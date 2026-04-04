@@ -6,10 +6,26 @@ type Tab = "today" | "tasks" | "calendar" | "leads"
 type LeadStatus = "new" | "waiting" | "followup_today" | "interested" | "replied" | "won"
 type SectionKey = "all" | "meetings" | "overdue" | "today" | "noContact"
 
-type Lead = { id: number; name: string; company: string; source: string; status: LeadStatus; value: number }
-type Activity = { id: number; leadId: number; type: "task" | "follow_up" | "meeting" | "call" | "reminder"; title: string; at: string; status: "pending" | "done" }
+type Lead = {
+  id: number
+  name: string
+  company: string
+  source: string
+  status: LeadStatus
+  value: number
+}
+
+type Activity = {
+  id: number
+  leadId: number
+  type: "task" | "follow_up" | "meeting" | "call" | "reminder"
+  title: string
+  at: string
+  status: "pending" | "done"
+}
 
 const TODAY = "2026-04-04"
+
 const leads: Lead[] = [
   { id: 1, name: "Marcin Kowalski", company: "TechFlow Sp. z o.o.", source: "LinkedIn", status: "followup_today", value: 8500 },
   { id: 2, name: "Ania Nowak", company: "Nowak Design Studio", source: "Polecenie", status: "interested", value: 3200 },
@@ -18,15 +34,16 @@ const leads: Lead[] = [
   { id: 5, name: "Tomasz Błaszczyk", company: "Błaszczyk IT Solutions", source: "Cold outreach", status: "new", value: 12000 },
   { id: 6, name: "Monika Jabłońska", company: "Jabłońska Finanse", source: "Polecenie", status: "replied", value: 1500 },
   { id: 7, name: "Agata Szymańska", company: "Szymańska Legal", source: "Strona www", status: "won", value: 6500 },
-  { id: 8, name: "Sylwia Kowalczyk", company: "Kowalczyk E-commerce", source: "Polecenie", status: "interested", value: 9500 }
+  { id: 8, name: "Sylwia Kowalczyk", company: "Kowalczyk E-commerce", source: "Polecenie", status: "interested", value: 9500 },
 ]
+
 const acts: Activity[] = [
   { id: 1, leadId: 1, type: "follow_up", title: "Odpisać na wiadomość Marcina", at: "2026-04-04T11:00", status: "pending" },
   { id: 2, leadId: 2, type: "task", title: "Przygotować brief rebrandingowy", at: "2026-04-04T09:00", status: "pending" },
   { id: 3, leadId: 3, type: "reminder", title: "Zadzwonić w sprawie oferty", at: "2026-04-03T10:00", status: "pending" },
   { id: 4, leadId: 5, type: "call", title: "Rozmowa wstępna — Tomasz", at: "2026-04-04T15:00", status: "pending" },
   { id: 5, leadId: 8, type: "follow_up", title: "Wysłać case studies Google Ads", at: "2026-04-02T12:00", status: "pending" },
-  { id: 6, leadId: 7, type: "task", title: "Wysłać umowę do podpisu", at: "2026-04-02T09:00", status: "done" }
+  { id: 6, leadId: 7, type: "task", title: "Wysłać umowę do podpisu", at: "2026-04-02T09:00", status: "done" },
 ]
 
 const statusMeta: Record<LeadStatus, { label: string; color: string; bg: string }> = {
@@ -35,21 +52,29 @@ const statusMeta: Record<LeadStatus, { label: string; color: string; bg: string 
   followup_today: { label: "Follow-up dziś", color: "#f87171", bg: "rgba(248,113,113,.12)" },
   interested: { label: "Zainteresowany", color: "#34d399", bg: "rgba(52,211,153,.12)" },
   replied: { label: "Odpisane", color: "#a78bfa", bg: "rgba(167,139,250,.12)" },
-  won: { label: "Wygrany", color: "#4ade80", bg: "rgba(74,222,128,.12)" }
+  won: { label: "Wygrany", color: "#4ade80", bg: "rgba(74,222,128,.12)" },
 }
 
-const sectionMeta = {
+const sectionMeta: Record<SectionKey, { title: string; color: string }> = {
   all: { title: "Wszystkie leady", color: "#f1eee8" },
   meetings: { title: "Spotkania i rozmowy dziś", color: "#a78bfa" },
   overdue: { title: "Zaległe — wymagają działania", color: "#ff6b6b" },
   today: { title: "Do zrobienia dziś", color: "#f59e0b" },
-  noContact: { title: "Bez kontaktu 5+ dni", color: "#7b8190" }
+  noContact: { title: "Bez kontaktu 5+ dni", color: "#7b8190" },
 }
+
+const baseOrder: SectionKey[] = ["all", "meetings", "overdue", "today", "noContact"]
 
 export default function HomePage() {
   const [tab, setTab] = useState<Tab>("today")
   const [scale, setScale] = useState<"small" | "medium" | "large">("small")
-  const [manual, setManual] = useState<Record<SectionKey, boolean>>({ all: true, meetings: true, overdue: true, today: true, noContact: true })
+  const [manual, setManual] = useState<Record<SectionKey, boolean>>({
+    all: true,
+    meetings: true,
+    overdue: true,
+    today: true,
+    noContact: true,
+  })
   const [promoted, setPromoted] = useState<SectionKey | null>(null)
 
   const leadMap = useMemo(() => new Map(leads.map((lead) => [lead.id, lead])), [])
@@ -57,8 +82,19 @@ export default function HomePage() {
   const overdue = acts.filter((a) => a.status === "pending" && a.at.slice(0, 10) < TODAY)
   const today = acts.filter((a) => a.status === "pending" && a.at.startsWith(TODAY))
   const noContact = leads.filter((lead) => lead.status !== "won")
-  const sections: Record<SectionKey, Lead[] | Activity[]> = { all: leads, meetings, overdue, today, noContact }
-  const order = promoted ? [promoted, "all", "meetings", "overdue", "today", "noContact"].filter((value, index, arr) => arr.indexOf(value) === index) as SectionKey[] : ["all", "meetings", "overdue", "today", "noContact"]
+
+  const sections: Record<SectionKey, Lead[] | Activity[]> = {
+    all: leads,
+    meetings,
+    overdue,
+    today,
+    noContact,
+  }
+
+  const order = useMemo<SectionKey[]>(() => {
+    if (!promoted) return baseOrder
+    return [promoted, ...baseOrder.filter((value) => value !== promoted)]
+  }, [promoted])
 
   function showSection(section: SectionKey) {
     setPromoted(section)
@@ -136,7 +172,13 @@ export default function HomePage() {
                   const over = active.filter((a) => a.at.slice(0, 10) < TODAY).length
                   return (
                     <div className="tr" key={lead.id}>
-                      <div style={{ display: "flex", gap: 12, alignItems: "center" }}><Avatar name={lead.name} /><div><div className="title">{lead.name}</div><div className="sub">{lead.company}</div></div></div>
+                      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                        <Avatar name={lead.name} />
+                        <div>
+                          <div className="title">{lead.name}</div>
+                          <div className="sub">{lead.company}</div>
+                        </div>
+                      </div>
                       <div><StatusBadge status={lead.status} /></div>
                       <div className="sub">{lead.source}</div>
                       <div className="value">{lead.value.toLocaleString("pl-PL")} zł</div>
@@ -148,8 +190,24 @@ export default function HomePage() {
             </>
           )}
 
-          {tab === "tasks" && <div className="panel">{acts.filter((a) => a.status === "pending").map((act) => <ActRow key={act.id} act={act} lead={leadMap.get(act.leadId)} />)}</div>}
-          {tab === "calendar" && <div className="panel"><div className="row"><div className="grow"><div className="title">Kalendarz</div><div className="sub">Na teraz wrzuciłem lekki placeholder pod review online.</div></div></div></div>}
+          {tab === "tasks" && (
+            <div className="panel">
+              {acts.filter((a) => a.status === "pending").map((act) => (
+                <ActRow key={act.id} act={act} lead={leadMap.get(act.leadId)} />
+              ))}
+            </div>
+          )}
+
+          {tab === "calendar" && (
+            <div className="panel">
+              <div className="row">
+                <div className="grow">
+                  <div className="title">Kalendarz</div>
+                  <div className="sub">Na teraz wrzuciłem lekki placeholder pod review online.</div>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </main>
@@ -157,11 +215,25 @@ export default function HomePage() {
 }
 
 function TopCard({ title, value, color, onClick }: { title: string; value: number; color: string; onClick: () => void }) {
-  return <button className="card" onClick={onClick}><div className="k" style={{ color }}>{title}</div><div className="v" style={{ color }}>{value}</div></button>
+  return (
+    <button className="card" onClick={onClick}>
+      <div className="k" style={{ color }}>{title}</div>
+      <div className="v" style={{ color }}>{value}</div>
+    </button>
+  )
 }
 
 function LeadMini({ lead }: { lead: Lead }) {
-  return <div className="row"><Avatar name={lead.name} /><div className="grow"><div className="title">{lead.name}</div><div className="sub">{lead.company}</div></div><StatusBadge status={lead.status} /></div>
+  return (
+    <div className="row">
+      <Avatar name={lead.name} />
+      <div className="grow">
+        <div className="title">{lead.name}</div>
+        <div className="sub">{lead.company}</div>
+      </div>
+      <StatusBadge status={lead.status} />
+    </div>
+  )
 }
 
 function ActRow({ act, lead }: { act: Activity; lead?: Lead }) {
@@ -170,11 +242,25 @@ function ActRow({ act, lead }: { act: Activity; lead?: Lead }) {
   const date = act.at.slice(0, 10)
   const time = act.at.slice(11, 16)
   const label = date === TODAY ? `dziś ${time}` : date === "2026-04-03" ? `wczoraj ${time}` : `2 dni temu ${time}`
-  return <div className="row"><div className="grow"><div className="title"><span style={{ color }}>{icon}</span> {act.title}</div><div className="sub">{label}{lead ? ` · ${lead.name}` : ""}</div></div>{date < TODAY ? <div style={{ color: "#ff6b6b", fontWeight: 700 }}>ZALEGŁE</div> : null}</div>
+
+  return (
+    <div className="row">
+      <div className="grow">
+        <div className="title"><span style={{ color }}>{icon}</span> {act.title}</div>
+        <div className="sub">{label}{lead ? ` · ${lead.name}` : ""}</div>
+      </div>
+      {date < TODAY ? <div style={{ color: "#ff6b6b", fontWeight: 700 }}>ZALEGŁE</div> : null}
+    </div>
+  )
 }
 
 function Avatar({ name }: { name: string }) {
-  const initials = name.split(" ").slice(0, 2).map((part) => part[0]).join("")
+  const initials = name
+    .split(" ")
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+
   return <span className="avatar">{initials}</span>
 }
 
