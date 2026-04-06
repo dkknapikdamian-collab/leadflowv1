@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { normalizeAndValidateEmail } from "@/lib/auth/email"
+import { getRequestFingerprint } from "@/lib/auth/request"
 import { checkAuthRateLimit } from "@/lib/auth/rate-limit"
 import { AUTH_SIGNUP_SENT_MESSAGE } from "@/lib/auth/messages"
 import { signUpWithPassword } from "@/lib/supabase/server"
@@ -16,7 +17,7 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const rateLimit = checkAuthRateLimit("signup", `${request.ip ?? "unknown"}:${email}`)
+  const rateLimit = checkAuthRateLimit("signup", `${getRequestFingerprint(request)}:${email}`)
   if (!rateLimit.ok) {
     return NextResponse.json(
       { error: `Spróbuj ponownie za około ${rateLimit.retryAfterSeconds}s.` },

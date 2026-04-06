@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { normalizeAndValidateEmail } from "@/lib/auth/email"
+import { getRequestFingerprint } from "@/lib/auth/request"
 import { checkAuthRateLimit } from "@/lib/auth/rate-limit"
 import { AUTH_GENERIC_LOGIN_ERROR } from "@/lib/auth/messages"
 import { setAuthCookies } from "@/lib/auth/cookies"
@@ -14,7 +15,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: AUTH_GENERIC_LOGIN_ERROR }, { status: 400 })
   }
 
-  const rateLimit = checkAuthRateLimit("login", `${request.ip ?? "unknown"}:${email}`)
+  const rateLimit = checkAuthRateLimit("login", `${getRequestFingerprint(request)}:${email}`)
   if (!rateLimit.ok) {
     return NextResponse.json(
       { error: `Spróbuj ponownie za około ${rateLimit.retryAfterSeconds}s.` },
