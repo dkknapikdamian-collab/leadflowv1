@@ -1,12 +1,12 @@
 "use client"
 
 import Link from "next/link"
+import { Suspense, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
 import { AuthShell } from "@/components/auth-shell"
 import { postJson } from "@/lib/supabase/browser"
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const next = searchParams.get("next") || "/today"
@@ -14,6 +14,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [googleUrl, setGoogleUrl] = useState("")
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const base = process.env.NEXT_PUBLIC_SUPABASE_URL || ""
+    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+    const params = new URLSearchParams({ provider: "google", flow_type: "implicit", redirect_to: redirectTo })
+    setGoogleUrl(`${base}/auth/v1/authorize?${params.toString()}`)
+  }, [next])
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -32,19 +41,17 @@ export default function LoginPage() {
     router.refresh()
   }
 
-  const googleUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/authorize?provider=google&flow_type=implicit&redirect_to=${encodeURIComponent(
-    `${window?.location?.origin || ""}/auth/callback?next=${encodeURIComponent(next)}`,
-  )}`
-
   return (
     <AuthShell
       title="Zaloguj się"
       subtitle="Wejdź przez Google albo e-mail i hasło. Dostęp zależy od statusu konta w bazie."
       footer={<p style={{ margin: 0, color: "var(--muted)" }}>Nie masz konta? <Link href="/signup">Załóż konto</Link></p>}
     >
-      <a href={googleUrl} style={{ display: "block", textAlign: "center", padding: 14, borderRadius: 12, border: "1px solid var(--border-light)", background: "transparent" }}>
-        Kontynuuj przez Google
-      </a>
+      {googleUrl ? (
+        <a href={googleUrl} style={{ display: "block", textAlign: "center", padding: 14, borderRadius: 12, border: "1px solid var(--border-light)", background: "transparent" }}>
+          Kontynuuj przez Google
+        </a>
+      ) : null}
 
       <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
         <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="E-mail" style={{ width: "100%", borderRadius: 12, border: "1px solid var(--border-light)", background: "#111", color: "var(--text)", padding: "12px 14px" }} />
@@ -57,5 +64,21 @@ export default function LoginPage() {
 
       <Link href="/forgot-password">Nie pamiętasz hasła?</Link>
     </AuthShell>
+  )
+}
+
+function LoginPageFallback() {
+  return (
+    <AuthShell title="Zaloguj się" subtitle="Ładowanie formularza logowania...">
+      <div style={{ color: "var(--muted)" }}>Przygotowuję formularz logowania...</div>
+    </AuthShell>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginPageFallback />}>
+      <LoginPageContent />
+    </Suspense>
   )
 }
