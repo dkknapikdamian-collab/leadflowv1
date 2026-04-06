@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { normalizeAndValidateEmail } from "@/lib/auth/email"
+import { AUTH_RESET_SENT_MESSAGE } from "@/lib/auth/messages"
 import { getRequestFingerprint } from "@/lib/auth/request"
 import { checkAuthRateLimit } from "@/lib/auth/rate-limit"
-import { AUTH_RESET_SENT_MESSAGE } from "@/lib/auth/messages"
+import { shouldReturnNeutralEmailActionSuccess } from "@/lib/auth/supabase-errors"
 import { sendPasswordReset } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
@@ -21,7 +22,18 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  await sendPasswordReset(email)
+  const result = await sendPasswordReset(email)
+
+  if (result.error) {
+    if (shouldReturnNeutralEmailActionSuccess(result.status, result.error)) {
+      return NextResponse.json({ ok: true, message: AUTH_RESET_SENT_MESSAGE })
+    }
+
+    return NextResponse.json(
+      { error: "Nie udało się teraz wysłać instrukcji resetu hasła." },
+      { status: result.status >= 500 ? 500 : 400 },
+    )
+  }
 
   return NextResponse.json({ ok: true, message: AUTH_RESET_SENT_MESSAGE })
 }

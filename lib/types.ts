@@ -53,6 +53,8 @@ export type FontScale = "compact" | "default" | "large"
 export type ViewProfile = "desktop" | "mobile"
 export type AccessStatus = "local" | "trial_active" | "trial_expired" | "paid_active" | "payment_failed" | "canceled"
 export type AppTheme = "classic" | "midnight"
+export type SignupSource = "google" | "email_password" | "invite" | "manual" | "unknown"
+export type WorkspaceMemberRole = "owner"
 
 export interface Lead {
   id: string
@@ -140,4 +142,65 @@ export interface AppSnapshot {
   settings: SettingsState
   leads: Lead[]
   items: WorkItem[]
+}
+
+export interface ProfileRecord {
+  id: string
+  normalizedEmail: string
+  email: string | null
+  displayName: string
+  timezone: string
+  isEmailVerified: boolean
+  signupSource: SignupSource
+  invitedByUserId: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface WorkspaceRecord {
+  id: string
+  ownerUserId: string
+  name: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface WorkspaceMemberRecord {
+  workspaceId: string
+  userId: string
+  role: WorkspaceMemberRole
+  createdAt: string
+}
+
+export interface AccessStatusRecord {
+  workspaceId: string
+  userId: string
+  accessStatus: Exclude<AccessStatus, "local">
+  trialStart: string
+  trialEnd: string
+  paidUntil: string | null
+  billingCustomerId: string | null
+  billingSubscriptionId: string | null
+  planName: string
+  trialUsed: boolean
+  signupSource: SignupSource
+  createdAt: string
+  updatedAt: string
+}
+
+export interface SettingsRecord extends SettingsState {
+  workspaceId: string
+  userId: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface LeadRecord extends Lead {
+  workspaceId: string
+  createdByUserId: string | null
+}
+
+export interface WorkItemRecord extends WorkItem {
+  workspaceId: string
+  createdByUserId: string | null
 }

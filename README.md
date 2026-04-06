@@ -25,22 +25,34 @@ Ten pakiet działa na:
 - middleware odświeżające sesję i chroniące prywatne widoki
 - warstwa sesji oddzielona od zwykłego store aplikacji
 - lokalny cache danych rozdzielony per zalogowany użytkownik, żeby konto A nie widziało wpisów konta B na tym samym urządzeniu
-- testy logiki i auth helperów
+- model ETAPU 3 rozpisany w kodzie i migracjach: profile, workspace, access status, settings, leads, work items
+- idempotentny bootstrap danych startowych po pierwszym logowaniu po stronie SQL triggera
+- testy logiki auth helperów i modelu repozytorium
 
-## Twarde zasady wdrożone na tym etapie
-- jeden e-mail ma prowadzić do jednego konta użytkownika
-- Google jest metodą logowania, a nie metodą nadawania dostępu
-- auth user nie jest brany z `snapshot.user`, tylko z sesji auth
-- komunikaty auth są neutralne i nie zdradzają publicznie, czy konto istnieje
-- e-mail jest zawsze normalizowany przed użyciem: trim + lowercase + walidacja formatu
-- wrażliwe akcje auth mają rate limiting po stronie aplikacji
-- nowy użytkownik ma startować od pustego stanu, nie od dema
-- dane demo nie ładują się automatycznie do produkcyjnego wejścia
+## Co domknięte względem ETAPU 2
+- login Google działa przez callback OAuth
+- login e-mail + hasło działa
+- rejestracja e-mail + hasło działa z neutralnymi komunikatami
+- resend confirmation ma limit i cooldown
+- forgot password i ustawienie nowego hasła są spięte
+- auth nie decyduje o dostępie w komponentach frontu
+- prywatne widoki są chronione przez middleware i sesję serwerową
 
-## Ważne ograniczenie tego etapu
-Ten etap domyka **ETAP 0–2**, czyli reguły, środowisko i pełny flow auth.
+## Co domknięte względem ETAPU 3
+- istnieje twardy model `profiles`, `workspaces`, `workspace_members`, `access_status`, `settings`, `leads`, `work_items`
+- każdy rekord biznesowy jest przewidziany pod `workspace_id`
+- bootstrap po pierwszym logowaniu tworzy profil, workspace, settings i trial
+- bootstrap jest idempotentny
+- są pola pod `signup_source` i `invited_by_user_id`
 
-Biznesowe dane aplikacji są już odseparowane od sesji użytkownika i cache są rozdzielone per użytkownik, ale pełne przejście na **online source of truth dla leadów / tasków / kalendarza** jest następnym etapem po uruchomieniu projektu Supabase i tabel z `supabase/001_init.sql`.
+## Ważne ograniczenie aktualnego stanu
+Auth jest już domknięty jak prawdziwa aplikacja, a model danych jest gotowy pod trial i billing.
+
+Natomiast pełne przepięcie CRUD leadów, tasków, kalendarza i ustawień z local cache na bazę online to kolejny etap. Na teraz:
+- sesja użytkownika jest prawdziwa,
+- separacja użytkowników jest prawdziwa,
+- model danych w Supabase jest gotowy,
+- ale główne dane robocze UI nie są jeszcze finalnie czytane i zapisywane do tych tabel.
 
 ## Pliki środowiskowe
 Skopiuj `.env.example` do `.env.local` i uzupełnij wartości.
@@ -51,53 +63,17 @@ Najważniejsze pola na ten etap:
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
 ## Supabase
-1. Utwórz projekt.
-2. Włącz:
-   - Google login,
-   - email/password auth,
-   - e-mail confirmation.
-3. Uruchom SQL z pliku:
+Jeśli stawiasz nowy projekt od zera, uruchom kolejno:
 
 ```text
 supabase/001_init.sql
+supabase/002_workspace_access_model.sql
 ```
 
-4. W Google Cloud ustaw redirect URL-e zgodne z:
-- `http://localhost:3000/auth/callback`
-- preview URL Vercel `/auth/callback`
-- production URL `/auth/callback`
+Jeśli projekt już był stawiany na wcześniejszym etapie, dołóż teraz:
 
-## Jak uruchomić zwykły start
-Na Windows najlepiej:
-- `start_leadflow.bat`
-
-albo:
-- `start_leadflow.ps1`
-
-Po uruchomieniu:
-- serwer dev startuje,
-- przeglądarka otwiera się sama,
-- log standardowy zapisuje się do `logs/app.log`,
-- błędy zapisują się do `logs/error.log`.
-
-## Jak uruchomić z testami
-Na Windows:
-- `start_leadflow_with_tests.bat`
-
-albo:
-- `start_leadflow_with_tests.ps1`
-
-Ten tryb:
-1. odpala testy,
-2. zapisuje wynik do `logs/test.log`,
-3. jeśli testy przejdą, uruchamia aplikację,
-4. otwiera stronę automatycznie w przeglądarce.
-
-## Uruchomienie ręczne
-```bash
-npm install
-npm run test
-npm run dev
+```text
+supabase/002_workspace_access_model.sql
 ```
 
 ## Co sprawdzić po podpięciu kont
@@ -109,3 +85,5 @@ npm run dev
 6. Login przez Google.
 7. Czy konto A i konto B nie mieszają lokalnych cache na tym samym urządzeniu.
 8. Czy po wylogowaniu prywatne widoki odcinają dostęp.
+9. Czy po pierwszym logowaniu istnieją rekordy w `profiles`, `workspaces`, `access_status`, `settings`.
+10. Czy tabele `leads` i `work_items` są gotowe pod następne przepięcie CRUD.
