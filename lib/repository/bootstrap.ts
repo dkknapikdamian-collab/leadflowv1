@@ -68,6 +68,9 @@ export function createBootstrapRecords(input: {
     planName: "Solo",
     trialUsed: true,
     signupSource: input.authProvider,
+    bonusCodeUsed: null,
+    bonusKind: null,
+    bonusAppliedAt: null,
     createdAt: now,
     updatedAt: now,
   }

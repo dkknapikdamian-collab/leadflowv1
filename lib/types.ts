@@ -55,6 +55,7 @@ export type AccessStatus = "local" | "trial_active" | "trial_expired" | "paid_ac
 export type AppTheme = "classic" | "midnight"
 export type SignupSource = "google" | "email_password" | "invite" | "manual" | "unknown"
 export type WorkspaceMemberRole = "owner"
+export type BonusKind = "promo_code" | "referral" | "manual"
 
 export interface Lead {
   id: string
@@ -184,6 +185,9 @@ export interface AccessStatusRecord {
   planName: string
   trialUsed: boolean
   signupSource: SignupSource
+  bonusCodeUsed: string | null
+  bonusKind: BonusKind | null
+  bonusAppliedAt: string | null
   createdAt: string
   updatedAt: string
 }

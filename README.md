@@ -27,6 +27,7 @@ Ten pakiet działa na:
 - lokalny cache danych rozdzielony per zalogowany użytkownik, żeby konto A nie widziało wpisów konta B na tym samym urządzeniu
 - model ETAPU 3 rozpisany w kodzie i migracjach: profile, workspace, access status, settings, leads, work items
 - idempotentny bootstrap danych startowych po pierwszym logowaniu po stronie SQL triggera
+- centralna tabela `access_status` trzyma status dostępu, trial, płatność i użyty bonus
 - testy logiki auth helperów i modelu repozytorium
 
 ## Co domknięte względem ETAPU 2
@@ -44,6 +45,7 @@ Ten pakiet działa na:
 - bootstrap po pierwszym logowaniu tworzy profil, workspace, settings i trial
 - bootstrap jest idempotentny
 - są pola pod `signup_source` i `invited_by_user_id`
+- `access_status` ma też miejsce na zapis użytego bonusu
 
 ## Ważne ograniczenie aktualnego stanu
 Auth jest już domknięty jak prawdziwa aplikacja, a model danych jest gotowy pod trial i billing.
@@ -68,12 +70,13 @@ Jeśli stawiasz nowy projekt od zera, uruchom kolejno:
 ```text
 supabase/001_init.sql
 supabase/002_workspace_access_model.sql
+supabase/003_access_status_bonus.sql
 ```
 
 Jeśli projekt już był stawiany na wcześniejszym etapie, dołóż teraz:
 
 ```text
-supabase/002_workspace_access_model.sql
+supabase/003_access_status_bonus.sql
 ```
 
 ## Co sprawdzić po podpięciu kont
@@ -86,4 +89,5 @@ supabase/002_workspace_access_model.sql
 7. Czy konto A i konto B nie mieszają lokalnych cache na tym samym urządzeniu.
 8. Czy po wylogowaniu prywatne widoki odcinają dostęp.
 9. Czy po pierwszym logowaniu istnieją rekordy w `profiles`, `workspaces`, `access_status`, `settings`.
-10. Czy tabele `leads` i `work_items` są gotowe pod następne przepięcie CRUD.
+10. Czy `access_status` ma komplet pól pod trial, płatność i bonus.
+11. Czy tabele `leads` i `work_items` są gotowe pod następne przepięcie CRUD.
