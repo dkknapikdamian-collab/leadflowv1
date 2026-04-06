@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { setAuthCookies } from "@/lib/auth/cookies"
+import { ensureUserCoreState } from "@/lib/repository/access-state.server"
 import { getUser } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
@@ -16,6 +17,11 @@ export async function POST(request: NextRequest) {
   }
 
   const userResult = await getUser(body.accessToken)
+
+  if (userResult.data?.id) {
+    await ensureUserCoreState(userResult.data.id).catch(() => null)
+  }
+
   const response = NextResponse.json({ ok: true, redirectTo: "/today" })
   setAuthCookies(response, {
     accessToken: body.accessToken,

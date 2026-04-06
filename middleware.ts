@@ -9,7 +9,7 @@ import {
   setAuthCookies,
   type CookieSessionInput,
 } from "@/lib/auth/cookies"
-import { ensureUserCoreState, getServerAccessStatusForUser } from "@/lib/repository/access-state.server"
+import { getAccessStatusForUser } from "@/lib/supabase/access-status"
 import { getUser, refreshSession } from "@/lib/supabase/server"
 
 const PUBLIC_PATHS = [
@@ -113,9 +113,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const email = userResult.data.email ?? getEmailFromRequest(request)
-  await ensureUserCoreState(userResult.data.id).catch(() => null)
-
-  const accessStatusResult = await getServerAccessStatusForUser(userResult.data.id)
+  const accessStatusResult = await getAccessStatusForUser(accessToken, userResult.data.id)
   const accessState = resolveAccessState({
     isEmailVerified: Boolean(userResult.data.email_confirmed_at),
     accessStatus: accessStatusResult.data,
@@ -132,6 +130,10 @@ export async function middleware(request: NextRequest) {
       return withSessionCookies(response, sessionCookies)
     }
 
+    return withSessionCookies(NextResponse.next(), sessionCookies)
+  }
+
+  if (accessStatusResult.data === null && accessStatusResult.error === null) {
     return withSessionCookies(NextResponse.next(), sessionCookies)
   }
 
