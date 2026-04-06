@@ -85,6 +85,8 @@ export function applyAccessStatusToSnapshot(
 ): AppSnapshot {
   const billing = buildBillingStateFromAccessStatus(snapshot.billing, row, now)
 
+  // Intentionally update only access-related metadata.
+  // Leads, tasks, settings, and the rest of the snapshot must survive temporary access loss.
   return {
     ...snapshot,
     context: {

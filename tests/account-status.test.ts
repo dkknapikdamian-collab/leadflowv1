@@ -55,6 +55,69 @@ test("applyAccessStatusToSnapshot blokuje tworzenie po payment_failed", () => {
   assert.equal(next.billing.canCreate, false)
 })
 
+test("applyAccessStatusToSnapshot zachowuje ledy, taski, ustawienia i snapshot po czasowej blokadzie", () => {
+  const snapshot = createInitialSnapshot()
+  snapshot.leads = [
+    {
+      id: "lead-1",
+      name: "ACME",
+      company: "ACME",
+      status: "active",
+      stage: "new",
+      source: "inbound",
+      createdAt: "2026-04-01T08:00:00.000Z",
+      updatedAt: "2026-04-01T08:00:00.000Z",
+      notes: "ważny lead",
+      email: null,
+      phone: null,
+      value: null,
+      tags: [],
+      leadScore: 0,
+      nextActionTitle: null,
+      nextActionAt: null,
+      owner: null,
+      lastContactAt: null,
+    },
+  ]
+  snapshot.items = [
+    {
+      id: "item-1",
+      kind: "task",
+      title: "Oddzwonić",
+      done: false,
+      leadId: "lead-1",
+      scheduledFor: "2026-04-08",
+      createdAt: "2026-04-01T08:00:00.000Z",
+      updatedAt: "2026-04-01T08:00:00.000Z",
+      notes: null,
+      completedAt: null,
+      snoozedUntil: null,
+      eventAt: null,
+      eventEndAt: null,
+    },
+  ]
+  snapshot.settings.workspaceName = "Moje Leady"
+  snapshot.settings.theme = "classic"
+
+  const next = applyAccessStatusToSnapshot(
+    snapshot,
+    createRow({
+      accessStatus: "trial_expired",
+      trialEnd: "2026-04-05T10:00:00.000Z",
+    }),
+    new Date("2026-04-06T08:00:00.000Z"),
+  )
+
+  assert.equal(next.leads.length, 1)
+  assert.equal(next.leads[0]?.name, "ACME")
+  assert.equal(next.items.length, 1)
+  assert.equal(next.items[0]?.title, "Oddzwonić")
+  assert.equal(next.settings.workspaceName, "Moje Leady")
+  assert.equal(next.settings.theme, "classic")
+  assert.equal(next.context.accessStatus, "trial_expired")
+  assert.equal(next.billing.status, "past_due")
+})
+
 test("getAccountStatusPresentation oznacza trial kończący się wkrótce", () => {
   const snapshot = applyAccessStatusToSnapshot(
     createInitialSnapshot(),
