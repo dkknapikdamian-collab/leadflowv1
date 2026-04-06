@@ -9,6 +9,7 @@ import {
   useState,
   type PropsWithChildren,
 } from "react"
+import { applyAccessStatusToSnapshot } from "@/lib/access/account-status"
 import { useAuthSession } from "@/lib/auth/session-provider"
 import { createAppDataRepository } from "@/lib/data/repository"
 import { choosePreferredSnapshot } from "@/lib/data/snapshot-selection"
@@ -22,6 +23,7 @@ import type {
   WorkItem,
   WorkItemInput,
 } from "@/lib/types"
+import type { AccessStatusRow } from "@/lib/supabase/access-status"
 import { STORAGE_KEY } from "@/lib/utils"
 
 interface AppStoreValue {
@@ -74,6 +76,7 @@ async function loadRemoteSnapshot() {
   return (await response.json().catch(() => null)) as {
     snapshot: AppSnapshot | null
     workspaceId: string | null
+    accessStatus: AccessStatusRow | null
   } | null
 }
 
@@ -124,7 +127,18 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
       )
 
       const selected = choosePreferredSnapshot(remoteSnapshot, localSnapshotWithWorkspace)
-      const nextSnapshot = selected.snapshot
+      let nextSnapshot = selected.snapshot
+
+      if (remotePayload?.accessStatus) {
+        nextSnapshot = applyAccessStatusToSnapshot(nextSnapshot, remotePayload.accessStatus)
+      }
+
+      nextSnapshot = syncSnapshotWithSession(
+        nextSnapshot,
+        session?.user ?? null,
+        remotePayload?.workspaceId ?? nextSnapshot.context.workspaceId ?? null,
+      )
+
       const serialized = JSON.stringify(nextSnapshot)
 
       if (cancelled) return

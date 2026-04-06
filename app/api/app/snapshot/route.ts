@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     snapshot: snapshotResult.data?.snapshot ?? null,
     workspaceId,
+    accessStatus: accessStatusResult.data ?? null,
   })
 }
 

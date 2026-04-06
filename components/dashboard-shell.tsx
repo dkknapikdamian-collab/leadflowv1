@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { type PropsWithChildren, useEffect, useMemo, useState } from "react"
+import { AccountStatusBanner } from "@/components/account-status-panel"
 import { ItemModal, LeadModal } from "@/components/views"
 import { useAuthSession } from "@/lib/auth/session-provider"
 import { useAppStore } from "@/lib/store"
@@ -342,6 +343,8 @@ export function DashboardShell({ children }: PropsWithChildren) {
             </button>
           </div>
         </header>
+
+        <AccountStatusBanner />
 
         <main className="page-content">{children}</main>
 

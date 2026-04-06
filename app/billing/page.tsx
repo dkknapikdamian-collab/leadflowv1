@@ -1,12 +1,12 @@
 export const dynamic = "force-dynamic"
 
+import { BillingStatusPageView } from "@/components/account-status-panel"
 import { DashboardShell } from "@/components/dashboard-shell"
-import { BillingPageView } from "@/components/views"
 
 export default function BillingPage() {
   return (
     <DashboardShell>
-      <BillingPageView />
+      <BillingStatusPageView />
     </DashboardShell>
   )
 }
