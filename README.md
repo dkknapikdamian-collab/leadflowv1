@@ -31,7 +31,9 @@ Ten pakiet działa na:
 - centralna tabela `access_status` trzyma status dostępu, trial, płatność i użyty bonus
 - centralna decyzja o dostępie w middleware na podstawie sesji auth i danych z bazy
 - ekran blokady dla usera zalogowanego, ale bez aktywnego dostępu
-- testy logiki auth helperów, modelu repozytorium, decyzji dostępowej i wyboru snapshotu lokalny/zdalny
+- maile auth rozdzielone od maili statusowych konta
+- statusowe maile konta przez Resend + cron + tracking wysyłek
+- testy logiki auth helperów, modelu repozytorium, decyzji dostępowej, wyboru snapshotu lokalny/zdalny i planera maili
 
 ## Co domknięte względem ETAPU 2
 - login Google działa przez callback OAuth
@@ -61,6 +63,19 @@ Ten pakiet działa na:
 - `paid_active` z ważnym `paid_until` wpuszcza
 - brak ważnego triala albo planu blokuje normalną pracę i kieruje na wall dostępu
 
+## Co domknięte względem ETAPU 5
+- auth maile są przygotowane pod własny SMTP w Supabase
+- maile statusowe są oddzielone od auth maili
+- są gotowe maile:
+  - trial kończy się za 3 dni
+  - trial kończy się jutro
+  - konto aktywne do dnia X
+  - plan wygasł
+  - płatność nieudana
+- jest tracking wysyłek przez `system_email_events`
+- jest endpoint cron do wysyłki statusowych maili
+- jest konfiguracja pod codzienne wywołanie na Vercel
+
 ## Co naprawiono dla wielu urządzeń
 - dane robocze nie siedzą już tylko na jednym urządzeniu
 - aplikacja ładuje snapshot z bazy przez `app_snapshots`
@@ -75,6 +90,10 @@ Najważniejsze pola na ten etap:
 - `NEXT_PUBLIC_APP_URL`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- `MAIL_FROM`
+- `RESEND_API_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `CRON_SECRET`
 
 ## Supabase
 Jeśli stawiasz nowy projekt od zera, uruchom kolejno:
@@ -83,12 +102,20 @@ Jeśli stawiasz nowy projekt od zera, uruchom kolejno:
 supabase/001_init.sql
 supabase/002_workspace_access_model.sql
 supabase/003_access_status_bonus.sql
+supabase/004_system_email_events.sql
 ```
 
 Jeśli projekt już był stawiany na wcześniejszym etapie, dołóż teraz:
 
 ```text
-supabase/003_access_status_bonus.sql
+supabase/004_system_email_events.sql
+```
+
+## Konfiguracja maili
+Szczegóły są w pliku:
+
+```text
+docs/EMAIL_SETUP.md
 ```
 
 ## Co sprawdzić po podpięciu kont
@@ -104,4 +131,6 @@ supabase/003_access_status_bonus.sql
 10. Czy `access_status` ma komplet pól pod trial, płatność i bonus.
 11. Czy user zalogowany, ale z wygasłym statusem, trafia na ekran blokady zamiast do pracy.
 12. Czy po dodaniu danych na laptopie te same dane widać po zalogowaniu na telefonie.
-13. Czy tabele `leads` i `work_items` są nadal gotowe pod późniejsze pełne rozbicie CRUD do modelu relacyjnego.
+13. Czy endpoint `/api/system/account-status-emails` wysyła maile statusowe po poprawnej konfiguracji.
+14. Czy tabela `system_email_events` nie dopuszcza do duplikatów tych samych maili.
+15. Czy tabele `leads` i `work_items` są nadal gotowe pod późniejsze pełne rozbicie CRUD do modelu relacyjnego.

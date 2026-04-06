@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/system/account-status-emails",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}

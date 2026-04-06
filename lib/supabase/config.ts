@@ -18,6 +18,14 @@ export function getSupabasePublishableKey() {
   return value
 }
 
+export function getSupabaseServiceRoleKey() {
+  const value = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
+  if (!value) {
+    throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY")
+  }
+  return value
+}
+
 export function getAppUrl() {
   const direct = process.env.NEXT_PUBLIC_APP_URL?.trim()
   if (direct) return direct.replace(/\/$/, "")
