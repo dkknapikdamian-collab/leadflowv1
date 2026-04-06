@@ -1,4 +1,5 @@
 import { getSupabasePublishableKey, getSupabaseUrl } from "@/lib/supabase/config"
+import type { AccessOverrideMode } from "@/lib/access/machine"
 
 export type AccessStatusValue = "trial_active" | "trial_expired" | "paid_active" | "payment_failed" | "canceled"
 
@@ -10,6 +11,9 @@ export interface AccessStatusRow {
   trialEnd: string | null
   paidUntil: string | null
   gracePeriodEnd?: string | null
+  accessOverrideMode?: AccessOverrideMode | null
+  accessOverrideExpiresAt?: string | null
+  accessOverrideNote?: string | null
   billingCustomerId: string | null
   billingSubscriptionId: string | null
   planName: string
@@ -26,6 +30,9 @@ interface RawAccessStatusRow {
   trial_end: string | null
   paid_until: string | null
   grace_period_end: string | null
+  access_override_mode: AccessOverrideMode | null
+  access_override_expires_at: string | null
+  access_override_note: string | null
   billing_customer_id: string | null
   billing_subscription_id: string | null
   plan_name: string
@@ -44,6 +51,9 @@ export async function getAccessStatusForUser(accessToken: string, userId: string
       "trial_end",
       "paid_until",
       "grace_period_end",
+      "access_override_mode",
+      "access_override_expires_at",
+      "access_override_note",
       "billing_customer_id",
       "billing_subscription_id",
       "plan_name",
@@ -87,6 +97,9 @@ export async function getAccessStatusForUser(accessToken: string, userId: string
       trialEnd: row.trial_end,
       paidUntil: row.paid_until,
       gracePeriodEnd: row.grace_period_end,
+      accessOverrideMode: row.access_override_mode,
+      accessOverrideExpiresAt: row.access_override_expires_at,
+      accessOverrideNote: row.access_override_note,
       billingCustomerId: row.billing_customer_id,
       billingSubscriptionId: row.billing_subscription_id,
       planName: row.plan_name,
