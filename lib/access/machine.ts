@@ -64,17 +64,17 @@ function isActiveUntil(value: string | null | undefined, now: number) {
   return timestamp !== null && timestamp >= now
 }
 
-function hasActiveAccessOverride(accessStatus: AccessStatusLike, now: number) {
+function getActiveAccessOverrideMode(accessStatus: AccessStatusLike, now: number): AccessOverrideMode {
   const mode = accessStatus.accessOverrideMode ?? "none"
   if (mode === "none") {
-    return false
+    return "none"
   }
 
   if (!accessStatus.accessOverrideExpiresAt) {
-    return true
+    return mode
   }
 
-  return isActiveUntil(accessStatus.accessOverrideExpiresAt, now)
+  return isActiveUntil(accessStatus.accessOverrideExpiresAt, now) ? mode : "none"
 }
 
 function canUseGracePeriod(accessStatus: AccessStatusLike, now: number) {
@@ -109,16 +109,32 @@ function buildResult(
 export function resolveAccessState(input: AccessMachineInput): AccessMachineResult {
   const now = getNowTimestamp(input.now)
 
-  if (input.accessStatus && hasActiveAccessOverride(input.accessStatus, now)) {
-    return buildResult(input, {
-      allowed: true,
-      canUseApp: true,
-      mustSeeBillingWall: false,
-      mustVerifyEmail: false,
-      reason: "access-override",
-      accessOverrideActive: true,
-      accessOverrideMode: input.accessStatus.accessOverrideMode ?? "none",
-    })
+  if (input.accessStatus) {
+    const activeOverrideMode = getActiveAccessOverrideMode(input.accessStatus, now)
+
+    if (activeOverrideMode === "admin_unlimited") {
+      return buildResult(input, {
+        allowed: true,
+        canUseApp: true,
+        mustSeeBillingWall: false,
+        mustVerifyEmail: false,
+        reason: "access-override",
+        accessOverrideActive: true,
+        accessOverrideMode: "admin_unlimited",
+      })
+    }
+
+    if (activeOverrideMode === "tester_unlimited") {
+      return buildResult(input, {
+        allowed: true,
+        canUseApp: true,
+        mustSeeBillingWall: false,
+        mustVerifyEmail: false,
+        reason: "access-override",
+        accessOverrideActive: true,
+        accessOverrideMode: "tester_unlimited",
+      })
+    }
   }
 
   if (!input.isEmailVerified) {
@@ -139,82 +155,84 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
   const accessStatus = input.accessStatus
   const gracePeriodActive = canUseGracePeriod(accessStatus, now)
 
-  switch (accessStatus.accessStatus) {
-    case "trial_active":
-      if (!accessStatus.trialEnd) {
-        return buildResult(input, {
-          reason: "missing-access-status",
-        })
-      }
-
-      if (isActiveUntil(accessStatus.trialEnd, now)) {
-        return buildResult(input, {
-          allowed: true,
-          canUseApp: true,
-          mustSeeBillingWall: false,
-          reason: "ok",
-        })
-      }
-
+  if (accessStatus.accessStatus === "paid_active") {
+    if (isActiveUntil(accessStatus.paidUntil, now) || gracePeriodActive) {
       return buildResult(input, {
-        reason: "trial-expired",
+        allowed: true,
+        canUseApp: true,
+        mustSeeBillingWall: false,
+        reason: "ok",
+        isGracePeriod: !isActiveUntil(accessStatus.paidUntil, now) && gracePeriodActive,
       })
+    }
 
-    case "trial_expired":
-      return buildResult(input, {
-        reason: "trial-expired",
-      })
+    return buildResult(input, {
+      reason: "plan-expired",
+    })
+  }
 
-    case "paid_active":
-      if (isActiveUntil(accessStatus.paidUntil, now) || gracePeriodActive) {
-        return buildResult(input, {
-          allowed: true,
-          canUseApp: true,
-          mustSeeBillingWall: false,
-          reason: "ok",
-          isGracePeriod: !isActiveUntil(accessStatus.paidUntil, now) && gracePeriodActive,
-        })
-      }
-
-      return buildResult(input, {
-        reason: "plan-expired",
-      })
-
-    case "payment_failed":
-      if (gracePeriodActive) {
-        return buildResult(input, {
-          allowed: true,
-          canUseApp: true,
-          mustSeeBillingWall: false,
-          reason: "ok",
-          isGracePeriod: true,
-        })
-      }
-
-      return buildResult(input, {
-        reason: "payment-failed",
-      })
-
-    case "canceled":
-      if (isActiveUntil(accessStatus.paidUntil, now) || gracePeriodActive) {
-        return buildResult(input, {
-          allowed: true,
-          canUseApp: true,
-          mustSeeBillingWall: false,
-          reason: "ok",
-          isGracePeriod: !isActiveUntil(accessStatus.paidUntil, now) && gracePeriodActive,
-        })
-      }
-
-      return buildResult(input, {
-        reason: "canceled",
-      })
-
-    default:
+  if (accessStatus.accessStatus === "trial_active") {
+    if (!accessStatus.trialEnd) {
       return buildResult(input, {
         reason: "missing-access-status",
       })
+    }
+
+    if (isActiveUntil(accessStatus.trialEnd, now)) {
+      return buildResult(input, {
+        allowed: true,
+        canUseApp: true,
+        mustSeeBillingWall: false,
+        reason: "ok",
+      })
+    }
+
+    return buildResult(input, {
+      reason: "trial-expired",
+    })
   }
+
+  if (accessStatus.accessStatus === "payment_failed") {
+    if (gracePeriodActive) {
+      return buildResult(input, {
+        allowed: true,
+        canUseApp: true,
+        mustSeeBillingWall: false,
+        reason: "ok",
+        isGracePeriod: true,
+      })
+    }
+
+    return buildResult(input, {
+      reason: "payment-failed",
+    })
+  }
+
+  if (accessStatus.accessStatus === "canceled") {
+    if (isActiveUntil(accessStatus.paidUntil, now) || gracePeriodActive) {
+      return buildResult(input, {
+        allowed: true,
+        canUseApp: true,
+        mustSeeBillingWall: false,
+        reason: "ok",
+        isGracePeriod: !isActiveUntil(accessStatus.paidUntil, now) && gracePeriodActive,
+      })
+    }
+
+    return buildResult(input, {
+      reason: "canceled",
+    })
+  }
+
+  if (accessStatus.accessStatus === "trial_expired") {
+    return buildResult(input, {
+      reason: "trial-expired",
+    })
+  }
+
+  return buildResult(input, {
+    reason: "missing-access-status",
+  })
 }
 
 export function canUseApp(input: AccessMachineInput) {

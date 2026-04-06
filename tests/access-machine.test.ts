@@ -30,7 +30,7 @@ test("mustVerifyEmail blokuje wejście, jeśli e-mail nie jest potwierdzony", ()
   assert.equal(state.reason, "email-not-verified")
 })
 
-test("admin_unlimited wpuszcza admina nawet bez potwierdzonego maila", () => {
+test("admin_unlimited ma najwyższy priorytet i wpuszcza nawet przy payment_failed oraz braku potwierdzenia maila", () => {
   const state = resolveAccessState({
     isEmailVerified: false,
     accessStatus: {
@@ -47,9 +47,10 @@ test("admin_unlimited wpuszcza admina nawet bez potwierdzonego maila", () => {
   assert.equal(state.mustVerifyEmail, false)
   assert.equal(state.mustSeeBillingWall, false)
   assert.equal(state.reason, "access-override")
+  assert.equal(state.accessOverrideMode, "admin_unlimited")
 })
 
-test("tester_unlimited wpuszcza, gdy override jest aktywny", () => {
+test("tester_unlimited ma wyższy priorytet niż trial_expired", () => {
   const state = resolveAccessState({
     isEmailVerified: true,
     accessStatus: {
@@ -64,6 +65,7 @@ test("tester_unlimited wpuszcza, gdy override jest aktywny", () => {
 
   assert.equal(state.canUseApp, true)
   assert.equal(state.reason, "access-override")
+  assert.equal(state.accessOverrideMode, "tester_unlimited")
 })
 
 test("wygasły tester override nie omija normalnej blokady", () => {
@@ -82,6 +84,37 @@ test("wygasły tester override nie omija normalnej blokady", () => {
   assert.equal(state.canUseApp, false)
   assert.equal(state.mustSeeBillingWall, true)
   assert.equal(state.reason, "trial-expired")
+})
+
+test("paid_active z ważnym paid_until ma wyższy priorytet niż trial i wpuszcza do aplikacji", () => {
+  const state = resolveAccessState({
+    isEmailVerified: true,
+    accessStatus: {
+      accessStatus: "paid_active",
+      trialEnd: "2026-04-13T10:00:00.000Z",
+      paidUntil: "2026-05-13T10:00:00.000Z",
+    },
+    now: "2026-04-10T10:00:00.000Z",
+  })
+
+  assert.equal(state.canUseApp, true)
+  assert.equal(state.reason, "ok")
+})
+
+test("paid_active po końcu paid_until blokuje jako plan-expired", () => {
+  const state = resolveAccessState({
+    isEmailVerified: true,
+    accessStatus: {
+      accessStatus: "paid_active",
+      trialEnd: "2026-04-30T10:00:00.000Z",
+      paidUntil: "2026-04-10T09:00:00.000Z",
+    },
+    now: "2026-04-10T10:00:00.000Z",
+  })
+
+  assert.equal(state.canUseApp, false)
+  assert.equal(state.mustSeeBillingWall, true)
+  assert.equal(state.reason, "plan-expired")
 })
 
 test("trial_active z ważnym trial_end wpuszcza do aplikacji", () => {
@@ -162,4 +195,20 @@ test("payment_failed bez grace period blokuje aplikację", () => {
   assert.equal(state.canUseApp, false)
   assert.equal(state.mustSeeBillingWall, true)
   assert.equal(state.reason, "payment-failed")
+})
+
+test("canceled po końcu ważności blokuje dostęp", () => {
+  const state = resolveAccessState({
+    isEmailVerified: true,
+    accessStatus: {
+      accessStatus: "canceled",
+      trialEnd: null,
+      paidUntil: "2026-04-10T09:00:00.000Z",
+    },
+    now: "2026-04-10T10:00:00.000Z",
+  })
+
+  assert.equal(state.canUseApp, false)
+  assert.equal(state.mustSeeBillingWall, true)
+  assert.equal(state.reason, "canceled")
 })
