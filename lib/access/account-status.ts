@@ -1,6 +1,6 @@
 import { resolveAccessState } from "@/lib/access/machine"
 import type { AccessStatusRow } from "@/lib/supabase/access-status"
-import type { AppSnapshot, BillingState } from "@/lib/types"
+import type { AccessOverrideStatus, AppSnapshot, BillingState } from "@/lib/types"
 
 export type AccountStatusTone = "neutral" | "success" | "warning" | "danger"
 
@@ -28,6 +28,22 @@ function getDaysUntil(value: string | null | undefined, now: Date) {
   return Math.ceil((timestamp - now.getTime()) / 86_400_000)
 }
 
+function isActiveUntil(value: string | null | undefined, now: Date) {
+  const timestamp = toTimestamp(value)
+  return timestamp !== null && timestamp >= now.getTime()
+}
+
+function getActiveOverrideFromSnapshot(snapshot: AppSnapshot, now: Date): AccessOverrideStatus | null {
+  const mode = snapshot.context.accessOverrideMode ?? null
+  if (!mode) return null
+
+  if (!snapshot.context.accessOverrideExpiresAt) {
+    return mode
+  }
+
+  return isActiveUntil(snapshot.context.accessOverrideExpiresAt, now) ? mode : null
+}
+
 export function formatAccountStatusDate(value: string | null | undefined, timeZone: string) {
   if (!value) return "—"
 
@@ -51,6 +67,10 @@ function deriveBillingStatus(row: AccessStatusRow, now: Date): BillingState["sta
 
   if (!accessState.canUseApp) {
     return "past_due"
+  }
+
+  if (accessState.accessOverrideActive) {
+    return "active"
   }
 
   return row.accessStatus === "trial_active" ? "trial" : "active"
@@ -95,6 +115,9 @@ export function applyAccessStatusToSnapshot(
       workspaceId: row.workspaceId || snapshot.context.workspaceId,
       accessStatus: row.accessStatus,
       billingStatus: billing.status,
+      accessOverrideMode: row.accessOverrideMode ?? null,
+      accessOverrideExpiresAt: row.accessOverrideExpiresAt ?? null,
+      accessOverrideNote: row.accessOverrideNote ?? null,
     },
     billing,
   }
@@ -116,12 +139,49 @@ export function getAccountStatusPresentation(
   options: { timeZone: string; now?: Date } = { timeZone: "Europe/Warsaw" },
 ): AccountStatusPresentation {
   const now = options.now ?? new Date()
+  const activeOverride = getActiveOverrideFromSnapshot(snapshot, now)
   const effectiveStatus = getEffectiveAccessStatus(snapshot)
   const planName = snapshot.billing.planName || "Solo"
   const trialEndLabel = formatAccountStatusDate(snapshot.billing.trialEndsAt, options.timeZone)
   const paidUntilLabel = formatAccountStatusDate(snapshot.billing.renewAt, options.timeZone)
+  const overrideUntilLabel = formatAccountStatusDate(snapshot.context.accessOverrideExpiresAt, options.timeZone)
   const trialDaysLeft = getDaysUntil(snapshot.billing.trialEndsAt, now)
   const planDaysLeft = getDaysUntil(snapshot.billing.renewAt, now)
+  const overrideDaysLeft = getDaysUntil(snapshot.context.accessOverrideExpiresAt, now)
+
+  if (activeOverride === "admin_unlimited") {
+    return {
+      tone: "success",
+      badgeLabel: "Admin unlimited",
+      title: "Stały dostęp administratora",
+      description:
+        snapshot.context.accessOverrideNote ||
+        "To konto ma stały bypass administratora i nie podlega normalnej logice triala ani płatności.",
+      primaryDateLabel: null,
+      secondaryDateLabel: paidUntilLabel !== "—" ? `Ostatni znany termin planu: ${paidUntilLabel}` : null,
+      ctaLabel: "Otwórz billing",
+      isBlocked: false,
+      isExpiringSoon: false,
+    }
+  }
+
+  if (activeOverride === "tester_unlimited") {
+    return {
+      tone: overrideDaysLeft !== null && overrideDaysLeft <= 3 ? "warning" : "success",
+      badgeLabel: "Tester access",
+      title: snapshot.context.accessOverrideExpiresAt ? "Dostęp testowy aktywny do wybranej daty" : "Dostęp testowy aktywny",
+      description:
+        snapshot.context.accessOverrideNote ||
+        (snapshot.context.accessOverrideExpiresAt
+          ? "To konto ma aktywny override testowy i nie wpada teraz w zwykły trial ani blokadę płatności."
+          : "To konto ma aktywny testowy no-limit access i nie wpada teraz w zwykły trial ani blokadę płatności."),
+      primaryDateLabel: snapshot.context.accessOverrideExpiresAt && overrideUntilLabel !== "—" ? `Dostęp testowy do: ${overrideUntilLabel}` : "Dostęp testowy bez limitu czasu",
+      secondaryDateLabel: paidUntilLabel !== "—" ? `Ostatni znany termin planu: ${paidUntilLabel}` : null,
+      ctaLabel: "Otwórz billing",
+      isBlocked: false,
+      isExpiringSoon: overrideDaysLeft !== null && overrideDaysLeft >= 0 && overrideDaysLeft <= 3,
+    }
+  }
 
   if (effectiveStatus === "local") {
     return {

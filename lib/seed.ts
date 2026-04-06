@@ -12,6 +12,9 @@ function createBaseSnapshot(): Omit<AppSnapshot, "leads" | "items"> {
       workspaceId: null,
       accessStatus: "local",
       billingStatus: "local",
+      accessOverrideMode: null,
+      accessOverrideExpiresAt: null,
+      accessOverrideNote: null,
     },
     billing: {
       planName: "Solo",
