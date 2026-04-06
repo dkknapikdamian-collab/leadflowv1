@@ -1,11 +1,11 @@
-import type { ManualOverrideMode } from "@/lib/access/machine"
+import type { AccessOverrideMode } from "@/lib/access/machine"
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/supabase/config"
 import type { AccessStatusRow } from "@/lib/supabase/access-status"
 
 export interface ServerAccessStatusRow extends AccessStatusRow {
-  manualOverrideMode: ManualOverrideMode
-  manualOverrideUntil: string | null
-  manualOverrideReason: string | null
+  accessOverrideMode: AccessOverrideMode
+  accessOverrideExpiresAt: string | null
+  accessOverrideNote: string | null
 }
 
 interface RawServerAccessStatusRow {
@@ -22,9 +22,9 @@ interface RawServerAccessStatusRow {
   bonus_code_used: string | null
   bonus_kind: AccessStatusRow["bonusKind"]
   bonus_applied_at: string | null
-  manual_override_mode: ManualOverrideMode | null
-  manual_override_until: string | null
-  manual_override_reason: string | null
+  access_override_mode: AccessOverrideMode | null
+  access_override_expires_at: string | null
+  access_override_note: string | null
 }
 
 interface EnsureUserCoreStateRow {
@@ -76,9 +76,9 @@ function mapServerAccessStatusRow(row: RawServerAccessStatusRow): ServerAccessSt
     bonusCodeUsed: row.bonus_code_used,
     bonusKind: row.bonus_kind,
     bonusAppliedAt: row.bonus_applied_at,
-    manualOverrideMode: row.manual_override_mode ?? "none",
-    manualOverrideUntil: row.manual_override_until,
-    manualOverrideReason: row.manual_override_reason,
+    accessOverrideMode: row.access_override_mode ?? "none",
+    accessOverrideExpiresAt: row.access_override_expires_at,
+    accessOverrideNote: row.access_override_note,
   }
 }
 
@@ -139,9 +139,9 @@ export async function getServerAccessStatusForUser(userId: string) {
       "bonus_code_used",
       "bonus_kind",
       "bonus_applied_at",
-      "manual_override_mode",
-      "manual_override_until",
-      "manual_override_reason",
+      "access_override_mode",
+      "access_override_expires_at",
+      "access_override_note",
     ].join(","),
     user_id: `eq.${userId}`,
     limit: "1",
@@ -156,11 +156,11 @@ export async function getServerAccessStatusForUser(userId: string) {
   }
 }
 
-export async function upsertServerManualAccessOverride(input: {
+export async function upsertServerAccessOverride(input: {
   userId: string
-  mode: ManualOverrideMode
-  until?: string | null
-  reason?: string | null
+  mode: Exclude<AccessOverrideMode, "none">
+  expiresAt?: string | null
+  note?: string | null
 }) {
   const params = new URLSearchParams({
     user_id: `eq.${input.userId}`,
@@ -172,9 +172,9 @@ export async function upsertServerManualAccessOverride(input: {
       Prefer: "return=minimal",
     },
     body: JSON.stringify({
-      manual_override_mode: input.mode,
-      manual_override_until: input.until ?? null,
-      manual_override_reason: input.reason ?? null,
+      access_override_mode: input.mode,
+      access_override_expires_at: input.expiresAt ?? null,
+      access_override_note: input.note ?? null,
     }),
   })
 }

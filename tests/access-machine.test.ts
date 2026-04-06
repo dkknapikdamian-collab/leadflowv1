@@ -30,6 +30,60 @@ test("mustVerifyEmail blokuje wejście, jeśli e-mail nie jest potwierdzony", ()
   assert.equal(state.reason, "email-not-verified")
 })
 
+test("admin_unlimited wpuszcza admina nawet bez potwierdzonego maila", () => {
+  const state = resolveAccessState({
+    isEmailVerified: false,
+    accessStatus: {
+      accessStatus: "payment_failed",
+      trialEnd: null,
+      paidUntil: null,
+      accessOverrideMode: "admin_unlimited",
+      accessOverrideExpiresAt: null,
+    },
+    now: "2026-04-10T10:00:00.000Z",
+  })
+
+  assert.equal(state.canUseApp, true)
+  assert.equal(state.mustVerifyEmail, false)
+  assert.equal(state.mustSeeBillingWall, false)
+  assert.equal(state.reason, "access-override")
+})
+
+test("tester_unlimited wpuszcza, gdy override jest aktywny", () => {
+  const state = resolveAccessState({
+    isEmailVerified: true,
+    accessStatus: {
+      accessStatus: "trial_expired",
+      trialEnd: "2026-04-01T10:00:00.000Z",
+      paidUntil: null,
+      accessOverrideMode: "tester_unlimited",
+      accessOverrideExpiresAt: "2026-04-30T10:00:00.000Z",
+    },
+    now: "2026-04-20T10:00:00.000Z",
+  })
+
+  assert.equal(state.canUseApp, true)
+  assert.equal(state.reason, "access-override")
+})
+
+test("wygasły tester override nie omija normalnej blokady", () => {
+  const state = resolveAccessState({
+    isEmailVerified: true,
+    accessStatus: {
+      accessStatus: "trial_expired",
+      trialEnd: "2026-04-01T10:00:00.000Z",
+      paidUntil: null,
+      accessOverrideMode: "tester_unlimited",
+      accessOverrideExpiresAt: "2026-04-05T10:00:00.000Z",
+    },
+    now: "2026-04-20T10:00:00.000Z",
+  })
+
+  assert.equal(state.canUseApp, false)
+  assert.equal(state.mustSeeBillingWall, true)
+  assert.equal(state.reason, "trial-expired")
+})
+
 test("trial_active z ważnym trial_end wpuszcza do aplikacji", () => {
   assert.equal(
     canUseApp({
@@ -108,39 +162,4 @@ test("payment_failed bez grace period blokuje aplikację", () => {
   assert.equal(state.canUseApp, false)
   assert.equal(state.mustSeeBillingWall, true)
   assert.equal(state.reason, "payment-failed")
-})
-
-test("manual override allow po stronie serwera wpuszcza mimo wygasłego triala", () => {
-  const state = resolveAccessState({
-    isEmailVerified: true,
-    accessStatus: {
-      accessStatus: "trial_expired",
-      trialEnd: "2026-04-01T10:00:00.000Z",
-      paidUntil: null,
-      manualOverrideMode: "allow",
-      manualOverrideUntil: "2026-04-30T10:00:00.000Z",
-    },
-    now: "2026-04-20T10:00:00.000Z",
-  })
-
-  assert.equal(state.canUseApp, true)
-  assert.equal(state.reason, "admin-allowed")
-})
-
-test("manual override block po stronie serwera blokuje nawet aktywny plan", () => {
-  const state = resolveAccessState({
-    isEmailVerified: true,
-    accessStatus: {
-      accessStatus: "paid_active",
-      trialEnd: null,
-      paidUntil: "2026-05-10T10:00:00.000Z",
-      manualOverrideMode: "block",
-      manualOverrideUntil: "2026-04-30T10:00:00.000Z",
-    },
-    now: "2026-04-20T10:00:00.000Z",
-  })
-
-  assert.equal(state.canUseApp, false)
-  assert.equal(state.mustSeeBillingWall, true)
-  assert.equal(state.reason, "admin-blocked")
 })

@@ -8,7 +8,6 @@ export type AccessDecisionReason =
   | "plan-expired"
   | "payment-failed"
   | "canceled"
-  | "admin-blocked"
 
 export interface AccessStatusDecisionInput {
   accessStatus: AccessMachineInput["accessStatus"]
@@ -43,8 +42,6 @@ export function evaluateAccessStatusDecision(input: AccessStatusDecisionInput): 
       return { allowed: false, reason: "payment-failed" }
     case "canceled":
       return { allowed: false, reason: "canceled" }
-    case "admin-blocked":
-      return { allowed: false, reason: "admin-blocked" }
     case "missing-access-status":
     default:
       return { allowed: false, reason: "missing-access-status" }

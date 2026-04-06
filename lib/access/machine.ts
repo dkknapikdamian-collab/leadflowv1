@@ -1,17 +1,16 @@
 import type { AccessStatusValue } from "@/lib/supabase/access-status"
 
-export type ManualOverrideMode = "none" | "allow" | "block"
+export type AccessOverrideMode = "none" | "admin_unlimited" | "tester_unlimited"
 
 export type AccessMachineReason =
   | "ok"
+  | "access-override"
   | "email-not-verified"
   | "missing-access-status"
   | "trial-expired"
   | "plan-expired"
   | "payment-failed"
   | "canceled"
-  | "admin-blocked"
-  | "admin-allowed"
 
 export interface AccessStatusLike {
   accessStatus: AccessStatusValue
@@ -19,9 +18,9 @@ export interface AccessStatusLike {
   trialEnd: string | null
   paidUntil: string | null
   gracePeriodEnd?: string | null
-  manualOverrideMode?: ManualOverrideMode | null
-  manualOverrideUntil?: string | null
-  manualOverrideReason?: string | null
+  accessOverrideMode?: AccessOverrideMode | null
+  accessOverrideExpiresAt?: string | null
+  accessOverrideNote?: string | null
 }
 
 export interface AccessMachineInput {
@@ -41,8 +40,8 @@ export interface AccessMachineResult {
   paidUntil: string | null
   gracePeriodEnd: string | null
   isGracePeriod: boolean
-  manualOverrideActive: boolean
-  manualOverrideMode: ManualOverrideMode
+  accessOverrideActive: boolean
+  accessOverrideMode: AccessOverrideMode
 }
 
 function toTimestamp(value: string | null | undefined) {
@@ -65,17 +64,17 @@ function isActiveUntil(value: string | null | undefined, now: number) {
   return timestamp !== null && timestamp >= now
 }
 
-function hasActiveManualOverride(accessStatus: AccessStatusLike, now: number) {
-  const mode = accessStatus.manualOverrideMode ?? "none"
+function hasActiveAccessOverride(accessStatus: AccessStatusLike, now: number) {
+  const mode = accessStatus.accessOverrideMode ?? "none"
   if (mode === "none") {
     return false
   }
 
-  if (!accessStatus.manualOverrideUntil) {
+  if (!accessStatus.accessOverrideExpiresAt) {
     return true
   }
 
-  return isActiveUntil(accessStatus.manualOverrideUntil, now)
+  return isActiveUntil(accessStatus.accessOverrideExpiresAt, now)
 }
 
 function canUseGracePeriod(accessStatus: AccessStatusLike, now: number) {
@@ -101,14 +100,26 @@ function buildResult(
     paidUntil: input.accessStatus?.paidUntil ?? null,
     gracePeriodEnd: input.accessStatus?.gracePeriodEnd ?? null,
     isGracePeriod: false,
-    manualOverrideActive: false,
-    manualOverrideMode: input.accessStatus?.manualOverrideMode ?? "none",
+    accessOverrideActive: false,
+    accessOverrideMode: input.accessStatus?.accessOverrideMode ?? "none",
     ...patch,
   }
 }
 
 export function resolveAccessState(input: AccessMachineInput): AccessMachineResult {
   const now = getNowTimestamp(input.now)
+
+  if (input.accessStatus && hasActiveAccessOverride(input.accessStatus, now)) {
+    return buildResult(input, {
+      allowed: true,
+      canUseApp: true,
+      mustSeeBillingWall: false,
+      mustVerifyEmail: false,
+      reason: "access-override",
+      accessOverrideActive: true,
+      accessOverrideMode: input.accessStatus.accessOverrideMode ?? "none",
+    })
+  }
 
   if (!input.isEmailVerified) {
     return buildResult(input, {
@@ -126,25 +137,6 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
   }
 
   const accessStatus = input.accessStatus
-
-  if (hasActiveManualOverride(accessStatus, now)) {
-    if (accessStatus.manualOverrideMode === "allow") {
-      return buildResult(input, {
-        allowed: true,
-        canUseApp: true,
-        mustSeeBillingWall: false,
-        reason: "admin-allowed",
-        manualOverrideActive: true,
-      })
-    }
-
-    return buildResult(input, {
-      reason: "admin-blocked",
-      manualOverrideActive: true,
-      mustSeeBillingWall: true,
-    })
-  }
-
   const gracePeriodActive = canUseGracePeriod(accessStatus, now)
 
   switch (accessStatus.accessStatus) {
