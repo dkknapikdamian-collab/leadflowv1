@@ -15,8 +15,8 @@ export type AccessMachineReason =
 
 export interface AccessStatusLike {
   accessStatus: AccessStatusValue
-  trialStart?: string
-  trialEnd: string
+  trialStart?: string | null
+  trialEnd: string | null
   paidUntil: string | null
   gracePeriodEnd?: string | null
   manualOverrideMode?: ManualOverrideMode | null
@@ -79,11 +79,7 @@ function hasActiveManualOverride(accessStatus: AccessStatusLike, now: number) {
 }
 
 function canUseGracePeriod(accessStatus: AccessStatusLike, now: number) {
-  if (![
-    "paid_active",
-    "payment_failed",
-    "canceled",
-  ].includes(accessStatus.accessStatus)) {
+  if (!["paid_active", "payment_failed", "canceled"].includes(accessStatus.accessStatus)) {
     return false
   }
 
@@ -153,6 +149,12 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
 
   switch (accessStatus.accessStatus) {
     case "trial_active":
+      if (!accessStatus.trialEnd) {
+        return buildResult(input, {
+          reason: "missing-access-status",
+        })
+      }
+
       if (isActiveUntil(accessStatus.trialEnd, now)) {
         return buildResult(input, {
           allowed: true,

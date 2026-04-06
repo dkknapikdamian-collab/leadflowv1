@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { clearAuthCookies, setAuthCookies } from "@/lib/auth/cookies"
+import { ensureUserCoreState } from "@/lib/repository/access-state.server"
 import { verifyOtp } from "@/lib/supabase/server"
 
 export async function GET(request: NextRequest) {
@@ -16,6 +17,10 @@ export async function GET(request: NextRequest) {
     const invalidResponse = NextResponse.redirect(new URL("/login?error=auth-link-invalid", request.url))
     clearAuthCookies(invalidResponse)
     return invalidResponse
+  }
+
+  if (result.data?.user?.id) {
+    await ensureUserCoreState(result.data.user.id).catch(() => null)
   }
 
   const redirectPath = type === "recovery" ? "/reset-password" : next

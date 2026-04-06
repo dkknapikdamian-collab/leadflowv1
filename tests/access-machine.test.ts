@@ -7,48 +7,73 @@ test("mustVerifyEmail blokuje wejście, jeśli e-mail nie jest potwierdzony", ()
     isEmailVerified: false,
     accessStatus: {
       accessStatus: "trial_active",
-      trialEnd: "2026-04-13T10:00:00.000Z",
+      trialEnd: null,
       paidUntil: null,
     },
     now: "2026-04-10T10:00:00.000Z",
   })
 
-  assert.equal(mustVerifyEmail({
-    isEmailVerified: false,
-    accessStatus: {
-      accessStatus: "trial_active",
-      trialEnd: "2026-04-13T10:00:00.000Z",
-      paidUntil: null,
-    },
-    now: "2026-04-10T10:00:00.000Z",
-  }), true)
+  assert.equal(
+    mustVerifyEmail({
+      isEmailVerified: false,
+      accessStatus: {
+        accessStatus: "trial_active",
+        trialEnd: null,
+        paidUntil: null,
+      },
+      now: "2026-04-10T10:00:00.000Z",
+    }),
+    true,
+  )
   assert.equal(state.canUseApp, false)
   assert.equal(state.mustSeeBillingWall, false)
   assert.equal(state.reason, "email-not-verified")
 })
 
 test("trial_active z ważnym trial_end wpuszcza do aplikacji", () => {
-  assert.equal(canUseApp({
+  assert.equal(
+    canUseApp({
+      isEmailVerified: true,
+      accessStatus: {
+        accessStatus: "trial_active",
+        trialEnd: "2026-04-13T10:00:00.000Z",
+        paidUntil: null,
+      },
+      now: "2026-04-10T10:00:00.000Z",
+    }),
+    true,
+  )
+})
+
+test("trial_active bez trial_end po potwierdzeniu maila nie wpuszcza do aplikacji", () => {
+  const state = resolveAccessState({
     isEmailVerified: true,
     accessStatus: {
       accessStatus: "trial_active",
-      trialEnd: "2026-04-13T10:00:00.000Z",
+      trialEnd: null,
       paidUntil: null,
     },
     now: "2026-04-10T10:00:00.000Z",
-  }), true)
+  })
+
+  assert.equal(state.canUseApp, false)
+  assert.equal(state.mustSeeBillingWall, true)
+  assert.equal(state.reason, "missing-access-status")
 })
 
 test("trial_active po końcu triala pokazuje billing wall", () => {
-  assert.equal(mustSeeBillingWall({
-    isEmailVerified: true,
-    accessStatus: {
-      accessStatus: "trial_active",
-      trialEnd: "2026-04-13T10:00:00.000Z",
-      paidUntil: null,
-    },
-    now: "2026-04-14T10:00:00.000Z",
-  }), true)
+  assert.equal(
+    mustSeeBillingWall({
+      isEmailVerified: true,
+      accessStatus: {
+        accessStatus: "trial_active",
+        trialEnd: "2026-04-13T10:00:00.000Z",
+        paidUntil: null,
+      },
+      now: "2026-04-14T10:00:00.000Z",
+    }),
+    true,
+  )
 })
 
 test("payment_failed z aktywnym grace_period_end nadal wpuszcza do aplikacji", () => {
@@ -56,7 +81,7 @@ test("payment_failed z aktywnym grace_period_end nadal wpuszcza do aplikacji", (
     isEmailVerified: true,
     accessStatus: {
       accessStatus: "payment_failed",
-      trialEnd: "2026-04-13T10:00:00.000Z",
+      trialEnd: null,
       paidUntil: "2026-04-20T10:00:00.000Z",
       gracePeriodEnd: "2026-04-21T10:00:00.000Z",
     },
@@ -73,7 +98,7 @@ test("payment_failed bez grace period blokuje aplikację", () => {
     isEmailVerified: true,
     accessStatus: {
       accessStatus: "payment_failed",
-      trialEnd: "2026-04-13T10:00:00.000Z",
+      trialEnd: null,
       paidUntil: "2026-04-20T10:00:00.000Z",
       gracePeriodEnd: "2026-04-20T09:00:00.000Z",
     },
@@ -107,7 +132,7 @@ test("manual override block po stronie serwera blokuje nawet aktywny plan", () =
     isEmailVerified: true,
     accessStatus: {
       accessStatus: "paid_active",
-      trialEnd: "2026-04-13T10:00:00.000Z",
+      trialEnd: null,
       paidUntil: "2026-05-10T10:00:00.000Z",
       manualOverrideMode: "block",
       manualOverrideUntil: "2026-04-30T10:00:00.000Z",

@@ -6,8 +6,8 @@ export interface AccessStatusRow {
   workspaceId: string
   userId: string
   accessStatus: AccessStatusValue
-  trialStart: string
-  trialEnd: string
+  trialStart: string | null
+  trialEnd: string | null
   paidUntil: string | null
   gracePeriodEnd?: string | null
   billingCustomerId: string | null
@@ -22,8 +22,8 @@ interface RawAccessStatusRow {
   workspace_id: string
   user_id: string
   access_status: AccessStatusRow["accessStatus"]
-  trial_start: string
-  trial_end: string
+  trial_start: string | null
+  trial_end: string | null
   paid_until: string | null
   grace_period_end: string | null
   billing_customer_id: string | null
