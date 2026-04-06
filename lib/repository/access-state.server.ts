@@ -27,6 +27,10 @@ interface RawServerAccessStatusRow {
   manual_override_reason: string | null
 }
 
+interface EnsureUserCoreStateRow {
+  workspace_id: string | null
+}
+
 async function serverAccessStatusRequest<T>(path: string, init: RequestInit = {}) {
   const response = await fetch(`${getSupabaseUrl()}/rest/v1${path}`, {
     ...init,
@@ -93,6 +97,29 @@ export function sanitizeAccessStatusForClient(row: ServerAccessStatusRow): Acces
     bonusCodeUsed: row.bonusCodeUsed,
     bonusKind: row.bonusKind,
     bonusAppliedAt: row.bonusAppliedAt,
+  }
+}
+
+export async function ensureUserCoreState(userId: string) {
+  const result = await serverAccessStatusRequest<EnsureUserCoreStateRow[] | EnsureUserCoreStateRow | null>(
+    "/rpc/ensure_user_core_state",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        target_user_id: userId,
+      }),
+    },
+  )
+
+  const row = Array.isArray(result.data) ? (result.data[0] ?? null) : (result.data ?? null)
+
+  return {
+    ...result,
+    data: row
+      ? {
+          workspaceId: row.workspace_id,
+        }
+      : null,
   }
 }
 
