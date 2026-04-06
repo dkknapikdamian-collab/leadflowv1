@@ -1,21 +1,24 @@
 {
-  "name": "leadflowv1",
-  "version": "0.1.0",
+  "name": "leadflow-restyle-v1",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "dev": "node ./node_modules/next/dist/bin/next dev",
+    "build": "node ./node_modules/next/dist/bin/next build",
+    "start": "node ./node_modules/next/dist/bin/next start",
+    "lint": "node ./node_modules/next/dist/bin/next lint",
+    "test": "tsc -p tsconfig.tests.json && node --test .tests-dist/tests/**/*.test.js",
+    "verify:prod": "npm test && npm run build"
   },
   "dependencies": {
-    "next": "^16.0.1",
+    "next": "16.2.2",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
   "devDependencies": {
-    "typescript": "5.9.3",
     "@types/node": "24.6.0",
     "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.2"
+    "@types/react-dom": "19.2.2",
+    "typescript": "5.9.3"
   }
 }
