@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
+import { evaluateAccessStatusDecision } from "@/lib/access/decision"
 import {
   clearAuthCookies,
   getAccessTokenFromRequest,
   getAuthProviderFromRequest,
 } from "@/lib/auth/cookies"
 import { mapSupabaseUserToSessionUser } from "@/lib/auth/session"
+import { getAccessStatusForUser } from "@/lib/supabase/access-status"
 import { getUser } from "@/lib/supabase/server"
 
 export async function GET(request: NextRequest) {
@@ -20,9 +22,19 @@ export async function GET(request: NextRequest) {
     return response
   }
 
+  const accessStatusResult = await getAccessStatusForUser(accessToken, result.data.id)
+  const decision = evaluateAccessStatusDecision({
+    accessStatus: accessStatusResult.data,
+    now: new Date(),
+  })
+
   return NextResponse.json({
     session: {
       user: mapSupabaseUserToSessionUser(result.data, getAuthProviderFromRequest(request)),
+      access: {
+        record: accessStatusResult.data,
+        decision,
+      },
     },
   })
 }

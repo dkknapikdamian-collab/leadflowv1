@@ -20,6 +20,7 @@
     "lib/seed.ts",
     "lib/snapshot.ts",
     "lib/today.ts",
+    "lib/access/**/*.ts",
     "lib/auth/**/*.ts",
     "lib/supabase/**/*.ts",
     "lib/repository/**/*.ts",

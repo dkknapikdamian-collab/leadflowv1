@@ -28,7 +28,9 @@ Ten pakiet działa na:
 - model ETAPU 3 rozpisany w kodzie i migracjach: profile, workspace, access status, settings, leads, work items
 - idempotentny bootstrap danych startowych po pierwszym logowaniu po stronie SQL triggera
 - centralna tabela `access_status` trzyma status dostępu, trial, płatność i użyty bonus
-- testy logiki auth helperów i modelu repozytorium
+- centralna decyzja o dostępie w middleware na podstawie sesji auth i danych z bazy
+- ekran blokady dla usera zalogowanego, ale bez aktywnego dostępu
+- testy logiki auth helperów, modelu repozytorium i decyzji dostępowej
 
 ## Co domknięte względem ETAPU 2
 - login Google działa przez callback OAuth
@@ -47,6 +49,17 @@ Ten pakiet działa na:
 - są pola pod `signup_source` i `invited_by_user_id`
 - `access_status` ma też miejsce na zapis użytego bonusu
 
+## Co domknięte względem ETAPU 4
+- user może być zalogowany, ale nadal zablokowany, jeśli nie ma aktywnego dostępu
+- middleware centralnie sprawdza:
+  - czy sesja istnieje,
+  - czy e-mail jest potwierdzony,
+  - czy istnieje rekord `access_status`,
+  - czy trial albo plan jeszcze trwa
+- `trial_active` z ważnym `trial_end` wpuszcza
+- `paid_active` z ważnym `paid_until` wpuszcza
+- brak ważnego triala albo planu blokuje normalną pracę i kieruje na wall dostępu
+
 ## Ważne ograniczenie aktualnego stanu
 Auth jest już domknięty jak prawdziwa aplikacja, a model danych jest gotowy pod trial i billing.
 
@@ -54,6 +67,7 @@ Natomiast pełne przepięcie CRUD leadów, tasków, kalendarza i ustawień z loc
 - sesja użytkownika jest prawdziwa,
 - separacja użytkowników jest prawdziwa,
 - model danych w Supabase jest gotowy,
+- decyzja o dostępie jest centralna,
 - ale główne dane robocze UI nie są jeszcze finalnie czytane i zapisywane do tych tabel.
 
 ## Pliki środowiskowe
@@ -90,4 +104,5 @@ supabase/003_access_status_bonus.sql
 8. Czy po wylogowaniu prywatne widoki odcinają dostęp.
 9. Czy po pierwszym logowaniu istnieją rekordy w `profiles`, `workspaces`, `access_status`, `settings`.
 10. Czy `access_status` ma komplet pól pod trial, płatność i bonus.
-11. Czy tabele `leads` i `work_items` są gotowe pod następne przepięcie CRUD.
+11. Czy user zalogowany, ale z wygasłym statusem, trafia na ekran blokady zamiast do pracy.
+12. Czy tabele `leads` i `work_items` są gotowe pod następne przepięcie CRUD.

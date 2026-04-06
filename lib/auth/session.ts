@@ -1,3 +1,5 @@
+import type { AccessDecisionReason } from "@/lib/access/decision"
+import type { AccessStatusRow } from "@/lib/supabase/access-status"
 import type { SupabaseAuthUser } from "@/lib/supabase/server"
 
 export interface AuthSessionUser {
@@ -10,6 +12,13 @@ export interface AuthSessionUser {
 
 export interface AuthSession {
   user: AuthSessionUser
+  access?: {
+    record: AccessStatusRow | null
+    decision: {
+      allowed: boolean
+      reason: AccessDecisionReason
+    }
+  } | null
 }
 
 function pickFirstString(...values: unknown[]) {
