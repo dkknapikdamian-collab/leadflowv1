@@ -73,6 +73,13 @@ function buildAccessBlockedRedirect(request: NextRequest, reason: string, sessio
   return withSessionCookies(response, sessionCookies)
 }
 
+function buildEnsureCoreStateRedirect(request: NextRequest, sessionCookies: CookieSessionInput | null) {
+  const ensureUrl = new URL("/api/auth/ensure-core-state", request.url)
+  ensureUrl.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`)
+  const response = NextResponse.redirect(ensureUrl)
+  return withSessionCookies(response, sessionCookies)
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -114,6 +121,18 @@ export async function middleware(request: NextRequest) {
 
   const email = userResult.data.email ?? getEmailFromRequest(request)
   const accessStatusResult = await getAccessStatusForUser(accessToken, userResult.data.id)
+
+  if (accessStatusResult.data === null && accessStatusResult.error === null) {
+    if (request.nextUrl.searchParams.get("core_state_checked") === "1") {
+      if (isAllowedWhenBlocked(pathname)) {
+        return withSessionCookies(NextResponse.next(), sessionCookies)
+      }
+      return buildAccessBlockedRedirect(request, "missing-access-status", sessionCookies)
+    }
+
+    return buildEnsureCoreStateRedirect(request, sessionCookies)
+  }
+
   const accessState = resolveAccessState({
     isEmailVerified: Boolean(userResult.data.email_confirmed_at),
     accessStatus: accessStatusResult.data,
@@ -130,10 +149,6 @@ export async function middleware(request: NextRequest) {
       return withSessionCookies(response, sessionCookies)
     }
 
-    return withSessionCookies(NextResponse.next(), sessionCookies)
-  }
-
-  if (accessStatusResult.data === null && accessStatusResult.error === null) {
     return withSessionCookies(NextResponse.next(), sessionCookies)
   }
 

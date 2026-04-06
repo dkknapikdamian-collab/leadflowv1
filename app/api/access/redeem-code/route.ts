@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getAccessTokenFromRequest } from "@/lib/auth/cookies"
-import { redeemAccessCode } from "@/lib/repository/access-codes.server"
+import { redeemPromoCode } from "@/lib/repository/promo-codes.server"
 import { ensureUserCoreState } from "@/lib/repository/access-state.server"
 import { getUser } from "@/lib/supabase/server"
 
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
 
   await ensureUserCoreState(userResult.data.id).catch(() => null)
 
-  const redeemResult = await redeemAccessCode({
+  const redeemResult = await redeemPromoCode({
     userId: userResult.data.id,
     code,
   })
@@ -40,5 +40,8 @@ export async function POST(request: NextRequest) {
     accessOverrideMode: redeemResult.data.accessOverrideMode,
     accessOverrideExpiresAt: redeemResult.data.accessOverrideExpiresAt,
     accessOverrideNote: redeemResult.data.accessOverrideNote,
+    accessStatus: redeemResult.data.accessStatus,
+    paidUntil: redeemResult.data.paidUntil,
+    effectType: redeemResult.data.effectType,
   })
 }
