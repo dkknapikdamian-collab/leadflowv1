@@ -22,7 +22,7 @@ const PUBLIC_PATHS = [
   "/auth/confirm",
 ]
 
-const ALLOWED_WHEN_BLOCKED = ["/access-blocked", "/billing"]
+const ALLOWED_WHEN_BLOCKED = ["/access-blocked", "/billing", "/api/access/redeem-code"]
 
 function isStaticPath(pathname: string) {
   return (
