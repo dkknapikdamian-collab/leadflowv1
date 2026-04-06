@@ -25,12 +25,13 @@ Ten pakiet działa na:
 - middleware odświeżające sesję i chroniące prywatne widoki
 - warstwa sesji oddzielona od zwykłego store aplikacji
 - lokalny cache danych rozdzielony per zalogowany użytkownik, żeby konto A nie widziało wpisów konta B na tym samym urządzeniu
+- wspólny snapshot aplikacji synchronizowany online między urządzeniami przez `app_snapshots`
 - model ETAPU 3 rozpisany w kodzie i migracjach: profile, workspace, access status, settings, leads, work items
 - idempotentny bootstrap danych startowych po pierwszym logowaniu po stronie SQL triggera
 - centralna tabela `access_status` trzyma status dostępu, trial, płatność i użyty bonus
 - centralna decyzja o dostępie w middleware na podstawie sesji auth i danych z bazy
 - ekran blokady dla usera zalogowanego, ale bez aktywnego dostępu
-- testy logiki auth helperów, modelu repozytorium i decyzji dostępowej
+- testy logiki auth helperów, modelu repozytorium, decyzji dostępowej i wyboru snapshotu lokalny/zdalny
 
 ## Co domknięte względem ETAPU 2
 - login Google działa przez callback OAuth
@@ -60,15 +61,12 @@ Ten pakiet działa na:
 - `paid_active` z ważnym `paid_until` wpuszcza
 - brak ważnego triala albo planu blokuje normalną pracę i kieruje na wall dostępu
 
-## Ważne ograniczenie aktualnego stanu
-Auth jest już domknięty jak prawdziwa aplikacja, a model danych jest gotowy pod trial i billing.
-
-Natomiast pełne przepięcie CRUD leadów, tasków, kalendarza i ustawień z local cache na bazę online to kolejny etap. Na teraz:
-- sesja użytkownika jest prawdziwa,
-- separacja użytkowników jest prawdziwa,
-- model danych w Supabase jest gotowy,
-- decyzja o dostępie jest centralna,
-- ale główne dane robocze UI nie są jeszcze finalnie czytane i zapisywane do tych tabel.
+## Co naprawiono dla wielu urządzeń
+- dane robocze nie siedzą już tylko na jednym urządzeniu
+- aplikacja ładuje snapshot z bazy przez `app_snapshots`
+- lokalny cache nadal istnieje jako fallback i warstwa awaryjna
+- jeśli lokalny snapshot jest nowszy od zdalnego, zostaje wypchnięty do bazy
+- dzięki temu laptop i telefon widzą ten sam stan po zalogowaniu na to samo konto
 
 ## Pliki środowiskowe
 Skopiuj `.env.example` do `.env.local` i uzupełnij wartości.
@@ -105,4 +103,5 @@ supabase/003_access_status_bonus.sql
 9. Czy po pierwszym logowaniu istnieją rekordy w `profiles`, `workspaces`, `access_status`, `settings`.
 10. Czy `access_status` ma komplet pól pod trial, płatność i bonus.
 11. Czy user zalogowany, ale z wygasłym statusem, trafia na ekran blokady zamiast do pracy.
-12. Czy tabele `leads` i `work_items` są gotowe pod następne przepięcie CRUD.
+12. Czy po dodaniu danych na laptopie te same dane widać po zalogowaniu na telefonie.
+13. Czy tabele `leads` i `work_items` są nadal gotowe pod późniejsze pełne rozbicie CRUD do modelu relacyjnego.

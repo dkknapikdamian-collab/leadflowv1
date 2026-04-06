@@ -5,11 +5,13 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type PropsWithChildren,
 } from "react"
 import { useAuthSession } from "@/lib/auth/session-provider"
 import { createAppDataRepository } from "@/lib/data/repository"
+import { choosePreferredSnapshot } from "@/lib/data/snapshot-selection"
 import { createLocalStorageDriver, createSnapshotStorageAdapter } from "@/lib/data/storage-adapter"
 import { buildUserScopedStorageKey } from "@/lib/data/storage-key"
 import type {
@@ -38,7 +40,11 @@ interface AppStoreValue {
 
 const AppStoreContext = createContext<AppStoreValue | null>(null)
 
-function syncSnapshotWithSession(snapshot: AppSnapshot, user: { id: string; email: string | null; displayName: string } | null) {
+function syncSnapshotWithSession(
+  snapshot: AppSnapshot,
+  user: { id: string; email: string | null; displayName: string } | null,
+  workspaceId?: string | null,
+) {
   return {
     ...snapshot,
     user: {
@@ -49,8 +55,39 @@ function syncSnapshotWithSession(snapshot: AppSnapshot, user: { id: string; emai
     context: {
       ...snapshot.context,
       userId: user?.id ?? null,
+      workspaceId: workspaceId ?? snapshot.context.workspaceId ?? null,
     },
   }
+}
+
+async function loadRemoteSnapshot() {
+  const response = await fetch("/api/app/snapshot", {
+    method: "GET",
+    cache: "no-store",
+    credentials: "same-origin",
+  })
+
+  if (!response.ok) {
+    return null
+  }
+
+  return (await response.json().catch(() => null)) as {
+    snapshot: AppSnapshot | null
+    workspaceId: string | null
+  } | null
+}
+
+async function saveRemoteSnapshot(snapshot: AppSnapshot) {
+  const response = await fetch("/api/app/snapshot", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "same-origin",
+    body: JSON.stringify({ snapshot }),
+  })
+
+  return response.ok
 }
 
 export function AppStoreProvider({ children }: PropsWithChildren) {
@@ -65,13 +102,43 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
   )
   const [snapshot, setSnapshot] = useState<AppSnapshot>(() => repository.createEmptySnapshot())
   const [isReady, setIsReady] = useState(false)
+  const lastRemoteSyncedRef = useRef<string | null>(null)
 
   useEffect(() => {
     if (!isAuthReady) return
 
-    const loadedSnapshot = repository.loadSnapshot()
-    setSnapshot(syncSnapshotWithSession(loadedSnapshot, session?.user ?? null))
-    setIsReady(true)
+    let cancelled = false
+
+    async function hydrateSnapshot() {
+      setIsReady(false)
+
+      const localSnapshot = syncSnapshotWithSession(repository.loadSnapshot(), session?.user ?? null)
+      const remotePayload = await loadRemoteSnapshot().catch(() => null)
+      const remoteSnapshot = remotePayload?.snapshot
+        ? syncSnapshotWithSession(remotePayload.snapshot, session?.user ?? null, remotePayload.workspaceId)
+        : null
+      const localSnapshotWithWorkspace = syncSnapshotWithSession(
+        localSnapshot,
+        session?.user ?? null,
+        remotePayload?.workspaceId ?? localSnapshot.context.workspaceId ?? null,
+      )
+
+      const selected = choosePreferredSnapshot(remoteSnapshot, localSnapshotWithWorkspace)
+      const nextSnapshot = selected.snapshot
+      const serialized = JSON.stringify(nextSnapshot)
+
+      if (cancelled) return
+
+      lastRemoteSyncedRef.current = selected.source === "remote" ? serialized : null
+      setSnapshot(nextSnapshot)
+      setIsReady(true)
+    }
+
+    void hydrateSnapshot()
+
+    return () => {
+      cancelled = true
+    }
   }, [isAuthReady, repository, session?.user])
 
   useEffect(() => {
@@ -79,6 +146,27 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
     document.documentElement.dataset.theme = theme
     document.body.dataset.theme = theme
   }, [snapshot.settings.theme])
+
+  useEffect(() => {
+    if (!isReady || !isAuthReady || !session?.user.id) return
+
+    const serialized = JSON.stringify(snapshot)
+    if (lastRemoteSyncedRef.current === serialized) return
+
+    const timeout = window.setTimeout(() => {
+      void saveRemoteSnapshot(snapshot)
+        .then((ok) => {
+          if (ok) {
+            lastRemoteSyncedRef.current = serialized
+          }
+        })
+        .catch(() => {
+          // keep local state as fallback
+        })
+    }, 250)
+
+    return () => window.clearTimeout(timeout)
+  }, [isAuthReady, isReady, session?.user.id, snapshot])
 
   const value = useMemo<AppStoreValue>(
     () => ({
