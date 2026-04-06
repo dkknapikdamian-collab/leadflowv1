@@ -6,7 +6,11 @@ import {
   getAuthProviderFromRequest,
 } from "@/lib/auth/cookies"
 import { mapSupabaseUserToSessionUser } from "@/lib/auth/session"
-import { getServerAccessStatusForUser, sanitizeAccessStatusForClient } from "@/lib/repository/access-state.server"
+import {
+  ensureUserCoreState,
+  getServerAccessStatusForUser,
+  sanitizeAccessStatusForClient,
+} from "@/lib/repository/access-state.server"
 import { getUser } from "@/lib/supabase/server"
 
 export async function GET(request: NextRequest) {
@@ -21,6 +25,8 @@ export async function GET(request: NextRequest) {
     clearAuthCookies(response)
     return response
   }
+
+  await ensureUserCoreState(result.data.id).catch(() => null)
 
   const accessStatusResult = await getServerAccessStatusForUser(result.data.id)
   const decision = evaluateAccessStatusDecision({

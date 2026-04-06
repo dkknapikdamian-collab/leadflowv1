@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { clearAuthCookies, getAccessTokenFromRequest } from "@/lib/auth/cookies"
-import { getServerAccessStatusForUser, sanitizeAccessStatusForClient } from "@/lib/repository/access-state.server"
+import {
+  ensureUserCoreState,
+  getServerAccessStatusForUser,
+  sanitizeAccessStatusForClient,
+} from "@/lib/repository/access-state.server"
 import { getAppSnapshotForUser, upsertAppSnapshotForUser } from "@/lib/supabase/app-snapshot"
 import { getUser } from "@/lib/supabase/server"
 import type { AppSnapshot } from "@/lib/types"
@@ -22,13 +26,18 @@ export async function GET(request: NextRequest) {
     return unauthorizedResponse()
   }
 
+  const backfillResult = await ensureUserCoreState(userResult.data.id).catch(() => null)
   const snapshotResult = await getAppSnapshotForUser(accessToken, userResult.data.id)
   if (snapshotResult.error) {
     return NextResponse.json({ error: "Nie udało się pobrać snapshotu." }, { status: 500 })
   }
 
   const accessStatusResult = await getServerAccessStatusForUser(userResult.data.id)
-  const workspaceId = snapshotResult.data?.workspaceId ?? accessStatusResult.data?.workspaceId ?? null
+  const workspaceId =
+    snapshotResult.data?.workspaceId ??
+    accessStatusResult.data?.workspaceId ??
+    backfillResult?.data?.workspaceId ??
+    null
 
   return NextResponse.json({
     snapshot: snapshotResult.data?.snapshot ?? null,
@@ -53,8 +62,9 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Brakuje snapshotu do zapisu." }, { status: 400 })
   }
 
+  const backfillResult = await ensureUserCoreState(userResult.data.id).catch(() => null)
   const accessStatusResult = await getServerAccessStatusForUser(userResult.data.id)
-  const workspaceId = accessStatusResult.data?.workspaceId
+  const workspaceId = accessStatusResult.data?.workspaceId ?? backfillResult?.data?.workspaceId ?? null
 
   if (!workspaceId) {
     return NextResponse.json({ error: "Brakuje workspace do zapisu snapshotu." }, { status: 400 })
