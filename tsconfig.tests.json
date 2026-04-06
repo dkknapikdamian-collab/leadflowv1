@@ -20,6 +20,8 @@
     "lib/seed.ts",
     "lib/snapshot.ts",
     "lib/today.ts",
+    "lib/auth/**/*.ts",
+    "lib/supabase/**/*.ts",
     "lib/data/**/*.ts",
     "tests/**/*.ts"
   ]

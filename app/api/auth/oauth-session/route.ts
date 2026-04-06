@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { setAuthCookies } from "@/lib/auth/cookies"
+import { getUser } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
   const body = (await request.json().catch(() => ({}))) as {
@@ -14,12 +15,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Brakuje tokenów sesji." }, { status: 400 })
   }
 
+  const userResult = await getUser(body.accessToken)
   const response = NextResponse.json({ ok: true, redirectTo: "/today" })
   setAuthCookies(response, {
     accessToken: body.accessToken,
     refreshToken: body.refreshToken,
-    email: body.email ?? null,
-    provider: body.provider ?? "google",
+    email: userResult.data?.email ?? body.email ?? null,
+    provider:
+      typeof userResult.data?.app_metadata?.provider === "string"
+        ? userResult.data.app_metadata.provider
+        : body.provider ?? "google",
     expiresIn: body.expiresIn ?? null,
   })
 

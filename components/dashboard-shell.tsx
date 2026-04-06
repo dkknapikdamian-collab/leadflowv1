@@ -1,11 +1,21 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { type PropsWithChildren, useEffect, useMemo, useState } from "react"
 import { ItemModal, LeadModal } from "@/components/views"
+import { useAuthSession } from "@/lib/auth/session-provider"
 import { useAppStore } from "@/lib/store"
-import { getCalendarItems, getCurrentDateKey, getDayOfMonth, getItemPrimaryDate, getMonthGrid, getMonthIndex, initials, toDateKey } from "@/lib/utils"
+import {
+  getCalendarItems,
+  getCurrentDateKey,
+  getDayOfMonth,
+  getItemPrimaryDate,
+  getMonthGrid,
+  getMonthIndex,
+  initials,
+  toDateKey,
+} from "@/lib/utils"
 
 const NAV_ITEMS = [
   { href: "/today", label: "Dziś", icon: "◈" },
@@ -119,16 +129,22 @@ function MobileMenuSheet({
   pathname,
   workspaceName,
   userName,
+  userEmail,
+  isLoggingOut,
   onClose,
   onOpenLeadModal,
   onOpenItemModal,
+  onLogout,
 }: {
   pathname: string
   workspaceName: string
   userName: string
+  userEmail: string
+  isLoggingOut: boolean
   onClose: () => void
   onOpenLeadModal: () => void
   onOpenItemModal: () => void
+  onLogout: () => void
 }) {
   return (
     <div className="mobile-menu-backdrop mobile-only" role="presentation">
@@ -147,7 +163,7 @@ function MobileMenuSheet({
           <div className="user-avatar">{getUserAvatarLabel(userName, workspaceName)}</div>
           <div>
             <div className="user-name">{userName}</div>
-            <div className="muted-small">{workspaceName}</div>
+            <div className="muted-small">{userEmail || workspaceName}</div>
           </div>
         </div>
 
@@ -157,6 +173,9 @@ function MobileMenuSheet({
           </button>
           <button className="ghost-button" type="button" onClick={onOpenItemModal}>
             + Dodaj działanie
+          </button>
+          <button className="ghost-button" type="button" onClick={onLogout} disabled={isLoggingOut}>
+            {isLoggingOut ? "Wylogowywanie..." : "Wyloguj"}
           </button>
         </div>
 
@@ -184,10 +203,13 @@ function MobileMenuSheet({
 
 export function DashboardShell({ children }: PropsWithChildren) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { session, isReady: isSessionReady, clear } = useAuthSession()
   const { snapshot, isReady } = useAppStore()
   const [leadModalOpen, setLeadModalOpen] = useState(false)
   const [itemModalOpen, setItemModalOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   useAutoViewProfile()
   useOverlayBodyLock(leadModalOpen || itemModalOpen || mobileMenuOpen)
@@ -196,10 +218,40 @@ export function DashboardShell({ children }: PropsWithChildren) {
     setMobileMenuOpen(false)
   }, [pathname])
 
+  useEffect(() => {
+    if (isSessionReady && !session) {
+      router.replace("/login")
+    }
+  }, [isSessionReady, router, session])
+
   const pageLabel = useMemo(
     () => NAV_ITEMS.find((item) => pathname.startsWith(item.href))?.label ?? "LeadFlow",
     [pathname],
   )
+
+  const displayUserName = session?.user.displayName || snapshot.user.name || "Twoje konto"
+  const displayUserEmail = session?.user.email || snapshot.user.email || ""
+
+  async function handleLogout() {
+    if (isLoggingOut) return
+
+    setIsLoggingOut(true)
+
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin",
+      })
+    } finally {
+      clear()
+      setMobileMenuOpen(false)
+      setLeadModalOpen(false)
+      setItemModalOpen(false)
+      router.replace("/login")
+      router.refresh()
+      setIsLoggingOut(false)
+    }
+  }
 
   function openLeadModal() {
     setMobileMenuOpen(false)
@@ -211,8 +263,12 @@ export function DashboardShell({ children }: PropsWithChildren) {
     setItemModalOpen(true)
   }
 
-  if (!isReady) {
+  if (!isReady || !isSessionReady) {
     return <div className="app-shell-loading">Ładowanie aplikacji…</div>
+  }
+
+  if (!session) {
+    return <div className="app-shell-loading">Przekierowuję do logowania…</div>
   }
 
   return (
@@ -246,11 +302,14 @@ export function DashboardShell({ children }: PropsWithChildren) {
           <button className="ghost-button" onClick={() => setItemModalOpen(true)}>
             + Dodaj działanie
           </button>
+          <button className="ghost-button" onClick={handleLogout} disabled={isLoggingOut}>
+            {isLoggingOut ? "Wylogowywanie..." : "Wyloguj"}
+          </button>
           <div className="user-box">
-            <div className="user-avatar">{getUserAvatarLabel(snapshot.user.name, snapshot.settings.workspaceName)}</div>
+            <div className="user-avatar">{getUserAvatarLabel(displayUserName, snapshot.settings.workspaceName)}</div>
             <div>
-              <div className="user-name">{snapshot.user.name}</div>
-              <div className="muted-small">{snapshot.settings.workspaceName}</div>
+              <div className="user-name">{displayUserName}</div>
+              <div className="muted-small">{displayUserEmail || snapshot.settings.workspaceName}</div>
             </div>
           </div>
         </div>
@@ -315,10 +374,13 @@ export function DashboardShell({ children }: PropsWithChildren) {
           <MobileMenuSheet
             pathname={pathname}
             workspaceName={snapshot.settings.workspaceName}
-            userName={snapshot.user.name}
+            userName={displayUserName}
+            userEmail={displayUserEmail}
+            isLoggingOut={isLoggingOut}
             onClose={() => setMobileMenuOpen(false)}
             onOpenLeadModal={openLeadModal}
             onOpenItemModal={openItemModal}
+            onLogout={handleLogout}
           />
         </div>
       ) : null}

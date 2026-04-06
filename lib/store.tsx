@@ -8,7 +8,10 @@ import {
   useState,
   type PropsWithChildren,
 } from "react"
+import { useAuthSession } from "@/lib/auth/session-provider"
 import { createAppDataRepository } from "@/lib/data/repository"
+import { createLocalStorageDriver, createSnapshotStorageAdapter } from "@/lib/data/storage-adapter"
+import { buildUserScopedStorageKey } from "@/lib/data/storage-key"
 import type {
   AppSnapshot,
   Lead,
@@ -17,6 +20,7 @@ import type {
   WorkItem,
   WorkItemInput,
 } from "@/lib/types"
+import { STORAGE_KEY } from "@/lib/utils"
 
 interface AppStoreValue {
   snapshot: AppSnapshot
@@ -33,16 +37,42 @@ interface AppStoreValue {
 }
 
 const AppStoreContext = createContext<AppStoreValue | null>(null)
-const repository = createAppDataRepository()
+
+function syncSnapshotWithSession(snapshot: AppSnapshot, user: { id: string; email: string | null; displayName: string } | null) {
+  return {
+    ...snapshot,
+    user: {
+      ...snapshot.user,
+      name: user?.displayName ?? snapshot.user.name,
+      email: user?.email ?? snapshot.user.email,
+    },
+    context: {
+      ...snapshot.context,
+      userId: user?.id ?? null,
+    },
+  }
+}
 
 export function AppStoreProvider({ children }: PropsWithChildren) {
+  const { session, isReady: isAuthReady } = useAuthSession()
+  const scopedStorageKey = useMemo(
+    () => buildUserScopedStorageKey(STORAGE_KEY, session?.user.id),
+    [session?.user.id],
+  )
+  const repository = useMemo(
+    () => createAppDataRepository(createSnapshotStorageAdapter(createLocalStorageDriver(scopedStorageKey))),
+    [scopedStorageKey],
+  )
   const [snapshot, setSnapshot] = useState<AppSnapshot>(() => repository.createEmptySnapshot())
   const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    setSnapshot(repository.loadSnapshot())
+    if (!isAuthReady) return
+
+    const loadedSnapshot = repository.loadSnapshot()
+    setSnapshot(syncSnapshotWithSession(loadedSnapshot, session?.user ?? null))
     setIsReady(true)
-  }, [])
+  }, [isAuthReady, repository, session?.user])
 
   useEffect(() => {
     const theme = snapshot.settings.theme || "classic"
@@ -53,25 +83,45 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
   const value = useMemo<AppStoreValue>(
     () => ({
       snapshot,
-      isReady,
+      isReady: isReady && isAuthReady,
       addLead: (payload: LeadInput) =>
-        setSnapshot((current: AppSnapshot) => repository.addLead(current, payload)),
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.addLead(current, payload), session?.user ?? null),
+        ),
       updateLead: (leadId: string, patch: Partial<Lead>) =>
-        setSnapshot((current: AppSnapshot) => repository.updateLead(current, leadId, patch)),
-      deleteLead: (leadId: string) => setSnapshot((current: AppSnapshot) => repository.deleteLead(current, leadId)),
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.updateLead(current, leadId, patch), session?.user ?? null),
+        ),
+      deleteLead: (leadId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.deleteLead(current, leadId), session?.user ?? null),
+        ),
       addItem: (payload: WorkItemInput) =>
-        setSnapshot((current: AppSnapshot) => repository.addItem(current, payload)),
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.addItem(current, payload), session?.user ?? null),
+        ),
       updateItem: (itemId: string, patch: Partial<WorkItem>) =>
-        setSnapshot((current: AppSnapshot) => repository.updateItem(current, itemId, patch)),
-      deleteItem: (itemId: string) => setSnapshot((current: AppSnapshot) => repository.deleteItem(current, itemId)),
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.updateItem(current, itemId, patch), session?.user ?? null),
+        ),
+      deleteItem: (itemId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.deleteItem(current, itemId), session?.user ?? null),
+        ),
       toggleItemDone: (itemId: string) =>
-        setSnapshot((current: AppSnapshot) => repository.toggleItemDone(current, itemId)),
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.toggleItemDone(current, itemId), session?.user ?? null),
+        ),
       snoozeItem: (itemId: string, nextDate: string) =>
-        setSnapshot((current: AppSnapshot) => repository.snoozeItem(current, itemId, nextDate)),
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.snoozeItem(current, itemId, nextDate), session?.user ?? null),
+        ),
       updateSettings: (patch: SettingsPatch) =>
-        setSnapshot((current: AppSnapshot) => repository.updateSettings(current, patch)),
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.updateSettings(current, patch), session?.user ?? null),
+        ),
     }),
-    [isReady, snapshot],
+    [isAuthReady, isReady, repository, session?.user, snapshot],
   )
 
   return <AppStoreContext.Provider value={value}>{children}</AppStoreContext.Provider>
