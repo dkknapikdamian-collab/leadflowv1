@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { evaluateAccessStatusDecision } from "@/lib/access/decision"
+import { resolveAccessState } from "@/lib/access/machine"
 import {
   clearAuthCookies,
   getAccessTokenFromRequest,
@@ -9,7 +9,7 @@ import {
   setAuthCookies,
   type CookieSessionInput,
 } from "@/lib/auth/cookies"
-import { getAccessStatusForUser } from "@/lib/supabase/access-status"
+import { getServerAccessStatusForUser } from "@/lib/repository/access-state.server"
 import { getUser, refreshSession } from "@/lib/supabase/server"
 
 const PUBLIC_PATHS = [
@@ -113,17 +113,18 @@ export async function middleware(request: NextRequest) {
   }
 
   const email = userResult.data.email ?? getEmailFromRequest(request)
-  if (!userResult.data.email_confirmed_at) {
-    return buildCheckEmailRedirect(request, email, sessionCookies)
-  }
-
-  const accessStatusResult = await getAccessStatusForUser(accessToken, userResult.data.id)
-  const decision = evaluateAccessStatusDecision({
+  const accessStatusResult = await getServerAccessStatusForUser(userResult.data.id)
+  const accessState = resolveAccessState({
+    isEmailVerified: Boolean(userResult.data.email_confirmed_at),
     accessStatus: accessStatusResult.data,
     now: new Date(),
   })
 
-  if (decision.allowed) {
+  if (accessState.mustVerifyEmail) {
+    return buildCheckEmailRedirect(request, email, sessionCookies)
+  }
+
+  if (accessState.canUseApp) {
     if (pathname === "/access-blocked") {
       const response = NextResponse.redirect(new URL("/today", request.url))
       return withSessionCookies(response, sessionCookies)
@@ -136,7 +137,7 @@ export async function middleware(request: NextRequest) {
     return withSessionCookies(NextResponse.next(), sessionCookies)
   }
 
-  return buildAccessBlockedRedirect(request, decision.reason, sessionCookies)
+  return buildAccessBlockedRedirect(request, accessState.reason, sessionCookies)
 }
 
 export const config = {

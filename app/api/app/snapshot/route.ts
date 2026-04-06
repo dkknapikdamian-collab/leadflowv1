@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { clearAuthCookies, getAccessTokenFromRequest } from "@/lib/auth/cookies"
-import { getAccessStatusForUser } from "@/lib/supabase/access-status"
+import { getServerAccessStatusForUser, sanitizeAccessStatusForClient } from "@/lib/repository/access-state.server"
 import { getAppSnapshotForUser, upsertAppSnapshotForUser } from "@/lib/supabase/app-snapshot"
 import { getUser } from "@/lib/supabase/server"
 import type { AppSnapshot } from "@/lib/types"
@@ -27,13 +27,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Nie udało się pobrać snapshotu." }, { status: 500 })
   }
 
-  const accessStatusResult = await getAccessStatusForUser(accessToken, userResult.data.id)
+  const accessStatusResult = await getServerAccessStatusForUser(userResult.data.id)
   const workspaceId = snapshotResult.data?.workspaceId ?? accessStatusResult.data?.workspaceId ?? null
 
   return NextResponse.json({
     snapshot: snapshotResult.data?.snapshot ?? null,
     workspaceId,
-    accessStatus: accessStatusResult.data ?? null,
+    accessStatus: accessStatusResult.data ? sanitizeAccessStatusForClient(accessStatusResult.data) : null,
   })
 }
 
@@ -53,7 +53,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Brakuje snapshotu do zapisu." }, { status: 400 })
   }
 
-  const accessStatusResult = await getAccessStatusForUser(accessToken, userResult.data.id)
+  const accessStatusResult = await getServerAccessStatusForUser(userResult.data.id)
   const workspaceId = accessStatusResult.data?.workspaceId
 
   if (!workspaceId) {

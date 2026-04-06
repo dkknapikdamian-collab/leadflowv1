@@ -1,12 +1,15 @@
 import { getSupabasePublishableKey, getSupabaseUrl } from "@/lib/supabase/config"
 
+export type AccessStatusValue = "trial_active" | "trial_expired" | "paid_active" | "payment_failed" | "canceled"
+
 export interface AccessStatusRow {
   workspaceId: string
   userId: string
-  accessStatus: "trial_active" | "trial_expired" | "paid_active" | "payment_failed" | "canceled"
+  accessStatus: AccessStatusValue
   trialStart: string
   trialEnd: string
   paidUntil: string | null
+  gracePeriodEnd?: string | null
   billingCustomerId: string | null
   billingSubscriptionId: string | null
   planName: string
@@ -22,6 +25,7 @@ interface RawAccessStatusRow {
   trial_start: string
   trial_end: string
   paid_until: string | null
+  grace_period_end: string | null
   billing_customer_id: string | null
   billing_subscription_id: string | null
   plan_name: string
@@ -39,6 +43,7 @@ export async function getAccessStatusForUser(accessToken: string, userId: string
       "trial_start",
       "trial_end",
       "paid_until",
+      "grace_period_end",
       "billing_customer_id",
       "billing_subscription_id",
       "plan_name",
@@ -81,6 +86,7 @@ export async function getAccessStatusForUser(accessToken: string, userId: string
       trialStart: row.trial_start,
       trialEnd: row.trial_end,
       paidUntil: row.paid_until,
+      gracePeriodEnd: row.grace_period_end,
       billingCustomerId: row.billing_customer_id,
       billingSubscriptionId: row.billing_subscription_id,
       planName: row.plan_name,

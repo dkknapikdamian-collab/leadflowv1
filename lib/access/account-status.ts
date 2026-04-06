@@ -1,4 +1,4 @@
-import { evaluateAccessStatusDecision } from "@/lib/access/decision"
+import { resolveAccessState } from "@/lib/access/machine"
 import type { AccessStatusRow } from "@/lib/supabase/access-status"
 import type { AppSnapshot, BillingState } from "@/lib/types"
 
@@ -43,24 +43,17 @@ export function formatAccountStatusDate(value: string | null | undefined, timeZo
 }
 
 function deriveBillingStatus(row: AccessStatusRow, now: Date): BillingState["status"] {
-  const decision = evaluateAccessStatusDecision({
-    accessStatus: {
-      accessStatus: row.accessStatus,
-      trialEnd: row.trialEnd,
-      paidUntil: row.paidUntil,
-    },
+  const accessState = resolveAccessState({
+    accessStatus: row,
+    isEmailVerified: true,
     now,
   })
 
-  if (row.accessStatus === "trial_active" && decision.allowed) {
-    return "trial"
+  if (!accessState.canUseApp) {
+    return "past_due"
   }
 
-  if ((row.accessStatus === "paid_active" || row.accessStatus === "canceled") && decision.allowed) {
-    return "active"
-  }
-
-  return "past_due"
+  return row.accessStatus === "trial_active" ? "trial" : "active"
 }
 
 export function buildBillingStateFromAccessStatus(
@@ -68,8 +61,12 @@ export function buildBillingStateFromAccessStatus(
   row: AccessStatusRow,
   now: Date = new Date(),
 ): BillingState {
+  const accessState = resolveAccessState({
+    accessStatus: row,
+    isEmailVerified: true,
+    now,
+  })
   const billingStatus = deriveBillingStatus(row, now)
-  const canCreate = billingStatus === "trial" || billingStatus === "active"
 
   return {
     ...current,
@@ -77,7 +74,7 @@ export function buildBillingStateFromAccessStatus(
     status: billingStatus,
     renewAt: row.paidUntil ?? current.renewAt,
     trialEndsAt: row.trialEnd || current.trialEndsAt,
-    canCreate,
+    canCreate: accessState.canUseApp,
   }
 }
 
@@ -124,6 +121,30 @@ export function getAccountStatusPresentation(
   const trialDaysLeft = getDaysUntil(snapshot.billing.trialEndsAt, now)
   const planDaysLeft = getDaysUntil(snapshot.billing.renewAt, now)
 
+  if (effectiveStatus === "local") {
+    return {
+      tone: "neutral",
+      badgeLabel: "Status lokalny",
+      title: "Brak statusu z serwera",
+      description: "To środowisko działa lokalnie i nie ma jeszcze podpiętego prawdziwego statusu konta.",
+      primaryDateLabel: null,
+      secondaryDateLabel: null,
+      ctaLabel: "Zobacz billing",
+      isBlocked: false,
+      isExpiringSoon: false,
+    }
+  }
+
+  const accessState = resolveAccessState({
+    isEmailVerified: true,
+    accessStatus: {
+      accessStatus: effectiveStatus,
+      trialEnd: snapshot.billing.trialEndsAt,
+      paidUntil: snapshot.billing.renewAt,
+    },
+    now,
+  })
+
   switch (effectiveStatus) {
     case "trial_active":
       return {
@@ -137,7 +158,7 @@ export function getAccountStatusPresentation(
         primaryDateLabel: trialEndLabel !== "—" ? `Koniec triala: ${trialEndLabel}` : null,
         secondaryDateLabel: null,
         ctaLabel: "Zobacz billing",
-        isBlocked: false,
+        isBlocked: !accessState.canUseApp,
         isExpiringSoon: trialDaysLeft !== null && trialDaysLeft >= 0 && trialDaysLeft <= 3,
       }
     case "paid_active":
@@ -152,7 +173,7 @@ export function getAccountStatusPresentation(
         primaryDateLabel: paidUntilLabel !== "—" ? `Aktywne do: ${paidUntilLabel}` : null,
         secondaryDateLabel: null,
         ctaLabel: "Otwórz billing",
-        isBlocked: false,
+        isBlocked: !accessState.canUseApp,
         isExpiringSoon: false,
       }
     case "canceled":
@@ -167,22 +188,36 @@ export function getAccountStatusPresentation(
         primaryDateLabel: paidUntilLabel !== "—" ? `Dostęp do: ${paidUntilLabel}` : null,
         secondaryDateLabel: null,
         ctaLabel: "Sprawdź billing",
-        isBlocked: !(planDaysLeft !== null && planDaysLeft >= 0),
+        isBlocked: !accessState.canUseApp,
         isExpiringSoon: planDaysLeft !== null && planDaysLeft >= 0 && planDaysLeft <= 3,
       }
     case "payment_failed":
-      return {
-        tone: "danger",
-        badgeLabel: "Problem z płatnością",
-        title: "Płatność wymaga uwagi",
-        description: "Dostęp do normalnego używania aplikacji jest wstrzymany do czasu poprawy płatności.",
-        primaryDateLabel: paidUntilLabel !== "—" ? `Ostatni znany termin: ${paidUntilLabel}` : null,
-        secondaryDateLabel: null,
-        ctaLabel: "Napraw płatność",
-        isBlocked: true,
-        isExpiringSoon: false,
-      }
+      return accessState.canUseApp
+        ? {
+            tone: "warning",
+            badgeLabel: "Bufor po problemie z płatnością",
+            title: "Dostęp działa tymczasowo",
+            description:
+              "Wystąpił problem z płatnością, ale aplikacja nadal działa w miękkim buforze. Uzupełnij płatność, zanim dostęp zostanie zablokowany.",
+            primaryDateLabel: paidUntilLabel !== "—" ? `Ostatni znany termin planu: ${paidUntilLabel}` : null,
+            secondaryDateLabel: null,
+            ctaLabel: "Napraw płatność",
+            isBlocked: false,
+            isExpiringSoon: true,
+          }
+        : {
+            tone: "danger",
+            badgeLabel: "Problem z płatnością",
+            title: "Płatność wymaga uwagi",
+            description: "Dostęp do normalnego używania aplikacji jest wstrzymany do czasu poprawy płatności.",
+            primaryDateLabel: paidUntilLabel !== "—" ? `Ostatni znany termin: ${paidUntilLabel}` : null,
+            secondaryDateLabel: null,
+            ctaLabel: "Napraw płatność",
+            isBlocked: true,
+            isExpiringSoon: false,
+          }
     case "trial_expired":
+    default:
       return {
         tone: "danger",
         badgeLabel: "Trial wygasł",
@@ -195,19 +230,6 @@ export function getAccountStatusPresentation(
         secondaryDateLabel: null,
         ctaLabel: "Przejdź do billing",
         isBlocked: true,
-        isExpiringSoon: false,
-      }
-    case "local":
-    default:
-      return {
-        tone: "neutral",
-        badgeLabel: "Status lokalny",
-        title: "Brak statusu z serwera",
-        description: "To środowisko działa lokalnie i nie ma jeszcze podpiętego prawdziwego statusu konta.",
-        primaryDateLabel: null,
-        secondaryDateLabel: null,
-        ctaLabel: "Zobacz billing",
-        isBlocked: false,
         isExpiringSoon: false,
       }
   }

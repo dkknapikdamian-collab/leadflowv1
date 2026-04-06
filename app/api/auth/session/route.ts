@@ -6,7 +6,7 @@ import {
   getAuthProviderFromRequest,
 } from "@/lib/auth/cookies"
 import { mapSupabaseUserToSessionUser } from "@/lib/auth/session"
-import { getAccessStatusForUser } from "@/lib/supabase/access-status"
+import { getServerAccessStatusForUser, sanitizeAccessStatusForClient } from "@/lib/repository/access-state.server"
 import { getUser } from "@/lib/supabase/server"
 
 export async function GET(request: NextRequest) {
@@ -22,9 +22,10 @@ export async function GET(request: NextRequest) {
     return response
   }
 
-  const accessStatusResult = await getAccessStatusForUser(accessToken, result.data.id)
+  const accessStatusResult = await getServerAccessStatusForUser(result.data.id)
   const decision = evaluateAccessStatusDecision({
     accessStatus: accessStatusResult.data,
+    isEmailVerified: Boolean(result.data.email_confirmed_at),
     now: new Date(),
   })
 
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
     session: {
       user: mapSupabaseUserToSessionUser(result.data, getAuthProviderFromRequest(request)),
       access: {
-        record: accessStatusResult.data,
+        record: accessStatusResult.data ? sanitizeAccessStatusForClient(accessStatusResult.data) : null,
         decision,
       },
     },
