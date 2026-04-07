@@ -8,6 +8,12 @@ export interface ServerAccessStatusRow extends AccessStatusRow {
   accessOverrideNote: string | null
 }
 
+export interface ServerProfileLookupRow {
+  userId: string
+  normalizedEmail: string
+  isEmailVerified: boolean
+}
+
 interface RawServerAccessStatusRow {
   workspace_id: string
   user_id: string
@@ -25,6 +31,12 @@ interface RawServerAccessStatusRow {
   access_override_mode: AccessOverrideMode | null
   access_override_expires_at: string | null
   access_override_note: string | null
+}
+
+interface RawServerProfileLookupRow {
+  user_id: string
+  normalized_email: string
+  is_email_verified: boolean
 }
 
 interface EnsureUserCoreStateRow {
@@ -82,6 +94,14 @@ function mapServerAccessStatusRow(row: RawServerAccessStatusRow): ServerAccessSt
   }
 }
 
+function mapServerProfileLookupRow(row: RawServerProfileLookupRow): ServerProfileLookupRow {
+  return {
+    userId: row.user_id,
+    normalizedEmail: row.normalized_email,
+    isEmailVerified: Boolean(row.is_email_verified),
+  }
+}
+
 export function sanitizeAccessStatusForClient(row: ServerAccessStatusRow): AccessStatusRow {
   return {
     workspaceId: row.workspaceId,
@@ -123,6 +143,23 @@ export async function ensureUserCoreState(userId: string) {
           workspaceId: row.workspace_id,
         }
       : null,
+  }
+}
+
+export async function getServerProfileByNormalizedEmail(email: string) {
+  const normalizedEmail = email.trim().toLowerCase()
+  const params = new URLSearchParams({
+    select: ["user_id", "normalized_email", "is_email_verified"].join(","),
+    normalized_email: `eq.${normalizedEmail}`,
+    limit: "1",
+  })
+
+  const result = await serverAccessStatusRequest<RawServerProfileLookupRow[]>(`/profiles?${params.toString()}`)
+  const row = result.data?.[0]
+
+  return {
+    ...result,
+    data: row ? mapServerProfileLookupRow(row) : null,
   }
 }
 
