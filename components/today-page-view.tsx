@@ -19,15 +19,13 @@ import {
   type TodaySection,
   type TodaySectionKey,
 } from "@/lib/today"
-import type { FontScale, Lead, WorkItem } from "@/lib/types"
+import type { Lead, WorkItem, WorkItemInput } from "@/lib/types"
 import {
   formatRelativeDateTimeShort,
-  getItemLeadLabel,
   getItemPrimaryDate,
   getItemTypeMeta,
   getStatusLabel,
   initials,
-  isOverdue,
 } from "@/lib/utils"
 
 function Avatar({ name }: { name: string }) {
@@ -41,11 +39,11 @@ function StatusBadge({ status }: { status: Lead["status"] }) {
 function FontScaleControl() {
   const { snapshot, updateSettings } = useAppStore()
   const currentScale = snapshot.settings.fontScale || "compact"
-  const options: { value: FontScale; label: string }[] = [
+  const options = [
     { value: "compact", label: "Mała" },
     { value: "default", label: "Średnia" },
     { value: "large", label: "Duża" },
-  ]
+  ] as const
 
   return (
     <div className="today-font-control" aria-label="Skala czcionki sekcji Dziś">
@@ -66,60 +64,229 @@ function FontScaleControl() {
   )
 }
 
+function formatCurrency(value: number) {
+  if (!value) return "—"
+
+  return new Intl.NumberFormat("pl-PL", {
+    style: "currency",
+    currency: "PLN",
+    maximumFractionDigits: 0,
+  }).format(value)
+}
+
+function createTomorrowAtNineIso() {
+  const nextDate = new Date()
+  nextDate.setDate(nextDate.getDate() + 1)
+  nextDate.setHours(9, 0, 0, 0)
+  return nextDate.toISOString()
+}
+
+function getLeadNextStepInfo(items: WorkItem[], leadId: string) {
+  const nextItem = items
+    .filter((item) => item.leadId === leadId && item.status !== "done" && item.recordType !== "note" && item.type !== "note")
+    .sort((left, right) => {
+      const leftDate = getItemPrimaryDate(left) || left.createdAt
+      const rightDate = getItemPrimaryDate(right) || right.createdAt
+      return leftDate.localeCompare(rightDate)
+    })[0] ?? null
+
+  return {
+    title: nextItem?.title ?? "Brak next step",
+    at: nextItem ? getItemPrimaryDate(nextItem) || null : null,
+  }
+}
+
+function getLeadReasonLabel(lead: LeadWithComputedState, sectionKey: TodaySectionKey) {
+  if (sectionKey === "waiting_too_long") {
+    return `Waiting ${lead.computed.daysSinceLastTouch} dni`
+  }
+
+  if (sectionKey === "stale") {
+    return `Brak ruchu od ${lead.computed.daysSinceLastTouch} dni`
+  }
+
+  if (sectionKey === "high_value_at_risk") {
+    return lead.computed.riskReason === "next_step_overdue"
+      ? "Wysoka wartość i overdue next step"
+      : "Wysoka wartość i brak ruchu"
+  }
+
+  if (sectionKey === "top_moves_today") {
+    return formatLeadAlarmReasonLabel(lead.computed.riskReason) || "Najwyższy priorytet dnia"
+  }
+
+  return formatLeadAlarmReasonLabel(lead.computed.riskReason) || "Aktywny lead bez planu"
+}
+
+function getItemReasonLabel(item: WorkItem, sectionKey: TodaySectionKey) {
+  if (sectionKey === "today") {
+    if (item.type === "call") return "Call na dziś"
+    if (item.type === "meeting") return "Spotkanie dziś"
+    if (item.type === "proposal") return "Oferta do wysłania dziś"
+    if (item.type === "follow_up" || item.type === "check_reply") return "Follow-up dziś"
+    return "Ruch zaplanowany na dziś"
+  }
+
+  if (sectionKey === "this_week") {
+    if (item.type === "meeting") return "Spotkanie w tym tygodniu"
+    if (item.type === "call") return "Call w tym tygodniu"
+    return "Ruch zaplanowany w tym tygodniu"
+  }
+
+  if (item.type === "call") return "Overdue call"
+  if (item.type === "meeting") return "Overdue meeting"
+  if (item.type === "proposal") return "Oferta po terminie"
+  if (item.type === "follow_up" || item.type === "check_reply") return "Brak follow-up"
+  return "Zaległe działanie"
+}
+
+function TodayQuickActionButton({
+  label,
+  onClick,
+  variant = "ghost",
+}: {
+  label: string
+  onClick: () => void
+  variant?: "ghost" | "primary"
+}) {
+  return (
+    <button
+      type="button"
+      className={variant === "primary" ? "primary-button" : "ghost-button small"}
+      onClick={(event) => {
+        event.stopPropagation()
+        onClick()
+      }}
+    >
+      {label}
+    </button>
+  )
+}
+
 function TodayItemRow({
   item,
-  leadName,
+  lead,
+  sectionKey,
   onEdit,
+  onDone,
+  onSnoozeTomorrow,
   dateOptions,
 }: {
   item: WorkItem
-  leadName?: string
+  lead: Lead | null
+  sectionKey: TodaySectionKey
   onEdit: () => void
+  onDone: () => void
+  onSnoozeTomorrow: () => void
   dateOptions: { timeZone: string }
 }) {
   const meta = getItemTypeMeta(item.type)
-  const overdue = isOverdue(item, dateOptions)
+  const reasonLabel = getItemReasonLabel(item, sectionKey)
 
   return (
-    <button className="today-item-row" onClick={onEdit} type="button">
-      <div className="today-item-icon" aria-hidden="true">
-        {meta.icon}
+    <article className="today-item-row" style={{ display: "flex", flexDirection: "column", alignItems: "stretch", gap: 12 }}>
+      <button className="today-row-open" onClick={onEdit} type="button" style={{ width: "100%", border: "none", background: "transparent", color: "inherit", padding: 0, textAlign: "left" }}>
+        <div className="today-row-open-top" style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+          <div className="today-item-icon" aria-hidden="true">
+            {meta.icon}
+          </div>
+          <div className="today-item-content" style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+            <div className="today-item-title">{lead?.name || item.leadLabel || item.title}</div>
+            <div className="today-item-flag">{reasonLabel}</div>
+          </div>
+        </div>
+
+        <div className="today-row-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8, marginTop: 12 }}>
+          <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "10px 12px", background: "rgba(255,255,255,0.02)" }}>
+            <div className="muted-small uppercase">Następny krok</div>
+            <div style={{ marginTop: 6, lineHeight: 1.4 }}>{item.title}</div>
+          </div>
+          <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "10px 12px", background: "rgba(255,255,255,0.02)" }}>
+            <div className="muted-small uppercase">Termin</div>
+            <div style={{ marginTop: 6, lineHeight: 1.4 }}>{formatRelativeDateTimeShort(getItemPrimaryDate(item), dateOptions)}</div>
+          </div>
+          <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "10px 12px", background: "rgba(255,255,255,0.02)" }}>
+            <div className="muted-small uppercase">Wartość</div>
+            <div style={{ marginTop: 6, lineHeight: 1.4 }}>{formatCurrency(lead?.value || 0)}</div>
+          </div>
+          <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "10px 12px", background: "rgba(255,255,255,0.02)" }}>
+            <div className="muted-small uppercase">Lead</div>
+            <div style={{ marginTop: 6, lineHeight: 1.4 }}>{lead?.name || item.leadLabel || "Wewnętrzne"}</div>
+          </div>
+        </div>
+      </button>
+
+      <div className="today-quick-actions" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <TodayQuickActionButton label="Zrobione" variant="primary" onClick={onDone} />
+        <TodayQuickActionButton label="Jutro" onClick={onSnoozeTomorrow} />
+        <TodayQuickActionButton label="Otwórz" onClick={onEdit} />
       </div>
-      <div className="today-item-content">
-        <div className="today-item-title">{item.title}</div>
-        {overdue ? <div className="today-item-flag">ZALEGŁE</div> : null}
-        <div className="today-item-meta">{formatRelativeDateTimeShort(getItemPrimaryDate(item), dateOptions)}</div>
-        {leadName ? <div className="today-item-lead">· {leadName}</div> : null}
-      </div>
-    </button>
+    </article>
   )
 }
 
 function TodayLeadRow({
   lead,
+  sectionKey,
   onOpen,
+  onCreateTomorrowFollowUp,
+  nextStepTitle,
+  nextStepAt,
   dateOptions,
 }: {
   lead: LeadWithComputedState
+  sectionKey: TodaySectionKey
   onOpen: () => void
+  onCreateTomorrowFollowUp: () => void
+  nextStepTitle: string
+  nextStepAt: string | null
   dateOptions: { timeZone: string }
 }) {
-  const riskLabel = formatLeadAlarmReasonLabel(lead.computed.riskReason)
-  const nextStepAt = lead.computed.nextStepAt
+  const reasonLabel = getLeadReasonLabel(lead, sectionKey)
 
   return (
-    <button className="today-lead-row" type="button" onClick={onOpen}>
-      <div className="today-lead-main">
-        <Avatar name={lead.name} />
-        <div className="today-lead-text">
-          <div className="today-lead-name">{lead.name}</div>
-          <div className="today-lead-company">{lead.company || lead.source}</div>
-          {riskLabel ? <div className="today-item-flag">{riskLabel}</div> : null}
-          {nextStepAt ? <div className="today-item-meta">{formatRelativeDateTimeShort(nextStepAt, dateOptions)}</div> : null}
+    <article className="today-lead-row" style={{ display: "flex", flexDirection: "column", alignItems: "stretch", gap: 12 }}>
+      <button className="today-row-open" type="button" onClick={onOpen} style={{ width: "100%", border: "none", background: "transparent", color: "inherit", padding: 0, textAlign: "left" }}>
+        <div className="today-lead-topbar" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+          <div className="today-lead-main">
+            <Avatar name={lead.name} />
+            <div className="today-lead-text">
+              <div className="today-lead-name">{lead.name}</div>
+              <div className="today-lead-company">{lead.company || lead.source}</div>
+            </div>
+          </div>
+          <StatusBadge status={lead.status} />
         </div>
+
+        <div className="today-item-flag">{reasonLabel}</div>
+
+        <div className="today-row-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8, marginTop: 12 }}>
+          <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "10px 12px", background: "rgba(255,255,255,0.02)" }}>
+            <div className="muted-small uppercase">Następny krok</div>
+            <div style={{ marginTop: 6, lineHeight: 1.4 }}>{nextStepTitle}</div>
+          </div>
+          <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "10px 12px", background: "rgba(255,255,255,0.02)" }}>
+            <div className="muted-small uppercase">Termin</div>
+            <div style={{ marginTop: 6, lineHeight: 1.4 }}>
+              {nextStepAt ? formatRelativeDateTimeShort(nextStepAt, dateOptions) : "Brak terminu"}
+            </div>
+          </div>
+          <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "10px 12px", background: "rgba(255,255,255,0.02)" }}>
+            <div className="muted-small uppercase">Wartość</div>
+            <div style={{ marginTop: 6, lineHeight: 1.4 }}>{formatCurrency(lead.value)}</div>
+          </div>
+          <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 12, padding: "10px 12px", background: "rgba(255,255,255,0.02)" }}>
+            <div className="muted-small uppercase">Priorytet dnia</div>
+            <div style={{ marginTop: 6, lineHeight: 1.4 }}>{lead.computed.dailyPriorityScore}</div>
+          </div>
+        </div>
+      </button>
+
+      <div className="today-quick-actions" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <TodayQuickActionButton label="Otwórz" variant="primary" onClick={onOpen} />
+        <TodayQuickActionButton label="Dodaj krok jutro" onClick={onCreateTomorrowFollowUp} />
       </div>
-      <StatusBadge status={lead.status} />
-    </button>
+    </article>
   )
 }
 
@@ -129,8 +296,12 @@ function TodaySectionBlock({
   onToggle,
   onFocus,
   onEditItem,
+  onItemDone,
+  onItemSnoozeTomorrow,
   onOpenLead,
-  getLeadName,
+  onCreateLeadFollowUpTomorrow,
+  getLeadById,
+  getLeadNextStepInfoById,
   dateOptions,
 }: {
   section: TodaySection
@@ -138,8 +309,12 @@ function TodaySectionBlock({
   onToggle: () => void
   onFocus: () => void
   onEditItem: (item: WorkItem) => void
+  onItemDone: (item: WorkItem) => void
+  onItemSnoozeTomorrow: (item: WorkItem) => void
   onOpenLead: (lead: Lead) => void
-  getLeadName: (item: WorkItem) => string
+  onCreateLeadFollowUpTomorrow: (lead: LeadWithComputedState) => void
+  getLeadById: (leadId: string | null) => Lead | null
+  getLeadNextStepInfoById: (leadId: string) => { title: string; at: string | null }
   dateOptions: { timeZone: string }
 }) {
   const meta = getTodaySectionMeta(section.key)
@@ -182,13 +357,33 @@ function TodaySectionBlock({
           {section.kind === "items" ? (
             section.items.length > 0 ? (
               section.items.map((item) => (
-                <TodayItemRow key={item.id} item={item} leadName={getLeadName(item)} onEdit={() => onEditItem(item)} dateOptions={dateOptions} />
+                <TodayItemRow
+                  key={item.id}
+                  item={item}
+                  lead={getLeadById(item.leadId)}
+                  sectionKey={section.key}
+                  onEdit={() => onEditItem(item)}
+                  onDone={() => onItemDone(item)}
+                  onSnoozeTomorrow={() => onItemSnoozeTomorrow(item)}
+                  dateOptions={dateOptions}
+                />
               ))
             ) : (
               <div className="empty-box">Brak wpisów w tej sekcji.</div>
             )
           ) : section.leads.length > 0 ? (
-            section.leads.map((lead) => <TodayLeadRow key={lead.id} lead={lead} onOpen={() => onOpenLead(lead)} dateOptions={dateOptions} />)
+            section.leads.map((lead) => (
+              <TodayLeadRow
+                key={lead.id}
+                lead={lead}
+                sectionKey={section.key}
+                onOpen={() => onOpenLead(lead)}
+                onCreateTomorrowFollowUp={() => onCreateLeadFollowUpTomorrow(lead)}
+                nextStepTitle={getLeadNextStepInfoById(lead.id).title}
+                nextStepAt={getLeadNextStepInfoById(lead.id).at}
+                dateOptions={dateOptions}
+              />
+            ))
           ) : (
             <div className="empty-box">Brak leadów w tej sekcji.</div>
           )}
@@ -199,7 +394,7 @@ function TodaySectionBlock({
 }
 
 export function TodayPageView() {
-  const { snapshot } = useAppStore()
+  const { snapshot, toggleItemDone, snoozeItem, addItem } = useAppStore()
   const [editingItem, setEditingItem] = useState<WorkItem | null>(null)
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [sectionOrder, setSectionOrder] = useState<TodaySectionKey[]>(TODAY_SECTION_ORDER)
@@ -208,6 +403,11 @@ export function TodayPageView() {
 
   const dateOptions = useMemo(() => ({ timeZone: snapshot.settings.timezone }), [snapshot.settings.timezone])
   const viewModel = useMemo(() => buildTodayViewModel(snapshot, dateOptions), [dateOptions, snapshot])
+  const leadMap = useMemo(() => new Map(snapshot.leads.map((lead) => [lead.id, lead])), [snapshot.leads])
+  const leadNextStepMap = useMemo(
+    () => new Map(snapshot.leads.map((lead) => [lead.id, getLeadNextStepInfo(snapshot.items, lead.id)])),
+    [snapshot.items, snapshot.leads],
+  )
   const sections = useMemo(() => {
     const mapped = new Map(viewModel.sections.map((section) => [section.key, section]))
     return sectionOrder
@@ -241,7 +441,10 @@ export function TodayPageView() {
     )
   }
 
-  const getLeadName = (item: WorkItem) => getItemLeadLabel(item, snapshot.leads)
+  function getLeadById(leadId: string | null) {
+    if (!leadId) return null
+    return leadMap.get(leadId) ?? null
+  }
 
   function toggleSection(key: TodaySectionKey) {
     setManualCollapsed((current) => getNextManualCollapsedState(current, transientExpandedKey, key))
@@ -257,13 +460,43 @@ export function TodayPageView() {
     focusSection(getSectionKeyFromTopStat(statKey))
   }
 
+  function handleItemDone(item: WorkItem) {
+    toggleItemDone(item.id)
+  }
+
+  function handleItemSnoozeTomorrow(item: WorkItem) {
+    snoozeItem(item.id, createTomorrowAtNineIso())
+  }
+
+  function handleCreateLeadFollowUpTomorrow(lead: LeadWithComputedState) {
+    const payload: WorkItemInput = {
+      leadId: lead.id,
+      leadLabel: lead.name,
+      recordType: "task",
+      type: lead.status === "waiting" ? "check_reply" : "follow_up",
+      title: lead.status === "waiting" ? `Sprawdzić odpowiedź — ${lead.name}` : `Follow-up — ${lead.name}`,
+      description: "Dodane szybkim ruchem z ekranu Dziś.",
+      status: "todo",
+      priority: lead.priority,
+      scheduledAt: createTomorrowAtNineIso(),
+      startAt: "",
+      endAt: "",
+      recurrence: "none",
+      reminder: snapshot.settings.defaultReminder,
+      showInTasks: true,
+      showInCalendar: true,
+    }
+
+    addItem(payload)
+  }
+
   return (
     <div className={`today-page today-font-${fontScale}${isMobileProfile ? " today-profile-mobile" : ""}`}>
       <section className="hero-row split">
         <div>
           <h1 className="page-title">Dzisiaj</h1>
           <div className="today-date-label">{viewModel.dateLabel}</div>
-          <p className="page-subtitle">Tu masz dokładnie to, co wymaga ruchu dzisiaj i co już wisi zaległe.</p>
+          <p className="page-subtitle">Tu od razu widzisz, co ruszyć teraz, co nie ma next stepu i co grozi zgubieniem.</p>
         </div>
         <FontScaleControl />
       </section>
@@ -319,8 +552,12 @@ export function TodayPageView() {
             onToggle={() => toggleSection(section.key)}
             onFocus={() => focusSection(section.key)}
             onEditItem={setEditingItem}
+            onItemDone={handleItemDone}
+            onItemSnoozeTomorrow={handleItemSnoozeTomorrow}
             onOpenLead={setSelectedLead}
-            getLeadName={getLeadName}
+            onCreateLeadFollowUpTomorrow={handleCreateLeadFollowUpTomorrow}
+            getLeadById={getLeadById}
+            getLeadNextStepInfoById={(leadId) => leadNextStepMap.get(leadId) ?? { title: "Brak next step", at: null }}
             dateOptions={dateOptions}
           />
         ))}
