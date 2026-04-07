@@ -1,19 +1,30 @@
 import type { AppSnapshot, Lead, WorkItem } from "./types"
+import { buildLeadsWithComputedState, DEFAULT_LEAD_STATE_SETTINGS } from "./domain/lead-state"
 import {
   getCurrentDateKey,
-  getDateKeyDiff,
-  getItemPrimaryDate,
   getTaskListItems,
+  getWeekDays,
   isCalendarVisibleItem,
   isMeetingLikeItem,
   isOverdue,
   isToday,
   toDateKey,
   formatDateKeyLong,
+  getItemPrimaryDate,
   type DateContextOptions,
 } from "./utils"
 
-export type TodaySectionKey = "all_leads" | "meetings" | "overdue" | "today" | "stale"
+export type TodaySectionKey =
+  | "all_leads"
+  | "meetings"
+  | "overdue"
+  | "missing_next_step"
+  | "waiting_too_long"
+  | "today"
+  | "this_week"
+  | "high_value_at_risk"
+  | "stale"
+
 export type TodayTopStatKey = "all_leads" | "today" | "overdue" | "meetings" | "stale"
 
 export interface TodayTopStat {
@@ -50,12 +61,27 @@ export interface TodayViewModel {
   topStats: TodayTopStat[]
 }
 
-export const TODAY_SECTION_ORDER: TodaySectionKey[] = ["meetings", "overdue", "today", "stale", "all_leads"]
+export const TODAY_SECTION_ORDER: TodaySectionKey[] = [
+  "meetings",
+  "overdue",
+  "missing_next_step",
+  "waiting_too_long",
+  "today",
+  "this_week",
+  "high_value_at_risk",
+  "stale",
+  "all_leads",
+]
+
 export const TODAY_DEFAULT_COLLAPSED: Record<TodaySectionKey, boolean> = {
   all_leads: true,
   meetings: false,
   overdue: false,
+  missing_next_step: false,
+  waiting_too_long: false,
   today: false,
+  this_week: false,
+  high_value_at_risk: false,
   stale: false,
 }
 
@@ -75,10 +101,30 @@ const TODAY_SECTION_META: Record<TodaySectionKey, { title: string; color: string
     color: "#f87171",
     kind: "items",
   },
+  missing_next_step: {
+    title: "Bez kolejnego kroku",
+    color: "#fb7185",
+    kind: "leads",
+  },
+  waiting_too_long: {
+    title: "Waiting za długo",
+    color: "#f97316",
+    kind: "leads",
+  },
   today: {
     title: "Do zrobienia dziś",
     color: "#f59e0b",
     kind: "items",
+  },
+  this_week: {
+    title: "Ten tydzień",
+    color: "#38bdf8",
+    kind: "items",
+  },
+  high_value_at_risk: {
+    title: "Wysoka wartość w ryzyku",
+    color: "#facc15",
+    kind: "leads",
   },
   stale: {
     title: "Bez kontaktu 5+ dni",
@@ -100,14 +146,12 @@ function getSnapshotDateOptions(snapshot: AppSnapshot, options: DateContextOptio
 
 export function getStaleLeads(snapshot: AppSnapshot, options: DateContextOptions = {}) {
   const dateOptions = getSnapshotDateOptions(snapshot, options)
-  const currentDateKey = getCurrentDateKey(dateOptions)
+  const staleDays = DEFAULT_LEAD_STATE_SETTINGS.staleLeadDays
+  const leadsWithComputed = buildLeadsWithComputedState(snapshot, dateOptions)
 
-  return snapshot.leads.filter((lead) => {
-    if (lead.status === "won" || lead.status === "lost") return false
-    const updatedDateKey = toDateKey(lead.updatedAt, dateOptions)
-    if (!updatedDateKey) return false
-    return getDateKeyDiff(currentDateKey, updatedDateKey) >= 5
-  })
+  return leadsWithComputed
+    .filter((lead) => lead.status !== "won" && lead.status !== "lost")
+    .filter((lead) => lead.computed.daysSinceLastTouch >= staleDays)
 }
 
 function getPendingItems(snapshot: AppSnapshot) {
@@ -157,6 +201,7 @@ function buildTodayTopStatsFromSections(snapshot: AppSnapshot, sections: TodaySe
 
 export function buildTodaySections(snapshot: AppSnapshot, options: DateContextOptions = {}): TodaySection[] {
   const dateOptions = getSnapshotDateOptions(snapshot, options)
+  const leadsWithComputed = buildLeadsWithComputedState(snapshot, dateOptions)
   const pendingItems = getPendingItems(snapshot)
   const pendingTaskItems = getTaskListItems(pendingItems)
   const overdueItems = pendingTaskItems.filter((item) => isOverdue(item, dateOptions))
@@ -171,6 +216,39 @@ export function buildTodaySections(snapshot: AppSnapshot, options: DateContextOp
   const todayItems = pendingTaskItems.filter((item) => {
     return isToday(getItemPrimaryDate(item), dateOptions) && !overdueIds.has(item.id) && !meetingIds.has(item.id)
   })
+
+  const missingNextStepLeads = leadsWithComputed.filter(
+    (lead) =>
+      lead.status !== "won" &&
+      lead.status !== "lost" &&
+      (
+        lead.computed.riskReason === "missing_next_step" ||
+        lead.computed.riskReason === "no_followup_after_meeting" ||
+        lead.computed.riskReason === "no_followup_after_proposal"
+      ),
+  )
+
+  const waitingTooLongLeads = leadsWithComputed.filter((lead) => lead.computed.isWaitingTooLong)
+
+  const currentDateKey = getCurrentDateKey(dateOptions)
+  const weekKeys = new Set(getWeekDays(0, currentDateKey, dateOptions))
+  const todayIds = new Set(todayItems.map((item) => item.id))
+
+  const thisWeekItems = pendingTaskItems.filter((item) => {
+    const itemDateKey = toDateKey(getItemPrimaryDate(item), dateOptions)
+    if (!itemDateKey) return false
+    if (overdueIds.has(item.id)) return false
+    if (todayIds.has(item.id)) return false
+    return weekKeys.has(itemDateKey)
+  })
+
+  const highValueAtRiskLeads = leadsWithComputed.filter(
+    (lead) =>
+      lead.status !== "won" &&
+      lead.status !== "lost" &&
+      lead.value >= DEFAULT_LEAD_STATE_SETTINGS.highValueThreshold &&
+      lead.computed.isAtRisk,
+  )
 
   const staleLeads = getStaleLeads(snapshot, dateOptions)
 
@@ -192,12 +270,44 @@ export function buildTodaySections(snapshot: AppSnapshot, options: DateContextOp
       items: overdueItems,
     },
     {
+      key: "missing_next_step",
+      title: TODAY_SECTION_META.missing_next_step.title,
+      color: TODAY_SECTION_META.missing_next_step.color,
+      kind: "leads",
+      count: missingNextStepLeads.length,
+      leads: missingNextStepLeads,
+    },
+    {
+      key: "waiting_too_long",
+      title: TODAY_SECTION_META.waiting_too_long.title,
+      color: TODAY_SECTION_META.waiting_too_long.color,
+      kind: "leads",
+      count: waitingTooLongLeads.length,
+      leads: waitingTooLongLeads,
+    },
+    {
       key: "today",
       title: TODAY_SECTION_META.today.title,
       color: TODAY_SECTION_META.today.color,
       kind: "items",
       count: todayItems.length,
       items: todayItems,
+    },
+    {
+      key: "this_week",
+      title: TODAY_SECTION_META.this_week.title,
+      color: TODAY_SECTION_META.this_week.color,
+      kind: "items",
+      count: thisWeekItems.length,
+      items: thisWeekItems,
+    },
+    {
+      key: "high_value_at_risk",
+      title: TODAY_SECTION_META.high_value_at_risk.title,
+      color: TODAY_SECTION_META.high_value_at_risk.color,
+      kind: "leads",
+      count: highValueAtRiskLeads.length,
+      leads: highValueAtRiskLeads,
     },
     {
       key: "stale",
@@ -213,7 +323,7 @@ export function buildTodaySections(snapshot: AppSnapshot, options: DateContextOp
       color: TODAY_SECTION_META.all_leads.color,
       kind: "leads",
       count: snapshot.leads.length,
-      leads: snapshot.leads,
+      leads: leadsWithComputed,
     },
   ]
 }

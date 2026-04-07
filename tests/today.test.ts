@@ -22,13 +22,15 @@ test("sekcje Dziś mają oczekiwane liczniki z paczki startowej po deduplikacji"
 
   const counts = Object.fromEntries(sections.map((section) => [section.key, section.count]))
 
-  assert.deepEqual(counts, {
-    meetings: 1,
-    overdue: 2,
-    today: 2,
-    stale: 6,
-    all_leads: 8,
-  })
+  assert.equal(counts.meetings, 1)
+  assert.equal(counts.overdue, 2)
+  assert.equal(counts.missing_next_step, 2)
+  assert.equal(counts.waiting_too_long, 1)
+  assert.equal(counts.today, 2)
+  assert.equal(counts.high_value_at_risk, 4)
+  assert.equal(counts.stale, 7)
+  assert.equal(counts.all_leads, 8)
+  assert.equal(typeof counts.this_week, "number")
 })
 
 test("w Dziś ten sam wpis nie pojawia się równocześnie w sekcji spotkań i zadań dziś", () => {
@@ -75,7 +77,17 @@ test("buildTodaySections i overdue działają po lokalnym dniu użytkownika, nie
 
 test("moveSectionToTop przenosi wskazaną sekcję na początek bez duplikatów", () => {
   const result = moveSectionToTop(TODAY_SECTION_ORDER, "overdue")
-  assert.deepEqual(result, ["overdue", "meetings", "today", "stale", "all_leads"])
+  assert.deepEqual(result, [
+    "overdue",
+    "meetings",
+    "missing_next_step",
+    "waiting_too_long",
+    "today",
+    "this_week",
+    "high_value_at_risk",
+    "stale",
+    "all_leads",
+  ])
 })
 
 test("górne liczniki Dziś mają oczekiwane wartości i kolejność", () => {
@@ -110,7 +122,7 @@ test("górne liczniki Dziś mają oczekiwane wartości i kolejność", () => {
     {
       key: "stale",
       label: "Bez kontaktu",
-      value: 6,
+      value: 7,
       color: "#6b7280",
     },
   ])
@@ -169,7 +181,17 @@ test("górne liczniki sekcji mają kolory zgodne z nagłówkami sekcji", () => {
 
 test("sekcja bez kontaktu daje się przenieść na początek jak pozostałe sekcje", () => {
   const result = moveSectionToTop(TODAY_SECTION_ORDER, "stale")
-  assert.deepEqual(result, ["stale", "meetings", "overdue", "today", "all_leads"])
+  assert.deepEqual(result, [
+    "stale",
+    "meetings",
+    "overdue",
+    "missing_next_step",
+    "waiting_too_long",
+    "today",
+    "this_week",
+    "high_value_at_risk",
+    "all_leads",
+  ])
 })
 
 test("sekcja otwarta tymczasowo z licznika zwija się po kliknięciu innej sekcji, jeśli była domyślnie zwinięta", () => {
@@ -177,7 +199,11 @@ test("sekcja otwarta tymczasowo z licznika zwija się po kliknięciu innej sekcj
     all_leads: true,
     meetings: false,
     overdue: true,
+    missing_next_step: false,
+    waiting_too_long: false,
     today: true,
+    this_week: false,
+    high_value_at_risk: false,
     stale: false,
   }
 
@@ -191,14 +217,17 @@ test("sekcja ręcznie rozwinięta zostaje otwarta nawet po klikaniu innych liczn
     all_leads: false,
     meetings: false,
     overdue: true,
+    missing_next_step: false,
+    waiting_too_long: false,
     today: true,
+    this_week: false,
+    high_value_at_risk: false,
     stale: false,
   }
 
   assert.equal(getEffectiveCollapsed(manualCollapsed, "overdue", "all_leads"), false)
   assert.equal(getEffectiveCollapsed(manualCollapsed, "today", "all_leads"), false)
 })
-
 
 test("lead z next action trafia do Today z jednego wspólnego modelu WorkItem", () => {
   const snapshot = addLeadSnapshot(createInitialSnapshot(), {
@@ -225,11 +254,11 @@ test("lead z next action trafia do Today z jednego wspólnego modelu WorkItem", 
   assert.equal(todaySection?.kind === "items" ? todaySection.items[0]?.leadId : null, snapshot.leads[0]?.id)
 })
 
-
 test("calendar visibility filtruje weekly i mini-month tylko po showInCalendar", () => {
   const snapshot = createInitialSnapshot()
   const visibleCalendarItem: WorkItem = {
     id: "calendar-visible",
+    workspaceId: null,
     leadId: null,
     leadLabel: "",
     recordType: "task",
@@ -268,6 +297,7 @@ test("meeting-like item widoczny w kalendarzu trafia tylko do sekcji spotkań, a
   snapshot.items = [
     {
       id: "meeting-visible",
+      workspaceId: null,
       leadId: null,
       leadLabel: "",
       recordType: "event",
@@ -303,6 +333,7 @@ test("meeting-like item ukryty z kalendarza może działać jako task-only bez w
   snapshot.items = [
     {
       id: "meeting-task-only",
+      workspaceId: null,
       leadId: null,
       leadLabel: "",
       recordType: "task",
@@ -338,6 +369,7 @@ test("task-only item zostaje poza kalendarzem, ale jest widoczny na task surface
   snapshot.items = [
     {
       id: "task-only",
+      workspaceId: null,
       leadId: null,
       leadLabel: "",
       recordType: "task",
@@ -361,7 +393,6 @@ test("task-only item zostaje poza kalendarzem, ale jest widoczny na task surface
   assert.deepEqual(getCalendarItems(snapshot.items).map((item) => item.id), [])
   assert.deepEqual(getTaskListItems(snapshot.items).map((item) => item.id), ["task-only"])
 })
-
 
 test("buildTodayViewModel jest jednym source of truth dla sekcji i liczników Today", () => {
   const snapshot = createDemoSnapshot()
@@ -389,7 +420,11 @@ test("pusty workspace dostaje pusty view-model Today bez alternatywnej ścieżki
     {
       meetings: 0,
       overdue: 0,
+      missing_next_step: 0,
+      waiting_too_long: 0,
       today: 0,
+      this_week: 0,
+      high_value_at_risk: 0,
       stale: 0,
       all_leads: 0,
     },
@@ -411,11 +446,14 @@ test("Today korzysta ze wspólnego domyślnego stanu zwijania sekcji", () => {
     all_leads: true,
     meetings: false,
     overdue: false,
+    missing_next_step: false,
+    waiting_too_long: false,
     today: false,
+    this_week: false,
+    high_value_at_risk: false,
     stale: false,
   })
 })
-
 
 test("buildTodayViewModel buduje etykietę dnia z lokalnego day key bez przesunięcia przez UTC", () => {
   const snapshot = createInitialSnapshot()
@@ -427,4 +465,122 @@ test("buildTodayViewModel buduje etykietę dnia z lokalnego day key bez przesuni
   })
 
   assert.match(viewModel.dateLabel, /5 kwietnia 2026/)
+})
+
+test("lead bez next step trafia do sekcji missing_next_step", () => {
+  const snapshot = createInitialSnapshot()
+  snapshot.leads = [
+    {
+      id: "lead_missing",
+      workspaceId: null,
+      name: "Lead bez kroku",
+      company: "",
+      email: "",
+      phone: "",
+      source: "Inne",
+      value: 0,
+      summary: "",
+      notes: "",
+      status: "new",
+      priority: "medium",
+      nextActionTitle: "",
+      nextActionAt: "",
+      nextActionItemId: null,
+      createdAt: "2026-04-01T09:00:00.000Z",
+      updatedAt: "2026-04-01T09:00:00.000Z",
+    },
+  ]
+
+  const sections = buildTodaySections(snapshot, { now: "2026-04-07T08:00:00.000Z", timeZone: snapshot.settings.timezone })
+  const section = sections.find((entry) => entry.key === "missing_next_step")
+
+  assert.equal(section?.kind, "leads")
+  assert.equal(section?.count, 1)
+})
+
+test("lead waiting za długo trafia do sekcji waiting_too_long", () => {
+  const snapshot = createInitialSnapshot()
+  snapshot.leads = [
+    {
+      id: "lead_waiting",
+      workspaceId: null,
+      name: "Lead waiting",
+      company: "",
+      email: "",
+      phone: "",
+      source: "Inne",
+      value: 0,
+      summary: "",
+      notes: "",
+      status: "waiting",
+      priority: "medium",
+      nextActionTitle: "",
+      nextActionAt: "",
+      nextActionItemId: null,
+      createdAt: "2026-04-01T09:00:00.000Z",
+      updatedAt: "2026-04-01T09:00:00.000Z",
+    },
+  ]
+  snapshot.items = [
+    {
+      id: "reply_done",
+      workspaceId: null,
+      leadId: "lead_waiting",
+      leadLabel: "Lead waiting",
+      recordType: "task",
+      type: "reply",
+      title: "Odpowiedź",
+      description: "",
+      status: "done",
+      priority: "medium",
+      scheduledAt: "2026-04-03T09:00:00.000Z",
+      startAt: "",
+      endAt: "",
+      recurrence: "none",
+      reminder: "none",
+      createdAt: "2026-04-03T09:00:00.000Z",
+      updatedAt: "2026-04-03T10:00:00.000Z",
+      showInTasks: true,
+      showInCalendar: false,
+    },
+  ]
+
+  const sections = buildTodaySections(snapshot, { now: "2026-04-07T08:00:00.000Z", timeZone: snapshot.settings.timezone })
+  const section = sections.find((entry) => entry.key === "waiting_too_long")
+
+  assert.equal(section?.kind, "leads")
+  assert.equal(section?.count, 1)
+})
+
+test("item z tego tygodnia trafia do sekcji this_week", () => {
+  const snapshot = createInitialSnapshot()
+  snapshot.items = [
+    {
+      id: "week_item",
+      workspaceId: null,
+      leadId: null,
+      leadLabel: "",
+      recordType: "task",
+      type: "task",
+      title: "Task w tym tygodniu",
+      description: "",
+      status: "todo",
+      priority: "medium",
+      scheduledAt: "2026-04-09T10:00:00.000Z",
+      startAt: "",
+      endAt: "",
+      recurrence: "none",
+      reminder: "none",
+      createdAt: "2026-04-07T08:00:00.000Z",
+      updatedAt: "2026-04-07T08:00:00.000Z",
+      showInTasks: true,
+      showInCalendar: false,
+    },
+  ]
+
+  const sections = buildTodaySections(snapshot, { now: "2026-04-07T08:00:00.000Z", timeZone: snapshot.settings.timezone })
+  const section = sections.find((entry) => entry.key === "this_week")
+
+  assert.equal(section?.kind, "items")
+  assert.equal(section?.count, 1)
 })
