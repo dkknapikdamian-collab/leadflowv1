@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, type ReactNode } from "react"
 import {
   PRIMARY_ADMIN_EMAIL,
   isPrimaryAdminEmail,
@@ -19,7 +19,7 @@ function DiagnosticRow({ label, value }: { label: string; value: string }) {
   )
 }
 
-function DiagnosticSection({ title, children }: { title: string; children: React.ReactNode }) {
+function DiagnosticSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div
       style={{

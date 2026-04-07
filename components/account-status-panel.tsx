@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useMemo, useState } from "react"
+import { useMemo, useState, type FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { getAccountStatusPresentation, formatAccountStatusDate } from "@/lib/access/account-status"
 import { useAppStore } from "@/lib/store"
@@ -93,7 +93,7 @@ function RedeemCodeCard() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     const trimmedCode = code.trim()
