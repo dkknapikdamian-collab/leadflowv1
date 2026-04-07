@@ -43,8 +43,27 @@ function getEarliestIso(...values: Array<string | null | undefined>) {
   return earliestValue
 }
 
+function getLatestUpdatedAt(
+  leftUpdatedAt: string | null | undefined,
+  rightUpdatedAt: string | null | undefined,
+  leftCreatedAt: string | null | undefined,
+  rightCreatedAt: string | null | undefined,
+) {
+  const latestUpdatedAt = getLatestIso(leftUpdatedAt, rightUpdatedAt)
+  if (latestUpdatedAt) {
+    return latestUpdatedAt
+  }
+
+  return getLatestIso(leftCreatedAt, rightCreatedAt)
+}
+
 function getRecordTimestamp(record: { updatedAt: string; createdAt: string }) {
-  return Math.max(toTimestamp(record.updatedAt), toTimestamp(record.createdAt))
+  const updatedAtTimestamp = toTimestamp(record.updatedAt)
+  if (updatedAtTimestamp > 0) {
+    return updatedAtTimestamp
+  }
+
+  return toTimestamp(record.createdAt)
 }
 
 function pickLatestRecord<T extends { updatedAt: string; createdAt: string }>(left: T, right: T) {
@@ -79,7 +98,12 @@ function mergeLeadRecords(remote: Lead, incoming: Lead): Lead {
     nextActionTitle: latest.nextActionTitle || stale.nextActionTitle || "",
     nextActionAt: latest.nextActionAt || stale.nextActionAt || "",
     createdAt: getEarliestIso(remote.createdAt, incoming.createdAt),
-    updatedAt: getLatestIso(remote.updatedAt, incoming.updatedAt, remote.createdAt, incoming.createdAt),
+    updatedAt: getLatestUpdatedAt(
+      remote.updatedAt,
+      incoming.updatedAt,
+      remote.createdAt,
+      incoming.createdAt,
+    ),
   }
 }
 
@@ -97,7 +121,12 @@ function mergeWorkItemRecords(remote: WorkItem, incoming: WorkItem): WorkItem {
     leadId: latest.leadId ?? stale.leadId ?? null,
     leadLabel: latest.leadLabel || stale.leadLabel || "",
     createdAt: getEarliestIso(remote.createdAt, incoming.createdAt),
-    updatedAt: getLatestIso(remote.updatedAt, incoming.updatedAt, remote.createdAt, incoming.createdAt),
+    updatedAt: getLatestUpdatedAt(
+      remote.updatedAt,
+      incoming.updatedAt,
+      remote.createdAt,
+      incoming.createdAt,
+    ),
   }
 
   if (oneSideDone && remote.status !== incoming.status && hasNonStatusConflict) {
