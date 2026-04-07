@@ -29,10 +29,15 @@ test("mapSupabaseUserToSessionUser buduje stabilny obiekt sesji", () => {
       id: "user-123",
       email: "session@example.com",
       email_confirmed_at: "2026-04-06T10:00:00.000Z",
+      app_metadata: {
+        providers: ["google", "email"],
+      },
       user_metadata: {
         display_name: "Sesyjny Użytkownik",
       },
-    },
+      email_change_sent_at: "2026-04-07T12:00:00.000Z",
+      new_email: "new-session@example.com",
+    } as Parameters<typeof mapSupabaseUserToSessionUser>[0],
     "google",
   )
 
@@ -42,6 +47,9 @@ test("mapSupabaseUserToSessionUser buduje stabilny obiekt sesji", () => {
     displayName: "Sesyjny Użytkownik",
     provider: "google",
     emailConfirmedAt: "2026-04-06T10:00:00.000Z",
+    emailVerified: true,
+    hasPassword: true,
+    emailChangePending: "new-session@example.com",
   })
 })
 
