@@ -1,124 +1,60 @@
-import type { AccessDecisionReason } from "@/lib/access/decision"
-import type { AccessStatusRow } from "@/lib/supabase/access-status"
-import type { SupabaseAuthUser } from "@/lib/supabase/server"
+import test from "node:test"
+import assert from "node:assert/strict"
+import { getAuthDisplayName, mapSupabaseUserToSessionUser } from "../lib/auth/session"
+import { buildUserScopedStorageKey } from "../lib/data/storage-key"
 
-type SessionSupabaseAuthUser = SupabaseAuthUser & {
-  new_email?: string | null
-  email_change?: string | null
-  email_change_sent_at?: string | null
-}
+test("getAuthDisplayName bierze pełną nazwę z user_metadata, jeśli istnieje", () => {
+  const displayName = getAuthDisplayName({
+    email: "user@example.com",
+    user_metadata: {
+      full_name: "Damian Testowy",
+    },
+  })
 
-export interface AuthSessionUser {
-  id: string
-  email: string | null
-  displayName: string
-  provider: string | null
-  emailConfirmedAt: string | null
-  emailVerified: boolean
-  hasPassword: boolean | null
-  emailChangePending: string | null
-}
+  assert.equal(displayName, "Damian Testowy")
+})
 
-export interface AuthSession {
-  user: AuthSessionUser
-  access?: {
-    record: AccessStatusRow | null
-    decision: {
-      allowed: boolean
-      reason: AccessDecisionReason
-    }
-  } | null
-}
+test("getAuthDisplayName spada do lokalnej części e-maila, jeśli metadata jest pusta", () => {
+  const displayName = getAuthDisplayName({
+    email: "solo@example.com",
+    user_metadata: {},
+  })
 
-function pickFirstString(...values: unknown[]) {
-  for (const value of values) {
-    if (typeof value === "string" && value.trim()) {
-      return value.trim()
-    }
-  }
+  assert.equal(displayName, "solo")
+})
 
-  return null
-}
-
-export function getAuthDisplayName(
-  user: Pick<SessionSupabaseAuthUser, "email" | "user_metadata">,
-): string {
-  const metadata = user.user_metadata ?? {}
-  const candidate = pickFirstString(
-    metadata.full_name,
-    metadata.name,
-    metadata.display_name,
-    metadata.user_name,
+test("mapSupabaseUserToSessionUser buduje stabilny obiekt sesji", () => {
+  const payload = mapSupabaseUserToSessionUser(
+    {
+      id: "user-123",
+      email: "session@example.com",
+      email_confirmed_at: "2026-04-06T10:00:00.000Z",
+      app_metadata: {
+        providers: ["google", "email"],
+      },
+      user_metadata: {
+        display_name: "Sesyjny Użytkownik",
+      },
+      email_change_sent_at: "2026-04-07T12:00:00.000Z",
+      new_email: "new-session@example.com",
+    } as Parameters<typeof mapSupabaseUserToSessionUser>[0],
+    "google",
   )
 
-  if (candidate) {
-    return candidate
-  }
+  assert.deepEqual(payload, {
+    id: "user-123",
+    email: "session@example.com",
+    displayName: "Sesyjny Użytkownik",
+    provider: "google",
+    emailConfirmedAt: "2026-04-06T10:00:00.000Z",
+    emailVerified: true,
+    hasPassword: true,
+    emailChangePending: "new-session@example.com",
+  })
+})
 
-  if (typeof user.email === "string" && user.email.includes("@")) {
-    return user.email.split("@")[0] || "Twoje konto"
-  }
-
-  return "Twoje konto"
-}
-
-export function getAuthProviders(user: Pick<SessionSupabaseAuthUser, "app_metadata">): string[] {
-  const rawProviders = user.app_metadata?.providers
-
-  if (!Array.isArray(rawProviders)) {
-    return []
-  }
-
-  return rawProviders.filter(
-    (value): value is string => typeof value === "string" && value.trim().length > 0,
-  )
-}
-
-export function inferHasPassword(
-  user: Pick<SessionSupabaseAuthUser, "app_metadata">,
-  provider: string | null = null,
-): boolean | null {
-  const providers = getAuthProviders(user)
-
-  if (providers.includes("email")) {
-    return true
-  }
-
-  if (provider === "email" || provider === "email_password") {
-    return true
-  }
-
-  if (providers.length === 0 && !provider) {
-    return null
-  }
-
-  return false
-}
-
-export function inferEmailChangePending(
-  user: Pick<SessionSupabaseAuthUser, "new_email" | "email_change" | "email_change_sent_at">,
-): string | null {
-  if (!user.email_change_sent_at) {
-    return null
-  }
-
-  return pickFirstString(user.new_email, user.email_change)
-}
-
-export function mapSupabaseUserToSessionUser(
-  user: SupabaseAuthUser,
-  provider: string | null = null,
-): AuthSessionUser {
-  const sessionUser = user as SessionSupabaseAuthUser
-
-  return {
-    id: sessionUser.id,
-    email: sessionUser.email ?? null,
-    displayName: getAuthDisplayName(sessionUser),
-    provider,
-    emailConfirmedAt: sessionUser.email_confirmed_at ?? null,
-    emailVerified: Boolean(sessionUser.email_confirmed_at),
-    hasPassword: inferHasPassword(sessionUser, provider),
-    emailChangePending: inferEmailChangePending(sessionUser),
-  }
-}
+test("buildUserScopedStorageKey rozdziela cache między użytkownikami", () => {
+  assert.equal(buildUserScopedStorageKey("leadflow-cache", "user-a"), "leadflow-cache:user-a")
+  assert.equal(buildUserScopedStorageKey("leadflow-cache", "user-b"), "leadflow-cache:user-b")
+  assert.equal(buildUserScopedStorageKey("leadflow-cache", null), "leadflow-cache:anonymous")
+})
