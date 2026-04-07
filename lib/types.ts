@@ -56,6 +56,7 @@ export type AppTheme = "classic" | "midnight"
 export type SignupSource = "google" | "email_password" | "invite" | "manual" | "unknown"
 export type WorkspaceMemberRole = "owner"
 export type BonusKind = "promo_code" | "referral" | "manual"
+export type AccessOverrideStatus = "admin_unlimited" | "tester_unlimited"
 
 export interface Lead {
   id: string
@@ -133,6 +134,9 @@ export interface SnapshotContextState {
   workspaceId: string | null
   accessStatus: AccessStatus
   billingStatus: BillingStatus
+  accessOverrideMode?: AccessOverrideStatus | null
+  accessOverrideExpiresAt?: string | null
+  accessOverrideNote?: string | null
   seedKind?: "demo"
 }
 
