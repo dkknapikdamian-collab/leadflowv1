@@ -103,6 +103,10 @@ function sortItemsForLead(a: WorkItem, b: WorkItem) {
   return left.localeCompare(right) || a.createdAt.localeCompare(b.createdAt)
 }
 
+function isActiveNextActionItem(item: WorkItem | null | undefined, leadId: string) {
+  return Boolean(item && item.leadId === leadId && item.status !== "done")
+}
+
 function getFallbackLeadNextActionItemId(items: WorkItem[], leadId: string) {
   return items
     .filter((item) => item.leadId === leadId && item.status !== "done")
@@ -111,9 +115,10 @@ function getFallbackLeadNextActionItemId(items: WorkItem[], leadId: string) {
 
 function synchronizeLeadSnapshot(leads: Lead[], items: WorkItem[]) {
   return leads.map((lead) => {
-    const linkedItem = lead.nextActionItemId
+    const linkedItemCandidate = lead.nextActionItemId
       ? items.find((item) => item.id === lead.nextActionItemId && item.leadId === lead.id)
       : null
+    const linkedItem = isActiveNextActionItem(linkedItemCandidate, lead.id) ? linkedItemCandidate : null
     const fallbackId = linkedItem ? null : getFallbackLeadNextActionItemId(items, lead.id)
     const effectiveItem = linkedItem ?? (fallbackId ? items.find((item) => item.id === fallbackId) ?? null : null)
 
@@ -222,6 +227,10 @@ function hasNonNextActionLeadPatch(patch: Partial<Lead>) {
   return Object.keys(patch).some((key) => !LEAD_NEXT_ACTION_PATCH_KEYS.includes(key as keyof Lead))
 }
 
+function shouldUpdateLinkedNextActionItem(patch: Partial<Lead>) {
+  return "nextActionTitle" in patch || "nextActionAt" in patch || "priority" in patch
+}
+
 export function loadSnapshot(raw: string | null | undefined): AppSnapshot {
   const initial = createInitialSnapshot()
   if (!raw) return initial
@@ -319,24 +328,26 @@ export function updateLeadSnapshot(snapshot: AppSnapshot, leadId: string, patch:
 
   if (wantsLinkedAction) {
     if (linkedItem) {
-      nextItems = nextItems.map((item) =>
-        item.id === linkedItem.id
-          ? enforceLinkedNextActionItemShape(
-              {
-                ...item,
-                title: mergedLead.nextActionTitle.trim(),
-                priority: mergedLead.priority,
-                scheduledAt: item.startAt ? item.scheduledAt : mergedLead.nextActionAt,
-                startAt: item.startAt ? mergedLead.nextActionAt : item.startAt,
-                endAt: item.endAt && item.startAt ? mergedLead.nextActionAt : item.endAt,
-                updatedAt: nowIso(),
-              },
-              leadId,
-              mergedLead.workspaceId,
-              mergedLead.name,
-            )
-          : item,
-      )
+      if (shouldUpdateLinkedNextActionItem(patch)) {
+        nextItems = nextItems.map((item) =>
+          item.id === linkedItem.id
+            ? enforceLinkedNextActionItemShape(
+                {
+                  ...item,
+                  title: mergedLead.nextActionTitle.trim(),
+                  priority: mergedLead.priority,
+                  scheduledAt: item.startAt ? item.scheduledAt : mergedLead.nextActionAt,
+                  startAt: item.startAt ? mergedLead.nextActionAt : item.startAt,
+                  endAt: item.endAt && item.startAt ? mergedLead.nextActionAt : item.endAt,
+                  updatedAt: nowIso(),
+                },
+                leadId,
+                mergedLead.workspaceId,
+                mergedLead.name,
+              )
+            : item,
+        )
+      }
       mergedLead.nextActionItemId = linkedItem.id
     } else {
       const created = createLinkedNextActionItem(leadId, mergedLead, nowIso())

@@ -48,7 +48,7 @@ function getRecordTimestamp(record: { updatedAt: string; createdAt: string }) {
 }
 
 function pickLatestRecord<T extends { updatedAt: string; createdAt: string }>(left: T, right: T) {
-  return getRecordTimestamp(right) > getRecordTimestamp(left) ? right : left
+  return getRecordTimestamp(right) >= getRecordTimestamp(left) ? right : left
 }
 
 function sortByRecentUpdate<T extends { updatedAt: string; createdAt: string }>(left: T, right: T) {
