@@ -13,6 +13,7 @@ import { applyAccessStatusToSnapshot } from "@/lib/access/account-status"
 import { useAuthSession } from "@/lib/auth/session-provider"
 import { createAppDataRepository } from "@/lib/data/repository"
 import { choosePreferredSnapshot } from "@/lib/data/snapshot-selection"
+import { resolveSnapshotAfterConflictRefetch } from "@/lib/data/snapshot-sync"
 import { createLocalStorageDriver, createSnapshotStorageAdapter } from "@/lib/data/storage-adapter"
 import { buildUserScopedStorageKey } from "@/lib/data/storage-key"
 import type {
@@ -40,6 +41,17 @@ interface AppStoreValue {
   updateSettings: (patch: SettingsPatch) => void
 }
 
+interface RemoteSnapshotPayload {
+  snapshot: AppSnapshot | null
+  workspaceId: string | null
+  accessStatus: AccessStatusRow | null
+}
+
+interface SaveRemoteSnapshotPayload extends RemoteSnapshotPayload {
+  ok: boolean
+  mergedFromConflict: boolean
+}
+
 const AppStoreContext = createContext<AppStoreValue | null>(null)
 
 function syncSnapshotWithSession(
@@ -62,6 +74,23 @@ function syncSnapshotWithSession(
   }
 }
 
+function applyRemotePayload(
+  payload: RemoteSnapshotPayload | null,
+  fallbackSnapshot: AppSnapshot,
+  user: { id: string; email: string | null; displayName: string } | null,
+) {
+  const remoteWorkspaceId = payload?.workspaceId ?? fallbackSnapshot.context.workspaceId ?? null
+  let nextSnapshot = payload?.snapshot
+    ? syncSnapshotWithSession(payload.snapshot, user, remoteWorkspaceId)
+    : syncSnapshotWithSession(fallbackSnapshot, user, remoteWorkspaceId)
+
+  if (payload?.accessStatus) {
+    nextSnapshot = applyAccessStatusToSnapshot(nextSnapshot, payload.accessStatus)
+  }
+
+  return syncSnapshotWithSession(nextSnapshot, user, remoteWorkspaceId)
+}
+
 async function loadRemoteSnapshot() {
   const response = await fetch("/api/app/snapshot", {
     method: "GET",
@@ -73,11 +102,7 @@ async function loadRemoteSnapshot() {
     return null
   }
 
-  return (await response.json().catch(() => null)) as {
-    snapshot: AppSnapshot | null
-    workspaceId: string | null
-    accessStatus: AccessStatusRow | null
-  } | null
+  return (await response.json().catch(() => null)) as RemoteSnapshotPayload | null
 }
 
 async function saveRemoteSnapshot(snapshot: AppSnapshot) {
@@ -90,7 +115,11 @@ async function saveRemoteSnapshot(snapshot: AppSnapshot) {
     body: JSON.stringify({ snapshot }),
   })
 
-  return response.ok
+  if (!response.ok) {
+    return null
+  }
+
+  return (await response.json().catch(() => null)) as SaveRemoteSnapshotPayload | null
 }
 
 export function AppStoreProvider({ children }: PropsWithChildren) {
@@ -106,6 +135,7 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
   const [snapshot, setSnapshot] = useState<AppSnapshot>(() => repository.createEmptySnapshot())
   const [isReady, setIsReady] = useState(false)
   const lastRemoteSyncedRef = useRef<string | null>(null)
+  const saveSequenceRef = useRef(0)
 
   useEffect(() => {
     if (!isAuthReady) return
@@ -127,16 +157,19 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
       )
 
       const selected = choosePreferredSnapshot(remoteSnapshot, localSnapshotWithWorkspace)
-      let nextSnapshot = selected.snapshot
-
-      if (remotePayload?.accessStatus) {
-        nextSnapshot = applyAccessStatusToSnapshot(nextSnapshot, remotePayload.accessStatus)
-      }
-
-      nextSnapshot = syncSnapshotWithSession(
-        nextSnapshot,
+      const nextSnapshot = applyRemotePayload(
+        remotePayload
+          ? {
+              ...remotePayload,
+              snapshot: selected.source === "remote" ? remotePayload.snapshot : localSnapshotWithWorkspace,
+            }
+          : {
+              snapshot: localSnapshotWithWorkspace,
+              workspaceId: localSnapshotWithWorkspace.context.workspaceId ?? null,
+              accessStatus: null,
+            },
+        localSnapshotWithWorkspace,
         session?.user ?? null,
-        remotePayload?.workspaceId ?? nextSnapshot.context.workspaceId ?? null,
       )
 
       const serialized = JSON.stringify(nextSnapshot)
@@ -168,11 +201,38 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
     if (lastRemoteSyncedRef.current === serialized) return
 
     const timeout = window.setTimeout(() => {
+      const requestId = saveSequenceRef.current + 1
+      saveSequenceRef.current = requestId
+
       void saveRemoteSnapshot(snapshot)
-        .then((ok) => {
-          if (ok) {
-            lastRemoteSyncedRef.current = serialized
+        .then(async (result) => {
+          if (!result) return
+
+          let resolvedPayload: RemoteSnapshotPayload | null = result
+          if (result.mergedFromConflict) {
+            const refetchedPayload = await loadRemoteSnapshot().catch(() => null)
+            const canonicalSnapshot = resolveSnapshotAfterConflictRefetch(snapshot, refetchedPayload?.snapshot ?? result.snapshot)
+            resolvedPayload = {
+              snapshot: canonicalSnapshot,
+              workspaceId: refetchedPayload?.workspaceId ?? result.workspaceId,
+              accessStatus: refetchedPayload?.accessStatus ?? result.accessStatus,
+            }
           }
+
+          if (saveSequenceRef.current !== requestId) return
+
+          const canonicalSnapshot = applyRemotePayload(resolvedPayload, snapshot, session?.user ?? null)
+          const canonicalSerialized = JSON.stringify(canonicalSnapshot)
+
+          setSnapshot((current) => {
+            const currentSerialized = JSON.stringify(current)
+            if (currentSerialized !== serialized) {
+              return current
+            }
+
+            lastRemoteSyncedRef.current = canonicalSerialized
+            return canonicalSnapshot
+          })
         })
         .catch(() => {
           // keep local state as fallback
@@ -180,7 +240,7 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
     }, 250)
 
     return () => window.clearTimeout(timeout)
-  }, [isAuthReady, isReady, session?.user.id, snapshot])
+  }, [isAuthReady, isReady, session?.user, snapshot])
 
   const value = useMemo<AppStoreValue>(
     () => ({

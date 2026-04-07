@@ -44,6 +44,12 @@ const EMPTY_ITEM_TEMPLATE: WorkItem = {
   showInCalendar: false,
 }
 
+const LEAD_NEXT_ACTION_PATCH_KEYS: Array<keyof Lead> = [
+  "nextActionTitle",
+  "nextActionAt",
+  "nextActionItemId",
+]
+
 function normalizeLead(lead: Partial<Lead> | undefined, initialLead: Lead): Lead {
   return {
     ...initialLead,
@@ -120,7 +126,6 @@ function synchronizeLeadSnapshot(leads: Lead[], items: WorkItem[]) {
   })
 }
 
-
 function migrateLegacyLeadActionItems(leads: Lead[], items: WorkItem[]) {
   const nextLeads = leads.map((lead) => ({ ...lead }))
   const nextItems = [...items]
@@ -151,7 +156,7 @@ function migrateLegacyLeadActionItems(leads: Lead[], items: WorkItem[]) {
   return { leads: nextLeads, items: nextItems }
 }
 
-function reconcileSnapshot(snapshot: AppSnapshot): AppSnapshot {
+export function reconcileAppSnapshot(snapshot: AppSnapshot): AppSnapshot {
   const items = snapshot.items.map((item) => normalizeItemLeadRelation(item, snapshot.leads))
   const leads = synchronizeLeadSnapshot(snapshot.leads, items)
   return {
@@ -213,6 +218,10 @@ function createLinkedNextActionItem(
   )
 }
 
+function hasNonNextActionLeadPatch(patch: Partial<Lead>) {
+  return Object.keys(patch).some((key) => !LEAD_NEXT_ACTION_PATCH_KEYS.includes(key as keyof Lead))
+}
+
 export function loadSnapshot(raw: string | null | undefined): AppSnapshot {
   const initial = createInitialSnapshot()
   if (!raw) return initial
@@ -233,7 +242,7 @@ export function loadSnapshot(raw: string | null | undefined): AppSnapshot {
 
     const migrated = migrateLegacyLeadActionItems(leads, items)
 
-    return reconcileSnapshot({
+    return reconcileAppSnapshot({
       ...initial,
       ...parsed,
       user: {
@@ -283,7 +292,7 @@ export function addLeadSnapshot(snapshot: AppSnapshot, payload: LeadInput): AppS
     updatedAt: date,
   }
 
-  return reconcileSnapshot({
+  return reconcileAppSnapshot({
     ...snapshot,
     leads: [nextLead, ...snapshot.leads],
     items: nextItems,
@@ -294,10 +303,12 @@ export function updateLeadSnapshot(snapshot: AppSnapshot, leadId: string, patch:
   const currentLead = snapshot.leads.find((lead) => lead.id === leadId)
   if (!currentLead) return snapshot
 
+  const leadUpdatedAt = hasNonNextActionLeadPatch(patch) ? nowIso() : currentLead.updatedAt
+
   const mergedLead: Lead = {
     ...currentLead,
     ...patch,
-    updatedAt: nowIso(),
+    updatedAt: leadUpdatedAt,
   }
 
   let nextItems = [...snapshot.items]
@@ -340,7 +351,7 @@ export function updateLeadSnapshot(snapshot: AppSnapshot, leadId: string, patch:
   }
 
   const nextLeads = snapshot.leads.map((lead) => (lead.id === leadId ? mergedLead : lead))
-  return reconcileSnapshot({
+  return reconcileAppSnapshot({
     ...snapshot,
     leads: nextLeads,
     items: nextItems,
@@ -348,7 +359,7 @@ export function updateLeadSnapshot(snapshot: AppSnapshot, leadId: string, patch:
 }
 
 export function deleteLeadSnapshot(snapshot: AppSnapshot, leadId: string): AppSnapshot {
-  return reconcileSnapshot({
+  return reconcileAppSnapshot({
     ...snapshot,
     leads: snapshot.leads.filter((lead) => lead.id !== leadId),
     items: snapshot.items.filter((item) => item.leadId !== leadId),
@@ -368,7 +379,7 @@ export function addItemSnapshot(snapshot: AppSnapshot, payload: WorkItemInput): 
     snapshot.leads,
   )
 
-  return reconcileSnapshot({
+  return reconcileAppSnapshot({
     ...snapshot,
     items: [nextItem, ...snapshot.items],
   })
@@ -377,7 +388,7 @@ export function addItemSnapshot(snapshot: AppSnapshot, payload: WorkItemInput): 
 export function updateItemSnapshot(snapshot: AppSnapshot, itemId: string, patch: Partial<WorkItem>): AppSnapshot {
   const ownerLead = snapshot.leads.find((lead) => lead.nextActionItemId === itemId) ?? null
 
-  return reconcileSnapshot({
+  return reconcileAppSnapshot({
     ...snapshot,
     items: snapshot.items.map((item) => {
       if (item.id !== itemId) return item
@@ -398,14 +409,14 @@ export function updateItemSnapshot(snapshot: AppSnapshot, itemId: string, patch:
 }
 
 export function deleteItemSnapshot(snapshot: AppSnapshot, itemId: string): AppSnapshot {
-  return reconcileSnapshot({
+  return reconcileAppSnapshot({
     ...snapshot,
     items: snapshot.items.filter((item) => item.id !== itemId),
   })
 }
 
 export function toggleItemDoneSnapshot(snapshot: AppSnapshot, itemId: string): AppSnapshot {
-  return reconcileSnapshot({
+  return reconcileAppSnapshot({
     ...snapshot,
     items: snapshot.items.map((item) =>
       item.id === itemId
@@ -422,7 +433,7 @@ export function toggleItemDoneSnapshot(snapshot: AppSnapshot, itemId: string): A
 export function snoozeItemSnapshot(snapshot: AppSnapshot, itemId: string, nextDate: string): AppSnapshot {
   const updatedAt = nowIso()
 
-  return reconcileSnapshot({
+  return reconcileAppSnapshot({
     ...snapshot,
     items: snapshot.items.map((item) => {
       if (item.id !== itemId) return item

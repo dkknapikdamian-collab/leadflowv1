@@ -5,6 +5,8 @@ import {
   getServerAccessStatusForUser,
   sanitizeAccessStatusForClient,
 } from "@/lib/repository/access-state.server"
+import { mergeSnapshotsForSync } from "@/lib/data/snapshot-sync"
+import { reconcileAppSnapshot } from "@/lib/snapshot"
 import { getAppSnapshotForUser, upsertAppSnapshotForUser } from "@/lib/supabase/app-snapshot"
 import { getUser } from "@/lib/supabase/server"
 import type { AppSnapshot } from "@/lib/types"
@@ -40,7 +42,7 @@ export async function GET(request: NextRequest) {
     null
 
   return NextResponse.json({
-    snapshot: snapshotResult.data?.snapshot ?? null,
+    snapshot: snapshotResult.data?.snapshot ? reconcileAppSnapshot(snapshotResult.data.snapshot) : null,
     workspaceId,
     accessStatus: accessStatusResult.data ? sanitizeAccessStatusForClient(accessStatusResult.data) : null,
   })
@@ -70,6 +72,11 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Brakuje workspace do zapisu snapshotu." }, { status: 400 })
   }
 
+  const currentSnapshotResult = await getAppSnapshotForUser(accessToken, userResult.data.id)
+  if (currentSnapshotResult.error) {
+    return NextResponse.json({ error: "Nie udało się pobrać bieżącego snapshotu do synchronizacji." }, { status: 500 })
+  }
+
   const nextSnapshot: AppSnapshot = {
     ...body.snapshot,
     context: {
@@ -79,15 +86,23 @@ export async function PUT(request: NextRequest) {
     },
   }
 
+  const mergeResult = mergeSnapshotsForSync(currentSnapshotResult.data?.snapshot ?? null, nextSnapshot)
+
   const saveResult = await upsertAppSnapshotForUser(accessToken, {
     userId: userResult.data.id,
     workspaceId,
-    snapshot: nextSnapshot,
+    snapshot: mergeResult.snapshot,
   })
 
   if (saveResult.error) {
     return NextResponse.json({ error: "Nie udało się zapisać snapshotu." }, { status: 500 })
   }
 
-  return NextResponse.json({ ok: true, workspaceId })
+  return NextResponse.json({
+    ok: true,
+    workspaceId,
+    snapshot: saveResult.data?.snapshot ? reconcileAppSnapshot(saveResult.data.snapshot) : mergeResult.snapshot,
+    accessStatus: accessStatusResult.data ? sanitizeAccessStatusForClient(accessStatusResult.data) : null,
+    mergedFromConflict: mergeResult.mergedFromConflict,
+  })
 }
