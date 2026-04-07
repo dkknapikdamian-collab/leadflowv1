@@ -66,7 +66,11 @@ function getRecordTimestamp(record: { updatedAt: string; createdAt: string }) {
   return toTimestamp(record.createdAt)
 }
 
-function pickLatestRecord<T extends { updatedAt: string; createdAt: string }>(left: T, right: T) {
+function pickLatestLeadRecord<T extends { updatedAt: string; createdAt: string }>(left: T, right: T) {
+  return getRecordTimestamp(right) > getRecordTimestamp(left) ? right : left
+}
+
+function pickLatestWorkItemRecord<T extends { updatedAt: string; createdAt: string }>(left: T, right: T) {
   return getRecordTimestamp(right) >= getRecordTimestamp(left) ? right : left
 }
 
@@ -86,7 +90,7 @@ function stripItemSyncFields(item: WorkItem) {
 }
 
 function mergeLeadRecords(remote: Lead, incoming: Lead): Lead {
-  const latest = pickLatestRecord(remote, incoming)
+  const latest = pickLatestLeadRecord(remote, incoming)
   const stale = latest === remote ? incoming : remote
 
   return {
@@ -108,7 +112,7 @@ function mergeLeadRecords(remote: Lead, incoming: Lead): Lead {
 }
 
 function mergeWorkItemRecords(remote: WorkItem, incoming: WorkItem): WorkItem {
-  const latest = pickLatestRecord(remote, incoming)
+  const latest = pickLatestWorkItemRecord(remote, incoming)
   const stale = latest === remote ? incoming : remote
   const oneSideDone = remote.status === "done" || incoming.status === "done"
   const hasNonStatusConflict = stripItemSyncFields(remote) !== stripItemSyncFields(incoming)
