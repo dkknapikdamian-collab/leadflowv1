@@ -56,11 +56,12 @@ export function AccountSettingsPanel() {
     return null
   }
 
-  const providerLabel = getAccountProviderLabel(user.provider)
-  const localPasswordLabel = getLocalPasswordLabel(user.hasPassword)
-  const emailStatusLabel = user.emailVerified ? "Potwierdzony" : "Niepotwierdzony"
-  const canChangePassword = canChangeLocalPassword(user)
-  const passwordUnavailableMessage = getPasswordChangeUnavailableMessage(user)
+  const currentUser = user
+  const providerLabel = getAccountProviderLabel(currentUser.provider)
+  const localPasswordLabel = getLocalPasswordLabel(currentUser.hasPassword)
+  const emailStatusLabel = currentUser.emailVerified ? "Potwierdzony" : "Niepotwierdzony"
+  const canChangePassword = canChangeLocalPassword(currentUser)
+  const passwordUnavailableMessage = getPasswordChangeUnavailableMessage(currentUser)
 
   async function handlePasswordSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -108,7 +109,7 @@ export function AccountSettingsPanel() {
   async function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    const validationError = validateAccountEmailChange(pendingEmail, user.email)
+    const validationError = validateAccountEmailChange(pendingEmail, currentUser.email)
     if (validationError) {
       setEmailState({
         isSubmitting: false,
@@ -159,11 +160,11 @@ export function AccountSettingsPanel() {
         <div className="info-card">
           <div className="info-row">
             <strong>Aktualny e-mail</strong>
-            <span>{user.email ?? "—"}</span>
+            <span>{currentUser.email ?? "—"}</span>
           </div>
           <div className="info-row">
             <strong>Display name</strong>
-            <span>{user.displayName || "—"}</span>
+            <span>{currentUser.displayName || "—"}</span>
           </div>
           <div className="info-row">
             <strong>Provider logowania</strong>
@@ -179,7 +180,11 @@ export function AccountSettingsPanel() {
           </div>
           <div className="info-row">
             <strong>Zmiana e-maila</strong>
-            <span>{user.emailChangePending ? `Czekamy na potwierdzenie: ${user.emailChangePending}` : "Brak oczekującej zmiany"}</span>
+            <span>
+              {currentUser.emailChangePending
+                ? `Czekamy na potwierdzenie: ${currentUser.emailChangePending}`
+                : "Brak oczekującej zmiany"}
+            </span>
           </div>
         </div>
       </div>
@@ -187,7 +192,9 @@ export function AccountSettingsPanel() {
       <div className="panel-card settings-grid">
         <div className="field-block full-span">
           <strong>Zmień hasło</strong>
-          <div className="muted-small">Działa dla kont z lokalnym hasłem. Dla kont Google sekcja pokazuje uczciwy stan bez martwego przycisku.</div>
+          <div className="muted-small">
+            Działa dla kont z lokalnym hasłem. Dla kont Google sekcja pokazuje uczciwy stan bez martwego przycisku.
+          </div>
         </div>
 
         {canChangePassword ? (
@@ -234,7 +241,9 @@ export function AccountSettingsPanel() {
         <form className="full-span" onSubmit={handleEmailSubmit}>
           <div className="field-block full-span">
             <strong>Zmień e-mail</strong>
-            <div className="muted-small">Po wysłaniu wniosku aplikacja pokaże stan oczekujący na potwierdzenie nowego adresu.</div>
+            <div className="muted-small">
+              Po wysłaniu wniosku aplikacja pokaże stan oczekujący na potwierdzenie nowego adresu.
+            </div>
           </div>
           <label className="field-block full-span">
             <span>Nowy e-mail</span>
