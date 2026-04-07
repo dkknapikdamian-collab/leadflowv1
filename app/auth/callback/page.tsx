@@ -2,16 +2,15 @@
 
 import Link from "next/link"
 import { Suspense, useEffect, useMemo, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { AuthShell } from "@/components/auth-shell"
 import { parseOAuthHash, postJson } from "@/lib/supabase/browser"
 
 function AuthCallbackContent() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const rawNext = searchParams.get("next") || "/today"
   const next = useMemo(() => (rawNext.startsWith("/") ? rawNext : "/today"), [rawNext])
-  const [message, setMessage] = useState("Kończę logowanie przez Google...")
+  const [message, setMessage] = useState("Finalizing Google sign-in...")
   const [error, setError] = useState("")
 
   useEffect(() => {
@@ -20,38 +19,38 @@ function AuthCallbackContent() {
     async function completeOAuth() {
       if (typeof window === "undefined") return
 
-      const hashPayload = parseOAuthHash(window.location.hash)
-      if (hashPayload.error) {
+      const payload = parseOAuthHash(window.location.hash)
+      if (payload.error) {
         if (!isCancelled) {
-          setError("Nie udało się dokończyć logowania przez Google. Spróbuj ponownie.")
+          setError("Google sign-in could not be completed. Try again.")
         }
         return
       }
 
-      if (!hashPayload.accessToken || !hashPayload.refreshToken) {
+      if (!payload.accessToken || !payload.refreshToken) {
         if (!isCancelled) {
-          setError("Brakuje danych sesji z logowania Google. Spróbuj ponownie.")
+          setError("Missing session data from Google sign-in. Try again.")
         }
         return
       }
 
       const result = await postJson<{ redirectTo?: string; error?: string }>("/api/auth/oauth-session", {
-        accessToken: hashPayload.accessToken,
-        refreshToken: hashPayload.refreshToken,
+        accessToken: payload.accessToken,
+        refreshToken: payload.refreshToken,
         provider: "google",
+        next,
       })
 
       if (!result.ok) {
         if (!isCancelled) {
-          setError(result.data.error || "Nie udało się zapisać sesji logowania.")
+          setError(result.data.error || "Session could not be saved.")
         }
         return
       }
 
       if (!isCancelled) {
-        setMessage("Sesja gotowa. Przekierowuję do aplikacji...")
-        router.replace(next)
-        router.refresh()
+        setMessage("Session ready. Redirecting...")
+        window.location.replace(result.data.redirectTo || next)
       }
     }
 
@@ -60,7 +59,7 @@ function AuthCallbackContent() {
     return () => {
       isCancelled = true
     }
-  }, [next, router])
+  }, [next])
 
   return (
     <AuthShell

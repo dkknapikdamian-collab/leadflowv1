@@ -4,12 +4,21 @@ import { getRequestFingerprint } from "@/lib/auth/request"
 import { checkAuthRateLimit } from "@/lib/auth/rate-limit"
 import { AUTH_GENERIC_LOGIN_ERROR } from "@/lib/auth/messages"
 import { setAuthCookies } from "@/lib/auth/cookies"
+import { ensureUserCoreState } from "@/lib/repository/access-state.server"
 import { signInWithPassword } from "@/lib/supabase/server"
 
+function toRelativePath(next: string | null) {
+  if (!next || !next.startsWith("/")) {
+    return "/today"
+  }
+  return next
+}
+
 export async function POST(request: NextRequest) {
-  const body = (await request.json().catch(() => ({}))) as { email?: string; password?: string }
+  const body = (await request.json().catch(() => ({}))) as { email?: string; password?: string; next?: string }
   const { email, isValid } = normalizeAndValidateEmail(body.email ?? "")
   const password = (body.password ?? "").trim()
+  const nextPath = toRelativePath(body.next ?? null)
 
   if (!isValid || !password) {
     return NextResponse.json({ error: AUTH_GENERIC_LOGIN_ERROR }, { status: 400 })
@@ -28,7 +37,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: AUTH_GENERIC_LOGIN_ERROR }, { status: 400 })
   }
 
-  const response = NextResponse.json({ ok: true, redirectTo: "/today" })
+  if (result.data.user?.id) {
+    await ensureUserCoreState(result.data.user.id).catch(() => null)
+  }
+
+  const response = NextResponse.json({
+    ok: true,
+    redirectTo: `/api/auth/ensure-core-state?next=${encodeURIComponent(nextPath)}`,
+  })
   setAuthCookies(response, {
     accessToken: result.data.access_token,
     refreshToken: result.data.refresh_token,

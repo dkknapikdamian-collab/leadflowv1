@@ -22,6 +22,8 @@ const PUBLIC_PATHS = [
   "/auth/confirm",
 ]
 
+const AUTH_ENTRY_PATHS = ["/login", "/signup"]
+
 const ALLOWED_WHEN_BLOCKED = ["/access-blocked", "/billing", "/api/access/redeem-code"]
 
 function isStaticPath(pathname: string) {
@@ -38,8 +40,36 @@ function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))
 }
 
+function isAuthEntryPath(pathname: string) {
+  return AUTH_ENTRY_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))
+}
+
 function isAllowedWhenBlocked(pathname: string) {
   return ALLOWED_WHEN_BLOCKED.some((path) => pathname === path || pathname.startsWith(`${path}/`))
+}
+
+function toRelativePath(next: string | null, fallback = "/today") {
+  if (!next || !next.startsWith("/")) {
+    return fallback
+  }
+  return next
+}
+
+function sanitizePostLoginPath(next: string | null) {
+  const candidate = toRelativePath(next, "/today")
+
+  if (
+    isAuthEntryPath(candidate) ||
+    candidate === "/auth/callback" ||
+    candidate === "/auth/confirm" ||
+    candidate === "/check-email" ||
+    candidate === "/forgot-password" ||
+    candidate === "/reset-password"
+  ) {
+    return "/today"
+  }
+
+  return candidate
 }
 
 function withSessionCookies(response: NextResponse, sessionCookies: CookieSessionInput | null) {
@@ -73,17 +103,42 @@ function buildAccessBlockedRedirect(request: NextRequest, reason: string, sessio
   return withSessionCookies(response, sessionCookies)
 }
 
-function buildEnsureCoreStateRedirect(request: NextRequest, sessionCookies: CookieSessionInput | null) {
+function buildEnsureCoreStateRedirect(
+  request: NextRequest,
+  sessionCookies: CookieSessionInput | null,
+  nextOverride?: string,
+) {
   const ensureUrl = new URL("/api/auth/ensure-core-state", request.url)
-  ensureUrl.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`)
+  ensureUrl.searchParams.set(
+    "next",
+    nextOverride ?? `${request.nextUrl.pathname}${request.nextUrl.search}`,
+  )
   const response = NextResponse.redirect(ensureUrl)
+  return withSessionCookies(response, sessionCookies)
+}
+
+function buildAuthenticatedRedirect(
+  request: NextRequest,
+  sessionCookies: CookieSessionInput | null,
+  nextOverride?: string,
+) {
+  const redirectUrl = new URL(nextOverride ?? "/today", request.url)
+  const response = NextResponse.redirect(redirectUrl)
+  return withSessionCookies(response, sessionCookies)
+}
+
+function buildAuthEntryResponse(sessionCookies: CookieSessionInput | null, clearCookies = false) {
+  const response = NextResponse.next()
+  if (clearCookies) {
+    clearAuthCookies(response)
+  }
   return withSessionCookies(response, sessionCookies)
 }
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (isStaticPath(pathname) || isPublicPath(pathname)) {
+  if (isStaticPath(pathname)) {
     return NextResponse.next()
   }
 
@@ -108,6 +163,52 @@ export async function middleware(request: NextRequest) {
         }
       }
     }
+  }
+
+  if (isAuthEntryPath(pathname)) {
+    if (!accessToken) {
+      return buildAuthEntryResponse(sessionCookies)
+    }
+
+    const userResult = await getUser(accessToken)
+    if (!userResult.data) {
+      return buildAuthEntryResponse(sessionCookies, true)
+    }
+
+    const email = userResult.data.email ?? getEmailFromRequest(request)
+    const accessStatusResult = await getAccessStatusForUser(accessToken, userResult.data.id)
+
+    if (accessStatusResult.data === null && accessStatusResult.error === null) {
+      return buildEnsureCoreStateRedirect(
+        request,
+        sessionCookies,
+        sanitizePostLoginPath(request.nextUrl.searchParams.get("next")),
+      )
+    }
+
+    const accessState = resolveAccessState({
+      isEmailVerified: Boolean(userResult.data.email_confirmed_at),
+      accessStatus: accessStatusResult.data,
+      now: new Date(),
+    })
+
+    if (accessState.mustVerifyEmail) {
+      return buildCheckEmailRedirect(request, email, sessionCookies)
+    }
+
+    if (accessState.canUseApp) {
+      return buildAuthenticatedRedirect(
+        request,
+        sessionCookies,
+        sanitizePostLoginPath(request.nextUrl.searchParams.get("next")),
+      )
+    }
+
+    return buildAccessBlockedRedirect(request, accessState.reason, sessionCookies)
+  }
+
+  if (isPublicPath(pathname)) {
+    return NextResponse.next()
   }
 
   if (!accessToken) {
