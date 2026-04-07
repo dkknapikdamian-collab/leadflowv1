@@ -1,0 +1,47 @@
+KIERUNEK PRODUKTU
+
+To nie jest już tylko lead follow-up app.
+
+To jest:
+jeden system do domykania i uruchamiania klienta
+
+Zasada główna:
+- sprzedaż = Lead Flow
+- po won albo ready to start lead może przejść do sprawy operacyjnej
+- Forteca nie jest osobną aplikacją
+- Sprawy są modułem tego samego systemu
+
+Produkt ma pilnować 2 rzeczy:
+
+1. Przed sprzedażą
+- kto wymaga ruchu dziś
+- jaki jest next step
+- co jest overdue
+- który lead jest zagrożony
+- gdzie kasa może uciec
+
+2. Po sprzedaży
+- czego klient jeszcze nie dosłał
+- czego nie zatwierdził
+- co blokuje start
+- czy czekamy na klienta czy na nas
+- jaki jest następny ruch operacyjny
+
+Finalne menu operatora:
+- Dziś
+- Leady
+- Sprawy
+- Zadania
+- Kalendarz
+- Aktywność
+- Rozliczenia
+- Ustawienia
+
+Później:
+- Szablony
+- Klienci
+
+Kierunek UI:
+- nowa skórka oparta o Fortecę
+- jeden spójny visual system
+- brak wrażenia dwóch osobnych aplikacji
