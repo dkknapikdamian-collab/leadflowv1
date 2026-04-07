@@ -2,9 +2,18 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { AuthShell } from "@/components/auth-shell"
 import { postJson } from "@/lib/supabase/browser"
+
+const authLinkStyle = {
+  display: "block",
+  textAlign: "center" as const,
+  padding: 14,
+  borderRadius: 12,
+  border: "1px solid var(--border-light)",
+  background: "transparent",
+}
 
 export default function SignupPage() {
   const router = useRouter()
@@ -12,15 +21,6 @@ export default function SignupPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [googleUrl, setGoogleUrl] = useState("")
-
-  useEffect(() => {
-    if (typeof window === "undefined") return
-    const base = process.env.NEXT_PUBLIC_SUPABASE_URL || ""
-    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/today")}`
-    const params = new URLSearchParams({ provider: "google", flow_type: "implicit", redirect_to: redirectTo })
-    setGoogleUrl(`${base}/auth/v1/authorize?${params.toString()}`)
-  }, [])
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -41,14 +41,12 @@ export default function SignupPage() {
   return (
     <AuthShell
       title="Załóż konto"
-      subtitle="Google i e-mail z hasłem prowadzą do tego samego konta dla tego samego adresu e-mail."
+      subtitle="Załóż konto przez Google albo e-mail z hasłem."
       footer={<p style={{ margin: 0, color: "var(--muted)" }}>Masz już konto? <Link href="/login">Zaloguj się</Link></p>}
     >
-      {googleUrl ? (
-        <a href={googleUrl} style={{ display: "block", textAlign: "center", padding: 14, borderRadius: 12, border: "1px solid var(--border-light)", background: "transparent" }}>
-          Zarejestruj się przez Google
-        </a>
-      ) : null}
+      <a href="/api/auth/oauth-start?next=%2Ftoday" style={authLinkStyle}>
+        Zarejestruj się przez Google
+      </a>
 
       <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
         <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="E-mail" style={{ width: "100%", borderRadius: 12, border: "1px solid var(--border-light)", background: "#111", color: "var(--text)", padding: "12px 14px" }} />

@@ -5,6 +5,7 @@ import { useAuthSession } from "@/lib/auth/session-provider"
 import { postJson } from "@/lib/supabase/browser"
 import {
   canChangeLocalPassword,
+  getAccountModeDescription,
   getAccountProviderLabel,
   getLocalPasswordLabel,
   getPasswordChangeUnavailableMessage,
@@ -59,9 +60,14 @@ export function AccountSettingsPanel() {
   const currentUser = user
   const providerLabel = getAccountProviderLabel(currentUser.provider)
   const localPasswordLabel = getLocalPasswordLabel(currentUser.hasPassword)
-  const emailStatusLabel = currentUser.emailVerified ? "Potwierdzony" : "Niepotwierdzony"
+  const emailStatusLabel = currentUser.emailVerified ? "Tak" : "Nie"
   const canChangePassword = canChangeLocalPassword(currentUser)
   const passwordUnavailableMessage = getPasswordChangeUnavailableMessage(currentUser)
+  const accountModeDescription = getAccountModeDescription(currentUser)
+  const emailChangeStatusLabel = currentUser.emailChangePending
+    ? `Tak, czeka potwierdzenie dla: ${currentUser.emailChangePending}`
+    : "Nie"
+  const emailChangeBlocked = Boolean(currentUser.emailChangePending)
 
   async function handlePasswordSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -84,6 +90,7 @@ export function AccountSettingsPanel() {
 
     const result = await postJson<{ message?: string; error?: string }>("/api/auth/update-password", {
       password,
+      passwordConfirm: confirmPassword,
       confirmPassword,
     })
 
@@ -153,7 +160,7 @@ export function AccountSettingsPanel() {
         <div className="toolbar-row wrap">
           <div>
             <h2 className="page-title">Konto</h2>
-            <p className="page-subtitle">Dane konta, bezpieczeństwo i zmiana adresu e-mail.</p>
+            <p className="page-subtitle">Tu widzisz stan logowania, bezpieczeństwo konta i zmianę adresu e-mail.</p>
           </div>
         </div>
 
@@ -163,29 +170,29 @@ export function AccountSettingsPanel() {
             <span>{currentUser.email ?? "—"}</span>
           </div>
           <div className="info-row">
-            <strong>Display name</strong>
-            <span>{currentUser.displayName || "—"}</span>
-          </div>
-          <div className="info-row">
-            <strong>Provider logowania</strong>
-            <span>{providerLabel}</span>
-          </div>
-          <div className="info-row">
-            <strong>Status e-maila</strong>
+            <strong>E-mail potwierdzony</strong>
             <span>{emailStatusLabel}</span>
           </div>
           <div className="info-row">
-            <strong>Hasło lokalne</strong>
+            <strong>Nazwa użytkownika</strong>
+            <span>{currentUser.displayName || "—"}</span>
+          </div>
+          <div className="info-row">
+            <strong>Typ konta</strong>
+            <span>{providerLabel}</span>
+          </div>
+          <div className="info-row">
+            <strong>Hasło w aplikacji</strong>
             <span>{localPasswordLabel}</span>
           </div>
           <div className="info-row">
-            <strong>Zmiana e-maila</strong>
-            <span>
-              {currentUser.emailChangePending
-                ? `Czekamy na potwierdzenie: ${currentUser.emailChangePending}`
-                : "Brak oczekującej zmiany"}
-            </span>
+            <strong>Trwa zmiana e-maila</strong>
+            <span>{emailChangeStatusLabel}</span>
           </div>
+        </div>
+
+        <div className="muted-small" style={{ marginTop: 12 }}>
+          {accountModeDescription}
         </div>
       </div>
 
@@ -193,7 +200,7 @@ export function AccountSettingsPanel() {
         <div className="field-block full-span">
           <strong>Zmień hasło</strong>
           <div className="muted-small">
-            Działa dla kont z lokalnym hasłem. Dla kont Google sekcja pokazuje uczciwy stan bez martwego przycisku.
+            Zmiana hasła działa tutaj, bez wychodzenia do osobnego ekranu logowania.
           </div>
         </div>
 
@@ -242,9 +249,18 @@ export function AccountSettingsPanel() {
           <div className="field-block full-span">
             <strong>Zmień e-mail</strong>
             <div className="muted-small">
-              Po wysłaniu wniosku aplikacja pokaże stan oczekujący na potwierdzenie nowego adresu.
+              Zmiana e-maila nie tworzy nowego konta. Po potwierdzeniu nadal jesteś tym samym użytkownikiem.
             </div>
           </div>
+
+          {currentUser.emailChangePending ? (
+            <div className="field-block full-span">
+              <div className="muted-small">
+                Najpierw dokończ trwającą zmianę e-maila albo poczekaj, aż wygaśnie poprzednia próba.
+              </div>
+            </div>
+          ) : null}
+
           <label className="field-block full-span">
             <span>Nowy e-mail</span>
             <input
@@ -259,7 +275,7 @@ export function AccountSettingsPanel() {
             <InlineMessage error={emailState.error} success={emailState.success} />
           </div>
           <div className="field-block full-span">
-            <button className="primary-button" type="submit" disabled={emailState.isSubmitting}>
+            <button className="primary-button" type="submit" disabled={emailState.isSubmitting || emailChangeBlocked}>
               {emailState.isSubmitting ? "Wysyłanie..." : "Rozpocznij zmianę e-maila"}
             </button>
           </div>

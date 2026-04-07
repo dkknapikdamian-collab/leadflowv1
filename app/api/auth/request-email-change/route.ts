@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { normalizeAndValidateEmail } from "@/lib/auth/email"
 import { validateAccountEmailChange } from "@/lib/account/account-settings"
+import { normalizeAndValidateEmail } from "@/lib/auth/email"
 import { getAccessTokenFromRequest } from "@/lib/auth/cookies"
 import { getUser } from "@/lib/supabase/server"
 import { getSupabasePublishableKey, getSupabaseUrl } from "@/lib/supabase/config"
@@ -54,7 +54,10 @@ export async function POST(request: NextRequest) {
 
   const result = await updateUserEmail(accessToken, email)
   if (!result.ok) {
-    return NextResponse.json({ error: result.error ?? "Nie udało się rozpocząć zmiany e-maila." }, { status: 400 })
+    return NextResponse.json(
+      { error: "Nie udało się rozpocząć zmiany e-maila. Ten adres może być już używany albo chwilowo niedostępny." },
+      { status: 400 },
+    )
   }
 
   return NextResponse.json({

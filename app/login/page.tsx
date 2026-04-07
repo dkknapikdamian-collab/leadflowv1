@@ -6,6 +6,29 @@ import { useSearchParams } from "next/navigation"
 import { AuthShell } from "@/components/auth-shell"
 import { postJson } from "@/lib/supabase/browser"
 
+const authLinkStyle = {
+  display: "block",
+  textAlign: "center" as const,
+  padding: 14,
+  borderRadius: 12,
+  border: "1px solid var(--border-light)",
+  background: "transparent",
+}
+
+const accentLinkStyle = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: 44,
+  padding: "12px 16px",
+  borderRadius: 12,
+  border: "1px solid rgba(245,158,11,0.28)",
+  background: "rgba(245,158,11,0.14)",
+  color: "var(--accent)",
+  textDecoration: "none",
+  fontWeight: 700,
+}
+
 function LoginPageContent() {
   const searchParams = useSearchParams()
   const next = searchParams.get("next") || "/today"
@@ -38,10 +61,17 @@ function LoginPageContent() {
   return (
     <AuthShell
       title="Zaloguj się"
-      subtitle="Wejdź przez Google albo e-mail i hasło. Dostęp zależy od statusu konta w bazie."
-      footer={<p style={{ margin: 0, color: "var(--muted)" }}>Nie masz konta? <Link href="/signup">Załóż konto</Link></p>}
+      subtitle="Wejdź do swojego panelu."
+      footer={
+        <div style={{ display: "grid", gap: 10 }}>
+          <div style={{ margin: 0, color: "var(--muted)" }}>Nie masz jeszcze konta?</div>
+          <Link href="/signup" style={accentLinkStyle}>
+            Załóż konto
+          </Link>
+        </div>
+      }
     >
-      <a href={googleUrl} style={{ display: "block", textAlign: "center", padding: 14, borderRadius: 12, border: "1px solid var(--border-light)", background: "transparent" }}>
+      <a href={googleUrl} style={authLinkStyle}>
         Kontynuuj przez Google
       </a>
 

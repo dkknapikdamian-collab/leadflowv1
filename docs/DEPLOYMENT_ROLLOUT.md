@@ -4,7 +4,7 @@
 
 Ten dokument zamraża sposób wdrażania zmian, żeby:
 - testerzy nie dostawali każdej zmiany od razu,
-- `main` nie był branch em roboczym,
+- `main` nie był branchem roboczym,
 - dało się normalnie testować preview,
 - dało się szybko cofnąć produkcję.
 
@@ -52,9 +52,12 @@ Jeżeli zmiana jest mała, można pracować bezpośrednio na `dev-rollout-freeze
 
 1. Żadnych bezpośrednich commitów funkcjonalnych na `main`.
 2. `main` ma być tylko świadomie aktualizowany po testach.
-3. Każda zmiana robocza ma być sprawdzona na preview linku.
-4. Testerzy mają korzystać tylko z produkcyjnego linku przypiętego do `main`.
-5. Własne testy mają iść tylko przez preview link z branchy roboczych.
+3. Testerzy mają siedzieć wyłącznie na linku produkcyjnym powiązanym z `main`.
+4. Ty masz mieć osobny preview albo staging do pracy roboczej.
+5. `main` nie może być poligonem do własnych testów.
+6. Każda zmiana produktowa, UX, auth albo billing ma najpierw przejść przez preview.
+7. Dopiero po sprawdzeniu preview zmiana może wejść na produkcję.
+8. Testerzy nie mogą zobaczyć nowej wersji, dopóki nie trafi ona świadomie na `main`.
 
 ---
 
@@ -73,6 +76,23 @@ Jeśli chcesz najprościej:
 2. testujesz preview,
 3. merge albo świadome przepchnięcie gotowej wersji do `main`,
 4. testerzy dalej siedzą tylko na produkcyjnym linku.
+
+---
+
+## Obowiązkowe testy środowiskowe przed wejściem na `main`
+
+Każda zmiana, która ma wejść do testerów albo produkcji, ma przejść ten pakiet minimum:
+
+1. test na telefonie,
+2. test na desktopie,
+3. test w oknie incognito,
+4. test na koncie A,
+5. test na koncie B,
+6. test separacji danych między kontem A i B,
+7. test, czy preview pokazuje nową wersję tylko Tobie,
+8. test, czy produkcyjny link dla testerów nadal pokazuje starą stabilną wersję, dopóki nie zaktualizujesz `main`.
+
+Jeżeli którykolwiek z tych testów nie jest zrobiony, rollout nie jest domknięty.
 
 ---
 
@@ -164,4 +184,6 @@ Etap uznajemy za domknięty, gdy:
 - istnieje spisana zasada rolloutu,
 - wiadomo, że `main` ma być tylko stabilne,
 - wiadomo, że preview służy do własnych testów,
+- wiadomo, że testerzy siedzą na produkcyjnym linku,
+- wiadomo, że zmiany produktowe i UX przechodzą najpierw przez preview,
 - wiadomo, jak cofnąć produkcję.

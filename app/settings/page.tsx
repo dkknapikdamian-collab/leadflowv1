@@ -7,8 +7,8 @@ import { SettingsPageView } from "@/components/views"
 export default function SettingsPage() {
   return (
     <DashboardShell>
-      <SettingsPageView />
       <AccountSettingsPanel />
+      <SettingsPageView />
     </DashboardShell>
   )
 }

@@ -12,8 +12,8 @@ export function getAccountProviderLabel(provider: string | null) {
 }
 
 export function getLocalPasswordLabel(hasPassword: boolean | null) {
-  if (hasPassword === true) return "Hasło lokalne aktywne"
-  if (hasPassword === false) return "Brak lokalnego hasła"
+  if (hasPassword === true) return "Ustawione"
+  if (hasPassword === false) return "Brak osobnego hasła"
   return "Nie udało się ustalić"
 }
 
@@ -22,16 +22,32 @@ export function canChangeLocalPassword(user: Pick<AuthSessionUser, "provider" | 
   return user.provider === "email" || user.provider === "email_password"
 }
 
+export function getAccountModeDescription(user: Pick<AuthSessionUser, "provider" | "hasPassword">) {
+  if (user.provider === "google" && user.hasPassword === false) {
+    return "Logujesz się przez Google. To konto nie ma osobnego hasła w aplikacji."
+  }
+
+  if (user.provider === "google" && user.hasPassword === true) {
+    return "Logujesz się przez Google, ale do tego konta jest też przypisane hasło lokalne."
+  }
+
+  if (user.provider === "email" || user.provider === "email_password") {
+    return "To konto działa w trybie e-mail + hasło."
+  }
+
+  return "Sposób logowania tego konta nie został jeszcze jednoznacznie rozpoznany."
+}
+
 export function getPasswordChangeUnavailableMessage(user: Pick<AuthSessionUser, "provider" | "hasPassword">) {
   if (canChangeLocalPassword(user)) {
     return null
   }
 
   if (user.provider === "google") {
-    return "To konto używa Google jako głównej metody logowania. Zmiana lokalnego hasła może nie być dostępna, dopóki nie dodasz hasła do konta."
+    return "To konto loguje się przez Google. Nie ma tu osobnego hasła do zmiany."
   }
 
-  return "Zmiana lokalnego hasła nie jest teraz dostępna dla tego konta."
+  return "Zmiana hasła nie jest teraz dostępna dla tego konta."
 }
 
 export function validateNewPassword(password: string, confirmPassword: string) {

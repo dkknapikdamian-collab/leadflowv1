@@ -2,7 +2,10 @@ import test from "node:test"
 import assert from "node:assert/strict"
 import {
   canChangeLocalPassword,
+  getAccountModeDescription,
   getAccountProviderLabel,
+  getLocalPasswordLabel,
+  getPasswordChangeUnavailableMessage,
   validateAccountEmailChange,
   validateNewPassword,
 } from "../lib/account/account-settings"
@@ -14,6 +17,30 @@ test("getAccountProviderLabel zwraca czytelną etykietę dla Google", () => {
 test("getAccountProviderLabel zwraca czytelną etykietę dla logowania hasłem", () => {
   assert.equal(getAccountProviderLabel("email"), "E-mail + hasło")
   assert.equal(getAccountProviderLabel("email_password"), "E-mail + hasło")
+})
+
+test("getLocalPasswordLabel pokazuje brak osobnego hasła dla konta Google bez hasła", () => {
+  assert.equal(getLocalPasswordLabel(false), "Brak osobnego hasła")
+})
+
+test("getAccountModeDescription jasno opisuje konto Google bez lokalnego hasła", () => {
+  assert.equal(
+    getAccountModeDescription({
+      provider: "google",
+      hasPassword: false,
+    }),
+    "Logujesz się przez Google. To konto nie ma osobnego hasła w aplikacji.",
+  )
+})
+
+test("getPasswordChangeUnavailableMessage daje ludzki komunikat dla Google bez hasła", () => {
+  assert.equal(
+    getPasswordChangeUnavailableMessage({
+      provider: "google",
+      hasPassword: false,
+    }),
+    "To konto loguje się przez Google. Nie ma tu osobnego hasła do zmiany.",
+  )
 })
 
 test("validateNewPassword odrzuca zbyt krótkie hasło", () => {

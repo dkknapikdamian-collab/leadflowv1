@@ -8,10 +8,11 @@ export async function POST(request: NextRequest) {
   const body = (await request.json().catch(() => ({}))) as {
     password?: string
     passwordConfirm?: string
+    confirmPassword?: string
   }
 
   const password = body.password ?? ""
-  const passwordConfirm = body.passwordConfirm ?? ""
+  const passwordConfirm = body.passwordConfirm ?? body.confirmPassword ?? ""
 
   if (password.trim().length < 8) {
     return NextResponse.json(
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
   const accessToken = getAccessTokenFromRequest(request)
   if (!accessToken) {
     return NextResponse.json(
-      { error: "Sesja wygasła. Poproś o nowy link resetu albo zaloguj się ponownie." },
+      { error: "Sesja wygasła. Zaloguj się ponownie i spróbuj jeszcze raz." },
       { status: 401 },
     )
   }
@@ -46,14 +47,14 @@ export async function POST(request: NextRequest) {
   const result = await updateUserPassword(accessToken, password)
   if (result.error) {
     return NextResponse.json(
-      { error: "Nie udało się ustawić nowego hasła." },
+      { error: "Nie udało się zmienić hasła." },
       { status: 400 },
     )
   }
 
   return NextResponse.json({
     ok: true,
-    message: "Hasło zostało ustawione.",
+    message: "Hasło zostało zmienione.",
     redirectTo: "/today",
   })
 }
