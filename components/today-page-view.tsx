@@ -4,6 +4,10 @@ import { useMemo, useState } from "react"
 import { ItemModal, LeadDrawer } from "@/components/views"
 import { useAppStore } from "@/lib/store"
 import {
+  formatLeadAlarmReasonLabel,
+  type LeadWithComputedState,
+} from "@/lib/domain/lead-state"
+import {
   buildTodayViewModel,
   getEffectiveCollapsed,
   getNextManualCollapsedState,
@@ -91,40 +95,17 @@ function TodayItemRow({
   )
 }
 
-function getRiskReasonLabel(riskReason?: string) {
-  switch (riskReason) {
-    case "missing_next_step":
-      return "Brak kolejnego kroku"
-    case "next_step_overdue":
-      return "Termin kolejnego kroku minął"
-    case "waiting_too_long":
-      return "Lead w waiting za długo"
-    case "high_value_stale":
-      return "Wysoka wartość i brak ruchu"
-    case "inactive_too_long":
-      return "Brak aktywności od dłuższego czasu"
-    case "too_many_open_actions":
-      return "Za dużo otwartych działań"
-    case "no_followup_after_meeting":
-      return "Brak follow-up po spotkaniu"
-    case "no_followup_after_proposal":
-      return "Brak follow-up po ofercie"
-    default:
-      return ""
-  }
-}
-
 function TodayLeadRow({
   lead,
   onOpen,
   dateOptions,
 }: {
-  lead: any
+  lead: LeadWithComputedState
   onOpen: () => void
   dateOptions: { timeZone: string }
 }) {
-  const riskLabel = getRiskReasonLabel(lead.computed?.riskReason)
-  const nextStepAt = lead.computed?.nextStepAt
+  const riskLabel = formatLeadAlarmReasonLabel(lead.computed.riskReason)
+  const nextStepAt = lead.computed.nextStepAt
 
   return (
     <button className="today-lead-row" type="button" onClick={onOpen}>

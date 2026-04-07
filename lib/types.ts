@@ -57,6 +57,18 @@ export type SignupSource = "google" | "email_password" | "invite" | "manual" | "
 export type WorkspaceMemberRole = "owner"
 export type BonusKind = "promo_code" | "referral" | "manual"
 
+export type LeadAlarmReason =
+  | "missing_next_step"
+  | "next_step_overdue"
+  | "waiting_too_long"
+  | "high_value_stale"
+  | "inactive_too_long"
+  | "too_many_open_actions"
+  | "no_followup_after_meeting"
+  | "no_followup_after_proposal"
+
+export type LeadRiskState = "ok" | "at_risk"
+
 export interface Lead {
   id: string
   workspaceId?: string | null

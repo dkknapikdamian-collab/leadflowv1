@@ -1,4 +1,11 @@
-import type { AppSnapshot, Lead, SettingsState, WorkItem } from "../types"
+import type {
+  AppSnapshot,
+  Lead,
+  LeadAlarmReason,
+  LeadRiskState,
+  SettingsState,
+  WorkItem,
+} from "../types"
 import {
   compareDateKeys,
   getCurrentDateKey,
@@ -8,22 +15,39 @@ import {
   type DateContextOptions,
 } from "../utils"
 
-export type LeadRiskReason =
-  | "none"
-  | "missing_next_step"
-  | "next_step_overdue"
-  | "waiting_too_long"
-  | "high_value_stale"
-  | "inactive_too_long"
-  | "too_many_open_actions"
-  | "no_followup_after_meeting"
-  | "no_followup_after_proposal"
+export type LeadRiskReason = LeadAlarmReason | "none"
 
 export interface LeadStateSettings {
   waitingTooLongDays: number
   staleLeadDays: number
   highValueThreshold: number
   maxOpenActionsBeforeChaos: number
+}
+
+export interface LeadLastTouchInfo {
+  item: WorkItem | null
+  itemId: string | null
+  itemType: WorkItem["type"] | null
+  at: string | null
+}
+
+export interface LeadNextStepInfo {
+  item: WorkItem | null
+  itemId: string | null
+  itemType: WorkItem["type"] | null
+  title: string
+  at: string | null
+  hasNextStep: boolean
+  isOverdue: boolean
+  daysUntil: number | null
+}
+
+export interface LeadRiskInfo {
+  state: LeadRiskState
+  isAtRisk: boolean
+  primaryReason: LeadRiskReason
+  reasons: LeadAlarmReason[]
+  isWaitingTooLong: boolean
 }
 
 export interface LeadComputedState {
@@ -36,7 +60,9 @@ export interface LeadComputedState {
   daysUntilNextStep: number | null
   isWaitingTooLong: boolean
   isAtRisk: boolean
+  riskState: LeadRiskState
   riskReason: LeadRiskReason
+  alarmReasons: LeadAlarmReason[]
   dailyPriorityScore: number
   openActionsCount: number
 }
@@ -108,7 +134,7 @@ function compareCompletedContacts(left: WorkItem, right: WorkItem) {
   return getCompletionLikeDate(right).localeCompare(getCompletionLikeDate(left)) || right.createdAt.localeCompare(left.createdAt)
 }
 
-function getLeadItems(snapshot: AppSnapshot, leadId: string) {
+export function getLeadItems(snapshot: AppSnapshot, leadId: string) {
   return snapshot.items.filter((item) => item.leadId === leadId)
 }
 
@@ -120,7 +146,7 @@ function getLastTouchItem(items: WorkItem[]) {
   return items.filter((item) => isCompletedContactItem(item)).sort(compareCompletedContacts)[0] ?? null
 }
 
-function getSpecificMissingFollowupReason(lastTouchItem: WorkItem | null, hasNextStep: boolean): LeadRiskReason | null {
+function getSpecificMissingFollowupReason(lastTouchItem: WorkItem | null, hasNextStep: boolean): LeadAlarmReason | null {
   if (hasNextStep || !lastTouchItem) return null
   if (lastTouchItem.type === "meeting") return "no_followup_after_meeting"
   if (lastTouchItem.type === "proposal") return "no_followup_after_proposal"
@@ -179,79 +205,178 @@ export function resolveLeadStateSettings(settings?: Partial<SettingsState> | nul
   }
 }
 
-export function buildLeadComputedState(
+export function formatLeadAlarmReasonLabel(reason?: LeadRiskReason | null) {
+  switch (reason) {
+    case "missing_next_step":
+      return "Brak kolejnego kroku"
+    case "next_step_overdue":
+      return "Termin kolejnego kroku minął"
+    case "waiting_too_long":
+      return "Lead w waiting za długo"
+    case "high_value_stale":
+      return "Wysoka wartość i brak ruchu"
+    case "inactive_too_long":
+      return "Brak aktywności od dłuższego czasu"
+    case "too_many_open_actions":
+      return "Za dużo otwartych działań"
+    case "no_followup_after_meeting":
+      return "Brak follow-up po spotkaniu"
+    case "no_followup_after_proposal":
+      return "Brak follow-up po ofercie"
+    default:
+      return ""
+  }
+}
+
+export function getLeadLastTouch(
+  snapshot: AppSnapshot,
+  lead: Lead,
+  _options: DateContextOptions = {},
+): LeadLastTouchInfo {
+  const lastTouchItem = getLastTouchItem(getLeadItems(snapshot, lead.id))
+  const lastTouchAt = lastTouchItem ? getCompletionLikeDate(lastTouchItem) : null
+
+  return {
+    item: lastTouchItem,
+    itemId: lastTouchItem?.id ?? null,
+    itemType: lastTouchItem?.type ?? null,
+    at: lastTouchAt,
+  }
+}
+
+export function getLeadNextStep(
   snapshot: AppSnapshot,
   lead: Lead,
   options: DateContextOptions = {},
-): LeadComputedState {
+): LeadNextStepInfo {
+  const nextStepItem = getNextStepItems(getLeadItems(snapshot, lead.id))[0] ?? null
+  const nextStepAt = nextStepItem ? getItemPrimaryDate(nextStepItem) || null : null
+  const hasNextStep = Boolean(nextStepItem)
+  const isOverdue = Boolean(nextStepAt) && compareDateKeys(toDateKey(nextStepAt, options), getCurrentDateKey(options)) < 0
+
+  return {
+    item: nextStepItem,
+    itemId: nextStepItem?.id ?? null,
+    itemType: nextStepItem?.type ?? null,
+    title: nextStepItem?.title ?? "",
+    at: nextStepAt,
+    hasNextStep,
+    isOverdue,
+    daysUntil: resolveDaysUntilNextStep(nextStepAt, options),
+  }
+}
+
+export function getLeadAlarmReasons(
+  snapshot: AppSnapshot,
+  lead: Lead,
+  options: DateContextOptions = {},
+): LeadAlarmReason[] {
+  if (!isActiveLead(lead)) return []
+
   const settings = resolveLeadStateSettings(snapshot.settings)
   const leadItems = getLeadItems(snapshot, lead.id)
-  const nextStepItems = getNextStepItems(leadItems)
-  const nextStepItem = nextStepItems[0] ?? null
-  const nextStepAt = nextStepItem ? getItemPrimaryDate(nextStepItem) || null : null
-  const hasNextStep = nextStepItems.length > 0
-  const nextStepOverdue =
-    Boolean(nextStepAt) &&
-    compareDateKeys(toDateKey(nextStepAt, options), getCurrentDateKey(options)) < 0
-  const lastTouchItem = getLastTouchItem(leadItems)
-  const lastTouchAt = lastTouchItem ? getCompletionLikeDate(lastTouchItem) : null
-  const daysSinceLastTouch = resolveDaysSinceLastTouch(lastTouchAt, lead.createdAt, options)
-  const daysUntilNextStep = resolveDaysUntilNextStep(nextStepAt, options)
-  const openActionsCount = nextStepItems.length
+  const lastTouch = getLeadLastTouch(snapshot, lead, options)
+  const nextStep = getLeadNextStep(snapshot, lead, options)
+  const daysSinceLastTouch = resolveDaysSinceLastTouch(lastTouch.at, lead.createdAt, options)
   const waitingCheckOverdue = lead.status === "waiting" && isWaitingCheckOverdue(leadItems, options)
   const isWaitingTooLong =
     lead.status === "waiting" &&
     (daysSinceLastTouch >= settings.waitingTooLongDays || waitingCheckOverdue)
   const isHighValueStale = lead.value >= settings.highValueThreshold && daysSinceLastTouch >= settings.staleLeadDays
   const isInactiveTooLong = daysSinceLastTouch >= settings.staleLeadDays
+  const openActionsCount = getNextStepItems(leadItems).length
   const hasTooManyOpenActions = openActionsCount > settings.maxOpenActionsBeforeChaos
-  const specificMissingFollowupReason = getSpecificMissingFollowupReason(lastTouchItem, hasNextStep)
+  const specificMissingFollowupReason = getSpecificMissingFollowupReason(lastTouch.item, nextStep.hasNextStep)
 
-  let riskReason: LeadRiskReason = "none"
+  const reasons: LeadAlarmReason[] = []
 
-  if (isActiveLead(lead)) {
-    if (nextStepOverdue) {
-      riskReason = "next_step_overdue"
-    } else if (specificMissingFollowupReason) {
-      riskReason = specificMissingFollowupReason
-    } else if (isWaitingTooLong) {
-      riskReason = "waiting_too_long"
-    } else if (!hasNextStep) {
-      riskReason = "missing_next_step"
-    } else if (isHighValueStale) {
-      riskReason = "high_value_stale"
-    } else if (isInactiveTooLong) {
-      riskReason = "inactive_too_long"
-    } else if (hasTooManyOpenActions) {
-      riskReason = "too_many_open_actions"
-    }
+  if (nextStep.isOverdue) reasons.push("next_step_overdue")
+  if (specificMissingFollowupReason) {
+    reasons.push(specificMissingFollowupReason)
+  } else if (!nextStep.hasNextStep) {
+    reasons.push("missing_next_step")
   }
+  if (isWaitingTooLong) reasons.push("waiting_too_long")
+  if (isHighValueStale) reasons.push("high_value_stale")
+  if (isInactiveTooLong) reasons.push("inactive_too_long")
+  if (hasTooManyOpenActions) reasons.push("too_many_open_actions")
+
+  return reasons
+}
+
+export function getLeadRiskState(
+  snapshot: AppSnapshot,
+  lead: Lead,
+  options: DateContextOptions = {},
+): LeadRiskInfo {
+  const alarmReasons = getLeadAlarmReasons(snapshot, lead, options)
+  const state: LeadRiskState = alarmReasons.length > 0 ? "at_risk" : "ok"
+  const primaryReason: LeadRiskReason = alarmReasons[0] ?? "none"
+  const isWaitingTooLong = alarmReasons.includes("waiting_too_long")
+
+  return {
+    state,
+    isAtRisk: state === "at_risk",
+    primaryReason,
+    reasons: alarmReasons,
+    isWaitingTooLong,
+  }
+}
+
+export function getLeadDailyPriority(
+  snapshot: AppSnapshot,
+  lead: Lead,
+  options: DateContextOptions = {},
+) {
+  if (!isActiveLead(lead)) return 0
+
+  const settings = resolveLeadStateSettings(snapshot.settings)
+  const nextStep = getLeadNextStep(snapshot, lead, options)
+  const risk = getLeadRiskState(snapshot, lead, options)
+  const lastTouch = getLeadLastTouch(snapshot, lead, options)
+  const daysSinceLastTouch = resolveDaysSinceLastTouch(lastTouch.at, lead.createdAt, options)
+  const openActionsCount = getNextStepItems(getLeadItems(snapshot, lead.id)).length
 
   let dailyPriorityScore = 0
 
-  if (isActiveLead(lead)) {
-    if (nextStepOverdue) dailyPriorityScore += 50
-    if (!hasNextStep) dailyPriorityScore += 40
-    if (isWaitingTooLong) dailyPriorityScore += 30
-    if (daysUntilNextStep === 0) dailyPriorityScore += 20
-    if (lead.priority === "high") dailyPriorityScore += 15
-    if (lead.value >= settings.highValueThreshold) dailyPriorityScore += 15
-    dailyPriorityScore += Math.min(daysSinceLastTouch * 2, 20)
-    if (hasTooManyOpenActions) dailyPriorityScore += 10
-  }
+  if (nextStep.isOverdue) dailyPriorityScore += 50
+  if (!nextStep.hasNextStep) dailyPriorityScore += 40
+  if (risk.isWaitingTooLong) dailyPriorityScore += 30
+  if (nextStep.daysUntil === 0) dailyPriorityScore += 20
+  if (lead.priority === "high") dailyPriorityScore += 15
+  if (lead.value >= settings.highValueThreshold) dailyPriorityScore += 15
+  dailyPriorityScore += Math.min(daysSinceLastTouch * 2, 20)
+  if (openActionsCount > settings.maxOpenActionsBeforeChaos) dailyPriorityScore += 10
+
+  return dailyPriorityScore
+}
+
+export function buildLeadComputedState(
+  snapshot: AppSnapshot,
+  lead: Lead,
+  options: DateContextOptions = {},
+): LeadComputedState {
+  const leadItems = getLeadItems(snapshot, lead.id)
+  const nextStep = getLeadNextStep(snapshot, lead, options)
+  const lastTouch = getLeadLastTouch(snapshot, lead, options)
+  const risk = getLeadRiskState(snapshot, lead, options)
+  const daysSinceLastTouch = resolveDaysSinceLastTouch(lastTouch.at, lead.createdAt, options)
+  const openActionsCount = getNextStepItems(leadItems).length
 
   return {
     leadId: lead.id,
-    hasNextStep,
-    nextStepAt,
-    nextStepOverdue: Boolean(nextStepOverdue),
-    lastTouchAt,
+    hasNextStep: nextStep.hasNextStep,
+    nextStepAt: nextStep.at,
+    nextStepOverdue: nextStep.isOverdue,
+    lastTouchAt: lastTouch.at,
     daysSinceLastTouch,
-    daysUntilNextStep,
-    isWaitingTooLong,
-    isAtRisk: riskReason !== "none",
-    riskReason,
-    dailyPriorityScore,
+    daysUntilNextStep: nextStep.daysUntil,
+    isWaitingTooLong: risk.isWaitingTooLong,
+    isAtRisk: risk.isAtRisk,
+    riskState: risk.state,
+    riskReason: risk.primaryReason,
+    alarmReasons: risk.reasons,
+    dailyPriorityScore: getLeadDailyPriority(snapshot, lead, options),
     openActionsCount,
   }
 }

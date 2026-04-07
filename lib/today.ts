@@ -1,5 +1,9 @@
-import type { AppSnapshot, Lead, WorkItem } from "./types"
-import { buildLeadsWithComputedState, DEFAULT_LEAD_STATE_SETTINGS } from "./domain/lead-state"
+import type { AppSnapshot, WorkItem } from "./types"
+import {
+  buildLeadsWithComputedState,
+  DEFAULT_LEAD_STATE_SETTINGS,
+  type LeadWithComputedState,
+} from "./domain/lead-state"
 import {
   getCurrentDateKey,
   getTaskListItems,
@@ -49,7 +53,7 @@ export interface TodayLeadsSection {
   color: string
   kind: "leads"
   count: number
-  leads: Lead[]
+  leads: LeadWithComputedState[]
 }
 
 export type TodaySection = TodayItemsSection | TodayLeadsSection
@@ -221,10 +225,8 @@ export function buildTodaySections(snapshot: AppSnapshot, options: DateContextOp
     (lead) =>
       lead.status !== "won" &&
       lead.status !== "lost" &&
-      (
-        lead.computed.riskReason === "missing_next_step" ||
-        lead.computed.riskReason === "no_followup_after_meeting" ||
-        lead.computed.riskReason === "no_followup_after_proposal"
+      lead.computed.alarmReasons.some(
+        (reason) => reason === "missing_next_step" || reason === "no_followup_after_meeting" || reason === "no_followup_after_proposal",
       ),
   )
 
