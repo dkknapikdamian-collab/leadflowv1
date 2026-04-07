@@ -1,6 +1,6 @@
-import { resolveAccessState } from "@/lib/access/machine"
-import type { AccessStatusRow } from "@/lib/supabase/access-status"
-import type { AppSnapshot, BillingState } from "@/lib/types"
+import { resolveAccessState } from "./machine"
+import type { AccessStatusRow } from "../supabase/access-status"
+import type { AppSnapshot, BillingState } from "../types"
 
 export type AccountStatusTone = "neutral" | "success" | "warning" | "danger"
 

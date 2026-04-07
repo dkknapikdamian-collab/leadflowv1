@@ -81,6 +81,16 @@ const CONTACT_ITEM_TYPES = new Set<WorkItem["type"]>([
   "check_reply",
 ])
 const WAITING_CHECK_TYPES = new Set<WorkItem["type"]>(["follow_up", "check_reply", "reply", "call", "task"])
+const PRIMARY_RISK_REASON_ORDER: LeadRiskReason[] = [
+  "next_step_overdue",
+  "no_followup_after_meeting",
+  "no_followup_after_proposal",
+  "waiting_too_long",
+  "missing_next_step",
+  "too_many_open_actions",
+  "high_value_stale",
+  "inactive_too_long",
+]
 
 export const DEFAULT_LEAD_STATE_SETTINGS: LeadStateSettings = {
   waitingTooLongDays: 3,
@@ -180,6 +190,16 @@ function isWaitingCheckOverdue(items: WorkItem[], options: DateContextOptions) {
     const itemDateKey = toDateKey(getItemPrimaryDate(item), options)
     return Boolean(itemDateKey) && compareDateKeys(itemDateKey, currentDateKey) < 0
   })
+}
+
+function getPrimaryLeadRiskReason(reasons: LeadAlarmReason[]): LeadRiskReason {
+  for (const reason of PRIMARY_RISK_REASON_ORDER) {
+    if (reasons.includes(reason as LeadAlarmReason)) {
+      return reason
+    }
+  }
+
+  return "none"
 }
 
 export function resolveLeadStateSettings(settings?: Partial<SettingsState> | null): LeadStateSettings {
@@ -311,7 +331,7 @@ export function getLeadRiskState(
 ): LeadRiskInfo {
   const alarmReasons = getLeadAlarmReasons(snapshot, lead, options)
   const state: LeadRiskState = alarmReasons.length > 0 ? "at_risk" : "ok"
-  const primaryReason: LeadRiskReason = alarmReasons[0] ?? "none"
+  const primaryReason = getPrimaryLeadRiskReason(alarmReasons)
   const isWaitingTooLong = alarmReasons.includes("waiting_too_long")
 
   return {

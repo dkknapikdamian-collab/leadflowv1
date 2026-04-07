@@ -1,5 +1,5 @@
-import { reconcileAppSnapshot } from "@/lib/snapshot"
-import type { AppSnapshot, Lead, WorkItem } from "@/lib/types"
+import { reconcileAppSnapshot } from "../snapshot"
+import type { AppSnapshot, Lead, WorkItem } from "../types"
 
 export interface SnapshotSyncMergeResult {
   snapshot: AppSnapshot

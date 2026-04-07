@@ -42,6 +42,9 @@ test("mapSupabaseUserToSessionUser buduje stabilny obiekt sesji", () => {
     displayName: "Sesyjny Użytkownik",
     provider: "google",
     emailConfirmedAt: "2026-04-06T10:00:00.000Z",
+    emailVerified: true,
+    hasPassword: false,
+    emailChangePending: null,
   })
 })
 

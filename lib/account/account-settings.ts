@@ -1,5 +1,5 @@
-import { normalizeAndValidateEmail } from "@/lib/auth/email"
-import type { AuthSessionUser } from "@/lib/auth/session"
+import { normalizeAndValidateEmail } from "../auth/email"
+import type { AuthSessionUser } from "../auth/session"
 
 export const MIN_ACCOUNT_PASSWORD_LENGTH = 8
 

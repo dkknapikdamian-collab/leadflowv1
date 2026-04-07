@@ -1,4 +1,4 @@
-import { resolveAccessState, type AccessMachineInput } from "@/lib/access/machine"
+import { resolveAccessState, type AccessMachineInput } from "./machine"
 
 export type AccessDecisionReason =
   | "ok"
