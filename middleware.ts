@@ -196,7 +196,7 @@ export async function middleware(request: NextRequest) {
       return buildCheckEmailRedirect(request, email, sessionCookies)
     }
 
-    if (accessState.canUseApp) {
+    if (accessState.canAccessApp) {
       return buildAuthenticatedRedirect(
         request,
         sessionCookies,
@@ -244,7 +244,7 @@ export async function middleware(request: NextRequest) {
     return buildCheckEmailRedirect(request, email, sessionCookies)
   }
 
-  if (accessState.canUseApp) {
+  if (accessState.canAccessApp) {
     if (pathname === "/access-blocked") {
       const response = NextResponse.redirect(new URL("/today", request.url))
       return withSessionCookies(response, sessionCookies)

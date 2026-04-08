@@ -1,4 +1,4 @@
-import type { AppSnapshot } from "./types"
+import type { AppSnapshot, CaseTemplate, TemplateItem, TemplateItemKind } from "./types"
 import { addDaysAt, createId } from "./utils"
 
 function createBaseSnapshot(): Omit<AppSnapshot, "leads" | "items"> {
@@ -25,12 +25,21 @@ function createBaseSnapshot(): Omit<AppSnapshot, "leads" | "items"> {
       inAppReminders: true,
       emailReminders: false,
       defaultReminder: "1h_before",
+      caseReminderFrequency: "daily",
       defaultSnooze: "tomorrow",
       workspaceName: "LeadFlow",
       fontScale: "compact",
       viewProfile: "desktop",
       theme: "classic",
     },
+    caseTemplates: [],
+    templateItems: [],
+    fileAttachments: [],
+    approvals: [],
+    notifications: [],
+    notificationDeliveryLog: [],
+    clientPortalTokens: [],
+    activityLog: [],
   }
 }
 
@@ -47,15 +56,92 @@ const inTwoDays11 = addDaysAt(2, 11, 0)
 const inThreeDays10 = addDaysAt(3, 10, 0)
 const createdOld = addDaysAt(-8, 8, 0)
 
+function starterTemplate(
+  id: string,
+  name: string,
+  caseType: string,
+  isDefault: boolean,
+  createdAt: string,
+): CaseTemplate {
+  return {
+    id,
+    workspaceId: null,
+    name,
+    caseType,
+    description: `${name} - szablon startowy`,
+    isDefault,
+    createdAt,
+    updatedAt: createdAt,
+  }
+}
+
+function starterTemplateItem(
+  templateId: string,
+  title: string,
+  itemType: TemplateItemKind,
+  sortOrder: number,
+  required: boolean,
+  createdAt: string,
+): TemplateItem {
+  return {
+    id: createId("tpl_item"),
+    workspaceId: null,
+    templateId,
+    title,
+    itemType,
+    description: "",
+    sortOrder,
+    required,
+    createdAt,
+    updatedAt: createdAt,
+  }
+}
+
+function buildStarterTemplates(createdAt: string) {
+  const website = starterTemplate("tpl_website", "Strona www", "strona www", true, createdAt)
+  const branding = starterTemplate("tpl_branding", "Branding", "branding", true, createdAt)
+  const ads = starterTemplate("tpl_ads", "Kampania reklamowa", "kampania reklamowa", true, createdAt)
+  const onboarding = starterTemplate("tpl_onboarding", "Onboarding klienta", "onboarding klienta", true, createdAt)
+
+  const templates = [website, branding, ads, onboarding]
+  const templateItems: TemplateItem[] = [
+    starterTemplateItem(website.id, "Brief strony", "response", 1, true, createdAt),
+    starterTemplateItem(website.id, "Dostep do hostingu", "access", 2, true, createdAt),
+    starterTemplateItem(website.id, "Logo i assets", "file", 3, true, createdAt),
+    starterTemplateItem(website.id, "Akceptacja makiety", "approval", 4, true, createdAt),
+
+    starterTemplateItem(branding.id, "Brief marki", "response", 1, true, createdAt),
+    starterTemplateItem(branding.id, "Pliki referencyjne", "file", 2, true, createdAt),
+    starterTemplateItem(branding.id, "Decyzja kierunku", "decision", 3, true, createdAt),
+    starterTemplateItem(branding.id, "Akceptacja finalu", "approval", 4, true, createdAt),
+
+    starterTemplateItem(ads.id, "Dostep do kont reklamowych", "access", 1, true, createdAt),
+    starterTemplateItem(ads.id, "Ustalenie KPI", "decision", 2, true, createdAt),
+    starterTemplateItem(ads.id, "Materialy reklamowe", "file", 3, true, createdAt),
+    starterTemplateItem(ads.id, "Akceptacja startu kampanii", "approval", 4, true, createdAt),
+
+    starterTemplateItem(onboarding.id, "Brief wspolpracy", "response", 1, true, createdAt),
+    starterTemplateItem(onboarding.id, "Dostep do narzedzi", "access", 2, true, createdAt),
+    starterTemplateItem(onboarding.id, "Checklista startowa", "file", 3, false, createdAt),
+    starterTemplateItem(onboarding.id, "Potwierdzenie kickoff", "approval", 4, true, createdAt),
+  ]
+
+  return { templates, templateItems }
+}
+
 export function createInitialSnapshot(): AppSnapshot {
+  const starters = buildStarterTemplates(createdOld)
   return {
     ...createBaseSnapshot(),
     leads: [],
     items: [],
+    caseTemplates: starters.templates,
+    templateItems: starters.templateItems,
   }
 }
 
 export function createDemoSnapshot(): AppSnapshot {
+  const starters = buildStarterTemplates(createdOld)
   return {
     ...createBaseSnapshot(),
     context: {
@@ -77,7 +163,7 @@ export function createDemoSnapshot(): AppSnapshot {
         value: 8500,
         summary: "Zainteresowany pakietem Enterprise.",
         notes: "Czeka na ofertę i szybki follow-up.",
-        status: "followup_needed",
+        status: "follow_up",
         priority: "high",
         nextActionTitle: "Odpisać na wiadomość",
         nextActionAt: today11,
@@ -95,7 +181,7 @@ export function createDemoSnapshot(): AppSnapshot {
         value: 3200,
         summary: "Szykuje rebranding i nową stronę.",
         notes: "Po rozmowie trzeba domknąć brief.",
-        status: "meeting_scheduled",
+        status: "qualification",
         priority: "high",
         nextActionTitle: "Przygotować brief",
         nextActionAt: today09,
@@ -113,7 +199,7 @@ export function createDemoSnapshot(): AppSnapshot {
         value: 5000,
         summary: "Oferta wysłana, brak odpowiedzi.",
         notes: "Wymaga szybkiego telefonu follow-up.",
-        status: "waiting",
+        status: "proposal_sent",
         priority: "medium",
         nextActionTitle: "Zadzwonić w sprawie oferty",
         nextActionAt: yesterday10,
@@ -348,5 +434,7 @@ export function createDemoSnapshot(): AppSnapshot {
         showInCalendar: false,
       },
     ],
+    caseTemplates: starters.templates,
+    templateItems: starters.templateItems,
   }
 }

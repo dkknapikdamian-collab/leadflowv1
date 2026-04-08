@@ -1,5 +1,5 @@
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/supabase/config"
-import type { BonusKind } from "@/lib/types"
+import type { AppSnapshot, BonusKind } from "@/lib/types"
 
 interface SystemEmailEventInsert {
   workspaceId: string
@@ -35,6 +35,12 @@ interface RawProfileRow {
 
 interface RawEmailEventRow {
   dedupe_key: string
+}
+
+interface RawAppSnapshotRow {
+  user_id: string
+  workspace_id: string
+  snapshot_json: AppSnapshot
 }
 
 async function adminRestRequest<T>(path: string, init: RequestInit = {}) {
@@ -140,6 +146,41 @@ export async function insertSystemEmailEvent(input: SystemEmailEventInsert) {
       provider: input.provider,
       provider_message_id: input.providerMessageId,
       payload: input.payload,
+    }),
+  })
+}
+
+export async function listAppSnapshotsForWorkflowNotifications() {
+  const params = new URLSearchParams({
+    select: "user_id,workspace_id,snapshot_json",
+    limit: "200",
+  })
+  const result = await adminRestRequest<RawAppSnapshotRow[]>(`/app_snapshots?${params.toString()}`)
+  return {
+    ...result,
+    data:
+      result.data?.map((row) => ({
+        userId: row.user_id,
+        workspaceId: row.workspace_id,
+        snapshot: row.snapshot_json,
+      })) ?? null,
+  }
+}
+
+export async function upsertAppSnapshotByAdmin(input: {
+  userId: string
+  workspaceId: string
+  snapshot: AppSnapshot
+}) {
+  return adminRestRequest<unknown>("/app_snapshots", {
+    method: "POST",
+    headers: {
+      Prefer: "resolution=merge-duplicates,return=minimal",
+    },
+    body: JSON.stringify({
+      user_id: input.userId,
+      workspace_id: input.workspaceId,
+      snapshot_json: input.snapshot,
     }),
   })
 }

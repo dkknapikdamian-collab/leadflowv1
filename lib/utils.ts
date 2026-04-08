@@ -1,5 +1,5 @@
-import { ITEM_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from "./constants"
-import type { AppSnapshot, Lead, Priority, WorkItem } from "./types"
+import { CASE_OPERATIONAL_STATUS_OPTIONS, ITEM_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from "./constants"
+import type { AppSnapshot, CaseOperationalStatus, Lead, Priority, WorkItem } from "./types"
 
 export const STORAGE_KEY = "leadflow-restyle-v1-snapshot-v2"
 
@@ -542,6 +542,10 @@ export function initials(name: string) {
 
 export function getStatusLabel(status: Lead["status"]) {
   return LEAD_STATUS_OPTIONS.find((item) => item.value === status)?.label ?? status
+}
+
+export function getOperationalStatusLabel(status: CaseOperationalStatus) {
+  return CASE_OPERATIONAL_STATUS_OPTIONS.find((item) => item.value === status)?.label ?? status
 }
 
 export function getItemTypeMeta(type: WorkItem["type"]) {

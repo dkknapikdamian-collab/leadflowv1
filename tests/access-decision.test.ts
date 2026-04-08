@@ -12,7 +12,7 @@ test("trial_active z ważnym trialEnd wpuszcza usera", () => {
     now: "2026-04-10T10:00:00.000Z",
   })
 
-  assert.deepEqual(decision, { allowed: true, reason: "ok" })
+  assert.deepEqual(decision, { allowed: true, mode: "full", reason: "ok" })
 })
 
 test("trial_active po końcu triala blokuje usera", () => {
@@ -25,7 +25,7 @@ test("trial_active po końcu triala blokuje usera", () => {
     now: "2026-04-14T10:00:00.000Z",
   })
 
-  assert.deepEqual(decision, { allowed: false, reason: "trial-expired" })
+  assert.deepEqual(decision, { allowed: true, mode: "read_only", reason: "trial-expired" })
 })
 
 test("paid_active z ważnym paidUntil wpuszcza usera", () => {
@@ -38,7 +38,7 @@ test("paid_active z ważnym paidUntil wpuszcza usera", () => {
     now: "2026-04-20T10:00:00.000Z",
   })
 
-  assert.deepEqual(decision, { allowed: true, reason: "ok" })
+  assert.deepEqual(decision, { allowed: true, mode: "full", reason: "ok" })
 })
 
 test("paid_active po końcu planu blokuje usera", () => {
@@ -51,7 +51,7 @@ test("paid_active po końcu planu blokuje usera", () => {
     now: "2026-05-11T10:00:00.000Z",
   })
 
-  assert.deepEqual(decision, { allowed: false, reason: "plan-expired" })
+  assert.deepEqual(decision, { allowed: true, mode: "read_only", reason: "plan-expired" })
 })
 
 test("payment_failed blokuje usera", () => {
@@ -64,7 +64,7 @@ test("payment_failed blokuje usera", () => {
     now: "2026-04-20T10:00:00.000Z",
   })
 
-  assert.deepEqual(decision, { allowed: false, reason: "payment-failed" })
+  assert.deepEqual(decision, { allowed: true, mode: "read_only", reason: "payment-failed" })
 })
 
 test("canceled z przyszłym paidUntil dalej wpuszcza do końca okresu", () => {
@@ -77,7 +77,7 @@ test("canceled z przyszłym paidUntil dalej wpuszcza do końca okresu", () => {
     now: "2026-04-20T10:00:00.000Z",
   })
 
-  assert.deepEqual(decision, { allowed: true, reason: "ok" })
+  assert.deepEqual(decision, { allowed: true, mode: "full", reason: "ok" })
 })
 
 test("brak rekordu access_status blokuje usera", () => {
@@ -86,5 +86,5 @@ test("brak rekordu access_status blokuje usera", () => {
     now: "2026-04-20T10:00:00.000Z",
   })
 
-  assert.deepEqual(decision, { allowed: false, reason: "missing-access-status" })
+  assert.deepEqual(decision, { allowed: false, mode: "blocked", reason: "missing-access-status" })
 })

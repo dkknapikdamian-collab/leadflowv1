@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import Link from "next/link"
 import { Suspense, useState } from "react"
@@ -38,18 +38,18 @@ function LoginPageContent() {
   return (
     <AuthShell
       title="Zaloguj się"
-      subtitle="Wejdź przez Google albo e-mail i hasło. Dostęp zależy od statusu konta w bazie."
+      subtitle="Nowa skórka systemu operatora. Wejdź przez Google albo e-mail i hasło."
       footer={<p style={{ margin: 0, color: "var(--muted)" }}>Nie masz konta? <Link href="/signup">Załóż konto</Link></p>}
     >
-      <a href={googleUrl} style={{ display: "block", textAlign: "center", padding: 14, borderRadius: 12, border: "1px solid var(--border-light)", background: "transparent" }}>
+      <a href={googleUrl} className="secondary-button" style={{ display: "block", textAlign: "center" }}>
         Kontynuuj przez Google
       </a>
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-        <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="E-mail" style={{ width: "100%", borderRadius: 12, border: "1px solid var(--border-light)", background: "#111", color: "var(--text)", padding: "12px 14px" }} />
-        <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Hasło" style={{ width: "100%", borderRadius: 12, border: "1px solid var(--border-light)", background: "#111", color: "var(--text)", padding: "12px 14px" }} />
-        {error ? <div style={{ color: "#f87171", fontSize: 14 }}>{error}</div> : null}
-        <button type="submit" disabled={isLoading} style={{ borderRadius: 12, border: "1px solid rgba(245,158,11,0.28)", background: "rgba(245,158,11,0.14)", color: "var(--accent)", padding: "12px 14px", fontWeight: 700 }}>
+      <form onSubmit={handleSubmit} className="auth-form">
+        <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="E-mail" className="text-input" />
+        <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Hasło" className="text-input" />
+        {error ? <div className="danger-text">{error}</div> : null}
+        <button type="submit" disabled={isLoading} className="primary-button">
           {isLoading ? "Logowanie..." : "Zaloguj się"}
         </button>
       </form>
@@ -62,7 +62,7 @@ function LoginPageContent() {
 function LoginPageFallback() {
   return (
     <AuthShell title="Zaloguj się" subtitle="Ładowanie formularza logowania...">
-      <div style={{ color: "var(--muted)" }}>Przygotowuję formularz logowania...</div>
+      <div className="muted-small">Przygotowuję formularz logowania...</div>
     </AuthShell>
   )
 }

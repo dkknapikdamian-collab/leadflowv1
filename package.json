@@ -6,7 +6,7 @@
     "dev": "node ./node_modules/next/dist/bin/next dev",
     "build": "node ./node_modules/next/dist/bin/next build",
     "start": "node ./node_modules/next/dist/bin/next start",
-    "lint": "node ./node_modules/next/dist/bin/next lint",
+    "lint": "tsc -p tsconfig.json --noEmit",
     "test": "tsc -p tsconfig.tests.json && node --test .tests-dist/tests/**/*.test.js",
     "verify:prod": "npm test && npm run build"
   },

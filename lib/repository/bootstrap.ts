@@ -82,6 +82,7 @@ export function createBootstrapRecords(input: {
     inAppReminders: true,
     emailReminders: false,
     defaultReminder: "1h_before",
+    caseReminderFrequency: "daily",
     defaultSnooze: "tomorrow",
     workspaceName: "LeadFlow",
     fontScale: "compact",

@@ -31,7 +31,10 @@ export interface AccessMachineInput {
 
 export interface AccessMachineResult {
   allowed: boolean
+  canAccessApp: boolean
   canUseApp: boolean
+  canOperate: boolean
+  isReadOnly: boolean
   mustSeeBillingWall: boolean
   mustVerifyEmail: boolean
   reason: AccessMachineReason
@@ -91,7 +94,10 @@ function buildResult(
 ): AccessMachineResult {
   return {
     allowed: false,
+    canAccessApp: false,
     canUseApp: false,
+    canOperate: false,
+    isReadOnly: false,
     mustSeeBillingWall: true,
     mustVerifyEmail: false,
     reason: "missing-access-status",
@@ -115,7 +121,10 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
     if (activeOverrideMode === "admin_unlimited") {
       return buildResult(input, {
         allowed: true,
+        canAccessApp: true,
         canUseApp: true,
+        canOperate: true,
+        isReadOnly: false,
         mustSeeBillingWall: false,
         mustVerifyEmail: false,
         reason: "access-override",
@@ -127,7 +136,10 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
     if (activeOverrideMode === "tester_unlimited") {
       return buildResult(input, {
         allowed: true,
+        canAccessApp: true,
         canUseApp: true,
+        canOperate: true,
+        isReadOnly: false,
         mustSeeBillingWall: false,
         mustVerifyEmail: false,
         reason: "access-override",
@@ -159,7 +171,10 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
     if (isActiveUntil(accessStatus.paidUntil, now) || gracePeriodActive) {
       return buildResult(input, {
         allowed: true,
+        canAccessApp: true,
         canUseApp: true,
+        canOperate: true,
+        isReadOnly: false,
         mustSeeBillingWall: false,
         reason: "ok",
         isGracePeriod: !isActiveUntil(accessStatus.paidUntil, now) && gracePeriodActive,
@@ -167,6 +182,12 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
     }
 
     return buildResult(input, {
+      allowed: true,
+      canAccessApp: true,
+      canUseApp: false,
+      canOperate: false,
+      isReadOnly: true,
+      mustSeeBillingWall: true,
       reason: "plan-expired",
     })
   }
@@ -181,13 +202,22 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
     if (isActiveUntil(accessStatus.trialEnd, now)) {
       return buildResult(input, {
         allowed: true,
+        canAccessApp: true,
         canUseApp: true,
+        canOperate: true,
+        isReadOnly: false,
         mustSeeBillingWall: false,
         reason: "ok",
       })
     }
 
     return buildResult(input, {
+      allowed: true,
+      canAccessApp: true,
+      canUseApp: false,
+      canOperate: false,
+      isReadOnly: true,
+      mustSeeBillingWall: true,
       reason: "trial-expired",
     })
   }
@@ -196,7 +226,10 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
     if (gracePeriodActive) {
       return buildResult(input, {
         allowed: true,
+        canAccessApp: true,
         canUseApp: true,
+        canOperate: true,
+        isReadOnly: false,
         mustSeeBillingWall: false,
         reason: "ok",
         isGracePeriod: true,
@@ -204,6 +237,12 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
     }
 
     return buildResult(input, {
+      allowed: true,
+      canAccessApp: true,
+      canUseApp: false,
+      canOperate: false,
+      isReadOnly: true,
+      mustSeeBillingWall: true,
       reason: "payment-failed",
     })
   }
@@ -212,7 +251,10 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
     if (isActiveUntil(accessStatus.paidUntil, now) || gracePeriodActive) {
       return buildResult(input, {
         allowed: true,
+        canAccessApp: true,
         canUseApp: true,
+        canOperate: true,
+        isReadOnly: false,
         mustSeeBillingWall: false,
         reason: "ok",
         isGracePeriod: !isActiveUntil(accessStatus.paidUntil, now) && gracePeriodActive,
@@ -220,12 +262,24 @@ export function resolveAccessState(input: AccessMachineInput): AccessMachineResu
     }
 
     return buildResult(input, {
+      allowed: true,
+      canAccessApp: true,
+      canUseApp: false,
+      canOperate: false,
+      isReadOnly: true,
+      mustSeeBillingWall: true,
       reason: "canceled",
     })
   }
 
   if (accessStatus.accessStatus === "trial_expired") {
     return buildResult(input, {
+      allowed: true,
+      canAccessApp: true,
+      canUseApp: false,
+      canOperate: false,
+      isReadOnly: true,
+      mustSeeBillingWall: true,
       reason: "trial-expired",
     })
   }

@@ -25,6 +25,7 @@ export interface AuthSession {
     record: AccessStatusRow | null
     decision: {
       allowed: boolean
+      mode: "full" | "read_only" | "blocked"
       reason: AccessDecisionReason
     }
   } | null

@@ -113,6 +113,9 @@ test("paid_active po końcu paid_until blokuje jako plan-expired", () => {
   })
 
   assert.equal(state.canUseApp, false)
+  assert.equal(state.canAccessApp, true)
+  assert.equal(state.canOperate, false)
+  assert.equal(state.isReadOnly, true)
   assert.equal(state.mustSeeBillingWall, true)
   assert.equal(state.reason, "plan-expired")
 })
@@ -193,6 +196,9 @@ test("payment_failed bez grace period blokuje aplikację", () => {
   })
 
   assert.equal(state.canUseApp, false)
+  assert.equal(state.canAccessApp, true)
+  assert.equal(state.canOperate, false)
+  assert.equal(state.isReadOnly, true)
   assert.equal(state.mustSeeBillingWall, true)
   assert.equal(state.reason, "payment-failed")
 })
@@ -209,6 +215,9 @@ test("canceled po końcu ważności blokuje dostęp", () => {
   })
 
   assert.equal(state.canUseApp, false)
+  assert.equal(state.canAccessApp, true)
+  assert.equal(state.canOperate, false)
+  assert.equal(state.isReadOnly, true)
   assert.equal(state.mustSeeBillingWall, true)
   assert.equal(state.reason, "canceled")
 })

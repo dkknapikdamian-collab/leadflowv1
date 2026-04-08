@@ -118,3 +118,39 @@ test("actions pozostają czystą warstwą mutacji bez persystencji", () => {
   assert.equal(nextSnapshot.settings.workspaceName, "Nowa nazwa")
   assert.equal(driver.loadRaw(), null)
 })
+
+test("centralny model dostepu blokuje mutacje domeny w trybie podgladu", () => {
+  const initial = createInitialSnapshot()
+  const readOnlySnapshot = {
+    ...initial,
+    billing: {
+      ...initial.billing,
+      canCreate: false,
+    },
+  }
+
+  const afterLead = applyAppDataAction(readOnlySnapshot, {
+    type: "addLead",
+    payload: {
+      name: "Zablokowany lead",
+      company: "",
+      email: "",
+      phone: "",
+      source: "Inne",
+      value: 0,
+      summary: "",
+      notes: "",
+      status: "new",
+      priority: "medium",
+      nextActionTitle: "",
+      nextActionAt: "",
+    },
+  })
+  const afterSettings = applyAppDataAction(readOnlySnapshot, {
+    type: "updateSettings",
+    patch: { workspaceName: "Tryb podgladu" },
+  })
+
+  assert.equal(afterLead.leads.length, 0)
+  assert.equal(afterSettings.settings.workspaceName, "Tryb podgladu")
+})

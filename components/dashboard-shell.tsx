@@ -21,14 +21,17 @@ import {
 const NAV_ITEMS = [
   { href: "/today", label: "Dziś", icon: "◈" },
   { href: "/leads", label: "Leady", icon: "◉" },
+  { href: "/cases", label: "Sprawy", icon: "◬" },
   { href: "/tasks", label: "Zadania", icon: "☑" },
   { href: "/calendar", label: "Kalendarz", icon: "⊞" },
-  { href: "/billing", label: "Billing", icon: "¤" },
+  { href: "/activity", label: "Aktywność", icon: "⌁" },
+  { href: "/billing", label: "Rozliczenia", icon: "¤" },
+  { href: "/templates", label: "Szablony", icon: "◫" },
   { href: "/settings", label: "Ustawienia", icon: "⚙" },
 ] as const
 
-const MOBILE_PRIMARY_NAV = NAV_ITEMS
-const MOBILE_SECONDARY_NAV = NAV_ITEMS
+const MOBILE_PRIMARY_NAV = NAV_ITEMS.slice(0, 5)
+const MOBILE_SECONDARY_NAV = NAV_ITEMS.slice(5)
 const GENERIC_USER_NAMES = new Set(["demo", "twoje konto", "konto", "użytkownik", "uzytkownik"])
 
 function getUserAvatarLabel(userName: string, workspaceName: string) {
@@ -132,6 +135,7 @@ function MobileMenuSheet({
   userName,
   userEmail,
   isLoggingOut,
+  isReadOnlyMode,
   onClose,
   onOpenLeadModal,
   onOpenItemModal,
@@ -142,6 +146,7 @@ function MobileMenuSheet({
   userName: string
   userEmail: string
   isLoggingOut: boolean
+  isReadOnlyMode: boolean
   onClose: () => void
   onOpenLeadModal: () => void
   onOpenItemModal: () => void
@@ -169,10 +174,10 @@ function MobileMenuSheet({
         </div>
 
         <div className="mobile-menu-actions">
-          <button className="ghost-button" type="button" onClick={onOpenLeadModal}>
+          <button className="ghost-button" type="button" onClick={onOpenLeadModal} disabled={isReadOnlyMode}>
             + Dodaj lead
           </button>
-          <button className="ghost-button" type="button" onClick={onOpenItemModal}>
+          <button className="ghost-button" type="button" onClick={onOpenItemModal} disabled={isReadOnlyMode}>
             + Dodaj działanie
           </button>
           <button className="ghost-button" type="button" onClick={onLogout} disabled={isLoggingOut}>
@@ -232,6 +237,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
 
   const displayUserName = session?.user.displayName || snapshot.user.name || "Twoje konto"
   const displayUserEmail = session?.user.email || snapshot.user.email || ""
+  const isReadOnlyMode = !snapshot.billing.canCreate
 
   async function handleLogout() {
     if (isLoggingOut) return
@@ -255,11 +261,13 @@ export function DashboardShell({ children }: PropsWithChildren) {
   }
 
   function openLeadModal() {
+    if (isReadOnlyMode) return
     setMobileMenuOpen(false)
     setLeadModalOpen(true)
   }
 
   function openItemModal() {
+    if (isReadOnlyMode) return
     setMobileMenuOpen(false)
     setItemModalOpen(true)
   }
@@ -279,7 +287,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
           <div className="brand-title">
             Lead<span>Flow</span>
           </div>
-          <div className="brand-subtitle">Lead follow-up i kalendarz</div>
+          <div className="brand-subtitle">Domykanie i uruchamianie klienta</div>
         </div>
 
         <nav className="nav-list">
@@ -297,12 +305,18 @@ export function DashboardShell({ children }: PropsWithChildren) {
         <SidebarMiniCalendar />
 
         <div className="sidebar-footer">
-          <button className="ghost-button" onClick={() => setLeadModalOpen(true)}>
+          <button className="ghost-button" onClick={() => setLeadModalOpen(true)} disabled={isReadOnlyMode}>
             + Dodaj lead
           </button>
-          <button className="ghost-button" onClick={() => setItemModalOpen(true)}>
+          <button className="ghost-button" onClick={() => setItemModalOpen(true)} disabled={isReadOnlyMode}>
             + Dodaj działanie
           </button>
+                    <div className="trial-status-box">
+            <div className="muted-small">Status konta</div>
+            <div className="trial-status-value">
+              {snapshot.billing.status === "active" ? "Plan aktywny" : snapshot.billing.status === "trial" ? "Trial aktywny" : "Wymaga uwagi"}
+            </div>
+          </div>
           <button className="ghost-button" onClick={handleLogout} disabled={isLoggingOut}>
             {isLoggingOut ? "Wylogowywanie..." : "Wyloguj"}
           </button>
@@ -335,16 +349,24 @@ export function DashboardShell({ children }: PropsWithChildren) {
             </div>
           </div>
           <div className="header-actions mobile-header-actions">
-            <button className="icon-button" onClick={openLeadModal} type="button">
+            <button className="icon-button" onClick={openLeadModal} type="button" disabled={isReadOnlyMode}>
               + Lead
             </button>
-            <button className="icon-button" onClick={openItemModal} type="button">
+            <button className="icon-button" onClick={openItemModal} type="button" disabled={isReadOnlyMode}>
               + Akcja
             </button>
           </div>
         </header>
 
         <AccountStatusBanner />
+        {isReadOnlyMode ? (
+          <section className="panel-card" style={{ margin: "16px 16px 0" }}>
+            <strong>Tryb podgladu po trialu/platnosci</strong>
+            <p className="muted-small" style={{ marginTop: 8 }}>
+              Mozesz przegladac dane, ale tworzenie i edycja leadow, spraw, zadan oraz szablonow jest zablokowane do czasu odnowienia dostepu.
+            </p>
+          </section>
+        ) : null}
 
         <main className="page-content">{children}</main>
 
@@ -380,6 +402,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
             userName={displayUserName}
             userEmail={displayUserEmail}
             isLoggingOut={isLoggingOut}
+            isReadOnlyMode={isReadOnlyMode}
             onClose={() => setMobileMenuOpen(false)}
             onOpenLeadModal={openLeadModal}
             onOpenItemModal={openItemModal}
@@ -393,3 +416,5 @@ export function DashboardShell({ children }: PropsWithChildren) {
     </div>
   )
 }
+
+

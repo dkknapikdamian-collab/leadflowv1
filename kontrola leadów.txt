@@ -1,0 +1,8 @@
+KONTROLA LEADOW - CHECKLISTA
+
+- Czy lead ma jasny status sprzedazowy?
+- Czy jest next step i termin?
+- Czy jest ryzyko i powod ryzyka?
+- Czy sa zalegle akcje?
+- Czy po won mozna uruchomic sprawe?
+- Czy przejscie do sprawy nie duplikuje klienta/kontaktu?

@@ -1,29 +1,23 @@
-"use client"
+﻿"use client"
 
 import { useMemo, useState } from "react"
 import { ItemModal, LeadDrawer } from "@/components/views"
+import { buildCasesDashboard } from "@/lib/repository/cases-dashboard"
 import { useAppStore } from "@/lib/store"
-import {
-  buildTodayViewModel,
-  getEffectiveCollapsed,
-  getNextManualCollapsedState,
-  getSectionKeyFromTopStat,
-  getTodaySectionMeta,
-  moveSectionToTop,
-  TODAY_DEFAULT_COLLAPSED,
-  TODAY_SECTION_ORDER,
-  type TodaySection,
-  type TodaySectionKey,
-} from "@/lib/today"
+import { getTodaySectionMeta } from "@/lib/today"
 import type { FontScale, Lead, WorkItem } from "@/lib/types"
 import {
   formatRelativeDateTimeShort,
+  getCurrentDateKey,
   getItemLeadLabel,
   getItemPrimaryDate,
   getItemTypeMeta,
   getStatusLabel,
+  getTaskListItems,
   initials,
   isOverdue,
+  isToday,
+  toDateKey,
 } from "@/lib/utils"
 
 function Avatar({ name }: { name: string }) {
@@ -38,13 +32,13 @@ function FontScaleControl() {
   const { snapshot, updateSettings } = useAppStore()
   const currentScale = snapshot.settings.fontScale || "compact"
   const options: { value: FontScale; label: string }[] = [
-    { value: "compact", label: "Mała" },
-    { value: "default", label: "Średnia" },
-    { value: "large", label: "Duża" },
+    { value: "compact", label: "Mala" },
+    { value: "default", label: "Srednia" },
+    { value: "large", label: "Duza" },
   ]
 
   return (
-    <div className="today-font-control" aria-label="Skala czcionki sekcji Dziś">
+    <div className="today-font-control" aria-label="Skala czcionki sekcji Dzis">
       <span className="today-font-control-label">Czcionka</span>
       <div className="today-font-control-buttons">
         {options.map((option) => (
@@ -74,8 +68,6 @@ function TodayItemRow({
   dateOptions: { timeZone: string }
 }) {
   const meta = getItemTypeMeta(item.type)
-  const overdue = isOverdue(item, dateOptions)
-
   return (
     <button className="today-item-row" onClick={onEdit} type="button">
       <div className="today-item-icon" aria-hidden="true">
@@ -83,9 +75,9 @@ function TodayItemRow({
       </div>
       <div className="today-item-content">
         <div className="today-item-title">{item.title}</div>
-        {overdue ? <div className="today-item-flag">ZALEGŁE</div> : null}
+        {isOverdue(item, dateOptions) ? <div className="today-item-flag">OVERDUE</div> : null}
         <div className="today-item-meta">{formatRelativeDateTimeShort(getItemPrimaryDate(item), dateOptions)}</div>
-        {leadName ? <div className="today-item-lead">· {leadName}</div> : null}
+        {leadName ? <div className="today-item-lead">• {leadName}</div> : null}
       </div>
     </button>
   )
@@ -99,6 +91,7 @@ function TodayLeadRow({ lead, onOpen }: { lead: Lead; onOpen: () => void }) {
         <div className="today-lead-text">
           <div className="today-lead-name">{lead.name}</div>
           <div className="today-lead-company">{lead.company || lead.source}</div>
+          <div className="muted-small">Next step: {lead.nextActionTitle || "Brak"}</div>
         </div>
       </div>
       <StatusBadge status={lead.status} />
@@ -106,78 +99,34 @@ function TodayLeadRow({ lead, onOpen }: { lead: Lead; onOpen: () => void }) {
   )
 }
 
-function TodaySectionBlock({
-  section,
-  collapsed,
-  onToggle,
-  onFocus,
-  onEditItem,
-  onOpenLead,
-  getLeadName,
-  dateOptions,
+function TodayCaseRow({
+  entry,
+  onOpen,
 }: {
-  section: TodaySection
-  collapsed: boolean
-  onToggle: () => void
-  onFocus: () => void
-  onEditItem: (item: WorkItem) => void
-  onOpenLead: (lead: Lead) => void
-  getLeadName: (item: WorkItem) => string
-  dateOptions: { timeZone: string }
+  entry: {
+    id: string
+    caseName: string
+    client: string
+    operationalStatus: string
+    missingItems: number
+    stalledDays: number
+    nextMove: string
+  }
+  onOpen: (caseId: string) => void
 }) {
-  const meta = getTodaySectionMeta(section.key)
-
   return (
-    <section className="today-section-card" data-section={section.key}>
-      <div className="today-section-header">
-        <div className="today-section-title-group">
-          <button className="today-section-title-wrap" type="button" onClick={onToggle}>
-            <div className="today-section-accent" style={{ backgroundColor: meta.color }} />
-            <h2 className="today-section-title" style={{ color: meta.color }}>
-              {section.title}
-            </h2>
-          </button>
-          <button
-            className="today-section-count"
-            type="button"
-            onClick={onFocus}
-            style={{
-              color: meta.color,
-              backgroundColor: `${meta.color}1a`,
-              borderColor: `${meta.color}33`,
-            }}
-            aria-label={`Przenieś sekcję ${section.title} na górę`}
-            title="Kliknij, aby przenieść sekcję na górę i ją otworzyć"
-          >
-            {section.count}
-          </button>
-        </div>
-
-        <div className="today-section-actions">
-          <button className="today-section-toggle" type="button" onClick={onToggle} aria-expanded={!collapsed}>
-            {collapsed ? "Rozwiń" : "Zwiń"}
-          </button>
+    <button className="today-lead-row" type="button" onClick={() => onOpen(entry.id)}>
+      <div className="today-lead-main">
+        <div className="today-lead-text">
+          <div className="today-lead-name">{entry.caseName}</div>
+          <div className="today-lead-company">
+            {entry.client} • brakujace: {entry.missingItems} • stoi: {entry.stalledDays} dni
+          </div>
+          <div className="muted-small">Kolejny ruch: {entry.nextMove}</div>
         </div>
       </div>
-
-      {!collapsed ? (
-        <div className="today-section-body">
-          {section.kind === "items" ? (
-            section.items.length > 0 ? (
-              section.items.map((item) => (
-                <TodayItemRow key={item.id} item={item} leadName={getLeadName(item)} onEdit={() => onEditItem(item)} dateOptions={dateOptions} />
-              ))
-            ) : (
-              <div className="empty-box">Brak wpisów w tej sekcji.</div>
-            )
-          ) : section.leads.length > 0 ? (
-            section.leads.map((lead) => <TodayLeadRow key={lead.id} lead={lead} onOpen={() => onOpenLead(lead)} />)
-          ) : (
-            <div className="empty-box">Brak leadów w tej sekcji.</div>
-          )}
-        </div>
-      ) : null}
-    </section>
+      <span className="badge">{entry.operationalStatus}</span>
+    </button>
   )
 }
 
@@ -185,128 +134,195 @@ export function TodayPageView() {
   const { snapshot } = useAppStore()
   const [editingItem, setEditingItem] = useState<WorkItem | null>(null)
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
-  const [sectionOrder, setSectionOrder] = useState<TodaySectionKey[]>(TODAY_SECTION_ORDER)
-  const [manualCollapsed, setManualCollapsed] = useState<Record<TodaySectionKey, boolean>>(TODAY_DEFAULT_COLLAPSED)
-  const [transientExpandedKey, setTransientExpandedKey] = useState<TodaySectionKey | null>(null)
-
   const dateOptions = useMemo(() => ({ timeZone: snapshot.settings.timezone }), [snapshot.settings.timezone])
-  const viewModel = useMemo(() => buildTodayViewModel(snapshot, dateOptions), [dateOptions, snapshot])
-  const sections = useMemo(() => {
-    const mapped = new Map(viewModel.sections.map((section) => [section.key, section]))
-    return sectionOrder
-      .map((key) => mapped.get(key))
-      .filter((section): section is TodaySection => Boolean(section))
-  }, [sectionOrder, viewModel.sections])
-  const topStats = viewModel.topStats
   const fontScale = snapshot.settings.fontScale || "compact"
   const isMobileProfile = snapshot.settings.viewProfile === "mobile"
+  const todayKey = getCurrentDateKey(dateOptions)
 
-  if (viewModel.isEmptyWorkspace) {
+  const casesDashboard = useMemo(() => buildCasesDashboard(snapshot, "all"), [snapshot])
+
+  const salesLeadsDueToday = useMemo(() => {
+    return snapshot.leads
+      .filter((lead) => lead.status !== "won" && lead.status !== "lost")
+      .filter((lead) => {
+        if (!lead.nextActionAt) return true
+        const day = toDateKey(lead.nextActionAt, dateOptions)
+        if (!day) return true
+        return day <= todayKey
+      })
+      .sort((a, b) => {
+        const aScore = a.nextActionAt ? (toDateKey(a.nextActionAt, dateOptions) || "9999-12-31") : "0000-00-00"
+        const bScore = b.nextActionAt ? (toDateKey(b.nextActionAt, dateOptions) || "9999-12-31") : "0000-00-00"
+        return aScore.localeCompare(bScore)
+      })
+  }, [dateOptions, snapshot.leads, todayKey])
+
+  const waitingOrBlockedCases = useMemo(
+    () =>
+      casesDashboard.all.filter(
+        (entry) => entry.operationalStatus === "waiting_for_client" || entry.operationalStatus === "blocked",
+      ),
+    [casesDashboard.all],
+  )
+
+  const readyCases = useMemo(
+    () => casesDashboard.all.filter((entry) => entry.operationalStatus === "ready_to_start"),
+    [casesDashboard.all],
+  )
+
+  const pendingTaskItems = useMemo(
+    () => getTaskListItems(snapshot.items.filter((item) => item.status !== "done")),
+    [snapshot.items],
+  )
+  const overdueItems = useMemo(
+    () => pendingTaskItems.filter((item) => isOverdue(item, dateOptions)),
+    [dateOptions, pendingTaskItems],
+  )
+  const todayItems = useMemo(
+    () => pendingTaskItems.filter((item) => isToday(getItemPrimaryDate(item), dateOptions) && !isOverdue(item, dateOptions)),
+    [dateOptions, pendingTaskItems],
+  )
+  const weekItems = useMemo(
+    () =>
+      pendingTaskItems.filter((item) => {
+        const day = toDateKey(getItemPrimaryDate(item), dateOptions)
+        if (!day || day <= todayKey) return false
+        return day <= "9999-12-31" && day <= addDaysKey(todayKey, 7)
+      }),
+    [dateOptions, pendingTaskItems, todayKey],
+  )
+  const leadsWithoutNextStep = useMemo(
+    () => snapshot.leads.filter((lead) => lead.status !== "won" && lead.status !== "lost" && !lead.nextActionAt),
+    [snapshot.leads],
+  )
+
+  const isEmptyWorkspace = snapshot.leads.length === 0 && snapshot.items.length === 0
+
+  if (isEmptyWorkspace) {
     return (
       <div className={`today-page today-font-${fontScale}${isMobileProfile ? " today-profile-mobile" : ""}`}>
         <section className="hero-row split">
           <div>
-            <h1 className="page-title">Dzisiaj</h1>
-            <div className="today-date-label">{viewModel.dateLabel}</div>
-            <p className="page-subtitle">Zacznij od pustego, prawdziwego workspace i dodaj tylko swoje dane.</p>
+            <h1 className="page-title">Dzis</h1>
+            <p className="page-subtitle">Zacznij od pustego workspace i dodaj pierwszy lead lub sprawe.</p>
           </div>
           <FontScaleControl />
-        </section>
-
-        <section className="panel-card">
-          <div className="stack-list">
-            <div className="empty-box">Dodaj pierwszego leada.</div>
-            <div className="empty-box">Dodaj pierwsze zadanie.</div>
-            <div className="empty-box">Dodaj pierwsze wydarzenie.</div>
-          </div>
         </section>
       </div>
     )
   }
 
-  const getLeadName = (item: WorkItem) => getItemLeadLabel(item, snapshot.leads)
-
-  function toggleSection(key: TodaySectionKey) {
-    setManualCollapsed((current) => getNextManualCollapsedState(current, transientExpandedKey, key))
-    setTransientExpandedKey((current) => (current === key ? null : current))
-  }
-
-  function focusSection(key: TodaySectionKey) {
-    setSectionOrder((current) => moveSectionToTop(current, key))
-    setTransientExpandedKey(key)
-  }
-
-  function focusFromTopStat(statKey: (typeof topStats)[number]["key"]) {
-    focusSection(getSectionKeyFromTopStat(statKey))
-  }
+  const topStats = [
+    {
+      key: "leads_due_today",
+      label: "Leady do ruchu dzis",
+      value: salesLeadsDueToday.length,
+      color: getTodaySectionMeta("today").color,
+    },
+    {
+      key: "cases_waiting_client",
+      label: "Sprawy czekajace na klienta",
+      value: casesDashboard.stats.waitingForClient,
+      color: "#7c3aed",
+    },
+    {
+      key: "cases_blocked",
+      label: "Sprawy zablokowane",
+      value: casesDashboard.stats.blocked,
+      color: "#ef4444",
+    },
+    {
+      key: "cases_ready_to_start",
+      label: "Sprawy gotowe do startu",
+      value: casesDashboard.stats.readyToStart,
+      color: "#10b981",
+    },
+  ]
 
   return (
     <div className={`today-page today-font-${fontScale}${isMobileProfile ? " today-profile-mobile" : ""}`}>
       <section className="hero-row split">
         <div>
-          <h1 className="page-title">Dzisiaj</h1>
-          <div className="today-date-label">{viewModel.dateLabel}</div>
-          <p className="page-subtitle">Tu masz dokładnie to, co wymaga ruchu dzisiaj i co już wisi zaległe.</p>
+          <h1 className="page-title">Dzis</h1>
+          <p className="page-subtitle">Jedno centrum dowodzenia: kasa, blokady i konkretne ruchy na dzis.</p>
         </div>
         <FontScaleControl />
       </section>
 
-      {!isMobileProfile ? (
-        <section className="today-top-stats-grid">
-          {topStats.map((stat) => {
-            const target = getSectionKeyFromTopStat(stat.key)
-            return (
-              <article
-                key={stat.key}
-                className={`today-top-stat-card today-top-stat-card--${stat.key} interactive`}
-                data-stat={stat.key}
-                style={{ ["--stat-color" as string]: stat.color }}
-                onClick={() => focusSection(target)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault()
-                    focusFromTopStat(stat.key)
-                  }
-                }}
-                aria-label={`Pokaż sekcję ${stat.label}`}
-              >
-                <div className="today-top-stat-label" style={{ color: stat.color }}>
-                  {stat.label}
-                </div>
-                <button
-                  className="today-top-stat-value"
-                  style={{ color: stat.color }}
-                  type="button"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    focusFromTopStat(stat.key)
-                  }}
-                  aria-label={`Przenieś ${stat.label} na górę listy`}
-                >
-                  {stat.value}
-                </button>
-              </article>
-            )
-          })}
-        </section>
-      ) : null}
-
-      <section className="today-sections-stack">
-        {sections.map((section) => (
-          <TodaySectionBlock
-            key={section.key}
-            section={section}
-            collapsed={getEffectiveCollapsed(manualCollapsed, transientExpandedKey, section.key)}
-            onToggle={() => toggleSection(section.key)}
-            onFocus={() => focusSection(section.key)}
-            onEditItem={setEditingItem}
-            onOpenLead={setSelectedLead}
-            getLeadName={getLeadName}
-            dateOptions={dateOptions}
-          />
+      <section className="today-top-stats-grid">
+        {topStats.map((stat) => (
+          <article key={stat.key} className="today-top-stat-card" style={{ ["--stat-color" as string]: stat.color }}>
+            <div className="today-top-stat-label" style={{ color: stat.color }}>
+              {stat.label}
+            </div>
+            <div className="today-top-stat-value" style={{ color: stat.color }}>
+              {stat.value}
+            </div>
+          </article>
         ))}
+      </section>
+
+      <section className="today-section-card">
+        <div className="today-section-header">
+          <h2 className="today-section-title" style={{ color: "#f59e0b" }}>Sekcja 1: sprzedaz wymaga ruchu</h2>
+        </div>
+        <div className="today-section-body">
+          {salesLeadsDueToday.length === 0 ? <div className="empty-box">Brak leadow wymagajacych ruchu.</div> : null}
+          {salesLeadsDueToday.map((lead) => (
+            <TodayLeadRow key={lead.id} lead={lead} onOpen={() => setSelectedLead(lead)} />
+          ))}
+        </div>
+      </section>
+
+      <section className="today-section-card">
+        <div className="today-section-header">
+          <h2 className="today-section-title" style={{ color: "#7c3aed" }}>Sekcja 2: realizacja stoi przez klienta</h2>
+        </div>
+        <div className="today-section-body">
+          {waitingOrBlockedCases.length === 0 ? <div className="empty-box">Brak spraw czekajacych lub zablokowanych.</div> : null}
+          {waitingOrBlockedCases.map((entry) => (
+            <TodayCaseRow key={entry.id} entry={entry} onOpen={(id) => (window.location.href = `/cases?caseId=${id}`)} />
+          ))}
+        </div>
+      </section>
+
+      <section className="today-section-card">
+        <div className="today-section-header">
+          <h2 className="today-section-title" style={{ color: "#10b981" }}>Sekcja 3: gotowe do ruszenia</h2>
+        </div>
+        <div className="today-section-body">
+          {readyCases.length === 0 ? <div className="empty-box">Brak spraw gotowych do startu.</div> : null}
+          {readyCases.map((entry) => (
+            <TodayCaseRow key={entry.id} entry={entry} onOpen={(id) => (window.location.href = `/cases?caseId=${id}`)} />
+          ))}
+        </div>
+      </section>
+
+      <section className="today-section-card">
+        <div className="today-section-header">
+          <h2 className="today-section-title" style={{ color: "#3b82f6" }}>Sekcja 4: dzis / overdue / ten tydzien / bez next step</h2>
+        </div>
+        <div className="today-section-body">
+          <div className="toolbar-row wrap">
+            <span className="badge">dzis: {todayItems.length}</span>
+            <span className="badge">overdue: {overdueItems.length}</span>
+            <span className="badge">ten tydzien: {weekItems.length}</span>
+            <span className="badge">bez next step: {leadsWithoutNextStep.length}</span>
+          </div>
+
+          {overdueItems.slice(0, 8).map((item) => (
+            <TodayItemRow key={`over-${item.id}`} item={item} leadName={getItemLeadLabel(item, snapshot.leads)} onEdit={() => setEditingItem(item)} dateOptions={dateOptions} />
+          ))}
+          {todayItems.slice(0, 8).map((item) => (
+            <TodayItemRow key={`today-${item.id}`} item={item} leadName={getItemLeadLabel(item, snapshot.leads)} onEdit={() => setEditingItem(item)} dateOptions={dateOptions} />
+          ))}
+          {weekItems.slice(0, 6).map((item) => (
+            <TodayItemRow key={`week-${item.id}`} item={item} leadName={getItemLeadLabel(item, snapshot.leads)} onEdit={() => setEditingItem(item)} dateOptions={dateOptions} />
+          ))}
+          {leadsWithoutNextStep.slice(0, 6).map((lead) => (
+            <TodayLeadRow key={`nonext-${lead.id}`} lead={lead} onOpen={() => setSelectedLead(lead)} />
+          ))}
+        </div>
       </section>
 
       {editingItem ? <ItemModal item={editingItem} onClose={() => setEditingItem(null)} /> : null}
@@ -314,3 +330,10 @@ export function TodayPageView() {
     </div>
   )
 }
+
+function addDaysKey(dateKey: string, days: number) {
+  const base = new Date(`${dateKey}T00:00:00.000Z`)
+  base.setUTCDate(base.getUTCDate() + days)
+  return base.toISOString().slice(0, 10)
+}
+

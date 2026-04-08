@@ -10,7 +10,17 @@ test("REPOSITORY_TABLES zawiera główne tabele ETAPU 3", () => {
     workspaceMembers: "workspace_members",
     accessStatus: "access_status",
     settings: "settings",
+    contacts: "contacts",
     leads: "leads",
+    cases: "cases",
+    caseTemplates: "case_templates",
+    templateItems: "template_items",
+    caseItems: "case_items",
+    fileAttachments: "file_attachments",
+    approvals: "approvals",
+    activityLog: "activity_log",
+    notifications: "notifications",
+    clientPortalTokens: "client_portal_tokens",
     workItems: "work_items",
   })
 })

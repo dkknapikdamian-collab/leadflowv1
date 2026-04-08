@@ -162,7 +162,7 @@ export function BillingStatusPageView() {
       <div className="hero-row">
         <div>
           <h1 className="page-title">Billing</h1>
-          <p className="page-subtitle">Tutaj użytkownik ma zawsze widzieć stan konta, trial i aktywny okres dostępu.</p>
+          <p className="page-subtitle">Rozliczenie dotyczy calego systemu: Leady, Sprawy, Zadania, Kalendarz, Aktywnosc i portal klienta.</p>
         </div>
       </div>
 
@@ -222,8 +222,11 @@ export function BillingStatusPageView() {
         <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 10 }}>Co to oznacza</div>
         <div style={{ color: "var(--muted)", lineHeight: 1.6 }}>
           {status.isBlocked
-            ? "Konto nie ma teraz pełnego dostępu do normalnej pracy w aplikacji. Dane nadal zostają, ale trzeba wejść w billing i przywrócić dostęp."
-            : "Konto ma aktywny dostęp. Jeśli trial albo plan zbliża się do końca, ta sekcja pokazuje to wcześniej, a nie dopiero po blokadzie."}
+            ? "Konto dziala w trybie podgladu: dane sa widoczne, ale normalna praca (tworzenie i edycja) jest zablokowana do czasu odnowienia dostepu."
+            : "Konto ma pelny dostep do calego systemu. Sekcja billing ostrzega zawczasu, zanim dostep przejdzie w tryb podgladu."}
+        </div>
+        <div style={{ color: "var(--muted)", lineHeight: 1.6, marginTop: 10 }}>
+          Polityka panelu klienta dla istniejacych spraw: link pozostaje aktywny do wygasniecia tokenu, ale przy zablokowanym koncie operatora panel dziala tylko w podgladzie.
         </div>
       </div>
     </section>

@@ -19,10 +19,12 @@ import type {
   AppSnapshot,
   Lead,
   LeadInput,
+  RequestStatus,
   SettingsPatch,
   WorkItem,
   WorkItemInput,
 } from "@/lib/types"
+import type { CaseTemplateInput } from "@/lib/snapshot"
 import type { AccessStatusRow } from "@/lib/supabase/access-status"
 import { STORAGE_KEY } from "@/lib/utils"
 
@@ -38,6 +40,48 @@ interface AppStoreValue {
   toggleItemDone: (itemId: string) => void
   snoozeItem: (itemId: string, nextDate: string) => void
   updateSettings: (patch: SettingsPatch) => void
+  addCaseTemplate: (payload: CaseTemplateInput) => void
+  updateCaseTemplate: (templateId: string, payload: CaseTemplateInput) => void
+  deleteCaseTemplate: (templateId: string) => void
+  duplicateCaseTemplate: (templateId: string) => void
+  setDefaultCaseTemplate: (templateId: string) => void
+  issueClientPortalToken: (payload: { caseId: string; tokenHash: string; expiresAt: string }) => void
+  revokeClientPortalToken: (tokenId: string, reason?: string) => void
+  registerPortalOpened: (tokenId: string) => void
+  registerPortalTokenFailure: (tokenHash: string) => void
+  addFileAttachment: (payload: {
+    caseId: string
+    caseItemId?: string | null
+    fileName: string
+    mimeType: string
+    fileSizeBytes: number
+    storagePath?: string
+    uploadedByRole?: "client" | "operator" | "system"
+    uploadedByLabel?: string
+  }) => void
+  addApproval: (payload: {
+    caseId: string
+    caseItemId?: string | null
+    requestedToEmail: string
+    status: RequestStatus
+    decision?: "accepted" | "rejected" | "needs_changes" | "option_a" | "option_b" | "option_c" | "submitted" | "answered"
+    optionValue?: string
+    actorRole?: "client" | "operator" | "system"
+    actorLabel?: string
+    note: string
+    decidedAt?: string
+  }) => void
+  addNotification: (payload: {
+    userId: string
+    channel: "in_app" | "email"
+    kind?: string
+    dedupeKey?: string
+    title: string
+    message: string
+    relatedLeadId?: string | null
+    relatedCaseId?: string | null
+    recipient?: string
+  }) => void
 }
 
 const AppStoreContext = createContext<AppStoreValue | null>(null)
@@ -221,6 +265,54 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
       updateSettings: (patch: SettingsPatch) =>
         setSnapshot((current: AppSnapshot) =>
           syncSnapshotWithSession(repository.updateSettings(current, patch), session?.user ?? null),
+        ),
+      addCaseTemplate: (payload: CaseTemplateInput) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.addCaseTemplate(current, payload), session?.user ?? null),
+        ),
+      updateCaseTemplate: (templateId: string, payload: CaseTemplateInput) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.updateCaseTemplate(current, templateId, payload), session?.user ?? null),
+        ),
+      deleteCaseTemplate: (templateId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.deleteCaseTemplate(current, templateId), session?.user ?? null),
+        ),
+      duplicateCaseTemplate: (templateId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.duplicateCaseTemplate(current, templateId), session?.user ?? null),
+        ),
+      setDefaultCaseTemplate: (templateId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.setDefaultCaseTemplate(current, templateId), session?.user ?? null),
+        ),
+      issueClientPortalToken: (payload: { caseId: string; tokenHash: string; expiresAt: string }) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.issueClientPortalToken(current, payload), session?.user ?? null),
+        ),
+      revokeClientPortalToken: (tokenId: string, reason?: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.revokeClientPortalToken(current, tokenId, reason), session?.user ?? null),
+        ),
+      registerPortalOpened: (tokenId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.registerPortalOpened(current, tokenId), session?.user ?? null),
+        ),
+      registerPortalTokenFailure: (tokenHash: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.registerPortalTokenFailure(current, tokenHash), session?.user ?? null),
+        ),
+      addFileAttachment: (payload) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.addFileAttachment(current, payload), session?.user ?? null),
+        ),
+      addApproval: (payload) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.addApproval(current, payload), session?.user ?? null),
+        ),
+      addNotification: (payload) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.addNotification(current, payload), session?.user ?? null),
         ),
     }),
     [isAuthReady, isReady, repository, session?.user, snapshot],

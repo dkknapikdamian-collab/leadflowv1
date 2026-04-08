@@ -1,0 +1,7 @@
+﻿KIERUNEK FORTECA - SHORT
+
+1) UI ma wygladac jak jeden system na wszystkich ekranach.
+2) Mocna hierarchia informacji: co dzis zrobic i co blokuje domkniecie klienta.
+3) Widoki operacyjne (Sprawy) sa czescia tego samego produktu, nie osobna aplikacja.
+4) Side bar i shell sa stale i przewidywalne.
+5) Karty, listy, staty i stany pusty/ladowanie/blad sa jednolite.

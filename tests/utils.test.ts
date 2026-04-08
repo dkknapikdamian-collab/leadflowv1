@@ -28,7 +28,10 @@ test("getRelativeDayLabel zwraca dziś, wczoraj i jutro", () => {
 })
 
 test("formatRelativeDateTimeShort dokleja godzinę do etykiety względnej", () => {
-  const value = formatRelativeDateTimeShort("2026-04-03T12:00:00.000Z", { now: "2026-04-05T12:00:00.000Z" })
+  const value = formatRelativeDateTimeShort("2026-04-03T12:00:00.000Z", {
+    now: "2026-04-05T12:00:00.000Z",
+    timeZone: "UTC",
+  })
   assert.match(value, /^2 dni temu 12:00$/)
 })
 
@@ -213,3 +216,4 @@ test("getNextSnoozeByHours nie cofa wpisu wstecz, jeśli termin już jest w przy
 
   assert.equal(snoozed, "2026-04-07T11:00:00.000Z")
 })
+

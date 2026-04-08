@@ -1,4 +1,4 @@
-import { resolveAccessState, type AccessMachineInput } from "@/lib/access/machine"
+import { resolveAccessState, type AccessMachineInput } from "./machine"
 
 export type AccessDecisionReason =
   | "ok"
@@ -17,6 +17,7 @@ export interface AccessStatusDecisionInput {
 
 export interface AccessStatusDecision {
   allowed: boolean
+  mode: "full" | "read_only" | "blocked"
   reason: AccessDecisionReason
 }
 
@@ -28,22 +29,37 @@ export function evaluateAccessStatusDecision(input: AccessStatusDecisionInput): 
   })
 
   if (state.canUseApp) {
-    return { allowed: true, reason: "ok" }
+    return { allowed: true, mode: "full", reason: "ok" }
+  }
+
+  if (state.canAccessApp) {
+    switch (state.reason) {
+      case "trial-expired":
+        return { allowed: true, mode: "read_only", reason: "trial-expired" }
+      case "plan-expired":
+        return { allowed: true, mode: "read_only", reason: "plan-expired" }
+      case "payment-failed":
+        return { allowed: true, mode: "read_only", reason: "payment-failed" }
+      case "canceled":
+        return { allowed: true, mode: "read_only", reason: "canceled" }
+      default:
+        return { allowed: true, mode: "read_only", reason: "ok" }
+    }
   }
 
   switch (state.reason) {
     case "email-not-verified":
-      return { allowed: false, reason: "email-not-verified" }
+      return { allowed: false, mode: "blocked", reason: "email-not-verified" }
     case "trial-expired":
-      return { allowed: false, reason: "trial-expired" }
+      return { allowed: false, mode: "blocked", reason: "trial-expired" }
     case "plan-expired":
-      return { allowed: false, reason: "plan-expired" }
+      return { allowed: false, mode: "blocked", reason: "plan-expired" }
     case "payment-failed":
-      return { allowed: false, reason: "payment-failed" }
+      return { allowed: false, mode: "blocked", reason: "payment-failed" }
     case "canceled":
-      return { allowed: false, reason: "canceled" }
+      return { allowed: false, mode: "blocked", reason: "canceled" }
     case "missing-access-status":
     default:
-      return { allowed: false, reason: "missing-access-status" }
+      return { allowed: false, mode: "blocked", reason: "missing-access-status" }
   }
 }
