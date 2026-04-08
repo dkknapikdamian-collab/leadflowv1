@@ -4,6 +4,14 @@
 
 Ten plik jest skróconą instrukcją operacyjną dla AI developera pracującego nad repo.
 
+## Zasada pracy (ważne)
+
+Do odwołania zmiany robimy **tylko i wyłącznie** na gałęzi:
+
+- `dev-rollout-freeze`
+
+Nie przełączaj gałęzi i nie przygotowuj merge do innych branchy, chyba że dostaniesz na to wyraźną decyzję.
+
 Pełna, nadrzędna definicja produktu znajduje się w:
 
 - `product-scope-v2.md`

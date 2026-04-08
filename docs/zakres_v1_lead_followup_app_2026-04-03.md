@@ -1,10 +1,23 @@
-# Zakres V1 — aplikacja lead follow-up + kalendarz + przypomnienia
+# Zakres V1 — warstwa sprzedaży (Lead Flow) w systemie ClientPilot
+
+> Źródło prawdy produktu: `product-scope-v2.md` (w repo root).
+>
+> Ten dokument opisuje **V1 jako warstwę sprzedaży** (Lead Flow). Po scaleniu Lead Flow + Forteca produkt nie jest już “tylko lead follow-up app”, tylko **jeden system do domykania i uruchamiania klienta**.
 
 **Data:** 2026-04-03  
-**Status:** zamknięta specyfikacja V1 do przekazania AI deweloperowi  
+**Status:** specyfikacja V1 (Lead Flow) — po scaleniu traktuj jako zakres warstwy sprzedaży  
 **Cel dokumentu:** ustalić dokładnie, co wchodzi do V1, czego nie wolno teraz budować i jak traktować pomysły wykraczające poza ten zakres.
 
 ---
+
+## Kontekst po scaleniu (żeby nie było sprzeczności)
+
+- Produkt: **jeden system do domykania i uruchamiania klienta**
+- Zasada nadrzędna: **sprzedaż = Lead Flow**
+- Po statusie **won** albo **ready to start** lead może przejść do **sprawy operacyjnej**
+- **Forteca nie jest osobną aplikacją**; **Sprawy są modułem tego samego systemu**
+- Finalne menu operatora: `Dziś`, `Leady`, `Sprawy`, `Zadania`, `Kalendarz`, `Aktywność`, `Rozliczenia`, `Ustawienia` (później: `Szablony`, `Klienci`)
+- Kierunek UI: nowa skórka oparta o kierunek **Forteca**
 
 # 1. Zasada nadrzędna dla AI dewelopera
 
@@ -46,9 +59,9 @@ V1 ma być:
 - narzędziem do niegubienia klientów i terminów,
 - aplikacją działającą dobrze na komputerze i telefonie.
 
-## Jednozdaniowa definicja produktu
+## Jednozdaniowa definicja V1 (Lead Flow)
 
-**V1 to płatna aplikacja webowa działająca na komputerze i telefonie, która pozwala prowadzić leady, planować działania i wydarzenia, ustawiać jednorazowe i cykliczne przypomnienia oraz codziennie pokazywać użytkownikowi, co ma zrobić, żeby nie gubić leadów i zadań.**
+**V1 to warstwa sprzedaży (Lead Flow) w systemie do domykania i uruchamiania klienta: prowadzenie leadów, planowanie działań i wydarzeń, przypomnienia oraz ekran `Dziś`, który codziennie mówi użytkownikowi, co ma zrobić, żeby nie gubić sprzedaży.**
 
 ---
 
