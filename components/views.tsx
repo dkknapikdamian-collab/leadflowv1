@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation"
 import { ConfirmDialog } from "@/components/confirm-dialog"
+import { ViewState } from "@/components/ui/view-state"
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react"
 import {
   ITEM_TYPE_OPTIONS,
@@ -345,7 +346,7 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
         </div>
 
         {tab === "overview" ? (
-          <div className="drawer-content">
+          <div className="drawer-content drawer-body">
             <section className="info-card" style={{ display: "grid", gap: 12 }}>
               <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }}>
                 <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 14, padding: 14 }}>
@@ -592,7 +593,12 @@ export function LeadsPageView() {
 
         {isMobileProfile ? (
           <div className="lead-mobile-list">
-            {filtered.length === 0 ? <div className="empty-box">{snapshot.leads.length === 0 && !query && statusFilter === "all" ? "Dodaj pierwszego leada." : "Brak wyników."}</div> : null}
+            {filtered.length === 0 ? (
+              <ViewState
+                title={snapshot.leads.length === 0 && !query && statusFilter === "all" ? "Dodaj pierwszego leada." : "Brak wyników."}
+                description="Zmień filtr lub wyszukiwane hasło, aby zobaczyć pasujące rekordy."
+              />
+            ) : null}
             {filtered.map((lead) => {
               const stats = getLeadActiveItemStats(lead.id, snapshot.items, dateOptions)
               const nextStep = getLeadNextStep(snapshot, lead, dateOptions)
@@ -631,7 +637,7 @@ export function LeadsPageView() {
           </div>
         ) : (
           <div className="lead-table">
-            <div className="lead-table-header" role="row" style={{ gridTemplateColumns: "2.1fr 1fr 1fr 1fr 0.9fr 1.2fr 1.4fr 1.2fr" }}>
+            <div className="lead-table-header lead-table-header-final" role="row">
               <div>KLIENT</div>
               <div>STATUS</div>
               <div>WARTOŚĆ</div>
@@ -643,14 +649,19 @@ export function LeadsPageView() {
             </div>
 
             <div className="lead-table-body">
-              {filtered.length === 0 ? <div className="empty-box">{snapshot.leads.length === 0 && !query && statusFilter === "all" ? "Dodaj pierwszego leada." : "Brak wyników."}</div> : null}
+              {filtered.length === 0 ? (
+                <ViewState
+                  title={snapshot.leads.length === 0 && !query && statusFilter === "all" ? "Dodaj pierwszego leada." : "Brak wyników."}
+                  description="Zmień filtr lub wyszukiwane hasło, aby zobaczyć pasujące rekordy."
+                />
+              ) : null}
               {filtered.map((lead) => {
                 const stats = getLeadActiveItemStats(lead.id, snapshot.items, dateOptions)
                 const nextStep = getLeadNextStep(snapshot, lead, dateOptions)
                 const lastTouch = getLeadLastTouch(snapshot, lead, dateOptions)
                 const riskLabel = formatLeadAlarmReasonLabel(lead.computed.riskReason) || "Pod kontrolą"
                 return (
-                  <button key={lead.id} className="lead-table-row" onClick={() => setSelectedLead(lead)} type="button" style={{ gridTemplateColumns: "2.1fr 1fr 1fr 1fr 0.9fr 1.2fr 1.4fr 1.2fr" }}>
+                  <button key={lead.id} className="lead-table-row lead-table-row-final" onClick={() => setSelectedLead(lead)} type="button">
                     <div className="lead-table-client">
                       <Avatar name={lead.name} />
                       <div className="lead-table-client-text">
@@ -664,7 +675,7 @@ export function LeadsPageView() {
                     <div className="lead-table-overdue">{stats.overdueCount > 0 ? stats.overdueCount : "—"}</div>
                     <div className="lead-table-source">{lastTouch.at ? formatDayLabel(lastTouch.at, dateOptions) : "Brak"}</div>
                     <div className="lead-table-source">{nextStep.title || "Brak next stepu"}</div>
-                    <div className="lead-table-source" style={{ color: lead.computed.isAtRisk ? "#dc2626" : "var(--muted)", fontWeight: 700 }}>{riskLabel}</div>
+                    <div className={`lead-table-source lead-risk-label ${lead.computed.isAtRisk ? "lead-risk-label-at-risk" : ""}`}>{riskLabel}</div>
                   </button>
                 )
               })}
@@ -757,7 +768,7 @@ export function TasksPageView() {
       </section>
 
       <section className="panel-card">
-        <div className="segmented-tabs" style={{ flexWrap: "wrap" }}>
+        <div className="segmented-tabs segmented-tabs-wrap">
           {tabMeta.map((tabOption) => (
             <button key={tabOption.key} className={tab === tabOption.key ? "active" : ""} onClick={() => setTab(tabOption.key)}>
               {tabOption.label} <span className="muted-small">{tabOption.count}</span>
@@ -766,7 +777,12 @@ export function TasksPageView() {
         </div>
 
         <div className="stack-list">
-          {list.length === 0 ? <div className="empty-box">{taskItems.length === 0 ? "Dodaj pierwsze zadanie." : "Brak wpisów w tej sekcji."}</div> : null}
+          {list.length === 0 ? (
+            <ViewState
+              title={taskItems.length === 0 ? "Dodaj pierwsze zadanie." : "Brak wpisów w tej sekcji."}
+              description="Wybierz inną zakładkę lub dodaj nowe działanie."
+            />
+          ) : null}
           {list.map((item) => {
             const leadLabel = getItemLeadLabel(item, snapshot.leads)
             const overdue = isOverdue(item, dateOptions)
@@ -949,7 +965,12 @@ export function CalendarPageView() {
                     </button>
                     {isOpen ? (
                       <div className="calendar-mobile-day-items">
-                        {items.length === 0 ? <div className="empty-box">{hasCalendarItems ? "Brak wydarzeń w tym dniu." : "Dodaj pierwsze wydarzenie."}</div> : items.map((item) => renderWeekPill(item))}
+                        {items.length === 0 ? (
+                          <ViewState
+                            title={hasCalendarItems ? "Brak wydarzeń w tym dniu." : "Dodaj pierwsze wydarzenie."}
+                            description="Wybierz inny dzień albo dodaj nowe działanie kalendarzowe."
+                          />
+                        ) : items.map((item) => renderWeekPill(item))}
                       </div>
                     ) : null}
                   </article>
@@ -984,12 +1005,22 @@ export function CalendarPageView() {
                 })}
               </div>
               <div className="calendar-mobile-selected-list">
-                {selectedDayItems.length === 0 ? <div className="empty-box">{hasCalendarItems ? "Brak wydarzeń w wybranym dniu." : "Dodaj pierwsze wydarzenie."}</div> : selectedDayItems.map((item) => renderWeekPill(item))}
+                {selectedDayItems.length === 0 ? (
+                  <ViewState
+                    title={hasCalendarItems ? "Brak wydarzeń w wybranym dniu." : "Dodaj pierwsze wydarzenie."}
+                    description="Wybierz inny termin albo dodaj nowe wydarzenie."
+                  />
+                ) : selectedDayItems.map((item) => renderWeekPill(item))}
               </div>
             </div>
           ) : null}
 
-          {!showMobileWeek && !showMobileMonth ? <div className="empty-box">Zaznacz tydzień albo miesiąc.</div> : null}
+          {!showMobileWeek && !showMobileMonth ? (
+            <ViewState
+              title="Zaznacz tydzień albo miesiąc."
+              description="Włącz przynajmniej jeden widok kalendarza."
+            />
+          ) : null}
         </section>
       ) : (
         <section className="calendar-layout calendar-layout-week-only">
@@ -1015,7 +1046,10 @@ export function CalendarPageView() {
                 })}
               </div>
             ) : (
-              <div className="empty-box">Dodaj pierwsze wydarzenie.</div>
+              <ViewState
+                title="Dodaj pierwsze wydarzenie."
+                description="Kalendarz jest gotowy na pierwsze działania i terminy."
+              />
             )}
           </div>
         </section>
@@ -1507,7 +1541,7 @@ function ModalShell({
             ×
           </button>
         </div>
-        {children}
+        <div className="modal-body">{children}</div>
       </div>
     </div>
   )

@@ -1,5 +1,7 @@
 "use client"
 
+import { ViewState } from "@/components/ui/view-state"
+
 export function CasesPageView() {
   const stats = {
     total: 0,
@@ -44,9 +46,10 @@ export function CasesPageView() {
           </button>
         </div>
 
-        <div className="empty-box">
-          Sprawy pojawią się tutaj po przejściu leada do etapu operacyjnego. Ten ekran jest już zablokowany wizualnie pod Fortecę.
-        </div>
+        <ViewState
+          title="Sprawy pojawią się po przejściu leada do etapu operacyjnego."
+          description="Ekran jest już zamrożony wizualnie pod ClientPilot i gotowy pod kolejne etapy wdrożenia."
+        />
       </div>
     </section>
   )

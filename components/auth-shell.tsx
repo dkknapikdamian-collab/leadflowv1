@@ -9,20 +9,19 @@ export function AuthShell({
   return (
     <main className="auth-screen">
       <section className="auth-card">
-        <div style={{ display: "grid", gap: 8, marginBottom: 20 }}>
+        <div className="auth-header">
           <div className="auth-brand">
             <span className="auth-brand-mark">•</span>
             <span>ClientPilot</span>
           </div>
-          <h1 style={{ margin: 0, fontSize: 28 }}>{title}</h1>
-          <p style={{ margin: 0, color: "var(--muted)", lineHeight: 1.6 }}>{subtitle}</p>
+          <h1 className="auth-title">{title}</h1>
+          <p className="auth-subtitle">{subtitle}</p>
         </div>
 
         <div className="auth-stack">{children}</div>
 
-        {footer ? <div style={{ marginTop: 18 }}>{footer}</div> : null}
+        {footer ? <div className="auth-footer">{footer}</div> : null}
       </section>
     </main>
   )
 }
-

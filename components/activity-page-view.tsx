@@ -1,5 +1,7 @@
 "use client"
 
+import { ViewState } from "@/components/ui/view-state"
+
 export function ActivityPageView() {
   return (
     <section className="single-column-page">
@@ -37,9 +39,10 @@ export function ActivityPageView() {
           </button>
         </div>
 
-        <div className="empty-box">
-          Tu pojawi się pełna historia zmian statusów, notatek, follow-upów, przejścia lead → sprawa i działań operacyjnych.
-        </div>
+        <ViewState
+          title="Tu pojawi się pełna historia działań."
+          description="Widok obejmie statusy, notatki, follow-upy, przejście lead → sprawa i ruch operacyjny."
+        />
       </div>
     </section>
   )

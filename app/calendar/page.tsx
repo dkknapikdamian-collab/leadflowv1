@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic"
 
 import { Suspense } from "react"
 import { DashboardShell } from "@/components/dashboard-shell"
+import { PageShell } from "@/components/layout/page-shell"
 import { CalendarPageView } from "@/components/views"
 
 function CalendarPageFallback() {
@@ -11,9 +12,11 @@ function CalendarPageFallback() {
 export default function CalendarPage() {
   return (
     <DashboardShell>
-      <Suspense fallback={<CalendarPageFallback />}>
-        <CalendarPageView />
-      </Suspense>
+      <PageShell>
+        <Suspense fallback={<CalendarPageFallback />}>
+          <CalendarPageView />
+        </Suspense>
+      </PageShell>
     </DashboardShell>
   )
 }

@@ -27,7 +27,6 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { href: "/today", label: "Dziś", icon: "◈" },
   { href: "/leads", label: "Leady", icon: "◉" },
-  { href: "/leads/pipeline", label: "Pipeline", icon: "⇄" },
   { href: "/cases", label: "Sprawy", icon: "▣" },
   { href: "/tasks", label: "Zadania", icon: "☑" },
   { href: "/calendar", label: "Kalendarz", icon: "⊞" },
@@ -44,7 +43,6 @@ const MOBILE_PRIMARY_NAV: NavItem[] = [
 ]
 
 const MOBILE_SECONDARY_NAV: NavItem[] = [
-  { href: "/leads/pipeline", label: "Pipeline", icon: "⇄" },
   { href: "/calendar", label: "Kalendarz", icon: "⊞" },
   { href: "/activity", label: "Aktywność", icon: "◎" },
   { href: "/billing", label: "Rozliczenia", icon: "¤" },
@@ -57,11 +55,11 @@ function getUserAvatarLabel(userName: string, workspaceName: string) {
   const normalizedUserName = userName.trim().toLowerCase()
 
   if (!userName.trim() || GENERIC_USER_NAMES.has(normalizedUserName)) {
-    return "FT"
+    return "CP"
   }
 
   const label = initials(userName)
-  return label || initials(workspaceName) || "FT"
+  return label || initials(workspaceName) || "CP"
 }
 
 function isNavItemActive(pathname: string, href: string) {
