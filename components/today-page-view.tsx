@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 import { ItemModal, LeadDrawer } from "@/components/views"
 import { useAppStore } from "@/lib/store"
 import {
@@ -394,27 +395,32 @@ function TodaySectionBlock({
 }
 
 export function TodayPageView() {
+  const router = useRouter()
   const { snapshot, toggleItemDone, snoozeItem, addItem } = useAppStore()
   const [editingItem, setEditingItem] = useState<WorkItem | null>(null)
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
-  const [sectionOrder, setSectionOrder] = useState<TodaySectionKey[]>(TODAY_SECTION_ORDER)
-  const [manualCollapsed, setManualCollapsed] = useState<Record<TodaySectionKey, boolean>>(TODAY_DEFAULT_COLLAPSED)
-  const [transientExpandedKey, setTransientExpandedKey] = useState<TodaySectionKey | null>(null)
+  const [sectionOrder, setSectionOrder] = useState<Array<"sales" | "blocked" | "ready" | "execution">>([
+    "sales",
+    "blocked",
+    "ready",
+    "execution",
+  ])
+  const [collapsed, setCollapsed] = useState<Record<"sales" | "blocked" | "ready" | "execution", boolean>>({
+    sales: false,
+    blocked: false,
+    ready: false,
+    execution: false,
+  })
 
   const dateOptions = useMemo(() => ({ timeZone: snapshot.settings.timezone }), [snapshot.settings.timezone])
   const viewModel = useMemo(() => buildTodayViewModel(snapshot, dateOptions), [dateOptions, snapshot])
+  const command = viewModel.commandCenter
   const leadMap = useMemo(() => new Map(snapshot.leads.map((lead) => [lead.id, lead])), [snapshot.leads])
   const leadNextStepMap = useMemo(
     () => new Map(snapshot.leads.map((lead) => [lead.id, getLeadNextStepInfo(snapshot.items, lead.id)])),
     [snapshot.items, snapshot.leads],
   )
-  const sections = useMemo(() => {
-    const mapped = new Map(viewModel.sections.map((section) => [section.key, section]))
-    return sectionOrder
-      .map((key) => mapped.get(key))
-      .filter((section): section is TodaySection => Boolean(section))
-  }, [sectionOrder, viewModel.sections])
-  const topStats = viewModel.topStats
+  const topStats = command.topStats
   const fontScale = snapshot.settings.fontScale || "compact"
   const isMobileProfile = snapshot.settings.viewProfile === "mobile"
 
@@ -446,18 +452,19 @@ export function TodayPageView() {
     return leadMap.get(leadId) ?? null
   }
 
-  function toggleSection(key: TodaySectionKey) {
-    setManualCollapsed((current) => getNextManualCollapsedState(current, transientExpandedKey, key))
-    setTransientExpandedKey((current) => (current === key ? null : current))
+  function toggleSection(key: "sales" | "blocked" | "ready" | "execution") {
+    setCollapsed((current) => ({ ...current, [key]: !current[key] }))
   }
 
-  function focusSection(key: TodaySectionKey) {
-    setSectionOrder((current) => moveSectionToTop(current, key))
-    setTransientExpandedKey(key)
+  function focusSection(key: "sales" | "blocked" | "ready" | "execution") {
+    setSectionOrder((current) => [key, ...current.filter((item) => item !== key)])
+    setCollapsed((current) => ({ ...current, [key]: false }))
   }
 
   function focusFromTopStat(statKey: (typeof topStats)[number]["key"]) {
-    focusSection(getSectionKeyFromTopStat(statKey))
+    if (statKey === "leads_to_move_today") return focusSection("sales")
+    if (statKey === "cases_ready_to_start") return focusSection("ready")
+    return focusSection("blocked")
   }
 
   function handleItemDone(item: WorkItem) {
@@ -491,6 +498,128 @@ export function TodayPageView() {
     addItem(payload)
   }
 
+  function renderSalesSection() {
+    if (command.sections.salesRequiresAction.length === 0) {
+      return <div className="empty-box">Brak leadow wymagajacych ruchu dzis.</div>
+    }
+
+    return command.sections.salesRequiresAction.map((lead) => (
+      <TodayLeadRow
+        key={lead.id}
+        lead={lead}
+        sectionKey={"top_moves_today" as TodaySectionKey}
+        onOpen={() => setSelectedLead(lead)}
+        onCreateTomorrowFollowUp={() => handleCreateLeadFollowUpTomorrow(lead)}
+        nextStepTitle={leadNextStepMap.get(lead.id)?.title ?? "Brak next step"}
+        nextStepAt={leadNextStepMap.get(lead.id)?.at ?? null}
+        dateOptions={dateOptions}
+      />
+    ))
+  }
+
+  function renderBlockedCasesSection() {
+    if (command.sections.realizationBlockedByClient.length === 0) {
+      return <div className="empty-box">Brak spraw zablokowanych przez klienta.</div>
+    }
+
+    return command.sections.realizationBlockedByClient.map((card) => (
+      <article key={card.id} className="today-item-row">
+        <div className="today-row-grid" style={{ display: "grid", gap: 10 }}>
+          <div className="today-item-title">{card.title}</div>
+          <div className="today-item-flag">{card.clientName} | {card.nextMove}</div>
+          <div className="muted-small">Braki: {card.missingElementsCount} | Kompletnosc: {card.completenessPercent}%</div>
+          <div className="muted-small">Status: {card.statusLabel} | Utknieta: {card.daysStuck} dni</div>
+        </div>
+        <div className="today-quick-actions" style={{ display: "flex", gap: 8, marginTop: 10 }}>
+          <TodayQuickActionButton label="Otworz Sprawy" variant="primary" onClick={() => router.push("/cases")} />
+        </div>
+      </article>
+    ))
+  }
+
+  function renderReadyCasesSection() {
+    if (command.sections.readyToStart.length === 0) {
+      return <div className="empty-box">Brak spraw gotowych do startu.</div>
+    }
+
+    return command.sections.readyToStart.map((card) => (
+      <article key={card.id} className="today-item-row">
+        <div className="today-row-grid" style={{ display: "grid", gap: 10 }}>
+          <div className="today-item-title">{card.title}</div>
+          <div className="today-item-flag">{card.clientName}</div>
+          <div className="muted-small">Kompletnosc: {card.completenessPercent}% | Braki: {card.missingElementsCount}</div>
+        </div>
+        <div className="today-quick-actions" style={{ display: "flex", gap: 8, marginTop: 10 }}>
+          <TodayQuickActionButton label="Przejdz do realizacji" variant="primary" onClick={() => router.push("/cases")} />
+        </div>
+      </article>
+    ))
+  }
+
+  function renderExecutionQueueSection() {
+    const queue = command.sections.executionQueue
+
+    return (
+      <div style={{ display: "grid", gap: 14 }}>
+        <div className="muted-small uppercase">Overdue</div>
+        {queue.overdueItems.length === 0 ? <div className="empty-box">Brak zaleglych dzialan.</div> : queue.overdueItems.map((item) => (
+          <TodayItemRow
+            key={item.id}
+            item={item}
+            lead={getLeadById(item.leadId)}
+            sectionKey={"overdue" as TodaySectionKey}
+            onEdit={() => setEditingItem(item)}
+            onDone={() => handleItemDone(item)}
+            onSnoozeTomorrow={() => handleItemSnoozeTomorrow(item)}
+            dateOptions={dateOptions}
+          />
+        ))}
+
+        <div className="muted-small uppercase">Dzis</div>
+        {queue.todayItems.length === 0 ? <div className="empty-box">Brak dzialan na dzis.</div> : queue.todayItems.map((item) => (
+          <TodayItemRow
+            key={item.id}
+            item={item}
+            lead={getLeadById(item.leadId)}
+            sectionKey={"today" as TodaySectionKey}
+            onEdit={() => setEditingItem(item)}
+            onDone={() => handleItemDone(item)}
+            onSnoozeTomorrow={() => handleItemSnoozeTomorrow(item)}
+            dateOptions={dateOptions}
+          />
+        ))}
+
+        <div className="muted-small uppercase">Ten tydzien</div>
+        {queue.thisWeekItems.length === 0 ? <div className="empty-box">Brak pozycji na ten tydzien.</div> : queue.thisWeekItems.map((item) => (
+          <TodayItemRow
+            key={item.id}
+            item={item}
+            lead={getLeadById(item.leadId)}
+            sectionKey={"this_week" as TodaySectionKey}
+            onEdit={() => setEditingItem(item)}
+            onDone={() => handleItemDone(item)}
+            onSnoozeTomorrow={() => handleItemSnoozeTomorrow(item)}
+            dateOptions={dateOptions}
+          />
+        ))}
+
+        <div className="muted-small uppercase">Bez next step</div>
+        {queue.leadsWithoutNextStep.length === 0 ? <div className="empty-box">Brak leadow bez next stepu.</div> : queue.leadsWithoutNextStep.map((lead) => (
+          <TodayLeadRow
+            key={lead.id}
+            lead={lead}
+            sectionKey={"missing_next_step" as TodaySectionKey}
+            onOpen={() => setSelectedLead(lead)}
+            onCreateTomorrowFollowUp={() => handleCreateLeadFollowUpTomorrow(lead)}
+            nextStepTitle={"Brak next step"}
+            nextStepAt={null}
+            dateOptions={dateOptions}
+          />
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className={`today-page today-font-${fontScale}${isMobileProfile ? " today-profile-mobile" : ""}`}>
       <section className="hero-row split">
@@ -505,14 +634,13 @@ export function TodayPageView() {
       {!isMobileProfile ? (
         <section className="today-top-stats-grid">
           {topStats.map((stat) => {
-            const target = getSectionKeyFromTopStat(stat.key)
             return (
               <article
                 key={stat.key}
                 className={`today-top-stat-card today-top-stat-card--${stat.key} interactive`}
                 data-stat={stat.key}
                 style={{ ["--stat-color" as string]: stat.color }}
-                onClick={() => focusSection(target)}
+                onClick={() => focusFromTopStat(stat.key)}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(event) => {
@@ -545,22 +673,46 @@ export function TodayPageView() {
       ) : null}
 
       <section className="today-sections-stack">
-        {sections.map((section) => (
-          <TodaySectionBlock
-            key={section.key}
-            section={section}
-            collapsed={getEffectiveCollapsed(manualCollapsed, transientExpandedKey, section.key)}
-            onToggle={() => toggleSection(section.key)}
-            onFocus={() => focusSection(section.key)}
-            onEditItem={setEditingItem}
-            onItemDone={handleItemDone}
-            onItemSnoozeTomorrow={handleItemSnoozeTomorrow}
-            onOpenLead={setSelectedLead}
-            onCreateLeadFollowUpTomorrow={handleCreateLeadFollowUpTomorrow}
-            getLeadById={getLeadById}
-            getLeadNextStepInfoById={(leadId) => leadNextStepMap.get(leadId) ?? { title: "Brak next step", at: null }}
-            dateOptions={dateOptions}
-          />
+        {sectionOrder.map((sectionKey) => (
+          <section key={sectionKey} className="today-section-card">
+            <div className="today-section-header">
+              <div className="today-section-title-group">
+                <button className="today-section-title-wrap" type="button" onClick={() => toggleSection(sectionKey)}>
+                  <h2 className="today-section-title">
+                    {sectionKey === "sales" ? "Sprzedaz wymaga ruchu" : null}
+                    {sectionKey === "blocked" ? "Realizacja stoi przez klienta" : null}
+                    {sectionKey === "ready" ? "Gotowe do ruszenia" : null}
+                    {sectionKey === "execution" ? "Dzis / overdue / ten tydzien / bez next step" : null}
+                  </h2>
+                </button>
+                <button className="today-section-count" type="button" onClick={() => focusSection(sectionKey)}>
+                  {sectionKey === "sales" ? command.sections.salesRequiresAction.length : null}
+                  {sectionKey === "blocked" ? command.sections.realizationBlockedByClient.length : null}
+                  {sectionKey === "ready" ? command.sections.readyToStart.length : null}
+                  {sectionKey === "execution"
+                    ? command.sections.executionQueue.overdueItems.length
+                      + command.sections.executionQueue.todayItems.length
+                      + command.sections.executionQueue.thisWeekItems.length
+                      + command.sections.executionQueue.leadsWithoutNextStep.length
+                    : null}
+                </button>
+              </div>
+              <div className="today-section-actions">
+                <button className="today-section-toggle" type="button" onClick={() => toggleSection(sectionKey)} aria-expanded={!collapsed[sectionKey]}>
+                  {collapsed[sectionKey] ? "Rozwin" : "Zwin"}
+                </button>
+              </div>
+            </div>
+
+            {!collapsed[sectionKey] ? (
+              <div className="today-section-body">
+                {sectionKey === "sales" ? renderSalesSection() : null}
+                {sectionKey === "blocked" ? renderBlockedCasesSection() : null}
+                {sectionKey === "ready" ? renderReadyCasesSection() : null}
+                {sectionKey === "execution" ? renderExecutionQueueSection() : null}
+              </div>
+            ) : null}
+          </section>
         ))}
       </section>
 

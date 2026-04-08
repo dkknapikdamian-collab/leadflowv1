@@ -4,6 +4,7 @@ import {
   DEFAULT_LEAD_STATE_SETTINGS,
   type LeadWithComputedState,
 } from "./domain/lead-state"
+import { buildCasesDashboard, type CaseDashboardCard } from "./domain/cases-dashboard"
 import {
   getCurrentDateKey,
   getWeekDays,
@@ -65,6 +66,35 @@ export interface TodayViewModel {
   isEmptyWorkspace: boolean
   sections: TodaySection[]
   topStats: TodayTopStat[]
+  commandCenter: TodayCommandCenter
+}
+
+export type TodayCommandTopStatKey =
+  | "leads_to_move_today"
+  | "cases_waiting_for_client"
+  | "cases_blocked"
+  | "cases_ready_to_start"
+
+export interface TodayCommandTopStat {
+  key: TodayCommandTopStatKey
+  label: string
+  value: number
+  color: string
+}
+
+export interface TodayCommandCenter {
+  topStats: TodayCommandTopStat[]
+  sections: {
+    salesRequiresAction: LeadWithComputedState[]
+    realizationBlockedByClient: CaseDashboardCard[]
+    readyToStart: CaseDashboardCard[]
+    executionQueue: {
+      overdueItems: WorkItem[]
+      todayItems: WorkItem[]
+      thisWeekItems: WorkItem[]
+      leadsWithoutNextStep: LeadWithComputedState[]
+    }
+  }
 }
 
 export const TODAY_SECTION_ORDER: TodaySectionKey[] = [
@@ -225,6 +255,98 @@ function buildTodayTopStatsFromSections(sections: TodaySection[]): TodayTopStat[
   ]
 }
 
+function buildTodayCommandCenter(snapshot: AppSnapshot, options: DateContextOptions): TodayCommandCenter {
+  const leadsWithComputed = buildLeadsWithComputedState(snapshot, options)
+  const pendingActionItems = getPendingActionItems(snapshot)
+  const dashboard = buildCasesDashboard(snapshot, options)
+
+  const salesRequiresAction = leadsWithComputed
+    .filter((lead) => lead.status !== "won" && lead.status !== "lost")
+    .filter((lead) => lead.computed.dailyPriorityScore > 0 || lead.computed.alarmReasons.length > 0)
+    .sort((left, right) => {
+      return (
+        right.computed.dailyPriorityScore - left.computed.dailyPriorityScore
+        || right.value - left.value
+        || left.name.localeCompare(right.name)
+      )
+    })
+
+  const realizationBlockedByClient = dashboard.cards
+    .filter((card) => card.status === "waiting_for_client" || card.status === "blocked")
+    .sort((left, right) => {
+      return (
+        Number(right.status === "blocked") - Number(left.status === "blocked")
+        || right.missingElementsCount - left.missingElementsCount
+        || right.daysStuck - left.daysStuck
+      )
+    })
+
+  const readyToStart = dashboard.cards
+    .filter((card) => card.status === "ready_to_start")
+    .sort((left, right) => {
+      return right.completenessPercent - left.completenessPercent || left.title.localeCompare(right.title)
+    })
+
+  const overdueItems = pendingActionItems.filter((item) => isOverdue(item, options))
+  const overdueIds = new Set(overdueItems.map((item) => item.id))
+  const todayItems = pendingActionItems.filter((item) => !overdueIds.has(item.id) && isToday(getItemPrimaryDate(item), options))
+  const todayIds = new Set(todayItems.map((item) => item.id))
+  const currentDateKey = getCurrentDateKey(options)
+  const weekKeys = new Set(getWeekDays(0, currentDateKey, options))
+  const thisWeekItems = pendingActionItems.filter((item) => {
+    const itemDateKey = toDateKey(getItemPrimaryDate(item), options)
+    if (!itemDateKey) return false
+    if (overdueIds.has(item.id) || todayIds.has(item.id)) return false
+    return weekKeys.has(itemDateKey)
+  })
+  const leadsWithoutNextStep = leadsWithComputed
+    .filter((lead) => lead.status !== "won" && lead.status !== "lost")
+    .filter((lead) => !lead.computed.hasNextStep)
+    .sort((left, right) => {
+      return right.value - left.value || left.name.localeCompare(right.name)
+    })
+
+  return {
+    topStats: [
+      {
+        key: "leads_to_move_today",
+        label: "Leady do ruchu dzis",
+        value: salesRequiresAction.length,
+        color: "#f59e0b",
+      },
+      {
+        key: "cases_waiting_for_client",
+        label: "Sprawy czekajace na klienta",
+        value: dashboard.stats.waitingForClient,
+        color: "#fb923c",
+      },
+      {
+        key: "cases_blocked",
+        label: "Sprawy zablokowane",
+        value: dashboard.stats.blocked,
+        color: "#ef4444",
+      },
+      {
+        key: "cases_ready_to_start",
+        label: "Sprawy gotowe do startu",
+        value: dashboard.stats.readyToStart,
+        color: "#22c55e",
+      },
+    ],
+    sections: {
+      salesRequiresAction,
+      realizationBlockedByClient,
+      readyToStart,
+      executionQueue: {
+        overdueItems,
+        todayItems,
+        thisWeekItems,
+        leadsWithoutNextStep,
+      },
+    },
+  }
+}
+
 export function buildTodaySections(snapshot: AppSnapshot, options: DateContextOptions = {}): TodaySection[] {
   const dateOptions = getSnapshotDateOptions(snapshot, options)
   const leadsWithComputed = buildLeadsWithComputedState(snapshot, dateOptions)
@@ -356,6 +478,7 @@ export function buildTodayViewModel(snapshot: AppSnapshot, options: DateContextO
     isEmptyWorkspace: snapshot.leads.length === 0 && snapshot.items.length === 0,
     sections,
     topStats: buildTodayTopStatsFromSections(sections),
+    commandCenter: buildTodayCommandCenter(snapshot, dateOptions),
   }
 }
 

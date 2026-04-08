@@ -646,3 +646,114 @@ test("najważniejsze ruchy dziś są sortowane malejąco po dailyPriorityScore",
 })
 
 
+
+test("command center Today pokazuje 4 glowne liczby dla leadow i spraw", () => {
+  const snapshot = createDemoSnapshot()
+  const viewModel = buildTodayViewModel(snapshot, { timeZone: snapshot.settings.timezone, now: "2026-04-05T08:30:00.000Z" })
+  const values = Object.fromEntries(viewModel.commandCenter.topStats.map((stat) => [stat.key, stat.value]))
+
+  assert.equal(typeof values.leads_to_move_today, "number")
+  assert.equal(typeof values.cases_waiting_for_client, "number")
+  assert.equal(typeof values.cases_blocked, "number")
+  assert.equal(typeof values.cases_ready_to_start, "number")
+})
+
+test("command center ma 4 sekcje: sprzedaz, blokady klienta, gotowe i execution queue", () => {
+  const snapshot = createInitialSnapshot()
+  snapshot.leads = [
+    {
+      id: "lead_1",
+      workspaceId: null,
+      contactId: null,
+      caseId: null,
+      name: "Lead bez next step",
+      company: "",
+      email: "",
+      phone: "",
+      source: "Inne",
+      value: 12000,
+      summary: "",
+      notes: "",
+      status: "offer_sent",
+      priority: "high",
+      nextActionTitle: "",
+      nextActionAt: "",
+      nextActionItemId: null,
+      createdAt: "2026-04-01T09:00:00.000Z",
+      updatedAt: "2026-04-01T09:00:00.000Z",
+    },
+  ]
+  snapshot.cases = [
+    {
+      id: "case_1",
+      workspaceId: "workspace_local",
+      contactId: "contact_1",
+      sourceLeadId: "lead_1",
+      templateId: null,
+      createdByUserId: null,
+      ownerUserId: "operator_local",
+      title: "Sprawa zablokowana",
+      description: "",
+      status: "blocked",
+      blockedByMissingRequired: true,
+      priority: "high",
+      value: 1000,
+      startAt: null,
+      dueAt: null,
+      closedAt: null,
+      createdAt: "2026-04-05T08:00:00.000Z",
+      updatedAt: "2026-04-05T08:00:00.000Z",
+    },
+    {
+      id: "case_2",
+      workspaceId: "workspace_local",
+      contactId: "contact_1",
+      sourceLeadId: "lead_1",
+      templateId: null,
+      createdByUserId: null,
+      ownerUserId: "operator_local",
+      title: "Sprawa gotowa",
+      description: "",
+      status: "ready_to_start",
+      blockedByMissingRequired: false,
+      priority: "medium",
+      value: 1000,
+      startAt: null,
+      dueAt: null,
+      closedAt: null,
+      createdAt: "2026-04-05T08:00:00.000Z",
+      updatedAt: "2026-04-05T08:00:00.000Z",
+    },
+  ]
+  snapshot.caseItems = [
+    {
+      id: "case_item_1",
+      workspaceId: "workspace_local",
+      caseId: "case_1",
+      templateItemId: null,
+      createdByUserId: null,
+      ownerUserId: null,
+      sortOrder: 100,
+      kind: "file",
+      title: "Plik",
+      description: "",
+      status: "needs_correction",
+      required: true,
+      dueAt: null,
+      completedAt: null,
+      createdAt: "2026-04-05T08:00:00.000Z",
+      updatedAt: "2026-04-05T08:00:00.000Z",
+    },
+  ]
+
+  const viewModel = buildTodayViewModel(snapshot, { timeZone: snapshot.settings.timezone, now: "2026-04-05T08:30:00.000Z" })
+  const command = viewModel.commandCenter
+
+  assert.equal(command.sections.salesRequiresAction.length, 1)
+  assert.equal(command.sections.realizationBlockedByClient.length, 1)
+  assert.equal(command.sections.readyToStart.length, 1)
+  assert.equal(Array.isArray(command.sections.executionQueue.overdueItems), true)
+  assert.equal(Array.isArray(command.sections.executionQueue.todayItems), true)
+  assert.equal(Array.isArray(command.sections.executionQueue.thisWeekItems), true)
+  assert.equal(Array.isArray(command.sections.executionQueue.leadsWithoutNextStep), true)
+})
