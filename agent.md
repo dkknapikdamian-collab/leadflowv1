@@ -13,7 +13,7 @@
 - Zanim zaczniesz prace: otworz `docs/REPO_MAP.md` i znajdz pliki/foldery powiazane z zadaniem.
 - Zasada zmiany: modyfikuj tylko pliki potrzebne do celu zmiany (bez "przekopywania" calego repo).
 - Zasada wyszukiwania: jesli musisz uzyc `rg`, ogranicz je do 1-3 katalogow albo konkretnych plikow wskazanych w mapie.
-- Utrzymanie mapy: po dodaniu/usunieciu plikow uruchom `node scripts/gen-repo-map.mjs` i committuj aktualna mape.
+- Utrzymanie mapy (twarda zasada): po KAZDEJ zmianie w repo aktualizuj mape przez `node scripts/gen-repo-map.mjs` i committuj `docs/REPO_MAP.md` razem z dana zmiana.
 
 ## Zasady Finalnej Aplikacji (ClientPilot) - Source Of Truth
 
