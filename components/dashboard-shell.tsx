@@ -309,7 +309,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
           <div className="brand-title">
             Lead<span>Flow</span>
           </div>
-          <div className="brand-subtitle">Domykanie i uruchamianie klienta</div>
+          <div className="brand-subtitle">FREEZE TEST 580ae66</div>
         </div>
 
         <nav className="nav-list">
@@ -423,3 +423,4 @@ export function DashboardShell({ children }: PropsWithChildren) {
     </div>
   )
 }
+
