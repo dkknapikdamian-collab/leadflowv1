@@ -1256,7 +1256,7 @@ export function SettingsPageView() {
           <span>Przypomnienia e-mail</span>
         </label>
         <label className="field-block full-span">
-          <span>Domyślne przypomnienie</span>
+          <span>Domyslna czestotliwosc przypomnien</span>
           <select
             className="select-input"
             value={snapshot.settings.defaultReminder}
@@ -1268,6 +1268,9 @@ export function SettingsPageView() {
               </option>
             ))}
           </select>
+          <div className="muted-small">
+            Dotyczy rowniez przypomnien dla spraw, checklist i portalu klienta.
+          </div>
         </label>
         <div className="field-block full-span">
           <span>Szata graficzna</span>
