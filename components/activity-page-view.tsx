@@ -6,28 +6,39 @@ export function ActivityPageView() {
       <div className="hero-row">
         <div>
           <h1 className="page-title">Aktywność</h1>
-          <p className="page-subtitle">
-            Wspólna oś działań dla sprzedaży i spraw operacyjnych. Ten ekran jest przygotowany jako część nowego systemu.
-          </p>
+          <p className="page-subtitle">Wspólna oś działań dla sprzedaży, spraw operacyjnych i zmian systemowych.</p>
+        </div>
+      </div>
+
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="muted-small uppercase">Sprzedaż</div>
+          <div className="stat-value">0</div>
+        </div>
+        <div className="stat-card">
+          <div className="muted-small uppercase">Operacyjne</div>
+          <div className="stat-value">0</div>
+        </div>
+        <div className="stat-card">
+          <div className="muted-small uppercase">Systemowe</div>
+          <div className="stat-value">0</div>
+        </div>
+        <div className="stat-card">
+          <div className="muted-small uppercase">Dzisiaj</div>
+          <div className="stat-value">0</div>
         </div>
       </div>
 
       <div className="panel-card large-card">
         <div className="toolbar-row wrap">
-          <input className="text-input" placeholder="Filtruj po typie aktywności, leadzie albo sprawie" disabled />
-          <select className="select-input" defaultValue="all" disabled>
-            <option value="all">Wszystkie typy</option>
-            <option value="sales">Sprzedaż</option>
-            <option value="operations">Operacyjne</option>
-            <option value="system">Systemowe</option>
-          </select>
+          <input className="text-input" placeholder="Filtruj po typie aktywności, leadzie albo sprawie..." disabled />
+          <button className="ghost-button" type="button" disabled>
+            Filtruj
+          </button>
         </div>
 
-        <div className="stack-list">
-          <div className="empty-box">
-            Tu w kolejnych etapach pojawi się wspólna historia zmian statusu, notatek, follow-upów, zadań, przejścia lead → sprawa
-            i aktywności operacyjnych.
-          </div>
+        <div className="empty-box">
+          Tu pojawi się pełna historia zmian statusów, notatek, follow-upów, przejścia lead → sprawa i działań operacyjnych.
         </div>
       </div>
     </section>

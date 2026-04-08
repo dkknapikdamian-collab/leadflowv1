@@ -164,7 +164,7 @@ export function BillingStatusPageView() {
     <section className="single-column-page">
       <div className="hero-row">
         <div>
-          <h1 className="page-title">Billing</h1>
+          <h1 className="page-title">Rozliczenia</h1>
           <p className="page-subtitle">Tutaj użytkownik ma zawsze widzieć stan konta, trial i aktywny okres dostępu.</p>
         </div>
       </div>

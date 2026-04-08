@@ -32,7 +32,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/tasks", label: "Zadania", icon: "☑" },
   { href: "/calendar", label: "Kalendarz", icon: "⊞" },
   { href: "/activity", label: "Aktywność", icon: "◎" },
-  { href: "/billing", label: "Billing", icon: "¤" },
+  { href: "/billing", label: "Rozliczenia", icon: "¤" },
   { href: "/settings", label: "Ustawienia", icon: "⚙" },
 ]
 
@@ -47,7 +47,7 @@ const MOBILE_SECONDARY_NAV: NavItem[] = [
   { href: "/leads/pipeline", label: "Pipeline", icon: "⇄" },
   { href: "/calendar", label: "Kalendarz", icon: "⊞" },
   { href: "/activity", label: "Aktywność", icon: "◎" },
-  { href: "/billing", label: "Billing", icon: "¤" },
+  { href: "/billing", label: "Rozliczenia", icon: "¤" },
   { href: "/settings", label: "Ustawienia", icon: "⚙" },
 ]
 
