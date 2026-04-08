@@ -44,7 +44,7 @@ export function createBootstrapRecords(input: {
   const workspace: WorkspaceRecord = {
     id: input.workspaceId,
     ownerUserId: input.userId,
-    name: "LeadFlow",
+    name: "ClientPilot",
     createdAt: now,
     updatedAt: now,
   }
@@ -84,7 +84,7 @@ export function createBootstrapRecords(input: {
     defaultReminder: "1h_before",
     caseReminderFrequency: "daily",
     defaultSnooze: "tomorrow",
-    workspaceName: "LeadFlow",
+    workspaceName: "ClientPilot",
     fontScale: "compact",
     viewProfile: "desktop",
     theme: "classic",

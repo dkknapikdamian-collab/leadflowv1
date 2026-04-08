@@ -1,5 +1,12 @@
 # agent.md
 
+## Zasada Pracy Z Repo (Main Frozen)
+
+- Repo jest "frozen" w sensie procesu: nie pushujemy nic bezposrednio na galaz `main`.
+- Wszystkie zmiany robimy w tym repo lokalnie i wersjonujemy w Git jako brancze robocze (feature/hotfix).
+- Publikacja/merge do `main` dopiero gdy user jawnie powie, ze to jest final i mamy zielone testy.
+- "Finalna wersja projektu" ma zyc w tym repo (to jest source of truth), bez duplikowania rownoleglych kopii.
+
 ## Jedna prawda produktu (po scaleniu Lead Flow + Forteca)
 
 Produkt nie jest juz tylko "lead follow-up app".

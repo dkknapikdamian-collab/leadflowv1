@@ -1,4 +1,4 @@
-# LeadFlow — konfiguracja maili
+# ClientPilot — konfiguracja maili
 
 ## Rozdzielenie maili
 
@@ -17,7 +17,7 @@ W projekcie są dwa osobne tory:
    - konto aktywne do dnia X
    - plan wygasł
    - płatność nieudana
-   - wychodzą z **aplikacji LeadFlow** przez **Resend**
+   - wychodzą z **aplikacji ClientPilot** przez **Resend**
 
 ## 1. Supabase Auth — custom SMTP
 

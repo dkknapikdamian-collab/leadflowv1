@@ -114,7 +114,7 @@ begin
      or coalesce(public.profiles.signup_source, 'unknown') = 'unknown';
 
   insert into public.workspaces (owner_user_id, name)
-  values (target_user_id, 'LeadFlow')
+  values (target_user_id, 'ClientPilot')
   on conflict (owner_user_id) do nothing;
 
   select id into workspace_uuid
@@ -187,7 +187,7 @@ begin
   values (
     workspace_uuid,
     target_user_id,
-    'LeadFlow',
+    'ClientPilot',
     'Europe/Warsaw'
   )
   on conflict (workspace_id) do update

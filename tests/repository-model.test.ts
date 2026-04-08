@@ -51,5 +51,5 @@ test("createBootstrapRecords buduje spójny startowy model konta i workspace", (
   assert.equal(records.accessStatus.bonusKind, null)
   assert.equal(records.accessStatus.bonusAppliedAt, null)
   assert.equal(records.settings.workspaceId, "workspace-1")
-  assert.equal(records.settings.workspaceName, "LeadFlow")
+  assert.equal(records.settings.workspaceName, "ClientPilot")
 })

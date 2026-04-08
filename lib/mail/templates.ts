@@ -61,32 +61,32 @@ export function buildAccountStatusEmailTemplate(input: AccountStatusEmailTemplat
       return {
         subject: "Trial kończy się za 3 dni",
         text: `Cześć ${input.displayName},\n\nTwój trial kończy się ${input.dateLabel}. Opłać plan, żeby zachować dostęp do aplikacji.\n\nLeadFlow`,
-        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Cześć ${safeName},</p><p>Twój trial kończy się <strong>${safeDateLabel}</strong>.</p><p>Opłać plan, żeby zachować dostęp do aplikacji.</p><p>LeadFlow</p></div>`,
+        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Cześć ${safeName},</p><p>Twój trial kończy się <strong>${safeDateLabel}</strong>.</p><p>Opłać plan, żeby zachować dostęp do aplikacji.</p><p>ClientPilot</p></div>`,
       }
     case "trial_ends_1d":
       return {
         subject: "Trial kończy się jutro",
         text: `Cześć ${input.displayName},\n\nTwój trial kończy się jutro, ${input.dateLabel}. Opłać plan, żeby nie stracić dostępu do aplikacji.\n\nLeadFlow`,
-        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Cześć ${safeName},</p><p>Twój trial kończy się jutro, <strong>${safeDateLabel}</strong>.</p><p>Opłać plan, żeby nie stracić dostępu do aplikacji.</p><p>LeadFlow</p></div>`,
+        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Cześć ${safeName},</p><p>Twój trial kończy się jutro, <strong>${safeDateLabel}</strong>.</p><p>Opłać plan, żeby nie stracić dostępu do aplikacji.</p><p>ClientPilot</p></div>`,
       }
     case "account_active_until":
       return {
         subject: "Konto aktywne do dnia X",
         text: `Cześć ${input.displayName},\n\nTwój plan ${input.planName} jest aktywny do ${input.dateLabel}.\n\nLeadFlow`,
-        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Cześć ${safeName},</p><p>Twój plan <strong>${safePlanName}</strong> jest aktywny do <strong>${safeDateLabel}</strong>.</p><p>LeadFlow</p></div>`,
+        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Cześć ${safeName},</p><p>Twój plan <strong>${safePlanName}</strong> jest aktywny do <strong>${safeDateLabel}</strong>.</p><p>ClientPilot</p></div>`,
       }
     case "payment_failed":
       return {
         subject: "Płatność nieudana",
         text: `Cześć ${input.displayName},\n\nNie udało się pobrać płatności za plan ${input.planName}. Uzupełnij płatność, żeby odzyskać pełny dostęp do aplikacji.\n\nLeadFlow`,
-        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Cześć ${safeName},</p><p>Nie udało się pobrać płatności za plan <strong>${safePlanName}</strong>.</p><p>Uzupełnij płatność, żeby odzyskać pełny dostęp do aplikacji.</p><p>LeadFlow</p></div>`,
+        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Cześć ${safeName},</p><p>Nie udało się pobrać płatności za plan <strong>${safePlanName}</strong>.</p><p>Uzupełnij płatność, żeby odzyskać pełny dostęp do aplikacji.</p><p>ClientPilot</p></div>`,
       }
     case "plan_expired":
     default:
       return {
         subject: "Plan wygasł",
         text: `Cześć ${input.displayName},\n\nTwój dostęp do aplikacji wygasł ${input.dateLabel}. Opłać plan, żeby wrócić do pracy.\n\nLeadFlow`,
-        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Cześć ${safeName},</p><p>Twój dostęp do aplikacji wygasł <strong>${safeDateLabel}</strong>.</p><p>Opłać plan, żeby wrócić do pracy.</p><p>LeadFlow</p></div>`,
+        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Cześć ${safeName},</p><p>Twój dostęp do aplikacji wygasł <strong>${safeDateLabel}</strong>.</p><p>Opłać plan, żeby wrócić do pracy.</p><p>ClientPilot</p></div>`,
       }
   }
 }
@@ -145,6 +145,6 @@ export function buildWorkflowEmailTemplate(input: WorkflowEmailTemplateInput) {
     text: `Czesc ${input.recipientLabel || "Uzytkowniku"},\n\n${preset.intro}\n${input.title}\n${input.message}\n\nLeadFlow`,
     html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111"><p>Czesc ${recipient},</p><p>${escapeHtml(
       preset.intro,
-    )}</p><p><strong>${safeTitle}</strong></p><p>${safeMessage}</p><p>LeadFlow</p></div>`,
+    )}</p><p><strong>${safeTitle}</strong></p><p>${safeMessage}</p><p>ClientPilot</p></div>`,
   }
 }

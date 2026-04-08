@@ -10,7 +10,7 @@ export function AuthShell({
     <main className="auth-main">
       <section className="auth-card">
         <div style={{ display: "grid", gap: 8, marginBottom: 20 }}>
-          <div style={{ fontSize: 26, fontWeight: 800 }}>LeadFlow</div>
+          <div style={{ fontSize: 26, fontWeight: 800 }}>ClientPilot</div>
           <h1 style={{ margin: 0, fontSize: 28 }}>{title}</h1>
           <p style={{ margin: 0, color: "var(--muted)", lineHeight: 1.5 }}>{subtitle}</p>
         </div>

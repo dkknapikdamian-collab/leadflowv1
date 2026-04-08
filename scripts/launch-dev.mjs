@@ -92,7 +92,7 @@ function openBrowser(targetUrl) {
     for (const attempt of winAttempts) {
       try {
         attempt()
-        const msg = `[LeadFlow] Otwieram przeglądarkę: ${targetUrl}\n`
+        const msg = `[ClientPilot] Otwieram przeglądarkę: ${targetUrl}\n`
         writeStdout(msg)
         return
       } catch (error) {
@@ -108,7 +108,7 @@ function openBrowser(targetUrl) {
     } else {
       execFile('xdg-open', [targetUrl])
     }
-    const msg = `[LeadFlow] Otwieram przeglądarkę: ${targetUrl}\n`
+    const msg = `[ClientPilot] Otwieram przeglądarkę: ${targetUrl}\n`
     writeStdout(msg)
   } catch (error) {
     logLine(errorLog, `Nieudana próba otwarcia przeglądarki: ${error instanceof Error ? error.message : String(error)}`)
@@ -132,7 +132,7 @@ function waitForServerThenOpen() {
         setTimeout(check, 1000)
       } else {
         logLine(errorLog, 'Serwer nie odpowiedział na czas.')
-        writeStderr('[LeadFlow] Serwer nie odpowiedział na czas.\n')
+        writeStderr('[ClientPilot] Serwer nie odpowiedział na czas.\n')
       }
     })
 
@@ -169,7 +169,7 @@ function runCommand(command, args, { stdoutStream, stderrStream, prefix, env }) 
 
 async function ensureNodeModules() {
   if (fs.existsSync(path.join(projectRoot, 'node_modules'))) return
-  writeStdout('[LeadFlow] Instalacja zależności...\n')
+  writeStdout('[ClientPilot] Instalacja zależności...\n')
   await runCommand(
     'npm',
     [
@@ -193,17 +193,17 @@ async function ensureNodeModules() {
 
 async function runTestsIfNeeded() {
   if (!withTests) return
-  writeStdout('[LeadFlow] Uruchamiam testy...\n')
+  writeStdout('[ClientPilot] Uruchamiam testy...\n')
   await runCommand('npm', ['run', 'test'], {
     stdoutStream: testLog,
     stderrStream: errorLog,
     prefix: 'testy',
   })
-  writeStdout('[LeadFlow] Testy przeszły.\n')
+  writeStdout('[ClientPilot] Testy przeszły.\n')
 }
 
 function startDevServer() {
-  writeStdout('[LeadFlow] Uruchamiam aplikację...\n')
+  writeStdout('[ClientPilot] Uruchamiam aplikację...\n')
   devChild = spawnPortable('npm', ['run', 'dev'])
 
   devChild.stdout.on('data', (chunk) => {
@@ -216,11 +216,11 @@ function startDevServer() {
 
   devChild.stderr.on('data', (chunk) => mirrorOutput(process.stderr, chunk, errorLog))
   devChild.on('error', (error) => {
-    const message = `[LeadFlow] Błąd uruchamiania serwera: ${error instanceof Error ? error.message : String(error)}\n`
+    const message = `[ClientPilot] Błąd uruchamiania serwera: ${error instanceof Error ? error.message : String(error)}\n`
     writeStderr(message)
   })
   devChild.on('close', (code) => {
-    const message = `[LeadFlow] Serwer zakończył pracę z kodem ${code ?? 0}.\n`
+    const message = `[ClientPilot] Serwer zakończył pracę z kodem ${code ?? 0}.\n`
     writeStdout(`\n${message}`)
     process.exit(code ?? 0)
   })
@@ -240,12 +240,12 @@ function shutdown() {
 process.on('SIGINT', shutdown)
 process.on('SIGTERM', shutdown)
 process.on('uncaughtException', (error) => {
-  writeStderr(`[LeadFlow] uncaughtException: ${error instanceof Error ? error.stack || error.message : String(error)}\n`)
+  writeStderr(`[ClientPilot] uncaughtException: ${error instanceof Error ? error.stack || error.message : String(error)}\n`)
   shutdown()
   process.exit(1)
 })
 process.on('unhandledRejection', (reason) => {
-  writeStderr(`[LeadFlow] unhandledRejection: ${reason instanceof Error ? reason.stack || reason.message : String(reason)}\n`)
+  writeStderr(`[ClientPilot] unhandledRejection: ${reason instanceof Error ? reason.stack || reason.message : String(reason)}\n`)
   shutdown()
   process.exit(1)
 })
@@ -257,7 +257,7 @@ try {
   startDevServer()
 } catch (error) {
   const message = error instanceof Error ? error.stack || error.message : String(error)
-  writeStderr(`[LeadFlow] ${message}\n`)
+  writeStderr(`[ClientPilot] ${message}\n`)
   shutdown()
   process.exit(1)
 }

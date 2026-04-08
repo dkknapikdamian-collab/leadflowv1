@@ -431,7 +431,7 @@ test("createInitialSnapshot zwraca pusty stan startowy aplikacji", () => {
 
   assert.equal(snapshot.leads.length, 0)
   assert.equal(snapshot.items.length, 0)
-  assert.equal(snapshot.settings.workspaceName, "LeadFlow")
+  assert.equal(snapshot.settings.workspaceName, "ClientPilot")
   assert.equal(snapshot.settings.theme, "classic")
   assert.equal(snapshot.context.accessStatus, "local")
 })

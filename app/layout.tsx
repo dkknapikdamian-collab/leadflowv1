@@ -4,7 +4,7 @@ import { Providers } from "@/app/providers"
 import "@/app/globals.css"
 
 export const metadata: Metadata = {
-  title: "LeadFlow",
+  title: "ClientPilot",
   description: "Lead follow-up + kalendarz + przypomnienia",
 }
 

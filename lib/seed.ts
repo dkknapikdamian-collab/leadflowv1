@@ -27,7 +27,7 @@ function createBaseSnapshot(): Omit<AppSnapshot, "leads" | "items"> {
       defaultReminder: "1h_before",
       caseReminderFrequency: "daily",
       defaultSnooze: "tomorrow",
-      workspaceName: "LeadFlow",
+      workspaceName: "ClientPilot",
       fontScale: "compact",
       viewProfile: "desktop",
       theme: "classic",

@@ -38,11 +38,11 @@ function getUserAvatarLabel(userName: string, workspaceName: string) {
   const normalizedUserName = userName.trim().toLowerCase()
 
   if (!userName.trim() || GENERIC_USER_NAMES.has(normalizedUserName)) {
-    return "LF"
+    return "CP"
   }
 
   const label = initials(userName)
-  return label || initials(workspaceName) || "LF"
+  return label || initials(workspaceName) || "CP"
 }
 
 function useAutoViewProfile() {
@@ -231,7 +231,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
   }, [isSessionReady, router, session])
 
   const pageLabel = useMemo(
-    () => NAV_ITEMS.find((item) => pathname.startsWith(item.href))?.label ?? "LeadFlow",
+    () => NAV_ITEMS.find((item) => pathname.startsWith(item.href))?.label ?? "ClientPilot",
     [pathname],
   )
 
@@ -339,7 +339,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
               type="button"
               aria-label="Otwórz menu mobilne"
               aria-expanded={mobileMenuOpen}
-              aria-controls="leadflow-mobile-menu"
+              aria-controls="clientpilot-mobile-menu"
             >
               ☰
             </button>
@@ -386,7 +386,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
             onClick={() => setMobileMenuOpen(true)}
             aria-haspopup="dialog"
             aria-expanded={mobileMenuOpen}
-            aria-controls="leadflow-mobile-menu"
+            aria-controls="clientpilot-mobile-menu"
           >
             <span>⋯</span>
             <span>Więcej</span>
@@ -395,7 +395,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
       </div>
 
       {mobileMenuOpen ? (
-        <div id="leadflow-mobile-menu">
+        <div id="clientpilot-mobile-menu">
           <MobileMenuSheet
             pathname={pathname}
             workspaceName={snapshot.settings.workspaceName}

@@ -1,4 +1,4 @@
-# LeadFlow
+# ClientPilot
 
 Aktualna definicja produktu jest w `product-scope-v2.md`.
 
