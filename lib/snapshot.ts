@@ -5,6 +5,8 @@ import { cloneSnapshot, createId, getItemPrimaryDate, nowIso } from "./utils"
 const EMPTY_LEAD_TEMPLATE: Lead = {
   id: "",
   workspaceId: null,
+  contactId: null,
+  caseId: null,
   name: "",
   company: "",
   email: "",
@@ -55,6 +57,8 @@ function normalizeLead(lead: Partial<Lead> | undefined, initialLead: Lead): Lead
     ...initialLead,
     ...lead,
     workspaceId: typeof lead?.workspaceId === "string" ? lead.workspaceId : initialLead.workspaceId ?? null,
+    contactId: typeof lead?.contactId === "string" ? lead.contactId : initialLead.contactId ?? null,
+    caseId: typeof lead?.caseId === "string" ? lead.caseId : initialLead.caseId ?? null,
     value: typeof lead?.value === "number" && Number.isFinite(lead.value) ? lead.value : initialLead.value,
     nextActionItemId: typeof lead?.nextActionItemId === "string" ? lead.nextActionItemId : null,
   }

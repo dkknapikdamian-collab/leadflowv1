@@ -3,14 +3,24 @@ import assert from "node:assert/strict"
 import { REPOSITORY_TABLES } from "../lib/repository/schema"
 import { createBootstrapRecords } from "../lib/repository/bootstrap"
 
-test("REPOSITORY_TABLES zawiera główne tabele ETAPU 3", () => {
+test("REPOSITORY_TABLES zawiera główne tabele ETAPU 3 + most Lead → Case", () => {
   assert.deepEqual(REPOSITORY_TABLES, {
     profiles: "profiles",
     workspaces: "workspaces",
     workspaceMembers: "workspace_members",
     accessStatus: "access_status",
     settings: "settings",
+    contacts: "contacts",
     leads: "leads",
+    cases: "cases",
+    caseTemplates: "case_templates",
+    templateItems: "template_items",
+    caseItems: "case_items",
+    fileAttachments: "file_attachments",
+    approvals: "approvals",
+    activityLog: "activity_log",
+    notifications: "notifications",
+    clientPortalTokens: "client_portal_tokens",
     workItems: "work_items",
   })
 })
@@ -43,4 +53,3 @@ test("createBootstrapRecords buduje spójny startowy model konta i workspace", (
   assert.equal(records.settings.workspaceId, "workspace-1")
   assert.equal(records.settings.workspaceName, "ClientPilot")
 })
-

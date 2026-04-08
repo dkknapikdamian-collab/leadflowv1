@@ -56,6 +56,39 @@ export type AppTheme = "classic" | "midnight"
 export type SignupSource = "google" | "email_password" | "invite" | "manual" | "unknown"
 export type WorkspaceMemberRole = "owner"
 export type BonusKind = "promo_code" | "referral" | "manual"
+export type CaseStatus =
+  | "draft"
+  | "intake"
+  | "waiting_client"
+  | "in_progress"
+  | "ready_to_start"
+  | "blocked"
+  | "done"
+  | "archived"
+export type CaseItemKind = "task" | "checklist" | "milestone" | "document" | "approval"
+export type CaseItemStatus = "todo" | "in_progress" | "blocked" | "done"
+export type ApprovalStatus = "pending" | "approved" | "rejected" | "expired"
+export type AttachmentScope = "case" | "case_item"
+export type ActivitySource = "sales" | "operations" | "system"
+export type ActivityType =
+  | "lead_created"
+  | "lead_updated"
+  | "lead_status_changed"
+  | "lead_converted_to_case"
+  | "case_created"
+  | "case_updated"
+  | "case_status_changed"
+  | "case_item_created"
+  | "case_item_updated"
+  | "case_item_completed"
+  | "file_uploaded"
+  | "approval_requested"
+  | "approval_decision"
+  | "notification_scheduled"
+  | "notification_sent"
+  | "reminder_triggered"
+export type NotificationChannel = "in_app" | "email" | "sms"
+export type NotificationStatus = "queued" | "sent" | "failed" | "read" | "dismissed"
 
 export type LeadAlarmReason =
   | "missing_next_step"
@@ -72,6 +105,8 @@ export type LeadRiskState = "ok" | "at_risk"
 export interface Lead {
   id: string
   workspaceId?: string | null
+  contactId?: string | null
+  caseId?: string | null
   name: string
   company: string
   email: string
@@ -109,6 +144,167 @@ export interface WorkItem {
   updatedAt: string
   showInTasks: boolean
   showInCalendar: boolean
+}
+
+export interface Contact {
+  id: string
+  workspaceId: string
+  createdByUserId?: string | null
+  name: string
+  company: string
+  email: string
+  phone: string
+  normalizedEmail: string
+  normalizedPhone: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CaseTemplate {
+  id: string
+  workspaceId: string
+  createdByUserId?: string | null
+  code: string
+  title: string
+  description: string
+  isDefault: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface TemplateItem {
+  id: string
+  workspaceId: string
+  templateId: string
+  createdByUserId?: string | null
+  sortOrder: number
+  kind: CaseItemKind
+  title: string
+  description: string
+  required: boolean
+  defaultDueOffsetDays: number | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Case {
+  id: string
+  workspaceId: string
+  contactId: string
+  sourceLeadId: string | null
+  templateId: string | null
+  createdByUserId?: string | null
+  ownerUserId: string | null
+  title: string
+  description: string
+  status: CaseStatus
+  priority: Priority
+  value: number
+  startAt: string | null
+  dueAt: string | null
+  closedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CaseItem {
+  id: string
+  workspaceId: string
+  caseId: string
+  templateItemId: string | null
+  createdByUserId?: string | null
+  ownerUserId: string | null
+  sortOrder: number
+  kind: CaseItemKind
+  title: string
+  description: string
+  status: CaseItemStatus
+  required: boolean
+  dueAt: string | null
+  completedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface FileAttachment {
+  id: string
+  workspaceId: string
+  caseId: string | null
+  caseItemId: string | null
+  scope: AttachmentScope
+  uploadedByUserId?: string | null
+  fileName: string
+  fileType: string
+  fileSizeBytes: number
+  storagePath: string
+  createdAt: string
+}
+
+export interface Approval {
+  id: string
+  workspaceId: string
+  caseId: string | null
+  caseItemId: string | null
+  requestedByUserId?: string | null
+  reviewerUserId: string | null
+  reviewerContactId: string | null
+  status: ApprovalStatus
+  title: string
+  description: string
+  dueAt: string | null
+  decidedAt: string | null
+  decisionNote: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ActivityLogEntry {
+  id: string
+  workspaceId: string
+  actorUserId: string | null
+  actorContactId: string | null
+  source: ActivitySource
+  type: ActivityType
+  leadId: string | null
+  caseId: string | null
+  caseItemId: string | null
+  attachmentId: string | null
+  approvalId: string | null
+  notificationId: string | null
+  payload: Record<string, unknown>
+  createdAt: string
+}
+
+export interface AppNotification {
+  id: string
+  workspaceId: string
+  caseId: string | null
+  caseItemId: string | null
+  leadId: string | null
+  contactId: string | null
+  channel: NotificationChannel
+  status: NotificationStatus
+  title: string
+  body: string
+  scheduledAt: string
+  sentAt: string | null
+  readAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ClientPortalToken {
+  id: string
+  workspaceId: string
+  caseId: string
+  contactId: string
+  tokenHash: string
+  createdByUserId?: string | null
+  expiresAt: string
+  revokedAt: string | null
+  lastUsedAt: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 export type LeadInput = Omit<Lead, "id" | "createdAt" | "updatedAt" | "nextActionItemId">
@@ -155,6 +351,16 @@ export interface AppSnapshot {
   settings: SettingsState
   leads: Lead[]
   items: WorkItem[]
+  contacts?: Contact[]
+  cases?: Case[]
+  caseTemplates?: CaseTemplate[]
+  templateItems?: TemplateItem[]
+  caseItems?: CaseItem[]
+  fileAttachments?: FileAttachment[]
+  approvals?: Approval[]
+  activityLog?: ActivityLogEntry[]
+  notifications?: AppNotification[]
+  clientPortalTokens?: ClientPortalToken[]
 }
 
 export interface ProfileRecord {
@@ -220,3 +426,14 @@ export interface WorkItemRecord extends WorkItem {
   workspaceId: string
   createdByUserId: string | null
 }
+
+export interface ContactRecord extends Contact {}
+export interface CaseTemplateRecord extends CaseTemplate {}
+export interface TemplateItemRecord extends TemplateItem {}
+export interface CaseRecord extends Case {}
+export interface CaseItemRecord extends CaseItem {}
+export interface FileAttachmentRecord extends FileAttachment {}
+export interface ApprovalRecord extends Approval {}
+export interface ActivityLogRecord extends ActivityLogEntry {}
+export interface NotificationRecord extends AppNotification {}
+export interface ClientPortalTokenRecord extends ClientPortalToken {}
