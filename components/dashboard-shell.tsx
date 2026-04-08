@@ -18,17 +18,39 @@ import {
   toDateKey,
 } from "@/lib/utils"
 
-const NAV_ITEMS = [
+type NavItem = {
+  href: string
+  label: string
+  icon: string
+}
+
+const NAV_ITEMS: NavItem[] = [
   { href: "/today", label: "Dziś", icon: "◈" },
   { href: "/leads", label: "Leady", icon: "◉" },
+  { href: "/leads/pipeline", label: "Pipeline", icon: "⇄" },
+  { href: "/cases", label: "Sprawy", icon: "▣" },
   { href: "/tasks", label: "Zadania", icon: "☑" },
   { href: "/calendar", label: "Kalendarz", icon: "⊞" },
+  { href: "/activity", label: "Aktywność", icon: "◎" },
   { href: "/billing", label: "Billing", icon: "¤" },
   { href: "/settings", label: "Ustawienia", icon: "⚙" },
-] as const
+]
 
-const MOBILE_PRIMARY_NAV = NAV_ITEMS
-const MOBILE_SECONDARY_NAV = NAV_ITEMS
+const MOBILE_PRIMARY_NAV: NavItem[] = [
+  { href: "/today", label: "Dziś", icon: "◈" },
+  { href: "/leads", label: "Leady", icon: "◉" },
+  { href: "/cases", label: "Sprawy", icon: "▣" },
+  { href: "/tasks", label: "Zadania", icon: "☑" },
+]
+
+const MOBILE_SECONDARY_NAV: NavItem[] = [
+  { href: "/leads/pipeline", label: "Pipeline", icon: "⇄" },
+  { href: "/calendar", label: "Kalendarz", icon: "⊞" },
+  { href: "/activity", label: "Aktywność", icon: "◎" },
+  { href: "/billing", label: "Billing", icon: "¤" },
+  { href: "/settings", label: "Ustawienia", icon: "⚙" },
+]
+
 const GENERIC_USER_NAMES = new Set(["demo", "twoje konto", "konto", "użytkownik", "uzytkownik"])
 
 function getUserAvatarLabel(userName: string, workspaceName: string) {
@@ -40,6 +62,14 @@ function getUserAvatarLabel(userName: string, workspaceName: string) {
 
   const label = initials(userName)
   return label || initials(workspaceName) || "LF"
+}
+
+function isNavItemActive(pathname: string, href: string) {
+  if (href === "/leads") {
+    return pathname === "/leads"
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`)
 }
 
 function useAutoViewProfile() {
@@ -182,7 +212,7 @@ function MobileMenuSheet({
 
         <nav className="mobile-menu-list" aria-label="Pozostałe sekcje">
           {MOBILE_SECONDARY_NAV.map((item) => {
-            const active = pathname.startsWith(item.href)
+            const active = isNavItemActive(pathname, item.href)
             return (
               <Link
                 key={item.href}
@@ -225,10 +255,10 @@ export function DashboardShell({ children }: PropsWithChildren) {
     }
   }, [isSessionReady, router, session])
 
-  const pageLabel = useMemo(
-    () => NAV_ITEMS.find((item) => pathname.startsWith(item.href))?.label ?? "LeadFlow",
-    [pathname],
-  )
+  const pageLabel = useMemo(() => {
+    const ordered = [...NAV_ITEMS].sort((left, right) => right.href.length - left.href.length)
+    return ordered.find((item) => isNavItemActive(pathname, item.href))?.label ?? "LeadFlow"
+  }, [pathname])
 
   const displayUserName = session?.user.displayName || snapshot.user.name || "Twoje konto"
   const displayUserEmail = session?.user.email || snapshot.user.email || ""
@@ -279,12 +309,12 @@ export function DashboardShell({ children }: PropsWithChildren) {
           <div className="brand-title">
             Lead<span>Flow</span>
           </div>
-          <div className="brand-subtitle">Lead follow-up i kalendarz</div>
+          <div className="brand-subtitle">Domykanie i uruchamianie klienta</div>
         </div>
 
         <nav className="nav-list">
           {NAV_ITEMS.map((item) => {
-            const active = pathname.startsWith(item.href)
+            const active = isNavItemActive(pathname, item.href)
             return (
               <Link key={item.href} href={item.href} className={`nav-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}>
                 <span>{item.icon}</span>
@@ -350,7 +380,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
 
         <nav className="bottom-nav mobile-only" aria-label="Główna nawigacja mobilna">
           {MOBILE_PRIMARY_NAV.map((item) => {
-            const active = pathname.startsWith(item.href)
+            const active = isNavItemActive(pathname, item.href)
             return (
               <Link key={item.href} href={item.href} className={`bottom-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}>
                 <span>{item.icon}</span>
