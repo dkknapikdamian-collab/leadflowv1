@@ -625,8 +625,8 @@ export function CasesPageView() {
           }}
           onRevokeClientLink={revokeClientPortalToken}
           clientPortalLink={
-            selectedPortalToken
-              ? `https://clientpilot.app/portal/${selectedPortalToken.tokenHash}`
+            selectedPortalToken?.tokenValue
+              ? `https://clientpilot.app/portal/${selectedPortalToken.tokenValue}`
               : `https://clientpilot.app/portal?case=${selectedCase.id}`
           }
         />

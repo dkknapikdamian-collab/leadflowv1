@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { verifySignedAttachmentAccess } from "@/lib/storage/signed-access"
 import { findPortalTokenInSnapshot, isPortalTokenActive, listAppSnapshotsForPortalLookup } from "@/lib/supabase/admin"
+import { checkSecurityRateLimit, getRequestClientIp } from "@/lib/security/rate-limit"
 import { nowIso } from "@/lib/utils"
 
 async function findSnapshotByToken(tokenHash: string, now: string) {
@@ -25,6 +26,15 @@ export async function GET(
 ) {
   const { token, attachmentId } = await context.params
   const now = nowIso()
+  const clientIp = getRequestClientIp(request)
+
+  const readLimit = checkSecurityRateLimit("portal-attachment-read", `${clientIp}:${token}`)
+  if (!readLimit.ok) {
+    return NextResponse.json(
+      { error: "Za duzo prob pobrania pliku. Sprobuj ponownie za chwile." },
+      { status: 429, headers: { "Retry-After": String(readLimit.retryAfterSeconds) } },
+    )
+  }
 
   const found = await findSnapshotByToken(token, now)
   if (!found) {

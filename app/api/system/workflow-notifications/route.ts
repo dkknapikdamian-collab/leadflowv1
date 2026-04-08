@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getCronSecret } from "@/lib/mail/config"
+import { checkSecurityRateLimit, getRequestClientIp } from "@/lib/security/rate-limit"
 import { sendEmailWithResend } from "@/lib/mail/resend"
 import { buildWorkflowNotificationJobs } from "@/lib/mail/workflow-planner"
 import { buildWorkflowEmailTemplate } from "@/lib/mail/workflow-templates"
@@ -78,6 +79,10 @@ function createActivity(input: {
   }
 }
 
+function isReminderKind(kind: string) {
+  return kind.includes("reminder") || kind.includes("due_soon") || kind.includes("decision_required")
+}
+
 async function handleRequest(request: NextRequest) {
   try {
     if (!isAuthorized(request)) {
@@ -91,6 +96,15 @@ async function handleRequest(request: NextRequest) {
   }
 
   const now = nowIso()
+  const callerIp = getRequestClientIp(request)
+  const triggerRateLimit = checkSecurityRateLimit("workflow-reminder-trigger", callerIp)
+  if (!triggerRateLimit.ok) {
+    return NextResponse.json(
+      { error: "Za duzo wywolan workflow notifications. Sprobuj ponownie za chwile." },
+      { status: 429, headers: { "Retry-After": String(triggerRateLimit.retryAfterSeconds) } },
+    )
+  }
+
   const snapshotsResult = await listAppSnapshotsForPortalLookup()
   if (!snapshotsResult.data) {
     return NextResponse.json({ error: "Nie udalo sie pobrac snapshotow." }, { status: 500 })
@@ -153,6 +167,22 @@ async function handleRequest(request: NextRequest) {
             at: now,
           }),
         )
+        if (isReminderKind(job.kind)) {
+          activityLog.unshift(
+            createActivity({
+              workspaceId: row.workspaceId,
+              caseId: job.caseId,
+              caseItemId: job.caseItemId,
+              type: "reminder_sent",
+              payload: {
+                kind: job.kind,
+                channel: "in_app",
+                dedupeKey: job.dedupeKey,
+              },
+              at: now,
+            }),
+          )
+        }
         await insertSystemEmailEvent({
           workspaceId: row.workspaceId,
           userId: row.userId,
@@ -245,6 +275,23 @@ async function handleRequest(request: NextRequest) {
             at: now,
           }),
         )
+        if (isReminderKind(job.kind)) {
+          activityLog.unshift(
+            createActivity({
+              workspaceId: row.workspaceId,
+              caseId: job.caseId,
+              caseItemId: job.caseItemId,
+              type: "reminder_sent",
+              payload: {
+                kind: job.kind,
+                channel: "email",
+                dedupeKey: job.dedupeKey,
+                to: job.recipient.email,
+              },
+              at: now,
+            }),
+          )
+        }
       }
 
       if (handled) {

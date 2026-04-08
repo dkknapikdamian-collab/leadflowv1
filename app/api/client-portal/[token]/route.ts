@@ -8,9 +8,11 @@ import {
 import { ALLOWED_UPLOAD_MIME_TYPES, MAX_UPLOAD_SIZE_BYTES, validateUploadMeta } from "@/lib/storage/upload-policy"
 import { createSignedAttachmentAccess } from "@/lib/storage/signed-access"
 import { resolveSnapshotAccessPolicy } from "@/lib/access/policy"
+import { checkSecurityRateLimit, getRequestClientIp } from "@/lib/security/rate-limit"
 import type {
   AppNotification,
   AppSnapshot,
+  ActivityLogEntry,
   Approval,
   ApprovalStatus,
   Case,
@@ -129,6 +131,76 @@ function findSnapshotByToken(tokenHash: string, now: string) {
     }
     return null
   })
+}
+
+function rateLimitedResponse(retryAfterSeconds: number, message = "Za duzo prob. Sprobuj ponownie za chwile.") {
+  return NextResponse.json(
+    { error: message },
+    { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } },
+  )
+}
+
+function appendPortalOpenedActivity(snapshot: AppSnapshot, token: ClientPortalToken, at: string) {
+  const caseRecord = (snapshot.cases ?? []).find((entry) => entry.id === token.caseId)
+  if (!caseRecord) return snapshot
+
+  const activity = snapshot.activityLog ?? []
+  const lastOpen = activity.find(
+    (entry) =>
+      entry.type === "portal_opened"
+      && entry.caseId === caseRecord.id
+      && entry.actorContactId === token.contactId,
+  )
+
+  const shouldSkip = lastOpen && (Date.parse(at) - Date.parse(lastOpen.createdAt)) < 5 * 60 * 1000
+  if (shouldSkip) {
+    return {
+      ...snapshot,
+      clientPortalTokens: (snapshot.clientPortalTokens ?? []).map((entry) =>
+        entry.id === token.id
+          ? {
+              ...entry,
+              lastUsedAt: at,
+              updatedAt: at,
+            }
+          : entry,
+      ),
+    }
+  }
+
+  const portalOpenedEntry: ActivityLogEntry = {
+    id: createId("activity"),
+    workspaceId: caseRecord.workspaceId,
+    actorUserId: null,
+    actorContactId: token.contactId,
+    source: "system",
+    type: "portal_opened",
+    leadId: caseRecord.sourceLeadId ?? null,
+    caseId: caseRecord.id,
+    caseItemId: null,
+    attachmentId: null,
+    approvalId: null,
+    notificationId: null,
+    payload: { tokenId: token.id },
+    createdAt: at,
+  }
+
+  return {
+    ...snapshot,
+    activityLog: [
+      portalOpenedEntry,
+      ...activity,
+    ],
+    clientPortalTokens: (snapshot.clientPortalTokens ?? []).map((entry) =>
+      entry.id === token.id
+        ? {
+            ...entry,
+            lastUsedAt: at,
+            updatedAt: at,
+          }
+        : entry,
+    ),
+  }
 }
 
 function sanitizePortalResponse(snapshot: AppSnapshot, token: ClientPortalToken) {
@@ -534,18 +606,42 @@ function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, inpu
   }
 }
 
-export async function GET(_request: NextRequest, context: { params: Promise<{ token: string }> }) {
+export async function GET(request: NextRequest, context: { params: Promise<{ token: string }> }) {
   const { token } = await context.params
   const now = nowIso()
+  const clientIp = getRequestClientIp(request)
+  const viewRateLimit = checkSecurityRateLimit("portal-view", `${clientIp}:${token}`)
+  if (!viewRateLimit.ok) {
+    return rateLimitedResponse(viewRateLimit.retryAfterSeconds)
+  }
+
   const found = await findSnapshotByToken(token, now)
   if (!found) {
+    const invalidRateLimit = checkSecurityRateLimit("portal-invalid-token", `${clientIp}:${token}`)
+    if (!invalidRateLimit.ok) {
+      return rateLimitedResponse(invalidRateLimit.retryAfterSeconds, "Limit prob dla publicznego linku zostal przekroczony.")
+    }
     return NextResponse.json({ error: "Nieprawidlowy link klienta." }, { status: 404 })
   }
   if (found.expired) {
+    const invalidRateLimit = checkSecurityRateLimit("portal-invalid-token", `${clientIp}:${token}`)
+    if (!invalidRateLimit.ok) {
+      return rateLimitedResponse(invalidRateLimit.retryAfterSeconds, "Limit prob dla publicznego linku zostal przekroczony.")
+    }
     return NextResponse.json({ error: "Link wygasl lub zostal odwolany." }, { status: 410 })
   }
 
-  const payload = sanitizePortalResponse(found.row.snapshot, found.token)
+  const snapshotWithOpenAudit = appendPortalOpenedActivity(found.row.snapshot, found.token, now)
+  const save = await upsertAppSnapshotByUserId({
+    userId: found.row.userId,
+    workspaceId: found.row.workspaceId,
+    snapshot: snapshotWithOpenAudit,
+  })
+  if (save.error) {
+    return NextResponse.json({ error: "Nie udalo sie zapisac zdarzenia portalu." }, { status: 500 })
+  }
+
+  const payload = sanitizePortalResponse(snapshotWithOpenAudit, found.token)
   if (!payload) {
     return NextResponse.json({ error: "Nie znaleziono sprawy dla tokenu." }, { status: 404 })
   }
@@ -556,11 +652,25 @@ export async function GET(_request: NextRequest, context: { params: Promise<{ to
 export async function POST(request: NextRequest, context: { params: Promise<{ token: string }> }) {
   const { token } = await context.params
   const now = nowIso()
+  const clientIp = getRequestClientIp(request)
+  const actionRateLimit = checkSecurityRateLimit("portal-action", `${clientIp}:${token}`)
+  if (!actionRateLimit.ok) {
+    return rateLimitedResponse(actionRateLimit.retryAfterSeconds)
+  }
+
   const found = await findSnapshotByToken(token, now)
   if (!found) {
+    const invalidRateLimit = checkSecurityRateLimit("portal-invalid-token", `${clientIp}:${token}`)
+    if (!invalidRateLimit.ok) {
+      return rateLimitedResponse(invalidRateLimit.retryAfterSeconds, "Limit prob dla publicznego linku zostal przekroczony.")
+    }
     return NextResponse.json({ error: "Nieprawidlowy link klienta." }, { status: 404 })
   }
   if (found.expired) {
+    const invalidRateLimit = checkSecurityRateLimit("portal-invalid-token", `${clientIp}:${token}`)
+    if (!invalidRateLimit.ok) {
+      return rateLimitedResponse(invalidRateLimit.retryAfterSeconds, "Limit prob dla publicznego linku zostal przekroczony.")
+    }
     return NextResponse.json({ error: "Link wygasl lub zostal odwolany." }, { status: 410 })
   }
 
@@ -590,6 +700,20 @@ export async function POST(request: NextRequest, context: { params: Promise<{ to
 
   if (!body?.action || !body.caseItemId) {
     return NextResponse.json({ error: "Brakuje danych akcji." }, { status: 400 })
+  }
+
+  if (body.action === "upload_file") {
+    const uploadRateLimit = checkSecurityRateLimit("portal-upload", `${clientIp}:${token}`)
+    if (!uploadRateLimit.ok) {
+      return rateLimitedResponse(uploadRateLimit.retryAfterSeconds, "Limit uploadow zostal przekroczony.")
+    }
+  }
+
+  if (body.action === "approval_decision" || body.action === "choose_option") {
+    const acceptanceRateLimit = checkSecurityRateLimit("portal-acceptance", `${clientIp}:${token}`)
+    if (!acceptanceRateLimit.ok) {
+      return rateLimitedResponse(acceptanceRateLimit.retryAfterSeconds, "Limit akcji akceptacji zostal przekroczony.")
+    }
   }
 
   const changed = applyPortalAction(found.row.snapshot, found.token, {

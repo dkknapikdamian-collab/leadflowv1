@@ -21,6 +21,7 @@ import type {
   WorkItemInput,
 } from "./types"
 import { cloneSnapshot, createId, getItemPrimaryDate, nowIso } from "./utils"
+import { createPortalTokenValue, hashPortalTokenValue } from "./security/portal-token"
 
 const EMPTY_LEAD_TEMPLATE: Lead = {
   id: "",
@@ -907,12 +908,14 @@ function getTemplateItemsForStartMode(
 
 function createPortalToken(caseId: string, workspaceId: string, contactId: string, now: string): ClientPortalToken {
   const expiresAt = new Date(Date.parse(now) + 1000 * 60 * 60 * 24 * 30).toISOString()
+  const publicToken = createPortalTokenValue()
   return {
     id: createId("portal"),
     workspaceId,
     caseId,
     contactId,
-    tokenHash: createId("cpt"),
+    tokenHash: hashPortalTokenValue(publicToken),
+    tokenValue: publicToken,
     createdByUserId: null,
     expiresAt,
     revokedAt: null,
@@ -1064,8 +1067,31 @@ export function revokeClientPortalTokenSnapshot(snapshot: AppSnapshot, caseId: s
   const tokens = snapshot.clientPortalTokens ?? []
   if (!tokens.some((entry) => entry.caseId === caseId && !entry.revokedAt)) return snapshot
 
+  const targetCase = (snapshot.cases ?? []).find((entry) => entry.id === caseId)
+  const revokeActivity: ActivityLogEntry[] = targetCase
+    ? [
+        {
+          id: createId("activity"),
+          workspaceId: targetCase.workspaceId,
+          actorUserId: snapshot.context.userId ?? null,
+          actorContactId: null,
+          source: "operations",
+          type: "portal_token_revoked",
+          leadId: targetCase.sourceLeadId ?? null,
+          caseId: targetCase.id,
+          caseItemId: null,
+          attachmentId: null,
+          approvalId: null,
+          notificationId: null,
+          payload: { reason: "manual_revoke" },
+          createdAt: now,
+        },
+      ]
+    : []
+
   return {
     ...snapshot,
+    activityLog: [...revokeActivity, ...(snapshot.activityLog ?? [])],
     clientPortalTokens: tokens.map((entry) =>
       entry.caseId === caseId && !entry.revokedAt
         ? {

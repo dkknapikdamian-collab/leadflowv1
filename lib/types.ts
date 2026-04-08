@@ -112,6 +112,9 @@ export type ActivityType =
   | "notification_scheduled"
   | "notification_sent"
   | "reminder_triggered"
+  | "reminder_sent"
+  | "portal_opened"
+  | "portal_token_revoked"
 export type NotificationChannel = "in_app" | "email" | "sms"
 export type NotificationStatus = "queued" | "sent" | "failed" | "read" | "dismissed"
 
@@ -326,6 +329,7 @@ export interface ClientPortalToken {
   caseId: string
   contactId: string
   tokenHash: string
+  tokenValue?: string
   createdByUserId?: string | null
   expiresAt: string
   revokedAt: string | null

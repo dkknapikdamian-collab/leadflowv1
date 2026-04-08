@@ -1,4 +1,5 @@
 import { getSupabasePublishableKey, getSupabaseUrl } from "@/lib/supabase/config"
+import { stripPortalTokenPublicValues } from "@/lib/security/portal-token"
 import type { AppSnapshot } from "@/lib/types"
 
 interface RawAppSnapshotRow {
@@ -41,7 +42,7 @@ export async function getAppSnapshotForUser(accessToken: string, userId: string)
     data: {
       userId: row.user_id,
       workspaceId: row.workspace_id,
-      snapshot: row.snapshot_json,
+      snapshot: stripPortalTokenPublicValues(row.snapshot_json),
     },
     error: null,
     status: response.status,
@@ -56,6 +57,8 @@ export async function upsertAppSnapshotForUser(
     snapshot: AppSnapshot
   },
 ) {
+  const sanitizedSnapshot = stripPortalTokenPublicValues(input.snapshot)
+
   const response = await fetch(`${getSupabaseUrl()}/rest/v1/app_snapshots`, {
     method: "POST",
     headers: {
@@ -67,7 +70,7 @@ export async function upsertAppSnapshotForUser(
     body: JSON.stringify({
       user_id: input.userId,
       workspace_id: input.workspaceId,
-      snapshot_json: input.snapshot,
+      snapshot_json: sanitizedSnapshot,
     }),
     cache: "no-store",
   })
@@ -86,7 +89,7 @@ export async function upsertAppSnapshotForUser(
       ? {
           userId: row.user_id,
           workspaceId: row.workspace_id,
-          snapshot: row.snapshot_json,
+          snapshot: stripPortalTokenPublicValues(row.snapshot_json),
         }
       : null,
     error: null,

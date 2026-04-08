@@ -1,4 +1,6 @@
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/supabase/config"
+import { stripPortalTokenPublicValues } from "@/lib/security/portal-token"
+import { verifyPortalTokenValue } from "@/lib/security/portal-token"
 import type { AppSnapshot, ClientPortalToken } from "@/lib/types"
 import type { BonusKind } from "@/lib/types"
 
@@ -166,7 +168,7 @@ export async function listAppSnapshotsForPortalLookup() {
     data: result.data?.map((row) => ({
       userId: row.user_id,
       workspaceId: row.workspace_id,
-      snapshot: row.snapshot_json,
+      snapshot: stripPortalTokenPublicValues(row.snapshot_json),
     })) ?? null,
   }
 }
@@ -178,6 +180,8 @@ export async function upsertAppSnapshotByUserId(
     snapshot: AppSnapshot
   },
 ) {
+  const sanitizedSnapshot = stripPortalTokenPublicValues(input.snapshot)
+
   const result = await adminRestRequest<RawAppSnapshotRow[]>("/app_snapshots", {
     method: "POST",
     headers: {
@@ -186,7 +190,7 @@ export async function upsertAppSnapshotByUserId(
     body: JSON.stringify({
       user_id: input.userId,
       workspace_id: input.workspaceId,
-      snapshot_json: input.snapshot,
+      snapshot_json: sanitizedSnapshot,
     }),
   })
 
@@ -197,7 +201,7 @@ export async function upsertAppSnapshotByUserId(
       ? {
           userId: row.user_id,
           workspaceId: row.workspace_id,
-          snapshot: row.snapshot_json,
+          snapshot: stripPortalTokenPublicValues(row.snapshot_json),
         }
       : null,
   }
@@ -205,7 +209,7 @@ export async function upsertAppSnapshotByUserId(
 
 export function findPortalTokenInSnapshot(snapshot: AppSnapshot, tokenHash: string) {
   const tokens = snapshot.clientPortalTokens ?? []
-  return tokens.find((token) => token.tokenHash === tokenHash) ?? null
+  return tokens.find((token) => verifyPortalTokenValue({ presentedToken: tokenHash, storedTokenHash: token.tokenHash })) ?? null
 }
 
 export function isPortalTokenActive(token: ClientPortalToken, nowIso: string) {
