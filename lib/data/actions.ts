@@ -22,6 +22,7 @@ import {
   updateLeadSnapshot,
   updateSettingsSnapshot,
 } from "../snapshot"
+import { resolveSnapshotAccessPolicy } from "../access/policy"
 import type {
   ActivityType,
   AppSnapshot,
@@ -69,6 +70,13 @@ export type AppDataAction =
   | { type: "updateSettings"; patch: SettingsPatch }
 
 export function applyAppDataAction(snapshot: AppSnapshot, action: AppDataAction): AppSnapshot {
+  const accessPolicy = resolveSnapshotAccessPolicy(snapshot)
+  const canMutateData = accessPolicy.canWork
+
+  if (action.type !== "updateSettings" && !canMutateData) {
+    return snapshot
+  }
+
   switch (action.type) {
     case "addLead":
       return addLeadSnapshot(snapshot, action.payload)

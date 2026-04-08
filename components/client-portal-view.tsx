@@ -57,6 +57,11 @@ type PortalPayload = {
     expiresAt: string
     revokedAt: string | null
   }
+  policy: {
+    mode: "active" | "read_only" | "disabled"
+    allowActions: boolean
+    message: string
+  }
 }
 
 export function ClientPortalView({ token }: { token: string }) {
@@ -172,7 +177,7 @@ export function ClientPortalView({ token }: { token: string }) {
                   <button
                     className="primary-button"
                     type="button"
-                    disabled={!fileDrafts[item.id] || busyItemId === item.id}
+                    disabled={!data.policy.allowActions || !fileDrafts[item.id] || busyItemId === item.id}
                     onClick={() => {
                       const selected = fileDrafts[item.id]
                       if (!selected) return
@@ -216,7 +221,7 @@ export function ClientPortalView({ token }: { token: string }) {
                   <button
                     className="primary-button"
                     type="button"
-                    disabled={busyItemId === item.id}
+                    disabled={!data.policy.allowActions || busyItemId === item.id}
                     onClick={() => void runAction(item, { action: "choose_option", option: decisionDrafts[item.id] ?? "Opcja A" })}
                   >
                     {item.actionLabel}
@@ -235,7 +240,7 @@ export function ClientPortalView({ token }: { token: string }) {
                   <button
                     className="primary-button"
                     type="button"
-                    disabled={busyItemId === item.id}
+                    disabled={!data.policy.allowActions || busyItemId === item.id}
                     onClick={() => void runAction(item, { action: "approval_decision", decision: "accepted" })}
                   >
                     Zaakceptowano
@@ -243,7 +248,7 @@ export function ClientPortalView({ token }: { token: string }) {
                   <button
                     className="ghost-button small"
                     type="button"
-                    disabled={busyItemId === item.id}
+                    disabled={!data.policy.allowActions || busyItemId === item.id}
                     onClick={() => void runAction(item, { action: "approval_decision", decision: "rejected" })}
                   >
                     Odrzucono
@@ -251,7 +256,7 @@ export function ClientPortalView({ token }: { token: string }) {
                   <button
                     className="ghost-button small"
                     type="button"
-                    disabled={busyItemId === item.id}
+                    disabled={!data.policy.allowActions || busyItemId === item.id}
                     onClick={() => void runAction(item, { action: "approval_decision", decision: "needs_changes" })}
                   >
                     Wymaga zmian
@@ -277,7 +282,7 @@ export function ClientPortalView({ token }: { token: string }) {
                   <button
                     className="primary-button"
                     type="button"
-                    disabled={busyItemId === item.id || !(responseDrafts[item.id] ?? "").trim()}
+                    disabled={!data.policy.allowActions || busyItemId === item.id || !(responseDrafts[item.id] ?? "").trim()}
                     onClick={() => void runAction(item, { action: "reply", responseText: responseDrafts[item.id] ?? "" })}
                   >
                     {item.actionLabel}
@@ -290,6 +295,12 @@ export function ClientPortalView({ token }: { token: string }) {
       </section>
 
       <section className="client-portal-bottom">
+        {!data.policy.allowActions ? (
+          <div className="info-card" style={{ gridColumn: "1 / -1" }}>
+            <strong>Polityka dostępu</strong>
+            <div>{data.policy.message}</div>
+          </div>
+        ) : null}
         <div className="info-card"><strong>Juz gotowe</strong><div>{data.summary.done}</div></div>
         <div className="info-card"><strong>Czeka na weryfikacje</strong><div>{data.summary.underReview}</div></div>
         <div className="info-card"><strong>Potrzebujemy od Ciebie</strong><div>{data.summary.waitingForClient}</div></div>

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { type PropsWithChildren, useEffect, useMemo, useState } from "react"
 import { AccountStatusBanner } from "@/components/account-status-panel"
+import { resolveSnapshotAccessPolicy } from "@/lib/access/policy"
 import { ItemModal, LeadModal } from "@/components/views"
 import { useAuthSession } from "@/lib/auth/session-provider"
 import { useAppStore } from "@/lib/store"
@@ -259,6 +260,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
     const ordered = [...NAV_ITEMS].sort((left, right) => right.href.length - left.href.length)
     return ordered.find((item) => isNavItemActive(pathname, item.href))?.label ?? "ClientPilot"
   }, [pathname])
+  const accessPolicy = useMemo(() => resolveSnapshotAccessPolicy(snapshot), [snapshot])
 
   const displayUserName = session?.user.displayName || snapshot.user.name || "Twoje konto"
   const displayUserEmail = session?.user.email || snapshot.user.email || ""
@@ -354,6 +356,25 @@ export function DashboardShell({ children }: PropsWithChildren) {
       </aside>
 
       <div className="main-column">
+        {!accessPolicy.canWork ? (
+          <section
+            style={{
+              margin: "16px 16px 0",
+              padding: 14,
+              borderRadius: 14,
+              border: "1px solid rgba(245, 158, 11, 0.28)",
+              background: "rgba(245, 158, 11, 0.10)",
+            }}
+          >
+            <div style={{ fontWeight: 800, marginBottom: 6 }}>Tryb podglądu danych</div>
+            <div style={{ color: "var(--muted)", lineHeight: 1.5 }}>
+              Widzisz dane i historię modułów, ale normalna praca jest zablokowana do czasu odnowienia planu. Nie utworzysz nowych leadów ani nowych spraw.
+            </div>
+            <div style={{ marginTop: 8 }}>
+              <Link href="/billing">Otwórz billing i przywróć pełny dostęp</Link>
+            </div>
+          </section>
+        ) : null}
         <header className="mobile-header mobile-only">
           <div className="mobile-header-main">
             <button

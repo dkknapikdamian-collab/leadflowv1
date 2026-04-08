@@ -1,4 +1,5 @@
 import { resolveAccessState } from "./machine"
+import { getEffectiveSnapshotStatus, resolveSnapshotAccessPolicy } from "./policy"
 import type { AccessStatusRow } from "../supabase/access-status"
 import type { AppSnapshot, BillingState } from "../types"
 
@@ -100,28 +101,18 @@ export function applyAccessStatusToSnapshot(
   }
 }
 
-function getEffectiveAccessStatus(snapshot: AppSnapshot) {
-  if (snapshot.context.accessStatus !== "local") {
-    return snapshot.context.accessStatus
-  }
-
-  if (snapshot.billing.status === "trial") return "trial_active"
-  if (snapshot.billing.status === "active") return "paid_active"
-  if (snapshot.billing.status === "past_due") return "trial_expired"
-  return "local"
-}
-
 export function getAccountStatusPresentation(
   snapshot: AppSnapshot,
   options: { timeZone: string; now?: Date } = { timeZone: "Europe/Warsaw" },
 ): AccountStatusPresentation {
   const now = options.now ?? new Date()
-  const effectiveStatus = getEffectiveAccessStatus(snapshot)
+  const effectiveStatus = getEffectiveSnapshotStatus(snapshot)
   const planName = snapshot.billing.planName || "Solo"
   const trialEndLabel = formatAccountStatusDate(snapshot.billing.trialEndsAt, options.timeZone)
   const paidUntilLabel = formatAccountStatusDate(snapshot.billing.renewAt, options.timeZone)
   const trialDaysLeft = getDaysUntil(snapshot.billing.trialEndsAt, now)
   const planDaysLeft = getDaysUntil(snapshot.billing.renewAt, now)
+  const accessPolicy = resolveSnapshotAccessPolicy(snapshot, { now, isEmailVerified: true })
 
   if (effectiveStatus === "local") {
     return {
@@ -137,16 +128,6 @@ export function getAccountStatusPresentation(
     }
   }
 
-  const accessState = resolveAccessState({
-    isEmailVerified: true,
-    accessStatus: {
-      accessStatus: effectiveStatus,
-      trialEnd: snapshot.billing.trialEndsAt,
-      paidUntil: snapshot.billing.renewAt,
-    },
-    now,
-  })
-
   switch (effectiveStatus) {
     case "trial_active":
       return {
@@ -160,7 +141,7 @@ export function getAccountStatusPresentation(
         primaryDateLabel: trialEndLabel !== "—" ? `Koniec triala: ${trialEndLabel}` : null,
         secondaryDateLabel: null,
         ctaLabel: "Zobacz billing",
-        isBlocked: !accessState.canUseApp,
+        isBlocked: !accessPolicy.canWork,
         isExpiringSoon: trialDaysLeft !== null && trialDaysLeft >= 0 && trialDaysLeft <= 3,
       }
     case "paid_active":
@@ -175,7 +156,7 @@ export function getAccountStatusPresentation(
         primaryDateLabel: paidUntilLabel !== "—" ? `Aktywne do: ${paidUntilLabel}` : null,
         secondaryDateLabel: null,
         ctaLabel: "Otwórz billing",
-        isBlocked: !accessState.canUseApp,
+        isBlocked: !accessPolicy.canWork,
         isExpiringSoon: false,
       }
     case "canceled":
@@ -190,11 +171,11 @@ export function getAccountStatusPresentation(
         primaryDateLabel: paidUntilLabel !== "—" ? `Dostęp do: ${paidUntilLabel}` : null,
         secondaryDateLabel: null,
         ctaLabel: "Sprawdź billing",
-        isBlocked: !accessState.canUseApp,
+        isBlocked: !accessPolicy.canWork,
         isExpiringSoon: planDaysLeft !== null && planDaysLeft >= 0 && planDaysLeft <= 3,
       }
     case "payment_failed":
-      return accessState.canUseApp
+      return accessPolicy.canWork
         ? {
             tone: "warning",
             badgeLabel: "Bufor po problemie z płatnością",

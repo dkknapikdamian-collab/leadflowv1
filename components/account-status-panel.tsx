@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useMemo } from "react"
 import { getAccountStatusPresentation, formatAccountStatusDate } from "@/lib/access/account-status"
+import { resolveSnapshotAccessPolicy } from "@/lib/access/policy"
 import { useAppStore } from "@/lib/store"
 
 function getToneStyles(tone: ReturnType<typeof getAccountStatusPresentation>["tone"]) {
@@ -156,9 +157,16 @@ export function BillingStatusPageView() {
     () => getAccountStatusPresentation(snapshot, { timeZone: snapshot.settings.timezone }),
     [snapshot],
   )
+  const accessPolicy = useMemo(() => resolveSnapshotAccessPolicy(snapshot), [snapshot])
   const trialEndsLabel = formatAccountStatusDate(snapshot.billing.trialEndsAt, snapshot.settings.timezone)
   const paidUntilLabel = formatAccountStatusDate(snapshot.billing.renewAt, snapshot.settings.timezone)
   const tone = getToneStyles(status.tone)
+  const portalPolicyLabel =
+    accessPolicy.clientPortalPolicy === "active"
+      ? "Panel klienta jest aktywny dla istniejących spraw."
+      : accessPolicy.clientPortalPolicy === "read_only"
+        ? "Panel klienta pozostaje widoczny dla istniejących spraw, ale akcje klienta są wstrzymane do czasu odnowienia dostępu."
+        : "Panel klienta jest wyłączony do czasu przywrócenia dostępu."
 
   return (
     <section className="single-column-page">
@@ -228,6 +236,19 @@ export function BillingStatusPageView() {
             ? "Konto nie ma teraz pełnego dostępu do normalnej pracy w aplikacji. Dane nadal zostają, ale trzeba wejść w billing i przywrócić dostęp."
             : "Konto ma aktywny dostęp. Jeśli trial albo plan zbliża się do końca, ta sekcja pokazuje to wcześniej, a nie dopiero po blokadzie."}
         </div>
+      </div>
+
+      <div className="panel-card large-card">
+        <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 10 }}>Zakres planu</div>
+        <div style={{ color: "var(--muted)", lineHeight: 1.6, marginBottom: 10 }}>
+          Billing obejmuje cały system: leady, sprawy, szablony, zadania i portal klienta.
+        </div>
+        <div style={{ color: "var(--muted)", lineHeight: 1.6 }}>
+          {accessPolicy.canWork
+            ? "Konto ma tryb pełnej pracy: możesz normalnie tworzyć i prowadzić leady oraz sprawy."
+            : "Konto działa w trybie podglądu danych: widzisz historię i stan pracy, ale nie tworzysz nowych leadów ani nowych spraw do czasu odnowienia dostępu."}
+        </div>
+        <div style={{ color: "var(--muted)", lineHeight: 1.6, marginTop: 8 }}>{portalPolicyLabel}</div>
       </div>
     </section>
   )

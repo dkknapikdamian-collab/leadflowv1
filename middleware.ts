@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { resolveAccessState } from "@/lib/access/machine"
+import { resolveWorkspaceAccessPolicy } from "@/lib/access/policy"
 import {
   clearAuthCookies,
   getAccessTokenFromRequest,
@@ -188,17 +188,17 @@ export async function middleware(request: NextRequest) {
       )
     }
 
-    const accessState = resolveAccessState({
+    const accessPolicy = resolveWorkspaceAccessPolicy({
       isEmailVerified: Boolean(userResult.data.email_confirmed_at),
       accessStatus: accessStatusResult.data,
       now: new Date(),
     })
 
-    if (accessState.mustVerifyEmail) {
+    if (accessPolicy.reason === "email-not-verified") {
       return buildCheckEmailRedirect(request, email, sessionCookies)
     }
 
-    if (accessState.canUseApp) {
+    if (accessPolicy.canViewData) {
       return buildAuthenticatedRedirect(
         request,
         sessionCookies,
@@ -206,7 +206,7 @@ export async function middleware(request: NextRequest) {
       )
     }
 
-    return buildAccessBlockedRedirect(request, accessState.reason, sessionCookies)
+    return buildAccessBlockedRedirect(request, accessPolicy.reason, sessionCookies)
   }
 
   if (isPublicPath(pathname)) {
@@ -236,17 +236,17 @@ export async function middleware(request: NextRequest) {
     return buildEnsureCoreStateRedirect(request, sessionCookies)
   }
 
-  const accessState = resolveAccessState({
+  const accessPolicy = resolveWorkspaceAccessPolicy({
     isEmailVerified: Boolean(userResult.data.email_confirmed_at),
     accessStatus: accessStatusResult.data,
     now: new Date(),
   })
 
-  if (accessState.mustVerifyEmail) {
+  if (accessPolicy.reason === "email-not-verified") {
     return buildCheckEmailRedirect(request, email, sessionCookies)
   }
 
-  if (accessState.canUseApp) {
+  if (accessPolicy.canViewData) {
     if (pathname === "/access-blocked") {
       const response = NextResponse.redirect(new URL("/today", request.url))
       return withSessionCookies(response, sessionCookies)
@@ -259,7 +259,7 @@ export async function middleware(request: NextRequest) {
     return withSessionCookies(NextResponse.next(), sessionCookies)
   }
 
-  return buildAccessBlockedRedirect(request, accessState.reason, sessionCookies)
+  return buildAccessBlockedRedirect(request, accessPolicy.reason, sessionCookies)
 }
 
 export const config = {

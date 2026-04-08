@@ -7,6 +7,7 @@ import {
 } from "@/lib/supabase/admin"
 import { ALLOWED_UPLOAD_MIME_TYPES, MAX_UPLOAD_SIZE_BYTES, validateUploadMeta } from "@/lib/storage/upload-policy"
 import { createSignedAttachmentAccess } from "@/lib/storage/signed-access"
+import { resolveSnapshotAccessPolicy } from "@/lib/access/policy"
 import type {
   AppNotification,
   AppSnapshot,
@@ -133,6 +134,7 @@ function findSnapshotByToken(tokenHash: string, now: string) {
 function sanitizePortalResponse(snapshot: AppSnapshot, token: ClientPortalToken) {
   const caseRecord = (snapshot.cases ?? []).find((entry) => entry.id === token.caseId)
   if (!caseRecord) return null
+  const accessPolicy = resolveSnapshotAccessPolicy(snapshot)
 
   const items = (snapshot.caseItems ?? [])
     .filter((entry) => entry.caseId === caseRecord.id)
@@ -210,6 +212,16 @@ function sanitizePortalResponse(snapshot: AppSnapshot, token: ClientPortalToken)
     token: {
       expiresAt: token.expiresAt,
       revokedAt: token.revokedAt,
+    },
+    policy: {
+      mode: accessPolicy.clientPortalPolicy,
+      allowActions: accessPolicy.clientPortalPolicy === "active",
+      message:
+        accessPolicy.clientPortalPolicy === "active"
+          ? "Panel klienta działa normalnie dla tej sprawy."
+          : accessPolicy.clientPortalPolicy === "read_only"
+            ? "Panel klienta pozostaje widoczny dla istniejącej sprawy, ale odpowiedzi i uploady są tymczasowo wyłączone do czasu odnowienia dostępu."
+            : "Panel klienta jest wyłączony do czasu przywrócenia dostępu.",
     },
   }
 }
@@ -550,6 +562,19 @@ export async function POST(request: NextRequest, context: { params: Promise<{ to
   }
   if (found.expired) {
     return NextResponse.json({ error: "Link wygasl lub zostal odwolany." }, { status: 410 })
+  }
+
+  const accessPolicy = resolveSnapshotAccessPolicy(found.row.snapshot)
+  if (accessPolicy.clientPortalPolicy !== "active") {
+    return NextResponse.json(
+      {
+        error:
+          accessPolicy.clientPortalPolicy === "read_only"
+            ? "Panel klienta jest w trybie podgladu. Akcje sa zablokowane do czasu odnowienia dostepu."
+            : "Panel klienta jest tymczasowo niedostepny.",
+      },
+      { status: 423 },
+    )
   }
 
   const body = (await request.json().catch(() => null)) as {
