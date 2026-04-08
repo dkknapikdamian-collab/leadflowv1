@@ -57,11 +57,11 @@ function getUserAvatarLabel(userName: string, workspaceName: string) {
   const normalizedUserName = userName.trim().toLowerCase()
 
   if (!userName.trim() || GENERIC_USER_NAMES.has(normalizedUserName)) {
-    return "LF"
+    return "FT"
   }
 
   const label = initials(userName)
-  return label || initials(workspaceName) || "LF"
+  return label || initials(workspaceName) || "FT"
 }
 
 function isNavItemActive(pathname: string, href: string) {
@@ -257,7 +257,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
 
   const pageLabel = useMemo(() => {
     const ordered = [...NAV_ITEMS].sort((left, right) => right.href.length - left.href.length)
-    return ordered.find((item) => isNavItemActive(pathname, item.href))?.label ?? "LeadFlow"
+    return ordered.find((item) => isNavItemActive(pathname, item.href))?.label ?? "Forteca"
   }, [pathname])
 
   const displayUserName = session?.user.displayName || snapshot.user.name || "Twoje konto"
@@ -307,9 +307,10 @@ export function DashboardShell({ children }: PropsWithChildren) {
       <aside className="sidebar desktop-only">
         <div className="brand-box">
           <div className="brand-title">
-            Lead<span>Flow</span>
+            <span className="brand-mark">•</span>
+            <span>Forteca</span>
           </div>
-          <div className="brand-subtitle">FREEZE TEST 580ae66</div>
+          <div className="brand-subtitle">Domykanie i uruchamianie klienta</div>
         </div>
 
         <nav className="nav-list">
@@ -324,6 +325,12 @@ export function DashboardShell({ children }: PropsWithChildren) {
           })}
         </nav>
 
+        <div className="sidebar-status-card">
+          <div className={`sidebar-status-chip plan-${snapshot.billing.status}`}>{snapshot.billing.status === "active" ? "Aktywne" : snapshot.billing.status === "trial" ? "Trial" : "Wymaga płatności"}</div>
+          <div style={{ fontWeight: 700 }}>{snapshot.billing.planName}</div>
+          <div className="muted-small">Jeden system do domykania i uruchamiania klienta.</div>
+        </div>
+
         <SidebarMiniCalendar />
 
         <div className="sidebar-footer">
@@ -333,9 +340,6 @@ export function DashboardShell({ children }: PropsWithChildren) {
           <button className="ghost-button" onClick={() => setItemModalOpen(true)}>
             + Dodaj działanie
           </button>
-          <button className="ghost-button" onClick={handleLogout} disabled={isLoggingOut}>
-            {isLoggingOut ? "Wylogowywanie..." : "Wyloguj"}
-          </button>
           <div className="user-box">
             <div className="user-avatar">{getUserAvatarLabel(displayUserName, snapshot.settings.workspaceName)}</div>
             <div>
@@ -343,6 +347,9 @@ export function DashboardShell({ children }: PropsWithChildren) {
               <div className="muted-small">{displayUserEmail || snapshot.settings.workspaceName}</div>
             </div>
           </div>
+          <button className="ghost-button" onClick={handleLogout} disabled={isLoggingOut}>
+            {isLoggingOut ? "Wylogowywanie..." : "Wyloguj"}
+          </button>
         </div>
       </aside>
 
@@ -357,7 +364,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
               aria-expanded={mobileMenuOpen}
               aria-controls="leadflow-mobile-menu"
             >
-              ☰
+              ⋯
             </button>
             <div>
               <div className="mobile-title">{pageLabel}</div>
@@ -423,4 +430,3 @@ export function DashboardShell({ children }: PropsWithChildren) {
     </div>
   )
 }
-

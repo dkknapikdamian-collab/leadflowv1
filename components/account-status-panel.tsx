@@ -8,40 +8,40 @@ import { useAppStore } from "@/lib/store"
 function getToneStyles(tone: ReturnType<typeof getAccountStatusPresentation>["tone"]) {
   if (tone === "success") {
     return {
-      border: "1px solid rgba(74, 222, 128, 0.28)",
-      background: "rgba(74, 222, 128, 0.08)",
-      badgeBackground: "rgba(74, 222, 128, 0.14)",
-      badgeColor: "#ccf7da",
-      badgeBorder: "1px solid rgba(74, 222, 128, 0.25)",
+      border: "1px solid rgba(34, 197, 94, 0.20)",
+      background: "rgba(34, 197, 94, 0.08)",
+      badgeBackground: "rgba(34, 197, 94, 0.12)",
+      badgeColor: "#15803d",
+      badgeBorder: "1px solid rgba(34, 197, 94, 0.20)",
     }
   }
 
   if (tone === "warning") {
     return {
-      border: "1px solid rgba(245, 158, 11, 0.28)",
+      border: "1px solid rgba(245, 158, 11, 0.24)",
       background: "rgba(245, 158, 11, 0.08)",
-      badgeBackground: "rgba(245, 158, 11, 0.14)",
-      badgeColor: "#ffebb6",
-      badgeBorder: "1px solid rgba(245, 158, 11, 0.25)",
+      badgeBackground: "rgba(245, 158, 11, 0.12)",
+      badgeColor: "#b45309",
+      badgeBorder: "1px solid rgba(245, 158, 11, 0.20)",
     }
   }
 
   if (tone === "danger") {
     return {
-      border: "1px solid rgba(248, 113, 113, 0.28)",
-      background: "rgba(248, 113, 113, 0.08)",
-      badgeBackground: "rgba(248, 113, 113, 0.14)",
-      badgeColor: "#ffd5d5",
-      badgeBorder: "1px solid rgba(248, 113, 113, 0.25)",
+      border: "1px solid rgba(239, 68, 68, 0.24)",
+      background: "rgba(239, 68, 68, 0.08)",
+      badgeBackground: "rgba(239, 68, 68, 0.12)",
+      badgeColor: "#b91c1c",
+      badgeBorder: "1px solid rgba(239, 68, 68, 0.20)",
     }
   }
 
   return {
-    border: "1px solid rgba(255, 255, 255, 0.08)",
-    background: "rgba(255, 255, 255, 0.03)",
-    badgeBackground: "rgba(255, 255, 255, 0.06)",
-    badgeColor: "#d9d4cc",
-    badgeBorder: "1px solid rgba(255, 255, 255, 0.08)",
+    border: "1px solid var(--border)",
+    background: "#ffffff",
+    badgeBackground: "#f8fafc",
+    badgeColor: "var(--muted)",
+    badgeBorder: "1px solid var(--border)",
   }
 }
 
@@ -56,10 +56,12 @@ function BillingLinkButton({ label }: { label: string }) {
         minHeight: 40,
         padding: "10px 14px",
         borderRadius: 12,
-        border: "1px solid rgba(255,255,255,0.12)",
+        border: "1px solid var(--border)",
+        background: "#fff",
         color: "var(--text)",
         textDecoration: "none",
         whiteSpace: "nowrap",
+        fontWeight: 700,
       }}
     >
       {label}
@@ -81,7 +83,7 @@ export function AccountStatusBanner() {
       style={{
         margin: "16px 16px 0",
         padding: 16,
-        borderRadius: 16,
+        borderRadius: 18,
         border: tone.border,
         background: tone.background,
       }}
@@ -136,8 +138,9 @@ function StatusInfoCard({ label, value, detail }: { label: string; value: string
       style={{
         border: "1px solid var(--border)",
         borderRadius: 16,
-        background: "var(--card)",
+        background: "#ffffff",
         padding: 16,
+        boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04), 0 10px 28px rgba(15, 23, 42, 0.05)",
       }}
     >
       <div style={{ color: "var(--muted)", fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>{label}</div>

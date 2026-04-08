@@ -6,29 +6,6 @@ import { useSearchParams } from "next/navigation"
 import { AuthShell } from "@/components/auth-shell"
 import { postJson } from "@/lib/supabase/browser"
 
-const authLinkStyle = {
-  display: "block",
-  textAlign: "center" as const,
-  padding: 14,
-  borderRadius: 12,
-  border: "1px solid var(--border-light)",
-  background: "transparent",
-}
-
-const accentLinkStyle = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  minHeight: 44,
-  padding: "12px 16px",
-  borderRadius: 12,
-  border: "1px solid rgba(245,158,11,0.28)",
-  background: "rgba(245,158,11,0.14)",
-  color: "var(--accent)",
-  textDecoration: "none",
-  fontWeight: 700,
-}
-
 function LoginPageContent() {
   const searchParams = useSearchParams()
   const next = searchParams.get("next") || "/today"
@@ -61,30 +38,43 @@ function LoginPageContent() {
   return (
     <AuthShell
       title="Zaloguj się"
-      subtitle="Wejdź do swojego panelu."
+      subtitle="Wejdź do swojego panelu i pilnuj ruchu sprzedażowego bez chaosu."
       footer={
         <div style={{ display: "grid", gap: 10 }}>
           <div style={{ margin: 0, color: "var(--muted)" }}>Nie masz jeszcze konta?</div>
-          <Link href="/signup" style={accentLinkStyle}>
+          <Link href="/signup" className="auth-link-button">
             Załóż konto
           </Link>
         </div>
       }
     >
-      <a href={googleUrl} style={authLinkStyle}>
+      <a href={googleUrl} className="auth-link-button">
         Kontynuuj przez Google
       </a>
 
       <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-        <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="E-mail" style={{ width: "100%", borderRadius: 12, border: "1px solid var(--border-light)", background: "#111", color: "var(--text)", padding: "12px 14px" }} />
-        <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Hasło" style={{ width: "100%", borderRadius: 12, border: "1px solid var(--border-light)", background: "#111", color: "var(--text)", padding: "12px 14px" }} />
-        {error ? <div style={{ color: "#f87171", fontSize: 14 }}>{error}</div> : null}
-        <button type="submit" disabled={isLoading} style={{ borderRadius: 12, border: "1px solid rgba(245,158,11,0.28)", background: "rgba(245,158,11,0.14)", color: "var(--accent)", padding: "12px 14px", fontWeight: 700 }}>
+        <input
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="E-mail"
+          className="text-input"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          placeholder="Hasło"
+          className="text-input"
+        />
+        {error ? <div style={{ color: "#dc2626", fontSize: 14 }}>{error}</div> : null}
+        <button type="submit" disabled={isLoading} className="auth-primary-button">
           {isLoading ? "Logowanie..." : "Zaloguj się"}
         </button>
       </form>
 
-      <Link href="/forgot-password">Nie pamiętasz hasła?</Link>
+      <Link href="/forgot-password" className="auth-muted-link">
+        Nie pamiętasz hasła?
+      </Link>
     </AuthShell>
   )
 }
