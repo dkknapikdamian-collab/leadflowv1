@@ -7,6 +7,14 @@
 - Publikacja/merge do `main` dopiero gdy user jawnie powie, ze to jest final i mamy zielone testy.
 - "Finalna wersja projektu" ma zyc w tym repo (to jest source of truth), bez duplikowania rownoleglych kopii.
 
+## Mapa Repo (Oszczedzanie Tokenow)
+
+- Zrodlem prawdy o strukturze repo jest: `docs/REPO_MAP.md` (generowane z `git ls-files`).
+- Zanim zaczniesz prace: otworz `docs/REPO_MAP.md` i znajdz pliki/foldery powiazane z zadaniem.
+- Zasada zmiany: modyfikuj tylko pliki potrzebne do celu zmiany (bez "przekopywania" calego repo).
+- Zasada wyszukiwania: jesli musisz uzyc `rg`, ogranicz je do 1-3 katalogow albo konkretnych plikow wskazanych w mapie.
+- Utrzymanie mapy: po dodaniu/usunieciu plikow uruchom `node scripts/gen-repo-map.mjs` i committuj aktualna mape.
+
 ## Zasady Finalnej Aplikacji (ClientPilot) - Source Of Truth
 
 ### 1) Jeden produkt, jedna baza prawdy
