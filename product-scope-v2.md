@@ -12,7 +12,7 @@ To jest **system do domykania i uruchamiania klienta**.
 
 ## Architektura produktu
 
-- Forteca nie jest osobna aplikacja.
+- Sprawy nie sa osobna aplikacja.
 - Sprawy sa modulem tego samego systemu.
 - Wspolny model danych, wspolna aktywnosc, wspolny workspace.
 
@@ -33,7 +33,7 @@ Pozniej:
 
 ## Kierunek interfejsu
 
-Nowa skorka UI jest oparta o kierunek Forteca i ma byc spojnym visual systemem.
+Nowa skorka UI ma byc spojnym visual systemem.
 
 ## Poza zakresem tej iteracji
 

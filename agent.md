@@ -27,10 +27,10 @@
 - Kazdy rekord biznesowy musi byc przypisany do workspace.
 - Auth, workspace, trial, billing, RLS i centralna logika dostepu sa twardym fundamentem produktu.
 
-### 2) Nie kopiujemy Fortecy 1:1 jako kodu bazowego
+### 2) Nie kopiujemy prototypu 1:1 jako kodu bazowego
 
 - Lead Flow = baza architektoniczna (twarde zasady danych online + access + workspace).
-- Forteca = kierunek wizualny + nowy modul + flow operacyjny (UX), ale nie osobna aplikacja ani baza kodowa do przeniesienia 1:1.
+- Prototyp = kierunek wizualny + nowy modul + flow operacyjny (UX), ale nie osobna aplikacja ani baza kodowa do przeniesienia 1:1.
 - Uzytkownik nie ma czuc, ze "wchodzi do drugiej aplikacji".
 
 ### 3) Docelowy przeplyw
@@ -73,7 +73,7 @@ Minimum na wczesnym etapie:
 - Rozliczenia
 - Ustawienia
 
-### 6) Visual System Lock (Forteca jako kierunek skorki)
+### 6) Visual System Lock (kierunek nowej skorki)
 
 Wszystkie ekrany maja byc jednym visual systemem:
 - sidebar
@@ -96,7 +96,7 @@ Zostaje:
 - settings, billing, auth, workspace, trial, dane online, RLS, centralny access model
 
 Zmieniamy/dowozimy:
-- skorka i komponenty widokowe w stylu Forteca
+- skorka i komponenty widokowe w nowym stylu (jeden visual system)
 - IA tak, by Sprawy byly pelnoprawnym modulem
 - most danych: po won lead przechodzi w case
 - Today ma pokazywac tez blokady po sprzedazy
@@ -112,7 +112,7 @@ Zmieniamy/dowozimy:
 5. Automatyzacje, blokery, dashboard polaczony
 6. Twarde domkniecie bezpieczenstwa, billingu, accessu, QA
 
-## Jedna prawda produktu (po scaleniu Lead Flow + Forteca)
+## Jedna prawda produktu (jedna aplikacja)
 
 Produkt nie jest juz tylko "lead follow-up app".
 Produkt jest **systemem do domykania i uruchamiania klienta**.
@@ -124,7 +124,7 @@ Produkt jest **systemem do domykania i uruchamiania klienta**.
 
 ### Co to oznacza produktowo
 
-- Forteca nie jest osobna aplikacja
+- Nie ma "drugiej aplikacji" - wszystko jest jednym produktem
 - Sprawy sa modulem tego samego systemu
 - jeden system, jeden workspace, jedna historia dzialan
 
@@ -145,7 +145,7 @@ Pozniej:
 
 ### Kierunek UI
 
-Nowa skorka UI ma byc oparta o kierunek Forteca i dzialac jako jeden wspolny visual system dla wszystkich ekranow.
+Nowa skorka UI ma dzialac jako jeden wspolny visual system dla wszystkich ekranow.
 
 ### Ograniczenia tej iteracji
 

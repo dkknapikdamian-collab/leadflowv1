@@ -9,15 +9,15 @@ Obowiazujaca definicja produktu znajduje sie w:
 - `agent.md`
 - `etapy.md`
 
-## Jedna prawda produktu po scaleniu Lead Flow + Forteca
+## Jedna prawda produktu (jedna aplikacja)
 
 - produkt = system do domykania i uruchamiania klienta
 - sprzedaz = lead flow
 - po `won` lead moze przejsc do sprawy operacyjnej
-- Forteca nie jest osobna aplikacja
+- Sprawy nie sa osobna aplikacja
 - Sprawy sa modulem tego samego systemu
 - finalne menu operatora: Dzis, Leady, Sprawy, Zadania, Kalendarz, Aktywnosc, Rozliczenia, Ustawienia
 - pozniej: Szablony, Klienci
-- nowa skorka UI oparta o kierunek Forteca
+- nowa skorka UI jako jeden spojny visual system
 
 Dalsza tresc ponizej zostaje jako archiwum V1.

@@ -2,7 +2,7 @@
 
 ## ETAP 0 - definicja produktu i dokumentacja
 
-Domknac jedna definicje produktu po scaleniu Lead Flow + Forteca.
+Domknac jedna definicje produktu (jedna aplikacja: sprzedaz + operacja).
 
 ## ETAP 1 - visual system lock
 

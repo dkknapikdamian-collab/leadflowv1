@@ -7,7 +7,7 @@ Aktualna definicja produktu jest w `product-scope-v2.md`.
 Produkt to system do domykania i uruchamiania klienta.
 Sprzedaz = lead flow.
 Po `won` lead moze przejsc do sprawy operacyjnej.
-Forteca nie jest osobna aplikacja - Sprawy sa modulem tego samego systemu.
+Sprawy sa modulem tego samego systemu (ten sam workspace, te same zasady dostepu, jedna baza prawdy).
 
 ## Menu operatora
 

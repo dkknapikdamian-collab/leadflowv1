@@ -4,8 +4,8 @@ Ta mapa jest generowana automatycznie na bazie `git ls-files` (czyli tylko pliki
 
 - Repo root: `C:/Users/malim/Desktop/biznesy_ai/Nowy folder/leadflowv1`
 - Branch: `etap16-qa-2026-04-08`
-- HEAD: `610fc85 ETAP1: Visual System Lock (skins, tokens, shells)`
-- Generated: `2026-04-08T17:14:10.545Z`
+- HEAD: `f94d827 Rule: update REPO_MAP after every change`
+- Generated: `2026-04-08T17:16:38.651Z`
 
 ## Jak używać
 
@@ -269,6 +269,7 @@ Ta mapa jest generowana automatycznie na bazie `git ls-files` (czyli tylko pliki
 - `docs/etapy_wdrozenia_v1_lead_followup_app_2026-04-03.md` - Docs: Etapy wdrożenia V1 — aplikacja lead follow-up + kalendarz + przypomnienia.
 - `docs/leadcrm_template_source.jsx` - Docs / project notes.
 - `docs/LISTA_DO_ZROBIENIA_ETAP_1_REALNA_WERYFIKACJA_BUILDA.md` - Docs: LISTA DO ZROBIENIA.
+- `docs/REPO_MAP.md` - Docs: Jak używać.
 - `docs/zakres_v1_lead_followup_app_2026-04-03.md` - Docs: Zakres V1 - status.
 - `docs/zasady.md` - Docs: zasady.md.
 
@@ -381,6 +382,7 @@ Ta mapa jest generowana automatycznie na bazie `git ls-files` (czyli tylko pliki
 
 ### scripts
 
+- `scripts/gen-repo-map.mjs` - Source module.
 - `scripts/launch-dev.mjs` - Source module.
 - `scripts/open-browser-after-ready.mjs` - Source module.
 
