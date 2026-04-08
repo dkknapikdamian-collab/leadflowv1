@@ -82,6 +82,9 @@ export const REQUEST_STATUS_OPTIONS: { value: ApprovalStatus; label: string }[] 
   { value: "reminder_sent", label: "Przypomnienie wyslane" },
   { value: "answered", label: "Odpowiedziano" },
   { value: "overdue", label: "Przeterminowana" },
+  { value: "accepted", label: "Zaakceptowano" },
+  { value: "rejected", label: "Odrzucono" },
+  { value: "needs_changes", label: "Wymaga zmian" },
 ]
 
 export const PRIORITY_OPTIONS: { value: Priority; label: string }[] = [

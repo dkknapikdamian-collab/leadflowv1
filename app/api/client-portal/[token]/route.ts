@@ -5,19 +5,74 @@ import {
   listAppSnapshotsForPortalLookup,
   upsertAppSnapshotByUserId,
 } from "@/lib/supabase/admin"
-import type { AppNotification, AppSnapshot, Approval, CaseItem, CaseItemStatus, ClientPortalToken, FileAttachment } from "@/lib/types"
+import { ALLOWED_UPLOAD_MIME_TYPES, MAX_UPLOAD_SIZE_BYTES, validateUploadMeta } from "@/lib/storage/upload-policy"
+import { createSignedAttachmentAccess } from "@/lib/storage/signed-access"
+import type {
+  AppNotification,
+  AppSnapshot,
+  Approval,
+  ApprovalStatus,
+  Case,
+  CaseItem,
+  CaseItemStatus,
+  ClientPortalToken,
+  FileAttachment,
+} from "@/lib/types"
 import { createId, nowIso } from "@/lib/utils"
 
-type PortalActionType = "upload_file" | "choose_option" | "accept" | "reply"
+type PortalActionType = "upload_file" | "choose_option" | "approval_decision" | "reply"
+type ApprovalDecision = "accepted" | "rejected" | "needs_changes"
+type PortalOption = "Opcja A" | "Opcja B" | "Opcja C"
+
+const DONE_STATUSES = new Set<CaseItemStatus>(["accepted", "not_applicable"])
+const PENDING_STATUSES = new Set<CaseItemStatus>(["none", "request_sent", "delivered"])
 
 function getCompletionStats(items: CaseItem[]) {
-  const doneStatuses = new Set<CaseItemStatus>(["accepted", "not_applicable"])
-  const done = items.filter((item) => doneStatuses.has(item.status)).length
-  const requiredMissing = items.filter((item) => item.required && !doneStatuses.has(item.status)).length
+  const done = items.filter((item) => DONE_STATUSES.has(item.status)).length
+  const requiredMissing = items.filter((item) => item.required && !DONE_STATUSES.has(item.status)).length
   return {
     completenessPercent: items.length === 0 ? 0 : Math.round((done / items.length) * 100),
     missingCount: requiredMissing,
   }
+}
+
+function isValidPortalOption(value: string | undefined): value is PortalOption {
+  return value === "Opcja A" || value === "Opcja B" || value === "Opcja C"
+}
+
+function decisionToApprovalStatus(decision: ApprovalDecision): ApprovalStatus {
+  if (decision === "accepted") return "accepted"
+  if (decision === "rejected") return "rejected"
+  return "needs_changes"
+}
+
+function decisionToCaseItemStatus(decision: ApprovalDecision): CaseItemStatus {
+  return decision === "accepted" ? "accepted" : "needs_correction"
+}
+
+function deriveCaseStatusAfterPortalAction(caseRecord: Case, nextCaseItems: CaseItem[]) {
+  const requiredItems = nextCaseItems.filter((item) => item.required)
+  const hasNeedsCorrection = requiredItems.some((item) => item.status === "needs_correction")
+  const hasUnderReview = requiredItems.some((item) => item.status === "under_review")
+  const hasPending = requiredItems.some((item) => PENDING_STATUSES.has(item.status))
+
+  if (hasNeedsCorrection) return "blocked"
+  if (hasUnderReview) return "under_review"
+  if (hasPending) return "waiting_for_client"
+
+  if (requiredItems.length > 0 && requiredItems.every((item) => DONE_STATUSES.has(item.status))) {
+    if (
+      caseRecord.status === "blocked"
+      || caseRecord.status === "waiting_for_client"
+      || caseRecord.status === "collecting_materials"
+      || caseRecord.status === "not_started"
+      || caseRecord.status === "under_review"
+    ) {
+      return "ready_to_start"
+    }
+  }
+
+  return caseRecord.status
 }
 
 function findSnapshotByToken(tokenHash: string, now: string) {
@@ -39,10 +94,13 @@ function findSnapshotByToken(tokenHash: string, now: string) {
 function sanitizePortalResponse(snapshot: AppSnapshot, token: ClientPortalToken) {
   const caseRecord = (snapshot.cases ?? []).find((entry) => entry.id === token.caseId)
   if (!caseRecord) return null
+
   const items = (snapshot.caseItems ?? [])
     .filter((entry) => entry.caseId === caseRecord.id)
     .sort((left, right) => left.sortOrder - right.sortOrder)
   const stats = getCompletionStats(items)
+  const attachments = snapshot.fileAttachments ?? []
+  const approvals = snapshot.approvals ?? []
 
   return {
     case: {
@@ -51,30 +109,64 @@ function sanitizePortalResponse(snapshot: AppSnapshot, token: ClientPortalToken)
       message: "To prosty panel sprawy. Zrob swoje 3-4 kroki i gotowe.",
       missingText: `Brakuje ${stats.missingCount} rzeczy do startu`,
       completenessPercent: stats.completenessPercent,
+      status: caseRecord.status,
     },
-    items: items.map((item) => ({
-      id: item.id,
-      title: item.title,
-      description: item.description,
-      required: item.required,
-      dueAt: item.dueAt,
-      status: item.status,
-      kind: item.kind,
-      actionLabel:
-        item.kind === "file"
-          ? "Dodaj plik"
-          : item.kind === "decision"
-            ? "Wybierz opcje"
-            : item.kind === "approval"
-              ? "Zaakceptuj"
-              : item.kind === "response"
-                ? "Odpowiedz"
-                : "Uzupełnij",
-    })),
+    items: items.map((item) => {
+      const latestAttachment = attachments
+        .filter((entry) => entry.caseItemId === item.id)
+        .sort((left, right) => right.createdAt.localeCompare(left.createdAt))[0] ?? null
+
+      const latestApproval = approvals
+        .filter((entry) => entry.caseItemId === item.id)
+        .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))[0] ?? null
+
+      return {
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        required: item.required,
+        dueAt: item.dueAt,
+        status: item.status,
+        kind: item.kind,
+        actionLabel:
+          item.kind === "file"
+            ? "Dodaj plik"
+            : item.kind === "decision"
+              ? "Wybierz opcje"
+              : item.kind === "approval"
+                ? "Zatwierdz / odeslij"
+                : item.kind === "response"
+                  ? "Odpowiedz"
+                  : "Uzupelnij",
+        latestAttachment: latestAttachment
+          ? {
+              id: latestAttachment.id,
+              fileName: latestAttachment.fileName,
+              fileType: latestAttachment.fileType,
+              fileSizeBytes: latestAttachment.fileSizeBytes,
+              addedAt: latestAttachment.createdAt,
+              addedBy: latestAttachment.uploadedByUserId ? "Uzytkownik" : "Klient",
+              access: createSignedAttachmentAccess(latestAttachment.id, token.tokenHash, 20),
+            }
+          : null,
+        latestApproval: latestApproval
+          ? {
+              id: latestApproval.id,
+              status: latestApproval.status,
+              decidedAt: latestApproval.decidedAt,
+              decisionNote: latestApproval.decisionNote,
+            }
+          : null,
+      }
+    }),
     summary: {
       done: items.filter((item) => item.status === "accepted" || item.status === "not_applicable").length,
-      underReview: items.filter((item) => item.status === "delivered" || item.status === "under_review").length,
+      underReview: items.filter((item) => item.status === "under_review").length,
       waitingForClient: items.filter((item) => item.status === "none" || item.status === "request_sent" || item.status === "needs_correction").length,
+    },
+    uploads: {
+      maxUploadSizeBytes: MAX_UPLOAD_SIZE_BYTES,
+      allowedMimeTypes: Array.from(ALLOWED_UPLOAD_MIME_TYPES),
     },
     token: {
       expiresAt: token.expiresAt,
@@ -104,6 +196,54 @@ function createPortalNotification(snapshot: AppSnapshot, caseId: string, itemId:
   }
 }
 
+function upsertApprovalEntry(input: {
+  approvals: Approval[]
+  snapshot: AppSnapshot
+  token: ClientPortalToken
+  caseId: string
+  item: CaseItem
+  title: string
+  description: string
+  status: ApprovalStatus
+  decisionNote: string
+  at: string
+}) {
+  const existing = input.approvals.find((entry) => entry.caseItemId === input.item.id)
+  if (existing) {
+    return input.approvals.map((entry) =>
+      entry.id === existing.id
+        ? {
+            ...entry,
+            status: input.status,
+            decidedAt: input.at,
+            decisionNote: input.decisionNote,
+            updatedAt: input.at,
+          }
+        : entry,
+    )
+  }
+
+  const approval: Approval = {
+    id: createId("approval"),
+    workspaceId: input.snapshot.context.workspaceId ?? "workspace_local",
+    caseId: input.caseId,
+    caseItemId: input.item.id,
+    requestedByUserId: null,
+    reviewerUserId: null,
+    reviewerContactId: input.token.contactId,
+    status: input.status,
+    title: input.title,
+    description: input.description,
+    dueAt: null,
+    decidedAt: input.at,
+    decisionNote: input.decisionNote,
+    createdAt: input.at,
+    updatedAt: input.at,
+  }
+
+  return [approval, ...input.approvals]
+}
+
 function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, input: {
   action: PortalActionType
   caseItemId: string
@@ -112,6 +252,7 @@ function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, inpu
   fileName?: string
   fileType?: string
   fileSizeBytes?: number
+  decision?: ApprovalDecision
 }) {
   const now = nowIso()
   const caseRecord = (snapshot.cases ?? []).find((entry) => entry.id === token.caseId)
@@ -119,31 +260,138 @@ function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, inpu
 
   const item = (snapshot.caseItems ?? []).find((entry) => entry.id === input.caseItemId && entry.caseId === caseRecord.id)
   if (!item) {
-    return { snapshot, error: "Element nie należy do tej sprawy." }
+    return { snapshot, error: "Element nie nalezy do tej sprawy." }
   }
 
-  const activityType: "file_uploaded" | "approval_decision" | "case_item_updated" =
-    input.action === "upload_file"
-      ? "file_uploaded"
-      : input.action === "accept"
-        ? "approval_decision"
-        : "case_item_updated"
+  if (input.action === "upload_file" && item.kind !== "file") {
+    return { snapshot, error: "Ten element nie obsluguje uploadu pliku." }
+  }
+  if (input.action === "choose_option" && item.kind !== "decision" && item.kind !== "access") {
+    return { snapshot, error: "Opcje A/B/C sa dostepne tylko dla decyzji i dostepow." }
+  }
+  if (input.action === "approval_decision" && item.kind !== "approval") {
+    return { snapshot, error: "Ta akcja dotyczy tylko elementow akceptacji." }
+  }
+  if (input.action === "reply" && item.kind !== "response") {
+    return { snapshot, error: "Ta akcja dotyczy tylko elementow odpowiedzi." }
+  }
+
+  let nextStatus: CaseItemStatus = item.status
+  let uploadMeta: { safeFileName: string; mimeType: string; fileSizeBytes: number } | null = null
+  let activityType: "file_uploaded" | "approval_decision" | "case_item_updated" = "case_item_updated"
+  const approvalDecision = input.decision
+
+  if (input.action === "upload_file") {
+    const upload = validateUploadMeta({
+      fileName: input.fileName ?? "",
+      mimeType: input.fileType ?? "",
+      fileSizeBytes: Number.isFinite(input.fileSizeBytes) ? Number(input.fileSizeBytes) : 0,
+    })
+    if (!upload.ok || !upload.safeFileName) {
+      return { snapshot, error: upload.error || "Nieprawidlowe dane pliku." }
+    }
+    uploadMeta = {
+      safeFileName: upload.safeFileName,
+      mimeType: input.fileType ?? "application/octet-stream",
+      fileSizeBytes: Number(input.fileSizeBytes ?? 0),
+    }
+    nextStatus = "under_review"
+    activityType = "file_uploaded"
+  } else if (input.action === "choose_option") {
+    if (!isValidPortalOption(input.option)) {
+      return { snapshot, error: "Wybierz poprawna opcje A/B/C." }
+    }
+    nextStatus = "under_review"
+    activityType = "approval_decision"
+  } else if (input.action === "approval_decision") {
+    if (!approvalDecision) {
+      return { snapshot, error: "Brakuje decyzji akceptacji." }
+    }
+    nextStatus = decisionToCaseItemStatus(approvalDecision)
+    activityType = "approval_decision"
+  } else if (input.action === "reply") {
+    const normalized = (input.responseText ?? "").trim()
+    if (!normalized) {
+      return { snapshot, error: "Wpisz tresc odpowiedzi." }
+    }
+    nextStatus = "under_review"
+    activityType = "case_item_updated"
+  }
 
   const nextCaseItems = (snapshot.caseItems ?? []).map((entry) => {
     if (entry.id !== item.id) return entry
-    let nextStatus: CaseItemStatus = entry.status
-    if (input.action === "upload_file") nextStatus = "delivered"
-    if (input.action === "choose_option") nextStatus = "delivered"
-    if (input.action === "accept") nextStatus = "accepted"
-    if (input.action === "reply") nextStatus = "delivered"
-
     return {
       ...entry,
       status: nextStatus,
-      completedAt: nextStatus === "accepted" ? now : entry.completedAt,
+      completedAt: nextStatus === "accepted" ? now : null,
       updatedAt: now,
     }
   })
+
+  let attachments = snapshot.fileAttachments ?? []
+  if (input.action === "upload_file" && uploadMeta) {
+    const attachment: FileAttachment = {
+      id: createId("att"),
+      workspaceId: snapshot.context.workspaceId ?? "workspace_local",
+      caseId: caseRecord.id,
+      caseItemId: item.id,
+      scope: "case_item",
+      uploadedByUserId: null,
+      fileName: uploadMeta.safeFileName,
+      fileType: uploadMeta.mimeType || "application/octet-stream",
+      fileSizeBytes: uploadMeta.fileSizeBytes,
+      storagePath: `portal-upload/${caseRecord.id}/${createId("file")}-${uploadMeta.safeFileName}`,
+      createdAt: now,
+    }
+    attachments = [attachment, ...attachments]
+  }
+
+  let approvals = snapshot.approvals ?? []
+  if (input.action === "approval_decision" && approvalDecision) {
+    approvals = upsertApprovalEntry({
+      approvals,
+      snapshot,
+      token,
+      caseId: caseRecord.id,
+      item,
+      title: `Akceptacja: ${item.title}`,
+      description: "Decyzja klienta z panelu.",
+      status: decisionToApprovalStatus(approvalDecision),
+      decisionNote:
+        approvalDecision === "accepted"
+          ? "Zaakceptowano."
+          : approvalDecision === "rejected"
+            ? "Odrzucono."
+            : "Wymaga zmian.",
+      at: now,
+    })
+  }
+
+  if (input.action === "choose_option" && isValidPortalOption(input.option)) {
+    approvals = upsertApprovalEntry({
+      approvals,
+      snapshot,
+      token,
+      caseId: caseRecord.id,
+      item,
+      title: `Decyzja: ${item.title}`,
+      description: "Wybór opcji klienta.",
+      status: "answered",
+      decisionNote: `Wybrano ${input.option}.`,
+      at: now,
+    })
+  }
+
+  const nextCaseStatus = deriveCaseStatusAfterPortalAction(caseRecord, nextCaseItems.filter((entry) => entry.caseId === caseRecord.id))
+  const nextCases = (snapshot.cases ?? []).map((entry) =>
+    entry.id === caseRecord.id
+      ? {
+          ...entry,
+          status: nextCaseStatus,
+          updatedAt: now,
+        }
+      : entry,
+  )
 
   const nextActivity = [
     {
@@ -151,7 +399,7 @@ function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, inpu
       workspaceId: snapshot.context.workspaceId ?? "workspace_local",
       actorUserId: null,
       actorContactId: token.contactId,
-      source: "operations" as const,
+      source: "system" as const,
       type: activityType,
       leadId: null,
       caseId: caseRecord.id,
@@ -162,8 +410,12 @@ function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, inpu
       payload: {
         action: input.action,
         option: input.option ?? null,
+        decision: approvalDecision ?? null,
         responseText: input.responseText ?? null,
-        fileName: input.fileName ?? null,
+        fileName: uploadMeta?.safeFileName ?? null,
+        fileType: uploadMeta?.mimeType ?? null,
+        fileSizeBytes: uploadMeta?.fileSizeBytes ?? null,
+        caseStatus: nextCaseStatus,
       },
       createdAt: now,
     },
@@ -171,69 +423,15 @@ function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, inpu
   ]
 
   const notifications = [
-    createPortalNotification(snapshot, caseRecord.id, item.id, "Nowa aktywność klienta", `${item.title}: ${input.action}`),
+    createPortalNotification(snapshot, caseRecord.id, item.id, "Nowa aktywnosc klienta", `${item.title}: ${input.action}`),
     ...(snapshot.notifications ?? []),
   ]
-
-  let attachments = snapshot.fileAttachments ?? []
-  if (input.action === "upload_file" && input.fileName) {
-    const attachment: FileAttachment = {
-      id: createId("att"),
-      workspaceId: snapshot.context.workspaceId ?? "workspace_local",
-      caseId: caseRecord.id,
-      caseItemId: item.id,
-      scope: "case_item",
-      uploadedByUserId: null,
-      fileName: input.fileName,
-      fileType: input.fileType || "application/octet-stream",
-      fileSizeBytes: Number.isFinite(input.fileSizeBytes) ? Number(input.fileSizeBytes) : 0,
-      storagePath: `portal-upload/${caseRecord.id}/${createId("file")}-${input.fileName}`,
-      createdAt: now,
-    }
-    attachments = [attachment, ...attachments]
-  }
-
-  let approvals = snapshot.approvals ?? []
-  if (input.action === "accept") {
-    const existing = approvals.find((entry) => entry.caseItemId === item.id)
-    if (existing) {
-      approvals = approvals.map((entry) =>
-        entry.id === existing.id
-          ? {
-              ...entry,
-              status: "answered",
-              decidedAt: now,
-              decisionNote: "Akceptacja z panelu klienta.",
-              updatedAt: now,
-            }
-          : entry,
-      )
-    } else {
-      const approval: Approval = {
-        id: createId("approval"),
-        workspaceId: snapshot.context.workspaceId ?? "workspace_local",
-        caseId: caseRecord.id,
-        caseItemId: item.id,
-        requestedByUserId: null,
-        reviewerUserId: null,
-        reviewerContactId: token.contactId,
-        status: "answered",
-        title: `Akceptacja: ${item.title}`,
-        description: "Klient zaakceptował element w panelu publicznym.",
-        dueAt: null,
-        decidedAt: now,
-        decisionNote: "Akceptacja z panelu klienta.",
-        createdAt: now,
-        updatedAt: now,
-      }
-      approvals = [approval, ...approvals]
-    }
-  }
 
   return {
     error: null,
     snapshot: {
       ...snapshot,
+      cases: nextCases,
       caseItems: nextCaseItems,
       activityLog: nextActivity,
       fileAttachments: attachments,
@@ -257,10 +455,10 @@ export async function GET(_request: NextRequest, context: { params: Promise<{ to
   const now = nowIso()
   const found = await findSnapshotByToken(token, now)
   if (!found) {
-    return NextResponse.json({ error: "Nieprawidłowy link klienta." }, { status: 404 })
+    return NextResponse.json({ error: "Nieprawidlowy link klienta." }, { status: 404 })
   }
   if (found.expired) {
-    return NextResponse.json({ error: "Link wygasł lub został odwołany." }, { status: 410 })
+    return NextResponse.json({ error: "Link wygasl lub zostal odwolany." }, { status: 410 })
   }
 
   const payload = sanitizePortalResponse(found.row.snapshot, found.token)
@@ -276,10 +474,10 @@ export async function POST(request: NextRequest, context: { params: Promise<{ to
   const now = nowIso()
   const found = await findSnapshotByToken(token, now)
   if (!found) {
-    return NextResponse.json({ error: "Nieprawidłowy link klienta." }, { status: 404 })
+    return NextResponse.json({ error: "Nieprawidlowy link klienta." }, { status: 404 })
   }
   if (found.expired) {
-    return NextResponse.json({ error: "Link wygasł lub został odwołany." }, { status: 410 })
+    return NextResponse.json({ error: "Link wygasl lub zostal odwolany." }, { status: 410 })
   }
 
   const body = (await request.json().catch(() => null)) as {
@@ -290,6 +488,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ to
     fileName?: string
     fileType?: string
     fileSizeBytes?: number
+    decision?: ApprovalDecision
   } | null
 
   if (!body?.action || !body.caseItemId) {
@@ -304,6 +503,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ to
     fileName: body.fileName,
     fileType: body.fileType,
     fileSizeBytes: body.fileSizeBytes,
+    decision: body.decision,
   })
 
   if (changed.error) {
@@ -316,7 +516,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ to
     snapshot: changed.snapshot,
   })
   if (save.error) {
-    return NextResponse.json({ error: "Nie udało się zapisać akcji klienta." }, { status: 500 })
+    return NextResponse.json({ error: "Nie udalo sie zapisac akcji klienta." }, { status: 500 })
   }
 
   const payload = sanitizePortalResponse(changed.snapshot, found.token)

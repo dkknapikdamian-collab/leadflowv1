@@ -84,7 +84,15 @@ export type CaseItemStatus =
   | "needs_correction"
   | "accepted"
   | "not_applicable"
-export type ApprovalStatus = "not_sent" | "sent" | "reminder_sent" | "answered" | "overdue"
+export type ApprovalStatus =
+  | "not_sent"
+  | "sent"
+  | "reminder_sent"
+  | "answered"
+  | "overdue"
+  | "accepted"
+  | "rejected"
+  | "needs_changes"
 export type AttachmentScope = "case" | "case_item"
 export type ActivitySource = "sales" | "operations" | "system"
 export type ActivityType =

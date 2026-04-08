@@ -286,6 +286,21 @@ function CaseDetailDrawer({
     setActionFeedback("Elementy do weryfikacji oznaczone jako zaakceptowane.")
   }
 
+  const handleBlockByMissingRequired = () => {
+    if (requiredPending.length === 0) {
+      setActionFeedback("Brak aktywnych brakow obowiazkowych.")
+      return
+    }
+
+    onUpdateCase(caseRecord.id, { status: "blocked" })
+    onAppendCaseActivity(caseRecord.id, "case_status_changed", "operations", {
+      status: "blocked",
+      reason: "missing_required_items",
+      missingRequiredCount: requiredPending.length,
+    })
+    setActionFeedback("Sprawa zablokowana do czasu uzupelnienia elementow obowiazkowych.")
+  }
+
   const handleApplyStatus = () => {
     onUpdateCase(caseRecord.id, { status: caseStatusDraft })
     onAppendCaseActivity(caseRecord.id, "case_status_changed", "operations", { status: caseStatusDraft })
@@ -380,6 +395,17 @@ function CaseDetailDrawer({
                   >
                     {item.status === "accepted" ? "Zweryfikowane" : "Oznacz jako zweryfikowane"}
                   </button>
+                  <button
+                    type="button"
+                    className="ghost-button small"
+                    disabled={item.status === "needs_correction"}
+                    onClick={() => {
+                      onUpdateCaseItem(item.id, { status: "needs_correction" })
+                      onAppendCaseActivity(caseRecord.id, "case_item_updated", "operations", { status: "needs_correction" }, item.id)
+                    }}
+                  >
+                    {item.status === "needs_correction" ? "Odeslane do poprawy" : "Odeslij do poprawy"}
+                  </button>
                   <span className={`badge status-${item.status}`}>{STATUS_LABELS[item.status]}</span>
                 </div>
               </div>
@@ -430,6 +456,7 @@ function CaseDetailDrawer({
               Odwołaj dostep
             </button>
             <button type="button" className="ghost-button" onClick={handleMarkAsVerified}>Oznacz jako zweryfikowane</button>
+            <button type="button" className="danger-button" onClick={handleBlockByMissingRequired}>Zablokuj przez braki</button>
             <div className="field-block">
               <span>Zmien status sprawy</span>
               <select
