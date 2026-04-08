@@ -1,4 +1,4 @@
-﻿# agent.md
+# agent.md
 
 ## Rola tego pliku
 

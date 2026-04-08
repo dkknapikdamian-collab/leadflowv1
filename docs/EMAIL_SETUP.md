@@ -1,4 +1,4 @@
-﻿# ClientPilot — konfiguracja maili
+# ClientPilot — konfiguracja maili
 
 ## Rozdzielenie maili
 

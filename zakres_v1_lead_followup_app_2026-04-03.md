@@ -1,4 +1,4 @@
-﻿# Zakres V1 po scaleniu Lead Flow i Fortecy
+# Zakres V1 po scaleniu Lead Flow i Fortecy
 
 **Data aktualizacji:** 2026-04-07  
 **Status:** obowiązująca wersja zakresu po scaleniu kierunku produktu  

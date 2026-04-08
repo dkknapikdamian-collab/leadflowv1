@@ -1,4 +1,4 @@
-﻿import test from "node:test"
+import test from "node:test"
 import assert from "node:assert/strict"
 import { getAuthDisplayName, mapSupabaseUserToSessionUser } from "../lib/auth/session"
 import { buildUserScopedStorageKey } from "../lib/data/storage-key"

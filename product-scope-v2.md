@@ -1,4 +1,4 @@
-﻿# Product Scope V2
+# Product Scope V2
 
 ## Status
 

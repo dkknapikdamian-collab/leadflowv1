@@ -1,4 +1,4 @@
-﻿# ClientPilot — etap auth bez zmiany UI
+# ClientPilot — etap auth bez zmiany UI
 
 ## Co wdrożone teraz
 

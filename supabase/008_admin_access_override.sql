@@ -1,4 +1,4 @@
-﻿alter table public.access_status
+alter table public.access_status
   add column if not exists access_override_mode text,
   add column if not exists access_override_expires_at timestamptz,
   add column if not exists access_override_note text;

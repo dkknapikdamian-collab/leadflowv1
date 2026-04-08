@@ -1,4 +1,4 @@
-﻿# Zakres V1 — warstwa sprzedaży (Lead Flow) w systemie ClientPilot
+# Zakres V1 — warstwa sprzedaży (Lead Flow) w systemie ClientPilot
 
 > Źródło prawdy produktu: `product-scope-v2.md` (w repo root).
 >

@@ -1,4 +1,4 @@
-﻿export type AccountStatusEmailKind =
+export type AccountStatusEmailKind =
   | "trial_ends_3d"
   | "trial_ends_1d"
   | "account_active_until"

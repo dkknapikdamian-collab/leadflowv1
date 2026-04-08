@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from "react"
+import type { ReactNode } from "react"
 import type { Metadata } from "next"
 import { Providers } from "@/app/providers"
 import "@/app/globals.css"

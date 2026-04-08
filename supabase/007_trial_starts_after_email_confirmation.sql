@@ -1,4 +1,4 @@
-﻿alter table public.access_status
+alter table public.access_status
   alter column trial_start drop not null,
   alter column trial_end drop not null,
   add column if not exists trial_activated_at timestamptz;

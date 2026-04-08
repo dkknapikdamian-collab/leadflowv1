@@ -1,4 +1,4 @@
-﻿create extension if not exists pgcrypto;
+create extension if not exists pgcrypto;
 
 alter table public.profiles
   add column if not exists timezone text not null default 'Europe/Warsaw',

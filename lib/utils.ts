@@ -1,4 +1,4 @@
-﻿import { ITEM_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from "./constants"
+import { ITEM_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from "./constants"
 import type { AppSnapshot, Lead, Priority, WorkItem } from "./types"
 
 export const STORAGE_KEY = "clientpilot-snapshot-v2"

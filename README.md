@@ -1,4 +1,4 @@
-﻿# ClientPilot
+# ClientPilot
 
 Ten pakiet działa na:
 - Next.js

@@ -1,4 +1,4 @@
-﻿Kontrola leadów nie znika.
+Kontrola leadów nie znika.
 Ona staje się warstwą 1 większego systemu.
 
 Nowa definicja produktu:

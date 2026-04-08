@@ -1,4 +1,4 @@
-﻿create or replace function public.build_initial_app_snapshot(
+create or replace function public.build_initial_app_snapshot(
   target_user_id uuid,
   target_workspace_id uuid
 )

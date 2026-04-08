@@ -1,4 +1,4 @@
-﻿import type { NextRequest, NextResponse } from "next/server"
+import type { NextRequest, NextResponse } from "next/server"
 
 export const ACCESS_COOKIE = "ClientPilot_access_token"
 export const REFRESH_COOKIE = "ClientPilot_refresh_token"

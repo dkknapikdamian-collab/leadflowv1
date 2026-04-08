@@ -1,4 +1,4 @@
-﻿import type { AppSnapshot } from "./types"
+import type { AppSnapshot } from "./types"
 import { addDaysAt, createId } from "./utils"
 
 function createBaseSnapshot(): Omit<AppSnapshot, "leads" | "items"> {
