@@ -33,6 +33,12 @@ interface AppStoreValue {
   addLead: (payload: LeadInput) => void
   updateLead: (leadId: string, patch: Partial<Lead>) => void
   deleteLead: (leadId: string) => void
+  startCaseFromLead: (
+    leadId: string,
+    mode: "empty" | "template" | "template_with_link",
+    templateId?: string | null,
+  ) => void
+  issueClientPortalLink: (leadId: string) => void
   addItem: (payload: WorkItemInput) => void
   updateItem: (itemId: string, patch: Partial<WorkItem>) => void
   deleteItem: (itemId: string) => void
@@ -257,6 +263,14 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
       deleteLead: (leadId: string) =>
         setSnapshot((current: AppSnapshot) =>
           syncSnapshotWithSession(repository.deleteLead(current, leadId), session?.user ?? null),
+        ),
+      startCaseFromLead: (leadId, mode, templateId) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.startCaseFromLead(current, leadId, mode, templateId), session?.user ?? null),
+        ),
+      issueClientPortalLink: (leadId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.issueClientPortalLink(current, leadId), session?.user ?? null),
         ),
       addItem: (payload: WorkItemInput) =>
         setSnapshot((current: AppSnapshot) =>

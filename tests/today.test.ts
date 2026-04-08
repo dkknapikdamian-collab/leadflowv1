@@ -37,10 +37,10 @@ test("demo snapshot daje oczekiwane liczniki sekcji po przebudowie Today", () =>
 
   assert.equal(counts.overdue, 2)
   assert.equal(counts.missing_next_step, 2)
-  assert.equal(counts.waiting_too_long, 1)
+  assert.equal(counts.waiting_too_long, 2)
   assert.equal(counts.today, 3)
   assert.equal(counts.this_week, 2)
-  assert.equal(counts.high_value_at_risk, 3)
+  assert.equal(counts.high_value_at_risk, 2)
   assert.equal(counts.stale, 1)
   assert.equal(counts.top_moves_today, 5)
 })
@@ -145,8 +145,8 @@ test("górne liczniki Today mapują się do sekcji egzekucyjnych", () => {
     },
     {
       key: "waiting_too_long",
-      label: "Waiting",
-      value: 1,
+      label: "Bez odpowiedzi",
+      value: 2,
       color: "#f97316",
     },
     {
@@ -158,7 +158,7 @@ test("górne liczniki Today mapują się do sekcji egzekucyjnych", () => {
     {
       key: "high_value_at_risk",
       label: "High value at risk",
-      value: 3,
+      value: 2,
       color: "#facc15",
     },
   ])
@@ -536,7 +536,7 @@ test("lead waiting za długo trafia do sekcji waiting_too_long", () => {
       value: 0,
       summary: "",
       notes: "",
-      status: "waiting",
+      status: "offer_sent",
       priority: "medium",
       nextActionTitle: "",
       nextActionAt: "",
@@ -564,6 +564,27 @@ test("lead waiting za długo trafia do sekcji waiting_too_long", () => {
       reminder: "none",
       createdAt: "2026-04-03T09:00:00.000Z",
       updatedAt: "2026-04-03T10:00:00.000Z",
+      showInTasks: true,
+      showInCalendar: false,
+    },
+    {
+      id: "follow_up_overdue",
+      workspaceId: null,
+      leadId: "lead_waiting",
+      leadLabel: "Lead waiting",
+      recordType: "task",
+      type: "follow_up",
+      title: "Follow-up",
+      description: "",
+      status: "todo",
+      priority: "medium",
+      scheduledAt: "2026-04-04T09:00:00.000Z",
+      startAt: "",
+      endAt: "",
+      recurrence: "none",
+      reminder: "none",
+      createdAt: "2026-04-04T09:00:00.000Z",
+      updatedAt: "2026-04-04T09:00:00.000Z",
       showInTasks: true,
       showInCalendar: false,
     },
@@ -623,3 +644,5 @@ test("najważniejsze ruchy dziś są sortowane malejąco po dailyPriorityScore",
     assert.deepEqual(scores, sortedScores)
   }
 })
+
+

@@ -10,9 +10,9 @@ import { formatMoney, formatRelativeDateTimeShort } from "@/lib/utils"
 const PIPELINE_ORDER: LeadStatus[] = [
   "new",
   "contacted",
-  "waiting",
-  "followup_needed",
-  "meeting_scheduled",
+  "qualification",
+  "offer_sent",
+  "follow_up",
   "won",
   "lost",
 ]

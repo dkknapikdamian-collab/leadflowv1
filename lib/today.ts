@@ -101,7 +101,7 @@ const TODAY_SECTION_META: Record<TodaySectionKey, { title: string; color: string
     kind: "leads",
   },
   waiting_too_long: {
-    title: "Czekają na odpowiedź",
+    title: "Bez odpowiedzi za dlugo",
     color: "#f97316",
     kind: "leads",
   },
@@ -206,7 +206,7 @@ function buildTodayTopStatsFromSections(sections: TodaySection[]): TodayTopStat[
     },
     {
       key: "waiting_too_long",
-      label: "Waiting",
+      label: "Bez odpowiedzi",
       value: getCount("waiting_too_long"),
       color: TODAY_SECTION_META.waiting_too_long.color,
     },
@@ -391,3 +391,4 @@ export function getNextManualCollapsedState(
     [key]: !currentlyCollapsed,
   }
 }
+

@@ -3,7 +3,9 @@ import {
   addLeadSnapshot,
   deleteItemSnapshot,
   deleteLeadSnapshot,
+  issueClientPortalLinkSnapshot,
   snoozeItemSnapshot,
+  startCaseFromLeadSnapshot,
   toggleItemDoneSnapshot,
   updateItemSnapshot,
   updateLeadSnapshot,
@@ -15,6 +17,8 @@ export type AppDataAction =
   | { type: "addLead"; payload: LeadInput }
   | { type: "updateLead"; leadId: string; patch: Partial<Lead> }
   | { type: "deleteLead"; leadId: string }
+  | { type: "startCaseFromLead"; leadId: string; mode: "empty" | "template" | "template_with_link"; templateId?: string | null }
+  | { type: "issueClientPortalLink"; leadId: string }
   | { type: "addItem"; payload: WorkItemInput }
   | { type: "updateItem"; itemId: string; patch: Partial<WorkItem> }
   | { type: "deleteItem"; itemId: string }
@@ -30,6 +34,14 @@ export function applyAppDataAction(snapshot: AppSnapshot, action: AppDataAction)
       return updateLeadSnapshot(snapshot, action.leadId, action.patch)
     case "deleteLead":
       return deleteLeadSnapshot(snapshot, action.leadId)
+    case "startCaseFromLead":
+      return startCaseFromLeadSnapshot(snapshot, {
+        leadId: action.leadId,
+        mode: action.mode,
+        templateId: action.templateId,
+      })
+    case "issueClientPortalLink":
+      return issueClientPortalLinkSnapshot(snapshot, action.leadId)
     case "addItem":
       return addItemSnapshot(snapshot, action.payload)
     case "updateItem":

@@ -5,6 +5,7 @@ import { ConfirmDialog } from "@/components/confirm-dialog"
 import { ViewState } from "@/components/ui/view-state"
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react"
 import {
+  CASE_OPERATIONAL_STATUS_OPTIONS,
   ITEM_TYPE_OPTIONS,
   LEAD_STATUS_OPTIONS,
   PRIORITY_OPTIONS,
@@ -21,7 +22,7 @@ import {
   getLeadNextStep,
   type LeadWithComputedState,
 } from "@/lib/domain/lead-state"
-import type { Lead, WorkItem, WorkItemInput } from "@/lib/types"
+import type { CaseStatus, Lead, WorkItem, WorkItemInput } from "@/lib/types"
 import {
   findLeadByText,
   formatDateKeyMonthDay,
@@ -65,6 +66,14 @@ function Avatar({ name }: { name: string }) {
 
 function LeadStatusBadge({ status }: { status: Lead["status"] }) {
   return <span className={`badge status-${status}`}>{getStatusLabel(status)}</span>
+}
+
+function getCaseOperationalStatusLabel(status: CaseStatus) {
+  return CASE_OPERATIONAL_STATUS_OPTIONS.find((option) => option.value === status)?.label ?? status
+}
+
+function CaseOperationalStatusBadge({ status }: { status: CaseStatus }) {
+  return <span className={`badge status-${status}`}>Operacje: {getCaseOperationalStatusLabel(status)}</span>
 }
 
 function PriorityBadge({ priority }: { priority: Lead["priority"] | WorkItem["priority"] }) {
@@ -123,12 +132,18 @@ function FieldLabel({ label, help }: { label: string; help?: string }) {
 }
 
 export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void }) {
-  const { snapshot, addItem, updateLead, deleteLead, toggleItemDone } = useAppStore()
+  const { snapshot, addItem, updateLead, deleteLead, toggleItemDone, startCaseFromLead, issueClientPortalLink } = useAppStore()
   const dateOptions = useMemo(() => ({ timeZone: snapshot.settings.timezone }), [snapshot.settings.timezone])
   const [tab, setTab] = useState<"overview" | "timeline">("overview")
   const [mode, setMode] = useState<"view" | "edit">("view")
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const liveLead = snapshot.leads.find((entry) => entry.id === lead.id) ?? lead
+  const relatedCase = snapshot.cases?.find((entry) => entry.id === liveLead.caseId) ?? null
+  const operationalStatus = relatedCase?.status ?? "not_started"
+  const canStartOperations = liveLead.status === "won" || operationalStatus === "ready_to_start"
+  const caseTemplates = snapshot.caseTemplates ?? []
+  const [startMode, setStartMode] = useState<"empty" | "template" | "template_with_link">("empty")
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("")
   const computed = useMemo(() => buildLeadComputedState(snapshot, liveLead, dateOptions), [dateOptions, liveLead, snapshot])
   const nextStep = useMemo(() => getLeadNextStep(snapshot, liveLead, dateOptions), [dateOptions, liveLead, snapshot])
   const lastTouch = useMemo(() => getLeadLastTouch(snapshot, liveLead, dateOptions), [dateOptions, liveLead, snapshot])
@@ -165,6 +180,11 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
     setMode("view")
     setTab("overview")
   }, [liveLead])
+
+  useEffect(() => {
+    const fallbackTemplate = caseTemplates.find((item) => item.isDefault) ?? caseTemplates[0]
+    setSelectedTemplateId(fallbackTemplate?.id ?? "")
+  }, [caseTemplates])
 
   const relatedItems = useMemo(
     () =>
@@ -251,9 +271,10 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
   }
 
   function addTomorrowFollowUp() {
+    const expectsReply = liveLead.status === "offer_sent" || liveLead.status === "follow_up"
     createQuickItem({
-      type: liveLead.status === "waiting" ? "check_reply" : "follow_up",
-      title: liveLead.status === "waiting" ? `Sprawdzić odpowiedź — ${liveLead.name}` : `Follow-up — ${liveLead.name}`,
+      type: expectsReply ? "check_reply" : "follow_up",
+      title: expectsReply ? `Sprawdzić odpowiedź — ${liveLead.name}` : `Follow-up — ${liveLead.name}`,
       scheduledAt: getNextDaySnoozeAtPreferredTime(liveLead.nextActionAt || nowIso(), dateOptions),
     })
   }
@@ -310,6 +331,7 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "flex-end" }}>
               <LeadStatusBadge status={liveLead.status} />
+              <CaseOperationalStatusBadge status={operationalStatus} />
               <PriorityBadge priority={liveLead.priority} />
               {computed.isAtRisk ? <span className="badge priority-high">Ryzyko</span> : <span className="badge status-won">Stabilny</span>}
             </div>
@@ -384,9 +406,9 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
                 <button className="ghost-button" type="button" onClick={addCallTask}>Zadzwoń</button>
                 <button className="ghost-button" type="button" onClick={addMeetingTask}>Spotkanie</button>
                 <button className="ghost-button" type="button" onClick={addNoteTimeline}>Notatka</button>
-                <button className="ghost-button" type="button" onClick={() => setLeadStatus("waiting")}>Waiting</button>
+                <button className="ghost-button" type="button" onClick={() => setLeadStatus("follow_up")}>Follow-up</button>
                 <button className="ghost-button" type="button" onClick={() => setLeadStatus("won")}>Won</button>
-                <button className="ghost-button" type="button" onClick={() => setLeadStatus("lost")}>Lost</button>
+                <button className="ghost-button" type="button" onClick={() => setLeadStatus("lost")}>Przegrany</button>
               </div>
             </section>
 
@@ -396,15 +418,102 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
                 <div className="muted-small">Ta sekcja ma przygotować przejście z wygranego leada do modułu spraw.</div>
               </div>
               <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 14, padding: 14 }}>
-                {liveLead.status === "won" ? (
+                <div className="muted-small uppercase">Status operacyjny</div>
+                <div style={{ marginTop: 6 }}>
+                  <CaseOperationalStatusBadge status={operationalStatus} />
+                </div>
+              </div>
+              <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 14, padding: 14 }}>
+                {canStartOperations ? (
                   <>
                     <div style={{ fontWeight: 700 }}>Lead jest gotowy do uruchomienia realizacji.</div>
-                    <div className="muted-small" style={{ marginTop: 6 }}>Następny etap to przypięcie checklisty startowej i przejście do sprawy operacyjnej.</div>
+                    <div className="muted-small" style={{ marginTop: 6 }}>
+                      Sprzedaz jest domknieta, a operacje prowadzisz osobnym statusem sprawy ({getCaseOperationalStatusLabel(operationalStatus)}).
+                    </div>
+                    {!relatedCase ? (
+                      <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
+                        <div className="muted-small uppercase">Tryb utworzenia sprawy</div>
+                        <label className="switch-row">
+                          <input type="radio" name={`start-mode-${liveLead.id}`} checked={startMode === "empty"} onChange={() => setStartMode("empty")} />
+                          <span>Pusta sprawa</span>
+                        </label>
+                        <label className="switch-row">
+                          <input type="radio" name={`start-mode-${liveLead.id}`} checked={startMode === "template"} onChange={() => setStartMode("template")} />
+                          <span>Sprawa z szablonu</span>
+                        </label>
+                        <label className="switch-row">
+                          <input type="radio" name={`start-mode-${liveLead.id}`} checked={startMode === "template_with_link"} onChange={() => setStartMode("template_with_link")} />
+                          <span>Szablon + od razu link klienta</span>
+                        </label>
+                        {startMode !== "empty" ? (
+                          caseTemplates.length > 0 ? (
+                            <label className="field-block" style={{ marginTop: 4 }}>
+                              <FieldLabel label="Szablon startowy" />
+                              <select className="select-input" value={selectedTemplateId} onChange={(event) => setSelectedTemplateId(event.target.value)}>
+                                {caseTemplates.map((template) => (
+                                  <option key={template.id} value={template.id}>
+                                    {template.title}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                          ) : (
+                            <div className="muted-small">Brak szablonów. Możesz utworzyć pustą sprawę.</div>
+                          )
+                        ) : null}
+                        <div className="drawer-actions wrap" style={{ marginTop: 6 }}>
+                          <button
+                            className="primary-button"
+                            type="button"
+                            onClick={() =>
+                              startCaseFromLead(
+                                liveLead.id,
+                                startMode,
+                                startMode === "empty" ? null : selectedTemplateId || null,
+                              )
+                            }
+                            disabled={startMode !== "empty" && !selectedTemplateId && caseTemplates.length > 0}
+                          >
+                            Utwórz sprawę
+                          </button>
+                          <button
+                            className="ghost-button"
+                            type="button"
+                            onClick={() => startCaseFromLead(liveLead.id, "template", selectedTemplateId || null)}
+                            disabled={caseTemplates.length === 0}
+                          >
+                            Uruchom checklistę startową
+                          </button>
+                          <button
+                            className="ghost-button"
+                            type="button"
+                            onClick={() => startCaseFromLead(liveLead.id, "template_with_link", selectedTemplateId || null)}
+                            disabled={caseTemplates.length === 0}
+                          >
+                            Wyślij link klientowi
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
+                        <div className="muted-small">
+                          Sprawa została utworzona i lead pozostaje w historii sprzedaży.
+                        </div>
+                        <div className="drawer-actions wrap">
+                          <a className="ghost-button" href="/cases">Otwórz sprawę w module Sprawy</a>
+                          <button className="ghost-button" type="button" onClick={() => issueClientPortalLink(liveLead.id)}>
+                            Wyślij link klientowi
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>
                     <div style={{ fontWeight: 700 }}>Jeszcze nie uruchamiaj realizacji.</div>
-                    <div className="muted-small" style={{ marginTop: 6 }}>Najpierw domknij sprzedaż. Po statusie „Wygrany” ta sekcja stanie się wejściem do kolejnego modułu.</div>
+                    <div className="muted-small" style={{ marginTop: 6 }}>
+                      Sekcja odblokuje się po statusie sprzedaży „Wygrany” lub po operacyjnym „Gotowe do startu”.
+                    </div>
                   </>
                 )}
               </div>

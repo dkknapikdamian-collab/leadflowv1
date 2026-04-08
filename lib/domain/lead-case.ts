@@ -112,7 +112,7 @@ function buildCaseFromLead(input: {
     ownerUserId: input.actorUserId ?? null,
     title: buildCaseTitle(input.lead),
     description: input.lead.summary || input.lead.notes || "",
-    status: input.status ?? "intake",
+    status: input.status ?? "not_started",
     priority: input.lead.priority,
     value: input.lead.value,
     startAt: null,
@@ -142,7 +142,7 @@ function buildCaseItemsFromTemplate(input: {
     kind: templateItem.kind,
     title: templateItem.title,
     description: templateItem.description,
-    status: "todo",
+    status: "none",
     required: templateItem.required,
     dueAt: null,
     completedAt: null,
@@ -161,7 +161,7 @@ export function createCaseFromLead(input: {
   now?: string
 }) {
   const at = input.now ?? nowIso()
-  const caseStatus = input.caseStatus ?? "intake"
+  const caseStatus = input.caseStatus ?? "not_started"
 
   if (!canCreateCaseFromLeadStatus(input.lead.status, caseStatus)) {
     throw new Error("lead-status-not-eligible-for-case")

@@ -81,6 +81,7 @@ const CONTACT_ITEM_TYPES = new Set<WorkItem["type"]>([
   "check_reply",
 ])
 const WAITING_CHECK_TYPES = new Set<WorkItem["type"]>(["follow_up", "check_reply", "reply", "call", "task"])
+const SALES_WAITING_STATUSES = new Set<Lead["status"]>(["offer_sent", "follow_up"])
 const PRIMARY_RISK_REASON_ORDER: LeadRiskReason[] = [
   "next_step_overdue",
   "no_followup_after_meeting",
@@ -232,7 +233,7 @@ export function formatLeadAlarmReasonLabel(reason?: LeadRiskReason | null) {
     case "next_step_overdue":
       return "Termin kolejnego kroku minął"
     case "waiting_too_long":
-      return "Lead w waiting za długo"
+      return "Lead za długo bez odpowiedzi"
     case "high_value_stale":
       return "Wysoka wartość i brak ruchu"
     case "inactive_too_long":
@@ -298,9 +299,9 @@ export function getLeadAlarmReasons(
   const lastTouch = getLeadLastTouch(snapshot, lead, options)
   const nextStep = getLeadNextStep(snapshot, lead, options)
   const daysSinceLastTouch = resolveDaysSinceLastTouch(lastTouch.at, lead.createdAt, options)
-  const waitingCheckOverdue = lead.status === "waiting" && isWaitingCheckOverdue(leadItems, options)
+  const waitingCheckOverdue = SALES_WAITING_STATUSES.has(lead.status) && isWaitingCheckOverdue(leadItems, options)
   const isWaitingTooLong =
-    lead.status === "waiting" &&
+    SALES_WAITING_STATUSES.has(lead.status) &&
     (daysSinceLastTouch >= settings.waitingTooLongDays || waitingCheckOverdue)
   const isHighValueStale = lead.value >= settings.highValueThreshold && daysSinceLastTouch >= settings.staleLeadDays
   const isInactiveTooLong = daysSinceLastTouch >= settings.staleLeadDays

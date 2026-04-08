@@ -467,7 +467,8 @@ body,
 }
 
 .priority-high,
-.status-followup_needed,
+.status-follow_up,
+.status-blocked,
 .plan-past_due,
 .badge.priority-high {
   color: #dc2626;
@@ -476,7 +477,11 @@ body,
 }
 
 .priority-medium,
-.status-meeting_scheduled,
+.status-qualification,
+.status-offer_sent,
+.status-under_review,
+.status-ready_to_start,
+.status-in_progress,
 .plan-trial,
 .badge.priority-medium {
   color: #d97706;
@@ -485,7 +490,9 @@ body,
 }
 
 .priority-low,
-.status-waiting,
+.status-not_started,
+.status-collecting_materials,
+.status-waiting_for_client,
 .status-contacted,
 .status-new,
 .badge.priority-low {
@@ -495,6 +502,7 @@ body,
 }
 
 .status-won,
+.status-closed,
 .plan-active {
   color: #16a34a;
   background: #ecfdf3;

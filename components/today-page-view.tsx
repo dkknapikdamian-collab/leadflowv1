@@ -98,7 +98,7 @@ function getLeadNextStepInfo(items: WorkItem[], leadId: string) {
 
 function getLeadReasonLabel(lead: LeadWithComputedState, sectionKey: TodaySectionKey) {
   if (sectionKey === "waiting_too_long") {
-    return `Waiting ${lead.computed.daysSinceLastTouch} dni`
+    return `Brak odpowiedzi ${lead.computed.daysSinceLastTouch} dni`
   }
 
   if (sectionKey === "stale") {
@@ -469,12 +469,13 @@ export function TodayPageView() {
   }
 
   function handleCreateLeadFollowUpTomorrow(lead: LeadWithComputedState) {
+    const expectsReply = lead.status === "offer_sent" || lead.status === "follow_up"
     const payload: WorkItemInput = {
       leadId: lead.id,
       leadLabel: lead.name,
       recordType: "task",
-      type: lead.status === "waiting" ? "check_reply" : "follow_up",
-      title: lead.status === "waiting" ? `Sprawdzić odpowiedź — ${lead.name}` : `Follow-up — ${lead.name}`,
+      type: expectsReply ? "check_reply" : "follow_up",
+      title: expectsReply ? `Sprawdzić odpowiedź — ${lead.name}` : `Follow-up — ${lead.name}`,
       description: "Dodane szybkim ruchem z ekranu Dziś.",
       status: "todo",
       priority: lead.priority,

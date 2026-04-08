@@ -1,5 +1,21 @@
 import { createInitialSnapshot } from "./seed"
-import type { AppSnapshot, BillingState, Lead, LeadInput, SettingsPatch, WorkItem, WorkItemInput } from "./types"
+import { createCaseFromLead } from "./domain/lead-case"
+import type {
+  ActivityLogEntry,
+  AppSnapshot,
+  BillingState,
+  Case,
+  CaseItem,
+  CaseStatus,
+  ClientPortalToken,
+  Contact,
+  Lead,
+  LeadInput,
+  SettingsPatch,
+  TemplateItem,
+  WorkItem,
+  WorkItemInput,
+} from "./types"
 import { cloneSnapshot, createId, getItemPrimaryDate, nowIso } from "./utils"
 
 const EMPTY_LEAD_TEMPLATE: Lead = {
@@ -505,6 +521,127 @@ export function updateSettingsSnapshot(snapshot: AppSnapshot, patch: SettingsPat
       ...snapshot.settings,
       ...patch,
     },
+  }
+}
+
+export interface StartCaseFromLeadSnapshotInput {
+  leadId: string
+  mode: "empty" | "template" | "template_with_link"
+  templateId?: string | null
+}
+
+function resolveWorkspaceId(snapshot: AppSnapshot, lead: Lead) {
+  return lead.workspaceId || snapshot.context.workspaceId || "workspace_local"
+}
+
+function getTemplateItemsForStartMode(
+  snapshot: AppSnapshot,
+  mode: StartCaseFromLeadSnapshotInput["mode"],
+  templateId?: string | null,
+) {
+  if (mode === "empty") return [] as TemplateItem[]
+  const allTemplateItems = snapshot.templateItems ?? []
+  if (templateId) {
+    return allTemplateItems.filter((item) => item.templateId === templateId)
+  }
+  const fallbackTemplate = snapshot.caseTemplates?.find((item) => item.isDefault) ?? snapshot.caseTemplates?.[0]
+  if (!fallbackTemplate) return []
+  return allTemplateItems.filter((item) => item.templateId === fallbackTemplate.id)
+}
+
+function createPortalToken(caseId: string, workspaceId: string, contactId: string, now: string): ClientPortalToken {
+  const expiresAt = new Date(Date.parse(now) + 1000 * 60 * 60 * 24 * 30).toISOString()
+  return {
+    id: createId("portal"),
+    workspaceId,
+    caseId,
+    contactId,
+    tokenHash: createId("cpt"),
+    createdByUserId: null,
+    expiresAt,
+    revokedAt: null,
+    lastUsedAt: null,
+    createdAt: now,
+    updatedAt: now,
+  }
+}
+
+function ensureCaseCollections(snapshot: AppSnapshot) {
+  return {
+    contacts: [...(snapshot.contacts ?? [])] as Contact[],
+    cases: [...(snapshot.cases ?? [])] as Case[],
+    caseItems: [...(snapshot.caseItems ?? [])] as CaseItem[],
+    activityLog: [...(snapshot.activityLog ?? [])] as ActivityLogEntry[],
+    clientPortalTokens: [...(snapshot.clientPortalTokens ?? [])] as ClientPortalToken[],
+  }
+}
+
+export function startCaseFromLeadSnapshot(snapshot: AppSnapshot, input: StartCaseFromLeadSnapshotInput): AppSnapshot {
+  const lead = snapshot.leads.find((entry) => entry.id === input.leadId)
+  if (!lead || lead.caseId) return snapshot
+
+  const now = nowIso()
+  const workspaceId = resolveWorkspaceId(snapshot, lead)
+  const collections = ensureCaseCollections(snapshot)
+  const templateItems = getTemplateItemsForStartMode(snapshot, input.mode, input.templateId)
+  const caseStatus: CaseStatus = lead.status === "won" ? "not_started" : "ready_to_start"
+
+  const transition = createCaseFromLead({
+    lead,
+    workspaceId,
+    contacts: collections.contacts,
+    caseStatus,
+    templateItems,
+    now,
+  })
+
+  const nextContacts = transition.createdContact ? [transition.createdContact, ...collections.contacts] : collections.contacts
+  const nextClientPortalTokens =
+    input.mode === "template_with_link"
+      ? [
+          createPortalToken(transition.case.id, transition.case.workspaceId, transition.contact.id, now),
+          ...collections.clientPortalTokens,
+        ]
+      : collections.clientPortalTokens
+
+  const nextLeads = snapshot.leads.map((entry) =>
+    entry.id === lead.id
+      ? {
+          ...entry,
+          ...transition.leadPatch,
+          updatedAt: now,
+        }
+      : entry,
+  )
+
+  return reconcileAppSnapshot({
+    ...snapshot,
+    leads: nextLeads,
+    contacts: nextContacts,
+    cases: [transition.case, ...collections.cases],
+    caseItems: [...transition.caseItems, ...collections.caseItems],
+    activityLog: [...transition.activityLog, ...collections.activityLog],
+    clientPortalTokens: nextClientPortalTokens,
+  })
+}
+
+export function issueClientPortalLinkSnapshot(snapshot: AppSnapshot, leadId: string): AppSnapshot {
+  const lead = snapshot.leads.find((entry) => entry.id === leadId)
+  if (!lead?.caseId) return snapshot
+
+  const linkedCase = snapshot.cases?.find((entry) => entry.id === lead.caseId)
+  if (!linkedCase) return snapshot
+
+  const contactId = linkedCase.contactId || lead.contactId
+  if (!contactId) return snapshot
+
+  const now = nowIso()
+  const collections = ensureCaseCollections(snapshot)
+  const token = createPortalToken(linkedCase.id, linkedCase.workspaceId, contactId, now)
+
+  return {
+    ...snapshot,
+    clientPortalTokens: [token, ...collections.clientPortalTokens],
   }
 }
 

@@ -160,7 +160,7 @@ test("sync łączy waiting z jednego klienta i nowy next step z drugiego, a isWa
     }),
   ]
 
-  const remote = updateLeadSnapshot(base, "lead_1", { status: "waiting" })
+  const remote = updateLeadSnapshot(base, "lead_1", { status: "offer_sent" })
   const incoming = updateLeadSnapshot(base, "lead_1", {
     nextActionTitle: "Sprawdzić odpowiedź",
     nextActionAt: "2026-04-08T10:00:00.000Z",
@@ -174,7 +174,7 @@ test("sync łączy waiting z jednego klienta i nowy next step z drugiego, a isWa
   })
 
   assert.equal(result.mergedFromConflict, true)
-  assert.equal(mergedLead.status, "waiting")
+  assert.equal(mergedLead.status, "offer_sent")
   assert.equal(mergedLead.nextActionTitle, "Sprawdzić odpowiedź")
   assert.equal(computed.isWaitingTooLong, true)
   assert.equal(computed.riskReason, "waiting_too_long")
@@ -187,7 +187,7 @@ test("po edycji next stepu dailyPriorityScore jest liczony na nowo na kanoniczny
     createLead({
       value: 9000,
       priority: "high",
-      status: "followup_needed",
+      status: "follow_up",
       nextActionTitle: "Stary follow-up",
       nextActionAt: "2026-04-05T09:00:00.000Z",
       nextActionItemId: "item_1",
@@ -249,7 +249,7 @@ test("po konflikcie refetch bierze kanoniczny snapshot z serwera bez miksu stare
   ]
 
   const remoteCanonical = cloneSnapshot(local)
-  remoteCanonical.leads[0]!.status = "waiting"
+  remoteCanonical.leads[0]!.status = "offer_sent"
   remoteCanonical.leads[0]!.nextActionTitle = "Nowy follow-up"
   remoteCanonical.leads[0]!.nextActionAt = "2026-04-09T12:00:00.000Z"
   remoteCanonical.items[0]!.title = "Nowy follow-up"
@@ -258,8 +258,9 @@ test("po konflikcie refetch bierze kanoniczny snapshot z serwera bez miksu stare
 
   const resolved = resolveSnapshotAfterConflictRefetch(local, remoteCanonical)
 
-  assert.equal(resolved.leads[0]?.status, "waiting")
+  assert.equal(resolved.leads[0]?.status, "offer_sent")
   assert.equal(resolved.leads[0]?.nextActionTitle, "Nowy follow-up")
   assert.equal(resolved.items[0]?.title, "Nowy follow-up")
   assert.equal(resolved.items[0]?.scheduledAt, "2026-04-09T12:00:00.000Z")
 })
+

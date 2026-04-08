@@ -169,7 +169,7 @@ test("getLeadAlarmReasons i getLeadRiskState klasyfikują aktywnego leada po nex
   applyDomainSettings(snapshot, { waitingTooLongDays: 3, staleLeadDays: 5, highValueThreshold: 5000 })
   snapshot.leads = [
     createLead({
-      status: "waiting",
+      status: "offer_sent",
       value: 9000,
       priority: "high",
       createdAt: "2026-04-01T09:00:00.000Z",
@@ -204,7 +204,7 @@ test("getLeadDailyPriority liczy priorytet dnia od nowa na podstawie helperów",
   const snapshot = createInitialSnapshot()
   snapshot.leads = [
     createLead({
-      status: "followup_needed",
+      status: "follow_up",
       priority: "high",
       value: 8000,
       createdAt: "2026-04-01T09:00:00.000Z",
@@ -221,13 +221,13 @@ test("getLeadDailyPriority liczy priorytet dnia od nowa na podstawie helperów",
   ]
 
   const score = getLeadDailyPriority(snapshot, snapshot.leads[0]!, { now: "2026-04-07T08:00:00.000Z" })
-  assert.equal(score, 92)
+  assert.equal(score, 122)
 })
 
 test("waiting bez ruchu przez próg dni trafia do waiting_too_long", () => {
   const snapshot = createInitialSnapshot() as SnapshotWithDomainSettings
   applyDomainSettings(snapshot, { waitingTooLongDays: 3 })
-  snapshot.leads = [createLead({ status: "waiting", createdAt: "2026-04-01T09:00:00.000Z" })]
+  snapshot.leads = [createLead({ status: "offer_sent", createdAt: "2026-04-01T09:00:00.000Z" })]
   snapshot.items = [
     createItem({
       id: "reply_done",
@@ -295,3 +295,4 @@ test("domyślne ustawienia domeny leadów są przewidywalne", () => {
     maxOpenActionsBeforeChaos: 3,
   })
 })
+

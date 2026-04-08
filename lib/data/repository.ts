@@ -9,6 +9,13 @@ export interface AppDataRepository {
   addLead(snapshot: AppSnapshot, payload: LeadInput): AppSnapshot
   updateLead(snapshot: AppSnapshot, leadId: string, patch: Partial<Lead>): AppSnapshot
   deleteLead(snapshot: AppSnapshot, leadId: string): AppSnapshot
+  startCaseFromLead(
+    snapshot: AppSnapshot,
+    leadId: string,
+    mode: "empty" | "template" | "template_with_link",
+    templateId?: string | null,
+  ): AppSnapshot
+  issueClientPortalLink(snapshot: AppSnapshot, leadId: string): AppSnapshot
   addItem(snapshot: AppSnapshot, payload: WorkItemInput): AppSnapshot
   updateItem(snapshot: AppSnapshot, itemId: string, patch: Partial<WorkItem>): AppSnapshot
   deleteItem(snapshot: AppSnapshot, itemId: string): AppSnapshot
@@ -40,6 +47,12 @@ export function createAppDataRepository(adapter: SnapshotStorageAdapter = create
     },
     deleteLead(snapshot, leadId) {
       return commit(snapshot, { type: "deleteLead", leadId })
+    },
+    startCaseFromLead(snapshot, leadId, mode, templateId) {
+      return commit(snapshot, { type: "startCaseFromLead", leadId, mode, templateId })
+    },
+    issueClientPortalLink(snapshot, leadId) {
+      return commit(snapshot, { type: "issueClientPortalLink", leadId })
     },
     addItem(snapshot, payload) {
       return commit(snapshot, { type: "addItem", payload })
