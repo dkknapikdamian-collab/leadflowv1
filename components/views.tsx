@@ -12,13 +12,22 @@ import {
   THEME_OPTIONS,
 } from "@/lib/constants"
 import { useAppStore } from "@/lib/store"
-import type { Lead, WorkItem } from "@/lib/types"
+import {
+  buildLeadComputedState,
+  buildLeadsWithComputedState,
+  formatLeadAlarmReasonLabel,
+  getLeadLastTouch,
+  getLeadNextStep,
+  type LeadWithComputedState,
+} from "@/lib/domain/lead-state"
+import type { Lead, WorkItem, WorkItemInput } from "@/lib/types"
 import {
   findLeadByText,
   formatDateKeyMonthDay,
   formatDateKeyWeekday,
   formatDateTime,
   formatDayLabel,
+  getDateKeyDiff,
   formatMoney,
   formatTime,
   formatWeekRangeLabel,
@@ -113,11 +122,15 @@ function FieldLabel({ label, help }: { label: string; help?: string }) {
 }
 
 export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void }) {
-  const { snapshot, updateLead, deleteLead, toggleItemDone } = useAppStore()
-  const dateOptions = { timeZone: snapshot.settings.timezone }
-  const [tab, setTab] = useState<"info" | "timeline">("info")
+  const { snapshot, addItem, updateLead, deleteLead, toggleItemDone } = useAppStore()
+  const dateOptions = useMemo(() => ({ timeZone: snapshot.settings.timezone }), [snapshot.settings.timezone])
+  const [tab, setTab] = useState<"overview" | "timeline">("overview")
+  const [mode, setMode] = useState<"view" | "edit">("view")
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const liveLead = snapshot.leads.find((entry) => entry.id === lead.id) ?? lead
+  const computed = useMemo(() => buildLeadComputedState(snapshot, liveLead, dateOptions), [dateOptions, liveLead, snapshot])
+  const nextStep = useMemo(() => getLeadNextStep(snapshot, liveLead, dateOptions), [dateOptions, liveLead, snapshot])
+  const lastTouch = useMemo(() => getLeadLastTouch(snapshot, liveLead, dateOptions), [dateOptions, liveLead, snapshot])
   const [form, setForm] = useState(() => ({
     name: liveLead.name,
     company: liveLead.company,
@@ -148,11 +161,22 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
       nextActionTitle: liveLead.nextActionTitle,
       nextActionAt: liveLead.nextActionAt,
     })
+    setMode("view")
+    setTab("overview")
   }, [liveLead])
 
-  const relatedItems = snapshot.items
-    .filter((item) => item.leadId === liveLead.id)
-    .sort((a, b) => getItemPrimaryDate(b).localeCompare(getItemPrimaryDate(a)))
+  const relatedItems = useMemo(
+    () =>
+      snapshot.items
+        .filter((item) => item.leadId === liveLead.id)
+        .sort((a, b) => getItemPrimaryDate(b).localeCompare(getItemPrimaryDate(a))),
+    [liveLead.id, snapshot.items],
+  )
+
+  const openItems = relatedItems.filter((item) => item.status !== "done" && item.recordType !== "note")
+  const latestTimeline = relatedItems.slice(0, 6)
+  const riskLabel = formatLeadAlarmReasonLabel(computed.riskReason) || "Lead pod kontrolą"
+  const statusTone = computed.isAtRisk ? "#dc2626" : "#16a34a"
 
   const hasChanges =
     form.name !== liveLead.name ||
@@ -201,179 +225,288 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
       nextActionTitle: form.nextActionTitle,
       nextActionAt: form.nextActionAt,
     })
-    onClose()
+    setMode("view")
+  }
+
+  function createQuickItem(input: Partial<WorkItemInput> & Pick<WorkItemInput, "type" | "title">) {
+    const payload: WorkItemInput = {
+      leadId: liveLead.id,
+      leadLabel: liveLead.name,
+      recordType: input.recordType ?? (input.type === "meeting" || input.type === "deadline" ? "event" : "task"),
+      type: input.type,
+      title: input.title,
+      description: input.description ?? "Dodane szybkim ruchem z widoku leada.",
+      status: input.status ?? "todo",
+      priority: input.priority ?? liveLead.priority,
+      scheduledAt: input.scheduledAt ?? (input.recordType === "event" ? "" : liveLead.nextActionAt || nowIso()),
+      startAt: input.startAt ?? "",
+      endAt: input.endAt ?? "",
+      recurrence: input.recurrence ?? "none",
+      reminder: input.reminder ?? snapshot.settings.defaultReminder,
+      showInTasks: input.showInTasks ?? true,
+      showInCalendar: input.showInCalendar ?? (input.type === "meeting"),
+    }
+    addItem(payload)
+  }
+
+  function addTomorrowFollowUp() {
+    createQuickItem({
+      type: liveLead.status === "waiting" ? "check_reply" : "follow_up",
+      title: liveLead.status === "waiting" ? `Sprawdzić odpowiedź — ${liveLead.name}` : `Follow-up — ${liveLead.name}`,
+      scheduledAt: getNextDaySnoozeAtPreferredTime(liveLead.nextActionAt || nowIso(), dateOptions),
+    })
+  }
+
+  function addCallTask() {
+    createQuickItem({
+      type: "call",
+      title: `Zadzwonić — ${liveLead.name}`,
+      scheduledAt: getNextSnoozeByHours(nowIso(), 1, dateOptions),
+    })
+  }
+
+  function addMeetingTask() {
+    const startAt = getNextDaySnoozeAtPreferredTime(nowIso(), { ...dateOptions, fallbackHour: 10 })
+    createQuickItem({
+      type: "meeting",
+      title: `Spotkanie — ${liveLead.name}`,
+      recordType: "event",
+      startAt,
+      endAt: startAt,
+      showInCalendar: true,
+      showInTasks: false,
+    })
+  }
+
+  function addNoteTimeline() {
+    createQuickItem({
+      type: "note",
+      title: `Notatka — ${liveLead.name}`,
+      description: liveLead.summary || liveLead.notes || "Krótka notatka do dalszego uzupełnienia.",
+      recordType: "note",
+      showInCalendar: false,
+      showInTasks: false,
+      scheduledAt: "",
+    })
+    setTab("timeline")
+  }
+
+  function setLeadStatus(status: Lead["status"]) {
+    updateLead(liveLead.id, { status })
   }
 
   return (
     <div className="drawer-backdrop" role="presentation">
       <aside className="drawer-panel" role="dialog" aria-modal="true" aria-label="Szczegóły leada">
         <div className="drawer-header">
-          <div className="drawer-user">
-            <Avatar name={liveLead.name} />
-            <div>
-              <div className="drawer-title">{liveLead.name}</div>
-              <div className="muted-small">{liveLead.company || "Bez firmy"}</div>
+          <div className="drawer-user" style={{ alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+              <Avatar name={liveLead.name} />
+              <div>
+                <div className="drawer-title">{liveLead.name}</div>
+                <div className="muted-small">{liveLead.company || liveLead.source || "Bez firmy"}</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "flex-end" }}>
+              <LeadStatusBadge status={liveLead.status} />
+              <PriorityBadge priority={liveLead.priority} />
+              {computed.isAtRisk ? <span className="badge priority-high">Ryzyko</span> : <span className="badge status-won">Stabilny</span>}
             </div>
           </div>
-          <button className="close-button" onClick={onClose}>
-            ×
-          </button>
-        </div>
-
-        <div className="drawer-tabs">
-          <button className={tab === "info" ? "active" : ""} onClick={() => setTab("info")}>
-            Dane
-          </button>
-          <button className={tab === "timeline" ? "active" : ""} onClick={() => setTab("timeline")}>
-            Historia
-          </button>
-        </div>
-
-        {tab === "info" ? (
-          <div className="drawer-content">
-            <div className="form-grid drawer-form-grid">
-              <label className="field-block">
-                <FieldLabel label="Lead *" help="Główna nazwa kontaktu albo firmy widoczna na listach." />
-                <input className="text-input" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
-              </label>
-              <label className="field-block">
-                <FieldLabel label="Firma" help="Opcjonalna nazwa firmy przypisanej do leada." />
-                <input className="text-input" value={form.company} onChange={(event) => setForm({ ...form, company: event.target.value })} />
-              </label>
-            </div>
-
-            <div className="form-grid drawer-form-grid">
-              <label className="field-block">
-                <FieldLabel label="Status" help="Aktualny etap pracy z leadem." />
-                <select
-                  className="select-input"
-                  value={form.status}
-                  onChange={(event) => setForm({ ...form, status: event.target.value as Lead["status"] })}
-                >
-                  {LEAD_STATUS_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="field-block">
-                <FieldLabel label="Priorytet" help="Pomaga ustalić kolejność działania." />
-                <select
-                  className="select-input"
-                  value={form.priority}
-                  onChange={(event) => setForm({ ...form, priority: event.target.value as Lead["priority"] })}
-                >
-                  {PRIORITY_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-            <div className="form-grid drawer-form-grid">
-              <label className="field-block">
-                <FieldLabel label="Źródło" help="Skąd przyszedł ten lead." />
-                <select
-                  className="select-input"
-                  value={form.source}
-                  onChange={(event) => setForm({ ...form, source: event.target.value as Lead["source"] })}
-                >
-                  {SOURCE_OPTIONS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="field-block">
-                <FieldLabel label="Wartość" help="Szacowana wartość leada lub dealu." />
-                <input
-                  type="number"
-                  min="0"
-                  step="100"
-                  className="text-input"
-                  value={form.value}
-                  onChange={(event) => setForm({ ...form, value: event.target.value })}
-                />
-              </label>
-            </div>
-
-            <div className="form-grid drawer-form-grid">
-              <label className="field-block">
-                <FieldLabel label="E-mail" help="Adres mailowy kontaktu." />
-                <input className="text-input" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
-              </label>
-              <label className="field-block">
-                <FieldLabel label="Telefon" help="Numer telefonu kontaktu." />
-                <input className="text-input" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
-              </label>
-            </div>
-
-            <div className="form-grid drawer-form-grid">
-              <label className="field-block">
-                <FieldLabel label="Next action" help="Najbliższa planowana akcja przy tym leadzie." />
-                <input
-                  className="text-input"
-                  value={form.nextActionTitle}
-                  onChange={(event) => setForm({ ...form, nextActionTitle: event.target.value })}
-                />
-              </label>
-              <label className="field-block">
-                <FieldLabel label="Termin" help="Data i godzina tej planowanej akcji." />
-                <input
-                  type="datetime-local"
-                  className="text-input date-time-input"
-                  value={toInputValue(form.nextActionAt)}
-                  onChange={(event) => setForm({ ...form, nextActionAt: fromInputValue(event.target.value) })}
-                />
-              </label>
-            </div>
-
-            <label className="field-block">
-              <FieldLabel label="Opis" help="Krótki opis sytuacji lub kontekstu leada." />
-              <textarea className="text-area" value={form.summary} onChange={(event) => setForm({ ...form, summary: event.target.value })} />
-            </label>
-
-            <label className="field-block">
-              <FieldLabel label="Notatki" help="Twoje robocze notatki do leada." />
-              <textarea className="text-area" value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} />
-            </label>
-
-            <div className="info-card">
-              <div className="info-row">
-                <strong>Aktywne działania</strong>
-                <span>{relatedItems.filter((item) => item.status !== "done").length}</span>
-              </div>
-              <div className="info-row">
-                <strong>Historia wpisów</strong>
-                <span>{relatedItems.length}</span>
-              </div>
-              <div className="info-row">
-                <strong>Utworzono</strong>
-                <span>{formatDateTime(liveLead.createdAt, dateOptions)}</span>
-              </div>
-              <div className="info-row">
-                <strong>Aktualizacja</strong>
-                <span>{formatDateTime(liveLead.updatedAt, dateOptions)}</span>
-              </div>
-            </div>
-
-            <div className="drawer-actions drawer-actions-between wrap">
-              <button className="danger-button" onClick={() => setShowDeleteConfirm(true)} type="button">
-                Usuń leada
+          <div className="drawer-actions wrap" style={{ marginTop: 14, justifyContent: "space-between" }}>
+            <div className="drawer-actions wrap">
+              <button className={`ghost-button small ${tab === "overview" ? "active" : ""}`} onClick={() => setTab("overview")} type="button">
+                Podgląd
               </button>
-              <div className="drawer-actions wrap">
-                <button className="ghost-button" onClick={resetForm} type="button" disabled={!hasChanges}>
-                  Cofnij zmiany
-                </button>
-                <button className="primary-button" onClick={handleSave} type="button" disabled={!hasChanges || !form.name.trim()}>
-                  Zapisz zmiany
-                </button>
-              </div>
+              <button className={`ghost-button small ${tab === "timeline" ? "active" : ""}`} onClick={() => setTab("timeline")} type="button">
+                Historia
+              </button>
             </div>
+            <div className="drawer-actions wrap">
+              {mode === "view" ? (
+                <button className="primary-button" onClick={() => setMode("edit")} type="button">
+                  Edytuj
+                </button>
+              ) : (
+                <>
+                  <button className="ghost-button" onClick={() => { resetForm(); setMode("view") }} type="button">
+                    Anuluj edycję
+                  </button>
+                  <button className="primary-button" onClick={handleSave} type="button" disabled={!hasChanges || !form.name.trim()}>
+                    Zapisz zmiany
+                  </button>
+                </>
+              )}
+              <button className="close-button" onClick={onClose} type="button" aria-label="Zamknij drawer">
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {tab === "overview" ? (
+          <div className="drawer-content">
+            <section className="info-card" style={{ display: "grid", gap: 12 }}>
+              <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }}>
+                <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 14, padding: 14 }}>
+                  <div className="muted-small uppercase">Ostatni kontakt</div>
+                  <div style={{ marginTop: 6 }}>{lastTouch.at ? formatDateTime(lastTouch.at, dateOptions) : "Brak historii kontaktu"}</div>
+                </div>
+                <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 14, padding: 14 }}>
+                  <div className="muted-small uppercase">Kolejny krok</div>
+                  <div style={{ marginTop: 6 }}>{nextStep.title || liveLead.nextActionTitle || "Brak next stepu"}</div>
+                </div>
+                <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 14, padding: 14 }}>
+                  <div className="muted-small uppercase">Termin</div>
+                  <div style={{ marginTop: 6 }}>{nextStep.at ? formatDateTime(nextStep.at, dateOptions) : liveLead.nextActionAt ? formatDateTime(liveLead.nextActionAt, dateOptions) : "Brak terminu"}</div>
+                </div>
+                <div className="today-row-meta-card" style={{ border: `1px solid ${computed.isAtRisk ? "#fecaca" : "var(--border)"}`, borderRadius: 14, padding: 14, background: computed.isAtRisk ? "#fff7f7" : "#fff" }}>
+                  <div className="muted-small uppercase">Stan ryzyka</div>
+                  <div style={{ marginTop: 6, color: statusTone, fontWeight: 700 }}>{riskLabel}</div>
+                </div>
+              </div>
+              <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}>
+                <div className="info-row"><strong>Dni bez ruchu</strong><span>{computed.daysSinceLastTouch}</span></div>
+                <div className="info-row"><strong>Otwarte działania</strong><span>{openItems.length}</span></div>
+                <div className="info-row"><strong>Wartość</strong><span>{formatMoney(liveLead.value)}</span></div>
+                <div className="info-row"><strong>Priorytet dnia</strong><span>{computed.dailyPriorityScore}</span></div>
+              </div>
+            </section>
+
+            <section className="info-card" style={{ display: "grid", gap: 12 }}>
+              <div>
+                <div className="drawer-title" style={{ fontSize: 18 }}>Szybkie akcje</div>
+                <div className="muted-small">Pchnij lead dalej bez wychodzenia z karty.</div>
+              </div>
+              <div className="drawer-actions wrap">
+                <button className="primary-button" type="button" onClick={addTomorrowFollowUp}>Follow-up jutro</button>
+                <button className="ghost-button" type="button" onClick={addCallTask}>Zadzwoń</button>
+                <button className="ghost-button" type="button" onClick={addMeetingTask}>Spotkanie</button>
+                <button className="ghost-button" type="button" onClick={addNoteTimeline}>Notatka</button>
+                <button className="ghost-button" type="button" onClick={() => setLeadStatus("waiting")}>Waiting</button>
+                <button className="ghost-button" type="button" onClick={() => setLeadStatus("won")}>Won</button>
+                <button className="ghost-button" type="button" onClick={() => setLeadStatus("lost")}>Lost</button>
+              </div>
+            </section>
+
+            <section className="info-card" style={{ display: "grid", gap: 12 }}>
+              <div>
+                <div className="drawer-title" style={{ fontSize: 18 }}>Start realizacji</div>
+                <div className="muted-small">Ta sekcja ma przygotować przejście z wygranego leada do modułu spraw.</div>
+              </div>
+              <div className="today-row-meta-card" style={{ border: "1px solid var(--border)", borderRadius: 14, padding: 14 }}>
+                {liveLead.status === "won" ? (
+                  <>
+                    <div style={{ fontWeight: 700 }}>Lead jest gotowy do uruchomienia realizacji.</div>
+                    <div className="muted-small" style={{ marginTop: 6 }}>Następny etap to przypięcie checklisty startowej i przejście do sprawy operacyjnej.</div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontWeight: 700 }}>Jeszcze nie uruchamiaj realizacji.</div>
+                    <div className="muted-small" style={{ marginTop: 6 }}>Najpierw domknij sprzedaż. Po statusie „Wygrany” ta sekcja stanie się wejściem do kolejnego modułu.</div>
+                  </>
+                )}
+              </div>
+            </section>
+
+            {mode === "edit" ? (
+              <section className="info-card" style={{ display: "grid", gap: 14 }}>
+                <div className="drawer-title" style={{ fontSize: 18 }}>Edycja leada</div>
+                <div className="form-grid drawer-form-grid">
+                  <label className="field-block">
+                    <FieldLabel label="Lead *" help="Główna nazwa kontaktu albo firmy widoczna na listach." />
+                    <input className="text-input" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
+                  </label>
+                  <label className="field-block">
+                    <FieldLabel label="Firma" help="Opcjonalna nazwa firmy przypisanej do leada." />
+                    <input className="text-input" value={form.company} onChange={(event) => setForm({ ...form, company: event.target.value })} />
+                  </label>
+                </div>
+                <div className="form-grid drawer-form-grid">
+                  <label className="field-block">
+                    <FieldLabel label="Status" help="Aktualny etap pracy z leadem." />
+                    <select className="select-input" value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value as Lead["status"] })}>
+                      {LEAD_STATUS_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="field-block">
+                    <FieldLabel label="Priorytet" help="Pomaga ustalić kolejność działania." />
+                    <select className="select-input" value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as Lead["priority"] })}>
+                      {PRIORITY_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                <div className="form-grid drawer-form-grid">
+                  <label className="field-block">
+                    <FieldLabel label="Źródło" help="Skąd przyszedł ten lead." />
+                    <select className="select-input" value={form.source} onChange={(event) => setForm({ ...form, source: event.target.value as Lead["source"] })}>
+                      {SOURCE_OPTIONS.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="field-block">
+                    <FieldLabel label="Wartość" help="Szacowana wartość leada lub dealu." />
+                    <input type="number" min="0" step="100" className="text-input" value={form.value} onChange={(event) => setForm({ ...form, value: event.target.value })} />
+                  </label>
+                </div>
+                <div className="form-grid drawer-form-grid">
+                  <label className="field-block">
+                    <FieldLabel label="E-mail" help="Adres mailowy kontaktu." />
+                    <input className="text-input" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
+                  </label>
+                  <label className="field-block">
+                    <FieldLabel label="Telefon" help="Numer telefonu kontaktu." />
+                    <input className="text-input" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
+                  </label>
+                </div>
+                <div className="form-grid drawer-form-grid">
+                  <label className="field-block">
+                    <FieldLabel label="Next action" help="Najbliższa planowana akcja przy tym leadzie." />
+                    <input className="text-input" value={form.nextActionTitle} onChange={(event) => setForm({ ...form, nextActionTitle: event.target.value })} />
+                  </label>
+                  <label className="field-block">
+                    <FieldLabel label="Termin" help="Data i godzina tej planowanej akcji." />
+                    <input type="datetime-local" className="text-input date-time-input" value={toInputValue(form.nextActionAt)} onChange={(event) => setForm({ ...form, nextActionAt: fromInputValue(event.target.value) })} />
+                  </label>
+                </div>
+                <label className="field-block">
+                  <FieldLabel label="Opis" help="Krótki opis sytuacji lub kontekstu leada." />
+                  <textarea className="text-area" value={form.summary} onChange={(event) => setForm({ ...form, summary: event.target.value })} />
+                </label>
+                <label className="field-block">
+                  <FieldLabel label="Notatki" help="Twoje robocze notatki do leada." />
+                  <textarea className="text-area" value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} />
+                </label>
+                <div className="drawer-actions drawer-actions-between wrap">
+                  <button className="danger-button" onClick={() => setShowDeleteConfirm(true)} type="button">Usuń leada</button>
+                  <div className="drawer-actions wrap">
+                    <button className="ghost-button" onClick={resetForm} type="button" disabled={!hasChanges}>Cofnij zmiany</button>
+                    <button className="primary-button" onClick={handleSave} type="button" disabled={!hasChanges || !form.name.trim()}>Zapisz zmiany</button>
+                  </div>
+                </div>
+              </section>
+            ) : null}
+
+            <section className="info-card" style={{ display: "grid", gap: 12 }}>
+              <div className="drawer-title" style={{ fontSize: 18 }}>Ostatnie ruchy</div>
+              {latestTimeline.length === 0 ? <div className="empty-box">Brak historii dla tego leada.</div> : null}
+              {latestTimeline.map((item) => (
+                <div key={item.id} className="timeline-row">
+                  <div>
+                    <div className="timeline-title">{item.title}</div>
+                    <div className="muted-small">{formatDateTime(getItemPrimaryDate(item), dateOptions)}</div>
+                  </div>
+                  {item.status !== "done" ? (
+                    <button className="ghost-button small" onClick={() => toggleItemDone(item.id)} type="button">Zrobione</button>
+                  ) : null}
+                </div>
+              ))}
+            </section>
           </div>
         ) : (
           <div className="drawer-content">
@@ -384,9 +517,12 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
                   <div className="timeline-title">{item.title}</div>
                   <div className="muted-small">{formatDateTime(getItemPrimaryDate(item), dateOptions)}</div>
                 </div>
-                <button className="ghost-button small" onClick={() => toggleItemDone(item.id)} type="button">
-                  {item.status === "done" ? "Przywróć" : "Zrobione"}
-                </button>
+                <div className="drawer-actions wrap">
+                  <span className={`badge priority-${item.priority}`}>{getPriorityLabel(item.priority)}</span>
+                  <button className="ghost-button small" onClick={() => toggleItemDone(item.id)} type="button">
+                    {item.status === "done" ? "Przywróć" : "Zrobione"}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -413,21 +549,28 @@ export function LeadsPageView() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const isMobileProfile = snapshot.settings.viewProfile === "mobile"
+  const dateOptions = useMemo(() => ({ timeZone: snapshot.settings.timezone }), [snapshot.settings.timezone])
 
   const normalizedQuery = normalizeSearchValue(query)
-  const filtered = snapshot.leads.filter((lead) => {
-    const searchableText = normalizeSearchValue(`${lead.name} ${lead.company} ${lead.email} ${lead.phone} ${lead.source}`)
-    const matchesQuery = !normalizedQuery || searchableText.includes(normalizedQuery)
-    const matchesStatus = statusFilter === "all" || lead.status === statusFilter
-    return matchesQuery && matchesStatus
-  })
+  const leadsWithComputed = useMemo(() => buildLeadsWithComputedState(snapshot, dateOptions), [dateOptions, snapshot])
+
+  const filtered = useMemo(
+    () =>
+      leadsWithComputed.filter((lead) => {
+        const searchableText = normalizeSearchValue(`${lead.name} ${lead.company} ${lead.email} ${lead.phone} ${lead.source}`)
+        const matchesQuery = !normalizedQuery || searchableText.includes(normalizedQuery)
+        const matchesStatus = statusFilter === "all" || lead.status === statusFilter
+        return matchesQuery && matchesStatus
+      }),
+    [leadsWithComputed, normalizedQuery, statusFilter],
+  )
 
   return (
     <>
       <section className="hero-row">
         <div>
           <h1 className="page-title">Leady</h1>
-          <p className="page-subtitle">Pełna lista leadów z szybkim podglądem statusu, wartości i aktywnych działań.</p>
+          <p className="page-subtitle">Tu widzisz status, wartość, aktywne działania, zaległości, ostatni kontakt, kolejny krok i ryzyko dla każdego leada.</p>
         </div>
       </section>
 
@@ -442,9 +585,7 @@ export function LeadsPageView() {
           <select className="select-input" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
             <option value="all">Wszystkie statusy</option>
             {LEAD_STATUS_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
+              <option key={option.value} value={option.value}>{option.label}</option>
             ))}
           </select>
         </div>
@@ -453,27 +594,36 @@ export function LeadsPageView() {
           <div className="lead-mobile-list">
             {filtered.length === 0 ? <div className="empty-box">{snapshot.leads.length === 0 && !query && statusFilter === "all" ? "Dodaj pierwszego leada." : "Brak wyników."}</div> : null}
             {filtered.map((lead) => {
-              const stats = getLeadActiveItemStats(lead.id, snapshot.items, { timeZone: snapshot.settings.timezone })
+              const stats = getLeadActiveItemStats(lead.id, snapshot.items, dateOptions)
+              const nextStep = getLeadNextStep(snapshot, lead, dateOptions)
+              const lastTouch = getLeadLastTouch(snapshot, lead, dateOptions)
+              const riskLabel = formatLeadAlarmReasonLabel(lead.computed.riskReason) || "Pod kontrolą"
+
               return (
                 <button key={lead.id} className="lead-mobile-row" onClick={() => setSelectedLead(lead)} type="button">
-                  <div className="lead-mobile-top">
+                  <div className="lead-mobile-top" style={{ alignItems: "flex-start" }}>
                     <div className="lead-mobile-main">
                       <Avatar name={lead.name} />
-                      <div className="lead-mobile-text">
+                      <div className="lead-mobile-text" style={{ width: "100%" }}>
                         <div className="lead-name">{lead.name}</div>
                         <div className="lead-mobile-meta-line">
                           <span>{lead.company || lead.source}</span>
                           <span>•</span>
                           <span>{formatMoney(lead.value)}</span>
-                          <span>•</span>
-                          <span>
-                            {stats.activeCount > 0 ? `${stats.activeCount} zad.` : "0 zad."}
-                            {stats.overdueCount > 0 ? <span className="lead-table-overdue"> · {stats.overdueCount} zaległe</span> : null}
-                          </span>
+                        </div>
+                        <div className="lead-mobile-meta-line" style={{ marginTop: 8, display: "grid", gap: 6 }}>
+                          <span>Status: {getStatusLabel(lead.status)}</span>
+                          <span>Aktywne działania: {stats.activeCount}{stats.overdueCount > 0 ? ` · zaległe ${stats.overdueCount}` : ""}</span>
+                          <span>Ostatni kontakt: {lastTouch.at ? formatDateTime(lastTouch.at, dateOptions) : "Brak"}</span>
+                          <span>Kolejny krok: {nextStep.title || "Brak next stepu"}</span>
+                          <span>Risk: {riskLabel}</span>
                         </div>
                       </div>
                     </div>
-                    <LeadStatusBadge status={lead.status} />
+                    <div style={{ display: "grid", gap: 8, justifyItems: "end" }}>
+                      <LeadStatusBadge status={lead.status} />
+                      {lead.computed.isAtRisk ? <span className="badge priority-high">Ryzyko</span> : null}
+                    </div>
                   </div>
                 </button>
               )
@@ -481,36 +631,40 @@ export function LeadsPageView() {
           </div>
         ) : (
           <div className="lead-table">
-            <div className="lead-table-header" role="row">
+            <div className="lead-table-header" role="row" style={{ gridTemplateColumns: "2.1fr 1fr 1fr 1fr 0.9fr 1.2fr 1.4fr 1.2fr" }}>
               <div>KLIENT</div>
               <div>STATUS</div>
-              <div>ŹRÓDŁO</div>
               <div>WARTOŚĆ</div>
-              <div>AKTYWNE ZADANIA</div>
+              <div>AKCJE</div>
+              <div>OVERDUE</div>
+              <div>OSTATNI KONTAKT</div>
+              <div>KOLEJNY KROK</div>
+              <div>RISK</div>
             </div>
 
             <div className="lead-table-body">
               {filtered.length === 0 ? <div className="empty-box">{snapshot.leads.length === 0 && !query && statusFilter === "all" ? "Dodaj pierwszego leada." : "Brak wyników."}</div> : null}
               {filtered.map((lead) => {
-                const stats = getLeadActiveItemStats(lead.id, snapshot.items, { timeZone: snapshot.settings.timezone })
+                const stats = getLeadActiveItemStats(lead.id, snapshot.items, dateOptions)
+                const nextStep = getLeadNextStep(snapshot, lead, dateOptions)
+                const lastTouch = getLeadLastTouch(snapshot, lead, dateOptions)
+                const riskLabel = formatLeadAlarmReasonLabel(lead.computed.riskReason) || "Pod kontrolą"
                 return (
-                  <button key={lead.id} className="lead-table-row" onClick={() => setSelectedLead(lead)} type="button">
+                  <button key={lead.id} className="lead-table-row" onClick={() => setSelectedLead(lead)} type="button" style={{ gridTemplateColumns: "2.1fr 1fr 1fr 1fr 0.9fr 1.2fr 1.4fr 1.2fr" }}>
                     <div className="lead-table-client">
                       <Avatar name={lead.name} />
                       <div className="lead-table-client-text">
                         <div className="lead-name">{lead.name}</div>
-                        <div className="muted-small">{lead.company || "Bez firmy"}</div>
+                        <div className="muted-small">{lead.company || lead.source}</div>
                       </div>
                     </div>
-                    <div className="lead-table-status">
-                      <LeadStatusBadge status={lead.status} />
-                    </div>
-                    <div className="lead-table-source">{lead.source}</div>
+                    <div className="lead-table-status"><LeadStatusBadge status={lead.status} /></div>
                     <div className="lead-table-value">{formatMoney(lead.value)}</div>
-                    <div className="lead-table-tasks">
-                      <span>{stats.activeCount > 0 ? stats.activeCount : "—"}</span>
-                      {stats.overdueCount > 0 ? <span className="lead-table-overdue">({stats.overdueCount}↑)</span> : null}
-                    </div>
+                    <div className="lead-table-tasks">{stats.activeCount > 0 ? stats.activeCount : "—"}</div>
+                    <div className="lead-table-overdue">{stats.overdueCount > 0 ? stats.overdueCount : "—"}</div>
+                    <div className="lead-table-source">{lastTouch.at ? formatDayLabel(lastTouch.at, dateOptions) : "Brak"}</div>
+                    <div className="lead-table-source">{nextStep.title || "Brak next stepu"}</div>
+                    <div className="lead-table-source" style={{ color: lead.computed.isAtRisk ? "#dc2626" : "var(--muted)", fontWeight: 700 }}>{riskLabel}</div>
                   </button>
                 )
               })}
@@ -528,88 +682,124 @@ export function TasksPageView() {
   const { snapshot, deleteItem, snoozeItem, toggleItemDone } = useAppStore()
   const [editingItem, setEditingItem] = useState<WorkItem | null>(null)
   const [itemToDelete, setItemToDelete] = useState<WorkItem | null>(null)
-  const [tab, setTab] = useState<"today" | "overdue" | "done">("today")
+  const [tab, setTab] = useState<"active" | "today" | "week" | "overdue" | "without_lead" | "done">("active")
+  const dateOptions = useMemo(() => ({ timeZone: snapshot.settings.timezone }), [snapshot.settings.timezone])
 
   const taskItems = useMemo(() => getTaskListItems(snapshot.items), [snapshot.items])
+  const currentDateKey = getCurrentDateKey(dateOptions)
+
+  function priorityOrder(priority: WorkItem["priority"]) {
+    return priority === "high" ? 0 : priority === "medium" ? 1 : 2
+  }
+
+  function sortActiveItems(items: WorkItem[]) {
+    return [...items].sort((left, right) => {
+      const overdueDiff = Number(isOverdue(left, dateOptions)) === Number(isOverdue(right, dateOptions)) ? 0 : Number(isOverdue(right, dateOptions)) - Number(isOverdue(left, dateOptions))
+      if (overdueDiff !== 0) return overdueDiff
+
+      const todayDiff = Number(isToday(getItemPrimaryDate(right), dateOptions)) - Number(isToday(getItemPrimaryDate(left), dateOptions))
+      if (todayDiff !== 0) return todayDiff
+
+      const priorityDiff = priorityOrder(left.priority) - priorityOrder(right.priority)
+      if (priorityDiff !== 0) return priorityDiff
+
+      return getItemPrimaryDate(left).localeCompare(getItemPrimaryDate(right))
+    })
+  }
+
+  const activeItems = useMemo(() => taskItems.filter((item) => item.status !== "done"), [taskItems])
 
   const list = useMemo(() => {
+    if (tab === "done") {
+      return [...taskItems.filter((item) => item.status === "done")].sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
+    }
+
     if (tab === "today") {
-      return taskItems.filter((item) => isToday(getItemPrimaryDate(item), { timeZone: snapshot.settings.timezone }))
+      return sortActiveItems(activeItems.filter((item) => isToday(getItemPrimaryDate(item), dateOptions)))
     }
+
+    if (tab === "week") {
+      return sortActiveItems(
+        activeItems.filter((item) => {
+          const diff = getDateKeyDiff(toDateKey(getItemPrimaryDate(item), dateOptions), currentDateKey)
+          return diff >= 0 && diff <= 6
+        }),
+      )
+    }
+
     if (tab === "overdue") {
-      return taskItems.filter((item) => isOverdue(item, { timeZone: snapshot.settings.timezone }))
+      return sortActiveItems(activeItems.filter((item) => isOverdue(item, dateOptions)))
     }
-    return taskItems.filter((item) => item.status === "done")
-  }, [snapshot.settings.timezone, tab, taskItems])
+
+    if (tab === "without_lead") {
+      return sortActiveItems(activeItems.filter((item) => !item.leadId))
+    }
+
+    return sortActiveItems(activeItems)
+  }, [activeItems, currentDateKey, dateOptions, tab, taskItems])
+
+  const tabMeta = [
+    { key: "active", label: "Wszystkie aktywne", count: activeItems.length },
+    { key: "today", label: "Dziś", count: activeItems.filter((item) => isToday(getItemPrimaryDate(item), dateOptions)).length },
+    { key: "week", label: "Ten tydzień", count: activeItems.filter((item) => { const diff = getDateKeyDiff(toDateKey(getItemPrimaryDate(item), dateOptions), currentDateKey); return diff >= 0 && diff <= 6 }).length },
+    { key: "overdue", label: "Zaległe", count: activeItems.filter((item) => isOverdue(item, dateOptions)).length },
+    { key: "without_lead", label: "Bez leada", count: activeItems.filter((item) => !item.leadId).length },
+    { key: "done", label: "Zrobione", count: taskItems.filter((item) => item.status === "done").length },
+  ] as const
 
   return (
     <>
       <section className="hero-row">
         <div>
           <h1 className="page-title">Zadania</h1>
-          <p className="page-subtitle">Tu masz taski, follow-upy i szybkie odkładanie na później.</p>
+          <p className="page-subtitle">Pełny ruch operacyjny. Tu widzisz backlog aktywnych zadań, ten tydzień, zaległości i wpisy bez przypiętego leada.</p>
         </div>
       </section>
 
       <section className="panel-card">
-        <div className="segmented-tabs">
-          {[
-            { key: "today", label: "Dziś" },
-            { key: "overdue", label: "Zaległe" },
-            { key: "done", label: "Zrobione" },
-          ].map((tabOption) => (
-            <button
-              key={tabOption.key}
-              className={tab === tabOption.key ? "active" : ""}
-              onClick={() => setTab(tabOption.key as typeof tab)}
-            >
-              {tabOption.label}
+        <div className="segmented-tabs" style={{ flexWrap: "wrap" }}>
+          {tabMeta.map((tabOption) => (
+            <button key={tabOption.key} className={tab === tabOption.key ? "active" : ""} onClick={() => setTab(tabOption.key)}>
+              {tabOption.label} <span className="muted-small">{tabOption.count}</span>
             </button>
           ))}
         </div>
 
         <div className="stack-list">
           {list.length === 0 ? <div className="empty-box">{taskItems.length === 0 ? "Dodaj pierwsze zadanie." : "Brak wpisów w tej sekcji."}</div> : null}
-          {list.map((item) => (
-            <div key={item.id} className="task-row">
-              <ItemCard
-                item={item}
-                leadName={getItemLeadLabel(item, snapshot.leads)}
-                onEdit={() => setEditingItem(item)}
-                dateOptions={{ timeZone: snapshot.settings.timezone }}
-              />
-              <div className="task-actions">
-                <button className="ghost-button small" onClick={() => toggleItemDone(item.id)}>
-                  {item.status === "done" ? "Cofnij" : "Zrobione"}
+          {list.map((item) => {
+            const leadLabel = getItemLeadLabel(item, snapshot.leads)
+            const overdue = isOverdue(item, dateOptions)
+            const typeMeta = getItemTypeMeta(item.type)
+            return (
+              <div key={item.id} className="task-row" style={{ display: "grid", gap: 12 }}>
+                <button className={`item-card ${overdue ? "overdue" : ""}`} onClick={() => setEditingItem(item)} type="button">
+                  <div className="item-card-top">
+                    <span className="item-icon">{typeMeta.icon}</span>
+                    <div style={{ minWidth: 0 }}>
+                      <div className={`item-title ${isDone(item) ? "done" : ""}`}>{item.title}</div>
+                      <div className="item-meta-row" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        <span>Typ: {typeMeta.label}</span>
+                        <span>Lead: {leadLabel || "Bez leada"}</span>
+                        <span>Termin: {formatDateTime(getItemPrimaryDate(item), dateOptions)}</span>
+                        {overdue ? <span className="lead-table-overdue">Po terminie</span> : null}
+                      </div>
+                    </div>
+                  </div>
+                  {item.description ? <div className="item-description">{item.description}</div> : null}
                 </button>
-                <button
-                  className="ghost-button small"
-                  onClick={() =>
-                    snoozeItem(
-                      item.id,
-                      getNextSnoozeByHours(getItemPrimaryDate(item), 1, { timeZone: snapshot.settings.timezone }),
-                    )
-                  }
-                >
-                  +1h
-                </button>
-                <button
-                  className="ghost-button small"
-                  onClick={() =>
-                    snoozeItem(
-                      item.id,
-                      getNextDaySnoozeAtPreferredTime(getItemPrimaryDate(item), { timeZone: snapshot.settings.timezone }),
-                    )
-                  }
-                >
-                  Jutro
-                </button>
-                <button className="danger-button small" onClick={() => setItemToDelete(item)}>
-                  Usuń
-                </button>
+                <div className="task-actions">
+                  <span className={`badge priority-${item.priority}`}>{getPriorityLabel(item.priority)}</span>
+                  <button className="ghost-button small" onClick={() => toggleItemDone(item.id)}>
+                    {item.status === "done" ? "Cofnij" : "Zrobione"}
+                  </button>
+                  <button className="ghost-button small" onClick={() => snoozeItem(item.id, getNextSnoozeByHours(getItemPrimaryDate(item), 1, dateOptions))}>+1h</button>
+                  <button className="ghost-button small" onClick={() => snoozeItem(item.id, getNextDaySnoozeAtPreferredTime(getItemPrimaryDate(item), dateOptions))}>Jutro</button>
+                  <button className="danger-button small" onClick={() => setItemToDelete(item)}>Usuń</button>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </section>
 
