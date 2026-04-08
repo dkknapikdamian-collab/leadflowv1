@@ -345,6 +345,7 @@ function CaseDetailDrawer({
             <div className="info-row"><strong>Typ uslugi</strong><span>{card.typeLabel}</span></div>
             <div className="info-row"><strong>Status sprzedazowy</strong><span>Wygrany</span></div>
             <div className="info-row"><strong>Status operacyjny</strong><span>{card.statusLabel}</span></div>
+            <div className="info-row"><strong>Flaga blokady</strong><span>{caseRecord.blockedByMissingRequired ? "Aktywna" : "Brak"}</span></div>
             <div className="info-row"><strong>Kompletnosc</strong><span>{card.completenessPercent}%</span></div>
             <div className="info-row"><strong>Brakujace elementy</strong><span>{card.missingElementsCount}</span></div>
             <div className="info-row"><strong>Czekamy na klienta</strong><span>{card.daysStuck} dni</span></div>

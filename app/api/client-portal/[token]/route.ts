@@ -15,8 +15,10 @@ import type {
   Case,
   CaseItem,
   CaseItemStatus,
+  CaseStatus,
   ClientPortalToken,
   FileAttachment,
+  WorkItem,
 } from "@/lib/types"
 import { createId, nowIso } from "@/lib/utils"
 
@@ -50,15 +52,15 @@ function decisionToCaseItemStatus(decision: ApprovalDecision): CaseItemStatus {
   return decision === "accepted" ? "accepted" : "needs_correction"
 }
 
-function deriveCaseStatusAfterPortalAction(caseRecord: Case, nextCaseItems: CaseItem[]) {
+function deriveCaseStatusAfterPortalAction(caseRecord: Case, nextCaseItems: CaseItem[]): { status: CaseStatus; blockedByMissingRequired: boolean } {
   const requiredItems = nextCaseItems.filter((item) => item.required)
   const hasNeedsCorrection = requiredItems.some((item) => item.status === "needs_correction")
   const hasUnderReview = requiredItems.some((item) => item.status === "under_review")
   const hasPending = requiredItems.some((item) => PENDING_STATUSES.has(item.status))
 
-  if (hasNeedsCorrection) return "blocked"
-  if (hasUnderReview) return "under_review"
-  if (hasPending) return "waiting_for_client"
+  if (hasNeedsCorrection) return { status: "blocked", blockedByMissingRequired: true }
+  if (hasUnderReview) return { status: "under_review", blockedByMissingRequired: false }
+  if (hasPending) return { status: "waiting_for_client", blockedByMissingRequired: true }
 
   if (requiredItems.length > 0 && requiredItems.every((item) => DONE_STATUSES.has(item.status))) {
     if (
@@ -68,11 +70,48 @@ function deriveCaseStatusAfterPortalAction(caseRecord: Case, nextCaseItems: Case
       || caseRecord.status === "not_started"
       || caseRecord.status === "under_review"
     ) {
-      return "ready_to_start"
+      return { status: "ready_to_start", blockedByMissingRequired: false }
     }
   }
 
-  return caseRecord.status
+  return { status: caseRecord.status, blockedByMissingRequired: Boolean(caseRecord.blockedByMissingRequired) }
+}
+
+function createOwnerAutomationTask(input: {
+  snapshot: AppSnapshot
+  caseRecord: Case
+  title: string
+  description: string
+  marker: string
+  at: string
+}): WorkItem | null {
+  const markerTag = `[auto:${input.marker}]`
+  const hasOpenTask = (input.snapshot.items ?? []).some(
+    (item) => item.status !== "done" && item.recordType === "task" && item.description.includes(markerTag),
+  )
+  if (hasOpenTask) return null
+
+  return {
+    id: createId("item"),
+    workspaceId: input.snapshot.context.workspaceId ?? "workspace_local",
+    leadId: input.caseRecord.sourceLeadId,
+    leadLabel: "",
+    recordType: "task",
+    type: "task",
+    title: input.title,
+    description: `${input.description}\n${markerTag}`,
+    status: "todo",
+    priority: "high",
+    scheduledAt: input.at,
+    startAt: "",
+    endAt: "",
+    recurrence: "none",
+    reminder: "none",
+    createdAt: input.at,
+    updatedAt: input.at,
+    showInTasks: true,
+    showInCalendar: false,
+  }
 }
 
 function findSnapshotByToken(tokenHash: string, now: string) {
@@ -387,7 +426,8 @@ function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, inpu
     entry.id === caseRecord.id
       ? {
           ...entry,
-          status: nextCaseStatus,
+          status: nextCaseStatus.status,
+          blockedByMissingRequired: nextCaseStatus.blockedByMissingRequired,
           updatedAt: now,
         }
       : entry,
@@ -415,7 +455,8 @@ function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, inpu
         fileName: uploadMeta?.safeFileName ?? null,
         fileType: uploadMeta?.mimeType ?? null,
         fileSizeBytes: uploadMeta?.fileSizeBytes ?? null,
-        caseStatus: nextCaseStatus,
+        caseStatus: nextCaseStatus.status,
+        blockedByMissingRequired: nextCaseStatus.blockedByMissingRequired,
       },
       createdAt: now,
     },
@@ -425,6 +466,36 @@ function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, inpu
   const notifications = [
     createPortalNotification(snapshot, caseRecord.id, item.id, "Nowa aktywnosc klienta", `${item.title}: ${input.action}`),
     ...(snapshot.notifications ?? []),
+  ]
+
+  const maybeReviewTask =
+    nextStatus === "under_review" && item.status !== "under_review"
+      ? createOwnerAutomationTask({
+          snapshot,
+          caseRecord,
+          title: `Zweryfikuj doslany element: ${item.title}`,
+          description: "Automat po doslaniu od klienta. Sprawdz element jeszcze dzis.",
+          marker: `case-item-review-${caseRecord.id}-${item.id}`,
+          at: now,
+        })
+      : null
+
+  const maybeReadyTask =
+    nextCaseStatus.status === "ready_to_start" && caseRecord.status !== "ready_to_start"
+      ? createOwnerAutomationTask({
+          snapshot,
+          caseRecord,
+          title: `Sprawa gotowa do startu: ${caseRecord.title}`,
+          description: "Automat po pelnej kompletnosci. Rozpocznij realizacje.",
+          marker: `case-ready-${caseRecord.id}`,
+          at: now,
+        })
+      : null
+
+  const nextItems = [
+    ...(maybeReadyTask ? [maybeReadyTask] : []),
+    ...(maybeReviewTask ? [maybeReviewTask] : []),
+    ...(snapshot.items ?? []),
   ]
 
   return {
@@ -437,6 +508,7 @@ function applyPortalAction(snapshot: AppSnapshot, token: ClientPortalToken, inpu
       fileAttachments: attachments,
       approvals,
       notifications,
+      items: nextItems,
       clientPortalTokens: (snapshot.clientPortalTokens ?? []).map((entry) =>
         entry.id === token.id
           ? {

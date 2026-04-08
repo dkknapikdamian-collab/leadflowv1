@@ -114,6 +114,7 @@ function buildCaseFromLead(input: {
     title: buildCaseTitle(input.lead),
     description: input.lead.summary || input.lead.notes || "",
     status: input.status ?? "not_started",
+    blockedByMissingRequired: false,
     priority: input.lead.priority,
     value: input.lead.value,
     startAt: null,

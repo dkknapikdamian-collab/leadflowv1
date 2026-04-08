@@ -1,6 +1,7 @@
 import { createInitialSnapshot } from "./seed"
 import { createCaseFromLead } from "./domain/lead-case"
 import type {
+  AppNotification,
   ActivityLogEntry,
   AppSnapshot,
   BillingState,
@@ -70,6 +71,10 @@ const LEAD_NEXT_ACTION_PATCH_KEYS: Array<keyof Lead> = [
   "nextActionAt",
   "nextActionItemId",
 ]
+
+const CASE_COMPLETENESS_CHECK_DAYS = 2
+const DONE_CASE_ITEM_STATUSES = new Set<CaseItemStatus>(["accepted", "not_applicable"])
+const PENDING_CASE_ITEM_STATUSES = new Set<CaseItemStatus>(["none", "request_sent", "delivered"])
 
 function normalizeLead(lead: Partial<Lead> | undefined, initialLead: Lead): Lead {
   return {
@@ -246,6 +251,114 @@ function createLinkedNextActionItem(
   )
 }
 
+function addDaysIso(baseIso: string, days: number) {
+  const base = Date.parse(baseIso)
+  const ms = Number.isFinite(base) ? base : Date.now()
+  return new Date(ms + days * 24 * 60 * 60 * 1000).toISOString()
+}
+
+function createOwnerAutomationTask(input: {
+  snapshot: AppSnapshot
+  title: string
+  description: string
+  scheduledAt: string
+  priority: WorkItem["priority"]
+  leadId?: string | null
+  marker: string
+}) {
+  const markerTag = `[auto:${input.marker}]`
+  const hasOpenTask = input.snapshot.items.some(
+    (item) =>
+      item.status !== "done"
+      && item.recordType === "task"
+      && item.description.includes(markerTag),
+  )
+  if (hasOpenTask) return null
+
+  const now = nowIso()
+  return normalizeItemLeadRelation(
+    {
+      ...EMPTY_ITEM_TEMPLATE,
+      id: createId("item"),
+      workspaceId: input.snapshot.context.workspaceId ?? null,
+      leadId: input.leadId ?? null,
+      leadLabel: "",
+      recordType: "task",
+      type: "task",
+      title: input.title,
+      description: `${input.description}\n${markerTag}`,
+      status: "todo",
+      priority: input.priority,
+      scheduledAt: input.scheduledAt,
+      startAt: "",
+      endAt: "",
+      recurrence: "none",
+      reminder: "none",
+      createdAt: now,
+      updatedAt: now,
+      showInTasks: true,
+      showInCalendar: false,
+    },
+    input.snapshot.leads,
+  )
+}
+
+function createSystemActivity(
+  snapshot: AppSnapshot,
+  caseId: string,
+  type: ActivityLogEntry["type"],
+  payload: Record<string, unknown>,
+  caseItemId?: string | null,
+): ActivityLogEntry {
+  return {
+    id: createId("activity"),
+    workspaceId: snapshot.context.workspaceId ?? "workspace_local",
+    actorUserId: snapshot.context.userId,
+    actorContactId: null,
+    source: "system",
+    type,
+    leadId: null,
+    caseId,
+    caseItemId: caseItemId ?? null,
+    attachmentId: null,
+    approvalId: null,
+    notificationId: null,
+    payload,
+    createdAt: nowIso(),
+  }
+}
+
+function createSystemNotification(
+  snapshot: AppSnapshot,
+  input: {
+    caseId: string
+    caseItemId?: string | null
+    channel: AppNotification["channel"]
+    status?: AppNotification["status"]
+    title: string
+    body: string
+  },
+): AppNotification {
+  const now = nowIso()
+  return {
+    id: createId("notif"),
+    workspaceId: snapshot.context.workspaceId ?? "workspace_local",
+    caseId: input.caseId,
+    caseItemId: input.caseItemId ?? null,
+    leadId: null,
+    contactId: null,
+    channel: input.channel,
+    status: input.status ?? "queued",
+    title: input.title,
+    body: input.body,
+    scheduledAt: now,
+    sentAt: null,
+    readAt: null,
+    createdAt: now,
+    updatedAt: now,
+  }
+}
+
 function hasNonNextActionLeadPatch(patch: Partial<Lead>) {
   return Object.keys(patch).some((key) => !LEAD_NEXT_ACTION_PATCH_KEYS.includes(key as keyof Lead))
 }
@@ -385,10 +498,19 @@ export function updateLeadSnapshot(snapshot: AppSnapshot, leadId: string, patch:
   }
 
   const nextLeads = snapshot.leads.map((lead) => (lead.id === leadId ? mergedLead : lead))
-  return reconcileAppSnapshot({
+  const updatedSnapshot = reconcileAppSnapshot({
     ...snapshot,
     leads: nextLeads,
     items: nextItems,
+  })
+
+  const movedToWon = currentLead.status !== "won" && mergedLead.status === "won"
+  const shouldAutoCreateCase = movedToWon && !mergedLead.caseId
+  if (!shouldAutoCreateCase) return updatedSnapshot
+
+  return startCaseFromLeadSnapshot(updatedSnapshot, {
+    leadId,
+    mode: "template_with_link",
   })
 }
 
@@ -807,6 +929,8 @@ function ensureCaseCollections(snapshot: AppSnapshot) {
     caseItems: [...(snapshot.caseItems ?? [])] as CaseItem[],
     activityLog: [...(snapshot.activityLog ?? [])] as ActivityLogEntry[],
     clientPortalTokens: [...(snapshot.clientPortalTokens ?? [])] as ClientPortalToken[],
+    notifications: [...(snapshot.notifications ?? [])] as AppNotification[],
+    items: [...snapshot.items] as WorkItem[],
   }
 }
 
@@ -818,11 +942,12 @@ export function startCaseFromLeadSnapshot(snapshot: AppSnapshot, input: StartCas
   const workspaceId = resolveWorkspaceId(snapshot, lead)
   const collections = ensureCaseCollections(snapshot)
   const templateSelection = getTemplateItemsForStartMode(snapshot, input.mode, input.templateId)
-  const caseStatus: CaseStatus = lead.status === "won" ? "not_started" : "ready_to_start"
+  const caseStatus: CaseStatus = lead.status === "won" ? "collecting_materials" : "ready_to_start"
 
   const transition = createCaseFromLead({
     lead,
     workspaceId,
+    actorUserId: snapshot.context.userId ?? "operator_local",
     contacts: collections.contacts,
     caseStatus,
     templateId: templateSelection.selectedTemplateId,
@@ -831,13 +956,8 @@ export function startCaseFromLeadSnapshot(snapshot: AppSnapshot, input: StartCas
   })
 
   const nextContacts = transition.createdContact ? [transition.createdContact, ...collections.contacts] : collections.contacts
-  const nextClientPortalTokens =
-    input.mode === "template_with_link"
-      ? [
-          createPortalToken(transition.case.id, transition.case.workspaceId, transition.contact.id, now),
-          ...collections.clientPortalTokens,
-        ]
-      : collections.clientPortalTokens
+  const portalToken = createPortalToken(transition.case.id, transition.case.workspaceId, transition.contact.id, now)
+  const nextClientPortalTokens = [portalToken, ...collections.clientPortalTokens]
 
   const nextLeads = snapshot.leads.map((entry) =>
     entry.id === lead.id
@@ -849,14 +969,73 @@ export function startCaseFromLeadSnapshot(snapshot: AppSnapshot, input: StartCas
       : entry,
   )
 
+  const ownerTask = createOwnerAutomationTask({
+    snapshot,
+    title: `Sprawdz kompletnosc: ${transition.case.title}`,
+    description: "Automat po utworzeniu sprawy. Sprawdz, czy klient doslal wymagane materialy.",
+    scheduledAt: addDaysIso(now, CASE_COMPLETENESS_CHECK_DAYS),
+    priority: "high",
+    leadId: lead.id,
+    marker: `case-completeness-check-${transition.case.id}`,
+  })
+
+  const nextNotifications = [
+    createSystemNotification(snapshot, {
+      caseId: transition.case.id,
+      channel: "in_app",
+      title: "Nowa sprawa po statusie wygrany",
+      body: `Utworzono sprawe ${transition.case.title} i przypisano do ownera.`,
+    }),
+    ...(snapshot.settings.emailReminders && transition.contact.email
+      ? [
+          createSystemNotification(snapshot, {
+            caseId: transition.case.id,
+            channel: "email",
+            title: "Start realizacji",
+            body: `Rozpoczynamy zbieranie materialow do sprawy ${transition.case.title}.`,
+          }),
+        ]
+      : []),
+    ...collections.notifications,
+  ]
+
+  const automationActivity: ActivityLogEntry[] = [
+    createSystemActivity(snapshot, transition.case.id, "case_status_changed", {
+      status: caseStatus,
+      reason: "auto_after_won",
+      ownerUserId: snapshot.context.userId,
+    }),
+    createSystemActivity(snapshot, transition.case.id, "notification_scheduled", {
+      channel: "in_app",
+      kind: "case_started",
+    }),
+  ]
+
+  if (snapshot.settings.emailReminders && transition.contact.email) {
+    automationActivity.push(
+      createSystemActivity(snapshot, transition.case.id, "notification_scheduled", {
+        channel: "email",
+        kind: "case_start_email",
+      }),
+    )
+  }
+
   return reconcileAppSnapshot({
     ...snapshot,
     leads: nextLeads,
     contacts: nextContacts,
-    cases: [transition.case, ...collections.cases],
+    cases: [
+      {
+        ...transition.case,
+        blockedByMissingRequired: false,
+      },
+      ...collections.cases,
+    ],
     caseItems: [...transition.caseItems, ...collections.caseItems],
-    activityLog: [...transition.activityLog, ...collections.activityLog],
+    activityLog: [...automationActivity, ...transition.activityLog, ...collections.activityLog],
     clientPortalTokens: nextClientPortalTokens,
+    notifications: nextNotifications,
+    items: ownerTask ? [ownerTask, ...collections.items] : collections.items,
   })
 }
 
@@ -927,6 +1106,32 @@ function resolveCaseItemCompletedAt(status: CaseItemStatus, currentCompletedAt: 
   return null
 }
 
+function deriveAutomatedCaseStatus(caseRecord: Case, caseItems: CaseItem[]) {
+  const requiredItems = caseItems.filter((item) => item.required)
+  const hasNeedsCorrection = requiredItems.some((item) => item.status === "needs_correction")
+  const hasUnderReview = requiredItems.some((item) => item.status === "under_review")
+  const hasPending = requiredItems.some((item) => PENDING_CASE_ITEM_STATUSES.has(item.status))
+  const allDone = requiredItems.length > 0 && requiredItems.every((item) => DONE_CASE_ITEM_STATUSES.has(item.status))
+
+  if (hasNeedsCorrection) {
+    return { status: "blocked" as CaseStatus, blockedByMissingRequired: true }
+  }
+  if (hasPending) {
+    return { status: "waiting_for_client" as CaseStatus, blockedByMissingRequired: true }
+  }
+  if (hasUnderReview) {
+    return { status: "under_review" as CaseStatus, blockedByMissingRequired: false }
+  }
+  if (allDone) {
+    return { status: "ready_to_start" as CaseStatus, blockedByMissingRequired: false }
+  }
+
+  return {
+    status: caseRecord.status,
+    blockedByMissingRequired: Boolean(caseRecord.blockedByMissingRequired),
+  }
+}
+
 export function updateCaseItemSnapshot(snapshot: AppSnapshot, caseItemId: string, patch: Partial<CaseItem>): AppSnapshot {
   const now = nowIso()
   const caseItems = snapshot.caseItems ?? []
@@ -948,9 +1153,104 @@ export function updateCaseItemSnapshot(snapshot: AppSnapshot, caseItemId: string
     }
   })
 
+  const caseRecord = (snapshot.cases ?? []).find((entry) => entry.id === existing.caseId)
+  if (!caseRecord) {
+    return {
+      ...snapshot,
+      caseItems: nextCaseItems,
+    }
+  }
+
+  const caseItemsForCase = nextCaseItems.filter((entry) => entry.caseId === caseRecord.id)
+  const nextStatusState = deriveAutomatedCaseStatus(caseRecord, caseItemsForCase)
+
+  const nextCases = (snapshot.cases ?? []).map((entry) =>
+    entry.id === caseRecord.id
+      ? {
+          ...entry,
+          status: nextStatusState.status,
+          blockedByMissingRequired: nextStatusState.blockedByMissingRequired,
+          updatedAt: now,
+        }
+      : entry,
+  )
+
+  const nextActivity = [...(snapshot.activityLog ?? [])]
+  const nextNotifications = [...(snapshot.notifications ?? [])]
+  let nextItems = [...snapshot.items]
+
+  if (existing.status !== "under_review" && status === "under_review") {
+    const reviewTask = createOwnerAutomationTask({
+      snapshot,
+      title: `Zweryfikuj doslany element: ${existing.title}`,
+      description: "Automat po doslaniu od klienta. Sprawdz i zatwierdz albo odeslij do poprawy.",
+      scheduledAt: now,
+      priority: "high",
+      leadId: caseRecord.sourceLeadId,
+      marker: `case-item-review-${existing.caseId}-${existing.id}`,
+    })
+
+    if (reviewTask) {
+      nextItems = [reviewTask, ...nextItems]
+      nextActivity.unshift(
+        createSystemActivity(snapshot, caseRecord.id, "case_item_updated", {
+          status: "under_review",
+          reason: "auto_after_upload_or_delivery",
+          caseItemId: existing.id,
+        }, existing.id),
+      )
+      nextNotifications.unshift(
+        createSystemNotification(snapshot, {
+          caseId: caseRecord.id,
+          caseItemId: existing.id,
+          channel: "in_app",
+          title: "Element do weryfikacji",
+          body: `${existing.title} zostal doslany i czeka na sprawdzenie dzis.`,
+        }),
+      )
+    }
+  }
+
+  if (caseRecord.status !== nextStatusState.status || Boolean(caseRecord.blockedByMissingRequired) !== nextStatusState.blockedByMissingRequired) {
+    nextActivity.unshift(
+      createSystemActivity(snapshot, caseRecord.id, "case_status_changed", {
+        status: nextStatusState.status,
+        blockedByMissingRequired: nextStatusState.blockedByMissingRequired,
+        reason: "auto_case_completeness_transition",
+      }),
+    )
+  }
+
+  if (nextStatusState.status === "ready_to_start" && caseRecord.status !== "ready_to_start") {
+    const startTask = createOwnerAutomationTask({
+      snapshot,
+      title: `Sprawa gotowa do startu: ${caseRecord.title}`,
+      description: "Automat po pelnej kompletnosci. Rozpocznij kolejny etap realizacji.",
+      scheduledAt: now,
+      priority: "high",
+      leadId: caseRecord.sourceLeadId,
+      marker: `case-ready-to-start-${caseRecord.id}`,
+    })
+    if (startTask) {
+      nextItems = [startTask, ...nextItems]
+      nextNotifications.unshift(
+        createSystemNotification(snapshot, {
+          caseId: caseRecord.id,
+          channel: "in_app",
+          title: "Sprawa gotowa do startu",
+          body: `${caseRecord.title} ma komplet wymaganych elementow.`,
+        }),
+      )
+    }
+  }
+
   return {
     ...snapshot,
+    cases: nextCases,
     caseItems: nextCaseItems,
+    activityLog: nextActivity,
+    notifications: nextNotifications,
+    items: nextItems,
   }
 }
 

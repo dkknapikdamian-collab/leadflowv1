@@ -224,6 +224,7 @@ export interface Case {
   title: string
   description: string
   status: CaseStatus
+  blockedByMissingRequired?: boolean
   priority: Priority
   value: number
   startAt: string | null
