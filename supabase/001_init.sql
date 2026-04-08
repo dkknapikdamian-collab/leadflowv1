@@ -1,4 +1,4 @@
-create extension if not exists pgcrypto;
+﻿create extension if not exists pgcrypto;
 
 create or replace function public.normalize_email(value text)
 returns text
@@ -21,7 +21,7 @@ create table if not exists public.profiles (
 create table if not exists public.workspaces (
   id uuid primary key default gen_random_uuid(),
   owner_user_id uuid not null unique references auth.users(id) on delete cascade,
-  name text not null default 'LeadFlow',
+  name text not null default 'ClientPilot',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -100,7 +100,7 @@ begin
         auth_provider = coalesce(excluded.auth_provider, public.profiles.auth_provider);
 
   insert into public.workspaces (owner_user_id, name)
-  values (new.id, 'LeadFlow')
+  values (new.id, 'ClientPilot')
   on conflict (owner_user_id) do nothing;
 
   select id into workspace_uuid
@@ -249,3 +249,4 @@ on public.app_snapshots
 for update
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
+

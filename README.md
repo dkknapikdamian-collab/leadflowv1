@@ -1,4 +1,4 @@
-# LeadFlow
+﻿# ClientPilot
 
 Ten pakiet działa na:
 - Next.js
@@ -134,3 +134,4 @@ docs/EMAIL_SETUP.md
 13. Czy endpoint `/api/system/account-status-emails` wysyła maile statusowe po poprawnej konfiguracji.
 14. Czy tabela `system_email_events` nie dopuszcza do duplikatów tych samych maili.
 15. Czy tabele `leads` i `work_items` są nadal gotowe pod późniejsze pełne rozbicie CRUD do modelu relacyjnego.
+

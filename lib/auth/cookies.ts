@@ -1,9 +1,9 @@
-import type { NextRequest, NextResponse } from "next/server"
+﻿import type { NextRequest, NextResponse } from "next/server"
 
-export const ACCESS_COOKIE = "leadflow_access_token"
-export const REFRESH_COOKIE = "leadflow_refresh_token"
-export const USER_EMAIL_COOKIE = "leadflow_user_email"
-export const AUTH_PROVIDER_COOKIE = "leadflow_auth_provider"
+export const ACCESS_COOKIE = "ClientPilot_access_token"
+export const REFRESH_COOKIE = "ClientPilot_refresh_token"
+export const USER_EMAIL_COOKIE = "ClientPilot_user_email"
+export const AUTH_PROVIDER_COOKIE = "ClientPilot_auth_provider"
 
 export type CookieSessionInput = {
   accessToken: string
@@ -105,3 +105,4 @@ export function isJwtExpired(token: string | null, skewSeconds = 30) {
   if (!exp) return true
   return exp <= Math.floor(Date.now() / 1000) + skewSeconds
 }
+

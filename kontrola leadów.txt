@@ -1,4 +1,4 @@
-Kontrola leadów nie znika.
+﻿Kontrola leadów nie znika.
 Ona staje się warstwą 1 większego systemu.
 
 Nowa definicja produktu:
@@ -28,7 +28,7 @@ Po `won` albo `ready to start` system ma zacząć pilnować:
 
 ## Najważniejsza zasada
 
-Forteca nie jest drugą apką.
+ClientPilot nie jest drugą apką.
 To jest ten sam system.
 
 Lead nie kończy się w próżni po wygraniu.
@@ -74,3 +74,4 @@ Nowa skórka ma iść w stronę Fortecy:
 
 Ten plik nie oznacza jeszcze przebudowy kodu, danych, auth ani billing.
 To jest zamrożenie kierunku produktu, żeby kolejne etapy były spójne.
+

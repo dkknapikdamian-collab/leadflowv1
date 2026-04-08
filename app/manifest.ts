@@ -1,9 +1,9 @@
-import type { MetadataRoute } from "next"
+﻿import type { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "LeadFlow",
-    short_name: "LeadFlow",
+    name: "ClientPilot",
+    short_name: "ClientPilot",
     description: "Lead follow-up + kalendarz + przypomnienia",
     start_url: "/today",
     display: "standalone",
@@ -19,3 +19,4 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
   }
 }
+

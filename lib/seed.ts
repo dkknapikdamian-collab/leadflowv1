@@ -1,4 +1,4 @@
-import type { AppSnapshot } from "./types"
+﻿import type { AppSnapshot } from "./types"
 import { addDaysAt, createId } from "./utils"
 
 function createBaseSnapshot(): Omit<AppSnapshot, "leads" | "items"> {
@@ -26,7 +26,7 @@ function createBaseSnapshot(): Omit<AppSnapshot, "leads" | "items"> {
       emailReminders: false,
       defaultReminder: "1h_before",
       defaultSnooze: "tomorrow",
-      workspaceName: "LeadFlow",
+      workspaceName: "ClientPilot",
       fontScale: "compact",
       viewProfile: "desktop",
       theme: "classic",
@@ -350,3 +350,4 @@ export function createDemoSnapshot(): AppSnapshot {
     ],
   }
 }
+

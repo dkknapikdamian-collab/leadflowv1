@@ -1,7 +1,7 @@
-import { ITEM_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from "./constants"
+﻿import { ITEM_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from "./constants"
 import type { AppSnapshot, Lead, Priority, WorkItem } from "./types"
 
-export const STORAGE_KEY = "leadflow-restyle-v1-snapshot-v2"
+export const STORAGE_KEY = "clientpilot-snapshot-v2"
 
 export interface DateContextOptions {
   timeZone?: string | null
@@ -591,3 +591,4 @@ export function getMonthGrid(base: string | Date = new Date(), options: DateCont
 export function cloneSnapshot(snapshot: AppSnapshot): AppSnapshot {
   return JSON.parse(JSON.stringify(snapshot)) as AppSnapshot
 }
+

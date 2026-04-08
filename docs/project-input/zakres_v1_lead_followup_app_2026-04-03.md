@@ -1,8 +1,8 @@
-# Zakres V1 — warstwa sprzedaży (Lead Flow) w systemie ClientPilot
+﻿# Zakres V1 — warstwa sprzedaży (Lead Flow) w systemie ClientPilot
 
 > Źródło prawdy produktu: `product-scope-v2.md` (w repo root).
 >
-> Ten dokument opisuje **V1 jako warstwę sprzedaży** (Lead Flow). Po scaleniu Lead Flow + Forteca produkt nie jest już “tylko lead follow-up app”, tylko **jeden system do domykania i uruchamiania klienta**.
+> Ten dokument opisuje **V1 jako warstwę sprzedaży** (Lead Flow). Po scaleniu Lead Flow + ClientPilot produkt nie jest już “tylko lead follow-up app”, tylko **jeden system do domykania i uruchamiania klienta**.
 
 **Data:** 2026-04-03  
 **Status:** specyfikacja V1 (Lead Flow) — po scaleniu traktuj jako zakres warstwy sprzedaży  
@@ -15,9 +15,9 @@
 - Produkt: **jeden system do domykania i uruchamiania klienta**
 - Zasada nadrzędna: **sprzedaż = Lead Flow**
 - Po statusie **won** albo **ready to start** lead może przejść do **sprawy operacyjnej**
-- **Forteca nie jest osobną aplikacją**; **Sprawy są modułem tego samego systemu**
+- **ClientPilot nie jest osobną aplikacją**; **Sprawy są modułem tego samego systemu**
 - Finalne menu operatora: `Dziś`, `Leady`, `Sprawy`, `Zadania`, `Kalendarz`, `Aktywność`, `Rozliczenia`, `Ustawienia` (później: `Szablony`, `Klienci`)
-- Kierunek UI: nowa skórka oparta o kierunek **Forteca**
+- Kierunek UI: nowa skórka oparta o kierunek **ClientPilot**
 
 # 1. Zasada nadrzędna dla AI dewelopera
 
@@ -771,3 +771,4 @@ To jest domknięty zakres V1.
 
 Najważniejsza zasada przy budowie:
 **nie dorzucać teraz rzeczy z V2 i nie zmieniać tego w duży CRM.**
+

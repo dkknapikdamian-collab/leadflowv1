@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -257,7 +257,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
 
   const pageLabel = useMemo(() => {
     const ordered = [...NAV_ITEMS].sort((left, right) => right.href.length - left.href.length)
-    return ordered.find((item) => isNavItemActive(pathname, item.href))?.label ?? "Forteca"
+    return ordered.find((item) => isNavItemActive(pathname, item.href))?.label ?? "ClientPilot"
   }, [pathname])
 
   const displayUserName = session?.user.displayName || snapshot.user.name || "Twoje konto"
@@ -308,7 +308,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
         <div className="brand-box">
           <div className="brand-title">
             <span className="brand-mark">•</span>
-            <span>Forteca</span>
+            <span>ClientPilot</span>
           </div>
           <div className="brand-subtitle">Domykanie i uruchamianie klienta</div>
         </div>
@@ -362,7 +362,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
               type="button"
               aria-label="Otwórz menu mobilne"
               aria-expanded={mobileMenuOpen}
-              aria-controls="leadflow-mobile-menu"
+              aria-controls="clientpilot-mobile-menu"
             >
               ⋯
             </button>
@@ -401,7 +401,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
             onClick={() => setMobileMenuOpen(true)}
             aria-haspopup="dialog"
             aria-expanded={mobileMenuOpen}
-            aria-controls="leadflow-mobile-menu"
+            aria-controls="clientpilot-mobile-menu"
           >
             <span>⋯</span>
             <span>Więcej</span>
@@ -410,7 +410,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
       </div>
 
       {mobileMenuOpen ? (
-        <div id="leadflow-mobile-menu">
+        <div id="clientpilot-mobile-menu">
           <MobileMenuSheet
             pathname={pathname}
             workspaceName={snapshot.settings.workspaceName}
@@ -430,3 +430,4 @@ export function DashboardShell({ children }: PropsWithChildren) {
     </div>
   )
 }
+

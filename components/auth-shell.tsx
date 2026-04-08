@@ -1,4 +1,4 @@
-import type { PropsWithChildren, ReactNode } from "react"
+﻿import type { PropsWithChildren, ReactNode } from "react"
 
 export function AuthShell({
   title,
@@ -12,7 +12,7 @@ export function AuthShell({
         <div style={{ display: "grid", gap: 8, marginBottom: 20 }}>
           <div className="auth-brand">
             <span className="auth-brand-mark">•</span>
-            <span>Forteca</span>
+            <span>ClientPilot</span>
           </div>
           <h1 style={{ margin: 0, fontSize: 28 }}>{title}</h1>
           <p style={{ margin: 0, color: "var(--muted)", lineHeight: 1.6 }}>{subtitle}</p>
@@ -25,3 +25,4 @@ export function AuthShell({
     </main>
   )
 }
+

@@ -1,4 +1,4 @@
-# Product Scope V2
+﻿# Product Scope V2
 
 ## Status
 
@@ -38,7 +38,7 @@ System pilnuje:
 
 ## Najważniejsza decyzja architektoniczna
 
-**Forteca nie jest osobną aplikacją.**
+**ClientPilot nie jest osobną aplikacją.**
 
 To jest jeden system.
 
@@ -65,7 +65,7 @@ Później:
 
 ## Kierunek UI
 
-Nowa skórka UI ma być oparta o kierunek **Forteca**.
+Nowa skórka UI ma być oparta o kierunek **ClientPilot**.
 
 To oznacza jeden spójny visual system dla:
 - sidebara,
@@ -110,7 +110,7 @@ To jest etap zamrożenia definicji produktu i jednej prawdy dokumentacyjnej.
 
 Jeżeli trafisz na starą nazwę albo opis typu:
 - lead follow-up app,
-- osobna Forteca,
+- osobna ClientPilot,
 - osobny portal materiałów,
 
 to traktuj to jako opis historyczny.
@@ -118,3 +118,4 @@ to traktuj to jako opis historyczny.
 Aktualna definicja brzmi:
 
 > **jeden system do domykania i uruchamiania klienta**
+

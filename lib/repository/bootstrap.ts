@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   AccessStatusRecord,
   ProfileRecord,
   SettingsRecord,
@@ -44,7 +44,7 @@ export function createBootstrapRecords(input: {
   const workspace: WorkspaceRecord = {
     id: input.workspaceId,
     ownerUserId: input.userId,
-    name: "LeadFlow",
+    name: "ClientPilot",
     createdAt: now,
     updatedAt: now,
   }
@@ -83,7 +83,7 @@ export function createBootstrapRecords(input: {
     emailReminders: false,
     defaultReminder: "1h_before",
     defaultSnooze: "tomorrow",
-    workspaceName: "LeadFlow",
+    workspaceName: "ClientPilot",
     fontScale: "compact",
     viewProfile: "desktop",
     theme: "classic",
@@ -99,3 +99,4 @@ export function createBootstrapRecords(input: {
     settings,
   }
 }
+

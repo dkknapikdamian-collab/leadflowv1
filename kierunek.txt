@@ -1,4 +1,4 @@
-KIERUNEK PRODUKTU
+﻿KIERUNEK PRODUKTU
 
 To nie jest już tylko lead follow-up app.
 
@@ -8,7 +8,7 @@ jeden system do domykania i uruchamiania klienta
 Zasada główna:
 - sprzedaż = Lead Flow
 - po won albo ready to start lead może przejść do sprawy operacyjnej
-- Forteca nie jest osobną aplikacją
+- ClientPilot nie jest osobną aplikacją
 - Sprawy są modułem tego samego systemu
 
 Produkt ma pilnować 2 rzeczy:
@@ -45,3 +45,4 @@ Kierunek UI:
 - nowa skórka oparta o Fortecę
 - jeden spójny visual system
 - brak wrażenia dwóch osobnych aplikacji
+

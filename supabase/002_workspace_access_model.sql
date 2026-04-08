@@ -1,4 +1,4 @@
-create extension if not exists pgcrypto;
+﻿create extension if not exists pgcrypto;
 
 alter table public.profiles
   add column if not exists timezone text not null default 'Europe/Warsaw',
@@ -74,7 +74,7 @@ create table if not exists public.settings (
   email_reminders boolean not null default false,
   default_reminder text not null default '1h_before',
   default_snooze text not null default 'tomorrow',
-  workspace_name text not null default 'LeadFlow',
+  workspace_name text not null default 'ClientPilot',
   font_scale text not null default 'compact',
   view_profile text not null default 'desktop',
   theme text not null default 'classic',
@@ -190,7 +190,7 @@ begin
         signup_source = excluded.signup_source;
 
   insert into public.workspaces (owner_user_id, name)
-  values (new.id, 'LeadFlow')
+  values (new.id, 'ClientPilot')
   on conflict (owner_user_id) do nothing;
 
   select id into workspace_uuid
@@ -227,7 +227,7 @@ begin
         updated_at = now();
 
   insert into public.settings (workspace_id, user_id, workspace_name, timezone)
-  values (workspace_uuid, new.id, 'LeadFlow', 'Europe/Warsaw')
+  values (workspace_uuid, new.id, 'ClientPilot', 'Europe/Warsaw')
   on conflict (workspace_id) do update
     set user_id = excluded.user_id,
         workspace_name = coalesce(public.settings.workspace_name, excluded.workspace_name),
@@ -469,3 +469,4 @@ using (
       and wm.user_id = auth.uid()
   )
 );
+

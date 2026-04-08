@@ -1,4 +1,4 @@
-# agent.md
+﻿# agent.md
 
 ## Rola tego pliku
 
@@ -28,11 +28,11 @@ To jest **jeden system do domykania i uruchamiania klienta**.
 
 1. **Sprzedaż = Lead Flow**
 2. Po statusie **won** albo **ready to start** lead może przejść do **sprawy operacyjnej**
-3. **Forteca nie jest osobną aplikacją**
+3. **ClientPilot nie jest osobną aplikacją**
 4. **Sprawy są modułem tego samego systemu**
 5. Użytkownik ma czuć ciągłość pracy, a nie wejście do drugiej apki
 6. `Dziś` pozostaje głównym ekranem decyzyjnym
-7. Kierunek UI ma być oparty o skórkę **Forteca**
+7. Kierunek UI ma być oparty o skórkę **ClientPilot**
 
 ## Jak interpretować moduły
 
@@ -91,11 +91,12 @@ Najpierw ma być zamknięta jedna prawda produktu i spójna dokumentacja.
 
 Jeżeli trafisz na opis typu:
 - „lead follow-up app” jako pełna definicja produktu,
-- „Forteca” jako osobna aplikacja,
+- „ClientPilot” jako osobna aplikacja,
 - osobne byty bez wspólnego systemu,
 
 to uznaj to za wersję historyczną.
 
 Od teraz poprawna interpretacja jest jedna:
 
-> Lead Flow i Forteca to jeden system, w którym warstwa sprzedaży przechodzi płynnie w warstwę uruchamiania klienta.
+> Lead Flow i ClientPilot to jeden system, w którym warstwa sprzedaży przechodzi płynnie w warstwę uruchamiania klienta.
+

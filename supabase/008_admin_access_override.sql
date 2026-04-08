@@ -1,4 +1,4 @@
-alter table public.access_status
+﻿alter table public.access_status
   add column if not exists access_override_mode text,
   add column if not exists access_override_expires_at timestamptz,
   add column if not exists access_override_note text;
@@ -140,7 +140,7 @@ begin
      or coalesce(public.profiles.signup_source, 'unknown') = 'unknown';
 
   insert into public.workspaces (owner_user_id, name)
-  values (target_user_id, 'LeadFlow')
+  values (target_user_id, 'ClientPilot')
   on conflict (owner_user_id) do nothing;
 
   select id into workspace_uuid
@@ -287,3 +287,4 @@ begin
   select workspace_uuid;
 end;
 $$;
+

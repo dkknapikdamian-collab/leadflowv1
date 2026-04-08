@@ -1,4 +1,4 @@
-import test from "node:test"
+﻿import test from "node:test"
 import assert from "node:assert/strict"
 import { createDemoSnapshot, createInitialSnapshot } from "../lib/seed"
 import { buildTodaySections } from "../lib/today"
@@ -431,7 +431,7 @@ test("createInitialSnapshot zwraca pusty stan startowy aplikacji", () => {
 
   assert.equal(snapshot.leads.length, 0)
   assert.equal(snapshot.items.length, 0)
-  assert.equal(snapshot.settings.workspaceName, "LeadFlow")
+  assert.equal(snapshot.settings.workspaceName, "ClientPilot")
   assert.equal(snapshot.settings.theme, "classic")
   assert.equal(snapshot.context.accessStatus, "local")
 })
@@ -548,3 +548,4 @@ test("edycja linked next action item nie może zamienić go w event ani ukryć z
   assert.equal(item.showInTasks, true)
   assert.equal(item.showInCalendar, true)
 })
+

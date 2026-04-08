@@ -1,4 +1,4 @@
-# Zakres V1 po scaleniu Lead Flow i Fortecy
+﻿# Zakres V1 po scaleniu Lead Flow i Fortecy
 
 **Data aktualizacji:** 2026-04-07  
 **Status:** obowiązująca wersja zakresu po scaleniu kierunku produktu  
@@ -23,7 +23,7 @@ To jest **jeden system do domykania i uruchamiania klienta**.
 - Po statusie **won** albo **ready to start** lead może przejść do **sprawy operacyjnej**
 - Użytkownik nie ma czuć przeskoku między dwoma aplikacjami
 - `Sprawy` są modułem tego samego systemu
-- `Forteca` nie jest osobną apką
+- `ClientPilot` nie jest osobną apką
 
 ## 4. Co pozostaje rdzeniem produktu
 
@@ -107,7 +107,7 @@ Później:
 
 ## 8. Kierunek UI
 
-Nowa skórka UI ma być oparta o kierunek **Forteca**.
+Nowa skórka UI ma być oparta o kierunek **ClientPilot**.
 
 To oznacza:
 - jeden spójny shell operatora,
@@ -145,7 +145,7 @@ Z wcześniejszego V1 nadal obowiązuje:
 
 Od teraz nie wolno zakładać, że:
 - produkt kończy się na leadach,
-- Forteca to osobna apka,
+- ClientPilot to osobna apka,
 - portal klienta to osobny system,
 - `Sprawy` są dodatkiem bez znaczenia architektonicznego.
 
@@ -156,3 +156,4 @@ To wszystko jest częścią jednego produktu.
 Jeżeli trafisz na starszy opis produktu, a nie zgadza się on z poniższym zdaniem, traktuj go jako historyczny:
 
 > **To jest jeden system do domykania i uruchamiania klienta.**
+

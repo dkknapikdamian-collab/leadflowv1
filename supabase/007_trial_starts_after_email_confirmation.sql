@@ -1,4 +1,4 @@
-alter table public.access_status
+﻿alter table public.access_status
   alter column trial_start drop not null,
   alter column trial_end drop not null,
   add column if not exists trial_activated_at timestamptz;
@@ -126,7 +126,7 @@ begin
      or coalesce(public.profiles.signup_source, 'unknown') = 'unknown';
 
   insert into public.workspaces (owner_user_id, name)
-  values (target_user_id, 'LeadFlow')
+  values (target_user_id, 'ClientPilot')
   on conflict (owner_user_id) do nothing;
 
   select id into workspace_uuid
@@ -245,7 +245,7 @@ begin
   values (
     workspace_uuid,
     target_user_id,
-    'LeadFlow',
+    'ClientPilot',
     'Europe/Warsaw'
   )
   on conflict (workspace_id) do update
@@ -295,3 +295,4 @@ begin
   select workspace_uuid;
 end;
 $$;
+

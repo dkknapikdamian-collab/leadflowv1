@@ -1,4 +1,4 @@
-import test from "node:test"
+﻿import test from "node:test"
 import assert from "node:assert/strict"
 import { REPOSITORY_TABLES } from "../lib/repository/schema"
 import { createBootstrapRecords } from "../lib/repository/bootstrap"
@@ -41,5 +41,6 @@ test("createBootstrapRecords buduje spójny startowy model konta i workspace", (
   assert.equal(records.accessStatus.bonusKind, null)
   assert.equal(records.accessStatus.bonusAppliedAt, null)
   assert.equal(records.settings.workspaceId, "workspace-1")
-  assert.equal(records.settings.workspaceName, "LeadFlow")
+  assert.equal(records.settings.workspaceName, "ClientPilot")
 })
+

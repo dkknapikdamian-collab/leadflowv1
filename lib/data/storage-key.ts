@@ -1,5 +1,5 @@
-export function buildUserScopedStorageKey(baseKey: string, userId: string | null | undefined) {
-  const normalizedBaseKey = baseKey.trim() || "leadflow"
+﻿export function buildUserScopedStorageKey(baseKey: string, userId: string | null | undefined) {
+  const normalizedBaseKey = baseKey.trim() || "ClientPilot"
   const normalizedUserId = userId?.trim()
 
   if (!normalizedUserId) {
@@ -8,3 +8,4 @@ export function buildUserScopedStorageKey(baseKey: string, userId: string | null
 
   return `${normalizedBaseKey}:${normalizedUserId}`
 }
+

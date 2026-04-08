@@ -1,4 +1,4 @@
-# LeadFlow — etap auth bez zmiany UI
+﻿# ClientPilot — etap auth bez zmiany UI
 
 ## Co wdrożone teraz
 
@@ -13,13 +13,13 @@
 
 ## Jak uruchomić
 
-1. Skopiuj folder `leadflow-next`.
+1. Skopiuj folder `clientpilot-next`.
 2. Jeśli chcesz test lokalny bez Supabase, zostaw `.env.local` puste.
 3. Jeśli chcesz prawdziwy auth, skopiuj `.env.example` do `.env.local` i wpisz dane Supabase.
 4. W Supabase uruchom plik:
 
 ```text
-leadflow-next/supabase/001_init.sql
+clientpilot-next/supabase/001_init.sql
 ```
 
 5. Odpal projekt lokalnie.
@@ -35,3 +35,4 @@ leadflow-next/supabase/001_init.sql
 
 - przepięcie `Dziś`, `Leady` i `Kalendarz` z danych statycznych na dane z Supabase,
 - bez rozwalania obecnego wyglądu.
+

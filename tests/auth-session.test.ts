@@ -1,4 +1,4 @@
-import test from "node:test"
+﻿import test from "node:test"
 import assert from "node:assert/strict"
 import { getAuthDisplayName, mapSupabaseUserToSessionUser } from "../lib/auth/session"
 import { buildUserScopedStorageKey } from "../lib/data/storage-key"
@@ -49,7 +49,8 @@ test("mapSupabaseUserToSessionUser buduje stabilny obiekt sesji", () => {
 })
 
 test("buildUserScopedStorageKey rozdziela cache między użytkownikami", () => {
-  assert.equal(buildUserScopedStorageKey("leadflow-cache", "user-a"), "leadflow-cache:user-a")
-  assert.equal(buildUserScopedStorageKey("leadflow-cache", "user-b"), "leadflow-cache:user-b")
-  assert.equal(buildUserScopedStorageKey("leadflow-cache", null), "leadflow-cache:anonymous")
+  assert.equal(buildUserScopedStorageKey("clientpilot-cache", "user-a"), "clientpilot-cache:user-a")
+  assert.equal(buildUserScopedStorageKey("clientpilot-cache", "user-b"), "clientpilot-cache:user-b")
+  assert.equal(buildUserScopedStorageKey("clientpilot-cache", null), "clientpilot-cache:anonymous")
 })
+
