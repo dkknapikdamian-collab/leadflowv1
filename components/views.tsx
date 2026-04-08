@@ -426,7 +426,7 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
         </div>
 
         {tab === "info" ? (
-          <div className={`drawer-content ${!isEditing ? "lead-preview-mode" : ""}`}>
+          <div className="drawer-content">
             <section className="lead-detail-status-bar" aria-label="Pasek stanu leada">
               <LeadStatusBadge status={liveLead.status} />
               <PriorityBadge priority={liveLead.priority} />
@@ -525,116 +525,191 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
               ) : null}
             </section>
 
-            <div className="form-grid drawer-form-grid">
-              <label className="field-block">
-                <FieldLabel label="Lead *" help="Główna nazwa kontaktu albo firmy widoczna na listach." />
-                <input className="text-input" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
-              </label>
-              <label className="field-block">
-                <FieldLabel label="Firma" help="Opcjonalna nazwa firmy przypisanej do leada." />
-                <input className="text-input" value={form.company} onChange={(event) => setForm({ ...form, company: event.target.value })} />
-              </label>
-            </div>
+            {!isEditing ? (
+              <>
+                <section className="info-card">
+                  <div className="section-head">
+                    <strong>Nagłówek</strong>
+                    <span className="muted-small">Podgląd</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Lead</strong>
+                    <span>{liveLead.name}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Firma</strong>
+                    <span>{liveLead.company || "—"}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Status</strong>
+                    <span>{getStatusLabel(liveLead.status)}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Priorytet</strong>
+                    <span>{getPriorityLabel(liveLead.priority)}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Źródło</strong>
+                    <span>{liveLead.source || "—"}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Wartość</strong>
+                    <span>{formatMoney(liveLead.value)}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>E-mail</strong>
+                    <span>{liveLead.email || "—"}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Telefon</strong>
+                    <span>{liveLead.phone || "—"}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Next action</strong>
+                    <span>{liveLead.nextActionTitle || "—"}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Termin</strong>
+                    <span>{liveLead.nextActionAt ? formatDateTime(liveLead.nextActionAt, dateOptions) : "—"}</span>
+                  </div>
+                </section>
 
-            <div className="form-grid drawer-form-grid">
-              <label className="field-block">
-                <FieldLabel label="Status" help="Aktualny etap pracy z leadem." />
-                <select
-                  className="select-input"
-                  value={form.status}
-                  onChange={(event) => setForm({ ...form, status: event.target.value as Lead["status"] })}
-                >
-                  {LEAD_STATUS_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="field-block">
-                <FieldLabel label="Priorytet" help="Pomaga ustalić kolejność działania." />
-                <select
-                  className="select-input"
-                  value={form.priority}
-                  onChange={(event) => setForm({ ...form, priority: event.target.value as Lead["priority"] })}
-                >
-                  {PRIORITY_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
+                {liveLead.summary ? (
+                  <section className="info-card">
+                    <div className="section-head">
+                      <strong>Opis</strong>
+                    </div>
+                    <div className="muted-small" style={{ whiteSpace: "pre-wrap" }}>
+                      {liveLead.summary}
+                    </div>
+                  </section>
+                ) : null}
 
-            <div className="form-grid drawer-form-grid">
-              <label className="field-block">
-                <FieldLabel label="Źródło" help="Skąd przyszedł ten lead." />
-                <select
-                  className="select-input"
-                  value={form.source}
-                  onChange={(event) => setForm({ ...form, source: event.target.value as Lead["source"] })}
-                >
-                  {SOURCE_OPTIONS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="field-block">
-                <FieldLabel label="Wartość" help="Szacowana wartość leada lub dealu." />
-                <input
-                  type="number"
-                  min="0"
-                  step="100"
-                  className="text-input"
-                  value={form.value}
-                  onChange={(event) => setForm({ ...form, value: event.target.value })}
-                />
-              </label>
-            </div>
+                {liveLead.notes ? (
+                  <section className="info-card">
+                    <div className="section-head">
+                      <strong>Notatki</strong>
+                    </div>
+                    <div className="muted-small" style={{ whiteSpace: "pre-wrap" }}>
+                      {liveLead.notes}
+                    </div>
+                  </section>
+                ) : null}
+              </>
+            ) : (
+              <>
+                <div className="form-grid drawer-form-grid">
+                  <label className="field-block">
+                    <FieldLabel label="Lead *" help="Główna nazwa kontaktu albo firmy widoczna na listach." />
+                    <input className="text-input" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
+                  </label>
+                  <label className="field-block">
+                    <FieldLabel label="Firma" help="Opcjonalna nazwa firmy przypisanej do leada." />
+                    <input className="text-input" value={form.company} onChange={(event) => setForm({ ...form, company: event.target.value })} />
+                  </label>
+                </div>
 
-            <div className="form-grid drawer-form-grid">
-              <label className="field-block">
-                <FieldLabel label="E-mail" help="Adres mailowy kontaktu." />
-                <input className="text-input" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
-              </label>
-              <label className="field-block">
-                <FieldLabel label="Telefon" help="Numer telefonu kontaktu." />
-                <input className="text-input" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
-              </label>
-            </div>
+                <div className="form-grid drawer-form-grid">
+                  <label className="field-block">
+                    <FieldLabel label="Status" help="Aktualny etap pracy z leadem." />
+                    <select
+                      className="select-input"
+                      value={form.status}
+                      onChange={(event) => setForm({ ...form, status: event.target.value as Lead["status"] })}
+                    >
+                      {LEAD_STATUS_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="field-block">
+                    <FieldLabel label="Priorytet" help="Pomaga ustalić kolejność działania." />
+                    <select
+                      className="select-input"
+                      value={form.priority}
+                      onChange={(event) => setForm({ ...form, priority: event.target.value as Lead["priority"] })}
+                    >
+                      {PRIORITY_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
 
-            <div className="form-grid drawer-form-grid">
-              <label className="field-block">
-                <FieldLabel label="Next action" help="Najbliższa planowana akcja przy tym leadzie." />
-                <input
-                  className="text-input"
-                  value={form.nextActionTitle}
-                  onChange={(event) => setForm({ ...form, nextActionTitle: event.target.value })}
-                />
-              </label>
-              <label className="field-block">
-                <FieldLabel label="Termin" help="Data i godzina tej planowanej akcji." />
-                <input
-                  type="datetime-local"
-                  className="text-input date-time-input"
-                  value={toInputValue(form.nextActionAt)}
-                  onChange={(event) => setForm({ ...form, nextActionAt: fromInputValue(event.target.value) })}
-                />
-              </label>
-            </div>
+                <div className="form-grid drawer-form-grid">
+                  <label className="field-block">
+                    <FieldLabel label="Źródło" help="Skąd przyszedł ten lead." />
+                    <select
+                      className="select-input"
+                      value={form.source}
+                      onChange={(event) => setForm({ ...form, source: event.target.value as Lead["source"] })}
+                    >
+                      {SOURCE_OPTIONS.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="field-block">
+                    <FieldLabel label="Wartość" help="Szacowana wartość leada lub dealu." />
+                    <input
+                      type="number"
+                      min="0"
+                      step="100"
+                      className="text-input"
+                      value={form.value}
+                      onChange={(event) => setForm({ ...form, value: event.target.value })}
+                    />
+                  </label>
+                </div>
 
-            <label className="field-block">
-              <FieldLabel label="Opis" help="Krótki opis sytuacji lub kontekstu leada." />
-              <textarea className="text-area" value={form.summary} onChange={(event) => setForm({ ...form, summary: event.target.value })} />
-            </label>
+                <div className="form-grid drawer-form-grid">
+                  <label className="field-block">
+                    <FieldLabel label="E-mail" help="Adres mailowy kontaktu." />
+                    <input className="text-input" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
+                  </label>
+                  <label className="field-block">
+                    <FieldLabel label="Telefon" help="Numer telefonu kontaktu." />
+                    <input className="text-input" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
+                  </label>
+                </div>
 
-            <label className="field-block">
-              <FieldLabel label="Notatki" help="Twoje robocze notatki do leada." />
-              <textarea className="text-area" value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} />
-            </label>
+                <div className="form-grid drawer-form-grid">
+                  <label className="field-block">
+                    <FieldLabel label="Next action" help="Najbliższa planowana akcja przy tym leadzie." />
+                    <input
+                      className="text-input"
+                      value={form.nextActionTitle}
+                      onChange={(event) => setForm({ ...form, nextActionTitle: event.target.value })}
+                    />
+                  </label>
+                  <label className="field-block">
+                    <FieldLabel label="Termin" help="Data i godzina tej planowanej akcji." />
+                    <input
+                      type="datetime-local"
+                      className="text-input date-time-input"
+                      value={toInputValue(form.nextActionAt)}
+                      onChange={(event) => setForm({ ...form, nextActionAt: fromInputValue(event.target.value) })}
+                    />
+                  </label>
+                </div>
+
+                <label className="field-block">
+                  <FieldLabel label="Opis" help="Krótki opis sytuacji lub kontekstu leada." />
+                  <textarea className="text-area" value={form.summary} onChange={(event) => setForm({ ...form, summary: event.target.value })} />
+                </label>
+
+                <label className="field-block">
+                  <FieldLabel label="Notatki" help="Twoje robocze notatki do leada." />
+                  <textarea className="text-area" value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} />
+                </label>
+              </>
+            )}
 
             <div className="info-card">
               <div className="info-row">
@@ -2032,18 +2107,17 @@ export function CalendarPageView() {
   const todayKey = getCurrentDateKey(dateOptions)
 
   return (
-    <>
-      <section className="hero-row split">
-        <div>
-          <h1 className="page-title">Kalendarz</h1>
-          <p className="page-subtitle">{weekLabel}</p>
-        </div>
-        <div className="header-actions">
-          <button className="ghost-button" onClick={() => setWeekOffset((value) => value - 1)}>
+    <PageShell
+      title="Kalendarz"
+      subtitle={weekLabel}
+      actions={
+        <>
+          <button className="ghost-button" onClick={() => setWeekOffset((value) => value - 1)} type="button">
             ←
           </button>
           <button
             className="ghost-button"
+            type="button"
             onClick={() => {
               setWeekOffset(0)
               setSelectedDay(fallbackDay)
@@ -2051,12 +2125,12 @@ export function CalendarPageView() {
           >
             Dziś
           </button>
-          <button className="ghost-button" onClick={() => setWeekOffset((value) => value + 1)}>
+          <button className="ghost-button" onClick={() => setWeekOffset((value) => value + 1)} type="button">
             →
           </button>
-        </div>
-      </section>
-
+        </>
+      }
+    >
       {isMobileProfile ? (
         <section className="calendar-mobile-stack">
           <div className="calendar-mobile-visibility-row">
@@ -2091,7 +2165,11 @@ export function CalendarPageView() {
                     </button>
                     {isOpen ? (
                       <div className="calendar-mobile-day-items">
-                        {items.length === 0 ? <div className="empty-box">{hasCalendarItems ? "Brak wydarzeń w tym dniu." : "Dodaj pierwsze wydarzenie."}</div> : items.map((item) => renderWeekPill(item))}
+                        {items.length === 0 ? (
+                          <div className="empty-box">{hasCalendarItems ? "Brak wydarzeń w tym dniu." : "Dodaj pierwsze wydarzenie."}</div>
+                        ) : (
+                          items.map((item) => renderWeekPill(item))
+                        )}
                       </div>
                     ) : null}
                   </article>
@@ -2126,7 +2204,11 @@ export function CalendarPageView() {
                 })}
               </div>
               <div className="calendar-mobile-selected-list">
-                {selectedDayItems.length === 0 ? <div className="empty-box">{hasCalendarItems ? "Brak wydarzeń w wybranym dniu." : "Dodaj pierwsze wydarzenie."}</div> : selectedDayItems.map((item) => renderWeekPill(item))}
+                {selectedDayItems.length === 0 ? (
+                  <div className="empty-box">{hasCalendarItems ? "Brak wydarzeń w wybranym dniu." : "Dodaj pierwsze wydarzenie."}</div>
+                ) : (
+                  selectedDayItems.map((item) => renderWeekPill(item))
+                )}
               </div>
             </div>
           ) : null}
@@ -2144,7 +2226,7 @@ export function CalendarPageView() {
 
                   return (
                     <div key={day} className={`week-column ${selectedDay === dayKey ? "selected" : ""}`}>
-                      <button className="week-head" onClick={() => setSelectedDay(dayKey)}>
+                      <button className="week-head" onClick={() => setSelectedDay(dayKey)} type="button">
                         <span>{formatDateKeyWeekday(day, { weekday: "short" })}</span>
                         <strong>{getDayOfMonth(day)}</strong>
                       </button>
@@ -2164,7 +2246,7 @@ export function CalendarPageView() {
       )}
 
       {editingItem ? <ItemModal item={editingItem} onClose={() => setEditingItem(null)} /> : null}
-    </>
+    </PageShell>
   )
 }
 
