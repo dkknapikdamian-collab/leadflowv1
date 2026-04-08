@@ -100,3 +100,11 @@ Od teraz poprawna interpretacja jest jedna:
 
 > Lead Flow i ClientPilot to jeden system, w którym warstwa sprzedaży przechodzi płynnie w warstwę uruchamiania klienta.
 
+
+## Zasada wdrozeniowa git (obowiazkowa)
+
+Po kazdej zmianie w kodzie wdrazaj od razu do gita na galezi `dev-rollout-freeze`.
+
+- commit i push wykonuj od razu po zakonczonej zmianie
+- nie odkladaj pushowania na pozniej
+- wszystko ma byc na biezaco wpychane do freeze

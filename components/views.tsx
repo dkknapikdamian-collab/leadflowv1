@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation"
 import { ConfirmDialog } from "@/components/confirm-dialog"
+import { CaseCreateModal } from "@/components/case-create-modal"
 import { ViewState } from "@/components/ui/view-state"
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react"
 import {
@@ -137,6 +138,7 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
   const [tab, setTab] = useState<"overview" | "timeline">("overview")
   const [mode, setMode] = useState<"view" | "edit">("view")
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [showCaseCreateModal, setShowCaseCreateModal] = useState(false)
   const liveLead = snapshot.leads.find((entry) => entry.id === lead.id) ?? lead
   const relatedCase = snapshot.cases?.find((entry) => entry.id === liveLead.caseId) ?? null
   const operationalStatus = relatedCase?.status ?? "not_started"
@@ -432,6 +434,14 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
                     </div>
                     {!relatedCase ? (
                       <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
+                        <div className="drawer-actions wrap">
+                          <button className="ghost-button" type="button" onClick={() => setShowCaseCreateModal(true)}>
+                            Otworz CaseCreateModal
+                          </button>
+                          <a className="ghost-button" href="/templates">
+                            Moduł Templates
+                          </a>
+                        </div>
                         <div className="muted-small uppercase">Tryb utworzenia sprawy</div>
                         <label className="switch-row">
                           <input type="radio" name={`start-mode-${liveLead.id}`} checked={startMode === "empty"} onChange={() => setStartMode("empty")} />
@@ -638,6 +648,9 @@ export function LeadDrawer({ lead, onClose }: { lead: Lead; onClose: () => void 
           </div>
         )}
       </aside>
+      {showCaseCreateModal ? (
+        <CaseCreateModal lead={liveLead} onClose={() => setShowCaseCreateModal(false)} />
+      ) : null}
       <ConfirmDialog
         open={showDeleteConfirm}
         title="Usunąć leada?"

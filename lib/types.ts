@@ -65,7 +65,17 @@ export type CaseStatus =
   | "in_progress"
   | "blocked"
   | "closed"
-export type CaseItemKind = "task" | "checklist" | "milestone" | "document" | "approval"
+export type CaseItemKind =
+  | "task"
+  | "checklist"
+  | "milestone"
+  | "document"
+  | "approval"
+  | "file"
+  | "decision"
+  | "response"
+  | "access"
+export type CaseTemplateServiceType = "website" | "branding" | "ads_campaign" | "client_onboarding" | "custom"
 export type CaseItemStatus =
   | "none"
   | "request_sent"
@@ -174,6 +184,7 @@ export interface CaseTemplate {
   code: string
   title: string
   description: string
+  serviceType: CaseTemplateServiceType
   isDefault: boolean
   createdAt: string
   updatedAt: string

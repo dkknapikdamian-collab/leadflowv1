@@ -2,6 +2,7 @@ import type {
   AppTheme,
   ApprovalStatus,
   CaseItemStatus,
+  CaseTemplateServiceType,
   CaseStatus,
   ItemType,
   LeadStatus,
@@ -54,6 +55,25 @@ export const CASE_CHECKLIST_STATUS_OPTIONS: { value: CaseItemStatus; label: stri
   { value: "needs_correction", label: "Do poprawy" },
   { value: "accepted", label: "Zaakceptowane" },
   { value: "not_applicable", label: "Nie dotyczy" },
+]
+
+export const CASE_TEMPLATE_SERVICE_TYPE_OPTIONS: { value: CaseTemplateServiceType; label: string }[] = [
+  { value: "website", label: "Strona www" },
+  { value: "branding", label: "Branding" },
+  { value: "ads_campaign", label: "Kampania reklamowa" },
+  { value: "client_onboarding", label: "Onboarding klienta" },
+  { value: "custom", label: "Niestandardowe" },
+]
+
+export const CASE_TEMPLATE_ITEM_KIND_OPTIONS: Array<{
+  value: "file" | "decision" | "approval" | "response" | "access"
+  label: string
+}> = [
+  { value: "file", label: "Plik" },
+  { value: "decision", label: "Decyzja" },
+  { value: "approval", label: "Akceptacja" },
+  { value: "response", label: "Odpowiedz" },
+  { value: "access", label: "Dostep" },
 ]
 
 export const REQUEST_STATUS_OPTIONS: { value: ApprovalStatus; label: string }[] = [

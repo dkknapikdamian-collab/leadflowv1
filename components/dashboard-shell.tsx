@@ -25,31 +25,33 @@ type NavItem = {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/today", label: "Dziś", icon: "◈" },
-  { href: "/leads", label: "Leady", icon: "◉" },
-  { href: "/cases", label: "Sprawy", icon: "▣" },
-  { href: "/tasks", label: "Zadania", icon: "☑" },
-  { href: "/calendar", label: "Kalendarz", icon: "⊞" },
-  { href: "/activity", label: "Aktywność", icon: "◎" },
-  { href: "/billing", label: "Rozliczenia", icon: "¤" },
-  { href: "/settings", label: "Ustawienia", icon: "⚙" },
+  { href: "/today", label: "Dzis", icon: "*" },
+  { href: "/leads", label: "Leady", icon: "o" },
+  { href: "/cases", label: "Sprawy", icon: "#" },
+  { href: "/templates", label: "Szablony", icon: "=" },
+  { href: "/tasks", label: "Zadania", icon: "[ ]" },
+  { href: "/calendar", label: "Kalendarz", icon: "@" },
+  { href: "/activity", label: "Aktywnosc", icon: "+" },
+  { href: "/billing", label: "Rozliczenia", icon: "$" },
+  { href: "/settings", label: "Ustawienia", icon: "~" },
 ]
 
 const MOBILE_PRIMARY_NAV: NavItem[] = [
-  { href: "/today", label: "Dziś", icon: "◈" },
-  { href: "/leads", label: "Leady", icon: "◉" },
-  { href: "/cases", label: "Sprawy", icon: "▣" },
-  { href: "/tasks", label: "Zadania", icon: "☑" },
+  { href: "/today", label: "Dzis", icon: "*" },
+  { href: "/leads", label: "Leady", icon: "o" },
+  { href: "/cases", label: "Sprawy", icon: "#" },
+  { href: "/tasks", label: "Zadania", icon: "[ ]" },
 ]
 
 const MOBILE_SECONDARY_NAV: NavItem[] = [
-  { href: "/calendar", label: "Kalendarz", icon: "⊞" },
-  { href: "/activity", label: "Aktywność", icon: "◎" },
-  { href: "/billing", label: "Rozliczenia", icon: "¤" },
-  { href: "/settings", label: "Ustawienia", icon: "⚙" },
+  { href: "/templates", label: "Szablony", icon: "=" },
+  { href: "/calendar", label: "Kalendarz", icon: "@" },
+  { href: "/activity", label: "Aktywnosc", icon: "+" },
+  { href: "/billing", label: "Rozliczenia", icon: "$" },
+  { href: "/settings", label: "Ustawienia", icon: "~" },
 ]
 
-const GENERIC_USER_NAMES = new Set(["demo", "twoje konto", "konto", "użytkownik", "uzytkownik"])
+const GENERIC_USER_NAMES = new Set(["demo", "twoje konto", "konto", "uzytkownik"])
 
 function getUserAvatarLabel(userName: string, workspaceName: string) {
   const normalizedUserName = userName.trim().toLowerCase()
@@ -428,4 +430,6 @@ export function DashboardShell({ children }: PropsWithChildren) {
     </div>
   )
 }
+
+
 

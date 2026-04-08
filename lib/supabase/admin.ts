@@ -1,4 +1,5 @@
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/supabase/config"
+import type { AppSnapshot, ClientPortalToken } from "@/lib/types"
 import type { BonusKind } from "@/lib/types"
 
 interface SystemEmailEventInsert {
@@ -35,6 +36,12 @@ interface RawProfileRow {
 
 interface RawEmailEventRow {
   dedupe_key: string
+}
+
+interface RawAppSnapshotRow {
+  user_id: string
+  workspace_id: string
+  snapshot_json: AppSnapshot
 }
 
 async function adminRestRequest<T>(path: string, init: RequestInit = {}) {
@@ -142,4 +149,66 @@ export async function insertSystemEmailEvent(input: SystemEmailEventInsert) {
       payload: input.payload,
     }),
   })
+}
+
+export async function listAppSnapshotsForPortalLookup() {
+  const params = new URLSearchParams({
+    select: "user_id,workspace_id,snapshot_json",
+    limit: "500",
+  })
+
+  const result = await adminRestRequest<RawAppSnapshotRow[]>(`/app_snapshots?${params.toString()}`, {
+    method: "GET",
+  })
+
+  return {
+    ...result,
+    data: result.data?.map((row) => ({
+      userId: row.user_id,
+      workspaceId: row.workspace_id,
+      snapshot: row.snapshot_json,
+    })) ?? null,
+  }
+}
+
+export async function upsertAppSnapshotByUserId(
+  input: {
+    userId: string
+    workspaceId: string
+    snapshot: AppSnapshot
+  },
+) {
+  const result = await adminRestRequest<RawAppSnapshotRow[]>("/app_snapshots", {
+    method: "POST",
+    headers: {
+      Prefer: "resolution=merge-duplicates,return=representation",
+    },
+    body: JSON.stringify({
+      user_id: input.userId,
+      workspace_id: input.workspaceId,
+      snapshot_json: input.snapshot,
+    }),
+  })
+
+  const row = result.data?.[0]
+  return {
+    ...result,
+    data: row
+      ? {
+          userId: row.user_id,
+          workspaceId: row.workspace_id,
+          snapshot: row.snapshot_json,
+        }
+      : null,
+  }
+}
+
+export function findPortalTokenInSnapshot(snapshot: AppSnapshot, tokenHash: string) {
+  const tokens = snapshot.clientPortalTokens ?? []
+  return tokens.find((token) => token.tokenHash === tokenHash) ?? null
+}
+
+export function isPortalTokenActive(token: ClientPortalToken, nowIso: string) {
+  if (token.revokedAt) return false
+  return Date.parse(token.expiresAt) > Date.parse(nowIso)
 }

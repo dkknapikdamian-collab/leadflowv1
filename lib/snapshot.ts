@@ -6,6 +6,9 @@ import type {
   BillingState,
   Case,
   CaseItem,
+  CaseItemStatus,
+  CaseTemplate,
+  CaseTemplateServiceType,
   CaseStatus,
   ClientPortalToken,
   Contact,
@@ -534,19 +537,250 @@ function resolveWorkspaceId(snapshot: AppSnapshot, lead: Lead) {
   return lead.workspaceId || snapshot.context.workspaceId || "workspace_local"
 }
 
+function normalizeTemplateCode(input: string) {
+  return input
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+}
+
+function nextTemplateSortOrder(items: TemplateItem[]) {
+  const max = items.reduce((acc, entry) => Math.max(acc, entry.sortOrder), 0)
+  return max + 100
+}
+
+function normalizeTemplateDefaults(templates: CaseTemplate[]) {
+  const byServiceType = new Map<CaseTemplateServiceType, string>()
+  templates.forEach((entry) => {
+    if (!entry.isDefault) return
+    if (!byServiceType.has(entry.serviceType)) {
+      byServiceType.set(entry.serviceType, entry.id)
+    }
+  })
+
+  return templates.map((entry) => {
+    const expectedDefaultId = byServiceType.get(entry.serviceType)
+    if (!expectedDefaultId) return entry
+    return {
+      ...entry,
+      isDefault: entry.id === expectedDefaultId,
+    }
+  })
+}
+
+function getTemplateCollection(snapshot: AppSnapshot) {
+  return [...(snapshot.caseTemplates ?? [])]
+}
+
+function getTemplateItemCollection(snapshot: AppSnapshot) {
+  return [...(snapshot.templateItems ?? [])]
+}
+
+function ensureWorkspaceId(snapshot: AppSnapshot, fallback = "workspace_local") {
+  return snapshot.context.workspaceId ?? fallback
+}
+
+export interface CreateCaseTemplateInput {
+  title: string
+  description: string
+  serviceType: CaseTemplateServiceType
+}
+
+export function addCaseTemplateSnapshot(snapshot: AppSnapshot, input: CreateCaseTemplateInput): AppSnapshot {
+  const now = nowIso()
+  const templates = getTemplateCollection(snapshot)
+  const sameType = templates.filter((entry) => entry.serviceType === input.serviceType)
+  const nextTemplate: CaseTemplate = {
+    id: createId("tpl"),
+    workspaceId: ensureWorkspaceId(snapshot),
+    createdByUserId: snapshot.context.userId,
+    code: normalizeTemplateCode(input.title) || createId("template"),
+    title: input.title.trim() || "Nowy szablon",
+    description: input.description.trim(),
+    serviceType: input.serviceType,
+    isDefault: sameType.length === 0,
+    createdAt: now,
+    updatedAt: now,
+  }
+
+  return {
+    ...snapshot,
+    caseTemplates: normalizeTemplateDefaults([nextTemplate, ...templates]),
+  }
+}
+
+export function updateCaseTemplateSnapshot(snapshot: AppSnapshot, templateId: string, patch: Partial<CaseTemplate>): AppSnapshot {
+  const now = nowIso()
+  const templates = getTemplateCollection(snapshot)
+  if (!templates.some((entry) => entry.id === templateId)) return snapshot
+
+  const updated = templates.map((entry) => {
+    if (entry.id !== templateId) return entry
+    const nextTitle = typeof patch.title === "string" ? patch.title.trim() : entry.title
+    return {
+      ...entry,
+      ...patch,
+      title: nextTitle || entry.title,
+      code: typeof patch.code === "string" ? normalizeTemplateCode(patch.code) || entry.code : entry.code,
+      updatedAt: now,
+    }
+  })
+
+  return {
+    ...snapshot,
+    caseTemplates: normalizeTemplateDefaults(updated),
+  }
+}
+
+export function duplicateCaseTemplateSnapshot(snapshot: AppSnapshot, templateId: string): AppSnapshot {
+  const sourceTemplate = (snapshot.caseTemplates ?? []).find((entry) => entry.id === templateId)
+  if (!sourceTemplate) return snapshot
+
+  const now = nowIso()
+  const nextTemplateId = createId("tpl")
+  const sourceItems = (snapshot.templateItems ?? []).filter((entry) => entry.templateId === templateId)
+  const duplicatedTemplate: CaseTemplate = {
+    ...sourceTemplate,
+    id: nextTemplateId,
+    code: `${normalizeTemplateCode(sourceTemplate.code)}_copy`,
+    title: `${sourceTemplate.title} (kopia)`,
+    isDefault: false,
+    createdAt: now,
+    updatedAt: now,
+  }
+
+  const duplicatedItems = sourceItems.map((entry) => ({
+    ...entry,
+    id: createId("tpl_item"),
+    templateId: nextTemplateId,
+    createdAt: now,
+    updatedAt: now,
+  }))
+
+  return {
+    ...snapshot,
+    caseTemplates: [duplicatedTemplate, ...(snapshot.caseTemplates ?? [])],
+    templateItems: [...duplicatedItems, ...(snapshot.templateItems ?? [])],
+  }
+}
+
+export function setDefaultCaseTemplateSnapshot(snapshot: AppSnapshot, templateId: string): AppSnapshot {
+  const templates = getTemplateCollection(snapshot)
+  const selected = templates.find((entry) => entry.id === templateId)
+  if (!selected) return snapshot
+
+  const updated = templates.map((entry) => {
+    if (entry.serviceType !== selected.serviceType) return entry
+    return {
+      ...entry,
+      isDefault: entry.id === selected.id,
+      updatedAt: nowIso(),
+    }
+  })
+
+  return {
+    ...snapshot,
+    caseTemplates: updated,
+  }
+}
+
+export interface CreateTemplateItemInput {
+  templateId: string
+  title: string
+  description: string
+  kind: TemplateItem["kind"]
+  required: boolean
+}
+
+export function addTemplateItemSnapshot(snapshot: AppSnapshot, input: CreateTemplateItemInput): AppSnapshot {
+  const template = (snapshot.caseTemplates ?? []).find((entry) => entry.id === input.templateId)
+  if (!template) return snapshot
+  const now = nowIso()
+  const collection = getTemplateItemCollection(snapshot)
+  const inTemplate = collection.filter((entry) => entry.templateId === input.templateId)
+
+  const nextItem: TemplateItem = {
+    id: createId("tpl_item"),
+    workspaceId: template.workspaceId,
+    templateId: input.templateId,
+    createdByUserId: snapshot.context.userId,
+    sortOrder: nextTemplateSortOrder(inTemplate),
+    kind: input.kind,
+    title: input.title.trim() || "Nowa pozycja",
+    description: input.description.trim(),
+    required: input.required,
+    defaultDueOffsetDays: null,
+    createdAt: now,
+    updatedAt: now,
+  }
+
+  return {
+    ...snapshot,
+    templateItems: [...collection, nextItem],
+  }
+}
+
+export function updateTemplateItemSnapshot(snapshot: AppSnapshot, templateItemId: string, patch: Partial<TemplateItem>): AppSnapshot {
+  const now = nowIso()
+  const items = getTemplateItemCollection(snapshot)
+  if (!items.some((entry) => entry.id === templateItemId)) return snapshot
+
+  return {
+    ...snapshot,
+    templateItems: items.map((entry) => {
+      if (entry.id !== templateItemId) return entry
+      return {
+        ...entry,
+        ...patch,
+        title: typeof patch.title === "string" ? patch.title.trim() || entry.title : entry.title,
+        description: typeof patch.description === "string" ? patch.description.trim() : entry.description,
+        updatedAt: now,
+      }
+    }),
+  }
+}
+
+export function deleteTemplateItemSnapshot(snapshot: AppSnapshot, templateItemId: string): AppSnapshot {
+  const items = getTemplateItemCollection(snapshot)
+  if (!items.some((entry) => entry.id === templateItemId)) return snapshot
+
+  return {
+    ...snapshot,
+    templateItems: items.filter((entry) => entry.id !== templateItemId),
+  }
+}
+
 function getTemplateItemsForStartMode(
   snapshot: AppSnapshot,
   mode: StartCaseFromLeadSnapshotInput["mode"],
   templateId?: string | null,
 ) {
-  if (mode === "empty") return [] as TemplateItem[]
-  const allTemplateItems = snapshot.templateItems ?? []
-  if (templateId) {
-    return allTemplateItems.filter((item) => item.templateId === templateId)
+  if (mode === "empty") {
+    return {
+      selectedTemplateId: null,
+      templateItems: [] as TemplateItem[],
+    }
   }
+  if (templateId) {
+    const selected = (snapshot.caseTemplates ?? []).find((entry) => entry.id === templateId)
+    if (!selected) {
+      return {
+        selectedTemplateId: null,
+        templateItems: [] as TemplateItem[],
+      }
+    }
+    return {
+      selectedTemplateId: selected.id,
+      templateItems: (snapshot.templateItems ?? []).filter((item) => item.templateId === selected.id),
+    }
+  }
+
   const fallbackTemplate = snapshot.caseTemplates?.find((item) => item.isDefault) ?? snapshot.caseTemplates?.[0]
-  if (!fallbackTemplate) return []
-  return allTemplateItems.filter((item) => item.templateId === fallbackTemplate.id)
+  return {
+    selectedTemplateId: fallbackTemplate?.id ?? null,
+    templateItems: fallbackTemplate ? (snapshot.templateItems ?? []).filter((item) => item.templateId === fallbackTemplate.id) : [],
+  }
 }
 
 function createPortalToken(caseId: string, workspaceId: string, contactId: string, now: string): ClientPortalToken {
@@ -583,7 +817,7 @@ export function startCaseFromLeadSnapshot(snapshot: AppSnapshot, input: StartCas
   const now = nowIso()
   const workspaceId = resolveWorkspaceId(snapshot, lead)
   const collections = ensureCaseCollections(snapshot)
-  const templateItems = getTemplateItemsForStartMode(snapshot, input.mode, input.templateId)
+  const templateSelection = getTemplateItemsForStartMode(snapshot, input.mode, input.templateId)
   const caseStatus: CaseStatus = lead.status === "won" ? "not_started" : "ready_to_start"
 
   const transition = createCaseFromLead({
@@ -591,7 +825,8 @@ export function startCaseFromLeadSnapshot(snapshot: AppSnapshot, input: StartCas
     workspaceId,
     contacts: collections.contacts,
     caseStatus,
-    templateItems,
+    templateId: templateSelection.selectedTemplateId,
+    templateItems: templateSelection.templateItems,
     now,
   })
 
@@ -642,6 +877,115 @@ export function issueClientPortalLinkSnapshot(snapshot: AppSnapshot, leadId: str
   return {
     ...snapshot,
     clientPortalTokens: [token, ...collections.clientPortalTokens],
+  }
+}
+
+export function revokeClientPortalTokenSnapshot(snapshot: AppSnapshot, caseId: string): AppSnapshot {
+  const now = nowIso()
+  const tokens = snapshot.clientPortalTokens ?? []
+  if (!tokens.some((entry) => entry.caseId === caseId && !entry.revokedAt)) return snapshot
+
+  return {
+    ...snapshot,
+    clientPortalTokens: tokens.map((entry) =>
+      entry.caseId === caseId && !entry.revokedAt
+        ? {
+            ...entry,
+            revokedAt: now,
+            updatedAt: now,
+          }
+        : entry,
+    ),
+  }
+}
+
+export function updateCaseSnapshot(snapshot: AppSnapshot, caseId: string, patch: Partial<Case>): AppSnapshot {
+  const now = nowIso()
+  const cases = snapshot.cases ?? []
+  const caseRecord = cases.find((entry) => entry.id === caseId)
+  if (!caseRecord) return snapshot
+
+  const nextCases = cases.map((entry) => {
+    if (entry.id !== caseId) return entry
+    return {
+      ...entry,
+      ...patch,
+      updatedAt: now,
+    }
+  })
+
+  return {
+    ...snapshot,
+    cases: nextCases,
+  }
+}
+
+function resolveCaseItemCompletedAt(status: CaseItemStatus, currentCompletedAt: string | null) {
+  if (status === "accepted" || status === "not_applicable") {
+    return currentCompletedAt ?? nowIso()
+  }
+  return null
+}
+
+export function updateCaseItemSnapshot(snapshot: AppSnapshot, caseItemId: string, patch: Partial<CaseItem>): AppSnapshot {
+  const now = nowIso()
+  const caseItems = snapshot.caseItems ?? []
+  const existing = caseItems.find((entry) => entry.id === caseItemId)
+  if (!existing) return snapshot
+
+  const status =
+    patch.status && patch.status !== existing.status
+      ? patch.status
+      : existing.status
+
+  const nextCaseItems = caseItems.map((entry) => {
+    if (entry.id !== caseItemId) return entry
+    return {
+      ...entry,
+      ...patch,
+      completedAt: resolveCaseItemCompletedAt(status, entry.completedAt),
+      updatedAt: now,
+    }
+  })
+
+  return {
+    ...snapshot,
+    caseItems: nextCaseItems,
+  }
+}
+
+export interface AppendCaseActivityInput {
+  caseId: string
+  type: ActivityLogEntry["type"]
+  source?: ActivityLogEntry["source"]
+  payload?: Record<string, unknown>
+  caseItemId?: string | null
+}
+
+export function appendCaseActivitySnapshot(snapshot: AppSnapshot, input: AppendCaseActivityInput): AppSnapshot {
+  const workspaceId = snapshot.context.workspaceId
+  if (!workspaceId) return snapshot
+
+  const activity: ActivityLogEntry = {
+    id: createId("activity"),
+    workspaceId,
+    actorUserId: snapshot.context.userId,
+    actorContactId: null,
+    source: input.source ?? "operations",
+    type: input.type,
+    leadId: null,
+    caseId: input.caseId,
+    caseItemId: input.caseItemId ?? null,
+    attachmentId: null,
+    approvalId: null,
+    notificationId: null,
+    payload: input.payload ?? {},
+    createdAt: nowIso(),
+  }
+
+  return {
+    ...snapshot,
+    activityLog: [activity, ...(snapshot.activityLog ?? [])],
   }
 }
 

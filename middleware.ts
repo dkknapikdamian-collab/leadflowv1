@@ -20,6 +20,8 @@ const PUBLIC_PATHS = [
   "/reset-password",
   "/auth/callback",
   "/auth/confirm",
+  "/portal",
+  "/api/client-portal",
 ]
 
 const AUTH_ENTRY_PATHS = ["/login", "/signup"]

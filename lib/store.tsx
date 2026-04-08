@@ -17,10 +17,16 @@ import { resolveSnapshotAfterConflictRefetch } from "@/lib/data/snapshot-sync"
 import { createLocalStorageDriver, createSnapshotStorageAdapter } from "@/lib/data/storage-adapter"
 import { buildUserScopedStorageKey } from "@/lib/data/storage-key"
 import type {
+  ActivityType,
   AppSnapshot,
+  Case,
+  CaseItem,
+  CaseTemplate,
+  CaseTemplateServiceType,
   Lead,
   LeadInput,
   SettingsPatch,
+  TemplateItem,
   WorkItem,
   WorkItemInput,
 } from "@/lib/types"
@@ -39,11 +45,28 @@ interface AppStoreValue {
     templateId?: string | null,
   ) => void
   issueClientPortalLink: (leadId: string) => void
+  revokeClientPortalToken: (caseId: string) => void
   addItem: (payload: WorkItemInput) => void
   updateItem: (itemId: string, patch: Partial<WorkItem>) => void
   deleteItem: (itemId: string) => void
   toggleItemDone: (itemId: string) => void
   snoozeItem: (itemId: string, nextDate: string) => void
+  addCaseTemplate: (payload: { title: string; description: string; serviceType: CaseTemplateServiceType }) => void
+  updateCaseTemplate: (templateId: string, patch: Partial<CaseTemplate>) => void
+  duplicateCaseTemplate: (templateId: string) => void
+  setDefaultCaseTemplate: (templateId: string) => void
+  addTemplateItem: (payload: { templateId: string; title: string; description: string; kind: TemplateItem["kind"]; required: boolean }) => void
+  updateTemplateItem: (templateItemId: string, patch: Partial<TemplateItem>) => void
+  deleteTemplateItem: (templateItemId: string) => void
+  updateCase: (caseId: string, patch: Partial<Case>) => void
+  updateCaseItem: (caseItemId: string, patch: Partial<CaseItem>) => void
+  appendCaseActivity: (
+    caseId: string,
+    activityType: ActivityType,
+    source?: "sales" | "operations" | "system",
+    payload?: Record<string, unknown>,
+    caseItemId?: string | null,
+  ) => void
   updateSettings: (patch: SettingsPatch) => void
 }
 
@@ -272,6 +295,10 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
         setSnapshot((current: AppSnapshot) =>
           syncSnapshotWithSession(repository.issueClientPortalLink(current, leadId), session?.user ?? null),
         ),
+      revokeClientPortalToken: (caseId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.revokeClientPortalToken(current, caseId), session?.user ?? null),
+        ),
       addItem: (payload: WorkItemInput) =>
         setSnapshot((current: AppSnapshot) =>
           syncSnapshotWithSession(repository.addItem(current, payload), session?.user ?? null),
@@ -291,6 +318,55 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
       snoozeItem: (itemId: string, nextDate: string) =>
         setSnapshot((current: AppSnapshot) =>
           syncSnapshotWithSession(repository.snoozeItem(current, itemId, nextDate), session?.user ?? null),
+        ),
+      addCaseTemplate: (payload) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.addCaseTemplate(current, payload), session?.user ?? null),
+        ),
+      updateCaseTemplate: (templateId: string, patch: Partial<CaseTemplate>) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.updateCaseTemplate(current, templateId, patch), session?.user ?? null),
+        ),
+      duplicateCaseTemplate: (templateId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.duplicateCaseTemplate(current, templateId), session?.user ?? null),
+        ),
+      setDefaultCaseTemplate: (templateId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.setDefaultCaseTemplate(current, templateId), session?.user ?? null),
+        ),
+      addTemplateItem: (payload) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.addTemplateItem(current, payload), session?.user ?? null),
+        ),
+      updateTemplateItem: (templateItemId: string, patch: Partial<TemplateItem>) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.updateTemplateItem(current, templateItemId, patch), session?.user ?? null),
+        ),
+      deleteTemplateItem: (templateItemId: string) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.deleteTemplateItem(current, templateItemId), session?.user ?? null),
+        ),
+      updateCase: (caseId: string, patch: Partial<Case>) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.updateCase(current, caseId, patch), session?.user ?? null),
+        ),
+      updateCaseItem: (caseItemId: string, patch: Partial<CaseItem>) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(repository.updateCaseItem(current, caseItemId, patch), session?.user ?? null),
+        ),
+      appendCaseActivity: (
+        caseId: string,
+        activityType: ActivityType,
+        source: "sales" | "operations" | "system" = "operations",
+        payload?: Record<string, unknown>,
+        caseItemId?: string | null,
+      ) =>
+        setSnapshot((current: AppSnapshot) =>
+          syncSnapshotWithSession(
+            repository.appendCaseActivity(current, caseId, activityType, source, payload, caseItemId),
+            session?.user ?? null,
+          ),
         ),
       updateSettings: (patch: SettingsPatch) =>
         setSnapshot((current: AppSnapshot) =>

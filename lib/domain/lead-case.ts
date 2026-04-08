@@ -101,13 +101,14 @@ function buildCaseFromLead(input: {
   actorUserId?: string | null
   at: string
   status?: CaseStatus
+  templateId?: string | null
 }): Case {
   return {
     id: createId("case"),
     workspaceId: input.workspaceId,
     contactId: input.contactId,
     sourceLeadId: input.lead.id,
-    templateId: null,
+    templateId: input.templateId ?? null,
     createdByUserId: input.actorUserId ?? null,
     ownerUserId: input.actorUserId ?? null,
     title: buildCaseTitle(input.lead),
@@ -157,6 +158,7 @@ export function createCaseFromLead(input: {
   contacts: Contact[]
   actorUserId?: string | null
   caseStatus?: CaseStatus
+  templateId?: string | null
   templateItems?: TemplateItem[]
   now?: string
 }) {
@@ -182,6 +184,7 @@ export function createCaseFromLead(input: {
     actorUserId: input.actorUserId,
     at,
     status: caseStatus,
+    templateId: input.templateId ?? null,
   })
 
   const caseItems = buildCaseItemsFromTemplate({
