@@ -65,21 +65,14 @@ function CheckEmailContent() {
         <div>Po kliknięciu linku wrócisz do aplikacji i dokończysz logowanie.</div>
       </div>
 
-      {message ? <div style={{ color: "var(--muted)", lineHeight: 1.5 }}>{message}</div> : null}
-      {error ? <div style={{ color: "#f87171", fontSize: 14, lineHeight: 1.5 }}>{error}</div> : null}
+      {message ? <div className="muted-small">{message}</div> : null}
+      {error ? <div className="danger-text">{error}</div> : null}
 
       <button
         type="button"
         onClick={handleResend}
         disabled={!email || isLoading || remainingSeconds > 0}
-        style={{
-          borderRadius: 12,
-          border: "1px solid rgba(245,158,11,0.28)",
-          background: "rgba(245,158,11,0.14)",
-          color: "var(--accent)",
-          padding: "12px 14px",
-          fontWeight: 700,
-        }}
+        className="primary-button"
       >
         {isLoading
           ? "Wysyłanie..."
@@ -94,7 +87,7 @@ function CheckEmailContent() {
 function CheckEmailFallback() {
   return (
     <AuthShell title="Sprawdź e-mail" subtitle="Ładuję dane potwierdzenia...">
-      <div style={{ color: "var(--muted)" }}>Przygotowuję ekran potwierdzenia e-mail...</div>
+      <div className="muted-small">Przygotowuję ekran potwierdzenia e-mail...</div>
     </AuthShell>
   )
 }

@@ -7,6 +7,103 @@
 - Publikacja/merge do `main` dopiero gdy user jawnie powie, ze to jest final i mamy zielone testy.
 - "Finalna wersja projektu" ma zyc w tym repo (to jest source of truth), bez duplikowania rownoleglych kopii.
 
+## Zasady Finalnej Aplikacji (ClientPilot) - Source Of Truth
+
+### 1) Jeden produkt, jedna baza prawdy
+
+- Jeden system do domykania i uruchamiania klienta.
+- Lead Flow to rdzen sprzedazowy.
+- Sprawy / kompletnosc / Client Portal to modul uruchamiany po sprzedazy.
+- Jedna baza online jako source of truth (nie lokalny stan).
+- Jedno konto, jeden workspace, jedna historia klienta.
+- Kazdy rekord biznesowy musi byc przypisany do workspace.
+- Auth, workspace, trial, billing, RLS i centralna logika dostepu sa twardym fundamentem produktu.
+
+### 2) Nie kopiujemy Fortecy 1:1 jako kodu bazowego
+
+- Lead Flow = baza architektoniczna (twarde zasady danych online + access + workspace).
+- Forteca = kierunek wizualny + nowy modul + flow operacyjny (UX), ale nie osobna aplikacja ani baza kodowa do przeniesienia 1:1.
+- Uzytkownik nie ma czuc, ze "wchodzi do drugiej aplikacji".
+
+### 3) Docelowy przeplyw
+
+- lead -> next step -> lead won -> tworzy sie sprawa -> sprawa dostaje checkliste
+- klient dostaje link (Client Portal) -> klient dosyla pliki / decyzje
+- operator weryfikuje -> sprawa staje sie ready to start
+
+### 4) Docelowa domena (poziomy)
+
+- Kontakt/Klient: jedna osoba/firma.
+- Lead: etap sprzedazowy (status, wartosc, priorytet, next step, risk, historia).
+- Case/Sprawa: etap operacyjny po wygraniu.
+- Checklist kompletnosci: materialy, decyzje, zgody, pliki, akceptacje, braki, blokery.
+- Aktywnosc i przypomnienia: overdue, kto czeka na kogo, czy sprawa stoi, jaki nastepny ruch.
+
+### 5) Docelowe menu operatora
+
+Portal klienta nie jest pozycja w menu - to wejscie z linku.
+
+Finalnie:
+- Dzis
+- Leady
+- Sprawy
+- Zadania
+- Kalendarz
+- (Klienci - na start moze byc ukryte w modelu Lead/Case, ale architektura ma to przewidywac)
+- Szablony
+- Aktywnosc
+- Rozliczenia
+- Ustawienia
+
+Minimum na wczesnym etapie:
+- Dzis
+- Leady
+- Zadania
+- Kalendarz
+- Sprawy
+- Aktywnosc
+- Rozliczenia
+- Ustawienia
+
+### 6) Visual System Lock (Forteca jako kierunek skorki)
+
+Wszystkie ekrany maja byc jednym visual systemem:
+- sidebar
+- karty + stats cards
+- search + filters bar
+- list cards
+- detail headers
+- status badges
+- shell operatora
+- shell Client Portal
+- dialogi i formularze
+- empty/loading/error states
+
+### 7) Co zostaje vs co zmieniamy
+
+Zostaje:
+- Today jako centrum dowodzenia
+- logika next step / overdue / risk / waiting too long
+- zadania, kalendarz, przypomnienia, snooze
+- settings, billing, auth, workspace, trial, dane online, RLS, centralny access model
+
+Zmieniamy/dowozimy:
+- skorka i komponenty widokowe w stylu Forteca
+- IA tak, by Sprawy byly pelnoprawnym modulem
+- most danych: po won lead przechodzi w case
+- Today ma pokazywac tez blokady po sprzedazy
+- lead detail ma sekcje "Start realizacji"
+- Client Portal + checklisty + uploady + akceptacje + status kompletnosci
+
+### 8) Kolejnosc budowy (werdykt)
+
+1. Zamrozenie architektury i nowej skorki rdzenia
+2. Domkniecie rdzenia Lead Flow w nowej skorce
+3. Dolozenie Spraw jako modulu po sprzedazy
+4. Client Portal + checklisty + uploady + akceptacje
+5. Automatyzacje, blokery, dashboard polaczony
+6. Twarde domkniecie bezpieczenstwa, billingu, accessu, QA
+
 ## Jedna prawda produktu (po scaleniu Lead Flow + Forteca)
 
 Produkt nie jest juz tylko "lead follow-up app".
@@ -46,4 +143,4 @@ Nowa skorka UI ma byc oparta o kierunek Forteca i dzialac jako jeden wspolny vis
 
 - bez zmian auth/billing flow
 - bez zmiany obecnych zasad dostepu
-- bez publicznego portalu klienta
+- (historycznie) bez publicznego portalu klienta - aktualnie portal klienta jest elementem finalnego produktu

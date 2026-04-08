@@ -1068,7 +1068,7 @@ export function TasksPageView() {
         <div className="segmented-tabs">
           {[
             { key: "all_active", label: "Wszystkie aktywne" },
-            { key: "today", label: "Dzis" },
+            { key: "today", label: "Dziś" },
             { key: "week", label: "Ten tydzien" },
             { key: "overdue", label: "Zalegle" },
             { key: "no_lead", label: "Bez leada" },
@@ -1920,7 +1920,7 @@ export function ActivityPageView() {
 
   return (
     <PageShell
-      title="Aktywnosc"
+      title="Aktywność"
       subtitle="Wspolny feed dzialan sprzedazowych i operacyjnych oraz log wysylek."
     >
       <section className="panel-card">

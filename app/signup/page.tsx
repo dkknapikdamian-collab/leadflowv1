@@ -45,16 +45,16 @@ export default function SignupPage() {
       footer={<p style={{ margin: 0, color: "var(--muted)" }}>Masz już konto? <Link href="/login">Zaloguj się</Link></p>}
     >
       {googleUrl ? (
-        <a href={googleUrl} style={{ display: "block", textAlign: "center", padding: 14, borderRadius: 12, border: "1px solid var(--border-light)", background: "transparent" }}>
+        <a href={googleUrl} className="secondary-button button-link block center">
           Zarejestruj się przez Google
         </a>
       ) : null}
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-        <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="E-mail" style={{ width: "100%", borderRadius: 12, border: "1px solid var(--border-light)", background: "#111", color: "var(--text)", padding: "12px 14px" }} />
-        <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Hasło" style={{ width: "100%", borderRadius: 12, border: "1px solid var(--border-light)", background: "#111", color: "var(--text)", padding: "12px 14px" }} />
-        {error ? <div style={{ color: "#f87171", fontSize: 14 }}>{error}</div> : null}
-        <button type="submit" disabled={isLoading} style={{ borderRadius: 12, border: "1px solid rgba(245,158,11,0.28)", background: "rgba(245,158,11,0.14)", color: "var(--accent)", padding: "12px 14px", fontWeight: 700 }}>
+      <form onSubmit={handleSubmit} className="auth-form">
+        <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="E-mail" className="text-input" />
+        <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Hasło" className="text-input" />
+        {error ? <div className="danger-text">{error}</div> : null}
+        <button type="submit" disabled={isLoading} className="primary-button">
           {isLoading ? "Tworzenie konta..." : "Załóż konto"}
         </button>
       </form>

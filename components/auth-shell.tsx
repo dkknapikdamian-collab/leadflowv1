@@ -9,15 +9,15 @@ export function AuthShell({
   return (
     <main className="auth-main">
       <section className="auth-card">
-        <div style={{ display: "grid", gap: 8, marginBottom: 20 }}>
-          <div style={{ fontSize: 26, fontWeight: 800 }}>ClientPilot</div>
-          <h1 style={{ margin: 0, fontSize: 28 }}>{title}</h1>
-          <p style={{ margin: 0, color: "var(--muted)", lineHeight: 1.5 }}>{subtitle}</p>
-        </div>
+        <header className="auth-header">
+          <div className="auth-brand">ClientPilot</div>
+          <h1 className="auth-title">{title}</h1>
+          <p className="auth-subtitle">{subtitle}</p>
+        </header>
 
-        <div className="auth-form">{children}</div>
+        <div className="auth-body">{children}</div>
 
-        {footer ? <div style={{ marginTop: 18 }}>{footer}</div> : null}
+        {footer ? <footer className="auth-footer">{footer}</footer> : null}
       </section>
     </main>
   )

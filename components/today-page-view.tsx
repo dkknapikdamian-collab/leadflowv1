@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import { useMemo, useState } from "react"
+import { PageShell } from "@/components/layout/page-shell"
 import { ItemModal, LeadDrawer } from "@/components/views"
 import { buildCasesDashboard } from "@/lib/repository/cases-dashboard"
 import { useAppStore } from "@/lib/store"
@@ -32,13 +33,13 @@ function FontScaleControl() {
   const { snapshot, updateSettings } = useAppStore()
   const currentScale = snapshot.settings.fontScale || "compact"
   const options: { value: FontScale; label: string }[] = [
-    { value: "compact", label: "Mala" },
-    { value: "default", label: "Srednia" },
-    { value: "large", label: "Duza" },
+    { value: "compact", label: "Mała" },
+    { value: "default", label: "Średnia" },
+    { value: "large", label: "Duża" },
   ]
 
   return (
-    <div className="today-font-control" aria-label="Skala czcionki sekcji Dzis">
+    <div className="today-font-control" aria-label="Skala czcionki sekcji Dziś">
       <span className="today-font-control-label">Czcionka</span>
       <div className="today-font-control-buttons">
         {options.map((option) => (
@@ -201,13 +202,13 @@ export function TodayPageView() {
   if (isEmptyWorkspace) {
     return (
       <div className={`today-page today-font-${fontScale}${isMobileProfile ? " today-profile-mobile" : ""}`}>
-        <section className="hero-row split">
-          <div>
-            <h1 className="page-title">Dzis</h1>
-            <p className="page-subtitle">Zacznij od pustego workspace i dodaj pierwszy lead lub sprawe.</p>
-          </div>
-          <FontScaleControl />
-        </section>
+        <PageShell
+          title="Dziś"
+          subtitle="Zacznij od pustego workspace i dodaj pierwszy lead lub sprawę."
+          actions={<FontScaleControl />}
+        >
+          {null}
+        </PageShell>
       </div>
     )
   }
@@ -215,7 +216,7 @@ export function TodayPageView() {
   const topStats = [
     {
       key: "leads_due_today",
-      label: "Leady do ruchu dzis",
+      label: "Leady do ruchu dziś",
       value: salesLeadsDueToday.length,
       color: getTodaySectionMeta("today").color,
     },
@@ -241,92 +242,121 @@ export function TodayPageView() {
 
   return (
     <div className={`today-page today-font-${fontScale}${isMobileProfile ? " today-profile-mobile" : ""}`}>
-      <section className="hero-row split">
-        <div>
-          <h1 className="page-title">Dzis</h1>
-          <p className="page-subtitle">Jedno centrum dowodzenia: kasa, blokady i konkretne ruchy na dzis.</p>
-        </div>
-        <FontScaleControl />
-      </section>
+      <PageShell
+        title="Dziś"
+        subtitle="Jedno centrum dowodzenia: kasa, blokady i konkretne ruchy na dziś."
+        actions={<FontScaleControl />}
+      >
 
-      <section className="today-top-stats-grid">
-        {topStats.map((stat) => (
-          <article key={stat.key} className="today-top-stat-card" style={{ ["--stat-color" as string]: stat.color }}>
-            <div className="today-top-stat-label" style={{ color: stat.color }}>
-              {stat.label}
+        <section className="today-top-stats-grid">
+          {topStats.map((stat) => (
+            <article key={stat.key} className="today-top-stat-card" style={{ ["--stat-color" as string]: stat.color }}>
+              <div className="today-top-stat-label" style={{ color: stat.color }}>
+                {stat.label}
+              </div>
+              <div className="today-top-stat-value" style={{ color: stat.color }}>
+                {stat.value}
+              </div>
+            </article>
+          ))}
+        </section>
+
+        <section className="today-section-card today-tone-sales">
+          <div className="today-section-header">
+            <div className="today-section-title-group">
+              <span className="today-section-accent" aria-hidden="true" />
+              <h2 className="today-section-title">Sekcja 1: sprzedaż wymaga ruchu</h2>
             </div>
-            <div className="today-top-stat-value" style={{ color: stat.color }}>
-              {stat.value}
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section className="today-section-card">
-        <div className="today-section-header">
-          <h2 className="today-section-title" style={{ color: "#f59e0b" }}>Sekcja 1: sprzedaz wymaga ruchu</h2>
-        </div>
-        <div className="today-section-body">
-          {salesLeadsDueToday.length === 0 ? <div className="empty-box">Brak leadow wymagajacych ruchu.</div> : null}
-          {salesLeadsDueToday.map((lead) => (
-            <TodayLeadRow key={lead.id} lead={lead} onOpen={() => setSelectedLead(lead)} />
-          ))}
-        </div>
-      </section>
-
-      <section className="today-section-card">
-        <div className="today-section-header">
-          <h2 className="today-section-title" style={{ color: "#7c3aed" }}>Sekcja 2: realizacja stoi przez klienta</h2>
-        </div>
-        <div className="today-section-body">
-          {waitingOrBlockedCases.length === 0 ? <div className="empty-box">Brak spraw czekajacych lub zablokowanych.</div> : null}
-          {waitingOrBlockedCases.map((entry) => (
-            <TodayCaseRow key={entry.id} entry={entry} onOpen={(id) => (window.location.href = `/cases?caseId=${id}`)} />
-          ))}
-        </div>
-      </section>
-
-      <section className="today-section-card">
-        <div className="today-section-header">
-          <h2 className="today-section-title" style={{ color: "#10b981" }}>Sekcja 3: gotowe do ruszenia</h2>
-        </div>
-        <div className="today-section-body">
-          {readyCases.length === 0 ? <div className="empty-box">Brak spraw gotowych do startu.</div> : null}
-          {readyCases.map((entry) => (
-            <TodayCaseRow key={entry.id} entry={entry} onOpen={(id) => (window.location.href = `/cases?caseId=${id}`)} />
-          ))}
-        </div>
-      </section>
-
-      <section className="today-section-card">
-        <div className="today-section-header">
-          <h2 className="today-section-title" style={{ color: "#3b82f6" }}>Sekcja 4: dzis / overdue / ten tydzien / bez next step</h2>
-        </div>
-        <div className="today-section-body">
-          <div className="toolbar-row wrap">
-            <span className="badge">dzis: {todayItems.length}</span>
-            <span className="badge">overdue: {overdueItems.length}</span>
-            <span className="badge">ten tydzien: {weekItems.length}</span>
-            <span className="badge">bez next step: {leadsWithoutNextStep.length}</span>
           </div>
+          <div className="today-section-body">
+            {salesLeadsDueToday.length === 0 ? <div className="empty-box">Brak leadów wymagających ruchu.</div> : null}
+            {salesLeadsDueToday.map((lead) => (
+              <TodayLeadRow key={lead.id} lead={lead} onOpen={() => setSelectedLead(lead)} />
+            ))}
+          </div>
+        </section>
 
-          {overdueItems.slice(0, 8).map((item) => (
-            <TodayItemRow key={`over-${item.id}`} item={item} leadName={getItemLeadLabel(item, snapshot.leads)} onEdit={() => setEditingItem(item)} dateOptions={dateOptions} />
-          ))}
-          {todayItems.slice(0, 8).map((item) => (
-            <TodayItemRow key={`today-${item.id}`} item={item} leadName={getItemLeadLabel(item, snapshot.leads)} onEdit={() => setEditingItem(item)} dateOptions={dateOptions} />
-          ))}
-          {weekItems.slice(0, 6).map((item) => (
-            <TodayItemRow key={`week-${item.id}`} item={item} leadName={getItemLeadLabel(item, snapshot.leads)} onEdit={() => setEditingItem(item)} dateOptions={dateOptions} />
-          ))}
-          {leadsWithoutNextStep.slice(0, 6).map((lead) => (
-            <TodayLeadRow key={`nonext-${lead.id}`} lead={lead} onOpen={() => setSelectedLead(lead)} />
-          ))}
-        </div>
-      </section>
+        <section className="today-section-card today-tone-waiting">
+          <div className="today-section-header">
+            <div className="today-section-title-group">
+              <span className="today-section-accent" aria-hidden="true" />
+              <h2 className="today-section-title">Sekcja 2: realizacja stoi przez klienta</h2>
+            </div>
+          </div>
+          <div className="today-section-body">
+            {waitingOrBlockedCases.length === 0 ? <div className="empty-box">Brak spraw czekających lub zablokowanych.</div> : null}
+            {waitingOrBlockedCases.map((entry) => (
+              <TodayCaseRow key={entry.id} entry={entry} onOpen={(id) => (window.location.href = `/cases?caseId=${id}`)} />
+            ))}
+          </div>
+        </section>
+
+        <section className="today-section-card today-tone-ready">
+          <div className="today-section-header">
+            <div className="today-section-title-group">
+              <span className="today-section-accent" aria-hidden="true" />
+              <h2 className="today-section-title">Sekcja 3: gotowe do ruszenia</h2>
+            </div>
+          </div>
+          <div className="today-section-body">
+            {readyCases.length === 0 ? <div className="empty-box">Brak spraw gotowych do startu.</div> : null}
+            {readyCases.map((entry) => (
+              <TodayCaseRow key={entry.id} entry={entry} onOpen={(id) => (window.location.href = `/cases?caseId=${id}`)} />
+            ))}
+          </div>
+        </section>
+
+        <section className="today-section-card today-tone-work">
+          <div className="today-section-header">
+            <div className="today-section-title-group">
+              <span className="today-section-accent" aria-hidden="true" />
+              <h2 className="today-section-title">Sekcja 4: dziś / overdue / ten tydzień / bez next step</h2>
+            </div>
+          </div>
+          <div className="today-section-body">
+            <div className="toolbar-row wrap">
+              <span className="badge">dziś: {todayItems.length}</span>
+              <span className="badge">overdue: {overdueItems.length}</span>
+              <span className="badge">ten tydzień: {weekItems.length}</span>
+              <span className="badge">bez next step: {leadsWithoutNextStep.length}</span>
+            </div>
+
+            {overdueItems.slice(0, 8).map((item) => (
+              <TodayItemRow
+                key={`over-${item.id}`}
+                item={item}
+                leadName={getItemLeadLabel(item, snapshot.leads)}
+                onEdit={() => setEditingItem(item)}
+                dateOptions={dateOptions}
+              />
+            ))}
+            {todayItems.slice(0, 8).map((item) => (
+              <TodayItemRow
+                key={`today-${item.id}`}
+                item={item}
+                leadName={getItemLeadLabel(item, snapshot.leads)}
+                onEdit={() => setEditingItem(item)}
+                dateOptions={dateOptions}
+              />
+            ))}
+            {weekItems.slice(0, 6).map((item) => (
+              <TodayItemRow
+                key={`week-${item.id}`}
+                item={item}
+                leadName={getItemLeadLabel(item, snapshot.leads)}
+                onEdit={() => setEditingItem(item)}
+                dateOptions={dateOptions}
+              />
+            ))}
+            {leadsWithoutNextStep.slice(0, 6).map((lead) => (
+              <TodayLeadRow key={`nonext-${lead.id}`} lead={lead} onOpen={() => setSelectedLead(lead)} />
+            ))}
+          </div>
+        </section>
 
       {editingItem ? <ItemModal item={editingItem} onClose={() => setEditingItem(null)} /> : null}
       {selectedLead ? <LeadDrawer lead={selectedLead} onClose={() => setSelectedLead(null)} /> : null}
+      </PageShell>
     </div>
   )
 }

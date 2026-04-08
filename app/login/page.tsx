@@ -41,7 +41,7 @@ function LoginPageContent() {
       subtitle="Nowa skórka systemu operatora. Wejdź przez Google albo e-mail i hasło."
       footer={<p style={{ margin: 0, color: "var(--muted)" }}>Nie masz konta? <Link href="/signup">Załóż konto</Link></p>}
     >
-      <a href={googleUrl} className="secondary-button" style={{ display: "block", textAlign: "center" }}>
+      <a href={googleUrl} className="secondary-button button-link block center">
         Kontynuuj przez Google
       </a>
 

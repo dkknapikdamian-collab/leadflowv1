@@ -2,65 +2,22 @@
 
 import Link from "next/link"
 import { useMemo } from "react"
+import { PageShell } from "@/components/layout/page-shell"
 import { getAccountStatusPresentation, formatAccountStatusDate } from "@/lib/access/account-status"
 import { useAppStore } from "@/lib/store"
 
-function getToneStyles(tone: ReturnType<typeof getAccountStatusPresentation>["tone"]) {
-  if (tone === "success") {
-    return {
-      border: "1px solid rgba(74, 222, 128, 0.28)",
-      background: "rgba(74, 222, 128, 0.08)",
-      badgeBackground: "rgba(74, 222, 128, 0.14)",
-      badgeColor: "#ccf7da",
-      badgeBorder: "1px solid rgba(74, 222, 128, 0.25)",
-    }
-  }
-
-  if (tone === "warning") {
-    return {
-      border: "1px solid rgba(245, 158, 11, 0.28)",
-      background: "rgba(245, 158, 11, 0.08)",
-      badgeBackground: "rgba(245, 158, 11, 0.14)",
-      badgeColor: "#ffebb6",
-      badgeBorder: "1px solid rgba(245, 158, 11, 0.25)",
-    }
-  }
-
-  if (tone === "danger") {
-    return {
-      border: "1px solid rgba(248, 113, 113, 0.28)",
-      background: "rgba(248, 113, 113, 0.08)",
-      badgeBackground: "rgba(248, 113, 113, 0.14)",
-      badgeColor: "#ffd5d5",
-      badgeBorder: "1px solid rgba(248, 113, 113, 0.25)",
-    }
-  }
-
-  return {
-    border: "1px solid rgba(255, 255, 255, 0.08)",
-    background: "rgba(255, 255, 255, 0.03)",
-    badgeBackground: "rgba(255, 255, 255, 0.06)",
-    badgeColor: "#d9d4cc",
-    badgeBorder: "1px solid rgba(255, 255, 255, 0.08)",
-  }
+function getToneClass(tone: ReturnType<typeof getAccountStatusPresentation>["tone"]) {
+  if (tone === "success") return "tone-success"
+  if (tone === "warning") return "tone-warning"
+  if (tone === "danger") return "tone-danger"
+  return "tone-neutral"
 }
 
 function BillingLinkButton({ label }: { label: string }) {
   return (
     <Link
       href="/billing"
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: 40,
-        padding: "10px 14px",
-        borderRadius: 12,
-        border: "1px solid rgba(255,255,255,0.12)",
-        color: "var(--text)",
-        textDecoration: "none",
-        whiteSpace: "nowrap",
-      }}
+      className="ghost-button button-link"
     >
       {label}
     </Link>
@@ -73,48 +30,15 @@ export function AccountStatusBanner() {
     () => getAccountStatusPresentation(snapshot, { timeZone: snapshot.settings.timezone }),
     [snapshot],
   )
-  const tone = getToneStyles(status.tone)
+  const toneClass = getToneClass(status.tone)
 
   return (
-    <section
-      aria-label="Status konta"
-      style={{
-        margin: "16px 16px 0",
-        padding: 16,
-        borderRadius: 16,
-        border: tone.border,
-        background: tone.background,
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          gap: 12,
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          flexWrap: "wrap",
-        }}
-      >
+    <section aria-label="Status konta" className={`tone-card account-status-banner ${toneClass}`}>
+      <div className="tone-card-row">
         <div style={{ minWidth: 0 }}>
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              minHeight: 28,
-              padding: "4px 10px",
-              borderRadius: 999,
-              background: tone.badgeBackground,
-              color: tone.badgeColor,
-              border: tone.badgeBorder,
-              fontSize: 12,
-              fontWeight: 700,
-              marginBottom: 10,
-            }}
-          >
-            {status.badgeLabel}
-          </div>
-          <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>{status.title}</div>
-          <div style={{ color: "var(--muted)", lineHeight: 1.5 }}>{status.description}</div>
+          <div className="tone-badge">{status.badgeLabel}</div>
+          <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 6, marginTop: 10 }}>{status.title}</div>
+          <div className="page-subtitle">{status.description}</div>
           {status.primaryDateLabel ? (
             <div style={{ color: "var(--text)", marginTop: 10, fontSize: 13, fontWeight: 700 }}>
               {status.primaryDateLabel}
@@ -132,17 +56,10 @@ export function AccountStatusBanner() {
 
 function StatusInfoCard({ label, value, detail }: { label: string; value: string; detail?: string }) {
   return (
-    <div
-      style={{
-        border: "1px solid var(--border)",
-        borderRadius: 16,
-        background: "var(--card)",
-        padding: 16,
-      }}
-    >
-      <div style={{ color: "var(--muted)", fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>{label}</div>
-      <div style={{ fontSize: 20, fontWeight: 800, marginBottom: detail ? 8 : 0 }}>{value}</div>
-      {detail ? <div style={{ color: "var(--muted)", lineHeight: 1.45 }}>{detail}</div> : null}
+    <div className="billing-info-card">
+      <div className="billing-info-label">{label}</div>
+      <div className="billing-info-value">{value}</div>
+      {detail ? <div className="billing-info-detail">{detail}</div> : null}
     </div>
   )
 }
@@ -155,45 +72,19 @@ export function BillingStatusPageView() {
   )
   const trialEndsLabel = formatAccountStatusDate(snapshot.billing.trialEndsAt, snapshot.settings.timezone)
   const paidUntilLabel = formatAccountStatusDate(snapshot.billing.renewAt, snapshot.settings.timezone)
-  const tone = getToneStyles(status.tone)
+  const toneClass = getToneClass(status.tone)
 
   return (
-    <section className="single-column-page">
-      <div className="hero-row">
-        <div>
-          <h1 className="page-title">Billing</h1>
-          <p className="page-subtitle">Rozliczenie dotyczy calego systemu: Leady, Sprawy, Zadania, Kalendarz, Aktywnosc i portal klienta.</p>
-        </div>
-      </div>
-
-      <div
-        style={{
-          borderRadius: 18,
-          border: tone.border,
-          background: tone.background,
-          padding: 18,
-          marginBottom: 16,
-        }}
-      >
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            minHeight: 30,
-            padding: "4px 10px",
-            borderRadius: 999,
-            background: tone.badgeBackground,
-            color: tone.badgeColor,
-            border: tone.badgeBorder,
-            fontSize: 12,
-            fontWeight: 700,
-            marginBottom: 12,
-          }}
-        >
+    <PageShell
+      title="Rozliczenia"
+      subtitle="Rozliczenie dotyczy calego systemu: Leady, Sprawy, Zadania, Kalendarz, Aktywność i portal klienta."
+    >
+      <div className={`tone-card ${toneClass}`} style={{ marginBottom: 16 }}>
+        <div className="tone-badge" style={{ marginBottom: 12 }}>
           {status.badgeLabel}
         </div>
         <div style={{ fontSize: 30, fontWeight: 800, marginBottom: 8 }}>{status.title}</div>
-        <div style={{ color: "var(--muted)", lineHeight: 1.6 }}>{status.description}</div>
+        <div className="page-subtitle">{status.description}</div>
         {status.isExpiringSoon ? (
           <div style={{ color: "var(--text)", fontSize: 13, fontWeight: 700, marginTop: 12 }}>
             Uwaga: konto wymaga uwagi zawczasu, zanim dostęp zostanie zablokowany.
@@ -201,14 +92,7 @@ export function BillingStatusPageView() {
         ) : null}
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: 16,
-          marginBottom: 16,
-        }}
-      >
+      <div className="billing-info-grid">
         <StatusInfoCard label="Obecny status" value={status.badgeLabel} detail={status.description} />
         <StatusInfoCard label="Koniec triala" value={trialEndsLabel} detail="Ta data pokazuje, do kiedy trwa okres próbny." />
         <StatusInfoCard
@@ -229,6 +113,6 @@ export function BillingStatusPageView() {
           Polityka panelu klienta dla istniejacych spraw: link pozostaje aktywny do wygasniecia tokenu, ale przy zablokowanym koncie operatora panel dziala tylko w podgladzie.
         </div>
       </div>
-    </section>
+    </PageShell>
   )
 }

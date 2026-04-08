@@ -285,7 +285,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
       <aside className="sidebar desktop-only">
         <div className="brand-box">
           <div className="brand-title">
-            Lead<span>Flow</span>
+            Client<span>Pilot</span>
           </div>
           <div className="brand-subtitle">Domykanie i uruchamianie klienta</div>
         </div>
