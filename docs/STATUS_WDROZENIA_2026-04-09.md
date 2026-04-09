@@ -165,3 +165,5 @@ Do domknięcia pozostaje **manualny** pakiet ETAP 16 (bez dodawania nowych funkc
 4. Security pass (RLS/portal): user A nie widzi danych usera B; token revoke działa; brak publicznego dostępu do plików bez podpisu.
 
 Do udokumentowania wyniku użyj: `docs/ETAP16_RAPORT_TEMPLATE.md`.
+
+Aktualny raport automatycznego PASS (2026-04-09): `docs/ETAP16_RAPORT_2026-04-09.md`.
