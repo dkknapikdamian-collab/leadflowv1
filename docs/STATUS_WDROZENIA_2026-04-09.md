@@ -1,10 +1,10 @@
-﻿# Status wdrożenia (freeze) — 2026-04-09
+﻿# Status wdrożenia (dev-rollout-freeze) — 2026-04-09
 
 Ten dokument odpowiada na pytanie: **co jest już wdrożone** vs **co jest jeszcze do domknięcia** w etapach ETAP 0–16.
 
 ## Stan gałęzi
 
-- Gałąź robocza/wdrożeniowa: `freeze`
+- Gałąź robocza/wdrożeniowa: `dev-rollout-freeze`
 - HEAD na dziś: ETAP 15 (security hardening) + wcześniejsze etapy do ETAP 14 w historii commitów
 - Testy: `cmd /c "npm test"` — PASS
 - Build: `cmd /c "npm run build"` — PASS

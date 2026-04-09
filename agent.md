@@ -8,7 +8,7 @@ Ten plik jest skróconą instrukcją operacyjną dla AI developera pracującego 
 
 Do odwołania zmiany robimy **tylko i wyłącznie** na gałęzi:
 
-- `freeze`
+- `dev-rollout-freeze`
 
 Nie przełączaj gałęzi i nie przygotowuj merge do innych branchy, chyba że dostaniesz na to wyraźną decyzję.
 
@@ -103,8 +103,8 @@ Od teraz poprawna interpretacja jest jedna:
 
 ## Zasada wdrozeniowa git (obowiazkowa)
 
-Po kazdej zmianie w kodzie wdrazaj od razu do gita na galezi `freeze`.
+Po kazdej zmianie w kodzie wdrazaj od razu do gita na galezi `dev-rollout-freeze`.
 
 - commit i push wykonuj od razu po zakonczonej zmianie
 - nie odkladaj pushowania na pozniej
-- wszystko ma byc na biezaco wpychane do freeze
+- wszystko ma byc na biezaco wpychane do `dev-rollout-freeze`

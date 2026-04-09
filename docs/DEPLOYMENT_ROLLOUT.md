@@ -22,7 +22,7 @@ Ma służyć wyłącznie do:
 - stałego linku dla testerów,
 - wersji zaakceptowanych.
 
-### 2. `freeze`
+### 2. `dev-rollout-freeze`
 To jest branch roboczy do własnych testów i kolejnych zmian.
 
 Na tym branchu można:
@@ -41,10 +41,10 @@ Dla większych zmian zalecany model:
 - `chore/...`
 
 Następnie:
-- feature/fix/chore -> `freeze`
-- po akceptacji `freeze` -> `main`
+- feature/fix/chore -> `dev-rollout-freeze`
+- po akceptacji `dev-rollout-freeze` -> `main`
 
-Jeżeli zmiana jest mała, można pracować bezpośrednio na `freeze`, ale nie na `main`.
+Jeżeli zmiana jest mała, można pracować bezpośrednio na `dev-rollout-freeze`, ale nie na `main`.
 
 ---
 
@@ -64,7 +64,7 @@ Jeżeli zmiana jest mała, można pracować bezpośrednio na `freeze`, ale nie n
 ## Docelowy flow wdrożenia
 
 ### Normalny cykl
-1. Zmiana powstaje na `freeze` albo na osobnym feature/fix branchu.
+1. Zmiana powstaje na `dev-rollout-freeze` albo na osobnym feature/fix branchu.
 2. Vercel buduje preview deploy dla branchu roboczego.
 3. Zmiana jest testowana na preview linku.
 4. Dopiero po akceptacji zmiana trafia do `main`.
@@ -72,7 +72,7 @@ Jeżeli zmiana jest mała, można pracować bezpośrednio na `freeze`, ale nie n
 
 ### Minimalna wersja flow
 Jeśli chcesz najprościej:
-1. robisz zmianę na `freeze`,
+1. robisz zmianę na `dev-rollout-freeze`,
 2. testujesz preview,
 3. merge albo świadome przepchnięcie gotowej wersji do `main`,
 4. testerzy dalej siedzą tylko na produkcyjnym linku.
@@ -106,7 +106,7 @@ Tego nie ustawia repo automatycznie. To trzeba ustawić w panelu Vercela.
 
 ### Efekt po ustawieniu
 - push na `main` zmienia produkcję,
-- push na `freeze` daje osobny preview,
+- push na `dev-rollout-freeze` daje osobny preview,
 - testerzy nie dostają zmian z branchy roboczych,
 - Ty masz osobny link do sprawdzania zmian.
 
@@ -133,12 +133,12 @@ Ma być jeden stały link produkcyjny:
 
 ### Link do testów własnych
 To ma być preview deploy:
-- z `freeze`
+- z `dev-rollout-freeze`
 - albo z aktualnego feature/fix brancha
 
 ### Prosta zasada nazewnicza
 - `main` = link dla testerów
-- `freeze` i inne branche = linki do własnych testów
+- `dev-rollout-freeze` i inne branche = linki do własnych testów
 
 ---
 
@@ -171,7 +171,7 @@ Dopiero potem szukasz spokojnie źródła błędu na branchu roboczym.
 - cel: stabilna wersja
 
 ### Preview
-- branch: `freeze` albo feature/fix branch
+- branch: `dev-rollout-freeze` albo feature/fix branch
 - odbiorca: Ty
 - cel: własne testy przed wypchnięciem na `main`
 
