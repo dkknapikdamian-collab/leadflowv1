@@ -137,7 +137,7 @@ function buildAuthEntryResponse(sessionCookies: CookieSessionInput | null, clear
   return withSessionCookies(response, sessionCookies)
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (isStaticPath(pathname)) {
