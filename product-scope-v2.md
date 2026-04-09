@@ -38,9 +38,11 @@ System pilnuje:
 
 ## Najważniejsza decyzja architektoniczna
 
-**ClientPilot nie jest osobną aplikacją.**
+**Forteca nie jest osobną aplikacją.** (w repo/historycznie mogła występować jako „ClientPilot”)
 
 To jest jeden system.
+
+**Sprawy są modułem tego samego systemu** (warstwa operacyjna po sprzedaży), a nie osobną apką ani osobnym światem.
 
 ### Reguła modelu produktu
 - lead żyje w warstwie sprzedażowej,
@@ -65,7 +67,7 @@ Później:
 
 ## Kierunek UI
 
-Nowa skórka UI ma być oparta o kierunek **ClientPilot**.
+Nowa skórka UI ma być oparta o przesłany kierunek **Forteca**.
 
 To oznacza jeden spójny visual system dla:
 - sidebara,
@@ -110,7 +112,7 @@ To jest etap zamrożenia definicji produktu i jednej prawdy dokumentacyjnej.
 
 Jeżeli trafisz na starą nazwę albo opis typu:
 - lead follow-up app,
-- osobna ClientPilot,
+- osobna Forteca,
 - osobny portal materiałów,
 
 to traktuj to jako opis historyczny.

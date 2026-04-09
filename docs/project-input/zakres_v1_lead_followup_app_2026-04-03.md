@@ -2,7 +2,7 @@
 
 > Źródło prawdy produktu: `product-scope-v2.md` (w repo root).
 >
-> Ten dokument opisuje **V1 jako warstwę sprzedaży** (Lead Flow). Po scaleniu Lead Flow + ClientPilot produkt nie jest już “tylko lead follow-up app”, tylko **jeden system do domykania i uruchamiania klienta**.
+> Ten dokument opisuje **V1 jako warstwę sprzedaży** (Lead Flow). Po scaleniu Lead Flow + Forteca (historycznie w repo mogła występować jako „ClientPilot”) produkt nie jest już “tylko lead follow-up app”, tylko **jeden system do domykania i uruchamiania klienta**.
 
 **Data:** 2026-04-03  
 **Status:** specyfikacja V1 (Lead Flow) — po scaleniu traktuj jako zakres warstwy sprzedaży  
@@ -15,9 +15,9 @@
 - Produkt: **jeden system do domykania i uruchamiania klienta**
 - Zasada nadrzędna: **sprzedaż = Lead Flow**
 - Po statusie **won** albo **ready to start** lead może przejść do **sprawy operacyjnej**
-- **ClientPilot nie jest osobną aplikacją**; **Sprawy są modułem tego samego systemu**
+- **Forteca nie jest osobną aplikacją** (historycznie w repo mogła występować jako „ClientPilot”); **Sprawy są modułem tego samego systemu**
 - Finalne menu operatora: `Dziś`, `Leady`, `Sprawy`, `Zadania`, `Kalendarz`, `Aktywność`, `Rozliczenia`, `Ustawienia` (później: `Szablony`, `Klienci`)
-- Kierunek UI: nowa skórka oparta o kierunek **ClientPilot**
+- Kierunek UI: nowa skórka oparta o przesłany kierunek **Forteca**
 
 # 1. Zasada nadrzędna dla AI dewelopera
 

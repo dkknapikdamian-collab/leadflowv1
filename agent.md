@@ -8,7 +8,7 @@ Ten plik jest skróconą instrukcją operacyjną dla AI developera pracującego 
 
 Do odwołania zmiany robimy **tylko i wyłącznie** na gałęzi:
 
-- `dev-rollout-freeze`
+- `freeze`
 
 Nie przełączaj gałęzi i nie przygotowuj merge do innych branchy, chyba że dostaniesz na to wyraźną decyzję.
 
@@ -28,11 +28,11 @@ To jest **jeden system do domykania i uruchamiania klienta**.
 
 1. **Sprzedaż = Lead Flow**
 2. Po statusie **won** albo **ready to start** lead może przejść do **sprawy operacyjnej**
-3. **ClientPilot nie jest osobną aplikacją**
+3. **Forteca nie jest osobną aplikacją** (w repo/historycznie mogła występować jako „ClientPilot”)
 4. **Sprawy są modułem tego samego systemu**
 5. Użytkownik ma czuć ciągłość pracy, a nie wejście do drugiej apki
 6. `Dziś` pozostaje głównym ekranem decyzyjnym
-7. Kierunek UI ma być oparty o skórkę **ClientPilot**
+7. Kierunek UI ma być oparty o przesłany kierunek **Forteca**
 
 ## Jak interpretować moduły
 
@@ -91,19 +91,19 @@ Najpierw ma być zamknięta jedna prawda produktu i spójna dokumentacja.
 
 Jeżeli trafisz na opis typu:
 - „lead follow-up app” jako pełna definicja produktu,
-- „ClientPilot” jako osobna aplikacja,
+- „Forteca” jako osobna aplikacja,
 - osobne byty bez wspólnego systemu,
 
 to uznaj to za wersję historyczną.
 
 Od teraz poprawna interpretacja jest jedna:
 
-> Lead Flow i ClientPilot to jeden system, w którym warstwa sprzedaży przechodzi płynnie w warstwę uruchamiania klienta.
+> Lead Flow i Forteca to jeden system, w którym warstwa sprzedaży przechodzi płynnie w warstwę uruchamiania klienta.
 
 
 ## Zasada wdrozeniowa git (obowiazkowa)
 
-Po kazdej zmianie w kodzie wdrazaj od razu do gita na galezi `dev-rollout-freeze`.
+Po kazdej zmianie w kodzie wdrazaj od razu do gita na galezi `freeze`.
 
 - commit i push wykonuj od razu po zakonczonej zmianie
 - nie odkladaj pushowania na pozniej

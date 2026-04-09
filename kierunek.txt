@@ -8,7 +8,7 @@ jeden system do domykania i uruchamiania klienta
 Zasada główna:
 - sprzedaż = Lead Flow
 - po won albo ready to start lead może przejść do sprawy operacyjnej
-- ClientPilot nie jest osobną aplikacją
+- Forteca nie jest osobną aplikacją (w repo/historycznie mogła występować jako „ClientPilot”)
 - Sprawy są modułem tego samego systemu
 
 Produkt ma pilnować 2 rzeczy:

@@ -28,7 +28,7 @@ Po `won` albo `ready to start` system ma zacząć pilnować:
 
 ## Najważniejsza zasada
 
-ClientPilot nie jest drugą apką.
+Forteca nie jest drugą apką. (w repo/historycznie mogła występować jako „ClientPilot”)
 To jest ten sam system.
 
 Lead nie kończy się w próżni po wygraniu.

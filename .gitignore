@@ -1,5 +1,6 @@
 node_modules/
 .next/
+.tests-dist/
 .vercel/
 .DS_Store
 npm-debug.log*

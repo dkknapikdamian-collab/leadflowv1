@@ -13,6 +13,7 @@ Zamknąć raz na zawsze, czym jest produkt po scaleniu.
 - istnieje nadrzędny dokument `product-scope-v2.md`,
 - `agent.md`, `zakres_v1_lead_followup_app_2026-04-03.md`, `kierunek.txt` i `kontrola leadów.txt` nie przeczą już sobie,
 - developer nie zgaduje, czy budujemy 1 system czy 2 aplikacje,
+- mamy jasno zapisane, że **Forteca nie jest osobną aplikacją**,
 - mamy jasno zapisane, że `Sprawy` są modułem tego samego systemu.
 
 ### Czego nie robić w tym etapie

@@ -23,7 +23,7 @@ To jest **jeden system do domykania i uruchamiania klienta**.
 - Po statusie **won** albo **ready to start** lead może przejść do **sprawy operacyjnej**
 - Użytkownik nie ma czuć przeskoku między dwoma aplikacjami
 - `Sprawy` są modułem tego samego systemu
-- `ClientPilot` nie jest osobną apką
+- `Forteca` nie jest osobną apką (w repo/historycznie mogła występować jako „ClientPilot”)
 
 ## 4. Co pozostaje rdzeniem produktu
 
@@ -107,7 +107,7 @@ Później:
 
 ## 8. Kierunek UI
 
-Nowa skórka UI ma być oparta o kierunek **ClientPilot**.
+Nowa skórka UI ma być oparta o przesłany kierunek **Forteca**.
 
 To oznacza:
 - jeden spójny shell operatora,
@@ -145,7 +145,7 @@ Z wcześniejszego V1 nadal obowiązuje:
 
 Od teraz nie wolno zakładać, że:
 - produkt kończy się na leadach,
-- ClientPilot to osobna apka,
+- Forteca to osobna apka,
 - portal klienta to osobny system,
 - `Sprawy` są dodatkiem bez znaczenia architektonicznego.
 
