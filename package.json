@@ -8,6 +8,8 @@
     "start": "node ./node_modules/next/dist/bin/next start",
     "lint": "node ./node_modules/next/dist/bin/next lint",
     "test": "tsc -p tsconfig.tests.json && node --test .tests-dist/tests/**/*.test.js",
+    "smoke:prod": "node scripts/smoke-prod.mjs",
+    "smoke:prod:build": "node scripts/smoke-prod.mjs --build",
     "verify:prod": "npm test && npm run build"
   },
   "dependencies": {

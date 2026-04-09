@@ -151,15 +151,15 @@ Workflow jest wdrożony w modelu danych i w portalu:
 
 ## ETAP 16 — full QA, mobile pass, consistency pass
 
-**Status: TODO (manual pass)**
+**Status: TODO (manual pass) + smoke automatyczny dostępny**
 
 Automatyczne minimum jest zaliczone:
 - testy jednostkowe/behawioralne w repo przechodzą: `npm test`
 - build produkcyjny przechodzi: `npm run build`
 
 Do domknięcia pozostaje **manualny** pakiet ETAP 16 (bez dodawania nowych funkcji):
+0. Smoke prod w jednym kroku: `cmd /c "npm run smoke:prod:build"` (raport statusów route’ów)
 1. `cmd /c "npm run start"` i smoke test w trybie produkcyjnym: Today/Leads/Tasks/Calendar/Cases/Templates/Billing/Settings/Portal.
 2. Mobile pass: sidebar, karty, formularze, portal klienta, upload/akcje, date pickery, status badge, hit targety.
 3. Consistency pass: nazewnictwo, badge’y, empty/loading/error states, komunikaty błędów, CTA.
 4. Security pass (RLS/portal): user A nie widzi danych usera B; token revoke działa; brak publicznego dostępu do plików bez podpisu.
-
