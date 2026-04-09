@@ -92,6 +92,23 @@ Domknąć dostęp, płatności, stabilność i spójność końcową.
 - edge-case flow,
 - spójność mobilna i desktopowa.
 
+## ETAP 16 — FULL QA, MOBILE PASS, CONSISTENCY PASS
+
+### Cel
+Domknąć produkt jako **jeden spójny system** od leada do sprawy gotowej do startu.
+
+### Zakres
+- automatyczny smoke prod: `npm test`, `npm run build`, `npm run smoke:prod:build` / `npm run verify:prod`
+- manualny smoke end-to-end (lead → won/ready → case → portal → weryfikacja → ready)
+- mobile pass (operator + portal klienta)
+- consistency pass (jedna skórka, spójne empty/loading/error, CTA, badge’y)
+- security pass (workspace isolation, tokeny portalu, dostęp do plików, rate limit)
+
+### Dokumenty etapu
+- checklist: `docs/ETAP16_QA_CHECKLIST.md`
+- raport (template): `docs/ETAP16_RAPORT_TEMPLATE.md`
+- raport (aktualny): `docs/ETAP16_RAPORT_2026-04-09.md`
+
 ## Kolejność nadrzędna
 
 1. Jedna prawda produktu
@@ -101,3 +118,4 @@ Domknąć dostęp, płatności, stabilność i spójność końcową.
 5. Portal klienta
 6. Dashboard połączony
 7. QA / access / billing polish
+8. ETAP 16: FULL QA + mobile + consistency
