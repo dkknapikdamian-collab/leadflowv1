@@ -2,6 +2,7 @@ import type { AppSnapshot, WorkItem } from "./types"
 import {
   buildLeadsWithComputedState,
   DEFAULT_LEAD_STATE_SETTINGS,
+  leadNeedsExecutionAttention,
   type LeadWithComputedState,
 } from "./domain/lead-state"
 import { buildCasesDashboard, type CaseDashboardCard } from "./domain/cases-dashboard"
@@ -262,7 +263,13 @@ function buildTodayCommandCenter(snapshot: AppSnapshot, options: DateContextOpti
 
   const salesRequiresAction = leadsWithComputed
     .filter((lead) => lead.status !== "won" && lead.status !== "lost")
-    .filter((lead) => lead.computed.dailyPriorityScore > 0 || lead.computed.alarmReasons.length > 0)
+    .filter((lead) =>
+      leadNeedsExecutionAttention({
+        hasNextStep: lead.computed.hasNextStep,
+        riskState: lead.computed.riskState,
+        dailyPriorityScore: lead.computed.dailyPriorityScore,
+      }),
+    )
     .sort((left, right) => {
       return (
         right.computed.dailyPriorityScore - left.computed.dailyPriorityScore
@@ -514,4 +521,3 @@ export function getNextManualCollapsedState(
     [key]: !currentlyCollapsed,
   }
 }
-

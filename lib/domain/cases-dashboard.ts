@@ -3,7 +3,6 @@ import type { AppSnapshot, Approval, Case, CaseItem, CaseStatus, Contact } from 
 import { getCurrentDateKey, getDateKeyDiff, toDateKey, type DateContextOptions } from "../utils"
 import {
   caseCanBeReadyToStart,
-  caseIsOperationallyBlocked,
   caseNeedsCompletenessReminder,
 } from "./case-completeness-blockers-source"
 
@@ -41,7 +40,6 @@ export interface CasesDashboardViewModel {
 }
 
 const DONE_CASE_ITEM_STATUSES = new Set<CaseItem["status"]>(["accepted", "not_applicable"])
-const DONE_APPROVAL_STATUSES = new Set<Approval["status"]>(["accepted", "answered"])
 const ACTIVE_CASE_STATUSES = new Set<CaseStatus>([
   "not_started",
   "collecting_materials",
@@ -71,14 +69,6 @@ function getCaseItems(caseItems: CaseItem[], caseId: string) {
   return caseItems.filter((item) => item.caseId === caseId).sort((left, right) => left.sortOrder - right.sortOrder)
 }
 
-function getCaseApprovals(approvals: Approval[], caseRecord: Case, items: CaseItem[]) {
-  const itemIdSet = new Set(items.map((item) => item.id))
-  return approvals.filter((approval) => {
-    if (approval.caseId === caseRecord.id) return true
-    return Boolean(approval.caseItemId && itemIdSet.has(approval.caseItemId))
-  })
-}
-
 function getCompleteness(items: CaseItem[]) {
   if (items.length === 0) return { completenessPercent: 0, missingElementsCount: 0 }
   const doneCount = items.filter((item) => DONE_CASE_ITEM_STATUSES.has(item.status)).length
@@ -87,6 +77,10 @@ function getCompleteness(items: CaseItem[]) {
     completenessPercent: Math.round((doneCount / items.length) * 100),
     missingElementsCount: requiredMissing,
   }
+}
+
+function hasPendingRequiredApproval(items: CaseItem[]) {
+  return items.some((item) => item.kind === "approval" && item.required && !DONE_CASE_ITEM_STATUSES.has(item.status))
 }
 
 function getLastActivityAt(snapshot: AppSnapshot, caseRecord: Case) {
@@ -107,40 +101,17 @@ function getReminderSent(caseRecord: Case, items: CaseItem[], approvals: Approva
   })
 }
 
-function getEffectiveStatus(input: {
-  caseRecord: Case
-  missingFromClient: boolean
-  missingApproval: boolean
-}) {
-  const blockedFlag = input.caseRecord.status === "blocked" || Boolean(input.caseRecord.blockedByMissingRequired)
-
-  if (
-    caseCanBeReadyToStart({
-      missingFromClient: input.missingFromClient,
-      missingApproval: input.missingApproval,
-      blockedFlag,
-    })
-  ) {
-    return "ready_to_start" as const
-  }
-
-  return input.caseRecord.status
-}
-
-function getNextMove(
-  caseRecord: { status: CaseStatus },
-  items: CaseItem[],
-  dueAt: string | null,
-  isOverdue: boolean,
-  currentDateKey: string,
-  options: DateContextOptions,
-  input: { missingApproval: boolean },
-) {
-  if (caseRecord.status === "ready_to_start") return "Uruchom sprawę"
-  if (input.missingApproval) return "Poproś o akceptację"
+function getNextMove(caseRecord: Case, items: CaseItem[], dueAt: string | null, isOverdue: boolean, currentDateKey: string, options: DateContextOptions) {
+  const { missingElementsCount } = getCompleteness(items)
+  const canStart = caseCanBeReadyToStart({
+    missingFromClient: missingElementsCount > 0,
+    missingApproval: hasPendingRequiredApproval(items),
+    blockedFlag: Boolean(caseRecord.blockedByMissingRequired) || caseRecord.status === "blocked",
+  })
 
   const nextPending = items.find((item) => !DONE_CASE_ITEM_STATUSES.has(item.status))
   if (nextPending) return `Uzupełnij: ${nextPending.title}`
+  if (caseRecord.status === "ready_to_start" && canStart) return "Uruchom sprawę"
   if (caseRecord.status === "waiting_for_client") return "Przypomnij klientowi"
   if (caseRecord.status === "blocked") return "Odblokuj sprawę"
   if (!dueAt) return "Kontynuuj realizację"
@@ -155,17 +126,17 @@ function isCaseOverdue(caseRecord: Case, options: DateContextOptions) {
   return getDateKeyDiff(toDateKey(caseRecord.dueAt, options), getCurrentDateKey(options)) < 0
 }
 
-function isCaseNeedingActionToday(
-  card: CaseDashboardCard,
-  currentDateKey: string,
-  options: DateContextOptions,
-  blockedByData: boolean,
-) {
+function isCaseNeedingActionToday(card: CaseDashboardCard, currentDateKey: string, options: DateContextOptions) {
+  const reminderNeeded = caseNeedsCompletenessReminder({
+    daysStuck: card.daysStuck,
+    blocked: card.status === "blocked",
+    readyToStart: card.status === "ready_to_start",
+  })
+
   if (card.status === "waiting_for_client" || card.status === "blocked") return true
+  if (card.status === "ready_to_start") return true
   if (card.isOverdue) return true
-  if (caseNeedsCompletenessReminder({ daysStuck: card.daysStuck, blocked: blockedByData, readyToStart: card.status === "ready_to_start" })) {
-    return true
-  }
+  if (reminderNeeded) return true
   if (card.missingElementsCount > 0 && (card.status === "ready_to_start" || card.status === "collecting_materials")) return true
   const dueKey = card.dueAt ? toDateKey(card.dueAt, options) : ""
   return Boolean(dueKey && dueKey === currentDateKey)
@@ -185,37 +156,20 @@ export function buildCasesDashboard(snapshot: AppSnapshot, options: DateContextO
 
   const cards = cases.map((caseRecord) => {
     const items = getCaseItems(caseItems, caseRecord.id)
-    const approvalsForCase = getCaseApprovals(approvals, caseRecord, items)
     const { completenessPercent, missingElementsCount } = getCompleteness(items)
     const lastActivityAt = getLastActivityAt(snapshot, caseRecord)
     const daysStuck = Math.max(0, getDateKeyDiff(currentDateKey, toDateKey(lastActivityAt, dateOptions)))
     const isOverdue = isCaseOverdue(caseRecord, dateOptions)
     const reminderSent = getReminderSent(caseRecord, items, approvals)
-    const missingFromClient = missingElementsCount > 0
-    const missingApproval = approvalsForCase.some((approval) => !DONE_APPROVAL_STATUSES.has(approval.status))
-    const blockedByData = caseIsOperationallyBlocked({
-      missingFromClient,
-      missingApproval,
-      blockedFlag: caseRecord.status === "blocked" || Boolean(caseRecord.blockedByMissingRequired),
-    })
-    const effectiveStatus = getEffectiveStatus({ caseRecord, missingFromClient, missingApproval })
-    const nextMove = getNextMove(
-      { status: effectiveStatus },
-      items,
-      caseRecord.dueAt,
-      isOverdue,
-      currentDateKey,
-      dateOptions,
-      { missingApproval },
-    )
+    const nextMove = getNextMove(caseRecord, items, caseRecord.dueAt, isOverdue, currentDateKey, dateOptions)
 
     const card: CaseDashboardCard = {
       id: caseRecord.id,
       title: caseRecord.title,
       clientName: getClientName(contacts, caseRecord),
       typeLabel: getTemplateTypeLabel(snapshot, caseRecord),
-      status: effectiveStatus,
-      statusLabel: getStatusLabel(effectiveStatus),
+      status: caseRecord.status,
+      statusLabel: getStatusLabel(caseRecord.status),
       completenessPercent,
       missingElementsCount,
       dueAt: caseRecord.dueAt,
@@ -229,7 +183,7 @@ export function buildCasesDashboard(snapshot: AppSnapshot, options: DateContextO
 
     return {
       ...card,
-      needsActionToday: isCaseNeedingActionToday(card, currentDateKey, dateOptions, blockedByData),
+      needsActionToday: isCaseNeedingActionToday(card, currentDateKey, dateOptions),
     }
   })
 

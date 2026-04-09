@@ -14,6 +14,11 @@ import {
   toDateKey,
   type DateContextOptions,
 } from "../utils"
+import {
+  isActiveLeadStatus,
+  isClosedLeadStatus,
+  requiresLeadExecutionGuard,
+} from "./workflow-source-of-truth"
 
 export type LeadRiskReason = LeadAlarmReason | "none"
 
@@ -105,11 +110,11 @@ function clampNonNegative(value: number) {
 }
 
 function isClosedLead(lead: Pick<Lead, "status">) {
-  return lead.status === "won" || lead.status === "lost"
+  return isClosedLeadStatus(lead.status)
 }
 
 function isActiveLead(lead: Pick<Lead, "status">) {
-  return !isClosedLead(lead)
+  return isActiveLeadStatus(lead.status)
 }
 
 function isActionableItem(item: WorkItem) {
@@ -370,6 +375,14 @@ export function getLeadDailyPriority(
   if (openActionsCount > settings.maxOpenActionsBeforeChaos) dailyPriorityScore += 10
 
   return dailyPriorityScore
+}
+
+export function leadNeedsExecutionAttention(input: Pick<LeadComputedState, "hasNextStep" | "riskState" | "dailyPriorityScore">) {
+  return requiresLeadExecutionGuard({
+    hasNextStep: input.hasNextStep,
+    riskState: input.riskState,
+    dailyPriorityScore: input.dailyPriorityScore,
+  })
 }
 
 export function buildLeadComputedState(
