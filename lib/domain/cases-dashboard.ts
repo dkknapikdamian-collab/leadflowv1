@@ -137,7 +137,7 @@ function isCaseNeedingActionToday(card: CaseDashboardCard, currentDateKey: strin
   if (card.status === "ready_to_start") return true
   if (card.isOverdue) return true
   if (reminderNeeded) return true
-  if (card.missingElementsCount > 0 && (card.status === "ready_to_start" || card.status === "collecting_materials")) return true
+  if (card.missingElementsCount > 0 && card.status === "collecting_materials") return true
   const dueKey = card.dueAt ? toDateKey(card.dueAt, options) : ""
   return Boolean(dueKey && dueKey === currentDateKey)
 }
