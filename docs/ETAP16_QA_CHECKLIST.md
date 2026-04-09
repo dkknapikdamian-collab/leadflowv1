@@ -8,6 +8,7 @@ Wymaga zbudowania i uruchomienia wersji produkcyjnej lokalnie:
 
 - `cmd /c "npm run smoke:prod:build"`
 - Alternatywnie 1 komenda na cały pakiet automatyczny: `cmd /c "npm run verify:prod"`
+- PowerShell shortcut: `verify_prod.ps1` (odpala `verify:prod` przez `cmd`, omija problem `npm.ps1`)
 
 Co sprawdza:
 - `next build` przechodzi
