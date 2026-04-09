@@ -5,7 +5,8 @@ import { createCaseFromLead } from "../lib/domain/lead-case"
 import { buildCasesDashboard } from "../lib/domain/cases-dashboard"
 import { buildTodayViewModel } from "../lib/today"
 import { canEnterOperationalStageFromWon, getPostSaleProcessOwner } from "../lib/domain/won-case-stage-source"
-import { caseCanBeReadyToStart, getReadyToStartAutomation } from "../lib/domain/case-ready-start-source"
+import { caseCanMoveToReadyToStart, getReadyToStartAutomation } from "../lib/domain/case-ready-start-source"
+import type { CaseStatus } from "../lib/types"
 
 test("integracja: lead won przechodzi do case bez utraty historii sprzedaży", () => {
   const snapshot = createInitialSnapshot()
@@ -91,15 +92,18 @@ test("integracja: kompletna sprawa trafia do ready_to_start i pojawia się w Tod
     allRequiredAccepted: true,
   })
 
-  assert.equal(caseCanBeReadyToStart({
-    allRequiredSubmitted: true,
-    allRequiredVerified: true,
-    allRequiredAccepted: true,
-  }), true)
+  assert.equal(
+    caseCanMoveToReadyToStart({
+      allRequiredSubmitted: true,
+      allRequiredVerified: true,
+      allRequiredAccepted: true,
+    }),
+    true,
+  )
 
   const readyCase = {
     ...transition.case,
-    status: automation.nextStatus,
+    status: automation.nextStatus as CaseStatus,
     blockedByMissingRequired: !automation.removeBlocker,
   }
 
