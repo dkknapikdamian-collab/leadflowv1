@@ -7,6 +7,7 @@ Cel: domknąć produkt jako **jeden spójny system** (bez dodawania nowych funkc
 Wymaga zbudowania i uruchomienia wersji produkcyjnej lokalnie:
 
 - `cmd /c "npm run smoke:prod:build"`
+- Alternatywnie 1 komenda na cały pakiet automatyczny: `cmd /c "npm run verify:prod"`
 
 Co sprawdza:
 - `next build` przechodzi
