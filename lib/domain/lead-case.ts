@@ -8,6 +8,11 @@ import type {
   CaseItem,
 } from "../types"
 import { createId, nowIso } from "../utils"
+import {
+  canEnterOperationalStageFromWon,
+  getPostSaleProcessOwner,
+  leadMustStayInSalesHistoryAfterWon,
+} from "./won-case-stage-source"
 
 const SALES_STATUSES_ALLOWED_FOR_CASE: Lead["status"][] = ["won"]
 
@@ -38,7 +43,21 @@ export function canCreateCaseFromLeadStatus(
   if (transitionStatus === "ready_to_start") {
     return true
   }
-  return SALES_STATUSES_ALLOWED_FOR_CASE.includes(leadStatus)
+  return canEnterOperationalStageFromWon(leadStatus) && SALES_STATUSES_ALLOWED_FOR_CASE.includes(leadStatus)
+}
+
+export function getLeadToCaseTransitionState(input: {
+  leadStatus: Lead["status"]
+  hasCaseId: boolean
+}) {
+  return {
+    leadRemainsInSalesHistory: leadMustStayInSalesHistoryAfterWon(),
+    canEnterOperationalStage: canEnterOperationalStageFromWon(input.leadStatus),
+    activeProcessRecord: getPostSaleProcessOwner({
+      leadStatus: input.leadStatus,
+      hasCaseId: input.hasCaseId,
+    }),
+  }
 }
 
 export function findExistingContactForLead(lead: Lead, contacts: Contact[]) {
@@ -196,6 +215,11 @@ export function createCaseFromLead(input: {
     at,
   })
 
+  const lifecycleState = getLeadToCaseTransitionState({
+    leadStatus: input.lead.status,
+    hasCaseId: true,
+  })
+
   const activityLog: ActivityLogEntry[] = [
     {
       id: createId("activity"),
@@ -214,6 +238,10 @@ export function createCaseFromLead(input: {
         caseStatus: caseRecord.status,
         contactId: contact.id,
         usedExistingContact: Boolean(existingContact),
+        leadRemainsInSalesHistory: lifecycleState.leadRemainsInSalesHistory,
+        activeProcessRecord: lifecycleState.activeProcessRecord,
+        checklistStarted: caseItems.length > 0,
+        clientPortalLinkAvailable: true,
       },
       createdAt: at,
     },
@@ -233,6 +261,7 @@ export function createCaseFromLead(input: {
       payload: {
         title: caseRecord.title,
         templateItems: caseItems.length,
+        activeProcessRecord: lifecycleState.activeProcessRecord,
       },
       createdAt: at,
     },
@@ -249,5 +278,8 @@ export function createCaseFromLead(input: {
     },
     activityLog,
     usedExistingContact: Boolean(existingContact),
+    lifecycleState,
+    checklistStarted: caseItems.length > 0,
+    canGenerateClientPortalLink: true,
   }
 }

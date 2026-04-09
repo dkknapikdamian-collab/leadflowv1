@@ -51,7 +51,7 @@ test("buildCasesDashboard liczy KPI i pola kart spraw", () => {
       ownerUserId: null,
       title: "Realizacja: AK Studio 2",
       description: "",
-      status: "ready_to_start",
+      status: "not_started",
       priority: "medium",
       value: 4000,
       startAt: null,
@@ -154,6 +154,11 @@ test("buildCasesDashboard liczy KPI i pola kart spraw", () => {
   assert.equal(first?.reminderSent, true)
   assert.equal(first?.isOverdue, true)
   assert.equal(first?.needsActionToday, true)
+
+  const second = view.cards.find((card) => card.id === "case_2")
+  assert.ok(second)
+  assert.equal(second?.status, "ready_to_start")
+  assert.equal(second?.nextMove, "Uruchom sprawę")
 })
 
 test("filterCaseCards filtruje po statusie i overdue", () => {

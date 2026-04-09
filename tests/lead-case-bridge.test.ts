@@ -4,6 +4,7 @@ import {
   canCreateCaseFromLeadStatus,
   createCaseFromLead,
   findExistingContactForLead,
+  getLeadToCaseTransitionState,
 } from "../lib/domain/lead-case"
 import type { Contact, Lead, TemplateItem } from "../lib/types"
 
@@ -75,6 +76,8 @@ test("duplikat klienta nie powstaje, gdy kontakt już istnieje", () => {
   assert.equal(transition.leadPatch.contactId, existingContact.id)
   assert.equal(transition.leadPatch.caseId, transition.case.id)
   assert.equal(transition.case.sourceLeadId, lead.id)
+  assert.equal(transition.lifecycleState.leadRemainsInSalesHistory, true)
+  assert.equal(transition.lifecycleState.activeProcessRecord, "case")
 })
 
 test("case dostaje relacje do checklisty i activity log", () => {
@@ -124,4 +127,17 @@ test("case dostaje relacje do checklisty i activity log", () => {
   assert.equal(transition.activityLog.length, 2)
   assert.equal(transition.activityLog[0]?.type, "lead_converted_to_case")
   assert.equal(transition.activityLog[1]?.type, "case_created")
+  assert.equal(transition.checklistStarted, true)
+  assert.equal(transition.canGenerateClientPortalLink, true)
+})
+
+test("po won lead zostaje w historii sprzedaży, ale aktywnym rekordem procesu staje się case", () => {
+  const lifecycle = getLeadToCaseTransitionState({
+    leadStatus: "won",
+    hasCaseId: true,
+  })
+
+  assert.equal(lifecycle.canEnterOperationalStage, true)
+  assert.equal(lifecycle.leadRemainsInSalesHistory, true)
+  assert.equal(lifecycle.activeProcessRecord, "case")
 })
