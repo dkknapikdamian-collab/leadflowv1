@@ -13,6 +13,8 @@ Co sprawdza:
 - `next start` wstaje bez crasha
 - kluczowe route’y i API odpowiadają (200/3xx/401/403 akceptowalne dla widoków chronionych)
 
+Po przejściu smoke uzupełnij raport: `docs/ETAP16_RAPORT_TEMPLATE.md`.
+
 ## 2) Manual smoke — flow end-to-end (operator)
 
 Minimalny flow (bez rozbudowy):
@@ -69,4 +71,3 @@ Zasady:
 - mobile pass nie ma blockerów
 - consistency pass: brak „ekranów z innej bajki”
 - security pass: brak wycieków między workspace’ami i brak publicznych plików
-

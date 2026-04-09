@@ -163,3 +163,5 @@ Do domknięcia pozostaje **manualny** pakiet ETAP 16 (bez dodawania nowych funkc
 2. Mobile pass: sidebar, karty, formularze, portal klienta, upload/akcje, date pickery, status badge, hit targety.
 3. Consistency pass: nazewnictwo, badge’y, empty/loading/error states, komunikaty błędów, CTA.
 4. Security pass (RLS/portal): user A nie widzi danych usera B; token revoke działa; brak publicznego dostępu do plików bez podpisu.
+
+Do udokumentowania wyniku użyj: `docs/ETAP16_RAPORT_TEMPLATE.md`.
