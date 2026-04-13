@@ -1,4 +1,4 @@
-import test from "node:test"
+﻿import test from "node:test"
 import assert from "node:assert/strict"
 import { createInitialSnapshot } from "../lib/seed"
 import {
@@ -33,7 +33,7 @@ test("lead bez next stepu wpada do sales_attention i wymaga ustalenia ruchu", ()
 
   assert.equal(summary.stage, "sales_attention")
   assert.equal(summary.canStartOperations, false)
-  assert.equal(summary.nextMoveLabel, "Ustal next step")
+  assert.equal(summary.nextMoveLabel, "Ustal następny krok")
   assert.equal(summary.openTaskCount, 0)
   assert.equal(summary.timelineCount, 0)
 })

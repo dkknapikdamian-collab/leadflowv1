@@ -1,4 +1,4 @@
-import test from "node:test"
+﻿import test from "node:test"
 import assert from "node:assert/strict"
 import { createInitialSnapshot } from "../lib/seed"
 import { addItemSnapshot, addLeadSnapshot, startCaseFromLeadSnapshot } from "../lib/snapshot"
@@ -92,7 +92,7 @@ test("lead drawer view model counts open and overdue items", () => {
   assert.equal(vm.openItemsCount, 3)
   assert.equal(vm.overdueItemsCount, 1)
   assert.equal(vm.timelineCount, 3)
-  assert.equal(vm.nextStepLabel, "Spotkanie")
+  assert.equal(vm.nextStepLabel, "Follow-up")
 })
 
 test("lead drawer view model exposes operations state for won lead with case", () => {
