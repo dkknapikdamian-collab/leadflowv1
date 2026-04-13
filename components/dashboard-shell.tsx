@@ -7,7 +7,7 @@ import { AccountStatusBanner } from "@/components/account-status-panel"
 import { resolveSnapshotAccessPolicy } from "@/lib/access/policy"
 import { ItemModal, LeadModal } from "@/components/views"
 import { useAuthSession } from "@/lib/auth/session-provider"
-import { useAppStore } from "@/lib/store"
+import { useAppStore, type AppSyncStatus } from "@/lib/store"
 import {
   getCalendarItems,
   getCurrentDateKey,
@@ -73,6 +73,84 @@ function isNavItemActive(pathname: string, href: string) {
   }
 
   return pathname === href || pathname.startsWith(`${href}/`)
+}
+
+function formatSyncTime(value: string | null) {
+  if (!value) return ""
+
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ""
+
+  return new Intl.DateTimeFormat("pl-PL", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date)
+}
+
+function getSyncPresentation(syncStatus: AppSyncStatus, lastSyncedAt: string | null) {
+  if (syncStatus === "syncing") {
+    return {
+      label: "Synchronizacja…",
+      detail: "Trwa zapis lub pobieranie",
+      border: "1px solid rgba(245, 158, 11, 0.22)",
+      background: "rgba(245, 158, 11, 0.08)",
+      color: "#b45309",
+    }
+  }
+
+  if (syncStatus === "error") {
+    return {
+      label: "Błąd sync",
+      detail: "Sprawdź połączenie i odśwież",
+      border: "1px solid rgba(239, 68, 68, 0.22)",
+      background: "rgba(239, 68, 68, 0.08)",
+      color: "#b91c1c",
+    }
+  }
+
+  if (syncStatus === "saved") {
+    const timeLabel = formatSyncTime(lastSyncedAt)
+    return {
+      label: "Zapisano",
+      detail: timeLabel ? `Ostatnio ${timeLabel}` : "Dane są w chmurze",
+      border: "1px solid rgba(34, 197, 94, 0.22)",
+      background: "rgba(34, 197, 94, 0.08)",
+      color: "#15803d",
+    }
+  }
+
+  return {
+    label: "Lokalnie",
+    detail: "Czeka na pierwszy sync",
+    border: "1px solid var(--border)",
+    background: "var(--card)",
+    color: "var(--muted)",
+  }
+}
+
+function SyncStatusPill({ syncStatus, lastSyncedAt }: { syncStatus: AppSyncStatus; lastSyncedAt: string | null }) {
+  const presentation = getSyncPresentation(syncStatus, lastSyncedAt)
+
+  return (
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        minHeight: 34,
+        padding: "7px 10px",
+        borderRadius: 999,
+        border: presentation.border,
+        background: presentation.background,
+        color: presentation.color,
+      }}
+      aria-label={`Status synchronizacji: ${presentation.label}`}
+      title={presentation.detail}
+    >
+      <span style={{ fontWeight: 800, fontSize: 12 }}>{presentation.label}</span>
+      <span style={{ fontSize: 11, opacity: 0.9 }}>{presentation.detail}</span>
+    </div>
+  )
 }
 
 function useAutoViewProfile() {
@@ -242,7 +320,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
   const pathname = usePathname()
   const router = useRouter()
   const { session, isReady: isSessionReady, clear } = useAuthSession()
-  const { snapshot, isReady } = useAppStore()
+  const { snapshot, isReady, syncStatus, lastSyncedAt } = useAppStore()
   const [leadModalOpen, setLeadModalOpen] = useState(false)
   const [itemModalOpen, setItemModalOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -393,6 +471,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
           </div>
 
           <div className="top-actions">
+            <SyncStatusPill syncStatus={syncStatus} lastSyncedAt={lastSyncedAt} />
             <button className="ghost-button small" type="button" onClick={handleRefresh}>
               Odśwież
             </button>
@@ -435,6 +514,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
             </div>
           </div>
           <div className="header-actions mobile-header-actions">
+            <SyncStatusPill syncStatus={syncStatus} lastSyncedAt={lastSyncedAt} />
             <button className="icon-button" onClick={openLeadModal} type="button">
               + Lead
             </button>

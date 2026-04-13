@@ -33,9 +33,13 @@ import type {
 import type { AccessStatusRow } from "@/lib/supabase/access-status"
 import { STORAGE_KEY } from "@/lib/utils"
 
+export type AppSyncStatus = "idle" | "syncing" | "saved" | "error"
+
 interface AppStoreValue {
   snapshot: AppSnapshot
   isReady: boolean
+  syncStatus: AppSyncStatus
+  lastSyncedAt: string | null
   addLead: (payload: LeadInput) => void
   updateLead: (leadId: string, patch: Partial<Lead>) => void
   deleteLead: (leadId: string) => void
@@ -165,6 +169,8 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
   )
   const [snapshot, setSnapshot] = useState<AppSnapshot>(() => repository.createEmptySnapshot())
   const [isReady, setIsReady] = useState(false)
+  const [syncStatus, setSyncStatus] = useState<AppSyncStatus>("idle")
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null)
   const lastRemoteSyncedRef = useRef<string | null>(null)
   const saveSequenceRef = useRef(0)
   const snapshotRef = useRef<AppSnapshot>(snapshot)
@@ -180,6 +186,7 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
 
     async function hydrateSnapshot() {
       setIsReady(false)
+      setSyncStatus("syncing")
 
       const localSnapshot = syncSnapshotWithSession(repository.loadSnapshot(), session?.user ?? null)
       const remotePayload = await loadRemoteSnapshot().catch(() => null)
@@ -215,9 +222,15 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
       lastRemoteSyncedRef.current = selected.source === "remote" ? serialized : null
       setSnapshot(nextSnapshot)
       setIsReady(true)
+      setSyncStatus("saved")
+      setLastSyncedAt(new Date().toISOString())
     }
 
-    void hydrateSnapshot()
+    void hydrateSnapshot().catch(() => {
+      if (cancelled) return
+      setIsReady(true)
+      setSyncStatus("error")
+    })
 
     return () => {
       cancelled = true
@@ -236,8 +249,14 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
     let cancelled = false
 
     async function pullRemoteSnapshotIntoStore() {
+      setSyncStatus("syncing")
       const remotePayload = await loadRemoteSnapshot().catch(() => null)
-      if (!remotePayload || cancelled) return
+      if (!remotePayload || cancelled) {
+        if (!cancelled) {
+          setSyncStatus("error")
+        }
+        return
+      }
 
       setSnapshot((current) => {
         const currentWithSession = syncSnapshotWithSession(
@@ -281,6 +300,11 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
         lastRemoteSyncedRef.current = remoteSerialized
         return nextSnapshot
       })
+
+      if (!cancelled) {
+        setSyncStatus("saved")
+        setLastSyncedAt(new Date().toISOString())
+      }
     }
 
     const intervalId = window.setInterval(() => {
@@ -325,9 +349,11 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
           if (!result) return
           const canonicalSnapshot = applyRemotePayload(result, currentSnapshot, session?.user ?? null)
           lastRemoteSyncedRef.current = JSON.stringify(canonicalSnapshot)
+          setSyncStatus("saved")
+          setLastSyncedAt(new Date().toISOString())
         })
         .catch(() => {
-          // keep local state as fallback
+          setSyncStatus("error")
         })
     }
 
@@ -356,10 +382,14 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
     const timeout = window.setTimeout(() => {
       const requestId = saveSequenceRef.current + 1
       saveSequenceRef.current = requestId
+      setSyncStatus("syncing")
 
       void saveRemoteSnapshot(snapshot)
         .then(async (result) => {
-          if (!result) return
+          if (!result) {
+            setSyncStatus("error")
+            return
+          }
 
           let resolvedPayload: RemoteSnapshotPayload | null = result
           if (result.mergedFromConflict) {
@@ -386,9 +416,12 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
             lastRemoteSyncedRef.current = canonicalSerialized
             return canonicalSnapshot
           })
+
+          setSyncStatus("saved")
+          setLastSyncedAt(new Date().toISOString())
         })
         .catch(() => {
-          // keep local state as fallback
+          setSyncStatus("error")
         })
     }, 250)
 
@@ -399,6 +432,8 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
     () => ({
       snapshot,
       isReady: isReady && isAuthReady,
+      syncStatus,
+      lastSyncedAt,
       addLead: (payload: LeadInput) =>
         setSnapshot((current: AppSnapshot) =>
           syncSnapshotWithSession(repository.addLead(current, payload), session?.user ?? null),
@@ -497,7 +532,7 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
           syncSnapshotWithSession(repository.updateSettings(current, patch), session?.user ?? null),
         ),
     }),
-    [isAuthReady, isReady, repository, session?.user, snapshot],
+    [isAuthReady, isReady, lastSyncedAt, repository, session?.user, snapshot, syncStatus],
   )
 
   return <AppStoreContext.Provider value={value}>{children}</AppStoreContext.Provider>
