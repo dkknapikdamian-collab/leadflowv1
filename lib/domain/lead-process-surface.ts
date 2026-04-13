@@ -1,4 +1,4 @@
-import type { AppSnapshot, CaseStatus, Lead, LeadAlarmReason, WorkItem } from "../types"
+﻿import type { AppSnapshot, CaseStatus, Lead, LeadAlarmReason, WorkItem } from "../types"
 import {
   compareDateKeys,
   getCurrentDateKey,
@@ -77,14 +77,20 @@ function resolveLeadProcessStage(input: {
   isAtRisk: boolean
   dailyPriorityScore: number
 }): LeadProcessStage {
-  if (isClosedLeadStatus(input.lead.status)) return "closed"
-
-  if (input.hasCase && input.operationalStatus !== "not_started" && input.operationalStatus !== "ready_to_start") {
-    return "in_operations"
+  if (input.operationalStatus === "ready_to_start") {
+    return "ready_for_operations"
   }
 
-  if (input.lead.status === "won" || input.operationalStatus === "ready_to_start") {
-    return "ready_for_operations"
+  if (input.lead.status === "won") {
+    return input.hasCase && input.operationalStatus !== "not_started"
+      ? "in_operations"
+      : "ready_for_operations"
+  }
+
+  if (isClosedLeadStatus(input.lead.status)) return "closed"
+
+  if (input.hasCase && input.operationalStatus !== "not_started") {
+    return "in_operations"
   }
 
   if (!input.hasNextStep || input.isAtRisk || input.dailyPriorityScore > 0) {
