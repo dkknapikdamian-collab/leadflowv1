@@ -6,6 +6,7 @@ import "@/app/clientpilot-overrides.css"
 import "@/app/variant-b-overrides.css"
 import "@/app/variant-b-surfaces.css"
 import "@/app/skins-and-mobile-overrides.css"
+import "@/app/today-mobile-overrides.css"
 
 export const metadata: Metadata = {
   title: "ClientPilot",
