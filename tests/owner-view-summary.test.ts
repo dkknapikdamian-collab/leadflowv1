@@ -10,7 +10,7 @@ function createLead(partial: Partial<LeadWithComputedState>): LeadWithComputedSt
     workspaceId: partial.workspaceId ?? null,
     contactId: partial.contactId ?? null,
     caseId: partial.caseId ?? null,
-    source: partial.source ?? "manual",
+    source: partial.source ?? "Inne",
     name: partial.name ?? "Jan Kowalski",
     company: partial.company ?? "Acme",
     email: partial.email ?? "jan@example.com",
@@ -22,6 +22,7 @@ function createLead(partial: Partial<LeadWithComputedState>): LeadWithComputedSt
     notes: partial.notes ?? "",
     nextActionTitle: partial.nextActionTitle ?? "",
     nextActionAt: partial.nextActionAt ?? "",
+    nextActionItemId: partial.nextActionItemId ?? null,
     createdAt: partial.createdAt ?? "2026-04-13T08:00:00.000Z",
     updatedAt: partial.updatedAt ?? "2026-04-13T08:00:00.000Z",
     computed: partial.computed ?? {
@@ -35,7 +36,7 @@ function createLead(partial: Partial<LeadWithComputedState>): LeadWithComputedSt
       isWaitingTooLong: false,
       isAtRisk: false,
       riskState: "ok",
-      riskReason: "none",
+      riskReason: "missing_next_step",
       alarmReasons: [],
       dailyPriorityScore: 0,
       openActionsCount: 0,
@@ -55,12 +56,11 @@ function createCaseCard(partial: Partial<CaseDashboardCard>): CaseDashboardCard 
     missingElementsCount: partial.missingElementsCount ?? 0,
     needsActionToday: partial.needsActionToday ?? false,
     isOverdue: partial.isOverdue ?? false,
+    reminderSent: partial.reminderSent ?? false,
     dueAt: partial.dueAt ?? null,
     nextMove: partial.nextMove ?? "Brak ruchu",
     lastActivityAt: partial.lastActivityAt ?? "2026-04-13T08:00:00.000Z",
     daysStuck: partial.daysStuck ?? 0,
-    blockedByMissingRequired: partial.blockedByMissingRequired ?? false,
-    sourceLeadId: partial.sourceLeadId ?? null,
   }
 }
 

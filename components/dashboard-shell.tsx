@@ -27,6 +27,7 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/today", label: "Dziś", icon: "◌" },
+  { href: "/operator", label: "Operator", icon: "◉" },
   { href: "/leads", label: "Leady", icon: "◎" },
   { href: "/cases", label: "Sprawy", icon: "▣" },
   { href: "/templates", label: "Szablony", icon: "◧" },
@@ -39,13 +40,14 @@ const NAV_ITEMS: NavItem[] = [
 
 const MOBILE_PRIMARY_NAV: NavItem[] = [
   { href: "/today", label: "Dziś", icon: "◌" },
+  { href: "/operator", label: "Operator", icon: "◉" },
   { href: "/leads", label: "Leady", icon: "◎" },
   { href: "/cases", label: "Sprawy", icon: "▣" },
-  { href: "/tasks", label: "Zadania", icon: "☰" },
 ]
 
 const MOBILE_SECONDARY_NAV: NavItem[] = [
   { href: "/templates", label: "Szablony", icon: "◧" },
+  { href: "/tasks", label: "Zadania", icon: "☰" },
   { href: "/calendar", label: "Kalendarz", icon: "◫" },
   { href: "/activity", label: "Aktywność", icon: "◍" },
   { href: "/billing", label: "Rozliczenia", icon: "◈" },
@@ -351,7 +353,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
           </div>
           <div className="priority-item">
             <strong>Najpierw sprzedaż, potem blokery klienta</strong>
-            <span>Sprawdź Today i ruszaj najpierw leady bez next stepu oraz sprawy ready to start.</span>
+            <span>Sprawdź Today i Operator Center, potem ruszaj leady bez next stepu oraz sprawy ready to start.</span>
           </div>
         </div>
 
