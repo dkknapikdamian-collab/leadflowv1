@@ -26,30 +26,30 @@ type NavItem = {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/today", label: "Dzis", icon: "*" },
-  { href: "/leads", label: "Leady", icon: "o" },
-  { href: "/cases", label: "Sprawy", icon: "#" },
-  { href: "/templates", label: "Szablony", icon: "=" },
-  { href: "/tasks", label: "Zadania", icon: "[ ]" },
-  { href: "/calendar", label: "Kalendarz", icon: "@" },
-  { href: "/activity", label: "Aktywnosc", icon: "+" },
-  { href: "/billing", label: "Rozliczenia", icon: "$" },
-  { href: "/settings", label: "Ustawienia", icon: "~" },
+  { href: "/today", label: "Dziś", icon: "◌" },
+  { href: "/leads", label: "Leady", icon: "◎" },
+  { href: "/cases", label: "Sprawy", icon: "▣" },
+  { href: "/templates", label: "Szablony", icon: "◧" },
+  { href: "/tasks", label: "Zadania", icon: "☰" },
+  { href: "/calendar", label: "Kalendarz", icon: "◫" },
+  { href: "/activity", label: "Aktywność", icon: "◍" },
+  { href: "/billing", label: "Rozliczenia", icon: "◈" },
+  { href: "/settings", label: "Ustawienia", icon: "⚙" },
 ]
 
 const MOBILE_PRIMARY_NAV: NavItem[] = [
-  { href: "/today", label: "Dzis", icon: "*" },
-  { href: "/leads", label: "Leady", icon: "o" },
-  { href: "/cases", label: "Sprawy", icon: "#" },
-  { href: "/tasks", label: "Zadania", icon: "[ ]" },
+  { href: "/today", label: "Dziś", icon: "◌" },
+  { href: "/leads", label: "Leady", icon: "◎" },
+  { href: "/cases", label: "Sprawy", icon: "▣" },
+  { href: "/tasks", label: "Zadania", icon: "☰" },
 ]
 
 const MOBILE_SECONDARY_NAV: NavItem[] = [
-  { href: "/templates", label: "Szablony", icon: "=" },
-  { href: "/calendar", label: "Kalendarz", icon: "@" },
-  { href: "/activity", label: "Aktywnosc", icon: "+" },
-  { href: "/billing", label: "Rozliczenia", icon: "$" },
-  { href: "/settings", label: "Ustawienia", icon: "~" },
+  { href: "/templates", label: "Szablony", icon: "◧" },
+  { href: "/calendar", label: "Kalendarz", icon: "◫" },
+  { href: "/activity", label: "Aktywność", icon: "◍" },
+  { href: "/billing", label: "Rozliczenia", icon: "◈" },
+  { href: "/settings", label: "Ustawienia", icon: "⚙" },
 ]
 
 const GENERIC_USER_NAMES = new Set(["demo", "twoje konto", "konto", "uzytkownik"])
@@ -131,8 +131,11 @@ function SidebarMiniCalendar() {
   )
 
   return (
-    <section className="sidebar-mini-calendar" aria-label="Mini kalendarz miesięczny">
-      <div className="sidebar-mini-calendar-label muted-small">Kalendarz</div>
+    <section className="sidebar-block card mini-calendar-card" aria-label="Mini kalendarz miesięczny">
+      <div className="block-head">
+        <span className="eyebrow">Kalendarz</span>
+        <span className="mini-dot hot" />
+      </div>
       <div className="sidebar-mini-month-grid">
         {monthGrid.map((cell) => {
           const dayKey = toDateKey(cell, dateOptions)
@@ -260,8 +263,8 @@ export function DashboardShell({ children }: PropsWithChildren) {
     const ordered = [...NAV_ITEMS].sort((left, right) => right.href.length - left.href.length)
     return ordered.find((item) => isNavItemActive(pathname, item.href))?.label ?? "ClientPilot"
   }, [pathname])
-  const accessPolicy = useMemo(() => resolveSnapshotAccessPolicy(snapshot), [snapshot])
 
+  const accessPolicy = useMemo(() => resolveSnapshotAccessPolicy(snapshot), [snapshot])
   const displayUserName = session?.user.displayName || snapshot.user.name || "Twoje konto"
   const displayUserEmail = session?.user.email || snapshot.user.email || ""
 
@@ -296,6 +299,10 @@ export function DashboardShell({ children }: PropsWithChildren) {
     setItemModalOpen(true)
   }
 
+  function handleRefresh() {
+    router.refresh()
+  }
+
   if (!isReady || !isSessionReady) {
     return <div className="app-shell-loading">Ładowanie aplikacji…</div>
   }
@@ -305,21 +312,31 @@ export function DashboardShell({ children }: PropsWithChildren) {
   }
 
   return (
-    <div className={`app-shell ${snapshot.settings.viewProfile === "mobile" ? "app-shell-mobile-preview" : ""}`}>
+    <div className={`app-shell variant-b-shell ${snapshot.settings.viewProfile === "mobile" ? "app-shell-mobile-preview" : ""}`}>
       <aside className="sidebar desktop-only">
-        <div className="brand-box">
-          <div className="brand-title">
-            <span className="brand-mark">•</span>
-            <span>ClientPilot</span>
+        <div className="workspace-card card">
+          <div className="workspace-head">
+            <div>
+              <div className="eyebrow">Workspace</div>
+              <div className="workspace-name">{snapshot.settings.workspaceName}</div>
+            </div>
+            <span className="status-badge success">
+              {snapshot.billing.status === "active" ? "Plan aktywny" : snapshot.billing.status === "trial" ? "Trial active" : "Wymaga płatności"}
+            </span>
           </div>
-          <div className="brand-subtitle">Domykanie i uruchamianie klienta</div>
+          <div className="workspace-copy">Jeden system do domykania i uruchamiania klienta.</div>
         </div>
 
-        <nav className="nav-list">
+        <nav className="nav card" aria-label="Główna nawigacja">
           {NAV_ITEMS.map((item) => {
             const active = isNavItemActive(pathname, item.href)
             return (
-              <Link key={item.href} href={item.href} className={`nav-link ${active ? "active" : ""}`} aria-current={active ? "page" : undefined}>
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`nav-link ${active ? "active" : ""}`}
+                aria-current={active ? "page" : undefined}
+              >
                 <span>{item.icon}</span>
                 <span>{item.label}</span>
               </Link>
@@ -327,54 +344,77 @@ export function DashboardShell({ children }: PropsWithChildren) {
           })}
         </nav>
 
-        <div className="sidebar-status-card">
-          <div className={`sidebar-status-chip plan-${snapshot.billing.status}`}>{snapshot.billing.status === "active" ? "Aktywne" : snapshot.billing.status === "trial" ? "Trial" : "Wymaga płatności"}</div>
-          <div style={{ fontWeight: 700 }}>{snapshot.billing.planName}</div>
-          <div className="muted-small">Jeden system do domykania i uruchamiania klienta.</div>
+        <div className="sidebar-block card">
+          <div className="block-head">
+            <span className="eyebrow">Priorytet dnia</span>
+            <span className="mini-dot hot" />
+          </div>
+          <div className="priority-item">
+            <strong>Najpierw sprzedaż, potem blokery klienta</strong>
+            <span>Sprawdź Today i ruszaj najpierw leady bez next stepu oraz sprawy ready to start.</span>
+          </div>
         </div>
 
         <SidebarMiniCalendar />
 
-        <div className="sidebar-footer">
-          <button className="ghost-button" onClick={() => setLeadModalOpen(true)}>
-            + Dodaj lead
-          </button>
-          <button className="ghost-button" onClick={() => setItemModalOpen(true)}>
-            + Dodaj działanie
-          </button>
-          <div className="user-box">
-            <div className="user-avatar">{getUserAvatarLabel(displayUserName, snapshot.settings.workspaceName)}</div>
+        <div className="sidebar-block card profile-card">
+          <div className="profile-row">
+            <div className="avatar">{getUserAvatarLabel(displayUserName, snapshot.settings.workspaceName)}</div>
             <div>
-              <div className="user-name">{displayUserName}</div>
-              <div className="muted-small">{displayUserEmail || snapshot.settings.workspaceName}</div>
+              <strong>{displayUserName}</strong>
+              <span>{displayUserEmail || "owner"}</span>
             </div>
           </div>
-          <button className="ghost-button" onClick={handleLogout} disabled={isLoggingOut}>
+        </div>
+
+        <div className="sidebar-footer card">
+          <button className="ghost-button" type="button" onClick={openLeadModal}>
+            + Dodaj lead
+          </button>
+          <button className="ghost-button" type="button" onClick={openItemModal}>
+            + Dodaj działanie
+          </button>
+          <button className="ghost-button" type="button" onClick={handleLogout} disabled={isLoggingOut}>
             {isLoggingOut ? "Wylogowywanie..." : "Wyloguj"}
           </button>
         </div>
       </aside>
 
       <div className="main-column">
-        {!accessPolicy.canWork ? (
-          <section
-            style={{
-              margin: "16px 16px 0",
-              padding: 14,
-              borderRadius: 14,
-              border: "1px solid rgba(245, 158, 11, 0.28)",
-              background: "rgba(245, 158, 11, 0.10)",
-            }}
-          >
-            <div style={{ fontWeight: 800, marginBottom: 6 }}>Tryb podglądu danych</div>
-            <div style={{ color: "var(--muted)", lineHeight: 1.5 }}>
-              Widzisz dane i historię modułów, ale normalna praca jest zablokowana do czasu odnowienia planu. Nie utworzysz nowych leadów ani nowych spraw.
+        <header className="desktop-shell-topbar desktop-only">
+          <div className="brand-pill">
+            <span className="brand-dot" />
+            <div>
+              <strong>{pageLabel}</strong>
+              <span>{snapshot.settings.workspaceName} • nowoczesny workflow operacyjny</span>
             </div>
-            <div style={{ marginTop: 8 }}>
+          </div>
+
+          <div className="top-actions">
+            <button className="ghost-button small" type="button" onClick={handleRefresh}>
+              Odśwież
+            </button>
+            <button className="ghost-button small" type="button" onClick={openLeadModal}>
+              Dodaj lead
+            </button>
+            <button className="primary-button small" type="button" onClick={openItemModal}>
+              Dodaj działanie
+            </button>
+          </div>
+        </header>
+
+        {!accessPolicy.canWork ? (
+          <section className="preview-banner">
+            <div className="preview-banner-title">Tryb podglądu danych</div>
+            <div className="preview-banner-copy">
+              Widzisz dane i historię modułów, ale normalna praca jest zablokowana do czasu odnowienia planu.
+            </div>
+            <div className="preview-banner-link">
               <Link href="/billing">Otwórz billing i przywróć pełny dostęp</Link>
             </div>
           </section>
         ) : null}
+
         <header className="mobile-header mobile-only">
           <div className="mobile-header-main">
             <button
@@ -451,6 +491,3 @@ export function DashboardShell({ children }: PropsWithChildren) {
     </div>
   )
 }
-
-
-

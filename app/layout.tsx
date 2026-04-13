@@ -1,8 +1,9 @@
-﻿import type { ReactNode } from "react"
+import type { ReactNode } from "react"
 import type { Metadata } from "next"
 import { Providers } from "@/app/providers"
 import "@/app/globals.css"
 import "@/app/clientpilot-overrides.css"
+import "@/app/variant-b-overrides.css"
 
 export const metadata: Metadata = {
   title: "ClientPilot",
@@ -18,5 +19,3 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     </html>
   )
 }
-
-
