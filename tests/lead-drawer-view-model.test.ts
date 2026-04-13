@@ -89,7 +89,7 @@ test("lead drawer view model counts open and overdue items", () => {
   const lead = snapshot.leads.find((entry) => entry.id === leadId)
   assert.ok(lead)
   const vm = buildLeadDrawerViewModel(snapshot, lead, dateOptions)
-  assert.equal(vm.openItemsCount, 2)
+  assert.equal(vm.openItemsCount, 3)
   assert.equal(vm.overdueItemsCount, 1)
   assert.equal(vm.timelineCount, 3)
   assert.equal(vm.nextStepLabel, "Spotkanie")

@@ -114,7 +114,7 @@ function resolveNextMoveLabel(input: {
   if (input.stage === "in_operations") {
     return `Prowadź sprawę (${input.operationalStatus})`
   }
-  return input.nextStepTitle || "Ustal next step"
+  return input.nextStepTitle || "Ustal następny krok"
 }
 
 export function buildLeadProcessSurfaceSummary(
