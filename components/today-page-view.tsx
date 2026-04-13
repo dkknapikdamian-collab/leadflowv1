@@ -8,18 +8,7 @@ import {
   formatLeadAlarmReasonLabel,
   type LeadWithComputedState,
 } from "@/lib/domain/lead-state"
-import {
-  buildTodayViewModel,
-  getEffectiveCollapsed,
-  getNextManualCollapsedState,
-  getSectionKeyFromTopStat,
-  getTodaySectionMeta,
-  moveSectionToTop,
-  TODAY_DEFAULT_COLLAPSED,
-  TODAY_SECTION_ORDER,
-  type TodaySection,
-  type TodaySectionKey,
-} from "@/lib/today"
+import { buildTodayViewModel, type TodaySectionKey, type TodayTopStat } from "@/lib/today"
 import type { Lead, WorkItem, WorkItemInput } from "@/lib/types"
 import {
   formatRelativeDateTimeShort,
@@ -83,13 +72,14 @@ function createTomorrowAtNineIso() {
 }
 
 function getLeadNextStepInfo(items: WorkItem[], leadId: string) {
-  const nextItem = items
-    .filter((item) => item.leadId === leadId && item.status !== "done" && item.recordType !== "note" && item.type !== "note")
-    .sort((left, right) => {
-      const leftDate = getItemPrimaryDate(left) || left.createdAt
-      const rightDate = getItemPrimaryDate(right) || right.createdAt
-      return leftDate.localeCompare(rightDate)
-    })[0] ?? null
+  const nextItem =
+    items
+      .filter((item) => item.leadId === leadId && item.status !== "done" && item.recordType !== "note" && item.type !== "note")
+      .sort((left, right) => {
+        const leftDate = getItemPrimaryDate(left) || left.createdAt
+        const rightDate = getItemPrimaryDate(right) || right.createdAt
+        return leftDate.localeCompare(rightDate)
+      })[0] ?? null
 
   return {
     title: nextItem?.title ?? "Brak next step",
@@ -186,7 +176,12 @@ function TodayItemRow({
 
   return (
     <article className="today-item-row" style={{ display: "flex", flexDirection: "column", alignItems: "stretch", gap: 12 }}>
-      <button className="today-row-open" onClick={onEdit} type="button" style={{ width: "100%", border: "none", background: "transparent", color: "inherit", padding: 0, textAlign: "left" }}>
+      <button
+        className="today-row-open"
+        onClick={onEdit}
+        type="button"
+        style={{ width: "100%", border: "none", background: "transparent", color: "inherit", padding: 0, textAlign: "left" }}
+      >
         <div className="today-row-open-top" style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
           <div className="today-item-icon" aria-hidden="true">
             {meta.icon}
@@ -247,7 +242,12 @@ function TodayLeadRow({
 
   return (
     <article className="today-lead-row" style={{ display: "flex", flexDirection: "column", alignItems: "stretch", gap: 12 }}>
-      <button className="today-row-open" type="button" onClick={onOpen} style={{ width: "100%", border: "none", background: "transparent", color: "inherit", padding: 0, textAlign: "left" }}>
+      <button
+        className="today-row-open"
+        type="button"
+        onClick={onOpen}
+        style={{ width: "100%", border: "none", background: "transparent", color: "inherit", padding: 0, textAlign: "left" }}
+      >
         <div className="today-lead-topbar" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div className="today-lead-main">
             <Avatar name={lead.name} />
@@ -291,105 +291,54 @@ function TodayLeadRow({
   )
 }
 
-function TodaySectionBlock({
-  section,
-  collapsed,
-  onToggle,
-  onFocus,
-  onEditItem,
-  onItemDone,
-  onItemSnoozeTomorrow,
-  onOpenLead,
-  onCreateLeadFollowUpTomorrow,
-  getLeadById,
-  getLeadNextStepInfoById,
-  dateOptions,
+function TodayStatsSection({
+  title,
+  cards,
+  onCardClick,
 }: {
-  section: TodaySection
-  collapsed: boolean
-  onToggle: () => void
-  onFocus: () => void
-  onEditItem: (item: WorkItem) => void
-  onItemDone: (item: WorkItem) => void
-  onItemSnoozeTomorrow: (item: WorkItem) => void
-  onOpenLead: (lead: Lead) => void
-  onCreateLeadFollowUpTomorrow: (lead: LeadWithComputedState) => void
-  getLeadById: (leadId: string | null) => Lead | null
-  getLeadNextStepInfoById: (leadId: string) => { title: string; at: string | null }
-  dateOptions: { timeZone: string }
+  title: string
+  cards: Array<{ key: string; label: string; value: number; color: string }>
+  onCardClick: (key: string) => void
 }) {
-  const meta = getTodaySectionMeta(section.key)
-
   return (
-    <section className="today-section-card" data-section={section.key}>
-      <div className="today-section-header">
-        <div className="today-section-title-group">
-          <button className="today-section-title-wrap" type="button" onClick={onToggle}>
-            <div className="today-section-accent" style={{ backgroundColor: meta.color }} />
-            <h2 className="today-section-title" style={{ color: meta.color }}>
-              {section.title}
-            </h2>
-          </button>
-          <button
-            className="today-section-count"
-            type="button"
-            onClick={onFocus}
-            style={{
-              color: meta.color,
-              backgroundColor: `${meta.color}1a`,
-              borderColor: `${meta.color}33`,
+    <section style={{ display: "grid", gap: 10 }}>
+      <div className="muted-small uppercase">{title}</div>
+      <div className="today-top-stats-grid">
+        {cards.map((stat) => (
+          <article
+            key={stat.key}
+            className={`today-top-stat-card today-top-stat-card--${stat.key} interactive`}
+            data-stat={stat.key}
+            style={{ ["--stat-color" as string]: stat.color }}
+            onClick={() => onCardClick(stat.key)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault()
+                onCardClick(stat.key)
+              }
             }}
-            aria-label={`Przenieś sekcję ${section.title} na górę`}
-            title="Kliknij, aby przenieść sekcję na górę i ją otworzyć"
+            aria-label={`Pokaż sekcję ${stat.label}`}
           >
-            {section.count}
-          </button>
-        </div>
-
-        <div className="today-section-actions">
-          <button className="today-section-toggle" type="button" onClick={onToggle} aria-expanded={!collapsed}>
-            {collapsed ? "Rozwiń" : "Zwiń"}
-          </button>
-        </div>
+            <div className="today-top-stat-label" style={{ color: stat.color }}>
+              {stat.label}
+            </div>
+            <button
+              className="today-top-stat-value"
+              style={{ color: stat.color }}
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation()
+                onCardClick(stat.key)
+              }}
+              aria-label={`Przenieś ${stat.label} na górę listy`}
+            >
+              {stat.value}
+            </button>
+          </article>
+        ))}
       </div>
-
-      {!collapsed ? (
-        <div className="today-section-body">
-          {section.kind === "items" ? (
-            section.items.length > 0 ? (
-              section.items.map((item) => (
-                <TodayItemRow
-                  key={item.id}
-                  item={item}
-                  lead={getLeadById(item.leadId)}
-                  sectionKey={section.key}
-                  onEdit={() => onEditItem(item)}
-                  onDone={() => onItemDone(item)}
-                  onSnoozeTomorrow={() => onItemSnoozeTomorrow(item)}
-                  dateOptions={dateOptions}
-                />
-              ))
-            ) : (
-              <div className="empty-box">Brak wpisów w tej sekcji.</div>
-            )
-          ) : section.leads.length > 0 ? (
-            section.leads.map((lead) => (
-              <TodayLeadRow
-                key={lead.id}
-                lead={lead}
-                sectionKey={section.key}
-                onOpen={() => onOpenLead(lead)}
-                onCreateTomorrowFollowUp={() => onCreateLeadFollowUpTomorrow(lead)}
-                nextStepTitle={getLeadNextStepInfoById(lead.id).title}
-                nextStepAt={getLeadNextStepInfoById(lead.id).at}
-                dateOptions={dateOptions}
-              />
-            ))
-          ) : (
-            <div className="empty-box">Brak leadów w tej sekcji.</div>
-          )}
-        </div>
-      ) : null}
     </section>
   )
 }
@@ -420,9 +369,26 @@ export function TodayPageView() {
     () => new Map(snapshot.leads.map((lead) => [lead.id, getLeadNextStepInfo(snapshot.items, lead.id)])),
     [snapshot.items, snapshot.leads],
   )
-  const topStats = command.topStats
+  const todaySectionsMap = useMemo(
+    () => new Map(viewModel.sections.map((section) => [section.key, section] as const)),
+    [viewModel.sections],
+  )
+  const executionTopStats = viewModel.topStats
+  const commandTopStats = command.topStats
   const fontScale = snapshot.settings.fontScale || "compact"
   const isMobileProfile = snapshot.settings.viewProfile === "mobile"
+
+  function getTodayLeadSection(sectionKey: TodaySectionKey) {
+    const section = todaySectionsMap.get(sectionKey)
+    if (!section || section.kind !== "leads") return []
+    return section.leads
+  }
+
+  function getTodayItemsSection(sectionKey: TodaySectionKey) {
+    const section = todaySectionsMap.get(sectionKey)
+    if (!section || section.kind !== "items") return []
+    return section.items
+  }
 
   if (viewModel.isEmptyWorkspace) {
     return (
@@ -461,10 +427,18 @@ export function TodayPageView() {
     setCollapsed((current) => ({ ...current, [key]: false }))
   }
 
-  function focusFromTopStat(statKey: (typeof topStats)[number]["key"]) {
+  function focusFromCommandTopStat(statKey: (typeof commandTopStats)[number]["key"]) {
     if (statKey === "leads_to_move_today") return focusSection("sales")
     if (statKey === "cases_ready_to_start") return focusSection("ready")
     return focusSection("blocked")
+  }
+
+  function focusFromExecutionTopStat(statKey: TodayTopStat["key"]) {
+    if (statKey === "waiting_too_long" || statKey === "high_value_at_risk") {
+      return focusSection("sales")
+    }
+
+    return focusSection("execution")
   }
 
   function handleItemDone(item: WorkItem) {
@@ -498,23 +472,81 @@ export function TodayPageView() {
     addItem(payload)
   }
 
+  function renderLeadGroup(title: string, leads: LeadWithComputedState[], sectionKey: TodaySectionKey) {
+    if (leads.length === 0) return null
+
+    return (
+      <div style={{ display: "grid", gap: 12 }}>
+        <div className="muted-small uppercase">{title}</div>
+        {leads.map((lead) => (
+          <TodayLeadRow
+            key={`${sectionKey}-${lead.id}`}
+            lead={lead}
+            sectionKey={sectionKey}
+            onOpen={() => setSelectedLead(lead)}
+            onCreateTomorrowFollowUp={() => handleCreateLeadFollowUpTomorrow(lead)}
+            nextStepTitle={leadNextStepMap.get(lead.id)?.title ?? "Brak next step"}
+            nextStepAt={leadNextStepMap.get(lead.id)?.at ?? null}
+            dateOptions={dateOptions}
+          />
+        ))}
+      </div>
+    )
+  }
+
+  function renderItemGroup(title: string, items: WorkItem[], sectionKey: TodaySectionKey) {
+    if (items.length === 0) return null
+
+    return (
+      <div style={{ display: "grid", gap: 12 }}>
+        <div className="muted-small uppercase">{title}</div>
+        {items.map((item) => (
+          <TodayItemRow
+            key={`${sectionKey}-${item.id}`}
+            item={item}
+            lead={getLeadById(item.leadId)}
+            sectionKey={sectionKey}
+            onEdit={() => setEditingItem(item)}
+            onDone={() => handleItemDone(item)}
+            onSnoozeTomorrow={() => handleItemSnoozeTomorrow(item)}
+            dateOptions={dateOptions}
+          />
+        ))}
+      </div>
+    )
+  }
+
   function renderSalesSection() {
-    if (command.sections.salesRequiresAction.length === 0) {
-      return <div className="empty-box">Brak leadow wymagajacych ruchu dzis.</div>
+    const shownLeadIds = new Set<string>()
+
+    const topMoves = getTodayLeadSection("top_moves_today")
+    topMoves.forEach((lead) => shownLeadIds.add(lead.id))
+
+    const waitingTooLong = getTodayLeadSection("waiting_too_long").filter((lead) => !shownLeadIds.has(lead.id))
+    waitingTooLong.forEach((lead) => shownLeadIds.add(lead.id))
+
+    const highValueAtRisk = getTodayLeadSection("high_value_at_risk").filter((lead) => !shownLeadIds.has(lead.id))
+    highValueAtRisk.forEach((lead) => shownLeadIds.add(lead.id))
+
+    const stale = getTodayLeadSection("stale").filter((lead) => !shownLeadIds.has(lead.id))
+    stale.forEach((lead) => shownLeadIds.add(lead.id))
+
+    const fallbackSales = command.sections.salesRequiresAction.filter((lead) => !shownLeadIds.has(lead.id))
+    fallbackSales.forEach((lead) => shownLeadIds.add(lead.id))
+
+    const renderedGroups = [
+      renderLeadGroup("Najważniejsze ruchy dziś", topMoves, "top_moves_today"),
+      renderLeadGroup("Waiting too long", waitingTooLong, "waiting_too_long"),
+      renderLeadGroup("High value at risk", highValueAtRisk, "high_value_at_risk"),
+      renderLeadGroup("Zaniedbane leady", stale, "stale"),
+      renderLeadGroup("Pozostałe leady do ruchu", fallbackSales, "top_moves_today"),
+    ].filter(Boolean)
+
+    if (renderedGroups.length === 0) {
+      return <div className="empty-box">Brak leadów wymagających ruchu dziś.</div>
     }
 
-    return command.sections.salesRequiresAction.map((lead) => (
-      <TodayLeadRow
-        key={lead.id}
-        lead={lead}
-        sectionKey={"top_moves_today" as TodaySectionKey}
-        onOpen={() => setSelectedLead(lead)}
-        onCreateTomorrowFollowUp={() => handleCreateLeadFollowUpTomorrow(lead)}
-        nextStepTitle={leadNextStepMap.get(lead.id)?.title ?? "Brak next step"}
-        nextStepAt={leadNextStepMap.get(lead.id)?.at ?? null}
-        dateOptions={dateOptions}
-      />
-    ))
+    return <div style={{ display: "grid", gap: 18 }}>{renderedGroups}</div>
   }
 
   function renderBlockedCasesSection() {
@@ -557,67 +589,23 @@ export function TodayPageView() {
   }
 
   function renderExecutionQueueSection() {
-    const queue = command.sections.executionQueue
+    const overdueItems = getTodayItemsSection("overdue")
+    const todayItems = getTodayItemsSection("today")
+    const thisWeekItems = getTodayItemsSection("this_week")
+    const leadsWithoutNextStep = getTodayLeadSection("missing_next_step")
 
-    return (
-      <div style={{ display: "grid", gap: 14 }}>
-        <div className="muted-small uppercase">Overdue</div>
-        {queue.overdueItems.length === 0 ? <div className="empty-box">Brak zaleglych dzialan.</div> : queue.overdueItems.map((item) => (
-          <TodayItemRow
-            key={item.id}
-            item={item}
-            lead={getLeadById(item.leadId)}
-            sectionKey={"overdue" as TodaySectionKey}
-            onEdit={() => setEditingItem(item)}
-            onDone={() => handleItemDone(item)}
-            onSnoozeTomorrow={() => handleItemSnoozeTomorrow(item)}
-            dateOptions={dateOptions}
-          />
-        ))}
+    const renderedGroups = [
+      renderItemGroup("Overdue", overdueItems, "overdue"),
+      renderItemGroup("Dziś", todayItems, "today"),
+      renderItemGroup("Ten tydzień", thisWeekItems, "this_week"),
+      renderLeadGroup("Bez next step", leadsWithoutNextStep, "missing_next_step"),
+    ].filter(Boolean)
 
-        <div className="muted-small uppercase">Dzis</div>
-        {queue.todayItems.length === 0 ? <div className="empty-box">Brak dzialan na dzis.</div> : queue.todayItems.map((item) => (
-          <TodayItemRow
-            key={item.id}
-            item={item}
-            lead={getLeadById(item.leadId)}
-            sectionKey={"today" as TodaySectionKey}
-            onEdit={() => setEditingItem(item)}
-            onDone={() => handleItemDone(item)}
-            onSnoozeTomorrow={() => handleItemSnoozeTomorrow(item)}
-            dateOptions={dateOptions}
-          />
-        ))}
+    if (renderedGroups.length === 0) {
+      return <div className="empty-box">Brak pozycji w kolejce wykonawczej.</div>
+    }
 
-        <div className="muted-small uppercase">Ten tydzien</div>
-        {queue.thisWeekItems.length === 0 ? <div className="empty-box">Brak pozycji na ten tydzien.</div> : queue.thisWeekItems.map((item) => (
-          <TodayItemRow
-            key={item.id}
-            item={item}
-            lead={getLeadById(item.leadId)}
-            sectionKey={"this_week" as TodaySectionKey}
-            onEdit={() => setEditingItem(item)}
-            onDone={() => handleItemDone(item)}
-            onSnoozeTomorrow={() => handleItemSnoozeTomorrow(item)}
-            dateOptions={dateOptions}
-          />
-        ))}
-
-        <div className="muted-small uppercase">Bez next step</div>
-        {queue.leadsWithoutNextStep.length === 0 ? <div className="empty-box">Brak leadow bez next stepu.</div> : queue.leadsWithoutNextStep.map((lead) => (
-          <TodayLeadRow
-            key={lead.id}
-            lead={lead}
-            sectionKey={"missing_next_step" as TodaySectionKey}
-            onOpen={() => setSelectedLead(lead)}
-            onCreateTomorrowFollowUp={() => handleCreateLeadFollowUpTomorrow(lead)}
-            nextStepTitle={"Brak next step"}
-            nextStepAt={null}
-            dateOptions={dateOptions}
-          />
-        ))}
-      </div>
-    )
+    return <div style={{ display: "grid", gap: 18 }}>{renderedGroups}</div>
   }
 
   return (
@@ -632,43 +620,17 @@ export function TodayPageView() {
       </section>
 
       {!isMobileProfile ? (
-        <section className="today-top-stats-grid">
-          {topStats.map((stat) => {
-            return (
-              <article
-                key={stat.key}
-                className={`today-top-stat-card today-top-stat-card--${stat.key} interactive`}
-                data-stat={stat.key}
-                style={{ ["--stat-color" as string]: stat.color }}
-                onClick={() => focusFromTopStat(stat.key)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault()
-                    focusFromTopStat(stat.key)
-                  }
-                }}
-                aria-label={`Pokaż sekcję ${stat.label}`}
-              >
-                <div className="today-top-stat-label" style={{ color: stat.color }}>
-                  {stat.label}
-                </div>
-                <button
-                  className="today-top-stat-value"
-                  style={{ color: stat.color }}
-                  type="button"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    focusFromTopStat(stat.key)
-                  }}
-                  aria-label={`Przenieś ${stat.label} na górę listy`}
-                >
-                  {stat.value}
-                </button>
-              </article>
-            )
-          })}
+        <section style={{ display: "grid", gap: 16 }}>
+          <TodayStatsSection
+            title="Alarmy i next step"
+            cards={executionTopStats}
+            onCardClick={(key) => focusFromExecutionTopStat(key as TodayTopStat["key"])}
+          />
+          <TodayStatsSection
+            title="Sprzedaż i operacje"
+            cards={commandTopStats}
+            onCardClick={(key) => focusFromCommandTopStat(key as (typeof commandTopStats)[number]["key"])}
+          />
         </section>
       ) : null}
 
@@ -679,10 +641,10 @@ export function TodayPageView() {
               <div className="today-section-title-group">
                 <button className="today-section-title-wrap" type="button" onClick={() => toggleSection(sectionKey)}>
                   <h2 className="today-section-title">
-                    {sectionKey === "sales" ? "Sprzedaz wymaga ruchu" : null}
+                    {sectionKey === "sales" ? "Sprzedaż wymaga ruchu" : null}
                     {sectionKey === "blocked" ? "Realizacja stoi przez klienta" : null}
                     {sectionKey === "ready" ? "Gotowe do ruszenia" : null}
-                    {sectionKey === "execution" ? "Dzis / overdue / ten tydzien / bez next step" : null}
+                    {sectionKey === "execution" ? "Overdue / dziś / ten tydzień / bez next step" : null}
                   </h2>
                 </button>
                 <button className="today-section-count" type="button" onClick={() => focusSection(sectionKey)}>
@@ -690,10 +652,10 @@ export function TodayPageView() {
                   {sectionKey === "blocked" ? command.sections.realizationBlockedByClient.length : null}
                   {sectionKey === "ready" ? command.sections.readyToStart.length : null}
                   {sectionKey === "execution"
-                    ? command.sections.executionQueue.overdueItems.length
-                      + command.sections.executionQueue.todayItems.length
-                      + command.sections.executionQueue.thisWeekItems.length
-                      + command.sections.executionQueue.leadsWithoutNextStep.length
+                    ? getTodayItemsSection("overdue").length
+                      + getTodayItemsSection("today").length
+                      + getTodayItemsSection("this_week").length
+                      + getTodayLeadSection("missing_next_step").length
                     : null}
                 </button>
               </div>
