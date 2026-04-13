@@ -1,0 +1,80 @@
+html[data-theme="graphite"],
+body[data-theme="graphite"] {
+  --bg: #111315;
+  --sidebar: #171a1d;
+  --card: #1d2125;
+  --card-hover: #252a30;
+  --border: #2f363d;
+  --border-light: #414a53;
+  --text: #f3f4f6;
+  --muted: #a7afb8;
+  --accent: #7dd3fc;
+  --danger: #fb7185;
+  --success: #34d399;
+  --calendar-dot: #7dd3fc;
+  --calendar-dot-today: #22c55e;
+}
+
+html[data-theme="obsidian"],
+body[data-theme="obsidian"] {
+  --bg: #050505;
+  --sidebar: #0a0a0b;
+  --card: #111113;
+  --card-hover: #18181b;
+  --border: #232328;
+  --border-light: #31313a;
+  --text: #fafafa;
+  --muted: #a1a1aa;
+  --accent: #a78bfa;
+  --danger: #fb7185;
+  --success: #4ade80;
+  --calendar-dot: #c4b5fd;
+  --calendar-dot-today: #22c55e;
+}
+
+.theme-card-preview-graphite .theme-card-swatch:nth-child(1) { background: #111315; }
+.theme-card-preview-graphite .theme-card-swatch:nth-child(2) { background: #1d2125; }
+.theme-card-preview-graphite .theme-card-swatch:nth-child(3) { background: #7dd3fc; }
+.theme-card-preview-graphite .theme-card-swatch:nth-child(4) { background: #f3f4f6; }
+
+.theme-card-preview-obsidian .theme-card-swatch:nth-child(1) { background: #050505; }
+.theme-card-preview-obsidian .theme-card-swatch:nth-child(2) { background: #111113; }
+.theme-card-preview-obsidian .theme-card-swatch:nth-child(3) { background: #a78bfa; }
+.theme-card-preview-obsidian .theme-card-swatch:nth-child(4) { background: #fafafa; }
+
+html[data-view-profile="mobile"] .sidebar.desktop-only,
+body[data-view-profile="mobile"] .sidebar.desktop-only,
+.app-shell-mobile-preview .sidebar.desktop-only {
+  display: none !important;
+}
+
+html[data-view-profile="mobile"] .desktop-shell-topbar.desktop-only,
+body[data-view-profile="mobile"] .desktop-shell-topbar.desktop-only,
+.app-shell-mobile-preview .desktop-shell-topbar.desktop-only {
+  display: none !important;
+}
+
+html[data-view-profile="mobile"] .mobile-only,
+body[data-view-profile="mobile"] .mobile-only,
+.app-shell-mobile-preview .mobile-only {
+  display: flex !important;
+}
+
+html[data-view-profile="mobile"] .bottom-nav.mobile-only,
+body[data-view-profile="mobile"] .bottom-nav.mobile-only,
+.app-shell-mobile-preview .bottom-nav.mobile-only {
+  display: grid !important;
+}
+
+html[data-view-profile="mobile"] .main-column,
+body[data-view-profile="mobile"] .main-column,
+.app-shell-mobile-preview .main-column {
+  width: 100%;
+  min-width: 0;
+}
+
+html[data-view-profile="mobile"] .page-content,
+body[data-view-profile="mobile"] .page-content,
+.app-shell-mobile-preview .page-content {
+  padding-inline: 12px;
+}
