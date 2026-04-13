@@ -4,6 +4,7 @@ import { Providers } from "@/app/providers"
 import "@/app/globals.css"
 import "@/app/clientpilot-overrides.css"
 import "@/app/variant-b-overrides.css"
+import "@/app/variant-b-surfaces.css"
 
 export const metadata: Metadata = {
   title: "ClientPilot",
