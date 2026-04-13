@@ -13,7 +13,7 @@ import { applyAccessStatusToSnapshot } from "@/lib/access/account-status"
 import { useAuthSession } from "@/lib/auth/session-provider"
 import { createAppDataRepository } from "@/lib/data/repository"
 import { choosePreferredSnapshot } from "@/lib/data/snapshot-selection"
-import { resolveSnapshotAfterConflictRefetch } from "@/lib/data/snapshot-sync"
+import { mergeSnapshotsForSync, resolveSnapshotAfterConflictRefetch } from "@/lib/data/snapshot-sync"
 import { createLocalStorageDriver, createSnapshotStorageAdapter } from "@/lib/data/storage-adapter"
 import { buildUserScopedStorageKey } from "@/lib/data/storage-key"
 import type {
@@ -82,6 +82,7 @@ interface SaveRemoteSnapshotPayload extends RemoteSnapshotPayload {
 }
 
 const AppStoreContext = createContext<AppStoreValue | null>(null)
+const REMOTE_SYNC_INTERVAL_MS = 15000
 
 function syncSnapshotWithSession(
   snapshot: AppSnapshot,
@@ -134,13 +135,14 @@ async function loadRemoteSnapshot() {
   return (await response.json().catch(() => null)) as RemoteSnapshotPayload | null
 }
 
-async function saveRemoteSnapshot(snapshot: AppSnapshot) {
+async function saveRemoteSnapshot(snapshot: AppSnapshot, options?: { keepalive?: boolean }) {
   const response = await fetch("/api/app/snapshot", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "same-origin",
+    keepalive: options?.keepalive ?? false,
     body: JSON.stringify({ snapshot }),
   })
 
@@ -165,6 +167,11 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
   const [isReady, setIsReady] = useState(false)
   const lastRemoteSyncedRef = useRef<string | null>(null)
   const saveSequenceRef = useRef(0)
+  const snapshotRef = useRef<AppSnapshot>(snapshot)
+
+  useEffect(() => {
+    snapshotRef.current = snapshot
+  }, [snapshot])
 
   useEffect(() => {
     if (!isAuthReady) return
@@ -222,6 +229,123 @@ export function AppStoreProvider({ children }: PropsWithChildren) {
     document.documentElement.dataset.theme = theme
     document.body.dataset.theme = theme
   }, [snapshot.settings.theme])
+
+  useEffect(() => {
+    if (!isReady || !isAuthReady || !session?.user.id) return
+
+    let cancelled = false
+
+    async function pullRemoteSnapshotIntoStore() {
+      const remotePayload = await loadRemoteSnapshot().catch(() => null)
+      if (!remotePayload || cancelled) return
+
+      setSnapshot((current) => {
+        const currentWithSession = syncSnapshotWithSession(
+          current,
+          session?.user ?? null,
+          remotePayload.workspaceId ?? current.context.workspaceId ?? null,
+        )
+        const remoteSnapshot = remotePayload.snapshot
+          ? syncSnapshotWithSession(remotePayload.snapshot, session?.user ?? null, remotePayload.workspaceId)
+          : null
+
+        if (!remoteSnapshot) {
+          const nextSnapshot = applyRemotePayload(remotePayload, currentWithSession, session?.user ?? null)
+          const nextSerialized = JSON.stringify(nextSnapshot)
+          const currentSerialized = JSON.stringify(currentWithSession)
+          if (nextSerialized === currentSerialized) {
+            return currentWithSession
+          }
+          return nextSnapshot
+        }
+
+        const mergedRemoteAndLocal = mergeSnapshotsForSync(remoteSnapshot, currentWithSession).snapshot
+        const nextSnapshot = applyRemotePayload(
+          {
+            ...remotePayload,
+            snapshot: mergedRemoteAndLocal,
+          },
+          currentWithSession,
+          session?.user ?? null,
+        )
+        const remoteCanonicalSnapshot = applyRemotePayload(remotePayload, currentWithSession, session?.user ?? null)
+        const currentSerialized = JSON.stringify(currentWithSession)
+        const nextSerialized = JSON.stringify(nextSnapshot)
+        const remoteSerialized = JSON.stringify(remoteCanonicalSnapshot)
+
+        if (nextSerialized === currentSerialized) {
+          lastRemoteSyncedRef.current = remoteSerialized
+          return currentWithSession
+        }
+
+        lastRemoteSyncedRef.current = remoteSerialized
+        return nextSnapshot
+      })
+    }
+
+    const intervalId = window.setInterval(() => {
+      void pullRemoteSnapshotIntoStore()
+    }, REMOTE_SYNC_INTERVAL_MS)
+
+    const handleFocus = () => {
+      void pullRemoteSnapshotIntoStore()
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void pullRemoteSnapshotIntoStore()
+      }
+    }
+
+    window.addEventListener("focus", handleFocus)
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    void pullRemoteSnapshotIntoStore()
+
+    return () => {
+      cancelled = true
+      window.clearInterval(intervalId)
+      window.removeEventListener("focus", handleFocus)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
+  }, [isAuthReady, isReady, session?.user])
+
+  useEffect(() => {
+    if (!isReady || !isAuthReady || !session?.user.id) return
+
+    const flushRemoteSnapshot = () => {
+      const currentSnapshot = snapshotRef.current
+      const serialized = JSON.stringify(currentSnapshot)
+      if (lastRemoteSyncedRef.current === serialized) {
+        return
+      }
+
+      void saveRemoteSnapshot(currentSnapshot, { keepalive: true })
+        .then((result) => {
+          if (!result) return
+          const canonicalSnapshot = applyRemotePayload(result, currentSnapshot, session?.user ?? null)
+          lastRemoteSyncedRef.current = JSON.stringify(canonicalSnapshot)
+        })
+        .catch(() => {
+          // keep local state as fallback
+        })
+    }
+
+    const handlePageHide = () => flushRemoteSnapshot()
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        flushRemoteSnapshot()
+      }
+    }
+
+    window.addEventListener("pagehide", handlePageHide)
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    return () => {
+      window.removeEventListener("pagehide", handlePageHide)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
+  }, [isAuthReady, isReady, session?.user])
 
   useEffect(() => {
     if (!isReady || !isAuthReady || !session?.user.id) return
