@@ -5,6 +5,27 @@ export interface SnapshotSyncMergeResult {
   snapshot: AppSnapshot
   mergedFromConflict: boolean
 }
+function normalizeDeletedWorkItemIds(value: unknown) {
+  if (!Array.isArray(value)) return [] as string[]
+  return [...new Set(value.filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0))]
+}
+
+function getDeletedWorkItemIds(snapshot: AppSnapshot) {
+  return normalizeDeletedWorkItemIds(snapshot.deletedWorkItemIds)
+}
+
+function mergeDeletedWorkItemIds(remoteSnapshot: AppSnapshot, incomingSnapshot: AppSnapshot) {
+  return normalizeDeletedWorkItemIds([
+    ...getDeletedWorkItemIds(remoteSnapshot),
+    ...getDeletedWorkItemIds(incomingSnapshot),
+  ])
+}
+
+function filterDeletedWorkItems(items: WorkItem[], deletedWorkItemIds: string[]) {
+  if (deletedWorkItemIds.length === 0) return items
+  const deletedSet = new Set(deletedWorkItemIds)
+  return items.filter((item) => !deletedSet.has(item.id))
+}
 
 function toTimestamp(value: string | null | undefined) {
   if (!value) return 0
@@ -182,12 +203,16 @@ export function mergeSnapshotsForSync(remoteSnapshot: AppSnapshot | null, incomi
 
   if (!remoteSnapshot) {
     return {
-      snapshot: normalizedIncoming,
+      snapshot: reconcileAppSnapshot({
+        ...normalizedIncoming,
+        deletedWorkItemIds: getDeletedWorkItemIds(normalizedIncoming),
+      }),
       mergedFromConflict: false,
     }
   }
 
   const normalizedRemote = reconcileAppSnapshot(remoteSnapshot)
+  const deletedWorkItemIds = mergeDeletedWorkItemIds(normalizedRemote, normalizedIncoming)
   const mergedSnapshot = reconcileAppSnapshot({
     ...normalizedRemote,
     ...normalizedIncoming,
@@ -198,8 +223,12 @@ export function mergeSnapshotsForSync(remoteSnapshot: AppSnapshot | null, incomi
     },
     billing: normalizedIncoming.billing,
     settings: normalizedIncoming.settings,
+    deletedWorkItemIds,
     leads: mergeCollection(normalizedRemote.leads, normalizedIncoming.leads, mergeLeadRecords),
-    items: mergeCollection(normalizedRemote.items, normalizedIncoming.items, mergeWorkItemRecords),
+    items: filterDeletedWorkItems(
+      mergeCollection(normalizedRemote.items, normalizedIncoming.items, mergeWorkItemRecords),
+      deletedWorkItemIds,
+    ),
   })
 
   return {
@@ -213,5 +242,8 @@ export function resolveSnapshotAfterConflictRefetch(localSnapshot: AppSnapshot, 
     return reconcileAppSnapshot(localSnapshot)
   }
 
-  return reconcileAppSnapshot(refetchedRemoteSnapshot)
+  return reconcileAppSnapshot({
+    ...refetchedRemoteSnapshot,
+    deletedWorkItemIds: mergeDeletedWorkItemIds(localSnapshot, refetchedRemoteSnapshot),
+  })
 }

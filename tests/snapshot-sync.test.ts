@@ -5,6 +5,7 @@ import { buildLeadComputedState } from "../lib/domain/lead-state"
 import {
   addItemSnapshot,
   addLeadSnapshot,
+  deleteItemSnapshot,
   toggleItemDoneSnapshot,
   updateItemSnapshot,
   updateLeadSnapshot,
@@ -264,3 +265,59 @@ test("po konflikcie refetch bierze kanoniczny snapshot z serwera bez miksu stare
   assert.equal(resolved.items[0]?.scheduledAt, "2026-04-09T12:00:00.000Z")
 })
 
+
+test("usuniÄ™ty task nie wraca po merge sync ze starszego snapshotu", () => {
+  const base = createInitialSnapshot()
+  base.context.workspaceId = "workspace_1"
+  base.leads = [
+    createLead({
+      nextActionTitle: "Task do usuniÄ™cia",
+      nextActionAt: "2026-04-08T09:00:00.000Z",
+      nextActionItemId: "item_1",
+    }),
+  ]
+  base.items = [
+    createItem({
+      id: "item_1",
+      type: "follow_up",
+      title: "Task do usuniÄ™cia",
+      scheduledAt: "2026-04-08T09:00:00.000Z",
+    }),
+  ]
+
+  const remote = cloneSnapshot(base)
+  const incoming = deleteItemSnapshot(base, "item_1")
+
+  const result = mergeSnapshotsForSync(remote, incoming)
+
+  assert.equal(result.snapshot.items.some((item) => item.id === "item_1"), false)
+  assert.equal((result.snapshot.deletedWorkItemIds ?? []).includes("item_1"), true)
+})
+
+test("refetch po konflikcie nie przywraca lokalnie usuniÄ™tego taska", () => {
+  const base = createInitialSnapshot()
+  base.context.workspaceId = "workspace_1"
+  base.leads = [
+    createLead({
+      nextActionTitle: "Task do usuniÄ™cia",
+      nextActionAt: "2026-04-08T09:00:00.000Z",
+      nextActionItemId: "item_1",
+    }),
+  ]
+  base.items = [
+    createItem({
+      id: "item_1",
+      type: "follow_up",
+      title: "Task do usuniÄ™cia",
+      scheduledAt: "2026-04-08T09:00:00.000Z",
+    }),
+  ]
+
+  const localDeleted = deleteItemSnapshot(base, "item_1")
+  const refetchedRemote = cloneSnapshot(base)
+
+  const resolved = resolveSnapshotAfterConflictRefetch(localDeleted, refetchedRemote)
+
+  assert.equal(resolved.items.some((item) => item.id === "item_1"), false)
+  assert.equal((resolved.deletedWorkItemIds ?? []).includes("item_1"), true)
+})

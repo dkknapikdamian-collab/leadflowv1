@@ -549,3 +549,28 @@ test("edycja linked next action item nie może zamienić go w event ani ukryć z
   assert.equal(item.showInCalendar, true)
 })
 
+
+test("deleteItemSnapshot zapisuje tombstone usuniÄ™tego taska", () => {
+  const snapshot = addLeadSnapshot(createInitialSnapshot(), {
+    name: "Lead z tombstone",
+    company: "",
+    email: "",
+    phone: "",
+    source: "Inne",
+    value: 0,
+    summary: "",
+    notes: "",
+    status: "new",
+    priority: "medium",
+    nextActionTitle: "UsunÄ…Ä‡ task",
+    nextActionAt: addDaysAt(0, 10, 0),
+  })
+
+  const lead = snapshot.leads[0]!
+  const deletedItemId = lead.nextActionItemId!
+  const updated = deleteItemSnapshot(snapshot, deletedItemId)
+  const deletedWorkItemIds = updated.deletedWorkItemIds ?? []
+
+  assert.equal(deletedWorkItemIds.includes(deletedItemId), true)
+  assert.equal(updated.items.some((item) => item.id === deletedItemId), false)
+})

@@ -102,6 +102,45 @@ function normalizeItem(item: Partial<WorkItem> | undefined, initialItem: WorkIte
 function normalizeLeadLabel(value: string | null | undefined) {
   return value?.trim() ?? ""
 }
+function normalizeDeletedWorkItemIds(value: unknown) {
+  if (!Array.isArray(value)) return [] as string[]
+  return [...new Set(value.filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0))]
+}
+
+function getDeletedWorkItemIds(snapshot: AppSnapshot) {
+  return normalizeDeletedWorkItemIds(snapshot.deletedWorkItemIds)
+}
+
+function withDeletedWorkItemIds(snapshot: AppSnapshot, deletedWorkItemIds: string[]): AppSnapshot {
+  return {
+    ...snapshot,
+    deletedWorkItemIds: normalizeDeletedWorkItemIds(deletedWorkItemIds),
+  }
+}
+
+function appendDeletedWorkItemIds(snapshot: AppSnapshot, itemIds: string[]): AppSnapshot {
+  if (itemIds.length === 0) {
+    return withDeletedWorkItemIds(snapshot, getDeletedWorkItemIds(snapshot))
+  }
+
+  return withDeletedWorkItemIds(snapshot, [...getDeletedWorkItemIds(snapshot), ...itemIds])
+}
+
+function applyDeletedWorkItemTombstones(snapshot: AppSnapshot): AppSnapshot {
+  const deletedWorkItemIds = getDeletedWorkItemIds(snapshot)
+  if (deletedWorkItemIds.length === 0) {
+    return withDeletedWorkItemIds(snapshot, [])
+  }
+
+  const deletedSet = new Set(deletedWorkItemIds)
+  return withDeletedWorkItemIds(
+    {
+      ...snapshot,
+      items: snapshot.items.filter((item) => !deletedSet.has(item.id)),
+    },
+    deletedWorkItemIds,
+  )
+}
 
 function isLikelyLegacyDemoSnapshot(parsed: Partial<AppSnapshot>) {
   return parsed.context?.seedKind === "demo"
@@ -191,10 +230,12 @@ function migrateLegacyLeadActionItems(leads: Lead[], items: WorkItem[]) {
 }
 
 export function reconcileAppSnapshot(snapshot: AppSnapshot): AppSnapshot {
-  const items = snapshot.items.map((item) => normalizeItemLeadRelation(item, snapshot.leads))
-  const leads = synchronizeLeadSnapshot(snapshot.leads, items)
+  const sanitizedSnapshot = applyDeletedWorkItemTombstones(snapshot)
+  const items = sanitizedSnapshot.items.map((item) => normalizeItemLeadRelation(item, sanitizedSnapshot.leads))
+  const leads = synchronizeLeadSnapshot(sanitizedSnapshot.leads, items)
   return {
-    ...snapshot,
+    ...sanitizedSnapshot,
+    deletedWorkItemIds: getDeletedWorkItemIds(sanitizedSnapshot),
     leads,
     items,
   }
@@ -407,6 +448,7 @@ export function loadSnapshot(raw: string | null | undefined): AppSnapshot {
         ...initial.settings,
         ...parsed.settings,
       },
+      deletedWorkItemIds: normalizeDeletedWorkItemIds(parsed.deletedWorkItemIds),
       leads: migrated.leads,
       items: migrated.items,
     })
@@ -516,11 +558,18 @@ export function updateLeadSnapshot(snapshot: AppSnapshot, leadId: string, patch:
 }
 
 export function deleteLeadSnapshot(snapshot: AppSnapshot, leadId: string): AppSnapshot {
-  return reconcileAppSnapshot({
-    ...snapshot,
-    leads: snapshot.leads.filter((lead) => lead.id !== leadId),
-    items: snapshot.items.filter((item) => item.leadId !== leadId),
-  })
+  const deletedItemIds = snapshot.items.filter((item) => item.leadId === leadId).map((item) => item.id)
+
+  return reconcileAppSnapshot(
+    appendDeletedWorkItemIds(
+      {
+        ...snapshot,
+        leads: snapshot.leads.filter((lead) => lead.id !== leadId),
+        items: snapshot.items.filter((item) => item.leadId !== leadId),
+      },
+      deletedItemIds,
+    ),
+  )
 }
 
 export function addItemSnapshot(snapshot: AppSnapshot, payload: WorkItemInput): AppSnapshot {
@@ -566,10 +615,15 @@ export function updateItemSnapshot(snapshot: AppSnapshot, itemId: string, patch:
 }
 
 export function deleteItemSnapshot(snapshot: AppSnapshot, itemId: string): AppSnapshot {
-  return reconcileAppSnapshot({
-    ...snapshot,
-    items: snapshot.items.filter((item) => item.id !== itemId),
-  })
+  return reconcileAppSnapshot(
+    appendDeletedWorkItemIds(
+      {
+        ...snapshot,
+        items: snapshot.items.filter((item) => item.id !== itemId),
+      },
+      [itemId],
+    ),
+  )
 }
 
 export function toggleItemDoneSnapshot(snapshot: AppSnapshot, itemId: string): AppSnapshot {

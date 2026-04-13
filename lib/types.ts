@@ -392,6 +392,7 @@ export interface AppSnapshot {
   activityLog?: ActivityLogEntry[]
   notifications?: AppNotification[]
   clientPortalTokens?: ClientPortalToken[]
+  deletedWorkItemIds?: string[]
 }
 
 export interface ProfileRecord {
