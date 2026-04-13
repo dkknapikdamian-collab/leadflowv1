@@ -11,7 +11,7 @@ import {
   updateLeadSnapshot,
 } from "../lib/snapshot"
 import { mergeSnapshotsForSync, resolveSnapshotAfterConflictRefetch } from "../lib/data/snapshot-sync"
-import type { AppSnapshot, Lead, WorkItem } from "../lib/types"
+import type { Lead, WorkItem } from "../lib/types"
 
 function cloneSnapshot<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
@@ -65,7 +65,7 @@ function createItem(overrides: Partial<WorkItem> = {}): WorkItem {
   }
 }
 
-test("sync łączy follow-up z telefonu i zmianę statusu leada z laptopa", () => {
+test("sync laczy follow-up z telefonu i zmiane statusu leada z laptopa", () => {
   const base = addLeadSnapshot(createInitialSnapshot(), {
     name: "Lead sync",
     company: "",
@@ -84,7 +84,7 @@ test("sync łączy follow-up z telefonu i zmianę statusu leada z laptopa", () =
 
   const remote = updateLeadSnapshot(base, leadId, { status: "contacted" })
   const incoming = updateLeadSnapshot(base, leadId, {
-    nextActionTitle: "Oddzwonić jutro",
+    nextActionTitle: "Oddzwonic jutro",
     nextActionAt: "2026-04-08T10:00:00.000Z",
   })
 
@@ -94,12 +94,12 @@ test("sync łączy follow-up z telefonu i zmianę statusu leada z laptopa", () =
   assert.equal(result.mergedFromConflict, true)
   assert.ok(mergedLead)
   assert.equal(mergedLead?.status, "contacted")
-  assert.equal(mergedLead?.nextActionTitle, "Oddzwonić jutro")
+  assert.equal(mergedLead?.nextActionTitle, "Oddzwonic jutro")
   assert.equal(mergedLead?.nextActionAt, "2026-04-08T10:00:00.000Z")
   assert.equal(typeof mergedLead?.nextActionItemId, "string")
 })
 
-test("sync łączy done z telefonu i edycję tego samego taska z laptopa bez utraty zmian", () => {
+test("sync laczy done z telefonu i edycje tego samego taska z laptopa bez utraty zmian", () => {
   const base = createInitialSnapshot()
   base.context.workspaceId = "workspace_1"
   base.leads = [
@@ -120,7 +120,7 @@ test("sync łączy done z telefonu i edycję tego samego taska z laptopa bez utr
 
   const remote = toggleItemDoneSnapshot(base, "item_1")
   const incoming = updateItemSnapshot(base, "item_1", {
-    title: "Nowy tytuł taska",
+    title: "Nowy tytul taska",
     scheduledAt: "2026-04-10T12:00:00.000Z",
   })
 
@@ -135,13 +135,13 @@ test("sync łączy done z telefonu i edycję tego samego taska z laptopa bez utr
   assert.equal(result.mergedFromConflict, true)
   assert.ok(mergedItem)
   assert.equal(mergedItem?.status, "done")
-  assert.equal(mergedItem?.title, "Nowy tytuł taska")
+  assert.equal(mergedItem?.title, "Nowy tytul taska")
   assert.equal(mergedItem?.scheduledAt, "2026-04-10T12:00:00.000Z")
   assert.equal(mergedLead.nextActionItemId, null)
   assert.equal(computed.hasNextStep, false)
 })
 
-test("sync łączy waiting z jednego klienta i nowy next step z drugiego, a isWaitingTooLong liczy się od nowa", () => {
+test("sync laczy waiting z jednego klienta i nowy next step z drugiego, a isWaitingTooLong liczy sie od nowa", () => {
   const base = createInitialSnapshot()
   base.context.workspaceId = "workspace_1"
   base.leads = [
@@ -155,7 +155,7 @@ test("sync łączy waiting z jednego klienta i nowy next step z drugiego, a isWa
       id: "reply_done",
       type: "reply",
       status: "done",
-      title: "Odpowiedź na wiadomość",
+      title: "Odpowiedz na wiadomosc",
       scheduledAt: "2026-04-02T09:00:00.000Z",
       updatedAt: "2026-04-02T10:00:00.000Z",
     }),
@@ -163,7 +163,7 @@ test("sync łączy waiting z jednego klienta i nowy next step z drugiego, a isWa
 
   const remote = updateLeadSnapshot(base, "lead_1", { status: "offer_sent" })
   const incoming = updateLeadSnapshot(base, "lead_1", {
-    nextActionTitle: "Sprawdzić odpowiedź",
+    nextActionTitle: "Sprawdzic odpowiedz",
     nextActionAt: "2026-04-08T10:00:00.000Z",
   })
 
@@ -176,7 +176,7 @@ test("sync łączy waiting z jednego klienta i nowy next step z drugiego, a isWa
 
   assert.equal(result.mergedFromConflict, true)
   assert.equal(mergedLead.status, "offer_sent")
-  assert.equal(mergedLead.nextActionTitle, "Sprawdzić odpowiedź")
+  assert.equal(mergedLead.nextActionTitle, "Sprawdzic odpowiedz")
   assert.equal(computed.isWaitingTooLong, true)
   assert.equal(computed.riskReason, "waiting_too_long")
 })
@@ -265,13 +265,12 @@ test("po konflikcie refetch bierze kanoniczny snapshot z serwera bez miksu stare
   assert.equal(resolved.items[0]?.scheduledAt, "2026-04-09T12:00:00.000Z")
 })
 
-
-test("usuniÄ™ty task nie wraca po merge sync ze starszego snapshotu", () => {
+test("usuniety task nie wraca po merge sync ze starszego snapshotu", () => {
   const base = createInitialSnapshot()
   base.context.workspaceId = "workspace_1"
   base.leads = [
     createLead({
-      nextActionTitle: "Task do usuniÄ™cia",
+      nextActionTitle: "Task do usuniecia",
       nextActionAt: "2026-04-08T09:00:00.000Z",
       nextActionItemId: "item_1",
     }),
@@ -280,7 +279,7 @@ test("usuniÄ™ty task nie wraca po merge sync ze starszego snapshotu", () => {
     createItem({
       id: "item_1",
       type: "follow_up",
-      title: "Task do usuniÄ™cia",
+      title: "Task do usuniecia",
       scheduledAt: "2026-04-08T09:00:00.000Z",
     }),
   ]
@@ -294,12 +293,12 @@ test("usuniÄ™ty task nie wraca po merge sync ze starszego snapshotu", () => {
   assert.equal((result.snapshot.deletedWorkItemIds ?? []).includes("item_1"), true)
 })
 
-test("refetch po konflikcie nie przywraca lokalnie usuniÄ™tego taska", () => {
+test("refetch po konflikcie nie przywraca lokalnie usunietego taska", () => {
   const base = createInitialSnapshot()
   base.context.workspaceId = "workspace_1"
   base.leads = [
     createLead({
-      nextActionTitle: "Task do usuniÄ™cia",
+      nextActionTitle: "Task do usuniecia",
       nextActionAt: "2026-04-08T09:00:00.000Z",
       nextActionItemId: "item_1",
     }),
@@ -308,7 +307,7 @@ test("refetch po konflikcie nie przywraca lokalnie usuniÄ™tego taska", () => 
     createItem({
       id: "item_1",
       type: "follow_up",
-      title: "Task do usuniÄ™cia",
+      title: "Task do usuniecia",
       scheduledAt: "2026-04-08T09:00:00.000Z",
     }),
   ]
@@ -320,4 +319,172 @@ test("refetch po konflikcie nie przywraca lokalnie usuniÄ™tego taska", () => 
 
   assert.equal(resolved.items.some((item) => item.id === "item_1"), false)
   assert.equal((resolved.deletedWorkItemIds ?? []).includes("item_1"), true)
+})
+
+test("sync nie gubi case lifecycle, tokenow i notification przy konflikcie runtime", () => {
+  const base = createInitialSnapshot()
+  base.context.workspaceId = "workspace_1"
+  base.contacts = [
+    {
+      id: "contact_1",
+      workspaceId: "workspace_1",
+      createdByUserId: "user_1",
+      name: "Jan Klient",
+      company: "Firma",
+      email: "jan@example.com",
+      phone: "+48123123123",
+      normalizedEmail: "jan@example.com",
+      normalizedPhone: "+48123123123",
+      createdAt: "2026-04-01T08:00:00.000Z",
+      updatedAt: "2026-04-01T08:00:00.000Z",
+    },
+  ]
+  base.cases = [
+    {
+      id: "case_1",
+      workspaceId: "workspace_1",
+      contactId: "contact_1",
+      sourceLeadId: "lead_1",
+      templateId: null,
+      createdByUserId: "user_1",
+      ownerUserId: "user_1",
+      title: "Case testowy",
+      description: "",
+      status: "collecting_materials",
+      blockedByMissingRequired: false,
+      priority: "high",
+      value: 1000,
+      startAt: null,
+      dueAt: null,
+      closedAt: null,
+      createdAt: "2026-04-02T08:00:00.000Z",
+      updatedAt: "2026-04-02T08:00:00.000Z",
+    },
+  ]
+  base.caseItems = [
+    {
+      id: "case_item_1",
+      workspaceId: "workspace_1",
+      caseId: "case_1",
+      templateItemId: null,
+      createdByUserId: "user_1",
+      ownerUserId: "user_1",
+      sortOrder: 100,
+      kind: "document",
+      title: "Umowa",
+      description: "",
+      status: "request_sent",
+      required: true,
+      dueAt: null,
+      completedAt: null,
+      createdAt: "2026-04-02T08:05:00.000Z",
+      updatedAt: "2026-04-02T08:05:00.000Z",
+    },
+  ]
+  base.clientPortalTokens = [
+    {
+      id: "portal_1",
+      workspaceId: "workspace_1",
+      caseId: "case_1",
+      contactId: "contact_1",
+      tokenHash: "hash_1",
+      createdByUserId: "user_1",
+      expiresAt: "2026-05-01T08:00:00.000Z",
+      revokedAt: null,
+      lastUsedAt: null,
+      createdAt: "2026-04-02T08:10:00.000Z",
+      updatedAt: "2026-04-02T08:10:00.000Z",
+    },
+  ]
+  base.notifications = []
+  base.activityLog = []
+
+  const remote = cloneSnapshot(base)
+  remote.cases![0] = {
+    ...remote.cases![0]!,
+    status: "waiting_for_client",
+    blockedByMissingRequired: true,
+    updatedAt: "2026-04-07T10:00:00.000Z",
+  }
+  remote.caseItems![0] = {
+    ...remote.caseItems![0]!,
+    status: "delivered",
+    updatedAt: "2026-04-07T10:00:00.000Z",
+  }
+  remote.activityLog = [
+    {
+      id: "activity_remote",
+      workspaceId: "workspace_1",
+      actorUserId: "user_1",
+      actorContactId: null,
+      source: "system",
+      type: "case_status_changed",
+      leadId: "lead_1",
+      caseId: "case_1",
+      caseItemId: null,
+      attachmentId: null,
+      approvalId: null,
+      notificationId: null,
+      payload: { status: "waiting_for_client" },
+      createdAt: "2026-04-07T10:00:00.000Z",
+    },
+  ]
+
+  const incoming = cloneSnapshot(base)
+  incoming.notifications = [
+    {
+      id: "notif_1",
+      workspaceId: "workspace_1",
+      caseId: "case_1",
+      caseItemId: null,
+      leadId: "lead_1",
+      contactId: "contact_1",
+      channel: "in_app",
+      status: "queued",
+      title: "Przypomnienie",
+      body: "Czekamy na klienta",
+      scheduledAt: "2026-04-07T11:00:00.000Z",
+      sentAt: null,
+      readAt: null,
+      createdAt: "2026-04-07T11:00:00.000Z",
+      updatedAt: "2026-04-07T11:00:00.000Z",
+    },
+  ]
+  incoming.clientPortalTokens![0] = {
+    ...incoming.clientPortalTokens![0]!,
+    revokedAt: "2026-04-07T11:05:00.000Z",
+    updatedAt: "2026-04-07T11:05:00.000Z",
+  }
+  incoming.activityLog = [
+    {
+      id: "activity_local",
+      workspaceId: "workspace_1",
+      actorUserId: "user_1",
+      actorContactId: null,
+      source: "operations",
+      type: "notification_scheduled",
+      leadId: "lead_1",
+      caseId: "case_1",
+      caseItemId: null,
+      attachmentId: null,
+      approvalId: null,
+      notificationId: "notif_1",
+      payload: { channel: "in_app" },
+      createdAt: "2026-04-07T11:00:00.000Z",
+    },
+  ]
+
+  const result = mergeSnapshotsForSync(remote, incoming)
+  const mergedCase = result.snapshot.cases?.find((entry) => entry.id === "case_1")
+  const mergedCaseItem = result.snapshot.caseItems?.find((entry) => entry.id === "case_item_1")
+  const mergedToken = result.snapshot.clientPortalTokens?.find((entry) => entry.id === "portal_1")
+
+  assert.equal(result.mergedFromConflict, true)
+  assert.equal(mergedCase?.status, "waiting_for_client")
+  assert.equal(mergedCase?.blockedByMissingRequired, true)
+  assert.equal(mergedCaseItem?.status, "delivered")
+  assert.equal(mergedToken?.revokedAt, "2026-04-07T11:05:00.000Z")
+  assert.equal(result.snapshot.notifications?.some((entry) => entry.id === "notif_1"), true)
+  assert.equal(result.snapshot.activityLog?.some((entry) => entry.id === "activity_remote"), true)
+  assert.equal(result.snapshot.activityLog?.some((entry) => entry.id === "activity_local"), true)
 })

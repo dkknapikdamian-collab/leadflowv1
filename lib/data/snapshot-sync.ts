@@ -1,10 +1,25 @@
 import { reconcileAppSnapshot } from "../snapshot"
-import type { AppSnapshot, Lead, WorkItem } from "../types"
+import type {
+  ActivityLogEntry,
+  AppNotification,
+  AppSnapshot,
+  Approval,
+  Case,
+  CaseItem,
+  CaseTemplate,
+  ClientPortalToken,
+  Contact,
+  FileAttachment,
+  Lead,
+  TemplateItem,
+  WorkItem,
+} from "../types"
 
 export interface SnapshotSyncMergeResult {
   snapshot: AppSnapshot
   mergedFromConflict: boolean
 }
+
 function normalizeDeletedWorkItemIds(value: unknown) {
   if (!Array.isArray(value)) return [] as string[]
   return [...new Set(value.filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0))]
@@ -87,6 +102,10 @@ function getRecordTimestamp(record: { updatedAt: string; createdAt: string }) {
   return toTimestamp(record.createdAt)
 }
 
+function getCreatedTimestamp(record: { createdAt: string }) {
+  return toTimestamp(record.createdAt)
+}
+
 function pickLatestLeadRecord<T extends { updatedAt: string; createdAt: string }>(left: T, right: T) {
   return getRecordTimestamp(right) > getRecordTimestamp(left) ? right : left
 }
@@ -95,8 +114,16 @@ function pickLatestWorkItemRecord<T extends { updatedAt: string; createdAt: stri
   return getRecordTimestamp(right) >= getRecordTimestamp(left) ? right : left
 }
 
+function pickLatestDatedRecord<T extends { updatedAt: string; createdAt: string }>(left: T, right: T) {
+  return getRecordTimestamp(right) >= getRecordTimestamp(left) ? right : left
+}
+
 function sortByRecentUpdate<T extends { updatedAt: string; createdAt: string }>(left: T, right: T) {
   return getRecordTimestamp(right) - getRecordTimestamp(left) || right.createdAt.localeCompare(left.createdAt)
+}
+
+function sortByRecentCreate<T extends { createdAt: string }>(left: T, right: T) {
+  return getCreatedTimestamp(right) - getCreatedTimestamp(left) || right.createdAt.localeCompare(left.createdAt)
 }
 
 function stripItemSyncFields(item: WorkItem) {
@@ -174,6 +201,24 @@ function mergeWorkItemRecords(remote: WorkItem, incoming: WorkItem): WorkItem {
   }
 }
 
+function mergeDatedRecords<T extends { id: string; updatedAt: string; createdAt: string }>(remote: T, incoming: T): T {
+  const latest = pickLatestDatedRecord(remote, incoming)
+  const stale = latest === remote ? incoming : remote
+
+  return {
+    ...stale,
+    ...latest,
+    id: latest.id,
+    createdAt: getEarliestIso(remote.createdAt, incoming.createdAt),
+    updatedAt: getLatestUpdatedAt(
+      remote.updatedAt,
+      incoming.updatedAt,
+      remote.createdAt,
+      incoming.createdAt,
+    ),
+  }
+}
+
 function mergeCollection<T extends { id: string; updatedAt: string; createdAt: string }>(
   remoteRecords: T[],
   incomingRecords: T[],
@@ -196,6 +241,59 @@ function mergeCollection<T extends { id: string; updatedAt: string; createdAt: s
     })
     .filter((record): record is T => Boolean(record))
     .sort(sortByRecentUpdate)
+}
+
+function mergeAppendOnlyCollection<T extends { id: string; createdAt: string }>(remoteRecords: T[], incomingRecords: T[]) {
+  const recordsById = new Map<string, T>()
+
+  for (const record of [...remoteRecords, ...incomingRecords]) {
+    const current = recordsById.get(record.id)
+    if (!current || getCreatedTimestamp(record) >= getCreatedTimestamp(current)) {
+      recordsById.set(record.id, record)
+    }
+  }
+
+  return [...recordsById.values()].sort(sortByRecentCreate)
+}
+
+function mergeContacts(remoteRecords: Contact[], incomingRecords: Contact[]) {
+  return mergeCollection(remoteRecords, incomingRecords, mergeDatedRecords)
+}
+
+function mergeCases(remoteRecords: Case[], incomingRecords: Case[]) {
+  return mergeCollection(remoteRecords, incomingRecords, mergeDatedRecords)
+}
+
+function mergeCaseTemplates(remoteRecords: CaseTemplate[], incomingRecords: CaseTemplate[]) {
+  return mergeCollection(remoteRecords, incomingRecords, mergeDatedRecords)
+}
+
+function mergeTemplateItems(remoteRecords: TemplateItem[], incomingRecords: TemplateItem[]) {
+  return mergeCollection(remoteRecords, incomingRecords, mergeDatedRecords)
+}
+
+function mergeCaseItems(remoteRecords: CaseItem[], incomingRecords: CaseItem[]) {
+  return mergeCollection(remoteRecords, incomingRecords, mergeDatedRecords)
+}
+
+function mergeApprovals(remoteRecords: Approval[], incomingRecords: Approval[]) {
+  return mergeCollection(remoteRecords, incomingRecords, mergeDatedRecords)
+}
+
+function mergeNotifications(remoteRecords: AppNotification[], incomingRecords: AppNotification[]) {
+  return mergeCollection(remoteRecords, incomingRecords, mergeDatedRecords)
+}
+
+function mergeClientPortalTokens(remoteRecords: ClientPortalToken[], incomingRecords: ClientPortalToken[]) {
+  return mergeCollection(remoteRecords, incomingRecords, mergeDatedRecords)
+}
+
+function mergeActivityLog(remoteRecords: ActivityLogEntry[], incomingRecords: ActivityLogEntry[]) {
+  return mergeAppendOnlyCollection(remoteRecords, incomingRecords)
+}
+
+function mergeFileAttachments(remoteRecords: FileAttachment[], incomingRecords: FileAttachment[]) {
+  return mergeAppendOnlyCollection(remoteRecords, incomingRecords)
 }
 
 export function mergeSnapshotsForSync(remoteSnapshot: AppSnapshot | null, incomingSnapshot: AppSnapshot): SnapshotSyncMergeResult {
@@ -228,6 +326,19 @@ export function mergeSnapshotsForSync(remoteSnapshot: AppSnapshot | null, incomi
     items: filterDeletedWorkItems(
       mergeCollection(normalizedRemote.items, normalizedIncoming.items, mergeWorkItemRecords),
       deletedWorkItemIds,
+    ),
+    contacts: mergeContacts(normalizedRemote.contacts ?? [], normalizedIncoming.contacts ?? []),
+    cases: mergeCases(normalizedRemote.cases ?? [], normalizedIncoming.cases ?? []),
+    caseTemplates: mergeCaseTemplates(normalizedRemote.caseTemplates ?? [], normalizedIncoming.caseTemplates ?? []),
+    templateItems: mergeTemplateItems(normalizedRemote.templateItems ?? [], normalizedIncoming.templateItems ?? []),
+    caseItems: mergeCaseItems(normalizedRemote.caseItems ?? [], normalizedIncoming.caseItems ?? []),
+    fileAttachments: mergeFileAttachments(normalizedRemote.fileAttachments ?? [], normalizedIncoming.fileAttachments ?? []),
+    approvals: mergeApprovals(normalizedRemote.approvals ?? [], normalizedIncoming.approvals ?? []),
+    activityLog: mergeActivityLog(normalizedRemote.activityLog ?? [], normalizedIncoming.activityLog ?? []),
+    notifications: mergeNotifications(normalizedRemote.notifications ?? [], normalizedIncoming.notifications ?? []),
+    clientPortalTokens: mergeClientPortalTokens(
+      normalizedRemote.clientPortalTokens ?? [],
+      normalizedIncoming.clientPortalTokens ?? [],
     ),
   })
 
