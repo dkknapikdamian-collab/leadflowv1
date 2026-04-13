@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useMemo } from "react"
 import { useAppStore } from "@/lib/store"
 import { buildCasesDashboard } from "@/lib/domain/cases-dashboard"
+import { buildLeadProcessSurfaceSummaryMap } from "@/lib/domain/lead-process-surface"
 import {
   buildLeadsWithComputedState,
   formatLeadAlarmReasonLabel,
@@ -50,23 +51,66 @@ function LeadStatusBadge({ status }: { status: string }) {
   return <span className={`badge status-${status}`}>{getStatusLabel(status as never)}</span>
 }
 
+function getLeadProcessStageLabel(stage: string) {
+  switch (stage) {
+    case "sales_attention":
+      return "Sprzedaż wymaga ruchu"
+    case "sales_scheduled":
+      return "Sprzedaż ustawiona"
+    case "ready_for_operations":
+      return "Gotowy do operacji"
+    case "in_operations":
+      return "W operacjach"
+    case "closed":
+      return "Zamknięty"
+    default:
+      return stage
+  }
+}
+
 export function OperatorCenterPageView() {
   const { snapshot } = useAppStore()
   const dateOptions = useMemo(() => ({ timeZone: snapshot.settings.timezone }), [snapshot.settings.timezone])
 
   const leads = useMemo(() => buildLeadsWithComputedState(snapshot, dateOptions), [snapshot, dateOptions])
   const leadSummary = useMemo(() => buildLeadOwnerSummary(leads), [leads])
+  const leadProcessSurfaceMap = useMemo(() => buildLeadProcessSurfaceSummaryMap(snapshot, dateOptions), [snapshot, dateOptions])
 
   const casesDashboard = useMemo(() => buildCasesDashboard(snapshot, dateOptions), [snapshot, dateOptions])
   const caseSummary = useMemo(() => buildCaseOwnerSummary(casesDashboard.cards), [casesDashboard.cards])
 
+  const readyForOperationsCount = useMemo(
+    () => Object.values(leadProcessSurfaceMap).filter((surface) => surface.stage === "ready_for_operations").length,
+    [leadProcessSurfaceMap],
+  )
+
+  const alreadyInOperationsCount = useMemo(
+    () => Object.values(leadProcessSurfaceMap).filter((surface) => surface.stage === "in_operations").length,
+    [leadProcessSurfaceMap],
+  )
+
   const topLeadMoves = useMemo(
     () =>
       leads
-        .filter((lead) => lead.computed.dailyPriorityScore > 0 || lead.computed.isAtRisk || !lead.computed.hasNextStep)
-        .sort((left, right) => right.computed.dailyPriorityScore - left.computed.dailyPriorityScore)
+        .filter((lead) => {
+          const surface = leadProcessSurfaceMap[lead.id]
+          return Boolean(
+            surface && (
+              surface.stage === "sales_attention"
+              || surface.stage === "ready_for_operations"
+              || surface.stage === "in_operations"
+            ),
+          )
+        })
+        .sort((left, right) => {
+          const leftSurface = leadProcessSurfaceMap[left.id]
+          const rightSurface = leadProcessSurfaceMap[right.id]
+          const leftWeight = leftSurface?.stage === "ready_for_operations" ? 3 : leftSurface?.stage === "sales_attention" ? 2 : leftSurface?.stage === "in_operations" ? 1 : 0
+          const rightWeight = rightSurface?.stage === "ready_for_operations" ? 3 : rightSurface?.stage === "sales_attention" ? 2 : rightSurface?.stage === "in_operations" ? 1 : 0
+          return rightWeight - leftWeight || right.computed.dailyPriorityScore - left.computed.dailyPriorityScore
+        })
         .slice(0, 5),
-    [leads],
+    [leadProcessSurfaceMap, leads],
   )
 
   const topCaseMoves = useMemo(
@@ -88,7 +132,7 @@ export function OperatorCenterPageView() {
         <div>
           <h1 className="page-title">Operator Center</h1>
           <p className="page-subtitle">
-            Jedno miejsce do oceny: co wymaga ruchu teraz, co jest zagrożone i co jest gotowe do ruszenia.
+            Jedno miejsce do oceny: co wymaga ruchu teraz, co przechodzi z leadu do case i co już żyje operacyjnie.
           </p>
         </div>
         <div className="drawer-actions wrap">
@@ -115,7 +159,7 @@ export function OperatorCenterPageView() {
           <MetricCard label="Brak next stepu" value={leadSummary.missingNextStep} tone="warning" />
           <MetricCard label="Overdue next step" value={leadSummary.overdueNextStep} tone="danger" />
           <MetricCard label="Waiting too long" value={leadSummary.waitingTooLong} tone="warning" />
-          <MetricCard label="High priority" value={leadSummary.highPriority} tone="success" />
+          <MetricCard label="Gotowe do operacji" value={readyForOperationsCount} tone="success" />
         </div>
       </section>
 
@@ -130,7 +174,7 @@ export function OperatorCenterPageView() {
           <MetricCard label="Czeka na klienta" value={caseSummary.waitingForClient} tone="warning" />
           <MetricCard label="Zablokowane" value={caseSummary.blocked} tone="danger" />
           <MetricCard label="Gotowe do startu" value={caseSummary.readyToStart} tone="success" />
-          <MetricCard label="Po terminie" value={caseSummary.overdue} tone="danger" />
+          <MetricCard label="Leady już w operacjach" value={alreadyInOperationsCount} tone="success" />
         </div>
       </section>
 
@@ -140,28 +184,37 @@ export function OperatorCenterPageView() {
           <div className="empty-box">Brak alarmowych leadów.</div>
         ) : (
           <div className="stack-list">
-            {topLeadMoves.map((lead) => (
-              <div key={lead.id} className="timeline-row" style={{ alignItems: "flex-start" }}>
-                <div style={{ display: "grid", gap: 6 }}>
-                  <div className="timeline-title">{lead.name}</div>
-                  <div className="muted-small">
-                    {lead.company || lead.source} | {formatMoney(lead.value)}
+            {topLeadMoves.map((lead) => {
+              const surface = leadProcessSurfaceMap[lead.id]
+              return (
+                <div key={lead.id} className="timeline-row" style={{ alignItems: "flex-start" }}>
+                  <div style={{ display: "grid", gap: 6 }}>
+                    <div className="timeline-title">{lead.name}</div>
+                    <div className="muted-small">
+                      {lead.company || lead.source} | {formatMoney(lead.value)}
+                    </div>
+                    <div className="muted-small">
+                      Etap: {getLeadProcessStageLabel(surface?.stage ?? "sales_attention")}
+                    </div>
+                    <div className="muted-small">
+                      {formatLeadAlarmReasonLabel(lead.computed.riskReason) || "Proces pod kontrolą"}
+                    </div>
+                    <div className="muted-small">
+                      Następny ruch: {surface?.nextMoveLabel || lead.nextActionTitle || "Ustal next step"}
+                    </div>
+                    <div className="muted-small">
+                      Otwarte: {surface?.openTaskCount ?? 0} | Overdue: {surface?.overdueTaskCount ?? 0} | Kalendarz: {surface?.calendarVisibleCount ?? 0}
+                    </div>
                   </div>
-                  <div className="muted-small">
-                    {formatLeadAlarmReasonLabel(lead.computed.riskReason) || "Najwyższy priorytet dnia"}
-                  </div>
-                  <div className="muted-small">
-                    Next step: {lead.nextActionTitle || "Brak"} | Score: {lead.computed.dailyPriorityScore}
+                  <div style={{ display: "grid", gap: 8, justifyItems: "end" }}>
+                    <LeadStatusBadge status={lead.status} />
+                    <Link className="ghost-button small" href="/leads">
+                      Otwórz leady
+                    </Link>
                   </div>
                 </div>
-                <div style={{ display: "grid", gap: 8, justifyItems: "end" }}>
-                  <LeadStatusBadge status={lead.status} />
-                  <Link className="ghost-button small" href="/leads">
-                    Otwórz leady
-                  </Link>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </section>

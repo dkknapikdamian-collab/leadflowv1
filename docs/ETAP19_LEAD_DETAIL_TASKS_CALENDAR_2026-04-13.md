@@ -18,8 +18,6 @@ Operator ma widzieć:
 - czy lead jest już gotowy do przejścia na case,
 - czy proces jest zamknięty.
 
----
-
 ## Pliki do sprawdzenia
 
 ### Widoki
@@ -40,8 +38,6 @@ Operator ma widzieć:
 - `tests/lead-process-surface.test.ts`
 - `tests/today.test.ts`
 - `tests/snapshot.test.ts`
-
----
 
 ## Zmień
 
@@ -84,19 +80,13 @@ Warstwa domenowa ma umieć odpowiedzieć:
 - ile rzeczy widać w kalendarzu,
 - czy operator powinien jeszcze sprzedawać czy już prowadzić case.
 
----
-
 ## Nie zmieniaj
-
 - nie wracaj do modelu oddzielonych światów lead / task / calendar,
 - nie zmieniaj branchy,
 - dalej pracujemy tylko na `dev-rollout-freeze`,
 - nie rozlewaj etapu o billing, contacts albo intake.
 
----
-
 ## Po wdrożeniu sprawdź
-
 - `npm test`
 - `npm run build`
 - ręczne flow:
@@ -112,10 +102,7 @@ Warstwa domenowa ma umieć odpowiedzieć:
   - Calendar
   - Today
 
----
-
 ## Kryterium zakończenia
-
 Etap jest zakończony dopiero wtedy, gdy operator może wejść w leada i bez zgadywania zobaczyć:
 - co się dzieje,
 - co ma zrobić,
