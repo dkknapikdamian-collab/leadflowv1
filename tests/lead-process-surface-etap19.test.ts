@@ -53,7 +53,7 @@ test("ETAP 19: lead z taskiem i eventem ma jedno wspólne summary procesu", () =
     value: 4800,
     summary: "",
     notes: "",
-    status: "meeting_scheduled",
+    status: "follow_up",
     priority: "high",
     nextActionTitle: "Wyślij follow-up po spotkaniu",
     nextActionAt: "2026-04-16T12:00:00.000Z",
@@ -104,7 +104,8 @@ test("ETAP 19: lead z taskiem i eventem ma jedno wspólne summary procesu", () =
   assert.equal(summary.openTaskCount, 2)
   assert.equal(summary.calendarVisibleCount, 2)
   assert.equal(summary.timelineCount, 3)
-  assert.equal(summary.nextMoveLabel, "Wyślij follow-up po spotkaniu")
+  assert.equal(summary.nextStepTitle, "Spotkanie online")
+  assert.equal(summary.nextMoveLabel, "Spotkanie online")
 })
 
 test("ETAP 19: lead won z case ready_to_start wraca jako ready_for_operations, nie in_operations", () => {
@@ -131,7 +132,8 @@ test("ETAP 19: lead won z case ready_to_start wraca jako ready_for_operations, n
   })
 
   const caseId = snapshot.leads.find((entry) => entry.id === leadId)!.caseId!
-  const existingCase = snapshot.cases.find((entry) => entry.id === caseId)!
+  const existingCase = snapshot.cases?.find((entry) => entry.id === caseId)
+  assert.ok(existingCase)
   existingCase.status = "ready_to_start"
 
   const lead = snapshot.leads.find((entry) => entry.id === leadId)!
