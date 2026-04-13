@@ -36,6 +36,7 @@ export interface LeadProcessSurfaceSummary {
   calendarVisibleCount: number
   timelineCount: number
   alarmReasons: LeadAlarmReason[]
+  riskReason: LeadAlarmReason | "none"
   nextMoveLabel: string
 }
 
@@ -152,6 +153,7 @@ export function buildLeadProcessSurfaceSummary(
     calendarVisibleCount: countCalendarVisible(items),
     timelineCount: items.length,
     alarmReasons: computed.alarmReasons,
+    riskReason: computed.riskReason,
     nextMoveLabel: resolveNextMoveLabel({
       stage,
       hasCase,
