@@ -27,27 +27,27 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/today", label: "Dziś", icon: "◌" },
-  { href: "/operator", label: "Operator", icon: "◉" },
   { href: "/leads", label: "Leady", icon: "◎" },
   { href: "/cases", label: "Sprawy", icon: "▣" },
-  { href: "/templates", label: "Szablony", icon: "◧" },
   { href: "/tasks", label: "Zadania", icon: "☰" },
   { href: "/calendar", label: "Kalendarz", icon: "◫" },
   { href: "/activity", label: "Aktywność", icon: "◍" },
+  { href: "/operator", label: "Operator+", icon: "◉" },
+  { href: "/templates", label: "Szablony", icon: "◧" },
   { href: "/billing", label: "Rozliczenia", icon: "◈" },
   { href: "/settings", label: "Ustawienia", icon: "⚙" },
 ]
 
 const MOBILE_PRIMARY_NAV: NavItem[] = [
   { href: "/today", label: "Dziś", icon: "◌" },
-  { href: "/operator", label: "Operator", icon: "◉" },
   { href: "/leads", label: "Leady", icon: "◎" },
   { href: "/cases", label: "Sprawy", icon: "▣" },
+  { href: "/tasks", label: "Zadania", icon: "☰" },
 ]
 
 const MOBILE_SECONDARY_NAV: NavItem[] = [
+  { href: "/operator", label: "Operator+", icon: "◉" },
   { href: "/templates", label: "Szablony", icon: "◧" },
-  { href: "/tasks", label: "Zadania", icon: "☰" },
   { href: "/calendar", label: "Kalendarz", icon: "◫" },
   { href: "/activity", label: "Aktywność", icon: "◍" },
   { href: "/billing", label: "Rozliczenia", icon: "◈" },
@@ -352,8 +352,8 @@ export function DashboardShell({ children }: PropsWithChildren) {
             <span className="mini-dot hot" />
           </div>
           <div className="priority-item">
-            <strong>Najpierw sprzedaż, potem blokery klienta</strong>
-            <span>Sprawdź Today i Operator Center, potem ruszaj leady bez next stepu oraz sprawy ready to start.</span>
+            <strong>Zacznij od Today. Operator traktuj pomocniczo.</strong>
+            <span>Najpierw sprawdź Today, potem ruszaj leady bez next stepu, overdue i sprawy ready to start. Operator+ zostaw jako ekran pomocniczy.</span>
           </div>
         </div>
 
