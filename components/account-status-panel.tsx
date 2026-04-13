@@ -39,8 +39,8 @@ function getToneStyles(tone: ReturnType<typeof getAccountStatusPresentation>["to
 
   return {
     border: "1px solid var(--border)",
-    background: "#ffffff",
-    badgeBackground: "#f8fafc",
+    background: "var(--card)",
+    badgeBackground: "color-mix(in srgb, var(--card-hover) 86%, transparent)",
     badgeColor: "var(--muted)",
     badgeBorder: "1px solid var(--border)",
   }
@@ -54,15 +54,16 @@ function BillingLinkButton({ label }: { label: string }) {
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: 40,
-        padding: "10px 14px",
+        minHeight: 36,
+        padding: "8px 12px",
         borderRadius: 12,
         border: "1px solid var(--border)",
-        background: "#fff",
+        background: "var(--card)",
         color: "var(--text)",
         textDecoration: "none",
         whiteSpace: "nowrap",
         fontWeight: 700,
+        fontSize: 13,
       }}
     >
       {label}
@@ -82,9 +83,9 @@ export function AccountStatusBanner() {
     <section
       aria-label="Status konta"
       style={{
-        margin: "16px 16px 0",
-        padding: 16,
-        borderRadius: 18,
+        margin: "10px 16px 0",
+        padding: 12,
+        borderRadius: 16,
         border: tone.border,
         background: tone.background,
       }}
@@ -92,39 +93,39 @@ export function AccountStatusBanner() {
       <div
         style={{
           display: "flex",
-          gap: 12,
+          gap: 10,
           justifyContent: "space-between",
           alignItems: "flex-start",
           flexWrap: "wrap",
         }}
       >
-        <div style={{ minWidth: 0 }}>
+        <div style={{ minWidth: 0, flex: "1 1 260px" }}>
           <div
             style={{
               display: "inline-flex",
               alignItems: "center",
-              minHeight: 28,
-              padding: "4px 10px",
+              minHeight: 24,
+              padding: "3px 9px",
               borderRadius: 999,
               background: tone.badgeBackground,
               color: tone.badgeColor,
               border: tone.badgeBorder,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: 700,
-              marginBottom: 10,
+              marginBottom: 8,
             }}
           >
             {status.badgeLabel}
           </div>
-          <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>{status.title}</div>
-          <div style={{ color: "var(--muted)", lineHeight: 1.5 }}>{status.description}</div>
+          <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: "var(--text)" }}>{status.title}</div>
+          <div style={{ color: "var(--muted)", lineHeight: 1.45, fontSize: 13 }}>{status.description}</div>
           {status.primaryDateLabel ? (
-            <div style={{ color: "var(--text)", marginTop: 10, fontSize: 13, fontWeight: 700 }}>
+            <div style={{ color: "var(--text)", marginTop: 8, fontSize: 12, fontWeight: 700 }}>
               {status.primaryDateLabel}
             </div>
           ) : null}
           {status.secondaryDateLabel ? (
-            <div style={{ color: "var(--muted)", marginTop: 4, fontSize: 13 }}>{status.secondaryDateLabel}</div>
+            <div style={{ color: "var(--muted)", marginTop: 3, fontSize: 12 }}>{status.secondaryDateLabel}</div>
           ) : null}
         </div>
         <BillingLinkButton label={status.ctaLabel} />
@@ -139,13 +140,14 @@ function StatusInfoCard({ label, value, detail }: { label: string; value: string
       style={{
         border: "1px solid var(--border)",
         borderRadius: 16,
-        background: "#ffffff",
+        background: "var(--card)",
+        color: "var(--text)",
         padding: 16,
         boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04), 0 10px 28px rgba(15, 23, 42, 0.05)",
       }}
     >
       <div style={{ color: "var(--muted)", fontSize: 12, textTransform: "uppercase", marginBottom: 10 }}>{label}</div>
-      <div style={{ fontSize: 20, fontWeight: 800, marginBottom: detail ? 8 : 0 }}>{value}</div>
+      <div style={{ fontSize: 20, fontWeight: 800, marginBottom: detail ? 8 : 0, color: "var(--text)" }}>{value}</div>
       {detail ? <div style={{ color: "var(--muted)", lineHeight: 1.45 }}>{detail}</div> : null}
     </div>
   )
@@ -203,7 +205,7 @@ export function BillingStatusPageView() {
         >
           {status.badgeLabel}
         </div>
-        <div style={{ fontSize: 30, fontWeight: 800, marginBottom: 8 }}>{status.title}</div>
+        <div style={{ fontSize: 30, fontWeight: 800, marginBottom: 8, color: "var(--text)" }}>{status.title}</div>
         <div style={{ color: "var(--muted)", lineHeight: 1.6 }}>{status.description}</div>
         {status.isExpiringSoon ? (
           <div style={{ color: "var(--text)", fontSize: 13, fontWeight: 700, marginTop: 12 }}>
@@ -230,7 +232,7 @@ export function BillingStatusPageView() {
       </div>
 
       <div className="panel-card large-card">
-        <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 10 }}>Co to oznacza</div>
+        <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 10, color: "var(--text)" }}>Co to oznacza</div>
         <div style={{ color: "var(--muted)", lineHeight: 1.6 }}>
           {status.isBlocked
             ? "Konto nie ma teraz pełnego dostępu do normalnej pracy w aplikacji. Dane nadal zostają, ale trzeba wejść w billing i przywrócić dostęp."
@@ -239,7 +241,7 @@ export function BillingStatusPageView() {
       </div>
 
       <div className="panel-card large-card">
-        <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 10 }}>Zakres planu</div>
+        <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 10, color: "var(--text)" }}>Zakres planu</div>
         <div style={{ color: "var(--muted)", lineHeight: 1.6, marginBottom: 10 }}>
           Billing obejmuje cały system: leady, sprawy, szablony, zadania i portal klienta.
         </div>
