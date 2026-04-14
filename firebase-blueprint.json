@@ -1,0 +1,210 @@
+{
+  "entities": {
+    "Profile": {
+      "title": "Profile",
+      "description": "User profile for the operator",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "fullName": { "type": "string" },
+        "timezone": { "type": "string" },
+        "reminderPrefs": { "type": "object" },
+        "workspaceId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "fullName"]
+    },
+    "Workspace": {
+      "title": "Workspace",
+      "description": "User workspace and subscription info",
+      "type": "object",
+      "properties": {
+        "ownerId": { "type": "string" },
+        "name": { "type": "string" },
+        "plan": { "type": "string", "enum": ["free", "pro"] },
+        "subscriptionStatus": { 
+          "type": "string", 
+          "enum": ["trial_active", "trial_expired", "paid_active", "payment_failed", "canceled"] 
+        },
+        "trialEndsAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerId", "name", "plan", "subscriptionStatus"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "Sales lead information",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "company": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "source": { 
+          "type": "string",
+          "enum": ["instagram", "facebook", "messenger", "whatsapp", "email", "form", "phone", "referral", "cold_outreach", "other"]
+        },
+        "description": { "type": "string" },
+        "notes": { "type": "string" },
+        "status": { 
+          "type": "string", 
+          "enum": ["new", "contacted", "waiting_for_reply", "follow_up_needed", "meeting_scheduled", "won", "lost"] 
+        },
+        "priority": { "type": "string", "enum": ["low", "medium", "high"] },
+        "dealValue": { "type": "number" },
+        "nextAction": { "type": "string" },
+        "nextActionAt": { "type": "string", "format": "date-time" },
+        "isAtRisk": { "type": "boolean" },
+        "riskScore": { "type": "number" },
+        "priorityScore": { "type": "number" },
+        "lastActivityAt": { "type": "string", "format": "date-time" },
+        "ownerId": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "status", "ownerId", "workspaceId"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Task or action related to a lead or independent",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "type": { "type": "string", "enum": ["follow_up", "phone", "reply", "send_offer", "check_reply", "meeting", "other"] },
+        "leadId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "time": { "type": "string" },
+        "priority": { "type": "string", "enum": ["low", "medium", "high"] },
+        "status": { "type": "string", "enum": ["todo", "done", "overdue", "postponed"] },
+        "reminderAt": { "type": "string", "format": "date-time" },
+        "recurrenceRule": { "type": "string" },
+        "note": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "type", "status", "ownerId", "workspaceId"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Calendar event",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "type": { "type": "string", "enum": ["meeting", "phone_call", "follow_up", "deadline", "other"] },
+        "leadId": { "type": "string" },
+        "startAt": { "type": "string", "format": "date-time" },
+        "endAt": { "type": "string", "format": "date-time" },
+        "description": { "type": "string" },
+        "reminderAt": { "type": "string", "format": "date-time" },
+        "recurrenceRule": { "type": "string" },
+        "status": { "type": "string", "enum": ["scheduled", "completed", "cancelled"] },
+        "ownerId": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "type", "startAt", "status", "ownerId", "workspaceId"]
+    },
+    "Case": {
+      "title": "Case",
+      "description": "Operational case after a lead is won",
+      "type": "object",
+      "properties": {
+        "leadId": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "title": { "type": "string" },
+        "clientName": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "status": { 
+          "type": "string", 
+          "enum": ["unstarted", "collecting_materials", "waiting_on_client", "to_verify", "ready_to_start", "in_progress", "blocked", "closed"] 
+        },
+        "completenessPercent": { "type": "number" },
+        "isBlocked": { "type": "boolean" },
+        "blockedReason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "ownerId", "status"]
+    },
+    "CaseItem": {
+      "title": "CaseItem",
+      "description": "A required element within a case",
+      "type": "object",
+      "properties": {
+        "caseId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["file", "decision", "text", "access"] },
+        "isRequired": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["missing", "requested", "uploaded", "to_verify", "to_improve", "accepted", "not_applicable"] },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "response": { "type": "string" },
+        "fileUrl": { "type": "string" },
+        "fileName": { "type": "string" },
+        "approvedAt": { "type": "string", "format": "date-time" },
+        "order": { "type": "number" }
+      },
+      "required": ["caseId", "title", "type", "isRequired", "status"]
+    },
+    "Activity": {
+      "title": "Activity",
+      "description": "Log of events for leads, cases, tasks, and events",
+      "type": "object",
+      "properties": {
+        "leadId": { "type": "string" },
+        "caseId": { "type": "string" },
+        "taskId": { "type": "string" },
+        "eventId": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "actorId": { "type": "string" },
+        "actorType": { "type": "string", "enum": ["operator", "client", "system"] },
+        "eventType": { "type": "string" },
+        "payload": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerId", "actorType", "eventType", "createdAt"]
+    },
+    "Template": {
+      "title": "Template",
+      "description": "Checklist template",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "items": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "ownerId"]
+    },
+    "ClientPortalToken": {
+      "title": "ClientPortalToken",
+      "description": "Token for client access to a case",
+      "type": "object",
+      "properties": {
+        "caseId": { "type": "string" },
+        "token": { "type": "string" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["caseId", "token"]
+    }
+  },
+  "firestore": {
+    "/profiles/{profileId}": { "schema": "Profile", "description": "User profiles" },
+    "/workspaces/{workspaceId}": { "schema": "Workspace", "description": "Workspaces" },
+    "/leads/{leadId}": { "schema": "Lead", "description": "Sales leads" },
+    "/tasks/{taskId}": { "schema": "Task", "description": "Tasks" },
+    "/events/{eventId}": { "schema": "Event", "description": "Calendar events" },
+    "/cases/{caseId}": { "schema": "Case", "description": "Cases" },
+    "/cases/{caseId}/items/{itemId}": { "schema": "CaseItem", "description": "Items in a case" },
+    "/activities/{activityId}": { "schema": "Activity", "description": "Unified activity log" },
+    "/templates/{templateId}": { "schema": "Template", "description": "Templates" },
+    "/client_portal_tokens/{tokenId}": { "schema": "ClientPortalToken", "description": "Client portal tokens" }
+  }
+}
