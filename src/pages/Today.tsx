@@ -14,7 +14,6 @@ import {
 } from 'firebase/firestore';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
-import AccessLockNotice from '../components/access-lock-notice';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -47,7 +46,6 @@ import {
 import { pl } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getWriteLockMessage } from '../lib/access';
 import {
   Dialog,
   DialogContent,
@@ -87,8 +85,6 @@ type TaskRecord = {
   date: string;
   type: string;
   status: string;
-  leadId?: string;
-  leadName?: string;
 };
 
 type EventRecord = {
@@ -204,7 +200,7 @@ function SectionBlock({
 }
 
 export default function Today() {
-  const { workspace, profile, hasAccess, hasWriteAccess, loading: wsLoading } = useWorkspace();
+  const { workspace, profile, hasAccess, loading: wsLoading } = useWorkspace();
   const [leads, setLeads] = useState<LeadRecord[]>([]);
   const [tasks, setTasks] = useState<TaskRecord[]>([]);
   const [events, setEvents] = useState<EventRecord[]>([]);
@@ -227,7 +223,6 @@ export default function Today() {
     type: 'follow_up',
     date: format(new Date(), 'yyyy-MM-dd'),
     priority: 'medium',
-    leadId: 'none',
   });
   const [newEvent, setNewEvent] = useState({
     title: '',
@@ -281,7 +276,7 @@ export default function Today() {
 
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error(getWriteLockMessage(workspace));
+    if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
 
     try {
       await addDoc(collection(db, 'leads'), {
@@ -316,14 +311,10 @@ export default function Today() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error(getWriteLockMessage(workspace));
+    if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
-      const linkedLead = newTask.leadId !== 'none' ? leads.find((lead) => lead.id === newTask.leadId) : null;
-
       await addDoc(collection(db, 'tasks'), {
         ...newTask,
-        leadId: linkedLead?.id || null,
-        leadName: linkedLead?.name || null,
         status: 'todo',
         ownerId: auth.currentUser?.uid,
         workspaceId: workspace.id,
@@ -332,7 +323,7 @@ export default function Today() {
       });
       toast.success('Zadanie dodane');
       setIsTaskOpen(false);
-      setNewTask({ title: '', type: 'follow_up', date: format(new Date(), 'yyyy-MM-dd'), priority: 'medium', leadId: 'none' });
+      setNewTask({ title: '', type: 'follow_up', date: format(new Date(), 'yyyy-MM-dd'), priority: 'medium' });
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
@@ -340,7 +331,7 @@ export default function Today() {
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error(getWriteLockMessage(workspace));
+    if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
       await addDoc(collection(db, 'events'), {
         ...newEvent,
@@ -364,10 +355,6 @@ export default function Today() {
   };
 
   const toggleTask = async (taskId: string, currentStatus: string) => {
-    if (!hasWriteAccess) {
-      toast.error(getWriteLockMessage(workspace));
-      return;
-    }
     try {
       await updateDoc(doc(db, 'tasks', taskId), {
         status: currentStatus === 'todo' ? 'done' : 'todo',
@@ -470,7 +457,6 @@ export default function Today() {
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-4 md:p-8">
-        <AccessLockNotice workspace={workspace} />
         <header className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
           <div>
             <h1 className="text-3xl font-bold app-text">Witaj, {profile?.fullName?.split(' ')[0] || 'Operatorze'}!</h1>
@@ -479,7 +465,7 @@ export default function Today() {
           <div className="flex flex-wrap items-center gap-2">
             <Dialog open={isLeadOpen} onOpenChange={setIsLeadOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-sm" disabled={!hasWriteAccess}><Plus className="h-4 w-4" /> Lead</Button>
+                <Button className="rounded-xl shadow-sm"><Plus className="h-4 w-4" /> Lead</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -529,7 +515,7 @@ export default function Today() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={!hasWriteAccess}>Dodaj leada</Button>
+                    <Button type="submit" className="w-full">Dodaj leada</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -537,7 +523,7 @@ export default function Today() {
 
             <Dialog open={isTaskOpen} onOpenChange={setIsTaskOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl" disabled={!hasWriteAccess}><Plus className="h-4 w-4" /> Zadanie</Button>
+                <Button variant="outline" className="rounded-xl"><Plus className="h-4 w-4" /> Zadanie</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -568,20 +554,8 @@ export default function Today() {
                       <Input type="date" value={newTask.date} onChange={(e) => setNewTask({ ...newTask, date: e.target.value })} required />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Powiąż z leadem</Label>
-                    <Select value={newTask.leadId} onValueChange={(value) => setNewTask({ ...newTask, leadId: value })}>
-                      <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">Bez leada</SelectItem>
-                        {activeLeads.map((lead) => (
-                          <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={!hasWriteAccess}>Dodaj zadanie</Button>
+                    <Button type="submit" className="w-full">Dodaj zadanie</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -589,7 +563,7 @@ export default function Today() {
 
             <Dialog open={isEventOpen} onOpenChange={setIsEventOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl" disabled={!hasWriteAccess}><Plus className="h-4 w-4" /> Wydarzenie</Button>
+                <Button variant="outline" className="rounded-xl"><Plus className="h-4 w-4" /> Wydarzenie</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -619,7 +593,7 @@ export default function Today() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={!hasWriteAccess}>Zaplanuj</Button>
+                    <Button type="submit" className="w-full">Zaplanuj</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -700,7 +674,6 @@ export default function Today() {
                         <div className="flex items-center gap-3">
                           <button
                             onClick={() => toggleTask(task.id, task.status)}
-                            disabled={!hasWriteAccess}
                             className="flex h-6 w-6 items-center justify-center rounded-lg border border-rose-500/30 bg-rose-500/10 text-rose-500"
                           >
                             <CheckSquare className="h-4 w-4" />
@@ -734,9 +707,9 @@ export default function Today() {
                     <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
                       <div>
                         <p className="font-semibold app-text">{task.title}</p>
-                        <p className="text-sm app-muted">Zadanie na dziś • {task.type}{task.leadName ? ` • ${task.leadName}` : ''}</p>
+                        <p className="text-sm app-muted">Zadanie na dziś • {task.type}</p>
                       </div>
-                      <Button variant="outline" size="sm" onClick={() => toggleTask(task.id, task.status)} disabled={!hasWriteAccess}>Oznacz jako zrobione</Button>
+                      <Button variant="outline" size="sm" onClick={() => toggleTask(task.id, task.status)}>Oznacz jako zrobione</Button>
                     </CardContent>
                   </Card>
                 ))}

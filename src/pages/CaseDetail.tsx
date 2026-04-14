@@ -10,6 +10,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -39,7 +40,6 @@ import { toast } from 'sonner';
 
 import { auth, db } from '../firebase';
 import Layout from '../components/Layout';
-import AccessLockNotice from '../components/access-lock-notice';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -51,18 +51,19 @@ import { Label } from '../components/ui/label';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
-import { useWorkspace } from '../hooks/useWorkspace';
-import { getWriteLockMessage } from '../lib/access';
-import { ensurePortalToken } from '../lib/portal';
 
 type CaseRecord = {
   id: string;
   title?: string;
   clientName?: string;
+  clientId?: string;
+  clientEmail?: string;
+  clientPhone?: string;
+  company?: string;
+  portalReady?: boolean;
   status?: string;
   completenessPercent?: number;
   leadId?: string;
-  portalToken?: string;
   updatedAt?: { toDate?: () => Date } | null;
 };
 
@@ -171,7 +172,6 @@ function activityDescription(payload?: Record<string, any>) {
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
-  const { workspace, hasWriteAccess } = useWorkspace();
 
   const [caseData, setCaseData] = useState<CaseRecord | null>(null);
   const [items, setItems] = useState<CaseItemRecord[]>([]);
@@ -239,13 +239,11 @@ export default function CaseDetail() {
           newStatus = 'waiting_on_client';
         }
 
-        if (hasWriteAccess) {
-          await updateDoc(caseRef, {
-            completenessPercent: percent,
-            status: newStatus,
-            updatedAt: serverTimestamp(),
-          });
-        }
+        await updateDoc(caseRef, {
+          completenessPercent: percent,
+          status: newStatus,
+          updatedAt: serverTimestamp(),
+        });
       }
     });
 
@@ -264,7 +262,7 @@ export default function CaseDetail() {
       unsubscribeItems();
       unsubscribeActivities();
     };
-  }, [caseId, hasWriteAccess, navigate]);
+  }, [caseId, navigate]);
 
   const filteredItems = useMemo(() => {
     if (itemFilter === 'all') return items;
@@ -294,7 +292,6 @@ export default function CaseDetail() {
   }
 
   async function handleAddItem() {
-    if (!hasWriteAccess) return toast.error(getWriteLockMessage(workspace));
     if (!newItem.title.trim()) return;
 
     try {
@@ -315,7 +312,6 @@ export default function CaseDetail() {
   }
 
   async function handleUpdateItemStatus(itemId: string, status: string, title: string) {
-    if (!hasWriteAccess) return toast.error(getWriteLockMessage(workspace));
     try {
       await updateDoc(doc(db, 'cases', caseId!, 'items', itemId), {
         status,
@@ -329,7 +325,6 @@ export default function CaseDetail() {
   }
 
   async function handleDeleteItem(itemId: string) {
-    if (!hasWriteAccess) return toast.error(getWriteLockMessage(workspace));
     try {
       await deleteDoc(doc(db, 'cases', caseId!, 'items', itemId));
       toast.success('Element usunięty');
@@ -339,19 +334,33 @@ export default function CaseDetail() {
   }
 
   async function generatePortalLink() {
-    if (!hasWriteAccess) return toast.error(getWriteLockMessage(workspace));
-    try {
-      const token = await ensurePortalToken(caseId!);
-      const url = `${window.location.origin}/portal/${caseId}/${token}`;
-      await navigator.clipboard.writeText(url);
-      toast.success('Link do panelu skopiowany');
-    } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+    const token = Math.random().toString(36).substring(2, 15);
+    const tokenRef = doc(db, 'client_portal_tokens', caseId!);
+    await setDoc(tokenRef, {
+      caseId,
+      token,
+      createdAt: serverTimestamp(),
+    });
+
+    await updateDoc(doc(db, 'cases', caseId!), {
+      portalReady: true,
+      portalGeneratedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    if (caseData?.clientId) {
+      await setDoc(doc(db, 'clients', caseData.clientId), {
+        portalReady: true,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
     }
+
+    const url = `${window.location.origin}/portal/${caseId}/${token}`;
+    navigator.clipboard.writeText(url);
+    toast.success('Link do panelu skopiowany');
   }
 
   async function sendReminderPlaceholder() {
-    if (!hasWriteAccess) return toast.error(getWriteLockMessage(workspace));
     await logActivity('portal_reminder_sent', { title: 'Operator wysłał przypomnienie do klienta.' });
     toast.success('Przypomnienie zapisane w historii sprawy');
   }
@@ -372,7 +381,6 @@ export default function CaseDetail() {
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8">
-        <AccessLockNotice workspace={workspace} />
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex min-w-0 items-start gap-3">
             <Link to="/cases">
@@ -399,7 +407,7 @@ export default function CaseDetail() {
           <div className="flex flex-wrap items-center gap-2">
             <Dialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-2xl" disabled={!hasWriteAccess}>
+                <Button variant="outline" className="rounded-2xl">
                   <Plus className="h-4 w-4" /> Dodaj element
                 </Button>
               </DialogTrigger>
@@ -433,10 +441,10 @@ export default function CaseDetail() {
               </DialogContent>
             </Dialog>
 
-            <Button variant="outline" className="rounded-2xl" onClick={generatePortalLink} disabled={!hasWriteAccess}>
+            <Button variant="outline" className="rounded-2xl" onClick={generatePortalLink}>
               <Copy className="h-4 w-4" /> Link portalu
             </Button>
-            <Button className="rounded-2xl" onClick={sendReminderPlaceholder} disabled={!hasWriteAccess}>
+            <Button className="rounded-2xl" onClick={sendReminderPlaceholder}>
               <Send className="h-4 w-4" /> Zapisz przypomnienie
             </Button>
           </div>
@@ -648,7 +656,7 @@ export default function CaseDetail() {
                 <div className="rounded-2xl border p-4 app-border app-surface">
                   <p className="text-xs font-bold uppercase tracking-[0.16em] app-muted">Portal klienta</p>
                   <p className="mt-1 text-sm app-muted">Link generowany jest lokalnie i trafia od razu do schowka, żeby łatwo wysłać go dalej.</p>
-                  <Button variant="outline" className="mt-3 rounded-2xl" onClick={generatePortalLink} disabled={!hasWriteAccess}>
+                  <Button variant="outline" className="mt-3 rounded-2xl" onClick={generatePortalLink}>
                     <Copy className="h-4 w-4" /> Kopiuj link portalu
                   </Button>
                 </div>

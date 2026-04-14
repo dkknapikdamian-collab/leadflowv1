@@ -42,11 +42,9 @@ import {
 } from 'lucide-react';
 
 import Layout from '../components/Layout';
-import AccessLockNotice from '../components/access-lock-notice';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
-import { getWriteLockMessage } from '../lib/access';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -205,13 +203,11 @@ function LeadRow({
   lead,
   onQuickAction,
   busy,
-  canWrite,
 }: {
   key?: string;
   lead: LeadRecord;
   onQuickAction: (lead: LeadRecord, action: QuickActionKey) => void;
   busy: string | null;
-  canWrite: boolean;
 }) {
   const status = getStatusOption(lead.status);
   const nextState = dueState(lead);
@@ -269,15 +265,15 @@ function LeadRow({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" size="sm" className="rounded-xl" disabled={!canWrite || busyForThisLead} onClick={() => onQuickAction(lead, 'followup')}>
+            <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForThisLead} onClick={() => onQuickAction(lead, 'followup')}>
               Follow-up jutro
             </Button>
-            <Button variant="outline" size="sm" className="rounded-xl" disabled={!canWrite || busyForThisLead} onClick={() => onQuickAction(lead, 'waiting')}>
+            <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForThisLead} onClick={() => onQuickAction(lead, 'waiting')}>
               Czekamy 3 dni
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-xl" disabled={!canWrite || busyForThisLead}>
+                <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForThisLead}>
                   <MoreHorizontal className="h-4 w-4" /> Więcej
                 </Button>
               </DropdownMenuTrigger>
@@ -304,14 +300,12 @@ function PipelineColumn({
   leads,
   onMove,
   onOpen,
-  canWrite,
 }: {
   key?: string;
   status: StatusOption;
   leads: LeadRecord[];
   onMove: (lead: LeadRecord, status: LeadStatus) => void;
   onOpen: (leadId: string) => void;
-  canWrite: boolean;
 }) {
   const totalValue = leads.reduce((sum, lead) => sum + (lead.dealValue || 0), 0);
 
@@ -354,7 +348,7 @@ function PipelineColumn({
                   </div>
                 </div>
                 <div className="mt-3 flex items-center gap-2">
-                  <Select value={lead.status || 'new'} onValueChange={(value) => onMove(lead, value as LeadStatus)} disabled={!canWrite}>
+                  <Select value={lead.status || 'new'} onValueChange={(value) => onMove(lead, value as LeadStatus)}>
                     <SelectTrigger className="h-9 rounded-xl"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {STATUS_OPTIONS.map((option) => (
@@ -376,7 +370,7 @@ function PipelineColumn({
 }
 
 export default function Leads() {
-  const { workspace, hasAccess, hasWriteAccess } = useWorkspace();
+  const { workspace, hasAccess } = useWorkspace();
   const [leads, setLeads] = useState<LeadRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'list' | 'pipeline'>('list');
@@ -420,7 +414,7 @@ export default function Leads() {
 
   async function handleCreateLead(e: FormEvent) {
     e.preventDefault();
-    if (!hasAccess) return toast.error(getWriteLockMessage(workspace));
+    if (!hasAccess) return toast.error('Twój trial wygasł.');
     if (!workspace) return toast.error('Brak aktywnego workspace.');
     if (!newLead.name.trim()) return toast.error('Wpisz nazwę leada.');
 
@@ -455,10 +449,7 @@ export default function Leads() {
 
   function handleImportCSV(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (!file || !workspace || !hasAccess) {
-      if (file && workspace && !hasAccess) toast.error(getWriteLockMessage(workspace));
-      return;
-    }
+    if (!file || !workspace || !hasAccess) return;
 
     Papa.parse(file, {
       header: true,
@@ -502,7 +493,7 @@ export default function Leads() {
 
   async function handleQuickAction(lead: LeadRecord, action: QuickActionKey) {
     if (!hasAccess) {
-      toast.error(getWriteLockMessage(workspace));
+      toast.error('Twój trial wygasł.');
       return;
     }
 
@@ -553,10 +544,6 @@ export default function Leads() {
   }
 
   async function handleMoveStage(lead: LeadRecord, status: LeadStatus) {
-    if (!hasWriteAccess) {
-      toast.error(getWriteLockMessage(workspace));
-      return;
-    }
     try {
       await updateDoc(doc(db, 'leads', lead.id), {
         status,
@@ -610,7 +597,6 @@ export default function Leads() {
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-4 md:p-8">
-        <AccessLockNotice workspace={workspace} />
         <header className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold app-primary-chip">
@@ -622,7 +608,7 @@ export default function Leads() {
 
           <div className="flex flex-wrap items-center gap-2">
             <input type="file" accept=".csv" className="hidden" ref={fileInputRef} onChange={handleImportCSV} />
-            <Button variant="outline" className="rounded-xl" onClick={() => fileInputRef.current?.click()} disabled={!hasWriteAccess}>
+            <Button variant="outline" className="rounded-xl" onClick={() => fileInputRef.current?.click()}>
               <Upload className="h-4 w-4" /> Import CSV
             </Button>
             <Button variant="outline" className="rounded-xl" disabled>
@@ -631,7 +617,7 @@ export default function Leads() {
 
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-sm" disabled={!hasWriteAccess}>
+                <Button className="rounded-xl shadow-sm">
                   <Plus className="h-4 w-4" /> Dodaj leada
                 </Button>
               </DialogTrigger>
@@ -689,7 +675,7 @@ export default function Leads() {
                   </div>
 
                   <DialogFooter>
-                    <Button type="submit" className="w-full rounded-xl" disabled={!hasWriteAccess}>Dodaj leada</Button>
+                    <Button type="submit" className="w-full rounded-xl">Dodaj leada</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -833,7 +819,7 @@ export default function Leads() {
         ) : viewMode === 'list' ? (
           <div className="space-y-4">
             {filteredLeads.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onQuickAction={handleQuickAction} busy={quickActionBusy} canWrite={hasWriteAccess} />
+              <LeadRow key={lead.id} lead={lead} onQuickAction={handleQuickAction} busy={quickActionBusy} />
             ))}
           </div>
         ) : (
@@ -848,7 +834,6 @@ export default function Leads() {
                   onOpen={(leadId) => {
                     window.location.href = `/leads/${leadId}`;
                   }}
-                  canWrite={hasWriteAccess}
                 />
               ))}
             </div>

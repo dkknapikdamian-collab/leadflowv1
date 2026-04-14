@@ -4,6 +4,7 @@ import { addDays, differenceInCalendarDays, format, isPast, isToday, parseISO, s
 import { pl } from 'date-fns/locale';
 import {
   addDoc,
+  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -13,6 +14,7 @@ import {
   query,
   serverTimestamp,
   Timestamp,
+  setDoc,
   updateDoc,
   where,
   writeBatch,
@@ -44,7 +46,6 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import AccessLockNotice from '../components/access-lock-notice';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -56,8 +57,7 @@ import { ScrollArea } from '../components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Textarea } from '../components/ui/textarea';
 import { auth, db } from '../firebase';
-import { getWriteLockMessage } from '../lib/access';
-import { ensurePortalToken } from '../lib/portal';
+import { buildClientIdFromLead } from '../lib/clients';
 import { useWorkspace } from '../hooks/useWorkspace';
 
 type LeadRecord = {
@@ -74,6 +74,9 @@ type LeadRecord = {
   isAtRisk?: boolean;
   updatedAt?: Timestamp;
   createdAt?: Timestamp;
+  linkedClientId?: string;
+  linkedCaseId?: string;
+  linkedCaseTitle?: string;
 };
 
 type ActivityRecord = {
@@ -94,7 +97,6 @@ type CaseRecord = {
   title?: string;
   status?: string;
   completenessPercent?: number;
-  portalToken?: string;
 };
 
 type QuickActionKey = 'call' | 'followup' | 'waiting' | 'meeting' | 'won' | 'lost';
@@ -207,7 +209,7 @@ function activityDescription(activity: ActivityRecord) {
 export default function LeadDetail() {
   const { leadId } = useParams();
   const navigate = useNavigate();
-  const { workspace, hasAccess, hasWriteAccess } = useWorkspace();
+  const { workspace, hasAccess } = useWorkspace();
 
   const [lead, setLead] = useState<LeadRecord | null>(null);
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
@@ -298,12 +300,20 @@ export default function LeadDetail() {
     });
   }
 
-  async function copyPortalLink(caseId: string, portalToken?: string) {
+  async function handleUpdateStatus(status: LeadRecord['status']) {
+    if (!leadId || !lead) return;
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
+
     try {
-      const token = portalToken || await ensurePortalToken(caseId);
-      const url = `${window.location.origin}/portal/${caseId}/${token}`;
-      await navigator.clipboard.writeText(url);
-      toast.success('Link do portalu skopiowany');
+      await updateDoc(doc(db, 'leads', leadId), {
+        status,
+        updatedAt: serverTimestamp(),
+      });
+      await logActivity('status_changed', { status });
+      toast.success('Status zaktualizowany');
     } catch (error: any) {
       toast.error(`Błąd: ${error.message}`);
     }
@@ -311,8 +321,12 @@ export default function LeadDetail() {
 
   async function handleSaveNextStep(e?: FormEvent) {
     e?.preventDefault();
-    if (!hasWriteAccess) return toast.error(getWriteLockMessage(workspace));
     if (!leadId || !lead) return;
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
+
     try {
       await updateDoc(doc(db, 'leads', leadId), {
         nextStep: nextStepDraft,
@@ -331,8 +345,11 @@ export default function LeadDetail() {
 
   async function handleAddNote(e: FormEvent) {
     e.preventDefault();
-    if (!hasWriteAccess) return toast.error(getWriteLockMessage(workspace));
     if (!note.trim()) return;
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
 
     try {
       await logActivity('note_added', { content: note.trim() });
@@ -345,8 +362,11 @@ export default function LeadDetail() {
   }
 
   async function handleUpdateLead() {
-    if (!hasWriteAccess) return toast.error(getWriteLockMessage(workspace));
     if (!leadId || !editLead) return;
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
 
     try {
       const payload = {
@@ -370,7 +390,6 @@ export default function LeadDetail() {
   }
 
   async function handleDeleteLead() {
-    if (!hasWriteAccess) return toast.error(getWriteLockMessage(workspace));
     if (!leadId) return;
     if (!window.confirm('Na pewno usunąć tego leada?')) return;
 
@@ -384,8 +403,11 @@ export default function LeadDetail() {
   }
 
   async function handleQuickAction(action: QuickActionKey) {
-    if (!hasWriteAccess) return toast.error(getWriteLockMessage(workspace));
     if (!leadId || !lead) return;
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
 
     setQuickActionBusy(action);
 
@@ -441,23 +463,50 @@ export default function LeadDetail() {
 
   async function handleCreateCase() {
     if (!leadId || !lead || !workspace) return;
-    if (!hasWriteAccess) {
-      toast.error(getWriteLockMessage(workspace));
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
       return;
     }
 
     setCaseBusy(true);
 
     try {
+      const clientId = buildClientIdFromLead({
+        leadId,
+        email: lead.email,
+        phone: lead.phone,
+        name: lead.name,
+      });
+
+      await setDoc(doc(db, 'clients', clientId), {
+        ownerId: auth.currentUser?.uid,
+        workspaceId: workspace.id,
+        name: lead.name,
+        company: lead.company || null,
+        email: lead.email || null,
+        phone: lead.phone || null,
+        sourceLeadId: leadId,
+        linkedLeadIds: arrayUnion(leadId),
+        primaryLeadId: leadId,
+        portalReady: false,
+        updatedAt: serverTimestamp(),
+        createdAt: serverTimestamp(),
+      }, { merge: true });
+
       const caseRef = await addDoc(collection(db, 'cases'), {
         leadId,
+        clientId,
         title: `Realizacja: ${lead.name}`,
         clientName: lead.name,
+        clientEmail: lead.email || null,
+        clientPhone: lead.phone || null,
+        company: lead.company || null,
         ownerId: auth.currentUser?.uid,
         workspaceId: workspace.id,
         status: 'collecting_materials',
         completenessPercent: 0,
         isBlocked: false,
+        portalReady: false,
         sourceLeadName: lead.name,
         sourceLeadStatus: lead.status || 'won',
         createdAt: serverTimestamp(),
@@ -498,8 +547,15 @@ export default function LeadDetail() {
         await batch.commit();
       }
 
+      await setDoc(doc(db, 'clients', clientId), {
+        linkedCaseIds: arrayUnion(caseRef.id),
+        primaryCaseId: caseRef.id,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+
       await updateDoc(doc(db, 'leads', leadId), {
         status: 'won',
+        linkedClientId: clientId,
         linkedCaseId: caseRef.id,
         linkedCaseTitle: `Realizacja: ${lead.name}`,
         convertedAt: serverTimestamp(),
@@ -510,13 +566,12 @@ export default function LeadDetail() {
         caseId: caseRef.id,
         title: lead.name,
         carriedTasks: leadTasksSnapshot.size,
-        portalReady: true,
       });
 
       toast.success(
         leadTasksSnapshot.size > 0
-          ? `Sprawa została uruchomiona. Przeniesiono też ${leadTasksSnapshot.size} otwartych zadań, a portal jest gotowy.`
-          : 'Sprawa została uruchomiona i portal klienta jest gotowy.'
+          ? `Sprawa została uruchomiona. Przeniesiono też ${leadTasksSnapshot.size} otwartych zadań.`
+          : 'Sprawa została uruchomiona.'
       );
       navigate(`/case/${caseRef.id}`);
     } catch (error: any) {
@@ -539,7 +594,6 @@ export default function LeadDetail() {
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:p-8">
-        <AccessLockNotice workspace={workspace} />
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex min-w-0 items-start gap-3">
             <Link to="/leads">
@@ -561,15 +615,15 @@ export default function LeadDetail() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" className="rounded-2xl" onClick={() => setIsEditing(true)} disabled={!hasWriteAccess}>
+            <Button variant="outline" className="rounded-2xl" onClick={() => setIsEditing(true)}>
               <Edit2 className="h-4 w-4" /> Edytuj
             </Button>
-            <Button className="rounded-2xl" onClick={() => handleQuickAction('won')} disabled={!hasWriteAccess || lead.status === 'won' || quickActionBusy !== null}>
+            <Button className="rounded-2xl" onClick={() => handleQuickAction('won')} disabled={lead.status === 'won' || quickActionBusy !== null}>
               <CheckCircle2 className="h-4 w-4" /> Wygrany
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="rounded-2xl" disabled={!hasWriteAccess}>
+                <Button variant="outline" size="icon" className="rounded-2xl">
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -641,7 +695,7 @@ export default function LeadDetail() {
                     key={key}
                     type="button"
                     onClick={() => handleQuickAction(key)}
-                    disabled={!hasWriteAccess || quickActionBusy !== null}
+                    disabled={quickActionBusy !== null}
                     className="rounded-2xl border p-4 text-left transition hover:bg-black/5 disabled:opacity-60 dark:hover:bg-white/5 app-border app-surface"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -674,12 +728,12 @@ export default function LeadDetail() {
                       <Label>Termin ruchu</Label>
                       <Input type="datetime-local" value={nextActionDraft} onChange={(event) => setNextActionDraft(event.target.value)} />
                     </div>
-                    <Button type="submit" className="rounded-2xl" disabled={!hasWriteAccess}>Zapisz kolejny krok</Button>
+                    <Button type="submit" className="rounded-2xl">Zapisz kolejny krok</Button>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <Button type="button" variant="outline" size="sm" onClick={() => setNextActionDraft(startOfTomorrowAtNine())} disabled={!hasWriteAccess}>Jutro 09:00</Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => setNextActionDraft(startInDaysAtNine(2))} disabled={!hasWriteAccess}>Za 2 dni</Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => setNextActionDraft(startInDaysAtNine(7))} disabled={!hasWriteAccess}>Za tydzień</Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setNextActionDraft(startOfTomorrowAtNine())}>Jutro 09:00</Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setNextActionDraft(startInDaysAtNine(2))}>Za 2 dni</Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setNextActionDraft(startInDaysAtNine(7))}>Za tydzień</Button>
                   </div>
                 </form>
               </CardContent>
@@ -700,7 +754,7 @@ export default function LeadDetail() {
                     onChange={(event) => setNote(event.target.value)}
                     placeholder="Zapisz najważniejszy kontekst po rozmowie, ofercie albo negocjacji..."
                   />
-                  <Button type="submit" className="rounded-2xl" disabled={!hasWriteAccess || !note.trim()}>
+                  <Button type="submit" className="rounded-2xl" disabled={!note.trim()}>
                     <Plus className="h-4 w-4" /> Dodaj notatkę
                   </Button>
                 </form>
@@ -823,6 +877,33 @@ export default function LeadDetail() {
 
             <Card className="border-none app-surface-strong">
               <CardHeader>
+                <CardTitle className="text-xl">Klient w procesie</CardTitle>
+                <CardDescription>
+                  Jeden rekord klienta spina sprzedaż i realizację, żeby nie gubić kontaktu między etapami.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="rounded-2xl border p-4 app-border app-surface">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] app-muted">Rekord klienta</p>
+                  <p className="mt-1 font-semibold app-text">{lead.name}</p>
+                  <p className="mt-1 text-sm app-muted">
+                    {lead.linkedClientId
+                      ? 'Lead jest już spięty z rekordem klienta i może płynnie przejść do sprawy.'
+                      : 'Rekord klienta zostanie utworzony automatycznie przy uruchomieniu sprawy albo możesz go zobaczyć w module Klienci.'}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {lead.linkedClientId ? <Badge variant="secondary">Klient spięty</Badge> : <Badge variant="outline">Klient utworzy się przy handoffie</Badge>}
+                    {lead.linkedCaseId ? <Badge variant="outline">Sprawa podpięta</Badge> : null}
+                  </div>
+                  <Button variant="outline" className="mt-4 rounded-2xl" asChild>
+                    <Link to="/clients">Otwórz moduł klientów <ChevronRight className="h-4 w-4" /></Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none app-surface-strong">
+              <CardHeader>
                 <CardTitle className="text-xl">Uruchomienie sprawy</CardTitle>
                 <CardDescription>
                   Wygrany lead może od razu przejść do realizacji bez ręcznego przepisywania.
@@ -834,21 +915,21 @@ export default function LeadDetail() {
                     <p className="font-semibold app-text">{associatedCase.title || 'Powiązana sprawa'}</p>
                     <p className="mt-1 text-sm app-muted">Status: {associatedCase.status || 'collecting_materials'}</p>
                     <p className="text-sm app-muted">Kompletność: {associatedCase.completenessPercent || 0}%</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Button variant="outline" className="rounded-2xl" asChild>
+                    <Button variant="outline" className="mt-3 rounded-2xl" asChild>
                       <Link to={`/case/${associatedCase.id}`}>
                         Otwórz sprawę <ExternalLink className="h-4 w-4" />
                       </Link>
-                      </Button>
-                      <Button variant="outline" className="rounded-2xl" onClick={() => copyPortalLink(associatedCase.id, associatedCase.portalToken)} disabled={!hasWriteAccess}>
-                        Skopiuj portal <ExternalLink className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    </Button>
                   </div>
                 ) : (
                   <>
                     <div className="space-y-2">
-                      <Label>Szablon startowy</Label>
+                      <div className="flex items-center justify-between gap-3">
+                        <Label>Szablon startowy</Label>
+                        <Button variant="ghost" size="sm" className="h-8 rounded-xl px-3" asChild>
+                          <Link to="/templates">Zarządzaj szablonami</Link>
+                        </Button>
+                      </div>
                       <Select value={selectedTemplateId} onValueChange={setSelectedTemplateId}>
                         <SelectTrigger>
                           <SelectValue placeholder="Bez szablonu lub wybierz gotowiec" />
@@ -861,7 +942,7 @@ export default function LeadDetail() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <Button className="w-full rounded-2xl" onClick={handleCreateCase} disabled={!hasWriteAccess || caseBusy}>
+                    <Button className="w-full rounded-2xl" onClick={handleCreateCase} disabled={caseBusy}>
                       {caseBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Briefcase className="h-4 w-4" />}
                       Utwórz sprawę z leada
                     </Button>
@@ -925,7 +1006,7 @@ export default function LeadDetail() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditing(false)}>Anuluj</Button>
-            <Button onClick={handleUpdateLead} disabled={!hasWriteAccess}><CheckCheck className="h-4 w-4" /> Zapisz</Button>
+            <Button onClick={handleUpdateLead}><CheckCheck className="h-4 w-4" /> Zapisz</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

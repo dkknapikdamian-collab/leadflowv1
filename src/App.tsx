@@ -20,6 +20,9 @@ const Login = lazy(() => import('./pages/Login'));
 const Tasks = lazy(() => import('./pages/Tasks'));
 const Calendar = lazy(() => import('./pages/Calendar'));
 const Billing = lazy(() => import('./pages/Billing'));
+const Templates = lazy(() => import('./pages/Templates'));
+const Clients = lazy(() => import('./pages/Clients'));
+const ClientDetail = lazy(() => import('./pages/ClientDetail'));
 
 function FullScreenLoader({ label = 'Ładowanie aplikacji...' }: { label?: string }) {
   return (
@@ -111,6 +114,9 @@ export default function App() {
             <Route path="/activity" element={user ? <Activity /> : <Navigate to="/login" />} />
             <Route path="/billing" element={user ? <Billing /> : <Navigate to="/login" />} />
             <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
+            <Route path="/templates" element={user ? <Templates /> : <Navigate to="/login" />} />
+            <Route path="/clients" element={user ? <Clients /> : <Navigate to="/login" />} />
+            <Route path="/clients/:clientId" element={user ? <ClientDetail /> : <Navigate to="/login" />} />
 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

@@ -11,7 +11,6 @@ import {
 } from 'firebase/firestore';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
-import AccessLockNotice from '../components/access-lock-notice';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -43,7 +42,6 @@ import {
 import { pl } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getWriteLockMessage } from '../lib/access';
 import {
   Dialog,
   DialogContent,
@@ -63,7 +61,7 @@ import {
 } from "../components/ui/select";
 
 export default function Calendar() {
-  const { workspace, hasAccess, hasWriteAccess } = useWorkspace();
+  const { workspace, hasAccess } = useWorkspace();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
@@ -104,7 +102,7 @@ export default function Calendar() {
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error(getWriteLockMessage(workspace));
+    if (!hasAccess) return toast.error('Trial wygasł.');
     try {
       await addDoc(collection(db, 'events'), {
         ...newEvent,
@@ -136,7 +134,7 @@ export default function Calendar() {
         </div>
         <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
           <DialogTrigger asChild>
-            <Button className="rounded-xl shadow-lg shadow-primary/20" disabled={!hasWriteAccess}><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
+            <Button className="rounded-xl shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
@@ -164,7 +162,7 @@ export default function Calendar() {
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit" className="w-full" disabled={!hasWriteAccess}>Zaplanuj</Button>
+                <Button type="submit" className="w-full">Zaplanuj</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -246,7 +244,6 @@ export default function Calendar() {
   return (
     <Layout>
       <div className="p-4 md:p-8 max-w-7xl mx-auto w-full">
-        <AccessLockNotice workspace={workspace} />
         {renderHeader()}
         {renderDays()}
         {renderCells()}

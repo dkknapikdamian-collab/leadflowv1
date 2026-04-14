@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { buildWorkspaceAccessMeta, hasWorkspaceWriteAccess, resolveWorkspaceAccessState } from '../lib/access';
+import { getAccessSummary } from '../lib/access';
 import { auth, db } from '../firebase';
 
 export function useWorkspace() {
@@ -70,12 +70,15 @@ export function useWorkspace() {
     };
   }, [activeUserId]);
 
-  const accessState = resolveWorkspaceAccessState(workspace);
-  const accessMeta = buildWorkspaceAccessMeta(workspace);
-  const hasWriteAccess = hasWorkspaceWriteAccess(workspace);
-  const isTrialActive = accessState === 'trial_active' || accessState == 'trial_ending';
-  const isPaidActive = accessState === 'paid_active';
-  const hasAccess = hasWriteAccess;
+  const access = getAccessSummary(workspace);
 
-  return { workspace, profile, loading, hasAccess, hasWriteAccess, isTrialActive, isPaidActive, accessState, accessMeta };
+  return {
+    workspace,
+    profile,
+    loading,
+    hasAccess: access.hasAccess,
+    isTrialActive: access.status === 'trial_active' || access.status === 'trial_ending',
+    isPaidActive: access.status === 'paid_active',
+    access,
+  };
 }

@@ -34,6 +34,7 @@ import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { cn } from '../lib/utils';
+import { useWorkspace } from '../hooks/useWorkspace';
 
 type LeadRecord = {
   id: string;
@@ -153,6 +154,7 @@ function EmptyState({ title, description }: { title: string; description: string
 }
 
 export default function Dashboard() {
+  const { access } = useWorkspace();
   const [leads, setLeads] = useState<LeadRecord[]>([]);
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [tasks, setTasks] = useState<TaskRecord[]>([]);
@@ -475,7 +477,23 @@ export default function Dashboard() {
           </Card>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-3">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <Link to="/billing">
+            <Card className="border-none app-surface-strong transition-all hover:-translate-y-0.5 hover:app-shadow">
+              <CardContent className="flex h-full flex-col gap-3 p-5">
+                <div className={cn('flex h-11 w-11 items-center justify-center rounded-2xl', access.toneClassName)}>
+                  <CreditCard className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-bold app-text">Dostęp workspace</p>
+                  <p className="mt-1 text-sm app-muted">{access.headline}. {access.hasAccess ? 'Praca operacyjna jest odblokowana.' : 'Zapis jest wstrzymany do wznowienia planu.'}</p>
+                </div>
+                <div className="mt-auto inline-flex items-center gap-2 text-sm font-semibold" style={{ color: 'var(--app-primary)' }}>
+                  {access.ctaLabel} <ChevronRight className="h-4 w-4" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
           <Link to="/today">
             <Card className="border-none app-surface-strong transition-all hover:-translate-y-0.5 hover:app-shadow">
               <CardContent className="flex h-full flex-col gap-3 p-5">
@@ -489,15 +507,15 @@ export default function Dashboard() {
               </CardContent>
             </Card>
           </Link>
-          <Link to="/billing">
+          <Link to="/leads">
             <Card className="border-none app-surface-strong transition-all hover:-translate-y-0.5 hover:app-shadow">
               <CardContent className="flex h-full flex-col gap-3 p-5">
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500">
-                  <CreditCard className="h-5 w-5" />
+                  <Target className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-bold app-text">Rozliczenia i trial</p>
-                  <p className="mt-1 text-sm app-muted">Zobacz status dostępu, trial i plan bez przeklikiwania się przez ustawienia.</p>
+                  <p className="font-bold app-text">Lejek sprzedaży</p>
+                  <p className="mt-1 text-sm app-muted">Przejdź do listy i pipeline, żeby ruszyć leady bez przekopywania całej aplikacji.</p>
                 </div>
               </CardContent>
             </Card>

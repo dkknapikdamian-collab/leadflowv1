@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import {
   collection,
@@ -14,7 +15,6 @@ import {
 } from 'firebase/firestore';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
-import AccessLockNotice from '../components/access-lock-notice';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -45,7 +45,6 @@ import {
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
-import { getWriteLockMessage } from '../lib/access';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import {
@@ -70,7 +69,6 @@ import {
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Link } from 'react-router-dom';
 
 const TASK_TYPES = [
   { value: 'follow_up', label: 'Follow-up' },
@@ -90,17 +88,14 @@ type TaskRecord = {
   priority?: 'low' | 'medium' | 'high';
   leadId?: string;
   leadName?: string;
+  clientId?: string;
+  clientName?: string;
+  caseId?: string;
+  caseTitle?: string;
   nextStep?: string;
 };
 
-type LeadOption = {
-  id: string;
-  name?: string;
-  status?: string;
-};
-
 type ViewMode = 'active' | 'today' | 'week' | 'overdue' | 'done';
-type LeadFilter = 'all' | 'with_lead' | 'without_lead';
 
 function getDateLabel(date: Date) {
   if (isToday(date)) return 'Dzisiaj';
@@ -117,21 +112,18 @@ function getTaskTone(task: TaskRecord) {
 }
 
 export default function Tasks() {
-  const { workspace, hasAccess, hasWriteAccess } = useWorkspace();
+  const { workspace, hasAccess } = useWorkspace();
   const [tasks, setTasks] = useState<TaskRecord[]>([]);
-  const [leadOptions, setLeadOptions] = useState<LeadOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [viewMode, setViewMode] = useState<ViewMode>('active');
-  const [leadFilter, setLeadFilter] = useState<LeadFilter>('all');
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
   const [newTask, setNewTask] = useState({
     title: '',
     type: 'follow_up',
     date: format(new Date(), 'yyyy-MM-dd'),
     priority: 'medium',
-    leadId: 'none',
   });
 
   useEffect(() => {
@@ -149,20 +141,7 @@ export default function Tasks() {
       setLoading(false);
     });
 
-    const leadsQuery = query(
-      collection(db, 'leads'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('updatedAt', 'desc')
-    );
-
-    const unsubscribeLeads = onSnapshot(leadsQuery, (snapshot) => {
-      setLeadOptions(snapshot.docs.map((item) => ({ id: item.id, ...(item.data() as Omit<LeadOption, 'id'>) })));
-    });
-
-    return () => {
-      unsubscribe();
-      unsubscribeLeads();
-    };
+    return () => unsubscribe();
   }, [workspace]);
 
   const counts = useMemo(() => {
@@ -191,16 +170,12 @@ export default function Tasks() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error(getWriteLockMessage(workspace));
+    if (!hasAccess) return toast.error('Trial wygasł.');
     if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania');
 
     try {
-      const linkedLead = newTask.leadId !== 'none' ? leadOptions.find((lead) => lead.id === newTask.leadId) : null;
-
       await addDoc(collection(db, 'tasks'), {
         ...newTask,
-        leadId: linkedLead?.id || null,
-        leadName: linkedLead?.name || null,
         status: 'todo',
         ownerId: auth.currentUser?.uid,
         workspaceId: workspace.id,
@@ -215,7 +190,6 @@ export default function Tasks() {
         type: 'follow_up',
         date: format(new Date(), 'yyyy-MM-dd'),
         priority: 'medium',
-        leadId: 'none',
       });
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -223,10 +197,6 @@ export default function Tasks() {
   };
 
   const toggleTask = async (taskId: string, currentStatus: string) => {
-    if (!hasWriteAccess) {
-      toast.error(getWriteLockMessage(workspace));
-      return;
-    }
     try {
       await updateDoc(doc(db, 'tasks', taskId), {
         status: currentStatus === 'todo' ? 'done' : 'todo',
@@ -238,10 +208,6 @@ export default function Tasks() {
   };
 
   const deleteTask = async (taskId: string) => {
-    if (!hasWriteAccess) {
-      toast.error(getWriteLockMessage(workspace));
-      return;
-    }
     if (!window.confirm('Usunąć zadanie?')) return;
     try {
       await deleteDoc(doc(db, 'tasks', taskId));
@@ -265,13 +231,6 @@ export default function Tasks() {
         const today = !isDone && isToday(date);
         const thisWeek = !isDone && isWithinInterval(date, { start: todayStart, end: weekEnd });
 
-        const matchesLead =
-          leadFilter === 'all'
-            ? true
-            : leadFilter === 'with_lead'
-              ? Boolean(task.leadId)
-              : !task.leadId;
-
         const matchesView =
           viewMode === 'active'
             ? !isDone
@@ -283,7 +242,7 @@ export default function Tasks() {
                   ? overdue
                   : isDone;
 
-        return matchesSearch && matchesType && matchesLead && matchesView;
+        return matchesSearch && matchesType && matchesView;
       })
       .sort((a, b) => {
         const aDate = parseISO(a.date);
@@ -300,7 +259,7 @@ export default function Tasks() {
         if (aToday !== bToday) return aToday ? -1 : 1;
         return aDate.getTime() - bDate.getTime();
       });
-  }, [leadFilter, searchQuery, tasks, typeFilter, viewMode]);
+  }, [searchQuery, tasks, typeFilter, viewMode]);
 
   const groupedTasks = useMemo(() => {
     return filteredTasks.reduce<Record<string, TaskRecord[]>>((acc, task) => {
@@ -316,7 +275,6 @@ export default function Tasks() {
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8">
-        <AccessLockNotice workspace={workspace} />
         <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
@@ -332,7 +290,7 @@ export default function Tasks() {
 
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
             <DialogTrigger asChild>
-              <Button className="h-11 rounded-2xl px-5 font-semibold" disabled={!hasWriteAccess}>
+              <Button className="h-11 rounded-2xl px-5 font-semibold">
                 <Plus className="mr-2 h-4 w-4" /> Nowe zadanie
               </Button>
             </DialogTrigger>
@@ -383,20 +341,8 @@ export default function Tasks() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label>Powiąż z leadem</Label>
-                  <Select value={newTask.leadId} onValueChange={(value) => setNewTask({ ...newTask, leadId: value })}>
-                    <SelectTrigger className="h-10 w-full"><SelectValue placeholder="Bez leada" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Bez leada</SelectItem>
-                      {leadOptions.map((lead) => (
-                        <SelectItem key={lead.id} value={lead.id}>{lead.name || 'Lead bez nazwy'}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
                 <DialogFooter>
-                  <Button type="submit" className="w-full sm:w-auto" disabled={!hasWriteAccess}>Dodaj zadanie</Button>
+                  <Button type="submit" className="w-full sm:w-auto">Dodaj zadanie</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -445,14 +391,6 @@ export default function Tasks() {
                     {TASK_TYPES.map((type) => (
                       <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
                     ))}
-                  </SelectContent>
-                </Select>
-                <Select value={leadFilter} onValueChange={(value) => setLeadFilter(value as LeadFilter)}>
-                  <SelectTrigger className="h-11 w-full sm:w-[220px]"><SelectValue placeholder="Powiązanie" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Wszystkie zadania</SelectItem>
-                    <SelectItem value="with_lead">Tylko z leadem</SelectItem>
-                    <SelectItem value="without_lead">Bez leada</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -515,7 +453,6 @@ export default function Tasks() {
                             <div className="flex min-w-0 items-start gap-4">
                               <button
                                 onClick={() => toggleTask(task.id, task.status)}
-                                disabled={!hasWriteAccess}
                                 className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border transition-colors ${
                                   task.status === 'done'
                                     ? 'app-button-primary'
@@ -538,7 +475,9 @@ export default function Tasks() {
                                 <div className="mt-2 flex flex-wrap items-center gap-2 text-xs app-muted">
                                   <Badge variant="outline">{typeLabel}</Badge>
                                   <span>{format(dateObj, 'd MMMM yyyy', { locale: pl })}</span>
+                                  {task.clientName ? <span>Klient: {task.clientName}</span> : null}
                                   {task.leadName ? <span>Lead: {task.leadName}</span> : null}
+                                  {task.caseTitle ? <span>Sprawa: {task.caseTitle}</span> : null}
                                 </div>
                               </div>
                             </div>
@@ -554,10 +493,19 @@ export default function Tasks() {
                                       : 'Zaplanowane'}
                               </div>
                               <div className="flex items-center gap-2">
-                                {task.leadId ? (
-                                  <Button variant="outline" size="sm" asChild>
-                                    <Link to={`/leads/${task.leadId}`}>Lead</Link>
-                                  </Button>
+                                {task.clientId ? (
+                                  <Link to={`/clients/${task.clientId}`}>
+                                    <Button variant="outline" className="rounded-xl px-3 text-xs">Klient</Button>
+                                  </Link>
+                                ) : null}
+                                {task.caseId ? (
+                                  <Link to={`/case/${task.caseId}`}>
+                                    <Button variant="outline" className="rounded-xl px-3 text-xs">Sprawa</Button>
+                                  </Link>
+                                ) : task.leadId ? (
+                                  <Link to={`/leads/${task.leadId}`}>
+                                    <Button variant="outline" className="rounded-xl px-3 text-xs">Lead</Button>
+                                  </Link>
                                 ) : null}
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>

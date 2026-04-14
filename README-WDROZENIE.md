@@ -141,6 +141,24 @@ Czyli warstwa po sprzedaży przestała wyglądać jak osobna, starsza aplikacja.
 
 ### 8. Lepsze przejście `lead -> case`
 
+
+### 9. Portal klienta przeszedł na nowy styl i mocniejszą logikę
+
+Ekran `Client Portal` nie odstaje już od reszty produktu.
+
+Doszło:
+- nowy układ zgodny ze skórkami i lepszym kontrastem,
+- licznik postępu oraz boczny panel tego, co jeszcze blokuje sprawę,
+- filtry checklisty: wszystko / do zrobienia / wysłane / gotowe / do poprawy,
+- czytelniejsze statusy elementów,
+- lepsze dialogi do wysyłania plików, odpowiedzi i danych dostępowych,
+- pokazywanie ostatnio wysłanej odpowiedzi lub pliku bezpośrednio na karcie elementu,
+- prostszy ekran błędnego lub wygasłego linku,
+- walidacja tokenu z obsługą wygaszenia / unieważnienia, jeśli takie pola są zapisane.
+
+Czyli po wysłaniu klientowi linku portal nie wygląda już jak obca część aplikacji, tylko jak naturalna kontynuacja całego flow.
+
+
 Samo utworzenie sprawy z leada zostało domknięte mocniej niż wcześniej.
 
 Doszło:
@@ -226,88 +244,100 @@ Najmocniejszy kolejny ruch bez wrzucania tego jeszcze na Git:
 - ekran `Aktywność` przebudowany na prawdziwą taśmę operacyjną z filtrami, szybkimi skokami do rekordu i lepszą czytelnością,
 - desktopowe menu dostało pozycję `Panel`, bez zaśmiecania dolnej nawigacji na telefonie.
 
+### 10. Warstwa dostępu i billingu przestała być tylko atrapą
 
-- twardsze, wspólne blokady zapisu po utracie dostępu,
-- notice `Tryb podglądu` na ekranach roboczych,
-- prawdziwe wiązanie tasków z leadami,
-- automatyczne przygotowanie portalu przy przejściu `lead -> case`,
-- lepsze blokowanie akcji operatora w `Lead Detail`, `Case Detail`, `Today`, `Tasks`, `Leady` i `Kalendarz`.
+Doszło mocniejsze domknięcie stanu komercyjnego aplikacji:
+- wspólna logika `access state` dla trialu, planu płatnego, wygaszenia, `payment_failed` i `canceled`,
+- sidebar, mobile header i banner blokady pokazują już prawdziwy stan dostępu zamiast prostego `trial / nie trial`,
+- ekran `Billing` pozwala teraz testować pełen przepływ stanów bez Stripe:
+  - aktywacja planu,
+  - symulacja wygaśnięcia trialu,
+  - `payment_failed`,
+  - `canceled`,
+  - wznowienie planu,
+  - ponowne uruchomienie trialu,
+- dashboard pokazuje już skrót stanu dostępu workspace, żeby nie trzeba było wchodzić do rozliczeń,
+- blokada dostępu ma teraz spójne komunikaty w całej aplikacji.
 
-## Co doszło teraz w najnowszym etapie
+Czyli warstwa `trial / billing / access` nie jest już tylko tekstem i jednym badge'em, tylko realnym stanem produktu gotowym pod późniejsze podpięcie prawdziwej płatności.
 
-### 9. Jedna logika dostępu zamiast porozrzucanych wyjątków
 
-Warstwa dostępu została spięta w jedną wspólną logikę.
+### 11. Doszedł pełny moduł `Szablony`
 
-Doszło:
-- centralne liczenie stanu dostępu workspace,
-- wspólna decyzja, czy zapis jest dozwolony,
-- wspólne komunikaty blokady dla całej aplikacji,
-- wspólne metadane statusu do sidebaru, mobile headera i ekranów roboczych.
-
-To ogranicza sytuację, w której jeden ekran pozwala pisać, a drugi tylko częściowo blokuje akcje.
-
-### 10. Twardsze blokady zapisu po utracie dostępu
-
-Najważniejsze akcje operatora są teraz realnie blokowane po utracie dostępu, a nie tylko oznaczane wizualnie.
-
-Objęte zostały m.in.:
-- dodawanie leadów,
-- dodawanie tasków,
-- dodawanie wydarzeń,
-- szybkie akcje na leadach,
-- zmiany etapu w pipeline,
-- edycja i ruchy na `Lead Detail`,
-- operacje checklisty i portalu na `Case Detail`,
-- część akcji z `Dziś` i `Kalendarza`.
-
-Gdy workspace traci zapis, użytkownik dostaje jasny komunikat i przejście do `Billing`, zamiast cichego pół-działania.
-
-### 11. Notice `Tryb podglądu` na ekranach roboczych
-
-Na kluczowych ekranach roboczych doszedł wspólny notice, który mówi wprost, że zapis jest zablokowany i dlaczego.
-
-Notice został dodany do:
-- `Dziś`,
-- `Leady`,
-- `Zadania`,
-- `Kalendarz`,
-- `Lead Detail`,
-- `Case Detail`.
-
-To jest ważne, bo user nie musi zgadywać, czemu przycisk nie działa.
-
-### 12. Taski są naprawdę powiązane z leadami
-
-Taski nie są już tylko luźną listą obok procesu leadowego.
+Dodałem osobny ekran `Szablony`, żeby warstwa `lead -> case` nie kończyła się na wyborze kilku zasianych gotowców.
 
 Doszło:
-- wybór leada podczas tworzenia taska,
-- zapis `leadId` i `leadName` na tasku,
-- widoczna etykieta powiązanego leada na kartach tasków,
-- filtrowanie: wszystkie / tylko z leadem / bez leada,
-- szybkie przejście z taska bezpośrednio do leada.
+- osobny route `/templates`,
+- nowa pozycja `Szablony` w nawigacji,
+- lista istniejących szablonów z wyszukiwarką,
+- staty szablonów i pozycji checklist,
+- tworzenie nowego szablonu,
+- edycja istniejącego szablonu,
+- duplikowanie szablonu,
+- usuwanie szablonu,
+- edycja pozycji checklisty w szablonie:
+  - tytuł,
+  - opis,
+  - typ,
+  - obowiązkowość,
+- link z `Lead Detail` do zarządzania szablonami przy uruchamianiu sprawy.
 
-To wzmacnia jeden z najważniejszych elementów produktu: zadanie ma wspierać ruch na leadzie, a nie żyć osobno.
+To domyka ważny brak produktu: operator może już sam budować gotowce dla różnych typów realizacji zamiast polegać tylko na seedzie startowym.
 
-### 13. `lead -> case -> portal` jest mocniej domknięte
 
-Przy utworzeniu sprawy z leada system nie kończy już pracy na samym rekordzie `case`.
+### 12. Doszedł moduł `Klienci` jako warstwa pośrednia
 
-Doszło:
-- automatyczne zapewnienie tokenu portalu po utworzeniu sprawy z leada,
-- zapis gotowości portalu także na sprawie,
-- możliwość kopiowania linku do portalu z poziomu `Lead Detail`, jeśli lead ma już powiązaną sprawę,
-- wspólny helper do pilnowania, czy token portalu istnieje i jest aktywny.
-
-To skraca drogę po wygraniu leada: nie trzeba już ręcznie dopychać portalu osobno.
-
-### 14. `Case Detail` i `Lead Detail` są bardziej operator-first
-
-Oba ekrany zostały dodatkowo dopięte pod realny przepływ operatora.
+Dodałem osobny ekran `Klienci`, żeby domknąć ścieżkę między leadem i sprawą.
 
 Doszło:
-- blokowanie akcji edycyjnych zgodnie z realnym stanem dostępu,
-- mocniejsze spięcie działań z portalem,
-- bezpieczniejsze operacje wokół checklisty i szybkich akcji,
-- mniej pół-stanów, w których UI udawał, że coś można zrobić.
+- route `/clients`,
+- nowa pozycja `Klienci` w nawigacji desktopowej,
+- lista klientów z wyszukiwarką i filtrami,
+- staty: wszyscy / w sprzedaży / onboarding / w realizacji / do spięcia,
+- ręczne dodawanie klienta,
+- fallbackowe rekordy budowane z istniejących leadów i spraw, więc moduł nie jest pusty na starych danych,
+- szybkie przejścia do źródłowego leada i sprawy,
+- akcja spinania fallbackowego rekordu w stałego klienta.
+
+Dodatkowo domknąłem powiązania danych:
+- `lead -> case` tworzy i aktualizuje rekord klienta,
+- sprawa zapisuje `clientId`, `clientEmail`, `clientPhone`, `company`,
+- lead zapisuje `linkedClientId`,
+- wygenerowanie portalu oznacza sprawę i klienta jako `portalReady`.
+
+
+### 13. Doszło prawdziwe `Centrum klienta`
+
+Moduł `Klienci` nie jest już tylko listą rekordów.
+
+Doszło:
+- route `/clients/:clientId`,
+- pełny ekran szczegółu klienta,
+- edycja danych klienta:
+  - nazwa,
+  - firma,
+  - e-mail,
+  - telefon,
+  - notatka operatora,
+- możliwość spięcia fallbackowego klienta do stałego rekordu bez wychodzenia ze szczegółu,
+- widok wszystkich powiązań klienta w jednym miejscu:
+  - leady,
+  - sprawy,
+  - zadania,
+  - wydarzenia,
+- tworzenie zadania bezpośrednio z poziomu klienta,
+- tworzenie wydarzenia bezpośrednio z poziomu klienta,
+- automatyczne zapisywanie przy nowych zadaniach i wydarzeniach pól:
+  - `clientId`,
+  - `clientName`,
+  - `leadId`,
+  - `leadName`,
+  - `caseId`,
+  - `caseTitle`,
+- mocniejsze linkowanie między modułami: klient → lead / sprawa / kalendarz.
+
+Dodatkowo dopiąłem ekran `Zadania`, żeby lepiej pokazywał kontekst procesu:
+- karta taska pokazuje już klienta i sprawę,
+- z taska można wejść bezpośrednio do klienta, sprawy albo leada.
+
+To jest ważne, bo klient staje się teraz realnym centrum pracy po sprzedaży, a nie tylko warstwą pośrednią na liście.

@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   BarChart3,
   Users,
+  ContactRound,
   Settings,
   LogOut,
   CheckCircle2,
@@ -13,6 +14,7 @@ import {
   Calendar,
   CheckSquare,
   CreditCard,
+  FileText,
   AlertTriangle,
   ChevronRight,
   Menu,
@@ -20,7 +22,6 @@ import {
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { differenceInDays, parseISO } from 'date-fns';
 import { cn } from '../lib/utils';
 import { useAppearance } from './appearance-provider';
 
@@ -46,7 +47,7 @@ function isPathActive(currentPath: string, itemPath: string) {
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const user = auth.currentUser;
-  const { workspace, hasAccess, accessMeta, accessState } = useWorkspace();
+  const { workspace, hasAccess, access } = useWorkspace();
   const { skin } = useAppearance();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -58,18 +59,17 @@ export default function Layout({ children }: LayoutProps) {
     { icon: LayoutDashboard, label: 'Dziś', path: '/', mobile: true },
     { icon: BarChart3, label: 'Panel', path: '/dashboard' },
     { icon: Users, label: 'Leady', path: '/leads', mobile: true },
+    { icon: ContactRound, label: 'Klienci', path: '/clients' },
     { icon: CheckSquare, label: 'Zadania', path: '/tasks', mobile: true },
     { icon: Calendar, label: 'Kalendarz', path: '/calendar', mobile: true },
     { icon: Briefcase, label: 'Sprawy', path: '/cases', mobile: true },
     { icon: History, label: 'Aktywność', path: '/activity' },
+    { icon: FileText, label: 'Szablony', path: '/templates' },
     { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
     { icon: Settings, label: 'Ustawienia', path: '/settings' },
   ], []);
 
   const mobileNavItems = navItems.filter((item) => item.mobile);
-  const trialDaysLeft = workspace?.trialEndsAt
-    ? Math.max(0, differenceInDays(parseISO(workspace.trialEndsAt), new Date()))
-    : 0;
 
   const sidebarContent = (
     <>
@@ -113,27 +113,28 @@ export default function Layout({ children }: LayoutProps) {
         })}
       </nav>
 
-      {(accessState === 'trial_active' || accessState === 'trial_ending') && (
+      {workspace && (
         <div className="mx-4 mb-4 rounded-2xl border app-border p-3 app-surface-strong app-shadow">
           <div className="mb-2 flex items-center justify-between gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Trial</span>
-            <span className="rounded-full px-2 py-1 text-[10px] font-bold app-primary-chip">{trialDaysLeft} dni</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Dostęp</span>
+            <span className={cn('rounded-full px-2 py-1 text-[10px] font-bold', access.chipClassName)}>{access.sidebarLabel}</span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
             <div
               className="h-full rounded-full"
               style={{
-                width: `${Math.max(6, Math.min(100, (trialDaysLeft / 7) * 100))}%`,
-                backgroundColor: 'var(--app-primary)',
+                width: `${access.status === 'paid_active' ? 100 : access.trialProgressPercent}%`,
+                backgroundColor: access.status === 'paid_active' ? 'rgb(16 185 129)' : 'var(--app-primary)',
               }}
             />
           </div>
+          <p className="mt-2 text-xs app-muted">{access.headline}</p>
           <Link
             to="/billing"
             className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold"
             style={{ color: 'var(--app-primary)' }}
           >
-            Rozliczenia <ChevronRight className="h-3 w-3" />
+            {access.ctaLabel} <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
       )}
@@ -169,10 +170,10 @@ export default function Layout({ children }: LayoutProps) {
             <h1 className="text-base font-bold app-text">Forteca</h1>
           </div>
           <div className="flex items-center gap-2">
-            {(accessState === 'trial_active' || accessState === 'trial_ending') && (
+            {workspace && (
               <Link to="/billing">
-                <div className="rounded-full px-3 py-1 text-[11px] font-semibold app-primary-chip">
-                  Trial {trialDaysLeft} dni
+                <div className={cn('rounded-full px-3 py-1 text-[11px] font-semibold', access.chipClassName)}>
+                  {access.badgeLabel}
                 </div>
               </Link>
             )}
@@ -218,10 +219,10 @@ export default function Layout({ children }: LayoutProps) {
           <div className="sticky top-[57px] z-30 border-b border-rose-500/20 bg-rose-500 px-4 py-2 text-white shadow-lg md:top-0">
             <div className="mx-auto flex max-w-7xl items-center justify-center gap-3 text-center">
               <AlertTriangle className="h-4 w-4 shrink-0" />
-              <p className="text-sm font-semibold">{accessMeta.blockedReason}</p>
+              <p className="text-sm font-semibold">{access.headline}. Podgląd danych działa, ale akcje zapisujące są wstrzymane.</p>
               <Link to="/billing">
                 <Button size="sm" variant="secondary" className="h-8 rounded-xl px-4 text-xs font-semibold text-slate-900">
-                  Odblokuj zapis
+                  {access.ctaLabel}
                 </Button>
               </Link>
             </div>

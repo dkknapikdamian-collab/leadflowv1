@@ -31,9 +31,13 @@ type CaseRecord = {
   id: string;
   title?: string;
   clientName?: string;
+  clientId?: string;
+  clientEmail?: string;
+  clientPhone?: string;
   status?: string;
   completenessPercent?: number;
   leadId?: string;
+  portalReady?: boolean;
   updatedAt?: { toDate?: () => Date } | null;
 };
 
@@ -261,6 +265,7 @@ export default function Cases() {
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm app-muted">
                         <span>Klient: {record.clientName || 'Brak nazwy klienta'}</span>
+                        {record.portalReady ? <span>Portal gotowy</span> : null}
                         <span>Kompletność: {percent}%</span>
                         <span>Ostatni ruch: {updatedAt ? format(updatedAt, 'd MMM yyyy', { locale: pl }) : 'Brak'}</span>
                       </div>
