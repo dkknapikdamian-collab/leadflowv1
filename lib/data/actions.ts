@@ -13,7 +13,6 @@ import {
   setDefaultCaseTemplateSnapshot,
   snoozeItemSnapshot,
   startCaseFromLeadSnapshot,
-  toggleItemDoneSnapshot,
   updateCaseItemSnapshot,
   updateCaseSnapshot,
   updateCaseTemplateSnapshot,
@@ -100,8 +99,16 @@ export function applyAppDataAction(snapshot: AppSnapshot, action: AppDataAction)
       return updateItemSnapshot(snapshot, action.itemId, action.patch)
     case "deleteItem":
       return deleteItemSnapshot(snapshot, action.itemId)
-    case "toggleItemDone":
-      return toggleItemDoneSnapshot(snapshot, action.itemId)
+    case "toggleItemDone": {
+      const currentItem = snapshot.items.find((item) => item.id === action.itemId)
+      if (!currentItem) return snapshot
+
+      const nextStatus = currentItem.status === "done" ? "todo" : "done"
+      return updateItemSnapshot(snapshot, action.itemId, {
+        status: nextStatus,
+        showInTasks: nextStatus === "done" ? false : currentItem.recordType !== "event",
+      })
+    }
     case "snoozeItem":
       return snoozeItemSnapshot(snapshot, action.itemId, action.nextDate)
     case "addCaseTemplate":

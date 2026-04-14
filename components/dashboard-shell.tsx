@@ -404,7 +404,6 @@ export function DashboardShell({ children }: PropsWithChildren) {
               {snapshot.billing.status === "active" ? "Plan aktywny" : snapshot.billing.status === "trial" ? "Trial active" : "Wymaga płatności"}
             </span>
           </div>
-          <div className="workspace-copy">Jeden system do domykania i uruchamiania klienta.</div>
         </div>
 
         <nav className="nav card" aria-label="Główna nawigacja">
@@ -423,17 +422,6 @@ export function DashboardShell({ children }: PropsWithChildren) {
             )
           })}
         </nav>
-
-        <div className="sidebar-block card">
-          <div className="block-head">
-            <span className="eyebrow">Priorytet dnia</span>
-            <span className="mini-dot hot" />
-          </div>
-          <div className="priority-item">
-            <strong>Zacznij od Today. Operator traktuj pomocniczo.</strong>
-            <span>Najpierw sprawdź Today, potem ruszaj leady bez next stepu, overdue i sprawy ready to start. Operator+ zostaw jako ekran pomocniczy.</span>
-          </div>
-        </div>
 
         <SidebarMiniCalendar />
 
@@ -466,7 +454,7 @@ export function DashboardShell({ children }: PropsWithChildren) {
             <span className="brand-dot" />
             <div>
               <strong>{pageLabel}</strong>
-              <span>{snapshot.settings.workspaceName} • nowoczesny workflow operacyjny</span>
+              <span>{snapshot.settings.workspaceName}</span>
             </div>
           </div>
 
