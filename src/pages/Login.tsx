@@ -1,21 +1,33 @@
-import { useState, FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import {
-  signInWithPopup,
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
   sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
   updateProfile,
 } from 'firebase/auth';
-import { auth, googleProvider, db } from '../firebase';
-import { doc, setDoc, getDoc, serverTimestamp, collection, addDoc } from 'firebase/firestore';
+import { addDays } from 'date-fns';
+import { ArrowLeft, CheckCircle2, Loader2, Lock, LogIn, Mail, Sparkles, User } from 'lucide-react';
+import { addDoc, collection, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { toast } from 'sonner';
+import { auth, db, googleProvider } from '../firebase';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { CheckCircle2, LogIn, Mail, Lock, User, Loader2, Sparkles, ArrowLeft } from 'lucide-react';
-import { toast } from 'sonner';
-import { addDays } from 'date-fns';
+
+const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
+
+function isAdminEmail(email?: string | null) {
+  return !!email && ADMIN_EMAILS.has(email.trim().toLowerCase());
+}
+
+type AuthUser = {
+  uid: string;
+  email?: string | null;
+  displayName?: string | null;
+};
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -24,30 +36,63 @@ export default function Login() {
   const [fullName, setFullName] = useState('');
   const [isResetting, setIsResetting] = useState(false);
 
-  const initializeUser = async (user: any, name?: string) => {
+  const initializeUser = async (user: AuthUser, name?: string) => {
     const profileRef = doc(db, 'profiles', user.uid);
     const profileSnap = await getDoc(profileRef);
+    const adminAccess = isAdminEmail(user.email);
 
     if (!profileSnap.exists()) {
       const workspaceRef = await addDoc(collection(db, 'workspaces'), {
         ownerId: user.uid,
-        name: `${name || user.displayName || 'Mój'} Workspace`,
-        plan: 'free',
-        subscriptionStatus: 'trial_active',
-        trialEndsAt: addDays(new Date(), 7).toISOString(),
+        name: `${name || user.displayName || 'Moj'} Workspace`,
+        plan: adminAccess ? 'pro' : 'free',
+        planId: adminAccess ? 'pro' : null,
+        subscriptionStatus: adminAccess ? 'paid_active' : 'trial_active',
+        trialEndsAt: adminAccess ? null : addDays(new Date(), 7).toISOString(),
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
 
       await setDoc(profileRef, {
-        email: user.email,
-        fullName: name || user.displayName,
+        email: user.email ?? null,
+        fullName: name || user.displayName || null,
         workspaceId: workspaceRef.id,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
+
+      return;
     }
+
+    const profileData = profileSnap.data();
+    if (!adminAccess || !profileData.workspaceId) {
+      return;
+    }
+
+    const workspaceRef = doc(db, 'workspaces', profileData.workspaceId);
+    const workspaceSnap = await getDoc(workspaceRef);
+    if (!workspaceSnap.exists()) {
+      return;
+    }
+
+    const workspaceData = workspaceSnap.data();
+    if (
+      workspaceData.subscriptionStatus === 'paid_active' &&
+      workspaceData.plan === 'pro' &&
+      workspaceData.planId === 'pro' &&
+      !workspaceData.trialEndsAt
+    ) {
+      return;
+    }
+
+    await updateDoc(workspaceRef, {
+      plan: 'pro',
+      planId: 'pro',
+      subscriptionStatus: 'paid_active',
+      trialEndsAt: null,
+      updatedAt: serverTimestamp(),
+    });
   };
 
   const handleGoogleLogin = async () => {
@@ -55,9 +100,9 @@ export default function Login() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       await initializeUser(result.user);
-      toast.success('Zalogowano pomyślnie');
+      toast.success('Zalogowano pomyslnie');
     } catch (error: any) {
-      toast.error('Błąd logowania: ' + error.message);
+      toast.error('Blad logowania: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -69,9 +114,9 @@ export default function Login() {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       await initializeUser(result.user);
-      toast.success('Zalogowano pomyślnie');
+      toast.success('Zalogowano pomyslnie');
     } catch (error: any) {
-      toast.error('Błąd logowania: ' + error.message);
+      toast.error('Blad logowania: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -85,9 +130,9 @@ export default function Login() {
       await updateProfile(result.user, { displayName: fullName });
       await sendEmailVerification(result.user);
       await initializeUser(result.user, fullName);
-      toast.success('Konto utworzone. Sprawdź e-mail, żeby je potwierdzić.');
+      toast.success('Konto utworzone. Sprawdz e-mail, zeby je potwierdzic.');
     } catch (error: any) {
-      toast.error('Błąd rejestracji: ' + error.message);
+      toast.error('Blad rejestracji: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -98,10 +143,10 @@ export default function Login() {
     setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email);
-      toast.success('Link do resetu hasła został wysłany.');
+      toast.success('Link do resetu hasla zostal wyslany.');
       setIsResetting(false);
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Blad: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -117,11 +162,11 @@ export default function Login() {
               onClick={() => setIsResetting(false)}
               className="mb-5 inline-flex items-center gap-2 text-sm font-medium app-muted transition-colors hover:app-text"
             >
-              <ArrowLeft className="h-4 w-4" /> Wróć do logowania
+              <ArrowLeft className="h-4 w-4" /> Wroc do logowania
             </button>
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold app-text">Reset hasła</h2>
-              <p className="text-sm app-muted">Wpisz e-mail i wyślij link do ustawienia nowego hasła.</p>
+              <h2 className="text-2xl font-bold app-text">Reset hasla</h2>
+              <p className="text-sm app-muted">Wpisz e-mail i wyslij link do ustawienia nowego hasla.</p>
             </div>
             <form onSubmit={handleResetPassword} className="mt-6 space-y-4">
               <div className="space-y-2">
@@ -136,7 +181,7 @@ export default function Login() {
                 />
               </div>
               <Button type="submit" className="h-11 w-full rounded-2xl font-semibold" disabled={loading}>
-                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Wyślij link resetujący'}
+                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Wyslij link resetujacy'}
               </Button>
             </form>
           </div>
@@ -155,16 +200,16 @@ export default function Login() {
           <div className="mt-6 flex h-16 w-16 items-center justify-center rounded-[24px] app-primary-chip">
             <CheckCircle2 className="h-9 w-9" />
           </div>
-          <h1 className="mt-6 text-4xl font-bold leading-tight app-text">Forteca porządkuje sprzedaż i start realizacji w jednym miejscu.</h1>
+          <h1 className="mt-6 text-4xl font-bold leading-tight app-text">Forteca porzadkuje sprzedaz i start realizacji w jednym miejscu.</h1>
           <p className="mt-4 max-w-xl text-base app-muted">
-            Jeden ekran na dziś, jedna baza leadów, zadania, kalendarz, sprawy i portal klienta. Bez latania między notatkami i chaosem.
+            Jeden ekran na dzis, jedna baza leadow, zadania, kalendarz, sprawy i portal klienta. Bez latania miedzy notatkami i chaosem.
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {[
-              ['Dziś', 'Od razu widzisz, co trzeba ruszyć teraz.'],
-              ['Leady', 'Każdy rekord ma następny krok i termin.'],
-              ['Sprawy', 'Po wygraniu leada przechodzisz płynnie do realizacji.'],
+              ['Dzis', 'Od razu widzisz, co trzeba ruszyc teraz.'],
+              ['Leady', 'Kazdy rekord ma nastepny krok i termin.'],
+              ['Sprawy', 'Po wygraniu leada przechodzisz plynnie do realizacji.'],
             ].map(([title, text]) => (
               <div key={title} className="rounded-2xl p-4 app-surface-strong">
                 <p className="text-sm font-bold app-text">{title}</p>
@@ -180,7 +225,7 @@ export default function Login() {
               <CheckCircle2 className="h-9 w-9" />
             </div>
             <h1 className="text-3xl font-bold app-text">Forteca</h1>
-            <p className="mt-2 text-sm app-muted">Zaloguj się i wróć do pracy z leadami oraz sprawami.</p>
+            <p className="mt-2 text-sm app-muted">Zaloguj sie i wroc do pracy z leadami oraz sprawami.</p>
           </div>
 
           <Tabs defaultValue="login" className="space-y-6">
@@ -209,14 +254,14 @@ export default function Login() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <Label htmlFor="password">Hasło</Label>
+                    <Label htmlFor="password">Haslo</Label>
                     <button
                       type="button"
                       onClick={() => setIsResetting(true)}
                       className="text-xs font-semibold"
                       style={{ color: 'var(--app-primary)' }}
                     >
-                      Zapomniałeś hasła?
+                      Zapomniales hasla?
                     </button>
                   </div>
                   <div className="relative">
@@ -224,7 +269,7 @@ export default function Login() {
                     <Input
                       id="password"
                       type="password"
-                      placeholder="••••••••"
+                      placeholder="********"
                       className="h-11 pl-10"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -234,7 +279,7 @@ export default function Login() {
                 </div>
 
                 <Button type="submit" className="h-11 w-full rounded-2xl font-semibold" disabled={loading}>
-                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Zaloguj się'}
+                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Zaloguj sie'}
                 </Button>
               </form>
 
@@ -260,7 +305,7 @@ export default function Login() {
             <TabsContent value="register" className="space-y-6">
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="reg-name">Imię i nazwisko</Label>
+                  <Label htmlFor="reg-name">Imie i nazwisko</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 app-muted" />
                     <Input
@@ -291,13 +336,13 @@ export default function Login() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="reg-password">Hasło</Label>
+                  <Label htmlFor="reg-password">Haslo</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 app-muted" />
                     <Input
                       id="reg-password"
                       type="password"
-                      placeholder="Minimum 8 znaków"
+                      placeholder="Minimum 8 znakow"
                       className="h-11 pl-10"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -308,7 +353,7 @@ export default function Login() {
                 </div>
 
                 <Button type="submit" className="h-11 w-full rounded-2xl font-semibold" disabled={loading}>
-                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Utwórz konto'}
+                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Utworz konto'}
                 </Button>
               </form>
             </TabsContent>
