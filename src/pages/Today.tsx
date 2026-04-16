@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
+import { ensureCurrentUserWorkspace } from '../lib/workspace';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -315,11 +316,11 @@ export default function Today() {
 
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
-    if (!workspace) return toast.error('Brak aktywnego workspace.');
     if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
 
     try {
+      const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
       await addDoc(collection(db, 'leads'), {
         name: newLead.name,
         email: newLead.email,
@@ -329,7 +330,7 @@ export default function Today() {
         nextStep: newLead.nextStep,
         nextActionAt: newLead.nextActionAt,
         ownerId: auth.currentUser.uid,
-        workspaceId: workspace.id,
+        workspaceId: ensuredWorkspace.id,
         isAtRisk: false,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -534,16 +535,17 @@ export default function Today() {
                     </div>
                     <div className="space-y-2">
                       <Label>Źródło</Label>
-                      <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {LEAD_SOURCE_OPTIONS.map((sourceOption) => (
-                            <SelectItem key={sourceOption.value} value={sourceOption.value}>
-                              {sourceOption.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <select
+                        value={newLead.source}
+                        onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
+                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                      >
+                        {LEAD_SOURCE_OPTIONS.map((sourceOption) => (
+                          <option key={sourceOption.value} value={sourceOption.value}>
+                            {sourceOption.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className="space-y-2">

@@ -44,6 +44,7 @@ import {
 import Layout from '../components/Layout';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
+import { ensureCurrentUserWorkspace } from '../lib/workspace';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
@@ -419,16 +420,16 @@ export default function Leads() {
     e.preventDefault();
     if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł.');
-    if (!workspace) return toast.error('Brak aktywnego workspace.');
     if (!newLead.name.trim()) return toast.error('Wpisz nazwę leada.');
 
     try {
+      const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
       await addDoc(collection(db, 'leads'), {
         ...newLead,
         dealValue: Number(newLead.dealValue) || 0,
         status: 'new',
         ownerId: auth.currentUser.uid,
-        workspaceId: workspace.id,
+        workspaceId: ensuredWorkspace.id,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         isAtRisk: false,
@@ -660,12 +661,15 @@ export default function Leads() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label>Źródło</Label>
-                      <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {SOURCE_OPTIONS.map((source) => <SelectItem key={source.value} value={source.value}>{source.label}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
+                      <select
+                        value={newLead.source}
+                        onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
+                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                      >
+                        {SOURCE_OPTIONS.map((source) => (
+                          <option key={source.value} value={source.value}>{source.label}</option>
+                        ))}
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label>Termin ruchu</Label>
