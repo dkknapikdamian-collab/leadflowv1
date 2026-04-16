@@ -5,25 +5,18 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
+  type User as FirebaseUser,
   updateProfile,
 } from 'firebase/auth';
-import { addDays } from 'date-fns';
 import { ArrowLeft, CheckCircle2, Loader2, Lock, LogIn, Mail, Sparkles, User } from 'lucide-react';
-import { addDoc, collection, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { toast } from 'sonner';
-import { auth, db, googleProvider } from '../firebase';
-import { isAdminEmail } from '../lib/admin';
+import { auth, googleProvider } from '../firebase';
+import { ensureWorkspaceForUser } from '../lib/workspace';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import firebaseConfig from '../../firebase-applet-config.json';
-
-type AuthUser = {
-  uid: string;
-  email?: string | null;
-  displayName?: string | null;
-};
 
 function getAuthErrorMessage(error: { code?: string; message?: string }) {
   if (error.code === 'auth/unauthorized-domain') {
@@ -41,63 +34,8 @@ export default function Login() {
   const [fullName, setFullName] = useState('');
   const [isResetting, setIsResetting] = useState(false);
 
-  const initializeUser = async (user: AuthUser, name?: string) => {
-    const profileRef = doc(db, 'profiles', user.uid);
-    const profileSnap = await getDoc(profileRef);
-    const adminAccess = isAdminEmail(user.email);
-
-    if (!profileSnap.exists()) {
-      const workspaceRef = await addDoc(collection(db, 'workspaces'), {
-        ownerId: user.uid,
-        name: `${name || user.displayName || 'Moj'} Workspace`,
-        plan: adminAccess ? 'pro' : 'free',
-        planId: adminAccess ? 'pro' : null,
-        subscriptionStatus: adminAccess ? 'paid_active' : 'trial_active',
-        trialEndsAt: adminAccess ? null : addDays(new Date(), 7).toISOString(),
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-
-      await setDoc(profileRef, {
-        email: user.email ?? null,
-        fullName: name || user.displayName || null,
-        workspaceId: workspaceRef.id,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-
-      return;
-    }
-
-    const profileData = profileSnap.data();
-    if (!adminAccess || !profileData.workspaceId) {
-      return;
-    }
-
-    const workspaceRef = doc(db, 'workspaces', profileData.workspaceId);
-    const workspaceSnap = await getDoc(workspaceRef);
-    if (!workspaceSnap.exists()) {
-      return;
-    }
-
-    const workspaceData = workspaceSnap.data();
-    if (
-      workspaceData.subscriptionStatus === 'paid_active' &&
-      workspaceData.plan === 'pro' &&
-      workspaceData.planId === 'pro' &&
-      !workspaceData.trialEndsAt
-    ) {
-      return;
-    }
-
-    await updateDoc(workspaceRef, {
-      plan: 'pro',
-      planId: 'pro',
-      subscriptionStatus: 'paid_active',
-      trialEndsAt: null,
-      updatedAt: serverTimestamp(),
-    });
+  const initializeUser = async (user: FirebaseUser, name?: string) => {
+    await ensureWorkspaceForUser(user, name);
   };
 
   const handleGoogleLogin = async () => {

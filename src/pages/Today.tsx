@@ -353,7 +353,6 @@ export default function Today() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!workspace) return toast.error('Brak aktywnego workspace.');
     if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
@@ -361,7 +360,7 @@ export default function Today() {
         ...newTask,
         status: 'todo',
         ownerId: auth.currentUser.uid,
-        workspaceId: workspace.id,
+        workspaceId: (workspace ?? await ensureCurrentUserWorkspace()).id,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
@@ -375,7 +374,6 @@ export default function Today() {
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!workspace) return toast.error('Brak aktywnego workspace.');
     if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
@@ -383,7 +381,7 @@ export default function Today() {
         ...newEvent,
         status: 'scheduled',
         ownerId: auth.currentUser.uid,
-        workspaceId: workspace.id,
+        workspaceId: (workspace ?? await ensureCurrentUserWorkspace()).id,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });

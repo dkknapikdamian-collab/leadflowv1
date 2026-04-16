@@ -164,7 +164,7 @@ service cloud.firestore {
 
     match /client_portal_tokens/{tokenHash} {
       allow list: if false;
-      allow get: if isTokenActive(tokenHash);
+      allow get: if false;
       allow create: if isAuthenticated()
         && request.resource.data.keys().hasAll(['caseId', 'tokenHash', 'createdBy', 'createdAt'])
         && request.resource.data.createdBy == request.auth.uid

@@ -67,20 +67,27 @@ export default function App() {
         setProfileLoading(true);
       }
 
-      const profileDoc = await getDoc(doc(db, 'profiles', user.uid));
-      if (!isMounted) {
-        return;
-      }
+      try {
+        const profileDoc = await getDoc(doc(db, 'profiles', user.uid));
+        if (!isMounted) {
+          return;
+        }
 
-      if (profileDoc.exists()) {
-        setProfile(profileDoc.data());
-      } else {
-        setProfile(null);
-      }
+        if (profileDoc.exists()) {
+          setProfile(profileDoc.data());
+        } else {
+          setProfile(null);
+        }
 
-      await seedTemplates();
-      if (isMounted) {
-        setProfileLoading(false);
+        await seedTemplates();
+      } catch {
+        if (isMounted) {
+          setProfile(null);
+        }
+      } finally {
+        if (isMounted) {
+          setProfileLoading(false);
+        }
       }
     }
 

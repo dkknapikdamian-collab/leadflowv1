@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { addDoc, collection, doc, getDocs, limit, onSnapshot, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore';
-import { addDays } from 'date-fns';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { getAccessSummary } from '../lib/access';
 import { isAdminEmail } from '../lib/admin';
 import { auth, db } from '../firebase';
+import { ensureCurrentUserWorkspace } from '../lib/workspace';
 
 export function useWorkspace() {
   const [activeUserId, setActiveUserId] = useState<string | null>(auth.currentUser?.uid ?? null);
@@ -31,111 +31,55 @@ export function useWorkspace() {
     setLoading(true);
     const profileRef = doc(db, 'profiles', activeUserId);
     let unsubscribeWorkspace: (() => void) | undefined;
+    let unsubscribeProfile: (() => void) | undefined;
 
-    const ensureWorkspaceBinding = async (profileData?: Record<string, any> | null) => {
-      const adminAccess = isAdminEmail(auth.currentUser?.email);
-      const workspaceQuery = query(collection(db, 'workspaces'), where('ownerId', '==', activeUserId), limit(1));
-      const ownedWorkspaceSnapshot = await getDocs(workspaceQuery);
+    const startSubscriptions = async () => {
+      try {
+        const ensuredWorkspace = await ensureCurrentUserWorkspace();
+        setWorkspace(ensuredWorkspace);
 
-      let workspaceId = ownedWorkspaceSnapshot.docs[0]?.id;
+        unsubscribeProfile = onSnapshot(
+          profileRef,
+          (snap) => {
+            const profileData = snap.exists() ? snap.data() : null;
+            setProfile(profileData ? { id: snap.id, ...profileData } : null);
 
-      if (!workspaceId) {
-        const workspaceRef = await addDoc(collection(db, 'workspaces'), {
-          ownerId: activeUserId,
-          name: `${profileData?.fullName || auth.currentUser?.displayName || 'Moj'} Workspace`,
-          plan: adminAccess ? 'pro' : 'free',
-          planId: adminAccess ? 'pro' : null,
-          subscriptionStatus: adminAccess ? 'paid_active' : 'trial_active',
-          trialEndsAt: adminAccess ? null : addDays(new Date(), 7).toISOString(),
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-        workspaceId = workspaceRef.id;
-      }
-
-      if (profileData) {
-        await updateDoc(profileRef, {
-          workspaceId,
-          updatedAt: serverTimestamp(),
-        });
-      } else {
-        await setDoc(profileRef, {
-          email: auth.currentUser?.email ?? null,
-          fullName: auth.currentUser?.displayName ?? null,
-          workspaceId,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        }, { merge: true });
-      }
-
-      return workspaceId;
-    };
-
-    const unsubscribeProfile = onSnapshot(
-      profileRef,
-      async (snap) => {
-        if (!snap.exists()) {
-          try {
-            await ensureWorkspaceBinding(null);
-          } catch {
-            setProfile(null);
-            setWorkspace(null);
-            setLoading(false);
-          }
-          return;
-        }
-
-        const profileData = snap.data();
-        setProfile({ id: snap.id, ...profileData });
-
-        if (!profileData.workspaceId) {
-          try {
-            await ensureWorkspaceBinding(profileData);
-          } catch {
+            const workspaceId = profileData?.workspaceId || ensuredWorkspace.id;
             unsubscribeWorkspace?.();
-            unsubscribeWorkspace = undefined;
-            setWorkspace(null);
-            setLoading(false);
-          }
-          return;
-        }
 
-        unsubscribeWorkspace?.();
-
-        const workspaceRef = doc(db, 'workspaces', profileData.workspaceId);
-        unsubscribeWorkspace = onSnapshot(
-          workspaceRef,
-          async (wsSnap) => {
-            if (wsSnap.exists()) {
-              setWorkspace({ id: wsSnap.id, ...wsSnap.data() });
-            } else {
-              try {
-                await ensureWorkspaceBinding(profileData);
-              } catch {
-                setWorkspace(null);
+            const workspaceRef = doc(db, 'workspaces', workspaceId);
+            unsubscribeWorkspace = onSnapshot(
+              workspaceRef,
+              (wsSnap) => {
+                setWorkspace(wsSnap.exists() ? { id: wsSnap.id, ...wsSnap.data() } : ensuredWorkspace);
+                setLoading(false);
+              },
+              () => {
+                setWorkspace(ensuredWorkspace);
+                setLoading(false);
               }
-            }
-            setLoading(false);
+            );
           },
           () => {
-            setWorkspace(null);
+            unsubscribeWorkspace?.();
+            unsubscribeWorkspace = undefined;
+            setProfile(null);
+            setWorkspace(ensuredWorkspace);
             setLoading(false);
           }
         );
-      },
-      () => {
-        unsubscribeWorkspace?.();
-        unsubscribeWorkspace = undefined;
+      } catch {
         setProfile(null);
         setWorkspace(null);
         setLoading(false);
       }
-    );
+    };
+
+    void startSubscriptions();
 
     return () => {
       unsubscribeWorkspace?.();
-      unsubscribeProfile();
+      unsubscribeProfile?.();
     };
   }, [activeUserId]);
 
