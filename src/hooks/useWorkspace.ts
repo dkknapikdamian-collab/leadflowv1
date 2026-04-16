@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { getAccessSummary } from '../lib/access';
+import { isAdminEmail } from '../lib/admin';
 import { auth, db } from '../firebase';
 
 export function useWorkspace() {
@@ -88,12 +89,14 @@ export function useWorkspace() {
   }, [activeUserId]);
 
   const access = getAccessSummary(workspace);
+  const isAdmin = isAdminEmail(auth.currentUser?.email) || profile?.role === 'admin' || profile?.isAdmin === true;
 
   return {
     workspace,
     profile,
     loading,
-    hasAccess: access.hasAccess,
+    hasAccess: access.hasAccess || isAdmin,
+    isAdmin,
     isTrialActive: access.status === 'trial_active' || access.status === 'trial_ending',
     isPaidActive: access.status === 'paid_active',
     access,

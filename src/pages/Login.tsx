@@ -12,17 +12,12 @@ import { ArrowLeft, CheckCircle2, Loader2, Lock, LogIn, Mail, Sparkles, User } f
 import { addDoc, collection, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { auth, db, googleProvider } from '../firebase';
+import { isAdminEmail } from '../lib/admin';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import firebaseConfig from '../../firebase-applet-config.json';
-
-const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
-
-function isAdminEmail(email?: string | null) {
-  return !!email && ADMIN_EMAILS.has(email.trim().toLowerCase());
-}
 
 type AuthUser = {
   uid: string;

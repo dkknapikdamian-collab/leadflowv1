@@ -671,7 +671,7 @@ export default function Leads() {
                       <Label>Źródło</Label>
                       <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
+                        <SelectContent portal={false}>
                           {SOURCE_OPTIONS.map((source) => <SelectItem key={source.value} value={source.value}>{source.label}</SelectItem>)}
                         </SelectContent>
                       </Select>

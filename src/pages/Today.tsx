@@ -518,7 +518,7 @@ export default function Today() {
                       <Label>Źródło</Label>
                       <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
+                        <SelectContent portal={false}>
                           <SelectItem value="instagram">Instagram</SelectItem>
                           <SelectItem value="facebook">Facebook</SelectItem>
                           <SelectItem value="messenger">Messenger</SelectItem>
