@@ -39,6 +39,7 @@ import {
 import { toast } from 'sonner';
 
 import { auth, db } from '../firebase';
+import { generatePortalToken, sha256Hex } from '../lib/security';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -334,16 +335,24 @@ export default function CaseDetail() {
   }
 
   async function generatePortalLink() {
-    const token = Math.random().toString(36).substring(2, 15);
-    const tokenRef = doc(db, 'client_portal_tokens', caseId!);
+    const token = generatePortalToken();
+    const tokenHash = await sha256Hex(token);
+    const tokenRef = doc(db, 'client_portal_tokens', tokenHash);
+    const expiresAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
     await setDoc(tokenRef, {
       caseId,
-      token,
+      tokenHash,
+      createdBy: auth.currentUser?.uid,
+      expiresAt,
+      revokedAt: null,
       createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
 
     await updateDoc(doc(db, 'cases', caseId!), {
       portalReady: true,
+      portalTokenHash: tokenHash,
+      portalExpiresAt: expiresAt,
       portalGeneratedAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -355,7 +364,7 @@ export default function CaseDetail() {
       }, { merge: true });
     }
 
-    const url = `${window.location.origin}/portal/${caseId}/${token}`;
+    const url = `${window.location.origin}/portal/${token}`;
     navigator.clipboard.writeText(url);
     toast.success('Link do panelu skopiowany');
   }

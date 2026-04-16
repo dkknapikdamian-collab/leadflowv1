@@ -1,74 +1,74 @@
-import { useState, useEffect, FormEvent } from 'react';
-import { auth, db } from '../firebase';
-import { 
-  collection, 
-  query, 
-  where, 
-  onSnapshot, 
-  orderBy, 
-  addDoc, 
-  serverTimestamp 
-} from 'firebase/firestore';
-import { useWorkspace } from '../hooks/useWorkspace';
-import Layout from '../components/Layout';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Plus, 
-  Calendar as CalendarIcon, 
-  Clock, 
-  Target, 
-  Briefcase,
-  Loader2
-} from 'lucide-react';
-import { 
-  format, 
-  addMonths, 
-  subMonths, 
-  startOfMonth, 
-  endOfMonth, 
-  startOfWeek, 
-  endOfWeek, 
-  isSameMonth, 
-  isSameDay, 
-  addDays, 
-  eachDayOfInterval,
-  parseISO,
-  isToday
-} from 'date-fns';
-import { pl } from 'date-fns/locale';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { addDays, addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, isToday, parseISO, startOfMonth, startOfWeek, subMonths } from 'date-fns';
+import { pl } from 'date-fns/locale';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
+import { Calendar as CalendarIcon, CheckSquare, ChevronLeft, ChevronRight, Clock, Loader2, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter
-} from '../components/ui/dialog';
+
+import { auth, db } from '../firebase';
+import { useWorkspace } from '../hooks/useWorkspace';
+import { RecurrenceEndType, RecurrenceRule, SnoozePreset, applySnoozePreset } from '../lib/scheduling';
+import Layout from '../components/Layout';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
+
+type CalendarTask = {
+  id: string;
+  title: string;
+  date: string;
+  status: 'todo' | 'done' | 'overdue' | 'postponed';
+};
+
+type CalendarEvent = {
+  id: string;
+  title: string;
+  type: string;
+  startAt: string;
+  endAt?: string;
+  status: 'scheduled' | 'completed' | 'cancelled' | 'postponed';
+  reminderAt?: string | null;
+  recurrenceRule?: RecurrenceRule;
+  recurrenceEndType?: RecurrenceEndType;
+  recurrenceEndAt?: string | null;
+  recurrenceCount?: number | null;
+};
+
+const RECURRENCE_OPTIONS: { value: RecurrenceRule; label: string }[] = [
+  { value: 'none', label: 'Brak' },
+  { value: 'daily', label: 'Codziennie' },
+  { value: 'every_2_days', label: 'Co 2 dni' },
+  { value: 'weekly', label: 'Co tydzień' },
+  { value: 'monthly', label: 'Co miesiąc' },
+  { value: 'weekday', label: 'Dzień roboczy' },
+];
 
 export default function Calendar() {
   const { workspace, hasAccess } = useWorkspace();
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [events, setEvents] = useState<any[]>([]);
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [tasks, setTasks] = useState<CalendarTask[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
 
   const [isNewEventOpen, setIsNewEventOpen] = useState(false);
-  const [newEvent, setNewEvent] = useState({ title: '', type: 'meeting', startAt: format(new Date(), "yyyy-MM-dd'T'HH:mm"), endAt: format(addDays(new Date(), 0), "yyyy-MM-dd'T'HH:mm") });
+  const [newEvent, setNewEvent] = useState({
+    title: '',
+    type: 'meeting',
+    startAt: format(new Date(), "yyyy-MM-dd'T'10:00"),
+    endAt: format(new Date(), "yyyy-MM-dd'T'11:00"),
+    reminderAt: '',
+    recurrenceRule: 'none' as RecurrenceRule,
+    recurrenceEndType: 'never' as RecurrenceEndType,
+    recurrenceEndAt: '',
+    recurrenceCount: '5',
+  });
 
   useEffect(() => {
     if (!auth.currentUser || !workspace) return;
@@ -76,21 +76,17 @@ export default function Calendar() {
     const eventsQuery = query(
       collection(db, 'events'),
       where('ownerId', '==', auth.currentUser.uid),
-      where('status', '==', 'scheduled')
+      orderBy('startAt', 'asc')
     );
-
     const tasksQuery = query(
       collection(db, 'tasks'),
       where('ownerId', '==', auth.currentUser.uid),
-      where('status', '==', 'todo')
+      orderBy('date', 'asc')
     );
 
-    const unsubscribeEvents = onSnapshot(eventsQuery, (snap) => {
-      setEvents(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-
+    const unsubscribeEvents = onSnapshot(eventsQuery, (snap) => setEvents(snap.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<CalendarEvent, 'id'>) }))));
     const unsubscribeTasks = onSnapshot(tasksQuery, (snap) => {
-      setTasks(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setTasks(snap.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<CalendarTask, 'id'>) })));
       setLoading(false);
     });
 
@@ -105,131 +101,96 @@ export default function Calendar() {
     if (!hasAccess) return toast.error('Trial wygasł.');
     try {
       await addDoc(collection(db, 'events'), {
-        ...newEvent,
+        title: newEvent.title,
+        type: newEvent.type,
+        startAt: newEvent.startAt,
+        endAt: newEvent.endAt || null,
+        reminderAt: newEvent.reminderAt || null,
+        recurrenceRule: newEvent.recurrenceRule,
+        recurrenceEndType: newEvent.recurrenceEndType,
+        recurrenceEndAt: newEvent.recurrenceEndAt || null,
+        recurrenceCount: Number(newEvent.recurrenceCount) || null,
         status: 'scheduled',
         ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
+        workspaceId: workspace?.id,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
       toast.success('Wydarzenie zaplanowane');
       setIsNewEventOpen(false);
-      setNewEvent({ title: '', type: 'meeting', startAt: format(new Date(), "yyyy-MM-dd'T'HH:mm"), endAt: format(addDays(new Date(), 0), "yyyy-MM-dd'T'HH:mm") });
+      setNewEvent({
+        title: '',
+        type: 'meeting',
+        startAt: format(new Date(), "yyyy-MM-dd'T'10:00"),
+        endAt: format(new Date(), "yyyy-MM-dd'T'11:00"),
+        reminderAt: '',
+        recurrenceRule: 'none',
+        recurrenceEndType: 'never',
+        recurrenceEndAt: '',
+        recurrenceCount: '5',
+      });
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
 
-  const renderHeader = () => (
-    <div className="flex items-center justify-between mb-8">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-900 capitalize">{format(currentMonth, 'MMMM yyyy', { locale: pl })}</h1>
-        <p className="text-slate-500">Twój harmonogram działań.</p>
-      </div>
-      <div className="flex items-center gap-4">
-        <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
-          <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="rounded-lg"><ChevronLeft className="w-4 h-4" /></Button>
-          <Button variant="ghost" onClick={() => setCurrentMonth(new Date())} className="text-sm font-bold px-4">Dzisiaj</Button>
-          <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="rounded-lg"><ChevronRight className="w-4 h-4" /></Button>
-        </div>
-        <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
-          <DialogTrigger asChild>
-            <Button className="rounded-xl shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
-            <form onSubmit={handleAddEvent} className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label>Tytuł</Label>
-                <Input value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} required />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Typ</Label>
-                  <Select value={newEvent.type} onValueChange={v => setNewEvent({...newEvent, type: v})}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="meeting">Spotkanie</SelectItem>
-                      <SelectItem value="phone_call">Rozmowa</SelectItem>
-                      <SelectItem value="follow_up">Follow-up</SelectItem>
-                      <SelectItem value="deadline">Deadline</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Start</Label>
-                  <Input type="datetime-local" value={newEvent.startAt} onChange={e => setNewEvent({...newEvent, startAt: e.target.value})} required />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit" className="w-full">Zaplanuj</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </div>
-  );
-
-  const renderDays = () => {
-    const days = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Ndz'];
-    return (
-      <div className="grid grid-cols-7 mb-2">
-        {days.map(day => (
-          <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
-        ))}
-      </div>
-    );
+  const toggleTaskDone = async (task: CalendarTask) => {
+    try {
+      await updateDoc(doc(db, 'tasks', task.id), {
+        status: task.status === 'done' ? 'todo' : 'done',
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    }
   };
 
-  const renderCells = () => {
+  const snoozeTask = async (task: CalendarTask, preset: SnoozePreset) => {
+    try {
+      const snoozeUntil = applySnoozePreset(preset);
+      await updateDoc(doc(db, 'tasks', task.id), {
+        status: 'postponed',
+        snoozeUntil,
+        date: snoozeUntil.slice(0, 10),
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    }
+  };
+
+  const postponeEvent = async (event: CalendarEvent, preset: SnoozePreset) => {
+    try {
+      const snoozeUntil = applySnoozePreset(preset);
+      await updateDoc(doc(db, 'events', event.id), {
+        status: 'postponed',
+        startAt: snoozeUntil,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    }
+  };
+
+  const removeEvent = async (eventId: string) => {
+    try {
+      await deleteDoc(doc(db, 'events', eventId));
+      toast.success('Wydarzenie usunięte');
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    }
+  };
+
+  const weekStart = useMemo(() => startOfWeek(currentMonth, { weekStartsOn: 1 }), [currentMonth]);
+  const weekDays = useMemo(() => eachDayOfInterval({ start: weekStart, end: addDays(weekStart, 6) }), [weekStart]);
+
+  const monthDays = useMemo(() => {
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(monthStart);
-    const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
-    const endDate = endOfWeek(monthEnd, { weekStartsOn: 1 });
-
-    const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
-
-    return (
-      <div className="grid grid-cols-7 border-t border-l border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white">
-        {calendarDays.map((day, i) => {
-          const dayEvents = events.filter(e => isSameDay(parseISO(e.startAt), day));
-          const dayTasks = tasks.filter(t => isSameDay(parseISO(t.date), day));
-          const isCurrentMonth = isSameMonth(day, monthStart);
-          const isTodayDay = isToday(day);
-
-          return (
-            <div 
-              key={i} 
-              className={`min-h-[120px] p-2 border-r border-b border-slate-100 transition-colors hover:bg-slate-50/50 ${
-                !isCurrentMonth ? 'bg-slate-50/30 text-slate-300' : 'text-slate-900'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${
-                  isTodayDay ? 'bg-primary text-white' : ''
-                }`}>
-                  {format(day, 'd')}
-                </span>
-              </div>
-              <div className="space-y-1">
-                {dayEvents.map(event => (
-                  <div key={event.id} className="text-[10px] p-1 rounded bg-indigo-50 text-indigo-700 border border-indigo-100 truncate font-medium">
-                    {format(parseISO(event.startAt), 'HH:mm')} {event.title}
-                  </div>
-                ))}
-                {dayTasks.map(task => (
-                  <div key={task.id} className="text-[10px] p-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-100 truncate font-medium">
-                    {task.title}
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
+    const rangeStart = startOfWeek(monthStart, { weekStartsOn: 1 });
+    const rangeEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+    return eachDayOfInterval({ start: rangeStart, end: rangeEnd });
+  }, [currentMonth]);
 
   if (loading) {
     return (
@@ -243,10 +204,162 @@ export default function Calendar() {
 
   return (
     <Layout>
-      <div className="p-4 md:p-8 max-w-7xl mx-auto w-full">
-        {renderHeader()}
-        {renderDays()}
-        {renderCells()}
+      <div className="p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 capitalize">{format(currentMonth, 'MMMM yyyy', { locale: pl })}</h1>
+            <p className="text-slate-500">Główny planner tygodniowy + mini miesiąc.</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'week' | 'month')}>
+              <TabsList>
+                <TabsTrigger value="week">Tydzień</TabsTrigger>
+                <TabsTrigger value="month">Miesiąc</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
+              <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="rounded-lg"><ChevronLeft className="w-4 h-4" /></Button>
+              <Button variant="ghost" onClick={() => setCurrentMonth(new Date())} className="text-sm font-bold px-4">Dzisiaj</Button>
+              <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="rounded-lg"><ChevronRight className="w-4 h-4" /></Button>
+            </div>
+            <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
+              <DialogTrigger asChild>
+                <Button className="rounded-xl shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
+                <form onSubmit={handleAddEvent} className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label>Tytuł</Label>
+                    <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Typ</Label>
+                      <Select value={newEvent.type} onValueChange={(value) => setNewEvent({ ...newEvent, type: value })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="meeting">Spotkanie</SelectItem>
+                          <SelectItem value="phone_call">Rozmowa</SelectItem>
+                          <SelectItem value="follow_up">Follow-up</SelectItem>
+                          <SelectItem value="deadline">Deadline</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Przypomnienie</Label>
+                      <Input type="datetime-local" value={newEvent.reminderAt} onChange={(e) => setNewEvent({ ...newEvent, reminderAt: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Start</Label>
+                      <Input type="datetime-local" value={newEvent.startAt} onChange={(e) => setNewEvent({ ...newEvent, startAt: e.target.value })} required />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Koniec</Label>
+                      <Input type="datetime-local" value={newEvent.endAt} onChange={(e) => setNewEvent({ ...newEvent, endAt: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Cykliczność</Label>
+                      <Select value={newEvent.recurrenceRule} onValueChange={(value) => setNewEvent({ ...newEvent, recurrenceRule: value as RecurrenceRule })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>{RECURRENCE_OPTIONS.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Koniec cyklu</Label>
+                      <Select value={newEvent.recurrenceEndType} onValueChange={(value) => setNewEvent({ ...newEvent, recurrenceEndType: value as RecurrenceEndType })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="never">Bez końca</SelectItem>
+                          <SelectItem value="until_date">Do daty</SelectItem>
+                          <SelectItem value="count">Liczba razy</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  {newEvent.recurrenceEndType === 'until_date' ? <Input type="date" value={newEvent.recurrenceEndAt} onChange={(e) => setNewEvent({ ...newEvent, recurrenceEndAt: e.target.value })} /> : null}
+                  {newEvent.recurrenceEndType === 'count' ? <Input type="number" min="1" value={newEvent.recurrenceCount} onChange={(e) => setNewEvent({ ...newEvent, recurrenceCount: e.target.value })} /> : null}
+                  <DialogFooter><Button type="submit">Zaplanuj</Button></DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+
+        {viewMode === 'week' ? (
+          <div className="grid gap-4 md:grid-cols-7">
+            {weekDays.map((day) => {
+              const dayEvents = events.filter((event) => event.status !== 'cancelled' && isSameDay(parseISO(event.startAt), day));
+              const dayTasks = tasks.filter((task) => task.status !== 'done' && isSameDay(parseISO(task.date), day));
+              return (
+                <Card key={day.toISOString()} className="border-none app-surface-strong">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">{format(day, 'EEE d', { locale: pl })}</CardTitle>
+                    {isToday(day) ? <Badge variant="secondary">Dziś</Badge> : null}
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {dayEvents.map((event) => (
+                      <div key={event.id} className="rounded-xl border p-2 text-xs">
+                        <p className="font-semibold">{event.title}</p>
+                        <p className="text-slate-500">{format(parseISO(event.startAt), 'HH:mm', { locale: pl })}</p>
+                        <div className="mt-2 flex gap-1">
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => postponeEvent(event, 'tomorrow')}>Snooze</Button>
+                          <Button size="sm" variant="ghost" className="h-7 px-2 text-[10px]" onClick={() => removeEvent(event.id)}><Trash2 className="h-3 w-3" /></Button>
+                        </div>
+                      </div>
+                    ))}
+                    {dayTasks.map((task) => (
+                      <div key={task.id} className="rounded-xl border p-2 text-xs">
+                        <p className="font-semibold">{task.title}</p>
+                        <div className="mt-2 flex gap-1">
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => toggleTaskDone(task)}><CheckSquare className="h-3 w-3 mr-1" />Done</Button>
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => snoozeTask(task, 'tomorrow')}>Snooze</Button>
+                        </div>
+                      </div>
+                    ))}
+                    {dayEvents.length === 0 && dayTasks.length === 0 ? <p className="text-xs text-slate-400">Brak</p> : null}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        ) : null}
+
+        <Card className="border-none app-surface-strong">
+          <CardHeader>
+            <CardTitle className="text-lg inline-flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> Mini miesiąc</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-7 mb-2">
+              {['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
+                <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
+              ))}
+            </div>
+            <div className="grid grid-cols-7 border-t border-l border-slate-100 rounded-2xl overflow-hidden bg-white">
+              {monthDays.map((day) => {
+                const dayEvents = events.filter((event) => event.status !== 'cancelled' && isSameDay(parseISO(event.startAt), day));
+                const dayTasks = tasks.filter((task) => task.status !== 'done' && isSameDay(parseISO(task.date), day));
+                return (
+                  <div key={day.toISOString()} className={`min-h-[110px] p-2 border-r border-b border-slate-100 ${!isSameMonth(day, currentMonth) ? 'bg-slate-50/30 text-slate-300' : 'text-slate-900'}`}>
+                    <div className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${isToday(day) ? 'bg-primary text-white' : ''}`}>{format(day, 'd')}</div>
+                    <div className="mt-2 space-y-1">
+                      {dayEvents.slice(0, 2).map((event) => <div key={event.id} className="text-[10px] p-1 rounded bg-indigo-50 text-indigo-700 border border-indigo-100 truncate">{event.title}</div>)}
+                      {dayTasks.slice(0, 2).map((task) => <div key={task.id} className="text-[10px] p-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-100 truncate">{task.title}</div>)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="text-sm app-muted">
+          Szybki skrót: snooze działa dla tasków i wydarzeń. Pełna praca dzienna jest na ekranach <Link to="/today" className="font-semibold text-[color:var(--app-primary)]">Dziś</Link> i <Link to="/tasks" className="font-semibold text-[color:var(--app-primary)]">Zadania</Link>.
+        </div>
       </div>
     </Layout>
   );

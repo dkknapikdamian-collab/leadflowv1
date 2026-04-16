@@ -101,6 +101,7 @@ export default function App() {
         <Suspense fallback={<RouteLoader />}>
           <Routes>
             <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+            <Route path="/portal/:token" element={<ClientPortal />} />
             <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
 
             <Route path="/" element={user ? <Today /> : <Navigate to="/login" />} />

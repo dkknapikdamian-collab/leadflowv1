@@ -9,9 +9,11 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   type Timestamp,
 } from 'firebase/firestore';
+import { signInAnonymously } from 'firebase/auth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
@@ -31,7 +33,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { db, storage } from '../firebase';
+import { auth, db, storage } from '../firebase';
+import { sha256Hex } from '../lib/security';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -67,7 +70,8 @@ type CaseItemRecord = {
 };
 
 type PortalTokenRecord = {
-  token?: string;
+  caseId?: string;
+  tokenHash?: string;
   expiresAt?: Timestamp | null;
   revokedAt?: Timestamp | null;
 };
@@ -141,7 +145,9 @@ function itemActionLabel(item: CaseItemRecord) {
 }
 
 export default function ClientPortal() {
-  const { caseId, token } = useParams();
+  const params = useParams();
+  const token = params.token;
+  const caseIdParam = params.caseId;
   const [caseData, setCaseData] = useState<CaseRecord | null>(null);
   const [items, setItems] = useState<CaseItemRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -155,7 +161,7 @@ export default function ClientPortal() {
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
-    if (!caseId || !token) {
+    if (!token) {
       setLoading(false);
       setIsValid(false);
       return;
@@ -167,7 +173,12 @@ export default function ClientPortal() {
 
     async function validateToken() {
       try {
-        const tokenRef = doc(db, 'client_portal_tokens', caseId);
+        if (!auth.currentUser) {
+          await signInAnonymously(auth);
+        }
+
+        const tokenHash = await sha256Hex(token);
+        const tokenRef = doc(db, 'client_portal_tokens', tokenHash);
         const tokenSnap = await getDoc(tokenRef);
 
         if (!tokenSnap.exists()) {
@@ -182,14 +193,31 @@ export default function ClientPortal() {
         const revokedAt = timestampToDate(tokenData.revokedAt);
         const expiresAt = timestampToDate(tokenData.expiresAt);
         const expired = expiresAt ? expiresAt.getTime() < Date.now() : false;
+        const caseId = tokenData.caseId;
 
-        if (tokenData.token !== token || revokedAt || expired) {
+        if (!caseId || revokedAt || expired) {
           if (isMounted) {
             setIsValid(false);
             setLoading(false);
           }
           return;
         }
+
+        if (caseIdParam && caseIdParam !== caseId) {
+          if (isMounted) {
+            setIsValid(false);
+            setLoading(false);
+          }
+          return;
+        }
+
+        await setDoc(doc(db, 'client_portal_sessions', auth.currentUser!.uid), {
+          caseId,
+          tokenHash,
+          expiresAt: tokenData.expiresAt || null,
+          updatedAt: serverTimestamp(),
+          createdAt: serverTimestamp(),
+        }, { merge: true });
 
         if (isMounted) {
           setIsValid(true);
@@ -226,7 +254,7 @@ export default function ClientPortal() {
       unsubscribeCase?.();
       unsubscribeItems?.();
     };
-  }, [caseId, token]);
+  }, [caseIdParam, token]);
 
   function openItemDialog(item: CaseItemRecord) {
     setSelectedItem(item);
@@ -243,7 +271,8 @@ export default function ClientPortal() {
   }
 
   async function handleSubmitResponse() {
-    if (!selectedItem || !caseId || !caseData) return;
+    if (!selectedItem || !caseData) return;
+    const caseId = caseData.id;
     setUploading(true);
 
     try {
@@ -257,11 +286,13 @@ export default function ClientPortal() {
         fileName = file.name;
       }
 
+      const tokenHash = await sha256Hex(token || '');
       await updateDoc(doc(db, 'cases', caseId, 'items', selectedItem.id), {
         status: 'uploaded',
         response: response || selectedItem.response || null,
         fileUrl,
         fileName,
+        portalTokenHash: tokenHash,
         updatedAt: serverTimestamp(),
       });
 
@@ -269,6 +300,7 @@ export default function ClientPortal() {
         caseId,
         ownerId: caseData.ownerId,
         actorType: 'client',
+        portalTokenHash: tokenHash,
         eventType: file ? 'file_uploaded' : 'response_sent',
         payload: { title: selectedItem.title },
         createdAt: serverTimestamp(),
@@ -284,11 +316,14 @@ export default function ClientPortal() {
   }
 
   async function handleDecision(itemId: string, decision: 'accepted' | 'rejected', title?: string) {
-    if (!caseId || !caseData) return;
+    if (!caseData) return;
+    const caseId = caseData.id;
 
     try {
+      const tokenHash = await sha256Hex(token || '');
       await updateDoc(doc(db, 'cases', caseId, 'items', itemId), {
         status: decision,
+        portalTokenHash: tokenHash,
         updatedAt: serverTimestamp(),
       });
 
@@ -296,6 +331,7 @@ export default function ClientPortal() {
         caseId,
         ownerId: caseData.ownerId,
         actorType: 'client',
+        portalTokenHash: tokenHash,
         eventType: 'decision_made',
         payload: { title: title || 'Decyzja', decision },
         createdAt: serverTimestamp(),

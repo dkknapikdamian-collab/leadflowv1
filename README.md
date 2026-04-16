@@ -1,20 +1,20 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Forteca LeadFlow
 
-# Run and deploy your AI Studio app
+Aplikacja webowa (React + Firebase) do pracy na leadach, zadaniach, kalendarzu i handoffie do spraw.
 
-This contains everything you need to run your app locally.
+## Start lokalny
+1. Uzupełnij `firebase-applet-config.json`.
+2. `npm install`
+3. `npm run dev`
 
-View your app in AI Studio: https://ai.studio/apps/7ce70458-8fde-42a5-bf6d-fd7f781ff424
+## Jakość
+- `npm run lint`
+- `npm run build`
 
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Najważniejsze moduły
+- `Dziś` – priorytety i zaległości,
+- `Leady` + `Lead detail`,
+- `Zadania` (przypomnienia, cykliczność, snooze),
+- `Kalendarz` (week planner + mini month),
+- `Sprawy` + portal klienta,
+- `Billing` i `Ustawienia`.

@@ -81,6 +81,11 @@
         "status": { "type": "string", "enum": ["todo", "done", "overdue", "postponed"] },
         "reminderAt": { "type": "string", "format": "date-time" },
         "recurrenceRule": { "type": "string" },
+        "recurrenceEndType": { "type": "string", "enum": ["never", "until_date", "count"] },
+        "recurrenceEndAt": { "type": "string", "format": "date-time" },
+        "recurrenceCount": { "type": "number" },
+        "recurrenceDoneCount": { "type": "number" },
+        "snoozeUntil": { "type": "string", "format": "date-time" },
         "note": { "type": "string" },
         "ownerId": { "type": "string" },
         "workspaceId": { "type": "string" },
@@ -102,7 +107,11 @@
         "description": { "type": "string" },
         "reminderAt": { "type": "string", "format": "date-time" },
         "recurrenceRule": { "type": "string" },
-        "status": { "type": "string", "enum": ["scheduled", "completed", "cancelled"] },
+        "recurrenceEndType": { "type": "string", "enum": ["never", "until_date", "count"] },
+        "recurrenceEndAt": { "type": "string", "format": "date-time" },
+        "recurrenceCount": { "type": "number" },
+        "snoozeUntil": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["scheduled", "completed", "cancelled", "postponed"] },
         "ownerId": { "type": "string" },
         "workspaceId": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" },
@@ -189,10 +198,25 @@
       "type": "object",
       "properties": {
         "caseId": { "type": "string" },
-        "token": { "type": "string" },
-        "expiresAt": { "type": "string", "format": "date-time" }
+        "tokenHash": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "revokedAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["caseId", "token"]
+      "required": ["caseId", "tokenHash"]
+    },
+    "ClientPortalSession": {
+      "title": "ClientPortalSession",
+      "description": "Anonymous client session bound to one active portal token",
+      "type": "object",
+      "properties": {
+        "caseId": { "type": "string" },
+        "tokenHash": { "type": "string" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["caseId", "tokenHash"]
     }
   },
   "firestore": {
@@ -205,6 +229,7 @@
     "/cases/{caseId}/items/{itemId}": { "schema": "CaseItem", "description": "Items in a case" },
     "/activities/{activityId}": { "schema": "Activity", "description": "Unified activity log" },
     "/templates/{templateId}": { "schema": "Template", "description": "Templates" },
-    "/client_portal_tokens/{tokenId}": { "schema": "ClientPortalToken", "description": "Client portal tokens" }
+    "/client_portal_tokens/{tokenId}": { "schema": "ClientPortalToken", "description": "Client portal tokens" },
+    "/client_portal_sessions/{sessionId}": { "schema": "ClientPortalSession", "description": "Client portal sessions" }
   }
 }

@@ -243,14 +243,12 @@ export default function Today() {
     const tasksQuery = query(
       collection(db, 'tasks'),
       where('ownerId', '==', auth.currentUser.uid),
-      where('status', '==', 'todo'),
       orderBy('date', 'asc')
     );
 
     const eventsQuery = query(
       collection(db, 'events'),
       where('ownerId', '==', auth.currentUser.uid),
-      where('status', '==', 'scheduled'),
       orderBy('startAt', 'asc')
     );
 
@@ -370,12 +368,18 @@ export default function Today() {
     [leads]
   );
 
-  const todayTasks = useMemo(() => tasks.filter((task) => isToday(parseISO(task.date))), [tasks]);
-  const overdueTasks = useMemo(
-    () => tasks.filter((task) => isPast(parseISO(task.date)) && !isToday(parseISO(task.date))),
+  const todayTasks = useMemo(
+    () => tasks.filter((task) => task.status !== 'done' && isToday(parseISO(task.date))),
     [tasks]
   );
-  const todayEvents = useMemo(() => events.filter((event) => isToday(parseISO(event.startAt))), [events]);
+  const overdueTasks = useMemo(
+    () => tasks.filter((task) => task.status !== 'done' && isPast(parseISO(task.date)) && !isToday(parseISO(task.date))),
+    [tasks]
+  );
+  const todayEvents = useMemo(
+    () => events.filter((event) => event.status !== 'completed' && event.status !== 'cancelled' && isToday(parseISO(event.startAt))),
+    [events]
+  );
 
   const todayLeads = useMemo(
     () => activeLeads.filter((lead) => lead.nextActionAt && isToday(parseISO(lead.nextActionAt))),
