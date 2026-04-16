@@ -417,6 +417,7 @@ export default function Leads() {
 
   async function handleCreateLead(e: FormEvent) {
     e.preventDefault();
+    if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     if (!workspace) return toast.error('Brak aktywnego workspace.');
     if (!newLead.name.trim()) return toast.error('Wpisz nazwę leada.');
@@ -426,7 +427,7 @@ export default function Leads() {
         ...newLead,
         dealValue: Number(newLead.dealValue) || 0,
         status: 'new',
-        ownerId: auth.currentUser?.uid,
+        ownerId: auth.currentUser.uid,
         workspaceId: workspace.id,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),

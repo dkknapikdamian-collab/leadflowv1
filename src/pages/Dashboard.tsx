@@ -311,8 +311,8 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
               {topStats.map((item) => (
-                <Link key={item.title} to={item.href}>
-                  <div className="rounded-2xl border app-border p-4 app-surface transition-all hover:-translate-y-0.5 hover:app-shadow">
+                <Link key={item.title} to={item.href} className="block">
+                  <div className="rounded-2xl border app-border p-4 app-surface cursor-pointer transition-all hover:-translate-y-0.5 hover:app-shadow">
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-[11px] font-bold uppercase tracking-[0.18em] app-muted">{item.title}</p>
@@ -398,22 +398,22 @@ export default function Dashboard() {
               )}
 
               <div className="grid gap-3 md:grid-cols-3">
-                <Link to="/leads">
-                  <div className="rounded-2xl border app-border p-4 app-surface">
+                <Link to="/leads" className="block">
+                  <div className="rounded-2xl border app-border p-4 app-surface cursor-pointer transition-all hover:-translate-y-0.5 hover:app-shadow">
                     <p className="text-[11px] font-bold uppercase tracking-[0.18em] app-muted">Leady zagrożone</p>
                     <p className="mt-2 text-2xl font-black app-text">{dashboard.atRiskLeads.length}</p>
                     <p className="mt-1 text-sm app-muted">Te leady wymagają najmocniejszej egzekucji.</p>
                   </div>
                 </Link>
-                <Link to="/cases">
-                  <div className="rounded-2xl border app-border p-4 app-surface">
+                <Link to="/cases" className="block">
+                  <div className="rounded-2xl border app-border p-4 app-surface cursor-pointer transition-all hover:-translate-y-0.5 hover:app-shadow">
                     <p className="text-[11px] font-bold uppercase tracking-[0.18em] app-muted">Sprawy zablokowane</p>
                     <p className="mt-2 text-2xl font-black app-text">{dashboard.blockedCases.length}</p>
                     <p className="mt-1 text-sm app-muted">Tu realizacja stoi i trzeba odblokować klienta albo decyzję.</p>
                   </div>
                 </Link>
-                <Link to="/tasks">
-                  <div className="rounded-2xl border app-border p-4 app-surface">
+                <Link to="/tasks" className="block">
+                  <div className="rounded-2xl border app-border p-4 app-surface cursor-pointer transition-all hover:-translate-y-0.5 hover:app-shadow">
                     <p className="text-[11px] font-bold uppercase tracking-[0.18em] app-muted">Taski zaległe</p>
                     <p className="mt-2 text-2xl font-black app-text">{dashboard.overdueTasks.length}</p>
                     <p className="mt-1 text-sm app-muted">Rzeczy, które już powinny być zamknięte albo przełożone.</p>
