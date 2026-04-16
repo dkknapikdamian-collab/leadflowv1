@@ -43,6 +43,7 @@ import {
 
 import Layout from '../components/Layout';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
@@ -94,24 +95,13 @@ const STATUS_OPTIONS: StatusOption[] = [
   { value: 'contacted', label: 'Skontaktowany', toneClass: 'bg-indigo-500/12 text-indigo-500 border-indigo-500/20', pipelineTitle: 'Kontakt' },
   { value: 'qualification', label: 'Kwalifikacja', toneClass: 'bg-violet-500/12 text-violet-500 border-violet-500/20', pipelineTitle: 'Kwalifikacja' },
   { value: 'proposal_sent', label: 'Oferta wysłana', toneClass: 'bg-amber-500/12 text-amber-600 border-amber-500/20', pipelineTitle: 'Oferta' },
-  { value: 'follow_up', label: 'Follow-up', toneClass: 'bg-orange-500/12 text-orange-500 border-orange-500/20', pipelineTitle: 'Follow-up' },
+  { value: 'follow_up', label: 'Dalszy kontakt', toneClass: 'bg-orange-500/12 text-orange-500 border-orange-500/20', pipelineTitle: 'Dalszy kontakt' },
   { value: 'negotiation', label: 'Negocjacje', toneClass: 'bg-pink-500/12 text-pink-500 border-pink-500/20', pipelineTitle: 'Negocjacje' },
   { value: 'won', label: 'Wygrany', toneClass: 'bg-emerald-500/12 text-emerald-500 border-emerald-500/20', pipelineTitle: 'Wygrane' },
   { value: 'lost', label: 'Stracony', toneClass: 'bg-slate-500/12 text-slate-500 border-slate-500/20', pipelineTitle: 'Stracone' },
 ];
 
-const SOURCE_OPTIONS = [
-  { value: 'instagram', label: 'Instagram' },
-  { value: 'facebook', label: 'Facebook' },
-  { value: 'messenger', label: 'Messenger' },
-  { value: 'whatsapp', label: 'WhatsApp' },
-  { value: 'email', label: 'E-mail' },
-  { value: 'form', label: 'Formularz' },
-  { value: 'phone', label: 'Telefon' },
-  { value: 'referral', label: 'Polecenie' },
-  { value: 'cold_outreach', label: 'Cold Outreach' },
-  { value: 'other', label: 'Inne' },
-];
+const SOURCE_OPTIONS = LEAD_SOURCE_OPTIONS;
 
 const PIPELINE_ORDER: LeadStatus[] = ['new', 'contacted', 'qualification', 'proposal_sent', 'follow_up', 'negotiation', 'won', 'lost'];
 const ACTIVE_STATUSES: LeadStatus[] = ['new', 'contacted', 'qualification', 'proposal_sent', 'follow_up', 'negotiation'];
@@ -141,7 +131,7 @@ function dueState(lead: LeadRecord) {
     return {
       label: 'Brak kroku',
       tone: 'text-amber-500',
-      badge: <Badge className="border-amber-500/20 bg-amber-500/12 text-amber-500">Brak next step</Badge>,
+      badge: <Badge className="border-amber-500/20 bg-amber-500/12 text-amber-500">Brak kolejnego kroku</Badge>,
       sortWeight: 5,
     };
   }
@@ -232,7 +222,7 @@ function LeadRow({
 
             <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm app-muted">
               {lead.company ? <span className="inline-flex items-center gap-1"><FileText className="h-3.5 w-3.5" /> {lead.company}</span> : null}
-              {lead.source ? <span className="inline-flex items-center gap-1 capitalize"><Target className="h-3.5 w-3.5" /> {lead.source}</span> : null}
+              {lead.source ? <span className="inline-flex items-center gap-1"><Target className="h-3.5 w-3.5" /> {getLeadSourceLabel(lead.source)}</span> : null}
               {lead.email ? <span className="inline-flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {lead.email}</span> : null}
               {lead.phone ? <span className="inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {lead.phone}</span> : null}
             </div>
@@ -266,7 +256,7 @@ function LeadRow({
 
           <div className="flex flex-wrap items-center gap-2">
             <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForThisLead} onClick={() => onQuickAction(lead, 'followup')}>
-              Follow-up jutro
+              Dalszy kontakt jutro
             </Button>
             <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForThisLead} onClick={() => onQuickAction(lead, 'waiting')}>
               Czekamy 3 dni
@@ -333,7 +323,7 @@ function PipelineColumn({
                     <button className="truncate text-left text-sm font-bold app-text hover:underline" onClick={() => onOpen(lead.id)}>
                       {lead.name}
                     </button>
-                    <p className="mt-1 text-xs app-muted">{lead.company || lead.source || 'Bez dodatkowego opisu'}</p>
+                    <p className="mt-1 text-xs app-muted">{lead.company || getLeadSourceLabel(lead.source) || 'Bez dodatkowego opisu'}</p>
                   </div>
                   {lead.isAtRisk ? <Badge variant="destructive">Ryzyko</Badge> : null}
                 </div>
@@ -519,7 +509,7 @@ export default function Leads() {
 
       if (action === 'followup') {
         updates.status = 'follow_up';
-        updates.nextStep = 'Follow-up po kontakcie';
+        updates.nextStep = 'Dalszy kontakt po rozmowie';
         updates.nextActionAt = startInDaysAtHour(1, 9);
       }
 
@@ -671,7 +661,7 @@ export default function Leads() {
                       <Label>Źródło</Label>
                       <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent portal={false}>
+                        <SelectContent>
                           {SOURCE_OPTIONS.map((source) => <SelectItem key={source.value} value={source.value}>{source.label}</SelectItem>)}
                         </SelectContent>
                       </Select>

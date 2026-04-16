@@ -13,6 +13,7 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -144,7 +145,7 @@ function LeadActionCard({
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs app-muted">
             {lead.company ? <span>{lead.company}</span> : null}
             {lead.dealValue ? <span>{lead.dealValue.toLocaleString()} PLN</span> : null}
-            {lead.source ? <span className="capitalize">{lead.source}</span> : null}
+            {lead.source ? <span>{getLeadSourceLabel(lead.source)}</span> : null}
             {lead.nextStep ? <span>{lead.nextStep}</span> : null}
             {lead.nextActionAt ? (
               <span>{format(parseISO(lead.nextActionAt), 'd MMMM, HH:mm', { locale: pl })}</span>
@@ -165,12 +166,14 @@ function LeadActionCard({
 }
 
 function SectionBlock({
+  id,
   title,
   count,
   icon,
   accent,
   children,
 }: {
+  id?: string;
   title: string;
   count: number;
   icon: ReactNode;
@@ -186,7 +189,7 @@ function SectionBlock({
         : 'app-text';
 
   return (
-    <section className="space-y-4">
+    <section id={id} className="space-y-4">
       <div className="flex items-center justify-between gap-3">
         <div className={`flex items-center gap-2 ${toneClass}`}>
           {icon}
@@ -230,6 +233,15 @@ export default function Today() {
     startAt: format(new Date(), "yyyy-MM-dd'T'10:00"),
     endAt: format(new Date(), "yyyy-MM-dd'T'11:00"),
   });
+
+  const openSectionOrRoute = (sectionId: string, fallbackPath: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    window.location.href = fallbackPath;
+  };
 
   useEffect(() => {
     if (!auth.currentUser || !workspace) {
@@ -303,6 +315,8 @@ export default function Today() {
 
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
+    if (!workspace) return toast.error('Brak aktywnego workspace.');
+    if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
 
     try {
@@ -314,7 +328,7 @@ export default function Today() {
         status: newLead.status,
         nextStep: newLead.nextStep,
         nextActionAt: newLead.nextActionAt,
-        ownerId: auth.currentUser?.uid,
+        ownerId: auth.currentUser.uid,
         workspaceId: workspace.id,
         isAtRisk: false,
         createdAt: serverTimestamp(),
@@ -338,12 +352,14 @@ export default function Today() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
+    if (!workspace) return toast.error('Brak aktywnego workspace.');
+    if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
       await addDoc(collection(db, 'tasks'), {
         ...newTask,
         status: 'todo',
-        ownerId: auth.currentUser?.uid,
+        ownerId: auth.currentUser.uid,
         workspaceId: workspace.id,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -358,12 +374,14 @@ export default function Today() {
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
+    if (!workspace) return toast.error('Brak aktywnego workspace.');
+    if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
       await addDoc(collection(db, 'events'), {
         ...newEvent,
         status: 'scheduled',
-        ownerId: auth.currentUser?.uid,
+        ownerId: auth.currentUser.uid,
         workspaceId: workspace.id,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -518,17 +536,12 @@ export default function Today() {
                       <Label>Źródło</Label>
                       <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent portal={false}>
-                          <SelectItem value="instagram">Instagram</SelectItem>
-                          <SelectItem value="facebook">Facebook</SelectItem>
-                          <SelectItem value="messenger">Messenger</SelectItem>
-                          <SelectItem value="whatsapp">WhatsApp</SelectItem>
-                          <SelectItem value="email">E-mail</SelectItem>
-                          <SelectItem value="form">Formularz</SelectItem>
-                          <SelectItem value="phone">Telefon</SelectItem>
-                          <SelectItem value="referral">Polecenie</SelectItem>
-                          <SelectItem value="cold_outreach">Cold outreach</SelectItem>
-                          <SelectItem value="other">Inne</SelectItem>
+                        <SelectContent>
+                          {LEAD_SOURCE_OPTIONS.map((sourceOption) => (
+                            <SelectItem key={sourceOption.value} value={sourceOption.value}>
+                              {sourceOption.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -573,7 +586,7 @@ export default function Today() {
                       <Select value={newTask.type} onValueChange={(value) => setNewTask({ ...newTask, type: value })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="follow_up">Follow-up</SelectItem>
+                          <SelectItem value="follow_up">Dalszy kontakt</SelectItem>
                           <SelectItem value="phone">Telefon</SelectItem>
                           <SelectItem value="reply">Odpisać</SelectItem>
                           <SelectItem value="send_offer">Wysłać ofertę</SelectItem>
@@ -615,8 +628,8 @@ export default function Today() {
                         <SelectContent>
                           <SelectItem value="meeting">Spotkanie</SelectItem>
                           <SelectItem value="phone_call">Rozmowa</SelectItem>
-                          <SelectItem value="follow_up">Follow-up</SelectItem>
-                          <SelectItem value="deadline">Deadline</SelectItem>
+                          <SelectItem value="follow_up">Dalszy kontakt</SelectItem>
+                          <SelectItem value="deadline">Termin końcowy</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -635,7 +648,10 @@ export default function Today() {
         </header>
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <Card className="border-none app-surface-strong app-shadow">
+          <Card
+            className="border-none app-surface-strong app-shadow cursor-pointer transition-transform hover:-translate-y-0.5"
+            onClick={() => openSectionOrRoute('sekcja-priorytety', '/leads')}
+          >
             <CardContent className="flex items-center justify-between p-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Priorytety dziś</p>
@@ -644,7 +660,10 @@ export default function Today() {
               <div className="rounded-2xl p-3 app-primary-chip"><Sparkles className="h-6 w-6" /></div>
             </CardContent>
           </Card>
-          <Card className="border-none app-surface-strong app-shadow">
+          <Card
+            className="border-none app-surface-strong app-shadow cursor-pointer transition-transform hover:-translate-y-0.5"
+            onClick={() => openSectionOrRoute('sekcja-zalegle', '/tasks')}
+          >
             <CardContent className="flex items-center justify-between p-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Zaległe</p>
@@ -653,7 +672,10 @@ export default function Today() {
               <div className="rounded-2xl bg-rose-500/12 p-3 text-rose-500"><AlertTriangle className="h-6 w-6" /></div>
             </CardContent>
           </Card>
-          <Card className="border-none app-surface-strong app-shadow">
+          <Card
+            className="border-none app-surface-strong app-shadow cursor-pointer transition-transform hover:-translate-y-0.5"
+            onClick={() => openSectionOrRoute('sekcja-bez-kroku', '/leads')}
+          >
             <CardContent className="flex items-center justify-between p-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Bez kroku</p>
@@ -662,7 +684,10 @@ export default function Today() {
               <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-500"><ShieldAlert className="h-6 w-6" /></div>
             </CardContent>
           </Card>
-          <Card className="border-none app-surface-strong app-shadow">
+          <Card
+            className="border-none app-surface-strong app-shadow cursor-pointer transition-transform hover:-translate-y-0.5"
+            onClick={() => openSectionOrRoute('sekcja-wartosc', '/leads')}
+          >
             <CardContent className="flex items-center justify-between p-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Wartość lejka</p>
@@ -675,7 +700,7 @@ export default function Today() {
 
         <div className="grid gap-8 xl:grid-cols-[minmax(0,1.7fr)_minmax(320px,0.9fr)]">
           <div className="space-y-8">
-            <SectionBlock title="Najważniejsze ruchy dziś" count={priorityList.length} icon={<Sparkles className="h-5 w-5" />} accent="primary">
+            <SectionBlock id="sekcja-priorytety" title="Najważniejsze ruchy dziś" count={priorityList.length} icon={<Sparkles className="h-5 w-5" />} accent="primary">
               {priorityList.length > 0 ? (
                 <div className="grid gap-3">
                   {priorityList.map(({ lead, score }) => (
@@ -699,7 +724,7 @@ export default function Today() {
             </SectionBlock>
 
             {overdueTasks.length + overdueLeads.length > 0 ? (
-              <SectionBlock title="Zaległe" count={overdueTasks.length + overdueLeads.length} icon={<AlertTriangle className="h-5 w-5" />} accent="danger">
+              <SectionBlock id="sekcja-zalegle" title="Zaległe" count={overdueTasks.length + overdueLeads.length} icon={<AlertTriangle className="h-5 w-5" />} accent="danger">
                 <div className="grid gap-3">
                   {overdueTasks.map((task) => (
                     <Card key={task.id} className="border-none app-surface-strong app-shadow">
@@ -789,7 +814,7 @@ export default function Today() {
             ) : null}
 
             {noStepLeads.length > 0 ? (
-              <SectionBlock title="Bez następnego kroku" count={noStepLeads.length} icon={<ShieldAlert className="h-5 w-5" />} accent="warning">
+              <SectionBlock id="sekcja-bez-kroku" title="Bez następnego kroku" count={noStepLeads.length} icon={<ShieldAlert className="h-5 w-5" />} accent="warning">
                 <div className="grid gap-3 md:grid-cols-2">
                   {noStepLeads.slice(0, 6).map((lead) => (
                     <div key={lead.id}><LeadActionCard lead={lead} badge={<Badge variant="outline" className="border-amber-500/25 text-amber-500">Brak kroku</Badge>} /></div>
@@ -800,7 +825,7 @@ export default function Today() {
           </div>
 
           <aside className="space-y-6">
-            <Card className="border-none app-surface-strong app-shadow">
+            <Card id="sekcja-wartosc" className="border-none app-surface-strong app-shadow">
               <CardHeader>
                 <CardTitle className="text-lg app-text">Najcenniejsze do ruszenia</CardTitle>
               </CardHeader>
