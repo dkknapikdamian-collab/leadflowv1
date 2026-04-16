@@ -26,11 +26,19 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, onInteractOutside, ...props }, ref) => (
+>(({ className, children, onInteractOutside, onFocusOutside, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
+      onFocusOutside={(event) => {
+        const target = event.target as HTMLElement | null
+        if (target?.closest('[data-slot="select-content"]')) {
+          event.preventDefault()
+          return
+        }
+        onFocusOutside?.(event)
+      }}
       onInteractOutside={(event) => {
         const target = event.target as HTMLElement | null
         if (target?.closest('[data-slot="select-content"]')) {
