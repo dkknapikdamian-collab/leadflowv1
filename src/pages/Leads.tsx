@@ -396,7 +396,13 @@ export default function Leads() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
+    if (!auth.currentUser || !workspace) {
+      setLeads([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
 
     const leadsQuery = query(
       collection(db, 'leads'),
@@ -404,10 +410,17 @@ export default function Leads() {
       orderBy('updatedAt', 'desc')
     );
 
-    const unsubscribe = onSnapshot(leadsQuery, (snapshot) => {
-      setLeads(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<LeadRecord, 'id'>) })));
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      leadsQuery,
+      (snapshot) => {
+        setLeads(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<LeadRecord, 'id'>) })));
+        setLoading(false);
+      },
+      () => {
+        setLeads([]);
+        setLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [workspace]);

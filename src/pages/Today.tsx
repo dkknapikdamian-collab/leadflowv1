@@ -232,7 +232,15 @@ export default function Today() {
   });
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
+    if (!auth.currentUser || !workspace) {
+      setLeads([]);
+      setTasks([]);
+      setEvents([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
 
     const leadsQuery = query(
       collection(db, 'leads'),
@@ -252,18 +260,39 @@ export default function Today() {
       orderBy('startAt', 'asc')
     );
 
-    const unsubscribeLeads = onSnapshot(leadsQuery, (snap) => {
-      setLeads(snap.docs.map((snapshot) => ({ id: snapshot.id, ...(snapshot.data() as Omit<LeadRecord, 'id'>) })));
-    });
+    const unsubscribeLeads = onSnapshot(
+      leadsQuery,
+      (snap) => {
+        setLeads(snap.docs.map((snapshot) => ({ id: snapshot.id, ...(snapshot.data() as Omit<LeadRecord, 'id'>) })));
+      },
+      () => {
+        setLeads([]);
+        setLoading(false);
+      }
+    );
 
-    const unsubscribeTasks = onSnapshot(tasksQuery, (snap) => {
-      setTasks(snap.docs.map((snapshot) => ({ id: snapshot.id, ...(snapshot.data() as Omit<TaskRecord, 'id'>) })));
-    });
+    const unsubscribeTasks = onSnapshot(
+      tasksQuery,
+      (snap) => {
+        setTasks(snap.docs.map((snapshot) => ({ id: snapshot.id, ...(snapshot.data() as Omit<TaskRecord, 'id'>) })));
+      },
+      () => {
+        setTasks([]);
+        setLoading(false);
+      }
+    );
 
-    const unsubscribeEvents = onSnapshot(eventsQuery, (snap) => {
-      setEvents(snap.docs.map((snapshot) => ({ id: snapshot.id, ...(snapshot.data() as Omit<EventRecord, 'id'>) })));
-      setLoading(false);
-    });
+    const unsubscribeEvents = onSnapshot(
+      eventsQuery,
+      (snap) => {
+        setEvents(snap.docs.map((snapshot) => ({ id: snapshot.id, ...(snapshot.data() as Omit<EventRecord, 'id'>) })));
+        setLoading(false);
+      },
+      () => {
+        setEvents([]);
+        setLoading(false);
+      }
+    );
 
     return () => {
       unsubscribeLeads();

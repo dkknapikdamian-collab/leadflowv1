@@ -162,11 +162,33 @@ export default function Billing() {
 
   const currentActions = statusActions[access.status] ?? statusActions.inactive;
 
-  if (loading || !workspace) {
+  if (loading) {
     return (
       <Layout>
         <div className="flex h-full items-center justify-center py-24">
           <Loader2 className="h-8 w-8 animate-spin" style={{ color: 'var(--app-primary)' }} />
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!workspace) {
+    return (
+      <Layout>
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10 md:px-8">
+          <Card className="border-none app-surface-strong">
+            <CardHeader>
+              <CardTitle>Brak aktywnego workspace</CardTitle>
+              <CardDescription>
+                Nie udało się wczytać danych workspace, więc ekran rozliczeń jest chwilowo niedostępny.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="rounded-2xl" onClick={() => window.location.reload()}>
+                Odśwież stronę
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </Layout>
     );

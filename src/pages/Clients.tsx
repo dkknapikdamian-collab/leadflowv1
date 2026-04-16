@@ -64,25 +64,54 @@ export default function Clients() {
   const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '' });
 
   useEffect(() => {
-    if (!auth.currentUser) return;
+    if (!auth.currentUser) {
+      setClients([]);
+      setLeads([]);
+      setCases([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
 
     const unsubscribers: Array<() => void> = [];
 
     const clientsQuery = query(collection(db, 'clients'), where('ownerId', '==', auth.currentUser.uid), orderBy('updatedAt', 'desc'));
-    unsubscribers.push(onSnapshot(clientsQuery, (snapshot) => {
-      setClients(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientRecord, 'id'>) })));
-      setLoading(false);
-    }));
+    unsubscribers.push(onSnapshot(
+      clientsQuery,
+      (snapshot) => {
+        setClients(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientRecord, 'id'>) })));
+        setLoading(false);
+      },
+      () => {
+        setClients([]);
+        setLoading(false);
+      }
+    ));
 
     const leadsQuery = query(collection(db, 'leads'), where('ownerId', '==', auth.currentUser.uid), orderBy('updatedAt', 'desc'));
-    unsubscribers.push(onSnapshot(leadsQuery, (snapshot) => {
-      setLeads(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientLeadLike, 'id'>) })));
-    }));
+    unsubscribers.push(onSnapshot(
+      leadsQuery,
+      (snapshot) => {
+        setLeads(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientLeadLike, 'id'>) })));
+      },
+      () => {
+        setLeads([]);
+        setLoading(false);
+      }
+    ));
 
     const casesQuery = query(collection(db, 'cases'), where('ownerId', '==', auth.currentUser.uid), orderBy('updatedAt', 'desc'));
-    unsubscribers.push(onSnapshot(casesQuery, (snapshot) => {
-      setCases(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientCaseLike, 'id'>) })));
-    }));
+    unsubscribers.push(onSnapshot(
+      casesQuery,
+      (snapshot) => {
+        setCases(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientCaseLike, 'id'>) })));
+      },
+      () => {
+        setCases([]);
+        setLoading(false);
+      }
+    ));
 
     return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
   }, []);

@@ -71,7 +71,14 @@ export default function Calendar() {
   });
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
+    if (!auth.currentUser || !workspace) {
+      setEvents([]);
+      setTasks([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
 
     const eventsQuery = query(
       collection(db, 'events'),
@@ -84,11 +91,25 @@ export default function Calendar() {
       orderBy('date', 'asc')
     );
 
-    const unsubscribeEvents = onSnapshot(eventsQuery, (snap) => setEvents(snap.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<CalendarEvent, 'id'>) }))));
-    const unsubscribeTasks = onSnapshot(tasksQuery, (snap) => {
-      setTasks(snap.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<CalendarTask, 'id'>) })));
-      setLoading(false);
-    });
+    const unsubscribeEvents = onSnapshot(
+      eventsQuery,
+      (snap) => setEvents(snap.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<CalendarEvent, 'id'>) }))),
+      () => {
+        setEvents([]);
+        setLoading(false);
+      }
+    );
+    const unsubscribeTasks = onSnapshot(
+      tasksQuery,
+      (snap) => {
+        setTasks(snap.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<CalendarTask, 'id'>) })));
+        setLoading(false);
+      },
+      () => {
+        setTasks([]);
+        setLoading(false);
+      }
+    );
 
     return () => {
       unsubscribeEvents();

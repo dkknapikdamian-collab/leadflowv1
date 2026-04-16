@@ -121,7 +121,13 @@ export default function Tasks() {
   });
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
+    if (!auth.currentUser || !workspace) {
+      setTasks([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
 
     const q = query(
       collection(db, 'tasks'),
@@ -130,10 +136,17 @@ export default function Tasks() {
       orderBy('createdAt', 'desc')
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setTasks(snapshot.docs.map((item) => ({ id: item.id, ...(item.data() as Omit<TaskRecord, 'id'>) })));
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        setTasks(snapshot.docs.map((item) => ({ id: item.id, ...(item.data() as Omit<TaskRecord, 'id'>) })));
+        setLoading(false);
+      },
+      () => {
+        setTasks([]);
+        setLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [workspace]);

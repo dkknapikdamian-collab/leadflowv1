@@ -30,39 +30,56 @@ export function useWorkspace() {
     const profileRef = doc(db, 'profiles', activeUserId);
     let unsubscribeWorkspace: (() => void) | undefined;
 
-    const unsubscribeProfile = onSnapshot(profileRef, (snap) => {
-      if (!snap.exists()) {
+    const unsubscribeProfile = onSnapshot(
+      profileRef,
+      (snap) => {
+        if (!snap.exists()) {
+          unsubscribeWorkspace?.();
+          unsubscribeWorkspace = undefined;
+          setProfile(null);
+          setWorkspace(null);
+          setLoading(false);
+          return;
+        }
+
+        const profileData = snap.data();
+        setProfile({ id: snap.id, ...profileData });
+
+        if (!profileData.workspaceId) {
+          unsubscribeWorkspace?.();
+          unsubscribeWorkspace = undefined;
+          setWorkspace(null);
+          setLoading(false);
+          return;
+        }
+
+        unsubscribeWorkspace?.();
+
+        const workspaceRef = doc(db, 'workspaces', profileData.workspaceId);
+        unsubscribeWorkspace = onSnapshot(
+          workspaceRef,
+          (wsSnap) => {
+            if (wsSnap.exists()) {
+              setWorkspace({ id: wsSnap.id, ...wsSnap.data() });
+            } else {
+              setWorkspace(null);
+            }
+            setLoading(false);
+          },
+          () => {
+            setWorkspace(null);
+            setLoading(false);
+          }
+        );
+      },
+      () => {
         unsubscribeWorkspace?.();
         unsubscribeWorkspace = undefined;
         setProfile(null);
         setWorkspace(null);
         setLoading(false);
-        return;
       }
-
-      const profileData = snap.data();
-      setProfile({ id: snap.id, ...profileData });
-
-      if (!profileData.workspaceId) {
-        unsubscribeWorkspace?.();
-        unsubscribeWorkspace = undefined;
-        setWorkspace(null);
-        setLoading(false);
-        return;
-      }
-
-      unsubscribeWorkspace?.();
-
-      const workspaceRef = doc(db, 'workspaces', profileData.workspaceId);
-      unsubscribeWorkspace = onSnapshot(workspaceRef, (wsSnap) => {
-        if (wsSnap.exists()) {
-          setWorkspace({ id: wsSnap.id, ...wsSnap.data() });
-        } else {
-          setWorkspace(null);
-        }
-        setLoading(false);
-      });
-    });
+    );
 
     return () => {
       unsubscribeWorkspace?.();
