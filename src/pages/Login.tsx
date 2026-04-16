@@ -16,6 +16,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import firebaseConfig from '../../firebase-applet-config.json';
 
 const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
 
@@ -28,6 +29,15 @@ type AuthUser = {
   email?: string | null;
   displayName?: string | null;
 };
+
+function getAuthErrorMessage(error: { code?: string; message?: string }) {
+  if (error.code === 'auth/unauthorized-domain') {
+    const currentHost = typeof window !== 'undefined' ? window.location.host : 'ta domena';
+    return `Google login jest zablokowany dla domeny ${currentHost}. Dodaj ja w Firebase Console > Authentication > Settings > Authorized domains. Dozwolony authDomain w projekcie: ${firebaseConfig.authDomain}.`;
+  }
+
+  return error.message ? `Blad logowania: ${error.message}` : 'Blad logowania. Sprobuj ponownie.';
+}
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -102,7 +112,7 @@ export default function Login() {
       await initializeUser(result.user);
       toast.success('Zalogowano pomyslnie');
     } catch (error: any) {
-      toast.error('Blad logowania: ' + error.message);
+      toast.error(getAuthErrorMessage(error));
     } finally {
       setLoading(false);
     }
