@@ -15,6 +15,7 @@ import {
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
+import { insertLeadToSupabase, insertTaskToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -51,6 +52,7 @@ import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -321,20 +323,50 @@ export default function Today() {
 
     try {
       const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
-      await addDoc(collection(db, 'leads'), {
-        name: newLead.name,
-        email: newLead.email,
-        dealValue: Number(newLead.dealValue) || 0,
-        source: newLead.source,
-        status: newLead.status,
-        nextStep: newLead.nextStep,
-        nextActionAt: newLead.nextActionAt,
-        ownerId: auth.currentUser.uid,
-        workspaceId: ensuredWorkspace.id,
-        isAtRisk: false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      const usingSupabase = isSupabaseConfigured();
+      if (usingSupabase) {
+        await insertLeadToSupabase({
+          name: newLead.name,
+          email: newLead.email,
+          source: newLead.source,
+          dealValue: Number(newLead.dealValue) || 0,
+          nextStep: newLead.nextStep,
+          nextActionAt: newLead.nextActionAt,
+          ownerId: auth.currentUser.uid,
+          workspaceId: ensuredWorkspace.id,
+        });
+      } else {
+        await addDoc(collection(db, 'leads'), {
+          name: newLead.name,
+          email: newLead.email,
+          dealValue: Number(newLead.dealValue) || 0,
+          source: newLead.source,
+          status: newLead.status,
+          nextStep: newLead.nextStep,
+          nextActionAt: newLead.nextActionAt,
+          ownerId: auth.currentUser.uid,
+          workspaceId: ensuredWorkspace.id,
+          isAtRisk: false,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
+      if (usingSupabase) {
+        setLeads((prev) => [
+          {
+            id: crypto.randomUUID(),
+            name: newLead.name,
+            email: newLead.email,
+            source: newLead.source,
+            dealValue: Number(newLead.dealValue) || 0,
+            status: 'new',
+            nextStep: newLead.nextStep,
+            nextActionAt: newLead.nextActionAt,
+            isAtRisk: false,
+          },
+          ...prev,
+        ]);
+      }
       toast.success('Lead dodany');
       setIsLeadOpen(false);
       setNewLead({
@@ -356,14 +388,40 @@ export default function Today() {
     if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
-      await addDoc(collection(db, 'tasks'), {
-        ...newTask,
-        status: 'todo',
-        ownerId: auth.currentUser.uid,
-        workspaceId: (workspace ?? await ensureCurrentUserWorkspace()).id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
+      const usingSupabase = isSupabaseConfigured();
+      if (usingSupabase) {
+        await insertTaskToSupabase({
+          title: newTask.title,
+          type: newTask.type,
+          date: newTask.date,
+          priority: newTask.priority,
+          status: 'todo',
+          ownerId: auth.currentUser.uid,
+          workspaceId: ensuredWorkspace.id,
+        });
+      } else {
+        await addDoc(collection(db, 'tasks'), {
+          ...newTask,
+          status: 'todo',
+          ownerId: auth.currentUser.uid,
+          workspaceId: ensuredWorkspace.id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
+      if (usingSupabase) {
+        setTasks((prev) => [
+          {
+            id: crypto.randomUUID(),
+            title: newTask.title,
+            type: newTask.type,
+            date: newTask.date,
+            status: 'todo',
+          },
+          ...prev,
+        ]);
+      }
       toast.success('Zadanie dodane');
       setIsTaskOpen(false);
       setNewTask({ title: '', type: 'follow_up', date: format(new Date(), 'yyyy-MM-dd'), priority: 'medium' });
@@ -520,6 +578,9 @@ export default function Today() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Szybkie dodanie leada</DialogTitle>
+                  <DialogDescription>
+                    Uzupelnij podstawowe dane, aby szybko dodac leada do lejka.
+                  </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleAddLead} className="space-y-4 py-2">
                   <div className="space-y-2">
@@ -574,6 +635,9 @@ export default function Today() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Nowe zadanie</DialogTitle>
+                  <DialogDescription>
+                    Dodaj zadanie operacyjne na dzis lub na wybrany termin.
+                  </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleAddTask} className="space-y-4 py-2">
                   <div className="space-y-2">
@@ -614,6 +678,9 @@ export default function Today() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
+                  <DialogDescription>
+                    Ustaw tytul, typ i termin, aby dodac wydarzenie do kalendarza.
+                  </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleAddEvent} className="space-y-4 py-2">
                   <div className="space-y-2">

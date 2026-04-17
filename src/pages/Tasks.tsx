@@ -32,6 +32,8 @@ import { toast } from 'sonner';
 
 import { auth, db } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { ensureCurrentUserWorkspace } from '../lib/workspace';
+import { insertTaskToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 import { RecurrenceEndType, RecurrenceRule, SnoozePreset, applySnoozePreset, canScheduleNextRecurrence, nextRecurringDate } from '../lib/scheduling';
 import Layout from '../components/Layout';
 import { Badge } from '../components/ui/badge';
@@ -178,27 +180,55 @@ export default function Tasks() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
+    if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania.');
 
     try {
-      await addDoc(collection(db, 'tasks'), {
-        title: newTask.title,
-        type: newTask.type,
-        date: newTask.date,
-        priority: newTask.priority,
-        reminderAt: newTask.reminderAt || null,
-        recurrenceRule: newTask.recurrenceRule,
-        recurrenceEndType: newTask.recurrenceEndType,
-        recurrenceEndAt: newTask.recurrenceEndAt || null,
-        recurrenceCount: Number(newTask.recurrenceCount) || null,
-        recurrenceDoneCount: 0,
-        status: 'todo',
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
+      const usingSupabase = isSupabaseConfigured();
+      if (usingSupabase) {
+        await insertTaskToSupabase({
+          title: newTask.title,
+          type: newTask.type,
+          date: newTask.date,
+          priority: newTask.priority,
+          status: 'todo',
+          ownerId: auth.currentUser.uid,
+          workspaceId: ensuredWorkspace.id,
+        });
+      } else {
+        await addDoc(collection(db, 'tasks'), {
+          title: newTask.title,
+          type: newTask.type,
+          date: newTask.date,
+          priority: newTask.priority,
+          reminderAt: newTask.reminderAt || null,
+          recurrenceRule: newTask.recurrenceRule,
+          recurrenceEndType: newTask.recurrenceEndType,
+          recurrenceEndAt: newTask.recurrenceEndAt || null,
+          recurrenceCount: Number(newTask.recurrenceCount) || null,
+          recurrenceDoneCount: 0,
+          status: 'todo',
+          ownerId: auth.currentUser.uid,
+          workspaceId: ensuredWorkspace.id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
+      if (usingSupabase) {
+        setTasks((prev) => [
+          {
+            id: crypto.randomUUID(),
+            title: newTask.title,
+            type: newTask.type,
+            date: newTask.date,
+            priority: newTask.priority as TaskRecord['priority'],
+            status: 'todo',
+          },
+          ...prev,
+        ]);
+      }
 
       toast.success('Zadanie dodane');
       setIsNewTaskOpen(false);
@@ -234,6 +264,7 @@ export default function Tasks() {
       ) {
         const nextDate = nextRecurringDate(task.date, task.recurrenceRule);
         if (nextDate) {
+          const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
           await addDoc(collection(db, 'tasks'), {
             title: task.title,
             type: task.type,
@@ -247,7 +278,7 @@ export default function Tasks() {
             recurrenceDoneCount: (task.recurrenceDoneCount || 0) + 1,
             status: 'todo',
             ownerId: auth.currentUser?.uid,
-            workspaceId: workspace?.id,
+            workspaceId: ensuredWorkspace.id,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
           });

@@ -45,6 +45,7 @@ import Layout from '../components/Layout';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
+import { insertLeadToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
@@ -424,16 +425,50 @@ export default function Leads() {
 
     try {
       const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
-      await addDoc(collection(db, 'leads'), {
-        ...newLead,
-        dealValue: Number(newLead.dealValue) || 0,
-        status: 'new',
-        ownerId: auth.currentUser.uid,
-        workspaceId: ensuredWorkspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        isAtRisk: false,
-      });
+      const usingSupabase = isSupabaseConfigured();
+      if (usingSupabase) {
+        await insertLeadToSupabase({
+          name: newLead.name,
+          email: newLead.email,
+          phone: newLead.phone,
+          company: newLead.company,
+          source: newLead.source,
+          dealValue: Number(newLead.dealValue) || 0,
+          nextStep: newLead.nextStep,
+          nextActionAt: newLead.nextActionAt,
+          ownerId: auth.currentUser.uid,
+          workspaceId: ensuredWorkspace.id,
+        });
+      } else {
+        await addDoc(collection(db, 'leads'), {
+          ...newLead,
+          dealValue: Number(newLead.dealValue) || 0,
+          status: 'new',
+          ownerId: auth.currentUser.uid,
+          workspaceId: ensuredWorkspace.id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          isAtRisk: false,
+        });
+      }
+      if (usingSupabase) {
+        setLeads((prev) => [
+          {
+            id: crypto.randomUUID(),
+            name: newLead.name,
+            email: newLead.email,
+            phone: newLead.phone,
+            company: newLead.company,
+            source: newLead.source,
+            dealValue: Number(newLead.dealValue) || 0,
+            status: 'new',
+            nextStep: newLead.nextStep,
+            nextActionAt: newLead.nextActionAt,
+            isAtRisk: false,
+          },
+          ...prev,
+        ]);
+      }
 
       toast.success('Lead dodany');
       setIsNewLeadOpen(false);
