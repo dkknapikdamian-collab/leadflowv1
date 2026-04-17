@@ -1,5 +1,10 @@
 type RecordMap = Record<string, unknown>;
 
+function isUuid(value: unknown) {
+  return typeof value === 'string'
+    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
 function getSupabaseConfig() {
   const url =
     process.env.NEXT_PUBLIC_SUPABASE_URL ||
@@ -42,13 +47,15 @@ async function supabaseRequest(path: string, init?: RequestInit) {
   return data;
 }
 
-export async function findWorkspaceId() {
+export async function findWorkspaceId(candidate?: unknown) {
+  if (isUuid(candidate)) {
+    return candidate;
+  }
+
   const queries = [
+    'workspaces?select=id&order=created_at.asc&limit=1',
     'workspaces?select=id&limit=1',
-    'workspaces?select=id&order=id.asc&limit=1',
     'workspace_members?select=workspace_id&limit=1',
-    'profiles?select=workspace_id&limit=1',
-    'account_access?select=workspace_id&limit=1',
   ];
 
   for (const query of queries) {

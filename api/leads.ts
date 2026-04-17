@@ -35,67 +35,37 @@ export default async function handler(req: any, res: any) {
     }
 
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-    const workspaceId = body.workspaceId || (await findWorkspaceId());
+    const workspaceId = await findWorkspaceId(body.workspaceId);
     if (!workspaceId) {
       throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
     }
     const nowIso = new Date().toISOString();
     const amount = Number(body.dealValue) || 0;
     const dueAt = body.nextActionAt ? new Date(body.nextActionAt).toISOString() : null;
-    const source = body.source || 'other';
+    const source = body.source || 'Inne';
 
-    const payloads = [
-      {
-        title: body.name,
-        person_name: body.name,
-        company_name: body.company || '',
-        email: body.email || '',
-        phone: body.phone || '',
-        source_type: source,
-        source_label: source,
-        status: 'new',
-        next_step: body.nextStep || '',
-        next_step_due_at: dueAt,
-        organization_id: workspaceId,
-        created_at: nowIso,
-        updated_at: nowIso,
-      },
-      {
-        workspace_id: workspaceId,
-        name: body.name,
-        company: body.company || '',
-        email: body.email || '',
-        phone: body.phone || '',
-        source,
-        status: 'new',
-        value: amount,
-        next_step: body.nextStep || '',
-        next_step_due_at: dueAt,
-        created_at: nowIso,
-        updated_at: nowIso,
-      },
-      {
-        workspace_id: workspaceId,
-        name: body.name,
-        company: body.company || '',
-        email: body.email || '',
-        phone: body.phone || '',
-        source,
-        status: 'new',
-        deal_value: amount,
-        next_step: body.nextStep || '',
-        next_step_due_at: dueAt,
-        created_at: nowIso,
-        updated_at: nowIso,
-      },
-      {
-        name: body.name,
-        status: 'new',
-      },
-    ];
+    const payload = {
+      workspace_id: workspaceId,
+      created_by_user_id: null,
+      name: body.name,
+      company: body.company || '',
+      email: body.email || '',
+      phone: body.phone || '',
+      source,
+      value: amount,
+      summary: '',
+      notes: '',
+      status: 'new',
+      priority: 'medium',
+      next_action_title: body.nextStep || '',
+      next_action_at: dueAt,
+      next_action_item_id: null,
+      created_at: nowIso,
+      updated_at: nowIso,
+    };
 
-    const result = await insertWithVariants(['leads'], payloads);
-    const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payloads[0];
+    const result = await insertWithVariants(['leads'], [payload]);
+    const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
 
     res.status(200).json(normalizeLead(inserted as Record<string, unknown>));
   } catch (error: any) {
