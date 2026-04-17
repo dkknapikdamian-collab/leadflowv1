@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, FormEvent } from 'react';
+﻿import { useEffect, useMemo, useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { addDays, endOfDay, format, isPast, isToday, isTomorrow, isWithinInterval, parseISO, startOfToday } from 'date-fns';
 import { pl } from 'date-fns/locale';
@@ -33,13 +33,13 @@ import { toast } from 'sonner';
 import { auth, db } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
-import { fetchTasksFromSupabase, insertTaskToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import { deleteTaskFromSupabase, fetchTasksFromSupabase, insertTaskToSupabase, isSupabaseConfigured, updateTaskInSupabase } from '../lib/supabase-fallback';
 import { RecurrenceEndType, RecurrenceRule, SnoozePreset, applySnoozePreset, canScheduleNextRecurrence, nextRecurringDate } from '../lib/scheduling';
 import Layout from '../components/Layout';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -49,8 +49,8 @@ import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
 const TASK_TYPES = [
   { value: 'follow_up', label: 'Follow-up' },
   { value: 'phone', label: 'Telefon' },
-  { value: 'reply', label: 'Odpisać' },
-  { value: 'send_offer', label: 'Wyślij ofertę' },
+  { value: 'reply', label: 'OdpisaÄ‡' },
+  { value: 'send_offer', label: 'WyĹ›lij ofertÄ™' },
   { value: 'meeting', label: 'Spotkanie' },
   { value: 'other', label: 'Inne' },
 ] as const;
@@ -59,9 +59,9 @@ const RECURRENCE_OPTIONS: { value: RecurrenceRule; label: string }[] = [
   { value: 'none', label: 'Brak' },
   { value: 'daily', label: 'Codziennie' },
   { value: 'every_2_days', label: 'Co 2 dni' },
-  { value: 'weekly', label: 'Co tydzień' },
-  { value: 'monthly', label: 'Co miesiąc' },
-  { value: 'weekday', label: 'Dzień roboczy' },
+  { value: 'weekly', label: 'Co tydzieĹ„' },
+  { value: 'monthly', label: 'Co miesiÄ…c' },
+  { value: 'weekday', label: 'DzieĹ„ roboczy' },
 ];
 
 type TaskStatus = 'todo' | 'done' | 'overdue' | 'postponed';
@@ -196,8 +196,8 @@ export default function Tasks() {
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
     if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!newTask.title.trim()) return toast.error('Wpisz tytuĹ‚ zadania.');
 
     try {
       const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
@@ -259,19 +259,28 @@ export default function Tasks() {
         recurrenceCount: '5',
       });
     } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
+      toast.error(`BĹ‚Ä…d: ${error.message}`);
     }
   };
 
   const toggleTask = async (task: TaskRecord) => {
     try {
       const nextStatus: TaskStatus = task.status === 'done' ? 'todo' : 'done';
-      await updateDoc(doc(db, 'tasks', task.id), {
-        status: nextStatus,
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await updateTaskInSupabase({
+          id: task.id,
+          status: nextStatus,
+        });
+        setTasks((prev) => prev.map((item) => (item.id === task.id ? { ...item, status: nextStatus } : item)));
+      } else {
+        await updateDoc(doc(db, 'tasks', task.id), {
+          status: nextStatus,
+          updatedAt: serverTimestamp(),
+        });
+      }
 
       if (
+        !isSupabaseConfigured() &&
         nextStatus === 'done'
         && task.recurrenceRule
         && task.recurrenceRule !== 'none'
@@ -300,32 +309,47 @@ export default function Tasks() {
         }
       }
     } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
+      toast.error(`BĹ‚Ä…d: ${error.message}`);
     }
   };
 
   const snoozeTask = async (task: TaskRecord, preset: SnoozePreset) => {
     try {
       const snoozeUntil = applySnoozePreset(preset);
-      await updateDoc(doc(db, 'tasks', task.id), {
-        status: 'postponed',
-        snoozeUntil,
-        date: snoozeUntil.slice(0, 10),
-        updatedAt: serverTimestamp(),
-      });
-      toast.success('Zadanie odłożone');
+      if (isSupabaseConfigured()) {
+        const nextDate = snoozeUntil.slice(0, 10);
+        await updateTaskInSupabase({
+          id: task.id,
+          status: 'postponed',
+          date: nextDate,
+        });
+        setTasks((prev) => prev.map((item) => (item.id === task.id ? { ...item, status: 'postponed', date: nextDate } : item)));
+      } else {
+        await updateDoc(doc(db, 'tasks', task.id), {
+          status: 'postponed',
+          snoozeUntil,
+          date: snoozeUntil.slice(0, 10),
+          updatedAt: serverTimestamp(),
+        });
+      }
+      toast.success('Zadanie odĹ‚oĹĽone');
     } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
+      toast.error(`BĹ‚Ä…d: ${error.message}`);
     }
   };
 
   const deleteTask = async (taskId: string) => {
-    if (!window.confirm('Usunąć zadanie?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ zadanie?')) return;
     try {
-      await deleteDoc(doc(db, 'tasks', taskId));
-      toast.success('Zadanie usunięte');
+      if (isSupabaseConfigured()) {
+        await deleteTaskFromSupabase(taskId);
+        setTasks((prev) => prev.filter((item) => item.id !== taskId));
+      } else {
+        await deleteDoc(doc(db, 'tasks', taskId));
+      }
+      toast.success('Zadanie usuniÄ™te');
     } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
+      toast.error(`BĹ‚Ä…d: ${error.message}`);
     }
   };
 
@@ -385,10 +409,15 @@ export default function Tasks() {
               <Button className="h-11 rounded-2xl px-5 font-semibold"><Plus className="mr-2 h-4 w-4" /> Nowe zadanie</Button>
             </DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
+              <DialogHeader>
+                <DialogTitle>Dodaj zadanie</DialogTitle>
+                <DialogDescription>
+                  Dodaj termin i priorytet zadania. Pola cyklicznoĹ›ci sÄ… dostÄ™pne poniĹĽej.
+                </DialogDescription>
+              </DialogHeader>
               <form onSubmit={handleAddTask} className="space-y-4 py-2">
                 <div className="space-y-2">
-                  <Label>Tytuł</Label>
+                  <Label>TytuĹ‚</Label>
                   <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -411,7 +440,7 @@ export default function Tasks() {
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="low">Niski</SelectItem>
-                        <SelectItem value="medium">Średni</SelectItem>
+                        <SelectItem value="medium">Ĺšredni</SelectItem>
                         <SelectItem value="high">Wysoki</SelectItem>
                       </SelectContent>
                     </Select>
@@ -423,33 +452,37 @@ export default function Tasks() {
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label>Cykliczność</Label>
-                    <Select value={newTask.recurrenceRule} onValueChange={(value) => setNewTask({ ...newTask, recurrenceRule: value as RecurrenceRule })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>{RECURRENCE_OPTIONS.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
-                    </Select>
+                    <Label>CyklicznoĹ›Ä‡</Label>
+                    <select
+                      value={newTask.recurrenceRule}
+                      onChange={(e) => setNewTask({ ...newTask, recurrenceRule: e.target.value as RecurrenceRule })}
+                      className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                    >
+                      {RECURRENCE_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+                    </select>
                   </div>
                   <div className="space-y-2">
                     <Label>Koniec cyklu</Label>
-                    <Select value={newTask.recurrenceEndType} onValueChange={(value) => setNewTask({ ...newTask, recurrenceEndType: value as RecurrenceEndType })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="never">Bez końca</SelectItem>
-                        <SelectItem value="until_date">Do daty</SelectItem>
-                        <SelectItem value="count">Liczba razy</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <select
+                      value={newTask.recurrenceEndType}
+                      onChange={(e) => setNewTask({ ...newTask, recurrenceEndType: e.target.value as RecurrenceEndType })}
+                      className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                    >
+                        <option value="never">Bez końca</option>
+                        <option value="until_date">Do daty</option>
+                        <option value="count">Liczba razy</option>
+                      </select>
                   </div>
                 </div>
                 {newTask.recurrenceEndType === 'until_date' ? (
                   <div className="space-y-2">
-                    <Label>Data końcowa</Label>
+                    <Label>Data koĹ„cowa</Label>
                     <Input type="date" value={newTask.recurrenceEndAt} onChange={(e) => setNewTask({ ...newTask, recurrenceEndAt: e.target.value })} />
                   </div>
                 ) : null}
                 {newTask.recurrenceEndType === 'count' ? (
                   <div className="space-y-2">
-                    <Label>Liczba powtórzeń</Label>
+                    <Label>Liczba powtĂłrzeĹ„</Label>
                     <Input type="number" min="1" value={newTask.recurrenceCount} onChange={(e) => setNewTask({ ...newTask, recurrenceCount: e.target.value })} />
                   </div>
                 ) : null}
@@ -462,9 +495,9 @@ export default function Tasks() {
         <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
           {[
             { key: 'active', label: 'Aktywne', value: counts.active, icon: ListTodo },
-            { key: 'today', label: 'Dziś', value: counts.today, icon: Clock },
-            { key: 'week', label: 'Tydzień', value: counts.week, icon: Calendar },
-            { key: 'overdue', label: 'Zaległe', value: counts.overdue, icon: AlertTriangle },
+            { key: 'today', label: 'DziĹ›', value: counts.today, icon: Clock },
+            { key: 'week', label: 'TydzieĹ„', value: counts.week, icon: Calendar },
+            { key: 'overdue', label: 'ZalegĹ‚e', value: counts.overdue, icon: AlertTriangle },
             { key: 'done', label: 'Zrobione', value: counts.done, icon: CheckSquare },
           ].map((stat) => (
             <Card key={stat.key} className="border-none">
@@ -497,9 +530,9 @@ export default function Tasks() {
             <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as ViewMode)}>
               <TabsList className="grid h-auto w-full grid-cols-2 gap-2 rounded-2xl p-2 md:grid-cols-5">
                 <TabsTrigger value="active" className="min-h-10 rounded-xl">Aktywne</TabsTrigger>
-                <TabsTrigger value="today" className="min-h-10 rounded-xl">Dziś</TabsTrigger>
-                <TabsTrigger value="week" className="min-h-10 rounded-xl">Ten tydzień</TabsTrigger>
-                <TabsTrigger value="overdue" className="min-h-10 rounded-xl">Zaległe</TabsTrigger>
+                <TabsTrigger value="today" className="min-h-10 rounded-xl">DziĹ›</TabsTrigger>
+                <TabsTrigger value="week" className="min-h-10 rounded-xl">Ten tydzieĹ„</TabsTrigger>
+                <TabsTrigger value="overdue" className="min-h-10 rounded-xl">ZalegĹ‚e</TabsTrigger>
                 <TabsTrigger value="done" className="min-h-10 rounded-xl">Zrobione</TabsTrigger>
               </TabsList>
             </Tabs>
@@ -510,11 +543,11 @@ export default function Tasks() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-24">
               <Loader2 className="mb-4 h-8 w-8 animate-spin" style={{ color: 'var(--app-primary)' }} />
-              <p className="app-muted">Ładowanie zadań...</p>
+              <p className="app-muted">Ĺadowanie zadaĹ„...</p>
             </div>
           ) : sortedDates.length === 0 ? (
             <Card className="border-dashed">
-              <CardContent className="py-16 text-center text-sm app-muted">Brak zadań w tym widoku.</CardContent>
+              <CardContent className="py-16 text-center text-sm app-muted">Brak zadaĹ„ w tym widoku.</CardContent>
             </Card>
           ) : (
             sortedDates.map((dateKey) => {
@@ -538,16 +571,16 @@ export default function Tasks() {
                               <button
                                 onClick={() => toggleTask(task)}
                                 className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border ${isDone ? 'app-button-primary' : 'app-button-outline'}`}
-                                aria-label={isDone ? 'Przywróć do aktywnych' : 'Oznacz jako zrobione'}
+                                aria-label={isDone ? 'PrzywrĂłÄ‡ do aktywnych' : 'Oznacz jako zrobione'}
                               >
                                 {isDone ? <CheckSquare className="h-4 w-4" /> : <Square className="h-4 w-4" />}
                               </button>
                               <div className="min-w-0">
                                 <div className="flex flex-wrap items-center gap-2">
                                   <p className={`font-semibold app-text ${isDone ? 'line-through opacity-80' : ''}`}>{task.title}</p>
-                                  {status === 'overdue' ? <Badge variant="destructive">Zaległe</Badge> : null}
-                                  {status === 'postponed' ? <Badge variant="outline">Odłożone</Badge> : null}
-                                  {isToday(parseISO(task.date)) && !isDone ? <Badge variant="secondary">Dziś</Badge> : null}
+                                  {status === 'overdue' ? <Badge variant="destructive">ZalegĹ‚e</Badge> : null}
+                                  {status === 'postponed' ? <Badge variant="outline">OdĹ‚oĹĽone</Badge> : null}
+                                  {isToday(parseISO(task.date)) && !isDone ? <Badge variant="secondary">DziĹ›</Badge> : null}
                                 </div>
                                 <div className="mt-2 flex flex-wrap gap-2 text-xs app-muted">
                                   <Badge variant="outline">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Inne'}</Badge>
@@ -566,12 +599,12 @@ export default function Tasks() {
                                   <Button variant="ghost" size="icon" className="rounded-xl"><MoreVertical className="h-4 w-4" /></Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                  <DropdownMenuItem onClick={() => toggleTask(task)}>{isDone ? 'Przywróć do aktywnych' : 'Oznacz jako zrobione'}</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'plus_1h')}>Odłóż +1h</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'tomorrow')}>Odłóż na jutro</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'plus_2d')}>Odłóż +2 dni</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'next_week')}>Odłóż na przyszły tydzień</DropdownMenuItem>
-                                  <DropdownMenuItem className="text-rose-500" onClick={() => deleteTask(task.id)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => toggleTask(task)}>{isDone ? 'PrzywrĂłÄ‡ do aktywnych' : 'Oznacz jako zrobione'}</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'plus_1h')}>OdĹ‚ĂłĹĽ +1h</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'tomorrow')}>OdĹ‚ĂłĹĽ na jutro</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'plus_2d')}>OdĹ‚ĂłĹĽ +2 dni</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'next_week')}>OdĹ‚ĂłĹĽ na przyszĹ‚y tydzieĹ„</DropdownMenuItem>
+                                  <DropdownMenuItem className="text-rose-500" onClick={() => deleteTask(task.id)}><Trash2 className="mr-2 h-4 w-4" /> UsuĹ„</DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </div>
@@ -589,3 +622,8 @@ export default function Tasks() {
     </Layout>
   );
 }
+
+
+
+
+

@@ -1,4 +1,4 @@
-import { findWorkspaceId, insertWithVariants, selectFirstAvailable } from './_supabase.js';
+import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
 function normalizeLead(row: Record<string, unknown>) {
   return {
@@ -26,6 +26,46 @@ export default async function handler(req: any, res: any) {
       ]);
 
       res.status(200).json((result.data as Record<string, unknown>[]).map(normalizeLead));
+      return;
+    }
+
+    if (req.method === 'PATCH') {
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
+      if (!body.id) {
+        res.status(400).json({ error: 'LEAD_ID_REQUIRED' });
+        return;
+      }
+
+      const payload: Record<string, unknown> = {
+        updated_at: new Date().toISOString(),
+      };
+
+      if (body.name !== undefined) payload.name = body.name;
+      if (body.company !== undefined) payload.company = body.company;
+      if (body.email !== undefined) payload.email = body.email;
+      if (body.phone !== undefined) payload.phone = body.phone;
+      if (body.source !== undefined) payload.source = body.source;
+      if (body.dealValue !== undefined) payload.value = Number(body.dealValue) || 0;
+      if (body.status !== undefined) payload.status = body.status;
+      if (body.nextStep !== undefined) payload.next_action_title = body.nextStep || '';
+      if (body.nextActionAt !== undefined) payload.next_action_at = body.nextActionAt ? new Date(body.nextActionAt).toISOString() : null;
+      if (body.isAtRisk !== undefined) payload.priority = body.isAtRisk ? 'high' : 'medium';
+
+      const data = await updateById('leads', String(body.id), payload);
+      const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
+      res.status(200).json(normalizeLead(updated as Record<string, unknown>));
+      return;
+    }
+
+    if (req.method === 'DELETE') {
+      const id = String(req.query?.id || '');
+      if (!id) {
+        res.status(400).json({ error: 'LEAD_ID_REQUIRED' });
+        return;
+      }
+
+      await deleteById('leads', id);
+      res.status(200).json({ ok: true, id });
       return;
     }
 

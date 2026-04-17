@@ -25,6 +25,17 @@ type TaskInsertInput = {
   workspaceId?: string;
 };
 
+type EventInsertInput = {
+  title: string;
+  type?: string;
+  startAt: string;
+  endAt?: string;
+  reminderAt?: string;
+  recurrenceRule?: string;
+  status?: string;
+  workspaceId?: string;
+};
+
 function getSupabaseConfig() {
   const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();
   return url ? { url } : null;
@@ -73,4 +84,54 @@ export async function fetchLeadsFromSupabase() {
 
 export async function fetchTasksFromSupabase() {
   return callApi<Record<string, unknown>[]>('/api/tasks');
+}
+
+export async function fetchEventsFromSupabase() {
+  return callApi<Record<string, unknown>[]>('/api/events');
+}
+
+export async function insertEventToSupabase(input: EventInsertInput) {
+  return callApi<SupabaseInsertResult>('/api/events', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updateLeadInSupabase(input: Record<string, unknown> & { id: string }) {
+  return callApi<SupabaseInsertResult>('/api/leads', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteLeadFromSupabase(id: string) {
+  return callApi<SupabaseInsertResult>(`/api/leads?id=${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }) {
+  return callApi<SupabaseInsertResult>('/api/tasks', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteTaskFromSupabase(id: string) {
+  return callApi<SupabaseInsertResult>(`/api/tasks?id=${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function updateEventInSupabase(input: Record<string, unknown> & { id: string }) {
+  return callApi<SupabaseInsertResult>('/api/events', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteEventFromSupabase(id: string) {
+  return callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
 }

@@ -3,6 +3,7 @@ import { auth, db } from '../firebase';
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   orderBy,
@@ -45,13 +46,13 @@ import Layout from '../components/Layout';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
-import { fetchLeadsFromSupabase, insertLeadToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import { deleteLeadFromSupabase, fetchLeadsFromSupabase, insertLeadToSupabase, isSupabaseConfigured, updateLeadInSupabase } from '../lib/supabase-fallback';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -194,11 +195,13 @@ function startInDaysAtHour(days: number, hour: number) {
 function LeadRow({
   lead,
   onQuickAction,
+  onDelete,
   busy,
 }: {
   key?: string;
   lead: LeadRecord;
   onQuickAction: (lead: LeadRecord, action: QuickActionKey) => void;
+  onDelete: (lead: LeadRecord) => void;
   busy: string | null;
 }) {
   const status = getStatusOption(lead.status);
@@ -275,6 +278,8 @@ function LeadRow({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => onQuickAction(lead, 'won')}>Oznacz jako wygrany</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onQuickAction(lead, 'lost')} className="text-rose-500">Oznacz jako stracony</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => onDelete(lead)} className="text-rose-500">Usuń lead</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Button size="sm" className="rounded-xl" asChild>
@@ -555,9 +560,7 @@ export default function Leads() {
     setQuickActionBusy(`${lead.id}:${action}`);
 
     try {
-      const updates: Record<string, unknown> = {
-        updatedAt: serverTimestamp(),
-      };
+      const updates: Record<string, unknown> = {};
 
       if (action === 'followup') {
         updates.status = 'follow_up';
@@ -589,7 +592,18 @@ export default function Leads() {
         updates.isAtRisk = !lead.isAtRisk;
       }
 
-      await updateDoc(doc(db, 'leads', lead.id), updates);
+      if (isSupabaseConfigured()) {
+        await updateLeadInSupabase({
+          id: lead.id,
+          ...updates,
+        });
+        setLeads((prev) => prev.map((item) => (item.id === lead.id ? { ...item, ...updates } : item)));
+      } else {
+        await updateDoc(doc(db, 'leads', lead.id), {
+          ...updates,
+          updatedAt: serverTimestamp(),
+        });
+      }
       toast.success('Lead zaktualizowany');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -600,11 +614,35 @@ export default function Leads() {
 
   async function handleMoveStage(lead: LeadRecord, status: LeadStatus) {
     try {
-      await updateDoc(doc(db, 'leads', lead.id), {
-        status,
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await updateLeadInSupabase({
+          id: lead.id,
+          status,
+        });
+        setLeads((prev) => prev.map((item) => (item.id === lead.id ? { ...item, status } : item)));
+      } else {
+        await updateDoc(doc(db, 'leads', lead.id), {
+          status,
+          updatedAt: serverTimestamp(),
+        });
+      }
       toast.success(`Etap zmieniony na: ${getStatusOption(status).label}`);
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    }
+  }
+
+  async function handleDeleteLead(lead: LeadRecord) {
+    if (!window.confirm(`Usunąć lead "${lead.name}"?`)) return;
+
+    try {
+      if (isSupabaseConfigured()) {
+        await deleteLeadFromSupabase(lead.id);
+        setLeads((prev) => prev.filter((item) => item.id !== lead.id));
+      } else {
+        await deleteDoc(doc(db, 'leads', lead.id));
+      }
+      toast.success('Lead usunięty');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
@@ -679,6 +717,9 @@ export default function Leads() {
               <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
                   <DialogTitle>Nowy lead</DialogTitle>
+                  <DialogDescription>
+                    Dodaj podstawowe dane kontaktu i ustaw następny krok dla leada.
+                  </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleCreateLead} className="space-y-4 py-2">
                   <div className="space-y-2">
@@ -877,7 +918,7 @@ export default function Leads() {
         ) : viewMode === 'list' ? (
           <div className="space-y-4">
             {filteredLeads.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onQuickAction={handleQuickAction} busy={quickActionBusy} />
+              <LeadRow key={lead.id} lead={lead} onQuickAction={handleQuickAction} onDelete={handleDeleteLead} busy={quickActionBusy} />
             ))}
           </div>
         ) : (

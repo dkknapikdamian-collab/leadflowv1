@@ -1,4 +1,4 @@
-import { findWorkspaceId, insertWithVariants, selectFirstAvailable } from './_supabase.js';
+import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
 function normalizeTask(row: Record<string, unknown>) {
   const dueAt = row.scheduled_at || row.due_at || row.date || row.dueAt || null;
@@ -24,6 +24,42 @@ export default async function handler(req: any, res: any) {
       ]);
 
       res.status(200).json((result.data as Record<string, unknown>[]).map(normalizeTask));
+      return;
+    }
+
+    if (req.method === 'PATCH') {
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
+      if (!body.id) {
+        res.status(400).json({ error: 'TASK_ID_REQUIRED' });
+        return;
+      }
+
+      const payload: Record<string, unknown> = {
+        updated_at: new Date().toISOString(),
+      };
+
+      if (body.title !== undefined) payload.title = body.title;
+      if (body.type !== undefined) payload.type = body.type;
+      if (body.status !== undefined) payload.status = body.status;
+      if (body.priority !== undefined) payload.priority = body.priority;
+      if (body.date !== undefined) payload.scheduled_at = body.date ? new Date(`${body.date}T09:00:00`).toISOString() : null;
+      if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? new Date(body.scheduledAt).toISOString() : null;
+
+      const data = await updateById('work_items', String(body.id), payload);
+      const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
+      res.status(200).json(normalizeTask(updated as Record<string, unknown>));
+      return;
+    }
+
+    if (req.method === 'DELETE') {
+      const id = String(req.query?.id || '');
+      if (!id) {
+        res.status(400).json({ error: 'TASK_ID_REQUIRED' });
+        return;
+      }
+
+      await deleteById('work_items', id);
+      res.status(200).json({ ok: true, id });
       return;
     }
 

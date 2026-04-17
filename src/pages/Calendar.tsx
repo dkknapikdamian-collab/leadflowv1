@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+﻿import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { addDays, addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, isToday, parseISO, startOfMonth, startOfWeek, subMonths } from 'date-fns';
 import { pl } from 'date-fns/locale';
@@ -9,11 +9,12 @@ import { toast } from 'sonner';
 import { auth, db } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { RecurrenceEndType, RecurrenceRule, SnoozePreset, applySnoozePreset } from '../lib/scheduling';
+import { deleteEventFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertEventToSupabase, isSupabaseConfigured, updateEventInSupabase, updateTaskInSupabase } from '../lib/supabase-fallback';
 import Layout from '../components/Layout';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
@@ -44,9 +45,9 @@ const RECURRENCE_OPTIONS: { value: RecurrenceRule; label: string }[] = [
   { value: 'none', label: 'Brak' },
   { value: 'daily', label: 'Codziennie' },
   { value: 'every_2_days', label: 'Co 2 dni' },
-  { value: 'weekly', label: 'Co tydzień' },
-  { value: 'monthly', label: 'Co miesiąc' },
-  { value: 'weekday', label: 'Dzień roboczy' },
+  { value: 'weekly', label: 'Co tydzieĹ„' },
+  { value: 'monthly', label: 'Co miesiÄ…c' },
+  { value: 'weekday', label: 'DzieĹ„ roboczy' },
 ];
 
 export default function Calendar() {
@@ -75,6 +76,23 @@ export default function Calendar() {
       setEvents([]);
       setTasks([]);
       setLoading(false);
+      return;
+    }
+
+    if (isSupabaseConfigured()) {
+      setLoading(true);
+      void Promise.all([fetchEventsFromSupabase(), fetchTasksFromSupabase()])
+        .then(([eventItems, taskItems]) => {
+          setEvents(eventItems as CalendarEvent[]);
+          setTasks(taskItems as CalendarTask[]);
+        })
+        .catch(() => {
+          setEvents([]);
+          setTasks([]);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
       return;
     }
 
@@ -119,24 +137,38 @@ export default function Calendar() {
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
     try {
-      await addDoc(collection(db, 'events'), {
-        title: newEvent.title,
-        type: newEvent.type,
-        startAt: newEvent.startAt,
-        endAt: newEvent.endAt || null,
-        reminderAt: newEvent.reminderAt || null,
-        recurrenceRule: newEvent.recurrenceRule,
-        recurrenceEndType: newEvent.recurrenceEndType,
-        recurrenceEndAt: newEvent.recurrenceEndAt || null,
-        recurrenceCount: Number(newEvent.recurrenceCount) || null,
-        status: 'scheduled',
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace?.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        const inserted = await insertEventToSupabase({
+          title: newEvent.title,
+          type: newEvent.type,
+          startAt: newEvent.startAt,
+          endAt: newEvent.endAt || undefined,
+          reminderAt: newEvent.reminderAt || undefined,
+          recurrenceRule: newEvent.recurrenceRule,
+          status: 'scheduled',
+          workspaceId: workspace?.id,
+        });
+        setEvents((prev) => [inserted as CalendarEvent, ...prev]);
+      } else {
+        await addDoc(collection(db, 'events'), {
+          title: newEvent.title,
+          type: newEvent.type,
+          startAt: newEvent.startAt,
+          endAt: newEvent.endAt || null,
+          reminderAt: newEvent.reminderAt || null,
+          recurrenceRule: newEvent.recurrenceRule,
+          recurrenceEndType: newEvent.recurrenceEndType,
+          recurrenceEndAt: newEvent.recurrenceEndAt || null,
+          recurrenceCount: Number(newEvent.recurrenceCount) || null,
+          status: 'scheduled',
+          ownerId: auth.currentUser?.uid,
+          workspaceId: workspace?.id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
       toast.success('Wydarzenie zaplanowane');
       setIsNewEventOpen(false);
       setNewEvent({
@@ -151,54 +183,76 @@ export default function Calendar() {
         recurrenceCount: '5',
       });
     } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
+      toast.error(`BĹ‚Ä…d: ${error.message}`);
     }
   };
 
   const toggleTaskDone = async (task: CalendarTask) => {
     try {
-      await updateDoc(doc(db, 'tasks', task.id), {
-        status: task.status === 'done' ? 'todo' : 'done',
-        updatedAt: serverTimestamp(),
-      });
+      const status = task.status === 'done' ? 'todo' : 'done';
+      if (isSupabaseConfigured()) {
+        await updateTaskInSupabase({ id: task.id, status });
+        setTasks((prev) => prev.map((item) => (item.id === task.id ? { ...item, status } : item)));
+      } else {
+        await updateDoc(doc(db, 'tasks', task.id), {
+          status,
+          updatedAt: serverTimestamp(),
+        });
+      }
     } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
+      toast.error(`BĹ‚Ä…d: ${error.message}`);
     }
   };
 
   const snoozeTask = async (task: CalendarTask, preset: SnoozePreset) => {
     try {
       const snoozeUntil = applySnoozePreset(preset);
-      await updateDoc(doc(db, 'tasks', task.id), {
-        status: 'postponed',
-        snoozeUntil,
-        date: snoozeUntil.slice(0, 10),
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        const nextDate = snoozeUntil.slice(0, 10);
+        await updateTaskInSupabase({ id: task.id, status: 'postponed', date: nextDate });
+        setTasks((prev) => prev.map((item) => (item.id === task.id ? { ...item, status: 'postponed', date: nextDate } : item)));
+      } else {
+        await updateDoc(doc(db, 'tasks', task.id), {
+          status: 'postponed',
+          snoozeUntil,
+          date: snoozeUntil.slice(0, 10),
+          updatedAt: serverTimestamp(),
+        });
+      }
     } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
+      toast.error(`BĹ‚Ä…d: ${error.message}`);
     }
   };
 
   const postponeEvent = async (event: CalendarEvent, preset: SnoozePreset) => {
     try {
       const snoozeUntil = applySnoozePreset(preset);
-      await updateDoc(doc(db, 'events', event.id), {
-        status: 'postponed',
-        startAt: snoozeUntil,
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await updateEventInSupabase({ id: event.id, status: 'postponed', startAt: snoozeUntil });
+        setEvents((prev) => prev.map((item) => (item.id === event.id ? { ...item, status: 'postponed', startAt: snoozeUntil } : item)));
+      } else {
+        await updateDoc(doc(db, 'events', event.id), {
+          status: 'postponed',
+          startAt: snoozeUntil,
+          updatedAt: serverTimestamp(),
+        });
+      }
     } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
+      toast.error(`BĹ‚Ä…d: ${error.message}`);
     }
   };
 
   const removeEvent = async (eventId: string) => {
     try {
-      await deleteDoc(doc(db, 'events', eventId));
-      toast.success('Wydarzenie usunięte');
+      if (isSupabaseConfigured()) {
+        await deleteEventFromSupabase(eventId);
+        setEvents((prev) => prev.filter((item) => item.id !== eventId));
+      } else {
+        await deleteDoc(doc(db, 'events', eventId));
+      }
+      toast.success('Wydarzenie usuniÄ™te');
     } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
+      toast.error(`BĹ‚Ä…d: ${error.message}`);
     }
   };
 
@@ -229,13 +283,13 @@ export default function Calendar() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-slate-900 capitalize">{format(currentMonth, 'MMMM yyyy', { locale: pl })}</h1>
-            <p className="text-slate-500">Główny planner tygodniowy + mini miesiąc.</p>
+            <p className="text-slate-500">GĹ‚Ăłwny planner tygodniowy + mini miesiÄ…c.</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'week' | 'month')}>
               <TabsList>
-                <TabsTrigger value="week">Tydzień</TabsTrigger>
-                <TabsTrigger value="month">Miesiąc</TabsTrigger>
+                <TabsTrigger value="week">TydzieĹ„</TabsTrigger>
+                <TabsTrigger value="month">MiesiÄ…c</TabsTrigger>
               </TabsList>
             </Tabs>
             <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
@@ -248,10 +302,15 @@ export default function Calendar() {
                 <Button className="rounded-xl shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
               </DialogTrigger>
               <DialogContent>
-                <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
+                <DialogHeader>
+                  <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
+                  <DialogDescription>
+                    Dodaj wydarzenie do kalendarza. CyklicznoĹ›Ä‡ moĹĽesz ustawiÄ‡ bez problematycznych list rozwijanych.
+                  </DialogDescription>
+                </DialogHeader>
                 <form onSubmit={handleAddEvent} className="space-y-4 py-4">
                   <div className="space-y-2">
-                    <Label>Tytuł</Label>
+                    <Label>TytuĹ‚</Label>
                     <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -284,22 +343,26 @@ export default function Calendar() {
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <Label>Cykliczność</Label>
-                      <Select value={newEvent.recurrenceRule} onValueChange={(value) => setNewEvent({ ...newEvent, recurrenceRule: value as RecurrenceRule })}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>{RECURRENCE_OPTIONS.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
-                      </Select>
+                      <Label>CyklicznoĹ›Ä‡</Label>
+                      <select
+                        value={newEvent.recurrenceRule}
+                        onChange={(e) => setNewEvent({ ...newEvent, recurrenceRule: e.target.value as RecurrenceRule })}
+                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                      >
+                        {RECURRENCE_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label>Koniec cyklu</Label>
-                      <Select value={newEvent.recurrenceEndType} onValueChange={(value) => setNewEvent({ ...newEvent, recurrenceEndType: value as RecurrenceEndType })}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="never">Bez końca</SelectItem>
-                          <SelectItem value="until_date">Do daty</SelectItem>
-                          <SelectItem value="count">Liczba razy</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select
+                        value={newEvent.recurrenceEndType}
+                        onChange={(e) => setNewEvent({ ...newEvent, recurrenceEndType: e.target.value as RecurrenceEndType })}
+                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                      >
+                          <option value="never">Bez końca</option>
+                          <option value="until_date">Do daty</option>
+                          <option value="count">Liczba razy</option>
+                        </select>
                     </div>
                   </div>
                   {newEvent.recurrenceEndType === 'until_date' ? <Input type="date" value={newEvent.recurrenceEndAt} onChange={(e) => setNewEvent({ ...newEvent, recurrenceEndAt: e.target.value })} /> : null}
@@ -320,7 +383,7 @@ export default function Calendar() {
                 <Card key={day.toISOString()} className="border-none app-surface-strong">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm">{format(day, 'EEE d', { locale: pl })}</CardTitle>
-                    {isToday(day) ? <Badge variant="secondary">Dziś</Badge> : null}
+                    {isToday(day) ? <Badge variant="secondary">DziĹ›</Badge> : null}
                   </CardHeader>
                   <CardContent className="space-y-2">
                     {dayEvents.map((event) => (
@@ -352,11 +415,11 @@ export default function Calendar() {
 
         <Card className="border-none app-surface-strong">
           <CardHeader>
-            <CardTitle className="text-lg inline-flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> Mini miesiąc</CardTitle>
+            <CardTitle className="text-lg inline-flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> Mini miesiÄ…c</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-7 mb-2">
-              {['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
+              {['Pon', 'Wt', 'Ĺšr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
                 <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
               ))}
             </div>
@@ -379,9 +442,13 @@ export default function Calendar() {
         </Card>
 
         <div className="text-sm app-muted">
-          Szybki skrót: snooze działa dla tasków i wydarzeń. Pełna praca dzienna jest na ekranach <Link to="/today" className="font-semibold text-[color:var(--app-primary)]">Dziś</Link> i <Link to="/tasks" className="font-semibold text-[color:var(--app-primary)]">Zadania</Link>.
+          Szybki skrĂłt: snooze dziaĹ‚a dla taskĂłw i wydarzeĹ„. PeĹ‚na praca dzienna jest na ekranach <Link to="/today" className="font-semibold text-[color:var(--app-primary)]">DziĹ›</Link> i <Link to="/tasks" className="font-semibold text-[color:var(--app-primary)]">Zadania</Link>.
         </div>
       </div>
     </Layout>
   );
 }
+
+
+
+

@@ -24,7 +24,7 @@ function getSupabaseConfig() {
   };
 }
 
-async function supabaseRequest(path: string, init?: RequestInit) {
+export async function supabaseRequest(path: string, init?: RequestInit) {
   const cfg = getSupabaseConfig();
   const response = await fetch(`${cfg.url}/rest/v1/${path}`, {
     ...init,
@@ -117,4 +117,22 @@ export async function selectFirstAvailable(tableQueries: string[]) {
   }
 
   throw lastError || new Error('SUPABASE_SELECT_FAILED');
+}
+
+export async function updateById(table: string, id: string, payload: RecordMap) {
+  const encodedId = encodeURIComponent(id);
+  return supabaseRequest(`${table}?id=eq.${encodedId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteById(table: string, id: string) {
+  const encodedId = encodeURIComponent(id);
+  return supabaseRequest(`${table}?id=eq.${encodedId}`, {
+    method: 'DELETE',
+    headers: {
+      Prefer: 'return=representation',
+    },
+  });
 }
