@@ -36,6 +36,9 @@ export default async function handler(req: any, res: any) {
 
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
     const workspaceId = body.workspaceId || (await findWorkspaceId());
+    if (!workspaceId) {
+      throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
+    }
     const nowIso = new Date().toISOString();
     const amount = Number(body.dealValue) || 0;
     const dueAt = body.nextActionAt ? new Date(body.nextActionAt).toISOString() : null;

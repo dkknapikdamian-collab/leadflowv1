@@ -43,15 +43,35 @@ async function supabaseRequest(path: string, init?: RequestInit) {
 }
 
 export async function findWorkspaceId() {
-  try {
-    const rows = await supabaseRequest('workspaces?select=id&order=created_at.asc&limit=1', {
-      method: 'GET',
-      headers: { Prefer: 'return=minimal' },
-    });
-    return Array.isArray(rows) && rows[0]?.id ? String(rows[0].id) : null;
-  } catch {
-    return null;
+  const queries = [
+    'workspaces?select=id&limit=1',
+    'workspaces?select=id&order=id.asc&limit=1',
+    'workspace_members?select=workspace_id&limit=1',
+    'profiles?select=workspace_id&limit=1',
+    'account_access?select=workspace_id&limit=1',
+  ];
+
+  for (const query of queries) {
+    try {
+      const rows = await supabaseRequest(query, {
+        method: 'GET',
+        headers: { Prefer: 'return=representation' },
+      });
+
+      if (Array.isArray(rows) && rows[0]) {
+        const row = rows[0] as Record<string, unknown>;
+        const id = row.id || row.workspace_id;
+        if (id) return String(id);
+      }
+    } catch (error) {
+      console.error('SUPABASE_WORKSPACE_LOOKUP_FAILED', {
+        query,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
   }
+
+  return null;
 }
 
 export async function insertWithVariants(tables: string[], payloads: RecordMap[]) {
