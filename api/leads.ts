@@ -1,4 +1,4 @@
-import { findWorkspaceId, insertWithVariants, selectFirstAvailable } from './_supabase';
+import { findWorkspaceId, insertWithVariants, selectFirstAvailable } from './_supabase.js';
 
 function normalizeLead(row: Record<string, unknown>) {
   return {

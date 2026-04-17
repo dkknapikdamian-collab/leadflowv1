@@ -1,4 +1,4 @@
-import { findWorkspaceId, insertWithVariants, selectFirstAvailable } from './_supabase';
+import { findWorkspaceId, insertWithVariants, selectFirstAvailable } from './_supabase.js';
 
 function normalizeTask(row: Record<string, unknown>) {
   const dueAt = row.due_at || row.date || row.dueAt || null;
