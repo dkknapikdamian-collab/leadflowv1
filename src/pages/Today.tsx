@@ -15,7 +15,7 @@ import {
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
-import { insertLeadToSupabase, insertTaskToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import { fetchLeadsFromSupabase, fetchTasksFromSupabase, insertLeadToSupabase, insertTaskToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -256,7 +256,21 @@ export default function Today() {
     }
 
     if (isSupabaseConfigured()) {
-      setLoading(false);
+      setLoading(true);
+      void Promise.all([fetchLeadsFromSupabase(), fetchTasksFromSupabase()])
+        .then(([leadItems, taskItems]) => {
+          setLeads(leadItems as LeadRecord[]);
+          setTasks(taskItems as TaskRecord[]);
+          setEvents([]);
+        })
+        .catch(() => {
+          setLeads([]);
+          setTasks([]);
+          setEvents([]);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
       return;
     }
 

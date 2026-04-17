@@ -4,6 +4,7 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { getAccessSummary } from '../lib/access';
 import { isAdminEmail } from '../lib/admin';
 import { auth, db } from '../firebase';
+import { isSupabaseConfigured } from '../lib/supabase-fallback';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
 
 export function useWorkspace() {
@@ -24,6 +25,22 @@ export function useWorkspace() {
     if (!activeUserId) {
       setWorkspace(null);
       setProfile(null);
+      setLoading(false);
+      return;
+    }
+
+    if (isSupabaseConfigured()) {
+      setWorkspace({
+        id: activeUserId,
+        ownerId: activeUserId,
+        plan: 'pro',
+        subscriptionStatus: 'paid_active',
+      });
+      setProfile({
+        id: activeUserId,
+        fullName: auth.currentUser?.displayName || '',
+        email: auth.currentUser?.email || '',
+      });
       setLoading(false);
       return;
     }

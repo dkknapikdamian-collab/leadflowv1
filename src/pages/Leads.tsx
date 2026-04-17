@@ -45,7 +45,7 @@ import Layout from '../components/Layout';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
-import { insertLeadToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import { fetchLeadsFromSupabase, insertLeadToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
@@ -395,7 +395,17 @@ export default function Leads() {
     }
 
     if (isSupabaseConfigured()) {
-      setLoading(false);
+      setLoading(true);
+      void fetchLeadsFromSupabase()
+        .then((items) => {
+          setLeads(items as LeadRecord[]);
+        })
+        .catch(() => {
+          setLeads([]);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
       return;
     }
 

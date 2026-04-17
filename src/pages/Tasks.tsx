@@ -33,7 +33,7 @@ import { toast } from 'sonner';
 import { auth, db } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
-import { insertTaskToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import { fetchTasksFromSupabase, insertTaskToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 import { RecurrenceEndType, RecurrenceRule, SnoozePreset, applySnoozePreset, canScheduleNextRecurrence, nextRecurringDate } from '../lib/scheduling';
 import Layout from '../components/Layout';
 import { Badge } from '../components/ui/badge';
@@ -130,7 +130,17 @@ export default function Tasks() {
     }
 
     if (isSupabaseConfigured()) {
-      setLoading(false);
+      setLoading(true);
+      void fetchTasksFromSupabase()
+        .then((items) => {
+          setTasks(items as TaskRecord[]);
+        })
+        .catch(() => {
+          setTasks([]);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
       return;
     }
 
