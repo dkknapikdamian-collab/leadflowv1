@@ -255,6 +255,11 @@ export default function Today() {
       return;
     }
 
+    if (isSupabaseConfigured()) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
 
     const leadsQuery = query(

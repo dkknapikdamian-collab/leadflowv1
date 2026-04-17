@@ -129,6 +129,11 @@ export default function Tasks() {
       return;
     }
 
+    if (isSupabaseConfigured()) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
 
     const q = query(

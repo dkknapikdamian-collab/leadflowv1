@@ -394,6 +394,11 @@ export default function Leads() {
       return;
     }
 
+    if (isSupabaseConfigured()) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
 
     const leadsQuery = query(
