@@ -1,8 +1,22 @@
 import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
+function asIsoDate(value: unknown) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed.toISOString();
+}
+
 function normalizeTask(row: Record<string, unknown>) {
-  const dueAt = row.scheduled_at || row.due_at || row.date || row.dueAt || null;
-  const normalizedDate = typeof dueAt === 'string' && dueAt.includes('T') ? dueAt.slice(0, 10) : String(dueAt || '');
+  const dueAt =
+    asIsoDate(row.scheduled_at) ||
+    asIsoDate(row.due_at) ||
+    asIsoDate(row.date) ||
+    asIsoDate(row.dueAt) ||
+    asIsoDate(row.start_at) ||
+    asIsoDate(row.created_at) ||
+    new Date().toISOString();
+  const normalizedDate = dueAt.slice(0, 10);
 
   return {
     id: String(row.id || crypto.randomUUID()),
@@ -18,6 +32,7 @@ export default async function handler(req: any, res: any) {
   try {
     if (req.method === 'GET') {
       const result = await selectFirstAvailable([
+        'work_items?select=*&show_in_tasks=is.true&order=created_at.desc.nullslast&limit=200',
         'work_items?select=*&record_type=eq.task&order=created_at.desc.nullslast&limit=200',
         'work_items?select=*&type=eq.task&order=created_at.desc.nullslast&limit=200',
         'work_items?select=*&order=created_at.desc.nullslast&limit=200',

@@ -1,6 +1,6 @@
 ﻿import { useEffect, useMemo, useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { addDays, endOfDay, format, isPast, isToday, isTomorrow, isWithinInterval, parseISO, startOfToday } from 'date-fns';
+import { addDays, endOfDay, format, isPast, isToday, isTomorrow, isValid, isWithinInterval, parseISO, startOfToday } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import {
   addDoc,
@@ -95,9 +95,19 @@ function getDateLabel(date: Date) {
   return format(date, 'EEEE, d MMMM', { locale: pl });
 }
 
+function parseTaskDate(value?: string | null) {
+  if (!value) return null;
+  const parsed = parseISO(value);
+  return isValid(parsed) ? parsed : null;
+}
+
+function getSafeTaskDate(task: TaskRecord) {
+  return parseTaskDate(task.date) ?? startOfToday();
+}
+
 function getEffectiveStatus(task: TaskRecord): TaskStatus {
   if (task.status === 'done') return 'done';
-  const date = parseISO(task.date);
+  const date = getSafeTaskDate(task);
   if (isPast(date) && !isToday(date)) return 'overdue';
   return task.status === 'postponed' ? 'postponed' : 'todo';
 }
@@ -175,7 +185,7 @@ export default function Tasks() {
     return tasks.reduce(
       (acc, task) => {
         const status = getEffectiveStatus(task);
-        const date = parseISO(task.date);
+        const date = getSafeTaskDate(task);
         const isDone = status === 'done';
         const overdue = status === 'overdue';
         const today = !isDone && isToday(date);
@@ -360,7 +370,7 @@ export default function Tasks() {
     return tasks
       .filter((task) => {
         const status = getEffectiveStatus(task);
-        const date = parseISO(task.date);
+        const date = getSafeTaskDate(task);
         const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesType = typeFilter === 'all' || task.type === typeFilter;
         const isDone = status === 'done';
@@ -381,13 +391,14 @@ export default function Tasks() {
 
         return matchesSearch && matchesType && matchesView;
       })
-      .sort((a, b) => parseISO(a.date).getTime() - parseISO(b.date).getTime());
+      .sort((a, b) => getSafeTaskDate(a).getTime() - getSafeTaskDate(b).getTime());
   }, [searchQuery, tasks, typeFilter, viewMode]);
 
   const groupedTasks = useMemo(() => {
     return filteredTasks.reduce<Record<string, TaskRecord[]>>((acc, task) => {
-      if (!acc[task.date]) acc[task.date] = [];
-      acc[task.date].push(task);
+      const dateKey = parseTaskDate(task.date) ? task.date : '__missing_date__';
+      if (!acc[dateKey]) acc[dateKey] = [];
+      acc[dateKey].push(task);
       return acc;
     }, {});
   }, [filteredTasks]);
@@ -551,8 +562,8 @@ export default function Tasks() {
             </Card>
           ) : (
             sortedDates.map((dateKey) => {
-              const dateObj = parseISO(dateKey);
-              const dateLabel = getDateLabel(dateObj);
+              const dateObj = parseTaskDate(dateKey);
+              const dateLabel = dateObj ? getDateLabel(dateObj) : 'Bez poprawnej daty';
               return (
                 <section key={dateKey} className="space-y-3">
                   <div className="flex items-center gap-2">
@@ -564,6 +575,7 @@ export default function Tasks() {
                     {groupedTasks[dateKey].map((task) => {
                       const status = getEffectiveStatus(task);
                       const isDone = status === 'done';
+                      const taskDate = parseTaskDate(task.date);
                       return (
                         <Card key={task.id} className={isDone ? 'opacity-70' : undefined}>
                           <CardContent className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between">
@@ -580,12 +592,12 @@ export default function Tasks() {
                                   <p className={`font-semibold app-text ${isDone ? 'line-through opacity-80' : ''}`}>{task.title}</p>
                                   {status === 'overdue' ? <Badge variant="destructive">ZalegĹ‚e</Badge> : null}
                                   {status === 'postponed' ? <Badge variant="outline">OdĹ‚oĹĽone</Badge> : null}
-                                  {isToday(parseISO(task.date)) && !isDone ? <Badge variant="secondary">DziĹ›</Badge> : null}
+                                  {taskDate && isToday(taskDate) && !isDone ? <Badge variant="secondary">DziĹ›</Badge> : null}
                                 </div>
                                 <div className="mt-2 flex flex-wrap gap-2 text-xs app-muted">
                                   <Badge variant="outline">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Inne'}</Badge>
-                                  <span>{format(parseISO(task.date), 'd MMMM yyyy', { locale: pl })}</span>
-                                  {task.reminderAt ? <span>Przypomnienie: {format(parseISO(task.reminderAt), 'd MMM, HH:mm', { locale: pl })}</span> : null}
+                                  <span>{taskDate ? format(taskDate, 'd MMMM yyyy', { locale: pl }) : 'Brak poprawnej daty'}</span>
+                                  {task.reminderAt && parseTaskDate(task.reminderAt) ? <span>Przypomnienie: {format(parseTaskDate(task.reminderAt) as Date, 'd MMM, HH:mm', { locale: pl })}</span> : null}
                                   {task.recurrenceRule && task.recurrenceRule !== 'none' ? <span>Cyklicznie: {RECURRENCE_OPTIONS.find((item) => item.value === task.recurrenceRule)?.label}</span> : null}
                                 </div>
                               </div>
