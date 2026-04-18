@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 
 import { auth, db } from '../firebase';
+import { deleteCaseFromSupabase, isSupabaseConfigured } from './supabase-fallback';
 
 async function safeQueryDocs(pathFactory: () => Promise<any>) {
   try {
@@ -19,7 +20,7 @@ async function safeQueryDocs(pathFactory: () => Promise<any>) {
   }
 }
 
-export async function deleteCaseWithRelations(caseId: string) {
+async function deleteCaseWithFirestore(caseId: string) {
   const ownerId = auth.currentUser?.uid;
   if (!ownerId) {
     throw new Error('Brak zalogowanego użytkownika.');
@@ -79,4 +80,13 @@ export async function deleteCaseWithRelations(caseId: string) {
   }
 
   await deleteDoc(doc(db, 'cases', caseId));
+}
+
+export async function deleteCaseWithRelations(caseId: string) {
+  if (isSupabaseConfigured()) {
+    await deleteCaseFromSupabase(caseId);
+    return;
+  }
+
+  await deleteCaseWithFirestore(caseId);
 }

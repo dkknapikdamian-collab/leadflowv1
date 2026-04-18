@@ -1,9 +1,17 @@
-Overlay hotfix dla lokalnego repo leadflowv1-fresh.
+Pakiet zbiorczy leadflowv1 na późniejsze jednorazowe wgranie.
 
-Podmieniane pliki:
-- src/pages/Calendar.tsx
-- src/lib/cases.ts
+Zawiera skumulowane zmiany do tej pory:
+- latest Calendar.tsx z ujednoliconym paskiem akcji i widokiem tygodniowym,
+- start cutoveru cases na Supabase,
+- helpery Supabase dla cases,
+- SQL KROK 1 do Supabase.
 
-Cel:
-- pełne ujednolicenie akcji dla wszystkich wpisów widocznych w kalendarzu,
-- bezpieczniejsza obsługa usuwania sprawy bez wywalania się na brakach uprawnień w kolekcjach powiązanych.
+Najpierw wykonaj SQL z pliku SUPABASE_SQL_STEP_1.sql w Supabase SQL Editor.
+Dopiero potem skopiuj zawartość tego folderu do repo leadflowv1-fresh.
+Następnie uruchom:
+1) npm.cmd install
+2) npm.cmd run lint
+3) npm.cmd run build
+
+Ten bundle nie jest jeszcze pełnym odcięciem Firebase z Today/Calendar/Workspace.
+To jest zbiorcza paczka z dotychczasowym stanem prac.

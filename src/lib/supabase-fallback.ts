@@ -97,6 +97,10 @@ export async function fetchEventsFromSupabase() {
   return callApi<Record<string, unknown>[]>('/api/events');
 }
 
+export async function fetchCasesFromSupabase() {
+  return callApi<Record<string, unknown>[]>('/api/cases');
+}
+
 export async function insertEventToSupabase(input: EventInsertInput) {
   return callApi<SupabaseInsertResult>('/api/events', {
     method: 'POST',
@@ -139,6 +143,12 @@ export async function updateEventInSupabase(input: Record<string, unknown> & { i
 
 export async function deleteEventFromSupabase(id: string) {
   return callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function deleteCaseFromSupabase(id: string) {
+  return callApi<SupabaseInsertResult>(`/api/cases?id=${encodeURIComponent(id)}`, {
     method: 'DELETE',
   });
 }
