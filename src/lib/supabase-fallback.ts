@@ -82,6 +82,10 @@ export async function fetchLeadsFromSupabase() {
   return callApi<Record<string, unknown>[]>('/api/leads');
 }
 
+export async function fetchLeadByIdFromSupabase(id: string) {
+  return callApi<Record<string, unknown>>(`/api/leads?id=${encodeURIComponent(id)}`);
+}
+
 export async function fetchTasksFromSupabase() {
   return callApi<Record<string, unknown>[]>('/api/tasks');
 }

@@ -9,8 +9,8 @@ function normalizeLead(row: Record<string, unknown>) {
     phone: String(row.phone || ''),
     source: String(row.source || row.source_label || row.source_type || 'other'),
     status: String(row.status || 'new'),
-    nextStep: String(row.next_step || row.nextStep || ''),
-    nextActionAt: String(row.next_step_due_at || row.nextActionAt || ''),
+    nextStep: String(row.next_action_title || row.next_step || row.nextStep || ''),
+    nextActionAt: String(row.next_action_at || row.next_step_due_at || row.nextActionAt || ''),
     dealValue: Number(row.deal_value || row.value || row.dealValue || 0),
     isAtRisk: Boolean(row.is_at_risk || row.isAtRisk || false),
     updatedAt: row.updated_at || row.updatedAt || null,
@@ -20,12 +20,22 @@ function normalizeLead(row: Record<string, unknown>) {
 export default async function handler(req: any, res: any) {
   try {
     if (req.method === 'GET') {
+      const requestedId = String(req.query?.id || '').trim();
       const result = await selectFirstAvailable([
         'leads?select=*&order=updated_at.desc.nullslast&limit=200',
         'leads?select=*&order=created_at.desc.nullslast&limit=200',
       ]);
-
-      res.status(200).json((result.data as Record<string, unknown>[]).map(normalizeLead));
+      const normalized = (result.data as Record<string, unknown>[]).map(normalizeLead);
+      if (requestedId) {
+        const match = normalized.find((lead) => lead.id === requestedId);
+        if (!match) {
+          res.status(404).json({ error: 'LEAD_NOT_FOUND' });
+          return;
+        }
+        res.status(200).json(match);
+        return;
+      }
+      res.status(200).json(normalized);
       return;
     }
 

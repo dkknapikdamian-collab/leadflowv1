@@ -59,6 +59,7 @@ import { Textarea } from '../components/ui/textarea';
 import { auth, db } from '../firebase';
 import { buildClientIdFromLead } from '../lib/clients';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { deleteLeadFromSupabase, fetchLeadByIdFromSupabase, isSupabaseConfigured, updateLeadInSupabase } from '../lib/supabase-fallback';
 
 type LeadRecord = {
   id: string;
@@ -229,6 +230,29 @@ export default function LeadDetail() {
   useEffect(() => {
     if (!leadId || !workspace) return;
 
+    if (isSupabaseConfigured()) {
+      setLoading(true);
+      void fetchLeadByIdFromSupabase(leadId)
+        .then((item) => {
+          const data = item as LeadRecord;
+          setLead(data);
+          setEditLead(data);
+          setNextStepDraft(data.nextStep || '');
+          setNextActionDraft(data.nextActionAt || startOfTomorrowAtNine());
+          setActivities([]);
+          setTemplates([]);
+          setAssociatedCase(null);
+        })
+        .catch(() => {
+          toast.error('Lead nie istnieje');
+          navigate('/leads');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+      return;
+    }
+
     const leadRef = doc(db, 'leads', leadId);
     const unsubscribeLead = onSnapshot(leadRef, (snapshot) => {
       if (!snapshot.exists()) {
@@ -289,6 +313,9 @@ export default function LeadDetail() {
   const isOverdue = !!nextActionDate && isPast(nextActionDate) && !isToday(nextActionDate);
 
   async function logActivity(eventType: string, payload: Record<string, any>) {
+    if (isSupabaseConfigured()) {
+      return;
+    }
     await addDoc(collection(db, 'activities'), {
       leadId,
       ownerId: auth.currentUser?.uid,
@@ -308,6 +335,14 @@ export default function LeadDetail() {
     }
 
     try {
+      if (isSupabaseConfigured()) {
+        const updated = await updateLeadInSupabase({ id: leadId, status });
+        setLead(updated as LeadRecord);
+        setEditLead(updated as LeadRecord);
+        toast.success('Status zaktualizowany');
+        return;
+      }
+
       await updateDoc(doc(db, 'leads', leadId), {
         status,
         updatedAt: serverTimestamp(),
@@ -328,6 +363,18 @@ export default function LeadDetail() {
     }
 
     try {
+      if (isSupabaseConfigured()) {
+        const updated = await updateLeadInSupabase({
+          id: leadId,
+          nextStep: nextStepDraft,
+          nextActionAt: nextActionDraft,
+        });
+        setLead(updated as LeadRecord);
+        setEditLead(updated as LeadRecord);
+        toast.success('Kolejny krok zapisany');
+        return;
+      }
+
       await updateDoc(doc(db, 'leads', leadId), {
         nextStep: nextStepDraft,
         nextActionAt: nextActionDraft,
@@ -352,6 +399,11 @@ export default function LeadDetail() {
     }
 
     try {
+      if (isSupabaseConfigured()) {
+        toast.error('Notatki aktywności nie są jeszcze podpięte pod Supabase.');
+        return;
+      }
+
       await logActivity('note_added', { content: note.trim() });
       await updateDoc(doc(db, 'leads', leadId!), { updatedAt: serverTimestamp() });
       setNote('');
@@ -381,6 +433,25 @@ export default function LeadDetail() {
         updatedAt: serverTimestamp(),
       };
 
+      if (isSupabaseConfigured()) {
+        const updated = await updateLeadInSupabase({
+          id: leadId,
+          name: payload.name,
+          company: payload.company,
+          email: payload.email,
+          phone: payload.phone,
+          dealValue: payload.dealValue,
+          source: payload.source,
+          nextStep: payload.nextStep,
+          nextActionAt: payload.nextActionAt,
+        });
+        setLead(updated as LeadRecord);
+        setEditLead(updated as LeadRecord);
+        setIsEditing(false);
+        toast.success('Lead zaktualizowany');
+        return;
+      }
+
       await updateDoc(doc(db, 'leads', leadId), payload);
       setIsEditing(false);
       toast.success('Lead zaktualizowany');
@@ -394,6 +465,13 @@ export default function LeadDetail() {
     if (!window.confirm('Na pewno usunąć tego leada?')) return;
 
     try {
+      if (isSupabaseConfigured()) {
+        await deleteLeadFromSupabase(leadId);
+        toast.success('Lead usunięty');
+        navigate('/leads');
+        return;
+      }
+
       await deleteDoc(doc(db, 'leads', leadId));
       toast.success('Lead usunięty');
       navigate('/leads');
@@ -451,8 +529,19 @@ export default function LeadDetail() {
         updates.status = 'lost';
       }
 
-      await updateDoc(doc(db, 'leads', leadId), updates);
-      await logActivity(action === 'call' ? 'call_logged' : 'quick_action', activityPayload);
+      if (isSupabaseConfigured()) {
+        const updated = await updateLeadInSupabase({
+          id: leadId,
+          status: updates.status,
+          nextStep: updates.nextStep,
+          nextActionAt: updates.nextActionAt,
+        });
+        setLead(updated as LeadRecord);
+        setEditLead(updated as LeadRecord);
+      } else {
+        await updateDoc(doc(db, 'leads', leadId), updates);
+        await logActivity(action === 'call' ? 'call_logged' : 'quick_action', activityPayload);
+      }
       toast.success(QUICK_ACTIONS[action].label);
     } catch (error: any) {
       toast.error(`Błąd: ${error.message}`);

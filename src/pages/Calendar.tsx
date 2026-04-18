@@ -266,6 +266,14 @@ export default function Calendar() {
     return eachDayOfInterval({ start: rangeStart, end: rangeEnd });
   }, [currentMonth]);
 
+  const focusWeekOfDay = (day: Date) => {
+    setCurrentMonth(day);
+    setViewMode('week');
+    requestAnimationFrame(() => {
+      document.getElementById('calendar-week-view')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -375,7 +383,8 @@ export default function Calendar() {
         </div>
 
         {viewMode === 'week' ? (
-          <div className="grid gap-4 md:grid-cols-7">
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_280px]">
+            <div id="calendar-week-view" className="grid gap-4 md:grid-cols-7">
             {weekDays.map((day) => {
               const dayEvents = events.filter((event) => event.status !== 'cancelled' && isSameDay(parseISO(event.startAt), day));
               const dayTasks = tasks.filter((task) => task.status !== 'done' && isSameDay(parseISO(task.date), day));
@@ -410,12 +419,60 @@ export default function Calendar() {
                 </Card>
               );
             })}
+            </div>
+
+            <Card className="border-none app-surface-strong xl:sticky xl:top-4 xl:self-start">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base inline-flex items-center gap-2"><CalendarIcon className="h-4 w-4" /> Mini miesiąc</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="grid grid-cols-7 gap-1">
+                  {['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So', 'Nd'].map((day) => (
+                    <div key={day} className="py-1 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">{day}</div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-7 gap-1">
+                  {monthDays.map((day) => {
+                    const dayEvents = events.filter((event) => event.status !== 'cancelled' && isSameDay(parseISO(event.startAt), day));
+                    const dayTasks = tasks.filter((task) => task.status !== 'done' && isSameDay(parseISO(task.date), day));
+                    const hasEvent = dayEvents.length > 0;
+                    const hasTask = dayTasks.length > 0;
+
+                    return (
+                      <button
+                        key={day.toISOString()}
+                        type="button"
+                        onClick={() => focusWeekOfDay(day)}
+                        title={hasEvent || hasTask ? `Wydarzenia: ${dayEvents.length}, zadania: ${dayTasks.length}` : 'Brak aktywności'}
+                        className={[
+                          'flex h-9 items-center justify-center rounded-lg text-xs font-semibold transition-colors',
+                          !isSameMonth(day, currentMonth) ? 'text-slate-300' : 'text-slate-800',
+                          isToday(day)
+                            ? 'bg-primary text-white'
+                            : hasEvent && hasTask
+                              ? 'bg-amber-100 text-amber-800'
+                              : hasEvent
+                                ? 'bg-indigo-100 text-indigo-800'
+                                : hasTask
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : 'hover:bg-slate-100',
+                        ].join(' ')}
+                      >
+                        {format(day, 'd')}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="pt-1 text-xs app-muted">Kliknij dzień, aby przejść do tego tygodnia.</p>
+              </CardContent>
+            </Card>
           </div>
         ) : null}
 
+        {viewMode === 'month' ? (
         <Card className="border-none app-surface-strong">
           <CardHeader>
-            <CardTitle className="text-lg inline-flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> Mini miesiąc</CardTitle>
+            <CardTitle className="text-lg inline-flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> Miesiąc</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-7 mb-2">
@@ -428,18 +485,19 @@ export default function Calendar() {
                 const dayEvents = events.filter((event) => event.status !== 'cancelled' && isSameDay(parseISO(event.startAt), day));
                 const dayTasks = tasks.filter((task) => task.status !== 'done' && isSameDay(parseISO(task.date), day));
                 return (
-                  <div key={day.toISOString()} className={`min-h-[110px] p-2 border-r border-b border-slate-100 ${!isSameMonth(day, currentMonth) ? 'bg-slate-50/30 text-slate-300' : 'text-slate-900'}`}>
+                  <button type="button" onClick={() => focusWeekOfDay(day)} key={day.toISOString()} className={`min-h-[110px] p-2 border-r border-b border-slate-100 text-left ${!isSameMonth(day, currentMonth) ? 'bg-slate-50/30 text-slate-300' : 'text-slate-900'}`}>
                     <div className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${isToday(day) ? 'bg-primary text-white' : ''}`}>{format(day, 'd')}</div>
                     <div className="mt-2 space-y-1">
                       {dayEvents.slice(0, 2).map((event) => <div key={event.id} className="text-[10px] p-1 rounded bg-indigo-50 text-indigo-700 border border-indigo-100 truncate">{event.title}</div>)}
                       {dayTasks.slice(0, 2).map((task) => <div key={task.id} className="text-[10px] p-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-100 truncate">{task.title}</div>)}
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
           </CardContent>
         </Card>
+        ) : null}
 
         <div className="text-sm app-muted">
           Szybki skrót: snooze działa dla tasków i wydarzeń. Pełna praca dzienna jest na ekranach <Link to="/today" className="font-semibold text-[color:var(--app-primary)]">Dziś</Link> i <Link to="/tasks" className="font-semibold text-[color:var(--app-primary)]">Zadania</Link>.

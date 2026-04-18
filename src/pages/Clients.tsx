@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   orderBy,
@@ -247,6 +248,24 @@ export default function Clients() {
     }
   }
 
+  async function handleDeleteClient(client: ClientViewModel) {
+    if (client.source !== 'client') {
+      toast.error('Usuń najpierw rekord źródłowy albo odepnij klienta od leada/sprawy.');
+      return;
+    }
+
+    if (!window.confirm(`Usunąć klienta "${client.name}"?`)) {
+      return;
+    }
+
+    try {
+      await deleteDoc(doc(db, 'clients', client.id));
+      toast.success('Klient usunięty.');
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    }
+  }
+
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8">
@@ -444,6 +463,11 @@ export default function Clients() {
                       {isFallback ? (
                         <Button className="w-full rounded-2xl" onClick={() => handlePromoteFallback(client)}>
                           Zepnij jako stałego klienta
+                        </Button>
+                      ) : null}
+                      {!isFallback ? (
+                        <Button variant="outline" className="w-full rounded-2xl text-rose-600" onClick={() => handleDeleteClient(client)}>
+                          Usuń klienta
                         </Button>
                       ) : null}
                     </div>

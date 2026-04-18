@@ -11,6 +11,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { DEFAULT_SKIN, getSkinOption, isSkinId, SKIN_OPTIONS, type SkinId } from '../lib/appearance';
+import { isSupabaseConfigured } from '../lib/supabase-fallback';
 
 const STORAGE_KEY = 'forteca-appearance-skin';
 
@@ -77,6 +78,10 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (isSupabaseConfigured()) {
+      return;
+    }
+
     const profileRef = doc(db, 'profiles', activeUserId);
     let isMounted = true;
 
@@ -120,6 +125,10 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     }
 
     if (!activeUserId) {
+      return;
+    }
+
+    if (isSupabaseConfigured()) {
       return;
     }
 

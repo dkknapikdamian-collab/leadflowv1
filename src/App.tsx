@@ -6,6 +6,7 @@ import { auth, db } from './firebase';
 import { Toaster } from './components/ui/sonner';
 import { TooltipProvider } from './components/ui/tooltip';
 import { seedTemplates } from './lib/firebase-utils';
+import { isSupabaseConfigured } from './lib/supabase-fallback';
 
 const Today = lazy(() => import('./pages/Today'));
 const Leads = lazy(() => import('./pages/Leads'));
@@ -65,6 +66,17 @@ export default function App() {
 
       if (isMounted) {
         setProfileLoading(true);
+      }
+
+      if (isSupabaseConfigured()) {
+        if (isMounted) {
+          setProfile({
+            email: user.email || '',
+            fullName: user.displayName || '',
+          });
+          setProfileLoading(false);
+        }
+        return;
       }
 
       try {
