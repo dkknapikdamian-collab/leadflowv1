@@ -60,14 +60,6 @@ import {
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../components/ui/select';
-
 type LeadRecord = {
   id: string;
   name: string;
@@ -218,6 +210,7 @@ export default function Today() {
   const [newLead, setNewLead] = useState({
     name: '',
     email: '',
+    phone: '',
     dealValue: '',
     source: 'other',
     status: 'new',
@@ -347,6 +340,7 @@ export default function Today() {
         await insertLeadToSupabase({
           name: newLead.name,
           email: newLead.email,
+          phone: newLead.phone,
           source: newLead.source,
           dealValue: Number(newLead.dealValue) || 0,
           nextStep: newLead.nextStep,
@@ -358,6 +352,7 @@ export default function Today() {
         await addDoc(collection(db, 'leads'), {
           name: newLead.name,
           email: newLead.email,
+          phone: newLead.phone,
           dealValue: Number(newLead.dealValue) || 0,
           source: newLead.source,
           status: newLead.status,
@@ -376,6 +371,7 @@ export default function Today() {
             id: crypto.randomUUID(),
             name: newLead.name,
             email: newLead.email,
+            phone: newLead.phone,
             source: newLead.source,
             dealValue: Number(newLead.dealValue) || 0,
             status: 'new',
@@ -391,6 +387,7 @@ export default function Today() {
       setNewLead({
         name: '',
         email: '',
+        phone: '',
         dealValue: '',
         source: 'other',
         status: 'new',
@@ -640,6 +637,10 @@ export default function Today() {
                       <Input type="email" value={newLead.email} onChange={(e) => setNewLead({ ...newLead, email: e.target.value })} />
                     </div>
                   </div>
+                  <div className="space-y-2">
+                    <Label>Telefon</Label>
+                    <Input type="tel" value={newLead.phone} onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })} />
+                  </div>
                   <DialogFooter>
                     <Button type="submit" className="w-full">Dodaj leada</Button>
                   </DialogFooter>
@@ -666,17 +667,18 @@ export default function Today() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label>Typ</Label>
-                      <Select value={newTask.type} onValueChange={(value) => setNewTask({ ...newTask, type: value })}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="follow_up">Dalszy kontakt</SelectItem>
-                          <SelectItem value="phone">Telefon</SelectItem>
-                          <SelectItem value="reply">Odpisać</SelectItem>
-                          <SelectItem value="send_offer">Wysłać ofertę</SelectItem>
-                          <SelectItem value="meeting">Spotkanie</SelectItem>
-                          <SelectItem value="other">Inne</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select
+                        value={newTask.type}
+                        onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}
+                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                      >
+                        <option value="follow_up">Dalszy kontakt</option>
+                        <option value="phone">Telefon</option>
+                        <option value="reply">Odpisać</option>
+                        <option value="send_offer">Wysłać ofertę</option>
+                        <option value="meeting">Spotkanie</option>
+                        <option value="other">Inne</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label>Data</Label>
@@ -709,15 +711,16 @@ export default function Today() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label>Typ</Label>
-                      <Select value={newEvent.type} onValueChange={(value) => setNewEvent({ ...newEvent, type: value })}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="meeting">Spotkanie</SelectItem>
-                          <SelectItem value="phone_call">Rozmowa</SelectItem>
-                          <SelectItem value="follow_up">Dalszy kontakt</SelectItem>
-                          <SelectItem value="deadline">Termin końcowy</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select
+                        value={newEvent.type}
+                        onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
+                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                      >
+                        <option value="meeting">Spotkanie</option>
+                        <option value="phone_call">Rozmowa</option>
+                        <option value="follow_up">Dalszy kontakt</option>
+                        <option value="deadline">Termin końcowy</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label>Start</Label>

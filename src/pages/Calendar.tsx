@@ -17,7 +17,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
 
 type CalendarTask = {
@@ -45,9 +44,9 @@ const RECURRENCE_OPTIONS: { value: RecurrenceRule; label: string }[] = [
   { value: 'none', label: 'Brak' },
   { value: 'daily', label: 'Codziennie' },
   { value: 'every_2_days', label: 'Co 2 dni' },
-  { value: 'weekly', label: 'Co tydzieĹ„' },
-  { value: 'monthly', label: 'Co miesiÄ…c' },
-  { value: 'weekday', label: 'DzieĹ„ roboczy' },
+  { value: 'weekly', label: 'Co tydzień' },
+  { value: 'monthly', label: 'Co miesiąc' },
+  { value: 'weekday', label: 'Dzień roboczy' },
 ];
 
 export default function Calendar() {
@@ -137,7 +136,7 @@ export default function Calendar() {
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     try {
       if (isSupabaseConfigured()) {
         const inserted = await insertEventToSupabase({
@@ -183,7 +182,7 @@ export default function Calendar() {
         recurrenceCount: '5',
       });
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d: ${error.message}`);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
 
@@ -200,7 +199,7 @@ export default function Calendar() {
         });
       }
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d: ${error.message}`);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
 
@@ -220,7 +219,7 @@ export default function Calendar() {
         });
       }
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d: ${error.message}`);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
 
@@ -238,7 +237,7 @@ export default function Calendar() {
         });
       }
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d: ${error.message}`);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
 
@@ -250,9 +249,9 @@ export default function Calendar() {
       } else {
         await deleteDoc(doc(db, 'events', eventId));
       }
-      toast.success('Wydarzenie usuniÄ™te');
+      toast.success('Wydarzenie usunięte');
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d: ${error.message}`);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
 
@@ -283,13 +282,13 @@ export default function Calendar() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-slate-900 capitalize">{format(currentMonth, 'MMMM yyyy', { locale: pl })}</h1>
-            <p className="text-slate-500">GĹ‚Ăłwny planner tygodniowy + mini miesiÄ…c.</p>
+            <p className="text-slate-500">Główny planner tygodniowy + mini miesiąc.</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'week' | 'month')}>
               <TabsList>
-                <TabsTrigger value="week">TydzieĹ„</TabsTrigger>
-                <TabsTrigger value="month">MiesiÄ…c</TabsTrigger>
+                <TabsTrigger value="week">Tydzień</TabsTrigger>
+                <TabsTrigger value="month">Miesiąc</TabsTrigger>
               </TabsList>
             </Tabs>
             <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
@@ -305,26 +304,27 @@ export default function Calendar() {
                 <DialogHeader>
                   <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
                   <DialogDescription>
-                    Dodaj wydarzenie do kalendarza. CyklicznoĹ›Ä‡ moĹĽesz ustawiÄ‡ bez problematycznych list rozwijanych.
+                    Dodaj wydarzenie do kalendarza. Cykliczność możesz ustawić bez problematycznych list rozwijanych.
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleAddEvent} className="space-y-4 py-4">
                   <div className="space-y-2">
-                    <Label>TytuĹ‚</Label>
+                    <Label>Tytuł</Label>
                     <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label>Typ</Label>
-                      <Select value={newEvent.type} onValueChange={(value) => setNewEvent({ ...newEvent, type: value })}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="meeting">Spotkanie</SelectItem>
-                          <SelectItem value="phone_call">Rozmowa</SelectItem>
-                          <SelectItem value="follow_up">Follow-up</SelectItem>
-                          <SelectItem value="deadline">Deadline</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select
+                        value={newEvent.type}
+                        onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
+                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                      >
+                        <option value="meeting">Spotkanie</option>
+                        <option value="phone_call">Rozmowa</option>
+                        <option value="follow_up">Follow-up</option>
+                        <option value="deadline">Deadline</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label>Przypomnienie</Label>
@@ -343,7 +343,7 @@ export default function Calendar() {
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <Label>CyklicznoĹ›Ä‡</Label>
+                      <Label>Cykliczność</Label>
                       <select
                         value={newEvent.recurrenceRule}
                         onChange={(e) => setNewEvent({ ...newEvent, recurrenceRule: e.target.value as RecurrenceRule })}
@@ -383,7 +383,7 @@ export default function Calendar() {
                 <Card key={day.toISOString()} className="border-none app-surface-strong">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm">{format(day, 'EEE d', { locale: pl })}</CardTitle>
-                    {isToday(day) ? <Badge variant="secondary">DziĹ›</Badge> : null}
+                    {isToday(day) ? <Badge variant="secondary">Dziś</Badge> : null}
                   </CardHeader>
                   <CardContent className="space-y-2">
                     {dayEvents.map((event) => (
@@ -415,11 +415,11 @@ export default function Calendar() {
 
         <Card className="border-none app-surface-strong">
           <CardHeader>
-            <CardTitle className="text-lg inline-flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> Mini miesiÄ…c</CardTitle>
+            <CardTitle className="text-lg inline-flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> Mini miesiąc</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-7 mb-2">
-              {['Pon', 'Wt', 'Ĺšr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
+              {['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
                 <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
               ))}
             </div>
@@ -442,7 +442,7 @@ export default function Calendar() {
         </Card>
 
         <div className="text-sm app-muted">
-          Szybki skrĂłt: snooze dziaĹ‚a dla taskĂłw i wydarzeĹ„. PeĹ‚na praca dzienna jest na ekranach <Link to="/today" className="font-semibold text-[color:var(--app-primary)]">DziĹ›</Link> i <Link to="/tasks" className="font-semibold text-[color:var(--app-primary)]">Zadania</Link>.
+          Szybki skrót: snooze działa dla tasków i wydarzeń. Pełna praca dzienna jest na ekranach <Link to="/today" className="font-semibold text-[color:var(--app-primary)]">Dziś</Link> i <Link to="/tasks" className="font-semibold text-[color:var(--app-primary)]">Zadania</Link>.
         </div>
       </div>
     </Layout>

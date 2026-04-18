@@ -49,8 +49,8 @@ import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
 const TASK_TYPES = [
   { value: 'follow_up', label: 'Follow-up' },
   { value: 'phone', label: 'Telefon' },
-  { value: 'reply', label: 'OdpisaÄ‡' },
-  { value: 'send_offer', label: 'WyĹ›lij ofertÄ™' },
+  { value: 'reply', label: 'Odpisać' },
+  { value: 'send_offer', label: 'Wyślij ofertę' },
   { value: 'meeting', label: 'Spotkanie' },
   { value: 'other', label: 'Inne' },
 ] as const;
@@ -59,9 +59,9 @@ const RECURRENCE_OPTIONS: { value: RecurrenceRule; label: string }[] = [
   { value: 'none', label: 'Brak' },
   { value: 'daily', label: 'Codziennie' },
   { value: 'every_2_days', label: 'Co 2 dni' },
-  { value: 'weekly', label: 'Co tydzieĹ„' },
-  { value: 'monthly', label: 'Co miesiÄ…c' },
-  { value: 'weekday', label: 'DzieĹ„ roboczy' },
+  { value: 'weekly', label: 'Co tydzień' },
+  { value: 'monthly', label: 'Co miesiąc' },
+  { value: 'weekday', label: 'Dzień roboczy' },
 ];
 
 type TaskStatus = 'todo' | 'done' | 'overdue' | 'postponed';
@@ -206,8 +206,8 @@ export default function Tasks() {
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
     if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (!newTask.title.trim()) return toast.error('Wpisz tytuĹ‚ zadania.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania.');
 
     try {
       const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
@@ -269,7 +269,7 @@ export default function Tasks() {
         recurrenceCount: '5',
       });
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d: ${error.message}`);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
 
@@ -319,7 +319,7 @@ export default function Tasks() {
         }
       }
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d: ${error.message}`);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
 
@@ -342,14 +342,14 @@ export default function Tasks() {
           updatedAt: serverTimestamp(),
         });
       }
-      toast.success('Zadanie odĹ‚oĹĽone');
+      toast.success('Zadanie odłożone');
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d: ${error.message}`);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
 
   const deleteTask = async (taskId: string) => {
-    if (!window.confirm('UsunÄ…Ä‡ zadanie?')) return;
+    if (!window.confirm('Usuń zadanie?')) return;
     try {
       if (isSupabaseConfigured()) {
         await deleteTaskFromSupabase(taskId);
@@ -357,9 +357,9 @@ export default function Tasks() {
       } else {
         await deleteDoc(doc(db, 'tasks', taskId));
       }
-      toast.success('Zadanie usuniÄ™te');
+      toast.success('Zadanie usunięte');
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d: ${error.message}`);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
 
@@ -423,21 +423,24 @@ export default function Tasks() {
               <DialogHeader>
                 <DialogTitle>Dodaj zadanie</DialogTitle>
                 <DialogDescription>
-                  Dodaj termin i priorytet zadania. Pola cyklicznoĹ›ci sÄ… dostÄ™pne poniĹĽej.
+                  Dodaj termin i priorytet zadania. Pola cykliczności są dostępne poniżej.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleAddTask} className="space-y-4 py-2">
                 <div className="space-y-2">
-                  <Label>TytuĹ‚</Label>
+                  <Label>Tytuł</Label>
                   <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Typ</Label>
-                    <Select value={newTask.type} onValueChange={(value) => setNewTask({ ...newTask, type: value })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>{TASK_TYPES.map((type) => <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>)}</SelectContent>
-                    </Select>
+                    <select
+                      value={newTask.type}
+                      onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}
+                      className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                    >
+                      {TASK_TYPES.map((type) => <option key={type.value} value={type.value}>{type.label}</option>)}
+                    </select>
                   </div>
                   <div className="space-y-2">
                     <Label>Data</Label>
@@ -447,14 +450,15 @@ export default function Tasks() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Priorytet</Label>
-                    <Select value={newTask.priority} onValueChange={(value) => setNewTask({ ...newTask, priority: value })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="low">Niski</SelectItem>
-                        <SelectItem value="medium">Ĺšredni</SelectItem>
-                        <SelectItem value="high">Wysoki</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <select
+                      value={newTask.priority}
+                      onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+                      className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                    >
+                      <option value="low">Niski</option>
+                      <option value="medium">Średni</option>
+                      <option value="high">Wysoki</option>
+                    </select>
                   </div>
                   <div className="space-y-2">
                     <Label>Przypomnienie</Label>
@@ -463,7 +467,7 @@ export default function Tasks() {
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label>CyklicznoĹ›Ä‡</Label>
+                    <Label>Cykliczność</Label>
                     <select
                       value={newTask.recurrenceRule}
                       onChange={(e) => setNewTask({ ...newTask, recurrenceRule: e.target.value as RecurrenceRule })}
@@ -487,13 +491,13 @@ export default function Tasks() {
                 </div>
                 {newTask.recurrenceEndType === 'until_date' ? (
                   <div className="space-y-2">
-                    <Label>Data koĹ„cowa</Label>
+                    <Label>Data końcowa</Label>
                     <Input type="date" value={newTask.recurrenceEndAt} onChange={(e) => setNewTask({ ...newTask, recurrenceEndAt: e.target.value })} />
                   </div>
                 ) : null}
                 {newTask.recurrenceEndType === 'count' ? (
                   <div className="space-y-2">
-                    <Label>Liczba powtĂłrzeĹ„</Label>
+                    <Label>Liczba powtórzeń</Label>
                     <Input type="number" min="1" value={newTask.recurrenceCount} onChange={(e) => setNewTask({ ...newTask, recurrenceCount: e.target.value })} />
                   </div>
                 ) : null}
@@ -506,9 +510,9 @@ export default function Tasks() {
         <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
           {[
             { key: 'active', label: 'Aktywne', value: counts.active, icon: ListTodo },
-            { key: 'today', label: 'DziĹ›', value: counts.today, icon: Clock },
-            { key: 'week', label: 'TydzieĹ„', value: counts.week, icon: Calendar },
-            { key: 'overdue', label: 'ZalegĹ‚e', value: counts.overdue, icon: AlertTriangle },
+            { key: 'today', label: 'Dziś', value: counts.today, icon: Clock },
+            { key: 'week', label: 'Tydzień', value: counts.week, icon: Calendar },
+            { key: 'overdue', label: 'Zaległe', value: counts.overdue, icon: AlertTriangle },
             { key: 'done', label: 'Zrobione', value: counts.done, icon: CheckSquare },
           ].map((stat) => (
             <Card key={stat.key} className="border-none">
@@ -541,9 +545,9 @@ export default function Tasks() {
             <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as ViewMode)}>
               <TabsList className="grid h-auto w-full grid-cols-2 gap-2 rounded-2xl p-2 md:grid-cols-5">
                 <TabsTrigger value="active" className="min-h-10 rounded-xl">Aktywne</TabsTrigger>
-                <TabsTrigger value="today" className="min-h-10 rounded-xl">DziĹ›</TabsTrigger>
-                <TabsTrigger value="week" className="min-h-10 rounded-xl">Ten tydzieĹ„</TabsTrigger>
-                <TabsTrigger value="overdue" className="min-h-10 rounded-xl">ZalegĹ‚e</TabsTrigger>
+                <TabsTrigger value="today" className="min-h-10 rounded-xl">Dziś</TabsTrigger>
+                <TabsTrigger value="week" className="min-h-10 rounded-xl">Ten tydzień</TabsTrigger>
+                <TabsTrigger value="overdue" className="min-h-10 rounded-xl">Zaległe</TabsTrigger>
                 <TabsTrigger value="done" className="min-h-10 rounded-xl">Zrobione</TabsTrigger>
               </TabsList>
             </Tabs>
@@ -554,11 +558,11 @@ export default function Tasks() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-24">
               <Loader2 className="mb-4 h-8 w-8 animate-spin" style={{ color: 'var(--app-primary)' }} />
-              <p className="app-muted">Ĺadowanie zadaĹ„...</p>
+              <p className="app-muted">Ładowanie zadań...</p>
             </div>
           ) : sortedDates.length === 0 ? (
             <Card className="border-dashed">
-              <CardContent className="py-16 text-center text-sm app-muted">Brak zadaĹ„ w tym widoku.</CardContent>
+              <CardContent className="py-16 text-center text-sm app-muted">Brak zadań w tym widoku.</CardContent>
             </Card>
           ) : (
             sortedDates.map((dateKey) => {
@@ -583,16 +587,16 @@ export default function Tasks() {
                               <button
                                 onClick={() => toggleTask(task)}
                                 className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border ${isDone ? 'app-button-primary' : 'app-button-outline'}`}
-                                aria-label={isDone ? 'PrzywrĂłÄ‡ do aktywnych' : 'Oznacz jako zrobione'}
+                                aria-label={isDone ? 'Przywróć do aktywnych' : 'Oznacz jako zrobione'}
                               >
                                 {isDone ? <CheckSquare className="h-4 w-4" /> : <Square className="h-4 w-4" />}
                               </button>
                               <div className="min-w-0">
                                 <div className="flex flex-wrap items-center gap-2">
                                   <p className={`font-semibold app-text ${isDone ? 'line-through opacity-80' : ''}`}>{task.title}</p>
-                                  {status === 'overdue' ? <Badge variant="destructive">ZalegĹ‚e</Badge> : null}
-                                  {status === 'postponed' ? <Badge variant="outline">OdĹ‚oĹĽone</Badge> : null}
-                                  {taskDate && isToday(taskDate) && !isDone ? <Badge variant="secondary">DziĹ›</Badge> : null}
+                                  {status === 'overdue' ? <Badge variant="destructive">Zaległe</Badge> : null}
+                                  {status === 'postponed' ? <Badge variant="outline">Odłożone</Badge> : null}
+                                  {taskDate && isToday(taskDate) && !isDone ? <Badge variant="secondary">Dziś</Badge> : null}
                                 </div>
                                 <div className="mt-2 flex flex-wrap gap-2 text-xs app-muted">
                                   <Badge variant="outline">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Inne'}</Badge>
@@ -611,12 +615,12 @@ export default function Tasks() {
                                   <Button variant="ghost" size="icon" className="rounded-xl"><MoreVertical className="h-4 w-4" /></Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                  <DropdownMenuItem onClick={() => toggleTask(task)}>{isDone ? 'PrzywrĂłÄ‡ do aktywnych' : 'Oznacz jako zrobione'}</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'plus_1h')}>OdĹ‚ĂłĹĽ +1h</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'tomorrow')}>OdĹ‚ĂłĹĽ na jutro</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'plus_2d')}>OdĹ‚ĂłĹĽ +2 dni</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'next_week')}>OdĹ‚ĂłĹĽ na przyszĹ‚y tydzieĹ„</DropdownMenuItem>
-                                  <DropdownMenuItem className="text-rose-500" onClick={() => deleteTask(task.id)}><Trash2 className="mr-2 h-4 w-4" /> UsuĹ„</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => toggleTask(task)}>{isDone ? 'Przywróć do aktywnych' : 'Oznacz jako zrobione'}</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'plus_1h')}>Odłóż +1h</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'tomorrow')}>Odłóż na jutro</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'plus_2d')}>Odłóż +2 dni</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => snoozeTask(task, 'next_week')}>Odłóż na przyszły tydzień</DropdownMenuItem>
+                                  <DropdownMenuItem className="text-rose-500" onClick={() => deleteTask(task.id)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </div>
