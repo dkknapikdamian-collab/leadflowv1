@@ -1,211 +1,80 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
     function isAuthenticated() {
       return request.auth != null;
     }
-
+    
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
-
-    function profilePath(userId) {
-      return /databases/$(database)/documents/profiles/$(userId);
+    
+    function isDocOwner() {
+      return isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
     }
 
-    function hasProfile(userId) {
-      return exists(profilePath(userId));
-    }
-
-    function currentWorkspaceId() {
-      return get(profilePath(request.auth.uid)).data.workspaceId;
-    }
-
-    function belongsToCurrentWorkspace(workspaceId) {
-      return isAuthenticated()
-        && hasProfile(request.auth.uid)
-        && currentWorkspaceId() == workspaceId;
-    }
-
-    function isOwnerScopedCreate() {
-      return isAuthenticated()
-        && request.resource.data.ownerId == request.auth.uid
-        && hasWritableWorkspaceAccess(request.resource.data.workspaceId);
-    }
-
-    function isOwnerScopedUpdate() {
-      return isAuthenticated()
-        && resource.data.ownerId == request.auth.uid
-        && request.resource.data.ownerId == request.auth.uid
-        && request.resource.data.workspaceId == resource.data.workspaceId
-        && hasWritableWorkspaceAccess(resource.data.workspaceId);
-    }
-
-    function hasWritableWorkspaceAccess(workspaceId) {
-      return !('workspaceId' in request.resource.data)
-        || workspaceId == null
-        || belongsToCurrentWorkspace(workspaceId)
-        || isLegacyOwnerFallback(workspaceId);
-    }
-
-    function isLegacyOwnerFallback(workspaceId) {
-      return isAuthenticated()
-        && (
-          !hasProfile(request.auth.uid)
-          || currentWorkspaceId() == null
-          || currentWorkspaceId() == ''
-          || currentWorkspaceId() == workspaceId
-        );
+    function isWorkspaceOwner(workspaceId) {
+      return isAuthenticated() && get(/databases/$(database)/documents/workspaces/$(workspaceId)).data.ownerId == request.auth.uid;
     }
 
     function isCaseOwner(caseId) {
       return isAuthenticated() && get(/databases/$(database)/documents/cases/$(caseId)).data.ownerId == request.auth.uid;
     }
 
-    function portalTokenPath(tokenHash) {
-      return /databases/$(database)/documents/client_portal_tokens/$(tokenHash);
+    function isValidClientToken(caseId) {
+      return exists(/databases/$(database)/documents/client_portal_tokens/$(caseId));
     }
 
-    function portalSessionPath(userId) {
-      return /databases/$(database)/documents/client_portal_sessions/$(userId);
-    }
-
-    function isTokenActive(tokenHash) {
-      return exists(portalTokenPath(tokenHash))
-        && get(portalTokenPath(tokenHash)).data.revokedAt == null
-        && (
-          get(portalTokenPath(tokenHash)).data.expiresAt == null
-          || get(portalTokenPath(tokenHash)).data.expiresAt > request.time
-        );
-    }
-
-    function hasPortalSession(caseId) {
-      return isAuthenticated()
-        && exists(portalSessionPath(request.auth.uid))
-        && get(portalSessionPath(request.auth.uid)).data.caseId == caseId
-        && isTokenActive(get(portalSessionPath(request.auth.uid)).data.tokenHash);
-    }
-
-    function activePortalTokenHash() {
-      return get(portalSessionPath(request.auth.uid)).data.tokenHash;
-    }
-
-    function isSafePortalItemUpdate(caseId) {
-      let changed = request.resource.data.diff(resource.data).changedKeys();
-      return hasPortalSession(caseId)
-        && changed.hasOnly(['status', 'response', 'fileUrl', 'fileName', 'updatedAt', 'portalTokenHash'])
-        && request.resource.data.portalTokenHash == activePortalTokenHash()
-        && request.resource.data.status in ['missing', 'uploaded', 'accepted', 'rejected'];
-    }
+    // ===============================================================
+    // Rules
+    // ===============================================================
 
     match /profiles/{profileId} {
       allow read, write: if isOwner(profileId);
     }
 
     match /workspaces/{workspaceId} {
-      allow read: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
-      allow create: if isAuthenticated()
-        && request.resource.data.ownerId == request.auth.uid
-        && request.resource.data.keys().hasAll(['ownerId', 'name', 'plan', 'subscriptionStatus', 'createdAt', 'updatedAt']);
-      allow update, delete: if isAuthenticated()
-        && resource.data.ownerId == request.auth.uid
-        && request.resource.data.ownerId == request.auth.uid;
+      allow read, write: if isOwner(resource.data.ownerId) || (resource == null && isAuthenticated());
     }
 
     match /leads/{leadId} {
-      allow read: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
-      allow create: if isOwnerScopedCreate()
-        && request.resource.data.keys().hasAll(['ownerId', 'workspaceId', 'name', 'status', 'createdAt', 'updatedAt']);
-      allow update: if isOwnerScopedUpdate();
-      allow delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
     }
 
     match /tasks/{taskId} {
-      allow read: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
-      allow create: if isOwnerScopedCreate()
-        && request.resource.data.keys().hasAll(['ownerId', 'workspaceId', 'title', 'type', 'status', 'createdAt', 'updatedAt']);
-      allow update: if isOwnerScopedUpdate();
-      allow delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
     }
 
     match /events/{eventId} {
-      allow read: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
-      allow create: if isOwnerScopedCreate()
-        && request.resource.data.keys().hasAll(['ownerId', 'workspaceId', 'title', 'type', 'startAt', 'status', 'createdAt', 'updatedAt']);
-      allow update: if isOwnerScopedUpdate();
-      allow delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
     }
 
     match /cases/{caseId} {
-      allow read: if isAuthenticated() && resource.data.ownerId == request.auth.uid
-        || hasPortalSession(caseId);
-      allow create: if isOwnerScopedCreate()
-        && request.resource.data.keys().hasAll(['ownerId', 'workspaceId', 'title', 'status', 'createdAt', 'updatedAt']);
-      allow update, delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
+      allow read: if isValidClientToken(caseId);
 
       match /items/{itemId} {
-        allow read: if isCaseOwner(caseId) || hasPortalSession(caseId);
-        allow create, delete: if isCaseOwner(caseId);
-        allow update: if isCaseOwner(caseId) || isSafePortalItemUpdate(caseId);
+        allow read, write: if isCaseOwner(caseId);
+        allow read, update: if isValidClientToken(caseId);
       }
     }
 
     match /activities/{activityId} {
-      allow read: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
-      allow create: if (
-        isAuthenticated()
-        && request.resource.data.ownerId == request.auth.uid
-        && (
-          !('workspaceId' in request.resource.data)
-          || belongsToCurrentWorkspace(request.resource.data.workspaceId)
-        )
-      ) || (
-        isAuthenticated()
-        && request.resource.data.actorType == 'client'
-        && hasPortalSession(request.resource.data.caseId)
-        && request.resource.data.portalTokenHash == activePortalTokenHash()
-      );
-      allow update, delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
+      allow create: if isValidClientToken(request.resource.data.caseId);
+      allow read: if isValidClientToken(resource.data.caseId);
     }
 
     match /templates/{templateId} {
-      allow read: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
-      allow create: if isAuthenticated()
-        && request.resource.data.ownerId == request.auth.uid
-        && request.resource.data.keys().hasAll(['ownerId', 'name', 'createdAt']);
-      allow update: if isAuthenticated()
-        && resource.data.ownerId == request.auth.uid
-        && request.resource.data.ownerId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
     }
 
-    match /hiddenClientDirectoryEntries/{entryId} {
-      allow read: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.ownerId == request.auth.uid;
-      allow update: if isAuthenticated()
-        && resource.data.ownerId == request.auth.uid
-        && request.resource.data.ownerId == request.auth.uid;
-      allow delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
-    }
-
-    match /client_portal_tokens/{tokenHash} {
-      allow list: if false;
-      allow get: if false;
-      allow create: if isAuthenticated()
-        && request.resource.data.keys().hasAll(['caseId', 'tokenHash', 'createdBy', 'createdAt'])
-        && request.resource.data.createdBy == request.auth.uid
-        && request.resource.data.tokenHash == tokenHash
-        && isCaseOwner(request.resource.data.caseId);
-      allow update, delete: if isAuthenticated()
-        && isCaseOwner(resource.data.caseId);
-    }
-
-    match /client_portal_sessions/{sessionId} {
-      allow read, delete: if isOwner(sessionId);
-      allow create, update: if isOwner(sessionId)
-        && request.resource.data.keys().hasAll(['caseId', 'tokenHash'])
-        && isTokenActive(request.resource.data.tokenHash)
-        && get(portalTokenPath(request.resource.data.tokenHash)).data.caseId == request.resource.data.caseId;
+    match /client_portal_tokens/{tokenId} {
+      allow read, write: if isCaseOwner(tokenId);
+      allow get: if true;
     }
   }
 }

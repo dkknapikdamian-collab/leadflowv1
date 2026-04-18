@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent, useMemo, type ReactNode } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { auth, db } from '../firebase';
 import {
   collection,
@@ -10,51 +10,38 @@ import {
   serverTimestamp,
   doc,
   updateDoc,
-  Timestamp,
 } from 'firebase/firestore';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
-import { ensureCurrentUserWorkspace } from '../lib/workspace';
-import { fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, insertEventToSupabase, insertLeadToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateTaskInSupabase } from '../lib/supabase-fallback';
 import Layout from '../components/Layout';
-import type { LeadPickerOption } from '../components/lead-picker';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
   Plus,
-  Calendar,
   CheckSquare,
-  Target,
   AlertTriangle,
-  Clock,
   ArrowRight,
   TrendingUp,
-  Loader2,
   ChevronRight,
-  Mail,
-  Phone,
-  ShieldAlert,
-  Sparkles,
+  Loader2,
+  Bell,
+  Repeat,
+  Clock,
 } from 'lucide-react';
 import {
   format,
-  isToday,
   isPast,
   addDays,
   isSameDay,
   parseISO,
-  differenceInCalendarDays,
-  startOfDay,
+  isToday,
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getLeadFinance, type LeadPartialPayment } from '../lib/lead-finance';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -62,324 +49,81 @@ import {
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-
-type PaymentDraft = {
-  id: string;
-  amount: string;
-  paidAt: string;
-  createdAt?: string;
-};
-
-function normalizePaymentDrafts(drafts: PaymentDraft[]): LeadPartialPayment[] {
-  return drafts
-    .map((payment, index) => {
-      const amount = Number(payment.amount);
-      if (!Number.isFinite(amount) || amount <= 0) return null;
-
-      return {
-        id: payment.id || `payment-${index}-${Date.now()}`,
-        amount,
-        paidAt: payment.paidAt || undefined,
-        createdAt: payment.createdAt || new Date().toISOString(),
-      };
-    })
-    .filter((entry): entry is LeadPartialPayment => Boolean(entry));
-}
-
-function PaymentEditor({
-  payments,
-  onChange,
-}: {
-  payments: PaymentDraft[];
-  onChange: (payments: PaymentDraft[]) => void;
-}) {
-  const totalDraftPaid = payments.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0);
-
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between gap-3">
-        <Label>Wpłaty częściowe / zaliczki</Label>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="rounded-xl"
-          onClick={() => onChange([...payments, { id: crypto.randomUUID(), amount: '', paidAt: '' }])}
-        >
-          <Plus className="h-4 w-4" /> Dodaj wpłatę
-        </Button>
-      </div>
-
-      {payments.length === 0 ? (
-        <div className="rounded-2xl border border-dashed p-4 text-sm app-muted app-border">
-          Brak wpłat częściowych. Jeśli klient wpłacił zaliczkę, dodaj ją tutaj od razu.
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {payments.map((payment) => (
-            <div key={payment.id} className="grid gap-2 rounded-2xl border p-3 app-border md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] md:items-end">
-              <div className="space-y-1.5">
-                <Label className="text-xs">Kwota</Label>
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={payment.amount}
-                  onChange={(event) => onChange(payments.map((item) => (item.id === payment.id ? { ...item, amount: event.target.value } : item)))}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs">Data wpłaty</Label>
-                <Input
-                  type="date"
-                  value={payment.paidAt}
-                  onChange={(event) => onChange(payments.map((item) => (item.id === payment.id ? { ...item, paidAt: event.target.value } : item)))}
-                />
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                className="rounded-xl text-rose-500"
-                onClick={() => onChange(payments.filter((item) => item.id !== payment.id))}
-              >
-                Usuń
-              </Button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <p className="text-xs app-muted">Suma wpisanych wpłat: {totalDraftPaid.toLocaleString()} PLN</p>
-    </div>
-  );
-}
-type LeadRecord = {
-  id: string;
-  name: string;
-  company?: string;
-  email?: string;
-  phone?: string;
-  dealValue?: number;
-  partialPayments?: LeadPartialPayment[];
-  source?: string;
-  status?: string;
-  nextStep?: string;
-  nextActionAt?: string;
-  isAtRisk?: boolean;
-  updatedAt?: Timestamp;
-};
-
-type TaskRecord = {
-  id: string;
-  title: string;
-  date: string;
-  type: string;
-  status: string;
-};
-
-type EventRecord = {
-  id: string;
-  title: string;
-  type: string;
-  startAt: string;
-  endAt?: string;
-  status: string;
-  leadId?: string;
-  leadName?: string;
-};
-
-const ACTIVE_LEAD_STATUSES = ['new', 'contacted', 'qualification', 'proposal_sent', 'follow_up', 'negotiation'];
-
-function getDefaultLeadNextActionAt() {
-  return format(addDays(new Date(), 1), "yyyy-MM-dd'T'09:00");
-}
-
-function toDate(value?: string | Timestamp | null) {
-  if (!value) return null;
-  if (typeof value === 'string') {
-    try {
-      return parseISO(value);
-    } catch {
-      return null;
-    }
-  }
-  if (value instanceof Timestamp) {
-    return value.toDate();
-  }
-  return null;
-}
-
-function leadReason(lead: LeadRecord) {
-  const nextActionDate = toDate(lead.nextActionAt);
-  const updatedDate = toDate(lead.updatedAt);
-
-  if (!lead.nextActionAt) return 'Brak ustawionego kolejnego kroku';
-  if (nextActionDate && isPast(nextActionDate) && !isToday(nextActionDate)) return 'Termin kolejnego ruchu już minął';
-  if (lead.isAtRisk) return 'Lead oznaczony jako zagrożony';
-  if (updatedDate && differenceInCalendarDays(new Date(), updatedDate) >= 5) return 'Lead jest bez ruchu od kilku dni';
-  if ((lead.dealValue || 0) >= 5000) return 'Wysoka wartość, warto go ruszyć';
-  return 'Wymaga Twojej uwagi';
-}
-
-function isLeadActionableNow(lead: LeadRecord) {
-  if (!lead.nextActionAt) return true;
-  const nextActionDate = toDate(lead.nextActionAt);
-  if (!nextActionDate) return true;
-  return isToday(nextActionDate) || isPast(nextActionDate);
-}
-
-function LeadActionCard({
-  lead,
-  badge,
-}: {
-  lead: LeadRecord;
-  badge: ReactNode;
-}) {
-  return (
-    <Card className="border-none app-surface-strong app-shadow">
-      <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0 flex-1 space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="truncate text-base font-bold app-text">{lead.name}</h3>
-            {badge}
-          </div>
-          <p className="text-sm app-muted">{leadReason(lead)}</p>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs app-muted">
-            {lead.company ? <span>{lead.company}</span> : null}
-            {lead.dealValue ? <span>{lead.dealValue.toLocaleString()} PLN</span> : null}
-            {lead.source ? <span>{getLeadSourceLabel(lead.source)}</span> : null}
-            {lead.nextStep ? <span>{lead.nextStep}</span> : null}
-            {lead.nextActionAt ? (
-              <span>{format(parseISO(lead.nextActionAt), 'd MMMM, HH:mm', { locale: pl })}</span>
-            ) : null}
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <Link to={`/leads/${lead.id}`}>Otwórz</Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link to={`/leads/${lead.id}`}>Ustaw ruch <ArrowRight className="h-4 w-4" /></Link>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function SectionBlock({
-  id,
-  title,
-  count,
-  icon,
-  accent,
-  children,
-}: {
-  id?: string;
-  title: string;
-  count: number;
-  icon: ReactNode;
-  accent?: 'danger' | 'warning' | 'primary' | 'default';
-  children: ReactNode;
-}) {
-  const toneClass = accent === 'danger'
-    ? 'text-rose-500'
-    : accent === 'warning'
-      ? 'text-amber-500'
-      : accent === 'primary'
-        ? 'text-[color:var(--app-primary)]'
-        : 'app-text';
-
-  return (
-    <section id={id} className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className={`flex items-center gap-2 ${toneClass}`}>
-          {icon}
-          <h2 className="text-lg font-bold">{title}</h2>
-        </div>
-        <Badge variant="outline" className="rounded-full">{count}</Badge>
-      </div>
-      {children}
-    </section>
-  );
-}
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
+import {
+  buildStartEndPair,
+  combineScheduleEntries,
+  createDefaultRecurrence,
+  createDefaultReminder,
+  getTaskDate,
+  getTaskStartAt,
+  normalizeRecurrenceConfig,
+  normalizeReminderConfig,
+  syncTaskDerivedFields,
+  toDateTimeLocalValue,
+} from '../lib/scheduling';
+import {
+  EVENT_TYPES,
+  PRIORITY_OPTIONS,
+  RECURRENCE_OPTIONS,
+  REMINDER_MODE_OPTIONS,
+  SOURCE_OPTIONS,
+  TASK_TYPES,
+} from '../lib/options';
 
 export default function Today() {
   const { workspace, profile, hasAccess, loading: wsLoading } = useWorkspace();
-  const [leads, setLeads] = useState<LeadRecord[]>([]);
-  const [tasks, setTasks] = useState<TaskRecord[]>([]);
-  const [events, setEvents] = useState<EventRecord[]>([]);
+  const [leads, setLeads] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [isLeadOpen, setIsLeadOpen] = useState(false);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [isEventOpen, setIsEventOpen] = useState(false);
+
   const [newLead, setNewLead] = useState({
     name: '',
     email: '',
-    phone: '',
     dealValue: '',
-    partialPayments: [] as PaymentDraft[],
     source: 'other',
     status: 'new',
     nextStep: '',
-    nextActionAt: getDefaultLeadNextActionAt(),
+    nextActionAt: '',
   });
-  const [newTask, setNewTask] = useState({
+
+  const [newTask, setNewTask] = useState(() => ({
     title: '',
     type: 'follow_up',
-    date: format(new Date(), 'yyyy-MM-dd'),
+    dueAt: toDateTimeLocalValue(new Date()),
     priority: 'medium',
-    leadId: '',
-    leadSearch: '',
-  });
-  const [newEvent, setNewEvent] = useState({
-    title: '',
-    type: 'meeting',
-    startAt: format(new Date(), "yyyy-MM-dd'T'10:00"),
-    endAt: format(new Date(), "yyyy-MM-dd'T'11:00"),
-    leadId: '',
-    leadSearch: '',
-  });
+    leadId: 'none',
+    leadName: '',
+    recurrence: createDefaultRecurrence(),
+    reminder: createDefaultReminder(),
+  }));
 
-  const openSectionOrRoute = (sectionId: string, fallbackPath: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
-    window.location.href = fallbackPath;
-  };
+  const [newEvent, setNewEvent] = useState(() => {
+    const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
+    return {
+      title: '',
+      type: 'meeting',
+      ...pair,
+      leadId: 'none',
+      leadName: '',
+      recurrence: createDefaultRecurrence(),
+      reminder: createDefaultReminder(),
+    };
+  });
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) {
-      setLeads([]);
-      setTasks([]);
-      setEvents([]);
-      setLoading(false);
-      return;
-    }
-
-    if (isSupabaseConfigured()) {
-      setLoading(true);
-      void Promise.all([fetchLeadsFromSupabase(), fetchTasksFromSupabase(), fetchEventsFromSupabase()])
-        .then(([leadItems, taskItems, eventItems]) => {
-          setLeads(leadItems as LeadRecord[]);
-          setTasks(taskItems as TaskRecord[]);
-          setEvents(eventItems as EventRecord[]);
-        })
-        .catch(() => {
-          setLeads([]);
-          setTasks([]);
-          setEvents([]);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-      return;
-    }
-
-    setLoading(true);
+    if (!auth.currentUser || !workspace) return;
 
     const leadsQuery = query(
       collection(db, 'leads'),
@@ -390,48 +134,29 @@ export default function Today() {
     const tasksQuery = query(
       collection(db, 'tasks'),
       where('ownerId', '==', auth.currentUser.uid),
+      where('status', '==', 'todo'),
       orderBy('date', 'asc')
     );
 
     const eventsQuery = query(
       collection(db, 'events'),
       where('ownerId', '==', auth.currentUser.uid),
+      where('status', '==', 'scheduled'),
       orderBy('startAt', 'asc')
     );
 
-    const unsubscribeLeads = onSnapshot(
-      leadsQuery,
-      (snap) => {
-        setLeads(snap.docs.map((snapshot) => ({ id: snapshot.id, ...(snapshot.data() as Omit<LeadRecord, 'id'>) })));
-      },
-      () => {
-        setLeads([]);
-        setLoading(false);
-      }
-    );
+    const unsubscribeLeads = onSnapshot(leadsQuery, (snap) => {
+      setLeads(snap.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
+    });
 
-    const unsubscribeTasks = onSnapshot(
-      tasksQuery,
-      (snap) => {
-        setTasks(snap.docs.map((snapshot) => ({ id: snapshot.id, ...(snapshot.data() as Omit<TaskRecord, 'id'>) })));
-      },
-      () => {
-        setTasks([]);
-        setLoading(false);
-      }
-    );
+    const unsubscribeTasks = onSnapshot(tasksQuery, (snap) => {
+      setTasks(snap.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
+    });
 
-    const unsubscribeEvents = onSnapshot(
-      eventsQuery,
-      (snap) => {
-        setEvents(snap.docs.map((snapshot) => ({ id: snapshot.id, ...(snapshot.data() as Omit<EventRecord, 'id'>) })));
-        setLoading(false);
-      },
-      () => {
-        setEvents([]);
-        setLoading(false);
-      }
-    );
+    const unsubscribeEvents = onSnapshot(eventsQuery, (snap) => {
+      setEvents(snap.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
+      setLoading(false);
+    });
 
     return () => {
       unsubscribeLeads();
@@ -440,77 +165,48 @@ export default function Today() {
     };
   }, [workspace]);
 
+  const resetNewTask = () => {
+    setNewTask({
+      title: '',
+      type: 'follow_up',
+      dueAt: toDateTimeLocalValue(new Date()),
+      priority: 'medium',
+      leadId: 'none',
+      leadName: '',
+      recurrence: createDefaultRecurrence(),
+      reminder: createDefaultReminder(),
+    });
+  };
+
+  const resetNewEvent = () => {
+    const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
+    setNewEvent({
+      title: '',
+      type: 'meeting',
+      ...pair,
+      leadId: 'none',
+      leadName: '',
+      recurrence: createDefaultRecurrence(),
+      reminder: createDefaultReminder(),
+    });
+  };
+
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
-    if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
-
     try {
-      const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
-      const usingSupabase = isSupabaseConfigured();
-      const partialPayments = normalizePaymentDrafts(newLead.partialPayments);
-      if (usingSupabase) {
-        await insertLeadToSupabase({
-          name: newLead.name,
-          email: newLead.email,
-          phone: newLead.phone,
-          source: newLead.source,
-          dealValue: Number(newLead.dealValue) || 0,
-          partialPayments,
-          nextStep: newLead.nextStep,
-          nextActionAt: newLead.nextActionAt,
-          ownerId: auth.currentUser.uid,
-          workspaceId: ensuredWorkspace.id,
-        });
-      } else {
-        await addDoc(collection(db, 'leads'), {
-          name: newLead.name,
-          email: newLead.email,
-          phone: newLead.phone,
-          dealValue: Number(newLead.dealValue) || 0,
-          partialPayments,
-          source: newLead.source,
-          status: newLead.status,
-          nextStep: newLead.nextStep,
-          nextActionAt: newLead.nextActionAt,
-          ownerId: auth.currentUser.uid,
-          workspaceId: ensuredWorkspace.id,
-          isAtRisk: false,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-      }
-      if (usingSupabase) {
-        setLeads((prev) => [
-          {
-            id: crypto.randomUUID(),
-            name: newLead.name,
-            email: newLead.email,
-            phone: newLead.phone,
-            source: newLead.source,
-            dealValue: Number(newLead.dealValue) || 0,
-            partialPayments,
-            status: 'new',
-            nextStep: newLead.nextStep,
-            nextActionAt: newLead.nextActionAt,
-            isAtRisk: false,
-          },
-          ...prev,
-        ]);
-      }
+      await addDoc(collection(db, 'leads'), {
+        ...newLead,
+        dealValue: Number(newLead.dealValue) || 0,
+        ownerId: auth.currentUser?.uid,
+        workspaceId: workspace.id,
+        isAtRisk: false,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
       toast.success('Lead dodany');
       setIsLeadOpen(false);
-      setNewLead({
-        name: '',
-        email: '',
-        phone: '',
-        dealValue: '',
-        partialPayments: [],
-        source: 'other',
-        status: 'new',
-        nextStep: '',
-        nextActionAt: getDefaultLeadNextActionAt(),
-      });
+      setNewLead({ name: '', email: '', dealValue: '', source: 'other', status: 'new', nextStep: '', nextActionAt: '' });
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
@@ -518,49 +214,26 @@ export default function Today() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
-      const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
-      const usingSupabase = isSupabaseConfigured();
-      if (usingSupabase) {
-        await insertTaskToSupabase({
-          title: newTask.title,
-          type: newTask.type,
-          date: newTask.date,
-          priority: newTask.priority,
-          status: 'todo',
-          leadId: newTask.leadId || null,
-          ownerId: auth.currentUser.uid,
-          workspaceId: ensuredWorkspace.id,
-        });
-      } else {
-        await addDoc(collection(db, 'tasks'), {
+      const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
+      await addDoc(collection(db, 'tasks'), {
+        ...syncTaskDerivedFields({
           ...newTask,
-          status: 'todo',
-          ownerId: auth.currentUser.uid,
-          workspaceId: ensuredWorkspace.id,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-      }
-      if (usingSupabase) {
-        setTasks((prev) => [
-          {
-            id: crypto.randomUUID(),
-            title: newTask.title,
-            type: newTask.type,
-            date: newTask.date,
-            status: 'todo',
-            leadId: newTask.leadId || undefined,
-            leadName: (leads as LeadPickerOption[]).find((lead) => lead.id === newTask.leadId)?.name,
-          },
-          ...prev,
-        ]);
-      }
+          leadId: selectedLead?.id ?? null,
+          leadName: selectedLead?.name ?? '',
+          recurrence: normalizeRecurrenceConfig(newTask.recurrence),
+          reminder: normalizeReminderConfig(newTask.reminder),
+        }),
+        status: 'todo',
+        ownerId: auth.currentUser?.uid,
+        workspaceId: workspace.id,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
       toast.success('Zadanie dodane');
       setIsTaskOpen(false);
-      setNewTask({ title: '', type: 'follow_up', date: format(new Date(), 'yyyy-MM-dd'), priority: 'medium', leadId: '', leadSearch: '' });
+      resetNewTask();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
@@ -568,41 +241,24 @@ export default function Today() {
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
-      const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
-      if (isSupabaseConfigured()) {
-        const inserted = await insertEventToSupabase({
-          title: newEvent.title,
-          type: newEvent.type,
-          startAt: newEvent.startAt,
-          endAt: newEvent.endAt,
-          status: 'scheduled',
-          leadId: newEvent.leadId || null,
-          workspaceId: ensuredWorkspace.id,
-        });
-        setEvents((prev) => [inserted as EventRecord, ...prev]);
-      } else {
-        await addDoc(collection(db, 'events'), {
-          ...newEvent,
-          status: 'scheduled',
-          ownerId: auth.currentUser.uid,
-          workspaceId: ensuredWorkspace.id,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-      }
+      const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
+      await addDoc(collection(db, 'events'), {
+        ...newEvent,
+        leadId: selectedLead?.id ?? null,
+        leadName: selectedLead?.name ?? '',
+        recurrence: normalizeRecurrenceConfig(newEvent.recurrence),
+        reminder: normalizeReminderConfig(newEvent.reminder),
+        status: 'scheduled',
+        ownerId: auth.currentUser?.uid,
+        workspaceId: workspace.id,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
       toast.success('Wydarzenie dodane');
       setIsEventOpen(false);
-      setNewEvent({
-        title: '',
-        type: 'meeting',
-        startAt: format(new Date(), "yyyy-MM-dd'T'10:00"),
-        endAt: format(new Date(), "yyyy-MM-dd'T'11:00"),
-        leadId: '',
-        leadSearch: '',
-      });
+      resetNewEvent();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
@@ -619,190 +275,86 @@ export default function Today() {
     }
   };
 
-  const activeLeads = useMemo(
-    () => leads.filter((lead) => ACTIVE_LEAD_STATUSES.includes(lead.status || 'new')),
-    [leads]
-  );
-
-  const todayTasks = useMemo(
-    () => tasks.filter((task) => task.status !== 'done' && isToday(parseISO(task.date))),
-    [tasks]
-  );
-  const overdueTasks = useMemo(
-    () => tasks.filter((task) => task.status !== 'done' && isPast(parseISO(task.date)) && !isToday(parseISO(task.date))),
-    [tasks]
-  );
-  const todayEvents = useMemo(
-    () => events.filter((event) => event.status !== 'completed' && event.status !== 'cancelled' && isToday(parseISO(event.startAt))),
-    [events]
-  );
-
-  const todayLeads = useMemo(
-    () => activeLeads.filter((lead) => lead.nextActionAt && isToday(parseISO(lead.nextActionAt))),
-    [activeLeads]
-  );
-  const overdueLeads = useMemo(
-    () => activeLeads.filter((lead) => lead.nextActionAt && isPast(parseISO(lead.nextActionAt)) && !isToday(parseISO(lead.nextActionAt))),
-    [activeLeads]
-  );
-  const noStepLeads = useMemo(() => activeLeads.filter((lead) => !lead.nextActionAt), [activeLeads]);
-  const staleLeads = useMemo(
-    () => activeLeads.filter((lead) => {
-      const updatedDate = toDate(lead.updatedAt);
-      return updatedDate ? differenceInCalendarDays(new Date(), updatedDate) >= 5 : false;
-    }),
-    [activeLeads]
-  );
-  const waitingTooLongLeads = useMemo(
-    () => activeLeads.filter((lead) => {
-      if (!['contacted', 'proposal_sent', 'follow_up', 'negotiation'].includes(lead.status || '')) return false;
-      const updatedDate = toDate(lead.updatedAt);
-      if (!updatedDate) return false;
-      return differenceInCalendarDays(new Date(), updatedDate) >= 3 && !(lead.nextActionAt && isPast(parseISO(lead.nextActionAt)) && !isToday(parseISO(lead.nextActionAt)));
-    }),
-    [activeLeads]
-  );
-  const highValueAtRisk = useMemo(
-    () => [...activeLeads]
-      .filter((lead) => isLeadActionableNow(lead))
-      .filter((lead) => lead.isAtRisk || (!lead.nextActionAt && (lead.dealValue || 0) >= 2000) || (lead.dealValue || 0) >= 5000)
-      .sort((a, b) => getLeadFinance(b).funnelAmount - getLeadFinance(a).funnelAmount)
-      .slice(0, 5),
-    [activeLeads]
-  );
-
-  const priorityList = useMemo(() => {
-    const scored = activeLeads
-      .filter((lead) => isLeadActionableNow(lead))
-      .map((lead) => {
-      let score = 0;
-      if (!lead.nextActionAt) score += 4;
-      if (lead.nextActionAt && isPast(parseISO(lead.nextActionAt))) score += 5;
-      if (lead.isAtRisk) score += 4;
-      if ((lead.dealValue || 0) >= 5000) score += 3;
-      const updatedDate = toDate(lead.updatedAt);
-      if (updatedDate) {
-        score += Math.min(4, Math.max(0, differenceInCalendarDays(new Date(), updatedDate) - 2));
-      }
-        score += Math.min(5, Math.round(getLeadFinance(lead).funnelAmount / 2000));
-        return { lead, score };
-      });
-
-    return scored
-      .filter((item) => item.score > 0)
-      .sort((a, b) => b.score - a.score || getLeadFinance(b.lead).funnelAmount - getLeadFinance(a.lead).funnelAmount)
-      .slice(0, 5);
-  }, [activeLeads]);
-
-  const nextDays = useMemo(
-    () => [1, 2, 3]
-      .map((offset) => {
-        const date = addDays(new Date(), offset);
-        const dayTasks = tasks.filter((task) => isSameDay(parseISO(task.date), date));
-        const dayEvents = events.filter((event) => isSameDay(parseISO(event.startAt), date));
-        return { offset, date, count: dayTasks.length + dayEvents.length, dayTasks, dayEvents };
-      })
-      .filter((bucket) => bucket.count > 0),
-    [tasks, events]
-  );
-
-  const funnelValue = activeLeads.reduce((acc, lead) => acc + getLeadFinance(lead).funnelAmount, 0);
-  const newLeadFinance = useMemo(() => getLeadFinance({
-    status: 'new',
-    dealValue: Number(newLead.dealValue) || 0,
-    partialPayments: normalizePaymentDrafts(newLead.partialPayments),
-  }), [newLead.dealValue, newLead.partialPayments]);
+  const handleEventStartChange = (value: string) => {
+    const currentStart = parseISO(newEvent.startAt);
+    const currentEnd = parseISO(newEvent.endAt);
+    const duration = Math.max(currentEnd.getTime() - currentStart.getTime(), 60 * 60_000);
+    const nextEnd = new Date(parseISO(value).getTime() + duration);
+    setNewEvent({ ...newEvent, startAt: value, endAt: toDateTimeLocalValue(nextEnd) });
+  };
 
   if (wsLoading || loading) {
     return (
       <Layout>
-        <div className="flex h-full items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[color:var(--app-primary)]" />
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       </Layout>
     );
   }
 
+  const today = new Date();
+  const todayEntries = combineScheduleEntries({
+    events,
+    tasks,
+    leads,
+    rangeStart: today,
+    rangeEnd: new Date(today.getTime() + 24 * 60 * 60_000 - 1),
+  });
+  const todayTasks = todayEntries.filter((entry) => entry.kind === 'task');
+  const todayEvents = todayEntries.filter((entry) => entry.kind === 'event');
+  const todayLeadActions = todayEntries.filter((entry) => entry.kind === 'lead');
+  const overdueTasks = tasks.filter((task) => {
+    const startAt = getTaskStartAt(task);
+    return task.status !== 'done' && startAt && isPast(parseISO(startAt)) && !isToday(parseISO(startAt));
+  });
+  const noStepLeads = leads.filter((lead) => !lead.nextActionAt && lead.status !== 'won' && lead.status !== 'lost');
+
   return (
     <Layout>
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-4 md:p-8">
-        <header className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+      <div className="p-4 md:p-8 max-w-7xl mx-auto w-full space-y-8">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold app-text">Witaj, {profile?.fullName?.split(' ')[0] || 'Operatorze'}!</h1>
-            <p className="mt-1 app-muted">To jest ekran decyzji. Wchodzisz i od razu widzisz, gdzie trzeba ruszyć proces.</p>
+            <h1 className="text-3xl font-bold text-slate-900">Witaj, {profile?.fullName?.split(' ')[0]}!</h1>
+            <p className="text-slate-500">Dziś zbieramy w jednym miejscu leady, zadania i wydarzenia.</p>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Dialog open={isLeadOpen} onOpenChange={setIsLeadOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-sm"><Plus className="h-4 w-4" /> Lead</Button>
+                <Button className="rounded-xl shadow-sm"><Plus className="w-4 h-4 mr-2" /> Lead</Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Szybkie dodanie leada</DialogTitle>
-                  <DialogDescription>
-                    Uzupelnij podstawowe dane, aby szybko dodac leada do lejka.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleAddLead} className="space-y-4 py-2">
+              <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader><DialogTitle>Szybkie dodanie leada</DialogTitle></DialogHeader>
+                <form onSubmit={handleAddLead} className="space-y-4 py-4">
                   <div className="space-y-2">
-                    <Label>Imię i nazwisko / firma</Label>
+                    <Label>Imię i nazwisko / Firma</Label>
                     <Input value={newLead.name} onChange={(e) => setNewLead({ ...newLead, name: e.target.value })} required />
                   </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Wartość (PLN)</Label>
                       <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
                     </div>
                     <div className="space-y-2">
                       <Label>Źródło</Label>
-                      <select
-                        value={newLead.source}
-                        onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
-                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
-                      >
-                        {LEAD_SOURCE_OPTIONS.map((sourceOption) => (
-                          <option key={sourceOption.value} value={sourceOption.value}>
-                            {sourceOption.label}
-                          </option>
-                        ))}
-                      </select>
+                      <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {SOURCE_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Następny krok</Label>
-                    <Input value={newLead.nextStep} onChange={(e) => setNewLead({ ...newLead, nextStep: e.target.value })} placeholder="Np. zadzwonić i domknąć termin rozmowy" />
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Kolejny krok</Label>
+                      <Input value={newLead.nextStep} onChange={(e) => setNewLead({ ...newLead, nextStep: e.target.value })} placeholder="np. Telefon z ofertą" />
+                    </div>
                     <div className="space-y-2">
                       <Label>Termin ruchu</Label>
-                      <Input type="datetime-local" value={newLead.nextActionAt} onChange={(e) => setNewLead({ ...newLead, nextActionAt: e.target.value })} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>E-mail</Label>
-                      <Input type="email" value={newLead.email} onChange={(e) => setNewLead({ ...newLead, email: e.target.value })} />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Telefon</Label>
-                    <Input type="tel" value={newLead.phone} onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })} />
-                  </div>
-                  <PaymentEditor payments={newLead.partialPayments} onChange={(partialPayments) => setNewLead((prev) => ({ ...prev, partialPayments }))} />
-                  <div className="grid gap-3 rounded-2xl border p-4 app-border md:grid-cols-4">
-                    <div>
-                      <p className="text-xs app-muted">Wartość</p>
-                      <p className="font-semibold app-text">{(Number(newLead.dealValue) || 0).toLocaleString()} PLN</p>
-                    </div>
-                    <div>
-                      <p className="text-xs app-muted">Wpłacono</p>
-                      <p className="font-semibold text-emerald-600">{newLeadFinance.paidAmount.toLocaleString()} PLN</p>
-                    </div>
-                    <div>
-                      <p className="text-xs app-muted">Pozostało</p>
-                      <p className="font-semibold app-text">{newLeadFinance.remainingAmount.toLocaleString()} PLN</p>
-                    </div>
-                    <div>
-                      <p className="text-xs app-muted">Trafi do lejka</p>
-                      <p className="font-semibold text-[color:var(--app-primary)]">{newLeadFinance.funnelAmount.toLocaleString()} PLN</p>
+                      <Input type="date" value={newLead.nextActionAt} onChange={(e) => setNewLead({ ...newLead, nextActionAt: e.target.value })} />
                     </div>
                   </div>
                   <DialogFooter>
@@ -814,40 +366,128 @@ export default function Today() {
 
             <Dialog open={isTaskOpen} onOpenChange={setIsTaskOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl"><Plus className="h-4 w-4" /> Zadanie</Button>
+                <Button variant="outline" className="rounded-xl shadow-sm"><Plus className="w-4 h-4 mr-2" /> Zadanie</Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Nowe zadanie</DialogTitle>
-                  <DialogDescription>
-                    Dodaj zadanie operacyjne na dzis lub na wybrany termin.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleAddTask} className="space-y-4 py-2">
-                  <div className="space-y-2">
-                    <Label>Tytuł zadania</Label>
-                    <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
+              <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader><DialogTitle>Nowe zadanie</DialogTitle></DialogHeader>
+                <form onSubmit={handleAddTask} className="space-y-6 py-4">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Tytuł zadania</Label>
+                      <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Typ</Label>
+                        <Select value={newTask.type} onValueChange={(value) => setNewTask({ ...newTask, type: value })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {TASK_TYPES.map((taskType) => (
+                              <SelectItem key={taskType.value} value={taskType.value}>{taskType.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Lead</Label>
+                        <Select value={newTask.leadId} onValueChange={(value) => setNewTask({ ...newTask, leadId: value })}>
+                          <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Bez leada</SelectItem>
+                            {leads.map((lead) => (
+                              <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Priorytet</Label>
+                        <Select value={newTask.priority} onValueChange={(value) => setNewTask({ ...newTask, priority: value })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {PRIORITY_OPTIONS.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
                   </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label>Typ</Label>
-                      <select
-                        value={newTask.type}
-                        onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}
-                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
-                      >
-                        <option value="follow_up">Dalszy kontakt</option>
-                        <option value="phone">Telefon</option>
-                        <option value="reply">Odpisać</option>
-                        <option value="send_offer">Wysłać ofertę</option>
-                        <option value="meeting">Spotkanie</option>
-                        <option value="other">Inne</option>
-                      </select>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Termin</p>
+                      <p className="text-xs text-slate-500">Najpierw ustaw moment wykonania zadania.</p>
                     </div>
                     <div className="space-y-2">
-                      <Label>Data</Label>
-                      <Input type="date" value={newTask.date} onChange={(e) => setNewTask({ ...newTask, date: e.target.value })} required />
+                      <Label>Data i godzina</Label>
+                      <Input type="datetime-local" value={newTask.dueAt} onChange={(e) => setNewTask({ ...newTask, dueAt: e.target.value })} required />
                     </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Cykliczność</p>
+                      <p className="text-xs text-slate-500">Możesz ustawić zadanie jednorazowe albo cykliczne.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Powtarzanie</Label>
+                        <Select value={newTask.recurrence.mode} onValueChange={(value) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, mode: value as any } })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {RECURRENCE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Co ile</Label>
+                        <Input type="number" min="1" value={newTask.recurrence.interval} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newTask.recurrence.mode === 'none'} />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Powtarzaj do</Label>
+                      <Input type="date" value={newTask.recurrence.until ?? ''} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, until: e.target.value || null } })} disabled={newTask.recurrence.mode === 'none'} />
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
+                      <p className="text-xs text-slate-500">Na końcu ustaw przypomnienie i jego cykliczność.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Tryb</Label>
+                        <Select value={newTask.reminder.mode} onValueChange={(value) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, mode: value as any } })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {REMINDER_MODE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Ile minut wcześniej</Label>
+                        <Input type="number" min="0" value={newTask.reminder.minutesBefore} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, minutesBefore: Math.max(0, Number(e.target.value) || 0) } })} disabled={newTask.reminder.mode === 'none'} />
+                      </div>
+                    </div>
+                    {newTask.reminder.mode === 'recurring' && (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Cykliczność przypomnienia</Label>
+                          <Select value={newTask.reminder.recurrenceMode} onValueChange={(value) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceMode: value as any } })}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Co ile</Label>
+                          <Input type="number" min="1" value={newTask.reminder.recurrenceInterval} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <DialogFooter>
                     <Button type="submit" className="w-full">Dodaj zadanie</Button>
@@ -858,38 +498,119 @@ export default function Today() {
 
             <Dialog open={isEventOpen} onOpenChange={setIsEventOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl"><Plus className="h-4 w-4" /> Wydarzenie</Button>
+                <Button variant="outline" className="rounded-xl shadow-sm"><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
-                  <DialogDescription>
-                    Ustaw tytul, typ i termin, aby dodac wydarzenie do kalendarza.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleAddEvent} className="space-y-4 py-2">
-                  <div className="space-y-2">
-                    <Label>Tytuł</Label>
-                    <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
+              <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
+                <form onSubmit={handleAddEvent} className="space-y-6 py-4">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Tytuł</Label>
+                      <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Typ</Label>
+                        <Select value={newEvent.type} onValueChange={(value) => setNewEvent({ ...newEvent, type: value })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {EVENT_TYPES.map((eventType) => <SelectItem key={eventType.value} value={eventType.value}>{eventType.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Lead</Label>
+                        <Select value={newEvent.leadId} onValueChange={(value) => setNewEvent({ ...newEvent, leadId: value })}>
+                          <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Bez leada</SelectItem>
+                            {leads.map((lead) => <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
                   </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label>Typ</Label>
-                      <select
-                        value={newEvent.type}
-                        onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
-                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
-                      >
-                        <option value="meeting">Spotkanie</option>
-                        <option value="phone_call">Rozmowa</option>
-                        <option value="follow_up">Dalszy kontakt</option>
-                        <option value="deadline">Termin końcowy</option>
-                      </select>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Od do</p>
+                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec aktualizuje się automatycznie po zmianie startu.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Start</Label>
+                        <Input type="datetime-local" value={newEvent.startAt} onChange={(e) => handleEventStartChange(e.target.value)} required />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Koniec</Label>
+                        <Input type="datetime-local" value={newEvent.endAt} onChange={(e) => setNewEvent({ ...newEvent, endAt: e.target.value })} required />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
+                      <p className="text-xs text-slate-500">Możesz ustawić np. wydarzenie miesięczne i będzie widoczne dynamicznie w kalendarzu.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Powtarzanie</Label>
+                        <Select value={newEvent.recurrence.mode} onValueChange={(value) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: value as any } })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {RECURRENCE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Co ile</Label>
+                        <Input type="number" min="1" value={newEvent.recurrence.interval} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newEvent.recurrence.mode === 'none'} />
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label>Start</Label>
-                      <Input type="datetime-local" value={newEvent.startAt} onChange={(e) => setNewEvent({ ...newEvent, startAt: e.target.value })} required />
+                      <Label>Powtarzaj do</Label>
+                      <Input type="date" value={newEvent.recurrence.until ?? ''} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, until: e.target.value || null } })} disabled={newEvent.recurrence.mode === 'none'} />
                     </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
+                      <p className="text-xs text-slate-500">Na końcu ustaw przypomnienie jednorazowe albo cykliczne.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Tryb</Label>
+                        <Select value={newEvent.reminder.mode} onValueChange={(value) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: value as any } })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {REMINDER_MODE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Ile minut wcześniej</Label>
+                        <Input type="number" min="0" value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Math.max(0, Number(e.target.value) || 0) } })} disabled={newEvent.reminder.mode === 'none'} />
+                      </div>
+                    </div>
+                    {newEvent.reminder.mode === 'recurring' && (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Cykliczność przypomnienia</Label>
+                          <Select value={newEvent.reminder.recurrenceMode} onValueChange={(value) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: value as any } })}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Co ile</Label>
+                          <Input type="number" min="1" value={newEvent.reminder.recurrenceInterval} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <DialogFooter>
                     <Button type="submit" className="w-full">Zaplanuj</Button>
@@ -900,273 +621,240 @@ export default function Today() {
           </div>
         </header>
 
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <Card
-            className="border-none app-surface-strong app-shadow cursor-pointer transition-transform hover:-translate-y-0.5"
-            onClick={() => openSectionOrRoute('sekcja-priorytety', '/leads')}
-          >
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Priorytety dziś</p>
-                <p className="mt-2 text-3xl font-bold app-text">{priorityList.length}</p>
-              </div>
-              <div className="rounded-2xl p-3 app-primary-chip"><Sparkles className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card
-            className="border-none app-surface-strong app-shadow cursor-pointer transition-transform hover:-translate-y-0.5"
-            onClick={() => openSectionOrRoute('sekcja-zalegle', '/tasks')}
-          >
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Zaległe</p>
-                <p className="mt-2 text-3xl font-bold text-rose-500">{overdueTasks.length + overdueLeads.length}</p>
-              </div>
-              <div className="rounded-2xl bg-rose-500/12 p-3 text-rose-500"><AlertTriangle className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card
-            className="border-none app-surface-strong app-shadow cursor-pointer transition-transform hover:-translate-y-0.5"
-            onClick={() => openSectionOrRoute('sekcja-bez-kroku', '/leads')}
-          >
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Bez kroku</p>
-                <p className="mt-2 text-3xl font-bold text-amber-500">{noStepLeads.length}</p>
-              </div>
-              <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-500"><ShieldAlert className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card
-            className="border-none app-surface-strong app-shadow cursor-pointer transition-transform hover:-translate-y-0.5"
-            onClick={() => openSectionOrRoute('sekcja-wartosc', '/leads')}
-          >
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Wartość lejka</p>
-                <p className="mt-2 text-3xl font-bold app-text">{funnelValue.toLocaleString()} PLN</p>
-              </div>
-              <div className="rounded-2xl p-3 app-primary-chip"><TrendingUp className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid gap-8 xl:grid-cols-[minmax(0,1.7fr)_minmax(320px,0.9fr)]">
-          <div className="space-y-8">
-            <SectionBlock id="sekcja-priorytety" title="Najważniejsze ruchy dziś" count={priorityList.length} icon={<Sparkles className="h-5 w-5" />} accent="primary">
-              {priorityList.length > 0 ? (
-                <div className="grid gap-3">
-                  {priorityList.map(({ lead, score }) => (
-                    <div key={lead.id}>
-                      <LeadActionCard
-                        lead={lead}
-                        badge={<Badge className="app-primary-chip border-none">Priorytet {score}</Badge>}
-                      />
-                    </div>
-                  ))}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            {overdueTasks.length > 0 && (
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 text-rose-600">
+                  <AlertTriangle className="w-5 h-5" />
+                  <h2 className="text-lg font-bold">Zaległe</h2>
+                  <Badge variant="destructive" className="rounded-full">{overdueTasks.length}</Badge>
                 </div>
-              ) : (
-                <Card className="border-dashed app-surface-strong">
-                  <CardContent className="p-8 text-center">
-                    <Sparkles className="mx-auto mb-3 h-8 w-8 app-muted" />
-                    <p className="font-medium app-text">Na ten moment nie ma niczego, co pali się natychmiast.</p>
-                    <p className="mt-1 text-sm app-muted">Możesz spokojnie wejść w leady albo uzupełnić kolejne kroki tam, gdzie ich brakuje.</p>
-                  </CardContent>
-                </Card>
-              )}
-            </SectionBlock>
-
-            {overdueTasks.length + overdueLeads.length > 0 ? (
-              <SectionBlock id="sekcja-zalegle" title="Zaległe" count={overdueTasks.length + overdueLeads.length} icon={<AlertTriangle className="h-5 w-5" />} accent="danger">
                 <div className="grid gap-3">
-                  {overdueTasks.map((task) => (
-                    <Card key={task.id} className="border-none app-surface-strong app-shadow">
-                      <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => toggleTask(task.id, task.status)}
-                            className="flex h-6 w-6 items-center justify-center rounded-lg border border-rose-500/30 bg-rose-500/10 text-rose-500"
-                          >
-                            <CheckSquare className="h-4 w-4" />
-                          </button>
-                          <div>
-                            <p className="font-semibold app-text">{task.title}</p>
-                            <p className="text-sm text-rose-500">Termin minął {format(parseISO(task.date), 'd MMMM', { locale: pl })}</p>
+                  {overdueTasks.map((task) => {
+                    const startAt = getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`;
+                    return (
+                      <Card key={task.id} className="border-rose-100 bg-rose-50/30">
+                        <CardContent className="p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <button onClick={() => toggleTask(task.id, task.status)} className="w-5 h-5 rounded border border-rose-300 flex items-center justify-center">
+                              {task.status === 'done' && <CheckSquare className="w-4 h-4 text-rose-600" />}
+                            </button>
+                            <div>
+                              <p className="font-medium text-slate-900">{task.title}</p>
+                              <p className="text-xs text-rose-500 font-medium">{format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}</p>
+                            </div>
                           </div>
+                          <Button variant="ghost" size="sm" asChild><Link to="/tasks"><ChevronRight className="w-4 h-4" /></Link></Button>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+
+            <section className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900">Dzisiaj</h2>
+                  <p className="text-sm text-slate-500">Plan dnia z aktualizacją live.</p>
+                </div>
+                <Badge variant="secondary" className="rounded-full">{todayEntries.length}</Badge>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Leady do ruchu</h3>
+                  {todayLeadActions.length > 0 ? (
+                    <div className="grid gap-3">
+                      {todayLeadActions.map((entry) => (
+                        <Card key={entry.id} className="shadow-sm border-amber-100">
+                          <CardContent className="p-4 flex items-center justify-between gap-4">
+                            <div>
+                              <p className="text-xs font-bold text-amber-600">{format(parseISO(entry.startsAt), 'HH:mm')}</p>
+                              <p className="font-semibold text-slate-900">{entry.leadName}</p>
+                              <p className="text-xs text-slate-500">{entry.title}</p>
+                            </div>
+                            <Button variant="outline" size="sm" asChild><Link to={entry.link ?? '/leads'}>Otwórz</Link></Button>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <Card className="border-dashed bg-slate-50/50"><CardContent className="p-6 text-sm text-slate-500">Brak leadów z ruchem na dziś.</CardContent></Card>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Wydarzenia</h3>
+                  {todayEvents.length > 0 ? (
+                    <div className="grid gap-3">
+                      {todayEvents.map((entry) => (
+                        <Card key={entry.id} className="border-indigo-100 shadow-sm">
+                          <CardContent className="p-4 flex items-center gap-4">
+                            <div className="w-12 text-center border-r border-slate-100 pr-4">
+                              <p className="text-xs font-bold text-indigo-600">{format(parseISO(entry.startsAt), 'HH:mm')}</p>
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex flex-wrap items-center gap-2 mb-1">
+                                <p className="font-semibold text-slate-900">{entry.title}</p>
+                                {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>}
+                                {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>}
+                              </div>
+                              <p className="text-xs text-slate-500">{EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label ?? 'Wydarzenie'}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
+                            </div>
+                            <Button variant="ghost" size="sm" asChild><Link to="/calendar"><ChevronRight className="w-4 h-4" /></Link></Button>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <Card className="border-dashed bg-slate-50/50"><CardContent className="p-6 text-sm text-slate-500">Brak wydarzeń na dziś.</CardContent></Card>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Zadania na dziś</h3>
+                  {todayTasks.length > 0 ? (
+                    <div className="grid gap-3">
+                      {todayTasks.map((entry) => (
+                        <Card key={entry.id} className="hover:border-primary/30 transition-colors shadow-sm">
+                          <CardContent className="p-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <button onClick={() => toggleTask(entry.sourceId, entry.raw.status)} className="w-5 h-5 rounded border border-slate-200 flex items-center justify-center hover:border-primary">
+                                {entry.raw.status === 'done' && <CheckSquare className="w-4 h-4 text-primary" />}
+                              </button>
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <p className="font-medium text-slate-900">{entry.title}</p>
+                                  {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>}
+                                  {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>}
+                                </div>
+                                <p className="text-xs text-slate-500">{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label ?? 'Zadanie'} • {format(parseISO(entry.startsAt), 'HH:mm')} {entry.leadName ? `• Lead: ${entry.leadName}` : ''}</p>
+                              </div>
+                            </div>
+                            <Badge variant="secondary" className="text-[10px] uppercase">{entry.raw.type}</Badge>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <Card className="border-dashed bg-slate-50/50"><CardContent className="p-8 text-center"><CheckSquare className="w-8 h-8 text-slate-300 mx-auto mb-2" /><p className="text-sm text-slate-500">Brak zadań na dziś.</p></CardContent></Card>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {noStepLeads.length > 0 && (
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 text-amber-600">
+                  <AlertTriangle className="w-5 h-5" />
+                  <h2 className="text-lg font-bold">Bez następnego kroku</h2>
+                  <Badge variant="outline" className="rounded-full border-amber-200 text-amber-700 bg-amber-50">{noStepLeads.length}</Badge>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {noStepLeads.slice(0, 4).map((lead) => (
+                    <Card key={lead.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-bold text-slate-900">{lead.name}</h4>
+                          <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Zaniedbany</Badge>
                         </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link to="/tasks">Zobacz zadania</Link>
+                        <p className="text-xs text-slate-500 mb-4">{lead.company || 'Brak firmy'}</p>
+                        <Button variant="outline" size="sm" className="w-full rounded-lg" asChild>
+                          <Link to={`/leads/${lead.id}`}>Ustal kolejny krok <ArrowRight className="w-3 h-3 ml-2" /></Link>
                         </Button>
                       </CardContent>
                     </Card>
                   ))}
-                  {overdueLeads.map((lead) => (
-                    <div key={lead.id}><LeadActionCard lead={lead} badge={<Badge variant="destructive">Lead po terminie</Badge>} /></div>
-                  ))}
                 </div>
-              </SectionBlock>
-            ) : null}
-
-            <SectionBlock title="Do ruchu dziś" count={todayLeads.length + todayTasks.length + todayEvents.length} icon={<Clock className="h-5 w-5" />}>
-              <div className="grid gap-3">
-                {todayLeads.map((lead) => (
-                  <div key={lead.id}><LeadActionCard lead={lead} badge={<Badge className="app-primary-chip border-none">Lead dziś</Badge>} /></div>
-                ))}
-
-                {todayTasks.map((task) => (
-                  <Card key={task.id} className="border-none app-surface-strong app-shadow">
-                    <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <p className="font-semibold app-text">{task.title}</p>
-                        <p className="text-sm app-muted">Zadanie na dziś • {task.type}</p>
-                      </div>
-                      <Button variant="outline" size="sm" onClick={() => toggleTask(task.id, task.status)}>Oznacz jako zrobione</Button>
-                    </CardContent>
-                  </Card>
-                ))}
-
-                {todayEvents.map((event) => (
-                  <Card key={event.id} className="border-none app-surface-strong app-shadow">
-                    <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex items-start gap-3">
-                        <div className="rounded-2xl p-3 app-primary-chip"><Calendar className="h-5 w-5" /></div>
-                        <div>
-                          <p className="font-semibold app-text">{event.title}</p>
-                          <p className="text-sm app-muted">
-                            {format(parseISO(event.startAt), 'HH:mm', { locale: pl })} • {event.type}
-                          </p>
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm" asChild>
-                        <Link to="/calendar">Kalendarz</Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-
-                {todayLeads.length === 0 && todayTasks.length === 0 && todayEvents.length === 0 ? (
-                  <Card className="border-dashed app-surface-strong">
-                    <CardContent className="p-8 text-center">
-                      <Clock className="mx-auto mb-3 h-8 w-8 app-muted" />
-                      <p className="font-medium app-text">Dziś nie ma ustawionych ruchów.</p>
-                      <p className="mt-1 text-sm app-muted">To dobry moment, żeby ustawić kolejne kroki na leadach bez terminu.</p>
-                    </CardContent>
-                  </Card>
-                ) : null}
-              </div>
-            </SectionBlock>
-
-            {waitingTooLongLeads.length > 0 ? (
-              <SectionBlock title="Czekają za długo" count={waitingTooLongLeads.length} icon={<Mail className="h-5 w-5" />} accent="warning">
-                <div className="grid gap-3 md:grid-cols-2">
-                  {waitingTooLongLeads.slice(0, 4).map((lead) => (
-                    <div key={lead.id}><LeadActionCard lead={lead} badge={<Badge variant="outline" className="border-amber-500/25 text-amber-500">Brak odpowiedzi</Badge>} /></div>
-                  ))}
-                </div>
-              </SectionBlock>
-            ) : null}
-
-            {noStepLeads.length > 0 ? (
-              <SectionBlock id="sekcja-bez-kroku" title="Bez następnego kroku" count={noStepLeads.length} icon={<ShieldAlert className="h-5 w-5" />} accent="warning">
-                <div className="grid gap-3 md:grid-cols-2">
-                  {noStepLeads.slice(0, 6).map((lead) => (
-                    <div key={lead.id}><LeadActionCard lead={lead} badge={<Badge variant="outline" className="border-amber-500/25 text-amber-500">Brak kroku</Badge>} /></div>
-                  ))}
-                </div>
-              </SectionBlock>
-            ) : null}
+              </section>
+            )}
           </div>
 
-          <aside className="space-y-6">
-            <Card id="sekcja-wartosc" className="border-none app-surface-strong app-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg app-text">Najcenniejsze do ruszenia</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {highValueAtRisk.length > 0 ? highValueAtRisk.map((lead) => (
-                  <div
-                    key={lead.id}
-                    className="rounded-2xl border p-4 transition-transform hover:-translate-y-0.5 app-border app-surface cursor-pointer"
-                    onClick={() => { window.location.href = `/leads/${lead.id}`; }}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="truncate font-semibold app-text">{lead.name}</p>
-                        <p className="text-xs app-muted">{lead.company || 'Brak firmy'}</p>
-                      </div>
-                      <Badge variant={lead.isAtRisk ? 'destructive' : 'secondary'}>
-                        {getLeadFinance(lead).funnelAmount.toLocaleString()} PLN
-                      </Badge>
-                    </div>
-                    <p className="mt-3 text-sm app-muted">{leadReason(lead)}</p>
-                    <Button variant="ghost" size="sm" className="mt-3 px-0" asChild>
-                      <Link to={`/leads/${lead.id}`}>Wejdź w rekord <ChevronRight className="h-4 w-4" /></Link>
-                    </Button>
+          <div className="space-y-8">
+            <Card className="bg-slate-900 text-white border-none shadow-xl overflow-hidden relative">
+              <div className="absolute top-0 right-0 p-4 opacity-10"><TrendingUp className="w-24 h-24" /></div>
+              <CardContent className="p-6">
+                <p className="text-sm font-medium text-slate-400">Wartość lejka</p>
+                <div className="text-3xl font-bold mb-1">{leads.reduce((acc, lead) => acc + (lead.dealValue || 0), 0).toLocaleString()} PLN</div>
+                <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaży</p>
+                <div className="mt-6 grid grid-cols-2 gap-4 border-t border-slate-800 pt-6">
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Aktywne leady</p>
+                    <p className="text-xl font-bold">{leads.filter((lead) => lead.status !== 'won' && lead.status !== 'lost').length}</p>
                   </div>
-                )) : (
-                  <p className="text-sm app-muted">Brak leadów, które wyglądają dziś na drogie i zaniedbane jednocześnie.</p>
-                )}
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Zadania</p>
+                    <p className="text-xl font-bold">{tasks.length}</p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
-            <Card className="border-none app-surface-strong app-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg app-text">Najbliższe dni</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {nextDays.length > 0 ? nextDays.map((bucket) => (
-                  <div key={bucket.offset} className="flex items-center gap-4 rounded-2xl border p-4 app-border app-surface">
-                    <div className="w-12 text-center">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">{format(bucket.date, 'EEE', { locale: pl })}</p>
-                      <p className="text-lg font-bold app-text">{format(bucket.date, 'd')}</p>
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium app-text">{bucket.count} {bucket.count === 1 ? 'rzecz' : 'rzeczy'}</p>
-                      <p className="text-xs app-muted">
-                        {bucket.dayEvents.length > 0 ? `${bucket.dayEvents.length} wydarzenie ` : ''}
-                        {bucket.dayTasks.length > 0 ? `${bucket.dayTasks.length} zadanie` : ''}
-                      </p>
-                    </div>
-                  </div>
-                )) : (
-                  <p className="text-sm app-muted">Na trzy najbliższe dni nie ma jeszcze nic w kalendarzu ani zadaniach.</p>
-                )}
-              </CardContent>
-            </Card>
+            <section className="space-y-4">
+              <h2 className="text-lg font-bold text-slate-900">Najbliższe dni</h2>
+              <div className="space-y-3">
+                {[1, 2, 3].map((days) => {
+                  const date = addDays(new Date(), days);
+                  const dayEntries = combineScheduleEntries({
+                    events,
+                    tasks,
+                    leads,
+                    rangeStart: date,
+                    rangeEnd: new Date(date.getTime() + 24 * 60 * 60_000 - 1),
+                  });
+                  const count = dayEntries.length;
+                  if (count === 0) return null;
 
-            <Card className="border-none app-surface-strong app-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg app-text">Leady bez ruchu</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {waitingTooLongLeads.length > 0 ? (
-                  <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4">
-                    <p className="font-semibold text-amber-600">{waitingTooLongLeads.length} leadów czeka już za długo</p>
-                    <p className="mt-1 text-sm text-amber-600/90">Nie są jeszcze po terminie, ale wiszą bez odpowiedzi i zaczynają robić się niebezpieczne.</p>
-                  </div>
-                ) : null}
-                {staleLeads.length > 0 ? staleLeads.slice(0, 5).map((lead) => {
-                  const updatedDate = toDate(lead.updatedAt);
-                  const days = updatedDate ? differenceInCalendarDays(startOfDay(new Date()), startOfDay(updatedDate)) : 0;
                   return (
-                    <div key={lead.id} className="rounded-2xl border p-4 app-border app-surface">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="font-semibold app-text">{lead.name}</p>
-                          <p className="text-xs app-muted">Bez ruchu od {days} dni</p>
-                        </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link to={`/leads/${lead.id}`}>Ruszyć</Link>
-                        </Button>
+                    <div key={days} className="flex items-center gap-4 group cursor-pointer">
+                      <div className="w-12 text-center">
+                        <p className="text-[10px] uppercase font-bold text-slate-400">{format(date, 'EEE', { locale: pl })}</p>
+                        <p className="text-lg font-bold text-slate-700">{format(date, 'd')}</p>
+                      </div>
+                      <div className="flex-1 bg-white p-3 rounded-xl border border-slate-100 group-hover:border-primary/30 transition-colors shadow-sm">
+                        <p className="text-sm font-medium text-slate-900">{count} {count === 1 ? 'rzecz' : 'rzeczy'}</p>
+                        <p className="text-[10px] text-slate-500">{dayEntries.filter((entry) => entry.kind === 'event').length} wydarzeń • {dayEntries.filter((entry) => entry.kind === 'task').length} zadań • {dayEntries.filter((entry) => entry.kind === 'lead').length} leadów</p>
                       </div>
                     </div>
                   );
-                }) : (
-                  <p className="text-sm app-muted">Nie ma teraz leadów, które leżą bez ruchu dłużej niż 5 dni.</p>
-                )}
-              </CardContent>
-            </Card>
-          </aside>
+                })}
+              </div>
+            </section>
+
+            <section className="space-y-4">
+              <h2 className="text-lg font-bold text-slate-900">Najcenniejsze</h2>
+              <div className="space-y-3">
+                {[...leads].sort((a, b) => (b.dealValue || 0) - (a.dealValue || 0)).slice(0, 3).map((lead) => (
+                  <Link key={lead.id} to={`/leads/${lead.id}`} className="block">
+                    <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100 hover:border-primary/30 transition-colors shadow-sm">
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">{lead.name}</p>
+                        <p className="text-[10px] text-slate-500">{lead.company || lead.source}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-primary">{(lead.dealValue || 0).toLocaleString()} PLN</p>
+                        <Badge variant="outline" className="text-[8px] h-4 px-1">TOP</Badge>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+
+            <section className="space-y-3">
+              <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-2"><Repeat className="w-4 h-4 text-slate-400" /><h3 className="text-sm font-bold text-slate-900">Cykliczność działa live</h3></div>
+                <p className="text-sm text-slate-500">Powtarzalne zadania i wydarzenia wpadają teraz do planu dnia bez ręcznego odświeżania.</p>
+              </div>
+              <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-2"><Bell className="w-4 h-4 text-slate-400" /><h3 className="text-sm font-bold text-slate-900">Przypomnienia zapisują się w danych</h3></div>
+                <p className="text-sm text-slate-500">Warstwa konfiguracji przypomnień jest już spięta z formularzami. Osobny silnik wysyłki to nadal osobny brak V1.</p>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
     </Layout>

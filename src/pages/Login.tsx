@@ -1,31 +1,21 @@
-import { FormEvent, useState } from 'react';
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
+import { useState, FormEvent } from 'react';
+import { 
+  signInWithPopup, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
   sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  type User as FirebaseUser,
-  updateProfile,
+  sendEmailVerification,
+  updateProfile
 } from 'firebase/auth';
-import { ArrowLeft, CheckCircle2, Loader2, Lock, LogIn, Mail, Sparkles, User } from 'lucide-react';
-import { toast } from 'sonner';
-import { auth, googleProvider } from '../firebase';
-import { ensureWorkspaceForUser } from '../lib/workspace';
+import { auth, googleProvider, db } from '../firebase';
+import { doc, setDoc, getDoc, serverTimestamp, collection, addDoc } from 'firebase/firestore';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import firebaseConfig from '../../firebase-applet-config.json';
-
-function getAuthErrorMessage(error: { code?: string; message?: string }) {
-  if (error.code === 'auth/unauthorized-domain') {
-    const currentHost = typeof window !== 'undefined' ? window.location.host : 'ta domena';
-    return `Google login jest zablokowany dla domeny ${currentHost}. Dodaj ja w Firebase Console > Authentication > Settings > Authorized domains. Dozwolony authDomain w projekcie: ${firebaseConfig.authDomain}.`;
-  }
-
-  return error.message ? `Blad logowania: ${error.message}` : 'Blad logowania. Sprobuj ponownie.';
-}
+import { CheckCircle2, LogIn, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { addDays } from 'date-fns';
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -34,8 +24,32 @@ export default function Login() {
   const [fullName, setFullName] = useState('');
   const [isResetting, setIsResetting] = useState(false);
 
-  const initializeUser = async (user: FirebaseUser, name?: string) => {
-    await ensureWorkspaceForUser(user, name);
+  const initializeUser = async (user: any, name?: string) => {
+    const profileRef = doc(db, 'profiles', user.uid);
+    const profileSnap = await getDoc(profileRef);
+
+    if (!profileSnap.exists()) {
+      // Create Workspace first
+      const workspaceRef = await addDoc(collection(db, 'workspaces'), {
+        ownerId: user.uid,
+        name: `${name || user.displayName || 'Mój'} Workspace`,
+        plan: 'free',
+        subscriptionStatus: 'trial_active',
+        trialEndsAt: addDays(new Date(), 7).toISOString(),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      // Create Profile
+      await setDoc(profileRef, {
+        email: user.email,
+        fullName: name || user.displayName,
+        workspaceId: workspaceRef.id,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    }
   };
 
   const handleGoogleLogin = async () => {
@@ -43,9 +57,10 @@ export default function Login() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       await initializeUser(result.user);
-      toast.success('Zalogowano pomyslnie');
+      toast.success('Zalogowano pomyślnie');
     } catch (error: any) {
-      toast.error(getAuthErrorMessage(error));
+      console.error(error);
+      toast.error('Błąd logowania: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -57,9 +72,9 @@ export default function Login() {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       await initializeUser(result.user);
-      toast.success('Zalogowano pomyslnie');
+      toast.success('Zalogowano pomyślnie');
     } catch (error: any) {
-      toast.error('Blad logowania: ' + error.message);
+      toast.error('Błąd logowania: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -73,9 +88,9 @@ export default function Login() {
       await updateProfile(result.user, { displayName: fullName });
       await sendEmailVerification(result.user);
       await initializeUser(result.user, fullName);
-      toast.success('Konto utworzone. Sprawdz e-mail, zeby je potwierdzic.');
+      toast.success('Konto utworzone! Sprawdź e-mail, aby potwierdzić konto.');
     } catch (error: any) {
-      toast.error('Blad rejestracji: ' + error.message);
+      toast.error('Błąd rejestracji: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -86,10 +101,10 @@ export default function Login() {
     setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email);
-      toast.success('Link do resetu hasla zostal wyslany.');
+      toast.success('Link do resetu hasła został wysłany na Twój e-mail.');
       setIsResetting(false);
     } catch (error: any) {
-      toast.error('Blad: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -97,84 +112,55 @@ export default function Login() {
 
   if (isResetting) {
     return (
-      <div className="min-h-screen px-4 py-8 app-shell-bg">
-        <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-xl items-center justify-center">
-          <div className="w-full rounded-[28px] p-6 app-surface app-shadow md:p-8">
-            <button
-              type="button"
-              onClick={() => setIsResetting(false)}
-              className="mb-5 inline-flex items-center gap-2 text-sm font-medium app-muted transition-colors hover:app-text"
-            >
-              <ArrowLeft className="h-4 w-4" /> Wroc do logowania
-            </button>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Resetuj hasło</h2>
+          <p className="text-slate-500 mb-6">Wpisz swój e-mail, aby otrzymać link do resetu hasła.</p>
+          <form onSubmit={handleResetPassword} className="space-y-4">
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold app-text">Reset hasla</h2>
-              <p className="text-sm app-muted">Wpisz e-mail i wyslij link do ustawienia nowego hasla.</p>
+              <Label htmlFor="reset-email">E-mail</Label>
+              <Input 
+                id="reset-email" 
+                type="email" 
+                placeholder="twoj@email.pl" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
-            <form onSubmit={handleResetPassword} className="mt-6 space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="reset-email">E-mail</Label>
-                <Input
-                  id="reset-email"
-                  type="email"
-                  placeholder="twoj@email.pl"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <Button type="submit" className="h-11 w-full rounded-2xl font-semibold" disabled={loading}>
-                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Wyslij link resetujacy'}
-              </Button>
-            </form>
-          </div>
+            <Button type="submit" className="w-full h-12 rounded-xl" disabled={loading}>
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Wyślij link'}
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="w-full" 
+              onClick={() => setIsResetting(false)}
+              disabled={loading}
+            >
+              Wróć do logowania
+            </Button>
+          </form>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen px-4 py-8 app-shell-bg">
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-6xl items-center gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <section className="hidden rounded-[32px] p-8 app-surface app-shadow lg:block xl:p-10">
-          <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
-            <Sparkles className="h-3.5 w-3.5" /> System uruchamiania klienta
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+      <div className="max-w-md w-full">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl shadow-lg shadow-primary/20 mb-6">
+            <CheckCircle2 className="w-10 h-10 text-white" />
           </div>
-          <div className="mt-6 flex h-16 w-16 items-center justify-center rounded-[24px] app-primary-chip">
-            <CheckCircle2 className="h-9 w-9" />
-          </div>
-          <h1 className="mt-6 text-4xl font-bold leading-tight app-text">CloseDock porzadkuje sprzedaz i start realizacji w jednym miejscu.</h1>
-          <p className="mt-4 max-w-xl text-base app-muted">
-            Jeden ekran na dzis, jedna baza leadow, zadania, kalendarz, sprawy i portal klienta. Bez latania miedzy notatkami i chaosem.
-          </p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Forteca</h1>
+          <p className="text-slate-500">Zintegrowany system uruchamiania klienta.</p>
+        </div>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {[
-              ['Dzis', 'Od razu widzisz, co trzeba ruszyc teraz.'],
-              ['Leady', 'Kazdy rekord ma nastepny krok i termin.'],
-              ['Sprawy', 'Po wygraniu leada przechodzisz plynnie do realizacji.'],
-            ].map(([title, text]) => (
-              <div key={title} className="rounded-2xl p-4 app-surface-strong">
-                <p className="text-sm font-bold app-text">{title}</p>
-                <p className="mt-2 text-sm app-muted">{text}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-[28px] p-6 app-surface app-shadow md:p-8">
-          <div className="mb-6 text-center lg:hidden">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[24px] app-primary-chip">
-              <CheckCircle2 className="h-9 w-9" />
-            </div>
-            <h1 className="text-3xl font-bold app-text">CloseDock</h1>
-            <p className="mt-2 text-sm app-muted">Zaloguj sie i wroc do pracy z leadami oraz sprawami.</p>
-          </div>
-
+        <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
           <Tabs defaultValue="login" className="space-y-6">
-            <TabsList className="grid h-auto w-full grid-cols-2 rounded-2xl p-1.5">
-              <TabsTrigger value="login" className="min-h-11 rounded-xl">Logowanie</TabsTrigger>
-              <TabsTrigger value="register" className="min-h-11 rounded-xl">Rejestracja</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 p-1 bg-slate-100 rounded-xl">
+              <TabsTrigger value="login" className="rounded-lg">Logowanie</TabsTrigger>
+              <TabsTrigger value="register" className="rounded-lg">Rejestracja</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login" className="space-y-6">
@@ -182,126 +168,125 @@ export default function Login() {
                 <div className="space-y-2">
                   <Label htmlFor="email">E-mail</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 app-muted" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="twoj@email.pl"
-                      className="h-11 pl-10"
+                    <Mail className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder="twoj@email.pl" 
+                      className="pl-10 h-11"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>
                 </div>
-
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <Label htmlFor="password">Haslo</Label>
-                    <button
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="password">Hasło</Label>
+                    <button 
                       type="button"
                       onClick={() => setIsResetting(true)}
-                      className="text-xs font-semibold"
-                      style={{ color: 'var(--app-primary)' }}
+                      className="text-xs text-primary hover:underline"
                     >
-                      Zapomniales hasla?
+                      Zapomniałeś hasła?
                     </button>
                   </div>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 app-muted" />
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="********"
-                      className="h-11 pl-10"
+                    <Lock className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
+                    <Input 
+                      id="password" 
+                      type="password" 
+                      placeholder="••••••••" 
+                      className="pl-10 h-11"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
                   </div>
                 </div>
-
-                <Button type="submit" className="h-11 w-full rounded-2xl font-semibold" disabled={loading}>
-                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Zaloguj sie'}
+                <Button type="submit" className="w-full h-11 rounded-xl font-semibold" disabled={loading}>
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Zaloguj się'}
                 </Button>
               </form>
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full app-border border-t"></span>
+                  <span className="w-full border-t border-slate-100"></span>
                 </div>
-                <div className="relative flex justify-center text-xs uppercase tracking-[0.16em]">
-                  <span className="px-3 app-surface app-muted">albo</span>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-slate-400">Lub kontynuuj przez</span>
                 </div>
               </div>
 
-              <Button
+              <Button 
                 variant="outline"
                 onClick={handleGoogleLogin}
-                className="h-11 w-full rounded-2xl text-base font-semibold"
+                className="w-full h-11 rounded-xl flex items-center justify-center gap-3 text-base font-semibold transition-all hover:bg-slate-50"
                 disabled={loading}
               >
-                <LogIn className="h-5 w-5" /> Google
+                <LogIn className="w-5 h-5" />
+                Google
               </Button>
             </TabsContent>
 
             <TabsContent value="register" className="space-y-6">
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="reg-name">Imie i nazwisko</Label>
+                  <Label htmlFor="reg-name">Imię i nazwisko</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 app-muted" />
-                    <Input
-                      id="reg-name"
-                      placeholder="Jan Kowalski"
-                      className="h-11 pl-10"
+                    <User className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
+                    <Input 
+                      id="reg-name" 
+                      placeholder="Jan Kowalski" 
+                      className="pl-10 h-11"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       required
                     />
                   </div>
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="reg-email">E-mail</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 app-muted" />
-                    <Input
-                      id="reg-email"
-                      type="email"
-                      placeholder="twoj@email.pl"
-                      className="h-11 pl-10"
+                    <Mail className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
+                    <Input 
+                      id="reg-email" 
+                      type="email" 
+                      placeholder="twoj@email.pl" 
+                      className="pl-10 h-11"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>
                 </div>
-
                 <div className="space-y-2">
-                  <Label htmlFor="reg-password">Haslo</Label>
+                  <Label htmlFor="reg-password">Hasło</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 app-muted" />
-                    <Input
-                      id="reg-password"
-                      type="password"
-                      placeholder="Minimum 8 znakow"
-                      className="h-11 pl-10"
+                    <Lock className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
+                    <Input 
+                      id="reg-password" 
+                      type="password" 
+                      placeholder="Min. 8 znaków" 
+                      className="pl-10 h-11"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      minLength={8}
                       required
+                      minLength={8}
                     />
                   </div>
                 </div>
-
-                <Button type="submit" className="h-11 w-full rounded-2xl font-semibold" disabled={loading}>
-                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Utworz konto'}
+                <Button type="submit" className="w-full h-11 rounded-xl font-semibold" disabled={loading}>
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Utwórz konto'}
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
-        </section>
+
+          <p className="text-center text-[10px] text-slate-400 mt-6">
+            Logując się, akceptujesz regulamin i politykę prywatności.
+          </p>
+        </div>
       </div>
     </div>
   );

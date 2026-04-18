@@ -1,239 +1,105 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-  query,
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { db, auth } from '../firebase';
+import { 
+  doc, 
+  getDoc, 
+  collection, 
+  query, 
+  onSnapshot, 
+  orderBy, 
+  addDoc, 
+  updateDoc, 
   serverTimestamp,
+  deleteDoc,
   setDoc,
-  updateDoc,
-  where,
+  where
 } from 'firebase/firestore';
-import { format } from 'date-fns';
-import { pl } from 'date-fns/locale';
-import {
-  AlertCircle,
-  ArrowLeft,
-  Check,
-  CheckCircle2,
-  Copy,
-  ExternalLink,
-  FileText,
-  History,
-  Link2,
-  Loader2,
-  MessageSquare,
-  MoreVertical,
-  Paperclip,
-  Plus,
-  Send,
-  ShieldAlert,
-  Trash2,
-  X,
-} from 'lucide-react';
-import { toast } from 'sonner';
-
-import { auth, db } from '../firebase';
-import { ConfirmDialog } from '../components/confirm-dialog';
-import { generatePortalToken, sha256Hex } from '../lib/security';
-import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
+import { 
+  ArrowLeft, 
+  Plus, 
+  Send, 
+  CheckCircle2, 
+  Clock, 
+  AlertCircle, 
+  FileText, 
+  MoreVertical,
+  Trash2,
+  Check,
+  X,
+  ExternalLink,
+  Copy,
+  History,
+  Paperclip,
+  MessageSquare
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger,
+  DialogFooter
+} from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { ScrollArea } from '../components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
-import { deleteCaseWithRelations } from '../lib/cases';
-
-type CaseRecord = {
-  id: string;
-  title?: string;
-  clientName?: string;
-  clientId?: string;
-  clientEmail?: string;
-  clientPhone?: string;
-  company?: string;
-  portalReady?: boolean;
-  status?: string;
-  completenessPercent?: number;
-  leadId?: string;
-  updatedAt?: { toDate?: () => Date } | null;
-};
-
-type CaseItemRecord = {
-  id: string;
-  title?: string;
-  description?: string;
-  type?: string;
-  isRequired?: boolean;
-  status?: 'missing' | 'uploaded' | 'accepted' | 'rejected';
-  dueDate?: string;
-};
-
-type ActivityRecord = {
-  id: string;
-  eventType?: string;
-  payload?: Record<string, any>;
-  createdAt?: { toDate?: () => Date } | null;
-};
-
-type LeadSummary = {
-  id: string;
-  name?: string;
-  status?: string;
-  nextStep?: string;
-  nextActionAt?: string;
-};
-
-const ITEM_FILTERS = [
-  { value: 'all', label: 'Wszystko' },
-  { value: 'missing', label: 'Braki' },
-  { value: 'uploaded', label: 'Do akceptacji' },
-  { value: 'accepted', label: 'Zaakceptowane' },
-  { value: 'rejected', label: 'Odrzucone' },
-] as const;
-
-type ItemFilter = (typeof ITEM_FILTERS)[number]['value'];
-
-function caseStatusLabel(status?: string) {
-  switch (status) {
-    case 'waiting_on_client':
-      return 'Czeka na klienta';
-    case 'blocked':
-      return 'Zablokowana';
-    case 'ready_to_start':
-      return 'Gotowa do startu';
-    case 'to_approve':
-      return 'Do akceptacji';
-    case 'in_progress':
-      return 'W toku';
-    case 'completed':
-      return 'Zakończona';
-    default:
-      return 'W realizacji';
-  }
-}
-
-function caseStatusVariant(status?: string): 'default' | 'secondary' | 'destructive' | 'outline' {
-  if (status === 'blocked') return 'destructive';
-  if (status === 'ready_to_start' || status === 'completed') return 'secondary';
-  return 'outline';
-}
-
-function itemStatusLabel(status?: string) {
-  switch (status) {
-    case 'uploaded':
-      return 'Wysłane / do akceptacji';
-    case 'accepted':
-      return 'Zaakceptowane';
-    case 'rejected':
-      return 'Odrzucone';
-    default:
-      return 'Brak';
-  }
-}
-
-function itemStatusVariant(status?: string): 'default' | 'secondary' | 'destructive' | 'outline' {
-  if (status === 'accepted') return 'secondary';
-  if (status === 'rejected') return 'destructive';
-  if (status === 'uploaded') return 'default';
-  return 'outline';
-}
-
-function activityLabel(eventType?: string, payload?: Record<string, any>) {
-  switch (eventType) {
-    case 'item_added':
-      return 'Dodano element checklisty';
-    case 'status_changed':
-      return 'Zmieniono status elementu';
-    case 'portal_reminder_sent':
-      return 'Wysłano przypomnienie';
-    default:
-      return payload?.title || 'Aktywność';
-  }
-}
-
-function activityDescription(payload?: Record<string, any>) {
-  if (!payload) return '';
-  if (payload.title && payload.status) {
-    return `${payload.title} → ${itemStatusLabel(payload.status)}`;
-  }
-  if (payload.title) return payload.title;
-  return '';
-}
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '../components/ui/dropdown-menu';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { ScrollArea } from '../components/ui/scroll-area';
+import Layout from '../components/Layout';
 
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
-
-  const [caseData, setCaseData] = useState<CaseRecord | null>(null);
-  const [items, setItems] = useState<CaseItemRecord[]>([]);
-  const [activities, setActivities] = useState<ActivityRecord[]>([]);
-  const [linkedLead, setLinkedLead] = useState<LeadSummary | null>(null);
+  const [caseData, setCaseData] = useState<any>(null);
+  const [items, setItems] = useState<any[]>([]);
+  const [activities, setActivities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
-  const [itemFilter, setItemFilter] = useState<ItemFilter>('all');
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [deletePending, setDeletePending] = useState(false);
-  const [newItem, setNewItem] = useState({
-    title: '',
-    description: '',
-    type: 'file',
-    isRequired: true,
-    dueDate: '',
-  });
+  const [newItem, setNewItem] = useState({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
 
   useEffect(() => {
     if (!caseId) return;
 
     const caseRef = doc(db, 'cases', caseId);
-    const unsubscribeCase = onSnapshot(caseRef, async (snapshot) => {
-      if (!snapshot.exists()) {
-        toast.error('Sprawa nie istnieje');
-        navigate('/cases');
-        return;
-      }
-
-      const data = { id: snapshot.id, ...(snapshot.data() as Omit<CaseRecord, 'id'>) };
-      setCaseData(data);
-
-      if (data.leadId) {
-        const leadSnapshot = await getDoc(doc(db, 'leads', data.leadId));
-        if (leadSnapshot.exists()) {
-          setLinkedLead({ id: leadSnapshot.id, ...(leadSnapshot.data() as Omit<LeadSummary, 'id'>) });
-        } else {
-          setLinkedLead(null);
-        }
+    const unsubscribeCase = onSnapshot(caseRef, (doc) => {
+      if (doc.exists()) {
+        setCaseData({ id: doc.id, ...doc.data() });
       } else {
-        setLinkedLead(null);
+        toast.error('Sprawa nie istnieje');
+        navigate('/');
       }
     });
 
     const itemsRef = collection(db, 'cases', caseId, 'items');
     const qItems = query(itemsRef, orderBy('order', 'asc'));
-    const unsubscribeItems = onSnapshot(qItems, async (snapshot) => {
-      const itemsData = snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<CaseItemRecord, 'id'>) }));
+    const unsubscribeItems = onSnapshot(qItems, (snapshot) => {
+      const itemsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
       setItems(itemsData);
       setLoading(false);
-
+      
+      // Update completeness percent and status
       if (itemsData.length > 0) {
-        const accepted = itemsData.filter((item) => item.status === 'accepted').length;
-        const percent = (accepted / itemsData.length) * 100;
-        const hasBlocked = itemsData.some((item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected'));
-        const hasToApprove = itemsData.some((item) => item.status === 'uploaded');
-        const allAccepted = itemsData.every((item) => item.status === 'accepted');
-
+        const completed = itemsData.filter(i => i.status === 'accepted').length;
+        const percent = (completed / itemsData.length) * 100;
+        
+        // Determine status
         let newStatus = 'in_progress';
+        const hasBlocked = itemsData.some(i => i.isRequired && (i.status === 'missing' || i.status === 'rejected'));
+        const hasToApprove = itemsData.some(i => i.status === 'uploaded');
+        const allAccepted = itemsData.every(i => i.status === 'accepted');
+
         if (allAccepted) {
           newStatus = 'completed';
         } else if (hasBlocked) {
@@ -244,22 +110,22 @@ export default function CaseDetail() {
           newStatus = 'waiting_on_client';
         }
 
-        await updateDoc(caseRef, {
-          completenessPercent: percent,
+        updateDoc(caseRef, { 
+          completenessPercent: percent, 
           status: newStatus,
-          updatedAt: serverTimestamp(),
+          updatedAt: serverTimestamp() 
         });
       }
     });
 
     const activitiesRef = collection(db, 'activities');
     const qActivities = query(
-      activitiesRef,
+      activitiesRef, 
       where('caseId', '==', caseId),
       orderBy('createdAt', 'desc')
     );
     const unsubscribeActivities = onSnapshot(qActivities, (snapshot) => {
-      setActivities(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ActivityRecord, 'id'>) })));
+      setActivities(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     });
 
     return () => {
@@ -269,36 +135,8 @@ export default function CaseDetail() {
     };
   }, [caseId, navigate]);
 
-  const filteredItems = useMemo(() => {
-    if (itemFilter === 'all') return items;
-    return items.filter((item) => item.status === itemFilter);
-  }, [itemFilter, items]);
-
-  const metrics = useMemo(() => {
-    const required = items.filter((item) => item.isRequired !== false);
-    return {
-      total: items.length,
-      requiredMissing: required.filter((item) => item.status === 'missing' || item.status === 'rejected').length,
-      toApprove: items.filter((item) => item.status === 'uploaded').length,
-      accepted: items.filter((item) => item.status === 'accepted').length,
-    };
-  }, [items]);
-
-  async function logActivity(eventType: string, payload: Record<string, any>) {
-    await addDoc(collection(db, 'activities'), {
-      caseId,
-      ownerId: auth.currentUser?.uid,
-      actorId: auth.currentUser?.uid,
-      actorType: 'operator',
-      eventType,
-      payload,
-      createdAt: serverTimestamp(),
-    });
-  }
-
-  async function handleAddItem() {
-    if (!newItem.title.trim()) return;
-
+  const handleAddItem = async () => {
+    if (!newItem.title) return;
     try {
       await addDoc(collection(db, 'cases', caseId!, 'items'), {
         ...newItem,
@@ -307,411 +145,342 @@ export default function CaseDetail() {
         order: items.length,
         createdAt: serverTimestamp(),
       });
-      await logActivity('item_added', { title: newItem.title.trim() });
+      
+      await addDoc(collection(db, 'activities'), {
+        caseId,
+        ownerId: auth.currentUser?.uid,
+        actorId: auth.currentUser?.uid,
+        actorType: 'operator',
+        eventType: 'item_added',
+        payload: { title: newItem.title },
+        createdAt: serverTimestamp(),
+      });
+
       setIsAddItemOpen(false);
       setNewItem({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
       toast.success('Element dodany');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
-  }
+  };
 
-  async function handleUpdateItemStatus(itemId: string, status: string, title: string) {
+  const handleUpdateItemStatus = async (itemId: string, status: string, title: string) => {
     try {
-      await updateDoc(doc(db, 'cases', caseId!, 'items', itemId), {
-        status,
-        approvedAt: status === 'accepted' ? serverTimestamp() : null,
+      await updateDoc(doc(db, 'cases', caseId!, 'items', itemId), { 
+        status, 
+        approvedAt: status === 'accepted' ? serverTimestamp() : null 
       });
-      await logActivity('status_changed', { title, status });
+      
+      await addDoc(collection(db, 'activities'), {
+        caseId,
+        ownerId: auth.currentUser?.uid,
+        actorId: auth.currentUser?.uid,
+        actorType: 'operator',
+        eventType: 'status_changed',
+        payload: { title, status },
+        createdAt: serverTimestamp(),
+      });
+
       toast.success('Status zaktualizowany');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
-  }
+  };
 
-  async function handleDeleteItem(itemId: string) {
+  const handleDeleteItem = async (itemId: string) => {
     try {
       await deleteDoc(doc(db, 'cases', caseId!, 'items', itemId));
       toast.success('Element usunięty');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
-  }
+  };
 
-  async function generatePortalLink() {
-    const token = generatePortalToken();
-    const tokenHash = await sha256Hex(token);
-    const tokenRef = doc(db, 'client_portal_tokens', tokenHash);
-    const expiresAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+  const generatePortalLink = async () => {
+    const token = Math.random().toString(36).substring(2, 15);
+    const tokenRef = doc(db, 'client_portal_tokens', caseId!);
     await setDoc(tokenRef, {
       caseId,
-      tokenHash,
-      createdBy: auth.currentUser?.uid,
-      expiresAt,
-      revokedAt: null,
+      token,
       createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
     });
-
-    await updateDoc(doc(db, 'cases', caseId!), {
-      portalReady: true,
-      portalTokenHash: tokenHash,
-      portalExpiresAt: expiresAt,
-      portalGeneratedAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-
-    if (caseData?.clientId) {
-      await setDoc(doc(db, 'clients', caseData.clientId), {
-        portalReady: true,
-        updatedAt: serverTimestamp(),
-      }, { merge: true });
-    }
-
-    const url = `${window.location.origin}/portal/${token}`;
+    
+    const url = `${window.location.origin}/portal/${caseId}/${token}`;
     navigator.clipboard.writeText(url);
-    toast.success('Link do panelu skopiowany');
-  }
+    toast.success('Link do panelu skopiowany!');
+  };
 
-  async function sendReminderPlaceholder() {
-    await logActivity('portal_reminder_sent', { title: 'Operator wysłał przypomnienie do klienta.' });
-    toast.success('Przypomnienie zapisane w historii sprawy');
-  }
-
-  async function handleDeleteCase() {
-    if (!caseId) return;
-
-    try {
-      setDeletePending(true);
-      await deleteCaseWithRelations(caseId);
-      toast.success('Sprawa usunięta');
-      navigate('/cases');
-    } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
-    } finally {
-      setDeletePending(false);
-      setIsDeleteOpen(false);
-    }
-  }
-
-  if (loading || !caseData) {
-    return (
-      <Layout>
-        <div className="flex h-full items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[color:var(--app-primary)]" />
-        </div>
-      </Layout>
-    );
-  }
-
-  const completeness = Math.round(caseData.completenessPercent || 0);
-  const updatedAt = caseData.updatedAt?.toDate ? caseData.updatedAt.toDate() : null;
+  if (loading || !caseData) return null;
 
   return (
     <Layout>
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="flex min-w-0 items-start gap-3">
-            <Link to="/cases">
-              <Button variant="outline" size="icon" className="rounded-2xl">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link to="/cases" className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+              <ArrowLeft className="w-5 h-5 text-slate-600" />
             </Link>
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="truncate text-2xl font-bold app-text md:text-3xl">{caseData.title || 'Sprawa bez tytułu'}</h1>
-                <Badge variant={caseStatusVariant(caseData.status)}>{caseStatusLabel(caseData.status)}</Badge>
-                {metrics.requiredMissing > 0 ? <Badge variant="destructive">Blokery</Badge> : null}
-              </div>
-              <p className="mt-1 text-sm app-muted">
-                Tu pilnujesz wejścia klienta w realizację: braków, akceptacji, blokad i gotowości do startu.
+            <div>
+              <h1 className="text-lg font-bold text-slate-900 truncate max-w-[200px] sm:max-w-md">
+                {caseData.title}
+              </h1>
+              <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">
+                Klient: {caseData.clientName}
               </p>
-              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm app-muted">
-                <span>Klient: {caseData.clientName || 'Brak nazwy klienta'}</span>
-                <span>Ostatni ruch: {updatedAt ? format(updatedAt, 'd MMMM yyyy', { locale: pl }) : 'Brak'}</span>
-              </div>
             </div>
           </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <Dialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-2xl">
-                  <Plus className="h-4 w-4" /> Dodaj element
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Dodaj element checklisty</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 py-2">
-                  <div className="space-y-2">
-                    <Label>Tytuł</Label>
-                    <Input value={newItem.title} onChange={(event) => setNewItem((prev) => ({ ...prev, title: event.target.value }))} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Opis</Label>
-                    <Textarea value={newItem.description} onChange={(event) => setNewItem((prev) => ({ ...prev, description: event.target.value }))} rows={3} />
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label>Typ</Label>
-                      <Input value={newItem.type} onChange={(event) => setNewItem((prev) => ({ ...prev, type: event.target.value }))} placeholder="file / approval / decision" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Termin</Label>
-                      <Input type="date" value={newItem.dueDate} onChange={(event) => setNewItem((prev) => ({ ...prev, dueDate: event.target.value }))} />
-                    </div>
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="button" onClick={handleAddItem} className="rounded-2xl">Dodaj</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
-            <Button variant="outline" className="rounded-2xl" onClick={generatePortalLink}>
-              <Copy className="h-4 w-4" /> Link portalu
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="hidden sm:flex gap-2" onClick={generatePortalLink}>
+              <Copy className="w-4 h-4" />
+              Kopiuj link dla klienta
             </Button>
-            <Button className="rounded-2xl" onClick={sendReminderPlaceholder}>
-              <Send className="h-4 w-4" /> Zapisz przypomnienie
-            </Button>
-            <Button variant="outline" className="rounded-2xl text-rose-500 hover:text-rose-500" onClick={() => setIsDeleteOpen(true)}>
-              <Trash2 className="h-4 w-4" /> Usuń sprawę
+            <Button size="sm" className="gap-2">
+              <Send className="w-4 h-4" />
+              Wyślij przypomnienie
             </Button>
           </div>
         </div>
+      </header>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <Card className="border-none app-surface-strong">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Kompletność</p>
-                <p className="mt-2 text-2xl font-bold app-text">{completeness}%</p>
-              </div>
-              <div className="rounded-2xl p-3 app-primary-chip"><CheckCircle2 className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Braki wymagane</p>
-                <p className="mt-2 text-2xl font-bold text-rose-500">{metrics.requiredMissing}</p>
-              </div>
-              <div className="rounded-2xl bg-rose-500/12 p-3 text-rose-500"><ShieldAlert className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Do akceptacji</p>
-                <p className="mt-2 text-2xl font-bold text-amber-500">{metrics.toApprove}</p>
-              </div>
-              <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-500"><AlertCircle className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Źródło</p>
-                <p className="mt-2 text-2xl font-bold app-text">{linkedLead ? 'Lead' : 'Ręczne'}</p>
-              </div>
-              <div className="rounded-2xl bg-sky-500/12 p-3 text-sky-500"><Link2 className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-        </section>
-
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.95fr)]">
-          <div className="space-y-6">
-            <Card className="border-none app-surface-strong">
-              <CardHeader>
-                <CardTitle className="text-xl">Postęp i logika blokad</CardTitle>
-                <CardDescription>
-                  To jest główna warstwa operacyjna po wygraniu leada. Widzisz, czego brakuje i co blokuje start.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="rounded-2xl border p-4 app-border app-surface">
-                  <div className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.16em] app-muted">
-                    <span>Kompletność sprawy</span>
-                    <span>{completeness}%</span>
-                  </div>
-                  <Progress value={completeness} className="h-2" />
-                  <p className="mt-3 text-sm app-muted">
-                    {caseData.status === 'blocked'
-                      ? 'Wymagane elementy wciąż blokują start realizacji.'
-                      : caseData.status === 'to_approve'
-                        ? 'Klient dostarczył materiały, ale część nadal wymaga decyzji lub zatwierdzenia.'
-                        : caseData.status === 'completed'
-                          ? 'Sprawa jest domknięta i kompletna.'
-                          : 'Sprawa jest w ruchu i warto pilnować rytmu dosyłania materiałów.'}
-                  </p>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column: Details & Items */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="border-none shadow-sm overflow-hidden">
+              <CardHeader className="bg-white border-b border-slate-100 pb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <Badge variant={caseData.status === 'blocked' ? 'destructive' : 'default'} className="px-3 py-1">
+                    {caseData.status === 'new' ? 'Nowa' :
+                     caseData.status === 'waiting_on_client' ? 'Czeka na klienta' :
+                     caseData.status === 'in_progress' ? 'W realizacji' :
+                     caseData.status === 'to_approve' ? 'Do akceptacji' :
+                     caseData.status === 'blocked' ? 'Zablokowana' : 'Zakończona'}
+                  </Badge>
+                  <span className="text-sm text-slate-500 font-medium">
+                    Ostatnia zmiana: {caseData.updatedAt?.toDate().toLocaleString()}
+                  </span>
                 </div>
-
-                <Tabs value={itemFilter} onValueChange={(value) => setItemFilter(value as ItemFilter)}>
-                  <TabsList className="grid w-full grid-cols-2 gap-2 sm:grid-cols-5">
-                    {ITEM_FILTERS.map((item) => (
-                      <TabsTrigger key={item.value} value={item.value}>{item.label}</TabsTrigger>
-                    ))}
-                  </TabsList>
-                  <TabsContent value={itemFilter} className="mt-4 space-y-3">
-                    {filteredItems.length > 0 ? filteredItems.map((item) => (
-                      <Card key={item.id} className="border-none app-surface">
-                        <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
-                          <div className="min-w-0 flex-1 space-y-2">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <p className="font-semibold app-text">{item.title || 'Element bez nazwy'}</p>
-                              <Badge variant={itemStatusVariant(item.status)}>{itemStatusLabel(item.status)}</Badge>
-                              {item.isRequired !== false ? <Badge variant="outline">Wymagane</Badge> : null}
-                            </div>
-                            {item.description ? <p className="text-sm app-muted">{item.description}</p> : null}
-                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs app-muted">
-                              <span>Typ: {item.type || 'file'}</span>
-                              <span>Termin: {item.dueDate || 'Brak'}</span>
-                            </div>
-                          </div>
-                          <div className="flex flex-wrap gap-2 lg:justify-end">
-                            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleUpdateItemStatus(item.id, 'uploaded', item.title || 'Element')}>
-                              <Paperclip className="h-4 w-4" /> Otrzymane
-                            </Button>
-                            <Button variant="secondary" size="sm" className="rounded-xl" onClick={() => handleUpdateItemStatus(item.id, 'accepted', item.title || 'Element')}>
-                              <Check className="h-4 w-4" /> Akceptuj
-                            </Button>
-                            <Button variant="destructive" size="sm" className="rounded-xl" onClick={() => handleUpdateItemStatus(item.id, 'rejected', item.title || 'Element')}>
-                              <X className="h-4 w-4" /> Odrzuć
-                            </Button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="icon" className="rounded-xl"><MoreVertical className="h-4 w-4" /></Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem className="text-rose-500" onClick={() => handleDeleteItem(item.id)}>
-                                  <Trash2 className="mr-2 h-4 w-4" /> Usuń
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )) : (
-                      <Card className="border-dashed app-surface">
-                        <CardContent className="p-8 text-center">
-                          <FileText className="mx-auto mb-3 h-8 w-8 app-muted" />
-                          <p className="font-medium app-text">Brak elementów w tym widoku</p>
-                          <p className="mt-1 text-sm app-muted">Dodaj nowy element albo przełącz filtr, żeby zobaczyć inne rekordy.</p>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
-
-            <Card className="border-none app-surface-strong">
-              <CardHeader>
-                <CardTitle className="text-xl">Historia sprawy</CardTitle>
-                <CardDescription>
-                  Tu zapisują się najważniejsze ruchy operatora związane z checklistą, statusem i przypomnieniami.
-                </CardDescription>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm font-bold">
+                    <span className="text-slate-700">Postęp kompletności</span>
+                    <span className="text-primary">{Math.round(caseData.completenessPercent || 0)}%</span>
+                  </div>
+                  <Progress value={caseData.completenessPercent || 0} className="h-3" />
+                </div>
               </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-[380px] pr-4">
-                  <div className="relative space-y-4 before:absolute before:left-[0.65rem] before:top-2 before:bottom-2 before:w-px before:bg-[var(--app-border)]">
-                    {activities.length > 0 ? activities.map((activity) => (
-                      <div key={activity.id} className="relative pl-8">
-                        <div className="absolute left-0 top-1.5 h-5 w-5 rounded-full border-4 border-[var(--app-surface-elevated)] bg-[color:var(--app-primary)]" />
-                        <div className="rounded-2xl border p-4 app-border app-surface">
-                          <p className="font-semibold app-text">{activityLabel(activity.eventType, activity.payload)}</p>
-                          {activityDescription(activity.payload) ? <p className="mt-1 text-sm app-muted">{activityDescription(activity.payload)}</p> : null}
-                          <p className="mt-3 text-[11px] font-medium app-muted">
-                            {activity.createdAt?.toDate ? format(activity.createdAt.toDate(), 'd MMMM yyyy, HH:mm', { locale: pl }) : 'Teraz'}
-                          </p>
+              <CardContent className="p-0">
+                <div className="p-6 flex items-center justify-between border-b border-slate-100">
+                  <h3 className="text-lg font-bold text-slate-900">Lista wymaganych elementów</h3>
+                  <Dialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen}>
+                    <DialogTrigger asChild>
+                      <Button size="sm" variant="outline" className="gap-2">
+                        <Plus className="w-4 h-4" />
+                        Dodaj element
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Dodaj wymagany element</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label>Nazwa elementu</Label>
+                          <Input placeholder="np. Logo w formacie SVG" value={newItem.title} onChange={e => setNewItem({...newItem, title: e.target.value})} />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Opis / Instrukcja</Label>
+                          <Textarea placeholder="Wyjaśnij klientowi co dokładnie ma zrobić..." value={newItem.description} onChange={e => setNewItem({...newItem, description: e.target.value})} />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>Typ</Label>
+                            <select 
+                              className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm"
+                              value={newItem.type}
+                              onChange={e => setNewItem({...newItem, type: e.target.value})}
+                            >
+                              <option value="file">Plik</option>
+                              <option value="decision">Decyzja (Tak/Nie)</option>
+                              <option value="text">Tekst / Odpowiedź</option>
+                              <option value="access">Dostępy / Hasła</option>
+                            </select>
+                          </div>
+                          <div className="flex items-center gap-2 pt-8">
+                            <input 
+                              type="checkbox" 
+                              id="required" 
+                              checked={newItem.isRequired} 
+                              onChange={e => setNewItem({...newItem, isRequired: e.target.checked})}
+                              className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary"
+                            />
+                            <Label htmlFor="required">Obowiązkowy</Label>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Termin (opcjonalnie)</Label>
+                          <Input type="date" value={newItem.dueDate} onChange={e => setNewItem({...newItem, dueDate: e.target.value})} />
                         </div>
                       </div>
-                    )) : (
-                      <Card className="border-dashed app-surface">
-                        <CardContent className="p-8 text-center">
-                          <History className="mx-auto mb-3 h-8 w-8 app-muted" />
-                          <p className="font-medium app-text">Historia sprawy jest jeszcze pusta.</p>
-                          <p className="mt-1 text-sm app-muted">Dodaj element, zmień status albo zapisz przypomnienie, a oś zacznie się wypełniać.</p>
-                        </CardContent>
-                      </Card>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsAddItemOpen(false)}>Anuluj</Button>
+                        <Button onClick={handleAddItem}>Dodaj element</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                <div className="divide-y divide-slate-100">
+                  {items.length === 0 ? (
+                    <div className="p-12 text-center">
+                      <FileText className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                      <p className="text-slate-500">Brak elementów. Dodaj pierwszy element, aby zacząć.</p>
+                    </div>
+                  ) : (
+                    items.map((item) => (
+                      <div key={item.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center gap-4 group">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                          item.status === 'accepted' ? 'bg-green-100 text-green-600' :
+                          item.status === 'uploaded' ? 'bg-blue-100 text-blue-600' :
+                          item.status === 'rejected' ? 'bg-red-100 text-red-600' :
+                          'bg-slate-100 text-slate-400'
+                        }`}>
+                          {item.status === 'accepted' ? <CheckCircle2 className="w-5 h-5" /> :
+                           item.status === 'uploaded' ? <Clock className="w-5 h-5" /> :
+                           item.status === 'rejected' ? <AlertCircle className="w-5 h-5" /> :
+                           <FileText className="w-5 h-5" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-bold text-slate-900 truncate">{item.title}</h4>
+                            {item.isRequired && <Badge variant="outline" className="text-[10px] h-4 px-1.5 border-red-200 text-red-500">Wymagane</Badge>}
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-2 text-xs text-slate-500">
+                              <span className="truncate">{item.description || 'Brak opisu'}</span>
+                              {item.dueDate && (
+                                <span className="flex items-center gap-1 text-amber-600 font-medium shrink-0">
+                                  <Clock className="w-3 h-3" />
+                                  {new Date(item.dueDate).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                            {(item.fileUrl || item.response) && (
+                              <div className="mt-2 p-2 bg-slate-100 rounded-lg text-xs space-y-1">
+                                {item.fileUrl && (
+                                  <a 
+                                    href={item.fileUrl} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1 text-primary hover:underline font-medium"
+                                  >
+                                    <Paperclip className="w-3 h-3" />
+                                    {item.fileName || 'Pobierz plik'}
+                                  </a>
+                                )}
+                                {item.response && (
+                                  <p className="text-slate-600 italic flex items-start gap-1">
+                                    <MessageSquare className="w-3 h-3 mt-0.5 shrink-0" />
+                                    {item.response}
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {item.status === 'uploaded' && (
+                            <div className="flex items-center gap-1">
+                              <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600 hover:bg-green-50" onClick={() => handleUpdateItemStatus(item.id, 'accepted', item.title)}>
+                                <Check className="w-4 h-4" />
+                              </Button>
+                              <Button size="icon" variant="ghost" className="h-8 w-8 text-red-600 hover:bg-red-50" onClick={() => handleUpdateItemStatus(item.id, 'rejected', item.title)}>
+                                <X className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          )}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <MoreVertical className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteItem(item.id)}>
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Usuń
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column: Activity & Info */}
+          <div className="space-y-6">
+            <Card className="border-none shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <History className="w-5 h-5 text-slate-400" />
+                  Ostatnia aktywność
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <ScrollArea className="h-[400px] px-6 pb-6">
+                  <div className="space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
+                    {activities.length === 0 ? (
+                      <p className="text-center text-slate-400 py-8 text-sm">Brak aktywności</p>
+                    ) : (
+                      activities.map((activity) => (
+                        <div key={activity.id} className="relative pl-8">
+                          <div className={`absolute left-0 top-1 w-4 h-4 rounded-full border-2 border-white shadow-sm ${
+                            activity.actorType === 'operator' ? 'bg-primary' : 'bg-green-500'
+                          }`} />
+                          <p className="text-sm font-medium text-slate-900">
+                            {activity.actorType === 'operator' ? 'Ty' : 'Klient'}
+                            <span className="font-normal text-slate-500 ml-1">
+                              {activity.eventType === 'item_added' ? `dodał element: ${activity.payload.title}` :
+                               activity.eventType === 'status_changed' ? `zmienił status ${activity.payload.title} na ${activity.payload.status}` :
+                               activity.eventType === 'file_uploaded' ? `wgrał plik do: ${activity.payload.title}` :
+                               activity.eventType === 'decision_made' ? `podjął decyzję w: ${activity.payload.title}` :
+                               'wykonał akcję'}
+                            </span>
+                          </p>
+                          <p className="text-[10px] text-slate-400 mt-0.5">
+                            {activity.createdAt?.toDate().toLocaleString()}
+                          </p>
+                        </div>
+                      ))
                     )}
                   </div>
                 </ScrollArea>
               </CardContent>
             </Card>
-          </div>
 
-          <aside className="space-y-6">
-            {linkedLead ? (
-              <Card className="border-none app-surface-strong">
-                <CardHeader>
-                  <CardTitle className="text-xl">Handoff z leada</CardTitle>
-                  <CardDescription>
-                    Ta sprawa przyszła z warstwy sprzedażowej. Możesz wrócić do rekordu źródłowego i sprawdzić kontekst.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="rounded-2xl border p-4 app-border app-surface">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] app-muted">Lead źródłowy</p>
-                    <p className="mt-1 font-semibold app-text">{linkedLead.name || 'Lead bez nazwy'}</p>
-                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm app-muted">
-                      <span>Status: {linkedLead.status || 'Brak'}</span>
-                      <span>Kolejny krok: {linkedLead.nextStep || 'Brak'}</span>
-                    </div>
-                    <Button variant="outline" className="mt-3 rounded-2xl" asChild>
-                      <Link to={`/leads/${linkedLead.id}`}>
-                        Otwórz leada <ExternalLink className="h-4 w-4" />
-                      </Link>
-                    </Button>
+            <Card className="border-none shadow-sm bg-primary text-white">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="bg-white/20 p-3 rounded-xl">
+                    <ExternalLink className="w-6 h-6 text-white" />
                   </div>
-                </CardContent>
-              </Card>
-            ) : null}
-
-            <Card className="border-none app-surface-strong">
-              <CardHeader>
-                <CardTitle className="text-xl">Panel operatora</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="rounded-2xl border p-4 app-border app-surface">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] app-muted">Co zrobić teraz</p>
-                  <p className="mt-1 text-sm app-text">
-                    {metrics.requiredMissing > 0
-                      ? 'Najpierw odblokuj brakujące lub odrzucone elementy.'
-                      : metrics.toApprove > 0
-                        ? 'Następnie przejdź przez rzeczy oczekujące na akceptację.'
-                        : 'Sprawa wygląda czysto. Możesz przejść do dalszej realizacji albo wysłać portal klientowi.'}
-                  </p>
+                  <div>
+                    <h4 className="font-bold">Panel Klienta</h4>
+                    <p className="text-xs text-white/70">Udostępnij ten link klientowi.</p>
+                  </div>
                 </div>
-                <div className="rounded-2xl border p-4 app-border app-surface">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] app-muted">Portal klienta</p>
-                  <p className="mt-1 text-sm app-muted">Link generowany jest lokalnie i trafia od razu do schowka, żeby łatwo wysłać go dalej.</p>
-                  <Button variant="outline" className="mt-3 rounded-2xl" onClick={generatePortalLink}>
-                    <Copy className="h-4 w-4" /> Kopiuj link portalu
-                  </Button>
-                </div>
-                <div className="rounded-2xl border p-4 app-border app-surface">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] app-muted">Notatka operacyjna</p>
-                  <p className="mt-1 text-sm app-muted">Najważniejsze: po wygraniu leada nie gubisz kontekstu, bo sprawa ma połączenie z rekordem sprzedażowym.</p>
-                </div>
+                <Button variant="secondary" className="w-full gap-2" onClick={generatePortalLink}>
+                  <Copy className="w-4 h-4" />
+                  Kopiuj link dostępu
+                </Button>
               </CardContent>
             </Card>
-          </aside>
+          </div>
         </div>
-        <ConfirmDialog
-          open={isDeleteOpen}
-          onOpenChange={(open) => {
-            if (!deletePending) setIsDeleteOpen(open);
-          }}
-          title="Usunąć sprawę?"
-          description={`Sprawa "${caseData.title || 'bez tytułu'}" zostanie usunięta razem z checklistą i aktywnościami, ale bez kasowania leada, klienta, zadań i wydarzeń.`}
-          confirmLabel="Usuń sprawę"
-          pending={deletePending}
-          onConfirm={handleDeleteCase}
-        />
-      </div>
+      </main>
     </Layout>
   );
 }

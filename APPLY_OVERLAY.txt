@@ -1,0 +1,17 @@
+To jest hotfix overlay na czysty branch dev-rollout-freeze.
+
+Kroki:
+1. Rozpakuj ZIP.
+2. Skopiuj jego zawartość na repo leadflowv1-fresh.
+3. Uruchom:
+   npm.cmd install
+   npm.cmd run lint
+   npm.cmd run build
+4. Jeśli wszystko przejdzie:
+   git add .
+   git commit -m "Fix calendar live sync and recurrence compatibility"
+   git push origin dev-rollout-freeze
+
+Uwagi:
+- Ten overlay nie jest pełnym repo. To bezpieczna paczka naprawcza na czysty branch.
+- Zawiera poprawkę zgodności useWorkspace + scheduling oraz strony objęte zmianą kalendarza / tasków / leadów.
