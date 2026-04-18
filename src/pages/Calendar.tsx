@@ -122,6 +122,63 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
   };
 }
 
+function getEntrySubtitle(entry: ScheduleEntry) {
+  const typedLabel = typeof entry.raw?.type === 'string' && entry.raw.type
+    ? `Typ: ${entry.raw.type}`
+    : entry.kind === 'event'
+      ? 'Wydarzenie w kalendarzu'
+      : entry.kind === 'task'
+        ? 'Zadanie w planie'
+        : 'Ruch leadowy';
+
+  if (entry.leadName) {
+    return `Lead: ${entry.leadName} • ${typedLabel}`;
+  }
+
+  return typedLabel;
+}
+
+type ScheduleEntryCardProps = {
+  entry: ScheduleEntry;
+  actionButtonClass: string;
+  actionPendingId: string | null;
+  onEdit: (entry: ScheduleEntry) => void;
+  onShift: (entry: ScheduleEntry, days: number) => void;
+  onComplete: (entry: ScheduleEntry) => void;
+};
+
+function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, onShift, onComplete }: ScheduleEntryCardProps) {
+  const pendingEdit = actionPendingId === `${entry.id}:edit`;
+  const pendingDay = actionPendingId === `${entry.id}:1`;
+  const pendingWeek = actionPendingId === `${entry.id}:7`;
+  const pendingDone = actionPendingId === `${entry.id}:done`;
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <Badge className={`${getEntryTone(entry)} border`}>{entry.badgeLabel || entry.kind}</Badge>
+        <span className="text-[11px] font-semibold text-slate-500">
+          {format(parseISO(entry.startsAt), 'HH:mm')}
+        </span>
+      </div>
+
+      <div className="mb-3 min-w-0">
+        <p className="truncate text-sm font-bold text-slate-900">{entry.title}</p>
+        <p className="truncate text-[11px] text-slate-500">{getEntrySubtitle(entry)}</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <button type="button" className={actionButtonClass} onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
+        <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
+        <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
+        <button type="button" className={actionButtonClass} onClick={() => onComplete(entry)} disabled={pendingDone}>
+          <CheckSquare className="mr-2 h-4 w-4" /> {pendingDone ? '...' : 'Zrobione'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Calendar() {
   const { workspace, hasAccess } = useWorkspace();
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -254,6 +311,7 @@ export default function Calendar() {
     rangeStart: selectedWeekStart,
     rangeEnd: selectedWeekEnd,
   });
+  const selectedDayEntries = getEntriesForDay(scheduleEntries, selectedDate);
 
   const handleStartChange = (value: string) => {
     const currentEnd = parseISO(newEvent.endAt);
@@ -712,6 +770,34 @@ export default function Calendar() {
         <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
           <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
             <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Wybrany dzień</p>
+              <h2 className="text-xl font-bold text-slate-900">{format(selectedDate, 'EEEE, d MMMM yyyy', { locale: pl })}</h2>
+            </div>
+            <Badge variant="secondary" className="h-7 px-3">{selectedDayEntries.length} wpisów</Badge>
+          </div>
+          <div className="grid gap-3 lg:grid-cols-2">
+            {selectedDayEntries.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-8 text-center text-sm text-slate-400 lg:col-span-2">
+                Brak wpisów dla tego dnia.
+              </div>
+            ) : selectedDayEntries.map((entry) => (
+              <div key={`selected:${entry.id}`}>
+                <ScheduleEntryCard
+                  entry={entry}
+                  actionButtonClass={actionButtonClass}
+                  actionPendingId={actionPendingId}
+                  onEdit={handleOpenEdit}
+                  onShift={handleShiftEntry}
+                  onComplete={handleCompleteEntry}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+          <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+            <div>
               <h3 className="text-lg font-bold text-slate-900">Widok tygodniowy</h3>
               <p className="text-sm text-slate-500">Każdy wpis ma ten sam zestaw akcji, niezależnie czy to zadanie, lead czy wydarzenie.</p>
             </div>
@@ -738,39 +824,18 @@ export default function Calendar() {
                       <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-3 py-6 text-center text-xs text-slate-400">
                         Brak wpisów
                       </div>
-                    ) : dayEntries.map((entry) => {
-                      const pendingEdit = actionPendingId === `${entry.id}:edit`;
-                      const pendingDay = actionPendingId === `${entry.id}:1`;
-                      const pendingWeek = actionPendingId === `${entry.id}:7`;
-                      const pendingDone = actionPendingId === `${entry.id}:done`;
-
-                      return (
-                        <div key={entry.id} className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-                          <div className="mb-2 flex items-center justify-between gap-2">
-                            <Badge className={`${getEntryTone(entry)} border`}>{entry.badgeLabel || entry.kind}</Badge>
-                            <span className="text-[11px] font-semibold text-slate-500">
-                              {format(parseISO(entry.startsAt), 'HH:mm')}
-                            </span>
-                          </div>
-
-                          <div className="mb-3 min-w-0">
-                            <p className="truncate text-sm font-bold text-slate-900">{entry.title}</p>
-                            <p className="truncate text-[11px] text-slate-500">
-                              {entry.leadName ? `Lead: ${entry.leadName}` : entry.kind === 'event' ? 'Wydarzenie w kalendarzu' : entry.kind === 'task' ? 'Zadanie w planie' : 'Ruch leadowy'}
-                            </p>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-2">
-                            <button type="button" className={actionButtonClass} onClick={() => handleOpenEdit(entry)} disabled={pendingEdit}>Edytuj</button>
-                            <button type="button" className={actionButtonClass} onClick={() => handleShiftEntry(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
-                            <button type="button" className={actionButtonClass} onClick={() => handleShiftEntry(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
-                            <button type="button" className={actionButtonClass} onClick={() => handleCompleteEntry(entry)} disabled={pendingDone}>
-                              <CheckSquare className="mr-2 h-4 w-4" /> {pendingDone ? '...' : 'Zrobione'}
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
+                    ) : dayEntries.map((entry) => (
+                      <div key={entry.id}>
+                        <ScheduleEntryCard
+                          entry={entry}
+                          actionButtonClass={actionButtonClass}
+                          actionPendingId={actionPendingId}
+                          onEdit={handleOpenEdit}
+                          onShift={handleShiftEntry}
+                          onComplete={handleCompleteEntry}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
               );

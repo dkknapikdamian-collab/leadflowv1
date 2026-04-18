@@ -1,1 +1,9 @@
-Skopiuj zawartość folderu do repo na czystym dev-rollout-freeze, potem uruchom npm.cmd install, npm.cmd run lint, npm.cmd run build.
+Overlay hotfix dla lokalnego repo leadflowv1-fresh.
+
+Podmieniane pliki:
+- src/pages/Calendar.tsx
+- src/lib/cases.ts
+
+Cel:
+- pełne ujednolicenie akcji dla wszystkich wpisów widocznych w kalendarzu,
+- bezpieczniejsza obsługa usuwania sprawy bez wywalania się na brakach uprawnień w kolekcjach powiązanych.
