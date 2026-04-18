@@ -50,6 +50,7 @@ import {
 import { pl } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { getLeadFinance, type LeadPartialPayment } from '../lib/lead-finance';
 import {
   Dialog,
   DialogContent,
@@ -68,6 +69,7 @@ type LeadRecord = {
   email?: string;
   phone?: string;
   dealValue?: number;
+  partialPayments?: LeadPartialPayment[];
   source?: string;
   status?: string;
   nextStep?: string;
@@ -555,7 +557,7 @@ export default function Today() {
   const highValueAtRisk = useMemo(
     () => [...activeLeads]
       .filter((lead) => lead.isAtRisk || (!lead.nextActionAt && (lead.dealValue || 0) >= 2000) || (lead.dealValue || 0) >= 5000)
-      .sort((a, b) => (b.dealValue || 0) - (a.dealValue || 0))
+      .sort((a, b) => getLeadFinance(b).funnelAmount - getLeadFinance(a).funnelAmount)
       .slice(0, 5),
     [activeLeads]
   );
@@ -571,12 +573,13 @@ export default function Today() {
       if (updatedDate) {
         score += Math.min(4, Math.max(0, differenceInCalendarDays(new Date(), updatedDate) - 2));
       }
+      score += Math.min(5, Math.round(getLeadFinance(lead).funnelAmount / 2000));
       return { lead, score };
     });
 
     return scored
       .filter((item) => item.score > 0)
-      .sort((a, b) => b.score - a.score || (b.lead.dealValue || 0) - (a.lead.dealValue || 0))
+      .sort((a, b) => b.score - a.score || getLeadFinance(b.lead).funnelAmount - getLeadFinance(a.lead).funnelAmount)
       .slice(0, 5);
   }, [activeLeads]);
 
@@ -592,7 +595,7 @@ export default function Today() {
     [tasks, events]
   );
 
-  const funnelValue = activeLeads.reduce((acc, lead) => acc + (lead.dealValue || 0), 0);
+  const funnelValue = activeLeads.reduce((acc, lead) => acc + getLeadFinance(lead).funnelAmount, 0);
 
   if (wsLoading || loading) {
     return (
@@ -946,14 +949,18 @@ export default function Today() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {highValueAtRisk.length > 0 ? highValueAtRisk.map((lead) => (
-                  <div key={lead.id} className="rounded-2xl border p-4 app-border app-surface">
+                  <div
+                    key={lead.id}
+                    className="rounded-2xl border p-4 transition-transform hover:-translate-y-0.5 app-border app-surface cursor-pointer"
+                    onClick={() => { window.location.href = `/leads/${lead.id}`; }}
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="truncate font-semibold app-text">{lead.name}</p>
                         <p className="text-xs app-muted">{lead.company || 'Brak firmy'}</p>
                       </div>
                       <Badge variant={lead.isAtRisk ? 'destructive' : 'secondary'}>
-                        {(lead.dealValue || 0).toLocaleString()} PLN
+                        {getLeadFinance(lead).funnelAmount.toLocaleString()} PLN
                       </Badge>
                     </div>
                     <p className="mt-3 text-sm app-muted">{leadReason(lead)}</p>

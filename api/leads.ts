@@ -1,6 +1,27 @@
 import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
+function normalizePartialPayments(value: unknown) {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((item, index) => {
+      if (!item || typeof item !== 'object') return null;
+      const row = item as Record<string, unknown>;
+      const amount = Number(row.amount || 0);
+      if (!Number.isFinite(amount) || amount < 0) return null;
+
+      return {
+        id: String(row.id || `payment-${index}`),
+        amount,
+        paidAt: typeof row.paidAt === 'string' && row.paidAt.trim() ? row.paidAt : undefined,
+        createdAt: typeof row.createdAt === 'string' && row.createdAt.trim() ? row.createdAt : new Date().toISOString(),
+      };
+    })
+    .filter(Boolean);
+}
+
 function normalizeLead(row: Record<string, unknown>) {
+  const partialPayments = normalizePartialPayments(row.partial_payments || row.partialPayments);
   return {
     id: String(row.id || crypto.randomUUID()),
     name: String(row.name || row.title || row.person_name || ''),
@@ -12,6 +33,7 @@ function normalizeLead(row: Record<string, unknown>) {
     nextStep: String(row.next_action_title || row.next_step || row.nextStep || ''),
     nextActionAt: String(row.next_action_at || row.next_step_due_at || row.nextActionAt || ''),
     dealValue: Number(row.deal_value || row.value || row.dealValue || 0),
+    partialPayments,
     isAtRisk: Boolean(row.is_at_risk || row.isAtRisk || false),
     updatedAt: row.updated_at || row.updatedAt || null,
   };
@@ -56,6 +78,7 @@ export default async function handler(req: any, res: any) {
       if (body.phone !== undefined) payload.phone = body.phone;
       if (body.source !== undefined) payload.source = body.source;
       if (body.dealValue !== undefined) payload.value = Number(body.dealValue) || 0;
+      if (body.partialPayments !== undefined) payload.partial_payments = normalizePartialPayments(body.partialPayments);
       if (body.status !== undefined) payload.status = body.status;
       if (body.nextStep !== undefined) payload.next_action_title = body.nextStep || '';
       if (body.nextActionAt !== undefined) payload.next_action_at = body.nextActionAt ? new Date(body.nextActionAt).toISOString() : null;
@@ -103,6 +126,7 @@ export default async function handler(req: any, res: any) {
       phone: body.phone || '',
       source,
       value: amount,
+      partial_payments: normalizePartialPayments(body.partialPayments),
       summary: '',
       notes: '',
       status: 'new',

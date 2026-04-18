@@ -17,7 +17,7 @@ import {
   Briefcase,
   CheckCircle2,
   ContactRound,
-  FileText,
+  EyeOff,
   Link2,
   Loader2,
   Mail,
@@ -25,6 +25,7 @@ import {
   Plus,
   Search,
   Sparkles,
+  Trash2,
   Users,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -57,6 +58,7 @@ export default function Clients() {
   const [clients, setClients] = useState<ClientRecord[]>([]);
   const [leads, setLeads] = useState<ClientLeadLike[]>([]);
   const [cases, setCases] = useState<ClientCaseLike[]>([]);
+  const [hiddenFallbackIds, setHiddenFallbackIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<ClientFilter>('all');
@@ -69,6 +71,7 @@ export default function Clients() {
       setClients([]);
       setLeads([]);
       setCases([]);
+      setHiddenFallbackIds([]);
       setLoading(false);
       return;
     }
@@ -78,46 +81,38 @@ export default function Clients() {
     const unsubscribers: Array<() => void> = [];
 
     const clientsQuery = query(collection(db, 'clients'), where('ownerId', '==', auth.currentUser.uid), orderBy('updatedAt', 'desc'));
-    unsubscribers.push(onSnapshot(
-      clientsQuery,
-      (snapshot) => {
-        setClients(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientRecord, 'id'>) })));
-        setLoading(false);
-      },
-      () => {
-        setClients([]);
-        setLoading(false);
-      }
-    ));
+    unsubscribers.push(onSnapshot(clientsQuery, (snapshot) => {
+      setClients(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientRecord, 'id'>) })));
+      setLoading(false);
+    }, () => {
+      setClients([]);
+      setLoading(false);
+    }));
+
+    const hiddenQuery = query(collection(db, 'hiddenClientDirectoryEntries'), where('ownerId', '==', auth.currentUser.uid));
+    unsubscribers.push(onSnapshot(hiddenQuery, (snapshot) => {
+      setHiddenFallbackIds(snapshot.docs.map((entry) => String(entry.data().directoryId || entry.id)));
+    }, () => {
+      setHiddenFallbackIds([]);
+    }));
 
     const leadsQuery = query(collection(db, 'leads'), where('ownerId', '==', auth.currentUser.uid), orderBy('updatedAt', 'desc'));
-    unsubscribers.push(onSnapshot(
-      leadsQuery,
-      (snapshot) => {
-        setLeads(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientLeadLike, 'id'>) })));
-      },
-      () => {
-        setLeads([]);
-        setLoading(false);
-      }
-    ));
+    unsubscribers.push(onSnapshot(leadsQuery, (snapshot) => {
+      setLeads(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientLeadLike, 'id'>) })));
+    }, () => setLeads([])));
 
     const casesQuery = query(collection(db, 'cases'), where('ownerId', '==', auth.currentUser.uid), orderBy('updatedAt', 'desc'));
-    unsubscribers.push(onSnapshot(
-      casesQuery,
-      (snapshot) => {
-        setCases(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientCaseLike, 'id'>) })));
-      },
-      () => {
-        setCases([]);
-        setLoading(false);
-      }
-    ));
+    unsubscribers.push(onSnapshot(casesQuery, (snapshot) => {
+      setCases(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<ClientCaseLike, 'id'>) })));
+    }, () => setCases([])));
 
     return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
   }, []);
 
-  const clientMap = useMemo(() => buildClientDirectory(clients, leads, cases), [cases, clients, leads]);
+  const clientMap = useMemo(
+    () => buildClientDirectory(clients, leads, cases).filter((client) => !(client.source !== 'client' && hiddenFallbackIds.includes(client.id))),
+    [cases, clients, hiddenFallbackIds, leads]
+  );
 
   const stats = useMemo(() => ({
     total: clientMap.length,
@@ -249,18 +244,25 @@ export default function Clients() {
   }
 
   async function handleDeleteClient(client: ClientViewModel) {
-    if (client.source !== 'client') {
-      toast.error('Usuń najpierw rekord źródłowy albo odepnij klienta od leada/sprawy.');
-      return;
-    }
-
-    if (!window.confirm(`Usunąć klienta "${client.name}"?`)) {
-      return;
-    }
+    const confirmed = window.confirm(`Usunąć klienta "${client.name}"?`);
+    if (!confirmed) return;
 
     try {
-      await deleteDoc(doc(db, 'clients', client.id));
-      toast.success('Klient usunięty.');
+      if (client.source === 'client') {
+        await deleteDoc(doc(db, 'clients', client.id));
+        toast.success('Klient usunięty.');
+        return;
+      }
+
+      await setDoc(doc(db, 'hiddenClientDirectoryEntries', client.id), {
+        ownerId: auth.currentUser?.uid,
+        workspaceId: workspace?.id || null,
+        directoryId: client.id,
+        source: client.source,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+      toast.success('Klient został ukryty z listy.');
     } catch (error: any) {
       toast.error(`Błąd: ${error.message}`);
     }
@@ -277,7 +279,7 @@ export default function Clients() {
             <div>
               <h1 className="text-3xl font-bold app-text">Klienci</h1>
               <p className="max-w-2xl text-sm md:text-base app-muted">
-                Tu trzymasz jedną bazę kontaktów pomiędzy leadem a sprawą. Dzięki temu nie gubisz człowieka, nawet gdy zmienia etap procesu.
+                Jedna lista kontaktów między leadem a sprawą. Szybko widzisz, kto jest tylko w sprzedaży, kto już wszedł w onboarding, a kto wymaga spięcia.
               </p>
             </div>
           </div>
@@ -370,7 +372,7 @@ export default function Clients() {
           </CardContent>
         </Card>
 
-        <section className="space-y-4">
+        <section className="space-y-3">
           {loading ? (
             <Card className="border-none app-surface-strong">
               <CardContent className="flex flex-col items-center justify-center gap-3 py-16">
@@ -403,76 +405,69 @@ export default function Clients() {
               const isFallback = client.source !== 'client';
 
               return (
-                <Card key={client.id} className="border-none app-surface-strong app-shadow transition-transform hover:-translate-y-0.5">
-                  <CardContent className="flex flex-col gap-5 p-5 lg:flex-row lg:items-center lg:justify-between">
-                    <div className="min-w-0 flex-1 space-y-3">
+                <div key={client.id} className="rounded-2xl border p-3 app-border app-surface-strong">
+                  <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+                    <div className="min-w-0 flex-[1.3]">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="truncate text-xl font-bold app-text">{client.name}</h3>
+                        <Link to={`/clients/${client.id}`} className="truncate font-semibold app-text hover:underline">
+                          {client.name}
+                        </Link>
                         <Badge className={clientHealthTone(health)}>{health}</Badge>
                         <Badge variant="outline">{portalStatusLabel(client.portalReady)}</Badge>
-                        {isFallback ? <Badge variant="outline">Jeszcze bez stałego rekordu</Badge> : null}
+                        {isFallback ? <Badge variant="outline">Fallback</Badge> : null}
                       </div>
-
-                      <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm app-muted">
-                        {client.company ? <span>Firma: {client.company}</span> : null}
-                        {client.email ? <span className="inline-flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {client.email}</span> : null}
+                      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs app-muted">
+                        {client.company ? <span>{client.company}</span> : null}
                         {client.phone ? <span className="inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {client.phone}</span> : null}
-                        <span>Leady: {client.linkedLeadIds.length}</span>
-                        <span>Sprawy: {client.linkedCaseIds.length}</span>
-                        <span>Ostatni ruch: {updatedAt ? updatedAt.toLocaleDateString('pl-PL') : 'brak danych'}</span>
+                        {client.email ? <span className="inline-flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {client.email}</span> : null}
                       </div>
-
-                      <p className="text-sm app-muted">
-                        {health === 'W realizacji'
-                          ? 'Klient jest już powiązany ze sprawą i ma gotowy albo uruchomiony portal.'
-                          : health === 'Onboarding'
-                            ? 'Klient ma sprawę, ale jeszcze nie widać pełnego domknięcia portalu lub materiałów.'
-                            : health === 'W sprzedaży'
-                              ? 'Klient jest nadal po stronie handlowej. Warto pilnować kolejnego kroku.'
-                              : 'To miejsce wymaga spięcia, żeby jedna osoba nie rozjechała się między leadem i sprawą.'}
-                      </p>
                     </div>
 
-                    <div className="flex w-full flex-col gap-2 lg:w-[320px]">
-                      <Link to={`/clients/${client.id}`}>
-                        <Button className="w-full justify-between rounded-2xl">
-                          Otwórz centrum klienta <ArrowRight className="h-4 w-4" />
-                        </Button>
-                      </Link>
+                    <div className="grid flex-1 grid-cols-2 gap-2 text-xs md:grid-cols-4">
+                      <div className="rounded-xl border px-3 py-2 app-border">
+                        <p className="app-muted">Leady</p>
+                        <p className="font-semibold app-text">{client.linkedLeadIds.length}</p>
+                      </div>
+                      <div className="rounded-xl border px-3 py-2 app-border">
+                        <p className="app-muted">Sprawy</p>
+                        <p className="font-semibold app-text">{client.linkedCaseIds.length}</p>
+                      </div>
+                      <div className="rounded-xl border px-3 py-2 app-border">
+                        <p className="app-muted">Ostatni ruch</p>
+                        <p className="font-semibold app-text">{updatedAt ? updatedAt.toLocaleDateString('pl-PL') : 'brak'}</p>
+                      </div>
+                      <div className="rounded-xl border px-3 py-2 app-border">
+                        <p className="app-muted">Stan</p>
+                        <p className="font-semibold app-text">{health}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 xl:justify-end">
+                      <Button className="rounded-xl" asChild>
+                        <Link to={`/clients/${client.id}`}>Otwórz <ArrowRight className="h-4 w-4" /></Link>
+                      </Button>
                       {client.primaryLeadId ? (
-                        <Link to={`/leads/${client.primaryLeadId}`}>
-                          <Button variant="outline" className="w-full justify-between rounded-2xl">
-                            Otwórz lead <ArrowRight className="h-4 w-4" />
-                          </Button>
-                        </Link>
+                        <Button variant="outline" className="rounded-xl" asChild>
+                          <Link to={`/leads/${client.primaryLeadId}`}>Lead</Link>
+                        </Button>
                       ) : null}
                       {client.primaryCaseId ? (
-                        <Link to={`/case/${client.primaryCaseId}`}>
-                          <Button variant="outline" className="w-full justify-between rounded-2xl">
-                            Otwórz sprawę <ArrowRight className="h-4 w-4" />
-                          </Button>
-                        </Link>
-                      ) : null}
-                      {client.primaryCaseId && client.portalReady ? (
-                        <Link to="/cases">
-                          <Button variant="outline" className="w-full justify-between rounded-2xl">
-                            Portal / checklista <FileText className="h-4 w-4" />
-                          </Button>
-                        </Link>
+                        <Button variant="outline" className="rounded-xl" asChild>
+                          <Link to={`/case/${client.primaryCaseId}`}>Sprawa</Link>
+                        </Button>
                       ) : null}
                       {isFallback ? (
-                        <Button className="w-full rounded-2xl" onClick={() => handlePromoteFallback(client)}>
-                          Zepnij jako stałego klienta
+                        <Button variant="outline" className="rounded-xl" onClick={() => handlePromoteFallback(client)}>
+                          Zepnij
                         </Button>
                       ) : null}
-                      {!isFallback ? (
-                        <Button variant="outline" className="w-full rounded-2xl text-rose-600" onClick={() => handleDeleteClient(client)}>
-                          Usuń klienta
-                        </Button>
-                      ) : null}
+                      <Button variant="outline" className="rounded-xl text-rose-600" onClick={() => handleDeleteClient(client)}>
+                        {isFallback ? <EyeOff className="mr-2 h-4 w-4" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                        Usuń
+                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               );
             })
           )}

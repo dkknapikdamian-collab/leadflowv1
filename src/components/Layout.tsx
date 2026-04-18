@@ -97,27 +97,29 @@ export default function Layout({ children }: LayoutProps) {
         </Button>
       </div>
 
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-        {navItems.map((item) => {
-          const isActive = isPathActive(location.pathname, item.path);
-          return (
-            <Link key={item.path} to={item.path}>
-              <Button
-                variant="ghost"
-                className={cn(
-                  'h-11 w-full justify-start gap-3 rounded-2xl px-4 font-medium transition-all',
-                  isActive ? 'app-nav-active' : 'hover:bg-black/5 dark:hover:bg-white/5'
-                )}
-              >
-                <item.icon className={cn('h-5 w-5', isActive ? 'opacity-100' : 'opacity-70')} />
-                {item.label}
-              </Button>
-            </Link>
-          );
-        })}
-      </nav>
+      <div className="flex-1 overflow-y-auto px-3 py-4">
+        <nav className="space-y-1">
+          {navItems.map((item) => {
+            const isActive = isPathActive(location.pathname, item.path);
+            return (
+              <Link key={item.path} to={item.path}>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'h-11 w-full justify-start gap-3 rounded-2xl px-4 font-medium transition-all',
+                    isActive ? 'app-nav-active' : 'hover:bg-black/5 dark:hover:bg-white/5'
+                  )}
+                >
+                  <item.icon className={cn('h-5 w-5', isActive ? 'opacity-100' : 'opacity-70')} />
+                  {item.label}
+                </Button>
+              </Link>
+            );
+          })}
+        </nav>
 
-      {workspace ? <SidebarMiniCalendar /> : null}
+        {workspace ? <SidebarMiniCalendar /> : null}
+      </div>
 
       <div className="border-t app-border p-4">
         <div className="mb-3 flex items-center gap-3 rounded-2xl border app-border px-3 py-3 app-surface-strong">

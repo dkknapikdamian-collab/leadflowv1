@@ -17,7 +17,10 @@ import { pl } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-import { fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import { onSnapshot, collection, orderBy, query, where } from 'firebase/firestore';
+import { auth, db } from '../firebase';
+import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import { isSupabaseConfigured } from '../lib/supabase-fallback';
 import { Button } from './ui/button';
 
 type DatedItem = {
@@ -42,36 +45,52 @@ export function SidebarMiniCalendar() {
   const [leadDates, setLeadDates] = useState<DatedItem[]>([]);
 
   useEffect(() => {
-    if (!isSupabaseConfigured()) {
+    if (isSupabaseConfigured()) {
+      void fetchCalendarBundleFromSupabase()
+        .then((bundle) => {
+          setTaskDates(bundle.tasks.map((item) => ({ date: item.date })));
+          setEventDates(bundle.events.map((item) => ({ date: item.startAt })));
+          setLeadDates(bundle.leads.map((item) => ({ date: item.nextActionAt })));
+        })
+        .catch(() => {
+          setTaskDates([]);
+          setEventDates([]);
+          setLeadDates([]);
+        });
+      return;
+    }
+
+    if (!auth.currentUser) {
       setTaskDates([]);
       setEventDates([]);
       setLeadDates([]);
       return;
     }
 
-    void Promise.all([fetchTasksFromSupabase(), fetchEventsFromSupabase(), fetchLeadsFromSupabase()])
-      .then(([tasks, events, leads]) => {
-        setTaskDates(
-          (tasks as Array<Record<string, unknown>>)
-            .filter((item) => typeof item.date === 'string' && item.date)
-            .map((item) => ({ date: String(item.date) }))
-        );
-        setEventDates(
-          (events as Array<Record<string, unknown>>)
-            .filter((item) => typeof item.startAt === 'string' && item.startAt)
-            .map((item) => ({ date: String(item.startAt) }))
-        );
-        setLeadDates(
-          (leads as Array<Record<string, unknown>>)
-            .filter((item) => typeof item.nextActionAt === 'string' && item.nextActionAt)
-            .map((item) => ({ date: String(item.nextActionAt) }))
-        );
-      })
-      .catch(() => {
-        setTaskDates([]);
-        setEventDates([]);
-        setLeadDates([]);
-      });
+    const unsubscribers = [
+      onSnapshot(query(collection(db, 'tasks'), where('ownerId', '==', auth.currentUser.uid), orderBy('date', 'asc')), (snapshot) => {
+        setTaskDates(snapshot.docs
+          .map((entry) => entry.data().date)
+          .filter((date): date is string => typeof date === 'string' && Boolean(date))
+          .map((date) => ({ date })));
+      }),
+      onSnapshot(query(collection(db, 'events'), where('ownerId', '==', auth.currentUser.uid), orderBy('startAt', 'asc')), (snapshot) => {
+        setEventDates(snapshot.docs
+          .map((entry) => entry.data().startAt)
+          .filter((date): date is string => typeof date === 'string' && Boolean(date))
+          .map((date) => ({ date })));
+      }),
+      onSnapshot(query(collection(db, 'leads'), where('ownerId', '==', auth.currentUser.uid), orderBy('nextActionAt', 'asc')), (snapshot) => {
+        setLeadDates(snapshot.docs
+          .map((entry) => entry.data().nextActionAt)
+          .filter((date): date is string => typeof date === 'string' && Boolean(date))
+          .map((date) => ({ date })));
+      }),
+    ];
+
+    return () => {
+      unsubscribers.forEach((unsubscribe) => unsubscribe());
+    };
   }, []);
 
   const monthDays = useMemo(() => {
@@ -83,25 +102,25 @@ export function SidebarMiniCalendar() {
   }, [currentMonth]);
 
   return (
-    <div className="mx-3 mb-3 rounded-2xl border app-border p-2.5 app-surface-strong app-shadow">
+    <div className="mt-4 rounded-2xl border app-border p-2 app-surface-strong">
       <div className="mb-2 flex items-center justify-between gap-1">
-        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-md" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
+        <Button variant="ghost" size="icon" className="h-5 w-5 rounded-md" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
         <div className="min-w-0 flex-1 text-center">
-          <p className="truncate text-[10px] font-bold uppercase tracking-[0.16em] app-muted">
+          <p className="truncate text-[9px] font-bold uppercase tracking-[0.16em] app-muted">
             {format(currentMonth, 'LLLL yyyy', { locale: pl })}
           </p>
         </div>
-        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-md" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
+        <Button variant="ghost" size="icon" className="h-5 w-5 rounded-md" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
 
-      <div className="aspect-square">
+      <div className="max-w-[148px]">
         <div className="grid grid-cols-7 gap-0.5">
           {['P', 'W', 'S', 'C', 'P', 'S', 'N'].map((day, index) => (
-            <div key={`${day}-${index}`} className="py-0.5 text-center text-[8px] font-bold uppercase text-slate-400">
+            <div key={`${day}-${index}`} className="py-0.5 text-center text-[7px] font-bold uppercase text-slate-400">
               {day}
             </div>
           ))}
@@ -118,7 +137,7 @@ export function SidebarMiniCalendar() {
                 type="button"
                 onClick={() => navigate(`/calendar?focus=${format(day, 'yyyy-MM-dd')}`)}
                 className={[
-                  'flex h-6 items-center justify-center rounded-md text-[10px] font-semibold transition-colors',
+                  'flex h-5 items-center justify-center rounded-md text-[9px] font-semibold transition-colors',
                   !isSameMonth(day, currentMonth) ? 'text-slate-300' : getDayTone(hasLead, hasEvent, hasTask, isToday(day)),
                 ].join(' ')}
                 title={hasLead || hasEvent || hasTask ? 'Ten dzień ma zaplanowany ruch' : 'Brak aktywności'}

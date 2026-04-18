@@ -9,6 +9,7 @@ type LeadInsertInput = {
   company?: string;
   source?: string;
   dealValue?: number;
+  partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>;
   nextStep?: string;
   nextActionAt?: string;
   ownerId?: string;

@@ -14,32 +14,29 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
-import { format, isPast, isToday, parseISO, startOfDay, subDays, isAfter, addDays, differenceInCalendarDays } from 'date-fns';
+import { addDays, differenceInCalendarDays, format, isAfter, isPast, isToday, parseISO, startOfDay, subDays } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import Papa from 'papaparse';
 import { Link } from 'react-router-dom';
 import {
   AlertTriangle,
-  ArrowRight,
   CheckCircle2,
   ChevronRight,
   Clock,
   Download,
-  FileText,
   Filter,
+  KanbanSquare,
   LayoutList,
   Loader2,
-  Mail,
   MoreHorizontal,
-  Phone,
   Plus,
   Search,
+  Sparkles,
   Target,
   TrendingUp,
   Upload,
+  Wallet,
   X,
-  KanbanSquare,
-  Sparkles,
 } from 'lucide-react';
 
 import Layout from '../components/Layout';
@@ -58,6 +55,17 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { ACTIVE_LEAD_STATUSES, type LeadPartialPayment, getLeadFinance, isActiveLeadStatus } from '../lib/lead-finance';
+
+type LeadStatus =
+  | 'new'
+  | 'contacted'
+  | 'qualification'
+  | 'proposal_sent'
+  | 'follow_up'
+  | 'negotiation'
+  | 'won'
+  | 'lost';
 
 type LeadRecord = {
   id: string;
@@ -70,19 +78,10 @@ type LeadRecord = {
   nextStep?: string;
   nextActionAt?: string;
   dealValue?: number;
+  partialPayments?: LeadPartialPayment[];
   isAtRisk?: boolean;
   updatedAt?: Timestamp | string | null;
 };
-
-type LeadStatus =
-  | 'new'
-  | 'contacted'
-  | 'qualification'
-  | 'proposal_sent'
-  | 'follow_up'
-  | 'negotiation'
-  | 'won'
-  | 'lost';
 
 type QuickActionKey = 'followup' | 'waiting' | 'meeting' | 'won' | 'lost' | 'risk';
 
@@ -91,6 +90,25 @@ type StatusOption = {
   label: string;
   toneClass: string;
   pipelineTitle: string;
+};
+
+type PaymentDraft = {
+  id: string;
+  amount: string;
+  paidAt: string;
+  createdAt?: string;
+};
+
+type LeadFormState = {
+  name: string;
+  email: string;
+  phone: string;
+  source: string;
+  dealValue: string;
+  company: string;
+  nextStep: string;
+  nextActionAt: string;
+  partialPayments: PaymentDraft[];
 };
 
 const STATUS_OPTIONS: StatusOption[] = [
@@ -104,10 +122,19 @@ const STATUS_OPTIONS: StatusOption[] = [
   { value: 'lost', label: 'Stracony', toneClass: 'bg-slate-500/12 text-slate-500 border-slate-500/20', pipelineTitle: 'Stracone' },
 ];
 
-const SOURCE_OPTIONS = LEAD_SOURCE_OPTIONS;
-
 const PIPELINE_ORDER: LeadStatus[] = ['new', 'contacted', 'qualification', 'proposal_sent', 'follow_up', 'negotiation', 'won', 'lost'];
-const ACTIVE_STATUSES: LeadStatus[] = ['new', 'contacted', 'qualification', 'proposal_sent', 'follow_up', 'negotiation'];
+
+const EMPTY_LEAD_FORM: LeadFormState = {
+  name: '',
+  email: '',
+  phone: '',
+  source: 'other',
+  dealValue: '',
+  company: '',
+  nextStep: '',
+  nextActionAt: format(new Date(), "yyyy-MM-dd'T'09:00"),
+  partialPayments: [],
+};
 
 function toDate(value?: Timestamp | string | null) {
   if (!value) return null;
@@ -165,18 +192,6 @@ function dueState(lead: LeadRecord) {
   };
 }
 
-function reasonText(lead: LeadRecord) {
-  const updatedDate = toDate(lead.updatedAt);
-  const nextDate = lead.nextActionAt ? parseISO(lead.nextActionAt) : null;
-
-  if (!lead.nextActionAt || !lead.nextStep) return 'Lead nie ma kompletnego kolejnego ruchu.';
-  if (nextDate && isPast(nextDate) && !isToday(nextDate)) return 'Termin minął i lead może wypaść z procesu.';
-  if (lead.isAtRisk) return 'Lead oznaczony jako zagrożony i wymaga Twojej uwagi.';
-  if (updatedDate && differenceInCalendarDays(new Date(), updatedDate) >= 5) return 'Brak ruchu od kilku dni. To już pachnie zaniedbaniem.';
-  if ((lead.dealValue || 0) >= 5000) return 'Lead o wysokiej wartości. Warto dopiąć go wcześniej niż drobnicę.';
-  return 'Lead jest aktywny i ma ustawiony kolejny ruch.';
-}
-
 function activityMatches(lead: LeadRecord, activityFilter: string) {
   if (activityFilter === 'all') return true;
   const updatedDate = toDate(lead.updatedAt);
@@ -192,104 +207,208 @@ function startInDaysAtHour(days: number, hour: number) {
   return format(addDays(new Date(), days), `yyyy-MM-dd'T'${String(hour).padStart(2, '0')}:00`);
 }
 
-function LeadRow({
-  lead,
-  onQuickAction,
-  onDelete,
-  busy,
+function formatMoney(value: number) {
+  return `${value.toLocaleString()} PLN`;
+}
+
+function normalizePaymentDrafts(drafts: PaymentDraft[]): LeadPartialPayment[] {
+  return drafts
+    .map((payment, index) => {
+      const amount = Number(payment.amount);
+      if (!Number.isFinite(amount) || amount <= 0) return null;
+
+      return {
+        id: payment.id || `payment-${index}-${Date.now()}`,
+        amount,
+        paidAt: payment.paidAt || undefined,
+        createdAt: payment.createdAt || new Date().toISOString(),
+      };
+    })
+    .filter((entry): entry is LeadPartialPayment => Boolean(entry));
+}
+
+function createLeadFormState(lead?: Partial<LeadRecord> | null): LeadFormState {
+  if (!lead) return { ...EMPTY_LEAD_FORM, partialPayments: [] };
+
+  return {
+    name: lead.name || '',
+    email: lead.email || '',
+    phone: lead.phone || '',
+    source: lead.source || 'other',
+    dealValue: lead.dealValue ? String(lead.dealValue) : '',
+    company: lead.company || '',
+    nextStep: lead.nextStep || '',
+    nextActionAt: lead.nextActionAt || format(new Date(), "yyyy-MM-dd'T'09:00"),
+    partialPayments: (lead.partialPayments || []).map((payment) => ({
+      id: payment.id || crypto.randomUUID(),
+      amount: String(payment.amount || ''),
+      paidAt: payment.paidAt || '',
+      createdAt: payment.createdAt,
+    })),
+  };
+}
+
+function PaymentEditor({
+  payments,
+  onChange,
 }: {
-  key?: string;
-  lead: LeadRecord;
-  onQuickAction: (lead: LeadRecord, action: QuickActionKey) => void;
-  onDelete: (lead: LeadRecord) => void;
-  busy: string | null;
+  payments: PaymentDraft[];
+  onChange: (payments: PaymentDraft[]) => void;
 }) {
-  const status = getStatusOption(lead.status);
-  const nextState = dueState(lead);
-  const daysSinceTouch = toDate(lead.updatedAt)
-    ? differenceInCalendarDays(new Date(), toDate(lead.updatedAt) as Date)
-    : 0;
-  const busyForThisLead = busy?.startsWith(lead.id) ?? false;
-  const nextStepLabel = lead.nextStep || 'Nie ustawiono';
+  const totalDraftPaid = payments.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0);
 
   return (
-    <Card className="border-none app-surface-strong transition-all hover:-translate-y-0.5 hover:app-shadow">
-      <CardContent className="space-y-2 p-3">
-        <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
-          <div className="min-w-0 flex-1 space-y-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="min-w-0 max-w-full truncate text-sm font-bold app-text sm:text-base">{lead.name}</h3>
-              <Badge className={cn('border', status.toneClass)}>{status.label}</Badge>
-              {lead.isAtRisk ? <Badge variant="destructive">Zagrożony</Badge> : null}
-              {!lead.nextActionAt || !lead.nextStep ? <Badge variant="outline">Brak opieki</Badge> : null}
-            </div>
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-3">
+        <Label>Historia wpłat</Label>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="rounded-xl"
+          onClick={() => onChange([...payments, { id: crypto.randomUUID(), amount: '', paidAt: '' }])}
+        >
+          <Plus className="h-4 w-4" /> Dodaj wpłatę
+        </Button>
+      </div>
 
-            <p className="line-clamp-1 text-xs app-muted">{reasonText(lead)}</p>
-
-            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs app-muted">
-              {lead.company ? <span className="inline-flex items-center gap-1"><FileText className="h-3.5 w-3.5" /> {lead.company}</span> : null}
-              {lead.source ? <span className="inline-flex items-center gap-1"><Target className="h-3.5 w-3.5" /> {getLeadSourceLabel(lead.source)}</span> : null}
-              {lead.email ? <span className="inline-flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {lead.email}</span> : null}
-              {lead.phone ? <span className="inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {lead.phone}</span> : null}
+      {payments.length === 0 ? (
+        <div className="rounded-2xl border border-dashed p-4 text-sm app-muted app-border">
+          Brak wpłat częściowych. Jeśli klient już coś wpłacił, dodaj pozycję poniżej.
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {payments.map((payment) => (
+            <div key={payment.id} className="grid gap-2 rounded-2xl border p-3 app-border md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] md:items-end">
+              <div className="space-y-1.5">
+                <Label className="text-xs">Kwota</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={payment.amount}
+                  onChange={(event) => onChange(payments.map((item) => (item.id === payment.id ? { ...item, amount: event.target.value } : item)))}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Data wpłaty</Label>
+                <Input
+                  type="date"
+                  value={payment.paidAt}
+                  onChange={(event) => onChange(payments.map((item) => (item.id === payment.id ? { ...item, paidAt: event.target.value } : item)))}
+                />
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                className="rounded-xl text-rose-500"
+                onClick={() => onChange(payments.filter((item) => item.id !== payment.id))}
+              >
+                Usuń
+              </Button>
             </div>
+          ))}
+        </div>
+      )}
+
+      <p className="text-xs app-muted">Suma wpisanych wpłat: {formatMoney(totalDraftPaid)}</p>
+    </div>
+  );
+}
+
+function LeadListRow({
+  lead,
+  busy,
+  onQuickAction,
+  onDelete,
+  onEdit,
+}: {
+  lead: LeadRecord;
+  busy: string | null;
+  onQuickAction: (lead: LeadRecord, action: QuickActionKey) => void;
+  onDelete: (lead: LeadRecord) => void;
+  onEdit: (lead: LeadRecord) => void;
+}) {
+  const status = getStatusOption(lead.status);
+  const due = dueState(lead);
+  const finance = getLeadFinance(lead);
+  const busyForLead = busy?.startsWith(lead.id) ?? false;
+
+  return (
+    <div className="rounded-2xl border p-3 app-border app-surface-strong">
+      <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+        <div className="min-w-0 flex-[1.4]">
+          <div className="flex flex-wrap items-center gap-2">
+            <Link to={`/leads/${lead.id}`} className="truncate font-semibold app-text hover:underline">
+              {lead.name}
+            </Link>
+            <Badge className={cn('border', status.toneClass)}>{status.label}</Badge>
+            {lead.isAtRisk ? <Badge variant="destructive">Zagrożony</Badge> : null}
           </div>
-
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:min-w-[320px] xl:max-w-[460px]">
-            <div className="rounded-xl border app-border px-2.5 py-2 app-surface">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Wartość</p>
-              <p className="mt-1 text-sm font-bold app-text">{(lead.dealValue || 0).toLocaleString()} PLN</p>
-            </div>
-            <div className="rounded-xl border app-border px-2.5 py-2 app-surface">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Termin</p>
-              <p className={cn('mt-1 text-sm font-bold', nextState.tone)}>{nextState.label}</p>
-            </div>
-            <div className="rounded-xl border app-border px-2.5 py-2 app-surface sm:col-span-2 xl:col-span-1">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Next step</p>
-              <p className="mt-1 truncate text-xs font-semibold app-text" title={nextStepLabel}>{nextStepLabel}</p>
-            </div>
-            <div className="rounded-xl border app-border px-2.5 py-2 app-surface">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Bez ruchu</p>
-              <p className="mt-1 text-sm font-bold app-text">{daysSinceTouch} dni</p>
-            </div>
+          <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs app-muted">
+            {lead.phone ? <span>{lead.phone}</span> : null}
+            {lead.email ? <span>{lead.email}</span> : null}
+            {lead.company ? <span>{lead.company}</span> : null}
+            {lead.source ? <span>{getLeadSourceLabel(lead.source)}</span> : null}
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-          <div className="flex flex-wrap items-center gap-2">
-            {nextState.badge}
-            {(lead.dealValue || 0) >= 5000 ? <Badge variant="secondary">Wysoka wartość</Badge> : null}
+        <div className="grid flex-1 grid-cols-2 gap-2 text-xs md:grid-cols-4 xl:grid-cols-5">
+          <div className="rounded-xl border px-3 py-2 app-border">
+            <p className="app-muted">Wartość</p>
+            <p className="font-semibold app-text">{formatMoney(lead.dealValue || 0)}</p>
           </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" size="sm" className="h-8 rounded-xl px-3 text-[11px]" disabled={busyForThisLead} onClick={() => onQuickAction(lead, 'followup')}>
-              Dalszy kontakt jutro
-            </Button>
-            <Button variant="outline" size="sm" className="h-8 rounded-xl px-3 text-[11px]" disabled={busyForThisLead} onClick={() => onQuickAction(lead, 'waiting')}>
-              Czekamy 3 dni
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8 rounded-xl px-3 text-[11px]" disabled={busyForThisLead}>
-                  <MoreHorizontal className="h-4 w-4" /> Więcej
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52">
-                <DropdownMenuItem onClick={() => onQuickAction(lead, 'meeting')}>Ustaw spotkanie</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onQuickAction(lead, 'risk')}>{lead.isAtRisk ? 'Zdejmij flagę ryzyka' : 'Oznacz jako zagrożony'}</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => onQuickAction(lead, 'won')}>Oznacz jako wygrany</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onQuickAction(lead, 'lost')} className="text-rose-500">Oznacz jako stracony</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => onDelete(lead)} className="text-rose-500">Usuń lead</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button size="sm" className="h-8 rounded-xl px-3 text-[11px]" asChild>
-              <Link to={`/leads/${lead.id}`}>Otwórz <ChevronRight className="h-4 w-4" /></Link>
-            </Button>
+          <div className="rounded-xl border px-3 py-2 app-border">
+            <p className="app-muted">Wpłacono</p>
+            <p className="font-semibold text-emerald-600">{formatMoney(finance.paidAmount)}</p>
+          </div>
+          <div className="rounded-xl border px-3 py-2 app-border">
+            <p className="app-muted">Pozostało</p>
+            <p className="font-semibold app-text">{formatMoney(finance.remainingAmount)}</p>
+          </div>
+          <div className="rounded-xl border px-3 py-2 app-border">
+            <p className="app-muted">Termin</p>
+            <p className={cn('font-semibold', due.tone)}>{due.label}</p>
+          </div>
+          <div className="rounded-xl border px-3 py-2 app-border">
+            <p className="app-muted">Lejek</p>
+            <p className="font-semibold text-[color:var(--app-primary)]">{formatMoney(finance.funnelAmount)}</p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        <div className="flex flex-wrap items-center gap-2 xl:justify-end">
+          <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForLead} onClick={() => onQuickAction(lead, 'followup')}>
+            Jutro
+          </Button>
+          <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForLead} onClick={() => onQuickAction(lead, 'waiting')}>
+            +3 dni
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForLead}>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onEdit(lead)}>Edytuj leada</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onQuickAction(lead, 'meeting')}>Ustaw spotkanie</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onQuickAction(lead, 'risk')}>
+                {lead.isAtRisk ? 'Zdejmij ryzyko' : 'Oznacz jako zagrożony'}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onQuickAction(lead, 'won')}>Wygrany</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onQuickAction(lead, 'lost')}>Stracony</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-rose-500" onClick={() => onDelete(lead)}>Usuń</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button size="sm" className="rounded-xl" asChild>
+            <Link to={`/leads/${lead.id}`}>Otwórz <ChevronRight className="h-4 w-4" /></Link>
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -297,55 +416,57 @@ function PipelineColumn({
   status,
   leads,
   onMove,
-  onOpen,
 }: {
-  key?: string;
   status: StatusOption;
   leads: LeadRecord[];
   onMove: (lead: LeadRecord, status: LeadStatus) => void;
-  onOpen: (leadId: string) => void;
 }) {
-  const totalValue = leads.reduce((sum, lead) => sum + (lead.dealValue || 0), 0);
+  const totalFunnelValue = leads.reduce((sum, lead) => sum + getLeadFinance(lead).funnelAmount, 0);
 
   return (
-    <Card className="min-w-[280px] border-none app-surface-strong">
+    <Card className="min-w-[310px] border-none app-surface-strong">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between gap-3">
           <div>
             <CardTitle className="text-lg">{status.pipelineTitle}</CardTitle>
-            <CardDescription>{leads.length} leadów · {totalValue.toLocaleString()} PLN</CardDescription>
+            <CardDescription>{leads.length} leadów · {formatMoney(totalFunnelValue)}</CardDescription>
           </div>
           <Badge className={cn('border', status.toneClass)}>{status.label}</Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
         {leads.length === 0 ? (
-          <div className="rounded-2xl border border-dashed app-border p-4 text-sm app-muted">Pusto. Tu wpadną leady po zmianie etapu.</div>
+          <div className="rounded-2xl border border-dashed p-4 text-sm app-muted app-border">Pusto.</div>
         ) : (
           leads.map((lead) => {
-            const nextState = dueState(lead);
+            const due = dueState(lead);
+            const finance = getLeadFinance(lead);
             return (
-              <div key={lead.id} className="rounded-2xl border app-border p-3 app-surface">
+              <div key={lead.id} className="rounded-2xl border p-3 app-border app-surface">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <button className="truncate text-left text-xs font-bold app-text hover:underline sm:text-sm" onClick={() => onOpen(lead.id)}>
+                    <Link to={`/leads/${lead.id}`} className="truncate text-sm font-bold app-text hover:underline">
                       {lead.name}
-                    </button>
-                    <p className="mt-1 text-xs app-muted">{lead.company || getLeadSourceLabel(lead.source) || 'Bez dodatkowego opisu'}</p>
+                    </Link>
+                    <p className="mt-1 text-xs app-muted">{lead.company || getLeadSourceLabel(lead.source) || 'Bez opisu'}</p>
                   </div>
                   {lead.isAtRisk ? <Badge variant="destructive">Ryzyko</Badge> : null}
                 </div>
                 <div className="mt-3 space-y-2 text-xs">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="app-muted">Wartość</span>
-                    <span className="font-semibold app-text">{(lead.dealValue || 0).toLocaleString()} PLN</span>
+                    <span className="app-muted">Wpłacono</span>
+                    <span className="font-semibold text-emerald-600">{formatMoney(finance.paidAmount)}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="app-muted">W lejku</span>
+                    <span className="font-semibold app-text">{formatMoney(finance.funnelAmount)}</span>
                   </div>
                   <div className="flex items-center justify-between gap-2">
                     <span className="app-muted">Termin</span>
-                    <span className={cn('font-semibold', nextState.tone)}>{lead.nextActionAt ? nextState.label : 'Brak'}</span>
+                    <span className={cn('font-semibold', due.tone)}>{lead.nextActionAt ? due.label : 'Brak'}</span>
                   </div>
                 </div>
-                <div className="mt-3 flex items-center gap-2">
+                <div className="mt-3 flex gap-2">
                   <Select value={lead.status || 'new'} onValueChange={(value) => onMove(lead, value as LeadStatus)}>
                     <SelectTrigger className="h-8 rounded-xl text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -354,8 +475,8 @@ function PipelineColumn({
                       ))}
                     </SelectContent>
                   </Select>
-                  <Button variant="outline" size="sm" className="h-8 rounded-xl px-3 text-[11px]" onClick={() => onOpen(lead.id)}>
-                    Szczegóły
+                  <Button variant="outline" size="sm" className="rounded-xl" asChild>
+                    <Link to={`/leads/${lead.id}`}>Szczegóły</Link>
                   </Button>
                 </div>
               </div>
@@ -378,18 +499,10 @@ export default function Leads() {
   const [atRiskFilter, setAtRiskFilter] = useState('all');
   const [activityFilter, setActivityFilter] = useState('all');
   const [quickActionBusy, setQuickActionBusy] = useState<string | null>(null);
-
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
-  const [newLead, setNewLead] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    source: 'other',
-    dealValue: '',
-    company: '',
-    nextStep: '',
-    nextActionAt: format(new Date(), "yyyy-MM-dd'T'09:00"),
-  });
+  const [newLead, setNewLead] = useState<LeadFormState>(EMPTY_LEAD_FORM);
+  const [editingLeadId, setEditingLeadId] = useState<string | null>(null);
+  const [editLead, setEditLead] = useState<LeadFormState>(EMPTY_LEAD_FORM);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -403,15 +516,9 @@ export default function Leads() {
     if (isSupabaseConfigured()) {
       setLoading(true);
       void fetchLeadsFromSupabase()
-        .then((items) => {
-          setLeads(items as LeadRecord[]);
-        })
-        .catch(() => {
-          setLeads([]);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+        .then((items) => setLeads(items as LeadRecord[]))
+        .catch(() => setLeads([]))
+        .finally(() => setLoading(false));
       return;
     }
 
@@ -444,6 +551,8 @@ export default function Leads() {
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     if (!newLead.name.trim()) return toast.error('Wpisz nazwę leada.');
 
+    const partialPayments = normalizePaymentDrafts(newLead.partialPayments);
+
     try {
       const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
       const usingSupabase = isSupabaseConfigured();
@@ -455,6 +564,7 @@ export default function Leads() {
           company: newLead.company,
           source: newLead.source,
           dealValue: Number(newLead.dealValue) || 0,
+          partialPayments,
           nextStep: newLead.nextStep,
           nextActionAt: newLead.nextActionAt,
           ownerId: auth.currentUser.uid,
@@ -463,6 +573,7 @@ export default function Leads() {
       } else {
         await addDoc(collection(db, 'leads'), {
           ...newLead,
+          partialPayments,
           dealValue: Number(newLead.dealValue) || 0,
           status: 'new',
           ownerId: auth.currentUser.uid,
@@ -472,39 +583,57 @@ export default function Leads() {
           isAtRisk: false,
         });
       }
-      if (usingSupabase) {
-        setLeads((prev) => [
-          {
-            id: crypto.randomUUID(),
-            name: newLead.name,
-            email: newLead.email,
-            phone: newLead.phone,
-            company: newLead.company,
-            source: newLead.source,
-            dealValue: Number(newLead.dealValue) || 0,
-            status: 'new',
-            nextStep: newLead.nextStep,
-            nextActionAt: newLead.nextActionAt,
-            isAtRisk: false,
-          },
-          ...prev,
-        ]);
-      }
-
       toast.success('Lead dodany');
       setIsNewLeadOpen(false);
-      setNewLead({
-        name: '',
-        email: '',
-        phone: '',
-        source: 'other',
-        dealValue: '',
-        company: '',
-        nextStep: '',
-        nextActionAt: format(new Date(), "yyyy-MM-dd'T'09:00"),
-      });
+      setNewLead(EMPTY_LEAD_FORM);
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error(`Błąd: ${error.message}`);
+    }
+  }
+
+  function openEditLead(lead: LeadRecord) {
+    setEditingLeadId(lead.id);
+    setEditLead(createLeadFormState(lead));
+  }
+
+  function closeEditLead() {
+    setEditingLeadId(null);
+    setEditLead(EMPTY_LEAD_FORM);
+  }
+
+  async function handleSaveLeadEdits(e: FormEvent) {
+    e.preventDefault();
+    if (!editingLeadId) return;
+    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!editLead.name.trim()) return toast.error('Wpisz nazwę leada.');
+
+    const partialPayments = normalizePaymentDrafts(editLead.partialPayments);
+    const updates = {
+      name: editLead.name,
+      email: editLead.email,
+      phone: editLead.phone,
+      company: editLead.company,
+      source: editLead.source,
+      dealValue: Number(editLead.dealValue) || 0,
+      partialPayments,
+      nextStep: editLead.nextStep,
+      nextActionAt: editLead.nextActionAt,
+    };
+
+    try {
+      if (isSupabaseConfigured()) {
+        await updateLeadInSupabase({ id: editingLeadId, ...updates });
+        setLeads((prev) => prev.map((lead) => (lead.id === editingLeadId ? { ...lead, ...updates } : lead)));
+      } else {
+        await updateDoc(doc(db, 'leads', editingLeadId), {
+          ...updates,
+          updatedAt: serverTimestamp(),
+        });
+      }
+      toast.success('Lead zapisany');
+      closeEditLead();
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
     }
   }
 
@@ -529,6 +658,7 @@ export default function Leads() {
             company: row.company || '',
             source: row.source || 'other',
             dealValue: Number(row.dealValue) || 0,
+            partialPayments: [],
             status: 'new',
             nextStep: row.nextStep || '',
             nextActionAt: row.nextActionAt || '',
@@ -546,7 +676,7 @@ export default function Leads() {
           await batch.commit();
           toast.success(`Zaimportowano ${count} leadów`);
         } catch (error: any) {
-          toast.error('Błąd importu: ' + error.message);
+          toast.error(`Błąd importu: ${error.message}`);
         }
       },
     });
@@ -568,36 +698,22 @@ export default function Leads() {
         updates.nextStep = 'Dalszy kontakt po rozmowie';
         updates.nextActionAt = startInDaysAtHour(1, 9);
       }
-
       if (action === 'waiting') {
         updates.status = 'contacted';
         updates.nextStep = 'Sprawdzić odpowiedź klienta';
         updates.nextActionAt = startInDaysAtHour(3, 9);
       }
-
       if (action === 'meeting') {
         updates.status = 'qualification';
         updates.nextStep = 'Spotkanie z leadem';
         updates.nextActionAt = startInDaysAtHour(2, 10);
       }
-
-      if (action === 'won') {
-        updates.status = 'won';
-      }
-
-      if (action === 'lost') {
-        updates.status = 'lost';
-      }
-
-      if (action === 'risk') {
-        updates.isAtRisk = !lead.isAtRisk;
-      }
+      if (action === 'won') updates.status = 'won';
+      if (action === 'lost') updates.status = 'lost';
+      if (action === 'risk') updates.isAtRisk = !lead.isAtRisk;
 
       if (isSupabaseConfigured()) {
-        await updateLeadInSupabase({
-          id: lead.id,
-          ...updates,
-        });
+        await updateLeadInSupabase({ id: lead.id, ...updates });
         setLeads((prev) => prev.map((item) => (item.id === lead.id ? { ...item, ...updates } : item)));
       } else {
         await updateDoc(doc(db, 'leads', lead.id), {
@@ -607,7 +723,7 @@ export default function Leads() {
       }
       toast.success('Lead zaktualizowany');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error(`Błąd: ${error.message}`);
     } finally {
       setQuickActionBusy(null);
     }
@@ -616,10 +732,7 @@ export default function Leads() {
   async function handleMoveStage(lead: LeadRecord, status: LeadStatus) {
     try {
       if (isSupabaseConfigured()) {
-        await updateLeadInSupabase({
-          id: lead.id,
-          status,
-        });
+        await updateLeadInSupabase({ id: lead.id, status });
         setLeads((prev) => prev.map((item) => (item.id === lead.id ? { ...item, status } : item)));
       } else {
         await updateDoc(doc(db, 'leads', lead.id), {
@@ -629,7 +742,7 @@ export default function Leads() {
       }
       toast.success(`Etap zmieniony na: ${getStatusOption(status).label}`);
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error(`Błąd: ${error.message}`);
     }
   }
 
@@ -645,7 +758,7 @@ export default function Leads() {
       }
       toast.success('Lead usunięty');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error(`Błąd: ${error.message}`);
     }
   }
 
@@ -656,9 +769,10 @@ export default function Leads() {
         const matchesSearch = haystack.includes(searchQuery.toLowerCase());
         const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
         const matchesSource = sourceFilter === 'all' || lead.source === sourceFilter;
-        const matchesAtRisk = atRiskFilter === 'all'
-          || (atRiskFilter === 'at-risk' && lead.isAtRisk)
-          || (atRiskFilter === 'safe' && !lead.isAtRisk);
+        const matchesAtRisk =
+          atRiskFilter === 'all' ||
+          (atRiskFilter === 'at-risk' && lead.isAtRisk) ||
+          (atRiskFilter === 'safe' && !lead.isAtRisk);
         const matchesActivity = activityMatches(lead, activityFilter);
 
         return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity;
@@ -666,20 +780,33 @@ export default function Leads() {
       .sort((a, b) => {
         const stateDiff = dueState(b).sortWeight - dueState(a).sortWeight;
         if (stateDiff !== 0) return stateDiff;
-        return (b.dealValue || 0) - (a.dealValue || 0);
+        return (getLeadFinance(b).funnelAmount || 0) - (getLeadFinance(a).funnelAmount || 0);
       });
   }, [activityFilter, atRiskFilter, leads, searchQuery, sourceFilter, statusFilter]);
 
   const stats = useMemo(() => {
-    const active = leads.filter((lead) => ACTIVE_STATUSES.includes((lead.status || 'new') as LeadStatus));
+    const active = leads.filter((lead) => isActiveLeadStatus(lead.status));
     return {
       total: leads.length,
       active: active.length,
-      value: active.reduce((acc, lead) => acc + (lead.dealValue || 0), 0),
+      funnel: active.reduce((acc, lead) => acc + getLeadFinance(lead).funnelAmount, 0),
+      earned: leads.reduce((acc, lead) => acc + getLeadFinance(lead).earnedAmount, 0),
       atRisk: active.filter((lead) => lead.isAtRisk || !lead.nextActionAt || !lead.nextStep).length,
       overdue: active.filter((lead) => lead.nextActionAt && isPast(parseISO(lead.nextActionAt)) && !isToday(parseISO(lead.nextActionAt))).length,
     };
   }, [leads]);
+
+  const draftFinance = useMemo(() => getLeadFinance({
+    status: 'new',
+    dealValue: Number(newLead.dealValue) || 0,
+    partialPayments: normalizePaymentDrafts(newLead.partialPayments),
+  }), [newLead.dealValue, newLead.partialPayments]);
+
+  const editDraftFinance = useMemo(() => getLeadFinance({
+    status: 'new',
+    dealValue: Number(editLead.dealValue) || 0,
+    partialPayments: normalizePaymentDrafts(editLead.partialPayments),
+  }), [editLead.dealValue, editLead.partialPayments]);
 
   const pipeline = useMemo(() => {
     return PIPELINE_ORDER.map((status) => ({
@@ -697,7 +824,9 @@ export default function Leads() {
               <Sparkles className="h-3.5 w-3.5" /> Centrum ruchu sprzedażowego
             </div>
             <h1 className="mt-3 text-3xl font-bold app-text">Leady</h1>
-            <p className="mt-1 max-w-2xl app-muted">Tutaj nie tylko przeglądasz rekordy. Tu przesuwasz proces do przodu, ustawiasz kolejny ruch i szybko łapiesz leady, które zaczynają gnić.</p>
+            <p className="mt-1 max-w-2xl app-muted">
+              Tutaj widzisz cały proces, ile już wpłynęło, ile jeszcze zostało do domknięcia i które rekordy wymagają ruchu.
+            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -715,11 +844,11 @@ export default function Leads() {
                   <Plus className="h-4 w-4" /> Dodaj leada
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-xl">
+              <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                   <DialogTitle>Nowy lead</DialogTitle>
                   <DialogDescription>
-                    Dodaj podstawowe dane kontaktu i ustaw następny krok dla leada.
+                    Dodaj dane kontaktu, ustaw wartość i wpisz już otrzymane wpłaty częściowe, jeśli klient coś przelał.
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleCreateLead} className="space-y-4 py-2">
@@ -734,7 +863,7 @@ export default function Leads() {
                       <Input value={newLead.company} onChange={(e) => setNewLead({ ...newLead, company: e.target.value })} />
                     </div>
                     <div className="space-y-2">
-                      <Label>Wartość (PLN)</Label>
+                      <Label>Wartość całości (PLN)</Label>
                       <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
                     </div>
                   </div>
@@ -758,7 +887,7 @@ export default function Leads() {
                         onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
                         className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
                       >
-                        {SOURCE_OPTIONS.map((source) => (
+                        {LEAD_SOURCE_OPTIONS.map((source) => (
                           <option key={source.value} value={source.value}>{source.label}</option>
                         ))}
                       </select>
@@ -771,7 +900,28 @@ export default function Leads() {
 
                   <div className="space-y-2">
                     <Label>Następny krok</Label>
-                    <Input value={newLead.nextStep} onChange={(e) => setNewLead({ ...newLead, nextStep: e.target.value })} placeholder="Np. zadzwonić i domknąć termin rozmowy" />
+                    <Input value={newLead.nextStep} onChange={(e) => setNewLead({ ...newLead, nextStep: e.target.value })} />
+                  </div>
+
+                  <PaymentEditor payments={newLead.partialPayments} onChange={(partialPayments) => setNewLead((prev) => ({ ...prev, partialPayments }))} />
+
+                  <div className="grid gap-3 rounded-2xl border p-4 app-border md:grid-cols-4">
+                    <div>
+                      <p className="text-xs app-muted">Wartość</p>
+                      <p className="font-semibold app-text">{formatMoney(Number(newLead.dealValue) || 0)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs app-muted">Wpłacono</p>
+                      <p className="font-semibold text-emerald-600">{formatMoney(draftFinance.paidAmount)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs app-muted">Pozostało</p>
+                      <p className="font-semibold app-text">{formatMoney(draftFinance.remainingAmount)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs app-muted">Trafi do lejka</p>
+                      <p className="font-semibold text-[color:var(--app-primary)]">{formatMoney(draftFinance.funnelAmount)}</p>
+                    </div>
                   </div>
 
                   <DialogFooter>
@@ -780,55 +930,115 @@ export default function Leads() {
                 </form>
               </DialogContent>
             </Dialog>
+
+            <Dialog open={Boolean(editingLeadId)} onOpenChange={(open) => { if (!open) closeEditLead(); }}>
+              <DialogContent className="sm:max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Edytuj leada</DialogTitle>
+                  <DialogDescription>
+                    Tutaj poprawisz dane kontaktowe, wartość i wpłaty częściowe już przypisane do tego leada.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSaveLeadEdits} className="space-y-4 py-2">
+                  <div className="space-y-2">
+                    <Label>Imię i nazwisko / nazwa</Label>
+                    <Input value={editLead.name} onChange={(e) => setEditLead({ ...editLead, name: e.target.value })} required />
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Firma</Label>
+                      <Input value={editLead.company} onChange={(e) => setEditLead({ ...editLead, company: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Wartość całości (PLN)</Label>
+                      <Input type="number" value={editLead.dealValue} onChange={(e) => setEditLead({ ...editLead, dealValue: e.target.value })} />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>E-mail</Label>
+                      <Input type="email" value={editLead.email} onChange={(e) => setEditLead({ ...editLead, email: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Telefon</Label>
+                      <Input value={editLead.phone} onChange={(e) => setEditLead({ ...editLead, phone: e.target.value })} />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Źródło</Label>
+                      <select
+                        value={editLead.source}
+                        onChange={(e) => setEditLead({ ...editLead, source: e.target.value })}
+                        className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
+                      >
+                        {LEAD_SOURCE_OPTIONS.map((source) => (
+                          <option key={source.value} value={source.value}>{source.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Termin ruchu</Label>
+                      <Input type="datetime-local" value={editLead.nextActionAt} onChange={(e) => setEditLead({ ...editLead, nextActionAt: e.target.value })} />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Następny krok</Label>
+                    <Input value={editLead.nextStep} onChange={(e) => setEditLead({ ...editLead, nextStep: e.target.value })} />
+                  </div>
+
+                  <PaymentEditor payments={editLead.partialPayments} onChange={(partialPayments) => setEditLead((prev) => ({ ...prev, partialPayments }))} />
+
+                  <div className="grid gap-3 rounded-2xl border p-4 app-border md:grid-cols-4">
+                    <div>
+                      <p className="text-xs app-muted">Wartość</p>
+                      <p className="font-semibold app-text">{formatMoney(Number(editLead.dealValue) || 0)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs app-muted">Wpłacono</p>
+                      <p className="font-semibold text-emerald-600">{formatMoney(editDraftFinance.paidAmount)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs app-muted">Pozostało</p>
+                      <p className="font-semibold app-text">{formatMoney(editDraftFinance.remainingAmount)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs app-muted">Trafi do lejka</p>
+                      <p className="font-semibold text-[color:var(--app-primary)]">{formatMoney(editDraftFinance.funnelAmount)}</p>
+                    </div>
+                  </div>
+
+                  <DialogFooter>
+                    <Button type="submit" className="w-full rounded-xl">Zapisz zmiany</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
         </header>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-          <Card className="border-none app-surface-strong">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Wszystkie</p>
-                <p className="mt-2 text-3xl font-bold app-text">{stats.total}</p>
-              </div>
-              <div className="rounded-2xl p-3 app-primary-chip"><Target className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Aktywne</p>
-                <p className="mt-2 text-3xl font-bold app-text">{stats.active}</p>
-              </div>
-              <div className="rounded-2xl bg-sky-500/12 p-3 text-sky-500"><CheckCircle2 className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">W lejku</p>
-                <p className="mt-2 text-2xl font-bold app-text">{stats.value.toLocaleString()} PLN</p>
-              </div>
-              <div className="rounded-2xl bg-emerald-500/12 p-3 text-emerald-500"><TrendingUp className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Po terminie</p>
-                <p className="mt-2 text-3xl font-bold text-rose-500">{stats.overdue}</p>
-              </div>
-              <div className="rounded-2xl bg-rose-500/12 p-3 text-rose-500"><AlertTriangle className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Wymagają pilnowania</p>
-                <p className="mt-2 text-3xl font-bold text-amber-500">{stats.atRisk}</p>
-              </div>
-              <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-500"><Clock className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
+          {[
+            { label: 'Wszystkie', value: String(stats.total), icon: Target, tone: 'app-primary-chip' },
+            { label: 'Aktywne', value: String(stats.active), icon: CheckCircle2, tone: 'bg-sky-500/12 text-sky-500' },
+            { label: 'W lejku', value: formatMoney(stats.funnel), icon: TrendingUp, tone: 'bg-emerald-500/12 text-emerald-500' },
+            { label: 'Zarobione', value: formatMoney(stats.earned), icon: Wallet, tone: 'bg-emerald-500/12 text-emerald-600' },
+            { label: 'Po terminie', value: String(stats.overdue), icon: AlertTriangle, tone: 'bg-rose-500/12 text-rose-500' },
+          ].map((stat) => (
+            <Card key={stat.label} className="border-none app-surface-strong">
+              <CardContent className="flex items-center justify-between p-5">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">{stat.label}</p>
+                  <p className="mt-2 text-2xl font-bold app-text">{stat.value}</p>
+                </div>
+                <div className={cn('rounded-2xl p-3', stat.tone)}><stat.icon className="h-6 w-6" /></div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         <Card className="border-none app-surface-strong">
@@ -864,7 +1074,7 @@ export default function Leads() {
                 <SelectTrigger className="rounded-xl"><SelectValue placeholder="Źródło" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Wszystkie źródła</SelectItem>
-                  {SOURCE_OPTIONS.map((source) => <SelectItem key={source.value} value={source.value}>{source.label}</SelectItem>)}
+                  {LEAD_SOURCE_OPTIONS.map((source) => <SelectItem key={source.value} value={source.value}>{source.label}</SelectItem>)}
                 </SelectContent>
               </Select>
               <Select value={atRiskFilter} onValueChange={setAtRiskFilter}>
@@ -912,29 +1122,28 @@ export default function Leads() {
               <div className="rounded-full p-4 app-primary-chip"><Search className="h-8 w-8" /></div>
               <div>
                 <h3 className="text-lg font-bold app-text">Nie znaleziono leadów</h3>
-                <p className="mt-1 max-w-md app-muted">Spróbuj zmienić filtry albo dodaj nowego leada. Ten ekran ma pomagać domykać ruch, nie chować rekordy.</p>
+                <p className="mt-1 max-w-md app-muted">Spróbuj zmienić filtry albo dodaj nowego leada.</p>
               </div>
             </CardContent>
           </Card>
         ) : viewMode === 'list' ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {filteredLeads.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onQuickAction={handleQuickAction} onDelete={handleDeleteLead} busy={quickActionBusy} />
+              <LeadListRow
+                key={lead.id}
+                lead={lead}
+                busy={quickActionBusy}
+                onQuickAction={handleQuickAction}
+                onDelete={handleDeleteLead}
+                onEdit={openEditLead}
+              />
             ))}
           </div>
         ) : (
           <div className="overflow-x-auto pb-2">
             <div className="flex min-w-max gap-4">
               {pipeline.map((column) => (
-                <PipelineColumn
-                  key={column.status.value}
-                  status={column.status}
-                  leads={column.leads}
-                  onMove={handleMoveStage}
-                  onOpen={(leadId) => {
-                    window.location.href = `/leads/${leadId}`;
-                  }}
-                />
+                <PipelineColumn key={column.status.value} status={column.status} leads={column.leads} onMove={handleMoveStage} />
               ))}
             </div>
           </div>

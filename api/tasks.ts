@@ -127,7 +127,7 @@ export default async function handler(req: any, res: any) {
       recurrence: 'none',
       reminder: 'none',
       show_in_tasks: true,
-      show_in_calendar: false,
+      show_in_calendar: true,
       created_at: nowIso,
       updated_at: nowIso,
     };
