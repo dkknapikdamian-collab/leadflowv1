@@ -130,6 +130,13 @@ function leadReason(lead: LeadRecord) {
   return 'Wymaga Twojej uwagi';
 }
 
+function isLeadActionableNow(lead: LeadRecord) {
+  if (!lead.nextActionAt) return true;
+  const nextActionDate = toDate(lead.nextActionAt);
+  if (!nextActionDate) return true;
+  return isToday(nextActionDate) || isPast(nextActionDate);
+}
+
 function LeadActionCard({
   lead,
   badge,
@@ -560,6 +567,7 @@ export default function Today() {
   );
   const highValueAtRisk = useMemo(
     () => [...activeLeads]
+      .filter((lead) => isLeadActionableNow(lead))
       .filter((lead) => lead.isAtRisk || (!lead.nextActionAt && (lead.dealValue || 0) >= 2000) || (lead.dealValue || 0) >= 5000)
       .sort((a, b) => getLeadFinance(b).funnelAmount - getLeadFinance(a).funnelAmount)
       .slice(0, 5),
@@ -567,7 +575,9 @@ export default function Today() {
   );
 
   const priorityList = useMemo(() => {
-    const scored = activeLeads.map((lead) => {
+    const scored = activeLeads
+      .filter((lead) => isLeadActionableNow(lead))
+      .map((lead) => {
       let score = 0;
       if (!lead.nextActionAt) score += 4;
       if (lead.nextActionAt && isPast(parseISO(lead.nextActionAt))) score += 5;
@@ -577,9 +587,9 @@ export default function Today() {
       if (updatedDate) {
         score += Math.min(4, Math.max(0, differenceInCalendarDays(new Date(), updatedDate) - 2));
       }
-      score += Math.min(5, Math.round(getLeadFinance(lead).funnelAmount / 2000));
-      return { lead, score };
-    });
+        score += Math.min(5, Math.round(getLeadFinance(lead).funnelAmount / 2000));
+        return { lead, score };
+      });
 
     return scored
       .filter((item) => item.score > 0)
