@@ -1,11 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
-import { addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, isToday, parseISO, startOfMonth, startOfWeek, subMonths } from 'date-fns';
+import {
+  addMonths,
+  eachDayOfInterval,
+  endOfMonth,
+  endOfWeek,
+  format,
+  isSameDay,
+  isSameMonth,
+  isToday,
+  parseISO,
+  startOfMonth,
+  startOfWeek,
+  subMonths,
+} from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-import { Button } from './ui/button';
 import { fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import { Button } from './ui/button';
 
 type DatedItem = {
   date: string;
@@ -70,29 +83,30 @@ export function SidebarMiniCalendar() {
   }, [currentMonth]);
 
   return (
-    <div className="mx-4 mb-4 rounded-2xl border app-border p-3 app-surface-strong app-shadow">
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
+    <div className="mx-3 mb-3 rounded-2xl border app-border p-2.5 app-surface-strong app-shadow">
+      <div className="mb-2 flex items-center justify-between gap-1">
+        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-md" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <div className="min-w-0 text-center">
-          <p className="truncate text-[11px] font-bold uppercase tracking-[0.18em] app-muted">Kalendarz</p>
-          <p className="truncate text-sm font-bold app-text capitalize">{format(currentMonth, 'LLLL yyyy', { locale: pl })}</p>
+        <div className="min-w-0 flex-1 text-center">
+          <p className="truncate text-[10px] font-bold uppercase tracking-[0.16em] app-muted">
+            {format(currentMonth, 'LLLL yyyy', { locale: pl })}
+          </p>
         </div>
-        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
+        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-md" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
 
       <div className="aspect-square">
-        <div className="grid grid-cols-7 gap-1">
-          {['P', 'W', 'Ś', 'C', 'P', 'S', 'N'].map((day, index) => (
-            <div key={`${day}-${index}`} className="py-0.5 text-center text-[9px] font-bold uppercase text-slate-400">
+        <div className="grid grid-cols-7 gap-0.5">
+          {['P', 'W', 'S', 'C', 'P', 'S', 'N'].map((day, index) => (
+            <div key={`${day}-${index}`} className="py-0.5 text-center text-[8px] font-bold uppercase text-slate-400">
               {day}
             </div>
           ))}
         </div>
-        <div className="mt-1 grid grid-cols-7 gap-1">
+        <div className="mt-1 grid grid-cols-7 gap-0.5">
           {monthDays.map((day) => {
             const hasTask = taskDates.some((item) => isSameDay(parseISO(item.date), day));
             const hasEvent = eventDates.some((item) => isSameDay(parseISO(item.date), day));
@@ -104,7 +118,7 @@ export function SidebarMiniCalendar() {
                 type="button"
                 onClick={() => navigate(`/calendar?focus=${format(day, 'yyyy-MM-dd')}`)}
                 className={[
-                  'flex h-7 items-center justify-center rounded-md text-[11px] font-semibold transition-colors',
+                  'flex h-6 items-center justify-center rounded-md text-[10px] font-semibold transition-colors',
                   !isSameMonth(day, currentMonth) ? 'text-slate-300' : getDayTone(hasLead, hasEvent, hasTask, isToday(day)),
                 ].join(' ')}
                 title={hasLead || hasEvent || hasTask ? 'Ten dzień ma zaplanowany ruch' : 'Brak aktywności'}

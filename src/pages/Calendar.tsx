@@ -365,7 +365,7 @@ export default function Calendar() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-slate-900 capitalize">{format(currentMonth, 'MMMM yyyy', { locale: pl })}</h1>
-            <p className="text-slate-500">Widok tygodnia z boczną nawigacją po dniach.</p>
+            <p className="text-slate-500">Widok tygodnia dla zadań, wydarzeń i ruchów na leadach.</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'week' | 'month')}>
@@ -468,64 +468,7 @@ export default function Calendar() {
         </div>
 
         {viewMode === 'week' ? (
-          <div className="grid gap-4 xl:grid-cols-[220px_minmax(0,1fr)]">
-            <Card className="border-none app-surface-strong xl:sticky xl:top-4 xl:self-start">
-              <CardContent className="space-y-3 p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}><ChevronLeft className="h-4 w-4" /></Button>
-                  <div className="text-center">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Mini miesiąc</p>
-                    <p className="text-sm font-bold text-slate-900 capitalize">{format(currentMonth, 'LLLL yyyy', { locale: pl })}</p>
-                  </div>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}><ChevronRight className="h-4 w-4" /></Button>
-                </div>
-                <div className="grid grid-cols-7 gap-1">
-                  {['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So', 'Nd'].map((day) => (
-                    <div key={day} className="py-0.5 text-center text-[9px] font-bold uppercase tracking-widest text-slate-400">{day}</div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-7 gap-1">
-                  {monthDays.map((day) => {
-                    const dayEvents = events.filter((event) => event.status !== 'cancelled' && isSameDay(parseISO(event.startAt), day));
-                    const dayTasks = tasks.filter((task) => task.status !== 'done' && isSameDay(parseISO(task.date), day));
-                    const dayLeadActions = leadActions.filter((lead) => isSameDay(parseISO(lead.nextActionAt), day));
-                    const hasEvent = dayEvents.length > 0;
-                    const hasTask = dayTasks.length > 0;
-                    const hasLeadAction = dayLeadActions.length > 0;
-
-                    return (
-                      <button
-                        key={day.toISOString()}
-                        type="button"
-                        onClick={() => focusWeekOfDay(day)}
-                        title={hasEvent || hasTask || hasLeadAction ? `Wydarzenia: ${dayEvents.length}, zadania: ${dayTasks.length}, leady: ${dayLeadActions.length}` : 'Brak aktywności'}
-                        className={[
-                          'flex h-7 items-center justify-center rounded-md text-[11px] font-semibold transition-colors',
-                          !isSameMonth(day, currentMonth) ? 'text-slate-300' : 'text-slate-800',
-                          isToday(day)
-                            ? 'bg-primary text-white'
-                            : hasLeadAction && hasEvent
-                              ? 'bg-fuchsia-100 text-fuchsia-800'
-                            : hasEvent && hasTask
-                              ? 'bg-amber-100 text-amber-800'
-                            : hasEvent
-                              ? 'bg-indigo-100 text-indigo-800'
-                            : hasLeadAction
-                              ? 'bg-cyan-100 text-cyan-800'
-                            : hasTask
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : 'hover:bg-slate-100',
-                        ].join(' ')}
-                      >
-                        {format(day, 'd')}
-                      </button>
-                    );
-                  })}
-                </div>
-                <Button variant="outline" className="h-8 w-full rounded-lg text-[11px]" onClick={() => setCurrentMonth(new Date())}>Dzisiaj</Button>
-              </CardContent>
-            </Card>
-            <div id="calendar-week-view" className="grid gap-3 md:grid-cols-7">
+          <div id="calendar-week-view" className="grid gap-3 md:grid-cols-7">
             {weekDays.map((day) => {
               const dayEvents = events.filter((event) => event.status !== 'cancelled' && isSameDay(parseISO(event.startAt), day));
               const dayTasks = tasks.filter((task) => task.status !== 'done' && isSameDay(parseISO(task.date), day));
@@ -575,8 +518,6 @@ export default function Calendar() {
                 </Card>
               );
             })}
-            </div>
-
           </div>
         ) : null}
 
