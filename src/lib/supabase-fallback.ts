@@ -21,6 +21,7 @@ type TaskInsertInput = {
   date?: string;
   priority?: string;
   status?: string;
+  leadId?: string | null;
   ownerId?: string;
   workspaceId?: string;
 };
@@ -33,6 +34,7 @@ type EventInsertInput = {
   reminderAt?: string;
   recurrenceRule?: string;
   status?: string;
+  leadId?: string | null;
   workspaceId?: string;
 };
 

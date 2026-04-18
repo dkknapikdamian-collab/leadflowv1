@@ -13,7 +13,19 @@ function normalizeEvent(row: Record<string, unknown>) {
     status: String(row.status || 'scheduled'),
     reminderAt: row.reminder && row.reminder !== 'none' ? String(row.reminder) : '',
     recurrenceRule: String(row.recurrence || 'none'),
+    leadId: row.lead_id ? String(row.lead_id) : undefined,
   };
+}
+
+async function syncLeadNextAction(leadId: unknown, item: { id?: unknown; title?: unknown; startAt?: unknown }) {
+  if (typeof leadId !== 'string' || !leadId.trim()) return;
+
+  await updateById('leads', leadId, {
+    next_action_title: String(item.title || ''),
+    next_action_at: item.startAt ? new Date(String(item.startAt)).toISOString() : null,
+    next_action_item_id: item.id ? String(item.id) : null,
+    updated_at: new Date().toISOString(),
+  });
 }
 
 export default async function handler(req: any, res: any) {
@@ -50,9 +62,17 @@ export default async function handler(req: any, res: any) {
       if (body.endAt !== undefined) payload.end_at = body.endAt ? new Date(body.endAt).toISOString() : null;
       if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
       if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
+      if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
 
       const data = await updateById('work_items', String(body.id), payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
+      if (body.leadId) {
+        await syncLeadNextAction(body.leadId, {
+          id: body.id,
+          title: body.title ?? payload.title,
+          startAt: body.startAt ?? payload.start_at,
+        });
+      }
       res.status(200).json(normalizeEvent(updated as Record<string, unknown>));
       return;
     }
@@ -85,7 +105,7 @@ export default async function handler(req: any, res: any) {
     const payload = {
       workspace_id: workspaceId,
       created_by_user_id: null,
-      lead_id: null,
+      lead_id: body.leadId || null,
       record_type: 'event',
       type: body.type || 'meeting',
       title: body.title,
@@ -105,6 +125,13 @@ export default async function handler(req: any, res: any) {
 
     const result = await insertWithVariants(['work_items'], [payload]);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
+    if (body.leadId) {
+      await syncLeadNextAction(body.leadId, {
+        id: (inserted as Record<string, unknown>).id,
+        title: body.title,
+        startAt,
+      });
+    }
 
     res.status(200).json(normalizeEvent(inserted as Record<string, unknown>));
   } catch (error: any) {

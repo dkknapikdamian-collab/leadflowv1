@@ -33,9 +33,10 @@ import { toast } from 'sonner';
 import { auth, db } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
-import { deleteTaskFromSupabase, fetchTasksFromSupabase, insertTaskToSupabase, isSupabaseConfigured, updateTaskInSupabase } from '../lib/supabase-fallback';
+import { deleteTaskFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, insertTaskToSupabase, isSupabaseConfigured, updateTaskInSupabase } from '../lib/supabase-fallback';
 import { RecurrenceEndType, RecurrenceRule, SnoozePreset, applySnoozePreset, canScheduleNextRecurrence, nextRecurringDate } from '../lib/scheduling';
 import Layout from '../components/Layout';
+import { LeadPicker, type LeadPickerOption } from '../components/lead-picker';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -112,9 +113,14 @@ function getEffectiveStatus(task: TaskRecord): TaskStatus {
   return task.status === 'postponed' ? 'postponed' : 'todo';
 }
 
+function getLeadLabel(task: TaskRecord, leads: LeadPickerOption[]) {
+  return task.leadName || leads.find((lead) => lead.id === task.leadId)?.name || '';
+}
+
 export default function Tasks() {
   const { workspace, hasAccess } = useWorkspace();
   const [tasks, setTasks] = useState<TaskRecord[]>([]);
+  const [leads, setLeads] = useState<LeadPickerOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -130,6 +136,8 @@ export default function Tasks() {
     recurrenceEndType: 'never' as RecurrenceEndType,
     recurrenceEndAt: '',
     recurrenceCount: '5',
+    leadId: '',
+    leadSearch: '',
   });
 
   useEffect(() => {
@@ -141,12 +149,14 @@ export default function Tasks() {
 
     if (isSupabaseConfigured()) {
       setLoading(true);
-      void fetchTasksFromSupabase()
-        .then((items) => {
+      void Promise.all([fetchTasksFromSupabase(), fetchLeadsFromSupabase()])
+        .then(([items, leadItems]) => {
           setTasks(items as TaskRecord[]);
+          setLeads(leadItems as LeadPickerOption[]);
         })
         .catch(() => {
           setTasks([]);
+          setLeads([]);
         })
         .finally(() => {
           setLoading(false);
@@ -219,6 +229,7 @@ export default function Tasks() {
           date: newTask.date,
           priority: newTask.priority,
           status: 'todo',
+          leadId: newTask.leadId || null,
           ownerId: auth.currentUser.uid,
           workspaceId: ensuredWorkspace.id,
         });
@@ -250,6 +261,8 @@ export default function Tasks() {
             date: newTask.date,
             priority: newTask.priority as TaskRecord['priority'],
             status: 'todo',
+            leadId: newTask.leadId || undefined,
+            leadName: leads.find((lead) => lead.id === newTask.leadId)?.name,
           },
           ...prev,
         ]);
@@ -267,6 +280,8 @@ export default function Tasks() {
         recurrenceEndType: 'never',
         recurrenceEndAt: '',
         recurrenceCount: '5',
+        leadId: '',
+        leadSearch: '',
       });
     } catch (error: any) {
       toast.error(`Błąd: ${error.message}`);
@@ -431,6 +446,16 @@ export default function Tasks() {
                   <Label>Tytuł</Label>
                   <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
                 </div>
+                {isSupabaseConfigured() ? (
+                    <LeadPicker
+                      leads={leads}
+                      selectedLeadId={newTask.leadId || undefined}
+                      query={newTask.leadSearch}
+                      onQueryChange={(value) => setNewTask({ ...newTask, leadSearch: value, leadId: '' })}
+                      onSelect={(lead) => setNewTask({ ...newTask, leadId: lead?.id || '', leadSearch: lead?.name || '' })}
+                      label="Następny krok dla leada"
+                    />
+                ) : null}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Typ</Label>
@@ -600,6 +625,7 @@ export default function Tasks() {
                                 </div>
                                 <div className="mt-2 flex flex-wrap gap-2 text-xs app-muted">
                                   <Badge variant="outline">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Inne'}</Badge>
+                                  {getLeadLabel(task, leads) ? <span>Lead: {getLeadLabel(task, leads)}</span> : null}
                                   <span>{taskDate ? format(taskDate, 'd MMMM yyyy', { locale: pl }) : 'Brak poprawnej daty'}</span>
                                   {task.reminderAt && parseTaskDate(task.reminderAt) ? <span>Przypomnienie: {format(parseTaskDate(task.reminderAt) as Date, 'd MMM, HH:mm', { locale: pl })}</span> : null}
                                   {task.recurrenceRule && task.recurrenceRule !== 'none' ? <span>Cyklicznie: {RECURRENCE_OPTIONS.find((item) => item.value === task.recurrenceRule)?.label}</span> : null}

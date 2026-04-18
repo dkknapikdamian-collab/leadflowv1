@@ -25,7 +25,19 @@ function normalizeTask(row: Record<string, unknown>) {
     date: normalizedDate,
     status: String(row.status || 'todo'),
     priority: String(row.priority || 'medium'),
+    leadId: row.lead_id ? String(row.lead_id) : undefined,
   };
+}
+
+async function syncLeadNextAction(leadId: unknown, item: { id?: unknown; title?: unknown; scheduledAt?: unknown }) {
+  if (typeof leadId !== 'string' || !leadId.trim()) return;
+
+  await updateById('leads', leadId, {
+    next_action_title: String(item.title || ''),
+    next_action_at: item.scheduledAt ? new Date(String(item.scheduledAt)).toISOString() : null,
+    next_action_item_id: item.id ? String(item.id) : null,
+    updated_at: new Date().toISOString(),
+  });
 }
 
 export default async function handler(req: any, res: any) {
@@ -59,9 +71,17 @@ export default async function handler(req: any, res: any) {
       if (body.priority !== undefined) payload.priority = body.priority;
       if (body.date !== undefined) payload.scheduled_at = body.date ? new Date(`${body.date}T09:00:00`).toISOString() : null;
       if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? new Date(body.scheduledAt).toISOString() : null;
+      if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
 
       const data = await updateById('work_items', String(body.id), payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
+      if (body.leadId) {
+        await syncLeadNextAction(body.leadId, {
+          id: body.id,
+          title: body.title ?? payload.title,
+          scheduledAt: body.scheduledAt ?? payload.scheduled_at ?? body.date,
+        });
+      }
       res.status(200).json(normalizeTask(updated as Record<string, unknown>));
       return;
     }
@@ -94,7 +114,7 @@ export default async function handler(req: any, res: any) {
     const payload = {
       workspace_id: workspaceId,
       created_by_user_id: null,
-      lead_id: null,
+      lead_id: body.leadId || null,
       record_type: 'task',
       type: body.type || 'task',
       title: body.title,
@@ -114,6 +134,13 @@ export default async function handler(req: any, res: any) {
 
     const result = await insertWithVariants(['work_items'], [payload]);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
+    if (body.leadId) {
+      await syncLeadNextAction(body.leadId, {
+        id: (inserted as Record<string, unknown>).id,
+        title: body.title,
+        scheduledAt,
+      });
+    }
 
     res.status(200).json(normalizeTask(inserted as Record<string, unknown>));
   } catch (error: any) {

@@ -9,8 +9,9 @@ import { toast } from 'sonner';
 import { auth, db } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { RecurrenceEndType, RecurrenceRule, SnoozePreset, applySnoozePreset } from '../lib/scheduling';
-import { deleteEventFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertEventToSupabase, isSupabaseConfigured, updateEventInSupabase, updateTaskInSupabase } from '../lib/supabase-fallback';
+import { deleteEventFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, insertEventToSupabase, isSupabaseConfigured, updateEventInSupabase, updateTaskInSupabase } from '../lib/supabase-fallback';
 import Layout from '../components/Layout';
+import { LeadPicker, type LeadPickerOption } from '../components/lead-picker';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -24,6 +25,8 @@ type CalendarTask = {
   title: string;
   date: string;
   status: 'todo' | 'done' | 'overdue' | 'postponed';
+  leadId?: string;
+  leadName?: string;
 };
 
 type CalendarEvent = {
@@ -38,6 +41,8 @@ type CalendarEvent = {
   recurrenceEndType?: RecurrenceEndType;
   recurrenceEndAt?: string | null;
   recurrenceCount?: number | null;
+  leadId?: string;
+  leadName?: string;
 };
 
 const RECURRENCE_OPTIONS: { value: RecurrenceRule; label: string }[] = [
@@ -49,11 +54,16 @@ const RECURRENCE_OPTIONS: { value: RecurrenceRule; label: string }[] = [
   { value: 'weekday', label: 'Dzień roboczy' },
 ];
 
+function getLeadLabel(item: { leadId?: string; leadName?: string }, leads: LeadPickerOption[]) {
+  return item.leadName || leads.find((lead) => lead.id === item.leadId)?.name || '';
+}
+
 export default function Calendar() {
   const { workspace, hasAccess } = useWorkspace();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [tasks, setTasks] = useState<CalendarTask[]>([]);
+  const [leads, setLeads] = useState<LeadPickerOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
 
@@ -68,6 +78,8 @@ export default function Calendar() {
     recurrenceEndType: 'never' as RecurrenceEndType,
     recurrenceEndAt: '',
     recurrenceCount: '5',
+    leadId: '',
+    leadSearch: '',
   });
 
   useEffect(() => {
@@ -80,14 +92,16 @@ export default function Calendar() {
 
     if (isSupabaseConfigured()) {
       setLoading(true);
-      void Promise.all([fetchEventsFromSupabase(), fetchTasksFromSupabase()])
-        .then(([eventItems, taskItems]) => {
+      void Promise.all([fetchEventsFromSupabase(), fetchTasksFromSupabase(), fetchLeadsFromSupabase()])
+        .then(([eventItems, taskItems, leadItems]) => {
           setEvents(eventItems as CalendarEvent[]);
           setTasks(taskItems as CalendarTask[]);
+          setLeads(leadItems as LeadPickerOption[]);
         })
         .catch(() => {
           setEvents([]);
           setTasks([]);
+          setLeads([]);
         })
         .finally(() => {
           setLoading(false);
@@ -147,6 +161,7 @@ export default function Calendar() {
           reminderAt: newEvent.reminderAt || undefined,
           recurrenceRule: newEvent.recurrenceRule,
           status: 'scheduled',
+          leadId: newEvent.leadId || null,
           workspaceId: workspace?.id,
         });
         setEvents((prev) => [inserted as CalendarEvent, ...prev]);
@@ -180,6 +195,8 @@ export default function Calendar() {
         recurrenceEndType: 'never',
         recurrenceEndAt: '',
         recurrenceCount: '5',
+        leadId: '',
+        leadSearch: '',
       });
     } catch (error: any) {
       toast.error(`Błąd: ${error.message}`);
@@ -320,6 +337,16 @@ export default function Calendar() {
                     <Label>Tytuł</Label>
                     <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
                   </div>
+                  {isSupabaseConfigured() ? (
+                    <LeadPicker
+                      leads={leads}
+                      selectedLeadId={newEvent.leadId || undefined}
+                      query={newEvent.leadSearch}
+                      onQueryChange={(value) => setNewEvent({ ...newEvent, leadSearch: value, leadId: '' })}
+                      onSelect={(lead) => setNewEvent({ ...newEvent, leadId: lead?.id || '', leadSearch: lead?.name || '' })}
+                      label="Powiąż z istniejącym leadem"
+                    />
+                  ) : null}
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label>Typ</Label>
@@ -398,6 +425,7 @@ export default function Calendar() {
                     {dayEvents.map((event) => (
                       <div key={event.id} className="rounded-xl border p-2 text-xs">
                         <p className="font-semibold">{event.title}</p>
+                        {getLeadLabel(event, leads) ? <p className="text-[10px] text-slate-500">Lead: {getLeadLabel(event, leads)}</p> : null}
                         <p className="text-slate-500">{format(parseISO(event.startAt), 'HH:mm', { locale: pl })}</p>
                         <div className="mt-2 flex gap-1">
                           <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => postponeEvent(event, 'tomorrow')}>Snooze</Button>
@@ -408,6 +436,7 @@ export default function Calendar() {
                     {dayTasks.map((task) => (
                       <div key={task.id} className="rounded-xl border p-2 text-xs">
                         <p className="font-semibold">{task.title}</p>
+                        {getLeadLabel(task, leads) ? <p className="text-[10px] text-slate-500">Lead: {getLeadLabel(task, leads)}</p> : null}
                         <div className="mt-2 flex gap-1">
                           <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => toggleTaskDone(task)}><CheckSquare className="h-3 w-3 mr-1" />Done</Button>
                           <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => snoozeTask(task, 'tomorrow')}>Snooze</Button>

@@ -15,8 +15,9 @@ import {
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
-import { fetchLeadsFromSupabase, fetchTasksFromSupabase, insertLeadToSupabase, insertTaskToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import { fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, insertEventToSupabase, insertLeadToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateTaskInSupabase } from '../lib/supabase-fallback';
 import Layout from '../components/Layout';
+import type { LeadPickerOption } from '../components/lead-picker';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -90,6 +91,8 @@ type EventRecord = {
   startAt: string;
   endAt?: string;
   status: string;
+  leadId?: string;
+  leadName?: string;
 };
 
 const ACTIVE_LEAD_STATUSES = ['new', 'contacted', 'qualification', 'proposal_sent', 'follow_up', 'negotiation'];
@@ -222,12 +225,16 @@ export default function Today() {
     type: 'follow_up',
     date: format(new Date(), 'yyyy-MM-dd'),
     priority: 'medium',
+    leadId: '',
+    leadSearch: '',
   });
   const [newEvent, setNewEvent] = useState({
     title: '',
     type: 'meeting',
     startAt: format(new Date(), "yyyy-MM-dd'T'10:00"),
     endAt: format(new Date(), "yyyy-MM-dd'T'11:00"),
+    leadId: '',
+    leadSearch: '',
   });
 
   const openSectionOrRoute = (sectionId: string, fallbackPath: string) => {
@@ -250,11 +257,11 @@ export default function Today() {
 
     if (isSupabaseConfigured()) {
       setLoading(true);
-      void Promise.all([fetchLeadsFromSupabase(), fetchTasksFromSupabase()])
-        .then(([leadItems, taskItems]) => {
+      void Promise.all([fetchLeadsFromSupabase(), fetchTasksFromSupabase(), fetchEventsFromSupabase()])
+        .then(([leadItems, taskItems, eventItems]) => {
           setLeads(leadItems as LeadRecord[]);
           setTasks(taskItems as TaskRecord[]);
-          setEvents([]);
+          setEvents(eventItems as EventRecord[]);
         })
         .catch(() => {
           setLeads([]);
@@ -413,6 +420,7 @@ export default function Today() {
           date: newTask.date,
           priority: newTask.priority,
           status: 'todo',
+          leadId: newTask.leadId || null,
           ownerId: auth.currentUser.uid,
           workspaceId: ensuredWorkspace.id,
         });
@@ -434,13 +442,15 @@ export default function Today() {
             type: newTask.type,
             date: newTask.date,
             status: 'todo',
+            leadId: newTask.leadId || undefined,
+            leadName: (leads as LeadPickerOption[]).find((lead) => lead.id === newTask.leadId)?.name,
           },
           ...prev,
         ]);
       }
       toast.success('Zadanie dodane');
       setIsTaskOpen(false);
-      setNewTask({ title: '', type: 'follow_up', date: format(new Date(), 'yyyy-MM-dd'), priority: 'medium' });
+      setNewTask({ title: '', type: 'follow_up', date: format(new Date(), 'yyyy-MM-dd'), priority: 'medium', leadId: '', leadSearch: '' });
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
@@ -451,14 +461,28 @@ export default function Today() {
     if (!auth.currentUser) return toast.error('Brak aktywnej sesji.');
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
-      await addDoc(collection(db, 'events'), {
-        ...newEvent,
-        status: 'scheduled',
-        ownerId: auth.currentUser.uid,
-        workspaceId: (workspace ?? await ensureCurrentUserWorkspace()).id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
+      if (isSupabaseConfigured()) {
+        const inserted = await insertEventToSupabase({
+          title: newEvent.title,
+          type: newEvent.type,
+          startAt: newEvent.startAt,
+          endAt: newEvent.endAt,
+          status: 'scheduled',
+          leadId: newEvent.leadId || null,
+          workspaceId: ensuredWorkspace.id,
+        });
+        setEvents((prev) => [inserted as EventRecord, ...prev]);
+      } else {
+        await addDoc(collection(db, 'events'), {
+          ...newEvent,
+          status: 'scheduled',
+          ownerId: auth.currentUser.uid,
+          workspaceId: ensuredWorkspace.id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
       toast.success('Wydarzenie dodane');
       setIsEventOpen(false);
       setNewEvent({
@@ -466,6 +490,8 @@ export default function Today() {
         type: 'meeting',
         startAt: format(new Date(), "yyyy-MM-dd'T'10:00"),
         endAt: format(new Date(), "yyyy-MM-dd'T'11:00"),
+        leadId: '',
+        leadSearch: '',
       });
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
