@@ -24,6 +24,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { cn } from '../lib/utils';
 import { useAppearance } from './appearance-provider';
+import { SidebarMiniCalendar } from './sidebar-mini-calendar';
 
 interface LayoutProps {
   children: ReactNode;
@@ -55,19 +56,22 @@ export default function Layout({ children }: LayoutProps) {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const navItems = useMemo<NavItem[]>(() => [
-    { icon: LayoutDashboard, label: 'Dziś', path: '/', mobile: true },
-    { icon: BarChart3, label: 'Panel', path: '/dashboard' },
-    { icon: Users, label: 'Leady', path: '/leads', mobile: true },
-    { icon: ContactRound, label: 'Klienci', path: '/clients' },
-    { icon: CheckSquare, label: 'Zadania', path: '/tasks', mobile: true },
-    { icon: Calendar, label: 'Kalendarz', path: '/calendar', mobile: true },
-    { icon: Briefcase, label: 'Sprawy', path: '/cases', mobile: true },
-    { icon: History, label: 'Aktywność', path: '/activity' },
-    { icon: FileText, label: 'Szablony', path: '/templates' },
-    { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
-    { icon: Settings, label: 'Ustawienia', path: '/settings' },
-  ], []);
+  const navItems = useMemo<NavItem[]>(
+    () => [
+      { icon: LayoutDashboard, label: 'Dziś', path: '/', mobile: true },
+      { icon: BarChart3, label: 'Panel', path: '/dashboard' },
+      { icon: Users, label: 'Leady', path: '/leads', mobile: true },
+      { icon: ContactRound, label: 'Klienci', path: '/clients' },
+      { icon: CheckSquare, label: 'Zadania', path: '/tasks', mobile: true },
+      { icon: Calendar, label: 'Kalendarz', path: '/calendar', mobile: true },
+      { icon: Briefcase, label: 'Sprawy', path: '/cases', mobile: true },
+      { icon: History, label: 'Aktywność', path: '/activity' },
+      { icon: FileText, label: 'Szablony', path: '/templates' },
+      { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
+      { icon: Settings, label: 'Ustawienia', path: '/settings' },
+    ],
+    []
+  );
 
   const mobileNavItems = navItems.filter((item) => item.mobile);
 
@@ -86,7 +90,7 @@ export default function Layout({ children }: LayoutProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden rounded-xl"
+          className="rounded-xl md:hidden"
           onClick={() => setMobileMenuOpen(false)}
         >
           <X className="h-5 w-5" />
@@ -113,31 +117,7 @@ export default function Layout({ children }: LayoutProps) {
         })}
       </nav>
 
-      {workspace && (
-        <div className="mx-4 mb-4 rounded-2xl border app-border p-3 app-surface-strong app-shadow">
-          <div className="mb-2 flex items-center justify-between gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Dostęp</span>
-            <span className={cn('rounded-full px-2 py-1 text-[10px] font-bold', access.chipClassName)}>{access.sidebarLabel}</span>
-          </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
-            <div
-              className="h-full rounded-full"
-              style={{
-                width: `${access.status === 'paid_active' ? 100 : access.trialProgressPercent}%`,
-                backgroundColor: access.status === 'paid_active' ? 'rgb(16 185 129)' : 'var(--app-primary)',
-              }}
-            />
-          </div>
-          <p className="mt-2 text-xs app-muted">{access.headline}</p>
-          <Link
-            to="/billing"
-            className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold"
-            style={{ color: 'var(--app-primary)' }}
-          >
-            {access.ctaLabel} <ChevronRight className="h-3 w-3" />
-          </Link>
-        </div>
-      )}
+      {workspace ? <SidebarMiniCalendar /> : null}
 
       <div className="border-t app-border p-4">
         <div className="mb-3 flex items-center gap-3 rounded-2xl border app-border px-3 py-3 app-surface-strong">
@@ -189,10 +169,12 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
-      <div className={cn(
-        'fixed inset-0 z-50 md:hidden',
-        mobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'
-      )}>
+      <div
+        className={cn(
+          'fixed inset-0 z-50 md:hidden',
+          mobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'
+        )}
+      >
         <div
           className={cn(
             'absolute inset-0 bg-slate-950/40 transition-opacity',

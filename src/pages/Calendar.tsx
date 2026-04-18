@@ -1,5 +1,5 @@
 ﻿import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { addDays, addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, isToday, parseISO, startOfMonth, startOfWeek, subMonths } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
@@ -76,6 +76,7 @@ function getLeadLabel(item: { leadId?: string; leadName?: string }, leads: LeadP
 }
 
 export default function Calendar() {
+  const [searchParams] = useSearchParams();
   const { workspace, hasAccess } = useWorkspace();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -322,6 +323,17 @@ export default function Calendar() {
       document.getElementById('calendar-week-view')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   };
+
+  useEffect(() => {
+    const focus = searchParams.get('focus');
+    if (!focus) return;
+
+    const parsed = parseISO(focus);
+    if (Number.isNaN(parsed.getTime())) return;
+
+    setCurrentMonth(parsed);
+    setViewMode('week');
+  }, [searchParams]);
 
   const leadActions = useMemo<CalendarLeadAction[]>(() => {
     return leads
