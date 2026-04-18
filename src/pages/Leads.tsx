@@ -214,19 +214,19 @@ function LeadRow({
 
   return (
     <Card className="border-none app-surface-strong transition-all hover:-translate-y-0.5 hover:app-shadow">
-      <CardContent className="space-y-3 p-4">
+      <CardContent className="space-y-2 p-3">
         <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
-          <div className="min-w-0 flex-1 space-y-3">
+          <div className="min-w-0 flex-1 space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="min-w-0 max-w-full truncate text-base font-bold app-text sm:text-lg">{lead.name}</h3>
+              <h3 className="min-w-0 max-w-full truncate text-sm font-bold app-text sm:text-base">{lead.name}</h3>
               <Badge className={cn('border', status.toneClass)}>{status.label}</Badge>
               {lead.isAtRisk ? <Badge variant="destructive">Zagrożony</Badge> : null}
               {!lead.nextActionAt || !lead.nextStep ? <Badge variant="outline">Brak opieki</Badge> : null}
             </div>
 
-            <p className="line-clamp-1 text-sm app-muted">{reasonText(lead)}</p>
+            <p className="line-clamp-1 text-xs app-muted">{reasonText(lead)}</p>
 
-            <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm app-muted">
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs app-muted">
               {lead.company ? <span className="inline-flex items-center gap-1"><FileText className="h-3.5 w-3.5" /> {lead.company}</span> : null}
               {lead.source ? <span className="inline-flex items-center gap-1"><Target className="h-3.5 w-3.5" /> {getLeadSourceLabel(lead.source)}</span> : null}
               {lead.email ? <span className="inline-flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {lead.email}</span> : null}
@@ -234,20 +234,20 @@ function LeadRow({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:min-w-[360px] xl:max-w-[520px]">
-            <div className="rounded-xl border app-border px-3 py-2 app-surface">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:min-w-[320px] xl:max-w-[460px]">
+            <div className="rounded-xl border app-border px-2.5 py-2 app-surface">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Wartość</p>
               <p className="mt-1 text-sm font-bold app-text">{(lead.dealValue || 0).toLocaleString()} PLN</p>
             </div>
-            <div className="rounded-xl border app-border px-3 py-2 app-surface">
+            <div className="rounded-xl border app-border px-2.5 py-2 app-surface">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Termin</p>
               <p className={cn('mt-1 text-sm font-bold', nextState.tone)}>{nextState.label}</p>
             </div>
-            <div className="rounded-xl border app-border px-3 py-2 app-surface sm:col-span-2 xl:col-span-1">
+            <div className="rounded-xl border app-border px-2.5 py-2 app-surface sm:col-span-2 xl:col-span-1">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Next step</p>
-              <p className="mt-1 truncate text-sm font-semibold app-text" title={nextStepLabel}>{nextStepLabel}</p>
+              <p className="mt-1 truncate text-xs font-semibold app-text" title={nextStepLabel}>{nextStepLabel}</p>
             </div>
-            <div className="rounded-xl border app-border px-3 py-2 app-surface">
+            <div className="rounded-xl border app-border px-2.5 py-2 app-surface">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Bez ruchu</p>
               <p className="mt-1 text-sm font-bold app-text">{daysSinceTouch} dni</p>
             </div>
@@ -261,15 +261,15 @@ function LeadRow({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForThisLead} onClick={() => onQuickAction(lead, 'followup')}>
+            <Button variant="outline" size="sm" className="h-8 rounded-xl px-3 text-[11px]" disabled={busyForThisLead} onClick={() => onQuickAction(lead, 'followup')}>
               Dalszy kontakt jutro
             </Button>
-            <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForThisLead} onClick={() => onQuickAction(lead, 'waiting')}>
+            <Button variant="outline" size="sm" className="h-8 rounded-xl px-3 text-[11px]" disabled={busyForThisLead} onClick={() => onQuickAction(lead, 'waiting')}>
               Czekamy 3 dni
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-xl" disabled={busyForThisLead}>
+                <Button variant="outline" size="sm" className="h-8 rounded-xl px-3 text-[11px]" disabled={busyForThisLead}>
                   <MoreHorizontal className="h-4 w-4" /> Więcej
                 </Button>
               </DropdownMenuTrigger>
@@ -283,7 +283,7 @@ function LeadRow({
                 <DropdownMenuItem onClick={() => onDelete(lead)} className="text-rose-500">Usuń lead</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button size="sm" className="rounded-xl" asChild>
+            <Button size="sm" className="h-8 rounded-xl px-3 text-[11px]" asChild>
               <Link to={`/leads/${lead.id}`}>Otwórz <ChevronRight className="h-4 w-4" /></Link>
             </Button>
           </div>
@@ -325,10 +325,10 @@ function PipelineColumn({
           leads.map((lead) => {
             const nextState = dueState(lead);
             return (
-              <div key={lead.id} className="rounded-2xl border app-border p-4 app-surface">
+              <div key={lead.id} className="rounded-2xl border app-border p-3 app-surface">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <button className="truncate text-left text-sm font-bold app-text hover:underline" onClick={() => onOpen(lead.id)}>
+                    <button className="truncate text-left text-xs font-bold app-text hover:underline sm:text-sm" onClick={() => onOpen(lead.id)}>
                       {lead.name}
                     </button>
                     <p className="mt-1 text-xs app-muted">{lead.company || getLeadSourceLabel(lead.source) || 'Bez dodatkowego opisu'}</p>
@@ -347,14 +347,14 @@ function PipelineColumn({
                 </div>
                 <div className="mt-3 flex items-center gap-2">
                   <Select value={lead.status || 'new'} onValueChange={(value) => onMove(lead, value as LeadStatus)}>
-                    <SelectTrigger className="h-9 rounded-xl"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-8 rounded-xl text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {STATUS_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  <Button variant="outline" size="sm" className="rounded-xl" onClick={() => onOpen(lead.id)}>
+                  <Button variant="outline" size="sm" className="h-8 rounded-xl px-3 text-[11px]" onClick={() => onOpen(lead.id)}>
                     Szczegóły
                   </Button>
                 </div>

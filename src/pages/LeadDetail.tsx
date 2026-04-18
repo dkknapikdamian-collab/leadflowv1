@@ -1074,14 +1074,15 @@ export default function LeadDetail() {
               </div>
               <div className="space-y-2">
                 <Label>Źródło</Label>
-                <Select value={editLead?.source || 'other'} onValueChange={(value) => setEditLead((prev) => ({ ...prev, source: value }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {SOURCE_OPTIONS.map((source) => (
-                      <SelectItem key={source.value} value={source.value}>{source.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <select
+                  value={editLead?.source || 'other'}
+                  onChange={(event) => setEditLead((prev) => ({ ...prev, source: event.target.value }))}
+                  className="app-input flex h-10 w-full rounded-md px-3 py-2 text-sm shadow-sm"
+                >
+                  {SOURCE_OPTIONS.map((source) => (
+                    <option key={source.value} value={source.value}>{source.label}</option>
+                  ))}
+                </select>
               </div>
             </div>
             <div className="space-y-2">
