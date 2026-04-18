@@ -210,20 +210,21 @@ function LeadRow({
     ? differenceInCalendarDays(new Date(), toDate(lead.updatedAt) as Date)
     : 0;
   const busyForThisLead = busy?.startsWith(lead.id) ?? false;
+  const nextStepLabel = lead.nextStep || 'Nie ustawiono';
 
   return (
     <Card className="border-none app-surface-strong transition-all hover:-translate-y-0.5 hover:app-shadow">
-      <CardContent className="space-y-4 p-4 md:p-5">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+      <CardContent className="space-y-3 p-4">
+        <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
           <div className="min-w-0 flex-1 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="truncate text-lg font-bold app-text">{lead.name}</h3>
+              <h3 className="min-w-0 max-w-full truncate text-base font-bold app-text sm:text-lg">{lead.name}</h3>
               <Badge className={cn('border', status.toneClass)}>{status.label}</Badge>
               {lead.isAtRisk ? <Badge variant="destructive">Zagrożony</Badge> : null}
               {!lead.nextActionAt || !lead.nextStep ? <Badge variant="outline">Brak opieki</Badge> : null}
             </div>
 
-            <p className="text-sm app-muted">{reasonText(lead)}</p>
+            <p className="line-clamp-1 text-sm app-muted">{reasonText(lead)}</p>
 
             <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm app-muted">
               {lead.company ? <span className="inline-flex items-center gap-1"><FileText className="h-3.5 w-3.5" /> {lead.company}</span> : null}
@@ -233,22 +234,22 @@ function LeadRow({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:min-w-[430px]">
-            <div className="rounded-2xl border app-border p-3 app-surface">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:min-w-[360px] xl:max-w-[520px]">
+            <div className="rounded-xl border app-border px-3 py-2 app-surface">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Wartość</p>
-              <p className="mt-2 text-base font-bold app-text">{(lead.dealValue || 0).toLocaleString()} PLN</p>
+              <p className="mt-1 text-sm font-bold app-text">{(lead.dealValue || 0).toLocaleString()} PLN</p>
             </div>
-            <div className="rounded-2xl border app-border p-3 app-surface">
+            <div className="rounded-xl border app-border px-3 py-2 app-surface">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Termin</p>
-              <p className={cn('mt-2 text-sm font-bold', nextState.tone)}>{nextState.label}</p>
+              <p className={cn('mt-1 text-sm font-bold', nextState.tone)}>{nextState.label}</p>
             </div>
-            <div className="rounded-2xl border app-border p-3 app-surface">
+            <div className="rounded-xl border app-border px-3 py-2 app-surface sm:col-span-2 xl:col-span-1">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Next step</p>
-              <p className="mt-2 line-clamp-2 text-sm font-semibold app-text">{lead.nextStep || 'Nie ustawiono'}</p>
+              <p className="mt-1 truncate text-sm font-semibold app-text" title={nextStepLabel}>{nextStepLabel}</p>
             </div>
-            <div className="rounded-2xl border app-border p-3 app-surface">
+            <div className="rounded-xl border app-border px-3 py-2 app-surface">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] app-muted">Bez ruchu</p>
-              <p className="mt-2 text-base font-bold app-text">{daysSinceTouch} dni</p>
+              <p className="mt-1 text-sm font-bold app-text">{daysSinceTouch} dni</p>
             </div>
           </div>
         </div>
