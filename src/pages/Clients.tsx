@@ -31,6 +31,7 @@ import {
 import { toast } from 'sonner';
 
 import { auth, db } from '../firebase';
+import { ConfirmDialog } from '../components/confirm-dialog';
 import Layout from '../components/Layout';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { buildClientDirectory, buildClientIdFromLead, clientHealthLabel, clientHealthTone, getDaysSinceTouch, portalStatusLabel, toJsDate, type ClientCaseLike, type ClientLeadLike, type ClientRecord, type ClientViewModel } from '../lib/clients';
@@ -65,6 +66,8 @@ export default function Clients() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '' });
+  const [clientToDelete, setClientToDelete] = useState<ClientViewModel | null>(null);
+  const [deletePending, setDeletePending] = useState(false);
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -244,9 +247,6 @@ export default function Clients() {
   }
 
   async function handleDeleteClient(client: ClientViewModel) {
-    const confirmed = window.confirm(`Usunąć klienta "${client.name}"?`);
-    if (!confirmed) return;
-
     try {
       if (client.source === 'client') {
         await deleteDoc(doc(db, 'clients', client.id));
@@ -461,7 +461,7 @@ export default function Clients() {
                           Zepnij
                         </Button>
                       ) : null}
-                      <Button variant="outline" className="rounded-xl text-rose-600" onClick={() => handleDeleteClient(client)}>
+                      <Button variant="outline" className="rounded-xl text-rose-600" onClick={() => setClientToDelete(client)}>
                         {isFallback ? <EyeOff className="mr-2 h-4 w-4" /> : <Trash2 className="mr-2 h-4 w-4" />}
                         Usuń
                       </Button>
@@ -486,6 +486,26 @@ export default function Clients() {
             </CardContent>
           </Card>
         ) : null}
+        <ConfirmDialog
+          open={Boolean(clientToDelete)}
+          onOpenChange={(open) => {
+            if (!open && !deletePending) setClientToDelete(null);
+          }}
+          title="Usunąć klienta?"
+          description={clientToDelete ? `Klient "${clientToDelete.name}" zostanie usunięty albo ukryty z listy klientów, zależnie od typu rekordu.` : ''}
+          confirmLabel="Usuń klienta"
+          pending={deletePending}
+          onConfirm={async () => {
+            if (!clientToDelete) return;
+            try {
+              setDeletePending(true);
+              await handleDeleteClient(clientToDelete);
+              setClientToDelete(null);
+            } finally {
+              setDeletePending(false);
+            }
+          }}
+        />
       </div>
     </Layout>
   );

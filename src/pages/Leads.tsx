@@ -40,6 +40,7 @@ import {
 } from 'lucide-react';
 
 import Layout from '../components/Layout';
+import { ConfirmDialog } from '../components/confirm-dialog';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadSourceLabel, LEAD_SOURCE_OPTIONS } from '../lib/leadSources';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
@@ -507,6 +508,8 @@ export default function Leads() {
   const [newLead, setNewLead] = useState<LeadFormState>(EMPTY_LEAD_FORM);
   const [editingLeadId, setEditingLeadId] = useState<string | null>(null);
   const [editLead, setEditLead] = useState<LeadFormState>(EMPTY_LEAD_FORM);
+  const [leadToDelete, setLeadToDelete] = useState<LeadRecord | null>(null);
+  const [deletePending, setDeletePending] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -641,6 +644,20 @@ export default function Leads() {
     }
   }
 
+  async function deleteLeadRecord(lead: LeadRecord) {
+    try {
+      if (isSupabaseConfigured()) {
+        await deleteLeadFromSupabase(lead.id);
+        setLeads((prev) => prev.filter((item) => item.id !== lead.id));
+      } else {
+        await deleteDoc(doc(db, 'leads', lead.id));
+      }
+      toast.success('Lead usunięty');
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    }
+  }
+
   function handleImportCSV(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file || !workspace || !hasAccess) return;
@@ -751,8 +768,6 @@ export default function Leads() {
   }
 
   async function handleDeleteLead(lead: LeadRecord) {
-    if (!window.confirm(`Usunąć lead "${lead.name}"?`)) return;
-
     try {
       if (isSupabaseConfigured()) {
         await deleteLeadFromSupabase(lead.id);
@@ -1138,7 +1153,7 @@ export default function Leads() {
                 lead={lead}
                 busy={quickActionBusy}
                 onQuickAction={handleQuickAction}
-                onDelete={handleDeleteLead}
+                onDelete={setLeadToDelete}
                 onEdit={openEditLead}
               />
             ))}
@@ -1153,6 +1168,26 @@ export default function Leads() {
           </div>
         )}
       </div>
+      <ConfirmDialog
+        open={Boolean(leadToDelete)}
+        onOpenChange={(open) => {
+          if (!open && !deletePending) setLeadToDelete(null);
+        }}
+        title="Usunąć leada?"
+        description={leadToDelete ? `Lead "${leadToDelete.name}" zostanie usunięty z listy i lejka.` : ''}
+        confirmLabel="Usuń leada"
+        pending={deletePending}
+        onConfirm={async () => {
+          if (!leadToDelete) return;
+          try {
+            setDeletePending(true);
+            await deleteLeadRecord(leadToDelete);
+            setLeadToDelete(null);
+          } finally {
+            setDeletePending(false);
+          }
+        }}
+      />
     </Layout>
   );
 }

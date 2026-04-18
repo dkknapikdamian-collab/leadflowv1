@@ -6,6 +6,13 @@ export type CalendarTaskItem = {
   title: string;
   date: string;
   status: string;
+  type?: string;
+  priority?: string;
+  reminderAt?: string | null;
+  recurrenceRule?: string;
+  recurrenceEndType?: string;
+  recurrenceEndAt?: string | null;
+  recurrenceCount?: number | null;
   leadId?: string;
   leadName?: string;
 };
@@ -57,6 +64,13 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
     title: String(row.title || ''),
     date,
     status: String(row.status || 'todo'),
+    type: row.type ? String(row.type) : undefined,
+    priority: row.priority ? String(row.priority) : undefined,
+    reminderAt: row.reminderAt ? String(row.reminderAt) : null,
+    recurrenceRule: row.recurrenceRule ? String(row.recurrenceRule) : undefined,
+    recurrenceEndType: row.recurrenceEndType ? String(row.recurrenceEndType) : undefined,
+    recurrenceEndAt: row.recurrenceEndAt ? String(row.recurrenceEndAt) : null,
+    recurrenceCount: typeof row.recurrenceCount === 'number' ? row.recurrenceCount : null,
     leadId: row.leadId ? String(row.leadId) : undefined,
     leadName: row.leadName ? String(row.leadName) : undefined,
   };

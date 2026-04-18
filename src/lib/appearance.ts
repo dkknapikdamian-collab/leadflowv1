@@ -10,13 +10,13 @@ export interface SkinOption {
 export const SKIN_OPTIONS: SkinOption[] = [
   {
     id: 'forteca-light',
-    label: 'Forteca Light',
+    label: 'CloseDock Light',
     description: 'Jasna, czysta skórka do pracy dziennej.',
     toastTheme: 'light',
   },
   {
     id: 'forteca-dark',
-    label: 'Forteca Dark',
+    label: 'CloseDock Dark',
     description: 'Ciemna wersja głównej skórki, dobra wieczorem i na telefonie.',
     toastTheme: 'dark',
   },

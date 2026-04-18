@@ -143,7 +143,7 @@ export default function Login() {
           <div className="mt-6 flex h-16 w-16 items-center justify-center rounded-[24px] app-primary-chip">
             <CheckCircle2 className="h-9 w-9" />
           </div>
-          <h1 className="mt-6 text-4xl font-bold leading-tight app-text">Forteca porzadkuje sprzedaz i start realizacji w jednym miejscu.</h1>
+          <h1 className="mt-6 text-4xl font-bold leading-tight app-text">CloseDock porzadkuje sprzedaz i start realizacji w jednym miejscu.</h1>
           <p className="mt-4 max-w-xl text-base app-muted">
             Jeden ekran na dzis, jedna baza leadow, zadania, kalendarz, sprawy i portal klienta. Bez latania miedzy notatkami i chaosem.
           </p>
@@ -167,7 +167,7 @@ export default function Login() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[24px] app-primary-chip">
               <CheckCircle2 className="h-9 w-9" />
             </div>
-            <h1 className="text-3xl font-bold app-text">Forteca</h1>
+            <h1 className="text-3xl font-bold app-text">CloseDock</h1>
             <p className="mt-2 text-sm app-muted">Zaloguj sie i wroc do pracy z leadami oraz sprawami.</p>
           </div>
 

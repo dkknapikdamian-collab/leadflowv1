@@ -35,7 +35,9 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
 import { deleteTaskFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, insertTaskToSupabase, isSupabaseConfigured, updateTaskInSupabase } from '../lib/supabase-fallback';
 import { RecurrenceEndType, RecurrenceRule, SnoozePreset, applySnoozePreset, canScheduleNextRecurrence, nextRecurringDate } from '../lib/scheduling';
+import { ConfirmDialog } from '../components/confirm-dialog';
 import Layout from '../components/Layout';
+import { TaskEditorDialog } from '../components/task-editor-dialog';
 import { LeadPicker, type LeadPickerOption } from '../components/lead-picker';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -46,15 +48,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
-
-const TASK_TYPES = [
-  { value: 'follow_up', label: 'Follow-up' },
-  { value: 'phone', label: 'Telefon' },
-  { value: 'reply', label: 'Odpisać' },
-  { value: 'send_offer', label: 'Wyślij ofertę' },
-  { value: 'meeting', label: 'Spotkanie' },
-  { value: 'other', label: 'Inne' },
-] as const;
+import { getDateLabel, getSafeTaskDate, getTaskTypeLabel, parseTaskDate, TASK_TYPES, type EditableTaskRecord, type TaskStatus } from '../lib/tasks';
 
 const RECURRENCE_OPTIONS: { value: RecurrenceRule; label: string }[] = [
   { value: 'none', label: 'Brak' },
@@ -65,46 +59,9 @@ const RECURRENCE_OPTIONS: { value: RecurrenceRule; label: string }[] = [
   { value: 'weekday', label: 'Dzień roboczy' },
 ];
 
-type TaskStatus = 'todo' | 'done' | 'overdue' | 'postponed';
 type ViewMode = 'active' | 'today' | 'week' | 'overdue' | 'done';
 
-type TaskRecord = {
-  id: string;
-  title: string;
-  type: string;
-  date: string;
-  status: TaskStatus;
-  priority?: 'low' | 'medium' | 'high';
-  reminderAt?: string | null;
-  recurrenceRule?: RecurrenceRule;
-  recurrenceEndType?: RecurrenceEndType;
-  recurrenceEndAt?: string | null;
-  recurrenceCount?: number | null;
-  recurrenceDoneCount?: number | null;
-  snoozeUntil?: string | null;
-  leadId?: string;
-  leadName?: string;
-  clientId?: string;
-  clientName?: string;
-  caseId?: string;
-  caseTitle?: string;
-};
-
-function getDateLabel(date: Date) {
-  if (isToday(date)) return 'Dzisiaj';
-  if (isTomorrow(date)) return 'Jutro';
-  return format(date, 'EEEE, d MMMM', { locale: pl });
-}
-
-function parseTaskDate(value?: string | null) {
-  if (!value) return null;
-  const parsed = parseISO(value);
-  return isValid(parsed) ? parsed : null;
-}
-
-function getSafeTaskDate(task: TaskRecord) {
-  return parseTaskDate(task.date) ?? startOfToday();
-}
+type TaskRecord = EditableTaskRecord;
 
 function getEffectiveStatus(task: TaskRecord): TaskStatus {
   if (task.status === 'done') return 'done';
@@ -126,6 +83,9 @@ export default function Tasks() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [viewMode, setViewMode] = useState<ViewMode>('active');
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<TaskRecord | null>(null);
+  const [taskToDelete, setTaskToDelete] = useState<TaskRecord | null>(null);
+  const [deletePending, setDeletePending] = useState(false);
   const [newTask, setNewTask] = useState({
     title: '',
     type: 'follow_up',
@@ -364,7 +324,6 @@ export default function Tasks() {
   };
 
   const deleteTask = async (taskId: string) => {
-    if (!window.confirm('Usuń zadanie?')) return;
     try {
       if (isSupabaseConfigured()) {
         await deleteTaskFromSupabase(taskId);
@@ -373,6 +332,64 @@ export default function Tasks() {
         await deleteDoc(doc(db, 'tasks', taskId));
       }
       toast.success('Zadanie usunięte');
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    }
+  };
+
+  const saveTaskEdits = async (payload: {
+    id: string;
+    title: string;
+    type: string;
+    date: string;
+    priority: string;
+    reminderAt: string | null;
+    recurrenceRule: RecurrenceRule;
+    recurrenceEndType: RecurrenceEndType;
+    recurrenceEndAt: string | null;
+    recurrenceCount: number | null;
+    leadId: string | null;
+  }) => {
+    if (!payload.title.trim()) {
+      toast.error('Wpisz tytuł zadania.');
+      return;
+    }
+
+    try {
+      const updates: Record<string, unknown> = {
+        title: payload.title.trim(),
+        type: payload.type,
+        date: payload.date,
+        priority: payload.priority,
+        leadId: payload.leadId,
+      };
+
+      if (isSupabaseConfigured()) {
+        updates.reminderAt = payload.reminderAt;
+        updates.recurrenceRule = payload.recurrenceRule;
+        await updateTaskInSupabase({ id: payload.id, ...updates });
+      } else {
+        updates.reminderAt = payload.reminderAt;
+        updates.recurrenceRule = payload.recurrenceRule;
+        updates.recurrenceEndType = payload.recurrenceEndType;
+        updates.recurrenceEndAt = payload.recurrenceEndAt;
+        updates.recurrenceCount = payload.recurrenceCount;
+        updates.updatedAt = serverTimestamp();
+        await updateDoc(doc(db, 'tasks', payload.id), updates);
+      }
+
+      setTasks((prev) => prev.map((task) => (
+        task.id === payload.id
+          ? {
+              ...task,
+              ...updates,
+              leadId: payload.leadId || undefined,
+              leadName: payload.leadId ? leads.find((lead) => lead.id === payload.leadId)?.name : undefined,
+            }
+          : task
+      )));
+      setEditingTask(null);
+      toast.success('Zadanie zapisane');
     } catch (error: any) {
       toast.error(`Błąd: ${error.message}`);
     }
@@ -624,7 +641,7 @@ export default function Tasks() {
                                   {taskDate && isToday(taskDate) && !isDone ? <Badge variant="secondary">Dziś</Badge> : null}
                                 </div>
                                 <div className="mt-2 flex flex-wrap gap-2 text-xs app-muted">
-                                  <Badge variant="outline">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Inne'}</Badge>
+                                  <Badge variant="outline">{getTaskTypeLabel(task.type)}</Badge>
                                   {getLeadLabel(task, leads) ? <span>Lead: {getLeadLabel(task, leads)}</span> : null}
                                   <span>{taskDate ? format(taskDate, 'd MMMM yyyy', { locale: pl }) : 'Brak poprawnej daty'}</span>
                                   {task.reminderAt && parseTaskDate(task.reminderAt) ? <span>Przypomnienie: {format(parseTaskDate(task.reminderAt) as Date, 'd MMM, HH:mm', { locale: pl })}</span> : null}
@@ -641,12 +658,13 @@ export default function Tasks() {
                                   <Button variant="ghost" size="icon" className="rounded-xl"><MoreVertical className="h-4 w-4" /></Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
+                                  <DropdownMenuItem onClick={() => setEditingTask(task)}>Edytuj</DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => toggleTask(task)}>{isDone ? 'Przywróć do aktywnych' : 'Oznacz jako zrobione'}</DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => snoozeTask(task, 'plus_1h')}>Odłóż +1h</DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => snoozeTask(task, 'tomorrow')}>Odłóż na jutro</DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => snoozeTask(task, 'plus_2d')}>Odłóż +2 dni</DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => snoozeTask(task, 'next_week')}>Odłóż na przyszły tydzień</DropdownMenuItem>
-                                  <DropdownMenuItem className="text-rose-500" onClick={() => deleteTask(task.id)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</DropdownMenuItem>
+                                  <DropdownMenuItem className="text-rose-500" onClick={() => setTaskToDelete(task)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </div>
@@ -661,6 +679,27 @@ export default function Tasks() {
           )}
         </div>
       </div>
+      <TaskEditorDialog open={Boolean(editingTask)} onOpenChange={(open) => { if (!open) setEditingTask(null); }} task={editingTask} leads={leads} onSave={saveTaskEdits} />
+      <ConfirmDialog
+        open={Boolean(taskToDelete)}
+        onOpenChange={(open) => {
+          if (!open && !deletePending) setTaskToDelete(null);
+        }}
+        title="Usunąć zadanie?"
+        description={taskToDelete ? `Zadanie "${taskToDelete.title}" zostanie usunięte z listy i kalendarza.` : ''}
+        confirmLabel="Usuń zadanie"
+        pending={deletePending}
+        onConfirm={async () => {
+          if (!taskToDelete) return;
+          try {
+            setDeletePending(true);
+            await deleteTask(taskToDelete.id);
+            setTaskToDelete(null);
+          } finally {
+            setDeletePending(false);
+          }
+        }}
+      />
     </Layout>
   );
 }

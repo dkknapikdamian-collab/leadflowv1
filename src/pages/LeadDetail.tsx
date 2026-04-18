@@ -41,6 +41,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { ConfirmDialog } from '../components/confirm-dialog';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -280,6 +281,8 @@ export default function LeadDetail() {
   const [templates, setTemplates] = useState<TemplateRecord[]>([]);
   const [associatedCase, setAssociatedCase] = useState<CaseRecord | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deletePending, setDeletePending] = useState(false);
   const [contactDraft, setContactDraft] = useState<Partial<LeadRecord>>({});
   const [editingField, setEditingField] = useState<'name' | 'company' | 'email' | 'phone' | null>(null);
   const [nextStepDraft, setNextStepDraft] = useState('');
@@ -479,7 +482,6 @@ export default function LeadDetail() {
 
   async function handleDeleteLead() {
     if (!leadId) return;
-    if (!window.confirm('Na pewno usunąć tego leada?')) return;
 
     try {
       if (isSupabaseConfigured()) {
@@ -693,7 +695,7 @@ export default function LeadDetail() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52">
                 <DropdownMenuItem onClick={() => handleQuickAction('lost')}>Oznacz jako stracony</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleDeleteLead} className="text-rose-500">
+                <DropdownMenuItem onClick={() => setIsDeleteOpen(true)} className="text-rose-500">
                   <Trash2 className="mr-2 h-4 w-4" /> Usuń leada
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -1042,6 +1044,24 @@ export default function LeadDetail() {
             </Card>
           </aside>
         </div>
+        <ConfirmDialog
+          open={isDeleteOpen}
+          onOpenChange={(open) => {
+            if (!deletePending) setIsDeleteOpen(open);
+          }}
+          title="Usunąć leada?"
+          description={`Lead "${lead.name}" zostanie usunięty razem z jego szczegółami.`}
+          confirmLabel="Usuń leada"
+          pending={deletePending}
+          onConfirm={async () => {
+            try {
+              setDeletePending(true);
+              await handleDeleteLead();
+            } finally {
+              setDeletePending(false);
+            }
+          }}
+        />
       </div>
     </Layout>
   );

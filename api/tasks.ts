@@ -26,6 +26,14 @@ function normalizeTask(row: Record<string, unknown>) {
     status: String(row.status || 'todo'),
     priority: String(row.priority || 'medium'),
     leadId: row.lead_id ? String(row.lead_id) : undefined,
+    reminderAt:
+      asIsoDate(row.reminder_at) ||
+      asIsoDate(row.reminderAt) ||
+      (typeof row.reminder === 'string' && row.reminder !== 'none' ? asIsoDate(row.reminder) : null),
+    recurrenceRule: String(row.recurrence_rule || row.recurrenceRule || row.recurrence || 'none'),
+    recurrenceEndType: row.recurrence_end_type ? String(row.recurrence_end_type) : undefined,
+    recurrenceEndAt: asIsoDate(row.recurrence_end_at) || null,
+    recurrenceCount: typeof row.recurrence_count === 'number' ? row.recurrence_count : null,
   };
 }
 
@@ -72,6 +80,8 @@ export default async function handler(req: any, res: any) {
       if (body.date !== undefined) payload.scheduled_at = body.date ? new Date(`${body.date}T09:00:00`).toISOString() : null;
       if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? new Date(body.scheduledAt).toISOString() : null;
       if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
+      if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
+      if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
 
       const data = await updateById('work_items', String(body.id), payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
@@ -125,7 +135,7 @@ export default async function handler(req: any, res: any) {
       start_at: null,
       end_at: null,
       recurrence: 'none',
-      reminder: 'none',
+      reminder: body.reminderAt || 'none',
       show_in_tasks: true,
       show_in_calendar: true,
       created_at: nowIso,

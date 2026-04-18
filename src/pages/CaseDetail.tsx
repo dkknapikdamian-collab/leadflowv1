@@ -39,6 +39,7 @@ import {
 import { toast } from 'sonner';
 
 import { auth, db } from '../firebase';
+import { ConfirmDialog } from '../components/confirm-dialog';
 import { generatePortalToken, sha256Hex } from '../lib/security';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
@@ -52,6 +53,7 @@ import { Label } from '../components/ui/label';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
+import { deleteCaseWithRelations } from '../lib/cases';
 
 type CaseRecord = {
   id: string;
@@ -181,6 +183,8 @@ export default function CaseDetail() {
   const [loading, setLoading] = useState(true);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [itemFilter, setItemFilter] = useState<ItemFilter>('all');
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deletePending, setDeletePending] = useState(false);
   const [newItem, setNewItem] = useState({
     title: '',
     description: '',
@@ -374,6 +378,22 @@ export default function CaseDetail() {
     toast.success('Przypomnienie zapisane w historii sprawy');
   }
 
+  async function handleDeleteCase() {
+    if (!caseId) return;
+
+    try {
+      setDeletePending(true);
+      await deleteCaseWithRelations(caseId);
+      toast.success('Sprawa usunięta');
+      navigate('/cases');
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    } finally {
+      setDeletePending(false);
+      setIsDeleteOpen(false);
+    }
+  }
+
   if (loading || !caseData) {
     return (
       <Layout>
@@ -455,6 +475,9 @@ export default function CaseDetail() {
             </Button>
             <Button className="rounded-2xl" onClick={sendReminderPlaceholder}>
               <Send className="h-4 w-4" /> Zapisz przypomnienie
+            </Button>
+            <Button variant="outline" className="rounded-2xl text-rose-500 hover:text-rose-500" onClick={() => setIsDeleteOpen(true)}>
+              <Trash2 className="h-4 w-4" /> Usuń sprawę
             </Button>
           </div>
         </div>
@@ -677,6 +700,17 @@ export default function CaseDetail() {
             </Card>
           </aside>
         </div>
+        <ConfirmDialog
+          open={isDeleteOpen}
+          onOpenChange={(open) => {
+            if (!deletePending) setIsDeleteOpen(open);
+          }}
+          title="Usunąć sprawę?"
+          description={`Sprawa "${caseData.title || 'bez tytułu'}" zostanie usunięta razem z checklistą i aktywnościami, ale bez kasowania leada, klienta, zadań i wydarzeń.`}
+          confirmLabel="Usuń sprawę"
+          pending={deletePending}
+          onConfirm={handleDeleteCase}
+        />
       </div>
     </Layout>
   );

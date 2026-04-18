@@ -12,13 +12,16 @@ import {
   ExternalLink,
   Filter,
   Link2,
+  Loader2,
   Search,
   ShieldAlert,
   Sparkles,
   Target,
+  Trash2,
 } from 'lucide-react';
 
 import { auth, db } from '../firebase';
+import { ConfirmDialog } from '../components/confirm-dialog';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -26,6 +29,7 @@ import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Progress } from '../components/ui/progress';
+import { deleteCaseWithRelations } from '../lib/cases';
 
 type CaseRecord = {
   id: string;
@@ -86,6 +90,8 @@ export default function Cases() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<CaseView>('all');
+  const [caseToDelete, setCaseToDelete] = useState<CaseRecord | null>(null);
+  const [deletePending, setDeletePending] = useState(false);
 
   useEffect(() => {
     if (!auth.currentUser) return;
@@ -136,6 +142,18 @@ export default function Cases() {
       return matchesSearch && matchesView;
     });
   }, [cases, searchQuery, viewMode]);
+
+  async function handleDeleteCase() {
+    if (!caseToDelete) return;
+
+    try {
+      setDeletePending(true);
+      await deleteCaseWithRelations(caseToDelete.id);
+      setCaseToDelete(null);
+    } finally {
+      setDeletePending(false);
+    }
+  }
 
   return (
     <Layout>
@@ -227,6 +245,10 @@ export default function Cases() {
           </CardContent>
         </Card>
 
+        <p className="text-sm app-muted">
+          Sprawa to etap realizacji po sprzedaży. Zadanie jest pojedynczą czynnością, wydarzenie blokiem czasu w kalendarzu, a sprawa pilnuje całego procesu wdrożenia klienta.
+        </p>
+
         <section className="space-y-4">
           {loading ? (
             <Card className="border-none app-surface-strong">
@@ -300,6 +322,9 @@ export default function Cases() {
                           Otwórz sprawę <ChevronRight className="h-4 w-4" />
                         </Link>
                       </Button>
+                      <Button variant="outline" className="rounded-2xl text-rose-500 hover:text-rose-500 lg:w-full" onClick={() => setCaseToDelete(record)}>
+                        <Trash2 className="h-4 w-4" /> Usuń sprawę
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -307,6 +332,17 @@ export default function Cases() {
             })
           )}
         </section>
+        <ConfirmDialog
+          open={Boolean(caseToDelete)}
+          onOpenChange={(open) => {
+            if (!open && !deletePending) setCaseToDelete(null);
+          }}
+          title="Usunąć sprawę?"
+          description={caseToDelete ? `Sprawa "${caseToDelete.title || 'bez tytułu'}" zostanie usunięta razem z checklistą i aktywnościami, ale bez kasowania leada, klienta, zadań i wydarzeń.` : ''}
+          confirmLabel="Usuń sprawę"
+          pending={deletePending}
+          onConfirm={handleDeleteCase}
+        />
       </div>
     </Layout>
   );

@@ -83,7 +83,7 @@ export default function Layout({ children }: LayoutProps) {
             <CheckCircle2 className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-bold app-text">Forteca</p>
+            <p className="text-sm font-bold app-text">CloseDock</p>
             <p className="text-xs app-muted">System uruchamiania klienta</p>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] app-muted">{skin.replace('-', ' ')}</p>
-            <h1 className="text-base font-bold app-text">Forteca</h1>
+            <h1 className="text-base font-bold app-text">CloseDock</h1>
           </div>
           <div className="flex items-center gap-2">
             {workspace && (

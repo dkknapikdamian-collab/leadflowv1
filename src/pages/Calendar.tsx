@@ -12,6 +12,7 @@ import { RecurrenceEndType, RecurrenceRule, SnoozePreset, applySnoozePreset } fr
 import { deleteEventFromSupabase, insertEventToSupabase, isSupabaseConfigured, updateEventInSupabase, updateTaskInSupabase } from '../lib/supabase-fallback';
 import { fetchCalendarBundleFromSupabase, normalizeCalendarEvent, normalizeCalendarLeadAction, normalizeCalendarTask, type CalendarEventItem, type CalendarLeadActionItem, type CalendarTaskItem } from '../lib/calendar-items';
 import Layout from '../components/Layout';
+import { TaskEditorDialog } from '../components/task-editor-dialog';
 import { LeadPicker, type LeadPickerOption } from '../components/lead-picker';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -20,6 +21,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { getTaskTypeLabel } from '../lib/tasks';
 
 type LeadCalendarItem = LeadPickerOption & {
   nextActionAt?: string;
@@ -66,6 +68,7 @@ export default function Calendar() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
   const [isNewEventOpen, setIsNewEventOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<CalendarTaskItem | null>(null);
   const [newEvent, setNewEvent] = useState({
     title: '',
     type: 'meeting',
@@ -286,6 +289,64 @@ export default function Calendar() {
     }
   };
 
+  const saveTaskEdits = async (payload: {
+    id: string;
+    title: string;
+    type: string;
+    date: string;
+    priority: string;
+    reminderAt: string | null;
+    recurrenceRule: RecurrenceRule;
+    recurrenceEndType: RecurrenceEndType;
+    recurrenceEndAt: string | null;
+    recurrenceCount: number | null;
+    leadId: string | null;
+  }) => {
+    if (!payload.title.trim()) {
+      toast.error('Wpisz tytuł zadania.');
+      return;
+    }
+
+    try {
+      const updates: Record<string, unknown> = {
+        title: payload.title.trim(),
+        type: payload.type,
+        date: payload.date,
+        priority: payload.priority,
+        leadId: payload.leadId,
+      };
+
+      if (isSupabaseConfigured()) {
+        updates.reminderAt = payload.reminderAt;
+        updates.recurrenceRule = payload.recurrenceRule;
+        await updateTaskInSupabase({ id: payload.id, ...updates });
+      } else {
+        updates.reminderAt = payload.reminderAt;
+        updates.recurrenceRule = payload.recurrenceRule;
+        updates.recurrenceEndType = payload.recurrenceEndType;
+        updates.recurrenceEndAt = payload.recurrenceEndAt;
+        updates.recurrenceCount = payload.recurrenceCount;
+        updates.updatedAt = serverTimestamp();
+        await updateDoc(doc(db, 'tasks', payload.id), updates);
+      }
+
+      setTasks((prev) => prev.map((task) => (
+        task.id === payload.id
+          ? {
+              ...task,
+              ...updates,
+              leadId: payload.leadId || undefined,
+              leadName: payload.leadId ? leads.find((lead) => lead.id === payload.leadId)?.name : undefined,
+            }
+          : task
+      )));
+      setEditingTask(null);
+      toast.success('Zadanie zapisane');
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    }
+  };
+
   const weekStart = useMemo(() => startOfWeek(anchorDate, { weekStartsOn: 1 }), [anchorDate]);
   const weekDays = useMemo(() => eachDayOfInterval({ start: weekStart, end: addDays(weekStart, 6) }), [weekStart]);
   const headerLabel = useMemo(
@@ -462,20 +523,26 @@ export default function Calendar() {
                         {getLeadLabel(event, leads) ? <p className="text-[10px] text-slate-500">Lead: {getLeadLabel(event, leads)}</p> : null}
                         <p className="text-slate-500">{format(parseISO(event.startAt), 'HH:mm', { locale: pl })}</p>
                         <div className="mt-2 flex gap-1">
-                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => postponeEvent(event, 'tomorrow')}>Snooze</Button>
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => postponeEvent(event, 'tomorrow')}>Odłóż</Button>
                           <Button size="sm" variant="ghost" className="h-7 px-2 text-[10px]" onClick={() => removeEvent(event.id)}><Trash2 className="h-3 w-3" /></Button>
                         </div>
                       </div>
                     ))}
                     {dayTasks.map((task) => (
-                      <div key={task.id} className="rounded-xl border p-2 text-xs">
+                      <button
+                        type="button"
+                        key={task.id}
+                        className="w-full rounded-xl border p-2 text-left text-xs transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+                        onClick={() => setEditingTask(task)}
+                      >
                         <p className="font-semibold">{task.title}</p>
                         {getLeadLabel(task, leads) ? <p className="text-[10px] text-slate-500">Lead: {getLeadLabel(task, leads)}</p> : null}
+                        {task.type ? <p className="text-[10px] text-slate-500">{getTaskTypeLabel(task.type)}</p> : null}
                         <div className="mt-2 flex gap-1">
-                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => toggleTaskDone(task)}><CheckSquare className="mr-1 h-3 w-3" />Done</Button>
-                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => snoozeTask(task, 'tomorrow')}>Snooze</Button>
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={(event) => { event.stopPropagation(); toggleTaskDone(task); }}><CheckSquare className="mr-1 h-3 w-3" />Zrobione</Button>
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={(event) => { event.stopPropagation(); snoozeTask(task, 'tomorrow'); }}>Odłóż</Button>
                         </div>
-                      </div>
+                      </button>
                     ))}
                     {dayEvents.length === 0 && dayTasks.length === 0 && dayLeadActions.length === 0 ? <p className="text-xs text-slate-400">Brak</p> : null}
                   </CardContent>
@@ -526,6 +593,7 @@ export default function Calendar() {
           Każda rzecz z datą wpada teraz w ten sam kalendarz: zadania, wydarzenia i ruchy na leadach.
         </div>
       </div>
+      <TaskEditorDialog open={Boolean(editingTask)} onOpenChange={(open) => { if (!open) setEditingTask(null); }} task={editingTask} leads={leads} onSave={saveTaskEdits} />
     </Layout>
   );
 }

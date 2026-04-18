@@ -16,9 +16,9 @@ export default defineConfig(({ mode }) => {
         injectRegister: 'auto',
         includeAssets: ['favicon.svg'],
         manifest: {
-          name: 'Forteca LeadFlow',
-          short_name: 'Forteca',
-          description: 'Lead follow-up, zadania i kalendarz w jednym miejscu.',
+          name: 'CloseDock',
+          short_name: 'CloseDock',
+          description: 'CloseDock porządkuje leady, zadania, kalendarz i start realizacji w jednym miejscu.',
           theme_color: '#0f172a',
           background_color: '#f8fafc',
           display: 'standalone',
