@@ -45,6 +45,23 @@ type CalendarEvent = {
   leadName?: string;
 };
 
+type LeadCalendarItem = LeadPickerOption & {
+  nextActionAt?: string;
+  nextStep?: string;
+  status?: string;
+  dealValue?: number;
+};
+
+type CalendarLeadAction = {
+  id: string;
+  name: string;
+  nextStep?: string;
+  nextActionAt: string;
+  status?: string;
+  dealValue?: number;
+  phone?: string;
+};
+
 const RECURRENCE_OPTIONS: { value: RecurrenceRule; label: string }[] = [
   { value: 'none', label: 'Brak' },
   { value: 'daily', label: 'Codziennie' },
@@ -63,7 +80,7 @@ export default function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [tasks, setTasks] = useState<CalendarTask[]>([]);
-  const [leads, setLeads] = useState<LeadPickerOption[]>([]);
+  const [leads, setLeads] = useState<LeadCalendarItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
 
@@ -96,7 +113,7 @@ export default function Calendar() {
         .then(([eventItems, taskItems, leadItems]) => {
           setEvents(eventItems as CalendarEvent[]);
           setTasks(taskItems as CalendarTask[]);
-          setLeads(leadItems as LeadPickerOption[]);
+          setLeads(leadItems as LeadCalendarItem[]);
         })
         .catch(() => {
           setEvents([]);
@@ -121,6 +138,11 @@ export default function Calendar() {
       where('ownerId', '==', auth.currentUser.uid),
       orderBy('date', 'asc')
     );
+    const leadsQuery = query(
+      collection(db, 'leads'),
+      where('ownerId', '==', auth.currentUser.uid),
+      orderBy('nextActionAt', 'asc')
+    );
 
     const unsubscribeEvents = onSnapshot(
       eventsQuery,
@@ -141,10 +163,20 @@ export default function Calendar() {
         setLoading(false);
       }
     );
+    const unsubscribeLeads = onSnapshot(
+      leadsQuery,
+      (snap) => {
+        setLeads(snap.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<LeadCalendarItem, 'id'>) })));
+      },
+      () => {
+        setLeads([]);
+      }
+    );
 
     return () => {
       unsubscribeEvents();
       unsubscribeTasks();
+      unsubscribeLeads();
     };
   }, [workspace]);
 
@@ -291,6 +323,20 @@ export default function Calendar() {
     });
   };
 
+  const leadActions = useMemo<CalendarLeadAction[]>(() => {
+    return leads
+      .filter((lead) => typeof lead.nextActionAt === 'string' && lead.nextActionAt.trim())
+      .map((lead) => ({
+        id: lead.id,
+        name: lead.name,
+        nextStep: lead.nextStep,
+        nextActionAt: lead.nextActionAt as string,
+        status: lead.status,
+        dealValue: lead.dealValue,
+        phone: lead.phone,
+      }));
+  }, [leads]);
+
   if (loading) {
     return (
       <Layout>
@@ -430,25 +476,31 @@ export default function Calendar() {
                   {monthDays.map((day) => {
                     const dayEvents = events.filter((event) => event.status !== 'cancelled' && isSameDay(parseISO(event.startAt), day));
                     const dayTasks = tasks.filter((task) => task.status !== 'done' && isSameDay(parseISO(task.date), day));
+                    const dayLeadActions = leadActions.filter((lead) => isSameDay(parseISO(lead.nextActionAt), day));
                     const hasEvent = dayEvents.length > 0;
                     const hasTask = dayTasks.length > 0;
+                    const hasLeadAction = dayLeadActions.length > 0;
 
                     return (
                       <button
                         key={day.toISOString()}
                         type="button"
                         onClick={() => focusWeekOfDay(day)}
-                        title={hasEvent || hasTask ? `Wydarzenia: ${dayEvents.length}, zadania: ${dayTasks.length}` : 'Brak aktywności'}
+                        title={hasEvent || hasTask || hasLeadAction ? `Wydarzenia: ${dayEvents.length}, zadania: ${dayTasks.length}, leady: ${dayLeadActions.length}` : 'Brak aktywności'}
                         className={[
                           'flex h-7 items-center justify-center rounded-md text-[11px] font-semibold transition-colors',
                           !isSameMonth(day, currentMonth) ? 'text-slate-300' : 'text-slate-800',
                           isToday(day)
                             ? 'bg-primary text-white'
+                            : hasLeadAction && hasEvent
+                              ? 'bg-fuchsia-100 text-fuchsia-800'
                             : hasEvent && hasTask
                               ? 'bg-amber-100 text-amber-800'
-                              : hasEvent
-                                ? 'bg-indigo-100 text-indigo-800'
-                                : hasTask
+                            : hasEvent
+                              ? 'bg-indigo-100 text-indigo-800'
+                            : hasLeadAction
+                              ? 'bg-cyan-100 text-cyan-800'
+                            : hasTask
                                   ? 'bg-emerald-100 text-emerald-800'
                                   : 'hover:bg-slate-100',
                         ].join(' ')}
@@ -465,6 +517,7 @@ export default function Calendar() {
             {weekDays.map((day) => {
               const dayEvents = events.filter((event) => event.status !== 'cancelled' && isSameDay(parseISO(event.startAt), day));
               const dayTasks = tasks.filter((task) => task.status !== 'done' && isSameDay(parseISO(task.date), day));
+              const dayLeadActions = leadActions.filter((lead) => isSameDay(parseISO(lead.nextActionAt), day));
               return (
                 <Card key={day.toISOString()} className="border-none app-surface-strong">
                   <CardHeader className="pb-2">
@@ -472,6 +525,18 @@ export default function Calendar() {
                     {isToday(day) ? <Badge variant="secondary">Dziś</Badge> : null}
                   </CardHeader>
                   <CardContent className="space-y-2 p-3">
+                    {dayLeadActions.map((lead) => (
+                      <div key={lead.id} className="rounded-xl border border-cyan-200 bg-cyan-50 p-2 text-xs">
+                        <p className="font-semibold text-cyan-900">{lead.name}</p>
+                        <p className="text-[10px] text-cyan-700">{lead.nextStep || 'Ruch na leadzie'}</p>
+                        <p className="text-[10px] text-cyan-700">{format(parseISO(lead.nextActionAt), 'HH:mm', { locale: pl })}</p>
+                        <div className="mt-2 flex gap-1">
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" asChild>
+                            <Link to={`/leads/${lead.id}`}>Lead</Link>
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                     {dayEvents.map((event) => (
                       <div key={event.id} className="rounded-xl border p-2 text-xs">
                         <p className="font-semibold">{event.title}</p>
@@ -493,7 +558,7 @@ export default function Calendar() {
                         </div>
                       </div>
                     ))}
-                    {dayEvents.length === 0 && dayTasks.length === 0 ? <p className="text-xs text-slate-400">Brak</p> : null}
+                    {dayEvents.length === 0 && dayTasks.length === 0 && dayLeadActions.length === 0 ? <p className="text-xs text-slate-400">Brak</p> : null}
                   </CardContent>
                 </Card>
               );
@@ -518,10 +583,12 @@ export default function Calendar() {
               {monthDays.map((day) => {
                 const dayEvents = events.filter((event) => event.status !== 'cancelled' && isSameDay(parseISO(event.startAt), day));
                 const dayTasks = tasks.filter((task) => task.status !== 'done' && isSameDay(parseISO(task.date), day));
+                const dayLeadActions = leadActions.filter((lead) => isSameDay(parseISO(lead.nextActionAt), day));
                 return (
                   <button type="button" onClick={() => focusWeekOfDay(day)} key={day.toISOString()} className={`min-h-[110px] p-2 border-r border-b border-slate-100 text-left ${!isSameMonth(day, currentMonth) ? 'bg-slate-50/30 text-slate-300' : 'text-slate-900'}`}>
                     <div className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${isToday(day) ? 'bg-primary text-white' : ''}`}>{format(day, 'd')}</div>
                     <div className="mt-2 space-y-1">
+                      {dayLeadActions.slice(0, 2).map((lead) => <div key={lead.id} className="text-[10px] p-1 rounded bg-cyan-50 text-cyan-700 border border-cyan-100 truncate">{lead.name}</div>)}
                       {dayEvents.slice(0, 2).map((event) => <div key={event.id} className="text-[10px] p-1 rounded bg-indigo-50 text-indigo-700 border border-indigo-100 truncate">{event.title}</div>)}
                       {dayTasks.slice(0, 2).map((task) => <div key={task.id} className="text-[10px] p-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-100 truncate">{task.title}</div>)}
                     </div>
