@@ -62,6 +62,97 @@ import {
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+
+type PaymentDraft = {
+  id: string;
+  amount: string;
+  paidAt: string;
+  createdAt?: string;
+};
+
+function normalizePaymentDrafts(drafts: PaymentDraft[]): LeadPartialPayment[] {
+  return drafts
+    .map((payment, index) => {
+      const amount = Number(payment.amount);
+      if (!Number.isFinite(amount) || amount <= 0) return null;
+
+      return {
+        id: payment.id || `payment-${index}-${Date.now()}`,
+        amount,
+        paidAt: payment.paidAt || undefined,
+        createdAt: payment.createdAt || new Date().toISOString(),
+      };
+    })
+    .filter((entry): entry is LeadPartialPayment => Boolean(entry));
+}
+
+function PaymentEditor({
+  payments,
+  onChange,
+}: {
+  payments: PaymentDraft[];
+  onChange: (payments: PaymentDraft[]) => void;
+}) {
+  const totalDraftPaid = payments.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0);
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-3">
+        <Label>Wpłaty częściowe / zaliczki</Label>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="rounded-xl"
+          onClick={() => onChange([...payments, { id: crypto.randomUUID(), amount: '', paidAt: '' }])}
+        >
+          <Plus className="h-4 w-4" /> Dodaj wpłatę
+        </Button>
+      </div>
+
+      {payments.length === 0 ? (
+        <div className="rounded-2xl border border-dashed p-4 text-sm app-muted app-border">
+          Brak wpłat częściowych. Jeśli klient wpłacił zaliczkę, dodaj ją tutaj od razu.
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {payments.map((payment) => (
+            <div key={payment.id} className="grid gap-2 rounded-2xl border p-3 app-border md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] md:items-end">
+              <div className="space-y-1.5">
+                <Label className="text-xs">Kwota</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={payment.amount}
+                  onChange={(event) => onChange(payments.map((item) => (item.id === payment.id ? { ...item, amount: event.target.value } : item)))}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Data wpłaty</Label>
+                <Input
+                  type="date"
+                  value={payment.paidAt}
+                  onChange={(event) => onChange(payments.map((item) => (item.id === payment.id ? { ...item, paidAt: event.target.value } : item)))}
+                />
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                className="rounded-xl text-rose-500"
+                onClick={() => onChange(payments.filter((item) => item.id !== payment.id))}
+              >
+                Usuń
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <p className="text-xs app-muted">Suma wpisanych wpłat: {totalDraftPaid.toLocaleString()} PLN</p>
+    </div>
+  );
+}
 type LeadRecord = {
   id: string;
   name: string;
@@ -228,6 +319,7 @@ export default function Today() {
     email: '',
     phone: '',
     dealValue: '',
+    partialPayments: [] as PaymentDraft[],
     source: 'other',
     status: 'new',
     nextStep: '',
@@ -356,6 +448,7 @@ export default function Today() {
     try {
       const ensuredWorkspace = workspace ?? await ensureCurrentUserWorkspace();
       const usingSupabase = isSupabaseConfigured();
+      const partialPayments = normalizePaymentDrafts(newLead.partialPayments);
       if (usingSupabase) {
         await insertLeadToSupabase({
           name: newLead.name,
@@ -363,6 +456,7 @@ export default function Today() {
           phone: newLead.phone,
           source: newLead.source,
           dealValue: Number(newLead.dealValue) || 0,
+          partialPayments,
           nextStep: newLead.nextStep,
           nextActionAt: newLead.nextActionAt,
           ownerId: auth.currentUser.uid,
@@ -374,6 +468,7 @@ export default function Today() {
           email: newLead.email,
           phone: newLead.phone,
           dealValue: Number(newLead.dealValue) || 0,
+          partialPayments,
           source: newLead.source,
           status: newLead.status,
           nextStep: newLead.nextStep,
@@ -394,6 +489,7 @@ export default function Today() {
             phone: newLead.phone,
             source: newLead.source,
             dealValue: Number(newLead.dealValue) || 0,
+            partialPayments,
             status: 'new',
             nextStep: newLead.nextStep,
             nextActionAt: newLead.nextActionAt,
@@ -409,6 +505,7 @@ export default function Today() {
         email: '',
         phone: '',
         dealValue: '',
+        partialPayments: [],
         source: 'other',
         status: 'new',
         nextStep: '',
@@ -610,6 +707,11 @@ export default function Today() {
   );
 
   const funnelValue = activeLeads.reduce((acc, lead) => acc + getLeadFinance(lead).funnelAmount, 0);
+  const newLeadFinance = useMemo(() => getLeadFinance({
+    status: 'new',
+    dealValue: Number(newLead.dealValue) || 0,
+    partialPayments: normalizePaymentDrafts(newLead.partialPayments),
+  }), [newLead.dealValue, newLead.partialPayments]);
 
   if (wsLoading || loading) {
     return (
@@ -683,6 +785,25 @@ export default function Today() {
                   <div className="space-y-2">
                     <Label>Telefon</Label>
                     <Input type="tel" value={newLead.phone} onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })} />
+                  </div>
+                  <PaymentEditor payments={newLead.partialPayments} onChange={(partialPayments) => setNewLead((prev) => ({ ...prev, partialPayments }))} />
+                  <div className="grid gap-3 rounded-2xl border p-4 app-border md:grid-cols-4">
+                    <div>
+                      <p className="text-xs app-muted">Wartość</p>
+                      <p className="font-semibold app-text">{(Number(newLead.dealValue) || 0).toLocaleString()} PLN</p>
+                    </div>
+                    <div>
+                      <p className="text-xs app-muted">Wpłacono</p>
+                      <p className="font-semibold text-emerald-600">{newLeadFinance.paidAmount.toLocaleString()} PLN</p>
+                    </div>
+                    <div>
+                      <p className="text-xs app-muted">Pozostało</p>
+                      <p className="font-semibold app-text">{newLeadFinance.remainingAmount.toLocaleString()} PLN</p>
+                    </div>
+                    <div>
+                      <p className="text-xs app-muted">Trafi do lejka</p>
+                      <p className="font-semibold text-[color:var(--app-primary)]">{newLeadFinance.funnelAmount.toLocaleString()} PLN</p>
+                    </div>
                   </div>
                   <DialogFooter>
                     <Button type="submit" className="w-full">Dodaj leada</Button>

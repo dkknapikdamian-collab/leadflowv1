@@ -257,6 +257,26 @@ export default function Calendar() {
     }
   };
 
+  const shiftTaskByDays = async (task: CalendarTaskItem, days: number) => {
+    try {
+      const current = parseISO(task.date);
+      const nextDate = format(addDays(current, days), 'yyyy-MM-dd');
+      if (isSupabaseConfigured()) {
+        await updateTaskInSupabase({ id: task.id, date: nextDate, status: 'todo' });
+        setTasks((prev) => prev.map((item) => (item.id === task.id ? { ...item, date: nextDate, status: 'todo' } : item)));
+      } else {
+        await updateDoc(doc(db, 'tasks', task.id), {
+          date: nextDate,
+          status: 'todo',
+          updatedAt: serverTimestamp(),
+        });
+      }
+      toast.success(days === 1 ? 'Zadanie przesunięte o 1 dzień' : 'Zadanie przesunięte o 1 tydzień');
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    }
+  };
+
   const postponeEvent = async (event: CalendarEventItem, preset: SnoozePreset) => {
     try {
       const snoozeUntil = applySnoozePreset(preset);
@@ -538,9 +558,11 @@ export default function Calendar() {
                         <p className="font-semibold">{task.title}</p>
                         {getLeadLabel(task, leads) ? <p className="text-[10px] text-slate-500">Lead: {getLeadLabel(task, leads)}</p> : null}
                         {task.type ? <p className="text-[10px] text-slate-500">{getTaskTypeLabel(task.type)}</p> : null}
-                        <div className="mt-2 flex gap-1">
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={(event) => { event.stopPropagation(); setEditingTask(task); }}>Edytuj</Button>
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={(event) => { event.stopPropagation(); shiftTaskByDays(task, 1); }}>+1D</Button>
+                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={(event) => { event.stopPropagation(); shiftTaskByDays(task, 7); }}>+1W</Button>
                           <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={(event) => { event.stopPropagation(); toggleTaskDone(task); }}><CheckSquare className="mr-1 h-3 w-3" />Zrobione</Button>
-                          <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={(event) => { event.stopPropagation(); snoozeTask(task, 'tomorrow'); }}>Odłóż</Button>
                         </div>
                       </button>
                     ))}
