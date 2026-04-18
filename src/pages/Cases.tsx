@@ -19,6 +19,7 @@ import {
   Target,
   Trash2,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { auth, db } from '../firebase';
 import { ConfirmDialog } from '../components/confirm-dialog';
@@ -149,7 +150,10 @@ export default function Cases() {
     try {
       setDeletePending(true);
       await deleteCaseWithRelations(caseToDelete.id);
+      toast.success('Sprawa usunięta');
       setCaseToDelete(null);
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
     } finally {
       setDeletePending(false);
     }
