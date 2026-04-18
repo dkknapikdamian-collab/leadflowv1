@@ -124,6 +124,10 @@ const STATUS_OPTIONS: StatusOption[] = [
 
 const PIPELINE_ORDER: LeadStatus[] = ['new', 'contacted', 'qualification', 'proposal_sent', 'follow_up', 'negotiation', 'won', 'lost'];
 
+function getDefaultLeadNextActionAt() {
+  return format(addDays(new Date(), 1), "yyyy-MM-dd'T'09:00");
+}
+
 const EMPTY_LEAD_FORM: LeadFormState = {
   name: '',
   email: '',
@@ -132,7 +136,7 @@ const EMPTY_LEAD_FORM: LeadFormState = {
   dealValue: '',
   company: '',
   nextStep: '',
-  nextActionAt: format(new Date(), "yyyy-MM-dd'T'09:00"),
+  nextActionAt: getDefaultLeadNextActionAt(),
   partialPayments: [],
 };
 
@@ -238,7 +242,7 @@ function createLeadFormState(lead?: Partial<LeadRecord> | null): LeadFormState {
     dealValue: lead.dealValue ? String(lead.dealValue) : '',
     company: lead.company || '',
     nextStep: lead.nextStep || '',
-    nextActionAt: lead.nextActionAt || format(new Date(), "yyyy-MM-dd'T'09:00"),
+    nextActionAt: lead.nextActionAt || getDefaultLeadNextActionAt(),
     partialPayments: (lead.partialPayments || []).map((payment) => ({
       id: payment.id || crypto.randomUUID(),
       amount: String(payment.amount || ''),

@@ -99,6 +99,10 @@ type EventRecord = {
 
 const ACTIVE_LEAD_STATUSES = ['new', 'contacted', 'qualification', 'proposal_sent', 'follow_up', 'negotiation'];
 
+function getDefaultLeadNextActionAt() {
+  return format(addDays(new Date(), 1), "yyyy-MM-dd'T'09:00");
+}
+
 function toDate(value?: string | Timestamp | null) {
   if (!value) return null;
   if (typeof value === 'string') {
@@ -220,7 +224,7 @@ export default function Today() {
     source: 'other',
     status: 'new',
     nextStep: '',
-    nextActionAt: format(new Date(), "yyyy-MM-dd'T'09:00"),
+    nextActionAt: getDefaultLeadNextActionAt(),
   });
   const [newTask, setNewTask] = useState({
     title: '',
@@ -401,7 +405,7 @@ export default function Today() {
         source: 'other',
         status: 'new',
         nextStep: '',
-        nextActionAt: format(new Date(), "yyyy-MM-dd'T'09:00"),
+        nextActionAt: getDefaultLeadNextActionAt(),
       });
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
