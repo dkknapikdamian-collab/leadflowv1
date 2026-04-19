@@ -200,6 +200,7 @@ export default function Calendar() {
   const { workspace, hasAccess } = useWorkspace();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [calendarView, setCalendarView] = useState<'week' | 'month'>('week');
   const [events, setEvents] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
@@ -665,14 +666,64 @@ export default function Calendar() {
       <div className="p-4 md:p-8 max-w-7xl mx-auto w-full">
         <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 capitalize">{format(currentMonth, 'MMMM yyyy', { locale: pl })}</h1>
+            <h1 className="text-3xl font-bold text-slate-900 capitalize">
+              {calendarView === 'week'
+                ? `${format(selectedWeekStart, 'd MMM', { locale: pl })} - ${format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}`
+                : format(currentMonth, 'MMMM yyyy', { locale: pl })}
+            </h1>
             <p className="text-slate-500">Kalendarz live dla zadań, wydarzeń i ruchów leadowych.</p>
           </div>
           <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+              <Button
+                variant={calendarView === 'week' ? 'default' : 'ghost'}
+                className="h-9 rounded-lg px-3 text-sm font-semibold"
+                onClick={() => setCalendarView('week')}
+              >
+                Tydzień
+              </Button>
+              <Button
+                variant={calendarView === 'month' ? 'default' : 'ghost'}
+                className="h-9 rounded-lg px-3 text-sm font-semibold"
+                onClick={() => setCalendarView('month')}
+              >
+                Miesiąc
+              </Button>
+            </div>
             <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
-              <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="rounded-lg"><ChevronLeft className="w-4 h-4" /></Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  if (calendarView === 'week') {
+                    const next = addDays(selectedDate, -7);
+                    setSelectedDate(next);
+                    setCurrentMonth(next);
+                    return;
+                  }
+                  setCurrentMonth(subMonths(currentMonth, 1));
+                }}
+                className="rounded-lg"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
               <Button variant="ghost" onClick={() => { setCurrentMonth(new Date()); setSelectedDate(new Date()); }} className="text-sm font-bold px-4">Dzisiaj</Button>
-              <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="rounded-lg"><ChevronRight className="w-4 h-4" /></Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  if (calendarView === 'week') {
+                    const next = addDays(selectedDate, 7);
+                    setSelectedDate(next);
+                    setCurrentMonth(next);
+                    return;
+                  }
+                  setCurrentMonth(addMonths(currentMonth, 1));
+                }}
+                className="rounded-lg"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
             <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
               <DialogTrigger asChild>
@@ -898,6 +949,8 @@ export default function Calendar() {
           </div>
         </div>
 
+        {calendarView === 'month' ? (
+        <>
         <div className="grid grid-cols-7 mb-2">
           {['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
             <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
@@ -971,7 +1024,10 @@ export default function Calendar() {
             ))}
           </div>
         </div>
+        </>
+        ) : null}
 
+        {calendarView === 'week' ? (
         <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
           <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
             <div>
@@ -981,7 +1037,8 @@ export default function Calendar() {
             <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisów</Badge>
           </div>
 
-          <div className="grid gap-4 xl:grid-cols-7">
+          <div className="overflow-x-auto pb-1">
+          <div className="grid grid-flow-col auto-cols-[minmax(280px,1fr)] gap-4 min-w-full">
             {weekDays.map((day) => {
               const dayEntries = getEntriesForDay(weekEntries, day);
               const isActiveDay = isSameDay(day, selectedDate);
@@ -1018,7 +1075,9 @@ export default function Calendar() {
               );
             })}
           </div>
+          </div>
         </div>
+        ) : null}
 
         <div className="mt-8 grid grid-cols-1 xl:grid-cols-3 gap-4">
           <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
