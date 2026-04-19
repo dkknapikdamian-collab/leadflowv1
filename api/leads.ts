@@ -39,6 +39,66 @@ function normalizeLead(row: Record<string, unknown>) {
   };
 }
 
+const OPTIONAL_LEAD_COLUMNS = new Set([
+  'is_at_risk',
+  'partial_payments',
+  'summary',
+  'notes',
+  'priority',
+  'next_action_title',
+  'next_action_at',
+  'next_action_item_id',
+  'linked_case_id',
+]);
+
+function extractMissingColumn(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  const match = message.match(/Could not find the '([^']+)' column/i);
+  return match?.[1] || null;
+}
+
+function omitMissingColumn(payload: Record<string, unknown>, column: string) {
+  const nextPayload = { ...payload };
+  delete nextPayload[column];
+  return nextPayload;
+}
+
+async function insertLeadWithSchemaFallback(payload: Record<string, unknown>) {
+  let currentPayload = { ...payload };
+
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    try {
+      return await insertWithVariants(['leads'], [currentPayload]);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !OPTIONAL_LEAD_COLUMNS.has(missingColumn) || !(missingColumn in currentPayload)) {
+        throw error;
+      }
+      currentPayload = omitMissingColumn(currentPayload, missingColumn);
+    }
+  }
+
+  throw new Error('LEAD_INSERT_SCHEMA_FALLBACK_EXHAUSTED');
+}
+
+async function updateLeadWithSchemaFallback(id: string, payload: Record<string, unknown>) {
+  let currentPayload = { ...payload };
+
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    try {
+      return await updateById('leads', id, currentPayload);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !OPTIONAL_LEAD_COLUMNS.has(missingColumn) || !(missingColumn in currentPayload)) {
+        throw error;
+      }
+      currentPayload = omitMissingColumn(currentPayload, missingColumn);
+    }
+  }
+
+  throw new Error('LEAD_UPDATE_SCHEMA_FALLBACK_EXHAUSTED');
+}
+
 export default async function handler(req: any, res: any) {
   try {
     if (req.method === 'GET') {
@@ -87,7 +147,7 @@ export default async function handler(req: any, res: any) {
         payload.priority = body.isAtRisk ? 'high' : 'medium';
       }
 
-      const data = await updateById('leads', String(body.id), payload);
+      const data = await updateLeadWithSchemaFallback(String(body.id), payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
       res.status(200).json(normalizeLead(updated as Record<string, unknown>));
       return;
@@ -142,7 +202,7 @@ export default async function handler(req: any, res: any) {
       updated_at: nowIso,
     };
 
-    const result = await insertWithVariants(['leads'], [payload]);
+    const result = await insertLeadWithSchemaFallback(payload);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
 
     res.status(200).json(normalizeLead(inserted as Record<string, unknown>));
