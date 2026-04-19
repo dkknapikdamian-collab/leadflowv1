@@ -20,7 +20,12 @@ async function safeQueryDocs(pathFactory: () => Promise<any>) {
   }
 }
 
-async function deleteCaseWithFirestore(caseId: string) {
+export async function deleteCaseWithRelations(caseId: string) {
+  if (isSupabaseConfigured()) {
+    await deleteCaseFromSupabase(caseId);
+    return;
+  }
+
   const ownerId = auth.currentUser?.uid;
   if (!ownerId) {
     throw new Error('Brak zalogowanego użytkownika.');
@@ -80,13 +85,4 @@ async function deleteCaseWithFirestore(caseId: string) {
   }
 
   await deleteDoc(doc(db, 'cases', caseId));
-}
-
-export async function deleteCaseWithRelations(caseId: string) {
-  if (isSupabaseConfigured()) {
-    await deleteCaseFromSupabase(caseId);
-    return;
-  }
-
-  await deleteCaseWithFirestore(caseId);
 }

@@ -1,17 +1,10 @@
-Pakiet zbiorczy leadflowv1 na późniejsze jednorazowe wgranie.
+To jest REALNY overlay krok 1 pod Supabase.
 
-Zawiera skumulowane zmiany do tej pory:
-- latest Calendar.tsx z ujednoliconym paskiem akcji i widokiem tygodniowym,
-- start cutoveru cases na Supabase,
-- helpery Supabase dla cases,
-- SQL KROK 1 do Supabase.
+Podmieniane pliki:
+- api/cases.ts
+- src/lib/cases.ts
+- src/pages/Cases.tsx
 
-Najpierw wykonaj SQL z pliku SUPABASE_SQL_STEP_1.sql w Supabase SQL Editor.
-Dopiero potem skopiuj zawartość tego folderu do repo leadflowv1-fresh.
-Następnie uruchom:
-1) npm.cmd install
-2) npm.cmd run lint
-3) npm.cmd run build
-
-Ten bundle nie jest jeszcze pełnym odcięciem Firebase z Today/Calendar/Workspace.
-To jest zbiorcza paczka z dotychczasowym stanem prac.
+Dodatkowo:
+- SUPABASE_SQL_STEP_1.sql
+- INSTRUKCJA_SUPABASE_STEP_1.txt

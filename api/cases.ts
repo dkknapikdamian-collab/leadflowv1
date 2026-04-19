@@ -1,28 +1,6 @@
-import { deleteById, selectFirstAvailable, supabaseRequest } from './_supabase.js';
+import { deleteById, selectFirstAvailable, supabaseRequest } from './_supabase';
 
-type AnyRow = Record<string, unknown>;
-
-function asIso(value: unknown) {
-  if (typeof value !== 'string' || !value.trim()) return null;
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed.toISOString();
-}
-
-function asArray(value: unknown): string[] {
-  if (Array.isArray(value)) return value.map((item) => String(item));
-  if (typeof value === 'string' && value.trim()) {
-    try {
-      const parsed = JSON.parse(value);
-      if (Array.isArray(parsed)) return parsed.map((item) => String(item));
-    } catch {
-      return [];
-    }
-  }
-  return [];
-}
-
-function normalizeCase(row: AnyRow) {
+function normalizeCase(row: Record<string, unknown>) {
   return {
     id: String(row.id || crypto.randomUUID()),
     title: String(row.title || row.name || 'Sprawa bez tytułu'),
@@ -36,67 +14,49 @@ function normalizeCase(row: AnyRow) {
   };
 }
 
-async function safeGet(path: string) {
-  try {
-    const data = await supabaseRequest(path, {
-      method: 'GET',
-      headers: { Prefer: 'return=representation' },
-    });
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
-}
-
-async function safePatch(path: string, payload: Record<string, unknown>) {
+async function bestEffortPatch(path: string, payload: Record<string, unknown>) {
   try {
     await supabaseRequest(path, {
       method: 'PATCH',
       body: JSON.stringify(payload),
     });
   } catch {
-    // etap przejściowy: jeżeli kolumna lub tabela jeszcze nie istnieje, nie wysadzamy całego delete
+    // best effort only during cutover
   }
 }
 
-async function safeDelete(path: string) {
+async function bestEffortDelete(path: string) {
   try {
     await supabaseRequest(path, {
       method: 'DELETE',
       headers: { Prefer: 'return=representation' },
     });
   } catch {
-    // etap przejściowy: ignorujemy brak tabeli / brak rekordów
-  }
-}
-
-async function cleanupClients(caseId: string) {
-  const clients = await safeGet('clients?select=id,primary_case_id,linked_case_ids&limit=500');
-
-  for (const raw of clients as AnyRow[]) {
-    const currentPrimary = raw.primary_case_id ? String(raw.primary_case_id) : null;
-    const linked = asArray(raw.linked_case_ids).filter((value) => value !== caseId);
-    const shouldTouch = currentPrimary === caseId || linked.length !== asArray(raw.linked_case_ids).length;
-
-    if (!shouldTouch || !raw.id) continue;
-
-    await safePatch(`clients?id=eq.${encodeURIComponent(String(raw.id))}`, {
-      primary_case_id: currentPrimary === caseId ? null : currentPrimary,
-      linked_case_ids: linked,
-      updated_at: new Date().toISOString(),
-    });
+    // optional cleanup only
   }
 }
 
 export default async function handler(req: any, res: any) {
   try {
     if (req.method === 'GET') {
+      const requestedId = String(req.query?.id || '').trim();
       const result = await selectFirstAvailable([
         'cases?select=*&order=updated_at.desc.nullslast&limit=200',
         'cases?select=*&order=created_at.desc.nullslast&limit=200',
       ]);
+      const normalized = (result.data as Record<string, unknown>[]).map(normalizeCase);
 
-      res.status(200).json((result.data as AnyRow[]).map(normalizeCase));
+      if (requestedId) {
+        const match = normalized.find((item) => item.id === requestedId);
+        if (!match) {
+          res.status(404).json({ error: 'CASE_NOT_FOUND' });
+          return;
+        }
+        res.status(200).json(match);
+        return;
+      }
+
+      res.status(200).json(normalized);
       return;
     }
 
@@ -107,23 +67,18 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
-      await safePatch(`work_items?case_id=eq.${encodeURIComponent(id)}`, {
+      await bestEffortPatch(`work_items?case_id=eq.${encodeURIComponent(id)}`, {
         case_id: null,
         case_title: null,
         updated_at: new Date().toISOString(),
       });
 
-      await safePatch(`leads?linked_case_id=eq.${encodeURIComponent(id)}`, {
+      await bestEffortPatch(`leads?id=eq.${encodeURIComponent(id)}`, {
         linked_case_id: null,
         updated_at: new Date().toISOString(),
       });
 
-      await cleanupClients(id);
-      await safeDelete(`client_portal_tokens?case_id=eq.${encodeURIComponent(id)}`);
-      await safeDelete(`client_portal_tokens?id=eq.${encodeURIComponent(id)}`);
-      await safeDelete(`case_items?case_id=eq.${encodeURIComponent(id)}`);
-      await safeDelete(`case_activity?case_id=eq.${encodeURIComponent(id)}`);
-      await safeDelete(`activities?case_id=eq.${encodeURIComponent(id)}`);
+      await bestEffortDelete(`client_portal_tokens?case_id=eq.${encodeURIComponent(id)}`);
       await deleteById('cases', id);
 
       res.status(200).json({ ok: true, id });
@@ -132,6 +87,6 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
-    res.status(500).json({ error: error.message || 'CASE_MUTATION_FAILED' });
+    res.status(500).json({ error: error.message || 'CASE_API_FAILED' });
   }
 }

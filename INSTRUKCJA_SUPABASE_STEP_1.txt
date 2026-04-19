@@ -1,41 +1,36 @@
-ETAP 1 — CO MASZ ZROBIĆ W SUPABASE, KROK PO KROKU
+ETAP 1 — CASES -> SUPABASE
 
-1. Wejdź do swojego projektu Supabase.
-2. W lewym menu kliknij: SQL Editor.
-3. Kliknij: New query.
-4. Otwórz plik:
-   SUPABASE_SQL_STEP_1.sql
-5. Skopiuj CAŁĄ zawartość tego pliku.
-6. Wklej do nowego query w Supabase.
-7. Kliknij Run.
+1. SQL
+- Otwórz Supabase
+- Wejdź w SQL Editor
+- Kliknij New query
+- Otwórz plik SUPABASE_SQL_STEP_1.sql
+- Skopiuj całość
+- Wklej do query
+- Kliknij Run
+- Na końcu ma pokazać się wynik: ok
 
-CO MA SIĘ STAĆ
-- query ma zakończyć się bez czerwonego błędu,
-- na końcu ma zwrócić małą tabelkę z:
-  status = ok
+2. Overlay do repo
+Uruchom w PowerShell:
 
-JEŚLI WYSKOCZY BŁĄD
-- nie poprawiaj nic sam,
-- skopiuj cały czerwony komunikat i wklej mi go 1:1.
+$Zip = "$HOME\Downloads\leadflow_supabase_cutover_real_step1.zip"
+$Temp = "$HOME\Downloads\leadflow_supabase_cutover_real_step1_unpacked"
+$Repo = "C:\Users\malim\Desktop\leadflowv1-fresh"
+$PatchRoot = Join-Path $Temp "leadflow_supabase_cutover_real_step1"
 
-PO SQL
-1. Wgraj overlay do repo.
-2. Zrób:
-   npm.cmd install
-   npm.cmd run lint
-   npm.cmd run build
-3. Dopiero potem push.
+if (!(Test-Path $Zip)) { throw "Nie znalazłem ZIP-a: $Zip" }
+if (Test-Path $Temp) { Remove-Item $Temp -Recurse -Force }
 
-CO TEN PAKIET ROBI
-- dodaje endpoint /api/cases dla Supabase,
-- przepina delete sprawy na Supabase,
-- dodaje brakujące helpery cases do supabase-fallback,
-- zostawia Firebase tylko jako fallback awaryjny.
+Expand-Archive -Path $Zip -DestinationPath $Temp -Force
 
-UWAGA
-To jest ETAP 1 cutoveru.
-Najpierw domykamy:
-- cases delete,
-- backend cases API,
-- zgodność kolumn pod relacje.
-Potem dopinamy pełne Today / Calendar / CaseDetail pod Supabase.
+Set-Location $Repo
+Copy-Item "$PatchRoot\*" $Repo -Recurse -Force
+
+npm.cmd install
+npm.cmd run lint
+npm.cmd run build
+
+3. Push
+git add .
+git commit -m "Start real Supabase cutover for cases delete"
+git push origin dev-rollout-freeze
