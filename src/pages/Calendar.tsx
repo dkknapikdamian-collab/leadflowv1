@@ -102,6 +102,8 @@ type CalendarEditDraft = {
 
 type CalendarScale = 'compact' | 'default' | 'large';
 
+const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+
 function createEntryActionClass() {
   return 'inline-flex h-9 items-center justify-center rounded-xl border border-slate-700 bg-slate-950 px-3 text-xs font-semibold text-white transition hover:border-slate-500 hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-50';
 }
@@ -827,26 +829,28 @@ export default function Calendar() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Typ</Label>
-                        <Select value={newEvent.type} onValueChange={(value) => setNewEvent({ ...newEvent, type: value })}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {EVENT_TYPES.map((eventType) => (
-                              <SelectItem key={eventType.value} value={eventType.value}>{eventType.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newEvent.type}
+                          onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
+                        >
+                          {EVENT_TYPES.map((eventType) => (
+                            <option key={eventType.value} value={eventType.value}>{eventType.label}</option>
+                          ))}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Lead</Label>
-                        <Select value={newEvent.leadId} onValueChange={(value) => setNewEvent({ ...newEvent, leadId: value })}>
-                          <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">Bez leada</SelectItem>
-                            {leads.map((lead) => (
-                              <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newEvent.leadId}
+                          onChange={(e) => setNewEvent({ ...newEvent, leadId: e.target.value })}
+                        >
+                          <option value="none">Bez leada</option>
+                          {leads.map((lead) => (
+                            <option key={lead.id} value={lead.id}>{lead.name}</option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -876,23 +880,21 @@ export default function Calendar() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Powtarzanie</Label>
-                        <Select
+                        <select
+                          className={modalSelectClass}
                           value={newEvent.recurrence.mode}
-                          onValueChange={(value) => setNewEvent({
+                          onChange={(e) => setNewEvent({
                             ...newEvent,
                             recurrence: {
                               ...newEvent.recurrence,
-                              mode: value as any,
+                              mode: e.target.value as any,
                             },
                           })}
                         >
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {RECURRENCE_OPTIONS.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                          {RECURRENCE_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Co ile</Label>
@@ -936,23 +938,21 @@ export default function Calendar() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Tryb</Label>
-                        <Select
+                        <select
+                          className={modalSelectClass}
                           value={newEvent.reminder.mode}
-                          onValueChange={(value) => setNewEvent({
+                          onChange={(e) => setNewEvent({
                             ...newEvent,
                             reminder: {
                               ...newEvent.reminder,
-                              mode: value as any,
+                              mode: e.target.value as any,
                             },
                           })}
                         >
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {REMINDER_MODE_OPTIONS.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                          {REMINDER_MODE_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Ile minut wcześniej</Label>
@@ -975,23 +975,21 @@ export default function Calendar() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
                           <Label>Cykliczność przypomnienia</Label>
-                          <Select
+                          <select
+                            className={modalSelectClass}
                             value={newEvent.reminder.recurrenceMode}
-                            onValueChange={(value) => setNewEvent({
+                            onChange={(e) => setNewEvent({
                               ...newEvent,
                               reminder: {
                                 ...newEvent.reminder,
-                                recurrenceMode: value as any,
+                                recurrenceMode: e.target.value as any,
                               },
                             })}
                           >
-                            <SelectTrigger><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
-                                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                            {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
+                              <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                          </select>
                         </div>
                         <div className="space-y-2">
                           <Label>Co ile</Label>
@@ -1218,14 +1216,15 @@ export default function Calendar() {
               {editEntry.kind !== 'lead' ? (
                 <div className="space-y-2">
                   <Label>Typ</Label>
-                  <Select value={editDraft.type} onValueChange={(value) => setEditDraft({ ...editDraft, type: value })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {(editEntry.kind === 'event' ? EVENT_TYPES : TASK_TYPES).map((option) => (
-                        <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <select
+                    className={modalSelectClass}
+                    value={editDraft.type}
+                    onChange={(e) => setEditDraft({ ...editDraft, type: e.target.value })}
+                  >
+                    {(editEntry.kind === 'event' ? EVENT_TYPES : TASK_TYPES).map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
                 </div>
               ) : null}
 
@@ -1267,15 +1266,16 @@ export default function Calendar() {
               {editEntry.kind !== 'lead' ? (
                 <div className="space-y-2">
                   <Label>Lead</Label>
-                  <Select value={editDraft.leadId} onValueChange={(value) => setEditDraft({ ...editDraft, leadId: value })}>
-                    <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Bez leada</SelectItem>
-                      {leads.map((lead) => (
-                        <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <select
+                    className={modalSelectClass}
+                    value={editDraft.leadId}
+                    onChange={(e) => setEditDraft({ ...editDraft, leadId: e.target.value })}
+                  >
+                    <option value="none">Bez leada</option>
+                    {leads.map((lead) => (
+                      <option key={lead.id} value={lead.id}>{lead.name}</option>
+                    ))}
+                  </select>
                 </div>
               ) : null}
 
