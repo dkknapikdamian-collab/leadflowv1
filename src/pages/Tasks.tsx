@@ -72,6 +72,14 @@ import {
   REMINDER_MODE_OPTIONS,
   TASK_TYPES,
 } from '../lib/options';
+import {
+  deleteTaskFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchTasksFromSupabase,
+  insertTaskToSupabase,
+  isSupabaseConfigured,
+  updateTaskInSupabase,
+} from '../lib/supabase-fallback';
 
 export default function Tasks() {
   const { workspace, hasAccess } = useWorkspace();
@@ -94,8 +102,50 @@ export default function Tasks() {
     reminder: createDefaultReminder(),
   }));
 
+  async function refreshSupabaseData() {
+    const [taskRows, leadRows] = await Promise.all([
+      fetchTasksFromSupabase(),
+      fetchLeadsFromSupabase(),
+    ]);
+
+    setTasks(taskRows as any[]);
+    setLeads(leadRows as any[]);
+  }
+
   useEffect(() => {
     if (!auth.currentUser || !workspace) return;
+
+    if (isSupabaseConfigured()) {
+      let cancelled = false;
+
+      const loadData = async () => {
+        try {
+          setLoading(true);
+          const [taskRows, leadRows] = await Promise.all([
+            fetchTasksFromSupabase(),
+            fetchLeadsFromSupabase(),
+          ]);
+
+          if (cancelled) return;
+          setTasks(taskRows as any[]);
+          setLeads(leadRows as any[]);
+        } catch (error: any) {
+          if (!cancelled) {
+            toast.error(`Błąd odczytu zadań: ${error.message}`);
+          }
+        } finally {
+          if (!cancelled) {
+            setLoading(false);
+          }
+        }
+      };
+
+      void loadData();
+
+      return () => {
+        cancelled = true;
+      };
+    }
 
     const tasksQuery = query(
       collection(db, 'tasks'),
@@ -153,14 +203,27 @@ export default function Tasks() {
     });
 
     try {
-      await addDoc(collection(db, 'tasks'), {
-        ...payload,
-        status: 'todo',
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await insertTaskToSupabase({
+          title: newTask.title,
+          type: newTask.type,
+          date: newTask.dueAt.slice(0, 10),
+          priority: newTask.priority,
+          leadId: selectedLead?.id ?? null,
+          ownerId: auth.currentUser?.uid,
+          workspaceId: workspace.id,
+        });
+        await refreshSupabaseData();
+      } else {
+        await addDoc(collection(db, 'tasks'), {
+          ...payload,
+          status: 'todo',
+          ownerId: auth.currentUser?.uid,
+          workspaceId: workspace.id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
 
       toast.success('Zadanie dodane');
       setIsNewTaskOpen(false);
@@ -172,10 +235,24 @@ export default function Tasks() {
 
   const toggleTask = async (taskId: string, currentStatus: string) => {
     try {
-      await updateDoc(doc(db, 'tasks', taskId), {
-        status: currentStatus === 'todo' ? 'done' : 'todo',
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        const task = tasks.find((entry) => entry.id === taskId);
+        await updateTaskInSupabase({
+          id: taskId,
+          status: currentStatus === 'todo' ? 'done' : 'todo',
+          title: task?.title,
+          type: task?.type,
+          date: task?.date,
+          priority: task?.priority,
+          leadId: task?.leadId ?? null,
+        });
+        await refreshSupabaseData();
+      } else {
+        await updateDoc(doc(db, 'tasks', taskId), {
+          status: currentStatus === 'todo' ? 'done' : 'todo',
+          updatedAt: serverTimestamp(),
+        });
+      }
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
@@ -184,7 +261,12 @@ export default function Tasks() {
   const deleteTask = async (taskId: string) => {
     if (!window.confirm('Usunąć zadanie?')) return;
     try {
-      await deleteDoc(doc(db, 'tasks', taskId));
+      if (isSupabaseConfigured()) {
+        await deleteTaskFromSupabase(taskId);
+        await refreshSupabaseData();
+      } else {
+        await deleteDoc(doc(db, 'tasks', taskId));
+      }
       toast.success('Zadanie usunięte');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);

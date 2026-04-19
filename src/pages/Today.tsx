@@ -76,6 +76,14 @@ import {
   SOURCE_OPTIONS,
   TASK_TYPES,
 } from '../lib/options';
+import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import {
+  insertEventToSupabase,
+  insertLeadToSupabase,
+  insertTaskToSupabase,
+  isSupabaseConfigured,
+  updateTaskInSupabase,
+} from '../lib/supabase-fallback';
 
 export default function Today() {
   const { workspace, profile, hasAccess, loading: wsLoading } = useWorkspace();
@@ -122,8 +130,44 @@ export default function Today() {
     };
   });
 
+  async function refreshSupabaseBundle() {
+    const bundle = await fetchCalendarBundleFromSupabase();
+    setLeads(bundle.leads);
+    setTasks(bundle.tasks);
+    setEvents(bundle.events);
+  }
+
   useEffect(() => {
     if (!auth.currentUser || !workspace) return;
+
+    if (isSupabaseConfigured()) {
+      let cancelled = false;
+
+      const loadBundle = async () => {
+        try {
+          setLoading(true);
+          const bundle = await fetchCalendarBundleFromSupabase();
+          if (cancelled) return;
+          setLeads(bundle.leads);
+          setTasks(bundle.tasks);
+          setEvents(bundle.events);
+        } catch (error: any) {
+          if (!cancelled) {
+            toast.error(`Błąd odczytu planu dnia: ${error.message}`);
+          }
+        } finally {
+          if (!cancelled) {
+            setLoading(false);
+          }
+        }
+      };
+
+      void loadBundle();
+
+      return () => {
+        cancelled = true;
+      };
+    }
 
     const leadsQuery = query(
       collection(db, 'leads'),
@@ -195,15 +239,25 @@ export default function Today() {
     e.preventDefault();
     if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
     try {
-      await addDoc(collection(db, 'leads'), {
-        ...newLead,
-        dealValue: Number(newLead.dealValue) || 0,
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        isAtRisk: false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await insertLeadToSupabase({
+          ...newLead,
+          dealValue: Number(newLead.dealValue) || 0,
+          ownerId: auth.currentUser?.uid,
+          workspaceId: workspace.id,
+        });
+        await refreshSupabaseBundle();
+      } else {
+        await addDoc(collection(db, 'leads'), {
+          ...newLead,
+          dealValue: Number(newLead.dealValue) || 0,
+          ownerId: auth.currentUser?.uid,
+          workspaceId: workspace.id,
+          isAtRisk: false,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
       toast.success('Lead dodany');
       setIsLeadOpen(false);
       setNewLead({ name: '', email: '', dealValue: '', source: 'other', status: 'new', nextStep: '', nextActionAt: '' });
@@ -217,20 +271,33 @@ export default function Today() {
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
       const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
-      await addDoc(collection(db, 'tasks'), {
-        ...syncTaskDerivedFields({
-          ...newTask,
+      if (isSupabaseConfigured()) {
+        await insertTaskToSupabase({
+          title: newTask.title,
+          type: newTask.type,
+          date: newTask.dueAt.slice(0, 10),
+          priority: newTask.priority,
           leadId: selectedLead?.id ?? null,
-          leadName: selectedLead?.name ?? '',
-          recurrence: normalizeRecurrenceConfig(newTask.recurrence),
-          reminder: normalizeReminderConfig(newTask.reminder),
-        }),
-        status: 'todo',
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+          ownerId: auth.currentUser?.uid,
+          workspaceId: workspace.id,
+        });
+        await refreshSupabaseBundle();
+      } else {
+        await addDoc(collection(db, 'tasks'), {
+          ...syncTaskDerivedFields({
+            ...newTask,
+            leadId: selectedLead?.id ?? null,
+            leadName: selectedLead?.name ?? '',
+            recurrence: normalizeRecurrenceConfig(newTask.recurrence),
+            reminder: normalizeReminderConfig(newTask.reminder),
+          }),
+          status: 'todo',
+          ownerId: auth.currentUser?.uid,
+          workspaceId: workspace.id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
       toast.success('Zadanie dodane');
       setIsTaskOpen(false);
       resetNewTask();
@@ -244,18 +311,31 @@ export default function Today() {
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
       const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
-      await addDoc(collection(db, 'events'), {
-        ...newEvent,
-        leadId: selectedLead?.id ?? null,
-        leadName: selectedLead?.name ?? '',
-        recurrence: normalizeRecurrenceConfig(newEvent.recurrence),
-        reminder: normalizeReminderConfig(newEvent.reminder),
-        status: 'scheduled',
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await insertEventToSupabase({
+          title: newEvent.title,
+          type: newEvent.type,
+          startAt: newEvent.startAt,
+          endAt: newEvent.endAt,
+          recurrenceRule: newEvent.recurrence.mode,
+          leadId: selectedLead?.id ?? null,
+          workspaceId: workspace.id,
+        });
+        await refreshSupabaseBundle();
+      } else {
+        await addDoc(collection(db, 'events'), {
+          ...newEvent,
+          leadId: selectedLead?.id ?? null,
+          leadName: selectedLead?.name ?? '',
+          recurrence: normalizeRecurrenceConfig(newEvent.recurrence),
+          reminder: normalizeReminderConfig(newEvent.reminder),
+          status: 'scheduled',
+          ownerId: auth.currentUser?.uid,
+          workspaceId: workspace.id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
       toast.success('Wydarzenie dodane');
       setIsEventOpen(false);
       resetNewEvent();
@@ -266,10 +346,24 @@ export default function Today() {
 
   const toggleTask = async (taskId: string, currentStatus: string) => {
     try {
-      await updateDoc(doc(db, 'tasks', taskId), {
-        status: currentStatus === 'todo' ? 'done' : 'todo',
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        const task = tasks.find((entry) => entry.id === taskId);
+        await updateTaskInSupabase({
+          id: taskId,
+          status: currentStatus === 'todo' ? 'done' : 'todo',
+          title: task?.title,
+          type: task?.type,
+          date: task?.date,
+          priority: task?.priority,
+          leadId: task?.leadId ?? null,
+        });
+        await refreshSupabaseBundle();
+      } else {
+        await updateDoc(doc(db, 'tasks', taskId), {
+          status: currentStatus === 'todo' ? 'done' : 'todo',
+          updatedAt: serverTimestamp(),
+        });
+      }
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }

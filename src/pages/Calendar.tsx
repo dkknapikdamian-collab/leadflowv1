@@ -80,6 +80,14 @@ import {
   TASK_TYPES,
   getScheduleEntryIcon,
 } from '../lib/options';
+import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import {
+  insertEventToSupabase,
+  isSupabaseConfigured,
+  updateEventInSupabase,
+  updateLeadInSupabase,
+  updateTaskInSupabase,
+} from '../lib/supabase-fallback';
 
 type CalendarEditDraft = {
   title: string;
@@ -214,8 +222,44 @@ export default function Calendar() {
     };
   });
 
+  async function refreshSupabaseBundle() {
+    const bundle = await fetchCalendarBundleFromSupabase();
+    setEvents(bundle.events);
+    setTasks(bundle.tasks);
+    setLeads(bundle.leads);
+  }
+
   useEffect(() => {
     if (!auth.currentUser || !workspace) return;
+
+    if (isSupabaseConfigured()) {
+      let cancelled = false;
+
+      const loadBundle = async () => {
+        try {
+          setLoading(true);
+          const bundle = await fetchCalendarBundleFromSupabase();
+          if (cancelled) return;
+          setEvents(bundle.events);
+          setTasks(bundle.tasks);
+          setLeads(bundle.leads);
+        } catch (error: any) {
+          if (!cancelled) {
+            toast.error(`Błąd odczytu kalendarza: ${error.message}`);
+          }
+        } finally {
+          if (!cancelled) {
+            setLoading(false);
+          }
+        }
+      };
+
+      void loadBundle();
+
+      return () => {
+        cancelled = true;
+      };
+    }
 
     const eventsQuery = query(
       collection(db, 'events'),
@@ -277,18 +321,31 @@ export default function Calendar() {
     const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
 
     try {
-      await addDoc(collection(db, 'events'), {
-        ...newEvent,
-        leadId: selectedLead?.id ?? null,
-        leadName: selectedLead?.name ?? '',
-        recurrence: normalizeRecurrenceConfig(newEvent.recurrence),
-        reminder: normalizeReminderConfig(newEvent.reminder),
-        status: 'scheduled',
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await insertEventToSupabase({
+          title: newEvent.title,
+          type: newEvent.type,
+          startAt: newEvent.startAt,
+          endAt: newEvent.endAt,
+          recurrenceRule: newEvent.recurrence.mode,
+          leadId: selectedLead?.id ?? null,
+          workspaceId: workspace.id,
+        });
+        await refreshSupabaseBundle();
+      } else {
+        await addDoc(collection(db, 'events'), {
+          ...newEvent,
+          leadId: selectedLead?.id ?? null,
+          leadName: selectedLead?.name ?? '',
+          recurrence: normalizeRecurrenceConfig(newEvent.recurrence),
+          reminder: normalizeReminderConfig(newEvent.reminder),
+          status: 'scheduled',
+          ownerId: auth.currentUser?.uid,
+          workspaceId: workspace.id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
       toast.success('Wydarzenie zaplanowane');
       setIsNewEventOpen(false);
       resetNewEvent();
@@ -356,11 +413,22 @@ export default function Calendar() {
           ? toDateTimeLocalValue(addDays(parseISO(entry.raw.endAt), days))
           : null;
 
-        await updateDoc(doc(db, 'events', entry.sourceId), {
-          startAt: nextStart,
-          endAt: nextEnd,
-          updatedAt: serverTimestamp(),
-        });
+        if (isSupabaseConfigured()) {
+          await updateEventInSupabase({
+            id: entry.sourceId,
+            title: entry.raw?.title || entry.title,
+            type: entry.raw?.type || 'meeting',
+            startAt: nextStart,
+            endAt: nextEnd,
+            leadId: entry.raw?.leadId ?? null,
+          });
+        } else {
+          await updateDoc(doc(db, 'events', entry.sourceId), {
+            startAt: nextStart,
+            endAt: nextEnd,
+            updatedAt: serverTimestamp(),
+          });
+        }
       } else if (entry.kind === 'task') {
         const nextStart = addDays(parseISO(getTaskStartAt(entry.raw) || entry.startsAt), days);
         const taskPayload = syncTaskDerivedFields({
@@ -370,20 +438,44 @@ export default function Calendar() {
           time: format(nextStart, 'HH:mm'),
         });
 
-        await updateDoc(doc(db, 'tasks', entry.sourceId), {
-          ...taskPayload,
-          updatedAt: serverTimestamp(),
-        });
+        if (isSupabaseConfigured()) {
+          await updateTaskInSupabase({
+            id: entry.sourceId,
+            title: taskPayload.title,
+            type: taskPayload.type,
+            date: taskPayload.date,
+            status: taskPayload.status,
+            priority: taskPayload.priority,
+            leadId: taskPayload.leadId ?? null,
+          });
+        } else {
+          await updateDoc(doc(db, 'tasks', entry.sourceId), {
+            ...taskPayload,
+            updatedAt: serverTimestamp(),
+          });
+        }
       } else {
         const currentLeadAt = typeof entry.raw?.nextActionAt === 'string' && entry.raw.nextActionAt
           ? entry.raw.nextActionAt
           : entry.startsAt;
         const nextStart = addDays(parseISO(currentLeadAt.includes('T') ? currentLeadAt : `${currentLeadAt}T09:00`), days);
 
-        await updateDoc(doc(db, 'leads', entry.sourceId), {
-          nextActionAt: toDateTimeLocalValue(nextStart),
-          updatedAt: serverTimestamp(),
-        });
+        if (isSupabaseConfigured()) {
+          await updateLeadInSupabase({
+            id: entry.sourceId,
+            nextStep: entry.raw?.nextStep || entry.title,
+            nextActionAt: toDateTimeLocalValue(nextStart),
+          });
+        } else {
+          await updateDoc(doc(db, 'leads', entry.sourceId), {
+            nextActionAt: toDateTimeLocalValue(nextStart),
+            updatedAt: serverTimestamp(),
+          });
+        }
+      }
+
+      if (isSupabaseConfigured()) {
+        await refreshSupabaseBundle();
       }
 
       toast.success(days === 1 ? 'Przesunięto o 1 dzień' : 'Przesunięto o 1 tydzień');
@@ -404,22 +496,58 @@ export default function Calendar() {
       setActionPendingId(`${entry.id}:done`);
 
       if (entry.kind === 'event') {
-        await updateDoc(doc(db, 'events', entry.sourceId), {
-          status: 'completed',
-          updatedAt: serverTimestamp(),
-        });
+        if (isSupabaseConfigured()) {
+          await updateEventInSupabase({
+            id: entry.sourceId,
+            title: entry.raw?.title || entry.title,
+            type: entry.raw?.type || 'meeting',
+            startAt: entry.raw?.startAt || entry.startsAt,
+            endAt: entry.raw?.endAt || entry.endsAt || null,
+            status: 'completed',
+            leadId: entry.raw?.leadId ?? null,
+          });
+        } else {
+          await updateDoc(doc(db, 'events', entry.sourceId), {
+            status: 'completed',
+            updatedAt: serverTimestamp(),
+          });
+        }
       } else if (entry.kind === 'task') {
-        await updateDoc(doc(db, 'tasks', entry.sourceId), {
-          status: 'done',
-          updatedAt: serverTimestamp(),
-        });
+        if (isSupabaseConfigured()) {
+          await updateTaskInSupabase({
+            id: entry.sourceId,
+            title: entry.raw?.title || entry.title,
+            type: entry.raw?.type,
+            date: entry.raw?.date || entry.startsAt.slice(0, 10),
+            status: 'done',
+            priority: entry.raw?.priority,
+            leadId: entry.raw?.leadId ?? null,
+          });
+        } else {
+          await updateDoc(doc(db, 'tasks', entry.sourceId), {
+            status: 'done',
+            updatedAt: serverTimestamp(),
+          });
+        }
       } else {
-        await updateDoc(doc(db, 'leads', entry.sourceId), {
-          nextStep: '',
-          nextActionAt: null,
-          lastContactAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
+        if (isSupabaseConfigured()) {
+          await updateLeadInSupabase({
+            id: entry.sourceId,
+            nextStep: '',
+            nextActionAt: null,
+          });
+        } else {
+          await updateDoc(doc(db, 'leads', entry.sourceId), {
+            nextStep: '',
+            nextActionAt: null,
+            lastContactAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          });
+        }
+      }
+
+      if (isSupabaseConfigured()) {
+        await refreshSupabaseBundle();
       }
 
       toast.success('Wpis oznaczony jako zrobiony');
@@ -440,15 +568,26 @@ export default function Calendar() {
 
       if (editEntry.kind === 'event') {
         const selectedLead = leads.find((lead) => lead.id === editDraft.leadId);
-        await updateDoc(doc(db, 'events', editEntry.sourceId), {
-          title: editDraft.title,
-          type: editDraft.type,
-          startAt: editDraft.startAt,
-          endAt: editDraft.endAt,
-          leadId: selectedLead?.id ?? null,
-          leadName: selectedLead?.name ?? '',
-          updatedAt: serverTimestamp(),
-        });
+        if (isSupabaseConfigured()) {
+          await updateEventInSupabase({
+            id: editEntry.sourceId,
+            title: editDraft.title,
+            type: editDraft.type,
+            startAt: editDraft.startAt,
+            endAt: editDraft.endAt,
+            leadId: selectedLead?.id ?? null,
+          });
+        } else {
+          await updateDoc(doc(db, 'events', editEntry.sourceId), {
+            title: editDraft.title,
+            type: editDraft.type,
+            startAt: editDraft.startAt,
+            endAt: editDraft.endAt,
+            leadId: selectedLead?.id ?? null,
+            leadName: selectedLead?.name ?? '',
+            updatedAt: serverTimestamp(),
+          });
+        }
       } else if (editEntry.kind === 'task') {
         const selectedLead = leads.find((lead) => lead.id === editDraft.leadId);
         const nextDate = parseISO(editDraft.startAt);
@@ -463,16 +602,40 @@ export default function Calendar() {
           leadName: selectedLead?.name ?? '',
         });
 
-        await updateDoc(doc(db, 'tasks', editEntry.sourceId), {
-          ...payload,
-          updatedAt: serverTimestamp(),
-        });
+        if (isSupabaseConfigured()) {
+          await updateTaskInSupabase({
+            id: editEntry.sourceId,
+            title: payload.title,
+            type: payload.type,
+            date: payload.date,
+            status: payload.status,
+            priority: payload.priority,
+            leadId: payload.leadId ?? null,
+          });
+        } else {
+          await updateDoc(doc(db, 'tasks', editEntry.sourceId), {
+            ...payload,
+            updatedAt: serverTimestamp(),
+          });
+        }
       } else {
-        await updateDoc(doc(db, 'leads', editEntry.sourceId), {
-          nextStep: editDraft.title,
-          nextActionAt: editDraft.startAt,
-          updatedAt: serverTimestamp(),
-        });
+        if (isSupabaseConfigured()) {
+          await updateLeadInSupabase({
+            id: editEntry.sourceId,
+            nextStep: editDraft.title,
+            nextActionAt: editDraft.startAt,
+          });
+        } else {
+          await updateDoc(doc(db, 'leads', editEntry.sourceId), {
+            nextStep: editDraft.title,
+            nextActionAt: editDraft.startAt,
+            updatedAt: serverTimestamp(),
+          });
+        }
+      }
+
+      if (isSupabaseConfigured()) {
+        await refreshSupabaseBundle();
       }
 
       toast.success('Wpis zaktualizowany');
