@@ -31,7 +31,6 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -74,6 +73,8 @@ const SOURCE_OPTIONS = [
   { value: 'cold_outreach', label: 'Cold Outreach' },
   { value: 'other', label: 'Inne' },
 ];
+
+const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 function asDate(value: unknown) {
   if (!value) return null;
@@ -821,18 +822,18 @@ export default function LeadDetail() {
                     <CardContent className="space-y-4">
                       <p className="text-sm text-slate-500">Tu przypniesz sprawę do leada. Po podpięciu będzie widoczna zarówno tutaj, jak i w module Sprawy.</p>
                       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
-                        <Select value={linkCaseId} onValueChange={setLinkCaseId}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Wybierz sprawę" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {availableCasesToLink.map((caseRecord: any) => (
-                              <SelectItem key={caseRecord.id} value={String(caseRecord.id)}>
-                                {caseRecord.title || 'Sprawa bez tytułu'}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={linkCaseId}
+                          onChange={(e) => setLinkCaseId(e.target.value)}
+                        >
+                          <option value="">Wybierz sprawę</option>
+                          {availableCasesToLink.map((caseRecord: any) => (
+                            <option key={caseRecord.id} value={String(caseRecord.id)}>
+                              {caseRecord.title || 'Sprawa bez tytułu'}
+                            </option>
+                          ))}
+                        </select>
                         <Button onClick={() => void handleLinkExistingCase()} disabled={!linkCaseId || linkingCase}>
                           <Briefcase className="w-4 h-4 mr-2" />
                           {linkingCase ? 'Podpinanie...' : 'Podepnij sprawę'}
@@ -917,18 +918,17 @@ export default function LeadDetail() {
               </div>
               <div className="space-y-2">
                 <Label>Źródło</Label>
-                <Select value={editLead?.source || 'other'} onValueChange={(value) => setEditLead({ ...editLead, source: value })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SOURCE_OPTIONS.map((source) => (
-                      <SelectItem key={source.value} value={source.value}>
-                        {source.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <select
+                  className={modalSelectClass}
+                  value={editLead?.source || 'other'}
+                  onChange={(e) => setEditLead({ ...editLead, source: e.target.value })}
+                >
+                  {SOURCE_OPTIONS.map((source) => (
+                    <option key={source.value} value={source.value}>
+                      {source.label}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
@@ -967,17 +967,16 @@ export default function LeadDetail() {
             </div>
             <div className="space-y-2">
               <Label>Status startowy</Label>
-              <Select value={createCaseDraft.status} onValueChange={(value) => setCreateCaseDraft((prev) => ({ ...prev, status: value }))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="in_progress">W toku</SelectItem>
-                  <SelectItem value="waiting_on_client">Czeka na klienta</SelectItem>
-                  <SelectItem value="blocked">Zablokowana</SelectItem>
-                  <SelectItem value="ready_to_start">Gotowa do startu</SelectItem>
-                </SelectContent>
-              </Select>
+              <select
+                className={modalSelectClass}
+                value={createCaseDraft.status}
+                onChange={(e) => setCreateCaseDraft((prev) => ({ ...prev, status: e.target.value }))}
+              >
+                <option value="in_progress">W toku</option>
+                <option value="waiting_on_client">Czeka na klienta</option>
+                <option value="blocked">Zablokowana</option>
+                <option value="ready_to_start">Gotowa do startu</option>
+              </select>
             </div>
           </div>
           <DialogFooter>

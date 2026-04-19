@@ -51,13 +51,6 @@ import {
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../components/ui/select';
-import {
   buildStartEndPair,
   combineScheduleEntries,
   createDefaultRecurrence,
@@ -87,6 +80,7 @@ import {
 } from '../lib/supabase-fallback';
 
 const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
+const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 type TileCardProps = {
   id: string;
@@ -529,14 +523,15 @@ export default function Today() {
                     </div>
                     <div className="space-y-2">
                       <Label>Źródło</Label>
-                      <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {SOURCE_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <select
+                        className={modalSelectClass}
+                        value={newLead.source}
+                        onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
+                      >
+                        {SOURCE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -575,37 +570,40 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <Label>Typ</Label>
-                        <Select value={newTask.type} onValueChange={(value) => setNewTask({ ...newTask, type: value })}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {TASK_TYPES.map((taskType) => (
-                              <SelectItem key={taskType.value} value={taskType.value}>{taskType.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newTask.type}
+                          onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}
+                        >
+                          {TASK_TYPES.map((taskType) => (
+                            <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
+                          ))}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Lead</Label>
-                        <Select value={newTask.leadId} onValueChange={(value) => setNewTask({ ...newTask, leadId: value })}>
-                          <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">Bez leada</SelectItem>
-                            {leads.map((lead) => (
-                              <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newTask.leadId}
+                          onChange={(e) => setNewTask({ ...newTask, leadId: e.target.value })}
+                        >
+                          <option value="none">Bez leada</option>
+                          {leads.map((lead) => (
+                            <option key={lead.id} value={lead.id}>{lead.name}</option>
+                          ))}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Priorytet</Label>
-                        <Select value={newTask.priority} onValueChange={(value) => setNewTask({ ...newTask, priority: value })}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {PRIORITY_OPTIONS.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newTask.priority}
+                          onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+                        >
+                          {PRIORITY_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -629,12 +627,13 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Powtarzanie</Label>
-                        <Select value={newTask.recurrence.mode} onValueChange={(value) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, mode: value as any } })}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {RECURRENCE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newTask.recurrence.mode}
+                          onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, mode: e.target.value as any } })}
+                        >
+                          {RECURRENCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Co ile</Label>
@@ -655,12 +654,13 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Tryb</Label>
-                        <Select value={newTask.reminder.mode} onValueChange={(value) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, mode: value as any } })}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {REMINDER_MODE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newTask.reminder.mode}
+                          onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, mode: e.target.value as any } })}
+                        >
+                          {REMINDER_MODE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Ile minut wcześniej</Label>
@@ -671,12 +671,13 @@ export default function Today() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
                           <Label>Cykliczność przypomnienia</Label>
-                          <Select value={newTask.reminder.recurrenceMode} onValueChange={(value) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceMode: value as any } })}>
-                            <SelectTrigger><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
-                            </SelectContent>
-                          </Select>
+                          <select
+                            className={modalSelectClass}
+                            value={newTask.reminder.recurrenceMode}
+                            onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceMode: e.target.value as any } })}
+                          >
+                            {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                          </select>
                         </div>
                         <div className="space-y-2">
                           <Label>Co ile</Label>
@@ -711,22 +712,24 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Typ</Label>
-                        <Select value={newEvent.type} onValueChange={(value) => setNewEvent({ ...newEvent, type: value })}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {EVENT_TYPES.map((eventType) => <SelectItem key={eventType.value} value={eventType.value}>{eventType.label}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newEvent.type}
+                          onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
+                        >
+                          {EVENT_TYPES.map((eventType) => <option key={eventType.value} value={eventType.value}>{eventType.label}</option>)}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Lead</Label>
-                        <Select value={newEvent.leadId} onValueChange={(value) => setNewEvent({ ...newEvent, leadId: value })}>
-                          <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">Bez leada</SelectItem>
-                            {leads.map((lead) => <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newEvent.leadId}
+                          onChange={(e) => setNewEvent({ ...newEvent, leadId: e.target.value })}
+                        >
+                          <option value="none">Bez leada</option>
+                          {leads.map((lead) => <option key={lead.id} value={lead.id}>{lead.name}</option>)}
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -756,12 +759,13 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Powtarzanie</Label>
-                        <Select value={newEvent.recurrence.mode} onValueChange={(value) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: value as any } })}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {RECURRENCE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newEvent.recurrence.mode}
+                          onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}
+                        >
+                          {RECURRENCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Co ile</Label>
@@ -782,12 +786,13 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Tryb</Label>
-                        <Select value={newEvent.reminder.mode} onValueChange={(value) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: value as any } })}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {REMINDER_MODE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
+                        <select
+                          className={modalSelectClass}
+                          value={newEvent.reminder.mode}
+                          onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}
+                        >
+                          {REMINDER_MODE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Ile minut wcześniej</Label>
@@ -798,12 +803,13 @@ export default function Today() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
                           <Label>Cykliczność przypomnienia</Label>
-                          <Select value={newEvent.reminder.recurrenceMode} onValueChange={(value) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: value as any } })}>
-                            <SelectTrigger><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
-                            </SelectContent>
-                          </Select>
+                          <select
+                            className={modalSelectClass}
+                            value={newEvent.reminder.recurrenceMode}
+                            onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}
+                          >
+                            {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                          </select>
                         </div>
                         <div className="space-y-2">
                           <Label>Co ile</Label>
