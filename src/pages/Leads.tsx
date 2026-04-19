@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -16,6 +16,7 @@ import {
   X,
   FileText,
   Loader2,
+  Briefcase,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
@@ -27,7 +28,12 @@ import Papa from 'papaparse';
 import { format, isAfter, isPast, parseISO, startOfDay, subDays } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { fetchLeadsFromSupabase, insertLeadToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import {
+  fetchCasesFromSupabase,
+  fetchLeadsFromSupabase,
+  insertLeadToSupabase,
+  isSupabaseConfigured,
+} from '../lib/supabase-fallback';
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
@@ -53,6 +59,13 @@ const SOURCE_OPTIONS = [
   { value: 'other', label: 'Inne' },
 ];
 
+type CaseRecord = {
+  id: string;
+  title?: string;
+  status?: string;
+  leadId?: string | null;
+};
+
 function toDateSafe(value: unknown) {
   if (!value) return null;
   if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
@@ -74,6 +87,7 @@ function toDateSafe(value: unknown) {
 export default function Leads() {
   const { workspace, hasAccess } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
+  const [cases, setCases] = useState<CaseRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -81,6 +95,7 @@ export default function Leads() {
   const [sourceFilter, setSourceFilter] = useState('all');
   const [atRiskFilter, setAtRiskFilter] = useState('all');
   const [activityFilter, setActivityFilter] = useState('all');
+  const [caseFilter, setCaseFilter] = useState('all');
 
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
   const [newLead, setNewLead] = useState({
@@ -101,8 +116,12 @@ export default function Leads() {
     setLoading(true);
     setLoadError(null);
     try {
-      const rows = await fetchLeadsFromSupabase();
-      setLeads(rows as any[]);
+      const [leadRows, caseRows] = await Promise.all([
+        fetchLeadsFromSupabase(),
+        fetchCasesFromSupabase().catch(() => []),
+      ]);
+      setLeads(leadRows as any[]);
+      setCases(caseRows as CaseRecord[]);
     } catch (error: any) {
       const message = error?.message || 'Nie udało się pobrać leadów';
       setLoadError(message);
@@ -117,6 +136,17 @@ export default function Leads() {
     if (!isSupabaseConfigured()) return;
     void loadLeads();
   }, [loadLeads, workspace]);
+
+  const casesByLeadId = useMemo(() => {
+    const map = new Map<string, CaseRecord>();
+    for (const caseRecord of cases) {
+      const leadId = String(caseRecord.leadId || '').trim();
+      if (leadId && !map.has(leadId)) {
+        map.set(leadId, caseRecord);
+      }
+    }
+    return map;
+  }, [cases]);
 
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
@@ -199,18 +229,28 @@ export default function Leads() {
 
     let matchesActivity = true;
     const updatedAt = toDateSafe(lead.updatedAt);
-    if (activityFilter !== 'all' && updatedAt) {
-      const now = new Date();
-      if (activityFilter === 'today') {
-        matchesActivity = isAfter(updatedAt, startOfDay(now));
-      } else if (activityFilter === 'week') {
-        matchesActivity = isAfter(updatedAt, subDays(now, 7));
-      } else if (activityFilter === 'month') {
-        matchesActivity = isAfter(updatedAt, subDays(now, 30));
+    if (activityFilter !== 'all') {
+      if (!updatedAt) {
+        matchesActivity = false;
+      } else {
+        const now = new Date();
+        if (activityFilter === 'today') {
+          matchesActivity = isAfter(updatedAt, startOfDay(now));
+        } else if (activityFilter === 'week') {
+          matchesActivity = isAfter(updatedAt, subDays(now, 7));
+        } else if (activityFilter === 'month') {
+          matchesActivity = isAfter(updatedAt, subDays(now, 30));
+        }
       }
     }
 
-    return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity;
+    const linkedCase = casesByLeadId.get(String(lead.id));
+    const matchesCase =
+      caseFilter === 'all' ||
+      (caseFilter === 'with-case' && Boolean(linkedCase)) ||
+      (caseFilter === 'without-case' && !linkedCase);
+
+    return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity && matchesCase;
   });
 
   const stats = {
@@ -218,6 +258,7 @@ export default function Leads() {
     active: leads.filter((lead) => !['won', 'lost'].includes(String(lead.status || 'new'))).length,
     value: leads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
     atRisk: leads.filter((lead) => Boolean(lead.isAtRisk)).length,
+    linkedToCase: leads.filter((lead) => casesByLeadId.has(String(lead.id))).length,
   };
 
   return (
@@ -309,7 +350,7 @@ export default function Leads() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
           <Card className="border-none shadow-sm">
             <CardContent className="p-6 flex items-center justify-between">
               <div>
@@ -354,10 +395,21 @@ export default function Leads() {
               </div>
             </CardContent>
           </Card>
+          <Card className="border-none shadow-sm">
+            <CardContent className="p-6 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Ze sprawą</p>
+                <h3 className="text-2xl font-bold text-emerald-600">{stats.linkedToCase}</h3>
+              </div>
+              <div className="bg-emerald-50 p-3 rounded-2xl">
+                <Briefcase className="w-6 h-6 text-emerald-500" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <Card className="border-none shadow-sm">
-          <CardContent className="p-4 flex flex-col md:flex-row gap-4">
+          <CardContent className="p-4 flex flex-col xl:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
@@ -367,7 +419,7 @@ export default function Leads() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-[160px] rounded-xl h-11 bg-slate-50 border-none">
                   <SelectValue placeholder="Status" />
@@ -405,7 +457,7 @@ export default function Leads() {
                 </SelectContent>
               </Select>
               <Select value={activityFilter} onValueChange={setActivityFilter}>
-                <SelectTrigger className="w-[140px] rounded-xl h-11 bg-slate-50 border-none">
+                <SelectTrigger className="w-[160px] rounded-xl h-11 bg-slate-50 border-none">
                   <SelectValue placeholder="Aktywność" />
                 </SelectTrigger>
                 <SelectContent>
@@ -415,7 +467,17 @@ export default function Leads() {
                   <SelectItem value="month">Ostatnie 30 dni</SelectItem>
                 </SelectContent>
               </Select>
-              {(statusFilter !== 'all' || sourceFilter !== 'all' || atRiskFilter !== 'all' || activityFilter !== 'all' || searchQuery) && (
+              <Select value={caseFilter} onValueChange={setCaseFilter}>
+                <SelectTrigger className="w-[160px] rounded-xl h-11 bg-slate-50 border-none">
+                  <SelectValue placeholder="Sprawa" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Wszystkie leady</SelectItem>
+                  <SelectItem value="with-case">Tylko ze sprawą</SelectItem>
+                  <SelectItem value="without-case">Tylko bez sprawy</SelectItem>
+                </SelectContent>
+              </Select>
+              {(statusFilter !== 'all' || sourceFilter !== 'all' || atRiskFilter !== 'all' || activityFilter !== 'all' || caseFilter !== 'all' || searchQuery) && (
                 <Button
                   variant="ghost"
                   onClick={() => {
@@ -423,6 +485,7 @@ export default function Leads() {
                     setSourceFilter('all');
                     setAtRiskFilter('all');
                     setActivityFilter('all');
+                    setCaseFilter('all');
                     setSearchQuery('');
                   }}
                   className="h-11 rounded-xl"
@@ -461,6 +524,7 @@ export default function Leads() {
               const status = STATUS_OPTIONS.find((option) => option.value === lead.status) || STATUS_OPTIONS[0];
               const nextActionDate = lead.nextActionAt ? parseISO(String(lead.nextActionAt)) : null;
               const isOverdue = nextActionDate ? isPast(nextActionDate) : false;
+              const linkedCase = casesByLeadId.get(String(lead.id));
 
               return (
                 <Link key={lead.id} to={`/leads/${lead.id}`}>
@@ -468,7 +532,7 @@ export default function Leads() {
                     <CardContent className="p-0">
                       <div className="flex flex-col md:flex-row md:items-center p-5 gap-4">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-1">
+                          <div className="flex items-center gap-3 mb-1 flex-wrap">
                             <h4 className="text-lg font-bold text-slate-900 truncate group-hover:text-primary transition-colors">{lead.name}</h4>
                             <Badge className={`${status.color} border-none font-medium text-[10px] uppercase`}>{status.label}</Badge>
                             {lead.isAtRisk && (
@@ -476,6 +540,11 @@ export default function Leads() {
                                 Zagrożony
                               </Badge>
                             )}
+                            {linkedCase ? (
+                              <Badge variant="outline" className="text-[10px] uppercase border-emerald-200 text-emerald-700">
+                                Ma sprawę
+                              </Badge>
+                            ) : null}
                           </div>
                           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
                             {lead.company && (
@@ -491,6 +560,11 @@ export default function Leads() {
                                 <Mail className="w-3.5 h-3.5" /> {lead.email}
                               </span>
                             )}
+                            {linkedCase?.title ? (
+                              <span className="flex items-center gap-1 text-emerald-700 font-medium">
+                                <Briefcase className="w-3.5 h-3.5" /> {linkedCase.title}
+                              </span>
+                            ) : null}
                           </div>
                         </div>
 
