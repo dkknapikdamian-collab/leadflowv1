@@ -71,12 +71,14 @@ import {
   normalizeRecurrenceConfig,
   normalizeReminderConfig,
   syncTaskDerivedFields,
+  toReminderAtIso,
   toDateTimeLocalValue,
   type ScheduleEntry,
 } from '../lib/scheduling';
 import {
   EVENT_TYPES,
   RECURRENCE_OPTIONS,
+  REMINDER_OFFSET_OPTIONS,
   REMINDER_MODE_OPTIONS,
   TASK_TYPES,
   getScheduleEntryIcon,
@@ -354,6 +356,7 @@ export default function Calendar() {
           type: newEvent.type,
           startAt: newEvent.startAt,
           endAt: newEvent.endAt,
+          reminderAt: toReminderAtIso(newEvent.startAt, newEvent.reminder),
           recurrenceRule: newEvent.recurrence.mode,
           leadId: selectedLead?.id ?? null,
           workspaceId: workspace.id,
@@ -955,20 +958,23 @@ export default function Calendar() {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Ile minut wcześniej</Label>
-                        <Input
-                          type="number"
-                          min="0"
+                        <Label>Kiedy przypomnieć</Label>
+                        <select
+                          className={modalSelectClass}
                           value={newEvent.reminder.minutesBefore}
                           onChange={(e) => setNewEvent({
                             ...newEvent,
                             reminder: {
                               ...newEvent.reminder,
-                              minutesBefore: Math.max(0, Number(e.target.value) || 0),
+                              minutesBefore: Number(e.target.value),
                             },
                           })}
                           disabled={newEvent.reminder.mode === 'none'}
-                        />
+                        >
+                          {REMINDER_OFFSET_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                     {newEvent.reminder.mode === 'recurring' && (

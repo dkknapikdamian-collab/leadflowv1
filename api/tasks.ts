@@ -17,20 +17,43 @@ function normalizeTask(row: Record<string, unknown>) {
     asIsoDate(row.created_at) ||
     new Date().toISOString();
   const normalizedDate = dueAt.slice(0, 10);
+  const reminderAt =
+    asIsoDate(row.reminder_at) ||
+    asIsoDate(row.reminderAt) ||
+    (typeof row.reminder === 'string' && row.reminder !== 'none' ? asIsoDate(row.reminder) : null);
+  const recurrenceRule = String(row.recurrence_rule || row.recurrenceRule || row.recurrence || 'none');
+  const reminderMinutes = reminderAt
+    ? Math.max(0, Math.round((new Date(dueAt).getTime() - new Date(reminderAt).getTime()) / 60_000))
+    : 30;
 
   return {
     id: String(row.id || crypto.randomUUID()),
     title: String(row.title || ''),
     type: String(row.type || row.task_type || 'task'),
     date: normalizedDate,
+    dueAt: dueAt.slice(0, 16),
+    time: dueAt.slice(11, 16),
     status: String(row.status || 'todo'),
     priority: String(row.priority || 'medium'),
     leadId: row.lead_id ? String(row.lead_id) : undefined,
-    reminderAt:
-      asIsoDate(row.reminder_at) ||
-      asIsoDate(row.reminderAt) ||
-      (typeof row.reminder === 'string' && row.reminder !== 'none' ? asIsoDate(row.reminder) : null),
-    recurrenceRule: String(row.recurrence_rule || row.recurrenceRule || row.recurrence || 'none'),
+    reminderAt,
+    reminder: reminderAt
+      ? {
+          mode: 'once',
+          minutesBefore: reminderMinutes,
+          recurrenceMode: 'daily',
+          recurrenceInterval: 1,
+          until: null,
+        }
+      : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
+    recurrenceRule,
+    recurrence: {
+      mode: recurrenceRule,
+      interval: 1,
+      until: null,
+      endType: 'never',
+      count: null,
+    },
     recurrenceEndType: row.recurrence_end_type ? String(row.recurrence_end_type) : undefined,
     recurrenceEndAt: asIsoDate(row.recurrence_end_at) || null,
     recurrenceCount: typeof row.recurrence_count === 'number' ? row.recurrence_count : null,
@@ -119,7 +142,11 @@ export default async function handler(req: any, res: any) {
       throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
     }
     const nowIso = new Date().toISOString();
-    const scheduledAt = body.date ? new Date(`${body.date}T09:00:00`).toISOString() : null;
+    const scheduledAt = body.scheduledAt
+      ? new Date(body.scheduledAt).toISOString()
+      : body.date
+        ? new Date(`${body.date}T09:00:00`).toISOString()
+        : null;
 
     const payload = {
       workspace_id: workspaceId,
@@ -134,7 +161,7 @@ export default async function handler(req: any, res: any) {
       scheduled_at: scheduledAt,
       start_at: null,
       end_at: null,
-      recurrence: 'none',
+      recurrence: body.recurrenceRule || 'none',
       reminder: body.reminderAt || 'none',
       show_in_tasks: true,
       show_in_calendar: true,

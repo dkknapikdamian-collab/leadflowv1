@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+﻿import { useState, useEffect, FormEvent } from 'react';
 import { auth, db } from '../firebase';
 import {
   collection,
@@ -66,11 +66,13 @@ import {
   normalizeRecurrenceConfig,
   normalizeReminderConfig,
   syncTaskDerivedFields,
+  toReminderAtIso,
   toDateTimeLocalValue,
 } from '../lib/scheduling';
 import {
   PRIORITY_OPTIONS,
   RECURRENCE_OPTIONS,
+  REMINDER_OFFSET_OPTIONS,
   REMINDER_MODE_OPTIONS,
   TASK_TYPES,
 } from '../lib/options';
@@ -96,6 +98,7 @@ export default function Tasks() {
   const [linkFilter, setLinkFilter] = useState('all');
 
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+  const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
   const [newTask, setNewTask] = useState(() => ({
     title: '',
     type: 'follow_up',
@@ -106,6 +109,7 @@ export default function Tasks() {
     recurrence: createDefaultRecurrence(),
     reminder: createDefaultReminder(),
   }));
+  const [editTask, setEditTask] = useState<any | null>(null);
 
   async function refreshSupabaseData() {
     const [taskRows, leadRows] = await Promise.all([
@@ -136,7 +140,7 @@ export default function Tasks() {
           setLeads(leadRows as any[]);
         } catch (error: any) {
           if (!cancelled) {
-            toast.error(`Błąd odczytu zadań: ${error.message}`);
+            toast.error(`BĹ‚Ä…d odczytu zadaĹ„: ${error.message}`);
           }
         } finally {
           if (!cancelled) {
@@ -193,10 +197,25 @@ export default function Tasks() {
     });
   };
 
+  const openEditTask = (task: any) => {
+    setEditTask({
+      id: task.id,
+      title: task.title || '',
+      type: task.type || 'follow_up',
+      dueAt: getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`,
+      priority: task.priority || 'medium',
+      leadId: task.leadId || 'none',
+      recurrence: normalizeRecurrenceConfig(task.recurrence),
+      reminder: normalizeReminderConfig(task.reminder),
+      status: task.status || 'todo',
+    });
+    setIsEditTaskOpen(true);
+  };
+
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!newTask.title.trim()) return toast.error('Wpisz tytuĹ‚ zadania');
 
     const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -213,8 +232,11 @@ export default function Tasks() {
           title: newTask.title,
           type: newTask.type,
           date: newTask.dueAt.slice(0, 10),
+          scheduledAt: newTask.dueAt,
           priority: newTask.priority,
           leadId: selectedLead?.id ?? null,
+          reminderAt: toReminderAtIso(payload.dueAt, payload.reminder),
+          recurrenceRule: payload.recurrence?.mode ?? 'none',
           ownerId: auth.currentUser?.uid,
           workspaceId: workspace.id,
         });
@@ -234,7 +256,7 @@ export default function Tasks() {
       setIsNewTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('BĹ‚Ä…d: ' + error.message);
     }
   };
 
@@ -259,12 +281,12 @@ export default function Tasks() {
         });
       }
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('BĹ‚Ä…d: ' + error.message);
     }
   };
 
   const deleteTask = async (taskId: string) => {
-    if (!window.confirm('Usunąć zadanie?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ zadanie?')) return;
     try {
       if (isSupabaseConfigured()) {
         await deleteTaskFromSupabase(taskId);
@@ -272,9 +294,54 @@ export default function Tasks() {
       } else {
         await deleteDoc(doc(db, 'tasks', taskId));
       }
-      toast.success('Zadanie usunięte');
+      toast.success('Zadanie usuniÄ™te');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('BĹ‚Ä…d: ' + error.message);
+    }
+  };
+
+  const handleSaveTaskEdit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!editTask?.id) return;
+    if (!editTask.title?.trim()) return toast.error('Wpisz tytuĹ‚ zadania');
+
+    const selectedLead = leads.find((lead) => lead.id === editTask.leadId);
+    const payload = syncTaskDerivedFields({
+      ...editTask,
+      leadId: selectedLead?.id ?? null,
+      leadName: selectedLead?.name ?? '',
+      recurrence: normalizeRecurrenceConfig(editTask.recurrence),
+      reminder: normalizeReminderConfig(editTask.reminder),
+    });
+
+    try {
+      if (isSupabaseConfigured()) {
+        await updateTaskInSupabase({
+          id: editTask.id,
+          title: payload.title,
+          type: payload.type,
+          status: payload.status,
+          priority: payload.priority,
+          date: payload.date,
+          scheduledAt: payload.dueAt,
+          leadId: payload.leadId ?? null,
+          reminderAt: toReminderAtIso(payload.dueAt, payload.reminder),
+          recurrenceRule: payload.recurrence?.mode ?? 'none',
+        });
+        await refreshSupabaseData();
+      } else {
+        await updateDoc(doc(db, 'tasks', editTask.id), {
+          ...payload,
+          updatedAt: serverTimestamp(),
+        });
+      }
+
+      toast.success('Zadanie zaktualizowane');
+      setIsEditTaskOpen(false);
+      setEditTask(null);
+    } catch (error: any) {
+      toast.error('BĹ‚Ä…d: ' + error.message);
     }
   };
 
@@ -320,7 +387,7 @@ export default function Tasks() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Zadania</h1>
-            <p className="text-slate-500">Zarządzaj codzienną egzekucją i powtarzalnymi ruchami.</p>
+            <p className="text-slate-500">ZarzÄ…dzaj codziennÄ… egzekucjÄ… i powtarzalnymi ruchami.</p>
           </div>
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
             <DialogTrigger asChild>
@@ -333,7 +400,7 @@ export default function Tasks() {
               <form onSubmit={handleAddTask} className="space-y-6 py-4">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Tytuł zadania</Label>
+                    <Label>TytuĹ‚ zadania</Label>
                     <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -395,8 +462,8 @@ export default function Tasks() {
 
                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                   <div>
-                    <p className="text-sm font-bold text-slate-900">Cykliczność</p>
-                    <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawić powtarzanie.</p>
+                    <p className="text-sm font-bold text-slate-900">CyklicznoĹ›Ä‡</p>
+                    <p className="text-xs text-slate-500">MoĹĽesz zostawiÄ‡ brak albo ustawiÄ‡ powtarzanie.</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2 md:col-span-2">
@@ -476,26 +543,29 @@ export default function Tasks() {
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Ile minut wcześniej</Label>
-                      <Input
-                        type="number"
-                        min="0"
+                      <Label>Kiedy przypomnieć</Label>
+                      <select
+                        className={modalSelectClass}
                         value={newTask.reminder.minutesBefore}
                         onChange={(e) => setNewTask({
                           ...newTask,
                           reminder: {
                             ...newTask.reminder,
-                            minutesBefore: Math.max(0, Number(e.target.value) || 0),
+                            minutesBefore: Number(e.target.value),
                           },
                         })}
                         disabled={newTask.reminder.mode === 'none'}
-                      />
+                      >
+                        {REMINDER_OFFSET_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   {newTask.reminder.mode === 'recurring' && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
-                        <Label>Cykliczność przypomnienia</Label>
+                        <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
                         <select
                           className={modalSelectClass}
                           value={newTask.reminder.recurrenceMode}
@@ -537,6 +607,197 @@ export default function Tasks() {
               </form>
             </DialogContent>
           </Dialog>
+          <Dialog open={isEditTaskOpen} onOpenChange={(open) => {
+            setIsEditTaskOpen(open);
+            if (!open) setEditTask(null);
+          }}>
+            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader><DialogTitle>Edytuj zadanie</DialogTitle></DialogHeader>
+              {editTask ? (
+                <form onSubmit={handleSaveTaskEdit} className="space-y-6 py-4">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Tytuł zadania</Label>
+                      <Input value={editTask.title} onChange={(e) => setEditTask({ ...editTask, title: e.target.value })} required />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Typ</Label>
+                        <select
+                          className={modalSelectClass}
+                          value={editTask.type}
+                          onChange={(e) => setEditTask({ ...editTask, type: e.target.value })}
+                        >
+                          {TASK_TYPES.map((taskType) => (
+                            <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Lead</Label>
+                        <select
+                          className={modalSelectClass}
+                          value={editTask.leadId}
+                          onChange={(e) => setEditTask({ ...editTask, leadId: e.target.value })}
+                        >
+                          <option value="none">Bez leada</option>
+                          {leads.map((lead) => (
+                            <option key={lead.id} value={lead.id}>{lead.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Priorytet</Label>
+                      <select
+                        className={modalSelectClass}
+                        value={editTask.priority}
+                        onChange={(e) => setEditTask({ ...editTask, priority: e.target.value })}
+                      >
+                        {PRIORITY_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div className="space-y-2">
+                      <Label>Data i godzina</Label>
+                      <Input
+                        type="datetime-local"
+                        value={editTask.dueAt}
+                        onChange={(e) => setEditTask({ ...editTask, dueAt: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Powtarzanie</Label>
+                        <select
+                          className={modalSelectClass}
+                          value={editTask.recurrence.mode}
+                          onChange={(e) => setEditTask({
+                            ...editTask,
+                            recurrence: {
+                              ...editTask.recurrence,
+                              mode: e.target.value as any,
+                            },
+                          })}
+                        >
+                          {RECURRENCE_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Co ile</Label>
+                        <Input
+                          type="number"
+                          min="1"
+                          value={editTask.recurrence.interval}
+                          onChange={(e) => setEditTask({
+                            ...editTask,
+                            recurrence: {
+                              ...editTask.recurrence,
+                              interval: Math.max(1, Number(e.target.value) || 1),
+                            },
+                          })}
+                          disabled={editTask.recurrence.mode === 'none'}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Tryb przypomnienia</Label>
+                        <select
+                          className={modalSelectClass}
+                          value={editTask.reminder.mode}
+                          onChange={(e) => setEditTask({
+                            ...editTask,
+                            reminder: {
+                              ...editTask.reminder,
+                              mode: e.target.value as any,
+                            },
+                          })}
+                        >
+                          {REMINDER_MODE_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Kiedy przypomnieć</Label>
+                        <select
+                          className={modalSelectClass}
+                          value={editTask.reminder.minutesBefore}
+                          onChange={(e) => setEditTask({
+                            ...editTask,
+                            reminder: {
+                              ...editTask.reminder,
+                              minutesBefore: Number(e.target.value),
+                            },
+                          })}
+                          disabled={editTask.reminder.mode === 'none'}
+                        >
+                          {REMINDER_OFFSET_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    {editTask.reminder.mode === 'recurring' && (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Cykliczność przypomnienia</Label>
+                          <select
+                            className={modalSelectClass}
+                            value={editTask.reminder.recurrenceMode}
+                            onChange={(e) => setEditTask({
+                              ...editTask,
+                              reminder: {
+                                ...editTask.reminder,
+                                recurrenceMode: e.target.value as any,
+                              },
+                            })}
+                          >
+                            {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
+                              <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Co ile</Label>
+                          <Input
+                            type="number"
+                            min="1"
+                            value={editTask.reminder.recurrenceInterval}
+                            onChange={(e) => setEditTask({
+                              ...editTask,
+                              reminder: {
+                                ...editTask.reminder,
+                                recurrenceInterval: Math.max(1, Number(e.target.value) || 1),
+                              },
+                            })}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <DialogFooter>
+                    <Button type="submit" className="w-full">Zapisz zmiany</Button>
+                  </DialogFooter>
+                </form>
+              ) : null}
+            </DialogContent>
+          </Dialog>
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -554,7 +815,7 @@ export default function Tasks() {
           <Card className="border-none shadow-sm">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Na dziś</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Na dziĹ›</p>
                 <p className="mt-2 text-2xl font-bold text-blue-600">{taskStats.today}</p>
               </div>
               <div className="rounded-2xl bg-blue-50 p-3 text-blue-500">
@@ -565,7 +826,7 @@ export default function Tasks() {
           <Card className="border-none shadow-sm">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Zaległe</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">ZalegĹ‚e</p>
                 <p className="mt-2 text-2xl font-bold text-rose-600">{taskStats.overdue}</p>
               </div>
               <div className="rounded-2xl bg-rose-50 p-3 text-rose-500">
@@ -621,7 +882,7 @@ export default function Tasks() {
               </Select>
               <Select value={linkFilter} onValueChange={setLinkFilter}>
                 <SelectTrigger className="w-[170px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Powiązanie" />
+                  <SelectValue placeholder="PowiÄ…zanie" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Wszystkie wpisy</SelectItem>
@@ -640,7 +901,7 @@ export default function Tasks() {
                   }}
                   className="h-11 rounded-xl"
                 >
-                  <X className="w-4 h-4 mr-2" /> Wyczyść
+                  <X className="w-4 h-4 mr-2" /> WyczyĹ›Ä‡
                 </Button>
               )}
             </div>
@@ -651,15 +912,15 @@ export default function Tasks() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-              <p className="text-slate-500">Ładowanie zadań...</p>
+              <p className="text-slate-500">Ĺadowanie zadaĹ„...</p>
             </div>
           ) : sortedDates.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
               <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-slate-300" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Brak zadań</h3>
-              <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo zmień filtry.</p>
+              <h3 className="text-lg font-bold text-slate-900">Brak zadaĹ„</h3>
+              <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo zmieĹ„ filtry.</p>
             </div>
           ) : (
             sortedDates.map((dateKey) => {
@@ -671,7 +932,7 @@ export default function Tasks() {
                 <section key={dateKey} className="space-y-3">
                   <div className="flex items-center gap-2">
                     <h2 className="text-lg font-bold text-slate-900">{format(parseISO(dateKey), 'EEEE, d MMMM', { locale: pl })}</h2>
-                    {isToday(parseISO(dateKey)) && <Badge className="rounded-full">Dziś</Badge>}
+                    {isToday(parseISO(dateKey)) && <Badge className="rounded-full">DziĹ›</Badge>}
                     {isTomorrow(parseISO(dateKey)) && <Badge variant="secondary" className="rounded-full">Jutro</Badge>}
                   </div>
                   <div className="space-y-3">
@@ -679,7 +940,11 @@ export default function Tasks() {
                       const taskStart = getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`;
                       const overdue = task.status !== 'done' && isPast(parseISO(taskStart)) && !isToday(parseISO(taskStart));
                       const recurrence = normalizeRecurrenceConfig(task.recurrence);
-                      const reminder = normalizeReminderConfig(task.reminder);
+                      const reminder = task.reminder
+                        ? normalizeReminderConfig(task.reminder)
+                        : task.reminderAt
+                          ? { ...createDefaultReminder(), mode: 'once' as const }
+                          : normalizeReminderConfig(task.reminder);
 
                       return (
                         <Card key={task.id} className={`border-none shadow-sm group transition-all ${task.status === 'done' ? 'opacity-60' : ''}`}>
@@ -696,30 +961,38 @@ export default function Tasks() {
                                   <p className={`font-bold text-slate-900 ${task.status === 'done' ? 'line-through' : ''}`}>{task.title}</p>
                                   <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label ?? 'Zadanie'}</Badge>
                                   {task.priority === 'high' && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge>}
-                                  {overdue && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge>}
+                                  {overdue && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">ZalegĹ‚e</Badge>}
                                   {!task.leadName && !task.leadId && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Bez leada</Badge>}
                                   {recurrence.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((item) => item.value === recurrence.mode)?.label}</Badge>}
                                   {reminder.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Bell className="w-3 h-3 mr-1" /> {reminder.mode === 'recurring' ? 'Cykliczne przypomnienie' : 'Przypomnienie'}</Badge>}
                                 </div>
                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
                                   <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {format(parseISO(taskStart), 'HH:mm')}</span>
-                                  {task.leadName ? <span>Lead: {task.leadName}</span> : <span>Brak powiązanego leada</span>}
+                                  {task.leadName ? <span>Lead: {task.leadName}</span> : <span>Brak powiÄ…zanego leada</span>}
                                 </div>
                               </div>
                             </div>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="rounded-xl"><MoreVertical className="w-4 h-4" /></Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => toggleTask(task.id, task.status)}>
-                                  <CheckSquare className="w-4 h-4 mr-2" /> {task.status === 'todo' ? 'Oznacz jako zrobione' : 'Przywróć do zrobienia'}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600">
-                                  <Trash2 className="w-4 h-4 mr-2" /> Usuń
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <Button variant="outline" size="sm" className="rounded-xl" onClick={() => openEditTask(task)}>
+                                Edytuj
+                              </Button>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="rounded-xl"><MoreVertical className="w-4 h-4" /></Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem onClick={() => openEditTask(task)}>
+                                    Edytuj
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => toggleTask(task.id, task.status)}>
+                                    <CheckSquare className="w-4 h-4 mr-2" /> {task.status === 'todo' ? 'Oznacz jako zrobione' : 'PrzywrĂłÄ‡ do zrobienia'}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600">
+                                    <Trash2 className="w-4 h-4 mr-2" /> UsuĹ„
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
                           </CardContent>
                         </Card>
                       );
@@ -734,3 +1007,5 @@ export default function Tasks() {
     </Layout>
   );
 }
+
+

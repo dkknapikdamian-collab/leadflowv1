@@ -20,9 +20,12 @@ type TaskInsertInput = {
   title: string;
   type?: string;
   date?: string;
+  scheduledAt?: string;
   priority?: string;
   status?: string;
   leadId?: string | null;
+  reminderAt?: string | null;
+  recurrenceRule?: string;
   caseId?: string | null;
   ownerId?: string;
   workspaceId?: string;

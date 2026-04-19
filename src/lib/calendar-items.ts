@@ -13,6 +13,8 @@ export type CalendarTaskItem = {
   recurrenceEndType?: string;
   recurrenceEndAt?: string | null;
   recurrenceCount?: number | null;
+  recurrence?: Record<string, unknown>;
+  reminder?: Record<string, unknown>;
   leadId?: string;
   leadName?: string;
 };
@@ -31,6 +33,8 @@ export type CalendarEventItem = {
   recurrenceEndType?: string;
   recurrenceEndAt?: string | null;
   recurrenceCount?: number | null;
+  recurrence?: Record<string, unknown>;
+  reminder?: Record<string, unknown>;
 };
 
 export type CalendarLeadActionItem = {
@@ -59,6 +63,13 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
   const date = typeof row.date === 'string' ? row.date : '';
   if (!isIsoLike(date)) return null;
 
+  const reminderAt = row.reminderAt ? String(row.reminderAt) : null;
+  const recurrenceRule = row.recurrenceRule ? String(row.recurrenceRule) : undefined;
+  const startAt = `${date}T09:00:00.000Z`;
+  const reminderMinutes = reminderAt
+    ? Math.max(0, Math.round((new Date(startAt).getTime() - new Date(reminderAt).getTime()) / 60_000))
+    : 30;
+
   return {
     id: String(row.id || crypto.randomUUID()),
     title: String(row.title || ''),
@@ -66,8 +77,18 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
     status: String(row.status || 'todo'),
     type: row.type ? String(row.type) : undefined,
     priority: row.priority ? String(row.priority) : undefined,
-    reminderAt: row.reminderAt ? String(row.reminderAt) : null,
-    recurrenceRule: row.recurrenceRule ? String(row.recurrenceRule) : undefined,
+    reminderAt,
+    recurrenceRule,
+    reminder: reminderAt
+      ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
+      : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
+    recurrence: {
+      mode: recurrenceRule || 'none',
+      interval: 1,
+      until: null,
+      endType: 'never',
+      count: null,
+    },
     recurrenceEndType: row.recurrenceEndType ? String(row.recurrenceEndType) : undefined,
     recurrenceEndAt: row.recurrenceEndAt ? String(row.recurrenceEndAt) : null,
     recurrenceCount: typeof row.recurrenceCount === 'number' ? row.recurrenceCount : null,
@@ -80,6 +101,12 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
   const startAt = typeof row.startAt === 'string' ? row.startAt : '';
   if (!isIsoLike(startAt)) return null;
 
+  const reminderAt = row.reminderAt ? String(row.reminderAt) : null;
+  const recurrenceRule = row.recurrenceRule ? String(row.recurrenceRule) : undefined;
+  const reminderMinutes = reminderAt
+    ? Math.max(0, Math.round((new Date(startAt).getTime() - new Date(reminderAt).getTime()) / 60_000))
+    : 30;
+
   return {
     id: String(row.id || crypto.randomUUID()),
     title: String(row.title || ''),
@@ -89,8 +116,18 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
     status: String(row.status || 'scheduled'),
     leadId: row.leadId ? String(row.leadId) : undefined,
     leadName: row.leadName ? String(row.leadName) : undefined,
-    reminderAt: row.reminderAt ? String(row.reminderAt) : null,
-    recurrenceRule: row.recurrenceRule ? String(row.recurrenceRule) : undefined,
+    reminderAt,
+    recurrenceRule,
+    reminder: reminderAt
+      ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
+      : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
+    recurrence: {
+      mode: recurrenceRule || 'none',
+      interval: 1,
+      until: null,
+      endType: 'never',
+      count: null,
+    },
     recurrenceEndType: row.recurrenceEndType ? String(row.recurrenceEndType) : undefined,
     recurrenceEndAt: row.recurrenceEndAt ? String(row.recurrenceEndAt) : null,
     recurrenceCount: typeof row.recurrenceCount === 'number' ? row.recurrenceCount : null,

@@ -3,6 +3,11 @@ import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, 
 function normalizeEvent(row: Record<string, unknown>) {
   const startAt = row.start_at || row.scheduled_at || row.startAt || null;
   const endAt = row.end_at || row.endAt || null;
+  const reminderAt = row.reminder && row.reminder !== 'none' ? String(row.reminder) : '';
+  const recurrenceRule = String(row.recurrence || 'none');
+  const reminderMinutes = reminderAt && startAt
+    ? Math.max(0, Math.round((new Date(String(startAt)).getTime() - new Date(reminderAt).getTime()) / 60_000))
+    : 30;
 
   return {
     id: String(row.id || crypto.randomUUID()),
@@ -11,8 +16,24 @@ function normalizeEvent(row: Record<string, unknown>) {
     startAt: String(startAt || ''),
     endAt: endAt ? String(endAt) : '',
     status: String(row.status || 'scheduled'),
-    reminderAt: row.reminder && row.reminder !== 'none' ? String(row.reminder) : '',
-    recurrenceRule: String(row.recurrence || 'none'),
+    reminderAt,
+    reminder: reminderAt
+      ? {
+          mode: 'once',
+          minutesBefore: reminderMinutes,
+          recurrenceMode: 'daily',
+          recurrenceInterval: 1,
+          until: null,
+        }
+      : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
+    recurrenceRule,
+    recurrence: {
+      mode: recurrenceRule,
+      interval: 1,
+      until: null,
+      endType: 'never',
+      count: null,
+    },
     leadId: row.lead_id ? String(row.lead_id) : undefined,
   };
 }

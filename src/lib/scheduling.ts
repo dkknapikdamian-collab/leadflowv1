@@ -8,6 +8,7 @@ import {
   isBefore,
   isEqual,
   parseISO,
+  subMinutes,
   startOfDay,
 } from 'date-fns';
 
@@ -119,6 +120,14 @@ export function normalizeReminderConfig(value: any): ReminderConfig {
     recurrenceInterval: Number.isFinite(Number(value?.recurrenceInterval)) && Number(value.recurrenceInterval) > 0 ? Number(value.recurrenceInterval) : 1,
     until: typeof value?.until === 'string' && value.until ? value.until : null,
   };
+}
+
+export function toReminderAtIso(startAt: string, reminderInput: any): string | null {
+  const reminder = normalizeReminderConfig(reminderInput);
+  if (reminder.mode === 'none') return null;
+  const startDate = parseISO(startAt);
+  if (Number.isNaN(startDate.getTime())) return null;
+  return subMinutes(startDate, reminder.minutesBefore).toISOString();
 }
 
 export function getTaskStartAt(task: any): string | null {

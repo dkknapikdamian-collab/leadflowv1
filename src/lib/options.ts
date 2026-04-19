@@ -58,8 +58,17 @@ export const RECURRENCE_OPTIONS = [
 
 export const REMINDER_MODE_OPTIONS = [
   { value: 'none', label: 'Brak' },
-  { value: 'once', label: 'Przypomnij raz' },
+  { value: 'once', label: 'Jednorazowe' },
   { value: 'recurring', label: 'Przypominaj cyklicznie' },
+];
+
+export const REMINDER_OFFSET_OPTIONS = [
+  { value: 0, label: 'W momencie terminu' },
+  { value: 10, label: '10 minut wcześniej' },
+  { value: 30, label: '30 minut wcześniej' },
+  { value: 60, label: '1 godzinę wcześniej' },
+  { value: 1440, label: '1 dzień wcześniej' },
+  { value: 10080, label: '1 tydzień wcześniej' },
 ];
 
 export const PRIORITY_OPTIONS = [
