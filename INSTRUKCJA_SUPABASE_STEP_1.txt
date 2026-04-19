@@ -1,0 +1,36 @@
+ETAP 1 — CASES -> SUPABASE
+
+1. SQL
+- Otwórz Supabase
+- Wejdź w SQL Editor
+- Kliknij New query
+- Otwórz plik SUPABASE_SQL_STEP_1.sql
+- Skopiuj całość
+- Wklej do query
+- Kliknij Run
+- Na końcu ma pokazać się wynik: ok
+
+2. Overlay do repo
+Uruchom w PowerShell:
+
+$Zip = "$HOME\Downloads\leadflow_supabase_cutover_real_step1.zip"
+$Temp = "$HOME\Downloads\leadflow_supabase_cutover_real_step1_unpacked"
+$Repo = "C:\Users\malim\Desktop\leadflowv1-fresh"
+$PatchRoot = Join-Path $Temp "leadflow_supabase_cutover_real_step1"
+
+if (!(Test-Path $Zip)) { throw "Nie znalazłem ZIP-a: $Zip" }
+if (Test-Path $Temp) { Remove-Item $Temp -Recurse -Force }
+
+Expand-Archive -Path $Zip -DestinationPath $Temp -Force
+
+Set-Location $Repo
+Copy-Item "$PatchRoot\*" $Repo -Recurse -Force
+
+npm.cmd install
+npm.cmd run lint
+npm.cmd run build
+
+3. Push
+git add .
+git commit -m "Start real Supabase cutover for cases delete"
+git push origin dev-rollout-freeze

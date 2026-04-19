@@ -1,0 +1,131 @@
+import { isValid, parseISO } from 'date-fns';
+import { fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, isSupabaseConfigured } from './supabase-fallback';
+
+export type CalendarTaskItem = {
+  id: string;
+  title: string;
+  date: string;
+  status: string;
+  type?: string;
+  priority?: string;
+  reminderAt?: string | null;
+  recurrenceRule?: string;
+  recurrenceEndType?: string;
+  recurrenceEndAt?: string | null;
+  recurrenceCount?: number | null;
+  leadId?: string;
+  leadName?: string;
+};
+
+export type CalendarEventItem = {
+  id: string;
+  title: string;
+  type: string;
+  startAt: string;
+  endAt?: string;
+  status: string;
+  leadId?: string;
+  leadName?: string;
+  reminderAt?: string | null;
+  recurrenceRule?: string;
+  recurrenceEndType?: string;
+  recurrenceEndAt?: string | null;
+  recurrenceCount?: number | null;
+};
+
+export type CalendarLeadActionItem = {
+  id: string;
+  name: string;
+  nextActionAt: string;
+  nextStep?: string;
+  status?: string;
+  dealValue?: number;
+  phone?: string;
+};
+
+export type CalendarBundle = {
+  tasks: CalendarTaskItem[];
+  events: CalendarEventItem[];
+  leads: CalendarLeadActionItem[];
+};
+
+function isIsoLike(value?: string | null) {
+  if (!value) return false;
+  const parsed = parseISO(value);
+  return isValid(parsed);
+}
+
+export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTaskItem | null {
+  const date = typeof row.date === 'string' ? row.date : '';
+  if (!isIsoLike(date)) return null;
+
+  return {
+    id: String(row.id || crypto.randomUUID()),
+    title: String(row.title || ''),
+    date,
+    status: String(row.status || 'todo'),
+    type: row.type ? String(row.type) : undefined,
+    priority: row.priority ? String(row.priority) : undefined,
+    reminderAt: row.reminderAt ? String(row.reminderAt) : null,
+    recurrenceRule: row.recurrenceRule ? String(row.recurrenceRule) : undefined,
+    recurrenceEndType: row.recurrenceEndType ? String(row.recurrenceEndType) : undefined,
+    recurrenceEndAt: row.recurrenceEndAt ? String(row.recurrenceEndAt) : null,
+    recurrenceCount: typeof row.recurrenceCount === 'number' ? row.recurrenceCount : null,
+    leadId: row.leadId ? String(row.leadId) : undefined,
+    leadName: row.leadName ? String(row.leadName) : undefined,
+  };
+}
+
+export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEventItem | null {
+  const startAt = typeof row.startAt === 'string' ? row.startAt : '';
+  if (!isIsoLike(startAt)) return null;
+
+  return {
+    id: String(row.id || crypto.randomUUID()),
+    title: String(row.title || ''),
+    type: String(row.type || 'meeting'),
+    startAt,
+    endAt: row.endAt ? String(row.endAt) : undefined,
+    status: String(row.status || 'scheduled'),
+    leadId: row.leadId ? String(row.leadId) : undefined,
+    leadName: row.leadName ? String(row.leadName) : undefined,
+    reminderAt: row.reminderAt ? String(row.reminderAt) : null,
+    recurrenceRule: row.recurrenceRule ? String(row.recurrenceRule) : undefined,
+    recurrenceEndType: row.recurrenceEndType ? String(row.recurrenceEndType) : undefined,
+    recurrenceEndAt: row.recurrenceEndAt ? String(row.recurrenceEndAt) : null,
+    recurrenceCount: typeof row.recurrenceCount === 'number' ? row.recurrenceCount : null,
+  };
+}
+
+export function normalizeCalendarLeadAction(row: Record<string, unknown>): CalendarLeadActionItem | null {
+  const nextActionAt = typeof row.nextActionAt === 'string' ? row.nextActionAt : '';
+  if (!isIsoLike(nextActionAt)) return null;
+
+  return {
+    id: String(row.id || crypto.randomUUID()),
+    name: String(row.name || ''),
+    nextActionAt,
+    nextStep: row.nextStep ? String(row.nextStep) : undefined,
+    status: row.status ? String(row.status) : undefined,
+    dealValue: Number(row.dealValue || 0),
+    phone: row.phone ? String(row.phone) : undefined,
+  };
+}
+
+export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle> {
+  if (!isSupabaseConfigured()) {
+    return { tasks: [], events: [], leads: [] };
+  }
+
+  const [taskItems, eventItems, leadItems] = await Promise.all([
+    fetchTasksFromSupabase(),
+    fetchEventsFromSupabase(),
+    fetchLeadsFromSupabase(),
+  ]);
+
+  return {
+    tasks: (taskItems as Record<string, unknown>[]).map(normalizeCalendarTask).filter((item): item is CalendarTaskItem => Boolean(item)),
+    events: (eventItems as Record<string, unknown>[]).map(normalizeCalendarEvent).filter((item): item is CalendarEventItem => Boolean(item)),
+    leads: (leadItems as Record<string, unknown>[]).map(normalizeCalendarLeadAction).filter((item): item is CalendarLeadActionItem => Boolean(item)),
+  };
+}

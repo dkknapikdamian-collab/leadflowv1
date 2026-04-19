@@ -1,0 +1,10 @@
+To jest REALNY overlay krok 1 pod Supabase.
+
+Podmieniane pliki:
+- api/cases.ts
+- src/lib/cases.ts
+- src/pages/Cases.tsx
+
+Dodatkowo:
+- SUPABASE_SQL_STEP_1.sql
+- INSTRUKCJA_SUPABASE_STEP_1.txt
