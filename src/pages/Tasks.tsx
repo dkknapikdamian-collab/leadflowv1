@@ -29,6 +29,8 @@ import {
   X,
   Bell,
   Repeat,
+  Link2,
+  ListTodo,
 } from 'lucide-react';
 import { format, isPast, isToday, isTomorrow, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
@@ -89,6 +91,7 @@ export default function Tasks() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('todo');
   const [typeFilter, setTypeFilter] = useState('all');
+  const [linkFilter, setLinkFilter] = useState('all');
 
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
   const [newTask, setNewTask] = useState(() => ({
@@ -274,10 +277,17 @@ export default function Tasks() {
   };
 
   const filteredTasks = tasks.filter((task) => {
-    const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const taskTitle = String(task.title || '').toLowerCase();
+    const matchesSearch = taskTitle.includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
     const matchesType = typeFilter === 'all' || task.type === typeFilter;
-    return matchesSearch && matchesStatus && matchesType;
+    const hasLead = Boolean(task.leadId || task.leadName);
+    const matchesLink =
+      linkFilter === 'all'
+      || (linkFilter === 'with-lead' && hasLead)
+      || (linkFilter === 'without-lead' && !hasLead);
+
+    return matchesSearch && matchesStatus && matchesType && matchesLink;
   });
 
   const groupedTasks = filteredTasks.reduce<Record<string, any[]>>((acc, task) => {
@@ -288,6 +298,19 @@ export default function Tasks() {
   }, {});
 
   const sortedDates = Object.keys(groupedTasks).sort();
+
+  const taskStats = {
+    active: tasks.filter((task) => task.status !== 'done').length,
+    today: tasks.filter((task) => {
+      const taskStart = getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`;
+      return task.status !== 'done' && isToday(parseISO(taskStart));
+    }).length,
+    overdue: tasks.filter((task) => {
+      const taskStart = getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`;
+      return task.status !== 'done' && isPast(parseISO(taskStart)) && !isToday(parseISO(taskStart));
+    }).length,
+    withoutLead: tasks.filter((task) => !task.leadId && !task.leadName).length,
+  };
 
   return (
     <Layout>
@@ -517,6 +540,53 @@ export default function Tasks() {
           </Dialog>
         </header>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <Card className="border-none shadow-sm">
+            <CardContent className="p-5 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Aktywne</p>
+                <p className="mt-2 text-2xl font-bold text-slate-900">{taskStats.active}</p>
+              </div>
+              <div className="rounded-2xl bg-slate-100 p-3 text-slate-500">
+                <ListTodo className="w-6 h-6" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-none shadow-sm">
+            <CardContent className="p-5 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Na dziś</p>
+                <p className="mt-2 text-2xl font-bold text-blue-600">{taskStats.today}</p>
+              </div>
+              <div className="rounded-2xl bg-blue-50 p-3 text-blue-500">
+                <Clock className="w-6 h-6" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-none shadow-sm">
+            <CardContent className="p-5 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Zaległe</p>
+                <p className="mt-2 text-2xl font-bold text-rose-600">{taskStats.overdue}</p>
+              </div>
+              <div className="rounded-2xl bg-rose-50 p-3 text-rose-500">
+                <AlertTriangle className="w-6 h-6" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-none shadow-sm">
+            <CardContent className="p-5 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Bez leada</p>
+                <p className="mt-2 text-2xl font-bold text-amber-600">{taskStats.withoutLead}</p>
+              </div>
+              <div className="rounded-2xl bg-amber-50 p-3 text-amber-500">
+                <Link2 className="w-6 h-6" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card className="border-none shadow-sm">
           <CardContent className="p-4 flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
@@ -550,12 +620,23 @@ export default function Tasks() {
                   ))}
                 </SelectContent>
               </Select>
-              {(statusFilter !== 'todo' || typeFilter !== 'all' || searchQuery) && (
+              <Select value={linkFilter} onValueChange={setLinkFilter}>
+                <SelectTrigger className="w-[170px] rounded-xl h-11 bg-slate-50 border-none">
+                  <SelectValue placeholder="Powiązanie" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Wszystkie wpisy</SelectItem>
+                  <SelectItem value="with-lead">Tylko z leadem</SelectItem>
+                  <SelectItem value="without-lead">Tylko bez leada</SelectItem>
+                </SelectContent>
+              </Select>
+              {(statusFilter !== 'todo' || typeFilter !== 'all' || linkFilter !== 'all' || searchQuery) && (
                 <Button
                   variant="ghost"
                   onClick={() => {
                     setStatusFilter('todo');
                     setTypeFilter('all');
+                    setLinkFilter('all');
                     setSearchQuery('');
                   }}
                   className="h-11 rounded-xl"
@@ -617,12 +698,13 @@ export default function Tasks() {
                                   <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label ?? 'Zadanie'}</Badge>
                                   {task.priority === 'high' && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge>}
                                   {overdue && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge>}
+                                  {!task.leadName && !task.leadId && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Bez leada</Badge>}
                                   {recurrence.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((item) => item.value === recurrence.mode)?.label}</Badge>}
                                   {reminder.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Bell className="w-3 h-3 mr-1" /> {reminder.mode === 'recurring' ? 'Cykliczne przypomnienie' : 'Przypomnienie'}</Badge>}
                                 </div>
                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
                                   <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {format(parseISO(taskStart), 'HH:mm')}</span>
-                                  {task.leadName && <span>Lead: {task.leadName}</span>}
+                                  {task.leadName ? <span>Lead: {task.leadName}</span> : <span>Brak powiązanego leada</span>}
                                 </div>
                               </div>
                             </div>

@@ -54,6 +54,14 @@ function SelectTrigger({
   )
 }
 
+type SelectContentProps = SelectPrimitive.Popup.Props &
+  Pick<
+    SelectPrimitive.Positioner.Props,
+    "align" | "alignOffset" | "side" | "sideOffset" | "alignItemWithTrigger"
+  > & {
+    portal?: boolean
+  }
+
 function SelectContent({
   className,
   children,
@@ -62,13 +70,14 @@ function SelectContent({
   align = "center",
   alignOffset = 0,
   alignItemWithTrigger = true,
+  portal,
   ...props
-}: SelectPrimitive.Popup.Props &
-  Pick<
-    SelectPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset" | "alignItemWithTrigger"
-  >) {
-  return (
+}: SelectContentProps) {
+  const activeElement = typeof document !== "undefined" ? document.activeElement : null
+  const isInsideDialog = Boolean(activeElement && activeElement.closest('[role="dialog"]'))
+  const shouldPortal = portal ?? !isInsideDialog
+
+  const content = (
     <SelectPrimitive.Positioner
       side={side}
       sideOffset={sideOffset}
@@ -92,6 +101,12 @@ function SelectContent({
       </SelectPrimitive.Popup>
     </SelectPrimitive.Positioner>
   )
+
+  if (!shouldPortal) {
+    return content
+  }
+
+  return <SelectPrimitive.Portal>{content}</SelectPrimitive.Portal>
 }
 
 function SelectLabel({
