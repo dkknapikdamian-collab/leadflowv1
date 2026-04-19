@@ -35,7 +35,14 @@ import {
   History,
   Paperclip,
   MessageSquare,
-  Loader2
+  Loader2,
+  Link2,
+  Unlink,
+  UserRound,
+  Mail,
+  Phone,
+  Target,
+  Calendar,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -56,12 +63,15 @@ import {
   DropdownMenuTrigger
 } from '../components/ui/dropdown-menu';
 import { ScrollArea } from '../components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import Layout from '../components/Layout';
 import {
   createClientPortalTokenInSupabase,
   fetchActivitiesFromSupabase,
   fetchCaseByIdFromSupabase,
   fetchCaseItemsFromSupabase,
+  fetchLeadByIdFromSupabase,
+  fetchLeadsFromSupabase,
   insertActivityToSupabase,
   insertCaseItemToSupabase,
   isSupabaseConfigured,
@@ -107,6 +117,54 @@ function computeCaseState(items: any[]) {
   };
 }
 
+function leadStatusLabel(status?: string) {
+  switch (status) {
+    case 'new':
+      return 'Nowy';
+    case 'contacted':
+      return 'Skontaktowany';
+    case 'qualification':
+      return 'Kwalifikacja';
+    case 'proposal_sent':
+      return 'Oferta wysłana';
+    case 'follow_up':
+      return 'Follow-up';
+    case 'negotiation':
+      return 'Negocjacje';
+    case 'won':
+      return 'Wygrany';
+    case 'lost':
+      return 'Przegrany';
+    default:
+      return 'Lead';
+  }
+}
+
+function leadSourceLabel(source?: string) {
+  switch (source) {
+    case 'instagram':
+      return 'Instagram';
+    case 'facebook':
+      return 'Facebook';
+    case 'messenger':
+      return 'Messenger';
+    case 'whatsapp':
+      return 'WhatsApp';
+    case 'email':
+      return 'E-mail';
+    case 'form':
+      return 'Formularz';
+    case 'phone':
+      return 'Telefon';
+    case 'referral':
+      return 'Polecenie';
+    case 'cold_outreach':
+      return 'Cold Outreach';
+    default:
+      return 'Inne';
+  }
+}
+
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
@@ -116,19 +174,36 @@ export default function CaseDetail() {
   const [loading, setLoading] = useState(true);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [newItem, setNewItem] = useState({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
+  const [sourceLead, setSourceLead] = useState<any>(null);
+  const [availableLeads, setAvailableLeads] = useState<any[]>([]);
+  const [selectedLeadId, setSelectedLeadId] = useState('');
+  const [leadRelationPending, setLeadRelationPending] = useState(false);
 
   async function refreshSupabaseCase() {
     if (!caseId) return;
 
-    const [caseRow, itemRows, activityRows] = await Promise.all([
+    const [caseRow, itemRows, activityRows, leadRows] = await Promise.all([
       fetchCaseByIdFromSupabase(caseId),
       fetchCaseItemsFromSupabase(caseId),
       fetchActivitiesFromSupabase({ caseId, limit: 200 }),
+      fetchLeadsFromSupabase(),
     ]);
 
     setCaseData(caseRow);
     setItems(itemRows);
     setActivities(activityRows);
+
+    const allLeads = (leadRows || []) as any[];
+    const linkedLeadId = String(caseRow?.leadId || '');
+    const currentLead = linkedLeadId ? allLeads.find((entry) => String(entry.id || '') === linkedLeadId) || null : null;
+    const openLeads = allLeads.filter((entry) => {
+      const status = String(entry.status || 'new');
+      return !['won', 'lost'].includes(status) || String(entry.id || '') === linkedLeadId;
+    });
+
+    setSourceLead(currentLead);
+    setAvailableLeads(openLeads);
+    setSelectedLeadId(linkedLeadId);
 
     const next = computeCaseState(itemRows);
     const currentPercent = Math.round(Number(caseRow?.completenessPercent || 0));
@@ -174,9 +249,10 @@ export default function CaseDetail() {
     }
 
     const caseRef = doc(db, 'cases', caseId);
-    const unsubscribeCase = onSnapshot(caseRef, (docSnap) => {
+    const unsubscribeCase = onSnapshot(caseRef, async (docSnap) => {
       if (docSnap.exists()) {
-        setCaseData({ id: docSnap.id, ...docSnap.data() });
+        const payload = { id: docSnap.id, ...docSnap.data() };
+        setCaseData(payload);
       } else {
         toast.error('Sprawa nie istnieje');
         navigate('/');
@@ -360,6 +436,100 @@ export default function CaseDetail() {
       toast.success('Link do panelu skopiowany!');
     } catch (error: any) {
       toast.error(`Błąd: ${error.message}`);
+    }
+  };
+
+  const handleLinkLeadToCase = async () => {
+    if (!caseId || !selectedLeadId) return;
+    if (String(caseData?.leadId || '') === selectedLeadId) {
+      toast.success('Ta sprawa jest już powiązana z wybranym leadem');
+      return;
+    }
+
+    const selectedLead = availableLeads.find((entry) => String(entry.id || '') === selectedLeadId);
+    if (!selectedLead) {
+      toast.error('Nie znaleziono wybranego leada');
+      return;
+    }
+
+    try {
+      setLeadRelationPending(true);
+      await updateCaseInSupabase({ id: caseId, leadId: selectedLeadId });
+
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'lead_linked',
+        payload: {
+          leadId: selectedLeadId,
+          leadName: selectedLead.name || 'Lead',
+        },
+      });
+
+      await insertActivityToSupabase({
+        leadId: selectedLeadId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_linked',
+        payload: {
+          caseId,
+          title: caseData?.title || 'Sprawa',
+        },
+      });
+
+      await refreshSupabaseCase();
+      toast.success('Lead podpięty do sprawy');
+    } catch (error: any) {
+      toast.error(`Błąd podpinania leada: ${error.message}`);
+    } finally {
+      setLeadRelationPending(false);
+    }
+  };
+
+  const handleUnlinkLeadFromCase = async () => {
+    if (!caseId || !caseData?.leadId) return;
+    if (!window.confirm('Odpiąć źródłowego leada od tej sprawy?')) return;
+
+    const currentLeadId = String(caseData.leadId);
+    const currentLead = sourceLead || await fetchLeadByIdFromSupabase(currentLeadId).catch(() => null);
+
+    try {
+      setLeadRelationPending(true);
+      await updateCaseInSupabase({ id: caseId, leadId: null });
+
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'lead_unlinked',
+        payload: {
+          leadId: currentLeadId,
+          leadName: currentLead?.name || 'Lead',
+        },
+      });
+
+      await insertActivityToSupabase({
+        leadId: currentLeadId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_unlinked',
+        payload: {
+          caseId,
+          title: caseData?.title || 'Sprawa',
+        },
+      });
+
+      await refreshSupabaseCase();
+      toast.success('Lead odpięty od sprawy');
+    } catch (error: any) {
+      toast.error(`Błąd odpinania leada: ${error.message}`);
+    } finally {
+      setLeadRelationPending(false);
     }
   };
 
@@ -586,6 +756,113 @@ export default function CaseDetail() {
             <Card className="border-none shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
+                  <UserRound className="w-5 h-5 text-slate-400" />
+                  Źródłowy lead
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {sourceLead ? (
+                  <>
+                    <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-base font-bold text-slate-900 break-words">{sourceLead.name || 'Lead bez nazwy'}</p>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            <Badge variant="outline">{leadStatusLabel(sourceLead.status)}</Badge>
+                            <Badge variant="secondary">{leadSourceLabel(sourceLead.source)}</Badge>
+                            {sourceLead.isAtRisk ? <Badge variant="destructive">Zagrożony</Badge> : null}
+                          </div>
+                        </div>
+                        <Button variant="outline" size="sm" asChild>
+                          <Link to={`/leads/${sourceLead.id}`}>
+                            Otwórz <ExternalLink className="w-4 h-4" />
+                          </Link>
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-3 text-sm text-slate-600">
+                        <div className="rounded-xl bg-slate-50 px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Następny krok</p>
+                          <p className="mt-1 font-medium text-slate-900 break-words">{sourceLead.nextStep || 'Brak ustawionego kroku'}</p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="rounded-xl bg-slate-50 px-3 py-2">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Termin ruchu</p>
+                            <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
+                              <Calendar className="w-4 h-4 text-slate-400" />
+                              {formatDateTime(sourceLead.nextActionAt)}
+                            </p>
+                          </div>
+                          <div className="rounded-xl bg-slate-50 px-3 py-2">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Wartość</p>
+                            <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
+                              <Target className="w-4 h-4 text-slate-400" />
+                              {(Number(sourceLead.dealValue) || 0).toLocaleString()} PLN
+                            </p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="rounded-xl bg-slate-50 px-3 py-2">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">E-mail</p>
+                            <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
+                              <Mail className="w-4 h-4 text-slate-400" />
+                              {sourceLead.email || 'Brak'}
+                            </p>
+                          </div>
+                          <div className="rounded-xl bg-slate-50 px-3 py-2">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Telefon</p>
+                            <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
+                              <Phone className="w-4 h-4 text-slate-400" />
+                              {sourceLead.phone || 'Brak'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <Button variant="outline" className="w-full text-rose-600 hover:text-rose-600" onClick={() => void handleUnlinkLeadFromCase()} disabled={leadRelationPending}>
+                      <Unlink className="w-4 h-4 mr-2" />
+                      {leadRelationPending ? 'Odpinanie...' : 'Odepnij leada od sprawy'}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-4">
+                      <p className="text-sm font-semibold text-slate-900">Ta sprawa nie ma jeszcze źródłowego leada.</p>
+                      <p className="mt-1 text-sm text-slate-500">
+                        Podepnij leada, żeby zachować pełną ścieżkę sprzedaż → realizacja w jednym rekordzie.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Wybierz leada do powiązania</Label>
+                      <Select value={selectedLeadId} onValueChange={setSelectedLeadId}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Wybierz leada" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableLeads.length === 0 ? (
+                            <SelectItem value="__empty__" disabled>Brak dostępnych leadów</SelectItem>
+                          ) : (
+                            availableLeads.map((lead: any) => (
+                              <SelectItem key={lead.id} value={String(lead.id)}>
+                                {lead.name || 'Lead bez nazwy'}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button className="w-full" onClick={() => void handleLinkLeadToCase()} disabled={!selectedLeadId || leadRelationPending || availableLeads.length === 0}>
+                      <Link2 className="w-4 h-4 mr-2" />
+                      {leadRelationPending ? 'Podpinanie...' : 'Podepnij leada'}
+                    </Button>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
                   <History className="w-5 h-5 text-slate-400" />
                   Ostatnia aktywność
                 </CardTitle>
@@ -609,6 +886,8 @@ export default function CaseDetail() {
                                activity.eventType === 'file_uploaded' ? `wgrał plik do: ${activity.payload?.title}` :
                                activity.eventType === 'decision_made' ? `podjął decyzję w: ${activity.payload?.title}` :
                                activity.eventType === 'portal_token_created' ? `wygenerował link portalu` :
+                               activity.eventType === 'lead_linked' ? `podpiął leada: ${activity.payload?.leadName || 'Lead'}` :
+                               activity.eventType === 'lead_unlinked' ? `odpiął leada: ${activity.payload?.leadName || 'Lead'}` :
                                'wykonał akcję'}
                             </span>
                           </p>

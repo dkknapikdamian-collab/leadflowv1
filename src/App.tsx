@@ -25,6 +25,10 @@ export default function App() {
   const [profileLoading, setProfileLoading] = useState(true);
 
   useEffect(() => {
+    document.title = 'Close Flow';
+  }, []);
+
+  useEffect(() => {
     async function fetchProfile() {
       if (user) {
         const profileDoc = await getDoc(doc(db, 'profiles', user.uid));
@@ -55,7 +59,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
           <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
-          
+
           <Route path="/" element={user ? <Today /> : <Navigate to="/login" />} />
           <Route path="/leads" element={user ? <Leads /> : <Navigate to="/login" />} />
           <Route path="/leads/:leadId" element={user ? <LeadDetail /> : <Navigate to="/login" />} />
@@ -66,7 +70,7 @@ export default function App() {
           <Route path="/activity" element={user ? <Activity /> : <Navigate to="/login" />} />
           <Route path="/billing" element={user ? <Billing /> : <Navigate to="/login" />} />
           <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
-          
+
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <Toaster position="top-right" richColors />

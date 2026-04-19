@@ -1,8 +1,8 @@
 import { useState, FormEvent } from 'react';
-import { 
-  signInWithPopup, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
+import {
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   sendEmailVerification,
   updateProfile
@@ -13,7 +13,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { CheckCircle2, LogIn, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
+import { CheckCircle2, LogIn, Mail, Lock, User, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { addDays } from 'date-fns';
 
@@ -29,7 +29,6 @@ export default function Login() {
     const profileSnap = await getDoc(profileRef);
 
     if (!profileSnap.exists()) {
-      // Create Workspace first
       const workspaceRef = await addDoc(collection(db, 'workspaces'), {
         ownerId: user.uid,
         name: `${name || user.displayName || 'Mój'} Workspace`,
@@ -40,7 +39,6 @@ export default function Login() {
         updatedAt: serverTimestamp(),
       });
 
-      // Create Profile
       await setDoc(profileRef, {
         email: user.email,
         fullName: name || user.displayName,
@@ -119,10 +117,10 @@ export default function Login() {
           <form onSubmit={handleResetPassword} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="reset-email">E-mail</Label>
-              <Input 
-                id="reset-email" 
-                type="email" 
-                placeholder="twoj@email.pl" 
+              <Input
+                id="reset-email"
+                type="email"
+                placeholder="twoj@email.pl"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -131,9 +129,9 @@ export default function Login() {
             <Button type="submit" className="w-full h-12 rounded-xl" disabled={loading}>
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Wyślij link'}
             </Button>
-            <Button 
-              variant="ghost" 
-              className="w-full" 
+            <Button
+              variant="ghost"
+              className="w-full"
               onClick={() => setIsResetting(false)}
               disabled={loading}
             >
@@ -152,8 +150,8 @@ export default function Login() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl shadow-lg shadow-primary/20 mb-6">
             <CheckCircle2 className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Forteca</h1>
-          <p className="text-slate-500">Zintegrowany system uruchamiania klienta.</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Close Flow</h1>
+          <p className="text-slate-500">Zintegrowany system domykania i uruchamiania klienta.</p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
@@ -169,10 +167,10 @@ export default function Login() {
                   <Label htmlFor="email">E-mail</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      placeholder="twoj@email.pl" 
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="twoj@email.pl"
                       className="pl-10 h-11"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -183,7 +181,7 @@ export default function Login() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <Label htmlFor="password">Hasło</Label>
-                    <button 
+                    <button
                       type="button"
                       onClick={() => setIsResetting(true)}
                       className="text-xs text-primary hover:underline"
@@ -193,10 +191,10 @@ export default function Login() {
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      placeholder="••••••••" 
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
                       className="pl-10 h-11"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -218,7 +216,7 @@ export default function Login() {
                 </div>
               </div>
 
-              <Button 
+              <Button
                 variant="outline"
                 onClick={handleGoogleLogin}
                 className="w-full h-11 rounded-xl flex items-center justify-center gap-3 text-base font-semibold transition-all hover:bg-slate-50"
@@ -235,9 +233,9 @@ export default function Login() {
                   <Label htmlFor="reg-name">Imię i nazwisko</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
-                    <Input 
-                      id="reg-name" 
-                      placeholder="Jan Kowalski" 
+                    <Input
+                      id="reg-name"
+                      placeholder="Jan Kowalski"
                       className="pl-10 h-11"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
@@ -249,10 +247,10 @@ export default function Login() {
                   <Label htmlFor="reg-email">E-mail</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
-                    <Input 
-                      id="reg-email" 
-                      type="email" 
-                      placeholder="twoj@email.pl" 
+                    <Input
+                      id="reg-email"
+                      type="email"
+                      placeholder="twoj@email.pl"
                       className="pl-10 h-11"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -264,10 +262,10 @@ export default function Login() {
                   <Label htmlFor="reg-password">Hasło</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
-                    <Input 
-                      id="reg-password" 
-                      type="password" 
-                      placeholder="Min. 8 znaków" 
+                    <Input
+                      id="reg-password"
+                      type="password"
+                      placeholder="Min. 8 znaków"
                       className="pl-10 h-11"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}

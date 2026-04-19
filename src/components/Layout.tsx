@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
 import { auth } from '../firebase';
 import { Button } from './ui/button';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Settings, 
-  LogOut, 
-  CheckCircle2, 
+import {
+  LayoutDashboard,
+  Users,
+  Settings,
+  LogOut,
+  CheckCircle2,
   Briefcase,
   History,
   Calendar,
@@ -15,11 +15,10 @@ import {
   AlertTriangle,
   ChevronRight,
   Menu,
-  X
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { format, parseISO, differenceInDays } from 'date-fns';
+import { parseISO, differenceInDays } from 'date-fns';
 
 interface LayoutProps {
   children: ReactNode;
@@ -28,7 +27,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const user = auth.currentUser;
-  const { workspace, isTrialActive, hasAccess } = useWorkspace();
+  const { workspace, hasAccess } = useWorkspace();
 
   const navItems = [
     { icon: LayoutDashboard, label: 'Dziś', path: '/' },
@@ -45,14 +44,13 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
-      {/* Sidebar */}
       <aside className="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col sticky top-0 md:h-screen z-20">
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
           <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <div className="bg-primary p-1.5 rounded-lg">
               <CheckCircle2 className="w-5 h-5 text-white" />
             </div>
-            Forteca
+            Close Flow
           </h1>
           <Button variant="ghost" size="icon" className="md:hidden"><Menu className="w-6 h-6" /></Button>
         </div>
@@ -62,11 +60,11 @@ export default function Layout({ children }: LayoutProps) {
             const isActive = location.pathname === item.path;
             return (
               <Link key={item.path} to={item.path}>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className={`w-full justify-start gap-3 h-11 rounded-xl px-4 transition-all ${
-                    isActive 
-                      ? 'bg-primary/5 text-primary font-bold' 
+                    isActive
+                      ? 'bg-primary/5 text-primary font-bold'
                       : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
@@ -78,7 +76,6 @@ export default function Layout({ children }: LayoutProps) {
           })}
         </nav>
 
-        {/* Trial Status in Sidebar */}
         {workspace?.subscriptionStatus === 'trial_active' && (
           <div className="px-4 py-3 mx-4 mb-4 bg-indigo-50 rounded-2xl border border-indigo-100">
             <div className="flex items-center justify-between mb-1">
@@ -86,9 +83,9 @@ export default function Layout({ children }: LayoutProps) {
               <p className="text-[10px] font-bold text-indigo-600">{trialDaysLeft} dni</p>
             </div>
             <div className="w-full bg-indigo-200 h-1 rounded-full overflow-hidden">
-              <div 
-                className="bg-indigo-600 h-full transition-all" 
-                style={{ width: `${Math.max(0, Math.min(100, (trialDaysLeft / 14) * 100))}%` }} 
+              <div
+                className="bg-indigo-600 h-full transition-all"
+                style={{ width: `${Math.max(0, Math.min(100, (trialDaysLeft / 14) * 100))}%` }}
               />
             </div>
             <Link to="/billing" className="mt-2 text-[10px] font-bold text-indigo-700 flex items-center gap-1 hover:underline">
@@ -107,9 +104,9 @@ export default function Layout({ children }: LayoutProps) {
               <p className="text-[10px] text-slate-500 truncate font-medium">{user?.email}</p>
             </div>
           </div>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start gap-3 h-11 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 px-4" 
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 h-11 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 px-4"
             onClick={() => auth.signOut()}
           >
             <LogOut className="w-5 h-5" />
@@ -118,9 +115,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 relative">
-        {/* Trial Expired Banner */}
         {workspace && !hasAccess && (
           <div className="bg-rose-600 text-white px-4 py-2 flex items-center justify-center gap-3 sticky top-0 z-30 shadow-lg">
             <AlertTriangle className="w-4 h-4" />
