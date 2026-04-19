@@ -17,6 +17,7 @@ import {
   FileText,
   Loader2,
   Briefcase,
+  CalendarDays,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
@@ -25,7 +26,7 @@ import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import Papa from 'papaparse';
-import { addDays, format, isAfter, isPast, parseISO, startOfDay, subDays } from 'date-fns';
+import { format, isAfter, isPast, parseISO, startOfDay, subDays, addDays } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
@@ -34,6 +35,7 @@ import {
   insertLeadToSupabase,
   isSupabaseConfigured,
 } from '../lib/supabase-fallback';
+import { hasNextStep, isNextStepOverdue } from '../lib/lead-health';
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
@@ -66,11 +68,16 @@ type CaseRecord = {
   leadId?: string | null;
 };
 
+function nativeSelectClassName() {
+  return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+}
+
 function toDateSafe(value: unknown) {
   if (!value) return null;
   if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
   if (typeof value === 'string') {
-    const parsed = new Date(value);
+    const normalized = value.includes('T') ? value : `${value}T09:00:00`;
+    const parsed = parseISO(normalized);
     return Number.isNaN(parsed.getTime()) ? null : parsed;
   }
   if (typeof value === 'object' && value && 'toDate' in (value as Record<string, unknown>)) {
@@ -82,10 +89,6 @@ function toDateSafe(value: unknown) {
     }
   }
   return null;
-}
-
-function toDateInputValue(date: Date) {
-  return format(date, 'yyyy-MM-dd');
 }
 
 export default function Leads() {
@@ -174,6 +177,11 @@ export default function Leads() {
     }
   };
 
+  const applyLeadDatePreset = (days: number) => {
+    const next = addDays(new Date(), days);
+    setNewLead((prev) => ({ ...prev, nextActionAt: format(next, 'yyyy-MM-dd') }));
+  };
+
   const handleImportCSV = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !workspace || !hasAccess) return;
@@ -255,14 +263,11 @@ export default function Leads() {
       (caseFilter === 'with-case' && Boolean(linkedCase)) ||
       (caseFilter === 'without-case' && !linkedCase);
 
-    const nextActionDate = lead.nextActionAt ? parseISO(String(lead.nextActionAt)) : null;
-    const isMissingNextStep = !nextActionDate && !['won', 'lost'].includes(String(lead.status || 'new'));
-    const isOverdue = Boolean(nextActionDate && isPast(nextActionDate));
     const matchesProcess =
       processFilter === 'all' ||
-      (processFilter === 'missing-next-step' && isMissingNextStep) ||
-      (processFilter === 'overdue' && isOverdue) ||
-      (processFilter === 'ready' && !isMissingNextStep && !isOverdue);
+      (processFilter === 'no-next-step' && !hasNextStep(lead)) ||
+      (processFilter === 'overdue-move' && isNextStepOverdue(lead)) ||
+      (processFilter === 'organized' && hasNextStep(lead) && !isNextStepOverdue(lead));
 
     return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity && matchesCase && matchesProcess;
   });
@@ -273,14 +278,7 @@ export default function Leads() {
     value: leads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
     atRisk: leads.filter((lead) => Boolean(lead.isAtRisk)).length,
     linkedToCase: leads.filter((lead) => casesByLeadId.has(String(lead.id))).length,
-    missingNextStep: leads.filter((lead) => !lead.nextActionAt && !['won', 'lost'].includes(String(lead.status || 'new'))).length,
-  };
-
-  const applyLeadDatePreset = (days: number) => {
-    setNewLead((prev) => ({
-      ...prev,
-      nextActionAt: toDateInputValue(addDays(new Date(), days)),
-    }));
+    noNextStep: leads.filter((lead) => !hasNextStep(lead) && !['won', 'lost'].includes(String(lead.status || 'new'))).length,
   };
 
   return (
@@ -303,7 +301,7 @@ export default function Leads() {
                   <Plus className="w-4 h-4 mr-2" /> Dodaj leada
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
+              <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Nowy lead</DialogTitle>
                 </DialogHeader>
@@ -333,18 +331,15 @@ export default function Leads() {
                     </div>
                     <div className="space-y-2">
                       <Label>Źródło</Label>
-                      <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {SOURCE_OPTIONS.map((source) => (
-                            <SelectItem key={source.value} value={source.value}>
-                              {source.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <select
+                        className={nativeSelectClassName()}
+                        value={newLead.source}
+                        onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
+                      >
+                        {SOURCE_OPTIONS.map((source) => (
+                          <option key={source.value} value={source.value}>{source.label}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -359,13 +354,13 @@ export default function Leads() {
                     <div className="space-y-2">
                       <Label>Termin ruchu</Label>
                       <Input type="date" value={newLead.nextActionAt} onChange={(e) => setNewLead({ ...newLead, nextActionAt: e.target.value })} />
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        <button type="button" className="rounded-full border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:bg-slate-50" onClick={() => applyLeadDatePreset(0)}>Dziś</button>
-                        <button type="button" className="rounded-full border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:bg-slate-50" onClick={() => applyLeadDatePreset(1)}>Jutro</button>
-                        <button type="button" className="rounded-full border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:bg-slate-50" onClick={() => applyLeadDatePreset(3)}>Za 3 dni</button>
-                        <button type="button" className="rounded-full border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:bg-slate-50" onClick={() => applyLeadDatePreset(7)}>Za tydzień</button>
-                      </div>
                     </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(0)}>Dziś</Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(1)}>Jutro</Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(3)}>Za 3 dni</Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(7)}>Za tydzień</Button>
                   </div>
                   <DialogFooter>
                     <Button type="submit" className="w-full">
@@ -438,10 +433,10 @@ export default function Leads() {
             <CardContent className="p-6 flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Bez kroku</p>
-                <h3 className="text-2xl font-bold text-amber-600">{stats.missingNextStep}</h3>
+                <h3 className="text-2xl font-bold text-amber-600">{stats.noNextStep}</h3>
               </div>
               <div className="bg-amber-50 p-3 rounded-2xl">
-                <Clock className="w-6 h-6 text-amber-500" />
+                <CalendarDays className="w-6 h-6 text-amber-500" />
               </div>
             </CardContent>
           </Card>
@@ -517,14 +512,14 @@ export default function Leads() {
                 </SelectContent>
               </Select>
               <Select value={processFilter} onValueChange={setProcessFilter}>
-                <SelectTrigger className="w-[180px] rounded-xl h-11 bg-slate-50 border-none">
+                <SelectTrigger className="w-[170px] rounded-xl h-11 bg-slate-50 border-none">
                   <SelectValue placeholder="Proces" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Cały proces</SelectItem>
-                  <SelectItem value="missing-next-step">Bez następnego kroku</SelectItem>
-                  <SelectItem value="overdue">Zaległy ruch</SelectItem>
-                  <SelectItem value="ready">Poukładane</SelectItem>
+                  <SelectItem value="no-next-step">Bez następnego kroku</SelectItem>
+                  <SelectItem value="overdue-move">Zaległy ruch</SelectItem>
+                  <SelectItem value="organized">Poukładane</SelectItem>
                 </SelectContent>
               </Select>
               {(statusFilter !== 'all' || sourceFilter !== 'all' || atRiskFilter !== 'all' || activityFilter !== 'all' || caseFilter !== 'all' || processFilter !== 'all' || searchQuery) && (
@@ -573,10 +568,9 @@ export default function Leads() {
           ) : (
             filteredLeads.map((lead) => {
               const status = STATUS_OPTIONS.find((option) => option.value === lead.status) || STATUS_OPTIONS[0];
-              const nextActionDate = lead.nextActionAt ? parseISO(String(lead.nextActionAt)) : null;
+              const nextActionDate = lead.nextActionAt ? parseISO(String(lead.nextActionAt).includes('T') ? String(lead.nextActionAt) : `${String(lead.nextActionAt)}T09:00:00`) : null;
               const isOverdue = nextActionDate ? isPast(nextActionDate) : false;
               const linkedCase = casesByLeadId.get(String(lead.id));
-              const isMissingNextStep = !nextActionDate && !['won', 'lost'].includes(String(lead.status || 'new'));
 
               return (
                 <Link key={lead.id} to={`/leads/${lead.id}`}>
@@ -592,8 +586,8 @@ export default function Leads() {
                                 Zagrożony
                               </Badge>
                             )}
-                            {isMissingNextStep ? (
-                              <Badge variant="outline" className="text-[10px] uppercase border-amber-200 text-amber-700 bg-amber-50">
+                            {!hasNextStep(lead) ? (
+                              <Badge variant="outline" className="text-[10px] uppercase border-amber-200 text-amber-700">
                                 Brak kroku
                               </Badge>
                             ) : null}
