@@ -13,10 +13,11 @@ export async function POST(request: NextRequest) {
   const body = (await request.json().catch(() => ({}))) as {
     password?: string
     confirmPassword?: string
+    passwordConfirm?: string
   }
 
   const password = body.password ?? ""
-  const confirmPassword = body.confirmPassword ?? ""
+  const confirmPassword = body.confirmPassword ?? body.passwordConfirm ?? ""
   const validationError = validateNewPassword(password, confirmPassword)
 
   if (validationError) {
