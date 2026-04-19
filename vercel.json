@@ -1,8 +1,8 @@
 {
-  "rewrites": [
+  "crons": [
     {
-      "source": "/((?!api/|assets/|.*\\..*).*)",
-      "destination": "/"
+      "path": "/api/system/account-status-emails",
+      "schedule": "0 8 * * *"
     }
   ]
 }
