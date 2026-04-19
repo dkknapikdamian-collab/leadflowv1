@@ -11,12 +11,13 @@ function normalizeCase(row: Record<string, unknown>) {
     title: String(row.title || row.name || 'Sprawa bez tytułu'),
     clientName: String(row.client_name || row.clientName || ''),
     clientId: row.client_id ? String(row.client_id) : undefined,
+    clientEmail: String(row.client_email || row.clientEmail || ''),
+    clientPhone: String(row.client_phone || row.clientPhone || ''),
     status: String(row.status || 'in_progress'),
     completenessPercent: Number(row.completeness_percent || row.completenessPercent || 0),
     leadId: row.lead_id ? String(row.lead_id) : undefined,
     portalReady: Boolean(row.portal_ready || row.portalReady || false),
     updatedAt: row.updated_at || row.updatedAt || null,
-    createdAt: row.created_at || row.createdAt || null,
   };
 }
 
@@ -85,20 +86,31 @@ export default async function handler(req: any, res: any) {
         workspace_id: workspaceId,
         lead_id: body.leadId || null,
         client_id: body.clientId || null,
-        title: body.title || 'Sprawa bez tytułu',
+        title: body.title || 'Nowa sprawa',
         client_name: body.clientName || '',
+        client_email: body.clientEmail || '',
+        client_phone: body.clientPhone || '',
         status: body.status || 'in_progress',
         completeness_percent: Number(body.completenessPercent || 0),
-        portal_ready: Boolean(body.portalReady),
+        portal_ready: Boolean(body.portalReady || false),
         created_at: nowIso,
         updated_at: nowIso,
       };
 
       const result = await insertWithVariants(['cases'], [payload]);
       const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
-      if (body.leadId) {
+      const insertedId = String((inserted as Record<string, unknown>).id || '');
+
+      if (insertedId) {
+        await bestEffortPatch(`leads?linked_case_id=eq.${encodeURIComponent(insertedId)}`, {
+          linked_case_id: null,
+          updated_at: nowIso,
+        });
+      }
+
+      if (body.leadId && insertedId) {
         await bestEffortPatch(`leads?id=eq.${encodeURIComponent(String(body.leadId))}`, {
-          linked_case_id: (inserted as Record<string, unknown>).id,
+          linked_case_id: insertedId,
           updated_at: nowIso,
         });
       }
@@ -114,32 +126,36 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
+      const nowIso = new Date().toISOString();
       const payload: Record<string, unknown> = {
-        updated_at: new Date().toISOString(),
+        updated_at: nowIso,
       };
+
       if (body.title !== undefined) payload.title = body.title || 'Sprawa bez tytułu';
       if (body.clientName !== undefined) payload.client_name = body.clientName || '';
+      if (body.clientEmail !== undefined) payload.client_email = body.clientEmail || '';
+      if (body.clientPhone !== undefined) payload.client_phone = body.clientPhone || '';
       if (body.clientId !== undefined) payload.client_id = body.clientId || null;
       if (body.status !== undefined) payload.status = body.status || 'in_progress';
       if (body.completenessPercent !== undefined) payload.completeness_percent = Number(body.completenessPercent || 0);
-      if (body.portalReady !== undefined) payload.portal_ready = Boolean(body.portalReady);
       if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
+      if (body.portalReady !== undefined) payload.portal_ready = Boolean(body.portalReady);
 
       const data = await updateById('cases', String(body.id), payload);
-      if (body.leadId !== undefined) {
-        if (body.leadId) {
-          await bestEffortPatch(`leads?id=eq.${encodeURIComponent(String(body.leadId))}`, {
-            linked_case_id: body.id,
-            updated_at: new Date().toISOString(),
-          });
-        } else {
-          await bestEffortPatch(`leads?linked_case_id=eq.${encodeURIComponent(String(body.id))}`, {
-            linked_case_id: null,
-            updated_at: new Date().toISOString(),
-          });
-        }
-      }
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
+
+      await bestEffortPatch(`leads?linked_case_id=eq.${encodeURIComponent(String(body.id))}`, {
+        linked_case_id: null,
+        updated_at: nowIso,
+      });
+
+      if (body.leadId) {
+        await bestEffortPatch(`leads?id=eq.${encodeURIComponent(String(body.leadId))}`, {
+          linked_case_id: String(body.id),
+          updated_at: nowIso,
+        });
+      }
+
       res.status(200).json(normalizeCase(updated as Record<string, unknown>));
       return;
     }
@@ -151,18 +167,22 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
+      const nowIso = new Date().toISOString();
+
       await bestEffortPatch(`work_items?case_id=eq.${encodeURIComponent(id)}`, {
         case_id: null,
         case_title: null,
-        updated_at: new Date().toISOString(),
+        updated_at: nowIso,
       });
+
       await bestEffortPatch(`leads?linked_case_id=eq.${encodeURIComponent(id)}`, {
         linked_case_id: null,
-        updated_at: new Date().toISOString(),
+        updated_at: nowIso,
       });
+
+      await bestEffortDelete(`client_portal_tokens?case_id=eq.${encodeURIComponent(id)}`);
       await bestEffortDelete(`case_items?case_id=eq.${encodeURIComponent(id)}`);
       await bestEffortDelete(`activities?case_id=eq.${encodeURIComponent(id)}`);
-      await bestEffortDelete(`client_portal_tokens?case_id=eq.${encodeURIComponent(id)}`);
       await deleteById('cases', id);
 
       res.status(200).json({ ok: true, id });

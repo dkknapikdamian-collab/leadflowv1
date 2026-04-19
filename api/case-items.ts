@@ -1,9 +1,4 @@
-import { deleteById, insertWithVariants, supabaseRequest, updateById } from './_supabase.js';
-
-function isMissingTableError(error: unknown) {
-  const message = error instanceof Error ? error.message : String(error || '');
-  return message.includes('PGRST205') || message.includes("table 'public.case_items'");
-}
+import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
 function normalizeCaseItem(row: Record<string, unknown>) {
   return {
@@ -15,11 +10,12 @@ function normalizeCaseItem(row: Record<string, unknown>) {
     status: String(row.status || 'missing'),
     isRequired: Boolean(row.is_required ?? row.isRequired ?? true),
     dueDate: row.due_date ? String(row.due_date) : '',
-    order: Number(row.sort_order ?? row.order ?? 0),
-    response: row.response ? String(row.response) : '',
-    fileUrl: row.file_url ? String(row.file_url) : '',
-    fileName: row.file_name ? String(row.file_name) : '',
-    approvedAt: row.approved_at ? String(row.approved_at) : null,
+    order: Number(row.item_order || row.order || 0),
+    response: row.response ? String(row.response) : null,
+    fileUrl: row.file_url ? String(row.file_url) : null,
+    fileName: row.file_name ? String(row.file_name) : null,
+    approvedAt: row.approved_at || null,
+    createdAt: row.created_at || null,
     updatedAt: row.updated_at || null,
   };
 }
@@ -33,19 +29,12 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
-      try {
-        const data = await supabaseRequest(`case_items?case_id=eq.${encodeURIComponent(caseId)}&select=*&order=sort_order.asc.nullslast,created_at.asc.nullslast`, {
-          method: 'GET',
-          headers: { Prefer: 'return=representation' },
-        });
-        res.status(200).json((data as Record<string, unknown>[]).map(normalizeCaseItem));
-      } catch (error) {
-        if (isMissingTableError(error)) {
-          res.status(200).json([]);
-          return;
-        }
-        throw error;
-      }
+      const result = await selectFirstAvailable([
+        `case_items?select=*&case_id=eq.${encodeURIComponent(caseId)}&order=item_order.asc,created_at.asc&limit=500`,
+        `case_items?select=*&case_id=eq.${encodeURIComponent(caseId)}&order=created_at.asc&limit=500`,
+      ]);
+
+      res.status(200).json((result.data as Record<string, unknown>[]).map(normalizeCaseItem));
       return;
     }
 
@@ -55,16 +44,17 @@ export default async function handler(req: any, res: any) {
         res.status(400).json({ error: 'CASE_ID_REQUIRED' });
         return;
       }
+
       const nowIso = new Date().toISOString();
       const payload = {
-        case_id: body.caseId,
+        case_id: String(body.caseId),
         title: body.title || '',
         description: body.description || '',
         type: body.type || 'file',
         status: body.status || 'missing',
         is_required: body.isRequired !== undefined ? Boolean(body.isRequired) : true,
         due_date: body.dueDate || null,
-        sort_order: Number(body.order || 0),
+        item_order: Number(body.order || 0),
         response: body.response || null,
         file_url: body.fileUrl || null,
         file_name: body.fileName || null,
@@ -89,13 +79,14 @@ export default async function handler(req: any, res: any) {
       const payload: Record<string, unknown> = {
         updated_at: new Date().toISOString(),
       };
+
       if (body.title !== undefined) payload.title = body.title || '';
       if (body.description !== undefined) payload.description = body.description || '';
       if (body.type !== undefined) payload.type = body.type || 'file';
       if (body.status !== undefined) payload.status = body.status || 'missing';
       if (body.isRequired !== undefined) payload.is_required = Boolean(body.isRequired);
       if (body.dueDate !== undefined) payload.due_date = body.dueDate || null;
-      if (body.order !== undefined) payload.sort_order = Number(body.order || 0);
+      if (body.order !== undefined) payload.item_order = Number(body.order || 0);
       if (body.response !== undefined) payload.response = body.response || null;
       if (body.fileUrl !== undefined) payload.file_url = body.fileUrl || null;
       if (body.fileName !== undefined) payload.file_name = body.fileName || null;
@@ -113,6 +104,7 @@ export default async function handler(req: any, res: any) {
         res.status(400).json({ error: 'CASE_ITEM_ID_REQUIRED' });
         return;
       }
+
       await deleteById('case_items', id);
       res.status(200).json({ ok: true, id });
       return;
@@ -120,6 +112,6 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
-    res.status(500).json({ error: error.message || 'CASE_ITEMS_API_FAILED' });
+    res.status(500).json({ error: error.message || 'CASE_ITEM_API_FAILED' });
   }
 }
