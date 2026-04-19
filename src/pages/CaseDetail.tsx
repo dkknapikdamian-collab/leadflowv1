@@ -1,32 +1,31 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { db, auth } from '../firebase';
-import { 
-  doc, 
-  getDoc, 
-  collection, 
-  query, 
-  onSnapshot, 
-  orderBy, 
-  addDoc, 
-  updateDoc, 
+import {
+  doc,
+  collection,
+  query,
+  onSnapshot,
+  orderBy,
+  addDoc,
+  updateDoc,
   serverTimestamp,
   deleteDoc,
   setDoc,
-  where
+  where,
 } from 'firebase/firestore';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
-import { 
-  ArrowLeft, 
-  Plus, 
-  Send, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle, 
-  FileText, 
+import {
+  ArrowLeft,
+  Plus,
+  Send,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  FileText,
   MoreVertical,
   Trash2,
   Check,
@@ -35,29 +34,73 @@ import {
   Copy,
   History,
   Paperclip,
-  MessageSquare
+  MessageSquare,
+  Loader2,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
-  DialogFooter
+  DialogFooter,
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { ScrollArea } from '../components/ui/scroll-area';
 import Layout from '../components/Layout';
+import {
+  createClientPortalTokenInSupabase,
+  fetchActivitiesFromSupabase,
+  fetchCaseByIdFromSupabase,
+  fetchCaseItemsFromSupabase,
+  insertActivityToSupabase,
+  insertCaseItemToSupabase,
+  isSupabaseConfigured,
+  updateCaseInSupabase,
+  updateCaseItemInSupabase,
+  deleteCaseItemFromSupabase,
+} from '../lib/supabase-fallback';
+
+function asDate(value: any) {
+  if (!value) return null;
+  if (typeof value === 'string') {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+  if (typeof value === 'object' && typeof value.toDate === 'function') {
+    return value.toDate();
+  }
+  return null;
+}
+
+function computeCaseStatus(items: any[]) {
+  if (items.length === 0) {
+    return { percent: 0, status: 'in_progress' };
+  }
+
+  const completed = items.filter((item) => item.status === 'accepted').length;
+  const percent = (completed / items.length) * 100;
+  const hasBlocked = items.some((item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected'));
+  const hasToApprove = items.some((item) => item.status === 'uploaded');
+  const allAccepted = items.every((item) => item.status === 'accepted');
+
+  let status = 'in_progress';
+  if (allAccepted) status = 'completed';
+  else if (hasBlocked) status = 'blocked';
+  else if (hasToApprove) status = 'to_approve';
+  else status = 'waiting_on_client';
+
+  return { percent, status };
+}
 
 export default function CaseDetail() {
   const { caseId } = useParams();
@@ -69,13 +112,46 @@ export default function CaseDetail() {
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [newItem, setNewItem] = useState({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
 
+  async function refreshSupabaseCase() {
+    if (!caseId) return;
+    const [caseRow, caseItems, caseActivities] = await Promise.all([
+      fetchCaseByIdFromSupabase(caseId),
+      fetchCaseItemsFromSupabase(caseId),
+      fetchActivitiesFromSupabase({ caseId, limit: 100 }),
+    ]);
+    setCaseData(caseRow);
+    setItems(caseItems as any[]);
+    setActivities(caseActivities as any[]);
+  }
+
   useEffect(() => {
     if (!caseId) return;
 
+    if (isSupabaseConfigured()) {
+      let cancelled = false;
+      const load = async () => {
+        try {
+          setLoading(true);
+          await refreshSupabaseCase();
+        } catch (error: any) {
+          if (!cancelled) {
+            toast.error(`Błąd sprawy: ${error.message}`);
+            navigate('/cases');
+          }
+        } finally {
+          if (!cancelled) setLoading(false);
+        }
+      };
+      void load();
+      return () => {
+        cancelled = true;
+      };
+    }
+
     const caseRef = doc(db, 'cases', caseId);
-    const unsubscribeCase = onSnapshot(caseRef, (doc) => {
-      if (doc.exists()) {
-        setCaseData({ id: doc.id, ...doc.data() });
+    const unsubscribeCase = onSnapshot(caseRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        setCaseData({ id: docSnapshot.id, ...docSnapshot.data() });
       } else {
         toast.error('Sprawa nie istnieje');
         navigate('/');
@@ -85,47 +161,28 @@ export default function CaseDetail() {
     const itemsRef = collection(db, 'cases', caseId, 'items');
     const qItems = query(itemsRef, orderBy('order', 'asc'));
     const unsubscribeItems = onSnapshot(qItems, (snapshot) => {
-      const itemsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      const itemsData = snapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() } as any));
       setItems(itemsData);
       setLoading(false);
-      
-      // Update completeness percent and status
+
       if (itemsData.length > 0) {
-        const completed = itemsData.filter(i => i.status === 'accepted').length;
-        const percent = (completed / itemsData.length) * 100;
-        
-        // Determine status
-        let newStatus = 'in_progress';
-        const hasBlocked = itemsData.some(i => i.isRequired && (i.status === 'missing' || i.status === 'rejected'));
-        const hasToApprove = itemsData.some(i => i.status === 'uploaded');
-        const allAccepted = itemsData.every(i => i.status === 'accepted');
-
-        if (allAccepted) {
-          newStatus = 'completed';
-        } else if (hasBlocked) {
-          newStatus = 'blocked';
-        } else if (hasToApprove) {
-          newStatus = 'to_approve';
-        } else {
-          newStatus = 'waiting_on_client';
-        }
-
-        updateDoc(caseRef, { 
-          completenessPercent: percent, 
-          status: newStatus,
-          updatedAt: serverTimestamp() 
+        const { percent, status } = computeCaseStatus(itemsData);
+        updateDoc(caseRef, {
+          completenessPercent: percent,
+          status,
+          updatedAt: serverTimestamp(),
         });
       }
     });
 
     const activitiesRef = collection(db, 'activities');
     const qActivities = query(
-      activitiesRef, 
+      activitiesRef,
       where('caseId', '==', caseId),
       orderBy('createdAt', 'desc')
     );
     const unsubscribeActivities = onSnapshot(qActivities, (snapshot) => {
-      setActivities(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setActivities(snapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() })));
     });
 
     return () => {
@@ -135,26 +192,76 @@ export default function CaseDetail() {
     };
   }, [caseId, navigate]);
 
+  useEffect(() => {
+    if (!isSupabaseConfigured() || !caseId || !caseData) return;
+    const { percent, status } = computeCaseStatus(items);
+    const currentPercent = Number(caseData.completenessPercent || 0);
+    const currentStatus = String(caseData.status || 'in_progress');
+    if (Math.round(currentPercent) === Math.round(percent) && currentStatus === status) return;
+
+    let cancelled = false;
+    const sync = async () => {
+      try {
+        await updateCaseInSupabase({
+          id: caseId,
+          completenessPercent: percent,
+          status,
+        });
+        if (!cancelled) {
+          setCaseData((prev: any) => ({ ...prev, completenessPercent: percent, status }));
+        }
+      } catch {
+        // no toast, background sync only
+      }
+    };
+    void sync();
+    return () => {
+      cancelled = true;
+    };
+  }, [items, caseId, caseData]);
+
   const handleAddItem = async () => {
-    if (!newItem.title) return;
+    if (!newItem.title || !caseId) return;
     try {
-      await addDoc(collection(db, 'cases', caseId!, 'items'), {
-        ...newItem,
-        caseId,
-        status: 'missing',
-        order: items.length,
-        createdAt: serverTimestamp(),
-      });
-      
-      await addDoc(collection(db, 'activities'), {
-        caseId,
-        ownerId: auth.currentUser?.uid,
-        actorId: auth.currentUser?.uid,
-        actorType: 'operator',
-        eventType: 'item_added',
-        payload: { title: newItem.title },
-        createdAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await insertCaseItemToSupabase({
+          caseId,
+          title: newItem.title,
+          description: newItem.description,
+          type: newItem.type,
+          isRequired: newItem.isRequired,
+          dueDate: newItem.dueDate || null,
+          order: items.length,
+          status: 'missing',
+        });
+        await insertActivityToSupabase({
+          caseId,
+          ownerId: auth.currentUser?.uid || null,
+          actorId: auth.currentUser?.uid || null,
+          actorType: 'operator',
+          eventType: 'item_added',
+          payload: { title: newItem.title },
+        });
+        await refreshSupabaseCase();
+      } else {
+        await addDoc(collection(db, 'cases', caseId, 'items'), {
+          ...newItem,
+          caseId,
+          status: 'missing',
+          order: items.length,
+          createdAt: serverTimestamp(),
+        });
+
+        await addDoc(collection(db, 'activities'), {
+          caseId,
+          ownerId: auth.currentUser?.uid,
+          actorId: auth.currentUser?.uid,
+          actorType: 'operator',
+          eventType: 'item_added',
+          payload: { title: newItem.title },
+          createdAt: serverTimestamp(),
+        });
+      }
 
       setIsAddItemOpen(false);
       setNewItem({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
@@ -166,21 +273,38 @@ export default function CaseDetail() {
 
   const handleUpdateItemStatus = async (itemId: string, status: string, title: string) => {
     try {
-      await updateDoc(doc(db, 'cases', caseId!, 'items', itemId), { 
-        status, 
-        approvedAt: status === 'accepted' ? serverTimestamp() : null 
-      });
-      
-      await addDoc(collection(db, 'activities'), {
-        caseId,
-        ownerId: auth.currentUser?.uid,
-        actorId: auth.currentUser?.uid,
-        actorType: 'operator',
-        eventType: 'status_changed',
-        payload: { title, status },
-        createdAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await updateCaseItemInSupabase({
+          id: itemId,
+          caseId: caseId!,
+          status,
+          approvedAt: status === 'accepted' ? new Date().toISOString() : null,
+        });
+        await insertActivityToSupabase({
+          caseId: caseId!,
+          ownerId: auth.currentUser?.uid || null,
+          actorId: auth.currentUser?.uid || null,
+          actorType: 'operator',
+          eventType: 'status_changed',
+          payload: { title, status },
+        });
+        await refreshSupabaseCase();
+      } else {
+        await updateDoc(doc(db, 'cases', caseId!, 'items', itemId), {
+          status,
+          approvedAt: status === 'accepted' ? serverTimestamp() : null,
+        });
 
+        await addDoc(collection(db, 'activities'), {
+          caseId,
+          ownerId: auth.currentUser?.uid,
+          actorId: auth.currentUser?.uid,
+          actorType: 'operator',
+          eventType: 'status_changed',
+          payload: { title, status },
+          createdAt: serverTimestamp(),
+        });
+      }
       toast.success('Status zaktualizowany');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -189,7 +313,12 @@ export default function CaseDetail() {
 
   const handleDeleteItem = async (itemId: string) => {
     try {
-      await deleteDoc(doc(db, 'cases', caseId!, 'items', itemId));
+      if (isSupabaseConfigured()) {
+        await deleteCaseItemFromSupabase(itemId);
+        await refreshSupabaseCase();
+      } else {
+        await deleteDoc(doc(db, 'cases', caseId!, 'items', itemId));
+      }
       toast.success('Element usunięty');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -197,20 +326,41 @@ export default function CaseDetail() {
   };
 
   const generatePortalLink = async () => {
-    const token = Math.random().toString(36).substring(2, 15);
-    const tokenRef = doc(db, 'client_portal_tokens', caseId!);
-    await setDoc(tokenRef, {
-      caseId,
-      token,
-      createdAt: serverTimestamp(),
-    });
-    
-    const url = `${window.location.origin}/portal/${caseId}/${token}`;
-    navigator.clipboard.writeText(url);
-    toast.success('Link do panelu skopiowany!');
+    try {
+      let token = '';
+      if (isSupabaseConfigured()) {
+        const result = await createClientPortalTokenInSupabase(caseId!);
+        token = String((result as any).token || '');
+        await refreshSupabaseCase();
+      } else {
+        token = Math.random().toString(36).substring(2, 15);
+        const tokenRef = doc(db, 'client_portal_tokens', caseId!);
+        await setDoc(tokenRef, {
+          caseId,
+          token,
+          createdAt: serverTimestamp(),
+        });
+      }
+
+      const url = `${window.location.origin}/portal/${caseId}/${token}`;
+      await navigator.clipboard.writeText(url);
+      toast.success('Link do panelu skopiowany!');
+    } catch (error: any) {
+      toast.error(`Błąd: ${error.message}`);
+    }
   };
 
-  if (loading || !caseData) return null;
+  if (loading || !caseData) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
+
+  const updatedAt = asDate(caseData.updatedAt);
 
   return (
     <Layout>
@@ -244,7 +394,6 @@ export default function CaseDetail() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column: Details & Items */}
           <div className="lg:col-span-2 space-y-6">
             <Card className="border-none shadow-sm overflow-hidden">
               <CardHeader className="bg-white border-b border-slate-100 pb-6">
@@ -257,7 +406,7 @@ export default function CaseDetail() {
                      caseData.status === 'blocked' ? 'Zablokowana' : 'Zakończona'}
                   </Badge>
                   <span className="text-sm text-slate-500 font-medium">
-                    Ostatnia zmiana: {caseData.updatedAt?.toDate().toLocaleString()}
+                    Ostatnia zmiana: {updatedAt ? updatedAt.toLocaleString() : '-'}
                   </span>
                 </div>
                 <div className="space-y-2">
@@ -294,7 +443,7 @@ export default function CaseDetail() {
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label>Typ</Label>
-                            <select 
+                            <select
                               className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm"
                               value={newItem.type}
                               onChange={e => setNewItem({...newItem, type: e.target.value})}
@@ -306,10 +455,10 @@ export default function CaseDetail() {
                             </select>
                           </div>
                           <div className="flex items-center gap-2 pt-8">
-                            <input 
-                              type="checkbox" 
-                              id="required" 
-                              checked={newItem.isRequired} 
+                            <input
+                              type="checkbox"
+                              id="required"
+                              checked={newItem.isRequired}
                               onChange={e => setNewItem({...newItem, isRequired: e.target.checked})}
                               className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary"
                             />
@@ -367,9 +516,9 @@ export default function CaseDetail() {
                             {(item.fileUrl || item.response) && (
                               <div className="mt-2 p-2 bg-slate-100 rounded-lg text-xs space-y-1">
                                 {item.fileUrl && (
-                                  <a 
-                                    href={item.fileUrl} 
-                                    target="_blank" 
+                                  <a
+                                    href={item.fileUrl}
+                                    target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-1 text-primary hover:underline font-medium"
                                   >
@@ -420,7 +569,6 @@ export default function CaseDetail() {
             </Card>
           </div>
 
-          {/* Right Column: Activity & Info */}
           <div className="space-y-6">
             <Card className="border-none shadow-sm">
               <CardHeader>
@@ -435,26 +583,32 @@ export default function CaseDetail() {
                     {activities.length === 0 ? (
                       <p className="text-center text-slate-400 py-8 text-sm">Brak aktywności</p>
                     ) : (
-                      activities.map((activity) => (
-                        <div key={activity.id} className="relative pl-8">
-                          <div className={`absolute left-0 top-1 w-4 h-4 rounded-full border-2 border-white shadow-sm ${
-                            activity.actorType === 'operator' ? 'bg-primary' : 'bg-green-500'
-                          }`} />
-                          <p className="text-sm font-medium text-slate-900">
-                            {activity.actorType === 'operator' ? 'Ty' : 'Klient'}
-                            <span className="font-normal text-slate-500 ml-1">
-                              {activity.eventType === 'item_added' ? `dodał element: ${activity.payload.title}` :
-                               activity.eventType === 'status_changed' ? `zmienił status ${activity.payload.title} na ${activity.payload.status}` :
-                               activity.eventType === 'file_uploaded' ? `wgrał plik do: ${activity.payload.title}` :
-                               activity.eventType === 'decision_made' ? `podjął decyzję w: ${activity.payload.title}` :
-                               'wykonał akcję'}
-                            </span>
-                          </p>
-                          <p className="text-[10px] text-slate-400 mt-0.5">
-                            {activity.createdAt?.toDate().toLocaleString()}
-                          </p>
-                        </div>
-                      ))
+                      activities.map((activity) => {
+                        const createdAt = asDate(activity.createdAt || activity.created_at);
+                        const eventType = activity.eventType || activity.event_type;
+                        const payload = activity.payload || {};
+                        const actorType = activity.actorType || activity.actor_type;
+                        return (
+                          <div key={activity.id} className="relative pl-8">
+                            <div className={`absolute left-0 top-1 w-4 h-4 rounded-full border-2 border-white shadow-sm ${
+                              actorType === 'operator' ? 'bg-primary' : 'bg-green-500'
+                            }`} />
+                            <p className="text-sm font-medium text-slate-900">
+                              {actorType === 'operator' ? 'Ty' : 'Klient'}
+                              <span className="font-normal text-slate-500 ml-1">
+                                {eventType === 'item_added' ? `dodał element: ${payload.title}` :
+                                 eventType === 'status_changed' ? `zmienił status ${payload.title} na ${payload.status}` :
+                                 eventType === 'file_uploaded' ? `wgrał plik do: ${payload.title}` :
+                                 eventType === 'decision_made' ? `podjął decyzję w: ${payload.title}` :
+                                 'wykonał akcję'}
+                              </span>
+                            </p>
+                            <p className="text-[10px] text-slate-400 mt-0.5">
+                              {createdAt ? createdAt.toLocaleString() : ''}
+                            </p>
+                          </div>
+                        );
+                      })
                     )}
                   </div>
                 </ScrollArea>

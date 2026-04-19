@@ -23,6 +23,7 @@ type TaskInsertInput = {
   priority?: string;
   status?: string;
   leadId?: string | null;
+  caseId?: string | null;
   ownerId?: string;
   workspaceId?: string;
 };
@@ -36,6 +37,47 @@ type EventInsertInput = {
   recurrenceRule?: string;
   status?: string;
   leadId?: string | null;
+  caseId?: string | null;
+  workspaceId?: string;
+};
+
+type CaseUpsertInput = {
+  id?: string;
+  title?: string;
+  clientName?: string;
+  clientId?: string | null;
+  status?: string;
+  completenessPercent?: number;
+  leadId?: string | null;
+  portalReady?: boolean;
+  workspaceId?: string;
+};
+
+type CaseItemInput = {
+  id?: string;
+  caseId: string;
+  title?: string;
+  description?: string;
+  type?: string;
+  status?: string;
+  isRequired?: boolean;
+  dueDate?: string | null;
+  order?: number;
+  response?: string | null;
+  fileUrl?: string | null;
+  fileName?: string | null;
+  approvedAt?: string | null;
+};
+
+type ActivityInput = {
+  id?: string;
+  caseId?: string | null;
+  leadId?: string | null;
+  ownerId?: string | null;
+  actorId?: string | null;
+  actorType?: string;
+  eventType?: string;
+  payload?: Record<string, unknown>;
   workspaceId?: string;
 };
 
@@ -96,6 +138,13 @@ export async function insertTaskToSupabase(input: TaskInsertInput) {
   });
 }
 
+export async function insertEventToSupabase(input: EventInsertInput) {
+  return callApi<SupabaseInsertResult>('/api/events', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
 export async function fetchLeadsFromSupabase() {
   return callApi<Record<string, unknown>[]>('/api/leads');
 }
@@ -116,10 +165,86 @@ export async function fetchCasesFromSupabase() {
   return callApi<Record<string, unknown>[]>('/api/cases');
 }
 
-export async function insertEventToSupabase(input: EventInsertInput) {
-  return callApi<SupabaseInsertResult>('/api/events', {
+export async function fetchCaseByIdFromSupabase(id: string) {
+  return callApi<Record<string, unknown>>(`/api/cases?id=${encodeURIComponent(id)}`);
+}
+
+export async function createCaseInSupabase(input: CaseUpsertInput) {
+  return callApi<SupabaseInsertResult>('/api/cases', {
     method: 'POST',
     body: JSON.stringify(input),
+  });
+}
+
+export async function updateCaseInSupabase(input: CaseUpsertInput & { id: string }) {
+  return callApi<SupabaseInsertResult>('/api/cases', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteCaseFromSupabase(id: string) {
+  return callApi<SupabaseInsertResult>(`/api/cases?id=${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function fetchCaseItemsFromSupabase(caseId: string) {
+  return callApi<Record<string, unknown>[]>(`/api/case-items?caseId=${encodeURIComponent(caseId)}`);
+}
+
+export async function insertCaseItemToSupabase(input: CaseItemInput) {
+  return callApi<SupabaseInsertResult>('/api/case-items', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updateCaseItemInSupabase(input: CaseItemInput & { id: string }) {
+  return callApi<SupabaseInsertResult>('/api/case-items', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteCaseItemFromSupabase(id: string) {
+  return callApi<SupabaseInsertResult>(`/api/case-items?id=${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function fetchActivitiesFromSupabase(params?: {
+  caseId?: string;
+  leadId?: string;
+  limit?: number;
+}) {
+  const query = new URLSearchParams();
+  if (params?.caseId) query.set('caseId', params.caseId);
+  if (params?.leadId) query.set('leadId', params.leadId);
+  if (params?.limit) query.set('limit', String(params.limit));
+  const suffix = query.toString() ? `?${query.toString()}` : '';
+  return callApi<Record<string, unknown>[]>(`/api/activities${suffix}`);
+}
+
+export async function insertActivityToSupabase(input: ActivityInput) {
+  return callApi<SupabaseInsertResult>('/api/activities', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function fetchClientPortalTokenFromSupabase(caseId: string) {
+  return callApi<Record<string, unknown>>(`/api/client-portal-tokens?caseId=${encodeURIComponent(caseId)}`);
+}
+
+export async function validateClientPortalTokenFromSupabase(caseId: string, token: string) {
+  return callApi<Record<string, unknown>>(`/api/client-portal-tokens?caseId=${encodeURIComponent(caseId)}&token=${encodeURIComponent(token)}`);
+}
+
+export async function createClientPortalTokenInSupabase(caseId: string) {
+  return callApi<Record<string, unknown>>('/api/client-portal-tokens', {
+    method: 'POST',
+    body: JSON.stringify({ caseId }),
   });
 }
 
@@ -158,19 +283,6 @@ export async function updateEventInSupabase(input: Record<string, unknown> & { i
 
 export async function deleteEventFromSupabase(id: string) {
   return callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(id)}`, {
-    method: 'DELETE',
-  });
-}
-
-export async function updateCaseInSupabase(input: Record<string, unknown> & { id: string }) {
-  return callApi<SupabaseInsertResult>('/api/cases', {
-    method: 'PATCH',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function deleteCaseFromSupabase(id: string) {
-  return callApi<SupabaseInsertResult>(`/api/cases?id=${encodeURIComponent(id)}`, {
     method: 'DELETE',
   });
 }

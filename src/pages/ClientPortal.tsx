@@ -1,46 +1,54 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { db, storage } from '../firebase';
-import { 
-  doc, 
-  getDoc, 
-  collection, 
-  query, 
-  onSnapshot, 
-  orderBy, 
-  updateDoc, 
-  addDoc, 
-  serverTimestamp 
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  onSnapshot,
+  orderBy,
+  updateDoc,
+  addDoc,
+  serverTimestamp,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
-import { 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle, 
-  FileText, 
-  Upload, 
-  MessageSquare, 
-  Check, 
+import {
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  FileText,
+  Upload,
+  MessageSquare,
+  Check,
   X,
   Paperclip,
-  Loader2
+  Loader2,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
-  DialogFooter
+  DialogFooter,
 } from '../components/ui/dialog';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
+import {
+  fetchCaseByIdFromSupabase,
+  fetchCaseItemsFromSupabase,
+  insertActivityToSupabase,
+  isSupabaseConfigured,
+  updateCaseItemInSupabase,
+  validateClientPortalTokenFromSupabase,
+} from '../lib/supabase-fallback';
 
 export default function ClientPortal() {
   const { caseId, token } = useParams();
@@ -54,25 +62,48 @@ export default function ClientPortal() {
   const [response, setResponse] = useState('');
   const [file, setFile] = useState<File | null>(null);
 
+  async function loadSupabasePortal() {
+    if (!caseId || !token) return;
+    try {
+      await validateClientPortalTokenFromSupabase(caseId, token);
+      const [caseRow, caseItems] = await Promise.all([
+        fetchCaseByIdFromSupabase(caseId),
+        fetchCaseItemsFromSupabase(caseId),
+      ]);
+      setCaseData(caseRow);
+      setItems(caseItems as any[]);
+      setIsValid(true);
+    } catch {
+      setIsValid(false);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     if (!caseId || !token) return;
+
+    if (isSupabaseConfigured()) {
+      void loadSupabasePortal();
+      return;
+    }
 
     async function validateToken() {
       const tokenRef = doc(db, 'client_portal_tokens', caseId!);
       const tokenSnap = await getDoc(tokenRef);
-      
+
       if (tokenSnap.exists() && tokenSnap.data().token === token) {
         setIsValid(true);
-        
+
         const caseRef = doc(db, 'cases', caseId!);
-        onSnapshot(caseRef, (doc) => {
-          if (doc.exists()) setCaseData({ id: doc.id, ...doc.data() });
+        onSnapshot(caseRef, (docSnapshot) => {
+          if (docSnapshot.exists()) setCaseData({ id: docSnapshot.id, ...docSnapshot.data() });
         });
 
         const itemsRef = collection(db, 'cases', caseId!, 'items');
         const qItems = query(itemsRef, orderBy('order', 'asc'));
         onSnapshot(qItems, (snapshot) => {
-          setItems(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+          setItems(snapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() })));
           setLoading(false);
         });
       } else {
@@ -81,7 +112,7 @@ export default function ClientPortal() {
       }
     }
 
-    validateToken();
+    void validateToken();
   }, [caseId, token]);
 
   const handleSubmitResponse = async () => {
@@ -99,22 +130,41 @@ export default function ClientPortal() {
         fileName = file.name;
       }
 
-      await updateDoc(doc(db, 'cases', caseId!, 'items', selectedItem.id), {
-        status: 'uploaded',
-        response: response || selectedItem.response || null,
-        fileUrl,
-        fileName,
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await updateCaseItemInSupabase({
+          id: selectedItem.id,
+          caseId: caseId!,
+          status: 'uploaded',
+          response: response || selectedItem.response || null,
+          fileUrl,
+          fileName,
+        });
+        await insertActivityToSupabase({
+          caseId: caseId!,
+          ownerId: caseData?.ownerId || null,
+          actorType: 'client',
+          eventType: file ? 'file_uploaded' : 'response_sent',
+          payload: { title: selectedItem.title },
+        });
+        await loadSupabasePortal();
+      } else {
+        await updateDoc(doc(db, 'cases', caseId!, 'items', selectedItem.id), {
+          status: 'uploaded',
+          response: response || selectedItem.response || null,
+          fileUrl,
+          fileName,
+          updatedAt: serverTimestamp(),
+        });
 
-      await addDoc(collection(db, 'activities'), {
-        caseId,
-        ownerId: caseData.ownerId,
-        actorType: 'client',
-        eventType: file ? 'file_uploaded' : 'response_sent',
-        payload: { title: selectedItem.title },
-        createdAt: serverTimestamp(),
-      });
+        await addDoc(collection(db, 'activities'), {
+          caseId,
+          ownerId: caseData.ownerId,
+          actorType: 'client',
+          eventType: file ? 'file_uploaded' : 'response_sent',
+          payload: { title: selectedItem.title },
+          createdAt: serverTimestamp(),
+        });
+      }
 
       toast.success('Przesłano pomyślnie!');
       setIsUploadOpen(false);
@@ -130,19 +180,36 @@ export default function ClientPortal() {
 
   const handleDecision = async (itemId: string, decision: 'accepted' | 'rejected', title: string) => {
     try {
-      await updateDoc(doc(db, 'cases', caseId!, 'items', itemId), {
-        status: decision === 'accepted' ? 'accepted' : 'rejected',
-        updatedAt: serverTimestamp(),
-      });
+      if (isSupabaseConfigured()) {
+        await updateCaseItemInSupabase({
+          id: itemId,
+          caseId: caseId!,
+          status: decision,
+          approvedAt: decision === 'accepted' ? new Date().toISOString() : null,
+        });
+        await insertActivityToSupabase({
+          caseId: caseId!,
+          ownerId: caseData?.ownerId || null,
+          actorType: 'client',
+          eventType: 'decision_made',
+          payload: { title, decision },
+        });
+        await loadSupabasePortal();
+      } else {
+        await updateDoc(doc(db, 'cases', caseId!, 'items', itemId), {
+          status: decision === 'accepted' ? 'accepted' : 'rejected',
+          updatedAt: serverTimestamp(),
+        });
 
-      await addDoc(collection(db, 'activities'), {
-        caseId,
-        ownerId: caseData.ownerId,
-        actorType: 'client',
-        eventType: 'decision_made',
-        payload: { title, decision },
-        createdAt: serverTimestamp(),
-      });
+        await addDoc(collection(db, 'activities'), {
+          caseId,
+          ownerId: caseData.ownerId,
+          actorType: 'client',
+          eventType: 'decision_made',
+          payload: { title, decision },
+          createdAt: serverTimestamp(),
+        });
+      }
 
       toast.success(decision === 'accepted' ? 'Zaakceptowano!' : 'Odrzucono.');
     } catch (error: any) {
@@ -166,7 +233,7 @@ export default function ClientPortal() {
     </div>
   );
 
-  const completedCount = items.filter(i => i.status === 'accepted').length;
+  const completedCount = items.filter((item) => item.status === 'accepted').length;
   const totalCount = items.length;
   const percent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
@@ -179,7 +246,7 @@ export default function ClientPortal() {
           </div>
           <h1 className="text-3xl font-bold mb-2">{caseData.title}</h1>
           <p className="text-white/70 mb-8">Witaj! Poniżej znajdziesz listę rzeczy, których potrzebujemy od Ciebie, aby ruszyć dalej z projektem.</p>
-          
+
           <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm max-w-md mx-auto">
             <div className="flex justify-between text-sm font-bold mb-2">
               <span>Twój postęp</span>
@@ -215,7 +282,7 @@ export default function ClientPortal() {
                       {item.isRequired && <Badge variant="outline" className="text-[10px] h-4 px-1.5 border-red-200 text-red-500">Wymagane</Badge>}
                     </div>
                     <p className="text-sm text-slate-500 mb-4">{item.description}</p>
-                    
+
                     {(item.fileUrl || item.response) && (
                       <div className="mb-4 p-3 bg-slate-100 rounded-xl text-sm space-y-2">
                         {item.fileUrl && (
