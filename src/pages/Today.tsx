@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent, useMemo } from 'react';
+import { useState, useEffect, FormEvent, ReactNode } from 'react';
 import { auth, db } from '../firebase';
 import {
   collection,
@@ -27,8 +27,8 @@ import {
   Bell,
   Repeat,
   Clock,
-  Target,
-  CalendarDays,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import {
   format,
@@ -36,7 +36,6 @@ import {
   addDays,
   parseISO,
   isToday,
-  startOfDay,
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
@@ -51,6 +50,13 @@ import {
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 import {
   buildStartEndPair,
   combineScheduleEntries,
@@ -79,70 +85,66 @@ import {
   isSupabaseConfigured,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
-import {
-  buildLeadAlertReason,
-  getLeadPriorityScore,
-  hasNextStep,
-  isHighValueAtRisk,
-  isNextStepOverdue,
-  isWaitingTooLong,
-} from '../lib/lead-health';
 
-function nativeSelectClassName() {
-  return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
-}
+const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
 
-function LeadSignalCard({
-  lead,
-  reason,
-  score,
-}: {
-  lead: any;
-  reason: string;
-  score?: number | null;
-}) {
-  const nextAction = typeof lead?.nextActionAt === 'string' && lead.nextActionAt
-    ? (() => {
-        try {
-          return parseISO(
-            lead.nextActionAt.includes('T') ? lead.nextActionAt : `${lead.nextActionAt}T09:00:00`
-          );
-        } catch {
-          return null;
-        }
-      })()
-    : null
+type TileCardProps = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  collapsedMap: Record<string, boolean>;
+  onToggle: (id: string) => void;
+  children?: ReactNode;
+  className?: string;
+  titleClassName?: string;
+  subtitleClassName?: string;
+  headerRight?: ReactNode;
+  bodyClassName?: string;
+};
+
+function TileCard({
+  id,
+  title,
+  subtitle,
+  collapsedMap,
+  onToggle,
+  children,
+  className = '',
+  titleClassName = 'text-slate-900',
+  subtitleClassName = 'text-slate-500',
+  headerRight,
+  bodyClassName = '',
+}: TileCardProps) {
+  const collapsed = Boolean(collapsedMap[id]);
 
   return (
-    <Card className="shadow-sm hover:shadow-md transition-shadow">
-      <CardContent className="p-4 flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2 mb-1">
-            <p className="font-bold text-slate-900 break-words">{lead.name || 'Lead bez nazwy'}</p>
-            {lead.isAtRisk ? (
-              <Badge variant="destructive" className="text-[10px] uppercase">Zagrożony</Badge>
-            ) : null}
-            {score ? (
-              <Badge variant="outline" className="text-[10px] uppercase border-slate-200">
-                Priorytet {score}
-              </Badge>
+    <Card className={`shadow-sm border-slate-100 ${className}`}>
+      <CardContent className="p-0">
+        <button
+          type="button"
+          onClick={() => onToggle(id)}
+          className="w-full p-4 flex items-center justify-between gap-4 text-left"
+        >
+          <div className="min-w-0">
+            <p className={`font-semibold break-words ${titleClassName}`}>{title}</p>
+            {subtitle ? (
+              <p className={`mt-1 text-xs break-words ${subtitleClassName}`}>{subtitle}</p>
             ) : null}
           </div>
-          <p className="text-sm text-slate-600 break-words">{reason}</p>
-          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
-            <span>Następny krok: {lead.nextStep || 'Brak'}</span>
-            <span>Wartość: {(Number(lead.dealValue) || 0).toLocaleString()} PLN</span>
-            <span>
-              Termin:{' '}
-              {nextAction ? format(nextAction, 'd MMM HH:mm', { locale: pl }) : 'Brak'}
-            </span>
+          <div className="flex items-center gap-3 shrink-0">
+            {headerRight}
+            {collapsed ? (
+              <ChevronDown className="w-4 h-4 text-slate-400" />
+            ) : (
+              <ChevronUp className="w-4 h-4 text-slate-400" />
+            )}
           </div>
-        </div>
-        <Button variant="outline" size="sm" asChild className="shrink-0">
-          <Link to={`/leads/${lead.id}`}>
-            Otwórz <ArrowRight className="w-3 h-3 ml-2" />
-          </Link>
-        </Button>
+        </button>
+        {!collapsed ? (
+          <div className={`border-t border-slate-100 p-4 pt-3 ${bodyClassName}`}>
+            {children}
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );
@@ -158,6 +160,7 @@ export default function Today() {
   const [isLeadOpen, setIsLeadOpen] = useState(false);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [isEventOpen, setIsEventOpen] = useState(false);
+  const [collapsedTiles, setCollapsedTiles] = useState<Record<string, boolean>>({});
 
   const [newLead, setNewLead] = useState({
     name: '',
@@ -192,6 +195,33 @@ export default function Today() {
       reminder: createDefaultReminder(),
     };
   });
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(TODAY_TILE_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Record<string, boolean>;
+        setCollapsedTiles(parsed);
+      }
+    } catch {
+      // Ignore invalid local storage state.
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(TODAY_TILE_STORAGE_KEY, JSON.stringify(collapsedTiles));
+    } catch {
+      // Ignore storage write failures.
+    }
+  }, [collapsedTiles]);
+
+  const toggleTile = (id: string) => {
+    setCollapsedTiles((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   async function refreshSupabaseBundle() {
     const bundle = await fetchCalendarBundleFromSupabase();
@@ -440,44 +470,6 @@ export default function Today() {
     setNewEvent({ ...newEvent, startAt: value, endAt: toDateTimeLocalValue(nextEnd) });
   };
 
-  const applyLeadDatePreset = (days: number) => {
-    const next = addDays(new Date(), days);
-    setNewLead((prev) => ({ ...prev, nextActionAt: format(next, 'yyyy-MM-dd') }));
-  };
-
-  const openLeads = useMemo(
-    () => leads.filter((lead) => !['won', 'lost'].includes(String(lead.status || 'new'))),
-    [leads]
-  );
-
-  const priorityLeads = useMemo(() => {
-    return [...openLeads]
-      .map((lead) => ({
-        lead,
-        score: getLeadPriorityScore(lead),
-        reason: buildLeadAlertReason(lead),
-      }))
-      .filter((entry) => entry.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5);
-  }, [openLeads]);
-
-  const overdueLeadRows = useMemo(() => {
-    return openLeads.filter((lead) => isNextStepOverdue(lead));
-  }, [openLeads]);
-
-  const noStepLeadRows = useMemo(() => {
-    return openLeads.filter((lead) => !hasNextStep(lead));
-  }, [openLeads]);
-
-  const waitingTooLongRows = useMemo(() => {
-    return openLeads.filter((lead) => isWaitingTooLong(lead));
-  }, [openLeads]);
-
-  const highValueAtRiskRows = useMemo(() => {
-    return openLeads.filter((lead) => isHighValueAtRisk(lead));
-  }, [openLeads]);
-
   if (wsLoading || loading) {
     return (
       <Layout>
@@ -496,13 +488,6 @@ export default function Today() {
     rangeStart: today,
     rangeEnd: new Date(today.getTime() + 24 * 60 * 60_000 - 1),
   });
-  const thisWeekEntries = combineScheduleEntries({
-    events,
-    tasks,
-    leads,
-    rangeStart: startOfDay(addDays(today, 1)),
-    rangeEnd: new Date(addDays(today, 7).getTime() + 24 * 60 * 60_000 - 1),
-  });
   const todayTasks = todayEntries.filter((entry) => entry.kind === 'task');
   const todayEvents = todayEntries.filter((entry) => entry.kind === 'event');
   const todayLeadActions = todayEntries.filter((entry) => entry.kind === 'lead');
@@ -510,6 +495,8 @@ export default function Today() {
     const startAt = getTaskStartAt(task);
     return task.status !== 'done' && startAt && isPast(parseISO(startAt)) && !isToday(parseISO(startAt));
   });
+  const noStepLeads = leads.filter((lead) => !lead.nextActionAt && lead.status !== 'won' && lead.status !== 'lost');
+  const topValuableLeads = [...leads].sort((a, b) => (b.dealValue || 0) - (a.dealValue || 0)).slice(0, 3);
 
   return (
     <Layout>
@@ -517,15 +504,19 @@ export default function Today() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Witaj, {profile?.fullName?.split(' ')[0]}!</h1>
-            <p className="text-slate-500">Dziś zbieramy w jednym miejscu leady, zadania, wydarzenia i sygnały ryzyka.</p>
+            <p className="text-slate-500">Dziś zbieramy w jednym miejscu leady, zadania i wydarzenia.</p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <Dialog open={isLeadOpen} onOpenChange={setIsLeadOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-sm"><Plus className="w-4 h-4 mr-2" /> Lead</Button>
+                <Button className="rounded-xl shadow-sm">
+                  <Plus className="w-4 h-4 mr-2" /> Lead
+                </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader><DialogTitle>Szybkie dodanie leada</DialogTitle></DialogHeader>
+                <DialogHeader>
+                  <DialogTitle>Szybkie dodanie leada</DialogTitle>
+                </DialogHeader>
                 <form onSubmit={handleAddLead} className="space-y-4 py-4">
                   <div className="space-y-2">
                     <Label>Imię i nazwisko / Firma</Label>
@@ -538,15 +529,14 @@ export default function Today() {
                     </div>
                     <div className="space-y-2">
                       <Label>Źródło</Label>
-                      <select
-                        className={nativeSelectClassName()}
-                        value={newLead.source}
-                        onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
-                      >
-                        {SOURCE_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>{option.label}</option>
-                        ))}
-                      </select>
+                      <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {SOURCE_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -559,12 +549,6 @@ export default function Today() {
                       <Input type="date" value={newLead.nextActionAt} onChange={(e) => setNewLead({ ...newLead, nextActionAt: e.target.value })} />
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(0)}>Dziś</Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(1)}>Jutro</Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(3)}>Za 3 dni</Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(7)}>Za tydzień</Button>
-                  </div>
                   <DialogFooter>
                     <Button type="submit" className="w-full">Dodaj leada</Button>
                   </DialogFooter>
@@ -574,10 +558,14 @@ export default function Today() {
 
             <Dialog open={isTaskOpen} onOpenChange={setIsTaskOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl shadow-sm"><Plus className="w-4 h-4 mr-2" /> Zadanie</Button>
+                <Button variant="outline" className="rounded-xl shadow-sm">
+                  <Plus className="w-4 h-4 mr-2" /> Zadanie
+                </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader><DialogTitle>Nowe zadanie</DialogTitle></DialogHeader>
+                <DialogHeader>
+                  <DialogTitle>Nowe zadanie</DialogTitle>
+                </DialogHeader>
                 <form onSubmit={handleAddTask} className="space-y-6 py-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -587,40 +575,37 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <Label>Typ</Label>
-                        <select
-                          className={nativeSelectClassName()}
-                          value={newTask.type}
-                          onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}
-                        >
-                          {TASK_TYPES.map((taskType) => (
-                            <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
-                          ))}
-                        </select>
+                        <Select value={newTask.type} onValueChange={(value) => setNewTask({ ...newTask, type: value })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {TASK_TYPES.map((taskType) => (
+                              <SelectItem key={taskType.value} value={taskType.value}>{taskType.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <Label>Lead</Label>
-                        <select
-                          className={nativeSelectClassName()}
-                          value={newTask.leadId}
-                          onChange={(e) => setNewTask({ ...newTask, leadId: e.target.value })}
-                        >
-                          <option value="none">Bez leada</option>
-                          {leads.map((lead) => (
-                            <option key={lead.id} value={lead.id}>{lead.name}</option>
-                          ))}
-                        </select>
+                        <Select value={newTask.leadId} onValueChange={(value) => setNewTask({ ...newTask, leadId: value })}>
+                          <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Bez leada</SelectItem>
+                            {leads.map((lead) => (
+                              <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <Label>Priorytet</Label>
-                        <select
-                          className={nativeSelectClassName()}
-                          value={newTask.priority}
-                          onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
-                        >
-                          {PRIORITY_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                          ))}
-                        </select>
+                        <Select value={newTask.priority} onValueChange={(value) => setNewTask({ ...newTask, priority: value })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {PRIORITY_OPTIONS.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   </div>
@@ -644,15 +629,12 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Powtarzanie</Label>
-                        <select
-                          className={nativeSelectClassName()}
-                          value={newTask.recurrence.mode}
-                          onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, mode: e.target.value as any } })}
-                        >
-                          {RECURRENCE_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                          ))}
-                        </select>
+                        <Select value={newTask.recurrence.mode} onValueChange={(value) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, mode: value as any } })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {RECURRENCE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <Label>Co ile</Label>
@@ -673,15 +655,12 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Tryb</Label>
-                        <select
-                          className={nativeSelectClassName()}
-                          value={newTask.reminder.mode}
-                          onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, mode: e.target.value as any } })}
-                        >
-                          {REMINDER_MODE_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                          ))}
-                        </select>
+                        <Select value={newTask.reminder.mode} onValueChange={(value) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, mode: value as any } })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {REMINDER_MODE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <Label>Ile minut wcześniej</Label>
@@ -692,15 +671,12 @@ export default function Today() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
                           <Label>Cykliczność przypomnienia</Label>
-                          <select
-                            className={nativeSelectClassName()}
-                            value={newTask.reminder.recurrenceMode}
-                            onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceMode: e.target.value as any } })}
-                          >
-                            {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
-                              <option key={option.value} value={option.value}>{option.label}</option>
-                            ))}
-                          </select>
+                          <Select value={newTask.reminder.recurrenceMode} onValueChange={(value) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceMode: value as any } })}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div className="space-y-2">
                           <Label>Co ile</Label>
@@ -718,10 +694,14 @@ export default function Today() {
 
             <Dialog open={isEventOpen} onOpenChange={setIsEventOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl shadow-sm"><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
+                <Button variant="outline" className="rounded-xl shadow-sm">
+                  <Plus className="w-4 h-4 mr-2" /> Wydarzenie
+                </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
+                <DialogHeader>
+                  <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
+                </DialogHeader>
                 <form onSubmit={handleAddEvent} className="space-y-6 py-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -731,28 +711,22 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Typ</Label>
-                        <select
-                          className={nativeSelectClassName()}
-                          value={newEvent.type}
-                          onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
-                        >
-                          {EVENT_TYPES.map((eventType) => (
-                            <option key={eventType.value} value={eventType.value}>{eventType.label}</option>
-                          ))}
-                        </select>
+                        <Select value={newEvent.type} onValueChange={(value) => setNewEvent({ ...newEvent, type: value })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {EVENT_TYPES.map((eventType) => <SelectItem key={eventType.value} value={eventType.value}>{eventType.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <Label>Lead</Label>
-                        <select
-                          className={nativeSelectClassName()}
-                          value={newEvent.leadId}
-                          onChange={(e) => setNewEvent({ ...newEvent, leadId: e.target.value })}
-                        >
-                          <option value="none">Bez leada</option>
-                          {leads.map((lead) => (
-                            <option key={lead.id} value={lead.id}>{lead.name}</option>
-                          ))}
-                        </select>
+                        <Select value={newEvent.leadId} onValueChange={(value) => setNewEvent({ ...newEvent, leadId: value })}>
+                          <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Bez leada</SelectItem>
+                            {leads.map((lead) => <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   </div>
@@ -782,15 +756,12 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Powtarzanie</Label>
-                        <select
-                          className={nativeSelectClassName()}
-                          value={newEvent.recurrence.mode}
-                          onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}
-                        >
-                          {RECURRENCE_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                          ))}
-                        </select>
+                        <Select value={newEvent.recurrence.mode} onValueChange={(value) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: value as any } })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {RECURRENCE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <Label>Co ile</Label>
@@ -811,15 +782,12 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Tryb</Label>
-                        <select
-                          className={nativeSelectClassName()}
-                          value={newEvent.reminder.mode}
-                          onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}
-                        >
-                          {REMINDER_MODE_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                          ))}
-                        </select>
+                        <Select value={newEvent.reminder.mode} onValueChange={(value) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: value as any } })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {REMINDER_MODE_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <Label>Ile minut wcześniej</Label>
@@ -830,15 +798,12 @@ export default function Today() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
                           <Label>Cykliczność przypomnienia</Label>
-                          <select
-                            className={nativeSelectClassName()}
-                            value={newEvent.reminder.recurrenceMode}
-                            onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}
-                          >
-                            {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
-                              <option key={option.value} value={option.value}>{option.label}</option>
-                            ))}
-                          </select>
+                          <Select value={newEvent.reminder.recurrenceMode} onValueChange={(value) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: value as any } })}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div className="space-y-2">
                           <Label>Co ile</Label>
@@ -856,142 +821,54 @@ export default function Today() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Priorytet dziś</p>
-                <h3 className="text-2xl font-bold text-slate-900">{priorityLeads.length}</h3>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-2xl">
-                <Target className="w-6 h-6 text-slate-400" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Bez kroku</p>
-                <h3 className="text-2xl font-bold text-amber-600">{noStepLeadRows.length}</h3>
-              </div>
-              <div className="bg-amber-50 p-3 rounded-2xl">
-                <AlertTriangle className="w-6 h-6 text-amber-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Waiting too long</p>
-                <h3 className="text-2xl font-bold text-rose-600">{waitingTooLongRows.length}</h3>
-              </div>
-              <div className="bg-rose-50 p-3 rounded-2xl">
-                <Clock className="w-6 h-6 text-rose-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wartość zagrożona</p>
-                <h3 className="text-2xl font-bold text-blue-600">{highValueAtRiskRows.length}</h3>
-              </div>
-              <div className="bg-blue-50 p-3 rounded-2xl">
-                <TrendingUp className="w-6 h-6 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            {priorityLeads.length > 0 && (
-              <section className="space-y-4">
-                <div className="flex items-center gap-2 text-slate-900">
-                  <Target className="w-5 h-5 text-slate-500" />
-                  <h2 className="text-lg font-bold">Najważniejsze ruchy dziś</h2>
-                  <Badge variant="secondary" className="rounded-full">{priorityLeads.length}</Badge>
-                </div>
-                <div className="grid gap-3">
-                  {priorityLeads.map(({ lead, reason, score }) => (
-                    <LeadSignalCard key={`priority:${lead.id}`} lead={lead} reason={reason} score={score} />
-                  ))}
-                </div>
-              </section>
-            )}
-
             {overdueTasks.length > 0 && (
               <section className="space-y-4">
                 <div className="flex items-center gap-2 text-rose-600">
                   <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Zaległe zadania</h2>
+                  <h2 className="text-lg font-bold">Zaległe</h2>
                   <Badge variant="destructive" className="rounded-full">{overdueTasks.length}</Badge>
                 </div>
                 <div className="grid gap-3">
                   {overdueTasks.map((task) => {
                     const startAt = getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`;
                     return (
-                      <Card key={task.id} className="border-rose-100 bg-rose-50/30">
-                        <CardContent className="p-4 flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <button onClick={() => toggleTask(task.id, task.status)} className="w-5 h-5 rounded border border-rose-300 flex items-center justify-center">
-                              {task.status === 'done' && <CheckSquare className="w-4 h-4 text-rose-600" />}
-                            </button>
-                            <div>
-                              <p className="font-medium text-slate-900">{task.title}</p>
-                              <p className="text-xs text-rose-500 font-medium">{format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}</p>
-                            </div>
+                      <TileCard
+                        key={task.id}
+                        id={`overdue-task:${task.id}`}
+                        title={task.title}
+                        subtitle={format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}
+                        collapsedMap={collapsedTiles}
+                        onToggle={toggleTile}
+                        className="border-rose-100 bg-rose-50/30"
+                        subtitleClassName="text-rose-500 font-medium"
+                        headerRight={
+                          <Badge variant="destructive" className="rounded-full">
+                            Zaległe
+                          </Badge>
+                        }
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="text-sm text-slate-600">
+                            Zadanie wymaga reakcji. Możesz je od razu oznaczyć jako wykonane albo przejść do pełnej listy zadań.
                           </div>
-                          <Button variant="ghost" size="sm" asChild><Link to="/tasks"><ChevronRight className="w-4 h-4" /></Link></Button>
-                        </CardContent>
-                      </Card>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => toggleTask(task.id, task.status)}
+                            >
+                              {task.status === 'done' ? 'Przywróć' : 'Oznacz jako zrobione'}
+                            </Button>
+                            <Button variant="ghost" size="sm" asChild>
+                              <Link to="/tasks">Otwórz listę</Link>
+                            </Button>
+                          </div>
+                        </div>
+                      </TileCard>
                     );
                   })}
-                </div>
-              </section>
-            )}
-
-            {overdueLeadRows.length > 0 && (
-              <section className="space-y-4">
-                <div className="flex items-center gap-2 text-rose-600">
-                  <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Przeterminowane leady</h2>
-                  <Badge variant="destructive" className="rounded-full">{overdueLeadRows.length}</Badge>
-                </div>
-                <div className="grid gap-3">
-                  {overdueLeadRows.slice(0, 6).map((lead) => (
-                    <LeadSignalCard key={`overdue:${lead.id}`} lead={lead} reason={buildLeadAlertReason(lead)} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {noStepLeadRows.length > 0 && (
-              <section className="space-y-4">
-                <div className="flex items-center gap-2 text-amber-600">
-                  <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Bez następnego kroku</h2>
-                  <Badge variant="outline" className="rounded-full border-amber-200 text-amber-700 bg-amber-50">{noStepLeadRows.length}</Badge>
-                </div>
-                <div className="grid gap-3">
-                  {noStepLeadRows.slice(0, 6).map((lead) => (
-                    <LeadSignalCard key={`no-step:${lead.id}`} lead={lead} reason={buildLeadAlertReason(lead)} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {waitingTooLongRows.length > 0 && (
-              <section className="space-y-4">
-                <div className="flex items-center gap-2 text-rose-700">
-                  <Clock className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Czekają za długo</h2>
-                  <Badge variant="outline" className="rounded-full border-rose-200 text-rose-700 bg-rose-50">{waitingTooLongRows.length}</Badge>
-                </div>
-                <div className="grid gap-3">
-                  {waitingTooLongRows.slice(0, 6).map((lead) => (
-                    <LeadSignalCard key={`waiting:${lead.id}`} lead={lead} reason={buildLeadAlertReason(lead)} />
-                  ))}
                 </div>
               </section>
             )}
@@ -1011,20 +888,36 @@ export default function Today() {
                   {todayLeadActions.length > 0 ? (
                     <div className="grid gap-3">
                       {todayLeadActions.map((entry) => (
-                        <Card key={entry.id} className="shadow-sm border-amber-100">
-                          <CardContent className="p-4 flex items-center justify-between gap-4">
-                            <div>
-                              <p className="text-xs font-bold text-amber-600">{format(parseISO(entry.startsAt), 'HH:mm')}</p>
-                              <p className="font-semibold text-slate-900">{entry.leadName}</p>
-                              <p className="text-xs text-slate-500">{entry.title}</p>
+                        <TileCard
+                          key={entry.id}
+                          id={`lead-action:${entry.id}`}
+                          title={entry.leadName}
+                          subtitle={`${format(parseISO(entry.startsAt), 'HH:mm')} • ${entry.title}`}
+                          collapsedMap={collapsedTiles}
+                          onToggle={toggleTile}
+                          className="border-amber-100"
+                          subtitleClassName="text-slate-500"
+                          headerRight={
+                            <span className="text-xs font-bold text-amber-600">
+                              {format(parseISO(entry.startsAt), 'HH:mm')}
+                            </span>
+                          }
+                        >
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="text-sm text-slate-600">
+                              Zaplanowany ruch sprzedażowy na dziś. Otwórz lead, żeby wykonać krok lub ustawić kolejny ruch.
                             </div>
-                            <Button variant="outline" size="sm" asChild><Link to={entry.link ?? '/leads'}>Otwórz</Link></Button>
-                          </CardContent>
-                        </Card>
+                            <Button variant="outline" size="sm" asChild>
+                              <Link to={entry.link ?? '/leads'}>Otwórz</Link>
+                            </Button>
+                          </div>
+                        </TileCard>
                       ))}
                     </div>
                   ) : (
-                    <Card className="border-dashed bg-slate-50/50"><CardContent className="p-6 text-sm text-slate-500">Brak leadów z ruchem na dziś.</CardContent></Card>
+                    <Card className="border-dashed bg-slate-50/50">
+                      <CardContent className="p-6 text-sm text-slate-500">Brak leadów z ruchem na dziś.</CardContent>
+                    </Card>
                   )}
                 </div>
 
@@ -1033,26 +926,44 @@ export default function Today() {
                   {todayEvents.length > 0 ? (
                     <div className="grid gap-3">
                       {todayEvents.map((entry) => (
-                        <Card key={entry.id} className="border-indigo-100 shadow-sm">
-                          <CardContent className="p-4 flex items-center gap-4">
-                            <div className="w-12 text-center border-r border-slate-100 pr-4">
-                              <p className="text-xs font-bold text-indigo-600">{format(parseISO(entry.startsAt), 'HH:mm')}</p>
+                        <TileCard
+                          key={entry.id}
+                          id={`event:${entry.id}`}
+                          title={entry.title}
+                          subtitle={`${EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label ?? 'Wydarzenie'}${entry.leadName ? ` • Lead: ${entry.leadName}` : ''}`}
+                          collapsedMap={collapsedTiles}
+                          onToggle={toggleTile}
+                          className="border-indigo-100"
+                          headerRight={
+                            <span className="text-xs font-bold text-indigo-600">
+                              {format(parseISO(entry.startsAt), 'HH:mm')}
+                            </span>
+                          }
+                        >
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                              {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
+                                <Badge variant="outline" className="text-[10px] uppercase">
+                                  <Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}
+                                </Badge>
+                              ) : null}
+                              {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' ? (
+                                <Badge variant="outline" className="text-[10px] uppercase">
+                                  <Bell className="w-3 h-3 mr-1" /> Przypomnienie
+                                </Badge>
+                              ) : null}
                             </div>
-                            <div className="flex-1">
-                              <div className="flex flex-wrap items-center gap-2 mb-1">
-                                <p className="font-semibold text-slate-900">{entry.title}</p>
-                                {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>}
-                                {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>}
-                              </div>
-                              <p className="text-xs text-slate-500">{EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label ?? 'Wydarzenie'}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
-                            </div>
-                            <Button variant="ghost" size="sm" asChild><Link to="/calendar"><ChevronRight className="w-4 h-4" /></Link></Button>
-                          </CardContent>
-                        </Card>
+                            <Button variant="ghost" size="sm" asChild>
+                              <Link to="/calendar">Kalendarz</Link>
+                            </Button>
+                          </div>
+                        </TileCard>
                       ))}
                     </div>
                   ) : (
-                    <Card className="border-dashed bg-slate-50/50"><CardContent className="p-6 text-sm text-slate-500">Brak wydarzeń na dziś.</CardContent></Card>
+                    <Card className="border-dashed bg-slate-50/50">
+                      <CardContent className="p-6 text-sm text-slate-500">Brak wydarzeń na dziś.</CardContent>
+                    </Card>
                   )}
                 </div>
 
@@ -1061,97 +972,118 @@ export default function Today() {
                   {todayTasks.length > 0 ? (
                     <div className="grid gap-3">
                       {todayTasks.map((entry) => (
-                        <Card key={entry.id} className="hover:border-primary/30 transition-colors shadow-sm">
-                          <CardContent className="p-4 flex items-center justify-between">
-                            <div className="flex items-center gap-3 min-w-0">
-                              <button onClick={() => toggleTask(entry.sourceId, entry.raw.status)} className="w-5 h-5 rounded border border-slate-200 flex items-center justify-center hover:border-primary">
-                                {entry.raw.status === 'done' && <CheckSquare className="w-4 h-4 text-primary" />}
-                              </button>
-                              <div className="min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <p className="font-medium text-slate-900">{entry.title}</p>
-                                  {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>}
-                                  {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>}
-                                </div>
-                                <p className="text-xs text-slate-500">{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label ?? 'Zadanie'} • {format(parseISO(entry.startsAt), 'HH:mm')} {entry.leadName ? `• Lead: ${entry.leadName}` : ''}</p>
-                              </div>
+                        <TileCard
+                          key={entry.id}
+                          id={`today-task:${entry.id}`}
+                          title={entry.title}
+                          subtitle={`${TASK_TYPES.find((item) => item.value === entry.raw.type)?.label ?? 'Zadanie'} • ${format(parseISO(entry.startsAt), 'HH:mm')}${entry.leadName ? ` • Lead: ${entry.leadName}` : ''}`}
+                          collapsedMap={collapsedTiles}
+                          onToggle={toggleTile}
+                          className="hover:border-primary/30 transition-colors"
+                          headerRight={
+                            <Badge variant="secondary" className="text-[10px] uppercase">
+                              {entry.raw.type}
+                            </Badge>
+                          }
+                        >
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                              {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
+                                <Badge variant="outline" className="text-[10px] uppercase">
+                                  <Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}
+                                </Badge>
+                              ) : null}
+                              {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' ? (
+                                <Badge variant="outline" className="text-[10px] uppercase">
+                                  <Bell className="w-3 h-3 mr-1" /> Przypomnienie
+                                </Badge>
+                              ) : null}
                             </div>
-                            <Badge variant="secondary" className="text-[10px] uppercase">{entry.raw.type}</Badge>
-                          </CardContent>
-                        </Card>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => toggleTask(entry.sourceId, entry.raw.status)}
+                            >
+                              {entry.raw.status === 'done' ? 'Przywróć' : 'Zakończ'}
+                            </Button>
+                          </div>
+                        </TileCard>
                       ))}
                     </div>
                   ) : (
-                    <Card className="border-dashed bg-slate-50/50"><CardContent className="p-8 text-center"><CheckSquare className="w-8 h-8 text-slate-300 mx-auto mb-2" /><p className="text-sm text-slate-500">Brak zadań na dziś.</p></CardContent></Card>
+                    <Card className="border-dashed bg-slate-50/50">
+                      <CardContent className="p-8 text-center">
+                        <CheckSquare className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                        <p className="text-sm text-slate-500">Brak zadań na dziś.</p>
+                      </CardContent>
+                    </Card>
                   )}
                 </div>
               </div>
             </section>
 
-            <section className="space-y-4">
-              <div className="flex items-center gap-2 text-slate-900">
-                <CalendarDays className="w-5 h-5 text-slate-500" />
-                <h2 className="text-lg font-bold">Ten tydzień</h2>
-                <Badge variant="secondary" className="rounded-full">{thisWeekEntries.length}</Badge>
-              </div>
-              {thisWeekEntries.length > 0 ? (
-                <div className="grid gap-3">
-                  {thisWeekEntries.slice(0, 8).map((entry) => (
-                    <Card key={`week:${entry.id}`} className="shadow-sm">
-                      <CardContent className="p-4 flex items-center justify-between gap-4">
-                        <div>
-                          <p className="text-xs font-bold text-slate-500 uppercase">{format(parseISO(entry.startsAt), 'EEE d MMM HH:mm', { locale: pl })}</p>
-                          <p className="font-semibold text-slate-900">{entry.title}</p>
-                          <p className="text-xs text-slate-500">
-                            {entry.kind === 'lead' ? 'Ruch leadowy' : entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}
-                            {entry.leadName ? ` • Lead: ${entry.leadName}` : ''}
-                          </p>
-                        </div>
-                        <Button variant="ghost" size="sm" asChild>
-                          <Link to={entry.link ?? (entry.kind === 'event' ? '/calendar' : entry.kind === 'task' ? '/tasks' : '/leads')}>
-                            <ChevronRight className="w-4 h-4" />
-                          </Link>
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <Card className="border-dashed bg-slate-50/50"><CardContent className="p-6 text-sm text-slate-500">Brak zaplanowanych rzeczy na kolejne dni.</CardContent></Card>
-              )}
-            </section>
-          </div>
-
-          <div className="space-y-8">
-            <Card className="bg-slate-900 text-white border-none shadow-xl overflow-hidden relative">
-              <div className="absolute top-0 right-0 p-4 opacity-10"><TrendingUp className="w-24 h-24" /></div>
-              <CardContent className="p-6">
-                <p className="text-sm font-medium text-slate-400">Wartość lejka</p>
-                <div className="text-3xl font-bold mb-1">{leads.reduce((acc, lead) => acc + (lead.dealValue || 0), 0).toLocaleString()} PLN</div>
-                <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaży</p>
-                <div className="mt-6 grid grid-cols-2 gap-4 border-t border-slate-800 pt-6">
-                  <div>
-                    <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Aktywne leady</p>
-                    <p className="text-xl font-bold">{openLeads.length}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Zadania</p>
-                    <p className="text-xl font-bold">{tasks.length}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {highValueAtRiskRows.length > 0 && (
+            {noStepLeads.length > 0 && (
               <section className="space-y-4">
-                <h2 className="text-lg font-bold text-slate-900">Najcenniejsze do ruszenia dziś</h2>
-                <div className="space-y-3">
-                  {highValueAtRiskRows.slice(0, 4).sort((a, b) => getLeadPriorityScore(b) - getLeadPriorityScore(a)).map((lead) => (
-                    <LeadSignalCard key={`high-value:${lead.id}`} lead={lead} reason={buildLeadAlertReason(lead)} score={getLeadPriorityScore(lead)} />
+                <div className="flex items-center gap-2 text-amber-600">
+                  <AlertTriangle className="w-5 h-5" />
+                  <h2 className="text-lg font-bold">Bez następnego kroku</h2>
+                  <Badge variant="outline" className="rounded-full border-amber-200 text-amber-700 bg-amber-50">{noStepLeads.length}</Badge>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {noStepLeads.slice(0, 4).map((lead) => (
+                    <TileCard
+                      key={lead.id}
+                      id={`no-step:${lead.id}`}
+                      title={lead.name}
+                      subtitle={lead.company || 'Brak firmy'}
+                      collapsedMap={collapsedTiles}
+                      onToggle={toggleTile}
+                      className="hover:shadow-md transition-shadow"
+                      headerRight={
+                        <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">
+                          Zaniedbany
+                        </Badge>
+                      }
+                    >
+                      <Button variant="outline" size="sm" className="w-full rounded-lg" asChild>
+                        <Link to={`/leads/${lead.id}`}>
+                          Ustal kolejny krok <ArrowRight className="w-3 h-3 ml-2" />
+                        </Link>
+                      </Button>
+                    </TileCard>
                   ))}
                 </div>
               </section>
             )}
+          </div>
+
+          <div className="space-y-8">
+            <TileCard
+              id="pipeline-summary"
+              title="Wartość lejka"
+              subtitle={`${leads.reduce((acc, lead) => acc + (lead.dealValue || 0), 0).toLocaleString()} PLN`}
+              collapsedMap={collapsedTiles}
+              onToggle={toggleTile}
+              className="bg-slate-900 text-white border-none shadow-xl"
+              titleClassName="text-white"
+              subtitleClassName="text-slate-300 text-2xl font-bold"
+              headerRight={
+                <TrendingUp className="w-10 h-10 text-white/20" />
+              }
+              bodyClassName="border-t border-slate-800"
+            >
+              <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaży</p>
+              <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-800 pt-4">
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Aktywne leady</p>
+                  <p className="text-xl font-bold text-white">{leads.filter((lead) => lead.status !== 'won' && lead.status !== 'lost').length}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Zadania</p>
+                  <p className="text-xl font-bold text-white">{tasks.length}</p>
+                </div>
+              </div>
+            </TileCard>
 
             <section className="space-y-4">
               <h2 className="text-lg font-bold text-slate-900">Najbliższe dni</h2>
@@ -1169,19 +1101,71 @@ export default function Today() {
                   if (count === 0) return null;
 
                   return (
-                    <div key={days} className="flex items-center gap-4 group cursor-pointer">
-                      <div className="w-12 text-center">
-                        <p className="text-[10px] uppercase font-bold text-slate-400">{format(date, 'EEE', { locale: pl })}</p>
-                        <p className="text-lg font-bold text-slate-700">{format(date, 'd')}</p>
-                      </div>
-                      <div className="flex-1 bg-white p-3 rounded-xl border border-slate-100 group-hover:border-primary/30 transition-colors shadow-sm">
-                        <p className="text-sm font-medium text-slate-900">{count} {count === 1 ? 'rzecz' : 'rzeczy'}</p>
-                        <p className="text-[10px] text-slate-500">{dayEntries.filter((entry) => entry.kind === 'event').length} wydarzeń • {dayEntries.filter((entry) => entry.kind === 'task').length} zadań • {dayEntries.filter((entry) => entry.kind === 'lead').length} leadów</p>
-                      </div>
-                    </div>
+                    <TileCard
+                      key={days}
+                      id={`upcoming-day:${days}`}
+                      title={`${format(date, 'EEE', { locale: pl }).toUpperCase()} ${format(date, 'd')}`}
+                      subtitle={`${count} ${count === 1 ? 'rzecz' : 'rzeczy'}`}
+                      collapsedMap={collapsedTiles}
+                      onToggle={toggleTile}
+                    >
+                      <p className="text-[10px] text-slate-500">
+                        {dayEntries.filter((entry) => entry.kind === 'event').length} wydarzeń • {dayEntries.filter((entry) => entry.kind === 'task').length} zadań • {dayEntries.filter((entry) => entry.kind === 'lead').length} leadów
+                      </p>
+                    </TileCard>
                   );
                 })}
               </div>
+            </section>
+
+            <section className="space-y-4">
+              <h2 className="text-lg font-bold text-slate-900">Najcenniejsze</h2>
+              <div className="space-y-3">
+                {topValuableLeads.map((lead) => (
+                  <TileCard
+                    key={lead.id}
+                    id={`valuable:${lead.id}`}
+                    title={lead.name}
+                    subtitle={lead.company || lead.source}
+                    collapsedMap={collapsedTiles}
+                    onToggle={toggleTile}
+                    headerRight={
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-primary">{(lead.dealValue || 0).toLocaleString()} PLN</p>
+                        <Badge variant="outline" className="text-[8px] h-4 px-1">TOP</Badge>
+                      </div>
+                    }
+                  >
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to={`/leads/${lead.id}`}>Otwórz lead</Link>
+                    </Button>
+                  </TileCard>
+                ))}
+              </div>
+            </section>
+
+            <section className="space-y-3">
+              <TileCard
+                id="info-recurring"
+                title="Cykliczność działa live"
+                subtitle="Powtarzalne zadania i wydarzenia wpadają teraz do planu dnia bez ręcznego odświeżania."
+                collapsedMap={collapsedTiles}
+                onToggle={toggleTile}
+                headerRight={<Repeat className="w-4 h-4 text-slate-400" />}
+              >
+                <p className="text-sm text-slate-500">Sekcja zostaje w widoku jako szybka notatka, ale możesz ją zwinąć, żeby nie zabierała miejsca.</p>
+              </TileCard>
+
+              <TileCard
+                id="info-reminders"
+                title="Przypomnienia zapisują się w danych"
+                subtitle="Warstwa konfiguracji przypomnień jest już spięta z formularzami."
+                collapsedMap={collapsedTiles}
+                onToggle={toggleTile}
+                headerRight={<Bell className="w-4 h-4 text-slate-400" />}
+              >
+                <p className="text-sm text-slate-500">Osobny silnik wysyłki to nadal osobny brak V1, ale ustawienia przypomnień są już zapisywane i gotowe do dalszego rozwijania.</p>
+              </TileCard>
             </section>
           </div>
         </div>
