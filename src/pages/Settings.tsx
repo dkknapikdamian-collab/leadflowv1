@@ -1,28 +1,38 @@
+import { useEffect, useState } from 'react';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { Palette, Shield, User } from 'lucide-react';
+import { toast } from 'sonner';
 import Layout from '../components/Layout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
+import { useAppearance } from '../components/appearance-provider';
 import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { auth, db } from '../firebase';
-import { useState, useEffect } from 'react';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { toast } from 'sonner';
-import { User, Shield, Bell, Palette } from 'lucide-react';
 
 export default function Settings() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { skin, setSkin, skinOptions } = useAppearance();
 
   useEffect(() => {
     if (!auth.currentUser) return;
+
     const fetchProfile = async () => {
       const profileDoc = await getDoc(doc(db, 'profiles', auth.currentUser!.uid));
       if (profileDoc.exists()) {
         setProfile(profileDoc.data());
+      } else {
+        setProfile({
+          fullName: auth.currentUser?.displayName || '',
+          companyName: '',
+          email: auth.currentUser?.email || '',
+        });
       }
       setLoading(false);
     };
-    fetchProfile();
+
+    void fetchProfile();
   }, []);
 
   const handleUpdateProfile = async () => {
@@ -34,9 +44,17 @@ export default function Settings() {
       });
       toast.success('Profil zaktualizowany');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error(`Błąd: ${error.message}`);
     }
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="p-8 max-w-4xl mx-auto w-full">Ładowanie ustawień...</div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -59,17 +77,11 @@ export default function Settings() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Imię i nazwisko</Label>
-                  <Input 
-                    value={profile?.fullName || ''} 
-                    onChange={e => setProfile({...profile, fullName: e.target.value})} 
-                  />
+                  <Input value={profile?.fullName || ''} onChange={(e) => setProfile({ ...profile, fullName: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Nazwa firmy</Label>
-                  <Input 
-                    value={profile?.companyName || ''} 
-                    onChange={e => setProfile({...profile, companyName: e.target.value})} 
-                  />
+                  <Input value={profile?.companyName || ''} onChange={(e) => setProfile({ ...profile, companyName: e.target.value })} />
                 </div>
               </div>
               <div className="space-y-2">
@@ -84,14 +96,29 @@ export default function Settings() {
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Palette className="w-5 h-5 text-slate-400" />
-                Branding portalu klienta
+                Motyw aplikacji
               </CardTitle>
-              <CardDescription>Dostosuj wygląd panelu, który widzi Twój klient.</CardDescription>
+              <CardDescription>Wybrany motyw zapisuje się lokalnie i w profilu, więc wraca po czyszczeniu cache.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-center">
-                <p className="text-sm text-slate-500">Funkcja personalizacji brandingu dostępna w planie PRO.</p>
-                <Button variant="outline" size="sm" className="mt-2">Sprawdź plany</Button>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {skinOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => {
+                      void setSkin(option.id)
+                        .then(() => toast.success(`Aktywowano motyw: ${option.label}`))
+                        .catch((error: any) => toast.error(`Błąd zapisu motywu: ${error?.message || 'REQUEST_FAILED'}`));
+                    }}
+                    className={`text-left p-4 rounded-xl border transition ${
+                      skin === option.id ? 'border-primary bg-primary/5' : 'border-slate-200 hover:border-slate-300'
+                    }`}
+                  >
+                    <p className="font-semibold text-slate-900">{option.label}</p>
+                    <p className="text-sm text-slate-500 mt-1">{option.description}</p>
+                  </button>
+                ))}
               </div>
             </CardContent>
           </Card>

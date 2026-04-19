@@ -34,7 +34,7 @@ function normalizeLead(row: Record<string, unknown>) {
     nextActionAt: String(row.next_action_at || row.next_step_due_at || row.nextActionAt || ''),
     dealValue: Number(row.deal_value || row.value || row.dealValue || 0),
     partialPayments,
-    isAtRisk: Boolean(row.is_at_risk || row.isAtRisk || false),
+    isAtRisk: Boolean(row.is_at_risk ?? row.isAtRisk ?? (String(row.priority || '').toLowerCase() === 'high')),
     updatedAt: row.updated_at || row.updatedAt || null,
   };
 }
@@ -82,7 +82,10 @@ export default async function handler(req: any, res: any) {
       if (body.status !== undefined) payload.status = body.status;
       if (body.nextStep !== undefined) payload.next_action_title = body.nextStep || '';
       if (body.nextActionAt !== undefined) payload.next_action_at = body.nextActionAt ? new Date(body.nextActionAt).toISOString() : null;
-      if (body.isAtRisk !== undefined) payload.priority = body.isAtRisk ? 'high' : 'medium';
+      if (body.isAtRisk !== undefined) {
+        payload.is_at_risk = Boolean(body.isAtRisk);
+        payload.priority = body.isAtRisk ? 'high' : 'medium';
+      }
 
       const data = await updateById('leads', String(body.id), payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
@@ -131,6 +134,7 @@ export default async function handler(req: any, res: any) {
       notes: '',
       status: 'new',
       priority: 'medium',
+      is_at_risk: false,
       next_action_title: body.nextStep || '',
       next_action_at: dueAt,
       next_action_item_id: null,

@@ -54,10 +54,25 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   const text = await response.text();
-  const data = text ? JSON.parse(text) : null;
+  let data: unknown = null;
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { raw: text };
+    }
+  }
 
   if (!response.ok) {
-    throw new Error(data?.error || `${response.status}:REQUEST_FAILED`);
+    const message =
+      typeof data === 'object' && data && 'error' in (data as Record<string, unknown>)
+        ? String((data as Record<string, unknown>).error)
+        : `${response.status}:REQUEST_FAILED:${text.slice(0, 180)}`;
+    throw new Error(message);
+  }
+
+  if (data && typeof data === 'object' && 'raw' in (data as Record<string, unknown>)) {
+    throw new Error(`INVALID_API_RESPONSE:${String((data as Record<string, unknown>).raw).slice(0, 180)}`);
   }
 
   return data as T;

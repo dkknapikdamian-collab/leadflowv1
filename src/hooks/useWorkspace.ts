@@ -30,19 +30,40 @@ export function useWorkspace() {
     }
 
     if (isSupabaseConfigured()) {
+      setLoading(true);
       setWorkspace({
         id: activeUserId,
         ownerId: activeUserId,
         plan: 'pro',
         subscriptionStatus: 'paid_active',
       });
-      setProfile({
-        id: activeUserId,
-        fullName: auth.currentUser?.displayName || '',
-        email: auth.currentUser?.email || '',
-      });
-      setLoading(false);
-      return;
+
+      const profileRef = doc(db, 'profiles', activeUserId);
+      const unsubscribeProfile = onSnapshot(
+        profileRef,
+        (snap) => {
+          if (snap.exists()) {
+            setProfile({ id: snap.id, ...snap.data() });
+          } else {
+            setProfile({
+              id: activeUserId,
+              fullName: auth.currentUser?.displayName || '',
+              email: auth.currentUser?.email || '',
+            });
+          }
+          setLoading(false);
+        },
+        () => {
+          setProfile({
+            id: activeUserId,
+            fullName: auth.currentUser?.displayName || '',
+            email: auth.currentUser?.email || '',
+          });
+          setLoading(false);
+        }
+      );
+
+      return () => unsubscribeProfile();
     }
 
     setLoading(true);

@@ -1,64 +1,33 @@
-import { useState, useEffect, useRef, FormEvent, ChangeEvent } from 'react';
-import { auth, db } from '../firebase';
-import { 
-  collection, 
-  query, 
-  where, 
-  onSnapshot, 
-  orderBy, 
-  addDoc, 
-  serverTimestamp,
-  writeBatch,
-  doc
-} from 'firebase/firestore';
+import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  ChevronRight, 
-  Target, 
-  ArrowRight,
+import {
+  Plus,
+  Search,
+  ChevronRight,
+  Target,
   TrendingUp,
   AlertTriangle,
-  CheckCircle2,
   Upload,
-  Download,
-  MoreHorizontal,
   Mail,
-  Phone,
-  Calendar,
   Clock,
   X,
   FileText,
-  Loader2
+  Loader2,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger,
-  DialogFooter
-} from '../components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import Papa from 'papaparse';
-import { format, parseISO, isPast, isAfter, subDays, startOfDay } from 'date-fns';
+import { format, isAfter, isPast, parseISO, startOfDay, subDays } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { fetchLeadsFromSupabase, insertLeadToSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
@@ -84,60 +53,89 @@ const SOURCE_OPTIONS = [
   { value: 'other', label: 'Inne' },
 ];
 
+function toDateSafe(value: unknown) {
+  if (!value) return null;
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+  if (typeof value === 'string') {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+  if (typeof value === 'object' && value && 'toDate' in (value as Record<string, unknown>)) {
+    try {
+      const converted = (value as { toDate: () => Date }).toDate();
+      return Number.isNaN(converted.getTime()) ? null : converted;
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
 export default function Leads() {
   const { workspace, hasAccess } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sourceFilter, setSourceFilter] = useState('all');
   const [atRiskFilter, setAtRiskFilter] = useState('all');
   const [activityFilter, setActivityFilter] = useState('all');
-  
+
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
-  const [newLead, setNewLead] = useState({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', nextStep: '', nextActionAt: '' });
-  
+  const [newLead, setNewLead] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    source: 'other',
+    dealValue: '',
+    company: '',
+    nextStep: '',
+    nextActionAt: '',
+  });
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
-
-    const q = query(
-      collection(db, 'leads'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('updatedAt', 'desc')
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setLeads(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  const loadLeads = useCallback(async () => {
+    if (!workspace) return;
+    setLoading(true);
+    setLoadError(null);
+    try {
+      const rows = await fetchLeadsFromSupabase();
+      setLeads(rows as any[]);
+    } catch (error: any) {
+      const message = error?.message || 'Nie udało się pobrać leadów';
+      setLoadError(message);
+      toast.error(`Błąd odczytu leadów: ${message}`);
+    } finally {
       setLoading(false);
-    });
-
-    return () => unsubscribe();
+    }
   }, [workspace]);
+
+  useEffect(() => {
+    if (!workspace) return;
+    if (!isSupabaseConfigured()) return;
+    void loadLeads();
+  }, [loadLeads, workspace]);
 
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
     if (!hasAccess) return toast.error('Twój trial wygasł.');
-    if (!newLead.name) return toast.error('Wpisz nazwę leada');
+    if (!newLead.name.trim()) return toast.error('Wpisz nazwę leada');
 
     try {
-      await addDoc(collection(db, 'leads'), {
+      await insertLeadToSupabase({
         ...newLead,
         dealValue: Number(newLead.dealValue) || 0,
-        status: 'new',
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        isAtRisk: false,
+        ownerId: workspace?.ownerId,
+        workspaceId: workspace?.id,
       });
-
+      await loadLeads();
       toast.success('Lead dodany');
       setIsNewLeadOpen(false);
       setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', nextStep: '', nextActionAt: '' });
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error(`Błąd zapisu leada: ${error.message}`);
     }
   };
 
@@ -149,61 +147,66 @@ export default function Leads() {
       header: true,
       skipEmptyLines: true,
       complete: async (results) => {
-        const batch = writeBatch(db);
-        let count = 0;
-
-        for (const row of results.data as any[]) {
-          if (!row.name) continue;
-          const leadRef = doc(collection(db, 'leads'));
-          batch.set(leadRef, {
-            name: row.name,
-            email: row.email || '',
-            phone: row.phone || '',
-            company: row.company || '',
-            source: row.source || 'other',
-            dealValue: Number(row.dealValue) || 0,
-            status: 'new',
-            ownerId: auth.currentUser?.uid,
-            workspaceId: workspace.id,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-            isAtRisk: false,
-          });
-          count++;
-          if (count >= 450) break; // Firestore batch limit is 500
+        const rows = (results.data as any[]).filter((row) => row?.name).slice(0, 300);
+        if (!rows.length) {
+          toast.error('Plik CSV nie zawiera poprawnych rekordów');
+          return;
         }
 
-        try {
-          await batch.commit();
-          toast.success(`Zaimportowano ${count} leadów`);
-        } catch (error: any) {
-          toast.error('Błąd importu: ' + error.message);
+        let imported = 0;
+        for (const row of rows) {
+          try {
+            await insertLeadToSupabase({
+              name: String(row.name),
+              email: String(row.email || ''),
+              phone: String(row.phone || ''),
+              company: String(row.company || ''),
+              source: String(row.source || 'other'),
+              dealValue: Number(row.dealValue) || 0,
+              nextStep: String(row.nextStep || ''),
+              nextActionAt: String(row.nextActionAt || ''),
+              workspaceId: workspace.id,
+              ownerId: workspace.ownerId,
+            });
+            imported += 1;
+          } catch {
+            // Continue import even if one row fails.
+          }
         }
-      }
+
+        await loadLeads();
+        toast.success(`Zaimportowano ${imported} leadów`);
+      },
+      error: (error) => {
+        toast.error(`Błąd importu CSV: ${error.message}`);
+      },
     });
   };
 
-  const filteredLeads = leads.filter(l => {
-    const matchesSearch = l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         l.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         l.company?.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = statusFilter === 'all' || l.status === statusFilter;
-    const matchesSource = sourceFilter === 'all' || l.source === sourceFilter;
-    const matchesAtRisk = atRiskFilter === 'all' || 
-                         (atRiskFilter === 'at-risk' && l.isAtRisk) || 
-                         (atRiskFilter === 'safe' && !l.isAtRisk);
-    
+  const filteredLeads = leads.filter((lead) => {
+    const name = String(lead.name || '').toLowerCase();
+    const email = String(lead.email || '').toLowerCase();
+    const company = String(lead.company || '').toLowerCase();
+    const queryText = searchQuery.toLowerCase();
+    const matchesSearch = name.includes(queryText) || email.includes(queryText) || company.includes(queryText);
+
+    const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
+    const matchesSource = sourceFilter === 'all' || lead.source === sourceFilter;
+    const matchesAtRisk =
+      atRiskFilter === 'all' ||
+      (atRiskFilter === 'at-risk' && Boolean(lead.isAtRisk)) ||
+      (atRiskFilter === 'safe' && !lead.isAtRisk);
+
     let matchesActivity = true;
-    if (activityFilter !== 'all' && l.updatedAt) {
-      const lastActivity = l.updatedAt.toDate();
+    const updatedAt = toDateSafe(lead.updatedAt);
+    if (activityFilter !== 'all' && updatedAt) {
       const now = new Date();
       if (activityFilter === 'today') {
-        matchesActivity = isAfter(lastActivity, startOfDay(now));
+        matchesActivity = isAfter(updatedAt, startOfDay(now));
       } else if (activityFilter === 'week') {
-        matchesActivity = isAfter(lastActivity, subDays(now, 7));
+        matchesActivity = isAfter(updatedAt, subDays(now, 7));
       } else if (activityFilter === 'month') {
-        matchesActivity = isAfter(lastActivity, subDays(now, 30));
+        matchesActivity = isAfter(updatedAt, subDays(now, 30));
       }
     }
 
@@ -212,9 +215,9 @@ export default function Leads() {
 
   const stats = {
     total: leads.length,
-    active: leads.filter(l => !['won', 'lost'].includes(l.status)).length,
-    value: leads.reduce((acc, l) => acc + (l.dealValue || 0), 0),
-    atRisk: leads.filter(l => l.isAtRisk).length,
+    active: leads.filter((lead) => !['won', 'lost'].includes(String(lead.status || 'new'))).length,
+    value: leads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
+    atRisk: leads.filter((lead) => Boolean(lead.isAtRisk)).length,
   };
 
   return (
@@ -226,17 +229,11 @@ export default function Leads() {
             <p className="text-slate-500">Zarządzaj procesem sprzedaży i domykaj deale.</p>
           </div>
           <div className="flex items-center gap-2">
-            <input 
-              type="file" 
-              accept=".csv" 
-              className="hidden" 
-              ref={fileInputRef} 
-              onChange={handleImportCSV} 
-            />
+            <input type="file" accept=".csv" className="hidden" ref={fileInputRef} onChange={handleImportCSV} />
             <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="rounded-xl">
               <Upload className="w-4 h-4 mr-2" /> Import CSV
             </Button>
-            
+
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
               <DialogTrigger asChild>
                 <Button className="rounded-xl shadow-lg shadow-primary/20">
@@ -244,37 +241,45 @@ export default function Leads() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
-                <DialogHeader><DialogTitle>Nowy lead</DialogTitle></DialogHeader>
+                <DialogHeader>
+                  <DialogTitle>Nowy lead</DialogTitle>
+                </DialogHeader>
                 <form onSubmit={handleCreateLead} className="space-y-4 py-4">
                   <div className="space-y-2">
                     <Label>Imię i nazwisko / Nazwa</Label>
-                    <Input value={newLead.name} onChange={e => setNewLead({...newLead, name: e.target.value})} required />
+                    <Input value={newLead.name} onChange={(e) => setNewLead({ ...newLead, name: e.target.value })} required />
                   </div>
                   <div className="space-y-2">
                     <Label>Firma</Label>
-                    <Input value={newLead.company} onChange={e => setNewLead({...newLead, company: e.target.value})} />
+                    <Input value={newLead.company} onChange={(e) => setNewLead({ ...newLead, company: e.target.value })} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Email</Label>
-                      <Input type="email" value={newLead.email} onChange={e => setNewLead({...newLead, email: e.target.value})} />
+                      <Input type="email" value={newLead.email} onChange={(e) => setNewLead({ ...newLead, email: e.target.value })} />
                     </div>
                     <div className="space-y-2">
                       <Label>Telefon</Label>
-                      <Input value={newLead.phone} onChange={e => setNewLead({...newLead, phone: e.target.value})} />
+                      <Input value={newLead.phone} onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })} />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Wartość (PLN)</Label>
-                      <Input type="number" value={newLead.dealValue} onChange={e => setNewLead({...newLead, dealValue: e.target.value})} />
+                      <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
                     </div>
                     <div className="space-y-2">
                       <Label>Źródło</Label>
-                      <Select value={newLead.source} onValueChange={v => setNewLead({...newLead, source: v})}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
+                      <Select value={newLead.source} onValueChange={(value) => setNewLead({ ...newLead, source: value })}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
                         <SelectContent>
-                          {SOURCE_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+                          {SOURCE_OPTIONS.map((source) => (
+                            <SelectItem key={source.value} value={source.value}>
+                              {source.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -282,15 +287,21 @@ export default function Leads() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Kolejny krok</Label>
-                      <Input value={newLead.nextStep} onChange={e => setNewLead({...newLead, nextStep: e.target.value})} placeholder="np. Telefon z ofertą" />
+                      <Input
+                        value={newLead.nextStep}
+                        onChange={(e) => setNewLead({ ...newLead, nextStep: e.target.value })}
+                        placeholder="np. Telefon z ofertą"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label>Termin ruchu</Label>
-                      <Input type="date" value={newLead.nextActionAt} onChange={e => setNewLead({...newLead, nextActionAt: e.target.value})} />
+                      <Input type="date" value={newLead.nextActionAt} onChange={(e) => setNewLead({ ...newLead, nextActionAt: e.target.value })} />
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Stwórz leada</Button>
+                    <Button type="submit" className="w-full">
+                      Stwórz leada
+                    </Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -298,7 +309,6 @@ export default function Leads() {
           </div>
         </header>
 
-        {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="border-none shadow-sm">
             <CardContent className="p-6 flex items-center justify-between">
@@ -306,7 +316,9 @@ export default function Leads() {
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wszystkie</p>
                 <h3 className="text-2xl font-bold text-slate-900">{stats.total}</h3>
               </div>
-              <div className="bg-slate-50 p-3 rounded-2xl"><Target className="w-6 h-6 text-slate-400" /></div>
+              <div className="bg-slate-50 p-3 rounded-2xl">
+                <Target className="w-6 h-6 text-slate-400" />
+              </div>
             </CardContent>
           </Card>
           <Card className="border-none shadow-sm">
@@ -315,7 +327,9 @@ export default function Leads() {
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Aktywne</p>
                 <h3 className="text-2xl font-bold text-blue-600">{stats.active}</h3>
               </div>
-              <div className="bg-blue-50 p-3 rounded-2xl"><TrendingUp className="w-6 h-6 text-blue-500" /></div>
+              <div className="bg-blue-50 p-3 rounded-2xl">
+                <TrendingUp className="w-6 h-6 text-blue-500" />
+              </div>
             </CardContent>
           </Card>
           <Card className="border-none shadow-sm">
@@ -324,7 +338,9 @@ export default function Leads() {
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wartość</p>
                 <h3 className="text-2xl font-bold text-slate-900">{stats.value.toLocaleString()} PLN</h3>
               </div>
-              <div className="bg-slate-50 p-3 rounded-2xl"><TrendingUp className="w-6 h-6 text-slate-400" /></div>
+              <div className="bg-slate-50 p-3 rounded-2xl">
+                <TrendingUp className="w-6 h-6 text-slate-400" />
+              </div>
             </CardContent>
           </Card>
           <Card className="border-none shadow-sm">
@@ -333,21 +349,22 @@ export default function Leads() {
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zagrożone</p>
                 <h3 className="text-2xl font-bold text-rose-600">{stats.atRisk}</h3>
               </div>
-              <div className="bg-rose-50 p-3 rounded-2xl"><AlertTriangle className="w-6 h-6 text-rose-500" /></div>
+              <div className="bg-rose-50 p-3 rounded-2xl">
+                <AlertTriangle className="w-6 h-6 text-rose-500" />
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Filters */}
         <Card className="border-none shadow-sm">
           <CardContent className="p-4 flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input 
-                placeholder="Szukaj po nazwie, emailu, firmie..." 
+              <Input
+                placeholder="Szukaj po nazwie, emailu, firmie..."
                 className="pl-10 rounded-xl bg-slate-50 border-none h-11"
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="flex gap-2">
@@ -357,7 +374,11 @@ export default function Leads() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Wszystkie statusy</SelectItem>
-                  {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+                  {STATUS_OPTIONS.map((status) => (
+                    <SelectItem key={status.value} value={status.value}>
+                      {status.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <Select value={sourceFilter} onValueChange={setSourceFilter}>
@@ -366,7 +387,11 @@ export default function Leads() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Wszystkie źródła</SelectItem>
-                  {SOURCE_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+                  {SOURCE_OPTIONS.map((source) => (
+                    <SelectItem key={source.value} value={source.value}>
+                      {source.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <Select value={atRiskFilter} onValueChange={setAtRiskFilter}>
@@ -391,13 +416,17 @@ export default function Leads() {
                 </SelectContent>
               </Select>
               {(statusFilter !== 'all' || sourceFilter !== 'all' || atRiskFilter !== 'all' || activityFilter !== 'all' || searchQuery) && (
-                <Button variant="ghost" onClick={() => { 
-                  setStatusFilter('all'); 
-                  setSourceFilter('all'); 
-                  setAtRiskFilter('all');
-                  setActivityFilter('all');
-                  setSearchQuery(''); 
-                }} className="h-11 rounded-xl">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setStatusFilter('all');
+                    setSourceFilter('all');
+                    setAtRiskFilter('all');
+                    setActivityFilter('all');
+                    setSearchQuery('');
+                  }}
+                  className="h-11 rounded-xl"
+                >
                   <X className="w-4 h-4 mr-2" /> Wyczyść
                 </Button>
               )}
@@ -405,12 +434,19 @@ export default function Leads() {
           </CardContent>
         </Card>
 
-        {/* List */}
         <div className="space-y-3">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
               <p className="text-slate-500">Ładowanie Twoich leadów...</p>
+            </div>
+          ) : loadError ? (
+            <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-rose-200">
+              <h3 className="text-lg font-bold text-rose-700">Nie udało się pobrać leadów</h3>
+              <p className="text-slate-500 max-w-lg mx-auto mt-1 break-words">{loadError}</p>
+              <Button className="mt-4 rounded-xl" onClick={() => void loadLeads()}>
+                Spróbuj ponownie
+              </Button>
             </div>
           ) : filteredLeads.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
@@ -421,9 +457,10 @@ export default function Leads() {
               <p className="text-slate-500 max-w-xs mx-auto mt-1">Spróbuj zmienić filtry lub dodaj nowego leada.</p>
             </div>
           ) : (
-            filteredLeads.map(lead => {
-              const status = STATUS_OPTIONS.find(s => s.value === lead.status) || STATUS_OPTIONS[0];
-              const isOverdue = lead.nextActionAt && isPast(parseISO(lead.nextActionAt));
+            filteredLeads.map((lead) => {
+              const status = STATUS_OPTIONS.find((option) => option.value === lead.status) || STATUS_OPTIONS[0];
+              const nextActionDate = lead.nextActionAt ? parseISO(String(lead.nextActionAt)) : null;
+              const isOverdue = nextActionDate ? isPast(nextActionDate) : false;
 
               return (
                 <Link key={lead.id} to={`/leads/${lead.id}`}>
@@ -432,35 +469,43 @@ export default function Leads() {
                       <div className="flex flex-col md:flex-row md:items-center p-5 gap-4">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-1">
-                            <h4 className="text-lg font-bold text-slate-900 truncate group-hover:text-primary transition-colors">
-                              {lead.name}
-                            </h4>
-                            <Badge className={`${status.color} border-none font-medium text-[10px] uppercase`}>
-                              {status.label}
-                            </Badge>
+                            <h4 className="text-lg font-bold text-slate-900 truncate group-hover:text-primary transition-colors">{lead.name}</h4>
+                            <Badge className={`${status.color} border-none font-medium text-[10px] uppercase`}>{status.label}</Badge>
                             {lead.isAtRisk && (
-                              <Badge variant="destructive" className="animate-pulse text-[10px] uppercase">Zagrożony</Badge>
+                              <Badge variant="destructive" className="animate-pulse text-[10px] uppercase">
+                                Zagrożony
+                              </Badge>
                             )}
                           </div>
                           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
-                            {lead.company && <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> {lead.company}</span>}
-                            <span className="flex items-center gap-1 capitalize"><Target className="w-3.5 h-3.5" /> {lead.source}</span>
-                            {lead.email && <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {lead.email}</span>}
+                            {lead.company && (
+                              <span className="flex items-center gap-1">
+                                <FileText className="w-3.5 h-3.5" /> {lead.company}
+                              </span>
+                            )}
+                            <span className="flex items-center gap-1 capitalize">
+                              <Target className="w-3.5 h-3.5" /> {lead.source}
+                            </span>
+                            {lead.email && (
+                              <span className="flex items-center gap-1">
+                                <Mail className="w-3.5 h-3.5" /> {lead.email}
+                              </span>
+                            )}
                           </div>
                         </div>
 
                         <div className="flex items-center gap-8">
                           <div className="text-right hidden lg:block w-32">
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Wartość</p>
-                            <p className="text-base font-bold text-slate-900">{(lead.dealValue || 0).toLocaleString()} PLN</p>
+                            <p className="text-base font-bold text-slate-900">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
                           </div>
 
                           <div className="text-right w-32">
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Następny krok</p>
-                            {lead.nextActionAt ? (
+                            {nextActionDate ? (
                               <p className={`text-sm font-bold flex items-center justify-end gap-1 ${isOverdue ? 'text-rose-600' : 'text-slate-700'}`}>
                                 {isOverdue && <AlertTriangle className="w-3 h-3" />}
-                                {format(parseISO(lead.nextActionAt), 'd MMM', { locale: pl })}
+                                {format(nextActionDate, 'd MMM', { locale: pl })}
                               </p>
                             ) : (
                               <p className="text-sm font-bold text-amber-600 flex items-center justify-end gap-1">
