@@ -54,59 +54,56 @@ function SelectTrigger({
   )
 }
 
-type SelectContentProps = SelectPrimitive.Popup.Props &
-  Pick<
-    SelectPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset" | "alignItemWithTrigger"
-  > & {
-    portal?: boolean
-  }
-
 function SelectContent({
   className,
   children,
   side = "bottom",
   sideOffset = 4,
-  align = "center",
+  align = "start",
   alignOffset = 0,
   alignItemWithTrigger = true,
-  portal,
   ...props
-}: SelectContentProps) {
-  const activeElement = typeof document !== "undefined" ? document.activeElement : null
-  const isInsideDialog = Boolean(activeElement && activeElement.closest('[role="dialog"]'))
-  const shouldPortal = portal ?? !isInsideDialog
+}: SelectPrimitive.Popup.Props &
+  Pick<
+    SelectPrimitive.Positioner.Props,
+    "align" | "alignOffset" | "side" | "sideOffset" | "alignItemWithTrigger"
+  >) {
+  const [portalContainer, setPortalContainer] = React.useState<HTMLElement | null>(null)
 
-  const content = (
-    <SelectPrimitive.Positioner
-      side={side}
-      sideOffset={sideOffset}
-      align={align}
-      alignOffset={alignOffset}
-      alignItemWithTrigger={alignItemWithTrigger}
-      className="isolate z-[60]"
-    >
-      <SelectPrimitive.Popup
-        data-slot="select-content"
-        data-align-trigger={alignItemWithTrigger}
-        className={cn(
-          "relative isolate z-[60] max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg border border-slate-200 bg-white text-slate-950 shadow-xl ring-1 ring-slate-200 duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
-          className
-        )}
-        {...props}
+  React.useEffect(() => {
+    if (typeof document === "undefined") return
+
+    const active = document.activeElement as HTMLElement | null
+    const dialogRoot = active?.closest?.('[role="dialog"]') as HTMLElement | null
+    setPortalContainer(dialogRoot ?? null)
+  }, [])
+
+  return (
+    <SelectPrimitive.Portal container={portalContainer ?? undefined}>
+      <SelectPrimitive.Positioner
+        side={side}
+        sideOffset={sideOffset}
+        align={align}
+        alignOffset={alignOffset}
+        alignItemWithTrigger={alignItemWithTrigger}
+        className="isolate z-[80]"
       >
-        <SelectScrollUpButton />
-        <SelectPrimitive.List>{children}</SelectPrimitive.List>
-        <SelectScrollDownButton />
-      </SelectPrimitive.Popup>
-    </SelectPrimitive.Positioner>
+        <SelectPrimitive.Popup
+          data-slot="select-content"
+          data-align-trigger={alignItemWithTrigger}
+          className={cn(
+            "relative isolate z-[80] max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg border border-slate-200 bg-white text-slate-950 shadow-xl ring-1 ring-slate-200 duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+            className
+          )}
+          {...props}
+        >
+          <SelectScrollUpButton />
+          <SelectPrimitive.List>{children}</SelectPrimitive.List>
+          <SelectScrollDownButton />
+        </SelectPrimitive.Popup>
+      </SelectPrimitive.Positioner>
+    </SelectPrimitive.Portal>
   )
-
-  if (!shouldPortal) {
-    return content
-  }
-
-  return <SelectPrimitive.Portal>{content}</SelectPrimitive.Portal>
 }
 
 function SelectLabel({

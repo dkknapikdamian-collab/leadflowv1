@@ -25,7 +25,7 @@ import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import Papa from 'papaparse';
-import { format, isAfter, isPast, parseISO, startOfDay, subDays } from 'date-fns';
+import { addDays, format, isAfter, isPast, parseISO, startOfDay, subDays } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
@@ -84,6 +84,10 @@ function toDateSafe(value: unknown) {
   return null;
 }
 
+function toDateInputValue(date: Date) {
+  return format(date, 'yyyy-MM-dd');
+}
+
 export default function Leads() {
   const { workspace, hasAccess } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
@@ -96,6 +100,7 @@ export default function Leads() {
   const [atRiskFilter, setAtRiskFilter] = useState('all');
   const [activityFilter, setActivityFilter] = useState('all');
   const [caseFilter, setCaseFilter] = useState('all');
+  const [processFilter, setProcessFilter] = useState('all');
 
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
   const [newLead, setNewLead] = useState({
@@ -250,7 +255,16 @@ export default function Leads() {
       (caseFilter === 'with-case' && Boolean(linkedCase)) ||
       (caseFilter === 'without-case' && !linkedCase);
 
-    return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity && matchesCase;
+    const nextActionDate = lead.nextActionAt ? parseISO(String(lead.nextActionAt)) : null;
+    const isMissingNextStep = !nextActionDate && !['won', 'lost'].includes(String(lead.status || 'new'));
+    const isOverdue = Boolean(nextActionDate && isPast(nextActionDate));
+    const matchesProcess =
+      processFilter === 'all' ||
+      (processFilter === 'missing-next-step' && isMissingNextStep) ||
+      (processFilter === 'overdue' && isOverdue) ||
+      (processFilter === 'ready' && !isMissingNextStep && !isOverdue);
+
+    return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity && matchesCase && matchesProcess;
   });
 
   const stats = {
@@ -259,6 +273,14 @@ export default function Leads() {
     value: leads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
     atRisk: leads.filter((lead) => Boolean(lead.isAtRisk)).length,
     linkedToCase: leads.filter((lead) => casesByLeadId.has(String(lead.id))).length,
+    missingNextStep: leads.filter((lead) => !lead.nextActionAt && !['won', 'lost'].includes(String(lead.status || 'new'))).length,
+  };
+
+  const applyLeadDatePreset = (days: number) => {
+    setNewLead((prev) => ({
+      ...prev,
+      nextActionAt: toDateInputValue(addDays(new Date(), days)),
+    }));
   };
 
   return (
@@ -337,6 +359,12 @@ export default function Leads() {
                     <div className="space-y-2">
                       <Label>Termin ruchu</Label>
                       <Input type="date" value={newLead.nextActionAt} onChange={(e) => setNewLead({ ...newLead, nextActionAt: e.target.value })} />
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        <button type="button" className="rounded-full border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:bg-slate-50" onClick={() => applyLeadDatePreset(0)}>Dziś</button>
+                        <button type="button" className="rounded-full border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:bg-slate-50" onClick={() => applyLeadDatePreset(1)}>Jutro</button>
+                        <button type="button" className="rounded-full border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:bg-slate-50" onClick={() => applyLeadDatePreset(3)}>Za 3 dni</button>
+                        <button type="button" className="rounded-full border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:bg-slate-50" onClick={() => applyLeadDatePreset(7)}>Za tydzień</button>
+                      </div>
                     </div>
                   </div>
                   <DialogFooter>
@@ -350,7 +378,7 @@ export default function Leads() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4">
           <Card className="border-none shadow-sm">
             <CardContent className="p-6 flex items-center justify-between">
               <div>
@@ -403,6 +431,17 @@ export default function Leads() {
               </div>
               <div className="bg-emerald-50 p-3 rounded-2xl">
                 <Briefcase className="w-6 h-6 text-emerald-500" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-none shadow-sm">
+            <CardContent className="p-6 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Bez kroku</p>
+                <h3 className="text-2xl font-bold text-amber-600">{stats.missingNextStep}</h3>
+              </div>
+              <div className="bg-amber-50 p-3 rounded-2xl">
+                <Clock className="w-6 h-6 text-amber-500" />
               </div>
             </CardContent>
           </Card>
@@ -477,7 +516,18 @@ export default function Leads() {
                   <SelectItem value="without-case">Tylko bez sprawy</SelectItem>
                 </SelectContent>
               </Select>
-              {(statusFilter !== 'all' || sourceFilter !== 'all' || atRiskFilter !== 'all' || activityFilter !== 'all' || caseFilter !== 'all' || searchQuery) && (
+              <Select value={processFilter} onValueChange={setProcessFilter}>
+                <SelectTrigger className="w-[180px] rounded-xl h-11 bg-slate-50 border-none">
+                  <SelectValue placeholder="Proces" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Cały proces</SelectItem>
+                  <SelectItem value="missing-next-step">Bez następnego kroku</SelectItem>
+                  <SelectItem value="overdue">Zaległy ruch</SelectItem>
+                  <SelectItem value="ready">Poukładane</SelectItem>
+                </SelectContent>
+              </Select>
+              {(statusFilter !== 'all' || sourceFilter !== 'all' || atRiskFilter !== 'all' || activityFilter !== 'all' || caseFilter !== 'all' || processFilter !== 'all' || searchQuery) && (
                 <Button
                   variant="ghost"
                   onClick={() => {
@@ -486,6 +536,7 @@ export default function Leads() {
                     setAtRiskFilter('all');
                     setActivityFilter('all');
                     setCaseFilter('all');
+                    setProcessFilter('all');
                     setSearchQuery('');
                   }}
                   className="h-11 rounded-xl"
@@ -525,6 +576,7 @@ export default function Leads() {
               const nextActionDate = lead.nextActionAt ? parseISO(String(lead.nextActionAt)) : null;
               const isOverdue = nextActionDate ? isPast(nextActionDate) : false;
               const linkedCase = casesByLeadId.get(String(lead.id));
+              const isMissingNextStep = !nextActionDate && !['won', 'lost'].includes(String(lead.status || 'new'));
 
               return (
                 <Link key={lead.id} to={`/leads/${lead.id}`}>
@@ -540,6 +592,11 @@ export default function Leads() {
                                 Zagrożony
                               </Badge>
                             )}
+                            {isMissingNextStep ? (
+                              <Badge variant="outline" className="text-[10px] uppercase border-amber-200 text-amber-700 bg-amber-50">
+                                Brak kroku
+                              </Badge>
+                            ) : null}
                             {linkedCase ? (
                               <Badge variant="outline" className="text-[10px] uppercase border-emerald-200 text-emerald-700">
                                 Ma sprawę
