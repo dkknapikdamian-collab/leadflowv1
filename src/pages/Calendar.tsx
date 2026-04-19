@@ -10,6 +10,7 @@ import {
   serverTimestamp,
   doc,
   updateDoc,
+  deleteDoc,
 } from 'firebase/firestore';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -23,6 +24,7 @@ import {
   Bell,
   Repeat,
   CheckSquare,
+  Trash2,
 } from 'lucide-react';
 import {
   format,
@@ -40,7 +42,6 @@ import {
   addDays,
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -82,6 +83,8 @@ import {
 } from '../lib/options';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import {
+  deleteEventFromSupabase,
+  deleteTaskFromSupabase,
   insertEventToSupabase,
   isSupabaseConfigured,
   updateEventInSupabase,
@@ -99,6 +102,10 @@ type CalendarEditDraft = {
 
 function createEntryActionClass() {
   return 'inline-flex h-9 items-center justify-center rounded-xl border border-slate-700 bg-slate-950 px-3 text-xs font-semibold text-white transition hover:border-slate-500 hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-50';
+}
+
+function createDangerActionClass() {
+  return 'inline-flex h-9 items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-3 text-xs font-semibold text-rose-700 transition hover:border-rose-300 hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-50';
 }
 
 function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
@@ -150,17 +157,20 @@ function getEntrySubtitle(entry: ScheduleEntry) {
 type ScheduleEntryCardProps = {
   entry: ScheduleEntry;
   actionButtonClass: string;
+  dangerActionClass: string;
   actionPendingId: string | null;
   onEdit: (entry: ScheduleEntry) => void;
   onShift: (entry: ScheduleEntry, days: number) => void;
   onComplete: (entry: ScheduleEntry) => void;
+  onDelete: (entry: ScheduleEntry) => void;
 };
 
-function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, onShift, onComplete }: ScheduleEntryCardProps) {
+function ScheduleEntryCard({ entry, actionButtonClass, dangerActionClass, actionPendingId, onEdit, onShift, onComplete, onDelete }: ScheduleEntryCardProps) {
   const pendingEdit = actionPendingId === `${entry.id}:edit`;
   const pendingDay = actionPendingId === `${entry.id}:1`;
   const pendingWeek = actionPendingId === `${entry.id}:7`;
   const pendingDone = actionPendingId === `${entry.id}:done`;
+  const pendingDelete = actionPendingId === `${entry.id}:delete`;
   const EntryIcon = getScheduleEntryIcon(entry.kind, entry.raw?.type);
 
   return (
@@ -178,18 +188,21 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
             <EntryIcon className="h-4 w-4" />
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-slate-900">{entry.title}</p>
-            <p className="truncate text-[11px] text-slate-500">{getEntrySubtitle(entry)}</p>
+            <p className="text-sm font-bold text-slate-900 break-words">{entry.title}</p>
+            <p className="text-[11px] text-slate-500 break-words">{getEntrySubtitle(entry)}</p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         <button type="button" className={actionButtonClass} onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
         <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
         <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
         <button type="button" className={actionButtonClass} onClick={() => onComplete(entry)} disabled={pendingDone}>
           <CheckSquare className="mr-2 h-4 w-4" /> {pendingDone ? '...' : 'Zrobione'}
+        </button>
+        <button type="button" className={dangerActionClass} onClick={() => onDelete(entry)} disabled={pendingDelete}>
+          <Trash2 className="mr-2 h-4 w-4" /> {pendingDelete ? '...' : 'Usuń'}
         </button>
       </div>
     </div>
@@ -559,6 +572,55 @@ export default function Calendar() {
     }
   };
 
+  const handleDeleteEntry = async (entry: ScheduleEntry) => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+
+    const confirmed = window.confirm(
+      entry.kind === 'lead'
+        ? 'Usunąć ten wpis z kalendarza? To wyczyści next step i termin ruchu dla leada.'
+        : 'Usunąć ten wpis z kalendarza?'
+    );
+    if (!confirmed) return;
+
+    try {
+      setActionPendingId(`${entry.id}:delete`);
+
+      if (entry.kind === 'event') {
+        if (isSupabaseConfigured()) {
+          await deleteEventFromSupabase(entry.sourceId);
+        } else {
+          await deleteDoc(doc(db, 'events', entry.sourceId));
+        }
+      } else if (entry.kind === 'task') {
+        if (isSupabaseConfigured()) {
+          await deleteTaskFromSupabase(entry.sourceId);
+        } else {
+          await deleteDoc(doc(db, 'tasks', entry.sourceId));
+        }
+      } else {
+        if (isSupabaseConfigured()) {
+          await updateLeadInSupabase({ id: entry.sourceId, nextStep: '', nextActionAt: null });
+        } else {
+          await updateDoc(doc(db, 'leads', entry.sourceId), {
+            nextStep: '',
+            nextActionAt: null,
+            updatedAt: serverTimestamp(),
+          });
+        }
+      }
+
+      if (isSupabaseConfigured()) {
+        await refreshSupabaseBundle();
+      }
+
+      toast.success('Wpis usunięty z kalendarza');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setActionPendingId(null);
+    }
+  };
+
   const handleSaveEdit = async (e: FormEvent) => {
     e.preventDefault();
     if (!editEntry || !editDraft) return;
@@ -660,6 +722,7 @@ export default function Calendar() {
   }
 
   const actionButtonClass = createEntryActionClass();
+  const dangerActionClass = createDangerActionClass();
 
   return (
     <Layout>
@@ -675,55 +738,29 @@ export default function Calendar() {
           </div>
           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
-              <Button
-                variant={calendarView === 'week' ? 'default' : 'ghost'}
-                className="h-9 rounded-lg px-3 text-sm font-semibold"
-                onClick={() => setCalendarView('week')}
-              >
-                Tydzień
-              </Button>
-              <Button
-                variant={calendarView === 'month' ? 'default' : 'ghost'}
-                className="h-9 rounded-lg px-3 text-sm font-semibold"
-                onClick={() => setCalendarView('month')}
-              >
-                Miesiąc
-              </Button>
+              <Button variant={calendarView === 'week' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarView('week')}>Tydzień</Button>
+              <Button variant={calendarView === 'month' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarView('month')}>Miesiąc</Button>
             </div>
             <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  if (calendarView === 'week') {
-                    const next = addDays(selectedDate, -7);
-                    setSelectedDate(next);
-                    setCurrentMonth(next);
-                    return;
-                  }
-                  setCurrentMonth(subMonths(currentMonth, 1));
-                }}
-                className="rounded-lg"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
+              <Button variant="ghost" size="icon" onClick={() => {
+                if (calendarView === 'week') {
+                  const next = addDays(selectedDate, -7);
+                  setSelectedDate(next);
+                  setCurrentMonth(next);
+                  return;
+                }
+                setCurrentMonth(subMonths(currentMonth, 1));
+              }} className="rounded-lg"><ChevronLeft className="w-4 h-4" /></Button>
               <Button variant="ghost" onClick={() => { setCurrentMonth(new Date()); setSelectedDate(new Date()); }} className="text-sm font-bold px-4">Dzisiaj</Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  if (calendarView === 'week') {
-                    const next = addDays(selectedDate, 7);
-                    setSelectedDate(next);
-                    setCurrentMonth(next);
-                    return;
-                  }
-                  setCurrentMonth(addMonths(currentMonth, 1));
-                }}
-                className="rounded-lg"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Button>
+              <Button variant="ghost" size="icon" onClick={() => {
+                if (calendarView === 'week') {
+                  const next = addDays(selectedDate, 7);
+                  setSelectedDate(next);
+                  setCurrentMonth(next);
+                  return;
+                }
+                setCurrentMonth(addMonths(currentMonth, 1));
+              }} className="rounded-lg"><ChevronRight className="w-4 h-4" /></Button>
             </div>
             <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
               <DialogTrigger asChild>
@@ -742,11 +779,7 @@ export default function Calendar() {
                         <Label>Typ</Label>
                         <Select value={newEvent.type} onValueChange={(value) => setNewEvent({ ...newEvent, type: value })}>
                           <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {EVENT_TYPES.map((eventType) => (
-                              <SelectItem key={eventType.value} value={eventType.value}>{eventType.label}</SelectItem>
-                            ))}
-                          </SelectContent>
+                          <SelectContent>{EVENT_TYPES.map((eventType) => (<SelectItem key={eventType.value} value={eventType.value}>{eventType.label}</SelectItem>))}</SelectContent>
                         </Select>
                       </div>
                       <div className="space-y-2">
@@ -755,32 +788,22 @@ export default function Calendar() {
                           <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">Bez leada</SelectItem>
-                            {leads.map((lead) => (
-                              <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>
-                            ))}
+                            {leads.map((lead) => (<SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>))}
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
                   </div>
-
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Od do</p>
                       <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje się automatycznie przy zmianie startu.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Start</Label>
-                        <Input type="datetime-local" value={newEvent.startAt} onChange={(e) => handleStartChange(e.target.value)} required />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Koniec</Label>
-                        <Input type="datetime-local" value={newEvent.endAt} onChange={(e) => setNewEvent({ ...newEvent, endAt: e.target.value })} required />
-                      </div>
+                      <div className="space-y-2"><Label>Start</Label><Input type="datetime-local" value={newEvent.startAt} onChange={(e) => handleStartChange(e.target.value)} required /></div>
+                      <div className="space-y-2"><Label>Koniec</Label><Input type="datetime-local" value={newEvent.endAt} onChange={(e) => setNewEvent({ ...newEvent, endAt: e.target.value })} required /></div>
                     </div>
                   </div>
-
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
@@ -789,58 +812,15 @@ export default function Calendar() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Powtarzanie</Label>
-                        <Select
-                          value={newEvent.recurrence.mode}
-                          onValueChange={(value) => setNewEvent({
-                            ...newEvent,
-                            recurrence: {
-                              ...newEvent.recurrence,
-                              mode: value as any,
-                            },
-                          })}
-                        >
+                        <Select value={newEvent.recurrence.mode} onValueChange={(value) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: value as any } })}>
                           <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {RECURRENCE_OPTIONS.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                            ))}
-                          </SelectContent>
+                          <SelectContent>{RECURRENCE_OPTIONS.map((option) => (<SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>))}</SelectContent>
                         </Select>
                       </div>
-                      <div className="space-y-2">
-                        <Label>Co ile</Label>
-                        <Input
-                          type="number"
-                          min="1"
-                          value={newEvent.recurrence.interval}
-                          onChange={(e) => setNewEvent({
-                            ...newEvent,
-                            recurrence: {
-                              ...newEvent.recurrence,
-                              interval: Math.max(1, Number(e.target.value) || 1),
-                            },
-                          })}
-                          disabled={newEvent.recurrence.mode === 'none'}
-                        />
-                      </div>
+                      <div className="space-y-2"><Label>Co ile</Label><Input type="number" min="1" value={newEvent.recurrence.interval} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newEvent.recurrence.mode === 'none'} /></div>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Powtarzaj do</Label>
-                      <Input
-                        type="date"
-                        value={newEvent.recurrence.until ?? ''}
-                        onChange={(e) => setNewEvent({
-                          ...newEvent,
-                          recurrence: {
-                            ...newEvent.recurrence,
-                            until: e.target.value || null,
-                          },
-                        })}
-                        disabled={newEvent.recurrence.mode === 'none'}
-                      />
-                    </div>
+                    <div className="space-y-2"><Label>Powtarzaj do</Label><Input type="date" value={newEvent.recurrence.until ?? ''} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, until: e.target.value || null } })} disabled={newEvent.recurrence.mode === 'none'} /></div>
                   </div>
-
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
@@ -849,85 +829,15 @@ export default function Calendar() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Tryb</Label>
-                        <Select
-                          value={newEvent.reminder.mode}
-                          onValueChange={(value) => setNewEvent({
-                            ...newEvent,
-                            reminder: {
-                              ...newEvent.reminder,
-                              mode: value as any,
-                            },
-                          })}
-                        >
+                        <Select value={newEvent.reminder.mode} onValueChange={(value) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: value as any } })}>
                           <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {REMINDER_MODE_OPTIONS.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                            ))}
-                          </SelectContent>
+                          <SelectContent>{REMINDER_MODE_OPTIONS.map((option) => (<SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>))}</SelectContent>
                         </Select>
                       </div>
-                      <div className="space-y-2">
-                        <Label>Ile minut wcześniej</Label>
-                        <Input
-                          type="number"
-                          min="0"
-                          value={newEvent.reminder.minutesBefore}
-                          onChange={(e) => setNewEvent({
-                            ...newEvent,
-                            reminder: {
-                              ...newEvent.reminder,
-                              minutesBefore: Math.max(0, Number(e.target.value) || 0),
-                            },
-                          })}
-                          disabled={newEvent.reminder.mode === 'none'}
-                        />
-                      </div>
+                      <div className="space-y-2"><Label>Ile minut wcześniej</Label><Input type="number" min="0" value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Math.max(0, Number(e.target.value) || 0) } })} disabled={newEvent.reminder.mode === 'none'} /></div>
                     </div>
-                    {newEvent.reminder.mode === 'recurring' && (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2 md:col-span-2">
-                          <Label>Cykliczność przypomnienia</Label>
-                          <Select
-                            value={newEvent.reminder.recurrenceMode}
-                            onValueChange={(value) => setNewEvent({
-                              ...newEvent,
-                              reminder: {
-                                ...newEvent.reminder,
-                                recurrenceMode: value as any,
-                              },
-                            })}
-                          >
-                            <SelectTrigger><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
-                                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Co ile</Label>
-                          <Input
-                            type="number"
-                            min="1"
-                            value={newEvent.reminder.recurrenceInterval}
-                            onChange={(e) => setNewEvent({
-                              ...newEvent,
-                              reminder: {
-                                ...newEvent.reminder,
-                                recurrenceInterval: Math.max(1, Number(e.target.value) || 1),
-                              },
-                            })}
-                          />
-                        </div>
-                      </div>
-                    )}
                   </div>
-
-                  <DialogFooter>
-                    <Button type="submit" className="w-full">Zaplanuj</Button>
-                  </DialogFooter>
+                  <DialogFooter><Button type="submit" className="w-full">Zaplanuj</Button></DialogFooter>
                 </form>
               </DialogContent>
             </Dialog>
@@ -938,242 +848,140 @@ export default function Calendar() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Tydzień operacyjny</p>
-              <h2 className="text-lg font-bold text-slate-900">
-                {format(selectedWeekStart, 'd MMM', { locale: pl })} - {format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}
-              </h2>
-              <p className="text-sm text-slate-500">Taski, leady i wydarzenia mają teraz identyczny pasek akcji: Edytuj, +1D, +1W, Zrobione.</p>
+              <h2 className="text-lg font-bold text-slate-900">{format(selectedWeekStart, 'd MMM', { locale: pl })} - {format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}</h2>
+              <p className="text-sm text-slate-500">Taski, leady i wydarzenia mają teraz identyczny pasek akcji: Edytuj, +1D, +1W, Zrobione, Usuń.</p>
             </div>
-            <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
-              Wybrany dzień: {format(selectedDate, 'EEEE, d MMMM', { locale: pl })}
-            </div>
+            <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">Wybrany dzień: {format(selectedDate, 'EEEE, d MMMM', { locale: pl })}</div>
           </div>
         </div>
 
         {calendarView === 'month' ? (
-        <>
-        <div className="grid grid-cols-7 mb-2">
-          {['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
-            <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
-          ))}
-        </div>
+          <>
+            <div className="grid grid-cols-7 mb-2">{['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (<div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>))}</div>
+            <div className="grid grid-cols-7 border-t border-l border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white">
+              {calendarDays.map((day, index) => {
+                const dayEntries = getEntriesForDay(scheduleEntries, day);
+                const isCurrentMonth = isSameMonth(day, monthStart);
+                const isTodayDay = isToday(day);
+                const isSelectedDay = isSameDay(day, selectedDate);
 
-        <div className="grid grid-cols-7 border-t border-l border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white">
-          {calendarDays.map((day, index) => {
-            const dayEntries = getEntriesForDay(scheduleEntries, day);
-            const isCurrentMonth = isSameMonth(day, monthStart);
-            const isTodayDay = isToday(day);
-            const isSelectedDay = isSameDay(day, selectedDate);
-
-            return (
-              <button
-                key={index}
-                type="button"
-                onClick={() => setSelectedDate(day)}
-                className={`min-h-[128px] p-2 border-r border-b border-slate-100 text-left transition-colors hover:bg-slate-50/50 ${!isCurrentMonth ? 'bg-slate-50/30 text-slate-300' : 'text-slate-900'} ${isSelectedDay ? 'ring-2 ring-inset ring-primary/30 bg-primary/5' : ''}`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${isTodayDay ? 'bg-primary text-white' : ''}`}>
-                    {format(day, 'd')}
-                  </span>
-                  {dayEntries.length > 0 && <Badge variant="secondary" className="h-5 text-[10px]">{dayEntries.length}</Badge>}
-                </div>
-                <div className="space-y-1">
-                  {dayEntries.slice(0, 4).map((entry) => {
-                    const EntryIcon = getScheduleEntryIcon(entry.kind, entry.raw?.type);
-
-                    return (
-                      <div key={entry.id} className={`flex items-center gap-1 rounded border p-1 text-[10px] font-medium ${getEntryTone(entry)}`}>
-                        <EntryIcon className="h-3 w-3 shrink-0" />
-                        <span className="truncate">{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span>
-                      </div>
-                    );
-                  })}
-                  {dayEntries.length > 4 && (
-                    <div className="text-[10px] text-slate-500 font-medium px-1">+ {dayEntries.length - 4} więcej</div>
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
-          <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Wybrany dzień</p>
-              <h2 className="text-xl font-bold text-slate-900">{format(selectedDate, 'EEEE, d MMMM yyyy', { locale: pl })}</h2>
+                return (
+                  <button key={index} type="button" onClick={() => setSelectedDate(day)} className={`min-h-[128px] p-2 border-r border-b border-slate-100 text-left transition-colors hover:bg-slate-50/50 ${!isCurrentMonth ? 'bg-slate-50/30 text-slate-300' : 'text-slate-900'} ${isSelectedDay ? 'ring-2 ring-inset ring-primary/30 bg-primary/5' : ''}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${isTodayDay ? 'bg-primary text-white' : ''}`}>{format(day, 'd')}</span>
+                      {dayEntries.length > 0 && <Badge variant="secondary" className="h-5 text-[10px]">{dayEntries.length}</Badge>}
+                    </div>
+                    <div className="space-y-1">
+                      {dayEntries.slice(0, 4).map((entry) => {
+                        const EntryIcon = getScheduleEntryIcon(entry.kind, entry.raw?.type);
+                        return <div key={entry.id} className={`flex items-center gap-1 rounded border p-1 text-[10px] font-medium ${getEntryTone(entry)}`}><EntryIcon className="h-3 w-3 shrink-0" /><span className="truncate">{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span></div>;
+                      })}
+                      {dayEntries.length > 4 && <div className="text-[10px] text-slate-500 font-medium px-1">+ {dayEntries.length - 4} więcej</div>}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
-            <Badge variant="secondary" className="h-7 px-3">{selectedDayEntries.length} wpisów</Badge>
-          </div>
-          <div className="grid gap-3 lg:grid-cols-2">
-            {selectedDayEntries.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-8 text-center text-sm text-slate-400 lg:col-span-2">
-                Brak wpisów dla tego dnia.
+            <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Wybrany dzień</p>
+                  <h2 className="text-xl font-bold text-slate-900">{format(selectedDate, 'EEEE, d MMMM yyyy', { locale: pl })}</h2>
+                </div>
+                <Badge variant="secondary" className="h-7 px-3">{selectedDayEntries.length} wpisów</Badge>
               </div>
-            ) : selectedDayEntries.map((entry) => (
-              <div key={`selected:${entry.id}`}>
-                <ScheduleEntryCard
-                  entry={entry}
-                  actionButtonClass={actionButtonClass}
-                  actionPendingId={actionPendingId}
-                  onEdit={handleOpenEdit}
-                  onShift={handleShiftEntry}
-                  onComplete={handleCompleteEntry}
-                />
+              <div className="grid gap-3 lg:grid-cols-2">
+                {selectedDayEntries.length === 0 ? (
+                  <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-8 text-center text-sm text-slate-400 lg:col-span-2">Brak wpisów dla tego dnia.</div>
+                ) : selectedDayEntries.map((entry) => (
+                  <div key={`selected:${entry.id}`}>
+                    <ScheduleEntryCard entry={entry} actionButtonClass={actionButtonClass} dangerActionClass={dangerActionClass} actionPendingId={actionPendingId} onEdit={handleOpenEdit} onShift={handleShiftEntry} onComplete={handleCompleteEntry} onDelete={handleDeleteEntry} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-        </>
+            </div>
+          </>
         ) : null}
 
         {calendarView === 'week' ? (
-        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
-          <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-            <div>
-              <h3 className="text-lg font-bold text-slate-900">Widok tygodniowy</h3>
-              <p className="text-sm text-slate-500">Każdy wpis ma ten sam zestaw akcji, niezależnie czy to zadanie, lead czy wydarzenie.</p>
+          <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+            <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">Widok tygodniowy</h3>
+                <p className="text-sm text-slate-500">Każdy wpis ma ten sam zestaw akcji, niezależnie czy to zadanie, lead czy wydarzenie.</p>
+              </div>
+              <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisów</Badge>
             </div>
-            <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisów</Badge>
-          </div>
-
-          <div className="overflow-x-auto pb-1">
-          <div className="grid grid-flow-col auto-cols-[minmax(280px,1fr)] gap-4 min-w-full">
-            {weekDays.map((day) => {
-              const dayEntries = getEntriesForDay(weekEntries, day);
-              const isActiveDay = isSameDay(day, selectedDate);
-
-              return (
-                <div key={day.toISOString()} className={`rounded-2xl border p-3 ${isActiveDay ? 'border-primary/40 bg-primary/5' : 'border-slate-200 bg-slate-50/40'}`}>
-                  <div className="mb-3 flex items-center justify-between">
-                    <div>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{format(day, 'EEEE', { locale: pl })}</p>
-                      <p className="text-base font-bold text-slate-900">{format(day, 'd MMM', { locale: pl })}</p>
+            <div className="overflow-x-auto pb-1">
+              <div className="grid grid-flow-col auto-cols-[minmax(280px,1fr)] gap-4 min-w-full">
+                {weekDays.map((day) => {
+                  const dayEntries = getEntriesForDay(weekEntries, day);
+                  const isActiveDay = isSameDay(day, selectedDate);
+                  return (
+                    <div key={day.toISOString()} className={`rounded-2xl border p-3 ${isActiveDay ? 'border-primary/40 bg-primary/5' : 'border-slate-200 bg-slate-50/40'}`}>
+                      <div className="mb-3 flex items-center justify-between">
+                        <div>
+                          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{format(day, 'EEEE', { locale: pl })}</p>
+                          <p className="text-base font-bold text-slate-900">{format(day, 'd MMM', { locale: pl })}</p>
+                        </div>
+                        {isToday(day) ? <Badge className="bg-primary/15 text-primary hover:bg-primary/15">Dziś</Badge> : null}
+                      </div>
+                      <div className="space-y-3">
+                        {dayEntries.length === 0 ? (
+                          <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-3 py-6 text-center text-xs text-slate-400">Brak wpisów</div>
+                        ) : dayEntries.map((entry) => (
+                          <div key={entry.id}>
+                            <ScheduleEntryCard entry={entry} actionButtonClass={actionButtonClass} dangerActionClass={dangerActionClass} actionPendingId={actionPendingId} onEdit={handleOpenEdit} onShift={handleShiftEntry} onComplete={handleCompleteEntry} onDelete={handleDeleteEntry} />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    {isToday(day) ? <Badge className="bg-primary/15 text-primary hover:bg-primary/15">Dziś</Badge> : null}
-                  </div>
-
-                  <div className="space-y-3">
-                    {dayEntries.length === 0 ? (
-                      <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-3 py-6 text-center text-xs text-slate-400">
-                        Brak wpisów
-                      </div>
-                    ) : dayEntries.map((entry) => (
-                      <div key={entry.id}>
-                        <ScheduleEntryCard
-                          entry={entry}
-                          actionButtonClass={actionButtonClass}
-                          actionPendingId={actionPendingId}
-                          onEdit={handleOpenEdit}
-                          onShift={handleShiftEntry}
-                          onComplete={handleCompleteEntry}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            </div>
           </div>
-          </div>
-        </div>
         ) : null}
-
-        <div className="mt-8 grid grid-cols-1 xl:grid-cols-3 gap-4">
-          <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <Repeat className="w-4 h-4 text-slate-400" />
-              <h2 className="text-sm font-bold text-slate-900">Cykliczne wpisy</h2>
-            </div>
-            <p className="text-sm text-slate-500">W tym miesiącu kalendarz rozwija powtarzalne zadania i wydarzenia bez ręcznego odświeżania.</p>
-          </div>
-          <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <Bell className="w-4 h-4 text-slate-400" />
-              <h2 className="text-sm font-bold text-slate-900">Przypomnienia</h2>
-            </div>
-            <p className="text-sm text-slate-500">Tryb przypomnień zapisuje się już w danych. Warstwa wysyłki powiadomień wymaga jeszcze domknięcia logiki V1.</p>
-          </div>
-          <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <Plus className="w-4 h-4 text-slate-400" />
-              <h2 className="text-sm font-bold text-slate-900">Live plan</h2>
-            </div>
-            <p className="text-sm text-slate-500">Kalendarz zbiera teraz wydarzenia, zadania oraz terminy kolejnego ruchu z leadów.</p>
-          </div>
-        </div>
       </div>
 
-      <Dialog open={Boolean(editEntry && editDraft)} onOpenChange={(open) => {
-        if (!open) {
-          setEditEntry(null);
-          setEditDraft(null);
-        }
-      }}>
+      <Dialog open={Boolean(editEntry && editDraft)} onOpenChange={(open) => { if (!open) { setEditEntry(null); setEditDraft(null); } }}>
         <DialogContent className="sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>Edytuj wpis z kalendarza</DialogTitle>
-          </DialogHeader>
+          <DialogHeader><DialogTitle>Edytuj wpis z kalendarza</DialogTitle></DialogHeader>
           {editEntry && editDraft ? (
             <form onSubmit={handleSaveEdit} className="space-y-4 py-2">
               <div className="space-y-2">
                 <Label>{editEntry.kind === 'lead' ? 'Next step' : 'Tytuł'}</Label>
-                <Input
-                  value={editDraft.title}
-                  onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })}
-                  required
-                />
+                <Input value={editDraft.title} onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })} required />
               </div>
-
               {editEntry.kind !== 'lead' ? (
                 <div className="space-y-2">
                   <Label>Typ</Label>
                   <Select value={editDraft.type} onValueChange={(value) => setEditDraft({ ...editDraft, type: value })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {(editEntry.kind === 'event' ? EVENT_TYPES : TASK_TYPES).map((option) => (
-                        <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                      ))}
-                    </SelectContent>
+                    <SelectContent>{(editEntry.kind === 'event' ? EVENT_TYPES : TASK_TYPES).map((option) => (<SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>))}</SelectContent>
                   </Select>
                 </div>
               ) : null}
-
               <div className={`grid gap-4 ${editEntry.kind === 'event' ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
                 <div className="space-y-2">
                   <Label>{editEntry.kind === 'lead' ? 'Termin ruchu' : 'Start'}</Label>
-                  <Input
-                    type="datetime-local"
-                    value={editDraft.startAt}
-                    onChange={(e) => {
-                      const nextValue = e.target.value;
-                      if (editEntry.kind === 'event') {
-                        const oldStart = parseISO(editDraft.startAt);
-                        const oldEnd = parseISO(editDraft.endAt || buildStartEndPair(editDraft.startAt).endAt);
-                        const duration = Math.max(oldEnd.getTime() - oldStart.getTime(), 60 * 60_000);
-                        const nextEnd = new Date(parseISO(nextValue).getTime() + duration);
-                        setEditDraft({ ...editDraft, startAt: nextValue, endAt: toDateTimeLocalValue(nextEnd) });
-                        return;
-                      }
-                      setEditDraft({ ...editDraft, startAt: nextValue });
-                    }}
-                    required
-                  />
+                  <Input type="datetime-local" value={editDraft.startAt} onChange={(e) => {
+                    const nextValue = e.target.value;
+                    if (editEntry.kind === 'event') {
+                      const oldStart = parseISO(editDraft.startAt);
+                      const oldEnd = parseISO(editDraft.endAt || buildStartEndPair(editDraft.startAt).endAt);
+                      const duration = Math.max(oldEnd.getTime() - oldStart.getTime(), 60 * 60_000);
+                      const nextEnd = new Date(parseISO(nextValue).getTime() + duration);
+                      setEditDraft({ ...editDraft, startAt: nextValue, endAt: toDateTimeLocalValue(nextEnd) });
+                      return;
+                    }
+                    setEditDraft({ ...editDraft, startAt: nextValue });
+                  }} required />
                 </div>
-
                 {editEntry.kind === 'event' ? (
-                  <div className="space-y-2">
-                    <Label>Koniec</Label>
-                    <Input
-                      type="datetime-local"
-                      value={editDraft.endAt}
-                      onChange={(e) => setEditDraft({ ...editDraft, endAt: e.target.value })}
-                      required
-                    />
-                  </div>
+                  <div className="space-y-2"><Label>Koniec</Label><Input type="datetime-local" value={editDraft.endAt} onChange={(e) => setEditDraft({ ...editDraft, endAt: e.target.value })} required /></div>
                 ) : null}
               </div>
-
               {editEntry.kind !== 'lead' ? (
                 <div className="space-y-2">
                   <Label>Lead</Label>
@@ -1181,19 +989,12 @@ export default function Calendar() {
                     <SelectTrigger><SelectValue placeholder="Bez leada" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none">Bez leada</SelectItem>
-                      {leads.map((lead) => (
-                        <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>
-                      ))}
+                      {leads.map((lead) => (<SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>))}
                     </SelectContent>
                   </Select>
                 </div>
               ) : null}
-
-              <DialogFooter>
-                <Button type="submit" disabled={actionPendingId === `${editEntry.id}:edit`}>
-                  {actionPendingId === `${editEntry.id}:edit` ? 'Zapisywanie...' : 'Zapisz zmiany'}
-                </Button>
-              </DialogFooter>
+              <DialogFooter><Button type="submit" disabled={actionPendingId === `${editEntry.id}:edit`}>{actionPendingId === `${editEntry.id}:edit` ? 'Zapisywanie...' : 'Zapisz zmiany'}</Button></DialogFooter>
             </form>
           ) : null}
         </DialogContent>

@@ -39,10 +39,12 @@ import { getLeadFinance, normalizePartialPayments } from '../lib/lead-finance';
 import { EVENT_TYPES, TASK_TYPES } from '../lib/options';
 import {
   deleteLeadFromSupabase,
+  fetchActivitiesFromSupabase,
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadByIdFromSupabase,
   fetchTasksFromSupabase,
+  insertActivityToSupabase,
   isSupabaseConfigured,
   updateCaseInSupabase,
   updateLeadInSupabase,
@@ -111,7 +113,7 @@ function eventTypeLabel(type?: string) {
 export default function LeadDetail() {
   const { leadId } = useParams();
   const navigate = useNavigate();
-  const { hasAccess } = useWorkspace();
+  const { hasAccess, workspace } = useWorkspace();
   const [lead, setLead] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -127,6 +129,25 @@ export default function LeadDetail() {
   const [paymentDate, setPaymentDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [linkCaseId, setLinkCaseId] = useState('');
   const [linkingCase, setLinkingCase] = useState(false);
+
+  const loadActivities = async () => {
+    if (!leadId) return;
+
+    if (isSupabaseConfigured()) {
+      try {
+        const rows = await fetchActivitiesFromSupabase({ leadId, limit: 100 });
+        setActivities(rows as any[]);
+      } catch (error: any) {
+        setActivities([]);
+        toast.error(`Błąd odczytu aktywności: ${error?.message || 'REQUEST_FAILED'}`);
+      }
+      return;
+    }
+
+    if (!auth.currentUser) {
+      setActivities([]);
+    }
+  };
 
   const loadLead = async () => {
     if (!leadId) return;
@@ -167,11 +188,11 @@ export default function LeadDetail() {
   useEffect(() => {
     if (!leadId) return;
     if (!isSupabaseConfigured()) return;
-    void loadLead();
+    void Promise.all([loadLead(), loadActivities()]);
   }, [leadId]);
 
   useEffect(() => {
-    if (!leadId || !auth.currentUser) return;
+    if (!leadId || !auth.currentUser || isSupabaseConfigured()) return;
 
     const activitiesRef = collection(db, 'activities');
     const activityQuery = query(activitiesRef, where('leadId', '==', leadId), orderBy('createdAt', 'desc'));
@@ -220,7 +241,27 @@ export default function LeadDetail() {
   );
 
   const addActivity = async (eventType: string, payload: Record<string, unknown>) => {
-    if (!auth.currentUser || !leadId) return;
+    if (!leadId) return;
+
+    if (isSupabaseConfigured()) {
+      try {
+        await insertActivityToSupabase({
+          leadId,
+          ownerId: auth.currentUser?.uid ?? null,
+          actorId: auth.currentUser?.uid ?? null,
+          actorType: 'operator',
+          eventType,
+          payload,
+          workspaceId: workspace?.id,
+        });
+        await loadActivities();
+        return;
+      } catch {
+        // fallback below only if needed
+      }
+    }
+
+    if (!auth.currentUser) return;
     try {
       await addDoc(collection(db, 'activities'), {
         leadId,
@@ -286,7 +327,8 @@ export default function LeadDetail() {
   const handleAddNote = async (e: FormEvent) => {
     e.preventDefault();
     if (!note.trim() || !hasAccess) return;
-    await addActivity('note_added', { content: note.trim() });
+    const content = note.trim();
+    await addActivity('note_added', { content });
     setNote('');
     toast.success('Notatka dodana');
   };
@@ -372,13 +414,13 @@ export default function LeadDetail() {
     <Layout>
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link to="/leads" className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+          <div className="flex items-center gap-4 min-w-0">
+            <Link to="/leads" className="p-2 hover:bg-slate-100 rounded-full transition-colors shrink-0">
               <ArrowLeft className="w-5 h-5 text-slate-600" />
             </Link>
-            <div>
-              <h1 className="text-lg font-bold text-slate-900 truncate max-w-[200px] sm:max-w-md">{lead.name}</h1>
-              <div className="flex items-center gap-2">
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold text-slate-900 max-w-[200px] sm:max-w-md break-words line-clamp-2">{lead.name}</h1>
+              <div className="flex items-center gap-2 flex-wrap">
                 <Badge className={`${currentStatus.color} border-none text-[10px] uppercase font-bold h-5`}>{currentStatus.label}</Badge>
                 {lead.isAtRisk && (
                   <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5 animate-pulse">
@@ -420,9 +462,9 @@ export default function LeadDetail() {
                   <div className="bg-emerald-50 p-3 rounded-2xl">
                     <DollarSign className="w-6 h-6 text-emerald-600" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wartość</p>
-                    <p className="text-lg font-bold text-slate-900">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
+                    <p className="text-lg font-bold text-slate-900 break-words">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
                   </div>
                 </CardContent>
               </Card>
@@ -431,9 +473,9 @@ export default function LeadDetail() {
                   <div className="bg-blue-50 p-3 rounded-2xl">
                     <Target className="w-6 h-6 text-blue-600" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Źródło</p>
-                    <p className="text-lg font-bold text-slate-900">{SOURCE_OPTIONS.find((item) => item.value === lead.source)?.label || 'Inne'}</p>
+                    <p className="text-lg font-bold text-slate-900 break-words">{SOURCE_OPTIONS.find((item) => item.value === lead.source)?.label || 'Inne'}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -442,9 +484,9 @@ export default function LeadDetail() {
                   <div className="bg-amber-50 p-3 rounded-2xl">
                     <Calendar className="w-6 h-6 text-amber-600" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Następny krok</p>
-                    <p className={`text-lg font-bold ${nextActionDate && isPast(nextActionDate) ? 'text-rose-600' : 'text-slate-900'}`}>
+                    <p className={`text-lg font-bold ${nextActionDate && isPast(nextActionDate) ? 'text-rose-600' : 'text-slate-900'} break-words`}>
                       {nextActionDate ? format(nextActionDate, 'd MMM', { locale: pl }) : 'Brak'}
                     </p>
                   </div>
@@ -479,18 +521,18 @@ export default function LeadDetail() {
                         <div className="bg-slate-50 p-2 rounded-xl">
                           <Mail className="w-4 h-4 text-slate-400" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">E-mail</p>
-                          <p className="text-sm font-medium">{lead.email || 'Brak'}</p>
+                          <p className="text-sm font-medium break-all">{lead.email || 'Brak'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="bg-slate-50 p-2 rounded-xl">
                           <Phone className="w-4 h-4 text-slate-400" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Telefon</p>
-                          <p className="text-sm font-medium">{lead.phone || 'Brak'}</p>
+                          <p className="text-sm font-medium break-words">{lead.phone || 'Brak'}</p>
                         </div>
                       </div>
                     </div>
@@ -499,16 +541,16 @@ export default function LeadDetail() {
                         <div className="bg-slate-50 p-2 rounded-xl">
                           <FileText className="w-4 h-4 text-slate-400" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Firma</p>
-                          <p className="text-sm font-medium">{lead.company || 'Brak'}</p>
+                          <p className="text-sm font-medium break-words">{lead.company || 'Brak'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="bg-slate-50 p-2 rounded-xl">
                           <Calendar className="w-4 h-4 text-slate-400" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ostatnia aktualizacja</p>
                           <p className="text-sm font-medium">{updatedAt ? format(updatedAt, 'd MMMM HH:mm', { locale: pl }) : '-'}</p>
                         </div>
@@ -578,7 +620,7 @@ export default function LeadDetail() {
                       </div>
                       <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Sprawa</p>
-                        <p className="mt-2 text-lg font-bold text-slate-900">{associatedCase?.title || 'Brak podpiętej sprawy'}</p>
+                        <p className="mt-2 text-lg font-bold text-slate-900 break-words">{associatedCase?.title || 'Brak podpiętej sprawy'}</p>
                         <p className="mt-1 text-sm text-slate-500">Lead może być źródłem sprawy operacyjnej.</p>
                       </div>
                     </div>
@@ -602,8 +644,8 @@ export default function LeadDetail() {
                               <div key={task.id} className="rounded-xl border border-slate-200 px-3 py-2">
                                 <div className="flex items-center justify-between gap-3">
                                   <div className="min-w-0">
-                                    <p className="text-sm font-semibold text-slate-900 truncate">{task.title || 'Zadanie bez tytułu'}</p>
-                                    <p className="text-xs text-slate-500">{taskTypeLabel(task.type)} • {formatScheduleDate(task.date || task.dueAt)}</p>
+                                    <p className="text-sm font-semibold text-slate-900 break-words">{task.title || 'Zadanie bez tytułu'}</p>
+                                    <p className="text-xs text-slate-500 break-words">{taskTypeLabel(task.type)} • {formatScheduleDate(task.date || task.dueAt)}</p>
                                   </div>
                                   <Badge variant={task.status === 'done' ? 'secondary' : 'outline'}>{task.status === 'done' ? 'Zrobione' : 'Aktywne'}</Badge>
                                 </div>
@@ -631,8 +673,8 @@ export default function LeadDetail() {
                               <div key={event.id} className="rounded-xl border border-slate-200 px-3 py-2">
                                 <div className="flex items-center justify-between gap-3">
                                   <div className="min-w-0">
-                                    <p className="text-sm font-semibold text-slate-900 truncate">{event.title || 'Wydarzenie bez tytułu'}</p>
-                                    <p className="text-xs text-slate-500">{eventTypeLabel(event.type)} • {formatScheduleDate(event.startAt)}</p>
+                                    <p className="text-sm font-semibold text-slate-900 break-words">{event.title || 'Wydarzenie bez tytułu'}</p>
+                                    <p className="text-xs text-slate-500 break-words">{eventTypeLabel(event.type)} • {formatScheduleDate(event.startAt)}</p>
                                   </div>
                                   <Badge variant={event.status === 'completed' ? 'secondary' : 'outline'}>{event.status === 'completed' ? 'Zrobione' : 'Zaplanowane'}</Badge>
                                 </div>
@@ -696,9 +738,9 @@ export default function LeadDetail() {
                           const paymentDateValue = payment.paidAt || payment.createdAt;
                           const parsed = asDate(paymentDateValue);
                           return (
-                            <div key={payment.id} className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2">
-                              <span className="text-sm text-slate-600">{parsed ? format(parsed, 'd MMM yyyy', { locale: pl }) : '-'}</span>
-                              <span className="font-semibold text-slate-900">{payment.amount.toLocaleString()} PLN</span>
+                            <div key={payment.id} className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 gap-3">
+                              <span className="text-sm text-slate-600 break-words">{parsed ? format(parsed, 'd MMM yyyy', { locale: pl }) : '-'}</span>
+                              <span className="font-semibold text-slate-900 shrink-0">{payment.amount.toLocaleString()} PLN</span>
                             </div>
                           );
                         })}
@@ -711,10 +753,10 @@ export default function LeadDetail() {
               <TabsContent value="realization" className="pt-6 space-y-6">
                 {associatedCase ? (
                   <Card className="border-none shadow-sm border-l-4 border-l-emerald-500">
-                    <CardContent className="p-6 flex items-center justify-between">
-                      <div>
+                    <CardContent className="p-6 flex items-center justify-between gap-4 flex-wrap">
+                      <div className="min-w-0">
                         <h4 className="font-bold text-slate-900">Sprawa aktywna</h4>
-                        <p className="text-sm text-slate-500">Realizacja projektu jest w toku.</p>
+                        <p className="text-sm text-slate-500 break-words">Realizacja projektu jest w toku.</p>
                       </div>
                       <Button className="rounded-xl gap-2" asChild>
                         <Link to={`/case/${associatedCase.id}`}>
@@ -799,7 +841,10 @@ export default function LeadDetail() {
                                 ? 'Podpięto sprawę'
                                 : 'Aktywność'}
                         </p>
-                        {activity.payload?.content && <p className="text-sm text-slate-600 mt-1 whitespace-pre-wrap">{activity.payload.content}</p>}
+                        {activity.payload?.content && <p className="text-sm text-slate-600 mt-1 whitespace-pre-wrap break-words">{activity.payload.content}</p>}
+                        {activity.payload?.caseId && !activity.payload?.content ? (
+                          <p className="text-xs text-slate-500 mt-1 break-all">Sprawa ID: {String(activity.payload.caseId)}</p>
+                        ) : null}
                       </div>
                     ))
                   )}
