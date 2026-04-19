@@ -1,4 +1,4 @@
-import { deleteById, selectFirstAvailable, supabaseRequest } from './_supabase';
+import { deleteById, selectFirstAvailable, supabaseRequest } from './_supabase.js';
 
 function normalizeCase(row: Record<string, unknown>) {
   return {
