@@ -1,5 +1,10 @@
 import { deleteById, selectFirstAvailable, supabaseRequest } from './_supabase.js';
 
+function isMissingCasesTableError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return message.includes('PGRST205') || message.includes("table 'public.cases'");
+}
+
 function normalizeCase(row: Record<string, unknown>) {
   return {
     id: String(row.id || crypto.randomUUID()),
@@ -40,11 +45,18 @@ export default async function handler(req: any, res: any) {
   try {
     if (req.method === 'GET') {
       const requestedId = String(req.query?.id || '').trim();
-      const result = await selectFirstAvailable([
-        'cases?select=*&order=updated_at.desc.nullslast&limit=200',
-        'cases?select=*&order=created_at.desc.nullslast&limit=200',
-      ]);
-      const normalized = (result.data as Record<string, unknown>[]).map(normalizeCase);
+      let rows: Record<string, unknown>[] = [];
+      try {
+        const result = await selectFirstAvailable([
+          'cases?select=*&order=updated_at.desc.nullslast&limit=200',
+          'cases?select=*&order=created_at.desc.nullslast&limit=200',
+        ]);
+        rows = result.data as Record<string, unknown>[];
+      } catch (error) {
+        if (!isMissingCasesTableError(error)) throw error;
+        rows = [];
+      }
+      const normalized = rows.map(normalizeCase);
 
       if (requestedId) {
         const match = normalized.find((item) => item.id === requestedId);
