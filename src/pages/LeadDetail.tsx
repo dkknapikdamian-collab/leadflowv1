@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
 import {
   ArrowLeft,
   Calendar,
@@ -19,6 +18,7 @@ import {
   CheckSquare,
   Briefcase,
   Link2,
+  Unlink,
 } from 'lucide-react';
 import { format, isPast, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
@@ -38,6 +38,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadFinance, normalizePartialPayments } from '../lib/lead-finance';
 import { EVENT_TYPES, TASK_TYPES } from '../lib/options';
 import {
+  createCaseInSupabase,
   deleteLeadFromSupabase,
   fetchActivitiesFromSupabase,
   fetchCasesFromSupabase,
@@ -49,7 +50,6 @@ import {
   updateCaseInSupabase,
   updateLeadInSupabase,
 } from '../lib/supabase-fallback';
-import { auth, db } from '../firebase';
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
@@ -110,6 +110,23 @@ function eventTypeLabel(type?: string) {
   return EVENT_TYPES.find((entry) => entry.value === type)?.label || 'Wydarzenie';
 }
 
+function activityTitle(activity: any) {
+  switch (activity.eventType) {
+    case 'status_changed':
+      return `Status: ${STATUS_OPTIONS.find((status) => status.value === activity.payload?.status)?.label || activity.payload?.status || 'Zmiana'}`;
+    case 'note_added':
+      return 'Notatka';
+    case 'case_created':
+      return 'Utworzono sprawę';
+    case 'case_linked':
+      return 'Podpięto sprawę';
+    case 'case_unlinked':
+      return 'Odpięto sprawę';
+    default:
+      return 'Aktywność';
+  }
+}
+
 export default function LeadDetail() {
   const { leadId } = useParams();
   const navigate = useNavigate();
@@ -124,41 +141,32 @@ export default function LeadDetail() {
   const [linkedEvents, setLinkedEvents] = useState<any[]>([]);
   const [note, setNote] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
+  const [createCasePending, setCreateCasePending] = useState(false);
   const [editLead, setEditLead] = useState<any>(null);
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentDate, setPaymentDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [linkCaseId, setLinkCaseId] = useState('');
   const [linkingCase, setLinkingCase] = useState(false);
-
-  const loadActivities = async () => {
-    if (!leadId) return;
-
-    if (isSupabaseConfigured()) {
-      try {
-        const rows = await fetchActivitiesFromSupabase({ leadId, limit: 100 });
-        setActivities(rows as any[]);
-      } catch (error: any) {
-        setActivities([]);
-        toast.error(`Błąd odczytu aktywności: ${error?.message || 'REQUEST_FAILED'}`);
-      }
-      return;
-    }
-
-    if (!auth.currentUser) {
-      setActivities([]);
-    }
-  };
+  const [createCaseDraft, setCreateCaseDraft] = useState({
+    title: '',
+    clientName: '',
+    clientEmail: '',
+    clientPhone: '',
+    status: 'in_progress',
+  });
 
   const loadLead = async () => {
     if (!leadId) return;
     setLoading(true);
     setLoadError(null);
     try {
-      const [leadRow, caseRows, taskRows, eventRows] = await Promise.all([
+      const [leadRow, caseRows, taskRows, eventRows, activityRows] = await Promise.all([
         fetchLeadByIdFromSupabase(leadId),
         fetchCasesFromSupabase(),
         fetchTasksFromSupabase(),
         fetchEventsFromSupabase(),
+        fetchActivitiesFromSupabase({ leadId, limit: 100 }),
       ]);
 
       const normalizedLead = {
@@ -175,7 +183,15 @@ export default function LeadDetail() {
       setAllCases(allCaseRows);
       setLinkedTasks((taskRows as Record<string, unknown>[]).filter((item) => String(item.leadId || '') === leadId));
       setLinkedEvents((eventRows as Record<string, unknown>[]).filter((item) => String(item.leadId || '') === leadId));
+      setActivities(activityRows as any[]);
       setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
+      setCreateCaseDraft({
+        title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - realizacja`,
+        clientName: String((leadRow as any)?.name || ''),
+        clientEmail: String((leadRow as any)?.email || ''),
+        clientPhone: String((leadRow as any)?.phone || ''),
+        status: 'in_progress',
+      });
     } catch (error: any) {
       const message = error?.message || 'Nie udało się pobrać danych leada';
       setLoadError(message);
@@ -188,25 +204,7 @@ export default function LeadDetail() {
   useEffect(() => {
     if (!leadId) return;
     if (!isSupabaseConfigured()) return;
-    void Promise.all([loadLead(), loadActivities()]);
-  }, [leadId]);
-
-  useEffect(() => {
-    if (!leadId || !auth.currentUser || isSupabaseConfigured()) return;
-
-    const activitiesRef = collection(db, 'activities');
-    const activityQuery = query(activitiesRef, where('leadId', '==', leadId), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(
-      activityQuery,
-      (snapshot) => {
-        setActivities(snapshot.docs.map((item) => ({ id: item.id, ...item.data() })));
-      },
-      () => {
-        setActivities([]);
-      },
-    );
-
-    return () => unsubscribe();
+    void loadLead();
   }, [leadId]);
 
   const finance = useMemo(() => getLeadFinance(lead || {}), [lead]);
@@ -242,36 +240,18 @@ export default function LeadDetail() {
 
   const addActivity = async (eventType: string, payload: Record<string, unknown>) => {
     if (!leadId) return;
-
-    if (isSupabaseConfigured()) {
-      try {
-        await insertActivityToSupabase({
-          leadId,
-          ownerId: auth.currentUser?.uid ?? null,
-          actorId: auth.currentUser?.uid ?? null,
-          actorType: 'operator',
-          eventType,
-          payload,
-          workspaceId: workspace?.id,
-        });
-        await loadActivities();
-        return;
-      } catch {
-        // fallback below only if needed
-      }
-    }
-
-    if (!auth.currentUser) return;
     try {
-      await addDoc(collection(db, 'activities'), {
+      await insertActivityToSupabase({
         leadId,
-        ownerId: auth.currentUser.uid,
-        actorId: auth.currentUser.uid,
+        ownerId: null,
+        actorId: null,
         actorType: 'operator',
         eventType,
         payload,
-        createdAt: serverTimestamp(),
+        workspaceId: workspace?.id,
       });
+      const rows = await fetchActivitiesFromSupabase({ leadId, limit: 100 });
+      setActivities(rows as any[]);
     } catch {
       // best effort only
     }
@@ -327,8 +307,7 @@ export default function LeadDetail() {
   const handleAddNote = async (e: FormEvent) => {
     e.preventDefault();
     if (!note.trim() || !hasAccess) return;
-    const content = note.trim();
-    await addActivity('note_added', { content });
+    await addActivity('note_added', { content: note.trim() });
     setNote('');
     toast.success('Notatka dodana');
   };
@@ -363,11 +342,59 @@ export default function LeadDetail() {
     try {
       setLinkingCase(true);
       await updateCaseInSupabase({ id: linkCaseId, leadId });
-      await patchLead({ linkedCaseId: linkCaseId }, 'Sprawa podpięta do leada');
+      toast.success('Sprawa podpięta do leada');
       await addActivity('case_linked', { caseId: linkCaseId });
       setLinkCaseId('');
+      await loadLead();
     } catch (error: any) {
       toast.error(`Błąd przypięcia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLinkingCase(false);
+    }
+  };
+
+  const handleCreateCaseFromLead = async () => {
+    if (!leadId) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!createCaseDraft.title.trim()) return toast.error('Podaj tytuł sprawy');
+
+    try {
+      setCreateCasePending(true);
+      const created = await createCaseInSupabase({
+        title: createCaseDraft.title.trim(),
+        clientName: createCaseDraft.clientName.trim() || lead?.name || '',
+        clientEmail: createCaseDraft.clientEmail.trim(),
+        clientPhone: createCaseDraft.clientPhone.trim(),
+        status: createCaseDraft.status,
+        leadId,
+        portalReady: false,
+        workspaceId: workspace?.id,
+      });
+      const caseId = String((created as any)?.id || '');
+      toast.success('Sprawa utworzona');
+      await addActivity('case_created', { caseId, title: createCaseDraft.title.trim() });
+      setIsCreateCaseOpen(false);
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd tworzenia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setCreateCasePending(false);
+    }
+  };
+
+  const handleUnlinkCase = async () => {
+    if (!associatedCase?.id) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!window.confirm('Odpiąć sprawę od tego leada?')) return;
+
+    try {
+      setLinkingCase(true);
+      await updateCaseInSupabase({ id: String(associatedCase.id), leadId: null });
+      toast.success('Sprawa odpięta');
+      await addActivity('case_unlinked', { caseId: associatedCase.id });
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd odpinania sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkingCase(false);
     }
@@ -419,7 +446,7 @@ export default function LeadDetail() {
               <ArrowLeft className="w-5 h-5 text-slate-600" />
             </Link>
             <div className="min-w-0">
-              <h1 className="text-lg font-bold text-slate-900 max-w-[200px] sm:max-w-md break-words line-clamp-2">{lead.name}</h1>
+              <h1 className="text-lg font-bold text-slate-900 break-words">{lead.name}</h1>
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge className={`${currentStatus.color} border-none text-[10px] uppercase font-bold h-5`}>{currentStatus.label}</Badge>
                 {lead.isAtRisk && (
@@ -430,7 +457,7 @@ export default function LeadDetail() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon" className="rounded-xl">
@@ -462,9 +489,9 @@ export default function LeadDetail() {
                   <div className="bg-emerald-50 p-3 rounded-2xl">
                     <DollarSign className="w-6 h-6 text-emerald-600" />
                   </div>
-                  <div className="min-w-0">
+                  <div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wartość</p>
-                    <p className="text-lg font-bold text-slate-900 break-words">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
+                    <p className="text-lg font-bold text-slate-900">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
                   </div>
                 </CardContent>
               </Card>
@@ -484,9 +511,9 @@ export default function LeadDetail() {
                   <div className="bg-amber-50 p-3 rounded-2xl">
                     <Calendar className="w-6 h-6 text-amber-600" />
                   </div>
-                  <div className="min-w-0">
+                  <div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Następny krok</p>
-                    <p className={`text-lg font-bold ${nextActionDate && isPast(nextActionDate) ? 'text-rose-600' : 'text-slate-900'} break-words`}>
+                    <p className={`text-lg font-bold ${nextActionDate && isPast(nextActionDate) ? 'text-rose-600' : 'text-slate-900'}`}>
                       {nextActionDate ? format(nextActionDate, 'd MMM', { locale: pl }) : 'Brak'}
                     </p>
                   </div>
@@ -523,7 +550,7 @@ export default function LeadDetail() {
                         </div>
                         <div className="min-w-0">
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">E-mail</p>
-                          <p className="text-sm font-medium break-all">{lead.email || 'Brak'}</p>
+                          <p className="text-sm font-medium break-words">{lead.email || 'Brak'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -550,7 +577,7 @@ export default function LeadDetail() {
                         <div className="bg-slate-50 p-2 rounded-xl">
                           <Calendar className="w-4 h-4 text-slate-400" />
                         </div>
-                        <div className="min-w-0">
+                        <div>
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ostatnia aktualizacja</p>
                           <p className="text-sm font-medium">{updatedAt ? format(updatedAt, 'd MMMM HH:mm', { locale: pl }) : '-'}</p>
                         </div>
@@ -738,9 +765,9 @@ export default function LeadDetail() {
                           const paymentDateValue = payment.paidAt || payment.createdAt;
                           const parsed = asDate(paymentDateValue);
                           return (
-                            <div key={payment.id} className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 gap-3">
-                              <span className="text-sm text-slate-600 break-words">{parsed ? format(parsed, 'd MMM yyyy', { locale: pl }) : '-'}</span>
-                              <span className="font-semibold text-slate-900 shrink-0">{payment.amount.toLocaleString()} PLN</span>
+                            <div key={payment.id} className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2">
+                              <span className="text-sm text-slate-600">{parsed ? format(parsed, 'd MMM yyyy', { locale: pl }) : '-'}</span>
+                              <span className="font-semibold text-slate-900">{payment.amount.toLocaleString()} PLN</span>
                             </div>
                           );
                         })}
@@ -753,24 +780,33 @@ export default function LeadDetail() {
               <TabsContent value="realization" className="pt-6 space-y-6">
                 {associatedCase ? (
                   <Card className="border-none shadow-sm border-l-4 border-l-emerald-500">
-                    <CardContent className="p-6 flex items-center justify-between gap-4 flex-wrap">
+                    <CardContent className="p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                       <div className="min-w-0">
-                        <h4 className="font-bold text-slate-900">Sprawa aktywna</h4>
-                        <p className="text-sm text-slate-500 break-words">Realizacja projektu jest w toku.</p>
+                        <h4 className="font-bold text-slate-900 break-words">{associatedCase.title || 'Sprawa aktywna'}</h4>
+                        <p className="text-sm text-slate-500">Realizacja projektu jest w toku.</p>
                       </div>
-                      <Button className="rounded-xl gap-2" asChild>
-                        <Link to={`/case/${associatedCase.id}`}>
-                          Przejdź do sprawy <ExternalLink className="w-4 h-4" />
-                        </Link>
-                      </Button>
+                      <div className="flex gap-2 flex-wrap">
+                        <Button className="rounded-xl gap-2" asChild>
+                          <Link to={`/case/${associatedCase.id}`}>
+                            Przejdź do sprawy <ExternalLink className="w-4 h-4" />
+                          </Link>
+                        </Button>
+                        <Button variant="outline" className="rounded-xl gap-2" onClick={() => void handleUnlinkCase()} disabled={linkingCase}>
+                          <Unlink className="w-4 h-4" />
+                          {linkingCase ? 'Odpinanie...' : 'Odepnij sprawę'}
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 ) : (
-                  <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-200">
+                  <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-200 space-y-4">
                     <h3 className="text-lg font-bold text-slate-900">Brak aktywnej sprawy</h3>
-                    <p className="text-slate-500 max-w-xs mx-auto mt-2">
-                      Podepnij istniejącą sprawę do leada albo utwórz ją w procesie operacyjnym.
+                    <p className="text-slate-500 max-w-xs mx-auto">
+                      Utwórz nową sprawę z poziomu leada albo podepnij istniejącą.
                     </p>
+                    <Button className="rounded-xl" onClick={() => setIsCreateCaseOpen(true)}>
+                      <Briefcase className="w-4 h-4 mr-2" /> Utwórz sprawę z leada
+                    </Button>
                   </div>
                 )}
 
@@ -832,19 +868,14 @@ export default function LeadDetail() {
                   ) : (
                     activities.map((activity) => (
                       <div key={activity.id} className="rounded-xl border border-slate-200 p-3">
-                        <p className="text-sm font-semibold text-slate-900">
-                          {activity.eventType === 'status_changed'
-                            ? `Status: ${STATUS_OPTIONS.find((status) => status.value === activity.payload?.status)?.label || activity.payload?.status}`
-                            : activity.eventType === 'note_added'
-                              ? 'Notatka'
-                              : activity.eventType === 'case_linked'
-                                ? 'Podpięto sprawę'
-                                : 'Aktywność'}
-                        </p>
-                        {activity.payload?.content && <p className="text-sm text-slate-600 mt-1 whitespace-pre-wrap break-words">{activity.payload.content}</p>}
-                        {activity.payload?.caseId && !activity.payload?.content ? (
-                          <p className="text-xs text-slate-500 mt-1 break-all">Sprawa ID: {String(activity.payload.caseId)}</p>
-                        ) : null}
+                        <div className="flex items-start justify-between gap-3">
+                          <p className="text-sm font-semibold text-slate-900">{activityTitle(activity)}</p>
+                          <span className="text-[11px] text-slate-400 whitespace-nowrap">
+                            {asDate(activity.createdAt) ? format(asDate(activity.createdAt)!, 'd MMM HH:mm', { locale: pl }) : ''}
+                          </span>
+                        </div>
+                        {activity.payload?.title ? <p className="text-sm text-slate-600 mt-1 break-words">{String(activity.payload.title)}</p> : null}
+                        {activity.payload?.content ? <p className="text-sm text-slate-600 mt-1 whitespace-pre-wrap break-words">{String(activity.payload.content)}</p> : null}
                       </div>
                     ))
                   )}
@@ -906,6 +937,56 @@ export default function LeadDetail() {
               Anuluj
             </Button>
             <Button onClick={() => void handleUpdateLead()}>Zapisz zmiany</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Utwórz sprawę z leada</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Tytuł sprawy</Label>
+              <Input value={createCaseDraft.title} onChange={(e) => setCreateCaseDraft((prev) => ({ ...prev, title: e.target.value }))} />
+            </div>
+            <div className="space-y-2">
+              <Label>Nazwa klienta</Label>
+              <Input value={createCaseDraft.clientName} onChange={(e) => setCreateCaseDraft((prev) => ({ ...prev, clientName: e.target.value }))} />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>E-mail klienta</Label>
+                <Input value={createCaseDraft.clientEmail} onChange={(e) => setCreateCaseDraft((prev) => ({ ...prev, clientEmail: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Telefon klienta</Label>
+                <Input value={createCaseDraft.clientPhone} onChange={(e) => setCreateCaseDraft((prev) => ({ ...prev, clientPhone: e.target.value }))} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Status startowy</Label>
+              <Select value={createCaseDraft.status} onValueChange={(value) => setCreateCaseDraft((prev) => ({ ...prev, status: value }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="in_progress">W toku</SelectItem>
+                  <SelectItem value="waiting_on_client">Czeka na klienta</SelectItem>
+                  <SelectItem value="blocked">Zablokowana</SelectItem>
+                  <SelectItem value="ready_to_start">Gotowa do startu</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateCaseOpen(false)}>
+              Anuluj
+            </Button>
+            <Button onClick={() => void handleCreateCaseFromLead()} disabled={createCasePending}>
+              {createCasePending ? 'Tworzenie...' : 'Utwórz sprawę'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
