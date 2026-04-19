@@ -162,6 +162,13 @@ export async function deleteEventFromSupabase(id: string) {
   });
 }
 
+export async function updateCaseInSupabase(input: Record<string, unknown> & { id: string }) {
+  return callApi<SupabaseInsertResult>('/api/cases', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
 export async function deleteCaseFromSupabase(id: string) {
   return callApi<SupabaseInsertResult>(`/api/cases?id=${encodeURIComponent(id)}`, {
     method: 'DELETE',

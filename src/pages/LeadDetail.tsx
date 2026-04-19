@@ -1,7 +1,25 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
-import { ArrowLeft, Calendar, CheckCircle2, DollarSign, Edit2, ExternalLink, FileText, Loader2, Mail, MoreVertical, Phone, Plus, Target, Trash2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calendar,
+  CheckCircle2,
+  DollarSign,
+  Edit2,
+  ExternalLink,
+  FileText,
+  Loader2,
+  Mail,
+  MoreVertical,
+  Phone,
+  Plus,
+  Target,
+  Trash2,
+  CheckSquare,
+  Briefcase,
+  Link2,
+} from 'lucide-react';
 import { format, isPast, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -18,7 +36,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Textarea } from '../components/ui/textarea';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadFinance, normalizePartialPayments } from '../lib/lead-finance';
-import { deleteLeadFromSupabase, fetchCasesFromSupabase, fetchLeadByIdFromSupabase, isSupabaseConfigured, updateLeadInSupabase } from '../lib/supabase-fallback';
+import { EVENT_TYPES, TASK_TYPES } from '../lib/options';
+import {
+  deleteLeadFromSupabase,
+  fetchCasesFromSupabase,
+  fetchEventsFromSupabase,
+  fetchLeadByIdFromSupabase,
+  fetchTasksFromSupabase,
+  isSupabaseConfigured,
+  updateCaseInSupabase,
+  updateLeadInSupabase,
+} from '../lib/supabase-fallback';
 import { auth, db } from '../firebase';
 
 const STATUS_OPTIONS = [
@@ -50,7 +78,7 @@ function asDate(value: unknown) {
   if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
   if (typeof value === 'string') {
     try {
-      const parsed = parseISO(value);
+      const parsed = value.includes('T') ? parseISO(value) : new Date(value);
       return Number.isNaN(parsed.getTime()) ? null : parsed;
     } catch {
       return null;
@@ -67,35 +95,66 @@ function asDate(value: unknown) {
   return null;
 }
 
+function formatScheduleDate(value: unknown) {
+  const parsed = asDate(value);
+  return parsed ? format(parsed, 'd MMM yyyy HH:mm', { locale: pl }) : 'Bez terminu';
+}
+
+function taskTypeLabel(type?: string) {
+  return TASK_TYPES.find((entry) => entry.value === type)?.label || 'Zadanie';
+}
+
+function eventTypeLabel(type?: string) {
+  return EVENT_TYPES.find((entry) => entry.value === type)?.label || 'Wydarzenie';
+}
+
 export default function LeadDetail() {
   const { leadId } = useParams();
   const navigate = useNavigate();
-  const { workspace, hasAccess } = useWorkspace();
+  const { hasAccess } = useWorkspace();
   const [lead, setLead] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activities, setActivities] = useState<any[]>([]);
   const [associatedCase, setAssociatedCase] = useState<any>(null);
+  const [allCases, setAllCases] = useState<any[]>([]);
+  const [linkedTasks, setLinkedTasks] = useState<any[]>([]);
+  const [linkedEvents, setLinkedEvents] = useState<any[]>([]);
   const [note, setNote] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editLead, setEditLead] = useState<any>(null);
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentDate, setPaymentDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [linkCaseId, setLinkCaseId] = useState('');
+  const [linkingCase, setLinkingCase] = useState(false);
 
   const loadLead = async () => {
-    if (!leadId || !workspace) return;
+    if (!leadId) return;
     setLoading(true);
     setLoadError(null);
     try {
-      const [leadRow, caseRows] = await Promise.all([fetchLeadByIdFromSupabase(leadId), fetchCasesFromSupabase()]);
+      const [leadRow, caseRows, taskRows, eventRows] = await Promise.all([
+        fetchLeadByIdFromSupabase(leadId),
+        fetchCasesFromSupabase(),
+        fetchTasksFromSupabase(),
+        fetchEventsFromSupabase(),
+      ]);
+
       const normalizedLead = {
         ...(leadRow as Record<string, unknown>),
         partialPayments: normalizePartialPayments((leadRow as Record<string, unknown>)?.partialPayments),
       };
+
+      const allCaseRows = caseRows as Record<string, unknown>[];
+      const currentCase = allCaseRows.find((item) => String(item.leadId || '') === leadId) || null;
+
       setLead(normalizedLead);
       setEditLead(normalizedLead);
-      const match = (caseRows as Record<string, unknown>[]).find((item) => String(item.leadId || '') === leadId);
-      setAssociatedCase(match || null);
+      setAssociatedCase(currentCase);
+      setAllCases(allCaseRows);
+      setLinkedTasks((taskRows as Record<string, unknown>[]).filter((item) => String(item.leadId || '') === leadId));
+      setLinkedEvents((eventRows as Record<string, unknown>[]).filter((item) => String(item.leadId || '') === leadId));
+      setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
     } catch (error: any) {
       const message = error?.message || 'Nie udało się pobrać danych leada';
       setLoadError(message);
@@ -106,13 +165,14 @@ export default function LeadDetail() {
   };
 
   useEffect(() => {
-    if (!workspace || !leadId) return;
+    if (!leadId) return;
     if (!isSupabaseConfigured()) return;
     void loadLead();
-  }, [leadId, workspace]);
+  }, [leadId]);
 
   useEffect(() => {
     if (!leadId || !auth.currentUser) return;
+
     const activitiesRef = collection(db, 'activities');
     const activityQuery = query(activitiesRef, where('leadId', '==', leadId), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(
@@ -124,10 +184,40 @@ export default function LeadDetail() {
         setActivities([]);
       },
     );
+
     return () => unsubscribe();
   }, [leadId]);
 
   const finance = useMemo(() => getLeadFinance(lead || {}), [lead]);
+
+  const sortedLinkedTasks = useMemo(
+    () =>
+      [...linkedTasks].sort((left, right) => {
+        const leftTime = asDate(left.date || left.dueAt || left.updatedAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+        const rightTime = asDate(right.date || right.dueAt || right.updatedAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+        return leftTime - rightTime;
+      }),
+    [linkedTasks],
+  );
+
+  const sortedLinkedEvents = useMemo(
+    () =>
+      [...linkedEvents].sort((left, right) => {
+        const leftTime = asDate(left.startAt || left.updatedAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+        const rightTime = asDate(right.startAt || right.updatedAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+        return leftTime - rightTime;
+      }),
+    [linkedEvents],
+  );
+
+  const availableCasesToLink = useMemo(
+    () =>
+      allCases.filter((item) => {
+        const itemLeadId = String(item.leadId || '');
+        return !itemLeadId || itemLeadId === leadId;
+      }),
+    [allCases, leadId],
+  );
 
   const addActivity = async (eventType: string, payload: Record<string, unknown>) => {
     if (!auth.currentUser || !leadId) return;
@@ -221,6 +311,24 @@ export default function LeadDetail() {
     await patchLead({ partialPayments: nextPayments }, 'Wpłata dodana');
     setPaymentAmount('');
     setPaymentDate(new Date().toISOString().slice(0, 10));
+  };
+
+  const handleLinkExistingCase = async () => {
+    if (!leadId) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!linkCaseId) return toast.error('Wybierz sprawę do powiązania');
+
+    try {
+      setLinkingCase(true);
+      await updateCaseInSupabase({ id: linkCaseId, leadId });
+      await patchLead({ linkedCaseId: linkCaseId }, 'Sprawa podpięta do leada');
+      await addActivity('case_linked', { caseId: linkCaseId });
+      setLinkCaseId('');
+    } catch (error: any) {
+      toast.error(`Błąd przypięcia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLinkingCase(false);
+    }
   };
 
   if (loading) {
@@ -325,7 +433,7 @@ export default function LeadDetail() {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Źródło</p>
-                    <p className="text-lg font-bold text-slate-900 capitalize">{lead.source || 'other'}</p>
+                    <p className="text-lg font-bold text-slate-900">{SOURCE_OPTIONS.find((item) => item.value === lead.source)?.label || 'Inne'}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -451,6 +559,91 @@ export default function LeadDetail() {
                     </div>
                   </CardContent>
                 </Card>
+
+                <Card className="border-none shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Powiązane elementy</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Zadania</p>
+                        <p className="mt-2 text-2xl font-bold text-slate-900">{sortedLinkedTasks.length}</p>
+                        <p className="mt-1 text-sm text-slate-500">Każde zadanie powiązane z leadem widać tutaj i na liście zadań.</p>
+                      </div>
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Wydarzenia</p>
+                        <p className="mt-2 text-2xl font-bold text-slate-900">{sortedLinkedEvents.length}</p>
+                        <p className="mt-1 text-sm text-slate-500">Wydarzenia z datą są widoczne także w kalendarzu.</p>
+                      </div>
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Sprawa</p>
+                        <p className="mt-2 text-lg font-bold text-slate-900">{associatedCase?.title || 'Brak podpiętej sprawy'}</p>
+                        <p className="mt-1 text-sm text-slate-500">Lead może być źródłem sprawy operacyjnej.</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <CheckSquare className="w-4 h-4 text-slate-400" />
+                            <h3 className="text-sm font-bold text-slate-900">Zadania leada</h3>
+                          </div>
+                          <Button variant="outline" size="sm" asChild>
+                            <Link to="/tasks">Otwórz zadania</Link>
+                          </Button>
+                        </div>
+                        {sortedLinkedTasks.length === 0 ? (
+                          <p className="text-sm text-slate-500">Brak zadań powiązanych z tym leadem.</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {sortedLinkedTasks.slice(0, 6).map((task: any) => (
+                              <div key={task.id} className="rounded-xl border border-slate-200 px-3 py-2">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="min-w-0">
+                                    <p className="text-sm font-semibold text-slate-900 truncate">{task.title || 'Zadanie bez tytułu'}</p>
+                                    <p className="text-xs text-slate-500">{taskTypeLabel(task.type)} • {formatScheduleDate(task.date || task.dueAt)}</p>
+                                  </div>
+                                  <Badge variant={task.status === 'done' ? 'secondary' : 'outline'}>{task.status === 'done' ? 'Zrobione' : 'Aktywne'}</Badge>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-slate-400" />
+                            <h3 className="text-sm font-bold text-slate-900">Wydarzenia leada</h3>
+                          </div>
+                          <Button variant="outline" size="sm" asChild>
+                            <Link to="/calendar">Otwórz kalendarz</Link>
+                          </Button>
+                        </div>
+                        {sortedLinkedEvents.length === 0 ? (
+                          <p className="text-sm text-slate-500">Brak wydarzeń powiązanych z tym leadem.</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {sortedLinkedEvents.slice(0, 6).map((event: any) => (
+                              <div key={event.id} className="rounded-xl border border-slate-200 px-3 py-2">
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="min-w-0">
+                                    <p className="text-sm font-semibold text-slate-900 truncate">{event.title || 'Wydarzenie bez tytułu'}</p>
+                                    <p className="text-xs text-slate-500">{eventTypeLabel(event.type)} • {formatScheduleDate(event.startAt)}</p>
+                                  </div>
+                                  <Badge variant={event.status === 'completed' ? 'secondary' : 'outline'}>{event.status === 'completed' ? 'Zrobione' : 'Zaplanowane'}</Badge>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </TabsContent>
 
               <TabsContent value="finance" className="pt-6 space-y-6">
@@ -515,7 +708,7 @@ export default function LeadDetail() {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="realization" className="pt-6">
+              <TabsContent value="realization" className="pt-6 space-y-6">
                 {associatedCase ? (
                   <Card className="border-none shadow-sm border-l-4 border-l-emerald-500">
                     <CardContent className="p-6 flex items-center justify-between">
@@ -534,10 +727,42 @@ export default function LeadDetail() {
                   <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-200">
                     <h3 className="text-lg font-bold text-slate-900">Brak aktywnej sprawy</h3>
                     <p className="text-slate-500 max-w-xs mx-auto mt-2">
-                      Ta sekcja czyta dane z Supabase. Gdy sprawa będzie podpięta do leada, pokaże się tutaj.
+                      Podepnij istniejącą sprawę do leada albo utwórz ją w procesie operacyjnym.
                     </p>
                   </div>
                 )}
+
+                {availableCasesToLink.length > 0 && !associatedCase ? (
+                  <Card className="border-none shadow-sm">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Link2 className="w-5 h-5 text-slate-400" />
+                        Podepnij istniejącą sprawę
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm text-slate-500">Tu przypniesz sprawę do leada. Po podpięciu będzie widoczna zarówno tutaj, jak i w module Sprawy.</p>
+                      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
+                        <Select value={linkCaseId} onValueChange={setLinkCaseId}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Wybierz sprawę" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableCasesToLink.map((caseRecord: any) => (
+                              <SelectItem key={caseRecord.id} value={String(caseRecord.id)}>
+                                {caseRecord.title || 'Sprawa bez tytułu'}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button onClick={() => void handleLinkExistingCase()} disabled={!linkCaseId || linkingCase}>
+                          <Briefcase className="w-4 h-4 mr-2" />
+                          {linkingCase ? 'Podpinanie...' : 'Podepnij sprawę'}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : null}
               </TabsContent>
             </Tabs>
           </div>
@@ -570,7 +795,9 @@ export default function LeadDetail() {
                             ? `Status: ${STATUS_OPTIONS.find((status) => status.value === activity.payload?.status)?.label || activity.payload?.status}`
                             : activity.eventType === 'note_added'
                               ? 'Notatka'
-                              : 'Aktywność'}
+                              : activity.eventType === 'case_linked'
+                                ? 'Podpięto sprawę'
+                                : 'Aktywność'}
                         </p>
                         {activity.payload?.content && <p className="text-sm text-slate-600 mt-1 whitespace-pre-wrap">{activity.payload.content}</p>}
                       </div>
