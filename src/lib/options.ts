@@ -1,3 +1,13 @@
+import {
+  CalendarDays,
+  CircleDot,
+  FileText,
+  MessageSquareReply,
+  Phone,
+  UserRound,
+  type LucideIcon,
+} from 'lucide-react';
+
 export const SOURCE_OPTIONS = [
   { value: 'instagram', label: 'Instagram' },
   { value: 'facebook', label: 'Facebook' },
@@ -23,20 +33,20 @@ export const STATUS_OPTIONS = [
 ];
 
 export const TASK_TYPES = [
-  { value: 'follow_up', label: 'Follow-up' },
-  { value: 'phone', label: 'Telefon' },
-  { value: 'reply', label: 'Odpisać' },
-  { value: 'send_offer', label: 'Wysłać ofertę' },
-  { value: 'meeting', label: 'Spotkanie' },
-  { value: 'other', label: 'Inne' },
+  { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },
+  { value: 'phone', label: 'Telefon', icon: Phone },
+  { value: 'reply', label: 'Odpisać', icon: MessageSquareReply },
+  { value: 'send_offer', label: 'Wyślij ofertę', icon: FileText },
+  { value: 'meeting', label: 'Spotkanie', icon: CalendarDays },
+  { value: 'other', label: 'Inne', icon: CircleDot },
 ];
 
 export const EVENT_TYPES = [
-  { value: 'meeting', label: 'Spotkanie' },
-  { value: 'phone_call', label: 'Rozmowa' },
-  { value: 'follow_up', label: 'Follow-up' },
-  { value: 'deadline', label: 'Deadline' },
-  { value: 'custom', label: 'Własne wydarzenie' },
+  { value: 'meeting', label: 'Spotkanie', icon: CalendarDays },
+  { value: 'phone_call', label: 'Rozmowa', icon: Phone },
+  { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },
+  { value: 'deadline', label: 'Deadline', icon: FileText },
+  { value: 'custom', label: 'Własne wydarzenie', icon: CircleDot },
 ];
 
 export const RECURRENCE_OPTIONS = [
@@ -57,3 +67,9 @@ export const PRIORITY_OPTIONS = [
   { value: 'medium', label: 'Średni' },
   { value: 'high', label: 'Wysoki' },
 ];
+
+export function getScheduleEntryIcon(kind: 'event' | 'task' | 'lead', type?: string): LucideIcon {
+  if (kind === 'lead') return UserRound;
+  if (kind === 'event') return EVENT_TYPES.find((entry) => entry.value === type)?.icon ?? CalendarDays;
+  return TASK_TYPES.find((entry) => entry.value === type)?.icon ?? CircleDot;
+}

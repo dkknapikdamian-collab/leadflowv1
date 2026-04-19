@@ -78,6 +78,7 @@ import {
   RECURRENCE_OPTIONS,
   REMINDER_MODE_OPTIONS,
   TASK_TYPES,
+  getScheduleEntryIcon,
 } from '../lib/options';
 
 type CalendarEditDraft = {
@@ -152,6 +153,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
   const pendingDay = actionPendingId === `${entry.id}:1`;
   const pendingWeek = actionPendingId === `${entry.id}:7`;
   const pendingDone = actionPendingId === `${entry.id}:done`;
+  const EntryIcon = getScheduleEntryIcon(entry.kind, entry.raw?.type);
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
@@ -163,8 +165,15 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
       </div>
 
       <div className="mb-3 min-w-0">
-        <p className="truncate text-sm font-bold text-slate-900">{entry.title}</p>
-        <p className="truncate text-[11px] text-slate-500">{getEntrySubtitle(entry)}</p>
+        <div className="flex items-start gap-2">
+          <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${getEntryTone(entry)}`}>
+            <EntryIcon className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-bold text-slate-900">{entry.title}</p>
+            <p className="truncate text-[11px] text-slate-500">{getEntrySubtitle(entry)}</p>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-2">
@@ -753,11 +762,16 @@ export default function Calendar() {
                   {dayEntries.length > 0 && <Badge variant="secondary" className="h-5 text-[10px]">{dayEntries.length}</Badge>}
                 </div>
                 <div className="space-y-1">
-                  {dayEntries.slice(0, 4).map((entry) => (
-                    <div key={entry.id} className={`block text-[10px] p-1 rounded border truncate font-medium ${getEntryTone(entry)}`}>
-                      {format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}
-                    </div>
-                  ))}
+                  {dayEntries.slice(0, 4).map((entry) => {
+                    const EntryIcon = getScheduleEntryIcon(entry.kind, entry.raw?.type);
+
+                    return (
+                      <div key={entry.id} className={`flex items-center gap-1 rounded border p-1 text-[10px] font-medium ${getEntryTone(entry)}`}>
+                        <EntryIcon className="h-3 w-3 shrink-0" />
+                        <span className="truncate">{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span>
+                      </div>
+                    );
+                  })}
                   {dayEntries.length > 4 && (
                     <div className="text-[10px] text-slate-500 font-medium px-1">+ {dayEntries.length - 4} więcej</div>
                   )}
