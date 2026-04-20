@@ -270,6 +270,23 @@ export default function LeadDetail() {
     }
   };
 
+  const closeLeadAfterCaseStart = async (caseRecordId: string) => {
+    if (!leadId) return;
+
+    await updateLeadInSupabase({
+      id: leadId,
+      status: 'won',
+      nextStep: '',
+      nextActionAt: null,
+    });
+
+    await addActivity('status_changed', {
+      status: 'won',
+      caseId: caseRecordId,
+      reason: 'lead_converted_to_case',
+    });
+  };
+
   const handleUpdateStatus = async (status: string) => {
     if (!hasAccess) return toast.error('Trial wygasł.');
     await patchLead({ status }, 'Status zaktualizowany');
@@ -343,6 +360,7 @@ export default function LeadDetail() {
     try {
       setLinkingCase(true);
       await updateCaseInSupabase({ id: linkCaseId, leadId });
+      await closeLeadAfterCaseStart(linkCaseId);
       toast.success('Sprawa podpięta do leada');
       await addActivity('case_linked', { caseId: linkCaseId });
       setLinkCaseId('');
@@ -372,6 +390,7 @@ export default function LeadDetail() {
         workspaceId: workspace?.id,
       });
       const caseId = String((created as any)?.id || '');
+      await closeLeadAfterCaseStart(caseId);
       toast.success('Sprawa utworzona');
       await addActivity('case_created', { caseId, title: createCaseDraft.title.trim() });
       setIsCreateCaseOpen(false);
