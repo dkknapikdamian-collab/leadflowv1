@@ -110,19 +110,23 @@ export default function Tasks() {
   }) => {
     if (!reminderAt) return;
 
-    await insertActivityToSupabase({
-      ownerId: auth.currentUser?.uid ?? null,
-      actorId: auth.currentUser?.uid ?? null,
-      actorType: 'operator',
-      eventType: 'reminder_scheduled',
-      payload: {
-        entityType: 'task',
-        title,
-        scheduledAt,
-        reminderAt,
-        source: 'tasks',
-      },
-    });
+    try {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'reminder_scheduled',
+        payload: {
+          entityType: 'task',
+          title,
+          scheduledAt,
+          reminderAt,
+          source: 'tasks',
+        },
+      });
+    } catch (error) {
+      console.warn('REMINDER_ACTIVITY_WRITE_FAILED', error);
+    }
   };
 
   async function refreshSupabaseData() {

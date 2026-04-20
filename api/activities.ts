@@ -1,5 +1,21 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable } from './_supabase.js';
 
+function isUuid(value) {
+  return typeof value === 'string'
+    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function asNullableString(value) {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
+function asNullableUuid(value) {
+  const normalized = asNullableString(value);
+  return normalized && isUuid(normalized) ? normalized : null;
+}
+
 function normalizeActivity(row) {
   return {
     id: String(row.id || crypto.randomUUID()),
@@ -43,10 +59,10 @@ export default async function handler(req, res) {
     const workspaceId = await findWorkspaceId(body.workspaceId);
     const payload = {
       workspace_id: workspaceId || null,
-      case_id: body.caseId || null,
-      lead_id: body.leadId || null,
-      owner_id: body.ownerId || null,
-      actor_id: body.actorId || null,
+      case_id: asNullableUuid(body.caseId),
+      lead_id: asNullableUuid(body.leadId),
+      owner_id: asNullableUuid(body.ownerId),
+      actor_id: asNullableUuid(body.actorId),
       actor_type: body.actorType || 'operator',
       event_type: body.eventType || 'activity',
       payload: body.payload || {},

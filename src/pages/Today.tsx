@@ -283,19 +283,23 @@ export default function Today() {
   }) => {
     if (!reminderAt) return;
 
-    await insertActivityToSupabase({
-      ownerId: auth.currentUser?.uid ?? null,
-      actorId: auth.currentUser?.uid ?? null,
-      actorType: 'operator',
-      eventType: 'reminder_scheduled',
-      payload: {
-        entityType,
-        title,
-        scheduledAt,
-        reminderAt,
-        source: 'today',
-      },
-    });
+    try {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'reminder_scheduled',
+        payload: {
+          entityType,
+          title,
+          scheduledAt,
+          reminderAt,
+          source: 'today',
+        },
+      });
+    } catch (error) {
+      console.warn('REMINDER_ACTIVITY_WRITE_FAILED', error);
+    }
   };
 
   const handleAddLead = async (e: FormEvent) => {
