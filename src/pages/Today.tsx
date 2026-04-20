@@ -838,41 +838,43 @@ export default function Today() {
           <div className="lg:col-span-2 space-y-8">
             {overdueTasks.length > 0 && (
               <section className="space-y-4">
-                <div className="flex items-center gap-2 text-rose-600">
-                  <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Zaległe zadania</h2>
-                  <Badge variant="destructive" className="rounded-full">{overdueTasks.length}</Badge>
-                </div>
-                <div className="grid gap-3">
-                  {overdueTasks.map((task) => {
-                    const startAt = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
-                    return (
-                      <TileCard
-                        key={task.id}
-                        id={`overdue-task:${task.id}`}
-                        title={task.title}
-                        subtitle={format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}
-                        collapsedMap={collapsedTiles}
-                        onToggle={toggleTile}
-                        className="border-rose-100 bg-rose-50/30"
-                        subtitleClassName="text-rose-500 font-medium"
-                        headerRight={<Badge variant="destructive" className="rounded-full">Zaległe</Badge>}
-                      >
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="text-sm text-slate-600">Zadanie wymaga reakcji. Możesz je od razu oznaczyć jako wykonane albo przejść do pełnej listy zadań.</div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <Button variant="outline" size="sm" onClick={() => toggleTask(task.id, task.status)}>
-                              {task.status === 'done' ? 'Przywróć' : 'Oznacz jako zrobione'}
-                            </Button>
-                            <Button variant="ghost" size="sm" asChild>
-                              <Link to="/tasks">Otwórz listę</Link>
-                            </Button>
-                          </div>
-                        </div>
-                      </TileCard>
-                    );
-                  })}
-                </div>
+                <TileCard
+                  id="overdue-tasks-section"
+                  title="ZalegĹ‚e zadania"
+                  subtitle={`${overdueTasks.length} wpisĂłw`}
+                  collapsedMap={collapsedTiles}
+                  onToggle={toggleTile}
+                  className="border-rose-100 bg-rose-50/30"
+                  subtitleClassName="text-rose-500 font-medium"
+                  headerRight={<Badge variant="destructive" className="rounded-full">{overdueTasks.length}</Badge>}
+                >
+                  <div className="grid gap-3">
+                    {overdueTasks.map((task) => {
+                      const startAt = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
+                      return (
+                        <Card key={task.id} className="border-rose-100">
+                          <CardContent className="p-4 flex items-center justify-between gap-4">
+                            <div className="min-w-0">
+                              <p className="font-semibold text-slate-900 break-words">{task.title}</p>
+                              <p className="text-sm text-rose-500 break-words font-medium">{format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}</p>
+                              <p className="mt-2 text-sm text-slate-600 break-words">
+                                Zadanie wymaga reakcji. MoĹĽesz je od razu oznaczyÄ‡ jako wykonane albo przejĹ›Ä‡ do peĹ‚nej listy zadaĹ„.
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <Button variant="outline" size="sm" onClick={() => toggleTask(task.id, task.status)}>
+                                {task.status === 'done' ? 'PrzywrĂłÄ‡' : 'Oznacz jako zrobione'}
+                              </Button>
+                              <Button variant="ghost" size="sm" asChild>
+                                <Link to="/tasks">OtwĂłrz listÄ™</Link>
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </TileCard>
               </section>
             )}
 
