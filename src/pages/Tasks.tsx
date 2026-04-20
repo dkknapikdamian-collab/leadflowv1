@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -199,8 +199,8 @@ export default function Tasks() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygas?.');
-    if (!newTask.title.trim()) return toast.error('Wpisz tytu? zadania');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania');
 
     const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -271,9 +271,9 @@ export default function Tasks() {
 
   const handleSaveTaskEdit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygas?.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     if (!editTask?.id) return;
-    if (!editTask.title?.trim()) return toast.error('Wpisz tytu? zadania');
+    if (!editTask.title?.trim()) return toast.error('Wpisz tytuł zadania');
 
     const selectedLead = leads.find((lead) => lead.id === editTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -368,7 +368,7 @@ export default function Tasks() {
               <form onSubmit={handleAddTask} className="space-y-6 py-4">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>TytuĹ‚ zadania</Label>
+                    <Label>Tytuł zadania</Label>
                     <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -430,8 +430,8 @@ export default function Tasks() {
 
                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                   <div>
-                    <p className="text-sm font-bold text-slate-900">CyklicznoĹ›?</p>
-                    <p className="text-xs text-slate-500">MoĹĽesz zostawi? brak albo ustawi? powtarzanie.</p>
+                    <p className="text-sm font-bold text-slate-900">Cykliczność</p>
+                    <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawić powtarzanie.</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2 md:col-span-2">
@@ -533,7 +533,7 @@ export default function Tasks() {
                   {newTask.reminder.mode === 'recurring' && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
-                        <Label>CyklicznoĹ›? przypomnienia</Label>
+                        <Label>Cykliczność przypomnienia</Label>
                         <select
                           className={modalSelectClass}
                           value={newTask.reminder.recurrenceMode}
@@ -783,7 +783,7 @@ export default function Tasks() {
           <Card className="border-none shadow-sm">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Na dziĹ›</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Na dziś</p>
                 <p className="mt-2 text-2xl font-bold text-blue-600">{taskStats.today}</p>
               </div>
               <div className="rounded-2xl bg-blue-50 p-3 text-blue-500">
@@ -869,7 +869,7 @@ export default function Tasks() {
                   }}
                   className="h-11 rounded-xl"
                 >
-                  <X className="w-4 h-4 mr-2" /> WyczyĹ›?
+                  <X className="w-4 h-4 mr-2" /> Wyczyść
                 </Button>
               )}
             </div>
@@ -880,15 +880,15 @@ export default function Tasks() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-              <p className="text-slate-500">Ĺadowanie zadaĹ„...</p>
+              <p className="text-slate-500">Ładowanie zadań...</p>
             </div>
           ) : sortedDates.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
               <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-slate-300" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Brak zadaĹ„</h3>
-              <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo zmieĹ„ filtry.</p>
+              <h3 className="text-lg font-bold text-slate-900">Brak zadań</h3>
+              <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo zmień filtry.</p>
             </div>
           ) : (
             sortedDates.map((dateKey) => {
@@ -956,7 +956,7 @@ export default function Tasks() {
                                     <CheckSquare className="w-4 h-4 mr-2" /> {task.status === 'todo' ? 'Oznacz jako zrobione' : 'Przywróć do zrobienia'}
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600">
-                                    <Trash2 className="w-4 h-4 mr-2" /> UsuĹ„
+                                    <Trash2 className="w-4 h-4 mr-2" /> Usuń
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>

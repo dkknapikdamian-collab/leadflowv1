@@ -320,7 +320,7 @@ export default function Calendar() {
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygas?.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
 
     const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
     const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
@@ -400,7 +400,7 @@ export default function Calendar() {
 
   const handleShiftEntry = async (entry: ScheduleEntry, days: number) => {
     if (!hasAccess) {
-      toast.error('Trial wygas?.');
+      toast.error('Trial wygasł.');
       return;
     }
 
@@ -463,7 +463,7 @@ export default function Calendar() {
 
   const handleCompleteEntry = async (entry: ScheduleEntry) => {
     if (!hasAccess) {
-      toast.error('Trial wygas?.');
+      toast.error('Trial wygasł.');
       return;
     }
 
@@ -509,7 +509,7 @@ export default function Calendar() {
 
   const handleDeleteEntry = async (entry: ScheduleEntry) => {
     if (!hasAccess) {
-      toast.error('Trial wygas?.');
+      toast.error('Trial wygasł.');
       return;
     }
     if (!window.confirm('Usunąć ten wpis z kalendarza?')) return;
@@ -541,7 +541,7 @@ export default function Calendar() {
   const handleSaveEdit = async (e: FormEvent) => {
     e.preventDefault();
     if (!editEntry || !editDraft) return;
-    if (!hasAccess) return toast.error('Trial wygas?.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
 
     try {
       setActionPendingId(`${editEntry.id}:edit`);

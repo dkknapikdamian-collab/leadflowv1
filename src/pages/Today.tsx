@@ -466,7 +466,7 @@ export default function Today() {
                       <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
                     </div>
                     <div className="space-y-2">
-                      <Label>Ĺąr?dło</Label>
+                      <Label>Źródło</Label>
                       <select
                         className={modalSelectClass}
                         value={newLead.source}
@@ -565,8 +565,8 @@ export default function Today() {
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
-                      <p className="text-sm font-bold text-slate-900">CyklicznoĹ›?</p>
-                      <p className="text-xs text-slate-500">MoĹĽesz ustawi? zadanie jednorazowe albo cykliczne.</p>
+                      <p className="text-sm font-bold text-slate-900">Cykliczność</p>
+                      <p className="text-xs text-slate-500">Możesz ustawić zadanie jednorazowe albo cykliczne.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
@@ -593,7 +593,7 @@ export default function Today() {
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                      <p className="text-xs text-slate-500">Na koĹ„cu ustaw przypomnienie i jego cyklicznoĹ›?.</p>
+                      <p className="text-xs text-slate-500">Na końcu ustaw przypomnienie i jego cykliczność.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -621,7 +621,7 @@ export default function Today() {
                     {newTask.reminder.mode === 'recurring' && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label>CyklicznoĹ›? przypomnienia</Label>
+                          <Label>Cykliczność przypomnienia</Label>
                           <select
                             className={modalSelectClass}
                             value={newTask.reminder.recurrenceMode}
@@ -704,8 +704,8 @@ export default function Today() {
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
-                      <p className="text-sm font-bold text-slate-900">CyklicznoĹ›? wydarzenia</p>
-                      <p className="text-xs text-slate-500">MoĹĽesz ustawi? np. wydarzenie miesi?czne i b?dzie widoczne dynamicznie w kalendarzu.</p>
+                      <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
+                      <p className="text-xs text-slate-500">Możesz ustawić np. wydarzenie miesięczne i będzie widoczne dynamicznie w kalendarzu.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
@@ -732,7 +732,7 @@ export default function Today() {
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                      <p className="text-xs text-slate-500">Na koĹ„cu ustaw przypomnienie jednorazowe albo cykliczne.</p>
+                      <p className="text-xs text-slate-500">Na końcu ustaw przypomnienie jednorazowe albo cykliczne.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -760,7 +760,7 @@ export default function Today() {
                     {newEvent.reminder.mode === 'recurring' && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label>CyklicznoĹ›? przypomnienia</Label>
+                          <Label>Cykliczność przypomnienia</Label>
                           <select
                             className={modalSelectClass}
                             value={newEvent.reminder.recurrenceMode}
@@ -815,7 +815,7 @@ export default function Today() {
                       >
                         <div className="flex items-center justify-between gap-4">
                           <div className="text-sm text-slate-600">
-                            Zadanie wymaga reakcji. MoĹĽesz je od razu oznaczy? jako wykonane albo przejĹ›? do pełnej listy zadaĹ„.
+                            Zadanie wymaga reakcji. Możesz je od razu oznaczyć jako wykonane albo przejść do pełnej listy zadań.
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <Button
@@ -826,7 +826,7 @@ export default function Today() {
                               {task.status === 'done' ? 'Przywróć' : 'Oznacz jako zrobione'}
                             </Button>
                             <Button variant="ghost" size="sm" asChild>
-                              <Link to="/tasks">Otw?rz list?</Link>
+                              <Link to="/tasks">Otwórz listę</Link>
                             </Button>
                           </div>
                         </div>
@@ -1031,7 +1031,7 @@ export default function Today() {
               }
               bodyClassName="border-t border-slate-800"
             >
-              <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaĹĽy</p>
+              <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaży</p>
               <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-800 pt-4">
                 <div>
                   <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Aktywne leady</p>
@@ -1045,7 +1045,7 @@ export default function Today() {
             </TileCard>
 
             <section className="space-y-4">
-              <h2 className="text-lg font-bold text-slate-900">NajbliĹĽsze dni</h2>
+              <h2 className="text-lg font-bold text-slate-900">Najbliższe dni</h2>
               <div className="space-y-3">
                 {[1, 2, 3].map((days) => {
                   const date = addDays(new Date(), days);
@@ -1096,7 +1096,7 @@ export default function Today() {
                     }
                   >
                     <Button variant="outline" size="sm" asChild>
-                      <Link to={`/leads/${lead.id}`}>Otw?rz lead</Link>
+                      <Link to={`/leads/${lead.id}`}>Otwórz lead</Link>
                     </Button>
                   </TileCard>
                 ))}
@@ -1106,8 +1106,8 @@ export default function Today() {
             <section className="space-y-3">
               <TileCard
                 id="info-recurring"
-                title="CyklicznoĹ›? działa live"
-                subtitle="Powtarzalne zadania i wydarzenia wpadaj? teraz do planu dnia bez r?cznego odĹ›wieĹĽania."
+                title="Cykliczność działa live"
+                subtitle="Powtarzalne zadania i wydarzenia wpadają teraz do planu dnia bez ręcznego odświeżania."
                 collapsedMap={collapsedTiles}
                 onToggle={toggleTile}
                 headerRight={<Repeat className="w-4 h-4 text-slate-400" />}
@@ -1118,12 +1118,12 @@ export default function Today() {
               <TileCard
                 id="info-reminders"
                 title="Przypomnienia zapisują się w danych"
-                subtitle="Warstwa konfiguracji przypomnieĹ„ jest juĹĽ spi?ta z formularzami."
+                subtitle="Warstwa konfiguracji przypomnień jest już spięta z formularzami."
                 collapsedMap={collapsedTiles}
                 onToggle={toggleTile}
                 headerRight={<Bell className="w-4 h-4 text-slate-400" />}
               >
-                <p className="text-sm text-slate-500">Osobny silnik wysyłki to nadal osobny brak V1, ale ustawienia przypomnieĹ„ s? juĹĽ zapisywane i gotowe do dalszego rozwijania.</p>
+                <p className="text-sm text-slate-500">Osobny silnik wysyłki to nadal osobny brak V1, ale ustawienia przypomnień są już zapisywane i gotowe do dalszego rozwijania.</p>
               </TileCard>
             </section>
           </div>
