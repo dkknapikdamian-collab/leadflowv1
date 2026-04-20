@@ -11,7 +11,6 @@ export function useWorkspace() {
   const [activeUserId, setActiveUserId] = useState<string | null>(auth.currentUser?.uid ?? null);
   const [workspace, setWorkspace] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
-  const [accessOverride, setAccessOverride] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [refreshToken, setRefreshToken] = useState(0);
 
@@ -27,7 +26,6 @@ export function useWorkspace() {
     if (!activeUserId) {
       setWorkspace(null);
       setProfile(null);
-      setAccessOverride(null);
       setLoading(false);
       return;
     }
@@ -46,7 +44,6 @@ export function useWorkspace() {
           if (cancelled) return;
           setWorkspace(me.workspace);
           setProfile(me.profile);
-          setAccessOverride(me.access);
         } catch {
           if (cancelled) return;
           setWorkspace({
@@ -63,7 +60,6 @@ export function useWorkspace() {
             role: 'member',
             isAdmin: false,
           });
-          setAccessOverride(null);
         } finally {
           if (!cancelled) {
             setLoading(false);
@@ -133,8 +129,7 @@ export function useWorkspace() {
     };
   }, [activeUserId, refreshToken]);
 
-  const fallbackAccess = getAccessSummary(workspace);
-  const access = accessOverride || fallbackAccess;
+  const access = getAccessSummary(workspace);
   const isAdmin = isAdminEmail(auth.currentUser?.email) || profile?.role === 'admin' || profile?.isAdmin === true;
   const refresh = () => setRefreshToken((prev) => prev + 1);
 
@@ -144,8 +139,8 @@ export function useWorkspace() {
     loading,
     hasAccess: access.hasAccess || isAdmin,
     isAdmin,
-    isTrialActive: access.isTrialActive ?? (access.status === 'trial_active' || access.status === 'trial_ending'),
-    isPaidActive: access.isPaidActive ?? access.status === 'paid_active',
+    isTrialActive: access.isTrialActive,
+    isPaidActive: access.isPaidActive,
     access,
     refresh,
   };
