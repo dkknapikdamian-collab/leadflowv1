@@ -78,6 +78,7 @@ import {
   updateCaseInSupabase,
   updateCaseItemInSupabase,
   deleteCaseItemFromSupabase,
+  updateLeadInSupabase,
 } from '../lib/supabase-fallback';
 
 function formatDateTime(value: any) {
@@ -439,6 +440,28 @@ export default function CaseDetail() {
     }
   };
 
+  const closeLeadAfterCaseLink = async (leadIdToClose: string) => {
+    await updateLeadInSupabase({
+      id: leadIdToClose,
+      status: 'won',
+      nextStep: '',
+      nextActionAt: null,
+    });
+
+    await insertActivityToSupabase({
+      leadId: leadIdToClose,
+      ownerId: auth.currentUser?.uid ?? null,
+      actorId: auth.currentUser?.uid ?? null,
+      actorType: 'operator',
+      eventType: 'status_changed',
+      payload: {
+        status: 'won',
+        caseId,
+        reason: 'lead_converted_to_case',
+      },
+    });
+  };
+
   const handleLinkLeadToCase = async () => {
     if (!caseId || !selectedLeadId) return;
     if (String(caseData?.leadId || '') === selectedLeadId) {
@@ -455,6 +478,7 @@ export default function CaseDetail() {
     try {
       setLeadRelationPending(true);
       await updateCaseInSupabase({ id: caseId, leadId: selectedLeadId });
+      await closeLeadAfterCaseLink(selectedLeadId);
 
       await insertActivityToSupabase({
         caseId,
