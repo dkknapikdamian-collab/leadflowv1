@@ -63,11 +63,13 @@ import {
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import {
   deleteEventFromSupabase,
+  deleteTaskFromSupabase,
   insertEventToSupabase,
   insertActivityToSupabase,
   insertLeadToSupabase,
   insertTaskToSupabase,
   updateEventInSupabase,
+  updateLeadInSupabase,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
@@ -177,7 +179,7 @@ export default function Today() {
   const [isEventOpen, setIsEventOpen] = useState(false);
   const [collapsedTiles, setCollapsedTiles] = useState<Record<string, boolean>>({});
   const [todayActionId, setTodayActionId] = useState<string | null>(null);
-  const [previewEventEntry, setPreviewEventEntry] = useState<any | null>(null);
+  const [previewEntry, setPreviewEntry] = useState<any | null>(null);
 
   const [newLead, setNewLead] = useState({
     name: '',
@@ -453,8 +455,8 @@ export default function Today() {
       });
 
       await refreshSupabaseBundle();
-      if (previewEventEntry?.id === entry.id) {
-        setPreviewEventEntry(null);
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
       }
       toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywrócone');
     } catch (error: any) {
@@ -471,10 +473,81 @@ export default function Today() {
       setTodayActionId(`${entry.id}:delete`);
       await deleteEventFromSupabase(entry.sourceId);
       await refreshSupabaseBundle();
-      if (previewEventEntry?.id === entry.id) {
-        setPreviewEventEntry(null);
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
       }
       toast.success('Wydarzenie usunięte');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
+  const toggleTodayTask = async (entry: any) => {
+    try {
+      setTodayActionId(`${entry.id}:done`);
+      const nextStatus = entry.raw?.status === 'done' ? 'todo' : 'done';
+
+      await updateTaskInSupabase({
+        id: entry.sourceId,
+        title: entry.raw?.title || entry.title,
+        type: entry.raw?.type,
+        date: entry.raw?.date || entry.startsAt.slice(0, 10),
+        status: nextStatus,
+        priority: entry.raw?.priority,
+        leadId: entry.raw?.leadId ?? null,
+      });
+
+      await refreshSupabaseBundle();
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
+      }
+      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako wykonane' : 'Zadanie przywrócone');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
+  const deleteTodayTask = async (entry: any) => {
+    if (!window.confirm('Usunąć to zadanie?')) return;
+
+    try {
+      setTodayActionId(`${entry.id}:delete`);
+      await deleteTaskFromSupabase(entry.sourceId);
+      await refreshSupabaseBundle();
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
+      }
+      toast.success('Zadanie usunięte');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
+  const postponeTodayLeadAction = async (entry: any, days: number) => {
+    try {
+      setTodayActionId(`${entry.id}:shift`);
+      const currentAt = typeof entry.raw?.nextActionAt === 'string' && entry.raw.nextActionAt
+        ? entry.raw.nextActionAt
+        : entry.startsAt;
+      const nextActionAt = toDateTimeLocalValue(addDays(parseISO(currentAt), days));
+
+      await updateLeadInSupabase({
+        id: entry.sourceId,
+        nextStep: entry.raw?.nextStep || entry.title,
+        nextActionAt,
+      });
+
+      await refreshSupabaseBundle();
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
+      }
+      toast.success(days === 1 ? 'Lead przełożony o 1 dzień' : 'Lead przełożony');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     } finally {
@@ -977,7 +1050,10 @@ export default function Today() {
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                               <span className="text-xs font-bold text-amber-600">{format(parseISO(entry.startsAt), 'HH:mm')}</span>
-                              <Button variant="outline" size="sm" asChild>
+                              <Button variant="outline" size="sm" onClick={() => setPreviewEntry(entry)}>
+                                Podgląd
+                              </Button>
+                              <Button variant="ghost" size="sm" asChild>
                                 <Link to={entry.link || '/leads'}>Otwórz</Link>
                               </Button>
                             </div>
@@ -1024,7 +1100,7 @@ export default function Today() {
                                 </div>
                               </div>
                               <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
-                                <Button variant="outline" size="sm" onClick={() => setPreviewEventEntry(entry)}>
+                                <Button variant="outline" size="sm" onClick={() => setPreviewEntry(entry)}>
                                   Podgląd
                                 </Button>
                                 <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(entry)} disabled={completePending}>
@@ -1065,7 +1141,10 @@ export default function Today() {
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => toggleTask(entry.sourceId, entry.raw.status)}>
+                              <Button variant="outline" size="sm" onClick={() => setPreviewEntry(entry)}>
+                                Podgląd
+                              </Button>
+                              <Button variant="outline" size="sm" onClick={() => toggleTodayTask(entry)}>
                                 {entry.raw.status === 'done' ? 'Przywróć' : 'Zakończ'}
                               </Button>
                               <Button variant="ghost" size="sm" asChild>
@@ -1281,57 +1360,107 @@ export default function Today() {
           </div>
         </div>
       </div>
-      <Dialog open={Boolean(previewEventEntry)} onOpenChange={(open) => { if (!open) setPreviewEventEntry(null); }}>
+      <Dialog open={Boolean(previewEntry)} onOpenChange={(open) => { if (!open) setPreviewEntry(null); }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Podgląd wydarzenia</DialogTitle>
+            <DialogTitle>Podgląd akcji</DialogTitle>
           </DialogHeader>
-          {previewEventEntry ? (
+          {previewEntry ? (
             <div className="space-y-4 py-2">
               <div className="space-y-1">
-                <p className="text-lg font-bold text-slate-900">{previewEventEntry.title}</p>
+                <p className="text-lg font-bold text-slate-900">{previewEntry.title}</p>
                 <p className="text-sm text-slate-500">
-                  {EVENT_TYPES.find((item) => item.value === previewEventEntry.raw?.type)?.label || 'Wydarzenie'}
-                  {previewEventEntry.leadName ? ` • Lead: ${previewEventEntry.leadName}` : ''}
+                  {previewEntry.kind === 'event'
+                    ? `${EVENT_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Wydarzenie'}${previewEntry.leadName ? ` • Lead: ${previewEntry.leadName}` : ''}`
+                    : previewEntry.kind === 'task'
+                      ? `${TASK_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Zadanie'}${previewEntry.leadName ? ` • Lead: ${previewEntry.leadName}` : ''}`
+                      : `${previewEntry.leadName || 'Lead'}${previewEntry.raw?.company ? ` • ${previewEntry.raw.company}` : ''}`}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="rounded-xl border border-slate-200 p-3">
-                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Start</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">{format(parseISO(previewEventEntry.startsAt), 'd MMMM yyyy, HH:mm', { locale: pl })}</p>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Termin</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">{format(parseISO(previewEntry.startsAt), 'd MMMM yyyy, HH:mm', { locale: pl })}</p>
                 </div>
                 <div className="rounded-xl border border-slate-200 p-3">
                   <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Status</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">{previewEventEntry.raw?.status === 'completed' ? 'Wykonane' : 'Zaplanowane'}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">{previewEntry.kind === 'event'
+                    ? previewEntry.raw?.status === 'completed' ? 'Wykonane' : 'Zaplanowane'
+                    : previewEntry.kind === 'task'
+                      ? previewEntry.raw?.status === 'done' ? 'Wykonane' : 'Do zrobienia'
+                      : isLeadOverdue(previewEntry.raw) ? 'Przeterminowany ruch' : 'Zaplanowany ruch'}</p>
                 </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                {previewEventEntry.raw?.recurrence?.mode && previewEventEntry.raw.recurrence.mode !== 'none' ? (
-                  <Badge variant="outline"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === previewEventEntry.raw.recurrence.mode)?.label}</Badge>
+                {previewEntry.kind === 'event' && previewEntry.raw?.recurrence?.mode && previewEntry.raw.recurrence.mode !== 'none' ? (
+                  <Badge variant="outline"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === previewEntry.raw.recurrence.mode)?.label}</Badge>
                 ) : null}
-                {previewEventEntry.raw?.reminder?.mode && previewEventEntry.raw.reminder.mode !== 'none' ? (
+                {previewEntry.kind === 'task' && previewEntry.raw?.recurrence?.mode && previewEntry.raw.recurrence.mode !== 'none' ? (
+                  <Badge variant="outline"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === previewEntry.raw.recurrence.mode)?.label}</Badge>
+                ) : null}
+                {previewEntry.raw?.reminder?.mode && previewEntry.raw.reminder.mode !== 'none' ? (
                   <Badge variant="outline"><Bell className="w-3 h-3 mr-1" /> Przypomnienie aktywne</Badge>
+                ) : null}
+                {previewEntry.kind === 'lead' && previewEntry.raw?.nextStep ? (
+                  <Badge variant="outline">Krok: {previewEntry.raw.nextStep}</Badge>
                 ) : null}
               </div>
 
               <DialogFooter className="flex flex-wrap gap-2 sm:justify-between">
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(previewEventEntry)} disabled={todayActionId === `${previewEventEntry.id}:delete`}>
-                    {todayActionId === `${previewEventEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(previewEventEntry)} disabled={todayActionId === `${previewEventEntry.id}:done`}>
-                    {todayActionId === `${previewEventEntry.id}:done`
-                      ? 'Zapisywanie...'
-                      : previewEventEntry.raw?.status === 'completed'
-                        ? 'Przywróć'
-                        : 'Oznacz jako wykonane'}
-                  </Button>
-                </div>
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/calendar">Otwórz kalendarz</Link>
-                </Button>
+                {previewEntry.kind === 'event' ? (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(previewEntry)} disabled={todayActionId === `${previewEntry.id}:delete`}>
+                        {todayActionId === `${previewEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(previewEntry)} disabled={todayActionId === `${previewEntry.id}:done`}>
+                        {todayActionId === `${previewEntry.id}:done`
+                          ? 'Zapisywanie...'
+                          : previewEntry.raw?.status === 'completed'
+                            ? 'Przywróć'
+                            : 'Oznacz jako wykonane'}
+                      </Button>
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/calendar">Otwórz kalendarz</Link>
+                    </Button>
+                  </>
+                ) : null}
+
+                {previewEntry.kind === 'task' ? (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(previewEntry)} disabled={todayActionId === `${previewEntry.id}:delete`}>
+                        {todayActionId === `${previewEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => toggleTodayTask(previewEntry)} disabled={todayActionId === `${previewEntry.id}:done`}>
+                        {todayActionId === `${previewEntry.id}:done`
+                          ? 'Zapisywanie...'
+                          : previewEntry.raw?.status === 'done'
+                            ? 'Przywróć'
+                            : 'Oznacz jako wykonane'}
+                      </Button>
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/tasks">Otwórz zadania</Link>
+                    </Button>
+                  </>
+                ) : null}
+
+                {previewEntry.kind === 'lead' ? (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={() => postponeTodayLeadAction(previewEntry, 1)} disabled={todayActionId === `${previewEntry.id}:shift`}>
+                        {todayActionId === `${previewEntry.id}:shift` ? 'Zapisywanie...' : 'Przełóż +1 dzień'}
+                      </Button>
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to={previewEntry.link || `/leads/${previewEntry.sourceId}`}>Otwórz lead</Link>
+                    </Button>
+                  </>
+                ) : null}
               </DialogFooter>
             </div>
           ) : null}

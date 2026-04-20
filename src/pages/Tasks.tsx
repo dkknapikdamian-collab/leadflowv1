@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -163,7 +163,7 @@ export default function Tasks() {
         setLeads(leadRows as any[]);
       } catch (error: any) {
         if (!cancelled) {
-          toast.error(`BĹ‚Ä…d odczytu zadaĹ„: ${error.message}`);
+          toast.error(`Błąd odczytu zadań: ${error.message}`);
         }
       } finally {
         if (!cancelled) {
@@ -276,8 +276,8 @@ export default function Tasks() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (!newTask.title.trim()) return toast.error('Wpisz tytuĹ‚ zadania');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania');
 
     const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -313,7 +313,7 @@ export default function Tasks() {
       setIsNewTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
@@ -347,21 +347,21 @@ export default function Tasks() {
   };
 
   const deleteTask = async (taskId: string) => {
-    if (!window.confirm('UsunÄ…Ä‡ zadanie?')) return;
+    if (!window.confirm('Usunąć zadanie?')) return;
     try {
       await deleteTaskFromSupabase(taskId);
       await refreshSupabaseData();
-      toast.success('Zadanie usuniÄ™te');
+      toast.success('Zadanie usunięte');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
   const handleSaveTaskEdit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     if (!editTask?.id) return;
-    if (!editTask.title?.trim()) return toast.error('Wpisz tytuĹ‚ zadania');
+    if (!editTask.title?.trim()) return toast.error('Wpisz tytuł zadania');
 
     const selectedLead = leads.find((lead) => lead.id === editTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -397,7 +397,7 @@ export default function Tasks() {
       setIsEditTaskOpen(false);
       setEditTask(null);
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
@@ -443,7 +443,7 @@ export default function Tasks() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Zadania</h1>
-            <p className="text-slate-500">ZarzÄ…dzaj codziennÄ… egzekucjÄ… i powtarzalnymi ruchami.</p>
+            <p className="text-slate-500">Zarządzaj codzienną egzekucją i powtarzalnymi ruchami.</p>
           </div>
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
             <DialogTrigger asChild>
@@ -456,7 +456,7 @@ export default function Tasks() {
               <form onSubmit={handleAddTask} className="space-y-6 py-4">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>TytuĹ‚ zadania</Label>
+                    <Label>Tytuł zadania</Label>
                     <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -518,8 +518,8 @@ export default function Tasks() {
 
                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                   <div>
-                    <p className="text-sm font-bold text-slate-900">CyklicznoĹ›Ä‡</p>
-                    <p className="text-xs text-slate-500">MoĹĽesz zostawiÄ‡ brak albo ustawiÄ‡ powtarzanie.</p>
+                    <p className="text-sm font-bold text-slate-900">Cykliczność</p>
+                    <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawiÄ‡ powtarzanie.</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2 md:col-span-2">
@@ -599,7 +599,7 @@ export default function Tasks() {
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Kiedy przypomnieÄ‡</Label>
+                      <Label>Kiedy przypomnieć</Label>
                       <select
                         className={modalSelectClass}
                         value={newTask.reminder.minutesBefore}
@@ -621,7 +621,7 @@ export default function Tasks() {
                   {newTask.reminder.mode === 'recurring' && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
-                        <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
+                        <Label>Cykliczność przypomnienia</Label>
                         <select
                           className={modalSelectClass}
                           value={newTask.reminder.recurrenceMode}
@@ -673,7 +673,7 @@ export default function Tasks() {
                 <form onSubmit={handleSaveTaskEdit} className="space-y-6 py-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label>TytuĹ‚ zadania</Label>
+                      <Label>Tytuł zadania</Label>
                       <Input value={editTask.title} onChange={(e) => setEditTask({ ...editTask, title: e.target.value })} required />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -789,7 +789,7 @@ export default function Tasks() {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Kiedy przypomnieÄ‡</Label>
+                        <Label>Kiedy przypomnieć</Label>
                         <select
                           className={modalSelectClass}
                           value={editTask.reminder.minutesBefore}
@@ -811,7 +811,7 @@ export default function Tasks() {
                     {editTask.reminder.mode === 'recurring' && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
+                          <Label>Cykliczność przypomnienia</Label>
                           <select
                             className={modalSelectClass}
                             value={editTask.reminder.recurrenceMode}
@@ -871,7 +871,7 @@ export default function Tasks() {
           <Card className="border-none shadow-sm">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Na dziĹ›</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Na dziś</p>
                 <p className="mt-2 text-2xl font-bold text-blue-600">{taskStats.today}</p>
               </div>
               <div className="rounded-2xl bg-blue-50 p-3 text-blue-500">
@@ -882,7 +882,7 @@ export default function Tasks() {
           <Card className="border-none shadow-sm">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">ZalegĹ‚e</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Zaległe</p>
                 <p className="mt-2 text-2xl font-bold text-rose-600">{taskStats.overdue}</p>
               </div>
               <div className="rounded-2xl bg-rose-50 p-3 text-rose-500">
@@ -938,7 +938,7 @@ export default function Tasks() {
               </Select>
               <Select value={linkFilter} onValueChange={setLinkFilter}>
                 <SelectTrigger className="w-[170px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="PowiÄ…zanie" />
+                  <SelectValue placeholder="Powiązanie" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Wszystkie wpisy</SelectItem>
@@ -957,7 +957,7 @@ export default function Tasks() {
                   }}
                   className="h-11 rounded-xl"
                 >
-                  <X className="w-4 h-4 mr-2" /> WyczyĹ›Ä‡
+                  <X className="w-4 h-4 mr-2" /> Wyczyść
                 </Button>
               )}
             </div>
@@ -968,15 +968,15 @@ export default function Tasks() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-              <p className="text-slate-500">Ĺadowanie zadaĹ„...</p>
+              <p className="text-slate-500">Ładowanie zadań...</p>
             </div>
           ) : sortedDates.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
               <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-slate-300" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Brak zadaĹ„</h3>
-              <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo zmieĹ„ filtry.</p>
+              <h3 className="text-lg font-bold text-slate-900">Brak zadań</h3>
+              <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo zmień filtry.</p>
             </div>
           ) : (
             sortedDates.map((dateKey) => {
@@ -988,7 +988,7 @@ export default function Tasks() {
                 <section key={dateKey} className="space-y-3">
                   <div className="flex items-center gap-2">
                     <h2 className="text-lg font-bold text-slate-900">{format(parseISO(dateKey), 'EEEE, d MMMM', { locale: pl })}</h2>
-                    {isToday(parseISO(dateKey)) && <Badge className="rounded-full">DziĹ›</Badge>}
+                    {isToday(parseISO(dateKey)) && <Badge className="rounded-full">Dziś</Badge>}
                     {isTomorrow(parseISO(dateKey)) && <Badge variant="secondary" className="rounded-full">Jutro</Badge>}
                   </div>
                   <div className="space-y-3">
@@ -1017,14 +1017,14 @@ export default function Tasks() {
                                   <p className={`font-bold text-slate-900 ${task.status === 'done' ? 'line-through' : ''}`}>{task.title}</p>
                                   <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</Badge>
                                   {task.priority === 'high' && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge>}
-                                  {overdue && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">ZalegĹ‚e</Badge>}
+                                  {overdue && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge>}
                                   {!task.leadName && !task.leadId && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Bez leada</Badge>}
                                   {recurrence.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((item) => item.value === recurrence.mode)?.label}</Badge>}
                                   {reminder.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Bell className="w-3 h-3 mr-1" /> {reminder.mode === 'recurring' ? 'Cykliczne przypomnienie' : 'Przypomnienie'}</Badge>}
                                 </div>
                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
                                   <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {format(parseISO(taskStart), 'HH:mm')}</span>
-                                  {task.leadName ? <span>Lead: {task.leadName}</span> : <span>Brak powiÄ…zanego leada</span>}
+                                  {task.leadName ? <span>Lead: {task.leadName}</span> : <span>Brak powiązanego leada</span>}
                                 </div>
                               </div>
                             </div>
@@ -1041,10 +1041,10 @@ export default function Tasks() {
                                     Edytuj
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => toggleTask(task.id, task.status)}>
-                                    <CheckSquare className="w-4 h-4 mr-2" /> {task.status === 'todo' ? 'Oznacz jako zrobione' : 'PrzywrĂłÄ‡ do zrobienia'}
+                                    <CheckSquare className="w-4 h-4 mr-2" /> {task.status === 'todo' ? 'Oznacz jako zrobione' : 'Przywróć do zrobienia'}
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600">
-                                    <Trash2 className="w-4 h-4 mr-2" /> UsuĹ„
+                                    <Trash2 className="w-4 h-4 mr-2" /> Usuń
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
