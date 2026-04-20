@@ -7,6 +7,27 @@ function asIsoDate(value: unknown) {
   return parsed.toISOString();
 }
 
+function asBoolean(value: unknown) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === 'true' || normalized === 't' || normalized === '1') return true;
+    if (normalized === 'false' || normalized === 'f' || normalized === '0') return false;
+  }
+  return null;
+}
+
+function isTaskRow(row: Record<string, unknown>) {
+  const recordType = String(row.record_type || row.recordType || '').trim().toLowerCase();
+  if (recordType) return recordType === 'task';
+
+  const showInTasks = asBoolean(row.show_in_tasks ?? row.showInTasks);
+  if (showInTasks !== null) return showInTasks;
+
+  const hasEndAt = Boolean(asIsoDate(row.end_at || row.endAt));
+  return !hasEndAt;
+}
+
 function normalizeTask(row: Record<string, unknown>) {
   const dueAt =
     asIsoDate(row.scheduled_at) ||
@@ -35,7 +56,8 @@ function normalizeTask(row: Record<string, unknown>) {
     time: dueAt.slice(11, 16),
     status: String(row.status || 'todo'),
     priority: String(row.priority || 'medium'),
-    leadId: row.lead_id ? String(row.lead_id) : undefined,
+    leadId: row.lead_id ? String(row.lead_id) : row.leadId ? String(row.leadId) : undefined,
+    leadName: row.lead_name ? String(row.lead_name) : row.leadName ? String(row.leadName) : undefined,
     reminderAt,
     reminder: reminderAt
       ? {
@@ -81,7 +103,11 @@ export default async function handler(req: any, res: any) {
         'work_items?select=*&order=created_at.desc.nullslast&limit=200',
       ]);
 
-      res.status(200).json((result.data as Record<string, unknown>[]).map(normalizeTask));
+      const normalized = (result.data as Record<string, unknown>[])
+        .filter(isTaskRow)
+        .map(normalizeTask);
+
+      res.status(200).json(normalized);
       return;
     }
 
@@ -150,7 +176,7 @@ export default async function handler(req: any, res: any) {
 
     const payload = {
       workspace_id: workspaceId,
-      created_by_user_id: null,
+      created_by_user_id: body.ownerId || null,
       lead_id: body.leadId || null,
       record_type: 'task',
       type: body.type || 'task',

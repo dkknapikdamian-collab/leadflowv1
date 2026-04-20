@@ -1,10 +1,44 @@
 import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
+function asIsoDate(value: unknown) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed.toISOString();
+}
+
+function asBoolean(value: unknown) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === 'true' || normalized === 't' || normalized === '1') return true;
+    if (normalized === 'false' || normalized === 'f' || normalized === '0') return false;
+  }
+  return null;
+}
+
+function isEventRow(row: Record<string, unknown>) {
+  const recordType = String(row.record_type || row.recordType || '').trim().toLowerCase();
+  if (recordType) return recordType === 'event';
+
+  const showInTasks = asBoolean(row.show_in_tasks ?? row.showInTasks);
+  if (showInTasks === true) return false;
+
+  const showInCalendar = asBoolean(row.show_in_calendar ?? row.showInCalendar);
+  if (showInCalendar !== null) return showInCalendar;
+
+  const hasEndAt = Boolean(asIsoDate(row.end_at || row.endAt));
+  return hasEndAt;
+}
+
 function normalizeEvent(row: Record<string, unknown>) {
-  const startAt = row.start_at || row.scheduled_at || row.startAt || null;
-  const endAt = row.end_at || row.endAt || null;
-  const reminderAt = row.reminder && row.reminder !== 'none' ? String(row.reminder) : '';
-  const recurrenceRule = String(row.recurrence || 'none');
+  const startAt = asIsoDate(row.start_at || row.scheduled_at || row.startAt) || '';
+  const endAt = asIsoDate(row.end_at || row.endAt);
+  const reminderAt =
+    asIsoDate(row.reminder_at) ||
+    asIsoDate(row.reminderAt) ||
+    (typeof row.reminder === 'string' && row.reminder !== 'none' ? asIsoDate(row.reminder) : null);
+  const recurrenceRule = String(row.recurrence_rule || row.recurrenceRule || row.recurrence || 'none');
   const reminderMinutes = reminderAt && startAt
     ? Math.max(0, Math.round((new Date(String(startAt)).getTime() - new Date(reminderAt).getTime()) / 60_000))
     : 30;
@@ -34,7 +68,8 @@ function normalizeEvent(row: Record<string, unknown>) {
       endType: 'never',
       count: null,
     },
-    leadId: row.lead_id ? String(row.lead_id) : undefined,
+    leadId: row.lead_id ? String(row.lead_id) : row.leadId ? String(row.leadId) : undefined,
+    leadName: row.lead_name ? String(row.lead_name) : row.leadName ? String(row.leadName) : undefined,
   };
 }
 
@@ -55,9 +90,14 @@ export default async function handler(req: any, res: any) {
       const result = await selectFirstAvailable([
         'work_items?select=*&record_type=eq.event&order=start_at.asc.nullslast&limit=200',
         'work_items?select=*&show_in_calendar=is.true&order=start_at.asc.nullslast&limit=200',
+        'work_items?select=*&order=start_at.asc.nullslast&limit=200',
       ]);
 
-      res.status(200).json((result.data as Record<string, unknown>[]).map(normalizeEvent));
+      const normalized = (result.data as Record<string, unknown>[])
+        .filter(isEventRow)
+        .map(normalizeEvent);
+
+      res.status(200).json(normalized);
       return;
     }
 
@@ -125,7 +165,7 @@ export default async function handler(req: any, res: any) {
     const startAt = body.startAt ? new Date(body.startAt).toISOString() : nowIso;
     const payload = {
       workspace_id: workspaceId,
-      created_by_user_id: null,
+      created_by_user_id: body.ownerId || null,
       lead_id: body.leadId || null,
       record_type: 'event',
       type: body.type || 'meeting',
