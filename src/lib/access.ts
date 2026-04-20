@@ -120,7 +120,7 @@ export function getAccessSummary(workspace?: WorkspaceLike | null): AccessSummar
         trialDaysLeft,
         trialProgressPercent,
         headline: 'Trial zaraz się kończy',
-        description: `Do końca testu zostało ${trialDaysLeft} ${trialDaysLeft === 1 ? 'dzień' : 'dni'}. To dobry moment, żeby włączyć plan i nie urwać sobie pracy w połowie.` ,
+        description: `Do końca testu zostało ${trialDaysLeft} ${trialDaysLeft === 1 ? 'dzień' : 'dni'}. To dobry moment, żeby włączyć plan i nie urwać sobie pracy w połowie.`,
         badgeLabel: `Trial ${trialDaysLeft} dni`,
         sidebarLabel: `${trialDaysLeft} dni trialu`,
         toneClassName: 'text-amber-500 bg-amber-500/10',

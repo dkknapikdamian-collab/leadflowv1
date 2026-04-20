@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { auth, db } from '../firebase';
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { updateWorkspaceSubscriptionInSupabase } from '../lib/supabase-fallback';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -51,19 +50,20 @@ const PLANS = [
 ];
 
 export default function Billing() {
-  const { workspace, loading } = useWorkspace();
+  const { workspace, loading, refresh } = useWorkspace();
   const [upgrading, setUpgrading] = useState(false);
 
   const handleUpgrade = async (planId: string) => {
     if (!workspace) return;
     setUpgrading(true);
     try {
-      await updateDoc(doc(db, 'workspaces', workspace.id), {
-        subscriptionStatus: 'paid_active',
+      await updateWorkspaceSubscriptionInSupabase({
+        workspaceId: workspace.id,
         planId,
-        updatedAt: serverTimestamp()
+        subscriptionStatus: 'paid_active',
       });
       toast.success('Subskrypcja aktywowana! (Symulacja)');
+      refresh();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     } finally {
@@ -105,8 +105,8 @@ export default function Billing() {
                 </h2>
                 <p className="text-slate-600">
                   {isTrial 
-                    ? `Pozostało Ci ${trialDaysLeft} dni darmowego dostępu.` 
-                    : `Twój plan: ${PLANS.find(p => p.id === workspace.planId)?.name || 'Forteca Solo'}`}
+                    ? `Pozostało Ci ${trialDaysLeft} dni darmowego dostępu.`
+                    : `Twój plan: ${PLANS.find((p) => p.id === workspace.planId)?.name || 'Forteca Solo'}`}
                 </p>
               </div>
             </div>

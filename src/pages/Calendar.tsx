@@ -1,17 +1,5 @@
 import { useState, useEffect, FormEvent } from 'react';
-import { auth, db } from '../firebase';
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  orderBy,
-  addDoc,
-  serverTimestamp,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from 'firebase/firestore';
+import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
@@ -89,7 +77,6 @@ import {
   deleteTaskFromSupabase,
   insertActivityToSupabase,
   insertEventToSupabase,
-  isSupabaseConfigured,
   updateEventInSupabase,
   updateLeadInSupabase,
   updateTaskInSupabase,
@@ -262,72 +249,31 @@ export default function Calendar() {
   useEffect(() => {
     if (!auth.currentUser || !workspace) return;
 
-    if (isSupabaseConfigured()) {
-      let cancelled = false;
+    let cancelled = false;
 
-      const loadBundle = async () => {
-        try {
-          setLoading(true);
-          const bundle = await fetchCalendarBundleFromSupabase();
-          if (cancelled) return;
-          setEvents(bundle.events);
-          setTasks(bundle.tasks);
-          setLeads(bundle.leads);
-        } catch (error: any) {
-          if (!cancelled) {
-            toast.error(`Błąd odczytu kalendarza: ${error.message}`);
-          }
-        } finally {
-          if (!cancelled) {
-            setLoading(false);
-          }
+    const loadBundle = async () => {
+      try {
+        setLoading(true);
+        const bundle = await fetchCalendarBundleFromSupabase();
+        if (cancelled) return;
+        setEvents(bundle.events);
+        setTasks(bundle.tasks);
+        setLeads(bundle.leads);
+      } catch (error: any) {
+        if (!cancelled) {
+          toast.error(`Błąd odczytu kalendarza: ${error.message}`);
         }
-      };
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
 
-      void loadBundle();
-
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    const eventsQuery = query(
-      collection(db, 'events'),
-      where('ownerId', '==', auth.currentUser.uid),
-      where('status', '==', 'scheduled'),
-      orderBy('startAt', 'asc')
-    );
-
-    const tasksQuery = query(
-      collection(db, 'tasks'),
-      where('ownerId', '==', auth.currentUser.uid),
-      where('status', '==', 'todo'),
-      orderBy('date', 'asc')
-    );
-
-    const leadsQuery = query(
-      collection(db, 'leads'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('updatedAt', 'desc')
-    );
-
-    const unsubscribeEvents = onSnapshot(eventsQuery, (snap) => {
-      setEvents(snap.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
-    });
-
-    const unsubscribeTasks = onSnapshot(tasksQuery, (snap) => {
-      setTasks(snap.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
-      setLoading(false);
-    });
-
-    const unsubscribeLeads = onSnapshot(leadsQuery, (snap) => {
-      setLeads(snap.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
-    });
+    void loadBundle();
 
     return () => {
-      unsubscribeEvents();
-      unsubscribeTasks();
-      unsubscribeLeads();
+      cancelled = true;
     };
   }, [workspace]);
 
@@ -357,26 +303,9 @@ export default function Calendar() {
   }) => {
     if (!reminderAt) return;
 
-    if (isSupabaseConfigured()) {
-      await insertActivityToSupabase({
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'reminder_scheduled',
-        payload: {
-          entityType,
-          title,
-          scheduledAt,
-          reminderAt,
-          source: 'calendar',
-        },
-      });
-      return;
-    }
-
-    await addDoc(collection(db, 'activities'), {
-      ownerId: auth.currentUser?.uid,
-      actorId: auth.currentUser?.uid,
+    await insertActivityToSupabase({
+      ownerId: auth.currentUser?.uid ?? null,
+      actorId: auth.currentUser?.uid ?? null,
       actorType: 'operator',
       eventType: 'reminder_scheduled',
       payload: {
@@ -386,56 +315,34 @@ export default function Calendar() {
         reminderAt,
         source: 'calendar',
       },
-      createdAt: serverTimestamp(),
     });
   };
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygas?.');
 
     const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
     const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
 
     try {
-      if (isSupabaseConfigured()) {
-        await insertEventToSupabase({
-          title: newEvent.title,
-          type: newEvent.type,
-          startAt: newEvent.startAt,
-          endAt: newEvent.endAt,
-          reminderAt,
-          recurrenceRule: newEvent.recurrence.mode,
-          leadId: selectedLead?.id ?? null,
-          workspaceId: workspace.id,
-        });
-        await registerReminderScheduled({
-          entityType: 'event',
-          title: newEvent.title,
-          scheduledAt: newEvent.startAt,
-          reminderAt,
-        });
-        await refreshSupabaseBundle();
-      } else {
-        await addDoc(collection(db, 'events'), {
-          ...newEvent,
-          leadId: selectedLead?.id ?? null,
-          leadName: selectedLead?.name ?? '',
-          recurrence: normalizeRecurrenceConfig(newEvent.recurrence),
-          reminder: normalizeReminderConfig(newEvent.reminder),
-          status: 'scheduled',
-          ownerId: auth.currentUser?.uid,
-          workspaceId: workspace.id,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-        await registerReminderScheduled({
-          entityType: 'event',
-          title: newEvent.title,
-          scheduledAt: newEvent.startAt,
-          reminderAt,
-        });
-      }
+      await insertEventToSupabase({
+        title: newEvent.title,
+        type: newEvent.type,
+        startAt: newEvent.startAt,
+        endAt: newEvent.endAt,
+        reminderAt,
+        recurrenceRule: newEvent.recurrence.mode,
+        leadId: selectedLead?.id ?? null,
+        workspaceId: workspace.id,
+      });
+      await registerReminderScheduled({
+        entityType: 'event',
+        title: newEvent.title,
+        scheduledAt: newEvent.startAt,
+        reminderAt,
+      });
+      await refreshSupabaseBundle();
       toast.success('Wydarzenie zaplanowane');
       setIsNewEventOpen(false);
       resetNewEvent();
@@ -493,7 +400,7 @@ export default function Calendar() {
 
   const handleShiftEntry = async (entry: ScheduleEntry, days: number) => {
     if (!hasAccess) {
-      toast.error('Trial wygasł.');
+      toast.error('Trial wygas?.');
       return;
     }
 
@@ -506,22 +413,14 @@ export default function Calendar() {
           ? toDateTimeLocalValue(addDays(parseISO(entry.raw.endAt), days))
           : null;
 
-        if (isSupabaseConfigured()) {
-          await updateEventInSupabase({
-            id: entry.sourceId,
-            title: entry.raw?.title || entry.title,
-            type: entry.raw?.type || 'meeting',
-            startAt: nextStart,
-            endAt: nextEnd,
-            leadId: entry.raw?.leadId ?? null,
-          });
-        } else {
-          await updateDoc(doc(db, 'events', entry.sourceId), {
-            startAt: nextStart,
-            endAt: nextEnd,
-            updatedAt: serverTimestamp(),
-          });
-        }
+        await updateEventInSupabase({
+          id: entry.sourceId,
+          title: entry.raw?.title || entry.title,
+          type: entry.raw?.type || 'meeting',
+          startAt: nextStart,
+          endAt: nextEnd,
+          leadId: entry.raw?.leadId ?? null,
+        });
       } else if (entry.kind === 'task') {
         const nextStart = addDays(parseISO(getTaskStartAt(entry.raw) || entry.startsAt), days);
         const taskPayload = syncTaskDerivedFields({
@@ -531,46 +430,29 @@ export default function Calendar() {
           time: format(nextStart, 'HH:mm'),
         });
 
-        if (isSupabaseConfigured()) {
-          await updateTaskInSupabase({
-            id: entry.sourceId,
-            title: taskPayload.title,
-            type: taskPayload.type,
-            date: taskPayload.date,
-            status: taskPayload.status,
-            priority: taskPayload.priority,
-            leadId: taskPayload.leadId ?? null,
-          });
-        } else {
-          await updateDoc(doc(db, 'tasks', entry.sourceId), {
-            ...taskPayload,
-            updatedAt: serverTimestamp(),
-          });
-        }
+        await updateTaskInSupabase({
+          id: entry.sourceId,
+          title: taskPayload.title,
+          type: taskPayload.type,
+          date: taskPayload.date,
+          status: taskPayload.status,
+          priority: taskPayload.priority,
+          leadId: taskPayload.leadId ?? null,
+        });
       } else {
         const currentLeadAt = typeof entry.raw?.nextActionAt === 'string' && entry.raw.nextActionAt
           ? entry.raw.nextActionAt
           : entry.startsAt;
         const nextStart = addDays(parseISO(currentLeadAt.includes('T') ? currentLeadAt : `${currentLeadAt}T09:00`), days);
 
-        if (isSupabaseConfigured()) {
-          await updateLeadInSupabase({
-            id: entry.sourceId,
-            nextStep: entry.raw?.nextStep || entry.title,
-            nextActionAt: toDateTimeLocalValue(nextStart),
-          });
-        } else {
-          await updateDoc(doc(db, 'leads', entry.sourceId), {
-            nextActionAt: toDateTimeLocalValue(nextStart),
-            updatedAt: serverTimestamp(),
-          });
-        }
+        await updateLeadInSupabase({
+          id: entry.sourceId,
+          nextStep: entry.raw?.nextStep || entry.title,
+          nextActionAt: toDateTimeLocalValue(nextStart),
+        });
       }
 
-      if (isSupabaseConfigured()) {
-        await refreshSupabaseBundle();
-      }
-
+      await refreshSupabaseBundle();
       toast.success(days === 1 ? 'Przesunięto o 1 dzień' : 'Przesunięto o 1 tydzień');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -581,7 +463,7 @@ export default function Calendar() {
 
   const handleCompleteEntry = async (entry: ScheduleEntry) => {
     if (!hasAccess) {
-      toast.error('Trial wygasł.');
+      toast.error('Trial wygas?.');
       return;
     }
 
@@ -589,60 +471,34 @@ export default function Calendar() {
       setActionPendingId(`${entry.id}:done`);
 
       if (entry.kind === 'event') {
-        if (isSupabaseConfigured()) {
-          await updateEventInSupabase({
-            id: entry.sourceId,
-            title: entry.raw?.title || entry.title,
-            type: entry.raw?.type || 'meeting',
-            startAt: entry.raw?.startAt || entry.startsAt,
-            endAt: entry.raw?.endAt || entry.endsAt || null,
-            status: 'completed',
-            leadId: entry.raw?.leadId ?? null,
-          });
-        } else {
-          await updateDoc(doc(db, 'events', entry.sourceId), {
-            status: 'completed',
-            updatedAt: serverTimestamp(),
-          });
-        }
+        await updateEventInSupabase({
+          id: entry.sourceId,
+          title: entry.raw?.title || entry.title,
+          type: entry.raw?.type || 'meeting',
+          startAt: entry.raw?.startAt || entry.startsAt,
+          endAt: entry.raw?.endAt || entry.endsAt || null,
+          status: 'completed',
+          leadId: entry.raw?.leadId ?? null,
+        });
       } else if (entry.kind === 'task') {
-        if (isSupabaseConfigured()) {
-          await updateTaskInSupabase({
-            id: entry.sourceId,
-            title: entry.raw?.title || entry.title,
-            type: entry.raw?.type,
-            date: entry.raw?.date || entry.startsAt.slice(0, 10),
-            status: 'done',
-            priority: entry.raw?.priority,
-            leadId: entry.raw?.leadId ?? null,
-          });
-        } else {
-          await updateDoc(doc(db, 'tasks', entry.sourceId), {
-            status: 'done',
-            updatedAt: serverTimestamp(),
-          });
-        }
+        await updateTaskInSupabase({
+          id: entry.sourceId,
+          title: entry.raw?.title || entry.title,
+          type: entry.raw?.type,
+          date: entry.raw?.date || entry.startsAt.slice(0, 10),
+          status: 'done',
+          priority: entry.raw?.priority,
+          leadId: entry.raw?.leadId ?? null,
+        });
       } else {
-        if (isSupabaseConfigured()) {
-          await updateLeadInSupabase({
-            id: entry.sourceId,
-            nextStep: '',
-            nextActionAt: null,
-          });
-        } else {
-          await updateDoc(doc(db, 'leads', entry.sourceId), {
-            nextStep: '',
-            nextActionAt: null,
-            lastContactAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-          });
-        }
+        await updateLeadInSupabase({
+          id: entry.sourceId,
+          nextStep: '',
+          nextActionAt: null,
+        });
       }
 
-      if (isSupabaseConfigured()) {
-        await refreshSupabaseBundle();
-      }
-
+      await refreshSupabaseBundle();
       toast.success('Wpis oznaczony jako zrobiony');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -653,7 +509,7 @@ export default function Calendar() {
 
   const handleDeleteEntry = async (entry: ScheduleEntry) => {
     if (!hasAccess) {
-      toast.error('Trial wygasł.');
+      toast.error('Trial wygas?.');
       return;
     }
     if (!window.confirm('Usunąć ten wpis z kalendarza?')) return;
@@ -662,36 +518,18 @@ export default function Calendar() {
       setActionPendingId(`${entry.id}:delete`);
 
       if (entry.kind === 'event') {
-        if (isSupabaseConfigured()) {
-          await deleteEventFromSupabase(entry.sourceId);
-        } else {
-          await deleteDoc(doc(db, 'events', entry.sourceId));
-        }
+        await deleteEventFromSupabase(entry.sourceId);
       } else if (entry.kind === 'task') {
-        if (isSupabaseConfigured()) {
-          await deleteTaskFromSupabase(entry.sourceId);
-        } else {
-          await deleteDoc(doc(db, 'tasks', entry.sourceId));
-        }
+        await deleteTaskFromSupabase(entry.sourceId);
       } else {
-        if (isSupabaseConfigured()) {
-          await updateLeadInSupabase({
-            id: entry.sourceId,
-            nextStep: '',
-            nextActionAt: null,
-          });
-        } else {
-          await updateDoc(doc(db, 'leads', entry.sourceId), {
-            nextStep: '',
-            nextActionAt: null,
-            updatedAt: serverTimestamp(),
-          });
-        }
+        await updateLeadInSupabase({
+          id: entry.sourceId,
+          nextStep: '',
+          nextActionAt: null,
+        });
       }
 
-      if (isSupabaseConfigured()) {
-        await refreshSupabaseBundle();
-      }
+      await refreshSupabaseBundle();
       toast.success('Wpis usunięty');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -703,7 +541,7 @@ export default function Calendar() {
   const handleSaveEdit = async (e: FormEvent) => {
     e.preventDefault();
     if (!editEntry || !editDraft) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygas?.');
 
     try {
       setActionPendingId(`${editEntry.id}:edit`);
@@ -711,38 +549,20 @@ export default function Calendar() {
       if (editEntry.kind === 'event') {
         const selectedLead = leads.find((lead) => lead.id === editDraft.leadId);
         const reminderAt = toReminderAtIso(editDraft.startAt, editEntry.raw?.reminder);
-        if (isSupabaseConfigured()) {
-          await updateEventInSupabase({
-            id: editEntry.sourceId,
-            title: editDraft.title,
-            type: editDraft.type,
-            startAt: editDraft.startAt,
-            endAt: editDraft.endAt,
-            leadId: selectedLead?.id ?? null,
-          });
-          await registerReminderScheduled({
-            entityType: 'event',
-            title: editDraft.title,
-            scheduledAt: editDraft.startAt,
-            reminderAt,
-          });
-        } else {
-          await updateDoc(doc(db, 'events', editEntry.sourceId), {
-            title: editDraft.title,
-            type: editDraft.type,
-            startAt: editDraft.startAt,
-            endAt: editDraft.endAt,
-            leadId: selectedLead?.id ?? null,
-            leadName: selectedLead?.name ?? '',
-            updatedAt: serverTimestamp(),
-          });
-          await registerReminderScheduled({
-            entityType: 'event',
-            title: editDraft.title,
-            scheduledAt: editDraft.startAt,
-            reminderAt,
-          });
-        }
+        await updateEventInSupabase({
+          id: editEntry.sourceId,
+          title: editDraft.title,
+          type: editDraft.type,
+          startAt: editDraft.startAt,
+          endAt: editDraft.endAt,
+          leadId: selectedLead?.id ?? null,
+        });
+        await registerReminderScheduled({
+          entityType: 'event',
+          title: editDraft.title,
+          scheduledAt: editDraft.startAt,
+          reminderAt,
+        });
       } else if (editEntry.kind === 'task') {
         const selectedLead = leads.find((lead) => lead.id === editDraft.leadId);
         const nextDate = parseISO(editDraft.startAt);
@@ -758,53 +578,30 @@ export default function Calendar() {
         });
         const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
 
-        if (isSupabaseConfigured()) {
-          await updateTaskInSupabase({
-            id: editEntry.sourceId,
-            title: payload.title,
-            type: payload.type,
-            date: payload.date,
-            status: payload.status,
-            priority: payload.priority,
-            leadId: payload.leadId ?? null,
-          });
-          await registerReminderScheduled({
-            entityType: 'task',
-            title: payload.title,
-            scheduledAt: payload.dueAt,
-            reminderAt,
-          });
-        } else {
-          await updateDoc(doc(db, 'tasks', editEntry.sourceId), {
-            ...payload,
-            updatedAt: serverTimestamp(),
-          });
-          await registerReminderScheduled({
-            entityType: 'task',
-            title: payload.title,
-            scheduledAt: payload.dueAt,
-            reminderAt,
-          });
-        }
+        await updateTaskInSupabase({
+          id: editEntry.sourceId,
+          title: payload.title,
+          type: payload.type,
+          date: payload.date,
+          status: payload.status,
+          priority: payload.priority,
+          leadId: payload.leadId ?? null,
+        });
+        await registerReminderScheduled({
+          entityType: 'task',
+          title: payload.title,
+          scheduledAt: payload.dueAt,
+          reminderAt,
+        });
       } else {
-        if (isSupabaseConfigured()) {
-          await updateLeadInSupabase({
-            id: editEntry.sourceId,
-            nextStep: editDraft.title,
-            nextActionAt: editDraft.startAt,
-          });
-        } else {
-          await updateDoc(doc(db, 'leads', editEntry.sourceId), {
-            nextStep: editDraft.title,
-            nextActionAt: editDraft.startAt,
-            updatedAt: serverTimestamp(),
-          });
-        }
+        await updateLeadInSupabase({
+          id: editEntry.sourceId,
+          nextStep: editDraft.title,
+          nextActionAt: editDraft.startAt,
+        });
       }
 
-      if (isSupabaseConfigured()) {
-        await refreshSupabaseBundle();
-      }
+      await refreshSupabaseBundle();
 
       toast.success('Wpis zaktualizowany');
       setEditEntry(null);
@@ -1006,7 +803,7 @@ export default function Calendar() {
                       <Label>Powtarzaj do</Label>
                       <Input
                         type="date"
-                        value={newEvent.recurrence.until ?? ''}
+                        value={newEvent.recurrence.until || ''}
                         onChange={(e) => setNewEvent({
                           ...newEvent,
                           recurrence: {

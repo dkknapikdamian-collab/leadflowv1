@@ -84,6 +84,29 @@ type ActivityInput = {
   workspaceId?: string;
 };
 
+type MeResponse = {
+  workspace: {
+    id: string;
+    ownerId?: string | null;
+    planId?: string | null;
+    subscriptionStatus?: string | null;
+    trialEndsAt?: string | null;
+  };
+  profile: {
+    id: string;
+    fullName?: string;
+    email?: string;
+    role?: string;
+    isAdmin?: boolean;
+  };
+  access: {
+    hasAccess: boolean;
+    status: string;
+    isTrialActive: boolean;
+    isPaidActive: boolean;
+  };
+};
+
 function getSupabaseConfig() {
   const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();
   return url ? { url } : null;
@@ -287,5 +310,26 @@ export async function updateEventInSupabase(input: Record<string, unknown> & { i
 export async function deleteEventFromSupabase(id: string) {
   return callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(id)}`, {
     method: 'DELETE',
+  });
+}
+
+export async function fetchMeFromSupabase(input: { uid?: string; email?: string; fullName?: string }) {
+  const query = new URLSearchParams();
+  if (input.uid) query.set('uid', input.uid);
+  if (input.email) query.set('email', input.email);
+  if (input.fullName) query.set('fullName', input.fullName);
+  const suffix = query.toString() ? `?${query.toString()}` : '';
+  return callApi<MeResponse>(`/api/me${suffix}`);
+}
+
+export async function updateWorkspaceSubscriptionInSupabase(input: {
+  workspaceId: string;
+  planId?: string;
+  subscriptionStatus?: string;
+  trialEndsAt?: string | null;
+}) {
+  return callApi<SupabaseInsertResult>('/api/workspace-subscription', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
   });
 }

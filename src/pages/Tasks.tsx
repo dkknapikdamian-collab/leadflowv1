@@ -1,17 +1,5 @@
 ﻿import { useState, useEffect, FormEvent } from 'react';
-import { auth, db } from '../firebase';
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  orderBy,
-  addDoc,
-  serverTimestamp,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from 'firebase/firestore';
+import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
@@ -82,7 +70,6 @@ import {
   fetchTasksFromSupabase,
   insertActivityToSupabase,
   insertTaskToSupabase,
-  isSupabaseConfigured,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
@@ -123,26 +110,9 @@ export default function Tasks() {
   }) => {
     if (!reminderAt) return;
 
-    if (isSupabaseConfigured()) {
-      await insertActivityToSupabase({
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'reminder_scheduled',
-        payload: {
-          entityType: 'task',
-          title,
-          scheduledAt,
-          reminderAt,
-          source: 'tasks',
-        },
-      });
-      return;
-    }
-
-    await addDoc(collection(db, 'activities'), {
-      ownerId: auth.currentUser?.uid,
-      actorId: auth.currentUser?.uid,
+    await insertActivityToSupabase({
+      ownerId: auth.currentUser?.uid ?? null,
+      actorId: auth.currentUser?.uid ?? null,
       actorType: 'operator',
       eventType: 'reminder_scheduled',
       payload: {
@@ -152,7 +122,6 @@ export default function Tasks() {
         reminderAt,
         source: 'tasks',
       },
-      createdAt: serverTimestamp(),
     });
   };
 
@@ -169,63 +138,34 @@ export default function Tasks() {
   useEffect(() => {
     if (!auth.currentUser || !workspace) return;
 
-    if (isSupabaseConfigured()) {
-      let cancelled = false;
+    let cancelled = false;
 
-      const loadData = async () => {
-        try {
-          setLoading(true);
-          const [taskRows, leadRows] = await Promise.all([
-            fetchTasksFromSupabase(),
-            fetchLeadsFromSupabase(),
-          ]);
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const [taskRows, leadRows] = await Promise.all([
+          fetchTasksFromSupabase(),
+          fetchLeadsFromSupabase(),
+        ]);
 
-          if (cancelled) return;
-          setTasks(taskRows as any[]);
-          setLeads(leadRows as any[]);
-        } catch (error: any) {
-          if (!cancelled) {
-            toast.error(`BĹ‚Ä…d odczytu zadaĹ„: ${error.message}`);
-          }
-        } finally {
-          if (!cancelled) {
-            setLoading(false);
-          }
+        if (cancelled) return;
+        setTasks(taskRows as any[]);
+        setLeads(leadRows as any[]);
+      } catch (error: any) {
+        if (!cancelled) {
+          toast.error(`Błąd odczytu zadań: ${error.message}`);
         }
-      };
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
 
-      void loadData();
-
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    const tasksQuery = query(
-      collection(db, 'tasks'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('date', 'asc'),
-      orderBy('createdAt', 'desc')
-    );
-
-    const leadsQuery = query(
-      collection(db, 'leads'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('updatedAt', 'desc')
-    );
-
-    const unsubscribeTasks = onSnapshot(tasksQuery, (snapshot) => {
-      setTasks(snapshot.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
-      setLoading(false);
-    });
-
-    const unsubscribeLeads = onSnapshot(leadsQuery, (snapshot) => {
-      setLeads(snapshot.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
-    });
+    void loadData();
 
     return () => {
-      unsubscribeTasks();
-      unsubscribeLeads();
+      cancelled = true;
     };
   }, [workspace]);
 
@@ -247,7 +187,7 @@ export default function Tasks() {
       id: task.id,
       title: task.title || '',
       type: task.type || 'follow_up',
-      dueAt: getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`,
+      dueAt: getTaskStartAt(task) || `${getTaskDate(task)}T09:00`,
       priority: task.priority || 'medium',
       leadId: task.leadId || 'none',
       recurrence: normalizeRecurrenceConfig(task.recurrence),
@@ -259,8 +199,8 @@ export default function Tasks() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (!newTask.title.trim()) return toast.error('Wpisz tytuĹ‚ zadania');
+    if (!hasAccess) return toast.error('Trial wygas?.');
+    if (!newTask.title.trim()) return toast.error('Wpisz tytu? zadania');
 
     const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -273,94 +213,67 @@ export default function Tasks() {
 
     try {
       const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
-      if (isSupabaseConfigured()) {
-        await insertTaskToSupabase({
-          title: newTask.title,
-          type: newTask.type,
-          date: newTask.dueAt.slice(0, 10),
-          scheduledAt: newTask.dueAt,
-          priority: newTask.priority,
-          leadId: selectedLead?.id ?? null,
-          reminderAt,
-          recurrenceRule: payload.recurrence?.mode ?? 'none',
-          ownerId: auth.currentUser?.uid,
-          workspaceId: workspace.id,
-        });
-        await registerReminderScheduled({
-          title: newTask.title,
-          scheduledAt: newTask.dueAt,
-          reminderAt,
-        });
-        await refreshSupabaseData();
-      } else {
-        await addDoc(collection(db, 'tasks'), {
-          ...payload,
-          status: 'todo',
-          ownerId: auth.currentUser?.uid,
-          workspaceId: workspace.id,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-        await registerReminderScheduled({
-          title: newTask.title,
-          scheduledAt: payload.dueAt,
-          reminderAt,
-        });
-      }
+      await insertTaskToSupabase({
+        title: newTask.title,
+        type: newTask.type,
+        date: newTask.dueAt.slice(0, 10),
+        scheduledAt: newTask.dueAt,
+        priority: newTask.priority,
+        leadId: selectedLead?.id ?? null,
+        reminderAt,
+        recurrenceRule: payload.recurrence?.mode ?? 'none',
+        ownerId: auth.currentUser?.uid,
+        workspaceId: workspace.id,
+      });
+      await registerReminderScheduled({
+        title: newTask.title,
+        scheduledAt: newTask.dueAt,
+        reminderAt,
+      });
+      await refreshSupabaseData();
 
       toast.success('Zadanie dodane');
       setIsNewTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
   const toggleTask = async (taskId: string, currentStatus: string) => {
     try {
-      if (isSupabaseConfigured()) {
-        const task = tasks.find((entry) => entry.id === taskId);
-        await updateTaskInSupabase({
-          id: taskId,
-          status: currentStatus === 'todo' ? 'done' : 'todo',
-          title: task?.title,
-          type: task?.type,
-          date: task?.date,
-          priority: task?.priority,
-          leadId: task?.leadId ?? null,
-        });
-        await refreshSupabaseData();
-      } else {
-        await updateDoc(doc(db, 'tasks', taskId), {
-          status: currentStatus === 'todo' ? 'done' : 'todo',
-          updatedAt: serverTimestamp(),
-        });
-      }
+      const task = tasks.find((entry) => entry.id === taskId);
+      await updateTaskInSupabase({
+        id: taskId,
+        title: task?.title,
+        type: task?.type,
+        date: task?.date,
+        status: currentStatus === 'todo' ? 'done' : 'todo',
+        priority: task?.priority,
+        leadId: task?.leadId ?? null,
+      });
+      await refreshSupabaseData();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
   const deleteTask = async (taskId: string) => {
-    if (!window.confirm('UsunÄ…Ä‡ zadanie?')) return;
+    if (!window.confirm('Usunąć zadanie?')) return;
     try {
-      if (isSupabaseConfigured()) {
-        await deleteTaskFromSupabase(taskId);
-        await refreshSupabaseData();
-      } else {
-        await deleteDoc(doc(db, 'tasks', taskId));
-      }
-      toast.success('Zadanie usuniÄ™te');
+      await deleteTaskFromSupabase(taskId);
+      await refreshSupabaseData();
+      toast.success('Zadanie usunięte');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
   const handleSaveTaskEdit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Trial wygas?.');
     if (!editTask?.id) return;
-    if (!editTask.title?.trim()) return toast.error('Wpisz tytuĹ‚ zadania');
+    if (!editTask.title?.trim()) return toast.error('Wpisz tytu? zadania');
 
     const selectedLead = leads.find((lead) => lead.id === editTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -373,42 +286,30 @@ export default function Tasks() {
 
     try {
       const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
-      if (isSupabaseConfigured()) {
-        await updateTaskInSupabase({
-          id: editTask.id,
-          title: payload.title,
-          type: payload.type,
-          status: payload.status,
-          priority: payload.priority,
-          date: payload.date,
-          scheduledAt: payload.dueAt,
-          leadId: payload.leadId ?? null,
-          reminderAt,
-          recurrenceRule: payload.recurrence?.mode ?? 'none',
-        });
-        await registerReminderScheduled({
-          title: payload.title,
-          scheduledAt: payload.dueAt,
-          reminderAt,
-        });
-        await refreshSupabaseData();
-      } else {
-        await updateDoc(doc(db, 'tasks', editTask.id), {
-          ...payload,
-          updatedAt: serverTimestamp(),
-        });
-        await registerReminderScheduled({
-          title: payload.title,
-          scheduledAt: payload.dueAt,
-          reminderAt,
-        });
-      }
+      await updateTaskInSupabase({
+        id: editTask.id,
+        title: payload.title,
+        type: payload.type,
+        status: payload.status,
+        priority: payload.priority,
+        date: payload.date,
+        scheduledAt: payload.dueAt,
+        leadId: payload.leadId ?? null,
+        reminderAt,
+        recurrenceRule: payload.recurrence?.mode ?? 'none',
+      });
+      await registerReminderScheduled({
+        title: payload.title,
+        scheduledAt: payload.dueAt,
+        reminderAt,
+      });
+      await refreshSupabaseData();
 
       toast.success('Zadanie zaktualizowane');
       setIsEditTaskOpen(false);
       setEditTask(null);
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
@@ -438,11 +339,11 @@ export default function Tasks() {
   const taskStats = {
     active: tasks.filter((task) => task.status !== 'done').length,
     today: tasks.filter((task) => {
-      const taskStart = getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`;
+      const taskStart = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
       return task.status !== 'done' && isToday(parseISO(taskStart));
     }).length,
     overdue: tasks.filter((task) => {
-      const taskStart = getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`;
+      const taskStart = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
       return task.status !== 'done' && isPast(parseISO(taskStart)) && !isToday(parseISO(taskStart));
     }).length,
     withoutLead: tasks.filter((task) => !task.leadId && !task.leadName).length,
@@ -454,7 +355,7 @@ export default function Tasks() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Zadania</h1>
-            <p className="text-slate-500">ZarzÄ…dzaj codziennÄ… egzekucjÄ… i powtarzalnymi ruchami.</p>
+            <p className="text-slate-500">Zarządzaj codzienną egzekucją i powtarzalnymi ruchami.</p>
           </div>
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
             <DialogTrigger asChild>
@@ -529,8 +430,8 @@ export default function Tasks() {
 
                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                   <div>
-                    <p className="text-sm font-bold text-slate-900">CyklicznoĹ›Ä‡</p>
-                    <p className="text-xs text-slate-500">MoĹĽesz zostawiÄ‡ brak albo ustawiÄ‡ powtarzanie.</p>
+                    <p className="text-sm font-bold text-slate-900">CyklicznoĹ›?</p>
+                    <p className="text-xs text-slate-500">MoĹĽesz zostawi? brak albo ustawi? powtarzanie.</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2 md:col-span-2">
@@ -572,7 +473,7 @@ export default function Tasks() {
                     <Label>Powtarzaj do</Label>
                     <Input
                       type="date"
-                      value={newTask.recurrence.until ?? ''}
+                      value={newTask.recurrence.until || ''}
                       onChange={(e) => setNewTask({
                         ...newTask,
                         recurrence: {
@@ -632,7 +533,7 @@ export default function Tasks() {
                   {newTask.reminder.mode === 'recurring' && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
-                        <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
+                        <Label>CyklicznoĹ›? przypomnienia</Label>
                         <select
                           className={modalSelectClass}
                           value={newTask.reminder.recurrenceMode}
@@ -893,7 +794,7 @@ export default function Tasks() {
           <Card className="border-none shadow-sm">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">ZalegĹ‚e</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Zaległe</p>
                 <p className="mt-2 text-2xl font-bold text-rose-600">{taskStats.overdue}</p>
               </div>
               <div className="rounded-2xl bg-rose-50 p-3 text-rose-500">
@@ -949,7 +850,7 @@ export default function Tasks() {
               </Select>
               <Select value={linkFilter} onValueChange={setLinkFilter}>
                 <SelectTrigger className="w-[170px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="PowiÄ…zanie" />
+                  <SelectValue placeholder="Powiązanie" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Wszystkie wpisy</SelectItem>
@@ -968,7 +869,7 @@ export default function Tasks() {
                   }}
                   className="h-11 rounded-xl"
                 >
-                  <X className="w-4 h-4 mr-2" /> WyczyĹ›Ä‡
+                  <X className="w-4 h-4 mr-2" /> WyczyĹ›?
                 </Button>
               )}
             </div>
@@ -992,19 +893,19 @@ export default function Tasks() {
           ) : (
             sortedDates.map((dateKey) => {
               const tasksForDate = groupedTasks[dateKey].sort((a, b) => {
-                return parseISO(getTaskStartAt(a) ?? `${getTaskDate(a)}T09:00`).getTime() - parseISO(getTaskStartAt(b) ?? `${getTaskDate(b)}T09:00`).getTime();
+                return parseISO(getTaskStartAt(a) || `${getTaskDate(a)}T09:00`).getTime() - parseISO(getTaskStartAt(b) || `${getTaskDate(b)}T09:00`).getTime();
               });
 
               return (
                 <section key={dateKey} className="space-y-3">
                   <div className="flex items-center gap-2">
                     <h2 className="text-lg font-bold text-slate-900">{format(parseISO(dateKey), 'EEEE, d MMMM', { locale: pl })}</h2>
-                    {isToday(parseISO(dateKey)) && <Badge className="rounded-full">DziĹ›</Badge>}
+                    {isToday(parseISO(dateKey)) && <Badge className="rounded-full">Dziś</Badge>}
                     {isTomorrow(parseISO(dateKey)) && <Badge variant="secondary" className="rounded-full">Jutro</Badge>}
                   </div>
                   <div className="space-y-3">
                     {tasksForDate.map((task: any) => {
-                      const taskStart = getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`;
+                      const taskStart = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
                       const overdue = task.status !== 'done' && isPast(parseISO(taskStart)) && !isToday(parseISO(taskStart));
                       const recurrence = normalizeRecurrenceConfig(task.recurrence);
                       const reminder = task.reminder
@@ -1026,16 +927,16 @@ export default function Tasks() {
                               <div className="min-w-0">
                                 <div className="flex flex-wrap items-center gap-2 mb-1">
                                   <p className={`font-bold text-slate-900 ${task.status === 'done' ? 'line-through' : ''}`}>{task.title}</p>
-                                  <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label ?? 'Zadanie'}</Badge>
+                                  <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</Badge>
                                   {task.priority === 'high' && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge>}
-                                  {overdue && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">ZalegĹ‚e</Badge>}
+                                  {overdue && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge>}
                                   {!task.leadName && !task.leadId && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Bez leada</Badge>}
                                   {recurrence.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((item) => item.value === recurrence.mode)?.label}</Badge>}
                                   {reminder.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Bell className="w-3 h-3 mr-1" /> {reminder.mode === 'recurring' ? 'Cykliczne przypomnienie' : 'Przypomnienie'}</Badge>}
                                 </div>
                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
                                   <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {format(parseISO(taskStart), 'HH:mm')}</span>
-                                  {task.leadName ? <span>Lead: {task.leadName}</span> : <span>Brak powiÄ…zanego leada</span>}
+                                  {task.leadName ? <span>Lead: {task.leadName}</span> : <span>Brak powiązanego leada</span>}
                                 </div>
                               </div>
                             </div>
@@ -1052,7 +953,7 @@ export default function Tasks() {
                                     Edytuj
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => toggleTask(task.id, task.status)}>
-                                    <CheckSquare className="w-4 h-4 mr-2" /> {task.status === 'todo' ? 'Oznacz jako zrobione' : 'PrzywrĂłÄ‡ do zrobienia'}
+                                    <CheckSquare className="w-4 h-4 mr-2" /> {task.status === 'todo' ? 'Oznacz jako zrobione' : 'Przywróć do zrobienia'}
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600">
                                     <Trash2 className="w-4 h-4 mr-2" /> UsuĹ„
@@ -1074,5 +975,3 @@ export default function Tasks() {
     </Layout>
   );
 }
-
-

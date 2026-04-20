@@ -1,16 +1,5 @@
 import { useState, useEffect, FormEvent, ReactNode } from 'react';
-import { auth, db } from '../firebase';
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  orderBy,
-  addDoc,
-  serverTimestamp,
-  doc,
-  updateDoc,
-} from 'firebase/firestore';
+import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
@@ -57,9 +46,6 @@ import {
   createDefaultReminder,
   getTaskDate,
   getTaskStartAt,
-  normalizeRecurrenceConfig,
-  normalizeReminderConfig,
-  syncTaskDerivedFields,
   toReminderAtIso,
   toDateTimeLocalValue,
 } from '../lib/scheduling';
@@ -78,7 +64,6 @@ import {
   insertActivityToSupabase,
   insertLeadToSupabase,
   insertTaskToSupabase,
-  isSupabaseConfigured,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
@@ -231,72 +216,31 @@ export default function Today() {
   useEffect(() => {
     if (!auth.currentUser || !workspace) return;
 
-    if (isSupabaseConfigured()) {
-      let cancelled = false;
+    let cancelled = false;
 
-      const loadBundle = async () => {
-        try {
-          setLoading(true);
-          const bundle = await fetchCalendarBundleFromSupabase();
-          if (cancelled) return;
-          setLeads(bundle.leads);
-          setTasks(bundle.tasks);
-          setEvents(bundle.events);
-        } catch (error: any) {
-          if (!cancelled) {
-            toast.error(`BłÄ…d odczytu planu dnia: ${error.message}`);
-          }
-        } finally {
-          if (!cancelled) {
-            setLoading(false);
-          }
+    const loadBundle = async () => {
+      try {
+        setLoading(true);
+        const bundle = await fetchCalendarBundleFromSupabase();
+        if (cancelled) return;
+        setLeads(bundle.leads);
+        setTasks(bundle.tasks);
+        setEvents(bundle.events);
+      } catch (error: any) {
+        if (!cancelled) {
+          toast.error(`Błąd odczytu planu dnia: ${error.message}`);
         }
-      };
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
 
-      void loadBundle();
-
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    const leadsQuery = query(
-      collection(db, 'leads'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('updatedAt', 'desc')
-    );
-
-    const tasksQuery = query(
-      collection(db, 'tasks'),
-      where('ownerId', '==', auth.currentUser.uid),
-      where('status', '==', 'todo'),
-      orderBy('date', 'asc')
-    );
-
-    const eventsQuery = query(
-      collection(db, 'events'),
-      where('ownerId', '==', auth.currentUser.uid),
-      where('status', '==', 'scheduled'),
-      orderBy('startAt', 'asc')
-    );
-
-    const unsubscribeLeads = onSnapshot(leadsQuery, (snap) => {
-      setLeads(snap.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
-    });
-
-    const unsubscribeTasks = onSnapshot(tasksQuery, (snap) => {
-      setTasks(snap.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
-    });
-
-    const unsubscribeEvents = onSnapshot(eventsQuery, (snap) => {
-      setEvents(snap.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() })));
-      setLoading(false);
-    });
+    void loadBundle();
 
     return () => {
-      unsubscribeLeads();
-      unsubscribeTasks();
-      unsubscribeEvents();
+      cancelled = true;
     };
   }, [workspace]);
 
@@ -339,26 +283,9 @@ export default function Today() {
   }) => {
     if (!reminderAt) return;
 
-    if (isSupabaseConfigured()) {
-      await insertActivityToSupabase({
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'reminder_scheduled',
-        payload: {
-          entityType,
-          title,
-          scheduledAt,
-          reminderAt,
-          source: 'today',
-        },
-      });
-      return;
-    }
-
-    await addDoc(collection(db, 'activities'), {
-      ownerId: auth.currentUser?.uid,
-      actorId: auth.currentUser?.uid,
+    await insertActivityToSupabase({
+      ownerId: auth.currentUser?.uid ?? null,
+      actorId: auth.currentUser?.uid ?? null,
       actorType: 'operator',
       eventType: 'reminder_scheduled',
       payload: {
@@ -368,171 +295,107 @@ export default function Today() {
         reminderAt,
         source: 'today',
       },
-      createdAt: serverTimestamp(),
     });
   };
 
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('TwĂłj trial wygasł. OpłaÄ‡ subskrypcjÄ™, aby dodawaÄ‡ leady.');
+    if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
     try {
-      if (isSupabaseConfigured()) {
-        await insertLeadToSupabase({
-          ...newLead,
-          dealValue: Number(newLead.dealValue) || 0,
-          ownerId: auth.currentUser?.uid,
-          workspaceId: workspace.id,
-        });
-        await refreshSupabaseBundle();
-      } else {
-        await addDoc(collection(db, 'leads'), {
-          ...newLead,
-          dealValue: Number(newLead.dealValue) || 0,
-          ownerId: auth.currentUser?.uid,
-          workspaceId: workspace.id,
-          isAtRisk: false,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-      }
+      await insertLeadToSupabase({
+        ...newLead,
+        dealValue: Number(newLead.dealValue) || 0,
+        ownerId: auth.currentUser?.uid,
+        workspaceId: workspace.id,
+      });
+      await refreshSupabaseBundle();
       toast.success('Lead dodany');
       setIsLeadOpen(false);
       setNewLead({ name: '', email: '', dealValue: '', source: 'other', status: 'new', nextStep: '', nextActionAt: '' });
     } catch (error: any) {
-      toast.error('BłÄ…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('TwĂłj trial wygasł.');
+    if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
       const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
       const reminderAt = toReminderAtIso(newTask.dueAt, newTask.reminder);
-      if (isSupabaseConfigured()) {
-        await insertTaskToSupabase({
-          title: newTask.title,
-          type: newTask.type,
-          date: newTask.dueAt.slice(0, 10),
-          scheduledAt: newTask.dueAt,
-          priority: newTask.priority,
-          leadId: selectedLead?.id ?? null,
-          reminderAt,
-          recurrenceRule: newTask.recurrence.mode,
-          ownerId: auth.currentUser?.uid,
-          workspaceId: workspace.id,
-        });
-        await registerReminderScheduled({
-          entityType: 'task',
-          title: newTask.title,
-          scheduledAt: newTask.dueAt,
-          reminderAt,
-        });
-        await refreshSupabaseBundle();
-      } else {
-        await addDoc(collection(db, 'tasks'), {
-          ...syncTaskDerivedFields({
-            ...newTask,
-            leadId: selectedLead?.id ?? null,
-            leadName: selectedLead?.name ?? '',
-            recurrence: normalizeRecurrenceConfig(newTask.recurrence),
-            reminder: normalizeReminderConfig(newTask.reminder),
-          }),
-          status: 'todo',
-          ownerId: auth.currentUser?.uid,
-          workspaceId: workspace.id,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-        await registerReminderScheduled({
-          entityType: 'task',
-          title: newTask.title,
-          scheduledAt: newTask.dueAt,
-          reminderAt,
-        });
-      }
+      await insertTaskToSupabase({
+        title: newTask.title,
+        type: newTask.type,
+        date: newTask.dueAt.slice(0, 10),
+        scheduledAt: newTask.dueAt,
+        priority: newTask.priority,
+        leadId: selectedLead?.id ?? null,
+        reminderAt,
+        recurrenceRule: newTask.recurrence.mode,
+        ownerId: auth.currentUser?.uid,
+        workspaceId: workspace.id,
+      });
+      await registerReminderScheduled({
+        entityType: 'task',
+        title: newTask.title,
+        scheduledAt: newTask.dueAt,
+        reminderAt,
+      });
+      await refreshSupabaseBundle();
       toast.success('Zadanie dodane');
       setIsTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('BłÄ…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('TwĂłj trial wygasł.');
+    if (!hasAccess) return toast.error('Twój trial wygasł.');
     try {
       const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
       const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
-      if (isSupabaseConfigured()) {
-        await insertEventToSupabase({
-          title: newEvent.title,
-          type: newEvent.type,
-          startAt: newEvent.startAt,
-          endAt: newEvent.endAt,
-          reminderAt,
-          recurrenceRule: newEvent.recurrence.mode,
-          leadId: selectedLead?.id ?? null,
-          workspaceId: workspace.id,
-        });
-        await registerReminderScheduled({
-          entityType: 'event',
-          title: newEvent.title,
-          scheduledAt: newEvent.startAt,
-          reminderAt,
-        });
-        await refreshSupabaseBundle();
-      } else {
-        await addDoc(collection(db, 'events'), {
-          ...newEvent,
-          leadId: selectedLead?.id ?? null,
-          leadName: selectedLead?.name ?? '',
-          recurrence: normalizeRecurrenceConfig(newEvent.recurrence),
-          reminder: normalizeReminderConfig(newEvent.reminder),
-          status: 'scheduled',
-          ownerId: auth.currentUser?.uid,
-          workspaceId: workspace.id,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-        await registerReminderScheduled({
-          entityType: 'event',
-          title: newEvent.title,
-          scheduledAt: newEvent.startAt,
-          reminderAt,
-        });
-      }
+      await insertEventToSupabase({
+        title: newEvent.title,
+        type: newEvent.type,
+        startAt: newEvent.startAt,
+        endAt: newEvent.endAt,
+        reminderAt,
+        recurrenceRule: newEvent.recurrence.mode,
+        leadId: selectedLead?.id ?? null,
+        workspaceId: workspace.id,
+      });
+      await registerReminderScheduled({
+        entityType: 'event',
+        title: newEvent.title,
+        scheduledAt: newEvent.startAt,
+        reminderAt,
+      });
+      await refreshSupabaseBundle();
       toast.success('Wydarzenie dodane');
       setIsEventOpen(false);
       resetNewEvent();
     } catch (error: any) {
-      toast.error('BłÄ…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
   const toggleTask = async (taskId: string, currentStatus: string) => {
     try {
-      if (isSupabaseConfigured()) {
-        const task = tasks.find((entry) => entry.id === taskId);
-        await updateTaskInSupabase({
-          id: taskId,
-          status: currentStatus === 'todo' ? 'done' : 'todo',
-          title: task?.title,
-          type: task?.type,
-          date: task?.date,
-          priority: task?.priority,
-          leadId: task?.leadId ?? null,
-        });
-        await refreshSupabaseBundle();
-      } else {
-        await updateDoc(doc(db, 'tasks', taskId), {
-          status: currentStatus === 'todo' ? 'done' : 'todo',
-          updatedAt: serverTimestamp(),
-        });
-      }
+      const task = tasks.find((entry) => entry.id === taskId);
+      await updateTaskInSupabase({
+        id: taskId,
+        status: currentStatus === 'todo' ? 'done' : 'todo',
+        title: task?.title,
+        type: task?.type,
+        date: task?.date,
+        priority: task?.priority,
+        leadId: task?.leadId ?? null,
+      });
+      await refreshSupabaseBundle();
     } catch (error: any) {
-      toast.error('BłÄ…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
@@ -594,16 +457,16 @@ export default function Today() {
                 </DialogHeader>
                 <form onSubmit={handleAddLead} className="space-y-4 py-4">
                   <div className="space-y-2">
-                    <Label>ImiÄ™ i nazwisko / Firma</Label>
+                    <Label>Imię i nazwisko / Firma</Label>
                     <Input value={newLead.name} onChange={(e) => setNewLead({ ...newLead, name: e.target.value })} required />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>WartoĹ›Ä‡ (PLN)</Label>
+                      <Label>Wartość (PLN)</Label>
                       <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
                     </div>
                     <div className="space-y-2">
-                      <Label>ĹąrĂłdło</Label>
+                      <Label>Ĺąr?dło</Label>
                       <select
                         className={modalSelectClass}
                         value={newLead.source}
@@ -618,7 +481,7 @@ export default function Today() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Kolejny krok</Label>
-                      <Input value={newLead.nextStep} onChange={(e) => setNewLead({ ...newLead, nextStep: e.target.value })} placeholder="np. Telefon z ofertÄ…" />
+                      <Input value={newLead.nextStep} onChange={(e) => setNewLead({ ...newLead, nextStep: e.target.value })} placeholder="np. Telefon z ofertą" />
                     </div>
                     <div className="space-y-2">
                       <Label>Termin ruchu</Label>
@@ -702,8 +565,8 @@ export default function Today() {
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
-                      <p className="text-sm font-bold text-slate-900">CyklicznoĹ›Ä‡</p>
-                      <p className="text-xs text-slate-500">MoĹĽesz ustawiÄ‡ zadanie jednorazowe albo cykliczne.</p>
+                      <p className="text-sm font-bold text-slate-900">CyklicznoĹ›?</p>
+                      <p className="text-xs text-slate-500">MoĹĽesz ustawi? zadanie jednorazowe albo cykliczne.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
@@ -723,14 +586,14 @@ export default function Today() {
                     </div>
                     <div className="space-y-2">
                       <Label>Powtarzaj do</Label>
-                      <Input type="date" value={newTask.recurrence.until ?? ''} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, until: e.target.value || null } })} disabled={newTask.recurrence.mode === 'none'} />
+                      <Input type="date" value={newTask.recurrence.until || ''} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, until: e.target.value || null } })} disabled={newTask.recurrence.mode === 'none'} />
                     </div>
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                      <p className="text-xs text-slate-500">Na koĹ„cu ustaw przypomnienie i jego cyklicznoĹ›Ä‡.</p>
+                      <p className="text-xs text-slate-500">Na koĹ„cu ustaw przypomnienie i jego cyklicznoĹ›?.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -744,7 +607,7 @@ export default function Today() {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Kiedy przypomnieÄ‡</Label>
+                        <Label>Kiedy przypomnieć</Label>
                         <select
                           className={modalSelectClass}
                           value={newTask.reminder.minutesBefore}
@@ -758,7 +621,7 @@ export default function Today() {
                     {newTask.reminder.mode === 'recurring' && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
+                          <Label>CyklicznoĹ›? przypomnienia</Label>
                           <select
                             className={modalSelectClass}
                             value={newTask.reminder.recurrenceMode}
@@ -825,7 +688,7 @@ export default function Today() {
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Od do</p>
-                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec aktualizuje siÄ™ automatycznie po zmianie startu.</p>
+                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec aktualizuje się automatycznie po zmianie startu.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -841,8 +704,8 @@ export default function Today() {
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
-                      <p className="text-sm font-bold text-slate-900">CyklicznoĹ›Ä‡ wydarzenia</p>
-                      <p className="text-xs text-slate-500">MoĹĽesz ustawiÄ‡ np. wydarzenie miesiÄ™czne i bÄ™dzie widoczne dynamicznie w kalendarzu.</p>
+                      <p className="text-sm font-bold text-slate-900">CyklicznoĹ›? wydarzenia</p>
+                      <p className="text-xs text-slate-500">MoĹĽesz ustawi? np. wydarzenie miesi?czne i b?dzie widoczne dynamicznie w kalendarzu.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
@@ -862,7 +725,7 @@ export default function Today() {
                     </div>
                     <div className="space-y-2">
                       <Label>Powtarzaj do</Label>
-                      <Input type="date" value={newEvent.recurrence.until ?? ''} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, until: e.target.value || null } })} disabled={newEvent.recurrence.mode === 'none'} />
+                      <Input type="date" value={newEvent.recurrence.until || ''} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, until: e.target.value || null } })} disabled={newEvent.recurrence.mode === 'none'} />
                     </div>
                   </div>
 
@@ -883,7 +746,7 @@ export default function Today() {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Kiedy przypomnieÄ‡</Label>
+                        <Label>Kiedy przypomnieć</Label>
                         <select
                           className={modalSelectClass}
                           value={newEvent.reminder.minutesBefore}
@@ -897,7 +760,7 @@ export default function Today() {
                     {newEvent.reminder.mode === 'recurring' && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
+                          <Label>CyklicznoĹ›? przypomnienia</Label>
                           <select
                             className={modalSelectClass}
                             value={newEvent.reminder.recurrenceMode}
@@ -933,7 +796,7 @@ export default function Today() {
                 </div>
                 <div className="grid gap-3">
                   {overdueTasks.map((task) => {
-                    const startAt = getTaskStartAt(task) ?? `${getTaskDate(task)}T09:00`;
+                    const startAt = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
                     return (
                       <TileCard
                         key={task.id}
@@ -952,7 +815,7 @@ export default function Today() {
                       >
                         <div className="flex items-center justify-between gap-4">
                           <div className="text-sm text-slate-600">
-                            Zadanie wymaga reakcji. MoĹĽesz je od razu oznaczyÄ‡ jako wykonane albo przejĹ›Ä‡ do pełnej listy zadaĹ„.
+                            Zadanie wymaga reakcji. MoĹĽesz je od razu oznaczy? jako wykonane albo przejĹ›? do pełnej listy zadaĹ„.
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <Button
@@ -960,10 +823,10 @@ export default function Today() {
                               size="sm"
                               onClick={() => toggleTask(task.id, task.status)}
                             >
-                              {task.status === 'done' ? 'PrzywrĂłÄ‡' : 'Oznacz jako zrobione'}
+                              {task.status === 'done' ? 'Przywróć' : 'Oznacz jako zrobione'}
                             </Button>
                             <Button variant="ghost" size="sm" asChild>
-                              <Link to="/tasks">OtwĂłrz listÄ™</Link>
+                              <Link to="/tasks">Otw?rz list?</Link>
                             </Button>
                           </div>
                         </div>
@@ -978,7 +841,7 @@ export default function Today() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold text-slate-900">Dzisiaj</h2>
-                  <p className="text-sm text-slate-500">Plan dnia z aktualizacjÄ… live.</p>
+                  <p className="text-sm text-slate-500">Plan dnia z aktualizacją live.</p>
                 </div>
                 <Badge variant="secondary" className="rounded-full">{todayEntries.length}</Badge>
               </div>
@@ -1003,7 +866,7 @@ export default function Today() {
                             <div className="flex items-center gap-2 shrink-0">
                               <span className="text-xs font-bold text-amber-600">{format(parseISO(entry.startsAt), 'HH:mm')}</span>
                               <Button variant="outline" size="sm" asChild>
-                                <Link to={entry.link ?? '/leads'}>Otwórz</Link>
+                                <Link to={entry.link || '/leads'}>Otwórz</Link>
                               </Button>
                             </div>
                           </CardContent>
@@ -1031,7 +894,7 @@ export default function Today() {
                           <CardContent className="p-4 flex items-center justify-between gap-4">
                             <div className="min-w-0">
                               <p className="font-semibold text-slate-900 break-words">{entry.title}</p>
-                              <p className="text-sm text-slate-500 break-words">{EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label ?? 'Wydarzenie'}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
+                              <p className="text-sm text-slate-500 break-words">{EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Wydarzenie'}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
                               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                                 {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
                                   <Badge variant="outline" className="text-[10px] uppercase">
@@ -1076,7 +939,7 @@ export default function Today() {
                           <CardContent className="p-4 flex items-center justify-between gap-4">
                             <div className="min-w-0">
                               <p className="font-semibold text-slate-900 break-words">{entry.title}</p>
-                              <p className="text-sm text-slate-500 break-words">{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label ?? 'Zadanie'} • {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
+                              <p className="text-sm text-slate-500 break-words">{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Zadanie'} • {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
                               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                                 {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
                                   <Badge variant="outline" className="text-[10px] uppercase">
@@ -1122,7 +985,7 @@ export default function Today() {
               <section className="space-y-4">
                 <div className="flex items-center gap-2 text-amber-600">
                   <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Bez nastÄ™pnego kroku</h2>
+                  <h2 className="text-lg font-bold">Bez następnego kroku</h2>
                   <Badge variant="outline" className="rounded-full border-amber-200 text-amber-700 bg-amber-50">{noStepLeads.length}</Badge>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1156,7 +1019,7 @@ export default function Today() {
           <div className="space-y-8">
             <TileCard
               id="pipeline-summary"
-              title="WartoĹ›Ä‡ lejka"
+              title="Wartość lejka"
               subtitle={`${activeLeadsValue.toLocaleString()} PLN`}
               collapsedMap={collapsedTiles}
               onToggle={toggleTile}
@@ -1206,7 +1069,7 @@ export default function Today() {
                       onToggle={toggleTile}
                     >
                       <p className="text-[10px] text-slate-500">
-                        {dayEntries.filter((entry) => entry.kind === 'event').length} wydarzeĹ„ â€˘ {dayEntries.filter((entry) => entry.kind === 'task').length} zadaĹ„ â€˘ {dayEntries.filter((entry) => entry.kind === 'lead').length} leadĂłw
+                        {dayEntries.filter((entry) => entry.kind === 'event').length} wydarzeń • {dayEntries.filter((entry) => entry.kind === 'task').length} zadań • {dayEntries.filter((entry) => entry.kind === 'lead').length} leadów
                       </p>
                     </TileCard>
                   );
@@ -1233,7 +1096,7 @@ export default function Today() {
                     }
                   >
                     <Button variant="outline" size="sm" asChild>
-                      <Link to={`/leads/${lead.id}`}>OtwĂłrz lead</Link>
+                      <Link to={`/leads/${lead.id}`}>Otw?rz lead</Link>
                     </Button>
                   </TileCard>
                 ))}
@@ -1243,24 +1106,24 @@ export default function Today() {
             <section className="space-y-3">
               <TileCard
                 id="info-recurring"
-                title="CyklicznoĹ›Ä‡ działa live"
-                subtitle="Powtarzalne zadania i wydarzenia wpadajÄ… teraz do planu dnia bez rÄ™cznego odĹ›wieĹĽania."
+                title="CyklicznoĹ›? działa live"
+                subtitle="Powtarzalne zadania i wydarzenia wpadaj? teraz do planu dnia bez r?cznego odĹ›wieĹĽania."
                 collapsedMap={collapsedTiles}
                 onToggle={toggleTile}
                 headerRight={<Repeat className="w-4 h-4 text-slate-400" />}
               >
-                <p className="text-sm text-slate-500">Sekcja zostaje w widoku jako szybka notatka, ale moĹĽesz jÄ… zwinÄ…Ä‡, ĹĽeby nie zabierała miejsca.</p>
+                <p className="text-sm text-slate-500">Sekcja zostaje w widoku jako szybka notatka, ale możesz ją zwinąć, żeby nie zabierała miejsca.</p>
               </TileCard>
 
               <TileCard
                 id="info-reminders"
-                title="Przypomnienia zapisujÄ… siÄ™ w danych"
-                subtitle="Warstwa konfiguracji przypomnieĹ„ jest juĹĽ spiÄ™ta z formularzami."
+                title="Przypomnienia zapisują się w danych"
+                subtitle="Warstwa konfiguracji przypomnieĹ„ jest juĹĽ spi?ta z formularzami."
                 collapsedMap={collapsedTiles}
                 onToggle={toggleTile}
                 headerRight={<Bell className="w-4 h-4 text-slate-400" />}
               >
-                <p className="text-sm text-slate-500">Osobny silnik wysyłki to nadal osobny brak V1, ale ustawienia przypomnieĹ„ sÄ… juĹĽ zapisywane i gotowe do dalszego rozwijania.</p>
+                <p className="text-sm text-slate-500">Osobny silnik wysyłki to nadal osobny brak V1, ale ustawienia przypomnieĹ„ s? juĹĽ zapisywane i gotowe do dalszego rozwijania.</p>
               </TileCard>
             </section>
           </div>
