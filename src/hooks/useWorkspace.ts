@@ -11,6 +11,7 @@ export function useWorkspace() {
   const [activeUserId, setActiveUserId] = useState<string | null>(auth.currentUser?.uid ?? null);
   const [workspace, setWorkspace] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [accessOverride, setAccessOverride] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [refreshToken, setRefreshToken] = useState(0);
 
@@ -26,6 +27,7 @@ export function useWorkspace() {
     if (!activeUserId) {
       setWorkspace(null);
       setProfile(null);
+      setAccessOverride(null);
       setLoading(false);
       return;
     }
@@ -44,6 +46,7 @@ export function useWorkspace() {
           if (cancelled) return;
           setWorkspace(me.workspace);
           setProfile(me.profile);
+          setAccessOverride(me.access);
         } catch {
           if (cancelled) return;
           setWorkspace({
@@ -60,6 +63,7 @@ export function useWorkspace() {
             role: 'member',
             isAdmin: false,
           });
+          setAccessOverride(null);
         } finally {
           if (!cancelled) {
             setLoading(false);
@@ -129,7 +133,19 @@ export function useWorkspace() {
     };
   }, [activeUserId, refreshToken]);
 
-  const access = getAccessSummary(workspace);
+  const fallbackAccess = getAccessSummary(workspace);
+  const access = accessOverride
+    ? {
+        ...fallbackAccess,
+        status: accessOverride.status ?? fallbackAccess.status,
+        hasAccess: typeof accessOverride.hasAccess === 'boolean' ? accessOverride.hasAccess : fallbackAccess.hasAccess,
+        isTrialActive:
+          typeof accessOverride.isTrialActive === 'boolean' ? accessOverride.isTrialActive : fallbackAccess.isTrialActive,
+        isPaidActive:
+          typeof accessOverride.isPaidActive === 'boolean' ? accessOverride.isPaidActive : fallbackAccess.isPaidActive,
+      }
+    : fallbackAccess;
+
   const isAdmin = isAdminEmail(auth.currentUser?.email) || profile?.role === 'admin' || profile?.isAdmin === true;
   const refresh = () => setRefreshToken((prev) => prev + 1);
 

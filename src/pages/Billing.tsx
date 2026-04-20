@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { updateWorkspaceSubscriptionInSupabase } from '../lib/supabase-fallback';
 import Layout from '../components/Layout';
@@ -10,9 +10,9 @@ import {
   Zap,
   Shield,
   Clock,
+  AlertTriangle,
   Check,
   Loader2,
-  AlertTriangle,
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
@@ -48,59 +48,49 @@ const PLANS = [
   },
 ];
 
-function statusTone(status: string) {
+function getStatusTone(status: string) {
   if (status === 'paid_active') {
     return {
-      card: 'bg-emerald-50 border-emerald-100',
-      icon: 'bg-emerald-100 text-emerald-600',
-      badge: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+      cardClassName: 'bg-emerald-50 border-emerald-100',
+      iconWrapClassName: 'bg-emerald-100 text-emerald-600',
+      badgeClassName: 'bg-white border-emerald-200 text-emerald-700',
+      Icon: Shield,
     };
   }
 
   if (status === 'trial_active' || status === 'trial_ending') {
     return {
-      card: 'bg-indigo-50 border-indigo-100',
-      icon: 'bg-indigo-100 text-indigo-600',
-      badge: 'bg-white border-indigo-200 text-indigo-700',
-    };
-  }
-
-  if (status === 'trial_expired' || status === 'payment_failed') {
-    return {
-      card: 'bg-rose-50 border-rose-100',
-      icon: 'bg-rose-100 text-rose-600',
-      badge: 'bg-white border-rose-200 text-rose-700',
+      cardClassName: 'bg-indigo-50 border-indigo-100',
+      iconWrapClassName: 'bg-indigo-100 text-indigo-600',
+      badgeClassName: 'bg-white border-indigo-200 text-indigo-700',
+      Icon: Clock,
     };
   }
 
   return {
-    card: 'bg-slate-50 border-slate-200',
-    icon: 'bg-slate-100 text-slate-600',
-    badge: 'bg-white border-slate-200 text-slate-700',
+    cardClassName: 'bg-rose-50 border-rose-100',
+    iconWrapClassName: 'bg-rose-100 text-rose-600',
+    badgeClassName: 'bg-white border-rose-200 text-rose-700',
+    Icon: AlertTriangle,
   };
 }
 
 export default function Billing() {
-  const { workspace, loading, refresh, access, isPaidActive } = useWorkspace();
+  const { workspace, loading, refresh, access } = useWorkspace();
   const [upgrading, setUpgrading] = useState(false);
-
-  const currentPlan = useMemo(
-    () => PLANS.find((plan) => plan.id === workspace?.planId) || PLANS[0],
-    [workspace?.planId]
-  );
-  const tone = statusTone(access.status);
 
   const handleUpgrade = async (planId: string) => {
     if (!workspace) return;
+    if (access.isPaidActive && workspace.planId === planId) return;
+
     setUpgrading(true);
     try {
       await updateWorkspaceSubscriptionInSupabase({
         workspaceId: workspace.id,
         planId,
         subscriptionStatus: 'paid_active',
-        trialEndsAt: null,
       });
-      toast.success('Plan aktywowany.');
+      toast.success('Subskrypcja aktywowana.');
       refresh();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -119,6 +109,8 @@ export default function Billing() {
     );
   }
 
+  const tone = getStatusTone(access.status);
+  const StatusIcon = tone.Icon;
   const trialEndsAtLabel = workspace.trialEndsAt
     ? format(parseISO(workspace.trialEndsAt), 'd MMMM yyyy', { locale: pl })
     : null;
@@ -128,66 +120,38 @@ export default function Billing() {
       <div className="p-4 md:p-8 max-w-5xl mx-auto w-full space-y-8">
         <header>
           <h1 className="text-3xl font-bold text-slate-900">Subskrypcja i rozliczenia</h1>
-          <p className="text-slate-500">Jeden stan dostępu dla billingu, blokad akcji i całej aplikacji.</p>
+          <p className="text-slate-500">Zarządzaj swoim planem i dostępem do Fortecy.</p>
         </header>
 
-        <Card className={`border shadow-sm ${tone.card}`}>
+        <Card className={`border-none shadow-sm ${tone.cardClassName}`}>
           <CardContent className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-2xl ${tone.icon}`}>
-                {access.status === 'paid_active' ? (
-                  <Shield className="w-8 h-8" />
-                ) : access.status === 'trial_expired' || access.status === 'payment_failed' ? (
-                  <AlertTriangle className="w-8 h-8" />
-                ) : (
-                  <Clock className="w-8 h-8" />
-                )}
+              <div className={`p-3 rounded-2xl ${tone.iconWrapClassName}`}>
+                <StatusIcon className="w-8 h-8" />
               </div>
-              <div className="space-y-1">
+              <div>
                 <h2 className="text-xl font-bold text-slate-900">{access.headline}</h2>
                 <p className="text-slate-600">{access.description}</p>
-                <div className="flex flex-wrap gap-2 pt-1">
-                  <Badge variant="outline" className={`px-4 py-1 rounded-full font-bold ${tone.badge}`}>
-                    {access.badgeLabel}
-                  </Badge>
-                  <Badge variant="outline" className="px-4 py-1 rounded-full font-bold bg-white border-slate-200 text-slate-700">
-                    Plan: {currentPlan.name}
-                  </Badge>
-                </div>
+                {trialEndsAtLabel && (access.isTrialActive || access.status === 'trial_expired') ? (
+                  <p className="mt-1 text-sm text-slate-500">Data końca trialu: {trialEndsAtLabel}</p>
+                ) : null}
               </div>
             </div>
 
-            <div className="min-w-[220px] space-y-2 rounded-2xl bg-white/80 p-4 border border-white/70">
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Stan dostępu</p>
-              <p className="text-sm font-semibold text-slate-900">
-                {access.hasAccess ? 'Możesz tworzyć i edytować rekordy' : 'Tworzenie nowych rekordów jest zablokowane'}
-              </p>
-              {trialEndsAtLabel ? (
-                <p className="text-xs text-slate-500">Koniec trialu: {trialEndsAtLabel}</p>
-              ) : null}
-            </div>
+            <Badge variant="outline" className={`px-4 py-1 rounded-full font-bold ${tone.badgeClassName}`}>
+              {access.badgeLabel}
+            </Badge>
           </CardContent>
         </Card>
 
-        {access.status === 'trial_expired' || access.status === 'payment_failed' || access.status === 'inactive' || access.status === 'canceled' ? (
-          <Card className="border border-amber-100 bg-amber-50 shadow-sm">
-            <CardContent className="p-5">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-amber-900">Co jest teraz zablokowane</p>
-                  <p className="text-sm text-amber-800 mt-1">
-                    Podgląd danych nadal działa, ale dodawanie nowych leadów, spraw, zadań i wydarzeń wymaga aktywnego planu.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ) : null}
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {PLANS.map((plan) => {
-            const isCurrentPlan = workspace.planId === plan.id && isPaidActive;
+            const isCurrentPaidPlan = access.isPaidActive && workspace.planId === plan.id;
+            const buttonLabel = isCurrentPaidPlan
+              ? 'Twój obecny plan'
+              : access.isPaidActive
+                ? 'Przełącz na ten plan'
+                : 'Aktywuj plan';
 
             return (
               <Card key={plan.id} className={`border-none shadow-lg relative overflow-hidden ${plan.popular ? 'ring-2 ring-primary' : ''}`}>
@@ -222,10 +186,10 @@ export default function Billing() {
                   <Button
                     className="w-full rounded-xl h-12 font-bold text-base"
                     variant={plan.popular ? 'default' : 'outline'}
-                    disabled={isCurrentPlan || upgrading}
+                    disabled={isCurrentPaidPlan || upgrading}
                     onClick={() => handleUpgrade(plan.id)}
                   >
-                    {isCurrentPlan ? 'Twój obecny plan' : 'Wybierz ten plan'}
+                    {buttonLabel}
                   </Button>
                 </CardFooter>
               </Card>
@@ -236,18 +200,18 @@ export default function Billing() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex flex-col items-center text-center p-6 space-y-2">
             <Shield className="w-8 h-8 text-slate-400" />
-            <h4 className="font-bold text-slate-900">Bezpieczne płatności</h4>
-            <p className="text-xs text-slate-500">Warstwa płatności może zostać podpięta później bez zmiany logiki dostępu w aplikacji.</p>
+            <h4 className="font-bold text-slate-900">Spójny stan dostępu</h4>
+            <p className="text-xs text-slate-500">Billing i blokady akcji korzystają teraz z tego samego stanu dostępu.</p>
           </div>
           <div className="flex flex-col items-center text-center p-6 space-y-2">
             <Zap className="w-8 h-8 text-slate-400" />
-            <h4 className="font-bold text-slate-900">Spójny stan dostępu</h4>
-            <p className="text-xs text-slate-500">Billing, blokady akcji i komunikaty operatora liczą teraz ten sam stan workspace.</p>
+            <h4 className="font-bold text-slate-900">Natychmiastowe odświeżenie</h4>
+            <p className="text-xs text-slate-500">Po zmianie planu ekran odświeża stan workspace bez ręcznego przeładowania.</p>
           </div>
           <div className="flex flex-col items-center text-center p-6 space-y-2">
             <CreditCard className="w-8 h-8 text-slate-400" />
-            <h4 className="font-bold text-slate-900">Gotowe pod realne płatności</h4>
-            <p className="text-xs text-slate-500">Po podpięciu operatora płatności wystarczy aktualizować workspace, bez osobnej logiki w widokach.</p>
+            <h4 className="font-bold text-slate-900">Jeden punkt zarządzania</h4>
+            <p className="text-xs text-slate-500">To miejsce jest źródłem prawdy dla stanu trialu i aktywnego planu.</p>
           </div>
         </div>
       </div>

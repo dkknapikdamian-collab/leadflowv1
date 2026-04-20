@@ -42,6 +42,42 @@ function parseTrialEnd(value?: string | null) {
   }
 }
 
+function buildTrialExpiredSummary(): AccessSummary {
+  return {
+    status: 'trial_expired',
+    hasAccess: false,
+    trialDaysLeft: 0,
+    trialProgressPercent: 6,
+    headline: 'Trial wygasł',
+    description: 'Podgląd danych nadal działa, ale tworzenie nowych leadów, spraw, tasków i wydarzeń jest zablokowane do czasu aktywacji planu.',
+    badgeLabel: 'Trial wygasł',
+    sidebarLabel: 'Trial wygasł',
+    toneClassName: 'text-rose-500 bg-rose-500/10',
+    chipClassName: 'bg-rose-500/12 text-rose-600 dark:text-rose-400',
+    ctaLabel: 'Wybierz plan',
+    isTrialActive: false,
+    isPaidActive: false,
+  };
+}
+
+function buildTrialEndingSummary(trialDaysLeft: number, trialProgressPercent: number): AccessSummary {
+  return {
+    status: 'trial_ending',
+    hasAccess: true,
+    trialDaysLeft,
+    trialProgressPercent,
+    headline: 'Trial zaraz się kończy',
+    description: `Do końca testu zostało ${trialDaysLeft} ${trialDaysLeft === 1 ? 'dzień' : 'dni'}. To dobry moment, żeby włączyć plan i nie urwać sobie pracy w połowie.`,
+    badgeLabel: `Trial ${trialDaysLeft} dni`,
+    sidebarLabel: `${trialDaysLeft} dni trialu`,
+    toneClassName: 'text-amber-500 bg-amber-500/10',
+    chipClassName: 'bg-amber-500/12 text-amber-600 dark:text-amber-400',
+    ctaLabel: 'Włącz plan',
+    isTrialActive: true,
+    isPaidActive: false,
+  };
+}
+
 export function getAccessSummary(workspace?: WorkspaceLike | null): AccessSummary {
   const trialEnd = parseTrialEnd(workspace?.trialEndsAt);
   const rawStatus = workspace?.subscriptionStatus ?? 'inactive';
@@ -104,46 +140,23 @@ export function getAccessSummary(workspace?: WorkspaceLike | null): AccessSummar
     };
   }
 
-  if (
-    rawStatus === 'trial_expired' ||
-    ((rawStatus === 'trial_active' || rawStatus === 'trial_ending') && (!trialEnd || trialDaysLeft <= 0))
-  ) {
-    return {
-      status: 'trial_expired',
-      hasAccess: false,
-      trialDaysLeft: 0,
-      trialProgressPercent: 6,
-      headline: 'Trial wygasł',
-      description: 'Podgląd danych nadal działa, ale tworzenie nowych leadów, spraw, tasków i wydarzeń jest zablokowane do czasu aktywacji planu.',
-      badgeLabel: 'Trial wygasł',
-      sidebarLabel: 'Trial wygasł',
-      toneClassName: 'text-rose-500 bg-rose-500/10',
-      chipClassName: 'bg-rose-500/12 text-rose-600 dark:text-rose-400',
-      ctaLabel: 'Wybierz plan',
-      isTrialActive: false,
-      isPaidActive: false,
-    };
-  }
+  if (rawStatus === 'trial_ending') {
+    if (!trialEnd || trialDaysLeft <= 0) {
+      return buildTrialExpiredSummary();
+    }
 
-  if (rawStatus === 'trial_ending' || (rawStatus === 'trial_active' && trialDaysLeft <= 2)) {
-    return {
-      status: 'trial_ending',
-      hasAccess: true,
-      trialDaysLeft,
-      trialProgressPercent,
-      headline: 'Trial zaraz się kończy',
-      description: `Do końca testu zostało ${trialDaysLeft} ${trialDaysLeft === 1 ? 'dzień' : 'dni'}. To dobry moment, żeby włączyć plan i nie urwać sobie pracy w połowie.`,
-      badgeLabel: `Trial ${trialDaysLeft} dni`,
-      sidebarLabel: `${trialDaysLeft} dni trialu`,
-      toneClassName: 'text-amber-500 bg-amber-500/10',
-      chipClassName: 'bg-amber-500/12 text-amber-600 dark:text-amber-400',
-      ctaLabel: 'Włącz plan',
-      isTrialActive: true,
-      isPaidActive: false,
-    };
+    return buildTrialEndingSummary(trialDaysLeft, trialProgressPercent);
   }
 
   if (rawStatus === 'trial_active') {
+    if (!trialEnd || trialDaysLeft <= 0) {
+      return buildTrialExpiredSummary();
+    }
+
+    if (trialDaysLeft <= 2) {
+      return buildTrialEndingSummary(trialDaysLeft, trialProgressPercent);
+    }
+
     return {
       status: 'trial_active',
       hasAccess: true,

@@ -55,19 +55,58 @@ function normalizeProfile(row: Record<string, unknown> | null, fallbackUid: stri
 
 function buildAccess(workspace: { subscriptionStatus: string; trialEndsAt: NullableString }) {
   const statusRaw = workspace.subscriptionStatus || 'inactive';
-  const trialActive = statusRaw === 'trial_active' && isFutureDate(workspace.trialEndsAt);
-  const trialEnding = statusRaw === 'trial_ending' || (statusRaw === 'trial_active' && trialActive);
-  const paidActive = statusRaw === 'paid_active';
-  const status =
-    statusRaw === 'trial_active' && workspace.trialEndsAt && !isFutureDate(workspace.trialEndsAt)
-      ? 'trial_expired'
-      : statusRaw;
+  const trialFuture = isFutureDate(workspace.trialEndsAt);
+
+  if (statusRaw === 'paid_active') {
+    return {
+      hasAccess: true,
+      status: 'paid_active',
+      isTrialActive: false,
+      isPaidActive: true,
+    };
+  }
+
+  if (statusRaw === 'trial_ending') {
+    if (!trialFuture) {
+      return {
+        hasAccess: false,
+        status: 'trial_expired',
+        isTrialActive: false,
+        isPaidActive: false,
+      };
+    }
+
+    return {
+      hasAccess: true,
+      status: 'trial_ending',
+      isTrialActive: true,
+      isPaidActive: false,
+    };
+  }
+
+  if (statusRaw === 'trial_active') {
+    if (!trialFuture) {
+      return {
+        hasAccess: false,
+        status: 'trial_expired',
+        isTrialActive: false,
+        isPaidActive: false,
+      };
+    }
+
+    return {
+      hasAccess: true,
+      status: 'trial_active',
+      isTrialActive: true,
+      isPaidActive: false,
+    };
+  }
 
   return {
-    hasAccess: paidActive || trialActive || trialEnding,
-    status,
-    isTrialActive: trialActive || trialEnding,
-    isPaidActive: paidActive,
+    hasAccess: false,
+    status: statusRaw,
+    isTrialActive: false,
+    isPaidActive: false,
   };
 }
 
