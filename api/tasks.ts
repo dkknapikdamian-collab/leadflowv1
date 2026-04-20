@@ -16,10 +16,15 @@ function isUuid(value: unknown) {
     && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
 
-function asNullableUuid(value: unknown) {
+function asNullableString(value: unknown) {
   if (typeof value !== 'string') return null;
   const trimmed = value.trim();
-  return trimmed && isUuid(trimmed) ? trimmed : null;
+  return trimmed ? trimmed : null;
+}
+
+function asNullableUuid(value: unknown) {
+  const normalized = asNullableString(value);
+  return normalized && isUuid(normalized) ? normalized : null;
 }
 
 function isTaskRow(row: Record<string, unknown>) {
@@ -100,6 +105,27 @@ async function syncLeadNextAction(leadId: unknown, item: { id?: unknown; title?:
   });
 }
 
+async function clearLeadNextActionIfCurrent(leadId: unknown, itemId: unknown) {
+  const normalizedLeadId = asNullableUuid(leadId);
+  const normalizedItemId = asNullableString(itemId);
+  if (!normalizedLeadId || !normalizedItemId) return;
+
+  const lookup = await selectFirstAvailable([
+    `leads?id=eq.${encodeURIComponent(normalizedLeadId)}&select=id,next_action_item_id&limit=1`,
+  ]);
+  const row = Array.isArray(lookup.data) && lookup.data[0] ? lookup.data[0] as Record<string, unknown> : null;
+  const currentItemId = row?.next_action_item_id ? String(row.next_action_item_id) : null;
+
+  if (currentItemId !== normalizedItemId) return;
+
+  await updateById('leads', normalizedLeadId, {
+    next_action_title: null,
+    next_action_at: null,
+    next_action_item_id: null,
+    updated_at: new Date().toISOString(),
+  });
+}
+
 export default async function handler(req: any, res: any) {
   try {
     if (req.method === 'GET') {
@@ -137,15 +163,22 @@ export default async function handler(req: any, res: any) {
       if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
 
       const data = await updateById('work_items', String(body.id), payload);
-      const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
-      if (body.leadId) {
-        await syncLeadNextAction(body.leadId, {
+      const updated = Array.isArray(data) && data[0] ? data[0] as Record<string, unknown> : { id: body.id, ...payload };
+      const effectiveLeadId = body.leadId !== undefined ? body.leadId : updated.lead_id;
+      const nextStatus = typeof (body.status ?? updated.status) === 'string' ? String(body.status ?? updated.status).toLowerCase() : '';
+      const isCompleted = nextStatus === 'done' || nextStatus === 'completed';
+
+      if (effectiveLeadId && isCompleted) {
+        await clearLeadNextActionIfCurrent(effectiveLeadId, body.id);
+      } else if (effectiveLeadId) {
+        await syncLeadNextAction(effectiveLeadId, {
           id: body.id,
-          title: body.title ?? payload.title,
-          scheduledAt: body.scheduledAt ?? payload.scheduled_at ?? body.date,
+          title: body.title ?? payload.title ?? updated.title,
+          scheduledAt: body.scheduledAt ?? payload.scheduled_at ?? body.date ?? updated.scheduled_at,
         });
       }
-      res.status(200).json(normalizeTask(updated as Record<string, unknown>));
+
+      res.status(200).json(normalizeTask(updated));
       return;
     }
 
