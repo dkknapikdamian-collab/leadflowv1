@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -42,13 +42,6 @@ import {
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../components/ui/select';
-import {
   buildStartEndPair,
   combineScheduleEntries,
   createDefaultRecurrence,
@@ -56,8 +49,6 @@ import {
   getEntriesForDay,
   getEntryTone,
   getTaskStartAt,
-  normalizeRecurrenceConfig,
-  normalizeReminderConfig,
   syncTaskDerivedFields,
   toReminderAtIso,
   toDateTimeLocalValue,
@@ -65,6 +56,7 @@ import {
 } from '../lib/scheduling';
 import {
   EVENT_TYPES,
+  PRIORITY_OPTIONS,
   RECURRENCE_OPTIONS,
   REMINDER_OFFSET_OPTIONS,
   REMINDER_MODE_OPTIONS,
@@ -77,6 +69,7 @@ import {
   deleteTaskFromSupabase,
   insertActivityToSupabase,
   insertEventToSupabase,
+  insertTaskToSupabase,
   updateEventInSupabase,
   updateLeadInSupabase,
   updateTaskInSupabase,
@@ -138,10 +131,23 @@ function getEntrySubtitle(entry: ScheduleEntry) {
         : 'Ruch leadowy';
 
   if (entry.leadName) {
-    return `Lead: ${entry.leadName} â€˘ ${typedLabel}`;
+    return `Lead: ${entry.leadName} • ${typedLabel}`;
   }
 
   return typedLabel;
+}
+
+function sortCalendarEntriesForDisplay(entries: ScheduleEntry[]) {
+  return [...entries].sort((a, b) => {
+    const aDone = a.kind === 'task' && a.raw?.status === 'done';
+    const bDone = b.kind === 'task' && b.raw?.status === 'done';
+
+    if (aDone !== bDone) {
+      return aDone ? 1 : -1;
+    }
+
+    return parseISO(a.startsAt).getTime() - parseISO(b.startsAt).getTime();
+  });
 }
 
 type ScheduleEntryCardProps = {
@@ -161,9 +167,10 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
   const pendingDone = actionPendingId === `${entry.id}:done`;
   const pendingDelete = actionPendingId === `${entry.id}:delete`;
   const EntryIcon = getScheduleEntryIcon(entry.kind, entry.raw?.type);
+  const isCompletedTask = entry.kind === 'task' && entry.raw?.status === 'done';
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+    <div className={`rounded-2xl border border-slate-200 bg-white p-3 shadow-sm ${isCompletedTask ? 'opacity-60' : ''}`}>
       <div className="mb-2 flex items-center justify-between gap-2">
         <Badge className={`${getEntryTone(entry)} border`}>{entry.badgeLabel || entry.kind}</Badge>
         <span className="text-[11px] font-semibold text-slate-500">
@@ -177,8 +184,8 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
             <EntryIcon className="h-4 w-4" />
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-bold text-slate-900 break-words">{entry.title}</p>
-            <p className="text-[11px] text-slate-500 break-words">{getEntrySubtitle(entry)}</p>
+            <p className={`text-sm font-bold break-words ${isCompletedTask ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
+            <p className={`text-[11px] break-words ${isCompletedTask ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{getEntrySubtitle(entry)}</p>
           </div>
         </div>
       </div>
@@ -191,7 +198,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
           <CheckSquare className="mr-2 h-4 w-4" /> {pendingDone ? '...' : 'Zrobione'}
         </button>
         <button type="button" className={actionButtonClass} onClick={() => onDelete(entry)} disabled={pendingDelete}>
-          <Trash2 className="mr-2 h-4 w-4" /> {pendingDelete ? '...' : 'UsuĹ„'}
+          <Trash2 className="mr-2 h-4 w-4" /> {pendingDelete ? '...' : 'Usuń'}
         </button>
       </div>
     </div>
@@ -210,6 +217,7 @@ export default function Calendar() {
   const [loading, setLoading] = useState(true);
 
   const [isNewEventOpen, setIsNewEventOpen] = useState(false);
+  const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
   const [editEntry, setEditEntry] = useState<ScheduleEntry | null>(null);
   const [editDraft, setEditDraft] = useState<CalendarEditDraft | null>(null);
   const [actionPendingId, setActionPendingId] = useState<string | null>(null);
@@ -225,6 +233,13 @@ export default function Calendar() {
       reminder: createDefaultReminder(),
     };
   });
+  const [newTask, setNewTask] = useState(() => ({
+    title: '',
+    type: 'follow_up',
+    dueAt: toDateTimeLocalValue(new Date()),
+    priority: 'medium',
+    leadId: 'none',
+  }));
 
   useEffect(() => {
     const stored = typeof window !== 'undefined' ? window.localStorage.getItem('leadflow-calendar-scale') : null;
@@ -244,7 +259,6 @@ export default function Calendar() {
     setEvents(bundle.events);
     setTasks(bundle.tasks);
     setLeads(bundle.leads);
-
     return bundle;
   }
 
@@ -263,7 +277,7 @@ export default function Calendar() {
         setLeads(bundle.leads);
       } catch (error: any) {
         if (!cancelled) {
-          toast.error(`BĹ‚Ä…d odczytu kalendarza: ${error.message}`);
+          toast.error(`Blad odczytu kalendarza: ${error.message}`);
         }
       } finally {
         if (!cancelled) {
@@ -289,6 +303,16 @@ export default function Calendar() {
       leadName: '',
       recurrence: createDefaultRecurrence(),
       reminder: createDefaultReminder(),
+    });
+  };
+
+  const resetNewTask = () => {
+    setNewTask({
+      title: '',
+      type: 'follow_up',
+      dueAt: toDateTimeLocalValue(new Date()),
+      priority: 'medium',
+      leadId: 'none',
     });
   };
 
@@ -387,9 +411,36 @@ export default function Calendar() {
     }
   };
 
+  const handleAddTask = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!hasAccess) return toast.error('Trial wygasl.');
+
+    const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
+
+    try {
+      await insertTaskToSupabase({
+        title: newTask.title,
+        type: newTask.type,
+        date: newTask.dueAt.slice(0, 10),
+        scheduledAt: newTask.dueAt,
+        priority: newTask.priority,
+        leadId: selectedLead?.id ?? null,
+        ownerId: auth.currentUser?.uid,
+        workspaceId: workspace.id,
+      });
+
+      await refreshSupabaseBundle();
+      toast.success('Zadanie dodane');
+      setIsNewTaskOpen(false);
+      resetNewTask();
+    } catch (error: any) {
+      toast.error('Blad: ' + error.message);
+    }
+  };
+
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Trial wygasl.');
 
     const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
     const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
@@ -416,7 +467,7 @@ export default function Calendar() {
       setIsNewEventOpen(false);
       resetNewEvent();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Blad: ' + error.message);
     }
   };
 
@@ -443,7 +494,7 @@ export default function Calendar() {
     rangeStart: selectedWeekStart,
     rangeEnd: selectedWeekEnd,
   });
-  const selectedDayEntries = getEntriesForDay(scheduleEntries, selectedDate);
+  const selectedDayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, selectedDate));
 
   const monthCellMinHeight = calendarScale === 'compact' ? 104 : calendarScale === 'large' ? 160 : 128;
   const weekColumnMinWidth = calendarScale === 'compact' ? '240px' : calendarScale === 'large' ? '360px' : '280px';
@@ -469,7 +520,7 @@ export default function Calendar() {
 
   const handleShiftEntry = async (entry: ScheduleEntry, days: number) => {
     if (!hasAccess) {
-      toast.error('Trial wygasĹ‚.');
+      toast.error('Trial wygasl.');
       return;
     }
 
@@ -522,9 +573,9 @@ export default function Calendar() {
       }
 
       await refreshSupabaseBundle();
-      toast.success(days === 1 ? 'PrzesuniÄ™to o 1 dzieĹ„' : 'PrzesuniÄ™to o 1 tydzieĹ„');
+      toast.success(days === 1 ? 'Przesunieto o 1 dzien' : 'Przesunieto o 1 tydzien');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Blad: ' + error.message);
     } finally {
       setActionPendingId(null);
     }
@@ -593,10 +644,10 @@ export default function Calendar() {
 
   const handleDeleteEntry = async (entry: ScheduleEntry) => {
     if (!hasAccess) {
-      toast.error('Trial wygasĹ‚.');
+      toast.error('Trial wygasl.');
       return;
     }
-    if (!window.confirm('UsunÄ…Ä‡ ten wpis z kalendarza?')) return;
+    if (!window.confirm('Usunac ten wpis z kalendarza?')) return;
 
     try {
       setActionPendingId(`${entry.id}:delete`);
@@ -614,9 +665,9 @@ export default function Calendar() {
       }
 
       await refreshSupabaseBundle();
-      toast.success('Wpis usuniÄ™ty');
+      toast.success('Wpis usuniety');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Blad: ' + error.message);
     } finally {
       setActionPendingId(null);
     }
@@ -625,7 +676,7 @@ export default function Calendar() {
   const handleSaveEdit = async (e: FormEvent) => {
     e.preventDefault();
     if (!editEntry || !editDraft) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Trial wygasl.');
 
     try {
       setActionPendingId(`${editEntry.id}:edit`);
@@ -686,12 +737,11 @@ export default function Calendar() {
       }
 
       await refreshSupabaseBundle();
-
       toast.success('Wpis zaktualizowany');
       setEditEntry(null);
       setEditDraft(null);
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Blad: ' + error.message);
     } finally {
       setActionPendingId(null);
     }
@@ -719,7 +769,7 @@ export default function Calendar() {
                 ? `${format(selectedWeekStart, 'd MMM', { locale: pl })} - ${format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}`
                 : format(currentMonth, 'MMMM yyyy', { locale: pl })}
             </h1>
-            <p className="text-slate-500">Kalendarz live dla zadaĹ„, wydarzeĹ„ i ruchĂłw leadowych.</p>
+            <p className="text-slate-500">Kalendarz live dla zadan, wydarzen i ruchow leadowych.</p>
           </div>
           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
@@ -728,25 +778,25 @@ export default function Calendar() {
                 className="h-9 rounded-lg px-3 text-sm font-semibold"
                 onClick={() => setCalendarView('week')}
               >
-                TydzieĹ„
+                Tydzien
               </Button>
               <Button
                 variant={calendarView === 'month' ? 'default' : 'ghost'}
                 className="h-9 rounded-lg px-3 text-sm font-semibold"
                 onClick={() => setCalendarView('month')}
               >
-                MiesiÄ…c
+                Miesiac
               </Button>
             </div>
             <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
               <Button variant={calendarScale === 'compact' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('compact')}>
-                MaĹ‚e kafelki
+                Male kafelki
               </Button>
               <Button variant={calendarScale === 'default' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('default')}>
                 Standard
               </Button>
               <Button variant={calendarScale === 'large' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('large')}>
-                DuĹĽe kafelki
+                Duze kafelki
               </Button>
             </div>
             <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
@@ -784,6 +834,58 @@ export default function Calendar() {
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
+            <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="rounded-xl">
+                  <Plus className="w-4 h-4 mr-2" /> Zadanie
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
+                <form onSubmit={handleAddTask} className="space-y-6 py-4">
+                  <div className="space-y-2">
+                    <Label>Tytul zadania</Label>
+                    <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Typ</Label>
+                      <select className={modalSelectClass} value={newTask.type} onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}>
+                        {TASK_TYPES.map((taskType) => (
+                          <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Lead</Label>
+                      <select className={modalSelectClass} value={newTask.leadId} onChange={(e) => setNewTask({ ...newTask, leadId: e.target.value })}>
+                        <option value="none">Bez leada</option>
+                        {leads.map((lead) => (
+                          <option key={lead.id} value={lead.id}>{lead.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Priorytet</Label>
+                      <select className={modalSelectClass} value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}>
+                        {PRIORITY_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Data i godzina</Label>
+                      <Input type="datetime-local" value={newTask.dueAt} onChange={(e) => setNewTask({ ...newTask, dueAt: e.target.value })} required />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit" className="w-full">Dodaj zadanie</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
             <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
               <DialogTrigger asChild>
                 <Button className="rounded-xl shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
@@ -793,17 +895,13 @@ export default function Calendar() {
                 <form onSubmit={handleAddEvent} className="space-y-6 py-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label>TytuĹ‚</Label>
+                      <Label>Tytul</Label>
                       <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Typ</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newEvent.type}
-                          onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
-                        >
+                        <select className={modalSelectClass} value={newEvent.type} onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}>
                           {EVENT_TYPES.map((eventType) => (
                             <option key={eventType.value} value={eventType.value}>{eventType.label}</option>
                           ))}
@@ -811,11 +909,7 @@ export default function Calendar() {
                       </div>
                       <div className="space-y-2">
                         <Label>Lead</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newEvent.leadId}
-                          onChange={(e) => setNewEvent({ ...newEvent, leadId: e.target.value })}
-                        >
+                        <select className={modalSelectClass} value={newEvent.leadId} onChange={(e) => setNewEvent({ ...newEvent, leadId: e.target.value })}>
                           <option value="none">Bez leada</option>
                           {leads.map((lead) => (
                             <option key={lead.id} value={lead.id}>{lead.name}</option>
@@ -828,7 +922,7 @@ export default function Calendar() {
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Od do</p>
-                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje siÄ™ automatycznie przy zmianie startu.</p>
+                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje sie automatycznie przy zmianie startu.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -844,23 +938,13 @@ export default function Calendar() {
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
-                      <p className="text-sm font-bold text-slate-900">CyklicznoĹ›Ä‡ wydarzenia</p>
-                      <p className="text-xs text-slate-500">MoĹĽesz zostawiÄ‡ brak albo ustawiÄ‡ powtarzanie, np. co miesiÄ…c.</p>
+                      <p className="text-sm font-bold text-slate-900">Cyklicznosc wydarzenia</p>
+                      <p className="text-xs text-slate-500">Mozesz zostawic brak albo ustawic powtarzanie, np. co miesiac.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Powtarzanie</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newEvent.recurrence.mode}
-                          onChange={(e) => setNewEvent({
-                            ...newEvent,
-                            recurrence: {
-                              ...newEvent.recurrence,
-                              mode: e.target.value as any,
-                            },
-                          })}
-                        >
+                        <select className={modalSelectClass} value={newEvent.recurrence.mode} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}>
                           {RECURRENCE_OPTIONS.map((option) => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                           ))}
@@ -868,76 +952,32 @@ export default function Calendar() {
                       </div>
                       <div className="space-y-2">
                         <Label>Co ile</Label>
-                        <Input
-                          type="number"
-                          min="1"
-                          value={newEvent.recurrence.interval}
-                          onChange={(e) => setNewEvent({
-                            ...newEvent,
-                            recurrence: {
-                              ...newEvent.recurrence,
-                              interval: Math.max(1, Number(e.target.value) || 1),
-                            },
-                          })}
-                          disabled={newEvent.recurrence.mode === 'none'}
-                        />
+                        <Input type="number" min="1" value={newEvent.recurrence.interval} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newEvent.recurrence.mode === 'none'} />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <Label>Powtarzaj do</Label>
-                      <Input
-                        type="date"
-                        value={newEvent.recurrence.until || ''}
-                        onChange={(e) => setNewEvent({
-                          ...newEvent,
-                          recurrence: {
-                            ...newEvent.recurrence,
-                            until: e.target.value || null,
-                          },
-                        })}
-                        disabled={newEvent.recurrence.mode === 'none'}
-                      />
+                      <Input type="date" value={newEvent.recurrence.until || ''} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, until: e.target.value || null } })} disabled={newEvent.recurrence.mode === 'none'} />
                     </div>
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                      <p className="text-xs text-slate-500">Na koĹ„cu ustaw sposĂłb przypominania i jego cyklicznoĹ›Ä‡.</p>
+                      <p className="text-xs text-slate-500">Na koncu ustaw sposob przypominania i jego cyklicznosc.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Tryb</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newEvent.reminder.mode}
-                          onChange={(e) => setNewEvent({
-                            ...newEvent,
-                            reminder: {
-                              ...newEvent.reminder,
-                              mode: e.target.value as any,
-                            },
-                          })}
-                        >
+                        <select className={modalSelectClass} value={newEvent.reminder.mode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}>
                           {REMINDER_MODE_OPTIONS.map((option) => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                           ))}
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Kiedy przypomnieÄ‡</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newEvent.reminder.minutesBefore}
-                          onChange={(e) => setNewEvent({
-                            ...newEvent,
-                            reminder: {
-                              ...newEvent.reminder,
-                              minutesBefore: Number(e.target.value),
-                            },
-                          })}
-                          disabled={newEvent.reminder.mode === 'none'}
-                        >
+                        <Label>Kiedy przypomniec</Label>
+                        <select className={modalSelectClass} value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })} disabled={newEvent.reminder.mode === 'none'}>
                           {REMINDER_OFFSET_OPTIONS.map((option) => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                           ))}
@@ -947,18 +987,8 @@ export default function Calendar() {
                     {newEvent.reminder.mode === 'recurring' && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
-                          <select
-                            className={modalSelectClass}
-                            value={newEvent.reminder.recurrenceMode}
-                            onChange={(e) => setNewEvent({
-                              ...newEvent,
-                              reminder: {
-                                ...newEvent.reminder,
-                                recurrenceMode: e.target.value as any,
-                              },
-                            })}
-                          >
+                          <Label>Cyklicznosc przypomnienia</Label>
+                          <select className={modalSelectClass} value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
                             {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
                               <option key={option.value} value={option.value}>{option.label}</option>
                             ))}
@@ -966,18 +996,7 @@ export default function Calendar() {
                         </div>
                         <div className="space-y-2">
                           <Label>Co ile</Label>
-                          <Input
-                            type="number"
-                            min="1"
-                            value={newEvent.reminder.recurrenceInterval}
-                            onChange={(e) => setNewEvent({
-                              ...newEvent,
-                              reminder: {
-                                ...newEvent.reminder,
-                                recurrenceInterval: Math.max(1, Number(e.target.value) || 1),
-                              },
-                            })}
-                          />
+                          <Input type="number" min="1" value={newEvent.reminder.recurrenceInterval} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
                         </div>
                       </div>
                     )}
@@ -995,149 +1014,150 @@ export default function Calendar() {
         <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">TydzieĹ„ operacyjny</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Tydzien operacyjny</p>
               <h2 className="text-lg font-bold text-slate-900">
                 {format(selectedWeekStart, 'd MMM', { locale: pl })} - {format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}
               </h2>
-              <p className="text-sm text-slate-500">Taski, leady i wydarzenia majÄ… teraz identyczny pasek akcji: Edytuj, +1D, +1W, Zrobione, UsuĹ„.</p>
+              <p className="text-sm text-slate-500">Taski, leady i wydarzenia maja teraz identyczny pasek akcji: Edytuj, +1D, +1W, Zrobione, Usun.</p>
             </div>
             <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
-              Wybrany dzieĹ„: {format(selectedDate, 'EEEE, d MMMM', { locale: pl })}
+              Wybrany dzien: {format(selectedDate, 'EEEE, d MMMM', { locale: pl })}
             </div>
           </div>
         </div>
 
         {calendarView === 'month' ? (
-        <>
-        <div className="grid grid-cols-7 mb-2">
-          {['Pon', 'Wt', 'Ĺšr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
-            <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-7 border-t border-l border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white">
-          {calendarDays.map((day, index) => {
-            const dayEntries = getEntriesForDay(scheduleEntries, day);
-            const isCurrentMonth = isSameMonth(day, monthStart);
-            const isTodayDay = isToday(day);
-            const isSelectedDay = isSameDay(day, selectedDate);
-
-            return (
-              <button
-                key={index}
-                type="button"
-                onClick={() => setSelectedDate(day)}
-                style={{ minHeight: monthCellMinHeight }}
-                className={`p-2 border-r border-b border-slate-100 text-left transition-colors hover:bg-slate-50/50 ${!isCurrentMonth ? 'bg-slate-50/30 text-slate-300' : 'text-slate-900'} ${isSelectedDay ? 'ring-2 ring-inset ring-primary/30 bg-primary/5' : ''}`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${isTodayDay ? 'bg-primary text-white' : ''}`}>
-                    {format(day, 'd')}
-                  </span>
-                  {dayEntries.length > 0 && <Badge variant="secondary" className="h-5 text-[10px]">{dayEntries.length}</Badge>}
-                </div>
-                <div className="space-y-1">
-                  {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
-                    const EntryIcon = getScheduleEntryIcon(entry.kind, entry.raw?.type);
-
-                    return (
-                      <div key={entry.id} className={`flex items-center gap-1 rounded border p-1 text-[10px] font-medium ${getEntryTone(entry)}`}>
-                        <EntryIcon className="h-3 w-3 shrink-0" />
-                        <span className="break-words">{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span>
-                      </div>
-                    );
-                  })}
-                  {dayEntries.length > (calendarScale === 'compact' ? 3 : 4) && (
-                    <div className="text-[10px] text-slate-500 font-medium px-1">+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} wiÄ™cej</div>
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
-          <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Wybrany dzieĹ„</p>
-              <h2 className="text-xl font-bold text-slate-900">{format(selectedDate, 'EEEE, d MMMM yyyy', { locale: pl })}</h2>
+          <>
+            <div className="grid grid-cols-7 mb-2">
+              {['Pon', 'Wt', 'Sro', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
+                <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
+              ))}
             </div>
-            <Badge variant="secondary" className="h-7 px-3">{selectedDayEntries.length} wpisĂłw</Badge>
-          </div>
-          <div className="grid gap-3 lg:grid-cols-2">
-            {selectedDayEntries.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-8 text-center text-sm text-slate-400 lg:col-span-2">
-                Brak wpisĂłw dla tego dnia.
+
+            <div className="grid grid-cols-7 border-t border-l border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white">
+              {calendarDays.map((day, index) => {
+                const dayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, day));
+                const isCurrentMonth = isSameMonth(day, monthStart);
+                const isTodayDay = isToday(day);
+                const isSelectedDay = isSameDay(day, selectedDate);
+
+                return (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setSelectedDate(day)}
+                    style={{ minHeight: monthCellMinHeight }}
+                    className={`p-2 border-r border-b border-slate-100 text-left transition-colors hover:bg-slate-50/50 ${!isCurrentMonth ? 'bg-slate-50/30 text-slate-300' : 'text-slate-900'} ${isSelectedDay ? 'ring-2 ring-inset ring-primary/30 bg-primary/5' : ''}`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${isTodayDay ? 'bg-primary text-white' : ''}`}>
+                        {format(day, 'd')}
+                      </span>
+                      {dayEntries.length > 0 && <Badge variant="secondary" className="h-5 text-[10px]">{dayEntries.length}</Badge>}
+                    </div>
+                    <div className="space-y-1">
+                      {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
+                        const EntryIcon = getScheduleEntryIcon(entry.kind, entry.raw?.type);
+                        const isCompletedTask = entry.kind === 'task' && entry.raw?.status === 'done';
+
+                        return (
+                          <div key={entry.id} className={`flex items-center gap-1 rounded border p-1 text-[10px] font-medium ${getEntryTone(entry)} ${isCompletedTask ? 'opacity-60' : ''}`}>
+                            <EntryIcon className="h-3 w-3 shrink-0" />
+                            <span className={`break-words ${isCompletedTask ? 'line-through' : ''}`}>{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span>
+                          </div>
+                        );
+                      })}
+                      {dayEntries.length > (calendarScale === 'compact' ? 3 : 4) && (
+                        <div className="text-[10px] text-slate-500 font-medium px-1">+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} wiecej</div>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Wybrany dzien</p>
+                  <h2 className="text-xl font-bold text-slate-900">{format(selectedDate, 'EEEE, d MMMM yyyy', { locale: pl })}</h2>
+                </div>
+                <Badge variant="secondary" className="h-7 px-3">{selectedDayEntries.length} wpisow</Badge>
               </div>
-            ) : selectedDayEntries.map((entry) => (
-              <div key={`selected:${entry.id}`}>
-                <ScheduleEntryCard
-                  entry={entry}
-                  actionButtonClass={actionButtonClass}
-                  actionPendingId={actionPendingId}
-                  onEdit={handleOpenEdit}
-                  onShift={handleShiftEntry}
-                  onComplete={handleCompleteEntry}
-                  onDelete={handleDeleteEntry}
-                />
+              <div className="grid gap-3 lg:grid-cols-2">
+                {selectedDayEntries.length === 0 ? (
+                  <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-8 text-center text-sm text-slate-400 lg:col-span-2">
+                    Brak wpisow dla tego dnia.
+                  </div>
+                ) : selectedDayEntries.map((entry) => (
+                  <div key={`selected:${entry.id}`}>
+                    <ScheduleEntryCard
+                      entry={entry}
+                      actionButtonClass={actionButtonClass}
+                      actionPendingId={actionPendingId}
+                      onEdit={handleOpenEdit}
+                      onShift={handleShiftEntry}
+                      onComplete={handleCompleteEntry}
+                      onDelete={handleDeleteEntry}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-        </>
+            </div>
+          </>
         ) : null}
 
         {calendarView === 'week' ? (
-        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
-          <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-            <div>
-              <h3 className="text-lg font-bold text-slate-900">Widok tygodniowy</h3>
-              <p className="text-sm text-slate-500">KaĹĽdy wpis ma ten sam zestaw akcji, niezaleĹĽnie czy to zadanie, lead czy wydarzenie.</p>
+          <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+            <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">Widok tygodniowy</h3>
+                <p className="text-sm text-slate-500">Kazdy wpis ma ten sam zestaw akcji, niezaleznie czy to zadanie, lead czy wydarzenie.</p>
+              </div>
+              <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisow</Badge>
             </div>
-            <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisĂłw</Badge>
-          </div>
 
-          <div className="overflow-x-auto pb-1">
-          <div className="grid grid-flow-col gap-4 min-w-full" style={{ gridAutoColumns: `minmax(${weekColumnMinWidth}, 1fr)` }}>
-            {weekDays.map((day) => {
-              const dayEntries = getEntriesForDay(weekEntries, day);
-              const isActiveDay = isSameDay(day, selectedDate);
+            <div className="overflow-x-auto pb-1">
+              <div className="grid grid-flow-col gap-4 min-w-full" style={{ gridAutoColumns: `minmax(${weekColumnMinWidth}, 1fr)` }}>
+                {weekDays.map((day) => {
+                  const dayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day));
+                  const isActiveDay = isSameDay(day, selectedDate);
 
-              return (
-                <div key={day.toISOString()} className={`rounded-2xl border p-3 ${isActiveDay ? 'border-primary/40 bg-primary/5' : 'border-slate-200 bg-slate-50/40'}`}>
-                  <div className="mb-3 flex items-center justify-between">
-                    <div>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{format(day, 'EEEE', { locale: pl })}</p>
-                      <p className="text-base font-bold text-slate-900">{format(day, 'd MMM', { locale: pl })}</p>
+                  return (
+                    <div key={day.toISOString()} className={`rounded-2xl border p-3 ${isActiveDay ? 'border-primary/40 bg-primary/5' : 'border-slate-200 bg-slate-50/40'}`}>
+                      <div className="mb-3 flex items-center justify-between">
+                        <div>
+                          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{format(day, 'EEEE', { locale: pl })}</p>
+                          <p className="text-base font-bold text-slate-900">{format(day, 'd MMM', { locale: pl })}</p>
+                        </div>
+                        {isToday(day) ? <Badge className="bg-primary/15 text-primary hover:bg-primary/15">Dzis</Badge> : null}
+                      </div>
+
+                      <div className="space-y-3">
+                        {dayEntries.length === 0 ? (
+                          <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-3 py-6 text-center text-xs text-slate-400">
+                            Brak wpisow
+                          </div>
+                        ) : dayEntries.map((entry) => (
+                          <div key={entry.id}>
+                            <ScheduleEntryCard
+                              entry={entry}
+                              actionButtonClass={actionButtonClass}
+                              actionPendingId={actionPendingId}
+                              onEdit={handleOpenEdit}
+                              onShift={handleShiftEntry}
+                              onComplete={handleCompleteEntry}
+                              onDelete={handleDeleteEntry}
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    {isToday(day) ? <Badge className="bg-primary/15 text-primary hover:bg-primary/15">DziĹ›</Badge> : null}
-                  </div>
-
-                  <div className="space-y-3">
-                    {dayEntries.length === 0 ? (
-                      <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-3 py-6 text-center text-xs text-slate-400">
-                        Brak wpisĂłw
-                      </div>
-                    ) : dayEntries.map((entry) => (
-                      <div key={entry.id}>
-                        <ScheduleEntryCard
-                          entry={entry}
-                          actionButtonClass={actionButtonClass}
-                          actionPendingId={actionPendingId}
-                          onEdit={handleOpenEdit}
-                          onShift={handleShiftEntry}
-                          onComplete={handleCompleteEntry}
-                          onDelete={handleDeleteEntry}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            </div>
           </div>
-          </div>
-        </div>
         ) : null}
 
         <div className="mt-8 grid grid-cols-1 xl:grid-cols-3 gap-4">
@@ -1146,21 +1166,21 @@ export default function Calendar() {
               <Repeat className="w-4 h-4 text-slate-400" />
               <h2 className="text-sm font-bold text-slate-900">Cykliczne wpisy</h2>
             </div>
-            <p className="text-sm text-slate-500">W tym miesiÄ…cu kalendarz rozwija powtarzalne zadania i wydarzenia bez rÄ™cznego odĹ›wieĹĽania.</p>
+            <p className="text-sm text-slate-500">W tym miesiacu kalendarz rozwija powtarzalne zadania i wydarzenia bez recznego odswiezania.</p>
           </div>
           <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-3">
               <Bell className="w-4 h-4 text-slate-400" />
               <h2 className="text-sm font-bold text-slate-900">Przypomnienia</h2>
             </div>
-            <p className="text-sm text-slate-500">Tryb przypomnieĹ„ zapisuje siÄ™ juĹĽ w danych. Warstwa wysyĹ‚ki powiadomieĹ„ wymaga jeszcze domkniÄ™cia logiki V1.</p>
+            <p className="text-sm text-slate-500">Tryb przypomnien zapisuje sie juz w danych. Warstwa wysylki powiadomien wymaga jeszcze domkniecia logiki V1.</p>
           </div>
           <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-3">
               <Plus className="w-4 h-4 text-slate-400" />
               <h2 className="text-sm font-bold text-slate-900">Live plan</h2>
             </div>
-            <p className="text-sm text-slate-500">Kalendarz zbiera teraz wydarzenia, zadania oraz terminy kolejnego ruchu z leadĂłw.</p>
+            <p className="text-sm text-slate-500">Kalendarz zbiera teraz wydarzenia, zadania oraz terminy kolejnego ruchu z leadow.</p>
           </div>
         </div>
       </div>
@@ -1178,22 +1198,14 @@ export default function Calendar() {
           {editEntry && editDraft ? (
             <form onSubmit={handleSaveEdit} className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label>{editEntry.kind === 'lead' ? 'Next step' : 'TytuĹ‚'}</Label>
-                <Input
-                  value={editDraft.title}
-                  onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })}
-                  required
-                />
+                <Label>{editEntry.kind === 'lead' ? 'Next step' : 'Tytul'}</Label>
+                <Input value={editDraft.title} onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })} required />
               </div>
 
               {editEntry.kind !== 'lead' ? (
                 <div className="space-y-2">
                   <Label>Typ</Label>
-                  <select
-                    className={modalSelectClass}
-                    value={editDraft.type}
-                    onChange={(e) => setEditDraft({ ...editDraft, type: e.target.value })}
-                  >
+                  <select className={modalSelectClass} value={editDraft.type} onChange={(e) => setEditDraft({ ...editDraft, type: e.target.value })}>
                     {(editEntry.kind === 'event' ? EVENT_TYPES : TASK_TYPES).map((option) => (
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
@@ -1226,12 +1238,7 @@ export default function Calendar() {
                 {editEntry.kind === 'event' ? (
                   <div className="space-y-2">
                     <Label>Koniec</Label>
-                    <Input
-                      type="datetime-local"
-                      value={editDraft.endAt}
-                      onChange={(e) => setEditDraft({ ...editDraft, endAt: e.target.value })}
-                      required
-                    />
+                    <Input type="datetime-local" value={editDraft.endAt} onChange={(e) => setEditDraft({ ...editDraft, endAt: e.target.value })} required />
                   </div>
                 ) : null}
               </div>
@@ -1239,11 +1246,7 @@ export default function Calendar() {
               {editEntry.kind !== 'lead' ? (
                 <div className="space-y-2">
                   <Label>Lead</Label>
-                  <select
-                    className={modalSelectClass}
-                    value={editDraft.leadId}
-                    onChange={(e) => setEditDraft({ ...editDraft, leadId: e.target.value })}
-                  >
+                  <select className={modalSelectClass} value={editDraft.leadId} onChange={(e) => setEditDraft({ ...editDraft, leadId: e.target.value })}>
                     <option value="none">Bez leada</option>
                     {leads.map((lead) => (
                       <option key={lead.id} value={lead.id}>{lead.name}</option>
@@ -1264,6 +1267,3 @@ export default function Calendar() {
     </Layout>
   );
 }
-
-
-
