@@ -163,9 +163,13 @@ export default async function handler(req: any, res: any) {
       if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
 
       const data = await updateById('work_items', String(body.id), payload);
-      const updated = Array.isArray(data) && data[0] ? data[0] as Record<string, unknown> : { id: body.id, ...payload };
-      const effectiveLeadId = body.leadId !== undefined ? body.leadId : updated.lead_id;
-      const nextStatus = typeof (body.status ?? updated.status) === 'string' ? String(body.status ?? updated.status).toLowerCase() : '';
+      const updatedRow: Record<string, unknown> = Array.isArray(data) && data[0]
+        ? data[0] as Record<string, unknown>
+        : { id: body.id, ...payload };
+
+      const effectiveLeadId = body.leadId !== undefined ? body.leadId : updatedRow.lead_id;
+      const statusSource = body.status ?? updatedRow.status;
+      const nextStatus = typeof statusSource === 'string' ? statusSource.toLowerCase() : '';
       const isCompleted = nextStatus === 'done' || nextStatus === 'completed';
 
       if (effectiveLeadId && isCompleted) {
@@ -173,12 +177,12 @@ export default async function handler(req: any, res: any) {
       } else if (effectiveLeadId) {
         await syncLeadNextAction(effectiveLeadId, {
           id: body.id,
-          title: body.title ?? payload.title ?? updated.title,
-          scheduledAt: body.scheduledAt ?? payload.scheduled_at ?? body.date ?? updated.scheduled_at,
+          title: body.title ?? payload.title ?? updatedRow.title,
+          scheduledAt: body.scheduledAt ?? payload.scheduled_at ?? body.date ?? updatedRow.scheduled_at,
         });
       }
 
-      res.status(200).json(normalizeTask(updated));
+      res.status(200).json(normalizeTask(updatedRow));
       return;
     }
 
