@@ -4,6 +4,17 @@ function asBoolean(value: unknown) {
   return value === true || value === 'true';
 }
 
+function isUuid(value: unknown) {
+  return typeof value === 'string'
+    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function asNullableUuid(value: unknown) {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed && isUuid(trimmed) ? trimmed : null;
+}
+
 function isEventRow(row: Record<string, unknown>) {
   const recordType = String(row.record_type || row.recordType || '').toLowerCase();
   const hasStartAt = Boolean(row.start_at || row.startAt || row.end_at || row.endAt);
@@ -56,9 +67,10 @@ function normalizeEvent(row: Record<string, unknown>) {
 }
 
 async function syncLeadNextAction(leadId: unknown, item: { id?: unknown; title?: unknown; startAt?: unknown }) {
-  if (typeof leadId !== 'string' || !leadId.trim()) return;
+  const normalizedLeadId = asNullableUuid(leadId);
+  if (!normalizedLeadId) return;
 
-  await updateById('leads', leadId, {
+  await updateById('leads', normalizedLeadId, {
     next_action_title: String(item.title || ''),
     next_action_at: item.startAt ? new Date(String(item.startAt)).toISOString() : null,
     next_action_item_id: item.id ? String(item.id) : null,
@@ -102,7 +114,7 @@ export default async function handler(req: any, res: any) {
       if (body.endAt !== undefined) payload.end_at = body.endAt ? new Date(body.endAt).toISOString() : null;
       if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
       if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
-      if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
+      if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
 
       const data = await updateById('work_items', String(body.id), payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
@@ -144,8 +156,8 @@ export default async function handler(req: any, res: any) {
     const startAt = body.startAt ? new Date(body.startAt).toISOString() : nowIso;
     const payload = {
       workspace_id: workspaceId,
-      created_by_user_id: body.ownerId || null,
-      lead_id: body.leadId || null,
+      created_by_user_id: asNullableUuid(body.ownerId),
+      lead_id: asNullableUuid(body.leadId),
       record_type: 'event',
       type: body.type || 'meeting',
       title: body.title,

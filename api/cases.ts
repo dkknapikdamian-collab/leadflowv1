@@ -1,5 +1,16 @@
 import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById } from './_supabase.js';
 
+function isUuid(value: unknown) {
+  return typeof value === 'string'
+    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function asNullableUuid(value: unknown) {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed && isUuid(trimmed) ? trimmed : null;
+}
+
 function isMissingCasesTableError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error || '');
   return message.includes('PGRST205') || message.includes("table 'public.cases'");
@@ -82,10 +93,13 @@ export default async function handler(req: any, res: any) {
       }
 
       const nowIso = new Date().toISOString();
+      const normalizedLeadId = asNullableUuid(body.leadId);
+      const normalizedClientId = asNullableUuid(body.clientId);
+
       const payload = {
         workspace_id: workspaceId,
-        lead_id: body.leadId || null,
-        client_id: body.clientId || null,
+        lead_id: normalizedLeadId,
+        client_id: normalizedClientId,
         title: body.title || 'Nowa sprawa',
         client_name: body.clientName || '',
         client_email: body.clientEmail || '',
@@ -108,8 +122,8 @@ export default async function handler(req: any, res: any) {
         });
       }
 
-      if (body.leadId && insertedId) {
-        await bestEffortPatch(`leads?id=eq.${encodeURIComponent(String(body.leadId))}`, {
+      if (normalizedLeadId && insertedId) {
+        await bestEffortPatch(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, {
           linked_case_id: insertedId,
           updated_at: nowIso,
         });
@@ -127,6 +141,8 @@ export default async function handler(req: any, res: any) {
       }
 
       const nowIso = new Date().toISOString();
+      const normalizedLeadId = body.leadId !== undefined ? asNullableUuid(body.leadId) : undefined;
+      const normalizedClientId = body.clientId !== undefined ? asNullableUuid(body.clientId) : undefined;
       const payload: Record<string, unknown> = {
         updated_at: nowIso,
       };
@@ -135,10 +151,10 @@ export default async function handler(req: any, res: any) {
       if (body.clientName !== undefined) payload.client_name = body.clientName || '';
       if (body.clientEmail !== undefined) payload.client_email = body.clientEmail || '';
       if (body.clientPhone !== undefined) payload.client_phone = body.clientPhone || '';
-      if (body.clientId !== undefined) payload.client_id = body.clientId || null;
+      if (body.clientId !== undefined) payload.client_id = normalizedClientId;
       if (body.status !== undefined) payload.status = body.status || 'in_progress';
       if (body.completenessPercent !== undefined) payload.completeness_percent = Number(body.completenessPercent || 0);
-      if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
+      if (body.leadId !== undefined) payload.lead_id = normalizedLeadId;
       if (body.portalReady !== undefined) payload.portal_ready = Boolean(body.portalReady);
 
       const data = await updateById('cases', String(body.id), payload);
@@ -149,8 +165,8 @@ export default async function handler(req: any, res: any) {
         updated_at: nowIso,
       });
 
-      if (body.leadId) {
-        await bestEffortPatch(`leads?id=eq.${encodeURIComponent(String(body.leadId))}`, {
+      if (normalizedLeadId) {
+        await bestEffortPatch(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, {
           linked_case_id: String(body.id),
           updated_at: nowIso,
         });
