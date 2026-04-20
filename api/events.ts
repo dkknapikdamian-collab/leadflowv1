@@ -143,9 +143,13 @@ export default async function handler(req: any, res: any) {
       if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
 
       const data = await updateById('work_items', String(body.id), payload);
-      const updated = Array.isArray(data) && data[0] ? data[0] as Record<string, unknown> : { id: body.id, ...payload };
-      const effectiveLeadId = body.leadId !== undefined ? body.leadId : updated.lead_id;
-      const nextStatus = typeof (body.status ?? updated.status) === 'string' ? String(body.status ?? updated.status).toLowerCase() : '';
+      const updatedRow: Record<string, unknown> = Array.isArray(data) && data[0]
+        ? data[0] as Record<string, unknown>
+        : { id: body.id, ...payload };
+
+      const effectiveLeadId = body.leadId !== undefined ? body.leadId : updatedRow.lead_id;
+      const statusSource = body.status ?? updatedRow.status;
+      const nextStatus = typeof statusSource === 'string' ? statusSource.toLowerCase() : '';
       const isCompleted = nextStatus === 'done' || nextStatus === 'completed';
 
       if (effectiveLeadId && isCompleted) {
@@ -153,12 +157,12 @@ export default async function handler(req: any, res: any) {
       } else if (effectiveLeadId) {
         await syncLeadNextAction(effectiveLeadId, {
           id: body.id,
-          title: body.title ?? payload.title ?? updated.title,
-          startAt: body.startAt ?? payload.start_at ?? updated.start_at,
+          title: body.title ?? payload.title ?? updatedRow.title,
+          startAt: body.startAt ?? payload.start_at ?? updatedRow.start_at,
         });
       }
 
-      res.status(200).json(normalizeEvent(updated));
+      res.status(200).json(normalizeEvent(updatedRow));
       return;
     }
 
