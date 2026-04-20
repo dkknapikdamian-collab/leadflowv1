@@ -137,13 +137,15 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
 export function normalizeCalendarLeadAction(row: Record<string, unknown>): CalendarLeadActionItem | null {
   const nextActionAt = typeof row.nextActionAt === 'string' ? row.nextActionAt : '';
   if (!isIsoLike(nextActionAt)) return null;
+  const status = row.status ? String(row.status) : undefined;
+  if (status === 'won' || status === 'lost') return null;
 
   return {
     id: String(row.id || crypto.randomUUID()),
     name: String(row.name || ''),
     nextActionAt,
     nextStep: row.nextStep ? String(row.nextStep) : undefined,
-    status: row.status ? String(row.status) : undefined,
+    status,
     dealValue: Number(row.dealValue || 0),
     phone: row.phone ? String(row.phone) : undefined,
   };

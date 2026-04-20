@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, FormEvent, ReactNode } from 'react';
+import { useState, useEffect, FormEvent, ReactNode } from 'react';
 import { auth, db } from '../firebase';
 import {
   collection,
@@ -75,6 +75,7 @@ import {
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import {
   insertEventToSupabase,
+  insertActivityToSupabase,
   insertLeadToSupabase,
   insertTaskToSupabase,
   isSupabaseConfigured,
@@ -85,6 +86,7 @@ const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 type TileCardProps = {
+  key?: string | number;
   id: string;
   title: string;
   subtitle?: string;
@@ -242,7 +244,7 @@ export default function Today() {
           setEvents(bundle.events);
         } catch (error: any) {
           if (!cancelled) {
-            toast.error(`BĹ‚Ä…d odczytu planu dnia: ${error.message}`);
+            toast.error(`BłÄ…d odczytu planu dnia: ${error.message}`);
           }
         } finally {
           if (!cancelled) {
@@ -324,9 +326,55 @@ export default function Today() {
     });
   };
 
+  const registerReminderScheduled = async ({
+    entityType,
+    title,
+    scheduledAt,
+    reminderAt,
+  }: {
+    entityType: 'task' | 'event';
+    title: string;
+    scheduledAt: string;
+    reminderAt: string | null;
+  }) => {
+    if (!reminderAt) return;
+
+    if (isSupabaseConfigured()) {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'reminder_scheduled',
+        payload: {
+          entityType,
+          title,
+          scheduledAt,
+          reminderAt,
+          source: 'today',
+        },
+      });
+      return;
+    }
+
+    await addDoc(collection(db, 'activities'), {
+      ownerId: auth.currentUser?.uid,
+      actorId: auth.currentUser?.uid,
+      actorType: 'operator',
+      eventType: 'reminder_scheduled',
+      payload: {
+        entityType,
+        title,
+        scheduledAt,
+        reminderAt,
+        source: 'today',
+      },
+      createdAt: serverTimestamp(),
+    });
+  };
+
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚. OpĹ‚aÄ‡ subskrypcjÄ™, aby dodawaÄ‡ leady.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasł. OpłaÄ‡ subskrypcjÄ™, aby dodawaÄ‡ leady.');
     try {
       if (isSupabaseConfigured()) {
         await insertLeadToSupabase({
@@ -351,15 +399,16 @@ export default function Today() {
       setIsLeadOpen(false);
       setNewLead({ name: '', email: '', dealValue: '', source: 'other', status: 'new', nextStep: '', nextActionAt: '' });
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('BłÄ…d: ' + error.message);
     }
   };
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasł.');
     try {
       const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
+      const reminderAt = toReminderAtIso(newTask.dueAt, newTask.reminder);
       if (isSupabaseConfigured()) {
         await insertTaskToSupabase({
           title: newTask.title,
@@ -368,10 +417,16 @@ export default function Today() {
           scheduledAt: newTask.dueAt,
           priority: newTask.priority,
           leadId: selectedLead?.id ?? null,
-          reminderAt: toReminderAtIso(newTask.dueAt, newTask.reminder),
+          reminderAt,
           recurrenceRule: newTask.recurrence.mode,
           ownerId: auth.currentUser?.uid,
           workspaceId: workspace.id,
+        });
+        await registerReminderScheduled({
+          entityType: 'task',
+          title: newTask.title,
+          scheduledAt: newTask.dueAt,
+          reminderAt,
         });
         await refreshSupabaseBundle();
       } else {
@@ -389,30 +444,43 @@ export default function Today() {
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         });
+        await registerReminderScheduled({
+          entityType: 'task',
+          title: newTask.title,
+          scheduledAt: newTask.dueAt,
+          reminderAt,
+        });
       }
       toast.success('Zadanie dodane');
       setIsTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('BłÄ…d: ' + error.message);
     }
   };
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasł.');
     try {
       const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
+      const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
       if (isSupabaseConfigured()) {
         await insertEventToSupabase({
           title: newEvent.title,
           type: newEvent.type,
           startAt: newEvent.startAt,
           endAt: newEvent.endAt,
-          reminderAt: toReminderAtIso(newEvent.startAt, newEvent.reminder),
+          reminderAt,
           recurrenceRule: newEvent.recurrence.mode,
           leadId: selectedLead?.id ?? null,
           workspaceId: workspace.id,
+        });
+        await registerReminderScheduled({
+          entityType: 'event',
+          title: newEvent.title,
+          scheduledAt: newEvent.startAt,
+          reminderAt,
         });
         await refreshSupabaseBundle();
       } else {
@@ -428,12 +496,18 @@ export default function Today() {
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         });
+        await registerReminderScheduled({
+          entityType: 'event',
+          title: newEvent.title,
+          scheduledAt: newEvent.startAt,
+          reminderAt,
+        });
       }
       toast.success('Wydarzenie dodane');
       setIsEventOpen(false);
       resetNewEvent();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('BłÄ…d: ' + error.message);
     }
   };
 
@@ -458,7 +532,7 @@ export default function Today() {
         });
       }
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('BłÄ…d: ' + error.message);
     }
   };
 
@@ -481,10 +555,12 @@ export default function Today() {
   }
 
   const today = new Date();
+  const activeLeads = leads.filter((lead) => lead.status !== 'won' && lead.status !== 'lost');
+  const activeLeadsValue = activeLeads.reduce((acc, lead) => acc + (lead.dealValue || 0), 0);
   const todayEntries = combineScheduleEntries({
     events,
     tasks,
-    leads,
+    leads: activeLeads,
     rangeStart: today,
     rangeEnd: new Date(today.getTime() + 24 * 60 * 60_000 - 1),
   });
@@ -495,8 +571,8 @@ export default function Today() {
     const startAt = getTaskStartAt(task);
     return task.status !== 'done' && startAt && isPast(parseISO(startAt)) && !isToday(parseISO(startAt));
   });
-  const noStepLeads = leads.filter((lead) => !lead.nextActionAt && lead.status !== 'won' && lead.status !== 'lost');
-  const topValuableLeads = [...leads].sort((a, b) => (b.dealValue || 0) - (a.dealValue || 0)).slice(0, 3);
+  const noStepLeads = activeLeads.filter((lead) => !lead.nextActionAt);
+  const topValuableLeads = [...activeLeads].sort((a, b) => (b.dealValue || 0) - (a.dealValue || 0)).slice(0, 3);
 
   return (
     <Layout>
@@ -527,7 +603,7 @@ export default function Today() {
                       <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
                     </div>
                     <div className="space-y-2">
-                      <Label>ĹąrĂłdĹ‚o</Label>
+                      <Label>ĹąrĂłdło</Label>
                       <select
                         className={modalSelectClass}
                         value={newLead.source}
@@ -569,7 +645,7 @@ export default function Today() {
                 <form onSubmit={handleAddTask} className="space-y-6 py-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label>TytuĹ‚ zadania</Label>
+                      <Label>Tytuł zadania</Label>
                       <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -718,7 +794,7 @@ export default function Today() {
                 <form onSubmit={handleAddEvent} className="space-y-6 py-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label>TytuĹ‚</Label>
+                      <Label>Tytuł</Label>
                       <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -852,7 +928,7 @@ export default function Today() {
               <section className="space-y-4">
                 <div className="flex items-center gap-2 text-rose-600">
                   <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">ZalegĹ‚e</h2>
+                  <h2 className="text-lg font-bold">Zaległe</h2>
                   <Badge variant="destructive" className="rounded-full">{overdueTasks.length}</Badge>
                 </div>
                 <div className="grid gap-3">
@@ -870,13 +946,13 @@ export default function Today() {
                         subtitleClassName="text-rose-500 font-medium"
                         headerRight={
                           <Badge variant="destructive" className="rounded-full">
-                            ZalegĹ‚e
+                            Zaległe
                           </Badge>
                         }
                       >
                         <div className="flex items-center justify-between gap-4">
                           <div className="text-sm text-slate-600">
-                            Zadanie wymaga reakcji. MoĹĽesz je od razu oznaczyÄ‡ jako wykonane albo przejĹ›Ä‡ do peĹ‚nej listy zadaĹ„.
+                            Zadanie wymaga reakcji. MoĹĽesz je od razu oznaczyÄ‡ jako wykonane albo przejĹ›Ä‡ do pełnej listy zadaĹ„.
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <Button
@@ -1014,13 +1090,18 @@ export default function Today() {
                                 ) : null}
                               </div>
                             </div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => toggleTask(entry.sourceId, entry.raw.status)}
-                            >
-                              {entry.raw.status === 'done' ? 'Przywróć' : 'Zakończ'}
-                            </Button>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => toggleTask(entry.sourceId, entry.raw.status)}
+                              >
+                                {entry.raw.status === 'done' ? 'Przywróć' : 'Zakończ'}
+                              </Button>
+                              <Button variant="ghost" size="sm" asChild>
+                                <Link to="/tasks">Lista zadań</Link>
+                              </Button>
+                            </div>
                           </CardContent>
                         </Card>
                       ))}
@@ -1076,7 +1157,7 @@ export default function Today() {
             <TileCard
               id="pipeline-summary"
               title="WartoĹ›Ä‡ lejka"
-              subtitle={`${leads.reduce((acc, lead) => acc + (lead.dealValue || 0), 0).toLocaleString()} PLN`}
+              subtitle={`${activeLeadsValue.toLocaleString()} PLN`}
               collapsedMap={collapsedTiles}
               onToggle={toggleTile}
               className="bg-slate-900 text-white border-none shadow-xl"
@@ -1091,7 +1172,7 @@ export default function Today() {
               <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-800 pt-4">
                 <div>
                   <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Aktywne leady</p>
-                  <p className="text-xl font-bold text-white">{leads.filter((lead) => lead.status !== 'won' && lead.status !== 'lost').length}</p>
+                  <p className="text-xl font-bold text-white">{activeLeads.length}</p>
                 </div>
                 <div>
                   <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Zadania</p>
@@ -1108,7 +1189,7 @@ export default function Today() {
                   const dayEntries = combineScheduleEntries({
                     events,
                     tasks,
-                    leads,
+                    leads: activeLeads,
                     rangeStart: date,
                     rangeEnd: new Date(date.getTime() + 24 * 60 * 60_000 - 1),
                   });
@@ -1162,13 +1243,13 @@ export default function Today() {
             <section className="space-y-3">
               <TileCard
                 id="info-recurring"
-                title="CyklicznoĹ›Ä‡ dziaĹ‚a live"
+                title="CyklicznoĹ›Ä‡ działa live"
                 subtitle="Powtarzalne zadania i wydarzenia wpadajÄ… teraz do planu dnia bez rÄ™cznego odĹ›wieĹĽania."
                 collapsedMap={collapsedTiles}
                 onToggle={toggleTile}
                 headerRight={<Repeat className="w-4 h-4 text-slate-400" />}
               >
-                <p className="text-sm text-slate-500">Sekcja zostaje w widoku jako szybka notatka, ale moĹĽesz jÄ… zwinÄ…Ä‡, ĹĽeby nie zabieraĹ‚a miejsca.</p>
+                <p className="text-sm text-slate-500">Sekcja zostaje w widoku jako szybka notatka, ale moĹĽesz jÄ… zwinÄ…Ä‡, ĹĽeby nie zabierała miejsca.</p>
               </TileCard>
 
               <TileCard
@@ -1179,7 +1260,7 @@ export default function Today() {
                 onToggle={toggleTile}
                 headerRight={<Bell className="w-4 h-4 text-slate-400" />}
               >
-                <p className="text-sm text-slate-500">Osobny silnik wysyĹ‚ki to nadal osobny brak V1, ale ustawienia przypomnieĹ„ sÄ… juĹĽ zapisywane i gotowe do dalszego rozwijania.</p>
+                <p className="text-sm text-slate-500">Osobny silnik wysyłki to nadal osobny brak V1, ale ustawienia przypomnieĹ„ sÄ… juĹĽ zapisywane i gotowe do dalszego rozwijania.</p>
               </TileCard>
             </section>
           </div>

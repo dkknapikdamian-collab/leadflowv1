@@ -101,6 +101,8 @@ export default function Activity() {
                              activity.eventType === 'file_uploaded' ? `wgrał plik do: ${activity.payload?.title}` :
                              activity.eventType === 'decision_made' ? `podjął decyzję w: ${activity.payload?.title}` :
                              activity.eventType === 'portal_token_created' ? `wygenerował link portalu dla: ${activity.payload?.title}` :
+                             activity.eventType === 'case_reminder_requested' ? `wysłał przypomnienie i utworzył follow-up` :
+                             activity.eventType === 'reminder_scheduled' ? `zaplanował przypomnienie: ${activity.payload?.title || 'pozycja'}` :
                              'wykonał akcję'}
                           </span>
                         </p>

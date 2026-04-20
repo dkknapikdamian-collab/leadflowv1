@@ -87,6 +87,7 @@ import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
+  insertActivityToSupabase,
   insertEventToSupabase,
   isSupabaseConfigured,
   updateEventInSupabase,
@@ -343,11 +344,58 @@ export default function Calendar() {
     });
   };
 
+  const registerReminderScheduled = async ({
+    entityType,
+    title,
+    scheduledAt,
+    reminderAt,
+  }: {
+    entityType: 'task' | 'event';
+    title: string;
+    scheduledAt: string;
+    reminderAt: string | null;
+  }) => {
+    if (!reminderAt) return;
+
+    if (isSupabaseConfigured()) {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'reminder_scheduled',
+        payload: {
+          entityType,
+          title,
+          scheduledAt,
+          reminderAt,
+          source: 'calendar',
+        },
+      });
+      return;
+    }
+
+    await addDoc(collection(db, 'activities'), {
+      ownerId: auth.currentUser?.uid,
+      actorId: auth.currentUser?.uid,
+      actorType: 'operator',
+      eventType: 'reminder_scheduled',
+      payload: {
+        entityType,
+        title,
+        scheduledAt,
+        reminderAt,
+        source: 'calendar',
+      },
+      createdAt: serverTimestamp(),
+    });
+  };
+
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
     if (!hasAccess) return toast.error('Trial wygasł.');
 
     const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
+    const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
 
     try {
       if (isSupabaseConfigured()) {
@@ -356,10 +404,16 @@ export default function Calendar() {
           type: newEvent.type,
           startAt: newEvent.startAt,
           endAt: newEvent.endAt,
-          reminderAt: toReminderAtIso(newEvent.startAt, newEvent.reminder),
+          reminderAt,
           recurrenceRule: newEvent.recurrence.mode,
           leadId: selectedLead?.id ?? null,
           workspaceId: workspace.id,
+        });
+        await registerReminderScheduled({
+          entityType: 'event',
+          title: newEvent.title,
+          scheduledAt: newEvent.startAt,
+          reminderAt,
         });
         await refreshSupabaseBundle();
       } else {
@@ -374,6 +428,12 @@ export default function Calendar() {
           workspaceId: workspace.id,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
+        });
+        await registerReminderScheduled({
+          entityType: 'event',
+          title: newEvent.title,
+          scheduledAt: newEvent.startAt,
+          reminderAt,
         });
       }
       toast.success('Wydarzenie zaplanowane');
@@ -650,6 +710,7 @@ export default function Calendar() {
 
       if (editEntry.kind === 'event') {
         const selectedLead = leads.find((lead) => lead.id === editDraft.leadId);
+        const reminderAt = toReminderAtIso(editDraft.startAt, editEntry.raw?.reminder);
         if (isSupabaseConfigured()) {
           await updateEventInSupabase({
             id: editEntry.sourceId,
@@ -658,6 +719,12 @@ export default function Calendar() {
             startAt: editDraft.startAt,
             endAt: editDraft.endAt,
             leadId: selectedLead?.id ?? null,
+          });
+          await registerReminderScheduled({
+            entityType: 'event',
+            title: editDraft.title,
+            scheduledAt: editDraft.startAt,
+            reminderAt,
           });
         } else {
           await updateDoc(doc(db, 'events', editEntry.sourceId), {
@@ -668,6 +735,12 @@ export default function Calendar() {
             leadId: selectedLead?.id ?? null,
             leadName: selectedLead?.name ?? '',
             updatedAt: serverTimestamp(),
+          });
+          await registerReminderScheduled({
+            entityType: 'event',
+            title: editDraft.title,
+            scheduledAt: editDraft.startAt,
+            reminderAt,
           });
         }
       } else if (editEntry.kind === 'task') {
@@ -683,6 +756,7 @@ export default function Calendar() {
           leadId: selectedLead?.id ?? null,
           leadName: selectedLead?.name ?? '',
         });
+        const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
 
         if (isSupabaseConfigured()) {
           await updateTaskInSupabase({
@@ -694,10 +768,22 @@ export default function Calendar() {
             priority: payload.priority,
             leadId: payload.leadId ?? null,
           });
+          await registerReminderScheduled({
+            entityType: 'task',
+            title: payload.title,
+            scheduledAt: payload.dueAt,
+            reminderAt,
+          });
         } else {
           await updateDoc(doc(db, 'tasks', editEntry.sourceId), {
             ...payload,
             updatedAt: serverTimestamp(),
+          });
+          await registerReminderScheduled({
+            entityType: 'task',
+            title: payload.title,
+            scheduledAt: payload.dueAt,
+            reminderAt,
           });
         }
       } else {

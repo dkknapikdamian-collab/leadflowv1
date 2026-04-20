@@ -265,9 +265,9 @@ export default function Leads() {
 
     const matchesProcess =
       processFilter === 'all' ||
-      (processFilter === 'no-next-step' && !hasNextStep(lead)) ||
-      (processFilter === 'overdue-move' && isNextStepOverdue(lead)) ||
-      (processFilter === 'organized' && hasNextStep(lead) && !isNextStepOverdue(lead));
+      (processFilter === 'no-next-step' && !['won', 'lost'].includes(String(lead.status || 'new')) && !hasNextStep(lead)) ||
+      (processFilter === 'overdue-move' && !['won', 'lost'].includes(String(lead.status || 'new')) && isNextStepOverdue(lead)) ||
+      (processFilter === 'organized' && !['won', 'lost'].includes(String(lead.status || 'new')) && hasNextStep(lead) && !isNextStepOverdue(lead));
 
     return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity && matchesCase && matchesProcess;
   });

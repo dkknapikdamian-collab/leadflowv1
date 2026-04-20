@@ -78,6 +78,7 @@ import {
   updateCaseInSupabase,
   updateCaseItemInSupabase,
   deleteCaseItemFromSupabase,
+  insertTaskToSupabase,
   updateLeadInSupabase,
 } from '../lib/supabase-fallback';
 
@@ -557,6 +558,106 @@ export default function CaseDetail() {
     }
   };
 
+  const handleSendCaseReminder = async () => {
+    if (!caseId) return;
+
+    const followUpDate = new Date(Date.now() + 24 * 60 * 60_000);
+    followUpDate.setHours(9, 0, 0, 0);
+    const followUpAt = followUpDate.toISOString().slice(0, 16);
+    const followUpTitle = `Follow-up: ${caseData?.title || 'Sprawa'}`;
+
+    try {
+      if (isSupabaseConfigured()) {
+        await insertTaskToSupabase({
+          title: followUpTitle,
+          type: 'follow_up',
+          date: followUpAt.slice(0, 10),
+          scheduledAt: followUpAt,
+          priority: 'medium',
+          status: 'todo',
+          caseId,
+          reminderAt: new Date(followUpDate.getTime() - 30 * 60_000).toISOString(),
+          ownerId: auth.currentUser?.uid ?? undefined,
+        });
+
+        await insertActivityToSupabase({
+          caseId,
+          ownerId: auth.currentUser?.uid ?? null,
+          actorId: auth.currentUser?.uid ?? null,
+          actorType: 'operator',
+          eventType: 'case_reminder_requested',
+          payload: {
+            title: caseData?.title || 'Sprawa',
+            taskTitle: followUpTitle,
+            scheduledAt: followUpAt,
+          },
+        });
+
+        await insertActivityToSupabase({
+          caseId,
+          ownerId: auth.currentUser?.uid ?? null,
+          actorId: auth.currentUser?.uid ?? null,
+          actorType: 'operator',
+          eventType: 'reminder_scheduled',
+          payload: {
+            entityType: 'task',
+            title: followUpTitle,
+            scheduledAt: followUpAt,
+            reason: 'case_detail_reminder',
+          },
+        });
+
+        await refreshSupabaseCase();
+      } else {
+        await addDoc(collection(db, 'tasks'), {
+          title: followUpTitle,
+          type: 'follow_up',
+          date: followUpAt.slice(0, 10),
+          dueAt: followUpAt,
+          status: 'todo',
+          priority: 'medium',
+          caseId,
+          ownerId: auth.currentUser?.uid,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+
+        await addDoc(collection(db, 'activities'), {
+          caseId,
+          ownerId: auth.currentUser?.uid,
+          actorId: auth.currentUser?.uid,
+          actorType: 'operator',
+          eventType: 'case_reminder_requested',
+          payload: {
+            title: caseData?.title || 'Sprawa',
+            taskTitle: followUpTitle,
+            scheduledAt: followUpAt,
+          },
+          createdAt: serverTimestamp(),
+        });
+
+        await addDoc(collection(db, 'activities'), {
+          caseId,
+          ownerId: auth.currentUser?.uid,
+          actorId: auth.currentUser?.uid,
+          actorType: 'operator',
+          eventType: 'reminder_scheduled',
+          payload: {
+            entityType: 'task',
+            title: followUpTitle,
+            scheduledAt: followUpAt,
+            reason: 'case_detail_reminder',
+          },
+          createdAt: serverTimestamp(),
+        });
+      }
+
+      toast.success('Przypomnienie zapisane i utworzono follow-up');
+    } catch (error: any) {
+      toast.error(`Błąd przypomnienia: ${error.message}`);
+    }
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -591,7 +692,7 @@ export default function CaseDetail() {
               <Copy className="w-4 h-4" />
               Kopiuj link dla klienta
             </Button>
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2" onClick={() => void handleSendCaseReminder()}>
               <Send className="w-4 h-4" />
               Wyślij przypomnienie
             </Button>
@@ -912,6 +1013,8 @@ export default function CaseDetail() {
                                activity.eventType === 'portal_token_created' ? `wygenerował link portalu` :
                                activity.eventType === 'lead_linked' ? `podpiął leada: ${activity.payload?.leadName || 'Lead'}` :
                                activity.eventType === 'lead_unlinked' ? `odpiął leada: ${activity.payload?.leadName || 'Lead'}` :
+                               activity.eventType === 'case_reminder_requested' ? `wysłał przypomnienie i utworzył follow-up` :
+                               activity.eventType === 'reminder_scheduled' ? `zaplanował przypomnienie: ${activity.payload?.title || 'pozycja'}` :
                                'wykonał akcję'}
                             </span>
                           </p>

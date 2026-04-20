@@ -382,8 +382,6 @@ export default function LeadDetail() {
       const created = await createCaseInSupabase({
         title: createCaseDraft.title.trim(),
         clientName: createCaseDraft.clientName.trim() || lead?.name || '',
-        clientEmail: createCaseDraft.clientEmail.trim(),
-        clientPhone: createCaseDraft.clientPhone.trim(),
         status: createCaseDraft.status,
         leadId,
         portalReady: false,

@@ -80,6 +80,7 @@ import {
   deleteTaskFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
+  insertActivityToSupabase,
   insertTaskToSupabase,
   isSupabaseConfigured,
   updateTaskInSupabase,
@@ -110,6 +111,50 @@ export default function Tasks() {
     reminder: createDefaultReminder(),
   }));
   const [editTask, setEditTask] = useState<any | null>(null);
+
+  const registerReminderScheduled = async ({
+    title,
+    scheduledAt,
+    reminderAt,
+  }: {
+    title: string;
+    scheduledAt: string;
+    reminderAt: string | null;
+  }) => {
+    if (!reminderAt) return;
+
+    if (isSupabaseConfigured()) {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'reminder_scheduled',
+        payload: {
+          entityType: 'task',
+          title,
+          scheduledAt,
+          reminderAt,
+          source: 'tasks',
+        },
+      });
+      return;
+    }
+
+    await addDoc(collection(db, 'activities'), {
+      ownerId: auth.currentUser?.uid,
+      actorId: auth.currentUser?.uid,
+      actorType: 'operator',
+      eventType: 'reminder_scheduled',
+      payload: {
+        entityType: 'task',
+        title,
+        scheduledAt,
+        reminderAt,
+        source: 'tasks',
+      },
+      createdAt: serverTimestamp(),
+    });
+  };
 
   async function refreshSupabaseData() {
     const [taskRows, leadRows] = await Promise.all([
@@ -227,6 +272,7 @@ export default function Tasks() {
     });
 
     try {
+      const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
       if (isSupabaseConfigured()) {
         await insertTaskToSupabase({
           title: newTask.title,
@@ -235,10 +281,15 @@ export default function Tasks() {
           scheduledAt: newTask.dueAt,
           priority: newTask.priority,
           leadId: selectedLead?.id ?? null,
-          reminderAt: toReminderAtIso(payload.dueAt, payload.reminder),
+          reminderAt,
           recurrenceRule: payload.recurrence?.mode ?? 'none',
           ownerId: auth.currentUser?.uid,
           workspaceId: workspace.id,
+        });
+        await registerReminderScheduled({
+          title: newTask.title,
+          scheduledAt: newTask.dueAt,
+          reminderAt,
         });
         await refreshSupabaseData();
       } else {
@@ -249,6 +300,11 @@ export default function Tasks() {
           workspaceId: workspace.id,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
+        });
+        await registerReminderScheduled({
+          title: newTask.title,
+          scheduledAt: payload.dueAt,
+          reminderAt,
         });
       }
 
@@ -316,6 +372,7 @@ export default function Tasks() {
     });
 
     try {
+      const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
       if (isSupabaseConfigured()) {
         await updateTaskInSupabase({
           id: editTask.id,
@@ -326,14 +383,24 @@ export default function Tasks() {
           date: payload.date,
           scheduledAt: payload.dueAt,
           leadId: payload.leadId ?? null,
-          reminderAt: toReminderAtIso(payload.dueAt, payload.reminder),
+          reminderAt,
           recurrenceRule: payload.recurrence?.mode ?? 'none',
+        });
+        await registerReminderScheduled({
+          title: payload.title,
+          scheduledAt: payload.dueAt,
+          reminderAt,
         });
         await refreshSupabaseData();
       } else {
         await updateDoc(doc(db, 'tasks', editTask.id), {
           ...payload,
           updatedAt: serverTimestamp(),
+        });
+        await registerReminderScheduled({
+          title: payload.title,
+          scheduledAt: payload.dueAt,
+          reminderAt,
         });
       }
 
