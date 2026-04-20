@@ -1,44 +1,26 @@
 import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
-function asIsoDate(value: unknown) {
-  if (typeof value !== 'string' || !value.trim()) return null;
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed.toISOString();
-}
-
 function asBoolean(value: unknown) {
-  if (typeof value === 'boolean') return value;
-  if (typeof value === 'string') {
-    const normalized = value.trim().toLowerCase();
-    if (normalized === 'true' || normalized === 't' || normalized === '1') return true;
-    if (normalized === 'false' || normalized === 'f' || normalized === '0') return false;
-  }
-  return null;
+  return value === true || value === 'true';
 }
 
 function isEventRow(row: Record<string, unknown>) {
-  const recordType = String(row.record_type || row.recordType || '').trim().toLowerCase();
-  if (recordType) return recordType === 'event';
+  const recordType = String(row.record_type || row.recordType || '').toLowerCase();
+  const hasStartAt = Boolean(row.start_at || row.startAt || row.end_at || row.endAt);
 
-  const showInTasks = asBoolean(row.show_in_tasks ?? row.showInTasks);
-  if (showInTasks === true) return false;
+  if (recordType === 'task') return false;
+  if (recordType === 'event') return true;
+  if (hasStartAt) return true;
+  if (asBoolean(row.show_in_calendar) && !asBoolean(row.show_in_tasks)) return true;
 
-  const showInCalendar = asBoolean(row.show_in_calendar ?? row.showInCalendar);
-  if (showInCalendar !== null) return showInCalendar;
-
-  const hasEndAt = Boolean(asIsoDate(row.end_at || row.endAt));
-  return hasEndAt;
+  return false;
 }
 
 function normalizeEvent(row: Record<string, unknown>) {
-  const startAt = asIsoDate(row.start_at || row.scheduled_at || row.startAt) || '';
-  const endAt = asIsoDate(row.end_at || row.endAt);
-  const reminderAt =
-    asIsoDate(row.reminder_at) ||
-    asIsoDate(row.reminderAt) ||
-    (typeof row.reminder === 'string' && row.reminder !== 'none' ? asIsoDate(row.reminder) : null);
-  const recurrenceRule = String(row.recurrence_rule || row.recurrenceRule || row.recurrence || 'none');
+  const startAt = row.start_at || row.scheduled_at || row.startAt || null;
+  const endAt = row.end_at || row.endAt || null;
+  const reminderAt = row.reminder && row.reminder !== 'none' ? String(row.reminder) : '';
+  const recurrenceRule = String(row.recurrence || 'none');
   const reminderMinutes = reminderAt && startAt
     ? Math.max(0, Math.round((new Date(String(startAt)).getTime() - new Date(reminderAt).getTime()) / 60_000))
     : 30;
@@ -93,11 +75,8 @@ export default async function handler(req: any, res: any) {
         'work_items?select=*&order=start_at.asc.nullslast&limit=200',
       ]);
 
-      const normalized = (result.data as Record<string, unknown>[])
-        .filter(isEventRow)
-        .map(normalizeEvent);
-
-      res.status(200).json(normalized);
+      const rows = (result.data as Record<string, unknown>[]).filter(isEventRow);
+      res.status(200).json(rows.map(normalizeEvent));
       return;
     }
 

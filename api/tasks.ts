@@ -8,24 +8,19 @@ function asIsoDate(value: unknown) {
 }
 
 function asBoolean(value: unknown) {
-  if (typeof value === 'boolean') return value;
-  if (typeof value === 'string') {
-    const normalized = value.trim().toLowerCase();
-    if (normalized === 'true' || normalized === 't' || normalized === '1') return true;
-    if (normalized === 'false' || normalized === 'f' || normalized === '0') return false;
-  }
-  return null;
+  return value === true || value === 'true';
 }
 
 function isTaskRow(row: Record<string, unknown>) {
-  const recordType = String(row.record_type || row.recordType || '').trim().toLowerCase();
-  if (recordType) return recordType === 'task';
+  const recordType = String(row.record_type || row.recordType || '').toLowerCase();
+  const hasStartAt = Boolean(row.start_at || row.startAt || row.end_at || row.endAt);
 
-  const showInTasks = asBoolean(row.show_in_tasks ?? row.showInTasks);
-  if (showInTasks !== null) return showInTasks;
+  if (recordType === 'event') return false;
+  if (recordType === 'task') return true;
+  if (asBoolean(row.show_in_tasks) || asBoolean(row.showInTasks)) return true;
+  if (hasStartAt && !asBoolean(row.show_in_tasks) && !asBoolean(row.showInTasks)) return false;
 
-  const hasEndAt = Boolean(asIsoDate(row.end_at || row.endAt));
-  return !hasEndAt;
+  return true;
 }
 
 function normalizeTask(row: Record<string, unknown>) {
@@ -103,11 +98,8 @@ export default async function handler(req: any, res: any) {
         'work_items?select=*&order=created_at.desc.nullslast&limit=200',
       ]);
 
-      const normalized = (result.data as Record<string, unknown>[])
-        .filter(isTaskRow)
-        .map(normalizeTask);
-
-      res.status(200).json(normalized);
+      const rows = (result.data as Record<string, unknown>[]).filter(isTaskRow);
+      res.status(200).json(rows.map(normalizeTask));
       return;
     }
 

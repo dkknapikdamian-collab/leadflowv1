@@ -1,5 +1,26 @@
 import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
+const SOURCE_ALIASES: Record<string, string> = {
+  instagram: 'instagram',
+  facebook: 'facebook',
+  messenger: 'messenger',
+  whatsapp: 'whatsapp',
+  'whats app': 'whatsapp',
+  'e-mail': 'email',
+  email: 'email',
+  mail: 'email',
+  formularz: 'form',
+  form: 'form',
+  telefon: 'phone',
+  phone: 'phone',
+  polecenie: 'referral',
+  referral: 'referral',
+  'cold outreach': 'cold_outreach',
+  cold_outreach: 'cold_outreach',
+  inne: 'other',
+  other: 'other',
+};
+
 function normalizePartialPayments(value: unknown) {
   if (!Array.isArray(value)) return [];
 
@@ -20,24 +41,23 @@ function normalizePartialPayments(value: unknown) {
     .filter(Boolean);
 }
 
-function normalizeIsoString(value: unknown) {
-  if (typeof value !== 'string' || !value.trim()) return '';
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return '';
-  return parsed.toISOString();
+function normalizeSource(value: unknown) {
+  if (typeof value !== 'string') return 'other';
+  const normalized = value.trim().toLowerCase();
+  return SOURCE_ALIASES[normalized] || 'other';
 }
 
-function normalizeSource(value: unknown) {
-  if (typeof value !== 'string' || !value.trim()) return 'other';
-
-  const normalized = value.trim().toLowerCase();
-  if (normalized === 'inne') return 'other';
-  return normalized;
+function toIsoDateTime(value: unknown) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  const trimmed = value.trim();
+  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(trimmed) ? `${trimmed}T09:00:00` : trimmed;
+  const parsed = new Date(normalized);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed.toISOString();
 }
 
 function normalizeLead(row: Record<string, unknown>) {
   const partialPayments = normalizePartialPayments(row.partial_payments || row.partialPayments);
-
   return {
     id: String(row.id || crypto.randomUUID()),
     name: String(row.name || row.title || row.person_name || ''),
@@ -47,7 +67,7 @@ function normalizeLead(row: Record<string, unknown>) {
     source: normalizeSource(row.source || row.source_label || row.source_type || 'other'),
     status: String(row.status || 'new'),
     nextStep: String(row.next_action_title || row.next_step || row.nextStep || ''),
-    nextActionAt: normalizeIsoString(row.next_action_at || row.next_step_due_at || row.nextActionAt || ''),
+    nextActionAt: String(row.next_action_at || row.next_step_due_at || row.nextActionAt || ''),
     dealValue: Number(row.deal_value || row.value || row.dealValue || 0),
     partialPayments,
     isAtRisk: Boolean(row.is_at_risk ?? row.isAtRisk ?? (String(row.priority || '').toLowerCase() === 'high')),
@@ -157,7 +177,7 @@ export default async function handler(req: any, res: any) {
       if (body.partialPayments !== undefined) payload.partial_payments = normalizePartialPayments(body.partialPayments);
       if (body.status !== undefined) payload.status = body.status;
       if (body.nextStep !== undefined) payload.next_action_title = body.nextStep || '';
-      if (body.nextActionAt !== undefined) payload.next_action_at = body.nextActionAt ? new Date(body.nextActionAt).toISOString() : null;
+      if (body.nextActionAt !== undefined) payload.next_action_at = toIsoDateTime(body.nextActionAt);
       if (body.isAtRisk !== undefined) {
         payload.is_at_risk = Boolean(body.isAtRisk);
         payload.priority = body.isAtRisk ? 'high' : 'medium';
@@ -194,10 +214,10 @@ export default async function handler(req: any, res: any) {
 
     const nowIso = new Date().toISOString();
     const amount = Number(body.dealValue) || 0;
-    const dueAt = body.nextActionAt ? new Date(body.nextActionAt).toISOString() : null;
+    const dueAt = toIsoDateTime(body.nextActionAt);
     const source = normalizeSource(body.source);
+    const status = typeof body.status === 'string' && body.status.trim() ? body.status : 'new';
     const isAtRisk = Boolean(body.isAtRisk);
-    const status = typeof body.status === 'string' && body.status.trim() ? body.status.trim() : 'new';
 
     const payload = {
       workspace_id: workspaceId,
