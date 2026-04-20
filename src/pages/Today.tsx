@@ -63,13 +63,11 @@ import {
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import {
   deleteEventFromSupabase,
-  deleteTaskFromSupabase,
   insertEventToSupabase,
   insertActivityToSupabase,
   insertLeadToSupabase,
   insertTaskToSupabase,
   updateEventInSupabase,
-  updateLeadInSupabase,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
@@ -89,6 +87,17 @@ type TileCardProps = {
   subtitleClassName?: string;
   headerRight?: ReactNode;
   bodyClassName?: string;
+};
+
+type LeadLinkCardProps = {
+  leadId: string;
+  title: string;
+  subtitle?: string;
+  helperText?: string;
+  className?: string;
+  subtitleClassName?: string;
+  badges?: ReactNode;
+  rightMeta?: ReactNode;
 };
 
 function TileCard({
@@ -139,6 +148,44 @@ function TileCard({
   );
 }
 
+function LeadLinkCard({
+  leadId,
+  title,
+  subtitle,
+  helperText,
+  className = '',
+  subtitleClassName = 'text-slate-500',
+  badges,
+  rightMeta,
+}: LeadLinkCardProps) {
+  return (
+    <Link to={`/leads/${leadId}`} className="block">
+      <Card className={`transition-all hover:border-primary/30 hover:shadow-md ${className}`}>
+        <CardContent className="p-4 flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="font-semibold text-slate-900 break-words">{title}</p>
+              {badges}
+            </div>
+            {subtitle ? (
+              <p className={`mt-1 text-sm break-words ${subtitleClassName}`}>{subtitle}</p>
+            ) : null}
+            {helperText ? (
+              <p className="mt-2 text-sm text-slate-600 break-words">{helperText}</p>
+            ) : null}
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            {rightMeta}
+            <div className="rounded-xl bg-slate-100 p-2 text-slate-500 transition-colors group-hover:bg-primary group-hover:text-white">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+}
+
 function parseMoment(value: unknown) {
   if (typeof value !== 'string' || !value.trim()) return null;
   try {
@@ -179,7 +226,7 @@ export default function Today() {
   const [isEventOpen, setIsEventOpen] = useState(false);
   const [collapsedTiles, setCollapsedTiles] = useState<Record<string, boolean>>({});
   const [todayActionId, setTodayActionId] = useState<string | null>(null);
-  const [previewEntry, setPreviewEntry] = useState<any | null>(null);
+  const [previewEventEntry, setPreviewEventEntry] = useState<any | null>(null);
 
   const [newLead, setNewLead] = useState({
     name: '',
@@ -240,6 +287,15 @@ export default function Today() {
       ...prev,
       [id]: !prev[id],
     }));
+  };
+
+  const scrollToFirstSection = (sectionIds: string[]) => {
+    const target = sectionIds
+      .map((id) => document.getElementById(id))
+      .find((element) => Boolean(element));
+
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   async function refreshSupabaseBundle() {
@@ -455,8 +511,8 @@ export default function Today() {
       });
 
       await refreshSupabaseBundle();
-      if (previewEntry?.id === entry.id) {
-        setPreviewEntry(null);
+      if (previewEventEntry?.id === entry.id) {
+        setPreviewEventEntry(null);
       }
       toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywrócone');
     } catch (error: any) {
@@ -473,81 +529,10 @@ export default function Today() {
       setTodayActionId(`${entry.id}:delete`);
       await deleteEventFromSupabase(entry.sourceId);
       await refreshSupabaseBundle();
-      if (previewEntry?.id === entry.id) {
-        setPreviewEntry(null);
+      if (previewEventEntry?.id === entry.id) {
+        setPreviewEventEntry(null);
       }
       toast.success('Wydarzenie usunięte');
-    } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
-    } finally {
-      setTodayActionId(null);
-    }
-  };
-
-  const toggleTodayTask = async (entry: any) => {
-    try {
-      setTodayActionId(`${entry.id}:done`);
-      const nextStatus = entry.raw?.status === 'done' ? 'todo' : 'done';
-
-      await updateTaskInSupabase({
-        id: entry.sourceId,
-        title: entry.raw?.title || entry.title,
-        type: entry.raw?.type,
-        date: entry.raw?.date || entry.startsAt.slice(0, 10),
-        status: nextStatus,
-        priority: entry.raw?.priority,
-        leadId: entry.raw?.leadId ?? null,
-      });
-
-      await refreshSupabaseBundle();
-      if (previewEntry?.id === entry.id) {
-        setPreviewEntry(null);
-      }
-      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako wykonane' : 'Zadanie przywrócone');
-    } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
-    } finally {
-      setTodayActionId(null);
-    }
-  };
-
-  const deleteTodayTask = async (entry: any) => {
-    if (!window.confirm('Usunąć to zadanie?')) return;
-
-    try {
-      setTodayActionId(`${entry.id}:delete`);
-      await deleteTaskFromSupabase(entry.sourceId);
-      await refreshSupabaseBundle();
-      if (previewEntry?.id === entry.id) {
-        setPreviewEntry(null);
-      }
-      toast.success('Zadanie usunięte');
-    } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
-    } finally {
-      setTodayActionId(null);
-    }
-  };
-
-  const postponeTodayLeadAction = async (entry: any, days: number) => {
-    try {
-      setTodayActionId(`${entry.id}:shift`);
-      const currentAt = typeof entry.raw?.nextActionAt === 'string' && entry.raw.nextActionAt
-        ? entry.raw.nextActionAt
-        : entry.startsAt;
-      const nextActionAt = toDateTimeLocalValue(addDays(parseISO(currentAt), days));
-
-      await updateLeadInSupabase({
-        id: entry.sourceId,
-        nextStep: entry.raw?.nextStep || entry.title,
-        nextActionAt,
-      });
-
-      await refreshSupabaseBundle();
-      if (previewEntry?.id === entry.id) {
-        setPreviewEntry(null);
-      }
-      toast.success(days === 1 ? 'Lead przełożony o 1 dzień' : 'Lead przełożony');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     } finally {
@@ -619,6 +604,7 @@ export default function Today() {
       tone: 'text-rose-600',
       bg: 'bg-rose-50',
       icon: AlertTriangle,
+      sectionIds: ['today-section-overdue-tasks', 'today-section-overdue-leads'],
     },
     {
       id: 'today',
@@ -627,6 +613,7 @@ export default function Today() {
       tone: 'text-blue-600',
       bg: 'bg-blue-50',
       icon: Clock,
+      sectionIds: ['today-section-main'],
     },
     {
       id: 'no-step',
@@ -635,6 +622,7 @@ export default function Today() {
       tone: 'text-amber-600',
       bg: 'bg-amber-50',
       icon: ListTodo,
+      sectionIds: ['today-section-no-step'],
     },
     {
       id: 'stalled',
@@ -643,6 +631,7 @@ export default function Today() {
       tone: 'text-purple-600',
       bg: 'bg-purple-50',
       icon: ShieldAlert,
+      sectionIds: ['today-section-stale'],
     },
   ];
 
@@ -941,17 +930,24 @@ export default function Today() {
           {summaryCards.map((card) => {
             const Icon = card.icon;
             return (
-              <Card key={card.id} className="border-none shadow-sm">
-                <CardContent className="p-5 flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.title}</p>
-                    <p className={`mt-2 text-2xl font-bold ${card.tone}`}>{card.value}</p>
-                  </div>
-                  <div className={`rounded-2xl p-3 ${card.bg}`}>
-                    <Icon className={`w-6 h-6 ${card.tone}`} />
-                  </div>
-                </CardContent>
-              </Card>
+              <button
+                key={card.id}
+                type="button"
+                onClick={() => scrollToFirstSection(card.sectionIds)}
+                className="w-full text-left"
+              >
+                <Card className="border-none shadow-sm transition-all hover:shadow-md hover:border-primary/20">
+                  <CardContent className="p-5 flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.title}</p>
+                      <p className={`mt-2 text-2xl font-bold ${card.tone}`}>{card.value}</p>
+                    </div>
+                    <div className={`rounded-2xl p-3 ${card.bg}`}>
+                      <Icon className={`w-6 h-6 ${card.tone}`} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </button>
             );
           })}
         </div>
@@ -959,45 +955,47 @@ export default function Today() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             {overdueTasks.length > 0 && (
-              <TileCard
-                id="overdue-tasks-section"
-                title="Zaległe zadania"
-                collapsedMap={collapsedTiles}
-                onToggle={toggleTile}
-                className="border-rose-100 bg-rose-50/30"
-                headerRight={<Badge variant="destructive" className="rounded-full">{overdueTasks.length}</Badge>}
-              >
-                <div className="grid gap-3">
-                  {overdueTasks.map((task) => {
-                    const startAt = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
-                    return (
-                      <Card key={task.id} className="border-rose-100">
-                        <CardContent className="p-4 flex items-center justify-between gap-4">
-                          <div className="min-w-0">
-                            <p className="font-semibold text-slate-900 break-words">{task.title}</p>
-                            <p className="text-sm text-rose-500 break-words font-medium">{format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}</p>
-                            <p className="mt-2 text-sm text-slate-600 break-words">
-                              Zadanie wymaga reakcji. Możesz je od razu oznaczyć jako wykonane albo przejść do pełnej listy zadań.
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <Button variant="outline" size="sm" onClick={() => toggleTask(task.id, task.status)}>
-                              {task.status === 'done' ? 'Przywróć' : 'Oznacz jako zrobione'}
-                            </Button>
-                            <Button variant="ghost" size="sm" asChild>
-                              <Link to="/tasks">Otwórz listę</Link>
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </TileCard>
+              <div id="today-section-overdue-tasks">
+                <TileCard
+                  id="overdue-tasks-section"
+                  title="Zaległe zadania"
+                  collapsedMap={collapsedTiles}
+                  onToggle={toggleTile}
+                  className="border-rose-100 bg-rose-50/30"
+                  headerRight={<Badge variant="destructive" className="rounded-full">{overdueTasks.length}</Badge>}
+                >
+                  <div className="grid gap-3">
+                    {overdueTasks.map((task) => {
+                      const startAt = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
+                      return (
+                        <Card key={task.id} className="border-rose-100">
+                          <CardContent className="p-4 flex items-center justify-between gap-4">
+                            <div className="min-w-0">
+                              <p className="font-semibold text-slate-900 break-words">{task.title}</p>
+                              <p className="text-sm text-rose-500 break-words font-medium">{format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}</p>
+                              <p className="mt-2 text-sm text-slate-600 break-words">
+                                Zadanie wymaga reakcji. Możesz je od razu oznaczyć jako wykonane albo przejść do pełnej listy zadań.
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <Button variant="outline" size="sm" onClick={() => toggleTask(task.id, task.status)}>
+                                {task.status === 'done' ? 'Przywróć' : 'Oznacz jako zrobione'}
+                              </Button>
+                              <Button variant="ghost" size="sm" asChild>
+                                <Link to="/tasks">Otwórz listę</Link>
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </TileCard>
+              </div>
             )}
 
             {overdueLeadActions.length > 0 && (
-              <section className="space-y-4">
+              <section id="today-section-overdue-leads" className="space-y-4">
                 <div className="flex items-center gap-2 text-rose-600">
                   <ShieldAlert className="w-5 h-5" />
                   <h2 className="text-lg font-bold">Leady przeterminowane</h2>
@@ -1005,30 +1003,22 @@ export default function Today() {
                 </div>
                 <div className="grid gap-3">
                   {overdueLeadActions.slice(0, 5).map((lead) => (
-                    <TileCard
+                    <LeadLinkCard
                       key={lead.id}
-                      id={`overdue-lead:${lead.id}`}
+                      leadId={String(lead.id)}
                       title={lead.name}
                       subtitle={`${lead.company || 'Brak firmy'} • ${formatLeadMoment(lead.nextActionAt)}`}
-                      collapsedMap={collapsedTiles}
-                      onToggle={toggleTile}
-                      className="border-rose-100 bg-rose-50/30"
                       subtitleClassName="text-rose-500 font-medium"
-                      headerRight={<Badge variant="destructive" className="rounded-full">Przeterminowany</Badge>}
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="text-sm text-slate-600 break-words">{lead.nextStep || 'Lead ma termin ruchu w przeszłości i wymaga decyzji.'}</div>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link to={`/leads/${lead.id}`}>Otwórz lead</Link>
-                        </Button>
-                      </div>
-                    </TileCard>
+                      className="border-rose-100 bg-rose-50/30"
+                      badges={<Badge variant="destructive" className="rounded-full">Przeterminowany</Badge>}
+                      helperText={lead.nextStep || 'Lead ma termin ruchu w przeszłości i wymaga decyzji.'}
+                    />
                   ))}
                 </div>
               </section>
             )}
 
-            <section className="space-y-4">
+            <section id="today-section-main" className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold text-slate-900">Dzisiaj</h2>
@@ -1042,23 +1032,23 @@ export default function Today() {
                   {todayLeadActions.length > 0 ? (
                     <div className="max-h-80 overflow-y-auto pr-1 space-y-3">
                       {todayLeadActions.map((entry) => (
-                        <Card key={entry.id} className="border-amber-100">
-                          <CardContent className="p-4 flex items-center justify-between gap-4">
-                            <div className="min-w-0">
-                              <p className="font-semibold text-slate-900 break-words">{entry.leadName}</p>
-                              <p className="text-sm text-slate-500 break-words">{entry.title}</p>
-                            </div>
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span className="text-xs font-bold text-amber-600">{format(parseISO(entry.startsAt), 'HH:mm')}</span>
-                              <Button variant="outline" size="sm" onClick={() => setPreviewEntry(entry)}>
-                                Podgląd
-                              </Button>
-                              <Button variant="ghost" size="sm" asChild>
-                                <Link to={entry.link || '/leads'}>Otwórz</Link>
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
+                        <Link key={entry.id} to={entry.link || `/leads/${entry.sourceId}`} className="block">
+                          <Card className="border-amber-100 transition-all hover:border-amber-300 hover:shadow-md">
+                            <CardContent className="p-4 flex items-center justify-between gap-4">
+                              <div className="min-w-0">
+                                <p className="font-semibold text-slate-900 break-words">{entry.leadName}</p>
+                                <p className="text-sm text-slate-500 break-words">{entry.title}</p>
+                                <p className="mt-2 text-xs font-medium text-amber-600">Kliknij, aby otworzyć leada</p>
+                              </div>
+                              <div className="flex items-center gap-3 shrink-0">
+                                <span className="text-xs font-bold text-amber-600">{format(parseISO(entry.startsAt), 'HH:mm')}</span>
+                                <div className="rounded-xl bg-amber-50 p-2 text-amber-600">
+                                  <ArrowRight className="w-4 h-4" />
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
                       ))}
                     </div>
                   ) : (
@@ -1100,7 +1090,7 @@ export default function Today() {
                                 </div>
                               </div>
                               <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
-                                <Button variant="outline" size="sm" onClick={() => setPreviewEntry(entry)}>
+                                <Button variant="outline" size="sm" onClick={() => setPreviewEventEntry(entry)}>
                                   Podgląd
                                 </Button>
                                 <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(entry)} disabled={completePending}>
@@ -1141,10 +1131,7 @@ export default function Today() {
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => setPreviewEntry(entry)}>
-                                Podgląd
-                              </Button>
-                              <Button variant="outline" size="sm" onClick={() => toggleTodayTask(entry)}>
+                              <Button variant="outline" size="sm" onClick={() => toggleTask(entry.sourceId, entry.raw.status)}>
                                 {entry.raw.status === 'done' ? 'Przywróć' : 'Zakończ'}
                               </Button>
                               <Button variant="ghost" size="sm" asChild>
@@ -1168,7 +1155,7 @@ export default function Today() {
             </section>
 
             {noStepLeads.length > 0 && (
-              <section className="space-y-4">
+              <section id="today-section-no-step" className="space-y-4">
                 <div className="flex items-center gap-2 text-amber-600">
                   <AlertTriangle className="w-5 h-5" />
                   <h2 className="text-lg font-bold">Bez następnego kroku</h2>
@@ -1176,27 +1163,21 @@ export default function Today() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {noStepLeads.slice(0, 4).map((lead) => (
-                    <TileCard
+                    <LeadLinkCard
                       key={lead.id}
-                      id={`no-step:${lead.id}`}
+                      leadId={String(lead.id)}
                       title={lead.name}
                       subtitle={lead.company || 'Brak firmy'}
-                      collapsedMap={collapsedTiles}
-                      onToggle={toggleTile}
-                      className="hover:shadow-md transition-shadow"
-                      headerRight={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak kroku</Badge>}
-                    >
-                      <Button variant="outline" size="sm" className="w-full rounded-lg" asChild>
-                        <Link to={`/leads/${lead.id}`}>Ustal kolejny krok <ArrowRight className="w-3 h-3 ml-2" /></Link>
-                      </Button>
-                    </TileCard>
+                      badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak kroku</Badge>}
+                      helperText="Kliknij i ustaw kolejny krok dla tego leada."
+                    />
                   ))}
                 </div>
               </section>
             )}
 
             {staleLeads.length > 0 && (
-              <section className="space-y-4">
+              <section id="today-section-stale" className="space-y-4">
                 <div className="flex items-center gap-2 text-purple-600">
                   <Clock className="w-5 h-5" />
                   <h2 className="text-lg font-bold">Bez ruchu za długo</h2>
@@ -1206,24 +1187,16 @@ export default function Today() {
                   {staleLeads.map((lead) => {
                     const days = getDaysWithoutUpdate(lead) || 0;
                     return (
-                      <TileCard
+                      <LeadLinkCard
                         key={lead.id}
-                        id={`stale:${lead.id}`}
+                        leadId={String(lead.id)}
                         title={lead.name}
                         subtitle={`${days} dni bez wyraźnego ruchu • ${lead.company || lead.source || 'Lead'}`}
-                        collapsedMap={collapsedTiles}
-                        onToggle={toggleTile}
-                        className="border-purple-100 bg-purple-50/30"
                         subtitleClassName="text-purple-500 font-medium"
-                        headerRight={<Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-white">Bez ruchu</Badge>}
-                      >
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="text-sm text-slate-600">Lead ma ustawiony proces, ale nie było świeżego ruchu. To dobry kandydat do szybkiego sprawdzenia lub follow-upu.</div>
-                          <Button variant="outline" size="sm" asChild>
-                            <Link to={`/leads/${lead.id}`}>Otwórz lead</Link>
-                          </Button>
-                        </div>
-                      </TileCard>
+                        className="border-purple-100 bg-purple-50/30"
+                        badges={<Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-white">Bez ruchu</Badge>}
+                        helperText="Lead ma ustawiony proces, ale nie było świeżego ruchu. To dobry kandydat do szybkiego sprawdzenia lub follow-upu."
+                      />
                     );
                   })}
                 </div>
@@ -1270,32 +1243,27 @@ export default function Today() {
                 <h2 className="text-lg font-bold text-slate-900">Najcenniejsze zagrożone</h2>
                 <div className="space-y-3">
                   {riskyValuableLeads.map((lead) => (
-                    <TileCard
+                    <LeadLinkCard
                       key={lead.id}
-                      id={`risky:${lead.id}`}
+                      leadId={String(lead.id)}
                       title={lead.name}
                       subtitle={lead.company || lead.source || 'Lead'}
-                      collapsedMap={collapsedTiles}
-                      onToggle={toggleTile}
-                      headerRight={
+                      rightMeta={
                         <div className="text-right">
                           <p className="text-sm font-bold text-rose-600">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
                           <Badge variant="outline" className="text-[8px] h-4 px-1 border-rose-200 text-rose-700">RYZYKO</Badge>
                         </div>
                       }
-                    >
-                      <div className="space-y-3">
-                        <div className="flex flex-wrap gap-2">
+                      badges={
+                        <>
                           {lead.isAtRisk ? <Badge variant="destructive">Oznaczony jako zagrożony</Badge> : null}
                           {isLeadOverdue(lead) ? <Badge variant="destructive">Termin w przeszłości</Badge> : null}
                           {!parseMoment(lead.nextActionAt) ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak kroku</Badge> : null}
                           {(getDaysWithoutUpdate(lead) || 0) >= 5 ? <Badge variant="outline" className="border-purple-200 text-purple-700">Bez ruchu {getDaysWithoutUpdate(lead)} dni</Badge> : null}
-                        </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link to={`/leads/${lead.id}`}>Otwórz lead</Link>
-                        </Button>
-                      </div>
-                    </TileCard>
+                        </>
+                      }
+                      helperText="Kliknij kartę, aby wejść do leada i od razu zareagować."
+                    />
                   ))}
                 </div>
               </section>
@@ -1331,19 +1299,19 @@ export default function Today() {
               <h2 className="text-lg font-bold text-slate-900">Najcenniejsze</h2>
               <div className="space-y-3">
                 {topValuableLeads.map((lead) => (
-                  <TileCard
+                  <LeadLinkCard
                     key={lead.id}
-                    id={`valuable:${lead.id}`}
+                    leadId={String(lead.id)}
                     title={lead.name}
                     subtitle={lead.company || lead.source || 'Lead'}
-                    collapsedMap={collapsedTiles}
-                    onToggle={toggleTile}
-                    headerRight={<div className="text-right"><p className="text-sm font-bold text-primary">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p><Badge variant="outline" className="text-[8px] h-4 px-1">TOP</Badge></div>}
-                  >
-                    <Button variant="outline" size="sm" asChild>
-                      <Link to={`/leads/${lead.id}`}>Otwórz lead</Link>
-                    </Button>
-                  </TileCard>
+                    rightMeta={
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-primary">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
+                        <Badge variant="outline" className="text-[8px] h-4 px-1">TOP</Badge>
+                      </div>
+                    }
+                    helperText="Kliknij kartę, aby otworzyć leada."
+                  />
                 ))}
               </div>
             </section>
@@ -1360,107 +1328,57 @@ export default function Today() {
           </div>
         </div>
       </div>
-      <Dialog open={Boolean(previewEntry)} onOpenChange={(open) => { if (!open) setPreviewEntry(null); }}>
+      <Dialog open={Boolean(previewEventEntry)} onOpenChange={(open) => { if (!open) setPreviewEventEntry(null); }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Podgląd akcji</DialogTitle>
+            <DialogTitle>Podgląd wydarzenia</DialogTitle>
           </DialogHeader>
-          {previewEntry ? (
+          {previewEventEntry ? (
             <div className="space-y-4 py-2">
               <div className="space-y-1">
-                <p className="text-lg font-bold text-slate-900">{previewEntry.title}</p>
+                <p className="text-lg font-bold text-slate-900">{previewEventEntry.title}</p>
                 <p className="text-sm text-slate-500">
-                  {previewEntry.kind === 'event'
-                    ? `${EVENT_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Wydarzenie'}${previewEntry.leadName ? ` • Lead: ${previewEntry.leadName}` : ''}`
-                    : previewEntry.kind === 'task'
-                      ? `${TASK_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Zadanie'}${previewEntry.leadName ? ` • Lead: ${previewEntry.leadName}` : ''}`
-                      : `${previewEntry.leadName || 'Lead'}${previewEntry.raw?.company ? ` • ${previewEntry.raw.company}` : ''}`}
+                  {EVENT_TYPES.find((item) => item.value === previewEventEntry.raw?.type)?.label || 'Wydarzenie'}
+                  {previewEventEntry.leadName ? ` • Lead: ${previewEventEntry.leadName}` : ''}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="rounded-xl border border-slate-200 p-3">
-                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Termin</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">{format(parseISO(previewEntry.startsAt), 'd MMMM yyyy, HH:mm', { locale: pl })}</p>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Start</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">{format(parseISO(previewEventEntry.startsAt), 'd MMMM yyyy, HH:mm', { locale: pl })}</p>
                 </div>
                 <div className="rounded-xl border border-slate-200 p-3">
                   <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Status</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">{previewEntry.kind === 'event'
-                    ? previewEntry.raw?.status === 'completed' ? 'Wykonane' : 'Zaplanowane'
-                    : previewEntry.kind === 'task'
-                      ? previewEntry.raw?.status === 'done' ? 'Wykonane' : 'Do zrobienia'
-                      : isLeadOverdue(previewEntry.raw) ? 'Przeterminowany ruch' : 'Zaplanowany ruch'}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">{previewEventEntry.raw?.status === 'completed' ? 'Wykonane' : 'Zaplanowane'}</p>
                 </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                {previewEntry.kind === 'event' && previewEntry.raw?.recurrence?.mode && previewEntry.raw.recurrence.mode !== 'none' ? (
-                  <Badge variant="outline"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === previewEntry.raw.recurrence.mode)?.label}</Badge>
+                {previewEventEntry.raw?.recurrence?.mode && previewEventEntry.raw.recurrence.mode !== 'none' ? (
+                  <Badge variant="outline"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === previewEventEntry.raw.recurrence.mode)?.label}</Badge>
                 ) : null}
-                {previewEntry.kind === 'task' && previewEntry.raw?.recurrence?.mode && previewEntry.raw.recurrence.mode !== 'none' ? (
-                  <Badge variant="outline"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === previewEntry.raw.recurrence.mode)?.label}</Badge>
-                ) : null}
-                {previewEntry.raw?.reminder?.mode && previewEntry.raw.reminder.mode !== 'none' ? (
+                {previewEventEntry.raw?.reminder?.mode && previewEventEntry.raw.reminder.mode !== 'none' ? (
                   <Badge variant="outline"><Bell className="w-3 h-3 mr-1" /> Przypomnienie aktywne</Badge>
-                ) : null}
-                {previewEntry.kind === 'lead' && previewEntry.raw?.nextStep ? (
-                  <Badge variant="outline">Krok: {previewEntry.raw.nextStep}</Badge>
                 ) : null}
               </div>
 
               <DialogFooter className="flex flex-wrap gap-2 sm:justify-between">
-                {previewEntry.kind === 'event' ? (
-                  <>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(previewEntry)} disabled={todayActionId === `${previewEntry.id}:delete`}>
-                        {todayActionId === `${previewEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(previewEntry)} disabled={todayActionId === `${previewEntry.id}:done`}>
-                        {todayActionId === `${previewEntry.id}:done`
-                          ? 'Zapisywanie...'
-                          : previewEntry.raw?.status === 'completed'
-                            ? 'Przywróć'
-                            : 'Oznacz jako wykonane'}
-                      </Button>
-                    </div>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link to="/calendar">Otwórz kalendarz</Link>
-                    </Button>
-                  </>
-                ) : null}
-
-                {previewEntry.kind === 'task' ? (
-                  <>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(previewEntry)} disabled={todayActionId === `${previewEntry.id}:delete`}>
-                        {todayActionId === `${previewEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => toggleTodayTask(previewEntry)} disabled={todayActionId === `${previewEntry.id}:done`}>
-                        {todayActionId === `${previewEntry.id}:done`
-                          ? 'Zapisywanie...'
-                          : previewEntry.raw?.status === 'done'
-                            ? 'Przywróć'
-                            : 'Oznacz jako wykonane'}
-                      </Button>
-                    </div>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link to="/tasks">Otwórz zadania</Link>
-                    </Button>
-                  </>
-                ) : null}
-
-                {previewEntry.kind === 'lead' ? (
-                  <>
-                    <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" onClick={() => postponeTodayLeadAction(previewEntry, 1)} disabled={todayActionId === `${previewEntry.id}:shift`}>
-                        {todayActionId === `${previewEntry.id}:shift` ? 'Zapisywanie...' : 'Przełóż +1 dzień'}
-                      </Button>
-                    </div>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link to={previewEntry.link || `/leads/${previewEntry.sourceId}`}>Otwórz lead</Link>
-                    </Button>
-                  </>
-                ) : null}
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(previewEventEntry)} disabled={todayActionId === `${previewEventEntry.id}:delete`}>
+                    {todayActionId === `${previewEventEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(previewEventEntry)} disabled={todayActionId === `${previewEventEntry.id}:done`}>
+                    {todayActionId === `${previewEventEntry.id}:done`
+                      ? 'Zapisywanie...'
+                      : previewEventEntry.raw?.status === 'completed'
+                        ? 'Przywróć'
+                        : 'Oznacz jako wykonane'}
+                  </Button>
+                </div>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/calendar">Otwórz kalendarz</Link>
+                </Button>
               </DialogFooter>
             </div>
           ) : null}

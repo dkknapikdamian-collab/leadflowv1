@@ -305,6 +305,36 @@ export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date
   });
 }
 
+function getEntryStatusPriority(entry: ScheduleEntry) {
+  if (entry.kind === 'task' && entry.raw?.status === 'done') return 3;
+  if (entry.kind === 'event' && entry.raw?.status === 'completed') return 2;
+  return 1;
+}
+
+function getEntryDedupKey(entry: ScheduleEntry) {
+  return `${entry.kind}:${entry.sourceId}:${entry.startsAt}`;
+}
+
+export function dedupeScheduleEntries(entries: ScheduleEntry[]) {
+  const unique = new Map<string, ScheduleEntry>();
+
+  for (const entry of entries) {
+    const key = getEntryDedupKey(entry);
+    const current = unique.get(key);
+
+    if (!current) {
+      unique.set(key, entry);
+      continue;
+    }
+
+    if (getEntryStatusPriority(entry) > getEntryStatusPriority(current)) {
+      unique.set(key, entry);
+    }
+  }
+
+  return [...unique.values()];
+}
+
 export function combineScheduleEntries({
   events,
   tasks,
@@ -318,11 +348,11 @@ export function combineScheduleEntries({
   rangeStart: Date;
   rangeEnd: Date;
 }) {
-  return [
+  return dedupeScheduleEntries([
     ...expandEventEntries(events, rangeStart, rangeEnd),
     ...expandTaskEntries(tasks, rangeStart, rangeEnd),
     ...expandLeadEntries(leads, rangeStart, rangeEnd),
-  ].sort((a, b) => parseISO(a.startsAt).getTime() - parseISO(b.startsAt).getTime());
+  ]).sort((a, b) => parseISO(a.startsAt).getTime() - parseISO(b.startsAt).getTime());
 }
 
 export function getEntriesForDay(entries: ScheduleEntry[], day: Date) {
