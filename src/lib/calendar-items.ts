@@ -40,11 +40,15 @@ export type CalendarEventItem = {
 export type CalendarLeadActionItem = {
   id: string;
   name: string;
-  nextActionAt: string;
+  nextActionAt?: string;
   nextStep?: string;
   status?: string;
   dealValue?: number;
   phone?: string;
+  company?: string;
+  source?: string;
+  isAtRisk?: boolean;
+  updatedAt?: string | null;
 };
 
 export type CalendarBundle = {
@@ -135,10 +139,12 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
 }
 
 export function normalizeCalendarLeadAction(row: Record<string, unknown>): CalendarLeadActionItem | null {
-  const nextActionAt = typeof row.nextActionAt === 'string' ? row.nextActionAt : '';
-  if (!isIsoLike(nextActionAt)) return null;
   const status = row.status ? String(row.status) : undefined;
   if (status === 'won' || status === 'lost') return null;
+
+  const nextActionAt = typeof row.nextActionAt === 'string' && isIsoLike(row.nextActionAt)
+    ? row.nextActionAt
+    : undefined;
 
   return {
     id: String(row.id || crypto.randomUUID()),
@@ -148,6 +154,10 @@ export function normalizeCalendarLeadAction(row: Record<string, unknown>): Calen
     status,
     dealValue: Number(row.dealValue || 0),
     phone: row.phone ? String(row.phone) : undefined,
+    company: row.company ? String(row.company) : undefined,
+    source: row.source ? String(row.source) : undefined,
+    isAtRisk: Boolean(row.isAtRisk),
+    updatedAt: typeof row.updatedAt === 'string' ? row.updatedAt : null,
   };
 }
 
