@@ -11,13 +11,14 @@ import {
   AlertTriangle,
   ArrowRight,
   TrendingUp,
-  ChevronRight,
   Loader2,
   Bell,
   Repeat,
   Clock,
   ChevronDown,
   ChevronUp,
+  ListTodo,
+  ShieldAlert,
 } from 'lucide-react';
 import {
   format,
@@ -25,6 +26,7 @@ import {
   addDays,
   parseISO,
   isToday,
+  differenceInCalendarDays,
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
@@ -68,7 +70,7 @@ import {
 } from '../lib/supabase-fallback';
 
 const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
-const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 type TileCardProps = {
   key?: string | number;
@@ -131,6 +133,34 @@ function TileCard({
       </CardContent>
     </Card>
   );
+}
+
+function parseMoment(value: unknown) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  try {
+    const normalized = value.includes('T') ? value : `${value}T09:00:00`;
+    const parsed = parseISO(normalized);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  } catch {
+    return null;
+  }
+}
+
+function isLeadOverdue(lead: any) {
+  const moment = parseMoment(lead?.nextActionAt);
+  if (!moment) return false;
+  return isPast(moment) && !isToday(moment);
+}
+
+function getDaysWithoutUpdate(lead: any) {
+  const moment = parseMoment(lead?.updatedAt);
+  if (!moment) return null;
+  return Math.max(0, differenceInCalendarDays(new Date(), moment));
+}
+
+function formatLeadMoment(value: unknown) {
+  const moment = parseMoment(value);
+  return moment ? format(moment, 'd MMM HH:mm', { locale: pl }) : 'Brak terminu';
 }
 
 export default function Today() {
@@ -423,23 +453,76 @@ export default function Today() {
 
   const today = new Date();
   const activeLeads = leads.filter((lead) => lead.status !== 'won' && lead.status !== 'lost');
-  const activeLeadsValue = activeLeads.reduce((acc, lead) => acc + (lead.dealValue || 0), 0);
+  const activeLeadsValue = activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0);
+  const leadsWithAction = activeLeads.filter((lead) => parseMoment(lead.nextActionAt));
   const todayEntries = combineScheduleEntries({
     events,
     tasks,
-    leads: activeLeads,
+    leads: leadsWithAction,
     rangeStart: today,
     rangeEnd: new Date(today.getTime() + 24 * 60 * 60_000 - 1),
   });
   const todayTasks = todayEntries.filter((entry) => entry.kind === 'task');
   const todayEvents = todayEntries.filter((entry) => entry.kind === 'event');
   const todayLeadActions = todayEntries.filter((entry) => entry.kind === 'lead');
+
   const overdueTasks = tasks.filter((task) => {
     const startAt = getTaskStartAt(task);
     return task.status !== 'done' && startAt && isPast(parseISO(startAt)) && !isToday(parseISO(startAt));
   });
-  const noStepLeads = activeLeads.filter((lead) => !lead.nextActionAt);
-  const topValuableLeads = [...activeLeads].sort((a, b) => (b.dealValue || 0) - (a.dealValue || 0)).slice(0, 3);
+  const overdueLeadActions = activeLeads.filter((lead) => isLeadOverdue(lead));
+  const noStepLeads = activeLeads.filter((lead) => !parseMoment(lead.nextActionAt));
+  const staleLeads = activeLeads
+    .filter((lead) => {
+      const days = getDaysWithoutUpdate(lead);
+      return days !== null && days >= 5 && !isLeadOverdue(lead) && Boolean(parseMoment(lead.nextActionAt)) && !lead.isAtRisk;
+    })
+    .sort((a, b) => (getDaysWithoutUpdate(b) || 0) - (getDaysWithoutUpdate(a) || 0))
+    .slice(0, 5);
+  const riskyValuableLeads = activeLeads
+    .filter((lead) => {
+      const value = Number(lead.dealValue) || 0;
+      const days = getDaysWithoutUpdate(lead) || 0;
+      return value > 0 && (Boolean(lead.isAtRisk) || isLeadOverdue(lead) || !parseMoment(lead.nextActionAt) || days >= 5);
+    })
+    .sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0))
+    .slice(0, 5);
+  const topValuableLeads = [...activeLeads].sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0)).slice(0, 3);
+
+  const summaryCards = [
+    {
+      id: 'urgent',
+      title: 'Pilne teraz',
+      value: overdueTasks.length + overdueLeadActions.length,
+      tone: 'text-rose-600',
+      bg: 'bg-rose-50',
+      icon: AlertTriangle,
+    },
+    {
+      id: 'today',
+      title: 'Na dziś',
+      value: todayEntries.length,
+      tone: 'text-blue-600',
+      bg: 'bg-blue-50',
+      icon: Clock,
+    },
+    {
+      id: 'no-step',
+      title: 'Bez kroku',
+      value: noStepLeads.length,
+      tone: 'text-amber-600',
+      bg: 'bg-amber-50',
+      icon: ListTodo,
+    },
+    {
+      id: 'stalled',
+      title: 'Bez ruchu',
+      value: staleLeads.length,
+      tone: 'text-purple-600',
+      bg: 'bg-purple-50',
+      icon: ShieldAlert,
+    },
+  ];
 
   return (
     <Layout>
@@ -447,6 +530,7 @@ export default function Today() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Witaj, {profile?.fullName?.split(' ')[0]}!</h1>
+            <p className="text-slate-500">Dziś pokazuje teraz nie tylko kalendarz, ale też miejsca, gdzie proces realnie się sypie.</p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <Dialog open={isLeadOpen} onOpenChange={setIsLeadOpen}>
@@ -471,11 +555,7 @@ export default function Today() {
                     </div>
                     <div className="space-y-2">
                       <Label>Źródło</Label>
-                      <select
-                        className={modalSelectClass}
-                        value={newLead.source}
-                        onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
-                      >
+                      <select className={modalSelectClass} value={newLead.source} onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}>
                         {SOURCE_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
@@ -518,11 +598,7 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <Label>Typ</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newTask.type}
-                          onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}
-                        >
+                        <select className={modalSelectClass} value={newTask.type} onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}>
                           {TASK_TYPES.map((taskType) => (
                             <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
                           ))}
@@ -530,11 +606,7 @@ export default function Today() {
                       </div>
                       <div className="space-y-2">
                         <Label>Lead</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newTask.leadId}
-                          onChange={(e) => setNewTask({ ...newTask, leadId: e.target.value })}
-                        >
+                        <select className={modalSelectClass} value={newTask.leadId} onChange={(e) => setNewTask({ ...newTask, leadId: e.target.value })}>
                           <option value="none">Bez leada</option>
                           {leads.map((lead) => (
                             <option key={lead.id} value={lead.id}>{lead.name}</option>
@@ -543,11 +615,7 @@ export default function Today() {
                       </div>
                       <div className="space-y-2">
                         <Label>Priorytet</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newTask.priority}
-                          onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
-                        >
+                        <select className={modalSelectClass} value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}>
                           {PRIORITY_OPTIONS.map((option) => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                           ))}
@@ -575,11 +643,7 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Powtarzanie</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newTask.recurrence.mode}
-                          onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, mode: e.target.value as any } })}
-                        >
+                        <select className={modalSelectClass} value={newTask.recurrence.mode} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, mode: e.target.value as any } })}>
                           {RECURRENCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                         </select>
                       </div>
@@ -602,22 +666,13 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Tryb</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newTask.reminder.mode}
-                          onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, mode: e.target.value as any } })}
-                        >
+                        <select className={modalSelectClass} value={newTask.reminder.mode} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, mode: e.target.value as any } })}>
                           {REMINDER_MODE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                         </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Kiedy przypomnieć</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newTask.reminder.minutesBefore}
-                          onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, minutesBefore: Number(e.target.value) } })}
-                          disabled={newTask.reminder.mode === 'none'}
-                        >
+                        <select className={modalSelectClass} value={newTask.reminder.minutesBefore} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, minutesBefore: Number(e.target.value) } })} disabled={newTask.reminder.mode === 'none'}>
                           {REMINDER_OFFSET_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                         </select>
                       </div>
@@ -626,11 +681,7 @@ export default function Today() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
                           <Label>Cykliczność przypomnienia</Label>
-                          <select
-                            className={modalSelectClass}
-                            value={newTask.reminder.recurrenceMode}
-                            onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceMode: e.target.value as any } })}
-                          >
+                          <select className={modalSelectClass} value={newTask.reminder.recurrenceMode} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceMode: e.target.value as any } })}>
                             {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                           </select>
                         </div>
@@ -667,21 +718,13 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Typ</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newEvent.type}
-                          onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
-                        >
+                        <select className={modalSelectClass} value={newEvent.type} onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}>
                           {EVENT_TYPES.map((eventType) => <option key={eventType.value} value={eventType.value}>{eventType.label}</option>)}
                         </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Lead</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newEvent.leadId}
-                          onChange={(e) => setNewEvent({ ...newEvent, leadId: e.target.value })}
-                        >
+                        <select className={modalSelectClass} value={newEvent.leadId} onChange={(e) => setNewEvent({ ...newEvent, leadId: e.target.value })}>
                           <option value="none">Bez leada</option>
                           {leads.map((lead) => <option key={lead.id} value={lead.id}>{lead.name}</option>)}
                         </select>
@@ -714,11 +757,7 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Powtarzanie</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newEvent.recurrence.mode}
-                          onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}
-                        >
+                        <select className={modalSelectClass} value={newEvent.recurrence.mode} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}>
                           {RECURRENCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                         </select>
                       </div>
@@ -741,22 +780,13 @@ export default function Today() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Tryb</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newEvent.reminder.mode}
-                          onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}
-                        >
+                        <select className={modalSelectClass} value={newEvent.reminder.mode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}>
                           {REMINDER_MODE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                         </select>
                       </div>
                       <div className="space-y-2">
                         <Label>Kiedy przypomnieć</Label>
-                        <select
-                          className={modalSelectClass}
-                          value={newEvent.reminder.minutesBefore}
-                          onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })}
-                          disabled={newEvent.reminder.mode === 'none'}
-                        >
+                        <select className={modalSelectClass} value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })} disabled={newEvent.reminder.mode === 'none'}>
                           {REMINDER_OFFSET_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                         </select>
                       </div>
@@ -765,11 +795,7 @@ export default function Today() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
                           <Label>Cykliczność przypomnienia</Label>
-                          <select
-                            className={modalSelectClass}
-                            value={newEvent.reminder.recurrenceMode}
-                            onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}
-                          >
+                          <select className={modalSelectClass} value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
                             {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                           </select>
                         </div>
@@ -789,13 +815,32 @@ export default function Today() {
           </div>
         </header>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {summaryCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <Card key={card.id} className="border-none shadow-sm">
+                <CardContent className="p-5 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.title}</p>
+                    <p className={`mt-2 text-2xl font-bold ${card.tone}`}>{card.value}</p>
+                  </div>
+                  <div className={`rounded-2xl p-3 ${card.bg}`}>
+                    <Icon className={`w-6 h-6 ${card.tone}`} />
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             {overdueTasks.length > 0 && (
               <section className="space-y-4">
                 <div className="flex items-center gap-2 text-rose-600">
                   <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Zaległe</h2>
+                  <h2 className="text-lg font-bold">Zaległe zadania</h2>
                   <Badge variant="destructive" className="rounded-full">{overdueTasks.length}</Badge>
                 </div>
                 <div className="grid gap-3">
@@ -811,22 +856,12 @@ export default function Today() {
                         onToggle={toggleTile}
                         className="border-rose-100 bg-rose-50/30"
                         subtitleClassName="text-rose-500 font-medium"
-                        headerRight={
-                          <Badge variant="destructive" className="rounded-full">
-                            Zaległe
-                          </Badge>
-                        }
+                        headerRight={<Badge variant="destructive" className="rounded-full">Zaległe</Badge>}
                       >
                         <div className="flex items-center justify-between gap-4">
-                          <div className="text-sm text-slate-600">
-                            Zadanie wymaga reakcji. Możesz je od razu oznaczyć jako wykonane albo przejść do pełnej listy zadań.
-                          </div>
+                          <div className="text-sm text-slate-600">Zadanie wymaga reakcji. Możesz je od razu oznaczyć jako wykonane albo przejść do pełnej listy zadań.</div>
                           <div className="flex items-center gap-2 shrink-0">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => toggleTask(task.id, task.status)}
-                            >
+                            <Button variant="outline" size="sm" onClick={() => toggleTask(task.id, task.status)}>
                               {task.status === 'done' ? 'Przywróć' : 'Oznacz jako zrobione'}
                             </Button>
                             <Button variant="ghost" size="sm" asChild>
@@ -841,6 +876,38 @@ export default function Today() {
               </section>
             )}
 
+            {overdueLeadActions.length > 0 && (
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 text-rose-600">
+                  <ShieldAlert className="w-5 h-5" />
+                  <h2 className="text-lg font-bold">Leady przeterminowane</h2>
+                  <Badge variant="destructive" className="rounded-full">{overdueLeadActions.length}</Badge>
+                </div>
+                <div className="grid gap-3">
+                  {overdueLeadActions.slice(0, 5).map((lead) => (
+                    <TileCard
+                      key={lead.id}
+                      id={`overdue-lead:${lead.id}`}
+                      title={lead.name}
+                      subtitle={`${lead.company || 'Brak firmy'} • ${formatLeadMoment(lead.nextActionAt)}`}
+                      collapsedMap={collapsedTiles}
+                      onToggle={toggleTile}
+                      className="border-rose-100 bg-rose-50/30"
+                      subtitleClassName="text-rose-500 font-medium"
+                      headerRight={<Badge variant="destructive" className="rounded-full">Przeterminowany</Badge>}
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="text-sm text-slate-600 break-words">{lead.nextStep || 'Lead ma termin ruchu w przeszłości i wymaga decyzji.'}</div>
+                        <Button variant="outline" size="sm" asChild>
+                          <Link to={`/leads/${lead.id}`}>Otwórz lead</Link>
+                        </Button>
+                      </div>
+                    </TileCard>
+                  ))}
+                </div>
+              </section>
+            )}
+
             <section className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -851,13 +918,7 @@ export default function Today() {
               </div>
 
               <div className="space-y-4">
-                <TileCard
-                  id="today-section-leads"
-                  title="Leady do ruchu"
-                  subtitle={`${todayLeadActions.length} wpisów`}
-                  collapsedMap={collapsedTiles}
-                  onToggle={toggleTile}
-                >
+                <TileCard id="today-section-leads" title="Leady do ruchu" subtitle={`${todayLeadActions.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayLeadActions.length > 0 ? (
                     <div className="max-h-80 overflow-y-auto pr-1 space-y-3">
                       {todayLeadActions.map((entry) => (
@@ -884,13 +945,7 @@ export default function Today() {
                   )}
                 </TileCard>
 
-                <TileCard
-                  id="today-section-events"
-                  title="Wydarzenia"
-                  subtitle={`${todayEvents.length} wpisów`}
-                  collapsedMap={collapsedTiles}
-                  onToggle={toggleTile}
-                >
+                <TileCard id="today-section-events" title="Wydarzenia" subtitle={`${todayEvents.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayEvents.length > 0 ? (
                     <div className="grid gap-3">
                       {todayEvents.map((entry) => (
@@ -901,14 +956,10 @@ export default function Today() {
                               <p className="text-sm text-slate-500 break-words">{EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Wydarzenie'}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
                               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                                 {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
-                                  <Badge variant="outline" className="text-[10px] uppercase">
-                                    <Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}
-                                  </Badge>
+                                  <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>
                                 ) : null}
                                 {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' ? (
-                                  <Badge variant="outline" className="text-[10px] uppercase">
-                                    <Bell className="w-3 h-3 mr-1" /> Przypomnienie
-                                  </Badge>
+                                  <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>
                                 ) : null}
                               </div>
                             </div>
@@ -929,13 +980,7 @@ export default function Today() {
                   )}
                 </TileCard>
 
-                <TileCard
-                  id="today-section-tasks"
-                  title="Zadania na dziś"
-                  subtitle={`${todayTasks.length} wpisów`}
-                  collapsedMap={collapsedTiles}
-                  onToggle={toggleTile}
-                >
+                <TileCard id="today-section-tasks" title="Zadania na dziś" subtitle={`${todayTasks.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayTasks.length > 0 ? (
                     <div className="grid gap-3">
                       {todayTasks.map((entry) => (
@@ -946,23 +991,15 @@ export default function Today() {
                               <p className="text-sm text-slate-500 break-words">{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Zadanie'} • {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
                               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                                 {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
-                                  <Badge variant="outline" className="text-[10px] uppercase">
-                                    <Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}
-                                  </Badge>
+                                  <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>
                                 ) : null}
                                 {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' ? (
-                                  <Badge variant="outline" className="text-[10px] uppercase">
-                                    <Bell className="w-3 h-3 mr-1" /> Przypomnienie
-                                  </Badge>
+                                  <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>
                                 ) : null}
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => toggleTask(entry.sourceId, entry.raw.status)}
-                              >
+                              <Button variant="outline" size="sm" onClick={() => toggleTask(entry.sourceId, entry.raw.status)}>
                                 {entry.raw.status === 'done' ? 'Przywróć' : 'Zakończ'}
                               </Button>
                               <Button variant="ghost" size="sm" asChild>
@@ -1002,19 +1039,48 @@ export default function Today() {
                       collapsedMap={collapsedTiles}
                       onToggle={toggleTile}
                       className="hover:shadow-md transition-shadow"
-                      headerRight={
-                        <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">
-                          Zaniedbany
-                        </Badge>
-                      }
+                      headerRight={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak kroku</Badge>}
                     >
                       <Button variant="outline" size="sm" className="w-full rounded-lg" asChild>
-                        <Link to={`/leads/${lead.id}`}>
-                          Ustal kolejny krok <ArrowRight className="w-3 h-3 ml-2" />
-                        </Link>
+                        <Link to={`/leads/${lead.id}`}>Ustal kolejny krok <ArrowRight className="w-3 h-3 ml-2" /></Link>
                       </Button>
                     </TileCard>
                   ))}
+                </div>
+              </section>
+            )}
+
+            {staleLeads.length > 0 && (
+              <section className="space-y-4">
+                <div className="flex items-center gap-2 text-purple-600">
+                  <Clock className="w-5 h-5" />
+                  <h2 className="text-lg font-bold">Bez ruchu za długo</h2>
+                  <Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-purple-50">{staleLeads.length}</Badge>
+                </div>
+                <div className="grid gap-3">
+                  {staleLeads.map((lead) => {
+                    const days = getDaysWithoutUpdate(lead) || 0;
+                    return (
+                      <TileCard
+                        key={lead.id}
+                        id={`stale:${lead.id}`}
+                        title={lead.name}
+                        subtitle={`${days} dni bez wyraźnego ruchu • ${lead.company || lead.source || 'Lead'}`}
+                        collapsedMap={collapsedTiles}
+                        onToggle={toggleTile}
+                        className="border-purple-100 bg-purple-50/30"
+                        subtitleClassName="text-purple-500 font-medium"
+                        headerRight={<Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-white">Bez ruchu</Badge>}
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="text-sm text-slate-600">Lead ma ustawiony proces, ale nie było świeżego ruchu. To dobry kandydat do szybkiego sprawdzenia lub follow-upu.</div>
+                          <Button variant="outline" size="sm" asChild>
+                            <Link to={`/leads/${lead.id}`}>Otwórz lead</Link>
+                          </Button>
+                        </div>
+                      </TileCard>
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -1030,9 +1096,7 @@ export default function Today() {
               className="bg-slate-900 text-white border-none shadow-xl"
               titleClassName="text-white"
               subtitleClassName="text-slate-300 text-2xl font-bold"
-              headerRight={
-                <TrendingUp className="w-10 h-10 text-white/20" />
-              }
+              headerRight={<TrendingUp className="w-10 h-10 text-white/20" />}
               bodyClassName="border-t border-slate-800"
             >
               <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaży</p>
@@ -1042,11 +1106,55 @@ export default function Today() {
                   <p className="text-xl font-bold text-white">{activeLeads.length}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Zadania</p>
-                  <p className="text-xl font-bold text-white">{tasks.length}</p>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Pilne teraz</p>
+                  <p className="text-xl font-bold text-white">{overdueTasks.length + overdueLeadActions.length}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bez kroku</p>
+                  <p className="text-xl font-bold text-white">{noStepLeads.length}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bez ruchu</p>
+                  <p className="text-xl font-bold text-white">{staleLeads.length}</p>
                 </div>
               </div>
             </TileCard>
+
+            {riskyValuableLeads.length > 0 && (
+              <section className="space-y-4">
+                <h2 className="text-lg font-bold text-slate-900">Najcenniejsze zagrożone</h2>
+                <div className="space-y-3">
+                  {riskyValuableLeads.map((lead) => (
+                    <TileCard
+                      key={lead.id}
+                      id={`risky:${lead.id}`}
+                      title={lead.name}
+                      subtitle={lead.company || lead.source || 'Lead'}
+                      collapsedMap={collapsedTiles}
+                      onToggle={toggleTile}
+                      headerRight={
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-rose-600">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
+                          <Badge variant="outline" className="text-[8px] h-4 px-1 border-rose-200 text-rose-700">RYZYKO</Badge>
+                        </div>
+                      }
+                    >
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap gap-2">
+                          {lead.isAtRisk ? <Badge variant="destructive">Oznaczony jako zagrożony</Badge> : null}
+                          {isLeadOverdue(lead) ? <Badge variant="destructive">Termin w przeszłości</Badge> : null}
+                          {!parseMoment(lead.nextActionAt) ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak kroku</Badge> : null}
+                          {(getDaysWithoutUpdate(lead) || 0) >= 5 ? <Badge variant="outline" className="border-purple-200 text-purple-700">Bez ruchu {getDaysWithoutUpdate(lead)} dni</Badge> : null}
+                        </div>
+                        <Button variant="outline" size="sm" asChild>
+                          <Link to={`/leads/${lead.id}`}>Otwórz lead</Link>
+                        </Button>
+                      </div>
+                    </TileCard>
+                  ))}
+                </div>
+              </section>
+            )}
 
             <section className="space-y-4">
               <h2 className="text-lg font-bold text-slate-900">Najbliższe dni</h2>
@@ -1056,7 +1164,7 @@ export default function Today() {
                   const dayEntries = combineScheduleEntries({
                     events,
                     tasks,
-                    leads: activeLeads,
+                    leads: leadsWithAction,
                     rangeStart: date,
                     rangeEnd: new Date(date.getTime() + 24 * 60 * 60_000 - 1),
                   });
@@ -1064,14 +1172,7 @@ export default function Today() {
                   if (count === 0) return null;
 
                   return (
-                    <TileCard
-                      key={days}
-                      id={`upcoming-day:${days}`}
-                      title={`${format(date, 'EEE', { locale: pl }).toUpperCase()} ${format(date, 'd')}`}
-                      subtitle={`${count} ${count === 1 ? 'rzecz' : 'rzeczy'}`}
-                      collapsedMap={collapsedTiles}
-                      onToggle={toggleTile}
-                    >
+                    <TileCard key={days} id={`upcoming-day:${days}`} title={`${format(date, 'EEE', { locale: pl }).toUpperCase()} ${format(date, 'd')}`} subtitle={`${count} ${count === 1 ? 'rzecz' : 'rzeczy'}`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                       <p className="text-[10px] text-slate-500">
                         {dayEntries.filter((entry) => entry.kind === 'event').length} wydarzeń • {dayEntries.filter((entry) => entry.kind === 'task').length} zadań • {dayEntries.filter((entry) => entry.kind === 'lead').length} leadów
                       </p>
@@ -1089,15 +1190,10 @@ export default function Today() {
                     key={lead.id}
                     id={`valuable:${lead.id}`}
                     title={lead.name}
-                    subtitle={lead.company || lead.source}
+                    subtitle={lead.company || lead.source || 'Lead'}
                     collapsedMap={collapsedTiles}
                     onToggle={toggleTile}
-                    headerRight={
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-primary">{(lead.dealValue || 0).toLocaleString()} PLN</p>
-                        <Badge variant="outline" className="text-[8px] h-4 px-1">TOP</Badge>
-                      </div>
-                    }
+                    headerRight={<div className="text-right"><p className="text-sm font-bold text-primary">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p><Badge variant="outline" className="text-[8px] h-4 px-1">TOP</Badge></div>}
                   >
                     <Button variant="outline" size="sm" asChild>
                       <Link to={`/leads/${lead.id}`}>Otwórz lead</Link>
@@ -1108,25 +1204,11 @@ export default function Today() {
             </section>
 
             <section className="space-y-3">
-              <TileCard
-                id="info-recurring"
-                title="Cykliczność działa live"
-                subtitle="Powtarzalne zadania i wydarzenia wpadają teraz do planu dnia bez ręcznego odświeżania."
-                collapsedMap={collapsedTiles}
-                onToggle={toggleTile}
-                headerRight={<Repeat className="w-4 h-4 text-slate-400" />}
-              >
+              <TileCard id="info-recurring" title="Cykliczność działa live" subtitle="Powtarzalne zadania i wydarzenia wpadają teraz do planu dnia bez ręcznego odświeżania." collapsedMap={collapsedTiles} onToggle={toggleTile} headerRight={<Repeat className="w-4 h-4 text-slate-400" />}>
                 <p className="text-sm text-slate-500">Sekcja zostaje w widoku jako szybka notatka, ale możesz ją zwinąć, żeby nie zabierała miejsca.</p>
               </TileCard>
 
-              <TileCard
-                id="info-reminders"
-                title="Przypomnienia zapisują się w danych"
-                subtitle="Warstwa konfiguracji przypomnień jest już spięta z formularzami."
-                collapsedMap={collapsedTiles}
-                onToggle={toggleTile}
-                headerRight={<Bell className="w-4 h-4 text-slate-400" />}
-              >
+              <TileCard id="info-reminders" title="Przypomnienia zapisują się w danych" subtitle="Warstwa konfiguracji przypomnień jest już spięta z formularzami." collapsedMap={collapsedTiles} onToggle={toggleTile} headerRight={<Bell className="w-4 h-4 text-slate-400" />}>
                 <p className="text-sm text-slate-500">Osobny silnik wysyłki to nadal osobny brak V1, ale ustawienia przypomnień są już zapisywane i gotowe do dalszego rozwijania.</p>
               </TileCard>
             </section>
