@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+﻿import { useState, useEffect, FormEvent } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -70,6 +70,7 @@ import {
   fetchTasksFromSupabase,
   insertActivityToSupabase,
   insertTaskToSupabase,
+  updateLeadInSupabase,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
@@ -137,6 +138,11 @@ export default function Tasks() {
 
     setTasks(taskRows as any[]);
     setLeads(leadRows as any[]);
+
+    return {
+      taskRows: taskRows as any[],
+      leadRows: leadRows as any[],
+    };
   }
 
   useEffect(() => {
@@ -157,7 +163,7 @@ export default function Tasks() {
         setLeads(leadRows as any[]);
       } catch (error: any) {
         if (!cancelled) {
-          toast.error(`Błąd odczytu zadań: ${error.message}`);
+          toast.error(`BĹ‚Ä…d odczytu zadaĹ„: ${error.message}`);
         }
       } finally {
         if (!cancelled) {
@@ -186,6 +192,73 @@ export default function Tasks() {
     });
   };
 
+  const getSoftNextStepDefaultDueAt = () => {
+    const next = new Date();
+    next.setDate(next.getDate() + 1);
+    next.setHours(9, 0, 0, 0);
+    return toDateTimeLocalValue(next);
+  };
+
+  const handleSoftNextStepAfterTaskCompletion = async ({
+    leadId,
+    leadName,
+    fallbackTitle,
+  }: {
+    leadId?: string | null;
+    leadName?: string;
+    fallbackTitle?: string;
+  }) => {
+    if (!leadId) return;
+
+    const latestLeads = await fetchLeadsFromSupabase();
+    const latestLead = (latestLeads as any[]).find((lead) => lead.id === leadId);
+    setLeads(latestLeads as any[]);
+
+    if (!latestLead || latestLead.status === 'won' || latestLead.status === 'lost' || latestLead.nextActionAt) {
+      return;
+    }
+
+    const choice = window.prompt(
+      `Lead "${leadName || latestLead.name || 'Lead'}" zostal bez kolejnego kroku.` +
+      `\n1 = ustaw krok teraz` +
+      `\n2 = przypomnij jutro` +
+      `\n3 = zostaw bez kroku`,
+      '2',
+    );
+
+    if (!choice) return;
+
+    if (choice === '1') {
+      const nextStep = window.prompt('Wpisz kolejny krok', fallbackTitle || 'Follow-up');
+      if (!nextStep?.trim()) return;
+
+      const nextActionAt = window.prompt(
+        'Podaj termin w formacie RRRR-MM-DDTHH:mm',
+        getSoftNextStepDefaultDueAt(),
+      );
+      if (!nextActionAt?.trim()) return;
+
+      await updateLeadInSupabase({
+        id: String(leadId),
+        nextStep: nextStep.trim(),
+        nextActionAt,
+      });
+      await refreshSupabaseData();
+      toast.success('Kolejny krok zapisany');
+      return;
+    }
+
+    if (choice === '2') {
+      await updateLeadInSupabase({
+        id: String(leadId),
+        nextStep: fallbackTitle || 'Follow-up',
+        nextActionAt: getSoftNextStepDefaultDueAt(),
+      });
+      await refreshSupabaseData();
+      toast.success('Ustawiono przypomnienie na jutro');
+    }
+  };
+
   const openEditTask = (task: any) => {
     setEditTask({
       id: task.id,
@@ -203,8 +276,8 @@ export default function Tasks() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!newTask.title.trim()) return toast.error('Wpisz tytuĹ‚ zadania');
 
     const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -240,44 +313,55 @@ export default function Tasks() {
       setIsNewTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('BĹ‚Ä…d: ' + error.message);
     }
   };
 
   const toggleTask = async (taskId: string, currentStatus: string) => {
     try {
       const task = tasks.find((entry) => entry.id === taskId);
+      const nextStatus = currentStatus === 'todo' ? 'done' : 'todo';
+
       await updateTaskInSupabase({
         id: taskId,
         title: task?.title,
         type: task?.type,
         date: task?.date,
-        status: currentStatus === 'todo' ? 'done' : 'todo',
+        status: nextStatus,
         priority: task?.priority,
         leadId: task?.leadId ?? null,
       });
+
       await refreshSupabaseData();
+
+      if (nextStatus === 'done' && task?.leadId) {
+        await handleSoftNextStepAfterTaskCompletion({
+          leadId: task.leadId,
+          leadName: task.leadName,
+          fallbackTitle: task.title,
+        });
+      }
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Blad: ' + error.message);
     }
   };
 
   const deleteTask = async (taskId: string) => {
-    if (!window.confirm('Usunąć zadanie?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ zadanie?')) return;
     try {
       await deleteTaskFromSupabase(taskId);
       await refreshSupabaseData();
-      toast.success('Zadanie usunięte');
+      toast.success('Zadanie usuniÄ™te');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('BĹ‚Ä…d: ' + error.message);
     }
   };
 
   const handleSaveTaskEdit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
     if (!editTask?.id) return;
-    if (!editTask.title?.trim()) return toast.error('Wpisz tytuł zadania');
+    if (!editTask.title?.trim()) return toast.error('Wpisz tytuĹ‚ zadania');
 
     const selectedLead = leads.find((lead) => lead.id === editTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -313,7 +397,7 @@ export default function Tasks() {
       setIsEditTaskOpen(false);
       setEditTask(null);
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('BĹ‚Ä…d: ' + error.message);
     }
   };
 
@@ -359,7 +443,7 @@ export default function Tasks() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Zadania</h1>
-            <p className="text-slate-500">Zarządzaj codzienną egzekucją i powtarzalnymi ruchami.</p>
+            <p className="text-slate-500">ZarzÄ…dzaj codziennÄ… egzekucjÄ… i powtarzalnymi ruchami.</p>
           </div>
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
             <DialogTrigger asChild>
@@ -372,7 +456,7 @@ export default function Tasks() {
               <form onSubmit={handleAddTask} className="space-y-6 py-4">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Tytuł zadania</Label>
+                    <Label>TytuĹ‚ zadania</Label>
                     <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -434,8 +518,8 @@ export default function Tasks() {
 
                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                   <div>
-                    <p className="text-sm font-bold text-slate-900">Cykliczność</p>
-                    <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawić powtarzanie.</p>
+                    <p className="text-sm font-bold text-slate-900">CyklicznoĹ›Ä‡</p>
+                    <p className="text-xs text-slate-500">MoĹĽesz zostawiÄ‡ brak albo ustawiÄ‡ powtarzanie.</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2 md:col-span-2">
@@ -515,7 +599,7 @@ export default function Tasks() {
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Kiedy przypomnieć</Label>
+                      <Label>Kiedy przypomnieÄ‡</Label>
                       <select
                         className={modalSelectClass}
                         value={newTask.reminder.minutesBefore}
@@ -537,7 +621,7 @@ export default function Tasks() {
                   {newTask.reminder.mode === 'recurring' && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
-                        <Label>Cykliczność przypomnienia</Label>
+                        <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
                         <select
                           className={modalSelectClass}
                           value={newTask.reminder.recurrenceMode}
@@ -589,7 +673,7 @@ export default function Tasks() {
                 <form onSubmit={handleSaveTaskEdit} className="space-y-6 py-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label>Tytuł zadania</Label>
+                      <Label>TytuĹ‚ zadania</Label>
                       <Input value={editTask.title} onChange={(e) => setEditTask({ ...editTask, title: e.target.value })} required />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -705,7 +789,7 @@ export default function Tasks() {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Kiedy przypomnieć</Label>
+                        <Label>Kiedy przypomnieÄ‡</Label>
                         <select
                           className={modalSelectClass}
                           value={editTask.reminder.minutesBefore}
@@ -727,7 +811,7 @@ export default function Tasks() {
                     {editTask.reminder.mode === 'recurring' && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label>Cykliczność przypomnienia</Label>
+                          <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
                           <select
                             className={modalSelectClass}
                             value={editTask.reminder.recurrenceMode}
@@ -787,7 +871,7 @@ export default function Tasks() {
           <Card className="border-none shadow-sm">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Na dziś</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Na dziĹ›</p>
                 <p className="mt-2 text-2xl font-bold text-blue-600">{taskStats.today}</p>
               </div>
               <div className="rounded-2xl bg-blue-50 p-3 text-blue-500">
@@ -798,7 +882,7 @@ export default function Tasks() {
           <Card className="border-none shadow-sm">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Zaległe</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">ZalegĹ‚e</p>
                 <p className="mt-2 text-2xl font-bold text-rose-600">{taskStats.overdue}</p>
               </div>
               <div className="rounded-2xl bg-rose-50 p-3 text-rose-500">
@@ -854,7 +938,7 @@ export default function Tasks() {
               </Select>
               <Select value={linkFilter} onValueChange={setLinkFilter}>
                 <SelectTrigger className="w-[170px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Powiązanie" />
+                  <SelectValue placeholder="PowiÄ…zanie" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Wszystkie wpisy</SelectItem>
@@ -873,7 +957,7 @@ export default function Tasks() {
                   }}
                   className="h-11 rounded-xl"
                 >
-                  <X className="w-4 h-4 mr-2" /> Wyczyść
+                  <X className="w-4 h-4 mr-2" /> WyczyĹ›Ä‡
                 </Button>
               )}
             </div>
@@ -884,15 +968,15 @@ export default function Tasks() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-              <p className="text-slate-500">Ładowanie zadań...</p>
+              <p className="text-slate-500">Ĺadowanie zadaĹ„...</p>
             </div>
           ) : sortedDates.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
               <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-slate-300" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Brak zadań</h3>
-              <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo zmień filtry.</p>
+              <h3 className="text-lg font-bold text-slate-900">Brak zadaĹ„</h3>
+              <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo zmieĹ„ filtry.</p>
             </div>
           ) : (
             sortedDates.map((dateKey) => {
@@ -904,7 +988,7 @@ export default function Tasks() {
                 <section key={dateKey} className="space-y-3">
                   <div className="flex items-center gap-2">
                     <h2 className="text-lg font-bold text-slate-900">{format(parseISO(dateKey), 'EEEE, d MMMM', { locale: pl })}</h2>
-                    {isToday(parseISO(dateKey)) && <Badge className="rounded-full">Dziś</Badge>}
+                    {isToday(parseISO(dateKey)) && <Badge className="rounded-full">DziĹ›</Badge>}
                     {isTomorrow(parseISO(dateKey)) && <Badge variant="secondary" className="rounded-full">Jutro</Badge>}
                   </div>
                   <div className="space-y-3">
@@ -933,14 +1017,14 @@ export default function Tasks() {
                                   <p className={`font-bold text-slate-900 ${task.status === 'done' ? 'line-through' : ''}`}>{task.title}</p>
                                   <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</Badge>
                                   {task.priority === 'high' && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge>}
-                                  {overdue && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge>}
+                                  {overdue && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">ZalegĹ‚e</Badge>}
                                   {!task.leadName && !task.leadId && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Bez leada</Badge>}
                                   {recurrence.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((item) => item.value === recurrence.mode)?.label}</Badge>}
                                   {reminder.mode !== 'none' && <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Bell className="w-3 h-3 mr-1" /> {reminder.mode === 'recurring' ? 'Cykliczne przypomnienie' : 'Przypomnienie'}</Badge>}
                                 </div>
                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
                                   <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {format(parseISO(taskStart), 'HH:mm')}</span>
-                                  {task.leadName ? <span>Lead: {task.leadName}</span> : <span>Brak powiązanego leada</span>}
+                                  {task.leadName ? <span>Lead: {task.leadName}</span> : <span>Brak powiÄ…zanego leada</span>}
                                 </div>
                               </div>
                             </div>
@@ -957,10 +1041,10 @@ export default function Tasks() {
                                     Edytuj
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => toggleTask(task.id, task.status)}>
-                                    <CheckSquare className="w-4 h-4 mr-2" /> {task.status === 'todo' ? 'Oznacz jako zrobione' : 'Przywróć do zrobienia'}
+                                    <CheckSquare className="w-4 h-4 mr-2" /> {task.status === 'todo' ? 'Oznacz jako zrobione' : 'PrzywrĂłÄ‡ do zrobienia'}
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600">
-                                    <Trash2 className="w-4 h-4 mr-2" /> Usuń
+                                    <Trash2 className="w-4 h-4 mr-2" /> UsuĹ„
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
@@ -979,3 +1063,7 @@ export default function Tasks() {
     </Layout>
   );
 }
+
+
+
+

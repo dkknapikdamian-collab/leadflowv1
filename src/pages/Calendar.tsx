@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+﻿import { useState, useEffect, FormEvent } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -138,7 +138,7 @@ function getEntrySubtitle(entry: ScheduleEntry) {
         : 'Ruch leadowy';
 
   if (entry.leadName) {
-    return `Lead: ${entry.leadName} • ${typedLabel}`;
+    return `Lead: ${entry.leadName} â€˘ ${typedLabel}`;
   }
 
   return typedLabel;
@@ -191,7 +191,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
           <CheckSquare className="mr-2 h-4 w-4" /> {pendingDone ? '...' : 'Zrobione'}
         </button>
         <button type="button" className={actionButtonClass} onClick={() => onDelete(entry)} disabled={pendingDelete}>
-          <Trash2 className="mr-2 h-4 w-4" /> {pendingDelete ? '...' : 'Usuń'}
+          <Trash2 className="mr-2 h-4 w-4" /> {pendingDelete ? '...' : 'UsuĹ„'}
         </button>
       </div>
     </div>
@@ -244,6 +244,8 @@ export default function Calendar() {
     setEvents(bundle.events);
     setTasks(bundle.tasks);
     setLeads(bundle.leads);
+
+    return bundle;
   }
 
   useEffect(() => {
@@ -261,7 +263,7 @@ export default function Calendar() {
         setLeads(bundle.leads);
       } catch (error: any) {
         if (!cancelled) {
-          toast.error(`Błąd odczytu kalendarza: ${error.message}`);
+          toast.error(`BĹ‚Ä…d odczytu kalendarza: ${error.message}`);
         }
       } finally {
         if (!cancelled) {
@@ -322,9 +324,72 @@ export default function Calendar() {
     }
   };
 
+  const handleSoftNextStepAfterEntryCompletion = async ({
+    leadId,
+    leadName,
+    fallbackTitle,
+  }: {
+    leadId?: string | null;
+    leadName?: string;
+    fallbackTitle?: string;
+  }) => {
+    if (!leadId) return;
+
+    const bundle = await refreshSupabaseBundle();
+    const latestLead = bundle.leads.find((lead) => lead.id === leadId);
+
+    if (!latestLead || latestLead.status === 'won' || latestLead.status === 'lost' || latestLead.nextActionAt) {
+      return;
+    }
+
+    const next = new Date();
+    next.setDate(next.getDate() + 1);
+    next.setHours(9, 0, 0, 0);
+
+    const choice = window.prompt(
+      `Lead "${leadName || latestLead.name || 'Lead'}" zostal bez kolejnego kroku.` +
+      `\n1 = ustaw krok teraz` +
+      `\n2 = przypomnij jutro` +
+      `\n3 = zostaw bez kroku`,
+      '2',
+    );
+
+    if (!choice) return;
+
+    if (choice === '1') {
+      const nextStep = window.prompt('Wpisz kolejny krok', fallbackTitle || 'Follow-up');
+      if (!nextStep?.trim()) return;
+
+      const nextActionAt = window.prompt(
+        'Podaj termin w formacie RRRR-MM-DDTHH:mm',
+        toDateTimeLocalValue(next),
+      );
+      if (!nextActionAt?.trim()) return;
+
+      await updateLeadInSupabase({
+        id: String(leadId),
+        nextStep: nextStep.trim(),
+        nextActionAt,
+      });
+      await refreshSupabaseBundle();
+      toast.success('Kolejny krok zapisany');
+      return;
+    }
+
+    if (choice === '2') {
+      await updateLeadInSupabase({
+        id: String(leadId),
+        nextStep: fallbackTitle || 'Follow-up',
+        nextActionAt: toDateTimeLocalValue(next),
+      });
+      await refreshSupabaseBundle();
+      toast.success('Ustawiono przypomnienie na jutro');
+    }
+  };
+
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
 
     const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
     const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
@@ -351,7 +416,7 @@ export default function Calendar() {
       setIsNewEventOpen(false);
       resetNewEvent();
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('BĹ‚Ä…d: ' + error.message);
     }
   };
 
@@ -404,7 +469,7 @@ export default function Calendar() {
 
   const handleShiftEntry = async (entry: ScheduleEntry, days: number) => {
     if (!hasAccess) {
-      toast.error('Trial wygasł.');
+      toast.error('Trial wygasĹ‚.');
       return;
     }
 
@@ -457,9 +522,9 @@ export default function Calendar() {
       }
 
       await refreshSupabaseBundle();
-      toast.success(days === 1 ? 'Przesunięto o 1 dzień' : 'Przesunięto o 1 tydzień');
+      toast.success(days === 1 ? 'PrzesuniÄ™to o 1 dzieĹ„' : 'PrzesuniÄ™to o 1 tydzieĹ„');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('BĹ‚Ä…d: ' + error.message);
     } finally {
       setActionPendingId(null);
     }
@@ -467,14 +532,19 @@ export default function Calendar() {
 
   const handleCompleteEntry = async (entry: ScheduleEntry) => {
     if (!hasAccess) {
-      toast.error('Trial wygasł.');
+      toast.error('Trial wygasl.');
       return;
     }
 
     try {
       setActionPendingId(`${entry.id}:done`);
 
+      let softLeadId: string | null = null;
+      let softLeadName = entry.leadName || '';
+      let softFallbackTitle = entry.title;
+
       if (entry.kind === 'event') {
+        softLeadId = entry.raw?.leadId ?? null;
         await updateEventInSupabase({
           id: entry.sourceId,
           title: entry.raw?.title || entry.title,
@@ -485,6 +555,7 @@ export default function Calendar() {
           leadId: entry.raw?.leadId ?? null,
         });
       } else if (entry.kind === 'task') {
+        softLeadId = entry.raw?.leadId ?? null;
         await updateTaskInSupabase({
           id: entry.sourceId,
           title: entry.raw?.title || entry.title,
@@ -503,9 +574,18 @@ export default function Calendar() {
       }
 
       await refreshSupabaseBundle();
+
+      if (softLeadId) {
+        await handleSoftNextStepAfterEntryCompletion({
+          leadId: softLeadId,
+          leadName: softLeadName,
+          fallbackTitle: softFallbackTitle,
+        });
+      }
+
       toast.success('Wpis oznaczony jako zrobiony');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Blad: ' + error.message);
     } finally {
       setActionPendingId(null);
     }
@@ -513,10 +593,10 @@ export default function Calendar() {
 
   const handleDeleteEntry = async (entry: ScheduleEntry) => {
     if (!hasAccess) {
-      toast.error('Trial wygasł.');
+      toast.error('Trial wygasĹ‚.');
       return;
     }
-    if (!window.confirm('Usunąć ten wpis z kalendarza?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ ten wpis z kalendarza?')) return;
 
     try {
       setActionPendingId(`${entry.id}:delete`);
@@ -534,9 +614,9 @@ export default function Calendar() {
       }
 
       await refreshSupabaseBundle();
-      toast.success('Wpis usunięty');
+      toast.success('Wpis usuniÄ™ty');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('BĹ‚Ä…d: ' + error.message);
     } finally {
       setActionPendingId(null);
     }
@@ -545,7 +625,7 @@ export default function Calendar() {
   const handleSaveEdit = async (e: FormEvent) => {
     e.preventDefault();
     if (!editEntry || !editDraft) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
 
     try {
       setActionPendingId(`${editEntry.id}:edit`);
@@ -611,7 +691,7 @@ export default function Calendar() {
       setEditEntry(null);
       setEditDraft(null);
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('BĹ‚Ä…d: ' + error.message);
     } finally {
       setActionPendingId(null);
     }
@@ -639,7 +719,7 @@ export default function Calendar() {
                 ? `${format(selectedWeekStart, 'd MMM', { locale: pl })} - ${format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}`
                 : format(currentMonth, 'MMMM yyyy', { locale: pl })}
             </h1>
-            <p className="text-slate-500">Kalendarz live dla zadań, wydarzeń i ruchów leadowych.</p>
+            <p className="text-slate-500">Kalendarz live dla zadaĹ„, wydarzeĹ„ i ruchĂłw leadowych.</p>
           </div>
           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
@@ -648,25 +728,25 @@ export default function Calendar() {
                 className="h-9 rounded-lg px-3 text-sm font-semibold"
                 onClick={() => setCalendarView('week')}
               >
-                Tydzień
+                TydzieĹ„
               </Button>
               <Button
                 variant={calendarView === 'month' ? 'default' : 'ghost'}
                 className="h-9 rounded-lg px-3 text-sm font-semibold"
                 onClick={() => setCalendarView('month')}
               >
-                Miesiąc
+                MiesiÄ…c
               </Button>
             </div>
             <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
               <Button variant={calendarScale === 'compact' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('compact')}>
-                Małe kafelki
+                MaĹ‚e kafelki
               </Button>
               <Button variant={calendarScale === 'default' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('default')}>
                 Standard
               </Button>
               <Button variant={calendarScale === 'large' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('large')}>
-                Duże kafelki
+                DuĹĽe kafelki
               </Button>
             </div>
             <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
@@ -713,7 +793,7 @@ export default function Calendar() {
                 <form onSubmit={handleAddEvent} className="space-y-6 py-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label>Tytuł</Label>
+                      <Label>TytuĹ‚</Label>
                       <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -748,7 +828,7 @@ export default function Calendar() {
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Od do</p>
-                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje się automatycznie przy zmianie startu.</p>
+                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje siÄ™ automatycznie przy zmianie startu.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -764,8 +844,8 @@ export default function Calendar() {
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
-                      <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
-                      <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawić powtarzanie, np. co miesiąc.</p>
+                      <p className="text-sm font-bold text-slate-900">CyklicznoĹ›Ä‡ wydarzenia</p>
+                      <p className="text-xs text-slate-500">MoĹĽesz zostawiÄ‡ brak albo ustawiÄ‡ powtarzanie, np. co miesiÄ…c.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
@@ -823,7 +903,7 @@ export default function Calendar() {
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                      <p className="text-xs text-slate-500">Na końcu ustaw sposób przypominania i jego cykliczność.</p>
+                      <p className="text-xs text-slate-500">Na koĹ„cu ustaw sposĂłb przypominania i jego cyklicznoĹ›Ä‡.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -845,7 +925,7 @@ export default function Calendar() {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Kiedy przypomnieć</Label>
+                        <Label>Kiedy przypomnieÄ‡</Label>
                         <select
                           className={modalSelectClass}
                           value={newEvent.reminder.minutesBefore}
@@ -867,7 +947,7 @@ export default function Calendar() {
                     {newEvent.reminder.mode === 'recurring' && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label>Cykliczność przypomnienia</Label>
+                          <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
                           <select
                             className={modalSelectClass}
                             value={newEvent.reminder.recurrenceMode}
@@ -915,14 +995,14 @@ export default function Calendar() {
         <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Tydzień operacyjny</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">TydzieĹ„ operacyjny</p>
               <h2 className="text-lg font-bold text-slate-900">
                 {format(selectedWeekStart, 'd MMM', { locale: pl })} - {format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}
               </h2>
-              <p className="text-sm text-slate-500">Taski, leady i wydarzenia mają teraz identyczny pasek akcji: Edytuj, +1D, +1W, Zrobione, Usuń.</p>
+              <p className="text-sm text-slate-500">Taski, leady i wydarzenia majÄ… teraz identyczny pasek akcji: Edytuj, +1D, +1W, Zrobione, UsuĹ„.</p>
             </div>
             <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
-              Wybrany dzień: {format(selectedDate, 'EEEE, d MMMM', { locale: pl })}
+              Wybrany dzieĹ„: {format(selectedDate, 'EEEE, d MMMM', { locale: pl })}
             </div>
           </div>
         </div>
@@ -930,7 +1010,7 @@ export default function Calendar() {
         {calendarView === 'month' ? (
         <>
         <div className="grid grid-cols-7 mb-2">
-          {['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
+          {['Pon', 'Wt', 'Ĺšr', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
             <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
           ))}
         </div>
@@ -968,7 +1048,7 @@ export default function Calendar() {
                     );
                   })}
                   {dayEntries.length > (calendarScale === 'compact' ? 3 : 4) && (
-                    <div className="text-[10px] text-slate-500 font-medium px-1">+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} więcej</div>
+                    <div className="text-[10px] text-slate-500 font-medium px-1">+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} wiÄ™cej</div>
                   )}
                 </div>
               </button>
@@ -979,15 +1059,15 @@ export default function Calendar() {
         <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
           <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Wybrany dzień</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Wybrany dzieĹ„</p>
               <h2 className="text-xl font-bold text-slate-900">{format(selectedDate, 'EEEE, d MMMM yyyy', { locale: pl })}</h2>
             </div>
-            <Badge variant="secondary" className="h-7 px-3">{selectedDayEntries.length} wpisów</Badge>
+            <Badge variant="secondary" className="h-7 px-3">{selectedDayEntries.length} wpisĂłw</Badge>
           </div>
           <div className="grid gap-3 lg:grid-cols-2">
             {selectedDayEntries.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-8 text-center text-sm text-slate-400 lg:col-span-2">
-                Brak wpisów dla tego dnia.
+                Brak wpisĂłw dla tego dnia.
               </div>
             ) : selectedDayEntries.map((entry) => (
               <div key={`selected:${entry.id}`}>
@@ -1012,9 +1092,9 @@ export default function Calendar() {
           <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
             <div>
               <h3 className="text-lg font-bold text-slate-900">Widok tygodniowy</h3>
-              <p className="text-sm text-slate-500">Każdy wpis ma ten sam zestaw akcji, niezależnie czy to zadanie, lead czy wydarzenie.</p>
+              <p className="text-sm text-slate-500">KaĹĽdy wpis ma ten sam zestaw akcji, niezaleĹĽnie czy to zadanie, lead czy wydarzenie.</p>
             </div>
-            <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisów</Badge>
+            <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisĂłw</Badge>
           </div>
 
           <div className="overflow-x-auto pb-1">
@@ -1030,13 +1110,13 @@ export default function Calendar() {
                       <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{format(day, 'EEEE', { locale: pl })}</p>
                       <p className="text-base font-bold text-slate-900">{format(day, 'd MMM', { locale: pl })}</p>
                     </div>
-                    {isToday(day) ? <Badge className="bg-primary/15 text-primary hover:bg-primary/15">Dziś</Badge> : null}
+                    {isToday(day) ? <Badge className="bg-primary/15 text-primary hover:bg-primary/15">DziĹ›</Badge> : null}
                   </div>
 
                   <div className="space-y-3">
                     {dayEntries.length === 0 ? (
                       <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-3 py-6 text-center text-xs text-slate-400">
-                        Brak wpisów
+                        Brak wpisĂłw
                       </div>
                     ) : dayEntries.map((entry) => (
                       <div key={entry.id}>
@@ -1066,21 +1146,21 @@ export default function Calendar() {
               <Repeat className="w-4 h-4 text-slate-400" />
               <h2 className="text-sm font-bold text-slate-900">Cykliczne wpisy</h2>
             </div>
-            <p className="text-sm text-slate-500">W tym miesiącu kalendarz rozwija powtarzalne zadania i wydarzenia bez ręcznego odświeżania.</p>
+            <p className="text-sm text-slate-500">W tym miesiÄ…cu kalendarz rozwija powtarzalne zadania i wydarzenia bez rÄ™cznego odĹ›wieĹĽania.</p>
           </div>
           <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-3">
               <Bell className="w-4 h-4 text-slate-400" />
               <h2 className="text-sm font-bold text-slate-900">Przypomnienia</h2>
             </div>
-            <p className="text-sm text-slate-500">Tryb przypomnień zapisuje się już w danych. Warstwa wysyłki powiadomień wymaga jeszcze domknięcia logiki V1.</p>
+            <p className="text-sm text-slate-500">Tryb przypomnieĹ„ zapisuje siÄ™ juĹĽ w danych. Warstwa wysyĹ‚ki powiadomieĹ„ wymaga jeszcze domkniÄ™cia logiki V1.</p>
           </div>
           <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-3">
               <Plus className="w-4 h-4 text-slate-400" />
               <h2 className="text-sm font-bold text-slate-900">Live plan</h2>
             </div>
-            <p className="text-sm text-slate-500">Kalendarz zbiera teraz wydarzenia, zadania oraz terminy kolejnego ruchu z leadów.</p>
+            <p className="text-sm text-slate-500">Kalendarz zbiera teraz wydarzenia, zadania oraz terminy kolejnego ruchu z leadĂłw.</p>
           </div>
         </div>
       </div>
@@ -1098,7 +1178,7 @@ export default function Calendar() {
           {editEntry && editDraft ? (
             <form onSubmit={handleSaveEdit} className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label>{editEntry.kind === 'lead' ? 'Next step' : 'Tytuł'}</Label>
+                <Label>{editEntry.kind === 'lead' ? 'Next step' : 'TytuĹ‚'}</Label>
                 <Input
                   value={editDraft.title}
                   onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })}
@@ -1184,3 +1264,6 @@ export default function Calendar() {
     </Layout>
   );
 }
+
+
+
