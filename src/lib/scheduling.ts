@@ -305,34 +305,31 @@ export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date
   });
 }
 
-function getEntryStatusPriority(entry: ScheduleEntry) {
-  if (entry.kind === 'task' && entry.raw?.status === 'done') return 3;
-  if (entry.kind === 'event' && entry.raw?.status === 'completed') return 2;
-  return 1;
-}
+function choosePreferredEntry(existing: ScheduleEntry, incoming: ScheduleEntry) {
+  const existingDone = existing.kind === 'task' && existing.raw?.status === 'done';
+  const incomingDone = incoming.kind === 'task' && incoming.raw?.status === 'done';
 
-function getEntryDedupKey(entry: ScheduleEntry) {
-  return `${entry.kind}:${entry.sourceId}:${entry.startsAt}`;
-}
-
-export function dedupeScheduleEntries(entries: ScheduleEntry[]) {
-  const unique = new Map<string, ScheduleEntry>();
-
-  for (const entry of entries) {
-    const key = getEntryDedupKey(entry);
-    const current = unique.get(key);
-
-    if (!current) {
-      unique.set(key, entry);
-      continue;
-    }
-
-    if (getEntryStatusPriority(entry) > getEntryStatusPriority(current)) {
-      unique.set(key, entry);
-    }
+  if (existingDone !== incomingDone) {
+    return incomingDone ? incoming : existing;
   }
 
-  return [...unique.values()];
+  return existing;
+}
+
+function dedupeScheduleEntries(entries: ScheduleEntry[]) {
+  const deduped = new Map<string, ScheduleEntry>();
+
+  for (const entry of entries) {
+    const dedupeKey = `${entry.kind}::${entry.sourceId}::${entry.startsAt}`;
+    const existing = deduped.get(dedupeKey);
+    if (!existing) {
+      deduped.set(dedupeKey, entry);
+      continue;
+    }
+    deduped.set(dedupeKey, choosePreferredEntry(existing, entry));
+  }
+
+  return Array.from(deduped.values());
 }
 
 export function combineScheduleEntries({
