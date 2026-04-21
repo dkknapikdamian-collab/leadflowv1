@@ -7,6 +7,7 @@ import { Badge } from '../components/ui/badge';
 import {
   ChevronLeft,
   ChevronRight,
+  ArrowUpRight,
   Plus,
   Loader2,
   Bell,
@@ -92,7 +93,7 @@ const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 function createEntryActionClass() {
-  return 'inline-flex h-9 items-center justify-center rounded-xl border border-slate-700 bg-slate-950 px-3 text-xs font-semibold text-white transition hover:border-slate-500 hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-50';
+  return 'inline-flex h-8 items-center justify-center rounded-lg border border-slate-700 bg-slate-950 px-2.5 text-[11px] font-semibold text-white transition hover:border-slate-500 hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-50';
 }
 
 function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
@@ -176,8 +177,16 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
   return (
     <div className={`rounded-2xl border border-slate-200 bg-white p-3 shadow-sm ${isCompletedTask ? 'opacity-60' : ''}`}>
       <div className="mb-2 flex items-center justify-between gap-2">
-        <Badge className={`${getEntryTone(entry)} border`}>{entry.badgeLabel || entry.kind}</Badge>
-        <span className="text-[11px] font-semibold text-slate-500">
+        <div className="flex min-w-0 items-center gap-1.5">
+          <Badge className={`${getEntryTone(entry)} border`}>{entry.badgeLabel || entry.kind}</Badge>
+          {entry.leadName ? (
+            <span className="inline-flex h-5 items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-1.5 text-[9px] font-semibold text-emerald-700">
+              <ArrowUpRight className="h-2.5 w-2.5" />
+              Lead
+            </span>
+          ) : null}
+        </div>
+        <span className="text-[10px] font-semibold text-slate-500">
           {format(parseISO(entry.startsAt), 'HH:mm')}
         </span>
       </div>
@@ -194,15 +203,15 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-1.5">
         <button type="button" className={actionButtonClass} onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
         <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
         <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
         <button type="button" className={actionButtonClass} onClick={() => onComplete(entry)} disabled={pendingDone}>
-          <CheckSquare className="mr-2 h-4 w-4" /> {pendingDone ? '...' : 'Zrobione'}
+          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : 'Zrobione'}
         </button>
         <button type="button" className={actionButtonClass} onClick={() => onDelete(entry)} disabled={pendingDelete}>
-          <Trash2 className="mr-2 h-4 w-4" /> {pendingDelete ? '...' : 'Usuń'}
+          <Trash2 className="mr-1 h-3.5 w-3.5" /> {pendingDelete ? '...' : 'Usuń'}
         </button>
       </div>
     </div>
