@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from './firebase';
+import { getIdTokenResult, signOut } from 'firebase/auth';
 import Today from './pages/Today';
 import Leads from './pages/Leads';
 import LeadDetail from './pages/LeadDetail';
@@ -18,9 +19,12 @@ import NotificationsCenter from './pages/NotificationsCenter';
 import NotificationRuntime from './components/NotificationRuntime';
 import { Toaster } from './components/ui/sonner';
 import { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { TooltipProvider } from './components/ui/tooltip';
 import { seedTemplates } from './lib/firebase-utils';
+import { toast } from 'sonner';
+
+const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 
 export default function App() {
   const [user, loading] = useAuthState(auth);
@@ -32,18 +36,65 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    async function fetchProfile() {
-      if (user) {
-        const profileDoc = await getDoc(doc(db, 'profiles', user.uid));
-        if (profileDoc.exists()) {
-          setProfile(profileDoc.data());
-        }
-        seedTemplates();
-      }
+    if (!user) {
+      setProfile(null);
       setProfileLoading(false);
+      return;
     }
-    fetchProfile();
+
+    setProfileLoading(true);
+
+    const profileRef = doc(db, 'profiles', user.uid);
+    const unsubscribe = onSnapshot(
+      profileRef,
+      (profileDoc) => {
+        void (async () => {
+          const nextProfile = profileDoc.exists() ? profileDoc.data() : null;
+          const forceLogoutAfter = typeof nextProfile?.forceLogoutAfter === 'string' ? nextProfile.forceLogoutAfter : '';
+
+          if (forceLogoutAfter) {
+            try {
+              const tokenResult = await getIdTokenResult(user);
+              const authTimeMs = Date.parse(String(tokenResult.authTime || ''));
+              const forceLogoutMs = Date.parse(forceLogoutAfter);
+
+              if (Number.isFinite(authTimeMs) && Number.isFinite(forceLogoutMs) && authTimeMs < forceLogoutMs) {
+                if (typeof window !== 'undefined') {
+                  window.sessionStorage.setItem(FORCE_LOGOUT_NOTICE_SESSION_KEY, '1');
+                }
+                setProfile(null);
+                setProfileLoading(false);
+                await signOut(auth);
+                return;
+              }
+            } catch (error) {
+              console.error('FORCE_LOGOUT_CHECK_FAILED', error);
+            }
+          }
+
+          setProfile(nextProfile);
+          seedTemplates();
+          setProfileLoading(false);
+        })();
+      },
+      (error) => {
+        console.error('PROFILE_SUBSCRIPTION_FAILED', error);
+        setProfileLoading(false);
+      },
+    );
+
+    return () => {
+      unsubscribe();
+    };
   }, [user]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.sessionStorage.getItem(FORCE_LOGOUT_NOTICE_SESSION_KEY) !== '1') return;
+
+    window.sessionStorage.removeItem(FORCE_LOGOUT_NOTICE_SESSION_KEY);
+    toast.success('Wylogowano tę sesję po globalnym wylogowaniu.');
+  }, []);
 
   if (loading || profileLoading) {
     return (

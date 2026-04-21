@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
+import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { AlertTriangle, Palette, Shield, User } from 'lucide-react';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
@@ -14,6 +15,7 @@ import { getConflictWarningsEnabled, setConflictWarningsEnabled as storeConflict
 export default function Settings() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [signingOutEverywhere, setSigningOutEverywhere] = useState(false);
   const [conflictWarningsEnabled, setConflictWarningsEnabledState] = useState(true);
   const { skin, setSkin, skinOptions } = useAppearance();
 
@@ -48,6 +50,29 @@ export default function Settings() {
       toast.success('Profil zaktualizowany');
     } catch (error: any) {
       toast.error(`Błąd: ${error.message}`);
+    }
+  };
+
+  const handleSignOutEverywhere = async () => {
+    if (!auth.currentUser) return;
+    if (!window.confirm('Wylogować wszystkie urządzenia, łącznie z tym?')) return;
+
+    setSigningOutEverywhere(true);
+    try {
+      await setDoc(
+        doc(db, 'profiles', auth.currentUser.uid),
+        {
+          forceLogoutAfter: new Date().toISOString(),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+      toast.success('Wylogowano wszystkie urządzenia. Zaloguj się ponownie.');
+      await signOut(auth);
+    } catch (error: any) {
+      toast.error(`Błąd: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setSigningOutEverywhere(false);
     }
   };
 
@@ -164,8 +189,13 @@ export default function Settings() {
               <CardDescription>Zarządzaj dostępem do swojego konta.</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full md:w-auto text-red-500 hover:text-red-600 hover:bg-red-50 border-red-100">
-                Wyloguj ze wszystkich urządzeń
+              <Button
+                variant="outline"
+                className="w-full md:w-auto text-red-500 hover:text-red-600 hover:bg-red-50 border-red-100"
+                onClick={() => void handleSignOutEverywhere()}
+                disabled={signingOutEverywhere}
+              >
+                {signingOutEverywhere ? 'Wylogowywanie...' : 'Wyloguj ze wszystkich urządzeń'}
               </Button>
             </CardContent>
           </Card>
