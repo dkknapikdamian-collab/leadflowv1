@@ -39,7 +39,9 @@ import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
 import {
   createCaseInSupabase,
+  deleteEventFromSupabase,
   deleteLeadFromSupabase,
+  deleteTaskFromSupabase,
   fetchActivitiesFromSupabase,
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
@@ -50,7 +52,9 @@ import {
   insertTaskToSupabase,
   isSupabaseConfigured,
   updateCaseInSupabase,
+  updateEventInSupabase,
   updateLeadInSupabase,
+  updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
 const STATUS_OPTIONS = [
@@ -126,6 +130,18 @@ function activityTitle(activity: any) {
       return 'Podpięto sprawę';
     case 'case_unlinked':
       return 'Odpięto sprawę';
+    case 'task_updated':
+      return 'Zaktualizowano zadanie';
+    case 'task_status_toggled':
+      return 'Zmieniono status zadania';
+    case 'task_deleted':
+      return 'Usunięto zadanie';
+    case 'event_updated':
+      return 'Zaktualizowano wydarzenie';
+    case 'event_status_toggled':
+      return 'Zmieniono status wydarzenia';
+    case 'event_deleted':
+      return 'Usunięto wydarzenie';
     default:
       return 'Aktywność';
   }
@@ -184,6 +200,7 @@ export default function LeadDetail() {
   const [isQuickEventOpen, setIsQuickEventOpen] = useState(false);
   const [quickTaskSubmitting, setQuickTaskSubmitting] = useState(false);
   const [quickEventSubmitting, setQuickEventSubmitting] = useState(false);
+  const [linkedEntryActionId, setLinkedEntryActionId] = useState<string | null>(null);
   const [quickTask, setQuickTask] = useState(() => ({
     title: '',
     type: 'follow_up',
@@ -451,6 +468,167 @@ export default function LeadDetail() {
       setQuickEventSubmitting(false);
     }
   };
+
+
+  const handleEditLinkedTask = async (task: any) => {
+    const title = window.prompt('Tytuł zadania', String(task.title || ''));
+    if (!title?.trim()) return;
+
+    const scheduledDate = asDate(task.date || task.dueAt || task.updatedAt) || new Date();
+    const scheduledDefault = toDateTimeLocalValue(scheduledDate);
+    const scheduledAt = window.prompt('Termin w formacie RRRR-MM-DDTHH:mm', scheduledDefault);
+    if (!scheduledAt?.trim()) return;
+
+    const nextType = window.prompt('Typ zadania', String(task.type || 'follow_up'));
+    if (!nextType?.trim()) return;
+
+    const nextPriority = window.prompt('Priorytet: low / medium / high', String(task.priority || 'medium'));
+    if (!nextPriority?.trim()) return;
+
+    try {
+      setLinkedEntryActionId(`task:${task.id}:edit`);
+      await updateTaskInSupabase({
+        id: String(task.id),
+        title: title.trim(),
+        type: nextType.trim(),
+        date: scheduledAt.slice(0, 10),
+        scheduledAt,
+        priority: nextPriority.trim(),
+        status: String(task.status || 'todo'),
+        leadId: task.leadId ? String(task.leadId) : null,
+        caseId: task.caseId ? String(task.caseId) : null,
+      });
+      await addActivity('task_updated', { title: title.trim(), taskId: task.id });
+      toast.success('Zadanie zaktualizowane');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd aktualizacji zadania: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLinkedEntryActionId(null);
+    }
+  };
+
+  const handleToggleLinkedTask = async (task: any) => {
+    const nextStatus = String(task.status || 'todo') === 'done' ? 'todo' : 'done';
+    const scheduledDate = asDate(task.date || task.dueAt || task.updatedAt) || new Date();
+    const scheduledAt = toDateTimeLocalValue(scheduledDate);
+
+    try {
+      setLinkedEntryActionId(`task:${task.id}:toggle`);
+      await updateTaskInSupabase({
+        id: String(task.id),
+        title: String(task.title || ''),
+        type: String(task.type || 'follow_up'),
+        date: scheduledAt.slice(0, 10),
+        scheduledAt,
+        priority: String(task.priority || 'medium'),
+        status: nextStatus,
+        leadId: task.leadId ? String(task.leadId) : null,
+        caseId: task.caseId ? String(task.caseId) : null,
+      });
+      await addActivity('task_status_toggled', { title: String(task.title || 'Zadanie'), status: nextStatus, taskId: task.id });
+      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrócone');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd zmiany statusu zadania: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLinkedEntryActionId(null);
+    }
+  };
+
+  const handleDeleteLinkedTask = async (task: any) => {
+    if (!window.confirm('Usunąć to zadanie?')) return;
+    try {
+      setLinkedEntryActionId(`task:${task.id}:delete`);
+      await deleteTaskFromSupabase(String(task.id));
+      await addActivity('task_deleted', { title: String(task.title || 'Zadanie'), taskId: task.id });
+      toast.success('Zadanie usunięte');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd usuwania zadania: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLinkedEntryActionId(null);
+    }
+  };
+
+  const handleEditLinkedEvent = async (event: any) => {
+    const title = window.prompt('Tytuł wydarzenia', String(event.title || ''));
+    if (!title?.trim()) return;
+
+    const startDefault = toDateTimeLocalValue(asDate(event.startAt || event.updatedAt) || new Date());
+    const endDefault = toDateTimeLocalValue(asDate(event.endAt || event.startAt || event.updatedAt) || new Date());
+    const startAt = window.prompt('Start w formacie RRRR-MM-DDTHH:mm', startDefault);
+    if (!startAt?.trim()) return;
+    const endAt = window.prompt('Koniec w formacie RRRR-MM-DDTHH:mm', endDefault);
+    if (!endAt?.trim()) return;
+
+    const nextType = window.prompt('Typ wydarzenia', String(event.type || 'meeting'));
+    if (!nextType?.trim()) return;
+
+    try {
+      setLinkedEntryActionId(`event:${event.id}:edit`);
+      await updateEventInSupabase({
+        id: String(event.id),
+        title: title.trim(),
+        type: nextType.trim(),
+        startAt,
+        endAt,
+        status: String(event.status || 'scheduled'),
+        leadId: event.leadId ? String(event.leadId) : null,
+        caseId: event.caseId ? String(event.caseId) : null,
+      });
+      await addActivity('event_updated', { title: title.trim(), eventId: event.id });
+      toast.success('Wydarzenie zaktualizowane');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd aktualizacji wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLinkedEntryActionId(null);
+    }
+  };
+
+  const handleToggleLinkedEvent = async (event: any) => {
+    const nextStatus = String(event.status || 'scheduled') === 'completed' ? 'scheduled' : 'completed';
+    const startAt = toDateTimeLocalValue(asDate(event.startAt || event.updatedAt) || new Date());
+    const endAt = toDateTimeLocalValue(asDate(event.endAt || event.startAt || event.updatedAt) || new Date());
+
+    try {
+      setLinkedEntryActionId(`event:${event.id}:toggle`);
+      await updateEventInSupabase({
+        id: String(event.id),
+        title: String(event.title || ''),
+        type: String(event.type || 'meeting'),
+        startAt,
+        endAt,
+        status: nextStatus,
+        leadId: event.leadId ? String(event.leadId) : null,
+        caseId: event.caseId ? String(event.caseId) : null,
+      });
+      await addActivity('event_status_toggled', { title: String(event.title || 'Wydarzenie'), status: nextStatus, eventId: event.id });
+      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywrócone');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd zmiany statusu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLinkedEntryActionId(null);
+    }
+  };
+
+  const handleDeleteLinkedEvent = async (event: any) => {
+    if (!window.confirm('Usunąć to wydarzenie?')) return;
+    try {
+      setLinkedEntryActionId(`event:${event.id}:delete`);
+      await deleteEventFromSupabase(String(event.id));
+      await addActivity('event_deleted', { title: String(event.title || 'Wydarzenie'), eventId: event.id });
+      toast.success('Wydarzenie usunięte');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd usuwania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLinkedEntryActionId(null);
+    }
+  };
+
 
   const handleAddPartialPayment = async (e: FormEvent) => {
     e.preventDefault();
@@ -874,11 +1052,20 @@ export default function LeadDetail() {
                                     <p className="text-sm font-semibold text-slate-900 break-words">{task.title || 'Zadanie bez tytułu'}</p>
                                     <p className="text-xs text-slate-500 break-words">{taskTypeLabel(task.type)} • {formatScheduleDate(task.date || task.dueAt)}</p>
                                   </div>
-                                  <div className="flex items-center gap-2 shrink-0">
+                                  <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
                                     <Badge variant={task.status === 'done' ? 'secondary' : 'outline'}>{task.status === 'done' ? 'Zrobione' : 'Aktywne'}</Badge>
                                     {associatedCase?.id && String(task.caseId || '') === String(associatedCase.id) && String(task.leadId || '') !== String(leadId || '') ? (
                                       <Badge variant="outline">Ze sprawy</Badge>
                                     ) : null}
+                                    <Button variant="ghost" size="sm" onClick={() => void handleEditLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:edit`}>
+                                      {linkedEntryActionId === `task:${task.id}:edit` ? '...' : 'Edytuj'}
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={() => void handleToggleLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:toggle`}>
+                                      {linkedEntryActionId === `task:${task.id}:toggle` ? '...' : task.status === 'done' ? 'Przywróć' : 'Zrób'}
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={() => void handleDeleteLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:delete`}>
+                                      {linkedEntryActionId === `task:${task.id}:delete` ? '...' : 'Usuń'}
+                                    </Button>
                                   </div>
                                 </div>
                               </div>
@@ -913,11 +1100,20 @@ export default function LeadDetail() {
                                     <p className="text-sm font-semibold text-slate-900 break-words">{event.title || 'Wydarzenie bez tytułu'}</p>
                                     <p className="text-xs text-slate-500 break-words">{eventTypeLabel(event.type)} • {formatScheduleDate(event.startAt)}</p>
                                   </div>
-                                  <div className="flex items-center gap-2 shrink-0">
+                                  <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
                                     <Badge variant={event.status === 'completed' ? 'secondary' : 'outline'}>{event.status === 'completed' ? 'Zrobione' : 'Zaplanowane'}</Badge>
                                     {associatedCase?.id && String(event.caseId || '') === String(associatedCase.id) && String(event.leadId || '') !== String(leadId || '') ? (
                                       <Badge variant="outline">Ze sprawy</Badge>
                                     ) : null}
+                                    <Button variant="ghost" size="sm" onClick={() => void handleEditLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:edit`}>
+                                      {linkedEntryActionId === `event:${event.id}:edit` ? '...' : 'Edytuj'}
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={() => void handleToggleLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:toggle`}>
+                                      {linkedEntryActionId === `event:${event.id}:toggle` ? '...' : event.status === 'completed' ? 'Przywróć' : 'Wykonaj'}
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={() => void handleDeleteLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:delete`}>
+                                      {linkedEntryActionId === `event:${event.id}:delete` ? '...' : 'Usuń'}
+                                    </Button>
                                   </div>
                                 </div>
                               </div>
