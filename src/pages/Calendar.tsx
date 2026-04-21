@@ -514,7 +514,7 @@ export default function Calendar() {
   const selectedDayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, selectedDate));
 
   const monthCellMinHeight = calendarScale === 'compact' ? 104 : calendarScale === 'large' ? 160 : 128;
-  const weekColumnMinWidth = calendarScale === 'compact' ? '240px' : calendarScale === 'large' ? '360px' : '280px';
+  const weekColumnMinWidth = calendarScale === 'compact' ? '150px' : calendarScale === 'large' ? '210px' : '170px';
 
   const handleStartChange = (value: string) => {
     const currentEnd = parseISO(newEvent.endAt);
@@ -1136,14 +1136,14 @@ export default function Calendar() {
               <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisów</Badge>
             </div>
 
-            <div className="overflow-x-auto pb-1">
-              <div className="grid grid-flow-col gap-4 min-w-full" style={{ gridAutoColumns: `minmax(${weekColumnMinWidth}, 1fr)` }}>
+            <div className="overflow-x-auto pb-1 xl:overflow-visible">
+              <div className="grid grid-flow-col gap-3 min-w-[980px] xl:min-w-0 xl:grid-flow-row xl:grid-cols-7" style={{ gridAutoColumns: `minmax(${weekColumnMinWidth}, 1fr)` }}>
                 {weekDays.map((day) => {
                   const dayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day));
                   const isActiveDay = isSameDay(day, selectedDate);
 
                   return (
-                    <div key={day.toISOString()} className={`rounded-2xl border p-3 ${isActiveDay ? 'border-primary/40 bg-primary/5' : 'border-slate-200 bg-slate-50/40'}`}>
+                    <div key={day.toISOString()} className={`rounded-xl border p-2.5 ${isActiveDay ? 'border-primary/40 bg-primary/5' : 'border-slate-200 bg-slate-50/40'}`}>
                       <div className="mb-3 flex items-center justify-between">
                         <div>
                           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{format(day, 'EEEE', { locale: pl })}</p>
@@ -1152,9 +1152,9 @@ export default function Calendar() {
                         {isToday(day) ? <Badge className="bg-primary/15 text-primary hover:bg-primary/15">Dziś</Badge> : null}
                       </div>
 
-                      <div className="space-y-3">
+                      <div className="space-y-2">
                         {dayEntries.length === 0 ? (
-                          <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-3 py-6 text-center text-xs text-slate-400">
+                          <div className="rounded-xl border border-dashed border-slate-200 bg-white px-2.5 py-4 text-center text-[11px] text-slate-400">
                             Brak wpisów
                           </div>
                         ) : dayEntries.map((entry) => (
