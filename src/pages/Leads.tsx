@@ -13,7 +13,6 @@ import {
   Upload,
   Mail,
   Clock,
-  X,
   FileText,
   Loader2,
   Briefcase,
@@ -24,7 +23,6 @@ import Layout from '../components/Layout';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import Papa from 'papaparse';
 import { format, isAfter, isPast, parseISO, startOfDay, subDays, addDays } from 'date-fns';
 import { pl } from 'date-fns/locale';
@@ -113,12 +111,6 @@ export default function Leads() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [sourceFilter, setSourceFilter] = useState('all');
-  const [atRiskFilter, setAtRiskFilter] = useState('all');
-  const [activityFilter, setActivityFilter] = useState('all');
-  const [caseFilter, setCaseFilter] = useState('all');
-  const [processFilter, setProcessFilter] = useState('all');
   const [quickFilter, setQuickFilter] = useState<LeadsQuickFilter>('all');
   const [valueSortEnabled, setValueSortEnabled] = useState(false);
 
@@ -253,7 +245,7 @@ export default function Leads() {
   };
 
   const filteredLeads = useMemo(() => {
-    const normalizedQuery = searchQuery.toLowerCase();
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
     const results = leads.filter((lead) => {
       const name = String(lead.name || '').toLowerCase();
@@ -263,52 +255,27 @@ export default function Leads() {
       const linkedCase = casesByLeadId.get(String(lead.id));
       const activeLead = !['won', 'lost'].includes(normalizedStatus);
       const missingNextStep = activeLead && !hasNextStep(lead);
+      const caseTitle = String(linkedCase?.title || '').toLowerCase();
+      const caseStatus = String(linkedCase?.status || '').toLowerCase();
 
-      const matchesSearch = name.includes(normalizedQuery) || email.includes(normalizedQuery) || company.includes(normalizedQuery);
-
-      const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
-      const matchesSource = sourceFilter === 'all' || lead.source === sourceFilter;
-      const matchesAtRisk =
-        atRiskFilter === 'all' ||
-        (atRiskFilter === 'at-risk' && Boolean(lead.isAtRisk)) ||
-        (atRiskFilter === 'safe' && !lead.isAtRisk);
-
-      let matchesActivity = true;
-      const updatedAt = toDateSafe(lead.updatedAt);
-      if (activityFilter !== 'all') {
-        if (!updatedAt) {
-          matchesActivity = false;
-        } else {
-          const now = new Date();
-          if (activityFilter === 'today') {
-            matchesActivity = isAfter(updatedAt, startOfDay(now));
-          } else if (activityFilter === 'week') {
-            matchesActivity = isAfter(updatedAt, subDays(now, 7));
-          } else if (activityFilter === 'month') {
-            matchesActivity = isAfter(updatedAt, subDays(now, 30));
-          }
-        }
-      }
-
-      const matchesCase =
-        caseFilter === 'all' ||
-        (caseFilter === 'with-case' && Boolean(linkedCase)) ||
-        (caseFilter === 'without-case' && !linkedCase);
-
-      const matchesProcess =
-        processFilter === 'all' ||
-        (processFilter === 'no-next-step' && activeLead && !hasNextStep(lead)) ||
-        (processFilter === 'overdue-move' && activeLead && isNextStepOverdue(lead)) ||
-        (processFilter === 'organized' && activeLead && hasNextStep(lead) && !isNextStepOverdue(lead));
+      const matchesSearch = !normalizedQuery
+        || name.includes(normalizedQuery)
+        || email.includes(normalizedQuery)
+        || company.includes(normalizedQuery)
+        || normalizedStatus.includes(normalizedQuery)
+        || String(lead.source || '').toLowerCase().includes(normalizedQuery)
+        || String(lead.nextStep || '').toLowerCase().includes(normalizedQuery)
+        || caseTitle.includes(normalizedQuery)
+        || caseStatus.includes(normalizedQuery);
 
       const matchesQuickFilter =
-        quickFilter === 'all' ||
-        (quickFilter === 'active' && activeLead) ||
-        (quickFilter === 'at-risk' && Boolean(lead.isAtRisk)) ||
-        (quickFilter === 'with-case' && Boolean(linkedCase)) ||
-        (quickFilter === 'no-next-step' && missingNextStep);
+        quickFilter === 'all'
+        || (quickFilter === 'active' && activeLead)
+        || (quickFilter === 'at-risk' && Boolean(lead.isAtRisk))
+        || (quickFilter === 'with-case' && Boolean(linkedCase))
+        || (quickFilter === 'no-next-step' && missingNextStep);
 
-      return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity && matchesCase && matchesProcess && matchesQuickFilter;
+      return matchesSearch && matchesQuickFilter;
     });
 
     if (valueSortEnabled) {
@@ -316,19 +283,7 @@ export default function Leads() {
     }
 
     return results;
-  }, [
-    activityFilter,
-    atRiskFilter,
-    caseFilter,
-    casesByLeadId,
-    leads,
-    processFilter,
-    quickFilter,
-    searchQuery,
-    sourceFilter,
-    statusFilter,
-    valueSortEnabled,
-  ]);
+  }, [casesByLeadId, leads, quickFilter, searchQuery, valueSortEnabled]);
 
   const stats = {
     total: leads.length,
@@ -523,104 +478,15 @@ export default function Leads() {
         </div>
 
         <Card className="border-none shadow-sm">
-          <CardContent className="p-4 flex flex-col xl:flex-row gap-4">
-            <div className="relative flex-1">
+          <CardContent className="p-4">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
-                placeholder="Szukaj po nazwie, emailu, firmie..."
+                placeholder="Szukaj po nazwie, emailu, firmie, statusie albo sprawie..."
                 className="pl-10 rounded-xl bg-slate-50 border-none h-11"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[160px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie statusy</SelectItem>
-                  {STATUS_OPTIONS.map((status) => (
-                    <SelectItem key={status.value} value={status.value}>
-                      {status.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={sourceFilter} onValueChange={setSourceFilter}>
-                <SelectTrigger className="w-[140px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Źródło" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie źródła</SelectItem>
-                  {SOURCE_OPTIONS.map((source) => (
-                    <SelectItem key={source.value} value={source.value}>
-                      {source.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={atRiskFilter} onValueChange={setAtRiskFilter}>
-                <SelectTrigger className="w-[140px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Ryzyko" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie</SelectItem>
-                  <SelectItem value="at-risk">Zagrożone</SelectItem>
-                  <SelectItem value="safe">Bezpieczne</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={activityFilter} onValueChange={setActivityFilter}>
-                <SelectTrigger className="w-[160px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Aktywność" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Kiedykolwiek</SelectItem>
-                  <SelectItem value="today">Dzisiaj</SelectItem>
-                  <SelectItem value="week">Ostatnie 7 dni</SelectItem>
-                  <SelectItem value="month">Ostatnie 30 dni</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={caseFilter} onValueChange={setCaseFilter}>
-                <SelectTrigger className="w-[160px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Sprawa" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie leady</SelectItem>
-                  <SelectItem value="with-case">Tylko ze sprawą</SelectItem>
-                  <SelectItem value="without-case">Tylko bez sprawy</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={processFilter} onValueChange={setProcessFilter}>
-                <SelectTrigger className="w-[170px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Proces" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Cały proces</SelectItem>
-                  <SelectItem value="no-next-step">Bez następnego kroku</SelectItem>
-                  <SelectItem value="overdue-move">Zaległy ruch</SelectItem>
-                  <SelectItem value="organized">Poukładane</SelectItem>
-                </SelectContent>
-              </Select>
-              {(statusFilter !== 'all' || sourceFilter !== 'all' || atRiskFilter !== 'all' || activityFilter !== 'all' || caseFilter !== 'all' || processFilter !== 'all' || searchQuery || quickFilter !== 'all' || valueSortEnabled) && (
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    setStatusFilter('all');
-                    setSourceFilter('all');
-                    setAtRiskFilter('all');
-                    setActivityFilter('all');
-                    setCaseFilter('all');
-                    setProcessFilter('all');
-                    setQuickFilter('all');
-                    setValueSortEnabled(false);
-                    setSearchQuery('');
-                  }}
-                  className="h-11 rounded-xl"
-                >
-                  <X className="w-4 h-4 mr-2" /> Wyczyść
-                </Button>
-              )}
             </div>
           </CardContent>
         </Card>

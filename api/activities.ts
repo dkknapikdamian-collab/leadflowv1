@@ -58,7 +58,7 @@ export default async function handler(req, res) {
         return;
       }
 
-      const payload = {
+      const payload: Record<string, unknown> = {
         updated_at: new Date().toISOString(),
       };
 

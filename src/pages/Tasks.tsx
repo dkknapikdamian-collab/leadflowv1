@@ -14,7 +14,6 @@ import {
   MoreVertical,
   Trash2,
   Loader2,
-  X,
   Bell,
   Repeat,
   Link2,
@@ -26,13 +25,6 @@ import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../components/ui/select';
 import {
   Dialog,
   DialogContent,
@@ -121,10 +113,6 @@ export default function Tasks() {
   const [cases, setCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [linkFilter, setLinkFilter] = useState('all');
-  const [caseFilter, setCaseFilter] = useState('all');
   const [taskScope, setTaskScope] = useState<TaskScope>('active');
 
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
@@ -470,28 +458,24 @@ export default function Tasks() {
   );
 
   const baseFilteredTasks = useMemo(() => {
-    return tasks.filter((task) => {
-      const taskTitle = String(task.title || '').toLowerCase();
-      const matchesSearch = taskTitle.includes(searchQuery.toLowerCase());
-      const matchesStatus =
-        statusFilter === 'all'
-          || (statusFilter === 'todo' && !isTaskDone(task))
-          || (statusFilter === 'done' && isTaskDone(task));
-      const matchesType = typeFilter === 'all' || task.type === typeFilter;
-      const hasLead = hasLeadLink(task);
-      const hasCase = hasCaseLink(task);
-      const matchesLink =
-        linkFilter === 'all'
-        || (linkFilter === 'with-lead' && hasLead)
-        || (linkFilter === 'without-lead' && !hasLead);
-      const matchesCase =
-        caseFilter === 'all'
-        || (caseFilter === 'with-case' && hasCase)
-        || (caseFilter === 'without-case' && !hasCase);
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
-      return matchesSearch && matchesStatus && matchesType && matchesLink && matchesCase;
+    return tasks.filter((task) => {
+      if (!normalizedQuery) return true;
+
+      const taskTitle = String(task.title || '').toLowerCase();
+      const taskType = String(task.type || '').toLowerCase();
+      const taskLead = String(task.leadName || '').toLowerCase();
+      const taskCase = String(caseTitleById.get(String(task.caseId || '')) || '').toLowerCase();
+      const taskPriority = String(task.priority || '').toLowerCase();
+
+      return taskTitle.includes(normalizedQuery)
+        || taskType.includes(normalizedQuery)
+        || taskLead.includes(normalizedQuery)
+        || taskCase.includes(normalizedQuery)
+        || taskPriority.includes(normalizedQuery);
     });
-  }, [tasks, searchQuery, statusFilter, typeFilter, linkFilter, caseFilter]);
+  }, [caseTitleById, tasks, searchQuery]);
 
   const scopedTasks = useMemo(() => {
     return baseFilteredTasks.filter((task) => {
@@ -924,58 +908,10 @@ export default function Tasks() {
         </div>
 
         <Card className="border-none shadow-sm">
-          <CardContent className="p-4 flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
+          <CardContent className="p-4">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input placeholder="Szukaj zadania..." className="pl-10 rounded-xl bg-slate-50 border-none h-11" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[140px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie</SelectItem>
-                  <SelectItem value="todo">Do zrobienia</SelectItem>
-                  <SelectItem value="done">Zrobione</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-[160px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Typ" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie typy</SelectItem>
-                  {TASK_TYPES.map((taskType) => (
-                    <SelectItem key={taskType.value} value={taskType.value}>{taskType.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={linkFilter} onValueChange={setLinkFilter}>
-                <SelectTrigger className="w-[170px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Powiązanie" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie wpisy</SelectItem>
-                  <SelectItem value="with-lead">Tylko z leadem</SelectItem>
-                  <SelectItem value="without-lead">Tylko bez leada</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={caseFilter} onValueChange={setCaseFilter}>
-                <SelectTrigger className="w-[170px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Sprawa" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie sprawy</SelectItem>
-                  <SelectItem value="with-case">Tylko ze sprawą</SelectItem>
-                  <SelectItem value="without-case">Tylko bez sprawy</SelectItem>
-                </SelectContent>
-              </Select>
-              {(statusFilter !== 'all' || typeFilter !== 'all' || linkFilter !== 'all' || caseFilter !== 'all' || searchQuery) ? (
-                <Button variant="ghost" onClick={() => { setStatusFilter('all'); setTypeFilter('all'); setLinkFilter('all'); setCaseFilter('all'); setSearchQuery(''); setTaskScope('active'); }} className="h-11 rounded-xl">
-                  <X className="w-4 h-4 mr-2" /> Wyczyść
-                </Button>
-              ) : null}
+              <Input placeholder="Szukaj po tytule, typie, leadzie albo sprawie..." className="pl-10 rounded-xl bg-slate-50 border-none h-11" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
           </CardContent>
         </Card>
