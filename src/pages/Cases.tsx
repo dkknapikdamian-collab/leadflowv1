@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { format } from 'date-fns';
@@ -16,6 +16,7 @@ import {
   Sparkles,
   Target,
   Trash2,
+  Plus,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -28,8 +29,11 @@ import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Progress } from '../components/ui/progress';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Label } from '../components/ui/label';
+import { useWorkspace } from '../hooks/useWorkspace';
 import { deleteCaseWithRelations } from '../lib/cases';
-import { fetchCasesFromSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import { createCaseInSupabase, fetchCasesFromSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 
 type CaseRecord = {
   id: string;
@@ -45,7 +49,7 @@ type CaseRecord = {
   updatedAt?: { toDate?: () => Date } | string | null;
 };
 
-type CaseView = 'all' | 'active' | 'waiting' | 'blocked' | 'ready' | 'completed';
+type CaseView = 'all' | 'active' | 'waiting' | 'blocked' | 'ready' | 'completed' | 'linked';
 
 const CASE_VIEWS: { value: CaseView; label: string }[] = [
   { value: 'all', label: 'Wszystkie' },
@@ -54,6 +58,7 @@ const CASE_VIEWS: { value: CaseView; label: string }[] = [
   { value: 'blocked', label: 'Zablokowane' },
   { value: 'ready', label: 'Gotowe' },
   { value: 'completed', label: 'Domknięte' },
+  { value: 'linked', label: 'Z leada' },
 ];
 
 function caseStatusLabel(status?: string) {
@@ -97,13 +102,30 @@ function toUpdatedDate(value: CaseRecord['updatedAt']) {
   return null;
 }
 
+function createStatCardClass(active: boolean) {
+  return `border-none app-surface-strong transition-all ${active ? 'ring-2 ring-primary/30 shadow-md' : 'shadow-sm hover:shadow-md'}`;
+}
+
 export default function Cases() {
+  const { workspace, hasAccess } = useWorkspace();
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<CaseView>('all');
   const [caseToDelete, setCaseToDelete] = useState<CaseRecord | null>(null);
   const [deletePending, setDeletePending] = useState(false);
+  const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
+  const [createCasePending, setCreateCasePending] = useState(false);
+  const [newCase, setNewCase] = useState({
+    title: '',
+    clientName: '',
+    status: 'in_progress',
+  });
+
+  const refreshCases = async () => {
+    const rows = await fetchCasesFromSupabase();
+    setCases(rows as CaseRecord[]);
+  };
 
   useEffect(() => {
     if (isSupabaseConfigured()) {
@@ -170,7 +192,9 @@ export default function Cases() {
               ? record.status === 'blocked'
               : viewMode === 'ready'
                 ? record.status === 'ready_to_start'
-                : record.status === 'completed';
+                : viewMode === 'linked'
+                  ? Boolean(record.leadId)
+                  : record.status === 'completed';
 
       return matchesSearch && matchesView;
     });
@@ -192,6 +216,35 @@ export default function Cases() {
     }
   }
 
+  async function handleCreateCase(e: FormEvent) {
+    e.preventDefault();
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!newCase.title.trim()) return toast.error('Podaj tytuł sprawy');
+
+    try {
+      setCreateCasePending(true);
+      await createCaseInSupabase({
+        title: newCase.title.trim(),
+        clientName: newCase.clientName.trim(),
+        status: newCase.status,
+        portalReady: false,
+        workspaceId: workspace?.id,
+      });
+      await refreshCases();
+      toast.success('Sprawa utworzona');
+      setIsCreateCaseOpen(false);
+      setNewCase({
+        title: '',
+        clientName: '',
+        status: 'in_progress',
+      });
+    } catch (error: any) {
+      toast.error(`Błąd tworzenia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setCreateCasePending(false);
+    }
+  }
+
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8">
@@ -207,18 +260,90 @@ export default function Cases() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 rounded-2xl border px-3 py-2 app-border app-surface-strong">
-            <Filter className="h-4 w-4 app-muted" />
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] app-muted">Jedna ścieżka: lead → sprawa → portal</p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-2 rounded-2xl border px-3 py-2 app-border app-surface-strong">
+              <Filter className="h-4 w-4 app-muted" />
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] app-muted">Jedna ścieżka: lead → sprawa → portal</p>
+            </div>
+            <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
+              <DialogTrigger asChild>
+                <Button className="rounded-2xl">
+                  <Plus className="mr-2 h-4 w-4" /> Dodaj sprawę
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>Nowa sprawa</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleCreateCase} className="space-y-4 py-2">
+                  <div className="space-y-2">
+                    <Label>Tytuł sprawy</Label>
+                    <Input value={newCase.title} onChange={(event) => setNewCase((prev) => ({ ...prev, title: event.target.value }))} placeholder="np. Wdrożenie klienta X" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Nazwa klienta</Label>
+                    <Input value={newCase.clientName} onChange={(event) => setNewCase((prev) => ({ ...prev, clientName: event.target.value }))} placeholder="np. Jan Kowalski / Firma XYZ" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Status startowy</Label>
+                    <select className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" value={newCase.status} onChange={(event) => setNewCase((prev) => ({ ...prev, status: event.target.value }))}>
+                      <option value="in_progress">W toku</option>
+                      <option value="waiting_on_client">Czeka na klienta</option>
+                      <option value="blocked">Zablokowana</option>
+                      <option value="ready_to_start">Gotowa do startu</option>
+                    </select>
+                  </div>
+                  <DialogFooter>
+                    <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)}>Anuluj</Button>
+                    <Button type="submit" disabled={createCasePending}>{createCasePending ? 'Tworzenie...' : 'Utwórz sprawę'}</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-          <Card className="border-none app-surface-strong"><CardContent className="flex items-center justify-between p-5"><div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Wszystkie</p><p className="mt-2 text-2xl font-bold app-text">{stats.total}</p></div><div className="rounded-2xl p-3 app-primary-chip"><Briefcase className="h-6 w-6" /></div></CardContent></Card>
-          <Card className="border-none app-surface-strong"><CardContent className="flex items-center justify-between p-5"><div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Czekają</p><p className="mt-2 text-2xl font-bold text-amber-500">{stats.waiting}</p></div><div className="rounded-2xl bg-amber-500/12 p-3 text-amber-500"><Clock className="h-6 w-6" /></div></CardContent></Card>
-          <Card className="border-none app-surface-strong"><CardContent className="flex items-center justify-between p-5"><div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Zablokowane</p><p className="mt-2 text-2xl font-bold text-rose-500">{stats.blocked}</p></div><div className="rounded-2xl bg-rose-500/12 p-3 text-rose-500"><ShieldAlert className="h-6 w-6" /></div></CardContent></Card>
-          <Card className="border-none app-surface-strong"><CardContent className="flex items-center justify-between p-5"><div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Gotowe</p><p className="mt-2 text-2xl font-bold text-emerald-500">{stats.ready}</p></div><div className="rounded-2xl bg-emerald-500/12 p-3 text-emerald-500"><CheckCircle2 className="h-6 w-6" /></div></CardContent></Card>
-          <Card className="border-none app-surface-strong"><CardContent className="flex items-center justify-between p-5"><div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Z leada</p><p className="mt-2 text-2xl font-bold app-text">{stats.linked}</p></div><div className="rounded-2xl bg-sky-500/12 p-3 text-sky-500"><Link2 className="h-6 w-6" /></div></CardContent></Card>
+          <button type="button" className="text-left" onClick={() => setViewMode('all')}>
+            <Card className={createStatCardClass(viewMode === 'all')}>
+              <CardContent className="flex items-center justify-between p-5">
+                <div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Wszystkie</p><p className="mt-2 text-2xl font-bold app-text">{stats.total}</p></div>
+                <div className="rounded-2xl p-3 app-primary-chip"><Briefcase className="h-6 w-6" /></div>
+              </CardContent>
+            </Card>
+          </button>
+          <button type="button" className="text-left" onClick={() => setViewMode((prev) => (prev === 'waiting' ? 'all' : 'waiting'))}>
+            <Card className={createStatCardClass(viewMode === 'waiting')}>
+              <CardContent className="flex items-center justify-between p-5">
+                <div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Czekają</p><p className="mt-2 text-2xl font-bold text-amber-500">{stats.waiting}</p></div>
+                <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-500"><Clock className="h-6 w-6" /></div>
+              </CardContent>
+            </Card>
+          </button>
+          <button type="button" className="text-left" onClick={() => setViewMode((prev) => (prev === 'blocked' ? 'all' : 'blocked'))}>
+            <Card className={createStatCardClass(viewMode === 'blocked')}>
+              <CardContent className="flex items-center justify-between p-5">
+                <div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Zablokowane</p><p className="mt-2 text-2xl font-bold text-rose-500">{stats.blocked}</p></div>
+                <div className="rounded-2xl bg-rose-500/12 p-3 text-rose-500"><ShieldAlert className="h-6 w-6" /></div>
+              </CardContent>
+            </Card>
+          </button>
+          <button type="button" className="text-left" onClick={() => setViewMode((prev) => (prev === 'ready' ? 'all' : 'ready'))}>
+            <Card className={createStatCardClass(viewMode === 'ready')}>
+              <CardContent className="flex items-center justify-between p-5">
+                <div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Gotowe</p><p className="mt-2 text-2xl font-bold text-emerald-500">{stats.ready}</p></div>
+                <div className="rounded-2xl bg-emerald-500/12 p-3 text-emerald-500"><CheckCircle2 className="h-6 w-6" /></div>
+              </CardContent>
+            </Card>
+          </button>
+          <button type="button" className="text-left" onClick={() => setViewMode((prev) => (prev === 'linked' ? 'all' : 'linked'))}>
+            <Card className={createStatCardClass(viewMode === 'linked')}>
+              <CardContent className="flex items-center justify-between p-5">
+                <div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Z leada</p><p className="mt-2 text-2xl font-bold app-text">{stats.linked}</p></div>
+                <div className="rounded-2xl bg-sky-500/12 p-3 text-sky-500"><Link2 className="h-6 w-6" /></div>
+              </CardContent>
+            </Card>
+          </button>
         </section>
 
         <Card className="border-none app-surface-strong">
@@ -228,7 +353,7 @@ export default function Cases() {
               <Input placeholder="Szukaj po sprawie, kliencie albo statusie..." value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} className="pl-10" />
             </div>
             <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as CaseView)} className="w-full lg:w-auto">
-              <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+              <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
                 {CASE_VIEWS.map((view) => <TabsTrigger key={view.value} value={view.value}>{view.label}</TabsTrigger>)}
               </TabsList>
             </Tabs>
@@ -303,6 +428,7 @@ export default function Cases() {
             })
           )}
         </section>
+
 
         <ConfirmDialog
           open={Boolean(caseToDelete)}
