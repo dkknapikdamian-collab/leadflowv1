@@ -6,8 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
-  CreditCard,
-  Zap,
   Shield,
   Clock,
   AlertTriangle,
@@ -195,24 +193,6 @@ export default function Billing() {
               </Card>
             );
           })}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="flex flex-col items-center text-center p-6 space-y-2">
-            <Shield className="w-8 h-8 text-slate-400" />
-            <h4 className="font-bold text-slate-900">Spójny stan dostępu</h4>
-            <p className="text-xs text-slate-500">Billing i blokady akcji korzystają teraz z tego samego stanu dostępu.</p>
-          </div>
-          <div className="flex flex-col items-center text-center p-6 space-y-2">
-            <Zap className="w-8 h-8 text-slate-400" />
-            <h4 className="font-bold text-slate-900">Natychmiastowe odświeżenie</h4>
-            <p className="text-xs text-slate-500">Po zmianie planu ekran odświeża stan workspace bez ręcznego przeładowania.</p>
-          </div>
-          <div className="flex flex-col items-center text-center p-6 space-y-2">
-            <CreditCard className="w-8 h-8 text-slate-400" />
-            <h4 className="font-bold text-slate-900">Jeden punkt zarządzania</h4>
-            <p className="text-xs text-slate-500">To miejsce jest źródłem prawdy dla stanu trialu i aktywnego planu.</p>
-          </div>
         </div>
       </div>
     </Layout>

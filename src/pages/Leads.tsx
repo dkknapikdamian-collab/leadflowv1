@@ -68,6 +68,8 @@ type CaseRecord = {
   leadId?: string | null;
 };
 
+type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'with-case' | 'no-next-step';
+
 function nativeSelectClassName() {
   return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 }
@@ -91,6 +93,14 @@ function toDateSafe(value: unknown) {
   return null;
 }
 
+function createSummaryCardClass(active: boolean) {
+  return `w-full text-left rounded-2xl transition-all ${active ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`;
+}
+
+function createSummaryCardContentClass(active: boolean) {
+  return `p-6 flex items-center justify-between ${active ? 'bg-primary/5' : ''}`;
+}
+
 export default function Leads() {
   const { workspace, hasAccess } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
@@ -104,6 +114,8 @@ export default function Leads() {
   const [activityFilter, setActivityFilter] = useState('all');
   const [caseFilter, setCaseFilter] = useState('all');
   const [processFilter, setProcessFilter] = useState('all');
+  const [quickFilter, setQuickFilter] = useState<LeadsQuickFilter>('all');
+  const [valueSortEnabled, setValueSortEnabled] = useState(false);
 
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
   const [newLead, setNewLead] = useState({
@@ -226,51 +238,83 @@ export default function Leads() {
     });
   };
 
-  const filteredLeads = leads.filter((lead) => {
-    const name = String(lead.name || '').toLowerCase();
-    const email = String(lead.email || '').toLowerCase();
-    const company = String(lead.company || '').toLowerCase();
-    const queryText = searchQuery.toLowerCase();
-    const matchesSearch = name.includes(queryText) || email.includes(queryText) || company.includes(queryText);
+  const filteredLeads = useMemo(() => {
+    const normalizedQuery = searchQuery.toLowerCase();
 
-    const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
-    const matchesSource = sourceFilter === 'all' || lead.source === sourceFilter;
-    const matchesAtRisk =
-      atRiskFilter === 'all' ||
-      (atRiskFilter === 'at-risk' && Boolean(lead.isAtRisk)) ||
-      (atRiskFilter === 'safe' && !lead.isAtRisk);
+    const results = leads.filter((lead) => {
+      const name = String(lead.name || '').toLowerCase();
+      const email = String(lead.email || '').toLowerCase();
+      const company = String(lead.company || '').toLowerCase();
+      const normalizedStatus = String(lead.status || 'new');
+      const linkedCase = casesByLeadId.get(String(lead.id));
+      const activeLead = !['won', 'lost'].includes(normalizedStatus);
+      const missingNextStep = activeLead && !hasNextStep(lead);
 
-    let matchesActivity = true;
-    const updatedAt = toDateSafe(lead.updatedAt);
-    if (activityFilter !== 'all') {
-      if (!updatedAt) {
-        matchesActivity = false;
-      } else {
-        const now = new Date();
-        if (activityFilter === 'today') {
-          matchesActivity = isAfter(updatedAt, startOfDay(now));
-        } else if (activityFilter === 'week') {
-          matchesActivity = isAfter(updatedAt, subDays(now, 7));
-        } else if (activityFilter === 'month') {
-          matchesActivity = isAfter(updatedAt, subDays(now, 30));
+      const matchesSearch = name.includes(normalizedQuery) || email.includes(normalizedQuery) || company.includes(normalizedQuery);
+
+      const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
+      const matchesSource = sourceFilter === 'all' || lead.source === sourceFilter;
+      const matchesAtRisk =
+        atRiskFilter === 'all' ||
+        (atRiskFilter === 'at-risk' && Boolean(lead.isAtRisk)) ||
+        (atRiskFilter === 'safe' && !lead.isAtRisk);
+
+      let matchesActivity = true;
+      const updatedAt = toDateSafe(lead.updatedAt);
+      if (activityFilter !== 'all') {
+        if (!updatedAt) {
+          matchesActivity = false;
+        } else {
+          const now = new Date();
+          if (activityFilter === 'today') {
+            matchesActivity = isAfter(updatedAt, startOfDay(now));
+          } else if (activityFilter === 'week') {
+            matchesActivity = isAfter(updatedAt, subDays(now, 7));
+          } else if (activityFilter === 'month') {
+            matchesActivity = isAfter(updatedAt, subDays(now, 30));
+          }
         }
       }
+
+      const matchesCase =
+        caseFilter === 'all' ||
+        (caseFilter === 'with-case' && Boolean(linkedCase)) ||
+        (caseFilter === 'without-case' && !linkedCase);
+
+      const matchesProcess =
+        processFilter === 'all' ||
+        (processFilter === 'no-next-step' && activeLead && !hasNextStep(lead)) ||
+        (processFilter === 'overdue-move' && activeLead && isNextStepOverdue(lead)) ||
+        (processFilter === 'organized' && activeLead && hasNextStep(lead) && !isNextStepOverdue(lead));
+
+      const matchesQuickFilter =
+        quickFilter === 'all' ||
+        (quickFilter === 'active' && activeLead) ||
+        (quickFilter === 'at-risk' && Boolean(lead.isAtRisk)) ||
+        (quickFilter === 'with-case' && Boolean(linkedCase)) ||
+        (quickFilter === 'no-next-step' && missingNextStep);
+
+      return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity && matchesCase && matchesProcess && matchesQuickFilter;
+    });
+
+    if (valueSortEnabled) {
+      return [...results].sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0));
     }
 
-    const linkedCase = casesByLeadId.get(String(lead.id));
-    const matchesCase =
-      caseFilter === 'all' ||
-      (caseFilter === 'with-case' && Boolean(linkedCase)) ||
-      (caseFilter === 'without-case' && !linkedCase);
-
-    const matchesProcess =
-      processFilter === 'all' ||
-      (processFilter === 'no-next-step' && !['won', 'lost'].includes(String(lead.status || 'new')) && !hasNextStep(lead)) ||
-      (processFilter === 'overdue-move' && !['won', 'lost'].includes(String(lead.status || 'new')) && isNextStepOverdue(lead)) ||
-      (processFilter === 'organized' && !['won', 'lost'].includes(String(lead.status || 'new')) && hasNextStep(lead) && !isNextStepOverdue(lead));
-
-    return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity && matchesCase && matchesProcess;
-  });
+    return results;
+  }, [
+    activityFilter,
+    atRiskFilter,
+    caseFilter,
+    casesByLeadId,
+    leads,
+    processFilter,
+    quickFilter,
+    searchQuery,
+    sourceFilter,
+    statusFilter,
+    valueSortEnabled,
+  ]);
 
   const stats = {
     total: leads.length,
@@ -279,6 +323,10 @@ export default function Leads() {
     atRisk: leads.filter((lead) => Boolean(lead.isAtRisk)).length,
     linkedToCase: leads.filter((lead) => casesByLeadId.has(String(lead.id))).length,
     noNextStep: leads.filter((lead) => !hasNextStep(lead) && !['won', 'lost'].includes(String(lead.status || 'new'))).length,
+  };
+
+  const toggleQuickFilter = (filter: LeadsQuickFilter) => {
+    setQuickFilter((prev) => (prev === filter ? 'all' : filter));
   };
 
   return (
@@ -374,72 +422,90 @@ export default function Leads() {
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4">
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wszystkie</p>
-                <h3 className="text-2xl font-bold text-slate-900">{stats.total}</h3>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-2xl">
-                <Target className="w-6 h-6 text-slate-400" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Aktywne</p>
-                <h3 className="text-2xl font-bold text-blue-600">{stats.active}</h3>
-              </div>
-              <div className="bg-blue-50 p-3 rounded-2xl">
-                <TrendingUp className="w-6 h-6 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wartość</p>
-                <h3 className="text-2xl font-bold text-slate-900">{stats.value.toLocaleString()} PLN</h3>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-2xl">
-                <TrendingUp className="w-6 h-6 text-slate-400" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zagrożone</p>
-                <h3 className="text-2xl font-bold text-rose-600">{stats.atRisk}</h3>
-              </div>
-              <div className="bg-rose-50 p-3 rounded-2xl">
-                <AlertTriangle className="w-6 h-6 text-rose-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Ze sprawą</p>
-                <h3 className="text-2xl font-bold text-emerald-600">{stats.linkedToCase}</h3>
-              </div>
-              <div className="bg-emerald-50 p-3 rounded-2xl">
-                <Briefcase className="w-6 h-6 text-emerald-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Bez kroku</p>
-                <h3 className="text-2xl font-bold text-amber-600">{stats.noNextStep}</h3>
-              </div>
-              <div className="bg-amber-50 p-3 rounded-2xl">
-                <CalendarDays className="w-6 h-6 text-amber-500" />
-              </div>
-            </CardContent>
-          </Card>
+          <button type="button" className={createSummaryCardClass(quickFilter === 'all')} onClick={() => setQuickFilter('all')}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'all')}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wszystkie</p>
+                  <h3 className="text-2xl font-bold text-slate-900">{stats.total}</h3>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-2xl">
+                  <Target className="w-6 h-6 text-slate-400" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
+
+          <button type="button" className={createSummaryCardClass(quickFilter === 'active')} onClick={() => toggleQuickFilter('active')}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'active')}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Aktywne</p>
+                  <h3 className="text-2xl font-bold text-blue-600">{stats.active}</h3>
+                </div>
+                <div className="bg-blue-50 p-3 rounded-2xl">
+                  <TrendingUp className="w-6 h-6 text-blue-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
+
+          <button type="button" className={createSummaryCardClass(valueSortEnabled)} onClick={() => setValueSortEnabled((prev) => !prev)}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(valueSortEnabled)}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wartość</p>
+                  <h3 className="text-2xl font-bold text-slate-900">{stats.value.toLocaleString()} PLN</h3>
+                  <p className="mt-1 text-[11px] font-semibold text-slate-500">{valueSortEnabled ? 'Sortowanie aktywne' : 'Kliknij, aby sortować'}</p>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-2xl">
+                  <TrendingUp className="w-6 h-6 text-slate-400" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
+
+          <button type="button" className={createSummaryCardClass(quickFilter === 'at-risk')} onClick={() => toggleQuickFilter('at-risk')}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'at-risk')}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zagrożone</p>
+                  <h3 className="text-2xl font-bold text-rose-600">{stats.atRisk}</h3>
+                </div>
+                <div className="bg-rose-50 p-3 rounded-2xl">
+                  <AlertTriangle className="w-6 h-6 text-rose-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
+
+          <button type="button" className={createSummaryCardClass(quickFilter === 'with-case')} onClick={() => toggleQuickFilter('with-case')}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'with-case')}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Ze sprawą</p>
+                  <h3 className="text-2xl font-bold text-emerald-600">{stats.linkedToCase}</h3>
+                </div>
+                <div className="bg-emerald-50 p-3 rounded-2xl">
+                  <Briefcase className="w-6 h-6 text-emerald-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
+
+          <button type="button" className={createSummaryCardClass(quickFilter === 'no-next-step')} onClick={() => toggleQuickFilter('no-next-step')}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'no-next-step')}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Bez kroku</p>
+                  <h3 className="text-2xl font-bold text-amber-600">{stats.noNextStep}</h3>
+                </div>
+                <div className="bg-amber-50 p-3 rounded-2xl">
+                  <CalendarDays className="w-6 h-6 text-amber-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
         </div>
 
         <Card className="border-none shadow-sm">
@@ -522,7 +588,7 @@ export default function Leads() {
                   <SelectItem value="organized">Poukładane</SelectItem>
                 </SelectContent>
               </Select>
-              {(statusFilter !== 'all' || sourceFilter !== 'all' || atRiskFilter !== 'all' || activityFilter !== 'all' || caseFilter !== 'all' || processFilter !== 'all' || searchQuery) && (
+              {(statusFilter !== 'all' || sourceFilter !== 'all' || atRiskFilter !== 'all' || activityFilter !== 'all' || caseFilter !== 'all' || processFilter !== 'all' || searchQuery || quickFilter !== 'all' || valueSortEnabled) && (
                 <Button
                   variant="ghost"
                   onClick={() => {
@@ -532,6 +598,8 @@ export default function Leads() {
                     setActivityFilter('all');
                     setCaseFilter('all');
                     setProcessFilter('all');
+                    setQuickFilter('all');
+                    setValueSortEnabled(false);
                     setSearchQuery('');
                   }}
                   className="h-11 rounded-xl"
