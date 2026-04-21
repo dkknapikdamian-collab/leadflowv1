@@ -43,6 +43,7 @@ import {
   Phone,
   Target,
   Calendar,
+  Edit2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -82,6 +83,8 @@ import {
   insertEventToSupabase,
   insertTaskToSupabase,
   isSupabaseConfigured,
+  updateActivityInSupabase,
+  deleteActivityFromSupabase,
   updateCaseInSupabase,
   updateCaseItemInSupabase,
   updateEventInSupabase,
@@ -266,6 +269,11 @@ export default function CaseDetail() {
   const [editCaseEvent, setEditCaseEvent] = useState<any | null>(null);
   const [taskEditSubmitting, setTaskEditSubmitting] = useState(false);
   const [eventEditSubmitting, setEventEditSubmitting] = useState(false);
+  const [caseNote, setCaseNote] = useState('');
+  const [caseNoteSubmitting, setCaseNoteSubmitting] = useState(false);
+  const [editCaseNote, setEditCaseNote] = useState<any | null>(null);
+  const [caseNoteEditSubmitting, setCaseNoteEditSubmitting] = useState(false);
+  const [caseNoteActionId, setCaseNoteActionId] = useState<string | null>(null);
 
   async function refreshSupabaseCase() {
     if (!caseId) return;
@@ -995,6 +1003,85 @@ export default function CaseDetail() {
     }
   };
 
+
+  const handleAddCaseNote = async () => {
+    if (!caseId) return;
+    if (!caseNote.trim()) {
+      toast.error('Wpisz treść notatki');
+      return;
+    }
+
+    try {
+      setCaseNoteSubmitting(true);
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'note_added',
+        payload: {
+          content: caseNote.trim(),
+        },
+      });
+      await refreshSupabaseCase();
+      setCaseNote('');
+      toast.success('Notatka dodana');
+    } catch (error: any) {
+      toast.error(`Błąd notatki: ${error.message}`);
+    } finally {
+      setCaseNoteSubmitting(false);
+    }
+  };
+
+  const openCaseNoteEditor = (activity: any) => {
+    setEditCaseNote({
+      id: String(activity.id || ''),
+      content: String(activity.payload?.content || ''),
+    });
+  };
+
+  const handleSaveCaseNoteEdit = async () => {
+    if (!editCaseNote?.id) return;
+    if (!editCaseNote.content?.trim()) {
+      toast.error('Wpisz treść notatki');
+      return;
+    }
+
+    try {
+      setCaseNoteEditSubmitting(true);
+      await updateActivityInSupabase({
+        id: String(editCaseNote.id),
+        payload: {
+          content: editCaseNote.content.trim(),
+        },
+      });
+      await refreshSupabaseCase();
+      setEditCaseNote(null);
+      toast.success('Notatka zaktualizowana');
+    } catch (error: any) {
+      toast.error(`Błąd edycji notatki: ${error.message}`);
+    } finally {
+      setCaseNoteEditSubmitting(false);
+    }
+  };
+
+  const handleDeleteCaseNote = async (activity: any) => {
+    const activityId = String(activity?.id || '');
+    if (!activityId) return;
+    if (!window.confirm('Usunąć tę notatkę?')) return;
+
+    try {
+      setCaseNoteActionId(activityId);
+      await deleteActivityFromSupabase(activityId);
+      await refreshSupabaseCase();
+      toast.success('Notatka usunięta');
+    } catch (error: any) {
+      toast.error(`Błąd usuwania notatki: ${error.message}`);
+    } finally {
+      setCaseNoteActionId(null);
+    }
+  };
+
   const handleSendCaseReminder = async () => {
     if (!caseId) return;
 
@@ -1648,47 +1735,80 @@ export default function CaseDetail() {
                   Ostatnia aktywność
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-0">
-                <ScrollArea className="h-[400px] px-6 pb-6">
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Notatka operacyjna</Label>
+                  <Textarea
+                    placeholder="Dodaj krótką notatkę do sprawy..."
+                    className="min-h-[96px]"
+                    value={caseNote}
+                    onChange={(e) => setCaseNote(e.target.value)}
+                  />
+                  <Button onClick={() => void handleAddCaseNote()} disabled={caseNoteSubmitting || !caseNote.trim()}>
+                    {caseNoteSubmitting ? 'Zapisywanie...' : 'Dodaj notatkę'}
+                  </Button>
+                </div>
+                <ScrollArea className="h-[360px] pr-2">
                   <div className="space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
                     {activities.length === 0 ? (
                       <p className="text-center text-slate-400 py-8 text-sm">Brak aktywności</p>
                     ) : (
-                      activities.map((activity) => (
-                        <div key={activity.id} className="relative pl-8">
-                          <div className={`absolute left-0 top-1 w-4 h-4 rounded-full border-2 border-white shadow-sm ${
-                            activity.actorType === 'operator' ? 'bg-primary' : 'bg-green-500'
-                          }`} />
-                          <p className="text-sm font-medium text-slate-900">
-                            {activity.actorType === 'operator' ? 'Ty' : 'Klient'}
-                            <span className="font-normal text-slate-500 ml-1">
-                              {activity.eventType === 'item_added' ? `dodał element: ${activity.payload?.title}` :
-                               activity.eventType === 'status_changed' ? `zmienił status ${activity.payload?.title} na ${activity.payload?.status}` :
-                               activity.eventType === 'file_uploaded' ? `wgrał plik do: ${activity.payload?.title}` :
-                               activity.eventType === 'decision_made' ? `podjął decyzję w: ${activity.payload?.title}` :
-                               activity.eventType === 'portal_token_created' ? `wygenerował link portalu` :
-                               activity.eventType === 'lead_linked' ? `podpiął leada: ${activity.payload?.leadName || 'Lead'}` :
-                               activity.eventType === 'lead_unlinked' ? `odpiął leada: ${activity.payload?.leadName || 'Lead'}` :
-                               activity.eventType === 'case_started' ? `uruchomił start realizacji` :
-                               activity.eventType === 'case_task_created' ? `dodał task do sprawy: ${activity.payload?.title || 'Task'}` :
-                               activity.eventType === 'case_task_updated' ? `zaktualizował task sprawy: ${activity.payload?.title || 'Task'}` :
-                               activity.eventType === 'case_task_status_toggled' ? `zmienił status taska: ${activity.payload?.title || 'Task'}` :
-                               activity.eventType === 'case_task_deleted' ? `usunął task sprawy: ${activity.payload?.title || 'Task'}` :
-                               activity.eventType === 'case_event_created' ? `dodał wydarzenie do sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
-                               activity.eventType === 'case_event_updated' ? `zaktualizował wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
-                               activity.eventType === 'case_event_status_toggled' ? `zmienił status wydarzenia: ${activity.payload?.title || 'Wydarzenie'}` :
-                               activity.eventType === 'case_event_deleted' ? `usunął wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
-                               activity.eventType === 'case_completed' ? `oznaczył sprawę jako zakończoną` :
-                               activity.eventType === 'case_reminder_requested' ? `wysłał przypomnienie i utworzył follow-up` :
-                               activity.eventType === 'reminder_scheduled' ? `zaplanował przypomnienie: ${activity.payload?.title || 'pozycja'}` :
-                               'wykonał akcję'}
-                            </span>
-                          </p>
-                          <p className="text-[10px] text-slate-400 mt-0.5">
-                            {formatDateTime(activity.createdAt)}
-                          </p>
-                        </div>
-                      ))
+                      activities.map((activity) => {
+                        const isCaseNote = activity.eventType === 'note_added';
+                        return (
+                          <div key={activity.id} className="relative pl-8">
+                            <div className={`absolute left-0 top-1 w-4 h-4 rounded-full border-2 border-white shadow-sm ${
+                              activity.actorType === 'operator' ? 'bg-primary' : 'bg-green-500'
+                            }`} />
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium text-slate-900">
+                                  {activity.actorType === 'operator' ? 'Ty' : 'Klient'}
+                                  <span className="font-normal text-slate-500 ml-1">
+                                    {activity.eventType === 'item_added' ? `dodał element: ${activity.payload?.title}` :
+                                     activity.eventType === 'status_changed' ? `zmienił status ${activity.payload?.title} na ${activity.payload?.status}` :
+                                     activity.eventType === 'file_uploaded' ? `wgrał plik do: ${activity.payload?.title}` :
+                                     activity.eventType === 'decision_made' ? `podjął decyzję w: ${activity.payload?.title}` :
+                                     activity.eventType === 'portal_token_created' ? `wygenerował link portalu` :
+                                     activity.eventType === 'lead_linked' ? `podpiął leada: ${activity.payload?.leadName || 'Lead'}` :
+                                     activity.eventType === 'lead_unlinked' ? `odpiął leada: ${activity.payload?.leadName || 'Lead'}` :
+                                     activity.eventType === 'case_started' ? `uruchomił start realizacji` :
+                                     activity.eventType === 'case_task_created' ? `dodał task do sprawy: ${activity.payload?.title || 'Task'}` :
+                                     activity.eventType === 'case_task_updated' ? `zaktualizował task sprawy: ${activity.payload?.title || 'Task'}` :
+                                     activity.eventType === 'case_task_status_toggled' ? `zmienił status taska: ${activity.payload?.title || 'Task'}` :
+                                     activity.eventType === 'case_task_deleted' ? `usunął task sprawy: ${activity.payload?.title || 'Task'}` :
+                                     activity.eventType === 'case_event_created' ? `dodał wydarzenie do sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
+                                     activity.eventType === 'case_event_updated' ? `zaktualizował wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
+                                     activity.eventType === 'case_event_status_toggled' ? `zmienił status wydarzenia: ${activity.payload?.title || 'Wydarzenie'}` :
+                                     activity.eventType === 'case_event_deleted' ? `usunął wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
+                                     activity.eventType === 'case_completed' ? `oznaczył sprawę jako zakończoną` :
+                                     activity.eventType === 'case_reminder_requested' ? `wysłał przypomnienie i utworzył follow-up` :
+                                     activity.eventType === 'reminder_scheduled' ? `zaplanował przypomnienie: ${activity.payload?.title || 'pozycja'}` :
+                                     activity.eventType === 'note_added' ? 'dodał notatkę operacyjną' :
+                                     'wykonał akcję'}
+                                  </span>
+                                </p>
+                                <p className="text-[10px] text-slate-400 mt-0.5">
+                                  {formatDateTime(activity.updatedAt || activity.createdAt)}
+                                </p>
+                                {isCaseNote && activity.payload?.content ? (
+                                  <p className="mt-2 text-sm text-slate-700 whitespace-pre-wrap break-words">{String(activity.payload.content)}</p>
+                                ) : null}
+                              </div>
+                              {isCaseNote ? (
+                                <div className="flex items-center gap-1 shrink-0">
+                                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openCaseNoteEditor(activity)}>
+                                    <Edit2 className="w-4 h-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 text-rose-600 hover:text-rose-600" onClick={() => void handleDeleteCaseNote(activity)} disabled={caseNoteActionId === String(activity.id)}>
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              ) : null}
+                            </div>
+                          </div>
+                        )
+                      })
                     )}
                   </div>
                 </ScrollArea>
@@ -1885,6 +2005,28 @@ export default function CaseDetail() {
             <Button variant="outline" onClick={() => setEditCaseEvent(null)}>Anuluj</Button>
             <Button onClick={() => void handleSaveCaseEventEdit()} disabled={eventEditSubmitting}>
               {eventEditSubmitting ? 'Zapisywanie...' : 'Zapisz wydarzenie'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={Boolean(editCaseNote)} onOpenChange={(open) => { if (!open) setEditCaseNote(null); }}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Edytuj notatkę sprawy</DialogTitle>
+          </DialogHeader>
+          {editCaseNote ? (
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label>Treść notatki</Label>
+                <Textarea value={editCaseNote.content} onChange={(e) => setEditCaseNote((prev: any) => ({ ...prev, content: e.target.value }))} className="min-h-[120px]" />
+              </div>
+            </div>
+          ) : null}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditCaseNote(null)}>Anuluj</Button>
+            <Button onClick={() => void handleSaveCaseNoteEdit()} disabled={caseNoteEditSubmitting}>
+              {caseNoteEditSubmitting ? 'Zapisywanie...' : 'Zapisz notatkę'}
             </Button>
           </DialogFooter>
         </DialogContent>
