@@ -70,7 +70,7 @@ import {
 
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
-type TaskScope = 'active' | 'today' | 'overdue' | 'without-lead' | 'done';
+type TaskScope = 'all' | 'active' | 'today' | 'overdue' | 'without-lead' | 'done';
 
 function getTaskStart(task: any) {
   return getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
@@ -113,7 +113,7 @@ export default function Tasks() {
   const [cases, setCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [taskScope, setTaskScope] = useState<TaskScope>('active');
+  const [taskScope, setTaskScope] = useState<TaskScope>('all');
 
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
   const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
@@ -480,6 +480,8 @@ export default function Tasks() {
   const scopedTasks = useMemo(() => {
     return baseFilteredTasks.filter((task) => {
       switch (taskScope) {
+        case 'all':
+          return true;
         case 'today':
           return isTaskForToday(task);
         case 'overdue':
@@ -929,7 +931,7 @@ export default function Tasks() {
                     <Search className="w-8 h-8 text-slate-300" />
                   </div>
                   <h3 className="text-lg font-bold text-slate-900">Brak zadań</h3>
-                  <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo zmień filtry.</p>
+                  <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo wpisz inną frazę.</p>
                 </div>
               ) : sortedCurrentDates.map((dateKey) => {
                 const tasksForDate = groupedCurrentTasks[dateKey].sort((a, b) => parseISO(getTaskStart(a)).getTime() - parseISO(getTaskStart(b)).getTime());
