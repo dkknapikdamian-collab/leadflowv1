@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  LifeBuoy,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -63,6 +64,7 @@ export default function Layout({ children }: LayoutProps) {
     { icon: Briefcase, label: 'Sprawy', path: '/cases' },
     { icon: History, label: 'Aktywność', path: '/activity' },
     { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
+    { icon: LifeBuoy, label: 'Pomoc', path: '/help' },
     { icon: Settings, label: 'Ustawienia', path: '/settings' },
   ];
 

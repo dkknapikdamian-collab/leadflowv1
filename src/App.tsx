@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import Tasks from './pages/Tasks';
 import Calendar from './pages/Calendar';
 import Billing from './pages/Billing';
+import SupportCenter from './pages/SupportCenter';
 import { Toaster } from './components/ui/sonner';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
@@ -69,6 +70,7 @@ export default function App() {
           <Route path="/case/:caseId" element={user ? <CaseDetail /> : <Navigate to="/login" />} />
           <Route path="/activity" element={user ? <Activity /> : <Navigate to="/login" />} />
           <Route path="/billing" element={user ? <Billing /> : <Navigate to="/login" />} />
+          <Route path="/help" element={user ? <SupportCenter /> : <Navigate to="/login" />} />
           <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
 
           <Route path="*" element={<Navigate to="/" />} />
