@@ -27,6 +27,8 @@ import {
   parseISO,
   isToday,
   differenceInCalendarDays,
+  startOfDay,
+  endOfDay,
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
@@ -559,6 +561,8 @@ export default function Today() {
   }
 
   const today = new Date();
+  const todayStart = startOfDay(today);
+  const todayEnd = endOfDay(today);
   const activeLeads = leads.filter((lead) => lead.status !== 'won' && lead.status !== 'lost');
   const activeLeadsValue = activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0);
   const leadsWithAction = activeLeads.filter((lead) => parseMoment(lead.nextActionAt));
@@ -566,8 +570,8 @@ export default function Today() {
     events,
     tasks,
     leads: leadsWithAction,
-    rangeStart: today,
-    rangeEnd: new Date(today.getTime() + 24 * 60 * 60_000 - 1),
+    rangeStart: todayStart,
+    rangeEnd: todayEnd,
   });
   const todayTasks = todayEntries.filter((entry) => entry.kind === 'task');
   const todayEvents = todayEntries.filter((entry) => entry.kind === 'event');
@@ -1271,13 +1275,13 @@ export default function Today() {
               <h2 className="text-lg font-bold text-slate-900">Najbliższe dni</h2>
               <div className="space-y-3">
                 {[1, 2, 3].map((days) => {
-                  const date = addDays(new Date(), days);
+                  const date = startOfDay(addDays(new Date(), days));
                   const dayEntries = combineScheduleEntries({
                     events,
                     tasks,
                     leads: leadsWithAction,
                     rangeStart: date,
-                    rangeEnd: new Date(date.getTime() + 24 * 60 * 60_000 - 1),
+                    rangeEnd: endOfDay(date),
                   });
                   const count = dayEntries.length;
                   if (count === 0) return null;
