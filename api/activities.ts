@@ -1,4 +1,4 @@
-import { findWorkspaceId, insertWithVariants, selectFirstAvailable } from './_supabase.js';
+import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
 function isUuid(value) {
   return typeof value === 'string'
@@ -27,6 +27,7 @@ function normalizeActivity(row) {
     eventType: String(row.event_type || 'activity'),
     payload: typeof row.payload === 'object' && row.payload ? row.payload : {},
     createdAt: row.created_at || null,
+    updatedAt: row.updated_at || row.updatedAt || row.created_at || null,
   };
 }
 
@@ -47,6 +48,43 @@ export default async function handler(req, res) {
       ]);
 
       res.status(200).json((result.data || []).map(normalizeActivity));
+      return;
+    }
+
+    if (req.method === 'PATCH') {
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
+      if (!body.id) {
+        res.status(400).json({ error: 'ACTIVITY_ID_REQUIRED' });
+        return;
+      }
+
+      const payload = {
+        updated_at: new Date().toISOString(),
+      };
+
+      if (body.caseId !== undefined) payload.case_id = asNullableUuid(body.caseId);
+      if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
+      if (body.ownerId !== undefined) payload.owner_id = asNullableUuid(body.ownerId);
+      if (body.actorId !== undefined) payload.actor_id = asNullableUuid(body.actorId);
+      if (body.actorType !== undefined) payload.actor_type = body.actorType || 'operator';
+      if (body.eventType !== undefined) payload.event_type = body.eventType || 'activity';
+      if (body.payload !== undefined) payload.payload = body.payload || {};
+
+      const result = await updateById('activities', String(body.id), payload);
+      const updated = Array.isArray(result) && result[0] ? result[0] : { id: body.id, ...payload };
+      res.status(200).json(normalizeActivity(updated));
+      return;
+    }
+
+    if (req.method === 'DELETE') {
+      const id = String(req.query?.id || '').trim();
+      if (!id) {
+        res.status(400).json({ error: 'ACTIVITY_ID_REQUIRED' });
+        return;
+      }
+
+      await deleteById('activities', id);
+      res.status(200).json({ ok: true, id });
       return;
     }
 

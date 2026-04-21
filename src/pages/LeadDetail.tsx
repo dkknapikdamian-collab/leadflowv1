@@ -180,6 +180,8 @@ export default function LeadDetail() {
   const [linkedTasks, setLinkedTasks] = useState<any[]>([]);
   const [linkedEvents, setLinkedEvents] = useState<any[]>([]);
   const [note, setNote] = useState('');
+  const [editingNote, setEditingNote] = useState<any | null>(null);
+  const [editingNoteContent, setEditingNoteContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
   const [createCasePending, setCreateCasePending] = useState(false);
@@ -392,6 +394,53 @@ export default function LeadDetail() {
     await addActivity('note_added', { content: note.trim() });
     setNote('');
     toast.success('Notatka dodana');
+  };
+
+  const openEditNote = (activity: any) => {
+    setEditingNote(activity);
+    setEditingNoteContent(String(activity?.payload?.content || ''));
+  };
+
+  const handleSaveEditedNote = async () => {
+    if (!leadId || !editingNote?.id) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    const content = editingNoteContent.trim();
+    if (!content) return toast.error('Treść notatki nie może być pusta');
+
+    try {
+      await updateActivityInSupabase({
+        id: String(editingNote.id),
+        leadId,
+        payload: {
+          ...(editingNote.payload || {}),
+          content,
+          editedAt: new Date().toISOString(),
+        },
+      });
+      toast.success('Notatka zaktualizowana');
+      setEditingNote(null);
+      setEditingNoteContent('');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd edycji notatki: ${error?.message || 'REQUEST_FAILED'}`);
+    }
+  };
+
+  const handleDeleteNote = async (activityId: string) => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!window.confirm('Usunąć tę notatkę?')) return;
+
+    try {
+      await deleteActivityFromSupabase(activityId);
+      toast.success('Notatka usunięta');
+      if (editingNote?.id && String(editingNote.id) == activityId) {
+        setEditingNote(null);
+        setEditingNoteContent('');
+      }
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd usuwania notatki: ${error?.message || 'REQUEST_FAILED'}`);
+    }
   };
 
 
@@ -1281,9 +1330,33 @@ export default function LeadDetail() {
                       <div key={activity.id} className="rounded-xl border border-slate-200 p-3">
                         <div className="flex items-start justify-between gap-3">
                           <p className="text-sm font-semibold text-slate-900">{activityTitle(activity)}</p>
-                          <span className="text-[11px] text-slate-400 whitespace-nowrap">
-                            {asDate(activity.createdAt) ? format(asDate(activity.createdAt)!, 'd MMM HH:mm', { locale: pl }) : ''}
-                          </span>
+                          <div className="flex items-center gap-1 shrink-0">
+                            {activity.eventType === 'note_added' ? (
+                              <>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 rounded-lg text-slate-500 hover:text-slate-700"
+                                  onClick={() => openEditNote(activity)}
+                                >
+                                  <Edit2 className="w-3.5 h-3.5" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 rounded-lg text-rose-500 hover:text-rose-700"
+                                  onClick={() => void handleDeleteNote(String(activity.id))}
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </Button>
+                              </>
+                            ) : null}
+                            <span className="text-[11px] text-slate-400 whitespace-nowrap">
+                              {asDate(activity.createdAt) ? format(asDate(activity.createdAt)!, 'd MMM HH:mm', { locale: pl }) : ''}
+                            </span>
+                          </div>
                         </div>
                         {activity.payload?.title ? <p className="text-sm text-slate-600 mt-1 break-words">{String(activity.payload.title)}</p> : null}
                         {activity.payload?.content ? <p className="text-sm text-slate-600 mt-1 whitespace-pre-wrap break-words">{String(activity.payload.content)}</p> : null}
@@ -1406,6 +1479,43 @@ export default function LeadDetail() {
               </Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+
+      <Dialog open={Boolean(editingNote)} onOpenChange={(open) => {
+        if (!open) {
+          setEditingNote(null);
+          setEditingNoteContent('');
+        }
+      }}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Edytuj notatkę</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <Label>Treść notatki</Label>
+            <Textarea
+              value={editingNoteContent}
+              onChange={(e) => setEditingNoteContent(e.target.value)}
+              className="min-h-[140px]"
+              placeholder="Treść notatki"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setEditingNote(null);
+                setEditingNoteContent('');
+              }}
+            >
+              Anuluj
+            </Button>
+            <Button onClick={() => void handleSaveEditedNote()}>
+              Zapisz notatkę
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 

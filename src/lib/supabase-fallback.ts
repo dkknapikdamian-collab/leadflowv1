@@ -259,6 +259,19 @@ export async function insertActivityToSupabase(input: ActivityInput) {
   });
 }
 
+export async function updateActivityInSupabase(input: Record<string, unknown> & { id: string }) {
+  return callApi<SupabaseInsertResult>('/api/activities', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteActivityFromSupabase(id: string) {
+  return callApi<SupabaseInsertResult>(`/api/activities?id=${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+}
+
 export async function fetchClientPortalTokenFromSupabase(caseId: string) {
   return callApi<Record<string, unknown>>(`/api/client-portal-tokens?caseId=${encodeURIComponent(caseId)}`);
 }
