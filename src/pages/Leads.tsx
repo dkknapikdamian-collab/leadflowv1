@@ -70,6 +70,11 @@ type CaseRecord = {
 
 type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'with-case' | 'no-next-step';
 
+function formatLeadSourceLabel(value: unknown) {
+  const normalized = String(value || 'other');
+  return SOURCE_OPTIONS.find((option) => option.value === normalized)?.label || 'Inne';
+}
+
 function nativeSelectClassName() {
   return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 }
@@ -639,18 +644,23 @@ export default function Leads() {
               const nextActionDate = lead.nextActionAt ? parseISO(String(lead.nextActionAt).includes('T') ? String(lead.nextActionAt) : `${String(lead.nextActionAt)}T09:00:00`) : null;
               const isOverdue = nextActionDate ? isPast(nextActionDate) : false;
               const linkedCase = casesByLeadId.get(String(lead.id));
+              const sourceLabel = formatLeadSourceLabel(lead.source);
+              const leadValueLabel = `${(Number(lead.dealValue) || 0).toLocaleString()} PLN`;
 
               return (
                 <Link key={lead.id} to={`/leads/${lead.id}`}>
-                  <Card className="border-none shadow-sm hover:shadow-md transition-all group overflow-hidden">
+                  <Card className="overflow-hidden border-none shadow-sm transition-all group hover:-translate-y-0.5 hover:shadow-md">
                     <CardContent className="p-0">
-                      <div className="flex flex-col md:flex-row md:items-center p-5 gap-4">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-1 flex-wrap">
-                            <h4 className="text-lg font-bold text-slate-900 truncate group-hover:text-primary transition-colors">{lead.name}</h4>
+                      <div className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:gap-4 md:p-4 lg:p-5">
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-2 flex flex-wrap items-center gap-2">
+                            <h4 className="min-w-0 truncate text-base font-bold text-slate-900 transition-colors group-hover:text-primary md:text-lg">{lead.name}</h4>
                             <Badge className={`${status.color} border-none font-medium text-[10px] uppercase`}>{status.label}</Badge>
+                            <Badge variant="outline" className="text-[10px] uppercase border-slate-200 text-slate-600">
+                              <Target className="mr-1 h-3 w-3" /> {sourceLabel}
+                            </Badge>
                             {lead.isAtRisk && (
-                              <Badge variant="destructive" className="animate-pulse text-[10px] uppercase">
+                              <Badge variant="destructive" className="text-[10px] uppercase">
                                 Zagrożony
                               </Badge>
                             )}
@@ -665,50 +675,50 @@ export default function Leads() {
                               </Badge>
                             ) : null}
                           </div>
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
-                            {lead.company && (
+
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-slate-500 md:text-sm">
+                            {lead.company ? (
                               <span className="flex items-center gap-1">
-                                <FileText className="w-3.5 h-3.5" /> {lead.company}
+                                <FileText className="h-3.5 w-3.5" /> {lead.company}
                               </span>
-                            )}
-                            <span className="flex items-center gap-1 capitalize">
-                              <Target className="w-3.5 h-3.5" /> {lead.source}
-                            </span>
-                            {lead.email && (
-                              <span className="flex items-center gap-1">
-                                <Mail className="w-3.5 h-3.5" /> {lead.email}
+                            ) : null}
+                            {lead.email ? (
+                              <span className="flex items-center gap-1 break-all">
+                                <Mail className="h-3.5 w-3.5" /> {lead.email}
                               </span>
-                            )}
+                            ) : null}
                             {linkedCase?.title ? (
-                              <span className="flex items-center gap-1 text-emerald-700 font-medium">
-                                <Briefcase className="w-3.5 h-3.5" /> {linkedCase.title}
+                              <span className="flex items-center gap-1 font-medium text-emerald-700">
+                                <Briefcase className="h-3.5 w-3.5" /> {linkedCase.title}
                               </span>
                             ) : null}
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-8">
-                          <div className="text-right hidden lg:block w-32">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Wartość</p>
-                            <p className="text-base font-bold text-slate-900">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
+                        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 md:flex md:items-center md:gap-4 lg:gap-5">
+                          <div className="grid min-w-0 grid-cols-2 gap-2 sm:w-auto sm:grid-cols-2">
+                            <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[118px] sm:text-right">
+                              <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Wartość</p>
+                              <p className="truncate text-sm font-bold text-slate-900 md:text-base">{leadValueLabel}</p>
+                            </div>
+
+                            <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[118px] sm:text-right">
+                              <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Następny krok</p>
+                              {nextActionDate ? (
+                                <p className={`flex items-center gap-1 text-sm font-bold sm:justify-end ${isOverdue ? 'text-rose-600' : 'text-slate-700'}`}>
+                                  {isOverdue && <AlertTriangle className="h-3 w-3" />}
+                                  {format(nextActionDate, 'd MMM', { locale: pl })}
+                                </p>
+                              ) : (
+                                <p className="flex items-center gap-1 text-sm font-bold text-amber-600 sm:justify-end">
+                                  <Clock className="h-3 w-3" /> Brak
+                                </p>
+                              )}
+                            </div>
                           </div>
 
-                          <div className="text-right w-32">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Następny krok</p>
-                            {nextActionDate ? (
-                              <p className={`text-sm font-bold flex items-center justify-end gap-1 ${isOverdue ? 'text-rose-600' : 'text-slate-700'}`}>
-                                {isOverdue && <AlertTriangle className="w-3 h-3" />}
-                                {format(nextActionDate, 'd MMM', { locale: pl })}
-                              </p>
-                            ) : (
-                              <p className="text-sm font-bold text-amber-600 flex items-center justify-end gap-1">
-                                <Clock className="w-3 h-3" /> Brak
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="bg-slate-50 p-2 rounded-xl group-hover:bg-primary group-hover:text-white transition-colors">
-                            <ChevronRight className="w-5 h-5" />
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-500 transition-colors group-hover:bg-primary group-hover:text-white">
+                            <ChevronRight className="h-4 w-4" />
                           </div>
                         </div>
                       </div>
