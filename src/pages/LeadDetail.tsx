@@ -20,7 +20,7 @@ import {
   Link2,
   Unlink,
 } from 'lucide-react';
-import { format, isPast, parseISO } from 'date-fns';
+import { differenceInCalendarDays, format, isPast, isToday, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
@@ -35,7 +35,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Textarea } from '../components/ui/textarea';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadFinance, normalizePartialPayments } from '../lib/lead-finance';
-import { EVENT_TYPES, TASK_TYPES } from '../lib/options';
+import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
+import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
 import {
   createCaseInSupabase,
   deleteLeadFromSupabase,
@@ -45,6 +46,8 @@ import {
   fetchLeadByIdFromSupabase,
   fetchTasksFromSupabase,
   insertActivityToSupabase,
+  insertEventToSupabase,
+  insertTaskToSupabase,
   isSupabaseConfigured,
   updateCaseInSupabase,
   updateLeadInSupabase,
@@ -156,6 +159,27 @@ export default function LeadDetail() {
     clientPhone: '',
     status: 'in_progress',
   });
+
+  const [isQuickTaskOpen, setIsQuickTaskOpen] = useState(false);
+  const [isQuickEventOpen, setIsQuickEventOpen] = useState(false);
+  const [quickTaskSubmitting, setQuickTaskSubmitting] = useState(false);
+  const [quickEventSubmitting, setQuickEventSubmitting] = useState(false);
+  const [quickTask, setQuickTask] = useState(() => ({
+    title: '',
+    type: 'follow_up',
+    dueAt: toDateTimeLocalValue(new Date()),
+    priority: 'medium',
+  }));
+  const [quickEvent, setQuickEvent] = useState(() => {
+    const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
+    return {
+      title: '',
+      type: 'meeting',
+      startAt: pair.startAt,
+      endAt: pair.endAt,
+    };
+  });
+
 
   const loadLead = async () => {
     if (!leadId) return;
@@ -330,6 +354,81 @@ export default function LeadDetail() {
     toast.success('Notatka dodana');
   };
 
+
+  const resetQuickTask = () => {
+    setQuickTask({
+      title: '',
+      type: 'follow_up',
+      dueAt: toDateTimeLocalValue(new Date()),
+      priority: 'medium',
+    });
+  };
+
+  const resetQuickEvent = () => {
+    const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
+    setQuickEvent({
+      title: '',
+      type: 'meeting',
+      startAt: pair.startAt,
+      endAt: pair.endAt,
+    });
+  };
+
+  const handleCreateQuickTask = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!leadId) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!quickTask.title.trim()) return toast.error('Podaj tytuł zadania');
+
+    try {
+      setQuickTaskSubmitting(true);
+      await insertTaskToSupabase({
+        title: quickTask.title.trim(),
+        type: quickTask.type,
+        date: quickTask.dueAt.slice(0, 10),
+        scheduledAt: quickTask.dueAt,
+        priority: quickTask.priority,
+        leadId,
+        workspaceId: workspace?.id,
+      });
+      toast.success('Zadanie dodane');
+      setIsQuickTaskOpen(false);
+      resetQuickTask();
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd dodawania zadania: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setQuickTaskSubmitting(false);
+    }
+  };
+
+  const handleCreateQuickEvent = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!leadId) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!quickEvent.title.trim()) return toast.error('Podaj tytuł wydarzenia');
+
+    try {
+      setQuickEventSubmitting(true);
+      await insertEventToSupabase({
+        title: quickEvent.title.trim(),
+        type: quickEvent.type,
+        startAt: quickEvent.startAt,
+        endAt: quickEvent.endAt,
+        leadId,
+        workspaceId: workspace?.id,
+      });
+      toast.success('Wydarzenie dodane');
+      setIsQuickEventOpen(false);
+      resetQuickEvent();
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd dodawania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setQuickEventSubmitting(false);
+    }
+  };
+
   const handleAddPartialPayment = async (e: FormEvent) => {
     e.preventDefault();
     if (!hasAccess) return toast.error('Trial wygasł.');
@@ -454,6 +553,10 @@ export default function LeadDetail() {
   const currentStatus = STATUS_OPTIONS.find((status) => status.value === lead.status) || STATUS_OPTIONS[0];
   const nextActionDate = asDate(lead.nextActionAt);
   const updatedAt = asDate(lead.updatedAt);
+  const nextActionOverdue = Boolean(nextActionDate && isPast(nextActionDate) && !isToday(nextActionDate));
+  const daysWithoutUpdate = updatedAt ? Math.max(0, differenceInCalendarDays(new Date(), updatedAt)) : null;
+  const missingNextStep = !String(lead.nextStep || '').trim();
+  const missingNextActionAt = !nextActionDate;
 
   return (
     <Layout>
@@ -531,13 +634,64 @@ export default function LeadDetail() {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Następny krok</p>
-                    <p className={`text-lg font-bold ${nextActionDate && isPast(nextActionDate) ? 'text-rose-600' : 'text-slate-900'}`}>
+                    <p className={`text-lg font-bold ${nextActionOverdue ? 'text-rose-600' : 'text-slate-900'}`}>
                       {nextActionDate ? format(nextActionDate, 'd MMM', { locale: pl }) : 'Brak'}
                     </p>
                   </div>
                 </CardContent>
               </Card>
             </div>
+
+            <Card className="border-none shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Co teraz zrobić z tym leadem</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Stan procesu</p>
+                    <div className="flex flex-wrap gap-2">
+                      {missingNextStep ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak opisu kroku</Badge> : <Badge variant="outline">Krok opisany</Badge>}
+                      {missingNextActionAt ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak terminu</Badge> : <Badge variant="outline">Termin ustawiony</Badge>}
+                      {nextActionOverdue ? <Badge variant="destructive">Termin minął</Badge> : null}
+                      {daysWithoutUpdate !== null && daysWithoutUpdate >= 5 ? (
+                        <Badge variant="outline" className="border-purple-200 text-purple-700">Bez ruchu {daysWithoutUpdate} dni</Badge>
+                      ) : null}
+                      {lead.isAtRisk ? <Badge variant="destructive">Oznaczony jako zagrożony</Badge> : null}
+                    </div>
+                    <p className="text-sm text-slate-500">
+                      Ten blok ma prowadzić operatora do kolejnego ruchu bez szukania po innych zakładkach.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Szybkie akcje</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button variant="outline" size="sm" onClick={() => setIsQuickTaskOpen(true)}>
+                        <Plus className="w-4 h-4 mr-2" /> Dodaj zadanie
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => setIsQuickEventOpen(true)}>
+                        <Calendar className="w-4 h-4 mr-2" /> Dodaj wydarzenie
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('contacted')}>
+                        Pierwszy kontakt
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('follow_up')}>
+                        Follow-up
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('negotiation')}>
+                        Negocjacje
+                      </Button>
+                      <Button size="sm" onClick={() => void handleUpdateStatus('won')} disabled={lead.status === 'won'}>
+                        Wygrany
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('lost')} disabled={lead.status === 'lost'}>
+                        Przegrany
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             <Tabs defaultValue="overview" className="w-full">
               <TabsList className="w-full justify-start bg-transparent border-b border-slate-200 rounded-none h-12 p-0 gap-8">
@@ -677,9 +831,14 @@ export default function LeadDetail() {
                             <CheckSquare className="w-4 h-4 text-slate-400" />
                             <h3 className="text-sm font-bold text-slate-900">Zadania leada</h3>
                           </div>
-                          <Button variant="outline" size="sm" asChild>
-                            <Link to="/tasks">Otwórz zadania</Link>
-                          </Button>
+                          <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm" onClick={() => setIsQuickTaskOpen(true)}>
+                              <Plus className="w-4 h-4 mr-2" /> Dodaj
+                            </Button>
+                            <Button variant="outline" size="sm" asChild>
+                              <Link to="/tasks">Otwórz zadania</Link>
+                            </Button>
+                          </div>
                         </div>
                         {sortedLinkedTasks.length === 0 ? (
                           <p className="text-sm text-slate-500">Brak zadań powiązanych z tym leadem.</p>
@@ -706,9 +865,14 @@ export default function LeadDetail() {
                             <Calendar className="w-4 h-4 text-slate-400" />
                             <h3 className="text-sm font-bold text-slate-900">Wydarzenia leada</h3>
                           </div>
-                          <Button variant="outline" size="sm" asChild>
-                            <Link to="/calendar">Otwórz kalendarz</Link>
-                          </Button>
+                          <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm" onClick={() => setIsQuickEventOpen(true)}>
+                              <Plus className="w-4 h-4 mr-2" /> Dodaj
+                            </Button>
+                            <Button variant="outline" size="sm" asChild>
+                              <Link to="/calendar">Otwórz kalendarz</Link>
+                            </Button>
+                          </div>
                         </div>
                         {sortedLinkedEvents.length === 0 ? (
                           <p className="text-sm text-slate-500">Brak wydarzeń powiązanych z tym leadem.</p>
@@ -903,6 +1067,118 @@ export default function LeadDetail() {
           </div>
         </div>
       </main>
+
+
+      <Dialog open={isQuickTaskOpen} onOpenChange={setIsQuickTaskOpen}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Dodaj szybkie zadanie dla leada</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCreateQuickTask} className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Tytuł zadania</Label>
+              <Input value={quickTask.title} onChange={(e) => setQuickTask((prev) => ({ ...prev, title: e.target.value }))} required />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Typ</Label>
+                <select
+                  className={modalSelectClass}
+                  value={quickTask.type}
+                  onChange={(e) => setQuickTask((prev) => ({ ...prev, type: e.target.value }))}
+                >
+                  {TASK_TYPES.map((taskType) => (
+                    <option key={taskType.value} value={taskType.value}>
+                      {taskType.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label>Priorytet</Label>
+                <select
+                  className={modalSelectClass}
+                  value={quickTask.priority}
+                  onChange={(e) => setQuickTask((prev) => ({ ...prev, priority: e.target.value }))}
+                >
+                  {PRIORITY_OPTIONS.map((priority) => (
+                    <option key={priority.value} value={priority.value}>
+                      {priority.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Data i godzina</Label>
+              <Input type="datetime-local" value={quickTask.dueAt} onChange={(e) => setQuickTask((prev) => ({ ...prev, dueAt: e.target.value }))} required />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" type="button" onClick={() => setIsQuickTaskOpen(false)}>
+                Anuluj
+              </Button>
+              <Button type="submit" disabled={quickTaskSubmitting}>
+                {quickTaskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isQuickEventOpen} onOpenChange={setIsQuickEventOpen}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Dodaj szybkie wydarzenie dla leada</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCreateQuickEvent} className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Tytuł wydarzenia</Label>
+              <Input value={quickEvent.title} onChange={(e) => setQuickEvent((prev) => ({ ...prev, title: e.target.value }))} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Typ</Label>
+              <select
+                className={modalSelectClass}
+                value={quickEvent.type}
+                onChange={(e) => setQuickEvent((prev) => ({ ...prev, type: e.target.value }))}
+              >
+                {EVENT_TYPES.map((eventType) => (
+                  <option key={eventType.value} value={eventType.value}>
+                    {eventType.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Start</Label>
+                <Input
+                  type="datetime-local"
+                  value={quickEvent.startAt}
+                  onChange={(e) => {
+                    const nextStart = e.target.value;
+                    const pair = buildStartEndPair(nextStart);
+                    setQuickEvent((prev) => ({ ...prev, startAt: nextStart, endAt: pair.endAt }));
+                  }}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Koniec</Label>
+                <Input type="datetime-local" value={quickEvent.endAt} onChange={(e) => setQuickEvent((prev) => ({ ...prev, endAt: e.target.value }))} required />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" type="button" onClick={() => setIsQuickEventOpen(false)}>
+                Anuluj
+              </Button>
+              <Button type="submit" disabled={quickEventSubmitting}>
+                {quickEventSubmitting ? 'Dodawanie...' : 'Dodaj wydarzenie'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
         <DialogContent>
