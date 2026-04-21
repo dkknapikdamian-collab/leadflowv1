@@ -131,6 +131,26 @@ function activityTitle(activity: any) {
   }
 }
 
+function dedupeById<T extends Record<string, unknown>>(items: T[]) {
+  const map = new Map<string, T>();
+  for (const item of items) {
+    const key = String(item.id || '');
+    if (!key) continue;
+    if (!map.has(key)) {
+      map.set(key, item);
+    }
+  }
+  return [...map.values()];
+}
+
+function isLinkedThroughLeadOrCase(item: Record<string, unknown>, leadId: string, caseId?: string | null) {
+  const directLeadId = String(item.leadId || '');
+  const directCaseId = String(item.caseId || '');
+  if (directLeadId === leadId) return true;
+  if (caseId && directCaseId === caseId) return true;
+  return false;
+}
+
 export default function LeadDetail() {
   const { leadId } = useParams();
   const navigate = useNavigate();
@@ -201,13 +221,16 @@ export default function LeadDetail() {
 
       const allCaseRows = caseRows as Record<string, unknown>[];
       const currentCase = allCaseRows.find((item) => String(item.leadId || '') === leadId) || null;
+      const currentCaseId = currentCase?.id ? String(currentCase.id) : null;
+      const linkedTaskRows = dedupeById((taskRows as Record<string, unknown>[]).filter((item) => isLinkedThroughLeadOrCase(item, leadId, currentCaseId)));
+      const linkedEventRows = dedupeById((eventRows as Record<string, unknown>[]).filter((item) => isLinkedThroughLeadOrCase(item, leadId, currentCaseId)));
 
       setLead(normalizedLead);
       setEditLead(normalizedLead);
       setAssociatedCase(currentCase);
       setAllCases(allCaseRows);
-      setLinkedTasks((taskRows as Record<string, unknown>[]).filter((item) => String(item.leadId || '') === leadId));
-      setLinkedEvents((eventRows as Record<string, unknown>[]).filter((item) => String(item.leadId || '') === leadId));
+      setLinkedTasks(linkedTaskRows);
+      setLinkedEvents(linkedEventRows);
       setActivities(activityRows as any[]);
       setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
       setCreateCaseDraft({
@@ -810,12 +833,12 @@ export default function LeadDetail() {
                       <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Zadania</p>
                         <p className="mt-2 text-2xl font-bold text-slate-900">{sortedLinkedTasks.length}</p>
-                        <p className="mt-1 text-sm text-slate-500">Każde zadanie powiązane z leadem widać tutaj i na liście zadań.</p>
+                        <p className="mt-1 text-sm text-slate-500">Widać tu zadania podpięte bezpośrednio do leada oraz zadania przypięte do powiązanej sprawy.</p>
                       </div>
                       <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Wydarzenia</p>
                         <p className="mt-2 text-2xl font-bold text-slate-900">{sortedLinkedEvents.length}</p>
-                        <p className="mt-1 text-sm text-slate-500">Wydarzenia z datą są widoczne także w kalendarzu.</p>
+                        <p className="mt-1 text-sm text-slate-500">Widać tu wydarzenia podpięte bezpośrednio do leada oraz wydarzenia przypięte do powiązanej sprawy.</p>
                       </div>
                       <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Sprawa</p>
@@ -851,7 +874,12 @@ export default function LeadDetail() {
                                     <p className="text-sm font-semibold text-slate-900 break-words">{task.title || 'Zadanie bez tytułu'}</p>
                                     <p className="text-xs text-slate-500 break-words">{taskTypeLabel(task.type)} • {formatScheduleDate(task.date || task.dueAt)}</p>
                                   </div>
-                                  <Badge variant={task.status === 'done' ? 'secondary' : 'outline'}>{task.status === 'done' ? 'Zrobione' : 'Aktywne'}</Badge>
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <Badge variant={task.status === 'done' ? 'secondary' : 'outline'}>{task.status === 'done' ? 'Zrobione' : 'Aktywne'}</Badge>
+                                    {associatedCase?.id && String(task.caseId || '') === String(associatedCase.id) && String(task.leadId || '') !== String(leadId || '') ? (
+                                      <Badge variant="outline">Ze sprawy</Badge>
+                                    ) : null}
+                                  </div>
                                 </div>
                               </div>
                             ))}
@@ -885,7 +913,12 @@ export default function LeadDetail() {
                                     <p className="text-sm font-semibold text-slate-900 break-words">{event.title || 'Wydarzenie bez tytułu'}</p>
                                     <p className="text-xs text-slate-500 break-words">{eventTypeLabel(event.type)} • {formatScheduleDate(event.startAt)}</p>
                                   </div>
-                                  <Badge variant={event.status === 'completed' ? 'secondary' : 'outline'}>{event.status === 'completed' ? 'Zrobione' : 'Zaplanowane'}</Badge>
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <Badge variant={event.status === 'completed' ? 'secondary' : 'outline'}>{event.status === 'completed' ? 'Zrobione' : 'Zaplanowane'}</Badge>
+                                    {associatedCase?.id && String(event.caseId || '') === String(associatedCase.id) && String(event.leadId || '') !== String(leadId || '') ? (
+                                      <Badge variant="outline">Ze sprawy</Badge>
+                                    ) : null}
+                                  </div>
                                 </div>
                               </div>
                             ))}

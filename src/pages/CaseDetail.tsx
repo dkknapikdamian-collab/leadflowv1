@@ -94,11 +94,11 @@ function formatDateTime(value: any) {
   return 'Brak';
 }
 
-function computeCaseState(items: any[]) {
+function computeCaseState(items: any[], currentStatus?: string) {
   if (!items.length) {
     return {
       completenessPercent: 0,
-      status: 'in_progress',
+      status: currentStatus === 'completed' ? 'completed' : currentStatus === 'in_progress' ? 'in_progress' : 'in_progress',
     };
   }
 
@@ -106,12 +106,25 @@ function computeCaseState(items: any[]) {
   const completenessPercent = (completed / items.length) * 100;
   const hasBlocked = items.some((entry) => entry.isRequired && (entry.status === 'missing' || entry.status === 'rejected'));
   const hasToApprove = items.some((entry) => entry.status === 'uploaded');
-  const allAccepted = items.every((entry) => entry.status === 'accepted');
+  const requiredItems = items.filter((entry) => entry.isRequired);
+  const acceptedRequired = requiredItems.filter((entry) => entry.status === 'accepted').length;
+  const allRequiredAccepted = requiredItems.length > 0
+    ? acceptedRequired === requiredItems.length
+    : items.every((entry) => entry.status === 'accepted');
 
   let status = 'waiting_on_client';
-  if (allAccepted) status = 'completed';
-  else if (hasBlocked) status = 'blocked';
-  else if (hasToApprove) status = 'to_approve';
+
+  if (currentStatus === 'completed') {
+    status = 'completed';
+  } else if (hasBlocked) {
+    status = 'blocked';
+  } else if (hasToApprove) {
+    status = 'to_approve';
+  } else if (allRequiredAccepted) {
+    status = currentStatus === 'in_progress' ? 'in_progress' : 'ready_to_start';
+  } else if (currentStatus === 'in_progress') {
+    status = 'in_progress';
+  }
 
   return {
     completenessPercent,
@@ -167,6 +180,32 @@ function leadSourceLabel(source?: string) {
   }
 }
 
+function caseStatusLabel(status?: string) {
+  switch (status) {
+    case 'new':
+      return 'Nowa';
+    case 'waiting_on_client':
+      return 'Czeka na klienta';
+    case 'to_approve':
+      return 'Do akceptacji';
+    case 'ready_to_start':
+      return 'Gotowa do startu';
+    case 'in_progress':
+      return 'W realizacji';
+    case 'blocked':
+      return 'Zablokowana';
+    case 'completed':
+      return 'Zakończona';
+    default:
+      return 'W realizacji';
+  }
+}
+
+function toDateTimeLocalValue(date: Date) {
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
@@ -207,7 +246,7 @@ export default function CaseDetail() {
     setAvailableLeads(openLeads);
     setSelectedLeadId(linkedLeadId);
 
-    const next = computeCaseState(itemRows);
+    const next = computeCaseState(itemRows, String(caseRow?.status || ''));
     const currentPercent = Math.round(Number(caseRow?.completenessPercent || 0));
     const nextPercent = Math.round(Number(next.completenessPercent || 0));
 
@@ -269,7 +308,7 @@ export default function CaseDetail() {
       setLoading(false);
 
       if (itemsData.length > 0) {
-        const next = computeCaseState(itemsData);
+        const next = computeCaseState(itemsData, String((caseData as any)?.status || ''));
         updateDoc(caseRef, {
           completenessPercent: next.completenessPercent,
           status: next.status,
@@ -658,6 +697,79 @@ export default function CaseDetail() {
     }
   };
 
+  const handleStartCaseExecution = async () => {
+    if (!caseId) return;
+
+    const now = new Date();
+    const scheduledAt = toDateTimeLocalValue(now);
+    const startTaskTitle = `Start realizacji: ${caseData?.title || 'Sprawa'}`;
+
+    try {
+      await updateCaseInSupabase({
+        id: caseId,
+        status: 'in_progress',
+      });
+
+      await insertTaskToSupabase({
+        title: startTaskTitle,
+        type: 'follow_up',
+        date: scheduledAt.slice(0, 10),
+        scheduledAt,
+        priority: 'high',
+        status: 'todo',
+        caseId,
+        ownerId: auth.currentUser?.uid ?? undefined,
+      });
+
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_started',
+        payload: {
+          title: caseData?.title || 'Sprawa',
+          taskTitle: startTaskTitle,
+          scheduledAt,
+        },
+      });
+
+      await refreshSupabaseCase();
+      toast.success('Sprawa weszła do realizacji i utworzono task startowy');
+    } catch (error: any) {
+      toast.error(`Błąd startu realizacji: ${error.message}`);
+    }
+  };
+
+  const handleMarkCaseCompleted = async () => {
+    if (!caseId) return;
+    if (!window.confirm('Oznaczyć tę sprawę jako zakończoną?')) return;
+
+    try {
+      await updateCaseInSupabase({
+        id: caseId,
+        status: 'completed',
+        completenessPercent: 100,
+      });
+
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_completed',
+        payload: {
+          title: caseData?.title || 'Sprawa',
+        },
+      });
+
+      await refreshSupabaseCase();
+      toast.success('Sprawa oznaczona jako zakończona');
+    } catch (error: any) {
+      toast.error(`Błąd zamknięcia sprawy: ${error.message}`);
+    }
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -703,15 +815,62 @@ export default function CaseDetail() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
+            <Card className="border-none shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-lg">Start realizacji</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Stan operacyjny</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant={caseData.status === 'blocked' ? 'destructive' : caseData.status === 'ready_to_start' ? 'secondary' : 'outline'}>
+                        {caseStatusLabel(caseData.status)}
+                      </Badge>
+                      {(Number(caseData.completenessPercent) || 0) >= 100 ? <Badge variant="secondary">Komplet 100%</Badge> : null}
+                      {items.some((entry) => entry.status === 'uploaded') ? <Badge variant="outline">Czeka na akceptację</Badge> : null}
+                    </div>
+                    <p className="text-sm text-slate-500">
+                      {caseData.status === 'ready_to_start'
+                        ? 'Sprawa jest gotowa do wejścia w realizację. Teraz operator powinien uruchomić start i przejąć prowadzenie.'
+                        : caseData.status === 'in_progress'
+                          ? 'Sprawa jest już w aktywnej realizacji. Kolejny ruch to pilnowanie tasków, klienta i historii zmian.'
+                          : caseData.status === 'completed'
+                            ? 'Sprawa jest domknięta. Możesz wrócić do środka tylko po historię lub kontrolę końcową.'
+                            : caseData.status === 'blocked'
+                              ? 'Sprawa ma realny blok i najpierw trzeba go odblokować.'
+                              : 'Sprawa nie jest jeszcze gotowa do startu. Najpierw domknij brakujące lub oczekujące elementy.'}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Szybkie akcje</p>
+                    <div className="flex flex-wrap gap-2">
+                      {caseData.status === 'ready_to_start' ? (
+                        <Button onClick={() => void handleStartCaseExecution()}>
+                          <Send className="w-4 h-4 mr-2" /> Start realizacji
+                        </Button>
+                      ) : null}
+                      {caseData.status !== 'completed' ? (
+                        <Button variant="outline" onClick={() => void handleSendCaseReminder()}>
+                          <Clock className="w-4 h-4 mr-2" /> Follow-up do sprawy
+                        </Button>
+                      ) : null}
+                      {caseData.status === 'in_progress' ? (
+                        <Button variant="outline" onClick={() => void handleMarkCaseCompleted()}>
+                          <CheckCircle2 className="w-4 h-4 mr-2" /> Oznacz jako zakończoną
+                        </Button>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="border-none shadow-sm overflow-hidden">
               <CardHeader className="bg-white border-b border-slate-100 pb-6">
                 <div className="flex items-center justify-between mb-4 gap-3">
-                  <Badge variant={caseData.status === 'blocked' ? 'destructive' : 'default'} className="px-3 py-1">
-                    {caseData.status === 'new' ? 'Nowa' :
-                     caseData.status === 'waiting_on_client' ? 'Czeka na klienta' :
-                     caseData.status === 'in_progress' ? 'W realizacji' :
-                     caseData.status === 'to_approve' ? 'Do akceptacji' :
-                     caseData.status === 'blocked' ? 'Zablokowana' : 'Zakończona'}
+                  <Badge variant={caseData.status === 'blocked' ? 'destructive' : caseData.status === 'ready_to_start' ? 'secondary' : 'default'} className="px-3 py-1">
+                    {caseStatusLabel(caseData.status)}
                   </Badge>
                   <span className="text-sm text-slate-500 font-medium text-right">
                     Ostatnia zmiana: {formatDateTime(caseData.updatedAt)}
@@ -1013,6 +1172,8 @@ export default function CaseDetail() {
                                activity.eventType === 'portal_token_created' ? `wygenerował link portalu` :
                                activity.eventType === 'lead_linked' ? `podpiął leada: ${activity.payload?.leadName || 'Lead'}` :
                                activity.eventType === 'lead_unlinked' ? `odpiął leada: ${activity.payload?.leadName || 'Lead'}` :
+                               activity.eventType === 'case_started' ? `uruchomił start realizacji` :
+                               activity.eventType === 'case_completed' ? `oznaczył sprawę jako zakończoną` :
                                activity.eventType === 'case_reminder_requested' ? `wysłał przypomnienie i utworzył follow-up` :
                                activity.eventType === 'reminder_scheduled' ? `zaplanował przypomnienie: ${activity.payload?.title || 'pozycja'}` :
                                'wykonał akcję'}

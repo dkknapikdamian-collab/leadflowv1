@@ -402,9 +402,13 @@ export default function Cases() {
                             ? 'Sprawa ma realny blok na starcie i wymaga odblokowania.'
                             : record.status === 'waiting_on_client'
                               ? 'Czekasz na materiał, decyzję albo odpowiedź klienta.'
-                              : record.status === 'ready_to_start'
-                                ? 'Sprawa jest gotowa do wejścia w realizację.'
-                                : 'Realizacja jest w ruchu i wymaga regularnej kontroli.'}
+                              : record.status === 'to_approve'
+                                ? 'Klient już coś dosłał, ale operator musi to zatwierdzić.'
+                                : record.status === 'ready_to_start'
+                                  ? 'Sprawa jest gotowa do wejścia w realizację i czeka na operacyjny start.'
+                                  : record.status === 'completed'
+                                    ? 'Sprawa jest domknięta. Możesz wejść do środka, żeby sprawdzić historię i komplet.'
+                                    : 'Realizacja jest w ruchu i wymaga regularnej kontroli.'}
                         </p>
                       </div>
                     </div>
