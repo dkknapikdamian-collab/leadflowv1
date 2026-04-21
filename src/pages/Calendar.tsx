@@ -7,7 +7,6 @@ import { Badge } from '../components/ui/badge';
 import {
   ChevronLeft,
   ChevronRight,
-  ArrowUpRight,
   Plus,
   Loader2,
   Bell,
@@ -174,14 +173,12 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
         <div className="flex min-w-0 items-center gap-1.5">
           <Badge className={`${getEntryTone(entry)} border`}>{entry.badgeLabel || entry.kind}</Badge>
           {entry.leadName ? (
-            <span className="inline-flex h-5 items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-1.5 text-[9px] font-semibold text-emerald-700">
-              <ArrowUpRight className="h-2.5 w-2.5" />
+            <span className="inline-flex h-5 items-center rounded-full border border-emerald-200 bg-emerald-50 px-1.5 text-[9px] font-semibold text-emerald-700">
               Lead
             </span>
           ) : null}
           {entry.raw?.caseId ? (
-            <span className="inline-flex h-5 items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-1.5 text-[9px] font-semibold text-sky-700">
-              <ArrowUpRight className="h-2.5 w-2.5" />
+            <span className="inline-flex h-5 items-center rounded-full border border-sky-200 bg-sky-50 px-1.5 text-[9px] font-semibold text-sky-700">
               Sprawa
             </span>
           ) : null}
@@ -1109,7 +1106,6 @@ export default function Calendar() {
               <h2 className="text-lg font-bold text-slate-900">
                 {format(selectedWeekStart, 'd MMM', { locale: pl })} - {format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}
               </h2>
-              <p className="text-sm text-slate-500">Zadania, leady i wydarzenia mają ten sam zestaw akcji: Edytuj, +1D, +1W, Zrobione, Usuń.</p>
             </div>
             <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
               Wybrany dzień: {format(selectedDate, 'EEEE, d MMMM', { locale: pl })}
@@ -1202,7 +1198,6 @@ export default function Calendar() {
             <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
               <div>
                 <h3 className="text-lg font-bold text-slate-900">Widok tygodniowy</h3>
-                <p className="text-sm text-slate-500">Każdy wpis ma ten sam zestaw akcji, niezależnie od tego, czy to zadanie, lead czy wydarzenie.</p>
               </div>
               <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisów</Badge>
             </div>
