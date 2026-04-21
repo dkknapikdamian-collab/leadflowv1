@@ -203,6 +203,10 @@ export default function LeadDetail() {
   const [quickTaskSubmitting, setQuickTaskSubmitting] = useState(false);
   const [quickEventSubmitting, setQuickEventSubmitting] = useState(false);
   const [linkedEntryActionId, setLinkedEntryActionId] = useState<string | null>(null);
+  const [editLinkedTask, setEditLinkedTask] = useState<any | null>(null);
+  const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
+  const [editLinkedTaskSubmitting, setEditLinkedTaskSubmitting] = useState(false);
+  const [editLinkedEventSubmitting, setEditLinkedEventSubmitting] = useState(false);
   const [quickTask, setQuickTask] = useState(() => ({
     title: '',
     type: 'follow_up',
@@ -519,42 +523,24 @@ export default function LeadDetail() {
   };
 
 
-  const handleEditLinkedTask = async (task: any) => {
-    const title = window.prompt('Tytuł zadania', String(task.title || ''));
-    if (!title?.trim()) return;
+  const openLinkedTaskEditor = (task: any) => {
+    const scheduledSource =
+      task.scheduledAt
+      || task.dueAt
+      || (task.date ? `${task.date}T09:00` : '')
+      || task.updatedAt
+      || toDateTimeLocalValue(new Date());
 
-    const scheduledDate = asDate(task.date || task.dueAt || task.updatedAt) || new Date();
-    const scheduledDefault = toDateTimeLocalValue(scheduledDate);
-    const scheduledAt = window.prompt('Termin w formacie RRRR-MM-DDTHH:mm', scheduledDefault);
-    if (!scheduledAt?.trim()) return;
-
-    const nextType = window.prompt('Typ zadania', String(task.type || 'follow_up'));
-    if (!nextType?.trim()) return;
-
-    const nextPriority = window.prompt('Priorytet: low / medium / high', String(task.priority || 'medium'));
-    if (!nextPriority?.trim()) return;
-
-    try {
-      setLinkedEntryActionId(`task:${task.id}:edit`);
-      await updateTaskInSupabase({
-        id: String(task.id),
-        title: title.trim(),
-        type: nextType.trim(),
-        date: scheduledAt.slice(0, 10),
-        scheduledAt,
-        priority: nextPriority.trim(),
-        status: String(task.status || 'todo'),
-        leadId: task.leadId ? String(task.leadId) : null,
-        caseId: task.caseId ? String(task.caseId) : null,
-      });
-      await addActivity('task_updated', { title: title.trim(), taskId: task.id });
-      toast.success('Zadanie zaktualizowane');
-      await loadLead();
-    } catch (error: any) {
-      toast.error(`Błąd aktualizacji zadania: ${error?.message || 'REQUEST_FAILED'}`);
-    } finally {
-      setLinkedEntryActionId(null);
-    }
+    setEditLinkedTask({
+      id: String(task.id || ''),
+      title: String(task.title || ''),
+      type: String(task.type || 'follow_up'),
+      dueAt: toDateTimeLocalValue(asDate(scheduledSource) || new Date()),
+      priority: String(task.priority || 'medium'),
+      status: String(task.status || 'todo'),
+      leadId: task.leadId ? String(task.leadId) : 'none',
+      caseId: task.caseId ? String(task.caseId) : '',
+    });
   };
 
   const handleToggleLinkedTask = async (task: any) => {
@@ -600,40 +586,20 @@ export default function LeadDetail() {
     }
   };
 
-  const handleEditLinkedEvent = async (event: any) => {
-    const title = window.prompt('Tytuł wydarzenia', String(event.title || ''));
-    if (!title?.trim()) return;
+  const openLinkedEventEditor = (event: any) => {
+    const startSource = event.startAt || event.updatedAt || toDateTimeLocalValue(new Date());
+    const endSource = event.endAt || event.startAt || event.updatedAt || toDateTimeLocalValue(new Date());
 
-    const startDefault = toDateTimeLocalValue(asDate(event.startAt || event.updatedAt) || new Date());
-    const endDefault = toDateTimeLocalValue(asDate(event.endAt || event.startAt || event.updatedAt) || new Date());
-    const startAt = window.prompt('Start w formacie RRRR-MM-DDTHH:mm', startDefault);
-    if (!startAt?.trim()) return;
-    const endAt = window.prompt('Koniec w formacie RRRR-MM-DDTHH:mm', endDefault);
-    if (!endAt?.trim()) return;
-
-    const nextType = window.prompt('Typ wydarzenia', String(event.type || 'meeting'));
-    if (!nextType?.trim()) return;
-
-    try {
-      setLinkedEntryActionId(`event:${event.id}:edit`);
-      await updateEventInSupabase({
-        id: String(event.id),
-        title: title.trim(),
-        type: nextType.trim(),
-        startAt,
-        endAt,
-        status: String(event.status || 'scheduled'),
-        leadId: event.leadId ? String(event.leadId) : null,
-        caseId: event.caseId ? String(event.caseId) : null,
-      });
-      await addActivity('event_updated', { title: title.trim(), eventId: event.id });
-      toast.success('Wydarzenie zaktualizowane');
-      await loadLead();
-    } catch (error: any) {
-      toast.error(`Błąd aktualizacji wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
-    } finally {
-      setLinkedEntryActionId(null);
-    }
+    setEditLinkedEvent({
+      id: String(event.id || ''),
+      title: String(event.title || ''),
+      type: String(event.type || 'meeting'),
+      startAt: toDateTimeLocalValue(asDate(startSource) || new Date()),
+      endAt: toDateTimeLocalValue(asDate(endSource) || (asDate(startSource) || new Date())),
+      status: String(event.status || 'scheduled'),
+      leadId: event.leadId ? String(event.leadId) : 'none',
+      caseId: event.caseId ? String(event.caseId) : '',
+    });
   };
 
   const handleToggleLinkedEvent = async (event: any) => {
@@ -678,6 +644,77 @@ export default function LeadDetail() {
     }
   };
 
+
+  const handleSaveLinkedTaskEdit = async () => {
+    if (!leadId || !editLinkedTask?.id) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!editLinkedTask.title?.trim()) return toast.error('Podaj tytuł zadania');
+
+    const selectedLead = leads.find((entry: any) => String(entry.id || '') === String(editLinkedTask.leadId || ''));
+    const normalizedLeadId = editLinkedTask.leadId && editLinkedTask.leadId !== 'none' ? String(editLinkedTask.leadId) : null;
+
+    try {
+      setEditLinkedTaskSubmitting(true);
+      await updateTaskInSupabase({
+        id: String(editLinkedTask.id),
+        title: String(editLinkedTask.title).trim(),
+        type: String(editLinkedTask.type || 'follow_up'),
+        date: String(editLinkedTask.dueAt).slice(0, 10),
+        scheduledAt: String(editLinkedTask.dueAt),
+        priority: String(editLinkedTask.priority || 'medium'),
+        status: String(editLinkedTask.status || 'todo'),
+        leadId: normalizedLeadId,
+        caseId: editLinkedTask.caseId ? String(editLinkedTask.caseId) : null,
+      });
+      await addActivity('task_updated', {
+        title: String(editLinkedTask.title).trim(),
+        taskId: editLinkedTask.id,
+        leadName: selectedLead?.name || '',
+      });
+      setEditLinkedTask(null);
+      toast.success('Zadanie zaktualizowane');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd aktualizacji zadania: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setEditLinkedTaskSubmitting(false);
+    }
+  };
+
+  const handleSaveLinkedEventEdit = async () => {
+    if (!leadId || !editLinkedEvent?.id) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!editLinkedEvent.title?.trim()) return toast.error('Podaj tytuł wydarzenia');
+
+    const selectedLead = leads.find((entry: any) => String(entry.id || '') === String(editLinkedEvent.leadId || ''));
+    const normalizedLeadId = editLinkedEvent.leadId && editLinkedEvent.leadId !== 'none' ? String(editLinkedEvent.leadId) : null;
+
+    try {
+      setEditLinkedEventSubmitting(true);
+      await updateEventInSupabase({
+        id: String(editLinkedEvent.id),
+        title: String(editLinkedEvent.title).trim(),
+        type: String(editLinkedEvent.type || 'meeting'),
+        startAt: String(editLinkedEvent.startAt),
+        endAt: String(editLinkedEvent.endAt),
+        status: String(editLinkedEvent.status || 'scheduled'),
+        leadId: normalizedLeadId,
+        caseId: editLinkedEvent.caseId ? String(editLinkedEvent.caseId) : null,
+      });
+      await addActivity('event_updated', {
+        title: String(editLinkedEvent.title).trim(),
+        eventId: editLinkedEvent.id,
+        leadName: selectedLead?.name || '',
+      });
+      setEditLinkedEvent(null);
+      toast.success('Wydarzenie zaktualizowane');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd aktualizacji wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setEditLinkedEventSubmitting(false);
+    }
+  };
 
   const handleAddPartialPayment = async (e: FormEvent) => {
     e.preventDefault();
@@ -1106,8 +1143,8 @@ export default function LeadDetail() {
                                     {associatedCase?.id && String(task.caseId || '') === String(associatedCase.id) && String(task.leadId || '') !== String(leadId || '') ? (
                                       <Badge variant="outline">Ze sprawy</Badge>
                                     ) : null}
-                                    <Button variant="ghost" size="sm" onClick={() => void handleEditLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:edit`}>
-                                      {linkedEntryActionId === `task:${task.id}:edit` ? '...' : 'Edytuj'}
+                                    <Button variant="ghost" size="sm" onClick={() => openLinkedTaskEditor(task)}>
+                                      Edytuj
                                     </Button>
                                     <Button variant="ghost" size="sm" onClick={() => void handleToggleLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:toggle`}>
                                       {linkedEntryActionId === `task:${task.id}:toggle` ? '...' : task.status === 'done' ? 'Przywróć' : 'Zrób'}
@@ -1154,8 +1191,8 @@ export default function LeadDetail() {
                                     {associatedCase?.id && String(event.caseId || '') === String(associatedCase.id) && String(event.leadId || '') !== String(leadId || '') ? (
                                       <Badge variant="outline">Ze sprawy</Badge>
                                     ) : null}
-                                    <Button variant="ghost" size="sm" onClick={() => void handleEditLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:edit`}>
-                                      {linkedEntryActionId === `event:${event.id}:edit` ? '...' : 'Edytuj'}
+                                    <Button variant="ghost" size="sm" onClick={() => openLinkedEventEditor(event)}>
+                                      Edytuj
                                     </Button>
                                     <Button variant="ghost" size="sm" onClick={() => void handleToggleLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:toggle`}>
                                       {linkedEntryActionId === `event:${event.id}:toggle` ? '...' : event.status === 'completed' ? 'Przywróć' : 'Wykonaj'}
@@ -1482,6 +1519,114 @@ export default function LeadDetail() {
         </DialogContent>
       </Dialog>
 
+
+      <Dialog open={Boolean(editLinkedTask)} onOpenChange={(open) => {
+        if (!open) setEditLinkedTask(null);
+      }}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Edytuj zadanie leada</DialogTitle>
+          </DialogHeader>
+          {editLinkedTask ? (
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label>Tytuł zadania</Label>
+                <Input value={editLinkedTask.title} onChange={(e) => setEditLinkedTask((prev: any) => ({ ...prev, title: e.target.value }))} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Typ</Label>
+                  <select className={modalSelectClass} value={editLinkedTask.type} onChange={(e) => setEditLinkedTask((prev: any) => ({ ...prev, type: e.target.value }))}>
+                    {TASK_TYPES.map((taskType) => (
+                      <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Priorytet</Label>
+                  <select className={modalSelectClass} value={editLinkedTask.priority} onChange={(e) => setEditLinkedTask((prev: any) => ({ ...prev, priority: e.target.value }))}>
+                    {PRIORITY_OPTIONS.map((priority) => (
+                      <option key={priority.value} value={priority.value}>{priority.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Data i godzina</Label>
+                  <Input type="datetime-local" value={editLinkedTask.dueAt} onChange={(e) => setEditLinkedTask((prev: any) => ({ ...prev, dueAt: e.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Lead</Label>
+                  <select className={modalSelectClass} value={editLinkedTask.leadId} onChange={(e) => setEditLinkedTask((prev: any) => ({ ...prev, leadId: e.target.value }))}>
+                    <option value="none">Bez leada</option>
+                    {leads.map((leadEntry: any) => (
+                      <option key={leadEntry.id} value={String(leadEntry.id)}>{leadEntry.name || 'Lead bez nazwy'}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          ) : null}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditLinkedTask(null)}>Anuluj</Button>
+            <Button onClick={() => void handleSaveLinkedTaskEdit()} disabled={editLinkedTaskSubmitting}>
+              {editLinkedTaskSubmitting ? 'Zapisywanie...' : 'Zapisz zadanie'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={Boolean(editLinkedEvent)} onOpenChange={(open) => {
+        if (!open) setEditLinkedEvent(null);
+      }}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Edytuj wydarzenie leada</DialogTitle>
+          </DialogHeader>
+          {editLinkedEvent ? (
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label>Tytuł wydarzenia</Label>
+                <Input value={editLinkedEvent.title} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, title: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Typ</Label>
+                <select className={modalSelectClass} value={editLinkedEvent.type} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, type: e.target.value }))}>
+                  {EVENT_TYPES.map((eventType) => (
+                    <option key={eventType.value} value={eventType.value}>{eventType.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Start</Label>
+                  <Input type="datetime-local" value={editLinkedEvent.startAt} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, startAt: e.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Koniec</Label>
+                  <Input type="datetime-local" value={editLinkedEvent.endAt} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, endAt: e.target.value }))} />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Lead</Label>
+                <select className={modalSelectClass} value={editLinkedEvent.leadId} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, leadId: e.target.value }))}>
+                  <option value="none">Bez leada</option>
+                  {leads.map((leadEntry: any) => (
+                    <option key={leadEntry.id} value={String(leadEntry.id)}>{leadEntry.name || 'Lead bez nazwy'}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          ) : null}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditLinkedEvent(null)}>Anuluj</Button>
+            <Button onClick={() => void handleSaveLinkedEventEdit()} disabled={editLinkedEventSubmitting}>
+              {editLinkedEventSubmitting ? 'Zapisywanie...' : 'Zapisz wydarzenie'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={Boolean(editingNote)} onOpenChange={(open) => {
         if (!open) {
