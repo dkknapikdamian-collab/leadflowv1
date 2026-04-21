@@ -391,9 +391,9 @@ export default function Leads() {
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4">
-          <button type="button" className={createSummaryCardClass(quickFilter === 'all')} onClick={() => setQuickFilter('all')}>
+          <div>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'all')}>
+              <CardContent className={createSummaryCardContentClass(false)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wszystkie</p>
                   <h3 className="text-2xl font-bold text-slate-900">{stats.total}</h3>
@@ -403,11 +403,11 @@ export default function Leads() {
                 </div>
               </CardContent>
             </Card>
-          </button>
+          </div>
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'active')} onClick={() => toggleQuickFilter('active')}>
+          <div>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'active')}>
+              <CardContent className={createSummaryCardContentClass(false)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Aktywne</p>
                   <h3 className="text-2xl font-bold text-blue-600">{stats.active}</h3>
@@ -417,26 +417,26 @@ export default function Leads() {
                 </div>
               </CardContent>
             </Card>
-          </button>
+          </div>
 
-          <button type="button" className={createSummaryCardClass(valueSortEnabled)} onClick={() => setValueSortEnabled((prev) => !prev)}>
+          <div>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(valueSortEnabled)}>
+              <CardContent className={createSummaryCardContentClass(false)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wartość</p>
                   <h3 className="text-2xl font-bold text-slate-900">{stats.value.toLocaleString()} PLN</h3>
-                  <p className="mt-1 text-[11px] font-semibold text-slate-500">{valueSortEnabled ? 'Sortowanie aktywne' : 'Kliknij, aby sortować'}</p>
+                  <p className="mt-1 text-[11px] font-semibold text-slate-500">Podgląd sumy</p>
                 </div>
                 <div className="bg-slate-50 p-3 rounded-2xl">
                   <TrendingUp className="w-6 h-6 text-slate-400" />
                 </div>
               </CardContent>
             </Card>
-          </button>
+          </div>
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'at-risk')} onClick={() => toggleQuickFilter('at-risk')}>
+          <div>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'at-risk')}>
+              <CardContent className={createSummaryCardContentClass(false)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zagrożone</p>
                   <h3 className="text-2xl font-bold text-rose-600">{stats.atRisk}</h3>
@@ -446,11 +446,11 @@ export default function Leads() {
                 </div>
               </CardContent>
             </Card>
-          </button>
+          </div>
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'with-case')} onClick={() => toggleQuickFilter('with-case')}>
+          <div>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'with-case')}>
+              <CardContent className={createSummaryCardContentClass(false)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Ze sprawą</p>
                   <h3 className="text-2xl font-bold text-emerald-600">{stats.linkedToCase}</h3>
@@ -460,11 +460,11 @@ export default function Leads() {
                 </div>
               </CardContent>
             </Card>
-          </button>
+          </div>
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'no-next-step')} onClick={() => toggleQuickFilter('no-next-step')}>
+          <div>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'no-next-step')}>
+              <CardContent className={createSummaryCardContentClass(false)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Bez kroku</p>
                   <h3 className="text-2xl font-bold text-amber-600">{stats.noNextStep}</h3>
@@ -474,7 +474,7 @@ export default function Leads() {
                 </div>
               </CardContent>
             </Card>
-          </button>
+          </div>
         </div>
 
         <Card className="border-none shadow-sm">

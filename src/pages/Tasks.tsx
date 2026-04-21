@@ -888,10 +888,9 @@ export default function Tasks() {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
           {statCards.map((card) => {
             const Icon = card.icon;
-            const active = taskScope === card.id;
             return (
-              <button key={card.id} type="button" onClick={() => activateScope(card.id)} className="text-left">
-                <Card className={`border-none shadow-sm transition-all ${active ? 'ring-2 ring-primary/25 shadow-md' : 'hover:shadow-md'}`}>
+              <div key={card.id}>
+                <Card className="border-none shadow-sm">
                   <CardContent className="p-5 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.title}</p>
@@ -902,7 +901,7 @@ export default function Tasks() {
                     </div>
                   </CardContent>
                 </Card>
-              </button>
+              </div>
             );
           })}
         </div>

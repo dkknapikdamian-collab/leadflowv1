@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Clock,
   ExternalLink,
-  Filter,
   Link2,
   Search,
   ShieldAlert,
@@ -27,7 +26,6 @@ import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Progress } from '../components/ui/progress';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
@@ -48,18 +46,6 @@ type CaseRecord = {
   portalReady?: boolean;
   updatedAt?: { toDate?: () => Date } | string | null;
 };
-
-type CaseView = 'all' | 'active' | 'waiting' | 'blocked' | 'ready' | 'completed' | 'linked';
-
-const CASE_VIEWS: { value: CaseView; label: string }[] = [
-  { value: 'all', label: 'Wszystkie' },
-  { value: 'active', label: 'Aktywne' },
-  { value: 'waiting', label: 'Czekają' },
-  { value: 'blocked', label: 'Zablokowane' },
-  { value: 'ready', label: 'Gotowe' },
-  { value: 'completed', label: 'Domknięte' },
-  { value: 'linked', label: 'Z leada' },
-];
 
 function caseStatusLabel(status?: string) {
   switch (status) {
@@ -102,8 +88,8 @@ function toUpdatedDate(value: CaseRecord['updatedAt']) {
   return null;
 }
 
-function createStatCardClass(active: boolean) {
-  return `border-none app-surface-strong transition-all ${active ? 'ring-2 ring-primary/30 shadow-md' : 'shadow-sm hover:shadow-md'}`;
+function createStatCardClass() {
+  return 'border-none app-surface-strong shadow-sm';
 }
 
 export default function Cases() {
@@ -111,7 +97,6 @@ export default function Cases() {
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<CaseView>('all');
   const [caseToDelete, setCaseToDelete] = useState<CaseRecord | null>(null);
   const [deletePending, setDeletePending] = useState(false);
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
@@ -165,40 +150,32 @@ export default function Cases() {
     return () => unsubscribe();
   }, []);
 
-  const stats = useMemo(() => ({
-    total: cases.length,
-    waiting: cases.filter((record) => record.status === 'waiting_on_client' || record.status === 'to_approve').length,
-    blocked: cases.filter((record) => record.status === 'blocked').length,
-    ready: cases.filter((record) => record.status === 'ready_to_start').length,
-    linked: cases.filter((record) => !!record.leadId).length,
-  }), [cases]);
+  const stats = useMemo(
+    () => ({
+      total: cases.length,
+      waiting: cases.filter((record) => record.status === 'waiting_on_client' || record.status === 'to_approve').length,
+      blocked: cases.filter((record) => record.status === 'blocked').length,
+      ready: cases.filter((record) => record.status === 'ready_to_start').length,
+      linked: cases.filter((record) => !!record.leadId).length,
+    }),
+    [cases]
+  );
 
   const filteredCases = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
 
+    if (!normalizedQuery) {
+      return cases;
+    }
+
     return cases.filter((record) => {
-      const matchesSearch = !normalizedQuery
-        || record.title?.toLowerCase().includes(normalizedQuery)
+      return (
+        record.title?.toLowerCase().includes(normalizedQuery)
         || record.clientName?.toLowerCase().includes(normalizedQuery)
-        || record.status?.toLowerCase().includes(normalizedQuery);
-
-      const matchesView = viewMode === 'all'
-        ? true
-        : viewMode === 'active'
-          ? record.status !== 'completed'
-          : viewMode === 'waiting'
-            ? record.status === 'waiting_on_client' || record.status === 'to_approve'
-            : viewMode === 'blocked'
-              ? record.status === 'blocked'
-              : viewMode === 'ready'
-                ? record.status === 'ready_to_start'
-                : viewMode === 'linked'
-                  ? Boolean(record.leadId)
-                  : record.status === 'completed';
-
-      return matchesSearch && matchesView;
+        || record.status?.toLowerCase().includes(normalizedQuery)
+      );
     });
-  }, [cases, searchQuery, viewMode]);
+  }, [cases, searchQuery]);
 
   async function handleDeleteCase() {
     if (!caseToDelete) return;
@@ -261,10 +238,6 @@ export default function Cases() {
             </div>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="flex items-center gap-2 rounded-2xl border px-3 py-2 app-border app-surface-strong">
-              <Filter className="h-4 w-4 app-muted" />
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] app-muted">Jedna ścieżka: lead → sprawa → portal</p>
-            </div>
             <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
               <DialogTrigger asChild>
                 <Button className="rounded-2xl">
@@ -286,7 +259,11 @@ export default function Cases() {
                   </div>
                   <div className="space-y-2">
                     <Label>Status startowy</Label>
-                    <select className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" value={newCase.status} onChange={(event) => setNewCase((prev) => ({ ...prev, status: event.target.value }))}>
+                    <select
+                      className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                      value={newCase.status}
+                      onChange={(event) => setNewCase((prev) => ({ ...prev, status: event.target.value }))}
+                    >
                       <option value="in_progress">W toku</option>
                       <option value="waiting_on_client">Czeka na klienta</option>
                       <option value="blocked">Zablokowana</option>
@@ -304,59 +281,74 @@ export default function Cases() {
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-          <button type="button" className="text-left" onClick={() => setViewMode('all')}>
-            <Card className={createStatCardClass(viewMode === 'all')}>
+          <div>
+            <Card className={createStatCardClass()}>
               <CardContent className="flex items-center justify-between p-5">
-                <div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Wszystkie</p><p className="mt-2 text-2xl font-bold app-text">{stats.total}</p></div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Wszystkie</p>
+                  <p className="mt-2 text-2xl font-bold app-text">{stats.total}</p>
+                </div>
                 <div className="rounded-2xl p-3 app-primary-chip"><Briefcase className="h-6 w-6" /></div>
               </CardContent>
             </Card>
-          </button>
-          <button type="button" className="text-left" onClick={() => setViewMode((prev) => (prev === 'waiting' ? 'all' : 'waiting'))}>
-            <Card className={createStatCardClass(viewMode === 'waiting')}>
+          </div>
+          <div>
+            <Card className={createStatCardClass()}>
               <CardContent className="flex items-center justify-between p-5">
-                <div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Czekają</p><p className="mt-2 text-2xl font-bold text-amber-500">{stats.waiting}</p></div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Czekają</p>
+                  <p className="mt-2 text-2xl font-bold text-amber-500">{stats.waiting}</p>
+                </div>
                 <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-500"><Clock className="h-6 w-6" /></div>
               </CardContent>
             </Card>
-          </button>
-          <button type="button" className="text-left" onClick={() => setViewMode((prev) => (prev === 'blocked' ? 'all' : 'blocked'))}>
-            <Card className={createStatCardClass(viewMode === 'blocked')}>
+          </div>
+          <div>
+            <Card className={createStatCardClass()}>
               <CardContent className="flex items-center justify-between p-5">
-                <div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Zablokowane</p><p className="mt-2 text-2xl font-bold text-rose-500">{stats.blocked}</p></div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Zablokowane</p>
+                  <p className="mt-2 text-2xl font-bold text-rose-500">{stats.blocked}</p>
+                </div>
                 <div className="rounded-2xl bg-rose-500/12 p-3 text-rose-500"><ShieldAlert className="h-6 w-6" /></div>
               </CardContent>
             </Card>
-          </button>
-          <button type="button" className="text-left" onClick={() => setViewMode((prev) => (prev === 'ready' ? 'all' : 'ready'))}>
-            <Card className={createStatCardClass(viewMode === 'ready')}>
+          </div>
+          <div>
+            <Card className={createStatCardClass()}>
               <CardContent className="flex items-center justify-between p-5">
-                <div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Gotowe</p><p className="mt-2 text-2xl font-bold text-emerald-500">{stats.ready}</p></div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Gotowe</p>
+                  <p className="mt-2 text-2xl font-bold text-emerald-500">{stats.ready}</p>
+                </div>
                 <div className="rounded-2xl bg-emerald-500/12 p-3 text-emerald-500"><CheckCircle2 className="h-6 w-6" /></div>
               </CardContent>
             </Card>
-          </button>
-          <button type="button" className="text-left" onClick={() => setViewMode((prev) => (prev === 'linked' ? 'all' : 'linked'))}>
-            <Card className={createStatCardClass(viewMode === 'linked')}>
+          </div>
+          <div>
+            <Card className={createStatCardClass()}>
               <CardContent className="flex items-center justify-between p-5">
-                <div><p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Z leada</p><p className="mt-2 text-2xl font-bold app-text">{stats.linked}</p></div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Z leada</p>
+                  <p className="mt-2 text-2xl font-bold app-text">{stats.linked}</p>
+                </div>
                 <div className="rounded-2xl bg-sky-500/12 p-3 text-sky-500"><Link2 className="h-6 w-6" /></div>
               </CardContent>
             </Card>
-          </button>
+          </div>
         </section>
 
         <Card className="border-none app-surface-strong">
           <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative flex-1">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
-              <Input placeholder="Szukaj po sprawie, kliencie albo statusie..." value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} className="pl-10" />
+              <Input
+                placeholder="Szukaj po sprawie, kliencie albo statusie..."
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                className="pl-10"
+              />
             </div>
-            <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as CaseView)} className="w-full lg:w-auto">
-              <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
-                {CASE_VIEWS.map((view) => <TabsTrigger key={view.value} value={view.value}>{view.label}</TabsTrigger>)}
-              </TabsList>
-            </Tabs>
           </CardContent>
         </Card>
 
@@ -366,9 +358,22 @@ export default function Cases() {
 
         <section className="space-y-4">
           {loading ? (
-            <Card className="border-none app-surface-strong"><CardContent className="flex flex-col items-center justify-center gap-3 py-16"><div className="h-10 w-10 animate-spin rounded-full border-b-2 border-[color:var(--app-primary)]" /><p className="text-sm font-medium app-muted">Ładowanie spraw...</p></CardContent></Card>
+            <Card className="border-none app-surface-strong">
+              <CardContent className="flex flex-col items-center justify-center gap-3 py-16">
+                <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-[color:var(--app-primary)]" />
+                <p className="text-sm font-medium app-muted">Ładowanie spraw...</p>
+              </CardContent>
+            </Card>
           ) : filteredCases.length === 0 ? (
-            <Card className="border-dashed app-surface-strong"><CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center"><div className="rounded-full p-4 app-primary-chip"><Target className="h-7 w-7" /></div><div><p className="text-lg font-semibold app-text">Brak spraw w tym widoku</p><p className="mt-1 max-w-md text-sm app-muted">Sprawy pojawią się tutaj po wygraniu leada albo po ręcznym uruchomieniu realizacji.</p></div></CardContent></Card>
+            <Card className="border-dashed app-surface-strong">
+              <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+                <div className="rounded-full p-4 app-primary-chip"><Target className="h-7 w-7" /></div>
+                <div>
+                  <p className="text-lg font-semibold app-text">Brak spraw w tym widoku</p>
+                  <p className="mt-1 max-w-md text-sm app-muted">Sprawy pojawią się tutaj po wygraniu leada albo po ręcznym uruchomieniu realizacji.</p>
+                </div>
+              </CardContent>
+            </Card>
           ) : (
             filteredCases.map((record) => {
               const attention = caseNeedsAttention(record);
@@ -432,7 +437,6 @@ export default function Cases() {
             })
           )}
         </section>
-
 
         <ConfirmDialog
           open={Boolean(caseToDelete)}
