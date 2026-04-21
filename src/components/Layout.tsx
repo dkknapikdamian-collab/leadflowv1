@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  Bell,
   LifeBuoy,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -63,6 +64,7 @@ export default function Layout({ children }: LayoutProps) {
     { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
     { icon: Briefcase, label: 'Sprawy', path: '/cases' },
     { icon: History, label: 'Aktywność', path: '/activity' },
+    { icon: Bell, label: 'Powiadomienia', path: '/notifications' },
     { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
     { icon: LifeBuoy, label: 'Pomoc', path: '/help' },
     { icon: Settings, label: 'Ustawienia', path: '/settings' },
