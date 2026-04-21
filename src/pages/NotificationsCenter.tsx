@@ -108,7 +108,6 @@ export default function NotificationsCenter() {
             <Bell className="h-3.5 w-3.5" /> Powiadomienia
           </div>
           <h1 className="text-3xl font-bold text-slate-900">Centrum powiadomień</h1>
-          <p className="text-slate-500">Na tym etapie działa live monitoring w aplikacji i powiadomienia przeglądarki. Zbiorczy email poranny dojdzie w późniejszym etapie.</p>
         </header>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">

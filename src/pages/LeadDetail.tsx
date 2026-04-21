@@ -1340,6 +1340,18 @@ export default function LeadDetail() {
               </TabsContent>
 
               <TabsContent value="realization" className="pt-6 space-y-6">
+                <Card className="border-none shadow-sm bg-slate-50">
+                  <CardContent className="p-5 space-y-2">
+                    <p className="text-sm font-semibold text-slate-900">Jak rozumieć sprawę</p>
+                    <p className="text-sm text-slate-600">
+                      Lead służy do domykania sprzedaży. Sprawa zaczyna się wtedy, gdy klient przechodzi już do realnej obsługi i trzeba prowadzić wykonanie.
+                    </p>
+                    <p className="text-sm text-slate-600">
+                      Najprościej: najpierw prowadzisz leada zadaniami i wydarzeniami, a gdy wchodzisz w realizację, tworzysz z niego sprawę.
+                    </p>
+                  </CardContent>
+                </Card>
+
                 {associatedCase ? (
                   <Card className="border-none shadow-sm border-l-4 border-l-emerald-500">
                     <CardContent className="p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -1364,7 +1376,7 @@ export default function LeadDetail() {
                   <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-200 space-y-4">
                     <h3 className="text-lg font-bold text-slate-900">Brak aktywnej sprawy</h3>
                     <p className="text-slate-500 max-w-xs mx-auto">
-                      Utwórz nową sprawę z poziomu leada albo podepnij istniejącą.
+                      Gdy klient przechodzi z etapu sprzedaży do realizacji, utwórz z leada sprawę albo podepnij istniejącą.
                     </p>
                     <Button className="rounded-xl" onClick={() => setIsCreateCaseOpen(true)}>
                       <Briefcase className="w-4 h-4 mr-2" /> Utwórz sprawę z leada
