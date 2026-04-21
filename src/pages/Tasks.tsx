@@ -67,6 +67,7 @@ import {
 } from '../lib/options';
 import {
   deleteTaskFromSupabase,
+  fetchCasesFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
   insertActivityToSupabase,
@@ -85,6 +86,10 @@ function getTaskStart(task: any) {
 
 function hasLeadLink(task: any) {
   return Boolean(task.leadId || task.leadName);
+}
+
+function hasCaseLink(task: any) {
+  return Boolean(task.caseId);
 }
 
 function isTaskDone(task: any) {
@@ -113,11 +118,13 @@ export default function Tasks() {
   const { workspace, hasAccess } = useWorkspace();
   const [tasks, setTasks] = useState<any[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
+  const [cases, setCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [linkFilter, setLinkFilter] = useState('all');
+  const [caseFilter, setCaseFilter] = useState('all');
   const [taskScope, setTaskScope] = useState<TaskScope>('active');
 
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
@@ -170,17 +177,20 @@ export default function Tasks() {
   };
 
   async function refreshSupabaseData() {
-    const [taskRows, leadRows] = await Promise.all([
+    const [taskRows, leadRows, caseRows] = await Promise.all([
       fetchTasksFromSupabase(),
       fetchLeadsFromSupabase(),
+      fetchCasesFromSupabase(),
     ]);
 
     setTasks(taskRows as any[]);
     setLeads(leadRows as any[]);
+    setCases(caseRows as any[]);
 
     return {
       taskRows: taskRows as any[],
       leadRows: leadRows as any[],
+      caseRows: caseRows as any[],
     };
   }
 
@@ -192,14 +202,16 @@ export default function Tasks() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const [taskRows, leadRows] = await Promise.all([
+        const [taskRows, leadRows, caseRows] = await Promise.all([
           fetchTasksFromSupabase(),
           fetchLeadsFromSupabase(),
+          fetchCasesFromSupabase(),
         ]);
 
         if (cancelled) return;
         setTasks(taskRows as any[]);
         setLeads(leadRows as any[]);
+        setCases(caseRows as any[]);
       } catch (error: any) {
         if (!cancelled) {
           toast.error(`Błąd odczytu zadań: ${error.message}`);
@@ -452,6 +464,11 @@ export default function Tasks() {
     }
   };
 
+  const caseTitleById = useMemo(
+    () => new Map(cases.map((caseRecord: any) => [String(caseRecord.id || ''), String(caseRecord.title || caseRecord.clientName || 'Powiązana sprawa')])),
+    [cases],
+  );
+
   const baseFilteredTasks = useMemo(() => {
     return tasks.filter((task) => {
       const taskTitle = String(task.title || '').toLowerCase();
@@ -462,14 +479,19 @@ export default function Tasks() {
           || (statusFilter === 'done' && isTaskDone(task));
       const matchesType = typeFilter === 'all' || task.type === typeFilter;
       const hasLead = hasLeadLink(task);
+      const hasCase = hasCaseLink(task);
       const matchesLink =
         linkFilter === 'all'
         || (linkFilter === 'with-lead' && hasLead)
         || (linkFilter === 'without-lead' && !hasLead);
+      const matchesCase =
+        caseFilter === 'all'
+        || (caseFilter === 'with-case' && hasCase)
+        || (caseFilter === 'without-case' && !hasCase);
 
-      return matchesSearch && matchesStatus && matchesType && matchesLink;
+      return matchesSearch && matchesStatus && matchesType && matchesLink && matchesCase;
     });
-  }, [tasks, searchQuery, statusFilter, typeFilter, linkFilter]);
+  }, [tasks, searchQuery, statusFilter, typeFilter, linkFilter, caseFilter]);
 
   const scopedTasks = useMemo(() => {
     return baseFilteredTasks.filter((task) => {
@@ -593,13 +615,16 @@ export default function Tasks() {
                 {task.priority === 'high' ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge> : null}
                 {overdue ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge> : null}
                 {!task.leadName && !task.leadId ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Bez leada</Badge> : null}
+                {task.caseId ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Sprawa</Badge> : null}
                 {recurrence.mode !== 'none' ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((item) => item.value === recurrence.mode)?.label}</Badge> : null}
                 {reminder.mode !== 'none' ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Bell className="w-3 h-3 mr-1" /> {reminder.mode === 'recurring' ? 'Cykliczne przypomnienie' : 'Przypomnienie'}</Badge> : null}
                 {completedSection ? <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 text-[10px] uppercase font-bold h-5">Archiwum</Badge> : null}
               </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
                 <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {format(parseISO(taskStart), 'HH:mm')}</span>
-                {task.leadName ? <span>Lead: {task.leadName}</span> : <span>Brak powiązanego leada</span>}
+                {task.leadName ? <span>Lead: {task.leadName}</span> : null}
+                {task.caseId ? <span>Sprawa: {caseTitleById.get(String(task.caseId)) || 'Powiązana sprawa'}</span> : null}
+                {!task.leadName && !task.leadId && !task.caseId ? <span>Brak powiązań</span> : null}
               </div>
             </div>
           </div>
@@ -936,8 +961,18 @@ export default function Tasks() {
                   <SelectItem value="without-lead">Tylko bez leada</SelectItem>
                 </SelectContent>
               </Select>
-              {(statusFilter !== 'all' || typeFilter !== 'all' || linkFilter !== 'all' || searchQuery) ? (
-                <Button variant="ghost" onClick={() => { setStatusFilter('all'); setTypeFilter('all'); setLinkFilter('all'); setSearchQuery(''); setTaskScope('active'); }} className="h-11 rounded-xl">
+              <Select value={caseFilter} onValueChange={setCaseFilter}>
+                <SelectTrigger className="w-[170px] rounded-xl h-11 bg-slate-50 border-none">
+                  <SelectValue placeholder="Sprawa" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Wszystkie sprawy</SelectItem>
+                  <SelectItem value="with-case">Tylko ze sprawą</SelectItem>
+                  <SelectItem value="without-case">Tylko bez sprawy</SelectItem>
+                </SelectContent>
+              </Select>
+              {(statusFilter !== 'all' || typeFilter !== 'all' || linkFilter !== 'all' || caseFilter !== 'all' || searchQuery) ? (
+                <Button variant="ghost" onClick={() => { setStatusFilter('all'); setTypeFilter('all'); setLinkFilter('all'); setCaseFilter('all'); setSearchQuery(''); setTaskScope('active'); }} className="h-11 rounded-xl">
                   <X className="w-4 h-4 mr-2" /> Wyczyść
                 </Button>
               ) : null}

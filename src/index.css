@@ -31,13 +31,13 @@
     --app-surface: #111827;
     --app-surface-strong: #1e293b;
     --app-surface-muted: #334155;
-    --app-border: #334155;
+    --app-border: #475569;
     --app-text: #f8fafc;
-    --app-muted: #cbd5e1;
-    --app-muted-soft: #94a3b8;
-    --app-primary-chip-bg: rgba(96, 165, 250, 0.18);
-    --app-primary-chip-text: #bfdbfe;
-    --app-shadow-color: rgba(2, 6, 23, 0.35);
+    --app-muted: #e2e8f0;
+    --app-muted-soft: #cbd5e1;
+    --app-primary-chip-bg: rgba(96, 165, 250, 0.22);
+    --app-primary-chip-text: #dbeafe;
+    --app-shadow-color: rgba(2, 6, 23, 0.38);
   }
 
   [data-skin="midnight"] {
@@ -47,13 +47,13 @@
     --app-surface: #0f172a;
     --app-surface-strong: #111827;
     --app-surface-muted: #1f2937;
-    --app-border: #1f2937;
+    --app-border: #334155;
     --app-text: #f8fafc;
-    --app-muted: #cbd5e1;
-    --app-muted-soft: #94a3b8;
-    --app-primary-chip-bg: rgba(34, 197, 94, 0.16);
-    --app-primary-chip-text: #86efac;
-    --app-shadow-color: rgba(0, 0, 0, 0.45);
+    --app-muted: #e2e8f0;
+    --app-muted-soft: #cbd5e1;
+    --app-primary-chip-bg: rgba(34, 197, 94, 0.22);
+    --app-primary-chip-text: #bbf7d0;
+    --app-shadow-color: rgba(0, 0, 0, 0.48);
   }
 
   [data-skin="sandstone"] {
@@ -63,13 +63,13 @@
     --app-surface: #f3ede2;
     --app-surface-strong: #fffdf8;
     --app-surface-muted: #e7dcc7;
-    --app-border: #d6c7ac;
+    --app-border: #c8b594;
     --app-text: #3f2f20;
-    --app-muted: #7c6a55;
-    --app-muted-soft: #a08d76;
-    --app-primary-chip-bg: rgba(217, 119, 6, 0.14);
-    --app-primary-chip-text: #b45309;
-    --app-shadow-color: rgba(85, 60, 28, 0.10);
+    --app-muted: #6f5d49;
+    --app-muted-soft: #8b7760;
+    --app-primary-chip-bg: rgba(217, 119, 6, 0.16);
+    --app-primary-chip-text: #92400e;
+    --app-shadow-color: rgba(85, 60, 28, 0.14);
   }
 
   html,
@@ -157,7 +157,9 @@ html[data-skin] .text-slate-900 {
   color: var(--app-text) !important;
 }
 
-html[data-skin] .text-slate-950 {
+html[data-skin] .text-slate-950,
+html[data-skin] .text-slate-800,
+html[data-skin] .text-slate-700 {
   color: var(--app-text) !important;
 }
 
@@ -188,6 +190,14 @@ html[data-skin] select {
   background-color: var(--app-surface-strong) !important;
   color: var(--app-text) !important;
   border-color: var(--app-border) !important;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--app-text) 4%, transparent);
+}
+
+html[data-skin] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+html[data-skin] textarea:focus,
+html[data-skin] select:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 22%, transparent) !important;
 }
 
 html[data-skin] input:not([type="checkbox"]):not([type="radio"]):not([type="range"])::placeholder,

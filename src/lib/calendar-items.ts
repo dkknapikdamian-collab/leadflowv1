@@ -20,6 +20,7 @@ export type CalendarTaskItem = {
   reminder?: Record<string, unknown>;
   leadId?: string;
   leadName?: string;
+  caseId?: string;
 };
 
 export type CalendarEventItem = {
@@ -31,6 +32,7 @@ export type CalendarEventItem = {
   status: string;
   leadId?: string;
   leadName?: string;
+  caseId?: string;
   reminderAt?: string | null;
   recurrenceRule?: string;
   recurrenceEndType?: string;
@@ -101,6 +103,7 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
     recurrenceCount: typeof row.recurrenceCount === 'number' ? row.recurrenceCount : null,
     leadId: row.leadId ? String(row.leadId) : undefined,
     leadName: row.leadName ? String(row.leadName) : undefined,
+    caseId: row.caseId ? String(row.caseId) : undefined,
   };
 }
 
@@ -121,6 +124,7 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
     status: String(row.status || 'scheduled'),
     leadId: row.leadId ? String(row.leadId) : undefined,
     leadName: row.leadName ? String(row.leadName) : undefined,
+    caseId: row.caseId ? String(row.caseId) : undefined,
     reminderAt,
     recurrenceRule,
     reminder: reminderAt ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null } : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },

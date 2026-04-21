@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent, useRef } from 'react';
+import { useState, useEffect, FormEvent, useMemo, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -68,6 +68,7 @@ import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
+  fetchCasesFromSupabase,
   insertActivityToSupabase,
   insertEventToSupabase,
   insertTaskToSupabase,
@@ -159,13 +160,14 @@ type ScheduleEntryCardProps = {
   entry: ScheduleEntry;
   actionButtonClass: string;
   actionPendingId: string | null;
+  caseTitle?: string | null;
   onEdit: (entry: ScheduleEntry) => void;
   onShift: (entry: ScheduleEntry, days: number) => void;
   onComplete: (entry: ScheduleEntry) => void;
   onDelete: (entry: ScheduleEntry) => void;
 };
 
-function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, onShift, onComplete, onDelete }: ScheduleEntryCardProps) {
+function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitle, onEdit, onShift, onComplete, onDelete }: ScheduleEntryCardProps) {
   const pendingEdit = actionPendingId === `${entry.id}:edit`;
   const pendingDay = actionPendingId === `${entry.id}:1`;
   const pendingWeek = actionPendingId === `${entry.id}:7`;
@@ -185,6 +187,12 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
               Lead
             </span>
           ) : null}
+          {entry.raw?.caseId ? (
+            <span className="inline-flex h-5 items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-1.5 text-[9px] font-semibold text-sky-700">
+              <ArrowUpRight className="h-2.5 w-2.5" />
+              Sprawa
+            </span>
+          ) : null}
         </div>
         <span className="text-[10px] font-semibold text-slate-500">
           {format(parseISO(entry.startsAt), 'HH:mm')}
@@ -199,6 +207,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, onEdit, 
           <div className="min-w-0">
             <p className={`text-sm font-bold break-words ${isCompletedTask ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
             <p className={`text-[11px] break-words ${isCompletedTask ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{getEntrySubtitle(entry)}</p>
+            {caseTitle ? <p className={`text-[11px] break-words ${isCompletedTask ? 'text-slate-400 line-through' : 'text-slate-500'}`}>Sprawa: {caseTitle}</p> : null}
           </div>
         </div>
       </div>
@@ -227,6 +236,7 @@ export default function Calendar() {
   const [events, setEvents] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
+  const [cases, setCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [isNewEventOpen, setIsNewEventOpen] = useState(false);
@@ -288,11 +298,15 @@ export default function Calendar() {
   }, [calendarView]);
 
   async function refreshSupabaseBundle() {
-    const bundle = await fetchCalendarBundleFromSupabase();
+    const [bundle, caseRows] = await Promise.all([
+      fetchCalendarBundleFromSupabase(),
+      fetchCasesFromSupabase(),
+    ]);
     setEvents(bundle.events);
     setTasks(bundle.tasks);
     setLeads(bundle.leads);
-    return bundle;
+    setCases(caseRows as any[]);
+    return { ...bundle, cases: caseRows as any[] };
   }
 
   useEffect(() => {
@@ -303,11 +317,15 @@ export default function Calendar() {
     const loadBundle = async () => {
       try {
         setLoading(true);
-        const bundle = await fetchCalendarBundleFromSupabase();
+        const [bundle, caseRows] = await Promise.all([
+          fetchCalendarBundleFromSupabase(),
+          fetchCasesFromSupabase(),
+        ]);
         if (cancelled) return;
         setEvents(bundle.events);
         setTasks(bundle.tasks);
         setLeads(bundle.leads);
+        setCases(caseRows as any[]);
       } catch (error: any) {
         if (!cancelled) {
           toast.error(`Błąd odczytu kalendarza: ${error.message}`);
@@ -540,6 +558,10 @@ export default function Calendar() {
     rangeEnd: selectedWeekEnd,
   });
   const selectedDayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, selectedDate));
+  const caseTitleById = useMemo(
+    () => new Map(cases.map((caseRecord: any) => [String(caseRecord.id || ''), String(caseRecord.title || caseRecord.clientName || 'Powiązana sprawa')])),
+    [cases],
+  );
 
   const monthCellMinHeight = calendarScale === 'compact' ? 104 : calendarScale === 'large' ? 160 : 128;
   const weekColumnMinWidth = calendarScale === 'compact' ? '150px' : calendarScale === 'large' ? '210px' : '170px';
@@ -1147,6 +1169,7 @@ export default function Calendar() {
                       entry={entry}
                       actionButtonClass={actionButtonClass}
                       actionPendingId={actionPendingId}
+                      caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
                       onEdit={handleOpenEdit}
                       onShift={handleShiftEntry}
                       onComplete={handleCompleteEntry}
@@ -1196,6 +1219,7 @@ export default function Calendar() {
                               entry={entry}
                               actionButtonClass={actionButtonClass}
                               actionPendingId={actionPendingId}
+                              caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
                               onEdit={handleOpenEdit}
                               onShift={handleShiftEntry}
                               onComplete={handleCompleteEntry}
