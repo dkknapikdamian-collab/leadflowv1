@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { db, auth } from '../firebase';
 import {
@@ -230,6 +230,49 @@ function getComparableTime(value: unknown) {
   return Number.isNaN(time) ? Number.MAX_SAFE_INTEGER : time;
 }
 
+type CaseClientOption = {
+  key: string;
+  name: string;
+  email: string;
+  phone: string;
+  source: 'lead' | 'current';
+};
+
+function normalizeCaseClientText(value: unknown) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function buildCaseClientOptions(leads: any[], sourceLead: any, caseData: any) {
+  const map = new Map<string, CaseClientOption>();
+
+  const push = (rawName: unknown, rawEmail: unknown, rawPhone: unknown, source: 'lead' | 'current') => {
+    const name = normalizeCaseClientText(rawName);
+    const email = normalizeCaseClientText(rawEmail);
+    const phone = normalizeCaseClientText(rawPhone);
+    if (!name && !email && !phone) return;
+
+    const key = `${name.toLowerCase()}|${email.toLowerCase()}|${phone}`;
+    if (map.has(key)) return;
+
+    map.set(key, {
+      key,
+      name: name || email || phone || 'Klient',
+      email,
+      phone,
+      source,
+    });
+  };
+
+  push(caseData?.clientName, caseData?.clientEmail, caseData?.clientPhone, 'current');
+  push(sourceLead?.name || sourceLead?.company, sourceLead?.email, sourceLead?.phone, 'lead');
+
+  for (const lead of leads || []) {
+    push(lead?.name || lead?.company, lead?.email, lead?.phone, 'lead');
+  }
+
+  return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
+}
+
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
@@ -275,6 +318,40 @@ export default function CaseDetail() {
   const [editCaseNote, setEditCaseNote] = useState<any | null>(null);
   const [caseNoteEditSubmitting, setCaseNoteEditSubmitting] = useState(false);
   const [caseNoteActionId, setCaseNoteActionId] = useState<string | null>(null);
+  const [isEditClientOpen, setIsEditClientOpen] = useState(false);
+  const [showClientCreateFields, setShowClientCreateFields] = useState(false);
+  const [caseClientSubmitting, setCaseClientSubmitting] = useState(false);
+  const [caseClientDraft, setCaseClientDraft] = useState({
+    clientName: '',
+    clientEmail: '',
+    clientPhone: '',
+  });
+
+  useEffect(() => {
+    setCaseClientDraft({
+      clientName: String(caseData?.clientName || ''),
+      clientEmail: String(caseData?.clientEmail || ''),
+      clientPhone: String(caseData?.clientPhone || ''),
+    });
+  }, [caseData?.clientEmail, caseData?.clientName, caseData?.clientPhone]);
+
+  const caseClientOptions = useMemo(
+    () => buildCaseClientOptions(availableLeads, sourceLead, caseData),
+    [availableLeads, caseData, sourceLead],
+  );
+
+  const caseClientSuggestions = useMemo(() => {
+    const normalizedQuery = caseClientDraft.clientName.trim().toLowerCase();
+    const base = normalizedQuery
+      ? caseClientOptions.filter((option) => {
+          return [option.name, option.email, option.phone]
+            .filter(Boolean)
+            .some((value) => value.toLowerCase().includes(normalizedQuery));
+        })
+      : caseClientOptions;
+
+    return base.slice(0, 6);
+  }, [caseClientDraft.clientName, caseClientOptions]);
 
   const loadConflictCandidates = async () => {
     const [taskRows, eventRows] = await Promise.all([
@@ -1140,6 +1217,53 @@ export default function CaseDetail() {
     }
   };
 
+  const handleSelectCaseClientSuggestion = (option: CaseClientOption) => {
+    setCaseClientDraft({
+      clientName: option.name,
+      clientEmail: option.email,
+      clientPhone: option.phone,
+    });
+    setShowClientCreateFields(false);
+  };
+
+  const handleSaveCaseClient = async () => {
+    if (!caseId) return;
+    if (!caseClientDraft.clientName.trim()) {
+      toast.error('Podaj nazwę klienta');
+      return;
+    }
+
+    try {
+      setCaseClientSubmitting(true);
+      await updateCaseInSupabase({
+        id: caseId,
+        clientName: caseClientDraft.clientName.trim(),
+        clientEmail: caseClientDraft.clientEmail.trim(),
+        clientPhone: caseClientDraft.clientPhone.trim(),
+      });
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_client_updated',
+        payload: {
+          clientName: caseClientDraft.clientName.trim(),
+          clientEmail: caseClientDraft.clientEmail.trim(),
+          clientPhone: caseClientDraft.clientPhone.trim(),
+        },
+      });
+      await refreshSupabaseCase();
+      setIsEditClientOpen(false);
+      setShowClientCreateFields(false);
+      toast.success('Dane klienta zaktualizowane');
+    } catch (error: any) {
+      toast.error(`Błąd klienta: ${error.message}`);
+    } finally {
+      setCaseClientSubmitting(false);
+    }
+  };
+
   const handleSendCaseReminder = async () => {
     if (!caseId) return;
 
@@ -1683,6 +1807,36 @@ export default function CaseDetail() {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <UserRound className="w-5 h-5 text-slate-400" />
+                  Klient sprawy
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+                  <div>
+                    <p className="text-base font-bold text-slate-900 break-words">{caseData.clientName || 'Brak klienta'}</p>
+                    <p className="mt-1 text-sm text-slate-500 break-words">{caseData.clientEmail || 'Brak e-maila'}</p>
+                    <p className="mt-1 text-sm text-slate-500 break-words">{caseData.clientPhone || 'Brak telefonu'}</p>
+                  </div>
+                </div>
+                <Button variant="outline" className="w-full" onClick={() => {
+                  setCaseClientDraft({
+                    clientName: String(caseData?.clientName || ''),
+                    clientEmail: String(caseData?.clientEmail || ''),
+                    clientPhone: String(caseData?.clientPhone || ''),
+                  });
+                  setShowClientCreateFields(false);
+                  setIsEditClientOpen(true);
+                }}>
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  Zmień klienta sprawy
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <UserRound className="w-5 h-5 text-slate-400" />
                   Źródłowy lead
                 </CardTitle>
               </CardHeader>
@@ -1980,6 +2134,83 @@ export default function CaseDetail() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <Dialog open={isEditClientOpen} onOpenChange={(open) => {
+        setIsEditClientOpen(open);
+        if (!open) {
+          setShowClientCreateFields(false);
+        }
+      }}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Zmień klienta sprawy</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Klient</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={caseClientDraft.clientName}
+                  onChange={(e) => setCaseClientDraft((prev) => ({ ...prev, clientName: e.target.value }))}
+                  placeholder="Wpisz klienta, a system podpowie z leadów i danych spraw"
+                />
+                <Button
+                  type="button"
+                  variant={showClientCreateFields ? 'default' : 'outline'}
+                  size="icon"
+                  onClick={() => setShowClientCreateFields((prev) => !prev)}
+                  title="Dodaj nowego klienta"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              {caseClientSuggestions.length > 0 ? (
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2 space-y-1">
+                  {caseClientSuggestions.map((option) => (
+                    <button
+                      key={option.key}
+                      type="button"
+                      className="w-full rounded-xl px-3 py-2 text-left transition hover:bg-white"
+                      onClick={() => handleSelectCaseClientSuggestion(option)}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-slate-900 truncate">{option.name}</p>
+                          <p className="text-xs text-slate-500 truncate">
+                            {[option.email, option.phone].filter(Boolean).join(' • ') || 'Dane klienta zapisane w systemie'}
+                          </p>
+                        </div>
+                        <Badge variant="outline">{option.source === 'lead' ? 'Z leada' : 'Z danych sprawy'}</Badge>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+            {showClientCreateFields ? (
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-4">
+                <p className="text-sm font-semibold text-slate-900">Nowy klient dla tej sprawy</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>E-mail klienta</Label>
+                    <Input value={caseClientDraft.clientEmail} onChange={(e) => setCaseClientDraft((prev) => ({ ...prev, clientEmail: e.target.value }))} placeholder="np. klient@firma.pl" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Telefon klienta</Label>
+                    <Input value={caseClientDraft.clientPhone} onChange={(e) => setCaseClientDraft((prev) => ({ ...prev, clientPhone: e.target.value }))} placeholder="np. 500 000 000" />
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditClientOpen(false)}>Anuluj</Button>
+            <Button onClick={() => void handleSaveCaseClient()} disabled={caseClientSubmitting}>
+              {caseClientSubmitting ? 'Zapisywanie...' : 'Zapisz klienta'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={Boolean(editCaseTask)} onOpenChange={(open) => { if (!open) setEditCaseTask(null); }}>
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>
