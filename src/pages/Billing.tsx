@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { updateWorkspaceSubscriptionInSupabase } from '../lib/supabase-fallback';
 import Layout from '../components/Layout';
@@ -11,37 +11,89 @@ import {
   AlertTriangle,
   Check,
   Loader2,
+  User,
+  Users,
+  Sparkles,
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 
-const PLANS = [
+type PlanAudience = 'solo' | 'team';
+
+type PlanCard = {
+  id: string;
+  name: string;
+  price: string;
+  description: string;
+  features: string[];
+  audience: PlanAudience | 'all';
+  popular?: boolean;
+  isTrial?: boolean;
+};
+
+const PLAN_CARDS: PlanCard[] = [
   {
-    id: 'solo',
-    name: 'Forteca Solo',
-    price: '99',
-    description: 'Dla freelancerów i małych firm.',
+    id: 'trial_14d',
+    name: 'Free Trial 14 dni',
+    price: '0',
+    description: 'Start bez płatności. Testujesz aplikację i sprawdzasz, czy pasuje do Twojego procesu.',
     features: [
-      'Nielimitowane leady',
-      'Nielimitowane sprawy',
-      'Portal klienta',
-      'Automatyczne checklisty',
-      'Wsparcie e-mail',
+      'Pełny start przez 14 dni',
+      'Bez utraty danych po trialu',
+      'Po trialu wybierasz plan płatny',
     ],
+    audience: 'all',
+    isTrial: true,
   },
   {
-    id: 'pro',
-    name: 'Forteca Pro',
-    price: '249',
-    description: 'Dla zespołów i agencji.',
+    id: 'solo_mini',
+    name: 'Solo Mini',
+    price: '15',
+    description: 'Lekki plan dla jednej osoby, która chce pilnować leadów i terminów bez chaosu.',
     features: [
-      'Wszystko w Solo',
-      'Współpraca zespołowa',
-      'Zaawansowane raporty',
-      'Własna domena portalu',
-      'Priorytetowe wsparcie',
+      'Dla 1 operatora',
+      'Leady, zadania, kalendarz',
+      'Zakres funkcji dopinamy później',
     ],
+    audience: 'solo',
+  },
+  {
+    id: 'solo_full',
+    name: 'Solo Full',
+    price: '30',
+    description: 'Pełniejszy wariant solo dla osoby, która chce prowadzić cały proces w jednym miejscu.',
+    features: [
+      'Dla 1 operatora',
+      'Pełny workflow closeflow',
+      'Zakres funkcji dopinamy później',
+    ],
+    audience: 'solo',
+    popular: true,
+  },
+  {
+    id: 'team_mini',
+    name: 'Firma / Grupa Mini',
+    price: '70',
+    description: 'Pakiet cenowy dla firmy lub grupy. Warstwę funkcji dopinamy osobno.',
+    features: [
+      'Oferta dla firmy lub grupy',
+      'Cennik gotowy pod rozwój produktu',
+      'Zakres funkcji dopinamy później',
+    ],
+    audience: 'team',
+  },
+  {
+    id: 'team_full',
+    name: 'Firma / Grupa Full',
+    price: '140',
+    description: 'Wyższy wariant firmowy pod mocniejsze użycie i dalsze rozszerzenia produktu.',
+    features: [
+      'Oferta dla firmy lub grupy',
+      'Wyższy pakiet komercyjny',
+      'Zakres funkcji dopinamy później',
+    ],
+    audience: 'team',
     popular: true,
   },
 ];
@@ -73,9 +125,26 @@ function getStatusTone(status: string) {
   };
 }
 
+function audienceButtonClass(active: boolean) {
+  return active
+    ? 'bg-slate-900 text-white shadow-sm'
+    : 'bg-white text-slate-600 hover:bg-slate-50';
+}
+
 export default function Billing() {
   const { workspace, loading, refresh, access } = useWorkspace();
   const [upgrading, setUpgrading] = useState(false);
+  const [audience, setAudience] = useState<PlanAudience>('solo');
+
+  const visiblePlans = useMemo(
+    () => PLAN_CARDS.filter((plan) => plan.audience === 'all' || plan.audience === audience),
+    [audience],
+  );
+
+  const currentPlan = useMemo(
+    () => PLAN_CARDS.find((plan) => plan.id === workspace?.planId) || null,
+    [workspace?.planId],
+  );
 
   const handleUpgrade = async (planId: string) => {
     if (!workspace) return;
@@ -88,7 +157,7 @@ export default function Billing() {
         planId,
         subscriptionStatus: 'paid_active',
       });
-      toast.success('Subskrypcja aktywowana.');
+      toast.success('Plan zapisany.');
       refresh();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -115,15 +184,20 @@ export default function Billing() {
 
   return (
     <Layout>
-      <div className="p-4 md:p-8 max-w-5xl mx-auto w-full space-y-8">
-        <header>
-          <h1 className="text-3xl font-bold text-slate-900">Subskrypcja i rozliczenia</h1>
-          <p className="text-slate-500">Zarządzaj swoim planem i dostępem do Fortecy.</p>
+      <div className="p-4 md:p-8 max-w-6xl mx-auto w-full space-y-8">
+        <header className="space-y-3">
+          <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
+            <Sparkles className="h-3.5 w-3.5" /> Cennik closeflow
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Subskrypcja i rozliczenia</h1>
+            <p className="text-slate-500">Wybierasz model Solo albo Firma / Grupa. Zakres funkcji planów dopinamy osobno później.</p>
+          </div>
         </header>
 
         <Card className={`border-none shadow-sm ${tone.cardClassName}`}>
-          <CardContent className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
+          <CardContent className="p-6 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-start gap-4">
               <div className={`p-3 rounded-2xl ${tone.iconWrapClassName}`}>
                 <StatusIcon className="w-8 h-8" />
               </div>
@@ -132,6 +206,9 @@ export default function Billing() {
                 <p className="text-slate-600">{access.description}</p>
                 {trialEndsAtLabel && (access.isTrialActive || access.status === 'trial_expired') ? (
                   <p className="mt-1 text-sm text-slate-500">Data końca trialu: {trialEndsAtLabel}</p>
+                ) : null}
+                {currentPlan ? (
+                  <p className="mt-1 text-sm text-slate-500">Obecny plan: {currentPlan.name}</p>
                 ) : null}
               </div>
             </div>
@@ -142,29 +219,62 @@ export default function Billing() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {PLANS.map((plan) => {
-            const isCurrentPaidPlan = access.isPaidActive && workspace.planId === plan.id;
-            const buttonLabel = isCurrentPaidPlan
-              ? 'Twój obecny plan'
-              : access.isPaidActive
-                ? 'Przełącz na ten plan'
-                : 'Aktywuj plan';
+        <Card className="border-none shadow-sm">
+          <CardContent className="p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-slate-900">Wybierz model cennika</p>
+              <p className="text-sm text-slate-500">Najpierw wybierasz typ klienta, potem konkretny plan.</p>
+            </div>
+            <div className="inline-flex rounded-2xl bg-slate-100 p-1 gap-1">
+              <button
+                type="button"
+                onClick={() => setAudience('solo')}
+                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition ${audienceButtonClass(audience === 'solo')}`}
+              >
+                <User className="h-4 w-4" /> Solo
+              </button>
+              <button
+                type="button"
+                onClick={() => setAudience('team')}
+                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition ${audienceButtonClass(audience === 'team')}`}
+              >
+                <Users className="h-4 w-4" /> Firma / Grupa
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {visiblePlans.map((plan) => {
+            const isCurrentPaidPlan = !plan.isTrial && access.isPaidActive && workspace.planId === plan.id;
+            const buttonLabel = plan.isTrial
+              ? access.isTrialActive
+                ? 'Masz aktywny trial'
+                : 'Trial startuje przy koncie'
+              : isCurrentPaidPlan
+                ? 'Twój obecny plan'
+                : access.isPaidActive
+                  ? 'Przełącz na ten plan'
+                  : 'Aktywuj plan';
 
             return (
               <Card key={plan.id} className={`border-none shadow-lg relative overflow-hidden ${plan.popular ? 'ring-2 ring-primary' : ''}`}>
                 {plan.popular ? (
                   <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-                    Najpopularniejszy
+                    Najlepszy wybór
                   </div>
                 ) : null}
 
-                <CardHeader>
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                <CardHeader className="space-y-3">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                    {plan.isTrial ? <Badge variant="secondary">Start</Badge> : null}
+                    {audience === 'team' && !plan.isTrial ? <Badge variant="outline">Oferta firmowa</Badge> : null}
+                  </div>
                   <CardDescription>{plan.description}</CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-5">
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-slate-900">{plan.price} PLN</span>
                     <span className="text-slate-500">/ mies.</span>
@@ -182,10 +292,14 @@ export default function Billing() {
 
                 <CardFooter>
                   <Button
-                    className="w-full rounded-xl h-12 font-bold text-base"
+                    className="w-full rounded-xl h-11 md:h-12 font-bold text-sm md:text-base"
                     variant={plan.popular ? 'default' : 'outline'}
-                    disabled={isCurrentPaidPlan || upgrading}
-                    onClick={() => handleUpgrade(plan.id)}
+                    disabled={plan.isTrial || isCurrentPaidPlan || upgrading}
+                    onClick={() => {
+                      if (!plan.isTrial) {
+                        void handleUpgrade(plan.id);
+                      }
+                    }}
                   >
                     {buttonLabel}
                   </Button>
@@ -194,6 +308,16 @@ export default function Billing() {
             );
           })}
         </div>
+
+        <Card className="border-none shadow-sm bg-slate-50">
+          <CardContent className="p-5 text-sm text-slate-600 space-y-2">
+            <p className="font-semibold text-slate-900">Ważne na teraz</p>
+            <p>
+              Ta zmiana wdraża nowy układ cennika i nowe ceny. Funkcje planów dopinamy później, a warianty
+              <span className="font-semibold"> Firma / Grupa</span> są na ten moment ofertą cenową, nie wdrożeniem wieloużytkownikowości.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </Layout>
   );
