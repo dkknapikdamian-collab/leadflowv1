@@ -66,11 +66,13 @@ import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
+  fetchLeadsFromSupabase,
   insertEventToSupabase,
   insertActivityToSupabase,
   insertLeadToSupabase,
   insertTaskToSupabase,
   updateEventInSupabase,
+  updateLeadInSupabase,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
@@ -315,6 +317,73 @@ export default function Today() {
     setEvents(bundle.events);
   }
 
+  const getSoftNextStepDefaultDueAt = () => {
+    const next = new Date();
+    next.setDate(next.getDate() + 1);
+    next.setHours(9, 0, 0, 0);
+    return toDateTimeLocalValue(next);
+  };
+
+  const handleSoftNextStepAfterCompletion = async ({
+    leadId,
+    leadName,
+    fallbackTitle,
+  }: {
+    leadId?: string | null;
+    leadName?: string;
+    fallbackTitle?: string;
+  }) => {
+    if (!leadId) return;
+
+    const latestLeads = await fetchLeadsFromSupabase();
+    const latestLead = (latestLeads as any[]).find((lead) => String(lead.id) === String(leadId));
+    setLeads(latestLeads as any[]);
+
+    if (!latestLead || latestLead.status === 'won' || latestLead.status === 'lost' || latestLead.nextActionAt) {
+      return;
+    }
+
+    const choice = window.prompt(
+      `Lead "${leadName || latestLead.name || 'Lead'}" zostal bez kolejnego kroku.` +
+      `\n1 = ustaw krok teraz` +
+      `\n2 = przypomnij jutro` +
+      `\n3 = zostaw bez kroku`,
+      '2',
+    );
+
+    if (!choice) return;
+
+    if (choice === '1') {
+      const nextStep = window.prompt('Wpisz kolejny krok', fallbackTitle || 'Follow-up');
+      if (!nextStep?.trim()) return;
+
+      const nextActionAt = window.prompt(
+        'Podaj termin w formacie RRRR-MM-DDTHH:mm',
+        getSoftNextStepDefaultDueAt(),
+      );
+      if (!nextActionAt?.trim()) return;
+
+      await updateLeadInSupabase({
+        id: String(leadId),
+        nextStep: nextStep.trim(),
+        nextActionAt,
+      });
+      await refreshSupabaseBundle();
+      toast.success('Kolejny krok zapisany');
+      return;
+    }
+
+    if (choice === '2') {
+      await updateLeadInSupabase({
+        id: String(leadId),
+        nextStep: fallbackTitle || 'Follow-up',
+        nextActionAt: getSoftNextStepDefaultDueAt(),
+      });
+      await refreshSupabaseBundle();
+      toast.success('Ustawiono przypomnienie na jutro');
+    }
+  };
+
   useEffect(() => {
     if (!auth.currentUser || !workspace) return;
 
@@ -554,6 +623,13 @@ export default function Today() {
       });
 
       await refreshSupabaseBundle();
+      if (nextStatus === 'done' && (entry.raw?.leadId ?? null)) {
+        await handleSoftNextStepAfterCompletion({
+          leadId: entry.raw?.leadId ?? null,
+          leadName: entry.leadName || entry.raw?.leadName || '',
+          fallbackTitle: entry.raw?.title || entry.title,
+        });
+      }
       if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
         setPreviewEntry(null);
       }
@@ -599,6 +675,13 @@ export default function Today() {
       });
 
       await refreshSupabaseBundle();
+      if (nextStatus === 'completed' && (entry.raw?.leadId ?? null)) {
+        await handleSoftNextStepAfterCompletion({
+          leadId: entry.raw?.leadId ?? null,
+          leadName: entry.leadName || entry.raw?.leadName || '',
+          fallbackTitle: entry.raw?.title || entry.title,
+        });
+      }
       if (previewEntry?.id === entry.id) {
         setPreviewEntry(null);
       }
