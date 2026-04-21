@@ -67,19 +67,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import Layout from '../components/Layout';
 import {
   createClientPortalTokenInSupabase,
+  deleteCaseItemFromSupabase,
+  deleteEventFromSupabase,
+  deleteTaskFromSupabase,
   fetchActivitiesFromSupabase,
   fetchCaseByIdFromSupabase,
   fetchCaseItemsFromSupabase,
+  fetchEventsFromSupabase,
   fetchLeadByIdFromSupabase,
   fetchLeadsFromSupabase,
+  fetchTasksFromSupabase,
   insertActivityToSupabase,
   insertCaseItemToSupabase,
+  insertEventToSupabase,
+  insertTaskToSupabase,
   isSupabaseConfigured,
   updateCaseInSupabase,
   updateCaseItemInSupabase,
-  deleteCaseItemFromSupabase,
-  insertTaskToSupabase,
+  updateEventInSupabase,
   updateLeadInSupabase,
+  updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
 function formatDateTime(value: any) {
@@ -206,6 +213,19 @@ function toDateTimeLocalValue(date: Date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+function buildDefaultEventEnd(startAt: string) {
+  const start = new Date(startAt);
+  const safeStart = Number.isNaN(start.getTime()) ? new Date() : start;
+  return toDateTimeLocalValue(new Date(safeStart.getTime() + 60 * 60_000));
+}
+
+function getComparableTime(value: unknown) {
+  if (!value) return Number.MAX_SAFE_INTEGER;
+  const parsed = new Date(String(value));
+  const time = parsed.getTime();
+  return Number.isNaN(time) ? Number.MAX_SAFE_INTEGER : time;
+}
+
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
@@ -219,15 +239,44 @@ export default function CaseDetail() {
   const [availableLeads, setAvailableLeads] = useState<any[]>([]);
   const [selectedLeadId, setSelectedLeadId] = useState('');
   const [leadRelationPending, setLeadRelationPending] = useState(false);
+  const [linkedTasks, setLinkedTasks] = useState<any[]>([]);
+  const [linkedEvents, setLinkedEvents] = useState<any[]>([]);
+  const [isQuickTaskOpen, setIsQuickTaskOpen] = useState(false);
+  const [isQuickEventOpen, setIsQuickEventOpen] = useState(false);
+  const [quickTaskSubmitting, setQuickTaskSubmitting] = useState(false);
+  const [quickEventSubmitting, setQuickEventSubmitting] = useState(false);
+  const [quickTask, setQuickTask] = useState(() => ({
+    title: '',
+    type: 'follow_up',
+    scheduledAt: toDateTimeLocalValue(new Date()),
+    priority: 'medium',
+  }));
+  const [quickEvent, setQuickEvent] = useState(() => {
+    const startAt = toDateTimeLocalValue(new Date());
+    return {
+      title: '',
+      type: 'meeting',
+      startAt,
+      endAt: buildDefaultEventEnd(startAt),
+    };
+  });
+  const [taskActionPendingId, setTaskActionPendingId] = useState<string | null>(null);
+  const [eventActionPendingId, setEventActionPendingId] = useState<string | null>(null);
+  const [editCaseTask, setEditCaseTask] = useState<any | null>(null);
+  const [editCaseEvent, setEditCaseEvent] = useState<any | null>(null);
+  const [taskEditSubmitting, setTaskEditSubmitting] = useState(false);
+  const [eventEditSubmitting, setEventEditSubmitting] = useState(false);
 
   async function refreshSupabaseCase() {
     if (!caseId) return;
 
-    const [caseRow, itemRows, activityRows, leadRows] = await Promise.all([
+    const [caseRow, itemRows, activityRows, leadRows, taskRows, eventRows] = await Promise.all([
       fetchCaseByIdFromSupabase(caseId),
       fetchCaseItemsFromSupabase(caseId),
       fetchActivitiesFromSupabase({ caseId, limit: 200 }),
       fetchLeadsFromSupabase(),
+      fetchTasksFromSupabase(),
+      fetchEventsFromSupabase(),
     ]);
 
     setCaseData(caseRow);
@@ -245,6 +294,17 @@ export default function CaseDetail() {
     setSourceLead(currentLead);
     setAvailableLeads(openLeads);
     setSelectedLeadId(linkedLeadId);
+
+    const currentCaseId = String(caseId || '');
+    const caseTasks = ((taskRows || []) as any[])
+      .filter((entry) => String(entry.caseId || '') === currentCaseId)
+      .sort((left, right) => getComparableTime(left.scheduledAt || left.dueAt || left.date) - getComparableTime(right.scheduledAt || right.dueAt || right.date));
+    const caseEvents = ((eventRows || []) as any[])
+      .filter((entry) => String(entry.caseId || '') === currentCaseId)
+      .sort((left, right) => getComparableTime(left.startAt) - getComparableTime(right.startAt));
+
+    setLinkedTasks(caseTasks);
+    setLinkedEvents(caseEvents);
 
     const next = computeCaseState(itemRows, String(caseRow?.status || ''));
     const currentPercent = Math.round(Number(caseRow?.completenessPercent || 0));
@@ -597,6 +657,344 @@ export default function CaseDetail() {
     }
   };
 
+  const resetQuickTask = () => {
+    setQuickTask({
+      title: '',
+      type: 'follow_up',
+      scheduledAt: toDateTimeLocalValue(new Date()),
+      priority: 'medium',
+    });
+  };
+
+  const resetQuickEvent = () => {
+    const startAt = toDateTimeLocalValue(new Date());
+    setQuickEvent({
+      title: '',
+      type: 'meeting',
+      startAt,
+      endAt: buildDefaultEventEnd(startAt),
+    });
+  };
+
+  const handleCreateQuickCaseTask = async () => {
+    if (!caseId) return;
+    if (!quickTask.title.trim()) {
+      toast.error('Podaj tytuł zadania');
+      return;
+    }
+
+    try {
+      setQuickTaskSubmitting(true);
+      await insertTaskToSupabase({
+        title: quickTask.title.trim(),
+        type: quickTask.type,
+        date: quickTask.scheduledAt.slice(0, 10),
+        scheduledAt: quickTask.scheduledAt,
+        priority: quickTask.priority,
+        status: 'todo',
+        caseId,
+        leadId: caseData?.leadId || null,
+        ownerId: auth.currentUser?.uid ?? undefined,
+      });
+
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_task_created',
+        payload: {
+          title: quickTask.title.trim(),
+          scheduledAt: quickTask.scheduledAt,
+        },
+      });
+
+      await refreshSupabaseCase();
+      resetQuickTask();
+      setIsQuickTaskOpen(false);
+      toast.success('Zadanie dodane do sprawy');
+    } catch (error: any) {
+      toast.error(`Błąd zadania: ${error.message}`);
+    } finally {
+      setQuickTaskSubmitting(false);
+    }
+  };
+
+  const handleCreateQuickCaseEvent = async () => {
+    if (!caseId) return;
+    if (!quickEvent.title.trim()) {
+      toast.error('Podaj tytuł wydarzenia');
+      return;
+    }
+
+    try {
+      setQuickEventSubmitting(true);
+      await insertEventToSupabase({
+        title: quickEvent.title.trim(),
+        type: quickEvent.type,
+        startAt: quickEvent.startAt,
+        endAt: quickEvent.endAt,
+        caseId,
+        leadId: caseData?.leadId || null,
+      });
+
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_event_created',
+        payload: {
+          title: quickEvent.title.trim(),
+          startAt: quickEvent.startAt,
+        },
+      });
+
+      await refreshSupabaseCase();
+      resetQuickEvent();
+      setIsQuickEventOpen(false);
+      toast.success('Wydarzenie dodane do sprawy');
+    } catch (error: any) {
+      toast.error(`Błąd wydarzenia: ${error.message}`);
+    } finally {
+      setQuickEventSubmitting(false);
+    }
+  };
+
+
+  const openCaseTaskEditor = (task: any) => {
+    setEditCaseTask({
+      id: String(task.id || ''),
+      title: String(task.title || ''),
+      type: String(task.type || 'follow_up'),
+      scheduledAt: String(task.scheduledAt || task.dueAt || `${task.date || ''}T09:00`).slice(0, 16),
+      priority: String(task.priority || 'medium'),
+      status: String(task.status || 'todo'),
+    });
+  };
+
+  const openCaseEventEditor = (event: any) => {
+    setEditCaseEvent({
+      id: String(event.id || ''),
+      title: String(event.title || ''),
+      type: String(event.type || 'meeting'),
+      startAt: String(event.startAt || '').slice(0, 16),
+      endAt: String(event.endAt || buildDefaultEventEnd(String(event.startAt || toDateTimeLocalValue(new Date())))).slice(0, 16),
+      status: String(event.status || 'scheduled'),
+    });
+  };
+
+  const handleToggleCaseTaskStatus = async (task: any) => {
+    if (!caseId || !task?.id) return;
+    const taskId = String(task.id);
+    const nextStatus = String(task.status || 'todo') === 'done' ? 'todo' : 'done';
+
+    try {
+      setTaskActionPendingId(taskId);
+      await updateTaskInSupabase({
+        id: taskId,
+        title: task.title,
+        type: task.type,
+        date: String(task.date || String(task.scheduledAt || task.dueAt || '').slice(0, 10)),
+        scheduledAt: task.scheduledAt || task.dueAt,
+        status: nextStatus,
+        priority: task.priority,
+        leadId: task.leadId ?? caseData?.leadId ?? null,
+        caseId,
+      });
+
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_task_status_toggled',
+        payload: {
+          title: task.title || 'Task',
+          status: nextStatus,
+        },
+      });
+
+      await refreshSupabaseCase();
+      toast.success(nextStatus === 'done' ? 'Task oznaczony jako zrobiony' : 'Task przywrócony do pracy');
+    } catch (error: any) {
+      toast.error(`Błąd taska: ${error.message}`);
+    } finally {
+      setTaskActionPendingId(null);
+    }
+  };
+
+  const handleDeleteCaseTask = async (task: any) => {
+    if (!caseId || !task?.id) return;
+    if (!window.confirm('Usunąć task ze sprawy?')) return;
+    const taskId = String(task.id);
+
+    try {
+      setTaskActionPendingId(taskId);
+      await deleteTaskFromSupabase(taskId);
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_task_deleted',
+        payload: {
+          title: task.title || 'Task',
+        },
+      });
+      await refreshSupabaseCase();
+      toast.success('Task usunięty');
+    } catch (error: any) {
+      toast.error(`Błąd usuwania taska: ${error.message}`);
+    } finally {
+      setTaskActionPendingId(null);
+    }
+  };
+
+  const handleDeleteCaseEvent = async (event: any) => {
+    if (!caseId || !event?.id) return;
+    if (!window.confirm('Usunąć wydarzenie ze sprawy?')) return;
+    const eventId = String(event.id);
+
+    try {
+      setEventActionPendingId(eventId);
+      await deleteEventFromSupabase(eventId);
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_event_deleted',
+        payload: {
+          title: event.title || 'Wydarzenie',
+        },
+      });
+      await refreshSupabaseCase();
+      toast.success('Wydarzenie usunięte');
+    } catch (error: any) {
+      toast.error(`Błąd usuwania wydarzenia: ${error.message}`);
+    } finally {
+      setEventActionPendingId(null);
+    }
+  };
+
+  const handleCompleteCaseEvent = async (event: any) => {
+    if (!caseId || !event?.id) return;
+    const eventId = String(event.id);
+
+    try {
+      setEventActionPendingId(eventId);
+      await updateEventInSupabase({
+        id: eventId,
+        title: event.title,
+        type: event.type,
+        startAt: event.startAt,
+        endAt: event.endAt,
+        status: String(event.status || 'scheduled') === 'completed' ? 'scheduled' : 'completed',
+        leadId: event.leadId ?? caseData?.leadId ?? null,
+        caseId,
+      });
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_event_status_toggled',
+        payload: {
+          title: event.title || 'Wydarzenie',
+          status: String(event.status || 'scheduled') === 'completed' ? 'scheduled' : 'completed',
+        },
+      });
+      await refreshSupabaseCase();
+      toast.success('Zmieniono status wydarzenia');
+    } catch (error: any) {
+      toast.error(`Błąd wydarzenia: ${error.message}`);
+    } finally {
+      setEventActionPendingId(null);
+    }
+  };
+
+  const handleSaveCaseTaskEdit = async () => {
+    if (!caseId || !editCaseTask?.id) return;
+    if (!editCaseTask.title?.trim()) {
+      toast.error('Podaj tytuł taska');
+      return;
+    }
+
+    try {
+      setTaskEditSubmitting(true);
+      await updateTaskInSupabase({
+        id: String(editCaseTask.id),
+        title: editCaseTask.title.trim(),
+        type: editCaseTask.type,
+        date: String(editCaseTask.scheduledAt).slice(0, 10),
+        scheduledAt: editCaseTask.scheduledAt,
+        status: editCaseTask.status,
+        priority: editCaseTask.priority,
+        leadId: caseData?.leadId || null,
+        caseId,
+      });
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_task_updated',
+        payload: {
+          title: editCaseTask.title.trim(),
+          scheduledAt: editCaseTask.scheduledAt,
+        },
+      });
+      await refreshSupabaseCase();
+      setEditCaseTask(null);
+      toast.success('Task zaktualizowany');
+    } catch (error: any) {
+      toast.error(`Błąd edycji taska: ${error.message}`);
+    } finally {
+      setTaskEditSubmitting(false);
+    }
+  };
+
+  const handleSaveCaseEventEdit = async () => {
+    if (!caseId || !editCaseEvent?.id) return;
+    if (!editCaseEvent.title?.trim()) {
+      toast.error('Podaj tytuł wydarzenia');
+      return;
+    }
+
+    try {
+      setEventEditSubmitting(true);
+      await updateEventInSupabase({
+        id: String(editCaseEvent.id),
+        title: editCaseEvent.title.trim(),
+        type: editCaseEvent.type,
+        startAt: editCaseEvent.startAt,
+        endAt: editCaseEvent.endAt,
+        status: editCaseEvent.status,
+        leadId: caseData?.leadId || null,
+        caseId,
+      });
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_event_updated',
+        payload: {
+          title: editCaseEvent.title.trim(),
+          startAt: editCaseEvent.startAt,
+        },
+      });
+      await refreshSupabaseCase();
+      setEditCaseEvent(null);
+      toast.success('Wydarzenie zaktualizowane');
+    } catch (error: any) {
+      toast.error(`Błąd edycji wydarzenia: ${error.message}`);
+    } finally {
+      setEventEditSubmitting(false);
+    }
+  };
+
   const handleSendCaseReminder = async () => {
     if (!caseId) return;
 
@@ -861,6 +1259,105 @@ export default function CaseDetail() {
                         </Button>
                       ) : null}
                     </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-lg">Operacyjny hub sprawy</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Zadania sprawy</p>
+                    <p className="mt-2 text-2xl font-bold text-slate-900">{linkedTasks.length}</p>
+                    <p className="mt-1 text-sm text-slate-500">Wszystkie taski przypięte do tej sprawy i widoczne również na liście zadań.</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Wydarzenia sprawy</p>
+                    <p className="mt-2 text-2xl font-bold text-slate-900">{linkedEvents.length}</p>
+                    <p className="mt-1 text-sm text-slate-500">Bloki czasu i spotkania przypięte bezpośrednio do tej sprawy.</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" onClick={() => setIsQuickTaskOpen(true)}>
+                    <Plus className="w-4 h-4 mr-2" /> Dodaj zadanie do sprawy
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsQuickEventOpen(true)}>
+                    <Calendar className="w-4 h-4 mr-2" /> Dodaj wydarzenie do sprawy
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link to="/tasks">Otwórz zadania <ExternalLink className="w-4 h-4" /></Link>
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link to="/calendar">Otwórz kalendarz <ExternalLink className="w-4 h-4" /></Link>
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="text-sm font-bold text-slate-900">Najbliższe zadania</h3>
+                      <Badge variant="outline">{linkedTasks.length}</Badge>
+                    </div>
+                    {linkedTasks.length === 0 ? (
+                      <p className="text-sm text-slate-500">Brak tasków przypiętych do tej sprawy.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {linkedTasks.slice(0, 5).map((task: any) => (
+                          <div key={task.id} className="rounded-xl border border-slate-200 px-3 py-2 space-y-3">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="text-sm font-semibold text-slate-900 break-words">{task.title || 'Zadanie bez tytułu'}</p>
+                                <p className="text-xs text-slate-500 break-words">{formatDateTime(task.scheduledAt || task.dueAt || task.date)}{task.priority ? ` • Priorytet: ${task.priority}` : ''}</p>
+                              </div>
+                              <Badge variant={task.status === 'done' ? 'secondary' : 'outline'}>{task.status === 'done' ? 'Zrobione' : 'Aktywne'}</Badge>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              <Button variant="outline" size="sm" onClick={() => openCaseTaskEditor(task)}>Edytuj</Button>
+                              <Button variant="outline" size="sm" onClick={() => void handleToggleCaseTaskStatus(task)} disabled={taskActionPendingId === String(task.id)}>
+                                {taskActionPendingId === String(task.id) ? '...' : task.status === 'done' ? 'Przywróć' : 'Zrobione'}
+                              </Button>
+                              <Button variant="outline" size="sm" className="text-rose-600 hover:text-rose-600" onClick={() => void handleDeleteCaseTask(task)} disabled={taskActionPendingId === String(task.id)}>Usuń</Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="text-sm font-bold text-slate-900">Najbliższe wydarzenia</h3>
+                      <Badge variant="outline">{linkedEvents.length}</Badge>
+                    </div>
+                    {linkedEvents.length === 0 ? (
+                      <p className="text-sm text-slate-500">Brak wydarzeń przypiętych do tej sprawy.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {linkedEvents.slice(0, 5).map((event: any) => (
+                          <div key={event.id} className="rounded-xl border border-slate-200 px-3 py-2 space-y-3">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="text-sm font-semibold text-slate-900 break-words">{event.title || 'Wydarzenie bez tytułu'}</p>
+                                <p className="text-xs text-slate-500 break-words">{formatDateTime(event.startAt)}{event.endAt ? ` → ${formatDateTime(event.endAt)}` : ''}</p>
+                              </div>
+                              <Badge variant={event.status === 'completed' ? 'secondary' : 'outline'}>{event.status === 'completed' ? 'Wykonane' : 'Zaplanowane'}</Badge>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              <Button variant="outline" size="sm" onClick={() => openCaseEventEditor(event)}>Edytuj</Button>
+                              <Button variant="outline" size="sm" onClick={() => void handleCompleteCaseEvent(event)} disabled={eventActionPendingId === String(event.id)}>
+                                {eventActionPendingId === String(event.id) ? '...' : event.status === 'completed' ? 'Przywróć' : 'Wykonane'}
+                              </Button>
+                              <Button variant="outline" size="sm" className="text-rose-600 hover:text-rose-600" onClick={() => void handleDeleteCaseEvent(event)} disabled={eventActionPendingId === String(event.id)}>Usuń</Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -1173,6 +1670,14 @@ export default function CaseDetail() {
                                activity.eventType === 'lead_linked' ? `podpiął leada: ${activity.payload?.leadName || 'Lead'}` :
                                activity.eventType === 'lead_unlinked' ? `odpiął leada: ${activity.payload?.leadName || 'Lead'}` :
                                activity.eventType === 'case_started' ? `uruchomił start realizacji` :
+                               activity.eventType === 'case_task_created' ? `dodał task do sprawy: ${activity.payload?.title || 'Task'}` :
+                               activity.eventType === 'case_task_updated' ? `zaktualizował task sprawy: ${activity.payload?.title || 'Task'}` :
+                               activity.eventType === 'case_task_status_toggled' ? `zmienił status taska: ${activity.payload?.title || 'Task'}` :
+                               activity.eventType === 'case_task_deleted' ? `usunął task sprawy: ${activity.payload?.title || 'Task'}` :
+                               activity.eventType === 'case_event_created' ? `dodał wydarzenie do sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
+                               activity.eventType === 'case_event_updated' ? `zaktualizował wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
+                               activity.eventType === 'case_event_status_toggled' ? `zmienił status wydarzenia: ${activity.payload?.title || 'Wydarzenie'}` :
+                               activity.eventType === 'case_event_deleted' ? `usunął wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
                                activity.eventType === 'case_completed' ? `oznaczył sprawę jako zakończoną` :
                                activity.eventType === 'case_reminder_requested' ? `wysłał przypomnienie i utworzył follow-up` :
                                activity.eventType === 'reminder_scheduled' ? `zaplanował przypomnienie: ${activity.payload?.title || 'pozycja'}` :
@@ -1210,6 +1715,180 @@ export default function CaseDetail() {
           </div>
         </div>
       </main>
+
+      <Dialog open={isQuickTaskOpen} onOpenChange={setIsQuickTaskOpen}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Dodaj zadanie do sprawy</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Tytuł zadania</Label>
+              <Input value={quickTask.title} onChange={(e) => setQuickTask((prev) => ({ ...prev, title: e.target.value }))} />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Typ</Label>
+                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickTask.type} onChange={(e) => setQuickTask((prev) => ({ ...prev, type: e.target.value }))}>
+                  <option value="follow_up">Follow-up</option>
+                  <option value="meeting">Spotkanie</option>
+                  <option value="call">Telefon</option>
+                  <option value="offer">Oferta</option>
+                  <option value="other">Inne</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label>Priorytet</Label>
+                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickTask.priority} onChange={(e) => setQuickTask((prev) => ({ ...prev, priority: e.target.value }))}>
+                  <option value="low">Niski</option>
+                  <option value="medium">Średni</option>
+                  <option value="high">Wysoki</option>
+                </select>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Data i godzina</Label>
+              <Input type="datetime-local" value={quickTask.scheduledAt} onChange={(e) => setQuickTask((prev) => ({ ...prev, scheduledAt: e.target.value }))} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsQuickTaskOpen(false)}>Anuluj</Button>
+            <Button onClick={() => void handleCreateQuickCaseTask()} disabled={quickTaskSubmitting}>
+              {quickTaskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isQuickEventOpen} onOpenChange={setIsQuickEventOpen}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Dodaj wydarzenie do sprawy</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Tytuł wydarzenia</Label>
+              <Input value={quickEvent.title} onChange={(e) => setQuickEvent((prev) => ({ ...prev, title: e.target.value }))} />
+            </div>
+            <div className="space-y-2">
+              <Label>Typ</Label>
+              <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickEvent.type} onChange={(e) => setQuickEvent((prev) => ({ ...prev, type: e.target.value }))}>
+                <option value="meeting">Spotkanie</option>
+                <option value="call">Telefon</option>
+                <option value="deadline">Deadline</option>
+                <option value="review">Review</option>
+                <option value="other">Inne</option>
+              </select>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Start</Label>
+                <Input type="datetime-local" value={quickEvent.startAt} onChange={(e) => {
+                  const nextStart = e.target.value;
+                  setQuickEvent((prev) => ({ ...prev, startAt: nextStart, endAt: buildDefaultEventEnd(nextStart) }));
+                }} />
+              </div>
+              <div className="space-y-2">
+                <Label>Koniec</Label>
+                <Input type="datetime-local" value={quickEvent.endAt} onChange={(e) => setQuickEvent((prev) => ({ ...prev, endAt: e.target.value }))} />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsQuickEventOpen(false)}>Anuluj</Button>
+            <Button onClick={() => void handleCreateQuickCaseEvent()} disabled={quickEventSubmitting}>
+              {quickEventSubmitting ? 'Dodawanie...' : 'Dodaj wydarzenie'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={Boolean(editCaseTask)} onOpenChange={(open) => { if (!open) setEditCaseTask(null); }}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Edytuj task sprawy</DialogTitle>
+          </DialogHeader>
+          {editCaseTask ? (
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label>Tytuł taska</Label>
+                <Input value={editCaseTask.title} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, title: e.target.value }))} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Typ</Label>
+                  <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseTask.type} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, type: e.target.value }))}>
+                    <option value="follow_up">Follow-up</option>
+                    <option value="meeting">Spotkanie</option>
+                    <option value="call">Telefon</option>
+                    <option value="offer">Oferta</option>
+                    <option value="other">Inne</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Priorytet</Label>
+                  <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseTask.priority} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, priority: e.target.value }))}>
+                    <option value="low">Niski</option>
+                    <option value="medium">Średni</option>
+                    <option value="high">Wysoki</option>
+                  </select>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Data i godzina</Label>
+                <Input type="datetime-local" value={editCaseTask.scheduledAt} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, scheduledAt: e.target.value }))} />
+              </div>
+            </div>
+          ) : null}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditCaseTask(null)}>Anuluj</Button>
+            <Button onClick={() => void handleSaveCaseTaskEdit()} disabled={taskEditSubmitting}>
+              {taskEditSubmitting ? 'Zapisywanie...' : 'Zapisz task'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={Boolean(editCaseEvent)} onOpenChange={(open) => { if (!open) setEditCaseEvent(null); }}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Edytuj wydarzenie sprawy</DialogTitle>
+          </DialogHeader>
+          {editCaseEvent ? (
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label>Tytuł wydarzenia</Label>
+                <Input value={editCaseEvent.title} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, title: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Typ</Label>
+                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseEvent.type} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, type: e.target.value }))}>
+                  <option value="meeting">Spotkanie</option>
+                  <option value="call">Telefon</option>
+                  <option value="deadline">Deadline</option>
+                  <option value="review">Review</option>
+                  <option value="other">Inne</option>
+                </select>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Start</Label>
+                  <Input type="datetime-local" value={editCaseEvent.startAt} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, startAt: e.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Koniec</Label>
+                  <Input type="datetime-local" value={editCaseEvent.endAt} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, endAt: e.target.value }))} />
+                </div>
+              </div>
+            </div>
+          ) : null}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditCaseEvent(null)}>Anuluj</Button>
+            <Button onClick={() => void handleSaveCaseEventEdit()} disabled={eventEditSubmitting}>
+              {eventEditSubmitting ? 'Zapisywanie...' : 'Zapisz wydarzenie'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 }
