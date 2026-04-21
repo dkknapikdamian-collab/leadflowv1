@@ -742,6 +742,14 @@ export default function Today() {
   };
 
 
+  const conflictCandidates = useMemo(
+    () =>
+      buildConflictCandidates({
+        tasks,
+        events,
+      }),
+    [events, tasks],
+  );
   if (wsLoading || loading) {
     return (
       <Layout>
@@ -790,14 +798,6 @@ export default function Today() {
     })
     .sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0))
     .slice(0, 5);
-  const conflictCandidates = useMemo(
-    () =>
-      buildConflictCandidates({
-        tasks,
-        events,
-      }),
-    [events, tasks],
-  );
   const topValuableLeads = [...activeLeads].sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0)).slice(0, 3);
 
   const summaryCards = [

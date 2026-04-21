@@ -525,6 +525,7 @@ export default function Tasks() {
         case 'done':
           return isTaskDone(task);
         case 'active':
+          return !isTaskDone(task);
         default:
           return true;
       }
@@ -924,10 +925,16 @@ export default function Tasks() {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
           {statCards.map((card) => {
             const Icon = card.icon;
+            const active = taskScope === card.id;
             return (
-              <div key={card.id}>
+              <button
+                key={card.id}
+                type="button"
+                onClick={() => activateScope(card.id)}
+                className={`w-full text-left rounded-2xl transition-all ${active ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}
+              >
                 <Card className="border-none shadow-sm">
-                  <CardContent className="p-5 flex items-center justify-between">
+                  <CardContent className={`p-5 flex items-center justify-between ${active ? 'bg-primary/5' : ''}`}>
                     <div>
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.title}</p>
                       <p className={`mt-2 text-2xl font-bold ${card.tone}`}>{card.value}</p>
@@ -937,7 +944,7 @@ export default function Tasks() {
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+              </button>
             );
           })}
         </div>

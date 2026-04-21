@@ -55,6 +55,8 @@ type ClientOption = {
   source: 'case' | 'lead';
 };
 
+type CaseView = 'all' | 'waiting' | 'blocked' | 'ready' | 'linked';
+
 function normalizeClientText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -142,6 +144,7 @@ export default function Cases() {
   const [leadCandidates, setLeadCandidates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [caseView, setCaseView] = useState<CaseView>('all');
   const [caseToDelete, setCaseToDelete] = useState<CaseRecord | null>(null);
   const [deletePending, setDeletePending] = useState(false);
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
@@ -236,20 +239,29 @@ export default function Cases() {
   const filteredCases = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
 
-    if (!normalizedQuery) {
-      return cases;
-    }
-
     return cases.filter((record) => {
-      return (
+      const matchesSearch = !normalizedQuery || (
         record.title?.toLowerCase().includes(normalizedQuery)
         || record.clientName?.toLowerCase().includes(normalizedQuery)
         || record.clientEmail?.toLowerCase().includes(normalizedQuery)
         || record.clientPhone?.toLowerCase().includes(normalizedQuery)
         || record.status?.toLowerCase().includes(normalizedQuery)
       );
+
+      const matchesView =
+        caseView === 'all'
+        || (caseView === 'waiting' && (record.status === 'waiting_on_client' || record.status === 'to_approve'))
+        || (caseView === 'blocked' && record.status === 'blocked')
+        || (caseView === 'ready' && record.status === 'ready_to_start')
+        || (caseView === 'linked' && Boolean(record.leadId));
+
+      return matchesSearch && matchesView;
     });
-  }, [cases, searchQuery]);
+  }, [caseView, cases, searchQuery]);
+
+  const toggleCaseView = (view: CaseView) => {
+    setCaseView((prev) => (prev === view ? 'all' : view));
+  };
 
   async function handleDeleteCase() {
     if (!caseToDelete) return;
@@ -433,9 +445,9 @@ export default function Cases() {
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-          <div>
+          <button type="button" onClick={() => setCaseView('all')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'all' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
             <Card className={createStatCardClass()}>
-              <CardContent className="flex items-center justify-between p-5">
+              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'all' ? 'bg-primary/5' : ''}`}>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Wszystkie</p>
                   <p className="mt-2 text-2xl font-bold app-text">{stats.total}</p>
@@ -443,10 +455,10 @@ export default function Cases() {
                 <div className="rounded-2xl p-3 app-primary-chip"><Briefcase className="h-6 w-6" /></div>
               </CardContent>
             </Card>
-          </div>
-          <div>
+          </button>
+          <button type="button" onClick={() => toggleCaseView('waiting')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'waiting' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
             <Card className={createStatCardClass()}>
-              <CardContent className="flex items-center justify-between p-5">
+              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'waiting' ? 'bg-primary/5' : ''}`}>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Czekają</p>
                   <p className="mt-2 text-2xl font-bold text-amber-500">{stats.waiting}</p>
@@ -454,10 +466,10 @@ export default function Cases() {
                 <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-500"><Clock className="h-6 w-6" /></div>
               </CardContent>
             </Card>
-          </div>
-          <div>
+          </button>
+          <button type="button" onClick={() => toggleCaseView('blocked')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'blocked' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
             <Card className={createStatCardClass()}>
-              <CardContent className="flex items-center justify-between p-5">
+              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'blocked' ? 'bg-primary/5' : ''}`}>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Zablokowane</p>
                   <p className="mt-2 text-2xl font-bold text-rose-500">{stats.blocked}</p>
@@ -465,10 +477,10 @@ export default function Cases() {
                 <div className="rounded-2xl bg-rose-500/12 p-3 text-rose-500"><ShieldAlert className="h-6 w-6" /></div>
               </CardContent>
             </Card>
-          </div>
-          <div>
+          </button>
+          <button type="button" onClick={() => toggleCaseView('ready')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'ready' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
             <Card className={createStatCardClass()}>
-              <CardContent className="flex items-center justify-between p-5">
+              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'ready' ? 'bg-primary/5' : ''}`}>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Gotowe</p>
                   <p className="mt-2 text-2xl font-bold text-emerald-500">{stats.ready}</p>
@@ -476,10 +488,10 @@ export default function Cases() {
                 <div className="rounded-2xl bg-emerald-500/12 p-3 text-emerald-500"><CheckCircle2 className="h-6 w-6" /></div>
               </CardContent>
             </Card>
-          </div>
-          <div>
+          </button>
+          <button type="button" onClick={() => toggleCaseView('linked')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'linked' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
             <Card className={createStatCardClass()}>
-              <CardContent className="flex items-center justify-between p-5">
+              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'linked' ? 'bg-primary/5' : ''}`}>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Z leada</p>
                   <p className="mt-2 text-2xl font-bold app-text">{stats.linked}</p>
@@ -487,7 +499,7 @@ export default function Cases() {
                 <div className="rounded-2xl bg-sky-500/12 p-3 text-sky-500"><Link2 className="h-6 w-6" /></div>
               </CardContent>
             </Card>
-          </div>
+          </button>
         </section>
 
         <Card className="border-none app-surface-strong">
@@ -522,7 +534,7 @@ export default function Cases() {
                 <div className="rounded-full p-4 app-primary-chip"><Target className="h-7 w-7" /></div>
                 <div>
                   <p className="text-lg font-semibold app-text">Brak spraw w tym widoku</p>
-                  <p className="mt-1 max-w-md text-sm app-muted">Sprawy pojawią się tutaj po wygraniu leada albo po ręcznym uruchomieniu realizacji.</p>
+                  <p className="mt-1 max-w-md text-sm app-muted">Sprawy pojawią się tutaj po wygraniu leada albo po ręcznym uruchomieniu realizacji. Zmień wyszukiwanie albo kliknij inny kafelek u góry, jeśli szukasz innego wycinka listy.</p>
                 </div>
               </CardContent>
             </Card>
