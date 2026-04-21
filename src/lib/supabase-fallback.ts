@@ -49,6 +49,8 @@ type CaseUpsertInput = {
   title?: string;
   clientName?: string;
   clientId?: string | null;
+  clientEmail?: string;
+  clientPhone?: string;
   status?: string;
   completenessPercent?: number;
   leadId?: string | null;

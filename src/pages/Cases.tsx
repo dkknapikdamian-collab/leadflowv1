@@ -31,7 +31,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { deleteCaseWithRelations } from '../lib/cases';
-import { createCaseInSupabase, fetchCasesFromSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import { createCaseInSupabase, fetchCasesFromSupabase, fetchLeadsFromSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 
 type CaseRecord = {
   id: string;
@@ -46,6 +46,50 @@ type CaseRecord = {
   portalReady?: boolean;
   updatedAt?: { toDate?: () => Date } | string | null;
 };
+
+type ClientOption = {
+  key: string;
+  name: string;
+  email: string;
+  phone: string;
+  source: 'case' | 'lead';
+};
+
+function normalizeClientText(value: unknown) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function buildClientOptions(cases: CaseRecord[], leads: any[]) {
+  const map = new Map<string, ClientOption>();
+
+  const push = (rawName: unknown, rawEmail: unknown, rawPhone: unknown, source: 'case' | 'lead') => {
+    const name = normalizeClientText(rawName);
+    const email = normalizeClientText(rawEmail);
+    const phone = normalizeClientText(rawPhone);
+    if (!name && !email && !phone) return;
+
+    const key = `${name.toLowerCase()}|${email.toLowerCase()}|${phone}`;
+    if (map.has(key)) return;
+
+    map.set(key, {
+      key,
+      name: name || email || phone || 'Klient',
+      email,
+      phone,
+      source,
+    });
+  };
+
+  for (const record of cases) {
+    push(record.clientName, record.clientEmail, record.clientPhone, 'case');
+  }
+
+  for (const lead of leads) {
+    push(lead?.name || lead?.company, lead?.email, lead?.phone, 'lead');
+  }
+
+  return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
+}
 
 function caseStatusLabel(status?: string) {
   switch (status) {
@@ -95,37 +139,50 @@ function createStatCardClass() {
 export default function Cases() {
   const { workspace, hasAccess } = useWorkspace();
   const [cases, setCases] = useState<CaseRecord[]>([]);
+  const [leadCandidates, setLeadCandidates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [caseToDelete, setCaseToDelete] = useState<CaseRecord | null>(null);
   const [deletePending, setDeletePending] = useState(false);
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
   const [createCasePending, setCreateCasePending] = useState(false);
+  const [showCreateClientFields, setShowCreateClientFields] = useState(false);
   const [newCase, setNewCase] = useState({
     title: '',
     clientName: '',
+    clientEmail: '',
+    clientPhone: '',
     status: 'in_progress',
   });
 
   const refreshCases = async () => {
-    const rows = await fetchCasesFromSupabase();
-    setCases(rows as CaseRecord[]);
+    const [caseRows, leadRows] = await Promise.all([
+      fetchCasesFromSupabase(),
+      fetchLeadsFromSupabase().catch(() => []),
+    ]);
+    setCases(caseRows as CaseRecord[]);
+    setLeadCandidates(leadRows as any[]);
   };
 
   useEffect(() => {
     if (isSupabaseConfigured()) {
       let isMounted = true;
       setLoading(true);
-      fetchCasesFromSupabase()
-        .then((rows) => {
+      Promise.all([
+        fetchCasesFromSupabase(),
+        fetchLeadsFromSupabase().catch(() => []),
+      ])
+        .then(([caseRows, leadRows]) => {
           if (!isMounted) return;
-          setCases(rows as CaseRecord[]);
+          setCases(caseRows as CaseRecord[]);
+          setLeadCandidates(leadRows as any[]);
           setLoading(false);
         })
         .catch((error: any) => {
           if (!isMounted) return;
           toast.error(`Błąd cases API: ${error.message}`);
           setCases([]);
+          setLeadCandidates([]);
           setLoading(false);
         });
 
@@ -161,6 +218,21 @@ export default function Cases() {
     [cases]
   );
 
+  const clientOptions = useMemo(() => buildClientOptions(cases, leadCandidates), [cases, leadCandidates]);
+
+  const clientSuggestions = useMemo(() => {
+    const normalizedQuery = newCase.clientName.trim().toLowerCase();
+    const base = normalizedQuery
+      ? clientOptions.filter((option) => {
+          return [option.name, option.email, option.phone]
+            .filter(Boolean)
+            .some((value) => value.toLowerCase().includes(normalizedQuery));
+        })
+      : clientOptions;
+
+    return base.slice(0, 6);
+  }, [clientOptions, newCase.clientName]);
+
   const filteredCases = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
 
@@ -172,6 +244,8 @@ export default function Cases() {
       return (
         record.title?.toLowerCase().includes(normalizedQuery)
         || record.clientName?.toLowerCase().includes(normalizedQuery)
+        || record.clientEmail?.toLowerCase().includes(normalizedQuery)
+        || record.clientPhone?.toLowerCase().includes(normalizedQuery)
         || record.status?.toLowerCase().includes(normalizedQuery)
       );
     });
@@ -203,6 +277,8 @@ export default function Cases() {
       await createCaseInSupabase({
         title: newCase.title.trim(),
         clientName: newCase.clientName.trim(),
+        clientEmail: newCase.clientEmail.trim(),
+        clientPhone: newCase.clientPhone.trim(),
         status: newCase.status,
         portalReady: false,
         workspaceId: workspace?.id,
@@ -210,9 +286,12 @@ export default function Cases() {
       await refreshCases();
       toast.success('Sprawa utworzona');
       setIsCreateCaseOpen(false);
+      setShowCreateClientFields(false);
       setNewCase({
         title: '',
         clientName: '',
+        clientEmail: '',
+        clientPhone: '',
         status: 'in_progress',
       });
     } catch (error: any) {
@@ -220,6 +299,17 @@ export default function Cases() {
     } finally {
       setCreateCasePending(false);
     }
+  }
+
+  function handleSelectClientSuggestion(option: ClientOption) {
+    setNewCase((prev) => ({
+      ...prev,
+      title: prev.title.trim() ? prev.title : `${option.name} - realizacja`,
+      clientName: option.name,
+      clientEmail: option.email,
+      clientPhone: option.phone,
+    }));
+    setShowCreateClientFields(false);
   }
 
   return (
@@ -238,7 +328,12 @@ export default function Cases() {
             </div>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
+            <Dialog open={isCreateCaseOpen} onOpenChange={(open) => {
+              setIsCreateCaseOpen(open);
+              if (!open) {
+                setShowCreateClientFields(false);
+              }
+            }}>
               <DialogTrigger asChild>
                 <Button className="rounded-2xl">
                   <Plus className="mr-2 h-4 w-4" /> Dodaj sprawę
@@ -254,9 +349,66 @@ export default function Cases() {
                     <Input value={newCase.title} onChange={(event) => setNewCase((prev) => ({ ...prev, title: event.target.value }))} placeholder="np. Wdrożenie klienta X" />
                   </div>
                   <div className="space-y-2">
-                    <Label>Nazwa klienta</Label>
-                    <Input value={newCase.clientName} onChange={(event) => setNewCase((prev) => ({ ...prev, clientName: event.target.value }))} placeholder="np. Jan Kowalski / Firma XYZ" />
+                    <Label>Klient</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={newCase.clientName}
+                        onChange={(event) => setNewCase((prev) => ({ ...prev, clientName: event.target.value }))}
+                        placeholder="Wpisz klienta, a system podpowie z leadów i spraw"
+                      />
+                      <Button
+                        type="button"
+                        variant={showCreateClientFields ? 'default' : 'outline'}
+                        size="icon"
+                        onClick={() => setShowCreateClientFields((prev) => !prev)}
+                        title="Dodaj nowego klienta"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {clientSuggestions.length > 0 ? (
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2 space-y-1">
+                        {clientSuggestions.map((option) => (
+                          <button
+                            key={option.key}
+                            type="button"
+                            className="w-full rounded-xl px-3 py-2 text-left transition hover:bg-white"
+                            onClick={() => handleSelectClientSuggestion(option)}
+                          >
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="text-sm font-semibold text-slate-900 truncate">{option.name}</p>
+                                <p className="text-xs text-slate-500 truncate">
+                                  {[option.email, option.phone].filter(Boolean).join(' • ') || 'Dane klienta zapisane w systemie'}
+                                </p>
+                              </div>
+                              <Badge variant="outline">{option.source === 'lead' ? 'Z leada' : 'Ze sprawy'}</Badge>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
+                    {!showCreateClientFields && (newCase.clientEmail || newCase.clientPhone) ? (
+                      <p className="text-xs text-slate-500">
+                        Wybrany klient: {[newCase.clientEmail, newCase.clientPhone].filter(Boolean).join(' • ')}
+                      </p>
+                    ) : null}
                   </div>
+                  {showCreateClientFields ? (
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-4">
+                      <p className="text-sm font-semibold text-slate-900">Nowy klient dla tej sprawy</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>E-mail klienta</Label>
+                          <Input value={newCase.clientEmail} onChange={(event) => setNewCase((prev) => ({ ...prev, clientEmail: event.target.value }))} placeholder="np. klient@firma.pl" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Telefon klienta</Label>
+                          <Input value={newCase.clientPhone} onChange={(event) => setNewCase((prev) => ({ ...prev, clientPhone: event.target.value }))} placeholder="np. 500 000 000" />
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
                   <div className="space-y-2">
                     <Label>Status startowy</Label>
                     <select
