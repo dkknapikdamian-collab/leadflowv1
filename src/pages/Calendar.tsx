@@ -85,6 +85,10 @@ type CalendarEditDraft = {
 
 type CalendarScale = 'compact' | 'default' | 'large';
 
+type CalendarView = 'week' | 'month';
+
+const CALENDAR_SCALE_STORAGE_KEY = 'leadflow-calendar-scale';
+const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 function createEntryActionClass() {
@@ -209,7 +213,7 @@ export default function Calendar() {
   const { workspace, hasAccess } = useWorkspace();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [calendarView, setCalendarView] = useState<'week' | 'month'>('week');
+  const [calendarView, setCalendarView] = useState<CalendarView>('week');
   const [calendarScale, setCalendarScale] = useState<CalendarScale>('default');
   const [events, setEvents] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
@@ -242,17 +246,30 @@ export default function Calendar() {
   }));
 
   useEffect(() => {
-    const stored = typeof window !== 'undefined' ? window.localStorage.getItem('leadflow-calendar-scale') : null;
-    if (stored === 'compact' || stored === 'default' || stored === 'large') {
-      setCalendarScale(stored);
+    if (typeof window === 'undefined') return;
+
+    const storedScale = window.localStorage.getItem(CALENDAR_SCALE_STORAGE_KEY);
+    if (storedScale === 'compact' || storedScale === 'default' || storedScale === 'large') {
+      setCalendarScale(storedScale);
+    }
+
+    const storedView = window.localStorage.getItem(CALENDAR_VIEW_STORAGE_KEY);
+    if (storedView === 'week' || storedView === 'month') {
+      setCalendarView(storedView);
     }
   }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.localStorage.setItem('leadflow-calendar-scale', calendarScale);
+      window.localStorage.setItem(CALENDAR_SCALE_STORAGE_KEY, calendarScale);
     }
   }, [calendarScale]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(CALENDAR_VIEW_STORAGE_KEY, calendarView);
+    }
+  }, [calendarView]);
 
   async function refreshSupabaseBundle() {
     const bundle = await fetchCalendarBundleFromSupabase();
@@ -769,7 +786,7 @@ export default function Calendar() {
                 ? `${format(selectedWeekStart, 'd MMM', { locale: pl })} - ${format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}`
                 : format(currentMonth, 'MMMM yyyy', { locale: pl })}
             </h1>
-            <p className="text-slate-500">Kalendarz live dla zadań, wydarzeń i ruchów leadowych.</p>
+            <p className="text-slate-500">Kalendarz dla zadań, wydarzeń i terminów ruchu z leadów.</p>
           </div>
           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
@@ -799,7 +816,7 @@ export default function Calendar() {
                 Duże kafelki
               </Button>
             </div>
-            <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
+            <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
               <Button
                 variant="ghost"
                 size="icon"
@@ -812,11 +829,13 @@ export default function Calendar() {
                   }
                   setCurrentMonth(subMonths(currentMonth, 1));
                 }}
-                className="rounded-lg"
+                className="rounded-lg text-primary hover:bg-primary/10 hover:text-primary"
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" onClick={() => { setCurrentMonth(new Date()); setSelectedDate(new Date()); }} className="text-sm font-bold px-4">Dzisiaj</Button>
+              <Button variant="ghost" onClick={() => { setCurrentMonth(new Date()); setSelectedDate(new Date()); }} className="text-sm font-bold px-4 text-slate-700 hover:text-slate-900">
+                Dzisiaj
+              </Button>
               <Button
                 variant="ghost"
                 size="icon"
@@ -829,7 +848,7 @@ export default function Calendar() {
                   }
                   setCurrentMonth(addMonths(currentMonth, 1));
                 }}
-                className="rounded-lg"
+                className="rounded-lg text-primary hover:bg-primary/10 hover:text-primary"
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>
@@ -1018,7 +1037,7 @@ export default function Calendar() {
               <h2 className="text-lg font-bold text-slate-900">
                 {format(selectedWeekStart, 'd MMM', { locale: pl })} - {format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}
               </h2>
-              <p className="text-sm text-slate-500">Taski, leady i wydarzenia mają teraz identyczny pasek akcji: Edytuj, +1D, +1W, Zrobione, Usun.</p>
+              <p className="text-sm text-slate-500">Zadania, leady i wydarzenia mają ten sam zestaw akcji: Edytuj, +1D, +1W, Zrobione, Usuń.</p>
             </div>
             <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
               Wybrany dzień: {format(selectedDate, 'EEEE, d MMMM', { locale: pl })}
@@ -1112,7 +1131,7 @@ export default function Calendar() {
             <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
               <div>
                 <h3 className="text-lg font-bold text-slate-900">Widok tygodniowy</h3>
-                <p className="text-sm text-slate-500">Każdy wpis ma ten sam zestaw akcji, niezależnie czy to zadanie, lead czy wydarzenie.</p>
+                <p className="text-sm text-slate-500">Każdy wpis ma ten sam zestaw akcji, niezależnie od tego, czy to zadanie, lead czy wydarzenie.</p>
               </div>
               <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisów</Badge>
             </div>
@@ -1159,30 +1178,6 @@ export default function Calendar() {
             </div>
           </div>
         ) : null}
-
-        <div className="mt-8 grid grid-cols-1 xl:grid-cols-3 gap-4">
-          <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <Repeat className="w-4 h-4 text-slate-400" />
-              <h2 className="text-sm font-bold text-slate-900">Cykliczne wpisy</h2>
-            </div>
-            <p className="text-sm text-slate-500">W tym miesiącu kalendarz rozwija powtarzalne zadania i wydarzenia bez ręcznego odświeżania.</p>
-          </div>
-          <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <Bell className="w-4 h-4 text-slate-400" />
-              <h2 className="text-sm font-bold text-slate-900">Przypomnienia</h2>
-            </div>
-            <p className="text-sm text-slate-500">Tryb przypomnień zapisuje się już w danych. Warstwa wysyłki powiadomień wymaga jeszcze domknięcia logiki V1.</p>
-          </div>
-          <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <Plus className="w-4 h-4 text-slate-400" />
-              <h2 className="text-sm font-bold text-slate-900">Live plan</h2>
-            </div>
-            <p className="text-sm text-slate-500">Kalendarz zbiera teraz wydarzenia, zadania oraz terminy kolejnego ruchu z leadów.</p>
-          </div>
-        </div>
       </div>
 
       <Dialog open={Boolean(editEntry && editDraft)} onOpenChange={(open) => {
