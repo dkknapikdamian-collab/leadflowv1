@@ -62,7 +62,6 @@ import {
   REMINDER_OFFSET_OPTIONS,
   REMINDER_MODE_OPTIONS,
   TASK_TYPES,
-  getScheduleEntryIcon,
 } from '../lib/options';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
@@ -129,19 +128,11 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
 }
 
 function getEntrySubtitle(entry: ScheduleEntry) {
-  const typedLabel = typeof entry.raw?.type === 'string' && entry.raw.type
-    ? `Typ: ${entry.raw.type}`
-    : entry.kind === 'event'
-      ? 'Wydarzenie w kalendarzu'
-      : entry.kind === 'task'
-        ? 'Zadanie w planie'
-        : 'Ruch leadowy';
-
   if (entry.leadName) {
-    return `Lead: ${entry.leadName} • ${typedLabel}`;
+    return `Lead: ${entry.leadName}`;
   }
 
-  return typedLabel;
+  return '';
 }
 
 function sortCalendarEntriesForDisplay(entries: ScheduleEntry[]) {
@@ -174,8 +165,8 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
   const pendingWeek = actionPendingId === `${entry.id}:7`;
   const pendingDone = actionPendingId === `${entry.id}:done`;
   const pendingDelete = actionPendingId === `${entry.id}:delete`;
-  const EntryIcon = getScheduleEntryIcon(entry.kind, entry.raw?.type);
   const isCompletedTask = entry.kind === 'task' && entry.raw?.status === 'done';
+  const subtitle = getEntrySubtitle(entry);
 
   return (
     <div className={`rounded-2xl border border-slate-200 bg-white p-3 shadow-sm ${isCompletedTask ? 'opacity-60' : ''}`}>
@@ -201,15 +192,10 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
       </div>
 
       <div className="mb-3 min-w-0">
-        <div className="flex items-start gap-2">
-          <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${getEntryTone(entry)}`}>
-            <EntryIcon className="h-4 w-4" />
-          </div>
-          <div className="min-w-0">
-            <p className={`text-sm font-bold break-words ${isCompletedTask ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
-            <p className={`text-[11px] break-words ${isCompletedTask ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{getEntrySubtitle(entry)}</p>
-            {caseTitle ? <p className={`text-[11px] break-words ${isCompletedTask ? 'text-slate-400 line-through' : 'text-slate-500'}`}>Sprawa: {caseTitle}</p> : null}
-          </div>
+        <div className="min-w-0">
+          <p className={`text-sm font-bold break-words ${isCompletedTask ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
+          {subtitle ? <p className={`text-[11px] break-words ${isCompletedTask ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{subtitle}</p> : null}
+          {caseTitle ? <p className={`text-[11px] break-words ${isCompletedTask ? 'text-slate-400 line-through' : 'text-slate-500'}`}>Sprawa: {caseTitle}</p> : null}
         </div>
       </div>
 
@@ -1162,12 +1148,10 @@ export default function Calendar() {
                     </div>
                     <div className="space-y-1">
                       {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
-                        const EntryIcon = getScheduleEntryIcon(entry.kind, entry.raw?.type);
                         const isCompletedTask = entry.kind === 'task' && entry.raw?.status === 'done';
 
                         return (
-                          <div key={entry.id} className={`flex items-center gap-1 rounded border p-1 text-[10px] font-medium ${getEntryTone(entry)} ${isCompletedTask ? 'opacity-60' : ''}`}>
-                            <EntryIcon className="h-3 w-3 shrink-0" />
+                          <div key={entry.id} className={`rounded border p-1 text-[10px] font-medium ${getEntryTone(entry)} ${isCompletedTask ? 'opacity-60' : ''}`}>
                             <span className={`break-words ${isCompletedTask ? 'line-through' : ''}`}>{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span>
                           </div>
                         );

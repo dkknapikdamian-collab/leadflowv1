@@ -741,6 +741,7 @@ export default function Today() {
     setNewEvent({ ...newEvent, startAt: value, endAt: toDateTimeLocalValue(nextEnd) });
   };
 
+
   if (wsLoading || loading) {
     return (
       <Layout>
