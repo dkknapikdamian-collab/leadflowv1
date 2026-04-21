@@ -78,6 +78,7 @@ import {
   fetchEventsFromSupabase,
   fetchLeadByIdFromSupabase,
   fetchLeadsFromSupabase,
+  fetchCasesFromSupabase,
   fetchTasksFromSupabase,
   insertActivityToSupabase,
   insertCaseItemToSupabase,
@@ -235,17 +236,17 @@ type CaseClientOption = {
   name: string;
   email: string;
   phone: string;
-  source: 'lead' | 'current';
+  source: 'lead' | 'current' | 'case';
 };
 
 function normalizeCaseClientText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function buildCaseClientOptions(leads: any[], sourceLead: any, caseData: any) {
+function buildCaseClientOptions(cases: any[], leads: any[], sourceLead: any, caseData: any) {
   const map = new Map<string, CaseClientOption>();
 
-  const push = (rawName: unknown, rawEmail: unknown, rawPhone: unknown, source: 'lead' | 'current') => {
+  const push = (rawName: unknown, rawEmail: unknown, rawPhone: unknown, source: 'lead' | 'current' | 'case') => {
     const name = normalizeCaseClientText(rawName);
     const email = normalizeCaseClientText(rawEmail);
     const phone = normalizeCaseClientText(rawPhone);
@@ -270,6 +271,10 @@ function buildCaseClientOptions(leads: any[], sourceLead: any, caseData: any) {
     push(lead?.name || lead?.company, lead?.email, lead?.phone, 'lead');
   }
 
+  for (const currentCase of cases || []) {
+    push(currentCase?.clientName, currentCase?.clientEmail, currentCase?.clientPhone, 'case');
+  }
+
   return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
 }
 
@@ -284,6 +289,7 @@ export default function CaseDetail() {
   const [newItem, setNewItem] = useState({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
   const [sourceLead, setSourceLead] = useState<any>(null);
   const [availableLeads, setAvailableLeads] = useState<any[]>([]);
+  const [availableCases, setAvailableCases] = useState<any[]>([]);
   const [selectedLeadId, setSelectedLeadId] = useState('');
   const [leadRelationPending, setLeadRelationPending] = useState(false);
   const [linkedTasks, setLinkedTasks] = useState<any[]>([]);
@@ -336,8 +342,8 @@ export default function CaseDetail() {
   }, [caseData?.clientEmail, caseData?.clientName, caseData?.clientPhone]);
 
   const caseClientOptions = useMemo(
-    () => buildCaseClientOptions(availableLeads, sourceLead, caseData),
-    [availableLeads, caseData, sourceLead],
+    () => buildCaseClientOptions(availableCases, availableLeads, sourceLead, caseData),
+    [availableCases, availableLeads, caseData, sourceLead],
   );
 
   const caseClientSuggestions = useMemo(() => {
@@ -367,11 +373,12 @@ export default function CaseDetail() {
   async function refreshSupabaseCase() {
     if (!caseId) return;
 
-    const [caseRow, itemRows, activityRows, leadRows, taskRows, eventRows] = await Promise.all([
+    const [caseRow, itemRows, activityRows, leadRows, caseRows, taskRows, eventRows] = await Promise.all([
       fetchCaseByIdFromSupabase(caseId),
       fetchCaseItemsFromSupabase(caseId),
       fetchActivitiesFromSupabase({ caseId, limit: 200 }),
       fetchLeadsFromSupabase(),
+      fetchCasesFromSupabase(),
       fetchTasksFromSupabase(),
       fetchEventsFromSupabase(),
     ]);
@@ -381,6 +388,7 @@ export default function CaseDetail() {
     setActivities(activityRows);
 
     const allLeads = (leadRows || []) as any[];
+    const allCases = (caseRows || []) as any[];
     const linkedLeadId = String(caseRow?.leadId || '');
     const currentLead = linkedLeadId ? allLeads.find((entry) => String(entry.id || '') === linkedLeadId) || null : null;
     const openLeads = allLeads.filter((entry) => {
@@ -390,6 +398,7 @@ export default function CaseDetail() {
 
     setSourceLead(currentLead);
     setAvailableLeads(openLeads);
+    setAvailableCases(allCases);
     setSelectedLeadId(linkedLeadId);
 
     const currentCaseId = String(caseId || '');
@@ -2179,7 +2188,7 @@ export default function CaseDetail() {
                             {[option.email, option.phone].filter(Boolean).join(' • ') || 'Dane klienta zapisane w systemie'}
                           </p>
                         </div>
-                        <Badge variant="outline">{option.source === 'lead' ? 'Z leada' : 'Z danych sprawy'}</Badge>
+                        <Badge variant="outline">{option.source === 'lead' ? 'Z leada' : option.source === 'case' ? 'Ze sprawy' : 'Z danych sprawy'}</Badge>
                       </div>
                     </button>
                   ))}
