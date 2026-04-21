@@ -159,7 +159,7 @@ function LeadLinkCard({
   rightMeta,
 }: LeadLinkCardProps) {
   return (
-    <Link to={`/leads/${leadId}`} className="block">
+    <Link to={`/leads/${leadId}`} className="block group">
       <Card className={`transition-all hover:border-primary/30 hover:shadow-md ${className}`}>
         <CardContent className="p-4 flex items-center justify-between gap-4">
           <div className="min-w-0">
@@ -641,7 +641,6 @@ export default function Today() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Witaj, {profile?.fullName?.split(' ')[0]}!</h1>
-            <p className="text-slate-500">Dziś pokazuje teraz nie tylko kalendarz, ale też miejsca, gdzie proces realnie się sypie.</p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <Dialog open={isLeadOpen} onOpenChange={setIsLeadOpen}>
@@ -1032,17 +1031,16 @@ export default function Today() {
                   {todayLeadActions.length > 0 ? (
                     <div className="max-h-80 overflow-y-auto pr-1 space-y-3">
                       {todayLeadActions.map((entry) => (
-                        <Link key={entry.id} to={entry.link || `/leads/${entry.sourceId}`} className="block">
+                        <Link key={entry.id} to={entry.link || `/leads/${entry.sourceId}`} className="block group">
                           <Card className="border-amber-100 transition-all hover:border-amber-300 hover:shadow-md">
                             <CardContent className="p-4 flex items-center justify-between gap-4">
                               <div className="min-w-0">
                                 <p className="font-semibold text-slate-900 break-words">{entry.leadName}</p>
                                 <p className="text-sm text-slate-500 break-words">{entry.title}</p>
-                                <p className="mt-2 text-xs font-medium text-amber-600">Kliknij, aby otworzyć leada</p>
                               </div>
                               <div className="flex items-center gap-3 shrink-0">
                                 <span className="text-xs font-bold text-amber-600">{format(parseISO(entry.startsAt), 'HH:mm')}</span>
-                                <div className="rounded-xl bg-amber-50 p-2 text-amber-600">
+                                <div className="rounded-xl bg-amber-50 p-2 text-amber-600 transition-colors group-hover:bg-primary group-hover:text-white">
                                   <ArrowRight className="w-4 h-4" />
                                 </div>
                               </div>
@@ -1314,16 +1312,6 @@ export default function Today() {
                   />
                 ))}
               </div>
-            </section>
-
-            <section className="space-y-3">
-              <TileCard id="info-recurring" title="Cykliczność działa live" subtitle="Powtarzalne zadania i wydarzenia wpadają teraz do planu dnia bez ręcznego odświeżania." collapsedMap={collapsedTiles} onToggle={toggleTile} headerRight={<Repeat className="w-4 h-4 text-slate-400" />}>
-                <p className="text-sm text-slate-500">Sekcja zostaje w widoku jako szybka notatka, ale możesz ją zwinąć, żeby nie zabierała miejsca.</p>
-              </TileCard>
-
-              <TileCard id="info-reminders" title="Przypomnienia zapisują się w danych" subtitle="Warstwa konfiguracji przypomnień jest już spięta z formularzami." collapsedMap={collapsedTiles} onToggle={toggleTile} headerRight={<Bell className="w-4 h-4 text-slate-400" />}>
-                <p className="text-sm text-slate-500">Osobny silnik wysyłki to nadal osobny brak V1, ale ustawienia przypomnień są już zapisywane i gotowe do dalszego rozwijania.</p>
-              </TileCard>
             </section>
           </div>
         </div>
