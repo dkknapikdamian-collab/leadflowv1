@@ -1,11 +1,13 @@
-import { useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent } from 'react';
 import {
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   sendEmailVerification,
-  updateProfile
+  updateProfile,
+  signInWithRedirect,
+  getRedirectResult,
 } from 'firebase/auth';
 import { auth, googleProvider, db } from '../firebase';
 import { doc, setDoc, getDoc, serverTimestamp, collection, addDoc } from 'firebase/firestore';
@@ -16,6 +18,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { CheckCircle2, LogIn, Mail, Lock, User, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { addDays } from 'date-fns';
+
+const GOOGLE_REDIRECT_SESSION_KEY = 'closeflow:google-redirect-pending';
+
+function shouldUseRedirectForGoogleAuth() {
+  if (typeof window === 'undefined') return false;
+  const ua = window.navigator.userAgent || '';
+  const coarsePointer = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || coarsePointer;
+}
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -50,15 +61,79 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    let active = true;
+    const redirectPending = typeof window !== 'undefined' && window.sessionStorage.getItem(GOOGLE_REDIRECT_SESSION_KEY) === '1';
+
+    if (!redirectPending) return;
+
+    const finalizeGoogleRedirect = async () => {
+      setLoading(true);
+      try {
+        const result = await getRedirectResult(auth);
+        if (result?.user) {
+          await initializeUser(result.user);
+          toast.success('Zalogowano pomyślnie');
+        }
+      } catch (error: any) {
+        console.error(error);
+        toast.error('Błąd logowania Google: ' + (error?.message || 'UNKNOWN_ERROR'));
+      } finally {
+        if (typeof window !== 'undefined') {
+          window.sessionStorage.removeItem(GOOGLE_REDIRECT_SESSION_KEY);
+        }
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void finalizeGoogleRedirect();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const handleGoogleLogin = async () => {
     setLoading(true);
+    googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+    const startRedirectFlow = async () => {
+      if (typeof window !== 'undefined') {
+        window.sessionStorage.setItem(GOOGLE_REDIRECT_SESSION_KEY, '1');
+      }
+      await signInWithRedirect(auth, googleProvider);
+    };
+
     try {
+      if (shouldUseRedirectForGoogleAuth()) {
+        await startRedirectFlow();
+        return;
+      }
+
       const result = await signInWithPopup(auth, googleProvider);
       await initializeUser(result.user);
       toast.success('Zalogowano pomyślnie');
     } catch (error: any) {
+      const code = String(error?.code || '');
       console.error(error);
-      toast.error('Błąd logowania: ' + error.message);
+
+      if (
+        code === 'auth/popup-blocked' ||
+        code === 'auth/cancelled-popup-request' ||
+        code === 'auth/operation-not-supported-in-this-environment'
+      ) {
+        try {
+          await startRedirectFlow();
+          return;
+        } catch (redirectError: any) {
+          console.error(redirectError);
+          toast.error('Błąd logowania Google: ' + (redirectError?.message || 'UNKNOWN_ERROR'));
+        }
+      } else {
+        toast.error('Błąd logowania Google: ' + (error?.message || 'UNKNOWN_ERROR'));
+      }
     } finally {
       setLoading(false);
     }
@@ -222,7 +297,7 @@ export default function Login() {
                 className="w-full h-11 rounded-xl flex items-center justify-center gap-3 text-base font-semibold transition-all hover:bg-slate-50"
                 disabled={loading}
               >
-                <LogIn className="w-5 h-5" />
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
                 Google
               </Button>
             </TabsContent>
