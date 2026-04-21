@@ -66,6 +66,7 @@ import {
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import Layout from '../components/Layout';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
   createClientPortalTokenInSupabase,
   deleteCaseItemFromSupabase,
@@ -274,6 +275,17 @@ export default function CaseDetail() {
   const [editCaseNote, setEditCaseNote] = useState<any | null>(null);
   const [caseNoteEditSubmitting, setCaseNoteEditSubmitting] = useState(false);
   const [caseNoteActionId, setCaseNoteActionId] = useState<string | null>(null);
+
+  const loadConflictCandidates = async () => {
+    const [taskRows, eventRows] = await Promise.all([
+      fetchTasksFromSupabase(),
+      fetchEventsFromSupabase(),
+    ]);
+    return buildConflictCandidates({
+      tasks: taskRows as any[],
+      events: eventRows as any[],
+    });
+  };
 
   async function refreshSupabaseCase() {
     if (!caseId) return;
@@ -693,6 +705,16 @@ export default function CaseDetail() {
 
     try {
       setQuickTaskSubmitting(true);
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: quickTask.title.trim(),
+          startAt: quickTask.scheduledAt,
+        },
+        candidates: await loadConflictCandidates(),
+      });
+      if (!shouldSave) return;
+
       await insertTaskToSupabase({
         title: quickTask.title.trim(),
         type: quickTask.type,
@@ -737,6 +759,17 @@ export default function CaseDetail() {
 
     try {
       setQuickEventSubmitting(true);
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'event',
+          title: quickEvent.title.trim(),
+          startAt: quickEvent.startAt,
+          endAt: quickEvent.endAt,
+        },
+        candidates: await loadConflictCandidates(),
+      });
+      if (!shouldSave) return;
+
       await insertEventToSupabase({
         title: quickEvent.title.trim(),
         type: quickEvent.type,
@@ -931,6 +964,18 @@ export default function CaseDetail() {
 
     try {
       setTaskEditSubmitting(true);
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: editCaseTask.title.trim(),
+          startAt: editCaseTask.scheduledAt,
+        },
+        candidates: await loadConflictCandidates(),
+        excludeId: String(editCaseTask.id),
+        excludeKind: 'task',
+      });
+      if (!shouldSave) return;
+
       await updateTaskInSupabase({
         id: String(editCaseTask.id),
         title: editCaseTask.title.trim(),
@@ -972,6 +1017,19 @@ export default function CaseDetail() {
 
     try {
       setEventEditSubmitting(true);
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'event',
+          title: editCaseEvent.title.trim(),
+          startAt: editCaseEvent.startAt,
+          endAt: editCaseEvent.endAt,
+        },
+        candidates: await loadConflictCandidates(),
+        excludeId: String(editCaseEvent.id),
+        excludeKind: 'event',
+      });
+      if (!shouldSave) return;
+
       await updateEventInSupabase({
         id: String(editCaseEvent.id),
         title: editCaseEvent.title.trim(),

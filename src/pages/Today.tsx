@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent, ReactNode, useRef } from 'react';
+import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -63,6 +63,7 @@ import {
   TASK_TYPES,
 } from '../lib/options';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
@@ -520,6 +521,16 @@ export default function Today() {
     setTaskSubmitting(true);
     try {
       const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: newTask.title,
+          startAt: newTask.dueAt,
+        },
+        candidates: conflictCandidates,
+      });
+      if (!shouldSave) return;
+
       const reminderAt = toReminderAtIso(newTask.dueAt, newTask.reminder);
       await insertTaskToSupabase({
         title: newTask.title,
@@ -559,6 +570,17 @@ export default function Today() {
     setEventSubmitting(true);
     try {
       const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'event',
+          title: newEvent.title,
+          startAt: newEvent.startAt,
+          endAt: newEvent.endAt,
+        },
+        candidates: conflictCandidates,
+      });
+      if (!shouldSave) return;
+
       const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
       await insertEventToSupabase({
         title: newEvent.title,
@@ -767,6 +789,14 @@ export default function Today() {
     })
     .sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0))
     .slice(0, 5);
+  const conflictCandidates = useMemo(
+    () =>
+      buildConflictCandidates({
+        tasks,
+        events,
+      }),
+    [events, tasks],
+  );
   const topValuableLeads = [...activeLeads].sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0)).slice(0, 3);
 
   const summaryCards = [

@@ -65,6 +65,7 @@ import {
   getScheduleEntryIcon,
 } from '../lib/options';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
@@ -472,6 +473,16 @@ export default function Calendar() {
     const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
 
     try {
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: newTask.title,
+          startAt: newTask.dueAt,
+        },
+        candidates: conflictCandidates,
+      });
+      if (!shouldSave) return;
+
       await insertTaskToSupabase({
         title: newTask.title,
         type: newTask.type,
@@ -506,6 +517,17 @@ export default function Calendar() {
     const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
 
     try {
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'event',
+          title: newEvent.title,
+          startAt: newEvent.startAt,
+          endAt: newEvent.endAt,
+        },
+        candidates: conflictCandidates,
+      });
+      if (!shouldSave) return;
+
       await insertEventToSupabase({
         title: newEvent.title,
         type: newEvent.type,
@@ -561,6 +583,15 @@ export default function Calendar() {
   const caseTitleById = useMemo(
     () => new Map(cases.map((caseRecord: any) => [String(caseRecord.id || ''), String(caseRecord.title || caseRecord.clientName || 'Powiązana sprawa')])),
     [cases],
+  );
+  const conflictCandidates = useMemo(
+    () =>
+      buildConflictCandidates({
+        tasks,
+        events,
+        caseTitleById,
+      }),
+    [caseTitleById, events, tasks],
   );
 
   const monthCellMinHeight = calendarScale === 'compact' ? 104 : calendarScale === 'large' ? 160 : 128;

@@ -57,9 +57,11 @@ import {
   REMINDER_MODE_OPTIONS,
   TASK_TYPES,
 } from '../lib/options';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
   deleteTaskFromSupabase,
   fetchCasesFromSupabase,
+  fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
   insertActivityToSupabase,
@@ -331,6 +333,21 @@ export default function Tasks() {
     });
 
     try {
+      const eventRows = await fetchEventsFromSupabase();
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: payload.title,
+          startAt: payload.dueAt,
+        },
+        candidates: buildConflictCandidates({
+          tasks,
+          events: eventRows as any[],
+          caseTitleById,
+        }),
+      });
+      if (!shouldSave) return;
+
       const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
       await insertTaskToSupabase({
         title: newTask.title,
@@ -421,6 +438,23 @@ export default function Tasks() {
     });
 
     try {
+      const eventRows = await fetchEventsFromSupabase();
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: payload.title,
+          startAt: payload.dueAt,
+        },
+        candidates: buildConflictCandidates({
+          tasks,
+          events: eventRows as any[],
+          caseTitleById,
+        }),
+        excludeId: String(editTask.id),
+        excludeKind: 'task',
+      });
+      if (!shouldSave) return;
+
       const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
       await updateTaskInSupabase({
         id: editTask.id,
@@ -958,7 +992,7 @@ export default function Tasks() {
               </div>
               {sortedCompletedDates.length === 0 ? (
                 <Card className="border-dashed bg-slate-50/50">
-                  <CardContent className="p-6 text-sm text-slate-500">Brak zrobionych zadań dla obecnego widoku.</CardContent>
+                  <CardContent className="p-6 text-sm text-slate-500">Brak zrobionych zadań dla obecnego wyszukiwania.</CardContent>
                 </Card>
               ) : (
                 <div className="space-y-6">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { Palette, Shield, User } from 'lucide-react';
+import { AlertTriangle, Palette, Shield, User } from 'lucide-react';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { useAppearance } from '../components/appearance-provider';
@@ -9,10 +9,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { auth, db } from '../firebase';
+import { getConflictWarningsEnabled, setConflictWarningsEnabled as storeConflictWarningsEnabled } from '../lib/app-preferences';
 
 export default function Settings() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [conflictWarningsEnabled, setConflictWarningsEnabledState] = useState(true);
   const { skin, setSkin, skinOptions } = useAppearance();
 
   useEffect(() => {
@@ -29,6 +31,7 @@ export default function Settings() {
           email: auth.currentUser?.email || '',
         });
       }
+      setConflictWarningsEnabledState(getConflictWarningsEnabled());
       setLoading(false);
     };
 
@@ -120,6 +123,35 @@ export default function Settings() {
                   </button>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-none shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-slate-400" />
+                Ustawienia aplikacji
+              </CardTitle>
+              <CardDescription>Domyślnie ostrzeżenia o konfliktach terminów są włączone.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={conflictWarningsEnabled}
+                  onChange={(event) => {
+                    const nextValue = event.target.checked;
+                    setConflictWarningsEnabledState(nextValue);
+                    storeConflictWarningsEnabled(nextValue);
+                    toast.success(nextValue ? 'Włączono ostrzeżenia o konfliktach terminów' : 'Wyłączono ostrzeżenia o konfliktach terminów');
+                  }}
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
+                />
+                <div>
+                  <p className="font-semibold text-slate-900">Pokazuj ostrzeżenia o konfliktach terminów</p>
+                  <p className="mt-1 text-sm text-slate-500">Przy dodawaniu lub edycji zadania albo wydarzenia aplikacja pokaże konflikt z istniejącym wpisem i zapyta, czy mimo to zapisać.</p>
+                </div>
+              </label>
             </CardContent>
           </Card>
 

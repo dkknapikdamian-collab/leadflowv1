@@ -37,6 +37,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadFinance, normalizePartialPayments } from '../lib/lead-finance';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
   createCaseInSupabase,
   deleteEventFromSupabase,
@@ -51,6 +52,8 @@ import {
   insertEventToSupabase,
   insertTaskToSupabase,
   isSupabaseConfigured,
+  updateActivityInSupabase,
+  deleteActivityFromSupabase,
   updateCaseInSupabase,
   updateEventInSupabase,
   updateLeadInSupabase,
@@ -308,6 +311,22 @@ export default function LeadDetail() {
       }),
     [allCases, leadId],
   );
+  const caseTitleById = useMemo(
+    () => new Map(allCases.map((item: any) => [String(item.id || ''), String(item.title || item.clientName || 'Powiązana sprawa')])),
+    [allCases],
+  );
+
+  const loadConflictCandidates = async () => {
+    const [taskRows, eventRows] = await Promise.all([
+      fetchTasksFromSupabase(),
+      fetchEventsFromSupabase(),
+    ]);
+    return buildConflictCandidates({
+      tasks: taskRows as any[],
+      events: eventRows as any[],
+      caseTitleById,
+    });
+  };
 
   const addActivity = async (eventType: string, payload: Record<string, unknown>) => {
     if (!leadId) return;
@@ -475,6 +494,16 @@ export default function LeadDetail() {
 
     try {
       setQuickTaskSubmitting(true);
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: quickTask.title.trim(),
+          startAt: quickTask.dueAt,
+        },
+        candidates: await loadConflictCandidates(),
+      });
+      if (!shouldSave) return;
+
       await insertTaskToSupabase({
         title: quickTask.title.trim(),
         type: quickTask.type,
@@ -503,6 +532,17 @@ export default function LeadDetail() {
 
     try {
       setQuickEventSubmitting(true);
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'event',
+          title: quickEvent.title.trim(),
+          startAt: quickEvent.startAt,
+          endAt: quickEvent.endAt,
+        },
+        candidates: await loadConflictCandidates(),
+      });
+      if (!shouldSave) return;
+
       await insertEventToSupabase({
         title: quickEvent.title.trim(),
         type: quickEvent.type,
@@ -655,6 +695,18 @@ export default function LeadDetail() {
 
     try {
       setEditLinkedTaskSubmitting(true);
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: String(editLinkedTask.title).trim(),
+          startAt: String(editLinkedTask.dueAt),
+        },
+        candidates: await loadConflictCandidates(),
+        excludeId: String(editLinkedTask.id),
+        excludeKind: 'task',
+      });
+      if (!shouldSave) return;
+
       await updateTaskInSupabase({
         id: String(editLinkedTask.id),
         title: String(editLinkedTask.title).trim(),
@@ -691,6 +743,19 @@ export default function LeadDetail() {
 
     try {
       setEditLinkedEventSubmitting(true);
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'event',
+          title: String(editLinkedEvent.title).trim(),
+          startAt: String(editLinkedEvent.startAt),
+          endAt: String(editLinkedEvent.endAt),
+        },
+        candidates: await loadConflictCandidates(),
+        excludeId: String(editLinkedEvent.id),
+        excludeKind: 'event',
+      });
+      if (!shouldSave) return;
+
       await updateEventInSupabase({
         id: String(editLinkedEvent.id),
         title: String(editLinkedEvent.title).trim(),
