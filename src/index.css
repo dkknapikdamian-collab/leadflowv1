@@ -7,15 +7,172 @@
 }
 
 @layer base {
+  :root,
+  [data-skin="forteca-light"] {
+    --color-primary: #2563eb;
+    --color-primary-foreground: #ffffff;
+    --app-bg: #f8fafc;
+    --app-surface: #f8fafc;
+    --app-surface-strong: #ffffff;
+    --app-surface-muted: #f1f5f9;
+    --app-border: #e2e8f0;
+    --app-text: #0f172a;
+    --app-muted: #64748b;
+    --app-muted-soft: #94a3b8;
+    --app-primary-chip-bg: rgba(37, 99, 235, 0.12);
+    --app-primary-chip-text: #1d4ed8;
+    --app-shadow-color: rgba(15, 23, 42, 0.06);
+  }
+
+  [data-skin="forteca-dark"] {
+    --color-primary: #60a5fa;
+    --color-primary-foreground: #08111f;
+    --app-bg: #0f172a;
+    --app-surface: #111827;
+    --app-surface-strong: #1e293b;
+    --app-surface-muted: #334155;
+    --app-border: #334155;
+    --app-text: #f8fafc;
+    --app-muted: #cbd5e1;
+    --app-muted-soft: #94a3b8;
+    --app-primary-chip-bg: rgba(96, 165, 250, 0.18);
+    --app-primary-chip-text: #bfdbfe;
+    --app-shadow-color: rgba(2, 6, 23, 0.35);
+  }
+
+  [data-skin="midnight"] {
+    --color-primary: #22c55e;
+    --color-primary-foreground: #04110a;
+    --app-bg: #020617;
+    --app-surface: #0f172a;
+    --app-surface-strong: #111827;
+    --app-surface-muted: #1f2937;
+    --app-border: #1f2937;
+    --app-text: #f8fafc;
+    --app-muted: #cbd5e1;
+    --app-muted-soft: #94a3b8;
+    --app-primary-chip-bg: rgba(34, 197, 94, 0.16);
+    --app-primary-chip-text: #86efac;
+    --app-shadow-color: rgba(0, 0, 0, 0.45);
+  }
+
+  [data-skin="sandstone"] {
+    --color-primary: #d97706;
+    --color-primary-foreground: #fffdf8;
+    --app-bg: #f8f5ef;
+    --app-surface: #f3ede2;
+    --app-surface-strong: #fffdf8;
+    --app-surface-muted: #e7dcc7;
+    --app-border: #d6c7ac;
+    --app-text: #3f2f20;
+    --app-muted: #7c6a55;
+    --app-muted-soft: #a08d76;
+    --app-primary-chip-bg: rgba(217, 119, 6, 0.14);
+    --app-primary-chip-text: #b45309;
+    --app-shadow-color: rgba(85, 60, 28, 0.10);
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
   body {
-    @apply font-sans text-slate-900 bg-slate-50;
+    @apply font-sans;
+    background-color: var(--app-bg);
+    color: var(--app-text);
+    transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
   }
 }
 
+.app-bg {
+  background-color: var(--app-bg);
+}
+
+.app-surface {
+  background-color: var(--app-surface);
+}
+
+.app-surface-strong {
+  background-color: var(--app-surface-strong);
+}
+
+.app-border {
+  border-color: var(--app-border);
+}
+
+.app-text {
+  color: var(--app-text);
+}
+
+.app-muted {
+  color: var(--app-muted);
+}
+
+.app-primary-chip {
+  background-color: var(--app-primary-chip-bg);
+  color: var(--app-primary-chip-text);
+}
+
+.app-shadow {
+  box-shadow: 0 10px 30px var(--app-shadow-color);
+}
+
 .glass {
-  @apply bg-white/80 backdrop-blur-md border border-white/20;
+  @apply backdrop-blur-md;
+  background-color: color-mix(in srgb, var(--app-surface-strong) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--app-border) 65%, transparent);
 }
 
 .card-shadow {
-  @apply shadow-[0_8px_30px_rgb(0,0,0,0.04)];
+  box-shadow: 0 8px 30px var(--app-shadow-color);
+}
+
+html[data-skin] .bg-slate-50,
+html[data-skin] .bg-slate-50\/40,
+html[data-skin] .bg-slate-50\/50,
+html[data-skin] .bg-slate-50\/30 {
+  background-color: var(--app-surface) !important;
+}
+
+html[data-skin] .bg-white,
+html[data-skin] .bg-white\/80,
+html[data-skin] .bg-white\/95 {
+  background-color: var(--app-surface-strong) !important;
+}
+
+html[data-skin] .bg-slate-100,
+html[data-skin] .bg-slate-200 {
+  background-color: var(--app-surface-muted) !important;
+}
+
+html[data-skin] .border-slate-100,
+html[data-skin] .border-slate-200,
+html[data-skin] .border-slate-300 {
+  border-color: var(--app-border) !important;
+}
+
+html[data-skin] .text-slate-900 {
+  color: var(--app-text) !important;
+}
+
+html[data-skin] .text-slate-600,
+html[data-skin] .text-slate-500 {
+  color: var(--app-muted) !important;
+}
+
+html[data-skin] .text-slate-400,
+html[data-skin] .text-slate-300 {
+  color: var(--app-muted-soft) !important;
+}
+
+html[data-skin] .hover\:bg-slate-50:hover,
+html[data-skin] .hover\:bg-slate-100:hover,
+html[data-skin] .hover\:bg-white:hover {
+  background-color: var(--app-surface-muted) !important;
+}
+
+html[data-skin] .hover\:text-slate-900:hover {
+  color: var(--app-text) !important;
 }
