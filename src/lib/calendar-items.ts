@@ -42,6 +42,7 @@ export type CalendarLeadActionItem = {
   name: string;
   nextActionAt?: string;
   nextStep?: string;
+  nextActionItemId?: string;
   status?: string;
   dealValue?: number;
   phone?: string;
@@ -151,6 +152,7 @@ export function normalizeCalendarLeadAction(row: Record<string, unknown>): Calen
     name: String(row.name || ''),
     nextActionAt,
     nextStep: row.nextStep ? String(row.nextStep) : undefined,
+    nextActionItemId: row.nextActionItemId ? String(row.nextActionItemId) : undefined,
     status,
     dealValue: Number(row.dealValue || 0),
     phone: row.phone ? String(row.phone) : undefined,

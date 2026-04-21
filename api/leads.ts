@@ -68,6 +68,7 @@ function normalizeLead(row: Record<string, unknown>) {
     status: String(row.status || 'new'),
     nextStep: String(row.next_action_title || row.next_step || row.nextStep || ''),
     nextActionAt: String(row.next_action_at || row.next_step_due_at || row.nextActionAt || ''),
+    nextActionItemId: String(row.next_action_item_id || row.nextActionItemId || ''),
     dealValue: Number(row.deal_value || row.value || row.dealValue || 0),
     partialPayments,
     isAtRisk: Boolean(row.is_at_risk ?? row.isAtRisk ?? (String(row.priority || '').toLowerCase() === 'high')),

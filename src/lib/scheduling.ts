@@ -8,8 +8,8 @@ import {
   isBefore,
   isEqual,
   parseISO,
-  subMinutes,
   startOfDay,
+  subMinutes,
 } from 'date-fns';
 
 export type RecurrenceRule = 'none' | 'daily' | 'every_2_days' | 'weekly' | 'monthly' | 'weekday';
@@ -332,6 +332,37 @@ function dedupeScheduleEntries(entries: ScheduleEntry[]) {
   return Array.from(deduped.values());
 }
 
+function normalizeComparableTitle(value: unknown) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function shouldHideLeadEntry(leadEntry: ScheduleEntry, entries: ScheduleEntry[]) {
+  if (leadEntry.kind !== 'lead') return false;
+
+  const linkedItemId = String(
+    leadEntry.raw?.nextActionItemId || leadEntry.raw?.next_action_item_id || '',
+  ).trim();
+  const leadTitle = normalizeComparableTitle(leadEntry.title);
+
+  return entries.some((entry) => {
+    if (entry.id === leadEntry.id || entry.kind === 'lead') return false;
+
+    if (linkedItemId && entry.sourceId === linkedItemId) {
+      return true;
+    }
+
+    const sameLead = Boolean(entry.leadId && leadEntry.leadId && String(entry.leadId) === String(leadEntry.leadId));
+    const sameMoment = entry.startsAt === leadEntry.startsAt;
+    const sameTitle = normalizeComparableTitle(entry.title) === leadTitle;
+
+    return sameLead && sameMoment && sameTitle;
+  });
+}
+
+function removeLeadShadowEntries(entries: ScheduleEntry[]) {
+  return entries.filter((entry) => !shouldHideLeadEntry(entry, entries));
+}
+
 export function combineScheduleEntries({
   events,
   tasks,
@@ -345,11 +376,14 @@ export function combineScheduleEntries({
   rangeStart: Date;
   rangeEnd: Date;
 }) {
-  return dedupeScheduleEntries([
+  const merged = dedupeScheduleEntries([
     ...expandEventEntries(events, rangeStart, rangeEnd),
     ...expandTaskEntries(tasks, rangeStart, rangeEnd),
     ...expandLeadEntries(leads, rangeStart, rangeEnd),
-  ]).sort((a, b) => parseISO(a.startsAt).getTime() - parseISO(b.startsAt).getTime());
+  ]);
+
+  return removeLeadShadowEntries(merged)
+    .sort((a, b) => parseISO(a.startsAt).getTime() - parseISO(b.startsAt).getTime());
 }
 
 export function getEntriesForDay(entries: ScheduleEntry[], day: Date) {
