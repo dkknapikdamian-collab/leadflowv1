@@ -1275,13 +1275,15 @@ export default function Today() {
               <h2 className="text-lg font-bold text-slate-900">Najbliższe dni</h2>
               <div className="space-y-3">
                 {[1, 2, 3].map((days) => {
-                  const date = startOfDay(addDays(new Date(), days));
+                  const date = addDays(new Date(), days);
+                  const dayStart = startOfDay(date);
+                  const dayEnd = endOfDay(date);
                   const dayEntries = combineScheduleEntries({
                     events,
                     tasks,
                     leads: leadsWithAction,
-                    rangeStart: date,
-                    rangeEnd: endOfDay(date),
+                    rangeStart: dayStart,
+                    rangeEnd: dayEnd,
                   });
                   const count = dayEntries.length;
                   if (count === 0) return null;

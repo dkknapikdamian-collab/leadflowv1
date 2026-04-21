@@ -5,6 +5,9 @@ export type CalendarTaskItem = {
   id: string;
   title: string;
   date: string;
+  dueAt?: string;
+  time?: string;
+  scheduledAt?: string;
   status: string;
   type?: string;
   priority?: string;
@@ -60,40 +63,39 @@ export type CalendarBundle = {
 
 function isIsoLike(value?: string | null) {
   if (!value) return false;
-  const parsed = parseISO(value);
-  return isValid(parsed);
+  return isValid(parseISO(value));
+}
+
+function asString(value: unknown) {
+  return typeof value === 'string' ? value : '';
 }
 
 export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTaskItem | null {
-  const date = typeof row.date === 'string' ? row.date : '';
-  if (!isIsoLike(date)) return null;
+  const dueAt = asString(row.dueAt);
+  const scheduledAtField = asString(row.scheduledAt);
+  const dateField = asString(row.date);
+  const timeField = asString(row.time) || '09:00';
+  const scheduledAt = (dueAt && isIsoLike(dueAt) ? dueAt : '') || (scheduledAtField && isIsoLike(scheduledAtField) ? scheduledAtField : '') || (dateField ? `${dateField}T${timeField}` : '');
+  if (!scheduledAt || !isIsoLike(scheduledAt)) return null;
 
   const reminderAt = row.reminderAt ? String(row.reminderAt) : null;
   const recurrenceRule = row.recurrenceRule ? String(row.recurrenceRule) : undefined;
-  const startAt = `${date}T09:00:00.000Z`;
-  const reminderMinutes = reminderAt
-    ? Math.max(0, Math.round((new Date(startAt).getTime() - new Date(reminderAt).getTime()) / 60_000))
-    : 30;
+  const reminderMinutes = reminderAt ? Math.max(0, Math.round((new Date(scheduledAt).getTime() - new Date(reminderAt).getTime()) / 60000)) : 30;
 
   return {
     id: String(row.id || crypto.randomUUID()),
     title: String(row.title || ''),
-    date,
+    date: scheduledAt.slice(0, 10),
+    dueAt: scheduledAt.slice(0, 16),
+    time: scheduledAt.slice(11, 16),
+    scheduledAt,
     status: String(row.status || 'todo'),
     type: row.type ? String(row.type) : undefined,
     priority: row.priority ? String(row.priority) : undefined,
     reminderAt,
     recurrenceRule,
-    reminder: reminderAt
-      ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
-      : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
-    recurrence: {
-      mode: recurrenceRule || 'none',
-      interval: 1,
-      until: null,
-      endType: 'never',
-      count: null,
-    },
+    reminder: reminderAt ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null } : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
+    recurrence: { mode: recurrenceRule || 'none', interval: 1, until: null, endType: 'never', count: null },
     recurrenceEndType: row.recurrenceEndType ? String(row.recurrenceEndType) : undefined,
     recurrenceEndAt: row.recurrenceEndAt ? String(row.recurrenceEndAt) : null,
     recurrenceCount: typeof row.recurrenceCount === 'number' ? row.recurrenceCount : null,
@@ -103,14 +105,12 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
 }
 
 export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEventItem | null {
-  const startAt = typeof row.startAt === 'string' ? row.startAt : '';
+  const startAt = asString(row.startAt);
   if (!isIsoLike(startAt)) return null;
 
   const reminderAt = row.reminderAt ? String(row.reminderAt) : null;
   const recurrenceRule = row.recurrenceRule ? String(row.recurrenceRule) : undefined;
-  const reminderMinutes = reminderAt
-    ? Math.max(0, Math.round((new Date(startAt).getTime() - new Date(reminderAt).getTime()) / 60_000))
-    : 30;
+  const reminderMinutes = reminderAt ? Math.max(0, Math.round((new Date(startAt).getTime() - new Date(reminderAt).getTime()) / 60000)) : 30;
 
   return {
     id: String(row.id || crypto.randomUUID()),
@@ -123,16 +123,8 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
     leadName: row.leadName ? String(row.leadName) : undefined,
     reminderAt,
     recurrenceRule,
-    reminder: reminderAt
-      ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
-      : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
-    recurrence: {
-      mode: recurrenceRule || 'none',
-      interval: 1,
-      until: null,
-      endType: 'never',
-      count: null,
-    },
+    reminder: reminderAt ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null } : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
+    recurrence: { mode: recurrenceRule || 'none', interval: 1, until: null, endType: 'never', count: null },
     recurrenceEndType: row.recurrenceEndType ? String(row.recurrenceEndType) : undefined,
     recurrenceEndAt: row.recurrenceEndAt ? String(row.recurrenceEndAt) : null,
     recurrenceCount: typeof row.recurrenceCount === 'number' ? row.recurrenceCount : null,
@@ -143,9 +135,7 @@ export function normalizeCalendarLeadAction(row: Record<string, unknown>): Calen
   const status = row.status ? String(row.status) : undefined;
   if (status === 'won' || status === 'lost') return null;
 
-  const nextActionAt = typeof row.nextActionAt === 'string' && isIsoLike(row.nextActionAt)
-    ? row.nextActionAt
-    : undefined;
+  const nextActionAt = typeof row.nextActionAt === 'string' && isIsoLike(row.nextActionAt) ? row.nextActionAt : undefined;
 
   return {
     id: String(row.id || crypto.randomUUID()),
@@ -164,9 +154,7 @@ export function normalizeCalendarLeadAction(row: Record<string, unknown>): Calen
 }
 
 export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle> {
-  if (!isSupabaseConfigured()) {
-    return { tasks: [], events: [], leads: [] };
-  }
+  if (!isSupabaseConfigured()) return { tasks: [], events: [], leads: [] };
 
   const [taskItems, eventItems, leadItems] = await Promise.all([
     fetchTasksFromSupabase(),
