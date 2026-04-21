@@ -51,15 +51,15 @@ export default function Settings() {
   if (loading) {
     return (
       <Layout>
-        <div className="p-8 max-w-4xl mx-auto w-full">Ładowanie ustawień...</div>
+        <div className="p-4 md:p-8 max-w-4xl mx-auto w-full">Ładowanie ustawień...</div>
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <div className="p-8 max-w-4xl mx-auto w-full">
-        <header className="mb-8">
+      <div className="p-4 md:p-8 max-w-4xl mx-auto w-full">
+        <header className="mb-6 md:mb-8">
           <h1 className="text-3xl font-bold text-slate-900">Ustawienia</h1>
           <p className="text-slate-500">Zarządzaj swoim kontem i konfiguracją systemu.</p>
         </header>
@@ -74,7 +74,7 @@ export default function Settings() {
               <CardDescription>Twoje dane wyświetlane w systemie i dla klientów.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Imię i nazwisko</Label>
                   <Input value={profile?.fullName || ''} onChange={(e) => setProfile({ ...profile, fullName: e.target.value })} />
@@ -88,7 +88,7 @@ export default function Settings() {
                 <Label>Email (nieedytowalny)</Label>
                 <Input value={profile?.email || ''} disabled />
               </div>
-              <Button onClick={handleUpdateProfile}>Zapisz zmiany</Button>
+              <Button onClick={handleUpdateProfile} className="w-full md:w-auto">Zapisz zmiany</Button>
             </CardContent>
           </Card>
 
@@ -98,7 +98,7 @@ export default function Settings() {
                 <Palette className="w-5 h-5 text-slate-400" />
                 Motyw aplikacji
               </CardTitle>
-              <CardDescription>Wybrany motyw zapisuje się lokalnie i w profilu, więc wraca po czyszczeniu cache.</CardDescription>
+              <CardDescription>Wybrany motyw zapisuje się lokalnie i w profilu, więc wraca po odświeżeniu.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -111,7 +111,7 @@ export default function Settings() {
                         .then(() => toast.success(`Aktywowano motyw: ${option.label}`))
                         .catch((error: any) => toast.error(`Błąd zapisu motywu: ${error?.message || 'REQUEST_FAILED'}`));
                     }}
-                    className={`text-left p-4 rounded-xl border transition ${
+                    className={`text-left min-h-[104px] p-3 md:p-4 rounded-xl border transition ${
                       skin === option.id ? 'border-primary bg-primary/5' : 'border-slate-200 hover:border-slate-300'
                     }`}
                   >
@@ -132,7 +132,7 @@ export default function Settings() {
               <CardDescription>Zarządzaj dostępem do swojego konta.</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="text-red-500 hover:text-red-600 hover:bg-red-50 border-red-100">
+              <Button variant="outline" className="w-full md:w-auto text-red-500 hover:text-red-600 hover:bg-red-50 border-red-100">
                 Wyloguj ze wszystkich urządzeń
               </Button>
             </CardContent>
