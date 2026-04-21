@@ -65,6 +65,7 @@ import {
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import {
   deleteEventFromSupabase,
+  deleteTaskFromSupabase,
   insertEventToSupabase,
   insertActivityToSupabase,
   insertLeadToSupabase,
@@ -228,7 +229,7 @@ export default function Today() {
   const [isEventOpen, setIsEventOpen] = useState(false);
   const [collapsedTiles, setCollapsedTiles] = useState<Record<string, boolean>>({});
   const [todayActionId, setTodayActionId] = useState<string | null>(null);
-  const [previewEventEntry, setPreviewEventEntry] = useState<any | null>(null);
+  const [previewEntry, setPreviewEntry] = useState<any | null>(null);
 
   const leadSubmitLockRef = useRef(false);
   const taskSubmitLockRef = useRef(false);
@@ -370,6 +371,20 @@ export default function Today() {
       reminder: createDefaultReminder(),
     });
   };
+
+  const openPreviewEntry = (entry: any) => {
+    setPreviewEntry(entry);
+  };
+
+  const buildTaskPreviewEntry = (task: any) => ({
+    id: `today-task:${task.id}`,
+    kind: 'task',
+    title: task.title,
+    startsAt: getTaskStartAt(task) || `${getTaskDate(task)}T09:00`,
+    sourceId: task.id,
+    leadName: task.leadName || '',
+    raw: task,
+  });
 
   const registerReminderScheduled = async ({
     entityType,
@@ -522,6 +537,52 @@ export default function Today() {
     }
   };
 
+  const toggleTodayTask = async (entry: any) => {
+    try {
+      setTodayActionId(`${entry.id}:done`);
+      const nextStatus = entry.raw?.status === 'done' ? 'todo' : 'done';
+
+      await updateTaskInSupabase({
+        id: entry.sourceId,
+        title: entry.raw?.title || entry.title,
+        type: entry.raw?.type,
+        date: entry.raw?.date || entry.startsAt.slice(0, 10),
+        scheduledAt: getTaskStartAt(entry.raw) || entry.startsAt,
+        status: nextStatus,
+        priority: entry.raw?.priority,
+        leadId: entry.raw?.leadId ?? null,
+      });
+
+      await refreshSupabaseBundle();
+      if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
+        setPreviewEntry(null);
+      }
+      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrócone');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
+  const deleteTodayTask = async (entry: any) => {
+    if (!window.confirm('Usunąć to zadanie?')) return;
+
+    try {
+      setTodayActionId(`${entry.id}:delete`);
+      await deleteTaskFromSupabase(entry.sourceId);
+      await refreshSupabaseBundle();
+      if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
+        setPreviewEntry(null);
+      }
+      toast.success('Zadanie usunięte');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
   const toggleTodayEvent = async (entry: any) => {
     try {
       setTodayActionId(`${entry.id}:done`);
@@ -538,8 +599,8 @@ export default function Today() {
       });
 
       await refreshSupabaseBundle();
-      if (previewEventEntry?.id === entry.id) {
-        setPreviewEventEntry(null);
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
       }
       toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywrócone');
     } catch (error: any) {
@@ -556,8 +617,8 @@ export default function Today() {
       setTodayActionId(`${entry.id}:delete`);
       await deleteEventFromSupabase(entry.sourceId);
       await refreshSupabaseBundle();
-      if (previewEventEntry?.id === entry.id) {
-        setPreviewEventEntry(null);
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
       }
       toast.success('Wydarzenie usunięte');
     } catch (error: any) {
@@ -995,22 +1056,38 @@ export default function Today() {
                   <div className="grid gap-3">
                     {overdueTasks.map((task) => {
                       const startAt = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
+                      const previewTask = buildTaskPreviewEntry(task);
+
                       return (
                         <Card key={task.id} className="border-rose-100">
                           <CardContent className="p-4 flex items-center justify-between gap-4">
-                            <div className="min-w-0">
+                            <div
+                              className="min-w-0 flex-1 cursor-pointer"
+                              role="button"
+                              tabIndex={0}
+                              onClick={() => openPreviewEntry(previewTask)}
+                              onKeyDown={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                  event.preventDefault();
+                                  openPreviewEntry(previewTask);
+                                }
+                              }}
+                            >
                               <p className="font-semibold text-slate-900 break-words">{task.title}</p>
                               <p className="text-sm text-rose-500 break-words font-medium">{format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}</p>
                               <p className="mt-2 text-sm text-slate-600 break-words">
-                                Zadanie wymaga reakcji. Możesz je od razu oznaczyć jako wykonane albo przejść do pełnej listy zadań.
+                                Zadanie wymaga reakcji. Kliknij kartę, aby podejrzeć szczegóły i wykonać akcję bez przechodzenia do pełnej listy.
                               </p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
-                              <Button variant="outline" size="sm" onClick={() => toggleTask(task.id, task.status)}>
-                                {task.status === 'done' ? 'Przywróć' : 'Oznacz jako zrobione'}
+                              <Button variant="outline" size="sm" onClick={() => openPreviewEntry(previewTask)}>
+                                Szczegóły
                               </Button>
-                              <Button variant="ghost" size="sm" asChild>
-                                <Link to="/tasks">Otwórz listę</Link>
+                              <Button variant="outline" size="sm" onClick={() => toggleTodayTask(previewTask)}>
+                                {task.status === 'done' ? 'Przywróć' : 'Zakończ'}
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(previewTask)}>
+                                Usuń
                               </Button>
                             </div>
                           </CardContent>
@@ -1096,7 +1173,18 @@ export default function Today() {
                         return (
                           <Card key={entry.id} className={`border-indigo-100 ${isCompleted ? 'opacity-60' : ''}`}>
                             <CardContent className="p-4 flex items-center justify-between gap-4">
-                              <div className="min-w-0">
+                              <div
+                                className="min-w-0 flex-1 cursor-pointer"
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => openPreviewEntry(entry)}
+                                onKeyDown={(event) => {
+                                  if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    openPreviewEntry(entry);
+                                  }
+                                }}
+                              >
                                 <p className={`font-semibold break-words ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
                                 <p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>
                                   {EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Wydarzenie'}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}
@@ -1117,11 +1205,11 @@ export default function Today() {
                                 </div>
                               </div>
                               <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
-                                <Button variant="outline" size="sm" onClick={() => setPreviewEventEntry(entry)}>
-                                  Podgląd
+                                <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
+                                  Szczegóły
                                 </Button>
                                 <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(entry)} disabled={completePending}>
-                                  {completePending ? '...' : isCompleted ? 'Przywróć' : 'Wdrożone'}
+                                  {completePending ? '...' : isCompleted ? 'Przywróć' : 'Wykonane'}
                                 </Button>
                                 <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(entry)} disabled={deletePending}>
                                   {deletePending ? '...' : 'Usuń'}
@@ -1142,32 +1230,55 @@ export default function Today() {
                 <TileCard id="today-section-tasks" title="Zadania na dziś" subtitle={`${todayTasks.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayTasks.length > 0 ? (
                     <div className="grid gap-3">
-                      {todayTasks.map((entry) => (
-                        <Card key={entry.id} className="hover:border-primary/30 transition-colors">
-                          <CardContent className="p-4 flex items-center justify-between gap-4">
-                            <div className="min-w-0">
-                              <p className="font-semibold text-slate-900 break-words">{entry.title}</p>
-                              <p className="text-sm text-slate-500 break-words">{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Zadanie'} • {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
-                              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                                {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
-                                  <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>
-                                ) : null}
-                                {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' ? (
-                                  <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>
-                                ) : null}
+                      {todayTasks.map((entry) => {
+                        const isCompleted = entry.raw?.status === 'done';
+                        const completePending = todayActionId === `${entry.id}:done`;
+                        const deletePending = todayActionId === `${entry.id}:delete`;
+
+                        return (
+                          <Card key={entry.id} className={`hover:border-primary/30 transition-colors ${isCompleted ? 'opacity-60' : ''}`}>
+                            <CardContent className="p-4 flex items-center justify-between gap-4">
+                              <div
+                                className="min-w-0 flex-1 cursor-pointer"
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => openPreviewEntry(entry)}
+                                onKeyDown={(event) => {
+                                  if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    openPreviewEntry(entry);
+                                  }
+                                }}
+                              >
+                                <p className={`font-semibold break-words ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
+                                <p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Zadanie'} • {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
+                                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                                  {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
+                                    <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>
+                                  ) : null}
+                                  {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' ? (
+                                    <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>
+                                  ) : null}
+                                  {isCompleted ? (
+                                    <Badge className="bg-slate-200 text-slate-700 hover:bg-slate-200 text-[10px] uppercase">Zrobione</Badge>
+                                  ) : null}
+                                </div>
                               </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => toggleTask(entry.sourceId, entry.raw.status)}>
-                                {entry.raw.status === 'done' ? 'Przywróć' : 'Zakończ'}
-                              </Button>
-                              <Button variant="ghost" size="sm" asChild>
-                                <Link to="/tasks">Lista zadań</Link>
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                              <div className="flex items-center gap-2">
+                                <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
+                                  Szczegóły
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => toggleTodayTask(entry)} disabled={completePending}>
+                                  {completePending ? '...' : isCompleted ? 'Przywróć' : 'Zakończ'}
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(entry)} disabled={deletePending}>
+                                  {deletePending ? '...' : 'Usuń'}
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
                     </div>
                   ) : (
                     <Card className="border-dashed bg-slate-50/50">
@@ -1347,56 +1458,82 @@ export default function Today() {
           </div>
         </div>
       </div>
-      <Dialog open={Boolean(previewEventEntry)} onOpenChange={(open) => { if (!open) setPreviewEventEntry(null); }}>
+      <Dialog open={Boolean(previewEntry)} onOpenChange={(open) => { if (!open) setPreviewEntry(null); }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Podgląd wydarzenia</DialogTitle>
+            <DialogTitle>{previewEntry?.kind === 'task' ? 'Podgląd zadania' : 'Podgląd wydarzenia'}</DialogTitle>
           </DialogHeader>
-          {previewEventEntry ? (
+          {previewEntry ? (
             <div className="space-y-4 py-2">
               <div className="space-y-1">
-                <p className="text-lg font-bold text-slate-900">{previewEventEntry.title}</p>
+                <p className="text-lg font-bold text-slate-900">{previewEntry.title}</p>
                 <p className="text-sm text-slate-500">
-                  {EVENT_TYPES.find((item) => item.value === previewEventEntry.raw?.type)?.label || 'Wydarzenie'}
-                  {previewEventEntry.leadName ? ` • Lead: ${previewEventEntry.leadName}` : ''}
+                  {previewEntry.kind === 'task'
+                    ? TASK_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Zadanie'
+                    : EVENT_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Wydarzenie'}
+                  {previewEntry.leadName ? ` • Lead: ${previewEntry.leadName}` : ''}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="rounded-xl border border-slate-200 p-3">
-                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Start</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">{format(parseISO(previewEventEntry.startsAt), 'd MMMM yyyy, HH:mm', { locale: pl })}</p>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">{previewEntry.kind === 'task' ? 'Termin' : 'Start'}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">{format(parseISO(previewEntry.startsAt), 'd MMMM yyyy, HH:mm', { locale: pl })}</p>
                 </div>
                 <div className="rounded-xl border border-slate-200 p-3">
                   <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Status</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">{previewEventEntry.raw?.status === 'completed' ? 'Wykonane' : 'Zaplanowane'}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">
+                    {previewEntry.kind === 'task'
+                      ? previewEntry.raw?.status === 'done'
+                        ? 'Zrobione'
+                        : 'Do zrobienia'
+                      : previewEntry.raw?.status === 'completed'
+                        ? 'Wykonane'
+                        : 'Zaplanowane'}
+                  </p>
                 </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                {previewEventEntry.raw?.recurrence?.mode && previewEventEntry.raw.recurrence.mode !== 'none' ? (
-                  <Badge variant="outline"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === previewEventEntry.raw.recurrence.mode)?.label}</Badge>
+                {previewEntry.raw?.recurrence?.mode && previewEntry.raw.recurrence.mode !== 'none' ? (
+                  <Badge variant="outline"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === previewEntry.raw.recurrence.mode)?.label}</Badge>
                 ) : null}
-                {previewEventEntry.raw?.reminder?.mode && previewEventEntry.raw.reminder.mode !== 'none' ? (
+                {previewEntry.raw?.reminder?.mode && previewEntry.raw.reminder.mode !== 'none' ? (
                   <Badge variant="outline"><Bell className="w-3 h-3 mr-1" /> Przypomnienie aktywne</Badge>
                 ) : null}
               </div>
 
               <DialogFooter className="flex flex-wrap gap-2 sm:justify-between">
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(previewEventEntry)} disabled={todayActionId === `${previewEventEntry.id}:delete`}>
-                    {todayActionId === `${previewEventEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => previewEntry.kind === 'task' ? deleteTodayTask(previewEntry) : deleteTodayEvent(previewEntry)}
+                    disabled={todayActionId === `${previewEntry.id}:delete`}
+                  >
+                    {todayActionId === `${previewEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(previewEventEntry)} disabled={todayActionId === `${previewEventEntry.id}:done`}>
-                    {todayActionId === `${previewEventEntry.id}:done`
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => previewEntry.kind === 'task' ? toggleTodayTask(previewEntry) : toggleTodayEvent(previewEntry)}
+                    disabled={todayActionId === `${previewEntry.id}:done`}
+                  >
+                    {todayActionId === `${previewEntry.id}:done`
                       ? 'Zapisywanie...'
-                      : previewEventEntry.raw?.status === 'completed'
-                        ? 'Przywróć'
-                        : 'Oznacz jako wykonane'}
+                      : previewEntry.kind === 'task'
+                        ? previewEntry.raw?.status === 'done'
+                          ? 'Przywróć'
+                          : 'Oznacz jako zrobione'
+                        : previewEntry.raw?.status === 'completed'
+                          ? 'Przywróć'
+                          : 'Oznacz jako wykonane'}
                   </Button>
                 </div>
                 <Button variant="outline" size="sm" asChild>
-                  <Link to="/calendar">Otwórz kalendarz</Link>
+                  <Link to={previewEntry.kind === 'task' ? '/tasks' : '/calendar'}>
+                    {previewEntry.kind === 'task' ? 'Otwórz zadania' : 'Otwórz kalendarz'}
+                  </Link>
                 </Button>
               </DialogFooter>
             </div>
