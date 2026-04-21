@@ -54,7 +54,6 @@ const PLAN_CARDS: PlanCard[] = [
     features: [
       'Dla 1 operatora',
       'Leady, zadania, kalendarz',
-      'Zakres funkcji dopinamy później',
     ],
     audience: 'solo',
   },
@@ -66,7 +65,6 @@ const PLAN_CARDS: PlanCard[] = [
     features: [
       'Dla 1 operatora',
       'Pełny workflow closeflow',
-      'Zakres funkcji dopinamy później',
     ],
     audience: 'solo',
     popular: true,
@@ -79,7 +77,6 @@ const PLAN_CARDS: PlanCard[] = [
     features: [
       'Oferta dla firmy lub grupy',
       'Cennik gotowy pod rozwój produktu',
-      'Zakres funkcji dopinamy później',
     ],
     audience: 'team',
   },
@@ -91,7 +88,6 @@ const PLAN_CARDS: PlanCard[] = [
     features: [
       'Oferta dla firmy lub grupy',
       'Wyższy pakiet komercyjny',
-      'Zakres funkcji dopinamy później',
     ],
     audience: 'team',
     popular: true,
@@ -191,7 +187,6 @@ export default function Billing() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Subskrypcja i rozliczenia</h1>
-            <p className="text-slate-500">Wybierasz model Solo albo Firma / Grupa. Zakres funkcji planów dopinamy osobno później.</p>
           </div>
         </header>
 
@@ -220,11 +215,7 @@ export default function Billing() {
         </Card>
 
         <Card className="border-none shadow-sm">
-          <CardContent className="p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-slate-900">Wybierz model cennika</p>
-              <p className="text-sm text-slate-500">Najpierw wybierasz typ klienta, potem konkretny plan.</p>
-            </div>
+          <CardContent className="p-4 flex justify-end">
             <div className="inline-flex rounded-2xl bg-slate-100 p-1 gap-1">
               <button
                 type="button"
@@ -309,15 +300,6 @@ export default function Billing() {
           })}
         </div>
 
-        <Card className="border-none shadow-sm bg-slate-50">
-          <CardContent className="p-5 text-sm text-slate-600 space-y-2">
-            <p className="font-semibold text-slate-900">Ważne na teraz</p>
-            <p>
-              Ta zmiana wdraża nowy układ cennika i nowe ceny. Funkcje planów dopinamy później, a warianty
-              <span className="font-semibold"> Firma / Grupa</span> są na ten moment ofertą cenową, nie wdrożeniem wieloużytkownikowości.
-            </p>
-          </CardContent>
-        </Card>
       </div>
     </Layout>
   );
