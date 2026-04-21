@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -254,6 +254,13 @@ export default function Calendar() {
     leadId: 'none',
   }));
 
+  const createTaskSubmitLockRef = useRef(false);
+  const createEventSubmitLockRef = useRef(false);
+  const editEntrySubmitLockRef = useRef(false);
+  const [taskSubmitting, setTaskSubmitting] = useState(false);
+  const [eventSubmitting, setEventSubmitting] = useState(false);
+  const [editSubmitting, setEditSubmitting] = useState(false);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -439,7 +446,10 @@ export default function Calendar() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
+    if (createTaskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
+    createTaskSubmitLockRef.current = true;
+    setTaskSubmitting(true);
 
     const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
 
@@ -461,12 +471,18 @@ export default function Calendar() {
       resetNewTask();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      createTaskSubmitLockRef.current = false;
+      setTaskSubmitting(false);
     }
   };
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
+    if (createEventSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
+    createEventSubmitLockRef.current = true;
+    setEventSubmitting(true);
 
     const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
     const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
@@ -494,6 +510,9 @@ export default function Calendar() {
       resetNewEvent();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      createEventSubmitLockRef.current = false;
+      setEventSubmitting(false);
     }
   };
 
@@ -702,7 +721,10 @@ export default function Calendar() {
   const handleSaveEdit = async (e: FormEvent) => {
     e.preventDefault();
     if (!editEntry || !editDraft) return;
+    if (editEntrySubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
+    editEntrySubmitLockRef.current = true;
+    setEditSubmitting(true);
 
     try {
       setActionPendingId(`${editEntry.id}:edit`);
@@ -769,6 +791,8 @@ export default function Calendar() {
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     } finally {
+      editEntrySubmitLockRef.current = false;
+      setEditSubmitting(false);
       setActionPendingId(null);
     }
   };
@@ -909,7 +933,7 @@ export default function Calendar() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Dodaj zadanie</Button>
+                    <Button type="submit" className="w-full" disabled={taskSubmitting}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -1031,7 +1055,7 @@ export default function Calendar() {
                   </div>
 
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Zaplanuj</Button>
+                    <Button type="submit" className="w-full" disabled={eventSubmitting}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -1260,8 +1284,8 @@ export default function Calendar() {
               ) : null}
 
               <DialogFooter>
-                <Button type="submit" disabled={actionPendingId === `${editEntry.id}:edit`}>
-                  {actionPendingId === `${editEntry.id}:edit` ? 'Zapisywanie...' : 'Zapisz zmiany'}
+                <Button type="submit" disabled={editSubmitting || actionPendingId === `${editEntry.id}:edit`}>
+                  {editSubmitting || actionPendingId === `${editEntry.id}:edit` ? 'Zapisywanie...' : 'Zapisz zmiany'}
                 </Button>
               </DialogFooter>
             </form>

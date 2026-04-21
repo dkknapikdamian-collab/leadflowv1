@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -133,6 +133,11 @@ export default function Tasks() {
     reminder: createDefaultReminder(),
   }));
   const [editTask, setEditTask] = useState<any | null>(null);
+
+  const createTaskSubmitLockRef = useRef(false);
+  const editTaskSubmitLockRef = useRef(false);
+  const [taskSubmitting, setTaskSubmitting] = useState(false);
+  const [taskEditSubmitting, setTaskEditSubmitting] = useState(false);
 
   const registerReminderScheduled = async ({
     title,
@@ -310,8 +315,11 @@ export default function Tasks() {
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
+    if (createTaskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania');
+    createTaskSubmitLockRef.current = true;
+    setTaskSubmitting(true);
 
     const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -348,6 +356,9 @@ export default function Tasks() {
       resetNewTask();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      createTaskSubmitLockRef.current = false;
+      setTaskSubmitting(false);
     }
   };
 
@@ -393,9 +404,12 @@ export default function Tasks() {
 
   const handleSaveTaskEdit = async (e: FormEvent) => {
     e.preventDefault();
+    if (editTaskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!editTask?.id) return;
     if (!editTask.title?.trim()) return toast.error('Wpisz tytuł zadania');
+    editTaskSubmitLockRef.current = true;
+    setTaskEditSubmitting(true);
 
     const selectedLead = leads.find((lead) => lead.id === editTask.leadId);
     const payload = syncTaskDerivedFields({
@@ -432,6 +446,9 @@ export default function Tasks() {
       setEditTask(null);
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      editTaskSubmitLockRef.current = false;
+      setTaskEditSubmitting(false);
     }
   };
 
@@ -741,7 +758,7 @@ export default function Tasks() {
                 </div>
 
                 <DialogFooter>
-                  <Button type="submit" className="w-full">Dodaj zadanie</Button>
+                  <Button type="submit" className="w-full" disabled={taskSubmitting}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -851,7 +868,7 @@ export default function Tasks() {
                   </div>
 
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Zapisz zmiany</Button>
+                    <Button type="submit" className="w-full" disabled={taskEditSubmitting}>{taskEditSubmitting ? 'Zapisywanie...' : 'Zapisz zmiany'}</Button>
                   </DialogFooter>
                 </form>
               ) : null}

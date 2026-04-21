@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent, ReactNode } from 'react';
+import { useState, useEffect, FormEvent, ReactNode, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -230,6 +230,13 @@ export default function Today() {
   const [todayActionId, setTodayActionId] = useState<string | null>(null);
   const [previewEventEntry, setPreviewEventEntry] = useState<any | null>(null);
 
+  const leadSubmitLockRef = useRef(false);
+  const taskSubmitLockRef = useRef(false);
+  const eventSubmitLockRef = useRef(false);
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [taskSubmitting, setTaskSubmitting] = useState(false);
+  const [eventSubmitting, setEventSubmitting] = useState(false);
+
   const [newLead, setNewLead] = useState({
     name: '',
     email: '',
@@ -398,7 +405,10 @@ export default function Today() {
 
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
+    if (leadSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
+    leadSubmitLockRef.current = true;
+    setLeadSubmitting(true);
     try {
       await insertLeadToSupabase({
         ...newLead,
@@ -412,12 +422,18 @@ export default function Today() {
       setNewLead({ name: '', email: '', dealValue: '', source: 'other', status: 'new', nextStep: '', nextActionAt: '' });
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      leadSubmitLockRef.current = false;
+      setLeadSubmitting(false);
     }
   };
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
+    if (taskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
+    taskSubmitLockRef.current = true;
+    setTaskSubmitting(true);
     try {
       const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
       const reminderAt = toReminderAtIso(newTask.dueAt, newTask.reminder);
@@ -445,12 +461,18 @@ export default function Today() {
       resetNewTask();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      taskSubmitLockRef.current = false;
+      setTaskSubmitting(false);
     }
   };
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
+    if (eventSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
+    eventSubmitLockRef.current = true;
+    setEventSubmitting(true);
     try {
       const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
       const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
@@ -476,6 +498,9 @@ export default function Today() {
       resetNewEvent();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      eventSubmitLockRef.current = false;
+      setEventSubmitting(false);
     }
   };
 
@@ -687,7 +712,7 @@ export default function Today() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Dodaj leada</Button>
+                    <Button type="submit" className="w-full" disabled={leadSubmitting}>{leadSubmitting ? 'Dodawanie...' : 'Dodaj leada'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -807,7 +832,7 @@ export default function Today() {
                     )}
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Dodaj zadanie</Button>
+                    <Button type="submit" className="w-full" disabled={taskSubmitting}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -921,7 +946,7 @@ export default function Today() {
                     )}
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Zaplanuj</Button>
+                    <Button type="submit" className="w-full" disabled={eventSubmitting}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>

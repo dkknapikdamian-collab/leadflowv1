@@ -136,6 +136,9 @@ export default function Leads() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const createLeadSubmitLockRef = useRef(false);
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+
   const loadLeads = useCallback(async () => {
     if (!workspace) return;
     setLoading(true);
@@ -175,8 +178,11 @@ export default function Leads() {
 
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
+    if (createLeadSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     if (!newLead.name.trim()) return toast.error('Wpisz nazwę leada');
+    createLeadSubmitLockRef.current = true;
+    setLeadSubmitting(true);
 
     try {
       await insertLeadToSupabase({
@@ -191,6 +197,9 @@ export default function Leads() {
       setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', nextStep: '', nextActionAt: '' });
     } catch (error: any) {
       toast.error(`Błąd zapisu leada: ${error.message}`);
+    } finally {
+      createLeadSubmitLockRef.current = false;
+      setLeadSubmitting(false);
     }
   };
 
@@ -416,8 +425,8 @@ export default function Leads() {
                     <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(7)}>Za tydzień</Button>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full">
-                      Stwórz leada
+                    <Button type="submit" className="w-full" disabled={leadSubmitting}>
+                      {leadSubmitting ? 'Dodawanie...' : 'Stwórz leada'}
                     </Button>
                   </DialogFooter>
                 </form>
