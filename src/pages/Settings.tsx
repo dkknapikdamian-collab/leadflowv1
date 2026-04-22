@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
-import { signOut } from 'firebase/auth';
+import {
+  EmailAuthProvider,
+  fetchSignInMethodsForEmail,
+  reauthenticateWithCredential,
+  sendPasswordResetEmail,
+  signOut,
+  verifyBeforeUpdateEmail,
+} from 'firebase/auth';
 import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
-import { AlertTriangle, Palette, Shield, User } from 'lucide-react';
+import { AlertTriangle, KeyRound, Mail, Palette, Shield, User } from 'lucide-react';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { useAppearance } from '../components/appearance-provider';
@@ -17,6 +24,12 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
   const [signingOutEverywhere, setSigningOutEverywhere] = useState(false);
   const [conflictWarningsEnabled, setConflictWarningsEnabledState] = useState(true);
+  const [emailChangeOpen, setEmailChangeOpen] = useState(false);
+  const [emailChangeSubmitting, setEmailChangeSubmitting] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [passwordResetSubmitting, setPasswordResetSubmitting] = useState(false);
+  const [passwordAuthAvailable, setPasswordAuthAvailable] = useState(false);
   const { skin, setSkin, skinOptions } = useAppearance();
 
   useEffect(() => {
@@ -33,6 +46,18 @@ export default function Settings() {
           email: auth.currentUser?.email || '',
         });
       }
+
+      let canUsePassword = auth.currentUser?.providerData?.some((item) => item.providerId === 'password') ?? false;
+      if (auth.currentUser?.email) {
+        try {
+          const methods = await fetchSignInMethodsForEmail(auth, auth.currentUser.email);
+          canUsePassword = canUsePassword || methods.includes('password');
+        } catch (error) {
+          console.warn('SETTINGS_FETCH_SIGNIN_METHODS_FAILED', error);
+        }
+      }
+
+      setPasswordAuthAvailable(canUsePassword);
       setConflictWarningsEnabledState(getConflictWarningsEnabled());
       setLoading(false);
     };
@@ -50,6 +75,63 @@ export default function Settings() {
       toast.success('Profil zaktualizowany');
     } catch (error: any) {
       toast.error(`Błąd: ${error.message}`);
+    }
+  };
+
+  const handleChangeEmail = async () => {
+    if (!auth.currentUser?.email) return;
+    if (!passwordAuthAvailable) {
+      toast.error('Zmiana e-maila z potwierdzeniem hasła działa dla kont z logowaniem e-mail + hasło.');
+      return;
+    }
+
+    const normalizedEmail = newEmail.trim().toLowerCase();
+    if (!normalizedEmail) {
+      toast.error('Wpisz nowy adres e-mail.');
+      return;
+    }
+
+    if (normalizedEmail === String(auth.currentUser.email).trim().toLowerCase()) {
+      toast.error('Nowy adres e-mail jest taki sam jak obecny.');
+      return;
+    }
+
+    if (!currentPassword.trim()) {
+      toast.error('Wpisz aktualne hasło, aby potwierdzić zmianę.');
+      return;
+    }
+
+    setEmailChangeSubmitting(true);
+    try {
+      const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
+      await reauthenticateWithCredential(auth.currentUser, credential);
+      await verifyBeforeUpdateEmail(auth.currentUser, normalizedEmail);
+      toast.success('Wysłaliśmy link potwierdzający na nowy e-mail. Zmiana zadziała po kliknięciu w link z wiadomości.');
+      setEmailChangeOpen(false);
+      setNewEmail('');
+      setCurrentPassword('');
+    } catch (error: any) {
+      toast.error(`Błąd zmiany e-maila: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setEmailChangeSubmitting(false);
+    }
+  };
+
+  const handleSendPasswordChangeLink = async () => {
+    if (!auth.currentUser?.email) return;
+    if (!passwordAuthAvailable) {
+      toast.error('To konto nie ma aktywnego logowania e-mail + hasło.');
+      return;
+    }
+
+    setPasswordResetSubmitting(true);
+    try {
+      await sendPasswordResetEmail(auth, auth.currentUser.email);
+      toast.success('Wysłaliśmy link do zmiany hasła na Twój e-mail.');
+    } catch (error: any) {
+      toast.error(`Błąd wysyłki linku: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setPasswordResetSubmitting(false);
     }
   };
 
@@ -113,8 +195,8 @@ export default function Settings() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Email (nieedytowalny)</Label>
-                <Input value={profile?.email || ''} disabled />
+                <Label>Aktualny e-mail</Label>
+                <Input value={auth.currentUser?.email || profile?.email || ''} disabled />
               </div>
               <Button onClick={handleUpdateProfile} className="w-full md:w-auto">Zapisz zmiany</Button>
             </CardContent>
@@ -186,17 +268,97 @@ export default function Settings() {
                 <Shield className="w-5 h-5 text-slate-400" />
                 Bezpieczeństwo
               </CardTitle>
-              <CardDescription>Zarządzaj dostępem do swojego konta.</CardDescription>
+              <CardDescription>Zarządzaj dostępem do swojego konta, e-maila i hasła.</CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button
-                variant="outline"
-                className="w-full md:w-auto text-red-500 hover:text-red-600 hover:bg-red-50 border-red-100"
-                onClick={() => void handleSignOutEverywhere()}
-                disabled={signingOutEverywhere}
-              >
-                {signingOutEverywhere ? 'Wylogowywanie...' : 'Wyloguj ze wszystkich urządzeń'}
-              </Button>
+            <CardContent className="space-y-6">
+              <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 text-slate-900 font-semibold">
+                      <Mail className="w-4 h-4 text-slate-400" />
+                      Zmiana e-maila
+                    </div>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Aktualny adres: {auth.currentUser?.email || 'Brak adresu e-mail'}
+                    </p>
+                  </div>
+                  <Button type="button" variant="outline" onClick={() => setEmailChangeOpen((value) => !value)}>
+                    {emailChangeOpen ? 'Anuluj' : 'Zmień e-mail'}
+                  </Button>
+                </div>
+
+                {emailChangeOpen ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2 md:col-span-2">
+                      <Label>Nowy e-mail</Label>
+                      <Input
+                        type="email"
+                        value={newEmail}
+                        onChange={(e) => setNewEmail(e.target.value)}
+                        placeholder="nowy@email.pl"
+                      />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <Label>Aktualne hasło</Label>
+                      <Input
+                        type="password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        placeholder="Potwierdź aktualnym hasłem"
+                      />
+                    </div>
+                    <div className="md:col-span-2 flex flex-col gap-2">
+                      <Button type="button" onClick={() => void handleChangeEmail()} disabled={emailChangeSubmitting}>
+                        {emailChangeSubmitting ? 'Wysyłanie...' : 'Wyślij potwierdzenie na nowy e-mail'}
+                      </Button>
+                      <p className="text-xs text-slate-500">
+                        Po potwierdzeniu hasłem wyślemy link na nowy adres. Zmiana aktywuje się po kliknięciu w link z wiadomości.
+                      </p>
+                      {!passwordAuthAvailable ? (
+                        <p className="text-xs text-amber-600">
+                          To konto nie ma aktywnego logowania e-mail + hasło, więc ta zmiana nie jest teraz dostępna.
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
+                <div className="flex items-center gap-2 text-slate-900 font-semibold">
+                  <KeyRound className="w-4 h-4 text-slate-400" />
+                  Zmiana hasła
+                </div>
+                <p className="text-sm text-slate-500">
+                  Wyślemy bezpieczny link do zmiany hasła na Twój obecny adres e-mail.
+                </p>
+                <Button type="button" variant="outline" onClick={() => void handleSendPasswordChangeLink()} disabled={passwordResetSubmitting}>
+                  {passwordResetSubmitting ? 'Wysyłanie...' : 'Wyślij link do zmiany hasła'}
+                </Button>
+                {!passwordAuthAvailable ? (
+                  <p className="text-xs text-amber-600">
+                    To konto nie ma aktywnego logowania e-mail + hasło, więc link do zmiany hasła nie jest dostępny.
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
+                <div className="flex items-center gap-2 text-slate-900 font-semibold">
+                  <Shield className="w-4 h-4 text-slate-400" />
+                  Wylogowanie globalne
+                </div>
+                <p className="text-sm text-slate-500">
+                  Kończy sesję na wszystkich urządzeniach, także na tym, z którego teraz korzystasz.
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full md:w-auto text-red-500 hover:text-red-600 hover:bg-red-50 border-red-100"
+                  onClick={() => void handleSignOutEverywhere()}
+                  disabled={signingOutEverywhere}
+                >
+                  {signingOutEverywhere ? 'Wylogowywanie...' : 'Wyloguj ze wszystkich urządzeń'}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

@@ -19,7 +19,7 @@ import NotificationsCenter from './pages/NotificationsCenter';
 import NotificationRuntime from './components/NotificationRuntime';
 import { Toaster } from './components/ui/sonner';
 import { useEffect, useState } from 'react';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore';
 import { TooltipProvider } from './components/ui/tooltip';
 import { seedTemplates } from './lib/firebase-utils';
 import { toast } from 'sonner';
@@ -49,7 +49,7 @@ export default function App() {
       profileRef,
       (profileDoc) => {
         void (async () => {
-          const nextProfile = profileDoc.exists() ? profileDoc.data() : null;
+          let nextProfile = profileDoc.exists() ? profileDoc.data() : null;
           const forceLogoutAfter = typeof nextProfile?.forceLogoutAfter === 'string' ? nextProfile.forceLogoutAfter : '';
 
           if (forceLogoutAfter) {
@@ -69,6 +69,23 @@ export default function App() {
               }
             } catch (error) {
               console.error('FORCE_LOGOUT_CHECK_FAILED', error);
+            }
+          }
+
+          const authEmail = user.email || null;
+          if (authEmail && nextProfile?.email !== authEmail) {
+            try {
+              await setDoc(
+                profileRef,
+                {
+                  email: authEmail,
+                  updatedAt: serverTimestamp(),
+                },
+                { merge: true },
+              );
+              nextProfile = { ...(nextProfile || {}), email: authEmail };
+            } catch (error) {
+              console.error('PROFILE_EMAIL_SYNC_FAILED', error);
             }
           }
 
