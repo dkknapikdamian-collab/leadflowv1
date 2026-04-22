@@ -48,6 +48,8 @@ function normalizeWorkspace(
 ) {
   const workspaceId = asNullableString(row?.id) || fallbackWorkspaceId || fallbackOwnerId || '';
   const ownerId =
+    asNullableString(row?.owner_user_id) ||
+    asNullableString(row?.ownerUserId) ||
     asNullableString(row?.owner_id) ||
     asNullableString(row?.ownerId) ||
     asNullableString(row?.created_by_user_id) ||
@@ -147,7 +149,7 @@ async function fetchWorkspace(workspaceId: string | null) {
 async function insertWorkspaceWithFallback(payload: Record<string, unknown>) {
   let currentPayload = { ...payload };
 
-  for (let attempt = 0; attempt < 6; attempt += 1) {
+  for (let attempt = 0; attempt < 8; attempt += 1) {
     try {
       return await insertWithVariants(['workspaces'], [currentPayload]);
     } catch (error) {
@@ -165,7 +167,7 @@ async function insertWorkspaceWithFallback(payload: Record<string, unknown>) {
 async function updateWorkspaceWithFallback(workspaceId: string, payload: Record<string, unknown>) {
   let currentPayload = { ...payload };
 
-  for (let attempt = 0; attempt < 6; attempt += 1) {
+  for (let attempt = 0; attempt < 8; attempt += 1) {
     try {
       return await updateById('workspaces', workspaceId, currentPayload);
     } catch (error) {
@@ -191,6 +193,7 @@ async function ensureWorkspace(
 
   if (!row) {
     const payload = {
+      owner_user_id: uid || null,
       owner_id: uid || null,
       created_by_user_id: uid || null,
       name: `${fullName || 'Moj'} Workspace`,
@@ -228,8 +231,17 @@ async function ensureWorkspace(
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.owner_id ?? row.ownerId ?? row.created_by_user_id ?? row.createdByUserId ?? null) && uid) {
+  if (!asNullableString(row.owner_user_id ?? row.ownerUserId ?? null) && uid) {
+    patch.owner_user_id = uid;
+    shouldPatch = true;
+  }
+
+  if (!asNullableString(row.owner_id ?? row.ownerId ?? null) && uid) {
     patch.owner_id = uid;
+    shouldPatch = true;
+  }
+
+  if (!asNullableString(row.created_by_user_id ?? row.createdByUserId ?? null) && uid) {
     patch.created_by_user_id = uid;
     shouldPatch = true;
   }

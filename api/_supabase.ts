@@ -83,6 +83,42 @@ export async function findWorkspaceId(candidate?: unknown) {
     });
   }
 
+  const ownerLookups = [
+    `workspaces?owner_user_id=eq.${encodeURIComponent(normalized)}&select=id&limit=1`,
+    `workspaces?owner_id=eq.${encodeURIComponent(normalized)}&select=id&limit=1`,
+    `workspaces?created_by_user_id=eq.${encodeURIComponent(normalized)}&select=id&limit=1`,
+  ];
+
+  for (const query of ownerLookups) {
+    try {
+      const ownerWorkspaceId = await readSingleValue(query, 'id');
+      if (ownerWorkspaceId) {
+        return ownerWorkspaceId;
+      }
+    } catch (error) {
+      console.error('SUPABASE_WORKSPACE_OWNER_LOOKUP_FAILED', {
+        candidate: normalized,
+        query,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  try {
+    const memberWorkspaceId = await readSingleValue(
+      `workspace_members?user_id=eq.${encodeURIComponent(normalized)}&select=workspace_id&limit=1`,
+      'workspace_id',
+    );
+    if (memberWorkspaceId) {
+      return memberWorkspaceId;
+    }
+  } catch (error) {
+    console.error('SUPABASE_WORKSPACE_MEMBER_USER_LOOKUP_FAILED', {
+      candidate: normalized,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
   try {
     const memberWorkspaceId = await readSingleValue(
       `workspace_members?workspace_id=eq.${encodeURIComponent(normalized)}&select=workspace_id&limit=1`,
