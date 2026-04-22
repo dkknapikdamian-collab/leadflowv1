@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   EmailAuthProvider,
   fetchSignInMethodsForEmail,
+  linkWithCredential,
   reauthenticateWithCredential,
   sendPasswordResetEmail,
   signOut,
@@ -30,6 +31,10 @@ export default function Settings() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [passwordResetSubmitting, setPasswordResetSubmitting] = useState(false);
   const [passwordAuthAvailable, setPasswordAuthAvailable] = useState(false);
+  const [setupPasswordOpen, setSetupPasswordOpen] = useState(false);
+  const [setupPasswordSubmitting, setSetupPasswordSubmitting] = useState(false);
+  const [setupPassword, setSetupPassword] = useState('');
+  const [setupPasswordConfirm, setSetupPasswordConfirm] = useState('');
   const { skin, setSkin, skinOptions } = useAppearance();
 
   useEffect(() => {
@@ -132,6 +137,52 @@ export default function Settings() {
       toast.error(`Błąd wysyłki linku: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setPasswordResetSubmitting(false);
+    }
+  };
+
+  const handleSetupPassword = async () => {
+    if (!auth.currentUser?.email) return;
+
+    if (passwordAuthAvailable) {
+      toast.success('To konto ma już aktywne logowanie e-mail + hasło.');
+      setSetupPasswordOpen(false);
+      return;
+    }
+
+    if (!setupPassword.trim() || setupPassword.trim().length < 8) {
+      toast.error('Nowe hasło musi mieć co najmniej 8 znaków.');
+      return;
+    }
+
+    if (setupPassword !== setupPasswordConfirm) {
+      toast.error('Hasła nie są takie same.');
+      return;
+    }
+
+    setSetupPasswordSubmitting(true);
+    try {
+      const credential = EmailAuthProvider.credential(auth.currentUser.email, setupPassword);
+      await linkWithCredential(auth.currentUser, credential);
+      await updateDoc(doc(db, 'profiles', auth.currentUser.uid), {
+        email: auth.currentUser.email,
+        updatedAt: serverTimestamp(),
+      });
+      setPasswordAuthAvailable(true);
+      setSetupPassword('');
+      setSetupPasswordConfirm('');
+      setSetupPasswordOpen(false);
+      toast.success('Hasło do logowania e-mail zostało ustawione. Teraz możesz zmieniać e-mail i hasło z poziomu ustawień.');
+    } catch (error: any) {
+      const code = String(error?.code || '');
+      if (code === 'auth/provider-already-linked') {
+        setPasswordAuthAvailable(true);
+        setSetupPasswordOpen(false);
+        toast.success('Logowanie e-mail + hasło było już aktywne dla tego konta.');
+      } else {
+        toast.error(`Błąd ustawiania hasła: ${error?.message || 'REQUEST_FAILED'}`);
+      }
+    } finally {
+      setSetupPasswordSubmitting(false);
     }
   };
 
@@ -336,9 +387,44 @@ export default function Settings() {
                   {passwordResetSubmitting ? 'Wysyłanie...' : 'Wyślij link do zmiany hasła'}
                 </Button>
                 {!passwordAuthAvailable ? (
-                  <p className="text-xs text-amber-600">
-                    To konto nie ma aktywnego logowania e-mail + hasło, więc link do zmiany hasła nie jest dostępny.
-                  </p>
+                  <div className="space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
+                    <p className="text-xs text-amber-700">
+                      To konto nie ma jeszcze aktywnego logowania e-mail + hasło. Najpierw ustaw hasło do tego konta.
+                    </p>
+                    <Button type="button" variant="outline" onClick={() => setSetupPasswordOpen((value) => !value)}>
+                      {setupPasswordOpen ? 'Anuluj ustawianie hasła' : 'Ustaw hasło do tego konta'}
+                    </Button>
+                    {setupPasswordOpen ? (
+                      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Nowe hasło</Label>
+                          <Input
+                            type="password"
+                            value={setupPassword}
+                            onChange={(e) => setSetupPassword(e.target.value)}
+                            placeholder="Minimum 8 znaków"
+                          />
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Powtórz nowe hasło</Label>
+                          <Input
+                            type="password"
+                            value={setupPasswordConfirm}
+                            onChange={(e) => setSetupPasswordConfirm(e.target.value)}
+                            placeholder="Powtórz nowe hasło"
+                          />
+                        </div>
+                        <div className="md:col-span-2 flex flex-col gap-2">
+                          <Button type="button" onClick={() => void handleSetupPassword()} disabled={setupPasswordSubmitting}>
+                            {setupPasswordSubmitting ? 'Ustawianie hasła...' : 'Aktywuj logowanie e-mail + hasło'}
+                          </Button>
+                          <p className="text-xs text-slate-500">
+                            To doda lokalne logowanie e-mail + hasło do obecnego konta. Potem odblokuje zmianę e-maila i zmianę hasła z poziomu ustawień.
+                          </p>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
                 ) : null}
               </div>
 
