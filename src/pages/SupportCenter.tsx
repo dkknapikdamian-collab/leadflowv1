@@ -203,9 +203,6 @@ export default function SupportCenter() {
           </Badge>
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Sugestie, problemy i support</h1>
-            <p className="mt-1 text-sm text-slate-500">
-              Tutaj zgłaszasz ulepszenia, problemy z działaniem oraz pytania o obsługę. Twój adres docelowy nie jest nigdzie pokazany w aplikacji.
-            </p>
           </div>
         </div>
 
@@ -267,12 +264,6 @@ export default function SupportCenter() {
                     />
                   </div>
 
-                  <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-xs leading-5 text-slate-500">
-                    <p className="font-semibold text-slate-900">Jak to działa teraz</p>
-                    <p className="mt-1">
-                      Zgłoszenie zapisuje się w aplikacji i może później pokazać odpowiedź bezpośrednio tutaj. Kanał mailowy jest przygotowany tak, żeby docelowy adres nie był widoczny w UI.
-                    </p>
-                  </div>
 
                   <Button type="submit" className="w-full sm:w-auto" disabled={sending}>
                     {sending ? (
@@ -371,12 +362,6 @@ export default function SupportCenter() {
 
           <div className="space-y-6">
             <Card className="border-none shadow-sm">
-              <CardHeader>
-                <CardTitle>Pomoc</CardTitle>
-                <CardDescription>
-                  Krótka ściąga, kiedy używać której sekcji.
-                </CardDescription>
-              </CardHeader>
               <CardContent className="space-y-3">
                 <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
                   <div className="flex items-center gap-2 text-slate-900">

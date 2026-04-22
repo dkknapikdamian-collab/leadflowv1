@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { useAppearance } from '../components/appearance-provider';
 import { updateWorkspaceSubscriptionInSupabase } from '../lib/supabase-fallback';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '../components/ui/card';
@@ -94,7 +95,7 @@ const PLAN_CARDS: PlanCard[] = [
   },
 ];
 
-function getStatusTone(status: string) {
+function getStatusTone(status: string, isDarkSkin: boolean) {
   if (status === 'paid_active') {
     return {
       cardClassName: 'bg-emerald-50 border-emerald-100',
@@ -114,9 +115,9 @@ function getStatusTone(status: string) {
   }
 
   return {
-    cardClassName: 'bg-rose-50 border-rose-100',
-    iconWrapClassName: 'bg-rose-100 text-rose-600',
-    badgeClassName: 'bg-white border-rose-200 text-rose-700',
+    cardClassName: isDarkSkin ? 'bg-red-950/55 border-red-500/35' : 'bg-rose-50 border-rose-100',
+    iconWrapClassName: isDarkSkin ? 'bg-red-500/20 text-red-100' : 'bg-rose-100 text-rose-600',
+    badgeClassName: isDarkSkin ? 'bg-red-500/15 border-red-400/45 text-red-50' : 'bg-white border-rose-200 text-rose-700',
     Icon: AlertTriangle,
   };
 }
@@ -129,6 +130,7 @@ function audienceButtonClass(active: boolean) {
 
 export default function Billing() {
   const { workspace, loading, refresh, access } = useWorkspace();
+  const { skin } = useAppearance();
   const [upgrading, setUpgrading] = useState(false);
   const [audience, setAudience] = useState<PlanAudience>('solo');
 
@@ -172,7 +174,8 @@ export default function Billing() {
     );
   }
 
-  const tone = getStatusTone(access.status);
+  const isBillingDarkSkin = skin === 'forteca-dark' || skin === 'midnight';
+  const tone = getStatusTone(access.status, isBillingDarkSkin);
   const StatusIcon = tone.Icon;
   const trialEndsAtLabel = workspace.trialEndsAt
     ? format(parseISO(workspace.trialEndsAt), 'd MMMM yyyy', { locale: pl })
