@@ -27,7 +27,7 @@ export default defineConfig(({mode}) => {
             if (id.includes('date-fns')) return 'vendor-date';
             if (id.includes('lucide-react')) return 'vendor-icons';
             if (id.includes('sonner')) return 'vendor-feedback';
-            return 'vendor';
+            return undefined;
           },
         },
       },
