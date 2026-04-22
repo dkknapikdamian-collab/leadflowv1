@@ -26,6 +26,17 @@ function asNullableString(value: unknown): NullableString {
   return trimmed ? trimmed : null;
 }
 
+function extractUuidCandidate(...values: unknown[]) {
+  for (const value of values) {
+    const normalized = asNullableString(value);
+    if (normalized && isUuid(normalized)) {
+      return normalized;
+    }
+  }
+
+  return null;
+}
+
 function asDate(value: unknown) {
   if (!value) return null;
   const date = new Date(String(value));
@@ -56,7 +67,7 @@ function extractMissingColumn(error: unknown) {
   const message = error instanceof Error ? error.message : String(error || '');
   const match = message.match(/Could not find the '([^']+)' column/i);
   if (match?.[1]) return match[1];
-  const altMatch = message.match(/column \\"([^\\"]+)\\" does not exist/i);
+  const altMatch = message.match(/column \"([^\"]+)\" does not exist/i);
   return altMatch?.[1] || null;
 }
 
@@ -385,8 +396,30 @@ function shouldRepairFreshTrialBootstrap(row: Record<string, unknown> | null) {
   return false;
 }
 
+function resolveWorkspaceOwnerUserId(profileRow: Record<string, unknown> | null, uid: string | null) {
+  return (
+    extractUuidCandidate(
+      profileRow?.owner_user_id,
+      profileRow?.ownerUserId,
+      profileRow?.owner_id,
+      profileRow?.ownerId,
+      profileRow?.created_by_user_id,
+      profileRow?.createdByUserId,
+      profileRow?.user_uuid,
+      profileRow?.userUuid,
+      profileRow?.profile_uuid,
+      profileRow?.profileUuid,
+      profileRow?.workspace_owner_user_id,
+      profileRow?.workspaceOwnerUserId,
+      profileRow?.id,
+      uid,
+    )
+    || crypto.randomUUID()
+  );
+}
+
 async function ensureWorkspace(
-  profileId: string | null,
+  workspaceOwnerUserId: string,
   fullName: string | null,
   workspaceId: string | null,
   row: Record<string, unknown> | null,
@@ -394,15 +427,11 @@ async function ensureWorkspace(
   const nowIso = new Date().toISOString();
   const trialEndsAt = buildTrialEndsAt();
 
-  if (!profileId || !isUuid(profileId)) {
-    throw new Error('PROFILE_UUID_REQUIRED_FOR_WORKSPACE');
-  }
-
   if (!row) {
     const payload: Record<string, unknown> = {
-      owner_user_id: profileId,
-      owner_id: profileId,
-      created_by_user_id: profileId,
+      owner_user_id: workspaceOwnerUserId,
+      owner_id: workspaceOwnerUserId,
+      created_by_user_id: workspaceOwnerUserId,
       name: `${fullName || 'Moj'} Workspace`,
       plan_id: DEFAULT_PLAN_ID,
       subscription_status: DEFAULT_STATUS,
@@ -444,17 +473,17 @@ async function ensureWorkspace(
   }
 
   if (!asNullableString(row.owner_user_id ?? row.ownerUserId ?? null)) {
-    patch.owner_user_id = profileId;
+    patch.owner_user_id = workspaceOwnerUserId;
     shouldPatch = true;
   }
 
   if (!asNullableString(row.owner_id ?? row.ownerId ?? null)) {
-    patch.owner_id = profileId;
+    patch.owner_id = workspaceOwnerUserId;
     shouldPatch = true;
   }
 
   if (!asNullableString(row.created_by_user_id ?? row.createdByUserId ?? null)) {
-    patch.created_by_user_id = profileId;
+    patch.created_by_user_id = workspaceOwnerUserId;
     shouldPatch = true;
   }
 
@@ -495,6 +524,7 @@ export default async function handler(req: any, res: any) {
     profileRow = await ensureProfile(profileRow, uid, email, fullName, null);
 
     const profileId = asNullableString(profileRow?.id);
+    const workspaceOwnerUserId = resolveWorkspaceOwnerUserId(profileRow, uid);
     let workspaceId = asNullableString(profileRow?.workspace_id ?? profileRow?.workspaceId ?? null);
     let workspaceRow = await fetchWorkspace(workspaceId);
 
@@ -503,13 +533,13 @@ export default async function handler(req: any, res: any) {
       workspaceId = asNullableString(workspaceRow?.id) || workspaceId;
     }
 
-    const ensuredWorkspace = await ensureWorkspace(profileId, fullName, workspaceId, workspaceRow);
+    const ensuredWorkspace = await ensureWorkspace(workspaceOwnerUserId, fullName, workspaceId, workspaceRow);
     workspaceId = ensuredWorkspace.workspaceId;
     workspaceRow = ensuredWorkspace.workspaceRow;
 
     profileRow = await ensureProfile(profileRow, uid, email, fullName, workspaceId);
 
-    const workspace = normalizeWorkspace(workspaceRow, workspaceId, profileId);
+    const workspace = normalizeWorkspace(workspaceRow, workspaceId, workspaceOwnerUserId);
     const profile = normalizeProfile(profileRow, uid, email, fullName);
     const access = buildAccess(workspace);
 

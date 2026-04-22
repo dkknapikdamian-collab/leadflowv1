@@ -26,27 +26,58 @@ export function getRequestIdentity(req, body = {}) {
   };
 }
 
-async function findWorkspaceIdByEmail(email) {
-  const normalizedEmail = asText(email).toLowerCase();
-  if (!normalizedEmail) return null;
-
-  const queries = [
-    `profiles?email=eq.${encodeURIComponent(normalizedEmail)}&select=id,workspace_id&limit=1`,
-    `profiles?email=eq.${encodeURIComponent(asText(email))}&select=id,workspace_id&limit=1`,
-  ];
-
+async function queryFirstRow(queries) {
   for (const query of queries) {
     try {
       const result = await selectFirstAvailable([query]);
       const row = Array.isArray(result.data) && result.data[0] ? result.data[0] : null;
-      const workspaceId = asText(row?.workspace_id);
-      if (workspaceId) return workspaceId;
+      if (row) {
+        return row;
+      }
     } catch {
       // ignore and continue
     }
   }
 
   return null;
+}
+
+async function findWorkspaceIdFromProfileRow(row) {
+  const workspaceId = asText(row?.workspace_id || row?.workspaceId);
+  if (workspaceId) return workspaceId;
+
+  const profileId = asText(row?.id);
+  if (!isUuid(profileId)) return null;
+
+  const ownerRow = await queryFirstRow([
+    `workspaces?owner_user_id=eq.${encodeURIComponent(profileId)}&select=id&limit=1`,
+    `workspaces?owner_id=eq.${encodeURIComponent(profileId)}&select=id&limit=1`,
+    `workspaces?created_by_user_id=eq.${encodeURIComponent(profileId)}&select=id&limit=1`,
+  ]);
+
+  const ownerWorkspaceId = asText(ownerRow?.id);
+  if (ownerWorkspaceId) return ownerWorkspaceId;
+
+  const memberRow = await queryFirstRow([
+    `workspace_members?user_id=eq.${encodeURIComponent(profileId)}&select=workspace_id&limit=1`,
+  ]);
+
+  const memberWorkspaceId = asText(memberRow?.workspace_id);
+  if (memberWorkspaceId) return memberWorkspaceId;
+
+  return null;
+}
+
+async function findWorkspaceIdByEmail(email) {
+  const normalizedEmail = asText(email).toLowerCase();
+  if (!normalizedEmail) return null;
+
+  const row = await queryFirstRow([
+    `profiles?email=eq.${encodeURIComponent(normalizedEmail)}&select=id,workspace_id&limit=1`,
+    `profiles?email=eq.${encodeURIComponent(asText(email))}&select=id,workspace_id&limit=1`,
+  ]);
+
+  return await findWorkspaceIdFromProfileRow(row);
 }
 
 async function findWorkspaceIdByProfileIdentity(profileIdentity) {
@@ -61,31 +92,8 @@ async function findWorkspaceIdByProfileIdentity(profileIdentity) {
   queries.push(`profiles?auth_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=id,workspace_id&limit=1`);
   queries.push(`profiles?external_auth_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=id,workspace_id&limit=1`);
 
-  for (const query of queries) {
-    try {
-      const result = await selectFirstAvailable([query]);
-      const row = Array.isArray(result.data) && result.data[0] ? result.data[0] : null;
-      const workspaceId = asText(row?.workspace_id);
-      if (workspaceId) return workspaceId;
-      const profileId = asText(row?.id);
-      if (isUuid(profileId)) {
-        try {
-          const memberResult = await selectFirstAvailable([
-            `workspace_members?user_id=eq.${encodeURIComponent(profileId)}&select=workspace_id&limit=1`,
-          ]);
-          const memberRow = Array.isArray(memberResult.data) && memberResult.data[0] ? memberResult.data[0] : null;
-          const memberWorkspaceId = asText(memberRow?.workspace_id);
-          if (memberWorkspaceId) return memberWorkspaceId;
-        } catch {
-          // ignore member lookup failure
-        }
-      }
-    } catch {
-      // ignore and continue
-    }
-  }
-
-  return null;
+  const row = await queryFirstRow(queries);
+  return await findWorkspaceIdFromProfileRow(row);
 }
 
 export async function resolveRequestWorkspaceId(req, body = {}) {
