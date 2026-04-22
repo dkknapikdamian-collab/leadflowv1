@@ -47,35 +47,55 @@ export async function supabaseRequest(path: string, init?: RequestInit) {
   return data;
 }
 
-export async function findWorkspaceId(candidate?: unknown) {
-  if (isUuid(candidate)) {
-    return candidate;
+async function readSingleValue(path: string, key: string) {
+  const rows = await supabaseRequest(path, {
+    method: 'GET',
+    headers: { Prefer: 'return=representation' },
+  });
+
+  if (Array.isArray(rows) && rows[0] && typeof rows[0] === 'object') {
+    const value = (rows[0] as Record<string, unknown>)[key];
+    return value ? String(value) : null;
   }
 
-  const queries = [
-    'workspaces?select=id&order=created_at.asc&limit=1',
-    'workspaces?select=id&limit=1',
-    'workspace_members?select=workspace_id&limit=1',
-  ];
+  return null;
+}
 
-  for (const query of queries) {
-    try {
-      const rows = await supabaseRequest(query, {
-        method: 'GET',
-        headers: { Prefer: 'return=representation' },
-      });
+export async function findWorkspaceId(candidate?: unknown) {
+  const normalized = typeof candidate === 'string' ? candidate.trim() : '';
 
-      if (Array.isArray(rows) && rows[0]) {
-        const row = rows[0] as Record<string, unknown>;
-        const id = row.id || row.workspace_id;
-        if (id) return String(id);
-      }
-    } catch (error) {
-      console.error('SUPABASE_WORKSPACE_LOOKUP_FAILED', {
-        query,
-        error: error instanceof Error ? error.message : String(error),
-      });
+  if (!normalized || !isUuid(normalized)) {
+    return null;
+  }
+
+  try {
+    const directId = await readSingleValue(
+      `workspaces?id=eq.${encodeURIComponent(normalized)}&select=id&limit=1`,
+      'id',
+    );
+    if (directId) {
+      return directId;
     }
+  } catch (error) {
+    console.error('SUPABASE_WORKSPACE_DIRECT_LOOKUP_FAILED', {
+      candidate: normalized,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
+  try {
+    const memberWorkspaceId = await readSingleValue(
+      `workspace_members?workspace_id=eq.${encodeURIComponent(normalized)}&select=workspace_id&limit=1`,
+      'workspace_id',
+    );
+    if (memberWorkspaceId) {
+      return memberWorkspaceId;
+    }
+  } catch (error) {
+    console.error('SUPABASE_WORKSPACE_MEMBER_LOOKUP_FAILED', {
+      candidate: normalized,
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 
   return null;

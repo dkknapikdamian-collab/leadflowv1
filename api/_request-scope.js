@@ -36,14 +36,28 @@ async function findWorkspaceIdByEmail(email) {
   }
 }
 
+async function findWorkspaceIdByProfileId(profileId) {
+  const normalizedProfileId = asText(profileId);
+  if (!normalizedProfileId) return null;
+
+  try {
+    const result = await selectFirstAvailable([
+      `profiles?id=eq.${encodeURIComponent(normalizedProfileId)}&select=id,workspace_id&limit=1`,
+    ]);
+    const row = Array.isArray(result.data) && result.data[0] ? result.data[0] : null;
+    return asText(row?.workspace_id) || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function resolveRequestWorkspaceId(req, body = {}) {
   const identity = getRequestIdentity(req, body);
-  const candidates = [identity.workspaceId, identity.userId].filter(Boolean);
 
-  for (const candidate of candidates) {
+  if (identity.workspaceId) {
     try {
-      const resolved = await findWorkspaceId(candidate);
-      if (resolved) return resolved;
+      const explicitWorkspace = await findWorkspaceId(identity.workspaceId);
+      if (explicitWorkspace) return explicitWorkspace;
     } catch {
       // ignore and continue
     }
@@ -52,6 +66,18 @@ export async function resolveRequestWorkspaceId(req, body = {}) {
   if (identity.email) {
     const byEmail = await findWorkspaceIdByEmail(identity.email);
     if (byEmail) return byEmail;
+  }
+
+  if (identity.userId) {
+    const byProfileId = await findWorkspaceIdByProfileId(identity.userId);
+    if (byProfileId) return byProfileId;
+
+    try {
+      const directWorkspace = await findWorkspaceId(identity.userId);
+      if (directWorkspace) return directWorkspace;
+    } catch {
+      // ignore and continue
+    }
   }
 
   return null;
