@@ -31,6 +31,8 @@ export type AccessSummary = {
   isPaidActive: boolean;
 };
 
+const TRIAL_LENGTH_DAYS = 14;
+
 function parseTrialEnd(value?: string | null) {
   if (!value) return null;
 
@@ -83,7 +85,7 @@ export function getAccessSummary(workspace?: WorkspaceLike | null): AccessSummar
   const rawStatus = workspace?.subscriptionStatus ?? 'inactive';
   const trialDaysLeft = trialEnd ? Math.max(0, differenceInCalendarDays(trialEnd, new Date())) : 0;
   const trialProgressPercent = trialEnd
-    ? Math.max(6, Math.min(100, Math.round((trialDaysLeft / 7) * 100)))
+    ? Math.max(6, Math.min(100, Math.round((trialDaysLeft / TRIAL_LENGTH_DAYS) * 100)))
     : 0;
 
   if (rawStatus === 'paid_active') {

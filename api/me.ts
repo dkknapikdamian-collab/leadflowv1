@@ -1,9 +1,11 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
 const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
-const DEFAULT_PLAN_ID = 'solo';
+const DEFAULT_PLAN_ID = 'trial_14d';
 const DEFAULT_STATUS = 'trial_active';
-const TRIAL_MS = 14 * 24 * 60 * 60 * 1000;
+const TRIAL_DAYS = 14;
+const TRIAL_MS = TRIAL_DAYS * 24 * 60 * 60 * 1000;
+const BROKEN_BOOTSTRAP_REPAIR_WINDOW_MS = 12 * 60 * 60 * 1000;
 
 type NullableString = string | null;
 
@@ -19,10 +21,22 @@ function asNullableString(value: unknown): NullableString {
   return trimmed ? trimmed : null;
 }
 
+function asDate(value: unknown) {
+  if (!value) return null;
+  const date = new Date(String(value));
+  return Number.isFinite(date.getTime()) ? date : null;
+}
+
 function isFutureDate(iso: NullableString) {
   if (!iso) return false;
   const date = new Date(iso);
   return Number.isFinite(date.getTime()) && date.getTime() > Date.now();
+}
+
+function isRecentDate(value: unknown, windowMs: number) {
+  const date = asDate(value);
+  if (!date) return false;
+  return Date.now() - date.getTime() <= windowMs;
 }
 
 function buildTrialEndsAt() {
@@ -182,8 +196,38 @@ async function updateWorkspaceWithFallback(workspaceId: string, payload: Record<
   throw new Error('WORKSPACE_UPDATE_SCHEMA_FALLBACK_EXHAUSTED');
 }
 
+function shouldRepairFreshTrialBootstrap(row: Record<string, unknown> | null) {
+  if (!row) return false;
+
+  const currentStatus = asNullableString(row.subscription_status ?? row.subscriptionStatus ?? row.status);
+  const currentTrialEndsAt = asNullableString(row.trial_ends_at ?? row.trialEndsAt ?? null);
+  const createdRecently = isRecentDate(row.created_at ?? row.createdAt ?? row.updated_at ?? row.updatedAt, BROKEN_BOOTSTRAP_REPAIR_WINDOW_MS);
+
+  if (!createdRecently) {
+    return false;
+  }
+
+  if (!currentStatus || !currentTrialEndsAt) {
+    return true;
+  }
+
+  if (currentStatus === 'inactive') {
+    return true;
+  }
+
+  if ((currentStatus === 'trial_active' || currentStatus === 'trial_ending') && !isFutureDate(currentTrialEndsAt)) {
+    return true;
+  }
+
+  if (currentStatus === 'trial_expired') {
+    return true;
+  }
+
+  return false;
+}
+
 async function ensureWorkspace(
-  uid: string | null,
+  authUserId: string | null,
   fullName: string | null,
   workspaceId: string | null,
   row: Record<string, unknown> | null,
@@ -193,9 +237,9 @@ async function ensureWorkspace(
 
   if (!row) {
     const payload = {
-      owner_user_id: uid || null,
-      owner_id: uid || null,
-      created_by_user_id: uid || null,
+      owner_user_id: authUserId || null,
+      owner_id: authUserId || null,
+      created_by_user_id: authUserId || null,
       name: `${fullName || 'Moj'} Workspace`,
       plan_id: DEFAULT_PLAN_ID,
       subscription_status: DEFAULT_STATUS,
@@ -208,47 +252,59 @@ async function ensureWorkspace(
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
 
     return {
-      workspaceId: asNullableString((inserted as Record<string, unknown>).id) || workspaceId || uid || '',
+      workspaceId: asNullableString((inserted as Record<string, unknown>).id) || workspaceId || authUserId || '',
       workspaceRow: inserted as Record<string, unknown>,
     };
   }
 
+  const currentStatus = asNullableString(row.subscription_status ?? row.subscriptionStatus ?? row.status);
+  const currentTrialEndsAt = asNullableString(row.trial_ends_at ?? row.trialEndsAt ?? null);
+  const currentPlanId = asNullableString(row.plan_id ?? row.planId ?? row.plan ?? null);
+  const paidActive = currentStatus === 'paid_active';
+
   const patch: Record<string, unknown> = { updated_at: nowIso };
   let shouldPatch = false;
 
-  if (!asNullableString(row.plan_id ?? row.planId ?? row.plan)) {
+  if (!currentPlanId) {
     patch.plan_id = DEFAULT_PLAN_ID;
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.subscription_status ?? row.subscriptionStatus ?? row.status)) {
+  if (!currentStatus) {
     patch.subscription_status = DEFAULT_STATUS;
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.trial_ends_at ?? row.trialEndsAt ?? null)) {
+  if (!currentTrialEndsAt) {
     patch.trial_ends_at = trialEndsAt;
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.owner_user_id ?? row.ownerUserId ?? null) && uid) {
-    patch.owner_user_id = uid;
+  if (!asNullableString(row.owner_user_id ?? row.ownerUserId ?? null) && authUserId) {
+    patch.owner_user_id = authUserId;
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.owner_id ?? row.ownerId ?? null) && uid) {
-    patch.owner_id = uid;
+  if (!asNullableString(row.owner_id ?? row.ownerId ?? null) && authUserId) {
+    patch.owner_id = authUserId;
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.created_by_user_id ?? row.createdByUserId ?? null) && uid) {
-    patch.created_by_user_id = uid;
+  if (!asNullableString(row.created_by_user_id ?? row.createdByUserId ?? null) && authUserId) {
+    patch.created_by_user_id = authUserId;
+    shouldPatch = true;
+  }
+
+  if (!paidActive && shouldRepairFreshTrialBootstrap(row)) {
+    patch.plan_id = DEFAULT_PLAN_ID;
+    patch.subscription_status = DEFAULT_STATUS;
+    patch.trial_ends_at = trialEndsAt;
     shouldPatch = true;
   }
 
   if (!shouldPatch || !workspaceId) {
     return {
-      workspaceId: workspaceId || asNullableString(row.id) || uid || '',
+      workspaceId: workspaceId || asNullableString(row.id) || authUserId || '',
       workspaceRow: row,
     };
   }
@@ -341,7 +397,7 @@ export default async function handler(req: any, res: any) {
     let workspaceId = profileWorkspaceId || asNullableString(resolvedWorkspaceId);
     let workspaceRow = await fetchWorkspace(workspaceId);
 
-    const ensuredWorkspace = await ensureWorkspace(stableOwnerId, fullName, workspaceId, workspaceRow);
+    const ensuredWorkspace = await ensureWorkspace(uid, fullName, workspaceId, workspaceRow);
     workspaceId = ensuredWorkspace.workspaceId;
     workspaceRow = ensuredWorkspace.workspaceRow;
 
