@@ -2,6 +2,7 @@ import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
 import { Briefcase, Loader2, Target } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { collection, query, where, onSnapshot, orderBy, limit, getDocs } from 'firebase/firestore';
 import {
@@ -216,6 +217,8 @@ export default function Activity() {
                 activities.map((activity) => {
                   const leadLabel = getLeadContextLabel(activity, leadLookup);
                   const caseLabel = getCaseContextLabel(activity, caseLookup);
+                  const leadId = normalizeText(activity?.leadId);
+                  const caseId = normalizeText(activity?.caseId);
                   const actorLabel = getActorLabel(activity);
                   const actionLabel = getActivityActionLabel(activity);
 
@@ -236,16 +239,35 @@ export default function Activity() {
                           </span>
                         </div>
 
-                        <div className="space-y-1">
+                        <div className="flex flex-wrap gap-2 pt-1">
                           {leadLabel ? (
-                            <p className="text-xs text-slate-400">
-                              Lead: {leadLabel}
-                            </p>
+                            leadId ? (
+                              <Link
+                                to={`/leads/${leadId}`}
+                                className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-100"
+                              >
+                                Lead: {leadLabel}
+                              </Link>
+                            ) : (
+                              <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+                                Lead: {leadLabel}
+                              </span>
+                            )
                           ) : null}
+
                           {caseLabel ? (
-                            <p className="text-xs text-slate-400">
-                              Sprawa: {caseLabel}
-                            </p>
+                            caseId ? (
+                              <Link
+                                to={`/case/${caseId}`}
+                                className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100"
+                              >
+                                Sprawa: {caseLabel}
+                              </Link>
+                            ) : (
+                              <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                                Sprawa: {caseLabel}
+                              </span>
+                            )
                           ) : null}
                         </div>
                       </div>
