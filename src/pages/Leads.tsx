@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -10,7 +10,6 @@ import {
   Target,
   TrendingUp,
   AlertTriangle,
-  Upload,
   Mail,
   Clock,
   FileText,
@@ -23,7 +22,6 @@ import Layout from '../components/Layout';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
-import Papa from 'papaparse';
 import { format, isAfter, isPast, parseISO, startOfDay, subDays, addDays } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -126,7 +124,6 @@ export default function Leads() {
     nextActionAt: '',
   });
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const createLeadSubmitLockRef = useRef(false);
   const [leadSubmitting, setLeadSubmitting] = useState(false);
@@ -200,50 +197,6 @@ export default function Leads() {
     setNewLead((prev) => ({ ...prev, nextActionAt: format(next, 'yyyy-MM-dd') }));
   };
 
-  const handleImportCSV = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !workspace || !hasAccess) return;
-
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: async (results) => {
-        const rows = (results.data as any[]).filter((row) => row?.name).slice(0, 300);
-        if (!rows.length) {
-          toast.error('Plik CSV nie zawiera poprawnych rekordów');
-          return;
-        }
-
-        let imported = 0;
-        for (const row of rows) {
-          try {
-            await insertLeadToSupabase({
-              name: String(row.name),
-              email: String(row.email || ''),
-              phone: String(row.phone || ''),
-              company: String(row.company || ''),
-              source: String(row.source || 'other'),
-              dealValue: Number(row.dealValue) || 0,
-              nextStep: String(row.nextStep || ''),
-              nextActionAt: String(row.nextActionAt || ''),
-              workspaceId: workspace.id,
-              ownerId: workspace.ownerId,
-            });
-            imported += 1;
-          } catch {
-            // Continue import even if one row fails.
-          }
-        }
-
-        await loadLeads();
-        toast.success(`Zaimportowano ${imported} leadów`);
-      },
-      error: (error) => {
-        toast.error(`Błąd importu CSV: ${error.message}`);
-      },
-    });
-  };
-
   const filteredLeads = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
 
@@ -313,11 +266,6 @@ export default function Leads() {
             <p className="text-slate-500">Zarządzaj procesem sprzedaży i domykaj deale.</p>
           </div>
           <div className="flex items-center gap-2">
-            <input type="file" accept=".csv" className="hidden" ref={fileInputRef} onChange={handleImportCSV} />
-            <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="rounded-xl">
-              <Upload className="w-4 h-4 mr-2" /> Import CSV
-            </Button>
-
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
               <DialogTrigger asChild>
                 <Button className="rounded-xl shadow-lg shadow-primary/20">

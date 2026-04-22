@@ -49,6 +49,8 @@ import {
   getEntriesForDay,
   getEntryTone,
   getTaskStartAt,
+  normalizeRecurrenceConfig,
+  normalizeReminderConfig,
   syncTaskDerivedFields,
   toReminderAtIso,
   toDateTimeLocalValue,
@@ -82,6 +84,9 @@ type CalendarEditDraft = {
   startAt: string;
   endAt: string;
   leadId: string;
+  priority: string;
+  recurrence: ReturnType<typeof createDefaultRecurrence>;
+  reminder: ReturnType<typeof createDefaultReminder>;
 };
 
 type CalendarScale = 'compact' | 'default' | 'large';
@@ -104,6 +109,9 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
       startAt: entry.raw?.startAt || entry.startsAt,
       endAt: entry.raw?.endAt || entry.endsAt || buildStartEndPair(entry.startsAt).endAt,
       leadId: entry.raw?.leadId || 'none',
+      priority: 'medium',
+      recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
+      reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
     };
   }
 
@@ -114,6 +122,9 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
       startAt: getTaskStartAt(entry.raw) || entry.startsAt,
       endAt: '',
       leadId: entry.raw?.leadId || 'none',
+      priority: entry.raw?.priority || 'medium',
+      recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
+      reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
     };
   }
 
@@ -123,6 +134,9 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
     startAt: entry.raw?.nextActionAt?.includes?.('T') ? entry.raw.nextActionAt : entry.startsAt,
     endAt: '',
     leadId: entry.raw?.id || entry.sourceId,
+    priority: 'medium',
+    recurrence: createDefaultRecurrence(),
+    reminder: createDefaultReminder(),
   };
 }
 
@@ -767,14 +781,18 @@ export default function Calendar() {
 
       if (editEntry.kind === 'event') {
         const selectedLead = leads.find((lead) => lead.id === editDraft.leadId);
-        const reminderAt = toReminderAtIso(editDraft.startAt, editEntry.raw?.reminder);
+        const reminderAt = toReminderAtIso(editDraft.startAt, editDraft.reminder);
         await updateEventInSupabase({
           id: editEntry.sourceId,
           title: editDraft.title,
           type: editDraft.type,
           startAt: editDraft.startAt,
           endAt: editDraft.endAt,
+          reminderAt,
+          recurrenceRule: editDraft.recurrence.mode,
+          status: editEntry.raw?.status || 'scheduled',
           leadId: selectedLead?.id ?? null,
+          caseId: editEntry.raw?.caseId ?? null,
         });
         await registerReminderScheduled({
           entityType: 'event',
@@ -792,8 +810,11 @@ export default function Calendar() {
           dueAt: editDraft.startAt,
           date: format(nextDate, 'yyyy-MM-dd'),
           time: format(nextDate, 'HH:mm'),
+          priority: editDraft.priority,
           leadId: selectedLead?.id ?? null,
           leadName: selectedLead?.name ?? '',
+          recurrence: editDraft.recurrence,
+          reminder: editDraft.reminder,
         });
         const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
 
@@ -802,9 +823,13 @@ export default function Calendar() {
           title: payload.title,
           type: payload.type,
           date: payload.date,
+          scheduledAt: payload.dueAt,
           status: payload.status,
           priority: payload.priority,
+          reminderAt,
+          recurrenceRule: payload.recurrence?.mode ?? 'none',
           leadId: payload.leadId ?? null,
+          caseId: editEntry.raw?.caseId ?? null,
         });
         await registerReminderScheduled({
           entityType: 'task',
@@ -1305,6 +1330,17 @@ export default function Calendar() {
                 ) : null}
               </div>
 
+              {editEntry.kind === 'task' ? (
+                <div className="space-y-2">
+                  <Label>Priorytet</Label>
+                  <select className={modalSelectClass} value={editDraft.priority} onChange={(e) => setEditDraft({ ...editDraft, priority: e.target.value })}>
+                    {PRIORITY_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+              ) : null}
+
               {editEntry.kind !== 'lead' ? (
                 <div className="space-y-2">
                   <Label>Lead</Label>
@@ -1314,6 +1350,76 @@ export default function Calendar() {
                       <option key={lead.id} value={lead.id}>{lead.name}</option>
                     ))}
                   </select>
+                </div>
+              ) : null}
+
+              {editEntry.kind === 'event' ? (
+                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
+                    <p className="text-xs text-slate-500">Te same opcje co przy tworzeniu wydarzenia.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2 md:col-span-2">
+                      <Label>Powtarzanie</Label>
+                      <select className={modalSelectClass} value={editDraft.recurrence.mode} onChange={(e) => setEditDraft({ ...editDraft, recurrence: { ...editDraft.recurrence, mode: e.target.value as any } })}>
+                        {RECURRENCE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Co ile</Label>
+                      <Input type="number" min="1" value={editDraft.recurrence.interval} onChange={(e) => setEditDraft({ ...editDraft, recurrence: { ...editDraft.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={editDraft.recurrence.mode === 'none'} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Powtarzaj do</Label>
+                    <Input type="date" value={editDraft.recurrence.until || ''} onChange={(e) => setEditDraft({ ...editDraft, recurrence: { ...editDraft.recurrence, until: e.target.value || null } })} disabled={editDraft.recurrence.mode === 'none'} />
+                  </div>
+                </div>
+              ) : null}
+
+              {editEntry.kind === 'event' ? (
+                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
+                    <p className="text-xs text-slate-500">Te same opcje co przy tworzeniu wydarzenia.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Tryb</Label>
+                      <select className={modalSelectClass} value={editDraft.reminder.mode} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, mode: e.target.value as any } })}>
+                        {REMINDER_MODE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Kiedy przypomnieć</Label>
+                      <select className={modalSelectClass} value={editDraft.reminder.minutesBefore} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, minutesBefore: Number(e.target.value) } })} disabled={editDraft.reminder.mode === 'none'}>
+                        {REMINDER_OFFSET_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  {editDraft.reminder.mode === 'recurring' ? (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Cykliczność przypomnienia</Label>
+                        <select className={modalSelectClass} value={editDraft.reminder.recurrenceMode} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, recurrenceMode: e.target.value as any } })}>
+                          {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Co ile</Label>
+                        <Input type="number" min="1" value={editDraft.reminder.recurrenceInterval} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               ) : null}
 
