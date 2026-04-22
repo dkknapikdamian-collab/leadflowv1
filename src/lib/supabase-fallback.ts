@@ -114,38 +114,94 @@ function getSupabaseConfig() {
   return url ? { url } : null;
 }
 
-async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(path, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init?.headers || {}),
-    },
-  });
+type ApiCacheEntry = {
+  expiresAt: number;
+  data?: unknown;
+  promise?: Promise<unknown>;
+};
 
-  const text = await response.text();
-  let data: unknown = null;
-  if (text) {
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = { raw: text };
+const API_GET_CACHE_TTL_MS = 10_000;
+const apiGetCache = new Map<string, ApiCacheEntry>();
+
+function clearApiGetCache() {
+  apiGetCache.clear();
+}
+
+async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
+  const method = (init?.method || 'GET').toUpperCase();
+  const useCache = method === 'GET';
+  const cacheKey = `${method}:${path}`;
+
+  if (useCache) {
+    const cached = apiGetCache.get(cacheKey);
+    if (cached && 'data' in cached && cached.expiresAt > Date.now()) {
+      return cached.data as T;
+    }
+    if (cached?.promise) {
+      return cached.promise as Promise<T>;
     }
   }
 
-  if (!response.ok) {
-    const message =
-      typeof data === 'object' && data && 'error' in (data as Record<string, unknown>)
-        ? String((data as Record<string, unknown>).error)
-        : `${response.status}:REQUEST_FAILED:${text.slice(0, 180)}`;
-    throw new Error(message);
+  const requestPromise = (async () => {
+    const response = await fetch(path, {
+      ...init,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(init?.headers || {}),
+      },
+    });
+
+    const text = await response.text();
+    let data: unknown = null;
+    if (text) {
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = { raw: text };
+      }
+    }
+
+    if (!response.ok) {
+      const message =
+        typeof data === 'object' && data && 'error' in (data as Record<string, unknown>)
+          ? String((data as Record<string, unknown>).error)
+          : `${response.status}:REQUEST_FAILED:${text.slice(0, 180)}`;
+      throw new Error(message);
+    }
+
+    if (data && typeof data === 'object' && 'raw' in (data as Record<string, unknown>)) {
+      throw new Error(`INVALID_API_RESPONSE:${String((data as Record<string, unknown>).raw).slice(0, 180)}`);
+    }
+
+    return data as T;
+  })();
+
+  if (useCache) {
+    apiGetCache.set(cacheKey, {
+      expiresAt: Date.now() + API_GET_CACHE_TTL_MS,
+      promise: requestPromise,
+    });
   }
 
-  if (data && typeof data === 'object' && 'raw' in (data as Record<string, unknown>)) {
-    throw new Error(`INVALID_API_RESPONSE:${String((data as Record<string, unknown>).raw).slice(0, 180)}`);
-  }
+  try {
+    const result = await requestPromise;
 
-  return data as T;
+    if (useCache) {
+      apiGetCache.set(cacheKey, {
+        expiresAt: Date.now() + API_GET_CACHE_TTL_MS,
+        data: result,
+      });
+    } else {
+      clearApiGetCache();
+    }
+
+    return result;
+  } catch (error) {
+    if (useCache) {
+      apiGetCache.delete(cacheKey);
+    }
+    throw error;
+  }
 }
 
 export function isSupabaseConfigured() {
