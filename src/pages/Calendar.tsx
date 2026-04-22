@@ -899,17 +899,19 @@ export default function Calendar() {
                 Miesiąc
               </Button>
             </div>
-            <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
-              <Button variant={calendarScale === 'compact' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('compact')}>
-                Małe kafelki
-              </Button>
-              <Button variant={calendarScale === 'default' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('default')}>
-                Standard
-              </Button>
-              <Button variant={calendarScale === 'large' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('large')}>
-                Duże kafelki
-              </Button>
-            </div>
+            {calendarView === 'month' ? (
+              <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+                <Button variant={calendarScale === 'compact' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('compact')}>
+                  Małe kafelki
+                </Button>
+                <Button variant={calendarScale === 'default' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('default')}>
+                  Standard
+                </Button>
+                <Button variant={calendarScale === 'large' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('large')}>
+                  Duże kafelki
+                </Button>
+              </div>
+            ) : null}
             <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
               <Button
                 variant="ghost"
