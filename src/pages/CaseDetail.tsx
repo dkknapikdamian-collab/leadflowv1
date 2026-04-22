@@ -224,6 +224,56 @@ function buildDefaultEventEnd(startAt: string) {
   return toDateTimeLocalValue(new Date(safeStart.getTime() + 60 * 60_000));
 }
 
+const SIMPLE_RECURRENCE_OPTIONS = [
+  { value: 'none', label: 'Bez powtarzania' },
+  { value: 'daily', label: 'Codziennie' },
+  { value: 'weekly', label: 'Co tydzień' },
+  { value: 'monthly', label: 'Co miesiąc' },
+];
+
+function normalizeDateTimeLocalInput(value: unknown) {
+  if (!value) return '';
+  const parsed = new Date(String(value));
+  return Number.isNaN(parsed.getTime()) ? '' : toDateTimeLocalValue(parsed);
+}
+
+function parseRecurrenceRule(rule: unknown) {
+  const raw = typeof rule === 'string' ? rule.trim() : '';
+  if (!raw) {
+    return { mode: 'none', until: '' };
+  }
+
+  const upper = raw.toUpperCase();
+  let mode = 'none';
+  if (upper.includes('FREQ=DAILY')) mode = 'daily';
+  else if (upper.includes('FREQ=WEEKLY')) mode = 'weekly';
+  else if (upper.includes('FREQ=MONTHLY')) mode = 'monthly';
+
+  const untilMatch = upper.match(/UNTIL=([0-9T]{13,16}Z?)/);
+  let until = '';
+  if (untilMatch?.[1]) {
+    const normalized = untilMatch[1].replace('Z', '');
+    const iso = normalized.length >= 15
+      ? `${normalized.slice(0, 4)}-${normalized.slice(4, 6)}-${normalized.slice(6, 8)}T${normalized.slice(9, 11)}:${normalized.slice(11, 13)}`
+      : '';
+    until = iso;
+  }
+
+  return { mode, until };
+}
+
+function buildRecurrenceRule(mode: string, until: string) {
+  if (!mode || mode === 'none') return '';
+
+  const freq = mode === 'daily' ? 'DAILY' : mode === 'weekly' ? 'WEEKLY' : 'MONTHLY';
+  const parsedUntil = until ? new Date(until) : null;
+  const untilPart = parsedUntil && !Number.isNaN(parsedUntil.getTime())
+    ? `;UNTIL=${parsedUntil.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')}`
+    : '';
+
+  return `RRULE:FREQ=${freq}${untilPart}`;
+}
+
 function getComparableTime(value: unknown) {
   if (!value) return Number.MAX_SAFE_INTEGER;
   const parsed = new Date(String(value));
@@ -303,6 +353,9 @@ export default function CaseDetail() {
     type: 'follow_up',
     scheduledAt: toDateTimeLocalValue(new Date()),
     priority: 'medium',
+    reminderAt: '',
+    recurrenceMode: 'none',
+    recurrenceUntil: '',
   }));
   const [quickEvent, setQuickEvent] = useState(() => {
     const startAt = toDateTimeLocalValue(new Date());
@@ -311,6 +364,10 @@ export default function CaseDetail() {
       type: 'meeting',
       startAt,
       endAt: buildDefaultEventEnd(startAt),
+      status: 'scheduled',
+      reminderAt: '',
+      recurrenceMode: 'none',
+      recurrenceUntil: '',
     };
   });
   const [taskActionPendingId, setTaskActionPendingId] = useState<string | null>(null);
@@ -769,6 +826,9 @@ export default function CaseDetail() {
       type: 'follow_up',
       scheduledAt: toDateTimeLocalValue(new Date()),
       priority: 'medium',
+      reminderAt: '',
+      recurrenceMode: 'none',
+      recurrenceUntil: '',
     });
   };
 
@@ -779,6 +839,10 @@ export default function CaseDetail() {
       type: 'meeting',
       startAt,
       endAt: buildDefaultEventEnd(startAt),
+      status: 'scheduled',
+      reminderAt: '',
+      recurrenceMode: 'none',
+      recurrenceUntil: '',
     });
   };
 
@@ -810,6 +874,8 @@ export default function CaseDetail() {
         status: 'todo',
         caseId,
         leadId: caseData?.leadId || null,
+        reminderAt: quickTask.reminderAt || null,
+        recurrenceRule: buildRecurrenceRule(quickTask.recurrenceMode, quickTask.recurrenceUntil),
         ownerId: auth.currentUser?.uid ?? undefined,
       });
 
@@ -861,8 +927,11 @@ export default function CaseDetail() {
         type: quickEvent.type,
         startAt: quickEvent.startAt,
         endAt: quickEvent.endAt,
+        status: quickEvent.status,
         caseId,
         leadId: caseData?.leadId || null,
+        reminderAt: quickEvent.reminderAt || undefined,
+        recurrenceRule: buildRecurrenceRule(quickEvent.recurrenceMode, quickEvent.recurrenceUntil),
       });
 
       await insertActivityToSupabase({
@@ -890,6 +959,7 @@ export default function CaseDetail() {
 
 
   const openCaseTaskEditor = (task: any) => {
+    const recurrence = parseRecurrenceRule(task.recurrenceRule);
     setEditCaseTask({
       id: String(task.id || ''),
       title: String(task.title || ''),
@@ -897,10 +967,14 @@ export default function CaseDetail() {
       scheduledAt: String(task.scheduledAt || task.dueAt || `${task.date || ''}T09:00`).slice(0, 16),
       priority: String(task.priority || 'medium'),
       status: String(task.status || 'todo'),
+      reminderAt: normalizeDateTimeLocalInput(task.reminderAt),
+      recurrenceMode: recurrence.mode,
+      recurrenceUntil: recurrence.until,
     });
   };
 
   const openCaseEventEditor = (event: any) => {
+    const recurrence = parseRecurrenceRule(event.recurrenceRule);
     setEditCaseEvent({
       id: String(event.id || ''),
       title: String(event.title || ''),
@@ -908,6 +982,9 @@ export default function CaseDetail() {
       startAt: String(event.startAt || '').slice(0, 16),
       endAt: String(event.endAt || buildDefaultEventEnd(String(event.startAt || toDateTimeLocalValue(new Date())))).slice(0, 16),
       status: String(event.status || 'scheduled'),
+      reminderAt: normalizeDateTimeLocalInput(event.reminderAt),
+      recurrenceMode: recurrence.mode,
+      recurrenceUntil: recurrence.until,
     });
   };
 
@@ -927,6 +1004,8 @@ export default function CaseDetail() {
         status: nextStatus,
         priority: task.priority,
         leadId: task.leadId ?? caseData?.leadId ?? null,
+        reminderAt: task.reminderAt || null,
+        recurrenceRule: typeof task.recurrenceRule === 'string' ? task.recurrenceRule : '',
         caseId,
       });
 
@@ -1019,6 +1098,8 @@ export default function CaseDetail() {
         endAt: event.endAt,
         status: String(event.status || 'scheduled') === 'completed' ? 'scheduled' : 'completed',
         leadId: event.leadId ?? caseData?.leadId ?? null,
+        reminderAt: event.reminderAt || null,
+        recurrenceRule: typeof event.recurrenceRule === 'string' ? event.recurrenceRule : '',
         caseId,
       });
       await insertActivityToSupabase({
@@ -1071,6 +1152,8 @@ export default function CaseDetail() {
         status: editCaseTask.status,
         priority: editCaseTask.priority,
         leadId: caseData?.leadId || null,
+        reminderAt: editCaseTask.reminderAt || null,
+        recurrenceRule: buildRecurrenceRule(editCaseTask.recurrenceMode, editCaseTask.recurrenceUntil),
         caseId,
       });
       await insertActivityToSupabase({
@@ -1124,6 +1207,8 @@ export default function CaseDetail() {
         endAt: editCaseEvent.endAt,
         status: editCaseEvent.status,
         leadId: caseData?.leadId || null,
+        reminderAt: editCaseEvent.reminderAt || null,
+        recurrenceRule: buildRecurrenceRule(editCaseEvent.recurrenceMode, editCaseEvent.recurrenceUntil),
         caseId,
       });
       await insertActivityToSupabase({
@@ -2091,6 +2176,26 @@ export default function CaseDetail() {
               <Label>Data i godzina</Label>
               <Input type="datetime-local" value={quickTask.scheduledAt} onChange={(e) => setQuickTask((prev) => ({ ...prev, scheduledAt: e.target.value }))} />
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Przypomnienie (opcjonalnie)</Label>
+                <Input type="datetime-local" value={quickTask.reminderAt} onChange={(e) => setQuickTask((prev) => ({ ...prev, reminderAt: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Powtarzanie</Label>
+                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickTask.recurrenceMode} onChange={(e) => setQuickTask((prev) => ({ ...prev, recurrenceMode: e.target.value }))}>
+                  {SIMPLE_RECURRENCE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {quickTask.recurrenceMode !== 'none' ? (
+              <div className="space-y-2">
+                <Label>Powtarzaj do (opcjonalnie)</Label>
+                <Input type="datetime-local" value={quickTask.recurrenceUntil} onChange={(e) => setQuickTask((prev) => ({ ...prev, recurrenceUntil: e.target.value }))} />
+              </div>
+            ) : null}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsQuickTaskOpen(false)}>Anuluj</Button>
@@ -2132,6 +2237,34 @@ export default function CaseDetail() {
               <div className="space-y-2">
                 <Label>Koniec</Label>
                 <Input type="datetime-local" value={quickEvent.endAt} onChange={(e) => setQuickEvent((prev) => ({ ...prev, endAt: e.target.value }))} />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickEvent.status} onChange={(e) => setQuickEvent((prev) => ({ ...prev, status: e.target.value }))}>
+                  <option value="scheduled">Zaplanowane</option>
+                  <option value="completed">Wykonane</option>
+                  <option value="cancelled">Anulowane</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label>Przypomnienie (opcjonalnie)</Label>
+                <Input type="datetime-local" value={quickEvent.reminderAt} onChange={(e) => setQuickEvent((prev) => ({ ...prev, reminderAt: e.target.value }))} />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Powtarzanie</Label>
+                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickEvent.recurrenceMode} onChange={(e) => setQuickEvent((prev) => ({ ...prev, recurrenceMode: e.target.value }))}>
+                  {SIMPLE_RECURRENCE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label>Powtarzaj do (opcjonalnie)</Label>
+                <Input type="datetime-local" value={quickEvent.recurrenceUntil} onChange={(e) => setQuickEvent((prev) => ({ ...prev, recurrenceUntil: e.target.value }))} disabled={quickEvent.recurrenceMode === 'none'} />
               </div>
             </div>
           </div>
@@ -2255,6 +2388,26 @@ export default function CaseDetail() {
                 <Label>Data i godzina</Label>
                 <Input type="datetime-local" value={editCaseTask.scheduledAt} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, scheduledAt: e.target.value }))} />
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Przypomnienie (opcjonalnie)</Label>
+                  <Input type="datetime-local" value={editCaseTask.reminderAt || ''} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, reminderAt: e.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Powtarzanie</Label>
+                  <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseTask.recurrenceMode || 'none'} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, recurrenceMode: e.target.value }))}>
+                    {SIMPLE_RECURRENCE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {editCaseTask.recurrenceMode !== 'none' ? (
+                <div className="space-y-2">
+                  <Label>Powtarzaj do (opcjonalnie)</Label>
+                  <Input type="datetime-local" value={editCaseTask.recurrenceUntil || ''} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, recurrenceUntil: e.target.value }))} />
+                </div>
+              ) : null}
             </div>
           ) : null}
           <DialogFooter>
@@ -2295,6 +2448,34 @@ export default function CaseDetail() {
                 <div className="space-y-2">
                   <Label>Koniec</Label>
                   <Input type="datetime-local" value={editCaseEvent.endAt} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, endAt: e.target.value }))} />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Status</Label>
+                  <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseEvent.status} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, status: e.target.value }))}>
+                    <option value="scheduled">Zaplanowane</option>
+                    <option value="completed">Wykonane</option>
+                    <option value="cancelled">Anulowane</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Przypomnienie (opcjonalnie)</Label>
+                  <Input type="datetime-local" value={editCaseEvent.reminderAt || ''} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, reminderAt: e.target.value }))} />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Powtarzanie</Label>
+                  <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseEvent.recurrenceMode || 'none'} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, recurrenceMode: e.target.value }))}>
+                    {SIMPLE_RECURRENCE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Powtarzaj do (opcjonalnie)</Label>
+                  <Input type="datetime-local" value={editCaseEvent.recurrenceUntil || ''} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, recurrenceUntil: e.target.value }))} disabled={editCaseEvent.recurrenceMode === 'none'} />
                 </div>
               </div>
             </div>
