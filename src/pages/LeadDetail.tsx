@@ -86,6 +86,18 @@ const SOURCE_OPTIONS = [
 
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
+const SIMPLE_RECURRENCE_OPTIONS = [
+  { value: 'none', label: 'Bez powtarzania' },
+  { value: 'daily', label: 'Codziennie' },
+  { value: 'weekly', label: 'Co tydzień' },
+  { value: 'monthly', label: 'Co miesiąc' },
+];
+
+function toOptionalDateTimeLocal(value: unknown) {
+  const parsed = asDate(value);
+  return parsed ? toDateTimeLocalValue(parsed) : '';
+}
+
 function asDate(value: unknown) {
   if (!value) return null;
   if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
@@ -580,6 +592,8 @@ export default function LeadDetail() {
       status: String(task.status || 'todo'),
       leadId: task.leadId ? String(task.leadId) : 'none',
       caseId: task.caseId ? String(task.caseId) : '',
+      reminderAt: toOptionalDateTimeLocal(task.reminderAt),
+      recurrenceRule: String(task.recurrenceRule || 'none'),
     });
   };
 
@@ -639,6 +653,8 @@ export default function LeadDetail() {
       status: String(event.status || 'scheduled'),
       leadId: event.leadId ? String(event.leadId) : 'none',
       caseId: event.caseId ? String(event.caseId) : '',
+      reminderAt: toOptionalDateTimeLocal(event.reminderAt),
+      recurrenceRule: String(event.recurrenceRule || 'none'),
     });
   };
 
@@ -715,6 +731,8 @@ export default function LeadDetail() {
         scheduledAt: String(editLinkedTask.dueAt),
         priority: String(editLinkedTask.priority || 'medium'),
         status: String(editLinkedTask.status || 'todo'),
+        reminderAt: editLinkedTask.reminderAt ? String(editLinkedTask.reminderAt) : null,
+        recurrenceRule: String(editLinkedTask.recurrenceRule || 'none'),
         leadId: normalizedLeadId,
         caseId: editLinkedTask.caseId ? String(editLinkedTask.caseId) : null,
       });
@@ -763,6 +781,8 @@ export default function LeadDetail() {
         startAt: String(editLinkedEvent.startAt),
         endAt: String(editLinkedEvent.endAt),
         status: String(editLinkedEvent.status || 'scheduled'),
+        reminderAt: editLinkedEvent.reminderAt ? String(editLinkedEvent.reminderAt) : null,
+        recurrenceRule: String(editLinkedEvent.recurrenceRule || 'none'),
         leadId: normalizedLeadId,
         caseId: editLinkedEvent.caseId ? String(editLinkedEvent.caseId) : null,
       });
@@ -1643,6 +1663,20 @@ export default function LeadDetail() {
                   </select>
                 </div>
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Przypomnienie</Label>
+                  <Input type="datetime-local" value={editLinkedTask.reminderAt || ''} onChange={(e) => setEditLinkedTask((prev: any) => ({ ...prev, reminderAt: e.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Powtarzanie</Label>
+                  <select className={modalSelectClass} value={editLinkedTask.recurrenceRule || 'none'} onChange={(e) => setEditLinkedTask((prev: any) => ({ ...prev, recurrenceRule: e.target.value }))}>
+                    {SIMPLE_RECURRENCE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
           ) : null}
           <DialogFooter>
@@ -1685,14 +1719,38 @@ export default function LeadDetail() {
                   <Input type="datetime-local" value={editLinkedEvent.endAt} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, endAt: e.target.value }))} />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Lead</Label>
-                <select className={modalSelectClass} value={editLinkedEvent.leadId} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, leadId: e.target.value }))}>
-                  <option value="none">Bez leada</option>
-                  {leads.map((leadEntry: any) => (
-                    <option key={leadEntry.id} value={String(leadEntry.id)}>{leadEntry.name || 'Lead bez nazwy'}</option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Lead</Label>
+                  <select className={modalSelectClass} value={editLinkedEvent.leadId} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, leadId: e.target.value }))}>
+                    <option value="none">Bez leada</option>
+                    {leads.map((leadEntry: any) => (
+                      <option key={leadEntry.id} value={String(leadEntry.id)}>{leadEntry.name || 'Lead bez nazwy'}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Status</Label>
+                  <select className={modalSelectClass} value={editLinkedEvent.status} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, status: e.target.value }))}>
+                    <option value="scheduled">Zaplanowane</option>
+                    <option value="completed">Wykonane</option>
+                    <option value="cancelled">Anulowane</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Przypomnienie</Label>
+                  <Input type="datetime-local" value={editLinkedEvent.reminderAt || ''} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, reminderAt: e.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Powtarzanie</Label>
+                  <select className={modalSelectClass} value={editLinkedEvent.recurrenceRule || 'none'} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, recurrenceRule: e.target.value }))}>
+                    {SIMPLE_RECURRENCE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           ) : null}
