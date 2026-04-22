@@ -404,3 +404,83 @@ export async function updateWorkspaceSubscriptionInSupabase(input: {
     body: JSON.stringify(input),
   });
 }
+
+export async function fetchSupportRequestsFromSupabase(params?: {
+  ownerId?: string;
+  limit?: number;
+  includeAll?: boolean;
+  status?: string;
+  kind?: string;
+  query?: string;
+}) {
+  const query = new URLSearchParams();
+  if (params?.ownerId) query.set('ownerId', params.ownerId);
+  if (params?.limit) query.set('limit', String(params.limit));
+  if (params?.includeAll) query.set('includeAll', '1');
+  if (params?.status) query.set('status', params.status);
+  if (params?.kind) query.set('kind', params.kind);
+  if (params?.query) query.set('query', params.query);
+  const suffix = query.toString() ? `?${query.toString()}` : '';
+  return callApi<Record<string, unknown>[]>(`/api/support-requests${suffix}`);
+}
+
+export async function createSupportRequestInSupabase(input: {
+  ownerId: string;
+  ownerEmail?: string | null;
+  workspaceId?: string | null;
+  kind: string;
+  subject: string;
+  message: string;
+}) {
+  return callApi<Record<string, unknown>>('/api/support-requests', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function appendSupportReplyInSupabase(input: {
+  id: string;
+  message: string;
+  authorType?: string;
+  authorLabel?: string;
+  ownerId?: string;
+  status?: string;
+}) {
+  return callApi<Record<string, unknown>>('/api/support-requests', {
+    method: 'PATCH',
+    body: JSON.stringify({
+      id: input.id,
+      action: 'append_reply',
+      message: input.message,
+      authorType: input.authorType,
+      authorLabel: input.authorLabel,
+      ownerId: input.ownerId,
+      status: input.status,
+    }),
+  });
+}
+
+export const addSupportReplyInSupabase = appendSupportReplyInSupabase;
+export const replyToSupportRequestInSupabase = appendSupportReplyInSupabase;
+
+export async function updateSupportRequestStatusInSupabase(input: {
+  id: string;
+  status: string;
+  ownerId?: string;
+}) {
+  return callApi<Record<string, unknown>>('/api/support-requests', {
+    method: 'PATCH',
+    body: JSON.stringify({
+      id: input.id,
+      status: input.status,
+      ownerId: input.ownerId,
+    }),
+  });
+}
+
+export async function updateSupportRequestInSupabase(input: Record<string, unknown> & { id: string }) {
+  return callApi<Record<string, unknown>>('/api/support-requests', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
