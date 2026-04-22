@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     if (req.method === 'PATCH') {
       if (!body.id || !workspaceId) { res.status(400).json({ error: 'EVENT_ID_REQUIRED' }); return; }
       const currentRow = await requireScopedRow('work_items', String(body.id), workspaceId, 'EVENT_NOT_FOUND');
-      const payload = { updated_at: new Date().toISOString() };
+      const payload = /** @type {Record<string, unknown>} */ ({ updated_at: new Date().toISOString() });
       if (body.title !== undefined) payload.title = body.title;
       if (body.type !== undefined) payload.type = body.type;
       if (body.status !== undefined) payload.status = body.status;

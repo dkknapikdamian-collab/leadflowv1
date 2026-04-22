@@ -37,7 +37,7 @@ export default async function handler(req, res) {
     if (req.method === 'PATCH') {
       if (!body.id || !workspaceId) { res.status(400).json({ error: 'LEAD_ID_REQUIRED' }); return; }
       await requireScopedRow('leads', String(body.id), workspaceId, 'LEAD_NOT_FOUND');
-      const payload = { updated_at: new Date().toISOString() };
+      const payload = /** @type {Record<string, unknown>} */ ({ updated_at: new Date().toISOString() });
       if (body.name !== undefined) payload.name = body.name;
       if (body.company !== undefined) payload.company = body.company;
       if (body.email !== undefined) payload.email = body.email;
