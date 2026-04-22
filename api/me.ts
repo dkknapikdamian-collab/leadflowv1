@@ -1,4 +1,4 @@
-import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
+import { insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 
 const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
 const DEFAULT_PLAN_ID = 'trial_14d';
@@ -8,6 +8,11 @@ const TRIAL_MS = TRIAL_DAYS * 24 * 60 * 60 * 1000;
 const BROKEN_BOOTSTRAP_REPAIR_WINDOW_MS = 12 * 60 * 60 * 1000;
 
 type NullableString = string | null;
+
+function isUuid(value: unknown) {
+  return typeof value === 'string'
+    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
 
 function asString(value: unknown, fallback = '') {
   if (typeof value === 'string') return value;
@@ -51,7 +56,7 @@ function extractMissingColumn(error: unknown) {
   const message = error instanceof Error ? error.message : String(error || '');
   const match = message.match(/Could not find the '([^']+)' column/i);
   if (match?.[1]) return match[1];
-  const altMatch = message.match(/column \\"([^\"]+)\\" does not exist/i);
+  const altMatch = message.match(/column \\"([^\\"]+)\\" does not exist/i);
   return altMatch?.[1] || null;
 }
 
@@ -60,7 +65,7 @@ function normalizeWorkspace(
   fallbackWorkspaceId: string | null,
   fallbackOwnerId: string | null,
 ) {
-  const workspaceId = asNullableString(row?.id) || fallbackWorkspaceId || fallbackOwnerId || '';
+  const workspaceId = asNullableString(row?.id) || fallbackWorkspaceId || '';
   const ownerId =
     asNullableString(row?.owner_user_id) ||
     asNullableString(row?.ownerUserId) ||
@@ -119,35 +124,33 @@ function buildAccess(workspace: { subscriptionStatus: string; trialEndsAt: Nulla
 }
 
 async function fetchProfile(uid: string | null, email: string | null) {
-  if (uid) {
-    try {
-      const byId = await selectFirstAvailable([
-        `profiles?id=eq.${encodeURIComponent(uid)}&select=*&limit=1`,
-      ]);
-      const row = Array.isArray(byId.data) ? byId.data[0] : null;
-      if (row) return row as Record<string, unknown>;
-    } catch {
-      // ignore
-    }
-  }
+  const queries: string[] = [];
 
   if (email) {
-    try {
-      const byEmail = await selectFirstAvailable([
-        `profiles?email=eq.${encodeURIComponent(email)}&select=*&limit=1`,
-      ]);
-      const row = Array.isArray(byEmail.data) ? byEmail.data[0] : null;
-      if (row) return row as Record<string, unknown>;
-    } catch {
-      // ignore
-    }
+    queries.push(`profiles?email=eq.${encodeURIComponent(email)}&select=*&limit=1`);
   }
 
-  return null;
+  if (uid) {
+    queries.push(`profiles?firebase_uid=eq.${encodeURIComponent(uid)}&select=*&limit=1`);
+    queries.push(`profiles?auth_uid=eq.${encodeURIComponent(uid)}&select=*&limit=1`);
+    queries.push(`profiles?external_auth_uid=eq.${encodeURIComponent(uid)}&select=*&limit=1`);
+  }
+
+  if (!queries.length) {
+    return null;
+  }
+
+  try {
+    const result = await selectFirstAvailable(queries);
+    const row = Array.isArray(result.data) ? result.data[0] : null;
+    return row ? (row as Record<string, unknown>) : null;
+  } catch {
+    return null;
+  }
 }
 
 async function fetchWorkspace(workspaceId: string | null) {
-  if (!workspaceId) return null;
+  if (!workspaceId || !isUuid(workspaceId)) return null;
 
   try {
     const result = await selectFirstAvailable([
@@ -160,10 +163,82 @@ async function fetchWorkspace(workspaceId: string | null) {
   }
 }
 
+async function findWorkspaceForProfile(profileId: string | null) {
+  if (!profileId || !isUuid(profileId)) return null;
+
+  const workspaceQueries = [
+    `workspaces?owner_user_id=eq.${encodeURIComponent(profileId)}&select=*&limit=1`,
+    `workspaces?owner_id=eq.${encodeURIComponent(profileId)}&select=*&limit=1`,
+    `workspaces?created_by_user_id=eq.${encodeURIComponent(profileId)}&select=*&limit=1`,
+  ];
+
+  for (const query of workspaceQueries) {
+    try {
+      const result = await selectFirstAvailable([query]);
+      const row = Array.isArray(result.data) ? result.data[0] : null;
+      if (row) {
+        return row as Record<string, unknown>;
+      }
+    } catch {
+      // ignore and continue
+    }
+  }
+
+  try {
+    const memberResult = await selectFirstAvailable([
+      `workspace_members?user_id=eq.${encodeURIComponent(profileId)}&select=workspace_id&limit=1`,
+    ]);
+    const memberRow = Array.isArray(memberResult.data) ? memberResult.data[0] : null;
+    const workspaceId = asNullableString(memberRow?.workspace_id);
+    if (!workspaceId) {
+      return null;
+    }
+    return await fetchWorkspace(workspaceId);
+  } catch {
+    return null;
+  }
+}
+
+async function insertProfileWithFallback(payload: Record<string, unknown>) {
+  let currentPayload = { ...payload };
+
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    try {
+      return await insertWithVariants(['profiles'], [currentPayload]);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !(missingColumn in currentPayload)) {
+        throw error;
+      }
+      delete currentPayload[missingColumn];
+    }
+  }
+
+  throw new Error('PROFILE_INSERT_SCHEMA_FALLBACK_EXHAUSTED');
+}
+
+async function updateProfileWithFallback(profileId: string, payload: Record<string, unknown>) {
+  let currentPayload = { ...payload };
+
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    try {
+      return await updateById('profiles', profileId, currentPayload);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !(missingColumn in currentPayload)) {
+        throw error;
+      }
+      delete currentPayload[missingColumn];
+    }
+  }
+
+  throw new Error('PROFILE_UPDATE_SCHEMA_FALLBACK_EXHAUSTED');
+}
+
 async function insertWorkspaceWithFallback(payload: Record<string, unknown>) {
   let currentPayload = { ...payload };
 
-  for (let attempt = 0; attempt < 8; attempt += 1) {
+  for (let attempt = 0; attempt < 10; attempt += 1) {
     try {
       return await insertWithVariants(['workspaces'], [currentPayload]);
     } catch (error) {
@@ -181,7 +256,7 @@ async function insertWorkspaceWithFallback(payload: Record<string, unknown>) {
 async function updateWorkspaceWithFallback(workspaceId: string, payload: Record<string, unknown>) {
   let currentPayload = { ...payload };
 
-  for (let attempt = 0; attempt < 8; attempt += 1) {
+  for (let attempt = 0; attempt < 10; attempt += 1) {
     try {
       return await updateById('workspaces', workspaceId, currentPayload);
     } catch (error) {
@@ -196,12 +271,96 @@ async function updateWorkspaceWithFallback(workspaceId: string, payload: Record<
   throw new Error('WORKSPACE_UPDATE_SCHEMA_FALLBACK_EXHAUSTED');
 }
 
+async function ensureProfile(
+  profileRow: Record<string, unknown> | null,
+  uid: string | null,
+  email: string | null,
+  fullName: string | null,
+  workspaceId: string | null,
+) {
+  const nowIso = new Date().toISOString();
+  const admin = isAdminEmail(email);
+
+  if (!profileRow) {
+    const generatedId = crypto.randomUUID();
+    const payload: Record<string, unknown> = {
+      id: generatedId,
+      email: email || '',
+      full_name: fullName || '',
+      workspace_id: workspaceId,
+      role: admin ? 'admin' : 'member',
+      is_admin: admin,
+      created_at: nowIso,
+      updated_at: nowIso,
+      firebase_uid: uid || null,
+      auth_uid: uid || null,
+      external_auth_uid: uid || null,
+    };
+
+    const result = await insertProfileWithFallback(payload);
+    return (Array.isArray(result.data) && result.data[0] ? result.data[0] : payload) as Record<string, unknown>;
+  }
+
+  const patch: Record<string, unknown> = { updated_at: nowIso };
+  let shouldPatch = false;
+
+  if (email && asNullableString(profileRow.email) !== email) {
+    patch.email = email;
+    shouldPatch = true;
+  }
+
+  if (fullName && asNullableString(profileRow.full_name ?? profileRow.fullName) !== fullName) {
+    patch.full_name = fullName;
+    shouldPatch = true;
+  }
+
+  if (workspaceId && asNullableString(profileRow.workspace_id ?? profileRow.workspaceId) !== workspaceId) {
+    patch.workspace_id = workspaceId;
+    shouldPatch = true;
+  }
+
+  if (uid && !asNullableString(profileRow.firebase_uid ?? profileRow.firebaseUid ?? null)) {
+    patch.firebase_uid = uid;
+    shouldPatch = true;
+  }
+
+  if (uid && !asNullableString(profileRow.auth_uid ?? profileRow.authUid ?? null)) {
+    patch.auth_uid = uid;
+    shouldPatch = true;
+  }
+
+  if (uid && !asNullableString(profileRow.external_auth_uid ?? profileRow.externalAuthUid ?? null)) {
+    patch.external_auth_uid = uid;
+    shouldPatch = true;
+  }
+
+  if (admin && asNullableString(profileRow.role) !== 'admin') {
+    patch.role = 'admin';
+    shouldPatch = true;
+  }
+
+  if (admin && !Boolean(profileRow.is_admin ?? profileRow.isAdmin)) {
+    patch.is_admin = true;
+    shouldPatch = true;
+  }
+
+  if (!shouldPatch) {
+    return profileRow;
+  }
+
+  const updated = await updateProfileWithFallback(String(profileRow.id), patch);
+  return (Array.isArray(updated) && updated[0] ? updated[0] : { ...profileRow, ...patch }) as Record<string, unknown>;
+}
+
 function shouldRepairFreshTrialBootstrap(row: Record<string, unknown> | null) {
   if (!row) return false;
 
   const currentStatus = asNullableString(row.subscription_status ?? row.subscriptionStatus ?? row.status);
   const currentTrialEndsAt = asNullableString(row.trial_ends_at ?? row.trialEndsAt ?? null);
-  const createdRecently = isRecentDate(row.created_at ?? row.createdAt ?? row.updated_at ?? row.updatedAt, BROKEN_BOOTSTRAP_REPAIR_WINDOW_MS);
+  const createdRecently = isRecentDate(
+    row.created_at ?? row.createdAt ?? row.updated_at ?? row.updatedAt,
+    BROKEN_BOOTSTRAP_REPAIR_WINDOW_MS,
+  );
 
   if (!createdRecently) {
     return false;
@@ -227,7 +386,7 @@ function shouldRepairFreshTrialBootstrap(row: Record<string, unknown> | null) {
 }
 
 async function ensureWorkspace(
-  authUserId: string | null,
+  profileId: string | null,
   fullName: string | null,
   workspaceId: string | null,
   row: Record<string, unknown> | null,
@@ -235,11 +394,15 @@ async function ensureWorkspace(
   const nowIso = new Date().toISOString();
   const trialEndsAt = buildTrialEndsAt();
 
+  if (!profileId || !isUuid(profileId)) {
+    throw new Error('PROFILE_UUID_REQUIRED_FOR_WORKSPACE');
+  }
+
   if (!row) {
-    const payload = {
-      owner_user_id: authUserId || null,
-      owner_id: authUserId || null,
-      created_by_user_id: authUserId || null,
+    const payload: Record<string, unknown> = {
+      owner_user_id: profileId,
+      owner_id: profileId,
+      created_by_user_id: profileId,
       name: `${fullName || 'Moj'} Workspace`,
       plan_id: DEFAULT_PLAN_ID,
       subscription_status: DEFAULT_STATUS,
@@ -252,7 +415,7 @@ async function ensureWorkspace(
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
 
     return {
-      workspaceId: asNullableString((inserted as Record<string, unknown>).id) || workspaceId || authUserId || '',
+      workspaceId: asNullableString((inserted as Record<string, unknown>).id) || workspaceId || '',
       workspaceRow: inserted as Record<string, unknown>,
     };
   }
@@ -280,18 +443,18 @@ async function ensureWorkspace(
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.owner_user_id ?? row.ownerUserId ?? null) && authUserId) {
-    patch.owner_user_id = authUserId;
+  if (!asNullableString(row.owner_user_id ?? row.ownerUserId ?? null)) {
+    patch.owner_user_id = profileId;
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.owner_id ?? row.ownerId ?? null) && authUserId) {
-    patch.owner_id = authUserId;
+  if (!asNullableString(row.owner_id ?? row.ownerId ?? null)) {
+    patch.owner_id = profileId;
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.created_by_user_id ?? row.createdByUserId ?? null) && authUserId) {
-    patch.created_by_user_id = authUserId;
+  if (!asNullableString(row.created_by_user_id ?? row.createdByUserId ?? null)) {
+    patch.created_by_user_id = profileId;
     shouldPatch = true;
   }
 
@@ -304,7 +467,7 @@ async function ensureWorkspace(
 
   if (!shouldPatch || !workspaceId) {
     return {
-      workspaceId: workspaceId || asNullableString(row.id) || authUserId || '',
+      workspaceId: workspaceId || asNullableString(row.id) || '',
       workspaceRow: row,
     };
   }
@@ -315,67 +478,6 @@ async function ensureWorkspace(
     workspaceId,
     workspaceRow: (Array.isArray(updated) && updated[0] ? updated[0] : { ...row, ...patch }) as Record<string, unknown>,
   };
-}
-
-async function ensureProfile(
-  profileRow: Record<string, unknown> | null,
-  uid: string | null,
-  email: string | null,
-  fullName: string | null,
-  workspaceId: string | null,
-) {
-  const nowIso = new Date().toISOString();
-  const admin = isAdminEmail(email);
-
-  if (!profileRow) {
-    const payload = {
-      id: uid || crypto.randomUUID(),
-      email: email || '',
-      full_name: fullName || '',
-      workspace_id: workspaceId,
-      role: admin ? 'admin' : 'member',
-      is_admin: admin,
-      created_at: nowIso,
-      updated_at: nowIso,
-    };
-    const result = await insertWithVariants(['profiles'], [payload]);
-    return (Array.isArray(result.data) && result.data[0] ? result.data[0] : payload) as Record<string, unknown>;
-  }
-
-  const patch: Record<string, unknown> = { updated_at: nowIso };
-  let shouldPatch = false;
-
-  if (email && asNullableString(profileRow.email) !== email) {
-    patch.email = email;
-    shouldPatch = true;
-  }
-
-  if (fullName && asNullableString(profileRow.full_name ?? profileRow.fullName) !== fullName) {
-    patch.full_name = fullName;
-    shouldPatch = true;
-  }
-
-  if (workspaceId && asNullableString(profileRow.workspace_id ?? profileRow.workspaceId) !== workspaceId) {
-    patch.workspace_id = workspaceId;
-    shouldPatch = true;
-  }
-
-  if (admin && asNullableString(profileRow.role) !== 'admin') {
-    patch.role = 'admin';
-    shouldPatch = true;
-  }
-
-  if (admin && !Boolean(profileRow.is_admin ?? profileRow.isAdmin)) {
-    patch.is_admin = true;
-    shouldPatch = true;
-  }
-
-  if (!shouldPatch) {
-    return profileRow;
-  }
-
-  const updated = await updateById('profiles', String(profileRow.id), patch);
-  return (Array.isArray(updated) && updated[0] ? updated[0] : { ...profileRow, ...patch }) as Record<string, unknown>;
 }
 
 export default async function handler(req: any, res: any) {
@@ -390,21 +492,24 @@ export default async function handler(req: any, res: any) {
     const fullName = asNullableString(req.query?.fullName || req.headers?.['x-user-name']);
 
     let profileRow = await fetchProfile(uid, email);
-    const stableOwnerId = asNullableString(profileRow?.id) || uid || email || null;
-    const profileWorkspaceId = asNullableString(profileRow?.workspace_id ?? profileRow?.workspaceId ?? null);
-    const resolvedWorkspaceId = profileWorkspaceId || (uid ? await findWorkspaceId(uid) : null);
+    profileRow = await ensureProfile(profileRow, uid, email, fullName, null);
 
-    let workspaceId = profileWorkspaceId || asNullableString(resolvedWorkspaceId);
+    const profileId = asNullableString(profileRow?.id);
+    let workspaceId = asNullableString(profileRow?.workspace_id ?? profileRow?.workspaceId ?? null);
     let workspaceRow = await fetchWorkspace(workspaceId);
 
-    const ensuredWorkspace = await ensureWorkspace(uid, fullName, workspaceId, workspaceRow);
+    if (!workspaceRow) {
+      workspaceRow = await findWorkspaceForProfile(profileId);
+      workspaceId = asNullableString(workspaceRow?.id) || workspaceId;
+    }
+
+    const ensuredWorkspace = await ensureWorkspace(profileId, fullName, workspaceId, workspaceRow);
     workspaceId = ensuredWorkspace.workspaceId;
     workspaceRow = ensuredWorkspace.workspaceRow;
 
     profileRow = await ensureProfile(profileRow, uid, email, fullName, workspaceId);
 
-    const finalOwnerId = asNullableString(profileRow?.id) || stableOwnerId;
-    const workspace = normalizeWorkspace(workspaceRow, workspaceId, finalOwnerId);
+    const workspace = normalizeWorkspace(workspaceRow, workspaceId, profileId);
     const profile = normalizeProfile(profileRow, uid, email, fullName);
     const access = buildAccess(workspace);
 
