@@ -1,19 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { db, auth } from '../firebase';
-import {
-  doc,
-  collection,
-  query,
-  onSnapshot,
-  orderBy,
-  addDoc,
-  updateDoc,
-  serverTimestamp,
-  deleteDoc,
-  setDoc,
-  where
-} from 'firebase/firestore';
+import { useParams, Link } from 'react-router-dom';
+import { auth } from '../firebase';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -84,7 +71,6 @@ import {
   insertCaseItemToSupabase,
   insertEventToSupabase,
   insertTaskToSupabase,
-  isSupabaseConfigured,
   updateActivityInSupabase,
   deleteActivityFromSupabase,
   updateCaseInSupabase,
@@ -330,7 +316,6 @@ function buildCaseClientOptions(cases: any[], leads: any[], sourceLead: any, cas
 
 export default function CaseDetail() {
   const { caseId } = useParams();
-  const navigate = useNavigate();
   const [caseData, setCaseData] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
@@ -492,117 +477,50 @@ export default function CaseDetail() {
   useEffect(() => {
     if (!caseId) return;
 
-    if (isSupabaseConfigured()) {
-      let cancelled = false;
-      setLoading(true);
+    let cancelled = false;
+    setLoading(true);
 
-      refreshSupabaseCase()
-        .then(() => {
-          if (cancelled) return;
-          setLoading(false);
-        })
-        .catch((error: any) => {
-          if (cancelled) return;
-          toast.error(`Błąd sprawy API: ${error.message}`);
-          setLoading(false);
-        });
-
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    const caseRef = doc(db, 'cases', caseId);
-    const unsubscribeCase = onSnapshot(caseRef, async (docSnap) => {
-      if (docSnap.exists()) {
-        const payload = { id: docSnap.id, ...docSnap.data() };
-        setCaseData(payload);
-      } else {
-        toast.error('Sprawa nie istnieje');
-        navigate('/');
-      }
-    });
-
-    const itemsRef = collection(db, 'cases', caseId, 'items');
-    const qItems = query(itemsRef, orderBy('order', 'asc'));
-    const unsubscribeItems = onSnapshot(qItems, (snapshot) => {
-      const itemsData = snapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() } as any));
-      setItems(itemsData);
-      setLoading(false);
-
-      if (itemsData.length > 0) {
-        const next = computeCaseState(itemsData, String((caseData as any)?.status || ''));
-        updateDoc(caseRef, {
-          completenessPercent: next.completenessPercent,
-          status: next.status,
-          updatedAt: serverTimestamp()
-        });
-      }
-    });
-
-    const activitiesRef = collection(db, 'activities');
-    const qActivities = query(
-      activitiesRef,
-      where('caseId', '==', caseId),
-      orderBy('createdAt', 'desc')
-    );
-    const unsubscribeActivities = onSnapshot(qActivities, (snapshot) => {
-      setActivities(snapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() })));
-    });
+    refreshSupabaseCase()
+      .then(() => {
+        if (cancelled) return;
+        setLoading(false);
+      })
+      .catch((error: any) => {
+        if (cancelled) return;
+        toast.error(`Błąd sprawy API: ${error.message}`);
+        setLoading(false);
+      });
 
     return () => {
-      unsubscribeCase();
-      unsubscribeItems();
-      unsubscribeActivities();
+      cancelled = true;
     };
-  }, [caseId, navigate]);
+  }, [caseId]);
 
   const handleAddItem = async () => {
     if (!newItem.title || !caseId) return;
 
     try {
-      if (isSupabaseConfigured()) {
-        await insertCaseItemToSupabase({
-          caseId,
-          title: newItem.title,
-          description: newItem.description,
-          type: newItem.type,
-          isRequired: newItem.isRequired,
-          dueDate: newItem.dueDate || null,
-          order: items.length,
-          status: 'missing',
-        });
+      await insertCaseItemToSupabase({
+        caseId,
+        title: newItem.title,
+        description: newItem.description,
+        type: newItem.type,
+        isRequired: newItem.isRequired,
+        dueDate: newItem.dueDate || null,
+        order: items.length,
+        status: 'missing',
+      });
 
-        await insertActivityToSupabase({
-          caseId,
-          ownerId: auth.currentUser?.uid ?? null,
-          actorId: auth.currentUser?.uid ?? null,
-          actorType: 'operator',
-          eventType: 'item_added',
-          payload: { title: newItem.title },
-        });
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'item_added',
+        payload: { title: newItem.title },
+      });
 
-        await refreshSupabaseCase();
-      } else {
-        await addDoc(collection(db, 'cases', caseId, 'items'), {
-          ...newItem,
-          caseId,
-          status: 'missing',
-          order: items.length,
-          createdAt: serverTimestamp(),
-        });
-
-        await addDoc(collection(db, 'activities'), {
-          caseId,
-          ownerId: auth.currentUser?.uid,
-          actorId: auth.currentUser?.uid,
-          actorType: 'operator',
-          eventType: 'item_added',
-          payload: { title: newItem.title },
-          createdAt: serverTimestamp(),
-        });
-      }
-
+      await refreshSupabaseCase();
       setIsAddItemOpen(false);
       setNewItem({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
       toast.success('Element dodany');
@@ -613,41 +531,23 @@ export default function CaseDetail() {
 
   const handleUpdateItemStatus = async (itemId: string, status: string, title: string) => {
     try {
-      if (isSupabaseConfigured()) {
-        await updateCaseItemInSupabase({
-          id: itemId,
-          caseId: caseId!,
-          status,
-          approvedAt: status === 'accepted' ? new Date().toISOString() : null,
-        });
+      await updateCaseItemInSupabase({
+        id: itemId,
+        caseId: caseId!,
+        status,
+        approvedAt: status === 'accepted' ? new Date().toISOString() : null,
+      });
 
-        await insertActivityToSupabase({
-          caseId,
-          ownerId: auth.currentUser?.uid ?? null,
-          actorId: auth.currentUser?.uid ?? null,
-          actorType: 'operator',
-          eventType: 'status_changed',
-          payload: { title, status },
-        });
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'status_changed',
+        payload: { title, status },
+      });
 
-        await refreshSupabaseCase();
-      } else {
-        await updateDoc(doc(db, 'cases', caseId!, 'items', itemId), {
-          status,
-          approvedAt: status === 'accepted' ? serverTimestamp() : null
-        });
-
-        await addDoc(collection(db, 'activities'), {
-          caseId,
-          ownerId: auth.currentUser?.uid,
-          actorId: auth.currentUser?.uid,
-          actorType: 'operator',
-          eventType: 'status_changed',
-          payload: { title, status },
-          createdAt: serverTimestamp(),
-        });
-      }
-
+      await refreshSupabaseCase();
       toast.success('Status zaktualizowany');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -656,12 +556,8 @@ export default function CaseDetail() {
 
   const handleDeleteItem = async (itemId: string) => {
     try {
-      if (isSupabaseConfigured()) {
-        await deleteCaseItemFromSupabase(itemId);
-        await refreshSupabaseCase();
-      } else {
-        await deleteDoc(doc(db, 'cases', caseId!, 'items', itemId));
-      }
+      await deleteCaseItemFromSupabase(itemId);
+      await refreshSupabaseCase();
       toast.success('Element usunięty');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
@@ -672,28 +568,17 @@ export default function CaseDetail() {
     try {
       if (!caseId) return;
 
-      let token = '';
-      if (isSupabaseConfigured()) {
-        const row = await createClientPortalTokenInSupabase(caseId);
-        token = String(row.token || '');
-        await insertActivityToSupabase({
-          caseId,
-          ownerId: auth.currentUser?.uid ?? null,
-          actorId: auth.currentUser?.uid ?? null,
-          actorType: 'operator',
-          eventType: 'portal_token_created',
-          payload: { title: caseData?.title || 'Sprawa' },
-        });
-        await refreshSupabaseCase();
-      } else {
-        token = Math.random().toString(36).substring(2, 15);
-        const tokenRef = doc(db, 'client_portal_tokens', caseId);
-        await setDoc(tokenRef, {
-          caseId,
-          token,
-          createdAt: serverTimestamp(),
-        });
-      }
+      const row = await createClientPortalTokenInSupabase(caseId);
+      const token = String(row.token || '');
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'portal_token_created',
+        payload: { title: caseData?.title || 'Sprawa' },
+      });
+      await refreshSupabaseCase();
 
       const url = `${window.location.origin}/portal/${caseId}/${token}`;
       await navigator.clipboard.writeText(url);
@@ -1367,91 +1252,46 @@ export default function CaseDetail() {
     const followUpTitle = `Follow-up: ${caseData?.title || 'Sprawa'}`;
 
     try {
-      if (isSupabaseConfigured()) {
-        await insertTaskToSupabase({
-          title: followUpTitle,
-          type: 'follow_up',
-          date: followUpAt.slice(0, 10),
+      await insertTaskToSupabase({
+        title: followUpTitle,
+        type: 'follow_up',
+        date: followUpAt.slice(0, 10),
+        scheduledAt: followUpAt,
+        priority: 'medium',
+        status: 'todo',
+        caseId,
+        reminderAt: new Date(followUpDate.getTime() - 30 * 60_000).toISOString(),
+        ownerId: auth.currentUser?.uid ?? undefined,
+      });
+
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'case_reminder_requested',
+        payload: {
+          title: caseData?.title || 'Sprawa',
+          taskTitle: followUpTitle,
           scheduledAt: followUpAt,
-          priority: 'medium',
-          status: 'todo',
-          caseId,
-          reminderAt: new Date(followUpDate.getTime() - 30 * 60_000).toISOString(),
-          ownerId: auth.currentUser?.uid ?? undefined,
-        });
+        },
+      });
 
-        await insertActivityToSupabase({
-          caseId,
-          ownerId: auth.currentUser?.uid ?? null,
-          actorId: auth.currentUser?.uid ?? null,
-          actorType: 'operator',
-          eventType: 'case_reminder_requested',
-          payload: {
-            title: caseData?.title || 'Sprawa',
-            taskTitle: followUpTitle,
-            scheduledAt: followUpAt,
-          },
-        });
-
-        await insertActivityToSupabase({
-          caseId,
-          ownerId: auth.currentUser?.uid ?? null,
-          actorId: auth.currentUser?.uid ?? null,
-          actorType: 'operator',
-          eventType: 'reminder_scheduled',
-          payload: {
-            entityType: 'task',
-            title: followUpTitle,
-            scheduledAt: followUpAt,
-            reason: 'case_detail_reminder',
-          },
-        });
-
-        await refreshSupabaseCase();
-      } else {
-        await addDoc(collection(db, 'tasks'), {
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'reminder_scheduled',
+        payload: {
+          entityType: 'task',
           title: followUpTitle,
-          type: 'follow_up',
-          date: followUpAt.slice(0, 10),
-          dueAt: followUpAt,
-          status: 'todo',
-          priority: 'medium',
-          caseId,
-          ownerId: auth.currentUser?.uid,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
+          scheduledAt: followUpAt,
+          reason: 'case_detail_reminder',
+        },
+      });
 
-        await addDoc(collection(db, 'activities'), {
-          caseId,
-          ownerId: auth.currentUser?.uid,
-          actorId: auth.currentUser?.uid,
-          actorType: 'operator',
-          eventType: 'case_reminder_requested',
-          payload: {
-            title: caseData?.title || 'Sprawa',
-            taskTitle: followUpTitle,
-            scheduledAt: followUpAt,
-          },
-          createdAt: serverTimestamp(),
-        });
-
-        await addDoc(collection(db, 'activities'), {
-          caseId,
-          ownerId: auth.currentUser?.uid,
-          actorId: auth.currentUser?.uid,
-          actorType: 'operator',
-          eventType: 'reminder_scheduled',
-          payload: {
-            entityType: 'task',
-            title: followUpTitle,
-            scheduledAt: followUpAt,
-            reason: 'case_detail_reminder',
-          },
-          createdAt: serverTimestamp(),
-        });
-      }
-
+      await refreshSupabaseCase();
       toast.success('Przypomnienie zapisane i utworzono follow-up');
     } catch (error: any) {
       toast.error(`Błąd przypomnienia: ${error.message}`);

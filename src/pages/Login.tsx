@@ -86,7 +86,7 @@ export default function Login() {
         name: `${name || user.displayName || 'Mój'} Workspace`,
         plan: 'free',
         subscriptionStatus: 'trial_active',
-        trialEndsAt: addDays(new Date(), 7).toISOString(),
+        trialEndsAt: addDays(new Date(), 14).toISOString(),
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
@@ -363,7 +363,7 @@ export default function Login() {
       </Tabs>
 
       <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3">
-        <p className="text-sm font-semibold text-emerald-900">Startujesz od 7 dni testu.</p>
+        <p className="text-sm font-semibold text-emerald-900">Startujesz od 14 dni testu.</p>
         <p className="mt-1 text-sm text-emerald-700">Możesz od razu wejść, dodać leady i sprawdzić cały przepływ pracy.</p>
       </div>
 
@@ -440,39 +440,39 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-slate-950">
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-        <div className="grid min-h-[calc(100vh-3rem)] gap-8 lg:grid-cols-[1.12fr_0.88fr]">
-          <section className="relative overflow-hidden rounded-[32px] border border-slate-800 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.25),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(16,185,129,0.18),_transparent_30%),linear-gradient(180deg,_rgba(15,23,42,1)_0%,_rgba(2,6,23,1)_100%)] p-6 text-white shadow-2xl shadow-slate-950/40 sm:p-8 lg:p-10">
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
+        <div className="grid min-h-[calc(100vh-2rem)] gap-6 lg:grid-cols-[1.08fr_0.92fr]">
+          <section className="relative overflow-hidden rounded-[32px] border border-slate-800 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.25),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(16,185,129,0.18),_transparent_30%),linear-gradient(180deg,_rgba(15,23,42,1)_0%,_rgba(2,6,23,1)_100%)] p-5 text-white shadow-2xl shadow-slate-950/40 sm:p-6 lg:p-7">
             <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.04)_0%,transparent_35%,transparent_65%,rgba(255,255,255,0.03)_100%)]" />
             <div className="relative z-10 flex h-full flex-col">
               <div className="inline-flex w-fit items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200">
                 Close Flow dla solo usług i sprzedaży
               </div>
 
-              <div className="mt-8 max-w-2xl">
-                <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
+              <div className="mt-6 max-w-xl">
+                <h1 className="text-3xl font-bold leading-tight sm:text-4xl">
                   Domykaj leady i prowadź sprawy bez chaosu.
                 </h1>
-                <p className="mt-5 max-w-xl text-lg leading-8 text-slate-300">
+                <p className="mt-4 max-w-lg text-base leading-7 text-slate-300">
                   Jedno miejsce do pilnowania kontaktu z klientem, follow-upów, spotkań, zadań i etapu realizacji po wygranej sprzedaży.
                 </p>
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-5 flex flex-wrap gap-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Cel</p>
                   <p className="mt-1 text-sm font-semibold text-white">Mniej przeoczeń, więcej domkniętych klientów</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Model</p>
-                  <p className="mt-1 text-sm font-semibold text-white">7 dni testu na start</p>
+                  <p className="mt-1 text-sm font-semibold text-white">14 dni testu na start</p>
                 </div>
               </div>
 
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
                 {HERO_POINTS.map((point) => (
-                  <div key={point} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300">
+                  <div key={point} className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                    <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300">
                       <CheckCircle2 className="h-5 w-5" />
                     </div>
                     <p className="text-sm leading-6 text-slate-200">{point}</p>
@@ -480,23 +480,23 @@ export default function Login() {
                 ))}
               </div>
 
-              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {FEATURE_CARDS.map((card) => {
                   const Icon = card.icon;
                   return (
-                    <div key={card.title} className="rounded-3xl border border-white/10 bg-slate-900/40 p-5 backdrop-blur-sm">
-                      <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/20 text-primary-foreground">
+                    <div key={card.title} className="rounded-3xl border border-white/10 bg-slate-900/40 p-4 backdrop-blur-sm">
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/20 text-primary-foreground">
                         <Icon className="h-5 w-5" />
                       </div>
-                      <h2 className="mt-4 text-lg font-semibold text-white">{card.title}</h2>
-                      <p className="mt-2 text-sm leading-6 text-slate-300">{card.text}</p>
+                      <h2 className="mt-3 text-base font-semibold text-white">{card.title}</h2>
+                      <p className="mt-1.5 text-sm leading-6 text-slate-300">{card.text}</p>
                     </div>
                   );
                 })}
               </div>
 
-              <div className="mt-auto pt-8">
-                <div className="rounded-3xl border border-emerald-400/20 bg-emerald-500/10 p-5">
+              <div className="mt-6 pt-4">
+                <div className="rounded-3xl border border-emerald-400/20 bg-emerald-500/10 p-4">
                   <div className="flex items-start gap-3">
                     <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-400/15 text-emerald-300">
                       <ArrowRight className="h-5 w-5" />

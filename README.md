@@ -1,20 +1,68 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Close Flow
 
-# Run and deploy your AI Studio app
+Close Flow to aplikacja do prowadzenia leadów, follow-upów, zadań, wydarzeń i spraw po sprzedaży w jednym miejscu.
 
-This contains everything you need to run your app locally.
+## Co robi produkt
 
-View your app in AI Studio: https://ai.studio/apps/7ce70458-8fde-42a5-bf6d-fd7f781ff424
+- pilnuje kolejnego ruchu przy leadzie
+- pokazuje priorytety w widoku **Dziś**
+- łączy zadania, wydarzenia i przypomnienia z leadami oraz sprawami
+- pozwala płynnie przejść z wygranego leada do **sprawy**
+- wspiera obsługę po sprzedaży bez chaosu między kalendarzem, notatkami i listą zadań
 
-## Run Locally
+## Główne widoki
 
-**Prerequisites:**  Node.js
+- **Dziś** – najważniejsze rzeczy do ruszenia teraz
+- **Leady** – lista sprzedażowa z kolejnym krokiem
+- **Lead Detail** – pełna karta leada z zadaniami, wydarzeniami i historią
+- **Sprawy** – etap po sprzedaży
+- **Case Detail** – operacyjny hub sprawy
+- **Kalendarz** – wspólna oś czasu dla zadań i wydarzeń
+- **Aktywność** – historia ruchów operatora
+- **Ustawienia / Rozliczenia / Pomoc** – konfiguracja konta i aplikacji
 
+## Stack
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- **Frontend:** React + Vite + TypeScript
+- **UI:** Tailwind + komponenty lokalne
+- **Auth:** Firebase Authentication + Google Login
+- **Dane aplikacyjne / API:** Supabase przez endpointy w katalogu `api/`
+
+## Uruchomienie lokalne
+
+### 1. Zainstaluj zależności
+```bash
+npm install
+```
+
+### 2. Skonfiguruj Firebase
+Repo korzysta z pliku:
+- `firebase-applet-config.json`
+
+To konfiguracja klienta Firebase używana do logowania i profilu użytkownika.
+
+### 3. Skonfiguruj Supabase
+Frontend oczekuje:
+- `VITE_SUPABASE_URL`
+
+Warstwa API po stronie serwera korzysta z:
+- `SUPABASE_URL` lub `NEXT_PUBLIC_SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+### 4. Uruchom projekt
+```bash
+npm run dev
+```
+
+## Build produkcyjny
+```bash
+npm run build
+```
+
+## Uwaga architektoniczna
+
+Aktualny kierunek produktu to:
+- Firebase dla auth
+- Supabase dla danych aplikacyjnych i endpointów API
+
+Warstwy sprzedaży, zadań, wydarzeń, aktywności i spraw są prowadzone po stronie Supabase.
