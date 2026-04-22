@@ -99,9 +99,15 @@ export default function SupportCenter() {
   const [tickets, setTickets] = useState<TicketRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [historyAvailable, setHistoryAvailable] = useState(true);
 
   useEffect(() => {
-    if (!auth.currentUser) return;
+    if (!auth.currentUser) {
+      setLoading(false);
+      setTickets([]);
+      setHistoryAvailable(false);
+      return;
+    }
 
     const ticketsQuery = query(
       collection(db, 'support_requests'),
@@ -120,9 +126,18 @@ export default function SupportCenter() {
           });
 
         setTickets(rows);
+        setHistoryAvailable(true);
         setLoading(false);
       },
       (error) => {
+        const code = typeof error?.code === 'string' ? error.code : '';
+        if (code === 'permission-denied' || code === 'firestore/permission-denied') {
+          console.warn('SUPPORT_REQUESTS_LOAD_PERMISSION_DENIED');
+          setTickets([]);
+          setHistoryAvailable(false);
+          setLoading(false);
+          return;
+        }
         console.error('SUPPORT_REQUESTS_LOAD_FAILED', error);
         toast.error('Nie udało się odczytać zgłoszeń pomocy.');
         setLoading(false);
@@ -306,6 +321,10 @@ export default function SupportCenter() {
                 {loading ? (
                   <div className="flex items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-500">
                     <Loader2 className="h-4 w-4 animate-spin" /> Ładowanie zgłoszeń...
+                  </div>
+                ) : !historyAvailable ? (
+                  <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-6 text-sm text-slate-500">
+                    Historia zgłoszeń jest chwilowo niedostępna. Nadal możesz wysłać nowe zgłoszenie z tego formularza.
                   </div>
                 ) : filteredTickets.length === 0 ? (
                   <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-6 text-sm text-slate-500">
