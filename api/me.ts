@@ -12,10 +12,11 @@ function asNullableString(value: unknown): NullableString { if (typeof value !==
 function isFutureDate(iso: NullableString) { if (!iso) return false; const date = new Date(iso); return Number.isFinite(date.getTime()) && date.getTime() > Date.now(); }
 function buildTrialEndsAt() { return new Date(Date.now() + TRIAL_MS).toISOString(); }
 function isAdminEmail(email: NullableString) { return !!email && ADMIN_EMAILS.has(email.trim().toLowerCase()); }
+function isMissingColumnError(error: unknown, columnName: string) { const message = error instanceof Error ? error.message : String(error || ''); return message.includes(`Could not find the '${columnName}' column`) || message.includes(`column \"${columnName}\" does not exist`) || message.includes(`'${columnName}' column`); }
 
 function normalizeWorkspace(row: Record<string, unknown> | null, fallbackWorkspaceId: string | null, fallbackOwnerId: string | null) {
   const workspaceId = asNullableString(row?.id) || fallbackWorkspaceId || fallbackOwnerId || '';
-  const ownerId = asNullableString(row?.owner_id) || asNullableString(row?.ownerId) || asNullableString(row?.created_by_user_id) || fallbackOwnerId;
+  const ownerId = asNullableString(row?.owner_id) || asNullableString(row?.ownerId) || fallbackOwnerId;
   const planId = asString(row?.plan_id ?? row?.planId ?? row?.plan ?? DEFAULT_PLAN_ID, DEFAULT_PLAN_ID);
   const subscriptionStatus = asString(row?.subscription_status ?? row?.subscriptionStatus ?? row?.status ?? DEFAULT_STATUS, DEFAULT_STATUS);
   const trialEndsAt = asNullableString(row?.trial_ends_at ?? row?.trialEndsAt ?? null);
@@ -52,12 +53,34 @@ async function fetchWorkspace(workspaceId: string | null) {
   try { const result = await selectFirstAvailable([`workspaces?id=eq.${encodeURIComponent(workspaceId)}&select=*&limit=1`]); const row = Array.isArray(result.data) ? result.data[0] : null; return (row || null) as Record<string, unknown> | null; } catch { return null; }
 }
 
+async function insertWorkspaceWithFallback(payload: Record<string, unknown>) {
+  try {
+    return await insertWithVariants(['workspaces'], [payload]);
+  } catch (error) {
+    if (!isMissingColumnError(error, 'created_by_user_id')) throw error;
+    const fallbackPayload = { ...payload };
+    delete fallbackPayload.created_by_user_id;
+    return insertWithVariants(['workspaces'], [fallbackPayload]);
+  }
+}
+
+async function updateWorkspaceWithFallback(workspaceId: string, payload: Record<string, unknown>) {
+  try {
+    return await updateById('workspaces', workspaceId, payload);
+  } catch (error) {
+    if (!isMissingColumnError(error, 'created_by_user_id')) throw error;
+    const fallbackPayload = { ...payload };
+    delete fallbackPayload.created_by_user_id;
+    return updateById('workspaces', workspaceId, fallbackPayload);
+  }
+}
+
 async function ensureWorkspace(uid: string | null, fullName: string | null, workspaceId: string | null, row: Record<string, unknown> | null) {
   const nowIso = new Date().toISOString();
   const trialEndsAt = buildTrialEndsAt();
   if (!row) {
     const payload = { owner_id: uid || null, created_by_user_id: uid || null, name: `${fullName || 'Mój'} Workspace`, plan_id: DEFAULT_PLAN_ID, subscription_status: DEFAULT_STATUS, trial_ends_at: trialEndsAt, created_at: nowIso, updated_at: nowIso };
-    const result = await insertWithVariants(['workspaces'], [payload]);
+    const result = await insertWorkspaceWithFallback(payload);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
     return { workspaceId: asNullableString((inserted as Record<string, unknown>).id) || workspaceId || uid || '', workspaceRow: inserted as Record<string, unknown> };
   }
@@ -66,9 +89,9 @@ async function ensureWorkspace(uid: string | null, fullName: string | null, work
   if (!asNullableString(row.plan_id ?? row.planId ?? row.plan)) { patch.plan_id = DEFAULT_PLAN_ID; shouldPatch = true; }
   if (!asNullableString(row.subscription_status ?? row.subscriptionStatus ?? row.status)) { patch.subscription_status = DEFAULT_STATUS; shouldPatch = true; }
   if (!asNullableString(row.trial_ends_at ?? row.trialEndsAt ?? null)) { patch.trial_ends_at = trialEndsAt; shouldPatch = true; }
-  if (!asNullableString(row.owner_id ?? row.ownerId ?? row.created_by_user_id ?? null) && uid) { patch.owner_id = uid; patch.created_by_user_id = uid; shouldPatch = true; }
+  if (!asNullableString(row.owner_id ?? row.ownerId ?? null) && uid) { patch.owner_id = uid; shouldPatch = true; }
   if (!shouldPatch || !workspaceId) return { workspaceId: workspaceId || asNullableString(row.id) || uid || '', workspaceRow: row };
-  const updated = await updateById('workspaces', workspaceId, patch);
+  const updated = await updateWorkspaceWithFallback(workspaceId, patch);
   return { workspaceId, workspaceRow: (Array.isArray(updated) && updated[0] ? updated[0] : { ...row, ...patch }) as Record<string, unknown> };
 }
 
