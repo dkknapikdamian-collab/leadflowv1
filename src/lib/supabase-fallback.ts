@@ -1,486 +1,117 @@
-type SupabaseInsertResult = {
-  [key: string]: unknown;
-};
+import { auth } from '../firebase';
 
-type LeadInsertInput = {
-  name: string;
-  email?: string;
-  phone?: string;
-  company?: string;
-  source?: string;
-  dealValue?: number;
-  partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>;
-  nextStep?: string;
-  nextActionAt?: string;
-  ownerId?: string;
-  workspaceId?: string;
-};
+type SupabaseInsertResult = { [key: string]: unknown };
+type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextStep?: string; nextActionAt?: string; ownerId?: string; workspaceId?: string };
+type TaskInsertInput = { title: string; type?: string; date?: string; scheduledAt?: string; priority?: string; status?: string; leadId?: string | null; reminderAt?: string | null; recurrenceRule?: string; caseId?: string | null; ownerId?: string; workspaceId?: string };
+type EventInsertInput = { title: string; type?: string; startAt: string; endAt?: string; reminderAt?: string; recurrenceRule?: string; status?: string; leadId?: string | null; caseId?: string | null; workspaceId?: string };
+type CaseUpsertInput = { id?: string; title?: string; clientName?: string; clientId?: string | null; clientEmail?: string; clientPhone?: string; status?: string; completenessPercent?: number; leadId?: string | null; portalReady?: boolean; workspaceId?: string };
+type CaseItemInput = { id?: string; caseId: string; title?: string; description?: string; type?: string; status?: string; isRequired?: boolean; dueDate?: string | null; order?: number; response?: string | null; fileUrl?: string | null; fileName?: string | null; approvedAt?: string | null };
+type ActivityInput = { id?: string; caseId?: string | null; leadId?: string | null; ownerId?: string | null; actorId?: string | null; actorType?: string; eventType?: string; payload?: Record<string, unknown>; workspaceId?: string };
+type MeResponse = { workspace: { id: string; ownerId?: string | null; planId?: string | null; subscriptionStatus?: string | null; trialEndsAt?: string | null }; profile: { id: string; fullName?: string; email?: string; role?: string; isAdmin?: boolean }; access: { hasAccess: boolean; status: string; isTrialActive: boolean; isPaidActive: boolean } };
+type ApiCacheEntry = { expiresAt: number; data?: unknown; promise?: Promise<unknown> };
 
-type TaskInsertInput = {
-  title: string;
-  type?: string;
-  date?: string;
-  scheduledAt?: string;
-  priority?: string;
-  status?: string;
-  leadId?: string | null;
-  reminderAt?: string | null;
-  recurrenceRule?: string;
-  caseId?: string | null;
-  ownerId?: string;
-  workspaceId?: string;
-};
-
-type EventInsertInput = {
-  title: string;
-  type?: string;
-  startAt: string;
-  endAt?: string;
-  reminderAt?: string;
-  recurrenceRule?: string;
-  status?: string;
-  leadId?: string | null;
-  caseId?: string | null;
-  workspaceId?: string;
-};
-
-type CaseUpsertInput = {
-  id?: string;
-  title?: string;
-  clientName?: string;
-  clientId?: string | null;
-  clientEmail?: string;
-  clientPhone?: string;
-  status?: string;
-  completenessPercent?: number;
-  leadId?: string | null;
-  portalReady?: boolean;
-  workspaceId?: string;
-};
-
-type CaseItemInput = {
-  id?: string;
-  caseId: string;
-  title?: string;
-  description?: string;
-  type?: string;
-  status?: string;
-  isRequired?: boolean;
-  dueDate?: string | null;
-  order?: number;
-  response?: string | null;
-  fileUrl?: string | null;
-  fileName?: string | null;
-  approvedAt?: string | null;
-};
-
-type ActivityInput = {
-  id?: string;
-  caseId?: string | null;
-  leadId?: string | null;
-  ownerId?: string | null;
-  actorId?: string | null;
-  actorType?: string;
-  eventType?: string;
-  payload?: Record<string, unknown>;
-  workspaceId?: string;
-};
-
-type MeResponse = {
-  workspace: {
-    id: string;
-    ownerId?: string | null;
-    planId?: string | null;
-    subscriptionStatus?: string | null;
-    trialEndsAt?: string | null;
-  };
-  profile: {
-    id: string;
-    fullName?: string;
-    email?: string;
-    role?: string;
-    isAdmin?: boolean;
-  };
-  access: {
-    hasAccess: boolean;
-    status: string;
-    isTrialActive: boolean;
-    isPaidActive: boolean;
-  };
-};
+const API_GET_CACHE_TTL_MS = 10_000;
+const apiGetCache = new Map<string, ApiCacheEntry>();
 
 function getSupabaseConfig() {
   const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();
   return url ? { url } : null;
 }
 
-type ApiCacheEntry = {
-  expiresAt: number;
-  data?: unknown;
-  promise?: Promise<unknown>;
-};
-
-const API_GET_CACHE_TTL_MS = 10_000;
-const apiGetCache = new Map<string, ApiCacheEntry>();
-
-function clearApiGetCache() {
-  apiGetCache.clear();
+function clearApiGetCache() { apiGetCache.clear(); }
+function getAuthContext() { return { uid: auth.currentUser?.uid || '', email: auth.currentUser?.email || '', fullName: auth.currentUser?.displayName || '' }; }
+function getAuthHeaders() {
+  const ctx = getAuthContext();
+  return Object.fromEntries(Object.entries({ 'x-user-id': ctx.uid, 'x-user-email': ctx.email, 'x-user-name': ctx.fullName }).filter(([, value]) => !!value));
 }
+function getCacheScope() { const ctx = getAuthContext(); return `${ctx.uid || 'anon'}:${ctx.email || 'anon'}`; }
 
 async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   const method = (init?.method || 'GET').toUpperCase();
   const useCache = method === 'GET';
-  const cacheKey = `${method}:${path}`;
+  const cacheKey = `${method}:${getCacheScope()}:${path}`;
 
   if (useCache) {
     const cached = apiGetCache.get(cacheKey);
-    if (cached && 'data' in cached && cached.expiresAt > Date.now()) {
-      return cached.data as T;
-    }
-    if (cached?.promise) {
-      return cached.promise as Promise<T>;
-    }
+    if (cached && 'data' in cached && cached.expiresAt > Date.now()) return cached.data as T;
+    if (cached?.promise) return cached.promise as Promise<T>;
   }
 
   const requestPromise = (async () => {
-    const response = await fetch(path, {
-      ...init,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(init?.headers || {}),
-      },
-    });
-
+    const response = await fetch(path, { ...init, headers: { ...getAuthHeaders(), 'Content-Type': 'application/json', ...(init?.headers || {}) } });
     const text = await response.text();
     let data: unknown = null;
     if (text) {
-      try {
-        data = JSON.parse(text);
-      } catch {
-        data = { raw: text };
-      }
+      try { data = JSON.parse(text); } catch { data = { raw: text }; }
     }
-
     if (!response.ok) {
-      const message =
-        typeof data === 'object' && data && 'error' in (data as Record<string, unknown>)
-          ? String((data as Record<string, unknown>).error)
-          : `${response.status}:REQUEST_FAILED:${text.slice(0, 180)}`;
+      const message = typeof data === 'object' && data && 'error' in (data as Record<string, unknown>) ? String((data as Record<string, unknown>).error) : `${response.status}:REQUEST_FAILED:${text.slice(0, 180)}`;
       throw new Error(message);
     }
-
-    if (data && typeof data === 'object' && 'raw' in (data as Record<string, unknown>)) {
-      throw new Error(`INVALID_API_RESPONSE:${String((data as Record<string, unknown>).raw).slice(0, 180)}`);
-    }
-
+    if (data && typeof data === 'object' && 'raw' in (data as Record<string, unknown>)) throw new Error(`INVALID_API_RESPONSE:${String((data as Record<string, unknown>).raw).slice(0, 180)}`);
     return data as T;
   })();
 
-  if (useCache) {
-    apiGetCache.set(cacheKey, {
-      expiresAt: Date.now() + API_GET_CACHE_TTL_MS,
-      promise: requestPromise,
-    });
-  }
-
+  if (useCache) apiGetCache.set(cacheKey, { expiresAt: Date.now() + API_GET_CACHE_TTL_MS, promise: requestPromise });
   try {
     const result = await requestPromise;
-
-    if (useCache) {
-      apiGetCache.set(cacheKey, {
-        expiresAt: Date.now() + API_GET_CACHE_TTL_MS,
-        data: result,
-      });
-    } else {
-      clearApiGetCache();
-    }
-
+    if (useCache) apiGetCache.set(cacheKey, { expiresAt: Date.now() + API_GET_CACHE_TTL_MS, data: result }); else clearApiGetCache();
     return result;
   } catch (error) {
-    if (useCache) {
-      apiGetCache.delete(cacheKey);
-    }
+    if (useCache) apiGetCache.delete(cacheKey);
     throw error;
   }
 }
 
-export function isSupabaseConfigured() {
-  return Boolean(getSupabaseConfig());
+export function isSupabaseConfigured() { return Boolean(getSupabaseConfig()); }
+export async function insertLeadToSupabase(input: LeadInsertInput) { return callApi<SupabaseInsertResult>('/api/leads', { method: 'POST', body: JSON.stringify(input) }); }
+export async function insertTaskToSupabase(input: TaskInsertInput) { return callApi<SupabaseInsertResult>('/api/tasks', { method: 'POST', body: JSON.stringify(input) }); }
+export async function insertEventToSupabase(input: EventInsertInput) { return callApi<SupabaseInsertResult>('/api/events', { method: 'POST', body: JSON.stringify(input) }); }
+export async function fetchLeadsFromSupabase() { return callApi<Record<string, unknown>[]>('/api/leads'); }
+export async function fetchLeadByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/leads?id=${encodeURIComponent(id)}`); }
+export async function fetchTasksFromSupabase() { return callApi<Record<string, unknown>[]>('/api/tasks'); }
+export async function fetchEventsFromSupabase() { return callApi<Record<string, unknown>[]>('/api/events'); }
+export async function fetchCasesFromSupabase() { return callApi<Record<string, unknown>[]>('/api/cases'); }
+export async function fetchCaseByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/cases?id=${encodeURIComponent(id)}`); }
+export async function createCaseInSupabase(input: CaseUpsertInput) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'POST', body: JSON.stringify(input) }); }
+export async function updateCaseInSupabase(input: CaseUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function deleteCaseFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/cases?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
+export async function fetchCaseItemsFromSupabase(caseId: string) { return callApi<Record<string, unknown>[]>(`/api/case-items?caseId=${encodeURIComponent(caseId)}`); }
+export async function insertCaseItemToSupabase(input: CaseItemInput) { return callApi<SupabaseInsertResult>('/api/case-items', { method: 'POST', body: JSON.stringify(input) }); }
+export async function updateCaseItemInSupabase(input: CaseItemInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/case-items', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function deleteCaseItemFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/case-items?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
+export async function fetchActivitiesFromSupabase(params?: { caseId?: string; leadId?: string; limit?: number }) {
+  const query = new URLSearchParams(); if (params?.caseId) query.set('caseId', params.caseId); if (params?.leadId) query.set('leadId', params.leadId); if (params?.limit) query.set('limit', String(params.limit));
+  return callApi<Record<string, unknown>[]>(`/api/activities${query.toString() ? `?${query.toString()}` : ''}`);
 }
-
-export async function insertLeadToSupabase(input: LeadInsertInput) {
-  return callApi<SupabaseInsertResult>('/api/leads', {
-    method: 'POST',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function insertTaskToSupabase(input: TaskInsertInput) {
-  return callApi<SupabaseInsertResult>('/api/tasks', {
-    method: 'POST',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function insertEventToSupabase(input: EventInsertInput) {
-  return callApi<SupabaseInsertResult>('/api/events', {
-    method: 'POST',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function fetchLeadsFromSupabase() {
-  return callApi<Record<string, unknown>[]>('/api/leads');
-}
-
-export async function fetchLeadByIdFromSupabase(id: string) {
-  return callApi<Record<string, unknown>>(`/api/leads?id=${encodeURIComponent(id)}`);
-}
-
-export async function fetchTasksFromSupabase() {
-  return callApi<Record<string, unknown>[]>('/api/tasks');
-}
-
-export async function fetchEventsFromSupabase() {
-  return callApi<Record<string, unknown>[]>('/api/events');
-}
-
-export async function fetchCasesFromSupabase() {
-  return callApi<Record<string, unknown>[]>('/api/cases');
-}
-
-export async function fetchCaseByIdFromSupabase(id: string) {
-  return callApi<Record<string, unknown>>(`/api/cases?id=${encodeURIComponent(id)}`);
-}
-
-export async function createCaseInSupabase(input: CaseUpsertInput) {
-  return callApi<SupabaseInsertResult>('/api/cases', {
-    method: 'POST',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function updateCaseInSupabase(input: CaseUpsertInput & { id: string }) {
-  return callApi<SupabaseInsertResult>('/api/cases', {
-    method: 'PATCH',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function deleteCaseFromSupabase(id: string) {
-  return callApi<SupabaseInsertResult>(`/api/cases?id=${encodeURIComponent(id)}`, {
-    method: 'DELETE',
-  });
-}
-
-export async function fetchCaseItemsFromSupabase(caseId: string) {
-  return callApi<Record<string, unknown>[]>(`/api/case-items?caseId=${encodeURIComponent(caseId)}`);
-}
-
-export async function insertCaseItemToSupabase(input: CaseItemInput) {
-  return callApi<SupabaseInsertResult>('/api/case-items', {
-    method: 'POST',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function updateCaseItemInSupabase(input: CaseItemInput & { id: string }) {
-  return callApi<SupabaseInsertResult>('/api/case-items', {
-    method: 'PATCH',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function deleteCaseItemFromSupabase(id: string) {
-  return callApi<SupabaseInsertResult>(`/api/case-items?id=${encodeURIComponent(id)}`, {
-    method: 'DELETE',
-  });
-}
-
-export async function fetchActivitiesFromSupabase(params?: {
-  caseId?: string;
-  leadId?: string;
-  limit?: number;
-}) {
-  const query = new URLSearchParams();
-  if (params?.caseId) query.set('caseId', params.caseId);
-  if (params?.leadId) query.set('leadId', params.leadId);
-  if (params?.limit) query.set('limit', String(params.limit));
-  const suffix = query.toString() ? `?${query.toString()}` : '';
-  return callApi<Record<string, unknown>[]>(`/api/activities${suffix}`);
-}
-
-export async function insertActivityToSupabase(input: ActivityInput) {
-  return callApi<SupabaseInsertResult>('/api/activities', {
-    method: 'POST',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function updateActivityInSupabase(input: Record<string, unknown> & { id: string }) {
-  return callApi<SupabaseInsertResult>('/api/activities', {
-    method: 'PATCH',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function deleteActivityFromSupabase(id: string) {
-  return callApi<SupabaseInsertResult>(`/api/activities?id=${encodeURIComponent(id)}`, {
-    method: 'DELETE',
-  });
-}
-
-export async function fetchClientPortalTokenFromSupabase(caseId: string) {
-  return callApi<Record<string, unknown>>(`/api/client-portal-tokens?caseId=${encodeURIComponent(caseId)}`);
-}
-
-export async function validateClientPortalTokenFromSupabase(caseId: string, token: string) {
-  return callApi<Record<string, unknown>>(`/api/client-portal-tokens?caseId=${encodeURIComponent(caseId)}&token=${encodeURIComponent(token)}`);
-}
-
-export async function createClientPortalTokenInSupabase(caseId: string) {
-  return callApi<Record<string, unknown>>('/api/client-portal-tokens', {
-    method: 'POST',
-    body: JSON.stringify({ caseId }),
-  });
-}
-
-export async function updateLeadInSupabase(input: Record<string, unknown> & { id: string }) {
-  return callApi<SupabaseInsertResult>('/api/leads', {
-    method: 'PATCH',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function deleteLeadFromSupabase(id: string) {
-  return callApi<SupabaseInsertResult>(`/api/leads?id=${encodeURIComponent(id)}`, {
-    method: 'DELETE',
-  });
-}
-
-export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }) {
-  return callApi<SupabaseInsertResult>('/api/tasks', {
-    method: 'PATCH',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function deleteTaskFromSupabase(id: string) {
-  return callApi<SupabaseInsertResult>(`/api/tasks?id=${encodeURIComponent(id)}`, {
-    method: 'DELETE',
-  });
-}
-
-export async function updateEventInSupabase(input: Record<string, unknown> & { id: string }) {
-  return callApi<SupabaseInsertResult>('/api/events', {
-    method: 'PATCH',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function deleteEventFromSupabase(id: string) {
-  return callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(id)}`, {
-    method: 'DELETE',
-  });
-}
-
+export async function insertActivityToSupabase(input: ActivityInput) { return callApi<SupabaseInsertResult>('/api/activities', { method: 'POST', body: JSON.stringify(input) }); }
+export async function updateActivityInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/activities', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function deleteActivityFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/activities?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
+export async function fetchClientPortalTokenFromSupabase(caseId: string) { return callApi<Record<string, unknown>>(`/api/client-portal-tokens?caseId=${encodeURIComponent(caseId)}`); }
+export async function validateClientPortalTokenFromSupabase(caseId: string, token: string) { return callApi<Record<string, unknown>>(`/api/client-portal-tokens?caseId=${encodeURIComponent(caseId)}&token=${encodeURIComponent(token)}`); }
+export async function createClientPortalTokenInSupabase(caseId: string) { return callApi<Record<string, unknown>>('/api/client-portal-tokens', { method: 'POST', body: JSON.stringify({ caseId }) }); }
+export async function updateLeadInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/leads', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function deleteLeadFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/leads?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
+export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/tasks', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function deleteTaskFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/tasks?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
+export async function updateEventInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/events', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function deleteEventFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function fetchMeFromSupabase(input: { uid?: string; email?: string; fullName?: string }) {
-  const query = new URLSearchParams();
-  if (input.uid) query.set('uid', input.uid);
-  if (input.email) query.set('email', input.email);
-  if (input.fullName) query.set('fullName', input.fullName);
-  const suffix = query.toString() ? `?${query.toString()}` : '';
-  return callApi<MeResponse>(`/api/me${suffix}`);
+  const query = new URLSearchParams(); if (input.uid) query.set('uid', input.uid); if (input.email) query.set('email', input.email); if (input.fullName) query.set('fullName', input.fullName);
+  return callApi<MeResponse>(`/api/me${query.toString() ? `?${query.toString()}` : ''}`);
 }
-
-export async function updateWorkspaceSubscriptionInSupabase(input: {
-  workspaceId: string;
-  planId?: string;
-  subscriptionStatus?: string;
-  trialEndsAt?: string | null;
-}) {
-  return callApi<SupabaseInsertResult>('/api/workspace-subscription', {
-    method: 'PATCH',
-    body: JSON.stringify(input),
-  });
+export async function updateWorkspaceSubscriptionInSupabase(input: { workspaceId: string; planId?: string; subscriptionStatus?: string; trialEndsAt?: string | null }) { return callApi<SupabaseInsertResult>('/api/workspace-subscription', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function fetchSupportRequestsFromSupabase(params?: { ownerId?: string; ownerEmail?: string; workspaceId?: string; limit?: number; includeAll?: boolean; status?: string; kind?: string; query?: string }) {
+  const query = new URLSearchParams(); if (params?.ownerId) query.set('ownerId', params.ownerId); if (params?.ownerEmail) query.set('ownerEmail', params.ownerEmail); if (params?.workspaceId) query.set('workspaceId', params.workspaceId); if (params?.limit) query.set('limit', String(params.limit)); if (params?.includeAll) query.set('includeAll', '1'); if (params?.status) query.set('status', params.status); if (params?.kind) query.set('kind', params.kind); if (params?.query) query.set('query', params.query);
+  return callApi<Record<string, unknown>[]>(`/api/support-requests${query.toString() ? `?${query.toString()}` : ''}`);
 }
-
-export async function fetchSupportRequestsFromSupabase(params?: {
-  ownerId?: string;
-  limit?: number;
-  includeAll?: boolean;
-  status?: string;
-  kind?: string;
-  query?: string;
-}) {
-  const query = new URLSearchParams();
-  if (params?.ownerId) query.set('ownerId', params.ownerId);
-  if (params?.limit) query.set('limit', String(params.limit));
-  if (params?.includeAll) query.set('includeAll', '1');
-  if (params?.status) query.set('status', params.status);
-  if (params?.kind) query.set('kind', params.kind);
-  if (params?.query) query.set('query', params.query);
-  const suffix = query.toString() ? `?${query.toString()}` : '';
-  return callApi<Record<string, unknown>[]>(`/api/support-requests${suffix}`);
+export async function createSupportRequestInSupabase(input: { ownerId: string; ownerEmail?: string | null; workspaceId?: string | null; kind: string; subject: string; message: string }) { return callApi<Record<string, unknown>>('/api/support-requests', { method: 'POST', body: JSON.stringify(input) }); }
+export async function appendSupportReplyInSupabase(input: { id: string; message: string; actorType?: string; authorType?: string; authorLabel?: string; ownerId?: string; status?: string; workspaceId?: string }) {
+  return callApi<Record<string, unknown>>('/api/support-requests', { method: 'PATCH', body: JSON.stringify({ id: input.id, action: 'reply', message: input.message, actorType: input.actorType || input.authorType, authorLabel: input.authorLabel, ownerId: input.ownerId, status: input.status, workspaceId: input.workspaceId }) });
 }
-
-export async function createSupportRequestInSupabase(input: {
-  ownerId: string;
-  ownerEmail?: string | null;
-  workspaceId?: string | null;
-  kind: string;
-  subject: string;
-  message: string;
-}) {
-  return callApi<Record<string, unknown>>('/api/support-requests', {
-    method: 'POST',
-    body: JSON.stringify(input),
-  });
-}
-
-export async function appendSupportReplyInSupabase(input: {
-  id: string;
-  message: string;
-  authorType?: string;
-  authorLabel?: string;
-  ownerId?: string;
-  status?: string;
-}) {
-  return callApi<Record<string, unknown>>('/api/support-requests', {
-    method: 'PATCH',
-    body: JSON.stringify({
-      id: input.id,
-      action: 'append_reply',
-      message: input.message,
-      authorType: input.authorType,
-      authorLabel: input.authorLabel,
-      ownerId: input.ownerId,
-      status: input.status,
-    }),
-  });
-}
-
 export const addSupportReplyInSupabase = appendSupportReplyInSupabase;
 export const replyToSupportRequestInSupabase = appendSupportReplyInSupabase;
-
-export async function updateSupportRequestStatusInSupabase(input: {
-  id: string;
-  status: string;
-  ownerId?: string;
-}) {
-  return callApi<Record<string, unknown>>('/api/support-requests', {
-    method: 'PATCH',
-    body: JSON.stringify({
-      id: input.id,
-      status: input.status,
-      ownerId: input.ownerId,
-    }),
-  });
+export async function updateSupportRequestStatusInSupabase(input: { id: string; status: string; ownerId?: string; workspaceId?: string }) {
+  return callApi<Record<string, unknown>>('/api/support-requests', { method: 'PATCH', body: JSON.stringify({ id: input.id, action: 'status', status: input.status, ownerId: input.ownerId, workspaceId: input.workspaceId }) });
 }
-
-export async function updateSupportRequestInSupabase(input: Record<string, unknown> & { id: string }) {
-  return callApi<Record<string, unknown>>('/api/support-requests', {
-    method: 'PATCH',
-    body: JSON.stringify(input),
-  });
-}
+export async function updateSupportRequestInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<Record<string, unknown>>('/api/support-requests', { method: 'PATCH', body: JSON.stringify(input) }); }
