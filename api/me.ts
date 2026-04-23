@@ -394,6 +394,7 @@ async function ensureProfile(
 ) {
   const nowIso = new Date().toISOString();
   const admin = isAdminEmail(email);
+  const normalizedUid = uid && isUuid(uid) ? uid : null;
 
   if (!profileRow) {
     const generatedId = crypto.randomUUID();
@@ -406,9 +407,9 @@ async function ensureProfile(
       is_admin: admin,
       created_at: nowIso,
       updated_at: nowIso,
-      firebase_uid: uid || null,
-      auth_uid: uid || null,
-      external_auth_uid: uid || null,
+      firebase_uid: normalizedUid,
+      auth_uid: normalizedUid,
+      external_auth_uid: normalizedUid,
     };
 
     const result = await insertProfileWithFallback(payload);
@@ -433,18 +434,18 @@ async function ensureProfile(
     shouldPatch = true;
   }
 
-  if (uid && !asNullableString(profileRow.firebase_uid ?? profileRow.firebaseUid ?? null)) {
-    patch.firebase_uid = uid;
+  if (normalizedUid && !asNullableString(profileRow.firebase_uid ?? profileRow.firebaseUid ?? null)) {
+    patch.firebase_uid = normalizedUid;
     shouldPatch = true;
   }
 
-  if (uid && !asNullableString(profileRow.auth_uid ?? profileRow.authUid ?? null)) {
-    patch.auth_uid = uid;
+  if (normalizedUid && !asNullableString(profileRow.auth_uid ?? profileRow.authUid ?? null)) {
+    patch.auth_uid = normalizedUid;
     shouldPatch = true;
   }
 
-  if (uid && !asNullableString(profileRow.external_auth_uid ?? profileRow.externalAuthUid ?? null)) {
-    patch.external_auth_uid = uid;
+  if (normalizedUid && !asNullableString(profileRow.external_auth_uid ?? profileRow.externalAuthUid ?? null)) {
+    patch.external_auth_uid = normalizedUid;
     shouldPatch = true;
   }
 
