@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { auth } from '../firebase';
 import { Button } from '../components/ui/button';
@@ -145,7 +145,7 @@ function leadStatusLabel(status?: string) {
     case 'accepted':
       return 'Zaakceptowany';
     case 'moved_to_service':
-      return 'Przeniesiony do obslugi';
+      return 'Przeniesiony do obsĹ‚ugi';
     case 'negotiation':
       return 'Negocjacje';
     case 'won':
@@ -586,7 +586,7 @@ export default function CaseDetail() {
 
       const url = `${window.location.origin}/portal/${caseId}/${token}`;
       await navigator.clipboard.writeText(url);
-      toast.success('Link do panelu skopiowany!');
+      toast.success('Link do panelu klienta skopiowany');
     } catch (error: any) {
       toast.error(`Błąd: ${error.message}`);
     }
@@ -2361,3 +2361,5 @@ export default function CaseDetail() {
     </Layout>
   );
 }
+
+
