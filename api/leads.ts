@@ -564,11 +564,20 @@ export default async function handler(req: any, res: any) {
     const status = normalizeStatus(body.status || 'new');
     const startRuleSnapshot = normalizeEnum(body.startRuleSnapshot, START_RULES, 'on_acceptance');
     const billingStatus = normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started');
+    const ensuredClient = await ensureClientForLead(finalWorkspaceId, {
+      client_id: body.clientId,
+      name: asText(body.name),
+      company: asText(body.company),
+      email: asText(body.email),
+      phone: asText(body.phone),
+      source: normalizeSource(body.source),
+    });
+    const ensuredClientId = asNullableUuid(ensuredClient?.id || body.clientId);
 
     const payload: Record<string, unknown> = {
       workspace_id: finalWorkspaceId,
       created_by_user_id: body.ownerId && isUuid(body.ownerId) ? body.ownerId : null,
-      client_id: asNullableUuid(body.clientId),
+      client_id: ensuredClientId,
       linked_case_id: asNullableUuid(body.linkedCaseId),
       service_profile_id: asNullableUuid(body.serviceProfileId),
       name: asText(body.name),

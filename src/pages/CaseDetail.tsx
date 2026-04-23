@@ -53,6 +53,7 @@ import {
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import Layout from '../components/Layout';
+import { isActiveSalesLead } from '../lib/lead-health';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
   createClientPortalTokenInSupabase,
@@ -148,8 +149,6 @@ function leadStatusLabel(status?: string) {
       return 'Przeniesiony do obsługi';
     case 'negotiation':
       return 'Negocjacje';
-    case 'won':
-      return 'Wygrany';
     case 'lost':
       return 'Przegrany';
     default:
@@ -443,10 +442,7 @@ const caseClientSuggestions = useMemo(() => {
     const allCases = (caseRows || []) as any[];
     const linkedLeadId = String(caseRow?.leadId || '');
     const currentLead = linkedLeadId ? allLeads.find((entry) => String(entry.id || '') === linkedLeadId) || null : null;
-    const openLeads = allLeads.filter((entry) => {
-      const status = String(entry.status || 'new');
-      return !['won', 'lost', 'moved_to_service', 'archived'].includes(status) || String(entry.id || '') === linkedLeadId;
-    });
+    const openLeads = allLeads.filter((entry) => isActiveSalesLead(entry) || String(entry.id || '') === linkedLeadId);
 
     setSourceLead(currentLead);
     setAvailableLeads(openLeads);
@@ -620,11 +616,16 @@ const caseClientSuggestions = useMemo(() => {
       await updateCaseInSupabase({
         id: caseId,
         leadId: selectedLeadId,
+        clientId: selectedLead.clientId ? String(selectedLead.clientId) : null,
+        clientName: String(caseData?.clientName || selectedLead.name || selectedLead.company || ''),
+        clientEmail: String(caseData?.clientEmail || selectedLead.email || ''),
+        clientPhone: String(caseData?.clientPhone || selectedLead.phone || ''),
         createdFromLead: true,
         serviceStartedAt: caseData?.serviceStartedAt || nowIso,
       });
       await updateLeadInSupabase({
         id: selectedLeadId,
+        clientId: selectedLead.clientId ? String(selectedLead.clientId) : null,
         linkedCaseId: caseId,
         status: 'moved_to_service',
         movedToServiceAt: nowIso,
@@ -1441,7 +1442,7 @@ const caseClientSuggestions = useMemo(() => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
@@ -1522,7 +1523,7 @@ const caseClientSuggestions = useMemo(() => {
               </CardContent>
             </Card>
 
-                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
@@ -1651,7 +1652,7 @@ const caseClientSuggestions = useMemo(() => {
               </CardContent>
             </Card>
 
-                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
@@ -1852,7 +1853,7 @@ const caseClientSuggestions = useMemo(() => {
           </div>
 
           <div className="space-y-6">
-                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
@@ -1912,7 +1913,7 @@ const caseClientSuggestions = useMemo(() => {
               </CardContent>
             </Card>
 
-                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
@@ -1955,38 +1956,38 @@ const caseClientSuggestions = useMemo(() => {
                     <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="text-base font-bold text-slate-900 break-words">{sourceLead.name || 'Lead bez nazwy'}</p>
+                          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Lead źródłowy</p>
+                          <p className="mt-1 text-base font-bold text-slate-900 break-words">{sourceLead.name || 'Lead bez nazwy'}</p>
                           <div className="mt-2 flex flex-wrap gap-2">
                             <Badge variant="outline">{leadStatusLabel(sourceLead.status)}</Badge>
-                            <Badge variant="secondary">{leadSourceLabel(sourceLead.source)}</Badge>
                             {sourceLead.isAtRisk ? <Badge variant="destructive">Zagrożony</Badge> : null}
                           </div>
                         </div>
                         <Button variant="outline" size="sm" asChild>
                           <Link to={`/leads/${sourceLead.id}`}>
-                            Otwórz <ExternalLink className="w-4 h-4" />
+                            Otwórz lead źródłowy <ExternalLink className="w-4 h-4" />
                           </Link>
                         </Button>
                       </div>
 
                       <div className="grid grid-cols-1 gap-3 text-sm text-slate-600">
                         <div className="rounded-xl bg-slate-50 px-3 py-2">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Następny krok</p>
-                          <p className="mt-1 font-medium text-slate-900 break-words">{sourceLead.nextStep || 'Brak ustawionego kroku'}</p>
+                          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Źródło pozyskania</p>
+                          <p className="mt-1 font-medium text-slate-900 break-words">{leadSourceLabel(sourceLead.source)}</p>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div className="rounded-xl bg-slate-50 px-3 py-2">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Termin ruchu</p>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Data wejścia do obsługi</p>
                             <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
                               <Calendar className="w-4 h-4 text-slate-400" />
-                              {formatDateTime(sourceLead.nextActionAt)}
+                              {sourceLeadMovedAtLabel}
                             </p>
                           </div>
                           <div className="rounded-xl bg-slate-50 px-3 py-2">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Wartość</p>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Status leada</p>
                             <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
                               <Target className="w-4 h-4 text-slate-400" />
-                              {(Number(sourceLead.dealValue) || 0).toLocaleString()} PLN
+                              {leadStatusLabel(sourceLead.status)}
                             </p>
                           </div>
                         </div>
@@ -2018,7 +2019,7 @@ const caseClientSuggestions = useMemo(() => {
                     <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-4">
                       <p className="text-sm font-semibold text-slate-900">Sprawa utworzona ręcznie.</p>
                       <p className="mt-1 text-sm text-slate-500">
-                        Mozesz opcjonalnie podpiac lead zrodlowy, jesli ten temat zaczal sie od procesu sprzedazowego.
+                        Możesz opcjonalnie podpiąć lead źródłowy, jeśli ten temat zaczął się od procesu sprzedażowego.
                       </p>
                     </div>
                     <div className="space-y-2">
@@ -2049,7 +2050,7 @@ const caseClientSuggestions = useMemo(() => {
               </CardContent>
             </Card>
 
-                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
@@ -2166,7 +2167,7 @@ const caseClientSuggestions = useMemo(() => {
               </CardContent>
             </Card>
 
-                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
@@ -2396,7 +2397,7 @@ const caseClientSuggestions = useMemo(() => {
                             {[option.email, option.phone].filter(Boolean).join(' • ') || 'Dane klienta zapisane w systemie'}
                           </p>
                         </div>
-                        <Badge variant="outline">{option.source === 'lead' ? 'Ze zrodlowego leada' : option.source === 'case' ? 'Ze sprawy' : 'Z danych sprawy'}</Badge>
+                        <Badge variant="outline">{option.source === 'lead' ? 'Ze źródłowego leada' : option.source === 'case' ? 'Ze sprawy' : 'Z danych sprawy'}</Badge>
                       </div>
                     </button>
                   ))}

@@ -1,6 +1,7 @@
 import { addMinutes, endOfDay, format, parseISO, startOfDay } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import type { CalendarBundle } from './calendar-items';
+import { isActiveSalesLead } from './lead-health';
 import { combineScheduleEntries, type ScheduleEntry } from './scheduling';
 
 const BROWSER_PREF_KEY = 'closeflow:notifications:browser-enabled:v1';
@@ -30,7 +31,7 @@ export type NotificationLogItem = NotificationItem & {
 function isEntryActionable(entry: ScheduleEntry) {
   if (entry.kind === 'task') return entry.raw?.status !== 'done';
   if (entry.kind === 'event') return entry.raw?.status !== 'completed';
-  return !['won', 'lost', 'moved_to_service', 'archived'].includes(String(entry.raw?.status || ''));
+  return isActiveSalesLead(entry.raw);
 }
 
 function mapEntryToItem(entry: ScheduleEntry, now: Date): NotificationItem | null {

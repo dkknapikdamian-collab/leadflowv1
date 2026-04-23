@@ -27,7 +27,7 @@ export type ClientLeadLike = {
   email?: string;
   phone?: string;
   status?: string;
-  linkedClientId?: string;
+  clientId?: string;
   linkedCaseId?: string;
   updatedAt?: Timestamp | string | null;
 };
@@ -180,9 +180,9 @@ export function buildClientDirectory(
   });
 
   leads.forEach((lead) => {
-    const clientId = lead.linkedClientId || buildClientIdFromLead({ leadId: lead.id, email: lead.email, phone: lead.phone, name: lead.name });
+    const clientId = lead.clientId || buildClientIdFromLead({ leadId: lead.id, email: lead.email, phone: lead.phone, name: lead.name });
     const current = map.get(clientId);
-    const shouldCreateFallback = Boolean(lead.linkedClientId || lead.linkedCaseId || ['negotiation', 'proposal_sent', 'waiting_response', 'accepted', 'moved_to_service', 'won'].includes(lead.status || ''));
+    const shouldCreateFallback = Boolean(lead.clientId || lead.linkedCaseId || ['negotiation', 'proposal_sent', 'waiting_response', 'accepted', 'moved_to_service'].includes(lead.status || ''));
 
     if (current || shouldCreateFallback) {
       upsert(clientId, {
@@ -201,7 +201,7 @@ export function buildClientDirectory(
 
   cases.forEach((caseRecord) => {
     const fallbackLead = caseRecord.leadId ? leads.find((lead) => lead.id === caseRecord.leadId) : undefined;
-    const clientId = caseRecord.clientId || fallbackLead?.linkedClientId || buildClientIdFromLead({
+    const clientId = caseRecord.clientId || fallbackLead?.clientId || buildClientIdFromLead({
       leadId: fallbackLead?.id || caseRecord.id,
       email: caseRecord.clientEmail || fallbackLead?.email,
       phone: caseRecord.clientPhone || fallbackLead?.phone,

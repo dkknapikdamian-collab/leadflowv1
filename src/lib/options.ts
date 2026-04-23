@@ -30,7 +30,6 @@ export const STATUS_OPTIONS = [
   { value: 'waiting_response', label: 'Czeka na odpowiedz', color: 'bg-orange-100 text-orange-700' },
   { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
   { value: 'moved_to_service', label: 'Przeniesiony do obslugi', color: 'bg-violet-100 text-violet-700' },
-  { value: 'won', label: 'Wygrany', color: 'bg-emerald-100 text-emerald-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
   { value: 'archived', label: 'Archiwum', color: 'bg-slate-100 text-slate-700' },
 ];

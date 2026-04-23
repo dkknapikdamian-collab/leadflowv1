@@ -35,6 +35,7 @@ import { Textarea } from '../components/ui/textarea';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadFinance, normalizePartialPayments } from '../lib/lead-finance';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
+import { isLeadMovedToService } from '../lib/lead-health';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
@@ -69,7 +70,6 @@ const STATUS_OPTIONS = [
   { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
   { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
-  { value: 'won', label: 'Wygrany', color: 'bg-emerald-100 text-emerald-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
 ];
 
@@ -301,12 +301,13 @@ export default function LeadDetail() {
   }, [leadId]);
 
   const finance = useMemo(() => getLeadFinance(lead || {}), [lead]);
+  const leadMovedToService = isLeadMovedToService(lead);
 
   const serviceCaseId = String(startServiceSuccess?.caseId || associatedCase?.id || '');
   const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'Powiązana sprawa');
   const serviceCaseStatusLabel = String(associatedCase?.status || createCaseDraft.status || 'ready_to_start').replaceAll('_', ' ');
   const serviceMovedAtLabel = formatScheduleDate(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
-  const showServiceBanner = Boolean(startServiceSuccess || associatedCase || String(lead?.status || '') === 'moved_to_service');
+  const showServiceBanner = Boolean(startServiceSuccess || associatedCase || leadMovedToService);
   const scrollToHistory = () => {
     document.getElementById('lead-history')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -389,6 +390,7 @@ export default function LeadDetail() {
 
   const handleUpdateStatus = async (status: string) => {
     if (!hasAccess) return toast.error('Trial wygasł.');
+    if (leadMovedToService) return toast.error('Temat został już przeniesiony do obsługi i nie wraca na aktywną listę leadów.');
     await patchLead({ status }, 'Status zaktualizowany');
     await addActivity('status_changed', { status });
   };
@@ -405,7 +407,7 @@ export default function LeadDetail() {
         source: editLead.source || 'other',
         dealValue: Number(editLead.dealValue) || 0,
       },
-      'Dane zaktualizowane',
+      leadMovedToService ? 'Dane źródłowe leada zaktualizowane' : 'Dane zaktualizowane',
     );
     setIsEditing(false);
   };
@@ -844,7 +846,7 @@ export default function LeadDetail() {
       setLinkCaseId('');
       setStartServiceSuccess({
         caseId: linkCaseId,
-        title: String(caseTitleById.get(String(linkCaseId)) || 'Powiazana sprawa'),
+        title: String(caseTitleById.get(String(linkCaseId)) || 'Powiązana sprawa'),
       });
       await loadLead();
     } catch (error: any) {
@@ -871,7 +873,7 @@ export default function LeadDetail() {
         workspaceId: workspace?.id,
       });
       const caseId = String((created as any)?.case?.id || '');
-      toast.success('Temat zostal przeniesiony do obslugi');
+      toast.success('Temat został przeniesiony do obsługi');
       setIsCreateCaseOpen(false);
       setStartServiceSuccess({
         caseId,
@@ -969,12 +971,12 @@ export default function LeadDetail() {
             {associatedCase?.id ? (
               <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" asChild>
                 <Link to={`/case/${associatedCase.id}`}>
-                  <Briefcase className="w-4 h-4" /> Otworz sprawe
+                  <Briefcase className="w-4 h-4" /> Otwórz sprawę
                 </Link>
               </Button>
             ) : (
               <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" onClick={() => setIsCreateCaseOpen(true)}>
-                <Briefcase className="w-4 h-4" /> Rozpocznij obsluge
+                <Briefcase className="w-4 h-4" /> Rozpocznij obsługę
               </Button>
             )}
           </div>
@@ -1107,11 +1109,11 @@ export default function LeadDetail() {
                       ) : null}
                       {associatedCase?.id ? (
                         <Button size="sm" asChild>
-                          <Link to={`/case/${associatedCase.id}`}>Otworz sprawe</Link>
+                          <Link to={`/case/${associatedCase.id}`}>Otwórz sprawę</Link>
                         </Button>
                       ) : (
                         <Button size="sm" onClick={() => setIsCreateCaseOpen(true)}>
-                          Rozpocznij obsluge
+                          Rozpocznij obsługę
                         </Button>
                       )}
                       {!associatedCase?.id ? (

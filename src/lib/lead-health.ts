@@ -1,5 +1,15 @@
 import { differenceInCalendarDays, isPast, parseISO, startOfDay } from 'date-fns'
 
+export const LEAD_ACTIVE_SALES_STATUSES = [
+  'new',
+  'contacted',
+  'qualification',
+  'proposal_sent',
+  'waiting_response',
+  'negotiation',
+  'accepted',
+] as const
+
 const CLOSED_STATUSES = new Set(['won', 'lost', 'moved_to_service', 'archived'])
 const WAITING_STATUSES = new Set(['proposal_sent', 'waiting_response', 'negotiation', 'accepted'])
 
@@ -24,6 +34,16 @@ function toDateSafe(value: unknown) {
 
 export function isClosedLeadStatus(status?: string) {
   return CLOSED_STATUSES.has(String(status || '').trim())
+}
+
+export function isLeadMovedToService(lead: any) {
+  const status = String(lead?.status || '').trim()
+  return status === 'moved_to_service' || String(lead?.leadVisibility || '').trim() === 'archived' || Boolean(lead?.linkedCaseId)
+}
+
+export function isActiveSalesLead(lead: any) {
+  const status = String(lead?.status || '').trim()
+  return LEAD_ACTIVE_SALES_STATUSES.includes(status as typeof LEAD_ACTIVE_SALES_STATUSES[number]) && !isLeadMovedToService(lead)
 }
 
 export function getLeadNextActionDate(lead: any) {

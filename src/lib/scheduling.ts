@@ -11,6 +11,7 @@ import {
   startOfDay,
   subMinutes,
 } from 'date-fns';
+import { isActiveSalesLead } from './lead-health';
 
 export type RecurrenceRule = 'none' | 'daily' | 'every_2_days' | 'weekly' | 'monthly' | 'weekday';
 export type RecurrenceEndType = 'never' | 'until_date' | 'count';
@@ -283,7 +284,7 @@ export function expandTaskEntries(tasks: any[], rangeStart: Date, rangeEnd: Date
 
 export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
   return leads.flatMap((lead) => {
-    if (!lead?.nextActionAt || ['won', 'lost', 'moved_to_service', 'archived'].includes(String(lead?.status || ''))) return [] as ScheduleEntry[];
+    if (!lead?.nextActionAt || !isActiveSalesLead(lead)) return [] as ScheduleEntry[];
 
     const startsAt = lead.nextActionAt.includes('T') ? lead.nextActionAt : `${lead.nextActionAt}T09:00`;
     const start = parseISO(startsAt);

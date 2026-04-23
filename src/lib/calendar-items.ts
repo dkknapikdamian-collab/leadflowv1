@@ -1,5 +1,6 @@
 import { isValid, parseISO } from 'date-fns';
 import { fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, isSupabaseConfigured } from './supabase-fallback';
+import { isActiveSalesLead } from './lead-health';
 
 export type CalendarTaskItem = {
   id: string;
@@ -138,7 +139,7 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
 
 export function normalizeCalendarLeadAction(row: Record<string, unknown>): CalendarLeadActionItem | null {
   const status = row.status ? String(row.status) : undefined;
-  if (status === 'won' || status === 'lost' || status === 'moved_to_service' || status === 'archived') return null;
+  if (!isActiveSalesLead(row)) return null;
 
   const nextActionAt = typeof row.nextActionAt === 'string' && isIsoLike(row.nextActionAt) ? row.nextActionAt : undefined;
 

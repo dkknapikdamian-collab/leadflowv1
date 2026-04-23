@@ -64,6 +64,7 @@ import {
   TASK_TYPES,
 } from '../lib/options';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
   deleteEventFromSupabase,
@@ -344,7 +345,7 @@ export default function Today() {
     const latestLead = (latestLeads as any[]).find((lead) => String(lead.id) === String(leadId));
     setLeads(latestLeads as any[]);
 
-    if (!latestLead || ['won', 'lost', 'moved_to_service', 'archived'].includes(String(latestLead.status || '')) || latestLead.nextActionAt) {
+    if (!latestLead || !isActiveSalesLead(latestLead) || latestLead.nextActionAt) {
       return;
     }
 
@@ -768,7 +769,7 @@ export default function Today() {
   const today = new Date();
   const todayStart = startOfDay(today);
   const todayEnd = endOfDay(today);
-  const activeLeads = leads.filter((lead) => !['won', 'lost', 'moved_to_service', 'archived'].includes(String(lead.status || '')));
+  const activeLeads = leads.filter((lead) => isActiveSalesLead(lead));
   const activeLeadsValue = activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0);
   const leadsWithAction = activeLeads.filter((lead) => parseMoment(lead.nextActionAt));
   const todayEntries = combineScheduleEntries({
@@ -795,7 +796,7 @@ export default function Today() {
     if (status === 'accepted' && (eligibleAt || String(lead.startRuleSnapshot || '') === 'on_acceptance')) return true;
     return false;
   });
-  const activeServiceLeads = leads.filter((lead) => String(lead.status || '') === 'moved_to_service');
+  const activeServiceLeads = leads.filter((lead) => isLeadMovedToService(lead));
   const blockedCases = cases.filter((caseRecord) => String(caseRecord.status || '') === 'blocked');
   const noStepLeads = activeLeads.filter((lead) => !parseMoment(lead.nextActionAt));
   const staleLeads = activeLeads

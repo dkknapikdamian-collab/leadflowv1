@@ -69,6 +69,7 @@ import {
   updateLeadInSupabase,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
+import { isActiveSalesLead } from '../lib/lead-health';
 
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
@@ -255,7 +256,7 @@ export default function Tasks() {
     const latestLead = (latestLeads as any[]).find((lead) => lead.id === leadId);
     setLeads(latestLeads as any[]);
 
-    if (!latestLead || ['won', 'lost', 'moved_to_service', 'archived'].includes(String(latestLead.status || '')) || latestLead.nextActionAt) {
+    if (!latestLead || !isActiveSalesLead(latestLead) || latestLead.nextActionAt) {
       return;
     }
 

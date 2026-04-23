@@ -31,7 +31,7 @@ import {
   insertLeadToSupabase,
   isSupabaseConfigured,
 } from '../lib/supabase-fallback';
-import { hasNextStep, isNextStepOverdue } from '../lib/lead-health';
+import { hasNextStep, isActiveSalesLead, isLeadMovedToService, isNextStepOverdue } from '../lib/lead-health';
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
@@ -42,7 +42,6 @@ const STATUS_OPTIONS = [
   { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
   { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
-  { value: 'won', label: 'Wygrany', color: 'bg-emerald-100 text-emerald-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
 ];
 
@@ -206,10 +205,9 @@ export default function Leads() {
       const name = String(lead.name || '').toLowerCase();
       const email = String(lead.email || '').toLowerCase();
       const company = String(lead.company || '').toLowerCase();
-      const normalizedStatus = String(lead.status || 'new');
       const linkedCase = casesByLeadId.get(String(lead.id));
-      const movedToService = normalizedStatus === 'moved_to_service' || String(lead.leadVisibility || '') === 'archived' || Boolean(linkedCase);
-      const activeLead = !['won', 'lost', 'archived'].includes(normalizedStatus) && !movedToService;
+      const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
+      const activeLead = isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
       const missingNextStep = activeLead && !hasNextStep(lead);
       const caseTitle = String(linkedCase?.title || '').toLowerCase();
       const caseStatus = String(linkedCase?.status || '').toLowerCase();
@@ -218,7 +216,7 @@ export default function Leads() {
         || name.includes(normalizedQuery)
         || email.includes(normalizedQuery)
         || company.includes(normalizedQuery)
-        || normalizedStatus.includes(normalizedQuery)
+        || String(lead.status || 'new').includes(normalizedQuery)
         || String(lead.source || '').toLowerCase().includes(normalizedQuery)
         || String(lead.nextStep || '').toLowerCase().includes(normalizedQuery)
         || caseTitle.includes(normalizedQuery)
@@ -243,11 +241,11 @@ export default function Leads() {
 
   const stats = {
     total: leads.length,
-    active: leads.filter((lead) => !['won', 'lost', 'archived', 'moved_to_service'].includes(String(lead.status || 'new')) && !casesByLeadId.has(String(lead.id))).length,
+    active: leads.filter((lead) => isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
     value: leads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
     atRisk: leads.filter((lead) => Boolean(lead.isAtRisk)).length,
-    linkedToCase: leads.filter((lead) => casesByLeadId.has(String(lead.id)) || String(lead.status || '') === 'moved_to_service').length,
-    noNextStep: leads.filter((lead) => !hasNextStep(lead) && !['won', 'lost', 'archived', 'moved_to_service'].includes(String(lead.status || 'new')) && !casesByLeadId.has(String(lead.id))).length,
+    linkedToCase: leads.filter((lead) => isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
+    noNextStep: leads.filter((lead) => !hasNextStep(lead) && isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
   };
 
   const toggleQuickFilter = (filter: LeadsQuickFilter) => {
@@ -503,7 +501,7 @@ export default function Leads() {
                             ) : null}
                             {linkedCase ? (
                               <Badge variant="outline" className="text-[10px] uppercase border-emerald-200 text-emerald-700">
-                                Ma sprawę
+                                Ma aktywną sprawę
                               </Badge>
                             ) : null}
                             {linkedCase ? (

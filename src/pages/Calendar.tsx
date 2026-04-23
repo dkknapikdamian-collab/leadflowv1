@@ -56,6 +56,7 @@ import {
   toDateTimeLocalValue,
   type ScheduleEntry,
 } from '../lib/scheduling';
+import { isActiveSalesLead } from '../lib/lead-health';
 import {
   EVENT_TYPES,
   PRIORITY_OPTIONS,
@@ -411,7 +412,7 @@ export default function Calendar() {
     const bundle = await refreshSupabaseBundle();
     const latestLead = bundle.leads.find((lead) => lead.id === leadId);
 
-    if (!latestLead || ['won', 'lost', 'moved_to_service', 'archived'].includes(String(latestLead.status || '')) || latestLead.nextActionAt) {
+    if (!latestLead || !isActiveSalesLead(latestLead) || latestLead.nextActionAt) {
       return;
     }
 

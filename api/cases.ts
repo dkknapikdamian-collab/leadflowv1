@@ -120,6 +120,67 @@ async function bestEffortDelete(path: string) {
   }
 }
 
+async function safeSelectRows(query: string) {
+  try {
+    const result = await selectFirstAvailable([query]);
+    return Array.isArray(result.data) ? (result.data as Record<string, unknown>[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+async function findExistingClient(workspaceId: string, input: { clientId?: unknown; clientEmail?: unknown; clientPhone?: unknown; clientName?: unknown }) {
+  const explicitClientId = asNullableUuid(input.clientId);
+  if (explicitClientId) {
+    const rows = await safeSelectRows(withWorkspaceFilter(`clients?select=*&id=eq.${encodeURIComponent(explicitClientId)}&limit=1`, workspaceId));
+    if (rows[0]) return rows[0];
+  }
+
+  const email = asText(input.clientEmail).toLowerCase();
+  if (email) {
+    const rows = await safeSelectRows(withWorkspaceFilter(`clients?select=*&email=eq.${encodeURIComponent(email)}&limit=1`, workspaceId));
+    if (rows[0]) return rows[0];
+  }
+
+  const phone = asText(input.clientPhone);
+  if (phone) {
+    const rows = await safeSelectRows(withWorkspaceFilter(`clients?select=*&phone=eq.${encodeURIComponent(phone)}&limit=1`, workspaceId));
+    if (rows[0]) return rows[0];
+  }
+
+  const name = asText(input.clientName);
+  if (name) {
+    const rows = await safeSelectRows(withWorkspaceFilter(`clients?select=*&name=ilike.${encodeURIComponent(name)}&limit=1`, workspaceId));
+    if (rows[0]) return rows[0];
+  }
+
+  return null;
+}
+
+async function ensureClientForCase(workspaceId: string, input: { clientId?: unknown; clientName?: unknown; clientEmail?: unknown; clientPhone?: unknown }) {
+  const existingClient = await findExistingClient(workspaceId, input);
+  if (existingClient) return existingClient;
+
+  const name = asText(input.clientName);
+  const email = asText(input.clientEmail).toLowerCase();
+  const phone = asText(input.clientPhone);
+  if (!name && !email && !phone) return null;
+
+  const nowIso = new Date().toISOString();
+  const result = await insertWithVariants(['clients'], [{
+    workspace_id: workspaceId,
+    name: name || email || phone || 'Klient',
+    company: null,
+    email: email || null,
+    phone: phone || null,
+    source_primary: 'other',
+    created_at: nowIso,
+    updated_at: nowIso,
+    last_activity_at: nowIso,
+  }]);
+  return Array.isArray(result.data) && result.data[0] ? result.data[0] as Record<string, unknown> : null;
+}
+
 export default async function handler(req: any, res: any) {
   try {
     if (req.method === 'GET') {
@@ -168,8 +229,22 @@ export default async function handler(req: any, res: any) {
 
       const nowIso = new Date().toISOString();
       const normalizedLeadId = asNullableUuid(body.leadId);
-      const normalizedClientId = asNullableUuid(body.clientId);
       const normalizedStatus = normalizeEnum(body.status, CASE_STATUSES, 'in_progress');
+      const linkedLeadRows = normalizedLeadId
+        ? await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(normalizedLeadId)}&limit=1`, finalWorkspaceId))
+        : [];
+      const linkedLead = linkedLeadRows[0] || null;
+      const existingLeadCaseId = normalizedLeadId ? asText(linkedLead?.linked_case_id || linkedLead?.linkedCaseId) : '';
+      if (normalizedLeadId && existingLeadCaseId) {
+        throw new Error('LEAD_ALREADY_HAS_CASE');
+      }
+      const ensuredClient = await ensureClientForCase(finalWorkspaceId, {
+        clientId: body.clientId ?? linkedLead?.client_id ?? linkedLead?.clientId,
+        clientName: body.clientName ?? linkedLead?.name ?? linkedLead?.company,
+        clientEmail: body.clientEmail ?? linkedLead?.email,
+        clientPhone: body.clientPhone ?? linkedLead?.phone,
+      });
+      const normalizedClientId = asNullableUuid(ensuredClient?.id || body.clientId || linkedLead?.client_id || linkedLead?.clientId);
 
       const payload: Record<string, unknown> = {
         workspace_id: finalWorkspaceId,
@@ -177,9 +252,9 @@ export default async function handler(req: any, res: any) {
         client_id: normalizedClientId,
         service_profile_id: asNullableUuid(body.serviceProfileId),
         title: asText(body.title) || 'Nowa sprawa',
-        client_name: asText(body.clientName),
-        client_email: asText(body.clientEmail),
-        client_phone: asText(body.clientPhone),
+        client_name: asText(body.clientName || ensuredClient?.name || linkedLead?.name),
+        client_email: asText(body.clientEmail || ensuredClient?.email || linkedLead?.email),
+        client_phone: asText(body.clientPhone || ensuredClient?.phone || linkedLead?.phone),
         status: normalizedStatus,
         billing_status: normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started'),
         billing_model_snapshot: normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual'),
@@ -203,6 +278,17 @@ export default async function handler(req: any, res: any) {
           linked_case_id: null,
           updated_at: nowIso,
         });
+        if (normalizedLeadId) {
+          await bestEffortPatch(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, {
+            client_id: normalizedClientId,
+            linked_case_id: insertedId,
+            status: 'moved_to_service',
+            moved_to_service_at: nowIso,
+            lead_visibility: 'archived',
+            sales_outcome: 'moved_to_service',
+            updated_at: nowIso,
+          });
+        }
       }
 
       res.status(200).json(normalizeCase(inserted as Record<string, unknown>));
@@ -218,16 +304,30 @@ export default async function handler(req: any, res: any) {
 
       const nowIso = new Date().toISOString();
       const normalizedLeadId = body.leadId !== undefined ? asNullableUuid(body.leadId) : undefined;
-      const normalizedClientId = body.clientId !== undefined ? asNullableUuid(body.clientId) : undefined;
+      const linkedLeadRows = normalizedLeadId
+        ? await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(normalizedLeadId)}&limit=1`, workspaceId))
+        : [];
+      const linkedLead = linkedLeadRows[0] || null;
+      const ensuredClient = (body.clientId !== undefined || body.clientName !== undefined || body.clientEmail !== undefined || body.clientPhone !== undefined || normalizedLeadId)
+        ? await ensureClientForCase(workspaceId, {
+            clientId: body.clientId ?? linkedLead?.client_id ?? linkedLead?.clientId,
+            clientName: body.clientName ?? linkedLead?.name ?? linkedLead?.company,
+            clientEmail: body.clientEmail ?? linkedLead?.email,
+            clientPhone: body.clientPhone ?? linkedLead?.phone,
+          })
+        : null;
+      const normalizedClientId = body.clientId !== undefined || ensuredClient
+        ? asNullableUuid(ensuredClient?.id || body.clientId || linkedLead?.client_id || linkedLead?.clientId)
+        : undefined;
       const nextStatus = body.status !== undefined ? normalizeEnum(body.status, CASE_STATUSES, 'in_progress') : undefined;
       const payload: Record<string, unknown> = {
         updated_at: nowIso,
       };
 
       if (body.title !== undefined) payload.title = asText(body.title) || 'Sprawa bez tytułu';
-      if (body.clientName !== undefined) payload.client_name = asText(body.clientName);
-      if (body.clientEmail !== undefined) payload.client_email = asText(body.clientEmail);
-      if (body.clientPhone !== undefined) payload.client_phone = asText(body.clientPhone);
+      if (body.clientName !== undefined || ensuredClient) payload.client_name = asText(body.clientName || ensuredClient?.name || linkedLead?.name);
+      if (body.clientEmail !== undefined || ensuredClient) payload.client_email = asText(body.clientEmail || ensuredClient?.email || linkedLead?.email);
+      if (body.clientPhone !== undefined || ensuredClient) payload.client_phone = asText(body.clientPhone || ensuredClient?.phone || linkedLead?.phone);
       if (body.clientId !== undefined) payload.client_id = normalizedClientId;
       if (nextStatus !== undefined) payload.status = nextStatus;
       if (body.completenessPercent !== undefined) payload.completeness_percent = Number(body.completenessPercent || 0);
