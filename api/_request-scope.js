@@ -22,6 +22,20 @@ function normalizeEmail(value) {
   return asText(value).toLowerCase();
 }
 
+function uniqueTexts(values) {
+  const seen = new Set();
+  const result = [];
+
+  for (const value of values) {
+    const normalized = asText(value);
+    if (!normalized || seen.has(normalized)) continue;
+    seen.add(normalized);
+    result.push(normalized);
+  }
+
+  return result;
+}
+
 export function getRequestIdentity(req, body = {}) {
   return {
     userId: getHeader(req, 'x-user-id') || asText(body.userId) || asText(req?.query?.uid),
@@ -66,7 +80,7 @@ function pickBestProfileRow(rows, identity = {}) {
     const firebaseUid = asText(row?.firebase_uid || row?.firebaseUid);
     const authUid = asText(row?.auth_uid || row?.authUid);
     const externalAuthUid = asText(row?.external_auth_uid || row?.externalAuthUid);
-    const profileId = asText(row?.id);
+    const profileId = asText(row?.id || row?.firebase_uid || row?.firebaseUid || row?.auth_uid || row?.authUid || row?.external_auth_uid || row?.externalAuthUid);
 
     let score = 0;
 
@@ -93,21 +107,35 @@ async function findWorkspaceIdFromProfileRow(row) {
   const workspaceId = asText(row?.workspace_id || row?.workspaceId);
   if (workspaceId && isUuid(workspaceId)) return workspaceId;
 
-  const profileId = asText(row?.id);
-  if (!isUuid(profileId)) return null;
+  const lookupCandidates = uniqueTexts([
+    row?.id,
+    row?.firebase_uid,
+    row?.firebaseUid,
+    row?.auth_uid,
+    row?.authUid,
+    row?.external_auth_uid,
+    row?.externalAuthUid,
+    row?.email,
+  ]);
 
-  const ownerRow = pickBestProfileRow(await queryRows([
-    `workspaces?owner_user_id=eq.${encodeURIComponent(profileId)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
-    `workspaces?owner_id=eq.${encodeURIComponent(profileId)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
-    `workspaces?created_by_user_id=eq.${encodeURIComponent(profileId)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
+  if (!lookupCandidates.length) return null;
+
+  const ownerQueries = lookupCandidates.flatMap((candidate) => ([
+    `workspaces?owner_user_id=eq.${encodeURIComponent(candidate)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
+    `workspaces?owner_id=eq.${encodeURIComponent(candidate)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
+    `workspaces?created_by_user_id=eq.${encodeURIComponent(candidate)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
   ]));
+
+  const ownerRow = pickBestProfileRow(await queryRows(ownerQueries));
 
   const ownerWorkspaceId = asText(ownerRow?.id);
   if (ownerWorkspaceId && isUuid(ownerWorkspaceId)) return ownerWorkspaceId;
 
-  const memberRows = await queryRows([
-    `workspace_members?user_id=eq.${encodeURIComponent(profileId)}&select=workspace_id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
-  ]);
+  const memberRows = await queryRows(
+    lookupCandidates.map((candidate) =>
+      `workspace_members?user_id=eq.${encodeURIComponent(candidate)}&select=workspace_id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
+    ),
+  );
 
   for (const memberRow of memberRows) {
     const memberWorkspaceId = asText(memberRow?.workspace_id);
@@ -124,8 +152,8 @@ async function findWorkspaceIdByEmail(email) {
   if (!normalizedEmail) return null;
 
   const rows = await queryRows([
-    `profiles?email=eq.${encodeURIComponent(normalizedEmail)}&select=id,email,workspace_id,firebase_uid,auth_uid,external_auth_uid,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
-    `profiles?email=eq.${encodeURIComponent(asText(email))}&select=id,email,workspace_id,firebase_uid,auth_uid,external_auth_uid,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
+    `profiles?email=eq.${encodeURIComponent(normalizedEmail)}&select=*&order=updated_at.desc.nullslast&limit=20`,
+    `profiles?email=eq.${encodeURIComponent(asText(email))}&select=*&order=updated_at.desc.nullslast&limit=20`,
   ]);
 
   const row = pickBestProfileRow(rows, { email: normalizedEmail });
@@ -138,11 +166,11 @@ async function findWorkspaceIdByProfileIdentity(profileIdentity, email = '') {
 
   const queries = [];
   if (isUuid(normalizedIdentity)) {
-    queries.push(`profiles?id=eq.${encodeURIComponent(normalizedIdentity)}&select=id,email,workspace_id,firebase_uid,auth_uid,external_auth_uid,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`);
+    queries.push(`profiles?id=eq.${encodeURIComponent(normalizedIdentity)}&select=*&order=updated_at.desc.nullslast&limit=20`);
   }
-  queries.push(`profiles?firebase_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=id,email,workspace_id,firebase_uid,auth_uid,external_auth_uid,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`);
-  queries.push(`profiles?auth_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=id,email,workspace_id,firebase_uid,auth_uid,external_auth_uid,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`);
-  queries.push(`profiles?external_auth_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=id,email,workspace_id,firebase_uid,auth_uid,external_auth_uid,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`);
+  queries.push(`profiles?firebase_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=*&order=updated_at.desc.nullslast&limit=20`);
+  queries.push(`profiles?auth_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=*&order=updated_at.desc.nullslast&limit=20`);
+  queries.push(`profiles?external_auth_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=*&order=updated_at.desc.nullslast&limit=20`);
 
   const row = pickBestProfileRow(await queryRows(queries), {
     userId: normalizedIdentity,

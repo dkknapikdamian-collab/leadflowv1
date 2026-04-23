@@ -183,6 +183,13 @@ export async function updateById(table: string, id: string, payload: RecordMap) 
   });
 }
 
+export async function updateWhere(path: string, payload: RecordMap) {
+  return supabaseRequest(path, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function deleteById(table: string, id: string) {
   const encodedId = encodeURIComponent(id);
   return supabaseRequest(`${table}?id=eq.${encodedId}`, {

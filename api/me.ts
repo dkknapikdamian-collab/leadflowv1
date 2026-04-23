@@ -1,4 +1,4 @@
-import { insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
+import { insertWithVariants, selectFirstAvailable, updateById, updateWhere } from './_supabase.js';
 
 const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
 const DEFAULT_PLAN_ID = 'trial_14d';
@@ -24,6 +24,20 @@ function asNullableString(value: unknown): NullableString {
   if (typeof value !== 'string') return null;
   const trimmed = value.trim();
   return trimmed ? trimmed : null;
+}
+
+function uniqueStrings(values: unknown[]) {
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const value of values) {
+    const normalized = asNullableString(value);
+    if (!normalized || seen.has(normalized)) continue;
+    seen.add(normalized);
+    result.push(normalized);
+  }
+
+  return result;
 }
 
 function extractUuidCandidate(...values: unknown[]) {
@@ -103,7 +117,18 @@ function normalizeProfile(
   const email = asString(row?.email ?? fallbackEmail ?? '');
   const admin = Boolean(row?.is_admin ?? row?.isAdmin ?? false) || isAdminEmail(email);
   return {
-    id: asString(row?.id ?? fallbackUid ?? ''),
+    id: asString(
+      row?.id
+        ?? row?.firebase_uid
+        ?? row?.firebaseUid
+        ?? row?.auth_uid
+        ?? row?.authUid
+        ?? row?.external_auth_uid
+        ?? row?.externalAuthUid
+        ?? fallbackUid
+        ?? fallbackEmail
+        ?? '',
+    ),
     fullName: asString(row?.full_name ?? row?.fullName ?? fallbackFullName ?? ''),
     email,
     role: asString(row?.role ?? (admin ? 'admin' : 'member')),
@@ -174,14 +199,37 @@ async function fetchWorkspace(workspaceId: string | null) {
   }
 }
 
-async function findWorkspaceForProfile(profileId: string | null) {
-  if (!profileId || !isUuid(profileId)) return null;
+function getProfileLookupCandidates(
+  profileRow: Record<string, unknown> | null,
+  uid: string | null,
+  email: string | null,
+) {
+  return uniqueStrings([
+    profileRow?.id,
+    profileRow?.firebase_uid,
+    profileRow?.firebaseUid,
+    profileRow?.auth_uid,
+    profileRow?.authUid,
+    profileRow?.external_auth_uid,
+    profileRow?.externalAuthUid,
+    uid,
+    email,
+  ]);
+}
 
-  const workspaceQueries = [
-    `workspaces?owner_user_id=eq.${encodeURIComponent(profileId)}&select=*&limit=1`,
-    `workspaces?owner_id=eq.${encodeURIComponent(profileId)}&select=*&limit=1`,
-    `workspaces?created_by_user_id=eq.${encodeURIComponent(profileId)}&select=*&limit=1`,
-  ];
+async function findWorkspaceForProfile(
+  profileRow: Record<string, unknown> | null,
+  uid: string | null,
+  email: string | null,
+) {
+  const lookupCandidates = getProfileLookupCandidates(profileRow, uid, email);
+  if (!lookupCandidates.length) return null;
+
+  const workspaceQueries = lookupCandidates.flatMap((candidate) => ([
+    `workspaces?owner_user_id=eq.${encodeURIComponent(candidate)}&select=*&limit=1`,
+    `workspaces?owner_id=eq.${encodeURIComponent(candidate)}&select=*&limit=1`,
+    `workspaces?created_by_user_id=eq.${encodeURIComponent(candidate)}&select=*&limit=1`,
+  ]));
 
   for (const query of workspaceQueries) {
     try {
@@ -196,18 +244,21 @@ async function findWorkspaceForProfile(profileId: string | null) {
   }
 
   try {
-    const memberResult = await selectFirstAvailable([
-      `workspace_members?user_id=eq.${encodeURIComponent(profileId)}&select=workspace_id&limit=1`,
-    ]);
-    const memberRow = Array.isArray(memberResult.data) ? memberResult.data[0] : null;
-    const workspaceId = asNullableString(memberRow?.workspace_id);
-    if (!workspaceId) {
-      return null;
+    for (const candidate of lookupCandidates) {
+      const memberResult = await selectFirstAvailable([
+        `workspace_members?user_id=eq.${encodeURIComponent(candidate)}&select=workspace_id&limit=1`,
+      ]);
+      const memberRow = Array.isArray(memberResult.data) ? memberResult.data[0] : null;
+      const workspaceId = asNullableString(memberRow?.workspace_id);
+      if (workspaceId) {
+        return await fetchWorkspace(workspaceId);
+      }
     }
-    return await fetchWorkspace(workspaceId);
   } catch {
     return null;
   }
+
+  return null;
 }
 
 async function insertProfileWithFallback(payload: Record<string, unknown>) {
@@ -228,19 +279,55 @@ async function insertProfileWithFallback(payload: Record<string, unknown>) {
   throw new Error('PROFILE_INSERT_SCHEMA_FALLBACK_EXHAUSTED');
 }
 
-async function updateProfileWithFallback(profileId: string, payload: Record<string, unknown>) {
+function buildProfileMatchQueries(
+  profileRow: Record<string, unknown> | null,
+  uid: string | null,
+  email: string | null,
+) {
+  return uniqueStrings([
+    profileRow?.id ? `profiles?id=eq.${encodeURIComponent(String(profileRow.id))}` : null,
+    profileRow?.firebase_uid ? `profiles?firebase_uid=eq.${encodeURIComponent(String(profileRow.firebase_uid))}` : null,
+    profileRow?.firebaseUid ? `profiles?firebase_uid=eq.${encodeURIComponent(String(profileRow.firebaseUid))}` : null,
+    profileRow?.auth_uid ? `profiles?auth_uid=eq.${encodeURIComponent(String(profileRow.auth_uid))}` : null,
+    profileRow?.authUid ? `profiles?auth_uid=eq.${encodeURIComponent(String(profileRow.authUid))}` : null,
+    profileRow?.external_auth_uid ? `profiles?external_auth_uid=eq.${encodeURIComponent(String(profileRow.external_auth_uid))}` : null,
+    profileRow?.externalAuthUid ? `profiles?external_auth_uid=eq.${encodeURIComponent(String(profileRow.externalAuthUid))}` : null,
+    email ? `profiles?email=eq.${encodeURIComponent(email)}` : null,
+    uid ? `profiles?firebase_uid=eq.${encodeURIComponent(uid)}` : null,
+    uid ? `profiles?auth_uid=eq.${encodeURIComponent(uid)}` : null,
+    uid ? `profiles?external_auth_uid=eq.${encodeURIComponent(uid)}` : null,
+  ]);
+}
+
+async function updateProfileWithFallback(
+  profileRow: Record<string, unknown> | null,
+  uid: string | null,
+  email: string | null,
+  payload: Record<string, unknown>,
+) {
   let currentPayload = { ...payload };
+  const matchQueries = buildProfileMatchQueries(profileRow, uid, email);
+
+  if (!matchQueries.length) {
+    throw new Error('PROFILE_UPDATE_MATCH_NOT_FOUND');
+  }
 
   for (let attempt = 0; attempt < 10; attempt += 1) {
-    try {
-      return await updateById('profiles', profileId, currentPayload);
-    } catch (error) {
-      const missingColumn = extractMissingColumn(error);
-      if (!missingColumn || !(missingColumn in currentPayload)) {
-        throw error;
+    let lastError: unknown = null;
+
+    for (const query of matchQueries) {
+      try {
+        return await updateWhere(query, currentPayload);
+      } catch (error) {
+        lastError = error;
       }
-      delete currentPayload[missingColumn];
     }
+
+    const missingColumn = extractMissingColumn(lastError);
+    if (!missingColumn || !(missingColumn in currentPayload)) {
+      throw lastError;
+    }
+    delete currentPayload[missingColumn];
   }
 
   throw new Error('PROFILE_UPDATE_SCHEMA_FALLBACK_EXHAUSTED');
@@ -359,7 +446,7 @@ async function ensureProfile(
     return profileRow;
   }
 
-  const updated = await updateProfileWithFallback(String(profileRow.id), patch);
+  const updated = await updateProfileWithFallback(profileRow, uid, email, patch);
   return (Array.isArray(updated) && updated[0] ? updated[0] : { ...profileRow, ...patch }) as Record<string, unknown>;
 }
 
@@ -398,13 +485,19 @@ function shouldRepairFreshTrialBootstrap(row: Record<string, unknown> | null) {
 
 function resolveWorkspaceOwnerUserId(profileRow: Record<string, unknown> | null, uid: string | null) {
   return (
-    extractUuidCandidate(
-      profileRow?.owner_user_id,
-      profileRow?.ownerUserId,
-      profileRow?.owner_id,
-      profileRow?.ownerId,
-      profileRow?.created_by_user_id,
-      profileRow?.createdByUserId,
+    asNullableString(profileRow?.owner_user_id)
+    || asNullableString(profileRow?.ownerUserId)
+    || asNullableString(profileRow?.owner_id)
+    || asNullableString(profileRow?.ownerId)
+    || asNullableString(profileRow?.created_by_user_id)
+    || asNullableString(profileRow?.createdByUserId)
+    || asNullableString(profileRow?.firebase_uid)
+    || asNullableString(profileRow?.firebaseUid)
+    || asNullableString(profileRow?.auth_uid)
+    || asNullableString(profileRow?.authUid)
+    || asNullableString(profileRow?.external_auth_uid)
+    || asNullableString(profileRow?.externalAuthUid)
+    || extractUuidCandidate(
       profileRow?.user_uuid,
       profileRow?.userUuid,
       profileRow?.profile_uuid,
@@ -414,6 +507,7 @@ function resolveWorkspaceOwnerUserId(profileRow: Record<string, unknown> | null,
       profileRow?.id,
       uid,
     )
+    || asNullableString(uid)
     || crypto.randomUUID()
   );
 }
@@ -523,13 +617,12 @@ export default async function handler(req: any, res: any) {
     let profileRow = await fetchProfile(uid, email);
     profileRow = await ensureProfile(profileRow, uid, email, fullName, null);
 
-    const profileId = asNullableString(profileRow?.id);
     const workspaceOwnerUserId = resolveWorkspaceOwnerUserId(profileRow, uid);
     let workspaceId = asNullableString(profileRow?.workspace_id ?? profileRow?.workspaceId ?? null);
     let workspaceRow = await fetchWorkspace(workspaceId);
 
     if (!workspaceRow) {
-      workspaceRow = await findWorkspaceForProfile(profileId);
+      workspaceRow = await findWorkspaceForProfile(profileRow, uid, email);
       workspaceId = asNullableString(workspaceRow?.id) || workspaceId;
     }
 
