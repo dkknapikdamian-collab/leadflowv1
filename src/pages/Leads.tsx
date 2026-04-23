@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, Briefcase, ChevronRight, FileText, Loader2, Mail, Plus, Search, Target, TrendingUp } from 'lucide-react';
+import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, Plus, Search, Target, TrendingUp } from 'lucide-react';
 import { format, isPast, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { getLeadNextAction } from '../lib/lead-next-action';
+import { getLeadNextAction, type LeadNextAction } from '../lib/lead-next-action';
 import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
 import {
   fetchCasesFromSupabase,
@@ -73,6 +73,36 @@ function createSummaryCardClass(active: boolean) {
 
 function createSummaryCardContentClass(active: boolean) {
   return `p-6 flex items-center justify-between ${active ? 'bg-primary/5' : ''}`;
+}
+
+function formatCaseStatusLabel(value?: string) {
+  if (!value) return '';
+  return value.replaceAll('_', ' ');
+}
+
+function getNextActionKindLabel(action: LeadNextAction | null | undefined) {
+  if (!action) return '';
+  return action.kind === 'task' ? 'Zadanie' : 'Wydarzenie';
+}
+
+function buildNextActionMeta(action: LeadNextAction | null | undefined) {
+  if (!action) {
+    return {
+      title: 'Brak zaplanowanych działań',
+      subtitle: 'Dodaj zadanie albo wydarzenie, aby temat nie wypadł z procesu.',
+      overdue: false,
+    };
+  }
+
+  const actionDate = parseISO(action.when);
+  const overdue = isPast(actionDate);
+  const dateLabel = format(actionDate, 'd MMM yyyy, HH:mm', { locale: pl });
+
+  return {
+    title: action.title,
+    subtitle: `${getNextActionKindLabel(action)} · ${dateLabel}`,
+    overdue,
+  };
 }
 
 export default function Leads() {
@@ -148,13 +178,13 @@ export default function Leads() {
       if (!leadId) continue;
       const linkedCase = casesByLeadId.get(leadId);
       const linkedTasks = tasks.filter((item) => {
-        const itemLeadId = String(item.leadId || '');
-        const itemCaseId = String(item.caseId || '');
+        const itemLeadId = String(item.leadId || item.lead_id || '');
+        const itemCaseId = String(item.caseId || item.case_id || '');
         return itemLeadId === leadId || (linkedCase?.id && itemCaseId === String(linkedCase.id));
       });
       const linkedEvents = events.filter((item) => {
-        const itemLeadId = String(item.leadId || '');
-        const itemCaseId = String(item.caseId || '');
+        const itemLeadId = String(item.leadId || item.lead_id || '');
+        const itemCaseId = String(item.caseId || item.case_id || '');
         return itemLeadId === leadId || (linkedCase?.id && itemCaseId === String(linkedCase.id));
       });
       map.set(leadId, getLeadNextAction(linkedTasks, linkedEvents));
@@ -249,7 +279,7 @@ export default function Leads() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Leady</h1>
-            <p className="text-slate-500">Lead to temat do pozyskania. Po starcie obsługi dalsza praca trafia do sprawy.</p>
+            <p className="text-slate-500">Lead to temat do pozyskania. Po rozpoczęciu obsługi dalsza praca przechodzi do sprawy.</p>
           </div>
           <div className="flex items-center gap-2">
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
@@ -372,7 +402,7 @@ export default function Leads() {
             <Card className="border-none shadow-sm">
               <CardContent className={createSummaryCardContentClass(quickFilter === 'history')}>
                 <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">W obsłudze</p>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Historia</p>
                   <h3 className="text-2xl font-bold text-emerald-600">{stats.linkedToCase}</h3>
                 </div>
                 <div className="bg-emerald-50 p-3 rounded-2xl">
@@ -423,11 +453,11 @@ export default function Leads() {
             filteredLeads.map((lead) => {
               const linkedCase = casesByLeadId.get(String(lead.id));
               const nextAction = nextActionByLeadId.get(String(lead.id));
-              const nextActionDate = nextAction ? parseISO(nextAction.when) : null;
-              const isOverdue = nextActionDate ? isPast(nextActionDate) : false;
+              const nextActionMeta = buildNextActionMeta(nextAction);
               const status = STATUS_OPTIONS.find((option) => option.value === lead.status) || STATUS_OPTIONS[0];
               const sourceLabel = formatLeadSourceLabel(lead.source);
               const leadValueLabel = `${(Number(lead.dealValue) || 0).toLocaleString()} PLN`;
+              const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
 
               return (
                 <Link key={lead.id} to={`/leads/${lead.id}`}>
@@ -446,9 +476,9 @@ export default function Leads() {
                                 Zagrożony
                               </Badge>
                             ) : null}
-                            {linkedCase ? (
+                            {movedToService ? (
                               <Badge variant="outline" className="text-[10px] uppercase border-violet-200 text-violet-700">
-                                Temat w obsłudze
+                                Temat jest już w obsłudze
                               </Badge>
                             ) : null}
                           </div>
@@ -471,29 +501,34 @@ export default function Leads() {
                             ) : null}
                             {linkedCase?.status ? (
                               <span className="font-medium text-violet-700">
-                                Status sprawy: {String(linkedCase.status).replaceAll('_', ' ')}
+                                Status sprawy: {formatCaseStatusLabel(linkedCase.status)}
                               </span>
                             ) : null}
                           </div>
+
+                          <p className="mt-2 text-sm text-slate-600">
+                            {movedToService
+                              ? 'Ten rekord został już wpięty w sprawę i pełni rolę historii pozyskania.'
+                              : 'Aktywny temat sprzedażowy. Wejdź, aby dodać akcję, notatkę albo rozpocząć obsługę.'}
+                          </p>
                         </div>
 
                         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 md:flex md:items-center md:gap-4 lg:gap-5">
-                          <div className="grid min-w-0 grid-cols-2 gap-2 sm:w-auto sm:grid-cols-2">
+                          <div className="grid min-w-0 grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2">
                             <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[118px] sm:text-right">
                               <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Wartość</p>
                               <p className="truncate text-sm font-bold text-slate-900 md:text-base">{leadValueLabel}</p>
                             </div>
 
-                            <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[118px] sm:text-right">
+                            <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[220px] sm:text-right">
                               <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Najbliższa akcja</p>
-                              {nextActionDate ? (
-                                <p className={`flex items-center gap-1 text-sm font-bold sm:justify-end ${isOverdue ? 'text-rose-600' : 'text-slate-700'}`}>
-                                  {isOverdue ? <AlertTriangle className="h-3 w-3" /> : null}
-                                  {format(nextActionDate, 'd MMM', { locale: pl })}
-                                </p>
-                              ) : (
-                                <p className="text-sm font-bold text-slate-500 sm:text-right">Brak zaplanowanych działań</p>
-                              )}
+                              <p className={`line-clamp-1 text-sm font-bold ${nextActionMeta.overdue ? 'text-rose-600' : 'text-slate-700'}`}>
+                                {nextActionMeta.title}
+                              </p>
+                              <p className={`mt-1 flex items-center gap-1 text-xs ${nextActionMeta.overdue ? 'text-rose-600' : 'text-slate-500'} sm:justify-end`}>
+                                <Clock3 className="h-3 w-3 shrink-0" />
+                                <span className="line-clamp-1">{nextActionMeta.subtitle}</span>
+                              </p>
                             </div>
                           </div>
 
