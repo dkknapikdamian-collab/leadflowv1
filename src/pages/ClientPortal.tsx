@@ -1,17 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { db, storage } from '../firebase';
-import {
-  doc,
-  getDoc,
-  collection,
-  query,
-  onSnapshot,
-  orderBy,
-  updateDoc,
-  addDoc,
-  serverTimestamp
-} from 'firebase/firestore';
+import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -60,6 +49,7 @@ export default function ClientPortal() {
   const [uploading, setUploading] = useState(false);
   const [response, setResponse] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [invalidReason, setInvalidReason] = useState('Link wygasł lub jest nieprawidłowy');
 
   async function refreshSupabasePortal() {
     if (!caseId) return;
@@ -74,53 +64,35 @@ export default function ClientPortal() {
   useEffect(() => {
     if (!caseId || !token) return;
 
-    if (isSupabaseConfigured()) {
-      let cancelled = false;
-      setLoading(true);
+    let cancelled = false;
+    setLoading(true);
 
-      validateClientPortalTokenFromSupabase(caseId, token)
-        .then(async () => {
-          if (cancelled) return;
-          setIsValid(true);
-          await refreshSupabasePortal();
-          if (!cancelled) setLoading(false);
-        })
-        .catch(() => {
-          if (cancelled) return;
-          setLoading(false);
-          setIsValid(false);
-        });
-
+    if (!isSupabaseConfigured()) {
+      setInvalidReason('Portal klienta wymaga skonfigurowanego Supabase.');
+      setIsValid(false);
+      setLoading(false);
       return () => {
         cancelled = true;
       };
     }
 
-    async function validateToken() {
-      const tokenRef = doc(db, 'client_portal_tokens', caseId);
-      const tokenSnap = await getDoc(tokenRef);
-
-      if (tokenSnap.exists() && tokenSnap.data().token === token) {
+    validateClientPortalTokenFromSupabase(caseId, token)
+      .then(async () => {
+        if (cancelled) return;
         setIsValid(true);
-
-        const caseRef = doc(db, 'cases', caseId);
-        onSnapshot(caseRef, (docSnap) => {
-          if (docSnap.exists()) setCaseData({ id: docSnap.id, ...docSnap.data() });
-        });
-
-        const itemsRef = collection(db, 'cases', caseId, 'items');
-        const qItems = query(itemsRef, orderBy('order', 'asc'));
-        onSnapshot(qItems, (snapshot) => {
-          setItems(snapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() })));
-          setLoading(false);
-        });
-      } else {
+        await refreshSupabasePortal();
+        if (!cancelled) setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
         setLoading(false);
         setIsValid(false);
-      }
-    }
+        setInvalidReason('Link wygasł, jest nieprawidłowy albo portal nie został jeszcze przygotowany.');
+      });
 
-    validateToken();
+    return () => {
+      cancelled = true;
+    };
   }, [caseId, token]);
 
   const handleSubmitResponse = async () => {
@@ -138,43 +110,24 @@ export default function ClientPortal() {
         fileName = file.name;
       }
 
-      if (isSupabaseConfigured()) {
-        await updateCaseItemInSupabase({
-          id: selectedItem.id,
-          caseId,
-          status: 'uploaded',
-          response: response || selectedItem.response || null,
-          fileUrl,
-          fileName,
-        });
+      await updateCaseItemInSupabase({
+        id: selectedItem.id,
+        caseId,
+        status: 'uploaded',
+        response: response || selectedItem.response || null,
+        fileUrl,
+        fileName,
+      });
 
-        await insertActivityToSupabase({
-          caseId,
-          ownerId: caseData?.ownerId ?? null,
-          actorType: 'client',
-          eventType: file ? 'file_uploaded' : 'response_sent',
-          payload: { title: selectedItem.title },
-        });
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: caseData?.ownerId ?? null,
+        actorType: 'client',
+        eventType: file ? 'file_uploaded' : 'response_sent',
+        payload: { title: selectedItem.title },
+      });
 
-        await refreshSupabasePortal();
-      } else {
-        await updateDoc(doc(db, 'cases', caseId, 'items', selectedItem.id), {
-          status: 'uploaded',
-          response: response || selectedItem.response || null,
-          fileUrl,
-          fileName,
-          updatedAt: serverTimestamp(),
-        });
-
-        await addDoc(collection(db, 'activities'), {
-          caseId,
-          ownerId: caseData.ownerId,
-          actorType: 'client',
-          eventType: file ? 'file_uploaded' : 'response_sent',
-          payload: { title: selectedItem.title },
-          createdAt: serverTimestamp(),
-        });
-      }
+      await refreshSupabasePortal();
 
       toast.success('Przesłano pomyślnie!');
       setIsUploadOpen(false);
@@ -190,37 +143,21 @@ export default function ClientPortal() {
 
   const handleDecision = async (itemId: string, decision: 'accepted' | 'rejected', title: string) => {
     try {
-      if (isSupabaseConfigured()) {
-        await updateCaseItemInSupabase({
-          id: itemId,
-          caseId: caseId!,
-          status: decision === 'accepted' ? 'accepted' : 'rejected',
-        });
+      await updateCaseItemInSupabase({
+        id: itemId,
+        caseId: caseId!,
+        status: decision === 'accepted' ? 'accepted' : 'rejected',
+      });
 
-        await insertActivityToSupabase({
-          caseId,
-          ownerId: caseData?.ownerId ?? null,
-          actorType: 'client',
-          eventType: 'decision_made',
-          payload: { title, decision },
-        });
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: caseData?.ownerId ?? null,
+        actorType: 'client',
+        eventType: 'decision_made',
+        payload: { title, decision },
+      });
 
-        await refreshSupabasePortal();
-      } else {
-        await updateDoc(doc(db, 'cases', caseId!, 'items', itemId), {
-          status: decision === 'accepted' ? 'accepted' : 'rejected',
-          updatedAt: serverTimestamp(),
-        });
-
-        await addDoc(collection(db, 'activities'), {
-          caseId,
-          ownerId: caseData.ownerId,
-          actorType: 'client',
-          eventType: 'decision_made',
-          payload: { title, decision },
-          createdAt: serverTimestamp(),
-        });
-      }
+      await refreshSupabasePortal();
 
       toast.success(decision === 'accepted' ? 'Zaakceptowano!' : 'Odrzucono.');
     } catch (error: any) {
@@ -238,8 +175,8 @@ export default function ClientPortal() {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <Card className="max-w-md w-full text-center p-8">
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Link wygasł lub jest nieprawidłowy</h2>
-        <p className="text-slate-500 mb-6">Skontaktuj się z opiekunem projektu, aby otrzymać nowy link dostępu.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Portal niedostępny</h2>
+        <p className="text-slate-500 mb-6">{invalidReason}</p>
       </Card>
     </div>
   );
