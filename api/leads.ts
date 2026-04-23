@@ -1,4 +1,4 @@
-import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
+import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
 
 const SOURCE_ALIASES = { instagram:'instagram', facebook:'facebook', messenger:'messenger', whatsapp:'whatsapp', 'whats app':'whatsapp', 'e-mail':'email', email:'email', mail:'email', formularz:'form', form:'form', telefon:'phone', phone:'phone', polecenie:'referral', referral:'referral', 'cold outreach':'cold_outreach', cold_outreach:'cold_outreach', inne:'other', other:'other' };
