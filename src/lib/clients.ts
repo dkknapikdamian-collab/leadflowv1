@@ -1,5 +1,12 @@
-import type { Timestamp } from 'firebase/firestore';
 import { parseISO, differenceInCalendarDays, isValid } from 'date-fns';
+
+type DateLikeValue =
+  | string
+  | null
+  | undefined
+  | {
+      toDate?: () => Date;
+    };
 
 export type ClientRecord = {
   id: string;
@@ -16,8 +23,8 @@ export type ClientRecord = {
   primaryLeadId?: string | null;
   portalReady?: boolean;
   notes?: string;
-  createdAt?: Timestamp | string | null;
-  updatedAt?: Timestamp | string | null;
+  createdAt?: DateLikeValue;
+  updatedAt?: DateLikeValue;
 };
 
 export type ClientLeadLike = {
@@ -29,7 +36,7 @@ export type ClientLeadLike = {
   status?: string;
   clientId?: string;
   linkedCaseId?: string;
-  updatedAt?: Timestamp | string | null;
+  updatedAt?: DateLikeValue;
 };
 
 export type ClientCaseLike = {
@@ -43,7 +50,7 @@ export type ClientCaseLike = {
   leadId?: string;
   status?: string;
   portalReady?: boolean;
-  updatedAt?: Timestamp | string | null;
+  updatedAt?: DateLikeValue;
 };
 
 export type ClientViewModel = {
@@ -58,7 +65,7 @@ export type ClientViewModel = {
   primaryCaseId?: string | null;
   portalReady: boolean;
   source: 'client' | 'case' | 'lead';
-  updatedAt?: Timestamp | string | null;
+  updatedAt?: DateLikeValue;
   notes?: string;
 };
 
@@ -82,13 +89,13 @@ export function buildClientIdFromLead(params: {
   return `client-${safeSlug(key)}-${safeSlug(params.leadId).slice(0, 12)}`;
 }
 
-export function toJsDate(value?: Timestamp | string | null) {
+export function toJsDate(value?: DateLikeValue) {
   if (!value) return null;
   if (typeof value === 'string') {
     const parsed = parseISO(value);
     return isValid(parsed) ? parsed : null;
   }
-  if (typeof value === 'object' && 'toDate' in value && typeof value.toDate === 'function') {
+  if (typeof value === 'object' && typeof value.toDate === 'function') {
     return value.toDate();
   }
   return null;
@@ -126,7 +133,7 @@ export function clientHealthTone(label: string) {
   }
 }
 
-export function getDaysSinceTouch(updatedAt?: Timestamp | string | null) {
+export function getDaysSinceTouch(updatedAt?: DateLikeValue) {
   const updated = toJsDate(updatedAt);
   if (!updated) return 0;
   return Math.max(0, differenceInCalendarDays(new Date(), updated));
