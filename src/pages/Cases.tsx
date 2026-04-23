@@ -95,6 +95,31 @@ function buildClientOptions(cases: CaseRecord[], leads: any[]) {
   return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
 }
 
+function leadSourceLabel(source?: string) {
+  switch (source) {
+    case 'instagram':
+      return 'Instagram';
+    case 'facebook':
+      return 'Facebook';
+    case 'messenger':
+      return 'Messenger';
+    case 'whatsapp':
+      return 'WhatsApp';
+    case 'email':
+      return 'E-mail';
+    case 'form':
+      return 'Formularz';
+    case 'phone':
+      return 'Telefon';
+    case 'referral':
+      return 'Polecenie';
+    case 'cold_outreach':
+      return 'Cold Outreach';
+    default:
+      return 'Inne';
+  }
+}
+
 function caseStatusLabel(status?: string) {
   switch (status) {
     case 'waiting_on_client':
@@ -221,6 +246,11 @@ export default function Cases() {
       linked: cases.filter((record) => !!record.leadId).length,
     }),
     [cases]
+  );
+
+  const leadsById = useMemo(
+    () => new Map((leadCandidates || []).map((entry: any) => [String(entry.id || ''), entry])),
+    [leadCandidates]
   );
 
   const clientOptions = useMemo(() => buildClientOptions(cases, leadCandidates), [cases, leadCandidates]);
@@ -537,7 +567,7 @@ export default function Cases() {
                 <div className="rounded-full p-4 app-primary-chip"><Target className="h-7 w-7" /></div>
                 <div>
                   <p className="text-lg font-semibold app-text">Brak spraw w tym widoku</p>
-                  <p className="mt-1 max-w-md text-sm app-muted">Sprawy pojawią się tutaj po przeniesieniu leada do obsługi albo po ręcznym uruchomieniu realizacji. Zmień wyszukiwanie albo kliknij inny kafelek u góry, jeśli szukasz innego wycinka listy.</p>
+                  <p className="mt-1 max-w-md text-sm app-muted">Sprawy pojawią się tutaj po kliknięciu „Rozpocznij obsługę” na leadzie albo po ręcznym uruchomieniu realizacji. Zmień wyszukiwanie albo kliknij inny kafelek u góry, jeśli szukasz innego wycinka listy.</p>
                 </div>
               </CardContent>
             </Card>
@@ -546,6 +576,7 @@ export default function Cases() {
               const attention = caseNeedsAttention(record);
               const percent = Math.round(record.completenessPercent || 0);
               const updatedAt = toUpdatedDate(record.updatedAt);
+              const sourceLead = record.leadId ? leadsById.get(String(record.leadId)) : null;
 
               return (
                 <Card key={record.id} className="border-none app-surface-strong app-shadow transition-transform hover:-translate-y-0.5">
@@ -555,13 +586,21 @@ export default function Cases() {
                         <h3 className="truncate text-xl font-bold app-text">{record.title || 'Sprawa bez tytułu'}</h3>
                         <Badge variant={caseBadgeVariant(record.status)}>{caseStatusLabel(record.status)}</Badge>
                         {attention ? <Badge variant="destructive">Wymaga uwagi</Badge> : null}
-                        <Badge variant="outline">{record.leadId || record.createdFromLead ? 'Z leada' : 'Utworzona recznie'}</Badge>
+                        <Badge variant="outline">{record.leadId || record.createdFromLead ? 'Z leada' : 'Utworzona ręcznie'}</Badge>
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm app-muted">
                         <span>Klient: {record.clientName || 'Brak nazwy klienta'}</span>
                         {record.portalReady ? <span>Portal gotowy</span> : null}
                         <span>Kompletność: {percent}%</span>
                         <span>Ostatni ruch: {updatedAt ? format(updatedAt, 'd MMM yyyy', { locale: pl }) : 'Brak'}</span>
+                        {sourceLead ? (
+                          <span>Źródło: {sourceLead.name || sourceLead.company || 'Lead'} • {leadSourceLabel(sourceLead.source)}</span>
+                        ) : (
+                          <span>Źródło: sprawa utworzona ręcznie</span>
+                        )}
+                        {record.serviceStartedAt ? (
+                          <span>Obsługa od: {format(new Date(record.serviceStartedAt), 'd MMM yyyy', { locale: pl })}</span>
+                        ) : null}
                       </div>
                       <div className="space-y-2 rounded-2xl border p-4 app-border app-surface">
                         <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.16em] app-muted">
