@@ -533,11 +533,156 @@ const caseClientSuggestions = useMemo(() => {
       await refreshSupabaseCase();
       setIsAddItemOpen(false);
       setNewItem({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
-      toast.success('Lead źródłowy zostaĹ‚ odpiÄ™ty od sprawy');
+      toast.success('Element został dodany do sprawy');
+    } catch (error: any) {
+      toast.error(`Błąd dodawania elementu: ${error.message}`);
+    }
+  };
+
+  const handleUpdateItemStatus = async (itemId: string, status: string, title?: string) => {
+    if (!caseId) return;
+    const itemToUpdate = items.find((entry) => String(entry.id || '') === String(itemId));
+    if (!itemToUpdate) return;
+
+    try {
+      await updateCaseItemInSupabase({
+        id: itemId,
+        caseId,
+        title: String(itemToUpdate.title || title || 'Element sprawy'),
+        description: String(itemToUpdate.description || ''),
+        type: String(itemToUpdate.type || 'file'),
+        isRequired: Boolean(itemToUpdate.isRequired),
+        dueDate: itemToUpdate.dueDate || null,
+        order: Number(itemToUpdate.order || 0),
+        status,
+      });
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'item_status_changed',
+        payload: {
+          itemId,
+          title: title || 'Element sprawy',
+          status,
+        },
+      });
+      await refreshSupabaseCase();
+      toast.success('Status elementu został zaktualizowany');
+    } catch (error: any) {
+      toast.error(`Błąd aktualizacji elementu: ${error.message}`);
+    }
+  };
+
+  const handleDeleteItem = async (itemId: string) => {
+    if (!caseId) return;
+    if (!window.confirm('Usunąć ten element ze sprawy?')) return;
+
+    const itemToDelete = items.find((entry) => String(entry.id || '') === String(itemId));
+
+    try {
+      await deleteCaseItemFromSupabase(itemId);
+      await insertActivityToSupabase({
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'item_deleted',
+        payload: {
+          itemId,
+          title: itemToDelete?.title || 'Element sprawy',
+        },
+      });
+      await refreshSupabaseCase();
+      toast.success('Element został usunięty');
+    } catch (error: any) {
+      toast.error(`Błąd usuwania elementu: ${error.message}`);
+    }
+  };
+
+  const handleLinkLeadToCase = async () => {
+    if (!caseId) return;
+    if (!selectedLeadId) {
+      toast.error('Wybierz leada do podpięcia');
+      return;
+    }
+
+    const nowIso = new Date().toISOString();
+    const selectedLead = availableLeads.find((entry) => String(entry.id || '') === selectedLeadId);
+    if (!selectedLead) {
+      toast.error('Nie udało się znaleźć wybranego leada');
+      return;
+    }
+
+    try {
+      setLeadRelationPending(true);
+      await updateCaseInSupabase({
+        id: caseId,
+        leadId: selectedLeadId,
+        createdFromLead: true,
+        serviceStartedAt: caseData?.serviceStartedAt || nowIso,
+      });
+      await updateLeadInSupabase({
+        id: selectedLeadId,
+        linkedCaseId: caseId,
+        status: 'moved_to_service',
+        movedToServiceAt: nowIso,
+        leadVisibility: 'archived',
+        salesOutcome: 'moved_to_service',
+        nextStep: '',
+        nextActionAt: null,
+      });
+
+      await insertActivityToSupabase({
+        caseId,
+        leadId: selectedLeadId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'lead_linked',
+        payload: {
+          leadId: selectedLeadId,
+          leadName: selectedLead.name || selectedLead.company || 'Lead',
+        },
+      });
+      await insertActivityToSupabase({
+        leadId: selectedLeadId,
+        caseId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'lead_moved_to_service',
+        payload: {
+          caseId,
+          caseTitle: caseData?.title || 'Sprawa',
+          movedToServiceAt: nowIso,
+        },
+      });
+
+      await refreshSupabaseCase();
+      toast.success('Lead źródłowy został podpięty do sprawy');
     } catch (error: any) {
       toast.error(`Błąd podpinania leada: ${error.message}`);
     } finally {
       setLeadRelationPending(false);
+    }
+  };
+
+  const generatePortalLink = async () => {
+    if (!caseId) return;
+
+    try {
+      const tokenResponse = await createClientPortalTokenInSupabase(caseId);
+      const token = String(tokenResponse?.token || '');
+      if (!token) {
+        throw new Error('PORTAL_TOKEN_MISSING');
+      }
+      const url = `${window.location.origin}/client-portal/${caseId}?token=${encodeURIComponent(token)}`;
+      await navigator.clipboard.writeText(url);
+      toast.success('Link do portalu klienta został skopiowany');
+    } catch (error: any) {
+      toast.error(`Błąd linku portalu: ${error.message}`);
     }
   };
 

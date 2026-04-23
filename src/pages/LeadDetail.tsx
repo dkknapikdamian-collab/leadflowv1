@@ -283,7 +283,7 @@ export default function LeadDetail() {
         clientName: String((leadRow as any)?.name || ''),
         clientEmail: String((leadRow as any)?.email || ''),
         clientPhone: String((leadRow as any)?.phone || ''),
-        status: 'in_progress',
+        status: 'ready_to_start',
       });
     } catch (error: any) {
       const message = error?.message || 'Nie udało się pobrać danych leada';
@@ -304,8 +304,12 @@ export default function LeadDetail() {
 
   const serviceCaseId = String(startServiceSuccess?.caseId || associatedCase?.id || '');
   const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'Powiązana sprawa');
+  const serviceCaseStatusLabel = String(associatedCase?.status || createCaseDraft.status || 'ready_to_start').replaceAll('_', ' ');
   const serviceMovedAtLabel = formatScheduleDate(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
   const showServiceBanner = Boolean(startServiceSuccess || associatedCase || String(lead?.status || '') === 'moved_to_service');
+  const scrollToHistory = () => {
+    document.getElementById('lead-history')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   const sortedLinkedTasks = useMemo(
     () =>
@@ -984,15 +988,17 @@ export default function LeadDetail() {
               <Card className="border-emerald-200 bg-emerald-50 shadow-sm">
                 <CardContent className="p-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div>
-                    <p className="text-sm font-bold text-emerald-800">Temat zostal przeniesiony do obslugi</p>
-                    <p className="text-sm text-emerald-700">Utworzono sprawe: {startServiceSuccess.title}</p>
-                    <p className="text-sm text-emerald-700">Lead pozostaje w historii jako zrodlo pozyskania.</p>
+                    <p className="text-sm font-bold text-emerald-800">Temat został przeniesiony do obsługi</p>
+                    <p className="text-sm text-emerald-700">Utworzono sprawę: {startServiceSuccess.title}</p>
+                    <p className="text-sm text-emerald-700">Lead pozostaje w historii jako źródło pozyskania tego tematu.</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Button size="sm" asChild>
-                      <Link to={`/case/${startServiceSuccess.caseId}`}>Otworz sprawe</Link>
+                      <Link to={`/case/${startServiceSuccess.caseId}`}>Otwórz sprawę</Link>
                     </Button>
-                    <Button size="sm" variant="outline" onClick={() => setStartServiceSuccess(null)}>Wroc do leada</Button>
+                    <Button size="sm" variant="outline" asChild>
+                      <Link to="/leads">Wróć do leadów</Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -1002,15 +1008,17 @@ export default function LeadDetail() {
               <Card className="border-violet-200 bg-violet-50 shadow-sm">
                 <CardContent className="p-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div>
-                    <p className="text-sm font-bold text-violet-900">Ten temat zostal przeniesiony do obslugi</p>
-                    <p className="text-sm text-violet-800">Sprawa: {associatedCase.title || 'Powiazana sprawa'}</p>
-                    <p className="text-sm text-violet-800">Status sprawy: {String(associatedCase.status || 'in_progress').replaceAll('_', ' ')}</p>
-                    <p className="text-sm text-violet-800">Lead zostaje widoczny jako historia pozyskania tego tematu.</p>
+                    <p className="text-sm font-bold text-violet-900">Ten temat został przeniesiony do obsługi</p>
+                    <p className="text-sm text-violet-800">Sprawa: {associatedCase.title || 'Powiązana sprawa'}</p>
+                    <p className="text-sm text-violet-800">Status sprawy: {serviceCaseStatusLabel}</p>
+                    <p className="text-sm text-violet-800">Data przejścia: {serviceMovedAtLabel}</p>
+                    <p className="text-sm text-violet-800">Lead został zamknięty sprzedażowo i dalej jest widoczny jako historia pozyskania tego tematu.</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Button size="sm" asChild>
-                      <Link to={`/case/${associatedCase.id}`}>Otworz sprawe</Link>
+                      <Link to={`/case/${associatedCase.id}`}>Otwórz sprawę</Link>
                     </Button>
+                    <Button size="sm" variant="outline" onClick={scrollToHistory}>Zobacz historię przejścia</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -1117,35 +1125,36 @@ export default function LeadDetail() {
               </CardContent>
             </Card>
 
-                    {showServiceBanner ? (
-          <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
-            <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
-              <div className="space-y-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge className="border-none bg-violet-600 text-white">Przeniesiony do obsĹ‚ugi</Badge>
-                  {serviceCaseTitle ? (
-                    <span className="text-sm font-semibold text-violet-900">Sprawa: {serviceCaseTitle}</span>
-                  ) : null}
-                </div>
-                <p className="text-sm text-violet-900">
-                  Ten lead nie zniknÄ…Ĺ‚. ZostaĹ‚ przeniesiony do historii sprzedaĹĽowej i jest ĹşrĂłdĹ‚em tej sprawy.
-                </p>
-                <p className="text-xs text-violet-700">Data przejĹ›cia: {serviceMovedAtLabel}</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {serviceCaseId ? (
-                  <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                    <Link to={/cases/}>OtwĂłrz sprawÄ™</Link>
-                  </Button>
-                ) : null}
-                <Button variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                  Zobacz historiÄ™ przejĹ›cia
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ) : null}
-<Tabs defaultValue="overview" className="w-full">
+            {showServiceBanner ? (
+              <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+                <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge className="border-none bg-violet-600 text-white">Przeniesiony do obsługi</Badge>
+                      {serviceCaseTitle ? (
+                        <span className="text-sm font-semibold text-violet-900">Sprawa: {serviceCaseTitle}</span>
+                      ) : null}
+                    </div>
+                    <p className="text-sm text-violet-900">
+                      Ten temat został zamknięty sprzedażowo, ale lead nie zniknął. Został przeniesiony do historii i dalej pokazuje źródło pozyskania.
+                    </p>
+                    <p className="text-sm text-violet-800">Status sprawy: {serviceCaseStatusLabel}</p>
+                    <p className="text-xs text-violet-700">Data przejścia: {serviceMovedAtLabel}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {serviceCaseId ? (
+                      <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
+                        <Link to={`/case/${serviceCaseId}`}>Otwórz sprawę</Link>
+                      </Button>
+                    ) : null}
+                    <Button variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100" onClick={scrollToHistory}>
+                      Zobacz historię przejścia
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
+            <Tabs defaultValue="overview" className="w-full">
               <TabsList className="w-full justify-start bg-transparent border-b border-slate-200 rounded-none h-12 p-0 gap-8">
                 <TabsTrigger value="overview" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-0 h-12 font-bold">
                   Przegląd
@@ -1516,7 +1525,7 @@ export default function LeadDetail() {
           </div>
 
           <div className="space-y-8">
-            <Card className="border-none shadow-sm">
+            <Card id="lead-history" className="border-none shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg">Historia</CardTitle>
               </CardHeader>
@@ -1936,7 +1945,10 @@ export default function LeadDetail() {
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-              Z tego leada zostanie utworzona sprawa. Lead nie zniknie i zostanie widoczny jako historia sprzedazowa tego tematu.
+              <p>Z tego leada zostanie utworzona sprawa.</p>
+              <p>Lead nie zniknie.</p>
+              <p>Zostanie przeniesiony do historii sprzedażowej.</p>
+              <p>Dalej będzie widoczny jako źródło pozyskania tego tematu.</p>
             </div>
             <div className="space-y-2">
               <Label>Tytuł sprawy</Label>
@@ -1957,16 +1969,16 @@ export default function LeadDetail() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Status startowy</Label>
+              <Label>Status startowy sprawy</Label>
               <select
                 className={modalSelectClass}
                 value={createCaseDraft.status}
                 onChange={(e) => setCreateCaseDraft((prev) => ({ ...prev, status: e.target.value }))}
               >
+                <option value="ready_to_start">Gotowa do startu</option>
                 <option value="in_progress">W toku</option>
                 <option value="waiting_on_client">Czeka na klienta</option>
                 <option value="blocked">Zablokowana</option>
-                <option value="ready_to_start">Gotowa do startu</option>
               </select>
             </div>
           </div>
