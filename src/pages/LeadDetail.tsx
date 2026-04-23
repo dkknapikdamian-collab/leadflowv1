@@ -309,6 +309,94 @@ export default function LeadDetail() {
   const serviceCaseStatusLabel = String(associatedCase?.status || createCaseDraft.status || 'ready_to_start').replaceAll('_', ' ');
   const serviceMovedAtLabel = formatScheduleDate(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
   const showServiceBanner = Boolean(startServiceSuccess || associatedCase || leadMovedToService);
+
+  useEffect(() => {
+    if (!leadMovedToService) return;
+    if (typeof window === 'undefined') return;
+
+    const normalizeText = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+    const replaceExactText = (from: string, to: string) => {
+      const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
+      for (const element of elements) {
+        const text = normalizeText(element.textContent || '');
+        if (text === from) {
+          element.textContent = to;
+        }
+      }
+    };
+
+    const hideByHeadingText = (targets: string[]) => {
+      const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
+      for (const element of elements) {
+        const text = normalizeText(element.textContent || '');
+        if (!targets.includes(text)) continue;
+
+        const root =
+          element.closest('section')
+          || element.closest('[data-slot="card"]')
+          || element.closest('article')
+          || element.closest('.rounded-2xl')
+          || element.parentElement;
+
+        if (root instanceof HTMLElement) {
+          root.style.display = 'none';
+          root.setAttribute('data-stage22-hidden', 'true');
+        }
+      }
+    };
+
+    const hideButtonsByText = (targets: string[]) => {
+      const elements = Array.from(document.querySelectorAll<HTMLElement>('button, a'));
+      for (const element of elements) {
+        const text = normalizeText(element.textContent || '');
+        if (!targets.includes(text)) continue;
+        element.style.display = 'none';
+        element.setAttribute('data-stage22-hidden', 'true');
+      }
+    };
+
+    const applyStage22PostServiceSimplifier = () => {
+      replaceExactText('Ten temat został przeniesiony do obsługi', 'Ten temat jest już w obsłudze');
+      replaceExactText(
+        'Lead został zamknięty sprzedażowo i dalej jest widoczny jako historia pozyskania tego tematu.',
+        'Lead został już tylko jako historią pozyskania tego tematu. Dalsza praca odbywa się w sprawie.'
+      );
+      replaceExactText(
+        'Ten temat został zamknięty sprzedażowo, ale lead nie zniknął. Został przeniesiony do historii i dalej pokazuje źródło pozyskania.',
+        'Ten lead jest już tylko historią pozyskania. Dalsza praca odbywa się w sprawie.'
+      );
+      replaceExactText('Następny krok', 'Najbliższa akcja');
+      replaceExactText('Co teraz zrobić z tym leadem', 'Dalsza praca odbywa się w sprawie');
+      replaceExactText(
+        'Ten blok ma prowadzić operatora do kolejnego ruchu bez szukania po innych zakładkach.',
+        'Po pozyskaniu ten ekran jest już tylko historią i wejściem do sprawy.'
+      );
+
+      hideByHeadingText([
+        'Planowanie ruchu',
+        'Szybkie akcje',
+        'Zadania leada',
+        'Wydarzenia leada',
+      ]);
+
+      hideButtonsByText([
+        'Dodaj zadanie',
+        'Dodaj wydarzenie',
+      ]);
+    };
+
+    applyStage22PostServiceSimplifier();
+
+    const observer = new MutationObserver(() => {
+      applyStage22PostServiceSimplifier();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, [leadMovedToService]);
+
   const scrollToHistory = () => {
     document.getElementById('lead-history')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
