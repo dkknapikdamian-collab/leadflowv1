@@ -11,7 +11,7 @@
 ## Czego ta paczka jeszcze nie kończy
 - auth nadal idzie przez Firebase
 - `src/firebase.ts` nadal istnieje
-- `src/lib/supabase-fallback.ts` nadal pobiera użytkownika z `auth.currentUser`
+- `src/lib/supabase-fallback.ts` nadal pobiera użytkownika z lekkiego snapshotu sesji
 - `LeadDetail.tsx` nadal ma ciężki hack DOM zamiast czystego renderowania pod status „temat w obsłudze”
 
 ## Następny etap
