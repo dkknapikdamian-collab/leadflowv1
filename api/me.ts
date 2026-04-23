@@ -278,6 +278,10 @@ async function findWorkspaceForProfile(
 }
 
 async function findFallbackWorkspace(email: string | null) {
+  if (!isAdminEmail(email)) {
+    return null;
+  }
+
   try {
     const result = await selectFirstAvailable([
       'workspaces?select=*&order=updated_at.desc.nullslast&limit=2',
@@ -296,6 +300,95 @@ async function findFallbackWorkspace(email: string | null) {
   }
 
   return null;
+}
+
+function getActivityActorUuids(profileRow: Record<string, unknown> | null, uid: string | null) {
+  return uniqueUuidStrings([
+    profileRow?.id,
+    profileRow?.firebase_uid,
+    profileRow?.firebaseUid,
+    profileRow?.auth_uid,
+    profileRow?.authUid,
+    profileRow?.external_auth_uid,
+    profileRow?.externalAuthUid,
+    uid,
+  ]);
+}
+
+async function findWorkspaceFromHistoricalActivity(
+  profileRow: Record<string, unknown> | null,
+  uid: string | null,
+) {
+  const actorUuids = getActivityActorUuids(profileRow, uid);
+  if (!actorUuids.length) {
+    return { workspaceRow: null, workspaceId: null, confidence: 'none' as const };
+  }
+
+  const scoreByWorkspace = new Map<string, number>();
+
+  const addScore = (workspaceId: string | null, score: number) => {
+    if (!workspaceId) return;
+    scoreByWorkspace.set(workspaceId, (scoreByWorkspace.get(workspaceId) || 0) + score);
+  };
+
+  const safeSelectRows = async (query: string) => {
+    try {
+      const result = await selectFirstAvailable([query]);
+      return Array.isArray(result.data) ? result.data : [];
+    } catch {
+      return [];
+    }
+  };
+
+  for (const actorId of actorUuids) {
+    const [leadRows, workItemRows, caseRows, membershipRows] = await Promise.all([
+      safeSelectRows(`leads?select=workspace_id&created_by_user_id=eq.${encodeURIComponent(actorId)}&limit=1000`),
+      safeSelectRows(`work_items?select=workspace_id&created_by_user_id=eq.${encodeURIComponent(actorId)}&limit=1000`),
+      safeSelectRows(`cases?select=workspace_id&created_by_user_id=eq.${encodeURIComponent(actorId)}&limit=1000`),
+      safeSelectRows(`workspace_members?select=workspace_id&user_id=eq.${encodeURIComponent(actorId)}&limit=100`),
+    ]);
+
+    const appendRows = (rows: unknown[], weight: number) => {
+      for (const row of rows) {
+        if (!row || typeof row !== 'object') continue;
+        const workspaceId = asNullableString((row as Record<string, unknown>).workspace_id);
+        addScore(workspaceId, weight);
+      }
+    };
+
+    appendRows(leadRows, 4);
+    appendRows(workItemRows, 3);
+    appendRows(caseRows, 3);
+    appendRows(membershipRows, 2);
+  }
+
+  const sorted = [...scoreByWorkspace.entries()].sort((a, b) => b[1] - a[1]);
+  if (!sorted.length) {
+    return { workspaceRow: null, workspaceId: null, confidence: 'none' as const };
+  }
+
+  const [bestWorkspaceId, bestScore] = sorted[0];
+  const secondScore = sorted[1]?.[1] || 0;
+  const confidence = bestScore > 0 && bestScore >= secondScore + 2 ? 'high' as const : 'low' as const;
+
+  if (!bestWorkspaceId || confidence !== 'high') {
+    return { workspaceRow: null, workspaceId: null, confidence };
+  }
+
+  const workspaceRow = await fetchWorkspace(bestWorkspaceId);
+  return {
+    workspaceRow: workspaceRow || null,
+    workspaceId: bestWorkspaceId,
+    confidence,
+  };
+}
+
+async function writeRecoveryLog(payload: Record<string, unknown>) {
+  try {
+    await insertWithVariants(['workspace_recovery_logs'], [payload]);
+  } catch {
+    // audit log is best-effort
+  }
 }
 
 async function insertProfileWithFallback(payload: Record<string, unknown>) {
@@ -522,8 +615,15 @@ function shouldRepairFreshTrialBootstrap(row: Record<string, unknown> | null) {
 }
 
 function resolveWorkspaceOwnerUserId(profileRow: Record<string, unknown> | null, uid: string | null) {
-  void uid;
   return extractUuidCandidate(
+    profileRow?.id,
+    profileRow?.firebase_uid,
+    profileRow?.firebaseUid,
+    profileRow?.auth_uid,
+    profileRow?.authUid,
+    profileRow?.external_auth_uid,
+    profileRow?.externalAuthUid,
+    uid,
     profileRow?.owner_user_id,
     profileRow?.ownerUserId,
     profileRow?.owner_id,
@@ -643,15 +743,26 @@ export default async function handler(req: any, res: any) {
     const workspaceOwnerUserId = resolveWorkspaceOwnerUserId(profileRow, uid);
     let workspaceId = asNullableString(profileRow?.workspace_id ?? profileRow?.workspaceId ?? null);
     let workspaceRow = await fetchWorkspace(workspaceId);
+    let workspaceResolutionMode = 'profile_workspace';
 
     if (!workspaceRow) {
       workspaceRow = await findWorkspaceForProfile(profileRow, uid, email);
       workspaceId = asNullableString(workspaceRow?.id) || workspaceId;
+      if (workspaceRow) workspaceResolutionMode = 'identity_mapping';
     }
 
     if (!workspaceRow) {
+      const historical = await findWorkspaceFromHistoricalActivity(profileRow, uid);
+      workspaceRow = historical.workspaceRow;
+      workspaceId = historical.workspaceId || workspaceId;
+      if (workspaceRow) workspaceResolutionMode = 'historical_mapping';
+    }
+
+    const explicitFallback = asString(req.query?.allowWorkspaceFallback || req.headers?.['x-allow-workspace-fallback'] || '').toLowerCase() === 'true';
+    if (!workspaceRow && explicitFallback) {
       workspaceRow = await findFallbackWorkspace(email);
       workspaceId = asNullableString(workspaceRow?.id) || workspaceId;
+      if (workspaceRow) workspaceResolutionMode = 'explicit_fallback';
     }
 
     const ensuredWorkspace = await ensureWorkspace(workspaceOwnerUserId, fullName, workspaceId, workspaceRow);
@@ -663,6 +774,22 @@ export default async function handler(req: any, res: any) {
     const workspace = normalizeWorkspace(workspaceRow, workspaceId, workspaceOwnerUserId);
     const profile = normalizeProfile(profileRow, uid, email, fullName);
     const access = buildAccess(workspace);
+
+    if (workspaceResolutionMode === 'historical_mapping' || workspaceResolutionMode === 'explicit_fallback') {
+      await writeRecoveryLog({
+        actor_email: profile.email || 'system',
+        target_profile: profile.id || profile.email || 'unknown',
+        target_email: profile.email || null,
+        from_workspace_id: null,
+        to_workspace_id: workspace.id || null,
+        reason: workspaceResolutionMode,
+        payload: {
+          source: 'api/me',
+          explicitFallback,
+        },
+        applied_at: new Date().toISOString(),
+      });
+    }
 
     res.status(200).json({ workspace, profile, access });
   } catch (error: any) {
