@@ -346,7 +346,7 @@ export default function LeadDetail() {
 
         if (root instanceof HTMLElement) {
           root.style.display = 'none';
-          root.setAttribute('data-stage23-hidden', 'true');
+          root.setAttribute('data-stage24-hidden', 'true');
         }
       }
     };
@@ -357,11 +357,11 @@ export default function LeadDetail() {
         const text = normalizeText(element.textContent || '');
         if (!targets.includes(text)) continue;
         element.style.display = 'none';
-        element.setAttribute('data-stage23-hidden', 'true');
+        element.setAttribute('data-stage24-hidden', 'true');
       }
     };
 
-    const applyStage23PostServiceSimplifier = () => {
+    const applyStage24PostServiceSimplifier = () => {
       replaceExactText('Ten temat został przeniesiony do obsługi', 'Ten temat jest już w obsłudze');
       replaceExactText(
         'Lead został zamknięty sprzedażowo i dalej jest widoczny jako historia pozyskania tego tematu.',
@@ -377,24 +377,31 @@ export default function LeadDetail() {
         'Ten blok ma prowadzić operatora do kolejnego ruchu bez szukania po innych zakładkach.',
         'Po pozyskaniu ten ekran jest już tylko historią i wejściem do sprawy.'
       );
+      replaceExactText('Przegląd', 'Historia pozyskania');
 
       hideByHeadingText([
         'Planowanie ruchu',
         'Szybkie akcje',
         'Zadania leada',
         'Wydarzenia leada',
+        'Powiązane elementy',
       ]);
 
       hideButtonsByText([
         'Dodaj zadanie',
         'Dodaj wydarzenie',
+        'Dodaj',
+        'Otwórz zadania',
+        'Otwórz kalendarz',
+        'Finanse',
+        'Realizacja',
       ]);
     };
 
-    applyStage23PostServiceSimplifier();
+    applyStage24PostServiceSimplifier();
 
     const observer = new MutationObserver(() => {
-      applyStage23PostServiceSimplifier();
+      applyStage24PostServiceSimplifier();
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
