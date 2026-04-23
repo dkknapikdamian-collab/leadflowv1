@@ -1,5 +1,6 @@
 import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
+import { buildLeadMovedToServicePayload } from './_lead-service.js';
 
 const SOURCE_ALIASES: Record<string, string> = {
   instagram: 'instagram',
@@ -127,6 +128,8 @@ function normalizeLead(row: Record<string, unknown>) {
   const movedToServiceAt = row.moved_to_service_at || row.movedToServiceAt || row.case_started_at || row.caseStartedAt || null;
   const leadVisibility = asText(row.lead_visibility || row.leadVisibility) || (normalizedStatus === 'moved_to_service' || linkedCaseId ? 'archived' : 'active');
   const salesOutcome = asText(row.sales_outcome || row.salesOutcome) || (normalizedStatus === 'moved_to_service' ? 'moved_to_service' : normalizedStatus === 'won' ? 'won' : normalizedStatus === 'lost' ? 'lost' : 'open');
+  const movedToService = normalizedStatus === 'moved_to_service' || leadVisibility === 'archived' || Boolean(linkedCaseId);
+
   return {
     id: String(row.id || crypto.randomUUID()),
     workspaceId: asText(row.workspace_id || row.workspaceId),
@@ -152,6 +155,7 @@ function normalizeLead(row: Record<string, unknown>) {
     caseEligibleAt: row.case_eligible_at || row.caseEligibleAt || null,
     caseStartedAt: row.case_started_at || row.caseStartedAt || null,
     linkedCaseId,
+    movedToService,
     movedToServiceAt,
     leadVisibility,
     salesOutcome,
@@ -354,19 +358,12 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
     throw new Error('CASE_CREATE_FAILED');
   }
 
-  const leadPayload: Record<string, unknown> = {
-    client_id: clientId,
-    linked_case_id: caseId,
-    status: 'moved_to_service',
-    moved_to_service_at: nowIso,
-    case_started_at: nowIso,
-    lead_visibility: 'archived',
-    sales_outcome: 'moved_to_service',
-    closed_at: nowIso,
-    next_action_title: '',
-    next_action_at: null,
-    updated_at: nowIso,
-  };
+  const leadPayload = buildLeadMovedToServicePayload({
+    caseId,
+    clientId,
+    occurredAt: nowIso,
+    updatedAt: nowIso,
+  });
   await updateLeadWithSchemaFallback(leadId, leadPayload);
 
   await insertActivityWithSchemaFallback({
@@ -377,7 +374,7 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
     actor_id: null,
     actor_type: 'operator',
     event_type: 'case_created',
-      payload: { caseId, caseTitle, leadName: asText(leadRow.name) },
+    payload: { caseId, caseTitle, leadName: asText(leadRow.name) },
     created_at: nowIso,
     updated_at: nowIso,
   }).catch(() => null);
@@ -522,6 +519,9 @@ export default async function handler(req: any, res: any) {
         if (body.movedToServiceAt === undefined) payload.moved_to_service_at = nowIso;
         if (body.leadVisibility === undefined) payload.lead_visibility = 'archived';
         if (body.salesOutcome === undefined) payload.sales_outcome = 'moved_to_service';
+        payload.next_action_title = '';
+        payload.next_action_at = null;
+        payload.next_action_item_id = null;
       }
       if (nextStatus && ['won', 'lost', 'archived'].includes(nextStatus) && body.closedAt === undefined) payload.closed_at = nowIso;
       if (nextStatus && !['won', 'lost', 'archived', 'moved_to_service'].includes(nextStatus) && body.closedAt === undefined) payload.closed_at = null;
@@ -592,8 +592,8 @@ export default async function handler(req: any, res: any) {
       status,
       priority: body.isAtRisk ? 'high' : 'medium',
       is_at_risk: Boolean(body.isAtRisk),
-      next_action_title: asText(body.nextStep),
-      next_action_at: toIsoDateTime(body.nextActionAt),
+      next_action_title: status === 'moved_to_service' ? '' : asText(body.nextStep),
+      next_action_at: status === 'moved_to_service' ? null : toIsoDateTime(body.nextActionAt),
       next_action_item_id: null,
       billing_status: billingStatus,
       billing_model_snapshot: normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual'),

@@ -1,5 +1,6 @@
 import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from './_supabase.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { buildLeadMovedToServicePayload } from './_lead-service.js';
 
 const CASE_STATUSES = new Set(['new', 'waiting_on_client', 'blocked', 'to_approve', 'ready_to_start', 'in_progress', 'on_hold', 'completed', 'canceled']);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
@@ -279,15 +280,15 @@ export default async function handler(req: any, res: any) {
           updated_at: nowIso,
         });
         if (normalizedLeadId) {
-          await bestEffortPatch(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, {
-            client_id: normalizedClientId,
-            linked_case_id: insertedId,
-            status: 'moved_to_service',
-            moved_to_service_at: nowIso,
-            lead_visibility: 'archived',
-            sales_outcome: 'moved_to_service',
-            updated_at: nowIso,
-          });
+          await bestEffortPatch(
+            `leads?id=eq.${encodeURIComponent(normalizedLeadId)}`,
+            buildLeadMovedToServicePayload({
+              caseId: insertedId,
+              clientId: normalizedClientId,
+              occurredAt: nowIso,
+              updatedAt: nowIso,
+            }),
+          );
         }
       }
 
@@ -353,10 +354,15 @@ export default async function handler(req: any, res: any) {
       });
 
       if (normalizedLeadId) {
-        await bestEffortPatch(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, {
-          linked_case_id: String(body.id),
-          updated_at: nowIso,
-        });
+        await bestEffortPatch(
+          `leads?id=eq.${encodeURIComponent(normalizedLeadId)}`,
+          buildLeadMovedToServicePayload({
+            caseId: String(body.id),
+            clientId: normalizedClientId,
+            occurredAt: nowIso,
+            updatedAt: nowIso,
+          }),
+        );
       }
 
       res.status(200).json(normalizeCase(updated as Record<string, unknown>));
