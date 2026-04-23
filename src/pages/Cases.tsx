@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+﻿import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { format } from 'date-fns';
@@ -349,7 +349,7 @@ export default function Cases() {
   function handleSelectClientSuggestion(option: ClientOption) {
     setNewCase((prev) => ({
       ...prev,
-      title: prev.title.trim() ? prev.title : `${option.name} - realizacja`,
+      title: prev.title.trim() ? prev.title : `${option.name} - obsługa`,
       clientName: option.name,
       clientEmail: option.email,
       clientPhone: option.phone,

@@ -723,7 +723,7 @@ const caseClientSuggestions = useMemo(() => {
       });
 
       await refreshSupabaseCase();
-      toast.success('Lead źródłowy zostaĹ‚ odpiÄ™ty od sprawy');
+      toast.success('Lead źródłowy został odpięty od sprawy');
     } catch (error: any) {
       toast.error(`Błąd odpinania leada: ${error.message}`);
     } finally {
