@@ -311,6 +311,11 @@ export default function LeadDetail() {
   const showServiceBanner = Boolean(startServiceSuccess || associatedCase || leadMovedToService);
 
   useEffect(() => {
+    if (!startServiceSuccess?.caseId) return;
+    navigate(`/cases/${startServiceSuccess.caseId}`);
+  }, [startServiceSuccess?.caseId, navigate]);
+
+  useEffect(() => {
     if (!leadMovedToService) return;
     if (typeof window === 'undefined') return;
 
@@ -341,7 +346,7 @@ export default function LeadDetail() {
 
         if (root instanceof HTMLElement) {
           root.style.display = 'none';
-          root.setAttribute('data-stage22-hidden', 'true');
+          root.setAttribute('data-stage23-hidden', 'true');
         }
       }
     };
@@ -352,15 +357,15 @@ export default function LeadDetail() {
         const text = normalizeText(element.textContent || '');
         if (!targets.includes(text)) continue;
         element.style.display = 'none';
-        element.setAttribute('data-stage22-hidden', 'true');
+        element.setAttribute('data-stage23-hidden', 'true');
       }
     };
 
-    const applyStage22PostServiceSimplifier = () => {
+    const applyStage23PostServiceSimplifier = () => {
       replaceExactText('Ten temat został przeniesiony do obsługi', 'Ten temat jest już w obsłudze');
       replaceExactText(
         'Lead został zamknięty sprzedażowo i dalej jest widoczny jako historia pozyskania tego tematu.',
-        'Lead został już tylko jako historią pozyskania tego tematu. Dalsza praca odbywa się w sprawie.'
+        'Ten lead jest już tylko historią pozyskania. Dalsza praca odbywa się w sprawie.'
       );
       replaceExactText(
         'Ten temat został zamknięty sprzedażowo, ale lead nie zniknął. Został przeniesiony do historii i dalej pokazuje źródło pozyskania.',
@@ -386,10 +391,10 @@ export default function LeadDetail() {
       ]);
     };
 
-    applyStage22PostServiceSimplifier();
+    applyStage23PostServiceSimplifier();
 
     const observer = new MutationObserver(() => {
-      applyStage22PostServiceSimplifier();
+      applyStage23PostServiceSimplifier();
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
