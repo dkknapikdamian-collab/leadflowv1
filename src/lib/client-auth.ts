@@ -5,6 +5,7 @@ export type ClientAuthSnapshot = {
 };
 
 const AUTH_SNAPSHOT_STORAGE_KEY = 'closeflow:client-auth-snapshot';
+const AUTH_SNAPSHOT_EVENT = 'closeflow:client-auth-snapshot-changed';
 
 let memorySnapshot: ClientAuthSnapshot = {
   uid: '',
@@ -24,11 +25,7 @@ function normalizeSnapshot(input?: Partial<ClientAuthSnapshot> | null): ClientAu
   };
 }
 
-export function getClientAuthSnapshot(): ClientAuthSnapshot {
-  if (memorySnapshot.uid || memorySnapshot.email || memorySnapshot.fullName) {
-    return memorySnapshot;
-  }
-
+function readStoredSnapshot(): ClientAuthSnapshot {
   if (!canUseStorage()) {
     return memorySnapshot;
   }
@@ -38,33 +35,64 @@ export function getClientAuthSnapshot(): ClientAuthSnapshot {
     if (!raw) return memorySnapshot;
 
     const parsed = JSON.parse(raw) as Partial<ClientAuthSnapshot>;
-    memorySnapshot = normalizeSnapshot(parsed);
-    return memorySnapshot;
+    return normalizeSnapshot(parsed);
   } catch {
     return memorySnapshot;
   }
 }
 
+function emitSnapshotChanged(snapshot: ClientAuthSnapshot) {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(
+    new CustomEvent<ClientAuthSnapshot>(AUTH_SNAPSHOT_EVENT, {
+      detail: snapshot,
+    }),
+  );
+}
+
+export function getClientAuthSnapshot(): ClientAuthSnapshot {
+  if (memorySnapshot.uid || memorySnapshot.email || memorySnapshot.fullName) {
+    return memorySnapshot;
+  }
+
+  memorySnapshot = readStoredSnapshot();
+  return memorySnapshot;
+}
+
 export function setClientAuthSnapshot(input?: Partial<ClientAuthSnapshot> | null) {
   memorySnapshot = normalizeSnapshot(input);
 
-  if (!canUseStorage()) return;
-
-  if (!memorySnapshot.uid && !memorySnapshot.email && !memorySnapshot.fullName) {
-    window.localStorage.removeItem(AUTH_SNAPSHOT_STORAGE_KEY);
-    return;
+  if (canUseStorage()) {
+    if (!memorySnapshot.uid && !memorySnapshot.email && !memorySnapshot.fullName) {
+      window.localStorage.removeItem(AUTH_SNAPSHOT_STORAGE_KEY);
+    } else {
+      window.localStorage.setItem(AUTH_SNAPSHOT_STORAGE_KEY, JSON.stringify(memorySnapshot));
+    }
   }
 
-  window.localStorage.setItem(AUTH_SNAPSHOT_STORAGE_KEY, JSON.stringify(memorySnapshot));
+  emitSnapshotChanged(memorySnapshot);
 }
 
 export function clearClientAuthSnapshot() {
-  memorySnapshot = {
+  setClientAuthSnapshot({
     uid: '',
     email: '',
     fullName: '',
+  });
+}
+
+export function subscribeClientAuthSnapshot(listener: (snapshot: ClientAuthSnapshot) => void) {
+  if (typeof window === 'undefined') {
+    return () => undefined;
+  }
+
+  const handler = (event: Event) => {
+    const detail = (event as CustomEvent<ClientAuthSnapshot>).detail;
+    listener(normalizeSnapshot(detail));
   };
 
-  if (!canUseStorage()) return;
-  window.localStorage.removeItem(AUTH_SNAPSHOT_STORAGE_KEY);
+  window.addEventListener(AUTH_SNAPSHOT_EVENT, handler as EventListener);
+  return () => {
+    window.removeEventListener(AUTH_SNAPSHOT_EVENT, handler as EventListener);
+  };
 }

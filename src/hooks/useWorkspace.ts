@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import { getAccessSummary } from '../lib/access';
 import { isAdminEmail } from '../lib/admin';
-import { auth } from '../firebase';
 import {
   fetchMeFromSupabase,
   getStoredWorkspaceId,
   isSupabaseConfigured,
   persistWorkspaceId,
 } from '../lib/supabase-fallback';
-import { clearClientAuthSnapshot, getClientAuthSnapshot, setClientAuthSnapshot } from '../lib/client-auth';
+import { useClientAuthSnapshot } from './useClientAuthSnapshot';
 
 function buildLocalWorkspace(storedWorkspaceId: string, email: string) {
   if (!storedWorkspaceId) return null;
@@ -49,8 +47,7 @@ function buildLocalProfile(activeUserId: string, fullName: string, email: string
 }
 
 export function useWorkspace() {
-  const initialSnapshot = getClientAuthSnapshot();
-  const [activeUserId, setActiveUserId] = useState<string | null>(initialSnapshot.uid || auth.currentUser?.uid || null);
+  const authSnapshot = useClientAuthSnapshot();
   const [workspace, setWorkspace] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [accessOverride, setAccessOverride] = useState<any>(null);
@@ -58,25 +55,8 @@ export function useWorkspace() {
   const [refreshToken, setRefreshToken] = useState(0);
 
   useEffect(() => {
-    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        clearClientAuthSnapshot();
-        setActiveUserId(null);
-        return;
-      }
+    const activeUserId = authSnapshot.uid || '';
 
-      setClientAuthSnapshot({
-        uid: user.uid,
-        email: user.email || '',
-        fullName: user.displayName || '',
-      });
-      setActiveUserId(user.uid);
-    });
-
-    return () => unsubscribeAuth();
-  }, []);
-
-  useEffect(() => {
     if (!activeUserId) {
       persistWorkspaceId(null);
       setWorkspace(null);
@@ -86,9 +66,8 @@ export function useWorkspace() {
       return;
     }
 
-    const authSnapshot = getClientAuthSnapshot();
-    const snapshotEmail = authSnapshot.email || auth.currentUser?.email || '';
-    const snapshotFullName = authSnapshot.fullName || auth.currentUser?.displayName || '';
+    const snapshotEmail = authSnapshot.email || '';
+    const snapshotFullName = authSnapshot.fullName || '';
 
     if (!isSupabaseConfigured()) {
       const storedWorkspaceId = getStoredWorkspaceId();
@@ -132,7 +111,7 @@ export function useWorkspace() {
     return () => {
       cancelled = true;
     };
-  }, [activeUserId, refreshToken]);
+  }, [authSnapshot.uid, authSnapshot.email, authSnapshot.fullName, refreshToken]);
 
   useEffect(() => {
     if (!workspace?.id) return;
@@ -152,8 +131,7 @@ export function useWorkspace() {
       }
     : fallbackAccess;
 
-  const authSnapshot = getClientAuthSnapshot();
-  const currentEmail = authSnapshot.email || auth.currentUser?.email || '';
+  const currentEmail = authSnapshot.email || '';
   const isAdmin = isAdminEmail(currentEmail) || profile?.role === 'admin' || profile?.isAdmin === true;
   const refresh = () => setRefreshToken((prev) => prev + 1);
 

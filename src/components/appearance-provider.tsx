@@ -7,11 +7,9 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase';
 import { DEFAULT_SKIN, getSkinOption, isSkinId, SKIN_OPTIONS, type SkinId } from '../lib/appearance';
 import { fetchMeFromSupabase, isSupabaseConfigured, updateProfileSettingsInSupabase } from '../lib/supabase-fallback';
-import { clearClientAuthSnapshot, getClientAuthSnapshot, setClientAuthSnapshot } from '../lib/client-auth';
+import { useClientAuthSnapshot } from '../hooks/useClientAuthSnapshot';
 
 const STORAGE_KEY = 'forteca-appearance-skin';
 
@@ -43,35 +41,15 @@ function applySkinToDocument(skin: SkinId) {
 }
 
 export function AppearanceProvider({ children }: { children: ReactNode }) {
-  const initialSnapshot = getClientAuthSnapshot();
+  const authSnapshot = useClientAuthSnapshot();
   const [skin, setSkinState] = useState<SkinId>(DEFAULT_SKIN);
   const [isReady, setIsReady] = useState(false);
-  const [activeUserId, setActiveUserId] = useState<string | null>(initialSnapshot.uid || null);
 
   useEffect(() => {
     const initialSkin = resolveStoredSkin();
     setSkinState(initialSkin);
     applySkinToDocument(initialSkin);
     setIsReady(true);
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        clearClientAuthSnapshot();
-        setActiveUserId(null);
-        return;
-      }
-
-      setClientAuthSnapshot({
-        uid: user.uid,
-        email: user.email || '',
-        fullName: user.displayName || '',
-      });
-      setActiveUserId(user.uid);
-    });
-
-    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -86,6 +64,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
   }, [isReady, skin]);
 
   useEffect(() => {
+    const activeUserId = authSnapshot.uid || '';
     if (!isReady || !activeUserId || !isSupabaseConfigured()) {
       return;
     }
@@ -94,7 +73,6 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
 
     const hydrateSkin = async () => {
       try {
-        const authSnapshot = getClientAuthSnapshot();
         const me = await fetchMeFromSupabase({
           uid: activeUserId,
           email: authSnapshot.email || undefined,
@@ -126,7 +104,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
       window.removeEventListener('focus', handleRefresh);
       document.removeEventListener('visibilitychange', handleRefresh);
     };
-  }, [activeUserId, isReady]);
+  }, [authSnapshot.uid, authSnapshot.email, authSnapshot.fullName, isReady]);
 
   const setSkin = useCallback(async (nextSkin: SkinId) => {
     setSkinState(nextSkin);
@@ -136,14 +114,14 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
       window.localStorage.setItem(STORAGE_KEY, nextSkin);
     }
 
-    if (!activeUserId || !isSupabaseConfigured()) {
+    if (!authSnapshot.uid || !isSupabaseConfigured()) {
       return;
     }
 
     await updateProfileSettingsInSupabase({
       appearanceSkin: nextSkin,
     });
-  }, [activeUserId]);
+  }, [authSnapshot.uid]);
 
   const value = useMemo<AppearanceContextValue>(() => ({
     skin,
