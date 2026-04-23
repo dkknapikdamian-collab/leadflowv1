@@ -24,8 +24,192 @@ function routeKind(req: any, body: Record<string, unknown>) {
   return typeof raw === 'string' ? raw.trim().toLowerCase() : '';
 }
 
-// --- workspace-subscription (PATCH)
-async function handleWorkspaceSubscription(req: any, res: any) {
+function asBoolean(value: unknown, fallback = false) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['1', 'true', 'yes', 'on'].includes(normalized)) return true;
+    if (['0', 'false', 'no', 'off'].includes(normalized)) return false;
+  }
+  return fallback;
+}
+
+function asHour(value: unknown, fallback = 7) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.max(0, Math.min(23, Math.floor(parsed)));
+}
+
+function toIso(value: unknown) {
+  const normalized = asNullableString(value);
+  if (!normalized) return null;
+  const parsed = new Date(normalized);
+  return Number.isFinite(parsed.getTime()) ? parsed.toISOString() : null;
+}
+
+function extractMissingColumn(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  const match = message.match(/Could not find the '([^']+)' column/i);
+  if (match?.[1]) return match[1];
+  const altMatch = message.match(/column \"([^\"]+)\" does not exist/i);
+  return altMatch?.[1] || null;
+}
+
+async function safeUpdateById(table: string, id: string, payload: Record<string, unknown>) {
+  let currentPayload = { ...payload };
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    try {
+      return await updateById(table, id, currentPayload);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !(missingColumn in currentPayload)) throw error;
+      delete currentPayload[missingColumn];
+    }
+  }
+  throw new Error('SAFE_UPDATE_BY_ID_EXHAUSTED');
+}
+
+async function safeUpdateWhere(path: string, payload: Record<string, unknown>) {
+  let currentPayload = { ...payload };
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    try {
+      return await updateWhere(path, currentPayload);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !(missingColumn in currentPayload)) throw error;
+      delete currentPayload[missingColumn];
+    }
+  }
+  throw new Error('SAFE_UPDATE_WHERE_EXHAUSTED');
+}
+
+async function safeInsert(table: string, payload: Record<string, unknown>) {
+  let currentPayload = { ...payload };
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    try {
+      return await insertWithVariants([table], [currentPayload]);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !(missingColumn in currentPayload)) throw error;
+      delete currentPayload[missingColumn];
+    }
+  }
+  throw new Error('SAFE_INSERT_EXHAUSTED');
+}
+
+async function findProfileRow(identity: { userId?: string; email?: string }) {
+  const queries: string[] = [];
+  const userId = asNullableString(identity.userId || null);
+  const email = asNullableString(identity.email || null);
+
+  if (email) {
+    queries.push(`profiles?email=eq.${encodeURIComponent(email)}&select=*&limit=1`);
+  }
+  if (userId) {
+    queries.push(`profiles?firebase_uid=eq.${encodeURIComponent(userId)}&select=*&limit=1`);
+    queries.push(`profiles?auth_uid=eq.${encodeURIComponent(userId)}&select=*&limit=1`);
+    queries.push(`profiles?external_auth_uid=eq.${encodeURIComponent(userId)}&select=*&limit=1`);
+    if (isUuid(userId)) queries.push(`profiles?id=eq.${encodeURIComponent(userId)}&select=*&limit=1`);
+  }
+
+  for (const query of queries) {
+    const rows = await safeSelect(query);
+    if (rows[0]) return rows[0];
+  }
+  return null;
+}
+
+async function ensureProfileRow(identity: { userId?: string; email?: string; fullName?: string; workspaceId?: string | null }) {
+  const nowIso = new Date().toISOString();
+  const existing = await findProfileRow(identity);
+  const normalizedUserId = asNullableString(identity.userId || null);
+
+  if (existing) return existing;
+
+  const payload: Record<string, unknown> = {
+    id: crypto.randomUUID(),
+    email: asNullableString(identity.email || null) || '',
+    full_name: asNullableString(identity.fullName || null) || '',
+    company_name: '',
+    workspace_id: asNullableString(identity.workspaceId || null),
+    role: 'member',
+    is_admin: false,
+    appearance_skin: 'classic-light',
+    planning_conflict_warnings_enabled: true,
+    browser_notifications_enabled: true,
+    force_logout_after: null,
+    created_at: nowIso,
+    updated_at: nowIso,
+    firebase_uid: normalizedUserId,
+    auth_uid: normalizedUserId,
+    external_auth_uid: normalizedUserId,
+  };
+  const inserted = await safeInsert('profiles', payload);
+  return Array.isArray(inserted.data) && inserted.data[0] ? inserted.data[0] : payload;
+}
+
+async function handleProfileSettings(req: any, res: any) {
+  try {
+    if (req.method !== 'PATCH') {
+      res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
+      return;
+    }
+
+    const body = parseBody(req.body);
+    const identity = getRequestIdentity(req, body);
+    if (!asNullableString(identity.userId || null) && !asNullableString(identity.email || null)) {
+      res.status(401).json({ error: 'PROFILE_IDENTITY_REQUIRED' });
+      return;
+    }
+
+    const workspaceId = (await findWorkspaceId((body as any).workspaceId)) || asNullableString((body as any).workspaceId) || null;
+    const row = await ensureProfileRow({
+      userId: identity.userId,
+      email: identity.email,
+      fullName: identity.fullName,
+      workspaceId,
+    });
+
+    const id = asNullableString((row as any).id);
+    if (!id) {
+      res.status(500).json({ error: 'PROFILE_SETTINGS_ROW_ID_MISSING' });
+      return;
+    }
+
+    const payload: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+    if ((body as any).fullName !== undefined) payload.full_name = asNullableString((body as any).fullName) || '';
+    if ((body as any).companyName !== undefined) payload.company_name = asNullableString((body as any).companyName) || '';
+    if ((body as any).email !== undefined) payload.email = asNullableString((body as any).email) || '';
+    if ((body as any).appearanceSkin !== undefined) payload.appearance_skin = asNullableString((body as any).appearanceSkin) || 'classic-light';
+    if ((body as any).planningConflictWarningsEnabled !== undefined) payload.planning_conflict_warnings_enabled = asBoolean((body as any).planningConflictWarningsEnabled, true);
+    if ((body as any).browserNotificationsEnabled !== undefined) payload.browser_notifications_enabled = asBoolean((body as any).browserNotificationsEnabled, true);
+    if ((body as any).forceLogoutAfter !== undefined) payload.force_logout_after = toIso((body as any).forceLogoutAfter);
+    if ((body as any).workspaceId !== undefined) payload.workspace_id = workspaceId;
+
+    const updated = await safeUpdateById('profiles', id, payload);
+    const nextRow = Array.isArray(updated) && updated[0] ? updated[0] : { ...row, ...payload, id };
+    res.status(200).json({
+      ok: true,
+      profile: {
+        id,
+        fullName: (nextRow as any).full_name ?? (body as any).fullName ?? '',
+        companyName: (nextRow as any).company_name ?? (body as any).companyName ?? '',
+        email: (nextRow as any).email ?? (body as any).email ?? identity.email ?? '',
+        appearanceSkin: (nextRow as any).appearance_skin ?? (body as any).appearanceSkin ?? 'classic-light',
+        planningConflictWarningsEnabled: Boolean((nextRow as any).planning_conflict_warnings_enabled ?? (body as any).planningConflictWarningsEnabled ?? true),
+        browserNotificationsEnabled: Boolean((nextRow as any).browser_notifications_enabled ?? (body as any).browserNotificationsEnabled ?? true),
+        forceLogoutAfter: (nextRow as any).force_logout_after ?? (body as any).forceLogoutAfter ?? null,
+        workspaceId: (nextRow as any).workspace_id ?? workspaceId,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error?.message || 'PROFILE_SETTINGS_UPDATE_FAILED' });
+  }
+}
+
+async function handleWorkspaceSettings(req: any, res: any) {
   try {
     if (req.method !== 'PATCH') {
       res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
@@ -44,12 +228,20 @@ async function handleWorkspaceSubscription(req: any, res: any) {
     };
     if ((body as any).planId !== undefined) payload.plan_id = (body as any).planId;
     if ((body as any).subscriptionStatus !== undefined) payload.subscription_status = (body as any).subscriptionStatus;
-    if ((body as any).trialEndsAt !== undefined) {
-      payload.trial_ends_at = (body as any).trialEndsAt ? new Date(String((body as any).trialEndsAt)).toISOString() : null;
-    }
+    if ((body as any).trialEndsAt !== undefined) payload.trial_ends_at = toIso((body as any).trialEndsAt);
+    if ((body as any).billingProvider !== undefined) payload.billing_provider = asNullableString((body as any).billingProvider) || 'manual';
+    if ((body as any).providerCustomerId !== undefined) payload.provider_customer_id = asNullableString((body as any).providerCustomerId);
+    if ((body as any).providerSubscriptionId !== undefined) payload.provider_subscription_id = asNullableString((body as any).providerSubscriptionId);
+    if ((body as any).nextBillingAt !== undefined) payload.next_billing_at = toIso((body as any).nextBillingAt);
+    if ((body as any).cancelAtPeriodEnd !== undefined) payload.cancel_at_period_end = asBoolean((body as any).cancelAtPeriodEnd, false);
+    if ((body as any).dailyDigestEnabled !== undefined) payload.daily_digest_enabled = asBoolean((body as any).dailyDigestEnabled, true);
+    if ((body as any).dailyDigestHour !== undefined) payload.daily_digest_hour = asHour((body as any).dailyDigestHour, 7);
+    if ((body as any).dailyDigestTimezone !== undefined) payload.daily_digest_timezone = asNullableString((body as any).dailyDigestTimezone) || 'Europe/Warsaw';
+    if ((body as any).dailyDigestRecipientEmail !== undefined) payload.daily_digest_recipient_email = asNullableString((body as any).dailyDigestRecipientEmail);
+    if ((body as any).timezone !== undefined) payload.timezone = asNullableString((body as any).timezone) || 'Europe/Warsaw';
 
-    const updated = await updateById(String('workspaces'), String(workspaceId), payload);
-    const row = Array.isArray(updated) && updated[0] ? updated[0] : null;
+    const updated = await safeUpdateById('workspaces', String(workspaceId), payload);
+    const row = Array.isArray(updated) && updated[0] ? updated[0] : { ...payload, id: workspaceId };
 
     res.status(200).json({
       ok: true,
@@ -58,11 +250,26 @@ async function handleWorkspaceSubscription(req: any, res: any) {
         planId: (row as any)?.plan_id ?? (body as any).planId ?? null,
         subscriptionStatus: (row as any)?.subscription_status ?? (body as any).subscriptionStatus ?? null,
         trialEndsAt: (row as any)?.trial_ends_at ?? (body as any).trialEndsAt ?? null,
+        billingProvider: (row as any)?.billing_provider ?? (body as any).billingProvider ?? 'manual',
+        providerCustomerId: (row as any)?.provider_customer_id ?? (body as any).providerCustomerId ?? null,
+        providerSubscriptionId: (row as any)?.provider_subscription_id ?? (body as any).providerSubscriptionId ?? null,
+        nextBillingAt: (row as any)?.next_billing_at ?? (body as any).nextBillingAt ?? null,
+        cancelAtPeriodEnd: Boolean((row as any)?.cancel_at_period_end ?? (body as any).cancelAtPeriodEnd ?? false),
+        dailyDigestEnabled: Boolean((row as any)?.daily_digest_enabled ?? (body as any).dailyDigestEnabled ?? true),
+        dailyDigestHour: Number((row as any)?.daily_digest_hour ?? (body as any).dailyDigestHour ?? 7),
+        dailyDigestTimezone: (row as any)?.daily_digest_timezone ?? (body as any).dailyDigestTimezone ?? 'Europe/Warsaw',
+        dailyDigestRecipientEmail: (row as any)?.daily_digest_recipient_email ?? (body as any).dailyDigestRecipientEmail ?? null,
+        timezone: (row as any)?.timezone ?? (body as any).timezone ?? 'Europe/Warsaw',
       },
     });
   } catch (error: any) {
-    res.status(500).json({ error: error.message || 'WORKSPACE_SUBSCRIPTION_UPDATE_FAILED' });
+    res.status(500).json({ error: error?.message || 'WORKSPACE_SETTINGS_UPDATE_FAILED' });
   }
+}
+
+// --- workspace-subscription (PATCH)
+async function handleWorkspaceSubscription(req: any, res: any) {
+  await handleWorkspaceSettings(req, res);
 }
 
 // --- client-portal-tokens (GET/POST)
@@ -571,6 +778,16 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
+  if (kind === 'profile-settings') {
+    await handleProfileSettings(req, res);
+    return;
+  }
+
+  if (kind === 'workspace-settings') {
+    await handleWorkspaceSettings(req, res);
+    return;
+  }
+
   if (kind === 'client-portal-tokens') {
     await handleClientPortalTokens(req, res);
     return;
@@ -583,4 +800,3 @@ export default async function handler(req: any, res: any) {
 
   res.status(400).json({ error: 'SYSTEM_KIND_REQUIRED' });
 }
-

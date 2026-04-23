@@ -4,6 +4,16 @@ export type WorkspaceLike = {
   subscriptionStatus?: string | null;
   trialEndsAt?: string | null;
   planId?: string | null;
+  billingProvider?: string | null;
+  providerCustomerId?: string | null;
+  providerSubscriptionId?: string | null;
+  nextBillingAt?: string | null;
+  cancelAtPeriodEnd?: boolean | null;
+  dailyDigestEnabled?: boolean | null;
+  dailyDigestHour?: number | null;
+  dailyDigestTimezone?: string | null;
+  dailyDigestRecipientEmail?: string | null;
+  timezone?: string | null;
 };
 
 export type AccessState =

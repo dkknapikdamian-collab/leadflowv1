@@ -109,7 +109,34 @@ function normalizeWorkspace(
     DEFAULT_STATUS,
   );
   const trialEndsAt = asNullableString(row?.trial_ends_at ?? row?.trialEndsAt ?? null);
-  return { id: workspaceId, ownerId, planId, subscriptionStatus, trialEndsAt };
+  const billingProvider = asNullableString(row?.billing_provider ?? row?.billingProvider ?? null) || 'manual';
+  const providerCustomerId = asNullableString(row?.provider_customer_id ?? row?.providerCustomerId ?? null);
+  const providerSubscriptionId = asNullableString(row?.provider_subscription_id ?? row?.providerSubscriptionId ?? null);
+  const nextBillingAt = asNullableString(row?.next_billing_at ?? row?.nextBillingAt ?? null);
+  const cancelAtPeriodEnd = Boolean(row?.cancel_at_period_end ?? row?.cancelAtPeriodEnd ?? false);
+  const timezone = asNullableString(row?.timezone ?? null) || 'Europe/Warsaw';
+  const dailyDigestEnabled = Boolean(row?.daily_digest_enabled ?? row?.dailyDigestEnabled ?? true);
+  const dailyDigestHourRaw = Number(row?.daily_digest_hour ?? row?.dailyDigestHour ?? 7);
+  const dailyDigestHour = Number.isFinite(dailyDigestHourRaw) ? Math.max(0, Math.min(23, Math.floor(dailyDigestHourRaw))) : 7;
+  const dailyDigestTimezone = asNullableString(row?.daily_digest_timezone ?? row?.dailyDigestTimezone ?? null) || timezone;
+  const dailyDigestRecipientEmail = asNullableString(row?.daily_digest_recipient_email ?? row?.dailyDigestRecipientEmail ?? null);
+  return {
+    id: workspaceId,
+    ownerId,
+    planId,
+    subscriptionStatus,
+    trialEndsAt,
+    billingProvider,
+    providerCustomerId,
+    providerSubscriptionId,
+    nextBillingAt,
+    cancelAtPeriodEnd,
+    timezone,
+    dailyDigestEnabled,
+    dailyDigestHour,
+    dailyDigestTimezone,
+    dailyDigestRecipientEmail,
+  };
 }
 
 function normalizeProfile(
@@ -134,9 +161,14 @@ function normalizeProfile(
         ?? '',
     ),
     fullName: asString(row?.full_name ?? row?.fullName ?? fallbackFullName ?? ''),
+    companyName: asString(row?.company_name ?? row?.companyName ?? ''),
     email,
     role: asString(row?.role ?? (admin ? 'admin' : 'member')),
     isAdmin: admin,
+    appearanceSkin: asString(row?.appearance_skin ?? row?.appearanceSkin ?? 'classic-light'),
+    planningConflictWarningsEnabled: Boolean(row?.planning_conflict_warnings_enabled ?? row?.planningConflictWarningsEnabled ?? true),
+    browserNotificationsEnabled: Boolean(row?.browser_notifications_enabled ?? row?.browserNotificationsEnabled ?? true),
+    forceLogoutAfter: asNullableString(row?.force_logout_after ?? row?.forceLogoutAfter ?? null),
   };
 }
 
@@ -516,9 +548,14 @@ async function ensureProfile(
       id: generatedId,
       email: email || '',
       full_name: fullName || '',
+      company_name: '',
       workspace_id: workspaceId,
       role: admin ? 'admin' : 'member',
       is_admin: admin,
+      appearance_skin: 'classic-light',
+      planning_conflict_warnings_enabled: true,
+      browser_notifications_enabled: true,
+      force_logout_after: null,
       created_at: nowIso,
       updated_at: nowIso,
       firebase_uid: normalizedUid,
@@ -648,6 +685,16 @@ async function ensureWorkspace(
       plan_id: DEFAULT_PLAN_ID,
       subscription_status: DEFAULT_STATUS,
       trial_ends_at: trialEndsAt,
+      billing_provider: 'manual',
+      provider_customer_id: null,
+      provider_subscription_id: null,
+      next_billing_at: null,
+      cancel_at_period_end: false,
+      timezone: 'Europe/Warsaw',
+      daily_digest_enabled: true,
+      daily_digest_hour: 7,
+      daily_digest_timezone: 'Europe/Warsaw',
+      daily_digest_recipient_email: null,
       created_at: nowIso,
       updated_at: nowIso,
     };
@@ -800,13 +847,28 @@ export default async function handler(req: any, res: any) {
       planId: DEFAULT_PLAN_ID,
       subscriptionStatus: DEFAULT_STATUS,
       trialEndsAt: buildTrialEndsAt(),
+      billingProvider: 'manual',
+      providerCustomerId: null,
+      providerSubscriptionId: null,
+      nextBillingAt: null,
+      cancelAtPeriodEnd: false,
+      timezone: 'Europe/Warsaw',
+      dailyDigestEnabled: true,
+      dailyDigestHour: 7,
+      dailyDigestTimezone: 'Europe/Warsaw',
+      dailyDigestRecipientEmail: email || '',
     };
     const fallbackProfile = {
       id: uid || email || crypto.randomUUID(),
       fullName: fullName || '',
+      companyName: '',
       email: email || '',
       role: isAdminEmail(email) ? 'admin' : 'member',
       isAdmin: isAdminEmail(email),
+      appearanceSkin: 'classic-light',
+      planningConflictWarningsEnabled: true,
+      browserNotificationsEnabled: true,
+      forceLogoutAfter: null,
     };
     const fallbackAccess = buildAccess(fallbackWorkspace);
     res.status(200).json({

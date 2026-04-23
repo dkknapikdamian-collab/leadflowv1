@@ -8,6 +8,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore';
 import { TooltipProvider } from './components/ui/tooltip';
 import { seedTemplates } from './lib/firebase-utils';
+import { fetchMeFromSupabase, isSupabaseConfigured } from './lib/supabase-fallback';
 import { toast } from 'sonner';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
@@ -57,6 +58,85 @@ export default function App() {
     }
 
     setProfileLoading(true);
+
+    if (isSupabaseConfigured()) {
+      let cancelled = false;
+
+      const syncProfileFromApi = async (showLoading = false) => {
+        if (showLoading) setProfileLoading(true);
+
+        try {
+          const me = await fetchMeFromSupabase({
+            uid: user.uid,
+            email: user.email || undefined,
+            fullName: user.displayName || undefined,
+          });
+          if (cancelled) return;
+
+          const nextProfile = me.profile || null;
+          const forceLogoutAfter = typeof nextProfile?.forceLogoutAfter === 'string' ? nextProfile.forceLogoutAfter : '';
+
+          if (forceLogoutAfter) {
+            try {
+              const tokenResult = await getIdTokenResult(user);
+              const authTimeMs = Date.parse(String(tokenResult.authTime || ''));
+              const forceLogoutMs = Date.parse(forceLogoutAfter);
+
+              if (Number.isFinite(authTimeMs) && Number.isFinite(forceLogoutMs) && authTimeMs < forceLogoutMs) {
+                if (typeof window !== 'undefined') {
+                  window.sessionStorage.setItem(FORCE_LOGOUT_NOTICE_SESSION_KEY, '1');
+                }
+                setProfile(null);
+                if (showLoading) setProfileLoading(false);
+                await signOut(auth);
+                return;
+              }
+            } catch (error) {
+              console.error('FORCE_LOGOUT_CHECK_FAILED', error);
+            }
+          }
+
+          setProfile(nextProfile);
+          seedTemplates();
+        } catch (error) {
+          if (cancelled) return;
+          console.error('PROFILE_API_BOOTSTRAP_FAILED', error);
+          setProfile({
+            id: user.uid,
+            fullName: user.displayName || '',
+            email: user.email || '',
+            role: 'member',
+            isAdmin: false,
+          });
+        } finally {
+          if (!cancelled && showLoading) {
+            setProfileLoading(false);
+          }
+        }
+      };
+
+      void syncProfileFromApi(true);
+
+      const interval = window.setInterval(() => {
+        void syncProfileFromApi(false);
+      }, 60_000);
+
+      const handleVisibilityRefresh = () => {
+        if (document.visibilityState === 'visible') {
+          void syncProfileFromApi(false);
+        }
+      };
+
+      window.addEventListener('focus', handleVisibilityRefresh);
+      document.addEventListener('visibilitychange', handleVisibilityRefresh);
+
+      return () => {
+        cancelled = true;
+        window.clearInterval(interval);
+        window.removeEventListener('focus', handleVisibilityRefresh);
+        document.removeEventListener('visibilitychange', handleVisibilityRefresh);
+      };
+    }
 
     const profileRef = doc(db, 'profiles', user.uid);
     const unsubscribe = onSnapshot(

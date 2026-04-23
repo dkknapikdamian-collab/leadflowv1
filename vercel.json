@@ -35,6 +35,14 @@
       "destination": "/api/system?kind=workspace-subscription"
     },
     {
+      "source": "/api/profile-settings",
+      "destination": "/api/system?kind=profile-settings"
+    },
+    {
+      "source": "/api/workspace-settings",
+      "destination": "/api/system?kind=workspace-settings"
+    },
+    {
       "source": "/api/client-portal-tokens",
       "destination": "/api/system?kind=client-portal-tokens"
     },

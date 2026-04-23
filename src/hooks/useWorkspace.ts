@@ -63,13 +63,28 @@ export function useWorkspace() {
             planId: 'trial_14d',
             subscriptionStatus: 'inactive',
             trialEndsAt: null,
+            billingProvider: 'manual',
+            providerCustomerId: null,
+            providerSubscriptionId: null,
+            nextBillingAt: null,
+            cancelAtPeriodEnd: false,
+            timezone: 'Europe/Warsaw',
+            dailyDigestEnabled: true,
+            dailyDigestHour: 7,
+            dailyDigestTimezone: 'Europe/Warsaw',
+            dailyDigestRecipientEmail: auth.currentUser?.email || '',
           } : null);
           setProfile({
             id: activeUserId,
             fullName: auth.currentUser?.displayName || '',
+            companyName: '',
             email: auth.currentUser?.email || '',
             role: 'member',
             isAdmin: false,
+            appearanceSkin: 'classic-light',
+            planningConflictWarningsEnabled: true,
+            browserNotificationsEnabled: true,
+            forceLogoutAfter: null,
           });
           setAccessOverride(null);
         } finally {

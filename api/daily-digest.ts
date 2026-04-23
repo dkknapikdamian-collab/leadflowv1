@@ -74,10 +74,11 @@ function isDuplicateLogError(error: unknown) {
   return message.includes('23505') || message.includes('duplicate key value');
 }
 
-async function readProfiles() {
+async function readDigestWorkspaces() {
   const result = await selectFirstAvailable([
-    'profiles?select=*&workspace_id=not.is.null&email=not.is.null&daily_digest_email_enabled=is.true&limit=2000',
-    'profiles?select=*&workspace_id=not.is.null&email=not.is.null&limit=2000',
+    'workspaces?select=*&daily_digest_enabled=is.true&daily_digest_recipient_email=not.is.null&limit=2000',
+    'workspaces?select=*&daily_digest_recipient_email=not.is.null&limit=2000',
+    'workspaces?select=*&limit=2000',
   ]);
   return Array.isArray(result.data) ? result.data.filter((row) => row && typeof row === 'object') : [];
 }
@@ -206,33 +207,6 @@ async function writeDigestLog(row: Record<string, unknown>) {
   }
 }
 
-async function updateProfileLastDigest(profileRow: Record<string, unknown>, atIso: string) {
-  const id = asNullableText(profileRow.id);
-  if (id) {
-    try {
-      await updateWhere(`profiles?id=eq.${encodeURIComponent(id)}`, {
-        last_digest_sent_at: atIso,
-        updated_at: atIso,
-      });
-      return;
-    } catch {
-      // try by email below
-    }
-  }
-
-  const email = asNullableText(profileRow.email);
-  if (!email) return;
-
-  try {
-    await updateWhere(`profiles?email=eq.${encodeURIComponent(email)}`, {
-      last_digest_sent_at: atIso,
-      updated_at: atIso,
-    });
-  } catch {
-    // optional metadata update
-  }
-}
-
 function isRequestAuthorized(req: any, body: Record<string, unknown>) {
   const cronSecret = asNullableText(process.env.CRON_SECRET);
   const providedSecret =
@@ -269,10 +243,10 @@ export default async function handler(req: any, res: any) {
     const force = asBool(req.query?.force ?? body.force, false);
     const appUrl = getAppUrl(req);
     const subject = 'CloseFlow - Plan dnia na dzis';
-    const profiles = await readProfiles();
+    const workspaces = await readDigestWorkspaces();
 
     const stats = {
-      totalProfiles: profiles.length,
+      totalWorkspaces: workspaces.length,
       sent: 0,
       skippedNoEmail: 0,
       skippedNoWorkspace: 0,
@@ -284,17 +258,14 @@ export default async function handler(req: any, res: any) {
 
     const errors: Array<{ email: string; error: string }> = [];
 
-    for (const row of profiles as Record<string, unknown>[]) {
-      const workspaceId = asNullableText(row.workspace_id ?? row.workspaceId);
-      const profileEmail = asNullableText(row.email)?.toLowerCase() || null;
-      const recipientEmail =
-        asNullableText(row.daily_digest_recipient_email ?? row.dailyDigestRecipientEmail)?.toLowerCase()
-        || profileEmail;
-      const enabled = asBool(row.daily_digest_email_enabled ?? row.dailyDigestEmailEnabled, true);
-      const timeZone = asNullableText(row.timezone) || DEFAULT_TZ;
+    for (const row of workspaces as Record<string, unknown>[]) {
+      const workspaceId = asNullableText(row.id ?? row.workspace_id ?? row.workspaceId);
+      const recipientEmail = asNullableText(row.daily_digest_recipient_email ?? row.dailyDigestRecipientEmail)?.toLowerCase() || null;
+      const enabled = asBool(row.daily_digest_enabled ?? row.dailyDigestEnabled, true);
+      const timeZone = asNullableText(row.daily_digest_timezone ?? row.dailyDigestTimezone) || asNullableText(row.timezone) || DEFAULT_TZ;
       const digestHour = asInt(row.daily_digest_hour ?? row.dailyDigestHour, DEFAULT_DIGEST_HOUR);
       const sentForDate = getDateKey(now, timeZone);
-      const profileId = asNullableText(row.id);
+      const workspaceName = asNullableText(row.name) || undefined;
 
       if (!workspaceId) {
         stats.skippedNoWorkspace += 1;
@@ -327,7 +298,7 @@ export default async function handler(req: any, res: any) {
           timeZone,
         });
         const { plain, html } = buildDigestEmail({
-          fullName: asNullableText(row.full_name ?? row.fullName) || undefined,
+          fullName: workspaceName,
           appUrl,
           payload,
           now,
@@ -346,7 +317,7 @@ export default async function handler(req: any, res: any) {
 
         await writeDigestLog({
           workspace_id: workspaceId,
-          profile_id: profileId,
+          profile_id: null,
           profile_email: recipientEmail,
           sent_for_date: sentForDate,
           sent_at: sentAtIso,
@@ -361,7 +332,6 @@ export default async function handler(req: any, res: any) {
           continue;
         }
 
-        await updateProfileLastDigest(row, sentAtIso);
         stats.sent += 1;
       } catch (error: any) {
         const failureMessage = error?.message || 'DIGEST_PROFILE_FAILED';
@@ -371,7 +341,7 @@ export default async function handler(req: any, res: any) {
         try {
           await writeDigestLog({
             workspace_id: workspaceId,
-            profile_id: profileId,
+            profile_id: null,
             profile_email: recipientEmail,
             sent_for_date: sentForDate,
             sent_at: new Date().toISOString(),

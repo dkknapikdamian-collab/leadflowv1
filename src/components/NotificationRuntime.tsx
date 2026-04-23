@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import { useWorkspace } from '../hooks/useWorkspace';
 import {
   buildRuntimeNotificationItems,
   getBrowserNotificationPermission,
@@ -16,6 +17,7 @@ type NotificationRuntimeProps = {
 
 export default function NotificationRuntime({ enabled }: NotificationRuntimeProps) {
   const scanPendingRef = useRef(false);
+  const { profile } = useWorkspace();
 
   useEffect(() => {
     if (!enabled) return;
@@ -32,7 +34,10 @@ export default function NotificationRuntime({ enabled }: NotificationRuntimeProp
 
         const items = buildRuntimeNotificationItems(bundle, new Date());
         const permission = getBrowserNotificationPermission();
-        const browserEnabled = getBrowserNotificationsEnabled();
+        const browserEnabled =
+          typeof profile?.browserNotificationsEnabled === 'boolean'
+            ? profile.browserNotificationsEnabled
+            : getBrowserNotificationsEnabled();
         const pageVisible = typeof document !== 'undefined' ? document.visibilityState === 'visible' : true;
 
         for (const item of items) {
@@ -81,7 +86,7 @@ export default function NotificationRuntime({ enabled }: NotificationRuntimeProp
       window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleFocus);
     };
-  }, [enabled]);
+  }, [enabled, profile?.browserNotificationsEnabled]);
 
   return null;
 }

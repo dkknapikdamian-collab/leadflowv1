@@ -8,9 +8,9 @@ import {
   type ReactNode,
 } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '../firebase';
-import { doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { auth } from '../firebase';
 import { DEFAULT_SKIN, getSkinOption, isSkinId, SKIN_OPTIONS, type SkinId } from '../lib/appearance';
+import { fetchMeFromSupabase, isSupabaseConfigured, updateProfileSettingsInSupabase } from '../lib/supabase-fallback';
 
 const STORAGE_KEY = 'forteca-appearance-skin';
 
@@ -73,41 +73,44 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
   }, [isReady, skin]);
 
   useEffect(() => {
-    if (!isReady || !activeUserId) {
+    if (!isReady || !activeUserId || !isSupabaseConfigured()) {
       return;
     }
 
-    const profileRef = doc(db, 'profiles', activeUserId);
-    let isMounted = true;
+    let cancelled = false;
 
-    const hydrateFromProfile = async () => {
-      const profileSnap = await getDoc(profileRef);
-      if (!isMounted || !profileSnap.exists()) {
-        return;
-      }
-
-      const profileSkin = profileSnap.data()?.appearanceSkin;
-      if (isSkinId(profileSkin)) {
-        setSkinState(profileSkin);
+    const hydrateSkin = async () => {
+      try {
+        const me = await fetchMeFromSupabase({
+          uid: activeUserId,
+          email: auth.currentUser?.email || undefined,
+          fullName: auth.currentUser?.displayName || undefined,
+        });
+        if (cancelled) return;
+        const nextSkin = me?.profile?.appearanceSkin;
+        if (isSkinId(nextSkin)) {
+          setSkinState(nextSkin);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.warn('APPEARANCE_PROFILE_READ_FAILED', error);
+        }
       }
     };
 
-    hydrateFromProfile();
+    void hydrateSkin();
 
-    const unsubscribe = onSnapshot(profileRef, (snapshot) => {
-      if (!snapshot.exists()) {
-        return;
-      }
+    const handleRefresh = () => {
+      void hydrateSkin();
+    };
 
-      const profileSkin = snapshot.data()?.appearanceSkin;
-      if (isSkinId(profileSkin)) {
-        setSkinState(profileSkin);
-      }
-    });
+    window.addEventListener('focus', handleRefresh);
+    document.addEventListener('visibilitychange', handleRefresh);
 
     return () => {
-      isMounted = false;
-      unsubscribe();
+      cancelled = true;
+      window.removeEventListener('focus', handleRefresh);
+      document.removeEventListener('visibilitychange', handleRefresh);
     };
   }, [activeUserId, isReady]);
 
@@ -119,17 +122,11 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
       window.localStorage.setItem(STORAGE_KEY, nextSkin);
     }
 
-    if (!activeUserId) {
+    if (!activeUserId || !isSupabaseConfigured()) {
       return;
     }
 
-    const profileRef = doc(db, 'profiles', activeUserId);
-    const profileSnap = await getDoc(profileRef);
-    if (!profileSnap.exists()) {
-      return;
-    }
-
-    await updateDoc(profileRef, {
+    await updateProfileSettingsInSupabase({
       appearanceSkin: nextSkin,
     });
   }, [activeUserId]);
