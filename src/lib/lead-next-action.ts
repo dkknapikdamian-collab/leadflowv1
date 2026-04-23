@@ -1,4 +1,5 @@
 import { isAfter, parseISO } from 'date-fns';
+import { normalizeCalendarEvent, normalizeCalendarTask } from './calendar-items';
 
 type LinkedItem = Record<string, unknown>;
 
@@ -16,50 +17,54 @@ function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function toItemDate(value: unknown) {
-  const normalized = asText(value);
-  if (!normalized) return null;
-
-  const iso = normalized.includes('T') ? normalized : `${normalized}T09:00:00`;
-  const parsed = parseISO(iso);
-  return Number.isNaN(parsed.getTime()) ? null : parsed;
-}
-
 function isOpenTaskStatus(status: string) {
-  return status !== 'done';
+  return status !== 'done' && status !== 'cancelled' && status !== 'canceled';
 }
 
 function isOpenEventStatus(status: string) {
-  return status !== 'completed' && status !== 'cancelled';
+  return status !== 'completed' && status !== 'cancelled' && status !== 'canceled';
 }
 
-function toAction(item: LinkedItem, kind: 'task' | 'event'): LeadNextAction | null {
-  const when = kind === 'task'
-    ? asText(item.scheduledAt || item.dueAt || item.date)
-    : asText(item.startAt);
-  const title = asText(item.title) || (kind === 'task' ? 'Zadanie bez tytułu' : 'Wydarzenie bez tytułu');
-  const status = asText(item.status || (kind === 'task' ? 'todo' : 'scheduled')).toLowerCase();
-  const parsed = toItemDate(when);
+function toTaskAction(item: LinkedItem): LeadNextAction | null {
+  const normalized = normalizeCalendarTask(item);
+  if (!normalized) return null;
 
-  if (!parsed) return null;
-  if (kind === 'task' && !isOpenTaskStatus(status)) return null;
-  if (kind === 'event' && !isOpenEventStatus(status)) return null;
+  const status = asText(normalized.status).toLowerCase() || 'todo';
+  if (!isOpenTaskStatus(status)) return null;
 
   return {
-    id: asText(item.id) || crypto.randomUUID(),
-    kind,
-    title,
-    when: parsed.toISOString(),
+    id: normalized.id,
+    kind: 'task',
+    title: normalized.title || 'Zadanie bez tytułu',
+    when: normalized.scheduledAt || `${normalized.date}T09:00:00`,
     status,
-    caseId: asText(item.caseId) || null,
-    leadId: asText(item.leadId) || null,
+    caseId: normalized.caseId || null,
+    leadId: normalized.leadId || null,
+  };
+}
+
+function toEventAction(item: LinkedItem): LeadNextAction | null {
+  const normalized = normalizeCalendarEvent(item);
+  if (!normalized) return null;
+
+  const status = asText(normalized.status).toLowerCase() || 'scheduled';
+  if (!isOpenEventStatus(status)) return null;
+
+  return {
+    id: normalized.id,
+    kind: 'event',
+    title: normalized.title || 'Wydarzenie bez tytułu',
+    when: normalized.startAt,
+    status,
+    caseId: normalized.caseId || null,
+    leadId: normalized.leadId || null,
   };
 }
 
 export function getLeadNextAction(tasks: LinkedItem[], events: LinkedItem[]) {
   const candidates = [
-    ...tasks.map((item) => toAction(item, 'task')),
-    ...events.map((item) => toAction(item, 'event')),
+    ...tasks.map((item) => toTaskAction(item)),
+    ...events.map((item) => toEventAction(item)),
   ].filter((item): item is LeadNextAction => Boolean(item));
 
   if (candidates.length === 0) return null;
