@@ -142,12 +142,12 @@ function activityTitle(activity: any) {
     case 'note_added':
       return 'Notatka';
     case 'case_created':
-      return 'RozpoczÄ™to obsĹ‚ugÄ™ i utworzono sprawÄ™';
+      return 'Rozpoczęto obsługę i utworzono sprawę';
     case 'case_linked':
-      return 'PodpiÄ™to istniejÄ…cÄ… sprawÄ™';
+      return 'Podpięto istniejącą sprawę';
     
     case 'lead_moved_to_service':
-      return 'Przeniesiono temat do obsĹ‚ugi';
+      return 'Przeniesiono temat do obsługi';
     case 'task_updated':
       return 'Zaktualizowano zadanie';
     case 'task_status_toggled':
@@ -279,7 +279,7 @@ export default function LeadDetail() {
       setActivities(activityRows as any[]);
       setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
       setCreateCaseDraft({
-        title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - realizacja`,
+        title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsługa`,
         clientName: String((leadRow as any)?.name || ''),
         clientEmail: String((leadRow as any)?.email || ''),
         clientPhone: String((leadRow as any)?.phone || ''),
@@ -303,7 +303,7 @@ export default function LeadDetail() {
   const finance = useMemo(() => getLeadFinance(lead || {}), [lead]);
 
   const serviceCaseId = String(startServiceSuccess?.caseId || associatedCase?.id || '');
-  const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'PowiÄ…zana sprawa');
+  const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'Powiązana sprawa');
   const serviceMovedAtLabel = formatScheduleDate(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
   const showServiceBanner = Boolean(startServiceSuccess || associatedCase || String(lead?.status || '') === 'moved_to_service');
 

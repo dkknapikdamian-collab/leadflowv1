@@ -145,7 +145,7 @@ function leadStatusLabel(status?: string) {
     case 'accepted':
       return 'Zaakceptowany';
     case 'moved_to_service':
-      return 'Przeniesiony do obsĹ‚ugi';
+      return 'Przeniesiony do obsługi';
     case 'negotiation':
       return 'Negocjacje';
     case 'won':
@@ -392,7 +392,7 @@ export default function CaseDetail() {
     [availableCases, availableLeads, caseData, sourceLead],
   );
 
-    const sourceLeadTitle = String(sourceLead?.name || sourceLead?.company || 'Lead ĹşrĂłdĹ‚owy');
+    const sourceLeadTitle = String(sourceLead?.name || sourceLead?.company || 'Lead źródłowy');
   const sourceLeadStatusLabel = leadStatusLabel(String(sourceLead?.status || ''));
   const sourceLeadOriginLabel = leadSourceLabel(String(sourceLead?.source || 'other'));
   const sourceLeadMovedAtLabel = formatDateTime(caseData?.serviceStartedAt || caseData?.startedAt || caseData?.createdAt);
@@ -533,7 +533,7 @@ const caseClientSuggestions = useMemo(() => {
       await refreshSupabaseCase();
       setIsAddItemOpen(false);
       setNewItem({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
-      toast.success('Lead ĹşrĂłdĹ‚owy zostaĹ‚ odpiÄ™ty od sprawy');
+      toast.success('Lead źródłowy zostaĹ‚ odpiÄ™ty od sprawy');
     } catch (error: any) {
       toast.error(`Błąd podpinania leada: ${error.message}`);
     } finally {
@@ -577,7 +577,7 @@ const caseClientSuggestions = useMemo(() => {
       });
 
       await refreshSupabaseCase();
-      toast.success('Lead ĹşrĂłdĹ‚owy zostaĹ‚ odpiÄ™ty od sprawy');
+      toast.success('Lead źródłowy zostaĹ‚ odpiÄ™ty od sprawy');
     } catch (error: any) {
       toast.error(`Błąd odpinania leada: ${error.message}`);
     } finally {
