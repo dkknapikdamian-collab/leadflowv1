@@ -32,13 +32,30 @@ function toDateSafe(value: unknown) {
   return null
 }
 
+function asText(value: unknown) {
+  return typeof value === 'string' ? value.trim() : ''
+}
+
 export function isClosedLeadStatus(status?: string) {
   return CLOSED_STATUSES.has(String(status || '').trim())
 }
 
 export function isLeadMovedToService(lead: any) {
-  const status = String(lead?.status || '').trim()
-  return status === 'moved_to_service' || String(lead?.leadVisibility || '').trim() === 'archived' || Boolean(lead?.linkedCaseId)
+  const status = asText(lead?.status)
+  const leadVisibility = asText(lead?.leadVisibility)
+  const salesOutcome = asText(lead?.salesOutcome)
+  const linkedCaseId = asText(lead?.linkedCaseId || lead?.caseId)
+
+  return Boolean(
+    lead?.movedToService
+    || status === 'moved_to_service'
+    || leadVisibility === 'archived'
+    || salesOutcome === 'moved_to_service'
+    || linkedCaseId
+    || toDateSafe(lead?.movedToServiceAt)
+    || toDateSafe(lead?.caseStartedAt)
+    || toDateSafe(lead?.serviceStartedAt),
+  )
 }
 
 export function isActiveSalesLead(lead: any) {
@@ -59,7 +76,7 @@ export function getLeadLastTouchDate(lead: any) {
 }
 
 export function hasNextStep(lead: any) {
-  return Boolean(String(lead?.nextStep || '').trim()) || Boolean(getLeadNextActionDate(lead))
+  return Boolean(getLeadNextActionDate(lead)) || Boolean(String(lead?.nextStep || '').trim())
 }
 
 export function isNextStepOverdue(lead: any) {
@@ -116,10 +133,11 @@ export function getLeadPriorityScore(lead: any) {
 }
 
 export function buildLeadAlertReason(lead: any) {
-  if (isNextStepOverdue(lead)) return 'Termin kolejnego ruchu juz minal'
-  if (!hasNextStep(lead)) return 'Lead nie ma ustawionego nastepnego kroku'
-  if (isWaitingTooLong(lead)) return 'Lead czeka za dlugo bez nowego ruchu'
-  if (isHighValueAtRisk(lead)) return 'Wysoka wartosc i zbyt malo ruchu'
-  if (Boolean(lead?.isAtRisk)) return 'Lead oznaczony jako zagrozony'
+  if (isLeadMovedToService(lead)) return 'Temat jest już w obsłudze'
+  if (isNextStepOverdue(lead)) return 'Termin najbliższej akcji już minął'
+  if (!hasNextStep(lead)) return 'Brak zaplanowanej akcji'
+  if (isWaitingTooLong(lead)) return 'Temat czeka za długo bez nowego ruchu'
+  if (isHighValueAtRisk(lead)) return 'Wysoka wartość i zbyt mało ruchu'
+  if (Boolean(lead?.isAtRisk)) return 'Temat oznaczony jako zagrożony'
   return 'Wymaga uwagi'
 }
