@@ -22,7 +22,7 @@ function normalizeEmail(value) {
   return asText(value).toLowerCase();
 }
 
-function getRequestIdentity(req, body = {}) {
+export function getRequestIdentity(req, body = {}) {
   return {
     userId: getHeader(req, 'x-user-id') || asText(body.userId) || asText(req?.query?.uid),
     email: getHeader(req, 'x-user-email') || asText(body.ownerEmail) || asText(body.email) || asText(req?.query?.email),
