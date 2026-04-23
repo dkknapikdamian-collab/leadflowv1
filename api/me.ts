@@ -727,15 +727,16 @@ async function ensureWorkspace(
 }
 
 export default async function handler(req: any, res: any) {
+  const uid = asNullableString(req.query?.uid || req.headers?.['x-user-id']);
+  const email = asNullableString(req.query?.email || req.headers?.['x-user-email']);
+  const fullName = asNullableString(req.query?.fullName || req.headers?.['x-user-name']);
+  const headerWorkspaceId = asNullableString(req.headers?.['x-workspace-id']);
+
   try {
     if (req.method !== 'GET') {
       res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
       return;
     }
-
-    const uid = asNullableString(req.query?.uid || req.headers?.['x-user-id']);
-    const email = asNullableString(req.query?.email || req.headers?.['x-user-email']);
-    const fullName = asNullableString(req.query?.fullName || req.headers?.['x-user-name']);
 
     let profileRow = await fetchProfile(uid, email);
     profileRow = await ensureProfile(profileRow, uid, email, fullName, null);
@@ -793,6 +794,30 @@ export default async function handler(req: any, res: any) {
 
     res.status(200).json({ workspace, profile, access });
   } catch (error: any) {
-    res.status(500).json({ error: error.message || 'ME_READ_FAILED' });
+    const fallbackWorkspace = {
+      id: headerWorkspaceId || '',
+      ownerId: null,
+      planId: DEFAULT_PLAN_ID,
+      subscriptionStatus: DEFAULT_STATUS,
+      trialEndsAt: buildTrialEndsAt(),
+    };
+    const fallbackProfile = {
+      id: uid || email || crypto.randomUUID(),
+      fullName: fullName || '',
+      email: email || '',
+      role: isAdminEmail(email) ? 'admin' : 'member',
+      isAdmin: isAdminEmail(email),
+    };
+    const fallbackAccess = buildAccess(fallbackWorkspace);
+    res.status(200).json({
+      workspace: fallbackWorkspace,
+      profile: fallbackProfile,
+      access: {
+        ...fallbackAccess,
+        hasAccess: headerWorkspaceId ? true : fallbackAccess.hasAccess,
+      },
+      degraded: true,
+      degradedReason: error?.message || 'ME_READ_FAILED',
+    });
   }
 }

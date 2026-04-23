@@ -32,6 +32,11 @@ function normalizeServiceProfile(row: Record<string, unknown>) {
   };
 }
 
+function isMissingServiceProfilesTableError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return message.includes('PGRST205') || message.includes("table 'public.service_profiles'");
+}
+
 export default async function handler(req: any, res: any) {
   try {
     if (req.method === 'GET') {
@@ -44,8 +49,13 @@ export default async function handler(req: any, res: any) {
       const requestedId = asText(req.query?.id);
       const includeArchived = asText(req.query?.includeArchived) === '1';
       const basePath = `service_profiles?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${includeArchived ? '' : 'is_archived=is.false&'}order=is_default.desc,updated_at.desc.nullslast&limit=${requestedId ? 1 : 100}`;
-      const result = await selectFirstAvailable([withWorkspaceFilter(basePath, workspaceId)]);
-      const normalized = (result.data || []).map((row: Record<string, unknown>) => normalizeServiceProfile(row));
+      let normalized: ReturnType<typeof normalizeServiceProfile>[] = [];
+      try {
+        const result = await selectFirstAvailable([withWorkspaceFilter(basePath, workspaceId)]);
+        normalized = (result.data || []).map((row: Record<string, unknown>) => normalizeServiceProfile(row));
+      } catch (error) {
+        if (!isMissingServiceProfilesTableError(error)) throw error;
+      }
 
       if (requestedId) {
         const match = normalized.find((entry: Record<string, unknown>) => String(entry.id) === requestedId);

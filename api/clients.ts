@@ -51,6 +51,11 @@ function extractMissingColumn(error: unknown) {
   return match?.[1] || null;
 }
 
+function isMissingClientsTableError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return message.includes('PGRST205') || message.includes("table 'public.clients'");
+}
+
 function omitMissingColumn(payload: Record<string, unknown>, column: string) {
   const next = { ...payload };
   delete next[column];
@@ -97,8 +102,13 @@ export default async function handler(req: any, res: any) {
       const requestedId = asText(req.query?.id);
       const base = withWorkspaceFilter(`clients?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}order=updated_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
       const fallback = withWorkspaceFilter(`clients?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
-      const result = await selectFirstAvailable([base, fallback]);
-      const normalized = (result.data || []).map((row: Record<string, unknown>) => normalizeClient(row));
+      let normalized: ReturnType<typeof normalizeClient>[] = [];
+      try {
+        const result = await selectFirstAvailable([base, fallback]);
+        normalized = (result.data || []).map((row: Record<string, unknown>) => normalizeClient(row));
+      } catch (error) {
+        if (!isMissingClientsTableError(error)) throw error;
+      }
 
       if (requestedId) {
         const match = normalized.find((entry: Record<string, unknown>) => String(entry.id) === requestedId);

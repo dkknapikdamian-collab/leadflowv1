@@ -31,6 +31,11 @@ function toIso(value: unknown) {
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
 
+function isMissingPaymentsTableError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return message.includes('PGRST205') || message.includes("table 'public.payments'");
+}
+
 function normalizePayment(row: Record<string, unknown>) {
   return {
     id: String(row.id || crypto.randomUUID()),
@@ -73,8 +78,13 @@ export default async function handler(req: any, res: any) {
       ].filter(Boolean).join('&');
 
       const basePath = `payments?select=*&${filters ? `${filters}&` : ''}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 300}`;
-      const result = await selectFirstAvailable([withWorkspaceFilter(basePath, workspaceId)]);
-      const normalized = (result.data || []).map((row: Record<string, unknown>) => normalizePayment(row));
+      let normalized: ReturnType<typeof normalizePayment>[] = [];
+      try {
+        const result = await selectFirstAvailable([withWorkspaceFilter(basePath, workspaceId)]);
+        normalized = (result.data || []).map((row: Record<string, unknown>) => normalizePayment(row));
+      } catch (error) {
+        if (!isMissingPaymentsTableError(error)) throw error;
+      }
 
       if (requestedId) {
         const match = normalized.find((entry: Record<string, unknown>) => String(entry.id) === requestedId);
