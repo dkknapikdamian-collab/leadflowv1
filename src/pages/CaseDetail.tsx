@@ -527,141 +527,7 @@ export default function CaseDetail() {
       await refreshSupabaseCase();
       setIsAddItemOpen(false);
       setNewItem({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
-      toast.success('Element dodany');
-    } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
-    }
-  };
-
-  const handleUpdateItemStatus = async (itemId: string, status: string, title: string) => {
-    try {
-      await updateCaseItemInSupabase({
-        id: itemId,
-        caseId: caseId!,
-        status,
-        approvedAt: status === 'accepted' ? new Date().toISOString() : null,
-      });
-
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'status_changed',
-        payload: { title, status },
-      });
-
-      await refreshSupabaseCase();
-      toast.success('Status zaktualizowany');
-    } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
-    }
-  };
-
-  const handleDeleteItem = async (itemId: string) => {
-    try {
-      await deleteCaseItemFromSupabase(itemId);
-      await refreshSupabaseCase();
-      toast.success('Element usunięty');
-    } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
-    }
-  };
-
-  const generatePortalLink = async () => {
-    try {
-      if (!caseId) return;
-
-      const row = await createClientPortalTokenInSupabase(caseId);
-      const token = String(row.token || '');
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'portal_token_created',
-        payload: { title: caseData?.title || 'Sprawa' },
-      });
-      await refreshSupabaseCase();
-
-      const url = `${window.location.origin}/portal/${caseId}/${token}`;
-      await navigator.clipboard.writeText(url);
-      toast.success('Link do panelu klienta skopiowany');
-    } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
-    }
-  };
-
-  const closeLeadAfterCaseLink = async (leadIdToClose: string) => {
-    await updateLeadInSupabase({
-      id: leadIdToClose,
-      status: 'moved_to_service',
-      linkedCaseId: caseId,
-      movedToServiceAt: new Date().toISOString(),
-      leadVisibility: 'archived',
-      salesOutcome: 'moved_to_service',
-      nextStep: '',
-      nextActionAt: null,
-    });
-
-    await insertActivityToSupabase({
-      leadId: leadIdToClose,
-      ownerId: auth.currentUser?.uid ?? null,
-      actorId: auth.currentUser?.uid ?? null,
-      actorType: 'operator',
-      eventType: 'lead_moved_to_service',
-      payload: {
-        status: 'moved_to_service',
-        caseId,
-        reason: 'lead_converted_to_case',
-      },
-    });
-  };
-
-  const handleLinkLeadToCase = async () => {
-    if (!caseId || !selectedLeadId) return;
-    if (String(caseData?.leadId || '') === selectedLeadId) {
-      toast.success('Ta sprawa jest już powiązana z wybranym leadem');
-      return;
-    }
-
-    const selectedLead = availableLeads.find((entry) => String(entry.id || '') === selectedLeadId);
-    if (!selectedLead) {
-      toast.error('Nie znaleziono wybranego leada');
-      return;
-    }
-
-    try {
-      setLeadRelationPending(true);
-      await updateCaseInSupabase({ id: caseId, leadId: selectedLeadId, createdFromLead: true, serviceStartedAt: new Date().toISOString() });
-      await closeLeadAfterCaseLink(selectedLeadId);
-
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'lead_linked',
-        payload: {
-          leadId: selectedLeadId,
-          leadName: selectedLead.name || 'Lead',
-        },
-      });
-
-      await insertActivityToSupabase({
-        leadId: selectedLeadId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_linked',
-        payload: {
-          caseId,
-          title: caseData?.title || 'Sprawa',
-        },
-      });
-
-      await refreshSupabaseCase();
-      toast.success('Lead podpięty do sprawy');
+      toast.success('Lead ĹşrĂłdĹ‚owy zostaĹ‚ odpiÄ™ty od sprawy');
     } catch (error: any) {
       toast.error(`Błąd podpinania leada: ${error.message}`);
     } finally {
@@ -705,7 +571,7 @@ export default function CaseDetail() {
       });
 
       await refreshSupabaseCase();
-      toast.success('Lead odpięty od sprawy');
+      toast.success('Lead ĹşrĂłdĹ‚owy zostaĹ‚ odpiÄ™ty od sprawy');
     } catch (error: any) {
       toast.error(`Błąd odpinania leada: ${error.message}`);
     } finally {
@@ -2361,6 +2227,9 @@ export default function CaseDetail() {
     </Layout>
   );
 }
+
+
+
 
 
 

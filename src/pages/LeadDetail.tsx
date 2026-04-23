@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+﻿import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -142,11 +142,11 @@ function activityTitle(activity: any) {
     case 'note_added':
       return 'Notatka';
     case 'case_created':
-      return 'Utworzono sprawę';
+      return 'RozpoczÄ™to obsĹ‚ugÄ™ i utworzono sprawÄ™';
     case 'case_linked':
-      return 'Podpięto sprawę';
+      return 'PodpiÄ™to istniejÄ…cÄ… sprawÄ™';
     case 'case_unlinked':
-      return 'Odpięto sprawę';
+      return 'OdpiÄ™to sprawÄ™ od leada';
     case 'task_updated':
       return 'Zaktualizowano zadanie';
     case 'task_status_toggled':
@@ -1949,3 +1949,6 @@ export default function LeadDetail() {
     </Layout>
   );
 }
+
+
+
