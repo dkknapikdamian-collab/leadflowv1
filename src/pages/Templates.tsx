@@ -470,7 +470,7 @@ export default function Templates() {
               <div className="rounded-2xl border p-4 text-sm app-border app-surface">
                 <p className="font-semibold app-text">Jak tego używać</p>
                 <p className="mt-2 app-muted">
-                  Ten szablon pojawi się przy akcji „Utwórz sprawę z leada”. Wszystkie pozycje zostaną automatycznie skopiowane do checklisty nowej realizacji.
+                  Ten szablon pojawi się przy akcji „Rozpocznij obsługę”. Wszystkie pozycje zostaną automatycznie skopiowane do checklisty nowej realizacji.
                 </p>
               </div>
             </div>

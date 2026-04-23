@@ -30,8 +30,7 @@ const LEAD_STATUSES = new Set([
   'negotiation',
   'waiting_response',
   'accepted',
-  'accepted_waiting_start',
-  'active_service',
+  'moved_to_service',
   'won',
   'lost',
   'archived',
@@ -61,7 +60,12 @@ const OPTIONAL_LEAD_COLUMNS = new Set([
   'start_rule_snapshot',
   'win_rule_snapshot',
   'closed_at',
+  'moved_to_service_at',
+  'lead_visibility',
+  'sales_outcome',
 ]);
+const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at']);
+const OPTIONAL_ACTIVITY_COLUMNS = new Set(['owner_id', 'actor_id', 'actor_type', 'event_type', 'payload', 'lead_id', 'case_id', 'workspace_id', 'created_at', 'updated_at']);
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -107,6 +111,8 @@ function toIsoDateTime(value: unknown) {
 function normalizeStatus(value: unknown) {
   const normalized = asText(value);
   if (normalized === 'follow_up') return 'waiting_response';
+  if (normalized === 'accepted_waiting_start') return 'accepted';
+  if (normalized === 'active_service') return 'moved_to_service';
   return LEAD_STATUSES.has(normalized) ? normalized : 'new';
 }
 
@@ -116,6 +122,11 @@ function normalizeEnum(value: unknown, allowed: Set<string>, fallback: string) {
 }
 
 function normalizeLead(row: Record<string, unknown>) {
+  const normalizedStatus = normalizeStatus(row.status);
+  const linkedCaseId = asText(row.linked_case_id || row.linkedCaseId) || null;
+  const movedToServiceAt = row.moved_to_service_at || row.movedToServiceAt || row.case_started_at || row.caseStartedAt || null;
+  const leadVisibility = asText(row.lead_visibility || row.leadVisibility) || (normalizedStatus === 'moved_to_service' || linkedCaseId ? 'archived' : 'active');
+  const salesOutcome = asText(row.sales_outcome || row.salesOutcome) || (normalizedStatus === 'moved_to_service' ? 'moved_to_service' : normalizedStatus === 'won' ? 'won' : normalizedStatus === 'lost' ? 'lost' : 'open');
   return {
     id: String(row.id || crypto.randomUUID()),
     workspaceId: asText(row.workspace_id || row.workspaceId),
@@ -126,7 +137,7 @@ function normalizeLead(row: Record<string, unknown>) {
     email: asText(row.email),
     phone: asText(row.phone),
     source: normalizeSource(row.source || row.source_label || row.source_type || 'other'),
-    status: normalizeStatus(row.status),
+    status: normalizedStatus,
     nextStep: asText(row.next_action_title || row.next_step || row.nextStep),
     nextActionAt: asText(row.next_action_at || row.next_step_due_at || row.nextActionAt),
     nextActionItemId: asText(row.next_action_item_id || row.nextActionItemId),
@@ -140,7 +151,10 @@ function normalizeLead(row: Record<string, unknown>) {
     acceptedAt: row.accepted_at || row.acceptedAt || null,
     caseEligibleAt: row.case_eligible_at || row.caseEligibleAt || null,
     caseStartedAt: row.case_started_at || row.caseStartedAt || null,
-    linkedCaseId: asText(row.linked_case_id || row.linkedCaseId) || null,
+    linkedCaseId,
+    movedToServiceAt,
+    leadVisibility,
+    salesOutcome,
     closedAt: row.closed_at || row.closedAt || null,
     updatedAt: row.updated_at || row.updatedAt || null,
     createdAt: row.created_at || row.createdAt || null,
@@ -187,12 +201,228 @@ async function updateLeadWithSchemaFallback(id: string, payload: Record<string, 
   throw new Error('LEAD_UPDATE_SCHEMA_FALLBACK_EXHAUSTED');
 }
 
+async function insertCaseWithSchemaFallback(payload: Record<string, unknown>) {
+  let currentPayload = { ...payload };
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    try {
+      return await insertWithVariants(['cases'], [currentPayload]);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !OPTIONAL_CASE_COLUMNS.has(missingColumn) || !(missingColumn in currentPayload)) throw error;
+      currentPayload = omitMissingColumn(currentPayload, missingColumn);
+    }
+  }
+  throw new Error('CASE_INSERT_SCHEMA_FALLBACK_EXHAUSTED');
+}
+
+async function insertActivityWithSchemaFallback(payload: Record<string, unknown>) {
+  let currentPayload = { ...payload };
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    try {
+      return await insertWithVariants(['activities'], [currentPayload]);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !OPTIONAL_ACTIVITY_COLUMNS.has(missingColumn) || !(missingColumn in currentPayload)) throw error;
+      currentPayload = omitMissingColumn(currentPayload, missingColumn);
+    }
+  }
+  throw new Error('ACTIVITY_INSERT_SCHEMA_FALLBACK_EXHAUSTED');
+}
+
+async function safeSelectRows(query: string) {
+  try {
+    const result = await selectFirstAvailable([query]);
+    return Array.isArray(result.data) ? (result.data as Record<string, unknown>[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+async function findExistingClient(workspaceId: string, leadRow: Record<string, unknown>) {
+  const explicitClientId = asNullableUuid(leadRow.client_id || leadRow.clientId);
+  if (explicitClientId) {
+    const rows = await safeSelectRows(withWorkspaceFilter(`clients?select=*&id=eq.${encodeURIComponent(explicitClientId)}&limit=1`, workspaceId));
+    if (rows[0]) return rows[0];
+  }
+
+  const email = asText(leadRow.email).toLowerCase();
+  if (email) {
+    const rows = await safeSelectRows(withWorkspaceFilter(`clients?select=*&email=eq.${encodeURIComponent(email)}&limit=1`, workspaceId));
+    if (rows[0]) return rows[0];
+  }
+
+  const phone = asText(leadRow.phone);
+  if (phone) {
+    const rows = await safeSelectRows(withWorkspaceFilter(`clients?select=*&phone=eq.${encodeURIComponent(phone)}&limit=1`, workspaceId));
+    if (rows[0]) return rows[0];
+  }
+
+  const name = asText(leadRow.name || leadRow.company);
+  if (name) {
+    const rows = await safeSelectRows(withWorkspaceFilter(`clients?select=*&name=ilike.${encodeURIComponent(name)}&limit=1`, workspaceId));
+    if (rows[0]) return rows[0];
+  }
+
+  return null;
+}
+
+async function ensureClientForLead(workspaceId: string, leadRow: Record<string, unknown>) {
+  const existing = await findExistingClient(workspaceId, leadRow);
+  if (existing) return existing;
+
+  const nowIso = new Date().toISOString();
+  const payload: Record<string, unknown> = {
+    workspace_id: workspaceId,
+    name: asText(leadRow.name || leadRow.company) || 'Klient',
+    company: asText(leadRow.company) || null,
+    email: asText(leadRow.email).toLowerCase() || null,
+    phone: asText(leadRow.phone) || null,
+    source_primary: asText(leadRow.source) || 'other',
+    created_at: nowIso,
+    updated_at: nowIso,
+    last_activity_at: nowIso,
+  };
+
+  const result = await insertWithVariants(['clients'], [payload]);
+  return Array.isArray(result.data) && result.data[0] ? result.data[0] as Record<string, unknown> : payload;
+}
+
+async function handleStartService(body: Record<string, unknown>, workspaceId: string) {
+  const leadId = asText(body.id || body.leadId);
+  if (!leadId) {
+    throw new Error('LEAD_ID_REQUIRED');
+  }
+
+  await requireScopedRow('leads', leadId, workspaceId, 'LEAD_NOT_FOUND');
+  const leadRows = await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(leadId)}&limit=1`, workspaceId));
+  const leadRow = leadRows[0];
+  if (!leadRow) {
+    throw new Error('LEAD_NOT_FOUND');
+  }
+
+  const existingCaseId = asText(leadRow.linked_case_id || leadRow.linkedCaseId);
+  if (existingCaseId) {
+    throw new Error('LEAD_ALREADY_HAS_CASE');
+  }
+
+  const existingCases = await safeSelectRows(withWorkspaceFilter(`cases?select=id&lead_id=eq.${encodeURIComponent(leadId)}&limit=1`, workspaceId));
+  if (existingCases[0]) {
+    throw new Error('LEAD_ALREADY_HAS_CASE');
+  }
+
+  const nowIso = new Date().toISOString();
+  const leadContext: Record<string, unknown> = {
+    ...leadRow,
+    name: asText(body.clientName) || asText(leadRow.name),
+    email: asText(body.clientEmail) || asText(leadRow.email),
+    phone: asText(body.clientPhone) || asText(leadRow.phone),
+  };
+  const clientRow = await ensureClientForLead(workspaceId, leadContext);
+  const clientId = asNullableUuid(clientRow.id);
+  const caseStatus = normalizeEnum(body.caseStatus || body.status, new Set(['new', 'waiting_on_client', 'blocked', 'to_approve', 'ready_to_start', 'in_progress', 'on_hold', 'completed', 'canceled']), 'in_progress');
+  const caseTitle = asText(body.title) || asText(leadRow.name) || `${asText(clientRow.name) || 'Klient'} - obsluga`;
+
+  const casePayload: Record<string, unknown> = {
+    workspace_id: workspaceId,
+    lead_id: leadId,
+    client_id: clientId,
+    service_profile_id: asNullableUuid(leadRow.service_profile_id || leadRow.serviceProfileId),
+    title: caseTitle,
+    client_name: asText(clientRow.name || leadContext.name),
+    client_email: asText(clientRow.email || leadContext.email),
+    client_phone: asText(clientRow.phone || leadContext.phone),
+    status: caseStatus,
+    billing_status: normalizeEnum(leadRow.billing_status || leadRow.billingStatus, BILLING_STATUSES, 'not_started'),
+    billing_model_snapshot: normalizeEnum(leadRow.billing_model_snapshot || leadRow.billingModelSnapshot, BILLING_MODELS, 'manual'),
+    completeness_percent: 0,
+    portal_ready: false,
+    started_at: caseStatus === 'in_progress' ? nowIso : null,
+    completed_at: caseStatus === 'completed' ? nowIso : null,
+    last_activity_at: nowIso,
+    created_from_lead: true,
+    service_started_at: nowIso,
+    created_at: nowIso,
+    updated_at: nowIso,
+  };
+
+  const createdCaseResult = await insertCaseWithSchemaFallback(casePayload);
+  const createdCase = Array.isArray(createdCaseResult.data) && createdCaseResult.data[0]
+    ? createdCaseResult.data[0] as Record<string, unknown>
+    : casePayload;
+  const caseId = asText(createdCase.id);
+  if (!caseId) {
+    throw new Error('CASE_CREATE_FAILED');
+  }
+
+  const leadPayload: Record<string, unknown> = {
+    client_id: clientId,
+    linked_case_id: caseId,
+    status: 'moved_to_service',
+    moved_to_service_at: nowIso,
+    case_started_at: nowIso,
+    lead_visibility: 'archived',
+    sales_outcome: 'moved_to_service',
+    closed_at: nowIso,
+    next_action_title: '',
+    next_action_at: null,
+    updated_at: nowIso,
+  };
+  await updateLeadWithSchemaFallback(leadId, leadPayload);
+
+  await insertActivityWithSchemaFallback({
+    workspace_id: workspaceId,
+    lead_id: leadId,
+    case_id: caseId,
+    owner_id: null,
+    actor_id: null,
+    actor_type: 'operator',
+    event_type: 'case_created',
+      payload: { caseId, caseTitle, leadName: asText(leadRow.name) },
+    created_at: nowIso,
+    updated_at: nowIso,
+  }).catch(() => null);
+
+  await insertActivityWithSchemaFallback({
+    workspace_id: workspaceId,
+    lead_id: leadId,
+    case_id: caseId,
+    owner_id: null,
+    actor_id: null,
+    actor_type: 'operator',
+    event_type: 'lead_moved_to_service',
+    payload: { caseId, caseTitle, movedToServiceAt: nowIso },
+    created_at: nowIso,
+    updated_at: nowIso,
+  }).catch(() => null);
+
+  const refreshedLeadRows = await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(leadId)}&limit=1`, workspaceId));
+
+  return {
+    lead: normalizeLead(refreshedLeadRows[0] || { ...leadRow, ...leadPayload, id: leadId }),
+    case: {
+      id: caseId,
+      title: asText(createdCase.title || caseTitle),
+      status: caseStatus,
+      clientId: clientId || undefined,
+      leadId,
+      createdFromLead: true,
+      serviceStartedAt: nowIso,
+    },
+    client: {
+      id: asText(clientRow.id),
+      name: asText(clientRow.name || leadContext.name),
+      email: asText(clientRow.email || leadContext.email),
+      phone: asText(clientRow.phone || leadContext.phone),
+    },
+  };
+}
+
 function deriveCaseEligibility(status: string, startRule: string, billingStatus: string, acceptedAtRaw: unknown, caseEligibleAtRaw: unknown) {
   const acceptedAt = toIsoDateTime(acceptedAtRaw as string) || (typeof acceptedAtRaw === 'string' ? acceptedAtRaw : null);
   const existingEligible = toIsoDateTime(caseEligibleAtRaw as string) || (typeof caseEligibleAtRaw === 'string' ? caseEligibleAtRaw : null);
   if (existingEligible) return existingEligible;
-  if (status === 'active_service') return new Date().toISOString();
-  if (startRule === 'on_acceptance' && (status === 'accepted' || status === 'accepted_waiting_start')) {
+  if (status === 'moved_to_service') return new Date().toISOString();
+  if (startRule === 'on_acceptance' && status === 'accepted') {
     return acceptedAt || new Date().toISOString();
   }
   if (startRule === 'on_deposit' && (billingStatus === 'deposit_paid' || billingStatus === 'partially_paid' || billingStatus === 'fully_paid' || billingStatus === 'paid')) {
@@ -233,6 +463,16 @@ export default async function handler(req: any, res: any) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
     const workspaceId = await resolveRequestWorkspaceId(req, body);
 
+    if (req.method === 'POST' && asText(body.action) === 'start_service') {
+      if (!workspaceId) {
+        res.status(400).json({ error: 'LEAD_WORKSPACE_REQUIRED' });
+        return;
+      }
+      const data = await handleStartService(body, workspaceId);
+      res.status(200).json(data);
+      return;
+    }
+
     if (req.method === 'PATCH') {
       if (!body.id || !workspaceId) {
         res.status(400).json({ error: 'LEAD_ID_REQUIRED' });
@@ -262,6 +502,7 @@ export default async function handler(req: any, res: any) {
       }
 
       if (body.clientId !== undefined) payload.client_id = asNullableUuid(body.clientId);
+      if (body.linkedCaseId !== undefined) payload.linked_case_id = asNullableUuid(body.linkedCaseId);
       if (body.serviceProfileId !== undefined) payload.service_profile_id = asNullableUuid(body.serviceProfileId);
       if (nextBillingStatus !== undefined) payload.billing_status = nextBillingStatus;
       if (body.billingModelSnapshot !== undefined) payload.billing_model_snapshot = normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual');
@@ -270,12 +511,20 @@ export default async function handler(req: any, res: any) {
       if (body.acceptedAt !== undefined) payload.accepted_at = toIsoDateTime(body.acceptedAt);
       if (body.caseEligibleAt !== undefined) payload.case_eligible_at = toIsoDateTime(body.caseEligibleAt);
       if (body.caseStartedAt !== undefined) payload.case_started_at = toIsoDateTime(body.caseStartedAt);
+      if (body.movedToServiceAt !== undefined) payload.moved_to_service_at = toIsoDateTime(body.movedToServiceAt);
+      if (body.leadVisibility !== undefined) payload.lead_visibility = asText(body.leadVisibility) || 'active';
+      if (body.salesOutcome !== undefined) payload.sales_outcome = asText(body.salesOutcome) || 'open';
       if (body.closedAt !== undefined) payload.closed_at = toIsoDateTime(body.closedAt);
 
       if (nextStatus === 'accepted' && body.acceptedAt === undefined) payload.accepted_at = nowIso;
-      if (nextStatus === 'active_service' && body.caseStartedAt === undefined) payload.case_started_at = nowIso;
+      if (nextStatus === 'moved_to_service') {
+        if (body.caseStartedAt === undefined) payload.case_started_at = nowIso;
+        if (body.movedToServiceAt === undefined) payload.moved_to_service_at = nowIso;
+        if (body.leadVisibility === undefined) payload.lead_visibility = 'archived';
+        if (body.salesOutcome === undefined) payload.sales_outcome = 'moved_to_service';
+      }
       if (nextStatus && ['won', 'lost', 'archived'].includes(nextStatus) && body.closedAt === undefined) payload.closed_at = nowIso;
-      if (nextStatus && !['won', 'lost', 'archived'].includes(nextStatus) && body.closedAt === undefined) payload.closed_at = null;
+      if (nextStatus && !['won', 'lost', 'archived', 'moved_to_service'].includes(nextStatus) && body.closedAt === undefined) payload.closed_at = null;
 
       const derivedEligibleAt = deriveCaseEligibility(
         nextStatus || normalizeStatus(body.currentStatus),
@@ -320,6 +569,7 @@ export default async function handler(req: any, res: any) {
       workspace_id: finalWorkspaceId,
       created_by_user_id: body.ownerId && isUuid(body.ownerId) ? body.ownerId : null,
       client_id: asNullableUuid(body.clientId),
+      linked_case_id: asNullableUuid(body.linkedCaseId),
       service_profile_id: asNullableUuid(body.serviceProfileId),
       name: asText(body.name),
       company: asText(body.company),
@@ -342,8 +592,11 @@ export default async function handler(req: any, res: any) {
       win_rule_snapshot: normalizeEnum(body.winRuleSnapshot, WIN_RULES, 'manual'),
       accepted_at: toIsoDateTime(body.acceptedAt) || (status === 'accepted' ? nowIso : null),
       case_eligible_at: deriveCaseEligibility(status, startRuleSnapshot, billingStatus, body.acceptedAt, body.caseEligibleAt),
-      case_started_at: toIsoDateTime(body.caseStartedAt) || (status === 'active_service' ? nowIso : null),
-      closed_at: ['won', 'lost', 'archived'].includes(status) ? nowIso : null,
+      case_started_at: toIsoDateTime(body.caseStartedAt) || (status === 'moved_to_service' ? nowIso : null),
+      moved_to_service_at: toIsoDateTime(body.movedToServiceAt) || (status === 'moved_to_service' ? nowIso : null),
+      lead_visibility: asText(body.leadVisibility) || (status === 'moved_to_service' ? 'archived' : 'active'),
+      sales_outcome: asText(body.salesOutcome) || (status === 'moved_to_service' ? 'moved_to_service' : status === 'won' ? 'won' : status === 'lost' ? 'lost' : 'open'),
+      closed_at: ['won', 'lost', 'archived', 'moved_to_service'].includes(status) ? nowIso : null,
       created_at: nowIso,
       updated_at: nowIso,
     };
@@ -353,6 +606,7 @@ export default async function handler(req: any, res: any) {
     res.status(200).json(normalizeLead(inserted as Record<string, unknown>));
   } catch (error: any) {
     const message = error?.message || 'LEAD_INSERT_FAILED';
-    res.status(message === 'LEAD_NOT_FOUND' ? 404 : 500).json({ error: message });
+    const statusCode = message === 'LEAD_NOT_FOUND' ? 404 : message === 'LEAD_ALREADY_HAS_CASE' ? 409 : 500;
+    res.status(statusCode).json({ error: message });
   }
 }

@@ -344,7 +344,7 @@ export default function Today() {
     const latestLead = (latestLeads as any[]).find((lead) => String(lead.id) === String(leadId));
     setLeads(latestLeads as any[]);
 
-    if (!latestLead || latestLead.status === 'won' || latestLead.status === 'lost' || latestLead.nextActionAt) {
+    if (!latestLead || ['won', 'lost', 'moved_to_service', 'archived'].includes(String(latestLead.status || '')) || latestLead.nextActionAt) {
       return;
     }
 
@@ -768,7 +768,7 @@ export default function Today() {
   const today = new Date();
   const todayStart = startOfDay(today);
   const todayEnd = endOfDay(today);
-  const activeLeads = leads.filter((lead) => lead.status !== 'won' && lead.status !== 'lost');
+  const activeLeads = leads.filter((lead) => !['won', 'lost', 'moved_to_service', 'archived'].includes(String(lead.status || '')));
   const activeLeadsValue = activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0);
   const leadsWithAction = activeLeads.filter((lead) => parseMoment(lead.nextActionAt));
   const todayEntries = combineScheduleEntries({
@@ -792,11 +792,10 @@ export default function Today() {
     const eligibleAt = parseMoment(lead.caseEligibleAt);
     const linkedCaseId = String(lead.linkedCaseId || '');
     if (linkedCaseId) return false;
-    if (status === 'accepted_waiting_start' && eligibleAt) return true;
     if (status === 'accepted' && (eligibleAt || String(lead.startRuleSnapshot || '') === 'on_acceptance')) return true;
     return false;
   });
-  const activeServiceLeads = activeLeads.filter((lead) => String(lead.status || '') === 'active_service');
+  const activeServiceLeads = leads.filter((lead) => String(lead.status || '') === 'moved_to_service');
   const blockedCases = cases.filter((caseRecord) => String(caseRecord.status || '') === 'blocked');
   const noStepLeads = activeLeads.filter((lead) => !parseMoment(lead.nextActionAt));
   const staleLeads = activeLeads

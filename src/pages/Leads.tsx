@@ -40,8 +40,7 @@ const STATUS_OPTIONS = [
   { value: 'proposal_sent', label: 'Oferta wysłana', color: 'bg-amber-100 text-amber-700' },
   { value: 'waiting_response', label: 'Czeka na odpowiedź', color: 'bg-orange-100 text-orange-700' },
   { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
-  { value: 'accepted_waiting_start', label: 'Zaakceptowany, czeka na start', color: 'bg-cyan-100 text-cyan-700' },
-  { value: 'active_service', label: 'Obsługa aktywna', color: 'bg-violet-100 text-violet-700' },
+  { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
   { value: 'won', label: 'Wygrany', color: 'bg-emerald-100 text-emerald-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
@@ -67,7 +66,7 @@ type CaseRecord = {
   leadId?: string | null;
 };
 
-type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'with-case' | 'no-next-step';
+type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history' | 'no-next-step';
 
 function formatLeadSourceLabel(value: unknown) {
   const normalized = String(value || 'other');
@@ -112,7 +111,7 @@ export default function Leads() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [quickFilter, setQuickFilter] = useState<LeadsQuickFilter>('all');
+  const [quickFilter, setQuickFilter] = useState<LeadsQuickFilter>('active');
   const [valueSortEnabled, setValueSortEnabled] = useState(false);
 
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
@@ -209,7 +208,8 @@ export default function Leads() {
       const company = String(lead.company || '').toLowerCase();
       const normalizedStatus = String(lead.status || 'new');
       const linkedCase = casesByLeadId.get(String(lead.id));
-      const activeLead = !['won', 'lost'].includes(normalizedStatus);
+      const movedToService = normalizedStatus === 'moved_to_service' || String(lead.leadVisibility || '') === 'archived' || Boolean(linkedCase);
+      const activeLead = !['won', 'lost', 'archived'].includes(normalizedStatus) && !movedToService;
       const missingNextStep = activeLead && !hasNextStep(lead);
       const caseTitle = String(linkedCase?.title || '').toLowerCase();
       const caseStatus = String(linkedCase?.status || '').toLowerCase();
@@ -228,7 +228,7 @@ export default function Leads() {
         quickFilter === 'all'
         || (quickFilter === 'active' && activeLead)
         || (quickFilter === 'at-risk' && Boolean(lead.isAtRisk))
-        || (quickFilter === 'with-case' && Boolean(linkedCase))
+        || (quickFilter === 'history' && movedToService)
         || (quickFilter === 'no-next-step' && missingNextStep);
 
       return matchesSearch && matchesQuickFilter;
@@ -243,11 +243,11 @@ export default function Leads() {
 
   const stats = {
     total: leads.length,
-    active: leads.filter((lead) => !['won', 'lost'].includes(String(lead.status || 'new'))).length,
+    active: leads.filter((lead) => !['won', 'lost', 'archived', 'moved_to_service'].includes(String(lead.status || 'new')) && !casesByLeadId.has(String(lead.id))).length,
     value: leads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
     atRisk: leads.filter((lead) => Boolean(lead.isAtRisk)).length,
-    linkedToCase: leads.filter((lead) => casesByLeadId.has(String(lead.id))).length,
-    noNextStep: leads.filter((lead) => !hasNextStep(lead) && !['won', 'lost'].includes(String(lead.status || 'new'))).length,
+    linkedToCase: leads.filter((lead) => casesByLeadId.has(String(lead.id)) || String(lead.status || '') === 'moved_to_service').length,
+    noNextStep: leads.filter((lead) => !hasNextStep(lead) && !['won', 'lost', 'archived', 'moved_to_service'].includes(String(lead.status || 'new')) && !casesByLeadId.has(String(lead.id))).length,
   };
 
   const toggleQuickFilter = (filter: LeadsQuickFilter) => {
@@ -405,11 +405,11 @@ export default function Leads() {
             </Card>
           </button>
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'with-case')} onClick={() => toggleQuickFilter('with-case')}>
+          <button type="button" className={createSummaryCardClass(quickFilter === 'history')} onClick={() => toggleQuickFilter('history')}>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'with-case')}>
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'history')}>
                 <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Ze sprawą</p>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">W historii</p>
                   <h3 className="text-2xl font-bold text-emerald-600">{stats.linkedToCase}</h3>
                 </div>
                 <div className="bg-emerald-50 p-3 rounded-2xl">
@@ -506,6 +506,11 @@ export default function Leads() {
                                 Ma sprawę
                               </Badge>
                             ) : null}
+                            {linkedCase ? (
+                              <Badge variant="outline" className="text-[10px] uppercase border-violet-200 text-violet-700">
+                                Przeniesiony do obsługi
+                              </Badge>
+                            ) : null}
                           </div>
 
                           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-slate-500 md:text-sm">
@@ -522,6 +527,11 @@ export default function Leads() {
                             {linkedCase?.title ? (
                               <span className="flex items-center gap-1 font-medium text-emerald-700">
                                 <Briefcase className="h-3.5 w-3.5" /> {linkedCase.title}
+                              </span>
+                            ) : null}
+                            {linkedCase?.status ? (
+                              <span className="font-medium text-violet-700">
+                                Status sprawy: {String(linkedCase.status).replaceAll('_', ' ')}
                               </span>
                             ) : null}
                           </div>

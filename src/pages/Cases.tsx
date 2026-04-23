@@ -43,6 +43,8 @@ type CaseRecord = {
   status?: string;
   completenessPercent?: number;
   leadId?: string;
+  createdFromLead?: boolean;
+  serviceStartedAt?: string | null;
   portalReady?: boolean;
   updatedAt?: { toDate?: () => Date } | string | null;
 };
@@ -292,6 +294,7 @@ export default function Cases() {
         clientEmail: newCase.clientEmail.trim(),
         clientPhone: newCase.clientPhone.trim(),
         status: newCase.status,
+        createdFromLead: false,
         portalReady: false,
         workspaceId: workspace?.id,
       });
@@ -534,7 +537,7 @@ export default function Cases() {
                 <div className="rounded-full p-4 app-primary-chip"><Target className="h-7 w-7" /></div>
                 <div>
                   <p className="text-lg font-semibold app-text">Brak spraw w tym widoku</p>
-                  <p className="mt-1 max-w-md text-sm app-muted">Sprawy pojawią się tutaj po wygraniu leada albo po ręcznym uruchomieniu realizacji. Zmień wyszukiwanie albo kliknij inny kafelek u góry, jeśli szukasz innego wycinka listy.</p>
+                  <p className="mt-1 max-w-md text-sm app-muted">Sprawy pojawią się tutaj po przeniesieniu leada do obsługi albo po ręcznym uruchomieniu realizacji. Zmień wyszukiwanie albo kliknij inny kafelek u góry, jeśli szukasz innego wycinka listy.</p>
                 </div>
               </CardContent>
             </Card>
@@ -552,7 +555,7 @@ export default function Cases() {
                         <h3 className="truncate text-xl font-bold app-text">{record.title || 'Sprawa bez tytułu'}</h3>
                         <Badge variant={caseBadgeVariant(record.status)}>{caseStatusLabel(record.status)}</Badge>
                         {attention ? <Badge variant="destructive">Wymaga uwagi</Badge> : null}
-                        {record.leadId ? <Badge variant="outline">Z leada</Badge> : null}
+                        <Badge variant="outline">{record.leadId || record.createdFromLead ? 'Z leada' : 'Utworzona recznie'}</Badge>
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm app-muted">
                         <span>Klient: {record.clientName || 'Brak nazwy klienta'}</span>
@@ -587,7 +590,9 @@ export default function Cases() {
                         <Button variant="outline" className="rounded-2xl lg:w-full" asChild>
                           <Link to={`/leads/${record.leadId}`}>Otwórz źródłowego leada <ExternalLink className="h-4 w-4" /></Link>
                         </Button>
-                      ) : null}
+                      ) : (
+                        <Badge variant="outline" className="justify-center rounded-2xl px-3 py-2 lg:w-full">Utworzona ręcznie</Badge>
+                      )}
                       <Button className="rounded-2xl lg:w-full" asChild>
                         <Link to={`/case/${record.id}`}>Otwórz sprawę <ChevronRight className="h-4 w-4" /></Link>
                       </Button>

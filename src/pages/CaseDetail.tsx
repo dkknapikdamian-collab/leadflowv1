@@ -141,13 +141,11 @@ function leadStatusLabel(status?: string) {
     case 'proposal_sent':
       return 'Oferta wysłana';
     case 'waiting_response':
-      return 'Follow-up';
+      return 'Czeka na odpowiedź';
     case 'accepted':
       return 'Zaakceptowany';
-    case 'accepted_waiting_start':
-      return 'Zaakceptowany, czeka na start';
-    case 'active_service':
-      return 'Obsługa aktywna';
+    case 'moved_to_service':
+      return 'Przeniesiony do obslugi';
     case 'negotiation':
       return 'Negocjacje';
     case 'won':
@@ -441,7 +439,7 @@ export default function CaseDetail() {
     const currentLead = linkedLeadId ? allLeads.find((entry) => String(entry.id || '') === linkedLeadId) || null : null;
     const openLeads = allLeads.filter((entry) => {
       const status = String(entry.status || 'new');
-      return !['won', 'lost'].includes(status) || String(entry.id || '') === linkedLeadId;
+      return !['won', 'lost', 'moved_to_service', 'archived'].includes(status) || String(entry.id || '') === linkedLeadId;
     });
 
     setSourceLead(currentLead);
@@ -597,7 +595,11 @@ export default function CaseDetail() {
   const closeLeadAfterCaseLink = async (leadIdToClose: string) => {
     await updateLeadInSupabase({
       id: leadIdToClose,
-      status: 'won',
+      status: 'moved_to_service',
+      linkedCaseId: caseId,
+      movedToServiceAt: new Date().toISOString(),
+      leadVisibility: 'archived',
+      salesOutcome: 'moved_to_service',
       nextStep: '',
       nextActionAt: null,
     });
@@ -607,9 +609,9 @@ export default function CaseDetail() {
       ownerId: auth.currentUser?.uid ?? null,
       actorId: auth.currentUser?.uid ?? null,
       actorType: 'operator',
-      eventType: 'status_changed',
+      eventType: 'lead_moved_to_service',
       payload: {
-        status: 'won',
+        status: 'moved_to_service',
         caseId,
         reason: 'lead_converted_to_case',
       },
@@ -631,7 +633,7 @@ export default function CaseDetail() {
 
     try {
       setLeadRelationPending(true);
-      await updateCaseInSupabase({ id: caseId, leadId: selectedLeadId });
+      await updateCaseInSupabase({ id: caseId, leadId: selectedLeadId, createdFromLead: true, serviceStartedAt: new Date().toISOString() });
       await closeLeadAfterCaseLink(selectedLeadId);
 
       await insertActivityToSupabase({
@@ -676,7 +678,7 @@ export default function CaseDetail() {
 
     try {
       setLeadRelationPending(true);
-      await updateCaseInSupabase({ id: caseId, leadId: null });
+      await updateCaseInSupabase({ id: caseId, leadId: null, createdFromLead: false });
 
       await insertActivityToSupabase({
         caseId,
@@ -1777,7 +1779,7 @@ export default function CaseDetail() {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <UserRound className="w-5 h-5 text-slate-400" />
-                  Źródłowy lead
+                  Źródło sprawy
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -1847,9 +1849,9 @@ export default function CaseDetail() {
                 ) : (
                   <>
                     <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-4">
-                      <p className="text-sm font-semibold text-slate-900">Ta sprawa nie ma jeszcze źródłowego leada.</p>
+                      <p className="text-sm font-semibold text-slate-900">Sprawa utworzona ręcznie.</p>
                       <p className="mt-1 text-sm text-slate-500">
-                        Podepnij leada, żeby zachować pełną ścieżkę sprzedaż → realizacja w jednym rekordzie.
+                        Mozesz opcjonalnie podpiac lead zrodlowy, jesli ten temat zaczal sie od procesu sprzedazowego.
                       </p>
                     </div>
                     <div className="space-y-2">

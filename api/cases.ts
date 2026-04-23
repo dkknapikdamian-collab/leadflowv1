@@ -4,7 +4,7 @@ import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from
 const CASE_STATUSES = new Set(['new', 'waiting_on_client', 'blocked', 'to_approve', 'ready_to_start', 'in_progress', 'on_hold', 'completed', 'canceled']);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
 const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_completion', 'success_fee', 'recurring', 'manual']);
-const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at']);
+const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at']);
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -46,6 +46,8 @@ function normalizeCase(row: Record<string, unknown>) {
     billingModelSnapshot: normalizeEnum(row.billing_model_snapshot || row.billingModelSnapshot, BILLING_MODELS, 'manual'),
     completenessPercent: Number(row.completeness_percent || row.completenessPercent || 0),
     leadId: asText(row.lead_id || row.leadId) || undefined,
+    createdFromLead: Boolean(row.created_from_lead ?? row.createdFromLead ?? row.lead_id ?? row.leadId),
+    serviceStartedAt: row.service_started_at || row.serviceStartedAt || row.started_at || row.startedAt || null,
     serviceProfileId: asText(row.service_profile_id || row.serviceProfileId) || undefined,
     portalReady: Boolean(row.portal_ready || row.portalReady || false),
     startedAt: row.started_at || row.startedAt || null,
@@ -183,6 +185,8 @@ export default async function handler(req: any, res: any) {
         billing_model_snapshot: normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual'),
         completeness_percent: Number(body.completenessPercent || 0),
         portal_ready: Boolean(body.portalReady || false),
+        created_from_lead: normalizedLeadId ? true : Boolean(body.createdFromLead),
+        service_started_at: toIso(body.serviceStartedAt) || (normalizedLeadId ? nowIso : null),
         started_at: toIso(body.startedAt) || (normalizedStatus === 'in_progress' ? nowIso : null),
         completed_at: toIso(body.completedAt) || (normalizedStatus === 'completed' ? nowIso : null),
         last_activity_at: toIso(body.lastActivityAt) || nowIso,
@@ -197,15 +201,6 @@ export default async function handler(req: any, res: any) {
       if (insertedId) {
         await bestEffortPatch(`leads?linked_case_id=eq.${encodeURIComponent(insertedId)}`, {
           linked_case_id: null,
-          updated_at: nowIso,
-        });
-      }
-
-      if (normalizedLeadId && insertedId) {
-        await bestEffortPatch(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, {
-          linked_case_id: insertedId,
-          case_started_at: nowIso,
-          status: 'active_service',
           updated_at: nowIso,
         });
       }
@@ -238,9 +233,11 @@ export default async function handler(req: any, res: any) {
       if (body.completenessPercent !== undefined) payload.completeness_percent = Number(body.completenessPercent || 0);
       if (body.leadId !== undefined) payload.lead_id = normalizedLeadId;
       if (body.portalReady !== undefined) payload.portal_ready = Boolean(body.portalReady);
+      if (body.createdFromLead !== undefined) payload.created_from_lead = Boolean(body.createdFromLead);
       if (body.serviceProfileId !== undefined) payload.service_profile_id = asNullableUuid(body.serviceProfileId);
       if (body.billingStatus !== undefined) payload.billing_status = normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started');
       if (body.billingModelSnapshot !== undefined) payload.billing_model_snapshot = normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual');
+      if (body.serviceStartedAt !== undefined) payload.service_started_at = toIso(body.serviceStartedAt);
       if (body.startedAt !== undefined) payload.started_at = toIso(body.startedAt);
       if (body.completedAt !== undefined) payload.completed_at = toIso(body.completedAt);
       if (body.lastActivityAt !== undefined) payload.last_activity_at = toIso(body.lastActivityAt);
@@ -258,8 +255,6 @@ export default async function handler(req: any, res: any) {
       if (normalizedLeadId) {
         await bestEffortPatch(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, {
           linked_case_id: String(body.id),
-          case_started_at: nowIso,
-          status: 'active_service',
           updated_at: nowIso,
         });
       }

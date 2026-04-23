@@ -25,12 +25,11 @@ export const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
   { value: 'contacted', label: 'Skontaktowany', color: 'bg-indigo-100 text-indigo-700' },
   { value: 'qualification', label: 'Kwalifikacja', color: 'bg-purple-100 text-purple-700' },
-  { value: 'proposal_sent', label: 'Oferta wysłana', color: 'bg-amber-100 text-amber-700' },
+  { value: 'proposal_sent', label: 'Oferta wyslana', color: 'bg-amber-100 text-amber-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
-  { value: 'waiting_response', label: 'Czeka na odpowiedź', color: 'bg-orange-100 text-orange-700' },
+  { value: 'waiting_response', label: 'Czeka na odpowiedz', color: 'bg-orange-100 text-orange-700' },
   { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
-  { value: 'accepted_waiting_start', label: 'Zaakceptowany, czeka na start', color: 'bg-cyan-100 text-cyan-700' },
-  { value: 'active_service', label: 'Obsługa aktywna', color: 'bg-violet-100 text-violet-700' },
+  { value: 'moved_to_service', label: 'Przeniesiony do obslugi', color: 'bg-violet-100 text-violet-700' },
   { value: 'won', label: 'Wygrany', color: 'bg-emerald-100 text-emerald-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
   { value: 'archived', label: 'Archiwum', color: 'bg-slate-100 text-slate-700' },
@@ -39,8 +38,8 @@ export const STATUS_OPTIONS = [
 export const TASK_TYPES = [
   { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },
   { value: 'phone', label: 'Telefon', icon: Phone },
-  { value: 'reply', label: 'Odpisać', icon: MessageSquareReply },
-  { value: 'send_offer', label: 'Wyślij ofertę', icon: FileText },
+  { value: 'reply', label: 'Odpisac', icon: MessageSquareReply },
+  { value: 'send_offer', label: 'Wyslij oferte', icon: FileText },
   { value: 'meeting', label: 'Spotkanie', icon: CalendarDays },
   { value: 'other', label: 'Inne', icon: CircleDot },
 ];
@@ -50,14 +49,14 @@ export const EVENT_TYPES = [
   { value: 'phone_call', label: 'Rozmowa', icon: Phone },
   { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },
   { value: 'deadline', label: 'Deadline', icon: FileText },
-  { value: 'custom', label: 'Własne wydarzenie', icon: CircleDot },
+  { value: 'custom', label: 'Wlasne wydarzenie', icon: CircleDot },
 ];
 
 export const RECURRENCE_OPTIONS = [
   { value: 'none', label: 'Brak' },
   { value: 'daily', label: 'Codziennie' },
-  { value: 'weekly', label: 'Co tydzień' },
-  { value: 'monthly', label: 'Co miesiąc' },
+  { value: 'weekly', label: 'Co tydzien' },
+  { value: 'monthly', label: 'Co miesiac' },
 ];
 
 export const REMINDER_MODE_OPTIONS = [
@@ -68,16 +67,16 @@ export const REMINDER_MODE_OPTIONS = [
 
 export const REMINDER_OFFSET_OPTIONS = [
   { value: 0, label: 'W momencie terminu' },
-  { value: 10, label: '10 minut wcześniej' },
-  { value: 30, label: '30 minut wcześniej' },
-  { value: 60, label: '1 godzinę wcześniej' },
-  { value: 1440, label: '1 dzień wcześniej' },
-  { value: 10080, label: '1 tydzień wcześniej' },
+  { value: 10, label: '10 minut wczesniej' },
+  { value: 30, label: '30 minut wczesniej' },
+  { value: 60, label: '1 godzine wczesniej' },
+  { value: 1440, label: '1 dzien wczesniej' },
+  { value: 10080, label: '1 tydzien wczesniej' },
 ];
 
 export const PRIORITY_OPTIONS = [
   { value: 'low', label: 'Niski' },
-  { value: 'medium', label: 'Średni' },
+  { value: 'medium', label: 'Sredni' },
   { value: 'high', label: 'Wysoki' },
 ];
 

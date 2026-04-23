@@ -255,7 +255,7 @@ export default function Tasks() {
     const latestLead = (latestLeads as any[]).find((lead) => lead.id === leadId);
     setLeads(latestLeads as any[]);
 
-    if (!latestLead || latestLead.status === 'won' || latestLead.status === 'lost' || latestLead.nextActionAt) {
+    if (!latestLead || ['won', 'lost', 'moved_to_service', 'archived'].includes(String(latestLead.status || '')) || latestLead.nextActionAt) {
       return;
     }
 

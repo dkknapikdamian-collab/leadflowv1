@@ -18,7 +18,6 @@ import {
   CheckSquare,
   Briefcase,
   Link2,
-  Unlink,
 } from 'lucide-react';
 import { differenceInCalendarDays, format, isPast, isToday, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
@@ -39,7 +38,6 @@ import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
-  createCaseInSupabase,
   deleteEventFromSupabase,
   deleteLeadFromSupabase,
   deleteTaskFromSupabase,
@@ -53,6 +51,7 @@ import {
   insertEventToSupabase,
   insertTaskToSupabase,
   isSupabaseConfigured,
+  startLeadServiceInSupabase,
   updateActivityInSupabase,
   deleteActivityFromSupabase,
   updateCaseInSupabase,
@@ -68,8 +67,7 @@ const STATUS_OPTIONS = [
   { value: 'proposal_sent', label: 'Oferta wysłana', color: 'bg-amber-100 text-amber-700' },
   { value: 'waiting_response', label: 'Czeka na odpowiedź', color: 'bg-orange-100 text-orange-700' },
   { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
-  { value: 'accepted_waiting_start', label: 'Zaakceptowany, czeka na start', color: 'bg-cyan-100 text-cyan-700' },
-  { value: 'active_service', label: 'Obsługa aktywna', color: 'bg-violet-100 text-violet-700' },
+  { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
   { value: 'won', label: 'Wygrany', color: 'bg-emerald-100 text-emerald-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
@@ -217,6 +215,7 @@ export default function LeadDetail() {
     clientPhone: '',
     status: 'in_progress',
   });
+  const [startServiceSuccess, setStartServiceSuccess] = useState<{ caseId: string; title: string } | null>(null);
 
   const [isQuickTaskOpen, setIsQuickTaskOpen] = useState(false);
   const [isQuickEventOpen, setIsQuickEventOpen] = useState(false);
@@ -376,23 +375,6 @@ export default function LeadDetail() {
       toast.error(`Błąd zapisu: ${error?.message || 'REQUEST_FAILED'}`);
       throw error;
     }
-  };
-
-  const closeLeadAfterCaseStart = async (caseRecordId: string) => {
-    if (!leadId) return;
-
-    await updateLeadInSupabase({
-      id: leadId,
-      status: 'won',
-      nextStep: '',
-      nextActionAt: null,
-    });
-
-    await addActivity('status_changed', {
-      status: 'won',
-      caseId: caseRecordId,
-      reason: 'lead_converted_to_case',
-    });
   };
 
   const handleUpdateStatus = async (status: string) => {
@@ -837,11 +819,23 @@ export default function LeadDetail() {
 
     try {
       setLinkingCase(true);
-      await updateCaseInSupabase({ id: linkCaseId, leadId });
-      await closeLeadAfterCaseStart(linkCaseId);
+      await updateCaseInSupabase({ id: linkCaseId, leadId, createdFromLead: true, serviceStartedAt: new Date().toISOString() });
+      await patchLead({
+        status: 'moved_to_service',
+        linkedCaseId: linkCaseId,
+        movedToServiceAt: new Date().toISOString(),
+        leadVisibility: 'archived',
+        salesOutcome: 'moved_to_service',
+        nextStep: '',
+        nextActionAt: null,
+      });
       toast.success('Sprawa podpięta do leada');
       await addActivity('case_linked', { caseId: linkCaseId });
       setLinkCaseId('');
+      setStartServiceSuccess({
+        caseId: linkCaseId,
+        title: String(caseTitleById.get(String(linkCaseId)) || 'Powiazana sprawa'),
+      });
       await loadLead();
     } catch (error: any) {
       toast.error(`Błąd przypięcia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
@@ -857,19 +851,22 @@ export default function LeadDetail() {
 
     try {
       setCreateCasePending(true);
-      const created = await createCaseInSupabase({
+      const created = await startLeadServiceInSupabase({
+        id: leadId,
         title: createCaseDraft.title.trim(),
-        clientName: createCaseDraft.clientName.trim() || lead?.name || '',
-        status: createCaseDraft.status,
-        leadId,
-        portalReady: false,
+        caseStatus: createCaseDraft.status,
+        clientName: createCaseDraft.clientName.trim(),
+        clientEmail: createCaseDraft.clientEmail.trim(),
+        clientPhone: createCaseDraft.clientPhone.trim(),
         workspaceId: workspace?.id,
       });
-      const caseId = String((created as any)?.id || '');
-      await closeLeadAfterCaseStart(caseId);
-      toast.success('Sprawa utworzona');
-      await addActivity('case_created', { caseId, title: createCaseDraft.title.trim() });
+      const caseId = String((created as any)?.case?.id || '');
+      toast.success('Temat zostal przeniesiony do obslugi');
       setIsCreateCaseOpen(false);
+      setStartServiceSuccess({
+        caseId,
+        title: String((created as any)?.case?.title || createCaseDraft.title.trim()),
+      });
       await loadLead();
     } catch (error: any) {
       toast.error(`Błąd tworzenia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
@@ -878,23 +875,6 @@ export default function LeadDetail() {
     }
   };
 
-  const handleUnlinkCase = async () => {
-    if (!associatedCase?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!window.confirm('Odpiąć sprawę od tego leada?')) return;
-
-    try {
-      setLinkingCase(true);
-      await updateCaseInSupabase({ id: String(associatedCase.id), leadId: null });
-      toast.success('Sprawa odpięta');
-      await addActivity('case_unlinked', { caseId: associatedCase.id });
-      await loadLead();
-    } catch (error: any) {
-      toast.error(`Błąd odpinania sprawy: ${error?.message || 'REQUEST_FAILED'}`);
-    } finally {
-      setLinkingCase(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -929,7 +909,10 @@ export default function LeadDetail() {
     );
   }
 
-  const currentStatus = STATUS_OPTIONS.find((status) => status.value === lead.status) || STATUS_OPTIONS[0];
+  const currentStatus = STATUS_OPTIONS.find((status) => status.value === lead.status)
+    || (lead.status === 'moved_to_service'
+      ? { value: 'moved_to_service', label: 'Przeniesiony do obslugi', color: 'bg-violet-100 text-violet-700' }
+      : STATUS_OPTIONS[0]);
   const nextActionDate = asDate(lead.nextActionAt);
   const updatedAt = asDate(lead.updatedAt);
   const nextActionOverdue = Boolean(nextActionDate && isPast(nextActionDate) && !isToday(nextActionDate));
@@ -973,9 +956,17 @@ export default function LeadDetail() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" onClick={() => void handleUpdateStatus('won')} disabled={lead.status === 'won'}>
-              <CheckCircle2 className="w-4 h-4" /> Wygrany
-            </Button>
+            {associatedCase?.id ? (
+              <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" asChild>
+                <Link to={`/case/${associatedCase.id}`}>
+                  <Briefcase className="w-4 h-4" /> Otworz sprawe
+                </Link>
+              </Button>
+            ) : (
+              <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" onClick={() => setIsCreateCaseOpen(true)}>
+                <Briefcase className="w-4 h-4" /> Rozpocznij obsluge
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -983,6 +974,42 @@ export default function LeadDetail() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
+            {startServiceSuccess ? (
+              <Card className="border-emerald-200 bg-emerald-50 shadow-sm">
+                <CardContent className="p-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <p className="text-sm font-bold text-emerald-800">Temat zostal przeniesiony do obslugi</p>
+                    <p className="text-sm text-emerald-700">Utworzono sprawe: {startServiceSuccess.title}</p>
+                    <p className="text-sm text-emerald-700">Lead pozostaje w historii jako zrodlo pozyskania.</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" asChild>
+                      <Link to={`/case/${startServiceSuccess.caseId}`}>Otworz sprawe</Link>
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setStartServiceSuccess(null)}>Wroc do leada</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
+
+            {associatedCase?.id ? (
+              <Card className="border-violet-200 bg-violet-50 shadow-sm">
+                <CardContent className="p-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <p className="text-sm font-bold text-violet-900">Ten temat zostal przeniesiony do obslugi</p>
+                    <p className="text-sm text-violet-800">Sprawa: {associatedCase.title || 'Powiazana sprawa'}</p>
+                    <p className="text-sm text-violet-800">Status sprawy: {String(associatedCase.status || 'in_progress').replaceAll('_', ' ')}</p>
+                    <p className="text-sm text-violet-800">Lead zostaje widoczny jako historia pozyskania tego tematu.</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" asChild>
+                      <Link to={`/case/${associatedCase.id}`}>Otworz sprawe</Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card className="border-none shadow-sm">
                 <CardContent className="p-4 flex items-center gap-4">
@@ -1051,21 +1078,33 @@ export default function LeadDetail() {
                       <Button variant="outline" size="sm" onClick={() => setIsQuickEventOpen(true)}>
                         <Calendar className="w-4 h-4 mr-2" /> Dodaj wydarzenie
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('contacted')}>
-                        Pierwszy kontakt
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('waiting_response')}>
-                        Follow-up
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('negotiation')}>
-                        Negocjacje
-                      </Button>
-                      <Button size="sm" onClick={() => void handleUpdateStatus('won')} disabled={lead.status === 'won'}>
-                        Wygrany
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('lost')} disabled={lead.status === 'lost'}>
-                        Przegrany
-                      </Button>
+                      {!associatedCase?.id ? (
+                        <>
+                          <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('contacted')}>
+                            Pierwszy kontakt
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('waiting_response')}>
+                            Ustaw follow-up
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('negotiation')}>
+                            Negocjacje
+                          </Button>
+                        </>
+                      ) : null}
+                      {associatedCase?.id ? (
+                        <Button size="sm" asChild>
+                          <Link to={`/case/${associatedCase.id}`}>Otworz sprawe</Link>
+                        </Button>
+                      ) : (
+                        <Button size="sm" onClick={() => setIsCreateCaseOpen(true)}>
+                          Rozpocznij obsluge
+                        </Button>
+                      )}
+                      {!associatedCase?.id ? (
+                        <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('lost')} disabled={lead.status === 'lost'}>
+                          Przegrany
+                        </Button>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -1384,17 +1423,13 @@ export default function LeadDetail() {
                     <CardContent className="p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                       <div className="min-w-0">
                         <h4 className="font-bold text-slate-900 break-words">{associatedCase.title || 'Sprawa aktywna'}</h4>
-                        <p className="text-sm text-slate-500">Realizacja projektu jest w toku.</p>
+                        <p className="text-sm text-slate-500">Temat jest już w obsłudze operacyjnej.</p>
                       </div>
                       <div className="flex gap-2 flex-wrap">
                         <Button className="rounded-xl gap-2" asChild>
                           <Link to={`/case/${associatedCase.id}`}>
                             Przejdź do sprawy <ExternalLink className="w-4 h-4" />
                           </Link>
-                        </Button>
-                        <Button variant="outline" className="rounded-xl gap-2" onClick={() => void handleUnlinkCase()} disabled={linkingCase}>
-                          <Unlink className="w-4 h-4" />
-                          {linkingCase ? 'Odpinanie...' : 'Odepnij sprawę'}
                         </Button>
                       </div>
                     </CardContent>
@@ -1406,7 +1441,7 @@ export default function LeadDetail() {
                       Gdy klient przechodzi z etapu sprzedaży do realizacji, utwórz z leada sprawę albo podepnij istniejącą.
                     </p>
                     <Button className="rounded-xl" onClick={() => setIsCreateCaseOpen(true)}>
-                      <Briefcase className="w-4 h-4 mr-2" /> Utwórz sprawę z leada
+                      <Briefcase className="w-4 h-4 mr-2" /> Rozpocznij obsługę
                     </Button>
                   </div>
                 )}
@@ -1420,7 +1455,7 @@ export default function LeadDetail() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <p className="text-sm text-slate-500">Tu przypniesz sprawę do leada. Po podpięciu będzie widoczna zarówno tutaj, jak i w module Sprawy.</p>
+                      <p className="text-sm text-slate-500">Tu przypniesz istniejącą sprawę do tego tematu. Po zapisaniu lead przejdzie do historii obsługi.</p>
                       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
                         <select
                           className={modalSelectClass}
@@ -1863,9 +1898,12 @@ export default function LeadDetail() {
       <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>Utwórz sprawę z leada</DialogTitle>
+            <DialogTitle>Rozpocząć obsługę tego tematu?</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+              Z tego leada zostanie utworzona sprawa. Lead nie zniknie i zostanie widoczny jako historia sprzedazowa tego tematu.
+            </div>
             <div className="space-y-2">
               <Label>Tytuł sprawy</Label>
               <Input value={createCaseDraft.title} onChange={(e) => setCreateCaseDraft((prev) => ({ ...prev, title: e.target.value }))} />
@@ -1903,7 +1941,7 @@ export default function LeadDetail() {
               Anuluj
             </Button>
             <Button onClick={() => void handleCreateCaseFromLead()} disabled={createCasePending}>
-              {createCasePending ? 'Tworzenie...' : 'Utwórz sprawę'}
+              {createCasePending ? 'Rozpoczynanie...' : 'Rozpocznij obsługę'}
             </Button>
           </DialogFooter>
         </DialogContent>

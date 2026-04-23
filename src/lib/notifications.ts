@@ -30,7 +30,7 @@ export type NotificationLogItem = NotificationItem & {
 function isEntryActionable(entry: ScheduleEntry) {
   if (entry.kind === 'task') return entry.raw?.status !== 'done';
   if (entry.kind === 'event') return entry.raw?.status !== 'completed';
-  return entry.raw?.status !== 'won' && entry.raw?.status !== 'lost';
+  return !['won', 'lost', 'moved_to_service', 'archived'].includes(String(entry.raw?.status || ''));
 }
 
 function mapEntryToItem(entry: ScheduleEntry, now: Date): NotificationItem | null {

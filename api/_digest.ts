@@ -86,7 +86,7 @@ function normalizeLeadActionDate(lead: LeadLike) {
 
 function isLeadClosed(lead: LeadLike) {
   const status = asText(lead.status).toLowerCase();
-  return status === 'won' || status === 'lost';
+  return status === 'won' || status === 'lost' || status === 'moved_to_service' || status === 'archived';
 }
 
 function isLeadOverdue(lead: LeadLike, now: Date, timeZone: string) {

@@ -19,7 +19,7 @@ export type LeadFinanceSummary = {
   funnelAmount: number;
 };
 
-export const ACTIVE_LEAD_STATUSES = ['new', 'contacted', 'qualification', 'proposal_sent', 'negotiation', 'waiting_response', 'accepted', 'accepted_waiting_start', 'active_service'] as const;
+export const ACTIVE_LEAD_STATUSES = ['new', 'contacted', 'qualification', 'proposal_sent', 'negotiation', 'waiting_response', 'accepted'] as const;
 
 export function normalizePartialPayment(input: unknown, fallbackIndex = 0): LeadPartialPayment | null {
   if (!input || typeof input !== 'object') return null;
@@ -55,8 +55,9 @@ export function getLeadFinance(source: LeadFinanceSource): LeadFinanceSummary {
   const remainingAmount = Math.max(0, dealValue - paidAmount);
   const isWon = source.status === 'won';
   const isLost = source.status === 'lost';
+  const isMovedToService = source.status === 'moved_to_service';
   const earnedAmount = isWon ? paidAmount + remainingAmount : paidAmount;
-  const funnelAmount = isWon || isLost ? 0 : remainingAmount;
+  const funnelAmount = isWon || isLost || isMovedToService ? 0 : remainingAmount;
 
   return {
     partialPayments,

@@ -1,7 +1,7 @@
 import { differenceInCalendarDays, isPast, parseISO, startOfDay } from 'date-fns'
 
-const CLOSED_STATUSES = new Set(['won', 'lost'])
-const WAITING_STATUSES = new Set(['proposal_sent', 'waiting_response', 'negotiation', 'accepted_waiting_start'])
+const CLOSED_STATUSES = new Set(['won', 'lost', 'moved_to_service', 'archived'])
+const WAITING_STATUSES = new Set(['proposal_sent', 'waiting_response', 'negotiation', 'accepted'])
 
 function toDateSafe(value: unknown) {
   if (!value) return null
@@ -96,10 +96,10 @@ export function getLeadPriorityScore(lead: any) {
 }
 
 export function buildLeadAlertReason(lead: any) {
-  if (isNextStepOverdue(lead)) return 'Termin kolejnego ruchu już minął'
-  if (!hasNextStep(lead)) return 'Lead nie ma ustawionego następnego kroku'
-  if (isWaitingTooLong(lead)) return 'Lead czeka za długo bez nowego ruchu'
-  if (isHighValueAtRisk(lead)) return 'Wysoka wartość i zbyt mało ruchu'
-  if (Boolean(lead?.isAtRisk)) return 'Lead oznaczony jako zagrożony'
+  if (isNextStepOverdue(lead)) return 'Termin kolejnego ruchu juz minal'
+  if (!hasNextStep(lead)) return 'Lead nie ma ustawionego nastepnego kroku'
+  if (isWaitingTooLong(lead)) return 'Lead czeka za dlugo bez nowego ruchu'
+  if (isHighValueAtRisk(lead)) return 'Wysoka wartosc i zbyt malo ruchu'
+  if (Boolean(lead?.isAtRisk)) return 'Lead oznaczony jako zagrozony'
   return 'Wymaga uwagi'
 }

@@ -411,7 +411,7 @@ export default function Calendar() {
     const bundle = await refreshSupabaseBundle();
     const latestLead = bundle.leads.find((lead) => lead.id === leadId);
 
-    if (!latestLead || latestLead.status === 'won' || latestLead.status === 'lost' || latestLead.nextActionAt) {
+    if (!latestLead || ['won', 'lost', 'moved_to_service', 'archived'].includes(String(latestLead.status || '')) || latestLead.nextActionAt) {
       return;
     }
 
