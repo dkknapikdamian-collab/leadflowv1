@@ -277,6 +277,27 @@ async function findWorkspaceForProfile(
   return null;
 }
 
+async function findFallbackWorkspace(email: string | null) {
+  try {
+    const result = await selectFirstAvailable([
+      'workspaces?select=*&order=updated_at.desc.nullslast&limit=2',
+      'workspaces?select=*&order=created_at.desc.nullslast&limit=2',
+      'workspaces?select=*&limit=2',
+    ]);
+    const rows = Array.isArray(result.data) ? result.data.filter((row) => row && typeof row === 'object') : [];
+    if (rows.length === 1) {
+      return rows[0] as Record<string, unknown>;
+    }
+    if (rows.length > 0 && isAdminEmail(email)) {
+      return rows[0] as Record<string, unknown>;
+    }
+  } catch {
+    // ignore and continue
+  }
+
+  return null;
+}
+
 async function insertProfileWithFallback(payload: Record<string, unknown>) {
   let currentPayload = { ...payload };
 
@@ -524,12 +545,12 @@ function resolveWorkspaceOwnerUserId(profileRow: Record<string, unknown> | null,
       profileRow?.id,
       uid,
     )
-    || crypto.randomUUID()
+    || null
   );
 }
 
 async function ensureWorkspace(
-  workspaceOwnerUserId: string,
+  workspaceOwnerUserId: string | null,
   fullName: string | null,
   workspaceId: string | null,
   row: Record<string, unknown> | null,
@@ -539,9 +560,6 @@ async function ensureWorkspace(
 
   if (!row) {
     const payload: Record<string, unknown> = {
-      owner_user_id: workspaceOwnerUserId,
-      owner_id: workspaceOwnerUserId,
-      created_by_user_id: workspaceOwnerUserId,
       name: `${fullName || 'Moj'} Workspace`,
       plan_id: DEFAULT_PLAN_ID,
       subscription_status: DEFAULT_STATUS,
@@ -549,6 +567,11 @@ async function ensureWorkspace(
       created_at: nowIso,
       updated_at: nowIso,
     };
+    if (workspaceOwnerUserId) {
+      payload.owner_user_id = workspaceOwnerUserId;
+      payload.owner_id = workspaceOwnerUserId;
+      payload.created_by_user_id = workspaceOwnerUserId;
+    }
 
     const result = await insertWorkspaceWithFallback(payload);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
@@ -582,17 +605,17 @@ async function ensureWorkspace(
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.owner_user_id ?? row.ownerUserId ?? null)) {
+  if (workspaceOwnerUserId && !asNullableString(row.owner_user_id ?? row.ownerUserId ?? null)) {
     patch.owner_user_id = workspaceOwnerUserId;
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.owner_id ?? row.ownerId ?? null)) {
+  if (workspaceOwnerUserId && !asNullableString(row.owner_id ?? row.ownerId ?? null)) {
     patch.owner_id = workspaceOwnerUserId;
     shouldPatch = true;
   }
 
-  if (!asNullableString(row.created_by_user_id ?? row.createdByUserId ?? null)) {
+  if (workspaceOwnerUserId && !asNullableString(row.created_by_user_id ?? row.createdByUserId ?? null)) {
     patch.created_by_user_id = workspaceOwnerUserId;
     shouldPatch = true;
   }
@@ -639,6 +662,11 @@ export default async function handler(req: any, res: any) {
 
     if (!workspaceRow) {
       workspaceRow = await findWorkspaceForProfile(profileRow, uid, email);
+      workspaceId = asNullableString(workspaceRow?.id) || workspaceId;
+    }
+
+    if (!workspaceRow) {
+      workspaceRow = await findFallbackWorkspace(email);
       workspaceId = asNullableString(workspaceRow?.id) || workspaceId;
     }
 
