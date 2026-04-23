@@ -61,6 +61,7 @@ function normalizeTask(row: any) {
     priority: String(row.priority || 'medium'),
     leadId: row.lead_id ? String(row.lead_id) : row.leadId ? String(row.leadId) : undefined,
     leadName: row.lead_name ? String(row.lead_name) : row.leadName ? String(row.leadName) : undefined,
+    caseId: row.case_id ? String(row.case_id) : row.caseId ? String(row.caseId) : undefined,
     reminderAt,
     reminder: reminderAt
       ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
@@ -107,6 +108,7 @@ function normalizeEvent(row: any) {
     recurrence: { mode: recurrenceRule, interval: 1, until: null, endType: 'never', count: null },
     leadId: row.lead_id ? String(row.lead_id) : row.leadId ? String(row.leadId) : undefined,
     leadName: row.lead_name ? String(row.lead_name) : row.leadName ? String(row.leadName) : undefined,
+    caseId: row.case_id ? String(row.case_id) : row.caseId ? String(row.caseId) : undefined,
   };
 }
 
@@ -201,6 +203,7 @@ export default async function handler(req: any, res: any) {
         if (body.date !== undefined) payload.scheduled_at = body.date ? new Date(`${body.date}T09:00:00`).toISOString() : null;
         if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? new Date(body.scheduledAt).toISOString() : null;
         if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
+        if (body.caseId !== undefined) payload.case_id = asNullableUuid(body.caseId);
         if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
         if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
       } else {
@@ -213,6 +216,7 @@ export default async function handler(req: any, res: any) {
         if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
         if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
         if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
+        if (body.caseId !== undefined) payload.case_id = asNullableUuid(body.caseId);
       }
 
       const data = await updateById('work_items', String(body.id), payload);
@@ -273,6 +277,7 @@ export default async function handler(req: any, res: any) {
         workspace_id: finalWorkspaceId,
         created_by_user_id: asNullableUuid(body.ownerId),
         lead_id: asNullableUuid(body.leadId),
+        case_id: asNullableUuid(body.caseId),
         record_type: 'task',
         type: body.type || 'task',
         title: body.title,
@@ -301,6 +306,7 @@ export default async function handler(req: any, res: any) {
       workspace_id: finalWorkspaceId,
       created_by_user_id: asNullableUuid(body.ownerId),
       lead_id: asNullableUuid(body.leadId),
+      case_id: asNullableUuid(body.caseId),
       record_type: 'event',
       type: body.type || 'meeting',
       title: body.title,
@@ -327,4 +333,3 @@ export default async function handler(req: any, res: any) {
     res.status(notFound.has(message) ? 404 : 500).json({ error: message });
   }
 }
-

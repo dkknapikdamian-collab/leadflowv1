@@ -41,6 +41,7 @@ import {
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { TopicContactPicker } from '../components/topic-contact-picker';
 import {
   buildStartEndPair,
   combineScheduleEntries,
@@ -67,10 +68,12 @@ import {
 } from '../lib/options';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
   fetchCasesFromSupabase,
+  fetchClientsFromSupabase,
   insertActivityToSupabase,
   insertEventToSupabase,
   insertTaskToSupabase,
@@ -85,6 +88,8 @@ type CalendarEditDraft = {
   startAt: string;
   endAt: string;
   leadId: string;
+  caseId: string;
+  relationQuery: string;
   priority: string;
   recurrence: ReturnType<typeof createDefaultRecurrence>;
   reminder: ReturnType<typeof createDefaultReminder>;
@@ -109,7 +114,9 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
       type: entry.raw?.type || 'meeting',
       startAt: entry.raw?.startAt || entry.startsAt,
       endAt: entry.raw?.endAt || entry.endsAt || buildStartEndPair(entry.startsAt).endAt,
-      leadId: entry.raw?.leadId || 'none',
+      leadId: entry.raw?.leadId || '',
+      caseId: entry.raw?.caseId || '',
+      relationQuery: entry.raw?.caseId ? (entry.raw?.title || entry.title) : (entry.raw?.leadName || ''),
       priority: 'medium',
       recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
       reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
@@ -122,7 +129,9 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
       type: entry.raw?.type || 'follow_up',
       startAt: getTaskStartAt(entry.raw) || entry.startsAt,
       endAt: '',
-      leadId: entry.raw?.leadId || 'none',
+      leadId: entry.raw?.leadId || '',
+      caseId: entry.raw?.caseId || '',
+      relationQuery: entry.raw?.caseId ? (entry.raw?.title || entry.title) : (entry.raw?.leadName || ''),
       priority: entry.raw?.priority || 'medium',
       recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
       reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
@@ -135,6 +144,8 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
     startAt: entry.raw?.nextActionAt?.includes?.('T') ? entry.raw.nextActionAt : entry.startsAt,
     endAt: '',
     leadId: entry.raw?.id || entry.sourceId,
+    caseId: '',
+    relationQuery: entry.raw?.name || entry.title,
     priority: 'medium',
     recurrence: createDefaultRecurrence(),
     reminder: createDefaultReminder(),
@@ -236,6 +247,7 @@ export default function Calendar() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [isNewEventOpen, setIsNewEventOpen] = useState(false);
@@ -249,8 +261,9 @@ export default function Calendar() {
       title: '',
       type: 'meeting',
       ...pair,
-      leadId: 'none',
-      leadName: '',
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
       recurrence: createDefaultRecurrence(),
       reminder: createDefaultReminder(),
     };
@@ -260,7 +273,9 @@ export default function Calendar() {
     type: 'follow_up',
     dueAt: toDateTimeLocalValue(new Date()),
     priority: 'medium',
-    leadId: 'none',
+    leadId: '',
+    caseId: '',
+    relationQuery: '',
   }));
 
   const createTaskSubmitLockRef = useRef(false);
@@ -297,15 +312,17 @@ export default function Calendar() {
   }, [calendarView]);
 
   async function refreshSupabaseBundle() {
-    const [bundle, caseRows] = await Promise.all([
+    const [bundle, caseRows, clientRows] = await Promise.all([
       fetchCalendarBundleFromSupabase(),
       fetchCasesFromSupabase(),
+      fetchClientsFromSupabase().catch(() => []),
     ]);
     setEvents(bundle.events);
     setTasks(bundle.tasks);
     setLeads(bundle.leads);
     setCases(caseRows as any[]);
-    return { ...bundle, cases: caseRows as any[] };
+    setClients(clientRows as any[]);
+    return { ...bundle, cases: caseRows as any[], clients: clientRows as any[] };
   }
 
   useEffect(() => {
@@ -316,15 +333,17 @@ export default function Calendar() {
     const loadBundle = async () => {
       try {
         setLoading(true);
-        const [bundle, caseRows] = await Promise.all([
+        const [bundle, caseRows, clientRows] = await Promise.all([
           fetchCalendarBundleFromSupabase(),
           fetchCasesFromSupabase(),
+          fetchClientsFromSupabase().catch(() => []),
         ]);
         if (cancelled) return;
         setEvents(bundle.events);
         setTasks(bundle.tasks);
         setLeads(bundle.leads);
         setCases(caseRows as any[]);
+        setClients(clientRows as any[]);
       } catch (error: any) {
         if (!cancelled) {
           toast.error(`Błąd odczytu kalendarza: ${error.message}`);
@@ -349,8 +368,9 @@ export default function Calendar() {
       title: '',
       type: 'meeting',
       ...pair,
-      leadId: 'none',
-      leadName: '',
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
       recurrence: createDefaultRecurrence(),
       reminder: createDefaultReminder(),
     });
@@ -362,7 +382,60 @@ export default function Calendar() {
       type: 'follow_up',
       dueAt: toDateTimeLocalValue(new Date()),
       priority: 'medium',
-      leadId: 'none',
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
+    });
+  };
+
+  const topicContactOptions = useMemo(
+    () => buildTopicContactOptions({ leads, cases, clients }),
+    [cases, clients, leads],
+  );
+
+  const selectedNewTaskOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: newTask.leadId || null, caseId: newTask.caseId || null }),
+    [newTask.caseId, newTask.leadId, topicContactOptions],
+  );
+
+  const selectedNewEventOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: newEvent.leadId || null, caseId: newEvent.caseId || null }),
+    [newEvent.caseId, newEvent.leadId, topicContactOptions],
+  );
+
+  const selectedEditOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: editDraft?.leadId || null, caseId: editDraft?.caseId || null }),
+    [editDraft?.caseId, editDraft?.leadId, topicContactOptions],
+  );
+
+  const handleSelectNewTaskRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setNewTask((prev) => ({
+      ...prev,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    }));
+  };
+
+  const handleSelectNewEventRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setNewEvent((prev) => ({
+      ...prev,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    }));
+  };
+
+  const handleSelectEditRelation = (option: TopicContactOption | null) => {
+    if (!editDraft) return;
+    const resolved = resolveTopicContactLink(option);
+    setEditDraft({
+      ...editDraft,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
     });
   };
 
@@ -468,8 +541,6 @@ export default function Calendar() {
     createTaskSubmitLockRef.current = true;
     setTaskSubmitting(true);
 
-    const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
-
     try {
       const shouldSave = confirmScheduleConflicts({
         draft: {
@@ -487,7 +558,8 @@ export default function Calendar() {
         date: newTask.dueAt.slice(0, 10),
         scheduledAt: newTask.dueAt,
         priority: newTask.priority,
-        leadId: selectedLead?.id ?? null,
+        leadId: newTask.leadId || null,
+        caseId: newTask.caseId || null,
         ownerId: auth.currentUser?.uid,
         workspaceId: workspace.id,
       });
@@ -511,7 +583,6 @@ export default function Calendar() {
     createEventSubmitLockRef.current = true;
     setEventSubmitting(true);
 
-    const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
     const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
 
     try {
@@ -533,7 +604,8 @@ export default function Calendar() {
         endAt: newEvent.endAt,
         reminderAt,
         recurrenceRule: newEvent.recurrence.mode,
-        leadId: selectedLead?.id ?? null,
+        leadId: newEvent.leadId || null,
+        caseId: newEvent.caseId || null,
         workspaceId: workspace.id,
       });
       await registerReminderScheduled({
@@ -636,6 +708,7 @@ export default function Calendar() {
           startAt: nextStart,
           endAt: nextEnd,
           leadId: entry.raw?.leadId ?? null,
+          caseId: entry.raw?.caseId ?? null,
         });
       } else if (entry.kind === 'task') {
         const nextStart = addDays(parseISO(getTaskStartAt(entry.raw) || entry.startsAt), days);
@@ -654,6 +727,7 @@ export default function Calendar() {
           status: taskPayload.status,
           priority: taskPayload.priority,
           leadId: taskPayload.leadId ?? null,
+          caseId: entry.raw?.caseId ?? null,
         });
       } else {
         const currentLeadAt = typeof entry.raw?.nextActionAt === 'string' && entry.raw.nextActionAt
@@ -700,6 +774,7 @@ export default function Calendar() {
           endAt: entry.raw?.endAt || entry.endsAt || null,
           status: 'completed',
           leadId: entry.raw?.leadId ?? null,
+          caseId: entry.raw?.caseId ?? null,
         });
       } else if (entry.kind === 'task') {
         softLeadId = entry.raw?.leadId ?? null;
@@ -711,6 +786,7 @@ export default function Calendar() {
           status: 'done',
           priority: entry.raw?.priority,
           leadId: entry.raw?.leadId ?? null,
+          caseId: entry.raw?.caseId ?? null,
         });
       } else {
         await updateLeadInSupabase({
@@ -781,7 +857,6 @@ export default function Calendar() {
       setActionPendingId(`${editEntry.id}:edit`);
 
       if (editEntry.kind === 'event') {
-        const selectedLead = leads.find((lead) => lead.id === editDraft.leadId);
         const reminderAt = toReminderAtIso(editDraft.startAt, editDraft.reminder);
         await updateEventInSupabase({
           id: editEntry.sourceId,
@@ -792,8 +867,8 @@ export default function Calendar() {
           reminderAt,
           recurrenceRule: editDraft.recurrence.mode,
           status: editEntry.raw?.status || 'scheduled',
-          leadId: selectedLead?.id ?? null,
-          caseId: editEntry.raw?.caseId ?? null,
+          leadId: editDraft.leadId || null,
+          caseId: editDraft.caseId || null,
         });
         await registerReminderScheduled({
           entityType: 'event',
@@ -802,7 +877,6 @@ export default function Calendar() {
           reminderAt,
         });
       } else if (editEntry.kind === 'task') {
-        const selectedLead = leads.find((lead) => lead.id === editDraft.leadId);
         const nextDate = parseISO(editDraft.startAt);
         const payload = syncTaskDerivedFields({
           ...editEntry.raw,
@@ -812,8 +886,8 @@ export default function Calendar() {
           date: format(nextDate, 'yyyy-MM-dd'),
           time: format(nextDate, 'HH:mm'),
           priority: editDraft.priority,
-          leadId: selectedLead?.id ?? null,
-          leadName: selectedLead?.name ?? '',
+          leadId: editDraft.leadId || null,
+          leadName: selectedEditOption?.resolvedTarget === 'lead' ? selectedEditOption.label : '',
           recurrence: editDraft.recurrence,
           reminder: editDraft.reminder,
         });
@@ -830,7 +904,7 @@ export default function Calendar() {
           reminderAt,
           recurrenceRule: payload.recurrence?.mode ?? 'none',
           leadId: payload.leadId ?? null,
-          caseId: editEntry.raw?.caseId ?? null,
+          caseId: editDraft.caseId || null,
         });
         await registerReminderScheduled({
           entityType: 'task',
@@ -972,16 +1046,14 @@ export default function Calendar() {
                         ))}
                       </select>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Lead</Label>
-                      <select className={modalSelectClass} value={newTask.leadId} onChange={(e) => setNewTask({ ...newTask, leadId: e.target.value })}>
-                        <option value="none">Bez leada</option>
-                        {leads.map((lead) => (
-                          <option key={lead.id} value={lead.id}>{lead.name}</option>
-                        ))}
-                      </select>
-                    </div>
                   </div>
+                  <TopicContactPicker
+                    options={topicContactOptions}
+                    selectedOption={selectedNewTaskOption}
+                    query={newTask.relationQuery}
+                    onQueryChange={(value) => setNewTask((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                    onSelect={handleSelectNewTaskRelation}
+                  />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Priorytet</Label>
@@ -1023,16 +1095,14 @@ export default function Calendar() {
                           ))}
                         </select>
                       </div>
-                      <div className="space-y-2">
-                        <Label>Lead</Label>
-                        <select className={modalSelectClass} value={newEvent.leadId} onChange={(e) => setNewEvent({ ...newEvent, leadId: e.target.value })}>
-                          <option value="none">Bez leada</option>
-                          {leads.map((lead) => (
-                            <option key={lead.id} value={lead.id}>{lead.name}</option>
-                          ))}
-                        </select>
-                      </div>
                     </div>
+                    <TopicContactPicker
+                      options={topicContactOptions}
+                      selectedOption={selectedNewEventOption}
+                      query={newEvent.relationQuery}
+                      onQueryChange={(value) => setNewEvent((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                      onSelect={handleSelectNewEventRelation}
+                    />
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
@@ -1346,13 +1416,13 @@ export default function Calendar() {
 
               {editEntry.kind !== 'lead' ? (
                 <div className="space-y-2">
-                  <Label>Lead</Label>
-                  <select className={modalSelectClass} value={editDraft.leadId} onChange={(e) => setEditDraft({ ...editDraft, leadId: e.target.value })}>
-                    <option value="none">Bez leada</option>
-                    {leads.map((lead) => (
-                      <option key={lead.id} value={lead.id}>{lead.name}</option>
-                    ))}
-                  </select>
+                  <TopicContactPicker
+                    options={topicContactOptions}
+                    selectedOption={selectedEditOption}
+                    query={editDraft.relationQuery}
+                    onQueryChange={(value) => setEditDraft({ ...editDraft, relationQuery: value, leadId: '', caseId: '' })}
+                    onSelect={handleSelectEditRelation}
+                  />
                 </div>
               ) : null}
 

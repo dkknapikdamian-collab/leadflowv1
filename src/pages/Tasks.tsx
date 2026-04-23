@@ -33,6 +33,7 @@ import {
   DialogTrigger,
   DialogFooter,
 } from '../components/ui/dialog';
+import { TopicContactPicker } from '../components/topic-contact-picker';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,9 +59,11 @@ import {
   TASK_TYPES,
 } from '../lib/options';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
 import {
   deleteTaskFromSupabase,
   fetchCasesFromSupabase,
+  fetchClientsFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
@@ -114,6 +117,7 @@ export default function Tasks() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [taskScope, setTaskScope] = useState<TaskScope>('all');
@@ -125,8 +129,9 @@ export default function Tasks() {
     type: 'follow_up',
     dueAt: toDateTimeLocalValue(new Date()),
     priority: 'medium',
-    leadId: 'none',
-    leadName: '',
+    leadId: '',
+    caseId: '',
+    relationQuery: '',
     recurrence: createDefaultRecurrence(),
     reminder: createDefaultReminder(),
   }));
@@ -173,15 +178,18 @@ export default function Tasks() {
       fetchLeadsFromSupabase(),
       fetchCasesFromSupabase(),
     ]);
+    const clientRows = await fetchClientsFromSupabase().catch(() => []);
 
     setTasks(taskRows as any[]);
     setLeads(leadRows as any[]);
     setCases(caseRows as any[]);
+    setClients(clientRows as any[]);
 
     return {
       taskRows: taskRows as any[],
       leadRows: leadRows as any[],
       caseRows: caseRows as any[],
+      clientRows: clientRows as any[],
     };
   }
 
@@ -193,16 +201,18 @@ export default function Tasks() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const [taskRows, leadRows, caseRows] = await Promise.all([
+        const [taskRows, leadRows, caseRows, clientRows] = await Promise.all([
           fetchTasksFromSupabase(),
           fetchLeadsFromSupabase(),
           fetchCasesFromSupabase(),
+          fetchClientsFromSupabase().catch(() => []),
         ]);
 
         if (cancelled) return;
         setTasks(taskRows as any[]);
         setLeads(leadRows as any[]);
         setCases(caseRows as any[]);
+        setClients(clientRows as any[]);
       } catch (error: any) {
         if (!cancelled) {
           toast.error(`Błąd odczytu zadań: ${error.message}`);
@@ -227,11 +237,51 @@ export default function Tasks() {
       type: 'follow_up',
       dueAt: toDateTimeLocalValue(new Date()),
       priority: 'medium',
-      leadId: 'none',
-      leadName: '',
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
       recurrence: createDefaultRecurrence(),
       reminder: createDefaultReminder(),
     });
+  };
+
+  const topicContactOptions = useMemo(
+    () => buildTopicContactOptions({ leads, cases, clients }),
+    [cases, clients, leads],
+  );
+
+  const selectedNewTaskOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: newTask.leadId || null, caseId: newTask.caseId || null }),
+    [newTask.caseId, newTask.leadId, topicContactOptions],
+  );
+
+  const selectedEditTaskOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: editTask?.leadId || null, caseId: editTask?.caseId || null }),
+    [editTask?.caseId, editTask?.leadId, topicContactOptions],
+  );
+
+  const handleSelectNewTaskRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setNewTask((prev) => ({
+      ...prev,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    }));
+  };
+
+  const handleSelectEditTaskRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setEditTask((prev: any) => (
+      prev
+        ? {
+            ...prev,
+            leadId: resolved.leadId || '',
+            caseId: resolved.caseId || '',
+            relationQuery: option?.label || '',
+          }
+        : prev
+    ));
   };
 
   const getSoftNextStepDefaultDueAt = () => {
@@ -308,7 +358,9 @@ export default function Tasks() {
       type: task.type || 'follow_up',
       dueAt: getTaskStart(task),
       priority: task.priority || 'medium',
-      leadId: task.leadId || 'none',
+      leadId: task.leadId || '',
+      caseId: task.caseId || '',
+      relationQuery: task.caseId ? String(caseTitleById.get(String(task.caseId)) || task.title || '') : (task.leadName || ''),
       recurrence: normalizeRecurrenceConfig(task.recurrence),
       reminder: normalizeReminderConfig(task.reminder),
       status: task.status || 'todo',
@@ -324,11 +376,10 @@ export default function Tasks() {
     createTaskSubmitLockRef.current = true;
     setTaskSubmitting(true);
 
-    const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
     const payload = syncTaskDerivedFields({
       ...newTask,
-      leadId: selectedLead?.id ?? null,
-      leadName: selectedLead?.name ?? '',
+      leadId: newTask.leadId || null,
+      leadName: selectedNewTaskOption?.resolvedTarget === 'lead' ? selectedNewTaskOption.label : '',
       recurrence: normalizeRecurrenceConfig(newTask.recurrence),
       reminder: normalizeReminderConfig(newTask.reminder),
     });
@@ -356,7 +407,8 @@ export default function Tasks() {
         date: newTask.dueAt.slice(0, 10),
         scheduledAt: newTask.dueAt,
         priority: newTask.priority,
-        leadId: selectedLead?.id ?? null,
+        leadId: newTask.leadId || null,
+        caseId: newTask.caseId || null,
         reminderAt,
         recurrenceRule: payload.recurrence?.mode ?? 'none',
         ownerId: auth.currentUser?.uid,
@@ -393,6 +445,7 @@ export default function Tasks() {
         status: nextStatus,
         priority: task?.priority,
         leadId: task?.leadId ?? null,
+        caseId: task?.caseId ?? null,
       });
 
       await refreshSupabaseData();
@@ -429,11 +482,10 @@ export default function Tasks() {
     editTaskSubmitLockRef.current = true;
     setTaskEditSubmitting(true);
 
-    const selectedLead = leads.find((lead) => lead.id === editTask.leadId);
     const payload = syncTaskDerivedFields({
       ...editTask,
-      leadId: selectedLead?.id ?? null,
-      leadName: selectedLead?.name ?? '',
+      leadId: editTask.leadId || null,
+      leadName: selectedEditTaskOption?.resolvedTarget === 'lead' ? selectedEditTaskOption.label : '',
       recurrence: normalizeRecurrenceConfig(editTask.recurrence),
       reminder: normalizeReminderConfig(editTask.reminder),
     });
@@ -466,6 +518,7 @@ export default function Tasks() {
         date: payload.date,
         scheduledAt: payload.dueAt,
         leadId: payload.leadId ?? null,
+        caseId: editTask.caseId || null,
         reminderAt,
         recurrenceRule: payload.recurrence?.mode ?? 'none',
       });
@@ -707,16 +760,14 @@ export default function Tasks() {
                         ))}
                       </select>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Lead</Label>
-                      <select className={modalSelectClass} value={newTask.leadId} onChange={(e) => setNewTask({ ...newTask, leadId: e.target.value })}>
-                        <option value="none">Bez leada</option>
-                        {leads.map((lead) => (
-                          <option key={lead.id} value={lead.id}>{lead.name}</option>
-                        ))}
-                      </select>
-                    </div>
                   </div>
+                  <TopicContactPicker
+                    options={topicContactOptions}
+                    selectedOption={selectedNewTaskOption}
+                    query={newTask.relationQuery}
+                    onQueryChange={(value) => setNewTask((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                    onSelect={handleSelectNewTaskRelation}
+                  />
                   <div className="space-y-2">
                     <Label>Priorytet</Label>
                     <select className={modalSelectClass} value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}>
@@ -833,16 +884,14 @@ export default function Tasks() {
                           ))}
                         </select>
                       </div>
-                      <div className="space-y-2">
-                        <Label>Lead</Label>
-                        <select className={modalSelectClass} value={editTask.leadId} onChange={(e) => setEditTask({ ...editTask, leadId: e.target.value })}>
-                          <option value="none">Bez leada</option>
-                          {leads.map((lead) => (
-                            <option key={lead.id} value={lead.id}>{lead.name}</option>
-                          ))}
-                        </select>
-                      </div>
                     </div>
+                    <TopicContactPicker
+                      options={topicContactOptions}
+                      selectedOption={selectedEditTaskOption}
+                      query={editTask.relationQuery}
+                      onQueryChange={(value) => setEditTask({ ...editTask, relationQuery: value, leadId: '', caseId: '' })}
+                      onSelect={handleSelectEditTaskRelation}
+                    />
                     <div className="space-y-2">
                       <Label>Priorytet</Label>
                       <select className={modalSelectClass} value={editTask.priority} onChange={(e) => setEditTask({ ...editTask, priority: e.target.value })}>

@@ -44,6 +44,7 @@ import {
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { TopicContactPicker } from '../components/topic-contact-picker';
 import {
   buildStartEndPair,
   combineScheduleEntries,
@@ -66,9 +67,11 @@ import {
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
+  fetchClientsFromSupabase,
   fetchLeadsFromSupabase,
   insertEventToSupabase,
   insertActivityToSupabase,
@@ -227,6 +230,7 @@ export default function Today() {
   const { workspace, profile, hasAccess, loading: wsLoading } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -260,8 +264,9 @@ export default function Today() {
     type: 'follow_up',
     dueAt: toDateTimeLocalValue(new Date()),
     priority: 'medium',
-    leadId: 'none',
-    leadName: '',
+    leadId: '',
+    caseId: '',
+    relationQuery: '',
     recurrence: createDefaultRecurrence(),
     reminder: createDefaultReminder(),
   }));
@@ -272,8 +277,9 @@ export default function Today() {
       title: '',
       type: 'meeting',
       ...pair,
-      leadId: 'none',
-      leadName: '',
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
       recurrence: createDefaultRecurrence(),
       reminder: createDefaultReminder(),
     };
@@ -316,9 +322,13 @@ export default function Today() {
   };
 
   async function refreshSupabaseBundle() {
-    const bundle = await fetchCalendarBundleFromSupabase();
+    const [bundle, clientRows] = await Promise.all([
+      fetchCalendarBundleFromSupabase(),
+      fetchClientsFromSupabase().catch(() => []),
+    ]);
     setLeads(bundle.leads);
     setCases(bundle.cases || []);
+    setClients(clientRows as any[]);
     setTasks(bundle.tasks);
     setEvents(bundle.events);
   }
@@ -398,10 +408,14 @@ export default function Today() {
     const loadBundle = async () => {
       try {
         setLoading(true);
-        const bundle = await fetchCalendarBundleFromSupabase();
+        const [bundle, clientRows] = await Promise.all([
+          fetchCalendarBundleFromSupabase(),
+          fetchClientsFromSupabase().catch(() => []),
+        ]);
         if (cancelled) return;
         setLeads(bundle.leads);
         setCases(bundle.cases || []);
+        setClients(clientRows as any[]);
         setTasks(bundle.tasks);
         setEvents(bundle.events);
       } catch (error: any) {
@@ -428,8 +442,9 @@ export default function Today() {
       type: 'follow_up',
       dueAt: toDateTimeLocalValue(new Date()),
       priority: 'medium',
-      leadId: 'none',
-      leadName: '',
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
       recurrence: createDefaultRecurrence(),
       reminder: createDefaultReminder(),
     });
@@ -441,11 +456,47 @@ export default function Today() {
       title: '',
       type: 'meeting',
       ...pair,
-      leadId: 'none',
-      leadName: '',
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
       recurrence: createDefaultRecurrence(),
       reminder: createDefaultReminder(),
     });
+  };
+
+  const topicContactOptions = useMemo(
+    () => buildTopicContactOptions({ leads, cases, clients }),
+    [cases, clients, leads],
+  );
+
+  const selectedNewTaskOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: newTask.leadId || null, caseId: newTask.caseId || null }),
+    [newTask.caseId, newTask.leadId, topicContactOptions],
+  );
+
+  const selectedNewEventOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: newEvent.leadId || null, caseId: newEvent.caseId || null }),
+    [newEvent.caseId, newEvent.leadId, topicContactOptions],
+  );
+
+  const handleSelectTaskRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setNewTask((prev) => ({
+      ...prev,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    }));
+  };
+
+  const handleSelectEventRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setNewEvent((prev) => ({
+      ...prev,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    }));
   };
 
   const openPreviewEntry = (entry: any) => {
@@ -526,7 +577,6 @@ export default function Today() {
     taskSubmitLockRef.current = true;
     setTaskSubmitting(true);
     try {
-      const selectedLead = leads.find((lead) => lead.id === newTask.leadId);
       const shouldSave = confirmScheduleConflicts({
         draft: {
           kind: 'task',
@@ -544,7 +594,8 @@ export default function Today() {
         date: newTask.dueAt.slice(0, 10),
         scheduledAt: newTask.dueAt,
         priority: newTask.priority,
-        leadId: selectedLead?.id ?? null,
+        leadId: newTask.leadId || null,
+        caseId: newTask.caseId || null,
         reminderAt,
         recurrenceRule: newTask.recurrence.mode,
         ownerId: auth.currentUser?.uid,
@@ -575,7 +626,6 @@ export default function Today() {
     eventSubmitLockRef.current = true;
     setEventSubmitting(true);
     try {
-      const selectedLead = leads.find((lead) => lead.id === newEvent.leadId);
       const shouldSave = confirmScheduleConflicts({
         draft: {
           kind: 'event',
@@ -595,7 +645,8 @@ export default function Today() {
         endAt: newEvent.endAt,
         reminderAt,
         recurrenceRule: newEvent.recurrence.mode,
-        leadId: selectedLead?.id ?? null,
+        leadId: newEvent.leadId || null,
+        caseId: newEvent.caseId || null,
         workspaceId: workspace.id,
       });
       await registerReminderScheduled({
@@ -627,6 +678,7 @@ export default function Today() {
         date: task?.date,
         priority: task?.priority,
         leadId: task?.leadId ?? null,
+        caseId: task?.caseId ?? null,
       });
       await refreshSupabaseBundle();
     } catch (error: any) {
@@ -648,6 +700,7 @@ export default function Today() {
         status: nextStatus,
         priority: entry.raw?.priority,
         leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
       });
 
       await refreshSupabaseBundle();
@@ -700,6 +753,7 @@ export default function Today() {
         endAt: entry.raw?.endAt || null,
         status: nextStatus,
         leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
       });
 
       await refreshSupabaseBundle();
@@ -925,21 +979,12 @@ export default function Today() {
                       <Label>Tytuł zadania</Label>
                       <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Typ</Label>
                         <select className={modalSelectClass} value={newTask.type} onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}>
                           {TASK_TYPES.map((taskType) => (
                             <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Lead</Label>
-                        <select className={modalSelectClass} value={newTask.leadId} onChange={(e) => setNewTask({ ...newTask, leadId: e.target.value })}>
-                          <option value="none">Bez leada</option>
-                          {leads.map((lead) => (
-                            <option key={lead.id} value={lead.id}>{lead.name}</option>
                           ))}
                         </select>
                       </div>
@@ -952,6 +997,13 @@ export default function Today() {
                         </select>
                       </div>
                     </div>
+                    <TopicContactPicker
+                      options={topicContactOptions}
+                      selectedOption={selectedNewTaskOption}
+                      query={newTask.relationQuery}
+                      onQueryChange={(value) => setNewTask((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                      onSelect={handleSelectTaskRelation}
+                    />
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
@@ -1052,14 +1104,14 @@ export default function Today() {
                           {EVENT_TYPES.map((eventType) => <option key={eventType.value} value={eventType.value}>{eventType.label}</option>)}
                         </select>
                       </div>
-                      <div className="space-y-2">
-                        <Label>Lead</Label>
-                        <select className={modalSelectClass} value={newEvent.leadId} onChange={(e) => setNewEvent({ ...newEvent, leadId: e.target.value })}>
-                          <option value="none">Bez leada</option>
-                          {leads.map((lead) => <option key={lead.id} value={lead.id}>{lead.name}</option>)}
-                        </select>
-                      </div>
                     </div>
+                    <TopicContactPicker
+                      options={topicContactOptions}
+                      selectedOption={selectedNewEventOption}
+                      query={newEvent.relationQuery}
+                      onQueryChange={(value) => setNewEvent((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                      onSelect={handleSelectEventRelation}
+                    />
                   </div>
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
