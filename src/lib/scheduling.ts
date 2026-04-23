@@ -11,7 +11,6 @@ import {
   startOfDay,
   subMinutes,
 } from 'date-fns';
-import { isActiveSalesLead } from './lead-health';
 
 export type RecurrenceRule = 'none' | 'daily' | 'every_2_days' | 'weekly' | 'monthly' | 'weekday';
 export type RecurrenceEndType = 'never' | 'until_date' | 'count';
@@ -283,27 +282,10 @@ export function expandTaskEntries(tasks: any[], rangeStart: Date, rangeEnd: Date
 }
 
 export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
-  return leads.flatMap((lead) => {
-    if (!lead?.nextActionAt || !isActiveSalesLead(lead)) return [] as ScheduleEntry[];
-
-    const startsAt = lead.nextActionAt.includes('T') ? lead.nextActionAt : `${lead.nextActionAt}T09:00`;
-    const start = parseISO(startsAt);
-    if (isBefore(start, rangeStart) || isAfter(start, rangeEnd)) return [] as ScheduleEntry[];
-
-    return [{
-      id: lead.id,
-      kind: 'lead' as const,
-      title: lead.nextStep || `Lead: ${lead.name}`,
-      startsAt,
-      endsAt: null,
-      sourceId: lead.id,
-      link: `/leads/${lead.id}`,
-      badgeLabel: 'Lead',
-      leadId: lead.id,
-      leadName: lead.name,
-      raw: lead,
-    }];
-  });
+  void leads;
+  void rangeStart;
+  void rangeEnd;
+  return [];
 }
 
 function choosePreferredEntry(existing: ScheduleEntry, incoming: ScheduleEntry) {

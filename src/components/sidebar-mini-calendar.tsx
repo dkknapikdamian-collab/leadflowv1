@@ -27,11 +27,9 @@ type DatedItem = {
   date: string;
 };
 
-function getDayTone(hasLead: boolean, hasEvent: boolean, hasTask: boolean, today: boolean) {
+function getDayTone(hasEvent: boolean, hasTask: boolean, today: boolean) {
   if (today) return 'bg-primary text-white';
-  if (hasLead && hasEvent) return 'bg-fuchsia-100 text-fuchsia-800';
   if (hasEvent && hasTask) return 'bg-amber-100 text-amber-800';
-  if (hasLead) return 'bg-cyan-100 text-cyan-800';
   if (hasEvent) return 'bg-indigo-100 text-indigo-800';
   if (hasTask) return 'bg-emerald-100 text-emerald-800';
   return 'text-slate-700 hover:bg-slate-100';
@@ -42,7 +40,6 @@ export function SidebarMiniCalendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [taskDates, setTaskDates] = useState<DatedItem[]>([]);
   const [eventDates, setEventDates] = useState<DatedItem[]>([]);
-  const [leadDates, setLeadDates] = useState<DatedItem[]>([]);
 
   useEffect(() => {
     if (isSupabaseConfigured()) {
@@ -50,12 +47,10 @@ export function SidebarMiniCalendar() {
         .then((bundle) => {
           setTaskDates(bundle.tasks.map((item) => ({ date: item.date })));
           setEventDates(bundle.events.map((item) => ({ date: item.startAt })));
-          setLeadDates(bundle.leads.map((item) => ({ date: item.nextActionAt })));
         })
         .catch(() => {
           setTaskDates([]);
           setEventDates([]);
-          setLeadDates([]);
         });
       return;
     }
@@ -63,7 +58,6 @@ export function SidebarMiniCalendar() {
     if (!auth.currentUser) {
       setTaskDates([]);
       setEventDates([]);
-      setLeadDates([]);
       return;
     }
 
@@ -77,12 +71,6 @@ export function SidebarMiniCalendar() {
       onSnapshot(query(collection(db, 'events'), where('ownerId', '==', auth.currentUser.uid), orderBy('startAt', 'asc')), (snapshot) => {
         setEventDates(snapshot.docs
           .map((entry) => entry.data().startAt)
-          .filter((date): date is string => typeof date === 'string' && Boolean(date))
-          .map((date) => ({ date })));
-      }),
-      onSnapshot(query(collection(db, 'leads'), where('ownerId', '==', auth.currentUser.uid), orderBy('nextActionAt', 'asc')), (snapshot) => {
-        setLeadDates(snapshot.docs
-          .map((entry) => entry.data().nextActionAt)
           .filter((date): date is string => typeof date === 'string' && Boolean(date))
           .map((date) => ({ date })));
       }),
@@ -129,7 +117,6 @@ export function SidebarMiniCalendar() {
           {monthDays.map((day) => {
             const hasTask = taskDates.some((item) => isSameDay(parseISO(item.date), day));
             const hasEvent = eventDates.some((item) => isSameDay(parseISO(item.date), day));
-            const hasLead = leadDates.some((item) => isSameDay(parseISO(item.date), day));
 
             return (
               <button
@@ -138,9 +125,9 @@ export function SidebarMiniCalendar() {
                 onClick={() => navigate(`/calendar?focus=${format(day, 'yyyy-MM-dd')}`)}
                 className={[
                   'flex h-5 items-center justify-center rounded-md text-[9px] font-semibold transition-colors',
-                  !isSameMonth(day, currentMonth) ? 'text-slate-300' : getDayTone(hasLead, hasEvent, hasTask, isToday(day)),
+                  !isSameMonth(day, currentMonth) ? 'text-slate-300' : getDayTone(hasEvent, hasTask, isToday(day)),
                 ].join(' ')}
-                title={hasLead || hasEvent || hasTask ? 'Ten dzień ma zaplanowany ruch' : 'Brak aktywności'}
+                title={hasEvent || hasTask ? 'Ten dzień ma zaplanowane działania' : 'Brak aktywności'}
               >
                 {format(day, 'd')}
               </button>

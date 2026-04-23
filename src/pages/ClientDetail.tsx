@@ -127,6 +127,12 @@ export default function ClientDetail() {
           <Card><CardContent className="p-4"><p className="text-sm text-slate-500">Rozliczenia</p><p className="text-2xl font-bold">{paymentTotal.toLocaleString()} PLN</p></CardContent></Card>
         </div>
 
+        <Card>
+          <CardContent className="p-4 text-sm text-slate-600">
+            Klient jest wspólnym rekordem w tle. Główna codzienna praca dzieje się na aktywnych leadach i sprawach powiązanych z tym klientem.
+          </CardContent>
+        </Card>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card>
             <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Target className="w-4 h-4" /> Leady klienta</CardTitle></CardHeader>

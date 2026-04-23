@@ -1,37 +1,28 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
+import { AlertTriangle, Briefcase, ChevronRight, FileText, Loader2, Mail, Plus, Search, Target, TrendingUp } from 'lucide-react';
+import { format, isPast, parseISO } from 'date-fns';
+import { pl } from 'date-fns/locale';
+import { toast } from 'sonner';
+
+import Layout from '../components/Layout';
+import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
-import { Input } from '../components/ui/input';
-import { Badge } from '../components/ui/badge';
-import {
-  Plus,
-  Search,
-  ChevronRight,
-  Target,
-  TrendingUp,
-  AlertTriangle,
-  Mail,
-  Clock,
-  FileText,
-  Loader2,
-  Briefcase,
-  CalendarDays,
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
-import Layout from '../components/Layout';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { toast } from 'sonner';
-import { format, isAfter, isPast, parseISO, startOfDay, subDays, addDays } from 'date-fns';
-import { pl } from 'date-fns/locale';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { getLeadNextAction } from '../lib/lead-next-action';
+import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
 import {
   fetchCasesFromSupabase,
+  fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
+  fetchTasksFromSupabase,
   insertLeadToSupabase,
   isSupabaseConfigured,
 } from '../lib/supabase-fallback';
-import { hasNextStep, isActiveSalesLead, isLeadMovedToService, isNextStepOverdue } from '../lib/lead-health';
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
@@ -65,7 +56,7 @@ type CaseRecord = {
   leadId?: string | null;
 };
 
-type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history' | 'no-next-step';
+type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history';
 
 function formatLeadSourceLabel(value: unknown) {
   const normalized = String(value || 'other');
@@ -74,25 +65,6 @@ function formatLeadSourceLabel(value: unknown) {
 
 function nativeSelectClassName() {
   return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
-}
-
-function toDateSafe(value: unknown) {
-  if (!value) return null;
-  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
-  if (typeof value === 'string') {
-    const normalized = value.includes('T') ? value : `${value}T09:00:00`;
-    const parsed = parseISO(normalized);
-    return Number.isNaN(parsed.getTime()) ? null : parsed;
-  }
-  if (typeof value === 'object' && value && 'toDate' in (value as Record<string, unknown>)) {
-    try {
-      const converted = (value as { toDate: () => Date }).toDate();
-      return Number.isNaN(converted.getTime()) ? null : converted;
-    } catch {
-      return null;
-    }
-  }
-  return null;
 }
 
 function createSummaryCardClass(active: boolean) {
@@ -107,6 +79,8 @@ export default function Leads() {
   const { workspace, hasAccess } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<CaseRecord[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -121,10 +95,7 @@ export default function Leads() {
     source: 'other',
     dealValue: '',
     company: '',
-    nextStep: '',
-    nextActionAt: '',
   });
-
 
   const createLeadSubmitLockRef = useRef(false);
   const [leadSubmitting, setLeadSubmitting] = useState(false);
@@ -134,12 +105,16 @@ export default function Leads() {
     setLoading(true);
     setLoadError(null);
     try {
-      const [leadRows, caseRows] = await Promise.all([
+      const [leadRows, caseRows, taskRows, eventRows] = await Promise.all([
         fetchLeadsFromSupabase(),
         fetchCasesFromSupabase().catch(() => []),
+        fetchTasksFromSupabase().catch(() => []),
+        fetchEventsFromSupabase().catch(() => []),
       ]);
       setLeads(leadRows as any[]);
       setCases(caseRows as CaseRecord[]);
+      setTasks(taskRows as any[]);
+      setEvents(eventRows as any[]);
     } catch (error: any) {
       const message = error?.message || 'Nie udało się pobrać leadów';
       setLoadError(message);
@@ -150,8 +125,7 @@ export default function Leads() {
   }, [workspace]);
 
   useEffect(() => {
-    if (!workspace) return;
-    if (!isSupabaseConfigured()) return;
+    if (!workspace || !isSupabaseConfigured()) return;
     void loadLeads();
   }, [loadLeads, workspace]);
 
@@ -165,6 +139,29 @@ export default function Leads() {
     }
     return map;
   }, [cases]);
+
+  const nextActionByLeadId = useMemo(() => {
+    const map = new Map<string, ReturnType<typeof getLeadNextAction>>();
+
+    for (const lead of leads) {
+      const leadId = String(lead.id || '');
+      if (!leadId) continue;
+      const linkedCase = casesByLeadId.get(leadId);
+      const linkedTasks = tasks.filter((item) => {
+        const itemLeadId = String(item.leadId || '');
+        const itemCaseId = String(item.caseId || '');
+        return itemLeadId === leadId || (linkedCase?.id && itemCaseId === String(linkedCase.id));
+      });
+      const linkedEvents = events.filter((item) => {
+        const itemLeadId = String(item.leadId || '');
+        const itemCaseId = String(item.caseId || '');
+        return itemLeadId === leadId || (linkedCase?.id && itemCaseId === String(linkedCase.id));
+      });
+      map.set(leadId, getLeadNextAction(linkedTasks, linkedEvents));
+    }
+
+    return map;
+  }, [casesByLeadId, events, leads, tasks]);
 
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
@@ -184,7 +181,7 @@ export default function Leads() {
       await loadLeads();
       toast.success('Lead dodany');
       setIsNewLeadOpen(false);
-      setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', nextStep: '', nextActionAt: '' });
+      setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '' });
     } catch (error: any) {
       toast.error(`Błąd zapisu leada: ${error.message}`);
     } finally {
@@ -193,32 +190,22 @@ export default function Leads() {
     }
   };
 
-  const applyLeadDatePreset = (days: number) => {
-    const next = addDays(new Date(), days);
-    setNewLead((prev) => ({ ...prev, nextActionAt: format(next, 'yyyy-MM-dd') }));
-  };
-
   const filteredLeads = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
 
     const results = leads.filter((lead) => {
-      const name = String(lead.name || '').toLowerCase();
-      const email = String(lead.email || '').toLowerCase();
-      const company = String(lead.company || '').toLowerCase();
       const linkedCase = casesByLeadId.get(String(lead.id));
       const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
       const activeLead = isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
-      const missingNextStep = activeLead && !hasNextStep(lead);
       const caseTitle = String(linkedCase?.title || '').toLowerCase();
       const caseStatus = String(linkedCase?.status || '').toLowerCase();
 
       const matchesSearch = !normalizedQuery
-        || name.includes(normalizedQuery)
-        || email.includes(normalizedQuery)
-        || company.includes(normalizedQuery)
-        || String(lead.status || 'new').includes(normalizedQuery)
+        || String(lead.name || '').toLowerCase().includes(normalizedQuery)
+        || String(lead.email || '').toLowerCase().includes(normalizedQuery)
+        || String(lead.company || '').toLowerCase().includes(normalizedQuery)
+        || String(lead.status || 'new').toLowerCase().includes(normalizedQuery)
         || String(lead.source || '').toLowerCase().includes(normalizedQuery)
-        || String(lead.nextStep || '').toLowerCase().includes(normalizedQuery)
         || caseTitle.includes(normalizedQuery)
         || caseStatus.includes(normalizedQuery);
 
@@ -226,8 +213,7 @@ export default function Leads() {
         quickFilter === 'all'
         || (quickFilter === 'active' && activeLead)
         || (quickFilter === 'at-risk' && Boolean(lead.isAtRisk))
-        || (quickFilter === 'history' && movedToService)
-        || (quickFilter === 'no-next-step' && missingNextStep);
+        || (quickFilter === 'history' && movedToService);
 
       return matchesSearch && matchesQuickFilter;
     });
@@ -245,7 +231,6 @@ export default function Leads() {
     value: leads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
     atRisk: leads.filter((lead) => Boolean(lead.isAtRisk)).length,
     linkedToCase: leads.filter((lead) => isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
-    noNextStep: leads.filter((lead) => !hasNextStep(lead) && isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
   };
 
   const toggleQuickFilter = (filter: LeadsQuickFilter) => {
@@ -264,7 +249,7 @@ export default function Leads() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Leady</h1>
-            <p className="text-slate-500">Zarządzaj procesem sprzedaży i domykaj deale.</p>
+            <p className="text-slate-500">Lead to temat do pozyskania. Po starcie obsługi dalsza praca trafia do sprawy.</p>
           </div>
           <div className="flex items-center gap-2">
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
@@ -314,26 +299,6 @@ export default function Leads() {
                       </select>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Kolejny krok</Label>
-                      <Input
-                        value={newLead.nextStep}
-                        onChange={(e) => setNewLead({ ...newLead, nextStep: e.target.value })}
-                        placeholder="np. Telefon z ofertą"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Termin ruchu</Label>
-                      <Input type="date" value={newLead.nextActionAt} onChange={(e) => setNewLead({ ...newLead, nextActionAt: e.target.value })} />
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(0)}>Dziś</Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(1)}>Jutro</Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(3)}>Za 3 dni</Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => applyLeadDatePreset(7)}>Za tydzień</Button>
-                  </div>
                   <DialogFooter>
                     <Button type="submit" className="w-full" disabled={leadSubmitting}>
                       {leadSubmitting ? 'Dodawanie...' : 'Stwórz leada'}
@@ -345,7 +310,7 @@ export default function Leads() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
           <button type="button" className={createSummaryCardClass(quickFilter === 'all' && !valueSortEnabled)} onClick={() => { setQuickFilter('all'); setValueSortEnabled(false); }}>
             <Card className="border-none shadow-sm">
               <CardContent className={createSummaryCardContentClass(quickFilter === 'all' && !valueSortEnabled)}>
@@ -407,25 +372,11 @@ export default function Leads() {
             <Card className="border-none shadow-sm">
               <CardContent className={createSummaryCardContentClass(quickFilter === 'history')}>
                 <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">W historii</p>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">W obsłudze</p>
                   <h3 className="text-2xl font-bold text-emerald-600">{stats.linkedToCase}</h3>
                 </div>
                 <div className="bg-emerald-50 p-3 rounded-2xl">
                   <Briefcase className="w-6 h-6 text-emerald-500" />
-                </div>
-              </CardContent>
-            </Card>
-          </button>
-
-          <button type="button" className={createSummaryCardClass(quickFilter === 'no-next-step')} onClick={() => toggleQuickFilter('no-next-step')}>
-            <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'no-next-step')}>
-                <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Bez kroku</p>
-                  <h3 className="text-2xl font-bold text-amber-600">{stats.noNextStep}</h3>
-                </div>
-                <div className="bg-amber-50 p-3 rounded-2xl">
-                  <CalendarDays className="w-6 h-6 text-amber-500" />
                 </div>
               </CardContent>
             </Card>
@@ -450,7 +401,7 @@ export default function Leads() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-              <p className="text-slate-500">Ładowanie Twoich leadów...</p>
+              <p className="text-slate-500">Ładowanie leadów...</p>
             </div>
           ) : loadError ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-rose-200">
@@ -466,14 +417,15 @@ export default function Leads() {
                 <Search className="w-8 h-8 text-slate-300" />
               </div>
               <h3 className="text-lg font-bold text-slate-900">Nie znaleziono leadów</h3>
-              <p className="text-slate-500 max-w-xs mx-auto mt-1">Spróbuj zmienić wyszukiwanie, kliknąć inny kafelek u góry albo dodaj nowego leada.</p>
+              <p className="text-slate-500 max-w-xs mx-auto mt-1">Spróbuj zmienić wyszukiwanie, kliknąć inny kafelek u góry albo dodać nowego leada.</p>
             </div>
           ) : (
             filteredLeads.map((lead) => {
-              const status = STATUS_OPTIONS.find((option) => option.value === lead.status) || STATUS_OPTIONS[0];
-              const nextActionDate = lead.nextActionAt ? parseISO(String(lead.nextActionAt).includes('T') ? String(lead.nextActionAt) : `${String(lead.nextActionAt)}T09:00:00`) : null;
-              const isOverdue = nextActionDate ? isPast(nextActionDate) : false;
               const linkedCase = casesByLeadId.get(String(lead.id));
+              const nextAction = nextActionByLeadId.get(String(lead.id));
+              const nextActionDate = nextAction ? parseISO(nextAction.when) : null;
+              const isOverdue = nextActionDate ? isPast(nextActionDate) : false;
+              const status = STATUS_OPTIONS.find((option) => option.value === lead.status) || STATUS_OPTIONS[0];
               const sourceLabel = formatLeadSourceLabel(lead.source);
               const leadValueLabel = `${(Number(lead.dealValue) || 0).toLocaleString()} PLN`;
 
@@ -481,7 +433,7 @@ export default function Leads() {
                 <Link key={lead.id} to={`/leads/${lead.id}`}>
                   <Card className="overflow-hidden border-none shadow-sm transition-all group hover:-translate-y-0.5 hover:shadow-md">
                     <CardContent className="p-0">
-                      <div className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:gap-4 md:p-4 lg:p-5">
+                      <div className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:gap-4 lg:p-5">
                         <div className="min-w-0 flex-1">
                           <div className="mb-2 flex flex-wrap items-center gap-2">
                             <h4 className="min-w-0 truncate text-base font-bold text-slate-900 transition-colors group-hover:text-primary md:text-lg">{lead.name}</h4>
@@ -489,24 +441,14 @@ export default function Leads() {
                             <Badge variant="outline" className="text-[10px] uppercase border-slate-200 text-slate-600">
                               <Target className="mr-1 h-3 w-3" /> {sourceLabel}
                             </Badge>
-                            {lead.isAtRisk && (
+                            {lead.isAtRisk ? (
                               <Badge variant="destructive" className="text-[10px] uppercase">
                                 Zagrożony
-                              </Badge>
-                            )}
-                            {!hasNextStep(lead) ? (
-                              <Badge variant="outline" className="text-[10px] uppercase border-amber-200 text-amber-700">
-                                Brak kroku
-                              </Badge>
-                            ) : null}
-                            {linkedCase ? (
-                              <Badge variant="outline" className="text-[10px] uppercase border-emerald-200 text-emerald-700">
-                                Ma aktywną sprawę
                               </Badge>
                             ) : null}
                             {linkedCase ? (
                               <Badge variant="outline" className="text-[10px] uppercase border-violet-200 text-violet-700">
-                                Przeniesiony do obsługi
+                                Temat w obsłudze
                               </Badge>
                             ) : null}
                           </div>
@@ -543,16 +485,14 @@ export default function Leads() {
                             </div>
 
                             <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[118px] sm:text-right">
-                              <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Następny krok</p>
+                              <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Najbliższa akcja</p>
                               {nextActionDate ? (
                                 <p className={`flex items-center gap-1 text-sm font-bold sm:justify-end ${isOverdue ? 'text-rose-600' : 'text-slate-700'}`}>
-                                  {isOverdue && <AlertTriangle className="h-3 w-3" />}
+                                  {isOverdue ? <AlertTriangle className="h-3 w-3" /> : null}
                                   {format(nextActionDate, 'd MMM', { locale: pl })}
                                 </p>
                               ) : (
-                                <p className="flex items-center gap-1 text-sm font-bold text-amber-600 sm:justify-end">
-                                  <Clock className="h-3 w-3" /> Brak
-                                </p>
+                                <p className="text-sm font-bold text-slate-500 sm:text-right">Brak zaplanowanych działań</p>
                               )}
                             </div>
                           </div>

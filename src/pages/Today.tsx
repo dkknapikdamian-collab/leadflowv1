@@ -255,8 +255,6 @@ export default function Today() {
     dealValue: '',
     source: 'other',
     status: 'new',
-    nextStep: '',
-    nextActionAt: '',
   });
 
   const [newTask, setNewTask] = useState(() => ({
@@ -333,13 +331,6 @@ export default function Today() {
     setEvents(bundle.events);
   }
 
-  const getSoftNextStepDefaultDueAt = () => {
-    const next = new Date();
-    next.setDate(next.getDate() + 1);
-    next.setHours(9, 0, 0, 0);
-    return toDateTimeLocalValue(next);
-  };
-
   const handleSoftNextStepAfterCompletion = async ({
     leadId,
     leadName,
@@ -349,55 +340,9 @@ export default function Today() {
     leadName?: string;
     fallbackTitle?: string;
   }) => {
-    if (!leadId) return;
-
-    const latestLeads = await fetchLeadsFromSupabase();
-    const latestLead = (latestLeads as any[]).find((lead) => String(lead.id) === String(leadId));
-    setLeads(latestLeads as any[]);
-
-    if (!latestLead || !isActiveSalesLead(latestLead) || latestLead.nextActionAt) {
-      return;
-    }
-
-    const choice = window.prompt(
-      `Lead "${leadName || latestLead.name || 'Lead'}" zostal bez kolejnego kroku.` +
-      `\n1 = ustaw krok teraz` +
-      `\n2 = przypomnij jutro` +
-      `\n3 = zostaw bez kroku`,
-      '2',
-    );
-
-    if (!choice) return;
-
-    if (choice === '1') {
-      const nextStep = window.prompt('Wpisz kolejny krok', fallbackTitle || 'Follow-up');
-      if (!nextStep?.trim()) return;
-
-      const nextActionAt = window.prompt(
-        'Podaj termin w formacie RRRR-MM-DDTHH:mm',
-        getSoftNextStepDefaultDueAt(),
-      );
-      if (!nextActionAt?.trim()) return;
-
-      await updateLeadInSupabase({
-        id: String(leadId),
-        nextStep: nextStep.trim(),
-        nextActionAt,
-      });
-      await refreshSupabaseBundle();
-      toast.success('Kolejny krok zapisany');
-      return;
-    }
-
-    if (choice === '2') {
-      await updateLeadInSupabase({
-        id: String(leadId),
-        nextStep: fallbackTitle || 'Follow-up',
-        nextActionAt: getSoftNextStepDefaultDueAt(),
-      });
-      await refreshSupabaseBundle();
-      toast.success('Ustawiono przypomnienie na jutro');
-    }
+    void leadId;
+    void leadName;
+    void fallbackTitle;
   };
 
   useEffect(() => {
@@ -561,7 +506,7 @@ export default function Today() {
       await refreshSupabaseBundle();
       toast.success('Lead dodany');
       setIsLeadOpen(false);
-      setNewLead({ name: '', email: '', dealValue: '', source: 'other', status: 'new', nextStep: '', nextActionAt: '' });
+      setNewLead({ name: '', email: '', dealValue: '', source: 'other', status: 'new' });
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     } finally {
@@ -891,7 +836,7 @@ export default function Today() {
     },
     {
       id: 'no-step',
-      title: 'Bez kroku',
+      title: 'Bez działań',
       value: noStepLeads.length,
       tone: 'text-amber-600',
       bg: 'bg-amber-50',
@@ -944,16 +889,6 @@ export default function Today() {
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
                       </select>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Kolejny krok</Label>
-                      <Input value={newLead.nextStep} onChange={(e) => setNewLead({ ...newLead, nextStep: e.target.value })} placeholder="np. Telefon z ofertą" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Termin ruchu</Label>
-                      <Input type="date" value={newLead.nextActionAt} onChange={(e) => setNewLead({ ...newLead, nextActionAt: e.target.value })} />
                     </div>
                   </div>
                   <DialogFooter>
@@ -1298,7 +1233,7 @@ export default function Today() {
                       subtitleClassName="text-rose-500 font-medium"
                       className="border-rose-100 bg-rose-50/30"
                       badges={<Badge variant="destructive" className="rounded-full">Przeterminowany</Badge>}
-                      helperText={lead.nextStep || 'Lead ma termin ruchu w przeszłości i wymaga decyzji.'}
+                      helperText="Lead ma przeterminowany ruch i wymaga decyzji albo przeniesienia do obsługi."
                     />
                   ))}
                 </div>
@@ -1478,7 +1413,7 @@ export default function Today() {
               <section id="today-section-no-step" className="space-y-4">
                 <div className="flex items-center gap-2 text-amber-600">
                   <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Bez następnego kroku</h2>
+                  <h2 className="text-lg font-bold">Bez zaplanowanych działań</h2>
                   <Badge variant="outline" className="rounded-full border-amber-200 text-amber-700 bg-amber-50">{noStepLeads.length}</Badge>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1488,8 +1423,8 @@ export default function Today() {
                       leadId={String(lead.id)}
                       title={lead.name}
                       subtitle={lead.company || 'Brak firmy'}
-                      badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak kroku</Badge>}
-                      helperText="Kliknij i ustaw kolejny krok dla tego leada."
+                      badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak działań</Badge>}
+                      helperText="Kliknij kartę i zaplanuj zadanie albo wydarzenie dla tego tematu."
                     />
                   ))}
                 </div>
@@ -1512,7 +1447,7 @@ export default function Today() {
                           title={lead.name}
                           subtitle={lead.company || 'Lead gotowy do startu'}
                           badges={<Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100 border-none">Gotowy do startu</Badge>}
-                          helperText="Wejdź w lead i użyj akcji „Utwórz sprawę”."
+                          helperText="Wejdź w lead i użyj akcji „Rozpocznij obsługę”."
                         />
                       ))}
                     </div>
@@ -1600,7 +1535,7 @@ export default function Today() {
                   <p className="text-xl font-bold text-white">{overdueTasks.length + overdueLeadActions.length}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bez kroku</p>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bez działań</p>
                   <p className="text-xl font-bold text-white">{noStepLeads.length}</p>
                 </div>
                 <div>
@@ -1630,7 +1565,7 @@ export default function Today() {
                         <>
                           {lead.isAtRisk ? <Badge variant="destructive">Oznaczony jako zagrożony</Badge> : null}
                           {isLeadOverdue(lead) ? <Badge variant="destructive">Termin w przeszłości</Badge> : null}
-                          {!parseMoment(lead.nextActionAt) ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak kroku</Badge> : null}
+                          {!parseMoment(lead.nextActionAt) ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak działań</Badge> : null}
                           {(getDaysWithoutUpdate(lead) || 0) >= 5 ? <Badge variant="outline" className="border-purple-200 text-purple-700">Bez ruchu {getDaysWithoutUpdate(lead)} dni</Badge> : null}
                         </>
                       }

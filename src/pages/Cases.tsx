@@ -550,7 +550,7 @@ export default function Cases() {
         </Card>
 
         <p className="text-sm app-muted">
-          Sprawa to etap realizacji po sprzedaży. Zadanie jest pojedynczą czynnością, wydarzenie blokiem czasu w kalendarzu, a sprawa pilnuje całego procesu wdrożenia klienta.
+          Sprawa to temat już prowadzony operacyjnie. Zadanie jest pojedynczą czynnością, wydarzenie blokiem czasu w kalendarzu, a sprawa jest głównym miejscem dalszej pracy po starcie obsługi.
         </p>
 
         <section className="space-y-4">

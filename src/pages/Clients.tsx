@@ -127,7 +127,7 @@ export default function Clients() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Klienci</h1>
-            <p className="text-slate-500">Jedna historia klienta: leady, sprawy i rozliczenia.</p>
+            <p className="text-slate-500">Wspólny rekord klienta w tle: leady, sprawy i rozliczenia w jednym miejscu.</p>
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>

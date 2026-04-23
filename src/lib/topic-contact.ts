@@ -115,7 +115,6 @@ export function buildTopicContactOptions({
       asText(lead.email),
       asText(lead.phone),
       asText(lead.source),
-      asText(lead.nextStep),
     ],
   }));
 

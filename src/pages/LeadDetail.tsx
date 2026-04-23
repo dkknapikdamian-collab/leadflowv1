@@ -19,7 +19,7 @@ import {
   Briefcase,
   Link2,
 } from 'lucide-react';
-import { differenceInCalendarDays, format, isPast, isToday, parseISO } from 'date-fns';
+import { format, isPast, isToday, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
@@ -36,6 +36,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadFinance, normalizePartialPayments } from '../lib/lead-finance';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import { isLeadMovedToService } from '../lib/lead-health';
+import { getLeadNextAction } from '../lib/lead-next-action';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
@@ -849,6 +850,7 @@ export default function LeadDetail() {
         title: String(caseTitleById.get(String(linkCaseId)) || 'Powiązana sprawa'),
       });
       await loadLead();
+      navigate(`/case/${linkCaseId}`);
     } catch (error: any) {
       toast.error(`Błąd przypięcia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -880,6 +882,9 @@ export default function LeadDetail() {
         title: String((created as any)?.case?.title || createCaseDraft.title.trim()),
       });
       await loadLead();
+      if (caseId) {
+        navigate(`/case/${caseId}`);
+      }
     } catch (error: any) {
       toast.error(`Błąd tworzenia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -925,12 +930,10 @@ export default function LeadDetail() {
     || (lead.status === 'moved_to_service'
       ? { value: 'moved_to_service', label: 'Przeniesiony do obsĹ‚ugi', color: 'bg-violet-100 text-violet-700' }
       : STATUS_OPTIONS[0]);
-  const nextActionDate = asDate(lead.nextActionAt);
+  const nextAction = getLeadNextAction(sortedLinkedTasks, sortedLinkedEvents);
+  const nextActionDate = asDate(nextAction?.when);
   const updatedAt = asDate(lead.updatedAt);
   const nextActionOverdue = Boolean(nextActionDate && isPast(nextActionDate) && !isToday(nextActionDate));
-  const daysWithoutUpdate = updatedAt ? Math.max(0, differenceInCalendarDays(new Date(), updatedAt)) : null;
-  const missingNextStep = !String(lead.nextStep || '').trim();
-  const missingNextActionAt = !nextActionDate;
 
   return (
     <Layout>
@@ -974,11 +977,11 @@ export default function LeadDetail() {
                   <Briefcase className="w-4 h-4" /> Otwórz sprawę
                 </Link>
               </Button>
-            ) : (
+            ) : !leadMovedToService ? (
               <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" onClick={() => setIsCreateCaseOpen(true)}>
                 <Briefcase className="w-4 h-4" /> Rozpocznij obsługę
               </Button>
-            )}
+            ) : null}
           </div>
         </div>
       </header>
@@ -990,7 +993,7 @@ export default function LeadDetail() {
               <Card className="border-emerald-200 bg-emerald-50 shadow-sm">
                 <CardContent className="p-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div>
-                    <p className="text-sm font-bold text-emerald-800">Temat został przeniesiony do obsługi</p>
+                    <p className="text-sm font-bold text-emerald-800">Ten temat jest już w obsłudze</p>
                     <p className="text-sm text-emerald-700">Utworzono sprawę: {startServiceSuccess.title}</p>
                     <p className="text-sm text-emerald-700">Lead pozostaje w historii jako źródło pozyskania tego tematu.</p>
                   </div>
@@ -1010,11 +1013,11 @@ export default function LeadDetail() {
               <Card className="border-violet-200 bg-violet-50 shadow-sm">
                 <CardContent className="p-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div>
-                    <p className="text-sm font-bold text-violet-900">Ten temat został przeniesiony do obsługi</p>
+                    <p className="text-sm font-bold text-violet-900">Ten temat jest już w obsłudze</p>
                     <p className="text-sm text-violet-800">Sprawa: {associatedCase.title || 'Powiązana sprawa'}</p>
                     <p className="text-sm text-violet-800">Status sprawy: {serviceCaseStatusLabel}</p>
                     <p className="text-sm text-violet-800">Data przejścia: {serviceMovedAtLabel}</p>
-                    <p className="text-sm text-violet-800">Lead został zamknięty sprzedażowo i dalej jest widoczny jako historia pozyskania tego tematu.</p>
+                    <p className="text-sm text-violet-800">Lead pozostał jako historia pozyskania i źródło tej sprawy.</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Button size="sm" asChild>
@@ -1055,77 +1058,17 @@ export default function LeadDetail() {
                     <Calendar className="w-6 h-6 text-amber-600" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Następny krok</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Najbliższa akcja</p>
                     <p className={`text-lg font-bold ${nextActionOverdue ? 'text-rose-600' : 'text-slate-900'}`}>
-                      {nextActionDate ? format(nextActionDate, 'd MMM', { locale: pl }) : 'Brak'}
+                      {nextActionDate ? format(nextActionDate, 'd MMM HH:mm', { locale: pl }) : 'Brak zaplanowanych działań'}
                     </p>
+                    {nextAction ? (
+                      <p className="text-sm text-slate-500">{nextAction.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}: {nextAction.title}</p>
+                    ) : null}
                   </div>
                 </CardContent>
               </Card>
             </div>
-
-            <Card className="border-none shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Co teraz zrobić z tym leadem</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Stan procesu</p>
-                    <div className="flex flex-wrap gap-2">
-                      {missingNextStep ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak opisu kroku</Badge> : <Badge variant="outline">Krok opisany</Badge>}
-                      {missingNextActionAt ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak terminu</Badge> : <Badge variant="outline">Termin ustawiony</Badge>}
-                      {nextActionOverdue ? <Badge variant="destructive">Termin minął</Badge> : null}
-                      {daysWithoutUpdate !== null && daysWithoutUpdate >= 5 ? (
-                        <Badge variant="outline" className="border-purple-200 text-purple-700">Bez ruchu {daysWithoutUpdate} dni</Badge>
-                      ) : null}
-                      {lead.isAtRisk ? <Badge variant="destructive">Oznaczony jako zagrożony</Badge> : null}
-                    </div>
-                    <p className="text-sm text-slate-500">
-                      Ten blok ma prowadzić operatora do kolejnego ruchu bez szukania po innych zakładkach.
-                    </p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Szybkie akcje</p>
-                    <div className="flex flex-wrap gap-2">
-                      <Button variant="outline" size="sm" onClick={() => setIsQuickTaskOpen(true)}>
-                        <Plus className="w-4 h-4 mr-2" /> Dodaj zadanie
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => setIsQuickEventOpen(true)}>
-                        <Calendar className="w-4 h-4 mr-2" /> Dodaj wydarzenie
-                      </Button>
-                      {!associatedCase?.id ? (
-                        <>
-                          <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('contacted')}>
-                            Pierwszy kontakt
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('waiting_response')}>
-                            Ustaw follow-up
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('negotiation')}>
-                            Negocjacje
-                          </Button>
-                        </>
-                      ) : null}
-                      {associatedCase?.id ? (
-                        <Button size="sm" asChild>
-                          <Link to={`/case/${associatedCase.id}`}>Otwórz sprawę</Link>
-                        </Button>
-                      ) : (
-                        <Button size="sm" onClick={() => setIsCreateCaseOpen(true)}>
-                          Rozpocznij obsługę
-                        </Button>
-                      )}
-                      {!associatedCase?.id ? (
-                        <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('lost')} disabled={lead.status === 'lost'}>
-                          Przegrany
-                        </Button>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
             {showServiceBanner ? (
               <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
@@ -1137,9 +1080,7 @@ export default function LeadDetail() {
                         <span className="text-sm font-semibold text-violet-900">Sprawa: {serviceCaseTitle}</span>
                       ) : null}
                     </div>
-                    <p className="text-sm text-violet-900">
-                      Ten temat został zamknięty sprzedażowo, ale lead nie zniknął. Został przeniesiony do historii i dalej pokazuje źródło pozyskania.
-                    </p>
+                    <p className="text-sm text-violet-900">To już historia pozyskania. Dalsza praca dzieje się w sprawie.</p>
                     <p className="text-sm text-violet-800">Status sprawy: {serviceCaseStatusLabel}</p>
                     <p className="text-xs text-violet-700">Data przejścia: {serviceMovedAtLabel}</p>
                   </div>
@@ -1221,48 +1162,31 @@ export default function LeadDetail() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-none shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Planowanie ruchu</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Następny krok</Label>
-                        <Input
-                          value={lead.nextStep || ''}
-                          onChange={(e) => setLead((prev: any) => ({ ...(prev || {}), nextStep: e.target.value }))}
-                          onBlur={(e) => {
-                            void patchLead({ nextStep: e.target.value }, 'Zapisano następny krok');
-                          }}
-                          placeholder="np. Telefon z ofertą"
-                        />
+                {!leadMovedToService ? (
+                  <Card className="border-none shadow-sm">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Ocena tematu</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <p className="text-sm text-slate-600">
+                          Najbliższa akcja jest liczona automatycznie z zadań i wydarzeń przypiętych do tego tematu. Nie ustawiasz już ręcznego kolejnego kroku.
+                        </p>
                       </div>
-                      <div className="space-y-2">
-                        <Label>Termin ruchu</Label>
-                        <Input
-                          type="date"
-                          value={lead.nextActionAt ? String(lead.nextActionAt).slice(0, 10) : ''}
-                          onChange={(e) => setLead((prev: any) => ({ ...(prev || {}), nextActionAt: e.target.value }))}
-                          onBlur={(e) => {
-                            void patchLead({ nextActionAt: e.target.value || '' }, 'Zapisano termin ruchu');
+                      <div className="flex items-center gap-2 p-3 bg-rose-50 rounded-xl border border-rose-100">
+                        <input
+                          type="checkbox"
+                          checked={Boolean(lead.isAtRisk)}
+                          onChange={(e) => {
+                            void patchLead({ isAtRisk: e.target.checked }, 'Zapisano status ryzyka');
                           }}
+                          className="w-4 h-4 rounded border-rose-300 text-rose-600 focus:ring-rose-500"
                         />
+                        <Label className="text-rose-700 font-bold">Oznacz jako zagrożony (wymaga natychmiastowej uwagi)</Label>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 p-3 bg-rose-50 rounded-xl border border-rose-100">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(lead.isAtRisk)}
-                        onChange={(e) => {
-                          void patchLead({ isAtRisk: e.target.checked }, 'Zapisano status ryzyka');
-                        }}
-                        className="w-4 h-4 rounded border-rose-300 text-rose-600 focus:ring-rose-500"
-                      />
-                      <Label className="text-rose-700 font-bold">Oznacz jako zagrożony (wymaga natychmiastowej uwagi)</Label>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                ) : null}
 
                 <Card className="border-none shadow-sm">
                   <CardHeader>
@@ -1295,9 +1219,11 @@ export default function LeadDetail() {
                             <h3 className="text-sm font-bold text-slate-900">Zadania leada</h3>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm" onClick={() => setIsQuickTaskOpen(true)}>
-                              <Plus className="w-4 h-4 mr-2" /> Dodaj
-                            </Button>
+                            {!leadMovedToService ? (
+                              <Button variant="outline" size="sm" onClick={() => setIsQuickTaskOpen(true)}>
+                                <Plus className="w-4 h-4 mr-2" /> Dodaj
+                              </Button>
+                            ) : null}
                             <Button variant="outline" size="sm" asChild>
                               <Link to="/tasks">Otwórz zadania</Link>
                             </Button>
@@ -1319,15 +1245,19 @@ export default function LeadDetail() {
                                     {associatedCase?.id && String(task.caseId || '') === String(associatedCase.id) && String(task.leadId || '') !== String(leadId || '') ? (
                                       <Badge variant="outline">Ze sprawy</Badge>
                                     ) : null}
-                                    <Button variant="ghost" size="sm" onClick={() => openLinkedTaskEditor(task)}>
-                                      Edytuj
-                                    </Button>
-                                    <Button variant="ghost" size="sm" onClick={() => void handleToggleLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:toggle`}>
-                                      {linkedEntryActionId === `task:${task.id}:toggle` ? '...' : task.status === 'done' ? 'Przywróć' : 'Zrób'}
-                                    </Button>
-                                    <Button variant="ghost" size="sm" onClick={() => void handleDeleteLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:delete`}>
-                                      {linkedEntryActionId === `task:${task.id}:delete` ? '...' : 'Usuń'}
-                                    </Button>
+                                    {!leadMovedToService ? (
+                                      <>
+                                        <Button variant="ghost" size="sm" onClick={() => openLinkedTaskEditor(task)}>
+                                          Edytuj
+                                        </Button>
+                                        <Button variant="ghost" size="sm" onClick={() => void handleToggleLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:toggle`}>
+                                          {linkedEntryActionId === `task:${task.id}:toggle` ? '...' : task.status === 'done' ? 'Przywróć' : 'Zrób'}
+                                        </Button>
+                                        <Button variant="ghost" size="sm" onClick={() => void handleDeleteLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:delete`}>
+                                          {linkedEntryActionId === `task:${task.id}:delete` ? '...' : 'Usuń'}
+                                        </Button>
+                                      </>
+                                    ) : null}
                                   </div>
                                 </div>
                               </div>
@@ -1343,9 +1273,11 @@ export default function LeadDetail() {
                             <h3 className="text-sm font-bold text-slate-900">Wydarzenia leada</h3>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm" onClick={() => setIsQuickEventOpen(true)}>
-                              <Plus className="w-4 h-4 mr-2" /> Dodaj
-                            </Button>
+                            {!leadMovedToService ? (
+                              <Button variant="outline" size="sm" onClick={() => setIsQuickEventOpen(true)}>
+                                <Plus className="w-4 h-4 mr-2" /> Dodaj
+                              </Button>
+                            ) : null}
                             <Button variant="outline" size="sm" asChild>
                               <Link to="/calendar">Otwórz kalendarz</Link>
                             </Button>
@@ -1367,15 +1299,19 @@ export default function LeadDetail() {
                                     {associatedCase?.id && String(event.caseId || '') === String(associatedCase.id) && String(event.leadId || '') !== String(leadId || '') ? (
                                       <Badge variant="outline">Ze sprawy</Badge>
                                     ) : null}
-                                    <Button variant="ghost" size="sm" onClick={() => openLinkedEventEditor(event)}>
-                                      Edytuj
-                                    </Button>
-                                    <Button variant="ghost" size="sm" onClick={() => void handleToggleLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:toggle`}>
-                                      {linkedEntryActionId === `event:${event.id}:toggle` ? '...' : event.status === 'completed' ? 'Przywróć' : 'Wykonaj'}
-                                    </Button>
-                                    <Button variant="ghost" size="sm" onClick={() => void handleDeleteLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:delete`}>
-                                      {linkedEntryActionId === `event:${event.id}:delete` ? '...' : 'Usuń'}
-                                    </Button>
+                                    {!leadMovedToService ? (
+                                      <>
+                                        <Button variant="ghost" size="sm" onClick={() => openLinkedEventEditor(event)}>
+                                          Edytuj
+                                        </Button>
+                                        <Button variant="ghost" size="sm" onClick={() => void handleToggleLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:toggle`}>
+                                          {linkedEntryActionId === `event:${event.id}:toggle` ? '...' : event.status === 'completed' ? 'Przywróć' : 'Wykonaj'}
+                                        </Button>
+                                        <Button variant="ghost" size="sm" onClick={() => void handleDeleteLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:delete`}>
+                                          {linkedEntryActionId === `event:${event.id}:delete` ? '...' : 'Usuń'}
+                                        </Button>
+                                      </>
+                                    ) : null}
                                   </div>
                                 </div>
                               </div>
@@ -1532,17 +1468,23 @@ export default function LeadDetail() {
                 <CardTitle className="text-lg">Historia</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <form onSubmit={handleAddNote} className="space-y-2">
-                  <Textarea
-                    placeholder="Dodaj notatkę z rozmowy..."
-                    className="rounded-xl bg-slate-50 border-none resize-none min-h-[100px]"
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                  />
-                  <Button type="submit" className="w-full rounded-xl" disabled={!note.trim()}>
-                    Dodaj notatkę
-                  </Button>
-                </form>
+                {!leadMovedToService ? (
+                  <form onSubmit={handleAddNote} className="space-y-2">
+                    <Textarea
+                      placeholder="Dodaj notatkę z rozmowy..."
+                      className="rounded-xl bg-slate-50 border-none resize-none min-h-[100px]"
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                    />
+                    <Button type="submit" className="w-full rounded-xl" disabled={!note.trim()}>
+                      Dodaj notatkę
+                    </Button>
+                  </form>
+                ) : (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+                    Ten widok pokazuje historię pozyskania. Dalsze notatki dodawaj już na sprawie.
+                  </div>
+                )}
                 <div className="space-y-2 max-h-[500px] overflow-auto pr-2">
                   {activities.length === 0 ? (
                     <p className="text-sm text-slate-500">Brak aktywności.</p>

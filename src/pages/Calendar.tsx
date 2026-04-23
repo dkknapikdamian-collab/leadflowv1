@@ -480,58 +480,9 @@ export default function Calendar() {
     leadName?: string;
     fallbackTitle?: string;
   }) => {
-    if (!leadId) return;
-
-    const bundle = await refreshSupabaseBundle();
-    const latestLead = bundle.leads.find((lead) => lead.id === leadId);
-
-    if (!latestLead || !isActiveSalesLead(latestLead) || latestLead.nextActionAt) {
-      return;
-    }
-
-    const next = new Date();
-    next.setDate(next.getDate() + 1);
-    next.setHours(9, 0, 0, 0);
-
-    const choice = window.prompt(
-      `Lead "${leadName || latestLead.name || 'Lead'}" zostal bez kolejnego kroku.` +
-      `\n1 = ustaw krok teraz` +
-      `\n2 = przypomnij jutro` +
-      `\n3 = zostaw bez kroku`,
-      '2',
-    );
-
-    if (!choice) return;
-
-    if (choice === '1') {
-      const nextStep = window.prompt('Wpisz kolejny krok', fallbackTitle || 'Follow-up');
-      if (!nextStep?.trim()) return;
-
-      const nextActionAt = window.prompt(
-        'Podaj termin w formacie RRRR-MM-DDTHH:mm',
-        toDateTimeLocalValue(next),
-      );
-      if (!nextActionAt?.trim()) return;
-
-      await updateLeadInSupabase({
-        id: String(leadId),
-        nextStep: nextStep.trim(),
-        nextActionAt,
-      });
-      await refreshSupabaseBundle();
-      toast.success('Kolejny krok zapisany');
-      return;
-    }
-
-    if (choice === '2') {
-      await updateLeadInSupabase({
-        id: String(leadId),
-        nextStep: fallbackTitle || 'Follow-up',
-        nextActionAt: toDateTimeLocalValue(next),
-      });
-      await refreshSupabaseBundle();
-      toast.success('Ustawiono przypomnienie na jutro');
-    }
+    void leadId;
+    void leadName;
+    void fallbackTitle;
   };
 
   const handleAddTask = async (e: FormEvent) => {

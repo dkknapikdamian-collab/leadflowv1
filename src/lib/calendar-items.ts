@@ -1,6 +1,5 @@
 import { isValid, parseISO } from 'date-fns';
-import { fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, isSupabaseConfigured } from './supabase-fallback';
-import { isActiveSalesLead } from './lead-health';
+import { fetchCasesFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, isSupabaseConfigured } from './supabase-fallback';
 
 export type CalendarTaskItem = {
   id: string;
@@ -43,25 +42,10 @@ export type CalendarEventItem = {
   reminder?: Record<string, unknown>;
 };
 
-export type CalendarLeadActionItem = {
-  id: string;
-  name: string;
-  nextActionAt?: string;
-  nextStep?: string;
-  nextActionItemId?: string;
-  status?: string;
-  dealValue?: number;
-  phone?: string;
-  company?: string;
-  source?: string;
-  isAtRisk?: boolean;
-  updatedAt?: string | null;
-};
-
 export type CalendarBundle = {
   tasks: CalendarTaskItem[];
   events: CalendarEventItem[];
-  leads: CalendarLeadActionItem[];
+  leads: never[];
   cases: Record<string, unknown>[];
 };
 
@@ -137,42 +121,19 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
   };
 }
 
-export function normalizeCalendarLeadAction(row: Record<string, unknown>): CalendarLeadActionItem | null {
-  const status = row.status ? String(row.status) : undefined;
-  if (!isActiveSalesLead(row)) return null;
-
-  const nextActionAt = typeof row.nextActionAt === 'string' && isIsoLike(row.nextActionAt) ? row.nextActionAt : undefined;
-
-  return {
-    id: String(row.id || crypto.randomUUID()),
-    name: String(row.name || ''),
-    nextActionAt,
-    nextStep: row.nextStep ? String(row.nextStep) : undefined,
-    nextActionItemId: row.nextActionItemId ? String(row.nextActionItemId) : undefined,
-    status,
-    dealValue: Number(row.dealValue || 0),
-    phone: row.phone ? String(row.phone) : undefined,
-    company: row.company ? String(row.company) : undefined,
-    source: row.source ? String(row.source) : undefined,
-    isAtRisk: Boolean(row.isAtRisk),
-    updatedAt: typeof row.updatedAt === 'string' ? row.updatedAt : null,
-  };
-}
-
 export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle> {
   if (!isSupabaseConfigured()) return { tasks: [], events: [], leads: [], cases: [] };
 
-  const [taskItems, eventItems, leadItems, caseItems] = await Promise.all([
+  const [taskItems, eventItems, caseItems] = await Promise.all([
     fetchTasksFromSupabase(),
     fetchEventsFromSupabase(),
-    fetchLeadsFromSupabase(),
     fetchCasesFromSupabase().catch(() => []),
   ]);
 
   return {
     tasks: (taskItems as Record<string, unknown>[]).map(normalizeCalendarTask).filter((item): item is CalendarTaskItem => Boolean(item)),
     events: (eventItems as Record<string, unknown>[]).map(normalizeCalendarEvent).filter((item): item is CalendarEventItem => Boolean(item)),
-    leads: (leadItems as Record<string, unknown>[]).map(normalizeCalendarLeadAction).filter((item): item is CalendarLeadActionItem => Boolean(item)),
+    leads: [],
     cases: caseItems as Record<string, unknown>[],
   };
 }
