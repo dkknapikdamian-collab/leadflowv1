@@ -522,30 +522,14 @@ function shouldRepairFreshTrialBootstrap(row: Record<string, unknown> | null) {
 }
 
 function resolveWorkspaceOwnerUserId(profileRow: Record<string, unknown> | null, uid: string | null) {
-  return (
-    extractUuidCandidate(
-      profileRow?.owner_user_id,
-      profileRow?.ownerUserId,
-      profileRow?.owner_id,
-      profileRow?.ownerId,
-      profileRow?.created_by_user_id,
-      profileRow?.createdByUserId,
-      profileRow?.firebase_uid,
-      profileRow?.firebaseUid,
-      profileRow?.auth_uid,
-      profileRow?.authUid,
-      profileRow?.external_auth_uid,
-      profileRow?.externalAuthUid,
-      profileRow?.user_uuid,
-      profileRow?.userUuid,
-      profileRow?.profile_uuid,
-      profileRow?.profileUuid,
-      profileRow?.workspace_owner_user_id,
-      profileRow?.workspaceOwnerUserId,
-      profileRow?.id,
-      uid,
-    )
-    || null
+  void uid;
+  return extractUuidCandidate(
+    profileRow?.owner_user_id,
+    profileRow?.ownerUserId,
+    profileRow?.owner_id,
+    profileRow?.ownerId,
+    profileRow?.created_by_user_id,
+    profileRow?.createdByUserId,
   );
 }
 
