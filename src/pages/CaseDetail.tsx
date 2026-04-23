@@ -2169,7 +2169,7 @@ export default function CaseDetail() {
                             {[option.email, option.phone].filter(Boolean).join(' • ') || 'Dane klienta zapisane w systemie'}
                           </p>
                         </div>
-                        <Badge variant="outline">{option.source === 'lead' ? 'Z leada' : option.source === 'case' ? 'Ze sprawy' : 'Z danych sprawy'}</Badge>
+                        <Badge variant="outline">{option.source === 'lead' ? 'Ze zrodlowego leada' : option.source === 'case' ? 'Ze sprawy' : 'Z danych sprawy'}</Badge>
                       </div>
                     </button>
                   ))}
@@ -2361,5 +2361,6 @@ export default function CaseDetail() {
     </Layout>
   );
 }
+
 
 
