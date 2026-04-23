@@ -11,7 +11,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { useAppearance } from '../components/appearance-provider';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { fetchCasesFromSupabase, fetchClientsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase, updateWorkspaceSubscriptionInSupabase } from '../lib/supabase-fallback';
+import {
+  fetchCasesFromSupabase,
+  fetchClientsFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchPaymentsFromSupabase,
+  updateWorkspaceSubscriptionInSupabase,
+} from '../lib/supabase-fallback';
 
 type PlanCard = {
   id: string;
@@ -21,12 +27,26 @@ type PlanCard = {
   features: string[];
 };
 
-const PLANS: PlanCard[] = [
-  { id: 'solo_mini', name: 'Solo Mini', price: '15', description: 'Dla 1 osoby, lekki workflow.', features: ['Leady, sprawy, today', 'Podstawowe rozliczenia'] },
-  { id: 'solo_full', name: 'Solo Full', price: '30', description: 'Pełny workflow dla freelancera.', features: ['Wszystkie moduły V1', 'Priorytetowe wsparcie'] },
-  { id: 'team_mini', name: 'Firma Mini', price: '70', description: 'Pakiet dla małego zespołu.', features: ['Model firmowy', 'Wspólna baza klientów'] },
-  { id: 'team_full', name: 'Firma Full', price: '140', description: 'Pakiet firmowy rozszerzony.', features: ['Model firmowy+', 'Rozbudowane wsparcie'] },
-];
+const PAID_PLAN: PlanCard = {
+  id: 'closeflow_pro',
+  name: 'CloseFlow Pro',
+  price: '49',
+  description: 'Jeden prosty plan V1 dla solo uslug i sprzedazy.',
+  features: [
+    'Pelny workflow lead -> case -> rozliczenie',
+    'Klienci, sprawy, taski i Today w jednym miejscu',
+    'Portal klienta i modul rozliczen V1',
+  ],
+};
+
+function getDisplayPlanId(planId?: string | null, subscriptionStatus?: string | null) {
+  if (planId === 'trial_14d' || planId === 'closeflow_pro') return planId;
+  if (['solo_mini', 'solo_full', 'team_mini', 'team_full', 'pro'].includes(String(planId || ''))) {
+    return 'closeflow_pro';
+  }
+  if (subscriptionStatus === 'paid_active') return 'closeflow_pro';
+  return 'trial_14d';
+}
 
 export default function Billing() {
   const { workspace, loading, refresh, access } = useWorkspace();
@@ -63,7 +83,7 @@ export default function Billing() {
       })
       .catch((error: any) => {
         if (cancelled) return;
-        toast.error(`Błąd odczytu rozliczeń: ${error?.message || 'REQUEST_FAILED'}`);
+        toast.error(`Blad odczytu rozliczen: ${error?.message || 'REQUEST_FAILED'}`);
       })
       .finally(() => {
         if (cancelled) return;
@@ -74,19 +94,19 @@ export default function Billing() {
     };
   }, [tab]);
 
-  const handleUpgrade = async (planId: string) => {
+  const handleUpgrade = async () => {
     if (!workspace) return;
     setUpgrading(true);
     try {
       await updateWorkspaceSubscriptionInSupabase({
         workspaceId: workspace.id,
-        planId,
+        planId: PAID_PLAN.id,
         subscriptionStatus: 'paid_active',
       });
       toast.success('Plan zapisany.');
       refresh();
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error(`Blad: ${error.message}`);
     } finally {
       setUpgrading(false);
     }
@@ -95,17 +115,21 @@ export default function Billing() {
   if (loading || !workspace) {
     return (
       <Layout>
-        <div className="flex items-center justify-center h-full"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+        <div className="flex h-full items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
       </Layout>
     );
   }
 
   const trialEndsAtLabel = workspace.trialEndsAt ? format(parseISO(workspace.trialEndsAt), 'd MMMM yyyy', { locale: pl }) : null;
   const isDark = skin === 'forteca-dark' || skin === 'midnight';
+  const currentPlanId = getDisplayPlanId(workspace.planId, workspace.subscriptionStatus);
+  const isCurrentPaidPlan = currentPlanId === PAID_PLAN.id && access.isPaidActive;
 
   return (
     <Layout>
-      <div className="p-4 md:p-8 max-w-6xl mx-auto w-full space-y-6">
+      <div className="mx-auto w-full max-w-6xl space-y-6 p-4 md:p-8">
         <header className="space-y-3">
           <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
             <Sparkles className="h-3.5 w-3.5" /> Cennik i rozliczenia
@@ -114,7 +138,7 @@ export default function Billing() {
         </header>
 
         <Tabs value={tab} onValueChange={(value) => setTab(value as 'plan' | 'settlements')}>
-          <TabsList className="grid w-full grid-cols-2 max-w-md">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
             <TabsTrigger value="plan">Plan</TabsTrigger>
             <TabsTrigger value="settlements">Rozliczenia</TabsTrigger>
           </TabsList>
@@ -123,46 +147,65 @@ export default function Billing() {
         {tab === 'plan' ? (
           <>
             <Card className={`border-none shadow-sm ${isDark ? 'bg-slate-900 text-slate-100' : 'bg-emerald-50'}`}>
-              <CardContent className="p-6 flex flex-col gap-2">
+              <CardContent className="flex flex-col gap-2 p-6">
                 <h2 className="text-xl font-bold">{access.headline}</h2>
                 <p>{access.description}</p>
                 {trialEndsAtLabel && (access.isTrialActive || access.status === 'trial_expired') ? (
-                  <p className="text-sm opacity-80">Data końca trialu: {trialEndsAtLabel}</p>
+                  <p className="text-sm opacity-80">Data konca trialu: {trialEndsAtLabel}</p>
                 ) : null}
                 <Badge variant="outline" className="w-fit">{access.badgeLabel}</Badge>
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {PLANS.map((plan) => {
-                const isCurrent = workspace.planId === plan.id && access.isPaidActive;
-                return (
-                  <Card key={plan.id} className="border-none shadow-sm">
-                    <CardHeader>
-                      <CardTitle>{plan.name}</CardTitle>
-                      <CardDescription>{plan.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <p className="text-3xl font-bold">{plan.price} PLN<span className="text-base font-medium text-slate-500">/mies.</span></p>
-                      {plan.features.map((feature) => (
-                        <p key={feature} className="text-sm text-slate-600 flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> {feature}</p>
-                      ))}
-                    </CardContent>
-                    <CardFooter>
-                      <Button disabled={upgrading || isCurrent} onClick={() => void handleUpgrade(plan.id)} className="w-full">
-                        {isCurrent ? 'Twój plan' : upgrading ? 'Zapisywanie...' : 'Aktywuj plan'}
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                );
-              })}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+              <Card className="border-none shadow-sm">
+                <CardHeader>
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <CardTitle>{PAID_PLAN.name}</CardTitle>
+                      <CardDescription>{PAID_PLAN.description}</CardDescription>
+                    </div>
+                    <Badge variant={isCurrentPaidPlan ? 'default' : 'outline'}>
+                      {isCurrentPaidPlan ? 'Aktywny plan' : 'Plan V1'}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-3xl font-bold">
+                    {PAID_PLAN.price} PLN
+                    <span className="text-base font-medium text-slate-500">/mies.</span>
+                  </p>
+                  {PAID_PLAN.features.map((feature) => (
+                    <p key={feature} className="flex items-center gap-2 text-sm text-slate-600">
+                      <Check className="h-4 w-4 text-emerald-500" /> {feature}
+                    </p>
+                  ))}
+                </CardContent>
+                <CardFooter>
+                  <Button disabled={upgrading || isCurrentPaidPlan} onClick={() => void handleUpgrade()} className="w-full">
+                    {isCurrentPaidPlan ? 'Twoj plan' : upgrading ? 'Zapisywanie...' : 'Aktywuj plan'}
+                  </Button>
+                </CardFooter>
+              </Card>
+
+              <Card className="border-none shadow-sm">
+                <CardHeader>
+                  <CardTitle>Jak dziala V1</CardTitle>
+                  <CardDescription>Prosty model bez mylacych wariantow i porownywarki planow.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-slate-600">
+                  <p><strong>Trial:</strong> startujesz od 14 dni testu z odblokowanym pelnym workflow.</p>
+                  <p><strong>Po trialu:</strong> aktywujesz jeden plan CloseFlow Pro.</p>
+                  <p><strong>Statusy:</strong> trial, plan aktywny, problem z platnoscia albo plan anulowany.</p>
+                </CardContent>
+              </Card>
             </div>
           </>
         ) : (
           <Card className="border-none shadow-sm">
             <CardHeader>
               <CardTitle>Rozliczenia lead/case</CardTitle>
-              <CardDescription>Filtruj status płatności niezależnie od statusów sprzedażowych i operacyjnych.</CardDescription>
+              <CardDescription>Filtruj status platnosci niezaleznie od statusow sprzedazowych i operacyjnych.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
@@ -173,16 +216,16 @@ export default function Billing() {
                 ))}
               </div>
               {settlementLoading ? (
-                <div className="py-8 flex justify-center"><Loader2 className="w-5 h-5 animate-spin text-slate-400" /></div>
+                <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-slate-400" /></div>
               ) : (
                 <div className="space-y-2">
                   {payments
                     .filter((payment) => statusFilter === 'all' || String(payment.status || '') === statusFilter)
                     .map((payment) => (
-                      <div key={payment.id} className="rounded-xl border border-slate-200 px-4 py-3 flex items-center justify-between gap-3">
+                      <div key={payment.id} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 px-4 py-3">
                         <div className="min-w-0">
-                          <p className="font-semibold text-slate-900 truncate">{Number(payment.amount || 0).toLocaleString()} {payment.currency || 'PLN'}</p>
-                          <p className="text-sm text-slate-500 truncate">
+                          <p className="truncate font-semibold text-slate-900">{Number(payment.amount || 0).toLocaleString()} {payment.currency || 'PLN'}</p>
+                          <p className="truncate text-sm text-slate-500">
                             {clientById.get(String(payment.clientId || '')) || 'Klient nieznany'} · {leadById.get(String(payment.leadId || '')) || 'Bez leada'} · {caseById.get(String(payment.caseId || '')) || 'Bez sprawy'}
                           </p>
                         </div>
@@ -190,7 +233,7 @@ export default function Billing() {
                       </div>
                     ))}
                   {payments.length === 0 ? (
-                    <div className="py-4 text-sm text-slate-500 flex items-center gap-2"><Shield className="w-4 h-4" /> Brak rozliczeń do wyświetlenia.</div>
+                    <div className="flex items-center gap-2 py-4 text-sm text-slate-500"><Shield className="h-4 w-4" /> Brak rozliczen do wyswietlenia.</div>
                   ) : null}
                 </div>
               )}

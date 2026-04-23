@@ -20,10 +20,10 @@ function buildWorkspacePayload(user: User, fullName?: string | null) {
   return {
     ownerId: user.uid,
     name: `${fullName || user.displayName || 'Moj'} Workspace`,
-    plan: adminAccess ? 'pro' : 'free',
-    planId: adminAccess ? 'pro' : null,
+    plan: adminAccess ? 'closeflow_pro' : 'trial_14d',
+    planId: adminAccess ? 'closeflow_pro' : 'trial_14d',
     subscriptionStatus: adminAccess ? 'paid_active' : 'trial_active',
-    trialEndsAt: adminAccess ? null : addDays(new Date(), 7).toISOString(),
+    trialEndsAt: adminAccess ? null : addDays(new Date(), 14).toISOString(),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   };
@@ -50,15 +50,15 @@ export async function ensureWorkspaceForUser(user: User | null, preferredName?: 
       if (
         adminAccess
         && (
-          workspaceData.plan !== 'pro'
-          || workspaceData.planId !== 'pro'
+          workspaceData.plan !== 'closeflow_pro'
+          || workspaceData.planId !== 'closeflow_pro'
           || workspaceData.subscriptionStatus !== 'paid_active'
           || workspaceData.trialEndsAt
         )
       ) {
         await updateDoc(workspaceRef, {
-          plan: 'pro',
-          planId: 'pro',
+          plan: 'closeflow_pro',
+          planId: 'closeflow_pro',
           subscriptionStatus: 'paid_active',
           trialEndsAt: null,
           updatedAt: serverTimestamp(),

@@ -2,6 +2,7 @@ import { insertWithVariants, selectFirstAvailable, updateById, updateWhere } fro
 
 const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
 const DEFAULT_PLAN_ID = 'trial_14d';
+const PAID_PLAN_ID = 'closeflow_pro';
 const DEFAULT_STATUS = 'trial_active';
 const TRIAL_DAYS = 14;
 const TRIAL_MS = TRIAL_DAYS * 24 * 60 * 60 * 1000;
@@ -81,6 +82,29 @@ function isAdminEmail(email: NullableString) {
   return !!email && ADMIN_EMAILS.has(email.trim().toLowerCase());
 }
 
+function normalizePlanId(planId: string | null | undefined, subscriptionStatus?: string | null) {
+  const normalized = asNullableString(planId);
+  const status = asNullableString(subscriptionStatus) || DEFAULT_STATUS;
+
+  if (!normalized) {
+    return status === 'paid_active' ? PAID_PLAN_ID : DEFAULT_PLAN_ID;
+  }
+
+  if (normalized === DEFAULT_PLAN_ID || normalized === PAID_PLAN_ID) {
+    return normalized;
+  }
+
+  if (['solo_mini', 'solo_full', 'team_mini', 'team_full', 'pro'].includes(normalized)) {
+    return PAID_PLAN_ID;
+  }
+
+  if (normalized === 'free') {
+    return DEFAULT_PLAN_ID;
+  }
+
+  return status === 'paid_active' ? PAID_PLAN_ID : normalized;
+}
+
 function extractMissingColumn(error: unknown) {
   const message = error instanceof Error ? error.message : String(error || '');
   const match = message.match(/Could not find the '([^']+)' column/i);
@@ -103,10 +127,13 @@ function normalizeWorkspace(
     asNullableString(row?.created_by_user_id) ||
     asNullableString(row?.createdByUserId) ||
     fallbackOwnerId;
-  const planId = asString(row?.plan_id ?? row?.planId ?? row?.plan ?? DEFAULT_PLAN_ID, DEFAULT_PLAN_ID);
   const subscriptionStatus = asString(
     row?.subscription_status ?? row?.subscriptionStatus ?? row?.status ?? DEFAULT_STATUS,
     DEFAULT_STATUS,
+  );
+  const planId = normalizePlanId(
+    asNullableString(row?.plan_id ?? row?.planId ?? row?.plan ?? DEFAULT_PLAN_ID),
+    subscriptionStatus,
   );
   const trialEndsAt = asNullableString(row?.trial_ends_at ?? row?.trialEndsAt ?? null);
   const billingProvider = asNullableString(row?.billing_provider ?? row?.billingProvider ?? null) || 'manual';
@@ -722,7 +749,13 @@ async function ensureWorkspace(
   let shouldPatch = false;
 
   if (!currentPlanId) {
-    patch.plan_id = DEFAULT_PLAN_ID;
+    patch.plan_id = paidActive ? PAID_PLAN_ID : DEFAULT_PLAN_ID;
+    shouldPatch = true;
+  }
+
+  const canonicalPlanId = normalizePlanId(currentPlanId, currentStatus);
+  if (currentPlanId && currentPlanId !== canonicalPlanId) {
+    patch.plan_id = canonicalPlanId;
     shouldPatch = true;
   }
 

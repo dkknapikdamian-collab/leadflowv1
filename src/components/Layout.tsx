@@ -107,7 +107,7 @@ export default function Layout({ children }: LayoutProps) {
               />
             </div>
             <Link to="/billing" className="mt-2 text-[10px] font-bold text-indigo-700 flex items-center gap-1 hover:underline">
-              Ulepsz konto <ChevronRight className="w-3 h-3" />
+              Aktywuj plan <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
         )}
@@ -200,7 +200,7 @@ export default function Layout({ children }: LayoutProps) {
                   />
                 </div>
                 <Link to="/billing" onClick={() => setMobileMenuOpen(false)} className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-indigo-700">
-                  Ulepsz konto <ChevronRight className="w-3 h-3" />
+                  Aktywuj plan <ChevronRight className="w-3 h-3" />
                 </Link>
               </div>
             )}
@@ -226,7 +226,7 @@ export default function Layout({ children }: LayoutProps) {
             <p className="text-sm font-bold">Twój okres próbny wygasł. Niektóre funkcje są zablokowane.</p>
             <Link to="/billing">
               <Button size="sm" variant="secondary" className="h-7 text-xs font-bold rounded-lg px-4">
-                Wybierz plan
+                Aktywuj plan
               </Button>
             </Link>
           </div>

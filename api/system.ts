@@ -40,6 +40,29 @@ function asHour(value: unknown, fallback = 7) {
   return Math.max(0, Math.min(23, Math.floor(parsed)));
 }
 
+function normalizePlanId(value: unknown, subscriptionStatus?: unknown) {
+  const normalized = asNullableString(value);
+  const status = asNullableString(subscriptionStatus) || 'inactive';
+
+  if (!normalized) {
+    return status === 'paid_active' ? 'closeflow_pro' : 'trial_14d';
+  }
+
+  if (normalized === 'trial_14d' || normalized === 'closeflow_pro') {
+    return normalized;
+  }
+
+  if (['solo_mini', 'solo_full', 'team_mini', 'team_full', 'pro'].includes(normalized)) {
+    return 'closeflow_pro';
+  }
+
+  if (normalized === 'free') {
+    return 'trial_14d';
+  }
+
+  return status === 'paid_active' ? 'closeflow_pro' : normalized;
+}
+
 function toIso(value: unknown) {
   const normalized = asNullableString(value);
   if (!normalized) return null;
@@ -226,7 +249,7 @@ async function handleWorkspaceSettings(req: any, res: any) {
     const payload: Record<string, unknown> = {
       updated_at: new Date().toISOString(),
     };
-    if ((body as any).planId !== undefined) payload.plan_id = (body as any).planId;
+    if ((body as any).planId !== undefined) payload.plan_id = normalizePlanId((body as any).planId, (body as any).subscriptionStatus);
     if ((body as any).subscriptionStatus !== undefined) payload.subscription_status = (body as any).subscriptionStatus;
     if ((body as any).trialEndsAt !== undefined) payload.trial_ends_at = toIso((body as any).trialEndsAt);
     if ((body as any).billingProvider !== undefined) payload.billing_provider = asNullableString((body as any).billingProvider) || 'manual';
@@ -247,7 +270,7 @@ async function handleWorkspaceSettings(req: any, res: any) {
       ok: true,
       workspace: {
         id: workspaceId,
-        planId: (row as any)?.plan_id ?? (body as any).planId ?? null,
+        planId: normalizePlanId((row as any)?.plan_id ?? (body as any).planId ?? null, (row as any)?.subscription_status ?? (body as any).subscriptionStatus ?? null),
         subscriptionStatus: (row as any)?.subscription_status ?? (body as any).subscriptionStatus ?? null,
         trialEndsAt: (row as any)?.trial_ends_at ?? (body as any).trialEndsAt ?? null,
         billingProvider: (row as any)?.billing_provider ?? (body as any).billingProvider ?? 'manual',

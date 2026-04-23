@@ -94,7 +94,8 @@ export default function Login() {
       const workspaceRef = await addDoc(collection(db, 'workspaces'), {
         ownerId: user.uid,
         name: `${name || user.displayName || 'Mój'} Workspace`,
-        plan: 'free',
+        plan: 'trial_14d',
+        planId: 'trial_14d',
         subscriptionStatus: 'trial_active',
         trialEndsAt: addDays(new Date(), 14).toISOString(),
         createdAt: serverTimestamp(),
