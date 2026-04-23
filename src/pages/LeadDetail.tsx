@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+﻿import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -301,6 +301,11 @@ export default function LeadDetail() {
   }, [leadId]);
 
   const finance = useMemo(() => getLeadFinance(lead || {}), [lead]);
+
+  const serviceCaseId = String(startServiceSuccess?.caseId || associatedCase?.id || '');
+  const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'PowiÄ…zana sprawa');
+  const serviceMovedAtLabel = formatScheduleDate(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
+  const showServiceBanner = Boolean(startServiceSuccess || associatedCase || String(lead?.status || '') === 'moved_to_service');
 
   const sortedLinkedTasks = useMemo(
     () =>
@@ -1112,7 +1117,35 @@ export default function LeadDetail() {
               </CardContent>
             </Card>
 
-            <Tabs defaultValue="overview" className="w-full">
+                    {showServiceBanner ? (
+          <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+            <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge className="border-none bg-violet-600 text-white">Przeniesiony do obsĹ‚ugi</Badge>
+                  {serviceCaseTitle ? (
+                    <span className="text-sm font-semibold text-violet-900">Sprawa: {serviceCaseTitle}</span>
+                  ) : null}
+                </div>
+                <p className="text-sm text-violet-900">
+                  Ten lead nie zniknÄ…Ĺ‚. ZostaĹ‚ przeniesiony do historii sprzedaĹĽowej i jest ĹşrĂłdĹ‚em tej sprawy.
+                </p>
+                <p className="text-xs text-violet-700">Data przejĹ›cia: {serviceMovedAtLabel}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {serviceCaseId ? (
+                  <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
+                    <Link to={/cases/}>OtwĂłrz sprawÄ™</Link>
+                  </Button>
+                ) : null}
+                <Button variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                  Zobacz historiÄ™ przejĹ›cia
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ) : null}
+<Tabs defaultValue="overview" className="w-full">
               <TabsList className="w-full justify-start bg-transparent border-b border-slate-200 rounded-none h-12 p-0 gap-8">
                 <TabsTrigger value="overview" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-0 h-12 font-bold">
                   Przegląd
@@ -1950,6 +1983,8 @@ export default function LeadDetail() {
     </Layout>
   );
 }
+
+
 
 
 

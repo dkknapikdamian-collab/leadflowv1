@@ -392,7 +392,13 @@ export default function CaseDetail() {
     [availableCases, availableLeads, caseData, sourceLead],
   );
 
-  const caseClientSuggestions = useMemo(() => {
+    const sourceLeadTitle = String(sourceLead?.name || sourceLead?.company || 'Lead ĹşrĂłdĹ‚owy');
+  const sourceLeadStatusLabel = leadStatusLabel(String(sourceLead?.status || ''));
+  const sourceLeadOriginLabel = leadSourceLabel(String(sourceLead?.source || 'other'));
+  const sourceLeadMovedAtLabel = formatDateTime(caseData?.serviceStartedAt || caseData?.startedAt || caseData?.createdAt);
+  const caseCreatedFromLead = Boolean(caseData?.leadId || caseData?.createdFromLead);
+
+const caseClientSuggestions = useMemo(() => {
     const normalizedQuery = caseClientDraft.clientName.trim().toLowerCase();
     const base = normalizedQuery
       ? caseClientOptions.filter((option) => {
@@ -1290,7 +1296,37 @@ export default function CaseDetail() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <Card className="border-none shadow-sm">
+                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {caseCreatedFromLead ? (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
+                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
+              </div>
+              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
+                <div>Status leada: {sourceLeadStatusLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+              </div>
+              {caseData?.leadId ? (
+                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                </Button>
+              ) : null}
+            </>
+          ) : (
+            <div className="space-y-2">
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+<Card className="border-none shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg">Start realizacji</CardTitle>
               </CardHeader>
@@ -1341,7 +1377,37 @@ export default function CaseDetail() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm">
+                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {caseCreatedFromLead ? (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
+                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
+              </div>
+              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
+                <div>Status leada: {sourceLeadStatusLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+              </div>
+              {caseData?.leadId ? (
+                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                </Button>
+              ) : null}
+            </>
+          ) : (
+            <div className="space-y-2">
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+<Card className="border-none shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg">Operacyjny hub sprawy</CardTitle>
               </CardHeader>
@@ -1440,7 +1506,37 @@ export default function CaseDetail() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm overflow-hidden">
+                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {caseCreatedFromLead ? (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
+                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
+              </div>
+              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
+                <div>Status leada: {sourceLeadStatusLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+              </div>
+              {caseData?.leadId ? (
+                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                </Button>
+              ) : null}
+            </>
+          ) : (
+            <div className="space-y-2">
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+<Card className="border-none shadow-sm overflow-hidden">
               <CardHeader className="bg-white border-b border-slate-100 pb-6">
                 <div className="flex items-center justify-between mb-4 gap-3">
                   <Badge variant={caseData.status === 'blocked' ? 'destructive' : caseData.status === 'ready_to_start' ? 'secondary' : 'default'} className="px-3 py-1">
@@ -1611,7 +1707,37 @@ export default function CaseDetail() {
           </div>
 
           <div className="space-y-6">
-            <Card className="border-none shadow-sm">
+                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {caseCreatedFromLead ? (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
+                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
+              </div>
+              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
+                <div>Status leada: {sourceLeadStatusLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+              </div>
+              {caseData?.leadId ? (
+                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                </Button>
+              ) : null}
+            </>
+          ) : (
+            <div className="space-y-2">
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+<Card className="border-none shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <UserRound className="w-5 h-5 text-slate-400" />
@@ -1641,7 +1767,37 @@ export default function CaseDetail() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm">
+                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {caseCreatedFromLead ? (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
+                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
+              </div>
+              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
+                <div>Status leada: {sourceLeadStatusLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+              </div>
+              {caseData?.leadId ? (
+                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                </Button>
+              ) : null}
+            </>
+          ) : (
+            <div className="space-y-2">
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+<Card className="border-none shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <UserRound className="w-5 h-5 text-slate-400" />
@@ -1748,7 +1904,37 @@ export default function CaseDetail() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm">
+                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {caseCreatedFromLead ? (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
+                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
+              </div>
+              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
+                <div>Status leada: {sourceLeadStatusLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+              </div>
+              {caseData?.leadId ? (
+                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                </Button>
+              ) : null}
+            </>
+          ) : (
+            <div className="space-y-2">
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+<Card className="border-none shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <History className="w-5 h-5 text-slate-400" />
@@ -1835,7 +2021,37 @@ export default function CaseDetail() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm bg-primary text-white">
+                  <Card className="border-violet-200 bg-violet-50/70 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {caseCreatedFromLead ? (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
+                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
+              </div>
+              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
+                <div>Status leada: {sourceLeadStatusLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+              </div>
+              {caseData?.leadId ? (
+                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                </Button>
+              ) : null}
+            </>
+          ) : (
+            <div className="space-y-2">
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+<Card className="border-none shadow-sm bg-primary text-white">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="bg-white/20 p-3 rounded-xl">
@@ -2227,6 +2443,8 @@ export default function CaseDetail() {
     </Layout>
   );
 }
+
+
 
 
 
