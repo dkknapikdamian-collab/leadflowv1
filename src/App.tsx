@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './firebase';
 import { getIdTokenResult, signOut } from 'firebase/auth';
 import NotificationRuntime from './components/NotificationRuntime';
@@ -8,6 +7,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { TooltipProvider } from './components/ui/tooltip';
 import { fetchMeFromSupabase, isSupabaseConfigured } from './lib/supabase-fallback';
 import { clearClientAuthSnapshot, setClientAuthSnapshot } from './lib/client-auth';
+import { useFirebaseSession } from './hooks/useFirebaseSession';
 import { toast } from 'sonner';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
@@ -51,7 +51,7 @@ function buildLocalProfile(user: any) {
 }
 
 export default function App() {
-  const [user, loading] = useAuthState(auth);
+  const [user, loading] = useFirebaseSession(auth);
   const [profile, setProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
 
