@@ -251,7 +251,7 @@ set
   billing_model_snapshot = coalesce(nullif(cs.billing_model_snapshot, ''), l.billing_model_snapshot, sp.billing_model),
   billing_status = coalesce(nullif(cs.billing_status, ''), l.billing_status, 'not_started')
 from public.leads l
-left join public.service_profiles sp on sp.workspace_id = cs.workspace_id and sp.is_default = true
+left join public.service_profiles sp on sp.workspace_id = l.workspace_id and sp.is_default = true
 where cs.lead_id = l.id
   and (cs.service_profile_id is null or cs.billing_model_snapshot is null or cs.billing_status is null);
 
