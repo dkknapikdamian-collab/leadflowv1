@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -145,8 +145,9 @@ function activityTitle(activity: any) {
       return 'RozpoczÄ™to obsĹ‚ugÄ™ i utworzono sprawÄ™';
     case 'case_linked':
       return 'PodpiÄ™to istniejÄ…cÄ… sprawÄ™';
-    case 'case_unlinked':
-      return 'OdpiÄ™to sprawÄ™ od leada';
+    
+    case 'lead_moved_to_service':
+      return 'Przeniesiono temat do obsĹ‚ugi';
     case 'task_updated':
       return 'Zaktualizowano zadanie';
     case 'task_status_toggled':
@@ -911,7 +912,7 @@ export default function LeadDetail() {
 
   const currentStatus = STATUS_OPTIONS.find((status) => status.value === lead.status)
     || (lead.status === 'moved_to_service'
-      ? { value: 'moved_to_service', label: 'Przeniesiony do obslugi', color: 'bg-violet-100 text-violet-700' }
+      ? { value: 'moved_to_service', label: 'Przeniesiony do obsĹ‚ugi', color: 'bg-violet-100 text-violet-700' }
       : STATUS_OPTIONS[0]);
   const nextActionDate = asDate(lead.nextActionAt);
   const updatedAt = asDate(lead.updatedAt);
