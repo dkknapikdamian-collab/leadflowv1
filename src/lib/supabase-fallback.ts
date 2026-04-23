@@ -12,6 +12,7 @@ type ApiCacheEntry = { expiresAt: number; data?: unknown; promise?: Promise<unkn
 
 const API_GET_CACHE_TTL_MS = 10_000;
 const apiGetCache = new Map<string, ApiCacheEntry>();
+const WORKSPACE_CONTEXT_STORAGE_KEY = 'closeflow:workspace-id';
 
 function getSupabaseConfig() {
   const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();
@@ -20,9 +21,30 @@ function getSupabaseConfig() {
 
 function clearApiGetCache() { apiGetCache.clear(); }
 function getAuthContext() { return { uid: auth.currentUser?.uid || '', email: auth.currentUser?.email || '', fullName: auth.currentUser?.displayName || '' }; }
+function canUseStorage() { return typeof window !== 'undefined' && !!window.localStorage; }
+export function getStoredWorkspaceId() {
+  if (!canUseStorage()) return '';
+  return window.localStorage.getItem(WORKSPACE_CONTEXT_STORAGE_KEY) || '';
+}
+export function persistWorkspaceId(workspaceId?: string | null) {
+  if (!canUseStorage()) return;
+  if (workspaceId && workspaceId.trim()) {
+    window.localStorage.setItem(WORKSPACE_CONTEXT_STORAGE_KEY, workspaceId.trim());
+    return;
+  }
+  window.localStorage.removeItem(WORKSPACE_CONTEXT_STORAGE_KEY);
+}
 function getAuthHeaders() {
   const ctx = getAuthContext();
-  return Object.fromEntries(Object.entries({ 'x-user-id': ctx.uid, 'x-user-email': ctx.email, 'x-user-name': ctx.fullName }).filter(([, value]) => !!value));
+  const workspaceId = getStoredWorkspaceId();
+  return Object.fromEntries(
+    Object.entries({
+      'x-user-id': ctx.uid,
+      'x-user-email': ctx.email,
+      'x-user-name': ctx.fullName,
+      'x-workspace-id': workspaceId,
+    }).filter(([, value]) => !!value),
+  );
 }
 function getCacheScope() { const ctx = getAuthContext(); return `${ctx.uid || 'anon'}:${ctx.email || 'anon'}`; }
 

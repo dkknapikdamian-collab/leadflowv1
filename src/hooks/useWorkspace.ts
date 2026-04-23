@@ -4,7 +4,12 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { getAccessSummary } from '../lib/access';
 import { isAdminEmail } from '../lib/admin';
 import { auth, db } from '../firebase';
-import { fetchMeFromSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import {
+  fetchMeFromSupabase,
+  getStoredWorkspaceId,
+  isSupabaseConfigured,
+  persistWorkspaceId,
+} from '../lib/supabase-fallback';
 import { ensureCurrentUserWorkspace } from '../lib/workspace';
 
 export function useWorkspace() {
@@ -25,6 +30,7 @@ export function useWorkspace() {
 
   useEffect(() => {
     if (!activeUserId) {
+      persistWorkspaceId(null);
       setWorkspace(null);
       setProfile(null);
       setAccessOverride(null);
@@ -44,18 +50,20 @@ export function useWorkspace() {
             fullName: auth.currentUser?.displayName || undefined,
           });
           if (cancelled) return;
+          persistWorkspaceId(me.workspace?.id || null);
           setWorkspace(me.workspace);
           setProfile(me.profile);
           setAccessOverride(me.access);
         } catch {
           if (cancelled) return;
-          setWorkspace({
-            id: activeUserId,
-            ownerId: activeUserId,
-            planId: 'solo',
+          const storedWorkspaceId = getStoredWorkspaceId();
+          setWorkspace(storedWorkspaceId ? {
+            id: storedWorkspaceId,
+            ownerId: null,
+            planId: 'trial_14d',
             subscriptionStatus: 'inactive',
             trialEndsAt: null,
-          });
+          } : null);
           setProfile({
             id: activeUserId,
             fullName: auth.currentUser?.displayName || '',
@@ -132,6 +140,11 @@ export function useWorkspace() {
       unsubscribeProfile?.();
     };
   }, [activeUserId, refreshToken]);
+
+  useEffect(() => {
+    if (!workspace?.id) return;
+    persistWorkspaceId(String(workspace.id));
+  }, [workspace?.id]);
 
   const fallbackAccess = getAccessSummary(workspace);
   const access = accessOverride
