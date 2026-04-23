@@ -380,6 +380,7 @@ export default function LeadDetail() {
       replaceExactText('Przegląd', 'Historia pozyskania');
 
       hideByHeadingText([
+        'Stan procesu',
         'Planowanie ruchu',
         'Szybkie akcje',
         'Zadania leada',
@@ -396,6 +397,32 @@ export default function LeadDetail() {
         'Finanse',
         'Realizacja',
       ]);
+
+      const hideProcessInfoCards = () => {
+        const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
+        for (const element of elements) {
+          const text = normalizeText(element.textContent || '');
+          if (
+            text === 'Najbliższa akcja'
+            || text === 'Brak opisu kroku'
+            || text === 'Brak terminu'
+          ) {
+            const root =
+              element.closest('section')
+              || element.closest('[data-slot="card"]')
+              || element.closest('article')
+              || element.closest('.rounded-2xl')
+              || element.parentElement;
+
+            if (root instanceof HTMLElement) {
+              root.style.display = 'none';
+              root.setAttribute('data-stage25-hidden', 'true');
+            }
+          }
+        }
+      };
+
+      hideProcessInfoCards();
     };
 
     applyStage24PostServiceSimplifier();
