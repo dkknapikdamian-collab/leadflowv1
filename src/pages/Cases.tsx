@@ -165,6 +165,15 @@ function createStatCardClass() {
   return 'border-none app-surface-strong shadow-sm';
 }
 
+function buildCaseSourceSummary(sourceLead: any) {
+  if (!sourceLead) {
+    return 'Źródło: sprawa uruchomiona ręcznie';
+  }
+
+  const leadName = sourceLead.name || sourceLead.company || 'Lead';
+  return `Źródło: temat pozyskany z leada ${leadName} • ${leadSourceLabel(sourceLead.source)}`;
+}
+
 export default function Cases() {
   const { workspace, hasAccess } = useWorkspace();
   const [cases, setCases] = useState<CaseRecord[]>([]);
@@ -368,7 +377,7 @@ export default function Cases() {
             <div>
               <h1 className="text-3xl font-bold app-text">Sprawy</h1>
               <p className="max-w-2xl text-sm md:text-base app-muted">
-                Tu widzisz, które realizacje stoją, które czekają na klienta i które są już gotowe do startu.
+                To jest główne miejsce pracy po rozpoczęciu obsługi. Tutaj widzisz, które realizacje stoją, które czekają na klienta i które są już gotowe do startu.
               </p>
             </div>
           </div>
@@ -526,7 +535,7 @@ export default function Cases() {
             <Card className={createStatCardClass()}>
               <CardContent className={`flex items-center justify-between p-5 ${caseView === 'linked' ? 'bg-primary/5' : ''}`}>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Z leada</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Pozyskane</p>
                   <p className="mt-2 text-2xl font-bold app-text">{stats.linked}</p>
                 </div>
                 <div className="rounded-2xl bg-sky-500/12 p-3 text-sky-500"><Link2 className="h-6 w-6" /></div>
@@ -550,7 +559,7 @@ export default function Cases() {
         </Card>
 
         <p className="text-sm app-muted">
-          Sprawa to temat już prowadzony operacyjnie. Zadanie jest pojedynczą czynnością, wydarzenie blokiem czasu w kalendarzu, a sprawa jest głównym miejscem dalszej pracy po starcie obsługi.
+          Sprawa to główne miejsce dalszej pracy po kliknięciu „Rozpocznij obsługę”. Zadanie jest pojedynczą czynnością, wydarzenie blokiem czasu w kalendarzu, a sprawa spina pełną realizację.
         </p>
 
         <section className="space-y-4">
@@ -577,6 +586,7 @@ export default function Cases() {
               const percent = Math.round(record.completenessPercent || 0);
               const updatedAt = toUpdatedDate(record.updatedAt);
               const sourceLead = record.leadId ? leadsById.get(String(record.leadId)) : null;
+              const sourceSummary = buildCaseSourceSummary(sourceLead);
 
               return (
                 <Card key={record.id} className="border-none app-surface-strong app-shadow transition-transform hover:-translate-y-0.5">
@@ -586,18 +596,14 @@ export default function Cases() {
                         <h3 className="truncate text-xl font-bold app-text">{record.title || 'Sprawa bez tytułu'}</h3>
                         <Badge variant={caseBadgeVariant(record.status)}>{caseStatusLabel(record.status)}</Badge>
                         {attention ? <Badge variant="destructive">Wymaga uwagi</Badge> : null}
-                        <Badge variant="outline">{record.leadId || record.createdFromLead ? 'Z leada' : 'Utworzona ręcznie'}</Badge>
+                        <Badge variant="outline">{record.leadId || record.createdFromLead ? 'Temat pozyskany' : 'Uruchomiona ręcznie'}</Badge>
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm app-muted">
                         <span>Klient: {record.clientName || 'Brak nazwy klienta'}</span>
                         {record.portalReady ? <span>Portal gotowy</span> : null}
                         <span>Kompletność: {percent}%</span>
                         <span>Ostatni ruch: {updatedAt ? format(updatedAt, 'd MMM yyyy', { locale: pl }) : 'Brak'}</span>
-                        {sourceLead ? (
-                          <span>Źródło: {sourceLead.name || sourceLead.company || 'Lead'} • {leadSourceLabel(sourceLead.source)}</span>
-                        ) : (
-                          <span>Źródło: sprawa utworzona ręcznie</span>
-                        )}
+                        <span>{sourceSummary}</span>
                         {record.serviceStartedAt ? (
                           <span>Obsługa od: {format(new Date(record.serviceStartedAt), 'd MMM yyyy', { locale: pl })}</span>
                         ) : null}
@@ -627,10 +633,10 @@ export default function Cases() {
                     <div className="flex flex-col gap-2 lg:w-[220px] lg:items-end">
                       {record.leadId ? (
                         <Button variant="outline" className="rounded-2xl lg:w-full" asChild>
-                          <Link to={`/leads/${record.leadId}`}>Otwórz źródłowego leada <ExternalLink className="h-4 w-4" /></Link>
+                          <Link to={`/leads/${record.leadId}`}>Otwórz historię pozyskania <ExternalLink className="h-4 w-4" /></Link>
                         </Button>
                       ) : (
-                        <Badge variant="outline" className="justify-center rounded-2xl px-3 py-2 lg:w-full">Utworzona ręcznie</Badge>
+                        <Badge variant="outline" className="justify-center rounded-2xl px-3 py-2 lg:w-full">Uruchomiona ręcznie</Badge>
                       )}
                       <Button className="rounded-2xl lg:w-full" asChild>
                         <Link to={`/case/${record.id}`}>Otwórz sprawę <ChevronRight className="h-4 w-4" /></Link>
