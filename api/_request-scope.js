@@ -36,6 +36,10 @@ function uniqueTexts(values) {
   return result;
 }
 
+function uniqueUuidTexts(values) {
+  return uniqueTexts(values).filter((value) => isUuid(value));
+}
+
 export function getRequestIdentity(req, body = {}) {
   return {
     userId: getHeader(req, 'x-user-id') || asText(body.userId) || asText(req?.query?.uid),
@@ -117,10 +121,19 @@ async function findWorkspaceIdFromProfileRow(row) {
     row?.externalAuthUid,
     row?.email,
   ]);
+  const uuidCandidates = uniqueUuidTexts([
+    row?.id,
+    row?.firebase_uid,
+    row?.firebaseUid,
+    row?.auth_uid,
+    row?.authUid,
+    row?.external_auth_uid,
+    row?.externalAuthUid,
+  ]);
 
   if (!lookupCandidates.length) return null;
 
-  const ownerQueries = lookupCandidates.flatMap((candidate) => ([
+  const ownerQueries = uuidCandidates.flatMap((candidate) => ([
     `workspaces?owner_user_id=eq.${encodeURIComponent(candidate)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
     `workspaces?owner_id=eq.${encodeURIComponent(candidate)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
     `workspaces?created_by_user_id=eq.${encodeURIComponent(candidate)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
@@ -132,7 +145,7 @@ async function findWorkspaceIdFromProfileRow(row) {
   if (ownerWorkspaceId && isUuid(ownerWorkspaceId)) return ownerWorkspaceId;
 
   const memberRows = await queryRows(
-    lookupCandidates.map((candidate) =>
+    uuidCandidates.map((candidate) =>
       `workspace_members?user_id=eq.${encodeURIComponent(candidate)}&select=workspace_id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
     ),
   );

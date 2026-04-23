@@ -40,6 +40,10 @@ function uniqueStrings(values: unknown[]) {
   return result;
 }
 
+function uniqueUuidStrings(values: unknown[]) {
+  return uniqueStrings(values).filter((value) => isUuid(value));
+}
+
 function extractUuidCandidate(...values: unknown[]) {
   for (const value of values) {
     const normalized = asNullableString(value);
@@ -204,17 +208,29 @@ function getProfileLookupCandidates(
   uid: string | null,
   email: string | null,
 ) {
-  return uniqueStrings([
-    profileRow?.id,
-    profileRow?.firebase_uid,
-    profileRow?.firebaseUid,
-    profileRow?.auth_uid,
-    profileRow?.authUid,
-    profileRow?.external_auth_uid,
-    profileRow?.externalAuthUid,
-    uid,
-    email,
-  ]);
+  return {
+    all: uniqueStrings([
+      profileRow?.id,
+      profileRow?.firebase_uid,
+      profileRow?.firebaseUid,
+      profileRow?.auth_uid,
+      profileRow?.authUid,
+      profileRow?.external_auth_uid,
+      profileRow?.externalAuthUid,
+      uid,
+      email,
+    ]),
+    uuids: uniqueUuidStrings([
+      profileRow?.id,
+      profileRow?.firebase_uid,
+      profileRow?.firebaseUid,
+      profileRow?.auth_uid,
+      profileRow?.authUid,
+      profileRow?.external_auth_uid,
+      profileRow?.externalAuthUid,
+      uid,
+    ]),
+  };
 }
 
 async function findWorkspaceForProfile(
@@ -223,9 +239,9 @@ async function findWorkspaceForProfile(
   email: string | null,
 ) {
   const lookupCandidates = getProfileLookupCandidates(profileRow, uid, email);
-  if (!lookupCandidates.length) return null;
+  if (!lookupCandidates.all.length) return null;
 
-  const workspaceQueries = lookupCandidates.flatMap((candidate) => ([
+  const workspaceQueries = lookupCandidates.uuids.flatMap((candidate) => ([
     `workspaces?owner_user_id=eq.${encodeURIComponent(candidate)}&select=*&limit=1`,
     `workspaces?owner_id=eq.${encodeURIComponent(candidate)}&select=*&limit=1`,
     `workspaces?created_by_user_id=eq.${encodeURIComponent(candidate)}&select=*&limit=1`,
@@ -244,7 +260,7 @@ async function findWorkspaceForProfile(
   }
 
   try {
-    for (const candidate of lookupCandidates) {
+    for (const candidate of lookupCandidates.uuids) {
       const memberResult = await selectFirstAvailable([
         `workspace_members?user_id=eq.${encodeURIComponent(candidate)}&select=workspace_id&limit=1`,
       ]);
@@ -485,19 +501,19 @@ function shouldRepairFreshTrialBootstrap(row: Record<string, unknown> | null) {
 
 function resolveWorkspaceOwnerUserId(profileRow: Record<string, unknown> | null, uid: string | null) {
   return (
-    asNullableString(profileRow?.owner_user_id)
-    || asNullableString(profileRow?.ownerUserId)
-    || asNullableString(profileRow?.owner_id)
-    || asNullableString(profileRow?.ownerId)
-    || asNullableString(profileRow?.created_by_user_id)
-    || asNullableString(profileRow?.createdByUserId)
-    || asNullableString(profileRow?.firebase_uid)
-    || asNullableString(profileRow?.firebaseUid)
-    || asNullableString(profileRow?.auth_uid)
-    || asNullableString(profileRow?.authUid)
-    || asNullableString(profileRow?.external_auth_uid)
-    || asNullableString(profileRow?.externalAuthUid)
-    || extractUuidCandidate(
+    extractUuidCandidate(
+      profileRow?.owner_user_id,
+      profileRow?.ownerUserId,
+      profileRow?.owner_id,
+      profileRow?.ownerId,
+      profileRow?.created_by_user_id,
+      profileRow?.createdByUserId,
+      profileRow?.firebase_uid,
+      profileRow?.firebaseUid,
+      profileRow?.auth_uid,
+      profileRow?.authUid,
+      profileRow?.external_auth_uid,
+      profileRow?.externalAuthUid,
       profileRow?.user_uuid,
       profileRow?.userUuid,
       profileRow?.profile_uuid,
@@ -507,7 +523,6 @@ function resolveWorkspaceOwnerUserId(profileRow: Record<string, unknown> | null,
       profileRow?.id,
       uid,
     )
-    || asNullableString(uid)
     || crypto.randomUUID()
   );
 }
