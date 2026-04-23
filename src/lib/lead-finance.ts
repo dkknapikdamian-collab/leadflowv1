@@ -19,7 +19,7 @@ export type LeadFinanceSummary = {
   funnelAmount: number;
 };
 
-export const ACTIVE_LEAD_STATUSES = ['new', 'contacted', 'qualification', 'proposal_sent', 'follow_up', 'negotiation'] as const;
+export const ACTIVE_LEAD_STATUSES = ['new', 'contacted', 'qualification', 'proposal_sent', 'negotiation', 'waiting_response', 'accepted', 'accepted_waiting_start', 'active_service'] as const;
 
 export function normalizePartialPayment(input: unknown, fallbackIndex = 0): LeadPartialPayment | null {
   if (!input || typeof input !== 'object') return null;

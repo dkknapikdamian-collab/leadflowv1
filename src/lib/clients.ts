@@ -182,7 +182,7 @@ export function buildClientDirectory(
   leads.forEach((lead) => {
     const clientId = lead.linkedClientId || buildClientIdFromLead({ leadId: lead.id, email: lead.email, phone: lead.phone, name: lead.name });
     const current = map.get(clientId);
-    const shouldCreateFallback = Boolean(lead.linkedClientId || lead.linkedCaseId || ['negotiation', 'proposal_sent', 'follow_up', 'won'].includes(lead.status || ''));
+    const shouldCreateFallback = Boolean(lead.linkedClientId || lead.linkedCaseId || ['negotiation', 'proposal_sent', 'waiting_response', 'accepted', 'active_service', 'won'].includes(lead.status || ''));
 
     if (current || shouldCreateFallback) {
       upsert(clientId, {

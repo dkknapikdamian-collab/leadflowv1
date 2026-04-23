@@ -1,5 +1,5 @@
 import { isValid, parseISO } from 'date-fns';
-import { fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, isSupabaseConfigured } from './supabase-fallback';
+import { fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, isSupabaseConfigured } from './supabase-fallback';
 
 export type CalendarTaskItem = {
   id: string;
@@ -61,6 +61,7 @@ export type CalendarBundle = {
   tasks: CalendarTaskItem[];
   events: CalendarEventItem[];
   leads: CalendarLeadActionItem[];
+  cases: Record<string, unknown>[];
 };
 
 function isIsoLike(value?: string | null) {
@@ -158,17 +159,19 @@ export function normalizeCalendarLeadAction(row: Record<string, unknown>): Calen
 }
 
 export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle> {
-  if (!isSupabaseConfigured()) return { tasks: [], events: [], leads: [] };
+  if (!isSupabaseConfigured()) return { tasks: [], events: [], leads: [], cases: [] };
 
-  const [taskItems, eventItems, leadItems] = await Promise.all([
+  const [taskItems, eventItems, leadItems, caseItems] = await Promise.all([
     fetchTasksFromSupabase(),
     fetchEventsFromSupabase(),
     fetchLeadsFromSupabase(),
+    fetchCasesFromSupabase().catch(() => []),
   ]);
 
   return {
     tasks: (taskItems as Record<string, unknown>[]).map(normalizeCalendarTask).filter((item): item is CalendarTaskItem => Boolean(item)),
     events: (eventItems as Record<string, unknown>[]).map(normalizeCalendarEvent).filter((item): item is CalendarEventItem => Boolean(item)),
     leads: (leadItems as Record<string, unknown>[]).map(normalizeCalendarLeadAction).filter((item): item is CalendarLeadActionItem => Boolean(item)),
+    cases: caseItems as Record<string, unknown>[],
   };
 }

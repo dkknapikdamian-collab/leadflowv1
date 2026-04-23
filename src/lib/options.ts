@@ -26,10 +26,14 @@ export const STATUS_OPTIONS = [
   { value: 'contacted', label: 'Skontaktowany', color: 'bg-indigo-100 text-indigo-700' },
   { value: 'qualification', label: 'Kwalifikacja', color: 'bg-purple-100 text-purple-700' },
   { value: 'proposal_sent', label: 'Oferta wysłana', color: 'bg-amber-100 text-amber-700' },
-  { value: 'follow_up', label: 'Follow-up', color: 'bg-orange-100 text-orange-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
+  { value: 'waiting_response', label: 'Czeka na odpowiedź', color: 'bg-orange-100 text-orange-700' },
+  { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
+  { value: 'accepted_waiting_start', label: 'Zaakceptowany, czeka na start', color: 'bg-cyan-100 text-cyan-700' },
+  { value: 'active_service', label: 'Obsługa aktywna', color: 'bg-violet-100 text-violet-700' },
   { value: 'won', label: 'Wygrany', color: 'bg-emerald-100 text-emerald-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
+  { value: 'archived', label: 'Archiwum', color: 'bg-slate-100 text-slate-700' },
 ];
 
 export const TASK_TYPES = [

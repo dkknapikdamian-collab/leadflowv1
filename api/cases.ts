@@ -1,14 +1,30 @@
-import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById } from './_supabase.js';
+import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from './_supabase.js';
+import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 
-function isUuid(value: unknown) {
-  return typeof value === 'string'
-    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+const CASE_STATUSES = new Set(['new', 'waiting_on_client', 'blocked', 'to_approve', 'ready_to_start', 'in_progress', 'on_hold', 'completed', 'canceled']);
+const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
+const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_completion', 'success_fee', 'recurring', 'manual']);
+const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at']);
+
+function asText(value: unknown) {
+  return typeof value === 'string' ? value.trim() : '';
 }
 
 function asNullableUuid(value: unknown) {
-  if (typeof value !== 'string') return null;
-  const trimmed = value.trim();
+  const trimmed = asText(value);
   return trimmed && isUuid(trimmed) ? trimmed : null;
+}
+
+function normalizeEnum(value: unknown, allowed: Set<string>, fallback: string) {
+  const normalized = asText(value);
+  return allowed.has(normalized) ? normalized : fallback;
+}
+
+function toIso(value: unknown) {
+  const normalized = asText(value);
+  if (!normalized) return null;
+  const parsed = new Date(normalized);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
 }
 
 function isMissingCasesTableError(error: unknown) {
@@ -19,17 +35,65 @@ function isMissingCasesTableError(error: unknown) {
 function normalizeCase(row: Record<string, unknown>) {
   return {
     id: String(row.id || crypto.randomUUID()),
-    title: String(row.title || row.name || 'Sprawa bez tytułu'),
-    clientName: String(row.client_name || row.clientName || ''),
-    clientId: row.client_id ? String(row.client_id) : undefined,
-    clientEmail: String(row.client_email || row.clientEmail || ''),
-    clientPhone: String(row.client_phone || row.clientPhone || ''),
-    status: String(row.status || 'in_progress'),
+    workspaceId: asText(row.workspace_id || row.workspaceId),
+    title: asText(row.title || row.name) || 'Sprawa bez tytułu',
+    clientName: asText(row.client_name || row.clientName),
+    clientId: asText(row.client_id || row.clientId) || undefined,
+    clientEmail: asText(row.client_email || row.clientEmail),
+    clientPhone: asText(row.client_phone || row.clientPhone),
+    status: normalizeEnum(row.status, CASE_STATUSES, 'in_progress'),
+    billingStatus: normalizeEnum(row.billing_status || row.billingStatus, BILLING_STATUSES, 'not_started'),
+    billingModelSnapshot: normalizeEnum(row.billing_model_snapshot || row.billingModelSnapshot, BILLING_MODELS, 'manual'),
     completenessPercent: Number(row.completeness_percent || row.completenessPercent || 0),
-    leadId: row.lead_id ? String(row.lead_id) : undefined,
+    leadId: asText(row.lead_id || row.leadId) || undefined,
+    serviceProfileId: asText(row.service_profile_id || row.serviceProfileId) || undefined,
     portalReady: Boolean(row.portal_ready || row.portalReady || false),
+    startedAt: row.started_at || row.startedAt || null,
+    completedAt: row.completed_at || row.completedAt || null,
+    lastActivityAt: row.last_activity_at || row.lastActivityAt || null,
     updatedAt: row.updated_at || row.updatedAt || null,
+    createdAt: row.created_at || row.createdAt || null,
   };
+}
+
+function extractMissingColumn(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  const match = message.match(/Could not find the '([^']+)' column/i);
+  return match?.[1] || null;
+}
+
+function omitMissingColumn(payload: Record<string, unknown>, column: string) {
+  const next = { ...payload };
+  delete next[column];
+  return next;
+}
+
+async function updateCaseWithSchemaFallback(id: string, payload: Record<string, unknown>) {
+  let current = { ...payload };
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    try {
+      return await updateById('cases', id, current);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !OPTIONAL_CASE_COLUMNS.has(missingColumn) || !(missingColumn in current)) throw error;
+      current = omitMissingColumn(current, missingColumn);
+    }
+  }
+  throw new Error('CASE_UPDATE_SCHEMA_FALLBACK_EXHAUSTED');
+}
+
+async function insertCaseWithSchemaFallback(payload: Record<string, unknown>) {
+  let current = { ...payload };
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    try {
+      return await insertWithVariants(['cases'], [current]);
+    } catch (error) {
+      const missingColumn = extractMissingColumn(error);
+      if (!missingColumn || !OPTIONAL_CASE_COLUMNS.has(missingColumn) || !(missingColumn in current)) throw error;
+      current = omitMissingColumn(current, missingColumn);
+    }
+  }
+  throw new Error('CASE_INSERT_SCHEMA_FALLBACK_EXHAUSTED');
 }
 
 async function bestEffortPatch(path: string, payload: Record<string, unknown>) {
@@ -39,7 +103,7 @@ async function bestEffortPatch(path: string, payload: Record<string, unknown>) {
       body: JSON.stringify(payload),
     });
   } catch {
-    // best effort only during cutover
+    // best effort only
   }
 }
 
@@ -50,19 +114,25 @@ async function bestEffortDelete(path: string) {
       headers: { Prefer: 'return=representation' },
     });
   } catch {
-    // optional cleanup only
+    // best effort only
   }
 }
 
 export default async function handler(req: any, res: any) {
   try {
     if (req.method === 'GET') {
-      const requestedId = String(req.query?.id || '').trim();
+      const workspaceId = await resolveRequestWorkspaceId(req);
+      if (!workspaceId) {
+        res.status(401).json({ error: 'CASE_WORKSPACE_REQUIRED' });
+        return;
+      }
+
+      const requestedId = asText(req.query?.id);
       let rows: Record<string, unknown>[] = [];
       try {
         const result = await selectFirstAvailable([
-          'cases?select=*&order=updated_at.desc.nullslast&limit=200',
-          'cases?select=*&order=created_at.desc.nullslast&limit=200',
+          withWorkspaceFilter(`cases?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}order=updated_at.desc.nullslast&limit=${requestedId ? 1 : 250}`, workspaceId),
+          withWorkspaceFilter(`cases?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 250}`, workspaceId),
         ]);
         rows = result.data as Record<string, unknown>[];
       } catch (error) {
@@ -85,33 +155,42 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
+    const workspaceId = await resolveRequestWorkspaceId(req, body);
+
     if (req.method === 'POST') {
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-      const workspaceId = await findWorkspaceId(body.workspaceId);
-      if (!workspaceId) {
+      const finalWorkspaceId = workspaceId || await findWorkspaceId(body.workspaceId);
+      if (!finalWorkspaceId) {
         throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
       }
 
       const nowIso = new Date().toISOString();
       const normalizedLeadId = asNullableUuid(body.leadId);
       const normalizedClientId = asNullableUuid(body.clientId);
+      const normalizedStatus = normalizeEnum(body.status, CASE_STATUSES, 'in_progress');
 
-      const payload = {
-        workspace_id: workspaceId,
+      const payload: Record<string, unknown> = {
+        workspace_id: finalWorkspaceId,
         lead_id: normalizedLeadId,
         client_id: normalizedClientId,
-        title: body.title || 'Nowa sprawa',
-        client_name: body.clientName || '',
-        client_email: body.clientEmail || '',
-        client_phone: body.clientPhone || '',
-        status: body.status || 'in_progress',
+        service_profile_id: asNullableUuid(body.serviceProfileId),
+        title: asText(body.title) || 'Nowa sprawa',
+        client_name: asText(body.clientName),
+        client_email: asText(body.clientEmail),
+        client_phone: asText(body.clientPhone),
+        status: normalizedStatus,
+        billing_status: normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started'),
+        billing_model_snapshot: normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual'),
         completeness_percent: Number(body.completenessPercent || 0),
         portal_ready: Boolean(body.portalReady || false),
+        started_at: toIso(body.startedAt) || (normalizedStatus === 'in_progress' ? nowIso : null),
+        completed_at: toIso(body.completedAt) || (normalizedStatus === 'completed' ? nowIso : null),
+        last_activity_at: toIso(body.lastActivityAt) || nowIso,
         created_at: nowIso,
         updated_at: nowIso,
       };
 
-      const result = await insertWithVariants(['cases'], [payload]);
+      const result = await insertCaseWithSchemaFallback(payload);
       const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
       const insertedId = String((inserted as Record<string, unknown>).id || '');
 
@@ -125,6 +204,8 @@ export default async function handler(req: any, res: any) {
       if (normalizedLeadId && insertedId) {
         await bestEffortPatch(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, {
           linked_case_id: insertedId,
+          case_started_at: nowIso,
+          status: 'active_service',
           updated_at: nowIso,
         });
       }
@@ -134,30 +215,39 @@ export default async function handler(req: any, res: any) {
     }
 
     if (req.method === 'PATCH') {
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-      if (!body.id) {
+      if (!body.id || !workspaceId) {
         res.status(400).json({ error: 'CASE_ID_REQUIRED' });
         return;
       }
+      await requireScopedRow('cases', String(body.id), workspaceId, 'CASE_NOT_FOUND');
 
       const nowIso = new Date().toISOString();
       const normalizedLeadId = body.leadId !== undefined ? asNullableUuid(body.leadId) : undefined;
       const normalizedClientId = body.clientId !== undefined ? asNullableUuid(body.clientId) : undefined;
+      const nextStatus = body.status !== undefined ? normalizeEnum(body.status, CASE_STATUSES, 'in_progress') : undefined;
       const payload: Record<string, unknown> = {
         updated_at: nowIso,
       };
 
-      if (body.title !== undefined) payload.title = body.title || 'Sprawa bez tytułu';
-      if (body.clientName !== undefined) payload.client_name = body.clientName || '';
-      if (body.clientEmail !== undefined) payload.client_email = body.clientEmail || '';
-      if (body.clientPhone !== undefined) payload.client_phone = body.clientPhone || '';
+      if (body.title !== undefined) payload.title = asText(body.title) || 'Sprawa bez tytułu';
+      if (body.clientName !== undefined) payload.client_name = asText(body.clientName);
+      if (body.clientEmail !== undefined) payload.client_email = asText(body.clientEmail);
+      if (body.clientPhone !== undefined) payload.client_phone = asText(body.clientPhone);
       if (body.clientId !== undefined) payload.client_id = normalizedClientId;
-      if (body.status !== undefined) payload.status = body.status || 'in_progress';
+      if (nextStatus !== undefined) payload.status = nextStatus;
       if (body.completenessPercent !== undefined) payload.completeness_percent = Number(body.completenessPercent || 0);
       if (body.leadId !== undefined) payload.lead_id = normalizedLeadId;
       if (body.portalReady !== undefined) payload.portal_ready = Boolean(body.portalReady);
+      if (body.serviceProfileId !== undefined) payload.service_profile_id = asNullableUuid(body.serviceProfileId);
+      if (body.billingStatus !== undefined) payload.billing_status = normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started');
+      if (body.billingModelSnapshot !== undefined) payload.billing_model_snapshot = normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual');
+      if (body.startedAt !== undefined) payload.started_at = toIso(body.startedAt);
+      if (body.completedAt !== undefined) payload.completed_at = toIso(body.completedAt);
+      if (body.lastActivityAt !== undefined) payload.last_activity_at = toIso(body.lastActivityAt);
+      if (nextStatus === 'in_progress' && body.startedAt === undefined) payload.started_at = nowIso;
+      if (nextStatus === 'completed' && body.completedAt === undefined) payload.completed_at = nowIso;
 
-      const data = await updateById('cases', String(body.id), payload);
+      const data = await updateCaseWithSchemaFallback(String(body.id), payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
 
       await bestEffortPatch(`leads?linked_case_id=eq.${encodeURIComponent(String(body.id))}`, {
@@ -168,6 +258,8 @@ export default async function handler(req: any, res: any) {
       if (normalizedLeadId) {
         await bestEffortPatch(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, {
           linked_case_id: String(body.id),
+          case_started_at: nowIso,
+          status: 'active_service',
           updated_at: nowIso,
         });
       }
@@ -177,11 +269,12 @@ export default async function handler(req: any, res: any) {
     }
 
     if (req.method === 'DELETE') {
-      const id = String(req.query?.id || '').trim();
-      if (!id) {
+      const id = asText(req.query?.id);
+      if (!id || !workspaceId) {
         res.status(400).json({ error: 'CASE_ID_REQUIRED' });
         return;
       }
+      await requireScopedRow('cases', id, workspaceId, 'CASE_NOT_FOUND');
 
       const nowIso = new Date().toISOString();
 
@@ -207,6 +300,7 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
-    res.status(500).json({ error: error.message || 'CASE_API_FAILED' });
+    const message = error?.message || 'CASE_API_FAILED';
+    res.status(message === 'CASE_NOT_FOUND' ? 404 : 500).json({ error: message });
   }
 }

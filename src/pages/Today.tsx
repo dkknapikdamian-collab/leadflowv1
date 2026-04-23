@@ -19,6 +19,7 @@ import {
   ChevronUp,
   ListTodo,
   ShieldAlert,
+  Briefcase,
 } from 'lucide-react';
 import {
   format,
@@ -96,6 +97,7 @@ type TileCardProps = {
 };
 
 type LeadLinkCardProps = {
+  key?: string | number;
   leadId: string;
   title: string;
   subtitle?: string;
@@ -223,6 +225,7 @@ function formatLeadMoment(value: unknown) {
 export default function Today() {
   const { workspace, profile, hasAccess, loading: wsLoading } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
+  const [cases, setCases] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -314,6 +317,7 @@ export default function Today() {
   async function refreshSupabaseBundle() {
     const bundle = await fetchCalendarBundleFromSupabase();
     setLeads(bundle.leads);
+    setCases(bundle.cases || []);
     setTasks(bundle.tasks);
     setEvents(bundle.events);
   }
@@ -396,6 +400,7 @@ export default function Today() {
         const bundle = await fetchCalendarBundleFromSupabase();
         if (cancelled) return;
         setLeads(bundle.leads);
+        setCases(bundle.cases || []);
         setTasks(bundle.tasks);
         setEvents(bundle.events);
       } catch (error: any) {
@@ -782,6 +787,17 @@ export default function Today() {
     return task.status !== 'done' && startAt && isPast(parseISO(startAt)) && !isToday(parseISO(startAt));
   });
   const overdueLeadActions = activeLeads.filter((lead) => isLeadOverdue(lead));
+  const readyToStartLeads = activeLeads.filter((lead) => {
+    const status = String(lead.status || '');
+    const eligibleAt = parseMoment(lead.caseEligibleAt);
+    const linkedCaseId = String(lead.linkedCaseId || '');
+    if (linkedCaseId) return false;
+    if (status === 'accepted_waiting_start' && eligibleAt) return true;
+    if (status === 'accepted' && (eligibleAt || String(lead.startRuleSnapshot || '') === 'on_acceptance')) return true;
+    return false;
+  });
+  const activeServiceLeads = activeLeads.filter((lead) => String(lead.status || '') === 'active_service');
+  const blockedCases = cases.filter((caseRecord) => String(caseRecord.status || '') === 'blocked');
   const noStepLeads = activeLeads.filter((lead) => !parseMoment(lead.nextActionAt));
   const staleLeads = activeLeads
     .filter((lead) => {
@@ -1425,6 +1441,58 @@ export default function Today() {
                     />
                   ))}
                 </div>
+              </section>
+            )}
+
+            {(readyToStartLeads.length > 0 || activeServiceLeads.length > 0 || blockedCases.length > 0) && (
+              <section id="today-section-service-transition" className="space-y-4">
+                <div className="flex items-center gap-2 text-violet-600">
+                  <Briefcase className="w-5 h-5" />
+                  <h2 className="text-lg font-bold">Start i obsługa</h2>
+                </div>
+                {readyToStartLeads.length > 0 ? (
+                  <TileCard id="today-section-ready-to-start" title="Gotowe do uruchomienia sprawy" subtitle={`${readyToStartLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                    <div className="space-y-2">
+                      {readyToStartLeads.slice(0, 5).map((lead) => (
+                        <LeadLinkCard
+                          key={lead.id}
+                          leadId={String(lead.id)}
+                          title={lead.name}
+                          subtitle={lead.company || 'Lead gotowy do startu'}
+                          badges={<Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100 border-none">Gotowy do startu</Badge>}
+                          helperText="Wejdź w lead i użyj akcji „Utwórz sprawę”."
+                        />
+                      ))}
+                    </div>
+                  </TileCard>
+                ) : null}
+                {activeServiceLeads.length > 0 ? (
+                  <TileCard id="today-section-active-service" title="Obsługa aktywna" subtitle={`${activeServiceLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                    <div className="space-y-2">
+                      {activeServiceLeads.slice(0, 5).map((lead) => (
+                        <LeadLinkCard
+                          key={lead.id}
+                          leadId={String(lead.id)}
+                          title={lead.name}
+                          subtitle={lead.company || 'Obsługa aktywna'}
+                          badges={<Badge variant="outline" className="border-violet-200 text-violet-700">Obsługa aktywna</Badge>}
+                        />
+                      ))}
+                    </div>
+                  </TileCard>
+                ) : null}
+                {blockedCases.length > 0 ? (
+                  <TileCard id="today-section-blocked-cases" title="Zablokowane sprawy" subtitle={`${blockedCases.length} spraw`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                    <div className="space-y-2">
+                      {blockedCases.slice(0, 5).map((caseRecord) => (
+                        <Link key={String(caseRecord.id)} to={`/case/${String(caseRecord.id)}`} className="block rounded-lg border border-rose-200 bg-rose-50/40 px-3 py-2 hover:bg-rose-50">
+                          <p className="font-medium text-slate-900">{String(caseRecord.title || 'Sprawa')}</p>
+                          <p className="text-sm text-rose-700">Status: zablokowana</p>
+                        </Link>
+                      ))}
+                    </div>
+                  </TileCard>
+                ) : null}
               </section>
             )}
 

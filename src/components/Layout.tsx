@@ -33,7 +33,7 @@ type NavItem = {
   path: string;
 };
 
-function NavButton({ item, isActive, compact = false, onNavigate }: { item: NavItem; isActive: boolean; compact?: boolean; onNavigate?: () => void }) {
+function NavButton({ item, isActive, compact = false, onNavigate }: { key?: string; item: NavItem; isActive: boolean; compact?: boolean; onNavigate?: () => void }) {
   return (
     <Link key={item.path} to={item.path} onClick={onNavigate}>
       <Button
@@ -60,6 +60,7 @@ export default function Layout({ children }: LayoutProps) {
   const navItems: NavItem[] = [
     { icon: LayoutDashboard, label: 'Dziś', path: '/' },
     { icon: Users, label: 'Leady', path: '/leads' },
+    { icon: Users, label: 'Klienci', path: '/clients' },
     { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
     { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
     { icon: Briefcase, label: 'Sprawy', path: '/cases' },

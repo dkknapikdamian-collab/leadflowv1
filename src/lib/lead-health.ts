@@ -1,7 +1,7 @@
 import { differenceInCalendarDays, isPast, parseISO, startOfDay } from 'date-fns'
 
 const CLOSED_STATUSES = new Set(['won', 'lost'])
-const WAITING_STATUSES = new Set(['proposal_sent', 'follow_up', 'negotiation'])
+const WAITING_STATUSES = new Set(['proposal_sent', 'waiting_response', 'negotiation', 'accepted_waiting_start'])
 
 function toDateSafe(value: unknown) {
   if (!value) return null

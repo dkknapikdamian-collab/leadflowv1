@@ -140,8 +140,14 @@ function leadStatusLabel(status?: string) {
       return 'Kwalifikacja';
     case 'proposal_sent':
       return 'Oferta wysłana';
-    case 'follow_up':
+    case 'waiting_response':
       return 'Follow-up';
+    case 'accepted':
+      return 'Zaakceptowany';
+    case 'accepted_waiting_start':
+      return 'Zaakceptowany, czeka na start';
+    case 'active_service':
+      return 'Obsługa aktywna';
     case 'negotiation':
       return 'Negocjacje';
     case 'won':

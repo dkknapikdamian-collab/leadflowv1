@@ -45,6 +45,7 @@ import {
   deleteTaskFromSupabase,
   fetchActivitiesFromSupabase,
   fetchCasesFromSupabase,
+  fetchLeadsFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadByIdFromSupabase,
   fetchTasksFromSupabase,
@@ -65,7 +66,10 @@ const STATUS_OPTIONS = [
   { value: 'contacted', label: 'Skontaktowany', color: 'bg-indigo-100 text-indigo-700' },
   { value: 'qualification', label: 'Kwalifikacja', color: 'bg-purple-100 text-purple-700' },
   { value: 'proposal_sent', label: 'Oferta wysłana', color: 'bg-amber-100 text-amber-700' },
-  { value: 'follow_up', label: 'Follow-up', color: 'bg-orange-100 text-orange-700' },
+  { value: 'waiting_response', label: 'Czeka na odpowiedź', color: 'bg-orange-100 text-orange-700' },
+  { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
+  { value: 'accepted_waiting_start', label: 'Zaakceptowany, czeka na start', color: 'bg-cyan-100 text-cyan-700' },
+  { value: 'active_service', label: 'Obsługa aktywna', color: 'bg-violet-100 text-violet-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
   { value: 'won', label: 'Wygrany', color: 'bg-emerald-100 text-emerald-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
@@ -192,6 +196,7 @@ export default function LeadDetail() {
   const [activities, setActivities] = useState<any[]>([]);
   const [associatedCase, setAssociatedCase] = useState<any>(null);
   const [allCases, setAllCases] = useState<any[]>([]);
+  const [leadOptions, setLeadOptions] = useState<any[]>([]);
   const [linkedTasks, setLinkedTasks] = useState<any[]>([]);
   const [linkedEvents, setLinkedEvents] = useState<any[]>([]);
   const [note, setNote] = useState('');
@@ -244,12 +249,13 @@ export default function LeadDetail() {
     setLoading(true);
     setLoadError(null);
     try {
-      const [leadRow, caseRows, taskRows, eventRows, activityRows] = await Promise.all([
+      const [leadRow, caseRows, taskRows, eventRows, activityRows, leadRows] = await Promise.all([
         fetchLeadByIdFromSupabase(leadId),
         fetchCasesFromSupabase(),
         fetchTasksFromSupabase(),
         fetchEventsFromSupabase(),
         fetchActivitiesFromSupabase({ leadId, limit: 100 }),
+        fetchLeadsFromSupabase().catch(() => []),
       ]);
 
       const normalizedLead = {
@@ -267,6 +273,7 @@ export default function LeadDetail() {
       setEditLead(normalizedLead);
       setAssociatedCase(currentCase);
       setAllCases(allCaseRows);
+      setLeadOptions(leadRows as any[]);
       setLinkedTasks(linkedTaskRows);
       setLinkedEvents(linkedEventRows);
       setActivities(activityRows as any[]);
@@ -706,7 +713,7 @@ export default function LeadDetail() {
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!editLinkedTask.title?.trim()) return toast.error('Podaj tytuł zadania');
 
-    const selectedLead = leads.find((entry: any) => String(entry.id || '') === String(editLinkedTask.leadId || ''));
+    const selectedLead = leadOptions.find((entry: any) => String(entry.id || '') === String(editLinkedTask.leadId || ''));
     const normalizedLeadId = editLinkedTask.leadId && editLinkedTask.leadId !== 'none' ? String(editLinkedTask.leadId) : null;
 
     try {
@@ -756,7 +763,7 @@ export default function LeadDetail() {
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!editLinkedEvent.title?.trim()) return toast.error('Podaj tytuł wydarzenia');
 
-    const selectedLead = leads.find((entry: any) => String(entry.id || '') === String(editLinkedEvent.leadId || ''));
+    const selectedLead = leadOptions.find((entry: any) => String(entry.id || '') === String(editLinkedEvent.leadId || ''));
     const normalizedLeadId = editLinkedEvent.leadId && editLinkedEvent.leadId !== 'none' ? String(editLinkedEvent.leadId) : null;
 
     try {
@@ -1047,7 +1054,7 @@ export default function LeadDetail() {
                       <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('contacted')}>
                         Pierwszy kontakt
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('follow_up')}>
+                      <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('waiting_response')}>
                         Follow-up
                       </Button>
                       <Button size="sm" variant="outline" onClick={() => void handleUpdateStatus('negotiation')}>
@@ -1657,7 +1664,7 @@ export default function LeadDetail() {
                   <Label>Lead</Label>
                   <select className={modalSelectClass} value={editLinkedTask.leadId} onChange={(e) => setEditLinkedTask((prev: any) => ({ ...prev, leadId: e.target.value }))}>
                     <option value="none">Bez leada</option>
-                    {leads.map((leadEntry: any) => (
+                    {leadOptions.map((leadEntry: any) => (
                       <option key={leadEntry.id} value={String(leadEntry.id)}>{leadEntry.name || 'Lead bez nazwy'}</option>
                     ))}
                   </select>
@@ -1724,7 +1731,7 @@ export default function LeadDetail() {
                   <Label>Lead</Label>
                   <select className={modalSelectClass} value={editLinkedEvent.leadId} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, leadId: e.target.value }))}>
                     <option value="none">Bez leada</option>
-                    {leads.map((leadEntry: any) => (
+                    {leadOptions.map((leadEntry: any) => (
                       <option key={leadEntry.id} value={String(leadEntry.id)}>{leadEntry.name || 'Lead bez nazwy'}</option>
                     ))}
                   </select>

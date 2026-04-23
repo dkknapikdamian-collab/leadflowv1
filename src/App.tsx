@@ -17,6 +17,8 @@ const Leads = lazy(() => import('./pages/Leads'));
 const LeadDetail = lazy(() => import('./pages/LeadDetail'));
 const Cases = lazy(() => import('./pages/Cases'));
 const CaseDetail = lazy(() => import('./pages/CaseDetail'));
+const Clients = lazy(() => import('./pages/Clients'));
+const ClientDetail = lazy(() => import('./pages/ClientDetail'));
 const ClientPortal = lazy(() => import('./pages/ClientPortal'));
 const Activity = lazy(() => import('./pages/Activity'));
 const Settings = lazy(() => import('./pages/Settings'));
@@ -151,6 +153,8 @@ export default function App() {
             <Route path="/calendar" element={user ? <Calendar /> : <Navigate to="/login" />} />
             <Route path="/cases" element={user ? <Cases /> : <Navigate to="/login" />} />
             <Route path="/case/:caseId" element={user ? <CaseDetail /> : <Navigate to="/login" />} />
+            <Route path="/clients" element={user ? <Clients /> : <Navigate to="/login" />} />
+            <Route path="/clients/:clientId" element={user ? <ClientDetail /> : <Navigate to="/login" />} />
             <Route path="/activity" element={user ? <Activity /> : <Navigate to="/login" />} />
             <Route path="/notifications" element={user ? <NotificationsCenter /> : <Navigate to="/login" />} />
             <Route path="/billing" element={user ? <Billing /> : <Navigate to="/login" />} />
