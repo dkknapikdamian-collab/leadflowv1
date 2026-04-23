@@ -396,6 +396,7 @@ export default function LeadDetail() {
         'Otwórz kalendarz',
         'Finanse',
         'Realizacja',
+        'Dodaj notatkę',
       ]);
 
       const hideProcessInfoCards = () => {
@@ -416,13 +417,38 @@ export default function LeadDetail() {
 
             if (root instanceof HTMLElement) {
               root.style.display = 'none';
-              root.setAttribute('data-stage25-hidden', 'true');
+              root.setAttribute('data-stage26-hidden', 'true');
+            }
+          }
+        }
+      };
+
+      const hideNoteComposer = () => {
+        const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
+        for (const element of elements) {
+          const text = normalizeText(element.textContent || '');
+          if (
+            text === 'Dodaj notatkę z rozmowy...'
+            || text === 'Dodaj notatkę'
+          ) {
+            const root =
+              element.closest('form')
+              || element.closest('section')
+              || element.closest('[data-slot="card"]')
+              || element.closest('article')
+              || element.closest('.rounded-2xl')
+              || element.parentElement;
+
+            if (root instanceof HTMLElement) {
+              root.style.display = 'none';
+              root.setAttribute('data-stage26-hidden', 'true');
             }
           }
         }
       };
 
       hideProcessInfoCards();
+      hideNoteComposer();
     };
 
     applyStage24PostServiceSimplifier();
