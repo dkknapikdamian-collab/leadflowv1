@@ -315,11 +315,22 @@ export default function LeadDetail() {
     navigate(`/cases/${startServiceSuccess.caseId}`);
   }, [startServiceSuccess?.caseId, navigate]);
 
-  useEffect(() => {
+    useEffect(() => {
     if (!leadMovedToService) return;
     if (typeof window === 'undefined') return;
 
     const normalizeText = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+    const resolveRoot = (element: HTMLElement | null) => {
+      if (!element) return null;
+      return (
+        element.closest('section')
+        || element.closest('[data-slot="card"]')
+        || element.closest('article')
+        || element.closest('.rounded-2xl')
+        || element.parentElement
+      ) as HTMLElement | null;
+    };
 
     const replaceExactText = (from: string, to: string) => {
       const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
@@ -337,16 +348,10 @@ export default function LeadDetail() {
         const text = normalizeText(element.textContent || '');
         if (!targets.includes(text)) continue;
 
-        const root =
-          element.closest('section')
-          || element.closest('[data-slot="card"]')
-          || element.closest('article')
-          || element.closest('.rounded-2xl')
-          || element.parentElement;
-
+        const root = resolveRoot(element);
         if (root instanceof HTMLElement) {
           root.style.display = 'none';
-          root.setAttribute('data-stage24-hidden', 'true');
+          root.setAttribute('data-stage27-hidden', 'true');
         }
       }
     };
@@ -357,11 +362,67 @@ export default function LeadDetail() {
         const text = normalizeText(element.textContent || '');
         if (!targets.includes(text)) continue;
         element.style.display = 'none';
-        element.setAttribute('data-stage24-hidden', 'true');
+        element.setAttribute('data-stage27-hidden', 'true');
       }
     };
 
-    const applyStage24PostServiceSimplifier = () => {
+    const hideCardsContainingTexts = (requiredTexts: string[]) => {
+      const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
+      for (const element of elements) {
+        const text = normalizeText(element.textContent || '');
+        if (!requiredTexts.every((entry) => text.includes(entry))) continue;
+
+        const root = resolveRoot(element);
+        if (root instanceof HTMLElement) {
+          root.style.display = 'none';
+          root.setAttribute('data-stage27-hidden', 'true');
+        }
+      }
+    };
+
+    const hideDuplicateServiceCards = () => {
+      const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
+      const matchedRoots: HTMLElement[] = [];
+
+      for (const element of elements) {
+        const text = normalizeText(element.textContent || '');
+        const isServiceCard =
+          text.includes('Ten temat jest już w obsłudze')
+          && text.includes('Status sprawy')
+          && text.includes('Data przejścia');
+
+        if (!isServiceCard) continue;
+
+        const root = resolveRoot(element);
+        if (!(root instanceof HTMLElement)) continue;
+        if (matchedRoots.includes(root)) continue;
+        matchedRoots.push(root);
+      }
+
+      matchedRoots.slice(1).forEach((root) => {
+        root.style.display = 'none';
+        root.setAttribute('data-stage27-hidden', 'true');
+      });
+    };
+
+    const hideNoteComposer = () => {
+      const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
+      for (const element of elements) {
+        const text = normalizeText(element.textContent || '');
+        if (
+          text === 'Dodaj notatkę z rozmowy...'
+          || text === 'Dodaj notatkę'
+        ) {
+          const root = resolveRoot(element);
+          if (root instanceof HTMLElement) {
+            root.style.display = 'none';
+            root.setAttribute('data-stage27-hidden', 'true');
+          }
+        }
+      }
+    };
+
+    const applyStage27MovedLeadCleanup = () => {
       replaceExactText('Ten temat został przeniesiony do obsługi', 'Ten temat jest już w obsłudze');
       replaceExactText(
         'Lead został zamknięty sprzedażowo i dalej jest widoczny jako historia pozyskania tego tematu.',
@@ -392,69 +453,31 @@ export default function LeadDetail() {
         'Dodaj zadanie',
         'Dodaj wydarzenie',
         'Dodaj',
+        'Dodaj notatkę',
         'Otwórz zadania',
         'Otwórz kalendarz',
         'Finanse',
         'Realizacja',
-        'Dodaj notatkę',
       ]);
 
-      const hideProcessInfoCards = () => {
-        const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
-        for (const element of elements) {
-          const text = normalizeText(element.textContent || '');
-          if (
-            text === 'Najbliższa akcja'
-            || text === 'Brak opisu kroku'
-            || text === 'Brak terminu'
-          ) {
-            const root =
-              element.closest('section')
-              || element.closest('[data-slot="card"]')
-              || element.closest('article')
-              || element.closest('.rounded-2xl')
-              || element.parentElement;
+      hideCardsContainingTexts([
+        'Najbliższa akcja',
+        'Brak opisu kroku',
+      ]);
 
-            if (root instanceof HTMLElement) {
-              root.style.display = 'none';
-              root.setAttribute('data-stage26-hidden', 'true');
-            }
-          }
-        }
-      };
+      hideCardsContainingTexts([
+        'Najbliższa akcja',
+        'Brak zaplanowanych działań',
+      ]);
 
-      const hideNoteComposer = () => {
-        const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
-        for (const element of elements) {
-          const text = normalizeText(element.textContent || '');
-          if (
-            text === 'Dodaj notatkę z rozmowy...'
-            || text === 'Dodaj notatkę'
-          ) {
-            const root =
-              element.closest('form')
-              || element.closest('section')
-              || element.closest('[data-slot="card"]')
-              || element.closest('article')
-              || element.closest('.rounded-2xl')
-              || element.parentElement;
-
-            if (root instanceof HTMLElement) {
-              root.style.display = 'none';
-              root.setAttribute('data-stage26-hidden', 'true');
-            }
-          }
-        }
-      };
-
-      hideProcessInfoCards();
       hideNoteComposer();
+      hideDuplicateServiceCards();
     };
 
-    applyStage24PostServiceSimplifier();
+    applyStage27MovedLeadCleanup();
 
     const observer = new MutationObserver(() => {
-      applyStage24PostServiceSimplifier();
+      applyStage27MovedLeadCleanup();
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
