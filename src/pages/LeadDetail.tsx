@@ -315,7 +315,7 @@ export default function LeadDetail() {
     navigate(`/cases/${startServiceSuccess.caseId}`);
   }, [startServiceSuccess?.caseId, navigate]);
 
-    useEffect(() => {
+      useEffect(() => {
     if (!leadMovedToService) return;
     if (typeof window === 'undefined') return;
 
@@ -351,7 +351,7 @@ export default function LeadDetail() {
         const root = resolveRoot(element);
         if (root instanceof HTMLElement) {
           root.style.display = 'none';
-          root.setAttribute('data-stage27-hidden', 'true');
+          root.setAttribute('data-stage28-hidden', 'true');
         }
       }
     };
@@ -362,7 +362,7 @@ export default function LeadDetail() {
         const text = normalizeText(element.textContent || '');
         if (!targets.includes(text)) continue;
         element.style.display = 'none';
-        element.setAttribute('data-stage27-hidden', 'true');
+        element.setAttribute('data-stage28-hidden', 'true');
       }
     };
 
@@ -375,7 +375,21 @@ export default function LeadDetail() {
         const root = resolveRoot(element);
         if (root instanceof HTMLElement) {
           root.style.display = 'none';
-          root.setAttribute('data-stage27-hidden', 'true');
+          root.setAttribute('data-stage28-hidden', 'true');
+        }
+      }
+    };
+
+    const hideNoteComposer = () => {
+      const textareas = Array.from(document.querySelectorAll<HTMLTextAreaElement>('textarea'));
+      for (const textarea of textareas) {
+        const placeholder = normalizeText(textarea.getAttribute('placeholder') || '');
+        if (placeholder !== 'Dodaj notatkę z rozmowy...') continue;
+
+        const root = resolveRoot(textarea);
+        if (root instanceof HTMLElement) {
+          root.style.display = 'none';
+          root.setAttribute('data-stage28-hidden', 'true');
         }
       }
     };
@@ -401,28 +415,28 @@ export default function LeadDetail() {
 
       matchedRoots.slice(1).forEach((root) => {
         root.style.display = 'none';
-        root.setAttribute('data-stage27-hidden', 'true');
+        root.setAttribute('data-stage28-hidden', 'true');
       });
     };
 
-    const hideNoteComposer = () => {
-      const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
-      for (const element of elements) {
-        const text = normalizeText(element.textContent || '');
-        if (
-          text === 'Dodaj notatkę z rozmowy...'
-          || text === 'Dodaj notatkę'
-        ) {
-          const root = resolveRoot(element);
-          if (root instanceof HTMLElement) {
-            root.style.display = 'none';
-            root.setAttribute('data-stage27-hidden', 'true');
-          }
-        }
-      }
+    const hideArchiveEditActions = () => {
+      hideButtonsByText([
+        'Dodaj zadanie',
+        'Dodaj wydarzenie',
+        'Dodaj',
+        'Dodaj notatkę',
+        'Otwórz zadania',
+        'Otwórz kalendarz',
+        'Finanse',
+        'Realizacja',
+        'Edytuj',
+        'Usuń',
+        'Zapisz',
+        'Anuluj',
+      ]);
     };
 
-    const applyStage27MovedLeadCleanup = () => {
+    const applyStage28MovedLeadCleanup = () => {
       replaceExactText('Ten temat został przeniesiony do obsługi', 'Ten temat jest już w obsłudze');
       replaceExactText(
         'Lead został zamknięty sprzedażowo i dalej jest widoczny jako historia pozyskania tego tematu.',
@@ -449,17 +463,6 @@ export default function LeadDetail() {
         'Powiązane elementy',
       ]);
 
-      hideButtonsByText([
-        'Dodaj zadanie',
-        'Dodaj wydarzenie',
-        'Dodaj',
-        'Dodaj notatkę',
-        'Otwórz zadania',
-        'Otwórz kalendarz',
-        'Finanse',
-        'Realizacja',
-      ]);
-
       hideCardsContainingTexts([
         'Najbliższa akcja',
         'Brak opisu kroku',
@@ -470,14 +473,20 @@ export default function LeadDetail() {
         'Brak zaplanowanych działań',
       ]);
 
+      hideCardsContainingTexts([
+        'Dalsza praca odbywa się w sprawie',
+        'Po pozyskaniu ten ekran jest już tylko historią i wejściem do sprawy.',
+      ]);
+
+      hideArchiveEditActions();
       hideNoteComposer();
       hideDuplicateServiceCards();
     };
 
-    applyStage27MovedLeadCleanup();
+    applyStage28MovedLeadCleanup();
 
     const observer = new MutationObserver(() => {
-      applyStage27MovedLeadCleanup();
+      applyStage28MovedLeadCleanup();
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
