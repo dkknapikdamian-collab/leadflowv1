@@ -260,18 +260,18 @@ insert into public.payments (
   workspace_id, client_id, lead_id, case_id, type, status, amount, currency, paid_at, due_at, note, created_at, updated_at
 )
 select
-  l.workspace_id,
-  l.client_id,
-  l.id,
-  l.linked_case_id,
-  case when row_number() over (partition by l.id order by coalesce(paid_at_raw, created_at_raw)) = 1 then 'deposit' else 'partial' end as type,
+  expanded.workspace_id,
+  expanded.client_id,
+  expanded.id,
+  expanded.linked_case_id,
+  case when row_number() over (partition by expanded.id order by coalesce(expanded.paid_at_raw, expanded.created_at_raw)) = 1 then 'deposit' else 'partial' end as type,
   'paid',
-  amount_raw,
+  expanded.amount_raw,
   'PLN',
-  paid_at_raw,
+  expanded.paid_at_raw,
   null,
   'Migrated from leads.partial_payments',
-  coalesce(created_at_raw, now()),
+  coalesce(expanded.created_at_raw, now()),
   now()
 from (
   select
