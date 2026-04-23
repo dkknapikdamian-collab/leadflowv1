@@ -11,6 +11,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
 import { DEFAULT_SKIN, getSkinOption, isSkinId, SKIN_OPTIONS, type SkinId } from '../lib/appearance';
 import { fetchMeFromSupabase, isSupabaseConfigured, updateProfileSettingsInSupabase } from '../lib/supabase-fallback';
+import { clearClientAuthSnapshot, getClientAuthSnapshot, setClientAuthSnapshot } from '../lib/client-auth';
 
 const STORAGE_KEY = 'forteca-appearance-skin';
 
@@ -42,9 +43,10 @@ function applySkinToDocument(skin: SkinId) {
 }
 
 export function AppearanceProvider({ children }: { children: ReactNode }) {
+  const initialSnapshot = getClientAuthSnapshot();
   const [skin, setSkinState] = useState<SkinId>(DEFAULT_SKIN);
   const [isReady, setIsReady] = useState(false);
-  const [activeUserId, setActiveUserId] = useState<string | null>(null);
+  const [activeUserId, setActiveUserId] = useState<string | null>(initialSnapshot.uid || null);
 
   useEffect(() => {
     const initialSkin = resolveStoredSkin();
@@ -55,7 +57,18 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setActiveUserId(user?.uid ?? null);
+      if (!user) {
+        clearClientAuthSnapshot();
+        setActiveUserId(null);
+        return;
+      }
+
+      setClientAuthSnapshot({
+        uid: user.uid,
+        email: user.email || '',
+        fullName: user.displayName || '',
+      });
+      setActiveUserId(user.uid);
     });
 
     return () => unsubscribe();
@@ -81,10 +94,11 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
 
     const hydrateSkin = async () => {
       try {
+        const authSnapshot = getClientAuthSnapshot();
         const me = await fetchMeFromSupabase({
           uid: activeUserId,
-          email: auth.currentUser?.email || undefined,
-          fullName: auth.currentUser?.displayName || undefined,
+          email: authSnapshot.email || undefined,
+          fullName: authSnapshot.fullName || undefined,
         });
         if (cancelled) return;
         const nextSkin = me?.profile?.appearanceSkin;

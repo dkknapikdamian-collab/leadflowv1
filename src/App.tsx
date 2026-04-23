@@ -1,14 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db } from './firebase';
+import { auth } from './firebase';
 import { getIdTokenResult, signOut } from 'firebase/auth';
 import NotificationRuntime from './components/NotificationRuntime';
 import { Toaster } from './components/ui/sonner';
 import { Suspense, lazy, useEffect, useState } from 'react';
-import { doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore';
 import { TooltipProvider } from './components/ui/tooltip';
-import { seedTemplates } from './lib/firebase-utils';
 import { fetchMeFromSupabase, isSupabaseConfigured } from './lib/supabase-fallback';
+import { clearClientAuthSnapshot, setClientAuthSnapshot } from './lib/client-auth';
 import { toast } from 'sonner';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
@@ -41,6 +40,16 @@ function AppRouteFallback() {
   );
 }
 
+function buildLocalProfile(user: any) {
+  return {
+    id: user?.uid || '',
+    fullName: user?.displayName || '',
+    email: user?.email || '',
+    role: 'member',
+    isAdmin: false,
+  };
+}
+
 export default function App() {
   const [user, loading] = useAuthState(auth);
   const [profile, setProfile] = useState<any>(null);
@@ -52,150 +61,94 @@ export default function App() {
 
   useEffect(() => {
     if (!user) {
+      clearClientAuthSnapshot();
       setProfile(null);
       setProfileLoading(false);
       return;
     }
 
-    setProfileLoading(true);
+    setClientAuthSnapshot({
+      uid: user.uid,
+      email: user.email || '',
+      fullName: user.displayName || '',
+    });
 
-    if (isSupabaseConfigured()) {
-      let cancelled = false;
-
-      const syncProfileFromApi = async (showLoading = false) => {
-        if (showLoading) setProfileLoading(true);
-
-        try {
-          const me = await fetchMeFromSupabase({
-            uid: user.uid,
-            email: user.email || undefined,
-            fullName: user.displayName || undefined,
-          });
-          if (cancelled) return;
-
-          const nextProfile = me.profile || null;
-          const forceLogoutAfter = typeof nextProfile?.forceLogoutAfter === 'string' ? nextProfile.forceLogoutAfter : '';
-
-          if (forceLogoutAfter) {
-            try {
-              const tokenResult = await getIdTokenResult(user);
-              const authTimeMs = Date.parse(String(tokenResult.authTime || ''));
-              const forceLogoutMs = Date.parse(forceLogoutAfter);
-
-              if (Number.isFinite(authTimeMs) && Number.isFinite(forceLogoutMs) && authTimeMs < forceLogoutMs) {
-                if (typeof window !== 'undefined') {
-                  window.sessionStorage.setItem(FORCE_LOGOUT_NOTICE_SESSION_KEY, '1');
-                }
-                setProfile(null);
-                if (showLoading) setProfileLoading(false);
-                await signOut(auth);
-                return;
-              }
-            } catch (error) {
-              console.error('FORCE_LOGOUT_CHECK_FAILED', error);
-            }
-          }
-
-          setProfile(nextProfile);
-          seedTemplates();
-        } catch (error) {
-          if (cancelled) return;
-          console.error('PROFILE_API_BOOTSTRAP_FAILED', error);
-          setProfile({
-            id: user.uid,
-            fullName: user.displayName || '',
-            email: user.email || '',
-            role: 'member',
-            isAdmin: false,
-          });
-        } finally {
-          if (!cancelled && showLoading) {
-            setProfileLoading(false);
-          }
-        }
-      };
-
-      void syncProfileFromApi(true);
-
-      const interval = window.setInterval(() => {
-        void syncProfileFromApi(false);
-      }, 60_000);
-
-      const handleVisibilityRefresh = () => {
-        if (document.visibilityState === 'visible') {
-          void syncProfileFromApi(false);
-        }
-      };
-
-      window.addEventListener('focus', handleVisibilityRefresh);
-      document.addEventListener('visibilitychange', handleVisibilityRefresh);
-
-      return () => {
-        cancelled = true;
-        window.clearInterval(interval);
-        window.removeEventListener('focus', handleVisibilityRefresh);
-        document.removeEventListener('visibilitychange', handleVisibilityRefresh);
-      };
+    if (!isSupabaseConfigured()) {
+      setProfile(buildLocalProfile(user));
+      setProfileLoading(false);
+      return;
     }
 
-    const profileRef = doc(db, 'profiles', user.uid);
-    const unsubscribe = onSnapshot(
-      profileRef,
-      (profileDoc) => {
-        void (async () => {
-          let nextProfile = profileDoc.exists() ? profileDoc.data() : null;
-          const forceLogoutAfter = typeof nextProfile?.forceLogoutAfter === 'string' ? nextProfile.forceLogoutAfter : '';
+    let cancelled = false;
+    setProfileLoading(true);
 
-          if (forceLogoutAfter) {
-            try {
-              const tokenResult = await getIdTokenResult(user);
-              const authTimeMs = Date.parse(String(tokenResult.authTime || ''));
-              const forceLogoutMs = Date.parse(forceLogoutAfter);
+    const syncProfileFromApi = async (showLoading = false) => {
+      if (showLoading) setProfileLoading(true);
 
-              if (Number.isFinite(authTimeMs) && Number.isFinite(forceLogoutMs) && authTimeMs < forceLogoutMs) {
-                if (typeof window !== 'undefined') {
-                  window.sessionStorage.setItem(FORCE_LOGOUT_NOTICE_SESSION_KEY, '1');
-                }
-                setProfile(null);
-                setProfileLoading(false);
-                await signOut(auth);
-                return;
+      try {
+        const me = await fetchMeFromSupabase({
+          uid: user.uid,
+          email: user.email || undefined,
+          fullName: user.displayName || undefined,
+        });
+        if (cancelled) return;
+
+        const nextProfile = me.profile || null;
+        const forceLogoutAfter = typeof nextProfile?.forceLogoutAfter === 'string' ? nextProfile.forceLogoutAfter : '';
+
+        if (forceLogoutAfter) {
+          try {
+            const tokenResult = await getIdTokenResult(user);
+            const authTimeMs = Date.parse(String(tokenResult.authTime || ''));
+            const forceLogoutMs = Date.parse(forceLogoutAfter);
+
+            if (Number.isFinite(authTimeMs) && Number.isFinite(forceLogoutMs) && authTimeMs < forceLogoutMs) {
+              if (typeof window !== 'undefined') {
+                window.sessionStorage.setItem(FORCE_LOGOUT_NOTICE_SESSION_KEY, '1');
               }
-            } catch (error) {
-              console.error('FORCE_LOGOUT_CHECK_FAILED', error);
+              clearClientAuthSnapshot();
+              setProfile(null);
+              if (showLoading) setProfileLoading(false);
+              await signOut(auth);
+              return;
             }
+          } catch (error) {
+            console.error('FORCE_LOGOUT_CHECK_FAILED', error);
           }
+        }
 
-          const authEmail = user.email || null;
-          if (authEmail && nextProfile?.email !== authEmail) {
-            try {
-              await setDoc(
-                profileRef,
-                {
-                  email: authEmail,
-                  updatedAt: serverTimestamp(),
-                },
-                { merge: true },
-              );
-              nextProfile = { ...(nextProfile || {}), email: authEmail };
-            } catch (error) {
-              console.error('PROFILE_EMAIL_SYNC_FAILED', error);
-            }
-          }
-
-          setProfile(nextProfile);
-          seedTemplates();
+        setProfile(nextProfile);
+      } catch (error) {
+        if (cancelled) return;
+        console.error('PROFILE_API_BOOTSTRAP_FAILED', error);
+        setProfile(buildLocalProfile(user));
+      } finally {
+        if (!cancelled && showLoading) {
           setProfileLoading(false);
-        })();
-      },
-      (error) => {
-        console.error('PROFILE_SUBSCRIPTION_FAILED', error);
-        setProfileLoading(false);
-      },
-    );
+        }
+      }
+    };
+
+    void syncProfileFromApi(true);
+
+    const interval = window.setInterval(() => {
+      void syncProfileFromApi(false);
+    }, 60_000);
+
+    const handleVisibilityRefresh = () => {
+      if (document.visibilityState === 'visible') {
+        void syncProfileFromApi(false);
+      }
+    };
+
+    window.addEventListener('focus', handleVisibilityRefresh);
+    document.addEventListener('visibilitychange', handleVisibilityRefresh);
 
     return () => {
-      unsubscribe();
+      cancelled = true;
+      window.clearInterval(interval);
+      window.removeEventListener('focus', handleVisibilityRefresh);
+      document.removeEventListener('visibilitychange', handleVisibilityRefresh);
     };
   }, [user]);
 

@@ -1,6 +1,5 @@
 ﻿import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import {
@@ -19,7 +18,6 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { auth, db } from '../firebase';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
@@ -204,46 +202,39 @@ export default function Cases() {
   };
 
   useEffect(() => {
-    if (isSupabaseConfigured()) {
-      let isMounted = true;
-      setLoading(true);
-      Promise.all([
-        fetchCasesFromSupabase(),
-        fetchLeadsFromSupabase().catch(() => []),
-      ])
-        .then(([caseRows, leadRows]) => {
-          if (!isMounted) return;
-          setCases(caseRows as CaseRecord[]);
-          setLeadCandidates(leadRows as any[]);
-          setLoading(false);
-        })
-        .catch((error: any) => {
-          if (!isMounted) return;
-          toast.error(`Błąd cases API: ${error.message}`);
-          setCases([]);
-          setLeadCandidates([]);
-          setLoading(false);
-        });
+    let isMounted = true;
+    setLoading(true);
 
+    if (!isSupabaseConfigured()) {
+      setCases([]);
+      setLeadCandidates([]);
+      setLoading(false);
       return () => {
         isMounted = false;
       };
     }
 
-    if (!auth.currentUser) return;
+    Promise.all([
+      fetchCasesFromSupabase(),
+      fetchLeadsFromSupabase().catch(() => []),
+    ])
+      .then(([caseRows, leadRows]) => {
+        if (!isMounted) return;
+        setCases(caseRows as CaseRecord[]);
+        setLeadCandidates(leadRows as any[]);
+        setLoading(false);
+      })
+      .catch((error: any) => {
+        if (!isMounted) return;
+        toast.error(`Błąd cases API: ${error.message}`);
+        setCases([]);
+        setLeadCandidates([]);
+        setLoading(false);
+      });
 
-    const q = query(
-      collection(db, 'cases'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('updatedAt', 'desc')
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setCases(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<CaseRecord, 'id'>) })));
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const stats = useMemo(

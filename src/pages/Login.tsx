@@ -9,8 +9,7 @@ import {
   signInWithRedirect,
   getRedirectResult,
 } from 'firebase/auth';
-import { auth, googleProvider, db } from '../firebase';
-import { doc, setDoc, getDoc, serverTimestamp, collection, addDoc } from 'firebase/firestore';
+import { auth, googleProvider } from '../firebase';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -29,7 +28,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { addDays } from 'date-fns';
+import { clearClientAuthSnapshot, setClientAuthSnapshot } from '../lib/client-auth';
 import { fetchMeFromSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 
 const GOOGLE_REDIRECT_SESSION_KEY = 'closeflow:google-redirect-pending';
@@ -78,39 +77,21 @@ export default function Login() {
   const [isResetting, setIsResetting] = useState(false);
 
   const initializeUser = async (user: any, name?: string) => {
-    if (isSupabaseConfigured()) {
-      await fetchMeFromSupabase({
-        uid: user.uid,
-        email: user.email || undefined,
-        fullName: name || user.displayName || undefined,
-      });
+    setClientAuthSnapshot({
+      uid: user.uid,
+      email: user.email || '',
+      fullName: name || user.displayName || '',
+    });
+
+    if (!isSupabaseConfigured()) {
       return;
     }
 
-    const profileRef = doc(db, 'profiles', user.uid);
-    const profileSnap = await getDoc(profileRef);
-
-    if (!profileSnap.exists()) {
-      const workspaceRef = await addDoc(collection(db, 'workspaces'), {
-        ownerId: user.uid,
-        name: `${name || user.displayName || 'Mój'} Workspace`,
-        plan: 'trial_14d',
-        planId: 'trial_14d',
-        subscriptionStatus: 'trial_active',
-        trialEndsAt: addDays(new Date(), 14).toISOString(),
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-
-      await setDoc(profileRef, {
-        email: user.email,
-        fullName: name || user.displayName,
-        workspaceId: workspaceRef.id,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-    }
+    await fetchMeFromSupabase({
+      uid: user.uid,
+      email: user.email || undefined,
+      fullName: name || user.displayName || undefined,
+    });
   };
 
   useEffect(() => {
@@ -129,6 +110,7 @@ export default function Login() {
         }
       } catch (error: any) {
         console.error(error);
+        clearClientAuthSnapshot();
         toast.error('Błąd logowania Google: ' + (error?.message || 'UNKNOWN_ERROR'));
       } finally {
         if (typeof window !== 'undefined') {
@@ -181,9 +163,11 @@ export default function Login() {
           return;
         } catch (redirectError: any) {
           console.error(redirectError);
+          clearClientAuthSnapshot();
           toast.error('Błąd logowania Google: ' + (redirectError?.message || 'UNKNOWN_ERROR'));
         }
       } else {
+        clearClientAuthSnapshot();
         toast.error('Błąd logowania Google: ' + (error?.message || 'UNKNOWN_ERROR'));
       }
     } finally {
@@ -199,6 +183,7 @@ export default function Login() {
       await initializeUser(result.user);
       toast.success('Zalogowano pomyślnie');
     } catch (error: any) {
+      clearClientAuthSnapshot();
       toast.error('Błąd logowania: ' + error.message);
     } finally {
       setLoading(false);
@@ -215,6 +200,7 @@ export default function Login() {
       await initializeUser(result.user, fullName);
       toast.success('Konto utworzone! Sprawdź e-mail, aby potwierdzić konto.');
     } catch (error: any) {
+      clearClientAuthSnapshot();
       toast.error('Błąd rejestracji: ' + error.message);
     } finally {
       setLoading(false);

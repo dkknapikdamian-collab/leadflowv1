@@ -1,4 +1,4 @@
-import { auth } from '../firebase';
+import { getClientAuthSnapshot } from './client-auth';
 
 type SupabaseInsertResult = { [key: string]: unknown };
 type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextStep?: string; nextActionAt?: string; ownerId?: string; workspaceId?: string };
@@ -25,7 +25,14 @@ function getSupabaseConfig() {
 }
 
 function clearApiGetCache() { apiGetCache.clear(); }
-function getAuthContext() { return { uid: auth.currentUser?.uid || '', email: auth.currentUser?.email || '', fullName: auth.currentUser?.displayName || '' }; }
+function getAuthContext() {
+  const ctx = getClientAuthSnapshot();
+  return {
+    uid: ctx.uid || '',
+    email: ctx.email || '',
+    fullName: ctx.fullName || '',
+  };
+}
 function canUseStorage() { return typeof window !== 'undefined' && !!window.localStorage; }
 export function getStoredWorkspaceId() {
   if (!canUseStorage()) return '';
