@@ -246,9 +246,7 @@ export default function Leads() {
 
     const linkedCase = casesByLeadId.get(leadId);
     const relationText = linkedCase
-      ? '
-
-Ten lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Jeśli baza odmówi usunięcia, usuń albo odłącz najpierw powiązanie.'
+      ? '\n\nTen lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Jeśli baza odmówi usunięcia, usuń albo odłącz najpierw powiązanie.'
       : '';
 
     if (!window.confirm('Usunąć leada z panelu: ' + (lead.name || 'Lead') + '?' + relationText)) return;

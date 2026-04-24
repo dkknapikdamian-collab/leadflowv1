@@ -155,9 +155,7 @@ export default function Clients() {
 
     const relationCount = counters.leads + counters.cases + counters.payments;
     const relationText = relationCount > 0
-      ? '
-
-Ten klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Jeśli baza odmówi usunięcia, trzeba najpierw odpiąć albo scalić powiązania.'
+      ? '\n\nTen klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Jeśli baza odmówi usunięcia, trzeba najpierw odpiąć albo scalić powiązania.'
       : '';
 
     if (!window.confirm('Usunąć klienta z panelu: ' + (client.name || 'Klient') + '?' + relationText)) return;

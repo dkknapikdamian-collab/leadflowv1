@@ -49,3 +49,15 @@ test('Panel delete actions documentation exists', () => {
   assert.match(doc, /Klienci/);
   assert.match(doc, /potwierdzenie/);
 });
+
+
+test('Panel delete confirmation strings are valid escaped strings', () => {
+  const leads = read('src/pages/Leads.tsx');
+  const clients = read('src/pages/Clients.tsx');
+
+  assert.doesNotMatch(leads, /\?\s*'\r?\n\r?\n\s*Ten lead ma powiązaną sprawę/);
+  assert.doesNotMatch(clients, /\?\s*'\r?\n\r?\n\s*Ten klient ma powiązania/);
+
+  assert.match(leads, /\\n\\nTen lead ma powiązaną sprawę/);
+  assert.match(clients, /\\n\\nTen klient ma powiązania/);
+});
