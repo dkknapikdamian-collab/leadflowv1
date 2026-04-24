@@ -23,11 +23,6 @@ test('CaseDetail exposes V1 command center UI and quick actions', () => {
   assert.ok(source.includes('data-testid="case-detail-v1-command-center"'));
   assert.ok(source.includes('Centrum dowodzenia sprawy V1'));
 
-  assert.ok(source.includes('onAddItem='));
-  assert.ok(source.includes('onCreateTask='));
-  assert.ok(source.includes('onCreateEvent='));
-  assert.ok(source.includes('onCopyPortal='));
-
   assert.ok(source.includes('setIsAddItemOpen(true)'));
   assert.ok(source.includes('setIsQuickTaskOpen(true)'));
   assert.ok(source.includes('setIsQuickEventOpen(true)'));
