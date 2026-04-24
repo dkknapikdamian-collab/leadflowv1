@@ -4,7 +4,10 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 
+const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+
 const requiredTests = [
+  'tests/closeflow-release-gate.test.cjs',
   'tests/lead-next-action-title-not-null.test.cjs',
   'tests/lead-client-path-contract.test.cjs',
   'tests/client-relation-command-center.test.cjs',
@@ -20,7 +23,7 @@ function run(label, command, args) {
   const result = spawnSync(command, args, {
     cwd: repoRoot,
     stdio: 'inherit',
-    shell: process.platform === 'win32',
+    shell: false,
   });
 
   if (result.status !== 0) {
@@ -38,7 +41,7 @@ for (const relativePath of requiredTests) {
   }
 }
 
-run('production build', 'npm.cmd', ['run', 'build']);
+run('production build', npmCommand, ['run', 'build']);
 
 for (const relativePath of requiredTests) {
   run(relativePath, 'node', ['--test', relativePath]);

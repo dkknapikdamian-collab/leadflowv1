@@ -32,3 +32,9 @@ To jest lokalna bramka bezpieczeństwa dla gałęzi:
 ```text
 dev-rollout-freeze
 ```
+
+
+## Poprawka techniczna
+
+Bramka nie używa `shell: true`, żeby nie generować ostrzeżeń Node.js przy uruchamianiu procesów potomnych.
+Dodatkowo bramka uruchamia własny test kontraktowy, żeby zmiany w samej bramce też były pilnowane.

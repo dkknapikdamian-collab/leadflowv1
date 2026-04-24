@@ -18,7 +18,9 @@ test('package exposes CloseFlow release verification script', () => {
 test('release gate runs production build before targeted tests', () => {
   const source = read('scripts/closeflow-release-check.cjs');
 
-  assert.match(source, /run\('production build', 'npm\.cmd', \['run', 'build'\]\)/);
+  assert.match(source, /const npmCommand = process\.platform === 'win32' \? 'npm\.cmd' : 'npm'/);
+  assert.match(source, /run\('production build', npmCommand, \['run', 'build'\]\)/);
+  assert.match(source, /shell: false/);
 });
 
 test('release gate includes calendar and today restore regression tests', () => {
@@ -44,4 +46,11 @@ test('release gate documentation exists', () => {
   assert.match(doc, /npm\.cmd run verify:closeflow/);
   assert.match(doc, /nie robimy commita/);
   assert.match(doc, /dev-rollout-freeze/);
+});
+
+
+test('release gate includes its own self-test', () => {
+  const source = read('scripts/closeflow-release-check.cjs');
+
+  assert.match(source, /tests\/closeflow-release-gate\.test\.cjs/);
 });
