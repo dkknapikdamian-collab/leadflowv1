@@ -257,6 +257,12 @@ function sortTodayEntriesForDisplay(entries: any[]) {
   });
 }
 
+
+function formatTodayCompleteActionLabel(isCompleted: boolean, isPending: boolean) {
+  if (isPending) return '...';
+  return isCompleted ? 'Przywróć' : 'Zrobione';
+}
+
 export default function Today() {
   const { workspace, profile, hasAccess, loading: wsLoading, workspaceReady, refresh } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
@@ -1381,9 +1387,9 @@ export default function Today() {
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
                                   Szczegóły
                                 </Button>
-                                <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(entry)} disabled={completePending}>
-                                  {completePending ? '...' : isCompleted ? 'Przywróć' : 'Wykonane'}
-                                </Button>
+                                <Button variant="outline" size="sm" onClick={() =>
+                            {formatTodayCompleteActionLabel(isCompleted, completePending)}
+                          </Button>
                                 <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(entry)} disabled={deletePending}>
                                   {deletePending ? '...' : 'Usuń'}
                                 </Button>
@@ -1441,9 +1447,9 @@ export default function Today() {
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
                                   Szczegóły
                                 </Button>
-                                <Button variant="outline" size="sm" onClick={() => toggleTodayTask(entry)} disabled={completePending}>
-                                  {completePending ? '...' : isCompleted ? 'Przywróć' : 'Zakończ'}
-                                </Button>
+                                <Button variant="outline" size="sm" onClick={() =>
+                            {formatTodayCompleteActionLabel(isCompleted, completePending)}
+                          </Button>
                                 <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(entry)} disabled={deletePending}>
                                   {deletePending ? '...' : 'Usuń'}
                                 </Button>
