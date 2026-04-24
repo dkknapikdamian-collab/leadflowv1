@@ -24,6 +24,7 @@ const requiredTests = [
   'tests/today-v1-final-action-board.test.cjs',
   'tests/cases-v1-lifecycle-command-board.test.cjs',
   'tests/case-detail-v1-command-center.test.cjs',
+  'tests/client-detail-v1-operational-center.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
@@ -69,4 +70,5 @@ for (const relativePath of requiredTests) {
 
 console.log('');
 console.log('CloseFlow quiet release gate passed.');
+
 

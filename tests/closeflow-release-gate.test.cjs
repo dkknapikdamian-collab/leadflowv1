@@ -47,6 +47,7 @@ test('release gate includes calendar and today restore regression tests', () => 
   assert.match(source, /case-lifecycle-v1-foundation\.test\.cjs/);
   assert.match(source, /cases-v1-lifecycle-command-board\.test\.cjs/);
   assert.match(source, /case-detail-v1-command-center\.test\.cjs/);
+  assert.match(source, /client-detail-v1-operational-center\.test\.cjs/);
   assert.match(source, /today-v1-final-action-board\.test\.cjs/);
 });
 
@@ -72,4 +73,5 @@ test('release gate documentation exists', () => {
   assert.match(doc, /nie robimy commita/);
   assert.match(doc, /dev-rollout-freeze/);
 });
+
 

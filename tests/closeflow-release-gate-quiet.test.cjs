@@ -38,6 +38,7 @@ test('quiet release gate runs build and core regression tests', () => {
   assert.match(source, /case-lifecycle-v1-foundation\.test\.cjs/);
   assert.match(source, /cases-v1-lifecycle-command-board\.test\.cjs/);
   assert.match(source, /case-detail-v1-command-center\.test\.cjs/);
+  assert.match(source, /client-detail-v1-operational-center\.test\.cjs/);
   assert.match(source, /today-v1-final-action-board\.test\.cjs/);
   assert.match(source, /lead-next-action-title-not-null\.test\.cjs/);
 });
@@ -48,4 +49,5 @@ test('quiet release gate documentation exists', () => {
   assert.match(doc, /verify:closeflow:quiet/);
   assert.match(doc, /build albo test/);
 });
+
 
