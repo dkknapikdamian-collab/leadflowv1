@@ -22,24 +22,6 @@ function normalizeEmail(value) {
   return asText(value).toLowerCase();
 }
 
-function uniqueTexts(values) {
-  const seen = new Set();
-  const result = [];
-
-  for (const value of values) {
-    const normalized = asText(value);
-    if (!normalized || seen.has(normalized)) continue;
-    seen.add(normalized);
-    result.push(normalized);
-  }
-
-  return result;
-}
-
-function uniqueUuidTexts(values) {
-  return uniqueTexts(values).filter((value) => isUuid(value));
-}
-
 export function getRequestIdentity(req, body = {}) {
   return {
     userId: getHeader(req, 'x-user-id') || asText(body.userId) || asText(req?.query?.uid),
@@ -58,45 +40,25 @@ async function queryRows(queries) {
       const result = await selectFirstAvailable([query]);
       if (Array.isArray(result.data)) {
         for (const row of result.data) {
-          if (row && typeof row === 'object') {
-            rows.push(row);
-          }
+          if (row && typeof row === 'object') rows.push(row);
         }
       }
     } catch {
-      // ignore and continue
+      // ignore schema-compatible fallback query failures
     }
   }
 
   return rows;
 }
 
-function pickBestProfileRow(rows, identity = {}) {
-  const email = normalizeEmail(identity.email);
-  const userId = asText(identity.userId);
-
+function pickNewestRow(rows) {
   let bestRow = null;
   let bestScore = Number.NEGATIVE_INFINITY;
 
   for (const row of rows) {
-    const workspaceId = asText(row?.workspace_id || row?.workspaceId);
-    const rowEmail = normalizeEmail(row?.email);
-    const firebaseUid = asText(row?.firebase_uid || row?.firebaseUid);
-    const authUid = asText(row?.auth_uid || row?.authUid);
-    const externalAuthUid = asText(row?.external_auth_uid || row?.externalAuthUid);
-    const profileId = asText(row?.id || row?.firebase_uid || row?.firebaseUid || row?.auth_uid || row?.authUid || row?.external_auth_uid || row?.externalAuthUid);
-
-    let score = 0;
-
-    if (workspaceId && isUuid(workspaceId)) score += 1000;
-    if (userId && firebaseUid === userId) score += 600;
-    if (userId && authUid === userId) score += 550;
-    if (userId && externalAuthUid === userId) score += 500;
-    if (email && rowEmail === email) score += 300;
-    if (profileId && isUuid(profileId)) score += 50;
-
-    score += Math.floor(asTimestamp(row?.updated_at || row?.updatedAt) / 1000);
-    score += Math.floor(asTimestamp(row?.created_at || row?.createdAt) / 1000);
+    const score =
+      Math.floor(asTimestamp(row?.updated_at || row?.updatedAt) / 1000) +
+      Math.floor(asTimestamp(row?.created_at || row?.createdAt) / 1000);
 
     if (score > bestScore) {
       bestScore = score;
@@ -107,90 +69,89 @@ function pickBestProfileRow(rows, identity = {}) {
   return bestRow;
 }
 
-async function findWorkspaceIdFromProfileRow(row) {
-  const workspaceId = asText(row?.workspace_id || row?.workspaceId);
-  if (workspaceId && isUuid(workspaceId)) return workspaceId;
+function extractWorkspaceId(row) {
+  const workspaceId = asText(row?.workspace_id || row?.workspaceId || row?.id);
+  return workspaceId && isUuid(workspaceId) ? workspaceId : null;
+}
 
-  const lookupCandidates = uniqueTexts([
-    row?.id,
-    row?.firebase_uid,
-    row?.firebaseUid,
-    row?.auth_uid,
-    row?.authUid,
-    row?.external_auth_uid,
-    row?.externalAuthUid,
-    row?.email,
-  ]);
-  const uuidCandidates = uniqueUuidTexts([
-    row?.id,
-    row?.firebase_uid,
-    row?.firebaseUid,
-    row?.auth_uid,
-    row?.authUid,
-    row?.external_auth_uid,
-    row?.externalAuthUid,
+async function findWorkspaceIdFromAuthUserId(userId) {
+  const normalizedUserId = asText(userId);
+  if (!normalizedUserId || !isUuid(normalizedUserId)) return null;
+
+  const profileRows = await queryRows([
+    `profiles?user_id=eq.${encodeURIComponent(normalizedUserId)}&select=user_id,workspace_id,updated_at,created_at&order=updated_at.desc.nullslast&limit=5`,
   ]);
 
-  if (!lookupCandidates.length) return null;
-
-  const ownerQueries = uuidCandidates.flatMap((candidate) => ([
-    `workspaces?owner_user_id=eq.${encodeURIComponent(candidate)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
-    `workspaces?owner_id=eq.${encodeURIComponent(candidate)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
-    `workspaces?created_by_user_id=eq.${encodeURIComponent(candidate)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
-  ]));
-
-  const ownerRow = pickBestProfileRow(await queryRows(ownerQueries));
-
-  const ownerWorkspaceId = asText(ownerRow?.id);
-  if (ownerWorkspaceId && isUuid(ownerWorkspaceId)) return ownerWorkspaceId;
-
-  const memberRows = await queryRows(
-    uuidCandidates.map((candidate) =>
-      `workspace_members?user_id=eq.${encodeURIComponent(candidate)}&select=workspace_id,updated_at,created_at&order=updated_at.desc.nullslast&limit=20`,
-    ),
-  );
-
-  for (const memberRow of memberRows) {
-    const memberWorkspaceId = asText(memberRow?.workspace_id);
-    if (memberWorkspaceId && isUuid(memberWorkspaceId)) {
-      return memberWorkspaceId;
-    }
+  for (const row of profileRows) {
+    const workspaceId = extractWorkspaceId(row);
+    if (workspaceId) return workspaceId;
   }
 
-  return null;
+  const membershipRows = await queryRows([
+    `workspace_members?user_id=eq.${encodeURIComponent(normalizedUserId)}&select=workspace_id,role,created_at&order=created_at.desc.nullslast&limit=5`,
+  ]);
+
+  for (const row of membershipRows) {
+    const workspaceId = extractWorkspaceId(row);
+    if (workspaceId) return workspaceId;
+  }
+
+  const ownedWorkspaceRows = await queryRows([
+    `workspaces?owner_user_id=eq.${encodeURIComponent(normalizedUserId)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=5`,
+    `workspaces?owner_id=eq.${encodeURIComponent(normalizedUserId)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=5`,
+    `workspaces?created_by_user_id=eq.${encodeURIComponent(normalizedUserId)}&select=id,updated_at,created_at&order=updated_at.desc.nullslast&limit=5`,
+  ]);
+
+  const ownedRow = pickNewestRow(ownedWorkspaceRows);
+  return extractWorkspaceId(ownedRow);
 }
 
 async function findWorkspaceIdByEmail(email) {
   const normalizedEmail = normalizeEmail(email);
   if (!normalizedEmail) return null;
 
-  const rows = await queryRows([
-    `profiles?email=eq.${encodeURIComponent(normalizedEmail)}&select=*&order=updated_at.desc.nullslast&limit=20`,
-    `profiles?email=eq.${encodeURIComponent(asText(email))}&select=*&order=updated_at.desc.nullslast&limit=20`,
+  const profileRows = await queryRows([
+    `profiles?normalized_email=eq.${encodeURIComponent(normalizedEmail)}&select=user_id,workspace_id,email,normalized_email,updated_at,created_at&order=updated_at.desc.nullslast&limit=5`,
+    `profiles?email=eq.${encodeURIComponent(normalizedEmail)}&select=user_id,workspace_id,email,normalized_email,updated_at,created_at&order=updated_at.desc.nullslast&limit=5`,
+    `profiles?email=eq.${encodeURIComponent(asText(email))}&select=user_id,workspace_id,email,normalized_email,updated_at,created_at&order=updated_at.desc.nullslast&limit=5`,
   ]);
 
-  const row = pickBestProfileRow(rows, { email: normalizedEmail });
-  return await findWorkspaceIdFromProfileRow(row);
+  for (const row of profileRows) {
+    const workspaceId = extractWorkspaceId(row);
+    if (workspaceId) return workspaceId;
+  }
+
+  const profileRow = pickNewestRow(profileRows);
+  const userId = asText(profileRow?.user_id || profileRow?.userId);
+  if (userId && isUuid(userId)) {
+    return await findWorkspaceIdFromAuthUserId(userId);
+  }
+
+  return null;
 }
 
-async function findWorkspaceIdByProfileIdentity(profileIdentity, email = '') {
-  const normalizedIdentity = asText(profileIdentity);
+async function findWorkspaceIdByLegacyIdentity(identity) {
+  const normalizedIdentity = asText(identity);
   if (!normalizedIdentity) return null;
 
-  const queries = [];
-  if (isUuid(normalizedIdentity)) {
-    queries.push(`profiles?id=eq.${encodeURIComponent(normalizedIdentity)}&select=*&order=updated_at.desc.nullslast&limit=20`);
+  const rows = await queryRows([
+    `profiles?auth_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=user_id,workspace_id,auth_uid,updated_at,created_at&order=updated_at.desc.nullslast&limit=5`,
+    `profiles?external_auth_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=user_id,workspace_id,external_auth_uid,updated_at,created_at&order=updated_at.desc.nullslast&limit=5`,
+    `profiles?firebase_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=user_id,workspace_id,firebase_uid,updated_at,created_at&order=updated_at.desc.nullslast&limit=5`,
+  ]);
+
+  for (const row of rows) {
+    const workspaceId = extractWorkspaceId(row);
+    if (workspaceId) return workspaceId;
   }
-  queries.push(`profiles?firebase_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=*&order=updated_at.desc.nullslast&limit=20`);
-  queries.push(`profiles?auth_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=*&order=updated_at.desc.nullslast&limit=20`);
-  queries.push(`profiles?external_auth_uid=eq.${encodeURIComponent(normalizedIdentity)}&select=*&order=updated_at.desc.nullslast&limit=20`);
 
-  const row = pickBestProfileRow(await queryRows(queries), {
-    userId: normalizedIdentity,
-    email,
-  });
+  const row = pickNewestRow(rows);
+  const userId = asText(row?.user_id || row?.userId);
+  if (userId && isUuid(userId)) {
+    return await findWorkspaceIdFromAuthUserId(userId);
+  }
 
-  return await findWorkspaceIdFromProfileRow(row);
+  return null;
 }
 
 export async function resolveRequestWorkspaceId(req, body = {}) {
@@ -205,14 +166,19 @@ export async function resolveRequestWorkspaceId(req, body = {}) {
     }
   }
 
+  if (identity.userId && isUuid(identity.userId)) {
+    const byAuthUserId = await findWorkspaceIdFromAuthUserId(identity.userId);
+    if (byAuthUserId) return byAuthUserId;
+  }
+
   if (identity.email) {
     const byEmail = await findWorkspaceIdByEmail(identity.email);
     if (byEmail) return byEmail;
   }
 
   if (identity.userId) {
-    const byProfileIdentity = await findWorkspaceIdByProfileIdentity(identity.userId, identity.email);
-    if (byProfileIdentity) return byProfileIdentity;
+    const byLegacyIdentity = await findWorkspaceIdByLegacyIdentity(identity.userId);
+    if (byLegacyIdentity) return byLegacyIdentity;
 
     try {
       const directWorkspace = await findWorkspaceId(identity.userId);
@@ -246,8 +212,6 @@ export async function fetchSingleScopedRow(table, id, workspaceId) {
 
 export async function requireScopedRow(table, id, workspaceId, errorCode = 'SCOPED_ROW_NOT_FOUND') {
   const row = await fetchSingleScopedRow(table, id, workspaceId);
-  if (!row) {
-    throw new Error(errorCode);
-  }
+  if (!row) throw new Error(errorCode);
   return row;
 }
