@@ -239,7 +239,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
         <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
         <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
         <button type="button" className={actionButtonClass} onClick={() => onComplete(entry)} disabled={pendingDone}>
-          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : 'Zrobione'}
+          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
         </button>
         <button type="button" className={actionButtonClass} onClick={() => onDelete(entry)} disabled={pendingDelete}>
           <Trash2 className="mr-1 h-3.5 w-3.5" /> {pendingDelete ? '...' : 'Usuń'}
@@ -704,6 +704,7 @@ export default function Calendar() {
 
     try {
       setActionPendingId(`${entry.id}:done`);
+      const wasCompleted = isCompletedCalendarEntry(entry);
 
       if (entry.kind === 'event') {
         await updateEventInSupabase({
@@ -712,7 +713,7 @@ export default function Calendar() {
           type: entry.raw?.type || 'meeting',
           startAt: entry.raw?.startAt || entry.startsAt,
           endAt: entry.raw?.endAt || entry.endsAt || null,
-          status: 'completed',
+          status: wasCompleted ? 'scheduled' : 'completed',
           leadId: entry.raw?.leadId ?? null,
           caseId: entry.raw?.caseId ?? null,
         });
@@ -722,7 +723,7 @@ export default function Calendar() {
           title: entry.raw?.title || entry.title,
           type: entry.raw?.type,
           date: entry.raw?.date || entry.startsAt.slice(0, 10),
-          status: 'done',
+          status: wasCompleted ? 'todo' : 'done',
           priority: entry.raw?.priority,
           leadId: entry.raw?.leadId ?? null,
           caseId: entry.raw?.caseId ?? null,
@@ -731,7 +732,7 @@ export default function Calendar() {
 
       await refreshSupabaseBundle();
 
-      toast.success('Wpis oznaczony jako zrobiony');
+      toast.success(wasCompleted ? 'Wpis przywrócony' : 'Wpis oznaczony jako zrobiony');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     } finally {
