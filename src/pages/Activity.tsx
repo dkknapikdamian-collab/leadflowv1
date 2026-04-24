@@ -1,4 +1,4 @@
-import Layout from '../components/Layout';
+﻿import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
 import {
   Briefcase,
@@ -128,6 +128,7 @@ function getActivityTypeBucket(activity: any) {
   if (eventType.includes('completed')) return 'completed';
   if (eventType.includes('restored')) return 'restored';
   if (eventType.includes('deleted')) return 'deleted';
+  if (eventType.includes('snoozed')) return 'updated';
   if (eventType.includes('created') || eventType.includes('added')) return 'created';
   if (eventType.includes('updated') || eventType.includes('changed')) return 'updated';
 
@@ -207,7 +208,10 @@ function getActivityActionLabel(activity: any) {
       return withTitle('przywrĂłciĹ‚ wydarzenie z DziĹ›', title);
     case 'today_event_deleted':
       return withTitle('usunÄ…Ĺ‚ wydarzenie z DziĹ›', title);
-    case 'status_changed':
+    case 'today_task_snoozed':
+      return withTitle('odĹ‚oĹĽyĹ‚ zadanie z DziĹ›', title);
+    case 'today_event_snoozed':
+      return withTitle('odĹ‚oĹĽyĹ‚ wydarzenie z DziĹ›', title);    case 'status_changed':
       return status ? 'zmieniĹ‚ status na ' + status : 'zmieniĹ‚ status';
     case 'case_created':
       return withTitle('uruchomiĹ‚ realizacjÄ™', title);

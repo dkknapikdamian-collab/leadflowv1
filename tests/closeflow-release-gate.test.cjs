@@ -1,4 +1,4 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -45,6 +45,7 @@ test('release gate includes calendar and today restore regression tests', () => 
   assert.match(source, /tests\/lead-service-mode-v1\.test\.cjs/);
   assert.match(source, /panel-delete-actions-v1\.test\.cjs/);
   assert.match(source, /case-lifecycle-v1-foundation\.test\.cjs/);
+  assert.match(source, /today-v1-final-action-board\.test\.cjs/);
 });
 
 test('release gate includes lead client path and next action guards', () => {
@@ -69,3 +70,4 @@ test('release gate documentation exists', () => {
   assert.match(doc, /nie robimy commita/);
   assert.match(doc, /dev-rollout-freeze/);
 });
+

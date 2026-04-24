@@ -1,4 +1,4 @@
-const { spawnSync } = require('node:child_process');
+﻿const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -21,6 +21,7 @@ const requiredTests = [
   'tests/lead-service-mode-v1.test.cjs',
   'tests/panel-delete-actions-v1.test.cjs',
   'tests/case-lifecycle-v1-foundation.test.cjs',
+  'tests/today-v1-final-action-board.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
@@ -66,3 +67,4 @@ for (const relativePath of requiredTests) {
 
 console.log('');
 console.log('CloseFlow quiet release gate passed.');
+

@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
+﻿import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -292,6 +292,54 @@ function formatTodayCompleteActionLabel(isCompleted: boolean, isPending: boolean
   return isCompleted ? 'Przywróć' : 'Zrobione';
 }
 
+function TodayEntryPriorityReasons({ entry }: { entry: any }) {
+  const reasons = getTodayEntryPriorityReasons(entry);
+
+  if (reasons.length === 0) return null;
+
+  return (
+    <div className="mt-3 flex flex-wrap gap-1.5">
+      {reasons.map((reason) => (
+        <span
+          key={reason}
+          className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600"
+        >
+          {reason}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function TodayEntrySnoozeBar({
+  entry,
+  isPending,
+  onSnooze,
+}: {
+  entry: any;
+  isPending: boolean;
+  onSnooze: (entry: any, optionKey: string) => void | Promise<void>;
+}) {
+  if (isCompletedTodayEntry(entry)) return null;
+
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2">
+      <span className="text-xs font-semibold text-slate-500">Szybko odĹ‚ĂłĹĽ:</span>
+      {TODAY_QUICK_SNOOZE_OPTIONS.map((option) => (
+        <button
+          key={option.key}
+          type="button"
+          disabled={isPending}
+          onClick={() => onSnooze(entry, option.key)}
+          className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
+          title={option.description}
+        >
+          {isPending ? '...' : option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 export default function Today() {
   const { workspace, profile, hasAccess, loading: wsLoading, workspaceReady, refresh } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
@@ -857,6 +905,77 @@ export default function Today() {
     }
   };
 
+  const handleSnoozeTodayTask = async (entry: any, optionKey: string) => {
+    const nextScheduledAt = resolveTodaySnoozeAt(optionKey);
+
+    try {
+      setTodayActionId(entry.id + ':snooze');
+      await updateTaskInSupabase({
+        id: entry.sourceId,
+        title: entry.raw?.title || entry.title,
+        type: entry.raw?.type,
+        date: nextScheduledAt.slice(0, 10),
+        scheduledAt: nextScheduledAt,
+        status: 'todo',
+        priority: entry.raw?.priority,
+        leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
+      });
+
+      await logTodayEntryActivity(entry, 'today_task_snoozed', {
+        nextScheduledAt,
+        snoozeOption: optionKey,
+      });
+
+      await refreshSupabaseBundle();
+      if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
+        setPreviewEntry(null);
+      }
+      toast.success('Zadanie odĹ‚oĹĽone');
+    } catch (error: any) {
+      toast.error('BĹ‚Ä…d: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
+  const handleSnoozeTodayEvent = async (entry: any, optionKey: string) => {
+    const nextStartAt = resolveTodaySnoozeAt(optionKey);
+    const currentStart = parseMoment(entry.raw?.startAt || entry.startsAt) || new Date();
+    const currentEnd = parseMoment(entry.raw?.endAt) || new Date(currentStart.getTime() + 60 * 60_000);
+    const durationMs = Math.max(currentEnd.getTime() - currentStart.getTime(), 60 * 60_000);
+    const nextEndAt = toDateTimeLocalValue(new Date(parseISO(nextStartAt).getTime() + durationMs));
+
+    try {
+      setTodayActionId(entry.id + ':snooze');
+      await updateEventInSupabase({
+        id: entry.sourceId,
+        title: entry.raw?.title || entry.title,
+        type: entry.raw?.type || 'meeting',
+        startAt: nextStartAt,
+        endAt: nextEndAt,
+        status: 'scheduled',
+        leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
+      });
+
+      await logTodayEntryActivity(entry, 'today_event_snoozed', {
+        nextStartAt,
+        nextEndAt,
+        snoozeOption: optionKey,
+      });
+
+      await refreshSupabaseBundle();
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
+      }
+      toast.success('Wydarzenie odĹ‚oĹĽone');
+    } catch (error: any) {
+      toast.error('BĹ‚Ä…d: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
   const handleEventStartChange = (value: string) => {
     const currentStart = parseISO(newEvent.startAt);
     const currentEnd = parseISO(newEvent.endAt);
@@ -1457,6 +1576,12 @@ export default function Today() {
                                 </div>
                               </div>
                               <TodayEntryRelationLinks entry={entry} />
+                                  <TodayEntryPriorityReasons entry={entry} />
+                                  <TodayEntrySnoozeBar
+                                    entry={entry}
+                                    isPending={todayActionId === entry.id + ':snooze'}
+                                    onSnooze={entry.kind === 'task' ? handleSnoozeTodayTask : handleSnoozeTodayEvent}
+                                  />
                               <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
                                   Szczegóły
@@ -1518,6 +1643,12 @@ export default function Today() {
                                 </div>
                               </div>
                               <TodayEntryRelationLinks entry={entry} />
+                                  <TodayEntryPriorityReasons entry={entry} />
+                                  <TodayEntrySnoozeBar
+                                    entry={entry}
+                                    isPending={todayActionId === entry.id + ':snooze'}
+                                    onSnooze={entry.kind === 'task' ? handleSnoozeTodayTask : handleSnoozeTodayEvent}
+                                  />
                               <div className="flex items-center gap-2">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
                                   Szczegóły
@@ -1850,3 +1981,4 @@ export default function Today() {
     </Layout>
   );
 }
+
