@@ -78,7 +78,7 @@ test('release gate documentation exists', () => {
 
 
 test('release gate includes Cases FileText runtime guard', () => {
-  const source = read('scripts\closeflow-release-check.cjs');
+  const source = read('scripts/closeflow-release-check.cjs');
 
   assert.match(source, /cases-filetext-runtime\.test\.cjs/);
 });
