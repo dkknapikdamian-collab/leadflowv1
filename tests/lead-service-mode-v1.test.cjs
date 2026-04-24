@@ -1,4 +1,4 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -11,20 +11,38 @@ function read(relativePath) {
 
 test('Lead service handoff uses current cases route', () => {
   const source = read('src/pages/LeadDetail.tsx');
-  assert.ok(source.includes("navigate(`/cases/${startServiceSuccess.caseId}`);"));
-  assert.ok(!source.includes("navigate(`/case/${startServiceSuccess.caseId}`);"));
+
+  assert.ok(
+    source.includes('navigate(`/cases/${startServiceSuccess.caseId}`);'),
+    'Po starcie obsługi ma kierować do /cases/:id.',
+  );
+
+  assert.ok(
+    !source.includes('navigate(`/case/${startServiceSuccess.caseId}`);'),
+    'Nie może zostać stara trasa /case/:id.',
+  );
 });
 
 test('LeadDetail marks sold/service lead as operational archive', () => {
   const source = read('src/pages/LeadDetail.tsx');
+
   assert.match(source, /const leadOperationalArchive = Boolean/);
-  assert.match(source, /leadMovedToService || associatedCase || startServiceSuccess/);
+  assert.match(source, /leadMovedToService \|\| associatedCase \|\| startServiceSuccess/);
 });
 
 test('LeadDetail blocks quick actions after handoff to case', () => {
   const source = read('src/pages/LeadDetail.tsx');
-  const taskRegion = source.slice(source.indexOf('const handleCreateQuickTask'), source.indexOf('const handleCreateQuickEvent'));
-  const eventRegion = source.slice(source.indexOf('const handleCreateQuickEvent'), source.indexOf('const openLinkedTaskEditor'));
+  const taskStart = source.indexOf('const handleCreateQuickTask');
+  const eventStart = source.indexOf('const handleCreateQuickEvent');
+  const editorStart = source.indexOf('const openLinkedTaskEditor');
+
+  assert.notEqual(taskStart, -1, 'Brak handleCreateQuickTask.');
+  assert.notEqual(eventStart, -1, 'Brak handleCreateQuickEvent.');
+  assert.notEqual(editorStart, -1, 'Brak openLinkedTaskEditor.');
+
+  const taskRegion = source.slice(taskStart, eventStart);
+  const eventRegion = source.slice(eventStart, editorStart);
+
   assert.match(taskRegion, /leadOperationalArchive/);
   assert.match(taskRegion, /Dodawaj dalsze zadania w sprawie/);
   assert.match(eventRegion, /leadOperationalArchive/);
@@ -33,7 +51,8 @@ test('LeadDetail blocks quick actions after handoff to case', () => {
 
 test('Lead service mode documentation exists', () => {
   const doc = read('docs/LEAD_SERVICE_MODE_V1_2026-04-24.md');
-  assert.match(doc, /Lead service mode V1/);
-  assert.match(doc, //cases/:id/);
-  assert.match(doc, /jedna prawde operacyjna/);
+
+  assert.ok(doc.includes('Lead service mode V1'));
+  assert.ok(doc.includes('/cases/:id'));
+  assert.ok(doc.includes('jedna prawde operacyjna'));
 });
