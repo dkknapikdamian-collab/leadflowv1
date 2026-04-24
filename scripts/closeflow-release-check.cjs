@@ -4,8 +4,6 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-
 const requiredTests = [
   'tests/closeflow-release-gate.test.cjs',
   'tests/lead-next-action-title-not-null.test.cjs',
@@ -20,17 +18,35 @@ const requiredTests = [
 function run(label, command, args) {
   console.log('');
   console.log('==> ' + label);
+
   const result = spawnSync(command, args, {
     cwd: repoRoot,
     stdio: 'inherit',
     shell: false,
   });
 
+  if (result.error) {
+    console.error('');
+    console.error('FAILED: ' + label);
+    console.error(result.error);
+    process.exit(1);
+  }
+
   if (result.status !== 0) {
     console.error('');
     console.error('FAILED: ' + label);
     process.exit(result.status || 1);
   }
+}
+
+function runNpmScript(label, scriptName) {
+  if (process.platform === 'win32') {
+    const cmd = process.env.ComSpec || 'cmd.exe';
+    run(label, cmd, ['/d', '/s', '/c', 'npm.cmd', 'run', scriptName]);
+    return;
+  }
+
+  run(label, 'npm', ['run', scriptName]);
 }
 
 for (const relativePath of requiredTests) {
@@ -41,10 +57,10 @@ for (const relativePath of requiredTests) {
   }
 }
 
-run('production build', npmCommand, ['run', 'build']);
+runNpmScript('production build', 'build');
 
 for (const relativePath of requiredTests) {
-  run(relativePath, 'node', ['--test', relativePath]);
+  run(relativePath, process.execPath, ['--test', relativePath]);
 }
 
 console.log('');

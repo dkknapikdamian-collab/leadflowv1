@@ -38,3 +38,11 @@ dev-rollout-freeze
 
 Bramka nie używa `shell: true`, żeby nie generować ostrzeżeń Node.js przy uruchamianiu procesów potomnych.
 Dodatkowo bramka uruchamia własny test kontraktowy, żeby zmiany w samej bramce też były pilnowane.
+
+
+## Windows runner fix
+
+Na Windowsie `npm.cmd` nie powinien być odpalany bezpośrednio przez `spawnSync(..., { shell: false })`.
+Bramka używa więc jawnego `cmd.exe /d /s /c npm.cmd run build`, dalej bez ustawiania `shell: true`.
+
+Testy Node są odpalane przez `process.execPath`, żeby używać tej samej wersji Node, która uruchomiła bramkę.
