@@ -14,6 +14,7 @@ const requiredTests = [
   'tests/calendar-entry-relation-links.test.cjs',
   'tests/today-completed-entries-behavior.test.cjs',
   'tests/today-restore-completed-label.test.cjs',
+  'tests/today-entry-relation-links.test.cjs',
 ];
 
 function run(label, command, args) {

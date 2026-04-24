@@ -258,6 +258,35 @@ function sortTodayEntriesForDisplay(entries: any[]) {
 }
 
 
+
+function TodayEntryRelationLinks({ entry }: { entry: any }) {
+  const leadId = entry?.raw?.leadId || entry?.leadId || null;
+  const caseId = entry?.raw?.caseId || entry?.caseId || null;
+
+  if (!leadId && !caseId) return null;
+
+  return (
+    <div className="mt-3 flex flex-wrap gap-2">
+      {leadId ? (
+        <Link
+          to={`/leads/${leadId}`}
+          className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+        >
+          Otwórz lead
+        </Link>
+      ) : null}
+      {caseId ? (
+        <Link
+          to={`/cases/${caseId}`}
+          className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700"
+        >
+          Otwórz sprawę
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
 function formatTodayCompleteActionLabel(isCompleted: boolean, isPending: boolean) {
   if (isPending) return '...';
   return isCompleted ? 'Przywróć' : 'Zrobione';
@@ -1383,6 +1412,7 @@ export default function Today() {
                                   ) : null}
                                 </div>
                               </div>
+                              <TodayEntryRelationLinks entry={entry} />
                               <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
                                   Szczegóły
@@ -1443,6 +1473,7 @@ export default function Today() {
                                   ) : null}
                                 </div>
                               </div>
+                              <TodayEntryRelationLinks entry={entry} />
                               <div className="flex items-center gap-2">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
                                   Szczegóły
