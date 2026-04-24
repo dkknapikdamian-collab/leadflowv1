@@ -559,6 +559,36 @@ export default function Today() {
     }
   };
 
+  const logTodayEntryActivity = async (
+    entry: any,
+    eventType: string,
+    extraPayload: Record<string, unknown> = {},
+  ) => {
+    try {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType,
+        leadId: entry?.raw?.leadId ?? entry?.leadId ?? null,
+        caseId: entry?.raw?.caseId ?? entry?.caseId ?? null,
+        workspaceId: workspace?.id ?? null,
+        payload: {
+          source: 'today',
+          entryId: entry?.id ?? null,
+          sourceId: entry?.sourceId ?? entry?.raw?.id ?? null,
+          kind: entry?.kind ?? null,
+          title: entry?.raw?.title || entry?.title || '',
+          startsAt: entry?.startsAt || getTaskStartAt(entry?.raw) || null,
+          status: getTodayEntryStatus(entry),
+          ...extraPayload,
+        },
+      });
+    } catch (error) {
+      console.warn('TODAY_ENTRY_ACTIVITY_WRITE_FAILED', error);
+    }
+  };
+
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
     if (leadSubmitLockRef.current) return;
@@ -723,6 +753,12 @@ export default function Today() {
         caseId: entry.raw?.caseId ?? null,
       });
 
+      await logTodayEntryActivity(
+        entry,
+        nextStatus === 'done' ? 'today_task_completed' : 'today_task_restored',
+        { nextStatus },
+      );
+
       await refreshSupabaseBundle();
       if (nextStatus === 'done' && (entry.raw?.leadId ?? null)) {
         await handleSoftNextStepAfterCompletion({
@@ -748,6 +784,7 @@ export default function Today() {
     try {
       setTodayActionId(`${entry.id}:delete`);
       await deleteTaskFromSupabase(entry.sourceId);
+      await logTodayEntryActivity(entry, 'today_task_deleted');
       await refreshSupabaseBundle();
       if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
         setPreviewEntry(null);
@@ -776,6 +813,12 @@ export default function Today() {
         caseId: entry.raw?.caseId ?? null,
       });
 
+      await logTodayEntryActivity(
+        entry,
+        nextStatus === 'completed' ? 'today_event_completed' : 'today_event_restored',
+        { nextStatus },
+      );
+
       await refreshSupabaseBundle();
       if (nextStatus === 'completed' && (entry.raw?.leadId ?? null)) {
         await handleSoftNextStepAfterCompletion({
@@ -801,6 +844,7 @@ export default function Today() {
     try {
       setTodayActionId(`${entry.id}:delete`);
       await deleteEventFromSupabase(entry.sourceId);
+      await logTodayEntryActivity(entry, 'today_event_deleted');
       await refreshSupabaseBundle();
       if (previewEntry?.id === entry.id) {
         setPreviewEntry(null);

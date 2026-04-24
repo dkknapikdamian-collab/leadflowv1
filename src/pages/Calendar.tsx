@@ -644,6 +644,36 @@ export default function Calendar() {
   const monthCellMinHeight = calendarScale === 'compact' ? 104 : calendarScale === 'large' ? 160 : 128;
   const weekColumnMinWidth = calendarScale === 'compact' ? '150px' : calendarScale === 'large' ? '210px' : '170px';
 
+  const logCalendarEntryActivity = async (
+    entry: ScheduleEntry,
+    eventType: string,
+    extraPayload: Record<string, unknown> = {},
+  ) => {
+    try {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType,
+        leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
+        workspaceId: workspace?.id ?? null,
+        payload: {
+          source: 'calendar',
+          entryId: entry.id,
+          sourceId: entry.sourceId,
+          kind: entry.kind,
+          title: entry.raw?.title || entry.title,
+          startsAt: entry.startsAt,
+          status: getCalendarEntryStatus(entry),
+          ...extraPayload,
+        },
+      });
+    } catch (error) {
+      console.warn('CALENDAR_ENTRY_ACTIVITY_WRITE_FAILED', error);
+    }
+  };
+
   const handleStartChange = (value: string) => {
     const currentEnd = parseISO(newEvent.endAt);
     const currentStart = parseISO(newEvent.startAt);
@@ -751,6 +781,16 @@ export default function Calendar() {
         });
       }
 
+      await logCalendarEntryActivity(
+        entry,
+        wasCompleted ? 'calendar_entry_restored' : 'calendar_entry_completed',
+        {
+          nextStatus: wasCompleted
+            ? entry.kind === 'event' ? 'scheduled' : 'todo'
+            : entry.kind === 'event' ? 'completed' : 'done',
+        },
+      );
+
       await refreshSupabaseBundle();
 
       toast.success(wasCompleted ? 'Wpis przywrócony' : 'Wpis oznaczony jako zrobiony');
@@ -776,6 +816,8 @@ export default function Calendar() {
       } else if (entry.kind === 'task') {
         await deleteTaskFromSupabase(entry.sourceId);
       }
+
+      await logCalendarEntryActivity(entry, 'calendar_entry_deleted');
 
       await refreshSupabaseBundle();
       toast.success('Wpis usunięty');

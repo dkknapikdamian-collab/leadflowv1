@@ -40,6 +40,7 @@ test('release gate includes calendar and today restore regression tests', () => 
   assert.match(source, /today-completed-entries-behavior\.test\.cjs/);
   assert.match(source, /today-restore-completed-label\.test\.cjs/);
   assert.match(source, /today-entry-relation-links\.test\.cjs/);
+  assert.match(source, /today-calendar-activity-logging\.test\.cjs/);
 });
 
 test('release gate includes lead client path and next action guards', () => {
