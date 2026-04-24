@@ -1,4 +1,4 @@
-import { insertWithVariants, selectFirstAvailable, updateById, updateWhere } from './_supabase.js';
+import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById, updateWhere } from './_supabase.js';
 
 const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
 const DEFAULT_PLAN_ID = 'trial_14d';
@@ -849,6 +849,9 @@ export default async function handler(req: any, res: any) {
     const ensuredWorkspace = await ensureWorkspace(workspaceOwnerUserId, fullName, workspaceId, workspaceRow);
     workspaceId = ensuredWorkspace.workspaceId;
     workspaceRow = ensuredWorkspace.workspaceRow;
+    if (!workspaceId || !isUuid(workspaceId)) {
+      throw new Error('WORKSPACE_BOOTSTRAP_FAILED');
+    }
 
     profileRow = await ensureProfile(profileRow, uid, email, fullName, workspaceId);
 
@@ -875,8 +878,16 @@ export default async function handler(req: any, res: any) {
     res.status(200).json({ workspace, profile, access });
   } catch (error: any) {
     const validHeaderWorkspaceId = headerWorkspaceId && isUuid(headerWorkspaceId) ? headerWorkspaceId : null;
+    const recoveredWorkspaceId = validHeaderWorkspaceId ? await findWorkspaceId(validHeaderWorkspaceId) : null;
+    if (!recoveredWorkspaceId) {
+      res.status(500).json({
+        error: 'WORKSPACE_BOOTSTRAP_FAILED',
+        details: error?.message || 'ME_READ_FAILED',
+      });
+      return;
+    }
     const fallbackWorkspace = {
-      id: validHeaderWorkspaceId || '',
+      id: recoveredWorkspaceId || '',
       ownerId: null,
       planId: DEFAULT_PLAN_ID,
       subscriptionStatus: DEFAULT_STATUS,
@@ -910,10 +921,10 @@ export default async function handler(req: any, res: any) {
       profile: fallbackProfile,
       access: {
         ...fallbackAccess,
-        hasAccess: validHeaderWorkspaceId ? true : fallbackAccess.hasAccess,
+        hasAccess: true,
       },
       degraded: true,
-      degradedReason: error?.message || 'ME_READ_FAILED',
+      degradedReason: error?.message || 'WORKSPACE_BOOTSTRAP_DEGRADED',
     });
   }
 }

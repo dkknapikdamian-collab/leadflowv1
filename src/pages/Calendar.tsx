@@ -68,6 +68,7 @@ import {
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
+import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
@@ -236,7 +237,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
 }
 
 export default function Calendar() {
-  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [calendarView, setCalendarView] = useState<CalendarView>('week');
@@ -476,6 +477,8 @@ export default function Calendar() {
     e.preventDefault();
     if (createTaskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     createTaskSubmitLockRef.current = true;
     setTaskSubmitting(true);
 
@@ -499,7 +502,7 @@ export default function Calendar() {
         leadId: newTask.leadId || null,
         caseId: newTask.caseId || null,
         ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
+        workspaceId,
       });
 
       await refreshSupabaseBundle();
@@ -518,6 +521,8 @@ export default function Calendar() {
     e.preventDefault();
     if (createEventSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     createEventSubmitLockRef.current = true;
     setEventSubmitting(true);
 
@@ -544,7 +549,7 @@ export default function Calendar() {
         recurrenceRule: newEvent.recurrence.mode,
         leadId: newEvent.leadId || null,
         caseId: newEvent.caseId || null,
-        workspaceId: workspace.id,
+        workspaceId,
       });
       await registerReminderScheduled({
         entityType: 'event',
@@ -921,7 +926,7 @@ export default function Calendar() {
             </div>
             <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl">
+                <Button variant="outline" className="rounded-xl" disabled={!workspaceReady}>
                   <Plus className="w-4 h-4 mr-2" /> Zadanie
                 </Button>
               </DialogTrigger>
@@ -964,14 +969,14 @@ export default function Calendar() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={taskSubmitting}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
+                    <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
             </Dialog>
             <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
+                <Button className="rounded-xl shadow-lg shadow-primary/20" disabled={!workspaceReady}><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
@@ -1084,7 +1089,7 @@ export default function Calendar() {
                   </div>
 
                   <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={eventSubmitting}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
+                    <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>

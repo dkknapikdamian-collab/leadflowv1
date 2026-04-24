@@ -68,6 +68,7 @@ import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
+import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
@@ -227,7 +228,7 @@ function formatLeadMoment(value: unknown) {
 }
 
 export default function Today() {
-  const { workspace, profile, hasAccess, loading: wsLoading } = useWorkspace();
+  const { workspace, profile, hasAccess, loading: wsLoading, workspaceReady, refresh } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
   const [clients, setClients] = useState<any[]>([]);
@@ -497,6 +498,8 @@ export default function Today() {
     e.preventDefault();
     if (leadSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     leadSubmitLockRef.current = true;
     setLeadSubmitting(true);
     try {
@@ -504,7 +507,7 @@ export default function Today() {
         ...newLead,
         dealValue: Number(newLead.dealValue) || 0,
         ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
+        workspaceId,
       });
       await refreshSupabaseBundle();
       toast.success('Lead dodany');
@@ -522,6 +525,8 @@ export default function Today() {
     e.preventDefault();
     if (taskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     taskSubmitLockRef.current = true;
     setTaskSubmitting(true);
     try {
@@ -547,7 +552,7 @@ export default function Today() {
         reminderAt,
         recurrenceRule: newTask.recurrence.mode,
         ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
+        workspaceId,
       });
       await registerReminderScheduled({
         entityType: 'task',
@@ -571,6 +576,8 @@ export default function Today() {
     e.preventDefault();
     if (eventSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     eventSubmitLockRef.current = true;
     setEventSubmitting(true);
     try {
@@ -595,7 +602,7 @@ export default function Today() {
         recurrenceRule: newEvent.recurrence.mode,
         leadId: newEvent.leadId || null,
         caseId: newEvent.caseId || null,
-        workspaceId: workspace.id,
+        workspaceId,
       });
       await registerReminderScheduled({
         entityType: 'event',
@@ -768,6 +775,22 @@ export default function Today() {
     );
   }
 
+  if (!workspaceReady) {
+    return (
+      <Layout>
+        <div className="p-6 max-w-3xl mx-auto w-full">
+          <Card className="border-rose-200">
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-lg font-bold text-rose-700">Kontekst workspace nie jest gotowy</h2>
+              <p className="text-sm text-slate-600">Nie możemy uruchomić akcji, dopóki workspace nie zostanie poprawnie zbootstrapowany.</p>
+              <Button onClick={() => refresh()}>Spróbuj ponownie</Button>
+            </CardContent>
+          </Card>
+        </div>
+      </Layout>
+    );
+  }
+
   const today = new Date();
   const todayStart = startOfDay(today);
   const todayEnd = endOfDay(today);
@@ -895,7 +918,7 @@ export default function Today() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={leadSubmitting}>{leadSubmitting ? 'Dodawanie...' : 'Dodaj leada'}</Button>
+                    <Button type="submit" className="w-full" disabled={leadSubmitting || !workspaceReady}>{leadSubmitting ? 'Dodawanie...' : 'Dodaj leada'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -1013,7 +1036,7 @@ export default function Today() {
                     )}
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={taskSubmitting}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
+                    <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -1127,7 +1150,7 @@ export default function Today() {
                     )}
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={eventSubmitting}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
+                    <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>

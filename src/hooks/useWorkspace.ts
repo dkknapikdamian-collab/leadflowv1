@@ -59,6 +59,7 @@ export function useWorkspace() {
   const [workspace, setWorkspace] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [accessOverride, setAccessOverride] = useState<any>(null);
+  const [workspaceError, setWorkspaceError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshToken, setRefreshToken] = useState(0);
 
@@ -70,6 +71,7 @@ export function useWorkspace() {
       setWorkspace(null);
       setProfile(null);
       setAccessOverride(null);
+      setWorkspaceError(null);
       setLoading(false);
       return;
     }
@@ -82,6 +84,7 @@ export function useWorkspace() {
       setWorkspace(buildLocalWorkspace(storedWorkspaceId, snapshotEmail));
       setProfile(buildLocalProfile(activeUserId, snapshotFullName, snapshotEmail));
       setAccessOverride(null);
+      setWorkspaceError(null);
       setLoading(false);
       return;
     }
@@ -102,12 +105,14 @@ export function useWorkspace() {
         setWorkspace(normalizedWorkspace);
         setProfile(me.profile);
         setAccessOverride(me.access);
+        setWorkspaceError(normalizedWorkspace?.id ? null : 'WORKSPACE_CONTEXT_REQUIRED');
       } catch {
         if (cancelled) return;
-        const storedWorkspaceId = getStoredWorkspaceId();
-        setWorkspace(buildLocalWorkspace(storedWorkspaceId, snapshotEmail));
+        persistWorkspaceId(null);
+        setWorkspace(null);
         setProfile(buildLocalProfile(activeUserId, snapshotFullName, snapshotEmail));
         setAccessOverride(null);
+        setWorkspaceError('WORKSPACE_BOOTSTRAP_FAILED');
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -143,11 +148,14 @@ export function useWorkspace() {
   const currentEmail = authSnapshot.email || '';
   const isAdmin = isAdminEmail(currentEmail) || profile?.role === 'admin' || profile?.isAdmin === true;
   const refresh = () => setRefreshToken((prev) => prev + 1);
+  const workspaceReady = Boolean(workspace?.id);
 
   return {
     workspace,
     profile,
     loading,
+    workspaceReady,
+    workspaceError,
     hasAccess: access.hasAccess || isAdmin,
     isAdmin,
     isTrialActive: access.isTrialActive,

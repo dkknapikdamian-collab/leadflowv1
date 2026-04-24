@@ -29,6 +29,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { deleteCaseWithRelations } from '../lib/cases';
+import { requireWorkspaceId } from '../lib/workspace-context';
 import { createCaseInSupabase, fetchCasesFromSupabase, fetchLeadsFromSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
 
 type CaseRecord = {
@@ -173,7 +174,7 @@ function buildCaseSourceSummary(sourceLead: any) {
 }
 
 export default function Cases() {
-  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [leadCandidates, setLeadCandidates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -314,6 +315,8 @@ export default function Cases() {
   async function handleCreateCase(e: FormEvent) {
     e.preventDefault();
     if (!hasAccess) return toast.error('Trial wygasł.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     if (!newCase.title.trim()) return toast.error('Podaj tytuł sprawy');
 
     try {
@@ -326,7 +329,7 @@ export default function Cases() {
         status: newCase.status,
         createdFromLead: false,
         portalReady: false,
-        workspaceId: workspace?.id,
+        workspaceId,
       });
       await refreshCases();
       toast.success('Sprawa utworzona');
@@ -380,7 +383,7 @@ export default function Cases() {
               }
             }}>
               <DialogTrigger asChild>
-                <Button className="rounded-2xl">
+                <Button className="rounded-2xl" disabled={!workspaceReady}>
                   <Plus className="mr-2 h-4 w-4" /> Dodaj sprawę
                 </Button>
               </DialogTrigger>
@@ -469,7 +472,7 @@ export default function Cases() {
                   </div>
                   <DialogFooter>
                     <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)}>Anuluj</Button>
-                    <Button type="submit" disabled={createCasePending}>{createCasePending ? 'Tworzenie...' : 'Utwórz sprawę'}</Button>
+                    <Button type="submit" disabled={createCasePending || !workspaceReady}>{createCasePending ? 'Tworzenie...' : 'Utwórz sprawę'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>

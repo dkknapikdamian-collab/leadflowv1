@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { auth } from '../firebase';
+import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -319,6 +320,7 @@ function buildCaseClientOptions(cases: any[], leads: any[], sourceLead: any, cas
 
 export default function CaseDetail() {
   const { caseId } = useParams();
+  const { workspace, workspaceReady, loading: workspaceLoading, refresh: refreshWorkspace } = useWorkspace();
   const [caseData, setCaseData] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
@@ -1396,11 +1398,27 @@ const caseClientSuggestions = useMemo(() => {
     }
   };
 
-  if (loading) {
+  if (workspaceLoading || loading) {
     return (
       <Layout>
         <div className="flex items-center justify-center h-full">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!workspaceReady) {
+    return (
+      <Layout>
+        <div className="p-6 max-w-3xl mx-auto w-full">
+          <Card className="border-rose-200">
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-lg font-bold text-rose-700">Kontekst workspace nie jest gotowy</h2>
+              <p className="text-sm text-slate-600">Akcje na sprawie są zablokowane do czasu poprawnego bootstrapu workspace.</p>
+              <Button onClick={() => refreshWorkspace()}>Spróbuj ponownie</Button>
+            </CardContent>
+          </Card>
         </div>
       </Layout>
     );

@@ -60,6 +60,7 @@ import {
 } from '../lib/options';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
+import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   deleteTaskFromSupabase,
   fetchCasesFromSupabase,
@@ -113,7 +114,7 @@ function groupTasksByDate(items: any[]) {
 }
 
 export default function Tasks() {
-  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [tasks, setTasks] = useState<any[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
@@ -330,6 +331,8 @@ export default function Tasks() {
     if (createTaskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     createTaskSubmitLockRef.current = true;
     setTaskSubmitting(true);
 
@@ -369,7 +372,7 @@ export default function Tasks() {
         reminderAt,
         recurrenceRule: payload.recurrence?.mode ?? 'none',
         ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
+        workspaceId,
       });
       await registerReminderScheduled({
         title: newTask.title,
@@ -696,7 +699,7 @@ export default function Tasks() {
           </div>
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
             <DialogTrigger asChild>
-              <Button className="rounded-xl shadow-lg shadow-primary/20">
+              <Button className="rounded-xl shadow-lg shadow-primary/20" disabled={!workspaceReady}>
                 <Plus className="w-4 h-4 mr-2" /> Nowe zadanie
               </Button>
             </DialogTrigger>
@@ -813,7 +816,7 @@ export default function Tasks() {
                 </div>
 
                 <DialogFooter>
-                  <Button type="submit" className="w-full" disabled={taskSubmitting}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
+                  <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
                 </DialogFooter>
               </form>
             </DialogContent>

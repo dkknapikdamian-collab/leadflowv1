@@ -186,7 +186,11 @@ export default async function handler(req: any, res: any) {
     }
 
     if (req.method === 'PATCH') {
-      if (!body.id || !workspaceId) {
+      if (!workspaceId) {
+        res.status(401).json({ error: kind === 'events' ? 'EVENT_WORKSPACE_REQUIRED' : 'TASK_WORKSPACE_REQUIRED' });
+        return;
+      }
+      if (!body.id) {
         res.status(400).json({ error: kind === 'events' ? 'EVENT_ID_REQUIRED' : 'TASK_ID_REQUIRED' });
         return;
       }
@@ -245,7 +249,11 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === 'DELETE') {
       const id = String(req.query?.id || '');
-      if (!id || !workspaceId) {
+      if (!workspaceId) {
+        res.status(401).json({ error: kind === 'events' ? 'EVENT_WORKSPACE_REQUIRED' : 'TASK_WORKSPACE_REQUIRED' });
+        return;
+      }
+      if (!id) {
         res.status(400).json({ error: kind === 'events' ? 'EVENT_ID_REQUIRED' : 'TASK_ID_REQUIRED' });
         return;
       }
@@ -263,7 +271,10 @@ export default async function handler(req: any, res: any) {
     }
 
     const finalWorkspaceId = workspaceId || await findWorkspaceId(body.workspaceId);
-    if (!finalWorkspaceId) throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
+    if (!finalWorkspaceId) {
+      res.status(401).json({ error: kind === 'events' ? 'EVENT_WORKSPACE_REQUIRED' : 'TASK_WORKSPACE_REQUIRED' });
+      return;
+    }
 
     const nowIso = new Date().toISOString();
 
@@ -330,6 +341,9 @@ export default async function handler(req: any, res: any) {
   } catch (error: any) {
     const message = error?.message || 'WORK_ITEMS_API_FAILED';
     const notFound = new Set(['TASK_NOT_FOUND', 'EVENT_NOT_FOUND', 'LEAD_NOT_FOUND']);
-    res.status(notFound.has(message) ? 404 : 500).json({ error: message });
+    const workspaceCodes = new Set(['SUPABASE_WORKSPACE_ID_MISSING', 'EVENT_WORKSPACE_REQUIRED', 'TASK_WORKSPACE_REQUIRED']);
+    const isWorkspaceError = workspaceCodes.has(message) || message === 'WORKSPACE_CONTEXT_REQUIRED' || message.endsWith('_WORKSPACE_REQUIRED');
+    const statusCode = notFound.has(message) ? 404 : isWorkspaceError ? 401 : 500;
+    res.status(statusCode).json({ error: message });
   }
 }

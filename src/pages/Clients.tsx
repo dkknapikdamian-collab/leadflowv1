@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { requireWorkspaceId } from '../lib/workspace-context';
 import { createClientInSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase } from '../lib/supabase-fallback';
 
 type ClientRecord = {
@@ -115,11 +116,16 @@ export default function Clients() {
       toast.error('Kontekst workspace nie jest jeszcze gotowy.');
       return;
     }
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) {
+      toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+      return;
+    }
     try {
       setCreatePending(true);
       await createClientInSupabase({
         ...newClient,
-        workspaceId: workspace.id,
+        workspaceId,
       });
       toast.success('Klient dodany');
       setIsCreateOpen(false);
@@ -142,7 +148,7 @@ export default function Clients() {
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <Button className="rounded-xl"><Plus className="w-4 h-4 mr-2" /> Dodaj klienta</Button>
+              <Button className="rounded-xl" disabled={!workspace?.id}><Plus className="w-4 h-4 mr-2" /> Dodaj klienta</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
               <DialogHeader><DialogTitle>Nowy klient</DialogTitle></DialogHeader>

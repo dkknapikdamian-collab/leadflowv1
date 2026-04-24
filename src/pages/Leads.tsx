@@ -15,6 +15,7 @@ import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadNextAction, type LeadNextAction } from '../lib/lead-next-action';
 import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
+import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
@@ -106,7 +107,7 @@ function buildNextActionMeta(action: LeadNextAction | null | undefined) {
 }
 
 export default function Leads() {
-  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
@@ -203,7 +204,8 @@ export default function Leads() {
     e.preventDefault();
     if (createLeadSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
-    if (!workspace?.id) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     if (!newLead.name.trim()) return toast.error('Wpisz nazwę leada');
     createLeadSubmitLockRef.current = true;
     setLeadSubmitting(true);
@@ -213,7 +215,7 @@ export default function Leads() {
         ...newLead,
         dealValue: Number(newLead.dealValue) || 0,
         ownerId: workspace?.ownerId,
-        workspaceId: workspace.id,
+        workspaceId,
       });
       await loadLeads();
       toast.success('Lead dodany');
@@ -291,7 +293,7 @@ export default function Leads() {
           <div className="flex items-center gap-2">
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-lg shadow-primary/20">
+                <Button className="rounded-xl shadow-lg shadow-primary/20" disabled={!workspaceReady}>
                   <Plus className="w-4 h-4 mr-2" /> Dodaj leada
                 </Button>
               </DialogTrigger>
@@ -337,7 +339,7 @@ export default function Leads() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={leadSubmitting}>
+                    <Button type="submit" className="w-full" disabled={leadSubmitting || !workspaceReady}>
                       {leadSubmitting ? 'Dodawanie...' : 'Stwórz leada'}
                     </Button>
                   </DialogFooter>

@@ -39,6 +39,7 @@ import { isLeadMovedToService } from '../lib/lead-health';
 import { getLeadNextAction } from '../lib/lead-next-action';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   deleteEventFromSupabase,
   deleteLeadFromSupabase,
@@ -189,7 +190,7 @@ function isLinkedThroughLeadOrCase(item: Record<string, unknown>, leadId: string
 export default function LeadDetail() {
   const { leadId } = useParams();
   const navigate = useNavigate();
-  const { hasAccess, workspace } = useWorkspace();
+  const { hasAccess, workspace, workspaceReady } = useWorkspace();
   const [lead, setLead] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -366,6 +367,8 @@ export default function LeadDetail() {
 
   const addActivity = async (eventType: string, payload: Record<string, unknown>) => {
     if (!leadId) return;
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return;
     try {
       await insertActivityToSupabase({
         leadId,
@@ -374,7 +377,7 @@ export default function LeadDetail() {
         actorType: 'operator',
         eventType,
         payload,
-        workspaceId: workspace?.id,
+        workspaceId,
       });
       const rows = await fetchActivitiesFromSupabase({ leadId, limit: 100 });
       setActivities(rows as any[]);
@@ -511,6 +514,8 @@ export default function LeadDetail() {
     if (!leadId) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!quickTask.title.trim()) return toast.error('Podaj tytuł zadania');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
 
     try {
       setQuickTaskSubmitting(true);
@@ -531,7 +536,7 @@ export default function LeadDetail() {
         scheduledAt: quickTask.dueAt,
         priority: quickTask.priority,
         leadId,
-        workspaceId: workspace?.id,
+        workspaceId,
       });
       toast.success('Zadanie dodane');
       setIsQuickTaskOpen(false);
@@ -549,6 +554,8 @@ export default function LeadDetail() {
     if (!leadId) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!quickEvent.title.trim()) return toast.error('Podaj tytuł wydarzenia');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
 
     try {
       setQuickEventSubmitting(true);
@@ -569,7 +576,7 @@ export default function LeadDetail() {
         startAt: quickEvent.startAt,
         endAt: quickEvent.endAt,
         leadId,
-        workspaceId: workspace?.id,
+        workspaceId,
       });
       toast.success('Wydarzenie dodane');
       setIsQuickEventOpen(false);
@@ -867,6 +874,8 @@ export default function LeadDetail() {
     if (!leadId) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!createCaseDraft.title.trim()) return toast.error('Podaj tytuł sprawy');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
 
     try {
       setCreateCasePending(true);
@@ -877,7 +886,7 @@ export default function LeadDetail() {
         clientName: createCaseDraft.clientName.trim(),
         clientEmail: createCaseDraft.clientEmail.trim(),
         clientPhone: createCaseDraft.clientPhone.trim(),
-        workspaceId: workspace?.id,
+        workspaceId,
       });
       const caseId = String((created as any)?.case?.id || '');
       toast.success('Temat został przeniesiony do obsługi');
@@ -1565,7 +1574,7 @@ export default function LeadDetail() {
               <Button variant="outline" type="button" onClick={() => setIsQuickTaskOpen(false)}>
                 Anuluj
               </Button>
-              <Button type="submit" disabled={quickTaskSubmitting}>
+              <Button type="submit" disabled={quickTaskSubmitting || !workspaceReady}>
                 {quickTaskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}
               </Button>
             </DialogFooter>
@@ -1620,7 +1629,7 @@ export default function LeadDetail() {
               <Button variant="outline" type="button" onClick={() => setIsQuickEventOpen(false)}>
                 Anuluj
               </Button>
-              <Button type="submit" disabled={quickEventSubmitting}>
+              <Button type="submit" disabled={quickEventSubmitting || !workspaceReady}>
                 {quickEventSubmitting ? 'Dodawanie...' : 'Dodaj wydarzenie'}
               </Button>
             </DialogFooter>
@@ -1913,7 +1922,7 @@ export default function LeadDetail() {
             <Button variant="outline" onClick={() => setIsCreateCaseOpen(false)}>
               Anuluj
             </Button>
-            <Button onClick={() => void handleCreateCaseFromLead()} disabled={createCasePending}>
+            <Button onClick={() => void handleCreateCaseFromLead()} disabled={createCasePending || !workspaceReady}>
               {createCasePending ? 'Rozpoczynanie...' : 'Rozpocznij obsługę'}
             </Button>
           </DialogFooter>
