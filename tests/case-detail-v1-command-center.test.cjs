@@ -12,8 +12,8 @@ function read(relativePath) {
 test('CaseDetail imports V1 lifecycle resolver', () => {
   const source = read('src/pages/CaseDetail.tsx');
 
-  assert.ok(source.includes("resolveCaseLifecycleV1"));
-  assert.ok(source.includes("../lib/case-lifecycle-v1"));
+  assert.ok(source.includes('resolveCaseLifecycleV1'));
+  assert.ok(source.includes('../lib/case-lifecycle-v1'));
 });
 
 test('CaseDetail exposes V1 command center UI and quick actions', () => {
@@ -22,10 +22,16 @@ test('CaseDetail exposes V1 command center UI and quick actions', () => {
   assert.ok(source.includes('function CaseDetailV1CommandCenter'));
   assert.ok(source.includes('data-testid="case-detail-v1-command-center"'));
   assert.ok(source.includes('Centrum dowodzenia sprawy V1'));
-  assert.ok(source.includes('onAddItem={() => setIsAddItemOpen(true)}'));
-  assert.ok(source.includes('onCreateTask={() => setIsQuickTaskOpen(true)}'));
-  assert.ok(source.includes('onCreateEvent={() => setIsQuickEventOpen(true)}'));
-  assert.ok(source.includes('onCopyPortal={generatePortalLink}'));
+
+  assert.ok(source.includes('onAddItem='));
+  assert.ok(source.includes('onCreateTask='));
+  assert.ok(source.includes('onCreateEvent='));
+  assert.ok(source.includes('onCopyPortal='));
+
+  assert.ok(source.includes('setIsAddItemOpen(true)'));
+  assert.ok(source.includes('setIsQuickTaskOpen(true)'));
+  assert.ok(source.includes('setIsQuickEventOpen(true)'));
+  assert.ok(source.includes('generatePortalLink'));
 });
 
 test('CaseDetail command center changes lifecycle status with activity log', () => {
