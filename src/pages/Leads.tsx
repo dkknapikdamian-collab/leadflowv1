@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, Plus, Search, Target, Trash2, TrendingUp } from 'lucide-react';
+import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, Plus, RotateCcw, Search, Target, Trash2, TrendingUp } from 'lucide-react';
 import { format, isPast, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -21,9 +21,9 @@ import {
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
-  deleteLeadFromSupabase,
   insertLeadToSupabase,
   isSupabaseConfigured,
+  updateLeadInSupabase,
 } from '../lib/supabase-fallback';
 
 const STATUS_OPTIONS = [
@@ -36,6 +36,7 @@ const STATUS_OPTIONS = [
   { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
+  { value: 'archived', label: 'W koszu', color: 'bg-amber-100 text-amber-700' },
 ];
 
 const SOURCE_OPTIONS = [
@@ -107,6 +108,21 @@ function buildNextActionMeta(action: LeadNextAction | null | undefined) {
   };
 }
 
+function isLeadInTrash(lead: any) {
+  const status = String(lead?.status || '').trim();
+  const visibility = String(lead?.leadVisibility || '').trim();
+  const outcome = String(lead?.salesOutcome || '').trim();
+
+  return status === 'archived' || visibility === 'trash' || outcome === 'archived' || outcome === 'trash';
+}
+
+function getRestoreStatusForLead(lead: any, linkedCase?: CaseRecord) {
+  if (linkedCase || lead?.linkedCaseId || lead?.caseId || lead?.movedToServiceAt || lead?.caseStartedAt) {
+    return 'moved_to_service';
+  }
+  return 'new';
+}
+
 export default function Leads() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
@@ -117,6 +133,7 @@ export default function Leads() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [quickFilter, setQuickFilter] = useState<LeadsQuickFilter>('active');
+  const [showTrash, setShowTrash] = useState(false);
   const [valueSortEnabled, setValueSortEnabled] = useState(false);
 
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
@@ -131,7 +148,7 @@ export default function Leads() {
 
   const createLeadSubmitLockRef = useRef(false);
   const [leadSubmitting, setLeadSubmitting] = useState(false);
-  const [deletePendingId, setDeletePendingId] = useState<string | null>(null);
+  const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
 
   const loadLeads = useCallback(async () => {
     if (!workspace?.id) {
@@ -231,8 +248,7 @@ export default function Leads() {
     }
   };
 
-
-  const handleDeleteLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {
+  const handleArchiveLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -246,27 +262,74 @@ export default function Leads() {
 
     const linkedCase = casesByLeadId.get(leadId);
     const relationText = linkedCase
-      ? '\n\nTen lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Jeśli baza odmówi usunięcia, usuń albo odłącz najpierw powiązanie.'
-      : '';
+      ? '\n\nTen lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
+      : '\n\nLead zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
 
-    if (!window.confirm('Usunąć leada z panelu: ' + (lead.name || 'Lead') + '?' + relationText)) return;
+    if (!window.confirm('Przenieść leada do kosza: ' + (lead.name || 'Lead') + '?' + relationText)) return;
 
     try {
-      setDeletePendingId(leadId);
-      await deleteLeadFromSupabase(leadId);
-      toast.success('Lead usunięty');
+      setArchivePendingId(leadId);
+      await updateLeadInSupabase({
+        id: leadId,
+        status: 'archived',
+        leadVisibility: 'trash',
+        salesOutcome: 'archived',
+        closedAt: new Date().toISOString(),
+      });
+      toast.success('Lead przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Błąd usuwania leada: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Błąd przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
-      setDeletePendingId(null);
+      setArchivePendingId(null);
     }
   };
 
+  const handleRestoreLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+
+    const leadId = String(lead.id || '');
+    if (!leadId) return;
+
+    const linkedCase = casesByLeadId.get(leadId);
+    const nextStatus = getRestoreStatusForLead(lead, linkedCase);
+    const nextVisibility = nextStatus === 'moved_to_service' ? 'archived' : 'active';
+    const nextOutcome = nextStatus === 'moved_to_service' ? 'moved_to_service' : 'open';
+
+    if (!window.confirm('Przywrócić leada do listy: ' + (lead.name || 'Lead') + '?')) return;
+
+    try {
+      setArchivePendingId(leadId);
+      await updateLeadInSupabase({
+        id: leadId,
+        status: nextStatus,
+        leadVisibility: nextVisibility,
+        salesOutcome: nextOutcome,
+        closedAt: null,
+      });
+      toast.success('Lead przywrócony');
+      await loadLeads();
+    } catch (error: any) {
+      toast.error('Błąd przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setArchivePendingId(null);
+    }
+  };
+
+  const activeLeads = useMemo(() => leads.filter((lead) => !isLeadInTrash(lead)), [leads]);
+  const trashLeads = useMemo(() => leads.filter((lead) => isLeadInTrash(lead)), [leads]);
+
   const filteredLeads = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
+    const sourceLeads = showTrash ? trashLeads : activeLeads;
 
-    const results = leads.filter((lead) => {
+    const results = sourceLeads.filter((lead) => {
       const linkedCase = casesByLeadId.get(String(lead.id));
       const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
       const activeLead = isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
@@ -283,7 +346,8 @@ export default function Leads() {
         || caseStatus.includes(normalizedQuery);
 
       const matchesQuickFilter =
-        quickFilter === 'all'
+        showTrash
+        || quickFilter === 'all'
         || (quickFilter === 'active' && activeLead)
         || (quickFilter === 'at-risk' && Boolean(lead.isAtRisk))
         || (quickFilter === 'history' && movedToService);
@@ -296,24 +360,33 @@ export default function Leads() {
     }
 
     return results;
-  }, [casesByLeadId, leads, quickFilter, searchQuery, valueSortEnabled]);
+  }, [activeLeads, casesByLeadId, quickFilter, searchQuery, showTrash, trashLeads, valueSortEnabled]);
 
   const stats = {
-    total: leads.length,
-    active: leads.filter((lead) => isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
-    value: leads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
-    atRisk: leads.filter((lead) => Boolean(lead.isAtRisk)).length,
-    linkedToCase: leads.filter((lead) => isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
+    total: activeLeads.length,
+    active: activeLeads.filter((lead) => isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
+    value: activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
+    atRisk: activeLeads.filter((lead) => Boolean(lead.isAtRisk)).length,
+    linkedToCase: activeLeads.filter((lead) => isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
+    trash: trashLeads.length,
   };
 
   const toggleQuickFilter = (filter: LeadsQuickFilter) => {
+    setShowTrash(false);
     setValueSortEnabled(false);
     setQuickFilter((prev) => (prev === filter ? 'all' : filter));
   };
 
   const toggleValueSorting = () => {
+    setShowTrash(false);
     setQuickFilter('all');
     setValueSortEnabled((prev) => !prev);
+  };
+
+  const toggleTrashView = () => {
+    setValueSortEnabled(false);
+    setQuickFilter('all');
+    setShowTrash((current) => !current);
   };
 
   return (
@@ -324,7 +397,19 @@ export default function Leads() {
             <h1 className="text-3xl font-bold text-slate-900">Leady</h1>
             <p className="text-slate-500">Lead to temat do pozyskania. Po rozpoczęciu obsługi dalsza praca przechodzi do sprawy.</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-xl"
+              onClick={toggleTrashView}
+            >
+              {showTrash ? <RotateCcw className="w-4 h-4 mr-2" /> : <Trash2 className="w-4 h-4 mr-2" />}
+              {showTrash ? 'Pokaż aktywne' : 'Kosz'}
+              <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                {showTrash ? stats.total : stats.trash}
+              </span>
+            </Button>
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
               <DialogTrigger asChild>
                 <Button className="rounded-xl shadow-lg shadow-primary/20" disabled={!workspaceReady}>
@@ -384,9 +469,9 @@ export default function Leads() {
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
-          <button type="button" className={createSummaryCardClass(quickFilter === 'all' && !valueSortEnabled)} onClick={() => { setQuickFilter('all'); setValueSortEnabled(false); }}>
+          <button type="button" className={createSummaryCardClass(quickFilter === 'all' && !valueSortEnabled && !showTrash)} onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'all' && !valueSortEnabled)}>
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'all' && !valueSortEnabled && !showTrash)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wszystkie</p>
                   <h3 className="text-2xl font-bold text-slate-900">{stats.total}</h3>
@@ -398,9 +483,9 @@ export default function Leads() {
             </Card>
           </button>
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'active')} onClick={() => toggleQuickFilter('active')}>
+          <button type="button" className={createSummaryCardClass(quickFilter === 'active' && !showTrash)} onClick={() => toggleQuickFilter('active')}>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'active')}>
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'active' && !showTrash)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Aktywne</p>
                   <h3 className="text-2xl font-bold text-blue-600">{stats.active}</h3>
@@ -412,9 +497,9 @@ export default function Leads() {
             </Card>
           </button>
 
-          <button type="button" className={createSummaryCardClass(valueSortEnabled)} onClick={toggleValueSorting}>
+          <button type="button" className={createSummaryCardClass(valueSortEnabled && !showTrash)} onClick={toggleValueSorting}>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(valueSortEnabled)}>
+              <CardContent className={createSummaryCardContentClass(valueSortEnabled && !showTrash)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wartość</p>
                   <h3 className="text-2xl font-bold text-slate-900">{stats.value.toLocaleString()} PLN</h3>
@@ -427,9 +512,9 @@ export default function Leads() {
             </Card>
           </button>
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'at-risk')} onClick={() => toggleQuickFilter('at-risk')}>
+          <button type="button" className={createSummaryCardClass(quickFilter === 'at-risk' && !showTrash)} onClick={() => toggleQuickFilter('at-risk')}>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'at-risk')}>
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'at-risk' && !showTrash)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zagrożone</p>
                   <h3 className="text-2xl font-bold text-rose-600">{stats.atRisk}</h3>
@@ -441,9 +526,9 @@ export default function Leads() {
             </Card>
           </button>
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'history')} onClick={() => toggleQuickFilter('history')}>
+          <button type="button" className={createSummaryCardClass(quickFilter === 'history' && !showTrash)} onClick={() => toggleQuickFilter('history')}>
             <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'history')}>
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'history' && !showTrash)}>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Historia</p>
                   <h3 className="text-2xl font-bold text-emerald-600">{stats.linkedToCase}</h3>
@@ -461,7 +546,7 @@ export default function Leads() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
-                placeholder="Szukaj po nazwie, emailu, firmie, statusie albo sprawie..."
+                placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj po nazwie, emailu, firmie, statusie albo sprawie...'}
                 className="pl-10 rounded-xl bg-slate-50 border-none h-11"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -469,6 +554,14 @@ export default function Leads() {
             </div>
           </CardContent>
         </Card>
+
+        {showTrash ? (
+          <Card className="border-amber-200 bg-amber-50 shadow-sm">
+            <CardContent className="p-4 text-sm text-amber-800">
+              To jest kosz leadów. Rekordy są ukryte z aktywnej listy, ale można je przywrócić. Nie kasujemy ich trwale w V1.
+            </CardContent>
+          </Card>
+        ) : null}
 
         <div className="space-y-3">
           {loading ? (
@@ -489,8 +582,8 @@ export default function Leads() {
               <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-slate-300" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Nie znaleziono leadów</h3>
-              <p className="text-slate-500 max-w-xs mx-auto mt-1">Spróbuj zmienić wyszukiwanie, kliknąć inny kafelek u góry albo dodać nowego leada.</p>
+              <h3 className="text-lg font-bold text-slate-900">{showTrash ? 'Kosz leadów jest pusty' : 'Nie znaleziono leadów'}</h3>
+              <p className="text-slate-500 max-w-xs mx-auto mt-1">{showTrash ? 'Przeniesione do kosza leady pojawią się tutaj.' : 'Spróbuj zmienić wyszukiwanie, kliknąć inny kafelek u góry albo dodać nowego leada.'}</p>
             </div>
           ) : (
             filteredLeads.map((lead) => {
@@ -501,6 +594,7 @@ export default function Leads() {
               const sourceLabel = formatLeadSourceLabel(lead.source);
               const leadValueLabel = `${(Number(lead.dealValue) || 0).toLocaleString()} PLN`;
               const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
+              const isArchivedLead = isLeadInTrash(lead);
 
               return (
                 <div key={lead.id} className="relative group/lead-row">
@@ -515,14 +609,19 @@ export default function Leads() {
                             <Badge variant="outline" className="text-[10px] uppercase border-slate-200 text-slate-600">
                               <Target className="mr-1 h-3 w-3" /> {sourceLabel}
                             </Badge>
-                            {lead.isAtRisk ? (
+                            {lead.isAtRisk && !isArchivedLead ? (
                               <Badge variant="destructive" className="text-[10px] uppercase">
                                 Zagrożony
                               </Badge>
                             ) : null}
-                            {movedToService ? (
+                            {movedToService && !isArchivedLead ? (
                               <Badge variant="outline" className="text-[10px] uppercase border-violet-200 text-violet-700">
                                 Temat jest już w obsłudze
+                              </Badge>
+                            ) : null}
+                            {isArchivedLead ? (
+                              <Badge variant="outline" className="text-[10px] uppercase border-amber-200 text-amber-700">
+                                W koszu
                               </Badge>
                             ) : null}
                           </div>
@@ -551,9 +650,11 @@ export default function Leads() {
                           </div>
 
                           <p className="mt-2 text-sm text-slate-600">
-                            {movedToService
-                              ? 'Ten rekord został już wpięty w sprawę i pełni rolę historii pozyskania.'
-                              : 'Aktywny temat sprzedażowy. Wejdź, aby dodać akcję, notatkę albo rozpocząć obsługę.'}
+                            {isArchivedLead
+                              ? 'Ten rekord jest w koszu. Możesz go przywrócić bez trwałego kasowania danych.'
+                              : movedToService
+                                ? 'Ten rekord został już wpięty w sprawę i pełni rolę historii pozyskania.'
+                                : 'Aktywny temat sprzedażowy. Wejdź, aby dodać akcję, notatkę albo rozpocząć obsługę.'}
                           </p>
                         </div>
 
@@ -567,11 +668,11 @@ export default function Leads() {
                             <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[220px] sm:text-right">
                               <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Najbliższa akcja</p>
                               <p className={`line-clamp-1 text-sm font-bold ${nextActionMeta.overdue ? 'text-rose-600' : 'text-slate-700'}`}>
-                                {nextActionMeta.title}
+                                {isArchivedLead ? 'Rekord w koszu' : nextActionMeta.title}
                               </p>
                               <p className={`mt-1 flex items-center gap-1 text-xs ${nextActionMeta.overdue ? 'text-rose-600' : 'text-slate-500'} sm:justify-end`}>
                                 <Clock3 className="h-3 w-3 shrink-0" />
-                                <span className="line-clamp-1">{nextActionMeta.subtitle}</span>
+                                <span className="line-clamp-1">{isArchivedLead ? 'Przywróć, aby wrócił do pracy' : nextActionMeta.subtitle}</span>
                               </p>
                             </div>
                           </div>
@@ -586,13 +687,18 @@ export default function Leads() {
                   </Link>
                   <button
                     type="button"
-                    aria-label="Usuń leada"
-                    title="Usuń leada"
-                    disabled={deletePendingId === String(lead.id || '')}
-                    onClick={(event) => handleDeleteLead(event, lead)}
-                    className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-rose-200 bg-rose-950/20 text-rose-300 transition hover:bg-rose-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    aria-label={isArchivedLead ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                    title={isArchivedLead ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                    disabled={archivePendingId === String(lead.id || '')}
+                    onClick={(event) => isArchivedLead ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead)}
+                    className={[
+                      'absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border transition disabled:cursor-not-allowed disabled:opacity-60',
+                      isArchivedLead
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-500 hover:text-white'
+                        : 'border-rose-200 bg-rose-950/20 text-rose-300 hover:bg-rose-500 hover:text-white',
+                    ].join(' ')}
                   >
-                    {deletePendingId === String(lead.id || '') ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                    {archivePendingId === String(lead.id || '') ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchivedLead ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
                   </button>
                 </div>
               );
