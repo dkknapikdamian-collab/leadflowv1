@@ -20,7 +20,7 @@ test('ClientDetail imports operational data sources', () => {
 test('ClientDetail exposes V1 operational center sections', () => {
   const source = read('src/pages/ClientDetail.tsx');
 
-  assert.ok(source.includes('NastÄ™pny ruch'));
+  assert.ok(source.includes('Nast\u0119pny ruch'));
   assert.ok(source.includes('Zadania klienta'));
   assert.ok(source.includes('Wydarzenia klienta'));
   assert.ok(source.includes('AktywnoĹ›Ä‡ klienta'));
