@@ -159,10 +159,23 @@ function getEntrySubtitle(entry: ScheduleEntry) {
   return '';
 }
 
+function getCalendarEntryStatus(entry: ScheduleEntry) {
+  return String(entry.raw?.status || '').toLowerCase();
+}
+
+function isCompletedCalendarEntry(entry: ScheduleEntry) {
+  const status = getCalendarEntryStatus(entry);
+
+  return (
+    (entry.kind === 'task' && status === 'done') ||
+    (entry.kind === 'event' && (status === 'completed' || status === 'done'))
+  );
+}
+
 function sortCalendarEntriesForDisplay(entries: ScheduleEntry[]) {
   return [...entries].sort((a, b) => {
-    const aDone = a.kind === 'task' && a.raw?.status === 'done';
-    const bDone = b.kind === 'task' && b.raw?.status === 'done';
+    const aDone = isCompletedCalendarEntry(a);
+    const bDone = isCompletedCalendarEntry(b);
 
     if (aDone !== bDone) {
       return aDone ? 1 : -1;
@@ -189,11 +202,11 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
   const pendingWeek = actionPendingId === `${entry.id}:7`;
   const pendingDone = actionPendingId === `${entry.id}:done`;
   const pendingDelete = actionPendingId === `${entry.id}:delete`;
-  const isCompletedTask = entry.kind === 'task' && entry.raw?.status === 'done';
+  const isCompletedEntry = isCompletedCalendarEntry(entry);
   const subtitle = getEntrySubtitle(entry);
 
   return (
-    <div className={`rounded-2xl border border-slate-200 bg-white p-3 shadow-sm ${isCompletedTask ? 'opacity-60' : ''}`}>
+    <div className={`rounded-2xl border border-slate-200 bg-white p-3 shadow-sm ${isCompletedEntry ? 'opacity-60' : ''}`}>
       <div className="mb-2 flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-1.5">
           <Badge className={`${getEntryTone(entry)} border`}>{entry.badgeLabel || entry.kind}</Badge>
@@ -215,9 +228,9 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
 
       <div className="mb-3 min-w-0">
         <div className="min-w-0">
-          <p className={`text-sm font-bold break-words ${isCompletedTask ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
-          {subtitle ? <p className={`text-[11px] break-words ${isCompletedTask ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{subtitle}</p> : null}
-          {caseTitle ? <p className={`text-[11px] break-words ${isCompletedTask ? 'text-slate-400 line-through' : 'text-slate-500'}`}>Sprawa: {caseTitle}</p> : null}
+          <p className={`text-sm font-bold break-words ${isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
+          {subtitle ? <p className={`text-[11px] break-words ${isCompletedEntry ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{subtitle}</p> : null}
+          {caseTitle ? <p className={`text-[11px] break-words ${isCompletedEntry ? 'text-slate-400 line-through' : 'text-slate-500'}`}>Sprawa: {caseTitle}</p> : null}
         </div>
       </div>
 
@@ -1142,11 +1155,11 @@ export default function Calendar() {
                     </div>
                     <div className="space-y-1">
                       {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
-                        const isCompletedTask = entry.kind === 'task' && entry.raw?.status === 'done';
+                        const isCompletedEntry = entry.kind === 'task' && entry.raw?.status === 'done';
 
                         return (
-                          <div key={entry.id} className={`rounded border p-1 text-[10px] font-medium ${getEntryTone(entry)} ${isCompletedTask ? 'opacity-60' : ''}`}>
-                            <span className={`break-words ${isCompletedTask ? 'line-through' : ''}`}>{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span>
+                          <div key={entry.id} className={`rounded border p-1 text-[10px] font-medium ${getEntryTone(entry)} ${isCompletedEntry ? 'opacity-60' : ''}`}>
+                            <span className={`break-words ${isCompletedEntry ? 'line-through' : ''}`}>{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span>
                           </div>
                         );
                       })}
