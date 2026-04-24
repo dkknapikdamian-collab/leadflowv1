@@ -31,6 +31,7 @@ import {
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
@@ -231,6 +232,26 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
           <p className={`text-sm font-bold break-words ${isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
           {subtitle ? <p className={`text-[11px] break-words ${isCompletedEntry ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{subtitle}</p> : null}
           {caseTitle ? <p className={`text-[11px] break-words ${isCompletedEntry ? 'text-slate-400 line-through' : 'text-slate-500'}`}>Sprawa: {caseTitle}</p> : null}
+          {(entry.raw?.leadId || entry.raw?.caseId) ? (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {entry.raw?.leadId ? (
+                <Link
+                  to={`/leads/${entry.raw.leadId}`}
+                  className="inline-flex h-7 items-center rounded-lg border border-slate-200 bg-slate-50 px-2 text-[11px] font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                >
+                  Otwórz lead
+                </Link>
+              ) : null}
+              {entry.raw?.caseId ? (
+                <Link
+                  to={`/cases/${entry.raw.caseId}`}
+                  className="inline-flex h-7 items-center rounded-lg border border-slate-200 bg-slate-50 px-2 text-[11px] font-semibold text-slate-700 transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700"
+                >
+                  Otwórz sprawę
+                </Link>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
 

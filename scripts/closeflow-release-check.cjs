@@ -11,6 +11,7 @@ const requiredTests = [
   'tests/client-relation-command-center.test.cjs',
   'tests/calendar-completed-event-behavior.test.cjs',
   'tests/calendar-restore-completed-entries.test.cjs',
+  'tests/calendar-entry-relation-links.test.cjs',
   'tests/today-completed-entries-behavior.test.cjs',
   'tests/today-restore-completed-label.test.cjs',
 ];

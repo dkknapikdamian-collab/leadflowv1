@@ -36,6 +36,7 @@ test('release gate includes calendar and today restore regression tests', () => 
 
   assert.match(source, /calendar-completed-event-behavior\.test\.cjs/);
   assert.match(source, /calendar-restore-completed-entries\.test\.cjs/);
+  assert.match(source, /calendar-entry-relation-links\.test\.cjs/);
   assert.match(source, /today-completed-entries-behavior\.test\.cjs/);
   assert.match(source, /today-restore-completed-label\.test\.cjs/);
 });
