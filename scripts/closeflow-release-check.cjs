@@ -17,6 +17,7 @@ const requiredTests = [
   'tests/today-restore-completed-label.test.cjs',
   'tests/today-entry-relation-links.test.cjs',
   'tests/today-calendar-activity-logging.test.cjs',
+  'tests/activity-command-center.test.cjs',
 ];
 
 function run(label, command, args) {

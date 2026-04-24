@@ -17,6 +17,7 @@ const requiredTests = [
   'tests/today-restore-completed-label.test.cjs',
   'tests/today-entry-relation-links.test.cjs',
   'tests/today-calendar-activity-logging.test.cjs',
+  'tests/activity-command-center.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
@@ -34,7 +35,7 @@ function runQuiet(label, command, args) {
     process.exit(result.status || 1);
   }
 
-  console.log('✓ ' + label);
+  console.log('âś“ ' + label);
 }
 
 function runNpmScript(label, scriptName) {
