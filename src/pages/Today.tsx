@@ -1387,9 +1387,9 @@ export default function Today() {
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
                                   Szczegóły
                                 </Button>
-                                <Button variant="outline" size="sm" onClick={() =>
-                            {formatTodayCompleteActionLabel(isCompleted, completePending)}
-                          </Button>
+                                <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(entry)} disabled={completePending}>
+                                  {formatTodayCompleteActionLabel(isCompleted, completePending)}
+                                </Button>
                                 <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(entry)} disabled={deletePending}>
                                   {deletePending ? '...' : 'Usuń'}
                                 </Button>
@@ -1447,9 +1447,9 @@ export default function Today() {
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
                                   Szczegóły
                                 </Button>
-                                <Button variant="outline" size="sm" onClick={() =>
-                            {formatTodayCompleteActionLabel(isCompleted, completePending)}
-                          </Button>
+                                <Button variant="outline" size="sm" onClick={() => toggleTodayTask(entry)} disabled={completePending}>
+                                  {formatTodayCompleteActionLabel(isCompleted, completePending)}
+                                </Button>
                                 <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(entry)} disabled={deletePending}>
                                   {deletePending ? '...' : 'Usuń'}
                                 </Button>
