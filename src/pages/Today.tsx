@@ -227,6 +227,36 @@ function formatLeadMoment(value: unknown) {
   return moment ? format(moment, 'd MMM HH:mm', { locale: pl }) : 'Brak terminu';
 }
 
+
+function getTodayEntryStatus(entry: any) {
+  return String(entry?.raw?.status || '').toLowerCase();
+}
+
+function isCompletedTodayEntry(entry: any) {
+  const status = getTodayEntryStatus(entry);
+
+  return (
+    (entry?.kind === 'task' && status === 'done') ||
+    (entry?.kind === 'event' && (status === 'completed' || status === 'done'))
+  );
+}
+
+function sortTodayEntriesForDisplay(entries: any[]) {
+  return [...entries].sort((a, b) => {
+    const aDone = isCompletedTodayEntry(a);
+    const bDone = isCompletedTodayEntry(b);
+
+    if (aDone !== bDone) {
+      return aDone ? 1 : -1;
+    }
+
+    const aTime = parseMoment(a?.startsAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+    const bTime = parseMoment(b?.startsAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+
+    return aTime - bTime;
+  });
+}
+
 export default function Today() {
   const { workspace, profile, hasAccess, loading: wsLoading, workspaceReady, refresh } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
@@ -644,7 +674,7 @@ export default function Today() {
   const toggleTodayTask = async (entry: any) => {
     try {
       setTodayActionId(`${entry.id}:done`);
-      const nextStatus = entry.raw?.status === 'done' ? 'todo' : 'done';
+      const nextStatus = isCompletedTodayEntry(entry) ? 'todo' : 'done';
 
       await updateTaskInSupabase({
         id: entry.sourceId,
@@ -698,7 +728,7 @@ export default function Today() {
   const toggleTodayEvent = async (entry: any) => {
     try {
       setTodayActionId(`${entry.id}:done`);
-      const nextStatus = entry.raw?.status === 'completed' ? 'scheduled' : 'completed';
+      const nextStatus = isCompletedTodayEntry(entry) ? 'scheduled' : 'completed';
 
       await updateEventInSupabase({
         id: entry.sourceId,
@@ -797,13 +827,13 @@ export default function Today() {
   const activeLeads = leads.filter((lead) => isActiveSalesLead(lead));
   const activeLeadsValue = activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0);
   const leadsWithAction = activeLeads.filter((lead) => parseMoment(lead.nextActionAt));
-  const todayEntries = combineScheduleEntries({
+  const todayEntries = sortTodayEntriesForDisplay(combineScheduleEntries({
     events,
     tasks,
     leads: leadsWithAction,
     rangeStart: todayStart,
     rangeEnd: todayEnd,
-  });
+  }));
   const todayTasks = todayEntries.filter((entry) => entry.kind === 'task');
   const todayEvents = todayEntries.filter((entry) => entry.kind === 'event');
   const todayLeadActions = todayEntries.filter((entry) => entry.kind === 'lead');
@@ -1309,7 +1339,7 @@ export default function Today() {
                   {todayEvents.length > 0 ? (
                     <div className="grid gap-3">
                       {todayEvents.map((entry) => {
-                        const isCompleted = entry.raw?.status === 'completed';
+                        const isCompleted = isCompletedTodayEntry(entry);
                         const completePending = todayActionId === `${entry.id}:done`;
                         const deletePending = todayActionId === `${entry.id}:delete`;
 
@@ -1374,7 +1404,7 @@ export default function Today() {
                   {todayTasks.length > 0 ? (
                     <div className="grid gap-3">
                       {todayTasks.map((entry) => {
-                        const isCompleted = entry.raw?.status === 'done';
+                        const isCompleted = isCompletedTodayEntry(entry);
                         const completePending = todayActionId === `${entry.id}:done`;
                         const deletePending = todayActionId === `${entry.id}:delete`;
 
