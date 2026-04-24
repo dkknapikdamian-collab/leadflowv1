@@ -1,4 +1,4 @@
-const { spawnSync } = require('node:child_process');
+﻿const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -35,7 +35,7 @@ function runQuiet(label, command, args) {
     process.exit(result.status || 1);
   }
 
-  console.log('âś“ ' + label);
+  console.log('OK ' + label);
 }
 
 function runNpmScript(label, scriptName) {

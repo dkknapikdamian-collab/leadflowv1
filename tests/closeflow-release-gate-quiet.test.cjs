@@ -1,4 +1,4 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -19,7 +19,7 @@ test('quiet release gate keeps output compact and prints details only on failure
   const source = read('scripts/closeflow-release-check-quiet.cjs');
 
   assert.match(source, /function runQuiet/);
-  assert.match(source, /console\.log\('âś“ ' \+ label\)/);
+  assert.match(source, /console\.log\('OK ' \+ label\)/);
   assert.match(source, /if \(result\.status !== 0\)/);
   assert.match(source, /if \(result\.stdout\) console\.error\(result\.stdout\)/);
   assert.match(source, /if \(result\.stderr\) console\.error\(result\.stderr\)/);
@@ -40,5 +40,5 @@ test('quiet release gate documentation exists', () => {
   const doc = read('docs/CLOSEFLOW_RELEASE_GATE_QUIET_2026-04-24.md');
 
   assert.match(doc, /verify:closeflow:quiet/);
-  assert.match(doc, /PeĹ‚ny log pokazuje dopiero wtedy/);
+  assert.match(doc, /build albo test/);
 });
