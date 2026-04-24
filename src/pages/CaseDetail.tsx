@@ -56,6 +56,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import Layout from '../components/Layout';
 import { isActiveSalesLead } from '../lib/lead-health';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import {
   createClientPortalTokenInSupabase,
   deleteCaseItemFromSupabase,
@@ -203,6 +204,132 @@ function caseStatusLabel(status?: string) {
   }
 }
 
+
+function caseLifecycleBadgeVariant(bucket: string): 'default' | 'secondary' | 'destructive' | 'outline' {
+  if (bucket === 'blocked') return 'destructive';
+  if (bucket === 'ready_to_start' || bucket === 'completed') return 'secondary';
+  if (bucket === 'needs_next_step' || bucket === 'waiting_approval') return 'outline';
+  return 'default';
+}
+
+function caseLifecycleRiskLabel(level: string) {
+  if (level === 'high') return 'Ryzyko wysokie';
+  if (level === 'medium') return 'Ryzyko średnie';
+  return 'Ryzyko niskie';
+}
+
+function CaseDetailV1CommandCenter({
+  lifecycle,
+  title,
+  currentStatusLabel,
+  completenessPercent,
+  isPending,
+  onAddItem,
+  onCreateTask,
+  onCreateEvent,
+  onCopyPortal,
+  onStartCase,
+  onCompleteCase,
+  onReopenCase,
+}: {
+  lifecycle: any;
+  title: string;
+  currentStatusLabel: string;
+  completenessPercent: number;
+  isPending: boolean;
+  onAddItem: () => void;
+  onCreateTask: () => void;
+  onCreateEvent: () => void;
+  onCopyPortal: () => void;
+  onStartCase: () => void;
+  onCompleteCase: () => void;
+  onReopenCase: () => void;
+}) {
+  const bucket = String(lifecycle?.bucket || 'needs_next_step');
+  const isCompleted = bucket === 'completed';
+  const isInProgress = bucket === 'in_progress';
+  const isReady = bucket === 'ready_to_start';
+  const safePercent = Math.max(0, Math.min(100, Math.round(Number(completenessPercent || 0))));
+
+  return (
+    <section className="mx-auto mb-6 w-full max-w-6xl px-6 pt-6 lg:px-8" data-testid="case-detail-v1-command-center">
+      <Card className="border-none bg-slate-950 text-white shadow-lg">
+        <CardContent className="p-5 lg:p-6">
+          <div className="grid gap-5 lg:grid-cols-[1.3fr_0.9fr]">
+            <div>
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <Badge variant={caseLifecycleBadgeVariant(bucket)}>{lifecycle?.label || 'Sprawa'}</Badge>
+                <Badge variant="outline" className="border-white/20 text-white">Status: {currentStatusLabel}</Badge>
+                <Badge variant="outline" className="border-white/20 text-white">{caseLifecycleRiskLabel(String(lifecycle?.riskLevel || 'low'))}</Badge>
+              </div>
+
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Centrum dowodzenia sprawy V1</p>
+              <h2 className="mt-2 text-2xl font-bold text-white">{title || 'Sprawa'}</h2>
+              <p className="mt-2 max-w-3xl text-sm text-slate-300">{lifecycle?.headline || 'Sprawa wymaga uporządkowania kolejnego kroku.'}</p>
+
+              <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Najbliższy ruch operatora</p>
+                <p className="mt-1 text-sm font-semibold text-white">{lifecycle?.nextOperatorAction || 'Dodaj zadanie albo wydarzenie, żeby sprawa miała jasny dalszy ruch.'}</p>
+              </div>
+
+              <div className="mt-4">
+                <div className="mb-2 flex items-center justify-between text-xs text-slate-300">
+                  <span>Kompletność</span>
+                  <span>{safePercent}%</span>
+                </div>
+                <Progress value={safePercent} className="h-2 bg-white/20" />
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                  <p className="text-lg font-bold text-white">{lifecycle?.missingRequiredCount || 0}</p>
+                  <p className="text-[11px] text-slate-400">Braki</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                  <p className="text-lg font-bold text-white">{lifecycle?.waitingApprovalCount || 0}</p>
+                  <p className="text-[11px] text-slate-400">Akceptacje</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                  <p className="text-lg font-bold text-white">{lifecycle?.openActionCount || 0}</p>
+                  <p className="text-[11px] text-slate-400">Akcje</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <Button type="button" variant="secondary" onClick={onAddItem} disabled={isPending}>
+                  <FileText className="mr-2 h-4 w-4" /> Dodaj brak
+                </Button>
+                <Button type="button" variant="secondary" onClick={onCreateTask} disabled={isPending}>
+                  <Target className="mr-2 h-4 w-4" /> Zadanie
+                </Button>
+                <Button type="button" variant="secondary" onClick={onCreateEvent} disabled={isPending}>
+                  <Calendar className="mr-2 h-4 w-4" /> Wydarzenie
+                </Button>
+                <Button type="button" variant="secondary" onClick={onCopyPortal} disabled={isPending}>
+                  <ExternalLink className="mr-2 h-4 w-4" /> Portal
+                </Button>
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-3">
+                <Button type="button" className="bg-white text-slate-950 hover:bg-slate-100" onClick={onStartCase} disabled={isPending || isCompleted || isInProgress}>
+                  <CheckCircle2 className="mr-2 h-4 w-4" /> Start
+                </Button>
+                <Button type="button" variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10" onClick={onCompleteCase} disabled={isPending || isCompleted || !isReady}>
+                  <Check className="mr-2 h-4 w-4" /> Zakończ
+                </Button>
+                <Button type="button" variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10" onClick={onReopenCase} disabled={isPending || !isCompleted}>
+                  <AlertCircle className="mr-2 h-4 w-4" /> Wznów
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
 function toDateTimeLocalValue(date: Date) {
   const pad = (value: number) => String(value).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
@@ -374,6 +501,7 @@ export default function CaseDetail() {
   const [isEditClientOpen, setIsEditClientOpen] = useState(false);
   const [showClientCreateFields, setShowClientCreateFields] = useState(false);
   const [caseClientSubmitting, setCaseClientSubmitting] = useState(false);
+  const [caseLifecyclePending, setCaseLifecyclePending] = useState(false);
   const [caseClientDraft, setCaseClientDraft] = useState({
     clientName: '',
     clientEmail: '',
@@ -504,6 +632,68 @@ const caseClientSuggestions = useMemo(() => {
     };
   }, [caseId]);
 
+
+  const caseLifecycle = useMemo(
+    () => resolveCaseLifecycleV1({
+      status: String(caseData?.status || ''),
+      items,
+      tasks: linkedTasks,
+      events: linkedEvents,
+    }),
+    [caseData?.status, items, linkedEvents, linkedTasks],
+  );
+
+  const lifecycleCompletenessPercent = Math.max(
+    Math.round(Number(caseData?.completenessPercent || 0)),
+    Math.round(Number(caseLifecycle.completenessPercent || 0)),
+  );
+
+  const setCaseLifecycleStatusV1 = async (nextStatus: string, eventType: string, successMessage: string) => {
+    if (!caseId) return;
+
+    try {
+      setCaseLifecyclePending(true);
+      await updateCaseInSupabase({
+        id: caseId,
+        status: nextStatus,
+      });
+
+      await insertActivityToSupabase({
+        caseId,
+        leadId: caseData?.leadId || null,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType,
+        payload: {
+          source: 'case_detail_v1_command_center',
+          title: caseData?.title || 'Sprawa',
+          previousStatus: caseData?.status || null,
+          nextStatus,
+          lifecycleBucket: caseLifecycle.bucket,
+        },
+      });
+
+      await refreshSupabaseCase();
+      toast.success(successMessage);
+    } catch (error: any) {
+      toast.error('Błąd zmiany statusu sprawy: ' + error.message);
+    } finally {
+      setCaseLifecyclePending(false);
+    }
+  };
+
+  const handleStartCaseV1 = async () => {
+    await setCaseLifecycleStatusV1('in_progress', 'case_lifecycle_started', 'Sprawa jest w realizacji');
+  };
+
+  const handleCompleteCaseV1 = async () => {
+    await setCaseLifecycleStatusV1('completed', 'case_lifecycle_completed', 'Sprawa została zakończona');
+  };
+
+  const handleReopenCaseV1 = async () => {
+    await setCaseLifecycleStatusV1('in_progress', 'case_lifecycle_reopened', 'Sprawa została wznowiona');
+  };
   const handleAddItem = async () => {
     if (!newItem.title || !caseId) return;
 

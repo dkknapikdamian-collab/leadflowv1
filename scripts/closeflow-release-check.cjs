@@ -23,6 +23,7 @@ const requiredTests = [
   'tests/case-lifecycle-v1-foundation.test.cjs',
   'tests/today-v1-final-action-board.test.cjs',
   'tests/cases-v1-lifecycle-command-board.test.cjs',
+  'tests/case-detail-v1-command-center.test.cjs',
 ];
 
 function run(label, command, args) {

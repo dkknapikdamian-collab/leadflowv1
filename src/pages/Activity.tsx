@@ -213,6 +213,12 @@ function getActivityActionLabel(activity: any) {
     case 'today_event_snoozed':
       return withTitle('odĹ‚oĹĽyĹ‚ wydarzenie z DziĹ›', title);    case 'status_changed':
       return status ? 'zmieniĹ‚ status na ' + status : 'zmieniĹ‚ status';
+    case 'case_lifecycle_started':
+      return withTitle('rozpoczął realizację sprawy', title);
+    case 'case_lifecycle_completed':
+      return withTitle('zakończył sprawę', title);
+    case 'case_lifecycle_reopened':
+      return withTitle('wznowił sprawę do pracy', title);
     case 'case_created':
       return withTitle('uruchomiĹ‚ realizacjÄ™', title);
     case 'item_added':
