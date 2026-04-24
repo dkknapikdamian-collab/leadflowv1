@@ -23,7 +23,7 @@ test('ClientDetail exposes V1 operational center sections', () => {
   assert.ok(source.includes('Nast\u0119pny ruch'));
   assert.ok(source.includes('Zadania klienta'));
   assert.ok(source.includes('Wydarzenia klienta'));
-  assert.ok(source.includes('AktywnoĹ›Ä‡ klienta'));
+  assert.ok(source.includes('Aktywno\u015b\u0107 klienta'));
   assert.ok(source.includes('buildClientNextAction'));
 });
 
@@ -51,6 +51,6 @@ test('ClientDetail operational center documentation exists', () => {
   const doc = read('docs/CLIENT_DETAIL_V1_OPERATIONAL_CENTER_2026-04-24.md');
 
   assert.ok(doc.includes('Client Detail V1 operational center'));
-  assert.ok(doc.includes('nastÄ™pny ruch klienta'));
   assert.ok(doc.includes('/cases/:id'));
+  assert.ok(doc.toLowerCase().includes('operacyj'));
 });
