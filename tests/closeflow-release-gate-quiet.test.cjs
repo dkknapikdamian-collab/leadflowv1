@@ -33,6 +33,7 @@ test('quiet release gate runs build and core regression tests', () => {
   assert.match(source, /today-entry-relation-links\.test\.cjs/);
   assert.match(source, /today-calendar-activity-logging\.test\.cjs/);
   assert.match(source, /activity-command-center\.test\.cjs/);
+  assert.match(source, /tests\/lead-service-mode-v1\.test\.cjs/);
   assert.match(source, /lead-next-action-title-not-null\.test\.cjs/);
 });
 

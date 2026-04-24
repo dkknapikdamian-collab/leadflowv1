@@ -310,10 +310,11 @@ export default function LeadDetail() {
   const serviceCaseStatusLabel = String(associatedCase?.status || createCaseDraft.status || 'ready_to_start').replaceAll('_', ' ');
   const serviceMovedAtLabel = formatScheduleDate(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
   const showServiceBanner = Boolean(startServiceSuccess || associatedCase || leadMovedToService);
+  const leadOperationalArchive = Boolean(leadMovedToService || associatedCase || startServiceSuccess);
 
   useEffect(() => {
     if (!startServiceSuccess?.caseId) return;
-    navigate(`/case/${startServiceSuccess.caseId}`);
+    navigate(`/cases/${startServiceSuccess.caseId}`);
   }, [startServiceSuccess?.caseId, navigate]);
 
   const scrollToHistory = () => {
@@ -513,6 +514,7 @@ export default function LeadDetail() {
     e.preventDefault();
     if (!leadId) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
+    if (leadOperationalArchive) return toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze zadania w sprawie.');
     if (!quickTask.title.trim()) return toast.error('Podaj tytuł zadania');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
@@ -553,6 +555,7 @@ export default function LeadDetail() {
     e.preventDefault();
     if (!leadId) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
+    if (leadOperationalArchive) return toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze wydarzenia w sprawie.');
     if (!quickEvent.title.trim()) return toast.error('Podaj tytuł wydarzenia');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
@@ -862,7 +865,7 @@ export default function LeadDetail() {
         title: String(caseTitleById.get(String(linkCaseId)) || 'Powiązana sprawa'),
       });
       await loadLead();
-      navigate(`/case/${linkCaseId}`);
+      navigate(`/cases/${linkCaseId}`);
     } catch (error: any) {
       toast.error(`Błąd przypięcia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -897,7 +900,7 @@ export default function LeadDetail() {
       });
       await loadLead();
       if (caseId) {
-        navigate(`/case/${caseId}`);
+        navigate(`/cases/${caseId}`);
       }
     } catch (error: any) {
       toast.error(`Błąd tworzenia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
@@ -989,7 +992,7 @@ export default function LeadDetail() {
             ) : null}
             {associatedCase?.id ? (
               <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" asChild>
-                <Link to={`/case/${associatedCase.id}`}>
+                <Link to={`/cases/${associatedCase.id}`}>
                   <Briefcase className="w-4 h-4" /> Otwórz sprawę
                 </Link>
               </Button>
@@ -1065,7 +1068,7 @@ export default function LeadDetail() {
                   <div className="flex flex-wrap gap-2">
                     {serviceCaseId ? (
                       <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                        <Link to={`/case/${serviceCaseId}`}>Otwórz sprawę</Link>
+                        <Link to={`/cases/${serviceCaseId}`}>Otwórz sprawę</Link>
                       </Button>
                     ) : null}
                     <Button variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100" onClick={scrollToHistory}>
@@ -1202,7 +1205,13 @@ export default function LeadDetail() {
                               <h3 className="text-sm font-bold text-slate-900">Zadania leada</h3>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => setIsQuickTaskOpen(true)}>
+                              <Button variant="outline" size="sm" onClick={() => {
+                          if (leadOperationalArchive) {
+                            toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze zadania w sprawie.');
+                            return;
+                          }
+                          setIsQuickTaskOpen(true);
+                        }}>
                                 <Plus className="w-4 h-4 mr-2" /> Dodaj
                               </Button>
                               <Button variant="outline" size="sm" asChild>
@@ -1250,7 +1259,13 @@ export default function LeadDetail() {
                               <h3 className="text-sm font-bold text-slate-900">Wydarzenia leada</h3>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => setIsQuickEventOpen(true)}>
+                              <Button variant="outline" size="sm" onClick={() => {
+                          if (leadOperationalArchive) {
+                            toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze wydarzenia w sprawie.');
+                            return;
+                          }
+                          setIsQuickEventOpen(true);
+                        }}>
                                 <Plus className="w-4 h-4 mr-2" /> Dodaj
                               </Button>
                               <Button variant="outline" size="sm" asChild>
@@ -1307,7 +1322,7 @@ export default function LeadDetail() {
                         <p className="text-sm text-slate-600">Data przejścia: {serviceMovedAtLabel}</p>
                         {serviceCaseId ? (
                           <Button className="mt-3" variant="outline" asChild>
-                            <Link to={`/case/${serviceCaseId}`}>Otwórz sprawę</Link>
+                            <Link to={`/cases/${serviceCaseId}`}>Otwórz sprawę</Link>
                           </Button>
                         ) : null}
                       </div>
@@ -1400,7 +1415,7 @@ export default function LeadDetail() {
                       </div>
                       <div className="flex gap-2 flex-wrap">
                         <Button className="rounded-xl gap-2" asChild>
-                          <Link to={`/case/${associatedCase.id}`}>
+                          <Link to={`/cases/${associatedCase.id}`}>
                             Przejdź do sprawy <ExternalLink className="w-4 h-4" />
                           </Link>
                         </Button>
