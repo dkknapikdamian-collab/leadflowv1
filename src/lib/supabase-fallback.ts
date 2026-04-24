@@ -67,12 +67,6 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   const method = (init?.method || 'GET').toUpperCase();
   const useCache = method === 'GET';
   const cacheKey = `${method}:${getCacheScope()}:${path}`;
-  const workspaceId = getStoredWorkspaceId();
-  const requiresWorkspaceContext = path.startsWith('/api/') && !path.startsWith('/api/me');
-
-  if (requiresWorkspaceContext && !workspaceId) {
-    throw new Error('WORKSPACE_CONTEXT_REQUIRED');
-  }
 
   if (useCache) {
     const cached = apiGetCache.get(cacheKey);
