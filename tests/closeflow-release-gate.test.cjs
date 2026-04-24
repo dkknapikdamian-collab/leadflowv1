@@ -45,6 +45,7 @@ test('release gate includes calendar and today restore regression tests', () => 
   assert.match(source, /tests\/lead-service-mode-v1\.test\.cjs/);
   assert.match(source, /panel-delete-actions-v1\.test\.cjs/);
   assert.match(source, /case-lifecycle-v1-foundation\.test\.cjs/);
+  assert.match(source, /cases-v1-lifecycle-command-board\.test\.cjs/);
   assert.match(source, /today-v1-final-action-board\.test\.cjs/);
 });
 

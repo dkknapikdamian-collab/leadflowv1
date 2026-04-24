@@ -22,6 +22,7 @@ const requiredTests = [
   'tests/panel-delete-actions-v1.test.cjs',
   'tests/case-lifecycle-v1-foundation.test.cjs',
   'tests/today-v1-final-action-board.test.cjs',
+  'tests/cases-v1-lifecycle-command-board.test.cjs',
 ];
 
 function run(label, command, args) {

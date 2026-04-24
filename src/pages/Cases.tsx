@@ -29,8 +29,16 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { deleteCaseWithRelations } from '../lib/cases';
+import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { requireWorkspaceId } from '../lib/workspace-context';
-import { createCaseInSupabase, fetchCasesFromSupabase, fetchLeadsFromSupabase, isSupabaseConfigured } from '../lib/supabase-fallback';
+import {
+  createCaseInSupabase,
+  fetchCasesFromSupabase,
+  fetchEventsFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchTasksFromSupabase,
+  isSupabaseConfigured,
+} from '../lib/supabase-fallback';
 
 type CaseRecord = {
   id: string;
@@ -56,7 +64,7 @@ type ClientOption = {
   source: 'case' | 'lead';
 };
 
-type CaseView = 'all' | 'waiting' | 'blocked' | 'ready' | 'linked';
+type CaseView = 'all' | 'waiting' | 'blocked' | 'approval' | 'ready' | 'needs_next_step' | 'linked';
 
 function normalizeClientText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -173,10 +181,53 @@ function buildCaseSourceSummary(sourceLead: any) {
   return `Źródło: temat pozyskany z leada ${leadName} • ${leadSourceLabel(sourceLead.source)}`;
 }
 
+
+function buildCaseActionMap(actions: any[]) {
+  const map = new Map<string, any[]>();
+
+  for (const action of actions || []) {
+    const caseId = normalizeClientText(action?.caseId);
+    if (!caseId) continue;
+
+    const current = map.get(caseId) || [];
+    current.push(action);
+    map.set(caseId, current);
+  }
+
+  return map;
+}
+
+function resolveCaseListLifecycle(
+  record: CaseRecord,
+  tasksByCaseId: Map<string, any[]>,
+  eventsByCaseId: Map<string, any[]>,
+) {
+  return resolveCaseLifecycleV1({
+    status: record.status,
+    tasks: tasksByCaseId.get(String(record.id || '')) || [],
+    events: eventsByCaseId.get(String(record.id || '')) || [],
+  });
+}
+
+function lifecycleBadgeVariant(bucket: string): 'default' | 'secondary' | 'destructive' | 'outline' {
+  if (bucket === 'blocked') return 'destructive';
+  if (bucket === 'ready_to_start' || bucket === 'completed') return 'secondary';
+  if (bucket === 'needs_next_step' || bucket === 'waiting_approval') return 'outline';
+  return 'default';
+}
+
+function lifecycleRiskLabel(level: string) {
+  if (level === 'high') return 'Ryzyko wysokie';
+  if (level === 'medium') return 'Ryzyko średnie';
+  return 'Ryzyko niskie';
+}
+
 export default function Cases() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [leadCandidates, setLeadCandidates] = useState<any[]>([]);
+  const [caseTasks, setCaseTasks] = useState<any[]>([]);
+  const [caseEvents, setCaseEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [caseView, setCaseView] = useState<CaseView>('all');
@@ -194,12 +245,16 @@ export default function Cases() {
   });
 
   const refreshCases = async () => {
-    const [caseRows, leadRows] = await Promise.all([
+    const [caseRows, leadRows, taskRows, eventRows] = await Promise.all([
       fetchCasesFromSupabase(),
       fetchLeadsFromSupabase().catch(() => []),
+      fetchTasksFromSupabase().catch(() => []),
+      fetchEventsFromSupabase().catch(() => []),
     ]);
     setCases(caseRows as CaseRecord[]);
     setLeadCandidates(leadRows as any[]);
+    setCaseTasks(taskRows as any[]);
+    setCaseEvents(eventRows as any[]);
   };
 
   useEffect(() => {
@@ -209,6 +264,8 @@ export default function Cases() {
     if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) {
       setCases([]);
       setLeadCandidates([]);
+      setCaseTasks([]);
+      setCaseEvents([]);
       setLoading(false);
       return () => {
         isMounted = false;
@@ -218,11 +275,15 @@ export default function Cases() {
     Promise.all([
       fetchCasesFromSupabase(),
       fetchLeadsFromSupabase().catch(() => []),
+      fetchTasksFromSupabase().catch(() => []),
+      fetchEventsFromSupabase().catch(() => []),
     ])
-      .then(([caseRows, leadRows]) => {
+      .then(([caseRows, leadRows, taskRows, eventRows]) => {
         if (!isMounted) return;
         setCases(caseRows as CaseRecord[]);
         setLeadCandidates(leadRows as any[]);
+        setCaseTasks(taskRows as any[]);
+        setCaseEvents(eventRows as any[]);
         setLoading(false);
       })
       .catch((error: any) => {
@@ -230,6 +291,8 @@ export default function Cases() {
         toast.error(`Błąd cases API: ${error.message}`);
         setCases([]);
         setLeadCandidates([]);
+        setCaseTasks([]);
+        setCaseEvents([]);
         setLoading(false);
       });
 
@@ -238,16 +301,22 @@ export default function Cases() {
     };
   }, [workspace?.id, workspaceLoading]);
 
-  const stats = useMemo(
-    () => ({
+  const caseTasksByCaseId = useMemo(() => buildCaseActionMap(caseTasks), [caseTasks]);
+  const caseEventsByCaseId = useMemo(() => buildCaseActionMap(caseEvents), [caseEvents]);
+
+  const stats = useMemo(() => {
+    const lifecycleRows = cases.map((record) => resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId));
+
+    return {
       total: cases.length,
-      waiting: cases.filter((record) => record.status === 'waiting_on_client' || record.status === 'to_approve').length,
-      blocked: cases.filter((record) => record.status === 'blocked').length,
-      ready: cases.filter((record) => record.status === 'ready_to_start').length,
+      waiting: lifecycleRows.filter((entry) => entry.bucket === 'blocked' || entry.bucket === 'waiting_approval').length,
+      blocked: lifecycleRows.filter((entry) => entry.bucket === 'blocked').length,
+      approval: lifecycleRows.filter((entry) => entry.bucket === 'waiting_approval').length,
+      ready: lifecycleRows.filter((entry) => entry.bucket === 'ready_to_start').length,
+      needsNextStep: lifecycleRows.filter((entry) => entry.bucket === 'needs_next_step').length,
       linked: cases.filter((record) => !!record.leadId).length,
-    }),
-    [cases]
-  );
+    };
+  }, [caseEventsByCaseId, caseTasksByCaseId, cases]);
 
   const leadsById = useMemo(
     () => new Map((leadCandidates || []).map((entry: any) => [String(entry.id || ''), entry])),
@@ -281,16 +350,19 @@ export default function Cases() {
         || record.status?.toLowerCase().includes(normalizedQuery)
       );
 
+      const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
       const matchesView =
         caseView === 'all'
-        || (caseView === 'waiting' && (record.status === 'waiting_on_client' || record.status === 'to_approve'))
-        || (caseView === 'blocked' && record.status === 'blocked')
-        || (caseView === 'ready' && record.status === 'ready_to_start')
+        || (caseView === 'waiting' && (lifecycle.bucket === 'blocked' || lifecycle.bucket === 'waiting_approval'))
+        || (caseView === 'blocked' && lifecycle.bucket === 'blocked')
+        || (caseView === 'approval' && lifecycle.bucket === 'waiting_approval')
+        || (caseView === 'ready' && lifecycle.bucket === 'ready_to_start')
+        || (caseView === 'needs_next_step' && lifecycle.bucket === 'needs_next_step')
         || (caseView === 'linked' && Boolean(record.leadId));
 
       return matchesSearch && matchesView;
     });
-  }, [caseView, cases, searchQuery]);
+  }, [caseEventsByCaseId, caseTasksByCaseId, caseView, cases, searchQuery]);
 
   const toggleCaseView = (view: CaseView) => {
     setCaseView((prev) => (prev === view ? 'all' : view));
@@ -480,7 +552,7 @@ export default function Cases() {
           </div>
         </header>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-7">
           <button type="button" onClick={() => setCaseView('all')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'all' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
             <Card className={createStatCardClass()}>
               <CardContent className={`flex items-center justify-between p-5 ${caseView === 'all' ? 'bg-primary/5' : ''}`}>
@@ -514,6 +586,17 @@ export default function Cases() {
               </CardContent>
             </Card>
           </button>
+          <button type="button" onClick={() => toggleCaseView('approval')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'approval' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
+            <Card className={createStatCardClass()}>
+              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'approval' ? 'bg-primary/5' : ''}`}>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Akceptacje</p>
+                  <p className="mt-2 text-2xl font-bold text-sky-500">{stats.approval}</p>
+                </div>
+                <div className="rounded-2xl bg-sky-500/12 p-3 text-sky-500"><FileText className="h-6 w-6" /></div>
+              </CardContent>
+            </Card>
+          </button>
           <button type="button" onClick={() => toggleCaseView('ready')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'ready' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
             <Card className={createStatCardClass()}>
               <CardContent className={`flex items-center justify-between p-5 ${caseView === 'ready' ? 'bg-primary/5' : ''}`}>
@@ -522,6 +605,17 @@ export default function Cases() {
                   <p className="mt-2 text-2xl font-bold text-emerald-500">{stats.ready}</p>
                 </div>
                 <div className="rounded-2xl bg-emerald-500/12 p-3 text-emerald-500"><CheckCircle2 className="h-6 w-6" /></div>
+              </CardContent>
+            </Card>
+          </button>
+          <button type="button" onClick={() => toggleCaseView('needs_next_step')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'needs_next_step' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
+            <Card className={createStatCardClass()}>
+              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'needs_next_step' ? 'bg-primary/5' : ''}`}>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Bez kroku</p>
+                  <p className="mt-2 text-2xl font-bold text-orange-500">{stats.needsNextStep}</p>
+                </div>
+                <div className="rounded-2xl bg-orange-500/12 p-3 text-orange-500"><Target className="h-6 w-6" /></div>
               </CardContent>
             </Card>
           </button>
@@ -581,6 +675,7 @@ export default function Cases() {
               const updatedAt = toUpdatedDate(record.updatedAt);
               const sourceLead = record.leadId ? leadsById.get(String(record.leadId)) : null;
               const sourceSummary = buildCaseSourceSummary(sourceLead);
+              const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
 
               return (
                 <Card key={record.id} className="border-none app-surface-strong app-shadow transition-transform hover:-translate-y-0.5">
@@ -589,6 +684,7 @@ export default function Cases() {
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className="truncate text-xl font-bold app-text">{record.title || 'Sprawa bez tytułu'}</h3>
                         <Badge variant={caseBadgeVariant(record.status)}>{caseStatusLabel(record.status)}</Badge>
+                        <Badge variant={lifecycleBadgeVariant(lifecycle.bucket)}>{lifecycle.label}</Badge>
                         {attention ? <Badge variant="destructive">Wymaga uwagi</Badge> : null}
                         <Badge variant="outline">{record.leadId || record.createdFromLead ? 'Temat pozyskany' : 'Uruchomiona ręcznie'}</Badge>
                       </div>
@@ -608,6 +704,16 @@ export default function Cases() {
                           <span>{percent}%</span>
                         </div>
                         <Progress value={percent} className="h-2" />
+                        <div className="rounded-xl border border-slate-200 bg-white/70 p-3">
+                          <p className="text-sm font-semibold app-text">{lifecycle.headline}</p>
+                          <p className="mt-1 text-sm app-muted">Następny ruch: {lifecycle.nextOperatorAction}</p>
+                          <div className="mt-2 flex flex-wrap gap-2 text-xs app-muted">
+                            <span>{lifecycleRiskLabel(lifecycle.riskLevel)}</span>
+                            <span>Otwarte akcje: {lifecycle.openActionCount}</span>
+                            <span>Braki wymagane: {lifecycle.missingRequiredCount}</span>
+                            <span>Do akceptacji: {lifecycle.waitingApprovalCount}</span>
+                          </div>
+                        </div>
                         <p className="text-sm app-muted">
                           {record.status === 'blocked'
                             ? 'Sprawa ma realny blok na starcie i wymaga odblokowania.'
