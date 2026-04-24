@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock,
+  FileText,
   ExternalLink,
   Link2,
   Search,

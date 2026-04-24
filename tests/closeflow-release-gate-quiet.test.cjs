@@ -52,3 +52,9 @@ test('quiet release gate documentation exists', () => {
 });
 
 
+
+test('quiet release gate includes Cases FileText runtime guard', () => {
+  const source = read('scripts\closeflow-release-check-quiet.cjs');
+
+  assert.match(source, /cases-filetext-runtime\.test\.cjs/);
+});
