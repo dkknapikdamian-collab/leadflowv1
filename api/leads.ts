@@ -443,8 +443,20 @@ export default async function handler(req: any, res: any) {
         return;
       }
       const requestedId = asText(req.query?.id);
-      const base = withWorkspaceFilter(`leads?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}order=updated_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
-      const fallback = withWorkspaceFilter(`leads?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
+      const requestedClientId = asNullableUuid(req.query?.clientId);
+      const requestedLinkedCaseId = asNullableUuid(req.query?.linkedCaseId || req.query?.caseId);
+      const requestedVisibility = asText(req.query?.visibility);
+      const requestedStatus = asText(req.query?.status);
+      const leadFilters = [
+        requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : '',
+        requestedClientId ? `client_id=eq.${encodeURIComponent(requestedClientId)}&` : '',
+        requestedLinkedCaseId ? `linked_case_id=eq.${encodeURIComponent(requestedLinkedCaseId)}&` : '',
+        requestedVisibility ? `lead_visibility=eq.${encodeURIComponent(requestedVisibility)}&` : '',
+        requestedStatus ? `status=eq.${encodeURIComponent(normalizeStatus(requestedStatus))}&` : '',
+      ].filter(Boolean).join('');
+      const leadLimit = requestedId ? 1 : 300;
+      const base = withWorkspaceFilter(`leads?select=*&${leadFilters}order=updated_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
+      const fallback = withWorkspaceFilter(`leads?select=*&${leadFilters}order=created_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
       const result = await selectFirstAvailable([base, fallback]);
       const normalized = (result.data || []).map((row: Record<string, unknown>) => normalizeLead(row));
       if (requestedId) {
@@ -623,6 +635,7 @@ export default async function handler(req: any, res: any) {
     res.status(statusCode).json({ error: message });
   }
 }
+
 
 
 

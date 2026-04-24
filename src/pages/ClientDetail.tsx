@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Briefcase, CreditCard, Loader2, Save, Target, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
@@ -34,13 +34,13 @@ export default function ClientDetail() {
     try {
       const [clientRow, leadRows, caseRows, paymentRows] = await Promise.all([
         fetchClientByIdFromSupabase(clientId),
-        fetchLeadsFromSupabase(),
-        fetchCasesFromSupabase(),
+        fetchLeadsFromSupabase({ clientId }),
+        fetchCasesFromSupabase({ clientId }),
         fetchPaymentsFromSupabase({ clientId }),
       ]);
       setClient(clientRow);
-      setLeads((leadRows as any[]).filter((entry) => String(entry.clientId || '') === clientId));
-      setCases((caseRows as any[]).filter((entry) => String(entry.clientId || '') === clientId));
+      setLeads(leadRows as any[]);
+      setCases(caseRows as any[]);
       setPayments(paymentRows as any[]);
       setForm({
         name: String((clientRow as any)?.name || ''),
@@ -50,7 +50,7 @@ export default function ClientDetail() {
         notes: String((clientRow as any)?.notes || ''),
       });
     } catch (error: any) {
-      toast.error(`Błąd odczytu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d odczytu klienta: ${error?.message || 'REQUEST_FAILED'}`);
       setClient(null);
     } finally {
       setLoading(false);
@@ -72,7 +72,7 @@ export default function ClientDetail() {
 
   const handleSave = async () => {
     if (!clientId) return;
-    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
     try {
       setSaving(true);
       await updateClientInSupabase({
@@ -82,7 +82,7 @@ export default function ClientDetail() {
       toast.success('Klient zaktualizowany');
       await reload();
     } catch (error: any) {
-      toast.error(`Błąd zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSaving(false);
     }
@@ -100,7 +100,7 @@ export default function ClientDetail() {
     return (
       <Layout>
         <div className="p-6 space-y-4">
-          <Button variant="outline" onClick={() => navigate('/clients')}><ArrowLeft className="w-4 h-4 mr-2" /> Wróć</Button>
+          <Button variant="outline" onClick={() => navigate('/clients')}><ArrowLeft className="w-4 h-4 mr-2" /> WrĂłÄ‡</Button>
           <Card><CardContent className="p-6 text-slate-500">Nie znaleziono klienta.</CardContent></Card>
         </div>
       </Layout>
@@ -136,7 +136,7 @@ export default function ClientDetail() {
 
         <Card>
           <CardContent className="p-4 text-sm text-slate-600">
-            Klient jest wspólnym rekordem w tle. Główna codzienna praca dzieje się na aktywnych leadach i sprawach powiązanych z tym klientem.
+            Klient jest wspĂłlnym rekordem w tle. GĹ‚Ăłwna codzienna praca dzieje siÄ™ na aktywnych leadach i sprawach powiÄ…zanych z tym klientem.
           </CardContent>
         </Card>
 
@@ -144,7 +144,7 @@ export default function ClientDetail() {
           <Card>
             <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Target className="w-4 h-4" /> Leady klienta</CardTitle></CardHeader>
             <CardContent className="space-y-2">
-              {leads.length === 0 ? <p className="text-sm text-slate-500">Brak leadów.</p> : leads.map((lead) => (
+              {leads.length === 0 ? <p className="text-sm text-slate-500">Brak leadĂłw.</p> : leads.map((lead) => (
                 <Link key={lead.id} to={`/leads/${lead.id}`} className="block rounded-lg border border-slate-200 p-3 hover:bg-slate-50">
                   <p className="font-medium text-slate-900">{lead.name || 'Lead'}</p>
                   <div className="flex items-center justify-between text-sm text-slate-500">
@@ -163,7 +163,7 @@ export default function ClientDetail() {
                 <Link key={caseRecord.id} to={`/case/${caseRecord.id}`} className="block rounded-lg border border-slate-200 p-3 hover:bg-slate-50">
                   <p className="font-medium text-slate-900">{caseRecord.title || 'Sprawa'}</p>
                   <div className="flex items-center justify-between text-sm text-slate-500">
-                    <span>Kompletność: {Math.round(Number(caseRecord.completenessPercent || 0))}%</span>
+                    <span>KompletnoĹ›Ä‡: {Math.round(Number(caseRecord.completenessPercent || 0))}%</span>
                     <Badge variant="outline">{caseRecord.status || 'in_progress'}</Badge>
                   </div>
                 </Link>
@@ -175,7 +175,7 @@ export default function ClientDetail() {
         <Card>
           <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><CreditCard className="w-4 h-4" /> Rozliczenia klienta</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {payments.length === 0 ? <p className="text-sm text-slate-500">Brak rozliczeń.</p> : payments.map((payment) => (
+            {payments.length === 0 ? <p className="text-sm text-slate-500">Brak rozliczeĹ„.</p> : payments.map((payment) => (
               <div key={payment.id} className="rounded-lg border border-slate-200 p-3 flex items-center justify-between gap-3">
                 <div>
                   <p className="font-medium text-slate-900">{Number(payment.amount || 0).toLocaleString()} {payment.currency || 'PLN'}</p>
@@ -190,3 +190,5 @@ export default function ClientDetail() {
     </Layout>
   );
 }
+
+

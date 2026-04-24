@@ -1,54 +1,28 @@
-# CloseFlow Supabase contract next pack — 2026-04-24
+# CloseFlow — Lead ↔ Klient ↔ Sprawa path pack
 
-## Co zawiera paczka
+## Cel
 
-Ta paczka dopisuje do repo lokalne i repozytoryjne źródło prawdy dla Supabase/Auth/Workspace oraz pierwszy mały fix resolvera workspace.
+Domknąć praktyczną ścieżkę:
 
-Dodawane / nadpisywane pliki:
+- lead tworzony w aplikacji zawsze ma `client_id`,
+- klient pokazuje swoje leady i sprawy przez API filtrowane po `clientId`,
+- sprawa może być filtrowana po `clientId` i `leadId`,
+- ekran klienta nie musi już pobierać wszystkich leadów/spraw i filtrować ich dopiero w przeglądarce.
 
-```text
-docs/SUPABASE_SCHEMA_SOURCE_OF_TRUTH_2026-04-24.md
-docs/AI_HANDOFF_SUPABASE_CLOSEFLOW_2026-04-24.md
-src/lib/supabase-schema-contract.ts
-supabase/sql/README.md
-supabase/sql/2026-04-24_live_schema_auth_workspace_probe.sql
-supabase/sql/2026-04-24_workspace_context_repair_v11_auth_users_schema_safe_casts.sql
-api/_request-scope.js
-```
+## Pliki zmieniane
 
-## Kierunek
+- `api/leads.ts`
+- `api/cases.ts`
+- `src/lib/supabase-fallback.ts`
+- `src/pages/ClientDetail.tsx`
+- `docs/LEAD_CLIENT_CASE_PATH_2026-04-24.md`
+- `tests/lead-client-path-contract.test.cjs`
 
-Potwierdzony live schema:
+## Testy
 
-```text
-workspaces.owner_user_id -> auth.users.id
-profiles.user_id -> auth.users.id
-workspace_members.user_id -> auth.users.id
-```
-
-Nie używać już założenia `public.users` jako właściciela workspace.
-
-## Co zmienia patch
-
-- zapisuje kierunek Supabase/Auth/Workspace w dokumentacji,
-- zapisuje kontrakt schematu w kodzie,
-- dodaje aktywny SQL v11 pod realny schemat,
-- poprawia `api/_request-scope.js`, żeby najpierw szukał workspace po `profiles.user_id`, `workspace_members.user_id` i `workspaces.owner_user_id`, a dopiero potem po legacy polach.
-
-## Po wdrożeniu
-
-Uruchom:
+Po zastosowaniu paczki uruchom:
 
 ```powershell
 npm.cmd run build
-```
-
-Jeśli build lokalny jest ciężki, minimum test ręczny:
-
-1. login,
-2. odświeżenie aplikacji,
-3. dodanie leada,
-4. dodanie taska,
-5. dodanie wydarzenia,
-6. sprawdzenie Dziś / Leady / Kalendarz.
+node --test tests/lead-client-path-contract.test.cjs
 ```

@@ -1,4 +1,4 @@
-import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from './_supabase.js';
+﻿import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from './_supabase.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { buildLeadMovedToServicePayload } from './_lead-service.js';
 
@@ -37,7 +37,7 @@ function normalizeCase(row: Record<string, unknown>) {
   return {
     id: String(row.id || crypto.randomUUID()),
     workspaceId: asText(row.workspace_id || row.workspaceId),
-    title: asText(row.title || row.name) || 'Sprawa bez tytułu',
+    title: asText(row.title || row.name) || 'Sprawa bez tytuĹ‚u',
     clientName: asText(row.client_name || row.clientName),
     clientId: asText(row.client_id || row.clientId) || undefined,
     clientEmail: asText(row.client_email || row.clientEmail),
@@ -192,11 +192,21 @@ export default async function handler(req: any, res: any) {
       }
 
       const requestedId = asText(req.query?.id);
+      const requestedClientId = asNullableUuid(req.query?.clientId);
+      const requestedLeadId = asNullableUuid(req.query?.leadId);
+      const requestedStatus = asText(req.query?.status);
+      const caseFilters = [
+        requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : '',
+        requestedClientId ? `client_id=eq.${encodeURIComponent(requestedClientId)}&` : '',
+        requestedLeadId ? `lead_id=eq.${encodeURIComponent(requestedLeadId)}&` : '',
+        requestedStatus ? `status=eq.${encodeURIComponent(normalizeEnum(requestedStatus, CASE_STATUSES, 'in_progress'))}&` : '',
+      ].filter(Boolean).join('');
+      const caseLimit = requestedId ? 1 : 250;
       let rows: Record<string, unknown>[] = [];
       try {
         const result = await selectFirstAvailable([
-          withWorkspaceFilter(`cases?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}order=updated_at.desc.nullslast&limit=${requestedId ? 1 : 250}`, workspaceId),
-          withWorkspaceFilter(`cases?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 250}`, workspaceId),
+          withWorkspaceFilter(`cases?select=*&${caseFilters}order=updated_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
+          withWorkspaceFilter(`cases?select=*&${caseFilters}order=created_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
         ]);
         rows = result.data as Record<string, unknown>[];
       } catch (error) {
@@ -325,7 +335,7 @@ export default async function handler(req: any, res: any) {
         updated_at: nowIso,
       };
 
-      if (body.title !== undefined) payload.title = asText(body.title) || 'Sprawa bez tytułu';
+      if (body.title !== undefined) payload.title = asText(body.title) || 'Sprawa bez tytuĹ‚u';
       if (body.clientName !== undefined || ensuredClient) payload.client_name = asText(body.clientName || ensuredClient?.name || linkedLead?.name);
       if (body.clientEmail !== undefined || ensuredClient) payload.client_email = asText(body.clientEmail || ensuredClient?.email || linkedLead?.email);
       if (body.clientPhone !== undefined || ensuredClient) payload.client_phone = asText(body.clientPhone || ensuredClient?.phone || linkedLead?.phone);
@@ -405,3 +415,4 @@ export default async function handler(req: any, res: any) {
     res.status(message === 'CASE_NOT_FOUND' ? 404 : 500).json({ error: message });
   }
 }
+

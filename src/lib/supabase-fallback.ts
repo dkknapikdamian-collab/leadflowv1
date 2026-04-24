@@ -1,4 +1,4 @@
-import { getClientAuthSnapshot } from './client-auth';
+﻿import { getClientAuthSnapshot } from './client-auth';
 
 type SupabaseInsertResult = { [key: string]: unknown };
 type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextActionAt?: string; ownerId?: string; workspaceId?: string };
@@ -142,11 +142,25 @@ export async function updatePaymentInSupabase(input: PaymentUpsertInput & { id: 
 export async function deletePaymentFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/payments?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function insertTaskToSupabase(input: TaskInsertInput) { return callApi<SupabaseInsertResult>('/api/tasks', { method: 'POST', body: JSON.stringify(input) }); }
 export async function insertEventToSupabase(input: EventInsertInput) { return callApi<SupabaseInsertResult>('/api/events', { method: 'POST', body: JSON.stringify(input) }); }
-export async function fetchLeadsFromSupabase() { return callApi<Record<string, unknown>[]>('/api/leads'); }
+export async function fetchLeadsFromSupabase(params?: { clientId?: string; linkedCaseId?: string; caseId?: string; status?: string; visibility?: string }) {
+  const query = new URLSearchParams();
+  if (params?.clientId) query.set('clientId', params.clientId);
+  if (params?.linkedCaseId) query.set('linkedCaseId', params.linkedCaseId);
+  if (params?.caseId) query.set('caseId', params.caseId);
+  if (params?.status) query.set('status', params.status);
+  if (params?.visibility) query.set('visibility', params.visibility);
+  return callApi<Record<string, unknown>[]>(`/api/leads${query.toString() ? `?${query.toString()}` : ''}`);
+}
 export async function fetchLeadByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/leads?id=${encodeURIComponent(id)}`); }
 export async function fetchTasksFromSupabase() { return callApi<Record<string, unknown>[]>('/api/tasks'); }
 export async function fetchEventsFromSupabase() { return callApi<Record<string, unknown>[]>('/api/events'); }
-export async function fetchCasesFromSupabase() { return callApi<Record<string, unknown>[]>('/api/cases'); }
+export async function fetchCasesFromSupabase(params?: { clientId?: string; leadId?: string; status?: string }) {
+  const query = new URLSearchParams();
+  if (params?.clientId) query.set('clientId', params.clientId);
+  if (params?.leadId) query.set('leadId', params.leadId);
+  if (params?.status) query.set('status', params.status);
+  return callApi<Record<string, unknown>[]>(`/api/cases${query.toString() ? `?${query.toString()}` : ''}`);
+}
 export async function fetchCaseByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/cases?id=${encodeURIComponent(id)}`); }
 export async function createCaseInSupabase(input: CaseUpsertInput) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateCaseInSupabase(input: CaseUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'PATCH', body: JSON.stringify(input) }); }
@@ -192,3 +206,5 @@ export async function updateSupportRequestStatusInSupabase(input: { id: string; 
   return callApi<Record<string, unknown>>('/api/support-requests', { method: 'PATCH', body: JSON.stringify({ id: input.id, action: 'status', status: input.status, ownerId: input.ownerId, workspaceId: input.workspaceId }) });
 }
 export async function updateSupportRequestInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<Record<string, unknown>>('/api/support-requests', { method: 'PATCH', body: JSON.stringify(input) }); }
+
+
