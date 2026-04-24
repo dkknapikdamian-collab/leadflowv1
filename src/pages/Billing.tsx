@@ -96,7 +96,7 @@ export default function Billing() {
   }, [tab, workspace?.id]);
 
   const handleUpgrade = async () => {
-    if (!workspace) return;
+    if (!workspace?.id) return;
     setUpgrading(true);
     try {
       await updateWorkspaceSubscriptionInSupabase({

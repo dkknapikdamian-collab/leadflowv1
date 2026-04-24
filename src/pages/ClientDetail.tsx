@@ -16,7 +16,7 @@ import { fetchCaseByIdFromSupabase, fetchCasesFromSupabase, fetchClientByIdFromS
 export default function ClientDetail() {
   const { clientId } = useParams();
   const navigate = useNavigate();
-  const { workspace, hasAccess } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [client, setClient] = useState<any>(null);
@@ -26,7 +26,10 @@ export default function ClientDetail() {
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
 
   const reload = useCallback(async () => {
-    if (!workspace || !clientId) return;
+    if (!workspace?.id || !clientId) {
+      setLoading(workspaceLoading);
+      return;
+    }
     setLoading(true);
     try {
       const [clientRow, leadRows, caseRows, paymentRows] = await Promise.all([
@@ -52,11 +55,15 @@ export default function ClientDetail() {
     } finally {
       setLoading(false);
     }
-  }, [clientId, workspace]);
+  }, [clientId, workspace?.id, workspaceLoading]);
 
   useEffect(() => {
+    if (workspaceLoading || !workspace?.id) {
+      setLoading(workspaceLoading);
+      return;
+    }
     void reload();
-  }, [reload]);
+  }, [reload, workspace?.id, workspaceLoading]);
 
   const paymentTotal = useMemo(
     () => payments.reduce((sum, entry) => sum + (Number(entry.amount) || 0), 0),

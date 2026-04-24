@@ -18,6 +18,12 @@ type ApiCacheEntry = { expiresAt: number; data?: unknown; promise?: Promise<unkn
 const API_GET_CACHE_TTL_MS = 10_000;
 const apiGetCache = new Map<string, ApiCacheEntry>();
 const WORKSPACE_CONTEXT_STORAGE_KEY = 'closeflow:workspace-id';
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export function normalizeWorkspaceContextId(value?: string | null) {
+  const normalized = typeof value === 'string' ? value.trim() : '';
+  return UUID_REGEX.test(normalized) ? normalized : '';
+}
 
 function getSupabaseConfig() {
   const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();
@@ -36,15 +42,21 @@ function getAuthContext() {
 function canUseStorage() { return typeof window !== 'undefined' && !!window.localStorage; }
 export function getStoredWorkspaceId() {
   if (!canUseStorage()) return '';
-  return window.localStorage.getItem(WORKSPACE_CONTEXT_STORAGE_KEY) || '';
+  const storedValue = window.localStorage.getItem(WORKSPACE_CONTEXT_STORAGE_KEY) || '';
+  const normalized = normalizeWorkspaceContextId(storedValue);
+  if (!normalized && storedValue) {
+    window.localStorage.removeItem(WORKSPACE_CONTEXT_STORAGE_KEY);
+  }
+  return normalized;
 }
 export function hasStoredWorkspaceContext() {
   return Boolean(getStoredWorkspaceId());
 }
 export function persistWorkspaceId(workspaceId?: string | null) {
   if (!canUseStorage()) return;
-  if (workspaceId && workspaceId.trim()) {
-    window.localStorage.setItem(WORKSPACE_CONTEXT_STORAGE_KEY, workspaceId.trim());
+  const normalized = normalizeWorkspaceContextId(workspaceId);
+  if (normalized) {
+    window.localStorage.setItem(WORKSPACE_CONTEXT_STORAGE_KEY, normalized);
     return;
   }
   window.localStorage.removeItem(WORKSPACE_CONTEXT_STORAGE_KEY);

@@ -23,7 +23,7 @@ type ClientRecord = {
 };
 
 export default function Clients() {
-  const { workspace, hasAccess } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState<ClientRecord[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
@@ -35,7 +35,10 @@ export default function Clients() {
   const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '' });
 
   const reload = useCallback(async () => {
-    if (!workspace) return;
+    if (!workspace?.id) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const [clientRows, leadRows, caseRows, paymentRows] = await Promise.all([
@@ -53,11 +56,15 @@ export default function Clients() {
     } finally {
       setLoading(false);
     }
-  }, [workspace]);
+  }, [workspace?.id]);
 
   useEffect(() => {
+    if (workspaceLoading || !workspace?.id) {
+      setLoading(workspaceLoading);
+      return;
+    }
     void reload();
-  }, [reload]);
+  }, [reload, workspace?.id, workspaceLoading]);
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -104,11 +111,15 @@ export default function Clients() {
       toast.error('Podaj nazwę klienta.');
       return;
     }
+    if (!workspace?.id) {
+      toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+      return;
+    }
     try {
       setCreatePending(true);
       await createClientInSupabase({
         ...newClient,
-        workspaceId: workspace?.id,
+        workspaceId: workspace.id,
       });
       toast.success('Klient dodany');
       setIsCreateOpen(false);

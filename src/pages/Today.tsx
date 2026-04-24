@@ -346,7 +346,10 @@ export default function Today() {
   };
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
+    if (!auth.currentUser || wsLoading || !workspace?.id) {
+      setLoading(wsLoading);
+      return;
+    }
 
     let cancelled = false;
 
@@ -379,7 +382,7 @@ export default function Today() {
     return () => {
       cancelled = true;
     };
-  }, [workspace]);
+  }, [workspace?.id, wsLoading]);
 
   const resetNewTask = () => {
     setNewTask({

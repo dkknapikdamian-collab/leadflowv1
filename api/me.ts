@@ -874,8 +874,9 @@ export default async function handler(req: any, res: any) {
 
     res.status(200).json({ workspace, profile, access });
   } catch (error: any) {
+    const validHeaderWorkspaceId = headerWorkspaceId && isUuid(headerWorkspaceId) ? headerWorkspaceId : null;
     const fallbackWorkspace = {
-      id: headerWorkspaceId || '',
+      id: validHeaderWorkspaceId || '',
       ownerId: null,
       planId: DEFAULT_PLAN_ID,
       subscriptionStatus: DEFAULT_STATUS,
@@ -909,7 +910,7 @@ export default async function handler(req: any, res: any) {
       profile: fallbackProfile,
       access: {
         ...fallbackAccess,
-        hasAccess: headerWorkspaceId ? true : fallbackAccess.hasAccess,
+        hasAccess: validHeaderWorkspaceId ? true : fallbackAccess.hasAccess,
       },
       degraded: true,
       degradedReason: error?.message || 'ME_READ_FAILED',

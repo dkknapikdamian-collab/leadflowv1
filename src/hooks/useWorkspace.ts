@@ -5,15 +5,17 @@ import {
   fetchMeFromSupabase,
   getStoredWorkspaceId,
   isSupabaseConfigured,
+  normalizeWorkspaceContextId,
   persistWorkspaceId,
 } from '../lib/supabase-fallback';
 import { useClientAuthSnapshot } from './useClientAuthSnapshot';
 
 function buildLocalWorkspace(storedWorkspaceId: string, email: string) {
-  if (!storedWorkspaceId) return null;
+  const workspaceId = normalizeWorkspaceContextId(storedWorkspaceId);
+  if (!workspaceId) return null;
 
   return {
-    id: storedWorkspaceId,
+    id: workspaceId,
     ownerId: null,
     planId: 'trial_14d',
     subscriptionStatus: 'trial_active',
@@ -29,6 +31,12 @@ function buildLocalWorkspace(storedWorkspaceId: string, email: string) {
     dailyDigestTimezone: 'Europe/Warsaw',
     dailyDigestRecipientEmail: email,
   };
+}
+
+function normalizeWorkspaceRecord(workspace: any) {
+  const workspaceId = normalizeWorkspaceContextId(workspace?.id);
+  if (!workspaceId) return null;
+  return { ...workspace, id: workspaceId };
 }
 
 function buildLocalProfile(activeUserId: string, fullName: string, email: string) {
@@ -89,8 +97,9 @@ export function useWorkspace() {
           fullName: snapshotFullName || undefined,
         });
         if (cancelled) return;
-        persistWorkspaceId(me.workspace?.id || null);
-        setWorkspace(me.workspace);
+        const normalizedWorkspace = normalizeWorkspaceRecord(me.workspace);
+        persistWorkspaceId(normalizedWorkspace?.id || null);
+        setWorkspace(normalizedWorkspace);
         setProfile(me.profile);
         setAccessOverride(me.access);
       } catch {

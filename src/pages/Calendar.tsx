@@ -236,7 +236,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
 }
 
 export default function Calendar() {
-  const { workspace, hasAccess } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [calendarView, setCalendarView] = useState<CalendarView>('week');
@@ -324,7 +324,10 @@ export default function Calendar() {
   }
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
+    if (!auth.currentUser || workspaceLoading || !workspace?.id) {
+      setLoading(workspaceLoading);
+      return;
+    }
 
     let cancelled = false;
 
@@ -358,7 +361,7 @@ export default function Calendar() {
     return () => {
       cancelled = true;
     };
-  }, [workspace]);
+  }, [workspace?.id, workspaceLoading]);
 
   const resetNewEvent = () => {
     const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));

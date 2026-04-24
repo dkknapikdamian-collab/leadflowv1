@@ -106,7 +106,7 @@ function buildNextActionMeta(action: LeadNextAction | null | undefined) {
 }
 
 export default function Leads() {
-  const { workspace, hasAccess } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
@@ -131,7 +131,10 @@ export default function Leads() {
   const [leadSubmitting, setLeadSubmitting] = useState(false);
 
   const loadLeads = useCallback(async () => {
-    if (!workspace) return;
+    if (!workspace?.id) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setLoadError(null);
     try {
@@ -152,12 +155,15 @@ export default function Leads() {
     } finally {
       setLoading(false);
     }
-  }, [workspace]);
+  }, [workspace?.id]);
 
   useEffect(() => {
-    if (!workspace || !isSupabaseConfigured()) return;
+    if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) {
+      setLoading(workspaceLoading);
+      return;
+    }
     void loadLeads();
-  }, [loadLeads, workspace]);
+  }, [loadLeads, workspace?.id, workspaceLoading]);
 
   const casesByLeadId = useMemo(() => {
     const map = new Map<string, CaseRecord>();
@@ -197,6 +203,7 @@ export default function Leads() {
     e.preventDefault();
     if (createLeadSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!workspace?.id) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     if (!newLead.name.trim()) return toast.error('Wpisz nazwę leada');
     createLeadSubmitLockRef.current = true;
     setLeadSubmitting(true);
@@ -206,7 +213,7 @@ export default function Leads() {
         ...newLead,
         dealValue: Number(newLead.dealValue) || 0,
         ownerId: workspace?.ownerId,
-        workspaceId: workspace?.id,
+        workspaceId: workspace.id,
       });
       await loadLeads();
       toast.success('Lead dodany');

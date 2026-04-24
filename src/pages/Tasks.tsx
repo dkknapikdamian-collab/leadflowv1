@@ -113,7 +113,7 @@ function groupTasksByDate(items: any[]) {
 }
 
 export default function Tasks() {
-  const { workspace, hasAccess } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [tasks, setTasks] = useState<any[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
@@ -194,7 +194,10 @@ export default function Tasks() {
   }
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
+    if (!auth.currentUser || workspaceLoading || !workspace?.id) {
+      setLoading(workspaceLoading);
+      return;
+    }
 
     let cancelled = false;
 
@@ -229,7 +232,7 @@ export default function Tasks() {
     return () => {
       cancelled = true;
     };
-  }, [workspace]);
+  }, [workspace?.id, workspaceLoading]);
 
   const resetNewTask = () => {
     setNewTask({
