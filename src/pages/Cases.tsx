@@ -173,7 +173,7 @@ function buildCaseSourceSummary(sourceLead: any) {
 }
 
 export default function Cases() {
-  const { workspace, hasAccess } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [leadCandidates, setLeadCandidates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -205,7 +205,7 @@ export default function Cases() {
     let isMounted = true;
     setLoading(true);
 
-    if (!isSupabaseConfigured()) {
+    if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) {
       setCases([]);
       setLeadCandidates([]);
       setLoading(false);
@@ -235,7 +235,7 @@ export default function Cases() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [workspace?.id, workspaceLoading]);
 
   const stats = useMemo(
     () => ({

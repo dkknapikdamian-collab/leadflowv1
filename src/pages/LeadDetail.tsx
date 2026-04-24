@@ -845,7 +845,6 @@ export default function LeadDetail() {
         movedToServiceAt: new Date().toISOString(),
         leadVisibility: 'archived',
         salesOutcome: 'moved_to_service',
-        nextStep: '',
         nextActionAt: null,
       });
       toast.success('Sprawa podpięta do leada');
@@ -1020,22 +1019,24 @@ export default function LeadDetail() {
                   </div>
                 </CardContent>
               </Card>
-              <Card className="border-none shadow-sm">
-                <CardContent className="p-4 flex items-center gap-4">
-                  <div className="bg-amber-50 p-3 rounded-2xl">
-                    <Calendar className="w-6 h-6 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Najbliższa akcja</p>
-                    <p className={`text-lg font-bold ${nextActionOverdue ? 'text-rose-600' : 'text-slate-900'}`}>
-                      {nextActionDate ? format(nextActionDate, 'd MMM HH:mm', { locale: pl }) : 'Brak zaplanowanych działań'}
-                    </p>
-                    {nextAction ? (
-                      <p className="text-sm text-slate-500">{nextAction.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}: {nextAction.title}</p>
-                    ) : null}
-                  </div>
-                </CardContent>
-              </Card>
+              {!leadMovedToService ? (
+                <Card className="border-none shadow-sm">
+                  <CardContent className="p-4 flex items-center gap-4">
+                    <div className="bg-amber-50 p-3 rounded-2xl">
+                      <Calendar className="w-6 h-6 text-amber-600" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Najbliższa akcja</p>
+                      <p className={`text-lg font-bold ${nextActionOverdue ? 'text-rose-600' : 'text-slate-900'}`}>
+                        {nextActionDate ? format(nextActionDate, 'd MMM HH:mm', { locale: pl }) : 'Brak zaplanowanych działań'}
+                      </p>
+                      {nextAction ? (
+                        <p className="text-sm text-slate-500">{nextAction.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}: {nextAction.title}</p>
+                      ) : null}
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : null}
             </div>
 
             {showServiceBanner ? (

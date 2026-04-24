@@ -10,6 +10,7 @@ import {
   isSupabaseConfigured,
 } from '../lib/supabase-fallback';
 import { toast } from 'sonner';
+import { useWorkspace } from '../hooks/useWorkspace';
 
 function formatActivityTime(value: any) {
   if (!value) return 'Brak daty';
@@ -123,6 +124,7 @@ function getCaseContextLabel(activity: any, caseLookup: Map<string, string>) {
 }
 
 export default function Activity() {
+  const { workspace, loading: workspaceLoading } = useWorkspace();
   const [activities, setActivities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [leadLookup, setLeadLookup] = useState<Map<string, string>>(new Map());
@@ -132,7 +134,7 @@ export default function Activity() {
     let cancelled = false;
     setLoading(true);
 
-    if (!isSupabaseConfigured()) {
+    if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) {
       setActivities([]);
       setLeadLookup(new Map());
       setCaseLookup(new Map());
@@ -166,7 +168,7 @@ export default function Activity() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [workspace?.id, workspaceLoading]);
 
   return (
     <Layout>

@@ -1,7 +1,7 @@
 import { getClientAuthSnapshot } from './client-auth';
 
 type SupabaseInsertResult = { [key: string]: unknown };
-type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextStep?: string; nextActionAt?: string; ownerId?: string; workspaceId?: string };
+type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextActionAt?: string; ownerId?: string; workspaceId?: string };
 type ClientUpsertInput = { id?: string; name?: string; company?: string; email?: string; phone?: string; notes?: string; tags?: string[]; sourcePrimary?: string; lastActivityAt?: string | null; archivedAt?: string | null; workspaceId?: string };
 type ServiceProfileUpsertInput = { id?: string; name?: string; description?: string; startRule?: string; winRule?: string; billingModel?: string; caseCreationMode?: string; isDefault?: boolean; isArchived?: boolean; workspaceId?: string };
 type PaymentUpsertInput = { id?: string; clientId?: string | null; leadId?: string | null; caseId?: string | null; type?: string; status?: string; amount?: number; currency?: string; paidAt?: string | null; dueAt?: string | null; note?: string; workspaceId?: string };
@@ -38,6 +38,9 @@ export function getStoredWorkspaceId() {
   if (!canUseStorage()) return '';
   return window.localStorage.getItem(WORKSPACE_CONTEXT_STORAGE_KEY) || '';
 }
+export function hasStoredWorkspaceContext() {
+  return Boolean(getStoredWorkspaceId());
+}
 export function persistWorkspaceId(workspaceId?: string | null) {
   if (!canUseStorage()) return;
   if (workspaceId && workspaceId.trim()) {
@@ -64,6 +67,12 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   const method = (init?.method || 'GET').toUpperCase();
   const useCache = method === 'GET';
   const cacheKey = `${method}:${getCacheScope()}:${path}`;
+  const workspaceId = getStoredWorkspaceId();
+  const requiresWorkspaceContext = path.startsWith('/api/') && !path.startsWith('/api/me');
+
+  if (requiresWorkspaceContext && !workspaceId) {
+    throw new Error('WORKSPACE_CONTEXT_REQUIRED');
+  }
 
   if (useCache) {
     const cached = apiGetCache.get(cacheKey);

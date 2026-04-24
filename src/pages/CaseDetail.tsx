@@ -631,7 +631,6 @@ const caseClientSuggestions = useMemo(() => {
         movedToServiceAt: nowIso,
         leadVisibility: 'archived',
         salesOutcome: 'moved_to_service',
-        nextStep: '',
         nextActionAt: null,
       });
 

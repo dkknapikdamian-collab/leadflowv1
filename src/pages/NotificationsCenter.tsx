@@ -7,7 +7,8 @@ import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
+import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
+import { useWorkspace } from '../hooks/useWorkspace';
 import {
   buildTodayNotificationItems,
   clearNotificationLog,
@@ -19,14 +20,20 @@ import {
 } from '../lib/notifications';
 import { toast } from 'sonner';
 
-export default function NotificationsCenter() {
+export default function NotificationsCenter() {
+  const { workspace, loading: workspaceLoading } = useWorkspace();
   const [loading, setLoading] = useState(true);
   const [bundle, setBundle] = useState<CalendarBundle>({ tasks: [], events: [], leads: [] });
   const [logTick, setLogTick] = useState(0);
   const [browserEnabled, setBrowserEnabledState] = useState(getBrowserNotificationsEnabled());
   const [permission, setPermission] = useState(getBrowserNotificationPermission());
 
-  useEffect(() => {
+  useEffect(() => {
+    if (workspaceLoading || !workspace?.id) {
+      setBundle({ tasks: [], events: [], leads: [], cases: [] });
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
 
     const load = async () => {
@@ -59,7 +66,7 @@ export default function NotificationsCenter() {
       cancelled = true;
       window.clearInterval(interval);
     };
-  }, []);
+  }, [workspace?.id, workspaceLoading]);
 
   const todayItems = useMemo(() => buildTodayNotificationItems(bundle, new Date()), [bundle]);
   const notificationLog = useMemo(() => getNotificationLog(), [logTick]);

@@ -1,5 +1,5 @@
 import { isValid, parseISO } from 'date-fns';
-import { fetchCasesFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, isSupabaseConfigured } from './supabase-fallback';
+import { fetchCasesFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, hasStoredWorkspaceContext, isSupabaseConfigured } from './supabase-fallback';
 
 export type CalendarTaskItem = {
   id: string;
@@ -190,7 +190,7 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
 }
 
 export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle> {
-  if (!isSupabaseConfigured()) return { tasks: [], events: [], leads: [], cases: [] };
+  if (!isSupabaseConfigured() || !hasStoredWorkspaceContext()) return { tasks: [], events: [], leads: [], cases: [] };
 
   const [taskItems, eventItems, caseItems] = await Promise.all([
     fetchTasksFromSupabase(),

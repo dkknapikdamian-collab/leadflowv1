@@ -57,7 +57,6 @@ import {
   toDateTimeLocalValue,
   type ScheduleEntry,
 } from '../lib/scheduling';
-import { isActiveSalesLead } from '../lib/lead-health';
 import {
   EVENT_TYPES,
   PRIORITY_OPTIONS,
@@ -78,7 +77,6 @@ import {
   insertEventToSupabase,
   insertTaskToSupabase,
   updateEventInSupabase,
-  updateLeadInSupabase,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
@@ -139,16 +137,16 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
   }
 
   return {
-    title: entry.raw?.nextStep || entry.title,
-    type: 'lead_follow_up',
-    startAt: entry.raw?.nextActionAt?.includes?.('T') ? entry.raw.nextActionAt : entry.startsAt,
+    title: entry.title,
+    type: 'follow_up',
+    startAt: entry.startsAt,
     endAt: '',
-    leadId: entry.raw?.id || entry.sourceId,
-    caseId: '',
-    relationQuery: entry.raw?.name || entry.title,
-    priority: 'medium',
-    recurrence: createDefaultRecurrence(),
-    reminder: createDefaultReminder(),
+    leadId: entry.raw?.leadId || '',
+    caseId: entry.raw?.caseId || '',
+    relationQuery: entry.raw?.leadName || '',
+    priority: entry.raw?.priority || 'medium',
+    recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
+    reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
   };
 }
 
@@ -471,20 +469,6 @@ export default function Calendar() {
     }
   };
 
-  const handleSoftNextStepAfterEntryCompletion = async ({
-    leadId,
-    leadName,
-    fallbackTitle,
-  }: {
-    leadId?: string | null;
-    leadName?: string;
-    fallbackTitle?: string;
-  }) => {
-    void leadId;
-    void leadName;
-    void fallbackTitle;
-  };
-
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
     if (createTaskSubmitLockRef.current) return;
@@ -680,17 +664,6 @@ export default function Calendar() {
           leadId: taskPayload.leadId ?? null,
           caseId: entry.raw?.caseId ?? null,
         });
-      } else {
-        const currentLeadAt = typeof entry.raw?.nextActionAt === 'string' && entry.raw.nextActionAt
-          ? entry.raw.nextActionAt
-          : entry.startsAt;
-        const nextStart = addDays(parseISO(currentLeadAt.includes('T') ? currentLeadAt : `${currentLeadAt}T09:00`), days);
-
-        await updateLeadInSupabase({
-          id: entry.sourceId,
-          nextStep: entry.raw?.nextStep || entry.title,
-          nextActionAt: toDateTimeLocalValue(nextStart),
-        });
       }
 
       await refreshSupabaseBundle();
@@ -711,12 +684,7 @@ export default function Calendar() {
     try {
       setActionPendingId(`${entry.id}:done`);
 
-      let softLeadId: string | null = null;
-      let softLeadName = entry.leadName || '';
-      let softFallbackTitle = entry.title;
-
       if (entry.kind === 'event') {
-        softLeadId = entry.raw?.leadId ?? null;
         await updateEventInSupabase({
           id: entry.sourceId,
           title: entry.raw?.title || entry.title,
@@ -728,7 +696,6 @@ export default function Calendar() {
           caseId: entry.raw?.caseId ?? null,
         });
       } else if (entry.kind === 'task') {
-        softLeadId = entry.raw?.leadId ?? null;
         await updateTaskInSupabase({
           id: entry.sourceId,
           title: entry.raw?.title || entry.title,
@@ -739,23 +706,9 @@ export default function Calendar() {
           leadId: entry.raw?.leadId ?? null,
           caseId: entry.raw?.caseId ?? null,
         });
-      } else {
-        await updateLeadInSupabase({
-          id: entry.sourceId,
-          nextStep: '',
-          nextActionAt: null,
-        });
       }
 
       await refreshSupabaseBundle();
-
-      if (softLeadId) {
-        await handleSoftNextStepAfterEntryCompletion({
-          leadId: softLeadId,
-          leadName: softLeadName,
-          fallbackTitle: softFallbackTitle,
-        });
-      }
 
       toast.success('Wpis oznaczony jako zrobiony');
     } catch (error: any) {
@@ -779,12 +732,6 @@ export default function Calendar() {
         await deleteEventFromSupabase(entry.sourceId);
       } else if (entry.kind === 'task') {
         await deleteTaskFromSupabase(entry.sourceId);
-      } else {
-        await updateLeadInSupabase({
-          id: entry.sourceId,
-          nextStep: '',
-          nextActionAt: null,
-        });
       }
 
       await refreshSupabaseBundle();
@@ -862,12 +809,6 @@ export default function Calendar() {
           title: payload.title,
           scheduledAt: payload.dueAt,
           reminderAt,
-        });
-      } else {
-        await updateLeadInSupabase({
-          id: editEntry.sourceId,
-          nextStep: editDraft.title,
-          nextActionAt: editDraft.startAt,
         });
       }
 
@@ -1309,7 +1250,7 @@ export default function Calendar() {
           {editEntry && editDraft ? (
             <form onSubmit={handleSaveEdit} className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label>{editEntry.kind === 'lead' ? 'Next step' : 'Tytuł'}</Label>
+                <Label>Tytuł</Label>
                 <Input value={editDraft.title} onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })} required />
               </div>
 
@@ -1326,7 +1267,7 @@ export default function Calendar() {
 
               <div className={`grid gap-4 ${editEntry.kind === 'event' ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
                 <div className="space-y-2">
-                  <Label>{editEntry.kind === 'lead' ? 'Termin ruchu' : 'Start'}</Label>
+                  <Label>Start</Label>
                   <Input
                     type="datetime-local"
                     value={editDraft.startAt}

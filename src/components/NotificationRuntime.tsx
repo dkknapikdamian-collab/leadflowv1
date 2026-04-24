@@ -17,10 +17,12 @@ type NotificationRuntimeProps = {
 
 export default function NotificationRuntime({ enabled }: NotificationRuntimeProps) {
   const scanPendingRef = useRef(false);
-  const { profile } = useWorkspace();
+  const { profile, workspace, loading } = useWorkspace();
 
   useEffect(() => {
     if (!enabled) return;
+    if (loading) return;
+    if (!workspace?.id) return;
 
     let cancelled = false;
 
@@ -86,7 +88,7 @@ export default function NotificationRuntime({ enabled }: NotificationRuntimeProp
       window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleFocus);
     };
-  }, [enabled, profile?.browserNotificationsEnabled]);
+  }, [enabled, loading, profile?.browserNotificationsEnabled, workspace?.id]);
 
   return null;
 }

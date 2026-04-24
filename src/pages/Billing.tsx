@@ -66,6 +66,7 @@ export default function Billing() {
 
   useEffect(() => {
     if (tab !== 'settlements') return;
+    if (!workspace?.id) return;
     let cancelled = false;
     setSettlementLoading(true);
     Promise.all([
@@ -92,7 +93,7 @@ export default function Billing() {
     return () => {
       cancelled = true;
     };
-  }, [tab]);
+  }, [tab, workspace?.id]);
 
   const handleUpgrade = async () => {
     if (!workspace) return;

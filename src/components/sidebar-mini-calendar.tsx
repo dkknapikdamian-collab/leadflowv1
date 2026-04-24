@@ -21,6 +21,7 @@ import { onSnapshot, collection, orderBy, query, where } from 'firebase/firestor
 import { auth, db } from '../firebase';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { isSupabaseConfigured } from '../lib/supabase-fallback';
+import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from './ui/button';
 
 type DatedItem = {
@@ -37,12 +38,19 @@ function getDayTone(hasEvent: boolean, hasTask: boolean, today: boolean) {
 
 export function SidebarMiniCalendar() {
   const navigate = useNavigate();
+  const { workspace, loading } = useWorkspace();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [taskDates, setTaskDates] = useState<DatedItem[]>([]);
   const [eventDates, setEventDates] = useState<DatedItem[]>([]);
 
   useEffect(() => {
+    if (loading) return;
     if (isSupabaseConfigured()) {
+      if (!workspace?.id) {
+        setTaskDates([]);
+        setEventDates([]);
+        return;
+      }
       void fetchCalendarBundleFromSupabase()
         .then((bundle) => {
           setTaskDates(bundle.tasks.map((item) => ({ date: item.date })));
@@ -79,7 +87,7 @@ export function SidebarMiniCalendar() {
     return () => {
       unsubscribers.forEach((unsubscribe) => unsubscribe());
     };
-  }, []);
+  }, [loading, workspace?.id]);
 
   const monthDays = useMemo(() => {
     const monthStart = startOfMonth(currentMonth);

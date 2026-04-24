@@ -141,7 +141,6 @@ function normalizeLead(row: Record<string, unknown>) {
     phone: asText(row.phone),
     source: normalizeSource(row.source || row.source_label || row.source_type || 'other'),
     status: normalizedStatus,
-    nextStep: asText(row.next_action_title || row.next_step || row.nextStep),
     nextActionAt: asText(row.next_action_at || row.next_step_due_at || row.nextActionAt),
     nextActionItemId: asText(row.next_action_item_id || row.nextActionItemId),
     dealValue: Number(row.deal_value || row.value || row.dealValue || 0),
@@ -491,7 +490,6 @@ export default async function handler(req: any, res: any) {
       if (body.dealValue !== undefined) payload.value = Number(body.dealValue) || 0;
       if (body.partialPayments !== undefined) payload.partial_payments = normalizePartialPayments(body.partialPayments);
       if (nextStatus !== undefined) payload.status = nextStatus;
-      if (body.nextStep !== undefined) payload.next_action_title = body.nextStep || '';
       if (body.nextActionAt !== undefined) payload.next_action_at = toIsoDateTime(body.nextActionAt);
       if (body.isAtRisk !== undefined) {
         payload.is_at_risk = Boolean(body.isAtRisk);
@@ -592,7 +590,7 @@ export default async function handler(req: any, res: any) {
       status,
       priority: body.isAtRisk ? 'high' : 'medium',
       is_at_risk: Boolean(body.isAtRisk),
-      next_action_title: status === 'moved_to_service' ? '' : asText(body.nextStep),
+      next_action_title: null,
       next_action_at: status === 'moved_to_service' ? null : toIsoDateTime(body.nextActionAt),
       next_action_item_id: null,
       billing_status: billingStatus,

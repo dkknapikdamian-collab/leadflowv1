@@ -76,7 +76,7 @@ export function getLeadLastTouchDate(lead: any) {
 }
 
 export function hasNextStep(lead: any) {
-  return Boolean(getLeadNextActionDate(lead)) || Boolean(String(lead?.nextStep || '').trim())
+  return Boolean(getLeadNextActionDate(lead))
 }
 
 export function isNextStepOverdue(lead: any) {
