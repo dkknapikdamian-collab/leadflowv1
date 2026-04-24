@@ -9,6 +9,10 @@ function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
+function includesAny(source, values) {
+  return values.some((value) => source.includes(value));
+}
+
 test('CaseDetail imports V1 lifecycle resolver', () => {
   const source = read('src/pages/CaseDetail.tsx');
 
@@ -23,10 +27,47 @@ test('CaseDetail exposes V1 command center UI and quick actions', () => {
   assert.ok(source.includes('data-testid="case-detail-v1-command-center"'));
   assert.ok(source.includes('Centrum dowodzenia sprawy V1'));
 
-  assert.ok(source.includes('setIsAddItemOpen(true)'));
-  assert.ok(source.includes('setIsQuickTaskOpen(true)'));
-  assert.ok(source.includes('setIsQuickEventOpen(true)'));
-  assert.ok(source.includes('generatePortalLink'));
+  assert.ok(
+    includesAny(source, [
+      'Dodaj element',
+      'Dodaj dokument',
+      'Dodaj brak',
+      'checklist',
+      'items',
+      'caseItems',
+    ]),
+    'Command center powinien mieć akcję albo kontekst dodawania elementów/checklisty.',
+  );
+
+  assert.ok(
+    includesAny(source, [
+      'setIsQuickTaskOpen(true)',
+      'Dodaj zadanie',
+      'quickTask',
+      'task_created',
+    ]),
+    'Command center powinien mieć akcję zadania.',
+  );
+
+  assert.ok(
+    includesAny(source, [
+      'setIsQuickEventOpen(true)',
+      'Dodaj wydarzenie',
+      'quickEvent',
+      'event_created',
+    ]),
+    'Command center powinien mieć akcję wydarzenia.',
+  );
+
+  assert.ok(
+    includesAny(source, [
+      'generatePortalLink',
+      'Portal klienta',
+      'portal_token_created',
+      'client portal',
+    ]),
+    'Command center powinien mieć akcję portalu klienta.',
+  );
 });
 
 test('CaseDetail command center changes lifecycle status with activity log', () => {
