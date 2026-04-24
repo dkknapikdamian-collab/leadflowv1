@@ -83,6 +83,8 @@ import {
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
+import { getTodayEntryPriorityReasons } from '../lib/today-v1-final';
+
 const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
