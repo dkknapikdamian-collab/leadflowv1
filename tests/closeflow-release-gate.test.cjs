@@ -55,6 +55,7 @@ test('release gate includes its own self-test', () => {
   const source = read('scripts/closeflow-release-check.cjs');
 
   assert.match(source, /tests\/closeflow-release-gate\.test\.cjs/);
+  assert.match(source, /tests\/closeflow-release-gate-quiet\.test\.cjs/);
 });
 
 test('release gate documentation exists', () => {

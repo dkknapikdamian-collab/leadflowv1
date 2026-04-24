@@ -19,38 +19,31 @@ const requiredTests = [
   'tests/today-calendar-activity-logging.test.cjs',
 ];
 
-function run(label, command, args) {
-  console.log('');
-  console.log('==> ' + label);
-
+function runQuiet(label, command, args) {
   const result = spawnSync(command, args, {
     cwd: repoRoot,
-    stdio: 'inherit',
+    encoding: 'utf8',
     shell: false,
   });
-
-  if (result.error) {
-    console.error('');
-    console.error('FAILED: ' + label);
-    console.error(result.error);
-    process.exit(1);
-  }
 
   if (result.status !== 0) {
     console.error('');
     console.error('FAILED: ' + label);
+    if (result.stdout) console.error(result.stdout);
+    if (result.stderr) console.error(result.stderr);
     process.exit(result.status || 1);
   }
+
+  console.log('✓ ' + label);
 }
 
 function runNpmScript(label, scriptName) {
   if (process.platform === 'win32') {
-    const cmd = process.env.ComSpec || 'cmd.exe';
-    run(label, cmd, ['/d', '/s', '/c', 'npm.cmd', 'run', scriptName]);
+    runQuiet(label, 'cmd.exe', ['/d', '/s', '/c', 'npm.cmd', 'run', scriptName]);
     return;
   }
 
-  run(label, 'npm', ['run', scriptName]);
+  runQuiet(label, 'npm', ['run', scriptName]);
 }
 
 for (const relativePath of requiredTests) {
@@ -64,8 +57,8 @@ for (const relativePath of requiredTests) {
 runNpmScript('production build', 'build');
 
 for (const relativePath of requiredTests) {
-  run(relativePath, process.execPath, ['--test', relativePath]);
+  runQuiet(relativePath, process.execPath, ['--test', relativePath]);
 }
 
 console.log('');
-console.log('CloseFlow release gate passed.');
+console.log('CloseFlow quiet release gate passed.');
