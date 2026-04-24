@@ -1,4 +1,4 @@
-import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
+﻿import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
 import { buildLeadMovedToServicePayload } from './_lead-service.js';
 
@@ -120,6 +120,10 @@ function normalizeStatus(value: unknown) {
 function normalizeEnum(value: unknown, allowed: Set<string>, fallback: string) {
   const normalized = asText(value);
   return allowed.has(normalized) ? normalized : fallback;
+}
+
+function normalizeNextActionTitle(value: unknown) {
+  return asText(value);
 }
 
 function normalizeLead(row: Record<string, unknown>) {
@@ -491,6 +495,7 @@ export default async function handler(req: any, res: any) {
       if (body.partialPayments !== undefined) payload.partial_payments = normalizePartialPayments(body.partialPayments);
       if (nextStatus !== undefined) payload.status = nextStatus;
       if (body.nextActionAt !== undefined) payload.next_action_at = toIsoDateTime(body.nextActionAt);
+      if (body.nextActionTitle !== undefined) payload.next_action_title = normalizeNextActionTitle(body.nextActionTitle);
       if (body.isAtRisk !== undefined) {
         payload.is_at_risk = Boolean(body.isAtRisk);
         payload.priority = body.isAtRisk ? 'high' : 'medium';
@@ -571,6 +576,7 @@ export default async function handler(req: any, res: any) {
       source: normalizeSource(body.source),
     });
     const ensuredClientId = asNullableUuid(ensuredClient?.id || body.clientId);
+    const nextActionAt = status === 'moved_to_service' ? null : toIsoDateTime(body.nextActionAt);
 
     const payload: Record<string, unknown> = {
       workspace_id: finalWorkspaceId,
@@ -590,8 +596,8 @@ export default async function handler(req: any, res: any) {
       status,
       priority: body.isAtRisk ? 'high' : 'medium',
       is_at_risk: Boolean(body.isAtRisk),
-      next_action_title: null,
-      next_action_at: status === 'moved_to_service' ? null : toIsoDateTime(body.nextActionAt),
+      next_action_title: normalizeNextActionTitle(body.nextActionTitle),
+      next_action_at: nextActionAt,
       next_action_item_id: null,
       billing_status: billingStatus,
       billing_model_snapshot: normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual'),
@@ -617,3 +623,7 @@ export default async function handler(req: any, res: any) {
     res.status(statusCode).json({ error: message });
   }
 }
+
+
+
+
