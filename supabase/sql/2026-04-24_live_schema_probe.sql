@@ -15,66 +15,40 @@ truncate table closeflow_schema_probe;
 
 insert into closeflow_schema_probe(section, table_name, metric, value)
 select
-  'tables',
-  t.table_name,
-  'exists',
-  case when to_regclass(format('public.%I', t.table_name)) is null then 'missing' else 'present' end
-from unnest(array[
-  'users',
-  'profiles',
-  'workspaces',
-  'workspace_members',
-  'leads',
-  'cases',
-  'work_items',
-  'clients',
-  'payments',
-  'activities'
-]) as t(table_name);
-
-insert into closeflow_schema_probe(section, table_name, metric, value)
-select 'counts', 'users', 'rows', count(*)::text from public.users
-where to_regclass('public.users') is not null;
-
-insert into closeflow_schema_probe(section, table_name, metric, value)
-select 'counts', 'profiles', 'rows', count(*)::text from public.profiles
-where to_regclass('public.profiles') is not null;
-
-insert into closeflow_schema_probe(section, table_name, metric, value)
-select 'counts', 'workspaces', 'rows', count(*)::text from public.workspaces
-where to_regclass('public.workspaces') is not null;
-
-insert into closeflow_schema_probe(section, table_name, metric, value)
-select 'counts', 'workspace_members', 'rows', count(*)::text from public.workspace_members
-where to_regclass('public.workspace_members') is not null;
+  'constraints',
+  con.conrelid::regclass::text,
+  con.conname,
+  concat(con.confrelid::regclass::text, ' | ', pg_get_constraintdef(con.oid))
+from pg_constraint con
+where con.conrelid in (
+  'public.workspaces'::regclass,
+  'public.workspace_members'::regclass,
+  'public.profiles'::regclass
+)
+order by con.conrelid::regclass::text, con.conname;
 
 insert into closeflow_schema_probe(section, table_name, metric, value)
 select
   'columns',
-  c.table_name,
+  c.table_schema || '.' || c.table_name,
   c.column_name,
   concat(c.data_type, '|nullable=', c.is_nullable, '|default=', coalesce(c.column_default, ''))
 from information_schema.columns c
-where c.table_schema = 'public'
+where c.table_schema in ('public', 'auth')
   and c.table_name in ('users', 'profiles', 'workspaces', 'workspace_members', 'leads', 'cases', 'work_items', 'clients', 'payments', 'activities')
-order by c.table_name, c.ordinal_position;
+order by c.table_schema, c.table_name, c.ordinal_position;
 
 insert into closeflow_schema_probe(section, table_name, metric, value)
-select
-  'constraints',
-  tc.table_name,
-  tc.constraint_name,
-  concat(tc.constraint_type, '|', coalesce(kcu.column_name, ''), ' -> ', coalesce(ccu.table_schema, ''), '.', coalesce(ccu.table_name, ''), '.', coalesce(ccu.column_name, ''))
-from information_schema.table_constraints tc
-left join information_schema.key_column_usage kcu
-  on tc.constraint_name = kcu.constraint_name
- and tc.table_schema = kcu.table_schema
-left join information_schema.constraint_column_usage ccu
-  on tc.constraint_name = ccu.constraint_name
- and tc.table_schema = ccu.table_schema
-where tc.table_schema = 'public'
-  and tc.table_name in ('users', 'profiles', 'workspaces', 'workspace_members', 'leads', 'cases', 'work_items', 'clients', 'payments', 'activities')
-order by tc.table_name, tc.constraint_name;
+select 'counts', 'auth.users', 'rows', count(*)::text from auth.users;
+
+insert into closeflow_schema_probe(section, table_name, metric, value)
+select 'counts', 'public.profiles', 'rows', count(*)::text from public.profiles;
+
+insert into closeflow_schema_probe(section, table_name, metric, value)
+select 'counts', 'public.workspaces', 'rows', count(*)::text from public.workspaces;
+
+insert into closeflow_schema_probe(section, table_name, metric, value)
+select 'counts', 'public.workspace_members', 'rows', count(*)::text from public.workspace_members;
 
 select section, table_name, metric, value
 from closeflow_schema_probe
