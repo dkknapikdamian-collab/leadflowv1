@@ -1,4 +1,4 @@
-﻿const assert = require('node:assert/strict');
+const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -34,6 +34,8 @@ test('quiet release gate runs build and core regression tests', () => {
   assert.match(source, /today-calendar-activity-logging\.test\.cjs/);
   assert.match(source, /activity-command-center\.test\.cjs/);
   assert.match(source, /tests\/lead-service-mode-v1\.test\.cjs/);
+  assert.match(source, /panel-delete-actions-v1\.test\.cjs/);
+  assert.match(source, /case-lifecycle-v1-foundation\.test\.cjs/);
   assert.match(source, /lead-next-action-title-not-null\.test\.cjs/);
 });
 

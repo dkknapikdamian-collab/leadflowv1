@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2, Mail, Phone, Plus, Search, UserRound } from 'lucide-react';
+import { Loader2, Mail, Phone, Plus, Search, Trash2, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -12,7 +12,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
-import { createClientInSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase } from '../lib/supabase-fallback';
+import { createClientInSupabase, deleteClientFromSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase } from '../lib/supabase-fallback';
 
 type ClientRecord = {
   id: string;
@@ -33,6 +33,7 @@ export default function Clients() {
   const [search, setSearch] = useState('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createPending, setCreatePending] = useState(false);
+  const [deletePendingId, setDeletePendingId] = useState<string | null>(null);
   const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '' });
 
   const reload = useCallback(async () => {
@@ -138,6 +139,41 @@ export default function Clients() {
     }
   };
 
+
+  const handleDeleteClient = async (
+    event: MouseEvent<HTMLButtonElement>,
+    client: ClientRecord,
+    counters: { leads: number; cases: number; payments: number },
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+
+    const relationCount = counters.leads + counters.cases + counters.payments;
+    const relationText = relationCount > 0
+      ? '
+
+Ten klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Jeśli baza odmówi usunięcia, trzeba najpierw odpiąć albo scalić powiązania.'
+      : '';
+
+    if (!window.confirm('Usunąć klienta z panelu: ' + (client.name || 'Klient') + '?' + relationText)) return;
+
+    try {
+      setDeletePendingId(client.id);
+      await deleteClientFromSupabase(client.id);
+      toast.success('Klient usunięty');
+      await reload();
+    } catch (error: any) {
+      toast.error('Błąd usuwania klienta: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setDeletePendingId(null);
+    }
+  };
+
   return (
     <Layout>
       <div className="p-4 md:p-8 max-w-6xl mx-auto w-full space-y-6">
@@ -179,9 +215,10 @@ export default function Clients() {
             {filtered.map((client) => {
               const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
               return (
-                <Link key={client.id} to={`/clients/${client.id}`}>
-                  <Card className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4 space-y-3">
+                <div key={client.id} className="relative group/client-card">
+                  <Link to={`/clients/${client.id}`} className="block">
+                    <Card className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4 pr-12 space-y-3">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <p className="font-semibold text-slate-900 truncate">{client.name || 'Klient'}</p>
@@ -198,9 +235,20 @@ export default function Clients() {
                         <Badge variant="outline">Sprawy: {counters.cases}</Badge>
                         <Badge variant="outline">Rozliczenia: {counters.payments}</Badge>
                       </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                  <button
+                    type="button"
+                    aria-label="Usuń klienta"
+                    title="Usuń klienta"
+                    disabled={deletePendingId === client.id}
+                    onClick={(event) => handleDeleteClient(event, client, counters)}
+                    className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-rose-200 bg-rose-950/20 text-rose-300 transition hover:bg-rose-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {deletePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                  </button>
+                </div>
               );
             })}
           </div>

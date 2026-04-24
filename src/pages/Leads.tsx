@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, Plus, Search, Target, TrendingUp } from 'lucide-react';
+import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, Plus, Search, Target, Trash2, TrendingUp } from 'lucide-react';
 import { format, isPast, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -21,6 +21,7 @@ import {
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
+  deleteLeadFromSupabase,
   insertLeadToSupabase,
   isSupabaseConfigured,
 } from '../lib/supabase-fallback';
@@ -130,6 +131,7 @@ export default function Leads() {
 
   const createLeadSubmitLockRef = useRef(false);
   const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [deletePendingId, setDeletePendingId] = useState<string | null>(null);
 
   const loadLeads = useCallback(async () => {
     if (!workspace?.id) {
@@ -226,6 +228,40 @@ export default function Leads() {
     } finally {
       createLeadSubmitLockRef.current = false;
       setLeadSubmitting(false);
+    }
+  };
+
+
+  const handleDeleteLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+
+    const leadId = String(lead.id || '');
+    if (!leadId) return;
+
+    const linkedCase = casesByLeadId.get(leadId);
+    const relationText = linkedCase
+      ? '
+
+Ten lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Jeśli baza odmówi usunięcia, usuń albo odłącz najpierw powiązanie.'
+      : '';
+
+    if (!window.confirm('Usunąć leada z panelu: ' + (lead.name || 'Lead') + '?' + relationText)) return;
+
+    try {
+      setDeletePendingId(leadId);
+      await deleteLeadFromSupabase(leadId);
+      toast.success('Lead usunięty');
+      await loadLeads();
+    } catch (error: any) {
+      toast.error('Błąd usuwania leada: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setDeletePendingId(null);
     }
   };
 
@@ -469,10 +505,11 @@ export default function Leads() {
               const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
 
               return (
-                <Link key={lead.id} to={`/leads/${lead.id}`}>
-                  <Card className="overflow-hidden border-none shadow-sm transition-all group hover:-translate-y-0.5 hover:shadow-md">
+                <div key={lead.id} className="relative group/lead-row">
+                  <Link to={`/leads/${lead.id}`} className="block">
+                    <Card className="overflow-hidden border-none shadow-sm transition-all group hover:-translate-y-0.5 hover:shadow-md">
                     <CardContent className="p-0">
-                      <div className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:gap-4 lg:p-5">
+                      <div className="flex flex-col gap-3 p-4 pr-14 md:flex-row md:items-center md:gap-4 lg:p-5 lg:pr-16">
                         <div className="min-w-0 flex-1">
                           <div className="mb-2 flex flex-wrap items-center gap-2">
                             <h4 className="min-w-0 truncate text-base font-bold text-slate-900 transition-colors group-hover:text-primary md:text-lg">{lead.name}</h4>
@@ -547,8 +584,19 @@ export default function Leads() {
                         </div>
                       </div>
                     </CardContent>
-                  </Card>
-                </Link>
+                    </Card>
+                  </Link>
+                  <button
+                    type="button"
+                    aria-label="Usuń leada"
+                    title="Usuń leada"
+                    disabled={deletePendingId === String(lead.id || '')}
+                    onClick={(event) => handleDeleteLead(event, lead)}
+                    className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-rose-200 bg-rose-950/20 text-rose-300 transition hover:bg-rose-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {deletePendingId === String(lead.id || '') ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                  </button>
+                </div>
               );
             })
           )}

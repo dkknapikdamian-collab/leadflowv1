@@ -19,6 +19,8 @@ const requiredTests = [
   'tests/today-calendar-activity-logging.test.cjs',
   'tests/activity-command-center.test.cjs',
   'tests/lead-service-mode-v1.test.cjs',
+  'tests/panel-delete-actions-v1.test.cjs',
+  'tests/case-lifecycle-v1-foundation.test.cjs',
 ];
 
 function run(label, command, args) {
