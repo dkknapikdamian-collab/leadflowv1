@@ -9,6 +9,10 @@ function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
+function assertIncludesOneOf(file, candidates, label) {
+  assert.ok(candidates.some((candidate) => file.includes(candidate)), label + ': expected one of ' + candidates.join(' | '));
+}
+
 test('ClientDetail keeps API-level client filters', () => {
   const file = read('src/pages/ClientDetail.tsx');
   assert.ok(file.includes('fetchLeadsFromSupabase({ clientId })'));
@@ -26,10 +30,31 @@ test('ClientDetail exposes relation command center actions', () => {
 
 test('ClientDetail links leads and cases both ways from client screen', () => {
   const file = read('src/pages/ClientDetail.tsx');
-  assert.ok(file.includes('navigate(`/leads/${String(lead.id)}`)'));
-  assert.ok(file.includes('navigate(`/case/${String(caseRecord.id)}`)'));
-  assert.ok(file.includes('navigate(`/case/${String(lead.linkedCaseId)}`)'));
-  assert.ok(file.includes('navigate(`/leads/${String(caseRecord.leadId)}`)'));
+
+  assertIncludesOneOf(file, [
+    'navigate(`/leads/${String(lead.id)}`)',
+    "navigate('/leads/' + String(lead.id))",
+    "to={'/leads/' + leadId}",
+  ], 'lead route');
+
+  assertIncludesOneOf(file, [
+    'navigate(`/cases/${String(caseRecord.id)}`)',
+    "navigate('/cases/' + String(caseRecord.id))",
+    "to={'/cases/' + caseId}",
+  ], 'case route');
+
+  assertIncludesOneOf(file, [
+    'navigate(`/cases/${String(lead.linkedCaseId)}`)',
+    "navigate('/cases/' + String(lead.linkedCaseId))",
+  ], 'lead linked case route');
+
+  assertIncludesOneOf(file, [
+    'navigate(`/leads/${String(caseRecord.leadId)}`)',
+    "navigate('/leads/' + String(caseRecord.leadId))",
+  ], 'case linked lead route');
+
+  assert.ok(!file.includes('navigate(`/case/${String(caseRecord.id)}`)'));
+  assert.ok(!file.includes('navigate(`/case/${String(lead.linkedCaseId)}`)'));
 });
 
 test('Client relation command center documentation exists', () => {
