@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2, Mail, Phone, Plus, Search, Trash2, UserRound } from 'lucide-react';
+import { Loader2, Mail, Phone, Plus, RotateCcw, Search, Trash2, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -12,7 +12,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
-import { createClientInSupabase, deleteClientFromSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase } from '../lib/supabase-fallback';
+import { createClientInSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase, updateClientInSupabase } from '../lib/supabase-fallback';
 
 type ClientRecord = {
   id: string;
@@ -31,9 +31,10 @@ export default function Clients() {
   const [cases, setCases] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
   const [search, setSearch] = useState('');
+  const [showArchived, setShowArchived] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createPending, setCreatePending] = useState(false);
-  const [deletePendingId, setDeletePendingId] = useState<string | null>(null);
+  const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
   const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '' });
 
   const reload = useCallback(async () => {
@@ -68,16 +69,19 @@ export default function Clients() {
     void reload();
   }, [reload, workspace?.id, workspaceLoading]);
 
+  const activeCount = useMemo(() => clients.filter((client) => !client.archivedAt).length, [clients]);
+  const archivedCount = useMemo(() => clients.filter((client) => Boolean(client.archivedAt)).length, [clients]);
+
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return clients
-      .filter((client) => !client.archivedAt)
+      .filter((client) => (showArchived ? Boolean(client.archivedAt) : !client.archivedAt))
       .filter((client) => {
         if (!query) return true;
         return [client.name, client.company, client.email, client.phone].some((entry) => String(entry || '').toLowerCase().includes(query));
       })
       .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pl'));
-  }, [clients, search]);
+  }, [clients, search, showArchived]);
 
   const countersByClientId = useMemo(() => {
     const map = new Map<string, { leads: number; cases: number; payments: number }>();
@@ -139,8 +143,7 @@ export default function Clients() {
     }
   };
 
-
-  const handleDeleteClient = async (
+  const handleArchiveClient = async (
     event: MouseEvent<HTMLButtonElement>,
     client: ClientRecord,
     counters: { leads: number; cases: number; payments: number },
@@ -155,20 +158,43 @@ export default function Clients() {
 
     const relationCount = counters.leads + counters.cases + counters.payments;
     const relationText = relationCount > 0
-      ? '\n\nTen klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Jeśli baza odmówi usunięcia, trzeba najpierw odpiąć albo scalić powiązania.'
-      : '';
+      ? '\n\nTen klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Rekord zniknie z aktywnej listy, ale dane nie zostaną trwale skasowane.'
+      : '\n\nRekord zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
 
-    if (!window.confirm('Usunąć klienta z panelu: ' + (client.name || 'Klient') + '?' + relationText)) return;
+    if (!window.confirm('Przenieść klienta do kosza: ' + (client.name || 'Klient') + '?' + relationText)) return;
 
     try {
-      setDeletePendingId(client.id);
-      await deleteClientFromSupabase(client.id);
-      toast.success('Klient usunięty');
+      setArchivePendingId(client.id);
+      await updateClientInSupabase({ id: client.id, archivedAt: new Date().toISOString() });
+      toast.success('Klient przeniesiony do kosza');
       await reload();
     } catch (error: any) {
-      toast.error('Błąd usuwania klienta: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Błąd przenoszenia klienta do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
-      setDeletePendingId(null);
+      setArchivePendingId(null);
+    }
+  };
+
+  const handleRestoreClient = async (event: MouseEvent<HTMLButtonElement>, client: ClientRecord) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+
+    if (!window.confirm('Przywrócić klienta do aktywnej listy: ' + (client.name || 'Klient') + '?')) return;
+
+    try {
+      setArchivePendingId(client.id);
+      await updateClientInSupabase({ id: client.id, archivedAt: null });
+      toast.success('Klient przywrócony');
+      await reload();
+    } catch (error: any) {
+      toast.error('Błąd przywracania klienta: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setArchivePendingId(null);
     }
   };
 
@@ -180,38 +206,61 @@ export default function Clients() {
             <h1 className="text-3xl font-bold text-slate-900">Klienci</h1>
             <p className="text-slate-500">Wspólny rekord klienta w tle: leady, sprawy i rozliczenia w jednym miejscu.</p>
           </div>
-          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-              <Button className="rounded-xl" disabled={!workspace?.id}><Plus className="w-4 h-4 mr-2" /> Dodaj klienta</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader><DialogTitle>Nowy klient</DialogTitle></DialogHeader>
-              <form onSubmit={handleCreateClient} className="space-y-3 py-2">
-                <div className="space-y-1"><Label>Nazwa</Label><Input value={newClient.name} onChange={(event) => setNewClient((prev) => ({ ...prev, name: event.target.value }))} required /></div>
-                <div className="space-y-1"><Label>Firma</Label><Input value={newClient.company} onChange={(event) => setNewClient((prev) => ({ ...prev, company: event.target.value }))} /></div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1"><Label>E-mail</Label><Input type="email" value={newClient.email} onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))} /></div>
-                  <div className="space-y-1"><Label>Telefon</Label><Input value={newClient.phone} onChange={(event) => setNewClient((prev) => ({ ...prev, phone: event.target.value }))} /></div>
-                </div>
-                <DialogFooter><Button type="submit" disabled={createPending}>{createPending ? 'Zapisywanie...' : 'Utwórz klienta'}</Button></DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-xl"
+              onClick={() => setShowArchived((current) => !current)}
+            >
+              {showArchived ? <RotateCcw className="w-4 h-4 mr-2" /> : <Trash2 className="w-4 h-4 mr-2" />}
+              {showArchived ? 'Pokaż aktywnych' : 'Kosz'}
+              <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                {showArchived ? activeCount : archivedCount}
+              </span>
+            </Button>
+            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+              <DialogTrigger asChild>
+                <Button className="rounded-xl" disabled={!workspace?.id}><Plus className="w-4 h-4 mr-2" /> Dodaj klienta</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader><DialogTitle>Nowy klient</DialogTitle></DialogHeader>
+                <form onSubmit={handleCreateClient} className="space-y-3 py-2">
+                  <div className="space-y-1"><Label>Nazwa</Label><Input value={newClient.name} onChange={(event) => setNewClient((prev) => ({ ...prev, name: event.target.value }))} required /></div>
+                  <div className="space-y-1"><Label>Firma</Label><Input value={newClient.company} onChange={(event) => setNewClient((prev) => ({ ...prev, company: event.target.value }))} /></div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1"><Label>E-mail</Label><Input type="email" value={newClient.email} onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))} /></div>
+                    <div className="space-y-1"><Label>Telefon</Label><Input value={newClient.phone} onChange={(event) => setNewClient((prev) => ({ ...prev, phone: event.target.value }))} /></div>
+                  </div>
+                  <DialogFooter><Button type="submit" disabled={createPending}>{createPending ? 'Zapisywanie...' : 'Utwórz klienta'}</Button></DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </header>
 
         <div className="relative">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <Input className="pl-9" placeholder="Szukaj klienta..." value={search} onChange={(event) => setSearch(event.target.value)} />
+          <Input className="pl-9" placeholder={showArchived ? 'Szukaj w koszu klientów...' : 'Szukaj klienta...'} value={search} onChange={(event) => setSearch(event.target.value)} />
         </div>
+
+        {showArchived ? (
+          <Card className="border-amber-200 bg-amber-50 shadow-sm">
+            <CardContent className="p-4 text-sm text-amber-800">
+              To jest kosz klientów. Rekordy są ukryte z aktywnej listy, ale nadal można je przywrócić.
+            </CardContent>
+          </Card>
+        ) : null}
 
         {loading ? (
           <Card><CardContent className="p-8 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></CardContent></Card>
         ) : filtered.length === 0 ? (
-          <Card><CardContent className="p-8 text-center text-slate-500">Brak klientów do wyświetlenia.</CardContent></Card>
+          <Card><CardContent className="p-8 text-center text-slate-500">{showArchived ? 'Kosz klientów jest pusty.' : 'Brak klientów do wyświetlenia.'}</CardContent></Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filtered.map((client) => {
               const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
+              const isArchived = Boolean(client.archivedAt);
               return (
                 <div key={client.id} className="relative group/client-card">
                   <Link to={`/clients/${client.id}`} className="block">
@@ -219,7 +268,10 @@ export default function Clients() {
                       <CardContent className="p-4 pr-12 space-y-3">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="font-semibold text-slate-900 truncate">{client.name || 'Klient'}</p>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-semibold text-slate-900 truncate">{client.name || 'Klient'}</p>
+                            {isArchived ? <Badge variant="outline" className="border-amber-200 text-amber-700">W koszu</Badge> : null}
+                          </div>
                           <p className="text-sm text-slate-500 truncate">{client.company || 'Bez firmy'}</p>
                         </div>
                         <UserRound className="w-4 h-4 text-slate-400 shrink-0" />
@@ -238,13 +290,18 @@ export default function Clients() {
                   </Link>
                   <button
                     type="button"
-                    aria-label="Usuń klienta"
-                    title="Usuń klienta"
-                    disabled={deletePendingId === client.id}
-                    onClick={(event) => handleDeleteClient(event, client, counters)}
-                    className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-rose-200 bg-rose-950/20 text-rose-300 transition hover:bg-rose-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    aria-label={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
+                    title={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
+                    disabled={archivePendingId === client.id}
+                    onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
+                    className={[
+                      'absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border transition disabled:cursor-not-allowed disabled:opacity-60',
+                      isArchived
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-500 hover:text-white'
+                        : 'border-rose-200 bg-rose-950/20 text-rose-300 hover:bg-rose-500 hover:text-white',
+                    ].join(' ')}
                   >
-                    {deletePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                    {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
                   </button>
                 </div>
               );
