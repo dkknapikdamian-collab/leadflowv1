@@ -1,4 +1,4 @@
-import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
+import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
 
 function asString(value: unknown) {

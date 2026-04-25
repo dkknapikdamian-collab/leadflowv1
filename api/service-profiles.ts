@@ -1,4 +1,4 @@
-import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
+import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 
 const START_RULES = new Set(['on_acceptance', 'on_deposit', 'on_full_payment', 'on_manual_approval', 'on_documents_ready', 'on_contract_signed', 'custom']);

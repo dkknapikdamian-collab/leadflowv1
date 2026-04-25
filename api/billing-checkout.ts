@@ -1,4 +1,4 @@
-﻿import { asNullableText, createStripeBlikCheckout, getAppUrl, parseBody } from './_stripe.js';
+import { asNullableText, createStripeBlikCheckout, getAppUrl, parseBody } from '../src/server/_stripe.js';
 
 export default async function handler(req: any, res: any) {
   try {

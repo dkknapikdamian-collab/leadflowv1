@@ -1,4 +1,4 @@
-import { findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById, updateWhere } from './_supabase.js';
+import { findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById, updateWhere } from '../src/server/_supabase.js';
 import { getRequestIdentity, asText } from './_request-scope.js';
 
 function parseBody(body: unknown) {

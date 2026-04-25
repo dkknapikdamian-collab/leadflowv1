@@ -1,4 +1,4 @@
-import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById, updateWhere } from './_supabase.js';
+import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById, updateWhere } from '../src/server/_supabase.js';
 
 const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
 const DEFAULT_PLAN_ID = 'trial_14d';

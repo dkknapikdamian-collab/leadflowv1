@@ -1,4 +1,4 @@
-import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
+import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 
 const PAYMENT_TYPES = new Set(['deposit', 'partial', 'final', 'commission', 'recurring', 'manual']);

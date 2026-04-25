@@ -1,5 +1,5 @@
-import { updateWhere } from './_supabase.js';
-import { asNullableText, buildNextBillingDate, getStripeConfig, readRawBody, verifyStripeSignature } from './_stripe.js';
+import { updateWhere } from '../src/server/_supabase.js';
+import { asNullableText, buildNextBillingDate, getStripeConfig, readRawBody, verifyStripeSignature } from '../src/server/_stripe.js';
 
 export const config = {
   api: {

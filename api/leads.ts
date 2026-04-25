@@ -1,4 +1,4 @@
-﻿import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
+import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
 import { buildLeadMovedToServicePayload } from './_lead-service.js';
 
