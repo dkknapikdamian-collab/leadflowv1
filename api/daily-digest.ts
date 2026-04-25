@@ -207,6 +207,10 @@ async function writeDigestLog(row: Record<string, unknown>) {
   }
 }
 
+function shouldEnforceWorkspaceDigestHour() {
+  return asBool(process.env.DIGEST_ENFORCE_WORKSPACE_HOUR, false);
+}
+
 function isRequestAuthorized(req: any, body: Record<string, unknown>) {
   const cronSecret = asNullableText(process.env.CRON_SECRET);
   const providedSecret =
@@ -287,6 +291,7 @@ export default async function handler(req: any, res: any) {
           appUrl,
           usesFallbackFromEmail: !asNullableText(process.env.DIGEST_FROM_EMAIL),
           cronSecretConfigured: Boolean(asNullableText(process.env.CRON_SECRET)),
+          enforceWorkspaceHour: shouldEnforceWorkspaceDigestHour(),
         },
         workspace: {
           id: workspaceId,
@@ -451,7 +456,7 @@ export default async function handler(req: any, res: any) {
         stats.skippedDisabled += 1;
         continue;
       }
-      if (!force && !shouldSendDigestNow(timeZone, now, digestHour)) {
+      if (!force && shouldEnforceWorkspaceDigestHour() && !shouldSendDigestNow(timeZone, now, digestHour)) {
         stats.skippedHour += 1;
         continue;
       }

@@ -593,6 +593,9 @@ export default function Settings() {
                           value={dailyDigestHour}
                           onChange={(e) => setDailyDigestHour(e.target.value)}
                         />
+                      <p className="mt-1 text-xs text-slate-500">
+                        Na darmowym Vercel cron dziala raz dziennie. Godzina jest zachowana jako ustawienie workspace, ale automatyczna wysylka idzie przy dziennym wywolaniu crona.
+                      </p>
                       </div>
                       <div className="space-y-2 md:col-span-2">
                         <Label>Strefa czasowa</Label>

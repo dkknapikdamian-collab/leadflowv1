@@ -22,3 +22,11 @@ test('daily digest accepts Vercel Cron before enforcing manual CRON_SECRET', () 
   assert.match(api, /if \(vercelCron\) return true;/);
   assert.match(api, /providedSecret === cronSecret/);
 });
+
+
+test('daily digest keeps workspace hour enforcement behind explicit Pro/runtime flag', () => {
+  const api = read('api/daily-digest.ts');
+
+  assert.match(api, /DIGEST_ENFORCE_WORKSPACE_HOUR/);
+  assert.match(api, /shouldEnforceWorkspaceDigestHour\(\) && !shouldSendDigestNow/);
+});
