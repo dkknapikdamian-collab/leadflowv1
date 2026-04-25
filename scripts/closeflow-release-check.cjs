@@ -1,4 +1,4 @@
-﻿const { spawnSync } = require('node:child_process');
+const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -27,6 +27,7 @@ const requiredTests = [
   'tests/cases-filetext-runtime.test.cjs',
   'tests/case-detail-v1-command-center.test.cjs',
   'tests/client-detail-v1-operational-center.test.cjs',
+  'tests/pwa-foundation.test.cjs',
 ];
 
 function run(label, command, args) {
