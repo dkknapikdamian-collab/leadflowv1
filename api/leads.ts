@@ -1,6 +1,6 @@
 import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
-import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
-import { buildLeadMovedToServicePayload } from './_lead-service.js';
+import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
+import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 
 const SOURCE_ALIASES: Record<string, string> = {
   instagram: 'instagram',

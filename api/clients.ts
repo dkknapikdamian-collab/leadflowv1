@@ -1,5 +1,5 @@
 import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
-import { resolveRequestWorkspaceId, requireScopedRow, withWorkspaceFilter } from './_request-scope.js';
+import { resolveRequestWorkspaceId, requireScopedRow, withWorkspaceFilter } from '../src/server/_request-scope.js';
 
 const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'archived_at']);
 

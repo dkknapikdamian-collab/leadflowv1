@@ -51,6 +51,10 @@
       "destination": "/api/system?kind=workspace-recovery"
     },
     {
+      "source": "/api/service-profiles",
+      "destination": "/api/system?kind=service-profiles"
+    },
+    {
       "source": "/((?!api/|assets/|.*\\..*).*)",
       "destination": "/"
     }

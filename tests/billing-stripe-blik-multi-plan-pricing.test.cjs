@@ -26,7 +26,7 @@ test('Billing page exposes Basic, Pro, Business and monthly/yearly periods', () 
 });
 
 test('Stripe checkout accepts selected plan and period metadata', () => {
-  const stripe = read('api/_stripe.ts');
+  const stripe = read('src/server/_stripe.ts');
   const checkout = read('api/billing-checkout.ts');
 
   assert.match(stripe, /STRIPE_BLIK_BILLING_PLANS/);

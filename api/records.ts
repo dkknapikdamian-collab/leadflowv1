@@ -1,5 +1,5 @@
 import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
-import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
+import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 
 function asString(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';

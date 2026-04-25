@@ -37,6 +37,7 @@ const requiredTests = [
   'tests/daily-digest-diagnostics.test.cjs',
   'tests/daily-digest-cron-auth.test.cjs',
   'tests/today-action-layout-not-column-cramped.test.cjs',
+  'tests/vercel-hobby-function-budget.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

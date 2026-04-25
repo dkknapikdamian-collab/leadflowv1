@@ -1,4 +1,4 @@
-﻿const assert = require('node:assert/strict');
+const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -27,11 +27,11 @@ test('billing page uses Stripe BLIK checkout and does not activate paid plan dir
 });
 
 test('Stripe BLIK API foundation exists and uses Stripe env contract', () => {
-  assert.ok(exists('api/_stripe.ts'));
+  assert.ok(exists('src/server/_stripe.ts')); 
   assert.ok(exists('api/billing-checkout.ts'));
   assert.ok(exists('api/stripe-webhook.ts'));
 
-  const helper = read('api/_stripe.ts');
+  const helper = read('src/server/_stripe.ts');
   const checkout = read('api/billing-checkout.ts');
   const webhook = read('api/stripe-webhook.ts');
 

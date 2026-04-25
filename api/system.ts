@@ -1,5 +1,6 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById, updateWhere } from '../src/server/_supabase.js';
-import { getRequestIdentity, asText } from './_request-scope.js';
+import { getRequestIdentity, asText } from '../src/server/_request-scope.js';
+import serviceProfilesHandler from '../src/server/service-profiles.js';
 
 function parseBody(body: unknown) {
   if (!body) return {};
@@ -796,7 +797,10 @@ export default async function handler(req: any, res: any) {
   const body = parseBody(req.body);
   const kind = routeKind(req, body);
 
-  if (kind === 'workspace-subscription') {
+      if (kind === 'service-profiles') {
+      return serviceProfilesHandler(req, res);
+    }
+if (kind === 'workspace-subscription') {
     await handleWorkspaceSubscription(req, res);
     return;
   }
