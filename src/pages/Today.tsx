@@ -167,15 +167,15 @@ function TileCard({
         <button
           type="button"
           onClick={() => onToggle(id)}
-          className="w-full p-4 flex flex-col gap-3 text-left sm:flex-row sm:items-start sm:justify-between"
+          className="w-full p-4 flex flex-col gap-3 text-left sm:flex-row sm:flex-wrap sm:items-start sm:justify-between"
         >
-          <div className="min-w-0 w-full flex-1">
+          <div className="min-w-0 basis-full sm:basis-72 flex-1">
             <p className={`font-semibold break-words ${titleClassName}`}>{title}</p>
             {subtitle ? (
               <p className={`mt-1 text-xs break-words ${subtitleClassName}`}>{subtitle}</p>
             ) : null}
           </div>
-          <div className="flex flex-wrap items-center gap-2 shrink-0 sm:justify-end">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
             {headerRight}
             {collapsed ? (
               <ChevronDown className="w-4 h-4 text-slate-400" />
@@ -207,8 +207,8 @@ function LeadLinkCard({
   return (
     <Link to={`/leads/${leadId}`} className="block group">
       <Card className={`transition-all hover:border-primary/30 hover:shadow-md ${className}`}>
-        <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0 w-full flex-1">
+        <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <div className="min-w-0 basis-full sm:basis-72 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <p className="font-semibold text-slate-900 break-words">{title}</p>
               {badges}
@@ -220,7 +220,7 @@ function LeadLinkCard({
               <p className="mt-2 text-sm text-slate-600 break-words">{helperText}</p>
             ) : null}
           </div>
-          <div className="flex flex-wrap items-center gap-2 shrink-0 sm:justify-end">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
             {rightMeta}
             <div className="rounded-xl bg-slate-100 p-2 text-slate-500 transition-colors group-hover:bg-primary group-hover:text-white">
               <ArrowRight className="w-4 h-4" />
@@ -356,15 +356,15 @@ function TodayEntrySnoozeBar({
   if (isCompletedTodayEntry(entry)) return null;
 
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2">
-      <span className="text-xs font-semibold text-slate-500">Szybko odłóż:</span>
+    <div className="mt-3 flex w-full max-w-full flex-wrap items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2">
+      <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko odłóż:</span>
       {TODAY_QUICK_SNOOZE_OPTIONS.map((option) => (
         <button
           key={option.key}
           type="button"
           disabled={isPending}
           onClick={() => onSnooze(entry, option.key)}
-          className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="whitespace-nowrap rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
           title={option.description}
         >
           {isPending ? '...' : option.label}
@@ -1464,7 +1464,7 @@ export default function Today() {
 
                       return (
                         <Card key={task.id} className="border-rose-100">
-                          <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                          <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                             <div
                               className="min-w-0 flex-1 cursor-pointer"
                               role="button"
@@ -1543,12 +1543,12 @@ export default function Today() {
                       {todayLeadActions.map((entry) => (
                         <Link key={entry.id} to={entry.link || `/leads/${entry.sourceId}`} className="block group">
                           <Card className="border-amber-100 transition-all hover:border-amber-300 hover:shadow-md">
-                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                              <div className="min-w-0 w-full flex-1">
+                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                              <div className="min-w-0 basis-full sm:basis-72 flex-1">
                                 <p className="font-semibold text-slate-900 break-words">{entry.leadName}</p>
                                 <p className="text-sm text-slate-500 break-words">{entry.title}</p>
                               </div>
-                              <div className="flex flex-wrap items-center gap-2 shrink-0 sm:justify-end">
+                              <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
                                 <span className="text-xs font-bold text-amber-600">{format(parseISO(entry.startsAt), 'HH:mm')}</span>
                                 <div className="rounded-xl bg-amber-50 p-2 text-amber-600 transition-colors group-hover:bg-primary group-hover:text-white">
                                   <ArrowRight className="w-4 h-4" />
@@ -1576,7 +1576,7 @@ export default function Today() {
 
                         return (
                           <Card key={entry.id} className={`border-indigo-100 ${isCompleted ? 'opacity-60' : ''}`}>
-                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                               <div
                                 className="min-w-0 flex-1 cursor-pointer"
                                 role="button"
@@ -1648,7 +1648,7 @@ export default function Today() {
 
                         return (
                           <Card key={entry.id} className={`hover:border-primary/30 transition-colors ${isCompleted ? 'opacity-60' : ''}`}>
-                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                               <div
                                 className="min-w-0 flex-1 cursor-pointer"
                                 role="button"
