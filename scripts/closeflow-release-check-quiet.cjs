@@ -34,6 +34,7 @@ const requiredTests = [
   'tests/billing-stripe-blik-foundation.test.cjs',
   'tests/billing-stripe-blik-multi-plan-pricing.test.cjs',
   'tests/billing-checkout-vercel-api-type-guard.test.cjs',
+  'tests/stripe-checkout-app-url-normalization.test.cjs',
   'tests/daily-digest-diagnostics.test.cjs',
   'tests/daily-digest-cron-auth.test.cjs',
   'tests/today-action-layout-not-column-cramped.test.cjs',

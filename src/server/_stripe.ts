@@ -23,15 +23,44 @@ export function parseBody(req: any) {
   return req.body;
 }
 
+export function normalizeAppUrl(value: unknown, fallback = 'https://closeflowapp.vercel.app') {
+  const raw = asNullableText(value);
+
+  if (!raw) {
+    return fallback;
+  }
+
+  const cleaned = raw.replace(/\/+$/, '');
+
+  if (/^https?:\/\//i.test(cleaned)) {
+    return cleaned;
+  }
+
+  if (
+    cleaned.includes('localhost')
+    || cleaned.startsWith('127.0.0.1')
+    || cleaned.startsWith('0.0.0.0')
+  ) {
+    return `http://${cleaned}`;
+  }
+
+  return `https://${cleaned}`;
+}
+
 export function getAppUrl(req: any) {
   const configured = asNullableText(process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || process.env.VITE_APP_URL);
-  if (configured) return configured.replace(/\/+$/, '');
+
+  if (configured) {
+    return normalizeAppUrl(configured);
+  }
 
   const host = asNullableText(req?.headers?.host);
-  if (!host) return 'https://closeflowapp.vercel.app';
 
-  const protocol = host.includes('localhost') ? 'http' : 'https';
-  return `${protocol}://${host}`;
+  if (!host) {
+    return normalizeAppUrl(null);
+  }
+
+  return normalizeAppUrl(host);
 }
 
 function toNumber(value: unknown, fallback = 0) {
