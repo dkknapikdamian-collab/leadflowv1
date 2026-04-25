@@ -1,0 +1,41 @@
+{
+  "name": "Close Flow",
+  "short_name": "CloseFlow",
+  "description": "Prosta aplikacja do pilnowania leadów, zadań, wydarzeń i spraw.",
+  "lang": "pl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/closeflow-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dziś",
+      "short_name": "Dziś",
+      "description": "Otwórz centrum dnia.",
+      "url": "/today"
+    },
+    {
+      "name": "Leady",
+      "short_name": "Leady",
+      "description": "Otwórz listę leadów.",
+      "url": "/leads"
+    },
+    {
+      "name": "Kalendarz",
+      "short_name": "Kalendarz",
+      "description": "Otwórz kalendarz.",
+      "url": "/calendar"
+    }
+  ]
+}
