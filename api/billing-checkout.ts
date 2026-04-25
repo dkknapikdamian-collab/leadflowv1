@@ -18,7 +18,7 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    const result = await createStripeBlikCheckout({
+    const result: any = await createStripeBlikCheckout({
       workspaceId,
       customerEmail,
       appUrl: getAppUrl(req),
