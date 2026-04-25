@@ -39,19 +39,98 @@ function toNumber(value: unknown, fallback = 0) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+type BillingPeriod = 'monthly' | 'yearly';
+
+type StripeBillingPlan = {
+  planId: string;
+  planKey: string;
+  period: BillingPeriod;
+  label: string;
+  amountPln: number;
+  accessDays: number;
+};
+
+const STRIPE_BLIK_BILLING_PLANS: Record<string, StripeBillingPlan> = {
+  basic_monthly: {
+    planId: 'closeflow_basic',
+    planKey: 'basic',
+    period: 'monthly',
+    label: 'CloseFlow Basic - dostep 30 dni',
+    amountPln: toNumber(process.env.STRIPE_PRICE_BASIC_MONTHLY_PLN, 19),
+    accessDays: 30,
+  },
+  basic_yearly: {
+    planId: 'closeflow_basic_yearly',
+    planKey: 'basic',
+    period: 'yearly',
+    label: 'CloseFlow Basic - dostep 365 dni',
+    amountPln: toNumber(process.env.STRIPE_PRICE_BASIC_YEARLY_PLN, 190),
+    accessDays: 365,
+  },
+  pro_monthly: {
+    planId: 'closeflow_pro',
+    planKey: 'pro',
+    period: 'monthly',
+    label: 'CloseFlow Pro - dostep 30 dni',
+    amountPln: toNumber(process.env.STRIPE_PRICE_PRO_MONTHLY_PLN, 39),
+    accessDays: 30,
+  },
+  pro_yearly: {
+    planId: 'closeflow_pro_yearly',
+    planKey: 'pro',
+    period: 'yearly',
+    label: 'CloseFlow Pro - dostep 365 dni',
+    amountPln: toNumber(process.env.STRIPE_PRICE_PRO_YEARLY_PLN, 390),
+    accessDays: 365,
+  },
+  business_monthly: {
+    planId: 'closeflow_business',
+    planKey: 'business',
+    period: 'monthly',
+    label: 'CloseFlow Business - dostep 30 dni',
+    amountPln: toNumber(process.env.STRIPE_PRICE_BUSINESS_MONTHLY_PLN, 69),
+    accessDays: 30,
+  },
+  business_yearly: {
+    planId: 'closeflow_business_yearly',
+    planKey: 'business',
+    period: 'yearly',
+    label: 'CloseFlow Business - dostep 365 dni',
+    amountPln: toNumber(process.env.STRIPE_PRICE_BUSINESS_YEARLY_PLN, 690),
+    accessDays: 365,
+  },
+};
+
+export function normalizeStripeBillingPeriod(value: unknown): BillingPeriod {
+  return String(value || '').toLowerCase() === 'yearly' ? 'yearly' : 'monthly';
+}
+
+export function normalizeStripePlanKey(value: unknown) {
+  const normalized = String(value || '').toLowerCase();
+
+  if (normalized === 'basic' || normalized === 'pro' || normalized === 'business') {
+    return normalized;
+  }
+
+  return 'basic';
+}
+
+export function resolveStripeBillingPlan(planKeyInput: unknown, periodInput: unknown) {
+  const planKey = normalizeStripePlanKey(planKeyInput);
+  const period = normalizeStripeBillingPeriod(periodInput);
+  const mapKey = `${planKey}_${period}`;
+
+  return STRIPE_BLIK_BILLING_PLANS[mapKey] || STRIPE_BLIK_BILLING_PLANS.basic_monthly;
+}
+
 export function getStripeConfig() {
   const secretKey = asNullableText(process.env.STRIPE_SECRET_KEY);
   const webhookSecret = asNullableText(process.env.STRIPE_WEBHOOK_SECRET);
-  const pricePln = toNumber(process.env.STRIPE_PRICE_PLN || process.env.CLOSEFLOW_PRICE_PLN, 49);
-  const amount = Math.max(100, Math.round(pricePln * 100));
 
   return {
     secretKey,
     webhookSecret,
-    amount,
     currency: 'pln',
-    productName: asText(process.env.STRIPE_PRODUCT_NAME || 'CloseFlow Pro - dostep 30 dni') || 'CloseFlow Pro - dostep 30 dni',
-    description: asText(process.env.STRIPE_PAYMENT_DESCRIPTION || 'CloseFlow Pro - dostep do aplikacji na 30 dni') || 'CloseFlow Pro - dostep do aplikacji na 30 dni',
   };
 }
 
@@ -114,13 +193,21 @@ export async function createStripeBlikCheckout({
   workspaceId,
   customerEmail,
   appUrl,
+  planKey,
+  billingPeriod,
 }: {
   workspaceId: string;
   customerEmail?: string | null;
   appUrl: string;
+  planKey?: string | null;
+  billingPeriod?: BillingPeriod | string | null;
 }) {
   const config = assertStripeCheckoutConfigured();
   if (!config.ok) return config;
+
+  const plan = resolveStripeBillingPlan(planKey, billingPeriod);
+  const amount = Math.max(100, Math.round(plan.amountPln * 100));
+  const description = `${plan.label} - ${plan.amountPln} PLN`;
 
   const params = new URLSearchParams();
   params.set('mode', 'payment');
@@ -132,16 +219,23 @@ export async function createStripeBlikCheckout({
   params.set('payment_method_types[1]', 'blik');
 
   params.set('line_items[0][price_data][currency]', config.currency);
-  params.set('line_items[0][price_data][unit_amount]', String(config.amount));
-  params.set('line_items[0][price_data][product_data][name]', config.productName);
+  params.set('line_items[0][price_data][unit_amount]', String(amount));
+  params.set('line_items[0][price_data][product_data][name]', plan.label);
   params.set('line_items[0][quantity]', '1');
 
   params.set('metadata[workspace_id]', workspaceId);
   params.set('metadata[billing_provider]', 'stripe_blik');
-  params.set('metadata[access_days]', '30');
+  params.set('metadata[plan_id]', plan.planId);
+  params.set('metadata[plan_key]', plan.planKey);
+  params.set('metadata[billing_period]', plan.period);
+  params.set('metadata[access_days]', String(plan.accessDays));
   params.set('payment_intent_data[metadata][workspace_id]', workspaceId);
   params.set('payment_intent_data[metadata][billing_provider]', 'stripe_blik');
-  params.set('payment_intent_data[description]', config.description);
+  params.set('payment_intent_data[metadata][plan_id]', plan.planId);
+  params.set('payment_intent_data[metadata][plan_key]', plan.planKey);
+  params.set('payment_intent_data[metadata][billing_period]', plan.period);
+  params.set('payment_intent_data[metadata][access_days]', String(plan.accessDays));
+  params.set('payment_intent_data[description]', description);
 
   if (customerEmail) {
     params.set('customer_email', customerEmail);
@@ -158,8 +252,13 @@ export async function createStripeBlikCheckout({
     provider: 'stripe_blik',
     url: session.url,
     sessionId: session.id || null,
-    amount: config.amount,
+    amount,
+    amountPln: plan.amountPln,
     currency: config.currency,
+    planId: plan.planId,
+    planKey: plan.planKey,
+    billingPeriod: plan.period,
+    accessDays: plan.accessDays,
   };
 }
 

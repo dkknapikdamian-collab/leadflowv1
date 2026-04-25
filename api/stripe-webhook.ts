@@ -17,6 +17,16 @@ function resolveWorkspaceId(session: Record<string, any>) {
   );
 }
 
+function resolveAccessDays(session: Record<string, any>) {
+  const raw = Number(session.metadata?.access_days || session.payment_intent?.metadata?.access_days || 30);
+  if (!Number.isFinite(raw) || raw <= 0) return 30;
+  return Math.min(730, Math.round(raw));
+}
+
+function resolvePlanId(session: Record<string, any>) {
+  return asNullableText(session.metadata?.plan_id || session.payment_intent?.metadata?.plan_id) || 'closeflow_basic';
+}
+
 async function markWorkspacePaidFromCheckout(session: Record<string, any>) {
   const workspaceId = resolveWorkspaceId(session);
   const paymentStatus = String(session.payment_status || '').toLowerCase();
@@ -28,12 +38,12 @@ async function markWorkspacePaidFromCheckout(session: Record<string, any>) {
   }
 
   await updateWhere(`workspaces?id=eq.${encodeURIComponent(workspaceId)}`, {
-    plan_id: 'closeflow_pro',
+    plan_id: resolvePlanId(session),
     subscription_status: 'paid_active',
     billing_provider: 'stripe_blik',
     provider_customer_id: asNullableText(session.customer),
     provider_subscription_id: asNullableText(session.payment_intent || session.id),
-    next_billing_at: buildNextBillingDate(30),
+    next_billing_at: buildNextBillingDate(resolveAccessDays(session)),
     cancel_at_period_end: false,
   });
 

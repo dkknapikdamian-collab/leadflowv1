@@ -10,6 +10,8 @@ export default async function handler(req: any, res: any) {
     const body = parseBody(req);
     const workspaceId = asNullableText(body.workspaceId || req?.headers?.['x-workspace-id']);
     const customerEmail = asNullableText(body.customerEmail || req?.headers?.['x-user-email']);
+    const planKey = asNullableText(body.planKey || req?.headers?.['x-billing-plan']);
+    const billingPeriod = asNullableText(body.billingPeriod || req?.headers?.['x-billing-period']);
 
     if (!workspaceId) {
       res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
@@ -20,6 +22,8 @@ export default async function handler(req: any, res: any) {
       workspaceId,
       customerEmail,
       appUrl: getAppUrl(req),
+      planKey,
+      billingPeriod,
     });
 
     if (!result.ok) {
@@ -42,7 +46,12 @@ export default async function handler(req: any, res: any) {
       url: result.url,
       sessionId: result.sessionId,
       amount: result.amount,
+      amountPln: result.amountPln,
       currency: result.currency,
+      planId: result.planId,
+      planKey: result.planKey,
+      billingPeriod: result.billingPeriod,
+      accessDays: result.accessDays,
     });
   } catch (error: any) {
     res.status(500).json({ error: error?.message || 'STRIPE_BLIK_CHECKOUT_FAILED' });

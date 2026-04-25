@@ -1,4 +1,4 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -37,7 +37,12 @@ test('Stripe BLIK API foundation exists and uses Stripe env contract', () => {
 
   assert.match(helper, /STRIPE_SECRET_KEY/);
   assert.match(helper, /STRIPE_WEBHOOK_SECRET/);
-  assert.match(helper, /STRIPE_PRICE_PLN/);
+  assert.match(helper, /STRIPE_PRICE_BASIC_MONTHLY_PLN/);
+  assert.match(helper, /STRIPE_PRICE_BASIC_YEARLY_PLN/);
+  assert.match(helper, /STRIPE_PRICE_PRO_MONTHLY_PLN/);
+  assert.match(helper, /STRIPE_PRICE_PRO_YEARLY_PLN/);
+  assert.match(helper, /STRIPE_PRICE_BUSINESS_MONTHLY_PLN/);
+  assert.match(helper, /STRIPE_PRICE_BUSINESS_YEARLY_PLN/);
   assert.match(helper, /checkout\/sessions/);
   assert.match(helper, /payment_method_types\[1\]/);
   assert.match(helper, /blik/);
@@ -86,3 +91,4 @@ test('release gates include Stripe BLIK billing foundation test and not P24 test
   assert.doesNotMatch(quietGate, /tests\/billing-przelewy24-foundation\.test\.cjs/);
   assert.doesNotMatch(fullGate, /tests\/billing-przelewy24-foundation\.test\.cjs/);
 });
+

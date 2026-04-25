@@ -32,6 +32,7 @@ const requiredTests = [
   'tests/daily-digest-email-runtime.test.cjs',
   'tests/email-digest-domain-gate.test.cjs',
   'tests/billing-stripe-blik-foundation.test.cjs',
+  'tests/billing-stripe-blik-multi-plan-pricing.test.cjs',
   'tests/daily-digest-diagnostics.test.cjs',
   'tests/daily-digest-cron-auth.test.cjs',
   'tests/today-action-layout-not-column-cramped.test.cjs',
