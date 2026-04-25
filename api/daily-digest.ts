@@ -215,12 +215,12 @@ function isRequestAuthorized(req: any, body: Record<string, unknown>) {
     || asNullableText((body as any)?.secret)
     || asNullableText(extractBearerToken(req));
 
+  const vercelCron = asNullableText(req?.headers?.['x-vercel-cron']);
+  if (vercelCron) return true;
+
   if (cronSecret) {
     return providedSecret === cronSecret;
   }
-
-  const vercelCron = asNullableText(req?.headers?.['x-vercel-cron']);
-  if (vercelCron) return true;
   if (asBool(req?.query?.manual, false)) return true;
   if (asBool((body as any)?.manual, false)) return true;
   return false;
@@ -234,6 +234,76 @@ export default async function handler(req: any, res: any) {
     }
 
     const body = parseBody(req);
+
+    const diagnosticsMode = asText((body as any)?.mode || (body as any)?.action || req?.query?.mode).toLowerCase();
+    if (diagnosticsMode === 'workspace-diagnostics' || diagnosticsMode === 'digest-diagnostics') {
+      if (req.method !== 'POST' && req.method !== 'GET') {
+        res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
+        return;
+      }
+
+      const workspaceId = asNullableText((body as any)?.workspaceId || req?.headers?.['x-workspace-id']);
+      const requesterEmail = asNullableText(req?.headers?.['x-user-email'] || (body as any)?.requesterEmail)?.toLowerCase() || null;
+
+      if (!workspaceId) {
+        res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
+        return;
+      }
+      if (!requesterEmail) {
+        res.status(401).json({ error: 'REQUESTER_EMAIL_REQUIRED' });
+        return;
+      }
+
+      const workspaceResult = await selectFirstAvailable([
+        `workspaces?select=*&id=eq.${encodeURIComponent(workspaceId)}&limit=1`,
+      ]);
+      const workspaceRow = Array.isArray(workspaceResult.data) && workspaceResult.data[0]
+        ? workspaceResult.data[0] as Record<string, unknown>
+        : { id: workspaceId };
+
+      const recipientEmail =
+        asNullableText((body as any)?.recipientEmail || workspaceRow.daily_digest_recipient_email || workspaceRow.dailyDigestRecipientEmail || requesterEmail)?.toLowerCase()
+        || null;
+      const timeZone =
+        asNullableText((body as any)?.dailyDigestTimezone || workspaceRow.daily_digest_timezone || workspaceRow.dailyDigestTimezone || workspaceRow.timezone)
+        || DEFAULT_TZ;
+      const digestHour = asInt((body as any)?.dailyDigestHour ?? workspaceRow.daily_digest_hour ?? workspaceRow.dailyDigestHour, DEFAULT_DIGEST_HOUR);
+      const fromEmail = asNullableText(process.env.DIGEST_FROM_EMAIL) || 'CloseFlow <onboarding@resend.dev>';
+      const appUrl = getAppUrl(req);
+      const hasResendApiKey = Boolean(asNullableText(process.env.RESEND_API_KEY));
+      const hasFromEmail = Boolean(fromEmail);
+      const hasAppUrl = Boolean(appUrl);
+      const canSend = Boolean(hasResendApiKey && hasFromEmail && recipientEmail);
+
+      res.status(200).json({
+        ok: true,
+        diagnostics: true,
+        canSend,
+        env: {
+          hasResendApiKey,
+          hasFromEmail,
+          hasAppUrl,
+          fromEmail,
+          appUrl,
+          usesFallbackFromEmail: !asNullableText(process.env.DIGEST_FROM_EMAIL),
+          cronSecretConfigured: Boolean(asNullableText(process.env.CRON_SECRET)),
+        },
+        workspace: {
+          id: workspaceId,
+          dailyDigestEnabled: asBool(workspaceRow.daily_digest_enabled ?? workspaceRow.dailyDigestEnabled, true),
+          dailyDigestHour: digestHour,
+          dailyDigestTimezone: timeZone,
+          dailyDigestRecipientEmail: recipientEmail,
+        },
+        hints: [
+          hasResendApiKey ? null : 'RESEND_API_KEY_MISSING',
+          recipientEmail ? null : 'DIGEST_RECIPIENT_EMAIL_REQUIRED',
+          hasFromEmail ? null : 'DIGEST_FROM_EMAIL_MISSING',
+        ].filter(Boolean),
+      });
+      return;
+    }
+
 
     const selfTestMode = asText((body as any)?.mode || (body as any)?.action).toLowerCase();
     if (selfTestMode === 'workspace-test' || selfTestMode === 'send-test-digest') {

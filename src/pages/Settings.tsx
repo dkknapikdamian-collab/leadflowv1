@@ -34,6 +34,26 @@ type ProfileFormState = {
   companyName: string;
 };
 
+type DigestDiagnosticsState = {
+  canSend?: boolean;
+  env?: {
+    hasResendApiKey?: boolean;
+    hasFromEmail?: boolean;
+    hasAppUrl?: boolean;
+    fromEmail?: string;
+    appUrl?: string;
+    usesFallbackFromEmail?: boolean;
+    cronSecretConfigured?: boolean;
+  };
+  workspace?: {
+    dailyDigestEnabled?: boolean;
+    dailyDigestHour?: number;
+    dailyDigestTimezone?: string;
+    dailyDigestRecipientEmail?: string | null;
+  };
+  hints?: string[];
+};
+
 export default function Settings() {
   const { workspace, profile: workspaceProfile, loading: workspaceLoading, refresh } = useWorkspace();
   const { skin, setSkin, skinOptions } = useAppearance();
@@ -42,6 +62,8 @@ export default function Settings() {
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingWorkspaceSettings, setSavingWorkspaceSettings] = useState(false);
   const [sendingDigestTest, setSendingDigestTest] = useState(false);
+  const [checkingDigestDiagnostics, setCheckingDigestDiagnostics] = useState(false);
+  const [digestDiagnostics, setDigestDiagnostics] = useState<DigestDiagnosticsState | null>(null);
   const [signingOutEverywhere, setSigningOutEverywhere] = useState(false);
   const [conflictWarningsEnabled, setConflictWarningsEnabledState] = useState(true);
   const [emailChangeOpen, setEmailChangeOpen] = useState(false);
@@ -150,6 +172,48 @@ export default function Settings() {
     }
   };
 
+
+
+  const handleCheckDigestDiagnostics = async () => {
+    if (!workspace?.id) {
+      toast.error('Workspace nie jest jeszcze gotowy.');
+      return;
+    }
+
+    const recipientEmail = dailyDigestRecipientEmail.trim() || workspaceProfile?.email || auth.currentUser?.email || '';
+
+    setCheckingDigestDiagnostics(true);
+    try {
+      const response = await fetch('/api/daily-digest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-workspace-id': workspace.id,
+          'x-user-id': auth.currentUser?.uid || '',
+          'x-user-email': auth.currentUser?.email || workspaceProfile?.email || recipientEmail,
+        },
+        body: JSON.stringify({
+          mode: 'workspace-diagnostics',
+          workspaceId: workspace.id,
+          recipientEmail,
+          dailyDigestTimezone: dailyDigestTimezone.trim() || 'Europe/Warsaw',
+          dailyDigestHour: Number(dailyDigestHour || '7'),
+        }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(String(data?.error || 'DIGEST_DIAGNOSTICS_FAILED'));
+      }
+
+      setDigestDiagnostics(data as DigestDiagnosticsState);
+      toast.success(data?.canSend ? 'Digest jest gotowy do wysylki.' : 'Diagnostyka digestu wykryla braki.');
+    } catch (error: any) {
+      toast.error(`Blad diagnostyki digestu: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setCheckingDigestDiagnostics(false);
+    }
+  };
 
   const handleSendDigestTest = async () => {
     if (!workspace?.id) {
@@ -557,12 +621,39 @@ export default function Settings() {
                       <Button
                         type="button"
                         variant="outline"
+                        onClick={() => void handleCheckDigestDiagnostics()}
+                        disabled={checkingDigestDiagnostics || !workspace?.id}
+                      >
+                        {checkingDigestDiagnostics ? 'Sprawdzanie...' : 'Sprawdz konfiguracje'}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
                         onClick={() => void handleSendDigestTest()}
                         disabled={sendingDigestTest || !workspace?.id || !dailyDigestRecipientEmail.trim()}
                       >
                         {sendingDigestTest ? 'Wysylanie testu...' : 'Wyslij test teraz'}
                       </Button>
                     </div>
+
+                    {digestDiagnostics ? (
+                      <div className={`rounded-2xl border p-4 text-sm ${digestDiagnostics.canSend ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-amber-200 bg-amber-50 text-amber-900'}`}>
+                        <p className="font-semibold">
+                          {digestDiagnostics.canSend ? 'Digest gotowy do wysylki' : 'Digest wymaga konfiguracji'}
+                        </p>
+                        <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
+                          <p>RESEND_API_KEY: {digestDiagnostics.env?.hasResendApiKey ? 'OK' : 'Brak'}</p>
+                          <p>DIGEST_FROM_EMAIL: {digestDiagnostics.env?.fromEmail || 'Brak'}</p>
+                          <p>APP_URL: {digestDiagnostics.env?.appUrl || 'Brak'}</p>
+                          <p>Odbiorca: {digestDiagnostics.workspace?.dailyDigestRecipientEmail || 'Brak'}</p>
+                          <p>Godzina: {digestDiagnostics.workspace?.dailyDigestHour ?? dailyDigestHour}</p>
+                          <p>Strefa: {digestDiagnostics.workspace?.dailyDigestTimezone || dailyDigestTimezone}</p>
+                        </div>
+                        {digestDiagnostics.hints && digestDiagnostics.hints.length > 0 ? (
+                          <p className="mt-3 text-xs">Braki: {digestDiagnostics.hints.join(', ')}</p>
+                        ) : null}
+                      </div>
+                    ) : null}
                   </div>
                 </TabsContent>
 

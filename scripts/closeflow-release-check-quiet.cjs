@@ -30,6 +30,9 @@ const requiredTests = [
   'tests/today-quick-snooze-options.test.cjs',
   'tests/pwa-foundation.test.cjs',
   'tests/daily-digest-email-runtime.test.cjs',
+  'tests/daily-digest-diagnostics.test.cjs',
+  'tests/daily-digest-cron-auth.test.cjs',
+  'tests/today-action-layout-not-column-cramped.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

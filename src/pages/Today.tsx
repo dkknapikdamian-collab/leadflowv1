@@ -167,15 +167,15 @@ function TileCard({
         <button
           type="button"
           onClick={() => onToggle(id)}
-          className="w-full p-4 flex items-center justify-between gap-4 text-left"
+          className="w-full p-4 flex flex-col gap-3 text-left sm:flex-row sm:items-start sm:justify-between"
         >
-          <div className="min-w-0">
+          <div className="min-w-0 w-full flex-1">
             <p className={`font-semibold break-words ${titleClassName}`}>{title}</p>
             {subtitle ? (
               <p className={`mt-1 text-xs break-words ${subtitleClassName}`}>{subtitle}</p>
             ) : null}
           </div>
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0 sm:justify-end">
             {headerRight}
             {collapsed ? (
               <ChevronDown className="w-4 h-4 text-slate-400" />
@@ -207,8 +207,8 @@ function LeadLinkCard({
   return (
     <Link to={`/leads/${leadId}`} className="block group">
       <Card className={`transition-all hover:border-primary/30 hover:shadow-md ${className}`}>
-        <CardContent className="p-4 flex items-center justify-between gap-4">
-          <div className="min-w-0">
+        <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0 w-full flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <p className="font-semibold text-slate-900 break-words">{title}</p>
               {badges}
@@ -220,7 +220,7 @@ function LeadLinkCard({
               <p className="mt-2 text-sm text-slate-600 break-words">{helperText}</p>
             ) : null}
           </div>
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0 sm:justify-end">
             {rightMeta}
             <div className="rounded-xl bg-slate-100 p-2 text-slate-500 transition-colors group-hover:bg-primary group-hover:text-white">
               <ArrowRight className="w-4 h-4" />
@@ -1464,7 +1464,7 @@ export default function Today() {
 
                       return (
                         <Card key={task.id} className="border-rose-100">
-                          <CardContent className="p-4 flex items-center justify-between gap-4">
+                          <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div
                               className="min-w-0 flex-1 cursor-pointer"
                               role="button"
@@ -1543,12 +1543,12 @@ export default function Today() {
                       {todayLeadActions.map((entry) => (
                         <Link key={entry.id} to={entry.link || `/leads/${entry.sourceId}`} className="block group">
                           <Card className="border-amber-100 transition-all hover:border-amber-300 hover:shadow-md">
-                            <CardContent className="p-4 flex items-center justify-between gap-4">
-                              <div className="min-w-0">
+                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                              <div className="min-w-0 w-full flex-1">
                                 <p className="font-semibold text-slate-900 break-words">{entry.leadName}</p>
                                 <p className="text-sm text-slate-500 break-words">{entry.title}</p>
                               </div>
-                              <div className="flex items-center gap-3 shrink-0">
+                              <div className="flex flex-wrap items-center gap-2 shrink-0 sm:justify-end">
                                 <span className="text-xs font-bold text-amber-600">{format(parseISO(entry.startsAt), 'HH:mm')}</span>
                                 <div className="rounded-xl bg-amber-50 p-2 text-amber-600 transition-colors group-hover:bg-primary group-hover:text-white">
                                   <ArrowRight className="w-4 h-4" />
@@ -1576,7 +1576,7 @@ export default function Today() {
 
                         return (
                           <Card key={entry.id} className={`border-indigo-100 ${isCompleted ? 'opacity-60' : ''}`}>
-                            <CardContent className="p-4 flex items-center justify-between gap-4">
+                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                               <div
                                 className="min-w-0 flex-1 cursor-pointer"
                                 role="button"
@@ -1648,7 +1648,7 @@ export default function Today() {
 
                         return (
                           <Card key={entry.id} className={`hover:border-primary/30 transition-colors ${isCompleted ? 'opacity-60' : ''}`}>
-                            <CardContent className="p-4 flex items-center justify-between gap-4">
+                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                               <div
                                 className="min-w-0 flex-1 cursor-pointer"
                                 role="button"
@@ -1682,7 +1682,7 @@ export default function Today() {
                                     isPending={todayActionId === entry.id + ':snooze'}
                                     onSnooze={entry.kind === 'task' ? handleSnoozeTodayTask : handleSnoozeTodayEvent}
                                   />
-                              <div className="flex items-center gap-2">
+                              <div className="flex flex-wrap items-center gap-2">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
                                   Szczegóły
                                 </Button>
@@ -1974,7 +1974,7 @@ export default function Today() {
               </div>
 
               <DialogFooter className="flex flex-wrap gap-2 sm:justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
