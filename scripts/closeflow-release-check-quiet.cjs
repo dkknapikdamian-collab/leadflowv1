@@ -39,6 +39,7 @@ const requiredTests = [
   'tests/today-action-layout-not-column-cramped.test.cjs',
   'tests/vercel-hobby-function-budget.test.cjs',
   'tests/request-scope-server-helper.test.cjs',
+  'tests/request-identity-vercel-api-signature.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

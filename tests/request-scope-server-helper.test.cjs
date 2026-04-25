@@ -15,7 +15,8 @@ test('request scope helper exists outside api directory for Vercel function budg
 
   const helper = read('src/server/_request-scope.ts');
   assert.match(helper, /export function asText/);
-  assert.match(helper, /export function getRequestIdentity/);
+  assert.match(helper, /export function getRequestIdentity\(req: any, bodyInput\?: any\)/);
+  assert.match(helper, /fullName: fullName \|\| null/);
   assert.match(helper, /export async function resolveRequestWorkspaceId/);
   assert.match(helper, /export function withWorkspaceFilter/);
   assert.match(helper, /export async function fetchSingleScopedRow/);

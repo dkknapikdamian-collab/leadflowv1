@@ -49,8 +49,8 @@ function parseBody(req: any) {
   return body;
 }
 
-export function getRequestIdentity(req: any) {
-  const body = parseBody(req);
+export function getRequestIdentity(req: any, bodyInput?: any) {
+  const body = bodyInput && typeof bodyInput === 'object' ? bodyInput : parseBody(req);
 
   const userId =
     headerValue(req, 'x-user-id')
@@ -67,7 +67,20 @@ export function getRequestIdentity(req: any) {
     || headerValue(req, 'x-email')
     || queryValue(req, 'email')
     || bodyValue(body, 'email')
-    || bodyValue(body, 'userEmail');
+    || bodyValue(body, 'userEmail')
+    || bodyValue(body, 'ownerEmail')
+    || bodyValue(body, 'owner_email');
+
+  const fullName =
+    headerValue(req, 'x-user-name')
+    || headerValue(req, 'x-full-name')
+    || queryValue(req, 'fullName')
+    || queryValue(req, 'name')
+    || bodyValue(body, 'fullName')
+    || bodyValue(body, 'full_name')
+    || bodyValue(body, 'name')
+    || bodyValue(body, 'displayName')
+    || bodyValue(body, 'display_name');
 
   const workspaceId =
     headerValue(req, 'x-workspace-id')
@@ -80,6 +93,7 @@ export function getRequestIdentity(req: any) {
   return {
     userId: userId || null,
     email: email || null,
+    fullName: fullName || null,
     workspaceId: workspaceId || null,
   };
 }
