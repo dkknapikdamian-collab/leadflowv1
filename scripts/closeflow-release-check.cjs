@@ -38,6 +38,7 @@ const requiredTests = [
   'tests/daily-digest-cron-auth.test.cjs',
   'tests/today-action-layout-not-column-cramped.test.cjs',
   'tests/vercel-hobby-function-budget.test.cjs',
+  'tests/request-scope-server-helper.test.cjs',
 ];
 
 function run(label, command, args) {
