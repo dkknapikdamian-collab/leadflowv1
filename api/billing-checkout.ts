@@ -1,4 +1,4 @@
-import { asNullableText, createStripeBlikCheckout, getAppUrl, parseBody } from './_stripe.js';
+﻿import { asNullableText, createStripeBlikCheckout, getAppUrl, parseBody } from './_stripe.js';
 
 export default async function handler(req: any, res: any) {
   try {
@@ -57,3 +57,4 @@ export default async function handler(req: any, res: any) {
     res.status(500).json({ error: error?.message || 'STRIPE_BLIK_CHECKOUT_FAILED' });
   }
 }
+
