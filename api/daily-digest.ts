@@ -234,6 +234,108 @@ export default async function handler(req: any, res: any) {
     }
 
     const body = parseBody(req);
+
+    const selfTestMode = asText((body as any)?.mode || (body as any)?.action).toLowerCase();
+    if (selfTestMode === 'workspace-test' || selfTestMode === 'send-test-digest') {
+      if (req.method !== 'POST') {
+        res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
+        return;
+      }
+
+      const workspaceId = asNullableText((body as any)?.workspaceId || req?.headers?.['x-workspace-id']);
+      const requesterEmail = asNullableText(req?.headers?.['x-user-email'] || (body as any)?.requesterEmail)?.toLowerCase() || null;
+
+      if (!workspaceId) {
+        res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
+        return;
+      }
+      if (!requesterEmail) {
+        res.status(401).json({ error: 'REQUESTER_EMAIL_REQUIRED' });
+        return;
+      }
+
+      const workspaceResult = await selectFirstAvailable([
+        `workspaces?select=*&id=eq.${encodeURIComponent(workspaceId)}&limit=1`,
+      ]);
+      const workspaceRow = Array.isArray(workspaceResult.data) && workspaceResult.data[0]
+        ? workspaceResult.data[0] as Record<string, unknown>
+        : { id: workspaceId };
+
+      const recipientEmail =
+        asNullableText((body as any)?.recipientEmail || workspaceRow.daily_digest_recipient_email || workspaceRow.dailyDigestRecipientEmail || requesterEmail)?.toLowerCase()
+        || null;
+      const timeZone =
+        asNullableText((body as any)?.dailyDigestTimezone || workspaceRow.daily_digest_timezone || workspaceRow.dailyDigestTimezone || workspaceRow.timezone)
+        || DEFAULT_TZ;
+      const workspaceName = asNullableText(workspaceRow.name) || undefined;
+
+      if (!recipientEmail) {
+        res.status(400).json({ error: 'DIGEST_RECIPIENT_EMAIL_REQUIRED' });
+        return;
+      }
+
+      const now = new Date();
+      const appUrl = getAppUrl(req);
+      const bundle = await loadWorkspaceBundle(workspaceId);
+      const payload = buildDailyDigestPayload({
+        leads: bundle.leads,
+        tasks: bundle.tasks,
+        events: bundle.events,
+        now,
+        timeZone,
+      });
+      const { plain, html } = buildDigestEmail({
+        fullName: workspaceName,
+        appUrl,
+        payload,
+        now,
+        timeZone,
+      });
+
+      const send = await sendDigestEmail({
+        to: recipientEmail,
+        subject: 'CloseFlow - test planu dnia',
+        plain,
+        html,
+      });
+
+      const sentForDate = getDateKey(now, timeZone);
+      try {
+        await writeDigestLog({
+          workspace_id: workspaceId,
+          profile_id: null,
+          profile_email: recipientEmail,
+          sent_for_date: sentForDate,
+          sent_at: new Date().toISOString(),
+          status: send.ok ? 'test_sent' : 'test_error',
+          error: send.error,
+          summary_json: payload.summary,
+        });
+      } catch {
+        // test send must report mail status even if logging is unavailable
+      }
+
+      if (!send.ok) {
+        res.status(500).json({
+          ok: false,
+          test: true,
+          error: send.error || 'DIGEST_TEST_SEND_FAILED',
+          recipientEmail,
+          summary: payload.summary,
+        });
+        return;
+      }
+
+      res.status(200).json({
+        ok: true,
+        test: true,
+        recipientEmail,
+        sentForDate,
+        summary: payload.summary,
+      });
+      return;
+    }
+
     if (!isRequestAuthorized(req, body)) {
       res.status(401).json({ error: 'DIGEST_CRON_UNAUTHORIZED' });
       return;

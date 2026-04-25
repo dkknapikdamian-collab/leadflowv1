@@ -41,6 +41,7 @@ export default function Settings() {
   const [profile, setProfile] = useState<ProfileFormState>({ fullName: '', companyName: '' });
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingWorkspaceSettings, setSavingWorkspaceSettings] = useState(false);
+  const [sendingDigestTest, setSendingDigestTest] = useState(false);
   const [signingOutEverywhere, setSigningOutEverywhere] = useState(false);
   const [conflictWarningsEnabled, setConflictWarningsEnabledState] = useState(true);
   const [emailChangeOpen, setEmailChangeOpen] = useState(false);
@@ -146,6 +147,52 @@ export default function Settings() {
       toast.error(`Blad zapisu digestu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSavingWorkspaceSettings(false);
+    }
+  };
+
+
+  const handleSendDigestTest = async () => {
+    if (!workspace?.id) {
+      toast.error('Workspace nie jest jeszcze gotowy.');
+      return;
+    }
+
+    const recipientEmail = dailyDigestRecipientEmail.trim() || workspaceProfile?.email || auth.currentUser?.email || '';
+    if (!recipientEmail) {
+      toast.error('Podaj adres odbiorcy digestu.');
+      return;
+    }
+
+    setSendingDigestTest(true);
+    try {
+      const response = await fetch('/api/daily-digest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-workspace-id': workspace.id,
+          'x-user-id': auth.currentUser?.uid || '',
+          'x-user-email': auth.currentUser?.email || workspaceProfile?.email || recipientEmail,
+        },
+        body: JSON.stringify({
+          mode: 'workspace-test',
+          force: true,
+          workspaceId: workspace.id,
+          recipientEmail,
+          dailyDigestTimezone: dailyDigestTimezone.trim() || 'Europe/Warsaw',
+          dailyDigestHour: Number(dailyDigestHour || '7'),
+        }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(String(data?.error || 'DIGEST_TEST_SEND_FAILED'));
+      }
+
+      toast.success(`Wyslano testowy digest na ${data?.recipientEmail || recipientEmail}.`);
+    } catch (error: any) {
+      toast.error(`Blad wysylki testowego digestu: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setSendingDigestTest(false);
     }
   };
 
@@ -503,9 +550,19 @@ export default function Settings() {
                       />
                     </div>
 
-                    <Button type="button" onClick={() => void handleSaveDigestSettings()} disabled={savingWorkspaceSettings || !workspace?.id}>
-                      {savingWorkspaceSettings ? 'Zapisywanie...' : 'Zapisz ustawienia digestu'}
-                    </Button>
+                    <div className="flex flex-col gap-2 md:flex-row">
+                      <Button type="button" onClick={() => void handleSaveDigestSettings()} disabled={savingWorkspaceSettings || !workspace?.id}>
+                        {savingWorkspaceSettings ? 'Zapisywanie...' : 'Zapisz ustawienia digestu'}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => void handleSendDigestTest()}
+                        disabled={sendingDigestTest || !workspace?.id || !dailyDigestRecipientEmail.trim()}
+                      >
+                        {sendingDigestTest ? 'Wysylanie testu...' : 'Wyslij test teraz'}
+                      </Button>
+                    </div>
                   </div>
                 </TabsContent>
 

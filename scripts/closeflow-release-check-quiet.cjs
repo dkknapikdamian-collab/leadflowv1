@@ -29,6 +29,7 @@ const requiredTests = [
   'tests/client-detail-v1-operational-center.test.cjs',
   'tests/today-quick-snooze-options.test.cjs',
   'tests/pwa-foundation.test.cjs',
+  'tests/daily-digest-email-runtime.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
