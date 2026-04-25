@@ -207,4 +207,10 @@ export async function updateSupportRequestStatusInSupabase(input: { id: string; 
 }
 export async function updateSupportRequestInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<Record<string, unknown>>('/api/support-requests', { method: 'PATCH', body: JSON.stringify(input) }); }
 
+export async function createBillingCheckoutSessionInSupabase(input: { workspaceId: string; customerEmail?: string | null }) {
+  return callApi<{ ok: boolean; provider?: string; url?: string; sessionId?: string | null; error?: string; missing?: Record<string, boolean> }>('/api/billing-checkout', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
 

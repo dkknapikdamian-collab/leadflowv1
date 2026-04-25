@@ -16,7 +16,7 @@ import {
   fetchClientsFromSupabase,
   fetchLeadsFromSupabase,
   fetchPaymentsFromSupabase,
-  updateWorkspaceSubscriptionInSupabase,
+  createBillingCheckoutSessionInSupabase,
 } from '../lib/supabase-fallback';
 
 type PlanCard = {
@@ -31,11 +31,12 @@ const PAID_PLAN: PlanCard = {
   id: 'closeflow_pro',
   name: 'CloseFlow Pro',
   price: '49',
-  description: 'Jeden prosty plan V1 dla solo uslug i sprzedazy.',
+  description: 'Jeden prosty plan V1 dla solo uslug i sprzedazy. Platnosc karta lub BLIK przez Stripe.',
   features: [
     'Pelny workflow lead -> case -> rozliczenie',
     'Klienci, sprawy, taski i Today w jednym miejscu',
     'Portal klienta i modul rozliczen V1',
+    'Platnosc karta lub BLIK za 30 dni dostepu',
   ],
 };
 
@@ -99,15 +100,23 @@ export default function Billing() {
     if (!workspace?.id) return;
     setUpgrading(true);
     try {
-      await updateWorkspaceSubscriptionInSupabase({
+      const result = await createBillingCheckoutSessionInSupabase({
         workspaceId: workspace.id,
-        planId: PAID_PLAN.id,
-        subscriptionStatus: 'paid_active',
+        customerEmail: workspace?.dailyDigestRecipientEmail || '',
       });
-      toast.success('Plan zapisany.');
-      refresh();
+
+      if (!result?.url) {
+        if (result?.error === 'STRIPE_PROVIDER_NOT_CONFIGURED') {
+          toast.error('Stripe nie jest jeszcze skonfigurowany w Vercel.');
+          return;
+        }
+
+        throw new Error(result?.error || 'STRIPE_BLIK_CHECKOUT_URL_MISSING');
+      }
+
+      window.location.assign(result.url);
     } catch (error: any) {
-      toast.error(`Blad: ${error.message}`);
+      toast.error(`Blad uruchamiania platnosci Stripe/BLIK: ${error.message || 'REQUEST_FAILED'}`);
     } finally {
       setUpgrading(false);
     }
@@ -184,7 +193,7 @@ export default function Billing() {
                 </CardContent>
                 <CardFooter>
                   <Button disabled={upgrading || isCurrentPaidPlan} onClick={() => void handleUpgrade()} className="w-full">
-                    {isCurrentPaidPlan ? 'Twoj plan' : upgrading ? 'Zapisywanie...' : 'Aktywuj plan'}
+                    {isCurrentPaidPlan ? 'Twoj plan' : upgrading ? 'Przekierowanie...' : 'Przejdz do platnosci'}
                   </Button>
                 </CardFooter>
               </Card>
@@ -196,7 +205,7 @@ export default function Billing() {
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm text-slate-600">
                   <p><strong>Trial:</strong> startujesz od 14 dni testu z odblokowanym pelnym workflow.</p>
-                  <p><strong>Po trialu:</strong> aktywujesz jeden plan CloseFlow Pro.</p>
+                  <p><strong>Po trialu:</strong> placisz karta albo BLIK przez Stripe i aktywujesz CloseFlow Pro na 30 dni.</p>
                   <p><strong>Statusy:</strong> trial, plan aktywny, problem z platnoscia albo plan anulowany.</p>
                 </CardContent>
               </Card>

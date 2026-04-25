@@ -43,6 +43,23 @@ export type AccessSummary = {
 
 const TRIAL_LENGTH_DAYS = 14;
 
+function parseAccessDate(value?: string | null) {
+  if (!value) return null;
+
+  try {
+    const date = parseISO(value);
+    return isValid(date) ? date : null;
+  } catch {
+    return null;
+  }
+}
+
+function isBillingDateExpired(value?: string | null) {
+  const date = parseAccessDate(value);
+  if (!date) return false;
+  return date.getTime() < Date.now();
+}
+
 function parseTrialEnd(value?: string | null) {
   if (!value) return null;
 
@@ -99,6 +116,24 @@ export function getAccessSummary(workspace?: WorkspaceLike | null): AccessSummar
     : 0;
 
   if (rawStatus === 'paid_active') {
+    if (isBillingDateExpired(workspace?.nextBillingAt)) {
+      return {
+        status: 'payment_failed',
+        hasAccess: false,
+        trialDaysLeft,
+        trialProgressPercent,
+        headline: 'Platnosc wymaga reakcji',
+        description: 'Oplacony okres dostepu minal. Mozesz dalej przegladac dane, ale tworzenie i edycja rekordow sa zablokowane do czasu odnowienia platnosci.',
+        badgeLabel: 'Platnosc wymagana',
+        sidebarLabel: 'Platnosc wymagana',
+        toneClassName: 'text-rose-500 bg-rose-500/10',
+        chipClassName: 'bg-rose-500/12 text-rose-600 dark:text-rose-400',
+        ctaLabel: 'Odnów plan',
+        isTrialActive: false,
+        isPaidActive: false,
+      };
+    }
+
     return {
       status: 'paid_active',
       hasAccess: true,
