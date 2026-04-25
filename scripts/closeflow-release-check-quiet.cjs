@@ -27,6 +27,7 @@ const requiredTests = [
   'tests/cases-filetext-runtime.test.cjs',
   'tests/case-detail-v1-command-center.test.cjs',
   'tests/client-detail-v1-operational-center.test.cjs',
+  'tests/today-quick-snooze-options.test.cjs',
   'tests/pwa-foundation.test.cjs',
 ];
 

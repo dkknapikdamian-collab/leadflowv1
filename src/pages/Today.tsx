@@ -88,6 +88,37 @@ import { getTodayEntryPriorityReasons } from '../lib/today-v1-final';
 const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
+const TODAY_QUICK_SNOOZE_OPTIONS = [
+  {
+    key: '1h',
+    label: 'Za 1h',
+    description: 'Odloz o godzine.',
+    minutes: 60,
+    days: 0,
+  },
+  {
+    key: 'tomorrow',
+    label: 'Jutro',
+    description: 'Odloz na jutro rano.',
+    minutes: 0,
+    days: 1,
+  },
+  {
+    key: '2d',
+    label: 'Za 2 dni',
+    description: 'Odloz o dwa dni.',
+    minutes: 0,
+    days: 2,
+  },
+  {
+    key: 'next_week',
+    label: 'Przyszly tydzien',
+    description: 'Odloz na przyszly tydzien.',
+    minutes: 0,
+    days: 7,
+  },
+] as const;
+
 type TileCardProps = {
   key?: string | number;
   id: string;
@@ -326,7 +357,7 @@ function TodayEntrySnoozeBar({
 
   return (
     <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2">
-      <span className="text-xs font-semibold text-slate-500">Szybko odĹ‚ĂłĹĽ:</span>
+      <span className="text-xs font-semibold text-slate-500">Szybko odłóż:</span>
       {TODAY_QUICK_SNOOZE_OPTIONS.map((option) => (
         <button
           key={option.key}
