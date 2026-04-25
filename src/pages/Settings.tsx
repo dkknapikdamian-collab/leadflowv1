@@ -661,20 +661,7 @@ export default function Settings() {
                       </div>
                     ) : null}
                   </div>
-                  ) : (
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                      <div className="flex items-center gap-2 text-slate-900 font-semibold">
-                        <Mail className="w-4 h-4 text-slate-400" />
-                        Mailowy digest
-                      </div>
-                      <p className="mt-1 text-sm text-slate-500">
-                        Mailowy digest jest gotowy technicznie, ale ukryty do czasu podpiecia domeny nadawczej. Bez zweryfikowanej domeny Resend pozwala wysylac tylko na adres wlasciciela konta.
-                      </p>
-                      <p className="mt-3 text-xs text-slate-500">
-                        Po podpieciu domeny wlaczymy ten panel ponownie i ustawimy nadawce typu powiadomienia@twojadomena.pl.
-                      </p>
-                    </div>
-                  )}
+                  ) : null}
                 </TabsContent>
 
                 <TabsContent value="planning" className="space-y-4">

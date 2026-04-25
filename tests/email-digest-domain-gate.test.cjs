@@ -9,17 +9,18 @@ function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
-test('email digest controls are hidden until sender domain is verified', () => {
+test('email digest UI is fully hidden until sender domain is ready', () => {
   const settings = read('src/pages/Settings.tsx');
 
   assert.match(settings, /const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;/);
   assert.match(settings, /DAILY_DIGEST_EMAIL_UI_VISIBLE \? \(/);
-  assert.match(settings, /Mailowy digest jest gotowy technicznie/);
-  assert.match(settings, /ukryty do czasu podpiecia domeny nadawczej/);
-  assert.match(settings, /powiadomienia@twojadomena\.pl/);
+  assert.match(settings, /\) : null\}/);
+  assert.doesNotMatch(settings, /Mailowy digest jest gotowy technicznie/);
+  assert.doesNotMatch(settings, /ukryty do czasu podpiecia domeny nadawczej/);
+  assert.doesNotMatch(settings, /powiadomienia@twojadomena\.pl/);
 });
 
-test('email digest backend handlers remain available for later domain activation', () => {
+test('email digest backend handlers remain in code for later domain activation', () => {
   const settings = read('src/pages/Settings.tsx');
 
   assert.match(settings, /handleSaveDigestSettings/);
