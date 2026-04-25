@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Close Flow</title>
+  <desc id="desc">Ikona aplikacji Close Flow.</desc>
+  <rect width="512" height="512" rx="112" fill="#0f172a" />
+  <path
+    d="M142 164c0-18.778 15.222-34 34-34h160c18.778 0 34 15.222 34 34v184c0 18.778-15.222 34-34 34H176c-18.778 0-34-15.222-34-34V164Z"
+    fill="#ffffff"
+    opacity="0.96"
+  />
+  <path
+    d="M196 208h92c8.837 0 16 7.163 16 16s-7.163 16-16 16h-92c-8.837 0-16-7.163-16-16s7.163-16 16-16Z"
+    fill="#4f46e5"
+  />
+  <path
+    d="M196 264h120c8.837 0 16 7.163 16 16s-7.163 16-16 16H196c-8.837 0-16-7.163-16-16s7.163-16 16-16Z"
+    fill="#0f172a"
+    opacity="0.82"
+  />
+  <path
+    d="M196 320h72c8.837 0 16 7.163 16 16s-7.163 16-16 16h-72c-8.837 0-16-7.163-16-16s7.163-16 16-16Z"
+    fill="#0f172a"
+    opacity="0.46"
+  />
+  <circle cx="344" cy="168" r="44" fill="#22c55e" />
+  <path
+    d="m326 168 12 12 26-30"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="16"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
