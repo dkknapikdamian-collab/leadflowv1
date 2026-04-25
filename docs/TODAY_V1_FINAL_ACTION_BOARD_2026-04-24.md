@@ -1,23 +1,23 @@
-﻿# Today V1 final action board
+# Today V1 final action board
 
 Data: 2026-04-24
 
 ## Problem
 
-Ekran DziĹ› ma byÄ‡ operacyjnym centrum dnia, a nie tylko listÄ… wpisĂłw. UĹĽytkownik musi szybko zobaczyÄ‡, dlaczego wpis jest waĹĽny, co jest zalegĹ‚e i co moĹĽna bezpiecznie odĹ‚oĹĽyÄ‡ bez wchodzenia w szczegĂłĹ‚y.
+Ekran Dziś ma być operacyjnym centrum dnia, a nie tylko listą wpisów. Użytkownik musi szybko zobaczyć, dlaczego wpis jest ważny, co jest zaległe i co można bezpiecznie odłożyć bez wchodzenia w szczegóły.
 
 ## Decyzja
 
-Dodajemy warstwÄ™ V1 final dla ekranu DziĹ›:
+Dodajemy warstwę V1 final dla ekranu Dziś:
 
 - powody priorytetu przy wpisach,
-- szybkie odĹ‚oĹĽenie wpisu,
-- activity log dla odĹ‚oĹĽenia,
-- czytelne etykiety w ekranie AktywnoĹ›Ä‡.
+- szybkie odłożenie wpisu,
+- activity log dla odłożenia,
+- czytelne etykiety w ekranie Aktywność.
 
 ## Nowe szybkie akcje
 
-- OdĹ‚ĂłĹĽ 2h
+- Odłóż 2h
 - Jutro 9:00
 - Za 3 dni
 
@@ -28,10 +28,10 @@ Dodajemy warstwÄ™ V1 final dla ekranu DziĹ›:
 
 ## Powody przy wpisie
 
-System pokazuje krĂłtkie etykiety:
+System pokazuje krótkie etykiety:
 
-- ZalegĹ‚e,
-- Na dziĹ›,
+- Zaległe,
+- Na dziś,
 - Wysoki priorytet,
 - Bez relacji,
 - Bez przypomnienia,
@@ -39,15 +39,15 @@ System pokazuje krĂłtkie etykiety:
 
 ## Zasada UX
 
-UĹĽytkownik nie musi myĹ›leÄ‡, gdzie kliknÄ…Ä‡. Z poziomu DziĹ› moĹĽe:
+Użytkownik nie musi myśleć, gdzie kliknąć. Z poziomu Dziś może:
 
-- podejrzeÄ‡ wpis,
-- oznaczyÄ‡ jako wykonany,
-- przywrĂłciÄ‡,
-- usunÄ…Ä‡,
-- odĹ‚oĹĽyÄ‡,
-- przejĹ›Ä‡ do leada albo sprawy.
+- podejrzeć wpis,
+- oznaczyć jako wykonany,
+- przywrócić,
+- usunąć,
+- odłożyć,
+- przejść do leada albo sprawy.
 
 ## Zakres techniczny
 
-Dodano helper `src/lib/today-v1-final.ts`, ktĂłry trzyma logikÄ™ V1 final dla ekranu DziĹ›. UI korzysta z niego zamiast dopychaÄ‡ kolejne ify bezpoĹ›rednio do widoku.
+Dodano helper `src/lib/today-v1-final.ts`, który trzyma logikę V1 final dla ekranu Dziś. UI korzysta z niego zamiast dopychać kolejne ify bezpośrednio do widoku.

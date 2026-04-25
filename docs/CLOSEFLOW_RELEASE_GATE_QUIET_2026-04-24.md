@@ -1,20 +1,20 @@
-﻿# CloseFlow quiet release gate
+# CloseFlow quiet release gate
 
 Data: 2026-04-24
 
 ## Po co to jest
 
-PeĹ‚na bramka `verify:closeflow` dziaĹ‚a, ale wypisuje duĹĽo logĂłw z builda i testĂłw.
+Pełna bramka `verify:closeflow` działa, ale wypisuje dużo logów z builda i testów.
 
-Do codziennej pracy dodano krĂłtszÄ… komendÄ™:
+Do codziennej pracy dodano krótszą komendę:
 
 ```powershell
 npm.cmd run verify:closeflow:quiet
 ```
 
-## Jak dziaĹ‚a
+## Jak działa
 
-Pokazuje tylko skrĂłcony wynik:
+Pokazuje tylko skrócony wynik:
 
 ```text
 âś“ production build
@@ -22,11 +22,11 @@ Pokazuje tylko skrĂłcony wynik:
 CloseFlow quiet release gate passed.
 ```
 
-PeĹ‚ny log pokazuje dopiero wtedy, gdy build albo test siÄ™ wysypie.
+Pełny log pokazuje dopiero wtedy, gdy build albo test się wysypie.
 
 ## Zasada
 
-- przed wiÄ™kszym commitem moĹĽna uĹĽywaÄ‡ `verify:closeflow:quiet`,
-- przy podejrzanych bĹ‚Ä™dach nadal moĹĽna odpaliÄ‡ peĹ‚ne `verify:closeflow`,
-- oba warianty sprawdzajÄ… produkcyjny build i zestaw testĂłw regresji.
+- przed większym commitem można używać `verify:closeflow:quiet`,
+- przy podejrzanych błędach nadal można odpalić pełne `verify:closeflow`,
+- oba warianty sprawdzają produkcyjny build i zestaw testów regresji.
 

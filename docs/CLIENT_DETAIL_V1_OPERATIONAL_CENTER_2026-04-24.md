@@ -1,40 +1,40 @@
-﻿# Client Detail V1 operational center
+# Client Detail V1 operational center
 
 Data: 2026-04-24
 
 ## Co robi ten etap
 
-Client Detail przestaje byÄ‡ tylko edycjÄ… danych klienta. Jest teraz centrum operacyjnym klienta.
+Client Detail przestaje być tylko edycją danych klienta. Jest teraz centrum operacyjnym klienta.
 
 ## Zakres
 
 Dodano:
 
-- nastÄ™pny ruch klienta,
-- liczniki aktywnych leadĂłw, spraw, zadaĹ„ i wydarzeĹ„,
-- listÄ™ zadaĹ„ klienta,
-- listÄ™ wydarzeĹ„ klienta,
-- ostatniÄ… aktywnoĹ›Ä‡ klienta,
-- poprawne przejĹ›cia do spraw przez `/cases/:id`,
-- powiÄ…zanie aktywnoĹ›ci, zadaĹ„ i wydarzeĹ„ przez leadId oraz caseId.
+- następny ruch klienta,
+- liczniki aktywnych leadów, spraw, zadań i wydarzeń,
+- listę zadań klienta,
+- listę wydarzeń klienta,
+- ostatnią aktywność klienta,
+- poprawne przejścia do spraw przez `/cases/:id`,
+- powiązanie aktywności, zadań i wydarzeń przez leadId oraz caseId.
 
-## Logika nastÄ™pnego ruchu
+## Logika następnego ruchu
 
 Priorytet jest prosty:
 
 ```text
-1. zalegĹ‚e zadanie,
-2. najbliĹĽsze aktywne zadanie,
-3. najbliĹĽsze aktywne wydarzenie,
+1. zaległe zadanie,
+2. najbliższe aktywne zadanie,
+3. najbliższe aktywne wydarzenie,
 4. aktywna sprawa,
 5. aktywny lead,
 6. brak aktywnego ruchu.
 ```
 
-## Efekt dla uĹĽytkownika
+## Efekt dla użytkownika
 
-UĹĽytkownik wchodzi w klienta i widzi, co realnie trzeba zrobiÄ‡ dalej. Nie musi rÄ™cznie szukaÄ‡ w DziĹ›, Kalendarzu, Leadach, Sprawach i AktywnoĹ›ci.
+Użytkownik wchodzi w klienta i widzi, co realnie trzeba zrobić dalej. Nie musi ręcznie szukać w Dziś, Kalendarzu, Leadach, Sprawach i Aktywności.
 
-## WaĹĽne
+## Ważne
 
 Ten etap nie zmienia SQL. Korzysta z obecnych API i filtruje dane po relacjach leadId oraz caseId.

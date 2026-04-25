@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -1651,7 +1651,7 @@ const caseClientSuggestions = useMemo(() => {
           <div className="lg:col-span-2 space-y-6">
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -1662,19 +1662,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
             </div>
           )}
         </CardContent>
@@ -1732,7 +1732,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -1743,19 +1743,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
             </div>
           )}
         </CardContent>
@@ -1861,7 +1861,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -1872,19 +1872,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
             </div>
           )}
         </CardContent>
@@ -2062,7 +2062,7 @@ const caseClientSuggestions = useMemo(() => {
           <div className="space-y-6">
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2073,19 +2073,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
             </div>
           )}
         </CardContent>
@@ -2122,7 +2122,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2133,19 +2133,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
             </div>
           )}
         </CardContent>
@@ -2259,7 +2259,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2270,19 +2270,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
             </div>
           )}
         </CardContent>
@@ -2376,7 +2376,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2387,19 +2387,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
+                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
+                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
             </div>
           )}
         </CardContent>

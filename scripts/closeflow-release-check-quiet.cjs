@@ -41,6 +41,7 @@ const requiredTests = [
   'tests/vercel-hobby-function-budget.test.cjs',
   'tests/request-scope-server-helper.test.cjs',
   'tests/request-identity-vercel-api-signature.test.cjs',
+  'tests/polish-mojibake-audit.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

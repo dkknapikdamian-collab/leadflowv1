@@ -37,7 +37,7 @@ function normalizeCase(row: Record<string, unknown>) {
   return {
     id: String(row.id || crypto.randomUUID()),
     workspaceId: asText(row.workspace_id || row.workspaceId),
-    title: asText(row.title || row.name) || 'Sprawa bez tytuĹ‚u',
+    title: asText(row.title || row.name) || 'Sprawa bez tytułu',
     clientName: asText(row.client_name || row.clientName),
     clientId: asText(row.client_id || row.clientId) || undefined,
     clientEmail: asText(row.client_email || row.clientEmail),
@@ -335,7 +335,7 @@ export default async function handler(req: any, res: any) {
         updated_at: nowIso,
       };
 
-      if (body.title !== undefined) payload.title = asText(body.title) || 'Sprawa bez tytuĹ‚u';
+      if (body.title !== undefined) payload.title = asText(body.title) || 'Sprawa bez tytułu';
       if (body.clientName !== undefined || ensuredClient) payload.client_name = asText(body.clientName || ensuredClient?.name || linkedLead?.name);
       if (body.clientEmail !== undefined || ensuredClient) payload.client_email = asText(body.clientEmail || ensuredClient?.email || linkedLead?.email);
       if (body.clientPhone !== undefined || ensuredClient) payload.client_phone = asText(body.clientPhone || ensuredClient?.phone || linkedLead?.phone);

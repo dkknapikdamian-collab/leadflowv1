@@ -1,4 +1,4 @@
-﻿import Layout from '../components/Layout';
+import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
 import {
   Briefcase,
@@ -28,7 +28,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 
 const sourceOptions = [
   { value: 'all', label: 'Wszystko' },
-  { value: 'today', label: 'DziĹ›' },
+  { value: 'today', label: 'Dziś' },
   { value: 'calendar', label: 'Kalendarz' },
   { value: 'lead', label: 'Leady' },
   { value: 'case', label: 'Sprawy' },
@@ -38,8 +38,8 @@ const sourceOptions = [
 const activityTypeOptions = [
   { value: 'all', label: 'Wszystkie' },
   { value: 'completed', label: 'Wykonane' },
-  { value: 'restored', label: 'PrzywrĂłcone' },
-  { value: 'deleted', label: 'UsuniÄ™te' },
+  { value: 'restored', label: 'Przywrócone' },
+  { value: 'deleted', label: 'Usunięte' },
   { value: 'created', label: 'Utworzone' },
   { value: 'updated', label: 'Aktualizacje' },
 ];
@@ -47,7 +47,7 @@ const activityTypeOptions = [
 const relationOptions = [
   { value: 'all', label: 'Wszystkie relacje' },
   { value: 'lead', label: 'Z leadem' },
-  { value: 'case', label: 'Ze sprawÄ…' },
+  { value: 'case', label: 'Ze sprawą' },
   { value: 'standalone', label: 'Bez relacji' },
 ];
 
@@ -138,7 +138,7 @@ function getActivityTypeBucket(activity: any) {
 function getSourceLabel(activity: any) {
   switch (getActivitySource(activity)) {
     case 'today':
-      return 'DziĹ›';
+      return 'Dziś';
     case 'calendar':
       return 'Kalendarz';
     case 'lead':
@@ -191,28 +191,28 @@ function getActivityActionLabel(activity: any) {
 
   switch (activity?.eventType) {
     case 'calendar_entry_completed':
-      return withTitle('oznaczyĹ‚ wpis kalendarza jako zrobiony', title);
+      return withTitle('oznaczył wpis kalendarza jako zrobiony', title);
     case 'calendar_entry_restored':
-      return withTitle('przywrĂłciĹ‚ wpis kalendarza', title);
+      return withTitle('przywrócił wpis kalendarza', title);
     case 'calendar_entry_deleted':
-      return withTitle('usunÄ…Ĺ‚ wpis kalendarza', title);
+      return withTitle('usunął wpis kalendarza', title);
     case 'today_task_completed':
-      return withTitle('oznaczyĹ‚ zadanie z DziĹ› jako zrobione', title);
+      return withTitle('oznaczył zadanie z Dziś jako zrobione', title);
     case 'today_task_restored':
-      return withTitle('przywrĂłciĹ‚ zadanie z DziĹ›', title);
+      return withTitle('przywrócił zadanie z Dziś', title);
     case 'today_task_deleted':
-      return withTitle('usunÄ…Ĺ‚ zadanie z DziĹ›', title);
+      return withTitle('usunął zadanie z Dziś', title);
     case 'today_event_completed':
-      return withTitle('oznaczyĹ‚ wydarzenie z DziĹ› jako zrobione', title);
+      return withTitle('oznaczył wydarzenie z Dziś jako zrobione', title);
     case 'today_event_restored':
-      return withTitle('przywrĂłciĹ‚ wydarzenie z DziĹ›', title);
+      return withTitle('przywrócił wydarzenie z Dziś', title);
     case 'today_event_deleted':
-      return withTitle('usunÄ…Ĺ‚ wydarzenie z DziĹ›', title);
+      return withTitle('usunął wydarzenie z Dziś', title);
     case 'today_task_snoozed':
-      return withTitle('odĹ‚oĹĽyĹ‚ zadanie z DziĹ›', title);
+      return withTitle('odłożył zadanie z Dziś', title);
     case 'today_event_snoozed':
-      return withTitle('odĹ‚oĹĽyĹ‚ wydarzenie z DziĹ›', title);    case 'status_changed':
-      return status ? 'zmieniĹ‚ status na ' + status : 'zmieniĹ‚ status';
+      return withTitle('odłożył wydarzenie z Dziś', title);    case 'status_changed':
+      return status ? 'zmienił status na ' + status : 'zmienił status';
     case 'case_lifecycle_started':
       return withTitle('rozpoczął realizację sprawy', title);
     case 'case_lifecycle_completed':
@@ -220,50 +220,50 @@ function getActivityActionLabel(activity: any) {
     case 'case_lifecycle_reopened':
       return withTitle('wznowił sprawę do pracy', title);
     case 'case_created':
-      return withTitle('uruchomiĹ‚ realizacjÄ™', title);
+      return withTitle('uruchomił realizację', title);
     case 'item_added':
-      return withTitle('dodaĹ‚ element', title);
+      return withTitle('dodał element', title);
     case 'file_uploaded':
-      return withTitle('wgraĹ‚ plik do', title);
+      return withTitle('wgrał plik do', title);
     case 'decision_made':
-      return withTitle('podjÄ…Ĺ‚ decyzjÄ™ w', title);
+      return withTitle('podjął decyzję w', title);
     case 'portal_token_created':
-      return withTitle('wygenerowaĹ‚ link portalu dla', title);
+      return withTitle('wygenerował link portalu dla', title);
     case 'case_reminder_requested':
-      return 'wysĹ‚aĹ‚ przypomnienie i utworzyĹ‚ follow-up';
+      return 'wysłał przypomnienie i utworzył follow-up';
     case 'reminder_scheduled':
-      return withTitle('zaplanowaĹ‚ przypomnienie', title);
+      return withTitle('zaplanował przypomnienie', title);
     case 'task_created':
-      return withTitle('dodaĹ‚ zadanie', title);
+      return withTitle('dodał zadanie', title);
     case 'task_updated':
-      return withTitle('zaktualizowaĹ‚ zadanie', title);
+      return withTitle('zaktualizował zadanie', title);
     case 'task_completed':
-      return withTitle('oznaczyĹ‚ jako zrobione', title);
+      return withTitle('oznaczył jako zrobione', title);
     case 'event_created':
-      return withTitle('dodaĹ‚ wydarzenie', title);
+      return withTitle('dodał wydarzenie', title);
     case 'event_updated':
-      return withTitle('zaktualizowaĹ‚ wydarzenie', title);
+      return withTitle('zaktualizował wydarzenie', title);
     case 'event_deleted':
-      return withTitle('usunÄ…Ĺ‚ wydarzenie', title);
+      return withTitle('usunął wydarzenie', title);
     case 'note_added':
-      return withTitle('dodaĹ‚ notatkÄ™', title);
+      return withTitle('dodał notatkę', title);
     default:
-      if (title) return withTitle('wykonaĹ‚ akcjÄ™', title);
-      if (nextStatus) return 'wykonaĹ‚ akcjÄ™, nowy status: ' + nextStatus;
-      return 'wykonaĹ‚ akcjÄ™';
+      if (title) return withTitle('wykonał akcję', title);
+      if (nextStatus) return 'wykonał akcję, nowy status: ' + nextStatus;
+      return 'wykonał akcję';
   }
 }
 
 function getLeadContextLabel(activity: any, leadLookup: Map<string, string>) {
   const leadId = normalizeText(activity?.leadId);
   if (!leadId) return '';
-  return leadLookup.get(leadId) || normalizeText(activity?.payload?.leadName) || normalizeText(activity?.payload?.title) || 'PowiÄ…zany lead';
+  return leadLookup.get(leadId) || normalizeText(activity?.payload?.leadName) || normalizeText(activity?.payload?.title) || 'Powiązany lead';
 }
 
 function getCaseContextLabel(activity: any, caseLookup: Map<string, string>) {
   const caseId = normalizeText(activity?.caseId);
   if (!caseId) return '';
-  return caseLookup.get(caseId) || normalizeText(activity?.payload?.caseTitle) || normalizeText(activity?.payload?.title) || 'PowiÄ…zana sprawa';
+  return caseLookup.get(caseId) || normalizeText(activity?.payload?.caseTitle) || normalizeText(activity?.payload?.title) || 'Powiązana sprawa';
 }
 
 function getActivitySearchText(activity: any, leadLookup: Map<string, string>, caseLookup: Map<string, string>) {
@@ -352,7 +352,7 @@ export default function Activity() {
       })
       .catch((error: any) => {
         if (cancelled) return;
-        toast.error('BĹ‚Ä…d aktywnoĹ›ci API: ' + error.message);
+        toast.error('Błąd aktywności API: ' + error.message);
         setActivities([]);
         setLeadLookup(new Map());
         setCaseLookup(new Map());
@@ -407,9 +407,9 @@ export default function Activity() {
       <div className="mx-auto w-full max-w-6xl p-6 lg:p-8">
         <header className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">AktywnoĹ›Ä‡</h1>
+            <h1 className="text-3xl font-bold text-slate-900">Aktywność</h1>
             <p className="mt-1 text-slate-500">
-              Operacyjna historia zmian z leadĂłw, spraw, ekranu DziĹ› i kalendarza.
+              Operacyjna historia zmian z leadów, spraw, ekranu Dziś i kalendarza.
             </p>
           </div>
 
@@ -422,8 +422,8 @@ export default function Activity() {
         <div className="mb-6 grid gap-3 md:grid-cols-4">
           <MetricCard label="Wszystkie" value={metrics.all} icon={FileText} />
           <MetricCard label="Wykonane" value={metrics.completed} icon={CheckCircle2} />
-          <MetricCard label="PrzywrĂłcone" value={metrics.restored} icon={RotateCcw} />
-          <MetricCard label="UsuniÄ™te" value={metrics.deleted} icon={Trash2} />
+          <MetricCard label="Przywrócone" value={metrics.restored} icon={RotateCcw} />
+          <MetricCard label="Usunięte" value={metrics.deleted} icon={Trash2} />
         </div>
 
         <Card className="mb-6 border-none shadow-sm">
@@ -490,7 +490,7 @@ export default function Activity() {
                 </div>
               ) : filteredActivities.length === 0 ? (
                 <div className="p-12 text-center text-slate-500">
-                  Brak aktywnoĹ›ci pasujÄ…cej do filtrĂłw.
+                  Brak aktywności pasującej do filtrów.
                 </div>
               ) : (
                 filteredActivities.map((activity) => {
@@ -574,7 +574,7 @@ export default function Activity() {
                               onClick={() => togglePayload(activityId)}
                               className="text-xs font-semibold text-slate-500 transition hover:text-slate-900"
                             >
-                              {isPayloadExpanded ? 'Ukryj szczegĂłĹ‚y techniczne' : 'PokaĹĽ szczegĂłĹ‚y techniczne'}
+                              {isPayloadExpanded ? 'Ukryj szczegóły techniczne' : 'Pokaż szczegóły techniczne'}
                             </button>
 
                             {isPayloadExpanded ? (

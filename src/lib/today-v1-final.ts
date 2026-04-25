@@ -1,4 +1,4 @@
-﻿export type TodayQuickSnoozeOption = {
+export type TodayQuickSnoozeOption = {
   key: 'plus_2h' | 'tomorrow_9' | 'in_3_days_9';
   label: string;
   description: string;
@@ -7,7 +7,7 @@
 export const TODAY_QUICK_SNOOZE_OPTIONS: TodayQuickSnoozeOption[] = [
   {
     key: 'plus_2h',
-    label: 'OdĹ‚ĂłĹĽ 2h',
+    label: 'Odłóż 2h',
     description: 'Przesuwa wpis o dwie godziny od teraz.',
   },
   {
@@ -107,11 +107,11 @@ export function getTodayEntryPriorityReasons(entry: any, now = new Date()) {
   }
 
   if (startAt && startAt < now && !isSameLocalDay(startAt, now)) {
-    reasons.push('ZalegĹ‚e');
+    reasons.push('Zaległe');
   }
 
   if (startAt && isSameLocalDay(startAt, now)) {
-    reasons.push('Na dziĹ›');
+    reasons.push('Na dziś');
   }
 
   if (String(entry?.raw?.priority || '').toLowerCase() === 'high') {

@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -945,7 +945,7 @@ export default function LeadDetail() {
 
   const currentStatus = STATUS_OPTIONS.find((status) => status.value === lead.status)
     || (lead.status === 'moved_to_service'
-      ? { value: 'moved_to_service', label: 'Przeniesiony do obsĹ‚ugi', color: 'bg-violet-100 text-violet-700' }
+      ? { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' }
       : STATUS_OPTIONS[0]);
   const nextAction = getLeadNextAction(sortedLinkedTasks, sortedLinkedEvents);
   const nextActionDate = asDate(nextAction?.when);

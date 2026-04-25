@@ -1,4 +1,4 @@
-﻿const assert = require('node:assert/strict');
+const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -16,7 +16,7 @@ test('Today V1 final helper exposes priority reasons and quick snooze options', 
   assert.match(source, /resolveTodaySnoozeAt/);
   assert.match(source, /getTodayEntryPriorityReasons/);
   assert.match(source, /buildTodayV1Digest/);
-  assert.match(source, /OdĹ‚ĂłĹĽ 2h/);
+  assert.match(source, /Odłóż 2h/);
   assert.match(source, /Jutro 9:00/);
   assert.match(source, /Za 3 dni/);
 });
@@ -47,8 +47,8 @@ test('Activity recognizes Today snooze activity labels', () => {
 
   assert.match(source, /today_task_snoozed/);
   assert.match(source, /today_event_snoozed/);
-  assert.match(source, /odĹ‚oĹĽyĹ‚ zadanie z DziĹ›/);
-  assert.match(source, /odĹ‚oĹĽyĹ‚ wydarzenie z DziĹ›/);
+  assert.match(source, /odłożył zadanie z Dziś/);
+  assert.match(source, /odłożył wydarzenie z Dziś/);
 });
 
 test('Today V1 final documentation exists', () => {
@@ -56,5 +56,5 @@ test('Today V1 final documentation exists', () => {
 
   assert.match(doc, /Today V1 final action board/);
   assert.match(doc, /today_task_snoozed/);
-  assert.match(doc, /OdĹ‚ĂłĹĽ 2h/);
+  assert.match(doc, /Odłóż 2h/);
 });

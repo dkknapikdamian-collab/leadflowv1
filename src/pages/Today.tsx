@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
+import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -964,9 +964,9 @@ export default function Today() {
       if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
         setPreviewEntry(null);
       }
-      toast.success('Zadanie odĹ‚oĹĽone');
+      toast.success('Zadanie odłożone');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
@@ -1002,9 +1002,9 @@ export default function Today() {
       if (previewEntry?.id === entry.id) {
         setPreviewEntry(null);
       }
-      toast.success('Wydarzenie odĹ‚oĹĽone');
+      toast.success('Wydarzenie odłożone');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
