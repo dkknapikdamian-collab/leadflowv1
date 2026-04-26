@@ -69,12 +69,52 @@ function shouldUseRedirectForGoogleAuth() {
   return /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || coarsePointer;
 }
 
+function isEmbeddedGoogleAuthBlockedUserAgent() {
+  if (typeof window === 'undefined') return false;
+
+  const ua = window.navigator.userAgent || '';
+  const standalone = (window.navigator as any).standalone === true;
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+
+  if (!isMobile || standalone) return false;
+
+  const normalizedUa = ua.toLowerCase();
+  const embeddedMarkers = [
+    'fban',
+    'fbav',
+    'fb_iab',
+    'fbios',
+    'fb4a',
+    'instagram',
+    'messenger',
+    ' line/',
+    'whatsapp',
+    'tiktok',
+    'twitter',
+    'snapchat',
+    'pinterest',
+    'linkedinapp',
+    'chatgpt',
+    'openai',
+    '; wv)',
+    ' wv',
+  ];
+
+  return embeddedMarkers.some((marker) => normalizedUa.includes(marker));
+}
+
+function getSafeLoginUrl() {
+  if (typeof window === 'undefined') return '';
+  return window.location.href;
+}
+
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [isResetting, setIsResetting] = useState(false);
+  const [googleWebViewBlocked, setGoogleWebViewBlocked] = useState(false);
 
   const initializeUser = async (user: any, name?: string) => {
     setClientAuthSnapshot({
@@ -130,6 +170,14 @@ export default function Login() {
   }, []);
 
   const handleGoogleLogin = async () => {
+    
+    if (isEmbeddedGoogleAuthBlockedUserAgent()) {
+      setGoogleWebViewBlocked(true);
+      toast.error('Google blokuje logowanie w tej przeglądarce. Otwórz stronę w Chrome albo Safari.');
+      return;
+    }
+
+    setGoogleWebViewBlocked(false);
     setLoading(true);
     googleProvider.setCustomParameters({ prompt: 'select_account' });
 
@@ -221,6 +269,32 @@ export default function Login() {
     }
   };
 
+  const handleCopyLoginUrl = async () => {
+    const url = getSafeLoginUrl();
+    if (!url) return;
+
+    try {
+      if (!navigator?.clipboard) throw new Error('NO_CLIPBOARD');
+      await navigator.clipboard.writeText(url);
+      toast.success('Link skopiowany. Otwórz go w Chrome albo Safari.');
+    } catch {
+      toast.error('Nie udało się skopiować linku. Skopiuj adres strony ręcznie.');
+    }
+  };
+
+  const handleOpenExternalBrowserHint = () => {
+    setGoogleWebViewBlocked(true);
+    const url = getSafeLoginUrl();
+    if (!url || typeof window === 'undefined') return;
+
+    try {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch {
+      // Some embedded browsers block opening a new tab. The copy button remains as fallback.
+    }
+  };
+
+
   const renderAuthCard = () => (
     <div className="rounded-[28px] border border-slate-200 bg-white/95 p-6 shadow-2xl shadow-slate-200/70 backdrop-blur sm:p-8">
       <div className="mb-6 flex items-center gap-3">
@@ -269,6 +343,22 @@ export default function Login() {
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-200"></span></div>
             <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-slate-400">Lub kontynuuj przez</span></div>
           </div>
+
+          {googleWebViewBlocked ? (
+            <div data-google-webview-guard="true" className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              <p className="font-semibold">Google blokuje logowanie w tej przeglądarce.</p>
+              <p className="mt-1 text-amber-800">Otwórz tę stronę w Chrome albo Safari i spróbuj ponownie. Logowanie e-mail i hasłem nadal działa tutaj.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button type="button" variant="outline" className="rounded-xl bg-white" onClick={handleOpenExternalBrowserHint}>
+                  Otwórz w Chrome albo Safari
+                </Button>
+                <Button type="button" variant="outline" className="rounded-xl bg-white" onClick={() => void handleCopyLoginUrl()}>
+                  Kopiuj link
+                </Button>
+              </div>
+            </div>
+          ) : null}
+
 
           <Button variant="outline" onClick={handleGoogleLogin} className="flex h-11 w-full items-center justify-center gap-3 rounded-xl text-base font-semibold hover:bg-slate-50" disabled={loading}>
             {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogIn className="h-5 w-5" />}

@@ -70,6 +70,7 @@ const requiredTests = [
   'tests/lead-write-access-gate.test.cjs',
   'tests/billing-access-plan-normalization.test.cjs',
   'tests/today-quick-snooze-real-button-click.test.cjs',
+  'tests/google-mobile-login-webview-guard.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
