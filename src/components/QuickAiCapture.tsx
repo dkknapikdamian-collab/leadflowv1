@@ -112,7 +112,7 @@ type QuickAiCaptureProps = {
 };
 
 export default function QuickAiCapture({ onSaved, initialText = '', openSignal = 0, draftSource = 'quick_capture' }: QuickAiCaptureProps) {
-  const { workspace, profile, hasAccess, workspaceReady } = useWorkspace();
+  const { workspace, profile, hasAccess, workspaceReady, isAdmin } = useWorkspace();
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
   const [draft, setDraft] = useState<QuickAiCaptureDraft | null>(null);
@@ -123,11 +123,11 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
-  const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey));
+  const [usage, setUsage] = useState<AiUsageSnapshot>(() => (isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })));
 
   useEffect(() => {
-    setUsage(getAiUsageSnapshot(aiUsageKey));
-  }, [aiUsageKey, open]);
+    setUsage(isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
+  }, [aiUsageKey, open, isAdmin]);
 
   const stopSpeech = () => {
     const recognition = recognitionRef.current;
@@ -261,7 +261,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
     }
 
     const command = rawText.trim();
-    const latestUsage = getAiUsageSnapshot(aiUsageKey);
+    const latestUsage = isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin });
     setUsage(latestUsage);
 
     if (command.length > AI_COMMAND_MAX_LENGTH) {
@@ -269,7 +269,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
       return;
     }
 
-    if (!latestUsage.canUse) {
+    if (!latestUsage.canUse && !latestUsage.adminExempt) {
       toast.error('Dzisiejszy limit AI został wykorzystany. Możesz dodać leada ręcznie.');
       return;
     }
@@ -278,7 +278,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
       setDraftLoading(true);
       const nextDraft = normalizeDraft(await createQuickAiCaptureDraft(rawText));
       setDraft(nextDraft);
-      const nextUsage = registerAiUsage(aiUsageKey);
+      const nextUsage = isAdmin ? registerAiUsage(aiUsageKey, undefined, { isAdmin }) : registerAiUsage(aiUsageKey, undefined, { isAdmin });
       setUsage(nextUsage);
       toast.success('Szkic gotowy do sprawdzenia');
     } catch (error: any) {
@@ -384,7 +384,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button type="button" onClick={() => void handleBuildDraft()} disabled={draftLoading || !rawText.trim() || !usage.canUse}>
+            <Button type="button" onClick={() => void handleBuildDraft()} disabled={draftLoading || !rawText.trim() || (!usage.canUse && !usage.adminExempt)}>
               {draftLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
               Zrób szkic
             </Button>
@@ -397,15 +397,15 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
             </Button>
             {draft ? <Badge variant="outline">Tryb: szkic do potwierdzenia</Badge> : null}
             {draft ? <Badge variant="secondary">Parser: {draft.provider}</Badge> : null}
-            <Badge variant="outline" data-ai-usage-badge="quick-capture">Limit AI: {usage.used}/{usage.limit}</Badge>
+            <Badge variant="outline" data-ai-usage-badge="quick-capture">{usage.adminExempt ? 'Admin AI: bez limitu' : 'Limit AI: ' + usage.used + '/' + usage.limit}</Badge>
             <Badge variant="outline">Max {AI_COMMAND_MAX_LENGTH} znaków</Badge>
           </div>
 
-          {!usage.canUse ? (
+          {!usage.canUse && !usage.adminExempt ? (
             <p data-ai-usage-warning="quick-capture" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
               Dzisiejszy limit AI został wykorzystany. Nadal możesz dodać leada ręcznie poza szkicem AI.
             </p>
-          ) : usage.remaining <= 5 ? (
+          ) : !usage.adminExempt && usage.remaining <= 5 ? (
             <p data-ai-usage-warning="quick-capture" className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
               Zostało {usage.remaining} zapytań AI na dziś.
             </p>

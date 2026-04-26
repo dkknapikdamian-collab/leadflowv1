@@ -32,6 +32,7 @@ export type TodayAiAssistantInput = {
     tasks?: Record<string, unknown>[];
     events?: Record<string, unknown>[];
     cases?: Record<string, unknown>[];
+    clients?: Record<string, unknown>[];
     now?: string;
   };
 };

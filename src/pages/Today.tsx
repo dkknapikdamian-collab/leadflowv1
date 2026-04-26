@@ -1271,6 +1271,7 @@ export default function Today() {
               tasks={tasks}
               events={events}
               cases={cases}
+                clients={clients}
               disabled={!hasAccess}
             
             onCaptureRequest={openQuickCaptureFromAssistant}

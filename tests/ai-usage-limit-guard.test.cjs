@@ -40,8 +40,8 @@ test('Today assistant and Quick Capture show and enforce the shared AI usage lim
 
   for (const source of [today, capture]) {
     assert.ok(source.includes('buildAiUsageKey(workspace?.id, profile?.id)'), 'usage must be scoped by workspace/profile');
-    assert.ok(source.includes('getAiUsageSnapshot(aiUsageKey)'), 'component must read current usage');
-    assert.ok(source.includes('registerAiUsage(aiUsageKey)'), 'component must register successful AI use');
+    assert.ok(source.includes('getAiUsageSnapshot(aiUsageKey'), 'component must read current usage, including admin-exempt options when needed');
+    assert.ok(source.includes('registerAiUsage(aiUsageKey'), 'component must register successful AI use, including admin-exempt options when needed');
     assert.ok(source.includes('!usage.canUse'), 'component must block AI when the daily limit is used');
     assert.ok(source.includes('AI_COMMAND_MAX_LENGTH'), 'component must enforce max command length');
   }

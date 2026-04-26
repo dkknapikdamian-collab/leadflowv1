@@ -37,6 +37,7 @@ type TodayAiAssistantProps = {
   tasks: Record<string, unknown>[];
   events: Record<string, unknown>[];
   cases: Record<string, unknown>[];
+  clients?: Record<string, unknown>[];
   disabled?: boolean;
   onCaptureRequest?: (rawText: string) => void;
 };
@@ -46,8 +47,14 @@ const CLIENT_OUT_OF_SCOPE_PATTERNS = [
   /\b(kosmos|wszechswiat|planeta|galaktyka|czarna dziura)\b/u,
   /\b(wiersz|poemat|opowiadanie|bajka|zart|dowcip|piosenka)\b/u,
   /\b(przepis|ugotuj|obiad|kolacja|sniadanie|ciasto)\b/u,
-  /\b(polityka|wybory|wojna|religia|historia)\b/u,
-  /\b(co to jest|kim jest|ile ma|ile kosztuje|jak dziala)\b/u,
+  /\b(polityka|wybory|wojna|religia|historia)\b/u,
+];
+
+const CLIENT_LEAD_CAPTURE_PATTERNS = [
+  /\b(zapisz|dodaj|utworz|utworzmy)\s+(mi\s+)?(leada|lida|lead|kontakt)\b/u,
+  /\b(mam|jest|wpadl|wpada|nowy)\s+(mi\s+)?(lead|leada|lida|kontakt)\b/u,
+  /\b(lead|leada|lida|kontakt)\b.*\b(zapisz|dodaj)\b/u,
+  /\b(zapisz|dodaj)\b.*\b(telefon|dzwonil|dzwonila|zainteresowan|oddzwonic|wyslac|papiery)\b/u,
 ];
 
 function normalizeCommandForGuard(value: string) {
@@ -62,6 +69,11 @@ function normalizeCommandForGuard(value: string) {
 function isClientOutOfScopeCommand(value: string) {
   const normalized = normalizeCommandForGuard(value);
   return CLIENT_OUT_OF_SCOPE_PATTERNS.some((pattern) => pattern.test(normalized));
+}
+
+function isClientLeadCaptureCommand(value: string) {
+  const normalized = normalizeCommandForGuard(value);
+  return CLIENT_LEAD_CAPTURE_PATTERNS.some((pattern) => pattern.test(normalized));
 }
 
 function buildClientBlockedAnswer(rawText: string, summary?: string): TodayAiAssistantAnswer {
@@ -83,6 +95,29 @@ function buildClientBlockedAnswer(rawText: string, summary?: string): TodayAiAss
       'sprawdzenie kolejnego kroku dla istniejącego leada',
       'sprawdzenie powiązanych zadań, wydarzeń i spraw',
     ],
+  };
+}
+
+function buildClientLeadCaptureDraftAnswer(rawText: string): TodayAiAssistantAnswer {
+  return {
+    ok: true,
+    scope: 'assistant_read_or_draft_only',
+    provider: 'client_lead_capture_guard',
+    noAutoWrite: true,
+    intent: 'lead_capture',
+    title: 'Szkic leada zapisany',
+    summary: 'Zapisałem podyktowaną notatkę w Szkicach AI. To nie jest jeszcze lead. Otwórz Szkice AI, sprawdź pola i dopiero wtedy zatwierdź zapis.',
+    rawText,
+    suggestedCaptureText: rawText,
+    items: [
+      {
+        label: 'Otwórz Szkice AI',
+        detail: 'Tam zobaczysz dokładny tekst dyktowania i robocze dane do sprawdzenia przed utworzeniem leada.',
+        href: '/ai-drafts',
+        priority: 'high',
+      },
+    ],
+    warnings: ['Bezpieczny tryb: asystent zapisał tylko szkic, nie utworzył leada ani zadania.'],
   };
 }
 
@@ -119,7 +154,7 @@ function priorityClassName(priority?: string) {
   return 'border-blue-200 bg-blue-50 text-blue-700';
 }
 
-export default function TodayAiAssistant({ leads, tasks, events, cases, disabled, onCaptureRequest }: TodayAiAssistantProps) {
+export default function TodayAiAssistant({ leads, tasks, events, cases, clients = [], disabled, onCaptureRequest }: TodayAiAssistantProps) {
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
   const [answer, setAnswer] = useState<TodayAiAssistantAnswer | null>(null);
@@ -128,13 +163,13 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
   const [interimText, setInterimText] = useState('');
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
-  const { workspace, profile } = useWorkspace();
+  const { workspace, profile, isAdmin } = useWorkspace();
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
-  const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey));
+  const [usage, setUsage] = useState<AiUsageSnapshot>(() => (isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })));
 
   useEffect(() => {
-    setUsage(getAiUsageSnapshot(aiUsageKey));
-  }, [aiUsageKey, open]);
+    setUsage(isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
+  }, [aiUsageKey, open, isAdmin]);
 
   const stopSpeech = () => {
     const recognition = recognitionRef.current;
@@ -158,7 +193,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
     const command = rawText.trim();
     if (!command) return toast.error('Powiedz albo wpisz polecenie dla asystenta');
 
-    const latestUsage = getAiUsageSnapshot(aiUsageKey);
+    const latestUsage = isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin });
     setUsage(latestUsage);
 
     if (command.length > AI_COMMAND_MAX_LENGTH) {
@@ -168,7 +203,14 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
       return;
     }
 
-    if (!latestUsage.canUse) {
+    if (isClientLeadCaptureCommand(command)) {
+      saveAiLeadDraft({ rawText: command, source: 'today_assistant' });
+      setAnswer(buildClientLeadCaptureDraftAnswer(command));
+      toast.success('Szkic leada zapisany w Szkicach AI');
+      return;
+    }
+
+    if (!latestUsage.canUse && !latestUsage.adminExempt) {
       const message = `Dzisiejszy limit AI został wykorzystany: ${latestUsage.used}/${latestUsage.limit}. Wróć jutro albo użyj zwykłych formularzy.`;
       setAnswer(buildClientBlockedAnswer(command, message));
       toast.error('Dzisiejszy limit AI został wykorzystany');
@@ -191,11 +233,20 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
           tasks,
           events,
           cases,
+          clients,
           now: new Date().toISOString(),
         },
       });
       setAnswer(result);
-      const nextUsage = registerAiUsage(aiUsageKey);
+      if (result.intent === 'lead_capture' && !result.hardBlock) {
+        const captureText = String(result.suggestedCaptureText || result.rawText || command || '').trim();
+        if (captureText) {
+          // AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
+          saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' });
+          toast.success('Szkic leada zapisany w Szkicach AI');
+        }
+      }
+      const nextUsage = isAdmin ? registerAiUsage(aiUsageKey, undefined, { isAdmin }) : registerAiUsage(aiUsageKey, undefined, { isAdmin });
       setUsage(nextUsage);
       toast.success('Asystent przygotował odpowiedź');
     } catch (error: any) {
@@ -232,7 +283,6 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
     setOpen(false);
     toast.success('Przeniesiono do Szybkiego szkicu');
   };
-
 
   const handleToggleSpeech = () => {
     if (listening) {
@@ -313,7 +363,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
 
         <div className="space-y-4">
           <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 text-sm text-blue-900">
-            Powiedz normalnie, czego potrzebujesz w aplikacji. Przykład: „co mam dzisiaj zrobić”, „co dalej z Janem Kowalskim” albo „mam leada, zapisz...”. Asystent działa tylko w obrębie CloseFlow i niczego nie zapisuje bez Twojej akceptacji.
+            Powiedz normalnie, czego potrzebujesz w aplikacji. Przykład: „co mam dzisiaj zrobić”, „co dalej z Janem Kowalskim” albo „mam leada, zapisz...”. Komendy typu „zapisz leada” trafiają od razu do Szkiców AI, ale nie tworzą leada bez Twojego sprawdzenia.
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -340,7 +390,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button type="button" onClick={handleAsk} disabled={loading || !usage.canUse}>
+            <Button type="button" onClick={handleAsk} disabled={loading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
               Zapytaj asystenta
             </Button>
@@ -350,15 +400,16 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
             </Button>
             <Badge variant="outline">Bez autopilota</Badge>
             <Badge variant="outline">Tylko CloseFlow</Badge>
-            <Badge variant="outline" data-ai-usage-badge="today-assistant">Limit AI: {usage.used}/{usage.limit}</Badge>
+            <Badge variant="outline">Pełny zakres aplikacji</Badge>
+            <Badge variant="outline" data-ai-usage-badge="today-assistant">{usage.adminExempt ? 'Admin AI: bez limitu' : 'Limit AI: ' + usage.used + '/' + usage.limit}</Badge>
             <Badge variant="outline">Max {AI_COMMAND_MAX_LENGTH} znaków</Badge>
           </div>
 
-          {!usage.canUse ? (
+          {!usage.canUse && !usage.adminExempt ? (
             <div data-ai-usage-warning="today-assistant" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
-              Dzisiejszy limit AI został wykorzystany. Formularze nadal działają ręcznie.
+              Dzisiejszy limit AI został wykorzystany. Formularze nadal działają ręcznie, a komendy „zapisz leada” mogą trafić do Szkiców AI bez użycia modelu.
             </div>
-          ) : usage.remaining <= 5 ? (
+          ) : !usage.adminExempt && usage.remaining <= 5 ? (
             <div data-ai-usage-warning="today-assistant" className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
               Zostało {usage.remaining} zapytań AI na dziś. Używaj asystenta do konkretnych akcji w aplikacji.
             </div>
@@ -416,7 +467,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
               {answer.intent === 'lead_capture' ? (
                 <div className="space-y-2 rounded-xl border border-blue-100 bg-blue-50/70 p-3">
                   <p className="text-xs text-blue-900">
-                    Żeby zapisać tego leada, przenieś notatkę do „Szybkiego szkicu”. Tam AI przepisze pola roboczo, a zapis zrobisz dopiero po sprawdzeniu.
+                    Jeżeli to szkic z asystenta, znajdziesz go już w „Szkicach AI”. Tam AI przepisze pola roboczo, a zapis zrobisz dopiero po sprawdzeniu.
                   </p>
                   <Button type="button" size="sm" variant="outline" onClick={handleSaveCaptureDraft} data-ai-assistant-save-draft="true">
                     Zapisz w szkicach AI
