@@ -54,6 +54,7 @@ function intentLabel(intent: TodayAiAssistantAnswer['intent']) {
   if (intent === 'today_briefing') return 'Plan dnia';
   if (intent === 'lead_lookup') return 'Lead';
   if (intent === 'lead_capture') return 'Szkic leada';
+  if (intent === 'blocked_out_of_scope') return 'Poza zakresem';
   return 'Pytanie';
 }
 
@@ -195,7 +196,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
 
         <div className="space-y-4">
           <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 text-sm text-blue-900">
-            Powiedz normalnie, czego potrzebujesz. Przykład: „co mam dzisiaj zrobić”, „co dalej z Janem Kowalskim” albo „mam leada, zapisz...”. Asystent niczego nie zapisuje bez Twojej akceptacji.
+            Powiedz normalnie, czego potrzebujesz w aplikacji. Przykład: „co mam dzisiaj zrobić”, „co dalej z Janem Kowalskim” albo „mam leada, zapisz...”. Asystent działa tylko w obrębie CloseFlow i niczego nie zapisuje bez Twojej akceptacji.
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -231,6 +232,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
               {listening ? 'Zatrzymaj dyktowanie' : 'Dyktuj'}
             </Button>
             <Badge variant="outline">Bez autopilota</Badge>
+            <Badge variant="outline">Tylko CloseFlow</Badge>
           </div>
 
           {answer ? (
@@ -239,11 +241,15 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
                 <Badge variant="secondary">{intentLabel(answer.intent)}</Badge>
                 <Badge variant="outline">Parser: {answer.provider}</Badge>
                 {answer.noAutoWrite ? <Badge variant="outline">Bez zapisu automatycznego</Badge> : null}
+                {answer.hardBlock ? <Badge variant="destructive">Blokada zakresu</Badge> : null}
               </div>
 
               <div>
                 <h3 className="text-lg font-bold text-slate-900">{answer.title}</h3>
                 <p className="mt-1 text-sm text-slate-600">{answer.summary}</p>
+                {answer.hardBlock ? (
+                  <p className="mt-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">Asystent nie odpowiada na pytania spoza aplikacji, żeby nie zużywać limitów AI poza obsługą leadów i pracy dziennej.</p>
+                ) : null}
               </div>
 
               {answer.warnings.length ? (

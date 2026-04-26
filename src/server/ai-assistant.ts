@@ -1,4 +1,4 @@
-type AssistantIntent = 'today_briefing' | 'lead_lookup' | 'lead_capture' | 'unknown';
+type AssistantIntent = 'today_briefing' | 'lead_lookup' | 'lead_capture' | 'blocked_out_of_scope' | 'unknown';
 
 type AssistantItem = {
   label: string;
@@ -19,7 +19,16 @@ type AssistantResponse = {
   items: AssistantItem[];
   warnings: string[];
   suggestedCaptureText?: string;
+  hardBlock?: boolean;
+  allowedScope?: string[];
 };
+
+const ASSISTANT_ALLOWED_SCOPE = [
+  'tworzenie szkicu leada z podyktowanej notatki',
+  'plan dnia z zadań i wydarzeń w aplikacji',
+  'sprawdzenie kolejnego kroku dla istniejącego leada',
+  'sprawdzenie powiązanych zadań, wydarzeń i spraw',
+];
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -304,11 +313,35 @@ function buildUnknown(rawText: string): AssistantResponse {
     provider: 'rules',
     noAutoWrite: true,
     intent: 'unknown',
-    title: 'Nie jestem pewien, o co chodzi',
-    summary: 'Spróbuj: „co mam dzisiaj zrobić”, „co dalej z Janem Kowalskim” albo „mam leada, zapisz...”.',
+    title: 'Nie rozpoznałem polecenia',
+    summary: 'Użyj polecenia związanego z aplikacją, np. „co mam dzisiaj zrobić”, „co dalej z Janem Kowalskim” albo „mam leada, zapisz...”.',
     rawText,
     items: [],
-    warnings: [],
+    warnings: ['Asystent działa tylko w obrębie CloseFlow.'],
+    allowedScope: ASSISTANT_ALLOWED_SCOPE,
+  };
+}
+
+function buildOutOfScopeAnswer(rawText: string): AssistantResponse {
+  return {
+    ok: true,
+    scope: 'assistant_read_or_draft_only',
+    provider: 'rules',
+    noAutoWrite: true,
+    intent: 'blocked_out_of_scope',
+    title: 'Poza zakresem aplikacji',
+    summary: 'Odpowiadam tylko na polecenia dotyczące leadów, zadań, wydarzeń, spraw i planu dnia w CloseFlow. Nie odpowiadam na pytania ogólne, żeby nie zużywać limitów AI poza pracą w aplikacji.',
+    rawText,
+    items: [
+      {
+        label: 'Dozwolone polecenia',
+        detail: 'Powiedz np. „co mam dzisiaj zrobić”, „co dalej z Janem Kowalskim” albo „mam leada, zapisz...”.',
+        priority: 'medium',
+      },
+    ],
+    warnings: ['Twarda blokada zakresu: brak odpowiedzi poza danymi i workflow aplikacji.'],
+    hardBlock: true,
+    allowedScope: ASSISTANT_ALLOWED_SCOPE,
   };
 }
 
@@ -334,7 +367,7 @@ function buildAssistantAnswer(body: Record<string, unknown>): AssistantResponse 
     return buildLeadLookup(context, rawText, now);
   }
 
-  return buildUnknown(rawText);
+  return buildOutOfScopeAnswer(rawText);
 }
 
 export default async function aiAssistantHandler(req: any, res: any) {

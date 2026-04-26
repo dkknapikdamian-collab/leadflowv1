@@ -1,6 +1,6 @@
 import { getClientAuthSnapshot } from './client-auth';
 
-export type TodayAiAssistantIntent = 'today_briefing' | 'lead_lookup' | 'lead_capture' | 'unknown';
+export type TodayAiAssistantIntent = 'today_briefing' | 'lead_lookup' | 'lead_capture' | 'blocked_out_of_scope' | 'unknown';
 
 export type TodayAiAssistantItem = {
   label: string;
@@ -21,6 +21,8 @@ export type TodayAiAssistantAnswer = {
   items: TodayAiAssistantItem[];
   warnings: string[];
   suggestedCaptureText?: string;
+  hardBlock?: boolean;
+  allowedScope?: string[];
 };
 
 export type TodayAiAssistantInput = {

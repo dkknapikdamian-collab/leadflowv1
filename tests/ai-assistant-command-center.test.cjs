@@ -56,6 +56,26 @@ test('AI assistant does not write records directly', () => {
   assert.doesNotMatch(server, /updateLeadInSupabase/);
 });
 
+
+test('AI assistant hard-blocks out-of-scope questions to protect usage limits', () => {
+  const server = read('src/server/ai-assistant.ts');
+  const client = read('src/lib/ai-assistant.ts');
+  const component = read('src/components/TodayAiAssistant.tsx');
+
+  assert.match(server, /ASSISTANT_ALLOWED_SCOPE/);
+  assert.match(server, /buildOutOfScopeAnswer/);
+  assert.match(server, /blocked_out_of_scope/);
+  assert.match(server, /hardBlock: true/);
+  assert.match(server, /Twarda blokada zakresu/);
+  assert.match(server, /Nie odpowiadam na pytania ogólne/);
+  assert.match(client, /blocked_out_of_scope/);
+  assert.match(component, /Tylko CloseFlow/);
+  assert.match(component, /Blokada zakresu/);
+  assert.match(component, /Asystent działa tylko w obrębie CloseFlow/);
+  assert.doesNotMatch(server, /OPENAI_API_KEY/);
+  assert.doesNotMatch(server, /GEMINI_API_KEY/);
+});
+
 test('AI assistant test is included in quiet release gate', () => {
   const source = read('scripts/closeflow-release-check-quiet.cjs');
   assert.ok(source.includes("'tests/ai-assistant-command-center.test.cjs'"));
