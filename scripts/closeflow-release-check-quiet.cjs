@@ -1,4 +1,4 @@
-const { spawnSync } = require('node:child_process');
+﻿const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -83,6 +83,7 @@ const requiredTests = [
   'tests/ai-assistant-autospeech-and-clear-input.test.cjs',
   'tests/ai-assistant-save-vs-search-rule.test.cjs',
   'tests/ai-assistant-admin-and-app-scope.test.cjs',
+  'tests/ai-safety-gates-direct-write.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

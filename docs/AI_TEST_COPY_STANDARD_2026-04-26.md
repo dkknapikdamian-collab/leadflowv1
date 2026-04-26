@@ -37,3 +37,17 @@ Release gate ma łapać regresję działania asystenta, nie kosmetyczną zmianę
 - Legacy tests mogą czasem szukać starej nazwy komponentu albo markera tekstowego.
 - Jeżeli logika została przeniesiona do wrappera, dopuszczalny jest krótki komentarz-kompatybilność zamiast cofania architektury.
 - Nie przywracamy długiego copy w UI tylko po to, żeby zadowolić test.
+
+- v77: release gate dopina test 	ests/ai-safety-gates-direct-write.test.cjs odpornie na zmiany kolejności listy testów.
+
+## v79: wyrównanie testu command center po bramkach bezpieczeństwa
+
+- Test `ai-assistant-command-center` nie może już zakładać, że `insertTaskToSupabase` i `insertEventToSupabase` nigdy nie występują w asystencie.
+- Aktualny kontrakt: leady nie są zapisywane bezpośrednio, a zadania i wydarzenia mogą być zapisane tylko za trybem `direct_task_event`.
+- Tryb bezpośredni musi mieć widoczne markery: `AI_DIRECT_WRITE_MODE_STATE`, `parseAiDirectWriteCommand`, `getStoredAiDirectWriteMode`, `persistAiDirectWriteMode`.
+## v80 capture handoff contract
+
+- Stary kontrakt `assistant must not save tasks directly` był poprawny dla trybu bez bramek bezpieczeństwa.
+- Po dodaniu trybu `direct_task_event` asystent może zapisać zadanie lub wydarzenie bezpośrednio tylko po świadomym włączeniu bramki.
+- Lead nadal nie jest tworzony finalnie przez asystenta. Oczywiste leady trafiają do Szkiców AI.
+- Test `ai-assistant-capture-handoff` ma pilnować rozdziału: handoff/szkice dla leadów, direct write tylko dla task/event i tylko za bramką.

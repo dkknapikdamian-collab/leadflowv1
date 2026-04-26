@@ -6,6 +6,13 @@ import { toast } from 'sonner';
 import { askTodayAiAssistant, type TodayAiAssistantAnswer } from '../lib/ai-assistant';
 import { saveAiLeadDraft } from '../lib/ai-drafts';
 import {
+  getStoredAiDirectWriteMode,
+  parseAiDirectWriteCommand,
+  persistAiDirectWriteMode,
+  type AiDirectWriteMode,
+} from '../lib/ai-direct-write-guard';
+import { insertEventToSupabase, insertTaskToSupabase } from '../lib/supabase-fallback';
+import {
   AI_COMMAND_MAX_LENGTH,
   buildAiUsageKey,
   getAiUsageSnapshot,
@@ -221,10 +228,18 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
   const { workspace, profile, isAdmin } = useWorkspace();
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
   const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
+  // AI_DIRECT_WRITE_MODE_STATE
+  const [directWriteMode, setDirectWriteMode] = useState<AiDirectWriteMode>(() => getStoredAiDirectWriteMode());
 
   useEffect(() => {
     setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
   }, [aiUsageKey, open, isAdmin]);
+
+  const handleDirectWriteModeChange = (mode: AiDirectWriteMode) => {
+    setDirectWriteMode(mode);
+    persistAiDirectWriteMode(mode);
+    toast.success(mode === 'direct_task_event' ? 'AI może od razu zapisywać zadania i wydarzenia z datą oraz godziną' : 'AI zapisuje wszystko przez Szkice AI');
+  };
 
   const clearAutoAskTimer = () => {
     if (pendingAutoAskTimerRef.current !== null) {
@@ -271,6 +286,59 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
       const message = `Polecenie jest za długie. Skróć je do maksymalnie ${AI_COMMAND_MAX_LENGTH} znaków.`;
       setAnswer(buildClientBlockedAnswer(command, message));
       toast.error(message);
+      return;
+    }
+
+    // AI_DIRECT_WRITE_TASK_EVENT_BRANCH
+    const directWriteCandidate = directWriteMode === 'direct_task_event' ? parseAiDirectWriteCommand(command) : null;
+    if (directWriteCandidate) {
+      setLoading(true);
+      try {
+        if (directWriteCandidate.kind === 'event') {
+          await insertEventToSupabase({
+            title: directWriteCandidate.title,
+            type: 'meeting',
+            startAt: directWriteCandidate.startAt || directWriteCandidate.scheduledAt,
+            endAt: directWriteCandidate.endAt,
+            status: 'scheduled',
+            workspaceId: workspace?.id,
+          });
+        } else {
+          await insertTaskToSupabase({
+            title: directWriteCandidate.title,
+            type: 'manual',
+            date: directWriteCandidate.scheduledAt.slice(0, 10),
+            scheduledAt: directWriteCandidate.scheduledAt,
+            status: 'todo',
+            priority: 'medium',
+            workspaceId: workspace?.id,
+          });
+        }
+
+        setAnswer({
+          ok: true,
+          scope: 'assistant_read_or_draft_only',
+          provider: 'client_direct_write_guard',
+          noAutoWrite: false,
+          intent: 'lead_capture',
+          title: directWriteCandidate.kind === 'event' ? 'Wydarzenie zapisane' : 'Zadanie zapisane',
+          summary: directWriteCandidate.title + ' — ' + directWriteCandidate.scheduledAt.replace('T', ' ').slice(0, 16),
+          rawText: command,
+          suggestedCaptureText: command,
+          items: [],
+          warnings: ['Bramka bezpieczeństwa AI: bezpośredni zapis działa tylko dla zadań i wydarzeń z datą oraz godziną.'],
+        });
+        setRawText('');
+        toast.success(directWriteCandidate.kind === 'event' ? 'Wydarzenie zapisane' : 'Zadanie zapisane');
+      } catch (error) {
+        // AI_DIRECT_WRITE_FALLBACK_TO_DRAFT
+        saveAiLeadDraft({ rawText: command, source: 'today_assistant' });
+        setAnswer(buildClientLeadCaptureDraftAnswer(command));
+        setRawText('');
+        toast.error('Nie udało się zapisać od razu. Komenda trafiła do Szkiców AI.');
+      } finally {
+        setLoading(false);
+      }
       return;
     }
 
@@ -468,6 +536,25 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
         <div className="space-y-4">
           <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 text-sm text-blue-900">
             Powiedz normalnie, czego potrzebujesz w aplikacji. Bez słowa „zapisz” asystent sprawdza dane aplikacji. Gdy powiesz „zapisz”, przygotuje szkic do ręcznego zatwierdzenia.
+          </div>
+
+          <div data-ai-safety-gates="direct-write" className="rounded-2xl border border-slate-200 bg-white p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold text-slate-900">Bramki bezpieczeństwa AI</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600">Domyślnie AI zapisuje przez Szkice AI. Możesz pozwolić na natychmiastowy zapis tylko dla jasnych zadań i wydarzeń z datą oraz godziną.</p>
+              </div>
+              <Badge variant="outline">AI_DIRECT_TASK_EVENT_GATE</Badge>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Button type="button" size="sm" variant={directWriteMode === 'draft_only' ? 'default' : 'outline'} onClick={() => handleDirectWriteModeChange('draft_only')}>
+                Wszystko przez Szkice AI
+              </Button>
+              <Button type="button" size="sm" variant={directWriteMode === 'direct_task_event' ? 'default' : 'outline'} onClick={() => handleDirectWriteModeChange('direct_task_event')}>
+                Zadania i wydarzenia od razu
+              </Button>
+            </div>
+            <p className="mt-3 text-xs text-slate-500">Leady, kontakty i niejasne notatki nadal trafiają do Szkiców AI. Brak daty albo godziny też wraca do szkicu.</p>
           </div>
 
           <div className="flex flex-wrap gap-2">

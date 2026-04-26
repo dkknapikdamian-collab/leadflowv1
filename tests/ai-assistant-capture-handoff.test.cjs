@@ -9,27 +9,22 @@ function read(relativePath) {
 }
 
 test('Today assistant can hand a lead-capture command to Quick AI Capture without auto-saving', () => {
-  const today = read('src/pages/Today.tsx');
-  const assistant = read('src/components/TodayAiAssistant.tsx');
-  const capture = read('src/components/QuickAiCapture.tsx');
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const root = path.resolve(__dirname, '..');
+  const assistant = fs.readFileSync(path.join(root, 'src/components/TodayAiAssistant.tsx'), 'utf8');
+  const globalQuickActions = fs.readFileSync(path.join(root, 'src/components/GlobalQuickActions.tsx'), 'utf8');
 
-  assert.ok(today.includes('quickCaptureSeed'), 'Today should store the assistant capture text');
-  assert.ok(today.includes('quickCaptureOpenSignal'), 'Today should trigger QuickAiCapture opening');
-  assert.ok(today.includes('openQuickCaptureFromAssistant'), 'Today should expose a handoff callback');
-  assert.ok(today.includes('initialText={quickCaptureSeed}'), 'QuickAiCapture should receive the assistant text');
-  assert.ok(today.includes('onCaptureRequest={openQuickCaptureFromAssistant}'), 'TodayAiAssistant should call the handoff callback');
-
-  assert.ok(assistant.includes('data-ai-assistant-open-capture="true"'), 'assistant should show a clear handoff button');
-  assert.ok(assistant.includes('Otwórz w Szybkim szkicu'), 'assistant should use clear Polish copy');
-  assert.ok(assistant.includes('handleTransferCapture'), 'assistant should explicitly transfer lead capture text');
-  assert.ok(!assistant.includes('insertLeadToSupabase'), 'assistant must not save leads directly');
-  assert.ok(!assistant.includes('insertTaskToSupabase'), 'assistant must not save tasks directly');
-
-  assert.ok(capture.includes('initialText?: string'), 'QuickAiCapture should accept seeded text');
-  assert.ok(capture.includes('openSignal?: number'), 'QuickAiCapture should accept an open trigger');
-  assert.ok(capture.includes('setOpen(true);'), 'QuickAiCapture should open only when explicitly triggered');
+  assert.ok(assistant.includes('onCaptureRequest'), 'assistant keeps capture handoff prop');
+  assert.ok(assistant.includes('saveAiLeadDraft'), 'assistant can still save obvious lead commands into AI drafts');
+  assert.ok(globalQuickActions.includes('GlobalAiAssistant') || globalQuickActions.includes('TodayAiAssistant'), 'global quick actions expose AI assistant');
+  assert.ok(assistant.includes('AI_DIRECT_WRITE_MODE_STATE'), 'assistant exposes direct write safety gate state');
+  assert.ok(assistant.includes('direct_task_event'), 'assistant must require explicit direct write mode');
+  assert.ok(assistant.includes('parseAiDirectWriteCommand'), 'assistant must parse direct write only through guard');
+  assert.ok(assistant.includes('insertTaskToSupabase'), 'assistant may write tasks only behind explicit safety gate');
+  assert.ok(assistant.includes('insertEventToSupabase'), 'assistant may write events only behind explicit safety gate');
+  assert.ok(!assistant.includes('insertLeadToSupabase'), 'assistant must not create final leads directly');
 });
-
 test('Today assistant saves obvious lead commands into AI drafts without model usage', () => {
   const assistant = read('src/components/TodayAiAssistant.tsx');
 

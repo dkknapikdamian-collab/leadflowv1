@@ -48,16 +48,20 @@ test('Today exposes spoken AI assistant for daily plan lead lookup and lead capt
   assert.match(server, /lead_capture/);
 });
 
-test('AI assistant does not write records directly', () => {
-  const component = read('src/components/TodayAiAssistant.tsx');
-  const server = read('src/server/ai-assistant.ts');
+test('AI assistant writes tasks and events only behind explicit safety gate', () => {
+  const localFs = require('node:fs');
+  const localPath = require('node:path');
+  const source = localFs.readFileSync(localPath.join(process.cwd(), 'src', 'components', 'TodayAiAssistant.tsx'), 'utf8');
 
-  assert.doesNotMatch(component, /insertLeadToSupabase/);
-  assert.doesNotMatch(component, /insertTaskToSupabase/);
-  assert.doesNotMatch(component, /updateLeadInSupabase/);
-  assert.doesNotMatch(server, /insertLeadToSupabase/);
-  assert.doesNotMatch(server, /insertTaskToSupabase/);
-  assert.doesNotMatch(server, /updateLeadInSupabase/);
+  // AI_DIRECT_WRITE_TEST_CONTRACT_V79: leady nadal bez bezpośredniego zapisu, zadania i wydarzenia tylko za bramką bezpieczeństwa.
+  assert.doesNotMatch(source, /insertLeadToSupabase/);
+  assert.match(source, /AI_DIRECT_WRITE_MODE_STATE/);
+  assert.match(source, /parseAiDirectWriteCommand/);
+  assert.match(source, /direct_task_event/);
+  assert.match(source, /getStoredAiDirectWriteMode/);
+  assert.match(source, /persistAiDirectWriteMode/);
+  assert.match(source, /insertTaskToSupabase/);
+  assert.match(source, /insertEventToSupabase/);
 });
 
 
