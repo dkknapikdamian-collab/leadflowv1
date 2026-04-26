@@ -92,28 +92,28 @@ const TODAY_QUICK_SNOOZE_OPTIONS = [
   {
     key: '1h',
     label: 'Za 1h',
-    description: 'OdĹ‚ĂłĹĽ o godzinÄ™.',
+    description: 'Odłóż o godzinę.',
     minutes: 60,
     days: 0,
   },
   {
     key: 'tomorrow',
     label: 'Jutro',
-    description: 'OdĹ‚ĂłĹĽ na jutro rano.',
+    description: 'Odłóż na jutro rano.',
     minutes: 0,
     days: 1,
   },
   {
     key: '2d',
     label: 'Za 2 dni',
-    description: 'OdĹ‚ĂłĹĽ o dwa dni.',
+    description: 'Odłóż o dwa dni.',
     minutes: 0,
     days: 2,
   },
   {
     key: 'next_week',
-    label: 'PrzyszĹ‚y tydzieĹ„',
-    description: 'OdĹ‚ĂłĹĽ na przyszĹ‚y tydzieĹ„.',
+    label: 'Przyszły tydzień',
+    description: 'Odłóż na przyszły tydzień.',
     minutes: 0,
     days: 7,
   },
@@ -322,7 +322,7 @@ function TodayEntryRelationLinks({ entry }: { entry: any }) {
           to={`/leads/${leadId}`}
           className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
         >
-          OtwĂłrz lead
+          Otwórz lead
         </Link>
       ) : null}
       {caseId ? (
@@ -330,7 +330,7 @@ function TodayEntryRelationLinks({ entry }: { entry: any }) {
           to={`/cases/${caseId}`}
           className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700"
         >
-          OtwĂłrz sprawÄ™
+          Otwórz sprawę
         </Link>
       ) : null}
     </div>
@@ -339,7 +339,7 @@ function TodayEntryRelationLinks({ entry }: { entry: any }) {
 
 function formatTodayCompleteActionLabel(isCompleted: boolean, isPending: boolean) {
   if (isPending) return '...';
-  return isCompleted ? 'PrzywrĂłÄ‡' : 'Zrobione';
+  return isCompleted ? 'Przywróć' : 'Zrobione';
 }
 
 function TodayEntryPriorityReasons({ entry }: { entry: any }) {
@@ -435,7 +435,7 @@ function TodayEntrySnoozeBar({
       onTouchStart={(event) => event.stopPropagation()}
       onTouchEnd={(event) => event.stopPropagation()}
     >
-      <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko odĹ‚ĂłĹĽ:</span>
+      <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko odłóż:</span>
       {onEdit ? (
         <button
           type="button"
@@ -620,7 +620,7 @@ export default function Today() {
         setEvents(bundle.events);
       } catch (error: any) {
         if (!cancelled) {
-          toast.error(`BĹ‚Ä…d odczytu planu dnia: ${error.message}`);
+          toast.error(`Błąd odczytu planu dnia: ${error.message}`);
         }
       } finally {
         if (!cancelled) {
@@ -778,7 +778,7 @@ export default function Today() {
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
     if (leadSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚. OpĹ‚aÄ‡ subskrypcjÄ™, aby dodawaÄ‡ leady.');
+    if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     leadSubmitLockRef.current = true;
@@ -795,7 +795,7 @@ export default function Today() {
       setIsLeadOpen(false);
       setNewLead({ name: '', email: '', dealValue: '', source: 'other', status: 'new' });
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       leadSubmitLockRef.current = false;
       setLeadSubmitting(false);
@@ -805,7 +805,7 @@ export default function Today() {
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
     if (taskSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Twój trial wygasł.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     taskSubmitLockRef.current = true;
@@ -846,7 +846,7 @@ export default function Today() {
       setIsTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       taskSubmitLockRef.current = false;
       setTaskSubmitting(false);
@@ -856,7 +856,7 @@ export default function Today() {
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
     if (eventSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Twój trial wygasł.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     eventSubmitLockRef.current = true;
@@ -896,7 +896,7 @@ export default function Today() {
       setIsEventOpen(false);
       resetNewEvent();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       eventSubmitLockRef.current = false;
       setEventSubmitting(false);
@@ -918,7 +918,7 @@ export default function Today() {
       });
       await refreshSupabaseBundle();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
@@ -956,16 +956,16 @@ export default function Today() {
       if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
         setPreviewEntry(null);
       }
-      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrĂłcone');
+      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrócone');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
   };
 
   const deleteTodayTask = async (entry: any) => {
-    if (!window.confirm('UsunÄ…Ä‡ to zadanie?')) return;
+    if (!window.confirm('Usunąć to zadanie?')) return;
 
     try {
       setTodayActionId(`${entry.id}:delete`);
@@ -975,9 +975,9 @@ export default function Today() {
       if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
         setPreviewEntry(null);
       }
-      toast.success('Zadanie usuniÄ™te');
+      toast.success('Zadanie usunięte');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
@@ -1016,16 +1016,16 @@ export default function Today() {
       if (previewEntry?.id === entry.id) {
         setPreviewEntry(null);
       }
-      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywrĂłcone');
+      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywrócone');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
   };
 
   const deleteTodayEvent = async (entry: any) => {
-    if (!window.confirm('UsunÄ…Ä‡ to wydarzenie?')) return;
+    if (!window.confirm('Usunąć to wydarzenie?')) return;
 
     try {
       setTodayActionId(`${entry.id}:delete`);
@@ -1035,9 +1035,9 @@ export default function Today() {
       if (previewEntry?.id === entry.id) {
         setPreviewEntry(null);
       }
-      toast.success('Wydarzenie usuniÄ™te');
+      toast.success('Wydarzenie usunięte');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
@@ -1069,9 +1069,9 @@ export default function Today() {
       if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
         setPreviewEntry(null);
       }
-      toast.success('Zadanie odĹ‚oĹĽone');
+      toast.success('Zadanie odłożone');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
@@ -1107,9 +1107,9 @@ export default function Today() {
       if (previewEntry?.id === entry.id) {
         setPreviewEntry(null);
       }
-      toast.success('Wydarzenie odĹ‚oĹĽone');
+      toast.success('Wydarzenie odłożone');
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
@@ -1148,8 +1148,8 @@ export default function Today() {
           <Card className="border-rose-200">
             <CardContent className="p-6 space-y-4">
               <h2 className="text-lg font-bold text-rose-700">Kontekst workspace nie jest gotowy</h2>
-              <p className="text-sm text-slate-600">Nie moĹĽemy uruchomiÄ‡ akcji, dopĂłki workspace nie zostanie poprawnie zbootstrapowany.</p>
-              <Button onClick={() => refresh()}>SprĂłbuj ponownie</Button>
+              <p className="text-sm text-slate-600">Nie możemy uruchomić akcji, dopóki workspace nie zostanie poprawnie zbootstrapowany.</p>
+              <Button onClick={() => refresh()}>Spróbuj ponownie</Button>
             </CardContent>
           </Card>
         </div>
@@ -1219,7 +1219,7 @@ export default function Today() {
     },
     {
       id: 'today',
-      title: 'Na dziĹ›',
+      title: 'Na dziś',
       value: todayEntries.length,
       tone: 'text-blue-600',
       bg: 'bg-blue-50',
@@ -1228,7 +1228,7 @@ export default function Today() {
     },
     {
       id: 'no-step',
-      title: 'Bez dziaĹ‚aĹ„',
+      title: 'Bez działań',
       value: noStepLeads.length,
       tone: 'text-amber-600',
       bg: 'bg-amber-50',
@@ -1266,16 +1266,16 @@ export default function Today() {
                 </DialogHeader>
                 <form onSubmit={handleAddLead} className="space-y-4 py-4">
                   <div className="space-y-2">
-                    <Label>ImiÄ™ i nazwisko / Firma</Label>
+                    <Label>Imię i nazwisko / Firma</Label>
                     <Input value={newLead.name} onChange={(e) => setNewLead({ ...newLead, name: e.target.value })} required />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>WartoĹ›Ä‡ (PLN)</Label>
+                      <Label>Wartość (PLN)</Label>
                       <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
                     </div>
                     <div className="space-y-2">
-                      <Label>ĹąrĂłdĹ‚o</Label>
+                      <Label>Źródło</Label>
                       <select className={modalSelectClass} value={newLead.source} onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}>
                         {SOURCE_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>{option.label}</option>
@@ -1303,7 +1303,7 @@ export default function Today() {
                 <form onSubmit={handleAddTask} className="space-y-6 py-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label>TytuĹ‚ zadania</Label>
+                      <Label>Tytuł zadania</Label>
                       <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1346,8 +1346,8 @@ export default function Today() {
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
-                      <p className="text-sm font-bold text-slate-900">CyklicznoĹ›Ä‡</p>
-                      <p className="text-xs text-slate-500">MoĹĽesz ustawiÄ‡ zadanie jednorazowe albo cykliczne.</p>
+                      <p className="text-sm font-bold text-slate-900">Cykliczność</p>
+                      <p className="text-xs text-slate-500">Możesz ustawić zadanie jednorazowe albo cykliczne.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
@@ -1370,7 +1370,7 @@ export default function Today() {
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                      <p className="text-xs text-slate-500">Na koĹ„cu ustaw przypomnienie i jego cyklicznoĹ›Ä‡.</p>
+                      <p className="text-xs text-slate-500">Na końcu ustaw przypomnienie i jego cykliczność.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -1380,7 +1380,7 @@ export default function Today() {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Kiedy przypomnieÄ‡</Label>
+                        <Label>Kiedy przypomnieć</Label>
                         <select className={modalSelectClass} value={newTask.reminder.minutesBefore} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, minutesBefore: Number(e.target.value) } })} disabled={newTask.reminder.mode === 'none'}>
                           {REMINDER_OFFSET_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                         </select>
@@ -1389,7 +1389,7 @@ export default function Today() {
                     {newTask.reminder.mode === 'recurring' && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
+                          <Label>Cykliczność przypomnienia</Label>
                           <select className={modalSelectClass} value={newTask.reminder.recurrenceMode} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceMode: e.target.value as any } })}>
                             {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                           </select>
@@ -1421,7 +1421,7 @@ export default function Today() {
                 <form onSubmit={handleAddEvent} className="space-y-6 py-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label>TytuĹ‚</Label>
+                      <Label>Tytuł</Label>
                       <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1444,7 +1444,7 @@ export default function Today() {
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Od do</p>
-                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec aktualizuje siÄ™ automatycznie po zmianie startu.</p>
+                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec aktualizuje się automatycznie po zmianie startu.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -1460,8 +1460,8 @@ export default function Today() {
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
-                      <p className="text-sm font-bold text-slate-900">CyklicznoĹ›Ä‡ wydarzenia</p>
-                      <p className="text-xs text-slate-500">MoĹĽesz ustawiÄ‡ np. wydarzenie miesiÄ™czne i bÄ™dzie widoczne dynamicznie w kalendarzu.</p>
+                      <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
+                      <p className="text-xs text-slate-500">Możesz ustawić np. wydarzenie miesięczne i będzie widoczne dynamicznie w kalendarzu.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
@@ -1484,7 +1484,7 @@ export default function Today() {
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                     <div>
                       <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                      <p className="text-xs text-slate-500">Na koĹ„cu ustaw przypomnienie jednorazowe albo cykliczne.</p>
+                      <p className="text-xs text-slate-500">Na końcu ustaw przypomnienie jednorazowe albo cykliczne.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -1494,7 +1494,7 @@ export default function Today() {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Kiedy przypomnieÄ‡</Label>
+                        <Label>Kiedy przypomnieć</Label>
                         <select className={modalSelectClass} value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })} disabled={newEvent.reminder.mode === 'none'}>
                           {REMINDER_OFFSET_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                         </select>
@@ -1503,7 +1503,7 @@ export default function Today() {
                     {newEvent.reminder.mode === 'recurring' && (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label>CyklicznoĹ›Ä‡ przypomnienia</Label>
+                          <Label>Cykliczność przypomnienia</Label>
                           <select className={modalSelectClass} value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
                             {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                           </select>
@@ -1556,7 +1556,7 @@ export default function Today() {
               <div id="today-section-overdue-tasks">
                 <TileCard
                   id="overdue-tasks-section"
-                  title="ZalegĹ‚e zadania"
+                  title="Zaległe zadania"
                   collapsedMap={collapsedTiles}
                   onToggle={toggleTile}
                   className="border-rose-100 bg-rose-50/30"
@@ -1585,18 +1585,18 @@ export default function Today() {
                               <p className="font-semibold text-slate-900 break-words">{task.title}</p>
                               <p className="text-sm text-rose-500 break-words font-medium">{format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}</p>
                               <p className="mt-2 text-sm text-slate-600 break-words">
-                                Zadanie wymaga reakcji. Kliknij kartÄ™, aby podejrzeÄ‡ szczegĂłĹ‚y i wykonaÄ‡ akcjÄ™ bez przechodzenia do peĹ‚nej listy.
+                                Zadanie wymaga reakcji. Kliknij kartę, aby podejrzeć szczegóły i wykonać akcję bez przechodzenia do pełnej listy.
                               </p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                               <Button variant="outline" size="sm" onClick={() => openPreviewEntry(previewTask)}>
-                                SzczegĂłĹ‚y
+                                Szczegóły
                               </Button>
                               <Button variant="outline" size="sm" onClick={() => toggleTodayTask(previewTask)}>
-                                {task.status === 'done' ? 'PrzywrĂłÄ‡' : 'ZakoĹ„cz'}
+                                {task.status === 'done' ? 'Przywróć' : 'Zakończ'}
                               </Button>
                               <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(previewTask)}>
-                                UsuĹ„
+                                Usuń
                               </Button>
                             </div>
                           </CardContent>
@@ -1621,11 +1621,11 @@ export default function Today() {
                       key={lead.id}
                       leadId={String(lead.id)}
                       title={lead.name}
-                      subtitle={`${lead.company || 'Brak firmy'} â€˘ ${formatLeadMoment(lead.nextActionAt)}`}
+                      subtitle={`${lead.company || 'Brak firmy'} • ${formatLeadMoment(lead.nextActionAt)}`}
                       subtitleClassName="text-rose-500 font-medium"
                       className="border-rose-100 bg-rose-50/30"
                       badges={<Badge variant="destructive" className="rounded-full">Przeterminowany</Badge>}
-                      helperText="Lead ma przeterminowany ruch i wymaga decyzji albo przeniesienia do obsĹ‚ugi."
+                      helperText="Lead ma przeterminowany ruch i wymaga decyzji albo przeniesienia do obsługi."
                     />
                   ))}
                 </div>
@@ -1636,13 +1636,13 @@ export default function Today() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold text-slate-900">Dzisiaj</h2>
-                  <p className="text-sm text-slate-500">Plan dnia z aktualizacjÄ… live.</p>
+                  <p className="text-sm text-slate-500">Plan dnia z aktualizacją live.</p>
                 </div>
                 <Badge variant="secondary" className="rounded-full">{todayEntries.length}</Badge>
               </div>
 
               <div className="space-y-4">
-                <TileCard id="today-section-leads" title="Leady do ruchu" subtitle={`${todayLeadActions.length} wpisĂłw`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-leads" title="Leady do ruchu" subtitle={`${todayLeadActions.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayLeadActions.length > 0 ? (
                     <div className="max-h-80 overflow-y-auto pr-1 space-y-3">
                       {todayLeadActions.map((entry) => (
@@ -1666,12 +1666,12 @@ export default function Today() {
                     </div>
                   ) : (
                     <Card className="border-dashed bg-slate-50/50">
-                      <CardContent className="p-6 text-sm text-slate-500">Brak leadĂłw z ruchem na dziĹ›.</CardContent>
+                      <CardContent className="p-6 text-sm text-slate-500">Brak leadów z ruchem na dziś.</CardContent>
                     </Card>
                   )}
                 </TileCard>
 
-                <TileCard id="today-section-events" title="Wydarzenia" subtitle={`${todayEvents.length} wpisĂłw`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-events" title="Wydarzenia" subtitle={`${todayEvents.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayEvents.length > 0 ? (
                     <div className="grid gap-3">
                       {todayEvents.map((entry) => {
@@ -1696,7 +1696,7 @@ export default function Today() {
                               >
                                 <p className={`font-semibold break-words ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
                                 <p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>
-                                  {EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Wydarzenie'}{entry.leadName ? ` â€˘ Lead: ${entry.leadName}` : ''}
+                                  {EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Wydarzenie'}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}
                                 </p>
                                 <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                                   <Badge variant="outline" className="text-[10px] uppercase">
@@ -1723,13 +1723,13 @@ export default function Today() {
                                   />
                               <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
-                                  SzczegĂłĹ‚y
+                                  Szczegóły
                                 </Button>
                                 <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(entry)} disabled={completePending}>
                                   {formatTodayCompleteActionLabel(isCompleted, completePending)}
                                 </Button>
                                 <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(entry)} disabled={deletePending}>
-                                  {deletePending ? '...' : 'UsuĹ„'}
+                                  {deletePending ? '...' : 'Usuń'}
                                 </Button>
                               </div>
                             </CardContent>
@@ -1739,12 +1739,12 @@ export default function Today() {
                     </div>
                   ) : (
                     <Card className="border-dashed bg-slate-50/50">
-                      <CardContent className="p-6 text-sm text-slate-500">Brak wydarzeĹ„ na dziĹ›.</CardContent>
+                      <CardContent className="p-6 text-sm text-slate-500">Brak wydarzeń na dziś.</CardContent>
                     </Card>
                   )}
                 </TileCard>
 
-                <TileCard id="today-section-tasks" title="Zadania na dziĹ›" subtitle={`${todayTasks.length} wpisĂłw`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-tasks" title="Zadania na dziś" subtitle={`${todayTasks.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayTasks.length > 0 ? (
                     <div className="grid gap-3">
                       {todayTasks.map((entry) => {
@@ -1768,7 +1768,7 @@ export default function Today() {
                                 }}
                               >
                                 <p className={`font-semibold break-words ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
-                                <p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Zadanie'} â€˘ {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` â€˘ Lead: ${entry.leadName}` : ''}</p>
+                                <p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Zadanie'} • {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
                                 <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                                   {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
                                     <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>
@@ -1791,13 +1791,13 @@ export default function Today() {
                                   />
                               <div className="flex flex-wrap items-center gap-2">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
-                                  SzczegĂłĹ‚y
+                                  Szczegóły
                                 </Button>
                                 <Button variant="outline" size="sm" onClick={() => toggleTodayTask(entry)} disabled={completePending}>
                                   {formatTodayCompleteActionLabel(isCompleted, completePending)}
                                 </Button>
                                 <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(entry)} disabled={deletePending}>
-                                  {deletePending ? '...' : 'UsuĹ„'}
+                                  {deletePending ? '...' : 'Usuń'}
                                 </Button>
                               </div>
                             </CardContent>
@@ -1809,7 +1809,7 @@ export default function Today() {
                     <Card className="border-dashed bg-slate-50/50">
                       <CardContent className="p-8 text-center">
                         <CheckSquare className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                        <p className="text-sm text-slate-500">Brak zadaĹ„ na dziĹ›.</p>
+                        <p className="text-sm text-slate-500">Brak zadań na dziś.</p>
                       </CardContent>
                     </Card>
                   )}
@@ -1821,7 +1821,7 @@ export default function Today() {
               <section id="today-section-no-step" className="space-y-4">
                 <div className="flex items-center gap-2 text-amber-600">
                   <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Bez zaplanowanych dziaĹ‚aĹ„</h2>
+                  <h2 className="text-lg font-bold">Bez zaplanowanych działań</h2>
                   <Badge variant="outline" className="rounded-full border-amber-200 text-amber-700 bg-amber-50">{noStepLeads.length}</Badge>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1831,8 +1831,8 @@ export default function Today() {
                       leadId={String(lead.id)}
                       title={lead.name}
                       subtitle={lead.company || 'Brak firmy'}
-                      badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak dziaĹ‚aĹ„</Badge>}
-                      helperText="Kliknij kartÄ™ i zaplanuj zadanie albo wydarzenie dla tego tematu."
+                      badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak działań</Badge>}
+                      helperText="Kliknij kartę i zaplanuj zadanie albo wydarzenie dla tego tematu."
                     />
                   ))}
                 </div>
@@ -1843,10 +1843,10 @@ export default function Today() {
               <section id="today-section-service-transition" className="space-y-4">
                 <div className="flex items-center gap-2 text-violet-600">
                   <Briefcase className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Start i obsĹ‚uga</h2>
+                  <h2 className="text-lg font-bold">Start i obsługa</h2>
                 </div>
                 {readyToStartLeads.length > 0 ? (
-                  <TileCard id="today-section-ready-to-start" title="Gotowe do uruchomienia sprawy" subtitle={`${readyToStartLeads.length} leadĂłw`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  <TileCard id="today-section-ready-to-start" title="Gotowe do uruchomienia sprawy" subtitle={`${readyToStartLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                     <div className="space-y-2">
                       {readyToStartLeads.slice(0, 5).map((lead) => (
                         <LeadLinkCard
@@ -1855,22 +1855,22 @@ export default function Today() {
                           title={lead.name}
                           subtitle={lead.company || 'Lead gotowy do startu'}
                           badges={<Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100 border-none">Gotowy do startu</Badge>}
-                          helperText="WejdĹş w lead i uĹĽyj akcji â€žRozpocznij obsĹ‚ugÄ™â€ť."
+                          helperText="Wejdź w lead i użyj akcji „Rozpocznij obsługę”."
                         />
                       ))}
                     </div>
                   </TileCard>
                 ) : null}
                 {activeServiceLeads.length > 0 ? (
-                  <TileCard id="today-section-active-service" title="ObsĹ‚uga aktywna" subtitle={`${activeServiceLeads.length} leadĂłw`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  <TileCard id="today-section-active-service" title="Obsługa aktywna" subtitle={`${activeServiceLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                     <div className="space-y-2">
                       {activeServiceLeads.slice(0, 5).map((lead) => (
                         <LeadLinkCard
                           key={lead.id}
                           leadId={String(lead.id)}
                           title={lead.name}
-                          subtitle={lead.company || 'ObsĹ‚uga aktywna'}
-                          badges={<Badge variant="outline" className="border-violet-200 text-violet-700">ObsĹ‚uga aktywna</Badge>}
+                          subtitle={lead.company || 'Obsługa aktywna'}
+                          badges={<Badge variant="outline" className="border-violet-200 text-violet-700">Obsługa aktywna</Badge>}
                         />
                       ))}
                     </div>
@@ -1895,7 +1895,7 @@ export default function Today() {
               <section id="today-section-stale" className="space-y-4">
                 <div className="flex items-center gap-2 text-purple-600">
                   <Clock className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Bez ruchu za dĹ‚ugo</h2>
+                  <h2 className="text-lg font-bold">Bez ruchu za długo</h2>
                   <Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-purple-50">{staleLeads.length}</Badge>
                 </div>
                 <div className="grid gap-3">
@@ -1906,11 +1906,11 @@ export default function Today() {
                         key={lead.id}
                         leadId={String(lead.id)}
                         title={lead.name}
-                        subtitle={`${days} dni bez wyraĹşnego ruchu â€˘ ${lead.company || lead.source || 'Lead'}`}
+                        subtitle={`${days} dni bez wyraźnego ruchu • ${lead.company || lead.source || 'Lead'}`}
                         subtitleClassName="text-purple-500 font-medium"
                         className="border-purple-100 bg-purple-50/30"
                         badges={<Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-white">Bez ruchu</Badge>}
-                        helperText="Lead ma ustawiony proces, ale nie byĹ‚o Ĺ›wieĹĽego ruchu. To dobry kandydat do szybkiego sprawdzenia lub follow-upu."
+                        helperText="Lead ma ustawiony proces, ale nie było świeżego ruchu. To dobry kandydat do szybkiego sprawdzenia lub follow-upu."
                       />
                     );
                   })}
@@ -1922,7 +1922,7 @@ export default function Today() {
           <div className="space-y-8">
             <TileCard
               id="pipeline-summary"
-              title="WartoĹ›Ä‡ lejka"
+              title="Wartość lejka"
               subtitle={`${activeLeadsValue.toLocaleString()} PLN`}
               collapsedMap={collapsedTiles}
               onToggle={toggleTile}
@@ -1932,7 +1932,7 @@ export default function Today() {
               headerRight={<TrendingUp className="w-10 h-10 text-white/20" />}
               bodyClassName="border-t border-slate-800"
             >
-              <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaĹĽy</p>
+              <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaży</p>
               <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-800 pt-4">
                 <div>
                   <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Aktywne leady</p>
@@ -1943,7 +1943,7 @@ export default function Today() {
                   <p className="text-xl font-bold text-white">{overdueTasks.length + overdueLeadActions.length}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bez dziaĹ‚aĹ„</p>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bez działań</p>
                   <p className="text-xl font-bold text-white">{noStepLeads.length}</p>
                 </div>
                 <div>
@@ -1955,7 +1955,7 @@ export default function Today() {
 
             {riskyValuableLeads.length > 0 && (
               <section className="space-y-4">
-                <h2 className="text-lg font-bold text-slate-900">Najcenniejsze zagroĹĽone</h2>
+                <h2 className="text-lg font-bold text-slate-900">Najcenniejsze zagrożone</h2>
                 <div className="space-y-3">
                   {riskyValuableLeads.map((lead) => (
                     <LeadLinkCard
@@ -1971,13 +1971,13 @@ export default function Today() {
                       }
                       badges={
                         <>
-                          {lead.isAtRisk ? <Badge variant="destructive">Oznaczony jako zagroĹĽony</Badge> : null}
-                          {isLeadOverdue(lead) ? <Badge variant="destructive">Termin w przeszĹ‚oĹ›ci</Badge> : null}
-                          {!parseMoment(lead.nextActionAt) ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak dziaĹ‚aĹ„</Badge> : null}
+                          {lead.isAtRisk ? <Badge variant="destructive">Oznaczony jako zagrożony</Badge> : null}
+                          {isLeadOverdue(lead) ? <Badge variant="destructive">Termin w przeszłości</Badge> : null}
+                          {!parseMoment(lead.nextActionAt) ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak działań</Badge> : null}
                           {(getDaysWithoutUpdate(lead) || 0) >= 5 ? <Badge variant="outline" className="border-purple-200 text-purple-700">Bez ruchu {getDaysWithoutUpdate(lead)} dni</Badge> : null}
                         </>
                       }
-                      helperText="Kliknij kartÄ™, aby wejĹ›Ä‡ do leada i od razu zareagowaÄ‡."
+                      helperText="Kliknij kartę, aby wejść do leada i od razu zareagować."
                     />
                   ))}
                 </div>
@@ -1985,7 +1985,7 @@ export default function Today() {
             )}
 
             <section className="space-y-4">
-              <h2 className="text-lg font-bold text-slate-900">NajbliĹĽsze dni</h2>
+              <h2 className="text-lg font-bold text-slate-900">Najbliższe dni</h2>
               <div className="space-y-3">
                 {[1, 2, 3].map((days) => {
                   const date = addDays(new Date(), days);
@@ -2004,7 +2004,7 @@ export default function Today() {
                   return (
                     <TileCard key={days} id={`upcoming-day:${days}`} title={`${format(date, 'EEE', { locale: pl }).toUpperCase()} ${format(date, 'd')}`} subtitle={`${count} ${count === 1 ? 'rzecz' : 'rzeczy'}`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                       <p className="text-[10px] text-slate-500">
-                        {dayEntries.filter((entry) => entry.kind === 'event').length} wydarzeĹ„ â€˘ {dayEntries.filter((entry) => entry.kind === 'task').length} zadaĹ„ â€˘ {dayEntries.filter((entry) => entry.kind === 'lead').length} leadĂłw
+                        {dayEntries.filter((entry) => entry.kind === 'event').length} wydarzeń • {dayEntries.filter((entry) => entry.kind === 'task').length} zadań • {dayEntries.filter((entry) => entry.kind === 'lead').length} leadów
                       </p>
                     </TileCard>
                   );
@@ -2027,7 +2027,7 @@ export default function Today() {
                         <Badge variant="outline" className="text-[8px] h-4 px-1">TOP</Badge>
                       </div>
                     }
-                    helperText="Kliknij kartÄ™, aby otworzyÄ‡ leada."
+                    helperText="Kliknij kartę, aby otworzyć leada."
                   />
                 ))}
               </div>
@@ -2038,7 +2038,7 @@ export default function Today() {
       <Dialog open={Boolean(previewEntry)} onOpenChange={(open) => { if (!open) setPreviewEntry(null); }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>{previewEntry?.kind === 'task' ? 'PodglÄ…d zadania' : 'PodglÄ…d wydarzenia'}</DialogTitle>
+            <DialogTitle>{previewEntry?.kind === 'task' ? 'Podgląd zadania' : 'Podgląd wydarzenia'}</DialogTitle>
           </DialogHeader>
           {previewEntry ? (
             <div className="space-y-4 py-2">
@@ -2048,7 +2048,7 @@ export default function Today() {
                   {previewEntry.kind === 'task'
                     ? TASK_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Zadanie'
                     : EVENT_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Wydarzenie'}
-                  {previewEntry.leadName ? ` â€˘ Lead: ${previewEntry.leadName}` : ''}
+                  {previewEntry.leadName ? ` • Lead: ${previewEntry.leadName}` : ''}
                 </p>
               </div>
 
@@ -2088,7 +2088,7 @@ export default function Today() {
                     onClick={() => previewEntry.kind === 'task' ? deleteTodayTask(previewEntry) : deleteTodayEvent(previewEntry)}
                     disabled={todayActionId === `${previewEntry.id}:delete`}
                   >
-                    {todayActionId === `${previewEntry.id}:delete` ? 'Usuwanie...' : 'UsuĹ„'}
+                    {todayActionId === `${previewEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
                   </Button>
                   <Button
                     variant="outline"
@@ -2100,16 +2100,16 @@ export default function Today() {
                       ? 'Zapisywanie...'
                       : previewEntry.kind === 'task'
                         ? previewEntry.raw?.status === 'done'
-                          ? 'PrzywrĂłÄ‡'
+                          ? 'Przywróć'
                           : 'Oznacz jako zrobione'
                         : previewEntry.raw?.status === 'completed'
-                          ? 'PrzywrĂłÄ‡'
+                          ? 'Przywróć'
                           : 'Oznacz jako wykonane'}
                   </Button>
                 </div>
                 <Button variant="outline" size="sm" asChild>
                   <Link to={previewEntry.kind === 'task' ? '/tasks' : '/calendar'}>
-                    {previewEntry.kind === 'task' ? 'OtwĂłrz zadania' : 'OtwĂłrz kalendarz'}
+                    {previewEntry.kind === 'task' ? 'Otwórz zadania' : 'Otwórz kalendarz'}
                   </Link>
                 </Button>
               </DialogFooter>

@@ -1651,7 +1651,7 @@ const caseClientSuggestions = useMemo(() => {
           <div className="lg:col-span-2 space-y-6">
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -1662,7 +1662,7 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
                 <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
@@ -1732,7 +1732,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -1743,7 +1743,7 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
                 <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
@@ -1861,7 +1861,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -1872,7 +1872,7 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
                 <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
@@ -2062,7 +2062,7 @@ const caseClientSuggestions = useMemo(() => {
           <div className="space-y-6">
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2073,7 +2073,7 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
                 <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
@@ -2122,7 +2122,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2133,7 +2133,7 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
                 <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
@@ -2259,7 +2259,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2270,7 +2270,7 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
                 <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
@@ -2376,7 +2376,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Ĺąródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2387,7 +2387,7 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Ĺąródło pozyskania: {sourceLeadOriginLabel}</div>
+                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
                 <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
