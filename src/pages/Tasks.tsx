@@ -694,8 +694,7 @@ export default function Tasks() {
       <div className="p-4 md:p-8 max-w-5xl mx-auto w-full space-y-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Zadania</h1>
-            <p className="text-slate-500">Zarządzaj codzienną egzekucją i powtarzalnymi ruchami.</p>
+            <h1 className="text-3xl font-bold text-slate-900">Zadania</h1>
           </div>
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
             <DialogTrigger asChild>

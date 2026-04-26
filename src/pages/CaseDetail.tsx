@@ -1685,8 +1685,7 @@ const caseClientSuggestions = useMemo(() => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Stan operacyjny</p>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
                     <div className="flex flex-wrap gap-2">
                       <Badge variant={caseData.status === 'blocked' ? 'destructive' : caseData.status === 'ready_to_start' ? 'secondary' : 'outline'}>
                         {caseStatusLabel(caseData.status)}

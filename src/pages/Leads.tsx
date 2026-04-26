@@ -394,8 +394,7 @@ export default function Leads() {
       <div className="p-4 md:p-8 max-w-7xl mx-auto w-full space-y-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Leady</h1>
-            <p className="text-slate-500">Lead to temat do pozyskania. Po rozpoczęciu obsługi dalsza praca przechodzi do sprawy.</p>
+            <h1 className="text-3xl font-bold text-slate-900">Leady</h1>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -653,7 +652,7 @@ export default function Leads() {
                             {isArchivedLead
                               ? 'Ten rekord jest w koszu. Możesz go przywrócić bez trwałego kasowania danych.'
                               : movedToService
-                                ? 'Ten rekord został już wpięty w sprawę i pełni rolę historii pozyskania.'
+                                ? ' i pełni rolę historii pozyskania.'
                                 : 'Aktywny temat sprzedażowy. Wejdź, aby dodać akcję, notatkę albo rozpocząć obsługę.'}
                           </p>
                         </div>

@@ -107,8 +107,6 @@ export default function Billing() {
   const [tab, setTab] = useState<'plan' | 'settlements'>('plan');
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
   const [upgradingPlanKey, setUpgradingPlanKey] = useState<string | null>(null);
-  const [billingCheckLoading, setBillingCheckLoading] = useState(false);
-  const [billingCheckResult, setBillingCheckResult] = useState<Record<string, any> | null>(null);
   const [settlementLoading, setSettlementLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [payments, setPayments] = useState<any[]>([]);
@@ -150,36 +148,6 @@ export default function Billing() {
       cancelled = true;
     };
   }, [tab, workspace?.id]);
-
-  const handleBillingCheck = async () => {
-    if (!workspace?.id) return;
-
-    setBillingCheckLoading(true);
-    setBillingCheckResult(null);
-
-    try {
-      const result = await createBillingCheckoutSessionInSupabase({
-        workspaceId: workspace.id,
-        customerEmail: '',
-        planKey: 'basic',
-        billingPeriod,
-        dryRun: true,
-      });
-
-      setBillingCheckResult(result as Record<string, any>);
-
-      if (result?.checkoutConfigured && result?.webhookConfigured) {
-        toast.success('Płatności Stripe/BLIK wyglądają na skonfigurowane.');
-        return;
-      }
-
-      toast.error('Płatności wymagają sprawdzenia konfiguracji w Vercel lub Stripe.');
-    } catch (error: any) {
-      toast.error(`Błąd sprawdzania płatności Stripe/BLIK: ${error.message || 'REQUEST_FAILED'}`);
-    } finally {
-      setBillingCheckLoading(false);
-    }
-  };
 
   const handleUpgrade = async (plan: PlanCard) => {
     if (!workspace?.id) return;
@@ -278,34 +246,7 @@ export default function Billing() {
               </div>
             </div>
 
-            <Card className="border-none shadow-sm">
-              <CardHeader>
-                <CardTitle>Test płatności Stripe/BLIK</CardTitle>
-                <CardDescription>
-                  Sprawdza konfigurację checkoutu bez tworzenia płatności i bez przekierowania użytkownika.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button type="button" variant="outline" disabled={billingCheckLoading} onClick={() => void handleBillingCheck()}>
-                    {billingCheckLoading ? 'Sprawdzanie...' : 'Sprawdź płatności'}
-                  </Button>
-                  {billingCheckResult ? (
-                    <Badge variant={billingCheckResult.checkoutConfigured && billingCheckResult.webhookConfigured ? 'default' : 'outline'}>
-                      {billingCheckResult.checkoutConfigured && billingCheckResult.webhookConfigured ? 'Gotowe' : 'Wymaga konfiguracji'}
-                    </Badge>
-                  ) : null}
-                </div>
-                {billingCheckResult ? (
-                  <div className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600 sm:grid-cols-2">
-                    <p><strong>Checkout:</strong> {billingCheckResult.checkoutConfigured ? 'OK' : 'brak STRIPE_SECRET_KEY'}</p>
-                    <p><strong>Webhook:</strong> {billingCheckResult.webhookConfigured ? 'OK' : 'brak STRIPE_WEBHOOK_SECRET'}</p>
-                    <p><strong>URL aplikacji:</strong> {billingCheckResult.appUrl || 'brak'}</p>
-                    <p><strong>Testowany plan:</strong> {billingCheckResult.planKey || 'basic'} / {billingCheckResult.billingPeriod || billingPeriod}</p>
-                  </div>
-                ) : null}
-              </CardContent>
-            </Card>
+
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               {BILLING_PLANS.map((plan) => {

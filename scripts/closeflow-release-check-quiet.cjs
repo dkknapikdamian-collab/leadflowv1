@@ -38,6 +38,7 @@ const requiredTests = [
   'tests/billing-stripe-blik-multi-plan-pricing.test.cjs',
   'tests/billing-checkout-vercel-api-type-guard.test.cjs',
   'tests/billing-ui-polish-and-diagnostics.test.cjs',
+  'tests/ui-copy-and-billing-cleanup.test.cjs',
   'tests/billing-stripe-diagnostics-dry-run.test.cjs',
   'tests/billing-dry-run-test-order-regression.test.cjs',
   'tests/stripe-checkout-app-url-normalization.test.cjs',

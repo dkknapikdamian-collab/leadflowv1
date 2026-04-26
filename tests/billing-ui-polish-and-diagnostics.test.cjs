@@ -5,15 +5,16 @@ const test = require('node:test');
 const repoRoot = path.resolve(__dirname, '..');
 function read(p) { return fs.readFileSync(path.join(repoRoot, p), 'utf8'); }
 
-test('Billing page exposes Stripe/BLIK diagnostics button without redirecting', () => {
+test('Billing page hides technical payment diagnostics from customer plan view', () => {
   const source = read('src/pages/Billing.tsx');
-  assert.match(source, /const handleBillingCheck = async \(\) =>/);
-  assert.match(source, /dryRun: true/);
-  assert.match(source, /Sprawdź płatności/);
-  assert.match(source, /Test płatności Stripe\/BLIK/);
-  assert.match(source, /Sprawdza konfigurację checkoutu bez tworzenia płatności/);
-  assert.match(source, /checkoutConfigured/);
-  assert.match(source, /webhookConfigured/);
+
+  assert.doesNotMatch(source, /Test płatności Stripe\/BLIK/);
+  assert.doesNotMatch(source, /Sprawdź płatności/);
+  assert.doesNotMatch(source, /Sprawdza konfigurację checkoutu bez tworzenia płatności/);
+  assert.doesNotMatch(source, /handleBillingCheck/);
+  assert.doesNotMatch(source, /billingCheckResult/);
+  assert.doesNotMatch(source, /dryRun:\s*true/);
+  assert.match(source, /Przejdź do płatności/);
 });
 
 test('Billing page has corrected Polish user-facing labels', () => {
