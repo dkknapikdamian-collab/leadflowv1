@@ -3,6 +3,14 @@ import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById, 
 const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
 const DEFAULT_PLAN_ID = 'trial_14d';
 const PAID_PLAN_ID = 'closeflow_pro';
+const PAID_PLAN_IDS = new Set([
+  'closeflow_basic',
+  'closeflow_basic_yearly',
+  'closeflow_pro',
+  'closeflow_pro_yearly',
+  'closeflow_business',
+  'closeflow_business_yearly',
+]);
 const DEFAULT_STATUS = 'trial_active';
 const TRIAL_DAYS = 14;
 const TRIAL_MS = TRIAL_DAYS * 24 * 60 * 60 * 1000;
@@ -68,6 +76,12 @@ function isFutureDate(iso: NullableString) {
   return Number.isFinite(date.getTime()) && date.getTime() > Date.now();
 }
 
+function isAccessBillingDateExpired(value: NullableString) {
+  if (!value) return false;
+  const date = asDate(value);
+  return !!date && date.getTime() < Date.now();
+}
+
 function isRecentDate(value: unknown, windowMs: number) {
   const date = asDate(value);
   if (!date) return false;
@@ -90,7 +104,7 @@ function normalizePlanId(planId: string | null | undefined, subscriptionStatus?:
     return status === 'paid_active' ? PAID_PLAN_ID : DEFAULT_PLAN_ID;
   }
 
-  if (normalized === DEFAULT_PLAN_ID || normalized === PAID_PLAN_ID) {
+  if (normalized === DEFAULT_PLAN_ID || PAID_PLAN_IDS.has(normalized)) {
     return normalized;
   }
 
@@ -199,11 +213,15 @@ function normalizeProfile(
   };
 }
 
-function buildAccess(workspace: { subscriptionStatus: string; trialEndsAt: NullableString }) {
+function buildAccess(workspace: { subscriptionStatus: string; trialEndsAt: NullableString; nextBillingAt?: NullableString }) {
   const statusRaw = workspace.subscriptionStatus || 'inactive';
   const trialFuture = isFutureDate(workspace.trialEndsAt);
 
   if (statusRaw === 'paid_active') {
+    if (isAccessBillingDateExpired(workspace.nextBillingAt || null)) {
+      return { hasAccess: false, status: 'payment_failed', isTrialActive: false, isPaidActive: false };
+    }
+
     return { hasAccess: true, status: 'paid_active', isTrialActive: false, isPaidActive: true };
   }
 

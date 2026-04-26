@@ -1,6 +1,7 @@
 import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
+import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 
 const SOURCE_ALIASES: Record<string, string> = {
   instagram: 'instagram',
@@ -475,6 +476,10 @@ export default async function handler(req: any, res: any) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
     const workspaceId = await resolveRequestWorkspaceId(req, body);
 
+    if (req.method !== 'GET' && workspaceId) {
+      await assertWorkspaceWriteAccess(workspaceId);
+    }
+
     if (req.method === 'POST' && asText(body.action) === 'start_service') {
       if (!workspaceId) {
         res.status(400).json({ error: 'LEAD_WORKSPACE_REQUIRED' });
@@ -575,6 +580,7 @@ export default async function handler(req: any, res: any) {
 
     const finalWorkspaceId = workspaceId || await findWorkspaceId(body.workspaceId);
     if (!finalWorkspaceId) throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
+    await assertWorkspaceWriteAccess(finalWorkspaceId);
     const nowIso = new Date().toISOString();
     const status = normalizeStatus(body.status || 'new');
     const startRuleSnapshot = normalizeEnum(body.startRuleSnapshot, START_RULES, 'on_acceptance');
@@ -630,6 +636,10 @@ export default async function handler(req: any, res: any) {
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
     res.status(200).json(normalizeLead(inserted as Record<string, unknown>));
   } catch (error: any) {
+    if (String(error?.message || error || '').startsWith('WORKSPACE_WRITE_ACCESS_REQUIRED')) {
+      res.status(402).json({ error: 'WORKSPACE_WRITE_ACCESS_REQUIRED' });
+      return;
+    }
     const message = error?.message || 'LEAD_INSERT_FAILED';
     const statusCode = message === 'LEAD_NOT_FOUND' ? 404 : message === 'LEAD_ALREADY_HAS_CASE' ? 409 : 500;
     res.status(statusCode).json({ error: message });

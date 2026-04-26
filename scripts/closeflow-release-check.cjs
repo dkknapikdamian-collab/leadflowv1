@@ -51,6 +51,8 @@ const requiredTests = [
   'tests/layout-brand-label.test.cjs',
   'tests/lead-start-service-case-redirect.test.cjs',
   'tests/billing-checkout-no-prefilled-personal-email.test.cjs',
+  'tests/lead-write-access-gate.test.cjs',
+  'tests/billing-access-plan-normalization.test.cjs',
   'tests/today-quick-snooze-real-button-click.test.cjs',
 ];
 
