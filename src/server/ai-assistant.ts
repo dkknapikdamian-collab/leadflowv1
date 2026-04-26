@@ -32,6 +32,7 @@ const ASSISTANT_ALLOWED_SCOPE = [
   'najcenniejsze leady, klienci i sprawy',
   'sprawdzenie kolejnego kroku dla istniejącego leada lub klienta',
   'sprawdzenie powiązanych zadań, wydarzeń i spraw',
+  'zasada zapisu: powiedz zapisz, dodaj, nowy lead albo mam leada; bez tego asystent szuka w aplikacji',
 ];
 
 const ASSISTANT_MAX_COMMAND_LENGTH = 800;
@@ -511,12 +512,24 @@ function buildGlobalAppSearchAnswer(context: Record<string, unknown>, rawText: s
   };
 }
 
+
 function detectCaptureIntent(query: string) {
-  const hasSaveVerb = /\b(zapisz|dodaj|utworz|stworz|wrzuc|wrzucic|zapamietaj)\b/u.test(query);
-  const hasLeadWord = /\b(lead|leada|kontakt|klient|temat)\b/u.test(query);
-  const hasLeadLikeContent = /\b(zainteresowan|sprzedaz|sprzedaza|zakup|dzialk|dzialki|stron|ofert|papiery|oddzwon|dzwonil|telefon|mail)\b/u.test(query);
-  return (hasSaveVerb && (hasLeadWord || hasLeadLikeContent)) || /\bmam leada\b/u.test(query);
+  const saveCommandPattern = /\b(zapisz|dodaj|utworz|stworz|wrzuc|wrzucic|zapamietaj|notuj|zanotuj)\b/u;
+  const leadCommandPattern = /\b(mam leada|mam lead|nowy lead|nowego leada|nowy kontakt|nowego klienta|dodaj klienta|dodaj kontakt)\b/u;
+  const hasSaveIntent = saveCommandPattern.test(query) || leadCommandPattern.test(query);
+  if (!hasSaveIntent) return false;
+
+  const payload = query
+    .replace(saveCommandPattern, ' ')
+    .replace(leadCommandPattern, ' ')
+    .replace(/\b(lead|leada|kontakt|klient|klienta|notatke|notatka|notatkę)\b/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const meaningfulTokens = payload.split(' ').filter((token) => token.length >= 2);
+  return meaningfulTokens.length > 0;
 }
+
 
 function buildCaptureAnswer(rawText: string): AssistantResponse {
   return {
@@ -525,8 +538,8 @@ function buildCaptureAnswer(rawText: string): AssistantResponse {
     provider: 'rules',
     noAutoWrite: true,
     intent: 'lead_capture',
-    title: 'Szkic leada zapisany do sprawdzenia',
-    summary: 'To wygląda jak lead. Notatka powinna trafić do Szkiców AI, a finalny lead powstanie dopiero po Twojej akceptacji.',
+    title: 'Szkic kontaktu / leada zapisany do sprawdzenia',
+    summary: 'Usłyszałem komendę zapisu. Notatka trafia do Szkiców AI, a finalny lead powstanie dopiero po Twojej akceptacji.',
     rawText,
     suggestedCaptureText: rawText,
     items: [
@@ -537,12 +550,13 @@ function buildCaptureAnswer(rawText: string): AssistantResponse {
       },
       {
         label: 'Otwórz Szkice AI',
-        detail: 'Tam poprawisz pola i zatwierdzisz leada, gdy będziesz mógł spokojnie sprawdzić dane.',
+        detail: 'Tam poprawisz pola i zatwierdzisz leada. Bez zatwierdzenia nic nie trafia jako finalny kontakt.',
         href: '/ai-drafts',
         priority: 'medium',
       },
     ],
-    warnings: ['Asystent nie tworzy leada automatycznie. Zapisuje tylko szkic do późniejszego zatwierdzenia.'],
+    warnings: ['Reguła pracy: słowo „zapisz” tworzy szkic. Bez „zapisz” asystent tylko szuka po danych aplikacji.'],
+    allowedScope: ASSISTANT_ALLOWED_SCOPE,
   };
 }
 
@@ -691,7 +705,7 @@ function buildUnknown(rawText: string): AssistantResponse {
     noAutoWrite: true,
     intent: 'unknown',
     title: 'Nie rozpoznałem polecenia w aplikacji',
-    summary: 'Mogę odpowiadać w pełnym zakresie CloseFlow: leady, klienci, sprawy, zadania, wydarzenia, plan dnia, plan na jutro, wartość lejka i szkice AI.',
+    summary: 'Mogę odpowiadać w pełnym zakresie CloseFlow i szukać po danych aplikacji. Jeżeli chcesz zapisać kontakt albo notatkę, zacznij od słowa „zapisz”; w innym przypadku potraktuję tekst jako szukanie.',
     rawText,
     items: [
       { label: 'Przykład', detail: '„co mam jutro”, „ile mam leadów”, „jaka jest wartość lejka”, „co dalej z Dorotą Kołodziej” albo „zapisz leada...”', priority: 'medium' },

@@ -80,6 +80,8 @@ const requiredTests = [
   'tests/ai-real-provider-wiring.test.cjs',
   'tests/ai-cloudflare-provider-wiring.test.cjs',
   'tests/ai-assistant-global-app-search.test.cjs',
+  'tests/ai-assistant-autospeech-and-clear-input.test.cjs',
+  'tests/ai-assistant-save-vs-search-rule.test.cjs',
   'tests/ai-assistant-admin-and-app-scope.test.cjs',
 ];
 

@@ -122,9 +122,9 @@ function buildClientLeadCaptureDraftAnswer(rawText: string): TodayAiAssistantAns
 }
 
 const EXAMPLES = [
-  'Co mam dzisiaj zrobić?',
-  'Co dalej z tym leadem?',
-  'Mam leada Warszawa zainteresowany sprzedażą działki, zapisz to',
+  'Dorota Kołodziej',
+  'Jaki jest mój najdroższy lead?',
+  'Zapisz Piotrek chce sprzedać działkę Warszawa kontakt jutro',
 ];
 
 function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {
@@ -162,6 +162,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
   const [listening, setListening] = useState(false);
   const [interimText, setInterimText] = useState('');
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const autoSpeechStartedRef = useRef(false);
   const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
   const { workspace, profile, isAdmin } = useWorkspace();
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
@@ -238,6 +239,8 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
         },
       });
       setAnswer(result);
+      // AI_ASSISTANT_CLEAR_INPUT_AFTER_RESULT
+      setRawText('');
       if (result.intent === 'lead_capture' && !result.hardBlock) {
         const captureText = String(result.suggestedCaptureText || result.rawText || command || '').trim();
         if (captureText) {
@@ -340,9 +343,24 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
     }
   };
 
-  const handleOpenChange = (nextOpen: boolean) => {
+  
+const handleOpenChange = (nextOpen: boolean) => {
     setOpen(nextOpen);
-    if (!nextOpen) stopSpeech();
+
+    if (nextOpen) {
+      if (speechSupported && !autoSpeechStartedRef.current) {
+        autoSpeechStartedRef.current = true;
+        window.setTimeout(() => {
+          if (autoSpeechStartedRef.current && !recognitionRef.current) {
+            handleToggleSpeech();
+          }
+        }, 900);
+      }
+      return;
+    }
+
+    autoSpeechStartedRef.current = false;
+    stopSpeech();
   };
 
   return (
@@ -378,7 +396,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
             <Textarea
               value={rawText}
               onChange={(event) => setRawText(event.target.value)}
-              placeholder="np. Co mam dzisiaj zrobić? / Co dalej z Janem? / Mam leada Warszawa, zainteresowany działką..."
+              placeholder="Szukaj: Dorota Kołodziej, e-mail, telefon, adres, notatka... albo zacznij od: Zapisz Piotrek chce sprzedać działkę Warszawa kontakt jutro"
               className="min-h-28"
             />
             {interimText ? (
@@ -399,6 +417,8 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
               {listening ? 'Zatrzymaj dyktowanie' : 'Dyktuj'}
             </Button>
             <Badge variant="outline">Bez autopilota</Badge>
+            <Badge variant="outline">Zapisz = szkic</Badge>
+            <Badge variant="outline">Bez zapisz = szukanie</Badge>
             <Badge variant="outline">Tylko CloseFlow</Badge>
             <Badge variant="outline">Pełny zakres aplikacji</Badge>
             <Badge variant="outline" data-ai-usage-badge="today-assistant">{usage.adminExempt ? 'Admin AI: bez limitu' : 'Limit AI: ' + usage.used + '/' + usage.limit}</Badge>

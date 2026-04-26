@@ -121,6 +121,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
   const [listening, setListening] = useState(false);
   const [interimText, setInterimText] = useState('');
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const autoSpeechStartedRef = useRef(false);
   const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
   const [usage, setUsage] = useState<AiUsageSnapshot>(() => (isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })));
@@ -350,7 +351,22 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => {
       setOpen(nextOpen);
-      if (!nextOpen) reset();
+
+      if (nextOpen) {
+        if (speechSupported && !autoSpeechStartedRef.current) {
+          // QUICK_AI_CAPTURE_AUTO_START_SPEECH
+          autoSpeechStartedRef.current = true;
+          window.setTimeout(() => {
+            if (autoSpeechStartedRef.current && !recognitionRef.current) {
+              handleToggleSpeech();
+            }
+          }, 900);
+        }
+        return;
+      }
+
+      autoSpeechStartedRef.current = false;
+      reset();
     }}>
       <DialogTrigger asChild>
         <Button type="button" variant="outline" className="rounded-xl" disabled={!workspaceReady}>
@@ -364,7 +380,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
 
         <div className="space-y-4">
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
-            Wklej albo podyktuj notatkę po rozmowie. System przygotuje szkic, ale niczego nie zapisze bez Twojego potwierdzenia.
+            Wklej albo podyktuj notatkę po rozmowie. Po otwarciu spróbuję od razu włączyć dyktowanie. System przygotuje szkic, ale niczego nie zapisze bez Twojego potwierdzenia.
           </div>
 
           <div className="space-y-2">
