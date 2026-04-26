@@ -56,6 +56,54 @@ function normalizeWhitespace(value: string) {
   return value.replace(/\s+/g, ' ').trim();
 }
 
+const QUICK_CAPTURE_NAME_STOPWORDS = new Set([
+  'patrzcie',
+  'sprawdz',
+  'sprawdź',
+  'czy',
+  'dziala',
+  'działa',
+  'aplikacja',
+  'glos',
+  'głos',
+  'sorry',
+  'dalej',
+  'mowie',
+  'mówię',
+  'test',
+  'znajdz',
+  'znajdź',
+  'zapisz',
+  'dodaj',
+  'leada',
+  'lead',
+  'lida',
+  'lide',
+  'lidę',
+]);
+
+const QUICK_CAPTURE_SPEECH_NAME_PATTERNS = [
+  /(?:znajd[zź]\s+mi|zapisz\s+mi|dodaj\s+mi)\s+(?:lida|lide|lidę|leada|lead[aę]?|kontakt|klienta?)?\s*([A-ZŁŚŻŹĆŃÓĘĄ][\p{L}'-]+(?:\s+[A-ZŁŚŻŹĆŃÓĘĄ][\p{L}'-]+){0,1})/u,
+  /(?:mam|nowy|nowa)\s+(?:lida|lide|lidę|leada|lead[aę]?|kontakt|klienta?)\s+([A-ZŁŚŻŹĆŃÓĘĄ][\p{L}'-]+(?:\s+[A-ZŁŚŻŹĆŃÓĘĄ][\p{L}'-]+){0,1})/u,
+  /(?:lida|lide|lidę|leada|lead[aę]?)\s+([A-ZŁŚŻŹĆŃÓĘĄ][\p{L}'-]+(?:\s+[A-ZŁŚŻŹĆŃÓĘĄ][\p{L}'-]+){0,1})/u,
+];
+
+function cleanSpeechNameCandidate(value: string) {
+  const words = normalizeWhitespace(value)
+    .split(' ')
+    .map((word) => word.trim())
+    .filter(Boolean);
+
+  while (words.length && QUICK_CAPTURE_NAME_STOPWORDS.has(words[0].toLowerCase())) {
+    words.shift();
+  }
+  while (words.length && QUICK_CAPTURE_NAME_STOPWORDS.has(words[words.length - 1].toLowerCase())) {
+    words.pop();
+  }
+
+  return words.slice(0, 2).join(' ');
+}
+
 function safeNumber(value: unknown) {
   const text = asText(value).replace(',', '.').replace(/[^0-9.]/g, '');
   const parsed = Number(text);
@@ -135,6 +183,14 @@ function extractName(text: string, phone: string, email: string) {
       .replace(phone, ' ')
       .replace(/[0-9+()\-]{6,}/g, ' '),
   );
+
+  for (const pattern of QUICK_CAPTURE_SPEECH_NAME_PATTERNS) {
+    const match = cleaned.match(pattern);
+    if (match?.[1]) {
+      const candidate = cleanSpeechNameCandidate(match[1]);
+      if (candidate) return candidate;
+    }
+  }
 
   const directPatterns = [
     /(?:kontakt|klient|lead|dzwoni[łl]a?|pani|pan)\s+([A-ZŁŚŻŹĆŃÓĘĄ][\p{L}'-]+(?:\s+[A-ZŁŚŻŹĆŃÓĘĄ][\p{L}'-]+){0,2})/u,

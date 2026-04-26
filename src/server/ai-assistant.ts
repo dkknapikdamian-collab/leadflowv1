@@ -30,6 +30,17 @@ const ASSISTANT_ALLOWED_SCOPE = [
   'sprawdzenie powiązanych zadań, wydarzeń i spraw',
 ];
 
+const ASSISTANT_MAX_COMMAND_LENGTH = 800;
+
+const OUT_OF_SCOPE_BLOCK_PATTERNS = [
+  /\b(pogoda|pogode|pogod[ye]|temperatura|deszcz|snieg|śnieg|wiatr)\b/u,
+  /\b(kosmos|wszechswiat|wszechświat|planeta|galaktyka|czarna dziura)\b/u,
+  /\b(wiersz|poemat|opowiadanie|bajka|zart|żart|dowcip|piosenka)\b/u,
+  /\b(przepis|ugotuj|obiad|kolacja|sniadanie|śniadanie|ciasto)\b/u,
+  /\b(polityka|wybory|wojna|geopolityka|religia|historia)\b/u,
+  /\b(co to jest|kim jest|ile ma|ile kosztuje|jak dziala|jak działa)\b/u,
+];
+
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -322,7 +333,7 @@ function buildUnknown(rawText: string): AssistantResponse {
   };
 }
 
-function buildOutOfScopeAnswer(rawText: string): AssistantResponse {
+function buildOutOfScopeAnswer(rawText: string, customSummary?: string): AssistantResponse {
   return {
     ok: true,
     scope: 'assistant_read_or_draft_only',
@@ -330,7 +341,7 @@ function buildOutOfScopeAnswer(rawText: string): AssistantResponse {
     noAutoWrite: true,
     intent: 'blocked_out_of_scope',
     title: 'Poza zakresem aplikacji',
-    summary: 'Odpowiadam tylko na polecenia dotyczące leadów, zadań, wydarzeń, spraw i planu dnia w CloseFlow. Nie odpowiadam na pytania ogólne, żeby nie zużywać limitów AI poza pracą w aplikacji.',
+    summary: customSummary || 'Odpowiadam tylko na polecenia dotyczące leadów, zadań, wydarzeń, spraw i planu dnia w CloseFlow. Nie odpowiadam na pytania ogólne, żeby nie zużywać limitów AI poza pracą w aplikacji.',
     rawText,
     items: [
       {
@@ -345,6 +356,11 @@ function buildOutOfScopeAnswer(rawText: string): AssistantResponse {
   };
 }
 
+function isClearlyOutOfScope(query: string) {
+  if (!query) return false;
+  return OUT_OF_SCOPE_BLOCK_PATTERNS.some((pattern) => pattern.test(query));
+}
+
 function buildAssistantAnswer(body: Record<string, unknown>): AssistantResponse {
   const rawText = asText(body.rawText || body.text || body.command);
   const context = (body.context && typeof body.context === 'object') ? body.context as Record<string, unknown> : {};
@@ -353,6 +369,14 @@ function buildAssistantAnswer(body: Record<string, unknown>): AssistantResponse 
 
   if (!rawText) {
     return buildUnknown(rawText);
+  }
+
+  if (rawText.length > ASSISTANT_MAX_COMMAND_LENGTH) {
+    return buildOutOfScopeAnswer(rawText, 'Komenda jest za długa jak na asystenta CloseFlow. Skróć ją do konkretnej akcji w aplikacji: lead, zadanie, wydarzenie, sprawa albo plan dnia.');
+  }
+
+  if (isClearlyOutOfScope(query)) {
+    return buildOutOfScopeAnswer(rawText);
   }
 
   if (detectCaptureIntent(query)) {
