@@ -5,6 +5,13 @@ import { toast } from 'sonner';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { createQuickAiCaptureDraft, type QuickAiCaptureDraft } from '../lib/ai-capture';
+import {
+  AI_COMMAND_MAX_LENGTH,
+  buildAiUsageKey,
+  getAiUsageSnapshot,
+  registerAiUsage,
+  type AiUsageSnapshot,
+} from '../lib/ai-usage-guard';
 import { insertLeadToSupabase, insertTaskToSupabase } from '../lib/supabase-fallback';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { Badge } from './ui/badge';
@@ -103,7 +110,7 @@ type QuickAiCaptureProps = {
 };
 
 export default function QuickAiCapture({ onSaved, initialText = '', openSignal = 0 }: QuickAiCaptureProps) {
-  const { workspace, hasAccess, workspaceReady } = useWorkspace();
+  const { workspace, profile, hasAccess, workspaceReady } = useWorkspace();
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
   const [draft, setDraft] = useState<QuickAiCaptureDraft | null>(null);
@@ -113,6 +120,12 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
   const [interimText, setInterimText] = useState('');
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
+  const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
+  const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey));
+
+  useEffect(() => {
+    setUsage(getAiUsageSnapshot(aiUsageKey));
+  }, [aiUsageKey, open]);
 
   const stopSpeech = () => {
     const recognition = recognitionRef.current;
@@ -228,10 +241,26 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
       return;
     }
 
+    const command = rawText.trim();
+    const latestUsage = getAiUsageSnapshot(aiUsageKey);
+    setUsage(latestUsage);
+
+    if (command.length > AI_COMMAND_MAX_LENGTH) {
+      toast.error(`Notatka jest za długa. Skróć ją do maksymalnie ${AI_COMMAND_MAX_LENGTH} znaków.`);
+      return;
+    }
+
+    if (!latestUsage.canUse) {
+      toast.error('Dzisiejszy limit AI został wykorzystany. Możesz dodać leada ręcznie.');
+      return;
+    }
+
     try {
       setDraftLoading(true);
       const nextDraft = normalizeDraft(await createQuickAiCaptureDraft(rawText));
       setDraft(nextDraft);
+      const nextUsage = registerAiUsage(aiUsageKey);
+      setUsage(nextUsage);
       toast.success('Szkic gotowy do sprawdzenia');
     } catch (error: any) {
       toast.error('Błąd szkicu: ' + (error?.message || 'REQUEST_FAILED'));
@@ -336,7 +365,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button type="button" onClick={() => void handleBuildDraft()} disabled={draftLoading || !rawText.trim()}>
+            <Button type="button" onClick={() => void handleBuildDraft()} disabled={draftLoading || !rawText.trim() || !usage.canUse}>
               {draftLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
               Zrób szkic
             </Button>
@@ -346,7 +375,19 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
             </Button>
             {draft ? <Badge variant="outline">Tryb: szkic do potwierdzenia</Badge> : null}
             {draft ? <Badge variant="secondary">Parser: {draft.provider}</Badge> : null}
+            <Badge variant="outline" data-ai-usage-badge="quick-capture">Limit AI: {usage.used}/{usage.limit}</Badge>
+            <Badge variant="outline">Max {AI_COMMAND_MAX_LENGTH} znaków</Badge>
           </div>
+
+          {!usage.canUse ? (
+            <p data-ai-usage-warning="quick-capture" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
+              Dzisiejszy limit AI został wykorzystany. Nadal możesz dodać leada ręcznie poza szkicem AI.
+            </p>
+          ) : usage.remaining <= 5 ? (
+            <p data-ai-usage-warning="quick-capture" className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
+              Zostało {usage.remaining} zapytań AI na dziś.
+            </p>
+          ) : null}
 
           {!speechSupported ? (
             <p className="text-xs text-slate-500">Dyktowanie w przeglądarce może być niedostępne. Na telefonie możesz użyć mikrofonu z klawiatury systemowej.</p>

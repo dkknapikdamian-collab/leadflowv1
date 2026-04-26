@@ -1,9 +1,17 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Bot, Loader2, Mic, MicOff, Send, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { askTodayAiAssistant, type TodayAiAssistantAnswer } from '../lib/ai-assistant';
+import {
+  AI_COMMAND_MAX_LENGTH,
+  buildAiUsageKey,
+  getAiUsageSnapshot,
+  registerAiUsage,
+  type AiUsageSnapshot,
+} from '../lib/ai-usage-guard';
+import { useWorkspace } from '../hooks/useWorkspace';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
@@ -31,6 +39,51 @@ type TodayAiAssistantProps = {
   disabled?: boolean;
   onCaptureRequest?: (rawText: string) => void;
 };
+
+const CLIENT_OUT_OF_SCOPE_PATTERNS = [
+  /\b(pogoda|pogode|temperatura|deszcz|snieg|wiatr)\b/u,
+  /\b(kosmos|wszechswiat|planeta|galaktyka|czarna dziura)\b/u,
+  /\b(wiersz|poemat|opowiadanie|bajka|zart|dowcip|piosenka)\b/u,
+  /\b(przepis|ugotuj|obiad|kolacja|sniadanie|ciasto)\b/u,
+  /\b(polityka|wybory|wojna|religia|historia)\b/u,
+  /\b(co to jest|kim jest|ile ma|ile kosztuje|jak dziala)\b/u,
+];
+
+function normalizeCommandForGuard(value: string) {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function isClientOutOfScopeCommand(value: string) {
+  const normalized = normalizeCommandForGuard(value);
+  return CLIENT_OUT_OF_SCOPE_PATTERNS.some((pattern) => pattern.test(normalized));
+}
+
+function buildClientBlockedAnswer(rawText: string, summary?: string): TodayAiAssistantAnswer {
+  return {
+    ok: true,
+    scope: 'assistant_read_or_draft_only',
+    provider: 'client_guard',
+    noAutoWrite: true,
+    intent: 'blocked_out_of_scope',
+    title: 'Poza zakresem aplikacji',
+    summary: summary || 'Asystent działa tylko w obrębie CloseFlow: leady, zadania, wydarzenia, sprawy i plan dnia. Takie pytanie nie idzie do AI, żeby nie zużywać limitów.',
+    rawText,
+    items: [],
+    warnings: ['Twarda blokada kosztów: polecenie nie zostało wysłane do modelu.'],
+    hardBlock: true,
+    allowedScope: [
+      'tworzenie szkicu leada z podyktowanej notatki',
+      'plan dnia z zadań i wydarzeń w aplikacji',
+      'sprawdzenie kolejnego kroku dla istniejącego leada',
+      'sprawdzenie powiązanych zadań, wydarzeń i spraw',
+    ],
+  };
+}
 
 const EXAMPLES = [
   'Co mam dzisiaj zrobić?',
@@ -74,6 +127,13 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
   const [interimText, setInterimText] = useState('');
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
+  const { workspace, profile } = useWorkspace();
+  const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
+  const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey));
+
+  useEffect(() => {
+    setUsage(getAiUsageSnapshot(aiUsageKey));
+  }, [aiUsageKey, open]);
 
   const stopSpeech = () => {
     const recognition = recognitionRef.current;
@@ -97,6 +157,30 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
     const command = rawText.trim();
     if (!command) return toast.error('Powiedz albo wpisz polecenie dla asystenta');
 
+    const latestUsage = getAiUsageSnapshot(aiUsageKey);
+    setUsage(latestUsage);
+
+    if (command.length > AI_COMMAND_MAX_LENGTH) {
+      const message = `Polecenie jest za długie. Skróć je do maksymalnie ${AI_COMMAND_MAX_LENGTH} znaków.`;
+      setAnswer(buildClientBlockedAnswer(command, message));
+      toast.error(message);
+      return;
+    }
+
+    if (!latestUsage.canUse) {
+      const message = `Dzisiejszy limit AI został wykorzystany: ${latestUsage.used}/${latestUsage.limit}. Wróć jutro albo użyj zwykłych formularzy.`;
+      setAnswer(buildClientBlockedAnswer(command, message));
+      toast.error('Dzisiejszy limit AI został wykorzystany');
+      return;
+    }
+
+    if (isClientOutOfScopeCommand(command)) {
+      const blocked = buildClientBlockedAnswer(command);
+      setAnswer(blocked);
+      toast.error('Poza zakresem aplikacji');
+      return;
+    }
+
     setLoading(true);
     try {
       const result = await askTodayAiAssistant({
@@ -110,6 +194,8 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
         },
       });
       setAnswer(result);
+      const nextUsage = registerAiUsage(aiUsageKey);
+      setUsage(nextUsage);
       toast.success('Asystent przygotował odpowiedź');
     } catch (error: any) {
       toast.error(`Błąd asystenta: ${error?.message || 'REQUEST_FAILED'}`);
@@ -242,7 +328,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button type="button" onClick={handleAsk} disabled={loading}>
+            <Button type="button" onClick={handleAsk} disabled={loading || !usage.canUse}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
               Zapytaj asystenta
             </Button>
@@ -252,7 +338,19 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
             </Button>
             <Badge variant="outline">Bez autopilota</Badge>
             <Badge variant="outline">Tylko CloseFlow</Badge>
+            <Badge variant="outline" data-ai-usage-badge="today-assistant">Limit AI: {usage.used}/{usage.limit}</Badge>
+            <Badge variant="outline">Max {AI_COMMAND_MAX_LENGTH} znaków</Badge>
           </div>
+
+          {!usage.canUse ? (
+            <div data-ai-usage-warning="today-assistant" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
+              Dzisiejszy limit AI został wykorzystany. Formularze nadal działają ręcznie.
+            </div>
+          ) : usage.remaining <= 5 ? (
+            <div data-ai-usage-warning="today-assistant" className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
+              Zostało {usage.remaining} zapytań AI na dziś. Używaj asystenta do konkretnych akcji w aplikacji.
+            </div>
+          ) : null}
 
           {answer ? (
             <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
