@@ -45,6 +45,7 @@ const requiredTests = [
   'tests/stat-shortcut-cards-standard.test.cjs',
   'tests/ui-completed-label-consistency.test.cjs',
   'tests/leads-history-copy-cleanup.test.cjs',
+  'tests/ai-quick-capture-foundation.test.cjs',
   'tests/billing-stripe-diagnostics-dry-run.test.cjs',
   'tests/billing-dry-run-test-order-regression.test.cjs',
   'tests/stripe-checkout-app-url-normalization.test.cjs',

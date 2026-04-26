@@ -2,6 +2,7 @@ import { findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequ
 import { getRequestIdentity, asText } from '../src/server/_request-scope.js';
 import serviceProfilesHandler from '../src/server/service-profiles.js';
 import aiConfigHandler from '../src/server/ai-config.js';
+import aiCaptureHandler from '../src/server/ai-capture.js';
 
 function parseBody(body: unknown) {
   if (!body) return {};
@@ -825,6 +826,11 @@ export default async function handler(req: any, res: any) {
 
   if (kind === 'ai-config') {
     await aiConfigHandler(req, res);
+    return;
+  }
+
+  if (kind === 'ai-capture-draft') {
+    await aiCaptureHandler(req, res);
     return;
   }
 

@@ -6,6 +6,7 @@ import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import QuickAiCapture from '../components/QuickAiCapture';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -391,6 +392,7 @@ export default function Leads() {
             <h1 className="text-3xl font-bold text-slate-900">Leady</h1>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <QuickAiCapture onSaved={() => void loadLeads()} />
             <Button
               type="button"
               variant="outline"
