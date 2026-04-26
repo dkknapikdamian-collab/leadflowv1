@@ -74,6 +74,8 @@ const requiredTests = [
   'tests/relation-funnel-value.test.cjs',
   'tests/global-quick-actions-open-modals.test.cjs',
   'tests/ai-draft-inbox-flow.test.cjs',
+  'tests/ai-draft-inbox-command-center.test.cjs',
+  'tests/global-quick-actions-sticky-single-source.test.cjs',
   'tests/ai-usage-limit-guard.test.cjs',
 ];
 

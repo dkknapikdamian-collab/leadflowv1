@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react';
+import { ClipboardList, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import QuickAiCapture from './QuickAiCapture';
@@ -26,11 +26,18 @@ export function consumeGlobalQuickAction(): GlobalQuickActionTarget | null {
 export default function GlobalQuickActions() {
   return (
     <div
-      className="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white/90 p-2 shadow-sm"
+      className="sticky top-16 z-30 mb-4 flex max-w-full flex-nowrap items-center gap-2 overflow-x-auto border-b border-slate-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur md:top-0 md:px-6"
       data-global-quick-actions="true"
     >
       <TodayAiAssistant leads={[]} tasks={[]} events={[]} cases={[]} />
       <QuickAiCapture />
+
+      <Button asChild variant="outline" className="rounded-xl bg-white" data-global-quick-action="ai-drafts">
+        <Link to="/ai-drafts">
+          <ClipboardList className="mr-2 h-4 w-4" />
+          Szkice AI
+        </Link>
+      </Button>
 
       <Button asChild className="rounded-xl shadow-lg shadow-primary/20" data-global-quick-action="lead">
         <Link to="/leads" onClick={() => rememberGlobalQuickAction('lead')}>
