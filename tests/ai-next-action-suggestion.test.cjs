@@ -24,7 +24,7 @@ test('AI next action is consolidated under system API without creating a new Ver
   assert.match(client, /\/api\/system\?kind=ai-next-action/);
 });
 
-test('Lead detail exposes AI next action as a suggestion-only flow', () => {
+test('Lead detail exposes AI next action as a controlled suggestion flow', () => {
   const component = read('src/components/LeadAiNextAction.tsx');
   const detail = read('src/pages/LeadDetail.tsx');
 
@@ -32,7 +32,10 @@ test('Lead detail exposes AI next action as a suggestion-only flow', () => {
   assert.match(component, /AI niczego nie tworzy bez Twojego kliknięcia/);
   assert.match(component, /Tylko sugestia/);
   assert.match(component, /Kopiuj plan/);
-  assert.doesNotMatch(component, /insertTaskToSupabase/);
+  assert.match(component, /Utwórz zadanie/);
+  assert.match(component, /handleCreateSuggestedTask/);
+  assert.match(component, /insertTaskToSupabase/);
+  assert.doesNotMatch(component, /useEffect\s*\(.*handleCreateSuggestedTask/s);
   assert.doesNotMatch(component, /autoCreate/i);
   assert.doesNotMatch(component, /GEMINI_API_KEY/);
 });
