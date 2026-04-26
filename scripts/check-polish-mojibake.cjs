@@ -69,11 +69,7 @@ const TEXT_EXTENSIONS = new Set([
 ]);
 
 function parseArgs(argv) {
-  const args = {
-    repo: null,
-    write: false,
-    check: false,
-  };
+  const args = { repo: null, write: false, check: false };
 
   for (let i = 2; i < argv.length; i += 1) {
     const key = argv[i];
@@ -119,11 +115,8 @@ function walkFiles(dir, out = []) {
     const fullPath = path.join(dir, entry.name);
     if (shouldIgnore(fullPath)) continue;
 
-    if (entry.isDirectory()) {
-      walkFiles(fullPath, out);
-    } else {
-      out.push(fullPath);
-    }
+    if (entry.isDirectory()) walkFiles(fullPath, out);
+    else out.push(fullPath);
   }
 
   return out;
@@ -149,10 +142,7 @@ function findSuspiciousLines(content) {
 
   lines.forEach((line, index) => {
     if (SUSPICIOUS_REGEXES.some((pattern) => pattern.test(line))) {
-      result.push({
-        line: index + 1,
-        text: line.trim().slice(0, 260),
-      });
+      result.push({ line: index + 1, text: line.trim().slice(0, 260) });
     }
   });
 
@@ -182,12 +172,7 @@ function main() {
     const before = fs.readFileSync(file, "utf8");
     const beforeSuspicious = findSuspiciousLines(before);
 
-    if (beforeSuspicious.length > 0) {
-      suspiciousBefore.push({
-        file,
-        lines: beforeSuspicious,
-      });
-    }
+    if (beforeSuspicious.length > 0) suspiciousBefore.push({ file, lines: beforeSuspicious });
 
     const after = applyFixes(before);
 
@@ -199,22 +184,14 @@ function main() {
     const checkedContent = args.write ? after : before;
     const afterSuspicious = findSuspiciousLines(checkedContent);
 
-    if (afterSuspicious.length > 0) {
-      suspiciousAfter.push({
-        file,
-        lines: afterSuspicious,
-      });
-    }
+    if (afterSuspicious.length > 0) suspiciousAfter.push({ file, lines: afterSuspicious });
   }
 
   if (args.write) {
-    if (changed.length === 0) {
-      console.log("Nie znaleziono sekwencji do automatycznej naprawy.");
-    } else {
+    if (changed.length === 0) console.log("Nie znaleziono sekwencji do automatycznej naprawy.");
+    else {
       console.log("Naprawione pliki:");
-      for (const file of changed) {
-        console.log(`- ${path.relative(repo, file)}`);
-      }
+      for (const file of changed) console.log(`- ${path.relative(repo, file)}`);
     }
   }
 
@@ -223,9 +200,7 @@ function main() {
     console.log("Podejrzane sekwencje przed/obecnie:");
     for (const item of suspiciousBefore.slice(0, 120)) {
       console.log(`- ${path.relative(repo, item.file)}`);
-      for (const line of item.lines.slice(0, 10)) {
-        console.log(`  L${line.line}: ${line.text}`);
-      }
+      for (const line of item.lines.slice(0, 10)) console.log(`  L${line.line}: ${line.text}`);
     }
   }
 
@@ -234,11 +209,8 @@ function main() {
     console.log("Po automatycznej naprawie nadal zostaly podejrzane sekwencje:");
     for (const item of suspiciousAfter.slice(0, 120)) {
       console.log(`- ${path.relative(repo, item.file)}`);
-      for (const line of item.lines.slice(0, 10)) {
-        console.log(`  L${line.line}: ${line.text}`);
-      }
+      for (const line of item.lines.slice(0, 10)) console.log(`  L${line.line}: ${line.text}`);
     }
-
     process.exit(1);
   }
 

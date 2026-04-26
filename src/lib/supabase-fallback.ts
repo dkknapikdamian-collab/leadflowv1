@@ -189,7 +189,7 @@ export async function fetchMeFromSupabase(input: { uid?: string; email?: string;
   const query = new URLSearchParams(); if (input.uid) query.set('uid', input.uid); if (input.email) query.set('email', input.email); if (input.fullName) query.set('fullName', input.fullName);
   return callApi<MeResponse>(`/api/me${query.toString() ? `?${query.toString()}` : ''}`);
 }
-export async function updateProfileSettingsInSupabase(input: ProfileSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/profile-settings', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function updateProfileSettingsInSupabase(input: ProfileSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/system?kind=profile-settings', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function updateWorkspaceSettingsInSupabase(input: WorkspaceSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/workspace-settings', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function updateWorkspaceSubscriptionInSupabase(input: { workspaceId: string; planId?: string; subscriptionStatus?: string; trialEndsAt?: string | null }) { return updateWorkspaceSettingsInSupabase(input); }
 export async function fetchSupportRequestsFromSupabase(params?: { ownerId?: string; ownerEmail?: string; workspaceId?: string; limit?: number; includeAll?: boolean; status?: string; kind?: string; query?: string }) {

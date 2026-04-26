@@ -2,14 +2,14 @@
 
 | Field | Current source | Current write path | Target source | Target read path | Target write path |
 | --- | --- | --- | --- | --- | --- |
-| `profile.fullName` | Firestore `profiles` / `/api/me` | `Settings.tsx`, `api/me.ts`, legacy login bootstrap | Supabase `profiles.full_name` | `/api/me -> useWorkspace` | `/api/profile-settings` |
-| `profile.companyName` | Firestore `profiles.companyName` | `Settings.tsx` | Supabase `profiles.company_name` | `/api/me -> useWorkspace` | `/api/profile-settings` |
-| `profile.email` | Firebase Auth + Firestore mirror + `/api/me` | auth flows, legacy Firestore sync, `api/me.ts` | Firebase Auth for identity, Supabase `profiles.email` for metadata mirror | `/api/me -> useWorkspace` | auth flows + `/api/profile-settings` mirror |
+| `profile.fullName` | Firestore `profiles` / `/api/me` | `Settings.tsx`, `api/me.ts`, legacy login bootstrap | Supabase `profiles.full_name` | `/api/me -> useWorkspace` | `/api/system?kind=profile-settings` |
+| `profile.companyName` | Firestore `profiles.companyName` | `Settings.tsx` | Supabase `profiles.company_name` | `/api/me -> useWorkspace` | `/api/system?kind=profile-settings` |
+| `profile.email` | Firebase Auth + Firestore mirror + `/api/me` | auth flows, legacy Firestore sync, `api/me.ts` | Firebase Auth for identity, Supabase `profiles.email` for metadata mirror | `/api/me -> useWorkspace` | auth flows + `/api/system?kind=profile-settings` mirror |
 | `profile.role` / `profile.isAdmin` | Supabase `profiles` + admin email fallback | `api/me.ts` | Supabase `profiles.role`, `profiles.is_admin` | `/api/me -> useWorkspace` | backend only |
-| `profile.appearanceSkin` | Firestore `profiles.appearanceSkin` + `localStorage` | `AppearanceProvider` | Supabase `profiles.appearance_skin` | `/api/me` / API hydrate in `AppearanceProvider` | `/api/profile-settings` |
-| `profile.planningConflictWarningsEnabled` | `localStorage` | `Settings.tsx` | Supabase `profiles.planning_conflict_warnings_enabled` | `/api/me -> useWorkspace` | `/api/profile-settings` with local cache fallback |
-| `profile.browserNotificationsEnabled` | `localStorage` | `Settings.tsx` | Supabase `profiles.browser_notifications_enabled` | `/api/me -> useWorkspace` | `/api/profile-settings` with local cache fallback |
-| `profile.forceLogoutAfter` | Firestore `profiles.forceLogoutAfter` | `Settings.tsx` | Supabase `profiles.force_logout_after` | `/api/me` in `App.tsx` | `/api/profile-settings` |
+| `profile.appearanceSkin` | Firestore `profiles.appearanceSkin` + `localStorage` | `AppearanceProvider` | Supabase `profiles.appearance_skin` | `/api/me` / API hydrate in `AppearanceProvider` | `/api/system?kind=profile-settings` |
+| `profile.planningConflictWarningsEnabled` | `localStorage` | `Settings.tsx` | Supabase `profiles.planning_conflict_warnings_enabled` | `/api/me -> useWorkspace` | `/api/system?kind=profile-settings` with local cache fallback |
+| `profile.browserNotificationsEnabled` | `localStorage` | `Settings.tsx` | Supabase `profiles.browser_notifications_enabled` | `/api/me -> useWorkspace` | `/api/system?kind=profile-settings` with local cache fallback |
+| `profile.forceLogoutAfter` | Firestore `profiles.forceLogoutAfter` | `Settings.tsx` | Supabase `profiles.force_logout_after` | `/api/me` in `App.tsx` | `/api/system?kind=profile-settings` |
 | `workspaceId` | Firestore `profiles.workspaceId`, `/api/me`, `localStorage` header cache | login/bootstrap, workspace ensure, request headers | Supabase `profiles.workspace_id` + resolved workspace in `/api/me` | `/api/me -> useWorkspace` | backend bootstrap / workspace recovery |
 | `workspace.planId` | Supabase `workspaces.plan_id`, legacy Firestore fallback | billing / `api/me.ts` | Supabase `workspaces.plan_id` | `/api/me -> useWorkspace` | `/api/workspace-settings` |
 | `workspace.subscriptionStatus` | Supabase `workspaces.subscription_status`, legacy Firestore fallback | billing / `api/me.ts` | Supabase `workspaces.subscription_status` | `/api/me -> useWorkspace` | `/api/workspace-settings` |

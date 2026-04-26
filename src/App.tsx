@@ -9,6 +9,7 @@ import { fetchMeFromSupabase, isSupabaseConfigured } from './lib/supabase-fallba
 import { clearClientAuthSnapshot, setClientAuthSnapshot } from './lib/client-auth';
 import { useFirebaseSession } from './hooks/useFirebaseSession';
 import { toast } from 'sonner';
+import { AppChunkErrorBoundary } from './components/AppChunkErrorBoundary';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 
@@ -173,8 +174,8 @@ export default function App() {
 
   return (
     <TooltipProvider>
-      <Router>
-        <Suspense fallback={<AppRouteFallback />}>
+      <Router>          <AppChunkErrorBoundary>
+          <Suspense fallback={<AppRouteFallback />}>
           <Routes>
             <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
             <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
@@ -197,7 +198,8 @@ export default function App() {
 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-        </Suspense>
+            </Suspense>
+        </AppChunkErrorBoundary>
         <NotificationRuntime enabled={Boolean(user)} />
         <Toaster position="top-right" richColors />
       </Router>

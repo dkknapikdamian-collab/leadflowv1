@@ -195,10 +195,14 @@ async function handleProfileSettings(req: any, res: any) {
     });
 
     const id = asNullableString((row as any).id);
-    if (!id) {
-      res.status(500).json({ error: 'PROFILE_SETTINGS_ROW_ID_MISSING' });
-      return;
-    }
+    const profileSettingsMatchQueries = uniqueStrings([
+      id ? `profiles?id=eq.${encodeURIComponent(id)}` : null,
+      identity.userId ? `profiles?firebase_uid=eq.${encodeURIComponent(identity.userId)}` : null,
+      identity.userId ? `profiles?auth_uid=eq.${encodeURIComponent(identity.userId)}` : null,
+      identity.userId ? `profiles?external_auth_uid=eq.${encodeURIComponent(identity.userId)}` : null,
+      identity.email ? `profiles?email=eq.${encodeURIComponent(identity.email)}` : null,
+    ]);
+    // PROFILE_SETTINGS_MATCH_QUERIES_V2: row id is optional because some Supabase profile schemas do not expose id.
 
     const payload: Record<string, unknown> = {
       updated_at: new Date().toISOString(),
@@ -212,12 +216,33 @@ async function handleProfileSettings(req: any, res: any) {
     if ((body as any).forceLogoutAfter !== undefined) payload.force_logout_after = toIso((body as any).forceLogoutAfter);
     if ((body as any).workspaceId !== undefined) payload.workspace_id = workspaceId;
 
-    const updated = await safeUpdateById('profiles', id, payload);
+    let updated: unknown = null;
+
+    if (id) {
+      updated = await safeUpdateById('profiles', id, payload);
+    } else {
+      let lastUpdateError: unknown = null;
+      for (const query of profileSettingsMatchQueries) {
+        try {
+          updated = await safeUpdateWhere(query, payload);
+          break;
+        } catch (error) {
+          lastUpdateError = error;
+        }
+      }
+
+      if (!updated) {
+        throw lastUpdateError || new Error('PROFILE_SETTINGS_MATCH_NOT_FOUND');
+      }
+    }
+
     const nextRow = Array.isArray(updated) && updated[0] ? updated[0] : { ...row, ...payload, id };
+    const responseProfileId = id || asNullableString((nextRow as any).id) || identity.userId || identity.email || '';
+
     res.status(200).json({
       ok: true,
       profile: {
-        id,
+        id: responseProfileId,
         fullName: (nextRow as any).full_name ?? (body as any).fullName ?? '',
         companyName: (nextRow as any).company_name ?? (body as any).companyName ?? '',
         email: (nextRow as any).email ?? (body as any).email ?? identity.email ?? '',
