@@ -19,7 +19,7 @@ test('billing page uses Stripe BLIK checkout and does not activate paid plan dir
   assert.match(billing, /createBillingCheckoutSessionInSupabase/);
   assert.match(billing, /Stripe\/BLIK/);
   assert.match(billing, /BLIK przez Stripe/);
-  assert.match(billing, /Przejdz do platnosci/);
+  assert.match(billing, /Przejdź do płatności/);
 
   assert.doesNotMatch(billing, /updateWorkspaceSubscriptionInSupabase/);
   assert.doesNotMatch(billing, /subscriptionStatus:\s*'paid_active'/);

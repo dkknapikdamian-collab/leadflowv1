@@ -47,30 +47,6 @@ export function normalizeAppUrl(value: unknown, fallback = 'https://closeflowapp
   return `https://${cleaned}`;
 }
 
-export function normalizeAppUrl(value: unknown, fallback = 'https://closeflowapp.vercel.app') {
-  const raw = asNullableText(value);
-
-  if (!raw) {
-    return fallback;
-  }
-
-  const cleaned = raw.replace(/\/+$/, '');
-
-  if (/^https?:\/\//i.test(cleaned)) {
-    return cleaned;
-  }
-
-  if (
-    cleaned.includes('localhost')
-    || cleaned.startsWith('127.0.0.1')
-    || cleaned.startsWith('0.0.0.0')
-  ) {
-    return `http://${cleaned}`;
-  }
-
-  return `https://${cleaned}`;
-}
-
 export function getAppUrl(req: any) {
   const configured = asNullableText(process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || process.env.VITE_APP_URL);
 

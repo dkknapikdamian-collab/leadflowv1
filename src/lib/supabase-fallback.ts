@@ -1,4 +1,4 @@
-﻿import { getClientAuthSnapshot } from './client-auth';
+import { getClientAuthSnapshot } from './client-auth';
 
 type SupabaseInsertResult = { [key: string]: unknown };
 type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextActionAt?: string; ownerId?: string; workspaceId?: string };
@@ -207,8 +207,8 @@ export async function updateSupportRequestStatusInSupabase(input: { id: string; 
 }
 export async function updateSupportRequestInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<Record<string, unknown>>('/api/support-requests', { method: 'PATCH', body: JSON.stringify(input) }); }
 
-export async function createBillingCheckoutSessionInSupabase(input: { workspaceId: string; customerEmail?: string | null; planKey?: string | null; billingPeriod?: string | null }) {
-  return callApi<{ ok: boolean; provider?: string; url?: string; sessionId?: string | null; error?: string; missing?: Record<string, boolean> }>('/api/billing-checkout', {
+export async function createBillingCheckoutSessionInSupabase(input: { workspaceId: string; customerEmail?: string | null; planKey?: string | null; billingPeriod?: string | null; dryRun?: boolean }) {
+  return callApi<{ ok: boolean; provider?: string; url?: string; sessionId?: string | null; error?: string; missing?: Record<string, boolean>; dryRun?: boolean; checkoutConfigured?: boolean; webhookConfigured?: boolean; appUrl?: string; planId?: string; planKey?: string; billingPeriod?: string; amount?: number; amountPln?: number; currency?: string; accessDays?: number }>('/api/billing-checkout', {
     method: 'POST',
     body: JSON.stringify(input),
   });

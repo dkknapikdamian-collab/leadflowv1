@@ -39,11 +39,11 @@ const BILLING_PLANS: PlanCard[] = [
     name: 'Basic',
     monthlyPrice: 19,
     yearlyPrice: 190,
-    description: 'Najprostszy start dla jednej osoby i malego procesu sprzedazy.',
+    description: 'Najprostszy start dla jednej osoby i małego procesu sprzedaży.',
     features: [
       'Leady, klienci, zadania i Today',
       'Podstawowy pipeline lead -> case',
-      'Platnosc karta lub BLIK za 30 dni albo rok',
+      'Płatność kartą lub BLIK za 30 dni albo rok',
     ],
   },
   {
@@ -52,13 +52,13 @@ const BILLING_PLANS: PlanCard[] = [
     name: 'Pro',
     monthlyPrice: 39,
     yearlyPrice: 390,
-    badge: 'Najlepszy wybor',
-    description: 'Pelny workflow CloseFlow dla solo uslug i sprzedazy.',
+    badge: 'Najlepszy wybór',
+    description: 'Pełny workflow CloseFlow dla usług solo i sprzedaży.',
     features: [
-      'Pelny workflow lead -> case -> rozliczenie',
+      'Pełny workflow lead -> sprawa -> rozliczenie',
       'Klienci, sprawy, taski i Today w jednym miejscu',
-      'Portal klienta i modul rozliczen V1',
-      'Platnosc karta lub BLIK za 30 dni albo rok',
+      'Portal klienta i moduł rozliczeń V1',
+      'Płatność kartą lub BLIK za 30 dni albo rok',
     ],
   },
   {
@@ -67,12 +67,12 @@ const BILLING_PLANS: PlanCard[] = [
     name: 'Business',
     monthlyPrice: 69,
     yearlyPrice: 690,
-    description: 'Dla osob, ktore chca wiecej miejsca na rozwoj i przyszle funkcje premium.',
+    description: 'Dla osób, które chcą więcej miejsca na rozwój i przyszłe funkcje premium.',
     features: [
       'Wszystko z Pro',
-      'Priorytet pod przyszle funkcje premium',
-      'Gotowe pod wieksza liczbe spraw i klientow',
-      'Platnosc karta lub BLIK za 30 dni albo rok',
+      'Priorytet pod przyszłe funkcje premium',
+      'Gotowe pod większą liczbę spraw i klientów',
+      'Płatność kartą lub BLIK za 30 dni albo rok',
     ],
   },
 ];
@@ -107,6 +107,8 @@ export default function Billing() {
   const [tab, setTab] = useState<'plan' | 'settlements'>('plan');
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
   const [upgradingPlanKey, setUpgradingPlanKey] = useState<string | null>(null);
+  const [billingCheckLoading, setBillingCheckLoading] = useState(false);
+  const [billingCheckResult, setBillingCheckResult] = useState<Record<string, any> | null>(null);
   const [settlementLoading, setSettlementLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [payments, setPayments] = useState<any[]>([]);
@@ -138,7 +140,7 @@ export default function Billing() {
       })
       .catch((error: any) => {
         if (cancelled) return;
-        toast.error(`Blad odczytu rozliczen: ${error?.message || 'REQUEST_FAILED'}`);
+        toast.error(`Błąd odczytu rozliczeń: ${error?.message || 'REQUEST_FAILED'}`);
       })
       .finally(() => {
         if (cancelled) return;
@@ -148,6 +150,36 @@ export default function Billing() {
       cancelled = true;
     };
   }, [tab, workspace?.id]);
+
+  const handleBillingCheck = async () => {
+    if (!workspace?.id) return;
+
+    setBillingCheckLoading(true);
+    setBillingCheckResult(null);
+
+    try {
+      const result = await createBillingCheckoutSessionInSupabase({
+        workspaceId: workspace.id,
+        customerEmail: workspace?.dailyDigestRecipientEmail || '',
+        planKey: 'basic',
+        billingPeriod,
+        dryRun: true,
+      });
+
+      setBillingCheckResult(result as Record<string, any>);
+
+      if (result?.checkoutConfigured && result?.webhookConfigured) {
+        toast.success('Płatności Stripe/BLIK wyglądają na skonfigurowane.');
+        return;
+      }
+
+      toast.error('Płatności wymagają sprawdzenia konfiguracji w Vercel lub Stripe.');
+    } catch (error: any) {
+      toast.error(`Błąd sprawdzania płatności Stripe/BLIK: ${error.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setBillingCheckLoading(false);
+    }
+  };
 
   const handleUpgrade = async (plan: PlanCard) => {
     if (!workspace?.id) return;
@@ -171,7 +203,7 @@ export default function Billing() {
 
       window.location.assign(result.url);
     } catch (error: any) {
-      toast.error(`Blad uruchamiania platnosci Stripe/BLIK: ${error.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd uruchamiania płatności Stripe/BLIK: ${error.message || 'REQUEST_FAILED'}`);
     } finally {
       setUpgradingPlanKey(null);
     }
@@ -215,7 +247,7 @@ export default function Billing() {
                 <h2 className="text-xl font-bold">{access.headline}</h2>
                 <p>{access.description}</p>
                 {trialEndsAtLabel && (access.isTrialActive || access.status === 'trial_expired') ? (
-                  <p className="text-sm opacity-80">Data konca trialu: {trialEndsAtLabel}</p>
+                  <p className="text-sm opacity-80">Data końca trialu: {trialEndsAtLabel}</p>
                 ) : null}
                 <Badge variant="outline" className="w-fit">{access.badgeLabel}</Badge>
               </CardContent>
@@ -223,8 +255,8 @@ export default function Billing() {
 
             <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="font-semibold text-slate-900">Wybierz okres dostepu</p>
-                <p className="text-sm text-slate-500">BLIK/karta przez Stripe. Roczny plan daje 365 dni dostepu.</p>
+                <p className="font-semibold text-slate-900">Wybierz okres dostępu</p>
+                <p className="text-sm text-slate-500">BLIK/karta przez Stripe. Roczny plan daje 365 dni dostępu.</p>
               </div>
               <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
                 <Button
@@ -245,6 +277,35 @@ export default function Billing() {
                 </Button>
               </div>
             </div>
+
+            <Card className="border-none shadow-sm">
+              <CardHeader>
+                <CardTitle>Test płatności Stripe/BLIK</CardTitle>
+                <CardDescription>
+                  Sprawdza konfigurację checkoutu bez tworzenia płatności i bez przekierowania użytkownika.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button type="button" variant="outline" disabled={billingCheckLoading} onClick={() => void handleBillingCheck()}>
+                    {billingCheckLoading ? 'Sprawdzanie...' : 'Sprawdź płatności'}
+                  </Button>
+                  {billingCheckResult ? (
+                    <Badge variant={billingCheckResult.checkoutConfigured && billingCheckResult.webhookConfigured ? 'default' : 'outline'}>
+                      {billingCheckResult.checkoutConfigured && billingCheckResult.webhookConfigured ? 'Gotowe' : 'Wymaga konfiguracji'}
+                    </Badge>
+                  ) : null}
+                </div>
+                {billingCheckResult ? (
+                  <div className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600 sm:grid-cols-2">
+                    <p><strong>Checkout:</strong> {billingCheckResult.checkoutConfigured ? 'OK' : 'brak STRIPE_SECRET_KEY'}</p>
+                    <p><strong>Webhook:</strong> {billingCheckResult.webhookConfigured ? 'OK' : 'brak STRIPE_WEBHOOK_SECRET'}</p>
+                    <p><strong>URL aplikacji:</strong> {billingCheckResult.appUrl || 'brak'}</p>
+                    <p><strong>Testowany plan:</strong> {billingCheckResult.planKey || 'basic'} / {billingCheckResult.billingPeriod || billingPeriod}</p>
+                  </div>
+                ) : null}
+              </CardContent>
+            </Card>
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               {BILLING_PLANS.map((plan) => {
@@ -274,7 +335,7 @@ export default function Billing() {
                       </p>
                       {billingPeriod === 'yearly' ? (
                         <p className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">
-                          Rocznie wychodzi taniej i daje 365 dni dostepu.
+                          Rocznie wychodzi taniej i daje 365 dni dostępu.
                         </p>
                       ) : null}
                       {plan.features.map((feature) => (
@@ -285,7 +346,7 @@ export default function Billing() {
                     </CardContent>
                     <CardFooter>
                       <Button disabled={Boolean(upgradingPlanKey) || isCurrentPlan} onClick={() => void handleUpgrade(plan)} className="w-full">
-                        {isCurrentPlan ? 'Twoj plan' : isLoadingPlan ? 'Przekierowanie...' : 'Przejdz do platnosci'}
+                        {isCurrentPlan ? 'Twój plan' : isLoadingPlan ? 'Przekierowanie...' : 'Przejdź do płatności'}
                       </Button>
                     </CardFooter>
                   </Card>
@@ -295,13 +356,13 @@ export default function Billing() {
 
             <Card className="border-none shadow-sm">
               <CardHeader>
-                <CardTitle>Jak dziala V1</CardTitle>
-                <CardDescription>Prosty model bez mylacych limitow i ukrytych oplat.</CardDescription>
+                <CardTitle>Jak działa V1</CardTitle>
+                <CardDescription>Prosty model bez mylących limitów i ukrytych opłat.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3 text-sm text-slate-600">
-                <p><strong>Trial:</strong> startujesz od 14 dni testu z odblokowanym pelnym workflow.</p>
-                <p><strong>Po trialu:</strong> placisz karta albo BLIK przez Stripe i aktywujesz wybrany plan na 30 albo 365 dni.</p>
-                <p><strong>Statusy:</strong> trial, plan aktywny, problem z platnoscia albo plan anulowany.</p>
+                <p><strong>Trial:</strong> startujesz od 14 dni testu z odblokowanym pełnym workflow.</p>
+                <p><strong>Po trialu:</strong> płacisz kartą albo BLIK przez Stripe i aktywujesz wybrany plan na 30 albo 365 dni.</p>
+                <p><strong>Statusy:</strong> trial, plan aktywny, problem z płatnością albo plan anulowany.</p>
               </CardContent>
             </Card>
           </>
@@ -309,7 +370,7 @@ export default function Billing() {
           <Card className="border-none shadow-sm">
             <CardHeader>
               <CardTitle>Rozliczenia lead/case</CardTitle>
-              <CardDescription>Filtruj status platnosci niezaleznie od statusow sprzedazowych i operacyjnych.</CardDescription>
+              <CardDescription>Filtruj status płatności niezaleznie od statusow sprzedazowych i operacyjnych.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
@@ -337,7 +398,7 @@ export default function Billing() {
                       </div>
                     ))}
                   {payments.length === 0 ? (
-                    <div className="flex items-center gap-2 py-4 text-sm text-slate-500"><Shield className="h-4 w-4" /> Brak rozliczen do wyswietlenia.</div>
+                    <div className="flex items-center gap-2 py-4 text-sm text-slate-500"><Shield className="h-4 w-4" /> Brak rozliczeń do wyświetlenia.</div>
                   ) : null}
                 </div>
               )}

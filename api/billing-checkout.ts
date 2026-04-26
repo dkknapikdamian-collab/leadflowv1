@@ -1,4 +1,4 @@
-import { asNullableText, createStripeBlikCheckout, getAppUrl, parseBody } from '../src/server/_stripe.js';
+import { asNullableText, createStripeBlikCheckout, getAppUrl, getStripeConfig, parseBody, resolveStripeBillingPlan } from '../src/server/_stripe.js';
 
 export default async function handler(req: any, res: any) {
   try {
@@ -12,9 +12,38 @@ export default async function handler(req: any, res: any) {
     const customerEmail = asNullableText(body.customerEmail || req?.headers?.['x-user-email']);
     const planKey = asNullableText(body.planKey || req?.headers?.['x-billing-plan']);
     const billingPeriod = asNullableText(body.billingPeriod || req?.headers?.['x-billing-period']);
+    const dryRun = body.dryRun === true || body.dryRun === '1' || req?.headers?.['x-billing-dry-run'] === '1';
 
     if (!workspaceId) {
       res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
+      return;
+    }
+
+    if (dryRun) {
+      const stripeConfig = getStripeConfig();
+      const plan = resolveStripeBillingPlan(planKey, billingPeriod);
+      const appUrl = getAppUrl(req);
+      const amount = Math.max(100, Math.round(plan.amountPln * 100));
+
+      res.status(200).json({
+        ok: true,
+        provider: 'stripe_blik',
+        dryRun: true,
+        checkoutConfigured: Boolean(stripeConfig.secretKey),
+        webhookConfigured: Boolean(stripeConfig.webhookSecret),
+        appUrl,
+        planId: plan.planId,
+        planKey: plan.planKey,
+        billingPeriod: plan.period,
+        amount,
+        amountPln: plan.amountPln,
+        currency: stripeConfig.currency,
+        accessDays: plan.accessDays,
+        missing: {
+          STRIPE_SECRET_KEY: !stripeConfig.secretKey,
+          STRIPE_WEBHOOK_SECRET: !stripeConfig.webhookSecret,
+        },
+      });
       return;
     }
 
