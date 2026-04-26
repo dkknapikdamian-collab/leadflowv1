@@ -1,28 +1,68 @@
-# CloseFlow — paczka wdrożeniowa
+# Close Flow
 
-Aktualna paczka zawiera kolejne etapy LeadFlow / CloseFlow:
+Close Flow to aplikacja do prowadzenia leadów, follow-upów, zadań, wydarzeń i spraw po sprzedaży w jednym miejscu.
 
-1. Quick Lead Capture — szybki lead z notatki wpisanej lub podyktowanej systemowo.
-2. Normalizatory danych dla tasków, eventów, leadów i spraw.
-3. Helper najbliższej zaplanowanej akcji.
-4. Centrum powiadomień i runtime przypomnień.
-5. Snooze alertów: 15 min, 1h, jutro.
+## Co robi produkt
+
+- pilnuje kolejnego ruchu przy leadzie
+- pokazuje priorytety w widoku **Dziś**
+- łączy zadania, wydarzenia i przypomnienia z leadami oraz sprawami
+- pozwala płynnie przejść z wygranego leada do **sprawy**
+- wspiera obsługę po sprzedaży bez chaosu między kalendarzem, notatkami i listą zadań
+
+## Główne widoki
+
+- **Dziś** – najważniejsze rzeczy do ruszenia teraz
+- **Leady** – lista sprzedażowa z kolejnym krokiem
+- **Lead Detail** – pełna karta leada z zadaniami, wydarzeniami i historią
+- **Sprawy** – etap po sprzedaży
+- **Case Detail** – operacyjny hub sprawy
+- **Kalendarz** – wspólna oś czasu dla zadań i wydarzeń
+- **Aktywność** – historia ruchów operatora
+- **Ustawienia / Rozliczenia / Pomoc** – konfiguracja konta i aplikacji
+
+## Stack
+
+- **Frontend:** React + Vite + TypeScript
+- **UI:** Tailwind + komponenty lokalne
+- **Auth:** Firebase Authentication + Google Login
+- **Dane aplikacyjne / API:** Supabase przez endpointy w katalogu `api/`
 
 ## Uruchomienie lokalne
 
-```powershell
-npm.cmd install
-npm.cmd run dev
+### 1. Zainstaluj zależności
+```bash
+npm install
 ```
 
-## Testy i build
+### 2. Skonfiguruj Firebase
+Repo korzysta z pliku:
+- `firebase-applet-config.json`
 
-```powershell
-npm.cmd install
-npm.cmd run test:stage
-npm.cmd run build
+To konfiguracja klienta Firebase używana do logowania i profilu użytkownika.
+
+### 3. Skonfiguruj Supabase
+Frontend oczekuje:
+- `VITE_SUPABASE_URL`
+
+Warstwa API po stronie serwera korzysta z:
+- `SUPABASE_URL` lub `NEXT_PUBLIC_SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+### 4. Uruchom projekt
+```bash
+npm run dev
 ```
 
-## Ważne
+## Build produkcyjny
+```bash
+npm run build
+```
 
-Jeśli `npm install` zawiesi się lokalnie, uruchom ponownie polecenie. Paczka nie zawiera `node_modules`.
+## Uwaga architektoniczna
+
+Aktualny kierunek produktu to:
+- Firebase dla auth
+- Supabase dla danych aplikacyjnych i endpointów API
+
+Warstwy sprzedaży, zadań, wydarzeń, aktywności i spraw są prowadzone po stronie Supabase.

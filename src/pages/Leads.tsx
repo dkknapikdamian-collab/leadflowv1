@@ -1,77 +1,42 @@
-import { useState, useEffect, useRef, FormEvent, ChangeEvent } from 'react';
-import { auth, db } from '../firebase';
-import { 
-  collection, 
-  query, 
-  where, 
-  onSnapshot, 
-  orderBy, 
-  addDoc, 
-  serverTimestamp,
-  writeBatch,
-  doc
-} from 'firebase/firestore';
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
+import { Link } from 'react-router-dom';
+import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, Plus, RotateCcw, Search, Target, Trash2, TrendingUp } from 'lucide-react';
+import { format, isPast, parseISO } from 'date-fns';
+import { pl } from 'date-fns/locale';
+import { toast } from 'sonner';
+
+import Layout from '../components/Layout';
+import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
-import { Badge } from '../components/ui/badge';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  ChevronRight, 
-  Target, 
-  ArrowRight,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle2,
-  Upload,
-  Download,
-  MoreHorizontal,
-  Mail,
-  Phone,
-  Calendar,
-  Clock,
-  X,
-  FileText,
-  Loader2,
-  Mic
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
-import Layout from '../components/Layout';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger,
-  DialogFooter
-} from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
-import { toast } from 'sonner';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
-import Papa from 'papaparse';
-import { format, parseISO, isPast, isAfter, subDays, startOfDay } from 'date-fns';
-import { pl } from 'date-fns/locale';
 import { useWorkspace } from '../hooks/useWorkspace';
-import QuickLeadCaptureModal from '../components/quick-lead/QuickLeadCaptureModal';
-import { getQuickLeadTaskType, type QuickLeadParsedData } from '../lib/quick-lead-capture';
+import { getLeadNextAction, type LeadNextAction } from '../lib/lead-next-action';
+import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
+import { requireWorkspaceId } from '../lib/workspace-context';
+import {
+  fetchCasesFromSupabase,
+  fetchEventsFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchTasksFromSupabase,
+  insertLeadToSupabase,
+  isSupabaseConfigured,
+  updateLeadInSupabase,
+} from '../lib/supabase-fallback';
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
   { value: 'contacted', label: 'Skontaktowany', color: 'bg-indigo-100 text-indigo-700' },
   { value: 'qualification', label: 'Kwalifikacja', color: 'bg-purple-100 text-purple-700' },
   { value: 'proposal_sent', label: 'Oferta wysłana', color: 'bg-amber-100 text-amber-700' },
-  { value: 'follow_up', label: 'Follow-up', color: 'bg-orange-100 text-orange-700' },
+  { value: 'waiting_response', label: 'Czeka na odpowiedź', color: 'bg-orange-100 text-orange-700' },
+  { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
+  { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
-  { value: 'won', label: 'Wygrany', color: 'bg-emerald-100 text-emerald-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
+  { value: 'archived', label: 'W koszu', color: 'bg-amber-100 text-amber-700' },
 ];
 
 const SOURCE_OPTIONS = [
@@ -87,194 +52,341 @@ const SOURCE_OPTIONS = [
   { value: 'other', label: 'Inne' },
 ];
 
+type CaseRecord = {
+  id: string;
+  title?: string;
+  status?: string;
+  leadId?: string | null;
+};
+
+type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history';
+
+function formatLeadSourceLabel(value: unknown) {
+  const normalized = String(value || 'other');
+  return SOURCE_OPTIONS.find((option) => option.value === normalized)?.label || 'Inne';
+}
+
+function nativeSelectClassName() {
+  return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+}
+
+function createSummaryCardClass(active: boolean) {
+  return `w-full text-left rounded-2xl transition-all ${active ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`;
+}
+
+function createSummaryCardContentClass(active: boolean) {
+  return `p-6 flex items-center justify-between ${active ? 'bg-primary/5' : ''}`;
+}
+
+function formatCaseStatusLabel(value?: string) {
+  if (!value) return '';
+  return value.replaceAll('_', ' ');
+}
+
+function getNextActionKindLabel(action: LeadNextAction | null | undefined) {
+  if (!action) return '';
+  return action.kind === 'task' ? 'Zadanie' : 'Wydarzenie';
+}
+
+function buildNextActionMeta(action: LeadNextAction | null | undefined) {
+  if (!action) {
+    return {
+      title: 'Brak zaplanowanych działań',
+      subtitle: 'Dodaj zadanie albo wydarzenie, aby temat nie wypadł z procesu.',
+      overdue: false,
+    };
+  }
+
+  const actionDate = parseISO(action.when);
+  const overdue = isPast(actionDate);
+  const dateLabel = format(actionDate, 'd MMM yyyy, HH:mm', { locale: pl });
+
+  return {
+    title: action.title,
+    subtitle: `${getNextActionKindLabel(action)} · ${dateLabel}`,
+    overdue,
+  };
+}
+
+function isLeadInTrash(lead: any) {
+  const status = String(lead?.status || '').trim();
+  const visibility = String(lead?.leadVisibility || '').trim();
+  const outcome = String(lead?.salesOutcome || '').trim();
+
+  return status === 'archived' || visibility === 'trash' || outcome === 'archived' || outcome === 'trash';
+}
+
+function getRestoreStatusForLead(lead: any, linkedCase?: CaseRecord) {
+  if (linkedCase || lead?.linkedCaseId || lead?.caseId || lead?.movedToServiceAt || lead?.caseStartedAt) {
+    return 'moved_to_service';
+  }
+  return 'new';
+}
+
 export default function Leads() {
-  const { workspace, hasAccess } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
+  const [cases, setCases] = useState<CaseRecord[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [sourceFilter, setSourceFilter] = useState('all');
-  const [atRiskFilter, setAtRiskFilter] = useState('all');
-  const [activityFilter, setActivityFilter] = useState('all');
-  
+  const [quickFilter, setQuickFilter] = useState<LeadsQuickFilter>('active');
+  const [showTrash, setShowTrash] = useState(false);
+  const [valueSortEnabled, setValueSortEnabled] = useState(false);
+
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
-  const [newLead, setNewLead] = useState({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '' });
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [newLead, setNewLead] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    source: 'other',
+    dealValue: '',
+    company: '',
+  });
+
+  const createLeadSubmitLockRef = useRef(false);
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
+
+  const loadLeads = useCallback(async () => {
+    if (!workspace?.id) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setLoadError(null);
+    try {
+      const [leadRows, caseRows, taskRows, eventRows] = await Promise.all([
+        fetchLeadsFromSupabase(),
+        fetchCasesFromSupabase().catch(() => []),
+        fetchTasksFromSupabase().catch(() => []),
+        fetchEventsFromSupabase().catch(() => []),
+      ]);
+      setLeads(leadRows as any[]);
+      setCases(caseRows as CaseRecord[]);
+      setTasks(taskRows as any[]);
+      setEvents(eventRows as any[]);
+    } catch (error: any) {
+      const message = error?.message || 'Nie udało się pobrać leadów';
+      setLoadError(message);
+      toast.error(`Błąd odczytu leadów: ${message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [workspace?.id]);
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
+    if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) {
+      setLoading(workspaceLoading);
+      return;
+    }
+    void loadLeads();
+  }, [loadLeads, workspace?.id, workspaceLoading]);
 
-    const q = query(
-      collection(db, 'leads'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('updatedAt', 'desc')
-    );
+  const casesByLeadId = useMemo(() => {
+    const map = new Map<string, CaseRecord>();
+    for (const caseRecord of cases) {
+      const leadId = String(caseRecord.leadId || '').trim();
+      if (leadId && !map.has(leadId)) {
+        map.set(leadId, caseRecord);
+      }
+    }
+    return map;
+  }, [cases]);
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setLeads(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      setLoading(false);
-    });
+  const nextActionByLeadId = useMemo(() => {
+    const map = new Map<string, ReturnType<typeof getLeadNextAction>>();
 
-    return () => unsubscribe();
-  }, [workspace]);
+    for (const lead of leads) {
+      const leadId = String(lead.id || '');
+      if (!leadId) continue;
+      const linkedCase = casesByLeadId.get(leadId);
+      const linkedTasks = tasks.filter((item) => {
+        const itemLeadId = String(item.leadId || item.lead_id || '');
+        const itemCaseId = String(item.caseId || item.case_id || '');
+        return itemLeadId === leadId || (linkedCase?.id && itemCaseId === String(linkedCase.id));
+      });
+      const linkedEvents = events.filter((item) => {
+        const itemLeadId = String(item.leadId || item.lead_id || '');
+        const itemCaseId = String(item.caseId || item.case_id || '');
+        return itemLeadId === leadId || (linkedCase?.id && itemCaseId === String(linkedCase.id));
+      });
+      map.set(leadId, getLeadNextAction(linkedTasks, linkedEvents));
+    }
+
+    return map;
+  }, [casesByLeadId, events, leads, tasks]);
 
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
+    if (createLeadSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
-    if (!newLead.name) return toast.error('Wpisz nazwę leada');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+    if (!newLead.name.trim()) return toast.error('Wpisz nazwę leada');
+    createLeadSubmitLockRef.current = true;
+    setLeadSubmitting(true);
 
     try {
-      await addDoc(collection(db, 'leads'), {
+      await insertLeadToSupabase({
         ...newLead,
         dealValue: Number(newLead.dealValue) || 0,
-        status: 'new',
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        isAtRisk: false,
+        ownerId: workspace?.ownerId,
+        workspaceId,
       });
-
+      await loadLeads();
       toast.success('Lead dodany');
       setIsNewLeadOpen(false);
       setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '' });
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error(`Błąd zapisu leada: ${error.message}`);
+    } finally {
+      createLeadSubmitLockRef.current = false;
+      setLeadSubmitting(false);
     }
   };
 
-  const handleQuickLeadConfirm = async (data: QuickLeadParsedData) => {
-    if (!hasAccess) throw new Error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
-    if (!workspace?.id || !auth.currentUser?.uid) throw new Error('Brak aktywnego workspace lub użytkownika.');
+  const handleArchiveLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-    const leadName = data.contactName || data.companyName || data.need || 'Nowy lead z szybkiej notatki';
-    const leadRef = await addDoc(collection(db, 'leads'), {
-      name: leadName,
-      company: data.companyName || '',
-      email: data.email || '',
-      phone: data.phone || '',
-      source: data.source || 'other',
-      dealValue: 0,
-      status: data.suggestedStatus || 'new',
-      priority: data.priority,
-      notes: data.need ? `Potrzeba: ${data.need}` : '',
-      nextActionAt: data.nextActionAt || null,
-      ownerId: auth.currentUser.uid,
-      workspaceId: workspace.id,
-      isAtRisk: !data.nextActionAt,
-      createdFromQuickCapture: true,
-      quickCaptureProvider: 'rule_parser',
-      quickCaptureConfirmedAt: new Date().toISOString(),
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
 
-    if (data.nextAction || data.nextActionAt) {
-      const actionDate = data.nextActionAt ? new Date(data.nextActionAt) : new Date();
-      await addDoc(collection(db, 'tasks'), {
-        title: data.nextAction ? `${data.nextAction}: ${leadName}` : `Follow-up: ${leadName}`,
-        type: getQuickLeadTaskType(data.nextAction),
-        date: format(actionDate, 'yyyy-MM-dd'),
-        priority: data.priority === 'high' ? 'high' : data.priority === 'low' ? 'low' : 'medium',
-        status: 'todo',
-        leadId: leadRef.id,
-        ownerId: auth.currentUser.uid,
-        workspaceId: workspace.id,
-        reminderAt: data.nextActionAt || null,
-        scheduledAt: data.nextActionAt || null,
-        dueAt: data.nextActionAt || format(actionDate, 'yyyy-MM-dd'),
-        createdFromQuickCapture: true,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+    const leadId = String(lead.id || '');
+    if (!leadId) return;
+
+    const linkedCase = casesByLeadId.get(leadId);
+    const relationText = linkedCase
+      ? '\n\nTen lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
+      : '\n\nLead zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
+
+    if (!window.confirm('Przenieść leada do kosza: ' + (lead.name || 'Lead') + '?' + relationText)) return;
+
+    try {
+      setArchivePendingId(leadId);
+      await updateLeadInSupabase({
+        id: leadId,
+        status: 'archived',
+        leadVisibility: 'trash',
+        salesOutcome: 'archived',
+        closedAt: new Date().toISOString(),
       });
+      toast.success('Lead przeniesiony do kosza');
+      await loadLeads();
+    } catch (error: any) {
+      toast.error('Błąd przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setArchivePendingId(null);
     }
-
-    await addDoc(collection(db, 'activities'), {
-      type: 'lead_created',
-      title: 'Utworzono leada z szybkiej notatki',
-      description: data.need || 'Lead utworzony z modułu szybkiego dodawania.',
-      leadId: leadRef.id,
-      ownerId: auth.currentUser.uid,
-      workspaceId: workspace.id,
-      createdAt: serverTimestamp(),
-    });
   };
 
-  const handleImportCSV = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !workspace || !hasAccess) return;
+  const handleRestoreLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: async (results) => {
-        const batch = writeBatch(db);
-        let count = 0;
-
-        for (const row of results.data as any[]) {
-          if (!row.name) continue;
-          const leadRef = doc(collection(db, 'leads'));
-          batch.set(leadRef, {
-            name: row.name,
-            email: row.email || '',
-            phone: row.phone || '',
-            company: row.company || '',
-            source: row.source || 'other',
-            dealValue: Number(row.dealValue) || 0,
-            status: 'new',
-            ownerId: auth.currentUser?.uid,
-            workspaceId: workspace.id,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-            isAtRisk: false,
-          });
-          count++;
-          if (count >= 450) break; // Firestore batch limit is 500
-        }
-
-        try {
-          await batch.commit();
-          toast.success(`Zaimportowano ${count} leadów`);
-        } catch (error: any) {
-          toast.error('Błąd importu: ' + error.message);
-        }
-      }
-    });
-  };
-
-  const filteredLeads = leads.filter(l => {
-    const matchesSearch = l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         l.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         l.company?.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = statusFilter === 'all' || l.status === statusFilter;
-    const matchesSource = sourceFilter === 'all' || l.source === sourceFilter;
-    const matchesAtRisk = atRiskFilter === 'all' || 
-                         (atRiskFilter === 'at-risk' && l.isAtRisk) || 
-                         (atRiskFilter === 'safe' && !l.isAtRisk);
-    
-    let matchesActivity = true;
-    if (activityFilter !== 'all' && l.updatedAt) {
-      const lastActivity = l.updatedAt.toDate();
-      const now = new Date();
-      if (activityFilter === 'today') {
-        matchesActivity = isAfter(lastActivity, startOfDay(now));
-      } else if (activityFilter === 'week') {
-        matchesActivity = isAfter(lastActivity, subDays(now, 7));
-      } else if (activityFilter === 'month') {
-        matchesActivity = isAfter(lastActivity, subDays(now, 30));
-      }
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
     }
 
-    return matchesSearch && matchesStatus && matchesSource && matchesAtRisk && matchesActivity;
-  });
+    const leadId = String(lead.id || '');
+    if (!leadId) return;
+
+    const linkedCase = casesByLeadId.get(leadId);
+    const nextStatus = getRestoreStatusForLead(lead, linkedCase);
+    const nextVisibility = nextStatus === 'moved_to_service' ? 'archived' : 'active';
+    const nextOutcome = nextStatus === 'moved_to_service' ? 'moved_to_service' : 'open';
+
+    if (!window.confirm('Przywrócić leada do listy: ' + (lead.name || 'Lead') + '?')) return;
+
+    try {
+      setArchivePendingId(leadId);
+      await updateLeadInSupabase({
+        id: leadId,
+        status: nextStatus,
+        leadVisibility: nextVisibility,
+        salesOutcome: nextOutcome,
+        closedAt: null,
+      });
+      toast.success('Lead przywrócony');
+      await loadLeads();
+    } catch (error: any) {
+      toast.error('Błąd przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setArchivePendingId(null);
+    }
+  };
+
+  const activeLeads = useMemo(() => leads.filter((lead) => !isLeadInTrash(lead)), [leads]);
+  const trashLeads = useMemo(() => leads.filter((lead) => isLeadInTrash(lead)), [leads]);
+
+  const filteredLeads = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+    const sourceLeads = showTrash ? trashLeads : activeLeads;
+
+    const results = sourceLeads.filter((lead) => {
+      const linkedCase = casesByLeadId.get(String(lead.id));
+      const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
+      const activeLead = isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
+      const caseTitle = String(linkedCase?.title || '').toLowerCase();
+      const caseStatus = String(linkedCase?.status || '').toLowerCase();
+
+      const matchesSearch = !normalizedQuery
+        || String(lead.name || '').toLowerCase().includes(normalizedQuery)
+        || String(lead.email || '').toLowerCase().includes(normalizedQuery)
+        || String(lead.company || '').toLowerCase().includes(normalizedQuery)
+        || String(lead.status || 'new').toLowerCase().includes(normalizedQuery)
+        || String(lead.source || '').toLowerCase().includes(normalizedQuery)
+        || caseTitle.includes(normalizedQuery)
+        || caseStatus.includes(normalizedQuery);
+
+      const matchesQuickFilter =
+        showTrash
+        || quickFilter === 'all'
+        || (quickFilter === 'active' && activeLead)
+        || (quickFilter === 'at-risk' && Boolean(lead.isAtRisk))
+        || (quickFilter === 'history' && movedToService);
+
+      return matchesSearch && matchesQuickFilter;
+    });
+
+    if (valueSortEnabled) {
+      return [...results].sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0));
+    }
+
+    return results;
+  }, [activeLeads, casesByLeadId, quickFilter, searchQuery, showTrash, trashLeads, valueSortEnabled]);
 
   const stats = {
-    total: leads.length,
-    active: leads.filter(l => !['won', 'lost'].includes(l.status)).length,
-    value: leads.reduce((acc, l) => acc + (l.dealValue || 0), 0),
-    atRisk: leads.filter(l => l.isAtRisk).length,
+    total: activeLeads.length,
+    active: activeLeads.filter((lead) => isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
+    value: activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
+    atRisk: activeLeads.filter((lead) => Boolean(lead.isAtRisk)).length,
+    linkedToCase: activeLeads.filter((lead) => isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
+    trash: trashLeads.length,
+  };
+
+  const toggleQuickFilter = (filter: LeadsQuickFilter) => {
+    setShowTrash(false);
+    setValueSortEnabled(false);
+    setQuickFilter((prev) => (prev === filter ? 'all' : filter));
+  };
+
+  const toggleValueSorting = () => {
+    setShowTrash(false);
+    setQuickFilter('all');
+    setValueSortEnabled((prev) => !prev);
+  };
+
+  const toggleTrashView = () => {
+    setValueSortEnabled(false);
+    setQuickFilter('all');
+    setShowTrash((current) => !current);
   };
 
   return (
@@ -283,74 +395,72 @@ export default function Leads() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Leady</h1>
-            <p className="text-slate-500">Zarządzaj procesem sprzedaży i domykaj deale.</p>
+            <p className="text-slate-500">Lead to temat do pozyskania. Po rozpoczęciu obsługi dalsza praca przechodzi do sprawy.</p>
           </div>
-          <div className="flex items-center gap-2 flex-wrap justify-end">
-            <QuickLeadCaptureModal
-              disabled={!hasAccess}
-              onConfirm={handleQuickLeadConfirm}
-              trigger={
-                <Button variant="default" className="rounded-xl shadow-lg shadow-primary/20" disabled={!hasAccess}>
-                  <Mic className="w-4 h-4 mr-2" /> Szybki lead
-                </Button>
-              }
-            />
-
-            <input 
-              type="file" 
-              accept=".csv" 
-              className="hidden" 
-              ref={fileInputRef} 
-              onChange={handleImportCSV} 
-            />
-            <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="rounded-xl">
-              <Upload className="w-4 h-4 mr-2" /> Import CSV
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-xl"
+              onClick={toggleTrashView}
+            >
+              {showTrash ? <RotateCcw className="w-4 h-4 mr-2" /> : <Trash2 className="w-4 h-4 mr-2" />}
+              {showTrash ? 'Pokaż aktywne' : 'Kosz'}
+              <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                {showTrash ? stats.total : stats.trash}
+              </span>
             </Button>
-            
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-lg shadow-primary/20">
+                <Button className="rounded-xl shadow-lg shadow-primary/20" disabled={!workspaceReady}>
                   <Plus className="w-4 h-4 mr-2" /> Dodaj leada
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader><DialogTitle>Nowy lead</DialogTitle></DialogHeader>
+              <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Nowy lead</DialogTitle>
+                </DialogHeader>
                 <form onSubmit={handleCreateLead} className="space-y-4 py-4">
                   <div className="space-y-2">
                     <Label>Imię i nazwisko / Nazwa</Label>
-                    <Input value={newLead.name} onChange={e => setNewLead({...newLead, name: e.target.value})} required />
+                    <Input value={newLead.name} onChange={(e) => setNewLead({ ...newLead, name: e.target.value })} required />
                   </div>
                   <div className="space-y-2">
                     <Label>Firma</Label>
-                    <Input value={newLead.company} onChange={e => setNewLead({...newLead, company: e.target.value})} />
+                    <Input value={newLead.company} onChange={(e) => setNewLead({ ...newLead, company: e.target.value })} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Email</Label>
-                      <Input type="email" value={newLead.email} onChange={e => setNewLead({...newLead, email: e.target.value})} />
+                      <Input type="email" value={newLead.email} onChange={(e) => setNewLead({ ...newLead, email: e.target.value })} />
                     </div>
                     <div className="space-y-2">
                       <Label>Telefon</Label>
-                      <Input value={newLead.phone} onChange={e => setNewLead({...newLead, phone: e.target.value})} />
+                      <Input value={newLead.phone} onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })} />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Wartość (PLN)</Label>
-                      <Input type="number" value={newLead.dealValue} onChange={e => setNewLead({...newLead, dealValue: e.target.value})} />
+                      <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
                     </div>
                     <div className="space-y-2">
                       <Label>Źródło</Label>
-                      <Select value={newLead.source} onValueChange={v => setNewLead({...newLead, source: v})}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {SOURCE_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
+                      <select
+                        className={nativeSelectClassName()}
+                        value={newLead.source}
+                        onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
+                      >
+                        {SOURCE_OPTIONS.map((source) => (
+                          <option key={source.value} value={source.value}>{source.label}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Stwórz leada</Button>
+                    <Button type="submit" className="w-full" disabled={leadSubmitting || !workspaceReady}>
+                      {leadSubmitting ? 'Dodawanie...' : 'Stwórz leada'}
+                    </Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -358,185 +468,239 @@ export default function Leads() {
           </div>
         </header>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wszystkie</p>
-                <h3 className="text-2xl font-bold text-slate-900">{stats.total}</h3>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-2xl"><Target className="w-6 h-6 text-slate-400" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Aktywne</p>
-                <h3 className="text-2xl font-bold text-blue-600">{stats.active}</h3>
-              </div>
-              <div className="bg-blue-50 p-3 rounded-2xl"><TrendingUp className="w-6 h-6 text-blue-500" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wartość</p>
-                <h3 className="text-2xl font-bold text-slate-900">{stats.value.toLocaleString()} PLN</h3>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-2xl"><TrendingUp className="w-6 h-6 text-slate-400" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zagrożone</p>
-                <h3 className="text-2xl font-bold text-rose-600">{stats.atRisk}</h3>
-              </div>
-              <div className="bg-rose-50 p-3 rounded-2xl"><AlertTriangle className="w-6 h-6 text-rose-500" /></div>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+          <button type="button" className={createSummaryCardClass(quickFilter === 'all' && !valueSortEnabled && !showTrash)} onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'all' && !valueSortEnabled && !showTrash)}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wszystkie</p>
+                  <h3 className="text-2xl font-bold text-slate-900">{stats.total}</h3>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-2xl">
+                  <Target className="w-6 h-6 text-slate-400" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
+
+          <button type="button" className={createSummaryCardClass(quickFilter === 'active' && !showTrash)} onClick={() => toggleQuickFilter('active')}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'active' && !showTrash)}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Aktywne</p>
+                  <h3 className="text-2xl font-bold text-blue-600">{stats.active}</h3>
+                </div>
+                <div className="bg-blue-50 p-3 rounded-2xl">
+                  <TrendingUp className="w-6 h-6 text-blue-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
+
+          <button type="button" className={createSummaryCardClass(valueSortEnabled && !showTrash)} onClick={toggleValueSorting}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(valueSortEnabled && !showTrash)}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wartość</p>
+                  <h3 className="text-2xl font-bold text-slate-900">{stats.value.toLocaleString()} PLN</h3>
+                  <p className="mt-1 text-[11px] font-semibold text-slate-500">{valueSortEnabled ? 'Sortowanie aktywne' : 'Kliknij, aby sortować po wartości'}</p>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-2xl">
+                  <TrendingUp className="w-6 h-6 text-slate-400" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
+
+          <button type="button" className={createSummaryCardClass(quickFilter === 'at-risk' && !showTrash)} onClick={() => toggleQuickFilter('at-risk')}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'at-risk' && !showTrash)}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zagrożone</p>
+                  <h3 className="text-2xl font-bold text-rose-600">{stats.atRisk}</h3>
+                </div>
+                <div className="bg-rose-50 p-3 rounded-2xl">
+                  <AlertTriangle className="w-6 h-6 text-rose-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
+
+          <button type="button" className={createSummaryCardClass(quickFilter === 'history' && !showTrash)} onClick={() => toggleQuickFilter('history')}>
+            <Card className="border-none shadow-sm">
+              <CardContent className={createSummaryCardContentClass(quickFilter === 'history' && !showTrash)}>
+                <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Historia</p>
+                  <h3 className="text-2xl font-bold text-emerald-600">{stats.linkedToCase}</h3>
+                </div>
+                <div className="bg-emerald-50 p-3 rounded-2xl">
+                  <Briefcase className="w-6 h-6 text-emerald-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </button>
         </div>
 
-        {/* Filters */}
         <Card className="border-none shadow-sm">
-          <CardContent className="p-4 flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
+          <CardContent className="p-4">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input 
-                placeholder="Szukaj po nazwie, emailu, firmie..." 
+              <Input
+                placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj po nazwie, emailu, firmie, statusie albo sprawie...'}
                 className="pl-10 rounded-xl bg-slate-50 border-none h-11"
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </div>
-            <div className="flex gap-2">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[160px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie statusy</SelectItem>
-                  {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              <Select value={sourceFilter} onValueChange={setSourceFilter}>
-                <SelectTrigger className="w-[140px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Źródło" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie źródła</SelectItem>
-                  {SOURCE_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              <Select value={atRiskFilter} onValueChange={setAtRiskFilter}>
-                <SelectTrigger className="w-[140px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Ryzyko" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie</SelectItem>
-                  <SelectItem value="at-risk">Zagrożone</SelectItem>
-                  <SelectItem value="safe">Bezpieczne</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={activityFilter} onValueChange={setActivityFilter}>
-                <SelectTrigger className="w-[140px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Aktywność" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Kiedykolwiek</SelectItem>
-                  <SelectItem value="today">Dzisiaj</SelectItem>
-                  <SelectItem value="week">Ostatnie 7 dni</SelectItem>
-                  <SelectItem value="month">Ostatnie 30 dni</SelectItem>
-                </SelectContent>
-              </Select>
-              {(statusFilter !== 'all' || sourceFilter !== 'all' || atRiskFilter !== 'all' || activityFilter !== 'all' || searchQuery) && (
-                <Button variant="ghost" onClick={() => { 
-                  setStatusFilter('all'); 
-                  setSourceFilter('all'); 
-                  setAtRiskFilter('all');
-                  setActivityFilter('all');
-                  setSearchQuery(''); 
-                }} className="h-11 rounded-xl">
-                  <X className="w-4 h-4 mr-2" /> Wyczyść
-                </Button>
-              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* List */}
+        {showTrash ? (
+          <Card className="border-amber-200 bg-amber-50 shadow-sm">
+            <CardContent className="p-4 text-sm text-amber-800">
+              To jest kosz leadów. Rekordy są ukryte z aktywnej listy, ale można je przywrócić. Nie kasujemy ich trwale w V1.
+            </CardContent>
+          </Card>
+        ) : null}
+
         <div className="space-y-3">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-              <p className="text-slate-500">Ładowanie Twoich leadów...</p>
+              <p className="text-slate-500">Ładowanie leadów...</p>
+            </div>
+          ) : loadError ? (
+            <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-rose-200">
+              <h3 className="text-lg font-bold text-rose-700">Nie udało się pobrać leadów</h3>
+              <p className="text-slate-500 max-w-lg mx-auto mt-1 break-words">{loadError}</p>
+              <Button className="mt-4 rounded-xl" onClick={() => void loadLeads()}>
+                Spróbuj ponownie
+              </Button>
             </div>
           ) : filteredLeads.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
               <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-slate-300" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Nie znaleziono leadów</h3>
-              <p className="text-slate-500 max-w-xs mx-auto mt-1">Spróbuj zmienić filtry lub dodaj nowego leada.</p>
+              <h3 className="text-lg font-bold text-slate-900">{showTrash ? 'Kosz leadów jest pusty' : 'Nie znaleziono leadów'}</h3>
+              <p className="text-slate-500 max-w-xs mx-auto mt-1">{showTrash ? 'Przeniesione do kosza leady pojawią się tutaj.' : 'Spróbuj zmienić wyszukiwanie, kliknąć inny kafelek u góry albo dodać nowego leada.'}</p>
             </div>
           ) : (
-            filteredLeads.map(lead => {
-              const status = STATUS_OPTIONS.find(s => s.value === lead.status) || STATUS_OPTIONS[0];
-              const isOverdue = lead.nextActionAt && isPast(parseISO(lead.nextActionAt));
+            filteredLeads.map((lead) => {
+              const linkedCase = casesByLeadId.get(String(lead.id));
+              const nextAction = nextActionByLeadId.get(String(lead.id));
+              const nextActionMeta = buildNextActionMeta(nextAction);
+              const status = STATUS_OPTIONS.find((option) => option.value === lead.status) || STATUS_OPTIONS[0];
+              const sourceLabel = formatLeadSourceLabel(lead.source);
+              const leadValueLabel = `${(Number(lead.dealValue) || 0).toLocaleString()} PLN`;
+              const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
+              const isArchivedLead = isLeadInTrash(lead);
 
               return (
-                <Link key={lead.id} to={`/leads/${lead.id}`}>
-                  <Card className="border-none shadow-sm hover:shadow-md transition-all group overflow-hidden">
+                <div key={lead.id} className="relative group/lead-row">
+                  <Link to={`/leads/${lead.id}`} className="block">
+                    <Card className="overflow-hidden border-none shadow-sm transition-all group hover:-translate-y-0.5 hover:shadow-md">
                     <CardContent className="p-0">
-                      <div className="flex flex-col md:flex-row md:items-center p-5 gap-4">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-1">
-                            <h4 className="text-lg font-bold text-slate-900 truncate group-hover:text-primary transition-colors">
-                              {lead.name}
-                            </h4>
-                            <Badge className={`${status.color} border-none font-medium text-[10px] uppercase`}>
-                              {status.label}
+                      <div className="flex flex-col gap-3 p-4 pr-14 md:flex-row md:items-center md:gap-4 lg:p-5 lg:pr-16">
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-2 flex flex-wrap items-center gap-2">
+                            <h4 className="min-w-0 truncate text-base font-bold text-slate-900 transition-colors group-hover:text-primary md:text-lg">{lead.name}</h4>
+                            <Badge className={`${status.color} border-none font-medium text-[10px] uppercase`}>{status.label}</Badge>
+                            <Badge variant="outline" className="text-[10px] uppercase border-slate-200 text-slate-600">
+                              <Target className="mr-1 h-3 w-3" /> {sourceLabel}
                             </Badge>
-                            {lead.isAtRisk && (
-                              <Badge variant="destructive" className="animate-pulse text-[10px] uppercase">Zagrożony</Badge>
-                            )}
+                            {lead.isAtRisk && !isArchivedLead ? (
+                              <Badge variant="destructive" className="text-[10px] uppercase">
+                                Zagrożony
+                              </Badge>
+                            ) : null}
+                            {movedToService && !isArchivedLead ? (
+                              <Badge variant="outline" className="text-[10px] uppercase border-violet-200 text-violet-700">
+                                Temat jest już w obsłudze
+                              </Badge>
+                            ) : null}
+                            {isArchivedLead ? (
+                              <Badge variant="outline" className="text-[10px] uppercase border-amber-200 text-amber-700">
+                                W koszu
+                              </Badge>
+                            ) : null}
                           </div>
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
-                            {lead.company && <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> {lead.company}</span>}
-                            <span className="flex items-center gap-1 capitalize"><Target className="w-3.5 h-3.5" /> {lead.source}</span>
-                            {lead.email && <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {lead.email}</span>}
+
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-slate-500 md:text-sm">
+                            {lead.company ? (
+                              <span className="flex items-center gap-1">
+                                <FileText className="h-3.5 w-3.5" /> {lead.company}
+                              </span>
+                            ) : null}
+                            {lead.email ? (
+                              <span className="flex items-center gap-1 break-all">
+                                <Mail className="h-3.5 w-3.5" /> {lead.email}
+                              </span>
+                            ) : null}
+                            {linkedCase?.title ? (
+                              <span className="flex items-center gap-1 font-medium text-emerald-700">
+                                <Briefcase className="h-3.5 w-3.5" /> {linkedCase.title}
+                              </span>
+                            ) : null}
+                            {linkedCase?.status ? (
+                              <span className="font-medium text-violet-700">
+                                Status sprawy: {formatCaseStatusLabel(linkedCase.status)}
+                              </span>
+                            ) : null}
                           </div>
+
+                          <p className="mt-2 text-sm text-slate-600">
+                            {isArchivedLead
+                              ? 'Ten rekord jest w koszu. Możesz go przywrócić bez trwałego kasowania danych.'
+                              : movedToService
+                                ? 'Ten rekord został już wpięty w sprawę i pełni rolę historii pozyskania.'
+                                : 'Aktywny temat sprzedażowy. Wejdź, aby dodać akcję, notatkę albo rozpocząć obsługę.'}
+                          </p>
                         </div>
 
-                        <div className="flex items-center gap-8">
-                          <div className="text-right hidden lg:block w-32">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Wartość</p>
-                            <p className="text-base font-bold text-slate-900">{(lead.dealValue || 0).toLocaleString()} PLN</p>
+                        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 md:flex md:items-center md:gap-4 lg:gap-5">
+                          <div className="grid min-w-0 grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2">
+                            <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[118px] sm:text-right">
+                              <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Wartość</p>
+                              <p className="truncate text-sm font-bold text-slate-900 md:text-base">{leadValueLabel}</p>
+                            </div>
+
+                            <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[220px] sm:text-right">
+                              <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Najbliższa akcja</p>
+                              <p className={`line-clamp-1 text-sm font-bold ${nextActionMeta.overdue ? 'text-rose-600' : 'text-slate-700'}`}>
+                                {isArchivedLead ? 'Rekord w koszu' : nextActionMeta.title}
+                              </p>
+                              <p className={`mt-1 flex items-center gap-1 text-xs ${nextActionMeta.overdue ? 'text-rose-600' : 'text-slate-500'} sm:justify-end`}>
+                                <Clock3 className="h-3 w-3 shrink-0" />
+                                <span className="line-clamp-1">{isArchivedLead ? 'Przywróć, aby wrócił do pracy' : nextActionMeta.subtitle}</span>
+                              </p>
+                            </div>
                           </div>
 
-                          <div className="text-right w-32">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Następny krok</p>
-                            {lead.nextActionAt ? (
-                              <p className={`text-sm font-bold flex items-center justify-end gap-1 ${isOverdue ? 'text-rose-600' : 'text-slate-700'}`}>
-                                {isOverdue && <AlertTriangle className="w-3 h-3" />}
-                                {format(parseISO(lead.nextActionAt), 'd MMM', { locale: pl })}
-                              </p>
-                            ) : (
-                              <p className="text-sm font-bold text-amber-600 flex items-center justify-end gap-1">
-                                <Clock className="w-3 h-3" /> Brak
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="bg-slate-50 p-2 rounded-xl group-hover:bg-primary group-hover:text-white transition-colors">
-                            <ChevronRight className="w-5 h-5" />
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-500 transition-colors group-hover:bg-primary group-hover:text-white">
+                            <ChevronRight className="h-4 w-4" />
                           </div>
                         </div>
                       </div>
                     </CardContent>
-                  </Card>
-                </Link>
+                    </Card>
+                  </Link>
+                  <button
+                    type="button"
+                    aria-label={isArchivedLead ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                    title={isArchivedLead ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                    disabled={archivePendingId === String(lead.id || '')}
+                    onClick={(event) => isArchivedLead ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead)}
+                    className={[
+                      'absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border transition disabled:cursor-not-allowed disabled:opacity-60',
+                      isArchivedLead
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-500 hover:text-white'
+                        : 'border-rose-200 bg-rose-950/20 text-rose-300 hover:bg-rose-500 hover:text-white',
+                    ].join(' ')}
+                  >
+                    {archivePendingId === String(lead.id || '') ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchivedLead ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                  </button>
+                </div>
               );
             })
           )}

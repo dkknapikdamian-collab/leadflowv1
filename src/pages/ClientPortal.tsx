@@ -1,46 +1,42 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { db, storage } from '../firebase';
-import { 
-  doc, 
-  getDoc, 
-  collection, 
-  query, 
-  onSnapshot, 
-  orderBy, 
-  updateDoc, 
-  addDoc, 
-  serverTimestamp 
-} from 'firebase/firestore';
+import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
+import { Card, CardContent } from '../components/ui/card';
 import { Progress } from '../components/ui/progress';
-import { 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle, 
-  FileText, 
-  Upload, 
-  MessageSquare, 
-  Check, 
+import {
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  FileText,
+  Upload,
+  MessageSquare,
+  Check,
   X,
   Paperclip,
   Loader2
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
   DialogFooter
 } from '../components/ui/dialog';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
+import {
+  fetchCaseByIdFromSupabase,
+  fetchCaseItemsFromSupabase,
+  insertActivityToSupabase,
+  isSupabaseConfigured,
+  updateCaseItemInSupabase,
+  validateClientPortalTokenFromSupabase,
+} from '../lib/supabase-fallback';
 
 export default function ClientPortal() {
   const { caseId, token } = useParams();
@@ -53,39 +49,54 @@ export default function ClientPortal() {
   const [uploading, setUploading] = useState(false);
   const [response, setResponse] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [invalidReason, setInvalidReason] = useState('Link wygasł lub jest nieprawidłowy');
+
+  async function refreshSupabasePortal() {
+    if (!caseId) return;
+    const [caseRow, itemRows] = await Promise.all([
+      fetchCaseByIdFromSupabase(caseId),
+      fetchCaseItemsFromSupabase(caseId),
+    ]);
+    setCaseData(caseRow);
+    setItems(itemRows);
+  }
 
   useEffect(() => {
     if (!caseId || !token) return;
 
-    async function validateToken() {
-      const tokenRef = doc(db, 'client_portal_tokens', caseId!);
-      const tokenSnap = await getDoc(tokenRef);
-      
-      if (tokenSnap.exists() && tokenSnap.data().token === token) {
-        setIsValid(true);
-        
-        const caseRef = doc(db, 'cases', caseId!);
-        onSnapshot(caseRef, (doc) => {
-          if (doc.exists()) setCaseData({ id: doc.id, ...doc.data() });
-        });
+    let cancelled = false;
+    setLoading(true);
 
-        const itemsRef = collection(db, 'cases', caseId!, 'items');
-        const qItems = query(itemsRef, orderBy('order', 'asc'));
-        onSnapshot(qItems, (snapshot) => {
-          setItems(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-          setLoading(false);
-        });
-      } else {
-        setLoading(false);
-        setIsValid(false);
-      }
+    if (!isSupabaseConfigured()) {
+      setInvalidReason('Portal klienta wymaga skonfigurowanego Supabase.');
+      setIsValid(false);
+      setLoading(false);
+      return () => {
+        cancelled = true;
+      };
     }
 
-    validateToken();
+    validateClientPortalTokenFromSupabase(caseId, token)
+      .then(async () => {
+        if (cancelled) return;
+        setIsValid(true);
+        await refreshSupabasePortal();
+        if (!cancelled) setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setLoading(false);
+        setIsValid(false);
+        setInvalidReason('Link wygasł, jest nieprawidłowy albo portal nie został jeszcze przygotowany.');
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [caseId, token]);
 
   const handleSubmitResponse = async () => {
-    if (!selectedItem) return;
+    if (!selectedItem || !caseId) return;
     setUploading(true);
 
     try {
@@ -99,22 +110,24 @@ export default function ClientPortal() {
         fileName = file.name;
       }
 
-      await updateDoc(doc(db, 'cases', caseId!, 'items', selectedItem.id), {
+      await updateCaseItemInSupabase({
+        id: selectedItem.id,
+        caseId,
         status: 'uploaded',
         response: response || selectedItem.response || null,
         fileUrl,
         fileName,
-        updatedAt: serverTimestamp(),
       });
 
-      await addDoc(collection(db, 'activities'), {
+      await insertActivityToSupabase({
         caseId,
-        ownerId: caseData.ownerId,
+        ownerId: caseData?.ownerId ?? null,
         actorType: 'client',
         eventType: file ? 'file_uploaded' : 'response_sent',
         payload: { title: selectedItem.title },
-        createdAt: serverTimestamp(),
       });
+
+      await refreshSupabasePortal();
 
       toast.success('Przesłano pomyślnie!');
       setIsUploadOpen(false);
@@ -130,19 +143,21 @@ export default function ClientPortal() {
 
   const handleDecision = async (itemId: string, decision: 'accepted' | 'rejected', title: string) => {
     try {
-      await updateDoc(doc(db, 'cases', caseId!, 'items', itemId), {
+      await updateCaseItemInSupabase({
+        id: itemId,
+        caseId: caseId!,
         status: decision === 'accepted' ? 'accepted' : 'rejected',
-        updatedAt: serverTimestamp(),
       });
 
-      await addDoc(collection(db, 'activities'), {
+      await insertActivityToSupabase({
         caseId,
-        ownerId: caseData.ownerId,
+        ownerId: caseData?.ownerId ?? null,
         actorType: 'client',
         eventType: 'decision_made',
         payload: { title, decision },
-        createdAt: serverTimestamp(),
       });
+
+      await refreshSupabasePortal();
 
       toast.success(decision === 'accepted' ? 'Zaakceptowano!' : 'Odrzucono.');
     } catch (error: any) {
@@ -160,8 +175,8 @@ export default function ClientPortal() {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <Card className="max-w-md w-full text-center p-8">
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Link wygasł lub jest nieprawidłowy</h2>
-        <p className="text-slate-500 mb-6">Skontaktuj się z opiekunem projektu, aby otrzymać nowy link dostępu.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Portal niedostępny</h2>
+        <p className="text-slate-500 mb-6">{invalidReason}</p>
       </Card>
     </div>
   );
@@ -179,7 +194,7 @@ export default function ClientPortal() {
           </div>
           <h1 className="text-3xl font-bold mb-2">{caseData.title}</h1>
           <p className="text-white/70 mb-8">Witaj! Poniżej znajdziesz listę rzeczy, których potrzebujemy od Ciebie, aby ruszyć dalej z projektem.</p>
-          
+
           <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm max-w-md mx-auto">
             <div className="flex justify-between text-sm font-bold mb-2">
               <span>Twój postęp</span>
@@ -212,10 +227,10 @@ export default function ClientPortal() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-bold text-slate-900 truncate">{item.title}</h4>
-                      {item.isRequired && <Badge variant="outline" className="text-[10px] h-4 px-1.5 border-red-200 text-red-500">Wymagane</Badge>}
+                      {item.isRequired && <span className="text-[10px] h-4 px-1.5 border border-red-200 text-red-500 rounded-full inline-flex items-center">Wymagane</span>}
                     </div>
                     <p className="text-sm text-slate-500 mb-4">{item.description}</p>
-                    
+
                     {(item.fileUrl || item.response) && (
                       <div className="mb-4 p-3 bg-slate-100 rounded-xl text-sm space-y-2">
                         {item.fileUrl && (

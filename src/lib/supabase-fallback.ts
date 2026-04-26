@@ -75,14 +75,6 @@ function getAuthHeaders() {
 }
 function getCacheScope() { const ctx = getAuthContext(); return `${ctx.uid || 'anon'}:${ctx.email || 'anon'}`; }
 
-function normalizeApiErrorMessage(statusCode: number, message: string) {
-  if (statusCode === 402 || message.startsWith('WORKSPACE_WRITE_ACCESS_REQUIRED')) {
-    return 'Twój plan wygasł albo nie jest aktywny. Odnów plan, aby tworzyć i edytować rekordy.';
-  }
-
-  return message;
-}
-
 async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   const method = (init?.method || 'GET').toUpperCase();
   const useCache = method === 'GET';
@@ -103,7 +95,7 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
     }
     if (!response.ok) {
       const message = typeof data === 'object' && data && 'error' in (data as Record<string, unknown>) ? String((data as Record<string, unknown>).error) : `${response.status}:REQUEST_FAILED:${text.slice(0, 180)}`;
-      throw new Error(normalizeApiErrorMessage(response.status, message));
+      throw new Error(message);
     }
     if (data && typeof data === 'object' && 'raw' in (data as Record<string, unknown>)) throw new Error(`INVALID_API_RESPONSE:${String((data as Record<string, unknown>).raw).slice(0, 180)}`);
     return data as T;

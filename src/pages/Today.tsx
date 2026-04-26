@@ -1,54 +1,38 @@
-import { useState, useEffect, FormEvent } from 'react';
-import { auth, db } from '../firebase';
-import { 
-  collection, 
-  query, 
-  where, 
-  onSnapshot, 
-  orderBy, 
-  limit, 
-  addDoc, 
-  serverTimestamp,
-  doc,
-  updateDoc
-} from 'firebase/firestore';
+import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
+import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { 
-  Plus, 
-  Calendar, 
-  CheckSquare, 
-  Target, 
-  AlertTriangle, 
-  Clock, 
+import {
+  Plus,
+  CheckSquare,
+  AlertTriangle,
   ArrowRight,
   TrendingUp,
-  MessageSquare,
-  Phone,
-  Mail,
-  MoreVertical,
-  ChevronRight,
   Loader2,
-  Mic
+  Bell,
+  Repeat,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  ListTodo,
+  ShieldAlert,
+  Briefcase,
 } from 'lucide-react';
-import { 
-  format, 
-  isToday, 
-  isTomorrow, 
-  isPast, 
-  addDays, 
-  startOfDay, 
+import {
+  format,
+  isPast,
+  addDays,
+  parseISO,
+  isToday,
+  differenceInCalendarDays,
+  startOfDay,
   endOfDay,
-  isSameDay,
-  parseISO
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
-import QuickLeadCaptureModal from '../components/quick-lead/QuickLeadCaptureModal';
-import { getQuickLeadTaskType, type QuickLeadParsedData } from '../lib/quick-lead-capture';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -56,210 +40,1080 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter
+  DialogFooter,
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { TopicContactPicker } from '../components/topic-contact-picker';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
+  buildStartEndPair,
+  combineScheduleEntries,
+  createDefaultRecurrence,
+  createDefaultReminder,
+  getTaskDate,
+  getTaskStartAt,
+  toReminderAtIso,
+  toDateTimeLocalValue,
+} from '../lib/scheduling';
+import {
+  EVENT_TYPES,
+  PRIORITY_OPTIONS,
+  RECURRENCE_OPTIONS,
+  REMINDER_OFFSET_OPTIONS,
+  REMINDER_MODE_OPTIONS,
+  SOURCE_OPTIONS,
+  TASK_TYPES,
+} from '../lib/options';
+import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
+import { requireWorkspaceId } from '../lib/workspace-context';
+import {
+  deleteEventFromSupabase,
+  deleteTaskFromSupabase,
+  fetchClientsFromSupabase,
+  fetchLeadsFromSupabase,
+  insertEventToSupabase,
+  insertActivityToSupabase,
+  insertLeadToSupabase,
+  insertTaskToSupabase,
+  updateEventInSupabase,
+  updateLeadInSupabase,
+  updateTaskInSupabase,
+} from '../lib/supabase-fallback';
 
+import { getTodayEntryPriorityReasons } from '../lib/today-v1-final';
+
+const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
+const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+
+const TODAY_QUICK_SNOOZE_OPTIONS = [
+  {
+    key: '1h',
+    label: 'Za 1h',
+    description: 'Odłóż o godzinę.',
+    minutes: 60,
+    days: 0,
+  },
+  {
+    key: 'tomorrow',
+    label: 'Jutro',
+    description: 'Odłóż na jutro rano.',
+    minutes: 0,
+    days: 1,
+  },
+  {
+    key: '2d',
+    label: 'Za 2 dni',
+    description: 'Odłóż o dwa dni.',
+    minutes: 0,
+    days: 2,
+  },
+  {
+    key: 'next_week',
+    label: 'Przyszły tydzień',
+    description: 'Odłóż na przyszły tydzień.',
+    minutes: 0,
+    days: 7,
+  },
+] as const;
+
+type TileCardProps = {
+  key?: string | number;
+  id: string;
+  title: string;
+  subtitle?: string;
+  collapsedMap: Record<string, boolean>;
+  onToggle: (id: string) => void;
+  children?: ReactNode;
+  className?: string;
+  titleClassName?: string;
+  subtitleClassName?: string;
+  headerRight?: ReactNode;
+  bodyClassName?: string;
+};
+
+type LeadLinkCardProps = {
+  key?: string | number;
+  leadId: string;
+  title: string;
+  subtitle?: string;
+  helperText?: string;
+  className?: string;
+  subtitleClassName?: string;
+  badges?: ReactNode;
+  rightMeta?: ReactNode;
+};
+
+function TileCard({
+  id,
+  title,
+  subtitle,
+  collapsedMap,
+  onToggle,
+  children,
+  className = '',
+  titleClassName = 'text-slate-900',
+  subtitleClassName = 'text-slate-500',
+  headerRight,
+  bodyClassName = '',
+}: TileCardProps) {
+  const collapsed = Boolean(collapsedMap[id]);
+
+  return (
+    <Card className={`shadow-sm border-slate-100 ${className}`}>
+      <CardContent className="p-0">
+        <button
+          type="button"
+          onClick={() => onToggle(id)}
+          className="w-full p-4 flex flex-col gap-3 text-left sm:flex-row sm:flex-wrap sm:items-start sm:justify-between"
+        >
+          <div className="min-w-0 basis-full sm:basis-72 flex-1">
+            <p className={`font-semibold break-words ${titleClassName}`}>{title}</p>
+            {subtitle ? (
+              <p className={`mt-1 text-xs break-words ${subtitleClassName}`}>{subtitle}</p>
+            ) : null}
+          </div>
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+            {headerRight}
+            {collapsed ? (
+              <ChevronDown className="w-4 h-4 text-slate-400" />
+            ) : (
+              <ChevronUp className="w-4 h-4 text-slate-400" />
+            )}
+          </div>
+        </button>
+        {!collapsed ? (
+          <div className={`border-t border-slate-100 p-4 pt-3 ${bodyClassName}`}>
+            {children}
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
+  );
+}
+
+function LeadLinkCard({
+  leadId,
+  title,
+  subtitle,
+  helperText,
+  className = '',
+  subtitleClassName = 'text-slate-500',
+  badges,
+  rightMeta,
+}: LeadLinkCardProps) {
+  return (
+    <Link to={`/leads/${leadId}`} className="block group">
+      <Card className={`transition-all hover:border-primary/30 hover:shadow-md ${className}`}>
+        <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <div className="min-w-0 basis-full sm:basis-72 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="font-semibold text-slate-900 break-words">{title}</p>
+              {badges}
+            </div>
+            {subtitle ? (
+              <p className={`mt-1 text-sm break-words ${subtitleClassName}`}>{subtitle}</p>
+            ) : null}
+            {helperText ? (
+              <p className="mt-2 text-sm text-slate-600 break-words">{helperText}</p>
+            ) : null}
+          </div>
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+            {rightMeta}
+            <div className="rounded-xl bg-slate-100 p-2 text-slate-500 transition-colors group-hover:bg-primary group-hover:text-white">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+}
+
+function parseMoment(value: unknown) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  try {
+    const normalized = value.includes('T') ? value : `${value}T09:00:00`;
+    const parsed = parseISO(normalized);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  } catch {
+    return null;
+  }
+}
+
+function isLeadOverdue(lead: any) {
+  const moment = parseMoment(lead?.nextActionAt);
+  if (!moment) return false;
+  return isPast(moment) && !isToday(moment);
+}
+
+function getDaysWithoutUpdate(lead: any) {
+  const moment = parseMoment(lead?.updatedAt);
+  if (!moment) return null;
+  return Math.max(0, differenceInCalendarDays(new Date(), moment));
+}
+
+function formatLeadMoment(value: unknown) {
+  const moment = parseMoment(value);
+  return moment ? format(moment, 'd MMM HH:mm', { locale: pl }) : 'Brak terminu';
+}
+
+
+function getTodayEntryStatus(entry: any) {
+  return String(entry?.raw?.status || '').toLowerCase();
+}
+
+function isCompletedTodayEntry(entry: any) {
+  const status = getTodayEntryStatus(entry);
+
+  return (
+    (entry?.kind === 'task' && status === 'done') ||
+    (entry?.kind === 'event' && (status === 'completed' || status === 'done'))
+  );
+}
+
+function sortTodayEntriesForDisplay(entries: any[]) {
+  return [...entries].sort((a, b) => {
+    const aDone = isCompletedTodayEntry(a);
+    const bDone = isCompletedTodayEntry(b);
+
+    if (aDone !== bDone) {
+      return aDone ? 1 : -1;
+    }
+
+    const aTime = parseMoment(a?.startsAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+    const bTime = parseMoment(b?.startsAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+
+    return aTime - bTime;
+  });
+}
+
+
+
+function TodayEntryRelationLinks({ entry }: { entry: any }) {
+  const leadId = entry?.raw?.leadId || entry?.leadId || null;
+  const caseId = entry?.raw?.caseId || entry?.caseId || null;
+
+  if (!leadId && !caseId) return null;
+
+  return (
+    <div className="mt-3 flex flex-wrap gap-2">
+      {leadId ? (
+        <Link
+          to={`/leads/${leadId}`}
+          className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+        >
+          Otwórz lead
+        </Link>
+      ) : null}
+      {caseId ? (
+        <Link
+          to={`/cases/${caseId}`}
+          className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700"
+        >
+          Otwórz sprawę
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
+function formatTodayCompleteActionLabel(isCompleted: boolean, isPending: boolean) {
+  if (isPending) return '...';
+  return isCompleted ? 'Przywróć' : 'Zrobione';
+}
+
+function TodayEntryPriorityReasons({ entry }: { entry: any }) {
+  const reasons = getTodayEntryPriorityReasons(entry);
+
+  if (reasons.length === 0) return null;
+
+  return (
+    <div className="mt-3 flex flex-wrap gap-1.5">
+      {reasons.map((reason) => (
+        <span
+          key={reason}
+          className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600"
+        >
+          {reason}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function TodayEntrySnoozeBar({
+  entry,
+  isPending,
+  onSnooze,
+  onEdit,
+}: {
+  entry: any;
+  isPending: boolean;
+  onSnooze: (entry: any, optionKey: string) => void | Promise<void>;
+  onEdit?: (entry: any) => void;
+}) {
+  const quickActionLockRef = useRef<string | null>(null);
+
+  if (isCompletedTodayEntry(entry)) return null;
+
+  const releaseQuickActionLock = (lockKey: string) => {
+    window.setTimeout(() => {
+      if (quickActionLockRef.current === lockKey) {
+        quickActionLockRef.current = null;
+      }
+    }, 450);
+  };
+
+  const stopInteractiveEvent = (event: any) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const runQuickAction = (event: any, lockKey: string, action: () => void) => {
+    stopInteractiveEvent(event);
+
+    if (isPending) return;
+    if (quickActionLockRef.current === lockKey) return;
+
+    quickActionLockRef.current = lockKey;
+    action();
+    releaseQuickActionLock(lockKey);
+  };
+
+  const handleEditAction = (event: any) => {
+    runQuickAction(event, `edit:${entry?.id || entry?.sourceId || 'entry'}`, () => {
+      onEdit?.(entry);
+    });
+  };
+
+  const handleSnoozeAction = (event: any, optionKey: string) => {
+    runQuickAction(event, `snooze:${entry?.id || entry?.sourceId || 'entry'}:${optionKey}`, () => {
+      void onSnooze(entry, optionKey);
+    });
+  };
+
+  const handleKeyboardAction = (event: any, callback: (event: any) => void) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    callback(event);
+  };
+
+  const actionClassName =
+    'inline-flex h-8 cursor-pointer select-none items-center whitespace-nowrap rounded-lg border px-2.5 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue-500/25';
+
+  const disabledClassName = isPending ? ' cursor-not-allowed opacity-50' : '';
+
+  return (
+    <div
+      className="relative z-50 mt-3 flex w-full max-w-full flex-wrap items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2 pointer-events-auto isolate"
+      data-today-quick-snooze-bar="true"
+      style={{ pointerEvents: 'auto' }}
+      onClick={(event) => event.stopPropagation()}
+      onMouseDown={(event) => event.stopPropagation()}
+      onMouseUp={(event) => event.stopPropagation()}
+      onPointerDown={(event) => event.stopPropagation()}
+      onPointerUp={(event) => event.stopPropagation()}
+      onTouchStart={(event) => event.stopPropagation()}
+      onTouchEnd={(event) => event.stopPropagation()}
+    >
+      <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko odłóż:</span>
+      {onEdit ? (
+        <button
+          type="button"
+          role="button"
+          tabIndex={isPending ? -1 : 0}
+          aria-disabled={isPending}
+          data-today-quick-snooze-edit="true"
+          onPointerDown={stopInteractiveEvent}
+          onPointerUp={handleEditAction}
+          onMouseDown={stopInteractiveEvent}
+          onTouchStart={(event) => event.stopPropagation()}
+          onClick={handleEditAction}
+          onKeyDown={(event) => handleKeyboardAction(event, handleEditAction)}
+          className={`${actionClassName} border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:bg-blue-100${disabledClassName}`}
+          title="Edytuj zadanie lub wydarzenie"
+        >
+          Edytuj
+        </button>
+      ) : null}
+      {TODAY_QUICK_SNOOZE_OPTIONS.map((option) => (
+        <button
+          key={option.key}
+          type="button"
+          role="button"
+          tabIndex={isPending ? -1 : 0}
+          aria-disabled={isPending}
+          data-today-quick-snooze-action={option.key}
+          onPointerDown={stopInteractiveEvent}
+          onPointerUp={(event) => handleSnoozeAction(event, option.key)}
+          onMouseDown={stopInteractiveEvent}
+          onTouchStart={(event) => event.stopPropagation()}
+          onClick={(event) => handleSnoozeAction(event, option.key)}
+          onKeyDown={(event) => handleKeyboardAction(event, (keyboardEvent) => handleSnoozeAction(keyboardEvent, option.key))}
+          className={`${actionClassName} border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50${disabledClassName}`}
+          title={option.description}
+        >
+          {isPending ? '...' : option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 export default function Today() {
-  const { workspace, profile, hasAccess, loading: wsLoading } = useWorkspace();
+  const { workspace, profile, hasAccess, loading: wsLoading, workspaceReady, refresh } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
+  const [cases, setCases] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Quick Add States
   const [isLeadOpen, setIsLeadOpen] = useState(false);
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [isEventOpen, setIsEventOpen] = useState(false);
-  const [newLead, setNewLead] = useState({ name: '', email: '', dealValue: '', source: 'other', status: 'new' });
-  const [newTask, setNewTask] = useState({ title: '', type: 'follow_up', date: format(new Date(), 'yyyy-MM-dd'), priority: 'medium' });
-  const [newEvent, setNewEvent] = useState({ title: '', type: 'meeting', startAt: format(new Date(), "yyyy-MM-dd'T'HH:mm"), endAt: format(addDays(new Date(), 0), "yyyy-MM-dd'T'HH:mm") });
+  const [collapsedTiles, setCollapsedTiles] = useState<Record<string, boolean>>({});
+  const [todayActionId, setTodayActionId] = useState<string | null>(null);
+  const [previewEntry, setPreviewEntry] = useState<any | null>(null);
+
+  const leadSubmitLockRef = useRef(false);
+  const taskSubmitLockRef = useRef(false);
+  const eventSubmitLockRef = useRef(false);
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [taskSubmitting, setTaskSubmitting] = useState(false);
+  const [eventSubmitting, setEventSubmitting] = useState(false);
+
+  const [newLead, setNewLead] = useState({
+    name: '',
+    email: '',
+    dealValue: '',
+    source: 'other',
+    status: 'new',
+  });
+
+  const [newTask, setNewTask] = useState(() => ({
+    title: '',
+    type: 'follow_up',
+    dueAt: toDateTimeLocalValue(new Date()),
+    priority: 'medium',
+    leadId: '',
+    caseId: '',
+    relationQuery: '',
+    recurrence: createDefaultRecurrence(),
+    reminder: createDefaultReminder(),
+  }));
+
+  const [newEvent, setNewEvent] = useState(() => {
+    const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
+    return {
+      title: '',
+      type: 'meeting',
+      ...pair,
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
+      recurrence: createDefaultRecurrence(),
+      reminder: createDefaultReminder(),
+    };
+  });
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
+    try {
+      const raw = window.localStorage.getItem(TODAY_TILE_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Record<string, boolean>;
+        setCollapsedTiles(parsed);
+      }
+    } catch {
+      // Ignore invalid local storage state.
+    }
+  }, []);
 
-    const leadsQuery = query(
-      collection(db, 'leads'),
-      where('ownerId', '==', auth.currentUser.uid),
-      where('status', 'not-in', ['won', 'lost']),
-      orderBy('status'),
-      orderBy('updatedAt', 'desc')
-    );
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(TODAY_TILE_STORAGE_KEY, JSON.stringify(collapsedTiles));
+    } catch {
+      // Ignore storage write failures.
+    }
+  }, [collapsedTiles]);
 
-    const tasksQuery = query(
-      collection(db, 'tasks'),
-      where('ownerId', '==', auth.currentUser.uid),
-      where('status', '==', 'todo'),
-      orderBy('date', 'asc')
-    );
+  const toggleTile = (id: string) => {
+    setCollapsedTiles((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
-    const eventsQuery = query(
-      collection(db, 'events'),
-      where('ownerId', '==', auth.currentUser.uid),
-      where('status', '==', 'scheduled'),
-      orderBy('startAt', 'asc')
-    );
+  const scrollToFirstSection = (sectionIds: string[]) => {
+    const target = sectionIds
+      .map((id) => document.getElementById(id))
+      .find((element) => Boolean(element));
 
-    const unsubscribeLeads = onSnapshot(leadsQuery, (snap) => {
-      setLeads(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
-    const unsubscribeTasks = onSnapshot(tasksQuery, (snap) => {
-      setTasks(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
+  async function refreshSupabaseBundle() {
+    const [bundle, clientRows] = await Promise.all([
+      fetchCalendarBundleFromSupabase(),
+      fetchClientsFromSupabase().catch(() => []),
+    ]);
+    setLeads(bundle.leads);
+    setCases(bundle.cases || []);
+    setClients(clientRows as any[]);
+    setTasks(bundle.tasks);
+    setEvents(bundle.events);
+  }
 
-    const unsubscribeEvents = onSnapshot(eventsQuery, (snap) => {
-      setEvents(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      setLoading(false);
-    });
+  const handleSoftNextStepAfterCompletion = async ({
+    leadId,
+    leadName,
+    fallbackTitle,
+  }: {
+    leadId?: string | null;
+    leadName?: string;
+    fallbackTitle?: string;
+  }) => {
+    void leadId;
+    void leadName;
+    void fallbackTitle;
+  };
+
+  useEffect(() => {
+    if (!auth.currentUser || wsLoading || !workspace?.id) {
+      setLoading(wsLoading);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadBundle = async () => {
+      try {
+        setLoading(true);
+        const [bundle, clientRows] = await Promise.all([
+          fetchCalendarBundleFromSupabase(),
+          fetchClientsFromSupabase().catch(() => []),
+        ]);
+        if (cancelled) return;
+        setLeads(bundle.leads);
+        setCases(bundle.cases || []);
+        setClients(clientRows as any[]);
+        setTasks(bundle.tasks);
+        setEvents(bundle.events);
+      } catch (error: any) {
+        if (!cancelled) {
+          toast.error(`Błąd odczytu planu dnia: ${error.message}`);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadBundle();
 
     return () => {
-      unsubscribeLeads();
-      unsubscribeTasks();
-      unsubscribeEvents();
+      cancelled = true;
     };
-  }, [workspace]);
+  }, [workspace?.id, wsLoading]);
+
+  const resetNewTask = () => {
+    setNewTask({
+      title: '',
+      type: 'follow_up',
+      dueAt: toDateTimeLocalValue(new Date()),
+      priority: 'medium',
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
+      recurrence: createDefaultRecurrence(),
+      reminder: createDefaultReminder(),
+    });
+  };
+
+  const resetNewEvent = () => {
+    const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
+    setNewEvent({
+      title: '',
+      type: 'meeting',
+      ...pair,
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
+      recurrence: createDefaultRecurrence(),
+      reminder: createDefaultReminder(),
+    });
+  };
+
+  const topicContactOptions = useMemo(
+    () => buildTopicContactOptions({ leads, cases, clients }),
+    [cases, clients, leads],
+  );
+
+  const selectedNewTaskOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: newTask.leadId || null, caseId: newTask.caseId || null }),
+    [newTask.caseId, newTask.leadId, topicContactOptions],
+  );
+
+  const selectedNewEventOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: newEvent.leadId || null, caseId: newEvent.caseId || null }),
+    [newEvent.caseId, newEvent.leadId, topicContactOptions],
+  );
+
+  const handleSelectTaskRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setNewTask((prev) => ({
+      ...prev,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    }));
+  };
+
+  const handleSelectEventRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setNewEvent((prev) => ({
+      ...prev,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    }));
+  };
+
+  const openPreviewEntry = (entry: any) => {
+    setPreviewEntry(entry);
+  };
+
+  const buildTaskPreviewEntry = (task: any) => ({
+    id: `today-task:${task.id}`,
+    kind: 'task',
+    title: task.title,
+    startsAt: getTaskStartAt(task) || `${getTaskDate(task)}T09:00`,
+    sourceId: task.id,
+    leadName: task.leadName || '',
+    raw: task,
+  });
+
+  const registerReminderScheduled = async ({
+    entityType,
+    title,
+    scheduledAt,
+    reminderAt,
+  }: {
+    entityType: 'task' | 'event';
+    title: string;
+    scheduledAt: string;
+    reminderAt: string | null;
+  }) => {
+    if (!reminderAt) return;
+
+    try {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'reminder_scheduled',
+        payload: {
+          entityType,
+          title,
+          scheduledAt,
+          reminderAt,
+          source: 'today',
+        },
+      });
+    } catch (error) {
+      console.warn('REMINDER_ACTIVITY_WRITE_FAILED', error);
+    }
+  };
+
+  const logTodayEntryActivity = async (
+    entry: any,
+    eventType: string,
+    extraPayload: Record<string, unknown> = {},
+  ) => {
+    try {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType,
+        leadId: entry?.raw?.leadId ?? entry?.leadId ?? null,
+        caseId: entry?.raw?.caseId ?? entry?.caseId ?? null,
+        workspaceId: workspace?.id ?? null,
+        payload: {
+          source: 'today',
+          entryId: entry?.id ?? null,
+          sourceId: entry?.sourceId ?? entry?.raw?.id ?? null,
+          kind: entry?.kind ?? null,
+          title: entry?.raw?.title || entry?.title || '',
+          startsAt: entry?.startsAt || getTaskStartAt(entry?.raw) || null,
+          status: getTodayEntryStatus(entry),
+          ...extraPayload,
+        },
+      });
+    } catch (error) {
+      console.warn('TODAY_ENTRY_ACTIVITY_WRITE_FAILED', error);
+    }
+  };
 
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
+    if (leadSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+    leadSubmitLockRef.current = true;
+    setLeadSubmitting(true);
     try {
-      await addDoc(collection(db, 'leads'), {
+      await insertLeadToSupabase({
         ...newLead,
         dealValue: Number(newLead.dealValue) || 0,
         ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        isAtRisk: false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        workspaceId,
       });
+      await refreshSupabaseBundle();
       toast.success('Lead dodany');
       setIsLeadOpen(false);
       setNewLead({ name: '', email: '', dealValue: '', source: 'other', status: 'new' });
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      leadSubmitLockRef.current = false;
+      setLeadSubmitting(false);
     }
-  };
-
-  const handleQuickLeadConfirm = async (data: QuickLeadParsedData) => {
-    if (!hasAccess) throw new Error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
-    if (!workspace?.id || !auth.currentUser?.uid) throw new Error('Brak aktywnego workspace lub użytkownika.');
-
-    const leadName = data.contactName || data.companyName || data.need || 'Nowy lead z szybkiej notatki';
-    const leadRef = await addDoc(collection(db, 'leads'), {
-      name: leadName,
-      company: data.companyName || '',
-      email: data.email || '',
-      phone: data.phone || '',
-      source: data.source || 'other',
-      dealValue: 0,
-      status: data.suggestedStatus || 'new',
-      priority: data.priority,
-      notes: data.need ? `Potrzeba: ${data.need}` : '',
-      nextActionAt: data.nextActionAt || null,
-      ownerId: auth.currentUser.uid,
-      workspaceId: workspace.id,
-      isAtRisk: !data.nextActionAt,
-      createdFromQuickCapture: true,
-      quickCaptureProvider: 'rule_parser',
-      quickCaptureConfirmedAt: new Date().toISOString(),
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-
-    if (data.nextAction || data.nextActionAt) {
-      const actionDate = data.nextActionAt ? new Date(data.nextActionAt) : new Date();
-      await addDoc(collection(db, 'tasks'), {
-        title: data.nextAction ? `${data.nextAction}: ${leadName}` : `Follow-up: ${leadName}`,
-        type: getQuickLeadTaskType(data.nextAction),
-        date: format(actionDate, 'yyyy-MM-dd'),
-        priority: data.priority === 'high' ? 'high' : data.priority === 'low' ? 'low' : 'medium',
-        status: 'todo',
-        leadId: leadRef.id,
-        ownerId: auth.currentUser.uid,
-        workspaceId: workspace.id,
-        reminderAt: data.nextActionAt || null,
-        scheduledAt: data.nextActionAt || null,
-        dueAt: data.nextActionAt || format(actionDate, 'yyyy-MM-dd'),
-        createdFromQuickCapture: true,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-    }
-
-    await addDoc(collection(db, 'activities'), {
-      type: 'lead_created',
-      title: 'Utworzono leada z szybkiej notatki',
-      description: data.need || 'Lead utworzony z modułu szybkiego dodawania.',
-      leadId: leadRef.id,
-      ownerId: auth.currentUser.uid,
-      workspaceId: workspace.id,
-      createdAt: serverTimestamp(),
-    });
   };
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
+    if (taskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+    taskSubmitLockRef.current = true;
+    setTaskSubmitting(true);
     try {
-      await addDoc(collection(db, 'tasks'), {
-        ...newTask,
-        status: 'todo',
-        scheduledAt: newTask.date,
-        dueAt: newTask.date,
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: newTask.title,
+          startAt: newTask.dueAt,
+        },
+        candidates: conflictCandidates,
       });
+      if (!shouldSave) return;
+
+      const reminderAt = toReminderAtIso(newTask.dueAt, newTask.reminder);
+      await insertTaskToSupabase({
+        title: newTask.title,
+        type: newTask.type,
+        date: newTask.dueAt.slice(0, 10),
+        scheduledAt: newTask.dueAt,
+        priority: newTask.priority,
+        leadId: newTask.leadId || null,
+        caseId: newTask.caseId || null,
+        reminderAt,
+        recurrenceRule: newTask.recurrence.mode,
+        ownerId: auth.currentUser?.uid,
+        workspaceId,
+      });
+      await registerReminderScheduled({
+        entityType: 'task',
+        title: newTask.title,
+        scheduledAt: newTask.dueAt,
+        reminderAt,
+      });
+      await refreshSupabaseBundle();
       toast.success('Zadanie dodane');
       setIsTaskOpen(false);
-      setNewTask({ title: '', type: 'follow_up', date: format(new Date(), 'yyyy-MM-dd'), priority: 'medium' });
+      resetNewTask();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      taskSubmitLockRef.current = false;
+      setTaskSubmitting(false);
     }
   };
 
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
+    if (eventSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+    eventSubmitLockRef.current = true;
+    setEventSubmitting(true);
     try {
-      await addDoc(collection(db, 'events'), {
-        ...newEvent,
-        status: 'scheduled',
-        date: newEvent.startAt.slice(0, 10),
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'event',
+          title: newEvent.title,
+          startAt: newEvent.startAt,
+          endAt: newEvent.endAt,
+        },
+        candidates: conflictCandidates,
       });
+      if (!shouldSave) return;
+
+      const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
+      await insertEventToSupabase({
+        title: newEvent.title,
+        type: newEvent.type,
+        startAt: newEvent.startAt,
+        endAt: newEvent.endAt,
+        reminderAt,
+        recurrenceRule: newEvent.recurrence.mode,
+        leadId: newEvent.leadId || null,
+        caseId: newEvent.caseId || null,
+        workspaceId,
+      });
+      await registerReminderScheduled({
+        entityType: 'event',
+        title: newEvent.title,
+        scheduledAt: newEvent.startAt,
+        reminderAt,
+      });
+      await refreshSupabaseBundle();
       toast.success('Wydarzenie dodane');
       setIsEventOpen(false);
-      setNewEvent({ title: '', type: 'meeting', startAt: format(new Date(), "yyyy-MM-dd'T'HH:mm"), endAt: format(addDays(new Date(), 0), "yyyy-MM-dd'T'HH:mm") });
+      resetNewEvent();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      eventSubmitLockRef.current = false;
+      setEventSubmitting(false);
     }
   };
 
   const toggleTask = async (taskId: string, currentStatus: string) => {
     try {
-      await updateDoc(doc(db, 'tasks', taskId), {
+      const task = tasks.find((entry) => entry.id === taskId);
+      await updateTaskInSupabase({
+        id: taskId,
         status: currentStatus === 'todo' ? 'done' : 'todo',
-        updatedAt: serverTimestamp()
+        title: task?.title,
+        type: task?.type,
+        date: task?.date,
+        priority: task?.priority,
+        leadId: task?.leadId ?? null,
+        caseId: task?.caseId ?? null,
       });
+      await refreshSupabaseBundle();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
   };
 
+  const toggleTodayTask = async (entry: any) => {
+    try {
+      setTodayActionId(`${entry.id}:done`);
+      const nextStatus = isCompletedTodayEntry(entry) ? 'todo' : 'done';
+
+      await updateTaskInSupabase({
+        id: entry.sourceId,
+        title: entry.raw?.title || entry.title,
+        type: entry.raw?.type,
+        date: entry.raw?.date || entry.startsAt.slice(0, 10),
+        scheduledAt: getTaskStartAt(entry.raw) || entry.startsAt,
+        status: nextStatus,
+        priority: entry.raw?.priority,
+        leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
+      });
+
+      await logTodayEntryActivity(
+        entry,
+        nextStatus === 'done' ? 'today_task_completed' : 'today_task_restored',
+        { nextStatus },
+      );
+
+      await refreshSupabaseBundle();
+      if (nextStatus === 'done' && (entry.raw?.leadId ?? null)) {
+        await handleSoftNextStepAfterCompletion({
+          leadId: entry.raw?.leadId ?? null,
+          leadName: entry.leadName || entry.raw?.leadName || '',
+          fallbackTitle: entry.raw?.title || entry.title,
+        });
+      }
+      if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
+        setPreviewEntry(null);
+      }
+      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrócone');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
+  const deleteTodayTask = async (entry: any) => {
+    if (!window.confirm('Usunąć to zadanie?')) return;
+
+    try {
+      setTodayActionId(`${entry.id}:delete`);
+      await deleteTaskFromSupabase(entry.sourceId);
+      await logTodayEntryActivity(entry, 'today_task_deleted');
+      await refreshSupabaseBundle();
+      if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
+        setPreviewEntry(null);
+      }
+      toast.success('Zadanie usunięte');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
+  const toggleTodayEvent = async (entry: any) => {
+    try {
+      setTodayActionId(`${entry.id}:done`);
+      const nextStatus = isCompletedTodayEntry(entry) ? 'scheduled' : 'completed';
+
+      await updateEventInSupabase({
+        id: entry.sourceId,
+        title: entry.raw?.title || entry.title,
+        type: entry.raw?.type || 'meeting',
+        startAt: entry.raw?.startAt || entry.startsAt,
+        endAt: entry.raw?.endAt || null,
+        status: nextStatus,
+        leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
+      });
+
+      await logTodayEntryActivity(
+        entry,
+        nextStatus === 'completed' ? 'today_event_completed' : 'today_event_restored',
+        { nextStatus },
+      );
+
+      await refreshSupabaseBundle();
+      if (nextStatus === 'completed' && (entry.raw?.leadId ?? null)) {
+        await handleSoftNextStepAfterCompletion({
+          leadId: entry.raw?.leadId ?? null,
+          leadName: entry.leadName || entry.raw?.leadName || '',
+          fallbackTitle: entry.raw?.title || entry.title,
+        });
+      }
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
+      }
+      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywrócone');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
+  const deleteTodayEvent = async (entry: any) => {
+    if (!window.confirm('Usunąć to wydarzenie?')) return;
+
+    try {
+      setTodayActionId(`${entry.id}:delete`);
+      await deleteEventFromSupabase(entry.sourceId);
+      await logTodayEntryActivity(entry, 'today_event_deleted');
+      await refreshSupabaseBundle();
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
+      }
+      toast.success('Wydarzenie usunięte');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
+  const handleSnoozeTodayTask = async (entry: any, optionKey: string) => {
+    const nextScheduledAt = resolveTodaySnoozeAt(optionKey);
+
+    try {
+      setTodayActionId(entry.id + ':snooze');
+      await updateTaskInSupabase({
+        id: entry.sourceId,
+        title: entry.raw?.title || entry.title,
+        type: entry.raw?.type,
+        date: nextScheduledAt.slice(0, 10),
+        scheduledAt: nextScheduledAt,
+        status: 'todo',
+        priority: entry.raw?.priority,
+        leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
+      });
+
+      await logTodayEntryActivity(entry, 'today_task_snoozed', {
+        nextScheduledAt,
+        snoozeOption: optionKey,
+      });
+
+      await refreshSupabaseBundle();
+      if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
+        setPreviewEntry(null);
+      }
+      toast.success('Zadanie odłożone');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+
+  const handleSnoozeTodayEvent = async (entry: any, optionKey: string) => {
+    const nextStartAt = resolveTodaySnoozeAt(optionKey);
+    const currentStart = parseMoment(entry.raw?.startAt || entry.startsAt) || new Date();
+    const currentEnd = parseMoment(entry.raw?.endAt) || new Date(currentStart.getTime() + 60 * 60_000);
+    const durationMs = Math.max(currentEnd.getTime() - currentStart.getTime(), 60 * 60_000);
+    const nextEndAt = toDateTimeLocalValue(new Date(parseISO(nextStartAt).getTime() + durationMs));
+
+    try {
+      setTodayActionId(entry.id + ':snooze');
+      await updateEventInSupabase({
+        id: entry.sourceId,
+        title: entry.raw?.title || entry.title,
+        type: entry.raw?.type || 'meeting',
+        startAt: nextStartAt,
+        endAt: nextEndAt,
+        status: 'scheduled',
+        leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
+      });
+
+      await logTodayEntryActivity(entry, 'today_event_snoozed', {
+        nextStartAt,
+        nextEndAt,
+        snoozeOption: optionKey,
+      });
+
+      await refreshSupabaseBundle();
+      if (previewEntry?.id === entry.id) {
+        setPreviewEntry(null);
+      }
+      toast.success('Wydarzenie odłożone');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setTodayActionId(null);
+    }
+  };
+  const handleEventStartChange = (value: string) => {
+    const currentStart = parseISO(newEvent.startAt);
+    const currentEnd = parseISO(newEvent.endAt);
+    const duration = Math.max(currentEnd.getTime() - currentStart.getTime(), 60 * 60_000);
+    const nextEnd = new Date(parseISO(value).getTime() + duration);
+    setNewEvent({ ...newEvent, startAt: value, endAt: toDateTimeLocalValue(nextEnd) });
+  };
+
+
+  const conflictCandidates = useMemo(
+    () =>
+      buildConflictCandidates({
+        tasks,
+        events,
+      }),
+    [events, tasks],
+  );
   if (wsLoading || loading) {
     return (
       <Layout>
@@ -270,11 +1124,110 @@ export default function Today() {
     );
   }
 
-  const todayTasks = tasks.filter(t => isToday(parseISO(t.date)));
-  const overdueTasks = tasks.filter(t => isPast(parseISO(t.date)) && !isToday(parseISO(t.date)));
-  const todayEvents = events.filter(e => isToday(parseISO(e.startAt)));
-  const actionLeads = leads.filter(l => l.nextActionAt && isToday(parseISO(l.nextActionAt)));
-  const noStepLeads = leads.filter(l => !l.nextActionAt);
+  if (!workspaceReady) {
+    return (
+      <Layout>
+        <div className="p-6 max-w-3xl mx-auto w-full">
+          <Card className="border-rose-200">
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-lg font-bold text-rose-700">Kontekst workspace nie jest gotowy</h2>
+              <p className="text-sm text-slate-600">Nie możemy uruchomić akcji, dopóki workspace nie zostanie poprawnie zbootstrapowany.</p>
+              <Button onClick={() => refresh()}>Spróbuj ponownie</Button>
+            </CardContent>
+          </Card>
+        </div>
+      </Layout>
+    );
+  }
+
+  const today = new Date();
+  const todayStart = startOfDay(today);
+  const todayEnd = endOfDay(today);
+  const activeLeads = leads.filter((lead) => isActiveSalesLead(lead));
+  const activeLeadsValue = activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0);
+  const leadsWithAction = activeLeads.filter((lead) => parseMoment(lead.nextActionAt));
+  const todayEntries = sortTodayEntriesForDisplay(combineScheduleEntries({
+    events,
+    tasks,
+    leads: leadsWithAction,
+    rangeStart: todayStart,
+    rangeEnd: todayEnd,
+  }));
+  const todayTasks = todayEntries.filter((entry) => entry.kind === 'task');
+  const todayEvents = todayEntries.filter((entry) => entry.kind === 'event');
+  const todayLeadActions = todayEntries.filter((entry) => entry.kind === 'lead');
+
+  const overdueTasks = tasks.filter((task) => {
+    const startAt = getTaskStartAt(task);
+    return task.status !== 'done' && startAt && isPast(parseISO(startAt)) && !isToday(parseISO(startAt));
+  });
+  const overdueLeadActions = activeLeads.filter((lead) => isLeadOverdue(lead));
+  const readyToStartLeads = activeLeads.filter((lead) => {
+    const status = String(lead.status || '');
+    const eligibleAt = parseMoment(lead.caseEligibleAt);
+    const linkedCaseId = String(lead.linkedCaseId || '');
+    if (linkedCaseId) return false;
+    if (status === 'accepted' && (eligibleAt || String(lead.startRuleSnapshot || '') === 'on_acceptance')) return true;
+    return false;
+  });
+  const activeServiceLeads = leads.filter((lead) => isLeadMovedToService(lead));
+  const blockedCases = cases.filter((caseRecord) => String(caseRecord.status || '') === 'blocked');
+  const noStepLeads = activeLeads.filter((lead) => !parseMoment(lead.nextActionAt));
+  const staleLeads = activeLeads
+    .filter((lead) => {
+      const days = getDaysWithoutUpdate(lead);
+      return days !== null && days >= 5 && !isLeadOverdue(lead) && Boolean(parseMoment(lead.nextActionAt)) && !lead.isAtRisk;
+    })
+    .sort((a, b) => (getDaysWithoutUpdate(b) || 0) - (getDaysWithoutUpdate(a) || 0))
+    .slice(0, 5);
+  const riskyValuableLeads = activeLeads
+    .filter((lead) => {
+      const value = Number(lead.dealValue) || 0;
+      const days = getDaysWithoutUpdate(lead) || 0;
+      return value > 0 && (Boolean(lead.isAtRisk) || isLeadOverdue(lead) || !parseMoment(lead.nextActionAt) || days >= 5);
+    })
+    .sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0))
+    .slice(0, 5);
+  const topValuableLeads = [...activeLeads].sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0)).slice(0, 3);
+
+  const summaryCards = [
+    {
+      id: 'urgent',
+      title: 'Pilne teraz',
+      value: overdueTasks.length + overdueLeadActions.length,
+      tone: 'text-rose-600',
+      bg: 'bg-rose-50',
+      icon: AlertTriangle,
+      sectionIds: ['today-section-overdue-tasks', 'today-section-overdue-leads'],
+    },
+    {
+      id: 'today',
+      title: 'Na dziś',
+      value: todayEntries.length,
+      tone: 'text-blue-600',
+      bg: 'bg-blue-50',
+      icon: Clock,
+      sectionIds: ['today-section-main'],
+    },
+    {
+      id: 'no-step',
+      title: 'Bez działań',
+      value: noStepLeads.length,
+      tone: 'text-amber-600',
+      bg: 'bg-amber-50',
+      icon: ListTodo,
+      sectionIds: ['today-section-no-step'],
+    },
+    {
+      id: 'stalled',
+      title: 'Bez ruchu',
+      value: staleLeads.length,
+      tone: 'text-purple-600',
+      bg: 'bg-purple-50',
+      icon: ShieldAlert,
+      sectionIds: ['today-section-stale'],
+    },
+  ];
 
   return (
     <Layout>
@@ -282,56 +1235,39 @@ export default function Today() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Witaj, {profile?.fullName?.split(' ')[0]}!</h1>
-            <p className="text-slate-500">Oto co wymaga Twojej uwagi dzisiaj.</p>
           </div>
-          <div className="flex items-center gap-2 flex-wrap justify-end">
-            <QuickLeadCaptureModal
-              disabled={!hasAccess}
-              onConfirm={handleQuickLeadConfirm}
-              trigger={
-                <Button variant="default" className="rounded-xl shadow-sm" disabled={!hasAccess}>
-                  <Mic className="w-4 h-4 mr-2" /> Szybki lead
-                </Button>
-              }
-            />
-
+          <div className="flex items-center gap-2 flex-wrap">
             <Dialog open={isLeadOpen} onOpenChange={setIsLeadOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-sm"><Plus className="w-4 h-4 mr-2" /> Lead</Button>
+                <Button className="rounded-xl shadow-sm">
+                  <Plus className="w-4 h-4 mr-2" /> Lead
+                </Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader><DialogTitle>Szybkie dodanie leada</DialogTitle></DialogHeader>
+              <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Szybkie dodanie leada</DialogTitle>
+                </DialogHeader>
                 <form onSubmit={handleAddLead} className="space-y-4 py-4">
                   <div className="space-y-2">
                     <Label>Imię i nazwisko / Firma</Label>
-                    <Input value={newLead.name} onChange={e => setNewLead({...newLead, name: e.target.value})} required />
+                    <Input value={newLead.name} onChange={(e) => setNewLead({ ...newLead, name: e.target.value })} required />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Wartość (PLN)</Label>
-                      <Input type="number" value={newLead.dealValue} onChange={e => setNewLead({...newLead, dealValue: e.target.value})} />
+                      <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
                     </div>
                     <div className="space-y-2">
                       <Label>Źródło</Label>
-                      <Select value={newLead.source} onValueChange={v => setNewLead({...newLead, source: v})}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="instagram">Instagram</SelectItem>
-                          <SelectItem value="facebook">Facebook</SelectItem>
-                          <SelectItem value="messenger">Messenger</SelectItem>
-                          <SelectItem value="whatsapp">WhatsApp</SelectItem>
-                          <SelectItem value="email">E-mail</SelectItem>
-                          <SelectItem value="form">Formularz</SelectItem>
-                          <SelectItem value="phone">Telefon</SelectItem>
-                          <SelectItem value="referral">Polecenie</SelectItem>
-                          <SelectItem value="cold_outreach">Cold Outreach</SelectItem>
-                          <SelectItem value="other">Inne</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select className={modalSelectClass} value={newLead.source} onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}>
+                        {SOURCE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Dodaj leada</Button>
+                    <Button type="submit" className="w-full" disabled={leadSubmitting || !workspaceReady}>{leadSubmitting ? 'Dodawanie...' : 'Dodaj leada'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -339,37 +1275,117 @@ export default function Today() {
 
             <Dialog open={isTaskOpen} onOpenChange={setIsTaskOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl shadow-sm"><Plus className="w-4 h-4 mr-2" /> Zadanie</Button>
+                <Button variant="outline" className="rounded-xl shadow-sm">
+                  <Plus className="w-4 h-4 mr-2" /> Zadanie
+                </Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader><DialogTitle>Nowe zadanie</DialogTitle></DialogHeader>
-                <form onSubmit={handleAddTask} className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <Label>Tytuł zadania</Label>
-                    <Input value={newTask.title} onChange={e => setNewTask({...newTask, title: e.target.value})} required />
+              <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Nowe zadanie</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleAddTask} className="space-y-6 py-4">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Tytuł zadania</Label>
+                      <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Typ</Label>
+                        <select className={modalSelectClass} value={newTask.type} onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}>
+                          {TASK_TYPES.map((taskType) => (
+                            <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Priorytet</Label>
+                        <select className={modalSelectClass} value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}>
+                          {PRIORITY_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <TopicContactPicker
+                      options={topicContactOptions}
+                      selectedOption={selectedNewTaskOption}
+                      query={newTask.relationQuery}
+                      onQueryChange={(value) => setNewTask((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                      onSelect={handleSelectTaskRelation}
+                    />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Typ</Label>
-                      <Select value={newTask.type} onValueChange={v => setNewTask({...newTask, type: v})}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="follow_up">Follow-up</SelectItem>
-                          <SelectItem value="phone">Telefon</SelectItem>
-                          <SelectItem value="reply">Odpisać</SelectItem>
-                          <SelectItem value="send_offer">Wysłać ofertę</SelectItem>
-                          <SelectItem value="meeting">Spotkanie</SelectItem>
-                          <SelectItem value="other">Inne</SelectItem>
-                        </SelectContent>
-                      </Select>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Termin</p>
+                      <p className="text-xs text-slate-500">Najpierw ustaw moment wykonania zadania.</p>
                     </div>
                     <div className="space-y-2">
-                      <Label>Data</Label>
-                      <Input type="date" value={newTask.date} onChange={e => setNewTask({...newTask, date: e.target.value})} required />
+                      <Label>Data i godzina</Label>
+                      <Input type="datetime-local" value={newTask.dueAt} onChange={(e) => setNewTask({ ...newTask, dueAt: e.target.value })} required />
                     </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Cykliczność</p>
+                      <p className="text-xs text-slate-500">Możesz ustawić zadanie jednorazowe albo cykliczne.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Powtarzanie</Label>
+                        <select className={modalSelectClass} value={newTask.recurrence.mode} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, mode: e.target.value as any } })}>
+                          {RECURRENCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Co ile</Label>
+                        <Input type="number" min="1" value={newTask.recurrence.interval} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newTask.recurrence.mode === 'none'} />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Powtarzaj do</Label>
+                      <Input type="date" value={newTask.recurrence.until || ''} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, until: e.target.value || null } })} disabled={newTask.recurrence.mode === 'none'} />
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
+                      <p className="text-xs text-slate-500">Na końcu ustaw przypomnienie i jego cykliczność.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Tryb</Label>
+                        <select className={modalSelectClass} value={newTask.reminder.mode} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, mode: e.target.value as any } })}>
+                          {REMINDER_MODE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Kiedy przypomnieć</Label>
+                        <select className={modalSelectClass} value={newTask.reminder.minutesBefore} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, minutesBefore: Number(e.target.value) } })} disabled={newTask.reminder.mode === 'none'}>
+                          {REMINDER_OFFSET_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    {newTask.reminder.mode === 'recurring' && (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Cykliczność przypomnienia</Label>
+                          <select className={modalSelectClass} value={newTask.reminder.recurrenceMode} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceMode: e.target.value as any } })}>
+                            {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Co ile</Label>
+                          <Input type="number" min="1" value={newTask.reminder.recurrenceInterval} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Dodaj zadanie</Button>
+                    <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -377,35 +1393,113 @@ export default function Today() {
 
             <Dialog open={isEventOpen} onOpenChange={setIsEventOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl shadow-sm"><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
+                <Button variant="outline" className="rounded-xl shadow-sm">
+                  <Plus className="w-4 h-4 mr-2" /> Wydarzenie
+                </Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
-                <form onSubmit={handleAddEvent} className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <Label>Tytuł</Label>
-                    <Input value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} required />
+              <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleAddEvent} className="space-y-6 py-4">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Tytuł</Label>
+                      <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Typ</Label>
+                        <select className={modalSelectClass} value={newEvent.type} onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}>
+                          {EVENT_TYPES.map((eventType) => <option key={eventType.value} value={eventType.value}>{eventType.label}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <TopicContactPicker
+                      options={topicContactOptions}
+                      selectedOption={selectedNewEventOption}
+                      query={newEvent.relationQuery}
+                      onQueryChange={(value) => setNewEvent((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                      onSelect={handleSelectEventRelation}
+                    />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Typ</Label>
-                      <Select value={newEvent.type} onValueChange={v => setNewEvent({...newEvent, type: v})}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="meeting">Spotkanie</SelectItem>
-                          <SelectItem value="phone_call">Rozmowa</SelectItem>
-                          <SelectItem value="follow_up">Follow-up</SelectItem>
-                          <SelectItem value="deadline">Deadline</SelectItem>
-                        </SelectContent>
-                      </Select>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Od do</p>
+                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec aktualizuje się automatycznie po zmianie startu.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Start</Label>
+                        <Input type="datetime-local" value={newEvent.startAt} onChange={(e) => handleEventStartChange(e.target.value)} required />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Koniec</Label>
+                        <Input type="datetime-local" value={newEvent.endAt} onChange={(e) => setNewEvent({ ...newEvent, endAt: e.target.value })} required />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
+                      <p className="text-xs text-slate-500">Możesz ustawić np. wydarzenie miesięczne i będzie widoczne dynamicznie w kalendarzu.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Powtarzanie</Label>
+                        <select className={modalSelectClass} value={newEvent.recurrence.mode} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}>
+                          {RECURRENCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Co ile</Label>
+                        <Input type="number" min="1" value={newEvent.recurrence.interval} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newEvent.recurrence.mode === 'none'} />
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label>Start</Label>
-                      <Input type="datetime-local" value={newEvent.startAt} onChange={e => setNewEvent({...newEvent, startAt: e.target.value})} required />
+                      <Label>Powtarzaj do</Label>
+                      <Input type="date" value={newEvent.recurrence.until || ''} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, until: e.target.value || null } })} disabled={newEvent.recurrence.mode === 'none'} />
                     </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
+                      <p className="text-xs text-slate-500">Na końcu ustaw przypomnienie jednorazowe albo cykliczne.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Tryb</Label>
+                        <select className={modalSelectClass} value={newEvent.reminder.mode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}>
+                          {REMINDER_MODE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Kiedy przypomnieć</Label>
+                        <select className={modalSelectClass} value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })} disabled={newEvent.reminder.mode === 'none'}>
+                          {REMINDER_OFFSET_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    {newEvent.reminder.mode === 'recurring' && (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Cykliczność przypomnienia</Label>
+                          <select className={modalSelectClass} value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
+                            {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Co ile</Label>
+                          <Input type="number" min="1" value={newEvent.reminder.recurrenceInterval} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Zaplanuj</Button>
+                    <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -413,215 +1507,601 @@ export default function Today() {
           </div>
         </header>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {summaryCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <button
+                key={card.id}
+                type="button"
+                onClick={() => scrollToFirstSection(card.sectionIds)}
+                className="w-full text-left"
+              >
+                <Card className="border-none shadow-sm transition-all hover:shadow-md hover:border-primary/20">
+                  <CardContent className="p-5 flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.title}</p>
+                      <p className={`mt-2 text-2xl font-bold ${card.tone}`}>{card.value}</p>
+                    </div>
+                    <div className={`rounded-2xl p-3 ${card.bg}`}>
+                      <Icon className={`w-6 h-6 ${card.tone}`} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </button>
+            );
+          })}
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Column */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Overdue Section */}
             {overdueTasks.length > 0 && (
-              <section className="space-y-4">
+              <div id="today-section-overdue-tasks">
+                <TileCard
+                  id="overdue-tasks-section"
+                  title="Zaległe zadania"
+                  collapsedMap={collapsedTiles}
+                  onToggle={toggleTile}
+                  className="border-rose-100 bg-rose-50/30"
+                  headerRight={<Badge variant="destructive" className="rounded-full">{overdueTasks.length}</Badge>}
+                >
+                  <div className="grid gap-3">
+                    {overdueTasks.map((task) => {
+                      const startAt = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
+                      const previewTask = buildTaskPreviewEntry(task);
+
+                      return (
+                        <Card key={task.id} className="border-rose-100">
+                          <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                            <div
+                              className="min-w-0 flex-1 cursor-pointer"
+                              role="button"
+                              tabIndex={0}
+                              onClick={() => openPreviewEntry(previewTask)}
+                              onKeyDown={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                  event.preventDefault();
+                                  openPreviewEntry(previewTask);
+                                }
+                              }}
+                            >
+                              <p className="font-semibold text-slate-900 break-words">{task.title}</p>
+                              <p className="text-sm text-rose-500 break-words font-medium">{format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}</p>
+                              <p className="mt-2 text-sm text-slate-600 break-words">
+                                Zadanie wymaga reakcji. Kliknij kartę, aby podejrzeć szczegóły i wykonać akcję bez przechodzenia do pełnej listy.
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <Button variant="outline" size="sm" onClick={() => openPreviewEntry(previewTask)}>
+                                Szczegóły
+                              </Button>
+                              <Button variant="outline" size="sm" onClick={() => toggleTodayTask(previewTask)}>
+                                {task.status === 'done' ? 'Przywróć' : 'Zakończ'}
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(previewTask)}>
+                                Usuń
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </TileCard>
+              </div>
+            )}
+
+            {overdueLeadActions.length > 0 && (
+              <section id="today-section-overdue-leads" className="space-y-4">
                 <div className="flex items-center gap-2 text-rose-600">
-                  <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Zaległe</h2>
-                  <Badge variant="destructive" className="rounded-full">{overdueTasks.length}</Badge>
+                  <ShieldAlert className="w-5 h-5" />
+                  <h2 className="text-lg font-bold">Leady przeterminowane</h2>
+                  <Badge variant="destructive" className="rounded-full">{overdueLeadActions.length}</Badge>
                 </div>
                 <div className="grid gap-3">
-                  {overdueTasks.map(task => (
-                    <Card key={task.id} className="border-rose-100 bg-rose-50/30">
-                      <CardContent className="p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <button onClick={() => toggleTask(task.id, task.status)} className="w-5 h-5 rounded border border-rose-300 flex items-center justify-center">
-                            {task.status === 'done' && <CheckSquare className="w-4 h-4 text-rose-600" />}
-                          </button>
-                          <div>
-                            <p className="font-medium text-slate-900">{task.title}</p>
-                            <p className="text-xs text-rose-500 font-medium">{format(parseISO(task.date), 'd MMMM', { locale: pl })}</p>
-                          </div>
-                        </div>
-                        <Button variant="ghost" size="sm" asChild><Link to="/tasks"><ChevronRight className="w-4 h-4" /></Link></Button>
-                      </CardContent>
-                    </Card>
+                  {overdueLeadActions.slice(0, 5).map((lead) => (
+                    <LeadLinkCard
+                      key={lead.id}
+                      leadId={String(lead.id)}
+                      title={lead.name}
+                      subtitle={`${lead.company || 'Brak firmy'} • ${formatLeadMoment(lead.nextActionAt)}`}
+                      subtitleClassName="text-rose-500 font-medium"
+                      className="border-rose-100 bg-rose-50/30"
+                      badges={<Badge variant="destructive" className="rounded-full">Przeterminowany</Badge>}
+                      helperText="Lead ma przeterminowany ruch i wymaga decyzji albo przeniesienia do obsługi."
+                    />
                   ))}
                 </div>
               </section>
             )}
 
-            {/* Today's Focus */}
-            <section className="space-y-4">
+            <section id="today-section-main" className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-slate-900">
-                  <Clock className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Dzisiaj</h2>
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900">Dzisiaj</h2>
+                  <p className="text-sm text-slate-500">Plan dnia z aktualizacją live.</p>
                 </div>
-                <span className="text-sm text-slate-500 font-medium">{format(new Date(), 'EEEE, d MMMM', { locale: pl })}</span>
+                <Badge variant="secondary" className="rounded-full">{todayEntries.length}</Badge>
               </div>
 
-              <div className="grid gap-6">
-                {/* Events */}
-                {todayEvents.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Wydarzenia</h3>
-                    {todayEvents.map(event => (
-                      <Card key={event.id} className="border-indigo-100 shadow-sm">
-                        <CardContent className="p-4 flex items-center gap-4">
-                          <div className="w-12 text-center border-r border-slate-100 pr-4">
-                            <p className="text-xs font-bold text-indigo-600">{format(parseISO(event.startAt), 'HH:mm')}</p>
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-semibold text-slate-900">{event.title}</p>
-                            <p className="text-xs text-slate-500">{event.type === 'meeting' ? 'Spotkanie' : 'Rozmowa'}</p>
-                          </div>
-                          <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">Teraz</Badge>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
+              <div className="space-y-4">
+                <TileCard id="today-section-leads" title="Leady do ruchu" subtitle={`${todayLeadActions.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  {todayLeadActions.length > 0 ? (
+                    <div className="max-h-80 overflow-y-auto pr-1 space-y-3">
+                      {todayLeadActions.map((entry) => (
+                        <Link key={entry.id} to={entry.link || `/leads/${entry.sourceId}`} className="block group">
+                          <Card className="border-amber-100 transition-all hover:border-amber-300 hover:shadow-md">
+                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                              <div className="min-w-0 basis-full sm:basis-72 flex-1">
+                                <p className="font-semibold text-slate-900 break-words">{entry.leadName}</p>
+                                <p className="text-sm text-slate-500 break-words">{entry.title}</p>
+                              </div>
+                              <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                                <span className="text-xs font-bold text-amber-600">{format(parseISO(entry.startsAt), 'HH:mm')}</span>
+                                <div className="rounded-xl bg-amber-50 p-2 text-amber-600 transition-colors group-hover:bg-primary group-hover:text-white">
+                                  <ArrowRight className="w-4 h-4" />
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <Card className="border-dashed bg-slate-50/50">
+                      <CardContent className="p-6 text-sm text-slate-500">Brak leadów z ruchem na dziś.</CardContent>
+                    </Card>
+                  )}
+                </TileCard>
 
-                {/* Tasks */}
-                <div className="space-y-3">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Zadania na dziś</h3>
+                <TileCard id="today-section-events" title="Wydarzenia" subtitle={`${todayEvents.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  {todayEvents.length > 0 ? (
+                    <div className="grid gap-3">
+                      {todayEvents.map((entry) => {
+                        const isCompleted = isCompletedTodayEntry(entry);
+                        const completePending = todayActionId === `${entry.id}:done`;
+                        const deletePending = todayActionId === `${entry.id}:delete`;
+
+                        return (
+                          <Card key={entry.id} className={`border-indigo-100 ${isCompleted ? 'opacity-60' : ''}`}>
+                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                              <div
+                                className="min-w-0 flex-1 cursor-pointer"
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => openPreviewEntry(entry)}
+                                onKeyDown={(event) => {
+                                  if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    openPreviewEntry(entry);
+                                  }
+                                }}
+                              >
+                                <p className={`font-semibold break-words ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
+                                <p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>
+                                  {EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Wydarzenie'}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}
+                                </p>
+                                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                                  <Badge variant="outline" className="text-[10px] uppercase">
+                                    {format(parseISO(entry.startsAt), 'HH:mm')}
+                                  </Badge>
+                                  {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
+                                    <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>
+                                  ) : null}
+                                  {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' ? (
+                                    <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>
+                                  ) : null}
+                                  {isCompleted ? (
+                                    <Badge className="bg-slate-200 text-slate-700 hover:bg-slate-200 text-[10px] uppercase">Wykonane</Badge>
+                                  ) : null}
+                                </div>
+                              </div>
+                              <TodayEntryRelationLinks entry={entry} />
+                                  <TodayEntryPriorityReasons entry={entry} />
+                                  <TodayEntrySnoozeBar
+                                    entry={entry}
+                                    isPending={todayActionId === entry.id + ':snooze'}
+                                    onSnooze={entry.kind === 'task' ? handleSnoozeTodayTask : handleSnoozeTodayEvent}
+                                  onEdit={openPreviewEntry}
+                                  />
+                              <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
+                                <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
+                                  Szczegóły
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(entry)} disabled={completePending}>
+                                  {formatTodayCompleteActionLabel(isCompleted, completePending)}
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(entry)} disabled={deletePending}>
+                                  {deletePending ? '...' : 'Usuń'}
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <Card className="border-dashed bg-slate-50/50">
+                      <CardContent className="p-6 text-sm text-slate-500">Brak wydarzeń na dziś.</CardContent>
+                    </Card>
+                  )}
+                </TileCard>
+
+                <TileCard id="today-section-tasks" title="Zadania na dziś" subtitle={`${todayTasks.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayTasks.length > 0 ? (
                     <div className="grid gap-3">
-                      {todayTasks.map(task => (
-                        <Card key={task.id} className="hover:border-primary/30 transition-colors shadow-sm">
-                          <CardContent className="p-4 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <button onClick={() => toggleTask(task.id, task.status)} className="w-5 h-5 rounded border border-slate-200 flex items-center justify-center hover:border-primary">
-                                {task.status === 'done' && <CheckSquare className="w-4 h-4 text-primary" />}
-                              </button>
-                              <p className="font-medium text-slate-900">{task.title}</p>
-                            </div>
-                            <Badge variant="secondary" className="text-[10px] uppercase">{task.type}</Badge>
-                          </CardContent>
-                        </Card>
-                      ))}
+                      {todayTasks.map((entry) => {
+                        const isCompleted = isCompletedTodayEntry(entry);
+                        const completePending = todayActionId === `${entry.id}:done`;
+                        const deletePending = todayActionId === `${entry.id}:delete`;
+
+                        return (
+                          <Card key={entry.id} className={`hover:border-primary/30 transition-colors ${isCompleted ? 'opacity-60' : ''}`}>
+                            <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                              <div
+                                className="min-w-0 flex-1 cursor-pointer"
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => openPreviewEntry(entry)}
+                                onKeyDown={(event) => {
+                                  if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    openPreviewEntry(entry);
+                                  }
+                                }}
+                              >
+                                <p className={`font-semibold break-words ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
+                                <p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Zadanie'} • {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
+                                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                                  {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
+                                    <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>
+                                  ) : null}
+                                  {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' ? (
+                                    <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>
+                                  ) : null}
+                                  {isCompleted ? (
+                                    <Badge className="bg-slate-200 text-slate-700 hover:bg-slate-200 text-[10px] uppercase">Zrobione</Badge>
+                                  ) : null}
+                                </div>
+                              </div>
+                              <TodayEntryRelationLinks entry={entry} />
+                                  <TodayEntryPriorityReasons entry={entry} />
+                                  <TodayEntrySnoozeBar
+                                    entry={entry}
+                                    isPending={todayActionId === entry.id + ':snooze'}
+                                    onSnooze={entry.kind === 'task' ? handleSnoozeTodayTask : handleSnoozeTodayEvent}
+                                  onEdit={openPreviewEntry}
+                                  />
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
+                                  Szczegóły
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => toggleTodayTask(entry)} disabled={completePending}>
+                                  {formatTodayCompleteActionLabel(isCompleted, completePending)}
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(entry)} disabled={deletePending}>
+                                  {deletePending ? '...' : 'Usuń'}
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
                     </div>
                   ) : (
                     <Card className="border-dashed bg-slate-50/50">
                       <CardContent className="p-8 text-center">
                         <CheckSquare className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                        <p className="text-sm text-slate-500">Brak zadań na dziś. Odpocznij albo zaplanuj coś!</p>
+                        <p className="text-sm text-slate-500">Brak zadań na dziś.</p>
                       </CardContent>
                     </Card>
                   )}
-                </div>
+                </TileCard>
               </div>
             </section>
 
-            {/* Neglected Leads */}
             {noStepLeads.length > 0 && (
-              <section className="space-y-4">
+              <section id="today-section-no-step" className="space-y-4">
                 <div className="flex items-center gap-2 text-amber-600">
                   <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Bez następnego kroku</h2>
+                  <h2 className="text-lg font-bold">Bez zaplanowanych działań</h2>
                   <Badge variant="outline" className="rounded-full border-amber-200 text-amber-700 bg-amber-50">{noStepLeads.length}</Badge>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {noStepLeads.slice(0, 4).map(lead => (
-                    <Card key={lead.id} className="hover:shadow-md transition-shadow">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-bold text-slate-900">{lead.name}</h4>
-                          <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Zaniedbany</Badge>
-                        </div>
-                        <p className="text-xs text-slate-500 mb-4">{lead.company || 'Brak firmy'}</p>
-                        <Button variant="outline" size="sm" className="w-full rounded-lg" asChild>
-                          <Link to={`/leads/${lead.id}`}>Ustal kolejny krok <ArrowRight className="w-3 h-3 ml-2" /></Link>
-                        </Button>
-                      </CardContent>
-                    </Card>
+                  {noStepLeads.slice(0, 4).map((lead) => (
+                    <LeadLinkCard
+                      key={lead.id}
+                      leadId={String(lead.id)}
+                      title={lead.name}
+                      subtitle={lead.company || 'Brak firmy'}
+                      badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak działań</Badge>}
+                      helperText="Kliknij kartę i zaplanuj zadanie albo wydarzenie dla tego tematu."
+                    />
                   ))}
+                </div>
+              </section>
+            )}
+
+            {(readyToStartLeads.length > 0 || activeServiceLeads.length > 0 || blockedCases.length > 0) && (
+              <section id="today-section-service-transition" className="space-y-4">
+                <div className="flex items-center gap-2 text-violet-600">
+                  <Briefcase className="w-5 h-5" />
+                  <h2 className="text-lg font-bold">Start i obsługa</h2>
+                </div>
+                {readyToStartLeads.length > 0 ? (
+                  <TileCard id="today-section-ready-to-start" title="Gotowe do uruchomienia sprawy" subtitle={`${readyToStartLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                    <div className="space-y-2">
+                      {readyToStartLeads.slice(0, 5).map((lead) => (
+                        <LeadLinkCard
+                          key={lead.id}
+                          leadId={String(lead.id)}
+                          title={lead.name}
+                          subtitle={lead.company || 'Lead gotowy do startu'}
+                          badges={<Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100 border-none">Gotowy do startu</Badge>}
+                          helperText="Wejdź w lead i użyj akcji „Rozpocznij obsługę”."
+                        />
+                      ))}
+                    </div>
+                  </TileCard>
+                ) : null}
+                {activeServiceLeads.length > 0 ? (
+                  <TileCard id="today-section-active-service" title="Obsługa aktywna" subtitle={`${activeServiceLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                    <div className="space-y-2">
+                      {activeServiceLeads.slice(0, 5).map((lead) => (
+                        <LeadLinkCard
+                          key={lead.id}
+                          leadId={String(lead.id)}
+                          title={lead.name}
+                          subtitle={lead.company || 'Obsługa aktywna'}
+                          badges={<Badge variant="outline" className="border-violet-200 text-violet-700">Obsługa aktywna</Badge>}
+                        />
+                      ))}
+                    </div>
+                  </TileCard>
+                ) : null}
+                {blockedCases.length > 0 ? (
+                  <TileCard id="today-section-blocked-cases" title="Zablokowane sprawy" subtitle={`${blockedCases.length} spraw`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                    <div className="space-y-2">
+                      {blockedCases.slice(0, 5).map((caseRecord) => (
+                        <Link key={String(caseRecord.id)} to={`/case/${String(caseRecord.id)}`} className="block rounded-lg border border-rose-200 bg-rose-50/40 px-3 py-2 hover:bg-rose-50">
+                          <p className="font-medium text-slate-900">{String(caseRecord.title || 'Sprawa')}</p>
+                          <p className="text-sm text-rose-700">Status: zablokowana</p>
+                        </Link>
+                      ))}
+                    </div>
+                  </TileCard>
+                ) : null}
+              </section>
+            )}
+
+            {staleLeads.length > 0 && (
+              <section id="today-section-stale" className="space-y-4">
+                <div className="flex items-center gap-2 text-purple-600">
+                  <Clock className="w-5 h-5" />
+                  <h2 className="text-lg font-bold">Bez ruchu za długo</h2>
+                  <Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-purple-50">{staleLeads.length}</Badge>
+                </div>
+                <div className="grid gap-3">
+                  {staleLeads.map((lead) => {
+                    const days = getDaysWithoutUpdate(lead) || 0;
+                    return (
+                      <LeadLinkCard
+                        key={lead.id}
+                        leadId={String(lead.id)}
+                        title={lead.name}
+                        subtitle={`${days} dni bez wyraźnego ruchu • ${lead.company || lead.source || 'Lead'}`}
+                        subtitleClassName="text-purple-500 font-medium"
+                        className="border-purple-100 bg-purple-50/30"
+                        badges={<Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-white">Bez ruchu</Badge>}
+                        helperText="Lead ma ustawiony proces, ale nie było świeżego ruchu. To dobry kandydat do szybkiego sprawdzenia lub follow-upu."
+                      />
+                    );
+                  })}
                 </div>
               </section>
             )}
           </div>
 
-          {/* Sidebar Column */}
           <div className="space-y-8">
-            {/* Stats Card */}
-            <Card className="bg-slate-900 text-white border-none shadow-xl overflow-hidden relative">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <TrendingUp className="w-24 h-24" />
+            <TileCard
+              id="pipeline-summary"
+              title="Wartość lejka"
+              subtitle={`${activeLeadsValue.toLocaleString()} PLN`}
+              collapsedMap={collapsedTiles}
+              onToggle={toggleTile}
+              className="bg-slate-900 text-white border-none shadow-xl"
+              titleClassName="text-white"
+              subtitleClassName="text-slate-300 text-2xl font-bold"
+              headerRight={<TrendingUp className="w-10 h-10 text-white/20" />}
+              bodyClassName="border-t border-slate-800"
+            >
+              <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaży</p>
+              <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-800 pt-4">
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Aktywne leady</p>
+                  <p className="text-xl font-bold text-white">{activeLeads.length}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Pilne teraz</p>
+                  <p className="text-xl font-bold text-white">{overdueTasks.length + overdueLeadActions.length}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bez działań</p>
+                  <p className="text-xl font-bold text-white">{noStepLeads.length}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bez ruchu</p>
+                  <p className="text-xl font-bold text-white">{staleLeads.length}</p>
+                </div>
               </div>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium text-slate-400">Wartość lejka</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-1">
-                  {leads.reduce((acc, l) => acc + (l.dealValue || 0), 0).toLocaleString()} PLN
-                </div>
-                <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaży</p>
-                
-                <div className="mt-6 grid grid-cols-2 gap-4 border-t border-slate-800 pt-6">
-                  <div>
-                    <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Aktywne leady</p>
-                    <p className="text-xl font-bold">{leads.length}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Zadania</p>
-                    <p className="text-xl font-bold">{tasks.length}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            </TileCard>
 
-            {/* Upcoming Section */}
+            {riskyValuableLeads.length > 0 && (
+              <section className="space-y-4">
+                <h2 className="text-lg font-bold text-slate-900">Najcenniejsze zagrożone</h2>
+                <div className="space-y-3">
+                  {riskyValuableLeads.map((lead) => (
+                    <LeadLinkCard
+                      key={lead.id}
+                      leadId={String(lead.id)}
+                      title={lead.name}
+                      subtitle={lead.company || lead.source || 'Lead'}
+                      rightMeta={
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-rose-600">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
+                          <Badge variant="outline" className="text-[8px] h-4 px-1 border-rose-200 text-rose-700">RYZYKO</Badge>
+                        </div>
+                      }
+                      badges={
+                        <>
+                          {lead.isAtRisk ? <Badge variant="destructive">Oznaczony jako zagrożony</Badge> : null}
+                          {isLeadOverdue(lead) ? <Badge variant="destructive">Termin w przeszłości</Badge> : null}
+                          {!parseMoment(lead.nextActionAt) ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak działań</Badge> : null}
+                          {(getDaysWithoutUpdate(lead) || 0) >= 5 ? <Badge variant="outline" className="border-purple-200 text-purple-700">Bez ruchu {getDaysWithoutUpdate(lead)} dni</Badge> : null}
+                        </>
+                      }
+                      helperText="Kliknij kartę, aby wejść do leada i od razu zareagować."
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
             <section className="space-y-4">
               <h2 className="text-lg font-bold text-slate-900">Najbliższe dni</h2>
               <div className="space-y-3">
-                {[1, 2, 3].map(days => {
+                {[1, 2, 3].map((days) => {
                   const date = addDays(new Date(), days);
-                  const dayTasks = tasks.filter(t => isSameDay(parseISO(t.date), date));
-                  const dayEvents = events.filter(e => isSameDay(parseISO(e.startAt), date));
-                  const count = dayTasks.length + dayEvents.length;
-                  
+                  const dayStart = startOfDay(date);
+                  const dayEnd = endOfDay(date);
+                  const dayEntries = combineScheduleEntries({
+                    events,
+                    tasks,
+                    leads: leadsWithAction,
+                    rangeStart: dayStart,
+                    rangeEnd: dayEnd,
+                  });
+                  const count = dayEntries.length;
                   if (count === 0) return null;
 
                   return (
-                    <div key={days} className="flex items-center gap-4 group cursor-pointer">
-                      <div className="w-12 text-center">
-                        <p className="text-[10px] uppercase font-bold text-slate-400">{format(date, 'EEE', { locale: pl })}</p>
-                        <p className="text-lg font-bold text-slate-700">{format(date, 'd')}</p>
-                      </div>
-                      <div className="flex-1 bg-white p-3 rounded-xl border border-slate-100 group-hover:border-primary/30 transition-colors shadow-sm">
-                        <p className="text-sm font-medium text-slate-900">{count} {count === 1 ? 'rzecz' : count < 5 ? 'rzeczy' : 'rzeczy'}</p>
-                        <p className="text-[10px] text-slate-500">
-                          {dayEvents.length > 0 && `${dayEvents.length} wydarzenie `}
-                          {dayTasks.length > 0 && `${dayTasks.length} zadanie`}
-                        </p>
-                      </div>
-                    </div>
+                    <TileCard key={days} id={`upcoming-day:${days}`} title={`${format(date, 'EEE', { locale: pl }).toUpperCase()} ${format(date, 'd')}`} subtitle={`${count} ${count === 1 ? 'rzecz' : 'rzeczy'}`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                      <p className="text-[10px] text-slate-500">
+                        {dayEntries.filter((entry) => entry.kind === 'event').length} wydarzeń • {dayEntries.filter((entry) => entry.kind === 'task').length} zadań • {dayEntries.filter((entry) => entry.kind === 'lead').length} leadów
+                      </p>
+                    </TileCard>
                   );
                 })}
               </div>
             </section>
 
-            {/* High Value Section */}
             <section className="space-y-4">
               <h2 className="text-lg font-bold text-slate-900">Najcenniejsze</h2>
               <div className="space-y-3">
-                {leads
-                  .sort((a, b) => (b.dealValue || 0) - (a.dealValue || 0))
-                  .slice(0, 3)
-                  .map(lead => (
-                    <Link key={lead.id} to={`/leads/${lead.id}`} className="block">
-                      <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100 hover:border-primary/30 transition-colors shadow-sm">
-                        <div>
-                          <p className="text-sm font-bold text-slate-900">{lead.name}</p>
-                          <p className="text-[10px] text-slate-500">{lead.company || lead.source}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-bold text-primary">{(lead.dealValue || 0).toLocaleString()} PLN</p>
-                          <Badge variant="outline" className="text-[8px] h-4 px-1">TOP</Badge>
-                        </div>
+                {topValuableLeads.map((lead) => (
+                  <LeadLinkCard
+                    key={lead.id}
+                    leadId={String(lead.id)}
+                    title={lead.name}
+                    subtitle={lead.company || lead.source || 'Lead'}
+                    rightMeta={
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-primary">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
+                        <Badge variant="outline" className="text-[8px] h-4 px-1">TOP</Badge>
                       </div>
-                    </Link>
-                  ))}
+                    }
+                    helperText="Kliknij kartę, aby otworzyć leada."
+                  />
+                ))}
               </div>
             </section>
           </div>
         </div>
       </div>
+      <Dialog open={Boolean(previewEntry)} onOpenChange={(open) => { if (!open) setPreviewEntry(null); }}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{previewEntry?.kind === 'task' ? 'Podgląd zadania' : 'Podgląd wydarzenia'}</DialogTitle>
+          </DialogHeader>
+          {previewEntry ? (
+            <div className="space-y-4 py-2">
+              <div className="space-y-1">
+                <p className="text-lg font-bold text-slate-900">{previewEntry.title}</p>
+                <p className="text-sm text-slate-500">
+                  {previewEntry.kind === 'task'
+                    ? TASK_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Zadanie'
+                    : EVENT_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Wydarzenie'}
+                  {previewEntry.leadName ? ` • Lead: ${previewEntry.leadName}` : ''}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="rounded-xl border border-slate-200 p-3">
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">{previewEntry.kind === 'task' ? 'Termin' : 'Start'}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">{format(parseISO(previewEntry.startsAt), 'd MMMM yyyy, HH:mm', { locale: pl })}</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 p-3">
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Status</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">
+                    {previewEntry.kind === 'task'
+                      ? previewEntry.raw?.status === 'done'
+                        ? 'Zrobione'
+                        : 'Do zrobienia'
+                      : previewEntry.raw?.status === 'completed'
+                        ? 'Wykonane'
+                        : 'Zaplanowane'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                {previewEntry.raw?.recurrence?.mode && previewEntry.raw.recurrence.mode !== 'none' ? (
+                  <Badge variant="outline"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === previewEntry.raw.recurrence.mode)?.label}</Badge>
+                ) : null}
+                {previewEntry.raw?.reminder?.mode && previewEntry.raw.reminder.mode !== 'none' ? (
+                  <Badge variant="outline"><Bell className="w-3 h-3 mr-1" /> Przypomnienie aktywne</Badge>
+                ) : null}
+              </div>
+
+              <DialogFooter className="flex flex-wrap gap-2 sm:justify-between">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => previewEntry.kind === 'task' ? deleteTodayTask(previewEntry) : deleteTodayEvent(previewEntry)}
+                    disabled={todayActionId === `${previewEntry.id}:delete`}
+                  >
+                    {todayActionId === `${previewEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => previewEntry.kind === 'task' ? toggleTodayTask(previewEntry) : toggleTodayEvent(previewEntry)}
+                    disabled={todayActionId === `${previewEntry.id}:done`}
+                  >
+                    {todayActionId === `${previewEntry.id}:done`
+                      ? 'Zapisywanie...'
+                      : previewEntry.kind === 'task'
+                        ? previewEntry.raw?.status === 'done'
+                          ? 'Przywróć'
+                          : 'Oznacz jako zrobione'
+                        : previewEntry.raw?.status === 'completed'
+                          ? 'Przywróć'
+                          : 'Oznacz jako wykonane'}
+                  </Button>
+                </div>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to={previewEntry.kind === 'task' ? '/tasks' : '/calendar'}>
+                    {previewEntry.kind === 'task' ? 'Otwórz zadania' : 'Otwórz kalendarz'}
+                  </Link>
+                </Button>
+              </DialogFooter>
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
+
     </Layout>
   );
 }
+

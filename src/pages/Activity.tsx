@@ -1,81 +1,593 @@
 import Layout from '../components/Layout';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { History, User, Briefcase, Target } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { auth, db } from '../firebase';
-import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
+import { Card, CardContent } from '../components/ui/card';
+import {
+  Briefcase,
+  CalendarClock,
+  CheckCircle2,
+  Clock,
+  FileText,
+  Filter,
+  Link2,
+  ListChecks,
+  Loader2,
+  RotateCcw,
+  Search,
+  Target,
+  Trash2,
+} from 'lucide-react';
+import { useMemo, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  fetchActivitiesFromSupabase,
+  fetchCasesFromSupabase,
+  fetchLeadsFromSupabase,
+  isSupabaseConfigured,
+} from '../lib/supabase-fallback';
+import { toast } from 'sonner';
+import { useWorkspace } from '../hooks/useWorkspace';
+
+const sourceOptions = [
+  { value: 'all', label: 'Wszystko' },
+  { value: 'today', label: 'Dziś' },
+  { value: 'calendar', label: 'Kalendarz' },
+  { value: 'lead', label: 'Leady' },
+  { value: 'case', label: 'Sprawy' },
+  { value: 'other', label: 'Inne' },
+];
+
+const activityTypeOptions = [
+  { value: 'all', label: 'Wszystkie' },
+  { value: 'completed', label: 'Wykonane' },
+  { value: 'restored', label: 'Przywrócone' },
+  { value: 'deleted', label: 'Usunięte' },
+  { value: 'created', label: 'Utworzone' },
+  { value: 'updated', label: 'Aktualizacje' },
+];
+
+const relationOptions = [
+  { value: 'all', label: 'Wszystkie relacje' },
+  { value: 'lead', label: 'Z leadem' },
+  { value: 'case', label: 'Ze sprawą' },
+  { value: 'standalone', label: 'Bez relacji' },
+];
+
+function formatActivityTime(value: any) {
+  if (!value) return 'Brak daty';
+  if (typeof value === 'string') {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? 'Brak daty' : parsed.toLocaleString();
+  }
+  if (typeof value?.toDate === 'function') {
+    return value.toDate().toLocaleString();
+  }
+  return 'Brak daty';
+}
+
+function normalizeText(value: any) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function getLeadDisplayName(record: any) {
+  return (
+    normalizeText(record?.clientName) ||
+    normalizeText(record?.name) ||
+    normalizeText(record?.title) ||
+    normalizeText(record?.email) ||
+    ''
+  );
+}
+
+function getCaseDisplayName(record: any) {
+  return (
+    normalizeText(record?.title) ||
+    normalizeText(record?.clientName) ||
+    normalizeText(record?.type) ||
+    ''
+  );
+}
+
+function buildLeadLookup(items: any[]) {
+  const lookup = new Map<string, string>();
+  for (const item of items || []) {
+    const id = normalizeText(item?.id);
+    const label = getLeadDisplayName(item);
+    if (id && label) lookup.set(id, label);
+  }
+  return lookup;
+}
+
+function buildCaseLookup(items: any[]) {
+  const lookup = new Map<string, string>();
+  for (const item of items || []) {
+    const id = normalizeText(item?.id);
+    const label = getCaseDisplayName(item);
+    if (id && label) lookup.set(id, label);
+  }
+  return lookup;
+}
+
+function getActorLabel(activity: any) {
+  return activity.actorType === 'client' ? 'Klient' : 'Operator';
+}
+
+function getActivitySource(activity: any) {
+  const eventType = normalizeText(activity?.eventType);
+  const payloadSource = normalizeText(activity?.payload?.source).toLowerCase();
+
+  if (payloadSource === 'today' || eventType.startsWith('today_')) return 'today';
+  if (payloadSource === 'calendar' || eventType.startsWith('calendar_')) return 'calendar';
+  if (eventType.startsWith('lead_') || activity?.leadId) return 'lead';
+  if (eventType.startsWith('case_') || activity?.caseId) return 'case';
+
+  return 'other';
+}
+
+function getActivityTypeBucket(activity: any) {
+  const eventType = normalizeText(activity?.eventType);
+
+  if (eventType.includes('completed')) return 'completed';
+  if (eventType.includes('restored')) return 'restored';
+  if (eventType.includes('deleted')) return 'deleted';
+  if (eventType.includes('snoozed')) return 'updated';
+  if (eventType.includes('created') || eventType.includes('added')) return 'created';
+  if (eventType.includes('updated') || eventType.includes('changed')) return 'updated';
+
+  return 'other';
+}
+
+function getSourceLabel(activity: any) {
+  switch (getActivitySource(activity)) {
+    case 'today':
+      return 'Dziś';
+    case 'calendar':
+      return 'Kalendarz';
+    case 'lead':
+      return 'Lead';
+    case 'case':
+      return 'Sprawa';
+    default:
+      return 'System';
+  }
+}
+
+function getActivityTypeIcon(activity: any) {
+  const bucket = getActivityTypeBucket(activity);
+  const source = getActivitySource(activity);
+
+  if (bucket === 'completed') return CheckCircle2;
+  if (bucket === 'restored') return RotateCcw;
+  if (bucket === 'deleted') return Trash2;
+  if (source === 'today') return ListChecks;
+  if (source === 'calendar') return CalendarClock;
+  if (source === 'lead') return Target;
+  if (source === 'case') return Briefcase;
+
+  return Clock;
+}
+
+function getActivityIconClass(activity: any) {
+  const bucket = getActivityTypeBucket(activity);
+  const source = getActivitySource(activity);
+
+  if (bucket === 'completed') return 'bg-emerald-50 text-emerald-600';
+  if (bucket === 'restored') return 'bg-amber-50 text-amber-600';
+  if (bucket === 'deleted') return 'bg-rose-50 text-rose-600';
+  if (source === 'today') return 'bg-indigo-50 text-indigo-600';
+  if (source === 'calendar') return 'bg-sky-50 text-sky-600';
+  if (source === 'lead') return 'bg-blue-50 text-blue-600';
+  if (source === 'case') return 'bg-green-50 text-green-600';
+
+  return 'bg-slate-100 text-slate-600';
+}
+
+function withTitle(base: string, title: string) {
+  return title ? base + ': ' + title : base;
+}
+
+function getActivityActionLabel(activity: any) {
+  const title = normalizeText(activity?.payload?.title);
+  const status = normalizeText(activity?.payload?.status);
+  const nextStatus = normalizeText(activity?.payload?.nextStatus);
+
+  switch (activity?.eventType) {
+    case 'calendar_entry_completed':
+      return withTitle('oznaczył wpis kalendarza jako zrobiony', title);
+    case 'calendar_entry_restored':
+      return withTitle('przywrócił wpis kalendarza', title);
+    case 'calendar_entry_deleted':
+      return withTitle('usunął wpis kalendarza', title);
+    case 'today_task_completed':
+      return withTitle('oznaczył zadanie z Dziś jako zrobione', title);
+    case 'today_task_restored':
+      return withTitle('przywrócił zadanie z Dziś', title);
+    case 'today_task_deleted':
+      return withTitle('usunął zadanie z Dziś', title);
+    case 'today_event_completed':
+      return withTitle('oznaczył wydarzenie z Dziś jako zrobione', title);
+    case 'today_event_restored':
+      return withTitle('przywrócił wydarzenie z Dziś', title);
+    case 'today_event_deleted':
+      return withTitle('usunął wydarzenie z Dziś', title);
+    case 'today_task_snoozed':
+      return withTitle('odłożył zadanie z Dziś', title);
+    case 'today_event_snoozed':
+      return withTitle('odłożył wydarzenie z Dziś', title);    case 'status_changed':
+      return status ? 'zmienił status na ' + status : 'zmienił status';
+    case 'case_lifecycle_started':
+      return withTitle('rozpoczął realizację sprawy', title);
+    case 'case_lifecycle_completed':
+      return withTitle('zakończył sprawę', title);
+    case 'case_lifecycle_reopened':
+      return withTitle('wznowił sprawę do pracy', title);
+    case 'case_created':
+      return withTitle('uruchomił realizację', title);
+    case 'item_added':
+      return withTitle('dodał element', title);
+    case 'file_uploaded':
+      return withTitle('wgrał plik do', title);
+    case 'decision_made':
+      return withTitle('podjął decyzję w', title);
+    case 'portal_token_created':
+      return withTitle('wygenerował link portalu dla', title);
+    case 'case_reminder_requested':
+      return 'wysłał przypomnienie i utworzył follow-up';
+    case 'reminder_scheduled':
+      return withTitle('zaplanował przypomnienie', title);
+    case 'task_created':
+      return withTitle('dodał zadanie', title);
+    case 'task_updated':
+      return withTitle('zaktualizował zadanie', title);
+    case 'task_completed':
+      return withTitle('oznaczył jako zrobione', title);
+    case 'event_created':
+      return withTitle('dodał wydarzenie', title);
+    case 'event_updated':
+      return withTitle('zaktualizował wydarzenie', title);
+    case 'event_deleted':
+      return withTitle('usunął wydarzenie', title);
+    case 'note_added':
+      return withTitle('dodał notatkę', title);
+    default:
+      if (title) return withTitle('wykonał akcję', title);
+      if (nextStatus) return 'wykonał akcję, nowy status: ' + nextStatus;
+      return 'wykonał akcję';
+  }
+}
+
+function getLeadContextLabel(activity: any, leadLookup: Map<string, string>) {
+  const leadId = normalizeText(activity?.leadId);
+  if (!leadId) return '';
+  return leadLookup.get(leadId) || normalizeText(activity?.payload?.leadName) || normalizeText(activity?.payload?.title) || 'Powiązany lead';
+}
+
+function getCaseContextLabel(activity: any, caseLookup: Map<string, string>) {
+  const caseId = normalizeText(activity?.caseId);
+  if (!caseId) return '';
+  return caseLookup.get(caseId) || normalizeText(activity?.payload?.caseTitle) || normalizeText(activity?.payload?.title) || 'Powiązana sprawa';
+}
+
+function getActivitySearchText(activity: any, leadLookup: Map<string, string>, caseLookup: Map<string, string>) {
+  return [
+    getActorLabel(activity),
+    getActivityActionLabel(activity),
+    getSourceLabel(activity),
+    normalizeText(activity?.eventType),
+    getLeadContextLabel(activity, leadLookup),
+    getCaseContextLabel(activity, caseLookup),
+    JSON.stringify(activity?.payload || {}),
+  ]
+    .join(' ')
+    .toLowerCase();
+}
+
+function safePayloadPreview(payload: any) {
+  try {
+    return JSON.stringify(payload || {}, null, 2);
+  } catch {
+    return '{}';
+  }
+}
+
+function MetricCard({
+  label,
+  value,
+  icon: Icon,
+}: {
+  label: string;
+  value: number;
+  icon: any;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</p>
+          <p className="mt-1 text-2xl font-bold text-slate-900">{value}</p>
+        </div>
+        <div className="rounded-xl bg-slate-100 p-2 text-slate-600">
+          <Icon className="h-5 w-5" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Activity() {
+  const { workspace, loading: workspaceLoading } = useWorkspace();
   const [activities, setActivities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [leadLookup, setLeadLookup] = useState<Map<string, string>>(new Map());
+  const [caseLookup, setCaseLookup] = useState<Map<string, string>>(new Map());
+  const [query, setQuery] = useState('');
+  const [sourceFilter, setSourceFilter] = useState('all');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [relationFilter, setRelationFilter] = useState('all');
+  const [expandedPayloadIds, setExpandedPayloadIds] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!auth.currentUser) return;
+    let cancelled = false;
+    setLoading(true);
 
-    const q = query(
-      collection(db, 'activities'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('createdAt', 'desc'),
-      limit(50)
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setActivities(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) {
+      setActivities([]);
+      setLeadLookup(new Map());
+      setCaseLookup(new Map());
       setLoading(false);
-    });
+      return () => {
+        cancelled = true;
+      };
+    }
 
-    return () => unsubscribe();
-  }, []);
+    Promise.all([
+      fetchActivitiesFromSupabase({ limit: 100 }),
+      fetchLeadsFromSupabase(),
+      fetchCasesFromSupabase(),
+    ])
+      .then(([activityRows, leadRows, caseRows]) => {
+        if (cancelled) return;
+        setActivities(activityRows);
+        setLeadLookup(buildLeadLookup(leadRows));
+        setCaseLookup(buildCaseLookup(caseRows));
+        setLoading(false);
+      })
+      .catch((error: any) => {
+        if (cancelled) return;
+        toast.error('Błąd aktywności API: ' + error.message);
+        setActivities([]);
+        setLeadLookup(new Map());
+        setCaseLookup(new Map());
+        setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [workspace?.id, workspaceLoading]);
+
+  const filteredActivities = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    return activities.filter((activity) => {
+      const source = getActivitySource(activity);
+      const bucket = getActivityTypeBucket(activity);
+      const leadId = normalizeText(activity?.leadId);
+      const caseId = normalizeText(activity?.caseId);
+
+      if (sourceFilter !== 'all' && source !== sourceFilter) return false;
+      if (typeFilter !== 'all' && bucket !== typeFilter) return false;
+      if (relationFilter === 'lead' && !leadId) return false;
+      if (relationFilter === 'case' && !caseId) return false;
+      if (relationFilter === 'standalone' && (leadId || caseId)) return false;
+
+      if (normalizedQuery) {
+        return getActivitySearchText(activity, leadLookup, caseLookup).includes(normalizedQuery);
+      }
+
+      return true;
+    });
+  }, [activities, query, sourceFilter, typeFilter, relationFilter, leadLookup, caseLookup]);
+
+  const metrics = useMemo(() => {
+    return {
+      all: activities.length,
+      completed: activities.filter((activity) => getActivityTypeBucket(activity) === 'completed').length,
+      restored: activities.filter((activity) => getActivityTypeBucket(activity) === 'restored').length,
+      deleted: activities.filter((activity) => getActivityTypeBucket(activity) === 'deleted').length,
+    };
+  }, [activities]);
+
+  const togglePayload = (id: string) => {
+    setExpandedPayloadIds((current) =>
+      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
+    );
+  };
 
   return (
     <Layout>
-      <div className="p-8 max-w-4xl mx-auto w-full">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Aktywność</h1>
-          <p className="text-slate-500">Historia wszystkich zdarzeń w Twoim systemie.</p>
+      <div className="mx-auto w-full max-w-6xl p-6 lg:p-8">
+        <header className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Aktywność</h1>
+            <p className="mt-1 text-slate-500">
+              Operacyjna historia zmian z leadów, spraw, ekranu Dziś i kalendarza.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-sm">
+            Widocznych: <span className="font-bold text-slate-900">{filteredActivities.length}</span> z{' '}
+            <span className="font-bold text-slate-900">{activities.length}</span>
+          </div>
         </header>
+
+        <div className="mb-6 grid gap-3 md:grid-cols-4">
+          <MetricCard label="Wszystkie" value={metrics.all} icon={FileText} />
+          <MetricCard label="Wykonane" value={metrics.completed} icon={CheckCircle2} />
+          <MetricCard label="Przywrócone" value={metrics.restored} icon={RotateCcw} />
+          <MetricCard label="Usunięte" value={metrics.deleted} icon={Trash2} />
+        </div>
+
+        <Card className="mb-6 border-none shadow-sm">
+          <CardContent className="p-4">
+            <div className="grid gap-3 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
+              <label className="relative block">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Szukaj po tytule, leadzie, sprawie, typie zdarzenia..."
+                  className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-50"
+                />
+              </label>
+
+              <label className="relative block">
+                <Filter className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <select
+                  value={sourceFilter}
+                  onChange={(event) => setSourceFilter(event.target.value)}
+                  className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-50"
+                >
+                  {sourceOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <select
+                value={typeFilter}
+                onChange={(event) => setTypeFilter(event.target.value)}
+                className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-50"
+              >
+                {activityTypeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={relationFilter}
+                onChange={(event) => setRelationFilter(event.target.value)}
+                className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-50"
+              >
+                {relationOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="border-none shadow-sm">
           <CardContent className="p-0">
             <div className="divide-y divide-slate-100">
               {loading ? (
                 <div className="p-12 text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                  <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
                 </div>
-              ) : activities.length === 0 ? (
+              ) : filteredActivities.length === 0 ? (
                 <div className="p-12 text-center text-slate-500">
-                  Brak zarejestrowanej aktywności.
+                  Brak aktywności pasującej do filtrów.
                 </div>
               ) : (
-                activities.map((activity) => (
-                  <div key={activity.id} className="p-6 flex gap-4 items-start hover:bg-slate-50 transition-colors">
-                    <div className={`p-2 rounded-xl shrink-0 ${
-                      activity.leadId ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'
-                    }`}>
-                      {activity.leadId ? <Target className="w-5 h-5" /> : <Briefcase className="w-5 h-5" />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <p className="text-sm font-bold text-slate-900">
-                          {activity.actorType === 'operator' ? 'Operator' : 'Klient'}
-                          <span className="font-normal text-slate-500 ml-1">
-                            {activity.eventType === 'status_changed' ? `zmienił status na ${activity.payload.status}` :
-                             activity.eventType === 'case_created' ? `uruchomił realizację: ${activity.payload.title}` :
-                             activity.eventType === 'item_added' ? `dodał element: ${activity.payload.title}` :
-                             activity.eventType === 'file_uploaded' ? `wgrał plik do: ${activity.payload.title}` :
-                             'wykonał akcję'}
-                          </span>
-                        </p>
-                        <span className="text-[10px] font-medium text-slate-400 whitespace-nowrap">
-                          {activity.createdAt?.toDate().toLocaleString()}
-                        </span>
+                filteredActivities.map((activity) => {
+                  const activityId = normalizeText(activity?.id) || String(activity?.createdAt || Math.random());
+                  const leadLabel = getLeadContextLabel(activity, leadLookup);
+                  const caseLabel = getCaseContextLabel(activity, caseLookup);
+                  const leadId = normalizeText(activity?.leadId);
+                  const caseId = normalizeText(activity?.caseId);
+                  const actorLabel = getActorLabel(activity);
+                  const actionLabel = getActivityActionLabel(activity);
+                  const Icon = getActivityTypeIcon(activity);
+                  const sourceLabel = getSourceLabel(activity);
+                  const isPayloadExpanded = expandedPayloadIds.includes(activityId);
+
+                  return (
+                    <div key={activityId} className="p-5 transition-colors hover:bg-slate-50">
+                      <div className="flex gap-4 items-start">
+                        <div className={['shrink-0 rounded-xl p-2', getActivityIconClass(activity)].join(' ')}>
+                          <Icon className="h-5 w-5" />
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-1 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                              <div className="mb-2 flex flex-wrap items-center gap-2">
+                                <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-slate-600">
+                                  {sourceLabel}
+                                </span>
+                                <span className="inline-flex items-center rounded-full bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-500">
+                                  {normalizeText(activity?.eventType) || 'event'}
+                                </span>
+                              </div>
+
+                              <p className="text-sm font-semibold text-slate-900">
+                                {actorLabel} {actionLabel}
+                              </p>
+                            </div>
+
+                            <span className="text-xs font-medium text-slate-400 whitespace-nowrap">
+                              {formatActivityTime(activity.createdAt)}
+                            </span>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {leadLabel ? (
+                              leadId ? (
+                                <Link
+                                  to={'/leads/' + leadId}
+                                  className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-100"
+                                >
+                                  <Link2 className="h-3 w-3" />
+                                  Lead: {leadLabel}
+                                </Link>
+                              ) : (
+                                <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+                                  Lead: {leadLabel}
+                                </span>
+                              )
+                            ) : null}
+
+                            {caseLabel ? (
+                              caseId ? (
+                                <Link
+                                  to={'/cases/' + caseId}
+                                  className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100"
+                                >
+                                  <Link2 className="h-3 w-3" />
+                                  Sprawa: {caseLabel}
+                                </Link>
+                              ) : (
+                                <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                                  Sprawa: {caseLabel}
+                                </span>
+                              )
+                            ) : null}
+                          </div>
+
+                          <div className="mt-3">
+                            <button
+                              type="button"
+                              onClick={() => togglePayload(activityId)}
+                              className="text-xs font-semibold text-slate-500 transition hover:text-slate-900"
+                            >
+                              {isPayloadExpanded ? 'Ukryj szczegóły techniczne' : 'Pokaż szczegóły techniczne'}
+                            </button>
+
+                            {isPayloadExpanded ? (
+                              <pre className="mt-3 max-h-80 overflow-auto rounded-2xl bg-slate-950 p-4 text-xs text-slate-100">
+                                {safePayloadPreview(activity.payload)}
+                              </pre>
+                            ) : null}
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-xs text-slate-400">
-                        {activity.leadId ? 'Lead' : 'Sprawa'}: {activity.leadId || activity.caseId}
-                      </p>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </CardContent>

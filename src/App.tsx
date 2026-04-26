@@ -1,44 +1,164 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db } from './firebase';
-import Today from './pages/Today';
-import Leads from './pages/Leads';
-import LeadDetail from './pages/LeadDetail';
-import Cases from './pages/Cases';
-import CaseDetail from './pages/CaseDetail';
-import ClientPortal from './pages/ClientPortal';
-import Activity from './pages/Activity';
-import Settings from './pages/Settings';
-import Login from './pages/Login';
-import Tasks from './pages/Tasks';
-import Calendar from './pages/Calendar';
-import Billing from './pages/Billing';
-import NotificationsCenter from './pages/NotificationsCenter';
+import { auth } from './firebase';
+import { getIdTokenResult, signOut } from 'firebase/auth';
+import NotificationRuntime from './components/NotificationRuntime';
 import { Toaster } from './components/ui/sonner';
-import { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { TooltipProvider } from './components/ui/tooltip';
-import { seedTemplates } from './lib/firebase-utils';
-import NotificationRuntime from './components/notifications/NotificationRuntime';
+import { fetchMeFromSupabase, isSupabaseConfigured } from './lib/supabase-fallback';
+import { clearClientAuthSnapshot, setClientAuthSnapshot } from './lib/client-auth';
+import { useFirebaseSession } from './hooks/useFirebaseSession';
+import { toast } from 'sonner';
+
+const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
+
+const Today = lazy(() => import('./pages/Today'));
+const Leads = lazy(() => import('./pages/Leads'));
+const LeadDetail = lazy(() => import('./pages/LeadDetail'));
+const Cases = lazy(() => import('./pages/Cases'));
+const CaseDetail = lazy(() => import('./pages/CaseDetail'));
+const Clients = lazy(() => import('./pages/Clients'));
+const ClientDetail = lazy(() => import('./pages/ClientDetail'));
+const ClientPortal = lazy(() => import('./pages/ClientPortal'));
+const Activity = lazy(() => import('./pages/Activity'));
+const Settings = lazy(() => import('./pages/Settings'));
+const Login = lazy(() => import('./pages/Login'));
+const Tasks = lazy(() => import('./pages/Tasks'));
+const Calendar = lazy(() => import('./pages/Calendar'));
+const Billing = lazy(() => import('./pages/Billing'));
+const SupportCenter = lazy(() => import('./pages/SupportCenter'));
+const NotificationsCenter = lazy(() => import('./pages/NotificationsCenter'));
+
+function AppRouteFallback() {
+  return (
+    <div className="flex items-center justify-center h-screen bg-slate-50">
+      <div className="flex flex-col items-center gap-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <p className="text-slate-500 font-medium animate-pulse">Ładowanie widoku...</p>
+      </div>
+    </div>
+  );
+}
+
+function buildLocalProfile(user: any) {
+  return {
+    id: user?.uid || '',
+    fullName: user?.displayName || '',
+    email: user?.email || '',
+    role: 'member',
+    isAdmin: false,
+  };
+}
 
 export default function App() {
-  const [user, loading] = useAuthState(auth);
+  const [user, loading] = useFirebaseSession(auth);
   const [profile, setProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchProfile() {
-      if (user) {
-        const profileDoc = await getDoc(doc(db, 'profiles', user.uid));
-        if (profileDoc.exists()) {
-          setProfile(profileDoc.data());
-        }
-        seedTemplates();
-      }
+    document.title = 'Close Flow';
+  }, []);
+
+  useEffect(() => {
+    if (!user) {
+      clearClientAuthSnapshot();
+      setProfile(null);
       setProfileLoading(false);
+      return;
     }
-    fetchProfile();
+
+    setClientAuthSnapshot({
+      uid: user.uid,
+      email: user.email || '',
+      fullName: user.displayName || '',
+    });
+
+    if (!isSupabaseConfigured()) {
+      setProfile(buildLocalProfile(user));
+      setProfileLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setProfileLoading(true);
+
+    const syncProfileFromApi = async (showLoading = false) => {
+      if (showLoading) setProfileLoading(true);
+
+      try {
+        const me = await fetchMeFromSupabase({
+          uid: user.uid,
+          email: user.email || undefined,
+          fullName: user.displayName || undefined,
+        });
+        if (cancelled) return;
+
+        const nextProfile = me.profile || null;
+        const forceLogoutAfter = typeof nextProfile?.forceLogoutAfter === 'string' ? nextProfile.forceLogoutAfter : '';
+
+        if (forceLogoutAfter) {
+          try {
+            const tokenResult = await getIdTokenResult(user);
+            const authTimeMs = Date.parse(String(tokenResult.authTime || ''));
+            const forceLogoutMs = Date.parse(forceLogoutAfter);
+
+            if (Number.isFinite(authTimeMs) && Number.isFinite(forceLogoutMs) && authTimeMs < forceLogoutMs) {
+              if (typeof window !== 'undefined') {
+                window.sessionStorage.setItem(FORCE_LOGOUT_NOTICE_SESSION_KEY, '1');
+              }
+              clearClientAuthSnapshot();
+              setProfile(null);
+              if (showLoading) setProfileLoading(false);
+              await signOut(auth);
+              return;
+            }
+          } catch (error) {
+            console.error('FORCE_LOGOUT_CHECK_FAILED', error);
+          }
+        }
+
+        setProfile(nextProfile);
+      } catch (error) {
+        if (cancelled) return;
+        console.error('PROFILE_API_BOOTSTRAP_FAILED', error);
+        setProfile(buildLocalProfile(user));
+      } finally {
+        if (!cancelled && showLoading) {
+          setProfileLoading(false);
+        }
+      }
+    };
+
+    void syncProfileFromApi(true);
+
+    const interval = window.setInterval(() => {
+      void syncProfileFromApi(false);
+    }, 60_000);
+
+    const handleVisibilityRefresh = () => {
+      if (document.visibilityState === 'visible') {
+        void syncProfileFromApi(false);
+      }
+    };
+
+    window.addEventListener('focus', handleVisibilityRefresh);
+    document.addEventListener('visibilitychange', handleVisibilityRefresh);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+      window.removeEventListener('focus', handleVisibilityRefresh);
+      document.removeEventListener('visibilitychange', handleVisibilityRefresh);
+    };
   }, [user]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.sessionStorage.getItem(FORCE_LOGOUT_NOTICE_SESSION_KEY) !== '1') return;
+
+    window.sessionStorage.removeItem(FORCE_LOGOUT_NOTICE_SESSION_KEY);
+    toast.success('Wylogowano tę sesję po globalnym wylogowaniu.');
+  }, []);
 
   if (loading || profileLoading) {
     return (
@@ -54,25 +174,31 @@ export default function App() {
   return (
     <TooltipProvider>
       <Router>
-        <Routes>
-          <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-          <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
-          
-          <Route path="/" element={user ? <Today /> : <Navigate to="/login" />} />
-          <Route path="/leads" element={user ? <Leads /> : <Navigate to="/login" />} />
-          <Route path="/leads/:leadId" element={user ? <LeadDetail /> : <Navigate to="/login" />} />
-          <Route path="/tasks" element={user ? <Tasks /> : <Navigate to="/login" />} />
-          <Route path="/calendar" element={user ? <Calendar /> : <Navigate to="/login" />} />
-          <Route path="/cases" element={user ? <Cases /> : <Navigate to="/login" />} />
-          <Route path="/case/:caseId" element={user ? <CaseDetail /> : <Navigate to="/login" />} />
-          <Route path="/activity" element={user ? <Activity /> : <Navigate to="/login" />} />
-          <Route path="/billing" element={user ? <Billing /> : <Navigate to="/login" />} />
-          <Route path="/notifications" element={user ? <NotificationsCenter /> : <Navigate to="/login" />} />
-          <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
-          
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-        {user && <NotificationRuntime />}
+        <Suspense fallback={<AppRouteFallback />}>
+          <Routes>
+            <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+            <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
+
+            <Route path="/" element={user ? <Today /> : <Navigate to="/login" />} />
+            <Route path="/leads" element={user ? <Leads /> : <Navigate to="/login" />} />
+            <Route path="/leads/:leadId" element={user ? <LeadDetail /> : <Navigate to="/login" />} />
+            <Route path="/tasks" element={user ? <Tasks /> : <Navigate to="/login" />} />
+            <Route path="/calendar" element={user ? <Calendar /> : <Navigate to="/login" />} />
+            <Route path="/cases" element={user ? <Cases /> : <Navigate to="/login" />} />
+            <Route path="/case/:caseId" element={user ? <CaseDetail /> : <Navigate to="/login" />} />
+            <Route path="/cases/:caseId" element={user ? <CaseDetail /> : <Navigate to="/login" />} />
+            <Route path="/clients" element={user ? <Clients /> : <Navigate to="/login" />} />
+            <Route path="/clients/:clientId" element={user ? <ClientDetail /> : <Navigate to="/login" />} />
+            <Route path="/activity" element={user ? <Activity /> : <Navigate to="/login" />} />
+            <Route path="/notifications" element={user ? <NotificationsCenter /> : <Navigate to="/login" />} />
+            <Route path="/billing" element={user ? <Billing /> : <Navigate to="/login" />} />
+            <Route path="/help" element={user ? <SupportCenter /> : <Navigate to="/login" />} />
+            <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
+
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </Suspense>
+        <NotificationRuntime enabled={Boolean(user)} />
         <Toaster position="top-right" richColors />
       </Router>
     </TooltipProvider>

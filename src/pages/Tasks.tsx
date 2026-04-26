@@ -1,133 +1,422 @@
-import { useState, useEffect, FormEvent } from 'react';
-import { auth, db } from '../firebase';
-import { 
-  collection, 
-  query, 
-  where, 
-  onSnapshot, 
-  orderBy, 
-  addDoc, 
-  serverTimestamp,
-  doc,
-  updateDoc,
-  deleteDoc
-} from 'firebase/firestore';
+import { useEffect, useMemo, useState, type FormEvent, useRef } from 'react';
+import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { 
-  Plus, 
-  CheckSquare, 
-  Square, 
-  Clock, 
-  AlertTriangle, 
-  Search, 
-  Filter, 
-  MoreVertical, 
-  Trash2, 
-  Edit2,
-  Calendar,
+import {
+  Plus,
+  CheckSquare,
+  Clock,
+  AlertTriangle,
+  Search,
+  MoreVertical,
+  Trash2,
   Loader2,
-  X
+  Bell,
+  Repeat,
+  Link2,
+  ListTodo,
+  CheckCircle2,
 } from 'lucide-react';
-import { format, isToday, isPast, parseISO, isTomorrow, addDays } from 'date-fns';
+import { format, isPast, isToday, isTomorrow, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter
+  DialogFooter,
 } from '../components/ui/dialog';
+import { TopicContactPicker } from '../components/topic-contact-picker';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
+} from '../components/ui/dropdown-menu';
+import {
+  createDefaultRecurrence,
+  createDefaultReminder,
+  getTaskDate,
+  getTaskStartAt,
+  normalizeRecurrenceConfig,
+  normalizeReminderConfig,
+  syncTaskDerivedFields,
+  toReminderAtIso,
+  toDateTimeLocalValue,
+} from '../lib/scheduling';
+import {
+  PRIORITY_OPTIONS,
+  RECURRENCE_OPTIONS,
+  REMINDER_OFFSET_OPTIONS,
+  REMINDER_MODE_OPTIONS,
+  TASK_TYPES,
+} from '../lib/options';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
+import { requireWorkspaceId } from '../lib/workspace-context';
+import {
+  deleteTaskFromSupabase,
+  fetchCasesFromSupabase,
+  fetchClientsFromSupabase,
+  fetchEventsFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchTasksFromSupabase,
+  insertActivityToSupabase,
+  insertTaskToSupabase,
+  updateLeadInSupabase,
+  updateTaskInSupabase,
+} from '../lib/supabase-fallback';
+import { isActiveSalesLead } from '../lib/lead-health';
 
-const TASK_TYPES = [
-  { value: 'follow_up', label: 'Follow-up' },
-  { value: 'phone', label: 'Telefon' },
-  { value: 'reply', label: 'Odpisać' },
-  { value: 'send_offer', label: 'Wysłać ofertę' },
-  { value: 'meeting', label: 'Spotkanie' },
-  { value: 'other', label: 'Inne' },
-];
+const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+
+type TaskScope = 'all' | 'active' | 'today' | 'overdue' | 'without-lead' | 'done';
+
+function getTaskStart(task: any) {
+  return getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
+}
+
+function hasLeadLink(task: any) {
+  return Boolean(task.leadId || task.leadName);
+}
+
+function hasCaseLink(task: any) {
+  return Boolean(task.caseId);
+}
+
+function isTaskDone(task: any) {
+  return String(task.status || 'todo') === 'done';
+}
+
+function isTaskForToday(task: any) {
+  return isToday(parseISO(getTaskStart(task)));
+}
+
+function isTaskOverdueEntry(task: any) {
+  const start = parseISO(getTaskStart(task));
+  return !isTaskDone(task) && isPast(start) && !isToday(start);
+}
+
+function groupTasksByDate(items: any[]) {
+  return items.reduce<Record<string, any[]>>((acc, task) => {
+    const date = getTaskDate(task);
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(task);
+    return acc;
+  }, {});
+}
 
 export default function Tasks() {
-  const { workspace, hasAccess } = useWorkspace();
+  const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [tasks, setTasks] = useState<any[]>([]);
+  const [leads, setLeads] = useState<any[]>([]);
+  const [cases, setCases] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('todo');
-  const [typeFilter, setTypeFilter] = useState('all');
+  const [taskScope, setTaskScope] = useState<TaskScope>('all');
 
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
-  const [newTask, setNewTask] = useState({ title: '', type: 'follow_up', date: format(new Date(), 'yyyy-MM-dd'), priority: 'medium' });
+  const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
+  const [newTask, setNewTask] = useState(() => ({
+    title: '',
+    type: 'follow_up',
+    dueAt: toDateTimeLocalValue(new Date()),
+    priority: 'medium',
+    leadId: '',
+    caseId: '',
+    relationQuery: '',
+    recurrence: createDefaultRecurrence(),
+    reminder: createDefaultReminder(),
+  }));
+  const [editTask, setEditTask] = useState<any | null>(null);
+
+  const createTaskSubmitLockRef = useRef(false);
+  const editTaskSubmitLockRef = useRef(false);
+  const [taskSubmitting, setTaskSubmitting] = useState(false);
+  const [taskEditSubmitting, setTaskEditSubmitting] = useState(false);
+
+  const registerReminderScheduled = async ({
+    title,
+    scheduledAt,
+    reminderAt,
+  }: {
+    title: string;
+    scheduledAt: string;
+    reminderAt: string | null;
+  }) => {
+    if (!reminderAt) return;
+
+    try {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'reminder_scheduled',
+        payload: {
+          entityType: 'task',
+          title,
+          scheduledAt,
+          reminderAt,
+          source: 'tasks',
+        },
+      });
+    } catch (error) {
+      console.warn('REMINDER_ACTIVITY_WRITE_FAILED', error);
+    }
+  };
+
+  async function refreshSupabaseData() {
+    const [taskRows, leadRows, caseRows] = await Promise.all([
+      fetchTasksFromSupabase(),
+      fetchLeadsFromSupabase(),
+      fetchCasesFromSupabase(),
+    ]);
+    const clientRows = await fetchClientsFromSupabase().catch(() => []);
+
+    setTasks(taskRows as any[]);
+    setLeads(leadRows as any[]);
+    setCases(caseRows as any[]);
+    setClients(clientRows as any[]);
+
+    return {
+      taskRows: taskRows as any[],
+      leadRows: leadRows as any[],
+      caseRows: caseRows as any[],
+      clientRows: clientRows as any[],
+    };
+  }
 
   useEffect(() => {
-    if (!auth.currentUser || !workspace) return;
+    if (!auth.currentUser || workspaceLoading || !workspace?.id) {
+      setLoading(workspaceLoading);
+      return;
+    }
 
-    const q = query(
-      collection(db, 'tasks'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('date', 'asc'),
-      orderBy('createdAt', 'desc')
-    );
+    let cancelled = false;
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setTasks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      setLoading(false);
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const [taskRows, leadRows, caseRows, clientRows] = await Promise.all([
+          fetchTasksFromSupabase(),
+          fetchLeadsFromSupabase(),
+          fetchCasesFromSupabase(),
+          fetchClientsFromSupabase().catch(() => []),
+        ]);
+
+        if (cancelled) return;
+        setTasks(taskRows as any[]);
+        setLeads(leadRows as any[]);
+        setCases(caseRows as any[]);
+        setClients(clientRows as any[]);
+      } catch (error: any) {
+        if (!cancelled) {
+          toast.error(`Błąd odczytu zadań: ${error.message}`);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [workspace?.id, workspaceLoading]);
+
+  const resetNewTask = () => {
+    setNewTask({
+      title: '',
+      type: 'follow_up',
+      dueAt: toDateTimeLocalValue(new Date()),
+      priority: 'medium',
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
+      recurrence: createDefaultRecurrence(),
+      reminder: createDefaultReminder(),
     });
+  };
 
-    return () => unsubscribe();
-  }, [workspace]);
+  const topicContactOptions = useMemo(
+    () => buildTopicContactOptions({ leads, cases, clients }),
+    [cases, clients, leads],
+  );
+
+  const selectedNewTaskOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: newTask.leadId || null, caseId: newTask.caseId || null }),
+    [newTask.caseId, newTask.leadId, topicContactOptions],
+  );
+
+  const selectedEditTaskOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: editTask?.leadId || null, caseId: editTask?.caseId || null }),
+    [editTask?.caseId, editTask?.leadId, topicContactOptions],
+  );
+
+  const handleSelectNewTaskRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setNewTask((prev) => ({
+      ...prev,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    }));
+  };
+
+  const handleSelectEditTaskRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setEditTask((prev: any) => (
+      prev
+        ? {
+            ...prev,
+            leadId: resolved.leadId || '',
+            caseId: resolved.caseId || '',
+            relationQuery: option?.label || '',
+          }
+        : prev
+    ));
+  };
+
+  const getSoftNextStepDefaultDueAt = () => {
+    const next = new Date();
+    next.setDate(next.getDate() + 1);
+    next.setHours(9, 0, 0, 0);
+    return toDateTimeLocalValue(next);
+  };
+
+  const handleSoftNextStepAfterTaskCompletion = async ({
+    leadId,
+    leadName,
+    fallbackTitle,
+  }: {
+    leadId?: string | null;
+    leadName?: string;
+    fallbackTitle?: string;
+  }) => {
+    void leadId;
+    void leadName;
+    void fallbackTitle;
+  };
+
+  const openEditTask = (task: any) => {
+    setEditTask({
+      id: task.id,
+      title: task.title || '',
+      type: task.type || 'follow_up',
+      dueAt: getTaskStart(task),
+      priority: task.priority || 'medium',
+      leadId: task.leadId || '',
+      caseId: task.caseId || '',
+      relationQuery: task.caseId ? String(caseTitleById.get(String(task.caseId)) || task.title || '') : (task.leadName || ''),
+      recurrence: normalizeRecurrenceConfig(task.recurrence),
+      reminder: normalizeReminderConfig(task.reminder),
+      status: task.status || 'todo',
+    });
+    setIsEditTaskOpen(true);
+  };
 
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
+    if (createTaskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!newTask.title) return toast.error('Wpisz tytuł zadania');
+    if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+    createTaskSubmitLockRef.current = true;
+    setTaskSubmitting(true);
+
+    const payload = syncTaskDerivedFields({
+      ...newTask,
+      leadId: newTask.leadId || null,
+      leadName: selectedNewTaskOption?.resolvedTarget === 'lead' ? selectedNewTaskOption.label : '',
+      recurrence: normalizeRecurrenceConfig(newTask.recurrence),
+      reminder: normalizeReminderConfig(newTask.reminder),
+    });
 
     try {
-      await addDoc(collection(db, 'tasks'), {
-        ...newTask,
-        status: 'todo',
-        scheduledAt: newTask.date,
-        dueAt: newTask.date,
-        ownerId: auth.currentUser?.uid,
-        workspaceId: workspace.id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+      const eventRows = await fetchEventsFromSupabase();
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: payload.title,
+          startAt: payload.dueAt,
+        },
+        candidates: buildConflictCandidates({
+          tasks,
+          events: eventRows as any[],
+          caseTitleById,
+        }),
       });
+      if (!shouldSave) return;
+
+      const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
+      await insertTaskToSupabase({
+        title: newTask.title,
+        type: newTask.type,
+        date: newTask.dueAt.slice(0, 10),
+        scheduledAt: newTask.dueAt,
+        priority: newTask.priority,
+        leadId: newTask.leadId || null,
+        caseId: newTask.caseId || null,
+        reminderAt,
+        recurrenceRule: payload.recurrence?.mode ?? 'none',
+        ownerId: auth.currentUser?.uid,
+        workspaceId,
+      });
+      await registerReminderScheduled({
+        title: newTask.title,
+        scheduledAt: newTask.dueAt,
+        reminderAt,
+      });
+      await refreshSupabaseData();
 
       toast.success('Zadanie dodane');
       setIsNewTaskOpen(false);
-      setNewTask({ title: '', type: 'follow_up', date: format(new Date(), 'yyyy-MM-dd'), priority: 'medium' });
+      resetNewTask();
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
+    } finally {
+      createTaskSubmitLockRef.current = false;
+      setTaskSubmitting(false);
     }
   };
 
   const toggleTask = async (taskId: string, currentStatus: string) => {
     try {
-      await updateDoc(doc(db, 'tasks', taskId), {
-        status: currentStatus === 'todo' ? 'done' : 'todo',
-        updatedAt: serverTimestamp()
+      const task = tasks.find((entry) => entry.id === taskId);
+      const nextStatus = currentStatus === 'todo' ? 'done' : 'todo';
+
+      await updateTaskInSupabase({
+        id: taskId,
+        title: task?.title,
+        type: task?.type,
+        date: task?.date,
+        status: nextStatus,
+        priority: task?.priority,
+        leadId: task?.leadId ?? null,
+        caseId: task?.caseId ?? null,
       });
+
+      await refreshSupabaseData();
+
+      if (nextStatus === 'done' && task?.leadId) {
+        await handleSoftNextStepAfterTaskCompletion({
+          leadId: task.leadId,
+          leadName: task.leadName,
+          fallbackTitle: task.title,
+        });
+      }
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
@@ -136,28 +425,269 @@ export default function Tasks() {
   const deleteTask = async (taskId: string) => {
     if (!window.confirm('Usunąć zadanie?')) return;
     try {
-      await deleteDoc(doc(db, 'tasks', taskId));
+      await deleteTaskFromSupabase(taskId);
+      await refreshSupabaseData();
       toast.success('Zadanie usunięte');
     } catch (error: any) {
       toast.error('Błąd: ' + error.message);
     }
   };
 
-  const filteredTasks = tasks.filter(t => {
-    const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || t.status === statusFilter;
-    const matchesType = typeFilter === 'all' || t.type === typeFilter;
-    return matchesSearch && matchesStatus && matchesType;
-  });
+  const handleSaveTaskEdit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (editTaskSubmitLockRef.current) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!editTask?.id) return;
+    if (!editTask.title?.trim()) return toast.error('Wpisz tytuł zadania');
+    editTaskSubmitLockRef.current = true;
+    setTaskEditSubmitting(true);
 
-  const groupedTasks = filteredTasks.reduce((acc: any, task) => {
-    const date = task.date;
-    if (!acc[date]) acc[date] = [];
-    acc[date].push(task);
-    return acc;
-  }, {});
+    const payload = syncTaskDerivedFields({
+      ...editTask,
+      leadId: editTask.leadId || null,
+      leadName: selectedEditTaskOption?.resolvedTarget === 'lead' ? selectedEditTaskOption.label : '',
+      recurrence: normalizeRecurrenceConfig(editTask.recurrence),
+      reminder: normalizeReminderConfig(editTask.reminder),
+    });
 
-  const sortedDates = Object.keys(groupedTasks).sort();
+    try {
+      const eventRows = await fetchEventsFromSupabase();
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: payload.title,
+          startAt: payload.dueAt,
+        },
+        candidates: buildConflictCandidates({
+          tasks,
+          events: eventRows as any[],
+          caseTitleById,
+        }),
+        excludeId: String(editTask.id),
+        excludeKind: 'task',
+      });
+      if (!shouldSave) return;
+
+      const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
+      await updateTaskInSupabase({
+        id: editTask.id,
+        title: payload.title,
+        type: payload.type,
+        status: payload.status,
+        priority: payload.priority,
+        date: payload.date,
+        scheduledAt: payload.dueAt,
+        leadId: payload.leadId ?? null,
+        caseId: editTask.caseId || null,
+        reminderAt,
+        recurrenceRule: payload.recurrence?.mode ?? 'none',
+      });
+      await registerReminderScheduled({
+        title: payload.title,
+        scheduledAt: payload.dueAt,
+        reminderAt,
+      });
+      await refreshSupabaseData();
+
+      toast.success('Zadanie zaktualizowane');
+      setIsEditTaskOpen(false);
+      setEditTask(null);
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      editTaskSubmitLockRef.current = false;
+      setTaskEditSubmitting(false);
+    }
+  };
+
+  const caseTitleById = useMemo(
+    () => new Map(cases.map((caseRecord: any) => [String(caseRecord.id || ''), String(caseRecord.title || caseRecord.clientName || 'Powiązana sprawa')])),
+    [cases],
+  );
+
+  const baseFilteredTasks = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    return tasks.filter((task) => {
+      if (!normalizedQuery) return true;
+
+      const taskTitle = String(task.title || '').toLowerCase();
+      const taskType = String(task.type || '').toLowerCase();
+      const taskLead = String(task.leadName || '').toLowerCase();
+      const taskCase = String(caseTitleById.get(String(task.caseId || '')) || '').toLowerCase();
+      const taskPriority = String(task.priority || '').toLowerCase();
+
+      return taskTitle.includes(normalizedQuery)
+        || taskType.includes(normalizedQuery)
+        || taskLead.includes(normalizedQuery)
+        || taskCase.includes(normalizedQuery)
+        || taskPriority.includes(normalizedQuery);
+    });
+  }, [caseTitleById, tasks, searchQuery]);
+
+  const scopedTasks = useMemo(() => {
+    return baseFilteredTasks.filter((task) => {
+      switch (taskScope) {
+        case 'all':
+          return true;
+        case 'today':
+          return isTaskForToday(task);
+        case 'overdue':
+          return isTaskOverdueEntry(task);
+        case 'without-lead':
+          return !hasLeadLink(task);
+        case 'done':
+          return isTaskDone(task);
+        case 'active':
+          return !isTaskDone(task);
+        default:
+          return true;
+      }
+    });
+  }, [baseFilteredTasks, taskScope]);
+
+  const visibleCurrentTasks = useMemo(() => {
+    if (taskScope === 'done') return [] as any[];
+    return scopedTasks.filter((task) => !isTaskDone(task) || isTaskForToday(task));
+  }, [scopedTasks, taskScope]);
+
+  const visibleCompletedTasks = useMemo(() => {
+    if (taskScope === 'done') return scopedTasks.filter((task) => isTaskDone(task));
+    return scopedTasks.filter((task) => isTaskDone(task) && !isTaskForToday(task));
+  }, [scopedTasks, taskScope]);
+
+  const groupedCurrentTasks = useMemo(() => groupTasksByDate(visibleCurrentTasks), [visibleCurrentTasks]);
+  const sortedCurrentDates = useMemo(() => Object.keys(groupedCurrentTasks).sort(), [groupedCurrentTasks]);
+  const groupedCompletedTasks = useMemo(() => groupTasksByDate(visibleCompletedTasks), [visibleCompletedTasks]);
+  const sortedCompletedDates = useMemo(() => Object.keys(groupedCompletedTasks).sort().reverse(), [groupedCompletedTasks]);
+
+  const taskStats = {
+    active: tasks.filter((task) => !isTaskDone(task)).length,
+    today: tasks.filter((task) => !isTaskDone(task) && isTaskForToday(task)).length,
+    overdue: tasks.filter((task) => isTaskOverdueEntry(task)).length,
+    withoutLead: tasks.filter((task) => !hasLeadLink(task)).length,
+    done: tasks.filter((task) => isTaskDone(task)).length,
+  };
+
+  const activateScope = (scope: TaskScope) => {
+    setTaskScope(scope);
+    if (scope === 'done') {
+      requestAnimationFrame(() => {
+        document.getElementById('completed-tasks-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  };
+
+  const statCards = [
+    {
+      id: 'active' as TaskScope,
+      title: 'Aktywne',
+      value: taskStats.active,
+      tone: 'text-slate-900',
+      bg: 'bg-slate-100 text-slate-500',
+      icon: ListTodo,
+    },
+    {
+      id: 'today' as TaskScope,
+      title: 'Na dziś',
+      value: taskStats.today,
+      tone: 'text-blue-600',
+      bg: 'bg-blue-50 text-blue-500',
+      icon: Clock,
+    },
+    {
+      id: 'overdue' as TaskScope,
+      title: 'Zaległe',
+      value: taskStats.overdue,
+      tone: 'text-rose-600',
+      bg: 'bg-rose-50 text-rose-500',
+      icon: AlertTriangle,
+    },
+    {
+      id: 'without-lead' as TaskScope,
+      title: 'Bez leada',
+      value: taskStats.withoutLead,
+      tone: 'text-amber-600',
+      bg: 'bg-amber-50 text-amber-500',
+      icon: Link2,
+    },
+    {
+      id: 'done' as TaskScope,
+      title: 'Zrobione',
+      value: taskStats.done,
+      tone: 'text-emerald-600',
+      bg: 'bg-emerald-50 text-emerald-500',
+      icon: CheckCircle2,
+    },
+  ];
+
+  const renderTaskCard = (task: any, completedSection = false) => {
+    const taskStart = getTaskStart(task);
+    const overdue = isTaskOverdueEntry(task);
+    const recurrence = normalizeRecurrenceConfig(task.recurrence);
+    const reminder = task.reminder
+      ? normalizeReminderConfig(task.reminder)
+      : task.reminderAt
+        ? { ...createDefaultReminder(), mode: 'once' as const }
+        : normalizeReminderConfig(task.reminder);
+    const done = isTaskDone(task);
+
+    return (
+      <Card key={task.id} className={`border-none shadow-sm group transition-all ${done ? 'opacity-60' : ''}`}>
+        <CardContent className="p-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              type="button"
+              onClick={() => toggleTask(task.id, task.status)}
+              className={`w-5 h-5 rounded border flex items-center justify-center ${done ? 'bg-primary border-primary text-white' : 'border-slate-200 hover:border-primary'}`}
+            >
+              {done ? <CheckSquare className="w-4 h-4" /> : null}
+            </button>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <p className={`font-bold text-slate-900 break-words ${done ? 'line-through' : ''}`}>{task.title}</p>
+                <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</Badge>
+                {task.priority === 'high' ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge> : null}
+                {overdue ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge> : null}
+                {!task.leadName && !task.leadId ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Bez leada</Badge> : null}
+                {task.caseId ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Sprawa</Badge> : null}
+                {recurrence.mode !== 'none' ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((item) => item.value === recurrence.mode)?.label}</Badge> : null}
+                {reminder.mode !== 'none' ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Bell className="w-3 h-3 mr-1" /> {reminder.mode === 'recurring' ? 'Cykliczne przypomnienie' : 'Przypomnienie'}</Badge> : null}
+                {completedSection ? <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 text-[10px] uppercase font-bold h-5">Archiwum</Badge> : null}
+              </div>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
+                <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {format(parseISO(taskStart), 'HH:mm')}</span>
+                {task.leadName ? <span>Lead: {task.leadName}</span> : null}
+                {task.caseId ? <span>Sprawa: {caseTitleById.get(String(task.caseId)) || 'Powiązana sprawa'}</span> : null}
+                {!task.leadName && !task.leadId && !task.caseId ? <span>Brak powiązań</span> : null}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => openEditTask(task)}>
+              Edytuj
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-xl"><MoreVertical className="w-4 h-4" /></Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => openEditTask(task)}>
+                  Edytuj
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => toggleTask(task.id, task.status)}>
+                  <CheckSquare className="w-4 h-4 mr-2" /> {done ? 'Przywróć do zrobienia' : 'Oznacz jako zrobione'}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600">
+                  <Trash2 className="w-4 h-4 mr-2" /> Usuń
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <Layout>
@@ -165,158 +695,342 @@ export default function Tasks() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Zadania</h1>
-            <p className="text-slate-500">Zarządzaj swoją codzienną egzekucją.</p>
+            <p className="text-slate-500">Zarządzaj codzienną egzekucją i powtarzalnymi ruchami.</p>
           </div>
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
             <DialogTrigger asChild>
-              <Button className="rounded-xl shadow-lg shadow-primary/20">
+              <Button className="rounded-xl shadow-lg shadow-primary/20" disabled={!workspaceReady}>
                 <Plus className="w-4 h-4 mr-2" /> Nowe zadanie
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
-              <form onSubmit={handleAddTask} className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label>Tytuł zadania</Label>
-                  <Input value={newTask.title} onChange={e => setNewTask({...newTask, title: e.target.value})} required />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
+              <form onSubmit={handleAddTask} className="space-y-6 py-4">
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Typ</Label>
-                    <Select value={newTask.type} onValueChange={v => setNewTask({...newTask, type: v})}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {TASK_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
+                    <Label>Tytuł zadania</Label>
+                    <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Typ</Label>
+                      <select className={modalSelectClass} value={newTask.type} onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}>
+                        {TASK_TYPES.map((taskType) => (
+                          <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <TopicContactPicker
+                    options={topicContactOptions}
+                    selectedOption={selectedNewTaskOption}
+                    query={newTask.relationQuery}
+                    onQueryChange={(value) => setNewTask((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                    onSelect={handleSelectNewTaskRelation}
+                  />
+                  <div className="space-y-2">
+                    <Label>Priorytet</Label>
+                    <select className={modalSelectClass} value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}>
+                      {PRIORITY_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Termin</p>
+                    <p className="text-xs text-slate-500">Najpierw ustaw konkretny moment wykonania zadania.</p>
                   </div>
                   <div className="space-y-2">
-                    <Label>Data</Label>
-                    <Input type="date" value={newTask.date} onChange={e => setNewTask({...newTask, date: e.target.value})} required />
+                    <Label>Data i godzina</Label>
+                    <Input type="datetime-local" value={newTask.dueAt} onChange={(e) => setNewTask({ ...newTask, dueAt: e.target.value })} required />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Priorytet</Label>
-                  <Select value={newTask.priority} onValueChange={v => setNewTask({...newTask, priority: v})}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Niski</SelectItem>
-                      <SelectItem value="medium">Średni</SelectItem>
-                      <SelectItem value="high">Wysoki</SelectItem>
-                    </SelectContent>
-                  </Select>
+
+                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Cykliczność</p>
+                    <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawić powtarzanie.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2 md:col-span-2">
+                      <Label>Powtarzanie</Label>
+                      <select className={modalSelectClass} value={newTask.recurrence.mode} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, mode: e.target.value as any } })}>
+                        {RECURRENCE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Co ile</Label>
+                      <Input type="number" min="1" value={newTask.recurrence.interval} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newTask.recurrence.mode === 'none'} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Powtarzaj do</Label>
+                    <Input type="date" value={newTask.recurrence.until || ''} onChange={(e) => setNewTask({ ...newTask, recurrence: { ...newTask.recurrence, until: e.target.value || null } })} disabled={newTask.recurrence.mode === 'none'} />
+                  </div>
                 </div>
+
+                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
+                    <p className="text-xs text-slate-500">Ustaw jednorazowe lub cykliczne przypominanie.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Tryb</Label>
+                      <select className={modalSelectClass} value={newTask.reminder.mode} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, mode: e.target.value as any } })}>
+                        {REMINDER_MODE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Kiedy przypomnieć</Label>
+                      <select className={modalSelectClass} value={newTask.reminder.minutesBefore} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, minutesBefore: Number(e.target.value) } })} disabled={newTask.reminder.mode === 'none'}>
+                        {REMINDER_OFFSET_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  {newTask.reminder.mode === 'recurring' ? (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Cykliczność przypomnienia</Label>
+                        <select className={modalSelectClass} value={newTask.reminder.recurrenceMode} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceMode: e.target.value as any } })}>
+                          {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Co ile</Label>
+                        <Input type="number" min="1" value={newTask.reminder.recurrenceInterval} onChange={(e) => setNewTask({ ...newTask, reminder: { ...newTask.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+
                 <DialogFooter>
-                  <Button type="submit" className="w-full">Dodaj zadanie</Button>
+                  <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
           </Dialog>
+
+          <Dialog open={isEditTaskOpen} onOpenChange={(open) => {
+            setIsEditTaskOpen(open);
+            if (!open) setEditTask(null);
+          }}>
+            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader><DialogTitle>Edytuj zadanie</DialogTitle></DialogHeader>
+              {editTask ? (
+                <form onSubmit={handleSaveTaskEdit} className="space-y-6 py-4">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Tytuł zadania</Label>
+                      <Input value={editTask.title} onChange={(e) => setEditTask({ ...editTask, title: e.target.value })} required />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Typ</Label>
+                        <select className={modalSelectClass} value={editTask.type} onChange={(e) => setEditTask({ ...editTask, type: e.target.value })}>
+                          {TASK_TYPES.map((taskType) => (
+                            <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <TopicContactPicker
+                      options={topicContactOptions}
+                      selectedOption={selectedEditTaskOption}
+                      query={editTask.relationQuery}
+                      onQueryChange={(value) => setEditTask({ ...editTask, relationQuery: value, leadId: '', caseId: '' })}
+                      onSelect={handleSelectEditTaskRelation}
+                    />
+                    <div className="space-y-2">
+                      <Label>Priorytet</Label>
+                      <select className={modalSelectClass} value={editTask.priority} onChange={(e) => setEditTask({ ...editTask, priority: e.target.value })}>
+                        {PRIORITY_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div className="space-y-2">
+                      <Label>Data i godzina</Label>
+                      <Input type="datetime-local" value={editTask.dueAt} onChange={(e) => setEditTask({ ...editTask, dueAt: e.target.value })} required />
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Powtarzanie</Label>
+                        <select className={modalSelectClass} value={editTask.recurrence.mode} onChange={(e) => setEditTask({ ...editTask, recurrence: { ...editTask.recurrence, mode: e.target.value as any } })}>
+                          {RECURRENCE_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Co ile</Label>
+                        <Input type="number" min="1" value={editTask.recurrence.interval} onChange={(e) => setEditTask({ ...editTask, recurrence: { ...editTask.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={editTask.recurrence.mode === 'none'} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Tryb przypomnienia</Label>
+                        <select className={modalSelectClass} value={editTask.reminder.mode} onChange={(e) => setEditTask({ ...editTask, reminder: { ...editTask.reminder, mode: e.target.value as any } })}>
+                          {REMINDER_MODE_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Kiedy przypomnieć</Label>
+                        <select className={modalSelectClass} value={editTask.reminder.minutesBefore} onChange={(e) => setEditTask({ ...editTask, reminder: { ...editTask.reminder, minutesBefore: Number(e.target.value) } })} disabled={editTask.reminder.mode === 'none'}>
+                          {REMINDER_OFFSET_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    {editTask.reminder.mode === 'recurring' ? (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Cykliczność przypomnienia</Label>
+                          <select className={modalSelectClass} value={editTask.reminder.recurrenceMode} onChange={(e) => setEditTask({ ...editTask, reminder: { ...editTask.reminder, recurrenceMode: e.target.value as any } })}>
+                            {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
+                              <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Co ile</Label>
+                          <Input type="number" min="1" value={editTask.reminder.recurrenceInterval} onChange={(e) => setEditTask({ ...editTask, reminder: { ...editTask.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <DialogFooter>
+                    <Button type="submit" className="w-full" disabled={taskEditSubmitting}>{taskEditSubmitting ? 'Zapisywanie...' : 'Zapisz zmiany'}</Button>
+                  </DialogFooter>
+                </form>
+              ) : null}
+            </DialogContent>
+          </Dialog>
         </header>
 
-        {/* Filters */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+          {statCards.map((card) => {
+            const Icon = card.icon;
+            const active = taskScope === card.id;
+            return (
+              <button
+                key={card.id}
+                type="button"
+                onClick={() => activateScope(card.id)}
+                className={`w-full text-left rounded-2xl transition-all ${active ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}
+              >
+                <Card className="border-none shadow-sm">
+                  <CardContent className={`p-5 flex items-center justify-between ${active ? 'bg-primary/5' : ''}`}>
+                    <div>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.title}</p>
+                      <p className={`mt-2 text-2xl font-bold ${card.tone}`}>{card.value}</p>
+                    </div>
+                    <div className={`rounded-2xl p-3 ${card.bg}`}>
+                      <Icon className="w-6 h-6" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </button>
+            );
+          })}
+        </div>
+
         <Card className="border-none shadow-sm">
-          <CardContent className="p-4 flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
+          <CardContent className="p-4">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input 
-                placeholder="Szukaj zadania..." 
-                className="pl-10 rounded-xl bg-slate-50 border-none h-11"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <div className="flex gap-2">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[140px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie</SelectItem>
-                  <SelectItem value="todo">Do zrobienia</SelectItem>
-                  <SelectItem value="done">Zrobione</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-[140px] rounded-xl h-11 bg-slate-50 border-none">
-                  <SelectValue placeholder="Typ" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Wszystkie typy</SelectItem>
-                  {TASK_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <Input placeholder="Szukaj po tytule, typie, leadzie albo sprawie..." className="pl-10 rounded-xl bg-slate-50 border-none h-11" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
           </CardContent>
         </Card>
 
-        {/* Task List */}
-        <div className="space-y-8">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-              <p className="text-slate-500">Ładowanie zadań...</p>
-            </div>
-          ) : sortedDates.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
-              <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckSquare className="w-8 h-8 text-slate-300" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900">Brak zadań</h3>
-              <p className="text-slate-500 max-w-xs mx-auto mt-1">Wszystko zrobione! Możesz odpocząć lub dodać nowe zadanie.</p>
-            </div>
-          ) : (
-            sortedDates.map(date => {
-              const dateObj = parseISO(date);
-              const isOverdue = isPast(dateObj) && !isToday(dateObj);
-              const dateLabel = isToday(dateObj) ? 'Dzisiaj' : isTomorrow(dateObj) ? 'Jutro' : format(dateObj, 'EEEE, d MMMM', { locale: pl });
-
-              return (
-                <div key={date} className="space-y-3">
-                  <h3 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${isOverdue ? 'text-rose-600' : 'text-slate-400'}`}>
-                    {isOverdue && <AlertTriangle className="w-4 h-4" />}
-                    {dateLabel}
-                  </h3>
-                  <div className="grid gap-3">
-                    {groupedTasks[date].map((task: any) => (
-                      <Card key={task.id} className={`border-none shadow-sm group transition-all ${task.status === 'done' ? 'opacity-60' : ''}`}>
-                        <CardContent className="p-4 flex items-center justify-between">
-                          <div className="flex items-center gap-4 flex-1">
-                            <button 
-                              onClick={() => toggleTask(task.id, task.status)}
-                              className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${
-                                task.status === 'done' ? 'bg-primary border-primary text-white' : 'border-slate-200 hover:border-primary'
-                              }`}
-                            >
-                              {task.status === 'done' && <CheckSquare className="w-4 h-4" />}
-                            </button>
-                            <div className="flex-1">
-                              <p className={`font-bold text-slate-900 ${task.status === 'done' ? 'line-through' : ''}`}>{task.title}</p>
-                              <div className="flex items-center gap-3 mt-1">
-                                <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find(t => t.value === task.type)?.label}</Badge>
-                                {task.priority === 'high' && <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge>}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"><MoreVertical className="w-4 h-4" /></Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600"><Trash2 className="w-4 h-4 mr-2" /> Usuń</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+            <p className="text-slate-500">Ładowanie zadań...</p>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {taskScope !== 'done' ? (
+              sortedCurrentDates.length === 0 ? (
+                <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
+                  <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search className="w-8 h-8 text-slate-300" />
                   </div>
+                  <h3 className="text-lg font-bold text-slate-900">Brak zadań</h3>
+                  <p className="text-slate-500 max-w-xs mx-auto mt-1">Dodaj pierwsze zadanie albo wpisz inną frazę.</p>
                 </div>
-              );
-            })
-          )}
-        </div>
+              ) : sortedCurrentDates.map((dateKey) => {
+                const tasksForDate = groupedCurrentTasks[dateKey].sort((a, b) => parseISO(getTaskStart(a)).getTime() - parseISO(getTaskStart(b)).getTime());
+
+                return (
+                  <section key={dateKey} className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-lg font-bold text-slate-900">{format(parseISO(dateKey), 'EEEE, d MMMM', { locale: pl })}</h2>
+                      {isToday(parseISO(dateKey)) ? <Badge className="rounded-full">Dziś</Badge> : null}
+                      {isTomorrow(parseISO(dateKey)) ? <Badge variant="secondary" className="rounded-full">Jutro</Badge> : null}
+                    </div>
+                    <div className="space-y-3">
+                      {tasksForDate.map((task) => renderTaskCard(task, false))}
+                    </div>
+                  </section>
+                );
+              })
+            ) : null}
+
+            <section id="completed-tasks-section" className="space-y-3">
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-bold text-slate-900">Zrobione zadania</h2>
+                <Badge variant="secondary" className="rounded-full">{visibleCompletedTasks.length}</Badge>
+              </div>
+              {sortedCompletedDates.length === 0 ? (
+                <Card className="border-dashed bg-slate-50/50">
+                  <CardContent className="p-6 text-sm text-slate-500">Brak zrobionych zadań dla obecnego wyszukiwania.</CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-6">
+                  {sortedCompletedDates.map((dateKey) => {
+                    const tasksForDate = groupedCompletedTasks[dateKey].sort((a, b) => parseISO(getTaskStart(b)).getTime() - parseISO(getTaskStart(a)).getTime());
+                    return (
+                      <div key={`completed:${dateKey}`} className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-base font-bold text-slate-900">{format(parseISO(dateKey), 'EEEE, d MMMM', { locale: pl })}</h3>
+                        </div>
+                        <div className="space-y-3">
+                          {tasksForDate.map((task) => renderTaskCard(task, true))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          </div>
+        )}
       </div>
     </Layout>
   );
