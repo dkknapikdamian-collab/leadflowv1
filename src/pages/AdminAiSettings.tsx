@@ -176,7 +176,7 @@ export default function AdminAiSettings() {
           />
           <ProviderCard
             title="Cloudflare AI"
-            description="Fallback, gdy Gemini nie działa albo zwróci błędny wynik."
+            description="Może działać jako główny provider albo fallback, zależnie od zmiennych w Vercel."
             provider={diagnostics?.providers.cloudflare || { configured: false, available: false }}
           />
         </section>

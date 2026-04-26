@@ -78,6 +78,7 @@ const requiredTests = [
   'tests/global-quick-actions-sticky-single-source.test.cjs',
   'tests/ai-usage-limit-guard.test.cjs',
   'tests/ai-real-provider-wiring.test.cjs',
+  'tests/ai-cloudflare-provider-wiring.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
