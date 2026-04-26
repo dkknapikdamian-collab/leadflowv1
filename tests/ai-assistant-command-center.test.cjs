@@ -1,4 +1,8 @@
 const assert = require('node:assert/strict');
+function assertSourceMatches(source, pattern, label) {
+  assert.ok(pattern.test(source), label + ': missing ' + pattern);
+}
+
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -36,8 +40,8 @@ test('Today exposes spoken AI assistant for daily plan lead lookup and lead capt
   assert.match(component, /Asystent AI/);
   assert.match(component, /SpeechRecognition/);
   assert.match(component, /webkitSpeechRecognition/);
-  assert.match(component, /Co mam dzisiaj zrobić/);
-  assert.match(component, /Mam leada Warszawa/);
+  assertSourceMatches(component, /Co mam dzisiaj zrobić/, 'today assistant example');
+  assertSourceMatches(component, /Mam leada Warszawa/, 'lead capture example copy');
   assert.match(component, /Bez autopilota/);
   assert.match(server, /today_briefing/);
   assert.match(server, /lead_lookup/);

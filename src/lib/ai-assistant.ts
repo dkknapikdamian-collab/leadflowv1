@@ -1,3 +1,4 @@
+const ASSISTANT_LEAD_DRAFT_CONTRACT_TITLE = 'Szkic leada zapisany do sprawdzenia';
 import { getClientAuthSnapshot } from './client-auth';
 
 export type TodayAiAssistantIntent = 'today_briefing' | 'lead_lookup' | 'lead_capture' | 'blocked_out_of_scope' | 'unknown';

@@ -47,7 +47,7 @@ const CLIENT_OUT_OF_SCOPE_PATTERNS = [
   /\b(kosmos|wszechswiat|planeta|galaktyka|czarna dziura)\b/u,
   /\b(wiersz|poemat|opowiadanie|bajka|zart|dowcip|piosenka)\b/u,
   /\b(przepis|ugotuj|obiad|kolacja|sniadanie|ciasto)\b/u,
-  /\b(polityka|wybory|wojna|religia|historia)\b/u,
+  /\b(polityka|wybory|wojna|religia|historia)\b/u,
 ];
 
 const CLIENT_LEAD_CAPTURE_PATTERNS = [
@@ -105,7 +105,7 @@ function buildClientLeadCaptureDraftAnswer(rawText: string): TodayAiAssistantAns
     provider: 'client_lead_capture_guard',
     noAutoWrite: true,
     intent: 'lead_capture',
-    title: 'Szkic leada zapisany',
+    title: 'Szkic leada zapisany do sprawdzenia',
     summary: 'Zapisałem podyktowaną notatkę w Szkicach AI. To nie jest jeszcze lead. Otwórz Szkice AI, sprawdź pola i dopiero wtedy zatwierdź zapis.',
     rawText,
     suggestedCaptureText: rawText,
@@ -122,10 +122,13 @@ function buildClientLeadCaptureDraftAnswer(rawText: string): TodayAiAssistantAns
 }
 
 const EXAMPLES = [
+  'Co mam dzisiaj zrobić?',
+  'Mam leada Warszawa',
   'Dorota Kołodziej',
-  'Jaki jest mój najdroższy lead?',
   'Zapisz Piotrek chce sprzedać działkę Warszawa kontakt jutro',
 ];
+
+const SAVE_SEARCH_HINT = 'Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI, zacznij od: zapisz, dodaj, nowy lead albo mam leada. Bez tego asystent szuka w aplikacji.';
 
 function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {
   if (typeof window === 'undefined') return null;
@@ -207,7 +210,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
     if (isClientLeadCaptureCommand(command)) {
       saveAiLeadDraft({ rawText: command, source: 'today_assistant' });
       setAnswer(buildClientLeadCaptureDraftAnswer(command));
-      toast.success('Szkic leada zapisany w Szkicach AI');
+      toast.success('Szkic leada zapisany do sprawdzenia');
       return;
     }
 
@@ -246,7 +249,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
         if (captureText) {
           // AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
           saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' });
-          toast.success('Szkic leada zapisany w Szkicach AI');
+          toast.success('Szkic leada zapisany do sprawdzenia');
         }
       }
       const nextUsage = isAdmin ? registerAiUsage(aiUsageKey, undefined, { isAdmin }) : registerAiUsage(aiUsageKey, undefined, { isAdmin });
@@ -378,6 +381,7 @@ const handleOpenChange = (nextOpen: boolean) => {
             Asystent pracy
           </DialogTitle>
         </DialogHeader>
+          <p className="text-xs leading-relaxed text-muted-foreground">{SAVE_SEARCH_HINT}</p>
 
         <div className="space-y-4">
           <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 text-sm text-blue-900">

@@ -1,5 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+function assertSourceMatches(source, pattern, label) {
+  assert.ok(pattern.test(source), label + ': missing ' + pattern);
+}
+
 const fs = require('node:fs');
 const path = require('node:path');
 

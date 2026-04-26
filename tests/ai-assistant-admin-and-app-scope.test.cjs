@@ -1,4 +1,8 @@
 const assert = require('node:assert/strict');
+function assertSourceMatches(source, pattern, label) {
+  assert.ok(pattern.test(source), label + ': missing ' + pattern);
+}
+
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -48,7 +52,7 @@ test('lead capture command from assistant is saved as AI draft, not as final lea
 
   assert.match(component, /AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT/);
   assert.match(component, /saveAiLeadDraft\(\{ rawText: captureText, source: 'today_assistant' \}\)/);
-  assert.match(server, /Szkic leada zapisany do sprawdzenia/);
+  assertSourceMatches(server, /Szkic leada zapisany do sprawdzenia/, 'lead draft copy');
   assert.doesNotMatch(component, /insertLeadToSupabase/);
   assert.doesNotMatch(server, /insertLeadToSupabase/);
 });
