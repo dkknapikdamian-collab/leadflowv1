@@ -1,4 +1,5 @@
 export const AI_DAILY_COMMAND_LIMIT = 35;
+export const AI_ADMIN_DAILY_COMMAND_LIMIT = Number.MAX_SAFE_INTEGER;
 export const AI_COMMAND_MAX_LENGTH = 800;
 
 export type AiUsageSnapshot = {
@@ -8,6 +9,11 @@ export type AiUsageSnapshot = {
   limit: number;
   remaining: number;
   canUse: boolean;
+  adminExempt?: boolean;
+};
+
+export type AiUsageOptions = {
+  isAdmin?: boolean;
 };
 
 const AI_USAGE_STORAGE_PREFIX = 'closeflow:ai-usage';
@@ -40,6 +46,10 @@ export function buildAiUsageKey(workspaceId?: unknown, userId?: unknown, now = n
   return `${AI_USAGE_STORAGE_PREFIX}:${getDateKey(now)}:${workspace}:${user}`;
 }
 
+export function isAiUsageAdminExempt(options?: AiUsageOptions) {
+  return options?.isAdmin === true;
+}
+
 function readUsedCount(key: string) {
   const storage = getStorage();
   if (!storage) return 0;
@@ -57,9 +67,22 @@ function writeUsedCount(key: string, value: number) {
   storage.setItem(key, String(Math.max(0, Math.floor(value))));
 }
 
-export function getAiUsageSnapshot(key: string, limit = AI_DAILY_COMMAND_LIMIT): AiUsageSnapshot {
-  const safeLimit = Math.max(1, Math.floor(limit));
+export function getAiUsageSnapshot(key: string, limit = AI_DAILY_COMMAND_LIMIT, options?: AiUsageOptions): AiUsageSnapshot {
   const used = Math.max(0, Math.floor(readUsedCount(key)));
+
+  if (isAiUsageAdminExempt(options)) {
+    return {
+      key,
+      date: getDateKey(),
+      used,
+      limit: AI_ADMIN_DAILY_COMMAND_LIMIT,
+      remaining: AI_ADMIN_DAILY_COMMAND_LIMIT,
+      canUse: true,
+      adminExempt: true,
+    };
+  }
+
+  const safeLimit = Math.max(1, Math.floor(limit));
   const remaining = Math.max(0, safeLimit - used);
 
   return {
@@ -72,7 +95,11 @@ export function getAiUsageSnapshot(key: string, limit = AI_DAILY_COMMAND_LIMIT):
   };
 }
 
-export function registerAiUsage(key: string, limit = AI_DAILY_COMMAND_LIMIT): AiUsageSnapshot {
+export function registerAiUsage(key: string, limit = AI_DAILY_COMMAND_LIMIT, options?: AiUsageOptions): AiUsageSnapshot {
+  if (isAiUsageAdminExempt(options)) {
+    return getAiUsageSnapshot(key, limit, options);
+  }
+
   const before = getAiUsageSnapshot(key, limit);
   const nextUsed = Math.min(before.limit, before.used + 1);
   writeUsedCount(key, nextUsed);
