@@ -28,7 +28,7 @@ function expectPattern(source, pattern, label) {
 }
 
 function rejectPattern(source, pattern, label) {
-  assert.ok(!pattern.test(source), 'Unexpected pattern: ' + label);
+  assert.equal(pattern.test(source), false, 'Unexpected pattern: ' + label);
 }
 
 test('Today task/action rows cannot squeeze title into one-letter column', () => {
@@ -46,7 +46,7 @@ test('Today task/action rows cannot squeeze title into one-letter column', () =>
   expectText(today, 'flex w-full flex-wrap items-center gap-2 sm:w-auto');
 });
 
-test('Today quick snooze bar wraps safely and does not split button text', () => {
+test('Today quick snooze bar wraps safely and keeps button text together', () => {
   const today = read('src/pages/Today.tsx');
   const component = extractTodayEntrySnoozeBar(today);
 
@@ -57,9 +57,13 @@ test('Today quick snooze bar wraps safely and does not split button text', () =>
   expectText(component, 'whitespace-nowrap');
   expectText(component, 'rounded-lg border');
   expectText(component, 'border-slate-200');
+  expectText(component, 'type="button"');
   expectText(component, 'role="button"');
   expectText(component, 'data-today-quick-snooze-action={option.key}');
-  rejectPattern(component, /<button\b/, 'native nested quick snooze button');
+  expectText(component, 'onPointerDown={stopInteractiveEvent}');
+  expectText(component, 'onPointerUp={(event) => handleSnoozeAction(event, option.key)}');
+  expectText(component, 'onClick={(event) => handleSnoozeAction(event, option.key)}');
+  expectText(component, 'pointer-events-auto');
 });
 
 test('release gates include Today layout regression test', () => {
