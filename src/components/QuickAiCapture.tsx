@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react';
-import { Loader2, Sparkles } from 'lucide-react';
+import { useRef, useState, type FormEvent } from 'react';
+import { Loader2, Mic, MicOff, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { auth } from '../firebase';
@@ -35,6 +35,20 @@ const PRIORITY_OPTIONS = [
 
 const selectClassName = 'flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
+type SpeechRecognitionLike = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: any) => void) | null;
+  onerror: ((event: any) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort?: () => void;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
 function getCreatedId(result: unknown) {
   const data = result as any;
   return String(
@@ -69,6 +83,19 @@ function normalizeDraft(input: QuickAiCaptureDraft): QuickAiCaptureDraft {
   };
 }
 
+function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {
+  if (typeof window === 'undefined') return null;
+  const browserWindow = window as any;
+  return browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition || null;
+}
+
+function joinTranscript(previous: string, addition: string) {
+  const base = previous.trim();
+  const next = addition.trim();
+  if (!next) return base;
+  return base ? `${base} ${next}` : next;
+}
+
 export default function QuickAiCapture({ onSaved }: { onSaved?: () => void | Promise<void> }) {
   const { workspace, hasAccess, workspaceReady } = useWorkspace();
   const [open, setOpen] = useState(false);
@@ -76,12 +103,95 @@ export default function QuickAiCapture({ onSaved }: { onSaved?: () => void | Pro
   const [draft, setDraft] = useState<QuickAiCaptureDraft | null>(null);
   const [draftLoading, setDraftLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [interimText, setInterimText] = useState('');
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
+
+  const stopSpeech = () => {
+    const recognition = recognitionRef.current;
+    recognitionRef.current = null;
+    setListening(false);
+    setInterimText('');
+
+    if (!recognition) return;
+    try {
+      recognition.stop();
+    } catch {
+      try {
+        recognition.abort?.();
+      } catch {
+        // Browser speech engines may throw when already stopped.
+      }
+    }
+  };
 
   const reset = () => {
+    stopSpeech();
     setRawText('');
     setDraft(null);
     setDraftLoading(false);
     setSaving(false);
+  };
+
+  const appendVoiceText = (text: string) => {
+    setRawText((current) => joinTranscript(current, text));
+  };
+
+  const handleToggleSpeech = () => {
+    if (listening) {
+      stopSpeech();
+      return;
+    }
+
+    const RecognitionConstructor = getSpeechRecognitionConstructor();
+    if (!RecognitionConstructor) {
+      toast.error('Dyktowanie nie jest dostępne w tej przeglądarce. Możesz użyć mikrofonu z klawiatury telefonu.');
+      return;
+    }
+
+    try {
+      const recognition = new RecognitionConstructor();
+      recognition.lang = 'pl-PL';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.onresult = (event: any) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let index = event.resultIndex || 0; index < event.results.length; index += 1) {
+          const result = event.results[index];
+          const transcript = String(result?.[0]?.transcript || '').trim();
+          if (!transcript) continue;
+          if (result?.isFinal) {
+            finalTranscript = joinTranscript(finalTranscript, transcript);
+          } else {
+            interimTranscript = joinTranscript(interimTranscript, transcript);
+          }
+        }
+
+        if (finalTranscript) {
+          appendVoiceText(finalTranscript);
+        }
+        setInterimText(interimTranscript);
+      };
+      recognition.onerror = () => {
+        toast.error('Nie udało się dokończyć dyktowania. Sprawdź uprawnienia mikrofonu.');
+        stopSpeech();
+      };
+      recognition.onend = () => {
+        recognitionRef.current = null;
+        setListening(false);
+        setInterimText('');
+      };
+      recognitionRef.current = recognition;
+      recognition.start();
+      setListening(true);
+      toast.success('Dyktowanie włączone');
+    } catch {
+      toast.error('Nie udało się uruchomić dyktowania.');
+      stopSpeech();
+    }
   };
 
   const updateLeadDraft = (field: keyof QuickAiCaptureDraft['lead'], value: string | number) => {
@@ -197,6 +307,9 @@ export default function QuickAiCapture({ onSaved }: { onSaved?: () => void | Pro
               placeholder="np. Jan Kowalski dzwonił w sprawie strony WWW, tel. 500 000 000, oddzwonić jutro rano, budżet około 3000 zł"
               className="min-h-32"
             />
+            {interimText ? (
+              <p className="rounded-lg bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">Rozpoznaję: {interimText}</p>
+            ) : null}
             {draft?.rawText ? (
               <p className="text-xs text-slate-500">Tekst źródłowy zostaje widoczny do sprawdzenia przed zapisem.</p>
             ) : null}
@@ -207,9 +320,17 @@ export default function QuickAiCapture({ onSaved }: { onSaved?: () => void | Pro
               {draftLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
               Zrób szkic
             </Button>
+            <Button type="button" variant="outline" onClick={handleToggleSpeech}>
+              {listening ? <MicOff className="mr-2 h-4 w-4" /> : <Mic className="mr-2 h-4 w-4" />}
+              {listening ? 'Zatrzymaj dyktowanie' : 'Dyktuj'}
+            </Button>
             {draft ? <Badge variant="outline">Tryb: szkic do potwierdzenia</Badge> : null}
             {draft ? <Badge variant="secondary">Parser: {draft.provider}</Badge> : null}
           </div>
+
+          {!speechSupported ? (
+            <p className="text-xs text-slate-500">Dyktowanie w przeglądarce może być niedostępne. Na telefonie możesz użyć mikrofonu z klawiatury systemowej.</p>
+          ) : null}
 
           {draft ? (
             <form onSubmit={handleSaveDraft} className="space-y-5 border-t border-slate-100 pt-4">
