@@ -443,9 +443,6 @@ export default function Cases() {
             </div>
             <div>
               <h1 className="text-3xl font-bold app-text">Sprawy</h1>
-              <p className="max-w-2xl text-sm md:text-base app-muted">
-                To jest główne miejsce pracy po rozpoczęciu obsługi. Tutaj widzisz, które realizacje stoją, które czekają na klienta i które są już gotowe do startu.
-              </p>
             </div>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">

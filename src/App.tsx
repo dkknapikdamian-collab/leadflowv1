@@ -23,6 +23,7 @@ const ClientDetail = lazy(() => import('./pages/ClientDetail'));
 const ClientPortal = lazy(() => import('./pages/ClientPortal'));
 const Activity = lazy(() => import('./pages/Activity'));
 const Settings = lazy(() => import('./pages/Settings'));
+const AdminAiSettings = lazy(() => import('./pages/AdminAiSettings'));
 const Login = lazy(() => import('./pages/Login'));
 const Tasks = lazy(() => import('./pages/Tasks'));
 const Calendar = lazy(() => import('./pages/Calendar'));
@@ -194,6 +195,7 @@ export default function App() {
             <Route path="/notifications" element={user ? <NotificationsCenter /> : <Navigate to="/login" />} />
             <Route path="/billing" element={user ? <Billing /> : <Navigate to="/login" />} />
             <Route path="/help" element={user ? <SupportCenter /> : <Navigate to="/login" />} />
+            <Route path="/settings/ai" element={user ? <AdminAiSettings /> : <Navigate to="/login" />} />
             <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
 
             <Route path="*" element={<Navigate to="/" />} />

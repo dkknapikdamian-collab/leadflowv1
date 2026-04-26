@@ -54,7 +54,7 @@ function NavButton({ item, isActive, compact = false, onNavigate }: { key?: stri
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const user = auth.currentUser;
-  const { workspace, hasAccess } = useWorkspace();
+  const { workspace, hasAccess, isAdmin } = useWorkspace();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems: NavItem[] = [
@@ -68,6 +68,7 @@ export default function Layout({ children }: LayoutProps) {
     { icon: Bell, label: 'Powiadomienia', path: '/notifications' },
     { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
     { icon: LifeBuoy, label: 'Pomoc', path: '/help' },
+    ...(isAdmin ? [{ icon: Settings, label: 'AI admin', path: '/settings/ai' }] : []),
     { icon: Settings, label: 'Ustawienia', path: '/settings' },
   ];
 
