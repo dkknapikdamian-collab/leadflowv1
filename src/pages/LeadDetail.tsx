@@ -23,6 +23,7 @@ import { format, isPast, isToday, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
+import LeadAiFollowupDraft from '../components/LeadAiFollowupDraft';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -1078,7 +1079,15 @@ export default function LeadDetail() {
                 </CardContent>
               </Card>
             ) : null}
-            <Tabs defaultValue="overview" className="w-full">
+                    <LeadAiFollowupDraft
+          lead={lead}
+          tasks={linkedTasks}
+          events={linkedEvents}
+          activities={activities}
+          disabled={!hasAccess || leadOperationalArchive}
+        />
+
+<Tabs defaultValue="overview" className="w-full">
               <TabsList className="w-full justify-start bg-transparent border-b border-slate-200 rounded-none h-12 p-0 gap-8">
                 <TabsTrigger value="overview" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-0 h-12 font-bold">
                   {leadMovedToService ? 'Historia pozyskania' : 'Przegląd'}
