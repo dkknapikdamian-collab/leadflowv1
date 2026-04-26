@@ -8,6 +8,11 @@ function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
+function extractQuickCaptureBlock(source) {
+  const match = source.match(/<QuickAiCapture[\s\S]*?\/>/);
+  return match ? match[0] : '';
+}
+
 test('Quick AI Capture supports browser voice input without exposing AI settings to the user', () => {
   const source = read('src/components/QuickAiCapture.tsx');
 
@@ -23,9 +28,26 @@ test('Quick AI Capture supports browser voice input without exposing AI settings
 test('Quick AI Capture is available from Today and Leads intake surfaces', () => {
   const today = read('src/pages/Today.tsx');
   const leads = read('src/pages/Leads.tsx');
+  const todayQuickCapture = extractQuickCaptureBlock(today);
 
   assert.ok(today.includes("../components/QuickAiCapture"), 'Today should import Quick AI Capture');
-  assert.ok(today.includes('<QuickAiCapture onSaved={() => void refreshSupabaseBundle()} />'), 'Today should refresh its daily bundle after capture save');
+  assert.ok(todayQuickCapture.includes('QuickAiCapture'), 'Today should render Quick AI Capture');
+  assert.ok(
+    /onSaved=\{\(\) => void refreshSupabaseBundle\(\)\}/.test(todayQuickCapture)
+      || /onSaved=\{refreshSupabaseBundle\}/.test(todayQuickCapture),
+    'Today should refresh its daily bundle after capture save',
+  );
+  assert.ok(
+    todayQuickCapture.includes('initialRawText={quickCaptureSeed}')
+      || todayQuickCapture.includes('seedText={quickCaptureSeed}')
+      || todayQuickCapture.includes('initialText={quickCaptureSeed}'),
+    'Today should pass assistant capture text into Quick AI Capture',
+  );
+  assert.ok(
+    todayQuickCapture.includes('openSignal={quickCaptureOpenSignal}')
+      || todayQuickCapture.includes('autoOpenSignal={quickCaptureOpenSignal}'),
+    'Today should open Quick AI Capture from assistant handoff signal',
+  );
   assert.ok(leads.includes('<QuickAiCapture onSaved={() => void loadLeads()} />'), 'Leads should refresh lead list after capture save');
 });
 
