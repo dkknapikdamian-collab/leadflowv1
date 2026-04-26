@@ -6,6 +6,7 @@ import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -70,13 +71,6 @@ function nativeSelectClassName() {
   return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 }
 
-function createSummaryCardClass(active: boolean) {
-  return `w-full text-left rounded-2xl transition-all ${active ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`;
-}
-
-function createSummaryCardContentClass(active: boolean) {
-  return `p-6 flex items-center justify-between ${active ? 'bg-primary/5' : ''}`;
-}
 
 function formatCaseStatusLabel(value?: string) {
   if (!value) return '';
@@ -468,76 +462,61 @@ export default function Leads() {
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
-          <button type="button" className={createSummaryCardClass(quickFilter === 'all' && !valueSortEnabled && !showTrash)} onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}>
-            <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'all' && !valueSortEnabled && !showTrash)}>
-                <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wszystkie</p>
-                  <h3 className="text-2xl font-bold text-slate-900">{stats.total}</h3>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-2xl">
-                  <Target className="w-6 h-6 text-slate-400" />
-                </div>
-              </CardContent>
-            </Card>
-          </button>
+          <StatShortcutCard
+            label="Wszystkie"
+            value={stats.total}
+            icon={Target}
+            active={quickFilter === 'all' && !valueSortEnabled && !showTrash}
+            onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}
+            valueClassName="text-slate-900"
+            iconClassName="bg-slate-100 text-slate-500"
+            title="Pokaż wszystkie leady"
+          />
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'active' && !showTrash)} onClick={() => toggleQuickFilter('active')}>
-            <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'active' && !showTrash)}>
-                <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Aktywne</p>
-                  <h3 className="text-2xl font-bold text-blue-600">{stats.active}</h3>
-                </div>
-                <div className="bg-blue-50 p-3 rounded-2xl">
-                  <TrendingUp className="w-6 h-6 text-blue-500" />
-                </div>
-              </CardContent>
-            </Card>
-          </button>
+          <StatShortcutCard
+            label="Aktywne"
+            value={stats.active}
+            icon={TrendingUp}
+            active={quickFilter === 'active' && !showTrash}
+            onClick={() => toggleQuickFilter('active')}
+            valueClassName="text-blue-600"
+            iconClassName="bg-blue-50 text-blue-500"
+            title="Pokaż aktywne leady"
+          />
 
-          <button type="button" className={createSummaryCardClass(valueSortEnabled && !showTrash)} onClick={toggleValueSorting}>
-            <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(valueSortEnabled && !showTrash)}>
-                <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Wartość</p>
-                  <h3 className="text-2xl font-bold text-slate-900">{stats.value.toLocaleString()} PLN</h3>
-                  <p className="mt-1 text-[11px] font-semibold text-slate-500">{valueSortEnabled ? 'Sortowanie aktywne' : 'Kliknij, aby sortować po wartości'}</p>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-2xl">
-                  <TrendingUp className="w-6 h-6 text-slate-400" />
-                </div>
-              </CardContent>
-            </Card>
-          </button>
+          <StatShortcutCard
+            label="Wartość"
+            value={stats.value.toLocaleString() + ' PLN'}
+            icon={TrendingUp}
+            active={valueSortEnabled && !showTrash}
+            onClick={toggleValueSorting}
+            valueClassName="text-slate-900"
+            iconClassName="bg-slate-100 text-slate-500"
+            helper={valueSortEnabled ? 'Sortowanie aktywne' : 'Kliknij, aby sortować po wartości'}
+            title="Sortuj leady po wartości"
+          />
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'at-risk' && !showTrash)} onClick={() => toggleQuickFilter('at-risk')}>
-            <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'at-risk' && !showTrash)}>
-                <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zagrożone</p>
-                  <h3 className="text-2xl font-bold text-rose-600">{stats.atRisk}</h3>
-                </div>
-                <div className="bg-rose-50 p-3 rounded-2xl">
-                  <AlertTriangle className="w-6 h-6 text-rose-500" />
-                </div>
-              </CardContent>
-            </Card>
-          </button>
+          <StatShortcutCard
+            label="Zagrożone"
+            value={stats.atRisk}
+            icon={AlertTriangle}
+            active={quickFilter === 'at-risk' && !showTrash}
+            onClick={() => toggleQuickFilter('at-risk')}
+            valueClassName="text-rose-600"
+            iconClassName="bg-rose-50 text-rose-500"
+            title="Pokaż zagrożone leady"
+          />
 
-          <button type="button" className={createSummaryCardClass(quickFilter === 'history' && !showTrash)} onClick={() => toggleQuickFilter('history')}>
-            <Card className="border-none shadow-sm">
-              <CardContent className={createSummaryCardContentClass(quickFilter === 'history' && !showTrash)}>
-                <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Historia</p>
-                  <h3 className="text-2xl font-bold text-emerald-600">{stats.linkedToCase}</h3>
-                </div>
-                <div className="bg-emerald-50 p-3 rounded-2xl">
-                  <Briefcase className="w-6 h-6 text-emerald-500" />
-                </div>
-              </CardContent>
-            </Card>
-          </button>
+          <StatShortcutCard
+            label="Historia"
+            value={stats.linkedToCase}
+            icon={Briefcase}
+            active={quickFilter === 'history' && !showTrash}
+            onClick={() => toggleQuickFilter('history')}
+            valueClassName="text-emerald-600"
+            iconClassName="bg-emerald-50 text-emerald-500"
+            title="Pokaż leady przeniesione do obsługi"
+          />
         </div>
 
         <Card className="border-none shadow-sm">
@@ -652,7 +631,7 @@ export default function Leads() {
                             {isArchivedLead
                               ? 'Ten rekord jest w koszu. Możesz go przywrócić bez trwałego kasowania danych.'
                               : movedToService
-                                ? ' i pełni rolę historii pozyskania.'
+                                ? ''
                                 : 'Aktywny temat sprzedażowy. Wejdź, aby dodać akcję, notatkę albo rozpocząć obsługę.'}
                           </p>
                         </div>

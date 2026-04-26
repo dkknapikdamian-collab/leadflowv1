@@ -198,7 +198,7 @@ function caseStatusLabel(status?: string) {
     case 'blocked':
       return 'Zablokowana';
     case 'completed':
-      return 'Zakończona';
+      return 'Zrobione';
     default:
       return 'W realizacji';
   }
@@ -317,7 +317,7 @@ function CaseDetailV1CommandCenter({
                   <CheckCircle2 className="mr-2 h-4 w-4" /> Start
                 </Button>
                 <Button type="button" variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10" onClick={onCompleteCase} disabled={isPending || isCompleted || !isReady}>
-                  <Check className="mr-2 h-4 w-4" /> Zakończ
+                  <Check className="mr-2 h-4 w-4" /> Zrobione
                 </Button>
                 <Button type="button" variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10" onClick={onReopenCase} disabled={isPending || !isCompleted}>
                   <AlertCircle className="mr-2 h-4 w-4" /> Wznów
@@ -688,7 +688,7 @@ const caseClientSuggestions = useMemo(() => {
   };
 
   const handleCompleteCaseV1 = async () => {
-    await setCaseLifecycleStatusV1('completed', 'case_lifecycle_completed', 'Sprawa została zakończona');
+    await setCaseLifecycleStatusV1('completed', 'case_lifecycle_completed', 'Sprawa oznaczona jako zrobione');
   };
 
   const handleReopenCaseV1 = async () => {
@@ -1561,7 +1561,7 @@ const caseClientSuggestions = useMemo(() => {
 
   const handleMarkCaseCompleted = async () => {
     if (!caseId) return;
-    if (!window.confirm('Oznaczyć tę sprawę jako zakończoną?')) return;
+    if (!window.confirm('Oznaczyć tę sprawę jako zrobioneoną?')) return;
 
     try {
       await updateCaseInSupabase({
@@ -1582,7 +1582,7 @@ const caseClientSuggestions = useMemo(() => {
       });
 
       await refreshSupabaseCase();
-      toast.success('Sprawa oznaczona jako zakończona');
+      toast.success('Sprawa oznaczona jako zrobione');
     } catch (error: any) {
       toast.error(`Błąd zamknięcia sprawy: ${error.message}`);
     }
@@ -1720,7 +1720,7 @@ const caseClientSuggestions = useMemo(() => {
                       ) : null}
                       {caseData.status === 'in_progress' ? (
                         <Button variant="outline" onClick={() => void handleMarkCaseCompleted()}>
-                          <CheckCircle2 className="w-4 h-4 mr-2" /> Oznacz jako zakończoną
+                          <CheckCircle2 className="w-4 h-4 mr-2" /> Oznacz jako zrobioneoną
                         </Button>
                       ) : null}
                     </div>
@@ -2339,7 +2339,7 @@ const caseClientSuggestions = useMemo(() => {
                                      activity.eventType === 'case_event_updated' ? `zaktualizował wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
                                      activity.eventType === 'case_event_status_toggled' ? `zmienił status wydarzenia: ${activity.payload?.title || 'Wydarzenie'}` :
                                      activity.eventType === 'case_event_deleted' ? `usunął wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
-                                     activity.eventType === 'case_completed' ? `oznaczył sprawę jako zakończoną` :
+                                     activity.eventType === 'case_completed' ? `oznaczył sprawę jako zrobioneoną` :
                                      activity.eventType === 'case_reminder_requested' ? `wysłał przypomnienie i utworzył follow-up` :
                                      activity.eventType === 'reminder_scheduled' ? `zaplanował przypomnienie: ${activity.payload?.title || 'pozycja'}` :
                                      activity.eventType === 'note_added' ? 'dodał notatkę operacyjną' :

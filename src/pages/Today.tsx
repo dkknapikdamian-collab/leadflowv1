@@ -1593,7 +1593,7 @@ export default function Today() {
                                 Szczegóły
                               </Button>
                               <Button variant="outline" size="sm" onClick={() => toggleTodayTask(previewTask)}>
-                                {task.status === 'done' ? 'Przywróć' : 'Zakończ'}
+                                {task.status === 'done' ? 'Przywróć' : 'Zrobione'}
                               </Button>
                               <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(previewTask)}>
                                 Usuń

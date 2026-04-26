@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -932,30 +933,19 @@ export default function Tasks() {
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
-          {statCards.map((card) => {
-            const Icon = card.icon;
-            const active = taskScope === card.id;
-            return (
-              <button
-                key={card.id}
-                type="button"
-                onClick={() => activateScope(card.id)}
-                className={`w-full text-left rounded-2xl transition-all ${active ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}
-              >
-                <Card className="border-none shadow-sm">
-                  <CardContent className={`p-5 flex items-center justify-between ${active ? 'bg-primary/5' : ''}`}>
-                    <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.title}</p>
-                      <p className={`mt-2 text-2xl font-bold ${card.tone}`}>{card.value}</p>
-                    </div>
-                    <div className={`rounded-2xl p-3 ${card.bg}`}>
-                      <Icon className="w-6 h-6" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </button>
-            );
-          })}
+          {statCards.map((stat) => (
+            <StatShortcutCard
+              key={stat.id}
+              label={stat.title}
+              value={stat.value}
+              icon={stat.icon}
+              active={taskScope === stat.id}
+              onClick={() => activateScope(stat.id)}
+              valueClassName={stat.tone}
+              iconClassName={stat.bg}
+              title={`Pokaż: ${stat.title.toLowerCase()}`}
+            />
+          ))}
         </div>
 
         <Card className="border-none shadow-sm">

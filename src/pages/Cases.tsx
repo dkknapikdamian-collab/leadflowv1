@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 
 import { ConfirmDialog } from '../components/confirm-dialog';
 import Layout from '../components/Layout';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
@@ -139,9 +140,9 @@ function caseStatusLabel(status?: string) {
     case 'to_approve':
       return 'Do akceptacji';
     case 'in_progress':
-      return 'W toku';
+      return 'W realizacji';
     case 'completed':
-      return 'Zakończona';
+      return 'Zrobione';
     default:
       return 'W realizacji';
   }
@@ -169,9 +170,6 @@ function toUpdatedDate(value: CaseRecord['updatedAt']) {
   return null;
 }
 
-function createStatCardClass() {
-  return 'border-none app-surface-strong shadow-sm';
-}
 
 function buildCaseSourceSummary(sourceLead: any) {
   if (!sourceLead) {
@@ -534,7 +532,7 @@ export default function Cases() {
                       value={newCase.status}
                       onChange={(event) => setNewCase((prev) => ({ ...prev, status: event.target.value }))}
                     >
-                      <option value="in_progress">W toku</option>
+                      <option value="in_progress">W realizacji</option>
                       <option value="waiting_on_client">Czeka na klienta</option>
                       <option value="blocked">Zablokowana</option>
                       <option value="ready_to_start">Gotowa do startu</option>
@@ -551,83 +549,76 @@ export default function Cases() {
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-7">
-          <button type="button" onClick={() => setCaseView('all')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'all' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
-            <Card className={createStatCardClass()}>
-              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'all' ? 'bg-primary/5' : ''}`}>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Wszystkie</p>
-                  <p className="mt-2 text-2xl font-bold app-text">{stats.total}</p>
-                </div>
-                <div className="rounded-2xl p-3 app-primary-chip"><Briefcase className="h-6 w-6" /></div>
-              </CardContent>
-            </Card>
-          </button>
-          <button type="button" onClick={() => toggleCaseView('waiting')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'waiting' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
-            <Card className={createStatCardClass()}>
-              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'waiting' ? 'bg-primary/5' : ''}`}>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Czekają</p>
-                  <p className="mt-2 text-2xl font-bold text-amber-500">{stats.waiting}</p>
-                </div>
-                <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-500"><Clock className="h-6 w-6" /></div>
-              </CardContent>
-            </Card>
-          </button>
-          <button type="button" onClick={() => toggleCaseView('blocked')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'blocked' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
-            <Card className={createStatCardClass()}>
-              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'blocked' ? 'bg-primary/5' : ''}`}>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Zablokowane</p>
-                  <p className="mt-2 text-2xl font-bold text-rose-500">{stats.blocked}</p>
-                </div>
-                <div className="rounded-2xl bg-rose-500/12 p-3 text-rose-500"><ShieldAlert className="h-6 w-6" /></div>
-              </CardContent>
-            </Card>
-          </button>
-          <button type="button" onClick={() => toggleCaseView('approval')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'approval' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
-            <Card className={createStatCardClass()}>
-              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'approval' ? 'bg-primary/5' : ''}`}>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Akceptacje</p>
-                  <p className="mt-2 text-2xl font-bold text-sky-500">{stats.approval}</p>
-                </div>
-                <div className="rounded-2xl bg-sky-500/12 p-3 text-sky-500"><FileText className="h-6 w-6" /></div>
-              </CardContent>
-            </Card>
-          </button>
-          <button type="button" onClick={() => toggleCaseView('ready')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'ready' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
-            <Card className={createStatCardClass()}>
-              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'ready' ? 'bg-primary/5' : ''}`}>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Gotowe</p>
-                  <p className="mt-2 text-2xl font-bold text-emerald-500">{stats.ready}</p>
-                </div>
-                <div className="rounded-2xl bg-emerald-500/12 p-3 text-emerald-500"><CheckCircle2 className="h-6 w-6" /></div>
-              </CardContent>
-            </Card>
-          </button>
-          <button type="button" onClick={() => toggleCaseView('needs_next_step')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'needs_next_step' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
-            <Card className={createStatCardClass()}>
-              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'needs_next_step' ? 'bg-primary/5' : ''}`}>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Bez kroku</p>
-                  <p className="mt-2 text-2xl font-bold text-orange-500">{stats.needsNextStep}</p>
-                </div>
-                <div className="rounded-2xl bg-orange-500/12 p-3 text-orange-500"><Target className="h-6 w-6" /></div>
-              </CardContent>
-            </Card>
-          </button>
-          <button type="button" onClick={() => toggleCaseView('linked')} className={`w-full text-left rounded-2xl transition-all ${caseView === 'linked' ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`}>
-            <Card className={createStatCardClass()}>
-              <CardContent className={`flex items-center justify-between p-5 ${caseView === 'linked' ? 'bg-primary/5' : ''}`}>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Pozyskane</p>
-                  <p className="mt-2 text-2xl font-bold app-text">{stats.linked}</p>
-                </div>
-                <div className="rounded-2xl bg-sky-500/12 p-3 text-sky-500"><Link2 className="h-6 w-6" /></div>
-              </CardContent>
-            </Card>
-          </button>
+          <StatShortcutCard
+            label="Wszystkie"
+            value={stats.total}
+            icon={Briefcase}
+            active={caseView === 'all'}
+            onClick={() => setCaseView('all')}
+            valueClassName="text-slate-900"
+            iconClassName="bg-slate-100 text-slate-500"
+            title="Pokaż wszystkie sprawy"
+          />
+          <StatShortcutCard
+            label="Czekają"
+            value={stats.waiting}
+            icon={Clock}
+            active={caseView === 'waiting'}
+            onClick={() => toggleCaseView('waiting')}
+            valueClassName="text-amber-600"
+            iconClassName="bg-amber-50 text-amber-500"
+            title="Pokaż sprawy, które czekają"
+          />
+          <StatShortcutCard
+            label="Zablokowane"
+            value={stats.blocked}
+            icon={ShieldAlert}
+            active={caseView === 'blocked'}
+            onClick={() => toggleCaseView('blocked')}
+            valueClassName="text-rose-600"
+            iconClassName="bg-rose-50 text-rose-500"
+            title="Pokaż zablokowane sprawy"
+          />
+          <StatShortcutCard
+            label="Akceptacje"
+            value={stats.approval}
+            icon={FileText}
+            active={caseView === 'approval'}
+            onClick={() => toggleCaseView('approval')}
+            valueClassName="text-sky-600"
+            iconClassName="bg-sky-50 text-sky-500"
+            title="Pokaż sprawy do akceptacji"
+          />
+          <StatShortcutCard
+            label="Gotowe"
+            value={stats.ready}
+            icon={CheckCircle2}
+            active={caseView === 'ready'}
+            onClick={() => toggleCaseView('ready')}
+            valueClassName="text-emerald-600"
+            iconClassName="bg-emerald-50 text-emerald-500"
+            title="Pokaż sprawy gotowe do startu"
+          />
+          <StatShortcutCard
+            label="Bez kroku"
+            value={stats.needsNextStep}
+            icon={Target}
+            active={caseView === 'needs_next_step'}
+            onClick={() => toggleCaseView('needs_next_step')}
+            valueClassName="text-orange-600"
+            iconClassName="bg-orange-50 text-orange-500"
+            title="Pokaż sprawy bez kolejnego kroku"
+          />
+          <StatShortcutCard
+            label="Pozyskane"
+            value={stats.linked}
+            icon={Link2}
+            active={caseView === 'linked'}
+            onClick={() => toggleCaseView('linked')}
+            valueClassName="text-slate-900"
+            iconClassName="bg-sky-50 text-sky-500"
+            title="Pokaż sprawy powiązane z leadem"
+          />
         </section>
 
         <Card className="border-none app-surface-strong">

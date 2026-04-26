@@ -260,7 +260,7 @@ export default function Dashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">Do akceptu</p>
+                  <p className="text-sm font-medium text-slate-500">Do akceptacji</p>
                   <h3 className="text-2xl font-bold text-blue-600">{stats.toApprove}</h3>
                 </div>
                 <div className="bg-blue-50 p-3 rounded-xl">
@@ -349,7 +349,7 @@ export default function Dashboard() {
                              c.status === 'waiting_on_client' ? 'Czeka na klienta' :
                              c.status === 'in_progress' ? 'W realizacji' :
                              c.status === 'to_approve' ? 'Do akceptacji' :
-                             c.status === 'blocked' ? 'Zablokowana' : 'Zakończona'}
+                             c.status === 'blocked' ? 'Zablokowana' : 'Zrobione'}
                           </Badge>
                         </div>
                         <p className="text-sm text-slate-500 flex items-center gap-2">
