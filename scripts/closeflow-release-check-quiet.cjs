@@ -50,6 +50,7 @@ const requiredTests = [
   'tests/ai-followup-draft.test.cjs',
   'tests/ai-next-action-suggestion.test.cjs',
   'tests/ai-next-action-create-task.test.cjs',
+  'tests/ai-assistant-command-center.test.cjs',
   'tests/billing-stripe-diagnostics-dry-run.test.cjs',
   'tests/billing-dry-run-test-order-regression.test.cjs',
   'tests/stripe-checkout-app-url-normalization.test.cjs',

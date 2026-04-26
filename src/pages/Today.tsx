@@ -3,6 +3,7 @@ import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
 import QuickAiCapture from '../components/QuickAiCapture';
+import TodayAiAssistant from '../components/TodayAiAssistant';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -1255,6 +1256,13 @@ export default function Today() {
             <h1 className="text-3xl font-bold text-slate-900">Witaj, {profile?.fullName?.split(' ')[0]}!</h1>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
+            <TodayAiAssistant
+              leads={leads}
+              tasks={tasks}
+              events={events}
+              cases={cases}
+              disabled={!hasAccess}
+            />
             <QuickAiCapture onSaved={() => void refreshSupabaseBundle()} />
             <Dialog open={isLeadOpen} onOpenChange={setIsLeadOpen}>
               <DialogTrigger asChild>
