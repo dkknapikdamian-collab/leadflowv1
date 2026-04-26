@@ -23,8 +23,12 @@ test('billing checkout supports dry-run diagnostics before real checkout', () =>
   assert.match(api, /webhookConfigured/);
   assert.match(api, /STRIPE_SECRET_KEY/);
   assert.match(api, /STRIPE_WEBHOOK_SECRET/);
-  assert.ok(api.indexOf('if (dryRun)') > -1);
-  assert.ok(api.indexOf('if (dryRun)') < api.indexOf('createStripeBlikCheckout'));
+  const dryRunIndex = api.indexOf('if (dryRun)');
+  const realCheckoutCallIndex = api.indexOf('const result: any = await createStripeBlikCheckout');
+
+  assert.ok(dryRunIndex > -1, 'dryRun block is missing');
+  assert.ok(realCheckoutCallIndex > -1, 'real Stripe checkout call is missing');
+  assert.ok(dryRunIndex < realCheckoutCallIndex, 'dryRun block must return before real Stripe checkout call');
 });
 
 test('client billing helper can request dry-run diagnostics', () => {
