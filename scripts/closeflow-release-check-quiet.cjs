@@ -28,6 +28,7 @@ const requiredTests = [
   'tests/case-detail-v1-command-center.test.cjs',
   'tests/client-detail-v1-operational-center.test.cjs',
   'tests/today-quick-snooze-options.test.cjs',
+  'tests/today-quick-snooze-click-edit-polish.test.cjs',
   'tests/pwa-foundation.test.cjs',
   'tests/daily-digest-email-runtime.test.cjs',
   'tests/email-digest-domain-gate.test.cjs',

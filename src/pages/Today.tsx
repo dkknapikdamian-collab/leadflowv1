@@ -92,28 +92,28 @@ const TODAY_QUICK_SNOOZE_OPTIONS = [
   {
     key: '1h',
     label: 'Za 1h',
-    description: 'Odloz o godzine.',
+    description: 'Odłóż o godzinę.',
     minutes: 60,
     days: 0,
   },
   {
     key: 'tomorrow',
     label: 'Jutro',
-    description: 'Odloz na jutro rano.',
+    description: 'Odłóż na jutro rano.',
     minutes: 0,
     days: 1,
   },
   {
     key: '2d',
     label: 'Za 2 dni',
-    description: 'Odloz o dwa dni.',
+    description: 'Odłóż o dwa dni.',
     minutes: 0,
     days: 2,
   },
   {
     key: 'next_week',
-    label: 'Przyszly tydzien',
-    description: 'Odloz na przyszly tydzien.',
+    label: 'Przyszły tydzień',
+    description: 'Odłóż na przyszły tydzień.',
     minutes: 0,
     days: 7,
   },
@@ -348,22 +348,59 @@ function TodayEntrySnoozeBar({
   entry,
   isPending,
   onSnooze,
+  onEdit,
 }: {
   entry: any;
   isPending: boolean;
   onSnooze: (entry: any, optionKey: string) => void | Promise<void>;
+  onEdit?: (entry: any) => void;
 }) {
   if (isCompletedTodayEntry(entry)) return null;
 
+  const stopInteractiveEvent = (event: any) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleEditClick = (event: any) => {
+    stopInteractiveEvent(event);
+    onEdit?.(entry);
+  };
+
+  const handleSnoozeClick = (event: any, optionKey: string) => {
+    stopInteractiveEvent(event);
+    void onSnooze(entry, optionKey);
+  };
+
   return (
-    <div className="mt-3 flex w-full max-w-full flex-wrap items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2">
+    <div
+      className="relative z-20 mt-3 flex w-full max-w-full flex-wrap items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2 pointer-events-auto"
+      onClick={(event) => event.stopPropagation()}
+      onMouseDown={(event) => event.stopPropagation()}
+      onPointerDown={(event) => event.stopPropagation()}
+    >
       <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko odłóż:</span>
+      {onEdit ? (
+        <button
+          type="button"
+          disabled={isPending}
+          onPointerDown={(event) => event.stopPropagation()}
+          onMouseDown={(event) => event.stopPropagation()}
+          onClick={handleEditClick}
+          className="whitespace-nowrap rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
+          title="Edytuj zadanie lub wydarzenie"
+        >
+          Edytuj
+        </button>
+      ) : null}
       {TODAY_QUICK_SNOOZE_OPTIONS.map((option) => (
         <button
           key={option.key}
           type="button"
           disabled={isPending}
-          onClick={() => onSnooze(entry, option.key)}
+          onPointerDown={(event) => event.stopPropagation()}
+          onMouseDown={(event) => event.stopPropagation()}
+          onClick={(event) => handleSnoozeClick(event, option.key)}
           className="whitespace-nowrap rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
           title={option.description}
         >
@@ -1614,6 +1651,7 @@ export default function Today() {
                                     entry={entry}
                                     isPending={todayActionId === entry.id + ':snooze'}
                                     onSnooze={entry.kind === 'task' ? handleSnoozeTodayTask : handleSnoozeTodayEvent}
+                                  onEdit={openPreviewEntry}
                                   />
                               <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
@@ -1681,6 +1719,7 @@ export default function Today() {
                                     entry={entry}
                                     isPending={todayActionId === entry.id + ':snooze'}
                                     onSnooze={entry.kind === 'task' ? handleSnoozeTodayTask : handleSnoozeTodayEvent}
+                                  onEdit={openPreviewEntry}
                                   />
                               <div className="flex flex-wrap items-center gap-2">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
