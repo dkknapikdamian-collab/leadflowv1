@@ -2,6 +2,7 @@ import { useState, useEffect, FormEvent, useMemo, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
+import { consumeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
@@ -317,6 +318,12 @@ export default function Calendar() {
   const [taskSubmitting, setTaskSubmitting] = useState(false);
   const [eventSubmitting, setEventSubmitting] = useState(false);
   const [editSubmitting, setEditSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (consumeGlobalQuickAction() === 'event') {
+      setIsNewEventOpen(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

@@ -1,96 +1,57 @@
-import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import { Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 import QuickAiCapture from './QuickAiCapture';
 import TodayAiAssistant from './TodayAiAssistant';
 import { Button } from './ui/button';
-import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
-import { useWorkspace } from '../hooks/useWorkspace';
 
-type BundleState = {
-  leads: Record<string, unknown>[];
-  tasks: Record<string, unknown>[];
-  events: Record<string, unknown>[];
-  cases: Record<string, unknown>[];
-};
+export type GlobalQuickActionTarget = 'lead' | 'task' | 'event';
 
-const emptyBundle: BundleState = {
-  leads: [],
-  tasks: [],
-  events: [],
-  cases: [],
-};
+const QUICK_ACTION_STORAGE_KEY = 'closeflow:global-quick-action:v1';
+
+export function rememberGlobalQuickAction(target: GlobalQuickActionTarget) {
+  if (typeof window === 'undefined') return;
+  window.sessionStorage.setItem(QUICK_ACTION_STORAGE_KEY, target);
+}
+
+export function consumeGlobalQuickAction(): GlobalQuickActionTarget | null {
+  if (typeof window === 'undefined') return null;
+  const value = window.sessionStorage.getItem(QUICK_ACTION_STORAGE_KEY);
+  window.sessionStorage.removeItem(QUICK_ACTION_STORAGE_KEY);
+
+  if (value === 'lead' || value === 'task' || value === 'event') return value;
+  return null;
+}
 
 export default function GlobalQuickActions() {
-  const { workspaceReady } = useWorkspace();
-  const location = useLocation();
-  const [bundle, setBundle] = useState<BundleState>(emptyBundle);
-  const [quickCaptureSeed, setQuickCaptureSeed] = useState('');
-  const [quickCaptureOpenSignal, setQuickCaptureOpenSignal] = useState(0);
-
-  const refreshBundle = async () => {
-    if (!workspaceReady) return;
-    try {
-      const nextBundle = await fetchCalendarBundleFromSupabase();
-      setBundle({
-        leads: nextBundle.leads || [],
-        tasks: nextBundle.tasks || [],
-        events: nextBundle.events || [],
-        cases: nextBundle.cases || [],
-      });
-    } catch {
-      // The global action bar must never block the current page.
-    }
-  };
-
-  useEffect(() => {
-    void refreshBundle();
-  }, [workspaceReady, location.pathname]);
-
-  const openQuickCaptureFromAssistant = (text: string) => {
-    const nextText = String(text || '').trim();
-    if (!nextText) return;
-    setQuickCaptureSeed(nextText);
-    setQuickCaptureOpenSignal((current) => current + 1);
-  };
-
   return (
-    <div className="sticky top-16 z-30 border-b border-slate-200 bg-slate-50/95 px-4 py-2 backdrop-blur md:top-0" data-global-quick-actions="true">
-      <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-2">
-        <TodayAiAssistant
-          leads={bundle.leads}
-          tasks={bundle.tasks}
-          events={bundle.events}
-          cases={bundle.cases}
-          disabled={!workspaceReady}
-          onCaptureRequest={openQuickCaptureFromAssistant}
-        />
-        <QuickAiCapture
-          onSaved={() => void refreshBundle()}
-          initialText={quickCaptureSeed}
-          openSignal={quickCaptureOpenSignal}
-          draftSource="quick_capture"
-        />
-        <Link to="/leads" className="inline-flex">
-          <Button type="button" className="rounded-xl">
-            <Plus className="mr-2 h-4 w-4" />
-            Lead
-          </Button>
+    <div
+      className="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white/90 p-2 shadow-sm"
+      data-global-quick-actions="true"
+    >
+      <TodayAiAssistant leads={[]} tasks={[]} events={[]} cases={[]} />
+      <QuickAiCapture />
+
+      <Button asChild className="rounded-xl shadow-lg shadow-primary/20" data-global-quick-action="lead">
+        <Link to="/leads" onClick={() => rememberGlobalQuickAction('lead')}>
+          <Plus className="mr-2 h-4 w-4" />
+          Lead
         </Link>
-        <Link to="/tasks" className="inline-flex">
-          <Button type="button" variant="outline" className="rounded-xl bg-white">
-            <Plus className="mr-2 h-4 w-4" />
-            Zadanie
-          </Button>
+      </Button>
+
+      <Button asChild variant="outline" className="rounded-xl bg-white" data-global-quick-action="task">
+        <Link to="/tasks" onClick={() => rememberGlobalQuickAction('task')}>
+          <Plus className="mr-2 h-4 w-4" />
+          Zadanie
         </Link>
-        <Link to="/calendar" className="inline-flex">
-          <Button type="button" variant="outline" className="rounded-xl bg-white">
-            <Plus className="mr-2 h-4 w-4" />
-            Wydarzenie
-          </Button>
+      </Button>
+
+      <Button asChild variant="outline" className="rounded-xl bg-white" data-global-quick-action="event">
+        <Link to="/calendar" onClick={() => rememberGlobalQuickAction('event')}>
+          <Plus className="mr-2 h-4 w-4" />
+          Wydarzenie
         </Link>
-      </div>
+      </Button>
     </div>
   );
 }

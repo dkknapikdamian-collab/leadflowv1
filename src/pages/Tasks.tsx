@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
+import { consumeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -74,6 +75,7 @@ import {
   updateLeadInSupabase,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
+import { useSearchParams } from 'react-router-dom';
 import { isActiveSalesLead } from '../lib/lead-health';
 
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
@@ -123,6 +125,7 @@ export default function Tasks() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [taskScope, setTaskScope] = useState<TaskScope>('all');
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
   const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
@@ -143,6 +146,20 @@ export default function Tasks() {
   const editTaskSubmitLockRef = useRef(false);
   const [taskSubmitting, setTaskSubmitting] = useState(false);
   const [taskEditSubmitting, setTaskEditSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (consumeGlobalQuickAction() === 'task') {
+      setIsNewTaskOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (searchParams.get('quick') !== 'task') return;
+    setIsNewTaskOpen(true);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const registerReminderScheduled = async ({
     title,
@@ -695,7 +712,7 @@ export default function Tasks() {
       <div className="p-4 md:p-8 max-w-5xl mx-auto w-full space-y-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Zadania</h1>
+            <h1 className="text-3xl font-bold text-slate-900">Zadania</h1>
           </div>
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
             <DialogTrigger asChild>

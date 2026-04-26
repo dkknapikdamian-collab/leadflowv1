@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, Plus, RotateCcw, Search, Target, Trash2, TrendingUp } from 'lucide-react';
 import { format, isPast, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { consumeGlobalQuickAction } from '../components/GlobalQuickActions';
 import QuickAiCapture from '../components/QuickAiCapture';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Badge } from '../components/ui/badge';
@@ -17,9 +18,11 @@ import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadNextAction, type LeadNextAction } from '../lib/lead-next-action';
 import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
+import { buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   fetchCasesFromSupabase,
+  fetchClientsFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
@@ -122,6 +125,7 @@ export default function Leads() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<CaseRecord[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -130,6 +134,7 @@ export default function Leads() {
   const [quickFilter, setQuickFilter] = useState<LeadsQuickFilter>('active');
   const [showTrash, setShowTrash] = useState(false);
   const [valueSortEnabled, setValueSortEnabled] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
   const [newLead, setNewLead] = useState({
@@ -145,6 +150,20 @@ export default function Leads() {
   const [leadSubmitting, setLeadSubmitting] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (consumeGlobalQuickAction() === 'lead') {
+      setIsNewLeadOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (searchParams.get('quick') !== 'lead') return;
+    setIsNewLeadOpen(true);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   const loadLeads = useCallback(async () => {
     if (!workspace?.id) {
       setLoading(false);
@@ -153,16 +172,18 @@ export default function Leads() {
     setLoading(true);
     setLoadError(null);
     try {
-      const [leadRows, caseRows, taskRows, eventRows] = await Promise.all([
+      const [leadRows, caseRows, taskRows, eventRows, clientRows] = await Promise.all([
         fetchLeadsFromSupabase(),
         fetchCasesFromSupabase().catch(() => []),
         fetchTasksFromSupabase().catch(() => []),
         fetchEventsFromSupabase().catch(() => []),
+        fetchClientsFromSupabase().catch(() => []),
       ]);
       setLeads(leadRows as any[]);
       setCases(caseRows as CaseRecord[]);
       setTasks(taskRows as any[]);
       setEvents(eventRows as any[]);
+      setClients(clientRows as any[]);
     } catch (error: any) {
       const message = error?.message || 'Nie udało się pobrać leadów';
       setLoadError(message);
@@ -320,6 +341,21 @@ export default function Leads() {
   const activeLeads = useMemo(() => leads.filter((lead) => !isLeadInTrash(lead)), [leads]);
   const trashLeads = useMemo(() => leads.filter((lead) => isLeadInTrash(lead)), [leads]);
 
+  const relationValueEntries = useMemo(
+    () => buildRelationValueEntries({ leads: activeLeads, clients, cases }),
+    [activeLeads, clients, cases],
+  );
+
+  const mostValuableRelations = useMemo(
+    () => relationValueEntries.slice(0, 5),
+    [relationValueEntries],
+  );
+
+  const relationFunnelValue = useMemo(
+    () => relationValueEntries.reduce((sum, entry) => sum + entry.value, 0),
+    [relationValueEntries],
+  );
+
   const filteredLeads = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
     const sourceLeads = showTrash ? trashLeads : activeLeads;
@@ -360,7 +396,7 @@ export default function Leads() {
   const stats = {
     total: activeLeads.length,
     active: activeLeads.filter((lead) => isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
-    value: activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0),
+    value: relationFunnelValue,
     atRisk: activeLeads.filter((lead) => Boolean(lead.isAtRisk)).length,
     linkedToCase: activeLeads.filter((lead) => isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
     trash: trashLeads.length,
@@ -389,7 +425,7 @@ export default function Leads() {
       <div className="p-4 md:p-8 max-w-7xl mx-auto w-full space-y-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Leady</h1>
+            <h1 className="text-3xl font-bold text-slate-900">Leady</h1>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <QuickAiCapture onSaved={() => void loadLeads()} />
@@ -539,6 +575,36 @@ export default function Leads() {
           <Card className="border-amber-200 bg-amber-50 shadow-sm">
             <CardContent className="p-4 text-sm text-amber-800">
               To jest kosz leadów. Rekordy są ukryte z aktywnej listy, ale można je przywrócić. Nie kasujemy ich trwale w V1.
+            </CardContent>
+          </Card>
+        ) : null}
+        {mostValuableRelations.length ? (
+          <Card className="border-none shadow-sm" data-relation-value-board="true">
+            <CardContent className="p-4">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-bold text-slate-900">Najcenniejsze relacje</p>
+                  <p className="text-xs text-slate-500">Liczymy leady, klientów i sprawy, żeby wartość lejka nie znikała po przejściu do obsługi.</p>
+                </div>
+                <Badge variant="outline">Lejek: {formatRelationValue(relationFunnelValue)}</Badge>
+              </div>
+              <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+                {mostValuableRelations.map((entry) => (
+                  <Link
+                    key={entry.key}
+                    to={entry.href || '/leads'}
+                    className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-blue-200 hover:bg-blue-50"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-slate-900">{entry.label}</p>
+                        <p className="text-xs text-slate-500">{entry.kindLabel}</p>
+                      </div>
+                      <span className="shrink-0 text-sm font-bold text-slate-900">{formatRelationValue(entry.value)}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </CardContent>
           </Card>
         ) : null}
