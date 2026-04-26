@@ -1094,7 +1094,8 @@ export default function LeadDetail() {
           events={linkedEvents}
           activities={activities}
           disabled={!hasAccess || leadOperationalArchive}
-        />
+                      onTaskCreated={() => void loadLead()}
+                    />
 
 
 <Tabs defaultValue="overview" className="w-full">

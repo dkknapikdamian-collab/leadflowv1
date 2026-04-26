@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ClipboardList, Copy, Loader2, Sparkles } from 'lucide-react';
+import { CheckCircle2, ClipboardList, Copy, Loader2, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Badge } from './ui/badge';
@@ -9,6 +9,9 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { createLeadNextActionSuggestion, type LeadNextActionSuggestion } from '../lib/ai-next-action';
+import { useWorkspace } from '../hooks/useWorkspace';
+import { insertTaskToSupabase } from '../lib/supabase-fallback';
+import { requireWorkspaceId } from '../lib/workspace-context';
 
 type LeadAiNextActionProps = {
   lead: Record<string, unknown> | null;
@@ -16,6 +19,7 @@ type LeadAiNextActionProps = {
   events: Record<string, unknown>[];
   activities: Record<string, unknown>[];
   disabled?: boolean;
+  onTaskCreated?: () => void | Promise<void>;
 };
 
 function getLeadTitle(lead: Record<string, unknown> | null) {
@@ -53,12 +57,14 @@ function buildPlanText(suggestion: LeadNextActionSuggestion | null) {
   ].join('\n');
 }
 
-export default function LeadAiNextAction({ lead, tasks, events, activities, disabled }: LeadAiNextActionProps) {
+export default function LeadAiNextAction({ lead, tasks, events, activities, disabled, onTaskCreated }: LeadAiNextActionProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [provider, setProvider] = useState('');
   const [suggestion, setSuggestion] = useState<LeadNextActionSuggestion | null>(null);
   const [planText, setPlanText] = useState('');
+  const [taskSaving, setTaskSaving] = useState(false);
+  const { workspace } = useWorkspace();
   const leadTitle = useMemo(() => getLeadTitle(lead), [lead]);
 
   const handleGenerate = async () => {
@@ -94,6 +100,40 @@ export default function LeadAiNextAction({ lead, tasks, events, activities, disa
       toast.success('Plan skopiowany');
     } catch {
       toast.error('Nie udało się skopiować. Zaznacz tekst ręcznie.');
+    }
+  };
+
+  const handleCreateSuggestedTask = async () => {
+    if (!lead) return toast.error('Brak danych leada');
+    if (!suggestion) return toast.error('Najpierw wygeneruj sugestię');
+
+    const leadId = String(lead.id || '');
+    if (!leadId) return toast.error('Brak ID leada');
+
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+
+    const dueAt = suggestion.suggestedTask.dueAt || suggestion.dueAt || new Date().toISOString();
+    const scheduledAt = Number.isFinite(new Date(dueAt).getTime()) ? dueAt : new Date().toISOString();
+
+    try {
+      setTaskSaving(true);
+      await insertTaskToSupabase({
+        title: suggestion.suggestedTask.title || suggestion.title || 'Follow-up z leadem',
+        type: suggestion.suggestedTask.type || 'follow_up',
+        date: scheduledAt.slice(0, 10),
+        scheduledAt,
+        priority: suggestion.suggestedTask.priority || suggestion.priority || 'medium',
+        status: 'todo',
+        leadId,
+        workspaceId,
+      });
+      toast.success('Zadanie z sugestii AI utworzone');
+      await onTaskCreated?.();
+    } catch (error: any) {
+      toast.error(`Błąd tworzenia zadania: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setTaskSaving(false);
     }
   };
 
@@ -155,6 +195,10 @@ export default function LeadAiNextAction({ lead, tasks, events, activities, disa
                     <Button type="button" variant="outline" onClick={handleCopy}>
                       <Copy className="mr-2 h-4 w-4" />
                       Kopiuj plan
+                    </Button>
+                    <Button type="button" onClick={handleCreateSuggestedTask} disabled={taskSaving}>
+                      {taskSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="mr-2 h-4 w-4" />}
+                      Utwórz zadanie
                     </Button>
                   </DialogFooter>
                 </div>
