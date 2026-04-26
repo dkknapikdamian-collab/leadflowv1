@@ -48,6 +48,7 @@ const requiredTests = [
   'tests/ai-quick-capture-foundation.test.cjs',
   'tests/ai-quick-capture-voice-and-today.test.cjs',
   'tests/ai-followup-draft.test.cjs',
+  'tests/ai-next-action-suggestion.test.cjs',
   'tests/billing-stripe-diagnostics-dry-run.test.cjs',
   'tests/billing-dry-run-test-order-regression.test.cjs',
   'tests/stripe-checkout-app-url-normalization.test.cjs',

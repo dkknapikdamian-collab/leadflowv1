@@ -24,6 +24,7 @@ import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import LeadAiFollowupDraft from '../components/LeadAiFollowupDraft';
+import LeadAiNextAction from '../components/LeadAiNextAction';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -1086,6 +1087,15 @@ export default function LeadDetail() {
           activities={activities}
           disabled={!hasAccess || leadOperationalArchive}
         />
+
+        <LeadAiNextAction
+          lead={lead}
+          tasks={linkedTasks}
+          events={linkedEvents}
+          activities={activities}
+          disabled={!hasAccess || leadOperationalArchive}
+        />
+
 
 <Tabs defaultValue="overview" className="w-full">
               <TabsList className="w-full justify-start bg-transparent border-b border-slate-200 rounded-none h-12 p-0 gap-8">

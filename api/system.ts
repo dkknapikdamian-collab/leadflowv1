@@ -3,6 +3,7 @@ import { getRequestIdentity, asText } from '../src/server/_request-scope.js';
 import serviceProfilesHandler from '../src/server/service-profiles.js';
 import aiConfigHandler from '../src/server/ai-config.js';
 import aiFollowupHandler from '../src/server/ai-followup.js';
+import aiNextActionHandler from '../src/server/ai-next-action.js';
 import aiCaptureHandler from '../src/server/ai-capture.js';
 
 function parseBody(body: unknown) {
@@ -824,6 +825,11 @@ async function handleWorkspaceRecovery(req: any, res: any) {
 export default async function handler(req: any, res: any) {
   const body = parseBody(req.body);
   const kind = routeKind(req, body);
+
+  if (kind === 'ai-next-action') {
+    await aiNextActionHandler(req, res);
+    return;
+  }
 
   if (kind === 'ai-followup-draft') {
     await aiFollowupHandler(req, res);
