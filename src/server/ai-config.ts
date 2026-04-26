@@ -1,3 +1,5 @@
+import { buildAiProviderRuntimeStatus } from './ai-provider.js';
+
 const DEFAULT_ADMIN_EMAILS = ['dk.knapikdamian@gmail.com'];
 
 function asText(value: unknown) {
@@ -64,6 +66,7 @@ function buildDiagnostics() {
       draftTtlHours: ttlHours,
       deleteRawTextOnConfirm: deleteRawOnConfirm,
       status: aiEnabled ? 'enabled' : 'disabled_rule_parser_only',
+      providerRuntime: buildAiProviderRuntimeStatus(),
     },
     providers: {
       ruleParser: {
@@ -90,6 +93,7 @@ function buildDiagnostics() {
       'Klucze API sa trzymane w zmiennych srodowiskowych backendu.',
       'Frontend widzi tylko status konfiguracji, nigdy wartosci sekretow.',
       'Gdy AI jest wylaczone albo provider nie dziala, Quick Lead Capture ma uzyc parsera regulowego.',
+      'AI provider jest jeden i dziala po stronie backendu. Frontend nie dostaje kluczy.',
     ],
   };
 }

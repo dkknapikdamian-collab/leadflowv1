@@ -1,3 +1,5 @@
+import { tryGenerateJsonWithAiProvider } from './ai-provider.js';
+
 type FollowupDraftRequest = {
   lead?: Record<string, unknown>;
   tasks?: Record<string, unknown>[];
@@ -193,6 +195,55 @@ function buildRuleFollowupDraft(input: FollowupDraftRequest): FollowupDraft {
   };
 }
 
+function asStringArray(value: unknown, fallback: string[]) {
+  if (!Array.isArray(value)) return fallback;
+  return value.map((item) => asText(item)).filter(Boolean).slice(0, 8);
+}
+
+function sanitizeAiFollowupDraft(candidate: unknown, fallback: FollowupDraft): FollowupDraft {
+  const root = candidate && typeof candidate === 'object' ? candidate as Record<string, unknown> : {};
+  const draft = root.draft && typeof root.draft === 'object' ? root.draft as Record<string, unknown> : root;
+  const message = asText(draft.message) || fallback.message;
+
+  return {
+    subject: asText(draft.subject) || fallback.subject,
+    message,
+    channel: asText(draft.channel) || fallback.channel,
+    goal: asText(draft.goal) || fallback.goal,
+    tone: asText(draft.tone) || fallback.tone,
+    copyHint: 'To jest szkic AI do sprawdzenia. Aplikacja niczego nie wysyła automatycznie.',
+    warnings: asStringArray(draft.warnings, fallback.warnings),
+    sourceSummary: asStringArray(draft.sourceSummary, fallback.sourceSummary),
+  };
+}
+
+async function buildModelBackedFollowupDraft(input: FollowupDraftRequest, fallback: FollowupDraft) {
+  const prompt = [
+    'Jesteś operatorem CloseFlow. Przygotuj szkic follow-up dla leada wyłącznie na podstawie danych z aplikacji.',
+    'Nie wysyłaj wiadomości. Nie obiecuj wykonania akcji. Nie dopowiadaj danych, których nie ma.',
+    'Zwróć wyłącznie JSON: {"draft":{"subject":"","message":"","channel":"","goal":"","tone":"","warnings":[],"sourceSummary":[]}}.',
+    'Język: polski. Styl: krótko, konkretnie, naturalnie.',
+    JSON.stringify({
+      lead: input.lead || {},
+      tasks: asArray(input.tasks).slice(0, 8),
+      events: asArray(input.events).slice(0, 8),
+      activities: asArray(input.activities).slice(0, 8),
+      goal: input.goal || '',
+      tone: input.tone || '',
+      channel: input.channel || '',
+    }),
+  ].join('\n');
+
+  const result = await tryGenerateJsonWithAiProvider(prompt, {
+    operation: 'followup_draft',
+    maxOutputTokens: 900,
+    temperature: 0.2,
+  });
+
+  if (!result) return { provider: 'rule_parser', draft: fallback };
+  return { provider: result.provider, draft: sanitizeAiFollowupDraft(result.json, fallback) };
+}
+
 export default async function aiFollowupHandler(req: any, res: any) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
@@ -205,13 +256,14 @@ export default async function aiFollowupHandler(req: any, res: any) {
     res.status(400).json({ error: 'LEAD_CONTEXT_REQUIRED' });
     return;
   }
+  const fallbackDraft = buildRuleFollowupDraft(body);
+  const modelResult = await buildModelBackedFollowupDraft(body, fallbackDraft);
 
-  const draft = buildRuleFollowupDraft(body);
   res.status(200).json({
     ok: true,
     scope: 'draft_only',
-    provider: 'rule_parser',
+    provider: modelResult.provider,
     noAutoSend: true,
-    draft,
+    draft: modelResult.draft,
   });
 }

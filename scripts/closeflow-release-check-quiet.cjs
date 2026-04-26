@@ -77,6 +77,7 @@ const requiredTests = [
   'tests/ai-draft-inbox-command-center.test.cjs',
   'tests/global-quick-actions-sticky-single-source.test.cjs',
   'tests/ai-usage-limit-guard.test.cjs',
+  'tests/ai-real-provider-wiring.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

@@ -1,3 +1,5 @@
+import { tryGenerateJsonWithAiProvider } from './ai-provider.js';
+
 type NextActionRequest = {
   lead?: Record<string, unknown>;
   tasks?: Record<string, unknown>[];
@@ -240,6 +242,71 @@ function buildSuggestion(input: NextActionRequest): NextActionSuggestion {
   };
 }
 
+function pickPriority(value: unknown, fallback: 'low' | 'medium' | 'high'): 'low' | 'medium' | 'high' {
+  const normalized = asText(value).toLowerCase();
+  return normalized === 'low' || normalized === 'medium' || normalized === 'high' ? normalized : fallback;
+}
+
+function pickKind(value: unknown, fallback: 'task' | 'message' | 'status_check'): 'task' | 'message' | 'status_check' {
+  const normalized = asText(value).toLowerCase();
+  return normalized === 'task' || normalized === 'message' || normalized === 'status_check' ? normalized : fallback;
+}
+
+function asStringArray(value: unknown, fallback: string[]) {
+  if (!Array.isArray(value)) return fallback;
+  return value.map((item) => asText(item)).filter(Boolean).slice(0, 8);
+}
+
+function sanitizeAiNextActionSuggestion(candidate: unknown, fallback: NextActionSuggestion): NextActionSuggestion {
+  const root = candidate && typeof candidate === 'object' ? candidate as Record<string, unknown> : {};
+  const suggestion = root.suggestion && typeof root.suggestion === 'object' ? root.suggestion as Record<string, unknown> : root;
+  const task = suggestion.suggestedTask && typeof suggestion.suggestedTask === 'object' ? suggestion.suggestedTask as Record<string, unknown> : {};
+  const dueAt = asText(suggestion.dueAt) || fallback.dueAt;
+
+  return {
+    kind: pickKind(suggestion.kind, fallback.kind),
+    title: asText(suggestion.title) || fallback.title,
+    summary: asText(suggestion.summary) || fallback.summary,
+    reason: asText(suggestion.reason) || fallback.reason,
+    priority: pickPriority(suggestion.priority, fallback.priority),
+    dueAt,
+    suggestedTask: {
+      title: asText(task.title) || fallback.suggestedTask.title,
+      type: asText(task.type) || fallback.suggestedTask.type,
+      priority: pickPriority(task.priority, fallback.suggestedTask.priority),
+      dueAt: asText(task.dueAt) || dueAt || fallback.suggestedTask.dueAt,
+    },
+    messageHint: asText(suggestion.messageHint) || fallback.messageHint,
+    warnings: asStringArray(suggestion.warnings, fallback.warnings),
+    sourceSummary: asStringArray(suggestion.sourceSummary, fallback.sourceSummary),
+  };
+}
+
+async function buildModelBackedNextAction(input: NextActionRequest, fallback: NextActionSuggestion) {
+  const prompt = [
+    'Jesteś operatorem CloseFlow. Wybierz jeden najlepszy następny ruch dla leada na podstawie danych z aplikacji.',
+    'Nie twórz zadania samodzielnie. Nie wysyłaj wiadomości. Zwróć wyłącznie sugestię do zatwierdzenia przez użytkownika.',
+    'Zwróć wyłącznie JSON: {"suggestion":{"kind":"task|message|status_check","title":"","summary":"","reason":"","priority":"low|medium|high","dueAt":"ISO","suggestedTask":{"title":"","type":"follow_up","priority":"medium","dueAt":"ISO"},"messageHint":"","warnings":[],"sourceSummary":[]}}.',
+    'Język: polski. Styl: konkretny operator sprzedaży.',
+    JSON.stringify({
+      lead: input.lead || {},
+      tasks: asArray(input.tasks).slice(0, 10),
+      events: asArray(input.events).slice(0, 10),
+      activities: asArray(input.activities).slice(0, 10),
+      now: input.now || new Date().toISOString(),
+    }),
+  ].join('\n');
+
+  const result = await tryGenerateJsonWithAiProvider(prompt, {
+    operation: 'next_action',
+    maxOutputTokens: 900,
+    temperature: 0.15,
+  });
+
+  if (!result) return { provider: 'rule_parser', suggestion: fallback };
+  return { provider: result.provider, suggestion: sanitizeAiNextActionSuggestion(result.json, fallback) };
+}
+
 export default async function aiNextActionHandler(req: any, res: any) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
@@ -252,12 +319,14 @@ export default async function aiNextActionHandler(req: any, res: any) {
     res.status(400).json({ error: 'LEAD_CONTEXT_REQUIRED' });
     return;
   }
+  const fallbackSuggestion = buildSuggestion(body);
+  const modelResult = await buildModelBackedNextAction(body, fallbackSuggestion);
 
   res.status(200).json({
     ok: true,
     scope: 'suggestion_only',
-    provider: 'rule_parser',
+    provider: modelResult.provider,
     noAutoWrite: true,
-    suggestion: buildSuggestion(body),
+    suggestion: modelResult.suggestion,
   });
 }
