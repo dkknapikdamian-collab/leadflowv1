@@ -1,410 +1,182 @@
-import { useEffect, useMemo, useState } from 'react';
-import { format, parseISO } from 'date-fns';
+import { useState, useEffect } from 'react';
+import { auth, db } from '../firebase';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { useWorkspace } from '../hooks/useWorkspace';
+import Layout from '../components/Layout';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { 
+  CheckCircle2, 
+  CreditCard, 
+  Zap, 
+  Shield, 
+  Clock, 
+  AlertTriangle,
+  Check,
+  Loader2
+} from 'lucide-react';
+import { format, parseISO, differenceInDays } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { Check, Loader2, Shield, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
-import Layout from '../components/Layout';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
-import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { useAppearance } from '../components/appearance-provider';
-import { useWorkspace } from '../hooks/useWorkspace';
-import {
-  fetchCasesFromSupabase,
-  fetchClientsFromSupabase,
-  fetchLeadsFromSupabase,
-  fetchPaymentsFromSupabase,
-  createBillingCheckoutSessionInSupabase,
-} from '../lib/supabase-fallback';
-
-type BillingPeriod = 'monthly' | 'yearly';
-
-type PlanCard = {
-  id: string;
-  key: 'basic' | 'pro' | 'business';
-  name: string;
-  monthlyPrice: number;
-  yearlyPrice: number;
-  description: string;
-  badge?: string;
-  features: string[];
-};
-
-const BILLING_PLANS: PlanCard[] = [
+const PLANS = [
   {
-    id: 'closeflow_basic',
-    key: 'basic',
-    name: 'Basic',
-    monthlyPrice: 19,
-    yearlyPrice: 190,
-    description: 'Najprostszy start dla jednej osoby i małego procesu sprzedaży.',
+    id: 'solo',
+    name: 'Forteca Solo',
+    price: '99',
+    description: 'Dla freelancerów i małych firm.',
     features: [
-      'Leady, klienci, zadania i Today',
-      'Podstawowy pipeline lead -> case',
-      'Płatność kartą lub BLIK za 30 dni albo rok',
-    ],
+      'Nielimitowane leady',
+      'Nielimitowane sprawy',
+      'Portal klienta',
+      'Automatyczne checklisty',
+      'Wsparcie e-mail'
+    ]
   },
   {
-    id: 'closeflow_pro',
-    key: 'pro',
-    name: 'Pro',
-    monthlyPrice: 39,
-    yearlyPrice: 390,
-    badge: 'Najlepszy wybór',
-    description: 'Pełny workflow CloseFlow dla usług solo i sprzedaży.',
+    id: 'pro',
+    name: 'Forteca Pro',
+    price: '249',
+    description: 'Dla zespołów i agencji.',
     features: [
-      'Pełny workflow lead -> sprawa -> rozliczenie',
-      'Klienci, sprawy, taski i Today w jednym miejscu',
-      'Portal klienta i moduł rozliczeń V1',
-      'Płatność kartą lub BLIK za 30 dni albo rok',
+      'Wszystko w Solo',
+      'Współpraca zespołowa',
+      'Zaawansowane raporty',
+      'Własna domena portalu',
+      'Priorytetowe wsparcie'
     ],
-  },
-  {
-    id: 'closeflow_business',
-    key: 'business',
-    name: 'Business',
-    monthlyPrice: 69,
-    yearlyPrice: 690,
-    description: 'Dla osób, które chcą więcej miejsca na rozwój i przyszłe funkcje premium.',
-    features: [
-      'Wszystko z Pro',
-      'Priorytet pod przyszłe funkcje premium',
-      'Gotowe pod większą liczbę spraw i klientów',
-      'Płatność kartą lub BLIK za 30 dni albo rok',
-    ],
-  },
+    popular: true
+  }
 ];
 
-function getPlanPrice(plan: PlanCard, period: BillingPeriod) {
-  return period === 'yearly' ? plan.yearlyPrice : plan.monthlyPrice;
-}
-
-function getPlanPeriodLabel(period: BillingPeriod) {
-  return period === 'yearly' ? '/rok' : '/30 dni';
-}
-
-function getDisplayPlanId(planId?: string | null, subscriptionStatus?: string | null) {
-  if (['closeflow_basic', 'closeflow_basic_yearly', 'closeflow_pro', 'closeflow_pro_yearly', 'closeflow_business', 'closeflow_business_yearly'].includes(String(planId || ''))) {
-    return String(planId);
-  }
-  if (['trial_14d', 'solo_mini', 'solo_full', 'team_mini', 'team_full', 'pro'].includes(String(planId || ''))) {
-    return 'closeflow_pro';
-  }
-  if (subscriptionStatus === 'paid_active') return 'closeflow_pro';
-  return 'trial_14d';
-}
-
-function isPlanActive(displayPlanId: string, plan: PlanCard, isPaidActive: boolean) {
-  if (!isPaidActive) return false;
-  return displayPlanId === plan.id || displayPlanId === `${plan.id}_yearly`;
-}
-
 export default function Billing() {
-  const { workspace, loading, refresh, access } = useWorkspace();
-  const { skin } = useAppearance();
-  const [tab, setTab] = useState<'plan' | 'settlements'>('plan');
-  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
-  const [upgradingPlanKey, setUpgradingPlanKey] = useState<string | null>(null);
-  const [billingCheckLoading, setBillingCheckLoading] = useState(false);
-  const [billingCheckResult, setBillingCheckResult] = useState<Record<string, any> | null>(null);
-  const [settlementLoading, setSettlementLoading] = useState(false);
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [payments, setPayments] = useState<any[]>([]);
-  const [clients, setClients] = useState<any[]>([]);
-  const [leads, setLeads] = useState<any[]>([]);
-  const [cases, setCases] = useState<any[]>([]);
+  const { workspace, loading } = useWorkspace();
+  const [upgrading, setUpgrading] = useState(false);
 
-  const clientById = useMemo(() => new Map(clients.map((entry) => [String(entry.id), String(entry.name || entry.company || 'Klient')])), [clients]);
-  const leadById = useMemo(() => new Map(leads.map((entry) => [String(entry.id), String(entry.name || 'Lead')])), [leads]);
-  const caseById = useMemo(() => new Map(cases.map((entry) => [String(entry.id), String(entry.title || 'Sprawa')])), [cases]);
-
-  useEffect(() => {
-    if (tab !== 'settlements') return;
-    if (!workspace?.id) return;
-    let cancelled = false;
-    setSettlementLoading(true);
-    Promise.all([
-      fetchPaymentsFromSupabase(),
-      fetchClientsFromSupabase().catch(() => []),
-      fetchLeadsFromSupabase().catch(() => []),
-      fetchCasesFromSupabase().catch(() => []),
-    ])
-      .then(([paymentRows, clientRows, leadRows, caseRows]) => {
-        if (cancelled) return;
-        setPayments(paymentRows as any[]);
-        setClients(clientRows as any[]);
-        setLeads(leadRows as any[]);
-        setCases(caseRows as any[]);
-      })
-      .catch((error: any) => {
-        if (cancelled) return;
-        toast.error(`Błąd odczytu rozliczeń: ${error?.message || 'REQUEST_FAILED'}`);
-      })
-      .finally(() => {
-        if (cancelled) return;
-        setSettlementLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [tab, workspace?.id]);
-
-  const handleBillingCheck = async () => {
-    if (!workspace?.id) return;
-
-    setBillingCheckLoading(true);
-    setBillingCheckResult(null);
-
+  const handleUpgrade = async (planId: string) => {
+    if (!workspace) return;
+    setUpgrading(true);
     try {
-      const result = await createBillingCheckoutSessionInSupabase({
-        workspaceId: workspace.id,
-        customerEmail: '',
-        planKey: 'basic',
-        billingPeriod,
-        dryRun: true,
+      await updateDoc(doc(db, 'workspaces', workspace.id), {
+        subscriptionStatus: 'paid_active',
+        planId,
+        updatedAt: serverTimestamp()
       });
-
-      setBillingCheckResult(result as Record<string, any>);
-
-      if (result?.checkoutConfigured && result?.webhookConfigured) {
-        toast.success('Płatności Stripe/BLIK wyglądają na skonfigurowane.');
-        return;
-      }
-
-      toast.error('Płatności wymagają sprawdzenia konfiguracji w Vercel lub Stripe.');
+      toast.success('Subskrypcja aktywowana! (Symulacja)');
     } catch (error: any) {
-      toast.error(`Błąd sprawdzania płatności Stripe/BLIK: ${error.message || 'REQUEST_FAILED'}`);
+      toast.error('Błąd: ' + error.message);
     } finally {
-      setBillingCheckLoading(false);
-    }
-  };
-
-  const handleUpgrade = async (plan: PlanCard) => {
-    if (!workspace?.id) return;
-    setUpgradingPlanKey(plan.key);
-    try {
-      const result = await createBillingCheckoutSessionInSupabase({
-        workspaceId: workspace.id,
-        customerEmail: '',
-        planKey: plan.key,
-        billingPeriod,
-      });
-
-      if (!result?.url) {
-        if (result?.error === 'STRIPE_PROVIDER_NOT_CONFIGURED') {
-          toast.error('Stripe nie jest jeszcze skonfigurowany w Vercel.');
-          return;
-        }
-
-        throw new Error(result?.error || 'STRIPE_BLIK_CHECKOUT_URL_MISSING');
-      }
-
-      window.location.assign(result.url);
-    } catch (error: any) {
-      toast.error(`Błąd uruchamiania płatności Stripe/BLIK: ${error.message || 'REQUEST_FAILED'}`);
-    } finally {
-      setUpgradingPlanKey(null);
+      setUpgrading(false);
     }
   };
 
   if (loading || !workspace) {
     return (
       <Layout>
-        <div className="flex h-full items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       </Layout>
     );
   }
 
-  const trialEndsAtLabel = workspace.trialEndsAt ? format(parseISO(workspace.trialEndsAt), 'd MMMM yyyy', { locale: pl }) : null;
-  const isDark = skin === 'forteca-dark' || skin === 'midnight';
-  const currentPlanId = getDisplayPlanId(workspace.planId, workspace.subscriptionStatus);
+  const trialDaysLeft = workspace.trialEndsAt ? differenceInDays(parseISO(workspace.trialEndsAt), new Date()) : 0;
+  const isTrial = workspace.subscriptionStatus === 'trial_active';
 
   return (
     <Layout>
-      <div className="mx-auto w-full max-w-6xl space-y-6 p-4 md:p-8">
-        <header className="space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
-            <Sparkles className="h-3.5 w-3.5" /> Cennik i rozliczenia
-          </div>
-          <h1 className="text-3xl font-bold text-slate-900">Billing</h1>
+      <div className="p-4 md:p-8 max-w-5xl mx-auto w-full space-y-8">
+        <header>
+          <h1 className="text-3xl font-bold text-slate-900">Subskrypcja i Rozliczenia</h1>
+          <p className="text-slate-500">Zarządzaj swoim planem i dostępem do Fortecy.</p>
         </header>
 
-        <Tabs value={tab} onValueChange={(value) => setTab(value as 'plan' | 'settlements')}>
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="plan">Plan</TabsTrigger>
-            <TabsTrigger value="settlements">Rozliczenia</TabsTrigger>
-          </TabsList>
-        </Tabs>
-
-        {tab === 'plan' ? (
-          <>
-            <Card className={`border-none shadow-sm ${isDark ? 'bg-slate-900 text-slate-100' : 'bg-emerald-50'}`}>
-              <CardContent className="flex flex-col gap-2 p-6">
-                <h2 className="text-xl font-bold">{access.headline}</h2>
-                <p>{access.description}</p>
-                {trialEndsAtLabel && (access.isTrialActive || access.status === 'trial_expired') ? (
-                  <p className="text-sm opacity-80">Data końca trialu: {trialEndsAtLabel}</p>
-                ) : null}
-                <Badge variant="outline" className="w-fit">{access.badgeLabel}</Badge>
-              </CardContent>
-            </Card>
-
-            <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        {/* Current Status */}
+        <Card className={`border-none shadow-sm ${isTrial ? 'bg-indigo-50 border-indigo-100' : 'bg-emerald-50 border-emerald-100'}`}>
+          <CardContent className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-2xl ${isTrial ? 'bg-indigo-100 text-indigo-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                {isTrial ? <Clock className="w-8 h-8" /> : <Shield className="w-8 h-8" />}
+              </div>
               <div>
-                <p className="font-semibold text-slate-900">Wybierz okres dostępu</p>
-                <p className="text-sm text-slate-500">BLIK/karta przez Stripe. Roczny plan daje 365 dni dostępu.</p>
-              </div>
-              <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant={billingPeriod === 'monthly' ? 'default' : 'ghost'}
-                  onClick={() => setBillingPeriod('monthly')}
-                >
-                  30 dni
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant={billingPeriod === 'yearly' ? 'default' : 'ghost'}
-                  onClick={() => setBillingPeriod('yearly')}
-                >
-                  Rok
-                </Button>
+                <h2 className="text-xl font-bold text-slate-900">
+                  {isTrial ? 'Jesteś w okresie próbnym' : 'Twoja subskrypcja jest aktywna'}
+                </h2>
+                <p className="text-slate-600">
+                  {isTrial 
+                    ? `Pozostało Ci ${trialDaysLeft} dni darmowego dostępu.` 
+                    : `Twój plan: ${PLANS.find(p => p.id === workspace.planId)?.name || 'Forteca Solo'}`}
+                </p>
               </div>
             </div>
+            {isTrial && (
+              <Badge variant="outline" className="bg-white border-indigo-200 text-indigo-700 px-4 py-1 rounded-full font-bold">
+                TRIAL: {trialDaysLeft} DNI
+              </Badge>
+            )}
+          </CardContent>
+        </Card>
 
-            <Card className="border-none shadow-sm">
-              <CardHeader>
-                <CardTitle>Test płatności Stripe/BLIK</CardTitle>
-                <CardDescription>
-                  Sprawdza konfigurację checkoutu bez tworzenia płatności i bez przekierowania użytkownika.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button type="button" variant="outline" disabled={billingCheckLoading} onClick={() => void handleBillingCheck()}>
-                    {billingCheckLoading ? 'Sprawdzanie...' : 'Sprawdź płatności'}
-                  </Button>
-                  {billingCheckResult ? (
-                    <Badge variant={billingCheckResult.checkoutConfigured && billingCheckResult.webhookConfigured ? 'default' : 'outline'}>
-                      {billingCheckResult.checkoutConfigured && billingCheckResult.webhookConfigured ? 'Gotowe' : 'Wymaga konfiguracji'}
-                    </Badge>
-                  ) : null}
-                </div>
-                {billingCheckResult ? (
-                  <div className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600 sm:grid-cols-2">
-                    <p><strong>Checkout:</strong> {billingCheckResult.checkoutConfigured ? 'OK' : 'brak STRIPE_SECRET_KEY'}</p>
-                    <p><strong>Webhook:</strong> {billingCheckResult.webhookConfigured ? 'OK' : 'brak STRIPE_WEBHOOK_SECRET'}</p>
-                    <p><strong>URL aplikacji:</strong> {billingCheckResult.appUrl || 'brak'}</p>
-                    <p><strong>Testowany plan:</strong> {billingCheckResult.planKey || 'basic'} / {billingCheckResult.billingPeriod || billingPeriod}</p>
-                  </div>
-                ) : null}
-              </CardContent>
-            </Card>
-
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-              {BILLING_PLANS.map((plan) => {
-                const isCurrentPlan = isPlanActive(currentPlanId, plan, access.isPaidActive);
-                const price = getPlanPrice(plan, billingPeriod);
-                const isLoadingPlan = upgradingPlanKey === plan.key;
-
-                return (
-                  <Card key={plan.id} className="flex h-full flex-col border-none shadow-sm">
-                    <CardHeader>
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <CardTitle>{plan.name}</CardTitle>
-                          <CardDescription>{plan.description}</CardDescription>
-                        </div>
-                        {plan.badge || isCurrentPlan ? (
-                          <Badge variant={isCurrentPlan ? 'default' : 'outline'}>
-                            {isCurrentPlan ? 'Aktywny plan' : plan.badge}
-                          </Badge>
-                        ) : null}
-                      </div>
-                    </CardHeader>
-                    <CardContent className="flex-1 space-y-3">
-                      <p className="text-3xl font-bold">
-                        {price} PLN
-                        <span className="text-base font-medium text-slate-500">{getPlanPeriodLabel(billingPeriod)}</span>
-                      </p>
-                      {billingPeriod === 'yearly' ? (
-                        <p className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">
-                          Rocznie wychodzi taniej i daje 365 dni dostępu.
-                        </p>
-                      ) : null}
-                      {plan.features.map((feature) => (
-                        <p key={feature} className="flex items-center gap-2 text-sm text-slate-600">
-                          <Check className="h-4 w-4 text-emerald-500" /> {feature}
-                        </p>
-                      ))}
-                    </CardContent>
-                    <CardFooter>
-                      <Button disabled={Boolean(upgradingPlanKey) || isCurrentPlan} onClick={() => void handleUpgrade(plan)} className="w-full">
-                        {isCurrentPlan ? 'Twój plan' : isLoadingPlan ? 'Przekierowanie...' : 'Przejdź do płatności'}
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                );
-              })}
-            </div>
-
-            <Card className="border-none shadow-sm">
-              <CardHeader>
-                <CardTitle>Jak działa V1</CardTitle>
-                <CardDescription>Prosty model bez mylących limitów i ukrytych opłat.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm text-slate-600">
-                <p><strong>Trial:</strong> startujesz od 14 dni testu z odblokowanym pełnym workflow.</p>
-                <p><strong>Po trialu:</strong> płacisz kartą albo BLIK przez Stripe i aktywujesz wybrany plan na 30 albo 365 dni.</p>
-                <p><strong>Statusy:</strong> trial, plan aktywny, problem z płatnością albo plan anulowany.</p>
-              </CardContent>
-            </Card>
-          </>
-        ) : (
-          <Card className="border-none shadow-sm">
-            <CardHeader>
-              <CardTitle>Rozliczenia lead/case</CardTitle>
-              <CardDescription>Filtruj status płatności niezaleznie od statusow sprzedazowych i operacyjnych.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-wrap gap-2">
-                {['all', 'awaiting_payment', 'partially_paid', 'fully_paid', 'commission_pending', 'paid'].map((status) => (
-                  <Button key={status} size="sm" variant={statusFilter === status ? 'default' : 'outline'} onClick={() => setStatusFilter(status)}>
-                    {status === 'all' ? 'Wszystkie' : status}
-                  </Button>
-                ))}
-              </div>
-              {settlementLoading ? (
-                <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-slate-400" /></div>
-              ) : (
-                <div className="space-y-2">
-                  {payments
-                    .filter((payment) => statusFilter === 'all' || String(payment.status || '') === statusFilter)
-                    .map((payment) => (
-                      <div key={payment.id} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 px-4 py-3">
-                        <div className="min-w-0">
-                          <p className="truncate font-semibold text-slate-900">{Number(payment.amount || 0).toLocaleString()} {payment.currency || 'PLN'}</p>
-                          <p className="truncate text-sm text-slate-500">
-                            {clientById.get(String(payment.clientId || '')) || 'Klient nieznany'} · {leadById.get(String(payment.leadId || '')) || 'Bez leada'} · {caseById.get(String(payment.caseId || '')) || 'Bez sprawy'}
-                          </p>
-                        </div>
-                        <Badge variant="outline">{payment.status || 'not_started'}</Badge>
-                      </div>
-                    ))}
-                  {payments.length === 0 ? (
-                    <div className="flex items-center gap-2 py-4 text-sm text-slate-500"><Shield className="h-4 w-4" /> Brak rozliczeń do wyświetlenia.</div>
-                  ) : null}
+        {/* Plans */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {PLANS.map(plan => (
+            <Card key={plan.id} className={`border-none shadow-lg relative overflow-hidden ${plan.popular ? 'ring-2 ring-primary' : ''}`}>
+              {plan.popular && (
+                <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                  Najpopularniejszy
                 </div>
               )}
-            </CardContent>
-          </Card>
-        )}
+              <CardHeader>
+                <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                <CardDescription>{plan.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-bold text-slate-900">{plan.price} PLN</span>
+                  <span className="text-slate-500">/ mies.</span>
+                </div>
+                <div className="space-y-3">
+                  {plan.features.map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3 text-sm text-slate-600">
+                      <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button 
+                  className="w-full rounded-xl h-12 font-bold text-base" 
+                  variant={plan.popular ? 'default' : 'outline'}
+                  disabled={workspace.planId === plan.id || upgrading}
+                  onClick={() => handleUpgrade(plan.id)}
+                >
+                  {workspace.planId === plan.id ? 'Twój obecny plan' : 'Wybierz ten plan'}
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+
+        {/* Security Info */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex flex-col items-center text-center p-6 space-y-2">
+            <Shield className="w-8 h-8 text-slate-400" />
+            <h4 className="font-bold text-slate-900">Bezpieczne płatności</h4>
+            <p className="text-xs text-slate-500">Twoje dane są szyfrowane i bezpieczne dzięki Stripe.</p>
+          </div>
+          <div className="flex flex-col items-center text-center p-6 space-y-2">
+            <Zap className="w-8 h-8 text-slate-400" />
+            <h4 className="font-bold text-slate-900">Błyskawiczna aktywacja</h4>
+            <p className="text-xs text-slate-500">Dostęp do wszystkich funkcji otrzymasz natychmiast po płatności.</p>
+          </div>
+          <div className="flex flex-col items-center text-center p-6 space-y-2">
+            <CreditCard className="w-8 h-8 text-slate-400" />
+            <h4 className="font-bold text-slate-900">Faktury VAT</h4>
+            <p className="text-xs text-slate-500">Automatycznie generujemy faktury VAT za każdą płatność.</p>
+          </div>
+        </div>
       </div>
     </Layout>
   );

@@ -1,164 +1,391 @@
-import { addMinutes, endOfDay, format, parseISO, startOfDay } from 'date-fns';
-import { pl } from 'date-fns/locale';
-import type { CalendarBundle } from './calendar-items';
-import { isActiveSalesLead } from './lead-health';
-import { combineScheduleEntries, type ScheduleEntry } from './scheduling';
+import { isClosedLeadStatus, normalizeEvent, normalizeLead, normalizeTask } from './record-normalizers';
+import { getNearestPlannedActionForLead } from './lead-actions';
 
-const BROWSER_PREF_KEY = 'closeflow:notifications:browser-enabled:v1';
-const LOG_KEY = 'closeflow:notifications:log:v1';
+export type ReminderType =
+  | 'task_overdue'
+  | 'event_overdue'
+  | 'task_due_soon'
+  | 'event_due_soon'
+  | 'today_task'
+  | 'today_event'
+  | 'lead_without_action';
 
-export type NotificationSeverity = 'overdue' | 'soon';
+export type ReminderPriority = 'low' | 'medium' | 'high';
 
-export type NotificationItem = {
-  id: string;
+export type ReminderSettings = {
+  liveNotificationsEnabled: boolean;
+  browserNotificationsEnabled: boolean;
+  dailyDigestEmailEnabled: boolean;
+  dailyDigestHour: string;
+  defaultReminderLeadMinutes: number;
+  defaultSnoozeMinutes: number;
+  leadWithoutActionAlertsEnabled: boolean;
+};
+
+export type ReminderItem = {
   key: string;
-  kind: 'task' | 'event' | 'lead';
+  type: ReminderType;
   title: string;
-  body: string;
-  startsAt: string;
+  description: string;
+  priority: ReminderPriority;
+  dueAt: string | null;
   sourceId: string;
-  severity: NotificationSeverity;
-  minutesUntil: number;
-  link: string;
-  leadName?: string | null;
+  sourceKind: 'task' | 'event' | 'lead';
+  href: string;
 };
 
-export type NotificationLogItem = NotificationItem & {
-  deliveredAt: string;
-  read: boolean;
+export type ReminderLogEntry = ReminderItem & {
+  firstShownAt: string;
+  lastShownAt: string;
+  shownCount: number;
+  snoozedUntil: string | null;
+  dismissedAt: string | null;
 };
 
-function isEntryActionable(entry: ScheduleEntry) {
-  if (entry.kind === 'task') return entry.raw?.status !== 'done';
-  if (entry.kind === 'event') return entry.raw?.status !== 'completed';
-  return isActiveSalesLead(entry.raw);
-}
+export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
+  liveNotificationsEnabled: true,
+  browserNotificationsEnabled: false,
+  dailyDigestEmailEnabled: false,
+  dailyDigestHour: '08:00',
+  defaultReminderLeadMinutes: 30,
+  defaultSnoozeMinutes: 60,
+  leadWithoutActionAlertsEnabled: true,
+};
 
-function mapEntryToItem(entry: ScheduleEntry, now: Date): NotificationItem | null {
-  if (!isEntryActionable(entry)) return null;
+const SETTINGS_KEY = 'closeflow.reminder.settings.v1';
+const LOG_KEY = 'closeflow.reminder.log.v1';
+const MAX_LOG_ENTRIES = 80;
+const SHOW_REPEAT_WINDOW_MINUTES = 60;
 
-  const startsAtDate = parseISO(entry.startsAt);
-  const minutesUntil = Math.round((startsAtDate.getTime() - now.getTime()) / 60_000);
-  const severity: NotificationSeverity = minutesUntil < 0 ? 'overdue' : 'soon';
-  const label = entry.kind === 'task' ? 'Zadanie' : entry.kind === 'event' ? 'Wydarzenie' : 'Lead';
-  const whenLabel = format(startsAtDate, 'd MMM, HH:mm', { locale: pl });
-  const leadLabel = entry.leadName ? ` • ${entry.leadName}` : '';
-
-  return {
-    id: `${entry.sourceId}:${entry.startsAt}`,
-    key: `${entry.kind}:${entry.sourceId}:${entry.startsAt}`,
-    kind: entry.kind,
-    title: entry.title,
-    body: `${label}${leadLabel} • ${whenLabel}`,
-    startsAt: entry.startsAt,
-    sourceId: entry.sourceId,
-    severity,
-    minutesUntil,
-    link: entry.link || (entry.kind === 'lead' ? `/leads/${entry.sourceId}` : entry.kind === 'task' ? '/tasks' : '/calendar'),
-    leadName: entry.leadName,
-  };
-}
-
-export function buildRuntimeNotificationItems(bundle: CalendarBundle, now = new Date()) {
-  const rangeStart = addMinutes(now, -120);
-  const rangeEnd = addMinutes(now, 15);
-
-  return combineScheduleEntries({
-    events: bundle.events,
-    tasks: bundle.tasks,
-    leads: bundle.leads,
-    rangeStart,
-    rangeEnd,
-  })
-    .map((entry) => mapEntryToItem(entry, now))
-    .filter((item): item is NotificationItem => Boolean(item))
-    .filter((item) => item.minutesUntil >= -120 && item.minutesUntil <= 15)
-    .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
-}
-
-export function buildTodayNotificationItems(bundle: CalendarBundle, now = new Date()) {
-  const rangeStart = startOfDay(now);
-  const rangeEnd = endOfDay(now);
-
-  return combineScheduleEntries({
-    events: bundle.events,
-    tasks: bundle.tasks,
-    leads: bundle.leads,
-    rangeStart,
-    rangeEnd,
-  })
-    .map((entry) => mapEntryToItem(entry, now))
-    .filter((item): item is NotificationItem => Boolean(item))
-    .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
-}
-
-export function supportsBrowserNotifications() {
-  return typeof window !== 'undefined' && 'Notification' in window;
-}
-
-export function getBrowserNotificationPermission(): NotificationPermission | 'unsupported' {
-  if (!supportsBrowserNotifications()) return 'unsupported';
-  return Notification.permission;
-}
-
-export function getBrowserNotificationsEnabled() {
-  if (typeof window === 'undefined') return false;
-  const raw = window.localStorage.getItem(BROWSER_PREF_KEY);
-  return raw === null ? true : raw === 'true';
-}
-
-export function setBrowserNotificationsEnabled(value: boolean) {
-  if (typeof window === 'undefined') return;
-  window.localStorage.setItem(BROWSER_PREF_KEY, String(value));
-}
-
-export function getNotificationLog() {
-  if (typeof window === 'undefined') return [] as NotificationLogItem[];
-
+function getStorage(): Storage | null {
   try {
-    const raw = window.localStorage.getItem(LOG_KEY);
-    if (!raw) return [] as NotificationLogItem[];
-    const parsed = JSON.parse(raw) as NotificationLogItem[];
-    return Array.isArray(parsed) ? parsed : [];
+    if (typeof window === 'undefined') return null;
+    return window.localStorage;
   } catch {
-    return [] as NotificationLogItem[];
+    return null;
   }
 }
 
-function saveNotificationLog(items: NotificationLogItem[]) {
-  if (typeof window === 'undefined') return;
-  window.localStorage.setItem(LOG_KEY, JSON.stringify(items.slice(0, 100)));
+function safeJsonParse<T>(value: string | null, fallback: T): T {
+  if (!value) return fallback;
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    return fallback;
+  }
 }
 
-export function hasDeliveredNotification(key: string) {
-  return getNotificationLog().some((item) => item.key === key);
+export function loadReminderSettings(userId = 'local'): ReminderSettings {
+  const storage = getStorage();
+  if (!storage) return DEFAULT_REMINDER_SETTINGS;
+  const all = safeJsonParse<Record<string, Partial<ReminderSettings>>>(storage.getItem(SETTINGS_KEY), {});
+  return { ...DEFAULT_REMINDER_SETTINGS, ...(all[userId] ?? {}) };
 }
 
-export function recordDeliveredNotification(item: NotificationItem) {
-  const existing = getNotificationLog();
-  if (existing.some((entry) => entry.key === item.key)) return;
-
-  const next: NotificationLogItem[] = [
-    {
-      ...item,
-      deliveredAt: new Date().toISOString(),
-      read: false,
-    },
-    ...existing,
-  ];
-
-  saveNotificationLog(next);
+export function saveReminderSettings(settings: Partial<ReminderSettings>, userId = 'local'): ReminderSettings {
+  const next = { ...loadReminderSettings(userId), ...settings };
+  const storage = getStorage();
+  if (!storage) return next;
+  const all = safeJsonParse<Record<string, Partial<ReminderSettings>>>(storage.getItem(SETTINGS_KEY), {});
+  all[userId] = next;
+  storage.setItem(SETTINGS_KEY, JSON.stringify(all));
+  return next;
 }
 
-export function markAllNotificationsRead() {
-  const updated = getNotificationLog().map((item) => ({ ...item, read: true }));
-  saveNotificationLog(updated);
+function startOfLocalDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-export function clearNotificationLog() {
-  saveNotificationLog([]);
+function isSameLocalDay(a: Date, b: Date): boolean {
+  return startOfLocalDay(a).getTime() === startOfLocalDay(b).getTime();
 }
 
-export function getUnreadNotificationCount() {
-  return getNotificationLog().filter((item) => !item.read).length;
+function parseMaybeDate(value: string | null): Date | null {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+}
+
+function minutesUntil(value: string | null, now: Date): number | null {
+  const parsed = parseMaybeDate(value);
+  if (!parsed) return null;
+  return Math.round((parsed.getTime() - now.getTime()) / 60000);
+}
+
+function taskReminderDate(rawTask: any): string | null {
+  const task = normalizeTask(rawTask);
+  return task.reminderAt ?? task.scheduledAt ?? task.dueAt ?? (task.date ? `${task.date}T09:00:00` : null);
+}
+
+function eventReminderDate(rawEvent: any): string | null {
+  const event = normalizeEvent(rawEvent);
+  return event.reminderAt ?? event.startAt;
+}
+
+export function buildReminderItems(input: {
+  tasks?: any[];
+  events?: any[];
+  leads?: any[];
+  now?: Date;
+  settings?: ReminderSettings;
+}): ReminderItem[] {
+  const now = input.now ?? new Date();
+  const settings = input.settings ?? DEFAULT_REMINDER_SETTINGS;
+  const reminders: ReminderItem[] = [];
+
+  for (const rawTask of input.tasks ?? []) {
+    const task = normalizeTask(rawTask);
+    if (task.status !== 'todo') continue;
+    const dueAt = taskReminderDate(rawTask);
+    const dueDate = parseMaybeDate(dueAt);
+    if (!dueDate) continue;
+    const min = minutesUntil(dueAt, now);
+    const title = task.title;
+    const href = task.leadId ? `/leads/${task.leadId}` : '/tasks';
+
+    if (dueDate.getTime() < now.getTime() && !isSameLocalDay(dueDate, now)) {
+      reminders.push({
+        key: `task:${task.id}:overdue`,
+        type: 'task_overdue',
+        title: `Zaległe zadanie: ${title}`,
+        description: 'Termin minął. Otwórz i zdecyduj: wykonane, przełóż albo usuń.',
+        priority: 'high',
+        dueAt,
+        sourceId: task.id,
+        sourceKind: 'task',
+        href,
+      });
+    } else if (min !== null && min >= 0 && min <= settings.defaultReminderLeadMinutes) {
+      reminders.push({
+        key: `task:${task.id}:due_soon`,
+        type: 'task_due_soon',
+        title: `Zadanie za chwilę: ${title}`,
+        description: `Termin w ciągu ${settings.defaultReminderLeadMinutes} minut.`,
+        priority: 'high',
+        dueAt,
+        sourceId: task.id,
+        sourceKind: 'task',
+        href,
+      });
+    } else if (isSameLocalDay(dueDate, now)) {
+      reminders.push({
+        key: `task:${task.id}:today`,
+        type: 'today_task',
+        title: `Zadanie na dziś: ${title}`,
+        description: 'Masz to zaplanowane na dzisiaj.',
+        priority: 'medium',
+        dueAt,
+        sourceId: task.id,
+        sourceKind: 'task',
+        href,
+      });
+    }
+  }
+
+  for (const rawEvent of input.events ?? []) {
+    const event = normalizeEvent(rawEvent);
+    if (event.status !== 'scheduled') continue;
+    const dueAt = eventReminderDate(rawEvent);
+    const dueDate = parseMaybeDate(dueAt);
+    if (!dueDate) continue;
+    const min = minutesUntil(dueAt, now);
+    const href = event.leadId ? `/leads/${event.leadId}` : '/calendar';
+
+    if (dueDate.getTime() < now.getTime() && !isSameLocalDay(dueDate, now)) {
+      reminders.push({
+        key: `event:${event.id}:overdue`,
+        type: 'event_overdue',
+        title: `Zaległe wydarzenie: ${event.title}`,
+        description: 'Wydarzenie minęło. Oznacz jako zakończone albo przełóż.',
+        priority: 'high',
+        dueAt,
+        sourceId: event.id,
+        sourceKind: 'event',
+        href,
+      });
+    } else if (min !== null && min >= 0 && min <= settings.defaultReminderLeadMinutes) {
+      reminders.push({
+        key: `event:${event.id}:due_soon`,
+        type: 'event_due_soon',
+        title: `Wydarzenie za chwilę: ${event.title}`,
+        description: `Start w ciągu ${settings.defaultReminderLeadMinutes} minut.`,
+        priority: 'high',
+        dueAt,
+        sourceId: event.id,
+        sourceKind: 'event',
+        href,
+      });
+    } else if (isSameLocalDay(dueDate, now)) {
+      reminders.push({
+        key: `event:${event.id}:today`,
+        type: 'today_event',
+        title: `Wydarzenie dzisiaj: ${event.title}`,
+        description: 'Masz to w dzisiejszym planie.',
+        priority: 'medium',
+        dueAt,
+        sourceId: event.id,
+        sourceKind: 'event',
+        href,
+      });
+    }
+  }
+
+  if (settings.leadWithoutActionAlertsEnabled) {
+    for (const rawLead of input.leads ?? []) {
+      const lead = normalizeLead(rawLead);
+      if (isClosedLeadStatus(lead.status)) continue;
+      const action = getNearestPlannedActionForLead({ lead: rawLead, tasks: input.tasks ?? [], events: input.events ?? [] });
+      if (action) continue;
+      reminders.push({
+        key: `lead:${lead.id}:without_action`,
+        type: 'lead_without_action',
+        title: `Lead bez zaplanowanej akcji: ${lead.name}`,
+        description: 'Brak zadania lub wydarzenia. Ten kontakt może wypaść z procesu.',
+        priority: lead.dealValue > 0 || lead.isAtRisk ? 'high' : 'medium',
+        dueAt: null,
+        sourceId: lead.id,
+        sourceKind: 'lead',
+        href: `/leads/${lead.id}`,
+      });
+    }
+  }
+
+  const order: Record<ReminderPriority, number> = { high: 0, medium: 1, low: 2 };
+  return reminders.sort((a, b) => order[a.priority] - order[b.priority]);
+}
+
+function readLog(): ReminderLogEntry[] {
+  const storage = getStorage();
+  if (!storage) return [];
+  return safeJsonParse<ReminderLogEntry[]>(storage.getItem(LOG_KEY), []);
+}
+
+function writeLog(entries: ReminderLogEntry[]): ReminderLogEntry[] {
+  const storage = getStorage();
+  const next = entries.slice(0, MAX_LOG_ENTRIES);
+  if (storage) storage.setItem(LOG_KEY, JSON.stringify(next));
+  return next;
+}
+
+export function listReminderLogs(): ReminderLogEntry[] {
+  return readLog().sort((a, b) => new Date(b.lastShownAt).getTime() - new Date(a.lastShownAt).getTime());
+}
+
+export function getReminderLog(key: string): ReminderLogEntry | null {
+  return readLog().find((entry) => entry.key === key) ?? null;
+}
+
+export function isReminderSuppressed(key: string, now = new Date()): boolean {
+  const entry = getReminderLog(key);
+  if (!entry) return false;
+  if (entry.dismissedAt) return true;
+  if (entry.snoozedUntil) {
+    const snoozedUntil = new Date(entry.snoozedUntil);
+    if (Number.isFinite(snoozedUntil.getTime()) && snoozedUntil.getTime() > now.getTime()) return true;
+  }
+  if (entry.lastShownAt) {
+    const lastShownAt = new Date(entry.lastShownAt);
+    if (Number.isFinite(lastShownAt.getTime())) {
+      return now.getTime() - lastShownAt.getTime() < SHOW_REPEAT_WINDOW_MINUTES * 60000;
+    }
+  }
+  return false;
+}
+
+export function markReminderShown(item: ReminderItem, now = new Date()): ReminderLogEntry {
+  const nowIso = now.toISOString();
+  const existing = readLog();
+  const found = existing.find((entry) => entry.key === item.key);
+  const entry: ReminderLogEntry = found
+    ? { ...found, ...item, lastShownAt: nowIso, shownCount: found.shownCount + 1, dismissedAt: null }
+    : { ...item, firstShownAt: nowIso, lastShownAt: nowIso, shownCount: 1, snoozedUntil: null, dismissedAt: null };
+  const next = [entry, ...existing.filter((old) => old.key !== item.key)];
+  writeLog(next);
+  return entry;
+}
+
+export function snoozeReminder(key: string, minutes: number, now = new Date()): ReminderLogEntry | null {
+  const existing = readLog();
+  const found = existing.find((entry) => entry.key === key);
+  if (!found) return null;
+  const snoozedUntil = new Date(now.getTime() + minutes * 60000).toISOString();
+  const entry = { ...found, snoozedUntil, dismissedAt: null, lastShownAt: now.toISOString() };
+  writeLog([entry, ...existing.filter((old) => old.key !== key)]);
+  return entry;
+}
+
+export function dismissReminder(key: string, now = new Date()): ReminderLogEntry | null {
+  const existing = readLog();
+  const found = existing.find((entry) => entry.key === key);
+  if (!found) return null;
+  const entry = { ...found, dismissedAt: now.toISOString(), lastShownAt: now.toISOString() };
+  writeLog([entry, ...existing.filter((old) => old.key !== key)]);
+  return entry;
+}
+
+export function clearReminderLog(): void {
+  const storage = getStorage();
+  if (storage) storage.removeItem(LOG_KEY);
+}
+
+export function getVisibleReminderItems(items: ReminderItem[], now = new Date()): ReminderItem[] {
+  return items.filter((item) => !isReminderSuppressed(item.key, now));
+}
+
+export function getBrowserNotificationPermission(): NotificationPermission | 'unsupported' {
+  if (typeof window === 'undefined' || !('Notification' in window)) return 'unsupported';
+  return Notification.permission;
+}
+
+export async function requestBrowserNotificationPermission(): Promise<NotificationPermission | 'unsupported'> {
+  if (typeof window === 'undefined' || !('Notification' in window)) return 'unsupported';
+  return Notification.requestPermission();
+}
+
+export function showBrowserNotification(item: ReminderItem): boolean {
+  if (getBrowserNotificationPermission() !== 'granted') return false;
+  try {
+    const notification = new Notification(item.title, { body: item.description });
+    notification.onclick = () => {
+      window.focus();
+      window.location.href = item.href;
+    };
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Backward-compatible wrappers kept for older imports that may still exist in a local repo
+// after copying ZIP contents over an existing working tree. New code should use
+// buildReminderItems/getVisibleReminderItems/markReminderShown directly.
+export function supportsBrowserNotifications(): boolean {
+  return typeof window !== 'undefined' && 'Notification' in window;
+}
+
+export function getBrowserNotificationsEnabled(userId = 'local'): boolean {
+  return loadReminderSettings(userId).browserNotificationsEnabled;
+}
+
+export function buildRuntimeNotificationItems(input: {
+  tasks?: any[];
+  events?: any[];
+  leads?: any[];
+  now?: Date;
+  settings?: ReminderSettings;
+}): ReminderItem[] {
+  return getVisibleReminderItems(buildReminderItems(input));
+}
+
+export function hasDeliveredNotification(keyOrItem: string | ReminderItem): boolean {
+  const key = typeof keyOrItem === 'string' ? keyOrItem : keyOrItem.key;
+  return Boolean(getReminderLog(key)?.lastShownAt);
+}
+
+export function recordDeliveredNotification(itemOrKey: ReminderItem | string, now = new Date()): ReminderLogEntry | null {
+  if (typeof itemOrKey !== 'string') return markReminderShown(itemOrKey, now);
+  const existing = getReminderLog(itemOrKey);
+  if (!existing) return null;
+  return markReminderShown(existing, now);
 }

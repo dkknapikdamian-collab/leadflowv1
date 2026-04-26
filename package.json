@@ -1,5 +1,5 @@
 {
-  "name": "closeflow",
+  "name": "react-example",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,8 +9,11 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "verify:closeflow": "node scripts/closeflow-release-check.cjs",
-    "verify:closeflow:quiet": "node scripts/closeflow-release-check-quiet.cjs"
+    "test:quick-lead": "tsx tests/quick-lead-capture.test.ts",
+    "test:lead-actions": "tsx tests/lead-actions.test.ts",
+    "test:normalizers": "tsx tests/record-normalizers.test.ts",
+    "test:notifications": "tsx tests/notifications.test.ts",
+    "test:stage": "npm run lint && npm run test:quick-lead && npm run test:lead-actions && npm run test:normalizers && npm run test:notifications"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
@@ -39,6 +42,7 @@
     "papaparse": "^5.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-firebase-hooks": "^5.1.1",
     "react-router-dom": "^7.14.0",
     "shadcn": "^4.1.2",
     "sonner": "^2.0.7",
