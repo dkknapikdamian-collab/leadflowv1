@@ -29,7 +29,8 @@ test('Quick AI Capture keeps the user confirmation gate', () => {
 
   assert.match(component, /Szybki szkic/);
   assert.match(component, /Zrób szkic/);
-  assert.match(component, /Zapisz po sprawdzeniu/);
+  assert.match(component, /Zatwierdź jako lead/);
+  assert.match(component, /Zapisz szkic/);
   assert.match(component, /niczego nie zapisze bez Twojego potwierdzenia/);
   assert.match(component, /Tekst źródłowy zostaje widoczny/);
   assert.match(component, /insertLeadToSupabase/);

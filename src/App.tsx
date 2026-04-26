@@ -22,6 +22,7 @@ const Clients = lazy(() => import('./pages/Clients'));
 const ClientDetail = lazy(() => import('./pages/ClientDetail'));
 const ClientPortal = lazy(() => import('./pages/ClientPortal'));
 const Activity = lazy(() => import('./pages/Activity'));
+const AiDrafts = lazy(() => import('./pages/AiDrafts'));
 const Settings = lazy(() => import('./pages/Settings'));
 const AdminAiSettings = lazy(() => import('./pages/AdminAiSettings'));
 const Login = lazy(() => import('./pages/Login'));
@@ -192,6 +193,7 @@ export default function App() {
             <Route path="/clients" element={user ? <Clients /> : <Navigate to="/login" />} />
             <Route path="/clients/:clientId" element={user ? <ClientDetail /> : <Navigate to="/login" />} />
             <Route path="/activity" element={user ? <Activity /> : <Navigate to="/login" />} />
+            <Route path="/ai-drafts" element={user ? <AiDrafts /> : <Navigate to="/login" />} />
             <Route path="/notifications" element={user ? <NotificationsCenter /> : <Navigate to="/login" />} />
             <Route path="/billing" element={user ? <Billing /> : <Navigate to="/login" />} />
             <Route path="/help" element={user ? <SupportCenter /> : <Navigate to="/login" />} />

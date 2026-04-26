@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
+import GlobalQuickActions from './GlobalQuickActions';
 import { parseISO, differenceInDays } from 'date-fns';
 
 interface LayoutProps {
@@ -65,6 +66,7 @@ export default function Layout({ children }: LayoutProps) {
     { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
     { icon: Briefcase, label: 'Sprawy', path: '/cases' },
     { icon: History, label: 'Aktywność', path: '/activity' },
+    { icon: History, label: 'Szkice AI', path: '/ai-drafts' },
     { icon: Bell, label: 'Powiadomienia', path: '/notifications' },
     { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
     { icon: LifeBuoy, label: 'Pomoc', path: '/help' },
@@ -232,6 +234,8 @@ export default function Layout({ children }: LayoutProps) {
             </Link>
           </div>
         )}
+        <GlobalQuickActions />
+
         {children}
       </main>
 

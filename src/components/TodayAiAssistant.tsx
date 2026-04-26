@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { askTodayAiAssistant, type TodayAiAssistantAnswer } from '../lib/ai-assistant';
+import { saveAiLeadDraft } from '../lib/ai-drafts';
 import {
   AI_COMMAND_MAX_LENGTH,
   buildAiUsageKey,
@@ -202,6 +203,17 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSaveCaptureDraft = () => {
+    const text = String(answer?.suggestedCaptureText || answer?.rawText || rawText || '').trim();
+    if (!text) {
+      toast.error('Brak treści do zapisania w Szkicach AI');
+      return;
+    }
+
+    saveAiLeadDraft({ rawText: text, source: 'today_assistant' });
+    toast.success('Szkic zapisany w Szkicach AI');
   };
 
   const handleTransferCapture = () => {
@@ -406,6 +418,9 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
                   <p className="text-xs text-blue-900">
                     Żeby zapisać tego leada, przenieś notatkę do „Szybkiego szkicu”. Tam AI przepisze pola roboczo, a zapis zrobisz dopiero po sprawdzeniu.
                   </p>
+                  <Button type="button" size="sm" variant="outline" onClick={handleSaveCaptureDraft} data-ai-assistant-save-draft="true">
+                    Zapisz w szkicach AI
+                  </Button>
                   {onCaptureRequest ? (
                     <Button type="button" size="sm" onClick={handleTransferCapture} data-ai-assistant-open-capture="true">
                       Otwórz w Szybkim szkicu

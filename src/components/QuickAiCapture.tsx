@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { createQuickAiCaptureDraft, type QuickAiCaptureDraft } from '../lib/ai-capture';
+import { saveAiLeadDraft, type AiLeadDraftSource } from '../lib/ai-drafts';
 import {
   AI_COMMAND_MAX_LENGTH,
   buildAiUsageKey,
@@ -107,9 +108,10 @@ type QuickAiCaptureProps = {
   onSaved?: () => void | Promise<void>;
   initialText?: string;
   openSignal?: number;
+  draftSource?: AiLeadDraftSource;
 };
 
-export default function QuickAiCapture({ onSaved, initialText = '', openSignal = 0 }: QuickAiCaptureProps) {
+export default function QuickAiCapture({ onSaved, initialText = '', openSignal = 0, draftSource = 'quick_capture' }: QuickAiCaptureProps) {
   const { workspace, profile, hasAccess, workspaceReady } = useWorkspace();
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
@@ -233,6 +235,23 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
 
   const updateTaskDraft = (field: keyof QuickAiCaptureDraft['task'], value: string | boolean) => {
     setDraft((prev) => prev ? { ...prev, task: { ...prev.task, [field]: value } } : prev);
+  };
+
+  const handleSaveRawDraft = () => {
+    const text = rawText.trim();
+    if (!text) {
+      toast.error('Wklej albo podyktuj notatkę przed zapisem szkicu.');
+      return;
+    }
+
+    saveAiLeadDraft({
+      rawText: text,
+      parsedDraft: draft ? draft as unknown as Record<string, unknown> : null,
+      source: draftSource,
+    });
+    toast.success('Szkic zapisany w Szkicach AI');
+    setOpen(false);
+    reset();
   };
 
   const handleBuildDraft = async () => {
@@ -369,6 +388,9 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
               {draftLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
               Zrób szkic
             </Button>
+            <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={!rawText.trim()}>
+              Zapisz szkic
+            </Button>
             <Button type="button" variant="outline" onClick={handleToggleSpeech}>
               {listening ? <MicOff className="mr-2 h-4 w-4" /> : <Mic className="mr-2 h-4 w-4" />}
               {listening ? 'Zatrzymaj dyktowanie' : 'Dyktuj'}
@@ -470,7 +492,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
                 <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={saving}>Anuluj</Button>
                 <Button type="submit" disabled={saving || !hasAccess}>
                   {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Zapisz po sprawdzeniu
+                  Zatwierdź jako lead
                 </Button>
               </DialogFooter>
             </form>
