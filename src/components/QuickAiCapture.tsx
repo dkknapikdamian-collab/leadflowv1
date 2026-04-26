@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Loader2, Mic, MicOff, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -96,7 +96,13 @@ function joinTranscript(previous: string, addition: string) {
   return base ? `${base} ${next}` : next;
 }
 
-export default function QuickAiCapture({ onSaved }: { onSaved?: () => void | Promise<void> }) {
+type QuickAiCaptureProps = {
+  onSaved?: () => void | Promise<void>;
+  initialText?: string;
+  openSignal?: number;
+};
+
+export default function QuickAiCapture({ onSaved, initialText = '', openSignal = 0 }: QuickAiCaptureProps) {
   const { workspace, hasAccess, workspaceReady } = useWorkspace();
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
@@ -125,6 +131,20 @@ export default function QuickAiCapture({ onSaved }: { onSaved?: () => void | Pro
       }
     }
   };
+
+  useEffect(() => {
+    if (!openSignal) return;
+    const nextText = String(initialText || '').trim();
+    if (!nextText) return;
+
+    stopSpeech();
+    setOpen(true);
+    setRawText(nextText);
+    setDraft(null);
+    setDraftLoading(false);
+    setSaving(false);
+    setInterimText('');
+  }, [openSignal, initialText]);
 
   const reset = () => {
     stopSpeech();

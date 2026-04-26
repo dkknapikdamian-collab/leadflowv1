@@ -29,6 +29,7 @@ type TodayAiAssistantProps = {
   events: Record<string, unknown>[];
   cases: Record<string, unknown>[];
   disabled?: boolean;
+  onCaptureRequest?: (rawText: string) => void;
 };
 
 const EXAMPLES = [
@@ -64,7 +65,7 @@ function priorityClassName(priority?: string) {
   return 'border-blue-200 bg-blue-50 text-blue-700';
 }
 
-export default function TodayAiAssistant({ leads, tasks, events, cases, disabled }: TodayAiAssistantProps) {
+export default function TodayAiAssistant({ leads, tasks, events, cases, disabled, onCaptureRequest }: TodayAiAssistantProps) {
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
   const [answer, setAnswer] = useState<TodayAiAssistantAnswer | null>(null);
@@ -116,6 +117,24 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
       setLoading(false);
     }
   };
+
+  const handleTransferCapture = () => {
+    const text = String(answer?.suggestedCaptureText || answer?.rawText || rawText || '').trim();
+    if (!text) {
+      toast.error('Brak treści do przeniesienia do Szybkiego szkicu');
+      return;
+    }
+
+    if (!onCaptureRequest) {
+      toast.error('Szybki szkic nie jest dostępny w tym widoku');
+      return;
+    }
+
+    onCaptureRequest(text);
+    setOpen(false);
+    toast.success('Przeniesiono do Szybkiego szkicu');
+  };
+
 
   const handleToggleSpeech = () => {
     if (listening) {
@@ -285,9 +304,16 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, disabled
               ) : null}
 
               {answer.intent === 'lead_capture' ? (
-                <p className="text-xs text-slate-500">
-                  Żeby zapisać tego leada, użyj przycisku „Szybki szkic”. Tam AI przepisze pola roboczo, a zapis zrobisz dopiero po sprawdzeniu.
-                </p>
+                <div className="space-y-2 rounded-xl border border-blue-100 bg-blue-50/70 p-3">
+                  <p className="text-xs text-blue-900">
+                    Żeby zapisać tego leada, przenieś notatkę do „Szybkiego szkicu”. Tam AI przepisze pola roboczo, a zapis zrobisz dopiero po sprawdzeniu.
+                  </p>
+                  {onCaptureRequest ? (
+                    <Button type="button" size="sm" onClick={handleTransferCapture} data-ai-assistant-open-capture="true">
+                      Otwórz w Szybkim szkicu
+                    </Button>
+                  ) : null}
+                </div>
               ) : null}
             </div>
           ) : null}

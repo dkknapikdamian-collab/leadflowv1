@@ -496,6 +496,16 @@ export default function Today() {
   const [todayActionId, setTodayActionId] = useState<string | null>(null);
   const [previewEntry, setPreviewEntry] = useState<any | null>(null);
 
+  const [quickCaptureSeed, setQuickCaptureSeed] = useState('');
+  const [quickCaptureOpenSignal, setQuickCaptureOpenSignal] = useState(0);
+
+  const openQuickCaptureFromAssistant = (text: string) => {
+    const nextText = String(text || '').trim();
+    if (!nextText) return;
+    setQuickCaptureSeed(nextText);
+    setQuickCaptureOpenSignal((current) => current + 1);
+  };
+
   const leadSubmitLockRef = useRef(false);
   const taskSubmitLockRef = useRef(false);
   const eventSubmitLockRef = useRef(false);
@@ -1262,8 +1272,13 @@ export default function Today() {
               events={events}
               cases={cases}
               disabled={!hasAccess}
-            />
-            <QuickAiCapture onSaved={() => void refreshSupabaseBundle()} />
+            
+            onCaptureRequest={openQuickCaptureFromAssistant}
+          />
+            <QuickAiCapture onSaved={() => void refreshSupabaseBundle()} 
+            initialText={quickCaptureSeed}
+            openSignal={quickCaptureOpenSignal}
+          />
             <Dialog open={isLeadOpen} onOpenChange={setIsLeadOpen}>
               <DialogTrigger asChild>
                 <Button className="rounded-xl shadow-sm">
