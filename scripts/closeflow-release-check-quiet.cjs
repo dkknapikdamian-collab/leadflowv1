@@ -79,6 +79,7 @@ const requiredTests = [
   'tests/ai-usage-limit-guard.test.cjs',
   'tests/ai-real-provider-wiring.test.cjs',
   'tests/ai-cloudflare-provider-wiring.test.cjs',
+  'tests/ai-assistant-global-app-search.test.cjs',
   'tests/ai-assistant-admin-and-app-scope.test.cjs',
 ];
 

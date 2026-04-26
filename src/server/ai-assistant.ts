@@ -1,4 +1,4 @@
-type AssistantIntent = 'today_briefing' | 'lead_lookup' | 'lead_capture' | 'blocked_out_of_scope' | 'unknown';
+type AssistantIntent = 'today_briefing' | 'lead_lookup' | 'lead_capture' | 'global_app_search' | 'blocked_out_of_scope' | 'unknown';
 
 type AssistantItem = {
   label: string;
@@ -97,17 +97,33 @@ function getCaseDisplayName(caseRecord: Record<string, unknown>) {
   return asText(caseRecord.title) || asText(caseRecord.clientName) || asText(caseRecord.name) || asText(caseRecord.company) || 'Sprawa bez nazwy';
 }
 
+
 function getSearchText(record: Record<string, unknown>) {
-  return normalizeText([
-    record.name,
-    record.company,
-    record.clientName,
-    record.title,
-    record.email,
-    record.phone,
-    record.source,
-    record.status,
-  ].filter(Boolean).join(' '));
+  const values: string[] = [];
+
+  for (const [key, value] of Object.entries(record)) {
+    if (value === null || value === undefined) continue;
+
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      values.push(String(value));
+      continue;
+    }
+
+    if (Array.isArray(value)) {
+      value.slice(0, 12).forEach((item) => {
+        if (typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean') {
+          values.push(String(item));
+        }
+      });
+      continue;
+    }
+
+    if (typeof value === 'object' && /note|notes|description|summary|message|comment|kontakt|contact|address|adres|email|phone|telefon|tag|status|source/i.test(key)) {
+      values.push(JSON.stringify(value));
+    }
+  }
+
+  return normalizeText(values.filter(Boolean).join(' '));
 }
 
 function getTaskMoment(task: Record<string, unknown>) {
@@ -360,6 +376,141 @@ function buildRelationValueAnswer(context: Record<string, unknown>, rawText: str
   };
 }
 
+type AppSearchKind = 'lead' | 'client' | 'case' | 'task' | 'event';
+
+function getSearchTerms(query: string) {
+  const stopWords = new Set([
+    'jaki', 'jaka', 'jakie', 'jest', 'moj', 'moja', 'moje', 'mój', 'czy', 'dla', 'tego', 'tej', 'ten', 'tym', 'tam', 'mam', 'pokaz', 'pokaż', 'znajdz', 'znajdź', 'szukaj', 'gdzie', 'ktory', 'który', 'ktora', 'która', 'kontakt', 'lead', 'leada', 'klient', 'klienta', 'sprawa', 'zadanie', 'wydarzenie', 'email', 'mail', 'telefon', 'numer', 'adres'
+  ]);
+  return query.split(' ').map((term) => term.trim()).filter((term) => term.length >= 3 && !stopWords.has(term));
+}
+
+function getKindLabel(kind: AppSearchKind) {
+  if (kind === 'client') return 'Klient';
+  if (kind === 'case') return 'Sprawa';
+  if (kind === 'task') return 'Zadanie';
+  if (kind === 'event') return 'Wydarzenie';
+  return 'Lead';
+}
+
+function getGenericTitle(kind: AppSearchKind, record: Record<string, unknown>) {
+  if (kind === 'client') return getClientDisplayName(record);
+  if (kind === 'case') return getCaseDisplayName(record);
+  if (kind === 'task') return asText(record.title) || asText(record.name) || 'Zadanie';
+  if (kind === 'event') return asText(record.title) || asText(record.name) || 'Wydarzenie';
+  return getLeadDisplayName(record);
+}
+
+function getGenericHref(kind: AppSearchKind, record: Record<string, unknown>) {
+  const id = getId(record);
+  if (kind === 'client') return id ? '/clients/' + id : '/clients';
+  if (kind === 'case') return id ? '/cases/' + id : '/cases';
+  if (kind === 'task') return taskHref(record);
+  if (kind === 'event') return eventHref(record);
+  return id ? '/leads/' + id : '/leads';
+}
+
+function buildGenericDetail(kind: AppSearchKind, record: Record<string, unknown>) {
+  const parts = [getKindLabel(kind)];
+  const email = asText(record.email || record.mail || record.contactEmail);
+  const phone = asText(record.phone || record.telefon || record.mobile || record.contactPhone);
+  const status = asText(record.status || record.stage || record.state);
+  const company = asText(record.company || record.clientName);
+  const value = getRecordValue(record);
+  const moment = kind === 'task' ? getTaskMoment(record) : kind === 'event' ? getEventMoment(record) : '';
+  if (company) parts.push('firma: ' + company);
+  if (email) parts.push('e-mail: ' + email);
+  if (phone) parts.push('telefon: ' + phone);
+  if (status) parts.push('status: ' + status);
+  if (value > 0) parts.push('wartość: ' + formatMoney(value));
+  if (moment) parts.push('termin: ' + formatShort(moment));
+  return parts.join(' · ');
+}
+
+function buildGlobalSearchRows(context: Record<string, unknown>) {
+  return [
+    ...safeArray(context.leads).map((record) => ({ kind: 'lead' as const, record })),
+    ...safeArray((context as any).clients).map((record) => ({ kind: 'client' as const, record })),
+    ...safeArray(context.cases).map((record) => ({ kind: 'case' as const, record })),
+    ...safeArray(context.tasks).map((record) => ({ kind: 'task' as const, record })),
+    ...safeArray(context.events).map((record) => ({ kind: 'event' as const, record })),
+  ];
+}
+
+function scoreGlobalRecord(query: string, record: Record<string, unknown>) {
+  const searchText = getSearchText(record);
+  if (!searchText) return 0;
+  const terms = getSearchTerms(query);
+  let score = 0;
+  if (query.length >= 4 && searchText.includes(query)) score += 20;
+  terms.forEach((term) => {
+    if (!searchText.includes(term)) return;
+    if (term.includes('@')) score += 12;
+    else if (/\d/.test(term)) score += 8;
+    else score += Math.min(6, Math.max(2, term.length - 1));
+  });
+  return score;
+}
+
+function wantsGlobalSearch(query: string) {
+  return /\b(znajdz|znajdź|szukaj|wyszukaj|pokaz|pokaż|odszukaj|kontakt|email|e-mail|mail|telefon|numer|adres)\b/u.test(query)
+    || query.includes('@')
+    || /\d{6,}/.test(query);
+}
+
+function hasPotentialRecordSearchQuery(query: string) {
+  const terms = getSearchTerms(query);
+  return query.includes('@') || /\d{6,}/.test(query) || terms.length >= 2;
+}
+
+function buildGlobalAppSearchAnswer(context: Record<string, unknown>, rawText: string): AssistantResponse {
+  const query = normalizeText(rawText);
+  const rows = buildGlobalSearchRows(context);
+  const scored = rows
+    .map((row) => ({ ...row, score: scoreGlobalRecord(query, row.record) }))
+    .filter((row) => row.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10);
+
+  if (!scored.length) {
+    return {
+      ok: true,
+      scope: 'assistant_read_or_draft_only',
+      provider: 'rules',
+      noAutoWrite: true,
+      intent: 'lead_lookup',
+      title: 'Nie znalazłem tego w danych aplikacji',
+      summary: 'Przeszukałem leady, klientów, sprawy, zadania i wydarzenia po nazwie, firmie, e-mailu, telefonie, opisie, notatkach i statusie.',
+      rawText,
+      items: rows.slice(0, 6).map((row) => ({
+        label: getGenericTitle(row.kind, row.record),
+        detail: buildGenericDetail(row.kind, row.record),
+        href: getGenericHref(row.kind, row.record),
+        priority: 'medium' as const,
+      })),
+      warnings: ['Brak dokładnego dopasowania. Spróbuj podać imię, firmę, e-mail, telefon albo fragment notatki.'],
+    };
+  }
+
+  return {
+    ok: true,
+    scope: 'assistant_read_or_draft_only',
+    provider: 'rules',
+    noAutoWrite: true,
+    intent: 'lead_lookup',
+    title: 'Znalazłem w aplikacji',
+    summary: 'Przeszukałem leady, klientów, sprawy, zadania i wydarzenia po nazwie, firmie, e-mailu, telefonie, opisie, notatkach i statusie.',
+    rawText,
+    items: scored.map((row) => ({
+      label: getGenericTitle(row.kind, row.record),
+      detail: buildGenericDetail(row.kind, row.record),
+      href: getGenericHref(row.kind, row.record),
+      priority: row.kind === 'client' || row.kind === 'case' ? 'high' as const : 'medium' as const,
+    })),
+    warnings: [],
+  };
+}
+
 function detectCaptureIntent(query: string) {
   const hasSaveVerb = /\b(zapisz|dodaj|utworz|stworz|wrzuc|wrzucic|zapamietaj)\b/u.test(query);
   const hasLeadWord = /\b(lead|leada|kontakt|klient|temat)\b/u.test(query);
@@ -592,11 +743,11 @@ function wantsOverview(query: string) {
 }
 
 function wantsFunnelValue(query: string) {
-  return /\b(wartosc|wartość|lejek|lejka|najcenniejsz|najdrozsz|najdroższ|top lead|top klient)\b/u.test(query);
+  return /\b(wartosc|wartość|lejek|lejka|najcenniejsz|najdrozszy|najdroższy|najdrozsz|najdroższ|najwieksz|największ|najwyzsz|najwyższ|najbardziej wartosciow|najbardziej wartościow|top lead|top klient|top spraw)\b/u.test(query);
 }
 
 function wantsLookup(query: string) {
-  return /\b(co dalej|co ma|jaki nastepny|następny|lead|leada|klient|klienta|kontakt|temat|sprawa|zadanie z|zadania z)\b/u.test(query);
+  return /\b(co dalej|co ma|co z|jaki nastepny|jaki następny|następny krok|nastepny krok|zadanie z|zadania z|wydarzenia z|sprawa z)\b/u.test(query);
 }
 
 function buildAssistantAnswer(body: Record<string, unknown>): AssistantResponse {
@@ -635,6 +786,10 @@ function buildAssistantAnswer(body: Record<string, unknown>): AssistantResponse 
 
   if (wantsLookup(query)) {
     return buildLeadLookup(context, rawText);
+  }
+
+  if (wantsGlobalSearch(query) || hasPotentialRecordSearchQuery(query)) {
+    return buildGlobalAppSearchAnswer(context, rawText);
   }
 
   return buildUnknown(rawText);
