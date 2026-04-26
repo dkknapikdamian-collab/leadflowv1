@@ -8,7 +8,7 @@ Po rozpoczeciu obslugi lead ma zostac archiwalnym zrodlem sprzedazy, a dalsza pr
 
 ## Co zmienia etap
 
-- przekierowanie po starcie obslugi idzie na aktualna trase /cases/:id,
+- przekierowanie po starcie obslugi idzie na aktualna trase /case/:id,
 - LeadDetail dostaje flage leadOperationalArchive,
 - szybkie dodawanie zadan z leada jest blokowane, gdy lead jest juz w obsludze,
 - szybkie dodawanie wydarzen z leada jest blokowane, gdy lead jest juz w obsludze,
@@ -20,7 +20,7 @@ V1 ma miec jedna prawde operacyjna po sprzedazy. Lead zostaje historia sprzedazy
 
 ## Kryterium zakonczenia
 
-- po starcie obslugi aplikacja prowadzi do /cases/:id,
+- po starcie obslugi aplikacja prowadzi do /case/:id,
 - LeadDetail nie tworzy nowych szybkich zadan i wydarzen dla leada bedacego juz w obsludze,
 - test lead-service-mode-v1.test.cjs przechodzi,
 - verify:closeflow:quiet przechodzi.

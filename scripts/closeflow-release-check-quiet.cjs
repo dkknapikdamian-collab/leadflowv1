@@ -29,6 +29,7 @@ const requiredTests = [
   'tests/client-detail-v1-operational-center.test.cjs',
   'tests/today-quick-snooze-options.test.cjs',
   'tests/today-quick-snooze-click-edit-polish.test.cjs',
+  'tests/today-quick-snooze-hard-click-fix.test.cjs',
   'tests/pwa-foundation.test.cjs',
   'tests/daily-digest-email-runtime.test.cjs',
   'tests/email-digest-domain-gate.test.cjs',
@@ -47,6 +48,8 @@ const requiredTests = [
   'tests/request-scope-server-helper.test.cjs',
   'tests/request-identity-vercel-api-signature.test.cjs',
   'tests/polish-mojibake-audit.test.cjs',
+  'tests/layout-brand-label.test.cjs',
+  'tests/lead-start-service-case-redirect.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

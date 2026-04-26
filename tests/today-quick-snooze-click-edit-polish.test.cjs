@@ -9,39 +9,65 @@ function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
+function extractTodayEntrySnoozeBar(source) {
+  const start = source.indexOf('function TodayEntrySnoozeBar({');
+  const end = source.indexOf('export default function Today() {');
+
+  assert.ok(start > -1, 'TodayEntrySnoozeBar component is missing');
+  assert.ok(end > start, 'TodayEntrySnoozeBar component end marker is missing');
+
+  return source.slice(start, end);
+}
+
+function expectText(source, text) {
+  assert.ok(source.includes(text), 'Missing text: ' + text);
+}
+
+function expectPattern(source, pattern, label) {
+  assert.ok(pattern.test(source), 'Missing pattern: ' + label);
+}
+
+function rejectPattern(source, pattern, label) {
+  assert.ok(!pattern.test(source), 'Unexpected pattern: ' + label);
+}
+
 test('Today quick snooze section has Polish labels with correct characters', () => {
   const source = read('src/pages/Today.tsx');
 
-  assert.match(source, /Szybko odłóż:/);
-  assert.match(source, /label: 'Przyszły tydzień'/);
-  assert.match(source, /description: 'Odłóż o godzinę\.'/);
-  assert.match(source, /description: 'Odłóż na przyszły tydzień\.'/);
+  expectText(source, 'Szybko odłóż:');
+  expectText(source, "label: 'Przyszły tydzień'");
+  expectText(source, "description: 'Odłóż o godzinę.'");
+  expectText(source, "description: 'Odłóż na przyszły tydzień.'");
 
-  assert.doesNotMatch(source, /Odloz/);
-  assert.doesNotMatch(source, /Przyszly tydzien/);
+  rejectPattern(source, /Odloz/, 'Odloz');
+  rejectPattern(source, /Przyszly tydzien/, 'Przyszly tydzien');
 });
 
-test('Today quick snooze buttons stop parent click handlers and remain clickable', () => {
+test('Today quick snooze actions stop parent click handlers and remain clickable', () => {
   const source = read('src/pages/Today.tsx');
+  const component = extractTodayEntrySnoozeBar(source);
 
-  assert.match(source, /function TodayEntrySnoozeBar/);
-  assert.match(source, /const stopInteractiveEvent = \(event: any\)/);
-  assert.match(source, /event\.preventDefault\(\)/);
-  assert.match(source, /event\.stopPropagation\(\)/);
-  assert.match(source, /onPointerDown=\{\(event\) => event\.stopPropagation\(\)\}/);
-  assert.match(source, /onMouseDown=\{\(event\) => event\.stopPropagation\(\)\}/);
-  assert.match(source, /onClick=\{\(event\) => handleSnoozeClick\(event, option\.key\)\}/);
-  assert.match(source, /void onSnooze\(entry, optionKey\)/);
-  assert.match(source, /pointer-events-auto/);
+  expectText(component, 'function TodayEntrySnoozeBar');
+  expectText(component, 'const stopInteractiveEvent = (event: any) =>');
+  expectText(component, 'event.preventDefault();');
+  expectText(component, 'event.stopPropagation();');
+  expectText(component, 'onPointerDown={stopInteractiveEvent}');
+  expectText(component, 'onMouseDown={stopInteractiveEvent}');
+  expectText(component, 'data-today-quick-snooze-action={option.key}');
+  expectText(component, 'role="button"');
+  expectText(component, 'pointer-events-auto');
+  expectText(component, 'z-50');
+  expectText(component, 'void onSnooze(entry, optionKey)');
 });
 
 test('Today quick snooze section exposes edit action', () => {
   const source = read('src/pages/Today.tsx');
+  const component = extractTodayEntrySnoozeBar(source);
 
-  assert.match(source, /onEdit\?: \(entry: any\) => void/);
-  assert.match(source, /const handleEditClick = \(event: any\)/);
-  assert.match(source, /onEdit\?\.\(entry\)/);
-  assert.match(source, />\s*Edytuj\s*<\/button>/);
-  assert.match(source, /title="Edytuj zadanie lub wydarzenie"/);
-  assert.match(source, /onEdit=\{openPreviewEntry\}/);
+  expectPattern(source, /onEdit\?: \(entry: any\) => void/, 'onEdit prop type');
+  expectText(component, 'const handleEditAction = (event: any) =>');
+  expectText(component, 'onEdit?.(entry);');
+  expectText(component, 'data-today-quick-snooze-edit="true"');
+  expectText(component, 'Edytuj zadanie lub wydarzenie');
+  expectText(source, 'onEdit={openPreviewEntry}');
 });

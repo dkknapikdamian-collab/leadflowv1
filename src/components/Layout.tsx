@@ -84,7 +84,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="bg-primary p-1.5 rounded-lg">
               <CheckCircle2 className="w-5 h-5 text-white" />
             </div>
-            Close Flow
+            CloseFlow
           </h1>
         </div>
 
@@ -139,7 +139,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="bg-primary p-1.5 rounded-lg shrink-0">
               <CheckCircle2 className="w-5 h-5 text-white" />
             </div>
-            <span className="text-base font-bold text-slate-900 truncate">Close Flow</span>
+            <span className="text-base font-bold text-slate-900 truncate">CloseFlow</span>
           </Link>
           <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setMobileMenuOpen(true)}>
             <Menu className="w-6 h-6" />
@@ -156,7 +156,7 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="bg-primary p-1.5 rounded-lg shrink-0">
                   <CheckCircle2 className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-base font-bold text-slate-900 truncate">Close Flow</span>
+                <span className="text-base font-bold text-slate-900 truncate">CloseFlow</span>
               </div>
               <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setMobileMenuOpen(false)}>
                 <X className="w-5 h-5" />

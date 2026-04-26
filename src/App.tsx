@@ -186,6 +186,7 @@ export default function App() {
             <Route path="/calendar" element={user ? <Calendar /> : <Navigate to="/login" />} />
             <Route path="/cases" element={user ? <Cases /> : <Navigate to="/login" />} />
             <Route path="/case/:caseId" element={user ? <CaseDetail /> : <Navigate to="/login" />} />
+            <Route path="/cases/:caseId" element={user ? <CaseDetail /> : <Navigate to="/login" />} />
             <Route path="/clients" element={user ? <Clients /> : <Navigate to="/login" />} />
             <Route path="/clients/:clientId" element={user ? <ClientDetail /> : <Navigate to="/login" />} />
             <Route path="/activity" element={user ? <Activity /> : <Navigate to="/login" />} />

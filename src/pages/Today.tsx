@@ -362,50 +362,76 @@ function TodayEntrySnoozeBar({
     event.stopPropagation();
   };
 
-  const handleEditClick = (event: any) => {
+  const handleEditAction = (event: any) => {
     stopInteractiveEvent(event);
+    if (isPending) return;
     onEdit?.(entry);
   };
 
-  const handleSnoozeClick = (event: any, optionKey: string) => {
+  const handleSnoozeAction = (event: any, optionKey: string) => {
     stopInteractiveEvent(event);
+    if (isPending) return;
     void onSnooze(entry, optionKey);
   };
 
+  const handleKeyboardAction = (event: any, callback: (event: any) => void) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    callback(event);
+  };
+
+  const actionClassName =
+    'inline-flex h-8 cursor-pointer select-none items-center whitespace-nowrap rounded-lg border px-2.5 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue-500/25';
+
+  const disabledClassName = isPending ? ' cursor-not-allowed opacity-50' : '';
+
   return (
     <div
-      className="relative z-20 mt-3 flex w-full max-w-full flex-wrap items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2 pointer-events-auto"
+      className="relative z-50 mt-3 flex w-full max-w-full flex-wrap items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2 pointer-events-auto isolate"
+      data-today-quick-snooze-bar="true"
+      style={{ pointerEvents: 'auto' }}
       onClick={(event) => event.stopPropagation()}
       onMouseDown={(event) => event.stopPropagation()}
+      onMouseUp={(event) => event.stopPropagation()}
       onPointerDown={(event) => event.stopPropagation()}
+      onPointerUp={(event) => event.stopPropagation()}
+      onTouchStart={(event) => event.stopPropagation()}
+      onTouchEnd={(event) => event.stopPropagation()}
     >
       <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko odłóż:</span>
       {onEdit ? (
-        <button
-          type="button"
-          disabled={isPending}
-          onPointerDown={(event) => event.stopPropagation()}
-          onMouseDown={(event) => event.stopPropagation()}
-          onClick={handleEditClick}
-          className="whitespace-nowrap rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
+        <span
+          role="button"
+          tabIndex={isPending ? -1 : 0}
+          aria-disabled={isPending}
+          data-today-quick-snooze-edit="true"
+          onPointerDown={stopInteractiveEvent}
+          onMouseDown={stopInteractiveEvent}
+          onTouchStart={(event) => event.stopPropagation()}
+          onClick={handleEditAction}
+          onKeyDown={(event) => handleKeyboardAction(event, handleEditAction)}
+          className={`${actionClassName} border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:bg-blue-100${disabledClassName}`}
           title="Edytuj zadanie lub wydarzenie"
         >
           Edytuj
-        </button>
+        </span>
       ) : null}
       {TODAY_QUICK_SNOOZE_OPTIONS.map((option) => (
-        <button
+        <span
           key={option.key}
-          type="button"
-          disabled={isPending}
-          onPointerDown={(event) => event.stopPropagation()}
-          onMouseDown={(event) => event.stopPropagation()}
-          onClick={(event) => handleSnoozeClick(event, option.key)}
-          className="whitespace-nowrap rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
+          role="button"
+          tabIndex={isPending ? -1 : 0}
+          aria-disabled={isPending}
+          data-today-quick-snooze-action={option.key}
+          onPointerDown={stopInteractiveEvent}
+          onMouseDown={stopInteractiveEvent}
+          onTouchStart={(event) => event.stopPropagation()}
+          onClick={(event) => handleSnoozeAction(event, option.key)}
+          onKeyDown={(event) => handleKeyboardAction(event, (keyboardEvent) => handleSnoozeAction(keyboardEvent, option.key))}
+          className={`${actionClassName} border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50${disabledClassName}`}
           title={option.description}
         >
           {isPending ? '...' : option.label}
-        </button>
+        </span>
       ))}
     </div>
   );

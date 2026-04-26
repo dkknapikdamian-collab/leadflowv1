@@ -1,4 +1,4 @@
-﻿const assert = require('node:assert/strict');
+const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -9,17 +9,17 @@ function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
-test('Lead service handoff uses current cases route', () => {
+test('Lead service handoff opens case detail directly after start', () => {
   const source = read('src/pages/LeadDetail.tsx');
 
   assert.ok(
-    source.includes('navigate(`/cases/${startServiceSuccess.caseId}`);'),
-    'Po starcie obsługi ma kierować do /cases/:id.',
+    source.includes('navigate(`/case/${startServiceSuccess.caseId}`);'),
+    'Po starcie obsługi ma kierować bezpośrednio do /case/:id.',
   );
 
   assert.ok(
-    !source.includes('navigate(`/case/${startServiceSuccess.caseId}`);'),
-    'Nie może zostać stara trasa /case/:id.',
+    !source.includes('navigate(`/cases/${startServiceSuccess.caseId}`);'),
+    'Nie może zostać błędny redirect na /cases/:id.',
   );
 });
 
@@ -53,6 +53,6 @@ test('Lead service mode documentation exists', () => {
   const doc = read('docs/LEAD_SERVICE_MODE_V1_2026-04-24.md');
 
   assert.ok(doc.includes('Lead service mode V1'));
-  assert.ok(doc.includes('/cases/:id'));
+  assert.ok(doc.includes('/case/:id'));
   assert.ok(doc.includes('jedna prawde operacyjna'));
 });

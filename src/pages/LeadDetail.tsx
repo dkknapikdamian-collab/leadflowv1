@@ -314,7 +314,7 @@ export default function LeadDetail() {
 
   useEffect(() => {
     if (!startServiceSuccess?.caseId) return;
-    navigate(`/cases/${startServiceSuccess.caseId}`);
+    navigate(`/case/${startServiceSuccess.caseId}`);
   }, [startServiceSuccess?.caseId, navigate]);
 
   const scrollToHistory = () => {
@@ -865,7 +865,7 @@ export default function LeadDetail() {
         title: String(caseTitleById.get(String(linkCaseId)) || 'Powiązana sprawa'),
       });
       await loadLead();
-      navigate(`/cases/${linkCaseId}`);
+      navigate(`/case/${linkCaseId}`);
     } catch (error: any) {
       toast.error(`Błąd przypięcia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -900,7 +900,7 @@ export default function LeadDetail() {
       });
       await loadLead();
       if (caseId) {
-        navigate(`/cases/${caseId}`);
+        navigate(`/case/${caseId}`);
       }
     } catch (error: any) {
       toast.error(`Błąd tworzenia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
@@ -992,7 +992,7 @@ export default function LeadDetail() {
             ) : null}
             {associatedCase?.id ? (
               <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" asChild>
-                <Link to={`/cases/${associatedCase.id}`}>
+                <Link to={`/case/${associatedCase.id}`}>
                   <Briefcase className="w-4 h-4" /> Otwórz sprawę
                 </Link>
               </Button>
@@ -1068,7 +1068,7 @@ export default function LeadDetail() {
                   <div className="flex flex-wrap gap-2">
                     {serviceCaseId ? (
                       <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                        <Link to={`/cases/${serviceCaseId}`}>Otwórz sprawę</Link>
+                        <Link to={`/case/${serviceCaseId}`}>Otwórz sprawę</Link>
                       </Button>
                     ) : null}
                     <Button variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100" onClick={scrollToHistory}>
@@ -1322,7 +1322,7 @@ export default function LeadDetail() {
                         <p className="text-sm text-slate-600">Data przejścia: {serviceMovedAtLabel}</p>
                         {serviceCaseId ? (
                           <Button className="mt-3" variant="outline" asChild>
-                            <Link to={`/cases/${serviceCaseId}`}>Otwórz sprawę</Link>
+                            <Link to={`/case/${serviceCaseId}`}>Otwórz sprawę</Link>
                           </Button>
                         ) : null}
                       </div>
@@ -1415,7 +1415,7 @@ export default function LeadDetail() {
                       </div>
                       <div className="flex gap-2 flex-wrap">
                         <Button className="rounded-xl gap-2" asChild>
-                          <Link to={`/cases/${associatedCase.id}`}>
+                          <Link to={`/case/${associatedCase.id}`}>
                             Przejdź do sprawy <ExternalLink className="w-4 h-4" />
                           </Link>
                         </Button>
