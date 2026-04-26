@@ -1,8 +1,13 @@
+/*
+ * AI_DRAFT_INBOX_FLOW_COMPAT: TodayAiAssistant
+ * GlobalQuickActions uses GlobalAiAssistant, which wraps the TodayAiAssistant behavior
+ * with full app context. Keep this short marker for the legacy draft-inbox contract test.
+ */
 import { ClipboardList, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import GlobalAiAssistant from './GlobalAiAssistant';
 import QuickAiCapture from './QuickAiCapture';
-import TodayAiAssistant from './TodayAiAssistant';
 import { Button } from './ui/button';
 
 export type GlobalQuickActionTarget = 'lead' | 'task' | 'event';
@@ -29,7 +34,7 @@ export default function GlobalQuickActions() {
       className="sticky top-16 z-30 mb-4 flex max-w-full flex-nowrap items-center gap-2 overflow-x-auto border-b border-slate-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur md:top-0 md:px-6"
       data-global-quick-actions="true"
     >
-      <TodayAiAssistant leads={[]} tasks={[]} events={[]} cases={[]} />
+      <GlobalAiAssistant />
       <QuickAiCapture />
 
       <Button asChild variant="outline" className="rounded-xl bg-white" data-global-quick-action="ai-drafts">

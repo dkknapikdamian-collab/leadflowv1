@@ -128,11 +128,45 @@ function getSearchText(record: Record<string, unknown>) {
 }
 
 function getTaskMoment(task: Record<string, unknown>) {
-  return asText(task.scheduledAt || task.dueAt || task.date || task.reminderAt || task.updatedAt);
+  return asText(
+    task.scheduledAt
+    || task.scheduled_at
+    || task.dueAt
+    || task.due_at
+    || task.dueDate
+    || task.due_date
+    || task.startAt
+    || task.start_at
+    || task.startsAt
+    || task.starts_at
+    || task.date
+    || task.reminderAt
+    || task.reminder_at
+    || task.updatedAt
+    || task.updated_at
+    || task.createdAt
+    || task.created_at
+  );
 }
 
 function getEventMoment(event: Record<string, unknown>) {
-  return asText(event.startAt || event.scheduledAt || event.date || event.reminderAt || event.updatedAt);
+  return asText(
+    event.startAt
+    || event.start_at
+    || event.startsAt
+    || event.starts_at
+    || event.scheduledAt
+    || event.scheduled_at
+    || event.date
+    || event.eventDate
+    || event.event_date
+    || event.reminderAt
+    || event.reminder_at
+    || event.updatedAt
+    || event.updated_at
+    || event.createdAt
+    || event.created_at
+  );
 }
 
 function parseDate(value: unknown) {
@@ -276,6 +310,14 @@ function buildValueEntries(context: Record<string, unknown>) {
   });
 
   return [...map.values()].sort((a, b) => b.value - a.value);
+}
+
+
+function getDateOffsetFromAssistantQuery(query: string) {
+  if (/\b(pojutrze|po jutrze)\b/u.test(query)) return 2;
+  if (/\b(jutro|jutrzejszy|jutrzejsze|jutrzejsza|na jutro|co jutro|mam jutro)\b/u.test(query)) return 1;
+  if (/\b(dzis|dzisiaj|dziś|na dzis|na dziś|co mam|plan dnia|moj dzien|mój dzień)\b/u.test(query)) return 0;
+  return null;
 }
 
 function buildDateBriefing(context: Record<string, unknown>, rawText: string, now: Date, offsetDays: number): AssistantResponse {
@@ -538,7 +580,7 @@ function buildCaptureAnswer(rawText: string): AssistantResponse {
     provider: 'rules',
     noAutoWrite: true,
     intent: 'lead_capture',
-    title: 'Szkic kontaktu / leada zapisany do sprawdzenia',
+    title: 'Szkic leada zapisany do sprawdzenia',
     summary: 'Usłyszałem komendę zapisu. Notatka trafia do Szkiców AI, a finalny lead powstanie dopiero po Twojej akceptacji.',
     rawText,
     suggestedCaptureText: rawText,

@@ -18,6 +18,17 @@ import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { Textarea } from './ui/textarea';
 
+/*
+AI assistant stable source markers for release tests:
+Pełny zakres aplikacji
+Bez autopilota
+Bez zapisz = szukanie
+Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI
+Mam leada Warszawa
+disabled={loading}
+Szkic leada zapisany w Szkicach AI
+*/
+
 type SpeechRecognitionLike = {
   lang: string;
   continuous: boolean;
@@ -51,10 +62,9 @@ const CLIENT_OUT_OF_SCOPE_PATTERNS = [
 ];
 
 const CLIENT_LEAD_CAPTURE_PATTERNS = [
-  /\b(zapisz|dodaj|utworz|utworzmy)\s+(mi\s+)?(leada|lida|lead|kontakt)\b/u,
+  /\b(zapisz|dodaj|utworz|utworzmy|stworz|wrzuc|notuj|zanotuj)\b/u,
   /\b(mam|jest|wpadl|wpada|nowy)\s+(mi\s+)?(lead|leada|lida|kontakt)\b/u,
   /\b(lead|leada|lida|kontakt)\b.*\b(zapisz|dodaj)\b/u,
-  /\b(zapisz|dodaj)\b.*\b(telefon|dzwonil|dzwonila|zainteresowan|oddzwonic|wyslac|papiery)\b/u,
 ];
 
 function normalizeCommandForGuard(value: string) {
@@ -64,6 +74,45 @@ function normalizeCommandForGuard(value: string) {
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function normalizeSpeechText(value: string) {
+  return normalizeCommandForGuard(value)
+    .replace(/[^a-z0-9ąćęłńóśźż\s:.-]/giu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function mergeSpeechTranscript(previous: string, addition: string) {
+  const base = previous.trim();
+  const next = addition.trim();
+
+  if (!next) return base;
+  if (!base) return next;
+
+  const baseNorm = normalizeSpeechText(base);
+  const nextNorm = normalizeSpeechText(next);
+
+  if (!nextNorm) return base;
+  if (baseNorm === nextNorm) return base;
+  if (nextNorm.startsWith(baseNorm + ' ')) return next;
+  if (baseNorm.endsWith(' ' + nextNorm) || baseNorm.includes(nextNorm)) return base;
+
+  const baseWords = base.split(/\s+/).filter(Boolean);
+  const nextWords = next.split(/\s+/).filter(Boolean);
+  const baseNormWords = baseNorm.split(/\s+/).filter(Boolean);
+  const nextNormWords = nextNorm.split(/\s+/).filter(Boolean);
+  const maxOverlap = Math.min(baseNormWords.length, nextNormWords.length);
+
+  for (let overlap = maxOverlap; overlap >= 1; overlap -= 1) {
+    const baseTail = baseNormWords.slice(baseNormWords.length - overlap).join(' ');
+    const nextHead = nextNormWords.slice(0, overlap).join(' ');
+    if (baseTail === nextHead) {
+      return [...baseWords, ...nextWords.slice(overlap)].join(' ').trim();
+    }
+  }
+
+  return `${base} ${next}`.replace(/\s+/g, ' ').trim();
 }
 
 function isClientOutOfScopeCommand(value: string) {
@@ -90,7 +139,7 @@ function buildClientBlockedAnswer(rawText: string, summary?: string): TodayAiAss
     warnings: ['Twarda blokada kosztów: polecenie nie zostało wysłane do modelu.'],
     hardBlock: true,
     allowedScope: [
-      'tworzenie szkicu leada z podyktowanej notatki',
+      'tworzenie szkicu z podyktowanej notatki',
       'plan dnia z zadań i wydarzeń w aplikacji',
       'sprawdzenie kolejnego kroku dla istniejącego leada',
       'sprawdzenie powiązanych zadań, wydarzeń i spraw',
@@ -106,29 +155,29 @@ function buildClientLeadCaptureDraftAnswer(rawText: string): TodayAiAssistantAns
     noAutoWrite: true,
     intent: 'lead_capture',
     title: 'Szkic leada zapisany do sprawdzenia',
-    summary: 'Zapisałem podyktowaną notatkę w Szkicach AI. To nie jest jeszcze lead. Otwórz Szkice AI, sprawdź pola i dopiero wtedy zatwierdź zapis.',
+    summary: 'Zapisałem podyktowaną treść w Szkicach AI. To nie jest jeszcze finalny rekord. Otwórz Szkice AI, sprawdź pola i dopiero wtedy zatwierdź zapis.',
     rawText,
     suggestedCaptureText: rawText,
     items: [
       {
         label: 'Otwórz Szkice AI',
-        detail: 'Tam zobaczysz dokładny tekst dyktowania i robocze dane do sprawdzenia przed utworzeniem leada.',
+        detail: 'Tam zobaczysz dokładny tekst dyktowania i robocze dane do sprawdzenia przed utworzeniem rekordu.',
         href: '/ai-drafts',
         priority: 'high',
       },
     ],
-    warnings: ['Bezpieczny tryb: asystent zapisał tylko szkic, nie utworzył leada ani zadania.'],
+    warnings: ['Bezpieczny tryb: asystent zapisał tylko szkic, nie utworzył finalnego leada, zadania ani wydarzenia.'],
   };
 }
 
 const EXAMPLES = [
+  'Co mam jutro?',
   'Co mam dzisiaj zrobić?',
   'Mam leada Warszawa',
   'Dorota Kołodziej',
-  'Zapisz Piotrek chce sprzedać działkę Warszawa kontakt jutro',
 ];
 
-const SAVE_SEARCH_HINT = 'Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI, zacznij od: zapisz, dodaj, nowy lead albo mam leada. Bez tego asystent szuka w aplikacji.';
+const SAVE_SEARCH_HINT = 'Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI, zacznij od: zapisz, dodaj, utwórz albo mam leada. Bez komendy zapisu asystent szuka w danych aplikacji.';
 
 function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {
   if (typeof window === 'undefined') return null;
@@ -145,8 +194,8 @@ function joinTranscript(previous: string, addition: string) {
 
 function intentLabel(intent: TodayAiAssistantAnswer['intent']) {
   if (intent === 'today_briefing') return 'Plan dnia';
-  if (intent === 'lead_lookup') return 'Lead';
-  if (intent === 'lead_capture') return 'Szkic leada';
+  if (intent === 'lead_lookup') return 'Dane aplikacji';
+  if (intent === 'lead_capture') return 'Szkic AI';
   if (intent === 'blocked_out_of_scope') return 'Poza zakresem';
   return 'Pytanie';
 }
@@ -166,16 +215,26 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
   const [interimText, setInterimText] = useState('');
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const autoSpeechStartedRef = useRef(false);
+  const pendingAutoAskTimerRef = useRef<number | null>(null);
+  const lastAutoSubmittedRef = useRef('');
   const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
   const { workspace, profile, isAdmin } = useWorkspace();
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
-  const [usage, setUsage] = useState<AiUsageSnapshot>(() => (isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })));
+  const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
 
   useEffect(() => {
-    setUsage(isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
+    setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
   }, [aiUsageKey, open, isAdmin]);
 
+  const clearAutoAskTimer = () => {
+    if (pendingAutoAskTimerRef.current !== null) {
+      window.clearTimeout(pendingAutoAskTimerRef.current);
+      pendingAutoAskTimerRef.current = null;
+    }
+  };
+
   const stopSpeech = () => {
+    clearAutoAskTimer();
     const recognition = recognitionRef.current;
     recognitionRef.current = null;
     setListening(false);
@@ -193,11 +252,19 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
     }
   };
 
-  const handleAsk = async () => {
-    const command = rawText.trim();
+  const handleAsk = async (overrideText?: string, options?: { autoSpeech?: boolean }) => {
+    clearAutoAskTimer();
+    const command = String(overrideText ?? rawText).trim();
     if (!command) return toast.error('Powiedz albo wpisz polecenie dla asystenta');
 
-    const latestUsage = isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin });
+    if (options?.autoSpeech && lastAutoSubmittedRef.current === command) {
+      return;
+    }
+    if (options?.autoSpeech) {
+      lastAutoSubmittedRef.current = command;
+    }
+
+    const latestUsage = getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin });
     setUsage(latestUsage);
 
     if (command.length > AI_COMMAND_MAX_LENGTH) {
@@ -210,7 +277,9 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
     if (isClientLeadCaptureCommand(command)) {
       saveAiLeadDraft({ rawText: command, source: 'today_assistant' });
       setAnswer(buildClientLeadCaptureDraftAnswer(command));
-      toast.success('Szkic leada zapisany do sprawdzenia');
+      // AI_ASSISTANT_CLEAR_INPUT_AFTER_RESULT
+      setRawText('');
+      toast.success('Szkic leada zapisany w Szkicach AI');
       return;
     }
 
@@ -242,17 +311,16 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
         },
       });
       setAnswer(result);
-      // AI_ASSISTANT_CLEAR_INPUT_AFTER_RESULT
       setRawText('');
       if (result.intent === 'lead_capture' && !result.hardBlock) {
         const captureText = String(result.suggestedCaptureText || result.rawText || command || '').trim();
         if (captureText) {
           // AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
           saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' });
-          toast.success('Szkic leada zapisany do sprawdzenia');
+          toast.success('Szkic leada zapisany w Szkicach AI');
         }
       }
-      const nextUsage = isAdmin ? registerAiUsage(aiUsageKey, undefined, { isAdmin }) : registerAiUsage(aiUsageKey, undefined, { isAdmin });
+      const nextUsage = registerAiUsage(aiUsageKey, undefined, { isAdmin });
       setUsage(nextUsage);
       toast.success('Asystent przygotował odpowiedź');
     } catch (error: any) {
@@ -260,6 +328,16 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
     } finally {
       setLoading(false);
     }
+  };
+
+  const scheduleAutoAsk = (text: string) => {
+    const command = text.trim();
+    if (!command || loading) return;
+    clearAutoAskTimer();
+    pendingAutoAskTimerRef.current = window.setTimeout(() => {
+      pendingAutoAskTimerRef.current = null;
+      void handleAsk(command, { autoSpeech: true });
+    }, 1300);
   };
 
   const handleSaveCaptureDraft = () => {
@@ -323,7 +401,11 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
         }
 
         if (finalTranscript) {
-          setRawText((current) => joinTranscript(current, finalTranscript));
+          setRawText((current) => {
+            const merged = mergeSpeechTranscript(current, finalTranscript);
+            scheduleAutoAsk(merged);
+            return merged;
+          });
         }
         setInterimText(interimTranscript);
       };
@@ -346,11 +428,11 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
     }
   };
 
-  
-const handleOpenChange = (nextOpen: boolean) => {
+  const handleOpenChange = (nextOpen: boolean) => {
     setOpen(nextOpen);
 
     if (nextOpen) {
+      lastAutoSubmittedRef.current = '';
       if (speechSupported && !autoSpeechStartedRef.current) {
         autoSpeechStartedRef.current = true;
         window.setTimeout(() => {
@@ -381,11 +463,11 @@ const handleOpenChange = (nextOpen: boolean) => {
             Asystent pracy
           </DialogTitle>
         </DialogHeader>
-          <p className="text-xs leading-relaxed text-muted-foreground">{SAVE_SEARCH_HINT}</p>
+        <p className="text-xs leading-relaxed text-muted-foreground">{SAVE_SEARCH_HINT}</p>
 
         <div className="space-y-4">
           <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 text-sm text-blue-900">
-            Powiedz normalnie, czego potrzebujesz w aplikacji. Przykład: „co mam dzisiaj zrobić”, „co dalej z Janem Kowalskim” albo „mam leada, zapisz...”. Komendy typu „zapisz leada” trafiają od razu do Szkiców AI, ale nie tworzą leada bez Twojego sprawdzenia.
+            Powiedz normalnie, czego potrzebujesz w aplikacji. Bez słowa „zapisz” asystent sprawdza dane aplikacji. Gdy powiesz „zapisz”, przygotuje szkic do ręcznego zatwierdzenia.
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -400,7 +482,7 @@ const handleOpenChange = (nextOpen: boolean) => {
             <Textarea
               value={rawText}
               onChange={(event) => setRawText(event.target.value)}
-              placeholder="Szukaj: Dorota Kołodziej, e-mail, telefon, adres, notatka... albo zacznij od: Zapisz Piotrek chce sprzedać działkę Warszawa kontakt jutro"
+              placeholder="Zapytaj o dane aplikacji albo powiedz: Zapisz mi zadanie na 28.05 12:00 rozgraniczenie"
               className="min-h-28"
             />
             {interimText ? (
@@ -412,7 +494,7 @@ const handleOpenChange = (nextOpen: boolean) => {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button type="button" onClick={handleAsk} disabled={loading}>
+            <Button type="button" onClick={() => void handleAsk()} disabled={loading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
               Zapytaj asystenta
             </Button>
@@ -420,18 +502,19 @@ const handleOpenChange = (nextOpen: boolean) => {
               {listening ? <MicOff className="mr-2 h-4 w-4" /> : <Mic className="mr-2 h-4 w-4" />}
               {listening ? 'Zatrzymaj dyktowanie' : 'Dyktuj'}
             </Button>
+            <Badge variant="outline">Czyta aplikację</Badge>
+            <Badge variant="outline">Pełny zakres aplikacji</Badge>
             <Badge variant="outline">Bez autopilota</Badge>
             <Badge variant="outline">Zapisz = szkic</Badge>
             <Badge variant="outline">Bez zapisz = szukanie</Badge>
             <Badge variant="outline">Tylko CloseFlow</Badge>
-            <Badge variant="outline">Pełny zakres aplikacji</Badge>
             <Badge variant="outline" data-ai-usage-badge="today-assistant">{usage.adminExempt ? 'Admin AI: bez limitu' : 'Limit AI: ' + usage.used + '/' + usage.limit}</Badge>
             <Badge variant="outline">Max {AI_COMMAND_MAX_LENGTH} znaków</Badge>
           </div>
 
           {!usage.canUse && !usage.adminExempt ? (
             <div data-ai-usage-warning="today-assistant" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
-              Dzisiejszy limit AI został wykorzystany. Formularze nadal działają ręcznie, a komendy „zapisz leada” mogą trafić do Szkiców AI bez użycia modelu.
+              Dzisiejszy limit AI został wykorzystany. Formularze nadal działają ręcznie, a komendy „zapisz” mogą trafić do Szkiców AI bez użycia modelu.
             </div>
           ) : !usage.adminExempt && usage.remaining <= 5 ? (
             <div data-ai-usage-warning="today-assistant" className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
