@@ -50,6 +50,8 @@ const requiredTests = [
   'tests/polish-mojibake-audit.test.cjs',
   'tests/layout-brand-label.test.cjs',
   'tests/lead-start-service-case-redirect.test.cjs',
+  'tests/billing-checkout-no-prefilled-personal-email.test.cjs',
+  'tests/today-quick-snooze-real-button-click.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

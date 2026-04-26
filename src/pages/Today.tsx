@@ -355,23 +355,44 @@ function TodayEntrySnoozeBar({
   onSnooze: (entry: any, optionKey: string) => void | Promise<void>;
   onEdit?: (entry: any) => void;
 }) {
+  const quickActionLockRef = useRef<string | null>(null);
+
   if (isCompletedTodayEntry(entry)) return null;
+
+  const releaseQuickActionLock = (lockKey: string) => {
+    window.setTimeout(() => {
+      if (quickActionLockRef.current === lockKey) {
+        quickActionLockRef.current = null;
+      }
+    }, 450);
+  };
 
   const stopInteractiveEvent = (event: any) => {
     event.preventDefault();
     event.stopPropagation();
   };
 
-  const handleEditAction = (event: any) => {
+  const runQuickAction = (event: any, lockKey: string, action: () => void) => {
     stopInteractiveEvent(event);
+
     if (isPending) return;
-    onEdit?.(entry);
+    if (quickActionLockRef.current === lockKey) return;
+
+    quickActionLockRef.current = lockKey;
+    action();
+    releaseQuickActionLock(lockKey);
+  };
+
+  const handleEditAction = (event: any) => {
+    runQuickAction(event, `edit:${entry?.id || entry?.sourceId || 'entry'}`, () => {
+      onEdit?.(entry);
+    });
   };
 
   const handleSnoozeAction = (event: any, optionKey: string) => {
-    stopInteractiveEvent(event);
-    if (isPending) return;
-    void onSnooze(entry, optionKey);
+    runQuickAction(event, `snooze:${entry?.id || entry?.sourceId || 'entry'}:${optionKey}`, () => {
+      void onSnooze(entry, optionKey);
+    });
   };
 
   const handleKeyboardAction = (event: any, callback: (event: any) => void) => {
@@ -399,12 +420,14 @@ function TodayEntrySnoozeBar({
     >
       <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko odłóż:</span>
       {onEdit ? (
-        <span
+        <button
+          type="button"
           role="button"
           tabIndex={isPending ? -1 : 0}
           aria-disabled={isPending}
           data-today-quick-snooze-edit="true"
           onPointerDown={stopInteractiveEvent}
+          onPointerUp={handleEditAction}
           onMouseDown={stopInteractiveEvent}
           onTouchStart={(event) => event.stopPropagation()}
           onClick={handleEditAction}
@@ -413,16 +436,18 @@ function TodayEntrySnoozeBar({
           title="Edytuj zadanie lub wydarzenie"
         >
           Edytuj
-        </span>
+        </button>
       ) : null}
       {TODAY_QUICK_SNOOZE_OPTIONS.map((option) => (
-        <span
+        <button
           key={option.key}
+          type="button"
           role="button"
           tabIndex={isPending ? -1 : 0}
           aria-disabled={isPending}
           data-today-quick-snooze-action={option.key}
           onPointerDown={stopInteractiveEvent}
+          onPointerUp={(event) => handleSnoozeAction(event, option.key)}
           onMouseDown={stopInteractiveEvent}
           onTouchStart={(event) => event.stopPropagation()}
           onClick={(event) => handleSnoozeAction(event, option.key)}
@@ -431,7 +456,7 @@ function TodayEntrySnoozeBar({
           title={option.description}
         >
           {isPending ? '...' : option.label}
-        </span>
+        </button>
       ))}
     </div>
   );

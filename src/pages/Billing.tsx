@@ -160,7 +160,7 @@ export default function Billing() {
     try {
       const result = await createBillingCheckoutSessionInSupabase({
         workspaceId: workspace.id,
-        customerEmail: workspace?.dailyDigestRecipientEmail || '',
+        customerEmail: '',
         planKey: 'basic',
         billingPeriod,
         dryRun: true,
@@ -187,7 +187,7 @@ export default function Billing() {
     try {
       const result = await createBillingCheckoutSessionInSupabase({
         workspaceId: workspace.id,
-        customerEmail: workspace?.dailyDigestRecipientEmail || '',
+        customerEmail: '',
         planKey: plan.key,
         billingPeriod,
       });
