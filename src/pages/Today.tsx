@@ -169,6 +169,26 @@ type LeadLinkCardProps = {
   rightMeta?: ReactNode;
 };
 
+
+function shouldOpenWeeklyCalendarTile(id: string, title: string) {
+  const compact = [id, title].join(' ').toLowerCase();
+  return compact.includes('calendar')
+    || compact.includes('kalendarz')
+    || compact.includes('schedule')
+    || compact.includes('najbliższe dni')
+    || compact.includes('najblizsze dni');
+}
+
+function openWeeklyCalendarFromToday() {
+  try {
+    window.localStorage.setItem('closeflow:calendar:view:v1', 'week');
+  } catch {
+    // Ignore local storage errors.
+  }
+
+  window.location.assign('/calendar?view=week');
+}
+
 function TileCard({
   id,
   title,
@@ -183,13 +203,23 @@ function TileCard({
   bodyClassName = '',
 }: TileCardProps) {
   const collapsed = Boolean(collapsedMap[id]);
+  const opensWeeklyCalendar = shouldOpenWeeklyCalendarTile(id, title);
+
+  const handleHeaderClick = () => {
+    if (opensWeeklyCalendar) {
+      openWeeklyCalendarFromToday();
+      return;
+    }
+
+    onToggle(id);
+  };
 
   return (
     <Card className={`shadow-sm border-slate-100 ${className}`}>
       <CardContent className="p-0">
         <button
           type="button"
-          onClick={() => onToggle(id)}
+          onClick={handleHeaderClick}
           className="w-full p-4 flex flex-col gap-3 text-left sm:flex-row sm:flex-wrap sm:items-start sm:justify-between"
         >
           <div className="min-w-0 basis-full sm:basis-72 flex-1">

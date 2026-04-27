@@ -32,7 +32,7 @@ import {
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
@@ -273,6 +273,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
 
 export default function Calendar() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
+  const [searchParams] = useSearchParams();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [calendarView, setCalendarView] = useState<CalendarView>('week');
@@ -324,6 +325,13 @@ export default function Calendar() {
       setIsNewEventOpen(true);
     }
   }, []);
+
+  useEffect(() => {
+    const forcedCalendarView = searchParams.get('view');
+    if (forcedCalendarView === 'week' || forcedCalendarView === 'month') {
+      setCalendarView(forcedCalendarView);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

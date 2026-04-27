@@ -116,6 +116,100 @@ function groupTasksByDate(items: any[]) {
   }, {});
 }
 
+
+
+function TaskReminderEditor({
+  reminder,
+  onChange,
+}: {
+  reminder: any;
+  onChange: (reminder: any) => void;
+}) {
+  const safeReminder = normalizeReminderConfig(reminder);
+
+  const updateReminder = (patch: Partial<ReturnType<typeof createDefaultReminder>>) => {
+    onChange(normalizeReminderConfig({
+      ...safeReminder,
+      ...patch,
+    }));
+  };
+
+  return (
+    <div className="rounded-2xl border border-slate-200 p-4 space-y-4" data-task-edit-reminder-panel="true">
+      <div>
+        <p className="text-sm font-bold text-slate-900">Przypomnienie</p>
+        <p className="text-xs text-slate-500">Tak samo jak przy tworzeniu zadania: możesz wyłączyć, ustawić jednorazowe albo cykliczne przypomnienie.</p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="space-y-2">
+          <Label>Tryb przypomnienia</Label>
+          <select
+            className={modalSelectClass}
+            value={safeReminder.mode}
+            onChange={(event) => updateReminder({ mode: event.target.value as any })}
+          >
+            {REMINDER_MODE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </div>
+
+        {safeReminder.mode !== 'none' ? (
+          <div className="space-y-2">
+            <Label>Ile wcześniej</Label>
+            <select
+              className={modalSelectClass}
+              value={String(safeReminder.minutesBefore)}
+              onChange={(event) => updateReminder({ minutesBefore: Number(event.target.value) })}
+            >
+              {REMINDER_OFFSET_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
+        ) : null}
+      </div>
+
+      {safeReminder.mode === 'recurring' ? (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="space-y-2">
+            <Label>Powtarzaj</Label>
+            <select
+              className={modalSelectClass}
+              value={safeReminder.recurrenceMode}
+              onChange={(event) => updateReminder({ recurrenceMode: event.target.value as any })}
+            >
+              {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Co ile</Label>
+            <Input
+              type="number"
+              min={1}
+              value={safeReminder.recurrenceInterval}
+              onChange={(event) => updateReminder({ recurrenceInterval: Number(event.target.value) || 1 })}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Do kiedy</Label>
+            <Input
+              type="date"
+              value={safeReminder.until || ''}
+              onChange={(event) => updateReminder({ until: event.target.value || null })}
+            />
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export default function Tasks() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [tasks, setTasks] = useState<any[]>([]);
@@ -962,7 +1056,13 @@ export default function Tasks() {
                     ) : null}
                   </div>
 
-                  <DialogFooter>
+                  
+                <TaskReminderEditor
+                  reminder={editTask?.reminder}
+                  onChange={(reminder) => setEditTask((prev: any) => prev ? { ...prev, reminder } : prev)}
+                />
+
+<DialogFooter>
                     <Button type="submit" className="w-full" disabled={taskEditSubmitting}>{taskEditSubmitting ? 'Zapisywanie...' : 'Zapisz zmiany'}</Button>
                   </DialogFooter>
                 </form>
