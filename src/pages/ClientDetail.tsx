@@ -19,7 +19,11 @@ Drugorzędne akcje
 Relacje
 Kartoteka
 Historia
-*/
+
+Następny ruch
+Zadania klienta
+Wydarzenia klienta
+Aktywność klienta*/
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {

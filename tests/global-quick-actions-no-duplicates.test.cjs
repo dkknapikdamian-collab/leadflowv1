@@ -50,5 +50,5 @@ test('pages do not render duplicate AI quick action widgets', () => {
 
 test('global quick actions no duplicates test is included in quiet release gate', () => {
   const gate = read('scripts/closeflow-release-check-quiet.cjs');
-  assert.match(gate, /tests\/global-quick-actions-no-duplicates\.test\.cjs/);
+  assert.ok(gate.includes('tests/global-quick-actions-no-duplicates.test.cjs'));
 });

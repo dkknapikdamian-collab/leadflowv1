@@ -17,5 +17,5 @@ test('global quick actions are exposed as one accessible toolbar', () => {
 
 test('global quick actions toolbar test is included in quiet release gate', () => {
   const gate = fs.readFileSync('scripts/closeflow-release-check-quiet.cjs', 'utf8');
-  assert.match(gate, /tests\/global-quick-actions-toolbar-a11y\.test\.cjs/);
+  assert.ok(gate.includes('tests/global-quick-actions-toolbar-a11y.test.cjs'));
 });

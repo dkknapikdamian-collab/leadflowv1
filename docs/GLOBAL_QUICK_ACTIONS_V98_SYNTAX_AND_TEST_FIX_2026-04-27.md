@@ -1,10 +1,10 @@
-# CloseFlow v98 - hotfix skĹ‚adni globalnych szybkich akcji
+# CloseFlow v98 - hotfix składni globalnych szybkich akcji
 
-Naprawia bĹ‚Ä…d po v97:
+Naprawia błąd po v97:
 
-- bĹ‚Ä™dne `onClick={() = aria-label=...}` w `src/components/GlobalQuickActions.tsx`,
-- brakujÄ…ce atrybuty `role="toolbar"`, `aria-label` i `data-global-quick-actions-contract`,
-- niepoprawne regexy w testach `.cjs`, gdzie Ĺ›cieĹĽka z `/` byĹ‚a traktowana jako flagi regexa.
+- błędne `onClick={() = aria-label=...}` w `src/components/GlobalQuickActions.tsx`,
+- brakujące atrybuty `role="toolbar"`, `aria-label` i `data-global-quick-actions-contract`,
+- niepoprawne regexy w testach `.cjs`, gdzie ścieżka z `/` była traktowana jako flagi regexa.
 
 Zakres:
 
@@ -12,7 +12,7 @@ Zakres:
 - `tests/global-quick-actions-no-duplicates.test.cjs`
 - `tests/global-quick-actions-toolbar-a11y.test.cjs`
 
-Po wdroĹĽeniu uruchomiÄ‡:
+Po wdrożeniu uruchomić:
 
 ```powershell
 node tests/global-quick-actions-no-duplicates.test.cjs
