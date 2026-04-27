@@ -65,6 +65,8 @@ import {
   isSupabaseConfigured,
   updateCaseInSupabase,
   updateCaseItemInSupabase,
+  updateEventInSupabase,
+  updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 import '../styles/closeflow-case-detail-focus.css';
 
@@ -354,6 +356,12 @@ function getActivityText(activity: CaseActivity) {
   if (activity.eventType === 'operator_note') return `${actor} dodał notatkę`;
   if (activity.eventType === 'task_added') return `${actor} dodał zadanie: ${title}`;
   if (activity.eventType === 'event_added') return `${actor} dodał wydarzenie: ${title}`;
+  if (activity.eventType === 'task_status_changed') {
+    return `${actor} zmienił status zadania „${title}” na: ${getTaskStatusLabel(activity.payload?.status)}`;
+  }
+  if (activity.eventType === 'event_status_changed') {
+    return `${actor} zmienił status wydarzenia „${title}” na: ${getEventStatusLabel(activity.payload?.status)}`;
+  }
   return `${actor} wykonał akcję`;
 }
 
@@ -886,6 +894,68 @@ export default function CaseDetail() {
     }
   };
 
+  const handleUpdateTaskStatus = async (taskId: string, status: string, title: string) => {
+    if (!caseId) return;
+
+    try {
+      await updateTaskInSupabase({
+        id: taskId,
+        status,
+        caseId,
+      });
+
+      setTasks((current) => current.map((task) => (task.id === taskId ? { ...task, status } : task)));
+
+      await insertActivityToSupabase({
+        caseId,
+        actorType: 'operator',
+        eventType: 'task_status_changed',
+        payload: { title, status },
+      }).catch((error) => console.error('CaseDetail task status activity failed', error));
+
+      await updateCaseInSupabase({
+        id: caseId,
+        lastActivityAt: new Date().toISOString(),
+      }).catch((error) => console.error('CaseDetail task status case touch failed', error));
+
+      toast.success(status === 'done' || status === 'completed' ? 'Zadanie oznaczone jako zrobione' : 'Status zadania zaktualizowany');
+      await refreshCaseData();
+    } catch (error: any) {
+      toast.error('Błąd: ' + (error?.message || 'Nie udało się zmienić statusu zadania'));
+    }
+  };
+
+  const handleUpdateEventStatus = async (eventId: string, status: string, title: string) => {
+    if (!caseId) return;
+
+    try {
+      await updateEventInSupabase({
+        id: eventId,
+        status,
+        caseId,
+      });
+
+      setEvents((current) => current.map((event) => (event.id === eventId ? { ...event, status } : event)));
+
+      await insertActivityToSupabase({
+        caseId,
+        actorType: 'operator',
+        eventType: 'event_status_changed',
+        payload: { title, status },
+      }).catch((error) => console.error('CaseDetail event status activity failed', error));
+
+      await updateCaseInSupabase({
+        id: caseId,
+        lastActivityAt: new Date().toISOString(),
+      }).catch((error) => console.error('CaseDetail event status case touch failed', error));
+
+      toast.success(status === 'done' || status === 'completed' ? 'Wydarzenie oznaczone jako odbyte' : 'Status wydarzenia zaktualizowany');
+      await refreshCaseData();
+    } catch (error: any) {
+      toast.error('Błąd: ' + (error?.message || 'Nie udało się zmienić statusu wydarzenia'));
+    }
+  };
+
   const handleUpdateItemStatus = async (itemId: string, status: string, title: string) => {
     if (!caseId) return;
 
@@ -1294,6 +1364,26 @@ export default function CaseDetail() {
                                         {task.priority && <span>Priorytet: {task.priority}</span>}
                                       </div>
                                     </div>
+                                    <div className="cf-action-controls">
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="cf-mini-action cf-mini-action-ok"
+                                        onClick={() => handleUpdateTaskStatus(task.id, 'done', task.title || 'Zadanie')}
+                                      >
+                                        <Check className="w-3.5 h-3.5" />
+                                        Zrobione
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="cf-mini-action"
+                                        onClick={() => handleUpdateTaskStatus(task.id, 'cancelled', task.title || 'Zadanie')}
+                                      >
+                                        <X className="w-3.5 h-3.5" />
+                                        Anuluj
+                                      </Button>
+                                    </div>
                                   </div>
                                 ))}
 
@@ -1311,6 +1401,26 @@ export default function CaseDetail() {
                                         </Badge>
                                         {event.type && <span>{event.type}</span>}
                                       </div>
+                                    </div>
+                                    <div className="cf-action-controls">
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="cf-mini-action cf-mini-action-ok"
+                                        onClick={() => handleUpdateEventStatus(event.id, 'done', event.title || 'Wydarzenie')}
+                                      >
+                                        <Check className="w-3.5 h-3.5" />
+                                        Odbyte
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="cf-mini-action"
+                                        onClick={() => handleUpdateEventStatus(event.id, 'cancelled', event.title || 'Wydarzenie')}
+                                      >
+                                        <X className="w-3.5 h-3.5" />
+                                        Anuluj
+                                      </Button>
                                     </div>
                                   </div>
                                 ))}

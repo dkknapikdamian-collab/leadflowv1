@@ -1012,3 +1012,47 @@
   }
 }
 
+/* Stage: CaseDetail quick close actions for tasks and events */
+
+.cf-action-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cf-mini-action {
+  min-height: 30px;
+  height: 30px;
+  border-radius: 999px !important;
+  padding-inline: 10px !important;
+  gap: 5px;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  white-space: nowrap;
+}
+
+.cf-mini-action-ok {
+  border-color: rgba(22, 163, 74, 0.22) !important;
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+.cf-action-task .cf-action-controls,
+.cf-action-event .cf-action-controls {
+  align-self: center;
+}
+
+@media (max-width: 760px) {
+  .cf-action-controls {
+    grid-column: 2;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .cf-mini-action {
+    flex: 1;
+  }
+}
+
