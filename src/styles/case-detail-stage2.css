@@ -1,0 +1,259 @@
+/*
+ * CloseFlow CaseDetail visual stage 2.
+ * This layer upgrades the top CaseDetail command center into the 5-second layout:
+ * blocker / nearest action / progress.
+ */
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 {
+  --case-stage2-radius-xl: 1.75rem;
+  --case-stage2-radius-lg: 1.25rem;
+  --case-stage2-radius-md: 1rem;
+  --case-stage2-border: color-mix(in srgb, var(--app-border) 76%, transparent);
+  --case-stage2-surface: color-mix(in srgb, var(--app-surface-strong) 94%, var(--color-primary) 6%);
+  --case-stage2-muted: color-mix(in srgb, var(--app-surface-muted) 88%, transparent);
+  --case-stage2-primary-soft: color-mix(in srgb, var(--color-primary) 13%, var(--app-surface-strong));
+  --case-stage2-primary-line: color-mix(in srgb, var(--color-primary) 32%, var(--app-border));
+  --case-stage2-warning-bg: color-mix(in srgb, #f59e0b 14%, var(--app-surface-strong));
+  --case-stage2-warning-line: color-mix(in srgb, #f59e0b 34%, var(--app-border));
+  --case-stage2-danger-bg: color-mix(in srgb, #ef4444 12%, var(--app-surface-strong));
+  --case-stage2-danger-line: color-mix(in srgb, #ef4444 34%, var(--app-border));
+  --case-stage2-success-bg: color-mix(in srgb, #22c55e 12%, var(--app-surface-strong));
+  --case-stage2-success-line: color-mix(in srgb, #22c55e 34%, var(--app-border));
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-shell {
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 34rem),
+    var(--app-surface-strong) !important;
+  color: var(--app-text) !important;
+  border: 1px solid var(--case-stage2-border) !important;
+  border-radius: var(--case-stage2-radius-xl) !important;
+  box-shadow: 0 20px 60px var(--app-shadow-color) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-kicker {
+  margin: 0;
+  color: var(--app-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-title {
+  margin-top: 0.35rem;
+  color: var(--app-text) !important;
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-subtitle {
+  margin-top: 0.4rem;
+  max-width: 48rem;
+  color: var(--app-muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-grid {
+  display: grid;
+  grid-template-columns: 1.12fr 1fr 0.9fr;
+  gap: 0.85rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile {
+  min-height: 10.5rem;
+  border: 1px solid var(--case-stage2-border);
+  border-radius: var(--case-stage2-radius-lg);
+  background: var(--case-stage2-surface);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  overflow: hidden;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile.is-warning {
+  background: var(--case-stage2-warning-bg);
+  border-color: var(--case-stage2-warning-line);
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile.is-danger {
+  background: var(--case-stage2-danger-bg);
+  border-color: var(--case-stage2-danger-line);
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile.is-success {
+  background: var(--case-stage2-success-bg);
+  border-color: var(--case-stage2-success-line);
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile.is-primary {
+  background: var(--case-stage2-primary-soft);
+  border-color: var(--case-stage2-primary-line);
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-eyebrow {
+  color: var(--app-muted);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile-title {
+  margin-top: 0.35rem;
+  color: var(--app-text) !important;
+  font-size: 1.15rem;
+  line-height: 1.1;
+  font-weight: 850;
+  letter-spacing: -0.035em;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile-text {
+  color: var(--app-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile-footer {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-progress-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--app-muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-progress-wrap {
+  margin-top: 0.15rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-progress-wrap [role="progressbar"] {
+  height: 0.55rem;
+  overflow: hidden;
+  background-color: color-mix(in srgb, var(--app-border) 62%, transparent) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-metric {
+  border: 1px solid var(--case-stage2-border);
+  border-radius: 0.95rem;
+  background: color-mix(in srgb, var(--app-surface-strong) 76%, transparent);
+  padding: 0.65rem;
+  text-align: center;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-metric strong {
+  display: block;
+  color: var(--color-primary);
+  font-size: 1.15rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-metric span {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--app-muted);
+  font-size: 0.68rem;
+  line-height: 1.15;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions-left,
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 button {
+  border-radius: 0.95rem !important;
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-primary-button {
+  background: var(--color-primary) !important;
+  color: var(--color-primary-foreground) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-primary-button:hover {
+  background: color-mix(in srgb, var(--color-primary) 86%, black) !important;
+  color: var(--color-primary-foreground) !important;
+}
+
+@media (max-width: 1120px) {
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-grid {
+    grid-template-columns: 1fr;
+  }
+
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-header {
+    flex-direction: column;
+  }
+
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions,
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions-left,
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions-right {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-actions button,
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-tile-footer button {
+    width: 100%;
+  }
+
+  section[data-testid="case-detail-v1-command-center"].case-detail-stage2 .case-detail-stage2-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

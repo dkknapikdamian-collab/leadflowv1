@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -142,13 +142,13 @@ function leadStatusLabel(status?: string) {
     case 'qualification':
       return 'Kwalifikacja';
     case 'proposal_sent':
-      return 'Oferta wysłana';
+      return 'Oferta wysĹ‚ana';
     case 'waiting_response':
-      return 'Czeka na odpowiedź';
+      return 'Czeka na odpowiedĹş';
     case 'accepted':
       return 'Zaakceptowany';
     case 'moved_to_service':
-      return 'Przeniesiony do obsługi';
+      return 'Przeniesiony do obsĹ‚ugi';
     case 'negotiation':
       return 'Negocjacje';
     case 'lost':
@@ -214,7 +214,7 @@ function caseLifecycleBadgeVariant(bucket: string): 'default' | 'secondary' | 'd
 
 function caseLifecycleRiskLabel(level: string) {
   if (level === 'high') return 'Ryzyko wysokie';
-  if (level === 'medium') return 'Ryzyko średnie';
+  if (level === 'medium') return 'Ryzyko Ĺ›rednie';
   return 'Ryzyko niskie';
 }
 
@@ -251,78 +251,154 @@ function CaseDetailV1CommandCenter({
   const isReady = bucket === 'ready_to_start';
   const safePercent = Math.max(0, Math.min(100, Math.round(Number(completenessPercent || 0))));
 
+  const missingRequiredCount = Number(lifecycle?.missingRequiredCount || 0);
+  const waitingApprovalCount = Number(lifecycle?.waitingApprovalCount || 0);
+  const openActionCount = Number(lifecycle?.openActionCount || 0);
+  const blockerCount = missingRequiredCount + waitingApprovalCount;
+
+  const blockerTone = bucket === 'blocked'
+    ? 'is-danger'
+    : blockerCount > 0 || bucket === 'waiting_approval' || bucket === 'needs_next_step'
+      ? 'is-warning'
+      : 'is-success';
+
+  const progressTone = isCompleted || isReady ? 'is-success' : 'is-primary';
+
+  const blockerTitle = bucket === 'blocked'
+    ? 'Sprawa jest zablokowana'
+    : blockerCount > 0
+      ? 'Trzeba zdjÄ…Ä‡ blokery'
+      : bucket === 'needs_next_step'
+        ? 'Brakuje jasnego ruchu'
+        : isCompleted
+          ? 'Sprawa zakoĹ„czona'
+          : 'MoĹĽna dziaĹ‚aÄ‡ dalej';
+
+  const blockerText = lifecycle?.headline || (
+    blockerCount > 0
+      ? 'SprawdĹş braki i akceptacje, zanim przesuniesz sprawÄ™ dalej.'
+      : 'Nie widaÄ‡ krytycznych brakĂłw. Pilnuj najbliĹĽszej akcji i postÄ™pu.'
+  );
+
+  const nextActionText = lifecycle?.nextOperatorAction || 'Dodaj zadanie albo wydarzenie, ĹĽeby sprawa miaĹ‚a jasny dalszy ruch.';
+
   return (
-    <section className="mx-auto mb-6 w-full max-w-6xl px-6 pt-6 lg:px-8" data-testid="case-detail-v1-command-center">
-      <Card className="border-none bg-slate-950 text-white shadow-lg">
-        <CardContent className="p-5 lg:p-6">
-          <div className="grid gap-5 lg:grid-cols-[1.3fr_0.9fr]">
+    <section className="case-detail-stage2 mx-auto mb-6 w-full max-w-6xl px-6 pt-6 lg:px-8" data-testid="case-detail-v1-command-center">
+      <Card className="case-detail-stage2-shell">
+        <CardContent className="p-4 lg:p-5">
+          <div className="case-detail-stage2-header">
             <div>
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <Badge variant={caseLifecycleBadgeVariant(bucket)}>{lifecycle?.label || 'Sprawa'}</Badge>
-                <Badge variant="outline" className="border-white/20 text-white">Status: {currentStatusLabel}</Badge>
-                <Badge variant="outline" className="border-white/20 text-white">{caseLifecycleRiskLabel(String(lifecycle?.riskLevel || 'low'))}</Badge>
-              </div>
-
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Centrum dowodzenia sprawy V1</p>
-              <h2 className="mt-2 text-2xl font-bold text-white">{title || 'Sprawa'}</h2>
-              <p className="mt-2 max-w-3xl text-sm text-slate-300">{lifecycle?.headline || 'Sprawa wymaga uporządkowania kolejnego kroku.'}</p>
-
-              <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Najbliższy ruch operatora</p>
-                <p className="mt-1 text-sm font-semibold text-white">{lifecycle?.nextOperatorAction || 'Dodaj zadanie albo wydarzenie, żeby sprawa miała jasny dalszy ruch.'}</p>
-              </div>
-
-              <div className="mt-4">
-                <div className="mb-2 flex items-center justify-between text-xs text-slate-300">
-                  <span>Kompletność</span>
-                  <span>{safePercent}%</span>
-                </div>
-                <Progress value={safePercent} className="h-2 bg-white/20" />
-              </div>
+              <p className="case-detail-stage2-kicker">ObsĹ‚uga sprawy</p>
+              <h2 className="case-detail-stage2-title">{title || 'Sprawa'}</h2>
+              <p className="case-detail-stage2-subtitle">
+                Najpierw sprawdĹş blokadÄ™, potem najbliĹĽszÄ… akcjÄ™. Reszta sprawy jest niĹĽej.
+              </p>
             </div>
 
-            <div className="grid gap-3">
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
-                  <p className="text-lg font-bold text-white">{lifecycle?.missingRequiredCount || 0}</p>
-                  <p className="text-[11px] text-slate-400">Braki</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
-                  <p className="text-lg font-bold text-white">{lifecycle?.waitingApprovalCount || 0}</p>
-                  <p className="text-[11px] text-slate-400">Akceptacje</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
-                  <p className="text-lg font-bold text-white">{lifecycle?.openActionCount || 0}</p>
-                  <p className="text-[11px] text-slate-400">Akcje</p>
-                </div>
-              </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant={caseLifecycleBadgeVariant(bucket)}>{lifecycle?.label || 'Sprawa'}</Badge>
+              <Badge variant="outline">Status: {currentStatusLabel}</Badge>
+              <Badge variant="outline">{caseLifecycleRiskLabel(String(lifecycle?.riskLevel || 'low'))}</Badge>
+            </div>
+          </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <Button type="button" variant="secondary" onClick={onAddItem} disabled={isPending}>
+          <div className="case-detail-stage2-grid">
+            <article className={`case-detail-stage2-tile ${blockerTone}`}>
+              <div className="case-detail-stage2-tile-top">
+                <div>
+                  <p className="case-detail-stage2-eyebrow">Co blokuje?</p>
+                  <h3 className="case-detail-stage2-tile-title">{blockerTitle}</h3>
+                </div>
+                <Badge variant={blockerCount > 0 || bucket === 'blocked' ? 'destructive' : 'secondary'}>
+                  {blockerCount > 0 ? `${blockerCount} do ruszenia` : 'OK'}
+                </Badge>
+              </div>
+              <p className="case-detail-stage2-tile-text">{blockerText}</p>
+              <div className="case-detail-stage2-tile-footer">
+                <Button type="button" size="sm" variant="secondary" onClick={onAddItem} disabled={isPending}>
                   <FileText className="mr-2 h-4 w-4" /> Dodaj brak
                 </Button>
-                <Button type="button" variant="secondary" onClick={onCreateTask} disabled={isPending}>
+                <Button type="button" size="sm" variant="outline" onClick={onCopyPortal} disabled={isPending}>
+                  <Send className="mr-2 h-4 w-4" /> PoproĹ› klienta
+                </Button>
+              </div>
+            </article>
+
+            <article className="case-detail-stage2-tile is-primary">
+              <div className="case-detail-stage2-tile-top">
+                <div>
+                  <p className="case-detail-stage2-eyebrow">NajbliĹĽsza akcja</p>
+                  <h3 className="case-detail-stage2-tile-title">Co robisz dalej?</h3>
+                </div>
+                <Badge variant="outline">{openActionCount > 0 ? `${openActionCount} akcji` : 'Brak akcji'}</Badge>
+              </div>
+              <p className="case-detail-stage2-tile-text">{nextActionText}</p>
+              <div className="case-detail-stage2-tile-footer">
+                <Button type="button" size="sm" className="case-detail-stage2-primary-button" onClick={onCreateTask} disabled={isPending}>
                   <Target className="mr-2 h-4 w-4" /> Zadanie
                 </Button>
-                <Button type="button" variant="secondary" onClick={onCreateEvent} disabled={isPending}>
+                <Button type="button" size="sm" variant="outline" onClick={onCreateEvent} disabled={isPending}>
                   <Calendar className="mr-2 h-4 w-4" /> Wydarzenie
                 </Button>
-                <Button type="button" variant="secondary" onClick={onCopyPortal} disabled={isPending}>
-                  <ExternalLink className="mr-2 h-4 w-4" /> Portal
-                </Button>
+              </div>
+            </article>
+
+            <article className={`case-detail-stage2-tile ${progressTone}`}>
+              <div className="case-detail-stage2-tile-top">
+                <div>
+                  <p className="case-detail-stage2-eyebrow">PostÄ™p sprawy</p>
+                  <h3 className="case-detail-stage2-tile-title">{safePercent}% gotowe</h3>
+                </div>
+                <Badge variant={isReady || isCompleted ? 'secondary' : 'outline'}>
+                  {isCompleted ? 'Zrobione' : isReady ? 'Gotowa' : 'W toku'}
+                </Badge>
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-3">
-                <Button type="button" className="bg-white text-slate-950 hover:bg-slate-100" onClick={onStartCase} disabled={isPending || isCompleted || isInProgress}>
-                  <CheckCircle2 className="mr-2 h-4 w-4" /> Start
-                </Button>
-                <Button type="button" variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10" onClick={onCompleteCase} disabled={isPending || isCompleted || !isReady}>
-                  <Check className="mr-2 h-4 w-4" /> Zrobione
-                </Button>
-                <Button type="button" variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10" onClick={onReopenCase} disabled={isPending || !isCompleted}>
-                  <AlertCircle className="mr-2 h-4 w-4" /> Wznów
-                </Button>
+              <div className="case-detail-stage2-progress-wrap">
+                <div className="case-detail-stage2-progress-row">
+                  <span>KompletnoĹ›Ä‡</span>
+                  <span>{safePercent}%</span>
+                </div>
+                <Progress value={safePercent} className="mt-2" />
               </div>
+
+              <div className="case-detail-stage2-metrics">
+                <div className="case-detail-stage2-metric">
+                  <strong>{missingRequiredCount}</strong>
+                  <span>braki</span>
+                </div>
+                <div className="case-detail-stage2-metric">
+                  <strong>{waitingApprovalCount}</strong>
+                  <span>akceptacje</span>
+                </div>
+                <div className="case-detail-stage2-metric">
+                  <strong>{openActionCount}</strong>
+                  <span>akcje</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div className="case-detail-stage2-actions">
+            <div className="case-detail-stage2-actions-left">
+              <Button type="button" variant="outline" onClick={onAddItem} disabled={isPending}>
+                <FileText className="mr-2 h-4 w-4" /> Dodaj brak
+              </Button>
+              <Button type="button" variant="outline" onClick={onCopyPortal} disabled={isPending}>
+                <ExternalLink className="mr-2 h-4 w-4" /> Portal klienta
+              </Button>
+            </div>
+
+            <div className="case-detail-stage2-actions-right">
+              <Button type="button" className="case-detail-stage2-primary-button" onClick={onStartCase} disabled={isPending || isCompleted || isInProgress}>
+                <CheckCircle2 className="mr-2 h-4 w-4" /> Start
+              </Button>
+              <Button type="button" variant="outline" onClick={onCompleteCase} disabled={isPending || isCompleted || !isReady}>
+                <Check className="mr-2 h-4 w-4" /> Zrobione
+              </Button>
+              <Button type="button" variant="outline" onClick={onReopenCase} disabled={isPending || !isCompleted}>
+                <AlertCircle className="mr-2 h-4 w-4" /> WznĂłw
+              </Button>
             </div>
           </div>
         </CardContent>
@@ -330,6 +406,7 @@ function CaseDetailV1CommandCenter({
     </section>
   );
 }
+
 function toDateTimeLocalValue(date: Date) {
   const pad = (value: number) => String(value).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
@@ -344,8 +421,8 @@ function buildDefaultEventEnd(startAt: string) {
 const SIMPLE_RECURRENCE_OPTIONS = [
   { value: 'none', label: 'Bez powtarzania' },
   { value: 'daily', label: 'Codziennie' },
-  { value: 'weekly', label: 'Co tydzień' },
-  { value: 'monthly', label: 'Co miesiąc' },
+  { value: 'weekly', label: 'Co tydzieĹ„' },
+  { value: 'monthly', label: 'Co miesiÄ…c' },
 ];
 
 function normalizeDateTimeLocalInput(value: unknown) {
@@ -521,7 +598,7 @@ export default function CaseDetail() {
     [availableCases, availableLeads, caseData, sourceLead],
   );
 
-    const sourceLeadTitle = String(sourceLead?.name || sourceLead?.company || 'Lead źródłowy');
+    const sourceLeadTitle = String(sourceLead?.name || sourceLead?.company || 'Lead ĹşrĂłdĹ‚owy');
   const sourceLeadStatusLabel = leadStatusLabel(String(sourceLead?.status || ''));
   const sourceLeadOriginLabel = leadSourceLabel(String(sourceLead?.source || 'other'));
   const sourceLeadMovedAtLabel = formatDateTime(caseData?.serviceStartedAt || caseData?.startedAt || caseData?.createdAt);
@@ -623,7 +700,7 @@ const caseClientSuggestions = useMemo(() => {
       })
       .catch((error: any) => {
         if (cancelled) return;
-        toast.error(`Błąd sprawy API: ${error.message}`);
+        toast.error(`BĹ‚Ä…d sprawy API: ${error.message}`);
         setLoading(false);
       });
 
@@ -677,7 +754,7 @@ const caseClientSuggestions = useMemo(() => {
       await refreshSupabaseCase();
       toast.success(successMessage);
     } catch (error: any) {
-      toast.error('Błąd zmiany statusu sprawy: ' + error.message);
+      toast.error('BĹ‚Ä…d zmiany statusu sprawy: ' + error.message);
     } finally {
       setCaseLifecyclePending(false);
     }
@@ -692,7 +769,7 @@ const caseClientSuggestions = useMemo(() => {
   };
 
   const handleReopenCaseV1 = async () => {
-    await setCaseLifecycleStatusV1('in_progress', 'case_lifecycle_reopened', 'Sprawa została wznowiona');
+    await setCaseLifecycleStatusV1('in_progress', 'case_lifecycle_reopened', 'Sprawa zostaĹ‚a wznowiona');
   };
   const handleAddItem = async () => {
     if (!newItem.title || !caseId) return;
@@ -721,9 +798,9 @@ const caseClientSuggestions = useMemo(() => {
       await refreshSupabaseCase();
       setIsAddItemOpen(false);
       setNewItem({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
-      toast.success('Element został dodany do sprawy');
+      toast.success('Element zostaĹ‚ dodany do sprawy');
     } catch (error: any) {
-      toast.error(`Błąd dodawania elementu: ${error.message}`);
+      toast.error(`BĹ‚Ä…d dodawania elementu: ${error.message}`);
     }
   };
 
@@ -757,15 +834,15 @@ const caseClientSuggestions = useMemo(() => {
         },
       });
       await refreshSupabaseCase();
-      toast.success('Status elementu został zaktualizowany');
+      toast.success('Status elementu zostaĹ‚ zaktualizowany');
     } catch (error: any) {
-      toast.error(`Błąd aktualizacji elementu: ${error.message}`);
+      toast.error(`BĹ‚Ä…d aktualizacji elementu: ${error.message}`);
     }
   };
 
   const handleDeleteItem = async (itemId: string) => {
     if (!caseId) return;
-    if (!window.confirm('Usunąć ten element ze sprawy?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ ten element ze sprawy?')) return;
 
     const itemToDelete = items.find((entry) => String(entry.id || '') === String(itemId));
 
@@ -783,23 +860,23 @@ const caseClientSuggestions = useMemo(() => {
         },
       });
       await refreshSupabaseCase();
-      toast.success('Element został usunięty');
+      toast.success('Element zostaĹ‚ usuniÄ™ty');
     } catch (error: any) {
-      toast.error(`Błąd usuwania elementu: ${error.message}`);
+      toast.error(`BĹ‚Ä…d usuwania elementu: ${error.message}`);
     }
   };
 
   const handleLinkLeadToCase = async () => {
     if (!caseId) return;
     if (!selectedLeadId) {
-      toast.error('Wybierz leada do podpięcia');
+      toast.error('Wybierz leada do podpiÄ™cia');
       return;
     }
 
     const nowIso = new Date().toISOString();
     const selectedLead = availableLeads.find((entry) => String(entry.id || '') === selectedLeadId);
     if (!selectedLead) {
-      toast.error('Nie udało się znaleźć wybranego leada');
+      toast.error('Nie udaĹ‚o siÄ™ znaleĹşÄ‡ wybranego leada');
       return;
     }
 
@@ -853,9 +930,9 @@ const caseClientSuggestions = useMemo(() => {
       });
 
       await refreshSupabaseCase();
-      toast.success('Lead źródłowy został podpięty do sprawy');
+      toast.success('Lead ĹşrĂłdĹ‚owy zostaĹ‚ podpiÄ™ty do sprawy');
     } catch (error: any) {
-      toast.error(`Błąd podpinania leada: ${error.message}`);
+      toast.error(`BĹ‚Ä…d podpinania leada: ${error.message}`);
     } finally {
       setLeadRelationPending(false);
     }
@@ -872,15 +949,15 @@ const caseClientSuggestions = useMemo(() => {
       }
       const url = `${window.location.origin}/client-portal/${caseId}?token=${encodeURIComponent(token)}`;
       await navigator.clipboard.writeText(url);
-      toast.success('Link do portalu klienta został skopiowany');
+      toast.success('Link do portalu klienta zostaĹ‚ skopiowany');
     } catch (error: any) {
-      toast.error(`Błąd linku portalu: ${error.message}`);
+      toast.error(`BĹ‚Ä…d linku portalu: ${error.message}`);
     }
   };
 
   const handleUnlinkLeadFromCase = async () => {
     if (!caseId || !caseData?.leadId) return;
-    if (!window.confirm('Odpiąć źródłowego leada od tej sprawy?')) return;
+    if (!window.confirm('OdpiÄ…Ä‡ ĹşrĂłdĹ‚owego leada od tej sprawy?')) return;
 
     const currentLeadId = String(caseData.leadId);
     const currentLead = sourceLead || await fetchLeadByIdFromSupabase(currentLeadId).catch(() => null);
@@ -914,9 +991,9 @@ const caseClientSuggestions = useMemo(() => {
       });
 
       await refreshSupabaseCase();
-      toast.success('Lead źródłowy został odpięty od sprawy');
+      toast.success('Lead ĹşrĂłdĹ‚owy zostaĹ‚ odpiÄ™ty od sprawy');
     } catch (error: any) {
-      toast.error(`Błąd odpinania leada: ${error.message}`);
+      toast.error(`BĹ‚Ä…d odpinania leada: ${error.message}`);
     } finally {
       setLeadRelationPending(false);
     }
@@ -951,7 +1028,7 @@ const caseClientSuggestions = useMemo(() => {
   const handleCreateQuickCaseTask = async () => {
     if (!caseId) return;
     if (!quickTask.title.trim()) {
-      toast.error('Podaj tytuł zadania');
+      toast.error('Podaj tytuĹ‚ zadania');
       return;
     }
 
@@ -998,7 +1075,7 @@ const caseClientSuggestions = useMemo(() => {
       setIsQuickTaskOpen(false);
       toast.success('Zadanie dodane do sprawy');
     } catch (error: any) {
-      toast.error(`Błąd zadania: ${error.message}`);
+      toast.error(`BĹ‚Ä…d zadania: ${error.message}`);
     } finally {
       setQuickTaskSubmitting(false);
     }
@@ -1007,7 +1084,7 @@ const caseClientSuggestions = useMemo(() => {
   const handleCreateQuickCaseEvent = async () => {
     if (!caseId) return;
     if (!quickEvent.title.trim()) {
-      toast.error('Podaj tytuł wydarzenia');
+      toast.error('Podaj tytuĹ‚ wydarzenia');
       return;
     }
 
@@ -1053,7 +1130,7 @@ const caseClientSuggestions = useMemo(() => {
       setIsQuickEventOpen(false);
       toast.success('Wydarzenie dodane do sprawy');
     } catch (error: any) {
-      toast.error(`Błąd wydarzenia: ${error.message}`);
+      toast.error(`BĹ‚Ä…d wydarzenia: ${error.message}`);
     } finally {
       setQuickEventSubmitting(false);
     }
@@ -1124,9 +1201,9 @@ const caseClientSuggestions = useMemo(() => {
       });
 
       await refreshSupabaseCase();
-      toast.success(nextStatus === 'done' ? 'Task oznaczony jako zrobiony' : 'Task przywrócony do pracy');
+      toast.success(nextStatus === 'done' ? 'Task oznaczony jako zrobiony' : 'Task przywrĂłcony do pracy');
     } catch (error: any) {
-      toast.error(`Błąd taska: ${error.message}`);
+      toast.error(`BĹ‚Ä…d taska: ${error.message}`);
     } finally {
       setTaskActionPendingId(null);
     }
@@ -1134,7 +1211,7 @@ const caseClientSuggestions = useMemo(() => {
 
   const handleDeleteCaseTask = async (task: any) => {
     if (!caseId || !task?.id) return;
-    if (!window.confirm('Usunąć task ze sprawy?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ task ze sprawy?')) return;
     const taskId = String(task.id);
 
     try {
@@ -1151,9 +1228,9 @@ const caseClientSuggestions = useMemo(() => {
         },
       });
       await refreshSupabaseCase();
-      toast.success('Task usunięty');
+      toast.success('Task usuniÄ™ty');
     } catch (error: any) {
-      toast.error(`Błąd usuwania taska: ${error.message}`);
+      toast.error(`BĹ‚Ä…d usuwania taska: ${error.message}`);
     } finally {
       setTaskActionPendingId(null);
     }
@@ -1161,7 +1238,7 @@ const caseClientSuggestions = useMemo(() => {
 
   const handleDeleteCaseEvent = async (event: any) => {
     if (!caseId || !event?.id) return;
-    if (!window.confirm('Usunąć wydarzenie ze sprawy?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ wydarzenie ze sprawy?')) return;
     const eventId = String(event.id);
 
     try {
@@ -1178,9 +1255,9 @@ const caseClientSuggestions = useMemo(() => {
         },
       });
       await refreshSupabaseCase();
-      toast.success('Wydarzenie usunięte');
+      toast.success('Wydarzenie usuniÄ™te');
     } catch (error: any) {
-      toast.error(`Błąd usuwania wydarzenia: ${error.message}`);
+      toast.error(`BĹ‚Ä…d usuwania wydarzenia: ${error.message}`);
     } finally {
       setEventActionPendingId(null);
     }
@@ -1218,7 +1295,7 @@ const caseClientSuggestions = useMemo(() => {
       await refreshSupabaseCase();
       toast.success('Zmieniono status wydarzenia');
     } catch (error: any) {
-      toast.error(`Błąd wydarzenia: ${error.message}`);
+      toast.error(`BĹ‚Ä…d wydarzenia: ${error.message}`);
     } finally {
       setEventActionPendingId(null);
     }
@@ -1227,7 +1304,7 @@ const caseClientSuggestions = useMemo(() => {
   const handleSaveCaseTaskEdit = async () => {
     if (!caseId || !editCaseTask?.id) return;
     if (!editCaseTask.title?.trim()) {
-      toast.error('Podaj tytuł taska');
+      toast.error('Podaj tytuĹ‚ taska');
       return;
     }
 
@@ -1273,7 +1350,7 @@ const caseClientSuggestions = useMemo(() => {
       setEditCaseTask(null);
       toast.success('Task zaktualizowany');
     } catch (error: any) {
-      toast.error(`Błąd edycji taska: ${error.message}`);
+      toast.error(`BĹ‚Ä…d edycji taska: ${error.message}`);
     } finally {
       setTaskEditSubmitting(false);
     }
@@ -1282,7 +1359,7 @@ const caseClientSuggestions = useMemo(() => {
   const handleSaveCaseEventEdit = async () => {
     if (!caseId || !editCaseEvent?.id) return;
     if (!editCaseEvent.title?.trim()) {
-      toast.error('Podaj tytuł wydarzenia');
+      toast.error('Podaj tytuĹ‚ wydarzenia');
       return;
     }
 
@@ -1328,7 +1405,7 @@ const caseClientSuggestions = useMemo(() => {
       setEditCaseEvent(null);
       toast.success('Wydarzenie zaktualizowane');
     } catch (error: any) {
-      toast.error(`Błąd edycji wydarzenia: ${error.message}`);
+      toast.error(`BĹ‚Ä…d edycji wydarzenia: ${error.message}`);
     } finally {
       setEventEditSubmitting(false);
     }
@@ -1338,7 +1415,7 @@ const caseClientSuggestions = useMemo(() => {
   const handleAddCaseNote = async () => {
     if (!caseId) return;
     if (!caseNote.trim()) {
-      toast.error('Wpisz treść notatki');
+      toast.error('Wpisz treĹ›Ä‡ notatki');
       return;
     }
 
@@ -1358,7 +1435,7 @@ const caseClientSuggestions = useMemo(() => {
       setCaseNote('');
       toast.success('Notatka dodana');
     } catch (error: any) {
-      toast.error(`Błąd notatki: ${error.message}`);
+      toast.error(`BĹ‚Ä…d notatki: ${error.message}`);
     } finally {
       setCaseNoteSubmitting(false);
     }
@@ -1374,7 +1451,7 @@ const caseClientSuggestions = useMemo(() => {
   const handleSaveCaseNoteEdit = async () => {
     if (!editCaseNote?.id) return;
     if (!editCaseNote.content?.trim()) {
-      toast.error('Wpisz treść notatki');
+      toast.error('Wpisz treĹ›Ä‡ notatki');
       return;
     }
 
@@ -1390,7 +1467,7 @@ const caseClientSuggestions = useMemo(() => {
       setEditCaseNote(null);
       toast.success('Notatka zaktualizowana');
     } catch (error: any) {
-      toast.error(`Błąd edycji notatki: ${error.message}`);
+      toast.error(`BĹ‚Ä…d edycji notatki: ${error.message}`);
     } finally {
       setCaseNoteEditSubmitting(false);
     }
@@ -1399,15 +1476,15 @@ const caseClientSuggestions = useMemo(() => {
   const handleDeleteCaseNote = async (activity: any) => {
     const activityId = String(activity?.id || '');
     if (!activityId) return;
-    if (!window.confirm('Usunąć tę notatkę?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ tÄ™ notatkÄ™?')) return;
 
     try {
       setCaseNoteActionId(activityId);
       await deleteActivityFromSupabase(activityId);
       await refreshSupabaseCase();
-      toast.success('Notatka usunięta');
+      toast.success('Notatka usuniÄ™ta');
     } catch (error: any) {
-      toast.error(`Błąd usuwania notatki: ${error.message}`);
+      toast.error(`BĹ‚Ä…d usuwania notatki: ${error.message}`);
     } finally {
       setCaseNoteActionId(null);
     }
@@ -1425,7 +1502,7 @@ const caseClientSuggestions = useMemo(() => {
   const handleSaveCaseClient = async () => {
     if (!caseId) return;
     if (!caseClientDraft.clientName.trim()) {
-      toast.error('Podaj nazwę klienta');
+      toast.error('Podaj nazwÄ™ klienta');
       return;
     }
 
@@ -1454,7 +1531,7 @@ const caseClientSuggestions = useMemo(() => {
       setShowClientCreateFields(false);
       toast.success('Dane klienta zaktualizowane');
     } catch (error: any) {
-      toast.error(`Błąd klienta: ${error.message}`);
+      toast.error(`BĹ‚Ä…d klienta: ${error.message}`);
     } finally {
       setCaseClientSubmitting(false);
     }
@@ -1511,7 +1588,7 @@ const caseClientSuggestions = useMemo(() => {
       await refreshSupabaseCase();
       toast.success('Przypomnienie zapisane i utworzono follow-up');
     } catch (error: any) {
-      toast.error(`Błąd przypomnienia: ${error.message}`);
+      toast.error(`BĹ‚Ä…d przypomnienia: ${error.message}`);
     }
   };
 
@@ -1553,15 +1630,15 @@ const caseClientSuggestions = useMemo(() => {
       });
 
       await refreshSupabaseCase();
-      toast.success('Sprawa weszła do realizacji i utworzono task startowy');
+      toast.success('Sprawa weszĹ‚a do realizacji i utworzono task startowy');
     } catch (error: any) {
-      toast.error(`Błąd startu realizacji: ${error.message}`);
+      toast.error(`BĹ‚Ä…d startu realizacji: ${error.message}`);
     }
   };
 
   const handleMarkCaseCompleted = async () => {
     if (!caseId) return;
-    if (!window.confirm('Oznaczyć tę sprawę jako zrobioneoną?')) return;
+    if (!window.confirm('OznaczyÄ‡ tÄ™ sprawÄ™ jako zrobioneonÄ…?')) return;
 
     try {
       await updateCaseInSupabase({
@@ -1584,7 +1661,7 @@ const caseClientSuggestions = useMemo(() => {
       await refreshSupabaseCase();
       toast.success('Sprawa oznaczona jako zrobione');
     } catch (error: any) {
-      toast.error(`Błąd zamknięcia sprawy: ${error.message}`);
+      toast.error(`BĹ‚Ä…d zamkniÄ™cia sprawy: ${error.message}`);
     }
   };
 
@@ -1605,8 +1682,8 @@ const caseClientSuggestions = useMemo(() => {
           <Card className="border-rose-200">
             <CardContent className="p-6 space-y-4">
               <h2 className="text-lg font-bold text-rose-700">Kontekst workspace nie jest gotowy</h2>
-              <p className="text-sm text-slate-600">Akcje na sprawie są zablokowane do czasu poprawnego bootstrapu workspace.</p>
-              <Button onClick={() => refreshWorkspace()}>Spróbuj ponownie</Button>
+              <p className="text-sm text-slate-600">Akcje na sprawie sÄ… zablokowane do czasu poprawnego bootstrapu workspace.</p>
+              <Button onClick={() => refreshWorkspace()}>SprĂłbuj ponownie</Button>
             </CardContent>
           </Card>
         </div>
@@ -1640,7 +1717,7 @@ const caseClientSuggestions = useMemo(() => {
             </Button>
             <Button size="sm" className="gap-2" onClick={() => void handleSendCaseReminder()}>
               <Send className="w-4 h-4" />
-              Wyślij przypomnienie
+              WyĹ›lij przypomnienie
             </Button>
           </div>
         </div>
@@ -1651,7 +1728,7 @@ const caseClientSuggestions = useMemo(() => {
           <div className="lg:col-span-2 space-y-6">
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -1662,19 +1739,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
-                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
             </div>
           )}
         </CardContent>
@@ -1691,18 +1768,18 @@ const caseClientSuggestions = useMemo(() => {
                         {caseStatusLabel(caseData.status)}
                       </Badge>
                       {(Number(caseData.completenessPercent) || 0) >= 100 ? <Badge variant="secondary">Komplet 100%</Badge> : null}
-                      {items.some((entry) => entry.status === 'uploaded') ? <Badge variant="outline">Czeka na akceptację</Badge> : null}
+                      {items.some((entry) => entry.status === 'uploaded') ? <Badge variant="outline">Czeka na akceptacjÄ™</Badge> : null}
                     </div>
                     <p className="text-sm text-slate-500">
                       {caseData.status === 'ready_to_start'
-                        ? 'Sprawa jest gotowa do wejścia w realizację. Teraz operator powinien uruchomić start i przejąć prowadzenie.'
+                        ? 'Sprawa jest gotowa do wejĹ›cia w realizacjÄ™. Teraz operator powinien uruchomiÄ‡ start i przejÄ…Ä‡ prowadzenie.'
                         : caseData.status === 'in_progress'
-                          ? 'Sprawa jest już w aktywnej realizacji. Kolejny ruch to pilnowanie tasków, klienta i historii zmian.'
+                          ? 'Sprawa jest juĹĽ w aktywnej realizacji. Kolejny ruch to pilnowanie taskĂłw, klienta i historii zmian.'
                           : caseData.status === 'completed'
-                            ? 'Sprawa jest domknięta. Możesz wrócić do środka tylko po historię lub kontrolę końcową.'
+                            ? 'Sprawa jest domkniÄ™ta. MoĹĽesz wrĂłciÄ‡ do Ĺ›rodka tylko po historiÄ™ lub kontrolÄ™ koĹ„cowÄ….'
                             : caseData.status === 'blocked'
-                              ? 'Sprawa ma realny blok i najpierw trzeba go odblokować.'
-                              : 'Sprawa nie jest jeszcze gotowa do startu. Najpierw domknij brakujące lub oczekujące elementy.'}
+                              ? 'Sprawa ma realny blok i najpierw trzeba go odblokowaÄ‡.'
+                              : 'Sprawa nie jest jeszcze gotowa do startu. Najpierw domknij brakujÄ…ce lub oczekujÄ…ce elementy.'}
                     </p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
@@ -1720,7 +1797,7 @@ const caseClientSuggestions = useMemo(() => {
                       ) : null}
                       {caseData.status === 'in_progress' ? (
                         <Button variant="outline" onClick={() => void handleMarkCaseCompleted()}>
-                          <CheckCircle2 className="w-4 h-4 mr-2" /> Oznacz jako zrobioneoną
+                          <CheckCircle2 className="w-4 h-4 mr-2" /> Oznacz jako zrobioneonÄ…
                         </Button>
                       ) : null}
                     </div>
@@ -1731,7 +1808,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -1742,19 +1819,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
-                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
             </div>
           )}
         </CardContent>
@@ -1768,12 +1845,12 @@ const caseClientSuggestions = useMemo(() => {
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                     <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Zadania sprawy</p>
                     <p className="mt-2 text-2xl font-bold text-slate-900">{linkedTasks.length}</p>
-                    <p className="mt-1 text-sm text-slate-500">Wszystkie taski przypięte do tej sprawy i widoczne również na liście zadań.</p>
+                    <p className="mt-1 text-sm text-slate-500">Wszystkie taski przypiÄ™te do tej sprawy i widoczne rĂłwnieĹĽ na liĹ›cie zadaĹ„.</p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                     <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Wydarzenia sprawy</p>
                     <p className="mt-2 text-2xl font-bold text-slate-900">{linkedEvents.length}</p>
-                    <p className="mt-1 text-sm text-slate-500">Bloki czasu i spotkania przypięte bezpośrednio do tej sprawy.</p>
+                    <p className="mt-1 text-sm text-slate-500">Bloki czasu i spotkania przypiÄ™te bezpoĹ›rednio do tej sprawy.</p>
                   </div>
                 </div>
 
@@ -1785,38 +1862,38 @@ const caseClientSuggestions = useMemo(() => {
                     <Calendar className="w-4 h-4 mr-2" /> Dodaj wydarzenie do sprawy
                   </Button>
                   <Button variant="outline" asChild>
-                    <Link to="/tasks">Otwórz zadania <ExternalLink className="w-4 h-4" /></Link>
+                    <Link to="/tasks">OtwĂłrz zadania <ExternalLink className="w-4 h-4" /></Link>
                   </Button>
                   <Button variant="outline" asChild>
-                    <Link to="/calendar">Otwórz kalendarz <ExternalLink className="w-4 h-4" /></Link>
+                    <Link to="/calendar">OtwĂłrz kalendarz <ExternalLink className="w-4 h-4" /></Link>
                   </Button>
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
                     <div className="flex items-center justify-between gap-3">
-                      <h3 className="text-sm font-bold text-slate-900">Najbliższe zadania</h3>
+                      <h3 className="text-sm font-bold text-slate-900">NajbliĹĽsze zadania</h3>
                       <Badge variant="outline">{linkedTasks.length}</Badge>
                     </div>
                     {linkedTasks.length === 0 ? (
-                      <p className="text-sm text-slate-500">Brak tasków przypiętych do tej sprawy.</p>
+                      <p className="text-sm text-slate-500">Brak taskĂłw przypiÄ™tych do tej sprawy.</p>
                     ) : (
                       <div className="space-y-2">
                         {linkedTasks.slice(0, 5).map((task: any) => (
                           <div key={task.id} className="rounded-xl border border-slate-200 px-3 py-2 space-y-3">
                             <div className="flex items-start justify-between gap-3">
                               <div className="min-w-0">
-                                <p className="text-sm font-semibold text-slate-900 break-words">{task.title || 'Zadanie bez tytułu'}</p>
-                                <p className="text-xs text-slate-500 break-words">{formatDateTime(task.scheduledAt || task.dueAt || task.date)}{task.priority ? ` • Priorytet: ${task.priority}` : ''}</p>
+                                <p className="text-sm font-semibold text-slate-900 break-words">{task.title || 'Zadanie bez tytuĹ‚u'}</p>
+                                <p className="text-xs text-slate-500 break-words">{formatDateTime(task.scheduledAt || task.dueAt || task.date)}{task.priority ? ` â€˘ Priorytet: ${task.priority}` : ''}</p>
                               </div>
                               <Badge variant={task.status === 'done' ? 'secondary' : 'outline'}>{task.status === 'done' ? 'Zrobione' : 'Aktywne'}</Badge>
                             </div>
                             <div className="flex flex-wrap gap-2">
                               <Button variant="outline" size="sm" onClick={() => openCaseTaskEditor(task)}>Edytuj</Button>
                               <Button variant="outline" size="sm" onClick={() => void handleToggleCaseTaskStatus(task)} disabled={taskActionPendingId === String(task.id)}>
-                                {taskActionPendingId === String(task.id) ? '...' : task.status === 'done' ? 'Przywróć' : 'Zrobione'}
+                                {taskActionPendingId === String(task.id) ? '...' : task.status === 'done' ? 'PrzywrĂłÄ‡' : 'Zrobione'}
                               </Button>
-                              <Button variant="outline" size="sm" className="text-rose-600 hover:text-rose-600" onClick={() => void handleDeleteCaseTask(task)} disabled={taskActionPendingId === String(task.id)}>Usuń</Button>
+                              <Button variant="outline" size="sm" className="text-rose-600 hover:text-rose-600" onClick={() => void handleDeleteCaseTask(task)} disabled={taskActionPendingId === String(task.id)}>UsuĹ„</Button>
                             </div>
                           </div>
                         ))}
@@ -1826,28 +1903,28 @@ const caseClientSuggestions = useMemo(() => {
 
                   <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
                     <div className="flex items-center justify-between gap-3">
-                      <h3 className="text-sm font-bold text-slate-900">Najbliższe wydarzenia</h3>
+                      <h3 className="text-sm font-bold text-slate-900">NajbliĹĽsze wydarzenia</h3>
                       <Badge variant="outline">{linkedEvents.length}</Badge>
                     </div>
                     {linkedEvents.length === 0 ? (
-                      <p className="text-sm text-slate-500">Brak wydarzeń przypiętych do tej sprawy.</p>
+                      <p className="text-sm text-slate-500">Brak wydarzeĹ„ przypiÄ™tych do tej sprawy.</p>
                     ) : (
                       <div className="space-y-2">
                         {linkedEvents.slice(0, 5).map((event: any) => (
                           <div key={event.id} className="rounded-xl border border-slate-200 px-3 py-2 space-y-3">
                             <div className="flex items-start justify-between gap-3">
                               <div className="min-w-0">
-                                <p className="text-sm font-semibold text-slate-900 break-words">{event.title || 'Wydarzenie bez tytułu'}</p>
-                                <p className="text-xs text-slate-500 break-words">{formatDateTime(event.startAt)}{event.endAt ? ` → ${formatDateTime(event.endAt)}` : ''}</p>
+                                <p className="text-sm font-semibold text-slate-900 break-words">{event.title || 'Wydarzenie bez tytuĹ‚u'}</p>
+                                <p className="text-xs text-slate-500 break-words">{formatDateTime(event.startAt)}{event.endAt ? ` â†’ ${formatDateTime(event.endAt)}` : ''}</p>
                               </div>
                               <Badge variant={event.status === 'completed' ? 'secondary' : 'outline'}>{event.status === 'completed' ? 'Wykonane' : 'Zaplanowane'}</Badge>
                             </div>
                             <div className="flex flex-wrap gap-2">
                               <Button variant="outline" size="sm" onClick={() => openCaseEventEditor(event)}>Edytuj</Button>
                               <Button variant="outline" size="sm" onClick={() => void handleCompleteCaseEvent(event)} disabled={eventActionPendingId === String(event.id)}>
-                                {eventActionPendingId === String(event.id) ? '...' : event.status === 'completed' ? 'Przywróć' : 'Wykonane'}
+                                {eventActionPendingId === String(event.id) ? '...' : event.status === 'completed' ? 'PrzywrĂłÄ‡' : 'Wykonane'}
                               </Button>
-                              <Button variant="outline" size="sm" className="text-rose-600 hover:text-rose-600" onClick={() => void handleDeleteCaseEvent(event)} disabled={eventActionPendingId === String(event.id)}>Usuń</Button>
+                              <Button variant="outline" size="sm" className="text-rose-600 hover:text-rose-600" onClick={() => void handleDeleteCaseEvent(event)} disabled={eventActionPendingId === String(event.id)}>UsuĹ„</Button>
                             </div>
                           </div>
                         ))}
@@ -1860,7 +1937,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -1871,19 +1948,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
-                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
             </div>
           )}
         </CardContent>
@@ -1900,7 +1977,7 @@ const caseClientSuggestions = useMemo(() => {
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm font-bold">
-                    <span className="text-slate-700">Postęp kompletności</span>
+                    <span className="text-slate-700">PostÄ™p kompletnoĹ›ci</span>
                     <span className="text-primary">{Math.round(caseData.completenessPercent || 0)}%</span>
                   </div>
                   <Progress value={caseData.completenessPercent || 0} className="h-3" />
@@ -1908,7 +1985,7 @@ const caseClientSuggestions = useMemo(() => {
               </CardHeader>
               <CardContent className="p-0">
                 <div className="p-6 flex items-center justify-between border-b border-slate-100 gap-3">
-                  <h3 className="text-lg font-bold text-slate-900">Lista wymaganych elementów</h3>
+                  <h3 className="text-lg font-bold text-slate-900">Lista wymaganych elementĂłw</h3>
                   <Dialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen}>
                     <DialogTrigger asChild>
                       <Button size="sm" variant="outline" className="gap-2">
@@ -1927,7 +2004,7 @@ const caseClientSuggestions = useMemo(() => {
                         </div>
                         <div className="space-y-2">
                           <Label>Opis / Instrukcja</Label>
-                          <Textarea placeholder="Wyjaśnij klientowi co dokładnie ma zrobić..." value={newItem.description} onChange={e => setNewItem({...newItem, description: e.target.value})} />
+                          <Textarea placeholder="WyjaĹ›nij klientowi co dokĹ‚adnie ma zrobiÄ‡..." value={newItem.description} onChange={e => setNewItem({...newItem, description: e.target.value})} />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
@@ -1939,8 +2016,8 @@ const caseClientSuggestions = useMemo(() => {
                             >
                               <option value="file">Plik</option>
                               <option value="decision">Decyzja (Tak/Nie)</option>
-                              <option value="text">Tekst / Odpowiedź</option>
-                              <option value="access">Dostępy / Hasła</option>
+                              <option value="text">Tekst / OdpowiedĹş</option>
+                              <option value="access">DostÄ™py / HasĹ‚a</option>
                             </select>
                           </div>
                           <div className="flex items-center gap-2 pt-8">
@@ -1951,7 +2028,7 @@ const caseClientSuggestions = useMemo(() => {
                               onChange={e => setNewItem({...newItem, isRequired: e.target.checked})}
                               className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary"
                             />
-                            <Label htmlFor="required">Obowiązkowy</Label>
+                            <Label htmlFor="required">ObowiÄ…zkowy</Label>
                           </div>
                         </div>
                         <div className="space-y-2">
@@ -1971,7 +2048,7 @@ const caseClientSuggestions = useMemo(() => {
                   {items.length === 0 ? (
                     <div className="p-12 text-center">
                       <FileText className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                      <p className="text-slate-500">Brak elementów. Dodaj pierwszy element, aby zacząć.</p>
+                      <p className="text-slate-500">Brak elementĂłw. Dodaj pierwszy element, aby zaczÄ…Ä‡.</p>
                     </div>
                   ) : (
                     items.map((item) => (
@@ -2045,7 +2122,7 @@ const caseClientSuggestions = useMemo(() => {
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteItem(item.id)}>
                                 <Trash2 className="w-4 h-4 mr-2" />
-                                Usuń
+                                UsuĹ„
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -2061,7 +2138,7 @@ const caseClientSuggestions = useMemo(() => {
           <div className="space-y-6">
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2072,19 +2149,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
-                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
             </div>
           )}
         </CardContent>
@@ -2114,14 +2191,14 @@ const caseClientSuggestions = useMemo(() => {
                   setIsEditClientOpen(true);
                 }}>
                   <Edit2 className="w-4 h-4 mr-2" />
-                  Zmień klienta sprawy
+                  ZmieĹ„ klienta sprawy
                 </Button>
               </CardContent>
             </Card>
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2132,19 +2209,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
-                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
             </div>
           )}
         </CardContent>
@@ -2153,7 +2230,7 @@ const caseClientSuggestions = useMemo(() => {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <UserRound className="w-5 h-5 text-slate-400" />
-                  Źródło sprawy
+                  ĹąrĂłdĹ‚o sprawy
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -2162,28 +2239,28 @@ const caseClientSuggestions = useMemo(() => {
                     <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Lead źródłowy</p>
+                          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Lead ĹşrĂłdĹ‚owy</p>
                           <p className="mt-1 text-base font-bold text-slate-900 break-words">{sourceLead.name || 'Lead bez nazwy'}</p>
                           <div className="mt-2 flex flex-wrap gap-2">
                             <Badge variant="outline">{leadStatusLabel(sourceLead.status)}</Badge>
-                            {sourceLead.isAtRisk ? <Badge variant="destructive">Zagrożony</Badge> : null}
+                            {sourceLead.isAtRisk ? <Badge variant="destructive">ZagroĹĽony</Badge> : null}
                           </div>
                         </div>
                         <Button variant="outline" size="sm" asChild>
                           <Link to={`/leads/${sourceLead.id}`}>
-                            Otwórz lead źródłowy <ExternalLink className="w-4 h-4" />
+                            OtwĂłrz lead ĹşrĂłdĹ‚owy <ExternalLink className="w-4 h-4" />
                           </Link>
                         </Button>
                       </div>
 
                       <div className="grid grid-cols-1 gap-3 text-sm text-slate-600">
                         <div className="rounded-xl bg-slate-50 px-3 py-2">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Źródło pozyskania</p>
+                          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">ĹąrĂłdĹ‚o pozyskania</p>
                           <p className="mt-1 font-medium text-slate-900 break-words">{leadSourceLabel(sourceLead.source)}</p>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div className="rounded-xl bg-slate-50 px-3 py-2">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Data wejścia do obsługi</p>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Data wejĹ›cia do obsĹ‚ugi</p>
                             <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
                               <Calendar className="w-4 h-4 text-slate-400" />
                               {sourceLeadMovedAtLabel}
@@ -2223,20 +2300,20 @@ const caseClientSuggestions = useMemo(() => {
                 ) : (
                   <>
                     <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-4">
-                      <p className="text-sm font-semibold text-slate-900">Sprawa utworzona ręcznie.</p>
+                      <p className="text-sm font-semibold text-slate-900">Sprawa utworzona rÄ™cznie.</p>
                       <p className="mt-1 text-sm text-slate-500">
-                        Możesz opcjonalnie podpiąć lead źródłowy, jeśli ten temat zaczął się od procesu sprzedażowego.
+                        MoĹĽesz opcjonalnie podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li ten temat zaczÄ…Ĺ‚ siÄ™ od procesu sprzedaĹĽowego.
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <Label>Wybierz leada do powiązania</Label>
+                      <Label>Wybierz leada do powiÄ…zania</Label>
                       <Select value={selectedLeadId} onValueChange={setSelectedLeadId}>
                         <SelectTrigger>
                           <SelectValue placeholder="Wybierz leada" />
                         </SelectTrigger>
                         <SelectContent>
                           {availableLeads.length === 0 ? (
-                            <SelectItem value="__empty__" disabled>Brak dostępnych leadów</SelectItem>
+                            <SelectItem value="__empty__" disabled>Brak dostÄ™pnych leadĂłw</SelectItem>
                           ) : (
                             availableLeads.map((lead: any) => (
                               <SelectItem key={lead.id} value={String(lead.id)}>
@@ -2258,7 +2335,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2269,19 +2346,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
-                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
             </div>
           )}
         </CardContent>
@@ -2290,26 +2367,26 @@ const caseClientSuggestions = useMemo(() => {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <History className="w-5 h-5 text-slate-400" />
-                  Ostatnia aktywność
+                  Ostatnia aktywnoĹ›Ä‡
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label>Notatka operacyjna</Label>
                   <Textarea
-                    placeholder="Dodaj krótką notatkę do sprawy..."
+                    placeholder="Dodaj krĂłtkÄ… notatkÄ™ do sprawy..."
                     className="min-h-[96px]"
                     value={caseNote}
                     onChange={(e) => setCaseNote(e.target.value)}
                   />
                   <Button onClick={() => void handleAddCaseNote()} disabled={caseNoteSubmitting || !caseNote.trim()}>
-                    {caseNoteSubmitting ? 'Zapisywanie...' : 'Dodaj notatkę'}
+                    {caseNoteSubmitting ? 'Zapisywanie...' : 'Dodaj notatkÄ™'}
                   </Button>
                 </div>
                 <ScrollArea className="h-[360px] pr-2">
                   <div className="space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
                     {activities.length === 0 ? (
-                      <p className="text-center text-slate-400 py-8 text-sm">Brak aktywności</p>
+                      <p className="text-center text-slate-400 py-8 text-sm">Brak aktywnoĹ›ci</p>
                     ) : (
                       activities.map((activity) => {
                         const isCaseNote = activity.eventType === 'note_added';
@@ -2323,27 +2400,27 @@ const caseClientSuggestions = useMemo(() => {
                                 <p className="text-sm font-medium text-slate-900">
                                   {activity.actorType === 'operator' ? 'Ty' : 'Klient'}
                                   <span className="font-normal text-slate-500 ml-1">
-                                    {activity.eventType === 'item_added' ? `dodał element: ${activity.payload?.title}` :
-                                     activity.eventType === 'status_changed' ? `zmienił status ${activity.payload?.title} na ${activity.payload?.status}` :
-                                     activity.eventType === 'file_uploaded' ? `wgrał plik do: ${activity.payload?.title}` :
-                                     activity.eventType === 'decision_made' ? `podjął decyzję w: ${activity.payload?.title}` :
-                                     activity.eventType === 'portal_token_created' ? `wygenerował link portalu` :
-                                     activity.eventType === 'lead_linked' ? `podpiął leada: ${activity.payload?.leadName || 'Lead'}` :
-                                     activity.eventType === 'lead_unlinked' ? `odpiął leada: ${activity.payload?.leadName || 'Lead'}` :
-                                     activity.eventType === 'case_started' ? `uruchomił start realizacji` :
-                                     activity.eventType === 'case_task_created' ? `dodał task do sprawy: ${activity.payload?.title || 'Task'}` :
-                                     activity.eventType === 'case_task_updated' ? `zaktualizował task sprawy: ${activity.payload?.title || 'Task'}` :
-                                     activity.eventType === 'case_task_status_toggled' ? `zmienił status taska: ${activity.payload?.title || 'Task'}` :
-                                     activity.eventType === 'case_task_deleted' ? `usunął task sprawy: ${activity.payload?.title || 'Task'}` :
-                                     activity.eventType === 'case_event_created' ? `dodał wydarzenie do sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
-                                     activity.eventType === 'case_event_updated' ? `zaktualizował wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
-                                     activity.eventType === 'case_event_status_toggled' ? `zmienił status wydarzenia: ${activity.payload?.title || 'Wydarzenie'}` :
-                                     activity.eventType === 'case_event_deleted' ? `usunął wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
-                                     activity.eventType === 'case_completed' ? `oznaczył sprawę jako zrobioneoną` :
-                                     activity.eventType === 'case_reminder_requested' ? `wysłał przypomnienie i utworzył follow-up` :
-                                     activity.eventType === 'reminder_scheduled' ? `zaplanował przypomnienie: ${activity.payload?.title || 'pozycja'}` :
-                                     activity.eventType === 'note_added' ? 'dodał notatkę operacyjną' :
-                                     'wykonał akcję'}
+                                    {activity.eventType === 'item_added' ? `dodaĹ‚ element: ${activity.payload?.title}` :
+                                     activity.eventType === 'status_changed' ? `zmieniĹ‚ status ${activity.payload?.title} na ${activity.payload?.status}` :
+                                     activity.eventType === 'file_uploaded' ? `wgraĹ‚ plik do: ${activity.payload?.title}` :
+                                     activity.eventType === 'decision_made' ? `podjÄ…Ĺ‚ decyzjÄ™ w: ${activity.payload?.title}` :
+                                     activity.eventType === 'portal_token_created' ? `wygenerowaĹ‚ link portalu` :
+                                     activity.eventType === 'lead_linked' ? `podpiÄ…Ĺ‚ leada: ${activity.payload?.leadName || 'Lead'}` :
+                                     activity.eventType === 'lead_unlinked' ? `odpiÄ…Ĺ‚ leada: ${activity.payload?.leadName || 'Lead'}` :
+                                     activity.eventType === 'case_started' ? `uruchomiĹ‚ start realizacji` :
+                                     activity.eventType === 'case_task_created' ? `dodaĹ‚ task do sprawy: ${activity.payload?.title || 'Task'}` :
+                                     activity.eventType === 'case_task_updated' ? `zaktualizowaĹ‚ task sprawy: ${activity.payload?.title || 'Task'}` :
+                                     activity.eventType === 'case_task_status_toggled' ? `zmieniĹ‚ status taska: ${activity.payload?.title || 'Task'}` :
+                                     activity.eventType === 'case_task_deleted' ? `usunÄ…Ĺ‚ task sprawy: ${activity.payload?.title || 'Task'}` :
+                                     activity.eventType === 'case_event_created' ? `dodaĹ‚ wydarzenie do sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
+                                     activity.eventType === 'case_event_updated' ? `zaktualizowaĹ‚ wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
+                                     activity.eventType === 'case_event_status_toggled' ? `zmieniĹ‚ status wydarzenia: ${activity.payload?.title || 'Wydarzenie'}` :
+                                     activity.eventType === 'case_event_deleted' ? `usunÄ…Ĺ‚ wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
+                                     activity.eventType === 'case_completed' ? `oznaczyĹ‚ sprawÄ™ jako zrobioneonÄ…` :
+                                     activity.eventType === 'case_reminder_requested' ? `wysĹ‚aĹ‚ przypomnienie i utworzyĹ‚ follow-up` :
+                                     activity.eventType === 'reminder_scheduled' ? `zaplanowaĹ‚ przypomnienie: ${activity.payload?.title || 'pozycja'}` :
+                                     activity.eventType === 'note_added' ? 'dodaĹ‚ notatkÄ™ operacyjnÄ…' :
+                                     'wykonaĹ‚ akcjÄ™'}
                                   </span>
                                 </p>
                                 <p className="text-[10px] text-slate-400 mt-0.5">
@@ -2375,7 +2452,7 @@ const caseClientSuggestions = useMemo(() => {
 
                   <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">Źródło sprawy</CardTitle>
+          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {caseCreatedFromLead ? (
@@ -2386,19 +2463,19 @@ const caseClientSuggestions = useMemo(() => {
               </div>
               <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
                 <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>Źródło pozyskania: {sourceLeadOriginLabel}</div>
-                <div>Obsługa od: {sourceLeadMovedAtLabel}</div>
+                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
+                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
               </div>
               {caseData?.leadId ? (
                 <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>Otwórz lead źródłowy</Link>
+                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
                 </Button>
               ) : null}
             </>
           ) : (
             <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona ręcznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstała bezpośrednio z leada. Możesz później podpiąć lead źródłowy, jeśli chcesz zachować pełną historię.</p>
+              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
+              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
             </div>
           )}
         </CardContent>
@@ -2411,12 +2488,12 @@ const caseClientSuggestions = useMemo(() => {
                   </div>
                   <div>
                     <h4 className="font-bold">Panel Klienta</h4>
-                    <p className="text-xs text-white/70">Udostępnij ten link klientowi.</p>
+                    <p className="text-xs text-white/70">UdostÄ™pnij ten link klientowi.</p>
                   </div>
                 </div>
                 <Button variant="secondary" className="w-full gap-2" onClick={generatePortalLink}>
                   <Copy className="w-4 h-4" />
-                  Kopiuj link dostępu
+                  Kopiuj link dostÄ™pu
                 </Button>
               </CardContent>
             </Card>
@@ -2431,7 +2508,7 @@ const caseClientSuggestions = useMemo(() => {
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label>Tytuł zadania</Label>
+              <Label>TytuĹ‚ zadania</Label>
               <Input value={quickTask.title} onChange={(e) => setQuickTask((prev) => ({ ...prev, title: e.target.value }))} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2449,7 +2526,7 @@ const caseClientSuggestions = useMemo(() => {
                 <Label>Priorytet</Label>
                 <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickTask.priority} onChange={(e) => setQuickTask((prev) => ({ ...prev, priority: e.target.value }))}>
                   <option value="low">Niski</option>
-                  <option value="medium">Średni</option>
+                  <option value="medium">Ĺšredni</option>
                   <option value="high">Wysoki</option>
                 </select>
               </div>
@@ -2495,7 +2572,7 @@ const caseClientSuggestions = useMemo(() => {
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label>Tytuł wydarzenia</Label>
+              <Label>TytuĹ‚ wydarzenia</Label>
               <Input value={quickEvent.title} onChange={(e) => setQuickEvent((prev) => ({ ...prev, title: e.target.value }))} />
             </div>
             <div className="space-y-2">
@@ -2566,7 +2643,7 @@ const caseClientSuggestions = useMemo(() => {
       }}>
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>Zmień klienta sprawy</DialogTitle>
+            <DialogTitle>ZmieĹ„ klienta sprawy</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
@@ -2575,7 +2652,7 @@ const caseClientSuggestions = useMemo(() => {
                 <Input
                   value={caseClientDraft.clientName}
                   onChange={(e) => setCaseClientDraft((prev) => ({ ...prev, clientName: e.target.value }))}
-                  placeholder="Wpisz klienta, a system podpowie z leadów i danych spraw"
+                  placeholder="Wpisz klienta, a system podpowie z leadĂłw i danych spraw"
                 />
                 <Button
                   type="button"
@@ -2600,10 +2677,10 @@ const caseClientSuggestions = useMemo(() => {
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-slate-900 truncate">{option.name}</p>
                           <p className="text-xs text-slate-500 truncate">
-                            {[option.email, option.phone].filter(Boolean).join(' • ') || 'Dane klienta zapisane w systemie'}
+                            {[option.email, option.phone].filter(Boolean).join(' â€˘ ') || 'Dane klienta zapisane w systemie'}
                           </p>
                         </div>
-                        <Badge variant="outline">{option.source === 'lead' ? 'Ze źródłowego leada' : option.source === 'case' ? 'Ze sprawy' : 'Z danych sprawy'}</Badge>
+                        <Badge variant="outline">{option.source === 'lead' ? 'Ze ĹşrĂłdĹ‚owego leada' : option.source === 'case' ? 'Ze sprawy' : 'Z danych sprawy'}</Badge>
                       </div>
                     </button>
                   ))}
@@ -2643,7 +2720,7 @@ const caseClientSuggestions = useMemo(() => {
           {editCaseTask ? (
             <div className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label>Tytuł taska</Label>
+                <Label>TytuĹ‚ taska</Label>
                 <Input value={editCaseTask.title} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, title: e.target.value }))} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2661,7 +2738,7 @@ const caseClientSuggestions = useMemo(() => {
                   <Label>Priorytet</Label>
                   <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseTask.priority} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, priority: e.target.value }))}>
                     <option value="low">Niski</option>
-                    <option value="medium">Średni</option>
+                    <option value="medium">Ĺšredni</option>
                     <option value="high">Wysoki</option>
                   </select>
                 </div>
@@ -2709,7 +2786,7 @@ const caseClientSuggestions = useMemo(() => {
           {editCaseEvent ? (
             <div className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label>Tytuł wydarzenia</Label>
+                <Label>TytuĹ‚ wydarzenia</Label>
                 <Input value={editCaseEvent.title} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, title: e.target.value }))} />
               </div>
               <div className="space-y-2">
@@ -2774,12 +2851,12 @@ const caseClientSuggestions = useMemo(() => {
       <Dialog open={Boolean(editCaseNote)} onOpenChange={(open) => { if (!open) setEditCaseNote(null); }}>
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>Edytuj notatkę sprawy</DialogTitle>
+            <DialogTitle>Edytuj notatkÄ™ sprawy</DialogTitle>
           </DialogHeader>
           {editCaseNote ? (
             <div className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label>Treść notatki</Label>
+                <Label>TreĹ›Ä‡ notatki</Label>
                 <Textarea value={editCaseNote.content} onChange={(e) => setEditCaseNote((prev: any) => ({ ...prev, content: e.target.value }))} className="min-h-[120px]" />
               </div>
             </div>
@@ -2787,7 +2864,7 @@ const caseClientSuggestions = useMemo(() => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditCaseNote(null)}>Anuluj</Button>
             <Button onClick={() => void handleSaveCaseNoteEdit()} disabled={caseNoteEditSubmitting}>
-              {caseNoteEditSubmitting ? 'Zapisywanie...' : 'Zapisz notatkę'}
+              {caseNoteEditSubmitting ? 'Zapisywanie...' : 'Zapisz notatkÄ™'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -2795,6 +2872,7 @@ const caseClientSuggestions = useMemo(() => {
     </Layout>
   );
 }
+
 
 
 

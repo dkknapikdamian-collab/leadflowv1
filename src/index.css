@@ -1,5 +1,6 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @import "./styles/case-detail-simplified.css";
+@import "./styles/case-detail-stage2.css";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -210,3 +211,4 @@ html[data-skin] select option {
   background-color: var(--app-surface-strong);
   color: var(--app-text);
 }
+
