@@ -285,6 +285,37 @@ function toDateOnlyFromLocalInput(value: string) {
   return value.slice(0, 10);
 }
 
+function buildQuickRescheduleIso(daysFromNow: number, sourceDate?: any, fallbackHour = 9) {
+  const source = toDate(sourceDate);
+  const target = new Date();
+  target.setDate(target.getDate() + daysFromNow);
+
+  if (source) {
+    target.setHours(source.getHours(), source.getMinutes(), 0, 0);
+  } else {
+    target.setHours(fallbackHour, 0, 0, 0);
+  }
+
+  return target.toISOString();
+}
+
+function buildDateOnlyFromIso(value: string) {
+  return value ? value.slice(0, 10) : '';
+}
+
+function addDurationToIso(startIso: string, durationMs: number) {
+  const start = toDate(startIso);
+  if (!start) return '';
+  return new Date(start.getTime() + durationMs).toISOString();
+}
+
+function getEventDurationMs(event: EventRecord) {
+  const start = toDate(event.startAt);
+  const end = toDate(event.endAt);
+  if (start && end && end.getTime() > start.getTime()) return end.getTime() - start.getTime();
+  return 60 * 60 * 1000;
+}
+
 function getCaseStatusLabel(status?: string) {
   if (!status) return 'Bez statusu';
   return CASE_STATUS_LABELS[status] || status;
@@ -361,6 +392,12 @@ function getActivityText(activity: CaseActivity) {
   }
   if (activity.eventType === 'event_status_changed') {
     return `${actor} zmienił status wydarzenia „${title}” na: ${getEventStatusLabel(activity.payload?.status)}`;
+  }
+  if (activity.eventType === 'task_rescheduled') {
+    return `${actor} przełożył zadanie „${title}” na: ${formatDateTime(activity.payload?.scheduledAt)}`;
+  }
+  if (activity.eventType === 'event_rescheduled') {
+    return `${actor} przełożył wydarzenie „${title}” na: ${formatDateTime(activity.payload?.startAt)}`;
   }
   return `${actor} wykonał akcję`;
 }
@@ -956,6 +993,104 @@ export default function CaseDetail() {
     }
   };
 
+  const handleQuickRescheduleTask = async (task: TaskRecord, daysFromNow: number, label: string) => {
+    if (!caseId) return;
+
+    const scheduledAt = buildQuickRescheduleIso(daysFromNow, task.scheduledAt || task.date || task.reminderAt);
+    const date = buildDateOnlyFromIso(scheduledAt);
+
+    try {
+      await updateTaskInSupabase({
+        id: task.id,
+        caseId,
+        scheduledAt,
+        date,
+        reminderAt: scheduledAt,
+        status: task.status === 'cancelled' ? 'todo' : task.status || 'todo',
+      });
+
+      setTasks((current) =>
+        current.map((currentTask) =>
+          currentTask.id === task.id
+            ? {
+                ...currentTask,
+                scheduledAt,
+                date,
+                reminderAt: scheduledAt,
+                status: currentTask.status === 'cancelled' ? 'todo' : currentTask.status || 'todo',
+              }
+            : currentTask,
+        ),
+      );
+
+      await insertActivityToSupabase({
+        caseId,
+        actorType: 'operator',
+        eventType: 'task_rescheduled',
+        payload: { title: task.title || 'Zadanie', scheduledAt, label },
+      }).catch((error) => console.error('CaseDetail task reschedule activity failed', error));
+
+      await updateCaseInSupabase({
+        id: caseId,
+        lastActivityAt: new Date().toISOString(),
+      }).catch((error) => console.error('CaseDetail task reschedule case touch failed', error));
+
+      toast.success(`Zadanie przełożone: ${label}`);
+      await refreshCaseData();
+    } catch (error: any) {
+      toast.error('Błąd: ' + (error?.message || 'Nie udało się przełożyć zadania'));
+    }
+  };
+
+  const handleQuickRescheduleEvent = async (event: EventRecord, daysFromNow: number, label: string) => {
+    if (!caseId) return;
+
+    const startAt = buildQuickRescheduleIso(daysFromNow, event.startAt || event.reminderAt, 10);
+    const endAt = addDurationToIso(startAt, getEventDurationMs(event));
+
+    try {
+      await updateEventInSupabase({
+        id: event.id,
+        caseId,
+        startAt,
+        endAt: endAt || undefined,
+        reminderAt: startAt,
+        status: event.status === 'cancelled' ? 'planned' : event.status || 'planned',
+      });
+
+      setEvents((current) =>
+        current.map((currentEvent) =>
+          currentEvent.id === event.id
+            ? {
+                ...currentEvent,
+                startAt,
+                endAt: endAt || currentEvent.endAt,
+                reminderAt: startAt,
+                status: currentEvent.status === 'cancelled' ? 'planned' : currentEvent.status || 'planned',
+              }
+            : currentEvent,
+        ),
+      );
+
+      await insertActivityToSupabase({
+        caseId,
+        actorType: 'operator',
+        eventType: 'event_rescheduled',
+        payload: { title: event.title || 'Wydarzenie', startAt, endAt: endAt || null, label },
+      }).catch((error) => console.error('CaseDetail event reschedule activity failed', error));
+
+      await updateCaseInSupabase({
+        id: caseId,
+        lastActivityAt: new Date().toISOString(),
+      }).catch((error) => console.error('CaseDetail event reschedule case touch failed', error));
+
+      toast.success(`Wydarzenie przełożone: ${label}`);
+      await refreshCaseData();
+    } catch (error: any) {
+      toast.error('Błąd: ' + (error?.message || 'Nie udało się przełożyć wydarzenia'));
+    }
+  };
+
   const handleUpdateItemStatus = async (itemId: string, status: string, title: string) => {
     if (!caseId) return;
 
@@ -1376,6 +1511,15 @@ export default function CaseDetail() {
                                       </Button>
                                       <Button
                                         size="sm"
+                                        variant="outline"
+                                        className="cf-mini-action cf-mini-action-warn"
+                                        onClick={() => handleQuickRescheduleTask(task, 1, 'jutro')}
+                                      >
+                                        <Clock className="w-3.5 h-3.5" />
+                                        Jutro
+                                      </Button>
+                                      <Button
+                                        size="sm"
                                         variant="ghost"
                                         className="cf-mini-action"
                                         onClick={() => handleUpdateTaskStatus(task.id, 'cancelled', task.title || 'Zadanie')}
@@ -1411,6 +1555,15 @@ export default function CaseDetail() {
                                       >
                                         <Check className="w-3.5 h-3.5" />
                                         Odbyte
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="cf-mini-action cf-mini-action-warn"
+                                        onClick={() => handleQuickRescheduleEvent(event, 1, 'jutro')}
+                                      >
+                                        <Clock className="w-3.5 h-3.5" />
+                                        Jutro
                                       </Button>
                                       <Button
                                         size="sm"

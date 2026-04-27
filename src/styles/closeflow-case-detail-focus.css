@@ -1056,3 +1056,16 @@
   }
 }
 
+/* Stage: CaseDetail quick reschedule actions */
+
+.cf-mini-action-warn {
+  border-color: rgba(217, 119, 6, 0.24) !important;
+  background: #fffbeb !important;
+  color: #b45309 !important;
+}
+
+.cf-action-controls .cf-mini-action-warn:hover {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+}
+
