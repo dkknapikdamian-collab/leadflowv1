@@ -2,7 +2,7 @@
 @import "./styles/case-detail-simplified.css";
 @import "./styles/case-detail-stage2.css";
 @import "./styles/visual-stage3-pipeline-and-case.css";
-@import "./styles/case-detail-forteca-v4.css";
+@import "./styles/closeflow-case-detail-focus.css";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
