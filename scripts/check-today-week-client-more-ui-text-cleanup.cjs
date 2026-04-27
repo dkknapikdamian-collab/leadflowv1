@@ -33,20 +33,86 @@ function assert(condition, message) {
   }
 }
 
+function stripJsComments(text) {
+  let output = '';
+  let index = 0;
+  let mode = 'code';
+  let quote = '';
+
+  while (index < text.length) {
+    const current = text[index];
+    const next = text[index + 1] || '';
+
+    if (mode === 'code') {
+      if (current === '/' && next === '*') {
+        index += 2;
+        while (index < text.length && !(text[index] === '*' && text[index + 1] === '/')) {
+          if (text[index] === '\n') output += '\n';
+          index += 1;
+        }
+        index += 2;
+        continue;
+      }
+
+      if (current === '/' && next === '/') {
+        index += 2;
+        while (index < text.length && text[index] !== '\n') index += 1;
+        if (text[index] === '\n') output += '\n';
+        index += 1;
+        continue;
+      }
+
+      if (current === "'" || current === '"' || current === '`') {
+        mode = 'string';
+        quote = current;
+        output += current;
+        index += 1;
+        continue;
+      }
+
+      output += current;
+      index += 1;
+      continue;
+    }
+
+    output += current;
+
+    if (current === '\\') {
+      if (index + 1 < text.length) {
+        output += text[index + 1];
+        index += 2;
+      } else {
+        index += 1;
+      }
+      continue;
+    }
+
+    if (current === quote) {
+      mode = 'code';
+      quote = '';
+    }
+
+    index += 1;
+  }
+
+  return output;
+}
+
 const today = read('src/pages/Today.tsx');
 const clientDetail = read('src/pages/ClientDetail.tsx');
+const clientDetailUi = stripJsComments(clientDetail);
 
 assert(today.includes('shouldOpenWeeklyCalendarFromShortcutText'), 'Today missing shortcut text detector');
 assert(today.includes('findTodayCalendarShortcutElement'), 'Today missing calendar shortcut element detector');
 assert(today.includes('data-today-week-calendar-click-capture="true"'), 'Today missing click capture marker');
 assert(today.includes('/calendar?view=week'), 'Today missing weekly calendar URL');
 
-assert(!clientDetail.includes("key: 'more'"), 'ClientDetail still contains more tab key');
-assert(!clientDetail.includes('key: "more"'), 'ClientDetail still contains more tab key');
-assert(!clientDetail.includes('Więcej'), 'ClientDetail still contains Więcej text');
-assert(!clientDetail.includes('Wiecej'), 'ClientDetail still contains Wiecej text');
-assert(!clientDetail.includes('CLIENT_DETAIL_MORE_MENU_SECONDARY'), 'ClientDetail still contains old more marker');
-assert(!clientDetail.includes('CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ'), 'ClientDetail still contains old more tabs marker');
+assert(!clientDetailUi.includes("key: 'more'"), 'ClientDetail still contains more tab key');
+assert(!clientDetailUi.includes('key: "more"'), 'ClientDetail still contains more tab key');
+assert(!clientDetailUi.includes('Więcej'), 'ClientDetail still contains Więcej text');
+assert(!clientDetailUi.includes('Wiecej'), 'ClientDetail still contains Wiecej text');
+assert(!clientDetailUi.includes('CLIENT_DETAIL_MORE_MENU_SECONDARY'), 'ClientDetail still contains old more marker');
+assert(!clientDetailUi.includes('CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ'), 'ClientDetail still contains old more tabs marker');
 
 const forbiddenTexts = [
   'Zasada tego panelu',
@@ -69,7 +135,7 @@ const files = ['src/pages', 'src/components']
 const hits = [];
 
 for (const file of files) {
-  const text = fs.readFileSync(file, 'utf8');
+  const text = stripJsComments(fs.readFileSync(file, 'utf8'));
   for (const fragment of forbiddenTexts) {
     if (text.includes(fragment)) {
       hits.push(path.relative(repo, file) + ': ' + fragment);

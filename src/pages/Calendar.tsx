@@ -32,7 +32,8 @@ import {
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,

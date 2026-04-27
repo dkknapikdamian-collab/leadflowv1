@@ -9,11 +9,11 @@ import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import {
-  archiveAiLeadDraft,
-  deleteAiLeadDraft,
-  getAiLeadDrafts,
-  markAiLeadDraftConverted,
-  updateAiLeadDraft,
+  archiveAiLeadDraftAsync,
+  deleteAiLeadDraftAsync,
+  getAiLeadDraftsAsync,
+  markAiLeadDraftConvertedAsync,
+  updateAiLeadDraftAsync,
   type AiLeadDraft,
   type AiLeadDraftStatus,
 } from '../lib/ai-drafts';
@@ -76,11 +76,19 @@ export default function AiDrafts() {
   const [searchQuery, setSearchQuery] = useState('');
   const [editingDraftId, setEditingDraftId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
+  const [draftsLoading, setDraftsLoading] = useState(false);
 
-  const reloadDrafts = () => setDrafts(getAiLeadDrafts());
+  const reloadDrafts = async () => {
+    setDraftsLoading(true);
+    try {
+      setDrafts(await getAiLeadDraftsAsync());
+    } finally {
+      setDraftsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    reloadDrafts();
+    void reloadDrafts();
   }, []);
 
   const stats = useMemo(() => {
@@ -105,7 +113,7 @@ export default function AiDrafts() {
 
   const handleCaptureSaved = async () => {
     if (activeDraftId) {
-      markAiLeadDraftConverted(activeDraftId);
+      await markAiLeadDraftConvertedAsync(activeDraftId);
       setActiveDraftId(null);
       reloadDrafts();
       toast.success('Szkic oznaczony jako zatwierdzony');
@@ -114,17 +122,16 @@ export default function AiDrafts() {
     reloadDrafts();
   };
 
-  const handleArchive = (draft: AiLeadDraft) => {
-    archiveAiLeadDraft(draft.id);
+  const handleArchive = async (draft: AiLeadDraft) => {
+    await archiveAiLeadDraftAsync(draft.id);
     reloadDrafts();
     toast.success('Szkic przeniesiony do archiwum');
   };
 
-  const handleDelete = (draft: AiLeadDraft) => {
+  const handleDelete = async (draft: AiLeadDraft) => {
     const confirmed = window.confirm('Usunąć szkic AI? Tej operacji nie będzie można cofnąć.');
     if (!confirmed) return;
-
-    deleteAiLeadDraft(draft.id);
+    await deleteAiLeadDraftAsync(draft.id);
     reloadDrafts();
     toast.success('Szkic usunięty');
   };
@@ -139,14 +146,13 @@ export default function AiDrafts() {
     setEditingText('');
   };
 
-  const handleSaveEdit = (draft: AiLeadDraft) => {
+  const handleSaveEdit = async (draft: AiLeadDraft) => {
     const nextText = editingText.trim();
     if (!nextText) {
       toast.error('Szkic nie może być pusty');
       return;
     }
-
-    updateAiLeadDraft(draft.id, { rawText: nextText });
+    await updateAiLeadDraftAsync(draft.id, { rawText: nextText });
     handleCancelEdit();
     reloadDrafts();
     toast.success('Szkic zaktualizowany');
@@ -201,7 +207,7 @@ export default function AiDrafts() {
                   </div>
                 </div>
               ) : (
-                <p className="whitespace-pre-wrap text-sm text-slate-800">{draft.rawText}</p>
+                <p className="whitespace-pre-wrap text-sm text-slate-800">{draft.rawText || 'Tekst źródłowy został usunięty po zatwierdzeniu albo anulowaniu szkicu.'}</p>
               )}
             </div>
           </div>
@@ -251,12 +257,12 @@ export default function AiDrafts() {
             </div>
             <h1 className="text-2xl font-bold text-slate-900">Szkice AI</h1>
             <p className="mt-1 max-w-3xl text-sm text-slate-600">
-              Notatka głosowa najpierw trafia tutaj. Lead powstaje dopiero po kliknięciu „Przejrzyj i zatwierdź”, sprawdzeniu pól i ręcznym zapisie.
+              Notatka głosowa najpierw trafia tutaj. Szkice są zapisywane w Supabase z lokalnym fallbackiem. Lead powstaje dopiero po kliknięciu „Przejrzyj i zatwierdź”, sprawdzeniu pól i ręcznym zapisie.
             </p>
           </div>
           <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">
             <CheckCircle2 className="h-4 w-4 text-blue-600" />
-            {stats.draft} do sprawdzenia
+            {draftsLoading ? 'Ładowanie...' : stats.draft + ' do sprawdzenia'}
           </div>
         </div>
 

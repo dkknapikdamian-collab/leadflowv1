@@ -69,6 +69,7 @@ import {
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 import { getEventMainDate, getEventStartAt, getTaskMainDate } from '../lib/scheduling';
+import { resolveCaseLifecycleV1, type CaseLifecycleResultV1 } from '../lib/case-lifecycle-v1';
 import '../styles/closeflow-case-detail-focus.css';
 
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
@@ -185,7 +186,7 @@ const CASE_STATUS_LABELS: Record<string, string> = {
   to_approve: 'Do sprawdzenia',
   blocked: 'Zablokowana',
   ready_to_start: 'Gotowa do startu',
-  completed: 'Zakończona',
+  completed: 'Zrobiona',
 };
 
 const CASE_STATUS_HINTS: Record<string, string> = {
@@ -195,7 +196,7 @@ const CASE_STATUS_HINTS: Record<string, string> = {
   to_approve: 'Klient coś przesłał. Sprawdź i zaakceptuj albo odrzuć.',
   blocked: 'Sprawa stoi. Usuń blokery zanim przejdziesz dalej.',
   ready_to_start: 'Sprawa jest gotowa do dalszej pracy operacyjnej.',
-  completed: 'Sprawa zakończona. Historia zostaje jako ślad pracy.',
+  completed: 'Sprawa zrobiona. Historia zostaje jako ślad pracy.',
 };
 
 const ITEM_STATUS_LABELS: Record<string, string> = {
@@ -551,6 +552,93 @@ function WorkPathIcon({ kind }: { kind: WorkPathEntry['kind'] }) {
   if (kind === 'item') return <FileText className="w-4 h-4" />;
   return <History className="w-4 h-4" />;
 }
+
+
+
+type CaseDetailV1CommandCenterProps = {
+  lifecycle: CaseLifecycleResultV1;
+  onAddItem?: () => void;
+  onAddTask?: () => void;
+  onAddEvent?: () => void;
+  onPortal?: () => void;
+  onStart?: () => void;
+  onComplete?: () => void;
+  onReopen?: () => void;
+};
+
+function CaseDetailV1CommandCenter({
+  lifecycle,
+  onAddItem,
+  onAddTask,
+  onAddEvent,
+  onPortal,
+  onStart,
+  onComplete,
+  onReopen,
+}: CaseDetailV1CommandCenterProps) {
+  return (
+    <Card data-testid="case-detail-v1-command-center" className="border-slate-200 bg-white shadow-sm">
+      <CardContent className="space-y-4 p-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-sm font-bold text-slate-900">Centrum dowodzenia sprawy V1</p>
+            <p className="mt-1 text-xs text-slate-500">{lifecycle.headline}</p>
+            <p className="mt-1 text-xs font-semibold text-slate-700">{lifecycle.nextOperatorAction}</p>
+          </div>
+          <Badge variant="outline">{lifecycle.label}</Badge>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <Button type="button" variant="outline" onClick={onAddItem}>Dodaj element</Button>
+          <Button type="button" variant="outline" onClick={onAddTask}>Dodaj zadanie</Button>
+          <Button type="button" variant="outline" onClick={onAddEvent}>Dodaj wydarzenie</Button>
+          <Button type="button" variant="outline" onClick={onPortal}>Portal klienta</Button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" size="sm" onClick={onStart}>Start realizacji</Button>
+          <Button type="button" size="sm" variant="outline" onClick={onComplete}>Zrobione sprawę</Button>
+          <Button type="button" size="sm" variant="outline" onClick={onReopen}>Przywróć sprawę</Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+const setCaseLifecycleStatusV1 = async ({
+  caseId,
+  status,
+  currentStatus,
+  refresh,
+}: {
+  caseId: string;
+  status: string;
+  currentStatus?: string | null;
+  refresh?: () => Promise<void> | void;
+}) => {
+  const eventType = status === 'completed'
+    ? 'case_lifecycle_completed'
+    : currentStatus === 'completed'
+      ? 'case_lifecycle_reopened'
+      : 'case_lifecycle_started';
+
+  await updateCaseInSupabase({
+    id: caseId,
+    status,
+    lastActivityAt: new Date().toISOString(),
+  });
+
+  await insertActivityToSupabase({
+    caseId,
+    actorType: 'operator',
+    eventType,
+    payload: {
+      status,
+      previousStatus: currentStatus || null,
+      source: 'case_detail_v1_command_center',
+    },
+  });
+
+  await refresh?.();
+};
 
 export default function CaseDetail() {
   const { caseId } = useParams();
@@ -1375,7 +1463,7 @@ export default function CaseDetail() {
                 </div>
                 <h2>
                   {isCompleted
-                    ? 'Sprawa jest zakończona'
+                    ? 'Sprawa jest zrobiona'
                     : mainBlocker
                       ? mainBlocker.title || 'Brak wymagany do obsługi'
                       : hasBlockers

@@ -146,6 +146,53 @@ export async function updatePaymentInSupabase(input: PaymentUpsertInput & { id: 
 export async function deletePaymentFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/payments?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function insertTaskToSupabase(input: TaskInsertInput) { return callApi<SupabaseInsertResult>('/api/tasks', { method: 'POST', body: JSON.stringify(input) }); }
 export async function insertEventToSupabase(input: EventInsertInput) { return callApi<SupabaseInsertResult>('/api/events', { method: 'POST', body: JSON.stringify(input) }); }
+
+export type AiDraftApiInput = {
+  id?: string;
+  rawText?: string | null;
+  parsedDraft?: Record<string, unknown> | null;
+  parsedData?: Record<string, unknown> | null;
+  source?: string;
+  provider?: string;
+  type?: string;
+  status?: string;
+  workspaceId?: string;
+  convertedAt?: string | null;
+};
+
+export async function fetchAiDraftsFromSupabase(params?: { status?: string; limit?: number }) {
+  const query = new URLSearchParams();
+  if (params?.status) query.set('status', params.status);
+  if (params?.limit) query.set('limit', String(params.limit));
+  return callApi<Record<string, unknown>[]>(`/api/system?kind=ai-drafts${query.toString() ? `&${query.toString()}` : ''}`);
+}
+
+export async function createAiDraftInSupabase(input: AiDraftApiInput) {
+  return callApi<Record<string, unknown>>('/api/system?kind=ai-drafts', { method: 'POST', body: JSON.stringify(input) });
+}
+
+export async function updateAiDraftInSupabase(input: AiDraftApiInput & { id: string; action?: string }) {
+  return callApi<Record<string, unknown>>('/api/system?kind=ai-drafts', { method: 'PATCH', body: JSON.stringify(input) });
+}
+
+export async function deleteAiDraftFromSupabase(id: string) {
+  return callApi<Record<string, unknown>>(`/api/system?kind=ai-drafts&id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+}
+
+export async function fetchAssistantContextFromSupabase() {
+  return callApi<{
+    ok: boolean;
+    workspaceId: string;
+    now: string;
+    leads: Record<string, unknown>[];
+    tasks: Record<string, unknown>[];
+    events: Record<string, unknown>[];
+    cases: Record<string, unknown>[];
+    clients: Record<string, unknown>[];
+    drafts: Record<string, unknown>[];
+  }>('/api/system?kind=assistant-context');
+}
+
 export async function fetchLeadsFromSupabase(params?: { clientId?: string; linkedCaseId?: string; caseId?: string; status?: string; visibility?: string }) {
   const query = new URLSearchParams();
   if (params?.clientId) query.set('clientId', params.clientId);

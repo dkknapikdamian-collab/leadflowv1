@@ -6,6 +6,8 @@ import aiFollowupHandler from '../src/server/ai-followup.js';
 import aiNextActionHandler from '../src/server/ai-next-action.js';
 import aiCaptureHandler from '../src/server/ai-capture.js';
 import aiAssistantHandler from '../src/server/ai-assistant.js';
+import aiDraftsHandler from '../src/server/ai-drafts.js';
+import assistantContextHandler from '../src/server/assistant-context.js';
 
 function parseBody(body: unknown) {
   if (!body) return {};
@@ -831,6 +833,16 @@ export default async function handler(req: any, res: any) {
     await aiNextActionHandler(req, res);
     return;
   }
+  if (kind === 'ai-drafts') {
+    await aiDraftsHandler(req, res);
+    return;
+  }
+
+  if (kind === 'assistant-context') {
+    await assistantContextHandler(req, res);
+    return;
+  }
+
 
   if (kind === 'ai-assistant') {
     await aiAssistantHandler(req, res);

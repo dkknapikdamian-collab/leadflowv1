@@ -286,6 +286,29 @@ function findTodayTileIdForShortcut(target: TodayTileShortcutTarget) {
   return fallback?.dataset.todayTileId || null;
 }
 
+function openTodayTopTileShortcut(target: TodayTileShortcutTarget) {
+  // TODAY_TOP_TILES_CLICK_FIX_V109: górne kafelki Dziś mają realnie otwierać sekcje, a nie tylko zmieniać hash URL.
+  if (target === 'calendar') {
+    openWeeklyCalendarFromToday();
+    return;
+  }
+
+  const tileId = findTodayTileIdForShortcut(target);
+  const header = tileId
+    ? document.querySelector<HTMLElement>(`[data-today-tile-header="true"][data-today-tile-id="${tileId}"]`)
+    : null;
+
+  if (!header) {
+    window.location.hash = target;
+    return;
+  }
+
+  header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (header.getAttribute('aria-expanded') === 'false') {
+    window.setTimeout(() => header.click(), 120);
+  }
+}
+
 function findTodayPipelineShortcutElement(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return null;
 
@@ -320,6 +343,7 @@ function TileCard({
           data-today-tile-id={id}
           data-today-tile-title={title}
           onClick={handleHeaderClick}
+          aria-expanded={!collapsed}
           className="w-full p-4 flex flex-col gap-3 text-left sm:flex-row sm:flex-wrap sm:items-start sm:justify-between"
         >
           <div className="min-w-0 basis-full sm:basis-72 flex-1">
@@ -762,29 +786,29 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-4">
-          <Link to="/today#pilne" data-today-pipeline-shortcut="urgent" className="rounded-2xl border border-blue-100 bg-blue-50 p-3 transition hover:border-blue-200 hover:bg-blue-100">
+          <button type="button" onClick={() => openTodayTopTileShortcut('urgent')} data-today-pipeline-shortcut="urgent" className="rounded-2xl border border-blue-100 bg-blue-50 p-3 transition hover:border-blue-200 hover:bg-blue-100 text-left">
             <span className="text-xs font-semibold text-blue-700">Pilne leady</span>
             <strong className="mt-1 block text-2xl text-blue-950">{urgentLeads.length}</strong>
             <small className="text-xs text-blue-700">Dziś albo zaległe</small>
-          </Link>
+          </button>
 
-          <Link to="/today#bez-dzialan" data-today-pipeline-shortcut="without_action" className="rounded-2xl border border-amber-100 bg-amber-50 p-3 transition hover:border-amber-200 hover:bg-amber-100">
+          <button type="button" onClick={() => openTodayTopTileShortcut('without_action')} data-today-pipeline-shortcut="without_action" className="rounded-2xl border border-amber-100 bg-amber-50 p-3 transition hover:border-amber-200 hover:bg-amber-100 text-left">
             <span className="text-xs font-semibold text-amber-700">Bez działań</span>
             <strong className="mt-1 block text-2xl text-amber-950">{withoutActionLeads.length}</strong>
             <small className="text-xs text-amber-700">Brak następnego kroku</small>
-          </Link>
+          </button>
 
-          <Link to="/today#bez-ruchu" data-today-pipeline-shortcut="without_movement" className="rounded-2xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 hover:bg-slate-100">
+          <button type="button" onClick={() => openTodayTopTileShortcut('without_movement')} data-today-pipeline-shortcut="without_movement" className="rounded-2xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 hover:bg-slate-100 text-left">
             <span className="text-xs font-semibold text-slate-700">Bez ruchu</span>
             <strong className="mt-1 block text-2xl text-slate-950">{withoutMovementLeads.length}</strong>
             <small className="text-xs text-slate-600">Brak zmiany 7+ dni</small>
-          </Link>
+          </button>
 
-          <Link to="/today#zablokowane" data-today-pipeline-shortcut="blocked" className="rounded-2xl border border-red-100 bg-red-50 p-3 transition hover:border-red-200 hover:bg-red-100">
+          <button type="button" onClick={() => openTodayTopTileShortcut('blocked')} data-today-pipeline-shortcut="blocked" className="rounded-2xl border border-red-100 bg-red-50 p-3 transition hover:border-red-200 hover:bg-red-100 text-left">
             <span className="text-xs font-semibold text-red-700">Zablokowane sprawy</span>
             <strong className="mt-1 block text-2xl text-red-950">{blockedCases.length}</strong>
             <small className="text-xs text-red-700">Wymagają odblokowania</small>
-          </Link>
+          </button>
         </div>
 
         {(topBlockedCases.length > 0 || topLeads.length > 0) ? (

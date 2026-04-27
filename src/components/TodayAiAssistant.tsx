@@ -56,6 +56,7 @@ type TodayAiAssistantProps = {
   events: Record<string, unknown>[];
   cases: Record<string, unknown>[];
   clients?: Record<string, unknown>[];
+  drafts?: Record<string, unknown>[];
   disabled?: boolean;
   onCaptureRequest?: (rawText: string) => void;
 };
@@ -103,12 +104,16 @@ function mergeSpeechTranscript(previous: string, addition: string) {
   if (!nextNorm) return base;
   if (baseNorm === nextNorm) return base;
   if (nextNorm.startsWith(baseNorm + ' ')) return next;
+  if (baseNorm.startsWith(nextNorm + ' ')) return base;
   if (baseNorm.endsWith(' ' + nextNorm) || baseNorm.includes(nextNorm)) return base;
 
   const baseWords = base.split(/\s+/).filter(Boolean);
   const nextWords = next.split(/\s+/).filter(Boolean);
   const baseNormWords = baseNorm.split(/\s+/).filter(Boolean);
   const nextNormWords = nextNorm.split(/\s+/).filter(Boolean);
+  const sharedWords = nextNormWords.filter((word) => baseNormWords.includes(word)).length;
+  if (nextNormWords.length > 0 && sharedWords / Math.max(nextNormWords.length, 1) >= 0.8) return base;
+
   const maxOverlap = Math.min(baseNormWords.length, nextNormWords.length);
 
   for (let overlap = maxOverlap; overlap >= 1; overlap -= 1) {
@@ -213,7 +218,7 @@ function priorityClassName(priority?: string) {
   return 'border-blue-200 bg-blue-50 text-blue-700';
 }
 
-export default function TodayAiAssistant({ leads, tasks, events, cases, clients = [], disabled, onCaptureRequest }: TodayAiAssistantProps) {
+export default function TodayAiAssistant({ leads, tasks, events, cases, clients = [], drafts = [], disabled, onCaptureRequest }: TodayAiAssistantProps) {
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
   const [answer, setAnswer] = useState<TodayAiAssistantAnswer | null>(null);
@@ -375,6 +380,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
           events,
           cases,
           clients,
+          drafts,
           now: new Date().toISOString(),
         },
       });
@@ -449,6 +455,11 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
     }
 
     try {
+      // AI_SPEECH_START_CLEARS_STALE_TEXT_V109: nowa sesja dyktowania nie dziedziczy starej treści z pola ani z poprzedniej odpowiedzi.
+      setRawText('');
+      setInterimText('');
+      setAnswer(null);
+      lastAutoSubmittedRef.current = '';
       const recognition = new RecognitionConstructor();
       recognition.lang = 'pl-PL';
       recognition.continuous = true;

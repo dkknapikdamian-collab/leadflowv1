@@ -16,6 +16,15 @@ export type AiUsageOptions = {
   isAdmin?: boolean;
 };
 
+export function isAiUsageUnlimited() {
+  try {
+    return String((import.meta as any).env?.VITE_AI_USAGE_UNLIMITED || '').toLowerCase() === 'true';
+  } catch {
+    return false;
+  }
+}
+
+
 const AI_USAGE_STORAGE_PREFIX = 'closeflow:ai-usage';
 
 function getStorage(): Storage | null {
@@ -70,7 +79,7 @@ function writeUsedCount(key: string, value: number) {
 export function getAiUsageSnapshot(key: string, limit = AI_DAILY_COMMAND_LIMIT, options?: AiUsageOptions): AiUsageSnapshot {
   const used = Math.max(0, Math.floor(readUsedCount(key)));
 
-  if (isAiUsageAdminExempt(options)) {
+  if (isAiUsageAdminExempt(options) || isAiUsageUnlimited()) {
     return {
       key,
       date: getDateKey(),
@@ -96,7 +105,7 @@ export function getAiUsageSnapshot(key: string, limit = AI_DAILY_COMMAND_LIMIT, 
 }
 
 export function registerAiUsage(key: string, limit = AI_DAILY_COMMAND_LIMIT, options?: AiUsageOptions): AiUsageSnapshot {
-  if (isAiUsageAdminExempt(options)) {
+  if (isAiUsageAdminExempt(options) || isAiUsageUnlimited()) {
     return getAiUsageSnapshot(key, limit, options);
   }
 

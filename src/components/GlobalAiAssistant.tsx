@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { useWorkspace } from '../hooks/useWorkspace';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
-import { fetchClientsFromSupabase, fetchLeadsFromSupabase } from '../lib/supabase-fallback';
+import { fetchAssistantContextFromSupabase, fetchClientsFromSupabase, fetchLeadsFromSupabase } from '../lib/supabase-fallback';
 import TodayAiAssistant from './TodayAiAssistant';
 
 type AssistantContext = {
@@ -11,6 +11,7 @@ type AssistantContext = {
   events: Record<string, unknown>[];
   cases: Record<string, unknown>[];
   clients: Record<string, unknown>[];
+  drafts: Record<string, unknown>[];
 };
 
 const EMPTY_CONTEXT: AssistantContext = {
@@ -19,6 +20,7 @@ const EMPTY_CONTEXT: AssistantContext = {
   events: [],
   cases: [],
   clients: [],
+  drafts: [],
 };
 
 function asRecordArray(value: unknown): Record<string, unknown>[] {
@@ -41,20 +43,32 @@ export default function GlobalAiAssistant() {
     const loadContext = async () => {
       setLoading(true);
       try {
-        const [bundle, leadRows, clientRows] = await Promise.all([
-          fetchCalendarBundleFromSupabase(),
-          fetchLeadsFromSupabase().catch(() => []),
-          fetchClientsFromSupabase().catch(() => []),
-        ]);
+        const appContext = await fetchAssistantContextFromSupabase().catch(async () => {
+          const [bundle, leadRows, clientRows] = await Promise.all([
+            fetchCalendarBundleFromSupabase(),
+            fetchLeadsFromSupabase().catch(() => []),
+            fetchClientsFromSupabase().catch(() => []),
+          ]);
+
+          return {
+            leads: asRecordArray(leadRows),
+            tasks: asRecordArray(bundle.tasks),
+            events: asRecordArray(bundle.events),
+            cases: asRecordArray(bundle.cases),
+            clients: asRecordArray(clientRows),
+            drafts: [],
+          };
+        });
 
         if (cancelled) return;
 
         setContext({
-          leads: asRecordArray(leadRows),
-          tasks: asRecordArray(bundle.tasks),
-          events: asRecordArray(bundle.events),
-          cases: asRecordArray(bundle.cases),
-          clients: asRecordArray(clientRows),
+          leads: asRecordArray(appContext.leads),
+          tasks: asRecordArray(appContext.tasks),
+          events: asRecordArray(appContext.events),
+          cases: asRecordArray(appContext.cases),
+          clients: asRecordArray(appContext.clients),
+          drafts: asRecordArray((appContext as any).drafts),
         });
       } catch {
         if (!cancelled) {
@@ -81,6 +95,7 @@ export default function GlobalAiAssistant() {
       events={context.events}
       cases={context.cases}
       clients={context.clients}
+      drafts={context.drafts}
       disabled={loading || workspaceLoading || !workspace?.id}
     />
   );
