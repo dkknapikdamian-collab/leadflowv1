@@ -136,6 +136,7 @@ export default function Tasks() {
     priority: 'medium',
     leadId: '',
     caseId: '',
+    clientId: '',
     relationQuery: '',
     recurrence: createDefaultRecurrence(),
     reminder: createDefaultReminder(),
@@ -273,12 +274,12 @@ export default function Tasks() {
   );
 
   const selectedNewTaskOption = useMemo(
-    () => findTopicContactOption(topicContactOptions, { leadId: newTask.leadId || null, caseId: newTask.caseId || null }),
+    () => findTopicContactOption(topicContactOptions, { leadId: newTask.leadId || null, caseId: newTask.caseId || null, clientId: newTask.clientId || null }),
     [newTask.caseId, newTask.leadId, topicContactOptions],
   );
 
   const selectedEditTaskOption = useMemo(
-    () => findTopicContactOption(topicContactOptions, { leadId: editTask?.leadId || null, caseId: editTask?.caseId || null }),
+    () => findTopicContactOption(topicContactOptions, { leadId: editTask?.leadId || null, caseId: editTask?.caseId || null, clientId: editTask?.clientId || null }),
     [editTask?.caseId, editTask?.leadId, topicContactOptions],
   );
 
@@ -288,6 +289,7 @@ export default function Tasks() {
       ...prev,
       leadId: resolved.leadId || '',
       caseId: resolved.caseId || '',
+      clientId: resolved.clientId || '',
       relationQuery: option?.label || '',
     }));
   };
@@ -300,7 +302,8 @@ export default function Tasks() {
             ...prev,
             leadId: resolved.leadId || '',
             caseId: resolved.caseId || '',
-            relationQuery: option?.label || '',
+      clientId: resolved.clientId || '',
+      relationQuery: option?.label || '',
           }
         : prev
     ));
@@ -336,6 +339,7 @@ export default function Tasks() {
       priority: task.priority || 'medium',
       leadId: task.leadId || '',
       caseId: task.caseId || '',
+      clientId: task.clientId || '',
       relationQuery: task.caseId ? String(caseTitleById.get(String(task.caseId)) || task.title || '') : (task.leadName || ''),
       recurrence: normalizeRecurrenceConfig(task.recurrence),
       reminder: normalizeReminderConfig(task.reminder),
@@ -357,6 +361,7 @@ export default function Tasks() {
     const payload = syncTaskDerivedFields({
       ...newTask,
       leadId: newTask.leadId || null,
+      clientId: newTask.clientId || null,
       leadName: selectedNewTaskOption?.resolvedTarget === 'lead' ? selectedNewTaskOption.label : '',
       recurrence: normalizeRecurrenceConfig(newTask.recurrence),
       reminder: normalizeReminderConfig(newTask.reminder),
@@ -387,6 +392,7 @@ export default function Tasks() {
         priority: newTask.priority,
         leadId: newTask.leadId || null,
         caseId: newTask.caseId || null,
+        clientId: newTask.clientId || null,
         reminderAt,
         recurrenceRule: payload.recurrence?.mode ?? 'none',
         ownerId: auth.currentUser?.uid,
@@ -424,6 +430,7 @@ export default function Tasks() {
         priority: task?.priority,
         leadId: task?.leadId ?? null,
         caseId: task?.caseId ?? null,
+        clientId: task?.clientId ?? null,
       });
 
       await refreshSupabaseData();
@@ -463,6 +470,7 @@ export default function Tasks() {
     const payload = syncTaskDerivedFields({
       ...editTask,
       leadId: editTask.leadId || null,
+      clientId: editTask.clientId || null,
       leadName: selectedEditTaskOption?.resolvedTarget === 'lead' ? selectedEditTaskOption.label : '',
       recurrence: normalizeRecurrenceConfig(editTask.recurrence),
       reminder: normalizeReminderConfig(editTask.reminder),
@@ -497,6 +505,7 @@ export default function Tasks() {
         scheduledAt: payload.dueAt,
         leadId: payload.leadId ?? null,
         caseId: editTask.caseId || null,
+        clientId: editTask.clientId || payload.clientId || null,
         reminderAt,
         recurrenceRule: payload.recurrence?.mode ?? 'none',
       });
@@ -869,7 +878,20 @@ export default function Tasks() {
                       onQueryChange={(value) => setEditTask({ ...editTask, relationQuery: value, leadId: '', caseId: '' })}
                       onSelect={handleSelectEditTaskRelation}
                     />
-                    <div className="space-y-2">
+                    
+                  <div className="space-y-2">
+                    <Label>Status zadania</Label>
+                    <select
+                      className={modalSelectClass}
+                      value={editTask?.status || 'todo'}
+                      onChange={(e) => setEditTask((prev: any) => prev ? { ...prev, status: e.target.value } : prev)}
+                    >
+                      <option value="todo">Do zrobienia</option>
+                      <option value="done">Zrobione</option>
+                      <option value="cancelled">Anulowane</option>
+                    </select>
+                  </div>
+<div className="space-y-2">
                       <Label>Priorytet</Label>
                       <select className={modalSelectClass} value={editTask.priority} onChange={(e) => setEditTask({ ...editTask, priority: e.target.value })}>
                         {PRIORITY_OPTIONS.map((option) => (

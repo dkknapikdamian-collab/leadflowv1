@@ -209,6 +209,7 @@ export function filterTopicContactOptions(options: TopicContactOption[], query: 
 export function resolveTopicContactLink(option: TopicContactOption | null) {
   if (!option || option.resolvedTarget === 'needs_disambiguation') {
     return {
+      clientId: null,
       leadId: null,
       caseId: null,
       resolutionLabel: '',
@@ -216,6 +217,7 @@ export function resolveTopicContactLink(option: TopicContactOption | null) {
   }
 
   return {
+    clientId: option.clientId || null,
     leadId: option.resolvedTarget === 'lead' ? option.leadId || null : null,
     caseId: option.resolvedTarget === 'case' ? option.caseId || null : null,
     resolutionLabel: option.resolutionLabel,
@@ -224,13 +226,16 @@ export function resolveTopicContactLink(option: TopicContactOption | null) {
 
 export function findTopicContactOption(
   options: TopicContactOption[],
-  params: { leadId?: string | null; caseId?: string | null }
+  params: { leadId?: string | null; caseId?: string | null; clientId?: string | null }
 ) {
   if (params.caseId) {
     return options.find((option) => option.resolvedTarget === 'case' && option.caseId === params.caseId) || null;
   }
   if (params.leadId) {
     return options.find((option) => option.resolvedTarget === 'lead' && option.leadId === params.leadId) || null;
+  }
+  if (params.clientId) {
+    return options.find((option) => option.clientId === params.clientId && !option.disabled) || null;
   }
   return null;
 }

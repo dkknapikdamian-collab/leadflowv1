@@ -38,9 +38,11 @@ import {
   CheckCircle2,
   CheckSquare,
   Clock,
+  Copy,
   CreditCard,
   Loader2,
   Mail,
+  Pencil,
   Phone,
   Save,
   Target,
@@ -469,6 +471,7 @@ export default function ClientDetail() {
   const [events, setEvents] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<ClientTab>('summary');
+  const [contactEditing, setContactEditing] = useState(false);
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
 
   const reload = useCallback(async () => {
@@ -593,6 +596,25 @@ export default function ClientDetail() {
     }
   };
 
+  const handleClientPanelEditToggle = async () => {
+    if (contactEditing) {
+      await handleSave();
+      return;
+    }
+    setContactEditing(true);
+  };
+
+  const cancelClientPanelEdit = () => {
+    setForm({
+      name: String(client?.name || ''),
+      company: String(client?.company || ''),
+      email: String(client?.email || ''),
+      phone: String(client?.phone || ''),
+      notes: String(client?.notes || ''),
+    });
+    setContactEditing(false);
+  };
+
   const copyValue = async (label: string, value: string) => {
     if (!value) return toast.error(`Brak wartości: ${label}`);
     try {
@@ -635,7 +657,6 @@ export default function ClientDetail() {
   const tabs: { key: ClientTab; label: string }[] = [
     { key: 'summary', label: 'Podsumowanie' },
     { key: 'cases', label: 'Sprawy' },
-    { key: 'contact', label: 'Kontakt' },
     { key: 'history', label: 'Historia' },
   ];
 
@@ -693,30 +714,94 @@ export default function ClientDetail() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <button type="button" onClick={() => void copyValue('Telefon', asText(form.phone))} className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50">
-                    <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">Telefon</span>
-                    <strong className="mt-1 flex items-center gap-2 text-sm text-slate-950"><Phone className="h-4 w-4 text-blue-600" /> {form.phone || 'Brak'}</strong>
-                  </button>
-                  <button type="button" onClick={() => void copyValue('E-mail', asText(form.email))} className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50">
-                    <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">E-mail</span>
-                    <strong className="mt-1 flex items-center gap-2 break-all text-sm text-slate-950"><Mail className="h-4 w-4 text-blue-600" /> {form.email || 'Brak'}</strong>
-                  </button>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                    <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">Preferowany kontakt</span>
-                    <strong className="mt-1 text-sm text-slate-950">{asText(client.preferredContact) || (form.phone ? 'Telefon' : form.email ? 'E-mail' : 'Do uzupełnienia')}</strong>
+                <div className="space-y-3" data-client-inline-contact-edit="true">
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">Dane klienta</p>
+                      <p className="text-sm font-bold text-slate-900">Kontakt i notatka</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {contactEditing ? (
+                        <Button type="button" variant="ghost" size="sm" className="rounded-xl" onClick={cancelClientPanelEdit} disabled={saving}>
+                          Anuluj
+                        </Button>
+                      ) : null}
+                      <Button type="button" size="sm" className="rounded-xl" onClick={() => void handleClientPanelEditToggle()} disabled={saving || !hasAccess}>
+                        {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : contactEditing ? <Save className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
+                        {contactEditing ? 'Zapisz' : 'Edytuj'}
+                      </Button>
+                    </div>
                   </div>
-                  <button type="button" onClick={() => setActiveTab('history')} className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50">
-                    <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">Pierwsze źródło</span>
-                    <strong className="mt-1 text-sm text-slate-950">{asText(firstSourceLead?.source) || asText(client.firstSource) || 'Do uzupełnienia'}</strong>
-                  </button>
+
+                  {contactEditing ? (
+                    <div className="space-y-3 rounded-2xl border border-blue-100 bg-blue-50/50 p-3">
+                      <div className="space-y-1.5">
+                        <Label>Imię i nazwisko / nazwa</Label>
+                        <Input value={form.name} onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Firma</Label>
+                        <Input value={form.company} onChange={(event) => setForm((prev) => ({ ...prev, company: event.target.value }))} />
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                        <div className="space-y-1.5">
+                          <Label>Telefon</Label>
+                          <Input value={form.phone} onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))} />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label>Email</Label>
+                          <Input type="email" value={form.email} onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))} />
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>Notatka</Label>
+                        <Textarea rows={4} value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                        <button type="button" onClick={() => void copyValue('Telefon', asText(form.phone))} className="min-w-0 flex-1 text-left">
+                          <span className="block text-[11px] font-black uppercase tracking-[0.12em] text-slate-400">Telefon</span>
+                          <span className="mt-0.5 block truncate text-sm font-bold text-slate-900">{form.phone || 'Brak telefonu'}</span>
+                        </button>
+                        <Button type="button" variant="ghost" size="icon" className="h-9 w-9 rounded-xl" onClick={() => void copyValue('Telefon', asText(form.phone))} aria-label="Kopiuj telefon">
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                        <button type="button" onClick={() => void copyValue('Email', asText(form.email))} className="min-w-0 flex-1 text-left">
+                          <span className="block text-[11px] font-black uppercase tracking-[0.12em] text-slate-400">Email</span>
+                          <span className="mt-0.5 block truncate text-sm font-bold text-slate-900">{form.email || 'Brak emaila'}</span>
+                        </button>
+                        <Button type="button" variant="ghost" size="icon" className="h-9 w-9 rounded-xl" onClick={() => void copyValue('Email', asText(form.email))} aria-label="Kopiuj email">
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+
+                      {form.company ? (
+                        <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                          <span className="block text-[11px] font-black uppercase tracking-[0.12em] text-slate-400">Firma</span>
+                          <span className="mt-0.5 block text-sm font-bold text-slate-900">{form.company}</span>
+                        </div>
+                      ) : null}
+
+                      {form.notes ? (
+                        <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                          <span className="block text-[11px] font-black uppercase tracking-[0.12em] text-slate-400">Notatka</span>
+                          <span className="mt-0.5 block whitespace-pre-wrap text-sm text-slate-700">{form.notes}</span>
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
                 </div>
 
                 <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-3 text-sm leading-relaxed text-slate-600">
                 </div>
 
                 <div className="space-y-2">
-                  <Button className="w-full rounded-xl" variant="outline" onClick={() => setActiveTab('contact')}>Edytuj dane kontaktowe</Button>
+                  <Button className="w-full rounded-xl" variant="outline" onClick={() => setContactEditing(true)}>Edytuj dane kontaktowe</Button>
                 </div>
               </CardContent>
             </Card>
