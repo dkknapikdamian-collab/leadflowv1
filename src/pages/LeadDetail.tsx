@@ -69,10 +69,10 @@ const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
   { value: 'contacted', label: 'Skontaktowany', color: 'bg-indigo-100 text-indigo-700' },
   { value: 'qualification', label: 'Kwalifikacja', color: 'bg-purple-100 text-purple-700' },
-  { value: 'proposal_sent', label: 'Oferta wysĹ‚ana', color: 'bg-amber-100 text-amber-700' },
-  { value: 'waiting_response', label: 'Czeka na odpowiedĹş', color: 'bg-orange-100 text-orange-700' },
+  { value: 'proposal_sent', label: 'Oferta wysłana', color: 'bg-amber-100 text-amber-700' },
+  { value: 'waiting_response', label: 'Czeka na odpowiedź', color: 'bg-orange-100 text-orange-700' },
   { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
-  { value: 'moved_to_service', label: 'Przeniesiony do obsĹ‚ugi', color: 'bg-violet-100 text-violet-700' },
+  { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
 ];
@@ -95,8 +95,8 @@ const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-whit
 const SIMPLE_RECURRENCE_OPTIONS = [
   { value: 'none', label: 'Bez powtarzania' },
   { value: 'daily', label: 'Codziennie' },
-  { value: 'weekly', label: 'Co tydzieĹ„' },
-  { value: 'monthly', label: 'Co miesiÄ…c' },
+  { value: 'weekly', label: 'Co tydzień' },
+  { value: 'monthly', label: 'Co miesiąc' },
 ];
 
 function toOptionalDateTimeLocal(value: unknown) {
@@ -146,26 +146,26 @@ function activityTitle(activity: any) {
     case 'note_added':
       return 'Notatka';
     case 'case_created':
-      return 'RozpoczÄ™to obsĹ‚ugÄ™ i utworzono sprawÄ™';
+      return 'Rozpoczęto obsługę i utworzono sprawę';
     case 'case_linked':
-      return 'PodpiÄ™to istniejÄ…cÄ… sprawÄ™';
+      return 'Podpięto istniejącą sprawę';
     
     case 'lead_moved_to_service':
-      return 'Przeniesiono temat do obsĹ‚ugi';
+      return 'Przeniesiono temat do obsługi';
     case 'task_updated':
       return 'Zaktualizowano zadanie';
     case 'task_status_toggled':
       return 'Zmieniono status zadania';
     case 'task_deleted':
-      return 'UsuniÄ™to zadanie';
+      return 'Usunięto zadanie';
     case 'event_updated':
       return 'Zaktualizowano wydarzenie';
     case 'event_status_toggled':
       return 'Zmieniono status wydarzenia';
     case 'event_deleted':
-      return 'UsuniÄ™to wydarzenie';
+      return 'Usunięto wydarzenie';
     default:
-      return 'AktywnoĹ›Ä‡';
+      return 'Aktywność';
   }
 }
 
@@ -283,16 +283,16 @@ export default function LeadDetail() {
       setActivities(activityRows as any[]);
       setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
       setCreateCaseDraft({
-        title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsĹ‚uga`,
+        title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsługa`,
         clientName: String((leadRow as any)?.name || ''),
         clientEmail: String((leadRow as any)?.email || ''),
         clientPhone: String((leadRow as any)?.phone || ''),
         status: 'ready_to_start',
       });
     } catch (error: any) {
-      const message = error?.message || 'Nie udaĹ‚o siÄ™ pobraÄ‡ danych leada';
+      const message = error?.message || 'Nie udało się pobrać danych leada';
       setLoadError(message);
-      toast.error(`BĹ‚Ä…d odczytu leada: ${message}`);
+      toast.error(`Błąd odczytu leada: ${message}`);
     } finally {
       setLoading(false);
     }
@@ -308,7 +308,7 @@ export default function LeadDetail() {
   const leadMovedToService = isLeadMovedToService(lead);
 
   const serviceCaseId = String(startServiceSuccess?.caseId || associatedCase?.id || '');
-  const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'PowiÄ…zana sprawa');
+  const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'Powiązana sprawa');
   const serviceCaseStatusLabel = String(associatedCase?.status || createCaseDraft.status || 'ready_to_start').replaceAll('_', ' ');
   const serviceMovedAtLabel = formatScheduleDate(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
   const showServiceBanner = Boolean(startServiceSuccess || associatedCase || leadMovedToService);
@@ -352,7 +352,7 @@ export default function LeadDetail() {
     [allCases, leadId],
   );
   const caseTitleById = useMemo(
-    () => new Map(allCases.map((item: any) => [String(item.id || ''), String(item.title || item.clientName || 'PowiÄ…zana sprawa')])),
+    () => new Map(allCases.map((item: any) => [String(item.id || ''), String(item.title || item.clientName || 'Powiązana sprawa')])),
     [allCases],
   );
 
@@ -396,20 +396,20 @@ export default function LeadDetail() {
       if (successMessage) toast.success(successMessage);
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d zapisu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zapisu: ${error?.message || 'REQUEST_FAILED'}`);
       throw error;
     }
   };
 
   const handleUpdateStatus = async (status: string) => {
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (leadMovedToService) return toast.error('Temat zostaĹ‚ juĹĽ przeniesiony do obsĹ‚ugi i nie wraca na aktywnÄ… listÄ™ leadĂłw.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (leadMovedToService) return toast.error('Temat został już przeniesiony do obsługi i nie wraca na aktywną listę leadów.');
     await patchLead({ status }, 'Status zaktualizowany');
     await addActivity('status_changed', { status });
   };
 
   const handleUpdateLead = async () => {
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     if (!editLead) return;
     await patchLead(
       {
@@ -420,20 +420,20 @@ export default function LeadDetail() {
         source: editLead.source || 'other',
         dealValue: Number(editLead.dealValue) || 0,
       },
-      leadMovedToService ? 'Dane ĹşrĂłdĹ‚owe leada zaktualizowane' : 'Dane zaktualizowane',
+      leadMovedToService ? 'Dane źródłowe leada zaktualizowane' : 'Dane zaktualizowane',
     );
     setIsEditing(false);
   };
 
   const handleDeleteLead = async () => {
     if (!leadId) return;
-    if (!window.confirm('Czy na pewno chcesz usunÄ…Ä‡ tego leada?')) return;
+    if (!window.confirm('Czy na pewno chcesz usunąć tego leada?')) return;
     try {
       await deleteLeadFromSupabase(leadId);
-      toast.success('Lead usuniÄ™ty');
+      toast.success('Lead usunięty');
       navigate('/leads');
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d usuwania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd usuwania: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -452,9 +452,9 @@ export default function LeadDetail() {
 
   const handleSaveEditedNote = async () => {
     if (!leadId || !editingNote?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     const content = editingNoteContent.trim();
-    if (!content) return toast.error('TreĹ›Ä‡ notatki nie moĹĽe byÄ‡ pusta');
+    if (!content) return toast.error('Treść notatki nie może być pusta');
 
     try {
       await updateActivityInSupabase({
@@ -471,24 +471,24 @@ export default function LeadDetail() {
       setEditingNoteContent('');
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d edycji notatki: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd edycji notatki: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleDeleteNote = async (activityId: string) => {
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (!window.confirm('UsunÄ…Ä‡ tÄ™ notatkÄ™?')) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!window.confirm('Usunąć tę notatkę?')) return;
 
     try {
       await deleteActivityFromSupabase(activityId);
-      toast.success('Notatka usuniÄ™ta');
+      toast.success('Notatka usunięta');
       if (editingNote?.id && String(editingNote.id) == activityId) {
         setEditingNote(null);
         setEditingNoteContent('');
       }
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d usuwania notatki: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd usuwania notatki: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -515,9 +515,9 @@ export default function LeadDetail() {
   const handleCreateQuickTask = async (e: FormEvent) => {
     e.preventDefault();
     if (!leadId) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (leadOperationalArchive) return toast.error('Ten lead jest juĹĽ w obsĹ‚udze. Dodawaj dalsze zadania w sprawie.');
-    if (!quickTask.title.trim()) return toast.error('Podaj tytuĹ‚ zadania');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (leadOperationalArchive) return toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze zadania w sprawie.');
+    if (!quickTask.title.trim()) return toast.error('Podaj tytuł zadania');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
 
@@ -547,7 +547,7 @@ export default function LeadDetail() {
       resetQuickTask();
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d dodawania zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd dodawania zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setQuickTaskSubmitting(false);
     }
@@ -556,9 +556,9 @@ export default function LeadDetail() {
   const handleCreateQuickEvent = async (e: FormEvent) => {
     e.preventDefault();
     if (!leadId) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (leadOperationalArchive) return toast.error('Ten lead jest juĹĽ w obsĹ‚udze. Dodawaj dalsze wydarzenia w sprawie.');
-    if (!quickEvent.title.trim()) return toast.error('Podaj tytuĹ‚ wydarzenia');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (leadOperationalArchive) return toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze wydarzenia w sprawie.');
+    if (!quickEvent.title.trim()) return toast.error('Podaj tytuł wydarzenia');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
 
@@ -588,7 +588,7 @@ export default function LeadDetail() {
       resetQuickEvent();
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d dodawania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd dodawania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setQuickEventSubmitting(false);
     }
@@ -636,25 +636,25 @@ export default function LeadDetail() {
         caseId: task.caseId ? String(task.caseId) : null,
       });
       await addActivity('task_status_toggled', { title: String(task.title || 'Zadanie'), status: nextStatus, taskId: task.id });
-      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrĂłcone');
+      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrócone');
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d zmiany statusu zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zmiany statusu zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
   };
 
   const handleDeleteLinkedTask = async (task: any) => {
-    if (!window.confirm('UsunÄ…Ä‡ to zadanie?')) return;
+    if (!window.confirm('Usunąć to zadanie?')) return;
     try {
       setLinkedEntryActionId(`task:${task.id}:delete`);
       await deleteTaskFromSupabase(String(task.id));
       await addActivity('task_deleted', { title: String(task.title || 'Zadanie'), taskId: task.id });
-      toast.success('Zadanie usuniÄ™te');
+      toast.success('Zadanie usunięte');
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d usuwania zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd usuwania zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -696,25 +696,25 @@ export default function LeadDetail() {
         caseId: event.caseId ? String(event.caseId) : null,
       });
       await addActivity('event_status_toggled', { title: String(event.title || 'Wydarzenie'), status: nextStatus, eventId: event.id });
-      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywrĂłcone');
+      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywrócone');
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d zmiany statusu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zmiany statusu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
   };
 
   const handleDeleteLinkedEvent = async (event: any) => {
-    if (!window.confirm('UsunÄ…Ä‡ to wydarzenie?')) return;
+    if (!window.confirm('Usunąć to wydarzenie?')) return;
     try {
       setLinkedEntryActionId(`event:${event.id}:delete`);
       await deleteEventFromSupabase(String(event.id));
       await addActivity('event_deleted', { title: String(event.title || 'Wydarzenie'), eventId: event.id });
-      toast.success('Wydarzenie usuniÄ™te');
+      toast.success('Wydarzenie usunięte');
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d usuwania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd usuwania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -723,8 +723,8 @@ export default function LeadDetail() {
 
   const handleSaveLinkedTaskEdit = async () => {
     if (!leadId || !editLinkedTask?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (!editLinkedTask.title?.trim()) return toast.error('Podaj tytuĹ‚ zadania');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!editLinkedTask.title?.trim()) return toast.error('Podaj tytuł zadania');
 
     const selectedLead = leadOptions.find((entry: any) => String(entry.id || '') === String(editLinkedTask.leadId || ''));
     const normalizedLeadId = editLinkedTask.leadId && editLinkedTask.leadId !== 'none' ? String(editLinkedTask.leadId) : null;
@@ -765,7 +765,7 @@ export default function LeadDetail() {
       toast.success('Zadanie zaktualizowane');
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d aktualizacji zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd aktualizacji zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setEditLinkedTaskSubmitting(false);
     }
@@ -773,8 +773,8 @@ export default function LeadDetail() {
 
   const handleSaveLinkedEventEdit = async () => {
     if (!leadId || !editLinkedEvent?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (!editLinkedEvent.title?.trim()) return toast.error('Podaj tytuĹ‚ wydarzenia');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!editLinkedEvent.title?.trim()) return toast.error('Podaj tytuł wydarzenia');
 
     const selectedLead = leadOptions.find((entry: any) => String(entry.id || '') === String(editLinkedEvent.leadId || ''));
     const normalizedLeadId = editLinkedEvent.leadId && editLinkedEvent.leadId !== 'none' ? String(editLinkedEvent.leadId) : null;
@@ -815,7 +815,7 @@ export default function LeadDetail() {
       toast.success('Wydarzenie zaktualizowane');
       await loadLead();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d aktualizacji wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd aktualizacji wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setEditLinkedEventSubmitting(false);
     }
@@ -823,10 +823,10 @@ export default function LeadDetail() {
 
   const handleAddPartialPayment = async (e: FormEvent) => {
     e.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (!paymentAmount.trim()) return toast.error('Podaj kwotÄ™ wpĹ‚aty');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!paymentAmount.trim()) return toast.error('Podaj kwotę wpłaty');
     const amount = Number(paymentAmount);
-    if (!Number.isFinite(amount) || amount <= 0) return toast.error('Kwota musi byÄ‡ wiÄ™ksza od zera');
+    if (!Number.isFinite(amount) || amount <= 0) return toast.error('Kwota musi być większa od zera');
 
     const nextPayments = [
       ...finance.partialPayments,
@@ -838,15 +838,15 @@ export default function LeadDetail() {
       },
     ];
 
-    await patchLead({ partialPayments: nextPayments }, 'WpĹ‚ata dodana');
+    await patchLead({ partialPayments: nextPayments }, 'Wpłata dodana');
     setPaymentAmount('');
     setPaymentDate(new Date().toISOString().slice(0, 10));
   };
 
   const handleLinkExistingCase = async () => {
     if (!leadId) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (!linkCaseId) return toast.error('Wybierz sprawÄ™ do powiÄ…zania');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!linkCaseId) return toast.error('Wybierz sprawę do powiązania');
 
     try {
       setLinkingCase(true);
@@ -859,17 +859,17 @@ export default function LeadDetail() {
         salesOutcome: 'moved_to_service',
         nextActionAt: null,
       });
-      toast.success('Sprawa podpiÄ™ta do leada');
+      toast.success('Sprawa podpięta do leada');
       await addActivity('case_linked', { caseId: linkCaseId });
       setLinkCaseId('');
       setStartServiceSuccess({
         caseId: linkCaseId,
-        title: String(caseTitleById.get(String(linkCaseId)) || 'PowiÄ…zana sprawa'),
+        title: String(caseTitleById.get(String(linkCaseId)) || 'Powiązana sprawa'),
       });
       await loadLead();
       navigate(`/case/${linkCaseId}`);
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d przypiÄ™cia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd przypięcia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkingCase(false);
     }
@@ -877,8 +877,8 @@ export default function LeadDetail() {
 
   const handleCreateCaseFromLead = async () => {
     if (!leadId) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
-    if (!createCaseDraft.title.trim()) return toast.error('Podaj tytuĹ‚ sprawy');
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!createCaseDraft.title.trim()) return toast.error('Podaj tytuł sprawy');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
 
@@ -894,7 +894,7 @@ export default function LeadDetail() {
         workspaceId,
       });
       const caseId = String((created as any)?.case?.id || '');
-      toast.success('Temat zostaĹ‚ przeniesiony do obsĹ‚ugi');
+      toast.success('Temat został przeniesiony do obsługi');
       setIsCreateCaseOpen(false);
       setStartServiceSuccess({
         caseId,
@@ -905,7 +905,7 @@ export default function LeadDetail() {
         navigate(`/case/${caseId}`);
       }
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d tworzenia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd tworzenia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setCreateCasePending(false);
     }
@@ -928,14 +928,14 @@ export default function LeadDetail() {
         <div className="p-6 max-w-3xl mx-auto w-full">
           <Card className="border-rose-200">
             <CardHeader>
-              <CardTitle className="text-rose-700">Nie udaĹ‚o siÄ™ otworzyÄ‡ leada</CardTitle>
+              <CardTitle className="text-rose-700">Nie udało się otworzyć leada</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-slate-600 break-words">{loadError || 'Lead nie istnieje albo nie zostaĹ‚ jeszcze zsynchronizowany.'}</p>
+              <p className="text-sm text-slate-600 break-words">{loadError || 'Lead nie istnieje albo nie został jeszcze zsynchronizowany.'}</p>
               <div className="flex gap-2">
-                <Button onClick={() => void loadLead()}>SprĂłbuj ponownie</Button>
+                <Button onClick={() => void loadLead()}>Spróbuj ponownie</Button>
                 <Button variant="outline" asChild>
-                  <Link to="/leads">WrĂłÄ‡ do listy</Link>
+                  <Link to="/leads">Wróć do listy</Link>
                 </Button>
               </div>
             </CardContent>
@@ -947,7 +947,7 @@ export default function LeadDetail() {
 
   const currentStatus = STATUS_OPTIONS.find((status) => status.value === lead.status)
     || (lead.status === 'moved_to_service'
-      ? { value: 'moved_to_service', label: 'Przeniesiony do obsĹ‚ugi', color: 'bg-violet-100 text-violet-700' }
+      ? { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' }
       : STATUS_OPTIONS[0]);
   const nextAction = getLeadNextAction(sortedLinkedTasks, sortedLinkedEvents);
   const nextActionDate = asDate(nextAction?.when);
@@ -968,7 +968,7 @@ export default function LeadDetail() {
                 <Badge className={`${currentStatus.color} border-none text-[10px] uppercase font-bold h-5`}>{currentStatus.label}</Badge>
                 {lead.isAtRisk && (
                   <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5 animate-pulse">
-                    ZagroĹĽony
+                    Zagrożony
                   </Badge>
                 )}
               </div>
@@ -987,7 +987,7 @@ export default function LeadDetail() {
                     <Edit2 className="w-4 h-4 mr-2" /> Edytuj dane
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleDeleteLead} className="text-rose-600">
-                    <Trash2 className="w-4 h-4 mr-2" /> UsuĹ„ leada
+                    <Trash2 className="w-4 h-4 mr-2" /> Usuń leada
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -995,12 +995,12 @@ export default function LeadDetail() {
             {associatedCase?.id ? (
               <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" asChild>
                 <Link to={`/case/${associatedCase.id}`}>
-                  <Briefcase className="w-4 h-4" /> OtwĂłrz sprawÄ™
+                  <Briefcase className="w-4 h-4" /> Otwórz sprawę
                 </Link>
               </Button>
             ) : !leadMovedToService ? (
               <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" onClick={() => setIsCreateCaseOpen(true)}>
-                <Briefcase className="w-4 h-4" /> Rozpocznij obsĹ‚ugÄ™
+                <Briefcase className="w-4 h-4" /> Rozpocznij obsługę
               </Button>
             ) : null}
           </div>
@@ -1017,7 +1017,7 @@ export default function LeadDetail() {
                     <DollarSign className="w-6 h-6 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">WartoĹ›Ä‡</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wartość</p>
                     <p className="text-lg font-bold text-slate-900">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
                   </div>
                 </CardContent>
@@ -1028,7 +1028,7 @@ export default function LeadDetail() {
                     <Target className="w-6 h-6 text-blue-600" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ĹąrĂłdĹ‚o</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Źródło</p>
                     <p className="text-lg font-bold text-slate-900 break-words">{SOURCE_OPTIONS.find((item) => item.value === lead.source)?.label || 'Inne'}</p>
                   </div>
                 </CardContent>
@@ -1040,9 +1040,9 @@ export default function LeadDetail() {
                       <Calendar className="w-6 h-6 text-amber-600" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">NajbliĹĽsza akcja</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Najbliższa akcja</p>
                       <p className={`text-lg font-bold ${nextActionOverdue ? 'text-rose-600' : 'text-slate-900'}`}>
-                        {nextActionDate ? format(nextActionDate, 'd MMM HH:mm', { locale: pl }) : 'Brak zaplanowanych dziaĹ‚aĹ„'}
+                        {nextActionDate ? format(nextActionDate, 'd MMM HH:mm', { locale: pl }) : 'Brak zaplanowanych działań'}
                       </p>
                       {nextAction ? (
                         <p className="text-sm text-slate-500">{nextAction.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}: {nextAction.title}</p>
@@ -1058,23 +1058,23 @@ export default function LeadDetail() {
                 <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge className="border-none bg-violet-600 text-white">Ten temat jest juĹĽ w obsĹ‚udze</Badge>
+                      <Badge className="border-none bg-violet-600 text-white">Ten temat jest już w obsłudze</Badge>
                       {serviceCaseTitle ? (
                         <span className="text-sm font-semibold text-violet-900">Sprawa: {serviceCaseTitle}</span>
                       ) : null}
                     </div>
-                    <p className="text-sm text-violet-900">To juĹĽ historia pozyskania. Dalsza </p>
+                    <p className="text-sm text-violet-900">To już historia pozyskania. Dalsza </p>
                     <p className="text-sm text-violet-800">Status sprawy: {serviceCaseStatusLabel}</p>
-                    <p className="text-xs text-violet-700">Data przejĹ›cia: {serviceMovedAtLabel}</p>
+                    <p className="text-xs text-violet-700">Data przejścia: {serviceMovedAtLabel}</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {serviceCaseId ? (
                       <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                        <Link to={`/case/${serviceCaseId}`}>OtwĂłrz sprawÄ™</Link>
+                        <Link to={`/case/${serviceCaseId}`}>Otwórz sprawę</Link>
                       </Button>
                     ) : null}
                     <Button variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100" onClick={scrollToHistory}>
-                      Zobacz historiÄ™ przejĹ›cia
+                      Zobacz historię przejścia
                     </Button>
                   </div>
                 </CardContent>
@@ -1101,7 +1101,7 @@ export default function LeadDetail() {
 <Tabs defaultValue="overview" className="w-full">
               <TabsList className="w-full justify-start bg-transparent border-b border-slate-200 rounded-none h-12 p-0 gap-8">
                 <TabsTrigger value="overview" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-0 h-12 font-bold">
-                  {leadMovedToService ? 'Historia pozyskania' : 'PrzeglÄ…d'}
+                  {leadMovedToService ? 'Historia pozyskania' : 'Przegląd'}
                 </TabsTrigger>
                 {!leadMovedToService ? (
                   <TabsTrigger value="finance" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-0 h-12 font-bold">
@@ -1175,7 +1175,7 @@ export default function LeadDetail() {
                     <CardContent className="space-y-4">
                       <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                         <p className="text-sm text-slate-600">
-                          NajbliĹĽsza akcja jest liczona automatycznie z zadaĹ„ i wydarzeĹ„ przypiÄ™tych do tego tematu. Nie ustawiasz juĹĽ rÄ™cznego kolejnego kroku.
+                          Najbliższa akcja jest liczona automatycznie z zadań i wydarzeń przypiętych do tego tematu. Nie ustawiasz już ręcznego kolejnego kroku.
                         </p>
                       </div>
                       <div className="flex items-center gap-2 p-3 bg-rose-50 rounded-xl border border-rose-100">
@@ -1187,7 +1187,7 @@ export default function LeadDetail() {
                           }}
                           className="w-4 h-4 rounded border-rose-300 text-rose-600 focus:ring-rose-500"
                         />
-                        <Label className="text-rose-700 font-bold">Oznacz jako zagroĹĽony (wymaga natychmiastowej uwagi)</Label>
+                        <Label className="text-rose-700 font-bold">Oznacz jako zagrożony (wymaga natychmiastowej uwagi)</Label>
                       </div>
                     </CardContent>
                   </Card>
@@ -1196,24 +1196,24 @@ export default function LeadDetail() {
                 {!leadMovedToService ? (
                   <Card className="border-none shadow-sm">
                     <CardHeader>
-                      <CardTitle className="text-lg">PowiÄ…zane elementy</CardTitle>
+                      <CardTitle className="text-lg">Powiązane elementy</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Zadania</p>
                           <p className="mt-2 text-2xl font-bold text-slate-900">{sortedLinkedTasks.length}</p>
-                          <p className="mt-1 text-sm text-slate-500">WidaÄ‡ tu zadania podpiÄ™te bezpoĹ›rednio do leada oraz zadania przypiÄ™te do powiÄ…zanej sprawy.</p>
+                          <p className="mt-1 text-sm text-slate-500">Widać tu zadania podpięte bezpośrednio do leada oraz zadania przypięte do powiązanej sprawy.</p>
                         </div>
                         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Wydarzenia</p>
                           <p className="mt-2 text-2xl font-bold text-slate-900">{sortedLinkedEvents.length}</p>
-                          <p className="mt-1 text-sm text-slate-500">WidaÄ‡ tu wydarzenia podpiÄ™te bezpoĹ›rednio do leada oraz wydarzenia przypiÄ™te do powiÄ…zanej sprawy.</p>
+                          <p className="mt-1 text-sm text-slate-500">Widać tu wydarzenia podpięte bezpośrednio do leada oraz wydarzenia przypięte do powiązanej sprawy.</p>
                         </div>
                         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Sprawa</p>
-                          <p className="mt-2 text-lg font-bold text-slate-900 break-words">{associatedCase?.title || 'Brak podpiÄ™tej sprawy'}</p>
-                          <p className="mt-1 text-sm text-slate-500">Lead moĹĽe byÄ‡ ĹşrĂłdĹ‚em sprawy operacyjnej.</p>
+                          <p className="mt-2 text-lg font-bold text-slate-900 break-words">{associatedCase?.title || 'Brak podpiętej sprawy'}</p>
+                          <p className="mt-1 text-sm text-slate-500">Lead może być źródłem sprawy operacyjnej.</p>
                         </div>
                       </div>
 
@@ -1227,7 +1227,7 @@ export default function LeadDetail() {
                             <div className="flex items-center gap-2">
                               <Button variant="outline" size="sm" onClick={() => {
                           if (leadOperationalArchive) {
-                            toast.error('Ten lead jest juĹĽ w obsĹ‚udze. Dodawaj dalsze zadania w sprawie.');
+                            toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze zadania w sprawie.');
                             return;
                           }
                           setIsQuickTaskOpen(true);
@@ -1235,20 +1235,20 @@ export default function LeadDetail() {
                                 <Plus className="w-4 h-4 mr-2" /> Dodaj
                               </Button>
                               <Button variant="outline" size="sm" asChild>
-                                <Link to="/tasks">OtwĂłrz zadania</Link>
+                                <Link to="/tasks">Otwórz zadania</Link>
                               </Button>
                             </div>
                           </div>
                           {sortedLinkedTasks.length === 0 ? (
-                            <p className="text-sm text-slate-500">Brak zadaĹ„ powiÄ…zanych z tym leadem.</p>
+                            <p className="text-sm text-slate-500">Brak zadań powiązanych z tym leadem.</p>
                           ) : (
                             <div className="space-y-2">
                               {sortedLinkedTasks.slice(0, 6).map((task: any) => (
                                 <div key={task.id} className="rounded-xl border border-slate-200 px-3 py-2">
                                   <div className="flex items-center justify-between gap-3">
                                     <div className="min-w-0">
-                                      <p className="text-sm font-semibold text-slate-900 break-words">{task.title || 'Zadanie bez tytuĹ‚u'}</p>
-                                      <p className="text-xs text-slate-500 break-words">{taskTypeLabel(task.type)} â€˘ {formatScheduleDate(task.date || task.dueAt)}</p>
+                                      <p className="text-sm font-semibold text-slate-900 break-words">{task.title || 'Zadanie bez tytułu'}</p>
+                                      <p className="text-xs text-slate-500 break-words">{taskTypeLabel(task.type)} • {formatScheduleDate(task.date || task.dueAt)}</p>
                                     </div>
                                     <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
                                       <Badge variant={task.status === 'done' ? 'secondary' : 'outline'}>{task.status === 'done' ? 'Zrobione' : 'Aktywne'}</Badge>
@@ -1259,10 +1259,10 @@ export default function LeadDetail() {
                                         Edytuj
                                       </Button>
                                       <Button variant="ghost" size="sm" onClick={() => void handleToggleLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:toggle`}>
-                                        {linkedEntryActionId === `task:${task.id}:toggle` ? '...' : task.status === 'done' ? 'PrzywrĂłÄ‡' : 'ZrĂłb'}
+                                        {linkedEntryActionId === `task:${task.id}:toggle` ? '...' : task.status === 'done' ? 'Przywróć' : 'Zrób'}
                                       </Button>
                                       <Button variant="ghost" size="sm" onClick={() => void handleDeleteLinkedTask(task)} disabled={linkedEntryActionId === `task:${task.id}:delete`}>
-                                        {linkedEntryActionId === `task:${task.id}:delete` ? '...' : 'UsuĹ„'}
+                                        {linkedEntryActionId === `task:${task.id}:delete` ? '...' : 'Usuń'}
                                       </Button>
                                     </div>
                                   </div>
@@ -1281,7 +1281,7 @@ export default function LeadDetail() {
                             <div className="flex items-center gap-2">
                               <Button variant="outline" size="sm" onClick={() => {
                           if (leadOperationalArchive) {
-                            toast.error('Ten lead jest juĹĽ w obsĹ‚udze. Dodawaj dalsze wydarzenia w sprawie.');
+                            toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze wydarzenia w sprawie.');
                             return;
                           }
                           setIsQuickEventOpen(true);
@@ -1289,20 +1289,20 @@ export default function LeadDetail() {
                                 <Plus className="w-4 h-4 mr-2" /> Dodaj
                               </Button>
                               <Button variant="outline" size="sm" asChild>
-                                <Link to="/calendar">OtwĂłrz kalendarz</Link>
+                                <Link to="/calendar">Otwórz kalendarz</Link>
                               </Button>
                             </div>
                           </div>
                           {sortedLinkedEvents.length === 0 ? (
-                            <p className="text-sm text-slate-500">Brak wydarzeĹ„ powiÄ…zanych z tym leadem.</p>
+                            <p className="text-sm text-slate-500">Brak wydarzeń powiązanych z tym leadem.</p>
                           ) : (
                             <div className="space-y-2">
                               {sortedLinkedEvents.slice(0, 6).map((event: any) => (
                                 <div key={event.id} className="rounded-xl border border-slate-200 px-3 py-2">
                                   <div className="flex items-center justify-between gap-3">
                                     <div className="min-w-0">
-                                      <p className="text-sm font-semibold text-slate-900 break-words">{event.title || 'Wydarzenie bez tytuĹ‚u'}</p>
-                                      <p className="text-xs text-slate-500 break-words">{eventTypeLabel(event.type)} â€˘ {formatScheduleDate(event.startAt)}</p>
+                                      <p className="text-sm font-semibold text-slate-900 break-words">{event.title || 'Wydarzenie bez tytułu'}</p>
+                                      <p className="text-xs text-slate-500 break-words">{eventTypeLabel(event.type)} • {formatScheduleDate(event.startAt)}</p>
                                     </div>
                                     <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
                                       <Badge variant={event.status === 'completed' ? 'secondary' : 'outline'}>{event.status === 'completed' ? 'Zrobione' : 'Zaplanowane'}</Badge>
@@ -1313,10 +1313,10 @@ export default function LeadDetail() {
                                         Edytuj
                                       </Button>
                                       <Button variant="ghost" size="sm" onClick={() => void handleToggleLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:toggle`}>
-                                        {linkedEntryActionId === `event:${event.id}:toggle` ? '...' : event.status === 'completed' ? 'PrzywrĂłÄ‡' : 'Wykonaj'}
+                                        {linkedEntryActionId === `event:${event.id}:toggle` ? '...' : event.status === 'completed' ? 'Przywróć' : 'Wykonaj'}
                                       </Button>
                                       <Button variant="ghost" size="sm" onClick={() => void handleDeleteLinkedEvent(event)} disabled={linkedEntryActionId === `event:${event.id}:delete`}>
-                                        {linkedEntryActionId === `event:${event.id}:delete` ? '...' : 'UsuĹ„'}
+                                        {linkedEntryActionId === `event:${event.id}:delete` ? '...' : 'Usuń'}
                                       </Button>
                                     </div>
                                   </div>
@@ -1331,18 +1331,18 @@ export default function LeadDetail() {
                 ) : (
                   <Card className="border-none shadow-sm">
                     <CardHeader>
-                      <CardTitle className="text-lg">PowiÄ…zana sprawa</CardTitle>
+                      <CardTitle className="text-lg">Powiązana sprawa</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <p className="text-sm text-slate-600">Po pozyskaniu dalsza praca odbywa siÄ™ na sprawie. Ten lead pozostaje historiÄ… i ĹşrĂłdĹ‚em.</p>
+                      <p className="text-sm text-slate-600">Po pozyskaniu dalsza praca odbywa się na sprawie. Ten lead pozostaje historią i źródłem.</p>
                       <div className="rounded-xl border border-slate-200 p-4">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Sprawa</p>
                         <p className="mt-1 text-base font-semibold text-slate-900 break-words">{serviceCaseTitle}</p>
                         <p className="mt-2 text-sm text-slate-600">Status sprawy: {serviceCaseStatusLabel}</p>
-                        <p className="text-sm text-slate-600">Data przejĹ›cia: {serviceMovedAtLabel}</p>
+                        <p className="text-sm text-slate-600">Data przejścia: {serviceMovedAtLabel}</p>
                         {serviceCaseId ? (
                           <Button className="mt-3" variant="outline" asChild>
-                            <Link to={`/case/${serviceCaseId}`}>OtwĂłrz sprawÄ™</Link>
+                            <Link to={`/case/${serviceCaseId}`}>Otwórz sprawę</Link>
                           </Button>
                         ) : null}
                       </div>
@@ -1355,19 +1355,19 @@ export default function LeadDetail() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Card className="border-none shadow-sm">
                     <CardContent className="p-4">
-                      <p className="text-xs text-slate-500">Suma wpĹ‚at</p>
+                      <p className="text-xs text-slate-500">Suma wpłat</p>
                       <p className="text-2xl font-bold text-emerald-600">{finance.paidAmount.toLocaleString()} PLN</p>
                     </CardContent>
                   </Card>
                   <Card className="border-none shadow-sm">
                     <CardContent className="p-4">
-                      <p className="text-xs text-slate-500">PozostaĹ‚o</p>
+                      <p className="text-xs text-slate-500">Pozostało</p>
                       <p className="text-2xl font-bold text-amber-600">{finance.remainingAmount.toLocaleString()} PLN</p>
                     </CardContent>
                   </Card>
                   <Card className="border-none shadow-sm">
                     <CardContent className="p-4">
-                      <p className="text-xs text-slate-500">WartoĹ›Ä‡ caĹ‚kowita</p>
+                      <p className="text-xs text-slate-500">Wartość całkowita</p>
                       <p className="text-2xl font-bold text-slate-900">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
                     </CardContent>
                   </Card>
@@ -1375,14 +1375,14 @@ export default function LeadDetail() {
 
                 <Card className="border-none shadow-sm">
                   <CardHeader>
-                    <CardTitle className="text-lg">Dodaj wpĹ‚atÄ™ czÄ™Ĺ›ciowÄ…</CardTitle>
+                    <CardTitle className="text-lg">Dodaj wpłatę częściową</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <form className="grid grid-cols-1 md:grid-cols-3 gap-3" onSubmit={handleAddPartialPayment}>
                       <Input type="number" min="0" step="0.01" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} placeholder="Kwota (PLN)" />
                       <Input type="date" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)} />
                       <Button type="submit">
-                        <Plus className="w-4 h-4 mr-2" /> Dodaj wpĹ‚atÄ™
+                        <Plus className="w-4 h-4 mr-2" /> Dodaj wpłatę
                       </Button>
                     </form>
                   </CardContent>
@@ -1390,11 +1390,11 @@ export default function LeadDetail() {
 
                 <Card className="border-none shadow-sm">
                   <CardHeader>
-                    <CardTitle className="text-lg">Historia wpĹ‚at</CardTitle>
+                    <CardTitle className="text-lg">Historia wpłat</CardTitle>
                   </CardHeader>
                   <CardContent>
                     {finance.partialPayments.length === 0 ? (
-                      <p className="text-sm text-slate-500">Brak wpĹ‚at czÄ™Ĺ›ciowych.</p>
+                      <p className="text-sm text-slate-500">Brak wpłat częściowych.</p>
                     ) : (
                       <div className="space-y-2">
                         {finance.partialPayments.map((payment) => {
@@ -1416,12 +1416,12 @@ export default function LeadDetail() {
               <TabsContent value="realization" className="pt-6 space-y-6">
                 <Card className="border-none shadow-sm bg-slate-50">
                   <CardContent className="p-5 space-y-2">
-                    <p className="text-sm font-semibold text-slate-900">Jak rozumieÄ‡ sprawÄ™</p>
+                    <p className="text-sm font-semibold text-slate-900">Jak rozumieć sprawę</p>
                     <p className="text-sm text-slate-600">
-                      Lead sĹ‚uĹĽy do domykania sprzedaĹĽy. Sprawa zaczyna siÄ™ wtedy, gdy klient przechodzi juĹĽ do realnej obsĹ‚ugi i trzeba prowadziÄ‡ wykonanie.
+                      Lead służy do domykania sprzedaży. Sprawa zaczyna się wtedy, gdy klient przechodzi już do realnej obsługi i trzeba prowadzić wykonanie.
                     </p>
                     <p className="text-sm text-slate-600">
-                      NajproĹ›ciej: najpierw prowadzisz leada zadaniami i wydarzeniami, a gdy wchodzisz w realizacjÄ™, tworzysz z niego sprawÄ™.
+                      Najprościej: najpierw prowadzisz leada zadaniami i wydarzeniami, a gdy wchodzisz w realizację, tworzysz z niego sprawę.
                     </p>
                   </CardContent>
                 </Card>
@@ -1431,12 +1431,12 @@ export default function LeadDetail() {
                     <CardContent className="p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                       <div className="min-w-0">
                         <h4 className="font-bold text-slate-900 break-words">{associatedCase.title || 'Sprawa aktywna'}</h4>
-                        <p className="text-sm text-slate-500">Temat jest juĹĽ w obsĹ‚udze operacyjnej.</p>
+                        <p className="text-sm text-slate-500">Temat jest już w obsłudze operacyjnej.</p>
                       </div>
                       <div className="flex gap-2 flex-wrap">
                         <Button className="rounded-xl gap-2" asChild>
                           <Link to={`/case/${associatedCase.id}`}>
-                            PrzejdĹş do sprawy <ExternalLink className="w-4 h-4" />
+                            Przejdź do sprawy <ExternalLink className="w-4 h-4" />
                           </Link>
                         </Button>
                       </div>
@@ -1446,10 +1446,10 @@ export default function LeadDetail() {
                   <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-200 space-y-4">
                     <h3 className="text-lg font-bold text-slate-900">Brak aktywnej sprawy</h3>
                     <p className="text-slate-500 max-w-xs mx-auto">
-                      Gdy klient przechodzi z etapu sprzedaĹĽy do realizacji, utwĂłrz z leada sprawÄ™ albo podepnij istniejÄ…cÄ….
+                      Gdy klient przechodzi z etapu sprzedaży do realizacji, utwórz z leada sprawę albo podepnij istniejącą.
                     </p>
                     <Button className="rounded-xl" onClick={() => setIsCreateCaseOpen(true)}>
-                      <Briefcase className="w-4 h-4 mr-2" /> Rozpocznij obsĹ‚ugÄ™
+                      <Briefcase className="w-4 h-4 mr-2" /> Rozpocznij obsługę
                     </Button>
                   </div>
                 )}
@@ -1459,27 +1459,27 @@ export default function LeadDetail() {
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2">
                         <Link2 className="w-5 h-5 text-slate-400" />
-                        Podepnij istniejÄ…cÄ… sprawÄ™
+                        Podepnij istniejącą sprawę
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <p className="text-sm text-slate-500">Tu przypniesz istniejÄ…cÄ… sprawÄ™ do tego tematu. Po zapisaniu lead przejdzie do historii obsĹ‚ugi.</p>
+                      <p className="text-sm text-slate-500">Tu przypniesz istniejącą sprawę do tego tematu. Po zapisaniu lead przejdzie do historii obsługi.</p>
                       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
                         <select
                           className={modalSelectClass}
                           value={linkCaseId}
                           onChange={(e) => setLinkCaseId(e.target.value)}
                         >
-                          <option value="">Wybierz sprawÄ™</option>
+                          <option value="">Wybierz sprawę</option>
                           {availableCasesToLink.map((caseRecord: any) => (
                             <option key={caseRecord.id} value={String(caseRecord.id)}>
-                              {caseRecord.title || 'Sprawa bez tytuĹ‚u'}
+                              {caseRecord.title || 'Sprawa bez tytułu'}
                             </option>
                           ))}
                         </select>
                         <Button onClick={() => void handleLinkExistingCase()} disabled={!linkCaseId || linkingCase}>
                           <Briefcase className="w-4 h-4 mr-2" />
-                          {linkingCase ? 'Podpinanie...' : 'Podepnij sprawÄ™'}
+                          {linkingCase ? 'Podpinanie...' : 'Podepnij sprawę'}
                         </Button>
                       </div>
                     </CardContent>
@@ -1498,23 +1498,23 @@ export default function LeadDetail() {
                 {!leadMovedToService ? (
                   <form onSubmit={handleAddNote} className="space-y-2">
                     <Textarea
-                      placeholder="Dodaj notatkÄ™ z rozmowy..."
+                      placeholder="Dodaj notatkę z rozmowy..."
                       className="rounded-xl bg-slate-50 border-none resize-none min-h-[100px]"
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
                     />
                     <Button type="submit" className="w-full rounded-xl" disabled={!note.trim()}>
-                      Dodaj notatkÄ™
+                      Dodaj notatkę
                     </Button>
                   </form>
                 ) : (
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-                    Ten widok pokazuje historiÄ™ pozyskania. Dalsze notatki dodawaj juĹĽ na sprawie.
+                    Ten widok pokazuje historię pozyskania. Dalsze notatki dodawaj już na sprawie.
                   </div>
                 )}
                 <div className="space-y-2 max-h-[500px] overflow-auto pr-2">
                   {activities.length === 0 ? (
-                    <p className="text-sm text-slate-500">Brak aktywnoĹ›ci.</p>
+                    <p className="text-sm text-slate-500">Brak aktywności.</p>
                   ) : (
                     activities.map((activity) => (
                       <div key={activity.id} className="rounded-xl border border-slate-200 p-3">
@@ -1568,7 +1568,7 @@ export default function LeadDetail() {
           </DialogHeader>
           <form onSubmit={handleCreateQuickTask} className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label>TytuĹ‚ zadania</Label>
+              <Label>Tytuł zadania</Label>
               <Input value={quickTask.title} onChange={(e) => setQuickTask((prev) => ({ ...prev, title: e.target.value }))} required />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1624,7 +1624,7 @@ export default function LeadDetail() {
           </DialogHeader>
           <form onSubmit={handleCreateQuickEvent} className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label>TytuĹ‚ wydarzenia</Label>
+              <Label>Tytuł wydarzenia</Label>
               <Input value={quickEvent.title} onChange={(e) => setQuickEvent((prev) => ({ ...prev, title: e.target.value }))} required />
             </div>
             <div className="space-y-2">
@@ -1683,7 +1683,7 @@ export default function LeadDetail() {
           {editLinkedTask ? (
             <div className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label>TytuĹ‚ zadania</Label>
+                <Label>Tytuł zadania</Label>
                 <Input value={editLinkedTask.title} onChange={(e) => setEditLinkedTask((prev: any) => ({ ...prev, title: e.target.value }))} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1754,7 +1754,7 @@ export default function LeadDetail() {
           {editLinkedEvent ? (
             <div className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label>TytuĹ‚ wydarzenia</Label>
+                <Label>Tytuł wydarzenia</Label>
                 <Input value={editLinkedEvent.title} onChange={(e) => setEditLinkedEvent((prev: any) => ({ ...prev, title: e.target.value }))} />
               </div>
               <div className="space-y-2">
@@ -1827,15 +1827,15 @@ export default function LeadDetail() {
       }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Edytuj notatkÄ™</DialogTitle>
+            <DialogTitle>Edytuj notatkę</DialogTitle>
           </DialogHeader>
           <div className="space-y-3 py-2">
-            <Label>TreĹ›Ä‡ notatki</Label>
+            <Label>Treść notatki</Label>
             <Textarea
               value={editingNoteContent}
               onChange={(e) => setEditingNoteContent(e.target.value)}
               className="min-h-[140px]"
-              placeholder="TreĹ›Ä‡ notatki"
+              placeholder="Treść notatki"
             />
           </div>
           <DialogFooter>
@@ -1849,7 +1849,7 @@ export default function LeadDetail() {
               Anuluj
             </Button>
             <Button onClick={() => void handleSaveEditedNote()}>
-              Zapisz notatkÄ™
+              Zapisz notatkę
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1881,11 +1881,11 @@ export default function LeadDetail() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>WartoĹ›Ä‡</Label>
+                <Label>Wartość</Label>
                 <Input type="number" value={editLead?.dealValue || ''} onChange={(e) => setEditLead({ ...editLead, dealValue: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label>ĹąrĂłdĹ‚o</Label>
+                <Label>Źródło</Label>
                 <select
                   className={modalSelectClass}
                   value={editLead?.source || 'other'}
@@ -1912,17 +1912,17 @@ export default function LeadDetail() {
       <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>RozpoczÄ…Ä‡ obsĹ‚ugÄ™ tego tematu?</DialogTitle>
+            <DialogTitle>Rozpocząć obsługę tego tematu?</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
               <p>Z tego leada zostanie utworzona sprawa.</p>
               <p>Lead nie zniknie.</p>
-              <p>Zostanie przeniesiony do historii sprzedaĹĽowej.</p>
-              <p>Dalej bÄ™dzie widoczny jako ĹşrĂłdĹ‚o pozyskania tego tematu.</p>
+              <p>Zostanie przeniesiony do historii sprzedażowej.</p>
+              <p>Dalej będzie widoczny jako źródło pozyskania tego tematu.</p>
             </div>
             <div className="space-y-2">
-              <Label>TytuĹ‚ sprawy</Label>
+              <Label>Tytuł sprawy</Label>
               <Input value={createCaseDraft.title} onChange={(e) => setCreateCaseDraft((prev) => ({ ...prev, title: e.target.value }))} />
             </div>
             <div className="space-y-2">
@@ -1958,7 +1958,7 @@ export default function LeadDetail() {
               Anuluj
             </Button>
             <Button onClick={() => void handleCreateCaseFromLead()} disabled={createCasePending || !workspaceReady}>
-              {createCasePending ? 'Rozpoczynanie...' : 'Rozpocznij obsĹ‚ugÄ™'}
+              {createCasePending ? 'Rozpoczynanie...' : 'Rozpocznij obsługę'}
             </Button>
           </DialogFooter>
         </DialogContent>

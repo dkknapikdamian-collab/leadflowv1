@@ -130,17 +130,40 @@ export function toReminderAtIso(startAt: string, reminderInput: any): string | n
   return subMinutes(startDate, reminder.minutesBefore).toISOString();
 }
 
+function normalizeScheduleDateTimeValue(value: unknown): string | null {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) return value.toISOString();
+  if (typeof value !== 'string') return null;
+
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return `${trimmed}T09:00`;
+
+  const parsed = parseISO(trimmed);
+  if (Number.isNaN(parsed.getTime())) return null;
+
+  return trimmed;
+}
+
 export function getTaskStartAt(task: any): string | null {
-  if (typeof task?.dueAt === 'string' && task.dueAt) return task.dueAt;
+  const direct = normalizeScheduleDateTimeValue(
+    task?.scheduledAt ?? task?.dueAt ?? task?.dateTime ?? task?.startsAt ?? task?.startAt,
+  );
+  if (direct) return direct;
+
   if (typeof task?.date === 'string' && task.date) {
     const time = typeof task?.time === 'string' && task.time ? task.time : '09:00';
     return `${task.date}T${time}`;
   }
-  return null;
+
+  return normalizeScheduleDateTimeValue(task?.reminderAt);
+}
+
+export function getTaskMainDate(task: any): string | null {
+  return getTaskStartAt(task);
 }
 
 export function getTaskDate(task: any): string {
-  if (typeof task?.date === 'string' && task.date) return task.date;
   const startAt = getTaskStartAt(task);
   return startAt ? format(parseISO(startAt), 'yyyy-MM-dd') : toDateValue(new Date());
 }
@@ -149,9 +172,22 @@ export function syncTaskDerivedFields(task: any) {
   const startAt = getTaskStartAt(task) ?? toDateTimeLocalValue(new Date());
   return {
     ...task,
+    scheduledAt: startAt,
     dueAt: startAt,
     date: format(parseISO(startAt), 'yyyy-MM-dd'),
   };
+}
+
+export function getEventStartAt(event: any): string | null {
+  return normalizeScheduleDateTimeValue(event?.startAt ?? event?.scheduledAt ?? event?.date ?? event?.reminderAt);
+}
+
+export function getEventEndAt(event: any): string | null {
+  return normalizeScheduleDateTimeValue(event?.endAt ?? event?.endsAt);
+}
+
+export function getEventMainDate(event: any): string | null {
+  return getEventStartAt(event);
 }
 
 export function buildStartEndPair(startAt: string, durationMinutes = 60) {
