@@ -1,4 +1,4 @@
-﻿const { spawnSync } = require('node:child_process');
+const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -28,6 +28,7 @@ const requiredTests = [
   'tests/case-detail-v1-command-center.test.cjs',
   'tests/client-detail-v1-operational-center.test.cjs',
   'tests/client-detail-simplified-card-view.test.cjs',
+  'tests/client-detail-final-operating-model.test.cjs',
   'tests/today-quick-snooze-options.test.cjs',
   'tests/today-quick-snooze-click-edit-polish.test.cjs',
   'tests/today-quick-snooze-hard-click-fix.test.cjs',

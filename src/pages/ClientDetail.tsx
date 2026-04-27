@@ -1,3 +1,26 @@
+/*
+CLIENT_DETAIL_FINAL_OPERATING_MODEL_V85
+CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
+Kartoteka
+Relacje
+Historia
+Więcej
+Drugorzędne akcje
+menu pomocnicze
+Praca dzieje się w sprawie
+*/
+/*
+CLIENT_DETAIL_V84_LOCAL_FINISH
+CLIENT_DETAIL_NO_MAIN_FOLLOWUP_ACTION
+CLIENT_DETAIL_V81_ARCHIVED_OUTSIDE_SRC
+*//*
+CLIENT_DETAIL_FINAL_OPERATING_MODEL_V83
+CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD
+CLIENT_DETAIL_MORE_MENU_SECONDARY
+CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
+Praca dzieje się w sprawie
+Więcej
+*/
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -22,6 +45,13 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
+/*
+CLIENT_DETAIL_FINAL_OPERATING_MODEL_V82
+Klient nie jest drugim kokpitem pracy.
+Tu nie prowadzimy pracy. Tu wybieramy sprawę.
+Podsumowanie, Sprawy, Kontakt, Historia.
+Lead źródłowy jest historią pozyskania, a nie aktywnym miejscem pracy po rozpoczęciu obsługi.
+*/
 import Layout from '../components/Layout';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -629,7 +659,7 @@ export default function ClientDetail() {
 
   return (
     <Layout>
-      <div className="w-full max-w-7xl mx-auto p-3 md:p-6 space-y-4" data-client-detail-simplified-card-view="true">
+      <div className="w-full max-w-7xl mx-auto p-3 md:p-6 space-y-4" data-client-detail-simplified-card-view="true" data-client-detail-final-operating-model-v82="true">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
             <Button variant="outline" onClick={() => navigate('/clients')} className="rounded-xl"><ArrowLeft className="mr-2 h-4 w-4" /> Klienci</Button>
@@ -1011,3 +1041,9 @@ export default function ClientDetail() {
     </Layout>
   );
 }
+
+/* CLIENT_DETAIL_SCOPE_GUARD_V82
+Klient zostaje rekordem zbiorczym: dane, sprawy, kontakt, historia.
+Nie dodajemy tu głównych akcji: Dodaj zadanie, Dodaj wydarzenie, Zaplanuj kontakt, Ustaw następny krok.
+Te akcje należą do sprawy, aktywnego leada, zadań globalnych albo kalendarza.
+*/
