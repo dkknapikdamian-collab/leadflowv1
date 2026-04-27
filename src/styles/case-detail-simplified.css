@@ -99,7 +99,6 @@ section[data-testid="case-detail-v1-command-center"] button.bg-transparent:hover
   background-color: var(--case-primary-soft) !important;
 }
 
-section[data-testid="case-detail-v1-command-center"] button[variant="secondary"],
 section[data-testid="case-detail-v1-command-center"] button:not(.bg-white):not(.bg-transparent) {
   border-radius: 1rem;
 }
