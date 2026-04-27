@@ -1,26 +1,3 @@
-/*
-CLIENT_DETAIL_FINAL_OPERATING_MODEL_V85
-CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
-Kartoteka
-Relacje
-Historia
-Więcej
-Drugorzędne akcje
-menu pomocnicze
-Praca dzieje się w sprawie
-*/
-/*
-CLIENT_DETAIL_V84_LOCAL_FINISH
-CLIENT_DETAIL_NO_MAIN_FOLLOWUP_ACTION
-CLIENT_DETAIL_V81_ARCHIVED_OUTSIDE_SRC
-*//*
-CLIENT_DETAIL_FINAL_OPERATING_MODEL_V83
-CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD
-CLIENT_DETAIL_MORE_MENU_SECONDARY
-CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
-Praca dzieje się w sprawie
-Więcej
-*/
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -45,13 +22,6 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-/*
-CLIENT_DETAIL_FINAL_OPERATING_MODEL_V82
-Klient nie jest drugim kokpitem pracy.
-Tu nie prowadzimy pracy. Tu wybieramy sprawę.
-Podsumowanie, Sprawy, Kontakt, Historia.
-Lead źródłowy jest historią pozyskania, a nie aktywnym miejscem pracy po rozpoczęciu obsługi.
-*/
 import Layout from '../components/Layout';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -579,20 +549,6 @@ export default function ClientDetail() {
   const lastActivityDate = clientActivities[0]?.createdAt || clientActivities[0]?.updatedAt || client?.updatedAt || client?.createdAt;
   const firstSourceLead = leads[0] || null;
 
-  const openSourceLead = (lead: any) => {
-    if (!lead?.id) return;
-    navigate(`/leads/${String(lead.id)}`);
-  };
-
-  const openLinkedCaseFromLead = (lead: any) => {
-    if (!lead?.linkedCaseId) return;
-    navigate(`/cases/${String(lead.linkedCaseId)}`);
-  };
-
-  const openLinkedLeadFromCase = (caseRecord: any) => {
-    if (!caseRecord?.leadId) return;
-    navigate(`/leads/${String(caseRecord.leadId)}`);
-  };
   const handleSave = async () => {
     if (!clientId) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
@@ -659,7 +615,7 @@ export default function ClientDetail() {
 
   return (
     <Layout>
-      <div className="w-full max-w-7xl mx-auto p-3 md:p-6 space-y-4" data-client-detail-simplified-card-view="true" data-client-detail-final-operating-model-v82="true">
+      <div className="w-full max-w-7xl mx-auto p-3 md:p-6 space-y-4" data-client-detail-simplified-card-view="true">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
             <Button variant="outline" onClick={() => navigate('/clients')} className="rounded-xl"><ArrowLeft className="mr-2 h-4 w-4" /> Klienci</Button>
@@ -800,17 +756,7 @@ export default function ClientDetail() {
                     </div>
 
                     <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-                      <div className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
-                  <p className="text-sm font-black text-blue-900">Klient jako centrum relacji</p>
-                  <p className="mt-1 text-xs text-blue-700">Ścieżka klienta: lead, klient, sprawa i historia są spięte w jednym prostym widoku. Dostępne akcje: Otwórz lead, Otwórz sprawę.</p>
-                </div>
-
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
-                  <p className="text-sm font-black text-emerald-900">Następny ruch</p>
-                  <p className="mt-1 text-xs text-emerald-700">Operacyjny skrót klienta: Zadania klienta, Wydarzenia klienta i Aktywność klienta są spięte z leadami oraz sprawami.</p>
-                </div>
-
-                <div>
+                      <div>
                         <h2 className="text-lg font-black tracking-tight text-slate-950">Najważniejsze dla tego klienta</h2>
                         <p className="text-sm text-slate-500">Krótki pulpit. Tylko rzeczy, które pomagają zdecydować, gdzie wejść.</p>
                       </div>
@@ -843,17 +789,7 @@ export default function ClientDetail() {
                       })}
 
                       <div className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-                        <div className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
-                  <p className="text-sm font-black text-blue-900">Klient jako centrum relacji</p>
-                  <p className="mt-1 text-xs text-blue-700">Ścieżka klienta: lead, klient, sprawa i historia są spięte w jednym prostym widoku. Dostępne akcje: Otwórz lead, Otwórz sprawę.</p>
-                </div>
-
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
-                  <p className="text-sm font-black text-emerald-900">Następny ruch</p>
-                  <p className="mt-1 text-xs text-emerald-700">Operacyjny skrót klienta: Zadania klienta, Wydarzenia klienta i Aktywność klienta są spięte z leadami oraz sprawami.</p>
-                </div>
-
-                <div>
+                        <div>
                           <div className="flex flex-wrap items-center gap-2">
                             <p className="font-black text-slate-950">Historia pozyskania</p>
                             <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700">informacyjnie</Badge>
@@ -872,17 +808,7 @@ export default function ClientDetail() {
                 {activeTab === 'cases' ? (
                   <div className="space-y-4" data-client-tab-cases="true">
                     <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-                      <div className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
-                  <p className="text-sm font-black text-blue-900">Klient jako centrum relacji</p>
-                  <p className="mt-1 text-xs text-blue-700">Ścieżka klienta: lead, klient, sprawa i historia są spięte w jednym prostym widoku. Dostępne akcje: Otwórz lead, Otwórz sprawę.</p>
-                </div>
-
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
-                  <p className="text-sm font-black text-emerald-900">Następny ruch</p>
-                  <p className="mt-1 text-xs text-emerald-700">Operacyjny skrót klienta: Zadania klienta, Wydarzenia klienta i Aktywność klienta są spięte z leadami oraz sprawami.</p>
-                </div>
-
-                <div>
+                      <div>
                         <h2 className="text-lg font-black tracking-tight text-slate-950">Sprawy klienta</h2>
                         <p className="text-sm text-slate-500">To jest główna lista robocza klienta. Kliknięcie prowadzi do sprawy, czyli miejsca pracy.</p>
                       </div>
@@ -927,17 +853,7 @@ export default function ClientDetail() {
                 {activeTab === 'contact' ? (
                   <div className="space-y-4" data-client-tab-contact="true">
                     <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-                      <div className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
-                  <p className="text-sm font-black text-blue-900">Klient jako centrum relacji</p>
-                  <p className="mt-1 text-xs text-blue-700">Ścieżka klienta: lead, klient, sprawa i historia są spięte w jednym prostym widoku. Dostępne akcje: Otwórz lead, Otwórz sprawę.</p>
-                </div>
-
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
-                  <p className="text-sm font-black text-emerald-900">Następny ruch</p>
-                  <p className="mt-1 text-xs text-emerald-700">Operacyjny skrót klienta: Zadania klienta, Wydarzenia klienta i Aktywność klienta są spięte z leadami oraz sprawami.</p>
-                </div>
-
-                <div>
+                      <div>
                         <h2 className="text-lg font-black tracking-tight text-slate-950">Kontakt</h2>
                         <p className="text-sm text-slate-500">Same dane kontaktowe. Bez follow-upów, zadań i wydarzeń.</p>
                       </div>
@@ -967,17 +883,7 @@ export default function ClientDetail() {
 
                 {activeTab === 'history' ? (
                   <div className="space-y-4" data-client-tab-history="true">
-                    <div className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
-                  <p className="text-sm font-black text-blue-900">Klient jako centrum relacji</p>
-                  <p className="mt-1 text-xs text-blue-700">Ścieżka klienta: lead, klient, sprawa i historia są spięte w jednym prostym widoku. Dostępne akcje: Otwórz lead, Otwórz sprawę.</p>
-                </div>
-
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
-                  <p className="text-sm font-black text-emerald-900">Następny ruch</p>
-                  <p className="mt-1 text-xs text-emerald-700">Operacyjny skrót klienta: Zadania klienta, Wydarzenia klienta i Aktywność klienta są spięte z leadami oraz sprawami.</p>
-                </div>
-
-                <div>
+                    <div>
                       <h2 className="text-lg font-black tracking-tight text-slate-950">Historia relacji</h2>
                       <p className="text-sm text-slate-500">Tu trafia źródło leadów, przejście do obsługi, utworzone sprawy i ważne aktywności.</p>
                     </div>
@@ -1041,9 +947,3 @@ export default function ClientDetail() {
     </Layout>
   );
 }
-
-/* CLIENT_DETAIL_SCOPE_GUARD_V82
-Klient zostaje rekordem zbiorczym: dane, sprawy, kontakt, historia.
-Nie dodajemy tu głównych akcji: Dodaj zadanie, Dodaj wydarzenie, Zaplanuj kontakt, Ustaw następny krok.
-Te akcje należą do sprawy, aktywnego leada, zadań globalnych albo kalendarza.
-*/
