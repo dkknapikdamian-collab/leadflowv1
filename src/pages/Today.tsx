@@ -565,20 +565,129 @@ function todayPipelineIsWithoutMovement(lead: any) {
   return typeof days === 'number' && days >= 7;
 }
 
-function TodayPipelineValueCard({ leads }: { leads: any[] }) {
+function todayPipelineIsBlockedCase(caseItem: any) {
+  const status = String(caseItem?.status || '').toLowerCase();
+  return status === 'blocked' || status === 'zablokowana' || status === 'zablokowane';
+}
+
+function todayPipelineCaseTitle(caseItem: any) {
+  return String(caseItem?.title || caseItem?.name || caseItem?.clientName || 'Sprawa bez nazwy');
+}
+
+function todayPipelineCaseSubtitle(caseItem: any) {
+  const parts = [
+    caseItem?.clientName ? String(caseItem.clientName) : '',
+    caseItem?.updatedAt ? 'ostatnia zmiana: ' + formatLeadMoment(caseItem.updatedAt) : '',
+  ].filter(Boolean);
+
+  return parts.length ? parts.join(' · ') : 'Brak dodatkowych danych';
+}
+
+function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: any[] }) {
   const activeLeads = (leads || []).filter(todayPipelineIsActiveLead);
   const activeLeadsWithValue = activeLeads.filter((lead) => todayPipelineLeadAmount(lead) > 0);
   const totalValue = activeLeads.reduce((sum, lead) => sum + todayPipelineLeadAmount(lead), 0);
   const urgentLeads = activeLeads.filter(todayPipelineIsUrgentLead);
   const withoutActionLeads = activeLeads.filter(todayPipelineIsWithoutAction);
   const withoutMovementLeads = activeLeads.filter(todayPipelineIsWithoutMovement);
+  const blockedCases = (cases || []).filter(todayPipelineIsBlockedCase);
 
   const topLeads = [...activeLeadsWithValue]
     .sort((left, right) => todayPipelineLeadAmount(right) - todayPipelineLeadAmount(left))
     .slice(0, 3);
 
+  const topBlockedCases = blockedCases.slice(0, 3);
+
   return (
-    <TodayPipelineValueCard leads={leads} />
+    <Card className="border-slate-200 bg-white shadow-sm">
+      <CardContent className="p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-sm font-bold text-slate-900">Dziś w skrócie</p>
+            <p className="mt-1 text-xs text-slate-500">
+              Pilne leady, brak następnego kroku, brak ruchu i sprawy zatrzymane w miejscu.
+            </p>
+          </div>
+          <Badge className="w-fit bg-emerald-50 text-emerald-700 border border-emerald-100">
+            {todayPipelineFormatMoney(totalValue)}
+          </Badge>
+        </div>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          <Link to="/leads" className="rounded-2xl border border-blue-100 bg-blue-50 p-3 transition hover:border-blue-200 hover:bg-blue-100">
+            <span className="text-xs font-semibold text-blue-700">Pilne leady</span>
+            <strong className="mt-1 block text-2xl text-blue-950">{urgentLeads.length}</strong>
+            <small className="text-xs text-blue-700">Dziś albo zaległe</small>
+          </Link>
+
+          <Link to="/leads" className="rounded-2xl border border-amber-100 bg-amber-50 p-3 transition hover:border-amber-200 hover:bg-amber-100">
+            <span className="text-xs font-semibold text-amber-700">Bez działań</span>
+            <strong className="mt-1 block text-2xl text-amber-950">{withoutActionLeads.length}</strong>
+            <small className="text-xs text-amber-700">Brak następnego kroku</small>
+          </Link>
+
+          <Link to="/leads" className="rounded-2xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 hover:bg-slate-100">
+            <span className="text-xs font-semibold text-slate-700">Bez ruchu</span>
+            <strong className="mt-1 block text-2xl text-slate-950">{withoutMovementLeads.length}</strong>
+            <small className="text-xs text-slate-600">Brak zmiany 7+ dni</small>
+          </Link>
+
+          <Link to="/cases" className="rounded-2xl border border-red-100 bg-red-50 p-3 transition hover:border-red-200 hover:bg-red-100">
+            <span className="text-xs font-semibold text-red-700">Zablokowane sprawy</span>
+            <strong className="mt-1 block text-2xl text-red-950">{blockedCases.length}</strong>
+            <small className="text-xs text-red-700">Wymagają odblokowania</small>
+          </Link>
+        </div>
+
+        {(topBlockedCases.length > 0 || topLeads.length > 0) ? (
+          <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            {topBlockedCases.length > 0 ? (
+              <div className="rounded-2xl border border-red-100 bg-red-50/60 p-3">
+                <div className="mb-2 flex items-center gap-2 text-sm font-bold text-red-800">
+                  <ShieldAlert className="h-4 w-4" />
+                  Zablokowane sprawy
+                </div>
+                <div className="grid gap-2">
+                  {topBlockedCases.map((caseItem) => (
+                    <Link
+                      key={caseItem.id}
+                      to={caseItem.id ? `/cases/${caseItem.id}` : '/cases'}
+                      className="rounded-xl border border-red-100 bg-white p-2 text-sm transition hover:border-red-200 hover:bg-red-50"
+                    >
+                      <strong className="block text-red-950">{todayPipelineCaseTitle(caseItem)}</strong>
+                      <span className="mt-0.5 block text-xs text-red-700">{todayPipelineCaseSubtitle(caseItem)}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {topLeads.length > 0 ? (
+              <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-3">
+                <div className="mb-2 flex items-center gap-2 text-sm font-bold text-emerald-800">
+                  <TrendingUp className="h-4 w-4" />
+                  Największa wartość leadów
+                </div>
+                <div className="grid gap-2">
+                  {topLeads.map((lead) => (
+                    <Link
+                      key={lead.id}
+                      to={lead.id ? `/leads/${lead.id}` : '/leads'}
+                      className="rounded-xl border border-emerald-100 bg-white p-2 text-sm transition hover:border-emerald-200 hover:bg-emerald-50"
+                    >
+                      <strong className="block text-emerald-950">{todayPipelineLeadName(lead)}</strong>
+                      <span className="mt-0.5 block text-xs text-emerald-700">
+                        {todayPipelineFormatMoney(todayPipelineLeadAmount(lead))} · {todayPipelineLeadSubtitle(lead)}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -1250,6 +1359,7 @@ export default function Today() {
     return (
       <Layout>
         <div className="flex items-center justify-center h-full">
+        <TodayPipelineValueCard leads={leads} cases={cases} />
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       </Layout>

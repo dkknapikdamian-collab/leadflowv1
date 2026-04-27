@@ -8,10 +8,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "node scripts/check-polish-mojibake.cjs && tsc --noEmit",
+    "lint": "node scripts/check-task-event-contract.cjs && node scripts/check-polish-mojibake.cjs && tsc --noEmit",
     "verify:closeflow": "node scripts/closeflow-release-check.cjs",
     "verify:closeflow:quiet": "node scripts/closeflow-release-check-quiet.cjs",
-    "check:polish": "node scripts/check-polish-mojibake.cjs"
+    "check:polish": "node scripts/check-polish-mojibake.cjs",
+    "check:task-event-contract": "node scripts/check-task-event-contract.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
