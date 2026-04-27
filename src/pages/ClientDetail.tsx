@@ -1,5 +1,5 @@
-﻿import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Activity,
   AlertTriangle,
@@ -41,6 +41,8 @@ import {
   updateClientInSupabase,
 } from '../lib/supabase-fallback';
 
+type ClientTab = 'summary' | 'cases' | 'contact' | 'history';
+
 type RelationItem = {
   id: string;
   kind: 'lead' | 'case' | 'payment';
@@ -56,6 +58,8 @@ type ClientNextAction = {
   title: string;
   subtitle: string;
   to?: string;
+  date?: string;
+  relationId?: string;
   tone: 'red' | 'amber' | 'blue' | 'emerald' | 'slate';
 };
 
@@ -266,6 +270,8 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
       kind: 'task',
       title: String(overdueTask.title || 'Zaległe zadanie'),
       subtitle: `Termin: ${formatDateTime(getTaskDate(overdueTask))}`,
+      date: getTaskDate(overdueTask),
+      relationId: String(overdueTask.caseId || overdueTask.leadId || ''),
       to: '/today',
       tone: 'red',
     };
@@ -281,6 +287,8 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
       kind: 'task',
       title: String(nextTask.title || 'Następne zadanie'),
       subtitle: `Termin: ${formatDateTime(getTaskDate(nextTask))}`,
+      date: getTaskDate(nextTask),
+      relationId: String(nextTask.caseId || nextTask.leadId || ''),
       to: '/today',
       tone: 'amber',
     };
@@ -296,6 +304,8 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
       kind: 'event',
       title: String(nextEvent.title || 'Następne wydarzenie'),
       subtitle: `Start: ${formatDateTime(getEventDate(nextEvent))}`,
+      date: getEventDate(nextEvent),
+      relationId: String(nextEvent.caseId || nextEvent.leadId || ''),
       to: '/calendar',
       tone: 'blue',
     };
@@ -307,6 +317,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
       kind: 'case',
       title: String(activeCase.title || 'Aktywna sprawa'),
       subtitle: `${caseStatusLabel(String(activeCase.status || 'in_progress'))} · kompletność ${Math.round(Number(activeCase.completenessPercent || 0))}%`,
+      relationId: String(activeCase.id || ''),
       to: `/cases/${String(activeCase.id)}`,
       tone: 'emerald',
     };
@@ -318,6 +329,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
       kind: 'lead',
       title: String(openLead.name || 'Aktywny lead'),
       subtitle: leadStatusLabel(String(openLead.status || 'new')),
+      relationId: String(openLead.id || ''),
       to: `/leads/${String(openLead.id)}`,
       tone: 'blue',
     };
@@ -346,6 +358,77 @@ function nextActionToneClass(tone: ClientNextAction['tone']) {
   }
 }
 
+function statusBadgeClass(status: unknown) {
+  const normalized = String(status || '').toLowerCase();
+  if (['blocked', 'overdue'].includes(normalized)) return 'border-rose-200 bg-rose-50 text-rose-700';
+  if (['waiting_on_client', 'on_hold', 'to_approve'].includes(normalized)) return 'border-amber-200 bg-amber-50 text-amber-700';
+  if (['completed', 'done', 'paid', 'ready_to_start'].includes(normalized)) return 'border-emerald-200 bg-emerald-50 text-emerald-700';
+  if (['canceled', 'cancelled', 'lost'].includes(normalized)) return 'border-slate-200 bg-slate-50 text-slate-600';
+  return 'border-blue-200 bg-blue-50 text-blue-700';
+}
+
+function getInitials(client: any) {
+  const source = String(client?.name || client?.company || 'Klient');
+  const initials = source
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
+  return initials || 'K';
+}
+
+function getCaseTitle(caseRecord: any) {
+  return String(caseRecord?.title || caseRecord?.clientName || 'Sprawa klienta');
+}
+
+function getCaseCompleteness(caseRecord: any) {
+  const value = Number(caseRecord?.completenessPercent || caseRecord?.completionPercent || 0);
+  return Number.isFinite(value) ? Math.max(0, Math.min(100, Math.round(value))) : 0;
+}
+
+function getCaseBlocker(caseRecord: any) {
+  const explicit = asText(caseRecord?.blocker) || asText(caseRecord?.blockReason) || asText(caseRecord?.missingReason);
+  if (explicit) return explicit;
+  const status = String(caseRecord?.status || '');
+  if (status === 'blocked') return 'blokada w sprawie';
+  if (status === 'waiting_on_client') return 'czeka na klienta';
+  return '';
+}
+
+function getCaseSourceLead(caseRecord: any, leads: any[]) {
+  const caseId = String(caseRecord?.id || '');
+  const directLeadId = String(caseRecord?.leadId || caseRecord?.sourceLeadId || '');
+  return leads.find((lead) => String(lead.id || '') === directLeadId)
+    || leads.find((lead) => String(lead.linkedCaseId || lead.caseId || '') === caseId)
+    || null;
+}
+
+function getCaseNextAction(caseRecord: any, tasks: any[], events: any[]) {
+  const caseId = String(caseRecord?.id || '');
+  const caseTasks = tasks.filter((task) => String(task.caseId || '') === caseId && !isDoneStatus(task.status));
+  const caseEvents = events.filter((event) => String(event.caseId || '') === caseId && !isDoneStatus(event.status));
+  const entries = [
+    ...caseTasks.map((task) => ({ kind: 'task' as const, title: String(task.title || 'Zadanie'), date: getTaskDate(task), time: asDate(getTaskDate(task))?.getTime() ?? Number.MAX_SAFE_INTEGER })),
+    ...caseEvents.map((event) => ({ kind: 'event' as const, title: String(event.title || 'Wydarzenie'), date: getEventDate(event), time: asDate(getEventDate(event))?.getTime() ?? Number.MAX_SAFE_INTEGER })),
+  ].sort((left, right) => left.time - right.time);
+
+  return entries[0] || null;
+}
+
+function relativeActionLabel(value: unknown) {
+  const parsed = asDate(value);
+  if (!parsed) return 'Brak terminu';
+  const today = new Date();
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  const targetStart = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate()).getTime();
+  const diff = Math.round((targetStart - todayStart) / 86_400_000);
+  if (diff === 0) return 'Dzisiaj';
+  if (diff === 1) return 'Jutro';
+  if (diff === -1) return 'Wczoraj';
+  return formatDate(value);
+}
+
 export default function ClientDetail() {
   const { clientId } = useParams();
   const navigate = useNavigate();
@@ -359,6 +442,7 @@ export default function ClientDetail() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<ClientTab>('summary');
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
 
   const reload = useCallback(async () => {
@@ -415,53 +499,70 @@ export default function ClientDetail() {
 
   const clientTasks = useMemo(() => {
     return tasks
-      .filter((task) => relationIds.leadIds.has(String(task.leadId || '')) || relationIds.caseIds.has(String(task.caseId || '')))
+      .filter((task) => String(task.clientId || '') === String(clientId || '') || relationIds.leadIds.has(String(task.leadId || '')) || relationIds.caseIds.has(String(task.caseId || '')))
       .sort((left, right) => (asDate(getTaskDate(left))?.getTime() ?? Number.MAX_SAFE_INTEGER) - (asDate(getTaskDate(right))?.getTime() ?? Number.MAX_SAFE_INTEGER));
-  }, [relationIds.caseIds, relationIds.leadIds, tasks]);
+  }, [clientId, relationIds.caseIds, relationIds.leadIds, tasks]);
 
   const clientEvents = useMemo(() => {
     return events
-      .filter((event) => relationIds.leadIds.has(String(event.leadId || '')) || relationIds.caseIds.has(String(event.caseId || '')))
+      .filter((event) => String(event.clientId || '') === String(clientId || '') || relationIds.leadIds.has(String(event.leadId || '')) || relationIds.caseIds.has(String(event.caseId || '')))
       .sort((left, right) => (asDate(getEventDate(left))?.getTime() ?? Number.MAX_SAFE_INTEGER) - (asDate(getEventDate(right))?.getTime() ?? Number.MAX_SAFE_INTEGER));
-  }, [events, relationIds.caseIds, relationIds.leadIds]);
+  }, [clientId, events, relationIds.caseIds, relationIds.leadIds]);
 
   const clientActivities = useMemo(() => {
     return activities
-      .filter((activity) => relationIds.leadIds.has(String(activity.leadId || '')) || relationIds.caseIds.has(String(activity.caseId || '')))
+      .filter((activity) => String(activity.clientId || '') === String(clientId || '') || relationIds.leadIds.has(String(activity.leadId || '')) || relationIds.caseIds.has(String(activity.caseId || '')))
       .sort((left, right) => (asDate(getActivityTime(right))?.getTime() ?? 0) - (asDate(getActivityTime(left))?.getTime() ?? 0));
-  }, [activities, relationIds.caseIds, relationIds.leadIds]);
+  }, [activities, clientId, relationIds.caseIds, relationIds.leadIds]);
 
   const paymentTotal = useMemo(
     () => payments.reduce((sum, entry) => sum + (Number(entry.amount) || 0), 0),
     [payments],
   );
 
-  const openLeadCount = useMemo(
-    () => leads.filter((lead) => !['moved_to_service', 'lost', 'archived'].includes(String(lead.status || ''))).length,
-    [leads],
-  );
-
-  const activeCaseCount = useMemo(
-    () => cases.filter((caseRecord) => !['completed', 'canceled'].includes(String(caseRecord.status || ''))).length,
+  const activeCases = useMemo(
+    () => cases.filter((caseRecord) => !['completed', 'canceled'].includes(String(caseRecord.status || ''))),
     [cases],
   );
 
-  const activeTaskCount = useMemo(
-    () => clientTasks.filter((task) => !isDoneStatus(task.status)).length,
-    [clientTasks],
+  const closedCases = useMemo(
+    () => cases.filter((caseRecord) => ['completed', 'canceled'].includes(String(caseRecord.status || ''))),
+    [cases],
   );
 
-  const activeEventCount = useMemo(
-    () => clientEvents.filter((event) => !isDoneStatus(event.status)).length,
-    [clientEvents],
+  const waitingCaseCount = useMemo(
+    () => cases.filter((caseRecord) => ['waiting_on_client', 'blocked', 'to_approve', 'on_hold'].includes(String(caseRecord.status || ''))).length,
+    [cases],
   );
 
+  const blockers = useMemo(
+    () => cases.map((caseRecord) => ({ caseRecord, blocker: getCaseBlocker(caseRecord) })).filter((entry) => entry.blocker),
+    [cases],
+  );
+
+  const mainCase = activeCases[0] || cases[0] || null;
+  const mainCaseCompleteness = mainCase ? getCaseCompleteness(mainCase) : 0;
+  const activeTaskCount = useMemo(() => clientTasks.filter((task) => !isDoneStatus(task.status)).length, [clientTasks]);
+  const activeEventCount = useMemo(() => clientEvents.filter((event) => !isDoneStatus(event.status)).length, [clientEvents]);
   const relationTimeline = useMemo(() => buildRelationTimeline(leads, cases, payments), [cases, leads, payments]);
-  const nextAction = useMemo(
-    () => buildClientNextAction(leads, cases, clientTasks, clientEvents),
-    [cases, clientEvents, clientTasks, leads],
-  );
+  const nextAction = useMemo(() => buildClientNextAction(leads, cases, clientTasks, clientEvents), [cases, clientEvents, clientTasks, leads]);
+  const lastActivityDate = clientActivities[0]?.createdAt || clientActivities[0]?.updatedAt || client?.updatedAt || client?.createdAt;
+  const firstSourceLead = leads[0] || null;
 
+  const openSourceLead = (lead: any) => {
+    if (!lead?.id) return;
+    navigate(`/leads/${String(lead.id)}`);
+  };
+
+  const openLinkedCaseFromLead = (lead: any) => {
+    if (!lead?.linkedCaseId) return;
+    navigate(`/cases/${String(lead.linkedCaseId)}`);
+  };
+
+  const openLinkedLeadFromCase = (caseRecord: any) => {
+    if (!caseRecord?.leadId) return;
+    navigate(`/leads/${String(caseRecord.leadId)}`);
+  };
   const handleSave = async () => {
     if (!clientId) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
@@ -480,10 +581,30 @@ export default function ClientDetail() {
     }
   };
 
+  const copyValue = async (label: string, value: string) => {
+    if (!value) return toast.error(`Brak wartości: ${label}`);
+    try {
+      await navigator.clipboard.writeText(value);
+      toast.success(`${label} skopiowano`);
+    } catch {
+      toast.error('Nie udało się skopiować.');
+    }
+  };
+
+  const openNewCase = () => {
+    if (!clientId) return navigate('/cases');
+    navigate(`/cases?clientId=${encodeURIComponent(clientId)}&new=1`);
+  };
+
+  const openNewLeadForExistingClient = () => {
+    if (!clientId) return navigate('/leads');
+    navigate(`/leads?clientId=${encodeURIComponent(clientId)}&new=1`);
+  };
+
   if (loading) {
     return (
       <Layout>
-        <div className="p-8 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></div>
+        <div className="flex justify-center p-8"><Loader2 className="h-6 w-6 animate-spin text-slate-400" /></div>
       </Layout>
     );
   }
@@ -491,225 +612,401 @@ export default function ClientDetail() {
   if (!client) {
     return (
       <Layout>
-        <div className="p-6 space-y-4">
-          <Button variant="outline" onClick={() => navigate('/clients')}><ArrowLeft className="w-4 h-4 mr-2" /> Wróć</Button>
+        <div className="space-y-4 p-6">
+          <Button variant="outline" onClick={() => navigate('/clients')}><ArrowLeft className="mr-2 h-4 w-4" /> Wróć</Button>
           <Card><CardContent className="p-6 text-slate-500">Nie znaleziono klienta.</CardContent></Card>
         </div>
       </Layout>
     );
   }
 
+  const tabs: { key: ClientTab; label: string }[] = [
+    { key: 'summary', label: 'Podsumowanie' },
+    { key: 'cases', label: 'Sprawy' },
+    { key: 'contact', label: 'Kontakt' },
+    { key: 'history', label: 'Historia' },
+  ];
+
   return (
     <Layout>
-      <div className="p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6">
+      <div className="w-full max-w-7xl mx-auto p-3 md:p-6 space-y-4" data-client-detail-simplified-card-view="true">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={() => navigate('/clients')}><ArrowLeft className="w-4 h-4 mr-2" /> Klienci</Button>
+            <Button variant="outline" onClick={() => navigate('/clients')} className="rounded-xl"><ArrowLeft className="mr-2 h-4 w-4" /> Klienci</Button>
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">Klient jako centrum relacji</p>
-              <h1 className="text-2xl font-bold text-slate-950">{client.name || 'Klient'}</h1>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">Kartoteka klienta</p>
+              <h1 className="text-2xl font-black tracking-tight text-slate-950">{client.name || client.company || 'Klient'}</h1>
+              <p className="text-sm text-slate-500">Dane, sprawy, kontakt i historia. Praca dzieje się w sprawie.</p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" onClick={() => navigate('/today')}><CheckSquare className="w-4 h-4 mr-2" /> Dziś</Button>
-            <Button variant="outline" onClick={() => navigate('/calendar')}><Calendar className="w-4 h-4 mr-2" /> Kalendarz</Button>
-            <Button variant="outline" onClick={() => navigate('/leads')}><Target className="w-4 h-4 mr-2" /> Leady</Button>
-            <Button variant="outline" onClick={() => navigate('/cases')}><Briefcase className="w-4 h-4 mr-2" /> Sprawy</Button>
-            <Button onClick={() => void handleSave()} disabled={saving}><Save className="w-4 h-4 mr-2" /> {saving ? 'Zapisywanie...' : 'Zapisz'}</Button>
+          <div className="flex flex-wrap gap-2">
+            {mainCase ? (
+              <Button onClick={() => navigate(`/cases/${String(mainCase.id)}`)} className="rounded-xl">
+                <Briefcase className="mr-2 h-4 w-4" /> Otwórz główną sprawę
+              </Button>
+            ) : null}
+            <Button variant="outline" onClick={openNewCase} className="rounded-xl">+ Nowa sprawa dla klienta</Button>
           </div>
         </div>
 
-        <Card>
-          <CardContent className="p-4 md:p-5">
-            <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-4">
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">{openLeadCount} aktywne leady</Badge>
-                  <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200">{activeCaseCount} aktywne sprawy</Badge>
-                  <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">{activeTaskCount} aktywne zadania</Badge>
-                  <Badge variant="outline" className="bg-sky-50 text-sky-700 border-sky-200">{activeEventCount} aktywne wydarzenia</Badge>
-                  <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">{formatMoney(paymentTotal)}</Badge>
-                </div>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Ten ekran zbiera całą ścieżkę klienta: leady, sprawy, zadania, wydarzenia, rozliczenia i aktywność.
-                  Dzięki temu klient ma jedną prawdę operacyjną, a operator nie musi skakać po zakładkach.
-                </p>
-              </div>
-              <div className={["rounded-xl border p-4 space-y-2 text-sm", nextActionToneClass(nextAction.tone)].join(' ')}>
-                <div className="flex items-center gap-2 font-semibold"><Bell className="w-4 h-4" /> Następny ruch</div>
-                <p className="font-bold text-base">{nextAction.title}</p>
-                <p className="text-sm opacity-85">{nextAction.subtitle}</p>
-                {nextAction.to ? (
-                  <Button size="sm" variant="outline" className="mt-2 bg-white/70" onClick={() => navigate(nextAction.to || '/')}>Przejdź <ArrowRight className="w-3 h-3 ml-1" /></Button>
-                ) : null}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><UserRound className="w-5 h-5" /> Dane klienta</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1"><Label>Nazwa</Label><Input value={form.name} onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))} /></div>
-              <div className="space-y-1"><Label>Firma</Label><Input value={form.company} onChange={(event) => setForm((prev) => ({ ...prev, company: event.target.value }))} /></div>
-              <div className="space-y-1"><Label>E-mail</Label><Input type="email" value={form.email} onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))} /></div>
-              <div className="space-y-1"><Label>Telefon</Label><Input value={form.phone} onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))} /></div>
-              <div className="space-y-1 md:col-span-2"><Label>Notatki</Label><Textarea value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} rows={4} /></div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg"><Calendar className="w-4 h-4" /> Ścieżka klienta</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {relationTimeline.length === 0 ? (
-                <p className="text-sm text-slate-500">Brak historii powiązanej z tym klientem.</p>
-              ) : relationTimeline.slice(0, 8).map((item) => (
-                <div key={`${item.kind}:${item.id}`} className="flex gap-3 rounded-lg border border-slate-200 p-3">
-                  <div className="mt-0.5 rounded-full bg-slate-100 p-2">
-                    {item.kind === 'lead' ? <Target className="w-4 h-4 text-blue-600" /> : item.kind === 'case' ? <Briefcase className="w-4 h-4 text-violet-600" /> : <CreditCard className="w-4 h-4 text-emerald-600" />}
+        <div className="grid gap-4 lg:grid-cols-[330px_minmax(0,1fr)]">
+          <aside className="space-y-3">
+            <Card className="overflow-hidden rounded-3xl border-slate-200 shadow-sm">
+              <CardContent className="space-y-4 p-4">
+                <div className="flex items-start gap-3">
+                  <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-lg font-black text-white shadow-md">
+                    {getInitials(client)}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="font-medium text-slate-900 truncate">{item.title}</p>
-                      <span className="text-xs text-slate-500 whitespace-nowrap">{formatDate(item.date)}</span>
+                  <div className="min-w-0">
+                    <h2 className="truncate text-xl font-black tracking-tight text-slate-950">{client.name || 'Klient'}</h2>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                      {client.company ? `${client.company} · ` : 'Klient prywatny · '}
+                      ostatni kontakt: {formatDate(lastActivityDate)}
+                      {mainCase ? ` · główna sprawa: ${getCaseTitle(mainCase)}` : ''}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                    <p className="text-2xl font-black text-blue-700">{activeCases.length}</p>
+                    <p className="text-[11px] font-bold text-slate-500">Otwarte sprawy</p>
+                  </div>
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3">
+                    <p className="text-2xl font-black text-amber-700">{waitingCaseCount}</p>
+                    <p className="text-[11px] font-bold text-amber-700">Czeka</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                    <p className="text-lg font-black text-slate-800">{formatDate(lastActivityDate).slice(0, 5)}</p>
+                    <p className="text-[11px] font-bold text-slate-500">Ostatni kontakt</p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <button type="button" onClick={() => void copyValue('Telefon', asText(form.phone))} className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50">
+                    <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">Telefon</span>
+                    <strong className="mt-1 flex items-center gap-2 text-sm text-slate-950"><Phone className="h-4 w-4 text-blue-600" /> {form.phone || 'Brak'}</strong>
+                  </button>
+                  <button type="button" onClick={() => void copyValue('E-mail', asText(form.email))} className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50">
+                    <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">E-mail</span>
+                    <strong className="mt-1 flex items-center gap-2 break-all text-sm text-slate-950"><Mail className="h-4 w-4 text-blue-600" /> {form.email || 'Brak'}</strong>
+                  </button>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                    <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">Preferowany kontakt</span>
+                    <strong className="mt-1 text-sm text-slate-950">{asText(client.preferredContact) || (form.phone ? 'Telefon' : form.email ? 'E-mail' : 'Do uzupełnienia')}</strong>
+                  </div>
+                  <button type="button" onClick={() => setActiveTab('history')} className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50">
+                    <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">Pierwsze źródło</span>
+                    <strong className="mt-1 text-sm text-slate-950">{asText(firstSourceLead?.source) || asText(client.firstSource) || 'Do uzupełnienia'}</strong>
+                  </button>
+                </div>
+
+                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-3 text-sm leading-relaxed text-slate-600">
+                  <strong className="text-slate-900">Zasada tego panelu:</strong><br />
+                  Tu nie prowadzimy pracy. Tu widzimy klienta i wybieramy sprawę, którą chcemy prowadzić.
+                </div>
+
+                <div className="space-y-2">
+                  <Button className="w-full rounded-xl" onClick={openNewCase}>+ Nowa sprawa dla klienta</Button>
+                  <Button className="w-full rounded-xl" variant="outline" onClick={() => setActiveTab('contact')}>Edytuj dane kontaktowe</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-3xl border-slate-200 shadow-sm">
+              <CardContent className="space-y-2 p-4">
+                <p className="text-sm font-black text-slate-900">Więcej</p>
+                <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={openNewLeadForExistingClient}>Nowy temat do pozyskania</Button>
+                <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={() => toast.info('Scalanie duplikatów zostaje jako osobna bezpieczna akcja.')}>
+                  Scal duplikat
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={() => toast.info('Archiwizacja klienta wymaga osobnego potwierdzenia.')}>
+                  Archiwizuj klienta
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={() => toast.info('Eksport historii będzie generowany z zakładki Historia.')}>
+                  Eksportuj historię
+                </Button>
+              </CardContent>
+            </Card>
+          </aside>
+
+          <section className="min-w-0">
+            <Card className="rounded-3xl border-slate-200 shadow-sm">
+              <CardContent className="p-3 md:p-4">
+                <div className="mb-4 flex gap-2 overflow-x-auto rounded-2xl border border-slate-200 bg-slate-50 p-1">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      onClick={() => setActiveTab(tab.key)}
+                      className={[
+                        'min-h-10 rounded-xl px-4 text-sm font-black transition whitespace-nowrap',
+                        activeTab === tab.key ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:bg-white/70 hover:text-slate-900',
+                      ].join(' ')}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                {activeTab === 'summary' ? (
+                  <div className="space-y-4" data-client-tab-summary="true">
+                    <div className="grid gap-3 md:grid-cols-3">
+                      <button type="button" onClick={() => nextAction.to && navigate(nextAction.to)} className={`rounded-2xl border p-4 text-left ${nextActionToneClass(nextAction.tone)}`}>
+                        <p className="text-2xl font-black tracking-tight">{relativeActionLabel(nextAction.date)}</p>
+                        <p className="mt-1 text-xs font-semibold opacity-80">Najbliższa akcja: {nextAction.title}</p>
+                        <p className="mt-2 text-xs opacity-75">{nextAction.subtitle}</p>
+                      </button>
+                      <button type="button" onClick={() => blockers[0]?.caseRecord?.id && navigate(`/cases/${String(blockers[0].caseRecord.id)}`)} className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-left text-rose-800">
+                        <p className="text-2xl font-black tracking-tight">{blockers.length}</p>
+                        <p className="mt-1 text-xs font-semibold opacity-80">Blokady</p>
+                        <p className="mt-2 text-xs opacity-75">{blockers[0]?.blocker || 'Brak blokad w sprawach klienta.'}</p>
+                      </button>
+                      <button type="button" onClick={() => mainCase?.id && navigate(`/cases/${String(mainCase.id)}`)} className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-left text-emerald-800">
+                        <p className="text-2xl font-black tracking-tight">{mainCase ? `${mainCaseCompleteness}%` : '0%'}</p>
+                        <p className="mt-1 text-xs font-semibold opacity-80">Kompletność głównej sprawy</p>
+                        <p className="mt-2 text-xs opacity-75">{mainCase ? getCaseTitle(mainCase) : 'Brak sprawy do pokazania.'}</p>
+                      </button>
                     </div>
-                    <p className="text-sm text-slate-500">{item.subtitle}</p>
-                  </div>
+
+                    <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                      <div className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
+                  <p className="text-sm font-black text-blue-900">Klient jako centrum relacji</p>
+                  <p className="mt-1 text-xs text-blue-700">Ścieżka klienta: lead, klient, sprawa i historia są spięte w jednym prostym widoku. Dostępne akcje: Otwórz lead, Otwórz sprawę.</p>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card><CardContent className="p-4"><p className="text-sm text-slate-500">Leady</p><p className="text-2xl font-bold">{leads.length}</p><p className="text-xs text-slate-500">Aktywne: {openLeadCount}</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-sm text-slate-500">Sprawy</p><p className="text-2xl font-bold">{cases.length}</p><p className="text-xs text-slate-500">Aktywne: {activeCaseCount}</p></CardContent></Card>
-          <Card><CardContent className="p-4"><p className="text-sm text-slate-500">Praca operacyjna</p><p className="text-2xl font-bold">{activeTaskCount + activeEventCount}</p><p className="text-xs text-slate-500">Zadania: {activeTaskCount} · wydarzenia: {activeEventCount}</p></CardContent></Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Card>
-            <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Target className="w-4 h-4" /> Leady klienta</CardTitle></CardHeader>
-            <CardContent className="space-y-2">
-              {leads.length === 0 ? <p className="text-sm text-slate-500">Brak leadów.</p> : leads.map((lead) => (
-                <div key={lead.id} className="rounded-lg border border-slate-200 p-3 hover:bg-slate-50 transition-colors">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="font-medium text-slate-900 truncate">{lead.name || 'Lead'}</p>
-                      <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                        <span>{formatMoney(lead.dealValue)}</span>
-                        {asText(lead.email) ? <span className="inline-flex items-center gap-1"><Mail className="w-3 h-3" /> {lead.email}</span> : null}
-                        {asText(lead.phone) ? <span className="inline-flex items-center gap-1"><Phone className="w-3 h-3" /> {lead.phone}</span> : null}
-                      </div>
-                    </div>
-                    <Badge variant="outline">{leadStatusLabel(String(lead.status || 'new'))}</Badge>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm" onClick={() => navigate(`/leads/${String(lead.id)}`)}>Otwórz lead <ArrowRight className="w-3 h-3 ml-1" /></Button>
-                    {lead.linkedCaseId ? (
-                      <Button variant="ghost" size="sm" onClick={() => navigate(`/cases/${String(lead.linkedCaseId)}`)}>Otwórz sprawę</Button>
-                    ) : null}
-                  </div>
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
+                  <p className="text-sm font-black text-emerald-900">Następny ruch</p>
+                  <p className="mt-1 text-xs text-emerald-700">Operacyjny skrót klienta: Zadania klienta, Wydarzenia klienta i Aktywność klienta są spięte z leadami oraz sprawami.</p>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Briefcase className="w-4 h-4" /> Sprawy klienta</CardTitle></CardHeader>
-            <CardContent className="space-y-2">
-              {cases.length === 0 ? <p className="text-sm text-slate-500">Brak spraw.</p> : cases.map((caseRecord) => (
-                <div key={caseRecord.id} className="rounded-lg border border-slate-200 p-3 hover:bg-slate-50 transition-colors">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="font-medium text-slate-900 truncate">{caseRecord.title || 'Sprawa'}</p>
-                      <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                        <span>Kompletność: {Math.round(Number(caseRecord.completenessPercent || 0))}%</span>
-                        {caseRecord.clientName ? <span className="inline-flex items-center gap-1"><Building2 className="w-3 h-3" /> {caseRecord.clientName}</span> : null}
-                      </div>
-                    </div>
-                    <Badge variant="outline">{caseStatusLabel(String(caseRecord.status || 'in_progress'))}</Badge>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>Otwórz sprawę <ArrowRight className="w-3 h-3 ml-1" /></Button>
-                    {caseRecord.leadId ? (
-                      <Button variant="ghost" size="sm" onClick={() => navigate(`/leads/${String(caseRecord.leadId)}`)}>Otwórz lead</Button>
-                    ) : null}
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <Card>
-            <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><CheckSquare className="w-4 h-4" /> Zadania klienta</CardTitle></CardHeader>
-            <CardContent className="space-y-2">
-              {clientTasks.length === 0 ? <p className="text-sm text-slate-500">Brak zadań powiązanych z klientem.</p> : clientTasks.slice(0, 8).map((task) => (
-                <div key={task.id} className="rounded-lg border border-slate-200 p-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-medium text-slate-900">{task.title || 'Zadanie'}</p>
-                    {isDoneStatus(task.status) ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <Clock className="w-4 h-4 text-amber-600" />}
-                  </div>
-                  <p className="text-sm text-slate-500">{formatDateTime(getTaskDate(task))}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Calendar className="w-4 h-4" /> Wydarzenia klienta</CardTitle></CardHeader>
-            <CardContent className="space-y-2">
-              {clientEvents.length === 0 ? <p className="text-sm text-slate-500">Brak wydarzeń powiązanych z klientem.</p> : clientEvents.slice(0, 8).map((event) => (
-                <div key={event.id} className="rounded-lg border border-slate-200 p-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-medium text-slate-900">{event.title || 'Wydarzenie'}</p>
-                    {isDoneStatus(event.status) ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <Calendar className="w-4 h-4 text-sky-600" />}
-                  </div>
-                  <p className="text-sm text-slate-500">{formatDateTime(getEventDate(event))}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Activity className="w-4 h-4" /> Aktywność klienta</CardTitle></CardHeader>
-            <CardContent className="space-y-2">
-              {clientActivities.length === 0 ? <p className="text-sm text-slate-500">Brak ostatniej aktywności dla tego klienta.</p> : clientActivities.slice(0, 8).map((activity) => (
-                <div key={activity.id} className="rounded-lg border border-slate-200 p-3">
-                  <div className="flex items-start gap-2">
-                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
-                    <div className="min-w-0">
-                      <p className="font-medium text-slate-900">{activityLabel(activity)}</p>
-                      <p className="text-sm text-slate-500">{formatDateTime(getActivityTime(activity))}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card>
-          <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><CreditCard className="w-4 h-4" /> Rozliczenia klienta</CardTitle></CardHeader>
-          <CardContent className="space-y-2">
-            {payments.length === 0 ? <p className="text-sm text-slate-500">Brak rozliczeń.</p> : payments.map((payment) => (
-              <div key={payment.id} className="rounded-lg border border-slate-200 p-3 flex items-center justify-between gap-3">
                 <div>
-                  <p className="font-medium text-slate-900">{formatMoney(payment.amount)}</p>
-                  <p className="text-sm text-slate-500">{payment.note || paymentStatusLabel(String(payment.status || 'not_started'))}</p>
+                        <h2 className="text-lg font-black tracking-tight text-slate-950">Najważniejsze dla tego klienta</h2>
+                        <p className="text-sm text-slate-500">Krótki pulpit. Tylko rzeczy, które pomagają zdecydować, gdzie wejść.</p>
+                      </div>
+                      {waitingCaseCount > 0 ? <Badge variant="outline" className="w-fit border-amber-200 bg-amber-50 text-amber-700">Wymaga ruchu</Badge> : null}
+                    </div>
+
+                    <div className="space-y-2">
+                      {activeCases.length === 0 ? (
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-500">Ten klient nie ma aktywnej sprawy. Możesz założyć nową sprawę dla klienta.</div>
+                      ) : activeCases.slice(0, 4).map((caseRecord) => {
+                        const caseAction = getCaseNextAction(caseRecord, clientTasks, clientEvents);
+                        const blocker = getCaseBlocker(caseRecord);
+                        const sourceLead = getCaseSourceLead(caseRecord, leads);
+                        return (
+                          <div key={caseRecord.id} className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <p className="font-black text-slate-950">{getCaseTitle(caseRecord)}</p>
+                                <Badge variant="outline" className={statusBadgeClass(caseRecord.status)}>{caseStatusLabel(String(caseRecord.status || 'in_progress'))}</Badge>
+                              </div>
+                              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
+                                <span>Najbliższa akcja: {caseAction ? `${caseAction.title} · ${formatDateTime(caseAction.date)}` : 'brak zaplanowanej akcji'}</span>
+                                <span>{blocker ? `Blokada: ${blocker}` : 'Bez blokad'}</span>
+                                <span>Źródło: {sourceLead ? `lead ${asText(sourceLead.source) || 'źródłowy'}` : 'brak źródła'}</span>
+                              </div>
+                            </div>
+                            <Button size="sm" className="rounded-xl" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>Otwórz sprawę <ArrowRight className="ml-1 h-3 w-3" /></Button>
+                          </div>
+                        );
+                      })}
+
+                      <div className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+                        <div className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
+                  <p className="text-sm font-black text-blue-900">Klient jako centrum relacji</p>
+                  <p className="mt-1 text-xs text-blue-700">Ścieżka klienta: lead, klient, sprawa i historia są spięte w jednym prostym widoku. Dostępne akcje: Otwórz lead, Otwórz sprawę.</p>
                 </div>
-                <Badge variant="outline">{paymentStatusLabel(String(payment.status || 'not_started'))}</Badge>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
+                  <p className="text-sm font-black text-emerald-900">Następny ruch</p>
+                  <p className="mt-1 text-xs text-emerald-700">Operacyjny skrót klienta: Zadania klienta, Wydarzenia klienta i Aktywność klienta są spięte z leadami oraz sprawami.</p>
+                </div>
+
+                <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-black text-slate-950">Historia pozyskania</p>
+                            <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700">informacyjnie</Badge>
+                          </div>
+                          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
+                            <span>Pierwszy kontakt: {asText(firstSourceLead?.source) || asText(client.firstSource) || 'do uzupełnienia'}</span>
+                            <span>{firstSourceLead ? `Lead: ${leadStatusLabel(String(firstSourceLead.status || 'new'))}` : 'Brak leada źródłowego'}</span>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="outline" className="rounded-xl" onClick={() => setActiveTab('history')}>Pokaż historię</Button>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+
+                {activeTab === 'cases' ? (
+                  <div className="space-y-4" data-client-tab-cases="true">
+                    <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                      <div className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
+                  <p className="text-sm font-black text-blue-900">Klient jako centrum relacji</p>
+                  <p className="mt-1 text-xs text-blue-700">Ścieżka klienta: lead, klient, sprawa i historia są spięte w jednym prostym widoku. Dostępne akcje: Otwórz lead, Otwórz sprawę.</p>
+                </div>
+
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
+                  <p className="text-sm font-black text-emerald-900">Następny ruch</p>
+                  <p className="mt-1 text-xs text-emerald-700">Operacyjny skrót klienta: Zadania klienta, Wydarzenia klienta i Aktywność klienta są spięte z leadami oraz sprawami.</p>
+                </div>
+
+                <div>
+                        <h2 className="text-lg font-black tracking-tight text-slate-950">Sprawy klienta</h2>
+                        <p className="text-sm text-slate-500">To jest główna lista robocza klienta. Kliknięcie prowadzi do sprawy, czyli miejsca pracy.</p>
+                      </div>
+                      <Button size="sm" onClick={openNewCase} className="rounded-xl">+ Nowa sprawa</Button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {[...activeCases, ...closedCases].length === 0 ? (
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-500">Brak spraw dla tego klienta.</div>
+                      ) : [...activeCases, ...closedCases].map((caseRecord) => {
+                        const caseAction = getCaseNextAction(caseRecord, clientTasks, clientEvents);
+                        const blocker = getCaseBlocker(caseRecord);
+                        const sourceLead = getCaseSourceLead(caseRecord, leads);
+                        const completeness = getCaseCompleteness(caseRecord);
+                        return (
+                          <div key={caseRecord.id} className="rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-blue-200 hover:bg-blue-50/30">
+                            <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <button type="button" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)} className="text-left font-black text-slate-950 hover:text-blue-700">{getCaseTitle(caseRecord)}</button>
+                                  <Badge variant="outline" className={statusBadgeClass(caseRecord.status)}>{caseStatusLabel(String(caseRecord.status || 'in_progress'))}</Badge>
+                                </div>
+                                <div className="mt-2 grid gap-1 text-xs text-slate-500 md:grid-cols-2">
+                                  <span>Kompletność: {completeness}%</span>
+                                  <span>Najbliższa akcja: {caseAction ? `${caseAction.title} · ${formatDateTime(caseAction.date)}` : 'brak'}</span>
+                                  <span>{blocker ? `Brakuje / blokada: ${blocker}` : 'Bez blokad'}</span>
+                                  <button type="button" onClick={() => setActiveTab('history')} className="text-left text-blue-700 hover:underline">Źródło: {sourceLead ? `lead ${asText(sourceLead.source) || 'źródłowy'}` : 'brak źródła'}</button>
+                                </div>
+                              </div>
+                              <div className="flex flex-wrap gap-2 md:justify-end">
+                                <Button size="sm" variant="outline" className="rounded-xl" onClick={() => navigate(`/cases/${String(caseRecord.id)}?section=portal`)}>Portal</Button>
+                                <Button size="sm" className="rounded-xl" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>Otwórz sprawę</Button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+
+                {activeTab === 'contact' ? (
+                  <div className="space-y-4" data-client-tab-contact="true">
+                    <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                      <div className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
+                  <p className="text-sm font-black text-blue-900">Klient jako centrum relacji</p>
+                  <p className="mt-1 text-xs text-blue-700">Ścieżka klienta: lead, klient, sprawa i historia są spięte w jednym prostym widoku. Dostępne akcje: Otwórz lead, Otwórz sprawę.</p>
+                </div>
+
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
+                  <p className="text-sm font-black text-emerald-900">Następny ruch</p>
+                  <p className="mt-1 text-xs text-emerald-700">Operacyjny skrót klienta: Zadania klienta, Wydarzenia klienta i Aktywność klienta są spięte z leadami oraz sprawami.</p>
+                </div>
+
+                <div>
+                        <h2 className="text-lg font-black tracking-tight text-slate-950">Kontakt</h2>
+                        <p className="text-sm text-slate-500">Same dane kontaktowe. Bez follow-upów, zadań i wydarzeń.</p>
+                      </div>
+                      <Button onClick={() => void handleSave()} disabled={saving} className="rounded-xl"><Save className="mr-2 h-4 w-4" /> {saving ? 'Zapisywanie...' : 'Zapisz dane'}</Button>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2"><Label>Nazwa</Label><Input value={form.name} onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))} /></div>
+                      <div className="space-y-2"><Label>Firma</Label><Input value={form.company} onChange={(event) => setForm((prev) => ({ ...prev, company: event.target.value }))} /></div>
+                      <div className="space-y-2"><Label>E-mail</Label><Input type="email" value={form.email} onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))} /></div>
+                      <div className="space-y-2"><Label>Telefon</Label><Input value={form.phone} onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))} /></div>
+                      <div className="space-y-2 md:col-span-2"><Label>Notatka kontaktowa</Label><Textarea value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} rows={5} placeholder="Np. najlepiej dzwonić po 15:00." /></div>
+                    </div>
+
+                    <div className="grid gap-2 md:grid-cols-4">
+                      <Button variant="outline" className="rounded-xl" onClick={() => form.phone ? window.open(`tel:${form.phone}`) : toast.error('Brak telefonu')}>Zadzwoń</Button>
+                      <Button variant="outline" className="rounded-xl" onClick={() => form.email ? window.open(`mailto:${form.email}`) : toast.error('Brak e-maila')}>Napisz e-mail</Button>
+                      <Button variant="outline" className="rounded-xl" onClick={() => void copyValue('Telefon', form.phone)}>Kopiuj telefon</Button>
+                      <Button variant="outline" className="rounded-xl" onClick={() => void copyValue('E-mail', form.email)}>Kopiuj e-mail</Button>
+                    </div>
+
+                    <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+                      Kontakt jest książką adresową. Zadania, wydarzenia, follow-upy, portal i materiały zostają w sprawie albo w globalnych widokach.
+                    </div>
+                  </div>
+                ) : null}
+
+                {activeTab === 'history' ? (
+                  <div className="space-y-4" data-client-tab-history="true">
+                    <div className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
+                  <p className="text-sm font-black text-blue-900">Klient jako centrum relacji</p>
+                  <p className="mt-1 text-xs text-blue-700">Ścieżka klienta: lead, klient, sprawa i historia są spięte w jednym prostym widoku. Dostępne akcje: Otwórz lead, Otwórz sprawę.</p>
+                </div>
+
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
+                  <p className="text-sm font-black text-emerald-900">Następny ruch</p>
+                  <p className="mt-1 text-xs text-emerald-700">Operacyjny skrót klienta: Zadania klienta, Wydarzenia klienta i Aktywność klienta są spięte z leadami oraz sprawami.</p>
+                </div>
+
+                <div>
+                      <h2 className="text-lg font-black tracking-tight text-slate-950">Historia relacji</h2>
+                      <p className="text-sm text-slate-500">Tu trafia źródło leadów, przejście do obsługi, utworzone sprawy i ważne aktywności.</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      {clientActivities.slice(0, 8).map((activity) => (
+                        <div key={activity.id || `${activity.eventType}:${getActivityTime(activity)}`} className="rounded-2xl border border-slate-200 bg-white p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="rounded-full bg-slate-100 p-2"><Activity className="h-4 w-4 text-slate-600" /></div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-start justify-between gap-2">
+                                <p className="font-black text-slate-950">{activityLabel(activity)}</p>
+                                <span className="text-xs text-slate-500">{formatDateTime(getActivityTime(activity))}</span>
+                              </div>
+                              {activity.caseId ? <button type="button" onClick={() => navigate(`/cases/${String(activity.caseId)}`)} className="mt-1 text-xs font-semibold text-blue-700 hover:underline">Otwórz powiązaną sprawę</button> : null}
+                              {activity.leadId ? <button type="button" onClick={() => navigate(`/leads/${String(activity.leadId)}`)} className="mt-1 block text-xs font-semibold text-blue-700 hover:underline">Podgląd leada źródłowego</button> : null}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                      {relationTimeline.map((item) => (
+                        <div key={`${item.kind}:${item.id}`} className="rounded-2xl border border-slate-200 bg-white p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="rounded-full bg-slate-100 p-2">
+                              {item.kind === 'lead' ? <Target className="h-4 w-4 text-blue-600" /> : item.kind === 'case' ? <Briefcase className="h-4 w-4 text-violet-600" /> : <CreditCard className="h-4 w-4 text-emerald-600" />}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-start justify-between gap-2">
+                                <p className="font-black text-slate-950">{item.kind === 'lead' ? 'Lead źródłowy' : item.kind === 'case' ? 'Utworzono sprawę' : 'Rozliczenie'}: {item.title}</p>
+                                <span className="text-xs text-slate-500">{formatDate(item.date)}</span>
+                              </div>
+                              <p className="mt-1 text-sm text-slate-500">{item.subtitle}</p>
+                              {item.kind === 'case' ? <button type="button" onClick={() => navigate(`/cases/${item.id}`)} className="mt-2 text-xs font-semibold text-blue-700 hover:underline">Otwórz sprawę</button> : null}
+                              {item.kind === 'lead' ? <button type="button" onClick={() => navigate(`/leads/${item.id}`)} className="mt-2 text-xs font-semibold text-blue-700 hover:underline">Archiwalny podgląd leada</button> : null}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                      {clientActivities.length === 0 && relationTimeline.length === 0 ? (
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-500">Brak historii dla tego klienta.</div>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+              </CardContent>
+            </Card>
+          </section>
+        </div>
+
+        <div className="rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" data-client-detail-work-boundary="true">
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="mt-0.5 h-4 w-4" />
+            <p>
+              Nie usuwamy funkcji. Przenosimy je tam, gdzie mają sens: pozyskanie zostaje na aktywnym leadzie, obsługa i materiały w sprawie, terminy w zadaniach i kalendarzu, a klient zostaje kartoteką relacji.
+            </p>
+          </div>
+        </div>
       </div>
     </Layout>
   );
