@@ -233,6 +233,72 @@ function findTodayCalendarShortcutElement(target: EventTarget | null) {
   return candidates.find((element) => shouldOpenWeeklyCalendarFromShortcutText(element.textContent)) || null;
 }
 
+
+type TodayTileShortcutTarget = 'urgent' | 'without_action' | 'without_movement' | 'blocked' | 'calendar';
+
+function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget | null {
+  const compact = String(value || '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!compact) return null;
+
+  if (compact.includes('zablokowane') || compact.includes('blok')) return 'blocked';
+  if (compact.includes('bez działań') || compact.includes('bez dzialan') || compact.includes('bez następnego') || compact.includes('bez nastepnego')) return 'without_action';
+  if (compact.includes('bez ruchu') || compact.includes('brak zmiany')) return 'without_movement';
+  if (compact.includes('pilne') || compact.includes('zaległe') || compact.includes('zalegle')) return 'urgent';
+  if (compact.includes('kalendarz') || compact.includes('najbliższe') || compact.includes('najblizsze') || compact.includes('termin')) return 'calendar';
+
+  return null;
+}
+
+function getTodayTileShortcutPatterns(target: TodayTileShortcutTarget) {
+  if (target === 'blocked') return ['zablokowane', 'blok'];
+  if (target === 'without_action') return ['bez działań', 'bez dzialan', 'bez następnego', 'bez nastepnego', 'następny krok', 'nastepny krok'];
+  if (target === 'without_movement') return ['bez ruchu', 'brak zmiany', '7 dni'];
+  if (target === 'urgent') return ['pilne', 'zaległe', 'zalegle', 'dzisiaj', 'dziś', 'dzis'];
+  if (target === 'calendar') return ['kalendarz', 'najbliższe', 'najblizsze', 'terminy', 'wydarzenia'];
+  return [];
+}
+
+function findTodayTileIdForShortcut(target: TodayTileShortcutTarget) {
+  const patterns = getTodayTileShortcutPatterns(target);
+
+  const headers = Array.from(
+    document.querySelectorAll<HTMLElement>('[data-today-tile-header="true"]'),
+  );
+
+  const exact = headers.find((header) => {
+    const value = String(header.dataset.todayTileTitle || header.textContent || '').toLowerCase();
+    return patterns.some((pattern) => value.includes(pattern));
+  });
+
+  if (exact?.dataset.todayTileId) {
+    return exact.dataset.todayTileId;
+  }
+
+  const fallback = headers.find((header) => {
+    const value = String(header.textContent || '').toLowerCase();
+    return patterns.some((pattern) => value.includes(pattern));
+  });
+
+  return fallback?.dataset.todayTileId || null;
+}
+
+function findTodayPipelineShortcutElement(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return null;
+
+  const direct = target.closest('[data-today-pipeline-shortcut]');
+  if (direct instanceof HTMLElement) return direct;
+
+  const candidate = target.closest('a, button, [role="button"], .rounded-2xl, .rounded-xl');
+  if (!(candidate instanceof HTMLElement)) return null;
+
+  const shortcutTarget = resolveTodayTileShortcutTarget(candidate.textContent);
+  return shortcutTarget ? candidate : null;
+}
+
 function TileCard({
   id,
   title,
@@ -247,14 +313,7 @@ function TileCard({
   bodyClassName = '',
 }: TileCardProps) {
   const collapsed = Boolean(collapsedMap[id]);
-  const opensWeeklyCalendar = shouldOpenWeeklyCalendarTile(id, title);
-
   const handleHeaderClick = () => {
-    if (opensWeeklyCalendar) {
-      openWeeklyCalendarFromToday();
-      return;
-    }
-
     onToggle(id);
   };
 
@@ -263,6 +322,9 @@ function TileCard({
       <CardContent className="p-0">
         <button
           type="button"
+          data-today-tile-header="true"
+          data-today-tile-id={id}
+          data-today-tile-title={title}
           onClick={handleHeaderClick}
           className="w-full p-4 flex flex-col gap-3 text-left sm:flex-row sm:flex-wrap sm:items-start sm:justify-between"
         >
@@ -688,25 +750,25 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-4">
-          <Link to="/leads" className="rounded-2xl border border-blue-100 bg-blue-50 p-3 transition hover:border-blue-200 hover:bg-blue-100">
+          <Link to="/today#pilne" data-today-pipeline-shortcut="urgent" className="rounded-2xl border border-blue-100 bg-blue-50 p-3 transition hover:border-blue-200 hover:bg-blue-100">
             <span className="text-xs font-semibold text-blue-700">Pilne leady</span>
             <strong className="mt-1 block text-2xl text-blue-950">{urgentLeads.length}</strong>
             <small className="text-xs text-blue-700">Dziś albo zaległe</small>
           </Link>
 
-          <Link to="/leads" className="rounded-2xl border border-amber-100 bg-amber-50 p-3 transition hover:border-amber-200 hover:bg-amber-100">
+          <Link to="/today#bez-dzialan" data-today-pipeline-shortcut="without_action" className="rounded-2xl border border-amber-100 bg-amber-50 p-3 transition hover:border-amber-200 hover:bg-amber-100">
             <span className="text-xs font-semibold text-amber-700">Bez działań</span>
             <strong className="mt-1 block text-2xl text-amber-950">{withoutActionLeads.length}</strong>
             <small className="text-xs text-amber-700">Brak następnego kroku</small>
           </Link>
 
-          <Link to="/leads" className="rounded-2xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 hover:bg-slate-100">
+          <Link to="/today#bez-ruchu" data-today-pipeline-shortcut="without_movement" className="rounded-2xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 hover:bg-slate-100">
             <span className="text-xs font-semibold text-slate-700">Bez ruchu</span>
             <strong className="mt-1 block text-2xl text-slate-950">{withoutMovementLeads.length}</strong>
             <small className="text-xs text-slate-600">Brak zmiany 7+ dni</small>
           </Link>
 
-          <Link to="/cases" className="rounded-2xl border border-red-100 bg-red-50 p-3 transition hover:border-red-200 hover:bg-red-100">
+          <Link to="/today#zablokowane" data-today-pipeline-shortcut="blocked" className="rounded-2xl border border-red-100 bg-red-50 p-3 transition hover:border-red-200 hover:bg-red-100">
             <span className="text-xs font-semibold text-red-700">Zablokowane sprawy</span>
             <strong className="mt-1 block text-2xl text-red-950">{blockedCases.length}</strong>
             <small className="text-xs text-red-700">Wymagają odblokowania</small>
@@ -853,12 +915,62 @@ export default function Today() {
     }
   }, [collapsedTiles]);
 
-  const toggleTile = (id: string) => {
-    setCollapsedTiles((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  const openOnlyTodayTile = (id: string) => {
+    setCollapsedTiles(() => {
+      const next: Record<string, boolean> = {};
+      const headers = Array.from(document.querySelectorAll<HTMLElement>('[data-today-tile-header="true"]'));
+
+      headers.forEach((header) => {
+        const tileId = header.dataset.todayTileId;
+        if (tileId) {
+          next[tileId] = tileId !== id;
+        }
+      });
+
+      if (!Object.keys(next).length) {
+        next[id] = false;
+      }
+
+      return next;
+    });
+
+    window.setTimeout(() => {
+      const header = document.querySelector<HTMLElement>(`[data-today-tile-id="${id}"]`);
+      header?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   };
+
+  const toggleTile = (id: string) => {
+    openOnlyTodayTile(id);
+  };
+
+  useEffect(() => {
+    const handleTodayPipelineShortcutClick = (event: MouseEvent) => {
+      const shortcutElement = findTodayPipelineShortcutElement(event.target);
+      if (!shortcutElement) return;
+
+      const explicitTarget = shortcutElement.dataset.todayPipelineShortcut as TodayTileShortcutTarget | undefined;
+      const target = explicitTarget || resolveTodayTileShortcutTarget(shortcutElement.textContent);
+      if (!target) return;
+
+      const tileId = findTodayTileIdForShortcut(target);
+      if (!tileId) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      openOnlyTodayTile(tileId);
+    };
+
+    document.addEventListener('click', handleTodayPipelineShortcutClick, true);
+
+    return () => {
+      document.removeEventListener('click', handleTodayPipelineShortcutClick, true);
+    };
+  }, []);
+  // data-today-shortcut-expands-section="true"
+
 
   useEffect(() => {
     const handleTodayWeekCalendarShortcutClick = (event: MouseEvent) => {

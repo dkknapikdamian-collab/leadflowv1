@@ -90,8 +90,10 @@ type CalendarEditDraft = {
   endAt: string;
   leadId: string;
   caseId: string;
+  clientId?: string;
   relationQuery: string;
   priority: string;
+  status?: string;
   recurrence: ReturnType<typeof createDefaultRecurrence>;
   reminder: ReturnType<typeof createDefaultReminder>;
 };
@@ -455,7 +457,7 @@ export default function Calendar() {
   );
 
   const selectedEditOption = useMemo(
-    () => findTopicContactOption(topicContactOptions, { leadId: editDraft?.leadId || null, caseId: editDraft?.caseId || null }),
+    () => findTopicContactOption(topicContactOptions, { leadId: editDraft?.leadId || null, caseId: editDraft?.caseId || null, clientId: editDraft?.clientId || null }),
     [editDraft?.caseId, editDraft?.leadId, topicContactOptions],
   );
 
@@ -856,18 +858,21 @@ export default function Calendar() {
 
       if (editEntry.kind === 'event') {
         const reminderAt = toReminderAtIso(editDraft.startAt, editDraft.reminder);
+
         await updateEventInSupabase({
           id: editEntry.sourceId,
           title: editDraft.title,
           type: editDraft.type,
           startAt: editDraft.startAt,
-          endAt: editDraft.endAt,
-          reminderAt,
-          recurrenceRule: editDraft.recurrence.mode,
-          status: editEntry.raw?.status || 'scheduled',
+          endAt: editDraft.endAt || null,
           leadId: editDraft.leadId || null,
           caseId: editDraft.caseId || null,
+          clientId: editDraft.clientId || null,
+          status: editDraft.status || 'scheduled',
+          reminderAt,
+          recurrenceRule: editDraft.recurrence.mode,
         });
+
         await registerReminderScheduled({
           entityType: 'event',
           title: editDraft.title,
@@ -1488,7 +1493,23 @@ export default function Calendar() {
                 </div>
               ) : null}
 
-              <DialogFooter>
+              
+                {editEntry?.kind === 'event' ? (
+                  <div className="space-y-2" data-calendar-event-edit-status="true">
+                    <Label>Status wydarzenia</Label>
+                    <select
+                      className={modalSelectClass}
+                      value={editDraft?.status || 'scheduled'}
+                      onChange={(event) => setEditDraft((prev) => prev ? { ...prev, status: event.target.value } : prev)}
+                    >
+                      <option value="scheduled">Zaplanowane</option>
+                      <option value="completed">Odbyte</option>
+                      <option value="cancelled">Anulowane</option>
+                    </select>
+                  </div>
+                ) : null}
+
+<DialogFooter>
                 <Button type="submit" disabled={editSubmitting || actionPendingId === `${editEntry.id}:edit`}>
                   {editSubmitting || actionPendingId === `${editEntry.id}:edit` ? 'Zapisywanie...' : 'Zapisz zmiany'}
                 </Button>
