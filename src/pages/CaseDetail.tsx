@@ -1,46 +1,55 @@
-﻿import { useState, useEffect, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { auth } from '../firebase';
-import { useWorkspace } from '../hooks/useWorkspace';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { db, auth } from '../firebase';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
 import {
+  AlertCircle,
   ArrowLeft,
+  CalendarClock,
+  Check,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  Copy,
+  ExternalLink,
+  FileText,
+  History,
+  ListChecks,
+  MessageSquare,
+  MoreVertical,
+  Paperclip,
   Plus,
   Send,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-  FileText,
-  MoreVertical,
+  ShieldAlert,
+  StickyNote,
   Trash2,
-  Check,
-  X,
-  ExternalLink,
-  Copy,
-  History,
-  Paperclip,
-  MessageSquare,
-  Loader2,
-  Link2,
-  Unlink,
   UserRound,
-  Mail,
-  Phone,
-  Target,
-  Calendar,
-  Edit2,
+  X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -49,892 +58,377 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { ScrollArea } from '../components/ui/scroll-area';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import Layout from '../components/Layout';
-import { isActiveSalesLead } from '../lib/lead-health';
-import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
-import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
-import {
-  createClientPortalTokenInSupabase,
-  deleteCaseItemFromSupabase,
-  deleteEventFromSupabase,
-  deleteTaskFromSupabase,
-  fetchActivitiesFromSupabase,
-  fetchCaseByIdFromSupabase,
-  fetchCaseItemsFromSupabase,
-  fetchEventsFromSupabase,
-  fetchLeadByIdFromSupabase,
-  fetchLeadsFromSupabase,
-  fetchCasesFromSupabase,
-  fetchTasksFromSupabase,
-  insertActivityToSupabase,
-  insertCaseItemToSupabase,
-  insertEventToSupabase,
-  insertTaskToSupabase,
-  updateActivityInSupabase,
-  deleteActivityFromSupabase,
-  updateCaseInSupabase,
-  updateCaseItemInSupabase,
-  updateEventInSupabase,
-  updateLeadInSupabase,
-  updateTaskInSupabase,
-} from '../lib/supabase-fallback';
+import '../styles/closeflow-case-detail-focus.css';
 
-function formatDateTime(value: any) {
-  if (!value) return 'Brak';
-  if (typeof value === 'string') {
-    const parsed = new Date(value);
-    return Number.isNaN(parsed.getTime()) ? 'Brak' : parsed.toLocaleString();
-  }
-  if (typeof value?.toDate === 'function') {
-    return value.toDate().toLocaleString();
-  }
-  return 'Brak';
-}
+type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
 
-function computeCaseState(items: any[], currentStatus?: string) {
-  if (!items.length) {
-    return {
-      completenessPercent: 0,
-      status: currentStatus === 'completed' ? 'completed' : currentStatus === 'in_progress' ? 'in_progress' : 'in_progress',
-    };
-  }
-
-  const completed = items.filter((entry) => entry.status === 'accepted').length;
-  const completenessPercent = (completed / items.length) * 100;
-  const hasBlocked = items.some((entry) => entry.isRequired && (entry.status === 'missing' || entry.status === 'rejected'));
-  const hasToApprove = items.some((entry) => entry.status === 'uploaded');
-  const requiredItems = items.filter((entry) => entry.isRequired);
-  const acceptedRequired = requiredItems.filter((entry) => entry.status === 'accepted').length;
-  const allRequiredAccepted = requiredItems.length > 0
-    ? acceptedRequired === requiredItems.length
-    : items.every((entry) => entry.status === 'accepted');
-
-  let status = 'waiting_on_client';
-
-  if (currentStatus === 'completed') {
-    status = 'completed';
-  } else if (hasBlocked) {
-    status = 'blocked';
-  } else if (hasToApprove) {
-    status = 'to_approve';
-  } else if (allRequiredAccepted) {
-    status = currentStatus === 'in_progress' ? 'in_progress' : 'ready_to_start';
-  } else if (currentStatus === 'in_progress') {
-    status = 'in_progress';
-  }
-
-  return {
-    completenessPercent,
-    status,
-  };
-}
-
-function leadStatusLabel(status?: string) {
-  switch (status) {
-    case 'new':
-      return 'Nowy';
-    case 'contacted':
-      return 'Skontaktowany';
-    case 'qualification':
-      return 'Kwalifikacja';
-    case 'proposal_sent':
-      return 'Oferta wysĹ‚ana';
-    case 'waiting_response':
-      return 'Czeka na odpowiedĹş';
-    case 'accepted':
-      return 'Zaakceptowany';
-    case 'moved_to_service':
-      return 'Przeniesiony do obsĹ‚ugi';
-    case 'negotiation':
-      return 'Negocjacje';
-    case 'lost':
-      return 'Przegrany';
-    default:
-      return 'Lead';
-  }
-}
-
-function leadSourceLabel(source?: string) {
-  switch (source) {
-    case 'instagram':
-      return 'Instagram';
-    case 'facebook':
-      return 'Facebook';
-    case 'messenger':
-      return 'Messenger';
-    case 'whatsapp':
-      return 'WhatsApp';
-    case 'email':
-      return 'E-mail';
-    case 'form':
-      return 'Formularz';
-    case 'phone':
-      return 'Telefon';
-    case 'referral':
-      return 'Polecenie';
-    case 'cold_outreach':
-      return 'Cold Outreach';
-    default:
-      return 'Inne';
-  }
-}
-
-function caseStatusLabel(status?: string) {
-  switch (status) {
-    case 'new':
-      return 'Nowa';
-    case 'waiting_on_client':
-      return 'Czeka na klienta';
-    case 'to_approve':
-      return 'Do akceptacji';
-    case 'ready_to_start':
-      return 'Gotowa do startu';
-    case 'in_progress':
-      return 'W realizacji';
-    case 'blocked':
-      return 'Zablokowana';
-    case 'completed':
-      return 'Zrobione';
-    default:
-      return 'W realizacji';
-  }
-}
-
-
-function caseLifecycleBadgeVariant(bucket: string): 'default' | 'secondary' | 'destructive' | 'outline' {
-  if (bucket === 'blocked') return 'destructive';
-  if (bucket === 'ready_to_start' || bucket === 'completed') return 'secondary';
-  if (bucket === 'needs_next_step' || bucket === 'waiting_approval') return 'outline';
-  return 'default';
-}
-
-function caseLifecycleRiskLabel(level: string) {
-  if (level === 'high') return 'Ryzyko wysokie';
-  if (level === 'medium') return 'Ryzyko Ĺ›rednie';
-  return 'Ryzyko niskie';
-}
-
-function CaseDetailV1CommandCenter({
-  lifecycle,
-  title,
-  currentStatusLabel,
-  completenessPercent,
-  isPending,
-  onAddItem,
-  onCreateTask,
-  onCreateEvent,
-  onCopyPortal,
-  onStartCase,
-  onCompleteCase,
-  onReopenCase,
-}: {
-  lifecycle: any;
-  title: string;
-  currentStatusLabel: string;
-  completenessPercent: number;
-  isPending: boolean;
-  onAddItem: () => void;
-  onCreateTask: () => void;
-  onCreateEvent: () => void;
-  onCopyPortal: () => void;
-  onStartCase: () => void;
-  onCompleteCase: () => void;
-  onReopenCase: () => void;
-}) {
-  const bucket = String(lifecycle?.bucket || 'needs_next_step');
-  const isCompleted = bucket === 'completed';
-  const isInProgress = bucket === 'in_progress';
-  const isReady = bucket === 'ready_to_start';
-  const safePercent = Math.max(0, Math.min(100, Math.round(Number(completenessPercent || 0))));
-
-  const missingRequiredCount = Number(lifecycle?.missingRequiredCount || 0);
-  const waitingApprovalCount = Number(lifecycle?.waitingApprovalCount || 0);
-  const openActionCount = Number(lifecycle?.openActionCount || 0);
-  const blockerCount = missingRequiredCount + waitingApprovalCount;
-
-  const blockerTone = bucket === 'blocked'
-    ? 'is-danger'
-    : blockerCount > 0 || bucket === 'waiting_approval' || bucket === 'needs_next_step'
-      ? 'is-warning'
-      : 'is-success';
-
-  const progressTone = isCompleted || isReady ? 'is-success' : 'is-primary';
-
-  const blockerTitle = bucket === 'blocked'
-    ? 'Sprawa jest zablokowana'
-    : blockerCount > 0
-      ? 'Trzeba zdjÄ…Ä‡ blokery'
-      : bucket === 'needs_next_step'
-        ? 'Brakuje jasnego ruchu'
-        : isCompleted
-          ? 'Sprawa zakoĹ„czona'
-          : 'MoĹĽna dziaĹ‚aÄ‡ dalej';
-
-  const blockerText = lifecycle?.headline || (
-    blockerCount > 0
-      ? 'SprawdĹş braki i akceptacje, zanim przesuniesz sprawÄ™ dalej.'
-      : 'Nie widaÄ‡ krytycznych brakĂłw. Pilnuj najbliĹĽszej akcji i postÄ™pu.'
-  );
-
-  const nextActionText = lifecycle?.nextOperatorAction || 'Dodaj zadanie albo wydarzenie, ĹĽeby sprawa miaĹ‚a jasny dalszy ruch.';
-
-  return (
-    <section className="case-detail-stage2 mx-auto mb-6 w-full max-w-6xl px-6 pt-6 lg:px-8" data-testid="case-detail-v1-command-center">
-      <Card className="case-detail-stage2-shell">
-        <CardContent className="p-4 lg:p-5">
-          <div className="case-detail-stage2-header">
-            <div>
-              <p className="case-detail-stage2-kicker">ObsĹ‚uga sprawy</p>
-              <h2 className="case-detail-stage2-title">{title || 'Sprawa'}</h2>
-              <p className="case-detail-stage2-subtitle">
-                Najpierw sprawdĹş blokadÄ™, potem najbliĹĽszÄ… akcjÄ™. Reszta sprawy jest niĹĽej.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant={caseLifecycleBadgeVariant(bucket)}>{lifecycle?.label || 'Sprawa'}</Badge>
-              <Badge variant="outline">Status: {currentStatusLabel}</Badge>
-              <Badge variant="outline">{caseLifecycleRiskLabel(String(lifecycle?.riskLevel || 'low'))}</Badge>
-            </div>
-          </div>
-
-          <div className="case-detail-stage2-grid">
-            <article className={`case-detail-stage2-tile ${blockerTone}`}>
-              <div className="case-detail-stage2-tile-top">
-                <div>
-                  <p className="case-detail-stage2-eyebrow">Co blokuje?</p>
-                  <h3 className="case-detail-stage2-tile-title">{blockerTitle}</h3>
-                </div>
-                <Badge variant={blockerCount > 0 || bucket === 'blocked' ? 'destructive' : 'secondary'}>
-                  {blockerCount > 0 ? `${blockerCount} do ruszenia` : 'OK'}
-                </Badge>
-              </div>
-              <p className="case-detail-stage2-tile-text">{blockerText}</p>
-              <div className="case-detail-stage2-tile-footer">
-                <Button type="button" size="sm" variant="secondary" onClick={onAddItem} disabled={isPending}>
-                  <FileText className="mr-2 h-4 w-4" /> Dodaj brak
-                </Button>
-                <Button type="button" size="sm" variant="outline" onClick={onCopyPortal} disabled={isPending}>
-                  <Send className="mr-2 h-4 w-4" /> PoproĹ› klienta
-                </Button>
-              </div>
-            </article>
-
-            <article className="case-detail-stage2-tile is-primary">
-              <div className="case-detail-stage2-tile-top">
-                <div>
-                  <p className="case-detail-stage2-eyebrow">NajbliĹĽsza akcja</p>
-                  <h3 className="case-detail-stage2-tile-title">Co robisz dalej?</h3>
-                </div>
-                <Badge variant="outline">{openActionCount > 0 ? `${openActionCount} akcji` : 'Brak akcji'}</Badge>
-              </div>
-              <p className="case-detail-stage2-tile-text">{nextActionText}</p>
-              <div className="case-detail-stage2-tile-footer">
-                <Button type="button" size="sm" className="case-detail-stage2-primary-button" onClick={onCreateTask} disabled={isPending}>
-                  <Target className="mr-2 h-4 w-4" /> Zadanie
-                </Button>
-                <Button type="button" size="sm" variant="outline" onClick={onCreateEvent} disabled={isPending}>
-                  <Calendar className="mr-2 h-4 w-4" /> Wydarzenie
-                </Button>
-              </div>
-            </article>
-
-            <article className={`case-detail-stage2-tile ${progressTone}`}>
-              <div className="case-detail-stage2-tile-top">
-                <div>
-                  <p className="case-detail-stage2-eyebrow">PostÄ™p sprawy</p>
-                  <h3 className="case-detail-stage2-tile-title">{safePercent}% gotowe</h3>
-                </div>
-                <Badge variant={isReady || isCompleted ? 'secondary' : 'outline'}>
-                  {isCompleted ? 'Zrobione' : isReady ? 'Gotowa' : 'W toku'}
-                </Badge>
-              </div>
-
-              <div className="case-detail-stage2-progress-wrap">
-                <div className="case-detail-stage2-progress-row">
-                  <span>KompletnoĹ›Ä‡</span>
-                  <span>{safePercent}%</span>
-                </div>
-                <Progress value={safePercent} className="mt-2" />
-              </div>
-
-              <div className="case-detail-stage2-metrics">
-                <div className="case-detail-stage2-metric">
-                  <strong>{missingRequiredCount}</strong>
-                  <span>braki</span>
-                </div>
-                <div className="case-detail-stage2-metric">
-                  <strong>{waitingApprovalCount}</strong>
-                  <span>akceptacje</span>
-                </div>
-                <div className="case-detail-stage2-metric">
-                  <strong>{openActionCount}</strong>
-                  <span>akcje</span>
-                </div>
-              </div>
-            </article>
-          </div>
-
-          <div className="case-detail-stage2-actions">
-            <div className="case-detail-stage2-actions-left">
-              <Button type="button" variant="outline" onClick={onAddItem} disabled={isPending}>
-                <FileText className="mr-2 h-4 w-4" /> Dodaj brak
-              </Button>
-              <Button type="button" variant="outline" onClick={onCopyPortal} disabled={isPending}>
-                <ExternalLink className="mr-2 h-4 w-4" /> Portal klienta
-              </Button>
-            </div>
-
-            <div className="case-detail-stage2-actions-right">
-              <Button type="button" className="case-detail-stage2-primary-button" onClick={onStartCase} disabled={isPending || isCompleted || isInProgress}>
-                <CheckCircle2 className="mr-2 h-4 w-4" /> Start
-              </Button>
-              <Button type="button" variant="outline" onClick={onCompleteCase} disabled={isPending || isCompleted || !isReady}>
-                <Check className="mr-2 h-4 w-4" /> Zrobione
-              </Button>
-              <Button type="button" variant="outline" onClick={onReopenCase} disabled={isPending || !isCompleted}>
-                <AlertCircle className="mr-2 h-4 w-4" /> WznĂłw
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </section>
-  );
-}
-
-function toDateTimeLocalValue(date: Date) {
-  const pad = (value: number) => String(value).padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
-
-function buildDefaultEventEnd(startAt: string) {
-  const start = new Date(startAt);
-  const safeStart = Number.isNaN(start.getTime()) ? new Date() : start;
-  return toDateTimeLocalValue(new Date(safeStart.getTime() + 60 * 60_000));
-}
-
-const SIMPLE_RECURRENCE_OPTIONS = [
-  { value: 'none', label: 'Bez powtarzania' },
-  { value: 'daily', label: 'Codziennie' },
-  { value: 'weekly', label: 'Co tydzieĹ„' },
-  { value: 'monthly', label: 'Co miesiÄ…c' },
-];
-
-function normalizeDateTimeLocalInput(value: unknown) {
-  if (!value) return '';
-  const parsed = new Date(String(value));
-  return Number.isNaN(parsed.getTime()) ? '' : toDateTimeLocalValue(parsed);
-}
-
-function parseRecurrenceRule(rule: unknown) {
-  const raw = typeof rule === 'string' ? rule.trim() : '';
-  if (!raw) {
-    return { mode: 'none', until: '' };
-  }
-
-  const upper = raw.toUpperCase();
-  let mode = 'none';
-  if (upper.includes('FREQ=DAILY')) mode = 'daily';
-  else if (upper.includes('FREQ=WEEKLY')) mode = 'weekly';
-  else if (upper.includes('FREQ=MONTHLY')) mode = 'monthly';
-
-  const untilMatch = upper.match(/UNTIL=([0-9T]{13,16}Z?)/);
-  let until = '';
-  if (untilMatch?.[1]) {
-    const normalized = untilMatch[1].replace('Z', '');
-    const iso = normalized.length >= 15
-      ? `${normalized.slice(0, 4)}-${normalized.slice(4, 6)}-${normalized.slice(6, 8)}T${normalized.slice(9, 11)}:${normalized.slice(11, 13)}`
-      : '';
-    until = iso;
-  }
-
-  return { mode, until };
-}
-
-function buildRecurrenceRule(mode: string, until: string) {
-  if (!mode || mode === 'none') return '';
-
-  const freq = mode === 'daily' ? 'DAILY' : mode === 'weekly' ? 'WEEKLY' : 'MONTHLY';
-  const parsedUntil = until ? new Date(until) : null;
-  const untilPart = parsedUntil && !Number.isNaN(parsedUntil.getTime())
-    ? `;UNTIL=${parsedUntil.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')}`
-    : '';
-
-  return `RRULE:FREQ=${freq}${untilPart}`;
-}
-
-function getComparableTime(value: unknown) {
-  if (!value) return Number.MAX_SAFE_INTEGER;
-  const parsed = new Date(String(value));
-  const time = parsed.getTime();
-  return Number.isNaN(time) ? Number.MAX_SAFE_INTEGER : time;
-}
-
-type CaseClientOption = {
-  key: string;
-  name: string;
-  email: string;
-  phone: string;
-  source: 'lead' | 'current' | 'case';
+type CaseItem = {
+  id: string;
+  title?: string;
+  description?: string;
+  type?: string;
+  status?: CaseItemStatus;
+  isRequired?: boolean;
+  dueDate?: string;
+  fileUrl?: string;
+  fileName?: string;
+  response?: string;
 };
 
-function normalizeCaseClientText(value: unknown) {
-  return typeof value === 'string' ? value.trim() : '';
+type CaseActivity = {
+  id: string;
+  actorType?: string;
+  eventType?: string;
+  payload?: Record<string, any>;
+  createdAt?: any;
+};
+
+type NewCaseItemState = {
+  title: string;
+  description: string;
+  type: string;
+  isRequired: boolean;
+  dueDate: string;
+};
+
+const CASE_STATUS_LABELS: Record<string, string> = {
+  new: 'Nowa',
+  waiting_on_client: 'Czeka na klienta',
+  in_progress: 'W realizacji',
+  to_approve: 'Do sprawdzenia',
+  blocked: 'Zablokowana',
+  completed: 'Zakończona',
+};
+
+const CASE_STATUS_HINTS: Record<string, string> = {
+  new: 'Sprawa została utworzona. Dodaj pierwsze braki albo zaplanuj pierwszą akcję.',
+  waiting_on_client: 'Czekamy na klienta. Najpierw zdejmij braki po jego stronie.',
+  in_progress: 'Sprawa jest w pracy. Pilnuj najbliższej akcji i terminów.',
+  to_approve: 'Klient coś przesłał. Sprawdź i zaakceptuj albo odrzuć.',
+  blocked: 'Sprawa stoi. Usuń blokery zanim przejdziesz dalej.',
+  completed: 'Sprawa zakończona. Historia zostaje jako ślad pracy.',
+};
+
+const ITEM_STATUS_LABELS: Record<string, string> = {
+  missing: 'Czeka',
+  uploaded: 'Do sprawdzenia',
+  accepted: 'Gotowe',
+  rejected: 'Bloker',
+};
+
+const ITEM_TYPE_LABELS: Record<string, string> = {
+  file: 'Plik',
+  decision: 'Decyzja',
+  text: 'Tekst',
+  access: 'Dostępy',
+};
+
+function toDate(value: any): Date | null {
+  if (!value) return null;
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+  if (typeof value?.toDate === 'function') {
+    const date = value.toDate();
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+  if (typeof value === 'string' || typeof value === 'number') {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+  return null;
 }
 
-function buildCaseClientOptions(cases: any[], leads: any[], sourceLead: any, caseData: any) {
-  const map = new Map<string, CaseClientOption>();
+function formatDateTime(value: any, fallback = 'Brak daty') {
+  const date = toDate(value);
+  if (!date) return fallback;
+  return date.toLocaleString('pl-PL', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
 
-  const push = (rawName: unknown, rawEmail: unknown, rawPhone: unknown, source: 'lead' | 'current' | 'case') => {
-    const name = normalizeCaseClientText(rawName);
-    const email = normalizeCaseClientText(rawEmail);
-    const phone = normalizeCaseClientText(rawPhone);
-    if (!name && !email && !phone) return;
+function formatDate(value: any, fallback = 'Bez terminu') {
+  const date = toDate(value);
+  if (!date) return fallback;
+  return date.toLocaleDateString('pl-PL', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+}
 
-    const key = `${name.toLowerCase()}|${email.toLowerCase()}|${phone}`;
-    if (map.has(key)) return;
+function getCaseStatusLabel(status?: string) {
+  if (!status) return 'Bez statusu';
+  return CASE_STATUS_LABELS[status] || status;
+}
 
-    map.set(key, {
-      key,
-      name: name || email || phone || 'Klient',
-      email,
-      phone,
-      source,
-    });
-  };
+function getCaseStatusHint(status?: string) {
+  if (!status) return 'Ustal status sprawy i najbliższy ruch.';
+  return CASE_STATUS_HINTS[status] || 'Sprawdź najbliższe działania i blokery.';
+}
 
-  push(caseData?.clientName, caseData?.clientEmail, caseData?.clientPhone, 'current');
-  push(sourceLead?.name || sourceLead?.company, sourceLead?.email, sourceLead?.phone, 'lead');
+function getItemStatusLabel(status?: string) {
+  if (!status) return 'Czeka';
+  return ITEM_STATUS_LABELS[status] || status;
+}
 
-  for (const lead of leads || []) {
-    push(lead?.name || lead?.company, lead?.email, lead?.phone, 'lead');
+function getItemTypeLabel(type?: string) {
+  if (!type) return 'Element';
+  return ITEM_TYPE_LABELS[type] || type;
+}
+
+function getItemStatusClass(status?: string) {
+  if (status === 'accepted') return 'cf-status-ok';
+  if (status === 'uploaded') return 'cf-status-info';
+  if (status === 'rejected') return 'cf-status-danger';
+  return 'cf-status-warning';
+}
+
+function getStatusBadgeClass(status?: string) {
+  if (status === 'completed') return 'cf-status-ok';
+  if (status === 'in_progress') return 'cf-status-info';
+  if (status === 'blocked') return 'cf-status-danger';
+  if (status === 'to_approve' || status === 'waiting_on_client') return 'cf-status-warning';
+  return 'cf-status-neutral';
+}
+
+function getActivityText(activity: CaseActivity) {
+  const actor = activity.actorType === 'operator' ? 'Ty' : 'Klient';
+  const title = activity.payload?.title || activity.payload?.itemTitle || 'element';
+
+  if (activity.eventType === 'item_added') return `${actor} dodał element: ${title}`;
+  if (activity.eventType === 'status_changed') {
+    return `${actor} zmienił status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;
   }
-
-  for (const currentCase of cases || []) {
-    push(currentCase?.clientName, currentCase?.clientEmail, currentCase?.clientPhone, 'case');
-  }
-
-  return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
+  if (activity.eventType === 'file_uploaded') return `${actor} wgrał plik do: ${title}`;
+  if (activity.eventType === 'decision_made') return `${actor} podjął decyzję w: ${title}`;
+  if (activity.eventType === 'operator_note') return `${actor} dodał notatkę`;
+  return `${actor} wykonał akcję`;
 }
 
 export default function CaseDetail() {
   const { caseId } = useParams();
-  const { workspace, workspaceReady, loading: workspaceLoading, refresh: refreshWorkspace } = useWorkspace();
+  const navigate = useNavigate();
   const [caseData, setCaseData] = useState<any>(null);
-  const [items, setItems] = useState<any[]>([]);
-  const [activities, setActivities] = useState<any[]>([]);
+  const [items, setItems] = useState<CaseItem[]>([]);
+  const [activities, setActivities] = useState<CaseActivity[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
-  const [newItem, setNewItem] = useState({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
-  const [sourceLead, setSourceLead] = useState<any>(null);
-  const [availableLeads, setAvailableLeads] = useState<any[]>([]);
-  const [availableCases, setAvailableCases] = useState<any[]>([]);
-  const [selectedLeadId, setSelectedLeadId] = useState('');
-  const [leadRelationPending, setLeadRelationPending] = useState(false);
-  const [linkedTasks, setLinkedTasks] = useState<any[]>([]);
-  const [linkedEvents, setLinkedEvents] = useState<any[]>([]);
-  const [isQuickTaskOpen, setIsQuickTaskOpen] = useState(false);
-  const [isQuickEventOpen, setIsQuickEventOpen] = useState(false);
-  const [quickTaskSubmitting, setQuickTaskSubmitting] = useState(false);
-  const [quickEventSubmitting, setQuickEventSubmitting] = useState(false);
-  const [quickTask, setQuickTask] = useState(() => ({
+  const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
+  const [newNote, setNewNote] = useState('');
+  const [newItem, setNewItem] = useState<NewCaseItemState>({
     title: '',
-    type: 'follow_up',
-    scheduledAt: toDateTimeLocalValue(new Date()),
-    priority: 'medium',
-    reminderAt: '',
-    recurrenceMode: 'none',
-    recurrenceUntil: '',
-  }));
-  const [quickEvent, setQuickEvent] = useState(() => {
-    const startAt = toDateTimeLocalValue(new Date());
-    return {
-      title: '',
-      type: 'meeting',
-      startAt,
-      endAt: buildDefaultEventEnd(startAt),
-      status: 'scheduled',
-      reminderAt: '',
-      recurrenceMode: 'none',
-      recurrenceUntil: '',
-    };
-  });
-  const [taskActionPendingId, setTaskActionPendingId] = useState<string | null>(null);
-  const [eventActionPendingId, setEventActionPendingId] = useState<string | null>(null);
-  const [editCaseTask, setEditCaseTask] = useState<any | null>(null);
-  const [editCaseEvent, setEditCaseEvent] = useState<any | null>(null);
-  const [taskEditSubmitting, setTaskEditSubmitting] = useState(false);
-  const [eventEditSubmitting, setEventEditSubmitting] = useState(false);
-  const [caseNote, setCaseNote] = useState('');
-  const [caseNoteSubmitting, setCaseNoteSubmitting] = useState(false);
-  const [editCaseNote, setEditCaseNote] = useState<any | null>(null);
-  const [caseNoteEditSubmitting, setCaseNoteEditSubmitting] = useState(false);
-  const [caseNoteActionId, setCaseNoteActionId] = useState<string | null>(null);
-  const [isEditClientOpen, setIsEditClientOpen] = useState(false);
-  const [showClientCreateFields, setShowClientCreateFields] = useState(false);
-  const [caseClientSubmitting, setCaseClientSubmitting] = useState(false);
-  const [caseLifecyclePending, setCaseLifecyclePending] = useState(false);
-  const [caseClientDraft, setCaseClientDraft] = useState({
-    clientName: '',
-    clientEmail: '',
-    clientPhone: '',
+    description: '',
+    type: 'file',
+    isRequired: true,
+    dueDate: '',
   });
 
   useEffect(() => {
-    setCaseClientDraft({
-      clientName: String(caseData?.clientName || ''),
-      clientEmail: String(caseData?.clientEmail || ''),
-      clientPhone: String(caseData?.clientPhone || ''),
-    });
-  }, [caseData?.clientEmail, caseData?.clientName, caseData?.clientPhone]);
-
-  const caseClientOptions = useMemo(
-    () => buildCaseClientOptions(availableCases, availableLeads, sourceLead, caseData),
-    [availableCases, availableLeads, caseData, sourceLead],
-  );
-
-    const sourceLeadTitle = String(sourceLead?.name || sourceLead?.company || 'Lead ĹşrĂłdĹ‚owy');
-  const sourceLeadStatusLabel = leadStatusLabel(String(sourceLead?.status || ''));
-  const sourceLeadOriginLabel = leadSourceLabel(String(sourceLead?.source || 'other'));
-  const sourceLeadMovedAtLabel = formatDateTime(caseData?.serviceStartedAt || caseData?.startedAt || caseData?.createdAt);
-  const caseCreatedFromLead = Boolean(caseData?.leadId || caseData?.createdFromLead);
-
-const caseClientSuggestions = useMemo(() => {
-    const normalizedQuery = caseClientDraft.clientName.trim().toLowerCase();
-    const base = normalizedQuery
-      ? caseClientOptions.filter((option) => {
-          return [option.name, option.email, option.phone]
-            .filter(Boolean)
-            .some((value) => value.toLowerCase().includes(normalizedQuery));
-        })
-      : caseClientOptions;
-
-    return base.slice(0, 6);
-  }, [caseClientDraft.clientName, caseClientOptions]);
-
-  const loadConflictCandidates = async () => {
-    const [taskRows, eventRows] = await Promise.all([
-      fetchTasksFromSupabase(),
-      fetchEventsFromSupabase(),
-    ]);
-    return buildConflictCandidates({
-      tasks: taskRows as any[],
-      events: eventRows as any[],
-    });
-  };
-
-  async function refreshSupabaseCase() {
     if (!caseId) return;
 
-    const [caseRow, itemRows, activityRows, leadRows, caseRows, taskRows, eventRows] = await Promise.all([
-      fetchCaseByIdFromSupabase(caseId),
-      fetchCaseItemsFromSupabase(caseId),
-      fetchActivitiesFromSupabase({ caseId, limit: 200 }),
-      fetchLeadsFromSupabase(),
-      fetchCasesFromSupabase(),
-      fetchTasksFromSupabase(),
-      fetchEventsFromSupabase(),
-    ]);
-
-    setCaseData(caseRow);
-    setItems(itemRows);
-    setActivities(activityRows);
-
-    const allLeads = (leadRows || []) as any[];
-    const allCases = (caseRows || []) as any[];
-    const linkedLeadId = String(caseRow?.leadId || '');
-    const currentLead = linkedLeadId ? allLeads.find((entry) => String(entry.id || '') === linkedLeadId) || null : null;
-    const openLeads = allLeads.filter((entry) => isActiveSalesLead(entry) || String(entry.id || '') === linkedLeadId);
-
-    setSourceLead(currentLead);
-    setAvailableLeads(openLeads);
-    setAvailableCases(allCases);
-    setSelectedLeadId(linkedLeadId);
-
-    const currentCaseId = String(caseId || '');
-    const caseTasks = ((taskRows || []) as any[])
-      .filter((entry) => String(entry.caseId || '') === currentCaseId)
-      .sort((left, right) => getComparableTime(left.scheduledAt || left.dueAt || left.date) - getComparableTime(right.scheduledAt || right.dueAt || right.date));
-    const caseEvents = ((eventRows || []) as any[])
-      .filter((entry) => String(entry.caseId || '') === currentCaseId)
-      .sort((left, right) => getComparableTime(left.startAt) - getComparableTime(right.startAt));
-
-    setLinkedTasks(caseTasks);
-    setLinkedEvents(caseEvents);
-
-    const next = computeCaseState(itemRows, String(caseRow?.status || ''));
-    const currentPercent = Math.round(Number(caseRow?.completenessPercent || 0));
-    const nextPercent = Math.round(Number(next.completenessPercent || 0));
-
-    if (currentPercent !== nextPercent || String(caseRow?.status || '') !== String(next.status || '')) {
-      const updated = await updateCaseInSupabase({
-        id: caseId,
-        completenessPercent: next.completenessPercent,
-        status: next.status,
-      });
-      if (updated) {
-        setCaseData((prev: any) => ({
-          ...prev,
-          completenessPercent: next.completenessPercent,
-          status: next.status,
-        }));
+    const caseRef = doc(db, 'cases', caseId);
+    const unsubscribeCase = onSnapshot(caseRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setCaseData({ id: snapshot.id, ...snapshot.data() });
+      } else {
+        toast.error('Sprawa nie istnieje');
+        navigate('/');
       }
-    }
-  }
+    });
 
-  useEffect(() => {
-    if (!caseId) return;
+    const itemsRef = collection(db, 'cases', caseId, 'items');
+    const qItems = query(itemsRef, orderBy('order', 'asc'));
+    const unsubscribeItems = onSnapshot(qItems, (snapshot) => {
+      const itemsData = snapshot.docs.map((itemDoc) => ({ id: itemDoc.id, ...itemDoc.data() } as CaseItem));
+      setItems(itemsData);
+      setLoading(false);
 
-    let cancelled = false;
-    setLoading(true);
+      if (itemsData.length > 0) {
+        const completed = itemsData.filter((item) => item.status === 'accepted').length;
+        const percent = (completed / itemsData.length) * 100;
 
-    refreshSupabaseCase()
-      .then(() => {
-        if (cancelled) return;
-        setLoading(false);
-      })
-      .catch((error: any) => {
-        if (cancelled) return;
-        toast.error(`BĹ‚Ä…d sprawy API: ${error.message}`);
-        setLoading(false);
-      });
+        let newStatus = 'in_progress';
+        const hasBlocked = itemsData.some(
+          (item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected'),
+        );
+        const hasToApprove = itemsData.some((item) => item.status === 'uploaded');
+        const allAccepted = itemsData.every((item) => item.status === 'accepted');
+
+        if (allAccepted) {
+          newStatus = 'completed';
+        } else if (hasBlocked) {
+          newStatus = 'blocked';
+        } else if (hasToApprove) {
+          newStatus = 'to_approve';
+        } else {
+          newStatus = 'waiting_on_client';
+        }
+
+        updateDoc(caseRef, {
+          completenessPercent: percent,
+          status: newStatus,
+          updatedAt: serverTimestamp(),
+        });
+      }
+    });
+
+    const activitiesRef = collection(db, 'activities');
+    const qActivities = query(activitiesRef, where('caseId', '==', caseId), orderBy('createdAt', 'desc'));
+    const unsubscribeActivities = onSnapshot(qActivities, (snapshot) => {
+      setActivities(snapshot.docs.map((activityDoc) => ({ id: activityDoc.id, ...activityDoc.data() })) as CaseActivity[]);
+    });
 
     return () => {
-      cancelled = true;
+      unsubscribeCase();
+      unsubscribeItems();
+      unsubscribeActivities();
     };
-  }, [caseId]);
+  }, [caseId, navigate]);
 
-
-  const caseLifecycle = useMemo(
-    () => resolveCaseLifecycleV1({
-      status: String(caseData?.status || ''),
-      items,
-      tasks: linkedTasks,
-      events: linkedEvents,
-    }),
-    [caseData?.status, items, linkedEvents, linkedTasks],
-  );
-
-  const lifecycleCompletenessPercent = Math.max(
-    Math.round(Number(caseData?.completenessPercent || 0)),
-    Math.round(Number(caseLifecycle.completenessPercent || 0)),
-  );
-
-  const setCaseLifecycleStatusV1 = async (nextStatus: string, eventType: string, successMessage: string) => {
-    if (!caseId) return;
-
-    try {
-      setCaseLifecyclePending(true);
-      await updateCaseInSupabase({
-        id: caseId,
-        status: nextStatus,
-      });
-
-      await insertActivityToSupabase({
-        caseId,
-        leadId: caseData?.leadId || null,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType,
-        payload: {
-          source: 'case_detail_v1_command_center',
-          title: caseData?.title || 'Sprawa',
-          previousStatus: caseData?.status || null,
-          nextStatus,
-          lifecycleBucket: caseLifecycle.bucket,
-        },
-      });
-
-      await refreshSupabaseCase();
-      toast.success(successMessage);
-    } catch (error: any) {
-      toast.error('BĹ‚Ä…d zmiany statusu sprawy: ' + error.message);
-    } finally {
-      setCaseLifecyclePending(false);
+  const completionPercent = useMemo(() => {
+    if (typeof caseData?.completenessPercent === 'number') {
+      return Math.round(caseData.completenessPercent);
     }
-  };
 
-  const handleStartCaseV1 = async () => {
-    await setCaseLifecycleStatusV1('in_progress', 'case_lifecycle_started', 'Sprawa jest w realizacji');
-  };
+    if (items.length === 0) return 0;
+    const accepted = items.filter((item) => item.status === 'accepted').length;
+    return Math.round((accepted / items.length) * 100);
+  }, [caseData?.completenessPercent, items]);
 
-  const handleCompleteCaseV1 = async () => {
-    await setCaseLifecycleStatusV1('completed', 'case_lifecycle_completed', 'Sprawa oznaczona jako zrobione');
-  };
+  const caseStats = useMemo(() => {
+    const accepted = items.filter((item) => item.status === 'accepted');
+    const uploaded = items.filter((item) => item.status === 'uploaded');
+    const missing = items.filter((item) => item.status === 'missing');
+    const rejected = items.filter((item) => item.status === 'rejected');
+    const requiredBlockers = items.filter(
+      (item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected'),
+    );
+    const openItems = items.filter((item) => item.status !== 'accepted');
 
-  const handleReopenCaseV1 = async () => {
-    await setCaseLifecycleStatusV1('in_progress', 'case_lifecycle_reopened', 'Sprawa zostaĹ‚a wznowiona');
-  };
-  const handleAddItem = async () => {
-    if (!newItem.title || !caseId) return;
-
-    try {
-      await insertCaseItemToSupabase({
-        caseId,
-        title: newItem.title,
-        description: newItem.description,
-        type: newItem.type,
-        isRequired: newItem.isRequired,
-        dueDate: newItem.dueDate || null,
-        order: items.length,
-        status: 'missing',
+    const dueItems = openItems
+      .filter((item) => item.dueDate)
+      .sort((first, second) => {
+        const firstDate = toDate(first.dueDate)?.getTime() || Number.MAX_SAFE_INTEGER;
+        const secondDate = toDate(second.dueDate)?.getTime() || Number.MAX_SAFE_INTEGER;
+        return firstDate - secondDate;
       });
 
-      await insertActivityToSupabase({
+    const mainBlocker = rejected[0] || requiredBlockers[0] || uploaded[0] || missing[0] || openItems[0] || null;
+    const nextActionItem = dueItems[0] || mainBlocker;
+
+    return {
+      accepted,
+      uploaded,
+      missing,
+      rejected,
+      requiredBlockers,
+      openItems,
+      mainBlocker,
+      nextActionItem,
+    };
+  }, [items]);
+
+  const handleAddItem = async () => {
+    if (!caseId || !newItem.title.trim()) {
+      toast.error('Podaj nazwę elementu');
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, 'cases', caseId, 'items'), {
+        ...newItem,
+        title: newItem.title.trim(),
+        description: newItem.description.trim(),
         caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        status: 'missing',
+        order: items.length,
+        createdAt: serverTimestamp(),
+      });
+
+      await addDoc(collection(db, 'activities'), {
+        caseId,
+        ownerId: auth.currentUser?.uid,
+        actorId: auth.currentUser?.uid,
         actorType: 'operator',
         eventType: 'item_added',
-        payload: { title: newItem.title },
+        payload: { title: newItem.title.trim() },
+        createdAt: serverTimestamp(),
       });
 
-      await refreshSupabaseCase();
       setIsAddItemOpen(false);
       setNewItem({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
-      toast.success('Element zostaĹ‚ dodany do sprawy');
+      toast.success('Element dodany');
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d dodawania elementu: ${error.message}`);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
-  const handleUpdateItemStatus = async (itemId: string, status: string, title?: string) => {
-    if (!caseId) return;
-    const itemToUpdate = items.find((entry) => String(entry.id || '') === String(itemId));
-    if (!itemToUpdate) return;
+  const handleAddNote = async () => {
+    if (!caseId || !newNote.trim()) {
+      toast.error('Wpisz treść notatki');
+      return;
+    }
 
     try {
-      await updateCaseItemInSupabase({
-        id: itemId,
+      await addDoc(collection(db, 'activities'), {
         caseId,
-        title: String(itemToUpdate.title || title || 'Element sprawy'),
-        description: String(itemToUpdate.description || ''),
-        type: String(itemToUpdate.type || 'file'),
-        isRequired: Boolean(itemToUpdate.isRequired),
-        dueDate: itemToUpdate.dueDate || null,
-        order: Number(itemToUpdate.order || 0),
-        status,
-      });
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        ownerId: auth.currentUser?.uid,
+        actorId: auth.currentUser?.uid,
         actorType: 'operator',
-        eventType: 'item_status_changed',
-        payload: {
-          itemId,
-          title: title || 'Element sprawy',
-          status,
-        },
+        eventType: 'operator_note',
+        payload: { note: newNote.trim() },
+        createdAt: serverTimestamp(),
       });
-      await refreshSupabaseCase();
-      toast.success('Status elementu zostaĹ‚ zaktualizowany');
+
+      setIsAddNoteOpen(false);
+      setNewNote('');
+      toast.success('Notatka dodana');
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d aktualizacji elementu: ${error.message}`);
+      toast.error('Błąd: ' + error.message);
+    }
+  };
+
+  const handleUpdateItemStatus = async (itemId: string, status: string, title: string) => {
+    if (!caseId) return;
+
+    try {
+      await updateDoc(doc(db, 'cases', caseId, 'items', itemId), {
+        status,
+        approvedAt: status === 'accepted' ? serverTimestamp() : null,
+      });
+
+      await addDoc(collection(db, 'activities'), {
+        caseId,
+        ownerId: auth.currentUser?.uid,
+        actorId: auth.currentUser?.uid,
+        actorType: 'operator',
+        eventType: 'status_changed',
+        payload: { title, status },
+        createdAt: serverTimestamp(),
+      });
+
+      toast.success('Status zaktualizowany');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
     }
   };
 
   const handleDeleteItem = async (itemId: string) => {
     if (!caseId) return;
-    if (!window.confirm('UsunÄ…Ä‡ ten element ze sprawy?')) return;
-
-    const itemToDelete = items.find((entry) => String(entry.id || '') === String(itemId));
 
     try {
-      await deleteCaseItemFromSupabase(itemId);
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'item_deleted',
-        payload: {
-          itemId,
-          title: itemToDelete?.title || 'Element sprawy',
-        },
-      });
-      await refreshSupabaseCase();
-      toast.success('Element zostaĹ‚ usuniÄ™ty');
+      await deleteDoc(doc(db, 'cases', caseId, 'items', itemId));
+      toast.success('Element usunięty');
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d usuwania elementu: ${error.message}`);
-    }
-  };
-
-  const handleLinkLeadToCase = async () => {
-    if (!caseId) return;
-    if (!selectedLeadId) {
-      toast.error('Wybierz leada do podpiÄ™cia');
-      return;
-    }
-
-    const nowIso = new Date().toISOString();
-    const selectedLead = availableLeads.find((entry) => String(entry.id || '') === selectedLeadId);
-    if (!selectedLead) {
-      toast.error('Nie udaĹ‚o siÄ™ znaleĹşÄ‡ wybranego leada');
-      return;
-    }
-
-    try {
-      setLeadRelationPending(true);
-      await updateCaseInSupabase({
-        id: caseId,
-        leadId: selectedLeadId,
-        clientId: selectedLead.clientId ? String(selectedLead.clientId) : null,
-        clientName: String(caseData?.clientName || selectedLead.name || selectedLead.company || ''),
-        clientEmail: String(caseData?.clientEmail || selectedLead.email || ''),
-        clientPhone: String(caseData?.clientPhone || selectedLead.phone || ''),
-        createdFromLead: true,
-        serviceStartedAt: caseData?.serviceStartedAt || nowIso,
-      });
-      await updateLeadInSupabase({
-        id: selectedLeadId,
-        clientId: selectedLead.clientId ? String(selectedLead.clientId) : null,
-        linkedCaseId: caseId,
-        status: 'moved_to_service',
-        movedToServiceAt: nowIso,
-        leadVisibility: 'archived',
-        salesOutcome: 'moved_to_service',
-        nextActionAt: null,
-      });
-
-      await insertActivityToSupabase({
-        caseId,
-        leadId: selectedLeadId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'lead_linked',
-        payload: {
-          leadId: selectedLeadId,
-          leadName: selectedLead.name || selectedLead.company || 'Lead',
-        },
-      });
-      await insertActivityToSupabase({
-        leadId: selectedLeadId,
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'lead_moved_to_service',
-        payload: {
-          caseId,
-          caseTitle: caseData?.title || 'Sprawa',
-          movedToServiceAt: nowIso,
-        },
-      });
-
-      await refreshSupabaseCase();
-      toast.success('Lead ĹşrĂłdĹ‚owy zostaĹ‚ podpiÄ™ty do sprawy');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d podpinania leada: ${error.message}`);
-    } finally {
-      setLeadRelationPending(false);
+      toast.error('Błąd: ' + error.message);
     }
   };
 
@@ -942,1942 +436,597 @@ const caseClientSuggestions = useMemo(() => {
     if (!caseId) return;
 
     try {
-      const tokenResponse = await createClientPortalTokenInSupabase(caseId);
-      const token = String(tokenResponse?.token || '');
-      if (!token) {
-        throw new Error('PORTAL_TOKEN_MISSING');
-      }
-      const url = `${window.location.origin}/client-portal/${caseId}?token=${encodeURIComponent(token)}`;
+      const token = Math.random().toString(36).substring(2, 15);
+      const tokenRef = doc(db, 'client_portal_tokens', caseId);
+      await setDoc(tokenRef, {
+        caseId,
+        token,
+        createdAt: serverTimestamp(),
+      });
+
+      const url = `${window.location.origin}/portal/${caseId}/${token}`;
       await navigator.clipboard.writeText(url);
-      toast.success('Link do portalu klienta zostaĹ‚ skopiowany');
+      toast.success('Link do panelu klienta skopiowany');
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d linku portalu: ${error.message}`);
+      toast.error('Nie udało się skopiować linku: ' + error.message);
     }
   };
 
-  const handleUnlinkLeadFromCase = async () => {
-    if (!caseId || !caseData?.leadId) return;
-    if (!window.confirm('OdpiÄ…Ä‡ ĹşrĂłdĹ‚owego leada od tej sprawy?')) return;
-
-    const currentLeadId = String(caseData.leadId);
-    const currentLead = sourceLead || await fetchLeadByIdFromSupabase(currentLeadId).catch(() => null);
-
-    try {
-      setLeadRelationPending(true);
-      await updateCaseInSupabase({ id: caseId, leadId: null, createdFromLead: false });
-
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'lead_unlinked',
-        payload: {
-          leadId: currentLeadId,
-          leadName: currentLead?.name || 'Lead',
-        },
-      });
-
-      await insertActivityToSupabase({
-        leadId: currentLeadId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_unlinked',
-        payload: {
-          caseId,
-          title: caseData?.title || 'Sprawa',
-        },
-      });
-
-      await refreshSupabaseCase();
-      toast.success('Lead ĹşrĂłdĹ‚owy zostaĹ‚ odpiÄ™ty od sprawy');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d odpinania leada: ${error.message}`);
-    } finally {
-      setLeadRelationPending(false);
-    }
+  const handleReminderCopy = () => {
+    toast.info('Na teraz bez fałszywej wysyłki maila. Użyj linku do portalu albo dodaj brak na checklistę.');
   };
 
-  const resetQuickTask = () => {
-    setQuickTask({
-      title: '',
-      type: 'follow_up',
-      scheduledAt: toDateTimeLocalValue(new Date()),
-      priority: 'medium',
-      reminderAt: '',
-      recurrenceMode: 'none',
-      recurrenceUntil: '',
-    });
+  const handleNotReadyYet = (label: string) => {
+    toast.info(`${label} będzie osobnym etapem. Ten patch porządkuje widok sprawy i checklistę.`);
   };
 
-  const resetQuickEvent = () => {
-    const startAt = toDateTimeLocalValue(new Date());
-    setQuickEvent({
-      title: '',
-      type: 'meeting',
-      startAt,
-      endAt: buildDefaultEventEnd(startAt),
-      status: 'scheduled',
-      reminderAt: '',
-      recurrenceMode: 'none',
-      recurrenceUntil: '',
-    });
-  };
+  if (loading || !caseData) return null;
 
-  const handleCreateQuickCaseTask = async () => {
-    if (!caseId) return;
-    if (!quickTask.title.trim()) {
-      toast.error('Podaj tytuĹ‚ zadania');
-      return;
-    }
-
-    try {
-      setQuickTaskSubmitting(true);
-      const shouldSave = confirmScheduleConflicts({
-        draft: {
-          kind: 'task',
-          title: quickTask.title.trim(),
-          startAt: quickTask.scheduledAt,
-        },
-        candidates: await loadConflictCandidates(),
-      });
-      if (!shouldSave) return;
-
-      await insertTaskToSupabase({
-        title: quickTask.title.trim(),
-        type: quickTask.type,
-        date: quickTask.scheduledAt.slice(0, 10),
-        scheduledAt: quickTask.scheduledAt,
-        priority: quickTask.priority,
-        status: 'todo',
-        caseId,
-        leadId: caseData?.leadId || null,
-        reminderAt: quickTask.reminderAt || null,
-        recurrenceRule: buildRecurrenceRule(quickTask.recurrenceMode, quickTask.recurrenceUntil),
-        ownerId: auth.currentUser?.uid ?? undefined,
-      });
-
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_task_created',
-        payload: {
-          title: quickTask.title.trim(),
-          scheduledAt: quickTask.scheduledAt,
-        },
-      });
-
-      await refreshSupabaseCase();
-      resetQuickTask();
-      setIsQuickTaskOpen(false);
-      toast.success('Zadanie dodane do sprawy');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d zadania: ${error.message}`);
-    } finally {
-      setQuickTaskSubmitting(false);
-    }
-  };
-
-  const handleCreateQuickCaseEvent = async () => {
-    if (!caseId) return;
-    if (!quickEvent.title.trim()) {
-      toast.error('Podaj tytuĹ‚ wydarzenia');
-      return;
-    }
-
-    try {
-      setQuickEventSubmitting(true);
-      const shouldSave = confirmScheduleConflicts({
-        draft: {
-          kind: 'event',
-          title: quickEvent.title.trim(),
-          startAt: quickEvent.startAt,
-          endAt: quickEvent.endAt,
-        },
-        candidates: await loadConflictCandidates(),
-      });
-      if (!shouldSave) return;
-
-      await insertEventToSupabase({
-        title: quickEvent.title.trim(),
-        type: quickEvent.type,
-        startAt: quickEvent.startAt,
-        endAt: quickEvent.endAt,
-        status: quickEvent.status,
-        caseId,
-        leadId: caseData?.leadId || null,
-        reminderAt: quickEvent.reminderAt || undefined,
-        recurrenceRule: buildRecurrenceRule(quickEvent.recurrenceMode, quickEvent.recurrenceUntil),
-      });
-
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_event_created',
-        payload: {
-          title: quickEvent.title.trim(),
-          startAt: quickEvent.startAt,
-        },
-      });
-
-      await refreshSupabaseCase();
-      resetQuickEvent();
-      setIsQuickEventOpen(false);
-      toast.success('Wydarzenie dodane do sprawy');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d wydarzenia: ${error.message}`);
-    } finally {
-      setQuickEventSubmitting(false);
-    }
-  };
-
-
-  const openCaseTaskEditor = (task: any) => {
-    const recurrence = parseRecurrenceRule(task.recurrenceRule);
-    setEditCaseTask({
-      id: String(task.id || ''),
-      title: String(task.title || ''),
-      type: String(task.type || 'follow_up'),
-      scheduledAt: String(task.scheduledAt || task.dueAt || `${task.date || ''}T09:00`).slice(0, 16),
-      priority: String(task.priority || 'medium'),
-      status: String(task.status || 'todo'),
-      reminderAt: normalizeDateTimeLocalInput(task.reminderAt),
-      recurrenceMode: recurrence.mode,
-      recurrenceUntil: recurrence.until,
-    });
-  };
-
-  const openCaseEventEditor = (event: any) => {
-    const recurrence = parseRecurrenceRule(event.recurrenceRule);
-    setEditCaseEvent({
-      id: String(event.id || ''),
-      title: String(event.title || ''),
-      type: String(event.type || 'meeting'),
-      startAt: String(event.startAt || '').slice(0, 16),
-      endAt: String(event.endAt || buildDefaultEventEnd(String(event.startAt || toDateTimeLocalValue(new Date())))).slice(0, 16),
-      status: String(event.status || 'scheduled'),
-      reminderAt: normalizeDateTimeLocalInput(event.reminderAt),
-      recurrenceMode: recurrence.mode,
-      recurrenceUntil: recurrence.until,
-    });
-  };
-
-  const handleToggleCaseTaskStatus = async (task: any) => {
-    if (!caseId || !task?.id) return;
-    const taskId = String(task.id);
-    const nextStatus = String(task.status || 'todo') === 'done' ? 'todo' : 'done';
-
-    try {
-      setTaskActionPendingId(taskId);
-      await updateTaskInSupabase({
-        id: taskId,
-        title: task.title,
-        type: task.type,
-        date: String(task.date || String(task.scheduledAt || task.dueAt || '').slice(0, 10)),
-        scheduledAt: task.scheduledAt || task.dueAt,
-        status: nextStatus,
-        priority: task.priority,
-        leadId: task.leadId ?? caseData?.leadId ?? null,
-        reminderAt: task.reminderAt || null,
-        recurrenceRule: typeof task.recurrenceRule === 'string' ? task.recurrenceRule : '',
-        caseId,
-      });
-
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_task_status_toggled',
-        payload: {
-          title: task.title || 'Task',
-          status: nextStatus,
-        },
-      });
-
-      await refreshSupabaseCase();
-      toast.success(nextStatus === 'done' ? 'Task oznaczony jako zrobiony' : 'Task przywrĂłcony do pracy');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d taska: ${error.message}`);
-    } finally {
-      setTaskActionPendingId(null);
-    }
-  };
-
-  const handleDeleteCaseTask = async (task: any) => {
-    if (!caseId || !task?.id) return;
-    if (!window.confirm('UsunÄ…Ä‡ task ze sprawy?')) return;
-    const taskId = String(task.id);
-
-    try {
-      setTaskActionPendingId(taskId);
-      await deleteTaskFromSupabase(taskId);
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_task_deleted',
-        payload: {
-          title: task.title || 'Task',
-        },
-      });
-      await refreshSupabaseCase();
-      toast.success('Task usuniÄ™ty');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d usuwania taska: ${error.message}`);
-    } finally {
-      setTaskActionPendingId(null);
-    }
-  };
-
-  const handleDeleteCaseEvent = async (event: any) => {
-    if (!caseId || !event?.id) return;
-    if (!window.confirm('UsunÄ…Ä‡ wydarzenie ze sprawy?')) return;
-    const eventId = String(event.id);
-
-    try {
-      setEventActionPendingId(eventId);
-      await deleteEventFromSupabase(eventId);
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_event_deleted',
-        payload: {
-          title: event.title || 'Wydarzenie',
-        },
-      });
-      await refreshSupabaseCase();
-      toast.success('Wydarzenie usuniÄ™te');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d usuwania wydarzenia: ${error.message}`);
-    } finally {
-      setEventActionPendingId(null);
-    }
-  };
-
-  const handleCompleteCaseEvent = async (event: any) => {
-    if (!caseId || !event?.id) return;
-    const eventId = String(event.id);
-
-    try {
-      setEventActionPendingId(eventId);
-      await updateEventInSupabase({
-        id: eventId,
-        title: event.title,
-        type: event.type,
-        startAt: event.startAt,
-        endAt: event.endAt,
-        status: String(event.status || 'scheduled') === 'completed' ? 'scheduled' : 'completed',
-        leadId: event.leadId ?? caseData?.leadId ?? null,
-        reminderAt: event.reminderAt || null,
-        recurrenceRule: typeof event.recurrenceRule === 'string' ? event.recurrenceRule : '',
-        caseId,
-      });
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_event_status_toggled',
-        payload: {
-          title: event.title || 'Wydarzenie',
-          status: String(event.status || 'scheduled') === 'completed' ? 'scheduled' : 'completed',
-        },
-      });
-      await refreshSupabaseCase();
-      toast.success('Zmieniono status wydarzenia');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d wydarzenia: ${error.message}`);
-    } finally {
-      setEventActionPendingId(null);
-    }
-  };
-
-  const handleSaveCaseTaskEdit = async () => {
-    if (!caseId || !editCaseTask?.id) return;
-    if (!editCaseTask.title?.trim()) {
-      toast.error('Podaj tytuĹ‚ taska');
-      return;
-    }
-
-    try {
-      setTaskEditSubmitting(true);
-      const shouldSave = confirmScheduleConflicts({
-        draft: {
-          kind: 'task',
-          title: editCaseTask.title.trim(),
-          startAt: editCaseTask.scheduledAt,
-        },
-        candidates: await loadConflictCandidates(),
-        excludeId: String(editCaseTask.id),
-        excludeKind: 'task',
-      });
-      if (!shouldSave) return;
-
-      await updateTaskInSupabase({
-        id: String(editCaseTask.id),
-        title: editCaseTask.title.trim(),
-        type: editCaseTask.type,
-        date: String(editCaseTask.scheduledAt).slice(0, 10),
-        scheduledAt: editCaseTask.scheduledAt,
-        status: editCaseTask.status,
-        priority: editCaseTask.priority,
-        leadId: caseData?.leadId || null,
-        reminderAt: editCaseTask.reminderAt || null,
-        recurrenceRule: buildRecurrenceRule(editCaseTask.recurrenceMode, editCaseTask.recurrenceUntil),
-        caseId,
-      });
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_task_updated',
-        payload: {
-          title: editCaseTask.title.trim(),
-          scheduledAt: editCaseTask.scheduledAt,
-        },
-      });
-      await refreshSupabaseCase();
-      setEditCaseTask(null);
-      toast.success('Task zaktualizowany');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d edycji taska: ${error.message}`);
-    } finally {
-      setTaskEditSubmitting(false);
-    }
-  };
-
-  const handleSaveCaseEventEdit = async () => {
-    if (!caseId || !editCaseEvent?.id) return;
-    if (!editCaseEvent.title?.trim()) {
-      toast.error('Podaj tytuĹ‚ wydarzenia');
-      return;
-    }
-
-    try {
-      setEventEditSubmitting(true);
-      const shouldSave = confirmScheduleConflicts({
-        draft: {
-          kind: 'event',
-          title: editCaseEvent.title.trim(),
-          startAt: editCaseEvent.startAt,
-          endAt: editCaseEvent.endAt,
-        },
-        candidates: await loadConflictCandidates(),
-        excludeId: String(editCaseEvent.id),
-        excludeKind: 'event',
-      });
-      if (!shouldSave) return;
-
-      await updateEventInSupabase({
-        id: String(editCaseEvent.id),
-        title: editCaseEvent.title.trim(),
-        type: editCaseEvent.type,
-        startAt: editCaseEvent.startAt,
-        endAt: editCaseEvent.endAt,
-        status: editCaseEvent.status,
-        leadId: caseData?.leadId || null,
-        reminderAt: editCaseEvent.reminderAt || null,
-        recurrenceRule: buildRecurrenceRule(editCaseEvent.recurrenceMode, editCaseEvent.recurrenceUntil),
-        caseId,
-      });
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_event_updated',
-        payload: {
-          title: editCaseEvent.title.trim(),
-          startAt: editCaseEvent.startAt,
-        },
-      });
-      await refreshSupabaseCase();
-      setEditCaseEvent(null);
-      toast.success('Wydarzenie zaktualizowane');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d edycji wydarzenia: ${error.message}`);
-    } finally {
-      setEventEditSubmitting(false);
-    }
-  };
-
-
-  const handleAddCaseNote = async () => {
-    if (!caseId) return;
-    if (!caseNote.trim()) {
-      toast.error('Wpisz treĹ›Ä‡ notatki');
-      return;
-    }
-
-    try {
-      setCaseNoteSubmitting(true);
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'note_added',
-        payload: {
-          content: caseNote.trim(),
-        },
-      });
-      await refreshSupabaseCase();
-      setCaseNote('');
-      toast.success('Notatka dodana');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d notatki: ${error.message}`);
-    } finally {
-      setCaseNoteSubmitting(false);
-    }
-  };
-
-  const openCaseNoteEditor = (activity: any) => {
-    setEditCaseNote({
-      id: String(activity.id || ''),
-      content: String(activity.payload?.content || ''),
-    });
-  };
-
-  const handleSaveCaseNoteEdit = async () => {
-    if (!editCaseNote?.id) return;
-    if (!editCaseNote.content?.trim()) {
-      toast.error('Wpisz treĹ›Ä‡ notatki');
-      return;
-    }
-
-    try {
-      setCaseNoteEditSubmitting(true);
-      await updateActivityInSupabase({
-        id: String(editCaseNote.id),
-        payload: {
-          content: editCaseNote.content.trim(),
-        },
-      });
-      await refreshSupabaseCase();
-      setEditCaseNote(null);
-      toast.success('Notatka zaktualizowana');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d edycji notatki: ${error.message}`);
-    } finally {
-      setCaseNoteEditSubmitting(false);
-    }
-  };
-
-  const handleDeleteCaseNote = async (activity: any) => {
-    const activityId = String(activity?.id || '');
-    if (!activityId) return;
-    if (!window.confirm('UsunÄ…Ä‡ tÄ™ notatkÄ™?')) return;
-
-    try {
-      setCaseNoteActionId(activityId);
-      await deleteActivityFromSupabase(activityId);
-      await refreshSupabaseCase();
-      toast.success('Notatka usuniÄ™ta');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d usuwania notatki: ${error.message}`);
-    } finally {
-      setCaseNoteActionId(null);
-    }
-  };
-
-  const handleSelectCaseClientSuggestion = (option: CaseClientOption) => {
-    setCaseClientDraft({
-      clientName: option.name,
-      clientEmail: option.email,
-      clientPhone: option.phone,
-    });
-    setShowClientCreateFields(false);
-  };
-
-  const handleSaveCaseClient = async () => {
-    if (!caseId) return;
-    if (!caseClientDraft.clientName.trim()) {
-      toast.error('Podaj nazwÄ™ klienta');
-      return;
-    }
-
-    try {
-      setCaseClientSubmitting(true);
-      await updateCaseInSupabase({
-        id: caseId,
-        clientName: caseClientDraft.clientName.trim(),
-        clientEmail: caseClientDraft.clientEmail.trim(),
-        clientPhone: caseClientDraft.clientPhone.trim(),
-      });
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_client_updated',
-        payload: {
-          clientName: caseClientDraft.clientName.trim(),
-          clientEmail: caseClientDraft.clientEmail.trim(),
-          clientPhone: caseClientDraft.clientPhone.trim(),
-        },
-      });
-      await refreshSupabaseCase();
-      setIsEditClientOpen(false);
-      setShowClientCreateFields(false);
-      toast.success('Dane klienta zaktualizowane');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d klienta: ${error.message}`);
-    } finally {
-      setCaseClientSubmitting(false);
-    }
-  };
-
-  const handleSendCaseReminder = async () => {
-    if (!caseId) return;
-
-    const followUpDate = new Date(Date.now() + 24 * 60 * 60_000);
-    followUpDate.setHours(9, 0, 0, 0);
-    const followUpAt = followUpDate.toISOString().slice(0, 16);
-    const followUpTitle = `Follow-up: ${caseData?.title || 'Sprawa'}`;
-
-    try {
-      await insertTaskToSupabase({
-        title: followUpTitle,
-        type: 'follow_up',
-        date: followUpAt.slice(0, 10),
-        scheduledAt: followUpAt,
-        priority: 'medium',
-        status: 'todo',
-        caseId,
-        reminderAt: new Date(followUpDate.getTime() - 30 * 60_000).toISOString(),
-        ownerId: auth.currentUser?.uid ?? undefined,
-      });
-
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_reminder_requested',
-        payload: {
-          title: caseData?.title || 'Sprawa',
-          taskTitle: followUpTitle,
-          scheduledAt: followUpAt,
-        },
-      });
-
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'reminder_scheduled',
-        payload: {
-          entityType: 'task',
-          title: followUpTitle,
-          scheduledAt: followUpAt,
-          reason: 'case_detail_reminder',
-        },
-      });
-
-      await refreshSupabaseCase();
-      toast.success('Przypomnienie zapisane i utworzono follow-up');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d przypomnienia: ${error.message}`);
-    }
-  };
-
-  const handleStartCaseExecution = async () => {
-    if (!caseId) return;
-
-    const now = new Date();
-    const scheduledAt = toDateTimeLocalValue(now);
-    const startTaskTitle = `Start realizacji: ${caseData?.title || 'Sprawa'}`;
-
-    try {
-      await updateCaseInSupabase({
-        id: caseId,
-        status: 'in_progress',
-      });
-
-      await insertTaskToSupabase({
-        title: startTaskTitle,
-        type: 'follow_up',
-        date: scheduledAt.slice(0, 10),
-        scheduledAt,
-        priority: 'high',
-        status: 'todo',
-        caseId,
-        ownerId: auth.currentUser?.uid ?? undefined,
-      });
-
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_started',
-        payload: {
-          title: caseData?.title || 'Sprawa',
-          taskTitle: startTaskTitle,
-          scheduledAt,
-        },
-      });
-
-      await refreshSupabaseCase();
-      toast.success('Sprawa weszĹ‚a do realizacji i utworzono task startowy');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d startu realizacji: ${error.message}`);
-    }
-  };
-
-  const handleMarkCaseCompleted = async () => {
-    if (!caseId) return;
-    if (!window.confirm('OznaczyÄ‡ tÄ™ sprawÄ™ jako zrobioneonÄ…?')) return;
-
-    try {
-      await updateCaseInSupabase({
-        id: caseId,
-        status: 'completed',
-        completenessPercent: 100,
-      });
-
-      await insertActivityToSupabase({
-        caseId,
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
-        actorType: 'operator',
-        eventType: 'case_completed',
-        payload: {
-          title: caseData?.title || 'Sprawa',
-        },
-      });
-
-      await refreshSupabaseCase();
-      toast.success('Sprawa oznaczona jako zrobione');
-    } catch (error: any) {
-      toast.error(`BĹ‚Ä…d zamkniÄ™cia sprawy: ${error.message}`);
-    }
-  };
-
-  if (workspaceLoading || loading) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center h-full">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
-      </Layout>
-    );
-  }
-
-  if (!workspaceReady) {
-    return (
-      <Layout>
-        <div className="p-6 max-w-3xl mx-auto w-full">
-          <Card className="border-rose-200">
-            <CardContent className="p-6 space-y-4">
-              <h2 className="text-lg font-bold text-rose-700">Kontekst workspace nie jest gotowy</h2>
-              <p className="text-sm text-slate-600">Akcje na sprawie sÄ… zablokowane do czasu poprawnego bootstrapu workspace.</p>
-              <Button onClick={() => refreshWorkspace()}>SprĂłbuj ponownie</Button>
-            </CardContent>
-          </Card>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (!caseData) return null;
+  const mainBlocker = caseStats.mainBlocker;
+  const nextActionItem = caseStats.nextActionItem;
+  const isCompleted = caseData.status === 'completed';
+  const hasBlockers = caseStats.requiredBlockers.length > 0 || caseStats.rejected.length > 0;
 
   return (
     <Layout>
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link to="/cases" className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-              <ArrowLeft className="w-5 h-5 text-slate-600" />
-            </Link>
-            <div className="min-w-0">
-              <h1 className="text-lg font-bold text-slate-900 truncate max-w-[200px] sm:max-w-md">
-                {caseData.title}
-              </h1>
-              <p className="text-xs text-slate-500 font-medium uppercase tracking-wider truncate">
-                Klient: {caseData.clientName || 'Brak klienta'}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="hidden sm:flex gap-2" onClick={generatePortalLink}>
-              <Copy className="w-4 h-4" />
-              Kopiuj link dla klienta
-            </Button>
-            <Button size="sm" className="gap-2" onClick={() => void handleSendCaseReminder()}>
-              <Send className="w-4 h-4" />
-              WyĹ›lij przypomnienie
-            </Button>
-          </div>
-        </div>
-      </header>
+      <div className="cf-case-page">
+        <header className="cf-case-topbar">
+          <div className="cf-case-topbar-inner">
+            <div className="cf-case-title-row">
+              <Link to="/cases" className="cf-icon-link" aria-label="Wróć do spraw">
+                <ArrowLeft className="w-5 h-5" />
+              </Link>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-6">
-                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {caseCreatedFromLead ? (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
-                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
-              </div>
-              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
-                <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
-              </div>
-              {caseData?.leadId ? (
-                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
-                </Button>
-              ) : null}
-            </>
-          ) : (
-            <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-<Card className="border-none shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-lg">Start realizacji</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant={caseData.status === 'blocked' ? 'destructive' : caseData.status === 'ready_to_start' ? 'secondary' : 'outline'}>
-                        {caseStatusLabel(caseData.status)}
-                      </Badge>
-                      {(Number(caseData.completenessPercent) || 0) >= 100 ? <Badge variant="secondary">Komplet 100%</Badge> : null}
-                      {items.some((entry) => entry.status === 'uploaded') ? <Badge variant="outline">Czeka na akceptacjÄ™</Badge> : null}
-                    </div>
-                    <p className="text-sm text-slate-500">
-                      {caseData.status === 'ready_to_start'
-                        ? 'Sprawa jest gotowa do wejĹ›cia w realizacjÄ™. Teraz operator powinien uruchomiÄ‡ start i przejÄ…Ä‡ prowadzenie.'
-                        : caseData.status === 'in_progress'
-                          ? 'Sprawa jest juĹĽ w aktywnej realizacji. Kolejny ruch to pilnowanie taskĂłw, klienta i historii zmian.'
-                          : caseData.status === 'completed'
-                            ? 'Sprawa jest domkniÄ™ta. MoĹĽesz wrĂłciÄ‡ do Ĺ›rodka tylko po historiÄ™ lub kontrolÄ™ koĹ„cowÄ….'
-                            : caseData.status === 'blocked'
-                              ? 'Sprawa ma realny blok i najpierw trzeba go odblokowaÄ‡.'
-                              : 'Sprawa nie jest jeszcze gotowa do startu. Najpierw domknij brakujÄ…ce lub oczekujÄ…ce elementy.'}
-                    </p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Szybkie akcje</p>
-                    <div className="flex flex-wrap gap-2">
-                      {caseData.status === 'ready_to_start' ? (
-                        <Button onClick={() => void handleStartCaseExecution()}>
-                          <Send className="w-4 h-4 mr-2" /> Start realizacji
-                        </Button>
-                      ) : null}
-                      {caseData.status !== 'completed' ? (
-                        <Button variant="outline" onClick={() => void handleSendCaseReminder()}>
-                          <Clock className="w-4 h-4 mr-2" /> Follow-up do sprawy
-                        </Button>
-                      ) : null}
-                      {caseData.status === 'in_progress' ? (
-                        <Button variant="outline" onClick={() => void handleMarkCaseCompleted()}>
-                          <CheckCircle2 className="w-4 h-4 mr-2" /> Oznacz jako zrobioneonÄ…
-                        </Button>
-                      ) : null}
-                    </div>
-                  </div>
+              <div className="cf-case-heading">
+                <div className="cf-breadcrumbs">
+                  <span>Sprawy</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                  <span className="cf-breadcrumb-current">Obsługa sprawy</span>
                 </div>
-              </CardContent>
-            </Card>
-
-                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {caseCreatedFromLead ? (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
-                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
-              </div>
-              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
-                <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
-              </div>
-              {caseData?.leadId ? (
-                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
-                </Button>
-              ) : null}
-            </>
-          ) : (
-            <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-<Card className="border-none shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-lg">Operacyjny hub sprawy</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Zadania sprawy</p>
-                    <p className="mt-2 text-2xl font-bold text-slate-900">{linkedTasks.length}</p>
-                    <p className="mt-1 text-sm text-slate-500">Wszystkie taski przypiÄ™te do tej sprawy i widoczne rĂłwnieĹĽ na liĹ›cie zadaĹ„.</p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Wydarzenia sprawy</p>
-                    <p className="mt-2 text-2xl font-bold text-slate-900">{linkedEvents.length}</p>
-                    <p className="mt-1 text-sm text-slate-500">Bloki czasu i spotkania przypiÄ™te bezpoĹ›rednio do tej sprawy.</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  <Button variant="outline" onClick={() => setIsQuickTaskOpen(true)}>
-                    <Plus className="w-4 h-4 mr-2" /> Dodaj zadanie do sprawy
-                  </Button>
-                  <Button variant="outline" onClick={() => setIsQuickEventOpen(true)}>
-                    <Calendar className="w-4 h-4 mr-2" /> Dodaj wydarzenie do sprawy
-                  </Button>
-                  <Button variant="outline" asChild>
-                    <Link to="/tasks">OtwĂłrz zadania <ExternalLink className="w-4 h-4" /></Link>
-                  </Button>
-                  <Button variant="outline" asChild>
-                    <Link to="/calendar">OtwĂłrz kalendarz <ExternalLink className="w-4 h-4" /></Link>
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                  <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <h3 className="text-sm font-bold text-slate-900">NajbliĹĽsze zadania</h3>
-                      <Badge variant="outline">{linkedTasks.length}</Badge>
-                    </div>
-                    {linkedTasks.length === 0 ? (
-                      <p className="text-sm text-slate-500">Brak taskĂłw przypiÄ™tych do tej sprawy.</p>
-                    ) : (
-                      <div className="space-y-2">
-                        {linkedTasks.slice(0, 5).map((task: any) => (
-                          <div key={task.id} className="rounded-xl border border-slate-200 px-3 py-2 space-y-3">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="min-w-0">
-                                <p className="text-sm font-semibold text-slate-900 break-words">{task.title || 'Zadanie bez tytuĹ‚u'}</p>
-                                <p className="text-xs text-slate-500 break-words">{formatDateTime(task.scheduledAt || task.dueAt || task.date)}{task.priority ? ` â€˘ Priorytet: ${task.priority}` : ''}</p>
-                              </div>
-                              <Badge variant={task.status === 'done' ? 'secondary' : 'outline'}>{task.status === 'done' ? 'Zrobione' : 'Aktywne'}</Badge>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                              <Button variant="outline" size="sm" onClick={() => openCaseTaskEditor(task)}>Edytuj</Button>
-                              <Button variant="outline" size="sm" onClick={() => void handleToggleCaseTaskStatus(task)} disabled={taskActionPendingId === String(task.id)}>
-                                {taskActionPendingId === String(task.id) ? '...' : task.status === 'done' ? 'PrzywrĂłÄ‡' : 'Zrobione'}
-                              </Button>
-                              <Button variant="outline" size="sm" className="text-rose-600 hover:text-rose-600" onClick={() => void handleDeleteCaseTask(task)} disabled={taskActionPendingId === String(task.id)}>UsuĹ„</Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <h3 className="text-sm font-bold text-slate-900">NajbliĹĽsze wydarzenia</h3>
-                      <Badge variant="outline">{linkedEvents.length}</Badge>
-                    </div>
-                    {linkedEvents.length === 0 ? (
-                      <p className="text-sm text-slate-500">Brak wydarzeĹ„ przypiÄ™tych do tej sprawy.</p>
-                    ) : (
-                      <div className="space-y-2">
-                        {linkedEvents.slice(0, 5).map((event: any) => (
-                          <div key={event.id} className="rounded-xl border border-slate-200 px-3 py-2 space-y-3">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="min-w-0">
-                                <p className="text-sm font-semibold text-slate-900 break-words">{event.title || 'Wydarzenie bez tytuĹ‚u'}</p>
-                                <p className="text-xs text-slate-500 break-words">{formatDateTime(event.startAt)}{event.endAt ? ` â†’ ${formatDateTime(event.endAt)}` : ''}</p>
-                              </div>
-                              <Badge variant={event.status === 'completed' ? 'secondary' : 'outline'}>{event.status === 'completed' ? 'Wykonane' : 'Zaplanowane'}</Badge>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                              <Button variant="outline" size="sm" onClick={() => openCaseEventEditor(event)}>Edytuj</Button>
-                              <Button variant="outline" size="sm" onClick={() => void handleCompleteCaseEvent(event)} disabled={eventActionPendingId === String(event.id)}>
-                                {eventActionPendingId === String(event.id) ? '...' : event.status === 'completed' ? 'PrzywrĂłÄ‡' : 'Wykonane'}
-                              </Button>
-                              <Button variant="outline" size="sm" className="text-rose-600 hover:text-rose-600" onClick={() => void handleDeleteCaseEvent(event)} disabled={eventActionPendingId === String(event.id)}>UsuĹ„</Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {caseCreatedFromLead ? (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
-                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
-              </div>
-              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
-                <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
-              </div>
-              {caseData?.leadId ? (
-                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
-                </Button>
-              ) : null}
-            </>
-          ) : (
-            <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-<Card className="border-none shadow-sm overflow-hidden">
-              <CardHeader className="bg-white border-b border-slate-100 pb-6">
-                <div className="flex items-center justify-between mb-4 gap-3">
-                  <Badge variant={caseData.status === 'blocked' ? 'destructive' : caseData.status === 'ready_to_start' ? 'secondary' : 'default'} className="px-3 py-1">
-                    {caseStatusLabel(caseData.status)}
+                <h1>{caseData.title}</h1>
+                <div className="cf-case-meta">
+                  <Badge className={`cf-status-badge ${getStatusBadgeClass(caseData.status)}`}>
+                    {getCaseStatusLabel(caseData.status)}
                   </Badge>
-                  <span className="text-sm text-slate-500 font-medium text-right">
-                    Ostatnia zmiana: {formatDateTime(caseData.updatedAt)}
-                  </span>
+                  <span>Klient: {caseData.clientName || 'Brak danych'}</span>
+                  <span>Ostatnia zmiana: {formatDateTime(caseData.updatedAt, 'Brak danych')}</span>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm font-bold">
-                    <span className="text-slate-700">PostÄ™p kompletnoĹ›ci</span>
-                    <span className="text-primary">{Math.round(caseData.completenessPercent || 0)}%</span>
-                  </div>
-                  <Progress value={caseData.completenessPercent || 0} className="h-3" />
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="p-6 flex items-center justify-between border-b border-slate-100 gap-3">
-                  <h3 className="text-lg font-bold text-slate-900">Lista wymaganych elementĂłw</h3>
-                  <Dialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen}>
-                    <DialogTrigger asChild>
-                      <Button size="sm" variant="outline" className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Dodaj element
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Dodaj wymagany element</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4 py-4">
-                        <div className="space-y-2">
-                          <Label>Nazwa elementu</Label>
-                          <Input placeholder="np. Logo w formacie SVG" value={newItem.title} onChange={e => setNewItem({...newItem, title: e.target.value})} />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Opis / Instrukcja</Label>
-                          <Textarea placeholder="WyjaĹ›nij klientowi co dokĹ‚adnie ma zrobiÄ‡..." value={newItem.description} onChange={e => setNewItem({...newItem, description: e.target.value})} />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label>Typ</Label>
-                            <select
-                              className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm"
-                              value={newItem.type}
-                              onChange={e => setNewItem({...newItem, type: e.target.value})}
-                            >
-                              <option value="file">Plik</option>
-                              <option value="decision">Decyzja (Tak/Nie)</option>
-                              <option value="text">Tekst / OdpowiedĹş</option>
-                              <option value="access">DostÄ™py / HasĹ‚a</option>
-                            </select>
-                          </div>
-                          <div className="flex items-center gap-2 pt-8">
-                            <input
-                              type="checkbox"
-                              id="required"
-                              checked={newItem.isRequired}
-                              onChange={e => setNewItem({...newItem, isRequired: e.target.checked})}
-                              className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary"
-                            />
-                            <Label htmlFor="required">ObowiÄ…zkowy</Label>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Termin (opcjonalnie)</Label>
-                          <Input type="date" value={newItem.dueDate} onChange={e => setNewItem({...newItem, dueDate: e.target.value})} />
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsAddItemOpen(false)}>Anuluj</Button>
-                        <Button onClick={handleAddItem}>Dodaj element</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
+              </div>
+            </div>
 
-                <div className="divide-y divide-slate-100">
-                  {items.length === 0 ? (
-                    <div className="p-12 text-center">
-                      <FileText className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                      <p className="text-slate-500">Brak elementĂłw. Dodaj pierwszy element, aby zaczÄ…Ä‡.</p>
+            <div className="cf-case-header-actions">
+              <Button variant="outline" size="sm" className="gap-2" onClick={generatePortalLink}>
+                <Copy className="w-4 h-4" />
+                Kopiuj portal
+              </Button>
+              <Dialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="gap-2">
+                    <Plus className="w-4 h-4" />
+                    Dodaj brak
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Dodaj wymagany element</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>Nazwa elementu</Label>
+                      <Input
+                        placeholder="np. Zgoda na publikację"
+                        value={newItem.title}
+                        onChange={(event) => setNewItem({ ...newItem, title: event.target.value })}
+                      />
                     </div>
-                  ) : (
-                    items.map((item) => (
-                      <div key={item.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center gap-4 group">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                          item.status === 'accepted' ? 'bg-green-100 text-green-600' :
-                          item.status === 'uploaded' ? 'bg-blue-100 text-blue-600' :
-                          item.status === 'rejected' ? 'bg-red-100 text-red-600' :
-                          'bg-slate-100 text-slate-400'
-                        }`}>
-                          {item.status === 'accepted' ? <CheckCircle2 className="w-5 h-5" /> :
-                           item.status === 'uploaded' ? <Clock className="w-5 h-5" /> :
-                           item.status === 'rejected' ? <AlertCircle className="w-5 h-5" /> :
-                           <FileText className="w-5 h-5" />}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-bold text-slate-900 truncate">{item.title}</h4>
-                            {item.isRequired && <Badge variant="outline" className="text-[10px] h-4 px-1.5 border-red-200 text-red-500">Wymagane</Badge>}
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-2 text-xs text-slate-500">
-                              <span className="truncate">{item.description || 'Brak opisu'}</span>
-                              {item.dueDate && (
-                                <span className="flex items-center gap-1 text-amber-600 font-medium shrink-0">
-                                  <Clock className="w-3 h-3" />
-                                  {new Date(item.dueDate).toLocaleDateString()}
-                                </span>
-                              )}
-                            </div>
-                            {(item.fileUrl || item.response) && (
-                              <div className="mt-2 p-2 bg-slate-100 rounded-lg text-xs space-y-1">
-                                {item.fileUrl && (
-                                  <a
-                                    href={item.fileUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-1 text-primary hover:underline font-medium"
-                                  >
-                                    <Paperclip className="w-3 h-3" />
-                                    {item.fileName || 'Pobierz plik'}
-                                  </a>
-                                )}
-                                {item.response && (
-                                  <p className="text-slate-600 italic flex items-start gap-1">
-                                    <MessageSquare className="w-3 h-3 mt-0.5 shrink-0" />
-                                    {item.response}
-                                  </p>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {item.status === 'uploaded' && (
-                            <div className="flex items-center gap-1">
-                              <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600 hover:bg-green-50" onClick={() => handleUpdateItemStatus(item.id, 'accepted', item.title)}>
-                                <Check className="w-4 h-4" />
-                              </Button>
-                              <Button size="icon" variant="ghost" className="h-8 w-8 text-red-600 hover:bg-red-50" onClick={() => handleUpdateItemStatus(item.id, 'rejected', item.title)}>
-                                <X className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          )}
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8">
-                                <MoreVertical className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteItem(item.id)}>
-                                <Trash2 className="w-4 h-4 mr-2" />
-                                UsuĹ„
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
+                    <div className="space-y-2">
+                      <Label>Opis / instrukcja</Label>
+                      <Textarea
+                        placeholder="Napisz krótko, czego brakuje i co klient ma zrobić."
+                        value={newItem.description}
+                        onChange={(event) => setNewItem({ ...newItem, description: event.target.value })}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Typ</Label>
+                        <select
+                          className="cf-native-select"
+                          value={newItem.type}
+                          onChange={(event) => setNewItem({ ...newItem, type: event.target.value })}
+                        >
+                          <option value="file">Plik</option>
+                          <option value="decision">Decyzja</option>
+                          <option value="text">Tekst / odpowiedź</option>
+                          <option value="access">Dostępy / hasła</option>
+                        </select>
                       </div>
-                    ))
+                      <div className="cf-checkbox-line">
+                        <input
+                          type="checkbox"
+                          id="required"
+                          checked={newItem.isRequired}
+                          onChange={(event) => setNewItem({ ...newItem, isRequired: event.target.checked })}
+                        />
+                        <Label htmlFor="required">Obowiązkowy</Label>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Termin opcjonalnie</Label>
+                      <Input
+                        type="date"
+                        value={newItem.dueDate}
+                        onChange={(event) => setNewItem({ ...newItem, dueDate: event.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsAddItemOpen(false)}>
+                      Anuluj
+                    </Button>
+                    <Button onClick={handleAddItem}>Dodaj element</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+        </header>
+
+        <main className="cf-case-main">
+          <section className="cf-command-grid" aria-label="Najważniejsze informacje o sprawie">
+            <Card className="cf-command-card cf-command-card-primary">
+              <CardContent className="cf-command-content">
+                <div className="cf-command-eyebrow">
+                  <ShieldAlert className="w-4 h-4" />
+                  Co teraz blokuje?
+                </div>
+                <h2>
+                  {isCompleted
+                    ? 'Sprawa jest zakończona'
+                    : mainBlocker
+                      ? mainBlocker.title || 'Brak wymagany do obsługi'
+                      : hasBlockers
+                        ? 'Są blokery do zdjęcia'
+                        : 'Brak krytycznych blokerów'}
+                </h2>
+                <p>
+                  {isCompleted
+                    ? 'Nie ma aktywnej pracy operacyjnej. Historia zostaje do wglądu.'
+                    : mainBlocker?.description || getCaseStatusHint(caseData.status)}
+                </p>
+                <div className="cf-command-actions">
+                  {mainBlocker ? (
+                    <Button variant="secondary" size="sm" onClick={() => handleReminderCopy()}>
+                      <Send className="w-4 h-4" />
+                      Przygotuj przypomnienie
+                    </Button>
+                  ) : (
+                    <Button variant="secondary" size="sm" onClick={() => handleNotReadyYet('Oznaczenie gotowości')}>
+                      <CheckCircle2 className="w-4 h-4" />
+                      Oznacz jako gotowe
+                    </Button>
                   )}
                 </div>
               </CardContent>
             </Card>
-          </div>
 
-          <div className="space-y-6">
-                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {caseCreatedFromLead ? (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
-                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
-              </div>
-              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
-                <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
-              </div>
-              {caseData?.leadId ? (
-                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
-                </Button>
-              ) : null}
-            </>
-          ) : (
-            <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-<Card className="border-none shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <UserRound className="w-5 h-5 text-slate-400" />
-                  Klient sprawy
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
-                  <div>
-                    <p className="text-base font-bold text-slate-900 break-words">{caseData.clientName || 'Brak klienta'}</p>
-                    <p className="mt-1 text-sm text-slate-500 break-words">{caseData.clientEmail || 'Brak e-maila'}</p>
-                    <p className="mt-1 text-sm text-slate-500 break-words">{caseData.clientPhone || 'Brak telefonu'}</p>
-                  </div>
+            <Card className="cf-command-card">
+              <CardContent className="cf-command-content">
+                <div className="cf-command-eyebrow">
+                  <CalendarClock className="w-4 h-4" />
+                  Najbliższa akcja
                 </div>
-                <Button variant="outline" className="w-full" onClick={() => {
-                  setCaseClientDraft({
-                    clientName: String(caseData?.clientName || ''),
-                    clientEmail: String(caseData?.clientEmail || ''),
-                    clientPhone: String(caseData?.clientPhone || ''),
-                  });
-                  setShowClientCreateFields(false);
-                  setIsEditClientOpen(true);
-                }}>
-                  <Edit2 className="w-4 h-4 mr-2" />
-                  ZmieĹ„ klienta sprawy
-                </Button>
+                <h2>{nextActionItem ? nextActionItem.title || 'Sprawdź element sprawy' : 'Brak zaplanowanej akcji'}</h2>
+                <p>
+                  {nextActionItem?.dueDate
+                    ? `Termin: ${formatDate(nextActionItem.dueDate)}`
+                    : nextActionItem
+                      ? 'Ten element wymaga reakcji, ale nie ma terminu.'
+                      : 'Dodaj zadanie, wydarzenie albo brak, żeby sprawa nie wisiała w powietrzu.'}
+                </p>
+                <div className="cf-command-actions">
+                  {nextActionItem ? (
+                    <Badge className={`cf-status-badge ${getItemStatusClass(nextActionItem.status)}`}>
+                      {getItemStatusLabel(nextActionItem.status)}
+                    </Badge>
+                  ) : (
+                    <Button size="sm" variant="outline" onClick={() => setIsAddItemOpen(true)}>
+                      <Plus className="w-4 h-4" />
+                      Dodaj pierwszy ruch
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
-                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {caseCreatedFromLead ? (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
-                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
-              </div>
-              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
-                <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
-              </div>
-              {caseData?.leadId ? (
-                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
-                </Button>
-              ) : null}
-            </>
-          ) : (
-            <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-<Card className="border-none shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <UserRound className="w-5 h-5 text-slate-400" />
-                  ĹąrĂłdĹ‚o sprawy
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {sourceLead ? (
-                  <>
-                    <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Lead ĹşrĂłdĹ‚owy</p>
-                          <p className="mt-1 text-base font-bold text-slate-900 break-words">{sourceLead.name || 'Lead bez nazwy'}</p>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            <Badge variant="outline">{leadStatusLabel(sourceLead.status)}</Badge>
-                            {sourceLead.isAtRisk ? <Badge variant="destructive">ZagroĹĽony</Badge> : null}
-                          </div>
+            <Card className="cf-command-card">
+              <CardContent className="cf-command-content">
+                <div className="cf-command-eyebrow">
+                  <ListChecks className="w-4 h-4" />
+                  Postęp sprawy
+                </div>
+                <div className="cf-progress-head">
+                  <h2>{completionPercent}% gotowe</h2>
+                  <span>{caseStats.accepted.length}/{items.length || 0}</span>
+                </div>
+                <Progress value={completionPercent} className="cf-progress-bar" />
+                <div className="cf-mini-stats">
+                  <span>{caseStats.requiredBlockers.length} blokerów</span>
+                  <span>{caseStats.uploaded.length} do sprawdzenia</span>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+
+          <section className="cf-case-layout">
+            <div className="cf-case-left">
+              <Card className="cf-panel-card">
+                <CardHeader className="cf-panel-header">
+                  <div>
+                    <CardTitle>Obsługa sprawy</CardTitle>
+                    <p>Jedno miejsce na braki, decyzje, materiały i historię. Bez szukania po całym ekranie.</p>
+                  </div>
+                </CardHeader>
+                <CardContent className="cf-panel-body">
+                  <Tabs defaultValue="work" className="cf-tabs">
+                    <TabsList className="cf-tabs-list">
+                      <TabsTrigger value="work">Obsługa</TabsTrigger>
+                      <TabsTrigger value="items">Checklisty</TabsTrigger>
+                      <TabsTrigger value="history">Historia</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="work" className="cf-tab-content">
+                      <div className="cf-work-grid">
+                        <Card className="cf-sub-card">
+                          <CardHeader className="cf-sub-card-header">
+                            <CardTitle>Najważniejsze działania</CardTitle>
+                            <Button size="sm" variant="outline" onClick={() => setIsAddItemOpen(true)}>
+                              <Plus className="w-4 h-4" />
+                              Dodaj
+                            </Button>
+                          </CardHeader>
+                          <CardContent className="cf-list-content">
+                            {caseStats.openItems.length === 0 ? (
+                              <div className="cf-empty-box">
+                                <CheckCircle2 className="w-10 h-10" />
+                                <strong>Nie ma aktywnych braków</strong>
+                                <span>Dodaj kolejny element tylko wtedy, gdy realnie czegoś brakuje.</span>
+                              </div>
+                            ) : (
+                              <div className="cf-case-items-list">
+                                {caseStats.openItems.slice(0, 4).map((item) => (
+                                  <div key={item.id} className="cf-action-item">
+                                    <div className={`cf-item-icon ${getItemStatusClass(item.status)}`}>
+                                      {item.status === 'uploaded' ? (
+                                        <Clock className="w-4 h-4" />
+                                      ) : item.status === 'rejected' ? (
+                                        <AlertCircle className="w-4 h-4" />
+                                      ) : (
+                                        <FileText className="w-4 h-4" />
+                                      )}
+                                    </div>
+                                    <div className="cf-action-main">
+                                      <strong>{item.title || 'Element sprawy'}</strong>
+                                      <span>{item.description || 'Brak opisu'}</span>
+                                      <div className="cf-action-meta">
+                                        <Badge className={`cf-status-badge ${getItemStatusClass(item.status)}`}>
+                                          {getItemStatusLabel(item.status)}
+                                        </Badge>
+                                        <span>{getItemTypeLabel(item.type)}</span>
+                                        {item.dueDate && <span>{formatDate(item.dueDate)}</span>}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+
+                        <Card className="cf-sub-card cf-status-card">
+                          <CardHeader className="cf-sub-card-header">
+                            <CardTitle>Status operacyjny</CardTitle>
+                          </CardHeader>
+                          <CardContent className="cf-status-summary">
+                            <div>
+                              <span>Stan sprawy</span>
+                              <strong>{getCaseStatusLabel(caseData.status)}</strong>
+                            </div>
+                            <div>
+                              <span>Gotowość</span>
+                              <strong>{hasBlockers ? 'Nie można startować' : 'Można przejść dalej'}</strong>
+                            </div>
+                            <div>
+                              <span>Do sprawdzenia</span>
+                              <strong>{caseStats.uploaded.length}</strong>
+                            </div>
+                            <div>
+                              <span>Ostatni ruch</span>
+                              <strong>{activities[0] ? formatDateTime(activities[0].createdAt) : 'Brak aktywności'}</strong>
+                            </div>
+                            <div className="cf-operator-note">
+                              <strong>Prosty komunikat:</strong>
+                              <span>{getCaseStatusHint(caseData.status)}</span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="items" className="cf-tab-content">
+                      <div className="cf-checklist-head">
+                        <div>
+                          <h3>Checklisty i blokery</h3>
+                          <p>Lista ma mówić jasno: gotowe, czeka, blokuje. Zero tabelkowego dymu.</p>
                         </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link to={`/leads/${sourceLead.id}`}>
-                            OtwĂłrz lead ĹşrĂłdĹ‚owy <ExternalLink className="w-4 h-4" />
-                          </Link>
+                        <Button size="sm" variant="outline" onClick={() => setIsAddItemOpen(true)}>
+                          <Plus className="w-4 h-4" />
+                          Dodaj element
                         </Button>
                       </div>
 
-                      <div className="grid grid-cols-1 gap-3 text-sm text-slate-600">
-                        <div className="rounded-xl bg-slate-50 px-3 py-2">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">ĹąrĂłdĹ‚o pozyskania</p>
-                          <p className="mt-1 font-medium text-slate-900 break-words">{leadSourceLabel(sourceLead.source)}</p>
+                      {items.length === 0 ? (
+                        <div className="cf-empty-box cf-empty-box-large">
+                          <FileText className="w-12 h-12" />
+                          <strong>Brak elementów sprawy</strong>
+                          <span>Dodaj pierwszy brak, decyzję albo materiał, żeby sprawa miała czytelny start.</span>
+                          <Button onClick={() => setIsAddItemOpen(true)}>
+                            <Plus className="w-4 h-4" />
+                            Dodaj pierwszy element
+                          </Button>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div className="rounded-xl bg-slate-50 px-3 py-2">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Data wejĹ›cia do obsĹ‚ugi</p>
-                            <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
-                              <Calendar className="w-4 h-4 text-slate-400" />
-                              {sourceLeadMovedAtLabel}
-                            </p>
-                          </div>
-                          <div className="rounded-xl bg-slate-50 px-3 py-2">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Status leada</p>
-                            <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
-                              <Target className="w-4 h-4 text-slate-400" />
-                              {leadStatusLabel(sourceLead.status)}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div className="rounded-xl bg-slate-50 px-3 py-2">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">E-mail</p>
-                            <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
-                              <Mail className="w-4 h-4 text-slate-400" />
-                              {sourceLead.email || 'Brak'}
-                            </p>
-                          </div>
-                          <div className="rounded-xl bg-slate-50 px-3 py-2">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Telefon</p>
-                            <p className="mt-1 font-medium text-slate-900 flex items-center gap-2 break-words">
-                              <Phone className="w-4 h-4 text-slate-400" />
-                              {sourceLead.phone || 'Brak'}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <Button variant="outline" className="w-full text-rose-600 hover:text-rose-600" onClick={() => void handleUnlinkLeadFromCase()} disabled={leadRelationPending}>
-                      <Unlink className="w-4 h-4 mr-2" />
-                      {leadRelationPending ? 'Odpinanie...' : 'Odepnij leada od sprawy'}
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-4">
-                      <p className="text-sm font-semibold text-slate-900">Sprawa utworzona rÄ™cznie.</p>
-                      <p className="mt-1 text-sm text-slate-500">
-                        MoĹĽesz opcjonalnie podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li ten temat zaczÄ…Ĺ‚ siÄ™ od procesu sprzedaĹĽowego.
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Wybierz leada do powiÄ…zania</Label>
-                      <Select value={selectedLeadId} onValueChange={setSelectedLeadId}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Wybierz leada" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {availableLeads.length === 0 ? (
-                            <SelectItem value="__empty__" disabled>Brak dostÄ™pnych leadĂłw</SelectItem>
-                          ) : (
-                            availableLeads.map((lead: any) => (
-                              <SelectItem key={lead.id} value={String(lead.id)}>
-                                {lead.name || 'Lead bez nazwy'}
-                              </SelectItem>
-                            ))
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <Button className="w-full" onClick={() => void handleLinkLeadToCase()} disabled={!selectedLeadId || leadRelationPending || availableLeads.length === 0}>
-                      <Link2 className="w-4 h-4 mr-2" />
-                      {leadRelationPending ? 'Podpinanie...' : 'Podepnij leada'}
-                    </Button>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-
-                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {caseCreatedFromLead ? (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
-                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
-              </div>
-              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
-                <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
-              </div>
-              {caseData?.leadId ? (
-                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
-                </Button>
-              ) : null}
-            </>
-          ) : (
-            <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-<Card className="border-none shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <History className="w-5 h-5 text-slate-400" />
-                  Ostatnia aktywnoĹ›Ä‡
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Notatka operacyjna</Label>
-                  <Textarea
-                    placeholder="Dodaj krĂłtkÄ… notatkÄ™ do sprawy..."
-                    className="min-h-[96px]"
-                    value={caseNote}
-                    onChange={(e) => setCaseNote(e.target.value)}
-                  />
-                  <Button onClick={() => void handleAddCaseNote()} disabled={caseNoteSubmitting || !caseNote.trim()}>
-                    {caseNoteSubmitting ? 'Zapisywanie...' : 'Dodaj notatkÄ™'}
-                  </Button>
-                </div>
-                <ScrollArea className="h-[360px] pr-2">
-                  <div className="space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
-                    {activities.length === 0 ? (
-                      <p className="text-center text-slate-400 py-8 text-sm">Brak aktywnoĹ›ci</p>
-                    ) : (
-                      activities.map((activity) => {
-                        const isCaseNote = activity.eventType === 'note_added';
-                        return (
-                          <div key={activity.id} className="relative pl-8">
-                            <div className={`absolute left-0 top-1 w-4 h-4 rounded-full border-2 border-white shadow-sm ${
-                              activity.actorType === 'operator' ? 'bg-primary' : 'bg-green-500'
-                            }`} />
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="min-w-0 flex-1">
-                                <p className="text-sm font-medium text-slate-900">
-                                  {activity.actorType === 'operator' ? 'Ty' : 'Klient'}
-                                  <span className="font-normal text-slate-500 ml-1">
-                                    {activity.eventType === 'item_added' ? `dodaĹ‚ element: ${activity.payload?.title}` :
-                                     activity.eventType === 'status_changed' ? `zmieniĹ‚ status ${activity.payload?.title} na ${activity.payload?.status}` :
-                                     activity.eventType === 'file_uploaded' ? `wgraĹ‚ plik do: ${activity.payload?.title}` :
-                                     activity.eventType === 'decision_made' ? `podjÄ…Ĺ‚ decyzjÄ™ w: ${activity.payload?.title}` :
-                                     activity.eventType === 'portal_token_created' ? `wygenerowaĹ‚ link portalu` :
-                                     activity.eventType === 'lead_linked' ? `podpiÄ…Ĺ‚ leada: ${activity.payload?.leadName || 'Lead'}` :
-                                     activity.eventType === 'lead_unlinked' ? `odpiÄ…Ĺ‚ leada: ${activity.payload?.leadName || 'Lead'}` :
-                                     activity.eventType === 'case_started' ? `uruchomiĹ‚ start realizacji` :
-                                     activity.eventType === 'case_task_created' ? `dodaĹ‚ task do sprawy: ${activity.payload?.title || 'Task'}` :
-                                     activity.eventType === 'case_task_updated' ? `zaktualizowaĹ‚ task sprawy: ${activity.payload?.title || 'Task'}` :
-                                     activity.eventType === 'case_task_status_toggled' ? `zmieniĹ‚ status taska: ${activity.payload?.title || 'Task'}` :
-                                     activity.eventType === 'case_task_deleted' ? `usunÄ…Ĺ‚ task sprawy: ${activity.payload?.title || 'Task'}` :
-                                     activity.eventType === 'case_event_created' ? `dodaĹ‚ wydarzenie do sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
-                                     activity.eventType === 'case_event_updated' ? `zaktualizowaĹ‚ wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
-                                     activity.eventType === 'case_event_status_toggled' ? `zmieniĹ‚ status wydarzenia: ${activity.payload?.title || 'Wydarzenie'}` :
-                                     activity.eventType === 'case_event_deleted' ? `usunÄ…Ĺ‚ wydarzenie sprawy: ${activity.payload?.title || 'Wydarzenie'}` :
-                                     activity.eventType === 'case_completed' ? `oznaczyĹ‚ sprawÄ™ jako zrobioneonÄ…` :
-                                     activity.eventType === 'case_reminder_requested' ? `wysĹ‚aĹ‚ przypomnienie i utworzyĹ‚ follow-up` :
-                                     activity.eventType === 'reminder_scheduled' ? `zaplanowaĹ‚ przypomnienie: ${activity.payload?.title || 'pozycja'}` :
-                                     activity.eventType === 'note_added' ? 'dodaĹ‚ notatkÄ™ operacyjnÄ…' :
-                                     'wykonaĹ‚ akcjÄ™'}
-                                  </span>
-                                </p>
-                                <p className="text-[10px] text-slate-400 mt-0.5">
-                                  {formatDateTime(activity.updatedAt || activity.createdAt)}
-                                </p>
-                                {isCaseNote && activity.payload?.content ? (
-                                  <p className="mt-2 text-sm text-slate-700 whitespace-pre-wrap break-words">{String(activity.payload.content)}</p>
-                                ) : null}
+                      ) : (
+                        <div className="cf-checklist-list">
+                          {items.map((item) => (
+                            <div key={item.id} className="cf-checklist-row">
+                              <div className={`cf-check-dot ${getItemStatusClass(item.status)}`}>
+                                {item.status === 'accepted' ? (
+                                  <Check className="w-4 h-4" />
+                                ) : item.status === 'rejected' ? (
+                                  <X className="w-4 h-4" />
+                                ) : item.status === 'uploaded' ? (
+                                  <Clock className="w-4 h-4" />
+                                ) : (
+                                  <FileText className="w-4 h-4" />
+                                )}
                               </div>
-                              {isCaseNote ? (
-                                <div className="flex items-center gap-1 shrink-0">
-                                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openCaseNoteEditor(activity)}>
-                                    <Edit2 className="w-4 h-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="icon" className="h-8 w-8 text-rose-600 hover:text-rose-600" onClick={() => void handleDeleteCaseNote(activity)} disabled={caseNoteActionId === String(activity.id)}>
-                                    <Trash2 className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
-                        )
-                      })
-                    )}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
 
-                  <Card className="hidden border-violet-200 bg-violet-50/70 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base text-violet-950">ĹąrĂłdĹ‚o sprawy</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {caseCreatedFromLead ? (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className="border-none bg-violet-600 text-white">Z leada</Badge>
-                <span className="text-sm font-semibold text-violet-950">{sourceLeadTitle}</span>
-              </div>
-              <div className="grid gap-2 text-sm text-violet-900 md:grid-cols-3">
-                <div>Status leada: {sourceLeadStatusLabel}</div>
-                <div>ĹąrĂłdĹ‚o pozyskania: {sourceLeadOriginLabel}</div>
-                <div>ObsĹ‚uga od: {sourceLeadMovedAtLabel}</div>
-              </div>
-              {caseData?.leadId ? (
-                <Button asChild variant="outline" className="border-violet-300 bg-white text-violet-900 hover:bg-violet-100">
-                  <Link to={/leads/}>OtwĂłrz lead ĹşrĂłdĹ‚owy</Link>
-                </Button>
-              ) : null}
-            </>
-          ) : (
-            <div className="space-y-2">
-              <Badge variant="outline" className="border-slate-300 text-slate-700">Utworzona rÄ™cznie</Badge>
-              <p className="text-sm text-slate-700">Ta sprawa nie powstaĹ‚a bezpoĹ›rednio z leada. MoĹĽesz pĂłĹşniej podpiÄ…Ä‡ lead ĹşrĂłdĹ‚owy, jeĹ›li chcesz zachowaÄ‡ peĹ‚nÄ… historiÄ™.</p>
+                              <div className="cf-check-main">
+                                <div className="cf-check-title-line">
+                                  <h4>{item.title || 'Element sprawy'}</h4>
+                                  {item.isRequired && <Badge variant="outline">Wymagane</Badge>}
+                                </div>
+                                <p>{item.description || 'Brak opisu'}</p>
+
+                                <div className="cf-check-meta">
+                                  <Badge className={`cf-status-badge ${getItemStatusClass(item.status)}`}>
+                                    {getItemStatusLabel(item.status)}
+                                  </Badge>
+                                  <span>{getItemTypeLabel(item.type)}</span>
+                                  {item.dueDate && <span>Termin: {formatDate(item.dueDate)}</span>}
+                                </div>
+
+                                {(item.fileUrl || item.response) && (
+                                  <div className="cf-client-response">
+                                    {item.fileUrl && (
+                                      <a href={item.fileUrl} target="_blank" rel="noopener noreferrer">
+                                        <Paperclip className="w-3.5 h-3.5" />
+                                        {item.fileName || 'Pobierz plik'}
+                                      </a>
+                                    )}
+                                    {item.response && (
+                                      <p>
+                                        <MessageSquare className="w-3.5 h-3.5" />
+                                        {item.response}
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="cf-check-actions">
+                                {item.status === 'uploaded' && (
+                                  <>
+                                    <Button
+                                      size="icon"
+                                      variant="ghost"
+                                      className="cf-accept-btn"
+                                      onClick={() => handleUpdateItemStatus(item.id, 'accepted', item.title || 'Element')}
+                                      aria-label="Zaakceptuj"
+                                    >
+                                      <Check className="w-4 h-4" />
+                                    </Button>
+                                    <Button
+                                      size="icon"
+                                      variant="ghost"
+                                      className="cf-reject-btn"
+                                      onClick={() => handleUpdateItemStatus(item.id, 'rejected', item.title || 'Element')}
+                                      aria-label="Odrzuć"
+                                    >
+                                      <X className="w-4 h-4" />
+                                    </Button>
+                                  </>
+                                )}
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="icon">
+                                      <MoreVertical className="w-4 h-4" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    {item.status !== 'accepted' && (
+                                      <DropdownMenuItem
+                                        onClick={() => handleUpdateItemStatus(item.id, 'accepted', item.title || 'Element')}
+                                      >
+                                        <Check className="w-4 h-4 mr-2" />
+                                        Oznacz jako gotowe
+                                      </DropdownMenuItem>
+                                    )}
+                                    {item.status !== 'missing' && (
+                                      <DropdownMenuItem
+                                        onClick={() => handleUpdateItemStatus(item.id, 'missing', item.title || 'Element')}
+                                      >
+                                        <FileText className="w-4 h-4 mr-2" />
+                                        Oznacz jako czeka
+                                      </DropdownMenuItem>
+                                    )}
+                                    <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteItem(item.id)}>
+                                      <Trash2 className="w-4 h-4 mr-2" />
+                                      Usuń
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </TabsContent>
+
+                    <TabsContent value="history" className="cf-tab-content">
+                      <Card className="cf-sub-card">
+                        <CardHeader className="cf-sub-card-header">
+                          <CardTitle>Historia sprawy</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ScrollArea className="cf-history-scroll">
+                            <div className="cf-timeline">
+                              {activities.length === 0 ? (
+                                <div className="cf-empty-box">
+                                  <History className="w-10 h-10" />
+                                  <strong>Brak aktywności</strong>
+                                  <span>Gdy dodasz brak, notatkę albo klient coś prześle, pojawi się tutaj.</span>
+                                </div>
+                              ) : (
+                                activities.map((activity) => (
+                                  <div key={activity.id} className="cf-timeline-item">
+                                    <div className="cf-timeline-dot" />
+                                    <div>
+                                      <strong>{getActivityText(activity)}</strong>
+                                      {activity.eventType === 'operator_note' && activity.payload?.note && <p>{activity.payload.note}</p>}
+                                      <span>{formatDateTime(activity.createdAt)}</span>
+                                    </div>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </ScrollArea>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                  </Tabs>
+                </CardContent>
+              </Card>
             </div>
-          )}
-        </CardContent>
-      </Card>
-<Card className="border-none shadow-sm bg-primary text-white">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-white/20 p-3 rounded-xl">
-                    <ExternalLink className="w-6 h-6 text-white" />
+
+            <aside className="cf-case-right">
+              <Card className="cf-side-card cf-side-actions">
+                <CardHeader>
+                  <CardTitle>Szybkie akcje</CardTitle>
+                  <p>Krótko i jasno. Bez polowania na przyciski.</p>
+                </CardHeader>
+                <CardContent className="cf-side-stack">
+                  <Button className="cf-wide-action" onClick={() => setIsAddItemOpen(true)}>
+                    <Plus className="w-4 h-4" />
+                    <span>
+                      <strong>Dodaj brak / element</strong>
+                      <small>plik, decyzja, tekst, dostęp</small>
+                    </span>
+                  </Button>
+
+                  <Button className="cf-wide-action" variant="outline" onClick={() => setIsAddNoteOpen(true)}>
+                    <StickyNote className="w-4 h-4" />
+                    <span>
+                      <strong>Dodaj notatkę</strong>
+                      <small>krótki ślad w historii</small>
+                    </span>
+                  </Button>
+
+                  <Button className="cf-wide-action" variant="outline" onClick={generatePortalLink}>
+                    <ExternalLink className="w-4 h-4" />
+                    <span>
+                      <strong>Kopiuj portal klienta</strong>
+                      <small>link do uzupełnienia braków</small>
+                    </span>
+                  </Button>
+
+                  <Button className="cf-wide-action" variant="outline" onClick={handleReminderCopy}>
+                    <Send className="w-4 h-4" />
+                    <span>
+                      <strong>Przygotuj przypomnienie</strong>
+                      <small>bez udawania wysyłki maila</small>
+                    </span>
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="cf-side-card">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <UserRound className="w-5 h-5" />
+                    Klient w tle
+                  </CardTitle>
+                  <p>To kontekst. Główna praca zostaje na sprawie.</p>
+                </CardHeader>
+                <CardContent className="cf-info-list">
+                  <div>
+                    <span>Nazwa</span>
+                    <strong>{caseData.clientName || 'Brak danych'}</strong>
                   </div>
                   <div>
-                    <h4 className="font-bold">Panel Klienta</h4>
-                    <p className="text-xs text-white/70">UdostÄ™pnij ten link klientowi.</p>
+                    <span>Status sprawy</span>
+                    <strong>{getCaseStatusLabel(caseData.status)}</strong>
                   </div>
-                </div>
-                <Button variant="secondary" className="w-full gap-2" onClick={generatePortalLink}>
-                  <Copy className="w-4 h-4" />
-                  Kopiuj link dostÄ™pu
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </main>
-
-      <Dialog open={isQuickTaskOpen} onOpenChange={setIsQuickTaskOpen}>
-        <DialogContent className="sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>Dodaj zadanie do sprawy</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label>TytuĹ‚ zadania</Label>
-              <Input value={quickTask.title} onChange={(e) => setQuickTask((prev) => ({ ...prev, title: e.target.value }))} />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Typ</Label>
-                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickTask.type} onChange={(e) => setQuickTask((prev) => ({ ...prev, type: e.target.value }))}>
-                  <option value="follow_up">Follow-up</option>
-                  <option value="meeting">Spotkanie</option>
-                  <option value="call">Telefon</option>
-                  <option value="offer">Oferta</option>
-                  <option value="other">Inne</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <Label>Priorytet</Label>
-                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickTask.priority} onChange={(e) => setQuickTask((prev) => ({ ...prev, priority: e.target.value }))}>
-                  <option value="low">Niski</option>
-                  <option value="medium">Ĺšredni</option>
-                  <option value="high">Wysoki</option>
-                </select>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Data i godzina</Label>
-              <Input type="datetime-local" value={quickTask.scheduledAt} onChange={(e) => setQuickTask((prev) => ({ ...prev, scheduledAt: e.target.value }))} />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Przypomnienie (opcjonalnie)</Label>
-                <Input type="datetime-local" value={quickTask.reminderAt} onChange={(e) => setQuickTask((prev) => ({ ...prev, reminderAt: e.target.value }))} />
-              </div>
-              <div className="space-y-2">
-                <Label>Powtarzanie</Label>
-                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickTask.recurrenceMode} onChange={(e) => setQuickTask((prev) => ({ ...prev, recurrenceMode: e.target.value }))}>
-                  {SIMPLE_RECURRENCE_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            {quickTask.recurrenceMode !== 'none' ? (
-              <div className="space-y-2">
-                <Label>Powtarzaj do (opcjonalnie)</Label>
-                <Input type="datetime-local" value={quickTask.recurrenceUntil} onChange={(e) => setQuickTask((prev) => ({ ...prev, recurrenceUntil: e.target.value }))} />
-              </div>
-            ) : null}
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsQuickTaskOpen(false)}>Anuluj</Button>
-            <Button onClick={() => void handleCreateQuickCaseTask()} disabled={quickTaskSubmitting}>
-              {quickTaskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isQuickEventOpen} onOpenChange={setIsQuickEventOpen}>
-        <DialogContent className="sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>Dodaj wydarzenie do sprawy</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label>TytuĹ‚ wydarzenia</Label>
-              <Input value={quickEvent.title} onChange={(e) => setQuickEvent((prev) => ({ ...prev, title: e.target.value }))} />
-            </div>
-            <div className="space-y-2">
-              <Label>Typ</Label>
-              <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickEvent.type} onChange={(e) => setQuickEvent((prev) => ({ ...prev, type: e.target.value }))}>
-                <option value="meeting">Spotkanie</option>
-                <option value="call">Telefon</option>
-                <option value="deadline">Deadline</option>
-                <option value="review">Review</option>
-                <option value="other">Inne</option>
-              </select>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Start</Label>
-                <Input type="datetime-local" value={quickEvent.startAt} onChange={(e) => {
-                  const nextStart = e.target.value;
-                  setQuickEvent((prev) => ({ ...prev, startAt: nextStart, endAt: buildDefaultEventEnd(nextStart) }));
-                }} />
-              </div>
-              <div className="space-y-2">
-                <Label>Koniec</Label>
-                <Input type="datetime-local" value={quickEvent.endAt} onChange={(e) => setQuickEvent((prev) => ({ ...prev, endAt: e.target.value }))} />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Status</Label>
-                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickEvent.status} onChange={(e) => setQuickEvent((prev) => ({ ...prev, status: e.target.value }))}>
-                  <option value="scheduled">Zaplanowane</option>
-                  <option value="completed">Wykonane</option>
-                  <option value="cancelled">Anulowane</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <Label>Przypomnienie (opcjonalnie)</Label>
-                <Input type="datetime-local" value={quickEvent.reminderAt} onChange={(e) => setQuickEvent((prev) => ({ ...prev, reminderAt: e.target.value }))} />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Powtarzanie</Label>
-                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={quickEvent.recurrenceMode} onChange={(e) => setQuickEvent((prev) => ({ ...prev, recurrenceMode: e.target.value }))}>
-                  {SIMPLE_RECURRENCE_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-2">
-                <Label>Powtarzaj do (opcjonalnie)</Label>
-                <Input type="datetime-local" value={quickEvent.recurrenceUntil} onChange={(e) => setQuickEvent((prev) => ({ ...prev, recurrenceUntil: e.target.value }))} disabled={quickEvent.recurrenceMode === 'none'} />
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsQuickEventOpen(false)}>Anuluj</Button>
-            <Button onClick={() => void handleCreateQuickCaseEvent()} disabled={quickEventSubmitting}>
-              {quickEventSubmitting ? 'Dodawanie...' : 'Dodaj wydarzenie'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={isEditClientOpen} onOpenChange={(open) => {
-        setIsEditClientOpen(open);
-        if (!open) {
-          setShowClientCreateFields(false);
-        }
-      }}>
-        <DialogContent className="sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>ZmieĹ„ klienta sprawy</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label>Klient</Label>
-              <div className="flex gap-2">
-                <Input
-                  value={caseClientDraft.clientName}
-                  onChange={(e) => setCaseClientDraft((prev) => ({ ...prev, clientName: e.target.value }))}
-                  placeholder="Wpisz klienta, a system podpowie z leadĂłw i danych spraw"
-                />
-                <Button
-                  type="button"
-                  variant={showClientCreateFields ? 'default' : 'outline'}
-                  size="icon"
-                  onClick={() => setShowClientCreateFields((prev) => !prev)}
-                  title="Dodaj nowego klienta"
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              {caseClientSuggestions.length > 0 ? (
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2 space-y-1">
-                  {caseClientSuggestions.map((option) => (
-                    <button
-                      key={option.key}
-                      type="button"
-                      className="w-full rounded-xl px-3 py-2 text-left transition hover:bg-white"
-                      onClick={() => handleSelectCaseClientSuggestion(option)}
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-slate-900 truncate">{option.name}</p>
-                          <p className="text-xs text-slate-500 truncate">
-                            {[option.email, option.phone].filter(Boolean).join(' â€˘ ') || 'Dane klienta zapisane w systemie'}
-                          </p>
-                        </div>
-                        <Badge variant="outline">{option.source === 'lead' ? 'Ze ĹşrĂłdĹ‚owego leada' : option.source === 'case' ? 'Ze sprawy' : 'Z danych sprawy'}</Badge>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-            {showClientCreateFields ? (
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-4">
-                <p className="text-sm font-semibold text-slate-900">Nowy klient dla tej sprawy</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>E-mail klienta</Label>
-                    <Input value={caseClientDraft.clientEmail} onChange={(e) => setCaseClientDraft((prev) => ({ ...prev, clientEmail: e.target.value }))} placeholder="np. klient@firma.pl" />
+                  <div>
+                    <span>Elementy</span>
+                    <strong>{items.length}</strong>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Telefon klienta</Label>
-                    <Input value={caseClientDraft.clientPhone} onChange={(e) => setCaseClientDraft((prev) => ({ ...prev, clientPhone: e.target.value }))} placeholder="np. 500 000 000" />
+                  <div>
+                    <span>Do sprawdzenia</span>
+                    <strong>{caseStats.uploaded.length}</strong>
                   </div>
-                </div>
-              </div>
-            ) : null}
+                </CardContent>
+              </Card>
+
+              <Card className="cf-side-card cf-note-card">
+                <CardHeader>
+                  <CardTitle>Krótka notatka operatora</CardTitle>
+                  <p>Ostatni sens sprawy w jednym miejscu.</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="cf-note-preview">
+                    {activities.find((activity) => activity.eventType === 'operator_note')?.payload?.note ||
+                      'Brak notatki. Dodaj krótką informację, żeby po wejściu w sprawę od razu wiedzieć, o co chodzi.'}
+                  </div>
+                </CardContent>
+              </Card>
+            </aside>
+          </section>
+        </main>
+      </div>
+
+      <Dialog open={isAddNoteOpen} onOpenChange={setIsAddNoteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Dodaj notatkę do sprawy</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-4">
+            <Label>Notatka</Label>
+            <Textarea
+              placeholder="Np. Klient potwierdził cenę, czekamy tylko na zgodę na publikację."
+              value={newNote}
+              onChange={(event) => setNewNote(event.target.value)}
+              className="min-h-[130px]"
+            />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditClientOpen(false)}>Anuluj</Button>
-            <Button onClick={() => void handleSaveCaseClient()} disabled={caseClientSubmitting}>
-              {caseClientSubmitting ? 'Zapisywanie...' : 'Zapisz klienta'}
+            <Button variant="outline" onClick={() => setIsAddNoteOpen(false)}>
+              Anuluj
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={Boolean(editCaseTask)} onOpenChange={(open) => { if (!open) setEditCaseTask(null); }}>
-        <DialogContent className="sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>Edytuj task sprawy</DialogTitle>
-          </DialogHeader>
-          {editCaseTask ? (
-            <div className="space-y-4 py-2">
-              <div className="space-y-2">
-                <Label>TytuĹ‚ taska</Label>
-                <Input value={editCaseTask.title} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, title: e.target.value }))} />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Typ</Label>
-                  <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseTask.type} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, type: e.target.value }))}>
-                    <option value="follow_up">Follow-up</option>
-                    <option value="meeting">Spotkanie</option>
-                    <option value="call">Telefon</option>
-                    <option value="offer">Oferta</option>
-                    <option value="other">Inne</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Priorytet</Label>
-                  <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseTask.priority} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, priority: e.target.value }))}>
-                    <option value="low">Niski</option>
-                    <option value="medium">Ĺšredni</option>
-                    <option value="high">Wysoki</option>
-                  </select>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Data i godzina</Label>
-                <Input type="datetime-local" value={editCaseTask.scheduledAt} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, scheduledAt: e.target.value }))} />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Przypomnienie (opcjonalnie)</Label>
-                  <Input type="datetime-local" value={editCaseTask.reminderAt || ''} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, reminderAt: e.target.value }))} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Powtarzanie</Label>
-                  <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseTask.recurrenceMode || 'none'} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, recurrenceMode: e.target.value }))}>
-                    {SIMPLE_RECURRENCE_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              {editCaseTask.recurrenceMode !== 'none' ? (
-                <div className="space-y-2">
-                  <Label>Powtarzaj do (opcjonalnie)</Label>
-                  <Input type="datetime-local" value={editCaseTask.recurrenceUntil || ''} onChange={(e) => setEditCaseTask((prev: any) => ({ ...prev, recurrenceUntil: e.target.value }))} />
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditCaseTask(null)}>Anuluj</Button>
-            <Button onClick={() => void handleSaveCaseTaskEdit()} disabled={taskEditSubmitting}>
-              {taskEditSubmitting ? 'Zapisywanie...' : 'Zapisz task'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={Boolean(editCaseEvent)} onOpenChange={(open) => { if (!open) setEditCaseEvent(null); }}>
-        <DialogContent className="sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>Edytuj wydarzenie sprawy</DialogTitle>
-          </DialogHeader>
-          {editCaseEvent ? (
-            <div className="space-y-4 py-2">
-              <div className="space-y-2">
-                <Label>TytuĹ‚ wydarzenia</Label>
-                <Input value={editCaseEvent.title} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, title: e.target.value }))} />
-              </div>
-              <div className="space-y-2">
-                <Label>Typ</Label>
-                <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseEvent.type} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, type: e.target.value }))}>
-                  <option value="meeting">Spotkanie</option>
-                  <option value="call">Telefon</option>
-                  <option value="deadline">Deadline</option>
-                  <option value="review">Review</option>
-                  <option value="other">Inne</option>
-                </select>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Start</Label>
-                  <Input type="datetime-local" value={editCaseEvent.startAt} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, startAt: e.target.value }))} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Koniec</Label>
-                  <Input type="datetime-local" value={editCaseEvent.endAt} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, endAt: e.target.value }))} />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Status</Label>
-                  <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseEvent.status} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, status: e.target.value }))}>
-                    <option value="scheduled">Zaplanowane</option>
-                    <option value="completed">Wykonane</option>
-                    <option value="cancelled">Anulowane</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Przypomnienie (opcjonalnie)</Label>
-                  <Input type="datetime-local" value={editCaseEvent.reminderAt || ''} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, reminderAt: e.target.value }))} />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Powtarzanie</Label>
-                  <select className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm" value={editCaseEvent.recurrenceMode || 'none'} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, recurrenceMode: e.target.value }))}>
-                    {SIMPLE_RECURRENCE_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Powtarzaj do (opcjonalnie)</Label>
-                  <Input type="datetime-local" value={editCaseEvent.recurrenceUntil || ''} onChange={(e) => setEditCaseEvent((prev: any) => ({ ...prev, recurrenceUntil: e.target.value }))} disabled={editCaseEvent.recurrenceMode === 'none'} />
-                </div>
-              </div>
-            </div>
-          ) : null}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditCaseEvent(null)}>Anuluj</Button>
-            <Button onClick={() => void handleSaveCaseEventEdit()} disabled={eventEditSubmitting}>
-              {eventEditSubmitting ? 'Zapisywanie...' : 'Zapisz wydarzenie'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={Boolean(editCaseNote)} onOpenChange={(open) => { if (!open) setEditCaseNote(null); }}>
-        <DialogContent className="sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>Edytuj notatkÄ™ sprawy</DialogTitle>
-          </DialogHeader>
-          {editCaseNote ? (
-            <div className="space-y-4 py-2">
-              <div className="space-y-2">
-                <Label>TreĹ›Ä‡ notatki</Label>
-                <Textarea value={editCaseNote.content} onChange={(e) => setEditCaseNote((prev: any) => ({ ...prev, content: e.target.value }))} className="min-h-[120px]" />
-              </div>
-            </div>
-          ) : null}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditCaseNote(null)}>Anuluj</Button>
-            <Button onClick={() => void handleSaveCaseNoteEdit()} disabled={caseNoteEditSubmitting}>
-              {caseNoteEditSubmitting ? 'Zapisywanie...' : 'Zapisz notatkÄ™'}
-            </Button>
+            <Button onClick={handleAddNote}>Dodaj notatkę</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </Layout>
   );
 }
-
-
-
-
-
-
-
-
-
