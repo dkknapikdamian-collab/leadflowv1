@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertCircle,
@@ -117,6 +117,7 @@ type TaskRecord = {
   status?: string;
   caseId?: string | null;
   leadId?: string | null;
+  clientId?: string | null;
 };
 
 type EventRecord = {
@@ -129,6 +130,7 @@ type EventRecord = {
   status?: string;
   caseId?: string | null;
   leadId?: string | null;
+  clientId?: string | null;
 };
 
 type CaseActivity = {
@@ -182,17 +184,17 @@ const CASE_STATUS_LABELS: Record<string, string> = {
   to_approve: 'Do sprawdzenia',
   blocked: 'Zablokowana',
   ready_to_start: 'Gotowa do startu',
-  completed: 'Zakończona',
+  completed: 'ZakoĹ„czona',
 };
 
 const CASE_STATUS_HINTS: Record<string, string> = {
-  new: 'Sprawa została utworzona. Dodaj pierwszy brak albo zaplanuj pierwszą akcję.',
+  new: 'Sprawa zostaĹ‚a utworzona. Dodaj pierwszy brak albo zaplanuj pierwszÄ… akcjÄ™.',
   waiting_on_client: 'Czekamy na klienta. Najpierw zdejmij braki po jego stronie.',
-  in_progress: 'Sprawa jest w pracy. Pilnuj najbliższej akcji i terminów.',
-  to_approve: 'Klient coś przesłał. Sprawdź i zaakceptuj albo odrzuć.',
-  blocked: 'Sprawa stoi. Usuń blokery zanim przejdziesz dalej.',
+  in_progress: 'Sprawa jest w pracy. Pilnuj najbliĹĽszej akcji i terminĂłw.',
+  to_approve: 'Klient coĹ› przesĹ‚aĹ‚. SprawdĹş i zaakceptuj albo odrzuÄ‡.',
+  blocked: 'Sprawa stoi. UsuĹ„ blokery zanim przejdziesz dalej.',
   ready_to_start: 'Sprawa jest gotowa do dalszej pracy operacyjnej.',
-  completed: 'Sprawa zakończona. Historia zostaje jako ślad pracy.',
+  completed: 'Sprawa zakoĹ„czona. Historia zostaje jako Ĺ›lad pracy.',
 };
 
 const ITEM_STATUS_LABELS: Record<string, string> = {
@@ -206,7 +208,7 @@ const ITEM_TYPE_LABELS: Record<string, string> = {
   file: 'Plik',
   decision: 'Decyzja',
   text: 'Tekst',
-  access: 'Dostępy',
+  access: 'DostÄ™py',
 };
 
 const TASK_STATUS_LABELS: Record<string, string> = {
@@ -322,8 +324,8 @@ function getCaseStatusLabel(status?: string) {
 }
 
 function getCaseStatusHint(status?: string) {
-  if (!status) return 'Ustal status sprawy i najbliższy ruch.';
-  return CASE_STATUS_HINTS[status] || 'Sprawdź najbliższe działania i blokery.';
+  if (!status) return 'Ustal status sprawy i najbliĹĽszy ruch.';
+  return CASE_STATUS_HINTS[status] || 'SprawdĹş najbliĹĽsze dziaĹ‚ania i blokery.';
 }
 
 function getItemStatusLabel(status?: string) {
@@ -378,28 +380,28 @@ function getActivityText(activity: CaseActivity) {
   const actor = activity.actorType === 'operator' ? 'Ty' : 'Klient';
   const title = activity.payload?.title || activity.payload?.itemTitle || 'element';
 
-  if (activity.eventType === 'item_added') return `${actor} dodał element: ${title}`;
+  if (activity.eventType === 'item_added') return `${actor} dodaĹ‚ element: ${title}`;
   if (activity.eventType === 'status_changed') {
-    return `${actor} zmienił status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;
+    return `${actor} zmieniĹ‚ status â€ž${title}â€ť na: ${getItemStatusLabel(activity.payload?.status)}`;
   }
-  if (activity.eventType === 'file_uploaded') return `${actor} wgrał plik do: ${title}`;
-  if (activity.eventType === 'decision_made') return `${actor} podjął decyzję w: ${title}`;
-  if (activity.eventType === 'operator_note') return `${actor} dodał notatkę`;
-  if (activity.eventType === 'task_added') return `${actor} dodał zadanie: ${title}`;
-  if (activity.eventType === 'event_added') return `${actor} dodał wydarzenie: ${title}`;
+  if (activity.eventType === 'file_uploaded') return `${actor} wgraĹ‚ plik do: ${title}`;
+  if (activity.eventType === 'decision_made') return `${actor} podjÄ…Ĺ‚ decyzjÄ™ w: ${title}`;
+  if (activity.eventType === 'operator_note') return `${actor} dodaĹ‚ notatkÄ™`;
+  if (activity.eventType === 'task_added') return `${actor} dodaĹ‚ zadanie: ${title}`;
+  if (activity.eventType === 'event_added') return `${actor} dodaĹ‚ wydarzenie: ${title}`;
   if (activity.eventType === 'task_status_changed') {
-    return `${actor} zmienił status zadania „${title}” na: ${getTaskStatusLabel(activity.payload?.status)}`;
+    return `${actor} zmieniĹ‚ status zadania â€ž${title}â€ť na: ${getTaskStatusLabel(activity.payload?.status)}`;
   }
   if (activity.eventType === 'event_status_changed') {
-    return `${actor} zmienił status wydarzenia „${title}” na: ${getEventStatusLabel(activity.payload?.status)}`;
+    return `${actor} zmieniĹ‚ status wydarzenia â€ž${title}â€ť na: ${getEventStatusLabel(activity.payload?.status)}`;
   }
   if (activity.eventType === 'task_rescheduled') {
-    return `${actor} przełożył zadanie „${title}” na: ${formatDateTime(activity.payload?.scheduledAt)}`;
+    return `${actor} przeĹ‚oĹĽyĹ‚ zadanie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.scheduledAt)}`;
   }
   if (activity.eventType === 'event_rescheduled') {
-    return `${actor} przełożył wydarzenie „${title}” na: ${formatDateTime(activity.payload?.startAt)}`;
+    return `${actor} przeĹ‚oĹĽyĹ‚ wydarzenie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.startAt)}`;
   }
-  return `${actor} wykonał akcję`;
+  return `${actor} wykonaĹ‚ akcjÄ™`;
 }
 
 function sortCaseItems(items: CaseItem[]) {
@@ -457,8 +459,24 @@ function buildPortalUrl(caseId: string, tokenPayload: Record<string, unknown>) {
   return token ? `${window.location.origin}/portal/${caseId}/${token}` : `${window.location.origin}/portal/${caseId}`;
 }
 
-function belongsToCase(entry: { caseId?: string | null }, caseId?: string) {
-  return !!caseId && String(entry.caseId || '') === String(caseId);
+function belongsToCase(
+  entry: { caseId?: string | null; leadId?: string | null; clientId?: string | null },
+  caseId?: string,
+  caseRecord?: CaseRecord | null,
+) {
+  const entryCaseId = String(entry.caseId || '');
+  const currentCaseId = String(caseId || '');
+  if (currentCaseId && entryCaseId === currentCaseId) return true;
+
+  const entryLeadId = String(entry.leadId || '');
+  const currentLeadId = String(caseRecord?.leadId || '');
+  if (currentLeadId && entryLeadId === currentLeadId) return true;
+
+  const entryClientId = String(entry.clientId || '');
+  const currentClientId = String(caseRecord?.clientId || '');
+  if (currentClientId && entryClientId === currentClientId) return true;
+
+  return false;
 }
 
 function buildWorkPathEntries(
@@ -470,8 +488,8 @@ function buildWorkPathEntries(
   const taskEntries: WorkPathEntry[] = tasks.map((task) => ({
     id: `task-${task.id}`,
     kind: 'task',
-    title: task.title || 'Zadanie bez tytułu',
-    subtitle: task.type ? `Zadanie: ${task.type}` : 'Zadanie powiązane ze sprawą',
+    title: task.title || 'Zadanie bez tytuĹ‚u',
+    subtitle: task.type ? `Zadanie: ${task.type}` : 'Zadanie powiÄ…zane ze sprawÄ…',
     statusLabel: getTaskStatusLabel(task.status),
     statusClass: getTaskStatusClass(task.status),
     dateValue: task.scheduledAt || task.date || task.reminderAt,
@@ -482,8 +500,8 @@ function buildWorkPathEntries(
   const eventEntries: WorkPathEntry[] = events.map((event) => ({
     id: `event-${event.id}`,
     kind: 'event',
-    title: event.title || 'Wydarzenie bez tytułu',
-    subtitle: event.endAt ? `Wydarzenie do ${formatDateTime(event.endAt)}` : 'Wydarzenie powiązane ze sprawą',
+    title: event.title || 'Wydarzenie bez tytuĹ‚u',
+    subtitle: event.endAt ? `Wydarzenie do ${formatDateTime(event.endAt)}` : 'Wydarzenie powiÄ…zane ze sprawÄ…',
     statusLabel: getEventStatusLabel(event.status),
     statusClass: getEventStatusClass(event.status),
     dateValue: event.startAt || event.reminderAt,
@@ -579,7 +597,7 @@ export default function CaseDetail() {
     }
 
     if (!isSupabaseConfigured()) {
-      setLoadError('Brak konfiguracji Supabase. Lista spraw może działać tylko po poprawnym ustawieniu VITE_SUPABASE_URL.');
+      setLoadError('Brak konfiguracji Supabase. Lista spraw moĹĽe dziaĹ‚aÄ‡ tylko po poprawnym ustawieniu VITE_SUPABASE_URL.');
       setLoading(false);
       return;
     }
@@ -633,8 +651,8 @@ export default function CaseDetail() {
       setCaseData(normalizedCase);
       setItems(sortCaseItems((Array.isArray(itemRowsRaw) ? itemRowsRaw : []) as CaseItem[]));
       setActivities(sortActivities((Array.isArray(activityRowsRaw) ? activityRowsRaw : []) as CaseActivity[]));
-      setTasks(((Array.isArray(taskRowsRaw) ? taskRowsRaw : []) as TaskRecord[]).filter((task) => belongsToCase(task, caseId)));
-      setEvents(((Array.isArray(eventRowsRaw) ? eventRowsRaw : []) as EventRecord[]).filter((event) => belongsToCase(event, caseId)));
+      setTasks(((Array.isArray(taskRowsRaw) ? taskRowsRaw : []) as TaskRecord[]).filter((task) => belongsToCase(task, caseId, normalizedCase)));
+      setEvents(((Array.isArray(eventRowsRaw) ? eventRowsRaw : []) as EventRecord[]).filter((event) => belongsToCase(event, caseId, normalizedCase)));
     } catch (error: any) {
       console.error('CaseDetail Supabase load failed', error);
       setCaseData(null);
@@ -644,9 +662,9 @@ export default function CaseDetail() {
       setEvents([]);
 
       if (error?.message === 'TIMEOUT_CASE_DETAIL_LOAD') {
-        setLoadError('Ładowanie sprawy trwa za długo. API nie odpowiedziało w bezpiecznym czasie.');
+        setLoadError('Ĺadowanie sprawy trwa za dĹ‚ugo. API nie odpowiedziaĹ‚o w bezpiecznym czasie.');
       } else {
-        setLoadError(`Nie mogę wczytać tej sprawy z API: ${error?.message || 'REQUEST_FAILED'}`);
+        setLoadError(`Nie mogÄ™ wczytaÄ‡ tej sprawy z API: ${error?.message || 'REQUEST_FAILED'}`);
       }
     } finally {
       if (timeoutId) window.clearTimeout(timeoutId);
@@ -744,7 +762,7 @@ export default function CaseDetail() {
 
   const handleAddItem = async () => {
     if (!caseId || !newItem.title.trim()) {
-      toast.error('Podaj nazwę elementu');
+      toast.error('Podaj nazwÄ™ elementu');
       return;
     }
 
@@ -779,13 +797,13 @@ export default function CaseDetail() {
       toast.success('Element dodany');
       await refreshCaseData();
     } catch (error: any) {
-      toast.error('Błąd: ' + (error?.message || 'Nie udało się dodać elementu'));
+      toast.error('BĹ‚Ä…d: ' + (error?.message || 'Nie udaĹ‚o siÄ™ dodaÄ‡ elementu'));
     }
   };
 
   const handleAddTask = async () => {
     if (!caseId || !newTask.title.trim()) {
-      toast.error('Podaj nazwę zadania');
+      toast.error('Podaj nazwÄ™ zadania');
       return;
     }
 
@@ -802,6 +820,7 @@ export default function CaseDetail() {
         priority: newTask.priority,
         status: 'todo',
         caseId,
+        clientId: caseData?.clientId || null,
         leadId: caseData?.leadId || null,
       };
 
@@ -839,19 +858,19 @@ export default function CaseDetail() {
       toast.success('Zadanie dodane do sprawy');
       await refreshCaseData();
     } catch (error: any) {
-      toast.error('Błąd: ' + (error?.message || 'Nie udało się dodać zadania'));
+      toast.error('BĹ‚Ä…d: ' + (error?.message || 'Nie udaĹ‚o siÄ™ dodaÄ‡ zadania'));
     }
   };
 
   const handleAddEvent = async () => {
     if (!caseId || !newEvent.title.trim()) {
-      toast.error('Podaj nazwę wydarzenia');
+      toast.error('Podaj nazwÄ™ wydarzenia');
       return;
     }
 
     const startAt = toIsoFromLocalInput(newEvent.startAt);
     if (!startAt) {
-      toast.error('Podaj datę i godzinę wydarzenia');
+      toast.error('Podaj datÄ™ i godzinÄ™ wydarzenia');
       return;
     }
 
@@ -867,6 +886,7 @@ export default function CaseDetail() {
         reminderAt: reminderAt || undefined,
         status: 'planned',
         caseId,
+        clientId: caseData?.clientId || null,
         leadId: caseData?.leadId || null,
       };
 
@@ -904,13 +924,13 @@ export default function CaseDetail() {
       toast.success('Wydarzenie dodane do sprawy');
       await refreshCaseData();
     } catch (error: any) {
-      toast.error('Błąd: ' + (error?.message || 'Nie udało się dodać wydarzenia'));
+      toast.error('BĹ‚Ä…d: ' + (error?.message || 'Nie udaĹ‚o siÄ™ dodaÄ‡ wydarzenia'));
     }
   };
 
   const handleAddNote = async () => {
     if (!caseId || !newNote.trim()) {
-      toast.error('Wpisz treść notatki');
+      toast.error('Wpisz treĹ›Ä‡ notatki');
       return;
     }
 
@@ -927,7 +947,7 @@ export default function CaseDetail() {
       toast.success('Notatka dodana');
       await refreshCaseData();
     } catch (error: any) {
-      toast.error('Błąd: ' + (error?.message || 'Nie udało się dodać notatki'));
+      toast.error('BĹ‚Ä…d: ' + (error?.message || 'Nie udaĹ‚o siÄ™ dodaÄ‡ notatki'));
     }
   };
 
@@ -958,7 +978,7 @@ export default function CaseDetail() {
       toast.success(status === 'done' || status === 'completed' ? 'Zadanie oznaczone jako zrobione' : 'Status zadania zaktualizowany');
       await refreshCaseData();
     } catch (error: any) {
-      toast.error('Błąd: ' + (error?.message || 'Nie udało się zmienić statusu zadania'));
+      toast.error('BĹ‚Ä…d: ' + (error?.message || 'Nie udaĹ‚o siÄ™ zmieniÄ‡ statusu zadania'));
     }
   };
 
@@ -989,7 +1009,7 @@ export default function CaseDetail() {
       toast.success(status === 'done' || status === 'completed' ? 'Wydarzenie oznaczone jako odbyte' : 'Status wydarzenia zaktualizowany');
       await refreshCaseData();
     } catch (error: any) {
-      toast.error('Błąd: ' + (error?.message || 'Nie udało się zmienić statusu wydarzenia'));
+      toast.error('BĹ‚Ä…d: ' + (error?.message || 'Nie udaĹ‚o siÄ™ zmieniÄ‡ statusu wydarzenia'));
     }
   };
 
@@ -1035,10 +1055,10 @@ export default function CaseDetail() {
         lastActivityAt: new Date().toISOString(),
       }).catch((error) => console.error('CaseDetail task reschedule case touch failed', error));
 
-      toast.success(`Zadanie przełożone: ${label}`);
+      toast.success(`Zadanie przeĹ‚oĹĽone: ${label}`);
       await refreshCaseData();
     } catch (error: any) {
-      toast.error('Błąd: ' + (error?.message || 'Nie udało się przełożyć zadania'));
+      toast.error('BĹ‚Ä…d: ' + (error?.message || 'Nie udaĹ‚o siÄ™ przeĹ‚oĹĽyÄ‡ zadania'));
     }
   };
 
@@ -1084,10 +1104,10 @@ export default function CaseDetail() {
         lastActivityAt: new Date().toISOString(),
       }).catch((error) => console.error('CaseDetail event reschedule case touch failed', error));
 
-      toast.success(`Wydarzenie przełożone: ${label}`);
+      toast.success(`Wydarzenie przeĹ‚oĹĽone: ${label}`);
       await refreshCaseData();
     } catch (error: any) {
-      toast.error('Błąd: ' + (error?.message || 'Nie udało się przełożyć wydarzenia'));
+      toast.error('BĹ‚Ä…d: ' + (error?.message || 'Nie udaĹ‚o siÄ™ przeĹ‚oĹĽyÄ‡ wydarzenia'));
     }
   };
 
@@ -1121,7 +1141,7 @@ export default function CaseDetail() {
       toast.success('Status zaktualizowany');
       await refreshCaseData();
     } catch (error: any) {
-      toast.error('Błąd: ' + (error?.message || 'Nie udało się zmienić statusu'));
+      toast.error('BĹ‚Ä…d: ' + (error?.message || 'Nie udaĹ‚o siÄ™ zmieniÄ‡ statusu'));
     }
   };
 
@@ -1135,10 +1155,10 @@ export default function CaseDetail() {
       setItems(nextItems);
       await syncCaseSummary(nextItems);
 
-      toast.success('Element usunięty');
+      toast.success('Element usuniÄ™ty');
       await refreshCaseData();
     } catch (error: any) {
-      toast.error('Błąd: ' + (error?.message || 'Nie udało się usunąć elementu'));
+      toast.error('BĹ‚Ä…d: ' + (error?.message || 'Nie udaĹ‚o siÄ™ usunÄ…Ä‡ elementu'));
     }
   };
 
@@ -1156,16 +1176,16 @@ export default function CaseDetail() {
         toast.success('Link do panelu klienta gotowy');
       }
     } catch (error: any) {
-      toast.error('Nie udało się przygotować linku: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ przygotowaÄ‡ linku: ' + (error?.message || 'REQUEST_FAILED'));
     }
   };
 
   const handleReminderCopy = () => {
-    toast.info('Na teraz bez fałszywej wysyłki maila. Użyj linku do portalu albo dodaj brak na checklistę.');
+    toast.info('Na teraz bez faĹ‚szywej wysyĹ‚ki maila. UĹĽyj linku do portalu albo dodaj brak na checklistÄ™.');
   };
 
   const handleNotReadyYet = (label: string) => {
-    toast.info(`${label} będzie osobnym etapem. Ten patch porządkuje widok sprawy i pokazuje powiązane akcje.`);
+    toast.info(`${label} bÄ™dzie osobnym etapem. Ten patch porzÄ…dkuje widok sprawy i pokazuje powiÄ…zane akcje.`);
   };
 
   if (loadError) {
@@ -1176,14 +1196,14 @@ export default function CaseDetail() {
             <Card className="cf-panel-card">
               <CardContent className="cf-empty-box cf-empty-box-large">
                 <AlertCircle className="w-12 h-12" />
-                <strong>Nie mogę otworzyć tej sprawy</strong>
+                <strong>Nie mogÄ™ otworzyÄ‡ tej sprawy</strong>
                 <span>{loadError}</span>
                 <div className="cf-command-actions">
                   <Button variant="outline" onClick={() => navigate('/cases')}>
-                    Wróć do spraw
+                    WrĂłÄ‡ do spraw
                   </Button>
                   <Button onClick={refreshCaseData}>
-                    Spróbuj ponownie
+                    SprĂłbuj ponownie
                   </Button>
                 </div>
               </CardContent>
@@ -1202,8 +1222,8 @@ export default function CaseDetail() {
             <Card className="cf-panel-card">
               <CardContent className="cf-empty-box cf-empty-box-large">
                 <Clock className="w-12 h-12" />
-                <strong>Ładuję sprawę</strong>
-                <span>Pobieram dane sprawy, checklisty, zadania, wydarzenia i historię.</span>
+                <strong>ĹadujÄ™ sprawÄ™</strong>
+                <span>Pobieram dane sprawy, checklisty, zadania, wydarzenia i historiÄ™.</span>
               </CardContent>
             </Card>
           </main>
@@ -1223,7 +1243,7 @@ export default function CaseDetail() {
                 <strong>Brak danych sprawy</strong>
                 <span>Nie znaleziono danych do pokazania dla tej sprawy.</span>
                 <Button variant="outline" onClick={() => navigate('/cases')}>
-                  Wróć do spraw
+                  WrĂłÄ‡ do spraw
                 </Button>
               </CardContent>
             </Card>
@@ -1245,7 +1265,7 @@ export default function CaseDetail() {
         <header className="cf-case-topbar">
           <div className="cf-case-topbar-inner">
             <div className="cf-case-title-row">
-              <Link to="/cases" className="cf-icon-link" aria-label="Wróć do spraw">
+              <Link to="/cases" className="cf-icon-link" aria-label="WrĂłÄ‡ do spraw">
                 <ArrowLeft className="w-5 h-5" />
               </Link>
 
@@ -1253,9 +1273,9 @@ export default function CaseDetail() {
                 <div className="cf-breadcrumbs">
                   <span>Sprawy</span>
                   <ChevronRight className="w-3.5 h-3.5" />
-                  <span className="cf-breadcrumb-current">Obsługa sprawy</span>
+                  <span className="cf-breadcrumb-current">ObsĹ‚uga sprawy</span>
                 </div>
-                <h1>{caseData.title || 'Sprawa bez tytułu'}</h1>
+                <h1>{caseData.title || 'Sprawa bez tytuĹ‚u'}</h1>
                 <div className="cf-case-meta">
                   <Badge className={`cf-status-badge ${getStatusBadgeClass(caseData.status)}`}>
                     {getCaseStatusLabel(caseData.status)}
@@ -1286,7 +1306,7 @@ export default function CaseDetail() {
                     <div className="space-y-2">
                       <Label>Nazwa elementu</Label>
                       <Input
-                        placeholder="np. Zgoda na publikację"
+                        placeholder="np. Zgoda na publikacjÄ™"
                         value={newItem.title}
                         onChange={(event) => setNewItem({ ...newItem, title: event.target.value })}
                       />
@@ -1294,7 +1314,7 @@ export default function CaseDetail() {
                     <div className="space-y-2">
                       <Label>Opis / instrukcja</Label>
                       <Textarea
-                        placeholder="Napisz krótko, czego brakuje i co klient ma zrobić."
+                        placeholder="Napisz krĂłtko, czego brakuje i co klient ma zrobiÄ‡."
                         value={newItem.description}
                         onChange={(event) => setNewItem({ ...newItem, description: event.target.value })}
                       />
@@ -1309,8 +1329,8 @@ export default function CaseDetail() {
                         >
                           <option value="file">Plik</option>
                           <option value="decision">Decyzja</option>
-                          <option value="text">Tekst / odpowiedź</option>
-                          <option value="access">Dostępy / hasła</option>
+                          <option value="text">Tekst / odpowiedĹş</option>
+                          <option value="access">DostÄ™py / hasĹ‚a</option>
                         </select>
                       </div>
                       <div className="cf-checkbox-line">
@@ -1320,7 +1340,7 @@ export default function CaseDetail() {
                           checked={newItem.isRequired}
                           onChange={(event) => setNewItem({ ...newItem, isRequired: event.target.checked })}
                         />
-                        <Label htmlFor="required">Obowiązkowy</Label>
+                        <Label htmlFor="required">ObowiÄ…zkowy</Label>
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -1345,7 +1365,7 @@ export default function CaseDetail() {
         </header>
 
         <main className="cf-case-main">
-          <section className="cf-command-grid" aria-label="Najważniejsze informacje o sprawie">
+          <section className="cf-command-grid" aria-label="NajwaĹĽniejsze informacje o sprawie">
             <Card className="cf-command-card cf-command-card-primary">
               <CardContent className="cf-command-content">
                 <div className="cf-command-eyebrow">
@@ -1354,16 +1374,16 @@ export default function CaseDetail() {
                 </div>
                 <h2>
                   {isCompleted
-                    ? 'Sprawa jest zakończona'
+                    ? 'Sprawa jest zakoĹ„czona'
                     : mainBlocker
-                      ? mainBlocker.title || 'Brak wymagany do obsługi'
+                      ? mainBlocker.title || 'Brak wymagany do obsĹ‚ugi'
                       : hasBlockers
-                        ? 'Są blokery do zdjęcia'
-                        : 'Brak krytycznych blokerów'}
+                        ? 'SÄ… blokery do zdjÄ™cia'
+                        : 'Brak krytycznych blokerĂłw'}
                 </h2>
                 <p>
                   {isCompleted
-                    ? 'Nie ma aktywnej pracy operacyjnej. Historia zostaje do wglądu.'
+                    ? 'Nie ma aktywnej pracy operacyjnej. Historia zostaje do wglÄ…du.'
                     : mainBlocker?.description || getCaseStatusHint(caseData.status)}
                 </p>
                 <div className="cf-command-actions">
@@ -1373,7 +1393,7 @@ export default function CaseDetail() {
                       Przygotuj przypomnienie
                     </Button>
                   ) : (
-                    <Button variant="secondary" size="sm" onClick={() => handleNotReadyYet('Oznaczenie gotowości')}>
+                    <Button variant="secondary" size="sm" onClick={() => handleNotReadyYet('Oznaczenie gotowoĹ›ci')}>
                       <CheckCircle2 className="w-4 h-4" />
                       Oznacz jako gotowe
                     </Button>
@@ -1386,9 +1406,9 @@ export default function CaseDetail() {
               <CardContent className="cf-command-content">
                 <div className="cf-command-eyebrow">
                   <CalendarClock className="w-4 h-4" />
-                  Najbliższa akcja
+                  NajbliĹĽsza akcja
                 </div>
-                <h2>{nextActionItem ? nextActionItem.title || 'Sprawdź element sprawy' : 'Brak zaplanowanej akcji'}</h2>
+                <h2>{nextActionItem ? nextActionItem.title || 'SprawdĹş element sprawy' : 'Brak zaplanowanej akcji'}</h2>
                 <p>
                   {'scheduledAt' in (nextActionItem || {})
                     ? `Termin: ${formatDateTime((nextActionItem as TaskRecord).scheduledAt || (nextActionItem as TaskRecord).date || (nextActionItem as TaskRecord).reminderAt)}`
@@ -1398,7 +1418,7 @@ export default function CaseDetail() {
                         ? `Termin: ${formatDate((nextActionItem as CaseItem).dueDate)}`
                         : nextActionItem
                           ? 'Ten element wymaga reakcji, ale nie ma terminu.'
-                          : 'Dodaj zadanie, wydarzenie albo brak, żeby sprawa nie wisiała w powietrzu.'}
+                          : 'Dodaj zadanie, wydarzenie albo brak, ĹĽeby sprawa nie wisiaĹ‚a w powietrzu.'}
                 </p>
                 <div className="cf-command-actions">
                   {nextActionItem ? (
@@ -1431,7 +1451,7 @@ export default function CaseDetail() {
               <CardContent className="cf-command-content">
                 <div className="cf-command-eyebrow">
                   <ListChecks className="w-4 h-4" />
-                  Postęp sprawy
+                  PostÄ™p sprawy
                 </div>
                 <div className="cf-progress-head">
                   <h2>{completionPercent}% gotowe</h2>
@@ -1439,9 +1459,9 @@ export default function CaseDetail() {
                 </div>
                 <Progress value={completionPercent} className="cf-progress-bar" />
                 <div className="cf-mini-stats">
-                  <span>{caseStats.requiredBlockers.length} blokerów</span>
-                  <span>{caseStats.openTasks.length} zadań</span>
-                  <span>{caseStats.plannedEvents.length} wydarzeń</span>
+                  <span>{caseStats.requiredBlockers.length} blokerĂłw</span>
+                  <span>{caseStats.openTasks.length} zadaĹ„</span>
+                  <span>{caseStats.plannedEvents.length} wydarzeĹ„</span>
                 </div>
               </CardContent>
             </Card>
@@ -1452,15 +1472,15 @@ export default function CaseDetail() {
               <Card className="cf-panel-card">
                 <CardHeader className="cf-panel-header">
                   <div>
-                    <CardTitle>Obsługa sprawy</CardTitle>
-                    <p>Jedno miejsce na braki, zadania, wydarzenia i historię. Bez szukania po całym ekranie.</p>
+                    <CardTitle>ObsĹ‚uga sprawy</CardTitle>
+                    <p>Jedno miejsce na braki, zadania, wydarzenia i historiÄ™. Bez szukania po caĹ‚ym ekranie.</p>
                   </div>
                 </CardHeader>
                 <CardContent className="cf-panel-body">
                   <Tabs defaultValue="work" className="cf-tabs">
                     <TabsList className="cf-tabs-list">
-                      <TabsTrigger value="work">Obsługa</TabsTrigger>
-                      <TabsTrigger value="path">Ścieżka</TabsTrigger>
+                      <TabsTrigger value="work">ObsĹ‚uga</TabsTrigger>
+                      <TabsTrigger value="path">ĹšcieĹĽka</TabsTrigger>
                       <TabsTrigger value="items">Checklisty</TabsTrigger>
                       <TabsTrigger value="history">Historia</TabsTrigger>
                     </TabsList>
@@ -1469,7 +1489,7 @@ export default function CaseDetail() {
                       <div className="cf-work-grid">
                         <Card className="cf-sub-card">
                           <CardHeader className="cf-sub-card-header">
-                            <CardTitle>Najważniejsze działania</CardTitle>
+                            <CardTitle>NajwaĹĽniejsze dziaĹ‚ania</CardTitle>
                             <Button size="sm" variant="outline" onClick={() => setIsAddItemOpen(true)}>
                               <Plus className="w-4 h-4" />
                               Dodaj
@@ -1479,7 +1499,7 @@ export default function CaseDetail() {
                             {caseStats.openItems.length === 0 && caseStats.openTasks.length === 0 && caseStats.plannedEvents.length === 0 ? (
                               <div className="cf-empty-box">
                                 <CheckCircle2 className="w-10 h-10" />
-                                <strong>Nie ma aktywnych działań</strong>
+                                <strong>Nie ma aktywnych dziaĹ‚aĹ„</strong>
                                 <span>Dodaj brak, zadanie albo wydarzenie, gdy sprawa wymaga kolejnego ruchu.</span>
                               </div>
                             ) : (
@@ -1490,7 +1510,7 @@ export default function CaseDetail() {
                                       <ListChecks className="w-4 h-4" />
                                     </div>
                                     <div className="cf-action-main">
-                                      <strong>{task.title || 'Zadanie bez tytułu'}</strong>
+                                      <strong>{task.title || 'Zadanie bez tytuĹ‚u'}</strong>
                                       <span>{formatDateTime(task.scheduledAt || task.date || task.reminderAt, 'Bez terminu')}</span>
                                       <div className="cf-action-meta">
                                         <Badge className={`cf-status-badge ${getTaskStatusClass(task.status)}`}>
@@ -1537,7 +1557,7 @@ export default function CaseDetail() {
                                       <CalendarClock className="w-4 h-4" />
                                     </div>
                                     <div className="cf-action-main">
-                                      <strong>{event.title || 'Wydarzenie bez tytułu'}</strong>
+                                      <strong>{event.title || 'Wydarzenie bez tytuĹ‚u'}</strong>
                                       <span>{formatDateTime(event.startAt || event.reminderAt, 'Bez terminu')}</span>
                                       <div className="cf-action-meta">
                                         <Badge className={`cf-status-badge ${getEventStatusClass(event.status)}`}>
@@ -1617,20 +1637,20 @@ export default function CaseDetail() {
                               <strong>{getCaseStatusLabel(caseData.status)}</strong>
                             </div>
                             <div>
-                              <span>Gotowość</span>
-                              <strong>{hasBlockers ? 'Nie można startować' : 'Można przejść dalej'}</strong>
+                              <span>GotowoĹ›Ä‡</span>
+                              <strong>{hasBlockers ? 'Nie moĹĽna startowaÄ‡' : 'MoĹĽna przejĹ›Ä‡ dalej'}</strong>
                             </div>
                             <div>
-                              <span>Powiązane zadania</span>
+                              <span>PowiÄ…zane zadania</span>
                               <strong>{tasks.length}</strong>
                             </div>
                             <div>
-                              <span>Powiązane wydarzenia</span>
+                              <span>PowiÄ…zane wydarzenia</span>
                               <strong>{events.length}</strong>
                             </div>
                             <div>
                               <span>Ostatni ruch</span>
-                              <strong>{activities[0] ? formatDateTime(activities[0].createdAt) : 'Brak aktywności'}</strong>
+                              <strong>{activities[0] ? formatDateTime(activities[0].createdAt) : 'Brak aktywnoĹ›ci'}</strong>
                             </div>
                             <div className="cf-operator-note">
                               <strong>Prosty komunikat:</strong>
@@ -1644,16 +1664,16 @@ export default function CaseDetail() {
                     <TabsContent value="path" className="cf-tab-content">
                       <div className="cf-checklist-head">
                         <div>
-                          <h3>Ścieżka pracy</h3>
-                          <p>Zielona oś prowadzi przez zadania, wydarzenia, braki i historię sprawy w jednej kolejności.</p>
+                          <h3>ĹšcieĹĽka pracy</h3>
+                          <p>Zielona oĹ› prowadzi przez zadania, wydarzenia, braki i historiÄ™ sprawy w jednej kolejnoĹ›ci.</p>
                         </div>
                       </div>
 
                       {workPathEntries.length === 0 ? (
                         <div className="cf-empty-box cf-empty-box-large">
                           <History className="w-12 h-12" />
-                          <strong>Brak ścieżki pracy</strong>
-                          <span>Dodaj zadanie, wydarzenie, brak albo notatkę, żeby zbudować czytelny przebieg sprawy.</span>
+                          <strong>Brak Ĺ›cieĹĽki pracy</strong>
+                          <span>Dodaj zadanie, wydarzenie, brak albo notatkÄ™, ĹĽeby zbudowaÄ‡ czytelny przebieg sprawy.</span>
                         </div>
                       ) : (
                         <div className="cf-work-path">
@@ -1691,7 +1711,7 @@ export default function CaseDetail() {
                       <div className="cf-checklist-head">
                         <div>
                           <h3>Checklisty i blokery</h3>
-                          <p>Lista ma mówić jasno: gotowe, czeka, blokuje. Zero tabelkowego dymu.</p>
+                          <p>Lista ma mĂłwiÄ‡ jasno: gotowe, czeka, blokuje. Zero tabelkowego dymu.</p>
                         </div>
                         <Button size="sm" variant="outline" onClick={() => setIsAddItemOpen(true)}>
                           <Plus className="w-4 h-4" />
@@ -1702,8 +1722,8 @@ export default function CaseDetail() {
                       {items.length === 0 ? (
                         <div className="cf-empty-box cf-empty-box-large">
                           <FileText className="w-12 h-12" />
-                          <strong>Brak elementów sprawy</strong>
-                          <span>Dodaj pierwszy brak, decyzję albo materiał, żeby sprawa miała czytelny start.</span>
+                          <strong>Brak elementĂłw sprawy</strong>
+                          <span>Dodaj pierwszy brak, decyzjÄ™ albo materiaĹ‚, ĹĽeby sprawa miaĹ‚a czytelny start.</span>
                           <Button onClick={() => setIsAddItemOpen(true)}>
                             <Plus className="w-4 h-4" />
                             Dodaj pierwszy element
@@ -1775,7 +1795,7 @@ export default function CaseDetail() {
                                     size="icon"
                                     variant="ghost"
                                     className="cf-reject-btn"
-                                    title="Odrzuć"
+                                    title="OdrzuÄ‡"
                                     onClick={() => handleUpdateItemStatus(item.id, 'rejected', item.title || 'Element')}
                                   >
                                     <X className="w-4 h-4" />
@@ -1796,7 +1816,7 @@ export default function CaseDetail() {
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteItem(item.id)}>
                                       <Trash2 className="w-4 h-4 mr-2" />
-                                      Usuń
+                                      UsuĹ„
                                     </DropdownMenuItem>
                                   </DropdownMenuContent>
                                 </DropdownMenu>
@@ -1812,7 +1832,7 @@ export default function CaseDetail() {
                         <div className="cf-empty-box cf-empty-box-large">
                           <History className="w-12 h-12" />
                           <strong>Brak historii</strong>
-                          <span>Historia pojawi się po dodaniu elementów, notatek albo zmianie statusu.</span>
+                          <span>Historia pojawi siÄ™ po dodaniu elementĂłw, notatek albo zmianie statusu.</span>
                         </div>
                       ) : (
                         <ScrollArea className="cf-history-scroll">
@@ -1845,7 +1865,7 @@ export default function CaseDetail() {
                     <Plus className="w-4 h-4" />
                     <span>
                       <strong>Dodaj brak</strong>
-                      <small>Materiał, decyzja albo odpowiedź</small>
+                      <small>MateriaĹ‚, decyzja albo odpowiedĹş</small>
                     </span>
                   </Button>
 
@@ -1867,7 +1887,7 @@ export default function CaseDetail() {
                         <div className="space-y-2">
                           <Label>Nazwa zadania</Label>
                           <Input
-                            placeholder="np. Zadzwonić do klienta"
+                            placeholder="np. ZadzwoniÄ‡ do klienta"
                             value={newTask.title}
                             onChange={(event) => setNewTask({ ...newTask, title: event.target.value })}
                           />
@@ -2004,18 +2024,18 @@ export default function CaseDetail() {
                       <Button variant="outline" className="cf-wide-action cf-wide-action-note">
                         <StickyNote className="w-4 h-4" />
                         <span>
-                          <strong>Dodaj notatkę</strong>
-                          <small>Krótki ślad dla operatora</small>
+                          <strong>Dodaj notatkÄ™</strong>
+                          <small>KrĂłtki Ĺ›lad dla operatora</small>
                         </span>
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Dodaj notatkę do sprawy</DialogTitle>
+                        <DialogTitle>Dodaj notatkÄ™ do sprawy</DialogTitle>
                       </DialogHeader>
                       <Textarea
                         className="min-h-[140px]"
-                        placeholder="Co warto zapamiętać przy tej sprawie?"
+                        placeholder="Co warto zapamiÄ™taÄ‡ przy tej sprawie?"
                         value={newNote}
                         onChange={(event) => setNewNote(event.target.value)}
                       />
@@ -2023,7 +2043,7 @@ export default function CaseDetail() {
                         <Button variant="outline" onClick={() => setIsAddNoteOpen(false)}>
                           Anuluj
                         </Button>
-                        <Button onClick={handleAddNote}>Zapisz notatkę</Button>
+                        <Button onClick={handleAddNote}>Zapisz notatkÄ™</Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
@@ -2040,8 +2060,8 @@ export default function CaseDetail() {
 
               <Card className="cf-side-card">
                 <CardHeader>
-                  <CardTitle>Powiązania sprawy</CardTitle>
-                  <p>Tu widać, czy zadania i wydarzenia są naprawdę podpięte.</p>
+                  <CardTitle>PowiÄ…zania sprawy</CardTitle>
+                  <p>Tu widaÄ‡, czy zadania i wydarzenia sÄ… naprawdÄ™ podpiÄ™te.</p>
                 </CardHeader>
                 <CardContent className="cf-info-list">
                   <div>
@@ -2066,7 +2086,7 @@ export default function CaseDetail() {
               <Card className="cf-side-card">
                 <CardHeader>
                   <CardTitle>Klient w tle</CardTitle>
-                  <p>Klient jest kontekstem. Praca dzieje się tutaj, w sprawie.</p>
+                  <p>Klient jest kontekstem. Praca dzieje siÄ™ tutaj, w sprawie.</p>
                 </CardHeader>
                 <CardContent className="cf-info-list">
                   <div>
@@ -2082,13 +2102,13 @@ export default function CaseDetail() {
                     <strong>{caseData.clientEmail || 'Brak'}</strong>
                   </div>
                   <div>
-                    <span>Powiązany lead</span>
+                    <span>PowiÄ…zany lead</span>
                     <strong>{caseData.leadId ? 'Tak' : 'Nie'}</strong>
                   </div>
                   {caseData.leadId && (
                     <Button variant="outline" className="w-full" asChild>
                       <Link to={`/leads/${caseData.leadId}`}>
-                        Otwórz lead <ExternalLink className="w-4 h-4 ml-2" />
+                        OtwĂłrz lead <ExternalLink className="w-4 h-4 ml-2" />
                       </Link>
                     </Button>
                   )}
@@ -2097,16 +2117,16 @@ export default function CaseDetail() {
 
               <Card className="cf-side-card cf-note-card">
                 <CardHeader>
-                  <CardTitle>Krótka notatka</CardTitle>
-                  <p>Ostatni kontekst bez czytania całej historii.</p>
+                  <CardTitle>KrĂłtka notatka</CardTitle>
+                  <p>Ostatni kontekst bez czytania caĹ‚ej historii.</p>
                 </CardHeader>
                 <CardContent>
                   <div className="cf-note-preview">
                     {typeof lastNote === 'string' && lastNote.trim()
                       ? lastNote
                       : mainBlocker
-                        ? `Najpierw zdejmij blokadę: ${mainBlocker.title || 'element sprawy'}.`
-                        : 'Brak osobnej notatki. Dodaj ją, jeśli jest coś ważnego do zapamiętania.'}
+                        ? `Najpierw zdejmij blokadÄ™: ${mainBlocker.title || 'element sprawy'}.`
+                        : 'Brak osobnej notatki. Dodaj jÄ…, jeĹ›li jest coĹ› waĹĽnego do zapamiÄ™tania.'}
                   </div>
                 </CardContent>
               </Card>
@@ -2117,3 +2137,4 @@ export default function CaseDetail() {
     </Layout>
   );
 }
+
