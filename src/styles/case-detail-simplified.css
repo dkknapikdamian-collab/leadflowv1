@@ -1,0 +1,130 @@
+/*
+ * Case detail visual simplification layer.
+ * Scope is intentionally narrow: it restyles only the existing CaseDetail V1 command center
+ * through the current app skin tokens instead of hardcoded mockup colors.
+ */
+
+section[data-testid="case-detail-v1-command-center"] {
+  --case-shell-radius: 1.75rem;
+  --case-tile-radius: 1.25rem;
+  --case-soft-border: color-mix(in srgb, var(--app-border) 74%, transparent);
+  --case-soft-surface: color-mix(in srgb, var(--app-surface-strong) 88%, var(--color-primary) 12%);
+  --case-muted-surface: color-mix(in srgb, var(--app-surface-muted) 86%, transparent);
+  --case-primary-soft: color-mix(in srgb, var(--color-primary) 14%, var(--app-surface-strong));
+  --case-primary-line: color-mix(in srgb, var(--color-primary) 28%, var(--app-border));
+}
+
+section[data-testid="case-detail-v1-command-center"] > div,
+section[data-testid="case-detail-v1-command-center"] .bg-slate-950 {
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 34rem),
+    var(--app-surface-strong) !important;
+  color: var(--app-text) !important;
+  border: 1px solid var(--case-soft-border) !important;
+  border-radius: var(--case-shell-radius) !important;
+  box-shadow: 0 22px 70px var(--app-shadow-color) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .text-white,
+section[data-testid="case-detail-v1-command-center"] .text-slate-950 {
+  color: var(--app-text) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .text-slate-400,
+section[data-testid="case-detail-v1-command-center"] .text-slate-300,
+section[data-testid="case-detail-v1-command-center"] .text-\[11px\] {
+  color: var(--app-muted) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .border-white\/10,
+section[data-testid="case-detail-v1-command-center"] .border-white\/20,
+section[data-testid="case-detail-v1-command-center"] .border-white\/30 {
+  border-color: var(--case-soft-border) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .bg-white\/5,
+section[data-testid="case-detail-v1-command-center"] .bg-white\/10 {
+  background-color: var(--case-muted-surface) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .rounded-2xl {
+  border-radius: var(--case-tile-radius) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .grid.grid-cols-3 > div {
+  background: var(--case-soft-surface) !important;
+  border-color: var(--case-primary-line) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .grid.grid-cols-3 p:first-child {
+  color: var(--color-primary) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] .tracking-\[0\.2em\],
+section[data-testid="case-detail-v1-command-center"] .tracking-\[0\.18em\] {
+  color: var(--app-muted) !important;
+  letter-spacing: 0.14em !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] h2 {
+  color: var(--app-text) !important;
+  letter-spacing: -0.035em;
+}
+
+section[data-testid="case-detail-v1-command-center"] [role="progressbar"],
+section[data-testid="case-detail-v1-command-center"] .bg-white\/20 {
+  background-color: color-mix(in srgb, var(--app-border) 64%, transparent) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] button.bg-white {
+  background-color: var(--color-primary) !important;
+  color: var(--color-primary-foreground) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--color-primary) 24%, transparent) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] button.bg-white:hover,
+section[data-testid="case-detail-v1-command-center"] button.hover\:bg-slate-100:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 88%, black) !important;
+  color: var(--color-primary-foreground) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] button.bg-transparent {
+  background-color: transparent !important;
+  color: var(--app-text) !important;
+  border-color: var(--case-soft-border) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] button.bg-transparent:hover {
+  background-color: var(--case-primary-soft) !important;
+}
+
+section[data-testid="case-detail-v1-command-center"] button[variant="secondary"],
+section[data-testid="case-detail-v1-command-center"] button:not(.bg-white):not(.bg-transparent) {
+  border-radius: 1rem;
+}
+
+section[data-testid="case-detail-v1-command-center"] .grid.grid-cols-2 button {
+  min-height: 2.75rem;
+  justify-content: flex-start;
+}
+
+@media (max-width: 768px) {
+  section[data-testid="case-detail-v1-command-center"] {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  section[data-testid="case-detail-v1-command-center"] > div,
+  section[data-testid="case-detail-v1-command-center"] .bg-slate-950 {
+    border-radius: 1.35rem !important;
+  }
+
+  section[data-testid="case-detail-v1-command-center"] .grid.grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  section[data-testid="case-detail-v1-command-center"] .grid.grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+}
