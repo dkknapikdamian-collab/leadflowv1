@@ -28,26 +28,35 @@ test('AI assistant command center is consolidated under system API without a new
   assert.match(server, /noAutoWrite: true/);
 });
 
-test('Today exposes spoken AI assistant for daily plan lead lookup and lead capture intent', () => {
+test('AI assistant is available from global toolbar for daily plan lead lookup and lead capture intent', () => {
   const today = read('src/pages/Today.tsx');
+  const layout = read('src/components/Layout.tsx');
+  const globalQuickActions = read('src/components/GlobalQuickActions.tsx');
+  const globalAssistant = read('src/components/GlobalAiAssistant.tsx');
   const component = read('src/components/TodayAiAssistant.tsx');
   const server = read('src/server/ai-assistant.ts');
 
-  assert.match(today, /TodayAiAssistant/);
-  assert.match(today, /leads=\{leads\}/);
-  assert.match(today, /tasks=\{tasks\}/);
-  assert.match(today, /events=\{events\}/);
+  assertSourceMatches(today, /TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97/, 'today single-source marker');
+  assert.doesNotMatch(today, /import\s+TodayAiAssistant/);
+  assert.match(layout, /GlobalQuickActions/);
+  assert.match(globalQuickActions, /GlobalAiAssistant/);
+  assert.match(globalQuickActions, /data-global-quick-actions-contract/);
+  assert.match(globalAssistant, /TodayAiAssistant/);
+  assert.match(globalAssistant, /leads=\{context\.leads\}/);
+  assert.match(globalAssistant, /tasks=\{context\.tasks\}/);
+  assert.match(globalAssistant, /events=\{context\.events\}/);
+  assert.match(globalAssistant, /cases=\{context\.cases\}/);
+  assert.match(globalAssistant, /clients=\{context\.clients\}/);
   assert.match(component, /Asystent AI/);
   assert.match(component, /SpeechRecognition/);
   assert.match(component, /webkitSpeechRecognition/);
-  assertSourceMatches(component, /Co mam dzisiaj zrobić/, 'today assistant example');
+  assertSourceMatches(component, /Co mam dzisiaj zrobi\u0107/, 'today assistant example');
   assertSourceMatches(component, /Mam leada Warszawa/, 'lead capture example copy');
   assert.match(component, /Bez autopilota/);
   assert.match(server, /today_briefing/);
   assert.match(server, /lead_lookup/);
   assert.match(server, /lead_capture/);
 });
-
 test('AI assistant writes tasks and events only behind explicit safety gate', () => {
   const localFs = require('node:fs');
   const localPath = require('node:path');

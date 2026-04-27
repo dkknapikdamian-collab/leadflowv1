@@ -37,9 +37,15 @@ test('Quick AI Capture keeps the user confirmation gate', () => {
   assert.match(component, /insertTaskToSupabase/);
 });
 
-test('Leads page exposes Quick AI Capture as a lead intake action', () => {
+test('Leads page delegates Quick AI Capture to the global quick actions toolbar', () => {
   const leads = read('src/pages/Leads.tsx');
+  const global = read('src/components/GlobalQuickActions.tsx');
 
-  assert.match(leads, /QuickAiCapture/);
-  assert.match(leads, /onSaved=\{\(\) => void loadLeads\(\)\}/);
+  assert.match(global, /QuickAiCapture/);
+  assert.match(global, /<QuickAiCapture\s*\/>/);
+  assert.match(global, /data-global-quick-actions-contract="v97"/);
+  assert.match(leads, /consumeGlobalQuickAction/);
+  assert.match(leads, /consumeGlobalQuickAction\(\) === 'lead'/);
+  assert.doesNotMatch(leads, /<QuickAiCapture\b/);
+  assert.doesNotMatch(leads, /from '..\/components\/QuickAiCapture'/);
 });
