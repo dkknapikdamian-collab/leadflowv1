@@ -56,6 +56,8 @@ import {
   fetchActivitiesFromSupabase,
   fetchCaseByIdFromSupabase,
   fetchCaseItemsFromSupabase,
+  fetchEventsFromSupabase,
+  fetchTasksFromSupabase,
   insertActivityToSupabase,
   insertCaseItemToSupabase,
   isSupabaseConfigured,
@@ -100,6 +102,31 @@ type CaseItem = {
   createdAt?: any;
 };
 
+type TaskRecord = {
+  id: string;
+  title?: string;
+  type?: string;
+  date?: string | null;
+  scheduledAt?: string | null;
+  reminderAt?: string | null;
+  priority?: string;
+  status?: string;
+  caseId?: string | null;
+  leadId?: string | null;
+};
+
+type EventRecord = {
+  id: string;
+  title?: string;
+  type?: string;
+  startAt?: string | null;
+  endAt?: string | null;
+  reminderAt?: string | null;
+  status?: string;
+  caseId?: string | null;
+  leadId?: string | null;
+};
+
 type CaseActivity = {
   id: string;
   actorType?: string;
@@ -114,6 +141,18 @@ type NewCaseItemState = {
   type: string;
   isRequired: boolean;
   dueDate: string;
+};
+
+type WorkPathEntry = {
+  id: string;
+  kind: 'task' | 'event' | 'item' | 'activity';
+  title: string;
+  subtitle: string;
+  statusLabel: string;
+  statusClass: string;
+  dateValue: any;
+  dateLabel: string;
+  sortTime: number;
 };
 
 const CASE_STATUS_LABELS: Record<string, string> = {
@@ -148,6 +187,24 @@ const ITEM_TYPE_LABELS: Record<string, string> = {
   decision: 'Decyzja',
   text: 'Tekst',
   access: 'Dostępy',
+};
+
+const TASK_STATUS_LABELS: Record<string, string> = {
+  todo: 'Do zrobienia',
+  open: 'Otwarte',
+  in_progress: 'W trakcie',
+  done: 'Zrobione',
+  completed: 'Zrobione',
+  cancelled: 'Anulowane',
+};
+
+const EVENT_STATUS_LABELS: Record<string, string> = {
+  planned: 'Zaplanowane',
+  open: 'Zaplanowane',
+  scheduled: 'Zaplanowane',
+  done: 'Odbyte',
+  completed: 'Odbyte',
+  cancelled: 'Anulowane',
 };
 
 function normalizeRecord<T>(value: unknown): T | null {
@@ -192,6 +249,10 @@ function formatDate(value: any, fallback = 'Bez terminu') {
   });
 }
 
+function sortTime(value: any, fallback = Number.MAX_SAFE_INTEGER) {
+  return toDate(value)?.getTime() || fallback;
+}
+
 function getCaseStatusLabel(status?: string) {
   if (!status) return 'Bez statusu';
   return CASE_STATUS_LABELS[status] || status;
@@ -212,11 +273,34 @@ function getItemTypeLabel(type?: string) {
   return ITEM_TYPE_LABELS[type] || type;
 }
 
+function getTaskStatusLabel(status?: string) {
+  if (!status) return 'Do zrobienia';
+  return TASK_STATUS_LABELS[status] || status;
+}
+
+function getEventStatusLabel(status?: string) {
+  if (!status) return 'Zaplanowane';
+  return EVENT_STATUS_LABELS[status] || status;
+}
+
 function getItemStatusClass(status?: string) {
   if (status === 'accepted') return 'cf-status-ok';
   if (status === 'uploaded') return 'cf-status-info';
   if (status === 'rejected') return 'cf-status-danger';
   return 'cf-status-warning';
+}
+
+function getTaskStatusClass(status?: string) {
+  if (status === 'done' || status === 'completed') return 'cf-status-ok';
+  if (status === 'cancelled') return 'cf-status-neutral';
+  if (status === 'in_progress') return 'cf-status-info';
+  return 'cf-status-warning';
+}
+
+function getEventStatusClass(status?: string) {
+  if (status === 'done' || status === 'completed') return 'cf-status-ok';
+  if (status === 'cancelled') return 'cf-status-neutral';
+  return 'cf-status-info';
 }
 
 function getStatusBadgeClass(status?: string) {
@@ -296,6 +380,82 @@ function buildPortalUrl(caseId: string, tokenPayload: Record<string, unknown>) {
   return token ? `${window.location.origin}/portal/${caseId}/${token}` : `${window.location.origin}/portal/${caseId}`;
 }
 
+function belongsToCase(entry: { caseId?: string | null }, caseId?: string) {
+  return !!caseId && String(entry.caseId || '') === String(caseId);
+}
+
+function buildWorkPathEntries(
+  tasks: TaskRecord[],
+  events: EventRecord[],
+  items: CaseItem[],
+  activities: CaseActivity[],
+): WorkPathEntry[] {
+  const taskEntries: WorkPathEntry[] = tasks.map((task) => ({
+    id: `task-${task.id}`,
+    kind: 'task',
+    title: task.title || 'Zadanie bez tytułu',
+    subtitle: task.type ? `Zadanie: ${task.type}` : 'Zadanie powiązane ze sprawą',
+    statusLabel: getTaskStatusLabel(task.status),
+    statusClass: getTaskStatusClass(task.status),
+    dateValue: task.scheduledAt || task.date || task.reminderAt,
+    dateLabel: formatDateTime(task.scheduledAt || task.date || task.reminderAt, 'Bez terminu'),
+    sortTime: sortTime(task.scheduledAt || task.date || task.reminderAt),
+  }));
+
+  const eventEntries: WorkPathEntry[] = events.map((event) => ({
+    id: `event-${event.id}`,
+    kind: 'event',
+    title: event.title || 'Wydarzenie bez tytułu',
+    subtitle: event.endAt ? `Wydarzenie do ${formatDateTime(event.endAt)}` : 'Wydarzenie powiązane ze sprawą',
+    statusLabel: getEventStatusLabel(event.status),
+    statusClass: getEventStatusClass(event.status),
+    dateValue: event.startAt || event.reminderAt,
+    dateLabel: formatDateTime(event.startAt || event.reminderAt, 'Bez terminu'),
+    sortTime: sortTime(event.startAt || event.reminderAt),
+  }));
+
+  const itemEntries: WorkPathEntry[] = items
+    .filter((item) => item.dueDate || item.status !== 'accepted')
+    .map((item) => ({
+      id: `item-${item.id}`,
+      kind: 'item',
+      title: item.title || 'Element sprawy',
+      subtitle: item.description || getItemTypeLabel(item.type),
+      statusLabel: getItemStatusLabel(item.status),
+      statusClass: getItemStatusClass(item.status),
+      dateValue: item.dueDate,
+      dateLabel: formatDate(item.dueDate, 'Bez terminu'),
+      sortTime: sortTime(item.dueDate),
+    }));
+
+  const activityEntries: WorkPathEntry[] = activities.slice(0, 8).map((activity) => ({
+    id: `activity-${activity.id}`,
+    kind: 'activity',
+    title: getActivityText(activity),
+    subtitle: typeof activity.payload?.note === 'string' ? activity.payload.note : 'Historia sprawy',
+    statusLabel: 'Historia',
+    statusClass: 'cf-status-neutral',
+    dateValue: activity.createdAt,
+    dateLabel: formatDateTime(activity.createdAt, 'Brak daty'),
+    sortTime: sortTime(activity.createdAt, 0),
+  }));
+
+  return [...taskEntries, ...eventEntries, ...itemEntries, ...activityEntries].sort((first, second) => {
+    const firstHasDate = first.dateValue ? 0 : 1;
+    const secondHasDate = second.dateValue ? 0 : 1;
+
+    if (firstHasDate !== secondHasDate) return firstHasDate - secondHasDate;
+    return first.sortTime - second.sortTime;
+  });
+}
+
+function WorkPathIcon({ kind }: { kind: WorkPathEntry['kind'] }) {
+  if (kind === 'task') return <ListChecks className="w-4 h-4" />;
+  if (kind === 'event') return <CalendarClock className="w-4 h-4" />;
+  if (kind === 'item') return <FileText className="w-4 h-4" />;
+  return <History className="w-4 h-4" />;
+}
+
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
@@ -303,6 +463,8 @@ export default function CaseDetail() {
   const [caseData, setCaseData] = useState<CaseRecord | null>(null);
   const [items, setItems] = useState<CaseItem[]>([]);
   const [activities, setActivities] = useState<CaseActivity[]>([]);
+  const [tasks, setTasks] = useState<TaskRecord[]>([]);
+  const [events, setEvents] = useState<EventRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
@@ -351,9 +513,17 @@ export default function CaseDetail() {
           console.error('CaseDetail Supabase activities load failed', error);
           return [];
         }),
+        fetchTasksFromSupabase().catch((error) => {
+          console.error('CaseDetail Supabase tasks load failed', error);
+          return [];
+        }),
+        fetchEventsFromSupabase().catch((error) => {
+          console.error('CaseDetail Supabase events load failed', error);
+          return [];
+        }),
       ]);
 
-      const [caseRowRaw, itemRowsRaw, activityRowsRaw] = await Promise.race([dataPromise, timeoutPromise]);
+      const [caseRowRaw, itemRowsRaw, activityRowsRaw, taskRowsRaw, eventRowsRaw] = await Promise.race([dataPromise, timeoutPromise]);
 
       const normalizedCase = normalizeRecord<CaseRecord>(caseRowRaw);
 
@@ -361,6 +531,8 @@ export default function CaseDetail() {
         setCaseData(null);
         setItems([]);
         setActivities([]);
+        setTasks([]);
+        setEvents([]);
         setLoadError('Nie znaleziono tej sprawy w aktualnym workspace.');
         return;
       }
@@ -368,11 +540,15 @@ export default function CaseDetail() {
       setCaseData(normalizedCase);
       setItems(sortCaseItems((Array.isArray(itemRowsRaw) ? itemRowsRaw : []) as CaseItem[]));
       setActivities(sortActivities((Array.isArray(activityRowsRaw) ? activityRowsRaw : []) as CaseActivity[]));
+      setTasks(((Array.isArray(taskRowsRaw) ? taskRowsRaw : []) as TaskRecord[]).filter((task) => belongsToCase(task, caseId)));
+      setEvents(((Array.isArray(eventRowsRaw) ? eventRowsRaw : []) as EventRecord[]).filter((event) => belongsToCase(event, caseId)));
     } catch (error: any) {
       console.error('CaseDetail Supabase load failed', error);
       setCaseData(null);
       setItems([]);
       setActivities([]);
+      setTasks([]);
+      setEvents([]);
 
       if (error?.message === 'TIMEOUT_CASE_DETAIL_LOAD') {
         setLoadError('Ładowanie sprawy trwa za długo. API nie odpowiedziało w bezpiecznym czasie.');
@@ -416,6 +592,9 @@ export default function CaseDetail() {
     );
     const openItems = items.filter((item) => item.status !== 'accepted');
 
+    const openTasks = tasks.filter((task) => !['done', 'completed', 'cancelled'].includes(String(task.status || '')));
+    const plannedEvents = events.filter((event) => !['done', 'completed', 'cancelled'].includes(String(event.status || '')));
+
     const dueItems = openItems
       .filter((item) => item.dueDate)
       .sort((first, second) => {
@@ -424,8 +603,16 @@ export default function CaseDetail() {
         return firstDate - secondDate;
       });
 
+    const dueTasks = openTasks
+      .filter((task) => task.scheduledAt || task.date || task.reminderAt)
+      .sort((first, second) => sortTime(first.scheduledAt || first.date || first.reminderAt) - sortTime(second.scheduledAt || second.date || second.reminderAt));
+
+    const dueEvents = plannedEvents
+      .filter((event) => event.startAt || event.reminderAt)
+      .sort((first, second) => sortTime(first.startAt || first.reminderAt) - sortTime(second.startAt || second.reminderAt));
+
     const mainBlocker = rejected[0] || requiredBlockers[0] || uploaded[0] || missing[0] || openItems[0] || null;
-    const nextActionItem = dueItems[0] || mainBlocker;
+    const nextActionItem = dueTasks[0] || dueEvents[0] || dueItems[0] || mainBlocker;
 
     return {
       accepted,
@@ -434,10 +621,17 @@ export default function CaseDetail() {
       rejected,
       requiredBlockers,
       openItems,
+      openTasks,
+      plannedEvents,
       mainBlocker,
       nextActionItem,
     };
-  }, [items]);
+  }, [events, items, tasks]);
+
+  const workPathEntries = useMemo(
+    () => buildWorkPathEntries(tasks, events, items, activities),
+    [activities, events, items, tasks],
+  );
 
   const syncCaseSummary = async (nextItems: CaseItem[]) => {
     if (!caseId) return;
@@ -593,7 +787,7 @@ export default function CaseDetail() {
   };
 
   const handleNotReadyYet = (label: string) => {
-    toast.info(`${label} będzie osobnym etapem. Ten patch porządkuje widok sprawy i checklistę.`);
+    toast.info(`${label} będzie osobnym etapem. Ten patch porządkuje widok sprawy i pokazuje powiązane akcje.`);
   };
 
   if (loadError) {
@@ -631,7 +825,7 @@ export default function CaseDetail() {
               <CardContent className="cf-empty-box cf-empty-box-large">
                 <Clock className="w-12 h-12" />
                 <strong>Ładuję sprawę</strong>
-                <span>Pobieram dane sprawy, checklisty i historię.</span>
+                <span>Pobieram dane sprawy, checklisty, zadania, wydarzenia i historię.</span>
               </CardContent>
             </Card>
           </main>
@@ -818,16 +1012,32 @@ export default function CaseDetail() {
                 </div>
                 <h2>{nextActionItem ? nextActionItem.title || 'Sprawdź element sprawy' : 'Brak zaplanowanej akcji'}</h2>
                 <p>
-                  {nextActionItem?.dueDate
-                    ? `Termin: ${formatDate(nextActionItem.dueDate)}`
-                    : nextActionItem
-                      ? 'Ten element wymaga reakcji, ale nie ma terminu.'
-                      : 'Dodaj zadanie, wydarzenie albo brak, żeby sprawa nie wisiała w powietrzu.'}
+                  {'scheduledAt' in (nextActionItem || {})
+                    ? `Termin: ${formatDateTime((nextActionItem as TaskRecord).scheduledAt || (nextActionItem as TaskRecord).date || (nextActionItem as TaskRecord).reminderAt)}`
+                    : 'startAt' in (nextActionItem || {})
+                      ? `Termin: ${formatDateTime((nextActionItem as EventRecord).startAt || (nextActionItem as EventRecord).reminderAt)}`
+                      : nextActionItem && 'dueDate' in nextActionItem
+                        ? `Termin: ${formatDate((nextActionItem as CaseItem).dueDate)}`
+                        : nextActionItem
+                          ? 'Ten element wymaga reakcji, ale nie ma terminu.'
+                          : 'Dodaj zadanie, wydarzenie albo brak, żeby sprawa nie wisiała w powietrzu.'}
                 </p>
                 <div className="cf-command-actions">
                   {nextActionItem ? (
-                    <Badge className={`cf-status-badge ${getItemStatusClass(nextActionItem.status)}`}>
-                      {getItemStatusLabel(nextActionItem.status)}
+                    <Badge
+                      className={`cf-status-badge ${
+                        'scheduledAt' in nextActionItem
+                          ? getTaskStatusClass((nextActionItem as TaskRecord).status)
+                          : 'startAt' in nextActionItem
+                            ? getEventStatusClass((nextActionItem as EventRecord).status)
+                            : getItemStatusClass((nextActionItem as CaseItem).status)
+                      }`}
+                    >
+                      {'scheduledAt' in nextActionItem
+                        ? getTaskStatusLabel((nextActionItem as TaskRecord).status)
+                        : 'startAt' in nextActionItem
+                          ? getEventStatusLabel((nextActionItem as EventRecord).status)
+                          : getItemStatusLabel((nextActionItem as CaseItem).status)}
                     </Badge>
                   ) : (
                     <Button size="sm" variant="outline" onClick={() => setIsAddItemOpen(true)}>
@@ -852,7 +1062,8 @@ export default function CaseDetail() {
                 <Progress value={completionPercent} className="cf-progress-bar" />
                 <div className="cf-mini-stats">
                   <span>{caseStats.requiredBlockers.length} blokerów</span>
-                  <span>{caseStats.uploaded.length} do sprawdzenia</span>
+                  <span>{caseStats.openTasks.length} zadań</span>
+                  <span>{caseStats.plannedEvents.length} wydarzeń</span>
                 </div>
               </CardContent>
             </Card>
@@ -864,13 +1075,14 @@ export default function CaseDetail() {
                 <CardHeader className="cf-panel-header">
                   <div>
                     <CardTitle>Obsługa sprawy</CardTitle>
-                    <p>Jedno miejsce na braki, decyzje, materiały i historię. Bez szukania po całym ekranie.</p>
+                    <p>Jedno miejsce na braki, zadania, wydarzenia i historię. Bez szukania po całym ekranie.</p>
                   </div>
                 </CardHeader>
                 <CardContent className="cf-panel-body">
                   <Tabs defaultValue="work" className="cf-tabs">
                     <TabsList className="cf-tabs-list">
                       <TabsTrigger value="work">Obsługa</TabsTrigger>
+                      <TabsTrigger value="path">Ścieżka</TabsTrigger>
                       <TabsTrigger value="items">Checklisty</TabsTrigger>
                       <TabsTrigger value="history">Historia</TabsTrigger>
                     </TabsList>
@@ -886,14 +1098,50 @@ export default function CaseDetail() {
                             </Button>
                           </CardHeader>
                           <CardContent className="cf-list-content">
-                            {caseStats.openItems.length === 0 ? (
+                            {caseStats.openItems.length === 0 && caseStats.openTasks.length === 0 && caseStats.plannedEvents.length === 0 ? (
                               <div className="cf-empty-box">
                                 <CheckCircle2 className="w-10 h-10" />
-                                <strong>Nie ma aktywnych braków</strong>
-                                <span>Dodaj kolejny element tylko wtedy, gdy realnie czegoś brakuje.</span>
+                                <strong>Nie ma aktywnych działań</strong>
+                                <span>Dodaj brak, zadanie albo wydarzenie, gdy sprawa wymaga kolejnego ruchu.</span>
                               </div>
                             ) : (
                               <div className="cf-case-items-list">
+                                {caseStats.openTasks.slice(0, 3).map((task) => (
+                                  <div key={`task-${task.id}`} className="cf-action-item cf-action-task">
+                                    <div className={`cf-item-icon ${getTaskStatusClass(task.status)}`}>
+                                      <ListChecks className="w-4 h-4" />
+                                    </div>
+                                    <div className="cf-action-main">
+                                      <strong>{task.title || 'Zadanie bez tytułu'}</strong>
+                                      <span>{formatDateTime(task.scheduledAt || task.date || task.reminderAt, 'Bez terminu')}</span>
+                                      <div className="cf-action-meta">
+                                        <Badge className={`cf-status-badge ${getTaskStatusClass(task.status)}`}>
+                                          {getTaskStatusLabel(task.status)}
+                                        </Badge>
+                                        {task.priority && <span>Priorytet: {task.priority}</span>}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+
+                                {caseStats.plannedEvents.slice(0, 3).map((event) => (
+                                  <div key={`event-${event.id}`} className="cf-action-item cf-action-event">
+                                    <div className={`cf-item-icon ${getEventStatusClass(event.status)}`}>
+                                      <CalendarClock className="w-4 h-4" />
+                                    </div>
+                                    <div className="cf-action-main">
+                                      <strong>{event.title || 'Wydarzenie bez tytułu'}</strong>
+                                      <span>{formatDateTime(event.startAt || event.reminderAt, 'Bez terminu')}</span>
+                                      <div className="cf-action-meta">
+                                        <Badge className={`cf-status-badge ${getEventStatusClass(event.status)}`}>
+                                          {getEventStatusLabel(event.status)}
+                                        </Badge>
+                                        {event.type && <span>{event.type}</span>}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+
                                 {caseStats.openItems.slice(0, 4).map((item) => (
                                   <div key={item.id} className="cf-action-item">
                                     <div className={`cf-item-icon ${getItemStatusClass(item.status)}`}>
@@ -937,8 +1185,12 @@ export default function CaseDetail() {
                               <strong>{hasBlockers ? 'Nie można startować' : 'Można przejść dalej'}</strong>
                             </div>
                             <div>
-                              <span>Do sprawdzenia</span>
-                              <strong>{caseStats.uploaded.length}</strong>
+                              <span>Powiązane zadania</span>
+                              <strong>{tasks.length}</strong>
+                            </div>
+                            <div>
+                              <span>Powiązane wydarzenia</span>
+                              <strong>{events.length}</strong>
                             </div>
                             <div>
                               <span>Ostatni ruch</span>
@@ -951,6 +1203,52 @@ export default function CaseDetail() {
                           </CardContent>
                         </Card>
                       </div>
+                    </TabsContent>
+
+                    <TabsContent value="path" className="cf-tab-content">
+                      <div className="cf-checklist-head">
+                        <div>
+                          <h3>Ścieżka pracy</h3>
+                          <p>Zielona oś prowadzi przez zadania, wydarzenia, braki i historię sprawy w jednej kolejności.</p>
+                        </div>
+                      </div>
+
+                      {workPathEntries.length === 0 ? (
+                        <div className="cf-empty-box cf-empty-box-large">
+                          <History className="w-12 h-12" />
+                          <strong>Brak ścieżki pracy</strong>
+                          <span>Dodaj zadanie, wydarzenie, brak albo notatkę, żeby zbudować czytelny przebieg sprawy.</span>
+                        </div>
+                      ) : (
+                        <div className="cf-work-path">
+                          {workPathEntries.map((entry, index) => (
+                            <div key={entry.id} className={`cf-work-path-row ${index === 0 ? 'cf-work-path-row-current' : ''}`}>
+                              <div className="cf-work-path-date">
+                                <strong>{entry.dateLabel}</strong>
+                                <span>
+                                  {entry.kind === 'task'
+                                    ? 'Zadanie'
+                                    : entry.kind === 'event'
+                                      ? 'Wydarzenie'
+                                      : entry.kind === 'item'
+                                        ? 'Brak / element'
+                                        : 'Historia'}
+                                </span>
+                              </div>
+                              <div className={`cf-work-path-dot ${entry.statusClass}`}>
+                                <WorkPathIcon kind={entry.kind} />
+                              </div>
+                              <div className="cf-work-path-card">
+                                <div className="cf-work-path-card-head">
+                                  <strong>{entry.title}</strong>
+                                  <Badge className={`cf-status-badge ${entry.statusClass}`}>{entry.statusLabel}</Badge>
+                                </div>
+                                <p>{entry.subtitle}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </TabsContent>
 
                     <TabsContent value="items" className="cf-tab-content">
@@ -1107,7 +1405,7 @@ export default function CaseDetail() {
                   <p>Proste przyciski robocze, bez zakopywania funkcji.</p>
                 </CardHeader>
                 <CardContent className="cf-side-stack">
-                  <Button className="cf-wide-action" onClick={() => setIsAddItemOpen(true)}>
+                  <Button className="cf-wide-action cf-wide-action-primary" onClick={() => setIsAddItemOpen(true)}>
                     <Plus className="w-4 h-4" />
                     <span>
                       <strong>Dodaj brak</strong>
@@ -1115,7 +1413,7 @@ export default function CaseDetail() {
                     </span>
                   </Button>
 
-                  <Button variant="outline" className="cf-wide-action" onClick={() => handleNotReadyYet('Dodawanie zadania')}>
+                  <Button variant="outline" className="cf-wide-action cf-wide-action-task" onClick={() => handleNotReadyYet('Dodawanie zadania')}>
                     <ListChecks className="w-4 h-4" />
                     <span>
                       <strong>Dodaj zadanie</strong>
@@ -1123,7 +1421,7 @@ export default function CaseDetail() {
                     </span>
                   </Button>
 
-                  <Button variant="outline" className="cf-wide-action" onClick={() => handleNotReadyYet('Dodawanie wydarzenia')}>
+                  <Button variant="outline" className="cf-wide-action cf-wide-action-event" onClick={() => handleNotReadyYet('Dodawanie wydarzenia')}>
                     <CalendarClock className="w-4 h-4" />
                     <span>
                       <strong>Dodaj wydarzenie</strong>
@@ -1133,7 +1431,7 @@ export default function CaseDetail() {
 
                   <Dialog open={isAddNoteOpen} onOpenChange={setIsAddNoteOpen}>
                     <DialogTrigger asChild>
-                      <Button variant="outline" className="cf-wide-action">
+                      <Button variant="outline" className="cf-wide-action cf-wide-action-note">
                         <StickyNote className="w-4 h-4" />
                         <span>
                           <strong>Dodaj notatkę</strong>
@@ -1167,6 +1465,31 @@ export default function CaseDetail() {
                       <small>Link dla klienta</small>
                     </span>
                   </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="cf-side-card">
+                <CardHeader>
+                  <CardTitle>Powiązania sprawy</CardTitle>
+                  <p>Tu widać, czy zadania i wydarzenia są naprawdę podpięte.</p>
+                </CardHeader>
+                <CardContent className="cf-info-list">
+                  <div>
+                    <span>Zadania</span>
+                    <strong>{tasks.length}</strong>
+                  </div>
+                  <div>
+                    <span>Wydarzenia</span>
+                    <strong>{events.length}</strong>
+                  </div>
+                  <div>
+                    <span>Elementy checklisty</span>
+                    <strong>{items.length}</strong>
+                  </div>
+                  <div>
+                    <span>Historia</span>
+                    <strong>{activities.length}</strong>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -1214,23 +1537,6 @@ export default function CaseDetail() {
                       : mainBlocker
                         ? `Najpierw zdejmij blokadę: ${mainBlocker.title || 'element sprawy'}.`
                         : 'Brak osobnej notatki. Dodaj ją, jeśli jest coś ważnego do zapamiętania.'}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="cf-side-card">
-                <CardHeader>
-                  <CardTitle>Źródło danych</CardTitle>
-                  <p>Ten widok jest przepięty na Supabase API, bez Firestore.</p>
-                </CardHeader>
-                <CardContent className="cf-info-list">
-                  <div>
-                    <span>Baza</span>
-                    <strong>Supabase</strong>
-                  </div>
-                  <div>
-                    <span>ID sprawy</span>
-                    <strong>{caseData.id}</strong>
                   </div>
                 </CardContent>
               </Card>
