@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "node scripts/check-today-tiles-event-edit-client-cleanup.cjs && node scripts/check-today-week-client-more-ui-text-cleanup.cjs && node scripts/check-task-edit-reminder-and-week-calendar.cjs && node scripts/check-client-inline-edit-and-task-edit.cjs && node scripts/check-task-event-contract.cjs && node scripts/check-polish-mojibake.cjs && tsc --noEmit",
+    "lint": "node scripts/check-relation-cleanup-today-toggle-sync.cjs && node scripts/check-today-tiles-event-edit-client-cleanup.cjs && node scripts/check-today-week-client-more-ui-text-cleanup.cjs && node scripts/check-task-edit-reminder-and-week-calendar.cjs && node scripts/check-client-inline-edit-and-task-edit.cjs && node scripts/check-task-event-contract.cjs && node scripts/check-polish-mojibake.cjs && tsc --noEmit",
     "verify:closeflow": "node scripts/closeflow-release-check.cjs",
     "verify:closeflow:quiet": "node scripts/closeflow-release-check-quiet.cjs",
     "check:polish": "node scripts/check-polish-mojibake.cjs",
@@ -16,7 +16,8 @@
     "check:client-inline-edit": "node scripts/check-client-inline-edit-and-task-edit.cjs",
     "check:task-edit-reminder-week-calendar": "node scripts/check-task-edit-reminder-and-week-calendar.cjs",
     "check:today-client-ui-cleanup": "node scripts/check-today-week-client-more-ui-text-cleanup.cjs",
-    "check:today-event-client-cleanup": "node scripts/check-today-tiles-event-edit-client-cleanup.cjs"
+    "check:today-event-client-cleanup": "node scripts/check-today-tiles-event-edit-client-cleanup.cjs",
+    "check:relation-cleanup-today-sync": "node scripts/check-relation-cleanup-today-toggle-sync.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

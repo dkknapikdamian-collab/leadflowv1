@@ -76,8 +76,17 @@ export function buildTopicContactOptions({
   cases: UnknownRecord[];
   clients: UnknownRecord[];
 }) {
-  const activeLeads = leads.filter((lead) => isActiveSalesLead(lead));
   const activeCases = cases.filter((caseRecord) => isActiveCase(caseRecord));
+  const activeCaseClientIds = new Set(activeCases.map((caseRecord) => asText(caseRecord.clientId)).filter(Boolean));
+  const activeCaseLeadIds = new Set(activeCases.map((caseRecord) => asText(caseRecord.leadId)).filter(Boolean));
+  const activeLeads = leads.filter((lead) => {
+    const leadId = asText(lead.id);
+    const clientId = asText(lead.clientId);
+
+    return isActiveSalesLead(lead)
+      && !activeCaseLeadIds.has(leadId)
+      && (!clientId || !activeCaseClientIds.has(clientId));
+  });
 
   const activeLeadsByClientId = new Map<string, UnknownRecord[]>();
   const activeCasesByClientId = new Map<string, UnknownRecord[]>();
@@ -118,7 +127,7 @@ export function buildTopicContactOptions({
     ],
   }));
 
-  const caseOptions: TopicContactOption[] = cases.map((caseRecord) => ({
+  const caseOptions: TopicContactOption[] = activeCases.map((caseRecord) => ({
     id: `case:${asText(caseRecord.id)}`,
     type: 'case',
     label: getCaseDisplayName(caseRecord),
@@ -138,66 +147,51 @@ export function buildTopicContactOptions({
     ],
   }));
 
-  const clientOptions: TopicContactOption[] = clients.map((client) => {
+  const clientOptions: TopicContactOption[] = clients.flatMap((client) => {
     const clientId = asText(client.id);
     const clientLabel = getClientDisplayName(client);
     const linkedCases = activeCasesByClientId.get(clientId) || [];
     const linkedLeads = activeLeadsByClientId.get(clientId) || [];
 
-    if (linkedCases.length === 1) {
-      const onlyCase = linkedCases[0];
-      return {
-        id: `client:${clientId}`,
-        type: 'client',
-        label: clientLabel,
-        subLabel: `Klient • aktywna sprawa: ${getCaseDisplayName(onlyCase)}`,
-        metaLabel: 'Klient',
-        clientId,
-        leadId: asText(onlyCase.leadId) || null,
-        caseId: asText(onlyCase.id) || null,
-        resolvedTarget: 'case',
-        resolutionLabel: `Powiązanie: sprawa "${getCaseDisplayName(onlyCase)}"`,
-        keywords: [clientLabel, asText(client.company), asText(client.email), asText(client.phone), getCaseDisplayName(onlyCase)],
-      };
+    if (linkedCases.length === 1 || (linkedCases.length === 0 && linkedLeads.length === 1)) {
+      return [];
     }
 
-    if (linkedCases.length === 0 && linkedLeads.length === 1) {
-      const onlyLead = linkedLeads[0];
-      return {
-        id: `client:${clientId}`,
+    if (linkedCases.length + linkedLeads.length > 1) {
+      return [{
+        id: `client:${clientId}:needs-topic`,
         type: 'client',
         label: clientLabel,
-        subLabel: `Klient • aktywny lead: ${getLeadDisplayName(onlyLead)}`,
+        subLabel: 'Klient • ma kilka tematów, wybierz konkretną sprawę albo aktywny lead',
         metaLabel: 'Klient',
         clientId,
-        leadId: asText(onlyLead.id) || null,
+        leadId: null,
         caseId: null,
-        resolvedTarget: 'lead',
-        resolutionLabel: `Powiązanie: lead "${getLeadDisplayName(onlyLead)}"`,
-        keywords: [clientLabel, asText(client.company), asText(client.email), asText(client.phone), getLeadDisplayName(onlyLead)],
-      };
+        resolvedTarget: 'needs_disambiguation',
+        resolutionLabel: 'Powiązanie wymaga wyboru konkretnego tematu',
+        disabled: true,
+        keywords: [clientLabel, asText(client.company), asText(client.email), asText(client.phone)],
+      }];
     }
 
-    const hasManyTopics = linkedCases.length + linkedLeads.length > 1;
-    return {
-      id: `client:${clientId}`,
-      type: 'client',
-      label: clientLabel,
-      subLabel: hasManyTopics
-        ? 'Klient • ma kilka tematów, wybierz konkretny lead albo sprawę'
-        : 'Klient • brak aktywnego tematu do powiązania',
-      metaLabel: 'Klient',
-      clientId,
-      leadId: null,
-      caseId: null,
-      resolvedTarget: 'needs_disambiguation',
-      resolutionLabel: 'Powiązanie wymaga wyboru konkretnego tematu',
-      disabled: true,
-      keywords: [clientLabel, asText(client.company), asText(client.email), asText(client.phone)],
-    };
+    return [];
   });
 
-  return [...caseOptions, ...leadOptions, ...clientOptions];
+  const seenOptionKeys = new Set<string>();
+  const dedupedOptions = [...caseOptions, ...leadOptions, ...clientOptions].filter((option) => {
+    const key = [
+      option.resolvedTarget,
+      option.caseId || '',
+      option.leadId || '',
+      option.clientId || '',
+      option.disabled ? 'disabled' : 'active',
+    ].join(':');
+
+    if (seenOptionKeys.has(key)) return false;
+    seenOptionKeys.add(key);
+    return true;
+  });
+  return dedupedOptions;
 }
 
 export function filterTopicContactOptions(options: TopicContactOption[], query: string) {

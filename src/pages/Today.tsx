@@ -290,13 +290,7 @@ function findTodayPipelineShortcutElement(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return null;
 
   const direct = target.closest('[data-today-pipeline-shortcut]');
-  if (direct instanceof HTMLElement) return direct;
-
-  const candidate = target.closest('a, button, [role="button"], .rounded-2xl, .rounded-xl');
-  if (!(candidate instanceof HTMLElement)) return null;
-
-  const shortcutTarget = resolveTodayTileShortcutTarget(candidate.textContent);
-  return shortcutTarget ? candidate : null;
+  return direct instanceof HTMLElement ? direct : null;
 }
 
 function TileCard({
@@ -703,7 +697,25 @@ function todayPipelineIsWithoutMovement(lead: any) {
 
 function todayPipelineIsBlockedCase(caseItem: any) {
   const status = String(caseItem?.status || '').toLowerCase();
-  return status === 'blocked' || status === 'zablokowana' || status === 'zablokowane';
+  const blockerText = String(
+    caseItem?.blocker ||
+    caseItem?.blockReason ||
+    caseItem?.missingReason ||
+    caseItem?.blockedReason ||
+    caseItem?.waitingReason ||
+    '',
+  ).trim();
+
+  return Boolean(
+    caseItem?.isBlocked ||
+    blockerText ||
+    status === 'blocked' ||
+    status === 'zablokowana' ||
+    status === 'zablokowane' ||
+    status === 'waiting_on_client' ||
+    status === 'to_approve' ||
+    status === 'on_hold',
+  );
 }
 
 function todayPipelineCaseTitle(caseItem: any) {
@@ -941,7 +953,21 @@ export default function Today() {
   };
 
   const toggleTile = (id: string) => {
-    openOnlyTodayTile(id);
+    setCollapsedTiles((prev) => {
+      const wasCollapsed = Boolean(prev[id]);
+      const next: Record<string, boolean> = {};
+      const headers = Array.from(document.querySelectorAll<HTMLElement>('[data-today-tile-header="true"]'));
+
+      headers.forEach((header) => {
+        const tileId = header.dataset.todayTileId;
+        if (tileId) {
+          next[tileId] = true;
+        }
+      });
+
+      next[id] = !wasCollapsed;
+      return next;
+    });
   };
 
   useEffect(() => {

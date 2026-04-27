@@ -61,6 +61,7 @@ type CaseRecord = {
   title?: string;
   status?: string;
   leadId?: string | null;
+  clientId?: string | null;
 };
 
 type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history';
@@ -211,13 +212,31 @@ export default function Leads() {
     return map;
   }, [cases]);
 
+  const casesByClientId = useMemo(() => {
+    const map = new Map<string, CaseRecord>();
+    for (const caseRecord of cases) {
+      const clientId = String(caseRecord.clientId || '').trim();
+      if (clientId && !map.has(clientId)) {
+        map.set(clientId, caseRecord);
+      }
+    }
+    return map;
+  }, [cases]);
+
+  const resolveLinkedCaseForLead = useCallback((lead: any) => {
+    const leadId = String(lead?.id || '').trim();
+    const clientId = String(lead?.clientId || '').trim();
+
+    return casesByLeadId.get(leadId) || (clientId ? casesByClientId.get(clientId) : undefined);
+  }, [casesByClientId, casesByLeadId]);
+
   const nextActionByLeadId = useMemo(() => {
     const map = new Map<string, ReturnType<typeof getLeadNextAction>>();
 
     for (const lead of leads) {
       const leadId = String(lead.id || '');
       if (!leadId) continue;
-      const linkedCase = casesByLeadId.get(leadId);
+      const linkedCase = resolveLinkedCaseForLead(lead);
       const linkedTasks = tasks.filter((item) => {
         const itemLeadId = String(item.leadId || item.lead_id || '');
         const itemCaseId = String(item.caseId || item.case_id || '');
@@ -232,7 +251,7 @@ export default function Leads() {
     }
 
     return map;
-  }, [casesByLeadId, events, leads, tasks]);
+  }, [events, leads, resolveLinkedCaseForLead, tasks]);
 
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
@@ -275,7 +294,7 @@ export default function Leads() {
     const leadId = String(lead.id || '');
     if (!leadId) return;
 
-    const linkedCase = casesByLeadId.get(leadId);
+    const linkedCase = resolveLinkedCaseForLead(lead);
     const relationText = linkedCase
       ? '\n\nTen lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
       : '\n\nLead zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
@@ -312,7 +331,7 @@ export default function Leads() {
     const leadId = String(lead.id || '');
     if (!leadId) return;
 
-    const linkedCase = casesByLeadId.get(leadId);
+    const linkedCase = resolveLinkedCaseForLead(lead);
     const nextStatus = getRestoreStatusForLead(lead, linkedCase);
     const nextVisibility = nextStatus === 'moved_to_service' ? 'archived' : 'active';
     const nextOutcome = nextStatus === 'moved_to_service' ? 'moved_to_service' : 'open';
@@ -361,7 +380,7 @@ export default function Leads() {
     const sourceLeads = showTrash ? trashLeads : activeLeads;
 
     const results = sourceLeads.filter((lead) => {
-      const linkedCase = casesByLeadId.get(String(lead.id));
+      const linkedCase = resolveLinkedCaseForLead(lead);
       const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
       const activeLead = isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
       const caseTitle = String(linkedCase?.title || '').toLowerCase();
@@ -391,14 +410,14 @@ export default function Leads() {
     }
 
     return results;
-  }, [activeLeads, casesByLeadId, quickFilter, searchQuery, showTrash, trashLeads, valueSortEnabled]);
+  }, [activeLeads, quickFilter, resolveLinkedCaseForLead, searchQuery, showTrash, trashLeads, valueSortEnabled]);
 
   const stats = {
     total: activeLeads.length,
-    active: activeLeads.filter((lead) => isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
+    active: activeLeads.filter((lead) => isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || resolveLinkedCaseForLead(lead)?.id })).length,
     value: relationFunnelValue,
     atRisk: activeLeads.filter((lead) => Boolean(lead.isAtRisk)).length,
-    linkedToCase: activeLeads.filter((lead) => isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || casesByLeadId.get(String(lead.id))?.id })).length,
+    linkedToCase: activeLeads.filter((lead) => isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || resolveLinkedCaseForLead(lead)?.id })).length,
     trash: trashLeads.length,
   };
 
@@ -632,7 +651,7 @@ export default function Leads() {
             </div>
           ) : (
             filteredLeads.map((lead) => {
-              const linkedCase = casesByLeadId.get(String(lead.id));
+              const linkedCase = resolveLinkedCaseForLead(lead);
               const nextAction = nextActionByLeadId.get(String(lead.id));
               const nextActionMeta = buildNextActionMeta(nextAction);
               const status = STATUS_OPTIONS.find((option) => option.value === lead.status) || STATUS_OPTIONS[0];

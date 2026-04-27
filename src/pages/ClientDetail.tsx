@@ -1,4 +1,4 @@
-﻿/*
+/*
 CLIENT_DETAIL_STALE_CUMULATIVE_REPAIR_V97
 CLIENT_DETAIL_RELATION_COMMAND_CENTER_COMPAT_V97
 Klient jako centrum relacji
@@ -67,6 +67,7 @@ import {
   fetchPaymentsFromSupabase,
   fetchTasksFromSupabase,
   updateClientInSupabase,
+  updateLeadInSupabase,
 } from '../lib/supabase-fallback';
 
 type ClientTab = 'summary' | 'cases' | 'contact' | 'history';
@@ -587,7 +588,25 @@ export default function ClientDetail() {
         id: clientId,
         ...form,
       });
-      toast.success('Klient zaktualizowany');
+
+      const linkedLeadUpdates = leads
+        .filter((lead) => String(lead?.id || '').trim())
+        .map((lead) => updateLeadInSupabase({
+          id: String(lead.id),
+          name: form.name,
+          company: form.company,
+          email: form.email,
+          phone: form.phone,
+        }));
+
+      const linkedLeadResults = await Promise.allSettled(linkedLeadUpdates);
+      const failedLeadSyncs = linkedLeadResults.filter((result) => result.status === 'rejected').length;
+
+      if (failedLeadSyncs > 0) {
+        toast.error('Klient zapisany, ale nie udało się zsynchronizować części powiązanych leadów.');
+      } else {
+        toast.success('Klient zaktualizowany');
+      }
       await reload();
     } catch (error: any) {
       toast.error(`Błąd zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
