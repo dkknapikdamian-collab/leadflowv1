@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @import "./styles/case-detail-simplified.css";
 @import "./styles/case-detail-stage2.css";
 @import "./styles/visual-stage3-pipeline-and-case.css";
@@ -213,4 +213,5 @@ html[data-skin] select option {
   background-color: var(--app-surface-strong);
   color: var(--app-text);
 }
+
 
