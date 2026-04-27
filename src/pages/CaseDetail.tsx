@@ -1,23 +1,5 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { db, auth } from '../firebase';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Progress } from '../components/ui/progress';
 import {
   AlertCircle,
   ArrowLeft,
@@ -43,6 +25,12 @@ import {
   X,
 } from 'lucide-react';
 import { toast } from 'sonner';
+
+import Layout from '../components/Layout';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
+import { Progress } from '../components/ui/progress';
 import {
   Dialog,
   DialogContent,
@@ -62,22 +50,54 @@ import {
 } from '../components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { ScrollArea } from '../components/ui/scroll-area';
-import Layout from '../components/Layout';
+import {
+  createClientPortalTokenInSupabase,
+  deleteCaseItemFromSupabase,
+  fetchActivitiesFromSupabase,
+  fetchCaseByIdFromSupabase,
+  fetchCaseItemsFromSupabase,
+  insertActivityToSupabase,
+  insertCaseItemToSupabase,
+  isSupabaseConfigured,
+  updateCaseInSupabase,
+  updateCaseItemInSupabase,
+} from '../lib/supabase-fallback';
 import '../styles/closeflow-case-detail-focus.css';
 
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
 
+type CaseRecord = {
+  id: string;
+  title?: string;
+  clientName?: string;
+  clientId?: string | null;
+  clientEmail?: string;
+  clientPhone?: string;
+  status?: string;
+  completenessPercent?: number;
+  leadId?: string | null;
+  createdFromLead?: boolean;
+  serviceStartedAt?: string | null;
+  portalReady?: boolean;
+  updatedAt?: any;
+  lastActivityAt?: string | null;
+};
+
 type CaseItem = {
   id: string;
+  caseId?: string;
   title?: string;
   description?: string;
   type?: string;
   status?: CaseItemStatus;
   isRequired?: boolean;
-  dueDate?: string;
-  fileUrl?: string;
-  fileName?: string;
-  response?: string;
+  dueDate?: string | null;
+  fileUrl?: string | null;
+  fileName?: string | null;
+  response?: string | null;
+  order?: number;
+  approvedAt?: string | null;
+  createdAt?: any;
 };
 
 type CaseActivity = {
@@ -102,16 +122,18 @@ const CASE_STATUS_LABELS: Record<string, string> = {
   in_progress: 'W realizacji',
   to_approve: 'Do sprawdzenia',
   blocked: 'Zablokowana',
-  completed: 'ZakoĹ„czona',
+  ready_to_start: 'Gotowa do startu',
+  completed: 'Zakończona',
 };
 
 const CASE_STATUS_HINTS: Record<string, string> = {
-  new: 'Sprawa zostaĹ‚a utworzona. Dodaj pierwsze braki albo zaplanuj pierwszÄ… akcjÄ™.',
+  new: 'Sprawa została utworzona. Dodaj pierwszy brak albo zaplanuj pierwszą akcję.',
   waiting_on_client: 'Czekamy na klienta. Najpierw zdejmij braki po jego stronie.',
-  in_progress: 'Sprawa jest w pracy. Pilnuj najbliĹĽszej akcji i terminĂłw.',
-  to_approve: 'Klient coĹ› przesĹ‚aĹ‚. SprawdĹş i zaakceptuj albo odrzuÄ‡.',
-  blocked: 'Sprawa stoi. UsuĹ„ blokery zanim przejdziesz dalej.',
-  completed: 'Sprawa zakoĹ„czona. Historia zostaje jako Ĺ›lad pracy.',
+  in_progress: 'Sprawa jest w pracy. Pilnuj najbliższej akcji i terminów.',
+  to_approve: 'Klient coś przesłał. Sprawdź i zaakceptuj albo odrzuć.',
+  blocked: 'Sprawa stoi. Usuń blokery zanim przejdziesz dalej.',
+  ready_to_start: 'Sprawa jest gotowa do dalszej pracy operacyjnej.',
+  completed: 'Sprawa zakończona. Historia zostaje jako ślad pracy.',
 };
 
 const ITEM_STATUS_LABELS: Record<string, string> = {
@@ -125,8 +147,14 @@ const ITEM_TYPE_LABELS: Record<string, string> = {
   file: 'Plik',
   decision: 'Decyzja',
   text: 'Tekst',
-  access: 'DostÄ™py',
+  access: 'Dostępy',
 };
+
+function normalizeRecord<T>(value: unknown): T | null {
+  if (Array.isArray(value)) return (value[0] || null) as T | null;
+  if (value && typeof value === 'object') return value as T;
+  return null;
+}
 
 function toDate(value: any): Date | null {
   if (!value) return null;
@@ -170,8 +198,8 @@ function getCaseStatusLabel(status?: string) {
 }
 
 function getCaseStatusHint(status?: string) {
-  if (!status) return 'Ustal status sprawy i najbliĹĽszy ruch.';
-  return CASE_STATUS_HINTS[status] || 'SprawdĹş najbliĹĽsze dziaĹ‚ania i blokery.';
+  if (!status) return 'Ustal status sprawy i najbliższy ruch.';
+  return CASE_STATUS_HINTS[status] || 'Sprawdź najbliższe działania i blokery.';
 }
 
 function getItemStatusLabel(status?: string) {
@@ -192,7 +220,7 @@ function getItemStatusClass(status?: string) {
 }
 
 function getStatusBadgeClass(status?: string) {
-  if (status === 'completed') return 'cf-status-ok';
+  if (status === 'completed' || status === 'ready_to_start') return 'cf-status-ok';
   if (status === 'in_progress') return 'cf-status-info';
   if (status === 'blocked') return 'cf-status-danger';
   if (status === 'to_approve' || status === 'waiting_on_client') return 'cf-status-warning';
@@ -203,20 +231,76 @@ function getActivityText(activity: CaseActivity) {
   const actor = activity.actorType === 'operator' ? 'Ty' : 'Klient';
   const title = activity.payload?.title || activity.payload?.itemTitle || 'element';
 
-  if (activity.eventType === 'item_added') return `${actor} dodaĹ‚ element: ${title}`;
+  if (activity.eventType === 'item_added') return `${actor} dodał element: ${title}`;
   if (activity.eventType === 'status_changed') {
-    return `${actor} zmieniĹ‚ status â€ž${title}â€ť na: ${getItemStatusLabel(activity.payload?.status)}`;
+    return `${actor} zmienił status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;
   }
-  if (activity.eventType === 'file_uploaded') return `${actor} wgraĹ‚ plik do: ${title}`;
-  if (activity.eventType === 'decision_made') return `${actor} podjÄ…Ĺ‚ decyzjÄ™ w: ${title}`;
-  if (activity.eventType === 'operator_note') return `${actor} dodaĹ‚ notatkÄ™`;
-  return `${actor} wykonaĹ‚ akcjÄ™`;
+  if (activity.eventType === 'file_uploaded') return `${actor} wgrał plik do: ${title}`;
+  if (activity.eventType === 'decision_made') return `${actor} podjął decyzję w: ${title}`;
+  if (activity.eventType === 'operator_note') return `${actor} dodał notatkę`;
+  return `${actor} wykonał akcję`;
+}
+
+function sortCaseItems(items: CaseItem[]) {
+  return [...items].sort((first, second) => {
+    const firstOrder = typeof first.order === 'number' ? first.order : Number.MAX_SAFE_INTEGER;
+    const secondOrder = typeof second.order === 'number' ? second.order : Number.MAX_SAFE_INTEGER;
+
+    if (firstOrder !== secondOrder) return firstOrder - secondOrder;
+
+    const firstDate = toDate(first.dueDate)?.getTime() || Number.MAX_SAFE_INTEGER;
+    const secondDate = toDate(second.dueDate)?.getTime() || Number.MAX_SAFE_INTEGER;
+
+    return firstDate - secondDate;
+  });
+}
+
+function sortActivities(activities: CaseActivity[]) {
+  return [...activities].sort((first, second) => {
+    const firstDate = toDate(first.createdAt)?.getTime() || 0;
+    const secondDate = toDate(second.createdAt)?.getTime() || 0;
+    return secondDate - firstDate;
+  });
+}
+
+function calculateCompletion(items: CaseItem[]) {
+  if (items.length === 0) return 0;
+  const accepted = items.filter((item) => item.status === 'accepted').length;
+  return Math.round((accepted / items.length) * 100);
+}
+
+function resolveCaseStatusFromItems(items: CaseItem[], fallback = 'in_progress') {
+  if (items.length === 0) return fallback;
+
+  const allAccepted = items.every((item) => item.status === 'accepted');
+  const hasBlocked = items.some((item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected'));
+  const hasToApprove = items.some((item) => item.status === 'uploaded');
+
+  if (allAccepted) return 'ready_to_start';
+  if (hasBlocked) return 'blocked';
+  if (hasToApprove) return 'to_approve';
+  return 'waiting_on_client';
+}
+
+function buildPortalUrl(caseId: string, tokenPayload: Record<string, unknown>) {
+  const explicitUrl = typeof tokenPayload.url === 'string' ? tokenPayload.url : '';
+  if (explicitUrl) return explicitUrl;
+
+  const token =
+    typeof tokenPayload.token === 'string'
+      ? tokenPayload.token
+      : typeof tokenPayload.portalToken === 'string'
+        ? tokenPayload.portalToken
+        : '';
+
+  return token ? `${window.location.origin}/portal/${caseId}/${token}` : `${window.location.origin}/portal/${caseId}`;
 }
 
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
-  const [caseData, setCaseData] = useState<any>(null);
+
+  const [caseData, setCaseData] = useState<CaseRecord | null>(null);
   const [items, setItems] = useState<CaseItem[]>([]);
   const [activities, setActivities] = useState<CaseActivity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -232,106 +316,94 @@ export default function CaseDetail() {
     dueDate: '',
   });
 
-  useEffect(() => {
+  const refreshCaseData = useCallback(async () => {
     if (!caseId) {
       setLoadError('Brak identyfikatora sprawy w adresie.');
       setLoading(false);
       return;
     }
 
-    setLoading(true);
-    setLoadError(null);
-
-    const caseRef = doc(db, 'cases', caseId);
-    const unsubscribeCase = onSnapshot(
-      caseRef,
-      (snapshot) => {
-        if (snapshot.exists()) {
-          setCaseData({ id: snapshot.id, ...snapshot.data() });
-        } else {
-          setLoadError('Nie znaleziono tej sprawy w bazie.');
-          setLoading(false);
-        }
-      },
-      (error) => {
-        console.error('CaseDetail Firestore case listener failed', error);
-        setLoadError(
-          'Nie mogÄ™ wczytaÄ‡ tej sprawy z bazy danych. Firestore zgĹ‚asza problem z konfiguracjÄ… projektu albo bazÄ… (default).'
-        );
-        setLoading(false);
-      }
-    );
-
-    const itemsRef = collection(db, 'cases', caseId, 'items');
-    const qItems = query(itemsRef, orderBy('order', 'asc'));
-    const unsubscribeItems = onSnapshot(qItems, (snapshot) => {
-      const itemsData = snapshot.docs.map((itemDoc) => ({ id: itemDoc.id, ...itemDoc.data() } as CaseItem));
-      setItems(itemsData);
+    if (!isSupabaseConfigured()) {
+      setLoadError('Brak konfiguracji Supabase. Lista spraw może działać tylko po poprawnym ustawieniu VITE_SUPABASE_URL.');
       setLoading(false);
-
-      if (itemsData.length > 0) {
-        const completed = itemsData.filter((item) => item.status === 'accepted').length;
-        const percent = (completed / itemsData.length) * 100;
-
-        let newStatus = 'in_progress';
-        const hasBlocked = itemsData.some(
-          (item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected'),
-        );
-        const hasToApprove = itemsData.some((item) => item.status === 'uploaded');
-        const allAccepted = itemsData.every((item) => item.status === 'accepted');
-
-        if (allAccepted) {
-          newStatus = 'completed';
-        } else if (hasBlocked) {
-          newStatus = 'blocked';
-        } else if (hasToApprove) {
-          newStatus = 'to_approve';
-        } else {
-          newStatus = 'waiting_on_client';
-        }
-
-        updateDoc(caseRef, {
-          completenessPercent: percent,
-          status: newStatus,
-          updatedAt: serverTimestamp(),
-        }).catch((error) => {
-          console.error('CaseDetail status sync failed', error);
-        });
-      }
-    }, (error) => {
-      console.error('CaseDetail Firestore items listener failed', error);
-      setItems([]);
-      setLoading(false);
-    });
-
-    const activitiesRef = collection(db, 'activities');
-    const qActivities = query(activitiesRef, where('caseId', '==', caseId), orderBy('createdAt', 'desc'));
-    const unsubscribeActivities = onSnapshot(
-      qActivities,
-      (snapshot) => {
-        setActivities(snapshot.docs.map((activityDoc) => ({ id: activityDoc.id, ...activityDoc.data() })) as CaseActivity[]);
-      },
-      (error) => {
-        console.error('CaseDetail Firestore activities listener failed', error);
-        setActivities([]);
-      }
-    );
-
-    return () => {
-      unsubscribeCase();
-      unsubscribeItems();
-      unsubscribeActivities();
-    };
-  }, [caseId, navigate]);
-
-  const completionPercent = useMemo(() => {
-    if (typeof caseData?.completenessPercent === 'number') {
-      return Math.round(caseData.completenessPercent);
+      return;
     }
 
-    if (items.length === 0) return 0;
-    const accepted = items.filter((item) => item.status === 'accepted').length;
-    return Math.round((accepted / items.length) * 100);
+    let timeoutId: number | undefined;
+
+    try {
+      setLoading(true);
+      setLoadError(null);
+
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = window.setTimeout(() => {
+          reject(new Error('TIMEOUT_CASE_DETAIL_LOAD'));
+        }, 12_000);
+      });
+
+      const dataPromise = Promise.all([
+        fetchCaseByIdFromSupabase(caseId),
+        fetchCaseItemsFromSupabase(caseId).catch((error) => {
+          console.error('CaseDetail Supabase items load failed', error);
+          return [];
+        }),
+        fetchActivitiesFromSupabase({ caseId, limit: 80 }).catch((error) => {
+          console.error('CaseDetail Supabase activities load failed', error);
+          return [];
+        }),
+      ]);
+
+      const [caseRowRaw, itemRowsRaw, activityRowsRaw] = await Promise.race([dataPromise, timeoutPromise]);
+
+      const normalizedCase = normalizeRecord<CaseRecord>(caseRowRaw);
+
+      if (!normalizedCase?.id) {
+        setCaseData(null);
+        setItems([]);
+        setActivities([]);
+        setLoadError('Nie znaleziono tej sprawy w aktualnym workspace.');
+        return;
+      }
+
+      setCaseData(normalizedCase);
+      setItems(sortCaseItems((Array.isArray(itemRowsRaw) ? itemRowsRaw : []) as CaseItem[]));
+      setActivities(sortActivities((Array.isArray(activityRowsRaw) ? activityRowsRaw : []) as CaseActivity[]));
+    } catch (error: any) {
+      console.error('CaseDetail Supabase load failed', error);
+      setCaseData(null);
+      setItems([]);
+      setActivities([]);
+
+      if (error?.message === 'TIMEOUT_CASE_DETAIL_LOAD') {
+        setLoadError('Ładowanie sprawy trwa za długo. API nie odpowiedziało w bezpiecznym czasie.');
+      } else {
+        setLoadError(`Nie mogę wczytać tej sprawy z API: ${error?.message || 'REQUEST_FAILED'}`);
+      }
+    } finally {
+      if (timeoutId) window.clearTimeout(timeoutId);
+      setLoading(false);
+    }
+  }, [caseId]);
+
+  useEffect(() => {
+    let active = true;
+
+    const run = async () => {
+      if (!active) return;
+      await refreshCaseData();
+    };
+
+    run();
+
+    return () => {
+      active = false;
+    };
+  }, [refreshCaseData]);
+
+  const completionPercent = useMemo(() => {
+    if (items.length > 0) return calculateCompletion(items);
+    if (typeof caseData?.completenessPercent === 'number') return Math.round(caseData.completenessPercent);
+    return 0;
   }, [caseData?.completenessPercent, items]);
 
   const caseStats = useMemo(() => {
@@ -367,63 +439,83 @@ export default function CaseDetail() {
     };
   }, [items]);
 
+  const syncCaseSummary = async (nextItems: CaseItem[]) => {
+    if (!caseId) return;
+
+    const completenessPercent = calculateCompletion(nextItems);
+    const status = resolveCaseStatusFromItems(nextItems, caseData?.status || 'in_progress');
+
+    await updateCaseInSupabase({
+      id: caseId,
+      completenessPercent,
+      status,
+      lastActivityAt: new Date().toISOString(),
+    }).catch((error) => {
+      console.error('CaseDetail case summary sync failed', error);
+    });
+  };
+
   const handleAddItem = async () => {
     if (!caseId || !newItem.title.trim()) {
-      toast.error('Podaj nazwÄ™ elementu');
+      toast.error('Podaj nazwę elementu');
       return;
     }
 
     try {
-      await addDoc(collection(db, 'cases', caseId, 'items'), {
-        ...newItem,
+      const input = {
+        caseId,
         title: newItem.title.trim(),
         description: newItem.description.trim(),
-        caseId,
+        type: newItem.type,
+        isRequired: newItem.isRequired,
+        dueDate: newItem.dueDate || null,
         status: 'missing',
         order: items.length,
-        createdAt: serverTimestamp(),
-      });
+      };
 
-      await addDoc(collection(db, 'activities'), {
+      const createdRaw = await insertCaseItemToSupabase(input);
+      const createdItem = normalizeRecord<CaseItem>(createdRaw) || ({ ...input, id: `local-${Date.now()}` } as CaseItem);
+      const nextItems = sortCaseItems([...items, createdItem]);
+
+      setItems(nextItems);
+      await syncCaseSummary(nextItems);
+
+      await insertActivityToSupabase({
         caseId,
-        ownerId: auth.currentUser?.uid,
-        actorId: auth.currentUser?.uid,
         actorType: 'operator',
         eventType: 'item_added',
-        payload: { title: newItem.title.trim() },
-        createdAt: serverTimestamp(),
-      });
+        payload: { title: input.title },
+      }).catch((error) => console.error('CaseDetail item activity failed', error));
 
       setIsAddItemOpen(false);
       setNewItem({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
       toast.success('Element dodany');
+      await refreshCaseData();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + (error?.message || 'Nie udało się dodać elementu'));
     }
   };
 
   const handleAddNote = async () => {
     if (!caseId || !newNote.trim()) {
-      toast.error('Wpisz treĹ›Ä‡ notatki');
+      toast.error('Wpisz treść notatki');
       return;
     }
 
     try {
-      await addDoc(collection(db, 'activities'), {
+      await insertActivityToSupabase({
         caseId,
-        ownerId: auth.currentUser?.uid,
-        actorId: auth.currentUser?.uid,
         actorType: 'operator',
         eventType: 'operator_note',
         payload: { note: newNote.trim() },
-        createdAt: serverTimestamp(),
       });
 
       setIsAddNoteOpen(false);
       setNewNote('');
       toast.success('Notatka dodana');
+      await refreshCaseData();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + (error?.message || 'Nie udało się dodać notatki'));
     }
   };
 
@@ -431,24 +523,33 @@ export default function CaseDetail() {
     if (!caseId) return;
 
     try {
-      await updateDoc(doc(db, 'cases', caseId, 'items', itemId), {
+      await updateCaseItemInSupabase({
+        id: itemId,
+        caseId,
         status,
-        approvedAt: status === 'accepted' ? serverTimestamp() : null,
+        approvedAt: status === 'accepted' ? new Date().toISOString() : null,
       });
 
-      await addDoc(collection(db, 'activities'), {
+      const nextItems = items.map((item) =>
+        item.id === itemId
+          ? { ...item, status, approvedAt: status === 'accepted' ? new Date().toISOString() : null }
+          : item,
+      );
+
+      setItems(nextItems);
+      await syncCaseSummary(nextItems);
+
+      await insertActivityToSupabase({
         caseId,
-        ownerId: auth.currentUser?.uid,
-        actorId: auth.currentUser?.uid,
         actorType: 'operator',
         eventType: 'status_changed',
         payload: { title, status },
-        createdAt: serverTimestamp(),
-      });
+      }).catch((error) => console.error('CaseDetail status activity failed', error));
 
       toast.success('Status zaktualizowany');
+      await refreshCaseData();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + (error?.message || 'Nie udało się zmienić statusu'));
     }
   };
 
@@ -456,10 +557,16 @@ export default function CaseDetail() {
     if (!caseId) return;
 
     try {
-      await deleteDoc(doc(db, 'cases', caseId, 'items', itemId));
-      toast.success('Element usuniÄ™ty');
+      await deleteCaseItemFromSupabase(itemId);
+
+      const nextItems = items.filter((item) => item.id !== itemId);
+      setItems(nextItems);
+      await syncCaseSummary(nextItems);
+
+      toast.success('Element usunięty');
+      await refreshCaseData();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d: ' + error.message);
+      toast.error('Błąd: ' + (error?.message || 'Nie udało się usunąć elementu'));
     }
   };
 
@@ -467,28 +574,26 @@ export default function CaseDetail() {
     if (!caseId) return;
 
     try {
-      const token = Math.random().toString(36).substring(2, 15);
-      const tokenRef = doc(db, 'client_portal_tokens', caseId);
-      await setDoc(tokenRef, {
-        caseId,
-        token,
-        createdAt: serverTimestamp(),
-      });
+      const tokenPayload = await createClientPortalTokenInSupabase(caseId);
+      const url = buildPortalUrl(caseId, tokenPayload || {});
 
-      const url = `${window.location.origin}/portal/${caseId}/${token}`;
-      await navigator.clipboard.writeText(url);
-      toast.success('Link do panelu klienta skopiowany');
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        toast.success('Link do panelu klienta skopiowany');
+      } else {
+        toast.success('Link do panelu klienta gotowy');
+      }
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ skopiowaÄ‡ linku: ' + error.message);
+      toast.error('Nie udało się przygotować linku: ' + (error?.message || 'REQUEST_FAILED'));
     }
   };
 
   const handleReminderCopy = () => {
-    toast.info('Na teraz bez faĹ‚szywej wysyĹ‚ki maila. UĹĽyj linku do portalu albo dodaj brak na checklistÄ™.');
+    toast.info('Na teraz bez fałszywej wysyłki maila. Użyj linku do portalu albo dodaj brak na checklistę.');
   };
 
   const handleNotReadyYet = (label: string) => {
-    toast.info(`${label} bÄ™dzie osobnym etapem. Ten patch porzÄ…dkuje widok sprawy i checklistÄ™.`);
+    toast.info(`${label} będzie osobnym etapem. Ten patch porządkuje widok sprawy i checklistę.`);
   };
 
   if (loadError) {
@@ -499,14 +604,14 @@ export default function CaseDetail() {
             <Card className="cf-panel-card">
               <CardContent className="cf-empty-box cf-empty-box-large">
                 <AlertCircle className="w-12 h-12" />
-                <strong>Nie mogÄ™ otworzyÄ‡ tej sprawy</strong>
+                <strong>Nie mogę otworzyć tej sprawy</strong>
                 <span>{loadError}</span>
                 <div className="cf-command-actions">
                   <Button variant="outline" onClick={() => navigate('/cases')}>
-                    WrĂłÄ‡ do spraw
+                    Wróć do spraw
                   </Button>
-                  <Button onClick={() => window.location.reload()}>
-                    SprĂłbuj ponownie
+                  <Button onClick={refreshCaseData}>
+                    Spróbuj ponownie
                   </Button>
                 </div>
               </CardContent>
@@ -525,8 +630,8 @@ export default function CaseDetail() {
             <Card className="cf-panel-card">
               <CardContent className="cf-empty-box cf-empty-box-large">
                 <Clock className="w-12 h-12" />
-                <strong>ĹadujÄ™ sprawÄ™</strong>
-                <span>Pobieram dane sprawy, checklisty i historiÄ™.</span>
+                <strong>Ładuję sprawę</strong>
+                <span>Pobieram dane sprawy, checklisty i historię.</span>
               </CardContent>
             </Card>
           </main>
@@ -546,7 +651,7 @@ export default function CaseDetail() {
                 <strong>Brak danych sprawy</strong>
                 <span>Nie znaleziono danych do pokazania dla tej sprawy.</span>
                 <Button variant="outline" onClick={() => navigate('/cases')}>
-                  WrĂłÄ‡ do spraw
+                  Wróć do spraw
                 </Button>
               </CardContent>
             </Card>
@@ -560,6 +665,7 @@ export default function CaseDetail() {
   const nextActionItem = caseStats.nextActionItem;
   const isCompleted = caseData.status === 'completed';
   const hasBlockers = caseStats.requiredBlockers.length > 0 || caseStats.rejected.length > 0;
+  const lastNote = activities.find((activity) => activity.eventType === 'operator_note')?.payload?.note;
 
   return (
     <Layout>
@@ -567,7 +673,7 @@ export default function CaseDetail() {
         <header className="cf-case-topbar">
           <div className="cf-case-topbar-inner">
             <div className="cf-case-title-row">
-              <Link to="/cases" className="cf-icon-link" aria-label="WrĂłÄ‡ do spraw">
+              <Link to="/cases" className="cf-icon-link" aria-label="Wróć do spraw">
                 <ArrowLeft className="w-5 h-5" />
               </Link>
 
@@ -575,15 +681,15 @@ export default function CaseDetail() {
                 <div className="cf-breadcrumbs">
                   <span>Sprawy</span>
                   <ChevronRight className="w-3.5 h-3.5" />
-                  <span className="cf-breadcrumb-current">ObsĹ‚uga sprawy</span>
+                  <span className="cf-breadcrumb-current">Obsługa sprawy</span>
                 </div>
-                <h1>{caseData.title}</h1>
+                <h1>{caseData.title || 'Sprawa bez tytułu'}</h1>
                 <div className="cf-case-meta">
                   <Badge className={`cf-status-badge ${getStatusBadgeClass(caseData.status)}`}>
                     {getCaseStatusLabel(caseData.status)}
                   </Badge>
                   <span>Klient: {caseData.clientName || 'Brak danych'}</span>
-                  <span>Ostatnia zmiana: {formatDateTime(caseData.updatedAt, 'Brak danych')}</span>
+                  <span>Ostatnia zmiana: {formatDateTime(caseData.updatedAt || caseData.lastActivityAt, 'Brak danych')}</span>
                 </div>
               </div>
             </div>
@@ -608,7 +714,7 @@ export default function CaseDetail() {
                     <div className="space-y-2">
                       <Label>Nazwa elementu</Label>
                       <Input
-                        placeholder="np. Zgoda na publikacjÄ™"
+                        placeholder="np. Zgoda na publikację"
                         value={newItem.title}
                         onChange={(event) => setNewItem({ ...newItem, title: event.target.value })}
                       />
@@ -616,7 +722,7 @@ export default function CaseDetail() {
                     <div className="space-y-2">
                       <Label>Opis / instrukcja</Label>
                       <Textarea
-                        placeholder="Napisz krĂłtko, czego brakuje i co klient ma zrobiÄ‡."
+                        placeholder="Napisz krótko, czego brakuje i co klient ma zrobić."
                         value={newItem.description}
                         onChange={(event) => setNewItem({ ...newItem, description: event.target.value })}
                       />
@@ -631,8 +737,8 @@ export default function CaseDetail() {
                         >
                           <option value="file">Plik</option>
                           <option value="decision">Decyzja</option>
-                          <option value="text">Tekst / odpowiedĹş</option>
-                          <option value="access">DostÄ™py / hasĹ‚a</option>
+                          <option value="text">Tekst / odpowiedź</option>
+                          <option value="access">Dostępy / hasła</option>
                         </select>
                       </div>
                       <div className="cf-checkbox-line">
@@ -642,7 +748,7 @@ export default function CaseDetail() {
                           checked={newItem.isRequired}
                           onChange={(event) => setNewItem({ ...newItem, isRequired: event.target.checked })}
                         />
-                        <Label htmlFor="required">ObowiÄ…zkowy</Label>
+                        <Label htmlFor="required">Obowiązkowy</Label>
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -667,7 +773,7 @@ export default function CaseDetail() {
         </header>
 
         <main className="cf-case-main">
-          <section className="cf-command-grid" aria-label="NajwaĹĽniejsze informacje o sprawie">
+          <section className="cf-command-grid" aria-label="Najważniejsze informacje o sprawie">
             <Card className="cf-command-card cf-command-card-primary">
               <CardContent className="cf-command-content">
                 <div className="cf-command-eyebrow">
@@ -676,26 +782,26 @@ export default function CaseDetail() {
                 </div>
                 <h2>
                   {isCompleted
-                    ? 'Sprawa jest zakoĹ„czona'
+                    ? 'Sprawa jest zakończona'
                     : mainBlocker
-                      ? mainBlocker.title || 'Brak wymagany do obsĹ‚ugi'
+                      ? mainBlocker.title || 'Brak wymagany do obsługi'
                       : hasBlockers
-                        ? 'SÄ… blokery do zdjÄ™cia'
-                        : 'Brak krytycznych blokerĂłw'}
+                        ? 'Są blokery do zdjęcia'
+                        : 'Brak krytycznych blokerów'}
                 </h2>
                 <p>
                   {isCompleted
-                    ? 'Nie ma aktywnej pracy operacyjnej. Historia zostaje do wglÄ…du.'
+                    ? 'Nie ma aktywnej pracy operacyjnej. Historia zostaje do wglądu.'
                     : mainBlocker?.description || getCaseStatusHint(caseData.status)}
                 </p>
                 <div className="cf-command-actions">
                   {mainBlocker ? (
-                    <Button variant="secondary" size="sm" onClick={() => handleReminderCopy()}>
+                    <Button variant="secondary" size="sm" onClick={handleReminderCopy}>
                       <Send className="w-4 h-4" />
                       Przygotuj przypomnienie
                     </Button>
                   ) : (
-                    <Button variant="secondary" size="sm" onClick={() => handleNotReadyYet('Oznaczenie gotowoĹ›ci')}>
+                    <Button variant="secondary" size="sm" onClick={() => handleNotReadyYet('Oznaczenie gotowości')}>
                       <CheckCircle2 className="w-4 h-4" />
                       Oznacz jako gotowe
                     </Button>
@@ -708,15 +814,15 @@ export default function CaseDetail() {
               <CardContent className="cf-command-content">
                 <div className="cf-command-eyebrow">
                   <CalendarClock className="w-4 h-4" />
-                  NajbliĹĽsza akcja
+                  Najbliższa akcja
                 </div>
-                <h2>{nextActionItem ? nextActionItem.title || 'SprawdĹş element sprawy' : 'Brak zaplanowanej akcji'}</h2>
+                <h2>{nextActionItem ? nextActionItem.title || 'Sprawdź element sprawy' : 'Brak zaplanowanej akcji'}</h2>
                 <p>
                   {nextActionItem?.dueDate
                     ? `Termin: ${formatDate(nextActionItem.dueDate)}`
                     : nextActionItem
                       ? 'Ten element wymaga reakcji, ale nie ma terminu.'
-                      : 'Dodaj zadanie, wydarzenie albo brak, ĹĽeby sprawa nie wisiaĹ‚a w powietrzu.'}
+                      : 'Dodaj zadanie, wydarzenie albo brak, żeby sprawa nie wisiała w powietrzu.'}
                 </p>
                 <div className="cf-command-actions">
                   {nextActionItem ? (
@@ -737,7 +843,7 @@ export default function CaseDetail() {
               <CardContent className="cf-command-content">
                 <div className="cf-command-eyebrow">
                   <ListChecks className="w-4 h-4" />
-                  PostÄ™p sprawy
+                  Postęp sprawy
                 </div>
                 <div className="cf-progress-head">
                   <h2>{completionPercent}% gotowe</h2>
@@ -745,7 +851,7 @@ export default function CaseDetail() {
                 </div>
                 <Progress value={completionPercent} className="cf-progress-bar" />
                 <div className="cf-mini-stats">
-                  <span>{caseStats.requiredBlockers.length} blokerĂłw</span>
+                  <span>{caseStats.requiredBlockers.length} blokerów</span>
                   <span>{caseStats.uploaded.length} do sprawdzenia</span>
                 </div>
               </CardContent>
@@ -757,14 +863,14 @@ export default function CaseDetail() {
               <Card className="cf-panel-card">
                 <CardHeader className="cf-panel-header">
                   <div>
-                    <CardTitle>ObsĹ‚uga sprawy</CardTitle>
-                    <p>Jedno miejsce na braki, decyzje, materiaĹ‚y i historiÄ™. Bez szukania po caĹ‚ym ekranie.</p>
+                    <CardTitle>Obsługa sprawy</CardTitle>
+                    <p>Jedno miejsce na braki, decyzje, materiały i historię. Bez szukania po całym ekranie.</p>
                   </div>
                 </CardHeader>
                 <CardContent className="cf-panel-body">
                   <Tabs defaultValue="work" className="cf-tabs">
                     <TabsList className="cf-tabs-list">
-                      <TabsTrigger value="work">ObsĹ‚uga</TabsTrigger>
+                      <TabsTrigger value="work">Obsługa</TabsTrigger>
                       <TabsTrigger value="items">Checklisty</TabsTrigger>
                       <TabsTrigger value="history">Historia</TabsTrigger>
                     </TabsList>
@@ -773,7 +879,7 @@ export default function CaseDetail() {
                       <div className="cf-work-grid">
                         <Card className="cf-sub-card">
                           <CardHeader className="cf-sub-card-header">
-                            <CardTitle>NajwaĹĽniejsze dziaĹ‚ania</CardTitle>
+                            <CardTitle>Najważniejsze działania</CardTitle>
                             <Button size="sm" variant="outline" onClick={() => setIsAddItemOpen(true)}>
                               <Plus className="w-4 h-4" />
                               Dodaj
@@ -783,8 +889,8 @@ export default function CaseDetail() {
                             {caseStats.openItems.length === 0 ? (
                               <div className="cf-empty-box">
                                 <CheckCircle2 className="w-10 h-10" />
-                                <strong>Nie ma aktywnych brakĂłw</strong>
-                                <span>Dodaj kolejny element tylko wtedy, gdy realnie czegoĹ› brakuje.</span>
+                                <strong>Nie ma aktywnych braków</strong>
+                                <span>Dodaj kolejny element tylko wtedy, gdy realnie czegoś brakuje.</span>
                               </div>
                             ) : (
                               <div className="cf-case-items-list">
@@ -827,8 +933,8 @@ export default function CaseDetail() {
                               <strong>{getCaseStatusLabel(caseData.status)}</strong>
                             </div>
                             <div>
-                              <span>GotowoĹ›Ä‡</span>
-                              <strong>{hasBlockers ? 'Nie moĹĽna startowaÄ‡' : 'MoĹĽna przejĹ›Ä‡ dalej'}</strong>
+                              <span>Gotowość</span>
+                              <strong>{hasBlockers ? 'Nie można startować' : 'Można przejść dalej'}</strong>
                             </div>
                             <div>
                               <span>Do sprawdzenia</span>
@@ -836,7 +942,7 @@ export default function CaseDetail() {
                             </div>
                             <div>
                               <span>Ostatni ruch</span>
-                              <strong>{activities[0] ? formatDateTime(activities[0].createdAt) : 'Brak aktywnoĹ›ci'}</strong>
+                              <strong>{activities[0] ? formatDateTime(activities[0].createdAt) : 'Brak aktywności'}</strong>
                             </div>
                             <div className="cf-operator-note">
                               <strong>Prosty komunikat:</strong>
@@ -851,7 +957,7 @@ export default function CaseDetail() {
                       <div className="cf-checklist-head">
                         <div>
                           <h3>Checklisty i blokery</h3>
-                          <p>Lista ma mĂłwiÄ‡ jasno: gotowe, czeka, blokuje. Zero tabelkowego dymu.</p>
+                          <p>Lista ma mówić jasno: gotowe, czeka, blokuje. Zero tabelkowego dymu.</p>
                         </div>
                         <Button size="sm" variant="outline" onClick={() => setIsAddItemOpen(true)}>
                           <Plus className="w-4 h-4" />
@@ -862,8 +968,8 @@ export default function CaseDetail() {
                       {items.length === 0 ? (
                         <div className="cf-empty-box cf-empty-box-large">
                           <FileText className="w-12 h-12" />
-                          <strong>Brak elementĂłw sprawy</strong>
-                          <span>Dodaj pierwszy brak, decyzjÄ™ albo materiaĹ‚, ĹĽeby sprawa miaĹ‚a czytelny start.</span>
+                          <strong>Brak elementów sprawy</strong>
+                          <span>Dodaj pierwszy brak, decyzję albo materiał, żeby sprawa miała czytelny start.</span>
                           <Button onClick={() => setIsAddItemOpen(true)}>
                             <Plus className="w-4 h-4" />
                             Dodaj pierwszy element
@@ -919,54 +1025,44 @@ export default function CaseDetail() {
                               </div>
 
                               <div className="cf-check-actions">
-                                {item.status === 'uploaded' && (
-                                  <>
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      className="cf-accept-btn"
-                                      onClick={() => handleUpdateItemStatus(item.id, 'accepted', item.title || 'Element')}
-                                      aria-label="Zaakceptuj"
-                                    >
-                                      <Check className="w-4 h-4" />
-                                    </Button>
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      className="cf-reject-btn"
-                                      onClick={() => handleUpdateItemStatus(item.id, 'rejected', item.title || 'Element')}
-                                      aria-label="OdrzuÄ‡"
-                                    >
-                                      <X className="w-4 h-4" />
-                                    </Button>
-                                  </>
+                                {item.status !== 'accepted' && (
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="cf-accept-btn"
+                                    title="Akceptuj"
+                                    onClick={() => handleUpdateItemStatus(item.id, 'accepted', item.title || 'Element')}
+                                  >
+                                    <Check className="w-4 h-4" />
+                                  </Button>
+                                )}
+                                {item.status !== 'rejected' && (
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="cf-reject-btn"
+                                    title="Odrzuć"
+                                    onClick={() => handleUpdateItemStatus(item.id, 'rejected', item.title || 'Element')}
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </Button>
                                 )}
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon">
+                                    <Button size="icon" variant="ghost">
                                       <MoreVertical className="w-4 h-4" />
                                     </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
-                                    {item.status !== 'accepted' && (
-                                      <DropdownMenuItem
-                                        onClick={() => handleUpdateItemStatus(item.id, 'accepted', item.title || 'Element')}
-                                      >
-                                        <Check className="w-4 h-4 mr-2" />
-                                        Oznacz jako gotowe
-                                      </DropdownMenuItem>
-                                    )}
-                                    {item.status !== 'missing' && (
-                                      <DropdownMenuItem
-                                        onClick={() => handleUpdateItemStatus(item.id, 'missing', item.title || 'Element')}
-                                      >
-                                        <FileText className="w-4 h-4 mr-2" />
-                                        Oznacz jako czeka
-                                      </DropdownMenuItem>
-                                    )}
+                                    <DropdownMenuItem onClick={() => handleUpdateItemStatus(item.id, 'missing', item.title || 'Element')}>
+                                      Oznacz jako czeka
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleUpdateItemStatus(item.id, 'uploaded', item.title || 'Element')}>
+                                      Oznacz do sprawdzenia
+                                    </DropdownMenuItem>
                                     <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteItem(item.id)}>
                                       <Trash2 className="w-4 h-4 mr-2" />
-                                      UsuĹ„
+                                      Usuń
                                     </DropdownMenuItem>
                                   </DropdownMenuContent>
                                 </DropdownMenu>
@@ -978,35 +1074,26 @@ export default function CaseDetail() {
                     </TabsContent>
 
                     <TabsContent value="history" className="cf-tab-content">
-                      <Card className="cf-sub-card">
-                        <CardHeader className="cf-sub-card-header">
-                          <CardTitle>Historia sprawy</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <ScrollArea className="cf-history-scroll">
-                            <div className="cf-timeline">
-                              {activities.length === 0 ? (
-                                <div className="cf-empty-box">
-                                  <History className="w-10 h-10" />
-                                  <strong>Brak aktywnoĹ›ci</strong>
-                                  <span>Gdy dodasz brak, notatkÄ™ albo klient coĹ› przeĹ›le, pojawi siÄ™ tutaj.</span>
-                                </div>
-                              ) : (
-                                activities.map((activity) => (
-                                  <div key={activity.id} className="cf-timeline-item">
-                                    <div className="cf-timeline-dot" />
-                                    <div>
-                                      <strong>{getActivityText(activity)}</strong>
-                                      {activity.eventType === 'operator_note' && activity.payload?.note && <p>{activity.payload.note}</p>}
-                                      <span>{formatDateTime(activity.createdAt)}</span>
-                                    </div>
-                                  </div>
-                                ))
-                              )}
-                            </div>
-                          </ScrollArea>
-                        </CardContent>
-                      </Card>
+                      {activities.length === 0 ? (
+                        <div className="cf-empty-box cf-empty-box-large">
+                          <History className="w-12 h-12" />
+                          <strong>Brak historii</strong>
+                          <span>Historia pojawi się po dodaniu elementów, notatek albo zmianie statusu.</span>
+                        </div>
+                      ) : (
+                        <ScrollArea className="cf-history-scroll">
+                          <div className="cf-timeline">
+                            {activities.map((activity) => (
+                              <div key={activity.id} className="cf-timeline-item">
+                                <div className="cf-timeline-dot" />
+                                <strong>{getActivityText(activity)}</strong>
+                                {activity.payload?.note && <p>{activity.payload.note}</p>}
+                                <span>{formatDateTime(activity.createdAt)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      )}
                     </TabsContent>
                   </Tabs>
                 </CardContent>
@@ -1017,38 +1104,67 @@ export default function CaseDetail() {
               <Card className="cf-side-card cf-side-actions">
                 <CardHeader>
                   <CardTitle>Szybkie akcje</CardTitle>
-                  <p>KrĂłtko i jasno. Bez polowania na przyciski.</p>
+                  <p>Proste przyciski robocze, bez zakopywania funkcji.</p>
                 </CardHeader>
                 <CardContent className="cf-side-stack">
                   <Button className="cf-wide-action" onClick={() => setIsAddItemOpen(true)}>
                     <Plus className="w-4 h-4" />
                     <span>
-                      <strong>Dodaj brak / element</strong>
-                      <small>plik, decyzja, tekst, dostÄ™p</small>
+                      <strong>Dodaj brak</strong>
+                      <small>Materiał, decyzja albo odpowiedź</small>
                     </span>
                   </Button>
 
-                  <Button className="cf-wide-action" variant="outline" onClick={() => setIsAddNoteOpen(true)}>
-                    <StickyNote className="w-4 h-4" />
+                  <Button variant="outline" className="cf-wide-action" onClick={() => handleNotReadyYet('Dodawanie zadania')}>
+                    <ListChecks className="w-4 h-4" />
                     <span>
-                      <strong>Dodaj notatkÄ™</strong>
-                      <small>krĂłtki Ĺ›lad w historii</small>
+                      <strong>Dodaj zadanie</strong>
+                      <small>Telefon, follow-up, rzecz do zrobienia</small>
                     </span>
                   </Button>
 
-                  <Button className="cf-wide-action" variant="outline" onClick={generatePortalLink}>
-                    <ExternalLink className="w-4 h-4" />
+                  <Button variant="outline" className="cf-wide-action" onClick={() => handleNotReadyYet('Dodawanie wydarzenia')}>
+                    <CalendarClock className="w-4 h-4" />
                     <span>
-                      <strong>Kopiuj portal klienta</strong>
-                      <small>link do uzupeĹ‚nienia brakĂłw</small>
+                      <strong>Dodaj wydarzenie</strong>
+                      <small>Spotkanie, termin albo blok w kalendarzu</small>
                     </span>
                   </Button>
 
-                  <Button className="cf-wide-action" variant="outline" onClick={handleReminderCopy}>
-                    <Send className="w-4 h-4" />
+                  <Dialog open={isAddNoteOpen} onOpenChange={setIsAddNoteOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="cf-wide-action">
+                        <StickyNote className="w-4 h-4" />
+                        <span>
+                          <strong>Dodaj notatkę</strong>
+                          <small>Krótki ślad dla operatora</small>
+                        </span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Dodaj notatkę do sprawy</DialogTitle>
+                      </DialogHeader>
+                      <Textarea
+                        className="min-h-[140px]"
+                        placeholder="Co warto zapamiętać przy tej sprawie?"
+                        value={newNote}
+                        onChange={(event) => setNewNote(event.target.value)}
+                      />
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsAddNoteOpen(false)}>
+                          Anuluj
+                        </Button>
+                        <Button onClick={handleAddNote}>Zapisz notatkę</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+
+                  <Button variant="outline" className="cf-wide-action" onClick={generatePortalLink}>
+                    <Copy className="w-4 h-4" />
                     <span>
-                      <strong>Przygotuj przypomnienie</strong>
-                      <small>bez udawania wysyĹ‚ki maila</small>
+                      <strong>Kopiuj portal</strong>
+                      <small>Link dla klienta</small>
                     </span>
                   </Button>
                 </CardContent>
@@ -1056,41 +1172,65 @@ export default function CaseDetail() {
 
               <Card className="cf-side-card">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <UserRound className="w-5 h-5" />
-                    Klient w tle
-                  </CardTitle>
-                  <p>To kontekst. GĹ‚Ăłwna praca zostaje na sprawie.</p>
+                  <CardTitle>Klient w tle</CardTitle>
+                  <p>Klient jest kontekstem. Praca dzieje się tutaj, w sprawie.</p>
                 </CardHeader>
                 <CardContent className="cf-info-list">
                   <div>
-                    <span>Nazwa</span>
+                    <span>Osoba / firma</span>
                     <strong>{caseData.clientName || 'Brak danych'}</strong>
                   </div>
                   <div>
-                    <span>Status sprawy</span>
-                    <strong>{getCaseStatusLabel(caseData.status)}</strong>
+                    <span>Telefon</span>
+                    <strong>{caseData.clientPhone || 'Brak'}</strong>
                   </div>
                   <div>
-                    <span>Elementy</span>
-                    <strong>{items.length}</strong>
+                    <span>E-mail</span>
+                    <strong>{caseData.clientEmail || 'Brak'}</strong>
                   </div>
                   <div>
-                    <span>Do sprawdzenia</span>
-                    <strong>{caseStats.uploaded.length}</strong>
+                    <span>Powiązany lead</span>
+                    <strong>{caseData.leadId ? 'Tak' : 'Nie'}</strong>
                   </div>
+                  {caseData.leadId && (
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link to={`/leads/${caseData.leadId}`}>
+                        Otwórz lead <ExternalLink className="w-4 h-4 ml-2" />
+                      </Link>
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
 
               <Card className="cf-side-card cf-note-card">
                 <CardHeader>
-                  <CardTitle>KrĂłtka notatka operatora</CardTitle>
-                  <p>Ostatni sens sprawy w jednym miejscu.</p>
+                  <CardTitle>Krótka notatka</CardTitle>
+                  <p>Ostatni kontekst bez czytania całej historii.</p>
                 </CardHeader>
                 <CardContent>
                   <div className="cf-note-preview">
-                    {activities.find((activity) => activity.eventType === 'operator_note')?.payload?.note ||
-                      'Brak notatki. Dodaj krĂłtkÄ… informacjÄ™, ĹĽeby po wejĹ›ciu w sprawÄ™ od razu wiedzieÄ‡, o co chodzi.'}
+                    {typeof lastNote === 'string' && lastNote.trim()
+                      ? lastNote
+                      : mainBlocker
+                        ? `Najpierw zdejmij blokadę: ${mainBlocker.title || 'element sprawy'}.`
+                        : 'Brak osobnej notatki. Dodaj ją, jeśli jest coś ważnego do zapamiętania.'}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="cf-side-card">
+                <CardHeader>
+                  <CardTitle>Źródło danych</CardTitle>
+                  <p>Ten widok jest przepięty na Supabase API, bez Firestore.</p>
+                </CardHeader>
+                <CardContent className="cf-info-list">
+                  <div>
+                    <span>Baza</span>
+                    <strong>Supabase</strong>
+                  </div>
+                  <div>
+                    <span>ID sprawy</span>
+                    <strong>{caseData.id}</strong>
                   </div>
                 </CardContent>
               </Card>
@@ -1098,30 +1238,6 @@ export default function CaseDetail() {
           </section>
         </main>
       </div>
-
-      <Dialog open={isAddNoteOpen} onOpenChange={setIsAddNoteOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Dodaj notatkÄ™ do sprawy</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3 py-4">
-            <Label>Notatka</Label>
-            <Textarea
-              placeholder="Np. Klient potwierdziĹ‚ cenÄ™, czekamy tylko na zgodÄ™ na publikacjÄ™."
-              value={newNote}
-              onChange={(event) => setNewNote(event.target.value)}
-              className="min-h-[130px]"
-            />
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddNoteOpen(false)}>
-              Anuluj
-            </Button>
-            <Button onClick={handleAddNote}>Dodaj notatkÄ™</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </Layout>
   );
 }
-
