@@ -3,7 +3,6 @@ import { Archive, CheckCircle2, Clock, Clipboard, Pencil, Search, Sparkles, Tras
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import QuickAiCapture from '../components/QuickAiCapture';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -287,14 +286,6 @@ export default function AiDrafts() {
             </CardContent>
           </Card>
         </div>
-
-        <QuickAiCapture
-          initialText={quickCaptureSeed}
-          openSignal={quickCaptureOpenSignal}
-          onSaved={handleCaptureSaved}
-          draftSource="manual"
-        />
-
         <section className="space-y-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" data-ai-draft-command-center="true">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>

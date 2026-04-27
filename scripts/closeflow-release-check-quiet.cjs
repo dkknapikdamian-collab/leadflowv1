@@ -78,6 +78,8 @@ const requiredTests = [
   'tests/ai-draft-inbox-flow.test.cjs',
   'tests/ai-draft-inbox-command-center.test.cjs',
   'tests/global-quick-actions-sticky-single-source.test.cjs',
+  'tests/global-quick-actions-no-duplicates.test.cjs',
+  'tests/global-quick-actions-toolbar-a11y.test.cjs',
   'tests/ai-usage-limit-guard.test.cjs',
   'tests/ai-real-provider-wiring.test.cjs',
   'tests/ai-cloudflare-provider-wiring.test.cjs',

@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { consumeGlobalQuickAction } from '../components/GlobalQuickActions';
-import QuickAiCapture from '../components/QuickAiCapture';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -18,7 +17,7 @@ import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getLeadNextAction, type LeadNextAction } from '../lib/lead-next-action';
 import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
-import { buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
+import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   fetchCasesFromSupabase,
@@ -341,6 +340,7 @@ export default function Leads() {
   const activeLeads = useMemo(() => leads.filter((lead) => !isLeadInTrash(lead)), [leads]);
   const trashLeads = useMemo(() => leads.filter((lead) => isLeadInTrash(lead)), [leads]);
 
+  // RELATION_FUNNEL_SUM_FROM_ACTIVE_LEADS_AND_CLIENTS
   const relationValueEntries = useMemo(
     () => buildRelationValueEntries({ leads: activeLeads, clients, cases }),
     [activeLeads, clients, cases],
@@ -352,8 +352,8 @@ export default function Leads() {
   );
 
   const relationFunnelValue = useMemo(
-    () => relationValueEntries.reduce((sum, entry) => sum + entry.value, 0),
-    [relationValueEntries],
+    () => buildRelationFunnelValue({ leads: activeLeads, clients }),
+    [activeLeads, clients],
   );
 
   const filteredLeads = useMemo(() => {
@@ -428,7 +428,6 @@ export default function Leads() {
             <h1 className="text-3xl font-bold text-slate-900">Leady</h1>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <QuickAiCapture onSaved={() => void loadLeads()} />
             <Button
               type="button"
               variant="outline"
@@ -584,9 +583,9 @@ export default function Leads() {
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="text-sm font-bold text-slate-900">Najcenniejsze relacje</p>
-                  <p className="text-xs text-slate-500">Liczymy leady, klientów i sprawy, żeby wartość lejka nie znikała po przejściu do obsługi.</p>
+                  <p className="text-xs text-slate-500">Suma lejka liczona z aktywnych leadów i klientów. Sprawy zostają jako kontekst relacji, ale nie podbijają głównej sumy.</p>
                 </div>
-                <Badge variant="outline">Lejek: {formatRelationValue(relationFunnelValue)}</Badge>
+                <Badge variant="outline">Lejek razem: {formatRelationValue(relationFunnelValue)}</Badge>
               </div>
               <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
                 {mostValuableRelations.map((entry) => (

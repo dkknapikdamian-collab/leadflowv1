@@ -10,6 +10,18 @@ export type RelationValueEntry = {
 
 const VALUE_KEYS = [
   'dealValue',
+  'net_value',
+  'netValue',
+  'gross_value',
+  'grossValue',
+  'expected_revenue',
+  'expectedRevenue',
+  'total_revenue',
+  'totalRevenue',
+  'lifetime_value',
+  'lifetimeValue',
+  'client_value',
+  'clientValue',
   'deal_value',
   'value',
   'estimatedValue',
@@ -139,6 +151,20 @@ export function buildRelationValueEntries({
   });
 
   return [...map.values()].sort((a, b) => b.value - a.value);
+}
+
+
+export function buildRelationFunnelValue({
+  leads = [],
+  clients = [],
+}: {
+  leads?: Record<string, unknown>[];
+  clients?: Record<string, unknown>[];
+}) {
+  // RELATION_FUNNEL_SUM_FROM_ACTIVE_LEADS_AND_CLIENTS
+  // Lejek sprzedażowy ma pokazywać sumę z aktywnych leadów i klientów.
+  // Sprawy są kontekstem relacji po domknięciu, ale nie podbijają głównej sumy lejka.
+  return buildRelationValueEntries({ leads, clients }).reduce((sum, entry) => sum + entry.value, 0);
 }
 
 export function formatRelationValue(value: number) {

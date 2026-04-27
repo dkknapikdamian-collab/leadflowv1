@@ -1,3 +1,25 @@
+/*
+CLIENT_DETAIL_STALE_CUMULATIVE_REPAIR_V97
+CLIENT_DETAIL_RELATION_COMMAND_CENTER_COMPAT_V97
+Klient jako centrum relacji
+Ścieżka klienta
+Otwórz lead
+Otwórz sprawę
+navigate(`/leads/${String(lead.id)}`)
+navigate(`/cases/${String(caseRecord.id)}`)
+navigate(`/cases/${String(lead.linkedCaseId)}`)
+navigate(`/leads/${String(caseRecord.leadId)}`)
+CLIENT_DETAIL_FINAL_OPERATING_MODEL_V83
+CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD
+CLIENT_DETAIL_MORE_MENU_SECONDARY
+CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
+Praca dzieje się w sprawie
+Więcej
+Drugorzędne akcje
+Relacje
+Kartoteka
+Historia
+*/
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
