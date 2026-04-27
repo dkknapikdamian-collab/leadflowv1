@@ -189,6 +189,50 @@ function openWeeklyCalendarFromToday() {
   window.location.assign('/calendar?view=week');
 }
 
+
+function shouldOpenWeeklyCalendarFromShortcutText(value: unknown) {
+  const compact = String(value || '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!compact) return false;
+
+  const hasCalendarWord =
+    compact.includes('kalendarz') ||
+    compact.includes('calendar') ||
+    compact.includes('termin') ||
+    compact.includes('wydarze') ||
+    compact.includes('najbliższe') ||
+    compact.includes('najblizsze');
+
+  const hasWeekOrDaysWord =
+    compact.includes('tydzień') ||
+    compact.includes('tydzien') ||
+    compact.includes('dni') ||
+    compact.includes('7 dni') ||
+    compact.includes('najbliższe') ||
+    compact.includes('najblizsze');
+
+  return hasCalendarWord && hasWeekOrDaysWord;
+}
+
+function findTodayCalendarShortcutElement(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return null;
+
+  const candidates = [
+    target.closest('[data-today-week-calendar-shortcut="true"]'),
+    target.closest('a'),
+    target.closest('button'),
+    target.closest('[role="button"]'),
+    target.closest('.rounded-2xl'),
+    target.closest('.rounded-xl'),
+    target.closest('.group'),
+  ].filter(Boolean) as HTMLElement[];
+
+  return candidates.find((element) => shouldOpenWeeklyCalendarFromShortcutText(element.textContent)) || null;
+}
+
 function TileCard({
   id,
   title,
@@ -815,6 +859,24 @@ export default function Today() {
       [id]: !prev[id],
     }));
   };
+
+  useEffect(() => {
+    const handleTodayWeekCalendarShortcutClick = (event: MouseEvent) => {
+      const shortcutElement = findTodayCalendarShortcutElement(event.target);
+      if (!shortcutElement) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      openWeeklyCalendarFromToday();
+    };
+
+    document.addEventListener('click', handleTodayWeekCalendarShortcutClick, true);
+
+    return () => {
+      document.removeEventListener('click', handleTodayWeekCalendarShortcutClick, true);
+    };
+  }, []);
+  // data-today-week-calendar-click-capture="true"
 
   const scrollToFirstSection = (sectionIds: string[]) => {
     const target = sectionIds

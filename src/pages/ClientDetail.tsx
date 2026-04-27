@@ -11,11 +11,11 @@ navigate(`/cases/${String(lead.linkedCaseId)}`)
 navigate(`/leads/${String(caseRecord.leadId)}`)
 CLIENT_DETAIL_FINAL_OPERATING_MODEL_V83
 CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD
-CLIENT_DETAIL_MORE_MENU_SECONDARY
-CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
+
+CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA
 Praca dzieje się w sprawie
-Więcej
-Drugorzędne akcje
+
+
 Relacje
 Kartoteka
 Historia
@@ -808,7 +808,7 @@ export default function ClientDetail() {
 
             <Card className="rounded-3xl border-slate-200 shadow-sm">
               <CardContent className="space-y-2 p-4">
-                <p className="text-sm font-black text-slate-900">Więcej</p>
+                <p className="text-sm font-black text-slate-900"></p>
                 <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={openNewLeadForExistingClient}>Nowy temat do pozyskania</Button>
                 <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={() => toast.info('Scalanie duplikatów zostaje jako osobna bezpieczna akcja.')}>
                   Scal duplikat
