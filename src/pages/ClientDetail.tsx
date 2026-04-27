@@ -1,10 +1,10 @@
-/*
+﻿/*
 CLIENT_DETAIL_STALE_CUMULATIVE_REPAIR_V97
 CLIENT_DETAIL_RELATION_COMMAND_CENTER_COMPAT_V97
 Klient jako centrum relacji
-Ścieżka klienta
-Otwórz lead
-Otwórz sprawę
+ĹšcieĹĽka klienta
+OtwĂłrz lead
+OtwĂłrz sprawÄ™
 navigate(`/leads/${String(lead.id)}`)
 navigate(`/cases/${String(caseRecord.id)}`)
 navigate(`/cases/${String(lead.linkedCaseId)}`)
@@ -13,17 +13,17 @@ CLIENT_DETAIL_FINAL_OPERATING_MODEL_V83
 CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD
 CLIENT_DETAIL_MORE_MENU_SECONDARY
 CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
-Praca dzieje się w sprawie
-Więcej
-Drugorzędne akcje
+Praca dzieje siÄ™ w sprawie
+WiÄ™cej
+DrugorzÄ™dne akcje
 Relacje
 Kartoteka
 Historia
 
-Następny ruch
+NastÄ™pny ruch
 Zadania klienta
 Wydarzenia klienta
-Aktywność klienta*/
+AktywnoĹ›Ä‡ klienta*/
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -151,13 +151,13 @@ function leadStatusLabel(status?: string) {
     case 'qualification':
       return 'Kwalifikacja';
     case 'proposal_sent':
-      return 'Oferta wysłana';
+      return 'Oferta wysĹ‚ana';
     case 'waiting_response':
-      return 'Czeka na odpowiedź';
+      return 'Czeka na odpowiedĹş';
     case 'accepted':
       return 'Zaakceptowany';
     case 'moved_to_service':
-      return 'W obsłudze';
+      return 'W obsĹ‚udze';
     case 'won':
       return 'Wygrany';
     case 'lost':
@@ -186,7 +186,7 @@ function caseStatusLabel(status?: string) {
     case 'on_hold':
       return 'Wstrzymana';
     case 'completed':
-      return 'Zakończona';
+      return 'ZakoĹ„czona';
     case 'canceled':
       return 'Anulowana';
     default:
@@ -198,11 +198,11 @@ function paymentStatusLabel(status?: string) {
   switch (status) {
     case 'paid':
     case 'fully_paid':
-      return 'Opłacone';
+      return 'OpĹ‚acone';
     case 'partially_paid':
-      return 'Częściowo opłacone';
+      return 'CzÄ™Ĺ›ciowo opĹ‚acone';
     case 'awaiting_payment':
-      return 'Czeka na płatność';
+      return 'Czeka na pĹ‚atnoĹ›Ä‡';
     case 'deposit_paid':
       return 'Zaliczka';
     case 'refunded':
@@ -222,21 +222,21 @@ function activityLabel(activity: any) {
     case 'calendar_entry_completed':
       return title ? `Wpis kalendarza wykonany: ${title}` : 'Wpis kalendarza wykonany';
     case 'calendar_entry_restored':
-      return title ? `Wpis kalendarza przywrócony: ${title}` : 'Wpis kalendarza przywrócony';
+      return title ? `Wpis kalendarza przywrĂłcony: ${title}` : 'Wpis kalendarza przywrĂłcony';
     case 'calendar_entry_deleted':
-      return title ? `Wpis kalendarza usunięty: ${title}` : 'Wpis kalendarza usunięty';
+      return title ? `Wpis kalendarza usuniÄ™ty: ${title}` : 'Wpis kalendarza usuniÄ™ty';
     case 'today_task_completed':
-      return title ? `Zadanie z Dziś wykonane: ${title}` : 'Zadanie z Dziś wykonane';
+      return title ? `Zadanie z DziĹ› wykonane: ${title}` : 'Zadanie z DziĹ› wykonane';
     case 'today_task_restored':
-      return title ? `Zadanie z Dziś przywrócone: ${title}` : 'Zadanie z Dziś przywrócone';
+      return title ? `Zadanie z DziĹ› przywrĂłcone: ${title}` : 'Zadanie z DziĹ› przywrĂłcone';
     case 'today_task_snoozed':
-      return title ? `Zadanie przesunięte: ${title}` : 'Zadanie przesunięte';
+      return title ? `Zadanie przesuniÄ™te: ${title}` : 'Zadanie przesuniÄ™te';
     case 'today_event_snoozed':
-      return title ? `Wydarzenie przesunięte: ${title}` : 'Wydarzenie przesunięte';
+      return title ? `Wydarzenie przesuniÄ™te: ${title}` : 'Wydarzenie przesuniÄ™te';
     case 'case_lifecycle_started':
-      return title ? `Sprawa rozpoczęta: ${title}` : 'Sprawa rozpoczęta';
+      return title ? `Sprawa rozpoczÄ™ta: ${title}` : 'Sprawa rozpoczÄ™ta';
     case 'case_lifecycle_completed':
-      return title ? `Sprawa zakończona: ${title}` : 'Sprawa zakończona';
+      return title ? `Sprawa zakoĹ„czona: ${title}` : 'Sprawa zakoĹ„czona';
     case 'case_lifecycle_reopened':
       return title ? `Sprawa wznowiona: ${title}` : 'Sprawa wznowiona';
     default:
@@ -249,7 +249,7 @@ function buildRelationTimeline(leads: any[], cases: any[], payments: any[]) {
     id: String(lead.id || ''),
     kind: 'lead',
     title: String(lead.name || lead.company || 'Lead'),
-    subtitle: `${formatMoney(lead.dealValue)} · ${leadStatusLabel(String(lead.status || 'new'))}`,
+    subtitle: `${formatMoney(lead.dealValue)} Â· ${leadStatusLabel(String(lead.status || 'new'))}`,
     status: leadStatusLabel(String(lead.status || 'new')),
     date: String(lead.updatedAt || lead.createdAt || ''),
     amount: Number(lead.dealValue || 0),
@@ -259,7 +259,7 @@ function buildRelationTimeline(leads: any[], cases: any[], payments: any[]) {
     id: String(caseRecord.id || ''),
     kind: 'case',
     title: String(caseRecord.title || caseRecord.clientName || 'Sprawa'),
-    subtitle: `Kompletność ${Math.round(Number(caseRecord.completenessPercent || 0))}% · ${caseStatusLabel(String(caseRecord.status || 'in_progress'))}`,
+    subtitle: `KompletnoĹ›Ä‡ ${Math.round(Number(caseRecord.completenessPercent || 0))}% Â· ${caseStatusLabel(String(caseRecord.status || 'in_progress'))}`,
     status: caseStatusLabel(String(caseRecord.status || 'in_progress')),
     date: String(caseRecord.updatedAt || caseRecord.createdAt || ''),
   }));
@@ -294,7 +294,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
   if (overdueTask) {
     return {
       kind: 'task',
-      title: String(overdueTask.title || 'Zaległe zadanie'),
+      title: String(overdueTask.title || 'ZalegĹ‚e zadanie'),
       subtitle: `Termin: ${formatDateTime(getTaskDate(overdueTask))}`,
       date: getTaskDate(overdueTask),
       relationId: String(overdueTask.caseId || overdueTask.leadId || ''),
@@ -311,7 +311,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
   if (nextTask) {
     return {
       kind: 'task',
-      title: String(nextTask.title || 'Następne zadanie'),
+      title: String(nextTask.title || 'NastÄ™pne zadanie'),
       subtitle: `Termin: ${formatDateTime(getTaskDate(nextTask))}`,
       date: getTaskDate(nextTask),
       relationId: String(nextTask.caseId || nextTask.leadId || ''),
@@ -328,7 +328,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
   if (nextEvent) {
     return {
       kind: 'event',
-      title: String(nextEvent.title || 'Następne wydarzenie'),
+      title: String(nextEvent.title || 'NastÄ™pne wydarzenie'),
       subtitle: `Start: ${formatDateTime(getEventDate(nextEvent))}`,
       date: getEventDate(nextEvent),
       relationId: String(nextEvent.caseId || nextEvent.leadId || ''),
@@ -342,7 +342,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
     return {
       kind: 'case',
       title: String(activeCase.title || 'Aktywna sprawa'),
-      subtitle: `${caseStatusLabel(String(activeCase.status || 'in_progress'))} · kompletność ${Math.round(Number(activeCase.completenessPercent || 0))}%`,
+      subtitle: `${caseStatusLabel(String(activeCase.status || 'in_progress'))} Â· kompletnoĹ›Ä‡ ${Math.round(Number(activeCase.completenessPercent || 0))}%`,
       relationId: String(activeCase.id || ''),
       to: `/cases/${String(activeCase.id)}`,
       tone: 'emerald',
@@ -502,7 +502,7 @@ export default function ClientDetail() {
         notes: String((clientRow as any)?.notes || ''),
       });
     } catch (error: any) {
-      toast.error(`Błąd odczytu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d odczytu klienta: ${error?.message || 'REQUEST_FAILED'}`);
       setClient(null);
     } finally {
       setLoading(false);
@@ -577,7 +577,7 @@ export default function ClientDetail() {
 
   const handleSave = async () => {
     if (!clientId) return;
-    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
     try {
       setSaving(true);
       await updateClientInSupabase({
@@ -587,19 +587,19 @@ export default function ClientDetail() {
       toast.success('Klient zaktualizowany');
       await reload();
     } catch (error: any) {
-      toast.error(`Błąd zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSaving(false);
     }
   };
 
   const copyValue = async (label: string, value: string) => {
-    if (!value) return toast.error(`Brak wartości: ${label}`);
+    if (!value) return toast.error(`Brak wartoĹ›ci: ${label}`);
     try {
       await navigator.clipboard.writeText(value);
       toast.success(`${label} skopiowano`);
     } catch {
-      toast.error('Nie udało się skopiować.');
+      toast.error('Nie udaĹ‚o siÄ™ skopiowaÄ‡.');
     }
   };
 
@@ -625,7 +625,7 @@ export default function ClientDetail() {
     return (
       <Layout>
         <div className="space-y-4 p-6">
-          <Button variant="outline" onClick={() => navigate('/clients')}><ArrowLeft className="mr-2 h-4 w-4" /> Wróć</Button>
+          <Button variant="outline" onClick={() => navigate('/clients')}><ArrowLeft className="mr-2 h-4 w-4" /> WrĂłÄ‡</Button>
           <Card><CardContent className="p-6 text-slate-500">Nie znaleziono klienta.</CardContent></Card>
         </div>
       </Layout>
@@ -648,13 +648,12 @@ export default function ClientDetail() {
             <div>
               <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">Kartoteka klienta</p>
               <h1 className="text-2xl font-black tracking-tight text-slate-950">{client.name || client.company || 'Klient'}</h1>
-              <p className="text-sm text-slate-500">Dane, sprawy, kontakt i historia. Praca dzieje się w sprawie.</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
             {mainCase ? (
               <Button onClick={() => navigate(`/cases/${String(mainCase.id)}`)} className="rounded-xl">
-                <Briefcase className="mr-2 h-4 w-4" /> Otwórz główną sprawę
+                <Briefcase className="mr-2 h-4 w-4" /> OtwĂłrz gĹ‚ĂłwnÄ… sprawÄ™
               </Button>
             ) : null}
             <Button variant="outline" onClick={openNewCase} className="rounded-xl">+ Nowa sprawa dla klienta</Button>
@@ -672,9 +671,9 @@ export default function ClientDetail() {
                   <div className="min-w-0">
                     <h2 className="truncate text-xl font-black tracking-tight text-slate-950">{client.name || 'Klient'}</h2>
                     <p className="mt-1 text-xs leading-relaxed text-slate-500">
-                      {client.company ? `${client.company} · ` : 'Klient prywatny · '}
+                      {client.company ? `${client.company} Â· ` : 'Klient prywatny Â· '}
                       ostatni kontakt: {formatDate(lastActivityDate)}
-                      {mainCase ? ` · główna sprawa: ${getCaseTitle(mainCase)}` : ''}
+                      {mainCase ? ` Â· gĹ‚Ăłwna sprawa: ${getCaseTitle(mainCase)}` : ''}
                     </p>
                   </div>
                 </div>
@@ -705,21 +704,18 @@ export default function ClientDetail() {
                   </button>
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">Preferowany kontakt</span>
-                    <strong className="mt-1 text-sm text-slate-950">{asText(client.preferredContact) || (form.phone ? 'Telefon' : form.email ? 'E-mail' : 'Do uzupełnienia')}</strong>
+                    <strong className="mt-1 text-sm text-slate-950">{asText(client.preferredContact) || (form.phone ? 'Telefon' : form.email ? 'E-mail' : 'Do uzupeĹ‚nienia')}</strong>
                   </div>
                   <button type="button" onClick={() => setActiveTab('history')} className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-200 hover:bg-blue-50">
-                    <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">Pierwsze źródło</span>
-                    <strong className="mt-1 text-sm text-slate-950">{asText(firstSourceLead?.source) || asText(client.firstSource) || 'Do uzupełnienia'}</strong>
+                    <span className="block text-[11px] font-black uppercase tracking-wide text-slate-500">Pierwsze ĹşrĂłdĹ‚o</span>
+                    <strong className="mt-1 text-sm text-slate-950">{asText(firstSourceLead?.source) || asText(client.firstSource) || 'Do uzupeĹ‚nienia'}</strong>
                   </button>
                 </div>
 
                 <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-3 text-sm leading-relaxed text-slate-600">
-                  <strong className="text-slate-900">Zasada tego panelu:</strong><br />
-                  Tu nie prowadzimy pracy. Tu widzimy klienta i wybieramy sprawę, którą chcemy prowadzić.
                 </div>
 
                 <div className="space-y-2">
-                  <Button className="w-full rounded-xl" onClick={openNewCase}>+ Nowa sprawa dla klienta</Button>
                   <Button className="w-full rounded-xl" variant="outline" onClick={() => setActiveTab('contact')}>Edytuj dane kontaktowe</Button>
                 </div>
               </CardContent>
@@ -727,16 +723,16 @@ export default function ClientDetail() {
 
             <Card className="rounded-3xl border-slate-200 shadow-sm">
               <CardContent className="space-y-2 p-4">
-                <p className="text-sm font-black text-slate-900">Więcej</p>
+                <p className="text-sm font-black text-slate-900">WiÄ™cej</p>
                 <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={openNewLeadForExistingClient}>Nowy temat do pozyskania</Button>
-                <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={() => toast.info('Scalanie duplikatów zostaje jako osobna bezpieczna akcja.')}>
+                <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={() => toast.info('Scalanie duplikatĂłw zostaje jako osobna bezpieczna akcja.')}>
                   Scal duplikat
                 </Button>
                 <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={() => toast.info('Archiwizacja klienta wymaga osobnego potwierdzenia.')}>
                   Archiwizuj klienta
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={() => toast.info('Eksport historii będzie generowany z zakładki Historia.')}>
-                  Eksportuj historię
+                <Button variant="outline" size="sm" className="w-full justify-start rounded-xl" onClick={() => toast.info('Eksport historii bÄ™dzie generowany z zakĹ‚adki Historia.')}>
+                  Eksportuj historiÄ™
                 </Button>
               </CardContent>
             </Card>
@@ -766,7 +762,7 @@ export default function ClientDetail() {
                     <div className="grid gap-3 md:grid-cols-3">
                       <button type="button" onClick={() => nextAction.to && navigate(nextAction.to)} className={`rounded-2xl border p-4 text-left ${nextActionToneClass(nextAction.tone)}`}>
                         <p className="text-2xl font-black tracking-tight">{relativeActionLabel(nextAction.date)}</p>
-                        <p className="mt-1 text-xs font-semibold opacity-80">Najbliższa akcja: {nextAction.title}</p>
+                        <p className="mt-1 text-xs font-semibold opacity-80">NajbliĹĽsza akcja: {nextAction.title}</p>
                         <p className="mt-2 text-xs opacity-75">{nextAction.subtitle}</p>
                       </button>
                       <button type="button" onClick={() => blockers[0]?.caseRecord?.id && navigate(`/cases/${String(blockers[0].caseRecord.id)}`)} className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-left text-rose-800">
@@ -776,22 +772,20 @@ export default function ClientDetail() {
                       </button>
                       <button type="button" onClick={() => mainCase?.id && navigate(`/cases/${String(mainCase.id)}`)} className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-left text-emerald-800">
                         <p className="text-2xl font-black tracking-tight">{mainCase ? `${mainCaseCompleteness}%` : '0%'}</p>
-                        <p className="mt-1 text-xs font-semibold opacity-80">Kompletność głównej sprawy</p>
+                        <p className="mt-1 text-xs font-semibold opacity-80">KompletnoĹ›Ä‡ gĹ‚Ăłwnej sprawy</p>
                         <p className="mt-2 text-xs opacity-75">{mainCase ? getCaseTitle(mainCase) : 'Brak sprawy do pokazania.'}</p>
                       </button>
                     </div>
 
                     <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
                       <div>
-                        <h2 className="text-lg font-black tracking-tight text-slate-950">Najważniejsze dla tego klienta</h2>
-                        <p className="text-sm text-slate-500">Krótki pulpit. Tylko rzeczy, które pomagają zdecydować, gdzie wejść.</p>
                       </div>
                       {waitingCaseCount > 0 ? <Badge variant="outline" className="w-fit border-amber-200 bg-amber-50 text-amber-700">Wymaga ruchu</Badge> : null}
                     </div>
 
                     <div className="space-y-2">
                       {activeCases.length === 0 ? (
-                        <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-500">Ten klient nie ma aktywnej sprawy. Możesz założyć nową sprawę dla klienta.</div>
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-500">Ten klient nie ma aktywnej sprawy. MoĹĽesz zaĹ‚oĹĽyÄ‡ nowÄ… sprawÄ™ dla klienta.</div>
                       ) : activeCases.slice(0, 4).map((caseRecord) => {
                         const caseAction = getCaseNextAction(caseRecord, clientTasks, clientEvents);
                         const blocker = getCaseBlocker(caseRecord);
@@ -804,12 +798,12 @@ export default function ClientDetail() {
                                 <Badge variant="outline" className={statusBadgeClass(caseRecord.status)}>{caseStatusLabel(String(caseRecord.status || 'in_progress'))}</Badge>
                               </div>
                               <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
-                                <span>Najbliższa akcja: {caseAction ? `${caseAction.title} · ${formatDateTime(caseAction.date)}` : 'brak zaplanowanej akcji'}</span>
+                                <span>NajbliĹĽsza akcja: {caseAction ? `${caseAction.title} Â· ${formatDateTime(caseAction.date)}` : 'brak zaplanowanej akcji'}</span>
                                 <span>{blocker ? `Blokada: ${blocker}` : 'Bez blokad'}</span>
-                                <span>Źródło: {sourceLead ? `lead ${asText(sourceLead.source) || 'źródłowy'}` : 'brak źródła'}</span>
+                                <span>ĹąrĂłdĹ‚o: {sourceLead ? `lead ${asText(sourceLead.source) || 'ĹşrĂłdĹ‚owy'}` : 'brak ĹşrĂłdĹ‚a'}</span>
                               </div>
                             </div>
-                            <Button size="sm" className="rounded-xl" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>Otwórz sprawę <ArrowRight className="ml-1 h-3 w-3" /></Button>
+                            <Button size="sm" className="rounded-xl" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>OtwĂłrz sprawÄ™ <ArrowRight className="ml-1 h-3 w-3" /></Button>
                           </div>
                         );
                       })}
@@ -821,11 +815,11 @@ export default function ClientDetail() {
                             <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700">informacyjnie</Badge>
                           </div>
                           <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
-                            <span>Pierwszy kontakt: {asText(firstSourceLead?.source) || asText(client.firstSource) || 'do uzupełnienia'}</span>
-                            <span>{firstSourceLead ? `Lead: ${leadStatusLabel(String(firstSourceLead.status || 'new'))}` : 'Brak leada źródłowego'}</span>
+                            <span>Pierwszy kontakt: {asText(firstSourceLead?.source) || asText(client.firstSource) || 'do uzupeĹ‚nienia'}</span>
+                            <span>{firstSourceLead ? `Lead: ${leadStatusLabel(String(firstSourceLead.status || 'new'))}` : 'Brak leada ĹşrĂłdĹ‚owego'}</span>
                           </div>
                         </div>
-                        <Button size="sm" variant="outline" className="rounded-xl" onClick={() => setActiveTab('history')}>Pokaż historię</Button>
+                        <Button size="sm" variant="outline" className="rounded-xl" onClick={() => setActiveTab('history')}>PokaĹĽ historiÄ™</Button>
                       </div>
                     </div>
                   </div>
@@ -836,7 +830,7 @@ export default function ClientDetail() {
                     <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
                       <div>
                         <h2 className="text-lg font-black tracking-tight text-slate-950">Sprawy klienta</h2>
-                        <p className="text-sm text-slate-500">To jest główna lista robocza klienta. Kliknięcie prowadzi do sprawy, czyli miejsca pracy.</p>
+                        <p className="text-sm text-slate-500">To jest gĹ‚Ăłwna lista robocza klienta. KlikniÄ™cie prowadzi do sprawy, czyli miejsca pracy.</p>
                       </div>
                       <Button size="sm" onClick={openNewCase} className="rounded-xl">+ Nowa sprawa</Button>
                     </div>
@@ -858,15 +852,15 @@ export default function ClientDetail() {
                                   <Badge variant="outline" className={statusBadgeClass(caseRecord.status)}>{caseStatusLabel(String(caseRecord.status || 'in_progress'))}</Badge>
                                 </div>
                                 <div className="mt-2 grid gap-1 text-xs text-slate-500 md:grid-cols-2">
-                                  <span>Kompletność: {completeness}%</span>
-                                  <span>Najbliższa akcja: {caseAction ? `${caseAction.title} · ${formatDateTime(caseAction.date)}` : 'brak'}</span>
+                                  <span>KompletnoĹ›Ä‡: {completeness}%</span>
+                                  <span>NajbliĹĽsza akcja: {caseAction ? `${caseAction.title} Â· ${formatDateTime(caseAction.date)}` : 'brak'}</span>
                                   <span>{blocker ? `Brakuje / blokada: ${blocker}` : 'Bez blokad'}</span>
-                                  <button type="button" onClick={() => setActiveTab('history')} className="text-left text-blue-700 hover:underline">Źródło: {sourceLead ? `lead ${asText(sourceLead.source) || 'źródłowy'}` : 'brak źródła'}</button>
+                                  <button type="button" onClick={() => setActiveTab('history')} className="text-left text-blue-700 hover:underline">ĹąrĂłdĹ‚o: {sourceLead ? `lead ${asText(sourceLead.source) || 'ĹşrĂłdĹ‚owy'}` : 'brak ĹşrĂłdĹ‚a'}</button>
                                 </div>
                               </div>
                               <div className="flex flex-wrap gap-2 md:justify-end">
                                 <Button size="sm" variant="outline" className="rounded-xl" onClick={() => navigate(`/cases/${String(caseRecord.id)}?section=portal`)}>Portal</Button>
-                                <Button size="sm" className="rounded-xl" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>Otwórz sprawę</Button>
+                                <Button size="sm" className="rounded-xl" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>OtwĂłrz sprawÄ™</Button>
                               </div>
                             </div>
                           </div>
@@ -881,7 +875,7 @@ export default function ClientDetail() {
                     <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
                       <div>
                         <h2 className="text-lg font-black tracking-tight text-slate-950">Kontakt</h2>
-                        <p className="text-sm text-slate-500">Same dane kontaktowe. Bez follow-upów, zadań i wydarzeń.</p>
+                        <p className="text-sm text-slate-500">Same dane kontaktowe. Bez follow-upĂłw, zadaĹ„ i wydarzeĹ„.</p>
                       </div>
                       <Button onClick={() => void handleSave()} disabled={saving} className="rounded-xl"><Save className="mr-2 h-4 w-4" /> {saving ? 'Zapisywanie...' : 'Zapisz dane'}</Button>
                     </div>
@@ -891,18 +885,18 @@ export default function ClientDetail() {
                       <div className="space-y-2"><Label>Firma</Label><Input value={form.company} onChange={(event) => setForm((prev) => ({ ...prev, company: event.target.value }))} /></div>
                       <div className="space-y-2"><Label>E-mail</Label><Input type="email" value={form.email} onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))} /></div>
                       <div className="space-y-2"><Label>Telefon</Label><Input value={form.phone} onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))} /></div>
-                      <div className="space-y-2 md:col-span-2"><Label>Notatka kontaktowa</Label><Textarea value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} rows={5} placeholder="Np. najlepiej dzwonić po 15:00." /></div>
+                      <div className="space-y-2 md:col-span-2"><Label>Notatka kontaktowa</Label><Textarea value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} rows={5} placeholder="Np. najlepiej dzwoniÄ‡ po 15:00." /></div>
                     </div>
 
                     <div className="grid gap-2 md:grid-cols-4">
-                      <Button variant="outline" className="rounded-xl" onClick={() => form.phone ? window.open(`tel:${form.phone}`) : toast.error('Brak telefonu')}>Zadzwoń</Button>
+                      <Button variant="outline" className="rounded-xl" onClick={() => form.phone ? window.open(`tel:${form.phone}`) : toast.error('Brak telefonu')}>ZadzwoĹ„</Button>
                       <Button variant="outline" className="rounded-xl" onClick={() => form.email ? window.open(`mailto:${form.email}`) : toast.error('Brak e-maila')}>Napisz e-mail</Button>
                       <Button variant="outline" className="rounded-xl" onClick={() => void copyValue('Telefon', form.phone)}>Kopiuj telefon</Button>
                       <Button variant="outline" className="rounded-xl" onClick={() => void copyValue('E-mail', form.email)}>Kopiuj e-mail</Button>
                     </div>
 
                     <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-                      Kontakt jest książką adresową. Zadania, wydarzenia, follow-upy, portal i materiały zostają w sprawie albo w globalnych widokach.
+                      Kontakt jest ksiÄ…ĹĽkÄ… adresowÄ…. Zadania, wydarzenia, follow-upy, portal i materiaĹ‚y zostajÄ… w sprawie albo w globalnych widokach.
                     </div>
                   </div>
                 ) : null}
@@ -911,7 +905,7 @@ export default function ClientDetail() {
                   <div className="space-y-4" data-client-tab-history="true">
                     <div>
                       <h2 className="text-lg font-black tracking-tight text-slate-950">Historia relacji</h2>
-                      <p className="text-sm text-slate-500">Tu trafia źródło leadów, przejście do obsługi, utworzone sprawy i ważne aktywności.</p>
+                      <p className="text-sm text-slate-500">Tu trafia ĹşrĂłdĹ‚o leadĂłw, przejĹ›cie do obsĹ‚ugi, utworzone sprawy i waĹĽne aktywnoĹ›ci.</p>
                     </div>
 
                     <div className="space-y-2">
@@ -924,8 +918,8 @@ export default function ClientDetail() {
                                 <p className="font-black text-slate-950">{activityLabel(activity)}</p>
                                 <span className="text-xs text-slate-500">{formatDateTime(getActivityTime(activity))}</span>
                               </div>
-                              {activity.caseId ? <button type="button" onClick={() => navigate(`/cases/${String(activity.caseId)}`)} className="mt-1 text-xs font-semibold text-blue-700 hover:underline">Otwórz powiązaną sprawę</button> : null}
-                              {activity.leadId ? <button type="button" onClick={() => navigate(`/leads/${String(activity.leadId)}`)} className="mt-1 block text-xs font-semibold text-blue-700 hover:underline">Podgląd leada źródłowego</button> : null}
+                              {activity.caseId ? <button type="button" onClick={() => navigate(`/cases/${String(activity.caseId)}`)} className="mt-1 text-xs font-semibold text-blue-700 hover:underline">OtwĂłrz powiÄ…zanÄ… sprawÄ™</button> : null}
+                              {activity.leadId ? <button type="button" onClick={() => navigate(`/leads/${String(activity.leadId)}`)} className="mt-1 block text-xs font-semibold text-blue-700 hover:underline">PodglÄ…d leada ĹşrĂłdĹ‚owego</button> : null}
                             </div>
                           </div>
                         </div>
@@ -939,12 +933,12 @@ export default function ClientDetail() {
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex flex-wrap items-start justify-between gap-2">
-                                <p className="font-black text-slate-950">{item.kind === 'lead' ? 'Lead źródłowy' : item.kind === 'case' ? 'Utworzono sprawę' : 'Rozliczenie'}: {item.title}</p>
+                                <p className="font-black text-slate-950">{item.kind === 'lead' ? 'Lead ĹşrĂłdĹ‚owy' : item.kind === 'case' ? 'Utworzono sprawÄ™' : 'Rozliczenie'}: {item.title}</p>
                                 <span className="text-xs text-slate-500">{formatDate(item.date)}</span>
                               </div>
                               <p className="mt-1 text-sm text-slate-500">{item.subtitle}</p>
-                              {item.kind === 'case' ? <button type="button" onClick={() => navigate(`/cases/${item.id}`)} className="mt-2 text-xs font-semibold text-blue-700 hover:underline">Otwórz sprawę</button> : null}
-                              {item.kind === 'lead' ? <button type="button" onClick={() => navigate(`/leads/${item.id}`)} className="mt-2 text-xs font-semibold text-blue-700 hover:underline">Archiwalny podgląd leada</button> : null}
+                              {item.kind === 'case' ? <button type="button" onClick={() => navigate(`/cases/${item.id}`)} className="mt-2 text-xs font-semibold text-blue-700 hover:underline">OtwĂłrz sprawÄ™</button> : null}
+                              {item.kind === 'lead' ? <button type="button" onClick={() => navigate(`/leads/${item.id}`)} className="mt-2 text-xs font-semibold text-blue-700 hover:underline">Archiwalny podglÄ…d leada</button> : null}
                             </div>
                           </div>
                         </div>
@@ -965,7 +959,6 @@ export default function ClientDetail() {
           <div className="flex items-start gap-2">
             <AlertTriangle className="mt-0.5 h-4 w-4" />
             <p>
-              Nie usuwamy funkcji. Przenosimy je tam, gdzie mają sens: pozyskanie zostaje na aktywnym leadzie, obsługa i materiały w sprawie, terminy w zadaniach i kalendarzu, a klient zostaje kartoteką relacji.
             </p>
           </div>
         </div>
