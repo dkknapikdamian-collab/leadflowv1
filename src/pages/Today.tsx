@@ -4,10 +4,11 @@ Today nie renderuje lokalnych kopii Asystenta AI, Szybkiego szkicu ani przycisk�
 Jedynym miejscem tych akcji jest globalny pasek GlobalQuickActions.
 */
 
-﻿import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
+import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
-import Layout from '../components/Layout';import { Card, CardContent } from '../components/ui/card';
+import Layout from '../components/Layout';
+import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
@@ -483,6 +484,105 @@ function TodayEntrySnoozeBar({
     </div>
   );
 }
+
+function todayPipelineNormalizeAmount(value: unknown) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return Math.max(0, value);
+  }
+
+  if (typeof value !== 'string') {
+    return 0;
+  }
+
+  const compact = value
+    .replace(/\s/g, '')
+    .replace(/zł|pln/gi, '')
+    .replace(/,/g, '.')
+    .replace(/[^0-9.-]/g, '');
+
+  const parsed = Number(compact);
+  return Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
+}
+
+function todayPipelineLeadAmount(lead: any) {
+  const candidates = [
+    lead?.dealValue,
+    lead?.value,
+    lead?.amount,
+    lead?.estimatedValue,
+    lead?.estimated_value,
+    lead?.deal_value,
+    lead?.budget,
+    lead?.price,
+  ];
+
+  for (const candidate of candidates) {
+    const amount = todayPipelineNormalizeAmount(candidate);
+    if (amount > 0) return amount;
+  }
+
+  return 0;
+}
+
+function todayPipelineFormatMoney(value: number) {
+  return new Intl.NumberFormat('pl-PL', {
+    style: 'currency',
+    currency: 'PLN',
+    maximumFractionDigits: 0,
+  }).format(Math.max(0, value || 0));
+}
+
+function todayPipelineIsActiveLead(lead: any) {
+  return isActiveSalesLead(lead) && !isLeadMovedToService(lead);
+}
+
+function todayPipelineLeadName(lead: any) {
+  return String(lead?.name || lead?.company || lead?.title || 'Lead bez nazwy');
+}
+
+function todayPipelineLeadSubtitle(lead: any) {
+  const parts = [
+    lead?.status ? String(lead.status) : '',
+    lead?.source ? String(lead.source) : '',
+    lead?.nextActionAt ? 'następny ruch: ' + formatLeadMoment(lead.nextActionAt) : '',
+  ].filter(Boolean);
+
+  return parts.length ? parts.join(' · ') : 'Brak dodatkowych danych';
+}
+
+function todayPipelineIsUrgentLead(lead: any) {
+  const nextAction = parseMoment(lead?.nextActionAt);
+  if (!nextAction) return false;
+  return isToday(nextAction) || isLeadOverdue(lead);
+}
+
+function todayPipelineIsWithoutAction(lead: any) {
+  return !parseMoment(lead?.nextActionAt);
+}
+
+function todayPipelineIsWithoutMovement(lead: any) {
+  const days = getDaysWithoutUpdate(lead);
+  return typeof days === 'number' && days >= 7;
+}
+
+function TodayPipelineValueCard({ leads }: { leads: any[] }) {
+  const activeLeads = (leads || []).filter(todayPipelineIsActiveLead);
+  const activeLeadsWithValue = activeLeads.filter((lead) => todayPipelineLeadAmount(lead) > 0);
+  const totalValue = activeLeads.reduce((sum, lead) => sum + todayPipelineLeadAmount(lead), 0);
+  const urgentLeads = activeLeads.filter(todayPipelineIsUrgentLead);
+  const withoutActionLeads = activeLeads.filter(todayPipelineIsWithoutAction);
+  const withoutMovementLeads = activeLeads.filter(todayPipelineIsWithoutMovement);
+
+  const topLeads = [...activeLeadsWithValue]
+    .sort((left, right) => todayPipelineLeadAmount(right) - todayPipelineLeadAmount(left))
+    .slice(0, 3);
+
+  return (
+    <TodayPipelineValueCard leads={leads} />
+  );
+}
+
+
 export default function Today() {
   const { workspace, profile, hasAccess, loading: wsLoading, workspaceReady, refresh } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
