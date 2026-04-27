@@ -60,6 +60,8 @@ import {
   fetchTasksFromSupabase,
   insertActivityToSupabase,
   insertCaseItemToSupabase,
+  insertEventToSupabase,
+  insertTaskToSupabase,
   isSupabaseConfigured,
   updateCaseInSupabase,
   updateCaseItemInSupabase,
@@ -141,6 +143,22 @@ type NewCaseItemState = {
   type: string;
   isRequired: boolean;
   dueDate: string;
+};
+
+type NewTaskState = {
+  title: string;
+  type: string;
+  scheduledAt: string;
+  reminderAt: string;
+  priority: string;
+};
+
+type NewEventState = {
+  title: string;
+  type: string;
+  startAt: string;
+  endAt: string;
+  reminderAt: string;
 };
 
 type WorkPathEntry = {
@@ -253,6 +271,18 @@ function sortTime(value: any, fallback = Number.MAX_SAFE_INTEGER) {
   return toDate(value)?.getTime() || fallback;
 }
 
+function toIsoFromLocalInput(value: string) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toISOString();
+}
+
+function toDateOnlyFromLocalInput(value: string) {
+  if (!value) return '';
+  return value.slice(0, 10);
+}
+
 function getCaseStatusLabel(status?: string) {
   if (!status) return 'Bez statusu';
   return CASE_STATUS_LABELS[status] || status;
@@ -322,6 +352,8 @@ function getActivityText(activity: CaseActivity) {
   if (activity.eventType === 'file_uploaded') return `${actor} wgrał plik do: ${title}`;
   if (activity.eventType === 'decision_made') return `${actor} podjął decyzję w: ${title}`;
   if (activity.eventType === 'operator_note') return `${actor} dodał notatkę`;
+  if (activity.eventType === 'task_added') return `${actor} dodał zadanie: ${title}`;
+  if (activity.eventType === 'event_added') return `${actor} dodał wydarzenie: ${title}`;
   return `${actor} wykonał akcję`;
 }
 
@@ -468,6 +500,8 @@ export default function CaseDetail() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+  const [isAddEventOpen, setIsAddEventOpen] = useState(false);
   const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
   const [newNote, setNewNote] = useState('');
   const [newItem, setNewItem] = useState<NewCaseItemState>({
@@ -476,6 +510,20 @@ export default function CaseDetail() {
     type: 'file',
     isRequired: true,
     dueDate: '',
+  });
+  const [newTask, setNewTask] = useState<NewTaskState>({
+    title: '',
+    type: 'follow_up',
+    scheduledAt: '',
+    reminderAt: '',
+    priority: 'normal',
+  });
+  const [newEvent, setNewEvent] = useState<NewEventState>({
+    title: '',
+    type: 'meeting',
+    startAt: '',
+    endAt: '',
+    reminderAt: '',
   });
 
   const refreshCaseData = useCallback(async () => {
@@ -687,6 +735,131 @@ export default function CaseDetail() {
       await refreshCaseData();
     } catch (error: any) {
       toast.error('Błąd: ' + (error?.message || 'Nie udało się dodać elementu'));
+    }
+  };
+
+  const handleAddTask = async () => {
+    if (!caseId || !newTask.title.trim()) {
+      toast.error('Podaj nazwę zadania');
+      return;
+    }
+
+    try {
+      const scheduledAt = toIsoFromLocalInput(newTask.scheduledAt);
+      const reminderAt = toIsoFromLocalInput(newTask.reminderAt);
+
+      const input = {
+        title: newTask.title.trim(),
+        type: newTask.type,
+        date: toDateOnlyFromLocalInput(newTask.scheduledAt),
+        scheduledAt: scheduledAt || undefined,
+        reminderAt: reminderAt || undefined,
+        priority: newTask.priority,
+        status: 'todo',
+        caseId,
+        leadId: caseData?.leadId || null,
+      };
+
+      const createdRaw = await insertTaskToSupabase(input);
+      const createdTask =
+        normalizeRecord<TaskRecord>(createdRaw) ||
+        ({
+          id: `local-task-${Date.now()}`,
+          ...input,
+        } as TaskRecord);
+
+      setTasks((current) => [...current, createdTask]);
+
+      await insertActivityToSupabase({
+        caseId,
+        actorType: 'operator',
+        eventType: 'task_added',
+        payload: { title: input.title, scheduledAt: input.scheduledAt || input.date || null },
+      }).catch((error) => console.error('CaseDetail task activity failed', error));
+
+      await updateCaseInSupabase({
+        id: caseId,
+        lastActivityAt: new Date().toISOString(),
+      }).catch((error) => console.error('CaseDetail task case touch failed', error));
+
+      setIsAddTaskOpen(false);
+      setNewTask({
+        title: '',
+        type: 'follow_up',
+        scheduledAt: '',
+        reminderAt: '',
+        priority: 'normal',
+      });
+
+      toast.success('Zadanie dodane do sprawy');
+      await refreshCaseData();
+    } catch (error: any) {
+      toast.error('Błąd: ' + (error?.message || 'Nie udało się dodać zadania'));
+    }
+  };
+
+  const handleAddEvent = async () => {
+    if (!caseId || !newEvent.title.trim()) {
+      toast.error('Podaj nazwę wydarzenia');
+      return;
+    }
+
+    const startAt = toIsoFromLocalInput(newEvent.startAt);
+    if (!startAt) {
+      toast.error('Podaj datę i godzinę wydarzenia');
+      return;
+    }
+
+    try {
+      const endAt = toIsoFromLocalInput(newEvent.endAt);
+      const reminderAt = toIsoFromLocalInput(newEvent.reminderAt);
+
+      const input = {
+        title: newEvent.title.trim(),
+        type: newEvent.type,
+        startAt,
+        endAt: endAt || undefined,
+        reminderAt: reminderAt || undefined,
+        status: 'planned',
+        caseId,
+        leadId: caseData?.leadId || null,
+      };
+
+      const createdRaw = await insertEventToSupabase(input);
+      const createdEvent =
+        normalizeRecord<EventRecord>(createdRaw) ||
+        ({
+          id: `local-event-${Date.now()}`,
+          ...input,
+        } as EventRecord);
+
+      setEvents((current) => [...current, createdEvent]);
+
+      await insertActivityToSupabase({
+        caseId,
+        actorType: 'operator',
+        eventType: 'event_added',
+        payload: { title: input.title, startAt: input.startAt },
+      }).catch((error) => console.error('CaseDetail event activity failed', error));
+
+      await updateCaseInSupabase({
+        id: caseId,
+        lastActivityAt: new Date().toISOString(),
+      }).catch((error) => console.error('CaseDetail event case touch failed', error));
+
+      setIsAddEventOpen(false);
+      setNewEvent({
+        title: '',
+        type: 'meeting',
+        startAt: '',
+        endAt: '',
+        reminderAt: '',
+      });
+
+      toast.success('Wydarzenie dodane do sprawy');
+      await refreshCaseData();
+    } catch (error: any) {
+      toast.error('Błąd: ' + (error?.message || 'Nie udało się dodać wydarzenia'));
     }
   };
 
@@ -1413,21 +1586,155 @@ export default function CaseDetail() {
                     </span>
                   </Button>
 
-                  <Button variant="outline" className="cf-wide-action cf-wide-action-task" onClick={() => handleNotReadyYet('Dodawanie zadania')}>
-                    <ListChecks className="w-4 h-4" />
-                    <span>
-                      <strong>Dodaj zadanie</strong>
-                      <small>Telefon, follow-up, rzecz do zrobienia</small>
-                    </span>
-                  </Button>
+                  <Dialog open={isAddTaskOpen} onOpenChange={setIsAddTaskOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="cf-wide-action cf-wide-action-task">
+                        <ListChecks className="w-4 h-4" />
+                        <span>
+                          <strong>Dodaj zadanie</strong>
+                          <small>Telefon, follow-up, rzecz do zrobienia</small>
+                        </span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Dodaj zadanie do sprawy</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label>Nazwa zadania</Label>
+                          <Input
+                            placeholder="np. Zadzwonić do klienta"
+                            value={newTask.title}
+                            onChange={(event) => setNewTask({ ...newTask, title: event.target.value })}
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>Typ</Label>
+                            <select
+                              className="cf-native-select"
+                              value={newTask.type}
+                              onChange={(event) => setNewTask({ ...newTask, type: event.target.value })}
+                            >
+                              <option value="follow_up">Follow-up</option>
+                              <option value="call">Telefon</option>
+                              <option value="email">E-mail</option>
+                              <option value="todo">Do zrobienia</option>
+                            </select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Priorytet</Label>
+                            <select
+                              className="cf-native-select"
+                              value={newTask.priority}
+                              onChange={(event) => setNewTask({ ...newTask, priority: event.target.value })}
+                            >
+                              <option value="low">Niski</option>
+                              <option value="normal">Normalny</option>
+                              <option value="high">Wysoki</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>Termin zadania</Label>
+                            <Input
+                              type="datetime-local"
+                              value={newTask.scheduledAt}
+                              onChange={(event) => setNewTask({ ...newTask, scheduledAt: event.target.value })}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Przypomnienie opcjonalnie</Label>
+                            <Input
+                              type="datetime-local"
+                              value={newTask.reminderAt}
+                              onChange={(event) => setNewTask({ ...newTask, reminderAt: event.target.value })}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsAddTaskOpen(false)}>
+                          Anuluj
+                        </Button>
+                        <Button onClick={handleAddTask}>Dodaj zadanie</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
 
-                  <Button variant="outline" className="cf-wide-action cf-wide-action-event" onClick={() => handleNotReadyYet('Dodawanie wydarzenia')}>
-                    <CalendarClock className="w-4 h-4" />
-                    <span>
-                      <strong>Dodaj wydarzenie</strong>
-                      <small>Spotkanie, termin albo blok w kalendarzu</small>
-                    </span>
-                  </Button>
+                  <Dialog open={isAddEventOpen} onOpenChange={setIsAddEventOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="cf-wide-action cf-wide-action-event">
+                        <CalendarClock className="w-4 h-4" />
+                        <span>
+                          <strong>Dodaj wydarzenie</strong>
+                          <small>Spotkanie, termin albo blok w kalendarzu</small>
+                        </span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Dodaj wydarzenie do sprawy</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label>Nazwa wydarzenia</Label>
+                          <Input
+                            placeholder="np. Spotkanie z klientem"
+                            value={newEvent.title}
+                            onChange={(event) => setNewEvent({ ...newEvent, title: event.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Typ</Label>
+                          <select
+                            className="cf-native-select"
+                            value={newEvent.type}
+                            onChange={(event) => setNewEvent({ ...newEvent, type: event.target.value })}
+                          >
+                            <option value="meeting">Spotkanie</option>
+                            <option value="call">Rozmowa</option>
+                            <option value="presentation">Prezentacja</option>
+                            <option value="deadline">Termin</option>
+                          </select>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>Start</Label>
+                            <Input
+                              type="datetime-local"
+                              value={newEvent.startAt}
+                              onChange={(event) => setNewEvent({ ...newEvent, startAt: event.target.value })}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Koniec opcjonalnie</Label>
+                            <Input
+                              type="datetime-local"
+                              value={newEvent.endAt}
+                              onChange={(event) => setNewEvent({ ...newEvent, endAt: event.target.value })}
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Przypomnienie opcjonalnie</Label>
+                          <Input
+                            type="datetime-local"
+                            value={newEvent.reminderAt}
+                            onChange={(event) => setNewEvent({ ...newEvent, reminderAt: event.target.value })}
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsAddEventOpen(false)}>
+                          Anuluj
+                        </Button>
+                        <Button onClick={handleAddEvent}>Dodaj wydarzenie</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
 
                   <Dialog open={isAddNoteOpen} onOpenChange={setIsAddNoteOpen}>
                     <DialogTrigger asChild>
