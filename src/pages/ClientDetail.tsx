@@ -1,4 +1,6 @@
 /*
+CLIENT_DETAIL_EDIT_SAVE_CLOSE_STAGE25
+CLIENT_DETAIL_MULTI_EMAIL_PHONE_STAGE25
 CLIENT_DETAIL_CONTRACT_MARKERS_V9
 Tu nie prowadzimy pracy
 CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
@@ -468,6 +470,95 @@ function relativeActionLabel(value: unknown) {
   return formatDate(value);
 }
 
+
+type ClientMultiContactKind = 'email' | 'phone';
+
+type ClientMultiContactFieldProps = {
+  kind: ClientMultiContactKind;
+  label: string;
+  value?: string | null;
+  onChange: (value: string) => void;
+  placeholder?: string;
+};
+
+function splitClientContactValue(value?: string | null) {
+  const parts = String(value || '')
+    .split(/[;\n]+/g)
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
+  return parts.length ? parts : [''];
+}
+
+function joinClientContactValue(values: string[]) {
+  return values
+    .map((entry) => String(entry || '').trim())
+    .filter(Boolean)
+    .join('; ');
+}
+
+function ClientMultiContactField({ kind, label, value, onChange, placeholder }: ClientMultiContactFieldProps) {
+  const values = splitClientContactValue(value);
+
+  const updateValue = (index: number, nextValue: string) => {
+    const next = [...values];
+    next[index] = nextValue;
+    onChange(joinClientContactValue(next));
+  };
+
+  const addValue = () => {
+    onChange(joinClientContactValue([...values, '']));
+  };
+
+  const removeValue = (index: number) => {
+    const next = values.filter((_, currentIndex) => currentIndex !== index);
+    onChange(joinClientContactValue(next.length ? next : ['']));
+  };
+
+  return (
+    <div className="space-y-2" data-client-contact-repeat={kind}>
+      <div className="flex items-center justify-between gap-2">
+        <Label>{label}</Label>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          className="h-8 px-2 text-xs"
+          onClick={addValue}
+          data-client-contact-repeat-add={kind}
+          aria-label={kind === 'email' ? 'Dodaj kolejny email klienta' : 'Dodaj kolejny telefon klienta'}
+        >
+          +
+        </Button>
+      </div>
+      <div className="space-y-2">
+        {values.map((entry, index) => (
+          <div key={index} className="flex items-center gap-2" data-client-contact-repeat-row={kind}>
+            <Input
+              value={entry}
+              onChange={(event) => updateValue(index, event.target.value)}
+              placeholder={placeholder || (kind === 'email' ? 'email klienta' : 'telefon klienta')}
+              type={kind === 'email' ? 'email' : 'tel'}
+            />
+            {values.length > 1 ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="h-9 px-2 text-xs text-slate-500"
+                onClick={() => removeValue(index)}
+                aria-label={kind === 'email' ? 'Usuń email klienta' : 'Usuń telefon klienta'}
+              >
+                Usuń
+              </Button>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ClientDetail() {
   const { clientId } = useParams();
   const navigate = useNavigate();
@@ -598,6 +689,8 @@ export default function ClientDetail() {
         id: clientId,
         ...form,
       });
+      // close client edit after save - stage25
+      setContactEditing(false);
 
       const linkedLeadUpdates = leads
         .filter((lead) => String(lead?.id || '').trim())
@@ -774,12 +867,22 @@ export default function ClientDetail() {
                       </div>
                       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                         <div className="space-y-1.5">
-                          <Label>Telefon</Label>
-                          <Input value={form.phone} onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))} />
+                          <ClientMultiContactField
+              kind="phone"
+              label="Telefon"
+              value={form.phone}
+              onChange={(value) => setForm((current: any) => ({ ...current, phone: value }))}
+              placeholder="telefon klienta"
+            />
                         </div>
                         <div className="space-y-1.5">
-                          <Label>Email</Label>
-                          <Input type="email" value={form.email} onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))} />
+                          <ClientMultiContactField
+              kind="email"
+              label="E-mail"
+              value={form.email}
+              onChange={(value) => setForm((current: any) => ({ ...current, email: value }))}
+              placeholder="email klienta"
+            />
                         </div>
                       </div>
                       <div className="space-y-1.5">
