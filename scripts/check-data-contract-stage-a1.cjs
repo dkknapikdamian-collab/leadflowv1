@@ -39,6 +39,6 @@ const css = read(cssPath);
 ].forEach((needle) => assertIncludes(contract, needle, `data-contract.ts zawiera ${needle}`));
 
 assertIncludes(css, 'CLIENT_PANEL_EMPTY_WARNING_STRIP_FIX_STAGE_A1', 'CSS ma marker usunięcia pustego paska klienta');
-assertIncludes(css, '.border-amber-200.bg-amber-50:has(svg)', 'CSS ukrywa pusty pasek ostrzegawczy klienta');
+assertIncludes(css, '#root .border-amber-200.bg-amber-50:has(> svg:only-child)', 'CSS ukrywa pusty pasek ostrzegawczy klienta przez zawężony selektor');
 
 console.log('OK: Stage A1 data contract guard passed.');
