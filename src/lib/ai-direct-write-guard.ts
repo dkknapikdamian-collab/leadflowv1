@@ -1,22 +1,32 @@
 export type AiDirectWriteMode = 'draft_only' | 'direct_task_event';
 
-export type AiDirectWriteKind = 'task' | 'event';
+export type AiDirectWriteKind = 'lead' | 'task' | 'event';
+
+export type AiDirectWriteLeadData = {
+  name: string;
+  email?: string;
+  phone?: string;
+  company?: string;
+  source?: string;
+};
 
 export type AiDirectWriteCommand = {
   kind: AiDirectWriteKind;
   title: string;
-  scheduledAt: string;
+  scheduledAt?: string;
   startAt?: string;
   endAt?: string;
-  matchedDate: string;
-  matchedTime: string;
+  matchedDate?: string;
+  matchedTime?: string;
+  leadData?: AiDirectWriteLeadData;
 };
 
 const STORAGE_KEY = 'closeflow:ai-direct-write-mode:v1';
 const SAVE_WORDS = /\b(zapisz|dodaj|utworz|utworzmy|stworz|wrzuc|notuj|zanotuj)\b/u;
-const LEAD_WORDS = /\b(lead|leada|lida|kontakt|klient|klienta)\b/u;
+const LEAD_WORDS = /\b(lead|leada|lida|kontakt|kontaktu|klient|klienta)\b/u;
 const EVENT_WORDS = /\b(wydarzenie|spotkanie|termin|wizyta|rozmowa|call|prezentacja)\b/u;
 const TASK_WORDS = /\b(zadanie|task|todo|przypomnienie|followup|follow-up)\b/u;
+const TASK_ACTION_WORDS = /\b(oddzwonic|oddzwonić|zadzwonic|zadzwonić|wyslac|wysłać|napisac|napisać|przypomniec|przypomnieć|sprawdzic|sprawdzić|zrobic|zrobić|wysylka|wysyłka)\b/u;
 
 function canUseStorage() {
   return typeof window !== 'undefined' && Boolean(window.localStorage);
@@ -96,7 +106,7 @@ function parseTimeFromText(text: string) {
     }
   }
 
-  const atHour = text.match(/\bo\s+(\d{1,2})\b/u);
+  const atHour = text.match(/\b(?:o|po)\s+(\d{1,2})\b/u);
   if (atHour) {
     const hour = Number(atHour[1]);
     if (hour >= 0 && hour <= 23) {
@@ -114,17 +124,19 @@ function addMinutes(localIso: string, minutes: number) {
   return String(date.getFullYear()) + '-' + pad2(date.getMonth() + 1) + '-' + pad2(date.getDate()) + 'T' + pad2(date.getHours()) + ':' + pad2(date.getMinutes()) + ':00';
 }
 
-function cleanTitle(rawText: string, kind: AiDirectWriteKind, matchedDate: string, matchedTime: string) {
+function cleanTitle(rawText: string, kind: AiDirectWriteKind, matchedDate?: string, matchedTime?: string) {
   const kindWords = kind === 'event'
     ? /\b(wydarzenie|spotkanie|termin|wizyta|rozmowa|call|prezentacja)\b/giu
     : /\b(zadanie|task|todo|przypomnienie|followup|follow-up)\b/giu;
 
-  const title = rawText
-    .split(matchedDate).join(' ')
-    .split(matchedTime).join(' ')
+  let title = rawText;
+  if (matchedDate) title = title.split(matchedDate).join(' ');
+  if (matchedTime) title = title.split(matchedTime).join(' ');
+
+  title = title
     .replace(/\b(zapisz|dodaj|utworz|utworzmy|stworz|wrzuc|notuj|zanotuj)\b/giu, ' ')
     .replace(kindWords, ' ')
-    .replace(/\b(mi|na|o|do|w|we|proszę|prosze)\b/giu, ' ')
+    .replace(/\b(mi|na|o|w|we|proszę|prosze)\b/giu, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 
@@ -132,15 +144,86 @@ function cleanTitle(rawText: string, kind: AiDirectWriteKind, matchedDate: strin
   return kind === 'event' ? 'Wydarzenie z AI' : 'Zadanie z AI';
 }
 
+function extractPhone(rawText: string) {
+  const match = rawText.match(/(?:\+48\s*)?(?:\d[\s-]?){9,}/u);
+  if (!match) return undefined;
+  const digits = match[0].replace(/\D/g, '');
+  const normalized = digits.startsWith('48') && digits.length === 11 ? digits.slice(2) : digits;
+  return normalized.length === 9 ? normalized : undefined;
+}
+
+function extractEmail(rawText: string) {
+  return rawText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/iu)?.[0];
+}
+
+function extractSource(rawText: string) {
+  const normalized = normalize(rawText);
+  if (/\b(facebook|fb|fejs|fejsbuk)\b/u.test(normalized)) return 'Facebook';
+  if (/\b(instagram|insta)\b/u.test(normalized)) return 'Instagram';
+  if (/\b(google)\b/u.test(normalized)) return 'Google';
+  if (/\b(olx)\b/u.test(normalized)) return 'OLX';
+  if (/\b(polecenia|polecenie|rekomendacja)\b/u.test(normalized)) return 'Polecenie';
+  if (/\b(formularz|formularza)\b/u.test(normalized)) return 'Formularz';
+  return undefined;
+}
+
+function cleanupLeadName(rawText: string, phone?: string, email?: string, source?: string) {
+  let cleaned = rawText;
+  if (phone) cleaned = cleaned.replace(phone, ' ').replace(phone.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3'), ' ');
+  if (email) cleaned = cleaned.replace(email, ' ');
+  if (source) cleaned = cleaned.replace(new RegExp(source, 'giu'), ' ');
+
+  cleaned = cleaned
+    .replace(/\b(zapisz|dodaj|utworz|utworzmy|stworz|wrzuc|notuj|zanotuj)\b/giu, ' ')
+    .replace(/\b(lead|leada|lida|kontakt|kontaktu|klient|klienta|nowy|nowego|z|ze|od|telefon|tel|numer|email|mail)\b/giu, ' ')
+    .replace(/\b(facebooka|facebook|fb|instagrama|instagram|google|olx|polecenia|formularza|formularz)\b/giu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const politeName = cleaned.match(/\b(Pan|Pani)\s+([A-ZŁŚŻŹĆŃÓĘ][\p{L}-]+(?:\s+[A-ZŁŚŻŹĆŃÓĘ][\p{L}-]+)?)/u);
+  if (politeName) return (politeName[1] + ' ' + politeName[2]).trim();
+
+  const titleCase = cleaned.match(/\b([A-ZŁŚŻŹĆŃÓĘ][\p{L}-]+(?:\s+[A-ZŁŚŻŹĆŃÓĘ][\p{L}-]+){0,2})\b/u);
+  if (titleCase) return titleCase[1].trim();
+
+  return cleaned.length >= 3 && cleaned.length <= 80 ? cleaned : '';
+}
+
+function parseLeadDirectWriteCommand(rawText: string): AiDirectWriteCommand | null {
+  const phone = extractPhone(rawText);
+  const email = extractEmail(rawText);
+  const source = extractSource(rawText);
+  const name = cleanupLeadName(rawText, phone, email, source);
+
+  if (!name && !phone && !email) return null;
+
+  const leadData: AiDirectWriteLeadData = {
+    name: name || phone || email || 'Lead z AI',
+  };
+  if (phone) leadData.phone = phone;
+  if (email) leadData.email = email;
+  if (source) leadData.source = source;
+
+  return {
+    kind: 'lead',
+    title: leadData.name,
+    leadData,
+  };
+}
+
 export function parseAiDirectWriteCommand(rawText: string, now = new Date()): AiDirectWriteCommand | null {
   // AI_DIRECT_TASK_EVENT_GATE
+  // AI_DIRECT_WRITE_RESPECTS_MODE_STAGE28
   const normalized = normalize(rawText);
   if (!normalized || !SAVE_WORDS.test(normalized)) return null;
-  if (LEAD_WORDS.test(normalized)) return null;
+
+  if (LEAD_WORDS.test(normalized)) {
+    return parseLeadDirectWriteCommand(rawText);
+  }
 
   const kind: AiDirectWriteKind | null = EVENT_WORDS.test(normalized)
     ? 'event'
-    : TASK_WORDS.test(normalized)
+    : (TASK_WORDS.test(normalized) || TASK_ACTION_WORDS.test(normalized))
       ? 'task'
       : null;
   if (!kind) return null;

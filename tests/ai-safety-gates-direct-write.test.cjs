@@ -6,17 +6,21 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 function read(relativePath) { return fs.readFileSync(path.join(root, relativePath), 'utf8'); }
 
-test('AI safety gates allow direct task and event writes only behind explicit mode', () => {
+test('AI safety gates allow direct clear records only behind explicit mode', () => {
   const today = read('src/components/TodayAiAssistant.tsx');
   const guard = read('src/lib/ai-direct-write-guard.ts');
   assert.match(today, /Bramki bezpieczeństwa AI/);
   assert.match(today, /Wszystko przez Szkice AI/);
-  assert.match(today, /Zadania i wydarzenia od razu/);
+  assert.match(today, /Jasne rekordy od razu/);
   assert.match(today, /insertTaskToSupabase/);
   assert.match(today, /insertEventToSupabase/);
+  assert.match(today, /createLeadFromAiDraftApprovalInSupabase/);
+  assert.doesNotMatch(today, /insertLeadToSupabase/);
   assert.match(today, /AI_DIRECT_WRITE_FALLBACK_TO_DRAFT/);
   assert.match(guard, /AI_DIRECT_TASK_EVENT_GATE/);
-  assert.match(guard, /return null;/);
+  assert.match(guard, /AI_DIRECT_WRITE_RESPECTS_MODE_STAGE28/);
+  assert.match(guard, /AiDirectWriteKind = 'lead' \| 'task' \| 'event'/);
+  assert.match(guard, /parseLeadDirectWriteCommand/);
 });
 
 test('AI safety gate test is included in quiet release gate', () => {
