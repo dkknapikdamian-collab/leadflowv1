@@ -30,6 +30,9 @@ import {
   insertEventToSupabase,
   createLeadFromAiDraftApprovalInSupabase,
   insertTaskToSupabase,
+  fetchClientsFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchCasesFromSupabase,
 } from '../lib/supabase-fallback';
 
 type DraftTab = AiLeadDraftStatus | 'all';
@@ -45,6 +48,7 @@ const approvalTypeOptions: { value: AiDraftApprovalType; label: string; helper: 
 
 /* AI_DRAFT_APPROVAL_TO_FINAL_RECORD_STAGE03 */
 /* AI_DRAFT_REAL_TRANSFER_STAGE12 */
+/* AI_DRAFT_RELATION_PICKER_STAGE24 */
 
 const DRAFT_TABS: { key: DraftTab; label: string; helper: string }[] = [
   { key: 'draft', label: 'Do sprawdzenia', helper: 'Notatki, z których jeszcze nie powstał lead.' },
@@ -93,6 +97,76 @@ function matchesDraftSearch(draft: AiLeadDraft, query: string) {
     .includes(normalized);
 }
 
+type AiDraftRelationKind = 'lead' | 'case' | 'client';
+
+type AiDraftRelationOption = {
+  id: string;
+  label: string;
+  helper: string;
+  search: string;
+};
+
+function firstAiDraftRelationText(entry: any, keys: string[]) {
+  for (const key of keys) {
+    const value = entry?.[key];
+    if (value !== undefined && value !== null && String(value).trim()) return String(value).trim();
+  }
+  return '';
+}
+
+function buildAiDraftRelationOption(entry: any, kind: AiDraftRelationKind): AiDraftRelationOption | null {
+  const id = firstAiDraftRelationText(entry, ['id']);
+  if (!id) return null;
+
+  const label = kind === 'case'
+    ? firstAiDraftRelationText(entry, ['title', 'name', 'caseName']) || 'Sprawa bez nazwy'
+    : firstAiDraftRelationText(entry, ['name', 'company', 'title', 'email', 'phone']) || (kind === 'lead' ? 'Lead bez nazwy' : 'Klient bez nazwy');
+
+  const helperParts = [
+    firstAiDraftRelationText(entry, ['company', 'clientName', 'name']),
+    firstAiDraftRelationText(entry, ['email']),
+    firstAiDraftRelationText(entry, ['phone']),
+    firstAiDraftRelationText(entry, ['status']),
+    firstAiDraftRelationText(entry, ['source']),
+  ].filter((value, index, array) => value && array.indexOf(value) === index && value !== label);
+
+  const helper = helperParts.slice(0, 3).join(' · ') || 'Rekord z bazy aplikacji';
+  const search = [id, label, helper, firstAiDraftRelationText(entry, ['clientId', 'leadId', 'caseId'])]
+    .join(' ')
+    .toLowerCase();
+
+  return { id, label, helper, search };
+}
+
+function buildAiDraftRelationOptions(rows: any[], kind: AiDraftRelationKind) {
+  const seen = new Set<string>();
+  return (Array.isArray(rows) ? rows : [])
+    .map((entry) => buildAiDraftRelationOption(entry, kind))
+    .filter((entry): entry is AiDraftRelationOption => {
+      if (!entry || seen.has(entry.id)) return false;
+      seen.add(entry.id);
+      return true;
+    })
+    .sort((a, b) => a.label.localeCompare(b.label, 'pl'));
+}
+
+function filterAiDraftRelationOptions(options: AiDraftRelationOption[], query: string, selectedId: string) {
+  const normalized = String(query || '').trim().toLowerCase();
+  const filtered = normalized
+    ? options.filter((option) => option.search.includes(normalized))
+    : options;
+
+  const selected = selectedId ? options.find((option) => option.id === selectedId) : null;
+  const withoutSelected = selected ? filtered.filter((option) => option.id !== selected.id) : filtered;
+  return (selected ? [selected, ...withoutSelected] : withoutSelected).slice(0, 8);
+}
+
+function getAiDraftRelationSelectedLabel(options: AiDraftRelationOption[], selectedId: string) {
+  if (!selectedId) return 'Brak powiązania';
+  const selected = options.find((option) => option.id === selectedId);
+  return selected ? selected.label : 'Wybrany rekord z bazy';
+}
+
 export default function AiDrafts() {
   const [drafts, setDrafts] = useState<AiLeadDraft[]>([]);
   const [quickCaptureSeed, setQuickCaptureSeed] = useState('');
@@ -106,6 +180,15 @@ export default function AiDrafts() {
   const [approvalDraftId, setApprovalDraftId] = useState<string | null>(null);
   const [approvalForm, setApprovalForm] = useState<AiDraftApprovalForm | null>(null);
   const [approvalSaving, setApprovalSaving] = useState(false);
+  const [approvalClients, setApprovalClients] = useState<any[]>([]);
+  const [approvalLeads, setApprovalLeads] = useState<any[]>([]);
+  const [approvalCases, setApprovalCases] = useState<any[]>([]);
+  const [approvalRelationsLoading, setApprovalRelationsLoading] = useState(false);
+  const [approvalRelationSearch, setApprovalRelationSearch] = useState<Record<AiDraftRelationKind, string>>({
+    lead: '',
+    case: '',
+    client: '',
+  });
 
   const reloadDrafts = async () => {
     setDraftsLoading(true);
@@ -118,6 +201,31 @@ export default function AiDrafts() {
 
   useEffect(() => {
     void reloadDrafts();
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setApprovalRelationsLoading(true);
+
+    Promise.all([
+      fetchClientsFromSupabase().catch(() => []),
+      fetchLeadsFromSupabase().catch(() => []),
+      fetchCasesFromSupabase().catch(() => []),
+    ])
+      .then(([clientRows, leadRows, caseRows]) => {
+        if (cancelled) return;
+        setApprovalClients(Array.isArray(clientRows) ? clientRows : []);
+        setApprovalLeads(Array.isArray(leadRows) ? leadRows : []);
+        setApprovalCases(Array.isArray(caseRows) ? caseRows : []);
+      })
+      .catch(() => null)
+      .finally(() => {
+        if (!cancelled) setApprovalRelationsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const stats = useMemo(() => {
@@ -133,6 +241,11 @@ export default function AiDrafts() {
       return tabMatch && matchesDraftSearch(draft, searchQuery);
     });
   }, [activeTab, drafts, searchQuery]);
+
+
+  const approvalClientOptions = useMemo(() => buildAiDraftRelationOptions(approvalClients, 'client'), [approvalClients]);
+  const approvalLeadOptions = useMemo(() => buildAiDraftRelationOptions(approvalLeads, 'lead'), [approvalLeads]);
+  const approvalCaseOptions = useMemo(() => buildAiDraftRelationOptions(approvalCases, 'case'), [approvalCases]);
 
   const openDraftInCapture = (draft: AiLeadDraft) => {
     setActiveDraftId(draft.id);
@@ -283,6 +396,74 @@ export default function AiDrafts() {
     }
   };
 
+
+  const renderApprovalRelationPicker = (
+    kind: AiDraftRelationKind,
+    label: string,
+    options: AiDraftRelationOption[],
+    selectedId: string,
+    field: 'leadId' | 'caseId' | 'clientId',
+  ) => {
+    const searchValue = approvalRelationSearch[kind] || '';
+    const visibleOptions = filterAiDraftRelationOptions(options, searchValue, selectedId);
+
+    return (
+      <div className="space-y-2 rounded-2xl border border-slate-200 bg-white p-3" data-ai-draft-relation-picker={kind}>
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">{label}</p>
+            <p className="text-sm font-semibold text-slate-900">{getAiDraftRelationSelectedLabel(options, selectedId)}</p>
+          </div>
+          {selectedId ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={() => updateApprovalForm({ [field]: '' } as Partial<AiDraftApprovalForm>)}
+            >
+              Wyczyść
+            </Button>
+          ) : null}
+        </div>
+
+        <Input
+          className={approvalInputClass}
+          value={searchValue}
+          onChange={(event) => setApprovalRelationSearch((current) => ({ ...current, [kind]: event.target.value }))}
+          placeholder={kind === 'lead' ? 'Szukaj leada po nazwie, telefonie lub emailu' : kind === 'case' ? 'Szukaj sprawy po nazwie lub statusie' : 'Szukaj klienta po nazwie, telefonie lub emailu'}
+          data-ai-draft-relation-search={kind}
+        />
+
+        <div className="max-h-44 space-y-1 overflow-y-auto pr-1">
+          {approvalRelationsLoading ? (
+            <p className="rounded-xl border border-dashed border-slate-200 px-3 py-2 text-xs text-slate-500">Ładuję dane z bazy...</p>
+          ) : null}
+          {!approvalRelationsLoading && visibleOptions.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-slate-200 px-3 py-2 text-xs text-slate-500">Brak wyniku. Zmień wyszukiwanie albo zostaw bez powiązania.</p>
+          ) : null}
+          {visibleOptions.map((option) => {
+            const active = selectedId === option.id;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                className={'w-full rounded-xl border px-3 py-2 text-left transition ' + (active ? 'border-blue-500 bg-blue-50 text-blue-900' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50')}
+                onClick={() => {
+                  updateApprovalForm({ [field]: option.id } as Partial<AiDraftApprovalForm>);
+                  setApprovalRelationSearch((current) => ({ ...current, [kind]: option.label }));
+                }}
+                data-ai-draft-relation-option={kind}
+              >
+                <span className="block text-sm font-semibold">{option.label}</span>
+                <span className="block text-xs text-slate-500">{option.helper}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   const renderApprovalPanel = (draft: AiLeadDraft) => {
     if (approvalDraftId !== draft.id || !approvalForm) return null;
 
@@ -350,11 +531,17 @@ export default function AiDrafts() {
           </div>
         ) : null}
 
-        {recordType !== 'lead' ? (
-          <div className="mt-3 grid gap-3 md:grid-cols-3">
-            <label className="space-y-1 text-xs font-semibold text-slate-600">ID leada<Input className={approvalInputClass} value={approvalForm.leadId} onChange={(event) => updateApprovalForm({ leadId: event.target.value })} placeholder="opcjonalnie" /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">ID sprawy<Input className={approvalInputClass} value={approvalForm.caseId} onChange={(event) => updateApprovalForm({ caseId: event.target.value })} placeholder="opcjonalnie" /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">ID klienta<Input className={approvalInputClass} value={approvalForm.clientId} onChange={(event) => updateApprovalForm({ clientId: event.target.value })} placeholder="opcjonalnie" /></label>
+                {recordType !== 'lead' ? (
+          <div className="mt-3 space-y-3" data-ai-draft-relation-picker-panel="true">
+            <div>
+              <p className="text-sm font-bold text-slate-900">Powiąż z istniejącym rekordem</p>
+              <p className="text-xs text-slate-600">Nie wpisuj ID ręcznie. Wyszukaj klienta, leada albo sprawę z bazy i wybierz właściwy rekord.</p>
+            </div>
+            <div className="grid gap-3 lg:grid-cols-3">
+              {renderApprovalRelationPicker('lead', 'Lead', approvalLeadOptions, approvalForm.leadId, 'leadId')}
+              {renderApprovalRelationPicker('case', 'Sprawa', approvalCaseOptions, approvalForm.caseId, 'caseId')}
+              {renderApprovalRelationPicker('client', 'Klient', approvalClientOptions, approvalForm.clientId, 'clientId')}
+            </div>
           </div>
         ) : null}
 
