@@ -219,8 +219,7 @@ CLIENT_PANEL_EMPTY_WARNING_STRIP_FIX_STAGE_A1
 Ukrywa pusty żółty pasek ostrzegawczy w panelu klienta, gdy zostaje sama ikonka bez treści.
 Nie ukrywa prawdziwych alertów, które mają tekst, link albo przycisk.
 */
-#root .border-amber-200.bg-amber-50:has(svg):not(:has(p)):not(:has(span)):not(:has(a)):not(:has(button)):empty,
-#root .border-amber-200.bg-amber-50:has(svg):not(:has(p)):not(:has(span)):not(:has(a)):not(:has(button)) {
+#root .border-amber-200.bg-amber-50:has(> svg:only-child) {
   display: none !important;
 }
 
