@@ -40,6 +40,6 @@ test('Stage12 forms use the same option dictionaries as normal app forms', () =>
 
 test('Stage12 files keep Polish encoding clean', () => {
   for (const [name, source] of [['AiDrafts', page], ['approval helper', helper]]) {
-    assert.doesNotMatch(source, /Ä|Ĺ|Å|Ã/u, `${name} has mojibake`);
+    assert.doesNotMatch(source, /\u00c4|\u0139|\u00c5|\u00c3/u, `${name} has mojibake`);
   }
 });

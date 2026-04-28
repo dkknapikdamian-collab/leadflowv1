@@ -588,14 +588,7 @@ export default function Leads() {
             </div>
           </CardContent>
         </Card>
-
-        {showTrash ? (
-          <Card className="border-amber-200 bg-amber-50 shadow-sm">
-            <CardContent className="p-4 text-sm text-amber-800">
-              To jest kosz leadów. Rekordy są ukryte z aktywnej listy, ale można je przywrócić. Nie kasujemy ich trwale w V1.
-            </CardContent>
-          </Card>
-        ) : null}
+        {/* LEADS_TRASH_COPY_REMOVED_STAGE14: kosz leadów bez martwego opisu V1 */}
         {mostValuableRelations.length ? (
           <Card className="border-none shadow-sm" data-relation-value-board="true">
             <CardContent className="p-4">

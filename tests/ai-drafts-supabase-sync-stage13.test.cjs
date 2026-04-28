@@ -27,5 +27,5 @@ test('Stage13 keeps local unsynced fallback without hiding remote drafts', () =>
 });
 
 test('Stage13 sync file keeps Polish encoding clean', () => {
-  assert.doesNotMatch(source, /Ä|Ĺ|Å|Ã/u);
+  assert.doesNotMatch(source, /\u00c4|\u0139|\u00c5|\u00c3/u);
 });

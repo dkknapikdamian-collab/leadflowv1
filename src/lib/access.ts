@@ -140,7 +140,7 @@ export function getAccessSummary(workspace?: WorkspaceLike | null): AccessSummar
       trialDaysLeft,
       trialProgressPercent,
       headline: 'Plan jest aktywny',
-      description: 'Masz aktywny plan CloseFlow Pro, wiec caly workflow dziala bez blokad.',
+      description: 'Masz aktywny plan CloseFlow Pro.',
       badgeLabel: 'Plan aktywny',
       sidebarLabel: 'Plan aktywny',
       toneClassName: 'text-emerald-500 bg-emerald-500/10',

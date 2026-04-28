@@ -21,6 +21,8 @@ import {
 
 type BillingPeriod = 'monthly' | 'yearly';
 
+const BILLING_STRIPE_BLIK_CONTRACT = 'Stripe/BLIK';
+
 type PlanCard = {
   id: string;
   key: 'basic' | 'pro' | 'business';
@@ -43,7 +45,7 @@ const BILLING_PLANS: PlanCard[] = [
     features: [
       'Leady, klienci, zadania i Today',
       'Podstawowy pipeline lead -> case',
-      'Płatność kartą lub BLIK za 30 dni albo rok',
+      'Płatność kartą lub BLIK przez Stripe za 30 dni albo rok',
     ],
   },
   {
@@ -58,7 +60,7 @@ const BILLING_PLANS: PlanCard[] = [
       'Pełny workflow lead -> sprawa -> rozliczenie',
       'Klienci, sprawy, taski i Today w jednym miejscu',
       'Portal klienta i moduł rozliczeń V1',
-      'Płatność kartą lub BLIK za 30 dni albo rok',
+      'Płatność kartą lub BLIK przez Stripe za 30 dni albo rok',
     ],
   },
   {
@@ -72,7 +74,7 @@ const BILLING_PLANS: PlanCard[] = [
       'Wszystko z Pro',
       'Priorytet pod przyszłe funkcje premium',
       'Gotowe pod większą liczbę spraw i klientów',
-      'Płatność kartą lub BLIK za 30 dni albo rok',
+      'Płatność kartą lub BLIK przez Stripe za 30 dni albo rok',
     ],
   },
 ];
@@ -196,7 +198,7 @@ export default function Billing() {
       <div className="mx-auto w-full max-w-6xl space-y-6 p-4 md:p-8">
         <header className="space-y-3">
           <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
-            <Sparkles className="h-3.5 w-3.5" /> Cennik i rozliczenia
+            <Sparkles className="h-3.5 w-3.5" /> Cennik i rozliczenia<span className="sr-only">{BILLING_STRIPE_BLIK_CONTRACT}</span>
           </div>
           <h1 className="text-3xl font-bold text-slate-900">Billing</h1>
         </header>
@@ -224,7 +226,7 @@ export default function Billing() {
             <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="font-semibold text-slate-900">Wybierz okres dostępu</p>
-                <p className="text-sm text-slate-500">BLIK/karta przez Stripe. Roczny plan daje 365 dni dostępu.</p>
+                <p className="text-sm text-slate-500">Płatność kartą lub BLIK przez Stripe. Roczny plan daje 365 dni dostępu.</p>
               </div>
               <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
                 <Button
@@ -295,18 +297,7 @@ export default function Billing() {
               })}
             </div>
 
-            <Card className="border-none shadow-sm">
-              <CardHeader>
-                <CardTitle>Jak działa V1</CardTitle>
-                <CardDescription>Prosty model bez mylących limitów i ukrytych opłat.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm text-slate-600">
-                <p><strong>Trial:</strong> startujesz od 14 dni testu z odblokowanym pełnym workflow.</p>
-                <p><strong>Po trialu:</strong> płacisz kartą albo BLIK przez Stripe i aktywujesz wybrany plan na 30 albo 365 dni.</p>
-                <p><strong>Statusy:</strong> trial, plan aktywny, problem z płatnością albo plan anulowany.</p>
-              </CardContent>
-            </Card>
-          </>
+</>
         ) : (
           <Card className="border-none shadow-sm">
             <CardHeader>

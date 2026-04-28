@@ -88,6 +88,7 @@ const requiredTests = [
   'tests/ai-assistant-save-vs-search-rule.test.cjs',
   'tests/ai-assistant-admin-and-app-scope.test.cjs',
   'tests/ai-safety-gates-direct-write.test.cjs',
+  'tests/supabase-first-readiness-stage16.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
