@@ -89,6 +89,7 @@ const requiredTests = [
   'tests/ai-assistant-admin-and-app-scope.test.cjs',
   'tests/ai-safety-gates-direct-write.test.cjs',
   'tests/ai-direct-write-respects-mode-stage28.test.cjs',
+  'tests/today-ai-drafts-tile-stage29.test.cjs',
   'tests/supabase-first-readiness-stage16.test.cjs',
 ];
 

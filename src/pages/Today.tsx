@@ -10,6 +10,11 @@ Finalny zapis rekordu nie dzieje się z poziomu Dziś.
 */
 
 /*
+TODAY_AI_DRAFTS_TILE_STAGE29
+Dziś pokazuje kafelek Szkice z liczbą niezatwierdzonych szkiców AI i krótką listą do sprawdzenia.
+*/
+
+/*
 TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97
 Today nie renderuje lokalnych kopii Asystenta AI, Szybkiego szkicu ani przycisków dodawania.
 Jedynym miejscem tych akcji jest globalny pasek GlobalQuickActions.
@@ -262,6 +267,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
   if (compact === 'without movement' || compact === 'bez ruchu') return 'without_movement';
   if (compact === 'blocked' || compact === 'zablokowane') return 'blocked';
   if (compact === 'calendar' || compact === 'kalendarz') return 'calendar';
+  if (compact === 'ai drafts' || compact === 'ai draft' || compact === 'szkice' || compact === 'szkice ai' || compact === 'drafts') return 'ai_drafts';
 
   if (
     compact.includes('zablokowane')
@@ -318,6 +324,14 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
     || compact.includes('wydarzenia')
   ) return 'calendar';
 
+  if (
+    compact.includes('szkice')
+    || compact.includes('szkic')
+    || compact.includes('ai drafts')
+    || compact.includes('drafts')
+    || compact.includes('do sprawdzenia')
+  ) return 'ai_drafts';
+
   return null;
 }
 
@@ -327,6 +341,7 @@ function getTodayTileShortcutPatterns(target: TodayTileShortcutTarget) {
   if (target === 'without_movement') return ['bez ruchu', 'brak zmiany', '7 dni'];
   if (target === 'urgent') return ['pilne', 'zaległe', 'zalegle', 'dzisiaj', 'dziś', 'dzis'];
   if (target === 'calendar') return ['kalendarz', 'najbliższe', 'najblizsze', 'terminy', 'wydarzenia'];
+  if (target === 'ai_drafts') return ['szkice', 'szkice ai', 'ai drafts', 'do sprawdzenia'];
   return [];
 }
 
@@ -361,6 +376,7 @@ function getTodayTopShortcutAnchorId(target: TodayTileShortcutTarget) {
   if (target === 'without_movement') return 'today-section-without-movement';
   if (target === 'blocked') return 'today-section-blocked';
   if (target === 'calendar') return 'today-section-calendar';
+  if (target === 'ai_drafts') return 'today-section-ai-drafts';
   return 'today-section-shortcut';
 }
 
@@ -370,6 +386,7 @@ function getTodayLegacyShortcutHash(target: TodayTileShortcutTarget) {
   if (target === 'without_movement') return 'bez-ruchu';
   if (target === 'blocked') return 'zablokowane';
   if (target === 'calendar') return 'kalendarz';
+  if (target === 'ai_drafts') return 'szkice-ai';
   return 'today';
 }
 
@@ -1258,7 +1275,53 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
 }
 
 
+
+function getPendingTodayAiDrafts(drafts: AiLeadDraft[]) {
+  return drafts.filter((draft) => draft.status === 'draft' && String(draft.rawText || '').trim());
+}
+
+function getTodayAiDraftPreview(draft: AiLeadDraft) {
+  const rawText = String(draft.rawText || '').replace(/s+/g, ' ').trim();
+  if (!rawText) return 'Szkic bez treści';
+  return rawText.length > 96 ? rawText.slice(0, 93) + '...' : rawText;
+}
+
+function formatTodayAiDraftCreatedAt(value: unknown) {
+  const parsed = new Date(String(value || ''));
+  if (!Number.isFinite(parsed.getTime())) return 'Brak daty';
+  return parsed.toLocaleString('pl-PL', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 export default function Today() {
+  // TODAY_AI_DRAFTS_TILE_STAGE29_STATE
+  const [todayAiDrafts, setTodayAiDrafts] = useState<AiLeadDraft[]>([]);
+  const pendingTodayAiDrafts = useMemo(() => getPendingTodayAiDrafts(todayAiDrafts), [todayAiDrafts]);
+  const pendingTodayAiDraftCount = pendingTodayAiDrafts.length;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    getAiLeadDraftsAsync()
+      .then((drafts) => {
+        if (!cancelled) {
+          setTodayAiDrafts(Array.isArray(drafts) ? drafts : []);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setTodayAiDrafts([]);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const { workspace, profile, hasAccess, loading: wsLoading, workspaceReady, refresh } = useWorkspace();
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
@@ -2129,6 +2192,50 @@ export default function Today() {
             <p className="text-sm text-slate-500">Globalne akcje są tylko w górnym pasku: Asystent AI, Szybki szkic, Szkice AI, Lead, Zadanie i Wydarzenie.</p>
           </div>
         </header>
+
+        <section
+          id="today-section-ai-drafts"
+          data-today-ai-drafts-tile="true"
+          data-today-shortcut-section="ai_drafts"
+          className="mb-6 scroll-mt-28"
+        >
+          <button
+            type="button"
+            onClick={() => openTodayTopTileShortcut('ai_drafts')}
+            className="group w-full rounded-2xl border border-blue-100 bg-blue-50/70 p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/25"
+          >
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">Szkice</p>
+                <h2 className="mt-1 text-xl font-bold text-slate-900">Szkice do zatwierdzenia</h2>
+                <p className="mt-1 text-sm text-slate-600">Tu wpadają szkice AI, które nie zostały jeszcze zatwierdzone ani skasowane.</p>
+              </div>
+              <div className="flex shrink-0 items-center gap-3 rounded-2xl border border-blue-100 bg-white px-4 py-3 text-blue-700 shadow-sm">
+                <ListTodo className="h-5 w-5" />
+                <span className="text-2xl font-black leading-none" data-today-ai-drafts-pending-count="true">{pendingTodayAiDraftCount}</span>
+              </div>
+            </div>
+
+            {pendingTodayAiDraftCount > 0 ? (
+              <div className="mt-4 grid gap-2 md:grid-cols-3" data-today-ai-drafts-preview-list="true">
+                {pendingTodayAiDrafts.slice(0, 3).map((draft) => (
+                  <div key={draft.id} className="rounded-xl border border-blue-100 bg-white p-3 shadow-sm">
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{formatTodayAiDraftCreatedAt(draft.createdAt)}</p>
+                    <p className="mt-1 text-sm font-semibold text-slate-800">{getTodayAiDraftPreview(draft)}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-4 rounded-xl border border-dashed border-blue-100 bg-white/70 p-3 text-sm font-medium text-slate-500" data-today-ai-drafts-empty="true">
+                Brak szkiców oczekujących na zatwierdzenie.
+              </p>
+            )}
+
+            <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-blue-700">
+              Otwórz Szkice AI <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            </span>
+          </button>
+        </section>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {summaryCards.map((card) => {
