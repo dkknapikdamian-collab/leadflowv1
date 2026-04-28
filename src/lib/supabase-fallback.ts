@@ -1,4 +1,5 @@
 import { getClientAuthSnapshot } from './client-auth';
+import { normalizeCaseContract, normalizeCaseListContract, normalizeEventListContract, normalizeLeadContract, normalizeLeadListContract, normalizeTaskListContract } from './data-contract';
 
 type SupabaseInsertResult = { [key: string]: unknown };
 type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextActionAt?: string; ownerId?: string; workspaceId?: string };
@@ -191,7 +192,13 @@ export async function fetchAssistantContextFromSupabase() {
     cases: Record<string, unknown>[];
     clients: Record<string, unknown>[];
     drafts: Record<string, unknown>[];
-  }>('/api/system?kind=assistant-context');
+  }>('/api/system?kind=assistant-context').then((context) => ({
+    ...context,
+    leads: normalizeLeadListContract(context.leads),
+    tasks: normalizeTaskListContract(context.tasks),
+    events: normalizeEventListContract(context.events),
+    cases: normalizeCaseListContract(context.cases),
+  }));
 }
 
 export async function fetchLeadsFromSupabase(params?: { clientId?: string; linkedCaseId?: string; caseId?: string; status?: string; visibility?: string }) {
@@ -201,19 +208,19 @@ export async function fetchLeadsFromSupabase(params?: { clientId?: string; linke
   if (params?.caseId) query.set('caseId', params.caseId);
   if (params?.status) query.set('status', params.status);
   if (params?.visibility) query.set('visibility', params.visibility);
-  return callApi<Record<string, unknown>[]>(`/api/leads${query.toString() ? `?${query.toString()}` : ''}`);
+  return callApi<Record<string, unknown>[]>(`/api/leads${query.toString() ? `?${query.toString()}` : ''}`).then(normalizeLeadListContract);
 }
-export async function fetchLeadByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/leads?id=${encodeURIComponent(id)}`); }
-export async function fetchTasksFromSupabase() { return callApi<Record<string, unknown>[]>('/api/tasks'); }
-export async function fetchEventsFromSupabase() { return callApi<Record<string, unknown>[]>('/api/events'); }
+export async function fetchLeadByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/leads?id=${encodeURIComponent(id)}`).then((row) => normalizeLeadContract(row)); }
+export async function fetchTasksFromSupabase() { return callApi<Record<string, unknown>[]>('/api/tasks').then(normalizeTaskListContract); }
+export async function fetchEventsFromSupabase() { return callApi<Record<string, unknown>[]>('/api/events').then(normalizeEventListContract); }
 export async function fetchCasesFromSupabase(params?: { clientId?: string; leadId?: string; status?: string }) {
   const query = new URLSearchParams();
   if (params?.clientId) query.set('clientId', params.clientId);
   if (params?.leadId) query.set('leadId', params.leadId);
   if (params?.status) query.set('status', params.status);
-  return callApi<Record<string, unknown>[]>(`/api/cases${query.toString() ? `?${query.toString()}` : ''}`);
+  return callApi<Record<string, unknown>[]>(`/api/cases${query.toString() ? `?${query.toString()}` : ''}`).then(normalizeCaseListContract);
 }
-export async function fetchCaseByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/cases?id=${encodeURIComponent(id)}`); }
+export async function fetchCaseByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/cases?id=${encodeURIComponent(id)}`).then((row) => normalizeCaseContract(row)); }
 export async function createCaseInSupabase(input: CaseUpsertInput) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateCaseInSupabase(input: CaseUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteCaseFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/cases?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
