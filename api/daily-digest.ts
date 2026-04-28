@@ -144,11 +144,25 @@ async function loadWorkspaceBundle(workspaceId: string) {
   const taskRows = Array.isArray(workItemsForTasks.data) ? workItemsForTasks.data : [];
   const eventRows = Array.isArray(workItemsForEvents.data) ? workItemsForEvents.data : [];
 
-  return {
+  
+  let draftRows: Record<string, unknown>[] = [];
+
+  // AI_DRAFTS_DAILY_DIGEST_STAGE05_API: brak tabeli ai_drafts nie blokuje maila z planem dnia.
+  try {
+    const aiDraftsResult = await selectFirstAvailable([
+      withWorkspaceFilter('ai_drafts?select=*&status=eq.draft&order=created_at.desc.nullslast&limit=20', workspaceId),
+      withWorkspaceFilter('ai_drafts?select=*&order=created_at.desc.nullslast&limit=20', workspaceId),
+    ]);
+    draftRows = Array.isArray(aiDraftsResult.data) ? aiDraftsResult.data as Record<string, unknown>[] : [];
+  } catch {
+    draftRows = [];
+  }
+return {
     leads,
     tasks: normalizeTaskRows(taskRows as Record<string, unknown>[]),
     events: normalizeEventRows(eventRows as Record<string, unknown>[]),
-  };
+  drafts: draftRows,
+};
 }
 
 async function sendDigestEmail({
@@ -356,6 +370,7 @@ export default async function handler(req: any, res: any) {
         leads: bundle.leads,
         tasks: bundle.tasks,
         events: bundle.events,
+        drafts: (bundle as any).drafts || [],
         now,
         timeZone,
       });
@@ -471,7 +486,8 @@ export default async function handler(req: any, res: any) {
           leads: bundle.leads,
           tasks: bundle.tasks,
           events: bundle.events,
-          now,
+        drafts: (bundle as any).drafts || [],
+        now,
           timeZone,
         });
         const { plain, html } = buildDigestEmail({

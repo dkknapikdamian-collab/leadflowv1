@@ -12,6 +12,10 @@ type AssistantContext = {
   cases: Record<string, unknown>[];
   clients: Record<string, unknown>[];
   drafts: Record<string, unknown>[];
+  operatorSnapshot?: Record<string, unknown>;
+  summary?: Record<string, unknown>;
+  relations?: Record<string, unknown>;
+  searchIndex?: Record<string, unknown>[];
 };
 
 const EMPTY_CONTEXT: AssistantContext = {
@@ -21,6 +25,10 @@ const EMPTY_CONTEXT: AssistantContext = {
   cases: [],
   clients: [],
   drafts: [],
+  operatorSnapshot: {},
+  summary: {},
+  relations: {},
+  searchIndex: [],
 };
 
 function asRecordArray(value: unknown): Record<string, unknown>[] {
@@ -69,6 +77,11 @@ export default function GlobalAiAssistant() {
           cases: asRecordArray(appContext.cases),
           clients: asRecordArray(appContext.clients),
           drafts: asRecordArray((appContext as any).drafts),
+          // AI_OPERATOR_SNAPSHOT_STAGE02_CONTEXT: przekazujemy metadane snapshotu do asystenta bez dokładania osobnej funkcji Vercel.
+          operatorSnapshot: ((appContext as any).operatorSnapshot && typeof (appContext as any).operatorSnapshot === 'object') ? (appContext as any).operatorSnapshot : {},
+          summary: ((appContext as any).summary && typeof (appContext as any).summary === 'object') ? (appContext as any).summary : {},
+          relations: ((appContext as any).relations && typeof (appContext as any).relations === 'object') ? (appContext as any).relations : {},
+          searchIndex: asRecordArray((appContext as any).searchIndex),
         });
       } catch {
         if (!cancelled) {
@@ -96,6 +109,10 @@ export default function GlobalAiAssistant() {
       cases={context.cases}
       clients={context.clients}
       drafts={context.drafts}
+      operatorSnapshot={context.operatorSnapshot}
+      summary={context.summary}
+      relations={context.relations}
+      searchIndex={context.searchIndex}
       disabled={loading || workspaceLoading || !workspace?.id}
     />
   );

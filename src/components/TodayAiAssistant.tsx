@@ -57,6 +57,10 @@ type TodayAiAssistantProps = {
   cases: Record<string, unknown>[];
   clients?: Record<string, unknown>[];
   drafts?: Record<string, unknown>[];
+  operatorSnapshot?: Record<string, unknown>;
+  summary?: Record<string, unknown>;
+  relations?: Record<string, unknown>;
+  searchIndex?: Record<string, unknown>[];
   disabled?: boolean;
   onCaptureRequest?: (rawText: string) => void;
 };
@@ -204,6 +208,19 @@ function joinTranscript(previous: string, addition: string) {
   return base ? `${base} ${next}` : next;
 }
 
+
+function shouldRegisterAiUsage(answer: TodayAiAssistantAnswer) {
+  // AI_OPERATOR_QUALITY_STAGE06_COST_GUARD: odpowiedzi policzone z danych aplikacji nie zużywają dziennego limitu AI.
+  const provider = String(answer.provider || '').toLowerCase();
+  const costGuard = String((answer as any).costGuard || '').toLowerCase();
+
+  if (answer.hardBlock) return false;
+  if (provider.includes('client_guard')) return false;
+  if (provider.includes('client_lead_capture_guard')) return false;
+  if (provider === 'rules' || costGuard === 'local_rules') return false;
+  return true;
+}
+
 function intentLabel(intent: TodayAiAssistantAnswer['intent']) {
   if (intent === 'today_briefing') return 'Plan dnia';
   if (intent === 'lead_lookup') return 'Dane aplikacji';
@@ -218,7 +235,7 @@ function priorityClassName(priority?: string) {
   return 'border-blue-200 bg-blue-50 text-blue-700';
 }
 
-export default function TodayAiAssistant({ leads, tasks, events, cases, clients = [], drafts = [], disabled, onCaptureRequest }: TodayAiAssistantProps) {
+export default function TodayAiAssistant({ leads, tasks, events, cases, clients = [], drafts = [], operatorSnapshot = {}, summary = {}, relations = {}, searchIndex = [], disabled, onCaptureRequest }: TodayAiAssistantProps) {
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
   const [answer, setAnswer] = useState<TodayAiAssistantAnswer | null>(null);
@@ -381,6 +398,11 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
           cases,
           clients,
           drafts,
+          // AI_OPERATOR_SNAPSHOT_STAGE02_PAYLOAD: snapshot aplikacji idzie razem z pytaniem, ale nadal bez automatycznego zapisu.
+          operatorSnapshot,
+          summary,
+          relations,
+          searchIndex,
           now: new Date().toISOString(),
         },
       });
@@ -394,9 +416,13 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
           toast.success('Szkic leada zapisany w Szkicach AI');
         }
       }
-      const nextUsage = registerAiUsage(aiUsageKey, undefined, { isAdmin });
-      setUsage(nextUsage);
-      toast.success('Asystent przygotował odpowiedź');
+      if (shouldRegisterAiUsage(result)) {
+        const nextUsage = registerAiUsage(aiUsageKey, undefined, { isAdmin });
+        setUsage(nextUsage);
+      } else {
+        setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
+      }
+      toast.success(result.costGuard === 'local_rules' || result.provider === 'rules' ? 'Asystent sprawdził dane aplikacji' : 'Asystent przygotował odpowiedź');
     } catch (error: any) {
       toast.error(`Błąd asystenta: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -606,6 +632,8 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
             <Badge variant="outline">Zapisz = szkic</Badge>
             <Badge variant="outline">Bez zapisz = szukanie</Badge>
             <Badge variant="outline">Tylko CloseFlow</Badge>
+            <Badge variant="outline">Dane aplikacji bez limitu</Badge>
+            <Badge variant="outline">Snapshot aplikacji</Badge>
             <Badge variant="outline" data-ai-usage-badge="today-assistant">{usage.adminExempt ? 'Admin AI: bez limitu' : 'Limit AI: ' + usage.used + '/' + usage.limit}</Badge>
             <Badge variant="outline">Max {AI_COMMAND_MAX_LENGTH} znaków</Badge>
           </div>

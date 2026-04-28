@@ -118,6 +118,7 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
 
 export function isSupabaseConfigured() { return Boolean(getSupabaseConfig()); }
 export async function insertLeadToSupabase(input: LeadInsertInput) { return callApi<SupabaseInsertResult>('/api/leads', { method: 'POST', body: JSON.stringify(input) }); }
+export const createLeadFromAiDraftApprovalInSupabase = insertLeadToSupabase;
 export async function startLeadServiceInSupabase(input: { id: string; title: string; caseStatus?: string; clientName?: string; clientEmail?: string; clientPhone?: string; workspaceId?: string }) {
   return callApi<Record<string, unknown>>('/api/leads', { method: 'POST', body: JSON.stringify({ action: 'start_service', ...input }) });
 }

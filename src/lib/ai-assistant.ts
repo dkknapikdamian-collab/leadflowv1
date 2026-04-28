@@ -24,6 +24,7 @@ export type TodayAiAssistantAnswer = {
   suggestedCaptureText?: string;
   hardBlock?: boolean;
   allowedScope?: string[];
+  costGuard?: 'local_rules' | 'external_ai' | 'client_guard';
 };
 
 export type TodayAiAssistantInput = {
@@ -35,10 +36,15 @@ export type TodayAiAssistantInput = {
     cases?: Record<string, unknown>[];
     clients?: Record<string, unknown>[];
     drafts?: Record<string, unknown>[];
+    operatorSnapshot?: Record<string, unknown>;
+    summary?: Record<string, unknown>;
+    relations?: Record<string, unknown>;
+    searchIndex?: Record<string, unknown>[];
     now?: string;
   };
 };
 
+// AI_OPERATOR_QUALITY_STAGE06_TYPES: typy frontu znają snapshot aplikacji i flagę kosztu odpowiedzi.
 export async function askTodayAiAssistant(input: TodayAiAssistantInput) {
   const auth = getClientAuthSnapshot();
   const response = await fetch('/api/system?kind=ai-assistant', {

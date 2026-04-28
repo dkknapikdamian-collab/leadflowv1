@@ -1,4 +1,10 @@
 /*
+AI_DRAFTS_IN_TODAY_STAGE04
+Szkice AI w Dziś są tylko do przeglądu i przejścia do centrum szkiców.
+Finalny zapis rekordu nie dzieje się z poziomu Dziś.
+*/
+
+/*
 TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97
 Today nie renderuje lokalnych kopii Asystenta AI, Szybkiego szkicu ani przycisków dodawania.
 Jedynym miejscem tych akcji jest globalny pasek GlobalQuickActions.
@@ -90,6 +96,7 @@ import {
 } from '../lib/supabase-fallback';
 
 import { getTodayEntryPriorityReasons } from '../lib/today-v1-final';
+import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 
 const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
@@ -234,21 +241,77 @@ function findTodayCalendarShortcutElement(target: EventTarget | null) {
 }
 
 
-type TodayTileShortcutTarget = 'urgent' | 'without_action' | 'without_movement' | 'blocked' | 'calendar';
+type TodayTileShortcutTarget = 'urgent' | 'without_action' | 'without_movement' | 'blocked' | 'calendar' | 'ai_drafts';
 
 function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget | null {
   const compact = String(value || '')
     .toLowerCase()
     .replace(/\s+/g, ' ')
+    .replace(/_/g, ' ')
     .trim();
 
   if (!compact) return null;
 
-  if (compact.includes('zablokowane') || compact.includes('blok')) return 'blocked';
-  if (compact.includes('bez działań') || compact.includes('bez dzialan') || compact.includes('bez następnego') || compact.includes('bez nastepnego')) return 'without_action';
-  if (compact.includes('bez ruchu') || compact.includes('brak zmiany')) return 'without_movement';
-  if (compact.includes('pilne') || compact.includes('zaległe') || compact.includes('zalegle')) return 'urgent';
-  if (compact.includes('kalendarz') || compact.includes('najbliższe') || compact.includes('najblizsze') || compact.includes('termin')) return 'calendar';
+  if (compact === 'urgent' || compact === 'pilne') return 'urgent';
+  if (compact === 'without action' || compact === 'without actions' || compact === 'bez dzialan' || compact === 'bez działań') return 'without_action';
+  if (compact === 'without movement' || compact === 'bez ruchu') return 'without_movement';
+  if (compact === 'blocked' || compact === 'zablokowane') return 'blocked';
+  if (compact === 'calendar' || compact === 'kalendarz') return 'calendar';
+
+  if (
+    compact.includes('zablokowane')
+    || compact.includes('zablokowana')
+    || compact.includes('blok')
+    || compact.includes('zatrzymane')
+    || compact.includes('zatrzymana')
+    || compact.includes('sprawy stoj')
+    || compact.includes('sprawa stoi')
+  ) return 'blocked';
+
+  if (
+    compact.includes('bez działań')
+    || compact.includes('bez dzialan')
+    || compact.includes('bez następnego')
+    || compact.includes('bez nastepnego')
+    || compact.includes('brak następnego')
+    || compact.includes('brak nastepnego')
+    || compact.includes('następny krok')
+    || compact.includes('nastepny krok')
+    || compact.includes('brak kolejnego')
+    || compact.includes('bez kolejnego')
+  ) return 'without_action';
+
+  if (
+    compact.includes('bez ruchu')
+    || compact.includes('brak ruchu')
+    || compact.includes('brak zmiany')
+    || compact.includes('bez zmiany')
+    || compact.includes('7 dni')
+    || compact.includes('za długo')
+    || compact.includes('za dlugo')
+    || compact.includes('zbyt długo')
+    || compact.includes('zbyt dlugo')
+  ) return 'without_movement';
+
+  if (
+    compact.includes('pilne')
+    || compact.includes('zaległe')
+    || compact.includes('zalegle')
+    || compact.includes('dzisiaj')
+    || compact.includes('dziś')
+    || compact.includes('dzis')
+    || compact.includes('priorytet')
+    || compact.includes('wymaga uwagi')
+    || compact.includes('ryzyko')
+  ) return 'urgent';
+
+  if (
+    compact.includes('kalendarz')
+    || compact.includes('najbliższe')
+    || compact.includes('najblizsze')
+    || compact.includes('termin')
+    || compact.includes('wydarzenia')
+  ) return 'calendar';
 
   return null;
 }
@@ -286,27 +349,85 @@ function findTodayTileIdForShortcut(target: TodayTileShortcutTarget) {
   return fallback?.dataset.todayTileId || null;
 }
 
+
+function getTodayTopShortcutAnchorId(target: TodayTileShortcutTarget) {
+  if (target === 'urgent') return 'today-section-urgent';
+  if (target === 'without_action') return 'today-section-without-action';
+  if (target === 'without_movement') return 'today-section-without-movement';
+  if (target === 'blocked') return 'today-section-blocked';
+  if (target === 'calendar') return 'today-section-calendar';
+  return 'today-section-shortcut';
+}
+
+function getTodayLegacyShortcutHash(target: TodayTileShortcutTarget) {
+  if (target === 'urgent') return 'pilne';
+  if (target === 'without_action') return 'bez-dzialan';
+  if (target === 'without_movement') return 'bez-ruchu';
+  if (target === 'blocked') return 'zablokowane';
+  if (target === 'calendar') return 'kalendarz';
+  return 'today';
+}
+
+function getTodayShortcutSectionElement(target: TodayTileShortcutTarget) {
+  const direct = document.querySelector<HTMLElement>('[data-today-shortcut-section="' + target + '"]');
+  if (direct) return direct;
+
+  const anchor = document.getElementById(getTodayTopShortcutAnchorId(target));
+  if (anchor instanceof HTMLElement) return anchor;
+
+  const legacy = document.getElementById(getTodayLegacyShortcutHash(target));
+  if (legacy instanceof HTMLElement) return legacy;
+
+  const headers = Array.from(document.querySelectorAll<HTMLElement>('[data-today-tile-header="true"]'));
+  const patterns = getTodayTileShortcutPatterns(target);
+  return headers.find((header) => {
+    const value = String(header.dataset.todayTileTitle || header.textContent || '').toLowerCase();
+    return patterns.some((pattern) => value.includes(pattern));
+  }) || null;
+}
+
+function expandTodayShortcutSection(section: HTMLElement) {
+  const header = section.matches('[data-today-tile-header="true"]')
+    ? section
+    : section.querySelector<HTMLElement>('[data-today-tile-header="true"]');
+
+  if (!header) return;
+
+  if (header.getAttribute('aria-expanded') === 'false') {
+    header.click();
+  }
+}
+
 function openTodayTopTileShortcut(target: TodayTileShortcutTarget) {
-  // TODAY_TOP_TILES_CLICK_FIX_V109: górne kafelki Dziś mają realnie otwierać sekcje, a nie tylko zmieniać hash URL.
+  // TODAY_TOP_TILE_DIRECT_ANCHOR_FIX_V111: górne kafelki Dziś mają jawne kotwice i nie zależą od tekstu nagłówka.
   if (target === 'calendar') {
     openWeeklyCalendarFromToday();
     return;
   }
 
-  const tileId = findTodayTileIdForShortcut(target);
-  const header = tileId
-    ? document.querySelector<HTMLElement>(`[data-today-tile-header="true"][data-today-tile-id="${tileId}"]`)
-    : null;
-
-  if (!header) {
-    window.location.hash = target;
+  if (target === 'ai_drafts') {
+    window.location.assign('/ai-drafts');
     return;
   }
 
-  header.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  if (header.getAttribute('aria-expanded') === 'false') {
-    window.setTimeout(() => header.click(), 120);
+  const section = getTodayShortcutSectionElement(target);
+  const hash = getTodayLegacyShortcutHash(target);
+
+  if (!section) {
+    window.location.hash = hash;
+    return;
   }
+
+  expandTodayShortcutSection(section);
+
+  window.setTimeout(() => {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    try {
+      window.history.replaceState(null, '', '#' + hash);
+    } catch {
+      window.location.hash = hash;
+    }
+  }, 80);
 }
 
 function findTodayPipelineShortcutElement(target: EventTarget | null) {
@@ -330,12 +451,19 @@ function TileCard({
   bodyClassName = '',
 }: TileCardProps) {
   const collapsed = Boolean(collapsedMap[id]);
+  const shortcutTarget = resolveTodayTileShortcutTarget(`${id} ${title}`);
+  const shortcutAnchorId = shortcutTarget ? getTodayTopShortcutAnchorId(shortcutTarget) : undefined;
   const handleHeaderClick = () => {
     onToggle(id);
   };
 
   return (
-    <Card className={`shadow-sm border-slate-100 ${className}`}>
+    <Card
+      id={shortcutAnchorId}
+      data-today-tile-card="true"
+      data-today-shortcut-section={shortcutTarget || undefined}
+      className={`scroll-mt-28 shadow-sm border-slate-100 ${className}`}
+    >
       <CardContent className="p-0">
         <button
           type="button"
@@ -755,6 +883,36 @@ function todayPipelineCaseSubtitle(caseItem: any) {
   return parts.length ? parts.join(' · ') : 'Brak dodatkowych danych';
 }
 
+
+function TodayAiDraftsTopTile({ drafts }: { drafts: AiLeadDraft[] }) {
+  const pendingDrafts = drafts.filter((draft) => draft.status === 'draft');
+  const latestDrafts = pendingDrafts.slice(0, 3);
+
+  return (
+    <Link
+      to="/ai-drafts"
+      data-today-ai-drafts-shortcut="true"
+      className="rounded-2xl border border-violet-100 bg-violet-50 p-3 text-left transition hover:border-violet-200 hover:bg-violet-100"
+    >
+      <span className="text-xs font-semibold text-violet-700">Szkice AI</span>
+      <strong className="mt-1 block text-2xl text-violet-950">{pendingDrafts.length}</strong>
+      <small className="text-xs text-violet-700">Do sprawdzenia</small>
+      {latestDrafts.length ? (
+        <span className="mt-2 block space-y-1 text-[11px] leading-snug text-violet-900">
+          {latestDrafts.map((draft) => (
+            <span key={draft.id} className="block truncate">• {draft.rawText || 'Szkic bez treści'}</span>
+          ))}
+        </span>
+      ) : (
+        <span className="mt-2 block text-[11px] text-violet-700">Brak szkiców do decyzji.</span>
+      )}
+    
+              <span className="text-xs font-semibold">Przejrzyj</span></Link>
+  );
+}
+
+/* TODAY_AI_DRAFTS_STAGE04: Dziś pokazuje szkice AI do sprawdzenia, ale finalny zapis nadal odbywa się w Szkicach AI. */
+
 function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: any[] }) {
   const activeLeads = (leads || []).filter(todayPipelineIsActiveLead);
   const activeLeadsWithValue = activeLeads.filter((lead) => todayPipelineLeadAmount(lead) > 0);
@@ -769,6 +927,21 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
     .slice(0, 3);
 
   const topBlockedCases = blockedCases.slice(0, 3);
+  const [aiDraftsStage04, setAiDraftsStage04] = useState<AiLeadDraft[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void getAiLeadDraftsAsync()
+      .then((rows) => {
+        if (!cancelled) setAiDraftsStage04(rows);
+      })
+      .catch(() => {
+        if (!cancelled) setAiDraftsStage04([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <Card className="border-slate-200 bg-white shadow-sm">
@@ -785,7 +958,20 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
           </Badge>
         </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-4">
+        <div
+          className="mt-4 grid gap-3 md:grid-cols-5"
+          data-today-top-tiles="true"
+          onClick={(event) => {
+            const shortcutElement = findTodayPipelineShortcutElement(event.target);
+            const shortcutTarget = resolveTodayTileShortcutTarget(
+              shortcutElement?.getAttribute('data-today-pipeline-shortcut') || shortcutElement?.textContent || '',
+            );
+            if (!shortcutTarget) return;
+            event.preventDefault();
+            event.stopPropagation();
+            openTodayTopTileShortcut(shortcutTarget);
+          }}
+        >
           <button type="button" onClick={() => openTodayTopTileShortcut('urgent')} data-today-pipeline-shortcut="urgent" className="rounded-2xl border border-blue-100 bg-blue-50 p-3 transition hover:border-blue-200 hover:bg-blue-100 text-left">
             <span className="text-xs font-semibold text-blue-700">Pilne leady</span>
             <strong className="mt-1 block text-2xl text-blue-950">{urgentLeads.length}</strong>
@@ -809,6 +995,8 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
             <strong className="mt-1 block text-2xl text-red-950">{blockedCases.length}</strong>
             <small className="text-xs text-red-700">Wymagają odblokowania</small>
           </button>
+
+          <TodayAiDraftsTopTile drafts={aiDraftsStage04} />
         </div>
 
         {(topBlockedCases.length > 0 || topLeads.length > 0) ? (

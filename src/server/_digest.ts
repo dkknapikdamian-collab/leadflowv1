@@ -2,6 +2,8 @@ type LeadLike = Record<string, unknown>;
 type TaskLike = Record<string, unknown>;
 type EventLike = Record<string, unknown>;
 
+
+type AiDraftLike = Record<string, unknown>;
 type DigestSectionItem = {
   id: string;
   title: string;
@@ -19,11 +21,13 @@ type DigestPayload = {
   noStepLeads: DigestSectionItem[];
   staleLeads: DigestSectionItem[];
   riskyValuableLeads: DigestSectionItem[];
+  pendingAiDrafts: DigestSectionItem[];
   summary: {
     urgentCount: number;
     todayCount: number;
     noStepCount: number;
     stalledCount: number;
+  aiDraftCount: number;
   };
 };
 
@@ -33,6 +37,10 @@ function asText(value: unknown) {
   return String(value).trim();
 }
 
+
+function safeRowsForDigest(value: unknown): Record<string, unknown>[] {
+  return Array.isArray(value) ? value.filter((row) => row && typeof row === 'object') as Record<string, unknown>[] : [];
+}
 function asNumber(value: unknown) {
   const amount = Number(value || 0);
   return Number.isFinite(amount) ? amount : 0;
@@ -103,22 +111,42 @@ function mapLeadTitle(lead: LeadLike) {
   return name || 'Lead bez nazwy';
 }
 
+/* DAILY_DIGEST_AI_DRAFTS_STAGE05 */
 export function buildDailyDigestPayload({
   leads,
   tasks,
   events,
+  drafts = [],
   now = new Date(),
   timeZone = 'Europe/Warsaw',
 }: {
   leads: LeadLike[];
   tasks: TaskLike[];
   events: EventLike[];
+  drafts?: AiDraftLike[];
   now?: Date;
   timeZone?: string;
 }): DigestPayload {
   const todayKey = getDateKey(now, timeZone);
 
-  const activeLeads = leads.filter((lead) => !isLeadClosed(lead));
+  
+  const pendingAiDrafts = safeRowsForDigest(drafts)
+    .filter((draft) => {
+      const status = asText(draft.status).toLowerCase();
+      return !status || status === 'draft';
+    })
+    .sort((a, b) => {
+      const left = parseIso(a.created_at ?? a.createdAt)?.getTime() ?? 0;
+      const right = parseIso(b.created_at ?? b.createdAt)?.getTime() ?? 0;
+      return right - left;
+    })
+    .slice(0, 3)
+    .map((draft) => ({
+      id: asText(draft.id) || crypto.randomUUID(),
+      title: (asText(draft.raw_text ?? draft.rawText) || 'Szkic AI bez treści').slice(0, 140),
+      when: parseIso(draft.created_at ?? draft.createdAt)?.toISOString(),
+    }));
+const activeLeads = leads.filter((lead) => !isLeadClosed(lead));
 
   const overdueTasks = tasks
     .filter((task) => {
@@ -233,12 +261,14 @@ export function buildDailyDigestPayload({
     noStepLeads,
     staleLeads,
     riskyValuableLeads,
+    pendingAiDrafts,
     summary: {
       urgentCount: overdueTasks.length + overdueLeads.length,
       todayCount: todayTasks.length + todayEvents.length,
       noStepCount: noStepLeads.length,
       stalledCount: staleLeads.length,
-    },
+    aiDraftCount: pendingAiDrafts.length,
+},
   };
 }
 
@@ -272,12 +302,18 @@ export function buildDigestEmail({
     `Na dzis: ${payload.summary.todayCount}`,
     `Bez kroku: ${payload.summary.noStepCount}`,
     `Bez ruchu: ${payload.summary.stalledCount}`,
-    '',
+    `Szkice AI do sprawdzenia: ${payload.summary.aiDraftCount}`,
+'',
     `Zalegle zadania: ${payload.overdueTasks.length}`,
     `Leady po terminie: ${payload.overdueLeads.length}`,
     `Wydarzenia na dzis: ${payload.todayEvents.length}`,
     '',
-    'Top leady do ruszenia:',
+    'Szkice AI do sprawdzenia:',
+    ...(payload.pendingAiDrafts.length
+      ? payload.pendingAiDrafts.map((draft, index) => `${index + 1}. ${draft.title}`)
+      : ['Brak']),
+    '',
+'Top leady do ruszenia:',
     ...(topLeads.length
       ? topLeads.map((lead, index) => `${index + 1}. ${lead.title} (${lead.value || 0} PLN)`)
       : ['Brak']),
@@ -305,6 +341,10 @@ export function buildDigestEmail({
         <tr>
           <td style="padding:8px;border:1px solid #e2e8f0">Leady bez ruchu</td>
           <td style="padding:8px;border:1px solid #e2e8f0"><strong>${payload.summary.stalledCount}</strong></td>
+        </tr>
+        <tr>
+          <td style="padding:8px;border:1px solid #e2e8f0">Szkice AI do sprawdzenia</td>
+          <td style="padding:8px;border:1px solid #e2e8f0"><strong>${payload.summary.aiDraftCount}</strong></td>
         </tr>
       </table>
       <p style="margin:0 0 8px"><strong>Top leady do ruszenia:</strong></p>

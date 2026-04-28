@@ -21,6 +21,7 @@ type AssistantResponse = {
   suggestedCaptureText?: string;
   hardBlock?: boolean;
   allowedScope?: string[];
+  costGuard?: 'local_rules' | 'external_ai' | 'client_guard';
 };
 
 const ASSISTANT_ALLOWED_SCOPE = [
@@ -36,6 +37,7 @@ const ASSISTANT_ALLOWED_SCOPE = [
 ];
 
 const ASSISTANT_MAX_COMMAND_LENGTH = 800;
+const AI_OPERATOR_SNAPSHOT_STAGE02_SERVER = true;
 
 const OUT_OF_SCOPE_BLOCK_PATTERNS = [
   /\b(pogoda|pogode|pogod[ye]|temperatura|deszcz|snieg|śnieg|wiatr)\b/u,
@@ -371,6 +373,8 @@ function buildAppOverviewAnswer(context: Record<string, unknown>, rawText: strin
   const cases = safeArray(context.cases);
   const tasks = safeArray(context.tasks).filter((task) => isOpenStatus(task.status));
   const events = safeArray(context.events).filter((event) => isOpenStatus(event.status));
+  const drafts = safeArray((context as any).drafts);
+  const pendingDrafts = drafts.filter((draft) => asText(draft.status).toLowerCase() === 'draft' || !asText(draft.status));
   const valueEntries = buildValueEntries(context);
   const funnelValue = valueEntries.reduce((sum, item) => sum + item.value, 0);
 
@@ -381,13 +385,14 @@ function buildAppOverviewAnswer(context: Record<string, unknown>, rawText: strin
     noAutoWrite: true,
     intent: 'today_briefing',
     title: 'Szybki stan aplikacji',
-    summary: `Leady: ${leads.length}. Klienci: ${clients.length}. Sprawy: ${cases.length}. Otwarte zadania: ${tasks.length}. Otwarte wydarzenia: ${events.length}. Wartość lejka: ${formatMoney(funnelValue)}.`,
+    summary: `Leady: ${leads.length}. Klienci: ${clients.length}. Sprawy: ${cases.length}. Otwarte zadania: ${tasks.length}. Otwarte wydarzenia: ${events.length}. Szkice AI do sprawdzenia: ${pendingDrafts.length}. Wartość lejka: ${formatMoney(funnelValue)}.`,
     rawText,
     items: [
       { label: `Leady: ${leads.length}`, detail: 'Aktywne kontakty sprzedażowe', href: '/leads', priority: 'medium' },
       { label: `Klienci: ${clients.length}`, detail: 'Kontakty przeniesione do obsługi klienta', href: '/clients', priority: 'medium' },
       { label: `Sprawy: ${cases.length}`, detail: 'Operacje po sprzedaży', href: '/cases', priority: 'medium' },
       { label: `Wartość lejka: ${formatMoney(funnelValue)}`, detail: 'Leady + klienci + sprawy z wartością', href: '/leads', priority: 'high' },
+      { label: `Szkice AI: ${pendingDrafts.length}`, detail: 'Robocze zapisy do ręcznego sprawdzenia', href: '/ai-drafts', priority: pendingDrafts.length ? 'high' : 'low' },
     ],
     warnings: [],
   };
@@ -419,7 +424,7 @@ function buildRelationValueAnswer(context: Record<string, unknown>, rawText: str
   };
 }
 
-type AppSearchKind = 'lead' | 'client' | 'case' | 'task' | 'event';
+type AppSearchKind = 'lead' | 'client' | 'case' | 'task' | 'event' | 'draft';
 
 function getSearchTerms(query: string) {
   const stopWords = new Set([
@@ -433,6 +438,7 @@ function getKindLabel(kind: AppSearchKind) {
   if (kind === 'case') return 'Sprawa';
   if (kind === 'task') return 'Zadanie';
   if (kind === 'event') return 'Wydarzenie';
+  if (kind === 'draft') return 'Szkic AI';
   return 'Lead';
 }
 
@@ -441,6 +447,7 @@ function getGenericTitle(kind: AppSearchKind, record: Record<string, unknown>) {
   if (kind === 'case') return getCaseDisplayName(record);
   if (kind === 'task') return asText(record.title) || asText(record.name) || 'Zadanie';
   if (kind === 'event') return asText(record.title) || asText(record.name) || 'Wydarzenie';
+  if (kind === 'draft') return asText(record._assistantTitle) || asText(record.rawText) || asText(record.raw_text) || 'Szkic AI';
   return getLeadDisplayName(record);
 }
 
@@ -450,6 +457,7 @@ function getGenericHref(kind: AppSearchKind, record: Record<string, unknown>) {
   if (kind === 'case') return id ? '/cases/' + id : '/cases';
   if (kind === 'task') return taskHref(record);
   if (kind === 'event') return eventHref(record);
+  if (kind === 'draft') return '/ai-drafts';
   return id ? '/leads/' + id : '/leads';
 }
 
@@ -461,6 +469,12 @@ function buildGenericDetail(kind: AppSearchKind, record: Record<string, unknown>
   const company = asText(record.company || record.clientName);
   const value = getRecordValue(record);
   const moment = kind === 'task' ? getTaskMoment(record) : kind === 'event' ? getEventMoment(record) : '';
+  if (kind === 'draft') {
+    const rawText = asText(record.rawText || record.raw_text);
+    const draftType = asText(record.type) || 'lead';
+    const status = asText(record.status) || 'draft';
+    return ['Szkic AI', 'typ: ' + draftType, 'status: ' + status, rawText ? 'treść: ' + rawText.slice(0, 140) : 'bez treści'].join(' · ');
+  }
   if (company) parts.push('firma: ' + company);
   if (email) parts.push('e-mail: ' + email);
   if (phone) parts.push('telefon: ' + phone);
@@ -477,6 +491,14 @@ function buildGlobalSearchRows(context: Record<string, unknown>) {
     ...safeArray(context.cases).map((record) => ({ kind: 'case' as const, record })),
     ...safeArray(context.tasks).map((record) => ({ kind: 'task' as const, record })),
     ...safeArray(context.events).map((record) => ({ kind: 'event' as const, record })),
+    ...safeArray((context as any).drafts).map((record) => ({
+      kind: 'draft' as const,
+      record: {
+        ...record,
+        _assistantEntityLabel: 'szkic ai szkice draft do sprawdzenia',
+        _assistantTitle: asText((record as any).rawText || (record as any).raw_text) || 'Szkic AI',
+      },
+    })),
   ];
 }
 
@@ -496,7 +518,7 @@ function scoreGlobalRecord(query: string, record: Record<string, unknown>) {
 }
 
 function wantsGlobalSearch(query: string) {
-  return /\b(znajdz|znajdź|szukaj|wyszukaj|pokaz|pokaż|odszukaj|kontakt|email|e-mail|mail|telefon|numer|adres)\b/u.test(query)
+  return /\b(znajdz|znajdź|szukaj|wyszukaj|pokaz|pokaż|odszukaj|kontakt|email|e-mail|mail|telefon|numer|adres|szkic|szkice|draft|drafty)\b/u.test(query)
     || query.includes('@')
     || /\d{6,}/.test(query);
 }
@@ -508,6 +530,7 @@ function hasPotentialRecordSearchQuery(query: string) {
 
 function buildGlobalAppSearchAnswer(context: Record<string, unknown>, rawText: string): AssistantResponse {
   const query = normalizeText(rawText);
+  if (wantsDraftReview(query)) return buildDraftReviewAnswer(context, rawText);
   const rows = buildGlobalSearchRows(context);
   const scored = rows
     .map((row) => ({ ...row, score: scoreGlobalRecord(query, row.record) }))
@@ -554,6 +577,42 @@ function buildGlobalAppSearchAnswer(context: Record<string, unknown>, rawText: s
   };
 }
 
+
+
+function wantsDraftReview(query: string) {
+  return /\b(szkic|szkice|draft|drafty|do sprawdzenia|niezatwierdzone|ai inbox)\b/u.test(query);
+}
+
+function buildDraftReviewAnswer(context: Record<string, unknown>, rawText: string): AssistantResponse {
+  // AI_OPERATOR_QUALITY_STAGE06_DRAFT_BRIEFING: pytania o szkice odpowiadają z danych aplikacji, bez modelu zewnętrznego.
+  const drafts = safeArray((context as any).drafts)
+    .filter((draft) => {
+      const status = asText(draft.status).toLowerCase();
+      return !status || status === 'draft';
+    })
+    .slice(0, 8);
+
+  return {
+    ok: true,
+    scope: 'assistant_read_or_draft_only',
+    provider: 'rules',
+    costGuard: 'local_rules',
+    noAutoWrite: true,
+    intent: 'global_app_search',
+    title: drafts.length ? 'Szkice AI do sprawdzenia' : 'Nie widzę szkiców AI do sprawdzenia',
+    summary: drafts.length
+      ? 'Masz ' + drafts.length + ' szkiców AI do ręcznego sprawdzenia. Żaden z nich nie jest finalnym rekordem.'
+      : 'Nie znalazłem aktywnych szkiców AI w statusie do sprawdzenia.',
+    rawText,
+    items: drafts.map((draft, index) => ({
+      label: asText(draft.rawText || draft.raw_text) || 'Szkic AI ' + String(index + 1),
+      detail: 'Szkic AI · status: ' + (asText(draft.status) || 'draft') + ' · źródło: ' + (asText(draft.source) || 'manual'),
+      href: '/ai-drafts',
+      priority: 'high' as const,
+    })),
+    warnings: drafts.length ? ['Otwórz Szkice AI, sprawdź pola i dopiero wtedy utwórz finalny rekord.'] : [],
+  };
+}
 
 function detectCaptureIntent(query: string) {
   const saveCommandPattern = /\b(zapisz|dodaj|utworz|stworz|wrzuc|wrzucic|zapamietaj|notuj|zanotuj)\b/u;
