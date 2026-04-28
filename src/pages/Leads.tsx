@@ -71,6 +71,46 @@ function formatLeadSourceLabel(value: unknown) {
   return SOURCE_OPTIONS.find((option) => option.value === normalized)?.label || 'Inne';
 }
 
+function normalizeLeadSearchValue(value: unknown) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getLeadPrimaryContact(lead: any) {
+  return String(lead?.phone || lead?.email || '').trim();
+}
+
+function buildLeadSearchText(lead: any, linkedCase?: CaseRecord) {
+  return [
+    lead?.name,
+    lead?.email,
+    lead?.phone,
+    lead?.company,
+    lead?.status,
+    lead?.source,
+    linkedCase?.title,
+    linkedCase?.status,
+  ].map(normalizeLeadSearchValue).filter(Boolean).join(' ');
+}
+
+function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sourceLabel: string, valueLabel: string) {
+  const contact = getLeadPrimaryContact(lead);
+  const company = String(lead?.company || '').trim();
+  const caseLabel = linkedCase ? 'sprawa: ' + (linkedCase.title || 'otwarta') : '';
+
+  return [
+    sourceLabel,
+    company,
+    contact,
+    valueLabel,
+    caseLabel,
+  ].filter(Boolean).join(' · ');
+}
+
 function nativeSelectClassName() {
   return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 }
@@ -107,11 +147,11 @@ function buildNextActionMeta(action: LeadNextAction | null | undefined) {
 }
 
 function isLeadInTrash(lead: any) {
+  // STAGE30_LEADS_TRASH_STRICT_VISIBILITY: kosz leadów nie może łapać aktywnych rekordów po samym wyniku sprzedaży.
   const status = String(lead?.status || '').trim();
   const visibility = String(lead?.leadVisibility || '').trim();
-  const outcome = String(lead?.salesOutcome || '').trim();
 
-  return status === 'archived' || visibility === 'trash' || outcome === 'archived' || outcome === 'trash';
+  return visibility === 'trash' || status === 'archived';
 }
 
 function getRestoreStatusForLead(lead: any, linkedCase?: CaseRecord) {
@@ -376,24 +416,15 @@ export default function Leads() {
   );
 
   const filteredLeads = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
+    // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka działa po nazwie, telefonie, mailu, firmie, źródle i sprawie.
+    const normalizedQuery = normalizeLeadSearchValue(searchQuery);
     const sourceLeads = showTrash ? trashLeads : activeLeads;
 
     const results = sourceLeads.filter((lead) => {
       const linkedCase = resolveLinkedCaseForLead(lead);
       const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
       const activeLead = isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
-      const caseTitle = String(linkedCase?.title || '').toLowerCase();
-      const caseStatus = String(linkedCase?.status || '').toLowerCase();
-
-      const matchesSearch = !normalizedQuery
-        || String(lead.name || '').toLowerCase().includes(normalizedQuery)
-        || String(lead.email || '').toLowerCase().includes(normalizedQuery)
-        || String(lead.company || '').toLowerCase().includes(normalizedQuery)
-        || String(lead.status || 'new').toLowerCase().includes(normalizedQuery)
-        || String(lead.source || '').toLowerCase().includes(normalizedQuery)
-        || caseTitle.includes(normalizedQuery)
-        || caseStatus.includes(normalizedQuery);
+      const matchesSearch = !normalizedQuery || buildLeadSearchText(lead, linkedCase).includes(normalizedQuery);
 
       const matchesQuickFilter =
         showTrash
@@ -411,6 +442,22 @@ export default function Leads() {
 
     return results;
   }, [activeLeads, quickFilter, resolveLinkedCaseForLead, searchQuery, showTrash, trashLeads, valueSortEnabled]);
+
+  const leadSearchSuggestions = useMemo(() => {
+    const normalizedQuery = normalizeLeadSearchValue(searchQuery);
+    if (!normalizedQuery) return [];
+
+    return filteredLeads.slice(0, 6).map((lead) => {
+      const linkedCase = resolveLinkedCaseForLead(lead);
+      const sourceLabel = formatLeadSourceLabel(lead.source);
+      const valueLabel = (Number(lead.dealValue) || 0).toLocaleString() + ' PLN';
+      return {
+        id: String(lead.id || ''),
+        name: String(lead.name || 'Lead bez nazwy'),
+        meta: buildLeadCompactMeta(lead, linkedCase, sourceLabel, valueLabel),
+      };
+    }).filter((lead) => lead.id);
+  }, [filteredLeads, resolveLinkedCaseForLead, searchQuery]);
 
   const stats = {
     total: activeLeads.length,
@@ -575,51 +622,79 @@ export default function Leads() {
           />
         </div>
 
-        <Card className="border-none shadow-sm">
-          <CardContent className="p-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj po nazwie, emailu, firmie, statusie albo sprawie...'}
-                className="pl-10 rounded-xl bg-slate-50 border-none h-11"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </CardContent>
-        </Card>
-        {/* LEADS_TRASH_COPY_REMOVED_STAGE14: kosz leadów bez martwego opisu V1 */}
-        {mostValuableRelations.length ? (
-          <Card className="border-none shadow-sm" data-relation-value-board="true">
+        {/* STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL: najcenniejsze relacje jako mała lista po prawej. */}
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_300px]" data-stage32-leads-value-layout="true">
+          <Card className="border-none shadow-sm">
             <CardContent className="p-4">
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <p className="text-sm font-bold text-slate-900">Najcenniejsze relacje</p>
-                  <p className="text-xs text-slate-500">Suma lejka liczona z aktywnych leadów i klientów. Sprawy zostają jako kontekst relacji, ale nie podbijają głównej sumy.</p>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input
+                  placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...'}
+                  className="pl-10 rounded-xl bg-slate-50 border-none h-11"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  list="lead-search-suggestions-stage31"
+                />
+                <datalist id="lead-search-suggestions-stage31">
+                  {leadSearchSuggestions.map((suggestion) => (
+                    <option key={suggestion.id} value={suggestion.name} />
+                  ))}
+                </datalist>
+              </div>
+              {searchQuery.trim() && leadSearchSuggestions.length ? (
+                <div className="mt-3 grid gap-2" data-stage31-lead-search-suggestions="true">
+                  {leadSearchSuggestions.map((suggestion, index) => (
+                    <Link
+                      key={suggestion.id}
+                      to={`/leads/${suggestion.id}`}
+                      className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm transition hover:border-blue-200 hover:bg-blue-50"
+                    >
+                      <span className="min-w-0 truncate font-medium text-slate-900">{index + 1}. {suggestion.name}</span>
+                      <span className="hidden min-w-0 truncate text-xs text-slate-500 md:block">{suggestion.meta}</span>
+                      <ChevronRight className="h-4 w-4 shrink-0 text-slate-400" />
+                    </Link>
+                  ))}
                 </div>
-                <Badge variant="outline">Lejek razem: {formatRelationValue(relationFunnelValue)}</Badge>
-              </div>
-              <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-                {mostValuableRelations.map((entry) => (
-                  <Link
-                    key={entry.key}
-                    to={entry.href || '/leads'}
-                    className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-blue-200 hover:bg-blue-50"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-slate-900">{entry.label}</p>
-                        <p className="text-xs text-slate-500">{entry.kindLabel}</p>
-                      </div>
-                      <span className="shrink-0 text-sm font-bold text-slate-900">{formatRelationValue(entry.value)}</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+              ) : null}
             </CardContent>
           </Card>
-        ) : null}
 
+          <aside className="xl:sticky xl:top-24 h-fit" data-stage32-leads-value-rail="true">
+            <Card className="border-none shadow-sm" data-relation-value-board="true">
+              <CardContent className="p-4">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold text-slate-900">Najcenniejsze relacje</p>
+                    <p className="text-xs text-slate-500">Top 5 według wartości</p>
+                  </div>
+                  <Badge variant="outline" className="shrink-0 text-[10px]">Lejek razem: {formatRelationValue(relationFunnelValue)}</Badge>
+                </div>
+
+                {mostValuableRelations.length ? (
+                  <div className="space-y-2">
+                    {mostValuableRelations.map((entry) => (
+                      <Link
+                        key={entry.key}
+                        to={entry.href || '/leads'}
+                        className="group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-blue-200 hover:bg-blue-50"
+                        data-stage32-valuable-relation-row="true"
+                      >
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-semibold text-slate-900 group-hover:text-blue-700">{entry.label}</span>
+                          <span className="block truncate text-[11px] text-slate-500">{entry.kindLabel}</span>
+                        </span>
+                        <span className="shrink-0 text-xs font-bold text-slate-900">{formatRelationValue(entry.value)}</span>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-500">Brak relacji z wyliczoną wartością.</p>
+                )}
+              </CardContent>
+            </Card>
+          </aside>
+        </div>
+        {/* LEADS_TRASH_COPY_REMOVED_STAGE14: kosz leadów bez martwego opisu V1 */}
         <div className="space-y-3">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
@@ -640,16 +715,17 @@ export default function Leads() {
                 <Search className="w-8 h-8 text-slate-300" />
               </div>
               <h3 className="text-lg font-bold text-slate-900">{showTrash ? 'Kosz leadów jest pusty' : 'Nie znaleziono leadów'}</h3>
-              <p className="text-slate-500 max-w-xs mx-auto mt-1">{showTrash ? 'Przeniesione do kosza leady pojawią się tutaj.' : 'Spróbuj zmienić wyszukiwanie, kliknąć inny kafelek u góry albo dodać nowego leada.'}</p>
+              <p className="text-slate-500 max-w-xs mx-auto mt-1">{showTrash ? 'Przeniesione do kosza leady pojawią się tutaj.' : 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.'}</p>
             </div>
           ) : (
-            filteredLeads.map((lead) => {
+            filteredLeads.map((lead, leadIndex) => {
               const linkedCase = resolveLinkedCaseForLead(lead);
               const nextAction = nextActionByLeadId.get(String(lead.id));
               const nextActionMeta = buildNextActionMeta(nextAction);
               const status = STATUS_OPTIONS.find((option) => option.value === lead.status) || STATUS_OPTIONS[0];
               const sourceLabel = formatLeadSourceLabel(lead.source);
               const leadValueLabel = `${(Number(lead.dealValue) || 0).toLocaleString()} PLN`;
+              const compactMeta = buildLeadCompactMeta(lead, linkedCase, sourceLabel, leadValueLabel);
               const movedToService = isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
               const isArchivedLead = isLeadInTrash(lead);
 
@@ -658,8 +734,12 @@ export default function Leads() {
                   <Link to={`/leads/${lead.id}`} className="block">
                     <Card className="overflow-hidden border-none shadow-sm transition-all group hover:-translate-y-0.5 hover:shadow-md">
                     <CardContent className="p-0">
-                      <div className="flex flex-col gap-3 p-4 pr-14 md:flex-row md:items-center md:gap-4 lg:p-5 lg:pr-16">
+                      <div className="flex flex-col gap-2 px-3 py-2 pr-12 md:flex-row md:items-center md:gap-3 lg:px-4 lg:py-3 lg:pr-14" data-stage31-lead-thin-row="true">
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600" aria-label={`Numer leada ${leadIndex + 1}`}>
+                          {leadIndex + 1}
+                        </div>
                         <div className="min-w-0 flex-1">
+                          <p className="mb-1 truncate text-xs text-slate-500" data-stage31-lead-one-line-meta="true">{compactMeta}</p>
                           <div className="mb-2 flex flex-wrap items-center gap-2">
                             <h4 className="min-w-0 truncate text-base font-bold text-slate-900 transition-colors group-hover:text-primary md:text-lg">{lead.name}</h4>
                             <Badge className={`${status.color} border-none font-medium text-[10px] uppercase`}>{status.label}</Badge>

@@ -243,15 +243,9 @@ export default function Clients() {
           <Input className="pl-9" placeholder={showArchived ? 'Szukaj w koszu klientów...' : 'Szukaj klienta...'} value={search} onChange={(event) => setSearch(event.target.value)} />
         </div>
 
-        {showArchived ? (
-          <Card className="border-amber-200 bg-amber-50 shadow-sm">
-            <CardContent className="p-4 text-sm text-amber-800">
-              To jest kosz klientów. Rekordy są ukryte z aktywnej listy, ale nadal można je przywrócić.
-            </CardContent>
-          </Card>
-        ) : null}
+        {/* STAGE30_CLIENTS_TRASH_COPY_REMOVED: kosz klientów bez zbędnego opisu. */}
 
-        {loading ? (
+{loading ? (
           <Card><CardContent className="p-8 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></CardContent></Card>
         ) : filtered.length === 0 ? (
           <Card><CardContent className="p-8 text-center text-slate-500">{showArchived ? 'Kosz klientów jest pusty.' : 'Brak klientów do wyświetlenia.'}</CardContent></Card>

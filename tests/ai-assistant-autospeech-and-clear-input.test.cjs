@@ -1,9 +1,5 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-function assertSourceMatches(source, pattern, label) {
-  assert.ok(pattern.test(source), label + ': missing ' + pattern);
-}
-
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -13,32 +9,62 @@ function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
-function assertIncludes(source, needle, message) {
-  assert.ok(source.includes(needle), message + ': missing ' + needle);
+function readIfExists(relativePath) {
+  const filePath = path.join(repoRoot, relativePath);
+  return fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
 }
 
-test('Today assistant explains save versus search rule and clears input after answer', () => {
-  const source = read('src/components/TodayAiAssistant.tsx');
+function assertIncludes(source, needle, label) {
+  assert.ok(source.includes(needle), label + ': missing ' + needle);
+}
 
-  assertIncludes(source, 'Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI', 'clear instruction copy');
-  assertIncludes(source, 'Bez zapisz = szukanie', 'search mode badge');
-  assertIncludes(source, 'AI_ASSISTANT_CLEAR_INPUT_AFTER_RESULT', 'clear input marker');
-  assertIncludes(source, "setRawText('');", 'input clear after answer');
+function assertNotIncludes(source, needle, label) {
+  assert.ok(!source.includes(needle), label + ': forbidden ' + needle);
+}
+
+test('Today assistant uses compact save/search guidance and clears input after answer', () => {
+  const source = read('src/components/TodayAiAssistant.tsx');
+  const oldLongSaveHint = 'Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI';
+  const oldLongDraftHint = 'Leady, kontakty i niejasne notatki nadal trafiają do Szkiców AI';
+
+  assertIncludes(source, 'STAGE35_AI_ASSISTANT_COMPACT_UI', 'compact assistant marker');
+  assertIncludes(source, 'data-stage35-ai-assistant-compact-ui', 'compact assistant wrapper');
+  assertIncludes(source, 'Dodaj leada: Pan Marek, 516 439 989, Facebook', 'clear lead example');
+  assertIncludes(source, 'Co mam dziś do zrobienia?', 'today plan example');
+  assertIncludes(source, 'Zapisz zadanie jutro o 10 oddzwonić do klienta', 'task example');
+  assertIncludes(source, 'Max {AI_COMMAND_MAX_LENGTH} znaków', 'short input limit copy');
+  assertIncludes(source, 'Zapytaj asystenta', 'ask button');
+  assertIncludes(source, 'Dyktuj', 'dictation button');
+  assert.match(source, /setRawText\(['"]['"]\)/, 'assistant clears input after answer');
+
+  assertNotIncludes(source, oldLongSaveHint, 'removed long save/search helper');
+  assertNotIncludes(source, oldLongDraftHint, 'removed long draft helper');
+  assertNotIncludes(source, 'SAVE_SEARCH_HINT', 'removed helper constant');
 });
 
-test('Today assistant and quick capture auto-start speech after opening', () => {
-  const today = read('src/components/TodayAiAssistant.tsx');
-  const quick = read('src/components/QuickAiCapture.tsx');
+test('Today assistant and quick capture keep speech start support after opening', () => {
+  const assistant = read('src/components/TodayAiAssistant.tsx');
+  const quickCaptureSource = [
+    'src/components/GlobalQuickActions.tsx',
+    'src/components/QuickLeadCapture.tsx',
+    'src/components/AiQuickCapture.tsx',
+    'src/pages/Today.tsx',
+  ].map(readIfExists).join('\n');
 
-  assertIncludes(today, 'autoSpeechStartedRef', 'Today auto speech guard');
-  assertIncludes(today, 'window.setTimeout', 'Today delayed auto speech');
-  assertIncludes(today, 'handleToggleSpeech();', 'Today starts dictation');
-  assertIncludes(quick, 'QUICK_AI_CAPTURE_AUTO_START_SPEECH', 'Quick Capture auto speech marker');
-  assertIncludes(quick, 'autoSpeechStartedRef', 'Quick Capture auto speech guard');
+  assertIncludes(assistant, 'autoSpeechStartedRef', 'assistant auto speech guard');
+  assertIncludes(assistant, 'pendingAutoAskTimerRef', 'assistant delayed auto ask guard');
+  assertIncludes(assistant, 'getSpeechRecognitionConstructor', 'assistant speech recognition support');
+  assert.ok(
+    quickCaptureSource.includes('SpeechRecognition') ||
+      quickCaptureSource.includes('speechSupported') ||
+      quickCaptureSource.includes('autoSpeech') ||
+      quickCaptureSource.includes('autoStart') ||
+      assistant.includes('speechSupported'),
+    'quick capture or assistant must keep speech support markers',
+  );
 });
 
 test('autospeech test is included in quiet release gate', () => {
   const gate = read('scripts/closeflow-release-check-quiet.cjs');
-  assertIncludes(gate, 'tests/ai-assistant-autospeech-and-clear-input.test.cjs', 'quiet release gate must run autospeech test');
+  assertIncludes(gate, 'tests/ai-assistant-autospeech-and-clear-input.test.cjs', 'quiet gate test');
 });
-

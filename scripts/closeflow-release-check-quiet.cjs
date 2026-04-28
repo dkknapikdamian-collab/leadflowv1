@@ -66,6 +66,14 @@ const requiredTests = [
   'tests/request-scope-server-helper.test.cjs',
   'tests/request-identity-vercel-api-signature.test.cjs',
   'tests/polish-mojibake-audit.test.cjs',
+  'tests/stage30-leads-clients-trash-contract.test.cjs',
+  'tests/stage31-leads-thin-list-search.test.cjs',
+  'tests/stage32-leads-value-right-rail.test.cjs',
+  'tests/stage32e-relation-rail-copy-compat.test.cjs',
+  'tests/stage32g-relation-funnel-full-gate-contract.test.cjs',
+  'tests/stage32f-relation-funnel-contract.test.cjs',
+  'tests/stage35c-ai-autospeech-compact-contract-fix.test.cjs',
+  'tests/stage35-ai-assistant-compact-ui.test.cjs',
   'tests/layout-brand-label.test.cjs',
   'tests/lead-start-service-case-redirect.test.cjs',
   'tests/billing-checkout-no-prefilled-personal-email.test.cjs',
@@ -90,6 +98,7 @@ const requiredTests = [
   'tests/ai-safety-gates-direct-write.test.cjs',
   'tests/ai-direct-write-respects-mode-stage28.test.cjs',
   'tests/today-ai-drafts-tile-stage29.test.cjs',
+  'tests/stage29d-today-ai-drafts-compact-tile.test.cjs',
   'tests/supabase-first-readiness-stage16.test.cjs',
 ];
 

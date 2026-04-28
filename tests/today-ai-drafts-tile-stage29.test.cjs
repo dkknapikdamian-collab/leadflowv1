@@ -13,17 +13,19 @@ function expectIncludes(source, text) {
   assert.ok(source.includes(text), 'Missing text: ' + text);
 }
 
-test('Stage29 Today shows a pending AI drafts tile and preview list', () => {
+test('Stage29 Today shows a compact pending AI drafts tile', () => {
   const today = read('src/pages/Today.tsx');
 
   expectIncludes(today, 'TODAY_AI_DRAFTS_TILE_STAGE29');
+  expectIncludes(today, 'TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM');
   expectIncludes(today, 'data-today-ai-drafts-tile="true"');
+  expectIncludes(today, 'data-today-ai-drafts-compact-tile="true"');
   expectIncludes(today, 'Szkice do zatwierdzenia');
   expectIncludes(today, 'data-today-ai-drafts-pending-count="true"');
-  expectIncludes(today, 'data-today-ai-drafts-preview-list="true"');
-  expectIncludes(today, 'pendingTodayAiDrafts.slice(0, 3)');
   expectIncludes(today, "openTodayTopTileShortcut('ai_drafts')");
-  expectIncludes(today, 'Szkice AI');
+  expectIncludes(today, 'Otwórz Szkice AI');
+  assert.equal(today.includes('data-today-ai-drafts-preview-list="true"'), false);
+  assert.equal(today.includes('pendingTodayAiDrafts.slice(0, 3)'), false);
 });
 
 test('Stage29 Today counts only drafts still waiting for approval', () => {
@@ -36,7 +38,7 @@ test('Stage29 Today counts only drafts still waiting for approval', () => {
   expectIncludes(today, 'setTodayAiDrafts(Array.isArray(drafts) ? drafts : [])');
 });
 
-test('Stage29 AI drafts shortcut routes to the drafts inbox and is covered by quiet gate', () => {
+test('Stage29 AI drafts shortcut routes to the drafts inbox and keeps collapsible lists untouched', () => {
   const today = read('src/pages/Today.tsx');
   const quietGate = read('scripts/closeflow-release-check-quiet.cjs');
 
@@ -44,5 +46,7 @@ test('Stage29 AI drafts shortcut routes to the drafts inbox and is covered by qu
   expectIncludes(today, "window.location.assign('/ai-drafts')");
   expectIncludes(today, "if (target === 'ai_drafts') return 'today-section-ai-drafts';");
   expectIncludes(today, "if (target === 'ai_drafts') return 'szkice-ai';");
+  expectIncludes(today, 'data-today-tile-card="true"');
+  expectIncludes(today, 'aria-expanded={!collapsed}');
   expectIncludes(quietGate, 'tests/today-ai-drafts-tile-stage29.test.cjs');
 });

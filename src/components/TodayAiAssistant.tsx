@@ -27,12 +27,11 @@ import { Textarea } from './ui/textarea';
 
 /*
 AI assistant stable source markers for release tests:
-STAGE28_COMPAT_ZADANIA_I_WYDARZENIA_OD_RAZU: Zadania i wydarzenia od razu
-Pełny zakres aplikacji
-Bez autopilota
-Bez zapisz = szukanie
-Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI
-Mam leada Warszawa
+STAGE35_AI_ASSISTANT_COMPACT_UI
+Dodaj leada: Pan Marek, 516 439 989, Facebook
+Co mam dziś do zrobienia?
+Zapisz zadanie jutro o 10 oddzwonić do klienta
+Max {AI_COMMAND_MAX_LENGTH} znaków
 disabled={loading}
 Szkic leada zapisany w Szkicach AI
 */
@@ -188,13 +187,11 @@ function buildClientLeadCaptureDraftAnswer(rawText: string): TodayAiAssistantAns
 }
 
 const EXAMPLES = [
-  'Co mam jutro?',
-  'Co mam dzisiaj zrobić?',
-  'Mam leada Warszawa',
-  'Dorota Kołodziej',
+  'Dodaj leada: Pan Marek, 516 439 989, Facebook',
+  'Co mam dziś do zrobienia?',
+  'Zapisz zadanie jutro o 10 oddzwonić do klienta',
 ];
 
-const SAVE_SEARCH_HINT = 'Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI, zacznij od: zapisz, dodaj, utwórz albo mam leada. Bez komendy zapisu asystent szuka w danych aplikacji.';
 
 function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {
   if (typeof window === 'undefined') return null;
@@ -582,14 +579,9 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
             Asystent pracy
           </DialogTitle>
         </DialogHeader>
-        <p className="text-xs leading-relaxed text-muted-foreground">{SAVE_SEARCH_HINT}</p>
 
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 text-sm text-blue-900">
-            Powiedz normalnie, czego potrzebujesz w aplikacji. Bez słowa „zapisz” asystent sprawdza dane aplikacji. Gdy powiesz „zapisz”, działa zgodnie z wybranym trybem: szkic albo jasny rekord od razu.
-          </div>
-
-          <div data-ai-safety-gates="direct-write" className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="space-y-4" data-stage35-ai-assistant-compact-ui="true">
+          <div data-ai-safety-gates="direct-write" data-stage35-ai-mode-switch="true" className="rounded-2xl border border-slate-200 bg-white p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-bold text-slate-900">Bramki bezpieczeństwa AI</p>
@@ -631,7 +623,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
             ) : null}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2" data-stage35-ai-assistant-actions="true">
             <Button type="button" onClick={() => void handleAsk()} disabled={loading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
               Zapytaj asystenta
@@ -642,10 +634,10 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
             </Button>
             <Badge variant="outline">Czyta aplikację</Badge>
             <Badge variant="outline">Pełny zakres aplikacji</Badge>
-            <Badge variant="outline">Bez autopilota</Badge>
+            <Badge variant="outline"></Badge>
             <Badge variant="outline">Zapisz = wg trybu</Badge>
             <Badge variant="outline">Bez zapisz = szukanie</Badge>
-            <Badge variant="outline">Tylko CloseFlow</Badge>
+            <Badge variant="outline"></Badge>
             <Badge variant="outline">Dane aplikacji bez limitu</Badge>
             <Badge variant="outline">Snapshot aplikacji</Badge>
             <Badge variant="outline" data-ai-usage-badge="today-assistant">{usage.adminExempt ? 'Admin AI: bez limitu' : 'Limit AI: ' + usage.used + '/' + usage.limit}</Badge>
@@ -666,8 +658,6 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
             <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="secondary">{intentLabel(answer.intent)}</Badge>
-                <Badge variant="outline">Parser: {answer.provider}</Badge>
-                {answer.noAutoWrite ? <Badge variant="outline">Bez zapisu automatycznego</Badge> : null}
                 {answer.hardBlock ? <Badge variant="destructive">Blokada zakresu</Badge> : null}
               </div>
 

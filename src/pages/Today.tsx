@@ -11,7 +11,8 @@ Finalny zapis rekordu nie dzieje się z poziomu Dziś.
 
 /*
 TODAY_AI_DRAFTS_TILE_STAGE29
-Dziś pokazuje kafelek Szkice z liczbą niezatwierdzonych szkiców AI i krótką listą do sprawdzenia.
+TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
+Dziś pokazuje mały dolny kafelek Szkice z liczbą niezatwierdzonych szkiców AI. Bez dużej sekcji i bez ingerencji w zwijane listy.
 */
 
 /*
@@ -2193,49 +2194,6 @@ export default function Today() {
           </div>
         </header>
 
-        <section
-          id="today-section-ai-drafts"
-          data-today-ai-drafts-tile="true"
-          data-today-shortcut-section="ai_drafts"
-          className="mb-6 scroll-mt-28"
-        >
-          <button
-            type="button"
-            onClick={() => openTodayTopTileShortcut('ai_drafts')}
-            className="group w-full rounded-2xl border border-blue-100 bg-blue-50/70 p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/25"
-          >
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">Szkice</p>
-                <h2 className="mt-1 text-xl font-bold text-slate-900">Szkice do zatwierdzenia</h2>
-                <p className="mt-1 text-sm text-slate-600">Tu wpadają szkice AI, które nie zostały jeszcze zatwierdzone ani skasowane.</p>
-              </div>
-              <div className="flex shrink-0 items-center gap-3 rounded-2xl border border-blue-100 bg-white px-4 py-3 text-blue-700 shadow-sm">
-                <ListTodo className="h-5 w-5" />
-                <span className="text-2xl font-black leading-none" data-today-ai-drafts-pending-count="true">{pendingTodayAiDraftCount}</span>
-              </div>
-            </div>
-
-            {pendingTodayAiDraftCount > 0 ? (
-              <div className="mt-4 grid gap-2 md:grid-cols-3" data-today-ai-drafts-preview-list="true">
-                {pendingTodayAiDrafts.slice(0, 3).map((draft) => (
-                  <div key={draft.id} className="rounded-xl border border-blue-100 bg-white p-3 shadow-sm">
-                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{formatTodayAiDraftCreatedAt(draft.createdAt)}</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-800">{getTodayAiDraftPreview(draft)}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="mt-4 rounded-xl border border-dashed border-blue-100 bg-white/70 p-3 text-sm font-medium text-slate-500" data-today-ai-drafts-empty="true">
-                Brak szkiców oczekujących na zatwierdzenie.
-              </p>
-            )}
-
-            <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-blue-700">
-              Otwórz Szkice AI <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </span>
-          </button>
-        </section>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {summaryCards.map((card) => {
@@ -2831,6 +2789,39 @@ export default function Today() {
         </DialogContent>
       </Dialog>
 
+
+        <section
+          id="today-section-ai-drafts"
+          data-today-ai-drafts-tile="true"
+          data-today-ai-drafts-compact-tile="true"
+          data-today-ai-drafts-stage29d-bottom="true"
+          data-today-shortcut-section="ai_drafts"
+          className="mt-8 scroll-mt-28"
+        >
+          <button
+            type="button"
+            onClick={() => openTodayTopTileShortcut('ai_drafts')}
+            className="group flex w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50/40 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/25"
+          >
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                <ListTodo className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold text-slate-900">Szkice do zatwierdzenia</p>
+                <p className="truncate text-xs text-slate-500">
+                  {pendingTodayAiDraftCount > 0 ? String(pendingTodayAiDraftCount) + ' oczekuje na decyzję' : 'Brak szkiców oczekujących'}
+                </p>
+              </div>
+            </div>
+
+            <span className="inline-flex shrink-0 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700 transition group-hover:border-blue-200 group-hover:bg-white group-hover:text-blue-700">
+              <span data-today-ai-drafts-pending-count="true">{pendingTodayAiDraftCount}</span>
+              <span className="hidden sm:inline">Otwórz Szkice AI</span>
+              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            </span>
+          </button>
+        </section>
     </Layout>
   );
 }

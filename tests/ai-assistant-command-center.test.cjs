@@ -50,9 +50,9 @@ test('AI assistant is available from global toolbar for daily plan lead lookup a
   assert.match(component, /Asystent AI/);
   assert.match(component, /SpeechRecognition/);
   assert.match(component, /webkitSpeechRecognition/);
-  assertSourceMatches(component, /Co mam dzisiaj zrobi\u0107/, 'today assistant example');
-  assertSourceMatches(component, /Mam leada Warszawa/, 'lead capture example copy');
-  assert.match(component, /Bez autopilota/);
+  assertSourceMatches(component, /Co mam dziś do zrobienia\?/, 'today assistant example');
+  assertSourceMatches(component, /Dodaj leada: Pan Marek/, 'lead capture example copy');
+  assert.match(component, /STAGE35_AI_ASSISTANT_COMPACT_UI/);
   assert.match(server, /today_briefing/);
   assert.match(server, /lead_lookup/);
   assert.match(server, /lead_capture/);
@@ -86,7 +86,7 @@ test('AI assistant hard-blocks out-of-scope questions to protect usage limits', 
   assert.match(server, /Twarda blokada zakresu/);
   assert.match(server, /Nie odpowiadam na pytania ogólne/);
   assert.match(client, /blocked_out_of_scope/);
-  assert.match(component, /Tylko CloseFlow/);
+  assert.match(component, /Poza zakresem aplikacji/);
   assert.match(component, /Blokada zakresu/);
   assert.match(component, /Asystent działa tylko w obrębie CloseFlow/);
   assert.doesNotMatch(server, /OPENAI_API_KEY/);
