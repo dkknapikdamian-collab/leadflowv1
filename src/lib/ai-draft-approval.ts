@@ -1,5 +1,7 @@
 export type AiDraftApprovalType = 'lead' | 'task' | 'event' | 'note';
 
+export const AI_DRAFT_REAL_TRANSFER_STAGE12_MARKER = 'AI_DRAFT_REAL_TRANSFER_STAGE12';
+
 export type AiDraftApprovalForm = {
   recordType: AiDraftApprovalType;
   title: string;
@@ -13,6 +15,8 @@ export type AiDraftApprovalForm = {
   scheduledAt: string;
   endAt: string;
   priority: string;
+  taskType: string;
+  eventType: string;
   leadId: string;
   caseId: string;
   clientId: string;
@@ -55,6 +59,11 @@ function pad2(value: number) {
 
 function toDateTimeLocal(date: Date) {
   return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}T${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+}
+
+function normalizeKnownOption(value: unknown, allowed: string[], fallback: string) {
+  const normalized = normalizeForIntent(value).replace(/\s+/g, '_');
+  return allowed.includes(normalized) ? normalized : fallback;
 }
 
 function parsePolishDateHint(rawText: string) {
@@ -120,6 +129,8 @@ export function buildAiDraftApprovalForm(draft: AiDraftLike): AiDraftApprovalFor
   const rawText = asText(draft.rawText);
   const recordType = detectAiDraftApprovalType(draft);
   const title = firstText(parsed, ['title', 'name', 'summary']) || inferTitle(rawText, recordType === 'lead' ? 'Nowy lead ze szkicu AI' : 'Nowy rekord ze szkicu AI');
+  const taskType = normalizeKnownOption(firstText(parsed, ['taskType', 'task_type', 'type']), ['follow_up', 'phone', 'reply', 'send_offer', 'meeting', 'other'], 'follow_up');
+  const eventType = normalizeKnownOption(firstText(parsed, ['eventType', 'event_type', 'type']), ['meeting', 'phone_call', 'follow_up', 'deadline', 'custom'], 'meeting');
   const scheduledAt = firstText(parsed, ['scheduledAt', 'dueAt', 'date', 'startAt']) || parsePolishDateHint(rawText);
   const start = scheduledAt ? new Date(scheduledAt) : null;
   const fallbackEnd = start && Number.isFinite(start.getTime()) ? toDateTimeLocal(new Date(start.getTime() + 60 * 60_000)) : '';
@@ -137,6 +148,8 @@ export function buildAiDraftApprovalForm(draft: AiDraftLike): AiDraftApprovalFor
     scheduledAt,
     endAt: firstText(parsed, ['endAt']) || fallbackEnd,
     priority: firstText(parsed, ['priority']) || 'medium',
+    taskType,
+    eventType,
     leadId: firstText(parsed, ['leadId', 'lead_id']),
     caseId: firstText(parsed, ['caseId', 'case_id']),
     clientId: firstText(parsed, ['clientId', 'client_id']),

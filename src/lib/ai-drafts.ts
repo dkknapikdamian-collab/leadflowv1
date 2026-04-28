@@ -31,6 +31,7 @@ export type AiLeadDraft = {
 };
 
 const STORAGE_PREFIX = 'closeflow:ai-lead-drafts:v1';
+export const AI_DRAFTS_SUPABASE_SYNC_STAGE13_MARKER = 'AI_DRAFTS_SUPABASE_SYNC_STAGE13';
 
 function getStorageKey() {
   const auth = getClientAuthSnapshot();
@@ -134,6 +135,57 @@ async function tryFetchRemoteDrafts() {
     : [];
 }
 
+function mergeRemoteAndLocalDrafts(remoteDrafts: AiLeadDraft[], localDrafts: AiLeadDraft[]) {
+  const remoteKeys = new Set(remoteDrafts.map((draft) => draft.id));
+  const localOnlyDrafts = localDrafts.filter((draft) => {
+    if (!draft.rawText && draft.status === 'draft') return false;
+    if (remoteKeys.has(draft.id)) return false;
+    return !draft.remoteSynced;
+  });
+
+  return dedupeDrafts([...remoteDrafts, ...localOnlyDrafts]).slice(0, 300);
+}
+
+async function pushAiLeadDraftToSupabase(draft: AiLeadDraft) {
+  const remote = await createAiDraftInSupabase({
+    rawText: draft.rawText,
+    parsedDraft: draft.parsedDraft || null,
+    source: draft.source,
+    provider: draft.provider || 'local',
+    type: draft.type || 'lead',
+    status: draft.status,
+  });
+
+  const normalized = normalizeDraft(remote);
+  if (!normalized) return draft;
+
+  const current = getAiLeadDrafts().filter((entry) => entry.id !== draft.id);
+  persistAiLeadDrafts(dedupeDrafts([normalized, ...current]).slice(0, 300));
+  return normalized;
+}
+
+function createLocalAiLeadDraft(input: { rawText: string; parsedDraft?: Record<string, unknown> | null; source?: AiLeadDraftSource; type?: AiLeadDraft['type']; }) {
+  const rawText = String(input.rawText || '').trim();
+  if (!rawText) throw new Error('AI_DRAFT_RAW_TEXT_REQUIRED');
+
+  const now = new Date().toISOString();
+  return {
+    id: makeId(),
+    kind: 'lead_capture' as const,
+    type: input.type || 'lead',
+    rawText,
+    parsedDraft: input.parsedDraft || null,
+    parsedData: input.parsedDraft || null,
+    provider: 'local',
+    source: input.source || 'manual',
+    status: 'draft' as const,
+    createdAt: now,
+    updatedAt: now,
+    convertedAt: null,
+    remoteSynced: false,
+  };
+}
+
 export async function syncLocalAiDraftsToSupabase() {
   const localDrafts = getAiLeadDrafts().filter((draft) => draft.status === 'draft' && draft.rawText && !draft.remoteSynced);
   if (!localDrafts.length) return [] as AiLeadDraft[];
@@ -172,10 +224,14 @@ export async function getAiLeadDraftsAsync() {
     if (localDrafts.some((draft) => draft.status === 'draft' && draft.rawText && !draft.remoteSynced)) {
       await syncLocalAiDraftsToSupabase();
     }
+
+    const latestLocalDrafts = getAiLeadDrafts();
     const remoteDrafts = await tryFetchRemoteDrafts();
-    if (remoteDrafts.length) {
-      persistAiLeadDrafts(remoteDrafts);
-      return remoteDrafts;
+    const mergedDrafts = mergeRemoteAndLocalDrafts(remoteDrafts, latestLocalDrafts);
+
+    if (mergedDrafts.length) {
+      persistAiLeadDrafts(mergedDrafts);
+      return mergedDrafts;
     }
   } catch {
     // Keep local mode for offline/demo/dev.
@@ -189,42 +245,11 @@ export function saveAiLeadDraft(input: {
   parsedDraft?: Record<string, unknown> | null;
   source?: AiLeadDraftSource;
 }) {
-  const rawText = String(input.rawText || '').trim();
-  if (!rawText) throw new Error('AI_DRAFT_RAW_TEXT_REQUIRED');
-
-  const now = new Date().toISOString();
-  const draft: AiLeadDraft = {
-    id: makeId(),
-    kind: 'lead_capture',
-    type: 'lead',
-    rawText,
-    parsedDraft: input.parsedDraft || null,
-    parsedData: input.parsedDraft || null,
-    provider: 'local',
-    source: input.source || 'manual',
-    status: 'draft',
-    createdAt: now,
-    updatedAt: now,
-    convertedAt: null,
-    remoteSynced: false,
-  };
-
+  const draft = createLocalAiLeadDraft(input);
   const drafts = getAiLeadDrafts();
-  persistAiLeadDrafts([draft, ...drafts].slice(0, 100));
+  persistAiLeadDrafts([draft, ...drafts].slice(0, 300));
 
-  void createAiDraftInSupabase({
-    rawText,
-    parsedDraft: input.parsedDraft || null,
-    source: draft.source,
-    provider: 'local',
-    type: 'lead',
-    status: 'draft',
-  }).then((remote) => {
-    const normalized = normalizeDraft(remote);
-    if (!normalized) return;
-    const current = getAiLeadDrafts().filter((entry) => entry.id !== draft.id);
-    persistAiLeadDrafts(dedupeDrafts([normalized, ...current]).slice(0, 100));
-  }).catch(() => null);
+  void pushAiLeadDraftToSupabase(draft).catch(() => null);
 
   return draft;
 }
@@ -234,19 +259,14 @@ export async function saveAiLeadDraftAsync(input: {
   parsedDraft?: Record<string, unknown> | null;
   source?: AiLeadDraftSource;
 }) {
-  const localDraft = saveAiLeadDraft(input);
+  const draft = createLocalAiLeadDraft(input);
+  const drafts = getAiLeadDrafts();
+  persistAiLeadDrafts([draft, ...drafts].slice(0, 300));
+
   try {
-    const remote = await createAiDraftInSupabase({
-      rawText: input.rawText,
-      parsedDraft: input.parsedDraft || null,
-      source: input.source || 'manual',
-      provider: 'local',
-      type: 'lead',
-      status: 'draft',
-    });
-    return normalizeDraft(remote) || localDraft;
+    return await pushAiLeadDraftToSupabase(draft);
   } catch {
-    return localDraft;
+    return draft;
   }
 }
 

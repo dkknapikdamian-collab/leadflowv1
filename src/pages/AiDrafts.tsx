@@ -8,6 +8,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
+import { EVENT_TYPES, PRIORITY_OPTIONS, SOURCE_OPTIONS, TASK_TYPES } from '../lib/options';
 import {
   archiveAiLeadDraftAsync,
   deleteAiLeadDraftAsync,
@@ -35,8 +36,15 @@ type DraftTab = AiLeadDraftStatus | 'all';
 
 const approvalInputClass = 'h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 const approvalSelectClass = approvalInputClass;
+const approvalTypeOptions: { value: AiDraftApprovalType; label: string; helper: string }[] = [
+  { value: 'lead', label: 'Lead', helper: 'Nowy kontakt sprzedażowy w lejku.' },
+  { value: 'task', label: 'Zadanie', helper: 'Prawdziwe zadanie widoczne w Dziś i kalendarzu.' },
+  { value: 'event', label: 'Wydarzenie', helper: 'Prawdziwe wydarzenie widoczne w kalendarzu.' },
+  { value: 'note', label: 'Notatka', helper: 'Notatka dopisana do historii powiązania.' },
+];
 
 /* AI_DRAFT_APPROVAL_TO_FINAL_RECORD_STAGE03 */
+/* AI_DRAFT_REAL_TRANSFER_STAGE12 */
 
 const DRAFT_TABS: { key: DraftTab; label: string; helper: string }[] = [
   { key: 'draft', label: 'Do sprawdzenia', helper: 'Notatki, z których jeszcze nie powstał lead.' },
@@ -147,6 +155,21 @@ export default function AiDrafts() {
     setApprovalForm((current) => current ? { ...current, ...patch } : current);
   };
 
+  const buildApprovalFormForRecordType = (draft: AiLeadDraft, nextType: AiDraftApprovalType) => {
+    const rebuilt = buildAiDraftApprovalForm({ ...draft, type: nextType });
+    setApprovalForm((current) => ({
+      ...rebuilt,
+      recordType: nextType,
+      leadId: current?.leadId || rebuilt.leadId,
+      caseId: current?.caseId || rebuilt.caseId,
+      clientId: current?.clientId || rebuilt.clientId,
+    }));
+  };
+
+  const handleApprovalRecordTypeChange = (draft: AiLeadDraft, nextType: AiDraftApprovalType) => {
+    buildApprovalFormForRecordType(draft, nextType);
+  };
+
   const buildConvertedActivityPayload = (draft: AiLeadDraft, form: AiDraftApprovalForm, createdRecord: Record<string, unknown>) => ({
     source: 'ai_draft_approval',
     draftId: draft.id,
@@ -201,7 +224,7 @@ export default function AiDrafts() {
       } else if (form.recordType === 'task') {
         createdRecord = await insertTaskToSupabase({
           title,
-          type: 'follow_up',
+          type: form.taskType || 'follow_up',
           date: form.scheduledAt ? form.scheduledAt.slice(0, 10) : undefined,
           scheduledAt: form.scheduledAt || undefined,
           dueAt: form.scheduledAt || undefined,
@@ -216,7 +239,7 @@ export default function AiDrafts() {
         const endAt = form.endAt || form.scheduledAt;
         createdRecord = await insertEventToSupabase({
           title,
-          type: 'meeting',
+          type: form.eventType || 'meeting',
           startAt,
           endAt,
           status: 'scheduled',
@@ -252,7 +275,7 @@ export default function AiDrafts() {
       closeDraftApproval();
       setActiveDraftId(null);
       await reloadDrafts();
-      toast.success(getAiDraftApprovalTypeLabel(form.recordType) + " utworzony ze szkicu AI");
+      toast.success(getAiDraftApprovalTypeLabel(form.recordType) + " przeniesiony ze szkicu AI");
     } catch (error: any) {
       toast.error('Nie udało się zatwierdzić szkicu: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
@@ -266,18 +289,28 @@ export default function AiDrafts() {
     const recordType = approvalForm.recordType;
 
     return (
-      <div className="mt-3 rounded-2xl border border-blue-100 bg-blue-50/50 p-4" data-ai-draft-approval-panel="true">
+      <div className="mt-3 rounded-2xl border border-blue-100 bg-blue-50/50 p-4" data-ai-draft-approval-panel="true" data-ai-draft-real-transfer-form="true">
         <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-bold text-slate-900">Zatwierdź szkic jako finalny rekord</p>
-            <p className="text-xs text-slate-600">Sprawdź pola. Finalny zapis powstaje dopiero po kliknięciu „Utwórz rekord”.</p>
+            <p className="text-xs text-slate-600">Wybierz, gdzie przenieść szkic. Formularz działa jak normalne dodawanie w aplikacji: po zatwierdzeniu rekord trafia do właściwego miejsca, a szkic przechodzi do zatwierdzonych.</p>
           </div>
-          <select className={approvalSelectClass} value={recordType} onChange={(event) => updateApprovalForm({ recordType: event.target.value as AiDraftApprovalType })} aria-label="Typ rekordu ze szkicu AI">
-            <option value="lead">Lead</option>
-            <option value="task">Zadanie</option>
-            <option value="event">Wydarzenie</option>
-            <option value="note">Notatka</option>
-          </select>
+                    <div className="grid gap-2 sm:grid-cols-4" data-ai-draft-transfer-target-selector="true">
+            {approvalTypeOptions.map((option) => {
+              const active = recordType === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={`rounded-2xl border px-3 py-2 text-left transition ${active ? 'border-blue-500 bg-blue-600 text-white shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50'}`}
+                  onClick={() => handleApprovalRecordTypeChange(draft, option.value)}
+                >
+                  <span className="block text-sm font-bold">{option.label}</span>
+                  <span className={`mt-0.5 block text-[11px] ${active ? 'text-blue-50' : 'text-slate-500'}`}>{option.helper}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {recordType === 'lead' ? (
@@ -286,7 +319,7 @@ export default function AiDrafts() {
             <label className="space-y-1 text-xs font-semibold text-slate-600">Firma<Input className={approvalInputClass} value={approvalForm.company} onChange={(event) => updateApprovalForm({ company: event.target.value })} /></label>
             <label className="space-y-1 text-xs font-semibold text-slate-600">E-mail<Input className={approvalInputClass} value={approvalForm.email} onChange={(event) => updateApprovalForm({ email: event.target.value })} /></label>
             <label className="space-y-1 text-xs font-semibold text-slate-600">Telefon<Input className={approvalInputClass} value={approvalForm.phone} onChange={(event) => updateApprovalForm({ phone: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Źródło<Input className={approvalInputClass} value={approvalForm.source} onChange={(event) => updateApprovalForm({ source: event.target.value })} /></label>
+            <label className="space-y-1 text-xs font-semibold text-slate-600">Źródło<select className={approvalSelectClass} value={approvalForm.source} onChange={(event) => updateApprovalForm({ source: event.target.value })}>{SOURCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
             <label className="space-y-1 text-xs font-semibold text-slate-600">Wartość<Input className={approvalInputClass} value={approvalForm.dealValue} onChange={(event) => updateApprovalForm({ dealValue: event.target.value })} /></label>
             <label className="space-y-1 text-xs font-semibold text-slate-600 md:col-span-2">Następny ruch<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
           </div>
@@ -295,14 +328,16 @@ export default function AiDrafts() {
         {recordType === 'task' ? (
           <div className="grid gap-3 md:grid-cols-2">
             <label className="space-y-1 text-xs font-semibold text-slate-600 md:col-span-2">Tytuł zadania<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
+            <label className="space-y-1 text-xs font-semibold text-slate-600">Typ zadania<select className={approvalSelectClass} value={approvalForm.taskType} onChange={(event) => updateApprovalForm({ taskType: event.target.value })}>{TASK_TYPES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
             <label className="space-y-1 text-xs font-semibold text-slate-600">Termin<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Priorytet<select className={approvalSelectClass} value={approvalForm.priority} onChange={(event) => updateApprovalForm({ priority: event.target.value })}><option value="low">Niski</option><option value="medium">Średni</option><option value="high">Wysoki</option></select></label>
+            <label className="space-y-1 text-xs font-semibold text-slate-600">Priorytet<select className={approvalSelectClass} value={approvalForm.priority} onChange={(event) => updateApprovalForm({ priority: event.target.value })}>{PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
           </div>
         ) : null}
 
         {recordType === 'event' ? (
           <div className="grid gap-3 md:grid-cols-2">
             <label className="space-y-1 text-xs font-semibold text-slate-600 md:col-span-2">Tytuł wydarzenia<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
+            <label className="space-y-1 text-xs font-semibold text-slate-600">Typ wydarzenia<select className={approvalSelectClass} value={approvalForm.eventType} onChange={(event) => updateApprovalForm({ eventType: event.target.value })}>{EVENT_TYPES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
             <label className="space-y-1 text-xs font-semibold text-slate-600">Start<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
             <label className="space-y-1 text-xs font-semibold text-slate-600">Koniec<Input type="datetime-local" className={approvalInputClass} value={approvalForm.endAt} onChange={(event) => updateApprovalForm({ endAt: event.target.value })} /></label>
           </div>
@@ -324,8 +359,8 @@ export default function AiDrafts() {
         ) : null}
 
         <div className="mt-4 flex flex-wrap gap-2">
-          <Button type="button" size="sm" onClick={() => void handleApproveDraftToRecord(draft)} disabled={approvalSaving} data-ai-draft-approve-final-record="true">
-            <CheckCircle2 className="mr-2 h-4 w-4" />{approvalSaving ? 'Tworzę...' : 'Utwórz rekord'}
+          <Button type="button" size="sm" onClick={() => void handleApproveDraftToRecord(draft)} disabled={approvalSaving} data-ai-draft-approve-final-record="true" data-ai-draft-real-record-create="true">
+            <CheckCircle2 className="mr-2 h-4 w-4" />{approvalSaving ? 'Przenoszę...' : 'Przenieś do aplikacji'}
           </Button>
           <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>Anuluj zatwierdzanie</Button>
         </div>

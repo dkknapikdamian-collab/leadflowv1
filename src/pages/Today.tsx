@@ -1,4 +1,9 @@
 /*
+TODAY_FUNNEL_DEDUP_VALUE_STAGE11
+Lejek w Dziś liczy wartość z leadów i klientów bez podwójnego sumowania tej samej osoby.
+*/
+
+/*
 AI_DRAFTS_IN_TODAY_STAGE04
 Szkice AI w Dziś są tylko do przeglądu i przejścia do centrum szkiców.
 Finalny zapis rekordu nie dzieje się z poziomu Dziś.
@@ -804,6 +809,207 @@ function todayPipelineLeadAmount(lead: any) {
   }
 
   return 0;
+}
+
+
+function todayPipelinePickFirstText(record: any, keys: string[]) {
+  for (const key of keys) {
+    const value = record?.[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+    if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  }
+  return '';
+}
+
+function todayPipelineNormalizeIdentityText(value: unknown) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9@.+-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function todayPipelineDigitsOnly(value: unknown) {
+  return String(value || '').replace(/\D/g, '');
+}
+
+function todayPipelineClientAmount(client: any) {
+  const candidates = [
+    client?.dealValue,
+    client?.value,
+    client?.amount,
+    client?.estimatedValue,
+    client?.estimated_value,
+    client?.deal_value,
+    client?.budget,
+    client?.price,
+    client?.totalValue,
+    client?.total_value,
+    client?.pipelineValue,
+    client?.pipeline_value,
+    client?.lifetimeValue,
+    client?.lifetime_value,
+  ];
+
+  for (const candidate of candidates) {
+    const amount = todayPipelineNormalizeAmount(candidate);
+    if (amount > 0) return amount;
+  }
+
+  return 0;
+}
+
+function todayPipelineClientName(client: any) {
+  return String(client?.name || client?.company || client?.title || client?.clientName || 'Klient bez nazwy');
+}
+
+function todayPipelineBuildPersonKey(record: any, kind: 'lead' | 'client', fallbackIndex: number) {
+  const clientId = todayPipelinePickFirstText(record, [
+    'clientId',
+    'client_id',
+    'customerId',
+    'customer_id',
+    'linkedClientId',
+    'linked_client_id',
+    'convertedClientId',
+    'converted_client_id',
+  ]);
+
+  if (clientId) return 'client:' + clientId;
+
+  if (kind === 'client') {
+    const ownClientId = todayPipelinePickFirstText(record, ['id', 'uid', 'clientUid']);
+    if (ownClientId) return 'client:' + ownClientId;
+  }
+
+  const sourceLeadId = todayPipelinePickFirstText(record, [
+    'leadId',
+    'lead_id',
+    'sourceLeadId',
+    'source_lead_id',
+    'createdFromLeadId',
+    'created_from_lead_id',
+    'originLeadId',
+    'origin_lead_id',
+  ]);
+
+  if (sourceLeadId) return 'lead:' + sourceLeadId;
+
+  const email = todayPipelineNormalizeIdentityText(todayPipelinePickFirstText(record, ['email', 'clientEmail', 'contactEmail']));
+  if (email) return 'email:' + email;
+
+  const phone = todayPipelineDigitsOnly(todayPipelinePickFirstText(record, ['phone', 'clientPhone', 'contactPhone', 'mobile']));
+  if (phone.length >= 6) return 'phone:' + phone;
+
+  const name = todayPipelineNormalizeIdentityText(todayPipelinePickFirstText(record, ['name', 'clientName', 'company', 'title']));
+  if (name) return 'name:' + name;
+
+  const id = todayPipelinePickFirstText(record, ['id', 'uid']);
+  return kind + ':' + (id || String(fallbackIndex));
+}
+
+type TodayPipelineDedupRow = {
+  key: string;
+  id: string;
+  kind: 'lead' | 'client';
+  title: string;
+  amount: number;
+  lead?: any;
+  client?: any;
+};
+
+function buildTodayDedupedFunnelSummary(leads: any[], clients: any[]) {
+  const rowsByKey = new Map<string, TodayPipelineDedupRow>();
+
+  clients.forEach((client, index) => {
+    const key = todayPipelineBuildPersonKey(client, 'client', index);
+    const amount = todayPipelineClientAmount(client);
+    const id = String(client?.id || key);
+    rowsByKey.set(key, {
+      key,
+      id,
+      kind: 'client',
+      title: todayPipelineClientName(client),
+      amount,
+      client,
+    });
+  });
+
+  leads.filter(todayPipelineIsActiveLead).forEach((lead, index) => {
+    const key = todayPipelineBuildPersonKey(lead, 'lead', index);
+    const amount = todayPipelineLeadAmount(lead);
+    const existing = rowsByKey.get(key);
+
+    if (existing) {
+      rowsByKey.set(key, {
+        ...existing,
+        amount: Math.max(existing.amount, amount),
+        lead,
+        title: existing.title || todayPipelineLeadName(lead),
+      });
+      return;
+    }
+
+    rowsByKey.set(key, {
+      key,
+      id: String(lead?.id || key),
+      kind: 'lead',
+      title: todayPipelineLeadName(lead),
+      amount,
+      lead,
+    });
+  });
+
+  const rows = Array.from(rowsByKey.values()).filter((row) => row.amount > 0);
+  const totalValue = rows.reduce((sum, row) => sum + row.amount, 0);
+  const clientRows = rows.filter((row) => row.kind === 'client').length;
+  const leadRows = rows.filter((row) => row.kind === 'lead').length;
+
+  return {
+    rows,
+    totalValue,
+    uniqueCount: rows.length,
+    clientRows,
+    leadRows,
+  };
+}
+
+function TodayFunnelDedupValueCard({ leads, clients }: { leads: any[]; clients: any[] }) {
+  const summary = buildTodayDedupedFunnelSummary(leads, clients);
+
+  return (
+    <Card data-today-funnel-dedup-stage11="true" className="border-slate-100 bg-white shadow-sm">
+      <CardContent className="p-4 sm:p-5">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Lejek</p>
+            <p className="mt-1 text-2xl font-black tracking-tight text-slate-950">
+              {todayPipelineFormatMoney(summary.totalValue)}
+            </p>
+            <p className="mt-1 text-sm text-slate-500">
+              Wartość z leadów i klientów bez podwójnego liczenia osoby, która przeszła z leada do klienta.
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-2 text-center sm:min-w-[320px]">
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
+              <p className="text-lg font-black text-slate-950">{summary.uniqueCount}</p>
+              <p className="text-[11px] font-semibold text-slate-500">kontaktów</p>
+            </div>
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
+              <p className="text-lg font-black text-slate-950">{summary.leadRows}</p>
+              <p className="text-[11px] font-semibold text-slate-500">leadów</p>
+            </div>
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
+              <p className="text-lg font-black text-slate-950">{summary.clientRows}</p>
+              <p className="text-[11px] font-semibold text-slate-500">klientów</p>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
 
 function todayPipelineFormatMoney(value: number) {
@@ -1916,6 +2122,7 @@ export default function Today() {
   return (
     <Layout>
       <div className="p-4 md:p-8 max-w-7xl mx-auto w-full space-y-8">
+        <TodayFunnelDedupValueCard leads={leads} clients={clients} />
                 <header className="space-y-2">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900">Witaj, Damian!</h1>
@@ -2354,7 +2561,7 @@ export default function Today() {
 
             {riskyValuableLeads.length > 0 && (
               <section className="space-y-4">
-                <h2 className="text-lg font-bold text-slate-900">Najcenniejsze zagrożone</h2>
+                <h2 className="text-lg font-bold text-slate-900"> zagrożone</h2>
                 <div className="space-y-3">
                   {riskyValuableLeads.map((lead) => (
                     <LeadLinkCard
@@ -2412,7 +2619,7 @@ export default function Today() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-lg font-bold text-slate-900">Najcenniejsze</h2>
+              <h2 className="text-lg font-bold text-slate-900"></h2>
               <div className="space-y-3">
                 {topValuableLeads.map((lead) => (
                   <LeadLinkCard
