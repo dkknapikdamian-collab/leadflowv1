@@ -43,7 +43,18 @@ assertContains(leads, 'updateLeadInSupabase', 'update Supabase kept');
 assertContains(leads, 'leadSearchSuggestions', 'search suggestions kept');
 assertContains(leads, 'setIsNewLeadOpen', 'new lead dialog kept');
 
+// Guard against the exact Stage25 v1 bug:
+// the replacement must start at the main component return, not at nested map() return.
+const leadText = read(leads);
+const mainReturnNeedle = '\n  return (\n    <Layout>\n      <div className="cf-html-view main-leads-html"';
+assertContains(leads, mainReturnNeedle.trimStart(), 'main component Stage25 return');
+if ((leadText.match(/data-visual-stage25-leads-full-jsx="true"/g) || []).length !== 1) {
+  throw new Error('src/pages/Leads.tsx must contain exactly one Stage25 root marker');
+}
+console.log('OK: src/pages/Leads.tsx contains exactly one Stage25 root marker');
+
 assertContains(index, "visual-stage25-leads-full-jsx-html-rebuild.css", 'Stage25 CSS import');
+assertNotContains(index, "visual-stage18-leads-hard-1to1.css", 'old Stage18 Leads import');
 assertNotContains(index, "visual-stage22-leads-final-lock.css", 'old Stage22 Leads import');
 assertNotContains(index, "visual-stage23-leads-html-parity-fix.css", 'old Stage23 Leads import');
 assertNotContains(index, "visual-stage24-leads-html-dom-parity-hardfix.css", 'old Stage24 Leads import');
@@ -67,4 +78,4 @@ for (const file of [leads, index, css, docs]) {
     }
   }
 }
-console.log('OK: Visual Stage25 Leads full JSX HTML rebuild guard passed.');
+console.log('OK: Visual Stage25 Leads full JSX HTML rebuild guard v2 passed.');
