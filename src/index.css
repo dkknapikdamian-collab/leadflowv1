@@ -5,6 +5,7 @@
 @import './styles/visual-stage27-cases-vnext.css';
 @import './styles/visual-stage26-leads-visual-alignment-fix.css';
 @import './styles/visual-stage25-leads-full-jsx-html-rebuild.css';
+@import './styles/visual-stage13-case-detail-vnext.css';
 @import './styles/visual-stage21-today-final-lock.css';
 @import './styles/visual-stage20-tasks-safe-css.css';
 @import './styles/visual-stage19-clients-safe-css.css';
@@ -14,7 +15,6 @@
 @import "./styles/case-detail-simplified.css";
 @import "./styles/case-detail-stage2.css";
 @import "./styles/visual-stage3-pipeline-and-case.css";
-@import "./styles/closeflow-case-detail-focus.css";
 @import "./styles/visual-stage08-case-detail.css";
 @import "./styles/visual-stage07-cases.css";
 @import "./styles/visual-stage06-client-detail.css";
@@ -245,6 +245,5 @@ Do not hide real alerts with text, link or button.
 }
 @import "./styles/visual-html-theme-v14.css";
 @import "./styles/closeflow-vnext-ui-contract.css";
-
 
 

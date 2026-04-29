@@ -70,7 +70,8 @@ import {
 } from '../lib/supabase-fallback';
 import { getEventMainDate, getEventStartAt, getTaskMainDate } from '../lib/scheduling';
 import { resolveCaseLifecycleV1, type CaseLifecycleResultV1 } from '../lib/case-lifecycle-v1';
-import '../styles/closeflow-case-detail-focus.css';
+
+// CASE_DETAIL_VISUAL_REBUILD_STAGE13
 
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
 
@@ -1347,6 +1348,7 @@ export default function CaseDetail() {
   const isCompleted = caseData.status === 'completed';
   const hasBlockers = caseStats.requiredBlockers.length > 0 || caseStats.rejected.length > 0;
   const lastNote = activities.find((activity) => activity.eventType === 'operator_note')?.payload?.note;
+  const sourceLabel = caseData.leadId || caseData.createdFromLead ? 'Lead' : null;
 
   return (
     <Layout>
@@ -1362,7 +1364,7 @@ export default function CaseDetail() {
                 <div className="cf-breadcrumbs">
                   <span>Sprawy</span>
                   <ChevronRight className="w-3.5 h-3.5" />
-                  <span className="cf-breadcrumb-current">Obsługa sprawy</span>
+                  <span className="cf-breadcrumb-current">{caseData.title || 'Sprawa'}</span>
                 </div>
                 <h1>{caseData.title || 'Sprawa bez tytułu'}</h1>
                 <div className="cf-case-meta">
@@ -1371,15 +1373,18 @@ export default function CaseDetail() {
                   </Badge>
                   <span>Klient: {caseData.clientName || 'Brak danych'}</span>
                   <span>Ostatnia zmiana: {formatDateTime(caseData.updatedAt || caseData.lastActivityAt, 'Brak danych')}</span>
+                  {sourceLabel && <span>Źródło: {sourceLabel}</span>}
                 </div>
               </div>
             </div>
 
             <div className="cf-case-header-actions">
-              <Button variant="outline" size="sm" className="gap-2" onClick={generatePortalLink}>
-                <Copy className="w-4 h-4" />
-                Kopiuj portal
-              </Button>
+              {caseData.portalReady && (
+                <Button variant="outline" size="sm" className="gap-2" onClick={generatePortalLink}>
+                  <Copy className="w-4 h-4" />
+                  Kopiuj portal
+                </Button>
+              )}
               <Dialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen}>
                 <DialogTrigger asChild>
                   <Button size="sm" className="gap-2">
@@ -1449,6 +1454,14 @@ export default function CaseDetail() {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+              <Button variant="outline" size="sm" className="gap-2" onClick={() => setIsAddTaskOpen(true)}>
+                <Plus className="w-4 h-4" />
+                Dodaj zadanie
+              </Button>
+              <Button variant="outline" size="sm" className="gap-2" onClick={() => setIsAddEventOpen(true)}>
+                <Plus className="w-4 h-4" />
+                Dodaj wydarzenie
+              </Button>
             </div>
           </div>
         </header>
@@ -2132,13 +2145,15 @@ export default function CaseDetail() {
                     </DialogContent>
                   </Dialog>
 
-                  <Button variant="outline" className="cf-wide-action" onClick={generatePortalLink}>
-                    <Copy className="w-4 h-4" />
-                    <span>
-                      <strong>Kopiuj portal</strong>
-                      <small>Link dla klienta</small>
-                    </span>
-                  </Button>
+                  {caseData.portalReady && (
+                    <Button variant="outline" className="cf-wide-action" onClick={generatePortalLink}>
+                      <Copy className="w-4 h-4" />
+                      <span>
+                        <strong>Kopiuj portal</strong>
+                        <small>Link dla klienta</small>
+                      </span>
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
 
@@ -2189,13 +2204,22 @@ export default function CaseDetail() {
                     <span>Powiązany lead</span>
                     <strong>{caseData.leadId ? 'Tak' : 'Nie'}</strong>
                   </div>
-                  {caseData.leadId && (
-                    <Button variant="outline" className="w-full" asChild>
-                      <Link to={`/leads/${caseData.leadId}`}>
-                        Otwórz lead <ExternalLink className="w-4 h-4 ml-2" />
-                      </Link>
-                    </Button>
-                  )}
+                  <div className="grid gap-2 pt-2">
+                    {caseData.clientId && (
+                      <Button variant="outline" className="w-full" asChild>
+                        <Link to={`/clients/${caseData.clientId}`}>
+                          Otwórz klienta <ExternalLink className="w-4 h-4 ml-2" />
+                        </Link>
+                      </Button>
+                    )}
+                    {caseData.leadId && (
+                      <Button variant="outline" className="w-full" asChild>
+                        <Link to={`/leads/${caseData.leadId}`}>
+                          Otwórz lead <ExternalLink className="w-4 h-4 ml-2" />
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 

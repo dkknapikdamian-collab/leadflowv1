@@ -1,0 +1,76 @@
+/* CASE_DETAIL_VISUAL_REBUILD_STAGE13 */
+
+@import './closeflow-case-detail-focus.css';
+
+:root {
+  --cf-vnext-border: #e4e7ec;
+  --cf-vnext-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  --cf-vnext-soft-blue: rgba(37, 99, 235, 0.12);
+}
+
+/* Zero dark wrappers: rails (not cards) */
+.cf-case-right,
+.cf-case-left {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Re-apply "card" look only where intended */
+.cf-command-card,
+.cf-panel-card,
+.cf-side-card,
+.cf-sub-card {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid var(--cf-vnext-border) !important;
+  border-radius: 28px !important;
+  box-shadow: var(--cf-vnext-shadow) !important;
+}
+
+/* Previously this used a dark gradient; keep it light. */
+.cf-command-card-primary {
+  color: #111827 !important;
+  border-color: var(--cf-vnext-border) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+.cf-command-card-primary .cf-command-eyebrow,
+.cf-command-card-primary h2,
+.cf-command-card-primary p {
+  color: inherit !important;
+}
+
+/* Tabs: active soft blue, inactive white, border #e4e7ec */
+.cf-tabs-list {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid var(--cf-vnext-border) !important;
+  box-shadow: var(--cf-vnext-shadow) !important;
+}
+
+.cf-tabs-list button {
+  background: #ffffff !important;
+  border: 1px solid transparent !important;
+}
+
+.cf-tabs-list button[data-state='active'] {
+  background: var(--cf-vnext-soft-blue) !important;
+  border-color: rgba(37, 99, 235, 0.22) !important;
+  box-shadow: none !important;
+}
+
+/* Small actions should stay light */
+.cf-mini-action,
+.cf-wide-action {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid var(--cf-vnext-border) !important;
+  box-shadow: var(--cf-vnext-shadow) !important;
+}
+
+/* Guardrails: no hardcoded dark backgrounds in vnext rail/card rules */
+.cf-case-right::before,
+.cf-case-right::after {
+  content: none !important;
+  display: none !important;
+}
