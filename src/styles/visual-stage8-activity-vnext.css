@@ -1,4 +1,4 @@
-.activity-vnext-page {
+﻿.activity-vnext-page {
   min-height: 100%;
   padding: 28px clamp(16px, 3vw, 36px) 40px;
   background:
@@ -740,3 +740,93 @@
     line-height: 1.35;
   }
 }
+
+/* STAGE8A_ACTIVITY_RIGHT_RAIL_LIGHT_HOTFIX_START */
+/*
+  Hotfix scope: Activity right rail only.
+  Wrapper stays transparent. Cards stay white. No dark backgrounds, gradients or pseudo-elements.
+*/
+.activity-vnext-page .activity-right-rail {
+  position: relative;
+  isolation: isolate;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  padding: 0 !important;
+}
+
+.activity-vnext-page .activity-right-rail::before,
+.activity-vnext-page .activity-right-rail::after,
+.activity-vnext-page .activity-right-rail .right-card::before,
+.activity-vnext-page .activity-right-rail .right-card::after,
+.activity-vnext-page .activity-right-rail .activity-right-card::before,
+.activity-vnext-page .activity-right-rail .activity-right-card::after {
+  content: none !important;
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.activity-vnext-page .activity-right-rail > .right-card.activity-right-card,
+.activity-vnext-page .activity-right-rail > .activity-right-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  color: #111827 !important;
+}
+
+.activity-vnext-page .activity-right-rail .activity-right-card-head,
+.activity-vnext-page .activity-right-rail .activity-rail-list,
+.activity-vnext-page .activity-right-rail .activity-rail-empty {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.activity-vnext-page .activity-right-rail .activity-rail-button {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid #e4e7ec !important;
+  box-shadow: none !important;
+  color: #475467 !important;
+}
+
+.activity-vnext-page .activity-right-rail .activity-rail-button:hover {
+  background: #eff6ff !important;
+  background-color: #eff6ff !important;
+  background-image: none !important;
+  border-color: #bfdbfe !important;
+  color: #1d4ed8 !important;
+}
+
+.activity-vnext-page .activity-right-rail .activity-rail-item {
+  background: #f9fafb !important;
+  background-color: #f9fafb !important;
+  background-image: none !important;
+  border: 1px solid #eef2f6 !important;
+  box-shadow: none !important;
+  color: #111827 !important;
+}
+/* STAGE8A_ACTIVITY_RIGHT_RAIL_LIGHT_HOTFIX_END */
+
