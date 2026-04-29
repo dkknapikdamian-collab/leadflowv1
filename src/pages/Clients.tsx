@@ -1,12 +1,10 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2, Mail, Phone, Plus, RotateCcw, Search, Trash2, UserRound } from 'lucide-react';
+import { Loader2, Plus, RotateCcw, Search, Trash2, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -55,7 +53,7 @@ export default function Clients() {
       setCases(caseRows as any[]);
       setPayments(paymentRows as any[]);
     } catch (error: any) {
-      toast.error(`BÅ‚Ä…d odczytu klientÃ³w: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`B³¹d odczytu klientów: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLoading(false);
     }
@@ -107,14 +105,43 @@ export default function Clients() {
     return map;
   }, [cases, leads, payments]);
 
+  const clientsWithCases = useMemo(
+    () => clients.filter((client) => !client.archivedAt && (countersByClientId.get(client.id)?.cases || 0) > 0).length,
+    [clients, countersByClientId],
+  );
+  const clientsWithoutCases = useMemo(
+    () => clients.filter((client) => !client.archivedAt && (countersByClientId.get(client.id)?.cases || 0) === 0).length,
+    [clients, countersByClientId],
+  );
+  const relationValue = useMemo(
+    () => clients.filter((client) => !client.archivedAt).reduce((sum, client) => sum + Number(countersByClientId.get(client.id)?.payments || 0), 0),
+    [clients, countersByClientId],
+  );
+  const staleClients = useMemo(
+    () => clients.filter((client) => !client.archivedAt && (countersByClientId.get(client.id)?.leads || 0) === 0).length,
+    [clients, countersByClientId],
+  );
+
+  const followupCandidates = useMemo(
+    () =>
+      clients
+        .filter((client) => {
+          if (client.archivedAt) return false;
+          const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
+          return counters.cases === 0 || counters.leads === 0;
+        })
+        .slice(0, 5),
+    [clients, countersByClientId],
+  );
+
   const handleCreateClient = async (event: FormEvent) => {
     event.preventDefault();
     if (!hasAccess) {
-      toast.error('TwÃ³j trial wygasÅ‚.');
+      toast.error('Twój trial wygas³.');
       return;
     }
     if (!newClient.name.trim()) {
-      toast.error('Podaj nazwÄ™ klienta.');
+      toast.error('Podaj nazwê klienta.');
       return;
     }
     if (!workspace?.id) {
@@ -137,7 +164,7 @@ export default function Clients() {
       setNewClient({ name: '', company: '', email: '', phone: '' });
       await reload();
     } catch (error: any) {
-      toast.error(`BÅ‚Ä…d zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`B³¹d zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setCreatePending(false);
     }
@@ -152,16 +179,16 @@ export default function Clients() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('TwÃ³j trial wygasÅ‚.');
+      toast.error('Twój trial wygas³.');
       return;
     }
 
     const relationCount = counters.leads + counters.cases + counters.payments;
     const relationText = relationCount > 0
-      ? '\n\nTen klient ma powiÄ…zania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Rekord zniknie z aktywnej listy, ale dane nie zostanÄ… trwale skasowane.'
-      : '\n\nRekord zniknie z aktywnej listy, ale bÄ™dzie moÅ¼na go przywrÃ³ciÄ‡ z kosza.';
+      ? '\n\nTen klient ma powi¹zania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Rekord zniknie z aktywnej listy, ale dane nie zostan¹ trwale skasowane.'
+      : '\n\nRekord zniknie z aktywnej listy, ale bêdzie mo¿na go przywróciæ z kosza.';
 
-    if (!window.confirm('PrzenieÅ›Ä‡ klienta do kosza: ' + (client.name || 'Klient') + '?' + relationText)) return;
+    if (!window.confirm('Przenieœæ klienta do kosza: ' + (client.name || 'Klient') + '?' + relationText)) return;
 
     try {
       setArchivePendingId(client.id);
@@ -169,7 +196,7 @@ export default function Clients() {
       toast.success('Klient przeniesiony do kosza');
       await reload();
     } catch (error: any) {
-      toast.error('BÅ‚Ä…d przenoszenia klienta do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('B³¹d przenoszenia klienta do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -180,19 +207,19 @@ export default function Clients() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('TwÃ³j trial wygasÅ‚.');
+      toast.error('Twój trial wygas³.');
       return;
     }
 
-    if (!window.confirm('PrzywrÃ³ciÄ‡ klienta do aktywnej listy: ' + (client.name || 'Klient') + '?')) return;
+    if (!window.confirm('Przywróciæ klienta do aktywnej listy: ' + (client.name || 'Klient') + '?')) return;
 
     try {
       setArchivePendingId(client.id);
       await updateClientInSupabase({ id: client.id, archivedAt: null });
-      toast.success('Klient przywrÃ³cony');
+      toast.success('Klient przywrócony');
       await reload();
     } catch (error: any) {
-      toast.error('BÅ‚Ä…d przywracania klienta: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('B³¹d przywracania klienta: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -200,27 +227,23 @@ export default function Clients() {
 
   return (
     <Layout>
-      <div className="p-4 md:p-8 max-w-6xl mx-auto w-full space-y-6">
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="cf-html-view main-clients-html" data-clients-real-view="true">
+        <div className="page-head">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Klienci</h1>
+            <span className="kicker">Baza relacji</span>
+            <h1>Klienci</h1>
+            <p className="lead-copy">Lista klientów nie powinna dublowaæ pracy ze spraw. To kartoteka osób i szybkie przejœcie do aktywnej sprawy.</p>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              className="rounded-xl"
-              onClick={() => setShowArchived((current) => !current)}
-            >
-              {showArchived ? <RotateCcw className="w-4 h-4 mr-2" /> : <Trash2 className="w-4 h-4 mr-2" />}
-              {showArchived ? 'PokaÅ¼ aktywnych' : 'Kosz'}
-              <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
-                {showArchived ? activeCount : archivedCount}
-              </span>
+          <div className="head-actions">
+            <Button type="button" variant="outline" className="btn soft-blue">? Zapytaj AI</Button>
+            <Button type="button" variant="outline" className="btn" onClick={() => setShowArchived((current) => !current)}>
+              {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
+              {showArchived ? 'Poka¿ aktywnych' : 'Kosz'}
+              <span className="pill">{showArchived ? activeCount : archivedCount}</span>
             </Button>
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl" disabled={!workspace?.id}><Plus className="w-4 h-4 mr-2" /> Dodaj klienta</Button>
+                <Button className="btn primary" disabled={!workspace?.id}><Plus className="w-4 h-4" /> Dodaj klienta</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
                 <DialogHeader><DialogTitle>Nowy klient</DialogTitle></DialogHeader>
@@ -231,76 +254,105 @@ export default function Clients() {
                     <div className="space-y-1"><Label>E-mail</Label><Input type="email" value={newClient.email} onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))} /></div>
                     <div className="space-y-1"><Label>Telefon</Label><Input value={newClient.phone} onChange={(event) => setNewClient((prev) => ({ ...prev, phone: event.target.value }))} /></div>
                   </div>
-                  <DialogFooter><Button type="submit" disabled={createPending}>{createPending ? 'Zapisywanie...' : 'UtwÃ³rz klienta'}</Button></DialogFooter>
+                  <DialogFooter><Button type="submit" disabled={createPending}>{createPending ? 'Zapisywanie...' : 'Utwórz klienta'}</Button></DialogFooter>
                 </form>
               </DialogContent>
             </Dialog>
           </div>
-        </header>
-
-        <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <Input className="pl-9" placeholder={showArchived ? 'Szukaj w koszu klientÃ³w...' : 'Szukaj klienta...'} value={search} onChange={(event) => setSearch(event.target.value)} />
         </div>
 
-        {/* STAGE30_CLIENTS_TRASH_COPY_REMOVED: kosz klientÃ³w bez zbÄ™dnego opisu. */}
+        <div className="grid-4">
+          <button type="button" className={`metric ${!showArchived ? 'active' : ''}`} onClick={() => setShowArchived(false)}>
+            <div><label>Aktywni</label><strong>{activeCount}</strong><div className="hint">z otwart¹ spraw¹</div></div>
+          </button>
+          <button type="button" className="metric">
+            <div><label>Bez sprawy</label><strong>{clientsWithoutCases}</strong><div className="hint">tylko kontakt</div></div>
+          </button>
+          <button type="button" className="metric">
+            <div><label>Wartoœæ</label><strong>{relationValue.toLocaleString()} PLN</strong><div className="hint">w relacjach</div></div>
+          </button>
+          <button type="button" className="metric">
+            <div><label>Bez ruchu</label><strong>{staleClients}</strong><div className="hint">do sprawdzenia</div></div>
+          </button>
+        </div>
 
-{loading ? (
-          <Card><CardContent className="p-8 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-slate-400" /></CardContent></Card>
-        ) : filtered.length === 0 ? (
-          <Card><CardContent className="p-8 text-center text-slate-500">{showArchived ? 'Kosz klientÃ³w jest pusty.' : 'Brak klientÃ³w do wyÅ›wietlenia.'}</CardContent></Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filtered.map((client) => {
-              const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
-              const isArchived = Boolean(client.archivedAt);
-              return (
-                <div key={client.id} className="relative group/client-card">
-                  <Link to={`/clients/${client.id}`} className="block">
-                    <Card className="hover:shadow-md transition-shadow">
-                      <CardContent className="p-4 pr-12 space-y-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <p className="font-semibold text-slate-900 truncate">{client.name || 'Klient'}</p>
-                            {isArchived ? <Badge variant="outline" className="border-amber-200 text-amber-700">W koszu</Badge> : null}
-                          </div>
-                          <p className="text-sm text-slate-500 truncate">{client.company || 'Bez firmy'}</p>
-                        </div>
-                        <UserRound className="w-4 h-4 text-slate-400 shrink-0" />
-                      </div>
-                      <div className="space-y-1 text-sm text-slate-600">
-                        <p className="flex items-center gap-2 truncate"><Mail className="w-3.5 h-3.5" /> {client.email || 'Brak e-maila'}</p>
-                        <p className="flex items-center gap-2 truncate"><Phone className="w-3.5 h-3.5" /> {client.phone || 'Brak telefonu'}</p>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline">Leady: {counters.leads}</Badge>
-                        <Badge variant="outline">Sprawy: {counters.cases}</Badge>
-                        <Badge variant="outline">Rozliczenia: {counters.payments}</Badge>
-                      </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                  <button
-                    type="button"
-                    aria-label={isArchived ? 'PrzywrÃ³Ä‡ klienta' : 'PrzenieÅ› klienta do kosza'}
-                    title={isArchived ? 'PrzywrÃ³Ä‡ klienta' : 'PrzenieÅ› klienta do kosza'}
-                    disabled={archivePendingId === client.id}
-                    onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
-                    className={[
-                      'absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border transition disabled:cursor-not-allowed disabled:opacity-60',
-                      isArchived
-                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-500 hover:text-white'
-                        : 'border-rose-200 bg-rose-950/20 text-rose-300 hover:bg-rose-500 hover:text-white',
-                    ].join(' ')}
-                  >
-                    {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-                  </button>
-                </div>
-              );
-            })}
+        <div className="layout-list">
+          <div className="stack">
+            <div className="search">
+              <span aria-hidden="true"><Search className="w-4 h-4" /></span>
+              <Input placeholder={showArchived ? 'Szukaj w koszu klientów...' : 'Szukaj klienta, telefonu, maila, firmy albo sprawy...'} value={search} onChange={(event) => setSearch(event.target.value)} />
+            </div>
+
+            {loading ? (
+              <div className="table-card"><div className="row row-empty"><span className="index"><Loader2 className="w-4 h-4 animate-spin" /></span><span><span className="title">£adowanie klientów</span><span className="sub">Pobieram dane z aplikacji.</span></span></div></div>
+            ) : filtered.length === 0 ? (
+              <div className="table-card"><div className="row row-empty"><span className="index">0</span><span><span className="title">{showArchived ? 'Kosz klientów jest pusty.' : 'Brak klientów do wyœwietlenia.'}</span></span></div></div>
+            ) : (
+              <div className="table-card">
+                {filtered.map((client, index) => {
+                  const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
+                  const isArchived = Boolean(client.archivedAt);
+                  return (
+                    <div key={client.id} className="row client-row">
+                      <span className="index">{index + 1}</span>
+                      <span className="lead-main-cell min-w-0">
+                        <Link to={`/clients/${client.id}`} className="title">{client.name || 'Klient'}</Link>
+                        <span className="sub">{client.company || 'Bez firmy'} • {client.email || 'brak e-maila'} • {client.phone || 'brak telefonu'}</span>
+                        <span className="statusline">
+                          {isArchived ? <span className="pill amber">W koszu</span> : <span className="pill green">Aktywna sprawa</span>}
+                          <span className="pill blue">Leady: {counters.leads}</span>
+                          <span className="pill">Ostatni kontakt: {counters.payments > 0 ? 'jest' : 'brak'}</span>
+                        </span>
+                      </span>
+                      <span className="lead-value-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
+                      <span className="lead-action-cell"><span className="mini">Nastêpny ruch</span><strong>{counters.cases > 0 ? 'W obs³udze' : 'Jutro'}</strong></span>
+                      <span className="lead-actions">
+                        <Link to={`/clients/${client.id}`} className="btn ghost" aria-label={`Otwórz klienta ${client.name || ''}`}><UserRound className="h-4 w-4" /></Link>
+                        <button
+                          type="button"
+                          aria-label={isArchived ? 'Przywróæ klienta' : 'Przenieœ klienta do kosza'}
+                          title={isArchived ? 'Przywróæ klienta' : 'Przenieœ klienta do kosza'}
+                          disabled={archivePendingId === client.id}
+                          onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
+                          className="btn ghost"
+                        >
+                          {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                        </button>
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        )}
+
+          <div className="clients-right-rail">
+            <aside className="right-card">
+              <div className="panel-head"><div><h3>Filtry proste</h3><p>Bez przesady, tylko najpotrzebniejsze.</p></div></div>
+              <div className="quick-list">
+                <button type="button" onClick={() => setShowArchived(false)}><span>Aktywni</span><strong>{activeCount}</strong></button>
+                <button type="button" onClick={() => setShowArchived(false)}><span>Bez sprawy</span><strong>{clientsWithoutCases}</strong></button>
+                <button type="button" onClick={() => setShowArchived(false)}><span>Bez ruchu</span><strong>{staleClients}</strong></button>
+                <button type="button" onClick={() => setShowArchived(true)}><span>Kosz</span><strong>{archivedCount}</strong></button>
+              </div>
+            </aside>
+
+            <aside className="right-card">
+              <div className="panel-head"><div><h3>Klienci do uwagi</h3><p>Relacje bez pe³nego spiêcia lead/sprawa.</p></div></div>
+              <div className="quick-list">
+                {followupCandidates.length ? followupCandidates.map((client) => {
+                  const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
+                  return (
+                    <Link key={client.id} to={`/clients/${client.id}`}>
+                      <span><strong>{client.name || 'Klient'}</strong><small>Leady {counters.leads} • Sprawy {counters.cases}</small></span>
+                      <UserRound className="h-4 w-4" />
+                    </Link>
+                  );
+                }) : <div className="note">Brak klientów wymagaj¹cych natychmiastowej uwagi.</div>}
+              </div>
+            </aside>
+          </div>
+        </div>
       </div>
     </Layout>
   );
