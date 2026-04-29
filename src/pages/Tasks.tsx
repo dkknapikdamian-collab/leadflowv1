@@ -768,54 +768,55 @@ export default function Tasks() {
           : 'Brak powiązań';
 
     return (
-      <Card key={task.id} className={`task-row-card border-none shadow-sm group transition-all ${done ? 'opacity-60' : ''}`}>
-        <CardContent className="task-row p-4">
-          <span className="task-index">{index}</span>
-          <div className="task-main min-w-0">
-            <p className={`task-title font-bold text-slate-900 break-words ${done ? 'line-through' : ''}`}>{task.title}</p>
-            <p className="task-meta">{relationLine}</p>
-            <p className="task-meta">{format(taskDate, 'd MMM yyyy, HH:mm', { locale: pl })}</p>
-            <div className="task-pills">
-              <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</Badge>
-              {task.priority === 'high' ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge> : null}
-              {overdue ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge> : null}
-              {completedSection ? <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 text-[10px] uppercase font-bold h-5">Archiwum</Badge> : null}
-              {recurrence.mode !== 'none' ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Repeat className="w-3 h-3 mr-1" /> Powtarzalne</Badge> : null}
-              {reminder.mode !== 'none' ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge> : null}
-            </div>
+      <div key={task.id} className={`task-row ${done ? 'is-done' : ''}`}>
+        <button
+          type="button"
+          onClick={() => toggleTask(task.id, task.status)}
+          className={`task-done-btn w-5 h-5 rounded border flex items-center justify-center ${done ? 'bg-primary border-primary text-white' : 'border-slate-200 hover:border-primary'}`}
+          aria-label={done ? 'Przywróć do zrobienia' : 'Oznacz jako zrobione'}
+        >
+          {done ? <CheckSquare className="w-4 h-4" /> : null}
+        </button>
+        <div className="task-main min-w-0">
+          <p className={`task-title font-bold text-slate-900 break-words ${done ? 'line-through' : ''}`}>{task.title}</p>
+          <p className="task-meta">{relationLine}</p>
+          <div className="task-pills">
+            <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</Badge>
+            {overdue ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge> : null}
+            {completedSection ? <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 text-[10px] uppercase font-bold h-5">Archiwum</Badge> : null}
           </div>
-          <div className="task-status-col">
-            <button
-              type="button"
-              onClick={() => toggleTask(task.id, task.status)}
-              className={`task-done-btn w-5 h-5 rounded border flex items-center justify-center ${done ? 'bg-primary border-primary text-white' : 'border-slate-200 hover:border-primary'}`}
-            >
-              {done ? <CheckSquare className="w-4 h-4" /> : null}
-            </button>
-          </div>
-          <div className="task-action-col">
-            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => openEditTask(task)}>
-              Edytuj
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-xl"><MoreVertical className="w-4 h-4" /></Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => openEditTask(task)}>
-                  Edytuj
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => toggleTask(task.id, task.status)}>
-                  <CheckSquare className="w-4 h-4 mr-2" /> {done ? 'Przywróć do zrobienia' : 'Oznacz jako zrobione'}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600">
-                  <Trash2 className="w-4 h-4 mr-2" /> Usuń
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+        <div className="task-term-col">
+          <span className="task-col-label">Termin</span>
+          <strong>{format(taskDate, 'd MMM, HH:mm', { locale: pl })}</strong>
+        </div>
+        <div className="task-type-col">
+          <span className="task-col-label">Typ / priorytet</span>
+          <strong>{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</strong>
+          {task.priority === 'high' ? <span className="task-priority-chip">Pilne</span> : null}
+        </div>
+        <div className="task-action-col">
+          <Button variant="outline" size="sm" className="rounded-xl" onClick={() => openEditTask(task)}>
+            Edytuj
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-xl"><MoreVertical className="w-4 h-4" /></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => openEditTask(task)}>
+                Edytuj
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toggleTask(task.id, task.status)}>
+                <CheckSquare className="w-4 h-4 mr-2" /> {done ? 'Przywróć do zrobienia' : 'Oznacz jako zrobione'}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600">
+                <Trash2 className="w-4 h-4 mr-2" /> Usuń
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
     );
   };
 
@@ -1137,7 +1138,7 @@ export default function Tasks() {
                       {isToday(parseISO(dateKey)) ? <Badge className="rounded-full">Dziś</Badge> : null}
                       {isTomorrow(parseISO(dateKey)) ? <Badge variant="secondary" className="rounded-full">Jutro</Badge> : null}
                     </div>
-                        <div className="space-y-3">
+                        <div className="tasks-list-card">
                           {tasksForDate.map((task, index) => renderTaskCard(task, false, index + 1))}
                         </div>
                   </section>
@@ -1163,7 +1164,7 @@ export default function Tasks() {
                         <div className="flex items-center gap-2">
                           <h3 className="text-base font-bold text-slate-900">{format(parseISO(dateKey), 'EEEE, d MMMM', { locale: pl })}</h3>
                         </div>
-                        <div className="space-y-3">
+                        <div className="tasks-list-card">
                           {tasksForDate.map((task, index) => renderTaskCard(task, true, index + 1))}
                         </div>
                       </div>
@@ -1176,8 +1177,8 @@ export default function Tasks() {
         )}
           </div>
 
-          <aside className="tasks-right-rail">
-            <div className="right-card">
+          <div className="tasks-right-rail">
+            <aside className="right-card tasks-right-card">
               <div className="panel-head"><h3>Szybkie skróty</h3><p>Najczęstsze filtry dla zadań.</p></div>
               <div className="quick-list">
                 <button type="button" onClick={() => activateScope('today')}><span>Dzisiaj</span><strong>{taskStats.today}</strong></button>
@@ -1185,15 +1186,15 @@ export default function Tasks() {
                 <button type="button" onClick={() => activateScope('active')}><span>Aktywne</span><strong>{taskStats.active}</strong></button>
                 <button type="button" onClick={() => activateScope('done')}><span>Zrobione</span><strong>{taskStats.done}</strong></button>
               </div>
-            </div>
-            <div className="right-card">
+            </aside>
+            <aside className="right-card tasks-right-card">
               <div className="panel-head"><h3>Podsumowanie</h3><p>Stan operacyjny z realnych danych.</p></div>
               <div className="quick-list">
                 <div className="quick-note">Bez leada: <strong>{taskStats.withoutLead}</strong></div>
                 <div className="quick-note">Najbliższe terminy: <strong>{sortedCurrentDates.length}</strong></div>
               </div>
-            </div>
-          </aside>
+            </aside>
+          </div>
         </div>
       </div>
     </Layout>
