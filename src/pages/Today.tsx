@@ -2223,8 +2223,8 @@ export default function Today() {
           })}
         </div>
 
-        <div className="layout-list grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="space-y-8">
+        <div className="layout-list today-layout grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="today-main-column space-y-8">
             {overdueTasks.length > 0 && (
               <div id="today-section-overdue-tasks">
                 <TileCard
@@ -2592,7 +2592,7 @@ export default function Today() {
             )}
           </div>
 
-          <aside className="right-card space-y-8">
+          <aside className="right-card today-right-rail space-y-8">
             <TileCard
               id="pipeline-summary"
               title="Wartość lejka"
