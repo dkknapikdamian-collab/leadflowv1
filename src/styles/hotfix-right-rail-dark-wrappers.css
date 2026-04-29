@@ -1,0 +1,96 @@
+/* HOTFIX_RIGHT_RAIL_DARK_WRAPPERS_ACTIVITY_AI_DRAFTS_NOTIFICATIONS */
+
+:root {
+  --cf-hotfix-border: #e4e7ec;
+  --cf-hotfix-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+}
+
+/* =========================================================
+   Right rail wrappers must be fully transparent
+   (no dark backgrounds, no pseudo overlays)
+   ========================================================= */
+
+.activity-vnext-page .activity-right-rail,
+.ai-drafts-vnext-page .ai-drafts-right-rail,
+.notifications-vnext-page .notifications-right-rail {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  min-width: 300px !important;
+  overflow: visible !important;
+}
+
+.activity-vnext-page .activity-right-rail::before,
+.activity-vnext-page .activity-right-rail::after,
+.ai-drafts-vnext-page .ai-drafts-right-rail::before,
+.ai-drafts-vnext-page .ai-drafts-right-rail::after,
+.notifications-vnext-page .notifications-right-rail::before,
+.notifications-vnext-page .notifications-right-rail::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* =========================================================
+   Right rail cards must be light
+   ========================================================= */
+
+.activity-vnext-page .right-card.activity-right-card,
+.activity-vnext-page .activity-right-card,
+.ai-drafts-vnext-page .right-card.ai-drafts-right-card,
+.ai-drafts-vnext-page .ai-drafts-right-card,
+.notifications-vnext-page .right-card.notifications-right-card,
+.notifications-vnext-page .notifications-right-card {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid var(--cf-hotfix-border) !important;
+  border-radius: 28px !important;
+  box-shadow: var(--cf-hotfix-shadow) !important;
+  color: #111827 !important;
+  overflow: hidden !important;
+}
+
+.activity-vnext-page .right-card.activity-right-card::before,
+.activity-vnext-page .right-card.activity-right-card::after,
+.activity-vnext-page .activity-right-card::before,
+.activity-vnext-page .activity-right-card::after,
+.ai-drafts-vnext-page .right-card.ai-drafts-right-card::before,
+.ai-drafts-vnext-page .right-card.ai-drafts-right-card::after,
+.ai-drafts-vnext-page .ai-drafts-right-card::before,
+.ai-drafts-vnext-page .ai-drafts-right-card::after,
+.notifications-vnext-page .right-card.notifications-right-card::before,
+.notifications-vnext-page .right-card.notifications-right-card::after,
+.notifications-vnext-page .notifications-right-card::before,
+.notifications-vnext-page .notifications-right-card::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* =========================================================
+   Mini rows inside right cards must stay light/readable
+   ========================================================= */
+
+.activity-vnext-page .activity-right-rail .activity-rail-item,
+.ai-drafts-vnext-page .ai-drafts-right-rail .ai-drafts-rail-item,
+.notifications-vnext-page .notifications-right-rail .notifications-rail-item {
+  background: #f8fafc !important;
+  background-color: #f8fafc !important;
+  border: 1px solid #eaecf0 !important;
+  border-radius: 16px !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+}
+
+.activity-vnext-page .activity-right-rail .activity-rail-item span,
+.ai-drafts-vnext-page .ai-drafts-right-rail .ai-drafts-rail-item span,
+.notifications-vnext-page .notifications-right-rail .notifications-rail-item span {
+  color: #667085 !important;
+}
+

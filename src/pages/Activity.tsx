@@ -1,5 +1,6 @@
 import Layout from '../components/Layout';
 import '../styles/visual-stage8-activity-vnext.css';
+import '../styles/hotfix-right-rail-dark-wrappers.css';
 import {
   ArrowUpRight,
   Bell,

@@ -48,6 +48,7 @@ import {
   fetchCasesFromSupabase,
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage9-ai-drafts-vnext.css';
+import '../styles/hotfix-right-rail-dark-wrappers.css';
 
 type DraftFilter =
   | 'all'

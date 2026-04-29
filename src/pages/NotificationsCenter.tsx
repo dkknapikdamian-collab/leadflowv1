@@ -35,6 +35,7 @@ import {
 } from '../lib/notifications';
 import { toast } from 'sonner';
 import '../styles/visual-stage10-notifications-vnext.css';
+import '../styles/hotfix-right-rail-dark-wrappers.css';
 
 type NotificationFilter =
   | 'all'
