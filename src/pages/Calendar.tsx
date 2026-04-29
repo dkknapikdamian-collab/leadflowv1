@@ -12,6 +12,7 @@ import {
   Loader2,
   Bell,
   Repeat,
+  Sparkles,
   CheckSquare,
   Trash2,
 } from 'lucide-react';
@@ -324,9 +325,9 @@ export default function Calendar() {
   const [editSubmitting, setEditSubmitting] = useState(false);
 
   useEffect(() => {
-    if (consumeGlobalQuickAction() === 'event') {
-      setIsNewEventOpen(true);
-    }
+    const action = consumeGlobalQuickAction();
+    if (action === 'event') setIsNewEventOpen(true);
+    if (action === 'task') setIsNewTaskOpen(true);
   }, []);
 
   useEffect(() => {
@@ -660,7 +661,6 @@ export default function Calendar() {
   );
 
   const monthCellMinHeight = calendarScale === 'compact' ? 104 : calendarScale === 'large' ? 160 : 128;
-  const weekColumnMinWidth = calendarScale === 'compact' ? '150px' : calendarScale === 'large' ? '210px' : '170px';
 
   const logCalendarEntryActivity = async (
     entry: ScheduleEntry,
@@ -945,136 +945,22 @@ export default function Calendar() {
 
   return (
     <Layout>
-      <div className="p-4 md:p-8 max-w-7xl mx-auto w-full">
-        <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
+      <div className="cf-html-view main-calendar-html" data-calendar-real-view="true">
+        <div className="page-head">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 capitalize">
-              {calendarView === 'week'
-                ? `${format(selectedWeekStart, 'd MMM', { locale: pl })} - ${format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}`
-                : format(currentMonth, 'MMMM yyyy', { locale: pl })}
-            </h1>
-            <p className="text-slate-500">Kalendarz dla zadań, wydarzeń i terminów ruchu z leadów.</p>
+            <span className="kicker">Terminy</span>
+            <h1>Kalendarz</h1>
+            <p className="lead-copy">Kalendarz ma pokazywać bliską przyszłość i powiązania, nie przytłaczać pełnym miesiącem.</p>
           </div>
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
-              <Button
-                variant={calendarView === 'week' ? 'default' : 'ghost'}
-                className="h-9 rounded-lg px-3 text-sm font-semibold"
-                onClick={() => setCalendarView('week')}
-              >
-                Tydzień
-              </Button>
-              <Button
-                variant={calendarView === 'month' ? 'default' : 'ghost'}
-                className="h-9 rounded-lg px-3 text-sm font-semibold"
-                onClick={() => setCalendarView('month')}
-              >
-                Miesiąc
-              </Button>
-            </div>
-            {calendarView === 'month' ? (
-              <div className="flex items-center rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
-                <Button variant={calendarScale === 'compact' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('compact')}>
-                  Małe kafelki
-                </Button>
-                <Button variant={calendarScale === 'default' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('default')}>
-                  Standard
-                </Button>
-                <Button variant={calendarScale === 'large' ? 'default' : 'ghost'} className="h-9 rounded-lg px-3 text-sm font-semibold" onClick={() => setCalendarScale('large')}>
-                  Duże kafelki
-                </Button>
-              </div>
-            ) : null}
-            <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  if (calendarView === 'week') {
-                    const next = addDays(selectedDate, -7);
-                    setSelectedDate(next);
-                    setCurrentMonth(next);
-                    return;
-                  }
-                  setCurrentMonth(subMonths(currentMonth, 1));
-                }}
-                className="rounded-lg text-primary hover:bg-primary/10 hover:text-primary"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" onClick={() => { setCurrentMonth(new Date()); setSelectedDate(new Date()); }} className="text-sm font-bold px-4 text-slate-700 hover:text-slate-900">
-                Dzisiaj
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  if (calendarView === 'week') {
-                    const next = addDays(selectedDate, 7);
-                    setSelectedDate(next);
-                    setCurrentMonth(next);
-                    return;
-                  }
-                  setCurrentMonth(addMonths(currentMonth, 1));
-                }}
-                className="rounded-lg text-primary hover:bg-primary/10 hover:text-primary"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
-            <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl" disabled={!workspaceReady}>
-                  <Plus className="w-4 h-4 mr-2" /> Zadanie
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
-                <form onSubmit={handleAddTask} className="space-y-6 py-4">
-                  <div className="space-y-2">
-                    <Label>Tytuł zadania</Label>
-                    <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Typ</Label>
-                      <select className={modalSelectClass} value={newTask.type} onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}>
-                        {TASK_TYPES.map((taskType) => (
-                          <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <TopicContactPicker
-                    options={topicContactOptions}
-                    selectedOption={selectedNewTaskOption}
-                    query={newTask.relationQuery}
-                    onQueryChange={(value) => setNewTask((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
-                    onSelect={handleSelectNewTaskRelation}
-                  />
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Priorytet</Label>
-                      <select className={modalSelectClass} value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}>
-                        {PRIORITY_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>{option.label}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Data i godzina</Label>
-                      <Input type="datetime-local" value={newTask.dueAt} onChange={(e) => setNewTask({ ...newTask, dueAt: e.target.value })} required />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
+          <div className="head-actions">
+            <Link to="/ai-drafts" className="btn soft-blue">
+              <Sparkles className="h-4 w-4" /> Zapytaj AI
+            </Link>
             <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-lg shadow-primary/20" disabled={!workspaceReady}><Plus className="w-4 h-4 mr-2" /> Wydarzenie</Button>
+                <Button className="btn primary" disabled={!workspaceReady}>
+                  <Plus className="h-4 w-4" /> Dodaj wydarzenie
+                </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
@@ -1195,19 +1081,106 @@ export default function Calendar() {
           </div>
         </div>
 
-        <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Tydzień operacyjny</p>
-              <h2 className="text-lg font-bold text-slate-900">
-                {format(selectedWeekStart, 'd MMM', { locale: pl })} - {format(selectedWeekEnd, 'd MMM yyyy', { locale: pl })}
-              </h2>
-            </div>
-            <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
-              Wybrany dzień: {format(selectedDate, 'EEEE, d MMMM', { locale: pl })}
+        <div className="calendar-toolbar">
+          <div className="calendar-seg" role="tablist" aria-label="Widok kalendarza">
+            <button type="button" className={`seg-btn ${calendarView === 'week' ? 'active' : ''}`} onClick={() => setCalendarView('week')}>Tydzień</button>
+            <button type="button" className={`seg-btn ${calendarView === 'month' ? 'active' : ''}`} onClick={() => setCalendarView('month')}>Miesiąc</button>
+          </div>
+
+          <div className="calendar-toolbar-right">
+            {calendarView === 'month' ? (
+              <div className="calendar-seg" role="tablist" aria-label="Wielkość kafelków">
+                <button type="button" className={`seg-btn ${calendarScale === 'compact' ? 'active' : ''}`} onClick={() => setCalendarScale('compact')}>Małe kafelki</button>
+                <button type="button" className={`seg-btn ${calendarScale === 'default' ? 'active' : ''}`} onClick={() => setCalendarScale('default')}>Standard</button>
+                <button type="button" className={`seg-btn ${calendarScale === 'large' ? 'active' : ''}`} onClick={() => setCalendarScale('large')}>Duże kafelki</button>
+              </div>
+            ) : null}
+
+            <div className="calendar-nav">
+              <button
+                type="button"
+                className="nav-btn"
+                onClick={() => {
+                  if (calendarView === 'week') {
+                    const next = addDays(selectedDate, -7);
+                    setSelectedDate(next);
+                    setCurrentMonth(next);
+                    return;
+                  }
+                  setCurrentMonth(subMonths(currentMonth, 1));
+                }}
+                aria-label={calendarView === 'week' ? 'Poprzedni tydzień' : 'Poprzedni miesiąc'}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button type="button" className="nav-today" onClick={() => { setCurrentMonth(new Date()); setSelectedDate(new Date()); }}>
+                Dzisiaj
+              </button>
+              <button
+                type="button"
+                className="nav-btn"
+                onClick={() => {
+                  if (calendarView === 'week') {
+                    const next = addDays(selectedDate, 7);
+                    setSelectedDate(next);
+                    setCurrentMonth(next);
+                    return;
+                  }
+                  setCurrentMonth(addMonths(currentMonth, 1));
+                }}
+                aria-label={calendarView === 'week' ? 'Następny tydzień' : 'Następny miesiąc'}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </div>
+
+        <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
+          <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
+            <form onSubmit={handleAddTask} className="space-y-6 py-4">
+              <div className="space-y-2">
+                <Label>Tytuł zadania</Label>
+                <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Typ</Label>
+                  <select className={modalSelectClass} value={newTask.type} onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}>
+                    {TASK_TYPES.map((taskType) => (
+                      <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <TopicContactPicker
+                options={topicContactOptions}
+                selectedOption={selectedNewTaskOption}
+                query={newTask.relationQuery}
+                onQueryChange={(value) => setNewTask((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                onSelect={handleSelectNewTaskRelation}
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Priorytet</Label>
+                  <select className={modalSelectClass} value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}>
+                    {PRIORITY_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Data i godzina</Label>
+                  <Input type="datetime-local" value={newTask.dueAt} onChange={(e) => setNewTask({ ...newTask, dueAt: e.target.value })} required />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
 
         {calendarView === 'month' ? (
           <>
@@ -1217,7 +1190,7 @@ export default function Calendar() {
               ))}
             </div>
 
-            <div className="grid grid-cols-7 border-t border-l border-slate-100 rounded-2xl overflow-hidden shadow-sm bg-white">
+            <div className="calendar-month-grid">
               {calendarDays.map((day, index) => {
                 const dayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, day));
                 const isCurrentMonth = isSameMonth(day, monthStart);
@@ -1230,10 +1203,10 @@ export default function Calendar() {
                     type="button"
                     onClick={() => setSelectedDate(day)}
                     style={{ minHeight: monthCellMinHeight }}
-                    className={`p-2 border-r border-b border-slate-100 text-left transition-colors hover:bg-slate-50/50 ${!isCurrentMonth ? 'bg-slate-50/30 text-slate-300' : 'text-slate-900'} ${isSelectedDay ? 'ring-2 ring-inset ring-primary/30 bg-primary/5' : ''}`}
+                    className={`calendar-day-cell ${!isCurrentMonth ? 'is-outside' : ''} ${isSelectedDay ? 'is-selected' : ''} ${isTodayDay ? 'is-today' : ''}`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${isTodayDay ? 'bg-primary text-white' : ''}`}>
+                      <span className="calendar-day-number">
                         {format(day, 'd')}
                       </span>
                       {dayEntries.length > 0 && <Badge variant="secondary" className="h-5 text-[10px]">{dayEntries.length}</Badge>}
@@ -1243,13 +1216,13 @@ export default function Calendar() {
                         const isCompletedEntry = entry.kind === 'task' && entry.raw?.status === 'done';
 
                         return (
-                          <div key={entry.id} className={`rounded border p-1 text-[10px] font-medium ${getEntryTone(entry)} ${isCompletedEntry ? 'opacity-60' : ''}`}>
-                            <span className={`break-words ${isCompletedEntry ? 'line-through' : ''}`}>{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span>
+                          <div key={entry.id} className={`calendar-day-pill ${getEntryTone(entry)} ${isCompletedEntry ? 'is-done' : ''}`}>
+                            <span className={isCompletedEntry ? 'is-done-text' : ''}>{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span>
                           </div>
                         );
                       })}
                       {dayEntries.length > (calendarScale === 'compact' ? 3 : 4) && (
-                        <div className="text-[10px] text-slate-500 font-medium px-1">+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} więcej</div>
+                        <div className="calendar-more">+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} więcej</div>
                       )}
                     </div>
                   </button>
@@ -1290,55 +1263,103 @@ export default function Calendar() {
         ) : null}
 
         {calendarView === 'week' ? (
-          <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
-            <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">Widok tygodniowy</h3>
+          <div className="calendar-week-layout">
+            <aside className="right-card calendar-week-filter">
+              <div className="panel-head">
+                <h3>Ten tydzień</h3>
+                <p>Najszybszy filtr.</p>
               </div>
-              <Badge variant="secondary" className="h-7 px-3">{weekEntries.length} wpisów</Badge>
-            </div>
+              <div className="calendar-week-filter-list">
+                {(() => {
+                  const today = new Date();
+                  const weekStart = selectedWeekStart;
+                  const wednesday = addDays(weekStart, 2);
+                  const friday = addDays(weekStart, 4);
+                  const nextWeekStart = addDays(weekStart, 7);
+                  const quick = [
+                    { key: 'today', label: 'Dzisiaj', date: today },
+                    { key: 'wed', label: 'Środa', date: wednesday },
+                    { key: 'fri', label: 'Piątek', date: friday },
+                    { key: 'next', label: 'Przyszły tydzień', date: nextWeekStart },
+                  ];
 
-            <div className="overflow-x-auto pb-1 xl:overflow-visible">
-              <div className="grid grid-flow-col gap-3 min-w-[980px] xl:min-w-0 xl:grid-flow-row xl:grid-cols-7" style={{ gridAutoColumns: `minmax(${weekColumnMinWidth}, 1fr)` }}>
+                  return quick.map((item) => {
+                    const count = sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, item.date)).length;
+                    const isActive = isSameDay(item.date, selectedDate);
+                    return (
+                      <button
+                        key={item.key}
+                        type="button"
+                        className={`calendar-week-filter-btn ${isActive ? 'active' : ''}`}
+                        onClick={() => {
+                          setSelectedDate(item.date);
+                          setCurrentMonth(item.date);
+                          if (item.key === 'next') setCalendarView('week');
+                        }}
+                      >
+                        <span>{item.label} · {count} {count === 1 ? 'rzecz' : 'rzeczy'}</span>
+                      </button>
+                    );
+                  });
+                })()}
+              </div>
+            </aside>
+
+            <section className="right-card calendar-week-plan">
+              <div className="panel-head">
+                <h3>Plan najbliższych dni</h3>
+                <p>Układ osi czasu jest szybszy niż ciężka siatka.</p>
+              </div>
+
+              <div className="calendar-week-plan-list">
                 {weekDays.map((day) => {
                   const dayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day));
-                  const isActiveDay = isSameDay(day, selectedDate);
+                  if (dayEntries.length === 0) return null;
+                  return dayEntries.map((entry) => {
+                    const dayLabel = isToday(day)
+                      ? 'DZIŚ'
+                      : format(day, 'EE', { locale: pl }).toUpperCase();
+                    const dayNumber = format(day, 'd');
+                    const caseTitle = entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null;
+                    const meta = caseTitle
+                      ? `Powiązane ze sprawą ${caseTitle}`
+                      : entry.leadName
+                        ? `Powiązane z leadem ${entry.leadName}`
+                        : null;
+                    const isDone = isCompletedCalendarEntry(entry);
 
-                  return (
-                    <div key={day.toISOString()} className={`rounded-xl border p-2.5 ${isActiveDay ? 'border-primary/40 bg-primary/5' : 'border-slate-200 bg-slate-50/40'}`}>
-                      <div className="mb-3 flex items-center justify-between">
-                        <div>
-                          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{format(day, 'EEEE', { locale: pl })}</p>
-                          <p className="text-base font-bold text-slate-900">{format(day, 'd MMM', { locale: pl })}</p>
+                    return (
+                      <button
+                        key={entry.id}
+                        type="button"
+                        className={`calendar-week-plan-row ${isDone ? 'is-done' : ''}`}
+                        onClick={() => handleOpenEdit(entry)}
+                      >
+                        <div className="calendar-week-datechip">
+                          <strong>{dayLabel}</strong>
+                          <span>{dayNumber}</span>
                         </div>
-                        {isToday(day) ? <Badge className="bg-primary/15 text-primary hover:bg-primary/15">Dziś</Badge> : null}
-                      </div>
-
-                      <div className="space-y-2">
-                        {dayEntries.length === 0 ? (
-                          <div className="rounded-xl border border-dashed border-slate-200 bg-white px-2.5 py-4 text-center text-[11px] text-slate-400">
-                            Brak wpisów
+                        <div className="calendar-week-row-main">
+                          <div className="calendar-week-row-title">{entry.title}</div>
+                          {meta ? <div className="calendar-week-row-meta">{meta}</div> : null}
+                          <div className="calendar-week-row-pills">
+                            <span className={`pill ${entry.kind === 'event' ? 'blue' : ''}`}>{entry.kind === 'event' ? 'Wydarzenie' : entry.kind === 'task' ? 'Zadanie' : 'Lead'}</span>
+                            <span className={`pill ${isDone ? 'soft' : 'soft-blue'}`}>{isDone ? 'Zrobione' : 'Zaplanowane'}</span>
                           </div>
-                        ) : dayEntries.map((entry) => (
-                          <div key={entry.id}>
-                            <ScheduleEntryCard
-                              entry={entry}
-                              actionButtonClass={actionButtonClass}
-                              actionPendingId={actionPendingId}
-                              caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
-                              onEdit={handleOpenEdit}
-                              onShift={handleShiftEntry}
-                              onComplete={handleCompleteEntry}
-                              onDelete={handleDeleteEntry}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
+                        </div>
+                        <div className="calendar-week-row-action" aria-hidden="true">›</div>
+                      </button>
+                    );
+                  });
                 })}
+
+                {weekEntries.length === 0 ? (
+                  <div className="calendar-week-empty">
+                    Brak wpisów w tym tygodniu.
+                  </div>
+                ) : null}
               </div>
-            </div>
+            </section>
           </div>
         ) : null}
       </div>
