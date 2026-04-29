@@ -1,4 +1,4 @@
-@import './styles/visual-stage26-leads-visual-alignment-fix.css';
+﻿@import './styles/visual-stage26-leads-visual-alignment-fix.css';
 @import './styles/visual-stage25-leads-full-jsx-html-rebuild.css';
 @import './styles/visual-stage21-today-final-lock.css';
 @import './styles/visual-stage20-tasks-safe-css.css';
@@ -239,4 +239,5 @@ Do not hide real alerts with text, link or button.
   display: none !important;
 }
 @import "./styles/visual-html-theme-v14.css";
+@import "./styles/closeflow-vnext-ui-contract.css";
 

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+﻿import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { auth } from './firebase';
 import { getIdTokenResult, signOut } from 'firebase/auth';
 import NotificationRuntime from './components/NotificationRuntime';
@@ -31,6 +31,8 @@ const Calendar = lazy(() => import('./pages/Calendar'));
 const Billing = lazy(() => import('./pages/Billing'));
 const SupportCenter = lazy(() => import('./pages/SupportCenter'));
 const NotificationsCenter = lazy(() => import('./pages/NotificationsCenter'));
+const UiPreviewVNextFull = lazy(() => import('./pages/UiPreviewVNextFull'));
+const UiPreviewVNext = lazy(() => import('./pages/UiPreviewVNext'));
 
 function AppRouteFallback() {
   return (
@@ -200,6 +202,8 @@ export default function App() {
             <Route path="/settings/ai" element={user ? <AdminAiSettings /> : <Navigate to="/login" />} />
             <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
 
+            <Route path="/ui-preview-vnext" element={<UiPreviewVNext />} />
+            <Route path="/ui-preview-vnext-full" element={<UiPreviewVNextFull />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
             </Suspense>
@@ -210,3 +214,6 @@ export default function App() {
     </TooltipProvider>
   );
 }
+
+
+
