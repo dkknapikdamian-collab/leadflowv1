@@ -1,5 +1,9 @@
-import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
-import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
+/*
+VERCEL_HOBBY_API_BUDGET_HOTFIX_2026_04_28
+Moved from api/ to src/server/ and routed through api/system.ts to keep the Vercel Hobby function budget green.
+*/
+import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
+import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from './_request-scope.js';
 
 function asString(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';

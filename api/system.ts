@@ -8,6 +8,8 @@ import aiCaptureHandler from '../src/server/ai-capture.js';
 import aiAssistantHandler from '../src/server/ai-assistant.js';
 import aiDraftsHandler from '../src/server/ai-drafts.js';
 import assistantContextHandler from '../src/server/assistant-context.js';
+import recordsHandler from '../src/server/records.js';
+import paymentsHandler from '../src/server/payments.js';
 
 function parseBody(body: unknown) {
   if (!body) return {};
@@ -828,6 +830,18 @@ async function handleWorkspaceRecovery(req: any, res: any) {
 export default async function handler(req: any, res: any) {
   const body = parseBody(req.body);
   const kind = routeKind(req, body);
+
+    // VERCEL_HOBBY_API_ROUTE_CONSOLIDATION_2026_04_28
+    // Zachowujemy stare URL-e przez vercel.json, ale handler siedzi w jednym endpointcie /api/system.
+    const apiRoute = (asNullableString(req?.query?.apiRoute ?? (body as any).apiRoute ?? null) || '').toLowerCase();
+    if (apiRoute === 'payments') {
+      await paymentsHandler(req, res);
+      return;
+    }
+    if (apiRoute === 'records') {
+      await recordsHandler(req, res);
+      return;
+    }
 
   if (kind === 'ai-next-action') {
     await aiNextActionHandler(req, res);

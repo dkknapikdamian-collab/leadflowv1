@@ -1,62 +1,70 @@
 {
-  "crons": [
-    {
-      "path": "/api/daily-digest",
-      "schedule": "5 5 * * *"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/tasks",
-      "destination": "/api/work-items?kind=tasks"
-    },
-    {
-      "source": "/api/events",
-      "destination": "/api/work-items?kind=events"
-    },
-    {
-      "source": "/api/activities",
-      "destination": "/api/records?kind=activities"
-    },
-    {
-      "source": "/api/case-items",
-      "destination": "/api/records?kind=case-items"
-    },
-    {
-      "source": "/api/support-forward",
-      "destination": "/api/support?route=forward"
-    },
-    {
-      "source": "/api/support-requests",
-      "destination": "/api/support?route=requests"
-    },
-    {
-      "source": "/api/workspace-subscription",
-      "destination": "/api/system?kind=workspace-subscription"
-    },
-    {
-      "source": "/api/profile-settings",
-      "destination": "/api/system?kind=profile-settings"
-    },
-    {
-      "source": "/api/workspace-settings",
-      "destination": "/api/system?kind=workspace-settings"
-    },
-    {
-      "source": "/api/client-portal-tokens",
-      "destination": "/api/system?kind=client-portal-tokens"
-    },
-    {
-      "source": "/api/admin/workspace-recovery",
-      "destination": "/api/system?kind=workspace-recovery"
-    },
-    {
-      "source": "/api/service-profiles",
-      "destination": "/api/system?kind=service-profiles"
-    },
-    {
-      "source": "/((?!api/|assets/|.*\\..*).*)",
-      "destination": "/"
-    }
-  ]
+    "crons":  [
+                  {
+                      "path":  "/api/daily-digest",
+                      "schedule":  "5 5 * * *"
+                  }
+              ],
+    "rewrites":  [
+                     {
+                         "source":  "/api/tasks",
+                         "destination":  "/api/work-items?kind=tasks"
+                     },
+                     {
+                         "source":  "/api/events",
+                         "destination":  "/api/work-items?kind=events"
+                     },
+                     {
+                         "source":  "/api/activities",
+                         "destination":  "/api/records?kind=activities"
+                     },
+                     {
+                         "source":  "/api/case-items",
+                         "destination":  "/api/records?kind=case-items"
+                     },
+                     {
+                         "source":  "/api/support-forward",
+                         "destination":  "/api/support?route=forward"
+                     },
+                     {
+                         "source":  "/api/support-requests",
+                         "destination":  "/api/support?route=requests"
+                     },
+                     {
+                         "source":  "/api/workspace-subscription",
+                         "destination":  "/api/system?kind=workspace-subscription"
+                     },
+                     {
+                         "source":  "/api/profile-settings",
+                         "destination":  "/api/system?kind=profile-settings"
+                     },
+                     {
+                         "source":  "/api/workspace-settings",
+                         "destination":  "/api/system?kind=workspace-settings"
+                     },
+                     {
+                         "source":  "/api/client-portal-tokens",
+                         "destination":  "/api/system?kind=client-portal-tokens"
+                     },
+                     {
+                         "source":  "/api/admin/workspace-recovery",
+                         "destination":  "/api/system?kind=workspace-recovery"
+                     },
+                     {
+                         "source":  "/api/service-profiles",
+                         "destination":  "/api/system?kind=service-profiles"
+                     },
+                     {
+                         "source":  "/((?!api/|assets/|.*\\..*).*)",
+                         "destination":  "/"
+                     },
+                     {
+                         "destination":  "/api/system?apiRoute=payments",
+                         "source":  "/api/payments"
+                     },
+                     {
+                         "destination":  "/api/system?apiRoute=records",
+                         "source":  "/api/records"
+                     }
+                 ]
 }
