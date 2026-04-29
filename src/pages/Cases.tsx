@@ -3,17 +3,10 @@ import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import {
-  Briefcase,
-  CheckCircle2,
   ChevronRight,
-  Clock,
-  FileText,
   ExternalLink,
-  Link2,
   Search,
-  ShieldAlert,
   Sparkles,
-  Target,
   Trash2,
   Plus,
 } from 'lucide-react';
@@ -21,11 +14,8 @@ import { toast } from 'sonner';
 
 import { ConfirmDialog } from '../components/confirm-dialog';
 import Layout from '../components/Layout';
-import { StatShortcutCard } from '../components/StatShortcutCard';
-import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
@@ -433,17 +423,17 @@ export default function Cases() {
 
   return (
     <Layout>
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8">
-        <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
-              <Sparkles className="h-3.5 w-3.5" /> Start realizacji
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold app-text">Sprawy</h1>
-            </div>
+      <div className="cf-html-view main-cases-html" data-cases-real-view="true">
+        <div className="page-head">
+          <div>
+            <span className="kicker">Centrum obsługi</span>
+            <h1>Sprawy</h1>
+            <p className="lead-copy">Lista spraw ma pokazać, które tematy są w pracy, które stoją i co wymaga klienta.</p>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="head-actions">
+            <Button type="button" variant="outline" className="btn soft-blue">
+              <Sparkles className="h-4 w-4" /> Zapytaj AI
+            </Button>
             <Dialog open={isCreateCaseOpen} onOpenChange={(open) => {
               setIsCreateCaseOpen(open);
               if (!open) {
@@ -451,8 +441,8 @@ export default function Cases() {
               }
             }}>
               <DialogTrigger asChild>
-                <Button className="rounded-2xl" disabled={!workspaceReady}>
-                  <Plus className="mr-2 h-4 w-4" /> Dodaj sprawę
+                <Button className="btn primary" disabled={!workspaceReady}>
+                  <Plus className="h-4 w-4" /> Nowa sprawa
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-lg">
@@ -546,200 +536,127 @@ export default function Cases() {
               </DialogContent>
             </Dialog>
           </div>
-        </header>
+        </div>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-7">
-          <StatShortcutCard
-            label="Wszystkie"
-            value={stats.total}
-            icon={Briefcase}
-            active={caseView === 'all'}
-            onClick={() => setCaseView('all')}
-            valueClassName="text-slate-900"
-            iconClassName="bg-slate-100 text-slate-500"
-            title="Pokaż wszystkie sprawy"
-          />
-          <StatShortcutCard
-            label="Czekają"
-            value={stats.waiting}
-            icon={Clock}
-            active={caseView === 'waiting'}
-            onClick={() => toggleCaseView('waiting')}
-            valueClassName="text-amber-600"
-            iconClassName="bg-amber-50 text-amber-500"
-            title="Pokaż sprawy, które czekają"
-          />
-          <StatShortcutCard
-            label="Zablokowane"
-            value={stats.blocked}
-            icon={ShieldAlert}
-            active={caseView === 'blocked'}
-            onClick={() => toggleCaseView('blocked')}
-            valueClassName="text-rose-600"
-            iconClassName="bg-rose-50 text-rose-500"
-            title="Pokaż zablokowane sprawy"
-          />
-          <StatShortcutCard
-            label="Akceptacje"
-            value={stats.approval}
-            icon={FileText}
-            active={caseView === 'approval'}
-            onClick={() => toggleCaseView('approval')}
-            valueClassName="text-sky-600"
-            iconClassName="bg-sky-50 text-sky-500"
-            title="Pokaż sprawy do akceptacji"
-          />
-          <StatShortcutCard
-            label="Gotowe"
-            value={stats.ready}
-            icon={CheckCircle2}
-            active={caseView === 'ready'}
-            onClick={() => toggleCaseView('ready')}
-            valueClassName="text-emerald-600"
-            iconClassName="bg-emerald-50 text-emerald-500"
-            title="Pokaż sprawy gotowe do startu"
-          />
-          <StatShortcutCard
-            label="Bez kroku"
-            value={stats.needsNextStep}
-            icon={Target}
-            active={caseView === 'needs_next_step'}
-            onClick={() => toggleCaseView('needs_next_step')}
-            valueClassName="text-orange-600"
-            iconClassName="bg-orange-50 text-orange-500"
-            title="Pokaż sprawy bez kolejnego kroku"
-          />
-          <StatShortcutCard
-            label="Pozyskane"
-            value={stats.linked}
-            icon={Link2}
-            active={caseView === 'linked'}
-            onClick={() => toggleCaseView('linked')}
-            valueClassName="text-slate-900"
-            iconClassName="bg-sky-50 text-sky-500"
-            title="Pokaż sprawy powiązane z leadem"
-          />
-        </section>
+        <div className="grid-4">
+          <button type="button" className={`metric ${caseView === 'all' ? 'active' : ''}`} onClick={() => setCaseView('all')}>
+            <div><label>W realizacji</label><strong>{stats.total}</strong><div className="hint">otwarte</div></div>
+          </button>
+          <button type="button" className={`metric ${caseView === 'waiting' || caseView === 'approval' ? 'active' : ''}`} onClick={() => toggleCaseView('waiting')}>
+            <div><label>Czeka na klienta</label><strong>{stats.waiting}</strong><div className="hint">po stronie klienta</div></div>
+          </button>
+          <button type="button" className={`metric ${caseView === 'blocked' ? 'active' : ''}`} onClick={() => toggleCaseView('blocked')}>
+            <div><label>Zablokowane</label><strong>{stats.blocked}</strong><div className="hint">brak krytycznych</div></div>
+          </button>
+          <button type="button" className={`metric ${caseView === 'ready' ? 'active' : ''}`} onClick={() => toggleCaseView('ready')}>
+            <div><label>Gotowe</label><strong>{stats.ready}</strong><div className="hint">historia</div></div>
+          </button>
+        </div>
 
-        <Card className="border-none app-surface-strong">
-          <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
+        <div className="layout-list">
+          <div className="stack">
+            <div className="search">
+              <span aria-hidden="true"><Search className="h-4 w-4" /></span>
               <Input
-                placeholder="Szukaj po sprawie, kliencie albo statusie..."
+                placeholder="Szukaj sprawy, klienta, telefonu, maila albo statusu..."
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                className="pl-10"
               />
             </div>
-          </CardContent>
-        </Card>
-
-        <p className="text-sm app-muted">
-          Sprawa to główne miejsce dalszej pracy po kliknięciu „Rozpocznij obsługę”. Zadanie jest pojedynczą czynnością, wydarzenie blokiem czasu w kalendarzu, a sprawa spina pełną realizację.
-        </p>
-
-        <section className="space-y-4">
-          {loading ? (
-            <Card className="border-none app-surface-strong">
-              <CardContent className="flex flex-col items-center justify-center gap-3 py-16">
-                <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-[color:var(--app-primary)]" />
-                <p className="text-sm font-medium app-muted">Ładowanie spraw...</p>
-              </CardContent>
-            </Card>
-          ) : filteredCases.length === 0 ? (
-            <Card className="border-dashed app-surface-strong">
-              <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-                <div className="rounded-full p-4 app-primary-chip"><Target className="h-7 w-7" /></div>
-                <div>
-                  <p className="text-lg font-semibold app-text">Brak spraw w tym widoku</p>
-                  <p className="mt-1 max-w-md text-sm app-muted">Sprawy pojawią się tutaj po kliknięciu „Rozpocznij obsługę” na leadzie albo po ręcznym uruchomieniu realizacji. Zmień wyszukiwanie albo kliknij inny kafelek u góry, jeśli szukasz innego wycinka listy.</p>
+            {loading ? (
+              <div className="table-card">
+                <div className="row row-empty">
+                  <span className="index"><div className="h-4 w-4 animate-spin rounded-full border-b-2 border-[color:var(--app-primary)]" /></span>
+                  <span><span className="title">Ładowanie spraw</span><span className="sub">Pobieram dane z aplikacji.</span></span>
                 </div>
-              </CardContent>
-            </Card>
-          ) : (
-            filteredCases.map((record) => {
-              const attention = caseNeedsAttention(record);
-              const percent = Math.round(record.completenessPercent || 0);
-              const updatedAt = toUpdatedDate(record.updatedAt);
-              const sourceLead = record.leadId ? leadsById.get(String(record.leadId)) : null;
-              const sourceSummary = buildCaseSourceSummary(sourceLead);
-              const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
-
-              return (
-                <Card key={record.id} className="border-none app-surface-strong app-shadow transition-transform hover:-translate-y-0.5">
-                  <CardContent className="flex flex-col gap-5 p-5 lg:flex-row lg:items-center lg:justify-between">
-                    <div className="min-w-0 flex-1 space-y-3">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="truncate text-xl font-bold app-text">{record.title || 'Sprawa bez tytułu'}</h3>
-                        <Badge variant={caseBadgeVariant(record.status)}>{caseStatusLabel(record.status)}</Badge>
-                        <Badge variant={lifecycleBadgeVariant(lifecycle.bucket)}>{lifecycle.label}</Badge>
-                        {attention ? <Badge variant="destructive">Wymaga uwagi</Badge> : null}
-                        <Badge variant="outline">{record.leadId || record.createdFromLead ? 'Temat pozyskany' : 'Uruchomiona ręcznie'}</Badge>
-                      </div>
-                      <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm app-muted">
-                        <span>Klient: {record.clientName || 'Brak nazwy klienta'}</span>
-                        {record.portalReady ? <span>Portal gotowy</span> : null}
-                        <span>Kompletność: {percent}%</span>
-                        <span>Ostatni ruch: {updatedAt ? format(updatedAt, 'd MMM yyyy', { locale: pl }) : 'Brak'}</span>
-                        <span>{sourceSummary}</span>
-                        {record.serviceStartedAt ? (
-                          <span>Obsługa od: {format(new Date(record.serviceStartedAt), 'd MMM yyyy', { locale: pl })}</span>
+              </div>
+            ) : filteredCases.length === 0 ? (
+              <div className="table-card">
+                <div className="row row-empty">
+                  <span className="index">0</span>
+                  <span><span className="title">Brak spraw w tym widoku</span><span className="sub">Zmień wyszukiwanie albo kliknij inny kafel metryk.</span></span>
+                </div>
+              </div>
+            ) : (
+              <div className="table-card">
+                {filteredCases.map((record, index) => {
+                  const attention = caseNeedsAttention(record);
+                  const percent = Math.round(record.completenessPercent || 0);
+                  const updatedAt = toUpdatedDate(record.updatedAt);
+                  const sourceLead = record.leadId ? leadsById.get(String(record.leadId)) : null;
+                  const sourceSummary = buildCaseSourceSummary(sourceLead);
+                  const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
+                  return (
+                    <div key={record.id} className="row case-row">
+                      <span className="index">{index + 1}</span>
+                      <span className="lead-main-cell min-w-0">
+                        <Link to={`/case/${record.id}`} className="title">{record.title || 'Sprawa bez tytułu'}</Link>
+                        <span className="sub">Klient: {record.clientName || 'Brak nazwy klienta'} · {sourceSummary}</span>
+                        <span className="statusline">
+                          <span className={`pill ${record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue'}`}>{caseStatusLabel(record.status)}</span>
+                          <span className={`pill ${lifecycle.bucket === 'blocked' ? 'red' : lifecycle.bucket === 'ready_to_start' ? 'green' : 'blue'}`}>{lifecycle.label}</span>
+                          {attention ? <span className="pill amber">Wymaga uwagi</span> : null}
+                          {record.leadId || record.createdFromLead ? <span className="pill">Temat pozyskany</span> : <span className="pill">Uruchomiona ręcznie</span>}
+                        </span>
+                      </span>
+                      <span className="lead-value-cell">
+                        <span className="mini">Postęp</span>
+                        <strong>{percent}%</strong>
+                        <Progress value={percent} className="case-progress" />
+                      </span>
+                      <span className="lead-action-cell">
+                        <span className="mini">Następny ruch</span>
+                        <strong>{lifecycle.nextOperatorAction}</strong>
+                        <span className="sub">{updatedAt ? format(updatedAt, 'd MMM yyyy', { locale: pl }) : 'Brak daty aktywności'}</span>
+                      </span>
+                      <span className="lead-actions">
+                        {record.leadId ? (
+                          <Button variant="outline" className="btn ghost" asChild>
+                            <Link to={`/leads/${record.leadId}`} aria-label="Otwórz leada"><ExternalLink className="h-4 w-4" /></Link>
+                          </Button>
                         ) : null}
-                      </div>
-                      <div className="space-y-2 rounded-2xl border p-4 app-border app-surface">
-                        <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.16em] app-muted">
-                          <span>Postęp uruchomienia</span>
-                          <span>{percent}%</span>
-                        </div>
-                        <Progress value={percent} className="h-2" />
-                        <div className="rounded-xl border border-slate-200 bg-white/70 p-3">
-                          <p className="text-sm font-semibold app-text">{lifecycle.headline}</p>
-                          <p className="mt-1 text-sm app-muted">Następny ruch: {lifecycle.nextOperatorAction}</p>
-                          <div className="mt-2 flex flex-wrap gap-2 text-xs app-muted">
-                            <span>{lifecycleRiskLabel(lifecycle.riskLevel)}</span>
-                            <span>Otwarte akcje: {lifecycle.openActionCount}</span>
-                            <span>Braki wymagane: {lifecycle.missingRequiredCount}</span>
-                            <span>Do akceptacji: {lifecycle.waitingApprovalCount}</span>
-                          </div>
-                        </div>
-                        <p className="text-sm app-muted">
-                          {record.status === 'blocked'
-                            ? 'Sprawa ma realny blok na starcie i wymaga odblokowania.'
-                            : record.status === 'waiting_on_client'
-                              ? 'Czekasz na materiał, decyzję albo odpowiedź klienta.'
-                              : record.status === 'to_approve'
-                                ? 'Klient już coś dosłał, ale operator musi to zatwierdzić.'
-                                : record.status === 'ready_to_start'
-                                  ? 'Sprawa jest gotowa do wejścia w realizację i czeka na operacyjny start.'
-                                  : record.status === 'completed'
-                                    ? 'Sprawa jest domknięta. Możesz wejść do środka, żeby sprawdzić historię i komplet.'
-                                    : 'Realizacja jest w ruchu i wymaga regularnej kontroli.'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2 lg:w-[220px] lg:items-end">
-                      {record.leadId ? (
-                        <Button variant="outline" className="rounded-2xl lg:w-full" asChild>
-                          <Link to={`/leads/${record.leadId}`}>Otwórz historię pozyskania <ExternalLink className="h-4 w-4" /></Link>
+                        <Button variant="outline" className="btn ghost" asChild>
+                          <Link to={`/case/${record.id}`} aria-label={`Otwórz sprawę ${record.title || ''}`}><ChevronRight className="h-4 w-4" /></Link>
                         </Button>
-                      ) : (
-                        <Badge variant="outline" className="justify-center rounded-2xl px-3 py-2 lg:w-full">Uruchomiona ręcznie</Badge>
-                      )}
-                      <Button className="rounded-2xl lg:w-full" asChild>
-                        <Link to={`/case/${record.id}`}>Otwórz sprawę <ChevronRight className="h-4 w-4" /></Link>
-                      </Button>
-                      <Button variant="outline" className="rounded-2xl text-rose-500 hover:text-rose-500 lg:w-full" onClick={() => setCaseToDelete(record)}>
-                        <Trash2 className="h-4 w-4" /> Usuń sprawę
-                      </Button>
+                        <Button variant="outline" className="btn ghost" onClick={() => setCaseToDelete(record)} aria-label={`Usuń sprawę ${record.title || ''}`}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </span>
                     </div>
-                  </CardContent>
-                </Card>
-              );
-            })
-          )}
-        </section>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="cases-right-rail">
+            <aside className="right-card">
+              <div className="panel-head"><div><h3>Operacyjne skróty</h3><p>Najczęstsze ruchy dla spraw.</p></div></div>
+              <div className="quick-list">
+                <button type="button" onClick={() => toggleCaseView('needs_next_step')}><span>Dodaj brak</span><strong>{stats.needsNextStep}</strong></button>
+                <button type="button" onClick={() => toggleCaseView('linked')}><span>Portal klienta</span><strong>{stats.linked}</strong></button>
+                <button type="button" onClick={() => toggleCaseView('waiting')}><span>Sprawy bez ruchu</span><strong>{stats.waiting}</strong></button>
+                <button type="button" onClick={() => toggleCaseView('approval')}><span>Do akceptacji</span><strong>{stats.approval}</strong></button>
+              </div>
+            </aside>
+
+            <aside className="right-card">
+              <div className="panel-head"><div><h3>Blokery i ryzyko</h3><p>Podgląd stanu na podstawie lifecycle.</p></div></div>
+              <div className="quick-list">
+                {filteredCases.slice(0, 4).map((record) => {
+                  const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
+                  return (
+                    <Link key={record.id} to={`/case/${record.id}`}>
+                      <span><strong>{record.title || 'Sprawa'}</strong><small>{lifecycleRiskLabel(lifecycle.riskLevel)} · Braki {lifecycle.missingRequiredCount}</small></span>
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
+                  );
+                })}
+                {filteredCases.length === 0 ? <div className="note">Brak spraw do pokazania.</div> : null}
+              </div>
+            </aside>
+          </div>
+        </div>
 
         <ConfirmDialog
           open={Boolean(caseToDelete)}
