@@ -23,14 +23,28 @@
 }
 
 .cf-html-view.main-leads-html {
-  width: min(1500px, calc(100vw - 340px)) !important;
+  width: min(1500px, 100%) !important;
   max-width: 1500px !important;
-  margin-inline: auto !important;
-  padding: 42px 0 64px !important;
+  margin-inline: 0 !important;
+  padding: 30px 0 64px !important;
 }
 
 .cf-html-view.main-leads-html .page-head {
   margin-bottom: 20px !important;
+}
+
+.cf-html-view.main-leads-html .kicker {
+  margin-bottom: 2px !important;
+}
+
+.cf-html-view.main-leads-html h1 {
+  font-size: clamp(40px, 4.2vw, 52px) !important;
+  letter-spacing: -.065em !important;
+}
+
+.cf-html-view.main-leads-html .lead-copy {
+  margin-top: 9px !important;
+  color: #667085 !important;
 }
 
 .cf-html-view.main-leads-html .page-head .head-actions {
@@ -46,9 +60,9 @@
 }
 
 .cf-html-view.main-leads-html .metric {
-  min-height: 106px !important;
+  min-height: 112px !important;
   border-radius: 22px !important;
-  padding: 16px !important;
+  padding: 18px !important;
   background: rgba(255, 255, 255, .82) !important;
   border: 1px solid #e4e7ec !important;
   box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
@@ -61,7 +75,7 @@
 
 .cf-html-view.main-leads-html .layout-list {
   grid-template-columns: minmax(0, 1fr) 315px !important;
-  gap: 17px !important;
+  gap: 18px !important;
   align-items: start !important;
   margin-top: 17px !important;
 }
@@ -79,6 +93,7 @@
   border-radius: 18px !important;
   background: rgba(255, 255, 255, .86) !important;
   border: 1px solid #e4e7ec !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72) !important;
 }
 
 .cf-html-view.main-leads-html .table-card {
@@ -91,8 +106,8 @@
 
 .cf-html-view.main-leads-html .row {
   grid-template-columns: 34px minmax(0, 1.35fr) minmax(130px, .45fr) minmax(180px, .7fr) 88px !important;
-  min-height: 88px !important;
-  padding: 13px 14px !important;
+  min-height: 96px !important;
+  padding: 15px 14px !important;
   gap: 12px !important;
   background: transparent !important;
 }
@@ -164,6 +179,13 @@
   color: #111827 !important;
 }
 
+.cf-html-view.main-leads-html .lead-right-rail {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
 .cf-html-view.main-leads-html .right-card::before,
 .cf-html-view.main-leads-html .right-card::after,
 .cf-html-view.main-leads-html .quick-list::before,
@@ -228,7 +250,7 @@
 
 @media (max-width: 1220px) {
   .cf-html-view.main-leads-html {
-    width: min(100%, calc(100vw - 110px)) !important;
+    width: 100% !important;
     padding-inline: 0 !important;
   }
 
