@@ -1,0 +1,344 @@
+/* VISUAL_STAGE16_TODAY_HTML_RESET_CSS
+   Stage 16 starts the visual rebuild again from a stable base.
+   It is intentionally CSS-first and aggressive, so the change is visible immediately.
+   Scope: global shell + Today route visual reset inspired by closeflow_full_app_modern_5s_ui_concept.html.
+*/
+
+:root {
+  --cf16-bg: #f4f6f8;
+  --cf16-bg-2: #eef2f6;
+  --cf16-sidebar: #101828;
+  --cf16-sidebar-2: #172033;
+  --cf16-card: #ffffff;
+  --cf16-card-soft: #f8fafc;
+  --cf16-text: #111827;
+  --cf16-muted: #667085;
+  --cf16-muted-2: #98a2b3;
+  --cf16-line: #e4e7ec;
+  --cf16-line-2: #d0d5dd;
+  --cf16-blue: #2563eb;
+  --cf16-blue-2: #1d4ed8;
+  --cf16-blue-soft: #eff6ff;
+  --cf16-green: #047857;
+  --cf16-green-soft: #ecfdf3;
+  --cf16-red: #b42318;
+  --cf16-red-soft: #fff1f3;
+  --cf16-amber: #b54708;
+  --cf16-amber-soft: #fffaeb;
+  --cf16-violet: #6941c6;
+  --cf16-violet-soft: #f4f3ff;
+  --cf16-shadow: 0 18px 45px rgba(16, 24, 40, .08);
+  --cf16-shadow-soft: 0 8px 22px rgba(16, 24, 40, .05);
+  --cf16-radius-xl: 28px;
+  --cf16-radius-lg: 20px;
+  --cf16-radius-md: 14px;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0 !important;
+  min-height: 100vh !important;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(37, 99, 235, .10), transparent 28%),
+    radial-gradient(circle at 95% 7%, rgba(16, 24, 40, .08), transparent 26%),
+    linear-gradient(180deg, #f7f9fc 0%, var(--cf16-bg) 34%, #eef2f6 100%) !important;
+  color: var(--cf16-text) !important;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+/* Hard visible shell reset. Works even if the previous app wrapper class changes. */
+#root > .app,
+#root .app,
+.app.closeflow-visual-stage01,
+.app.cf-html-shell,
+.cf-html-shell {
+  min-height: 100vh !important;
+  background: transparent !important;
+  color: var(--cf16-text) !important;
+}
+
+@media (min-width: 1024px) {
+  #root > .app,
+  #root .app,
+  .app.closeflow-visual-stage01,
+  .app.cf-html-shell,
+  .cf-html-shell {
+    display: grid !important;
+    grid-template-columns: 286px minmax(0, 1fr) !important;
+  }
+}
+
+/* Sidebar: direct visual replacement based on the HTML concept. */
+#root aside,
+#root nav[aria-label*="głów" i],
+#root nav[aria-label*="glow" i],
+#root .sidebar,
+#root .app-sidebar,
+#root [class*="sidebar"] {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(37, 99, 235, .26), transparent 35%),
+    linear-gradient(180deg, var(--cf16-sidebar) 0%, #0b1220 100%) !important;
+  color: #fff !important;
+  border-right: 0 !important;
+  box-shadow: 24px 0 50px rgba(16, 24, 40, .18) !important;
+}
+
+#root aside a,
+#root aside button,
+#root .sidebar a,
+#root .sidebar button,
+#root [class*="sidebar"] a,
+#root [class*="sidebar"] button {
+  border-radius: 16px !important;
+  color: rgba(255,255,255,.78) !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+  background: transparent !important;
+}
+
+#root aside a[aria-current="page"],
+#root aside button[aria-current="page"],
+#root aside .active,
+#root .sidebar a[aria-current="page"],
+#root .sidebar button[aria-current="page"],
+#root .sidebar .active,
+#root [class*="sidebar"] a[aria-current="page"],
+#root [class*="sidebar"] button[aria-current="page"],
+#root [class*="sidebar"] .active {
+  color: #fff !important;
+  background: rgba(255,255,255,.12) !important;
+  border-color: rgba(255,255,255,.16) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+
+/* Main canvas. */
+#root main,
+#root [role="main"],
+#root .main-content,
+#root [class*="content"] {
+  background: transparent !important;
+}
+
+@media (min-width: 1024px) {
+  #root main,
+  #root [role="main"],
+  #root .main-content {
+    padding: 28px !important;
+  }
+}
+
+/* Global app cards/buttons so the change is unmistakable across the whole product. */
+#root .card,
+#root [class*="Card"],
+#root [class*="card"],
+#root [class*="panel"],
+#root [class*="tile"],
+#root [class*="stat"],
+#root [class*="metric"],
+#root section,
+#root article {
+  border-color: var(--cf16-line) !important;
+  border-radius: var(--cf16-radius-lg) !important;
+}
+
+#root .card,
+#root [class*="card"],
+#root [class*="panel"],
+#root [class*="tile"] {
+  background: rgba(255,255,255,.92) !important;
+  box-shadow: var(--cf16-shadow-soft) !important;
+}
+
+#root button,
+#root .btn,
+#root a[role="button"] {
+  border-radius: 999px !important;
+  font-weight: 800 !important;
+}
+
+#root button[class*="primary"],
+#root .btn.primary,
+#root [data-variant="default"],
+#root .bg-primary {
+  background: linear-gradient(180deg, var(--cf16-blue) 0%, var(--cf16-blue-2) 100%) !important;
+  color: #fff !important;
+  border-color: rgba(29,78,216,.25) !important;
+  box-shadow: 0 12px 26px rgba(37, 99, 235, .22) !important;
+}
+
+#root input,
+#root textarea,
+#root select {
+  border-radius: 16px !important;
+  border: 1px solid var(--cf16-line-2) !important;
+  background: #fff !important;
+  box-shadow: inset 0 1px 0 rgba(16,24,40,.02) !important;
+}
+
+/* Stage 16 specific: Dzis tab. These selectors cover previous stage wrappers and real route classes. */
+#root .main-today,
+#root [data-current-section="today"],
+#root [data-route="today"],
+#root [data-section="today"] {
+  display: grid !important;
+  gap: 18px !important;
+}
+
+#root .main-today h1,
+#root [data-current-section="today"] h1,
+#root [data-route="today"] h1,
+#root [data-section="today"] h1 {
+  font-size: clamp(28px, 4vw, 44px) !important;
+  line-height: .96 !important;
+  letter-spacing: -.045em !important;
+  margin: 0 !important;
+  color: var(--cf16-text) !important;
+}
+
+#root .main-today h1 + p,
+#root [data-current-section="today"] h1 + p,
+#root [data-route="today"] h1 + p,
+#root [data-section="today"] h1 + p {
+  max-width: 760px !important;
+  color: var(--cf16-muted) !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+#root .main-today [class*="grid"],
+#root [data-current-section="today"] [class*="grid"],
+#root [data-route="today"] [class*="grid"],
+#root [data-section="today"] [class*="grid"] {
+  gap: 14px !important;
+}
+
+#root .main-today [class*="tile"],
+#root .main-today [class*="card"],
+#root [data-current-section="today"] [class*="tile"],
+#root [data-current-section="today"] [class*="card"],
+#root [data-route="today"] [class*="tile"],
+#root [data-route="today"] [class*="card"] {
+  border-radius: 22px !important;
+  background: #fff !important;
+  border: 1px solid var(--cf16-line) !important;
+  box-shadow: var(--cf16-shadow-soft) !important;
+}
+
+#root .main-today [class*="metric"],
+#root .main-today [class*="shortcut"],
+#root [data-current-section="today"] [class*="metric"],
+#root [data-current-section="today"] [class*="shortcut"] {
+  min-height: 124px !important;
+  padding: 18px !important;
+  border-radius: 22px !important;
+  background: #fff !important;
+  border: 1px solid var(--cf16-line) !important;
+  box-shadow: var(--cf16-shadow-soft) !important;
+}
+
+#root .main-today [class*="right"],
+#root [data-current-section="today"] [class*="right"],
+#root [data-route="today"] [class*="right"] {
+  border-radius: 22px !important;
+  background: #fff !important;
+  border: 1px solid var(--cf16-line) !important;
+  box-shadow: var(--cf16-shadow-soft) !important;
+}
+
+/* HTML concept utility classes. Safe if page components start using them in the next stages. */
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 22px;
+  margin-bottom: 18px;
+}
+
+.kicker {
+  margin: 0 0 8px;
+  color: var(--cf16-blue);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.lead-copy {
+  max-width: 720px;
+  color: var(--cf16-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.metric {
+  min-height: 124px;
+  padding: 18px;
+  border: 1px solid var(--cf16-line);
+  border-radius: var(--cf16-radius-lg);
+  background: var(--cf16-card);
+  box-shadow: var(--cf16-shadow-soft);
+}
+
+.metric .sub,
+.sub,
+.hint {
+  color: var(--cf16-muted);
+}
+
+.layout-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+  align-items: start;
+}
+
+.table-card,
+.right-card,
+.work-card {
+  border: 1px solid var(--cf16-line);
+  border-radius: var(--cf16-radius-lg);
+  background: var(--cf16-card);
+  box-shadow: var(--cf16-shadow-soft);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--cf16-line);
+  background: var(--cf16-card-soft);
+  color: var(--cf16-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@media (max-width: 1100px) {
+  .grid-4,
+  .layout-list {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 720px) {
+  #root main,
+  #root [role="main"] {
+    padding: 14px !important;
+  }
+
+  .page-head {
+    display: block;
+  }
+}
