@@ -757,8 +757,8 @@ export default function Leads() {
             </div>
           </div>
 
-          <aside className="stack lead-right-rail" data-stage25-leads-right-rail="true">
-            <div className="right-card" data-relation-value-board="true">
+          <div className="lead-right-rail" data-stage25-leads-right-rail="true">
+            <aside className="right-card lead-right-card lead-top-relations" data-relation-value-board="true">
               <div className="panel-head">
                 <div>
                   <h3>Najcenniejsze relacje</h3>
@@ -782,9 +782,9 @@ export default function Leads() {
               ) : (
                 <div className="note">Brak relacji z wyliczoną wartością.</div>
               )}
-            </div>
+            </aside>
 
-            <div className="right-card">
+            <aside className="right-card lead-right-card lead-ai-card">
               <div className="panel-head">
                 <div>
                   <h3>AI jako przycisk</h3>
@@ -794,8 +794,8 @@ export default function Leads() {
               <Link to="/ai-drafts" className="btn soft-blue">
                 ✦ Przejdź do szkiców AI
               </Link>
-            </div>
-          </aside>
+            </aside>
+          </div>
         </div>
       </div>
     </Layout>

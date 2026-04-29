@@ -363,3 +363,54 @@
 .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .metric .hint {
   color: #667085 !important;
 }
+
+/* ETAP 2D structural right-rail fix */
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  min-width: 315px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::before,
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::after,
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card::before,
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card::after {
+  content: none !important;
+  display: none !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card {
+  padding: 16px !important;
+  background: rgba(255, 255, 255, .9) !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+  overflow: hidden !important;
+  color: #111827 !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-top-relations .quick-list a {
+  background: #ffffff !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 18px !important;
+  padding: 12px 14px !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-ai-card .btn.soft-blue {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+  color: #1d4ed8 !important;
+}
+
+@media (max-width: 1220px) {
+  .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail {
+    min-width: 0 !important;
+  }
+}
