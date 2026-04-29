@@ -1435,7 +1435,43 @@ export default function Calendar() {
                 <h3>Najbliższe 7 dni</h3>
                 <p>Najszybszy filtr.</p>
               </div>
-              <div className="calendar-week-filter-list">
+              <div className="calendar-week-visible-days-v3 mt-3 space-y-2">
+                {weekDays.map((day, index) => {
+                  const dayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day));
+                  const active = isSameDay(day, selectedDate);
+                  const label = getCalendarDayNavLabel(day, index);
+                  const weekday = capitalizeCalendarLabel(format(day, 'EEEE', { locale: pl }));
+                  const dateLabel = format(day, 'd MMM', { locale: pl });
+
+                  return (
+                    <button
+                      key={day.toISOString()}
+                      type="button"
+                      onClick={() => setSelectedDate(day)}
+                      className={
+                        active
+                          ? 'w-full rounded-2xl border border-blue-200 bg-blue-50 px-3 py-2.5 text-left shadow-sm transition hover:border-blue-300 hover:bg-blue-100'
+                          : 'w-full rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-left shadow-sm transition hover:border-slate-300 hover:bg-slate-50'
+                      }
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className={active ? "truncate text-sm font-extrabold text-blue-700" : "truncate text-sm font-extrabold text-slate-900"}>
+                            {label}
+                          </div>
+                          <div className={active ? "truncate text-[11px] font-semibold text-blue-600" : "truncate text-[11px] font-semibold text-slate-500"}>
+                            {index === 0 ? weekday + ' · ' + dateLabel : dateLabel}
+                          </div>
+                        </div>
+                        <span className={active ? "shrink-0 rounded-full border border-blue-200 bg-white px-2 py-1 text-[11px] font-bold text-blue-700" : "shrink-0 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-bold text-slate-600"}>
+                          {formatCalendarItemCount(dayEntries.length)}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="calendar-week-filter-list hidden">
                 {(() => {
                   const nextWeekStart = addDays(selectedWeekStart, 7);
                   const days = weekDays.map((day, index) => ({
