@@ -1,0 +1,147 @@
+﻿/* ETAP 5: Tasks visual rebuild (scoped) */
+.cf-html-view.main-tasks-html {
+  width: min(1500px, 100%);
+  margin: 0;
+  padding: 30px 0 64px;
+  display: grid;
+  gap: 16px;
+}
+
+.cf-html-view.main-tasks-html .page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 22px;
+  margin-bottom: 8px;
+}
+
+.cf-html-view.main-tasks-html .kicker {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid #e4e7ec;
+  background: rgba(255, 255, 255, .72);
+  color: #667085;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.cf-html-view.main-tasks-html h1 {
+  margin: 8px 0 0;
+  color: #111827;
+  font-size: clamp(42px, 4.2vw, 54px);
+  line-height: 1;
+  letter-spacing: -.06em;
+  font-weight: 950;
+}
+
+.cf-html-view.main-tasks-html .lead-copy {
+  margin: 8px 0 0;
+  color: #667085;
+  max-width: 780px;
+  line-height: 1.45;
+  font-size: 13px;
+}
+
+.cf-html-view.main-tasks-html .head-actions { display: flex; gap: 8px; align-items: center; }
+
+.cf-html-view.main-tasks-html .grid-5 { gap: 13px; }
+
+.cf-html-view.main-tasks-html .layout-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 315px;
+  gap: 17px;
+  align-items: start;
+}
+
+.cf-html-view.main-tasks-html .stack,
+.cf-html-view.main-tasks-html .tasks-right-rail { display: grid; gap: 14px; }
+
+.cf-html-view.main-tasks-html .tasks-right-rail {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+.cf-html-view.main-tasks-html .search-card { background: rgba(255,255,255,.86) !important; border: 1px solid #e4e7ec !important; border-radius: 20px !important; }
+
+.cf-html-view.main-tasks-html .task-row-card {
+  border: 1px solid #e4e7ec !important;
+  background: rgba(255,255,255,.9) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 8px 22px rgba(16,24,40,.05) !important;
+}
+
+.cf-html-view.main-tasks-html .task-row {
+  display: grid;
+  grid-template-columns: 36px minmax(280px, 1fr) minmax(140px, 180px) 92px;
+  gap: 20px;
+  align-items: center;
+  padding: 18px 20px;
+}
+
+.cf-html-view.main-tasks-html .task-index {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #f2f4f7;
+  color: #667085;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.cf-html-view.main-tasks-html .task-title { margin: 0; color: #111827; font-size: 18px; line-height: 1.25; }
+.cf-html-view.main-tasks-html .task-meta { margin: 4px 0 0; color: #667085; font-size: 12px; line-height: 1.35; }
+.cf-html-view.main-tasks-html .task-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+.cf-html-view.main-tasks-html .task-status-col { display: flex; justify-content: center; }
+.cf-html-view.main-tasks-html .task-done-btn { width: 26px; height: 26px; }
+.cf-html-view.main-tasks-html .task-action-col { display: flex; justify-content: flex-end; align-items: center; gap: 8px; }
+
+.cf-html-view.main-tasks-html .right-card {
+  padding: 16px;
+  border-radius: 28px;
+  background: rgba(255,255,255,.9);
+  border: 1px solid #e4e7ec;
+  box-shadow: 0 8px 22px rgba(16,24,40,.05);
+}
+
+.cf-html-view.main-tasks-html .panel-head h3 { margin: 0; font-size: 15px; color: #111827; }
+.cf-html-view.main-tasks-html .panel-head p { margin: 4px 0 0; font-size: 12px; color: #667085; }
+.cf-html-view.main-tasks-html .quick-list { display: grid; gap: 8px; }
+.cf-html-view.main-tasks-html .quick-list button,
+.cf-html-view.main-tasks-html .quick-note {
+  min-height: 42px;
+  border-radius: 14px;
+  border: 1px solid #e4e7ec;
+  background: #fff;
+  color: #344054;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+@media (max-width: 1220px) {
+  .cf-html-view.main-tasks-html .layout-list { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  .cf-html-view.main-tasks-html { width: 100%; padding: 0 14px 94px; }
+  .cf-html-view.main-tasks-html .page-head { flex-direction: column; gap: 12px; }
+  .cf-html-view.main-tasks-html .task-row {
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 10px;
+    padding: 14px;
+  }
+  .cf-html-view.main-tasks-html .task-status-col,
+  .cf-html-view.main-tasks-html .task-action-col { grid-column: 2; justify-content: flex-start; }
+}

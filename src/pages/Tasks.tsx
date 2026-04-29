@@ -625,6 +625,10 @@ export default function Tasks() {
     () => new Map(cases.map((caseRecord: any) => [String(caseRecord.id || ''), String(caseRecord.title || caseRecord.clientName || 'Powiązana sprawa')])),
     [cases],
   );
+  const clientNameById = useMemo(
+    () => new Map(clients.map((client: any) => [String(client.id || ''), String(client.name || client.company || 'Klient')])),
+    [clients],
+  );
 
   const baseFilteredTasks = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -742,7 +746,7 @@ export default function Tasks() {
     },
   ];
 
-  const renderTaskCard = (task: any, completedSection = false) => {
+  const renderTaskCard = (task: any, completedSection = false, index = 0) => {
     const taskStart = getTaskStart(task);
     const overdue = isTaskOverdueEntry(task);
     const recurrence = normalizeRecurrenceConfig(task.recurrence);
@@ -752,39 +756,44 @@ export default function Tasks() {
         ? { ...createDefaultReminder(), mode: 'once' as const }
         : normalizeReminderConfig(task.reminder);
     const done = isTaskDone(task);
+    const taskDate = parseISO(taskStart);
+    const caseTitle = task.caseId ? (caseTitleById.get(String(task.caseId)) || 'Powiązana sprawa') : '';
+    const clientName = task.clientId ? (clientNameById.get(String(task.clientId)) || '') : '';
+    const relationLine = caseTitle
+      ? `Sprawa: ${caseTitle}`
+      : task.leadName
+        ? `Lead: ${task.leadName}`
+        : clientName
+          ? `Klient: ${clientName}`
+          : 'Brak powiązań';
 
     return (
-      <Card key={task.id} className={`border-none shadow-sm group transition-all ${done ? 'opacity-60' : ''}`}>
-        <CardContent className="p-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
+      <Card key={task.id} className={`task-row-card border-none shadow-sm group transition-all ${done ? 'opacity-60' : ''}`}>
+        <CardContent className="task-row p-4">
+          <span className="task-index">{index}</span>
+          <div className="task-main min-w-0">
+            <p className={`task-title font-bold text-slate-900 break-words ${done ? 'line-through' : ''}`}>{task.title}</p>
+            <p className="task-meta">{relationLine}</p>
+            <p className="task-meta">{format(taskDate, 'd MMM yyyy, HH:mm', { locale: pl })}</p>
+            <div className="task-pills">
+              <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</Badge>
+              {task.priority === 'high' ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge> : null}
+              {overdue ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge> : null}
+              {completedSection ? <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 text-[10px] uppercase font-bold h-5">Archiwum</Badge> : null}
+              {recurrence.mode !== 'none' ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Repeat className="w-3 h-3 mr-1" /> Powtarzalne</Badge> : null}
+              {reminder.mode !== 'none' ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge> : null}
+            </div>
+          </div>
+          <div className="task-status-col">
             <button
               type="button"
               onClick={() => toggleTask(task.id, task.status)}
-              className={`w-5 h-5 rounded border flex items-center justify-center ${done ? 'bg-primary border-primary text-white' : 'border-slate-200 hover:border-primary'}`}
+              className={`task-done-btn w-5 h-5 rounded border flex items-center justify-center ${done ? 'bg-primary border-primary text-white' : 'border-slate-200 hover:border-primary'}`}
             >
               {done ? <CheckSquare className="w-4 h-4" /> : null}
             </button>
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <p className={`font-bold text-slate-900 break-words ${done ? 'line-through' : ''}`}>{task.title}</p>
-                <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</Badge>
-                {task.priority === 'high' ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Wysoki</Badge> : null}
-                {overdue ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge> : null}
-                {!task.leadName && !task.leadId ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Bez leada</Badge> : null}
-                {task.caseId ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5">Sprawa</Badge> : null}
-                {recurrence.mode !== 'none' ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((item) => item.value === recurrence.mode)?.label}</Badge> : null}
-                {reminder.mode !== 'none' ? <Badge variant="outline" className="text-[10px] uppercase font-bold h-5"><Bell className="w-3 h-3 mr-1" /> {reminder.mode === 'recurring' ? 'Cykliczne przypomnienie' : 'Przypomnienie'}</Badge> : null}
-                {completedSection ? <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 text-[10px] uppercase font-bold h-5">Archiwum</Badge> : null}
-              </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
-                <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {format(parseISO(taskStart), 'HH:mm')}</span>
-                {task.leadName ? <span>Lead: {task.leadName}</span> : null}
-                {task.caseId ? <span>Sprawa: {caseTitleById.get(String(task.caseId)) || 'Powiązana sprawa'}</span> : null}
-                {!task.leadName && !task.leadId && !task.caseId ? <span>Brak powiązań</span> : null}
-              </div>
-            </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="task-action-col">
             <Button variant="outline" size="sm" className="rounded-xl" onClick={() => openEditTask(task)}>
               Edytuj
             </Button>
@@ -812,11 +821,14 @@ export default function Tasks() {
 
   return (
     <Layout>
-      <div className="p-4 md:p-8 max-w-5xl mx-auto w-full space-y-8">
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="cf-html-view main-tasks-html">
+        <header className="page-head flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
+            <span className="kicker">Czas i obowiązki</span>
             <h1 className="text-3xl font-bold text-slate-900">Zadania</h1>
+            <p className="lead-copy">Widok operacyjny: co jest na dziś, co zalega i co wymaga ruchu w tym tygodniu.</p>
           </div>
+          <div className="head-actions">
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
             <DialogTrigger asChild>
               <Button className="rounded-xl shadow-lg shadow-primary/20" disabled={!workspaceReady}>
@@ -941,6 +953,7 @@ export default function Tasks() {
               </form>
             </DialogContent>
           </Dialog>
+          </div>
 
           <Dialog open={isEditTaskOpen} onOpenChange={(open) => {
             setIsEditTaskOpen(open);
@@ -1071,7 +1084,7 @@ export default function Tasks() {
           </Dialog>
         </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+        <div className="grid-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
           {statCards.map((stat) => (
             <StatShortcutCard
               key={stat.id}
@@ -1087,7 +1100,7 @@ export default function Tasks() {
           ))}
         </div>
 
-        <Card className="border-none shadow-sm">
+        <Card className="search-card border-none shadow-sm">
           <CardContent className="p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -1096,6 +1109,8 @@ export default function Tasks() {
           </CardContent>
         </Card>
 
+        <div className="layout-list">
+          <div className="stack">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
@@ -1122,9 +1137,9 @@ export default function Tasks() {
                       {isToday(parseISO(dateKey)) ? <Badge className="rounded-full">Dziś</Badge> : null}
                       {isTomorrow(parseISO(dateKey)) ? <Badge variant="secondary" className="rounded-full">Jutro</Badge> : null}
                     </div>
-                    <div className="space-y-3">
-                      {tasksForDate.map((task) => renderTaskCard(task, false))}
-                    </div>
+                        <div className="space-y-3">
+                          {tasksForDate.map((task, index) => renderTaskCard(task, false, index + 1))}
+                        </div>
                   </section>
                 );
               })
@@ -1149,7 +1164,7 @@ export default function Tasks() {
                           <h3 className="text-base font-bold text-slate-900">{format(parseISO(dateKey), 'EEEE, d MMMM', { locale: pl })}</h3>
                         </div>
                         <div className="space-y-3">
-                          {tasksForDate.map((task) => renderTaskCard(task, true))}
+                          {tasksForDate.map((task, index) => renderTaskCard(task, true, index + 1))}
                         </div>
                       </div>
                     );
@@ -1159,6 +1174,27 @@ export default function Tasks() {
             </section>
           </div>
         )}
+          </div>
+
+          <aside className="tasks-right-rail">
+            <div className="right-card">
+              <div className="panel-head"><h3>Szybkie skróty</h3><p>Najczęstsze filtry dla zadań.</p></div>
+              <div className="quick-list">
+                <button type="button" onClick={() => activateScope('today')}><span>Dzisiaj</span><strong>{taskStats.today}</strong></button>
+                <button type="button" onClick={() => activateScope('overdue')}><span>Zaległe</span><strong>{taskStats.overdue}</strong></button>
+                <button type="button" onClick={() => activateScope('active')}><span>Aktywne</span><strong>{taskStats.active}</strong></button>
+                <button type="button" onClick={() => activateScope('done')}><span>Zrobione</span><strong>{taskStats.done}</strong></button>
+              </div>
+            </div>
+            <div className="right-card">
+              <div className="panel-head"><h3>Podsumowanie</h3><p>Stan operacyjny z realnych danych.</p></div>
+              <div className="quick-list">
+                <div className="quick-note">Bez leada: <strong>{taskStats.withoutLead}</strong></div>
+                <div className="quick-note">Najbliższe terminy: <strong>{sortedCurrentDates.length}</strong></div>
+              </div>
+            </div>
+          </aside>
+        </div>
       </div>
     </Layout>
   );
