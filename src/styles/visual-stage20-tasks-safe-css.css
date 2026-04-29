@@ -1,0 +1,305 @@
+/* VISUAL_STAGE20_TASKS_SAFE_CSS_2026_04_29
+   Zadania: bezpieczna skórka CSS pod istniejący TSX.
+   Zakres: tylko wygląd, rytm HTML, karty, metryki, search, listy, akcje.
+   Nie rusza logiki, API, Supabase, formularzy, statusów ani routingu.
+*/
+
+.cf-html-shell main[data-current-section="zadania"] {
+  --stage20-ink: #111827;
+  --stage20-muted: #667085;
+  --stage20-muted-2: #98a2b3;
+  --stage20-line: #e4e7ec;
+  --stage20-line-2: #d0d5dd;
+  --stage20-card: rgba(255, 255, 255, 0.90);
+  --stage20-card-strong: #ffffff;
+  --stage20-card-soft: #f8fafc;
+  --stage20-blue: #2563eb;
+  --stage20-blue-soft: #eff6ff;
+  --stage20-green: #047857;
+  --stage20-green-soft: #ecfdf3;
+  --stage20-red: #b42318;
+  --stage20-red-soft: #fff1f3;
+  --stage20-amber: #b54708;
+  --stage20-amber-soft: #fffaeb;
+  --stage20-shadow: 0 18px 45px rgba(16, 24, 40, 0.08);
+  --stage20-shadow-soft: 0 8px 22px rgba(16, 24, 40, 0.05);
+  background:
+    radial-gradient(circle at 14% 6%, rgba(37, 99, 235, 0.12), transparent 30rem),
+    radial-gradient(circle at 90% 12%, rgba(16, 24, 40, 0.08), transparent 28rem),
+    linear-gradient(180deg, #f7f9fc 0%, #f4f6f8 42%, #eef2f6 100%);
+}
+
+.cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .p-4,
+.cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .md\:p-8,
+.cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .max-w-5xl {
+  max-width: 1360px !important;
+  padding: 28px !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] header {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 22px;
+  border: 1px solid var(--stage20-line);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 92% 4%, rgba(37, 99, 235, 0.16), transparent 18rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.90));
+  box-shadow: var(--stage20-shadow);
+  padding: 24px;
+}
+
+.cf-html-shell main[data-current-section="zadania"] header::before {
+  content: "Czas i obowiązki";
+  display: inline-flex;
+  width: fit-content;
+  position: absolute;
+  top: 18px;
+  left: 24px;
+  border: 1px solid var(--stage20-line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--stage20-muted);
+  padding: 5px 9px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cf-html-shell main[data-current-section="zadania"] header > div:first-child {
+  padding-top: 34px;
+}
+
+.cf-html-shell main[data-current-section="zadania"] header h1 {
+  margin: 0;
+  color: var(--stage20-ink) !important;
+  font-size: clamp(30px, 3.2vw, 46px) !important;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.cf-html-shell main[data-current-section="zadania"] header h1 + p,
+.cf-html-shell main[data-current-section="zadania"] header p {
+  max-width: 760px;
+  margin-top: 10px;
+  color: var(--stage20-muted) !important;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.cf-html-shell main[data-current-section="zadania"] header button,
+.cf-html-shell main[data-current-section="zadania"] header a {
+  min-height: 42px;
+  border-radius: 13px !important;
+  font-weight: 900 !important;
+  box-shadow: var(--stage20-shadow-soft);
+}
+
+.cf-html-shell main[data-current-section="zadania"] header button[class*="bg-primary"],
+.cf-html-shell main[data-current-section="zadania"] header button:last-child {
+  background: var(--stage20-blue) !important;
+  border-color: var(--stage20-blue) !important;
+  color: #ffffff !important;
+  box-shadow: 0 13px 26px rgba(37, 99, 235, 0.23) !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] header + .grid,
+.cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5,
+.cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.md\:grid-cols-5,
+.cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.lg\:grid-cols-5 {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.cf-html-shell main[data-current-section="zadania"] header + .grid > button,
+.cf-html-shell main[data-current-section="zadania"] header + .grid > div,
+.cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 > button,
+.cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 > div {
+  min-height: 106px;
+  border: 1px solid var(--stage20-line) !important;
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.84) !important;
+  box-shadow: var(--stage20-shadow-soft) !important;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.cf-html-shell main[data-current-section="zadania"] header + .grid > button:hover,
+.cf-html-shell main[data-current-section="zadania"] header + .grid > div:hover,
+.cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 > button:hover,
+.cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 > div:hover {
+  transform: translateY(-2px);
+  border-color: #bfdbfe !important;
+  box-shadow: var(--stage20-shadow) !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] header + .grid [class*="text-2xl"],
+.cf-html-shell main[data-current-section="zadania"] header + .grid [class*="text-3xl"],
+.cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 [class*="text-2xl"],
+.cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 [class*="text-3xl"] {
+  color: var(--stage20-ink) !important;
+  font-size: 25px !important;
+  letter-spacing: -0.06em;
+}
+
+.cf-html-shell main[data-current-section="zadania"] .relative:has(input) {
+  border: 1px solid var(--stage20-line);
+  border-radius: 18px;
+  background: var(--stage20-card);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.70), var(--stage20-shadow-soft);
+  padding: 0;
+}
+
+.cf-html-shell main[data-current-section="zadania"] .relative:has(input) input {
+  min-height: 50px;
+  border: 0 !important;
+  border-radius: 18px !important;
+  background: transparent !important;
+  color: var(--stage20-ink) !important;
+  font-weight: 750;
+  box-shadow: none !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] .relative:has(input) svg {
+  color: var(--stage20-muted-2) !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] .space-y-8 > section,
+.cf-html-shell main[data-current-section="zadania"] section[id="completed-tasks-section"],
+.cf-html-shell main[data-current-section="zadania"] .space-y-6 > section {
+  border: 1px solid var(--stage20-line);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: var(--stage20-shadow-soft);
+  padding: 18px;
+}
+
+.cf-html-shell main[data-current-section="zadania"] section h2,
+.cf-html-shell main[data-current-section="zadania"] section h3 {
+  color: var(--stage20-ink) !important;
+  font-size: 16px !important;
+  letter-spacing: -0.03em;
+}
+
+.cf-html-shell main[data-current-section="zadania"] section p,
+.cf-html-shell main[data-current-section="zadania"] section .text-slate-500,
+.cf-html-shell main[data-current-section="zadania"] section .text-slate-600 {
+  color: var(--stage20-muted) !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] [class*="shadow-sm"],
+.cf-html-shell main[data-current-section="zadania"] [data-slot="card"] {
+  border: 1px solid var(--stage20-line) !important;
+  border-radius: 20px !important;
+  background: var(--stage20-card-strong) !important;
+  box-shadow: var(--stage20-shadow-soft) !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] [class*="shadow-sm"]:hover,
+.cf-html-shell main[data-current-section="zadania"] [data-slot="card"]:hover {
+  border-color: #bfdbfe !important;
+  box-shadow: var(--stage20-shadow) !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] [data-slot="card"] [class*="p-4"],
+.cf-html-shell main[data-current-section="zadania"] [class*="shadow-sm"] [class*="p-4"] {
+  padding: 16px !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] [data-slot="badge"],
+.cf-html-shell main[data-current-section="zadania"] .inline-flex.items-center.rounded-full,
+.cf-html-shell main[data-current-section="zadania"] [class*="Badge"] {
+  height: 24px;
+  border-radius: 999px !important;
+  border-color: rgba(148, 163, 184, 0.32) !important;
+  background: #f2f4f7 !important;
+  color: #475467 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] [data-slot="badge"][class*="destructive"],
+.cf-html-shell main[data-current-section="zadania"] .bg-rose-50,
+.cf-html-shell main[data-current-section="zadania"] .bg-red-50 {
+  background: var(--stage20-red-soft) !important;
+  color: var(--stage20-red) !important;
+  border-color: #fecdd3 !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] .bg-emerald-100,
+.cf-html-shell main[data-current-section="zadania"] .bg-green-50 {
+  background: var(--stage20-green-soft) !important;
+  color: var(--stage20-green) !important;
+  border-color: #bbf7d0 !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] .bg-amber-50,
+.cf-html-shell main[data-current-section="zadania"] .bg-yellow-50 {
+  background: var(--stage20-amber-soft) !important;
+  color: var(--stage20-amber) !important;
+  border-color: #fedf89 !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] button.rounded-xl,
+.cf-html-shell main[data-current-section="zadania"] [role="button"].rounded-xl,
+.cf-html-shell main[data-current-section="zadania"] .rounded-xl {
+  border-radius: 14px !important;
+}
+
+.cf-html-shell main[data-current-section="zadania"] [role="dialog"] input,
+.cf-html-shell main[data-current-section="zadania"] [role="dialog"] select,
+.cf-html-shell main[data-current-section="zadania"] [role="dialog"] textarea {
+  border-radius: 14px !important;
+}
+
+@media (max-width: 1220px) {
+  .cf-html-shell main[data-current-section="zadania"] header + .grid,
+  .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5,
+  .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.md\:grid-cols-5,
+  .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.lg\:grid-cols-5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .p-4,
+  .cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .md\:p-8,
+  .cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .max-w-5xl {
+    padding: 14px !important;
+  }
+
+  .cf-html-shell main[data-current-section="zadania"] header {
+    flex-direction: column;
+    border-radius: 22px;
+    padding: 18px;
+  }
+
+  .cf-html-shell main[data-current-section="zadania"] header::before {
+    position: static;
+    margin-bottom: 10px;
+  }
+
+  .cf-html-shell main[data-current-section="zadania"] header > div:first-child {
+    padding-top: 0;
+  }
+
+  .cf-html-shell main[data-current-section="zadania"] header h1 {
+    font-size: 30px !important;
+  }
+
+  .cf-html-shell main[data-current-section="zadania"] header + .grid,
+  .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5,
+  .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.md\:grid-cols-5,
+  .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.lg\:grid-cols-5 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cf-html-shell main[data-current-section="zadania"] [data-slot="card"] [class*="flex"],
+  .cf-html-shell main[data-current-section="zadania"] [class*="shadow-sm"] [class*="flex"] {
+    align-items: flex-start;
+  }
+}
