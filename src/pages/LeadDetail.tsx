@@ -65,6 +65,8 @@ import {
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 
+// LEAD_DETAIL_VISUAL_REBUILD_STAGE14
+
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
   { value: 'contacted', label: 'Skontaktowany', color: 'bg-indigo-100 text-indigo-700' },
@@ -142,26 +144,23 @@ function eventTypeLabel(type?: string) {
 function activityTitle(activity: any) {
   switch (activity.eventType) {
     case 'status_changed':
-      return `Status: ${STATUS_OPTIONS.find((status) => status.value === activity.payload?.status)?.label || activity.payload?.status || 'Zmiana'}`;
+      return 'Zmieniono status';
     case 'note_added':
-      return 'Notatka';
+      return 'Dodano notatkę';
     case 'case_created':
-      return 'Rozpoczęto obsługę i utworzono sprawę';
+      return 'Utworzono sprawę';
     case 'case_linked':
-      return 'Podpięto istniejącą sprawę';
-    
+      return 'Podpięto sprawę';
     case 'lead_moved_to_service':
-      return 'Przeniesiono temat do obsługi';
+      return 'Temat przekazany do obsługi';
     case 'task_updated':
-      return 'Zaktualizowano zadanie';
     case 'task_status_toggled':
-      return 'Zmieniono status zadania';
+      return 'Zmieniono zadanie';
     case 'task_deleted':
       return 'Usunięto zadanie';
     case 'event_updated':
-      return 'Zaktualizowano wydarzenie';
     case 'event_status_toggled':
-      return 'Zmieniono status wydarzenia';
+      return 'Zmieniono wydarzenie';
     case 'event_deleted':
       return 'Usunięto wydarzenie';
     default:
@@ -952,6 +951,8 @@ export default function LeadDetail() {
   const nextAction = getLeadNextAction(sortedLinkedTasks, sortedLinkedEvents);
   const nextActionDate = asDate(nextAction?.when);
   const updatedAt = asDate(lead.updatedAt);
+  const lastActivityAt = asDate(lead.lastActivityAt) || asDate(activities[0]?.createdAt) || updatedAt;
+  const leadSourceLabel = SOURCE_OPTIONS.find((item) => item.value === lead.source)?.label || (lead.source ? String(lead.source) : null);
   const nextActionOverdue = Boolean(nextActionDate && isPast(nextActionDate) && !isToday(nextActionDate));
 
   return (
@@ -963,6 +964,9 @@ export default function LeadDetail() {
               <ArrowLeft className="w-5 h-5 text-slate-600" />
             </Link>
             <div className="min-w-0">
+              <div className="text-[11px] font-bold text-slate-500">
+                Leady <span className="mx-1 text-slate-300">/</span> {lead.name}
+              </div>
               <h1 className="text-lg font-bold text-slate-900 break-words">{lead.name}</h1>
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge className={`${currentStatus.color} border-none text-[10px] uppercase font-bold h-5`}>{currentStatus.label}</Badge>
@@ -972,26 +976,44 @@ export default function LeadDetail() {
                   </Badge>
                 )}
               </div>
+              <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-semibold text-slate-600">
+                {leadSourceLabel ? (
+                  <span className="rounded-full border border-slate-200 bg-white px-2 py-1">
+                    Źródło: {leadSourceLabel}
+                  </span>
+                ) : null}
+                {lead.dealValue ? (
+                  <span className="rounded-full border border-slate-200 bg-white px-2 py-1">
+                    Wartość: {(Number(lead.dealValue) || 0).toLocaleString()} PLN
+                  </span>
+                ) : null}
+                <span className="rounded-full border border-slate-200 bg-white px-2 py-1">
+                  Ostatnia aktywność: {lastActivityAt ? format(lastActivityAt, 'd MMM HH:mm', { locale: pl }) : '-'}
+                </span>
+                {lead.phone || lead.email ? (
+                  <span className="rounded-full border border-slate-200 bg-white px-2 py-1">
+                    Kontakt: {[lead.phone, lead.email].filter(Boolean).join(' · ')}
+                  </span>
+                ) : null}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            {!leadMovedToService ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon" className="rounded-xl">
-                    <MoreVertical className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                    <Edit2 className="w-4 h-4 mr-2" /> Edytuj dane
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleDeleteLead} className="text-rose-600">
-                    <Trash2 className="w-4 h-4 mr-2" /> Usuń leada
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : null}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" className="rounded-xl">
+                  <MoreVertical className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                  <Edit2 className="w-4 h-4 mr-2" /> Edytuj dane
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDeleteLead} className="text-rose-600">
+                  <Trash2 className="w-4 h-4 mr-2" /> Usuń leada
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             {associatedCase?.id ? (
               <Button className="rounded-xl gap-2 shadow-lg shadow-primary/20" asChild>
                 <Link to={`/case/${associatedCase.id}`}>
@@ -1063,7 +1085,7 @@ export default function LeadDetail() {
                         <span className="text-sm font-semibold text-violet-900">Sprawa: {serviceCaseTitle}</span>
                       ) : null}
                     </div>
-                    <p className="text-sm text-violet-900">To już historia pozyskania. Dalsza </p>
+                    <p className="text-sm text-violet-900">To już historia pozyskania. Dalsza praca dzieje się w sprawie.</p>
                     <p className="text-sm text-violet-800">Status sprawy: {serviceCaseStatusLabel}</p>
                     <p className="text-xs text-violet-700">Data przejścia: {serviceMovedAtLabel}</p>
                   </div>
@@ -1080,25 +1102,29 @@ export default function LeadDetail() {
                 </CardContent>
               </Card>
             ) : null}
-                    <LeadAiFollowupDraft
-          lead={lead}
-          tasks={linkedTasks}
-          events={linkedEvents}
-          activities={activities}
-          disabled={!hasAccess || leadOperationalArchive}
-        />
 
-        <LeadAiNextAction
-          lead={lead}
-          tasks={linkedTasks}
-          events={linkedEvents}
-          activities={activities}
-          disabled={!hasAccess || leadOperationalArchive}
-                      onTaskCreated={() => void loadLead()}
-                    />
+            {!leadOperationalArchive ? (
+              <>
+                <LeadAiFollowupDraft
+                  lead={lead}
+                  tasks={linkedTasks}
+                  events={linkedEvents}
+                  activities={activities}
+                  disabled={!hasAccess}
+                />
 
+                <LeadAiNextAction
+                  lead={lead}
+                  tasks={linkedTasks}
+                  events={linkedEvents}
+                  activities={activities}
+                  disabled={!hasAccess}
+                  onTaskCreated={() => void loadLead()}
+                />
+              </>
+            ) : null}
 
-<Tabs defaultValue="overview" className="w-full">
+            <Tabs defaultValue="overview" className="w-full">
               <TabsList className="w-full justify-start bg-transparent border-b border-slate-200 rounded-none h-12 p-0 gap-8">
                 <TabsTrigger value="overview" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-0 h-12 font-bold">
                   {leadMovedToService ? 'Historia pozyskania' : 'Przegląd'}
