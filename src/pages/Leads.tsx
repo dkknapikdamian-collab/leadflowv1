@@ -1,3 +1,4 @@
+// VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, Plus, RotateCcw, Search, Target, Trash2, TrendingUp } from 'lucide-react';
