@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, FormEvent, useMemo, useRef } from 'react';
+import { useState, useEffect, FormEvent, useMemo, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -110,7 +110,7 @@ const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 function createEntryActionClass() {
-  return 'inline-flex h-8 items-center justify-center rounded-lg border border-slate-200 bg-white px-2.5 text-[11px] font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-50';
+  return 'inline-flex h-[30px] w-auto min-w-0 items-center justify-center rounded-full border border-slate-200 bg-white px-3 text-[12px] font-bold leading-none text-slate-700 shadow-none transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-50';
 }
 
 function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
@@ -192,6 +192,88 @@ function sortCalendarEntriesForDisplay(entries: ScheduleEntry[]) {
   });
 }
 
+function capitalizeCalendarLabel(value: string) {
+  if (!value) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function formatCalendarItemCount(count: number) {
+  if (count === 1) return '1 rzecz';
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) {
+    return `${count} rzeczy`;
+  }
+  return `${count} rzeczy`;
+}
+
+function getCalendarEntryTypeLabel(entry: ScheduleEntry) {
+  if (entry.kind === 'event') return 'Wydarzenie';
+  if (entry.kind === 'task') return 'Zadanie';
+  return 'Lead';
+}
+
+function getCalendarEntryTypeClass(entry: ScheduleEntry) {
+  if (entry.kind === 'event') return 'border-indigo-100 bg-indigo-50 text-indigo-700';
+  if (entry.kind === 'task') return 'border-emerald-100 bg-emerald-50 text-emerald-700';
+  return 'border-amber-100 bg-amber-50 text-amber-700';
+}
+
+function getCalendarEntryStatusLabel(entry: ScheduleEntry) {
+  const status = getCalendarEntryStatus(entry);
+  if (status === 'done' || status === 'completed') return 'Zrobione';
+  if (status === 'cancelled' || status === 'canceled') return 'Anulowane';
+  if (status === 'overdue') return 'Zaległe';
+  if (status === 'in_progress') return 'W toku';
+  return 'Zaplanowane';
+}
+
+function getCalendarEntryStatusClass(entry: ScheduleEntry) {
+  const status = getCalendarEntryStatus(entry);
+  if (status === 'done' || status === 'completed') return 'border-emerald-100 bg-emerald-50 text-emerald-700';
+  if (status === 'cancelled' || status === 'canceled') return 'border-slate-200 bg-slate-50 text-slate-500';
+  if (status === 'overdue') return 'border-rose-100 bg-rose-50 text-rose-700';
+  return 'border-blue-100 bg-blue-50 text-blue-700';
+}
+
+function getCalendarEntryTimeLabel(entry: ScheduleEntry) {
+  const rawTime = String(entry.raw?.time || '').trim();
+  if (rawTime) return rawTime.slice(0, 5);
+
+  const date = parseISO(entry.startsAt);
+  if (Number.isNaN(date.getTime())) return 'bez godziny';
+
+  const formatted = format(date, 'HH:mm');
+  const hasExplicitHour = Boolean(
+    entry.raw?.scheduledAt ||
+    entry.raw?.dueAt ||
+    entry.raw?.startAt ||
+    entry.raw?.startsAt ||
+    entry.startsAt.includes('T')
+  );
+
+  if (!hasExplicitHour || formatted === '00:00') return 'bez godziny';
+  return formatted;
+}
+
+function getCalendarEntryRelationLabel(entry: ScheduleEntry, caseTitle?: string | null) {
+  if (caseTitle || entry.raw?.caseId) {
+    return `Sprawa: ${caseTitle || entry.raw?.caseTitle || entry.raw?.title || 'Powiązana sprawa'}`;
+  }
+  if (entry.leadName || entry.raw?.leadName) {
+    return `Lead: ${entry.leadName || entry.raw?.leadName}`;
+  }
+  if (entry.raw?.clientName || entry.raw?.customerName) {
+    return `Klient: ${entry.raw.clientName || entry.raw.customerName}`;
+  }
+  return '';
+}
+
+function getCalendarDayNavLabel(day: Date, index: number) {
+  if (index === 0 || isToday(day)) return 'Dzisiaj';
+  return capitalizeCalendarLabel(format(day, 'eeee', { locale: pl }));
+}
+
 type ScheduleEntryCardProps = {
   entry: ScheduleEntry;
   actionButtonClass: string;
@@ -212,68 +294,65 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
   const pendingDone = actionPendingId === `${entry.id}:done`;
   const pendingDelete = actionPendingId === `${entry.id}:delete`;
   const isCompletedEntry = isCompletedCalendarEntry(entry);
-  const subtitle = getEntrySubtitle(entry);
+  const relationLabel = getCalendarEntryRelationLabel(entry, caseTitle);
+  const relationClass = `truncate text-[12px] font-semibold ${isCompletedEntry ? 'text-slate-400 line-through' : 'text-slate-500'}`;
+  const neutralActionClass = actionButtonClass;
+  const postponeActionClass = `${actionButtonClass} border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:bg-blue-100`;
+  const doneActionClass = `${actionButtonClass} border-emerald-200 bg-emerald-50 text-emerald-700 hover:border-emerald-300 hover:bg-emerald-100`;
+  const deleteActionClass = `${actionButtonClass} border-rose-200 bg-rose-50 text-rose-700 hover:border-rose-300 hover:bg-rose-100`;
 
   return (
-    <div className={`rounded-2xl border border-slate-200 bg-white p-3 shadow-sm ${isCompletedEntry ? 'opacity-60' : ''}`}>
-      <div className="mb-2 flex items-center justify-between gap-2">
+    <div className={`rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md ${isCompletedEntry ? 'opacity-60' : ''}`}>
+      <div className="grid gap-2 lg:grid-cols-[auto_minmax(220px,1fr)_76px_118px_auto] lg:items-center">
         <div className="flex min-w-0 items-center gap-1.5">
-          <Badge className={`${getEntryTone(entry)} border`}>{entry.badgeLabel || entry.kind}</Badge>
-          {entry.leadName ? (
-            <span className="inline-flex h-5 items-center rounded-full border border-emerald-200 bg-emerald-50 px-1.5 text-[9px] font-semibold text-emerald-700">
-              Lead
-            </span>
-          ) : null}
-          {entry.raw?.caseId ? (
-            <span className="inline-flex h-5 items-center rounded-full border border-sky-200 bg-sky-50 px-1.5 text-[9px] font-semibold text-sky-700">
-              Sprawa
-            </span>
-          ) : null}
+          <span className={`inline-flex h-6 shrink-0 items-center rounded-full border px-2.5 text-[12px] font-bold leading-none ${getCalendarEntryTypeClass(entry)}`}>
+            {getCalendarEntryTypeLabel(entry)}
+          </span>
         </div>
-        <span className="text-[10px] font-semibold text-slate-500">
-          {format(parseISO(entry.startsAt), 'HH:mm')}
-        </span>
-      </div>
 
-      <div className="mb-3 min-w-0">
         <div className="min-w-0">
-          <p className={`text-sm font-bold break-words ${isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
-          {subtitle ? <p className={`text-[11px] break-words ${isCompletedEntry ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{subtitle}</p> : null}
-          {caseTitle ? <p className={`text-[11px] break-words ${isCompletedEntry ? 'text-slate-400 line-through' : 'text-slate-500'}`}>Sprawa: {caseTitle}</p> : null}
-          {(entry.raw?.leadId || entry.raw?.caseId) ? (
-            <div className="mt-2 flex flex-wrap gap-2">
-              {entry.raw?.leadId ? (
-                <Link
-                  to={`/leads/${entry.raw.leadId}`}
-                  className="inline-flex h-7 items-center rounded-lg border border-slate-200 bg-slate-50 px-2 text-[11px] font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-                >
-                  Otwórz lead
-                </Link>
-              ) : null}
-              {entry.raw?.caseId ? (
-                <Link
-                  to={`/cases/${entry.raw.caseId}`}
-                  className="inline-flex h-7 items-center rounded-lg border border-slate-200 bg-slate-50 px-2 text-[11px] font-semibold text-slate-700 transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700"
-                >
-                  Otwórz sprawę
-                </Link>
-              ) : null}
-            </div>
-          ) : null}
+          <p className={`truncate text-[14px] font-bold leading-5 ${isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900'}`} title={entry.title}>
+            {entry.title}
+          </p>
+          {relationLabel ? (
+            entry.raw?.caseId ? (
+              <Link to={`/cases/${entry.raw.caseId}`} className={`${relationClass} transition hover:text-sky-700`} title={relationLabel}>
+                {relationLabel}
+              </Link>
+            ) : entry.raw?.leadId ? (
+              <Link to={`/leads/${entry.raw.leadId}`} className={`${relationClass} transition hover:text-blue-700`} title={relationLabel}>
+                {relationLabel}
+              </Link>
+            ) : (
+              <p className={relationClass} title={relationLabel}>{relationLabel}</p>
+            )
+          ) : (
+            <p className="truncate text-[12px] font-semibold text-slate-400">Brak powiązania</p>
+          )}
         </div>
-      </div>
 
-      <div className="grid grid-cols-4 gap-1.5">
-        <button type="button" className={actionButtonClass} onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
-        <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
-        <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
-        <button type="button" className={actionButtonClass} onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
-        <button type="button" className={actionButtonClass} onClick={() => onComplete(entry)} disabled={pendingDone}>
-          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
-        </button>
-        <button type="button" className={actionButtonClass} onClick={() => onDelete(entry)} disabled={pendingDelete}>
-          <Trash2 className="mr-1 h-3.5 w-3.5" /> {pendingDelete ? '...' : 'Usuń'}
-        </button>
+        <div className="text-[12px] font-bold text-slate-600 lg:text-center">
+          {getCalendarEntryTimeLabel(entry)}
+        </div>
+
+        <div className="lg:text-center">
+          <span className={`inline-flex h-6 items-center rounded-full border px-2.5 text-[12px] font-bold leading-none ${getCalendarEntryStatusClass(entry)}`}>
+            {getCalendarEntryStatusLabel(entry)}
+          </span>
+        </div>
+
+        <div className="flex flex-wrap gap-1.5 lg:justify-end">
+          <button type="button" className={neutralActionClass} onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
+          <button type="button" className={postponeActionClass} onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
+          <button type="button" className={postponeActionClass} onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
+          <button type="button" className={postponeActionClass} onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
+          <button type="button" className={doneActionClass} onClick={() => onComplete(entry)} disabled={pendingDone}>
+            <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
+          </button>
+          <button type="button" className={deleteActionClass} onClick={() => onDelete(entry)} disabled={pendingDelete}>
+            <Trash2 className="mr-1 h-3.5 w-3.5" /> {pendingDelete ? '...' : 'Usuń'}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -630,24 +709,29 @@ export default function Calendar() {
   const monthEnd = endOfMonth(monthStart);
   const monthRangeStart = startOfWeek(monthStart, { weekStartsOn: 1 });
   const monthRangeEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+  const rollingWeekStart = new Date();
+  rollingWeekStart.setHours(0, 0, 0, 0);
+  const rollingWeekEnd = addDays(rollingWeekStart, 6);
+  rollingWeekEnd.setHours(23, 59, 59, 999);
+  const selectedWeekStart = rollingWeekStart;
+  const selectedWeekEnd = rollingWeekEnd;
+  const calendarDataRangeEnd = rollingWeekEnd.getTime() > monthRangeEnd.getTime() ? rollingWeekEnd : monthRangeEnd;
   const calendarDays = eachDayOfInterval({ start: monthRangeStart, end: monthRangeEnd });
   const scheduleEntries = combineScheduleEntries({
     events,
     tasks,
     leads,
     rangeStart: monthRangeStart,
-    rangeEnd: monthRangeEnd,
+    rangeEnd: calendarDataRangeEnd,
   });
 
-  const selectedWeekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
-  const selectedWeekEnd = endOfWeek(selectedDate, { weekStartsOn: 1 });
-  const weekDays = eachDayOfInterval({ start: selectedWeekStart, end: selectedWeekEnd });
+  const weekDays = Array.from({ length: 7 }, (_, index) => addDays(rollingWeekStart, index));
   const weekEntries = combineScheduleEntries({
     events,
     tasks,
     leads,
-    rangeStart: selectedWeekStart,
-    rangeEnd: selectedWeekEnd,
+    rangeStart: rollingWeekStart,
+    rangeEnd: rollingWeekEnd,
   });
   const selectedDayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, selectedDate));
   const caseTitleById = useMemo(
@@ -1348,15 +1432,15 @@ export default function Calendar() {
           <div className="calendar-week-layout">
             <aside className="right-card calendar-week-filter">
               <div className="panel-head">
-                <h3>Ten tydzień</h3>
+                <h3>Najbliższe 7 dni</h3>
                 <p>Najszybszy filtr.</p>
               </div>
               <div className="calendar-week-filter-list">
                 {(() => {
                   const nextWeekStart = addDays(selectedWeekStart, 7);
-                  const days = weekDays.map((day) => ({
+                  const days = weekDays.map((day, index) => ({
                     key: day.toISOString(),
-                    label: isToday(day) ? 'Dzisiaj' : format(day, 'EEEE', { locale: pl }),
+                    label: isToday(day) ? 'Dzisiaj' : getCalendarDayNavLabel(day, index),
                     date: day,
                     count: sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day)).length,
                   }));
@@ -1397,7 +1481,7 @@ export default function Calendar() {
               </div>
 
               <div className="calendar-week-plan-list">
-                {weekDays.map((day) => {
+                {weekDays.map((day, index) => {
                   const dayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day));
                   const isActiveDay = isSameDay(day, selectedDate);
 
@@ -1405,7 +1489,7 @@ export default function Calendar() {
                     <section key={day.toISOString()} className={`calendar-week-day ${isActiveDay ? 'is-active' : ''}`}>
                       <header className="calendar-week-day-head">
                         <div>
-                          <div className="calendar-week-day-kicker">{format(day, 'EEEE', { locale: pl })}</div>
+                          <div className="calendar-week-day-kicker">{getCalendarDayNavLabel(day, index)}</div>
                           <div className="calendar-week-day-title">{format(day, 'd MMM', { locale: pl })}</div>
                         </div>
                         <div className="calendar-week-day-count">{dayEntries.length} {dayEntries.length === 1 ? 'wpis' : 'wpisów'}</div>
