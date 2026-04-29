@@ -874,3 +874,45 @@
     padding-left: 0;
   }
 }
+
+/* STAGE10A_RIGHT_RAIL_LIGHT_HOTFIX_START */
+.notifications-vnext-page .notifications-right-rail,
+.notifications-vnext-page [aria-label="Panel powiadomien"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.notifications-vnext-page .notifications-right-rail::before,
+.notifications-vnext-page .notifications-right-rail::after,
+.notifications-vnext-page [aria-label="Panel powiadomien"]::before,
+.notifications-vnext-page [aria-label="Panel powiadomien"]::after,
+.notifications-vnext-page .right-card.notifications-right-card::before,
+.notifications-vnext-page .right-card.notifications-right-card::after,
+.notifications-vnext-page .notifications-right-card::before,
+.notifications-vnext-page .notifications-right-card::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.notifications-vnext-page .right-card.notifications-right-card,
+.notifications-vnext-page .notifications-right-rail > .notifications-right-card,
+.notifications-vnext-page .notifications-right-card {
+  position: relative;
+  isolation: isolate;
+  background: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  color: #111827 !important;
+  overflow: hidden;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+/* STAGE10A_RIGHT_RAIL_LIGHT_HOTFIX_END */
