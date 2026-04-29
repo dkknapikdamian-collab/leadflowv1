@@ -17,7 +17,6 @@ import Layout from '../components/Layout';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Progress } from '../components/ui/progress';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -95,31 +94,6 @@ function buildClientOptions(cases: CaseRecord[], leads: any[]) {
   return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
 }
 
-function leadSourceLabel(source?: string) {
-  switch (source) {
-    case 'instagram':
-      return 'Instagram';
-    case 'facebook':
-      return 'Facebook';
-    case 'messenger':
-      return 'Messenger';
-    case 'whatsapp':
-      return 'WhatsApp';
-    case 'email':
-      return 'E-mail';
-    case 'form':
-      return 'Formularz';
-    case 'phone':
-      return 'Telefon';
-    case 'referral':
-      return 'Polecenie';
-    case 'cold_outreach':
-      return 'Cold Outreach';
-    default:
-      return 'Inne';
-  }
-}
-
 function caseStatusLabel(status?: string) {
   switch (status) {
     case 'waiting_on_client':
@@ -139,12 +113,6 @@ function caseStatusLabel(status?: string) {
   }
 }
 
-function caseBadgeVariant(status?: string): 'default' | 'secondary' | 'destructive' | 'outline' {
-  if (status === 'blocked') return 'destructive';
-  if (status === 'ready_to_start' || status === 'completed') return 'secondary';
-  return 'outline';
-}
-
 function caseNeedsAttention(caseRecord: CaseRecord) {
   return caseRecord.status === 'blocked' || caseRecord.status === 'waiting_on_client' || (caseRecord.completenessPercent || 0) < 35;
 }
@@ -159,16 +127,6 @@ function toUpdatedDate(value: CaseRecord['updatedAt']) {
     return value.toDate();
   }
   return null;
-}
-
-
-function buildCaseSourceSummary(sourceLead: any) {
-  if (!sourceLead) {
-    return 'Źródło: sprawa uruchomiona ręcznie';
-  }
-
-  const leadName = sourceLead.name || sourceLead.company || 'Lead';
-  return `Źródło: temat pozyskany z leada ${leadName} • ${leadSourceLabel(sourceLead.source)}`;
 }
 
 
@@ -210,6 +168,25 @@ function lifecycleRiskLabel(level: string) {
   if (level === 'high') return 'Ryzyko wysokie';
   if (level === 'medium') return 'Ryzyko średnie';
   return 'Ryzyko niskie';
+}
+
+function lifecycleCompactLabel(record: CaseRecord, lifecycle: ReturnType<typeof resolveCaseLifecycleV1>) {
+  if (record.status === 'waiting_on_client' || lifecycle.bucket === 'waiting_approval') return 'Czeka na klienta';
+  if (record.status === 'blocked' || lifecycle.bucket === 'blocked') return 'Wymaga uwagi';
+  return 'Brak blokerów';
+}
+
+function lifecycleCompactVariant(record: CaseRecord, lifecycle: ReturnType<typeof resolveCaseLifecycleV1>) {
+  if (record.status === 'waiting_on_client' || lifecycle.bucket === 'waiting_approval') return 'amber';
+  if (record.status === 'blocked' || lifecycle.bucket === 'blocked') return 'red';
+  return 'green';
+}
+
+function compactNextAction(value: string) {
+  const text = String(value || '').trim();
+  if (!text) return 'Brak zaplanowanych działań';
+  const firstSentence = text.split(/[.!?]/)[0]?.trim() || text;
+  return firstSentence.slice(0, 56);
 }
 
 export default function Cases() {
@@ -584,44 +561,43 @@ export default function Cases() {
                   const attention = caseNeedsAttention(record);
                   const percent = Math.round(record.completenessPercent || 0);
                   const updatedAt = toUpdatedDate(record.updatedAt);
-                  const sourceLead = record.leadId ? leadsById.get(String(record.leadId)) : null;
-                  const sourceSummary = buildCaseSourceSummary(sourceLead);
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
+                  const statusLabel = caseStatusLabel(record.status);
+                  const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
+                  const compactLifecyclePill = compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel;
+                  const nextActionLabel = compactNextAction(lifecycle.nextOperatorAction);
+                  const metaSuffix = lifecycle.missingRequiredCount > 0
+                    ? `brakuje ${lifecycle.missingRequiredCount} elementów`
+                    : `${percent}% kompletności`;
                   return (
                     <div key={record.id} className="row case-row">
                       <span className="index">{index + 1}</span>
                       <span className="lead-main-cell min-w-0">
                         <Link to={`/case/${record.id}`} className="title">{record.title || 'Sprawa bez tytułu'}</Link>
-                        <span className="sub">Klient: {record.clientName || 'Brak nazwy klienta'} · {sourceSummary}</span>
+                        <span className="sub">Klient: {record.clientName || 'Brak nazwy klienta'} · {metaSuffix}</span>
                         <span className="statusline">
-                          <span className={`pill ${record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue'}`}>{caseStatusLabel(record.status)}</span>
-                          <span className={`pill ${lifecycle.bucket === 'blocked' ? 'red' : lifecycle.bucket === 'ready_to_start' ? 'green' : 'blue'}`}>{lifecycle.label}</span>
-                          {attention ? <span className="pill amber">Wymaga uwagi</span> : null}
-                          {record.leadId || record.createdFromLead ? <span className="pill">Temat pozyskany</span> : <span className="pill">Uruchomiona ręcznie</span>}
+                          <span className={`pill ${record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue'}`}>{statusLabel}</span>
+                          {compactLifecyclePill ? <span className={`pill ${lifecycleCompactVariant(record, lifecycle)}`}>{compactLifecyclePill}</span> : null}
+                          {attention && !compactLifecyclePill ? <span className="pill amber">Wymaga uwagi</span> : null}
                         </span>
                       </span>
                       <span className="lead-value-cell">
                         <span className="mini">Postęp</span>
                         <strong>{percent}%</strong>
-                        <Progress value={percent} className="case-progress" />
                       </span>
                       <span className="lead-action-cell">
                         <span className="mini">Następny ruch</span>
-                        <strong>{lifecycle.nextOperatorAction}</strong>
-                        <span className="sub">{updatedAt ? format(updatedAt, 'd MMM yyyy', { locale: pl }) : 'Brak daty aktywności'}</span>
+                        <strong className="next-action-text">{nextActionLabel}</strong>
+                        {updatedAt ? <span className="sub next-action-date">{format(updatedAt, 'd MMM yyyy', { locale: pl })}</span> : null}
                       </span>
                       <span className="lead-actions">
-                        {record.leadId ? (
-                          <Button variant="outline" className="btn ghost" asChild>
-                            <Link to={`/leads/${record.leadId}`} aria-label="Otwórz leada"><ExternalLink className="h-4 w-4" /></Link>
-                          </Button>
-                        ) : null}
                         <Button variant="outline" className="btn ghost" asChild>
                           <Link to={`/case/${record.id}`} aria-label={`Otwórz sprawę ${record.title || ''}`}><ChevronRight className="h-4 w-4" /></Link>
                         </Button>
-                        <Button variant="outline" className="btn ghost" onClick={() => setCaseToDelete(record)} aria-label={`Usuń sprawę ${record.title || ''}`}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <span className="sr-only">
+                          {record.leadId ? <Link to={`/leads/${record.leadId}`}><ExternalLink className="h-4 w-4" /></Link> : null}
+                          <button type="button" onClick={() => setCaseToDelete(record)}><Trash2 className="h-4 w-4" /></button>
+                        </span>
                       </span>
                     </div>
                   );
