@@ -287,3 +287,79 @@
     justify-content: flex-start !important;
   }
 }
+
+/* ETAP 2C hardfix: right rail + color parity */
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] {
+  color: #111827 !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .head-actions .btn.primary {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #fff !important;
+  box-shadow: 0 13px 26px rgba(37, 99, 235, .23) !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .head-actions .btn.soft-blue {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+  color: #1d4ed8 !important;
+  box-shadow: none !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .head-actions .btn:not(.primary):not(.soft-blue) {
+  background: #ffffff !important;
+  border-color: #e4e7ec !important;
+  color: #111827 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail,
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] aside.lead-right-rail {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  isolation: auto !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::before,
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::after {
+  content: none !important;
+  display: none !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail > * {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail .right-card {
+  background: rgba(255, 255, 255, .86) !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+  color: #111827 !important;
+  overflow: hidden !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail .quick-list a {
+  background: #ffffff !important;
+  border: 1px solid #e4e7ec !important;
+  color: #344054 !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .metric label {
+  color: #667085 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .08em !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .metric strong {
+  color: #111827 !important;
+}
+
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .metric .hint {
+  color: #667085 !important;
+}
