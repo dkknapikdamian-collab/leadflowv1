@@ -1,0 +1,677 @@
+/* VISUAL_STAGE21_TODAY_FINAL_LOCK_CSS_2026_04_29
+   Dziś: finalny bezpieczny lock wizualny pod HTML closeflow_full_app_modern_5s_ui_concept.html.
+   Zakres: wyłącznie wygląd zakładki Dziś, bez zmian logiki, API, Supabase, auth, billing, formularzy i danych.
+   Ten plik nie tworzy atrap i nie podmienia realnych liczb z aplikacji.
+*/
+
+.cf-html-shell .main-today {
+  --cf21-bg: #f4f6f8;
+  --cf21-bg-2: #eef2f6;
+  --cf21-card: #ffffff;
+  --cf21-card-soft: #f8fafc;
+  --cf21-text: #111827;
+  --cf21-muted: #667085;
+  --cf21-muted-2: #98a2b3;
+  --cf21-line: #e4e7ec;
+  --cf21-line-2: #d0d5dd;
+  --cf21-blue: #2563eb;
+  --cf21-blue-2: #1d4ed8;
+  --cf21-blue-soft: #eff6ff;
+  --cf21-green: #047857;
+  --cf21-green-soft: #ecfdf3;
+  --cf21-red: #b42318;
+  --cf21-red-soft: #fff1f3;
+  --cf21-amber: #b54708;
+  --cf21-amber-soft: #fffaeb;
+  --cf21-violet: #6941c6;
+  --cf21-violet-soft: #f4f3ff;
+  --cf21-shadow: 0 18px 45px rgba(16, 24, 40, 0.08);
+  --cf21-shadow-soft: 0 8px 22px rgba(16, 24, 40, 0.05);
+  --cf21-radius-xl: 28px;
+  --cf21-radius-lg: 20px;
+  --cf21-radius-md: 14px;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(37, 99, 235, 0.10), transparent 28rem),
+    radial-gradient(circle at 95% 7%, rgba(16, 24, 40, 0.08), transparent 26rem),
+    linear-gradient(180deg, #f7f9fc 0%, var(--cf21-bg) 34%, var(--cf21-bg-2) 100%) !important;
+}
+
+.cf-html-shell .main-today > [data-shell-content="true"] {
+  max-width: 1500px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+.cf-html-shell .main-today > [data-shell-content="true"] > div,
+.cf-html-shell .main-today > [data-shell-content="true"] > section,
+.cf-html-shell .main-today .today-page,
+.cf-html-shell .main-today .today-stage,
+.cf-html-shell .main-today .today-html-page {
+  max-width: 1500px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.cf-html-shell .main-today .page-head,
+.cf-html-shell .main-today [data-visual-page-head],
+.cf-html-shell .main-today header:first-child,
+.cf-html-shell .main-today .today-header,
+.cf-html-shell .main-today .today-page-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 22px !important;
+  margin-bottom: 20px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.cf-html-shell .main-today .kicker,
+.cf-html-shell .main-today [data-kicker],
+.cf-html-shell .main-today .today-kicker,
+.cf-html-shell .main-today header:first-child [class*="uppercase"]:first-child {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  width: fit-content !important;
+  padding: 5px 9px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--cf21-line) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: var(--cf21-muted) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+.cf-html-shell .main-today h1,
+.cf-html-shell .main-today .page-head h1,
+.cf-html-shell .main-today header:first-child h1 {
+  margin: 8px 0 0 !important;
+  color: var(--cf21-text) !important;
+  font-size: clamp(28px, 3vw, 42px) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.06em !important;
+}
+
+.cf-html-shell .main-today .lead-copy,
+.cf-html-shell .main-today .page-head p,
+.cf-html-shell .main-today header:first-child p,
+.cf-html-shell .main-today .today-lead-copy {
+  max-width: 780px !important;
+  margin: 8px 0 0 !important;
+  color: var(--cf21-muted) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+.cf-html-shell .main-today .head-actions,
+.cf-html-shell .main-today [data-visual-head-actions],
+.cf-html-shell .main-today header:first-child > div:last-child {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+}
+
+.cf-html-shell .main-today .head-actions button,
+.cf-html-shell .main-today .head-actions a,
+.cf-html-shell .main-today header:first-child button,
+.cf-html-shell .main-today header:first-child a,
+.cf-html-shell .main-today .today-header button,
+.cf-html-shell .main-today .today-header a {
+  min-height: 40px !important;
+  border: 1px solid var(--cf21-line) !important;
+  border-radius: 13px !important;
+  background: var(--cf21-card) !important;
+  color: var(--cf21-text) !important;
+  box-shadow: var(--cf21-shadow-soft) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+.cf-html-shell .main-today .head-actions button[class*="primary"],
+.cf-html-shell .main-today .head-actions button[class*="bg-primary"],
+.cf-html-shell .main-today header:first-child button[class*="primary"],
+.cf-html-shell .main-today header:first-child button[class*="bg-primary"],
+.cf-html-shell .main-today header:first-child button:last-child {
+  background: var(--cf21-blue) !important;
+  border-color: var(--cf21-blue) !important;
+  color: #ffffff !important;
+  box-shadow: 0 13px 26px rgba(37, 99, 235, 0.23) !important;
+}
+
+.cf-html-shell .main-today .grid-4,
+.cf-html-shell .main-today [data-visual-metrics],
+.cf-html-shell .main-today .today-metrics,
+.cf-html-shell .main-today .today-shortcuts,
+.cf-html-shell .main-today .stat-shortcut-grid,
+.cf-html-shell .main-today .grid:has([data-stat-shortcut-card]),
+.cf-html-shell .main-today .grid:has(.stat-shortcut-card),
+.cf-html-shell .main-today .grid:has(.today-top-tile) {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 13px !important;
+  margin-bottom: 17px !important;
+}
+
+.cf-html-shell .main-today .metric,
+.cf-html-shell .main-today [data-stat-shortcut-card],
+.cf-html-shell .main-today .stat-shortcut-card,
+.cf-html-shell .main-today .today-top-tile,
+.cf-html-shell .main-today .today-metric,
+.cf-html-shell .main-today .today-shortcuts > button,
+.cf-html-shell .main-today .today-shortcuts > a,
+.cf-html-shell .main-today .grid:has([data-stat-shortcut-card]) > *,
+.cf-html-shell .main-today .grid:has(.stat-shortcut-card) > * {
+  min-height: 106px !important;
+  border: 1px solid var(--cf21-line) !important;
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  box-shadow: var(--cf21-shadow-soft) !important;
+  padding: 16px !important;
+  cursor: pointer !important;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease !important;
+}
+
+.cf-html-shell .main-today .metric:hover,
+.cf-html-shell .main-today [data-stat-shortcut-card]:hover,
+.cf-html-shell .main-today .stat-shortcut-card:hover,
+.cf-html-shell .main-today .today-top-tile:hover,
+.cf-html-shell .main-today .today-shortcuts > button:hover,
+.cf-html-shell .main-today .today-shortcuts > a:hover,
+.cf-html-shell .main-today .grid:has([data-stat-shortcut-card]) > *:hover,
+.cf-html-shell .main-today .grid:has(.stat-shortcut-card) > *:hover {
+  transform: translateY(-2px) !important;
+  border-color: #93c5fd !important;
+  box-shadow: var(--cf21-shadow) !important;
+}
+
+.cf-html-shell .main-today .metric label,
+.cf-html-shell .main-today .metric .label,
+.cf-html-shell .main-today [data-stat-shortcut-card] label,
+.cf-html-shell .main-today .stat-shortcut-card label,
+.cf-html-shell .main-today .today-top-tile label,
+.cf-html-shell .main-today .today-metric label {
+  color: var(--cf21-muted) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+.cf-html-shell .main-today .metric strong,
+.cf-html-shell .main-today [data-stat-shortcut-card] strong,
+.cf-html-shell .main-today .stat-shortcut-card strong,
+.cf-html-shell .main-today .today-top-tile strong,
+.cf-html-shell .main-today .today-metric strong,
+.cf-html-shell .main-today .today-shortcuts strong {
+  display: block !important;
+  margin-top: 7px !important;
+  color: var(--cf21-text) !important;
+  font-size: 25px !important;
+  letter-spacing: -0.06em !important;
+  line-height: 1 !important;
+}
+
+.cf-html-shell .main-today .metric .hint,
+.cf-html-shell .main-today [data-stat-shortcut-card] .hint,
+.cf-html-shell .main-today .stat-shortcut-card .hint,
+.cf-html-shell .main-today .today-top-tile .hint,
+.cf-html-shell .main-today .today-metric .hint {
+  margin-top: 5px !important;
+  color: var(--cf21-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.3 !important;
+}
+
+.cf-html-shell .main-today .layout-list,
+.cf-html-shell .main-today [data-visual-layout-list],
+.cf-html-shell .main-today .today-layout,
+.cf-html-shell .main-today .today-main-grid,
+.cf-html-shell .main-today .grid:has(.right-card),
+.cf-html-shell .main-today .grid:has([data-visual-right-rail]),
+.cf-html-shell .main-today .grid:has(.today-right-rail),
+.cf-html-shell .main-today .grid:has(.today-sidebar) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 315px !important;
+  gap: 17px !important;
+  align-items: start !important;
+  margin-top: 17px !important;
+}
+
+.cf-html-shell .main-today .hero-grid,
+.cf-html-shell .main-today [data-visual-hero-grid],
+.cf-html-shell .main-today .today-hero-grid,
+.cf-html-shell .main-today .grid:has(.hero) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.65fr) !important;
+  gap: 14px !important;
+}
+
+.cf-html-shell .main-today .hero,
+.cf-html-shell .main-today [data-visual-hero],
+.cf-html-shell .main-today .today-priority-hero,
+.cf-html-shell .main-today .today-main-hero {
+  min-height: 156px !important;
+  border: 0 !important;
+  border-radius: var(--cf21-radius-xl) !important;
+  background: linear-gradient(135deg, #111827, #1d2939) !important;
+  color: #ffffff !important;
+  box-shadow: var(--cf21-shadow) !important;
+  padding: 18px !important;
+}
+
+.cf-html-shell .main-today .hero.light,
+.cf-html-shell .main-today [data-visual-hero="light"],
+.cf-html-shell .main-today .today-week-hero,
+.cf-html-shell .main-today .today-secondary-hero {
+  border: 1px solid var(--cf21-line) !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  color: var(--cf21-text) !important;
+  box-shadow: var(--cf21-shadow-soft) !important;
+}
+
+.cf-html-shell .main-today .hero label,
+.cf-html-shell .main-today .hero .label,
+.cf-html-shell .main-today .today-priority-hero label {
+  color: rgba(255, 255, 255, 0.62) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+.cf-html-shell .main-today .hero.light label,
+.cf-html-shell .main-today .today-week-hero label,
+.cf-html-shell .main-today .today-secondary-hero label {
+  color: var(--cf21-muted) !important;
+}
+
+.cf-html-shell .main-today .hero h2,
+.cf-html-shell .main-today .today-priority-hero h2,
+.cf-html-shell .main-today .today-main-hero h2 {
+  margin: 8px 0 6px !important;
+  color: inherit !important;
+  font-size: 27px !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.06em !important;
+}
+
+.cf-html-shell .main-today .hero p,
+.cf-html-shell .main-today .today-priority-hero p,
+.cf-html-shell .main-today .today-main-hero p {
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+.cf-html-shell .main-today .hero.light p,
+.cf-html-shell .main-today .today-week-hero p,
+.cf-html-shell .main-today .today-secondary-hero p {
+  color: var(--cf21-muted) !important;
+}
+
+.cf-html-shell .main-today .card,
+.cf-html-shell .main-today [data-slot="card"],
+.cf-html-shell .main-today .today-card,
+.cf-html-shell .main-today .today-section,
+.cf-html-shell .main-today .today-tile-card,
+.cf-html-shell .main-today .today-list-card,
+.cf-html-shell .main-today .table-card {
+  overflow: hidden !important;
+  border: 1px solid var(--cf21-line) !important;
+  border-radius: var(--cf21-radius-xl) !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  box-shadow: var(--cf21-shadow-soft) !important;
+}
+
+.cf-html-shell .main-today .card.pad,
+.cf-html-shell .main-today .today-card.pad,
+.cf-html-shell .main-today .today-section,
+.cf-html-shell .main-today .today-tile-card {
+  padding: 18px !important;
+}
+
+.cf-html-shell .main-today .panel-head,
+.cf-html-shell .main-today [data-visual-panel-head],
+.cf-html-shell .main-today .today-panel-head,
+.cf-html-shell .main-today .today-tile-header,
+.cf-html-shell .main-today .card-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 14px !important;
+}
+
+.cf-html-shell .main-today .panel-head h2,
+.cf-html-shell .main-today .panel-head h3,
+.cf-html-shell .main-today .today-panel-head h2,
+.cf-html-shell .main-today .today-panel-head h3,
+.cf-html-shell .main-today .today-tile-header h2,
+.cf-html-shell .main-today .today-tile-header h3,
+.cf-html-shell .main-today .card-header h2,
+.cf-html-shell .main-today .card-header h3 {
+  margin: 0 !important;
+  color: var(--cf21-text) !important;
+  font-size: 15px !important;
+  letter-spacing: -0.03em !important;
+}
+
+.cf-html-shell .main-today .panel-head p,
+.cf-html-shell .main-today .today-panel-head p,
+.cf-html-shell .main-today .today-tile-header p,
+.cf-html-shell .main-today .card-header p {
+  margin: 4px 0 0 !important;
+  color: var(--cf21-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+.cf-html-shell .main-today .row,
+.cf-html-shell .main-today [data-visual-row],
+.cf-html-shell .main-today .today-row,
+.cf-html-shell .main-today .today-item,
+.cf-html-shell .main-today .work-card,
+.cf-html-shell .main-today [data-work-card],
+.cf-html-shell .main-today .today-action-card,
+.cf-html-shell .main-today .today-list-card > div {
+  border-radius: 18px !important;
+  border: 1px solid var(--cf21-line) !important;
+  background: var(--cf21-card-soft) !important;
+  box-shadow: none !important;
+}
+
+.cf-html-shell .main-today .work-card,
+.cf-html-shell .main-today [data-work-card],
+.cf-html-shell .main-today .today-action-card,
+.cf-html-shell .main-today .today-row,
+.cf-html-shell .main-today .today-item {
+  display: grid !important;
+  gap: 9px !important;
+  padding: 14px !important;
+}
+
+.cf-html-shell .main-today .work-head,
+.cf-html-shell .main-today .today-row-head,
+.cf-html-shell .main-today .today-item-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+.cf-html-shell .main-today .title,
+.cf-html-shell .main-today .today-row-title,
+.cf-html-shell .main-today .today-item-title,
+.cf-html-shell .main-today .work-card strong {
+  color: var(--cf21-text) !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.2 !important;
+}
+
+.cf-html-shell .main-today .sub,
+.cf-html-shell .main-today .mini,
+.cf-html-shell .main-today .today-row-sub,
+.cf-html-shell .main-today .today-item-sub,
+.cf-html-shell .main-today .work-card p {
+  color: var(--cf21-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+.cf-html-shell .main-today .pill,
+.cf-html-shell .main-today .badge,
+.cf-html-shell .main-today [data-slot="badge"],
+.cf-html-shell .main-today .inline-flex.items-center.rounded-full {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  min-height: 24px !important;
+  border-radius: 999px !important;
+  border: 1px solid transparent !important;
+  background: #f2f4f7 !important;
+  color: #475467 !important;
+  padding: 0 9px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+.cf-html-shell .main-today .pill.blue,
+.cf-html-shell .main-today .badge.blue,
+.cf-html-shell .main-today [data-tone="blue"],
+.cf-html-shell .main-today .bg-blue-50,
+.cf-html-shell .main-today .bg-sky-50 {
+  border-color: #bfdbfe !important;
+  background: var(--cf21-blue-soft) !important;
+  color: var(--cf21-blue-2) !important;
+}
+
+.cf-html-shell .main-today .pill.green,
+.cf-html-shell .main-today .badge.green,
+.cf-html-shell .main-today [data-tone="green"],
+.cf-html-shell .main-today .bg-emerald-50,
+.cf-html-shell .main-today .bg-green-50 {
+  border-color: #bbf7d0 !important;
+  background: var(--cf21-green-soft) !important;
+  color: var(--cf21-green) !important;
+}
+
+.cf-html-shell .main-today .pill.red,
+.cf-html-shell .main-today .badge.red,
+.cf-html-shell .main-today [data-tone="red"],
+.cf-html-shell .main-today .bg-red-50,
+.cf-html-shell .main-today .bg-rose-50,
+.cf-html-shell .main-today [class*="destructive"] {
+  border-color: #fecdd3 !important;
+  background: var(--cf21-red-soft) !important;
+  color: var(--cf21-red) !important;
+}
+
+.cf-html-shell .main-today .pill.amber,
+.cf-html-shell .main-today .badge.amber,
+.cf-html-shell .main-today [data-tone="amber"],
+.cf-html-shell .main-today .bg-amber-50,
+.cf-html-shell .main-today .bg-yellow-50 {
+  border-color: #fedf89 !important;
+  background: var(--cf21-amber-soft) !important;
+  color: var(--cf21-amber) !important;
+}
+
+.cf-html-shell .main-today .pill.violet,
+.cf-html-shell .main-today .badge.violet,
+.cf-html-shell .main-today [data-tone="violet"],
+.cf-html-shell .main-today .bg-violet-50,
+.cf-html-shell .main-today .bg-purple-50 {
+  border-color: #ddd6fe !important;
+  background: var(--cf21-violet-soft) !important;
+  color: var(--cf21-violet) !important;
+}
+
+.cf-html-shell .main-today .right-card,
+.cf-html-shell .main-today [data-visual-right-rail],
+.cf-html-shell .main-today .today-right-rail,
+.cf-html-shell .main-today .today-sidebar,
+.cf-html-shell .main-today aside:not(.sidebar) {
+  padding: 16px !important;
+  border: 1px solid var(--cf21-line) !important;
+  border-radius: var(--cf21-radius-xl) !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  box-shadow: var(--cf21-shadow-soft) !important;
+}
+
+.cf-html-shell .main-today .quick-list,
+.cf-html-shell .main-today [data-visual-quick-list],
+.cf-html-shell .main-today .today-shortcut-list,
+.cf-html-shell .main-today .today-right-rail nav,
+.cf-html-shell .main-today aside:not(.sidebar) nav {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.cf-html-shell .main-today .quick-list button,
+.cf-html-shell .main-today .quick-list a,
+.cf-html-shell .main-today .today-shortcut-list button,
+.cf-html-shell .main-today .today-shortcut-list a,
+.cf-html-shell .main-today .today-right-rail nav button,
+.cf-html-shell .main-today .today-right-rail nav a,
+.cf-html-shell .main-today aside:not(.sidebar) nav button,
+.cf-html-shell .main-today aside:not(.sidebar) nav a {
+  min-height: 40px !important;
+  border: 1px solid var(--cf21-line) !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  color: #344054 !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 12px !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+.cf-html-shell .main-today .quick-list button:hover,
+.cf-html-shell .main-today .quick-list a:hover,
+.cf-html-shell .main-today .today-shortcut-list button:hover,
+.cf-html-shell .main-today .today-shortcut-list a:hover,
+.cf-html-shell .main-today .today-right-rail nav button:hover,
+.cf-html-shell .main-today .today-right-rail nav a:hover,
+.cf-html-shell .main-today aside:not(.sidebar) nav button:hover,
+.cf-html-shell .main-today aside:not(.sidebar) nav a:hover {
+  border-color: #bfdbfe !important;
+  background: var(--cf21-blue-soft) !important;
+  color: var(--cf21-blue-2) !important;
+}
+
+.cf-html-shell .main-today .note,
+.cf-html-shell .main-today .today-note,
+.cf-html-shell .main-today [data-visual-note] {
+  border: 1px dashed var(--cf21-line-2) !important;
+  border-radius: 18px !important;
+  background: var(--cf21-card-soft) !important;
+  color: var(--cf21-muted) !important;
+  padding: 14px !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+.cf-html-shell .main-today input,
+.cf-html-shell .main-today textarea,
+.cf-html-shell .main-today select {
+  min-height: 40px;
+  border-color: var(--cf21-line) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: var(--cf21-text) !important;
+}
+
+.cf-html-shell .main-today [role="dialog"] {
+  border-radius: var(--cf21-radius-xl) !important;
+}
+
+.cf-html-shell .main-today [role="dialog"] input,
+.cf-html-shell .main-today [role="dialog"] textarea,
+.cf-html-shell .main-today [role="dialog"] select {
+  border-radius: 14px !important;
+}
+
+@media (max-width: 1220px) {
+  .cf-html-shell .main-today .grid-4,
+  .cf-html-shell .main-today [data-visual-metrics],
+  .cf-html-shell .main-today .today-metrics,
+  .cf-html-shell .main-today .today-shortcuts,
+  .cf-html-shell .main-today .stat-shortcut-grid,
+  .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]),
+  .cf-html-shell .main-today .grid:has(.stat-shortcut-card),
+  .cf-html-shell .main-today .grid:has(.today-top-tile) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .cf-html-shell .main-today .layout-list,
+  .cf-html-shell .main-today [data-visual-layout-list],
+  .cf-html-shell .main-today .today-layout,
+  .cf-html-shell .main-today .today-main-grid,
+  .cf-html-shell .main-today .grid:has(.right-card),
+  .cf-html-shell .main-today .grid:has([data-visual-right-rail]),
+  .cf-html-shell .main-today .grid:has(.today-right-rail),
+  .cf-html-shell .main-today .grid:has(.today-sidebar) {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .cf-html-shell .main-today > [data-shell-content="true"] {
+    padding: 0 !important;
+  }
+
+  .cf-html-shell .main-today .page-head,
+  .cf-html-shell .main-today [data-visual-page-head],
+  .cf-html-shell .main-today header:first-child,
+  .cf-html-shell .main-today .today-header,
+  .cf-html-shell .main-today .today-page-head {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .cf-html-shell .main-today .head-actions,
+  .cf-html-shell .main-today [data-visual-head-actions],
+  .cf-html-shell .main-today header:first-child > div:last-child {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+  }
+
+  .cf-html-shell .main-today h1,
+  .cf-html-shell .main-today .page-head h1,
+  .cf-html-shell .main-today header:first-child h1 {
+    font-size: 29px !important;
+  }
+
+  .cf-html-shell .main-today .grid-4,
+  .cf-html-shell .main-today [data-visual-metrics],
+  .cf-html-shell .main-today .today-metrics,
+  .cf-html-shell .main-today .today-shortcuts,
+  .cf-html-shell .main-today .stat-shortcut-grid,
+  .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]),
+  .cf-html-shell .main-today .grid:has(.stat-shortcut-card),
+  .cf-html-shell .main-today .grid:has(.today-top-tile),
+  .cf-html-shell .main-today .hero-grid,
+  .cf-html-shell .main-today [data-visual-hero-grid],
+  .cf-html-shell .main-today .today-hero-grid,
+  .cf-html-shell .main-today .grid:has(.hero) {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cf-html-shell .main-today .metric,
+  .cf-html-shell .main-today [data-stat-shortcut-card],
+  .cf-html-shell .main-today .stat-shortcut-card,
+  .cf-html-shell .main-today .today-top-tile,
+  .cf-html-shell .main-today .today-metric,
+  .cf-html-shell .main-today .today-shortcuts > button,
+  .cf-html-shell .main-today .today-shortcuts > a {
+    min-height: 92px !important;
+  }
+
+  .cf-html-shell .main-today .card,
+  .cf-html-shell .main-today [data-slot="card"],
+  .cf-html-shell .main-today .today-card,
+  .cf-html-shell .main-today .today-section,
+  .cf-html-shell .main-today .today-tile-card,
+  .cf-html-shell .main-today .today-list-card,
+  .cf-html-shell .main-today .table-card,
+  .cf-html-shell .main-today .right-card,
+  .cf-html-shell .main-today [data-visual-right-rail],
+  .cf-html-shell .main-today .today-right-rail,
+  .cf-html-shell .main-today .today-sidebar,
+  .cf-html-shell .main-today aside:not(.sidebar) {
+    border-radius: 22px !important;
+  }
+}
