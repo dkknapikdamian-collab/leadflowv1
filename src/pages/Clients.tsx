@@ -53,7 +53,7 @@ export default function Clients() {
       setCases(caseRows as any[]);
       setPayments(paymentRows as any[]);
     } catch (error: any) {
-      toast.error(`B≥πd odczytu klientÛw: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`B≈ÇƒÖd odczytu klient√≥w: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLoading(false);
     }
@@ -137,11 +137,11 @@ export default function Clients() {
   const handleCreateClient = async (event: FormEvent) => {
     event.preventDefault();
     if (!hasAccess) {
-      toast.error('TwÛj trial wygas≥.');
+      toast.error('Tw√≥j trial wygas≈Ç.');
       return;
     }
     if (!newClient.name.trim()) {
-      toast.error('Podaj nazwÍ klienta.');
+      toast.error('Podaj nazwƒô klienta.');
       return;
     }
     if (!workspace?.id) {
@@ -164,7 +164,7 @@ export default function Clients() {
       setNewClient({ name: '', company: '', email: '', phone: '' });
       await reload();
     } catch (error: any) {
-      toast.error(`B≥πd zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`B≈ÇƒÖd zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setCreatePending(false);
     }
@@ -179,16 +179,16 @@ export default function Clients() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('TwÛj trial wygas≥.');
+      toast.error('Tw√≥j trial wygas≈Ç.');
       return;
     }
 
     const relationCount = counters.leads + counters.cases + counters.payments;
     const relationText = relationCount > 0
-      ? '\n\nTen klient ma powiπzania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Rekord zniknie z aktywnej listy, ale dane nie zostanπ trwale skasowane.'
-      : '\n\nRekord zniknie z aktywnej listy, ale bÍdzie moøna go przywrÛciÊ z kosza.';
+      ? '\n\nTen klient ma powiƒÖzania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Rekord zniknie z aktywnej listy, ale dane nie zostanƒÖ trwale skasowane.'
+      : '\n\nRekord zniknie z aktywnej listy, ale bƒôdzie mo≈ºna go przywr√≥ciƒá z kosza.';
 
-    if (!window.confirm('PrzenieúÊ klienta do kosza: ' + (client.name || 'Klient') + '?' + relationText)) return;
+    if (!window.confirm('Przenie≈õƒá klienta do kosza: ' + (client.name || 'Klient') + '?' + relationText)) return;
 
     try {
       setArchivePendingId(client.id);
@@ -196,7 +196,7 @@ export default function Clients() {
       toast.success('Klient przeniesiony do kosza');
       await reload();
     } catch (error: any) {
-      toast.error('B≥πd przenoszenia klienta do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('B≈ÇƒÖd przenoszenia klienta do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -207,19 +207,19 @@ export default function Clients() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('TwÛj trial wygas≥.');
+      toast.error('Tw√≥j trial wygas≈Ç.');
       return;
     }
 
-    if (!window.confirm('PrzywrÛciÊ klienta do aktywnej listy: ' + (client.name || 'Klient') + '?')) return;
+    if (!window.confirm('Przywr√≥ciƒá klienta do aktywnej listy: ' + (client.name || 'Klient') + '?')) return;
 
     try {
       setArchivePendingId(client.id);
       await updateClientInSupabase({ id: client.id, archivedAt: null });
-      toast.success('Klient przywrÛcony');
+      toast.success('Klient przywr√≥cony');
       await reload();
     } catch (error: any) {
-      toast.error('B≥πd przywracania klienta: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('B≈ÇƒÖd przywracania klienta: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -232,13 +232,13 @@ export default function Clients() {
           <div>
             <span className="kicker">Baza relacji</span>
             <h1>Klienci</h1>
-            <p className="lead-copy">Lista klientÛw nie powinna dublowaÊ pracy ze spraw. To kartoteka osÛb i szybkie przejúcie do aktywnej sprawy.</p>
+            <p className="lead-copy">Lista klient√≥w nie powinna dublowaƒá pracy ze spraw. To kartoteka os√≥b i szybkie przej≈õcie do aktywnej sprawy.</p>
           </div>
           <div className="head-actions">
             <Button type="button" variant="outline" className="btn soft-blue">? Zapytaj AI</Button>
             <Button type="button" variant="outline" className="btn" onClick={() => setShowArchived((current) => !current)}>
               {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
-              {showArchived ? 'Pokaø aktywnych' : 'Kosz'}
+              {showArchived ? 'Poka≈º aktywnych' : 'Kosz'}
               <span className="pill">{showArchived ? activeCount : archivedCount}</span>
             </Button>
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
@@ -254,7 +254,7 @@ export default function Clients() {
                     <div className="space-y-1"><Label>E-mail</Label><Input type="email" value={newClient.email} onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))} /></div>
                     <div className="space-y-1"><Label>Telefon</Label><Input value={newClient.phone} onChange={(event) => setNewClient((prev) => ({ ...prev, phone: event.target.value }))} /></div>
                   </div>
-                  <DialogFooter><Button type="submit" disabled={createPending}>{createPending ? 'Zapisywanie...' : 'UtwÛrz klienta'}</Button></DialogFooter>
+                  <DialogFooter><Button type="submit" disabled={createPending}>{createPending ? 'Zapisywanie...' : 'Utw√≥rz klienta'}</Button></DialogFooter>
                 </form>
               </DialogContent>
             </Dialog>
@@ -263,13 +263,13 @@ export default function Clients() {
 
         <div className="grid-4">
           <button type="button" className={`metric ${!showArchived ? 'active' : ''}`} onClick={() => setShowArchived(false)}>
-            <div><label>Aktywni</label><strong>{activeCount}</strong><div className="hint">z otwartπ sprawπ</div></div>
+            <div><label>Aktywni</label><strong>{activeCount}</strong><div className="hint">z otwartƒÖ sprawƒÖ</div></div>
           </button>
           <button type="button" className="metric">
             <div><label>Bez sprawy</label><strong>{clientsWithoutCases}</strong><div className="hint">tylko kontakt</div></div>
           </button>
           <button type="button" className="metric">
-            <div><label>WartoúÊ</label><strong>{relationValue.toLocaleString()} PLN</strong><div className="hint">w relacjach</div></div>
+            <div><label>Warto≈õƒá</label><strong>{relationValue.toLocaleString()} PLN</strong><div className="hint">w relacjach</div></div>
           </button>
           <button type="button" className="metric">
             <div><label>Bez ruchu</label><strong>{staleClients}</strong><div className="hint">do sprawdzenia</div></div>
@@ -280,13 +280,13 @@ export default function Clients() {
           <div className="stack">
             <div className="search">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
-              <Input placeholder={showArchived ? 'Szukaj w koszu klientÛw...' : 'Szukaj klienta, telefonu, maila, firmy albo sprawy...'} value={search} onChange={(event) => setSearch(event.target.value)} />
+              <Input placeholder={showArchived ? 'Szukaj w koszu klient√≥w...' : 'Szukaj klienta, telefonu, maila, firmy albo sprawy...'} value={search} onChange={(event) => setSearch(event.target.value)} />
             </div>
 
             {loading ? (
-              <div className="table-card"><div className="row row-empty"><span className="index"><Loader2 className="w-4 h-4 animate-spin" /></span><span><span className="title">£adowanie klientÛw</span><span className="sub">Pobieram dane z aplikacji.</span></span></div></div>
+              <div className="table-card"><div className="row row-empty"><span className="index"><Loader2 className="w-4 h-4 animate-spin" /></span><span><span className="title">≈Åadowanie klient√≥w</span><span className="sub">Pobieram dane z aplikacji.</span></span></div></div>
             ) : filtered.length === 0 ? (
-              <div className="table-card"><div className="row row-empty"><span className="index">0</span><span><span className="title">{showArchived ? 'Kosz klientÛw jest pusty.' : 'Brak klientÛw do wyúwietlenia.'}</span></span></div></div>
+              <div className="table-card"><div className="row row-empty"><span className="index">0</span><span><span className="title">{showArchived ? 'Kosz klient√≥w jest pusty.' : 'Brak klient√≥w do wy≈õwietlenia.'}</span></span></div></div>
             ) : (
               <div className="table-card">
                 {filtered.map((client, index) => {
@@ -297,7 +297,7 @@ export default function Clients() {
                       <span className="index">{index + 1}</span>
                       <span className="lead-main-cell min-w-0">
                         <Link to={`/clients/${client.id}`} className="title">{client.name || 'Klient'}</Link>
-                        <span className="sub">{client.company || 'Bez firmy'} ï {client.email || 'brak e-maila'} ï {client.phone || 'brak telefonu'}</span>
+                        <span className="sub">{client.company || 'Bez firmy'} ¬∑ {client.email || 'brak e-maila'} ¬∑ {client.phone || 'brak telefonu'}</span>
                         <span className="statusline">
                           {isArchived ? <span className="pill amber">W koszu</span> : <span className="pill green">Aktywna sprawa</span>}
                           <span className="pill blue">Leady: {counters.leads}</span>
@@ -305,13 +305,13 @@ export default function Clients() {
                         </span>
                       </span>
                       <span className="lead-value-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
-                      <span className="lead-action-cell"><span className="mini">NastÍpny ruch</span><strong>{counters.cases > 0 ? 'W obs≥udze' : 'Jutro'}</strong></span>
+                      <span className="lead-action-cell"><span className="mini">Nastƒôpny ruch</span><strong>{counters.cases > 0 ? 'W obs≈Çudze' : 'Jutro'}</strong></span>
                       <span className="lead-actions">
-                        <Link to={`/clients/${client.id}`} className="btn ghost" aria-label={`OtwÛrz klienta ${client.name || ''}`}><UserRound className="h-4 w-4" /></Link>
+                        <Link to={`/clients/${client.id}`} className="btn ghost" aria-label={`Otw√≥rz klienta ${client.name || ''}`}><UserRound className="h-4 w-4" /></Link>
                         <button
                           type="button"
-                          aria-label={isArchived ? 'PrzywrÛÊ klienta' : 'Przenieú klienta do kosza'}
-                          title={isArchived ? 'PrzywrÛÊ klienta' : 'Przenieú klienta do kosza'}
+                          aria-label={isArchived ? 'Przywr√≥ƒá klienta' : 'Przenie≈õ klienta do kosza'}
+                          title={isArchived ? 'Przywr√≥ƒá klienta' : 'Przenie≈õ klienta do kosza'}
                           disabled={archivePendingId === client.id}
                           onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
                           className="btn ghost"
@@ -338,17 +338,17 @@ export default function Clients() {
             </aside>
 
             <aside className="right-card">
-              <div className="panel-head"><div><h3>Klienci do uwagi</h3><p>Relacje bez pe≥nego spiÍcia lead/sprawa.</p></div></div>
+              <div className="panel-head"><div><h3>Klienci do uwagi</h3><p>Relacje bez pe≈Çnego spiƒôcia lead/sprawa.</p></div></div>
               <div className="quick-list">
                 {followupCandidates.length ? followupCandidates.map((client) => {
                   const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
                   return (
                     <Link key={client.id} to={`/clients/${client.id}`}>
-                      <span><strong>{client.name || 'Klient'}</strong><small>Leady {counters.leads} ï Sprawy {counters.cases}</small></span>
+                      <span><strong>{client.name || 'Klient'}</strong><small>Leady {counters.leads} ¬∑ Sprawy {counters.cases}</small></span>
                       <UserRound className="h-4 w-4" />
                     </Link>
                   );
-                }) : <div className="note">Brak klientÛw wymagajπcych natychmiastowej uwagi.</div>}
+                }) : <div className="note">Brak klient√≥w wymagajƒÖcych natychmiastowej uwagi.</div>}
               </div>
             </aside>
           </div>
