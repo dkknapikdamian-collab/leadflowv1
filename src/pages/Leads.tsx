@@ -489,7 +489,7 @@ export default function Leads() {
   };
   return (
     <Layout>
-      <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true">
+      <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">
         <div className="page-head">
           <div>
             <span className="kicker">Lista sprzedażowa</span>
@@ -646,7 +646,7 @@ export default function Leads() {
 
         <div className="layout-list" data-stage25-leads-layout-list="true">
           <div className="stack">
-            <div className="search">
+            <div className="search" data-leads-search="true">
               <span aria-hidden="true">⌕</span>
               <input
                 placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...'}
@@ -673,7 +673,7 @@ export default function Leads() {
               </div>
             ) : null}
 
-            <div className="table-card" data-stage25-lead-table-card="true">
+            <div className="table-card lead-table-card" data-stage25-lead-table-card="true">
               {loading || workspaceLoading ? (
                 <div className="row row-empty">
                   <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
@@ -757,7 +757,7 @@ export default function Leads() {
             </div>
           </div>
 
-          <aside className="stack" data-stage25-leads-right-rail="true">
+          <aside className="stack lead-right-rail" data-stage25-leads-right-rail="true">
             <div className="right-card" data-relation-value-board="true">
               <div className="panel-head">
                 <div>

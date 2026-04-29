@@ -66,6 +66,14 @@
   margin-top: 17px !important;
 }
 
+.cf-html-view.main-leads-html .lead-table-card .row > * {
+  min-width: 0 !important;
+}
+
+.cf-html-view.main-leads-html .lead-right-rail {
+  align-content: start !important;
+}
+
 .cf-html-view.main-leads-html .search input {
   height: 50px !important;
   border-radius: 18px !important;
