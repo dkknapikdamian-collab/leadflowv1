@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent, useMemo, useRef } from 'react';
+﻿import { useState, useEffect, FormEvent, useMemo, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -30,6 +30,7 @@ import {
   parseISO,
   isSameDay,
   addDays,
+  addHours,
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -109,7 +110,7 @@ const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 function createEntryActionClass() {
-  return 'inline-flex h-8 items-center justify-center rounded-lg border border-slate-700 bg-slate-950 px-2.5 text-[11px] font-semibold text-white transition hover:border-slate-500 hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-50';
+  return 'inline-flex h-8 items-center justify-center rounded-lg border border-slate-200 bg-white px-2.5 text-[11px] font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-50';
 }
 
 function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
@@ -198,14 +199,16 @@ type ScheduleEntryCardProps = {
   caseTitle?: string | null;
   onEdit: (entry: ScheduleEntry) => void;
   onShift: (entry: ScheduleEntry, days: number) => void;
+  onShiftHours: (entry: ScheduleEntry, hours: number) => void;
   onComplete: (entry: ScheduleEntry) => void;
   onDelete: (entry: ScheduleEntry) => void;
 };
 
-function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitle, onEdit, onShift, onComplete, onDelete }: ScheduleEntryCardProps) {
+function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitle, onEdit, onShift, onShiftHours, onComplete, onDelete }: ScheduleEntryCardProps) {
   const pendingEdit = actionPendingId === `${entry.id}:edit`;
   const pendingDay = actionPendingId === `${entry.id}:1`;
   const pendingWeek = actionPendingId === `${entry.id}:7`;
+  const pendingHour = actionPendingId === `${entry.id}:h1`;
   const pendingDone = actionPendingId === `${entry.id}:done`;
   const pendingDelete = actionPendingId === `${entry.id}:delete`;
   const isCompletedEntry = isCompletedCalendarEntry(entry);
@@ -260,10 +263,11 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className="grid grid-cols-4 gap-1.5">
         <button type="button" className={actionButtonClass} onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
         <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
         <button type="button" className={actionButtonClass} onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
+        <button type="button" className={actionButtonClass} onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
         <button type="button" className={actionButtonClass} onClick={() => onComplete(entry)} disabled={pendingDone}>
           <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
         </button>
@@ -765,6 +769,62 @@ export default function Calendar() {
     }
   };
 
+  const handleShiftEntryHours = async (entry: ScheduleEntry, hours: number) => {
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
+
+    try {
+      setActionPendingId(`${entry.id}:h${hours}`);
+
+      if (entry.kind === 'event') {
+        const baseStart = parseISO(entry.raw?.startAt || entry.startsAt);
+        const nextStart = toDateTimeLocalValue(addHours(baseStart, hours));
+        const nextEnd = entry.raw?.endAt
+          ? toDateTimeLocalValue(addHours(parseISO(entry.raw.endAt), hours))
+          : null;
+
+        await updateEventInSupabase({
+          id: entry.sourceId,
+          title: entry.raw?.title || entry.title,
+          type: entry.raw?.type || 'meeting',
+          startAt: nextStart,
+          endAt: nextEnd,
+          leadId: entry.raw?.leadId ?? null,
+          caseId: entry.raw?.caseId ?? null,
+        });
+      } else if (entry.kind === 'task') {
+        const baseStart = parseISO(getTaskStartAt(entry.raw) || entry.startsAt);
+        const nextStart = addHours(baseStart, hours);
+        const taskPayload = syncTaskDerivedFields({
+          ...entry.raw,
+          dueAt: toDateTimeLocalValue(nextStart),
+          date: format(nextStart, 'yyyy-MM-dd'),
+          time: format(nextStart, 'HH:mm'),
+        });
+
+        await updateTaskInSupabase({
+          id: entry.sourceId,
+          title: taskPayload.title,
+          type: taskPayload.type,
+          date: taskPayload.date,
+          status: taskPayload.status,
+          priority: taskPayload.priority,
+          leadId: taskPayload.leadId ?? null,
+          caseId: entry.raw?.caseId ?? null,
+        });
+      }
+
+      await refreshSupabaseBundle();
+      toast.success(hours === 1 ? 'Przesunięto o 1 godzinę' : `Przesunięto o ${hours} godz.`);
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    } finally {
+      setActionPendingId(null);
+    }
+  };
+
   const handleCompleteEntry = async (entry: ScheduleEntry) => {
     if (!hasAccess) {
       toast.error('Trial wygasł.');
@@ -1198,10 +1258,17 @@ export default function Calendar() {
                 const isSelectedDay = isSameDay(day, selectedDate);
 
                 return (
-                  <button
+                  <div
                     key={index}
-                    type="button"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedDate(day)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setSelectedDate(day);
+                      }
+                    }}
                     style={{ minHeight: monthCellMinHeight }}
                     className={`calendar-day-cell ${!isCurrentMonth ? 'is-outside' : ''} ${isSelectedDay ? 'is-selected' : ''} ${isTodayDay ? 'is-today' : ''}`}
                   >
@@ -1216,16 +1283,30 @@ export default function Calendar() {
                         const isCompletedEntry = entry.kind === 'task' && entry.raw?.status === 'done';
 
                         return (
-                          <div key={entry.id} className={`calendar-day-pill ${getEntryTone(entry)} ${isCompletedEntry ? 'is-done' : ''}`}>
-                            <span className={isCompletedEntry ? 'is-done-text' : ''}>{format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}</span>
-                          </div>
+                          <button
+                            key={entry.id}
+                            type="button"
+                            className={`calendar-day-pill ${getEntryTone(entry)} ${isCompletedEntry ? 'is-done' : ''}`}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setSelectedDate(day);
+                              handleOpenEdit(entry);
+                            }}
+                            title={entry.title}
+                          >
+                            <span className="calendar-pill-type">{entry.kind === 'event' ? 'Wyd' : entry.kind === 'task' ? 'Zad' : 'Lead'}</span>
+                            <span className={isCompletedEntry ? 'is-done-text' : ''}>
+                              {format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}
+                              {entry.raw?.caseId ? ' · Sprawa' : entry.raw?.leadId ? ' · Lead' : ''}
+                            </span>
+                          </button>
                         );
                       })}
                       {dayEntries.length > (calendarScale === 'compact' ? 3 : 4) && (
                         <div className="calendar-more">+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} więcej</div>
                       )}
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -1252,6 +1333,7 @@ export default function Calendar() {
                       caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
                       onEdit={handleOpenEdit}
                       onShift={handleShiftEntry}
+                      onShiftHours={handleShiftEntryHours}
                       onComplete={handleCompleteEntry}
                       onDelete={handleDeleteEntry}
                     />
@@ -1271,20 +1353,24 @@ export default function Calendar() {
               </div>
               <div className="calendar-week-filter-list">
                 {(() => {
-                  const today = new Date();
-                  const weekStart = selectedWeekStart;
-                  const wednesday = addDays(weekStart, 2);
-                  const friday = addDays(weekStart, 4);
-                  const nextWeekStart = addDays(weekStart, 7);
+                  const nextWeekStart = addDays(selectedWeekStart, 7);
+                  const days = weekDays.map((day) => ({
+                    key: day.toISOString(),
+                    label: isToday(day) ? 'Dzisiaj' : format(day, 'EEEE', { locale: pl }),
+                    date: day,
+                    count: sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day)).length,
+                  }));
                   const quick = [
-                    { key: 'today', label: 'Dzisiaj', date: today },
-                    { key: 'wed', label: 'Środa', date: wednesday },
-                    { key: 'fri', label: 'Piątek', date: friday },
-                    { key: 'next', label: 'Przyszły tydzień', date: nextWeekStart },
+                    ...days,
+                    {
+                      key: `next:${nextWeekStart.toISOString()}`,
+                      label: 'Przyszły tydzień',
+                      date: nextWeekStart,
+                      count: sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, nextWeekStart)).length,
+                    },
                   ];
 
                   return quick.map((item) => {
-                    const count = sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, item.date)).length;
                     const isActive = isSameDay(item.date, selectedDate);
                     return (
                       <button
@@ -1294,10 +1380,9 @@ export default function Calendar() {
                         onClick={() => {
                           setSelectedDate(item.date);
                           setCurrentMonth(item.date);
-                          if (item.key === 'next') setCalendarView('week');
                         }}
                       >
-                        <span>{item.label} · {count} {count === 1 ? 'rzecz' : 'rzeczy'}</span>
+                        <span>{item.label} · {item.count} {item.count === 1 ? 'rzecz' : 'rzeczy'}</span>
                       </button>
                     );
                   });
@@ -1314,50 +1399,39 @@ export default function Calendar() {
               <div className="calendar-week-plan-list">
                 {weekDays.map((day) => {
                   const dayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day));
-                  if (dayEntries.length === 0) return null;
-                  return dayEntries.map((entry) => {
-                    const dayLabel = isToday(day)
-                      ? 'DZIŚ'
-                      : format(day, 'EE', { locale: pl }).toUpperCase();
-                    const dayNumber = format(day, 'd');
-                    const caseTitle = entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null;
-                    const meta = caseTitle
-                      ? `Powiązane ze sprawą ${caseTitle}`
-                      : entry.leadName
-                        ? `Powiązane z leadem ${entry.leadName}`
-                        : null;
-                    const isDone = isCompletedCalendarEntry(entry);
+                  const isActiveDay = isSameDay(day, selectedDate);
 
-                    return (
-                      <button
-                        key={entry.id}
-                        type="button"
-                        className={`calendar-week-plan-row ${isDone ? 'is-done' : ''}`}
-                        onClick={() => handleOpenEdit(entry)}
-                      >
-                        <div className="calendar-week-datechip">
-                          <strong>{dayLabel}</strong>
-                          <span>{dayNumber}</span>
+                  return (
+                    <section key={day.toISOString()} className={`calendar-week-day ${isActiveDay ? 'is-active' : ''}`}>
+                      <header className="calendar-week-day-head">
+                        <div>
+                          <div className="calendar-week-day-kicker">{format(day, 'EEEE', { locale: pl })}</div>
+                          <div className="calendar-week-day-title">{format(day, 'd MMM', { locale: pl })}</div>
                         </div>
-                        <div className="calendar-week-row-main">
-                          <div className="calendar-week-row-title">{entry.title}</div>
-                          {meta ? <div className="calendar-week-row-meta">{meta}</div> : null}
-                          <div className="calendar-week-row-pills">
-                            <span className={`pill ${entry.kind === 'event' ? 'blue' : ''}`}>{entry.kind === 'event' ? 'Wydarzenie' : entry.kind === 'task' ? 'Zadanie' : 'Lead'}</span>
-                            <span className={`pill ${isDone ? 'soft' : 'soft-blue'}`}>{isDone ? 'Zrobione' : 'Zaplanowane'}</span>
-                          </div>
-                        </div>
-                        <div className="calendar-week-row-action" aria-hidden="true">›</div>
-                      </button>
-                    );
-                  });
+                        <div className="calendar-week-day-count">{dayEntries.length} {dayEntries.length === 1 ? 'wpis' : 'wpisów'}</div>
+                      </header>
+
+                      <div className="calendar-week-day-entries">
+                        {dayEntries.length === 0 ? (
+                          <div className="calendar-week-empty">Brak wpisów.</div>
+                        ) : dayEntries.map((entry) => (
+                          <ScheduleEntryCard
+                            key={`week:${day.toISOString()}:${entry.id}`}
+                            entry={entry}
+                            actionButtonClass={actionButtonClass}
+                            actionPendingId={actionPendingId}
+                            caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
+                            onEdit={handleOpenEdit}
+                            onShift={handleShiftEntry}
+                            onShiftHours={handleShiftEntryHours}
+                            onComplete={handleCompleteEntry}
+                            onDelete={handleDeleteEntry}
+                          />
+                        ))}
+                      </div>
+                    </section>
+                  );
                 })}
-
-                {weekEntries.length === 0 ? (
-                  <div className="calendar-week-empty">
-                    Brak wpisów w tym tygodniu.
-                  </div>
-                ) : null}
               </div>
             </section>
           </div>
@@ -1543,3 +1617,4 @@ export default function Calendar() {
     </Layout>
   );
 }
+
