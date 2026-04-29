@@ -230,12 +230,4 @@ Nie ukrywa prawdziwych alertów, które mają tekst, link albo przycisk.
 #root .border-amber-200.bg-amber-50:has(> svg:only-child) {
   display: none !important;
 }
-
-
-
-
-
-
-
-
-
+@import "./styles/visual-html-theme-v14.css";

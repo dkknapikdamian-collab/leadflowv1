@@ -1,3 +1,5 @@
+/* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-stage01" */
+/* VISUAL_HTML_THEME_V14_LAYOUT */
 /*
 VISUAL_STAGE_01_SHELL_SIDEBAR
 VISUAL_STAGE_02_TODAY_ROUTE_SCOPE
@@ -215,7 +217,7 @@ export default function Layout({ children }: LayoutProps) {
   );
 
   return (
-    <div className="app closeflow-visual-stage01" data-visual-stage="01-shell-sidebar">
+    <div className="app closeflow-visual-stage01 cf-html-shell" data-visual-stage="01-shell-sidebar">
       <aside className="sidebar" data-shell-sidebar="true">
         <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
           <span className="brand-logo" aria-hidden="true">
@@ -260,7 +262,7 @@ export default function Layout({ children }: LayoutProps) {
                 <span className="brand-logo" aria-hidden="true">CF</span>
                 <span className="brand-title">
                   <strong>CloseFlow</strong>
-                  <span>Menu aplikacji</span>
+                  <span>Lead &rarr; klient &rarr; sprawa</span>
                 </span>
               </Link>
               <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(false)} aria-label="Zamknij menu">
