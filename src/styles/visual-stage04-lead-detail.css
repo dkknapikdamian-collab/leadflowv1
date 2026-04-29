@@ -1,0 +1,149 @@
+/* VISUAL_STAGE_04_LEAD_DETAIL_UI_SYSTEM */
+.main-lead-detail {
+  --cf-blue: #2563eb;
+  --cf-blue-soft: #eff6ff;
+  --cf-green: #047857;
+  --cf-red: #b42318;
+  --cf-amber: #b54708;
+  --cf-violet: #6941c6;
+  --cf-text: #111827;
+  --cf-muted: #667085;
+  --cf-line: #e4e7ec;
+  --cf-card: #ffffff;
+  --cf-soft: #f8fafc;
+}
+
+.main-lead-detail .max-w-7xl,
+.main-lead-detail .max-w-6xl,
+.main-lead-detail .mx-auto {
+  max-width: 1440px;
+}
+
+.main-lead-detail header,
+.main-lead-detail [data-lead-detail-head='true'],
+.main-lead-detail .lead-detail-head {
+  border: 1px solid rgba(228, 231, 236, .95);
+  border-radius: 28px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 18px 45px rgba(16, 24, 40, .08);
+  padding: 22px;
+}
+
+.main-lead-detail header h1::before,
+.main-lead-detail .lead-detail-title::before {
+  content: 'Karta leada';
+  display: block;
+  margin-bottom: 7px;
+  color: var(--cf-blue);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.main-lead-detail header h1::after,
+.main-lead-detail .lead-detail-title::after {
+  content: 'Dane kontaktowe, najbliższy ruch, historia i przejście do obsługi w jednym miejscu.';
+  display: block;
+  margin-top: 7px;
+  max-width: 760px;
+  color: var(--cf-muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.main-lead-detail .layout-detail,
+.main-lead-detail [data-lead-detail-layout='true'],
+.main-lead-detail .grid.gap-6,
+.main-lead-detail .grid.gap-4 {
+  gap: 18px;
+}
+
+.main-lead-detail .person-card,
+.main-lead-detail .hero,
+.main-lead-detail .hero.light,
+.main-lead-detail .right-card,
+.main-lead-detail .work-card,
+.main-lead-detail .rounded-2xl.bg-white,
+.main-lead-detail .border-none.shadow-sm,
+.main-lead-detail [data-lead-service-banner],
+.main-lead-detail [data-lead-operational-archive],
+.main-lead-detail [data-lead-linked-work-card] {
+  border: 1px solid var(--cf-line) !important;
+  border-radius: 24px !important;
+  background: var(--cf-card) !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+}
+
+.main-lead-detail .hero,
+.main-lead-detail [data-lead-next-action-card='true'] {
+  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 68%) !important;
+}
+
+.main-lead-detail .hero.light,
+.main-lead-detail [data-lead-finance-card='true'] {
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%) !important;
+}
+
+.main-lead-detail .tabs,
+.main-lead-detail [role='tablist'] {
+  border: 1px solid var(--cf-line) !important;
+  border-radius: 18px !important;
+  background: var(--cf-soft) !important;
+  padding: 4px !important;
+}
+
+.main-lead-detail [role='tab'],
+.main-lead-detail .tabs button {
+  border-radius: 14px !important;
+}
+
+.main-lead-detail .quick-list,
+.main-lead-detail [data-lead-quick-actions='true'] {
+  display: grid;
+  gap: 10px;
+}
+
+.main-lead-detail button,
+.main-lead-detail a {
+  text-underline-offset: 3px;
+}
+
+.main-lead-detail input,
+.main-lead-detail textarea,
+.main-lead-detail select {
+  border-radius: 14px !important;
+}
+
+@media (max-width: 1180px) {
+  .main-lead-detail .layout-detail,
+  .main-lead-detail [data-lead-detail-layout='true'] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .main-lead-detail .p-4,
+  .main-lead-detail .p-6,
+  .main-lead-detail .p-8,
+  .main-lead-detail .max-w-7xl,
+  .main-lead-detail .max-w-6xl {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .main-lead-detail header,
+  .main-lead-detail [data-lead-detail-head='true'] {
+    border-radius: 22px;
+    padding: 18px;
+  }
+
+  .main-lead-detail .person-card,
+  .main-lead-detail .hero,
+  .main-lead-detail .hero.light,
+  .main-lead-detail .right-card,
+  .main-lead-detail .work-card,
+  .main-lead-detail .rounded-2xl.bg-white {
+    border-radius: 20px !important;
+  }
+}

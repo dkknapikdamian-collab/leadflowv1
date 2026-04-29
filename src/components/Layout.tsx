@@ -1,6 +1,18 @@
+/*
+VISUAL_STAGE_01_SHELL_SIDEBAR
+VISUAL_STAGE_02_TODAY_ROUTE_SCOPE
+VISUAL_STAGE_03_LEADS_ROUTE_SCOPE
+VISUAL_STAGE_04_LEAD_DETAIL_ROUTE_SCOPE
+VISUAL_STAGE_05_CLIENTS_ROUTE_SCOPE
+VISUAL_STAGE_06_CLIENT_DETAIL_ROUTE_SCOPE
+VISUAL_STAGE_07_CASES_ROUTE_SCOPE
+VISUAL_STAGE_08_CASE_DETAIL_ROUTE_SCOPE
+Globalny shell CloseFlow został przepięty na docelowy system wizualny z HTML-a.
+Zakres: ciemny sidebar, grupy menu, global-bar, mobile-top, mobile-nav i footer konta/trialu.
+Nie zmienia logiki ekranów, routingu, Supabase, AI, auth ani billing/access.
+*/
 import { ReactNode, useMemo, useState } from 'react';
 import { auth } from '../firebase';
-import { Button } from './ui/button';
 import {
   LayoutDashboard,
   Users,
@@ -18,6 +30,8 @@ import {
   X,
   Bell,
   LifeBuoy,
+  ClipboardList,
+  Bot,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -32,23 +46,83 @@ type NavItem = {
   icon: any;
   label: string;
   path: string;
+  badge?: string;
 };
 
-function NavButton({ item, isActive, compact = false, onNavigate }: { key?: string; item: NavItem; isActive: boolean; compact?: boolean; onNavigate?: () => void }) {
+type NavGroup = {
+  caption: string;
+  items: NavItem[];
+};
+
+function isNavItemActive(pathname: string, itemPath: string) {
+  if (itemPath === '/') return pathname === '/';
+  if (itemPath === '/settings/ai') return pathname === '/settings/ai';
+  if (itemPath === '/settings') return pathname === '/settings';
+  if (itemPath === '/cases') return pathname === '/cases' || pathname.startsWith('/cases/') || pathname.startsWith('/case/');
+  if (itemPath === '/leads') return pathname === '/leads' || pathname.startsWith('/leads/');
+  if (itemPath === '/clients') return pathname === '/clients' || pathname.startsWith('/clients/');
+  return pathname === itemPath || pathname.startsWith(itemPath + '/');
+}
+
+function NavButton({
+  item,
+  isActive,
+  compact = false,
+  onNavigate,
+}: {
+  key?: string;
+  item: NavItem;
+  isActive: boolean;
+  compact?: boolean;
+  onNavigate?: () => void;
+}) {
   return (
-    <Link key={item.path} to={item.path} onClick={onNavigate}>
-      <Button
-        variant="ghost"
-        className={`w-full justify-start gap-3 ${compact ? 'h-10 rounded-lg px-3 text-sm' : 'h-11 rounded-xl px-4'} transition-all ${
-          isActive
-            ? 'bg-primary/5 text-primary font-bold'
-            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
-        }`}
-      >
-        <item.icon className={`w-5 h-5 ${isActive ? 'text-primary' : 'text-slate-400'}`} />
-        {item.label}
-      </Button>
+    <Link
+      key={item.path}
+      to={item.path}
+      onClick={onNavigate}
+      className={`nav-btn ${isActive ? 'active' : ''} ${compact ? 'nav-btn-compact' : ''}`}
+      aria-current={isActive ? 'page' : undefined}
+      data-nav-path={item.path}
+    >
+      <span className="nav-ico" aria-hidden="true">
+        <item.icon className="h-4 w-4" />
+      </span>
+      <span className="nav-label">{item.label}</span>
+      {item.badge ? <span className="nav-badge">{item.badge}</span> : null}
     </Link>
+  );
+}
+
+function TrialCard({ trialDaysLeft }: { trialDaysLeft: number }) {
+  const safeDays = Math.max(0, trialDaysLeft);
+  const width = Math.max(0, Math.min(100, (safeDays / 14) * 100));
+
+  return (
+    <div className="trial-card" data-shell-trial-card="true">
+      <div className="top">
+        <span>Trial</span>
+        <strong>{safeDays} dni</strong>
+      </div>
+      <div className="bar" aria-hidden="true">
+        <span style={{ width: `${width}%` }} />
+      </div>
+      <Link to="/billing" className="trial-link">
+        Aktywuj plan <ChevronRight className="h-3 w-3" />
+      </Link>
+    </div>
+  );
+}
+
+function UserCard({ userInitial, name, email }: { userInitial: string; name: string; email?: string | null }) {
+  return (
+    <div className="user-card" data-shell-user-card="true">
+      <div className="user-avatar">{userInitial}</div>
+      <div className="min-w-0">
+        <strong className="truncate">{name}</strong>
+        <span className="truncate">{email}</span>
+      </div>
+    </div>
   );
 }
 
@@ -58,200 +132,204 @@ export default function Layout({ children }: LayoutProps) {
   const { workspace, hasAccess, isAdmin } = useWorkspace();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navItems: NavItem[] = [
-    { icon: LayoutDashboard, label: 'Dziś', path: '/' },
-    { icon: Users, label: 'Leady', path: '/leads' },
-    { icon: Users, label: 'Klienci', path: '/clients' },
-    { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
-    { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
-    { icon: Briefcase, label: 'Sprawy', path: '/cases' },
-    { icon: History, label: 'Aktywność', path: '/activity' },
-    { icon: History, label: 'Szkice AI', path: '/ai-drafts' },
-    { icon: Bell, label: 'Powiadomienia', path: '/notifications' },
-    { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
-    { icon: LifeBuoy, label: 'Pomoc', path: '/help' },
-    ...(isAdmin ? [{ icon: Settings, label: 'AI admin', path: '/settings/ai' }] : []),
-    { icon: Settings, label: 'Ustawienia', path: '/settings' },
-  ];
+  const navGroups = useMemo<NavGroup[]>(() => {
+    const systemItems: NavItem[] = [
+      { icon: ClipboardList, label: 'Szkice AI', path: '/ai-drafts' },
+      { icon: Bell, label: 'Powiadomienia', path: '/notifications' },
+      { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
+      { icon: LifeBuoy, label: 'Pomoc', path: '/help' },
+      ...(isAdmin ? [{ icon: Bot, label: 'AI admin', path: '/settings/ai', badge: 'AI' }] : []),
+      { icon: Settings, label: 'Ustawienia', path: '/settings' },
+    ];
 
-  const mobileNavItems = useMemo(() => navItems.slice(0, 4), [navItems]);
+    return [
+      {
+        caption: 'Start pracy',
+        items: [
+          { icon: LayoutDashboard, label: 'Dziś', path: '/' },
+          { icon: Users, label: 'Leady', path: '/leads' },
+          { icon: Users, label: 'Klienci', path: '/clients' },
+          { icon: Briefcase, label: 'Sprawy', path: '/cases' },
+        ],
+      },
+      {
+        caption: 'Czas i obowiązki',
+        items: [
+          { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
+          { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
+          { icon: History, label: 'Aktywność', path: '/activity' },
+        ],
+      },
+      {
+        caption: 'System',
+        items: systemItems,
+      },
+    ];
+  }, [isAdmin]);
+
+  const navItems = useMemo(() => navGroups.flatMap((group) => group.items), [navGroups]);
+  const mobileNavItems = useMemo(
+    () => [
+      { icon: LayoutDashboard, label: 'Dziś', path: '/' },
+      { icon: Users, label: 'Leady', path: '/leads' },
+      { icon: Users, label: 'Klienci', path: '/clients' },
+      { icon: Briefcase, label: 'Sprawy', path: '/cases' },
+      { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
+    ],
+    [],
+  );
+
+  const activeItem = navItems.find((item) => isNavItemActive(location.pathname, item.path));
+  const currentTitle = activeItem?.label || 'CloseFlow';
+  const isTodayRoute = location.pathname === '/';
+  const isLeadsRoute = location.pathname === '/leads';
+  const isLeadDetailRoute = /^\/leads\/[^/]+$/.test(location.pathname);
+  const isClientsRoute = location.pathname === '/clients';
+  const isClientDetailRoute = /^\/clients\/[^/]+$/.test(location.pathname);
+  const isCasesRoute = location.pathname === '/cases';
+  const isCaseDetailRoute = /^\/(?:case|cases)\/[^/]+$/.test(location.pathname);
+  const currentSection = isTodayRoute ? 'today' : isLeadsRoute ? 'leads' : isLeadDetailRoute ? 'lead-detail' : isClientsRoute ? 'clients' : isClientDetailRoute ? 'client-detail' : isCasesRoute ? 'cases' : isCaseDetailRoute ? 'case-detail' : currentTitle.toLowerCase();
   const trialDaysLeft = workspace?.trialEndsAt ? differenceInDays(parseISO(workspace.trialEndsAt), new Date()) : 0;
-
   const userInitial = user?.displayName?.charAt(0) || user?.email?.charAt(0).toUpperCase() || 'U';
+  const userName = user?.displayName || 'Użytkownik';
+
+  const renderNavGroups = (compact = false, onNavigate?: () => void) => (
+    <>
+      {navGroups.map((group) => (
+        <div key={group.caption} className="nav-group">
+          <div className="nav-caption">{group.caption}</div>
+          <div className="nav-stack">
+            {group.items.map((item) => (
+              <NavButton
+                key={item.path}
+                item={item}
+                isActive={isNavItemActive(location.pathname, item.path)}
+                compact={compact}
+                onNavigate={onNavigate}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </>
+  );
 
   return (
-    <div className="min-h-screen bg-slate-50 md:flex">
-      <aside className="hidden md:flex md:w-64 bg-white border-r border-slate-200 flex-col sticky top-0 h-screen z-20">
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <div className="bg-primary p-1.5 rounded-lg">
-              <CheckCircle2 className="w-5 h-5 text-white" />
-            </div>
-            CloseFlow
-          </h1>
-        </div>
+    <div className="app closeflow-visual-stage01" data-visual-stage="01-shell-sidebar">
+      <aside className="sidebar" data-shell-sidebar="true">
+        <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
+          <span className="brand-logo" aria-hidden="true">
+            CF
+          </span>
+          <span className="brand-title">
+            <strong>CloseFlow</strong>
+            <span>Panel domykania leadów</span>
+          </span>
+        </Link>
 
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <NavButton key={item.path} item={item} isActive={location.pathname === item.path} />
-          ))}
+        <nav className="nav-scroll" aria-label="Główne menu CloseFlow">
+          {renderNavGroups()}
         </nav>
 
-        {workspace?.subscriptionStatus === 'trial_active' && (
-          <div className="px-4 py-3 mx-4 mb-4 bg-indigo-50 rounded-2xl border border-indigo-100">
-            <div className="flex items-center justify-between mb-1">
-              <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Trial</p>
-              <p className="text-[10px] font-bold text-indigo-600">{trialDaysLeft} dni</p>
-            </div>
-            <div className="w-full bg-indigo-200 h-1 rounded-full overflow-hidden">
-              <div
-                className="bg-indigo-600 h-full transition-all"
-                style={{ width: `${Math.max(0, Math.min(100, (trialDaysLeft / 14) * 100))}%` }}
-              />
-            </div>
-            <Link to="/billing" className="mt-2 text-[10px] font-bold text-indigo-700 flex items-center gap-1 hover:underline">
-              Aktywuj plan <ChevronRight className="w-3 h-3" />
-            </Link>
-          </div>
-        )}
-
-        <div className="p-4 border-t border-slate-100">
-          <div className="flex items-center gap-3 px-2 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-sm">
-              {userInitial}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-slate-900 truncate">{user?.displayName || 'Użytkownik'}</p>
-              <p className="text-[10px] text-slate-500 truncate font-medium">{user?.email}</p>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 h-11 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 px-4"
-            onClick={() => auth.signOut()}
-          >
-            <LogOut className="w-5 h-5" />
-            Wyloguj się
-          </Button>
+        <div className="sidebar-footer">
+          {workspace?.subscriptionStatus === 'trial_active' ? <TrialCard trialDaysLeft={trialDaysLeft} /> : null}
+          <UserCard userInitial={userInitial} name={userName} email={user?.email} />
+          <button type="button" className="sidebar-logout" onClick={() => auth.signOut()}>
+            <LogOut className="h-4 w-4" />
+            <span>Wyloguj się</span>
+          </button>
         </div>
       </aside>
 
-      <div className="md:hidden fixed top-0 inset-x-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="flex items-center justify-between px-4 h-16">
-          <Link to="/" className="min-w-0 flex items-center gap-2">
-            <div className="bg-primary p-1.5 rounded-lg shrink-0">
-              <CheckCircle2 className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-base font-bold text-slate-900 truncate">CloseFlow</span>
-          </Link>
-          <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setMobileMenuOpen(true)}>
-            <Menu className="w-6 h-6" />
-          </Button>
-        </div>
+      <div className="mobile-top" data-shell-mobile-top="true">
+        <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
+          <span className="brand-logo" aria-hidden="true">CF</span>
+          <span>CloseFlow</span>
+        </Link>
+        <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="Otwórz menu">
+          <Menu className="h-6 w-6" />
+        </button>
       </div>
 
       {mobileMenuOpen ? (
-        <div className="md:hidden fixed inset-0 z-50">
-          <button type="button" className="absolute inset-0 bg-slate-950/50" onClick={() => setMobileMenuOpen(false)} aria-label="Zamknij menu" />
-          <div className="absolute right-0 top-0 h-full w-[84%] max-w-sm bg-white shadow-2xl flex flex-col">
-            <div className="h-16 px-4 border-b border-slate-100 flex items-center justify-between">
-              <div className="flex items-center gap-2 min-w-0">
-                <div className="bg-primary p-1.5 rounded-lg shrink-0">
-                  <CheckCircle2 className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-base font-bold text-slate-900 truncate">CloseFlow</span>
-              </div>
-              <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setMobileMenuOpen(false)}>
-                <X className="w-5 h-5" />
-              </Button>
+        <div className="mobile-drawer" data-shell-mobile-menu="true">
+          <button type="button" className="mobile-drawer-backdrop" onClick={() => setMobileMenuOpen(false)} aria-label="Zamknij menu" />
+          <div className="mobile-drawer-panel">
+            <div className="mobile-drawer-head">
+              <Link to="/" onClick={() => setMobileMenuOpen(false)} className="brand mobile-drawer-brand">
+                <span className="brand-logo" aria-hidden="true">CF</span>
+                <span className="brand-title">
+                  <strong>CloseFlow</strong>
+                  <span>Menu aplikacji</span>
+                </span>
+              </Link>
+              <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(false)} aria-label="Zamknij menu">
+                <X className="h-5 w-5" />
+              </button>
             </div>
 
-            <div className="p-4 border-b border-slate-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-sm shrink-0">
-                  {userInitial}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-bold text-slate-900 truncate">{user?.displayName || 'Użytkownik'}</p>
-                  <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
-                </div>
-              </div>
+            <div className="mobile-user-wrap">
+              <UserCard userInitial={userInitial} name={userName} email={user?.email} />
             </div>
 
-            <nav className="flex-1 overflow-y-auto p-4 space-y-1">
-              {navItems.map((item) => (
-                <NavButton
-                  key={item.path}
-                  item={item}
-                  isActive={location.pathname === item.path}
-                  compact
-                  onNavigate={() => setMobileMenuOpen(false)}
-                />
-              ))}
+            <nav className="mobile-drawer-nav" aria-label="Menu mobilne CloseFlow">
+              {renderNavGroups(true, () => setMobileMenuOpen(false))}
             </nav>
 
-            {workspace?.subscriptionStatus === 'trial_active' && (
-              <div className="mx-4 mb-4 rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">Trial</span>
-                  <span className="text-[10px] font-bold text-indigo-600">{trialDaysLeft} dni</span>
-                </div>
-                <div className="h-1 overflow-hidden rounded-full bg-indigo-200">
-                  <div
-                    className="h-full bg-indigo-600 transition-all"
-                    style={{ width: `${Math.max(0, Math.min(100, (trialDaysLeft / 14) * 100))}%` }}
-                  />
-                </div>
-                <Link to="/billing" onClick={() => setMobileMenuOpen(false)} className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-indigo-700">
-                  Aktywuj plan <ChevronRight className="w-3 h-3" />
-                </Link>
-              </div>
-            )}
-
-            <div className="p-4 border-t border-slate-100">
-              <Button
-                variant="ghost"
-                className="w-full justify-start gap-3 h-11 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 px-4"
-                onClick={() => auth.signOut()}
-              >
-                <LogOut className="w-5 h-5" />
-                Wyloguj się
-              </Button>
+            <div className="mobile-drawer-footer">
+              {workspace?.subscriptionStatus === 'trial_active' ? <TrialCard trialDaysLeft={trialDaysLeft} /> : null}
+              <button type="button" className="sidebar-logout" onClick={() => auth.signOut()}>
+                <LogOut className="h-4 w-4" />
+                <span>Wyloguj się</span>
+              </button>
             </div>
           </div>
         </div>
       ) : null}
 
-      <main className="flex-1 min-w-0 relative pt-16 pb-20 md:pt-0 md:pb-0">
+      <main
+        className={`main ${isTodayRoute ? 'main-today' : ''} ${isLeadsRoute ? 'main-leads' : ''} ${isLeadDetailRoute ? 'main-lead-detail' : ''} ${isClientsRoute ? 'main-clients' : ''} ${isClientDetailRoute ? 'main-client-detail' : ''} ${isCasesRoute ? 'main-cases' : ''} ${isCaseDetailRoute ? 'main-case-detail' : ''}`}
+        data-shell-main="true"
+        data-current-section={currentSection}
+      >
+        <div className="global-bar" data-shell-global-bar="true">
+          <div className="global-title">
+            <span className="global-dot" aria-hidden="true">
+              <CheckCircle2 className="h-4 w-4" />
+            </span>
+            <span className="global-title-copy">
+              Panel operatora <strong>{currentTitle}</strong>
+            </span>
+          </div>
+          <GlobalQuickActions />
+        </div>
+
         {workspace && !hasAccess && (
-          <div className="bg-rose-600 text-white px-4 py-2 flex items-center justify-center gap-3 sticky top-16 md:top-0 z-30 shadow-lg">
-            <AlertTriangle className="w-4 h-4 shrink-0" />
-            <p className="text-sm font-bold">Twój okres próbny wygasł. Niektóre funkcje są zablokowane.</p>
-            <Link to="/billing">
-              <Button size="sm" variant="secondary" className="h-7 text-xs font-bold rounded-lg px-4">
-                Aktywuj plan
-              </Button>
+          <div className="access-warning" data-shell-access-warning="true">
+            <AlertTriangle className="h-4 w-4 shrink-0" />
+            <p>Twój okres próbny wygasł. Niektóre funkcje są zablokowane.</p>
+            <Link to="/billing" className="access-warning-action">
+              Aktywuj plan
             </Link>
           </div>
         )}
-        <GlobalQuickActions />
 
-        {children}
+        <div className="view active" data-shell-content="true" data-visual-stage-today={isTodayRoute ? '02-today' : undefined} data-visual-stage-leads={isLeadsRoute ? '03-leads' : undefined} data-visual-stage-lead-detail={isLeadDetailRoute ? '04-lead-detail' : undefined} data-visual-stage-clients={isClientsRoute ? '05-clients' : undefined} data-visual-stage-client-detail={isClientDetailRoute ? '06-client-detail' : undefined} data-visual-stage-cases={isCasesRoute ? '07-cases' : undefined} data-visual-stage-case-detail={isCaseDetailRoute ? '08-case-detail' : undefined}>
+          {children}
+        </div>
       </main>
 
-      <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur">
-        <div className="grid grid-cols-4 gap-1 px-2 py-2">
-          {mobileNavItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <Link key={item.path} to={item.path} className={`flex flex-col items-center justify-center rounded-xl px-2 py-2 text-[11px] font-semibold ${isActive ? 'bg-primary/10 text-primary' : 'text-slate-500'}`}>
-                <item.icon className="mb-1 h-5 w-5" />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+      <nav className="mobile-nav" aria-label="Najważniejsze zakładki" data-shell-mobile-nav="true">
+        {mobileNavItems.map((item) => {
+          const isActive = isNavItemActive(location.pathname, item.path);
+          return (
+            <Link key={item.path} to={item.path} className={`mobile-nav-btn ${isActive ? 'active' : ''}`} aria-current={isActive ? 'page' : undefined}>
+              <item.icon className="h-5 w-5" />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }

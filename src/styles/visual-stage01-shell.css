@@ -1,0 +1,698 @@
+/*
+VISUAL_STAGE_01_SHELL_CSS
+Wspólny shell wizualny CloseFlow zgodny z closeflow_full_app_modern_5s_ui_concept.html.
+Zakres CSS jest zawężony do .closeflow-visual-stage01, żeby nie przebudować ekranów wewnętrznych przed ich etapami.
+*/
+:root {
+  --cf-vs-bg: #f4f6f8;
+  --cf-vs-bg-2: #eef2f6;
+  --cf-vs-sidebar: #101828;
+  --cf-vs-sidebar-2: #172033;
+  --cf-vs-card: #ffffff;
+  --cf-vs-card-soft: #f8fafc;
+  --cf-vs-text: #111827;
+  --cf-vs-muted: #667085;
+  --cf-vs-muted-2: #98a2b3;
+  --cf-vs-line: #e4e7ec;
+  --cf-vs-line-2: #d0d5dd;
+  --cf-vs-blue: #2563eb;
+  --cf-vs-blue-2: #1d4ed8;
+  --cf-vs-blue-soft: #eff6ff;
+  --cf-vs-green: #047857;
+  --cf-vs-red: #b42318;
+  --cf-vs-amber: #b54708;
+  --cf-vs-violet: #6941c6;
+  --cf-vs-shadow: 0 18px 45px rgba(16, 24, 40, .08);
+  --cf-vs-shadow-soft: 0 8px 22px rgba(16, 24, 40, .05);
+  --cf-vs-radius-xl: 28px;
+  --cf-vs-radius-lg: 20px;
+  --cf-vs-radius-md: 14px;
+}
+
+.closeflow-visual-stage01.app {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 286px minmax(0, 1fr);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(37, 99, 235, .10), transparent 28%),
+    radial-gradient(circle at 95% 7%, rgba(16, 24, 40, .08), transparent 26%),
+    linear-gradient(180deg, #f7f9fc 0%, var(--cf-vs-bg) 34%, var(--cf-vs-bg-2) 100%);
+  color: var(--cf-vs-text);
+}
+
+.closeflow-visual-stage01 .sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 18px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(37, 99, 235, .26), transparent 35%),
+    linear-gradient(180deg, var(--cf-vs-sidebar) 0%, #0b1220 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 10;
+  box-shadow: 18px 0 45px rgba(16, 24, 40, .16);
+}
+
+.closeflow-visual-stage01 .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  color: inherit;
+  text-decoration: none;
+}
+
+.closeflow-visual-stage01 .brand-logo {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #fff;
+  color: #0f172a;
+  font-weight: 950;
+  letter-spacing: -.05em;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .24);
+  flex: 0 0 auto;
+}
+
+.closeflow-visual-stage01 .brand-title {
+  min-width: 0;
+}
+
+.closeflow-visual-stage01 .brand-title strong {
+  display: block;
+  font-size: 16px;
+  letter-spacing: -.04em;
+}
+
+.closeflow-visual-stage01 .brand-title span {
+  display: block;
+  margin-top: 2px;
+  color: rgba(255, 255, 255, .54);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.closeflow-visual-stage01 .nav-scroll {
+  overflow: auto;
+  padding-right: 2px;
+  flex: 1;
+}
+
+.closeflow-visual-stage01 .nav-group {
+  margin-top: 14px;
+}
+
+.closeflow-visual-stage01 .nav-group:first-child {
+  margin-top: 0;
+}
+
+.closeflow-visual-stage01 .nav-stack {
+  display: grid;
+  gap: 3px;
+}
+
+.closeflow-visual-stage01 .nav-caption {
+  padding: 0 10px 7px;
+  color: rgba(255, 255, 255, .38);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.closeflow-visual-stage01 .nav-btn {
+  width: 100%;
+  min-height: 43px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: rgba(255, 255, 255, .68);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 11px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  transition: .16s ease;
+  text-align: left;
+  text-decoration: none;
+}
+
+.closeflow-visual-stage01 .nav-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, .08);
+}
+
+.closeflow-visual-stage01 .nav-btn.active {
+  color: #fff;
+  background: rgba(255, 255, 255, .12);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, .10),
+    0 14px 26px rgba(0, 0, 0, .16);
+}
+
+.closeflow-visual-stage01 .nav-ico {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, .07);
+  font-size: 14px;
+  flex: 0 0 auto;
+}
+
+.closeflow-visual-stage01 .nav-btn.active .nav-ico {
+  background: #fff;
+  color: #0f172a;
+}
+
+.closeflow-visual-stage01 .nav-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.closeflow-visual-stage01 .nav-badge {
+  margin-left: auto;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .10);
+  color: rgba(255, 255, 255, .7);
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.closeflow-visual-stage01 .sidebar-footer {
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
+.closeflow-visual-stage01 .trial-card {
+  padding: 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .10);
+}
+
+.closeflow-visual-stage01 .trial-card .top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: rgba(255, 255, 255, .75);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.closeflow-visual-stage01 .bar {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .12);
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.closeflow-visual-stage01 .bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #60a5fa;
+}
+
+.closeflow-visual-stage01 .trial-link {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255, 255, 255, .86);
+  font-size: 11px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.closeflow-visual-stage01 .user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .06);
+  min-width: 0;
+}
+
+.closeflow-visual-stage01 .user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .12);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: #fff;
+  flex: 0 0 auto;
+}
+
+.closeflow-visual-stage01 .user-card strong {
+  display: block;
+  font-size: 12px;
+  color: #fff;
+}
+
+.closeflow-visual-stage01 .user-card span {
+  display: block;
+  color: rgba(255, 255, 255, .5);
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.closeflow-visual-stage01 .sidebar-logout {
+  min-height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  background: rgba(255, 255, 255, .04);
+  color: rgba(255, 255, 255, .68);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: .15s ease;
+}
+
+.closeflow-visual-stage01 .sidebar-logout:hover {
+  color: #fff;
+  background: rgba(180, 35, 24, .24);
+  border-color: rgba(255, 255, 255, .14);
+}
+
+.closeflow-visual-stage01 .main {
+  min-width: 0;
+  padding: 24px 28px 48px;
+}
+
+.closeflow-visual-stage01 .global-bar {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  margin: -24px -28px 22px;
+  padding: 13px 28px;
+  background: rgba(247, 249, 252, .86);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(228, 231, 236, .78);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.closeflow-visual-stage01 .global-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--cf-vs-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.closeflow-visual-stage01 .global-dot {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--cf-vs-blue-soft);
+  color: var(--cf-vs-blue-2);
+  flex: 0 0 auto;
+}
+
+.closeflow-visual-stage01 .global-title strong {
+  color: var(--cf-vs-text);
+  margin-left: 4px;
+}
+
+.closeflow-visual-stage01 .global-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 1px;
+  max-width: 100%;
+}
+
+.closeflow-visual-stage01 .btn,
+.closeflow-visual-stage01 .global-actions > button {
+  min-height: 40px;
+  border: 1px solid var(--cf-vs-line);
+  background: var(--cf-vs-card);
+  color: var(--cf-vs-text);
+  border-radius: 13px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: var(--cf-vs-shadow-soft);
+  transition: .15s ease;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.closeflow-visual-stage01 .btn:hover,
+.closeflow-visual-stage01 .global-actions > button:hover {
+  transform: translateY(-1px);
+  border-color: var(--cf-vs-line-2);
+}
+
+.closeflow-visual-stage01 .btn.primary {
+  background: var(--cf-vs-blue);
+  border-color: var(--cf-vs-blue);
+  color: #fff;
+  box-shadow: 0 13px 26px rgba(37, 99, 235, .23);
+}
+
+.closeflow-visual-stage01 .btn.soft-blue {
+  color: var(--cf-vs-blue-2);
+  background: var(--cf-vs-blue-soft);
+  border-color: #bfdbfe;
+  box-shadow: none;
+}
+
+.closeflow-visual-stage01 .view {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.closeflow-visual-stage01 .view.active {
+  display: block;
+}
+
+.closeflow-visual-stage01 .access-warning {
+  margin: 0 auto 18px;
+  max-width: 1500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 18px;
+  border: 1px solid #fecdd3;
+  background: #fff1f3;
+  color: var(--cf-vs-red);
+  padding: 10px 14px;
+  box-shadow: var(--cf-vs-shadow-soft);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.closeflow-visual-stage01 .access-warning p {
+  margin: 0;
+}
+
+.closeflow-visual-stage01 .access-warning-action {
+  min-height: 30px;
+  border-radius: 11px;
+  background: var(--cf-vs-red);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.closeflow-visual-stage01 .mobile-top,
+.closeflow-visual-stage01 .mobile-nav {
+  display: none;
+}
+
+.closeflow-visual-stage01 .mobile-drawer {
+  display: none;
+}
+
+@media (max-width: 1220px) {
+  .closeflow-visual-stage01.app {
+    grid-template-columns: 86px minmax(0, 1fr);
+  }
+
+  .closeflow-visual-stage01 .sidebar {
+    padding: 14px 10px;
+  }
+
+  .closeflow-visual-stage01 .brand-title,
+  .closeflow-visual-stage01 .nav-caption,
+  .closeflow-visual-stage01 .nav-label,
+  .closeflow-visual-stage01 .nav-badge,
+  .closeflow-visual-stage01 .sidebar-footer {
+    display: none;
+  }
+
+  .closeflow-visual-stage01 .brand {
+    justify-content: center;
+    padding: 8px 0 14px;
+  }
+
+  .closeflow-visual-stage01 .nav-btn {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .closeflow-visual-stage01 .nav-ico {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 760px) {
+  .closeflow-visual-stage01.app {
+    display: block;
+    padding-top: 64px;
+    padding-bottom: 78px;
+  }
+
+  .closeflow-visual-stage01 .sidebar {
+    display: none;
+  }
+
+  .closeflow-visual-stage01 .main {
+    padding: 14px 14px 28px;
+  }
+
+  .closeflow-visual-stage01 .mobile-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(247, 249, 252, .92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(228, 231, 236, .85);
+  }
+
+  .closeflow-visual-stage01 .mobile-brand {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--cf-vs-text);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 950;
+    letter-spacing: -.03em;
+  }
+
+  .closeflow-visual-stage01 .mobile-brand .brand-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+    background: var(--cf-vs-sidebar);
+    color: #fff;
+    box-shadow: var(--cf-vs-shadow-soft);
+  }
+
+  .closeflow-visual-stage01 .mobile-menu-btn {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--cf-vs-line);
+    border-radius: 15px;
+    background: #fff;
+    color: var(--cf-vs-text);
+    display: grid;
+    place-items: center;
+    box-shadow: var(--cf-vs-shadow-soft);
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+
+  .closeflow-visual-stage01 .global-bar {
+    position: sticky;
+    top: 64px;
+    margin: -14px -14px 14px;
+    padding: 10px 14px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .closeflow-visual-stage01 .global-title {
+    display: none;
+  }
+
+  .closeflow-visual-stage01 .global-actions {
+    justify-content: flex-start;
+  }
+
+  .closeflow-visual-stage01 .global-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .closeflow-visual-stage01 .view {
+    max-width: none;
+  }
+
+  .closeflow-visual-stage01 .access-warning {
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    border-radius: 16px;
+    font-size: 12px;
+  }
+
+  .closeflow-visual-stage01 .mobile-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(255, 255, 255, .94);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(228, 231, 236, .90);
+    box-shadow: 0 -14px 38px rgba(16, 24, 40, .08);
+  }
+
+  .closeflow-visual-stage01 .mobile-nav-btn {
+    min-width: 0;
+    min-height: 54px;
+    border-radius: 16px;
+    color: var(--cf-vs-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .closeflow-visual-stage01 .mobile-nav-btn.active {
+    color: var(--cf-vs-blue-2);
+    background: var(--cf-vs-blue-soft);
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: block;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(16, 24, 40, .44);
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(420px, 88vw);
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0;
+    background:
+      radial-gradient(circle at 0% 0%, rgba(37, 99, 235, .26), transparent 35%),
+      linear-gradient(180deg, var(--cf-vs-sidebar) 0%, #0b1220 100%);
+    color: #fff;
+    box-shadow: -28px 0 90px rgba(16, 24, 40, .28);
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-head {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-brand {
+    border-bottom: 0;
+    padding: 0;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-head .mobile-menu-btn {
+    background: rgba(255, 255, 255, .08);
+    border-color: rgba(255, 255, 255, .12);
+    color: #fff;
+    box-shadow: none;
+  }
+
+  .closeflow-visual-stage01 .mobile-user-wrap {
+    padding: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-nav {
+    overflow: auto;
+    padding: 14px;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-footer {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border-top: 1px solid rgba(255, 255, 255, .08);
+  }
+
+  .closeflow-visual-stage01 .nav-btn-compact {
+    min-height: 42px;
+  }
+}

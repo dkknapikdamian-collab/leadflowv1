@@ -1,0 +1,173 @@
+/*
+VISUAL_STAGE_02_TODAY_CSS
+Bezpieczna warstwa wizualna dla zakładki Dziś.
+Zakres: tylko main-today ustawiane przez Layout dla ścieżki /.
+Nie zmienia logiki Today, danych, Supabase, tasków, eventów, snooze ani szkiców AI.
+*/
+.closeflow-visual-stage01 .main-today [data-shell-content] {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.closeflow-visual-stage01 .main-today [data-shell-content] > * {
+  max-width: 1500px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.closeflow-visual-stage01 .main-today h1,
+.closeflow-visual-stage01 .main-today [data-shell-content] h1 {
+  color: var(--cf-vs-text);
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1;
+  letter-spacing: -.06em;
+}
+
+.closeflow-visual-stage01 .main-today h1 + p,
+.closeflow-visual-stage01 .main-today [data-shell-content] h1 + p {
+  color: var(--cf-vs-muted);
+  max-width: 780px;
+  line-height: 1.45;
+}
+
+.closeflow-visual-stage01 .main-today [data-today-tile-card="true"],
+.closeflow-visual-stage01 .main-today .shadow-sm.border-slate-100,
+.closeflow-visual-stage01 .main-today .rounded-2xl.border,
+.closeflow-visual-stage01 .main-today .rounded-3xl.border {
+  border-color: var(--cf-vs-line) !important;
+  border-radius: var(--cf-vs-radius-xl) !important;
+  background: rgba(255, 255, 255, .86) !important;
+  box-shadow: var(--cf-vs-shadow-soft) !important;
+}
+
+.closeflow-visual-stage01 .main-today [data-today-tile-card="true"]:hover,
+.closeflow-visual-stage01 .main-today .rounded-2xl.border:hover,
+.closeflow-visual-stage01 .main-today .rounded-3xl.border:hover {
+  box-shadow: var(--cf-vs-shadow) !important;
+}
+
+.closeflow-visual-stage01 .main-today [data-today-tile-header="true"] {
+  min-height: 64px;
+  padding: 16px 18px !important;
+  border-radius: inherit;
+}
+
+.closeflow-visual-stage01 .main-today [data-today-tile-header="true"] p:first-child,
+.closeflow-visual-stage01 .main-today [data-today-tile-card="true"] .font-semibold {
+  color: var(--cf-vs-text) !important;
+  font-weight: 950 !important;
+  letter-spacing: -.025em;
+}
+
+.closeflow-visual-stage01 .main-today [data-today-tile-header="true"] p + p,
+.closeflow-visual-stage01 .main-today [data-today-tile-card="true"] .text-xs,
+.closeflow-visual-stage01 .main-today [data-today-tile-card="true"] .text-sm.text-slate-500 {
+  color: var(--cf-vs-muted) !important;
+}
+
+.closeflow-visual-stage01 .main-today [data-today-shortcut-section="urgent"] {
+  border-color: rgba(180, 35, 24, .22) !important;
+}
+
+.closeflow-visual-stage01 .main-today [data-today-shortcut-section="without_action"] {
+  border-color: rgba(181, 71, 8, .24) !important;
+}
+
+.closeflow-visual-stage01 .main-today [data-today-shortcut-section="without_movement"] {
+  border-color: rgba(105, 65, 198, .22) !important;
+}
+
+.closeflow-visual-stage01 .main-today [data-today-shortcut-section="calendar"] {
+  border-color: rgba(37, 99, 235, .22) !important;
+}
+
+.closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar="true"] {
+  border-color: var(--cf-vs-line) !important;
+  border-radius: 18px !important;
+  background: var(--cf-vs-card-soft) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72);
+}
+
+.closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar="true"] button,
+.closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar="true"] [role="button"] {
+  min-height: 34px;
+  border-radius: 12px !important;
+  font-weight: 900 !important;
+}
+
+.closeflow-visual-stage01 .main-today a[href^="/leads/"],
+.closeflow-visual-stage01 .main-today a[href^="/cases/"] {
+  text-decoration: none;
+}
+
+.closeflow-visual-stage01 .main-today .text-slate-900,
+.closeflow-visual-stage01 .main-today .text-slate-800,
+.closeflow-visual-stage01 .main-today .text-slate-700 {
+  color: var(--cf-vs-text) !important;
+}
+
+.closeflow-visual-stage01 .main-today .text-slate-600,
+.closeflow-visual-stage01 .main-today .text-slate-500,
+.closeflow-visual-stage01 .main-today .text-slate-400 {
+  color: var(--cf-vs-muted) !important;
+}
+
+.closeflow-visual-stage01 .main-today .bg-white,
+.closeflow-visual-stage01 .main-today .bg-white\/80,
+.closeflow-visual-stage01 .main-today .bg-white\/95 {
+  background-color: rgba(255, 255, 255, .9) !important;
+}
+
+.closeflow-visual-stage01 .main-today .bg-slate-50,
+.closeflow-visual-stage01 .main-today .bg-slate-100,
+.closeflow-visual-stage01 .main-today .bg-slate-50\/50 {
+  background-color: var(--cf-vs-card-soft) !important;
+}
+
+.closeflow-visual-stage01 .main-today .border-slate-100,
+.closeflow-visual-stage01 .main-today .border-slate-200,
+.closeflow-visual-stage01 .main-today .border-slate-300 {
+  border-color: var(--cf-vs-line) !important;
+}
+
+.closeflow-visual-stage01 .main-today .rounded-xl {
+  border-radius: var(--cf-vs-radius-md) !important;
+}
+
+.closeflow-visual-stage01 .main-today .rounded-2xl {
+  border-radius: var(--cf-vs-radius-lg) !important;
+}
+
+.closeflow-visual-stage01 .main-today .rounded-3xl {
+  border-radius: var(--cf-vs-radius-xl) !important;
+}
+
+.closeflow-visual-stage01 .main-today button,
+.closeflow-visual-stage01 .main-today a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 760px) {
+  .closeflow-visual-stage01 .main-today [data-shell-content] > * {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .closeflow-visual-stage01 .main-today h1,
+  .closeflow-visual-stage01 .main-today [data-shell-content] h1 {
+    font-size: 29px;
+  }
+
+  .closeflow-visual-stage01 .main-today [data-today-tile-card="true"] {
+    border-radius: 22px !important;
+  }
+
+  .closeflow-visual-stage01 .main-today [data-today-tile-header="true"] {
+    padding: 14px !important;
+  }
+
+  .closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar="true"] {
+    gap: 6px !important;
+    padding: 8px !important;
+  }
+}

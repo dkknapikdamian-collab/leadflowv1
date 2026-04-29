@@ -1,0 +1,178 @@
+/*
+VISUAL_STAGE_06_CLIENT_DETAIL
+Scope: /clients/:clientId only through .main-client-detail.
+Goal: map ClientDetail to closeflow_full_app_modern_5s_ui_concept.html without changing Supabase, data, tasks, events, payments, leads, cases or edit/sync logic.
+HTML patterns: layout-detail, person-card, avatar-line, kv-row, hero-grid, hero, hero.light, tabs, work-card, right-card, quick-list, mini-grid, mobile polish.
+*/
+
+.main-client-detail {
+  --cf-client-card: #ffffff;
+  --cf-client-soft: #f8fafc;
+  --cf-client-text: #111827;
+  --cf-client-muted: #667085;
+  --cf-client-line: #e4e7ec;
+  --cf-client-blue: #2563eb;
+}
+
+.main-client-detail [data-shell-content] > div,
+.main-client-detail .view > div {
+  max-width: 1440px !important;
+  margin-inline: auto;
+}
+
+.main-client-detail h1,
+.main-client-detail h2,
+.main-client-detail h3 {
+  letter-spacing: -0.04em;
+  color: var(--cf-client-text);
+}
+
+.main-client-detail header,
+.main-client-detail .page-head {
+  border-radius: 28px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 58%, #eff6ff 100%);
+  border: 1px solid rgba(228, 231, 236, .95);
+  box-shadow: 0 18px 45px rgba(16, 24, 40, .08);
+  padding: 22px;
+}
+
+.main-client-detail .layout-detail,
+.main-client-detail [data-client-detail-layout],
+.main-client-detail [class*="grid-cols"] {
+  align-items: start;
+}
+
+.main-client-detail .person-card,
+.main-client-detail .card,
+.main-client-detail [class*="rounded-2xl"],
+.main-client-detail [class*="rounded-3xl"] {
+  border-color: var(--cf-client-line) !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+}
+
+.main-client-detail [class*="bg-white"],
+.main-client-detail .card,
+.main-client-detail .person-card,
+.main-client-detail .right-card,
+.main-client-detail .work-card {
+  background: var(--cf-client-card) !important;
+}
+
+.main-client-detail .avatar-line,
+.main-client-detail [data-client-avatar-line] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.main-client-detail .kv-row,
+.main-client-detail [data-client-kv-row] {
+  border-radius: 14px;
+  background: var(--cf-client-soft);
+  border: 1px solid var(--cf-client-line);
+  padding: 10px 12px;
+}
+
+.main-client-detail .hero-grid,
+.main-client-detail [data-client-hero-grid] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.main-client-detail .hero,
+.main-client-detail [data-client-next-action],
+.main-client-detail [data-client-main-case] {
+  border-radius: 24px;
+  border: 1px solid var(--cf-client-line);
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05);
+}
+
+.main-client-detail .hero.light,
+.main-client-detail [data-client-completeness],
+.main-client-detail [data-client-relations-summary] {
+  background: var(--cf-client-soft);
+}
+
+.main-client-detail .mini-grid,
+.main-client-detail [data-client-mini-grid] {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.main-client-detail .tabs,
+.main-client-detail [role="tablist"] {
+  border-radius: 18px;
+  background: var(--cf-client-soft);
+  border: 1px solid var(--cf-client-line);
+  padding: 4px;
+}
+
+.main-client-detail .work-card,
+.main-client-detail [data-client-work-card] {
+  border-radius: 20px;
+  border: 1px solid var(--cf-client-line);
+  background: #fff;
+}
+
+.main-client-detail .right-card,
+.main-client-detail [data-client-right-card] {
+  border-radius: 24px;
+  border: 1px solid var(--cf-client-line);
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05);
+}
+
+.main-client-detail .quick-list,
+.main-client-detail [data-client-quick-list] {
+  display: grid;
+  gap: 10px;
+}
+
+.main-client-detail button,
+.main-client-detail a[role="button"] {
+  border-radius: 14px;
+}
+
+.main-client-detail input,
+.main-client-detail textarea,
+.main-client-detail select {
+  border-color: var(--cf-client-line) !important;
+  background: #fff !important;
+}
+
+@media (max-width: 760px) {
+  .main-client-detail {
+    padding-bottom: 92px;
+  }
+
+  .main-client-detail [data-shell-content] > div,
+  .main-client-detail .view > div {
+    padding-inline: 12px !important;
+    gap: 14px !important;
+  }
+
+  .main-client-detail header,
+  .main-client-detail .page-head {
+    border-radius: 22px;
+    padding: 16px;
+  }
+
+  .main-client-detail h1 {
+    font-size: 1.65rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .main-client-detail .hero-grid,
+  .main-client-detail .mini-grid,
+  .main-client-detail [data-client-hero-grid],
+  .main-client-detail [data-client-mini-grid] {
+    grid-template-columns: 1fr;
+  }
+
+  .main-client-detail button,
+  .main-client-detail a {
+    min-height: 40px;
+  }
+}
