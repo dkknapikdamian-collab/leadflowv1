@@ -1,4 +1,4 @@
-import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
+import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow, asText } from '../src/server/_request-scope.js';
 import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { normalizeTaskContract, toIsoDateTime } from '../src/lib/data-contract.js';
@@ -20,6 +20,14 @@ function asNullableText(value: unknown) {
   return normalized || null;
 }
 
+function asUuidOrNull(value: unknown) {
+  const normalized = asText(value);
+  return isUuid(normalized) ? normalized : null;
+}
+function asNullableUuid(value: unknown) {
+  const normalized = asText(value);
+  return isUuid(normalized) ? normalized : null;
+}
 function asSchedule(value: unknown) {
   return toIsoDateTime(value);
 }
@@ -44,7 +52,7 @@ function buildTaskPayload(body: Record<string, unknown>, workspaceId: string, mo
 
   if (mode === 'insert') {
     payload.workspace_id = workspaceId;
-    payload.created_by_user_id = asNullableText(body.ownerId || body.owner_id);
+    payload.created_by_user_id = asUuidOrNull(body.ownerId || body.owner_id);
     payload.record_type = 'task';
     payload.show_in_tasks = true;
     payload.show_in_calendar = true;
@@ -56,9 +64,9 @@ function buildTaskPayload(body: Record<string, unknown>, workspaceId: string, mo
   if (body.type !== undefined || mode === 'insert') payload.type = asText(body.type) || 'task';
   if (body.status !== undefined || mode === 'insert') payload.status = asText(body.status) || 'todo';
   if (body.priority !== undefined || mode === 'insert') payload.priority = asText(body.priority) || 'medium';
-  if (body.leadId !== undefined) payload.lead_id = asNullableText(body.leadId);
-  if (body.caseId !== undefined) payload.case_id = asNullableText(body.caseId);
-  if (body.clientId !== undefined) payload.client_id = asNullableText(body.clientId);
+  if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
+  if (body.caseId !== undefined) payload.case_id = asNullableUuid(body.caseId);
+  if (body.clientId !== undefined) payload.client_id = asNullableUuid(body.clientId);
   if (body.reminderAt !== undefined) payload.reminder_at = asSchedule(body.reminderAt);
   if (body.recurrenceRule !== undefined) payload.recurrence_rule = asText(body.recurrenceRule) || 'none';
   if (scheduledAt !== null || body.scheduledAt !== undefined || body.dueAt !== undefined || body.date !== undefined) {
@@ -169,3 +177,4 @@ export default async function handler(req: any, res: any) {
     res.status(500).json({ error: error?.message || 'TASK_API_FAILED' });
   }
 }
+
