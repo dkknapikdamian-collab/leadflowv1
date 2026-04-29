@@ -1,3 +1,4 @@
+// VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -731,117 +732,311 @@ export default function Leads() {
               const isArchivedLead = isLeadInTrash(lead);
 
               return (
-                <div key={lead.id} className="relative group/lead-row">
-                  <Link to={`/leads/${lead.id}`} className="block">
-                    <Card className="overflow-hidden border-none shadow-sm transition-all group hover:-translate-y-0.5 hover:shadow-md">
-                    <CardContent className="p-0">
-                      <div className="flex flex-col gap-2 px-3 py-2 pr-12 md:flex-row md:items-center md:gap-3 lg:px-4 lg:py-3 lg:pr-14" data-stage31-lead-thin-row="true">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600" aria-label={`Numer leada ${leadIndex + 1}`}>
-                          {leadIndex + 1}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="mb-1 truncate text-xs text-slate-500" data-stage31-lead-one-line-meta="true">{compactMeta}</p>
-                          <div className="mb-2 flex flex-wrap items-center gap-2">
-                            <h4 className="min-w-0 truncate text-base font-bold text-slate-900 transition-colors group-hover:text-primary md:text-lg">{lead.name}</h4>
-                            <Badge className={`${status.color} border-none font-medium text-[10px] uppercase`}>{status.label}</Badge>
-                            <Badge variant="outline" className="text-[10px] uppercase border-slate-200 text-slate-600">
-                              <Target className="mr-1 h-3 w-3" /> {sourceLabel}
-                            </Badge>
-                            {lead.isAtRisk && !isArchivedLead ? (
-                              <Badge variant="destructive" className="text-[10px] uppercase">
-                                Zagrożony
-                              </Badge>
-                            ) : null}
-                            {movedToService && !isArchivedLead ? (
-                              <Badge variant="outline" className="text-[10px] uppercase border-violet-200 text-violet-700">
-                                Temat jest już w obsłudze
-                              </Badge>
-                            ) : null}
-                            {isArchivedLead ? (
-                              <Badge variant="outline" className="text-[10px] uppercase border-amber-200 text-amber-700">
-                                W koszu
-                              </Badge>
-                            ) : null}
-                          </div>
+    <Layout>
+      <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true">
+        <div className="page-head">
+          <div>
+            <span className="kicker">Lista sprzedażowa</span>
+            <h1>Leady</h1>
+            <p className="lead-copy">
+              Ten widok ma odpowiadać na jedno pytanie: z kim teraz pracuję i gdzie jest pieniądz albo ryzyko.
+            </p>
+          </div>
 
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-slate-500 md:text-sm">
-                            {lead.company ? (
-                              <span className="flex items-center gap-1">
-                                <FileText className="h-3.5 w-3.5" /> {lead.company}
-                              </span>
-                            ) : null}
-                            {lead.email ? (
-                              <span className="flex items-center gap-1 break-all">
-                                <Mail className="h-3.5 w-3.5" /> {lead.email}
-                              </span>
-                            ) : null}
-                            {linkedCase?.title ? (
-                              <span className="flex items-center gap-1 font-medium text-emerald-700">
-                                <Briefcase className="h-3.5 w-3.5" /> {linkedCase.title}
-                              </span>
-                            ) : null}
-                            {linkedCase?.status ? (
-                              <span className="font-medium text-violet-700">
-                                Status sprawy: {formatCaseStatusLabel(linkedCase.status)}
-                              </span>
-                            ) : null}
-                          </div>
+          <div className="head-actions">
+            <button
+              type="button"
+              className="btn"
+              onClick={toggleTrashView}
+            >
+              {showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+              {showTrash ? 'Pokaż aktywne' : 'Kosz'}
+              <span className="pill">{showTrash ? stats.total : stats.trash}</span>
+            </button>
 
-                          <p className="mt-2 text-sm text-slate-600">
-                            {isArchivedLead
-                              ? 'Ten rekord jest w koszu. Możesz go przywrócić bez trwałego kasowania danych.'
-                              : movedToService
-                                ? ''
-                                : 'Aktywny temat sprzedażowy. Wejdź, aby dodać akcję, notatkę albo rozpocząć obsługę.'}
-                          </p>
-                        </div>
+            <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
+              <DialogTrigger asChild>
+                <button type="button" className="btn primary" disabled={!workspaceReady}>
+                  <Plus className="h-4 w-4" />
+                  Dodaj leada
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Nowy lead</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleCreateLead} className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label>Imię i nazwisko / Nazwa</Label>
+                    <Input value={newLead.name} onChange={(e) => setNewLead({ ...newLead, name: e.target.value })} required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Firma</Label>
+                    <Input value={newLead.company} onChange={(e) => setNewLead({ ...newLead, company: e.target.value })} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Email</Label>
+                      <Input type="email" value={newLead.email} onChange={(e) => setNewLead({ ...newLead, email: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Telefon</Label>
+                      <Input value={newLead.phone} onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Wartość (PLN)</Label>
+                      <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Źródło</Label>
+                      <select
+                        className={nativeSelectClassName()}
+                        value={newLead.source}
+                        onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
+                      >
+                        {SOURCE_OPTIONS.map((source) => (
+                          <option key={source.value} value={source.value}>{source.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit" className="w-full" disabled={leadSubmitting || !workspaceReady}>
+                      {leadSubmitting ? 'Dodawanie...' : 'Stwórz leada'}
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
 
-                        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 md:flex md:items-center md:gap-4 lg:gap-5">
-                          <div className="grid min-w-0 grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2">
-                            <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[118px] sm:text-right">
-                              <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Wartość</p>
-                              <p className="truncate text-sm font-bold text-slate-900 md:text-base">{leadValueLabel}</p>
-                            </div>
+        <div className="grid-5">
+          <button
+            type="button"
+            className={`metric ${quickFilter === 'all' && !valueSortEnabled && !showTrash ? 'active' : ''}`}
+            onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}
+            title="Pokaż wszystkie leady"
+          >
+            <div>
+              <label>Wszystkie</label>
+              <strong>{stats.total}</strong>
+              <div className="hint">pełna baza</div>
+            </div>
+            <Target className="metric-icon" />
+          </button>
 
-                            <div className="rounded-xl bg-slate-50 px-3 py-2 text-left sm:min-w-[220px] sm:text-right">
-                              <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Najbliższa akcja</p>
-                              <p className={`line-clamp-1 text-sm font-bold ${nextActionMeta.overdue ? 'text-rose-600' : 'text-slate-700'}`}>
-                                {isArchivedLead ? 'Rekord w koszu' : nextActionMeta.title}
-                              </p>
-                              <p className={`mt-1 flex items-center gap-1 text-xs ${nextActionMeta.overdue ? 'text-rose-600' : 'text-slate-500'} sm:justify-end`}>
-                                <Clock3 className="h-3 w-3 shrink-0" />
-                                <span className="line-clamp-1">{isArchivedLead ? 'Przywróć, aby wrócił do pracy' : nextActionMeta.subtitle}</span>
-                              </p>
-                            </div>
-                          </div>
+          <button
+            type="button"
+            className={`metric ${quickFilter === 'active' && !showTrash ? 'active' : ''}`}
+            onClick={() => toggleQuickFilter('active')}
+            title="Pokaż aktywne leady"
+          >
+            <div>
+              <label>Aktywne</label>
+              <strong>{stats.active}</strong>
+              <div className="hint">do prowadzenia</div>
+            </div>
+            <TrendingUp className="metric-icon blue" />
+          </button>
 
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-500 transition-colors group-hover:bg-primary group-hover:text-white">
-                            <ChevronRight className="h-4 w-4" />
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                    </Card>
+          <button
+            type="button"
+            className={`metric ${valueSortEnabled && !showTrash ? 'active' : ''}`}
+            onClick={toggleValueSorting}
+            title="Sortuj leady po wartości"
+          >
+            <div>
+              <label>Wartość</label>
+              <strong>{stats.value.toLocaleString()} PLN</strong>
+              <div className="hint">{valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortować'}</div>
+            </div>
+            <TrendingUp className="metric-icon" />
+          </button>
+
+          <button
+            type="button"
+            className={`metric ${quickFilter === 'at-risk' && !showTrash ? 'active' : ''}`}
+            onClick={() => toggleQuickFilter('at-risk')}
+            title="Pokaż zagrożone leady"
+          >
+            <div>
+              <label>Zagrożone</label>
+              <strong className="danger">{stats.atRisk}</strong>
+              <div className="hint">ryzyko utraty</div>
+            </div>
+            <AlertTriangle className="metric-icon red" />
+          </button>
+
+          <button
+            type="button"
+            className={`metric ${quickFilter === 'history' && !showTrash ? 'active' : ''}`}
+            onClick={() => toggleQuickFilter('history')}
+            title="Pokaż leady przeniesione do obsługi"
+          >
+            <div>
+              <label>Historia</label>
+              <strong className="success">{stats.linkedToCase}</strong>
+              <div className="hint">w obsłudze lub zamknięte</div>
+            </div>
+            <Briefcase className="metric-icon green" />
+          </button>
+        </div>
+
+        <div className="layout-list" data-stage25-leads-layout-list="true">
+          <div className="stack">
+            <div className="search">
+              <span aria-hidden="true">⌕</span>
+              <input
+                placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...'}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                list="lead-search-suggestions-stage25"
+              />
+              <datalist id="lead-search-suggestions-stage25">
+                {leadSearchSuggestions.map((suggestion) => (
+                  <option key={suggestion.id} value={suggestion.name} />
+                ))}
+              </datalist>
+            </div>
+
+            {searchQuery.trim() && leadSearchSuggestions.length ? (
+              <div className="suggestions" data-stage25-lead-search-suggestions="true">
+                {leadSearchSuggestions.map((suggestion, index) => (
+                  <Link key={suggestion.id} to={`/leads/${suggestion.id}`}>
+                    <span>{index + 1}. {suggestion.name}</span>
+                    <small>{suggestion.meta}</small>
+                    <ChevronRight className="h-4 w-4" />
                   </Link>
-                  <button
-                    type="button"
-                    aria-label={isArchivedLead ? 'Przywróć leada' : 'Przenieś leada do kosza'}
-                    title={isArchivedLead ? 'Przywróć leada' : 'Przenieś leada do kosza'}
-                    disabled={archivePendingId === String(lead.id || '')}
-                    onClick={(event) => isArchivedLead ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead)}
-                    className={[
-                      'absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border transition disabled:cursor-not-allowed disabled:opacity-60',
-                      isArchivedLead
-                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-500 hover:text-white'
-                        : 'border-rose-200 bg-rose-950/20 text-rose-300 hover:bg-rose-500 hover:text-white',
-                    ].join(' ')}
-                  >
-                    {archivePendingId === String(lead.id || '') ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchivedLead ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            <div className="table-card" data-stage25-lead-table-card="true">
+              {loading || workspaceLoading ? (
+                <div className="row row-empty">
+                  <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
+                  <span>
+                    <span className="title">Ładowanie leadów</span>
+                    <span className="sub">Pobieram dane z aplikacji.</span>
+                  </span>
                 </div>
-              );
-            })
-          )}
+              ) : loadError ? (
+                <div className="row row-empty">
+                  <span className="index">!</span>
+                  <span>
+                    <span className="title">Nie udało się pobrać leadów</span>
+                    <span className="sub">{loadError}</span>
+                  </span>
+                </div>
+              ) : filteredLeads.length ? (
+                filteredLeads.map((lead, index) => {
+                  const leadId = String(lead.id || '');
+                  const linkedCase = resolveLinkedCaseForLead(lead);
+                  const sourceLabel = formatLeadSourceLabel(lead.source);
+                  const statusOption = STATUS_OPTIONS.find((option) => option.value === String(lead.status || 'new'));
+                  const statusLabel = statusOption?.label || 'Nowy';
+                  const valueLabel = (Number(lead.dealValue) || 0).toLocaleString() + ' PLN';
+                  const meta = buildLeadCompactMeta(lead, linkedCase, sourceLabel, valueLabel);
+                  const nextActionMeta = buildNextActionMeta(nextActionByLeadId.get(leadId));
+                  const pending = archivePendingId === leadId;
+
+                  return (
+                    <div key={leadId || index} className="row lead-row" data-stage25-lead-row="true">
+                      <span className="index">{index + 1}</span>
+
+                      <span className="lead-main-cell">
+                        <Link to={`/leads/${leadId}`} className="title">{lead.name || 'Lead bez nazwy'}</Link>
+                        <span className="sub">{meta || 'Brak danych kontaktowych'}</span>
+                        <span className="statusline">
+                          <span className="pill blue">{statusLabel}</span>
+                          <span className="pill">{sourceLabel}</span>
+                          {linkedCase ? <span className="pill violet">Sprawa</span> : null}
+                        </span>
+                      </span>
+
+                      <span className="lead-value-cell">
+                        <span className="mini">Wartość</span>
+                        <strong>{valueLabel}</strong>
+                      </span>
+
+                      <span className="lead-action-cell">
+                        <span className="mini">Najbliższa akcja</span>
+                        <strong className={nextActionMeta.overdue ? 'danger' : ''}>{nextActionMeta.title}</strong>
+                        <span className="sub">{nextActionMeta.subtitle}</span>
+                      </span>
+
+                      <span className="lead-actions">
+                        <Link to={`/leads/${leadId}`} className="btn ghost" aria-label={`Otwórz leada ${lead.name || ''}`}>
+                          <ChevronRight className="h-4 w-4" />
+                        </Link>
+                        <button
+                          type="button"
+                          className="btn ghost lead-icon-btn"
+                          disabled={pending}
+                          onClick={(event) => (showTrash ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead))}
+                          aria-label={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                          title={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                        >
+                          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                        </button>
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="row row-empty">
+                  <span className="index">0</span>
+                  <span>
+                    <span className="title">{showTrash ? 'Kosz jest pusty' : 'Brak leadów w tym widoku'}</span>
+                    <span className="sub">{showTrash ? 'Nie ma rekordów do przywrócenia.' : 'Zmień filtr albo dodaj pierwszego leada.'}</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <aside className="stack" data-stage25-leads-right-rail="true">
+            <div className="right-card" data-relation-value-board="true">
+              <div className="panel-head">
+                <div>
+                  <h3>Najcenniejsze relacje</h3>
+                  <p>Top 5 według wartości</p>
+                </div>
+                <span className="pill dark">Lejek razem: {formatRelationValue(relationFunnelValue)}</span>
+              </div>
+
+              {mostValuableRelations.length ? (
+                <div className="quick-list">
+                  {mostValuableRelations.map((entry) => (
+                    <Link key={entry.key} to={entry.href || '/leads'} data-stage25-valuable-relation-row="true">
+                      <span>
+                        <strong>{entry.label}</strong>
+                        <small>{entry.kindLabel}</small>
+                      </span>
+                      <strong>{formatRelationValue(entry.value)}</strong>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="note">Brak relacji z wyliczoną wartością.</div>
+              )}
+            </div>
+
+            <div className="right-card">
+              <div className="panel-head">
+                <div>
+                  <h3>AI jako przycisk</h3>
+                  <p>Bez stałego panelu. Klikasz tylko wtedy, kiedy potrzebujesz.</p>
+                </div>
+              </div>
+              <Link to="/ai-drafts" className="btn soft-blue">
+                ✦ Przejdź do szkiców AI
+              </Link>
+            </div>
+          </aside>
         </div>
       </div>
     </Layout>
