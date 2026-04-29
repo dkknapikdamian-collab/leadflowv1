@@ -1,0 +1,53 @@
+/* ETAP 7A: Tasks hotfix - neutral active stat cards */
+.cf-html-view.main-tasks-html .grid-5 > a,
+.cf-html-view.main-tasks-html .grid-5 > button {
+  outline: none !important;
+  border: 1px solid #e4e7ec !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+  background: #ffffff !important;
+}
+
+.cf-html-view.main-tasks-html .grid-5 > a:focus,
+.cf-html-view.main-tasks-html .grid-5 > a:focus-visible,
+.cf-html-view.main-tasks-html .grid-5 > a:active,
+.cf-html-view.main-tasks-html .grid-5 > button:focus,
+.cf-html-view.main-tasks-html .grid-5 > button:focus-visible,
+.cf-html-view.main-tasks-html .grid-5 > button:active {
+  outline: none !important;
+  border-color: #e4e7ec !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+}
+
+.cf-html-view.main-tasks-html .grid-5 > a[class*="ring"],
+.cf-html-view.main-tasks-html .grid-5 > button[class*="ring"],
+.cf-html-view.main-tasks-html .grid-5 > a[class*="shadow-md"],
+.cf-html-view.main-tasks-html .grid-5 > button[class*="shadow-md"] {
+  outline: none !important;
+  border-color: #e4e7ec !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+}
+
+.cf-html-view.main-tasks-html .grid-5 > a > *,
+.cf-html-view.main-tasks-html .grid-5 > button > * {
+  border-color: #e4e7ec !important;
+  box-shadow: none !important;
+}
+
+.cf-html-view.main-tasks-html .grid-5 > a > * > *,
+.cf-html-view.main-tasks-html .grid-5 > button > * > * {
+  box-shadow: none !important;
+}
+
+.cf-html-view.main-tasks-html .grid-5 > a .bg-primary\/5,
+.cf-html-view.main-tasks-html .grid-5 > button .bg-primary\/5 {
+  background: #ffffff !important;
+}
+
+.cf-html-view.main-tasks-html .grid-5 > a[aria-current="true"],
+.cf-html-view.main-tasks-html .grid-5 > a[aria-selected="true"],
+.cf-html-view.main-tasks-html .grid-5 > button[aria-current="true"],
+.cf-html-view.main-tasks-html .grid-5 > button[aria-selected="true"] {
+  outline: none !important;
+  border-color: #e4e7ec !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+}
