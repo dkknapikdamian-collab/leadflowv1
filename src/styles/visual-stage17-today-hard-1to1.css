@@ -1,0 +1,642 @@
+/* VISUAL_STAGE17_TODAY_HTML_HARD_1TO1_CSS
+   Cel: twarde przepięcie widoku Dziś i shell na system wizualny z closeflow_full_app_modern_5s_ui_concept.html.
+   Zakres: tylko CSS + klasy powłoki; bez zmiany API, Supabase, auth, danych i logiki Today.
+*/
+
+:root {
+  --cf17-bg: #f4f6f8;
+  --cf17-bg-2: #eef2f6;
+  --cf17-sidebar: #101828;
+  --cf17-sidebar-2: #172033;
+  --cf17-card: #ffffff;
+  --cf17-card-soft: #f8fafc;
+  --cf17-text: #111827;
+  --cf17-muted: #667085;
+  --cf17-muted-2: #98a2b3;
+  --cf17-line: #e4e7ec;
+  --cf17-line-2: #d0d5dd;
+  --cf17-blue: #2563eb;
+  --cf17-blue-2: #1d4ed8;
+  --cf17-blue-soft: #eff6ff;
+  --cf17-green: #047857;
+  --cf17-green-soft: #ecfdf3;
+  --cf17-red: #b42318;
+  --cf17-red-soft: #fff1f3;
+  --cf17-amber: #b54708;
+  --cf17-amber-soft: #fffaeb;
+  --cf17-violet: #6941c6;
+  --cf17-violet-soft: #f4f3ff;
+  --cf17-shadow: 0 18px 45px rgba(16, 24, 40, .08);
+  --cf17-shadow-soft: 0 8px 22px rgba(16, 24, 40, .05);
+  --cf17-radius-xl: 28px;
+  --cf17-radius-lg: 20px;
+  --cf17-radius-md: 14px;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body:has(.cf-html-shell),
+body:has(.closeflow-visual-stage01),
+body:has(.main-today) {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(37, 99, 235, .10), transparent 28%),
+    radial-gradient(circle at 95% 7%, rgba(16, 24, 40, .08), transparent 26%),
+    linear-gradient(180deg, #f7f9fc 0%, var(--cf17-bg) 34%, var(--cf17-bg-2) 100%) !important;
+  color: var(--cf17-text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.cf-html-shell,
+.closeflow-visual-stage01 {
+  background:
+    radial-gradient(circle at 16% 0%, rgba(37, 99, 235, .10), transparent 28%),
+    radial-gradient(circle at 95% 7%, rgba(16, 24, 40, .08), transparent 26%),
+    linear-gradient(180deg, #f7f9fc 0%, var(--cf17-bg) 34%, var(--cf17-bg-2) 100%) !important;
+  color: var(--cf17-text);
+}
+
+.cf-html-shell .app,
+.cf-html-shell.app,
+.closeflow-visual-stage01,
+.closeflow-visual-stage01.app {
+  min-height: 100vh;
+}
+
+/* Shell 1:1: ciemny sidebar, białe karty, global bar */
+.cf-html-shell .sidebar,
+.closeflow-visual-stage01 .sidebar,
+.cf-html-shell aside.sidebar,
+.closeflow-visual-stage01 aside.sidebar,
+.cf-html-shell [data-sidebar],
+.closeflow-visual-stage01 [data-sidebar] {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(37, 99, 235, .26), transparent 35%),
+    linear-gradient(180deg, var(--cf17-sidebar) 0%, #0b1220 100%) !important;
+  color: #fff !important;
+  box-shadow: 18px 0 45px rgba(16, 24, 40, .16) !important;
+  border-right: 0 !important;
+}
+
+.cf-html-shell .brand,
+.closeflow-visual-stage01 .brand {
+  border-bottom: 1px solid rgba(255,255,255,.08) !important;
+}
+
+.cf-html-shell .brand-logo,
+.closeflow-visual-stage01 .brand-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  background: #fff !important;
+  color: #0f172a !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,.24) !important;
+}
+
+.cf-html-shell .brand-title strong,
+.closeflow-visual-stage01 .brand-title strong {
+  color: #fff !important;
+  letter-spacing: -.04em;
+}
+
+.cf-html-shell .brand-title span,
+.closeflow-visual-stage01 .brand-title span {
+  color: rgba(255,255,255,.54) !important;
+  font-weight: 800;
+}
+
+.cf-html-shell .nav-caption,
+.closeflow-visual-stage01 .nav-caption {
+  color: rgba(255,255,255,.38) !important;
+  font-size: 10px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.cf-html-shell .nav-btn,
+.closeflow-visual-stage01 .nav-btn,
+.cf-html-shell .sidebar a,
+.closeflow-visual-stage01 .sidebar a {
+  border-radius: 14px !important;
+  color: rgba(255,255,255,.68) !important;
+  font-weight: 850 !important;
+  transition: .16s ease !important;
+}
+
+.cf-html-shell .nav-btn:hover,
+.closeflow-visual-stage01 .nav-btn:hover,
+.cf-html-shell .sidebar a:hover,
+.closeflow-visual-stage01 .sidebar a:hover {
+  color: #fff !important;
+  background: rgba(255,255,255,.08) !important;
+}
+
+.cf-html-shell .nav-btn.active,
+.closeflow-visual-stage01 .nav-btn.active,
+.cf-html-shell .sidebar a[aria-current="page"],
+.closeflow-visual-stage01 .sidebar a[aria-current="page"] {
+  color: #fff !important;
+  background: rgba(255,255,255,.12) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.10), 0 14px 26px rgba(0,0,0,.16) !important;
+}
+
+.cf-html-shell .nav-ico,
+.closeflow-visual-stage01 .nav-ico {
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.07) !important;
+}
+
+.cf-html-shell .nav-btn.active .nav-ico,
+.closeflow-visual-stage01 .nav-btn.active .nav-ico {
+  background: #fff !important;
+  color: #0f172a !important;
+}
+
+.cf-html-shell .nav-badge,
+.closeflow-visual-stage01 .nav-badge {
+  background: rgba(255,255,255,.10) !important;
+  color: rgba(255,255,255,.72) !important;
+}
+
+.cf-html-shell .trial-card,
+.closeflow-visual-stage01 .trial-card,
+.cf-html-shell .user-card,
+.closeflow-visual-stage01 .user-card {
+  border-radius: 18px !important;
+  background: rgba(255,255,255,.08) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+}
+
+.cf-html-shell .main,
+.closeflow-visual-stage01 .main,
+.cf-html-shell main,
+.closeflow-visual-stage01 main {
+  min-width: 0;
+  background: transparent !important;
+}
+
+.cf-html-shell .global-bar,
+.closeflow-visual-stage01 .global-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(247, 249, 252, .86) !important;
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(228, 231, 236, .78) !important;
+  box-shadow: none !important;
+}
+
+.cf-html-shell .global-title,
+.closeflow-visual-stage01 .global-title {
+  color: var(--cf17-muted) !important;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.cf-html-shell .global-actions,
+.closeflow-visual-stage01 .global-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 1px;
+}
+
+/* Wspólne komponenty HTML skin */
+.cf-html-shell .btn,
+.closeflow-visual-stage01 .btn,
+.main-today .btn,
+.main-today button:not([role="checkbox"]):not([aria-hidden="true"]),
+.cf-html-shell button[data-variant="outline"],
+.closeflow-visual-stage01 button[data-variant="outline"] {
+  min-height: 40px;
+  border-radius: 13px !important;
+  font-size: 12px;
+  font-weight: 900 !important;
+  transition: .15s ease !important;
+}
+
+.cf-html-shell .btn.primary,
+.closeflow-visual-stage01 .btn.primary,
+.cf-html-shell .global-actions .btn.primary,
+.closeflow-visual-stage01 .global-actions .btn.primary,
+.main-today .head-actions .btn.primary,
+.main-today [data-primary="true"] {
+  background: var(--cf17-blue) !important;
+  border-color: var(--cf17-blue) !important;
+  color: #fff !important;
+  box-shadow: 0 13px 26px rgba(37, 99, 235, .23) !important;
+}
+
+.cf-html-shell .btn.soft-blue,
+.closeflow-visual-stage01 .btn.soft-blue,
+.main-today .btn.soft-blue,
+.cf-html-shell .ai-open,
+.closeflow-visual-stage01 .ai-open {
+  color: var(--cf17-blue-2) !important;
+  background: var(--cf17-blue-soft) !important;
+  border-color: #bfdbfe !important;
+  box-shadow: none !important;
+}
+
+.cf-html-shell .card,
+.closeflow-visual-stage01 .card,
+.main-today .card,
+.main-today [data-slot="card"],
+.main-today .rounded-lg,
+.main-today .rounded-xl,
+.main-today .rounded-2xl,
+.main-today .border,
+.main-today .today-tile-card,
+.main-today .today-section,
+.main-today .today-action-card {
+  background: rgba(255,255,255,.86) !important;
+  border: 1px solid var(--cf17-line) !important;
+  border-radius: var(--cf17-radius-xl) !important;
+  box-shadow: var(--cf17-shadow-soft) !important;
+}
+
+.main-today .page-head,
+.main-today [data-visual-page-head],
+.main-today header:first-child,
+.main-today > section:first-child,
+.main-today > div:first-child {
+  margin-bottom: 20px;
+}
+
+.main-today h1,
+.main-today .page-head h1 {
+  color: var(--cf17-text) !important;
+  font-size: clamp(28px, 3vw, 42px) !important;
+  line-height: 1 !important;
+  letter-spacing: -.06em !important;
+}
+
+.main-today .kicker,
+.main-today [data-kicker],
+.main-today .badge:first-child,
+.main-today [class*="kicker"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--cf17-line) !important;
+  background: rgba(255,255,255,.72) !important;
+  color: var(--cf17-muted) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.main-today .lead-copy,
+.main-today p,
+.main-today .text-muted-foreground {
+  color: var(--cf17-muted) !important;
+}
+
+.main-today .grid-4,
+.main-today [data-visual-metrics],
+.main-today .stat-shortcut-grid,
+.main-today .today-shortcuts,
+.main-today .grid:has(.stat-shortcut-card),
+.main-today .grid:has(.today-tile-card) {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 13px !important;
+}
+
+.main-today .metric,
+.main-today .stat-shortcut-card,
+.main-today .today-top-tile,
+.main-today .today-metric,
+.main-today [data-stat-shortcut-card],
+.main-today [role="button"].card {
+  min-height: 106px !important;
+  border-radius: 22px !important;
+  padding: 16px !important;
+  background: rgba(255,255,255,.82) !important;
+  border: 1px solid var(--cf17-line) !important;
+  box-shadow: var(--cf17-shadow-soft) !important;
+  cursor: pointer;
+  transition: .16s ease !important;
+}
+
+.main-today .metric:hover,
+.main-today .stat-shortcut-card:hover,
+.main-today .today-top-tile:hover,
+.main-today [data-stat-shortcut-card]:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cf17-shadow) !important;
+}
+
+.main-today .metric strong,
+.main-today .stat-shortcut-card strong,
+.main-today .today-top-tile strong,
+.main-today [data-stat-shortcut-card] strong {
+  font-size: 25px !important;
+  letter-spacing: -.06em !important;
+  line-height: 1 !important;
+}
+
+.main-today .layout-list,
+.main-today [data-visual-layout-list],
+.main-today .today-main-grid,
+.main-today .today-layout,
+.main-today .grid:has(.right-card),
+.main-today .grid:has([data-visual-right-rail]) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 315px !important;
+  gap: 17px !important;
+  align-items: start !important;
+  margin-top: 17px !important;
+}
+
+.main-today .hero-grid,
+.main-today [data-visual-hero-grid] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.35fr) minmax(240px, .65fr) !important;
+  gap: 14px !important;
+}
+
+.main-today .hero,
+.main-today [data-visual-hero],
+.main-today .today-priority-hero {
+  min-height: 156px;
+  border-radius: var(--cf17-radius-xl) !important;
+  padding: 18px !important;
+  background: linear-gradient(135deg, #111827, #1d2939) !important;
+  color: #fff !important;
+  box-shadow: var(--cf17-shadow) !important;
+}
+
+.main-today .hero.light,
+.main-today [data-visual-hero="light"],
+.main-today .today-week-hero {
+  background: rgba(255,255,255,.86) !important;
+  border: 1px solid var(--cf17-line) !important;
+  color: var(--cf17-text) !important;
+  box-shadow: var(--cf17-shadow-soft) !important;
+}
+
+.main-today .panel-head,
+.main-today .today-tile-header,
+.main-today [data-visual-panel-head] {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 14px !important;
+}
+
+.main-today .panel-head h2,
+.main-today .panel-head h3,
+.main-today .today-tile-header h2,
+.main-today .today-tile-header h3 {
+  margin: 0 !important;
+  font-size: 15px !important;
+  letter-spacing: -.03em !important;
+}
+
+.main-today .table-card,
+.main-today [data-visual-table-card],
+.main-today .today-list,
+.main-today .today-section-list {
+  background: rgba(255,255,255,.84) !important;
+  border: 1px solid var(--cf17-line) !important;
+  border-radius: var(--cf17-radius-xl) !important;
+  box-shadow: var(--cf17-shadow-soft) !important;
+  overflow: hidden !important;
+}
+
+.main-today .row,
+.main-today [data-visual-row],
+.main-today .today-row,
+.main-today .today-item,
+.main-today .work-card,
+.main-today [data-work-card] {
+  border-radius: 18px !important;
+  background: var(--cf17-card-soft) !important;
+  border: 1px solid var(--cf17-line) !important;
+  box-shadow: none !important;
+}
+
+.main-today .pill,
+.cf-html-shell .pill,
+.closeflow-visual-stage01 .pill,
+.main-today .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  background: #f2f4f7 !important;
+  color: #475467 !important;
+  white-space: nowrap;
+}
+
+.main-today .pill.blue,
+.main-today .badge.blue,
+.main-today [data-tone="blue"] {
+  background: var(--cf17-blue-soft) !important;
+  color: var(--cf17-blue-2) !important;
+  border-color: #bfdbfe !important;
+}
+
+.main-today .pill.green,
+.main-today [data-tone="green"] {
+  background: var(--cf17-green-soft) !important;
+  color: var(--cf17-green) !important;
+}
+
+.main-today .pill.red,
+.main-today [data-tone="red"],
+.main-today .destructive {
+  background: var(--cf17-red-soft) !important;
+  color: var(--cf17-red) !important;
+}
+
+.main-today .pill.amber,
+.main-today [data-tone="amber"],
+.main-today .warning {
+  background: var(--cf17-amber-soft) !important;
+  color: var(--cf17-amber) !important;
+}
+
+.main-today .right-card,
+.main-today aside,
+.main-today [data-visual-right-rail],
+.main-today .today-right-rail,
+.main-today .today-sidebar {
+  padding: 16px !important;
+  border-radius: var(--cf17-radius-xl) !important;
+  background: rgba(255,255,255,.86) !important;
+  border: 1px solid var(--cf17-line) !important;
+  box-shadow: var(--cf17-shadow-soft) !important;
+}
+
+.main-today .quick-list,
+.main-today [data-visual-quick-list],
+.main-today .today-shortcut-list {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.main-today .quick-list button,
+.main-today .quick-list a,
+.main-today .today-shortcut-list button,
+.main-today .today-shortcut-list a {
+  min-height: 40px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--cf17-line) !important;
+  background: #fff !important;
+  color: #344054 !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px !important;
+  cursor: pointer;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+.main-today .quick-list button:hover,
+.main-today .quick-list a:hover,
+.main-today .today-shortcut-list button:hover,
+.main-today .today-shortcut-list a:hover {
+  border-color: #bfdbfe !important;
+  background: var(--cf17-blue-soft) !important;
+  color: var(--cf17-blue-2) !important;
+}
+
+.main-today .today-snooze-bar,
+.main-today [data-snooze-bar] {
+  border-radius: 18px !important;
+  background: var(--cf17-blue-soft) !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+.main-today input,
+.main-today textarea,
+.main-today select,
+.cf-html-shell input,
+.cf-html-shell textarea,
+.cf-html-shell select {
+  border-color: var(--cf17-line) !important;
+  background: rgba(255,255,255,.9) !important;
+  border-radius: 14px !important;
+}
+
+/* Mobile 1:1 */
+@media (max-width: 1220px) {
+  .main-today .grid-4,
+  .main-today [data-visual-metrics],
+  .main-today .stat-shortcut-grid,
+  .main-today .today-shortcuts,
+  .main-today .grid:has(.stat-shortcut-card),
+  .main-today .grid:has(.today-tile-card) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .main-today .layout-list,
+  .main-today [data-visual-layout-list],
+  .main-today .today-main-grid,
+  .main-today .today-layout,
+  .main-today .grid:has(.right-card),
+  .main-today .grid:has([data-visual-right-rail]) {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .cf-html-shell .sidebar,
+  .closeflow-visual-stage01 .sidebar,
+  .cf-html-shell aside.sidebar,
+  .closeflow-visual-stage01 aside.sidebar {
+    display: none !important;
+  }
+
+  .cf-html-shell .mobile-top,
+  .closeflow-visual-stage01 .mobile-top {
+    display: flex !important;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: rgba(255,255,255,.9) !important;
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--cf17-line) !important;
+  }
+
+  .cf-html-shell .main,
+  .closeflow-visual-stage01 .main,
+  .cf-html-shell main,
+  .closeflow-visual-stage01 main {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    padding-bottom: 94px !important;
+  }
+
+  .cf-html-shell .global-bar,
+  .closeflow-visual-stage01 .global-bar {
+    margin-left: -14px !important;
+    margin-right: -14px !important;
+    padding: 10px 14px !important;
+    overflow-x: auto !important;
+  }
+
+  .cf-html-shell .global-title,
+  .closeflow-visual-stage01 .global-title {
+    display: none !important;
+  }
+
+  .main-today .grid-4,
+  .main-today [data-visual-metrics],
+  .main-today .stat-shortcut-grid,
+  .main-today .today-shortcuts,
+  .main-today .grid:has(.stat-shortcut-card),
+  .main-today .grid:has(.today-tile-card),
+  .main-today .hero-grid,
+  .main-today [data-visual-hero-grid] {
+    grid-template-columns: 1fr !important;
+  }
+
+  .main-today h1,
+  .main-today .page-head h1 {
+    font-size: 29px !important;
+  }
+
+  .main-today .today-tile-card,
+  .main-today .card,
+  .main-today [data-slot="card"] {
+    border-radius: 20px !important;
+  }
+
+  .cf-html-shell .mobile-nav,
+  .closeflow-visual-stage01 .mobile-nav {
+    position: fixed;
+    bottom: 0;
+    inset-inline: 0;
+    z-index: 40;
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    padding: 8px;
+    background: rgba(255,255,255,.95) !important;
+    border-top: 1px solid var(--cf17-line) !important;
+    backdrop-filter: blur(16px);
+  }
+}

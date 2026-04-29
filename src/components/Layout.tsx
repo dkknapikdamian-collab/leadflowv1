@@ -1,3 +1,4 @@
+// VISUAL_STAGE17_TODAY_HTML_HARD_1TO1_LAYOUT
 /* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-stage01" */
 /* VISUAL_HTML_THEME_V14_LAYOUT */
 /*

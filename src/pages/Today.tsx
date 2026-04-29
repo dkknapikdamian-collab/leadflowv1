@@ -1,3 +1,4 @@
+// VISUAL_STAGE17_TODAY_HTML_HARD_1TO1
 /*
 TODAY_FUNNEL_DEDUP_VALUE_STAGE11
 Lejek w Dziś liczy wartość z leadów i klientów bez podwójnego sumowania tej samej osoby.

@@ -8,7 +8,7 @@
                     "build":  "vite build",
                     "preview":  "vite preview",
                     "clean":  "rm -rf dist",
-                    "lint":  "node scripts/check-visual-stage16-today-html-reset.cjs \u0026\u0026 node scripts/check-visual-html-theme-v14.cjs \u0026\u0026 node scripts/check-visual-stage08-case-detail.cjs \u0026\u0026 node scripts/check-visual-stage07-cases.cjs \u0026\u0026 node scripts/check-visual-stage06-client-detail.cjs \u0026\u0026 node scripts/check-visual-stage05-clients.cjs \u0026\u0026 node scripts/check-visual-stage04-lead-detail.cjs \u0026\u0026 node scripts/check-visual-stage03-leads.cjs \u0026\u0026 node scripts/check-visual-stage02-today.cjs \u0026\u0026 node scripts/check-visual-stage01-shell.cjs \u0026\u0026 node scripts/check-relation-cleanup-today-toggle-sync.cjs \u0026\u0026 node scripts/check-today-tiles-event-edit-client-cleanup.cjs \u0026\u0026 node scripts/check-today-week-client-more-ui-text-cleanup.cjs \u0026\u0026 node scripts/check-task-edit-reminder-and-week-calendar.cjs \u0026\u0026 node scripts/check-client-inline-edit-and-task-edit.cjs \u0026\u0026 node scripts/check-task-event-contract.cjs \u0026\u0026 node scripts/check-data-contract-stage-a1.cjs \u0026\u0026 node scripts/check-data-contract-stage-a2.cjs \u0026\u0026 node scripts/check-polish-mojibake.cjs \u0026\u0026 tsc --noEmit",
+                    "lint":  "node scripts/check-visual-stage17-today-hard-1to1.cjs \u0026\u0026 node scripts/check-visual-stage16-today-html-reset.cjs \u0026\u0026 node scripts/check-visual-html-theme-v14.cjs \u0026\u0026 node scripts/check-visual-stage08-case-detail.cjs \u0026\u0026 node scripts/check-visual-stage07-cases.cjs \u0026\u0026 node scripts/check-visual-stage06-client-detail.cjs \u0026\u0026 node scripts/check-visual-stage05-clients.cjs \u0026\u0026 node scripts/check-visual-stage04-lead-detail.cjs \u0026\u0026 node scripts/check-visual-stage03-leads.cjs \u0026\u0026 node scripts/check-visual-stage02-today.cjs \u0026\u0026 node scripts/check-visual-stage01-shell.cjs \u0026\u0026 node scripts/check-relation-cleanup-today-toggle-sync.cjs \u0026\u0026 node scripts/check-today-tiles-event-edit-client-cleanup.cjs \u0026\u0026 node scripts/check-today-week-client-more-ui-text-cleanup.cjs \u0026\u0026 node scripts/check-task-edit-reminder-and-week-calendar.cjs \u0026\u0026 node scripts/check-client-inline-edit-and-task-edit.cjs \u0026\u0026 node scripts/check-task-event-contract.cjs \u0026\u0026 node scripts/check-data-contract-stage-a1.cjs \u0026\u0026 node scripts/check-data-contract-stage-a2.cjs \u0026\u0026 node scripts/check-polish-mojibake.cjs \u0026\u0026 tsc --noEmit",
                     "verify:closeflow":  "node scripts/closeflow-release-check.cjs",
                     "verify:closeflow:quiet":  "node scripts/closeflow-release-check-quiet.cjs",
                     "check:polish":  "node scripts/check-polish-mojibake.cjs",
@@ -29,7 +29,8 @@
                     "check:visual-stage07-cases":  "node scripts/check-visual-stage07-cases.cjs",
                     "check:visual-stage08-case-detail":  "node scripts/check-visual-stage08-case-detail.cjs",
                     "check:visual-html-theme-v14":  "node scripts/check-visual-html-theme-v14.cjs",
-                    "check:visual-stage16-today-html-reset":  "node scripts/check-visual-stage16-today-html-reset.cjs"
+                    "check:visual-stage16-today-html-reset":  "node scripts/check-visual-stage16-today-html-reset.cjs",
+                    "check:visual-stage17-today-hard-1to1":  "node scripts/check-visual-stage17-today-hard-1to1.cjs"
                 },
     "dependencies":  {
                          "@base-ui/react":  "^1.3.0",
