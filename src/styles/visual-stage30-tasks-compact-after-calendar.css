@@ -1,0 +1,168 @@
+/* ETAP 7: Zadania compact after calendar (scoped) */
+.cf-html-view.main-tasks-html .task-row.task-row-compact {
+  grid-template-columns: minmax(88px, 0.34fr) minmax(260px, 1.35fr) minmax(126px, 0.52fr) minmax(112px, 0.42fr) minmax(330px, 0.95fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 58px;
+  padding: 10px 14px;
+}
+
+.cf-html-view.main-tasks-html .task-type-badge-col,
+.cf-html-view.main-tasks-html .task-status-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cf-html-view.main-tasks-html .task-type-badge {
+  width: fit-content;
+  max-width: 100%;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 3px 8px;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cf-html-view.main-tasks-html .task-row.task-row-compact .task-title {
+  font-size: 14px;
+  -webkit-line-clamp: 1;
+}
+
+.cf-html-view.main-tasks-html .task-row.task-row-compact .task-meta {
+  margin-top: 3px;
+  font-size: 11px;
+}
+
+.cf-html-view.main-tasks-html .task-row.task-row-compact .task-pills {
+  margin-top: 5px;
+}
+
+.cf-html-view.main-tasks-html .task-row.task-row-compact .task-term-col strong {
+  font-size: 12px;
+}
+
+.cf-html-view.main-tasks-html .task-status-chip {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid #e4e7ec;
+  background: #f8fafc;
+  color: #475467;
+  padding: 3px 8px;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+.cf-html-view.main-tasks-html .task-status-chip.is-overdue {
+  border-color: #fecdd3;
+  background: #fff1f3;
+  color: #be123c;
+}
+
+.cf-html-view.main-tasks-html .task-status-chip.is-today {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.cf-html-view.main-tasks-html .task-status-chip.is-done {
+  border-color: #bbf7d0;
+  background: #ecfdf3;
+  color: #047857;
+}
+
+.cf-html-view.main-tasks-html .task-status-chip.is-active {
+  border-color: #e4e7ec;
+  background: #f8fafc;
+  color: #475467;
+}
+
+.cf-html-view.main-tasks-html .task-action-col.task-action-col-compact {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.cf-html-view.main-tasks-html .task-action-col.task-action-col-compact .task-action-btn {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: max-content !important;
+  flex: 0 0 auto !important;
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 0 8px !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+.cf-html-view.main-tasks-html .task-action-col.task-action-col-compact .task-action-danger {
+  color: #be123c !important;
+}
+
+.cf-html-view.main-tasks-html .task-action-col.task-action-col-compact .task-action-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1180px) {
+  .cf-html-view.main-tasks-html .task-row.task-row-compact {
+    grid-template-columns: minmax(82px, .4fr) minmax(220px, 1fr) minmax(118px, .55fr) minmax(100px, .45fr);
+  }
+
+  .cf-html-view.main-tasks-html .task-action-col.task-action-col-compact {
+    grid-column: 2 / -1;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .cf-html-view.main-tasks-html .task-row.task-row-compact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .cf-html-view.main-tasks-html .task-type-badge-col,
+  .cf-html-view.main-tasks-html .task-main,
+  .cf-html-view.main-tasks-html .task-term-col,
+  .cf-html-view.main-tasks-html .task-status-col,
+  .cf-html-view.main-tasks-html .task-action-col.task-action-col-compact {
+    grid-column: 1;
+  }
+
+  .cf-html-view.main-tasks-html .task-action-col.task-action-col-compact {
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .cf-html-view.main-tasks-html .task-action-col.task-action-col-compact .task-action-btn {
+    width: auto !important;
+    max-width: max-content !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding-inline: 9px !important;
+  }
+}

@@ -22,7 +22,7 @@ import {
   ListTodo,
   CheckCircle2,
 } from 'lucide-react';
-import { format, isPast, isToday, isTomorrow, parseISO } from 'date-fns';
+import { addDays, addHours, addWeeks, endOfWeek, format, isPast, isToday, isTomorrow, isWithinInterval, parseISO, startOfDay } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { Input } from '../components/ui/input';
@@ -80,7 +80,7 @@ import { isActiveSalesLead } from '../lib/lead-health';
 
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
-type TaskScope = 'all' | 'active' | 'today' | 'overdue' | 'without-lead' | 'done';
+type TaskScope = 'active' | 'today' | 'week' | 'overdue' | 'without-lead' | 'done';
 
 function getTaskStart(task: any) {
   return getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
@@ -100,6 +100,52 @@ function isTaskDone(task: any) {
 
 function isTaskForToday(task: any) {
   return isToday(parseISO(getTaskStart(task)));
+}
+
+function hasTaskTerm(task: any) {
+  return Boolean(task.scheduledAt || task.dueAt || task.startAt || task.date || task.reminderAt);
+}
+
+function isTaskInCurrentWeek(task: any) {
+  const start = parseISO(getTaskStart(task));
+  const now = new Date();
+  return isWithinInterval(start, {
+    start: startOfDay(now),
+    end: endOfWeek(now, { weekStartsOn: 1 }),
+  });
+}
+
+function getTaskTimeValue(task: any) {
+  if (!hasTaskTerm(task)) return Number.POSITIVE_INFINITY;
+  const time = parseISO(getTaskStart(task)).getTime();
+  return Number.isFinite(time) ? time : Number.POSITIVE_INFINITY;
+}
+
+function isHighPriorityTask(task: any) {
+  const priority = String(task.priority || '').toLowerCase();
+  return priority === 'high' || priority === 'urgent' || priority === 'pilne';
+}
+
+function getTaskStatusLabel(task: any) {
+  if (isTaskDone(task)) return 'Zrobione';
+  if (isTaskOverdueEntry(task)) return 'Zaległe';
+  if (isTaskForToday(task)) return 'Dziś';
+  if (!hasTaskTerm(task)) return 'Bez terminu';
+  return 'Aktywne';
+}
+
+function compareTasksOperational(a: any, b: any) {
+  const rank = (task: any) => {
+    if (isTaskOverdueEntry(task)) return 0;
+    if (!isTaskDone(task) && isTaskForToday(task)) return 1;
+    if (!isTaskDone(task) && isHighPriorityTask(task)) return 2;
+    if (hasTaskTerm(task)) return 3;
+    return 4;
+  };
+
+  const rankDiff = rank(a) - rank(b);
+  if (rankDiff !== 0) return rankDiff;
+  return getTaskTimeValue(a) - getTaskTimeValue(b);
 }
 
 function isTaskOverdueEntry(task: any) {
@@ -218,7 +264,7 @@ export default function Tasks() {
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [taskScope, setTaskScope] = useState<TaskScope>('all');
+  const [taskScope, setTaskScope] = useState<TaskScope>('active');
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
@@ -541,6 +587,40 @@ export default function Tasks() {
     }
   };
 
+  const rescheduleTask = async (task: any, amount: number, unit: 'hour' | 'day' | 'week') => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+
+    try {
+      const currentStart = parseISO(getTaskStart(task));
+      const nextStart = unit === 'hour'
+        ? addHours(currentStart, amount)
+        : unit === 'day'
+          ? addDays(currentStart, amount)
+          : addWeeks(currentStart, amount);
+      const nextScheduledAt = toDateTimeLocalValue(nextStart);
+
+      await updateTaskInSupabase({
+        id: task.id,
+        title: task.title,
+        type: task.type,
+        status: task.status || 'todo',
+        priority: task.priority,
+        date: nextScheduledAt.slice(0, 10),
+        scheduledAt: nextScheduledAt,
+        leadId: task.leadId ?? null,
+        caseId: task.caseId ?? null,
+        clientId: task.clientId ?? null,
+        reminderAt: task.reminderAt ?? null,
+        recurrenceRule: task.recurrenceRule ?? task.recurrence?.mode ?? 'none',
+      });
+
+      await refreshSupabaseData();
+      toast.success('Termin zadania przesunięty');
+    } catch (error: any) {
+      toast.error('Błąd: ' + error.message);
+    }
+  };
+
   const deleteTask = async (taskId: string) => {
     if (!window.confirm('Usunąć zadanie?')) return;
     try {
@@ -653,33 +733,38 @@ export default function Tasks() {
   const scopedTasks = useMemo(() => {
     return baseFilteredTasks.filter((task) => {
       switch (taskScope) {
-        case 'all':
-          return true;
+        case 'active':
+          return !isTaskDone(task);
         case 'today':
-          return isTaskForToday(task);
+          return !isTaskDone(task) && isTaskForToday(task);
+        case 'week':
+          return !isTaskDone(task) && isTaskInCurrentWeek(task);
         case 'overdue':
           return isTaskOverdueEntry(task);
         case 'without-lead':
-          return !hasLeadLink(task);
+          return !isTaskDone(task) && !hasLeadLink(task);
         case 'done':
           return isTaskDone(task);
-        case 'active':
-          return !isTaskDone(task);
         default:
-          return true;
+          return !isTaskDone(task);
       }
     });
   }, [baseFilteredTasks, taskScope]);
 
   const visibleCurrentTasks = useMemo(() => {
     if (taskScope === 'done') return [] as any[];
-    return scopedTasks.filter((task) => !isTaskDone(task) || isTaskForToday(task));
+    return scopedTasks
+      .filter((task) => !isTaskDone(task))
+      .slice()
+      .sort(compareTasksOperational);
   }, [scopedTasks, taskScope]);
 
   const visibleCompletedTasks = useMemo(() => {
-    if (taskScope === 'done') return scopedTasks.filter((task) => isTaskDone(task));
-    return scopedTasks.filter((task) => isTaskDone(task) && !isTaskForToday(task));
-  }, [scopedTasks, taskScope]);
+    return scopedTasks
+      .filter((task) => isTaskDone(task))
+      .slice()
+      .sort((a, b) => getTaskTimeValue(b) - getTaskTimeValue(a));
+  }, [scopedTasks]);
 
   const groupedCurrentTasks = useMemo(() => groupTasksByDate(visibleCurrentTasks), [visibleCurrentTasks]);
   const sortedCurrentDates = useMemo(() => Object.keys(groupedCurrentTasks).sort(), [groupedCurrentTasks]);
@@ -689,8 +774,8 @@ export default function Tasks() {
   const taskStats = {
     active: tasks.filter((task) => !isTaskDone(task)).length,
     today: tasks.filter((task) => !isTaskDone(task) && isTaskForToday(task)).length,
+    week: tasks.filter((task) => !isTaskDone(task) && isTaskInCurrentWeek(task)).length,
     overdue: tasks.filter((task) => isTaskOverdueEntry(task)).length,
-    withoutLead: tasks.filter((task) => !hasLeadLink(task)).length,
     done: tasks.filter((task) => isTaskDone(task)).length,
   };
 
@@ -714,11 +799,19 @@ export default function Tasks() {
     },
     {
       id: 'today' as TaskScope,
-      title: 'Na dziś',
+      title: 'Dziś',
       value: taskStats.today,
       tone: 'text-blue-600',
       bg: 'bg-blue-50 text-blue-500',
       icon: Clock,
+    },
+    {
+      id: 'week' as TaskScope,
+      title: 'Ten tydzień',
+      value: taskStats.week,
+      tone: 'text-indigo-600',
+      bg: 'bg-indigo-50 text-indigo-500',
+      icon: Bell,
     },
     {
       id: 'overdue' as TaskScope,
@@ -727,14 +820,6 @@ export default function Tasks() {
       tone: 'text-rose-600',
       bg: 'bg-rose-50 text-rose-500',
       icon: AlertTriangle,
-    },
-    {
-      id: 'without-lead' as TaskScope,
-      title: 'Bez leada',
-      value: taskStats.withoutLead,
-      tone: 'text-amber-600',
-      bg: 'bg-amber-50 text-amber-500',
-      icon: Link2,
     },
     {
       id: 'done' as TaskScope,
@@ -747,16 +832,13 @@ export default function Tasks() {
   ];
 
   const renderTaskCard = (task: any, completedSection = false, index = 0) => {
+    void index;
     const taskStart = getTaskStart(task);
     const overdue = isTaskOverdueEntry(task);
-    const recurrence = normalizeRecurrenceConfig(task.recurrence);
-    const reminder = task.reminder
-      ? normalizeReminderConfig(task.reminder)
-      : task.reminderAt
-        ? { ...createDefaultReminder(), mode: 'once' as const }
-        : normalizeReminderConfig(task.reminder);
     const done = isTaskDone(task);
+    const hasTerm = hasTaskTerm(task);
     const taskDate = parseISO(taskStart);
+    const taskTypeLabel = TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie';
     const caseTitle = task.caseId ? (caseTitleById.get(String(task.caseId)) || 'Powiązana sprawa') : '';
     const clientName = task.clientId ? (clientNameById.get(String(task.clientId)) || '') : '';
     const relationLine = caseTitle
@@ -766,55 +848,59 @@ export default function Tasks() {
         : clientName
           ? `Klient: ${clientName}`
           : 'Brak powiązań';
+    const statusLabel = getTaskStatusLabel(task);
+    const statusTone = done
+      ? 'is-done'
+      : overdue
+        ? 'is-overdue'
+        : isTaskForToday(task)
+          ? 'is-today'
+          : 'is-active';
 
     return (
-      <div key={task.id} className={`task-row ${done ? 'is-done' : ''}`}>
-        <button
-          type="button"
-          onClick={() => toggleTask(task.id, task.status)}
-          className={`task-done-btn w-5 h-5 rounded border flex items-center justify-center ${done ? 'bg-primary border-primary text-white' : 'border-slate-200 hover:border-primary'}`}
-          aria-label={done ? 'Przywróć do zrobienia' : 'Oznacz jako zrobione'}
-        >
-          {done ? <CheckSquare className="w-4 h-4" /> : null}
-        </button>
+      <div key={task.id} className={`task-row task-row-compact ${done ? 'is-done' : ''}`} data-task-compact-row="true">
+        <div className="task-type-badge-col">
+          <span className="task-type-badge">{taskTypeLabel}</span>
+        </div>
+
         <div className="task-main min-w-0">
           <p className={`task-title font-bold text-slate-900 break-words ${done ? 'line-through' : ''}`}>{task.title}</p>
           <p className="task-meta">{relationLine}</p>
           <div className="task-pills">
-            <Badge variant="secondary" className="text-[10px] uppercase font-bold h-5">{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</Badge>
-            {overdue ? <Badge variant="destructive" className="text-[10px] uppercase font-bold h-5">Zaległe</Badge> : null}
+            {isHighPriorityTask(task) ? <span className="task-priority-chip">Pilne</span> : null}
             {completedSection ? <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 text-[10px] uppercase font-bold h-5">Archiwum</Badge> : null}
           </div>
         </div>
+
         <div className="task-term-col">
           <span className="task-col-label">Termin</span>
-          <strong>{format(taskDate, 'd MMM, HH:mm', { locale: pl })}</strong>
+          <strong>{hasTerm ? format(taskDate, 'd MMM, HH:mm', { locale: pl }) : 'Bez terminu'}</strong>
         </div>
-        <div className="task-type-col">
-          <span className="task-col-label">Typ / priorytet</span>
-          <strong>{TASK_TYPES.find((item) => item.value === task.type)?.label || 'Zadanie'}</strong>
-          {task.priority === 'high' ? <span className="task-priority-chip">Pilne</span> : null}
+
+        <div className="task-status-col">
+          <span className="task-col-label">Status</span>
+          <span className={`task-status-chip ${statusTone}`}>{statusLabel}</span>
         </div>
-        <div className="task-action-col">
-          <Button variant="outline" size="sm" className="rounded-xl" onClick={() => openEditTask(task)}>
+
+        <div className="task-action-col task-action-col-compact" data-task-actions="compact">
+          <Button variant="outline" size="sm" className="task-action-btn rounded-xl" onClick={() => openEditTask(task)}>
             Edytuj
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-xl"><MoreVertical className="w-4 h-4" /></Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => openEditTask(task)}>
-                Edytuj
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => toggleTask(task.id, task.status)}>
-                <CheckSquare className="w-4 h-4 mr-2" /> {done ? 'Przywróć do zrobienia' : 'Oznacz jako zrobione'}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => deleteTask(task.id)} className="text-rose-600">
-                <Trash2 className="w-4 h-4 mr-2" /> Usuń
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button variant="outline" size="sm" className="task-action-btn rounded-xl" disabled={done} onClick={() => rescheduleTask(task, 1, 'hour')}>
+            +1H
+          </Button>
+          <Button variant="outline" size="sm" className="task-action-btn rounded-xl" disabled={done} onClick={() => rescheduleTask(task, 1, 'day')}>
+            +1D
+          </Button>
+          <Button variant="outline" size="sm" className="task-action-btn rounded-xl" disabled={done} onClick={() => rescheduleTask(task, 1, 'week')}>
+            +1W
+          </Button>
+          <Button variant={done ? 'outline' : 'default'} size="sm" className="task-action-btn rounded-xl" onClick={() => toggleTask(task.id, task.status)}>
+            {done ? 'Przywróć' : 'Zrobione'}
+          </Button>
+          <Button variant="ghost" size="sm" className="task-action-btn task-action-danger rounded-xl" onClick={() => deleteTask(task.id)}>
+            Usuń
+          </Button>
         </div>
       </div>
     );
