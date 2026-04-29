@@ -1,0 +1,377 @@
+/* VISUAL_STAGE23_LEADS_HTML_PARITY_FIX_CSS
+   Cel: domknac zakladke Leady do ukladu HTML 1:1 bez zmiany dzialania.
+   Zakres: tylko warstwa wizualna. Zostaja: filtry, kosz, formularz dodawania, wyszukiwarka, linki, dane z aplikacji.
+*/
+
+#root .cf-html-shell .main-leads {
+  --cf23-bg: #f4f6f8;
+  --cf23-bg-2: #eef2f6;
+  --cf23-sidebar: #101828;
+  --cf23-card: #ffffff;
+  --cf23-card-soft: #f8fafc;
+  --cf23-text: #111827;
+  --cf23-muted: #667085;
+  --cf23-muted-2: #98a2b3;
+  --cf23-line: #e4e7ec;
+  --cf23-line-2: #d0d5dd;
+  --cf23-blue: #2563eb;
+  --cf23-blue-2: #1d4ed8;
+  --cf23-blue-soft: #eff6ff;
+  --cf23-green: #047857;
+  --cf23-green-soft: #ecfdf3;
+  --cf23-red: #b42318;
+  --cf23-red-soft: #fff1f3;
+  --cf23-amber: #b54708;
+  --cf23-amber-soft: #fffaeb;
+  --cf23-violet: #6941c6;
+  --cf23-violet-soft: #f4f3ff;
+  --cf23-shadow: 0 18px 45px rgba(16, 24, 40, .08);
+  --cf23-shadow-soft: 0 8px 22px rgba(16, 24, 40, .05);
+  --cf23-radius-xl: 28px;
+  --cf23-radius-lg: 20px;
+  --cf23-radius-md: 14px;
+  background: transparent !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div {
+  width: min(100%, 1500px) !important;
+  max-width: 1500px !important;
+  margin: 0 auto !important;
+  padding: 24px 32px 56px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 315px !important;
+  gap: 17px !important;
+  align-items: start !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > header {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 22px !important;
+  width: 100% !important;
+  margin: 0 0 3px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > header h1 {
+  margin: 0 !important;
+  color: var(--cf23-text) !important;
+  font-size: clamp(28px, 3vw, 42px) !important;
+  line-height: 1 !important;
+  letter-spacing: -.06em !important;
+  font-weight: 950 !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > header h1::before {
+  content: 'LISTA SPRZEDAZOWA';
+  display: inline-flex !important;
+  align-items: center !important;
+  width: fit-content !important;
+  margin: 0 0 8px !important;
+  padding: 5px 9px !important;
+  border: 1px solid var(--cf23-line) !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.72) !important;
+  color: var(--cf23-muted) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .08em !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > header h1::after {
+  content: 'Ten widok ma odpowiadac na jedno pytanie: z kim teraz pracujesz i gdzie jest pieniadz albo ryzyko.';
+  display: block !important;
+  max-width: 780px !important;
+  margin-top: 8px !important;
+  color: var(--cf23-muted) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.45 !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > header > div:last-child {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  padding-top: 0 !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > header button {
+  min-height: 40px !important;
+  height: 40px !important;
+  border-radius: 13px !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  box-shadow: var(--cf23-shadow-soft) !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > header button:first-child {
+  background: #fff !important;
+  color: var(--cf23-text) !important;
+  border-color: var(--cf23-line) !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > header button:last-child {
+  background: var(--cf23-blue) !important;
+  border-color: var(--cf23-blue) !important;
+  color: #fff !important;
+  box-shadow: 0 13px 26px rgba(37, 99, 235, .23) !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5.gap-4 {
+  grid-column: 1 / -1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 13px !important;
+  margin: 0 !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button {
+  min-height: 106px !important;
+  height: auto !important;
+  display: block !important;
+  border-radius: 22px !important;
+  overflow: visible !important;
+  transform: none !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button > div,
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot='card'],
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .h-full {
+  min-height: 106px !important;
+  height: 100% !important;
+  border: 1px solid var(--cf23-line) !important;
+  border-radius: 22px !important;
+  background: rgba(255,255,255,.82) !important;
+  box-shadow: var(--cf23-shadow-soft) !important;
+  overflow: hidden !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot='card-content'] {
+  min-height: 106px !important;
+  padding: 16px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: start !important;
+  gap: 12px !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 p:first-child {
+  color: var(--cf23-muted) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .08em !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 h3 {
+  color: var(--cf23-text) !important;
+  font-size: 25px !important;
+  line-height: 1 !important;
+  letter-spacing: -.06em !important;
+  font-weight: 950 !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 p:not(:first-child) {
+  color: var(--cf23-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.3 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+#root .cf-html-shell .main-leads [data-stage32-leads-value-layout='true'] {
+  display: contents !important;
+}
+
+#root .cf-html-shell .main-leads [data-stage32-leads-value-layout='true'] > div:first-child {
+  grid-column: 1 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-shell .main-leads [data-stage32-leads-value-rail='true'] {
+  grid-column: 2 !important;
+  grid-row: 3 / span 3 !important;
+  align-self: start !important;
+  position: sticky !important;
+  top: 92px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-shell .main-leads [data-relation-value-board='true'],
+#root .cf-html-shell .main-leads [data-stage32-leads-value-rail='true'] [data-slot='card'] {
+  width: 100% !important;
+  border: 1px solid var(--cf23-line) !important;
+  border-radius: var(--cf23-radius-xl) !important;
+  background: rgba(255,255,255,.86) !important;
+  box-shadow: var(--cf23-shadow-soft) !important;
+  overflow: hidden !important;
+}
+
+#root .cf-html-shell .main-leads [data-stage32-leads-value-rail='true'] [data-slot='card-content'] {
+  padding: 16px !important;
+}
+
+#root .cf-html-shell .main-leads [data-stage32-leads-value-rail='true'] a {
+  min-height: 40px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--cf23-line) !important;
+  background: #fff !important;
+  color: var(--cf23-text) !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-shell .main-leads [data-stage32-leads-value-layout='true'] > div:first-child [data-slot='card'],
+#root .cf-html-shell .main-leads [data-stage32-leads-value-layout='true'] > div:first-child .border-none.shadow-sm {
+  border: 1px solid var(--cf23-line) !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,.86) !important;
+  box-shadow: var(--cf23-shadow-soft) !important;
+  overflow: visible !important;
+}
+
+#root .cf-html-shell .main-leads input[list='lead-search-suggestions-stage31'],
+#root .cf-html-shell .main-leads input[placeholder*='Szukaj'] {
+  height: 50px !important;
+  min-height: 50px !important;
+  border: 1px solid var(--cf23-line) !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,.86) !important;
+  color: var(--cf23-text) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7) !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 {
+  grid-column: 1 !important;
+  display: grid !important;
+  gap: 14px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-top: 0 !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 > a,
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 > div:not([role='status']) {
+  width: 100% !important;
+  min-height: 108px !important;
+  border: 1px solid var(--cf23-line) !important;
+  border-radius: var(--cf23-radius-xl) !important;
+  background: rgba(255,255,255,.84) !important;
+  box-shadow: var(--cf23-shadow-soft) !important;
+  overflow: hidden !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 [data-slot='card'],
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .rounded-xl,
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .rounded-2xl {
+  border-radius: var(--cf23-radius-xl) !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 [data-slot='card-content'] {
+  padding: 14px !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .truncate,
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .line-clamp-1,
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .line-clamp-2 {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+}
+
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 h2,
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 h3,
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .font-bold,
+#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .font-semibold {
+  color: var(--cf23-text) !important;
+  font-weight: 950 !important;
+  letter-spacing: -.025em !important;
+  line-height: 1.2 !important;
+}
+
+#root .cf-html-shell .main-leads [data-slot='badge'],
+#root .cf-html-shell .main-leads .inline-flex.items-center.rounded-full {
+  min-height: 24px !important;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-shell .main-leads svg {
+  flex: 0 0 auto !important;
+}
+
+#root .cf-html-shell .main-leads button svg + span,
+#root .cf-html-shell .main-leads a svg + span {
+  white-space: nowrap !important;
+}
+
+@media (max-width: 1220px) {
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div {
+    grid-template-columns: 1fr !important;
+    padding: 18px !important;
+  }
+
+  #root .cf-html-shell .main-leads [data-stage32-leads-value-layout='true'],
+  #root .cf-html-shell .main-leads [data-stage32-leads-value-rail='true'],
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    position: static !important;
+  }
+}
+
+@media (max-width: 760px) {
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    padding: 14px !important;
+  }
+
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header {
+    display: grid !important;
+    gap: 12px !important;
+  }
+
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header h1 {
+    font-size: 29px !important;
+  }
+
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header > div:last-child {
+    justify-content: stretch !important;
+  }
+
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header button {
+    flex: 1 1 auto !important;
+  }
+
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5.gap-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button,
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button > div,
+  #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot='card'] {
+    min-height: 96px !important;
+  }
+}

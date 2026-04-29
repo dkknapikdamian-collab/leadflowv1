@@ -1,3 +1,4 @@
+@import './styles/visual-stage22-leads-final-lock.css';
 @import './styles/visual-stage21-today-final-lock.css';
 @import './styles/visual-stage20-tasks-safe-css.css';
 @import './styles/visual-stage19-clients-safe-css.css';
@@ -17,6 +18,8 @@
 @import "./styles/visual-stage03-leads.css";
 @import "./styles/visual-stage02-today.css";
 @import "./styles/visual-stage01-shell.css";
+
+@import './styles/visual-stage23-leads-html-parity-fix.css';
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -230,8 +233,8 @@ html[data-skin] select option {
 
 /*
 CLIENT_PANEL_EMPTY_WARNING_STRIP_FIX_STAGE_A1
-Ukrywa pusty żółty pasek ostrzegawczy w panelu klienta, gdy zostaje sama ikonka bez treści.
-Nie ukrywa prawdziwych alertów, które mają tekst, link albo przycisk.
+Ukrywa pusty ĹĽĂłĹ‚ty pasek ostrzegawczy w panelu klienta, gdy zostaje sama ikonka bez treĹ›ci.
+Nie ukrywa prawdziwych alertĂłw, ktĂłre majÄ… tekst, link albo przycisk.
 */
 #root .border-amber-200.bg-amber-50:has(> svg:only-child) {
   display: none !important;

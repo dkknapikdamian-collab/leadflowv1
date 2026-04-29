@@ -1,0 +1,585 @@
+/* VISUAL_STAGE22_LEADS_FINAL_LOCK_CSS_2026_04_29
+   Leady: finalny lock wizualny pod closeflow_full_app_modern_5s_ui_concept.html.
+   Zakres: tylko CSS. Zero zmian API, Supabase, auth, danych, filtrów, formularzy i modalów.
+   Cel: header, metryki, wyszukiwarka, lista, kosz, right rail, ikony i mobile w rytmie HTML 1:1.
+*/
+
+.cf-html-shell .main-leads,
+.closeflow-visual-stage01 .main-leads,
+main[data-current-section="leads"] {
+  --cf22-bg: #f4f6f8;
+  --cf22-bg-2: #eef2f6;
+  --cf22-sidebar: #101828;
+  --cf22-sidebar-2: #172033;
+  --cf22-card: #ffffff;
+  --cf22-card-soft: #f8fafc;
+  --cf22-text: #111827;
+  --cf22-muted: #667085;
+  --cf22-muted-2: #98a2b3;
+  --cf22-line: #e4e7ec;
+  --cf22-line-2: #d0d5dd;
+  --cf22-blue: #2563eb;
+  --cf22-blue-2: #1d4ed8;
+  --cf22-blue-soft: #eff6ff;
+  --cf22-green: #047857;
+  --cf22-green-soft: #ecfdf3;
+  --cf22-red: #b42318;
+  --cf22-red-soft: #fff1f3;
+  --cf22-amber: #b54708;
+  --cf22-amber-soft: #fffaeb;
+  --cf22-violet: #6941c6;
+  --cf22-violet-soft: #f4f3ff;
+  --cf22-shadow: 0 18px 45px rgba(16, 24, 40, .08);
+  --cf22-shadow-soft: 0 8px 22px rgba(16, 24, 40, .05);
+  --cf22-radius-xl: 28px;
+  --cf22-radius-lg: 20px;
+  --cf22-radius-md: 14px;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(37, 99, 235, .10), transparent 28%),
+    radial-gradient(circle at 95% 7%, rgba(16, 24, 40, .08), transparent 26%),
+    linear-gradient(180deg, #f7f9fc 0%, var(--cf22-bg) 34%, var(--cf22-bg-2) 100%) !important;
+  color: var(--cf22-text) !important;
+}
+
+.cf-html-shell .main-leads > [data-shell-content="true"] > .p-4,
+.cf-html-shell .main-leads > [data-shell-content="true"] > .md\:p-8,
+.cf-html-shell .main-leads > [data-shell-content="true"] > .max-w-7xl,
+.closeflow-visual-stage01 .main-leads > [data-shell-content="true"] > .p-4,
+.closeflow-visual-stage01 .main-leads > [data-shell-content="true"] > .md\:p-8,
+main[data-current-section="leads"] > [data-shell-content="true"] > .max-w-7xl {
+  max-width: 1500px !important;
+  padding: 24px 28px 48px !important;
+}
+
+/* HTML: .page-head + .kicker + h1 + .lead-copy + .head-actions */
+.cf-html-shell .main-leads header,
+.closeflow-visual-stage01 .main-leads header,
+main[data-current-section="leads"] header {
+  position: relative;
+  overflow: hidden;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 22px !important;
+  margin: 0 0 20px !important;
+  padding: 22px !important;
+  border: 1px solid var(--cf22-line) !important;
+  border-radius: var(--cf22-radius-xl) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(37, 99, 235, .10), transparent 28%),
+    linear-gradient(135deg, rgba(255,255,255,.96) 0%, rgba(248,250,252,.90) 100%) !important;
+  box-shadow: var(--cf22-shadow) !important;
+}
+
+.cf-html-shell .main-leads header::before,
+.closeflow-visual-stage01 .main-leads header::before,
+main[data-current-section="leads"] header::before {
+  content: "Lista sprzedazowa";
+  display: inline-flex;
+  width: fit-content;
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--cf22-line);
+  background: rgba(255,255,255,.72);
+  color: var(--cf22-muted);
+  font-size: 10px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.cf-html-shell .main-leads header > div:first-child,
+.closeflow-visual-stage01 .main-leads header > div:first-child,
+main[data-current-section="leads"] header > div:first-child {
+  min-width: 0 !important;
+  padding-top: 33px !important;
+}
+
+.cf-html-shell .main-leads header h1,
+.closeflow-visual-stage01 .main-leads header h1,
+main[data-current-section="leads"] header h1 {
+  margin: 0 !important;
+  color: var(--cf22-text) !important;
+  font-size: clamp(28px, 3vw, 42px) !important;
+  line-height: 1 !important;
+  letter-spacing: -.06em !important;
+  font-weight: 950 !important;
+}
+
+.cf-html-shell .main-leads header h1::after,
+.closeflow-visual-stage01 .main-leads header h1::after,
+main[data-current-section="leads"] header h1::after {
+  content: "Wszystkie aktywne relacje, ryzyka, wartosc lejka i historia przeniesionych tematow w jednym czytelnym widoku.";
+  display: block;
+  max-width: 780px;
+  margin-top: 9px;
+  color: var(--cf22-muted);
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+.cf-html-shell .main-leads header > div:last-child,
+.closeflow-visual-stage01 .main-leads header > div:last-child,
+main[data-current-section="leads"] header > div:last-child {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+/* Buttons: one rhythm across tabs */
+.cf-html-shell .main-leads button,
+.closeflow-visual-stage01 .main-leads button,
+main[data-current-section="leads"] button {
+  border-radius: 13px !important;
+  font-weight: 900 !important;
+  letter-spacing: -.01em;
+}
+
+.cf-html-shell .main-leads header button,
+.closeflow-visual-stage01 .main-leads header button,
+main[data-current-section="leads"] header button {
+  min-height: 40px !important;
+  border: 1px solid var(--cf22-line) !important;
+  background: var(--cf22-card) !important;
+  color: var(--cf22-text) !important;
+  box-shadow: var(--cf22-shadow-soft) !important;
+}
+
+.cf-html-shell .main-leads header button:first-child,
+.closeflow-visual-stage01 .main-leads header button:first-child,
+main[data-current-section="leads"] header button:first-child {
+  color: var(--cf22-blue-2) !important;
+  background: var(--cf22-blue-soft) !important;
+  border-color: #bfdbfe !important;
+  box-shadow: none !important;
+}
+
+.cf-html-shell .main-leads header button:last-child,
+.closeflow-visual-stage01 .main-leads header button:last-child,
+main[data-current-section="leads"] header button:last-child {
+  background: var(--cf22-blue) !important;
+  border-color: var(--cf22-blue) !important;
+  color: #fff !important;
+  box-shadow: 0 13px 26px rgba(37, 99, 235, .23) !important;
+}
+
+/* Every icon has the same visual grammar */
+.cf-html-shell .main-leads svg,
+.closeflow-visual-stage01 .main-leads svg,
+main[data-current-section="leads"] svg {
+  flex: 0 0 auto;
+  stroke-width: 2.25;
+}
+
+.cf-html-shell .main-leads header button svg,
+.closeflow-visual-stage01 .main-leads header button svg,
+main[data-current-section="leads"] header button svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* HTML: .grid-5 + .metric */
+.cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+.closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 13px !important;
+  margin: 0 0 17px !important;
+}
+
+.cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button,
+.closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button,
+main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button {
+  border-radius: 22px !important;
+  text-align: left !important;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease !important;
+}
+
+.cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button:hover,
+.closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button:hover,
+main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button:hover {
+  transform: translateY(-2px);
+}
+
+.cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot="card"],
+.cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .h-full,
+.closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot="card"],
+.closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .h-full,
+main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot="card"] {
+  height: 100%;
+  border: 1px solid var(--cf22-line) !important;
+  border-radius: 22px !important;
+  background: rgba(255,255,255,.82) !important;
+  box-shadow: var(--cf22-shadow-soft) !important;
+  overflow: hidden !important;
+}
+
+.cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [class*="min-h"],
+.closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [class*="min-h"],
+main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [class*="min-h"] {
+  min-height: 106px !important;
+  padding: 16px !important;
+  align-items: center !important;
+}
+
+.cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 p,
+.closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 p,
+main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 p {
+  margin: 0 0 5px !important;
+  color: var(--cf22-muted) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .08em !important;
+}
+
+.cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 h3,
+.closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 h3,
+main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 h3 {
+  color: var(--cf22-text) !important;
+  font-size: 25px !important;
+  line-height: 1 !important;
+  letter-spacing: -.06em !important;
+  font-weight: 950 !important;
+}
+
+.cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .rounded-2xl,
+.closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .rounded-2xl,
+main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .rounded-2xl {
+  width: 44px !important;
+  height: 44px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 16px !important;
+  padding: 0 !important;
+}
+
+.cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .rounded-2xl svg,
+.closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .rounded-2xl svg,
+main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .rounded-2xl svg {
+  width: 21px !important;
+  height: 21px !important;
+}
+
+/* HTML: .layout-list */
+.cf-html-shell .main-leads [data-stage32-leads-value-layout="true"],
+.closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout="true"],
+main[data-current-section="leads"] [data-stage32-leads-value-layout="true"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 315px !important;
+  gap: 17px !important;
+  align-items: start !important;
+  margin-top: 17px !important;
+}
+
+/* HTML: .search */
+.cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] > [data-slot="card"],
+.cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] > .border-none,
+.closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout="true"] > [data-slot="card"],
+.closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout="true"] > .border-none,
+main[data-current-section="leads"] [data-stage32-leads-value-layout="true"] > [data-slot="card"] {
+  border: 1px solid var(--cf22-line) !important;
+  border-radius: var(--cf22-radius-xl) !important;
+  background: rgba(255,255,255,.86) !important;
+  box-shadow: var(--cf22-shadow-soft) !important;
+  overflow: hidden !important;
+}
+
+.cf-html-shell .main-leads .relative:has(input[list="lead-search-suggestions-stage31"]),
+.closeflow-visual-stage01 .main-leads .relative:has(input[list="lead-search-suggestions-stage31"]),
+main[data-current-section="leads"] .relative:has(input[list="lead-search-suggestions-stage31"]) {
+  position: relative;
+}
+
+.cf-html-shell .main-leads input[list="lead-search-suggestions-stage31"],
+.closeflow-visual-stage01 .main-leads input[list="lead-search-suggestions-stage31"],
+main[data-current-section="leads"] input[list="lead-search-suggestions-stage31"] {
+  height: 50px !important;
+  border: 1px solid var(--cf22-line) !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,.86) !important;
+  color: var(--cf22-text) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.70) !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+}
+
+.cf-html-shell .main-leads input[list="lead-search-suggestions-stage31"]::placeholder,
+.closeflow-visual-stage01 .main-leads input[list="lead-search-suggestions-stage31"]::placeholder,
+main[data-current-section="leads"] input[list="lead-search-suggestions-stage31"]::placeholder {
+  color: var(--cf22-muted-2) !important;
+}
+
+.cf-html-shell .main-leads [data-stage31-lead-search-suggestions="true"],
+.closeflow-visual-stage01 .main-leads [data-stage31-lead-search-suggestions="true"],
+main[data-current-section="leads"] [data-stage31-lead-search-suggestions="true"] {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.cf-html-shell .main-leads [data-stage31-lead-search-suggestions="true"] a,
+.closeflow-visual-stage01 .main-leads [data-stage31-lead-search-suggestions="true"] a,
+main[data-current-section="leads"] [data-stage31-lead-search-suggestions="true"] a {
+  min-height: 40px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--cf22-line) !important;
+  background: #fff !important;
+  color: #344054 !important;
+  box-shadow: none !important;
+}
+
+/* HTML right-card + quick-list */
+.cf-html-shell .main-leads [data-stage32-leads-value-rail="true"],
+.closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"],
+main[data-current-section="leads"] [data-stage32-leads-value-rail="true"] {
+  position: sticky !important;
+  top: 104px !important;
+  align-self: start !important;
+  display: grid !important;
+  gap: 14px !important;
+}
+
+.cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] > [data-slot="card"],
+.cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] > .border-none,
+.closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"] > [data-slot="card"],
+.closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"] > .border-none,
+main[data-current-section="leads"] [data-stage32-leads-value-rail="true"] > [data-slot="card"] {
+  border: 1px solid var(--cf22-line) !important;
+  border-radius: var(--cf22-radius-xl) !important;
+  background: rgba(255,255,255,.86) !important;
+  box-shadow: var(--cf22-shadow-soft) !important;
+  overflow: hidden !important;
+}
+
+.cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] [data-slot="card-content"],
+.closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"] [data-slot="card-content"],
+main[data-current-section="leads"] [data-stage32-leads-value-rail="true"] [data-slot="card-content"] {
+  padding: 16px !important;
+}
+
+.cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] a,
+.closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"] a,
+main[data-current-section="leads"] [data-stage32-leads-value-rail="true"] a {
+  min-height: 40px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--cf22-line) !important;
+  background: #fff !important;
+  color: #344054 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 10px 12px !important;
+  transition: .15s ease !important;
+}
+
+.cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] a:hover,
+.closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"] a:hover,
+main[data-current-section="leads"] [data-stage32-leads-value-rail="true"] a:hover {
+  border-color: #bfdbfe !important;
+  background: var(--cf22-blue-soft) !important;
+  color: var(--cf22-blue-2) !important;
+  transform: translateY(-1px);
+}
+
+/* Lead list cards: preserve routes/actions, only skin rows */
+.cf-html-shell .main-leads .space-y-3 > a[href^="/leads/"],
+.closeflow-visual-stage01 .main-leads .space-y-3 > a[href^="/leads/"],
+main[data-current-section="leads"] .space-y-3 > a[href^="/leads/"],
+.cf-html-shell .main-leads .space-y-3 > div:has(a[href^="/leads/"]),
+.closeflow-visual-stage01 .main-leads .space-y-3 > div:has(a[href^="/leads/"]),
+main[data-current-section="leads"] .space-y-3 > div:has(a[href^="/leads/"]) {
+  border: 1px solid var(--cf22-line) !important;
+  border-radius: var(--cf22-radius-lg) !important;
+  background: rgba(255,255,255,.88) !important;
+  box-shadow: var(--cf22-shadow-soft) !important;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease !important;
+}
+
+.cf-html-shell .main-leads .space-y-3 > a[href^="/leads/"]:hover,
+.closeflow-visual-stage01 .main-leads .space-y-3 > a[href^="/leads/"]:hover,
+main[data-current-section="leads"] .space-y-3 > a[href^="/leads/"]:hover,
+.cf-html-shell .main-leads .space-y-3 > div:has(a[href^="/leads/"]):hover,
+.closeflow-visual-stage01 .main-leads .space-y-3 > div:has(a[href^="/leads/"]):hover,
+main[data-current-section="leads"] .space-y-3 > div:has(a[href^="/leads/"]):hover {
+  transform: translateY(-1px);
+  border-color: #bfdbfe !important;
+  box-shadow: var(--cf22-shadow) !important;
+}
+
+/* Pills and badges */
+.cf-html-shell .main-leads [data-slot="badge"],
+.cf-html-shell .main-leads .inline-flex.items-center.rounded-full,
+.closeflow-visual-stage01 .main-leads [data-slot="badge"],
+.closeflow-visual-stage01 .main-leads .inline-flex.items-center.rounded-full,
+main[data-current-section="leads"] [data-slot="badge"],
+main[data-current-section="leads"] .inline-flex.items-center.rounded-full {
+  min-height: 24px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--cf22-line) !important;
+  background: var(--cf22-card-soft) !important;
+  color: #475467 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+.cf-html-shell .main-leads .bg-blue-100,
+.cf-html-shell .main-leads .bg-blue-50,
+.closeflow-visual-stage01 .main-leads .bg-blue-100,
+.closeflow-visual-stage01 .main-leads .bg-blue-50,
+main[data-current-section="leads"] .bg-blue-100,
+main[data-current-section="leads"] .bg-blue-50 {
+  background: var(--cf22-blue-soft) !important;
+  color: var(--cf22-blue-2) !important;
+  border-color: #bfdbfe !important;
+}
+
+.cf-html-shell .main-leads .bg-emerald-50,
+.cf-html-shell .main-leads .bg-green-50,
+.closeflow-visual-stage01 .main-leads .bg-emerald-50,
+.closeflow-visual-stage01 .main-leads .bg-green-50,
+main[data-current-section="leads"] .bg-emerald-50,
+main[data-current-section="leads"] .bg-green-50 {
+  background: var(--cf22-green-soft) !important;
+  color: var(--cf22-green) !important;
+  border-color: #bbf7d0 !important;
+}
+
+.cf-html-shell .main-leads .bg-rose-50,
+.cf-html-shell .main-leads .bg-red-50,
+.closeflow-visual-stage01 .main-leads .bg-rose-50,
+.closeflow-visual-stage01 .main-leads .bg-red-50,
+main[data-current-section="leads"] .bg-rose-50,
+main[data-current-section="leads"] .bg-red-50 {
+  background: var(--cf22-red-soft) !important;
+  color: var(--cf22-red) !important;
+  border-color: #fecdd3 !important;
+}
+
+.cf-html-shell .main-leads .bg-amber-50,
+.cf-html-shell .main-leads .bg-amber-100,
+.closeflow-visual-stage01 .main-leads .bg-amber-50,
+.closeflow-visual-stage01 .main-leads .bg-amber-100,
+main[data-current-section="leads"] .bg-amber-50,
+main[data-current-section="leads"] .bg-amber-100 {
+  background: var(--cf22-amber-soft) !important;
+  color: var(--cf22-amber) !important;
+  border-color: #fedf89 !important;
+}
+
+.cf-html-shell .main-leads .bg-violet-100,
+.cf-html-shell .main-leads .bg-purple-100,
+.closeflow-visual-stage01 .main-leads .bg-violet-100,
+.closeflow-visual-stage01 .main-leads .bg-purple-100,
+main[data-current-section="leads"] .bg-violet-100,
+main[data-current-section="leads"] .bg-purple-100 {
+  background: var(--cf22-violet-soft) !important;
+  color: var(--cf22-violet) !important;
+  border-color: #ddd6fe !important;
+}
+
+/* Dialogs stay functional, but receive the same corner rhythm */
+.cf-html-shell .main-leads [role="dialog"],
+.closeflow-visual-stage01 .main-leads [role="dialog"],
+main[data-current-section="leads"] [role="dialog"] {
+  border-radius: var(--cf22-radius-lg) !important;
+}
+
+.cf-html-shell .main-leads [role="dialog"] input,
+.cf-html-shell .main-leads [role="dialog"] select,
+.closeflow-visual-stage01 .main-leads [role="dialog"] input,
+.closeflow-visual-stage01 .main-leads [role="dialog"] select,
+main[data-current-section="leads"] [role="dialog"] input,
+main[data-current-section="leads"] [role="dialog"] select {
+  border-radius: var(--cf22-radius-md) !important;
+}
+
+@media (max-width: 1180px) {
+  .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"],
+  .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout="true"],
+  main[data-current-section="leads"] [data-stage32-leads-value-layout="true"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"],
+  .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"],
+  main[data-current-section="leads"] [data-stage32-leads-value-rail="true"] {
+    position: static !important;
+  }
+}
+
+@media (max-width: 920px) {
+  .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+  .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+  main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .cf-html-shell .main-leads > [data-shell-content="true"] > .p-4,
+  .cf-html-shell .main-leads > [data-shell-content="true"] > .md\:p-8,
+  .cf-html-shell .main-leads > [data-shell-content="true"] > .max-w-7xl,
+  .closeflow-visual-stage01 .main-leads > [data-shell-content="true"] > .p-4,
+  .closeflow-visual-stage01 .main-leads > [data-shell-content="true"] > .md\:p-8,
+  main[data-current-section="leads"] > [data-shell-content="true"] > .max-w-7xl {
+    padding: 14px !important;
+  }
+
+  .cf-html-shell .main-leads header,
+  .closeflow-visual-stage01 .main-leads header,
+  main[data-current-section="leads"] header {
+    display: grid !important;
+    border-radius: 22px !important;
+    padding: 18px !important;
+  }
+
+  .cf-html-shell .main-leads header::before,
+  .closeflow-visual-stage01 .main-leads header::before,
+  main[data-current-section="leads"] header::before {
+    position: static !important;
+    margin-bottom: 10px;
+  }
+
+  .cf-html-shell .main-leads header > div:first-child,
+  .closeflow-visual-stage01 .main-leads header > div:first-child,
+  main[data-current-section="leads"] header > div:first-child {
+    padding-top: 0 !important;
+  }
+
+  .cf-html-shell .main-leads header > div:last-child,
+  .closeflow-visual-stage01 .main-leads header > div:last-child,
+  main[data-current-section="leads"] header > div:last-child {
+    justify-content: stretch !important;
+  }
+
+  .cf-html-shell .main-leads header button,
+  .closeflow-visual-stage01 .main-leads header button,
+  main[data-current-section="leads"] header button {
+    flex: 1 1 auto !important;
+  }
+
+  .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+  .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+  main[data-current-section="leads"] .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"],
+  .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout="true"],
+  main[data-current-section="leads"] [data-stage32-leads-value-layout="true"] {
+    gap: 12px !important;
+    margin-top: 12px !important;
+  }
+}
