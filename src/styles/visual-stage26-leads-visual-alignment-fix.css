@@ -1,0 +1,259 @@
+/* VISUAL_STAGE26_LEADS_VISUAL_ALIGNMENT_FIX
+   Leady: korekta po porownaniu screenshotu aplikacji z HTML.
+   Zakres: wyglad i ulozenie zakladki Leady. Bez zmian API, Supabase, auth, billing i routingu.
+*/
+
+.cf-html-shell main[data-current-section="leady"] {
+  background:
+    radial-gradient(circle at 16% 0%, rgba(37, 99, 235, .10), transparent 28%),
+    radial-gradient(circle at 95% 7%, rgba(16, 24, 40, .08), transparent 26%),
+    linear-gradient(180deg, #f7f9fc 0%, #f4f6f8 34%, #eef2f6 100%) !important;
+}
+
+/* Usuniecie efektu "waski panel na srodku" z poprzednich etapow. */
+.cf-html-shell main[data-current-section="leady"] [data-shell-content="true"],
+.cf-html-shell main[data-current-section="leady"] [data-shell-content="true"] > div,
+.cf-html-shell main[data-current-section="leady"] [data-shell-content="true"] > .p-4,
+.cf-html-shell main[data-current-section="leady"] [data-shell-content="true"] > .md\:p-8,
+.cf-html-shell main[data-current-section="leady"] [data-shell-content="true"] > .max-w-5xl {
+  width: 100% !important;
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.cf-html-view.main-leads-html {
+  width: min(1500px, calc(100vw - 340px)) !important;
+  max-width: 1500px !important;
+  margin-inline: auto !important;
+  padding: 42px 0 64px !important;
+}
+
+.cf-html-view.main-leads-html .page-head {
+  margin-bottom: 20px !important;
+}
+
+.cf-html-view.main-leads-html .page-head .head-actions {
+  align-items: center !important;
+  gap: 8px !important;
+  padding-top: 2px !important;
+}
+
+.cf-html-view.main-leads-html .grid-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 13px !important;
+  margin-top: 0 !important;
+}
+
+.cf-html-view.main-leads-html .metric {
+  min-height: 106px !important;
+  border-radius: 22px !important;
+  padding: 16px !important;
+  background: rgba(255, 255, 255, .82) !important;
+  border: 1px solid #e4e7ec !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+}
+
+.cf-html-view.main-leads-html .metric.active {
+  background: #eff6ff !important;
+  border-color: #93c5fd !important;
+}
+
+.cf-html-view.main-leads-html .layout-list {
+  grid-template-columns: minmax(0, 1fr) 315px !important;
+  gap: 17px !important;
+  align-items: start !important;
+  margin-top: 17px !important;
+}
+
+.cf-html-view.main-leads-html .search input {
+  height: 50px !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, .86) !important;
+  border: 1px solid #e4e7ec !important;
+}
+
+.cf-html-view.main-leads-html .table-card {
+  border-radius: 28px !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, .84) !important;
+  border: 1px solid #e4e7ec !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+}
+
+.cf-html-view.main-leads-html .row {
+  grid-template-columns: 34px minmax(0, 1.35fr) minmax(130px, .45fr) minmax(180px, .7fr) 88px !important;
+  min-height: 88px !important;
+  padding: 13px 14px !important;
+  gap: 12px !important;
+  background: transparent !important;
+}
+
+.cf-html-view.main-leads-html .row:hover {
+  background: #ffffff !important;
+}
+
+.cf-html-view.main-leads-html .lead-main-cell,
+.cf-html-view.main-leads-html .lead-value-cell,
+.cf-html-view.main-leads-html .lead-action-cell {
+  min-width: 0 !important;
+}
+
+.cf-html-view.main-leads-html .title,
+.cf-html-view.main-leads-html a.title {
+  color: #111827 !important;
+  font-weight: 950 !important;
+  letter-spacing: -.025em !important;
+  line-height: 1.2 !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+.cf-html-view.main-leads-html .sub {
+  color: #667085 !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+.cf-html-view.main-leads-html .lead-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+}
+
+.cf-html-view.main-leads-html .lead-actions .btn.ghost {
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  color: #111827 !important;
+  border: 1px solid #e4e7ec !important;
+}
+
+/* Naprawa prawego panelu: zadnych czarnych rogow i zadnego bialego tekstu na bialym tle. */
+.cf-html-view.main-leads-html .right-card,
+.cf-html-view.main-leads-html .right-card *,
+.cf-html-view.main-leads-html .quick-list,
+.cf-html-view.main-leads-html .quick-list * {
+  text-shadow: none !important;
+}
+
+.cf-html-view.main-leads-html .right-card {
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  padding: 16px !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, .86) !important;
+  border: 1px solid #e4e7ec !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+  color: #111827 !important;
+}
+
+.cf-html-view.main-leads-html .right-card::before,
+.cf-html-view.main-leads-html .right-card::after,
+.cf-html-view.main-leads-html .quick-list::before,
+.cf-html-view.main-leads-html .quick-list::after {
+  content: none !important;
+  display: none !important;
+}
+
+.cf-html-view.main-leads-html .right-card h3 {
+  color: #111827 !important;
+  font-size: 15px !important;
+  line-height: 1.1 !important;
+  font-weight: 950 !important;
+}
+
+.cf-html-view.main-leads-html .right-card p,
+.cf-html-view.main-leads-html .right-card small {
+  color: #667085 !important;
+}
+
+.cf-html-view.main-leads-html .right-card .pill.dark {
+  background: #101828 !important;
+  color: #ffffff !important;
+}
+
+.cf-html-view.main-leads-html .quick-list {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.cf-html-view.main-leads-html .quick-list a {
+  min-height: 42px !important;
+  border-radius: 14px !important;
+  border: 1px solid #e4e7ec !important;
+  background: #ffffff !important;
+  color: #344054 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 9px 12px !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.cf-html-view.main-leads-html .quick-list a strong {
+  color: #111827 !important;
+  opacity: 1 !important;
+}
+
+.cf-html-view.main-leads-html .quick-list a small {
+  color: #667085 !important;
+  opacity: 1 !important;
+}
+
+.cf-html-view.main-leads-html .right-card .btn.soft-blue {
+  width: fit-content !important;
+  color: #1d4ed8 !important;
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+@media (max-width: 1220px) {
+  .cf-html-view.main-leads-html {
+    width: min(100%, calc(100vw - 110px)) !important;
+    padding-inline: 0 !important;
+  }
+
+  .cf-html-view.main-leads-html .layout-list {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cf-html-view.main-leads-html .grid-5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .cf-html-view.main-leads-html {
+    width: 100% !important;
+    padding: 0 14px 94px !important;
+  }
+
+  .cf-html-view.main-leads-html .grid-5 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cf-html-view.main-leads-html .row {
+    grid-template-columns: 30px minmax(0, 1fr) !important;
+  }
+
+  .cf-html-view.main-leads-html .lead-value-cell,
+  .cf-html-view.main-leads-html .lead-action-cell,
+  .cf-html-view.main-leads-html .lead-actions {
+    grid-column: 2 !important;
+  }
+
+  .cf-html-view.main-leads-html .lead-actions {
+    justify-content: flex-start !important;
+  }
+}

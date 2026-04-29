@@ -500,6 +500,9 @@ export default function Leads() {
           </div>
 
           <div className="head-actions">
+            <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
+              âś¦ Zapytaj AI
+            </Link>
             <button
               type="button"
               className="btn"
