@@ -1,3 +1,4 @@
+@import './styles/visual-stage24-leads-html-dom-parity-hardfix.css';
 @import './styles/visual-stage22-leads-final-lock.css';
 @import './styles/visual-stage21-today-final-lock.css';
 @import './styles/visual-stage20-tasks-safe-css.css';
@@ -233,8 +234,8 @@ html[data-skin] select option {
 
 /*
 CLIENT_PANEL_EMPTY_WARNING_STRIP_FIX_STAGE_A1
-Ukrywa pusty ĹĽĂłĹ‚ty pasek ostrzegawczy w panelu klienta, gdy zostaje sama ikonka bez treĹ›ci.
-Nie ukrywa prawdziwych alertĂłw, ktĂłre majÄ… tekst, link albo przycisk.
+Hide empty warning strip in client panel when it only contains icon.
+Do not hide real alerts with text, link or button.
 */
 #root .border-amber-200.bg-amber-50:has(> svg:only-child) {
   display: none !important;
