@@ -2186,17 +2186,18 @@ export default function Today() {
 
   return (
     <Layout>
-      <div className="p-4 md:p-8 max-w-7xl mx-auto w-full space-y-8">
+      <div className="today-html-page p-4 md:p-8 max-w-7xl mx-auto w-full space-y-8">
         <TodayFunnelDedupValueCard leads={leads} clients={clients} />
-                <header className="space-y-2">
+                <header className="page-head today-page-head">
           <div>
+            <span className="kicker">Start pracy</span>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900">Witaj, Damian!</h1>
-            <p className="text-sm text-slate-500">Globalne akcje są tylko w górnym pasku: Asystent AI, Szybki szkic, Szkice AI, Lead, Zadanie i Wydarzenie.</p>
+            <p className="lead-copy text-sm text-slate-500">Globalne akcje są tylko w górnym pasku: Asystent AI, Szybki szkic, Szkice AI, Lead, Zadanie i Wydarzenie.</p>
           </div>
         </header>
 
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {summaryCards.map((card) => {
             const Icon = card.icon;
             return (
@@ -2206,7 +2207,7 @@ export default function Today() {
                 onClick={() => scrollToFirstSection(card.sectionIds)}
                 className="w-full text-left"
               >
-                <Card className="border-none shadow-sm transition-all hover:shadow-md hover:border-primary/20">
+                <Card className="metric border-none shadow-sm transition-all hover:shadow-md hover:border-primary/20">
                   <CardContent className="p-5 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.title}</p>
@@ -2222,8 +2223,8 @@ export default function Today() {
           })}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="layout-list grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="space-y-8">
             {overdueTasks.length > 0 && (
               <div id="today-section-overdue-tasks">
                 <TileCard
@@ -2591,7 +2592,7 @@ export default function Today() {
             )}
           </div>
 
-          <div className="space-y-8">
+          <aside className="right-card space-y-8">
             <TileCard
               id="pipeline-summary"
               title="Wartość lejka"
@@ -2704,7 +2705,7 @@ export default function Today() {
                 ))}
               </div>
             </section>
-          </div>
+          </aside>
         </div>
       </div>
       <Dialog open={Boolean(previewEntry)} onOpenChange={(open) => { if (!open) setPreviewEntry(null); }}>
