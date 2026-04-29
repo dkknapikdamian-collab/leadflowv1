@@ -1,11 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Archive, CheckCircle2, Clock, Clipboard, Pencil, Search, Sparkles, Trash2, XCircle } from 'lucide-react';
+import {
+  Archive,
+  AlertTriangle,
+  CalendarClock,
+  CheckCircle2,
+  Clock,
+  Clipboard,
+  FileText,
+  Loader2,
+  Pencil,
+  Search,
+  Sparkles,
+  Target,
+  Trash2,
+  XCircle,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { EVENT_TYPES, PRIORITY_OPTIONS, SOURCE_OPTIONS, TASK_TYPES } from '../lib/options';
@@ -34,68 +47,18 @@ import {
   fetchLeadsFromSupabase,
   fetchCasesFromSupabase,
 } from '../lib/supabase-fallback';
+import '../styles/visual-stage9-ai-drafts-vnext.css';
 
-type DraftTab = AiLeadDraftStatus | 'all';
-
-const approvalInputClass = 'h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
-const approvalSelectClass = approvalInputClass;
-const approvalTypeOptions: { value: AiDraftApprovalType; label: string; helper: string }[] = [
-  { value: 'lead', label: 'Lead', helper: 'Nowy kontakt sprzedażowy w lejku.' },
-  { value: 'task', label: 'Zadanie', helper: 'Prawdziwe zadanie widoczne w Dziś i kalendarzu.' },
-  { value: 'event', label: 'Wydarzenie', helper: 'Prawdziwe wydarzenie widoczne w kalendarzu.' },
-  { value: 'note', label: 'Notatka', helper: 'Notatka dopisana do historii powiązania.' },
-];
-
-/* AI_DRAFT_APPROVAL_TO_FINAL_RECORD_STAGE03 */
-/* AI_DRAFT_REAL_TRANSFER_STAGE12 */
-/* AI_DRAFT_RELATION_PICKER_STAGE24 */
-
-const DRAFT_TABS: { key: DraftTab; label: string; helper: string }[] = [
-  { key: 'draft', label: 'Do sprawdzenia', helper: 'Notatki, z których jeszcze nie powstał lead.' },
-  { key: 'converted', label: 'Zatwierdzone', helper: 'Szkice już przerobione na leady.' },
-  { key: 'archived', label: 'Archiwum', helper: 'Odłożone notatki bez kasowania historii.' },
-  { key: 'all', label: 'Wszystkie', helper: 'Pełna historia szkiców AI.' },
-];
-
-function formatDraftDate(value: string) {
-  const parsed = new Date(value);
-  if (!Number.isFinite(parsed.getTime())) return 'Brak daty';
-  return parsed.toLocaleString('pl-PL', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-function sourceLabel(source: string) {
-  if (source === 'today_assistant') return 'Asystent AI';
-  if (source === 'quick_capture') return 'Szybki szkic';
-  return 'Ręcznie';
-}
-
-function statusLabel(status: AiLeadDraftStatus) {
-  if (status === 'converted') return 'Zatwierdzony';
-  if (status === 'archived') return 'Archiwum';
-  return 'Do sprawdzenia';
-}
-
-function statusBadgeClassName(status: AiLeadDraftStatus) {
-  if (status === 'converted') return 'border-emerald-200 bg-emerald-50 text-emerald-700';
-  if (status === 'archived') return 'border-slate-200 bg-slate-50 text-slate-600';
-  return 'border-blue-200 bg-blue-50 text-blue-700';
-}
-
-function matchesDraftSearch(draft: AiLeadDraft, query: string) {
-  const normalized = query.trim().toLowerCase();
-  if (!normalized) return true;
-
-  return [draft.rawText, sourceLabel(draft.source), statusLabel(draft.status)]
-    .join(' ')
-    .toLowerCase()
-    .includes(normalized);
-}
+type DraftFilter =
+  | 'all'
+  | 'draft'
+  | 'lead'
+  | 'task'
+  | 'event'
+  | 'note'
+  | 'errors'
+  | 'converted'
+  | 'archived';
 
 type AiDraftRelationKind = 'lead' | 'case' | 'client';
 
@@ -105,6 +68,213 @@ type AiDraftRelationOption = {
   helper: string;
   search: string;
 };
+
+const approvalInputClass = 'ai-drafts-approval-input';
+const approvalSelectClass = approvalInputClass;
+
+const approvalTypeOptions: { value: AiDraftApprovalType; label: string; helper: string }[] = [
+  { value: 'lead', label: 'Lead', helper: 'Nowy kontakt sprzedażowy w lejku.' },
+  { value: 'task', label: 'Zadanie', helper: 'Prawdziwe zadanie widoczne w Dziś i kalendarzu.' },
+  { value: 'event', label: 'Wydarzenie', helper: 'Prawdziwe wydarzenie widoczne w kalendarzu.' },
+  { value: 'note', label: 'Notatka', helper: 'Notatka dopisana do historii powiązania.' },
+];
+
+const AI_DRAFT_FILTERS: { key: DraftFilter; label: string }[] = [
+  { key: 'all', label: 'Wszystkie' },
+  { key: 'draft', label: 'Do sprawdzenia' },
+  { key: 'lead', label: 'Leady' },
+  { key: 'task', label: 'Zadania' },
+  { key: 'event', label: 'Wydarzenia' },
+  { key: 'note', label: 'Notatki' },
+  { key: 'errors', label: 'Błędy' },
+  { key: 'converted', label: 'Zatwierdzone' },
+  { key: 'archived', label: 'Anulowane' },
+];
+
+const AI_DRAFT_STAGE9_MARKER = 'AI_DRAFTS_VISUAL_REBUILD_STAGE9';
+
+function asText(value: unknown) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function firstText(source: Record<string, unknown> | null | undefined, keys: string[]) {
+  if (!source) return '';
+  for (const key of keys) {
+    const value = asText(source[key]);
+    if (value) return value;
+  }
+  return '';
+}
+
+function getDraftParsedData(draft: AiLeadDraft) {
+  const parsed = draft.parsedDraft || draft.parsedData || null;
+  return parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : null;
+}
+
+function getDraftType(draft: AiLeadDraft): AiDraftApprovalType {
+  if (draft.type === 'task' || draft.type === 'event' || draft.type === 'note' || draft.type === 'lead') {
+    return draft.type;
+  }
+  return buildAiDraftApprovalForm(draft).recordType;
+}
+
+function getDraftTypeLabel(draft: AiLeadDraft) {
+  const type = getDraftType(draft);
+  if (type === 'task') return 'Zadanie';
+  if (type === 'event') return 'Wydarzenie';
+  if (type === 'note') return 'Notatka';
+  return 'Lead';
+}
+
+function getDraftIcon(draft: AiLeadDraft) {
+  const type = getDraftType(draft);
+  if (type === 'task') return Clipboard;
+  if (type === 'event') return CalendarClock;
+  if (type === 'note') return FileText;
+  return Target;
+}
+
+function getDraftStatusKey(draft: AiLeadDraft): 'draft' | 'converted' | 'archived' | 'errors' {
+  const provider = asText(draft.provider).toLowerCase();
+  const rawText = asText(draft.rawText);
+  const parsed = getDraftParsedData(draft);
+
+  if (draft.status === 'converted') return 'converted';
+  if (draft.status === 'archived') return 'archived';
+  if (provider.includes('fail') || provider.includes('error')) return 'errors';
+  if (draft.status === 'draft' && !rawText && !parsed) return 'errors';
+
+  return 'draft';
+}
+
+function getDraftStatusLabel(draft: AiLeadDraft) {
+  const status = getDraftStatusKey(draft);
+  if (status === 'converted') return 'Zatwierdzony';
+  if (status === 'archived') {
+    if (draft.cancelledAt) return 'Anulowany';
+    if (draft.expiresAt && new Date(draft.expiresAt).getTime() < Date.now()) return 'Wygasł';
+    return 'Anulowany';
+  }
+  if (status === 'errors') return 'Błąd';
+  return 'Do sprawdzenia';
+}
+
+function getDraftSourceLabel(draft: AiLeadDraft) {
+  if (draft.source === 'today_assistant') return 'Asystent AI';
+  if (draft.source === 'quick_capture') return 'Quick Lead Capture';
+
+  const provider = asText(draft.provider).toLowerCase();
+  if (provider.includes('rule') || provider.includes('parser')) return 'Parser tekstu';
+  if (provider.includes('quick')) return 'Szybki szkic';
+  if (provider.includes('gemini') || provider.includes('cloudflare') || provider.includes('ai')) return 'Asystent AI';
+
+  return 'Szybki szkic';
+}
+
+function parseDate(value: unknown) {
+  const raw = asText(value);
+  if (!raw) return null;
+  const parsed = new Date(raw);
+  return Number.isFinite(parsed.getTime()) ? parsed : null;
+}
+
+function isSameCalendarDay(a: Date, b: Date) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+function isYesterday(value: Date, now: Date) {
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  return isSameCalendarDay(value, yesterday);
+}
+
+function formatDraftDate(value: string) {
+  const parsed = parseDate(value);
+  if (!parsed) return 'Brak daty';
+
+  const now = new Date();
+  const time = parsed.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+
+  if (isSameCalendarDay(parsed, now)) return 'dzisiaj ' + time;
+  if (isYesterday(parsed, now)) return 'wczoraj ' + time;
+
+  return new Intl.DateTimeFormat('pl-PL', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+    .format(parsed)
+    .replace(/\./g, '');
+}
+
+function shortPreview(value: unknown) {
+  const text = asText(value).replace(/\s+/g, ' ');
+  if (!text) return 'Brak krótkiego opisu. Otwórz szkic, żeby sprawdzić szczegóły.';
+  return text.length > 170 ? text.slice(0, 167) + '...' : text;
+}
+
+function getDraftTitle(draft: AiLeadDraft) {
+  const parsed = getDraftParsedData(draft);
+  const typeLabel = getDraftTypeLabel(draft);
+  const title = firstText(parsed, ['title', 'name', 'contactName', 'clientName', 'summary', 'need']);
+  if (title) return typeLabel + ': ' + title;
+
+  const approval = buildAiDraftApprovalForm(draft);
+  if (approval.title && approval.title !== 'Nowy rekord ze szkicu AI') return typeLabel + ': ' + approval.title;
+  if (approval.name) return typeLabel + ': ' + approval.name;
+
+  return 'Szkic bez tytułu';
+}
+
+function getDraftDescription(draft: AiLeadDraft) {
+  const parsed = getDraftParsedData(draft);
+  const description = firstText(parsed, ['description', 'body', 'note', 'need', 'summary']);
+  if (description) return shortPreview(description);
+  return shortPreview(draft.rawText);
+}
+
+function draftHasMissingData(draft: AiLeadDraft) {
+  const parsed = getDraftParsedData(draft);
+  const missing = parsed?.missingFields;
+  if (Array.isArray(missing) && missing.length > 0) return true;
+  if (getDraftStatusKey(draft) === 'errors') return true;
+  const form = buildAiDraftApprovalForm(draft);
+  if (form.recordType === 'lead' && !form.name) return true;
+  if ((form.recordType === 'task' || form.recordType === 'event') && !form.title) return true;
+  return false;
+}
+
+function matchesDraftSearch(draft: AiLeadDraft, query: string) {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) return true;
+
+  const form = buildAiDraftApprovalForm(draft);
+  return [
+    draft.rawText,
+    getDraftTitle(draft),
+    getDraftDescription(draft),
+    getDraftTypeLabel(draft),
+    getDraftStatusLabel(draft),
+    getDraftSourceLabel(draft),
+    form.name,
+    form.title,
+    form.company,
+    form.phone,
+    form.email,
+    form.source,
+    form.scheduledAt,
+  ]
+    .join(' ')
+    .toLowerCase()
+    .includes(normalized);
+}
+
+function shouldShowByFilter(draft: AiLeadDraft, filter: DraftFilter) {
+  if (filter === 'all') return true;
+  if (filter === 'errors') return draftHasMissingData(draft) || getDraftStatusKey(draft) === 'errors';
+  if (filter === 'draft' || filter === 'converted' || filter === 'archived') return getDraftStatusKey(draft) === filter;
+  return getDraftType(draft) === filter;
+}
 
 function firstAiDraftRelationText(entry: any, keys: string[]) {
   for (const key of keys) {
@@ -118,9 +288,11 @@ function buildAiDraftRelationOption(entry: any, kind: AiDraftRelationKind): AiDr
   const id = firstAiDraftRelationText(entry, ['id']);
   if (!id) return null;
 
-  const label = kind === 'case'
-    ? firstAiDraftRelationText(entry, ['title', 'name', 'caseName']) || 'Sprawa bez nazwy'
-    : firstAiDraftRelationText(entry, ['name', 'company', 'title', 'email', 'phone']) || (kind === 'lead' ? 'Lead bez nazwy' : 'Klient bez nazwy');
+  const label =
+    kind === 'case'
+      ? firstAiDraftRelationText(entry, ['title', 'name', 'caseName']) || 'Sprawa bez nazwy'
+      : firstAiDraftRelationText(entry, ['name', 'company', 'title', 'email', 'phone']) ||
+        (kind === 'lead' ? 'Lead bez nazwy' : 'Klient bez nazwy');
 
   const helperParts = [
     firstAiDraftRelationText(entry, ['company', 'clientName', 'name']),
@@ -152,10 +324,7 @@ function buildAiDraftRelationOptions(rows: any[], kind: AiDraftRelationKind) {
 
 function filterAiDraftRelationOptions(options: AiDraftRelationOption[], query: string, selectedId: string) {
   const normalized = String(query || '').trim().toLowerCase();
-  const filtered = normalized
-    ? options.filter((option) => option.search.includes(normalized))
-    : options;
-
+  const filtered = normalized ? options.filter((option) => option.search.includes(normalized)) : options;
   const selected = selectedId ? options.find((option) => option.id === selectedId) : null;
   const withoutSelected = selected ? filtered.filter((option) => option.id !== selected.id) : filtered;
   return (selected ? [selected, ...withoutSelected] : withoutSelected).slice(0, 8);
@@ -167,12 +336,36 @@ function getAiDraftRelationSelectedLabel(options: AiDraftRelationOption[], selec
   return selected ? selected.label : 'Wybrany rekord z bazy';
 }
 
+function MetricCard({
+  label,
+  value,
+  icon: Icon,
+  active,
+  onClick,
+}: {
+  label: string;
+  value: number;
+  icon: any;
+  active?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button type="button" onClick={onClick} className={['ai-drafts-stat-card', active ? 'ai-drafts-stat-card-active' : ''].join(' ')}>
+      <span className="ai-drafts-stat-content">
+        <span className="ai-drafts-stat-label">{label}</span>
+        <span className="ai-drafts-stat-value">{value}</span>
+      </span>
+      <span className="ai-drafts-stat-icon" aria-hidden="true">
+        <Icon className="h-5 w-5" />
+      </span>
+    </button>
+  );
+}
+
 export default function AiDrafts() {
   const [drafts, setDrafts] = useState<AiLeadDraft[]>([]);
-  const [quickCaptureSeed, setQuickCaptureSeed] = useState('');
-  const [quickCaptureOpenSignal, setQuickCaptureOpenSignal] = useState(0);
   const [activeDraftId, setActiveDraftId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<DraftTab>('draft');
+  const [activeFilter, setActiveFilter] = useState<DraftFilter>('draft');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingDraftId, setEditingDraftId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
@@ -229,29 +422,42 @@ export default function AiDrafts() {
   }, []);
 
   const stats = useMemo(() => {
-    const draft = drafts.filter((entry) => entry.status === 'draft').length;
-    const converted = drafts.filter((entry) => entry.status === 'converted').length;
-    const archived = drafts.filter((entry) => entry.status === 'archived').length;
-    return { draft, converted, archived, total: drafts.length };
+    return {
+      draft: drafts.filter((entry) => getDraftStatusKey(entry) === 'draft').length,
+      leads: drafts.filter((entry) => getDraftType(entry) === 'lead').length,
+      tasks: drafts.filter((entry) => getDraftType(entry) === 'task').length,
+      events: drafts.filter((entry) => getDraftType(entry) === 'event').length,
+      errors: drafts.filter((entry) => draftHasMissingData(entry) || getDraftStatusKey(entry) === 'errors').length,
+      converted: drafts.filter((entry) => getDraftStatusKey(entry) === 'converted').length,
+      archived: drafts.filter((entry) => getDraftStatusKey(entry) === 'archived').length,
+      total: drafts.length,
+    };
+  }, [drafts]);
+
+  const filterCounts = useMemo(() => {
+    return AI_DRAFT_FILTERS.reduce<Record<string, number>>((acc, filter) => {
+      acc[filter.key] = drafts.filter((draft) => shouldShowByFilter(draft, filter.key)).length;
+      return acc;
+    }, {});
   }, [drafts]);
 
   const filteredDrafts = useMemo(() => {
-    return drafts.filter((draft) => {
-      const tabMatch = activeTab === 'all' || draft.status === activeTab;
-      return tabMatch && matchesDraftSearch(draft, searchQuery);
-    });
-  }, [activeTab, drafts, searchQuery]);
-
+    return drafts.filter((draft) => shouldShowByFilter(draft, activeFilter) && matchesDraftSearch(draft, searchQuery));
+  }, [activeFilter, drafts, searchQuery]);
 
   const approvalClientOptions = useMemo(() => buildAiDraftRelationOptions(approvalClients, 'client'), [approvalClients]);
   const approvalLeadOptions = useMemo(() => buildAiDraftRelationOptions(approvalLeads, 'lead'), [approvalLeads]);
   const approvalCaseOptions = useMemo(() => buildAiDraftRelationOptions(approvalCases, 'case'), [approvalCases]);
 
-  const openDraftInCapture = (draft: AiLeadDraft) => {
-    setActiveDraftId(draft.id);
-    setQuickCaptureSeed(draft.rawText);
-    setQuickCaptureOpenSignal((current) => current + 1);
-  };
+  const recentConverted = useMemo(
+    () => drafts.filter((draft) => getDraftStatusKey(draft) === 'converted').slice(0, 4),
+    [drafts],
+  );
+
+  const draftsWithGaps = useMemo(
+    () => drafts.filter((draft) => draftHasMissingData(draft) || getDraftStatusKey(draft) === 'errors').slice(0, 4),
+    [drafts],
+  );
 
   const openDraftApproval = (draft: AiLeadDraft) => {
     setActiveDraftId(draft.id);
@@ -265,10 +471,10 @@ export default function AiDrafts() {
   };
 
   const updateApprovalForm = (patch: Partial<AiDraftApprovalForm>) => {
-    setApprovalForm((current) => current ? { ...current, ...patch } : current);
+    setApprovalForm((current) => (current ? { ...current, ...patch } : current));
   };
 
-  const buildApprovalFormForRecordType = (draft: AiLeadDraft, nextType: AiDraftApprovalType) => {
+  const handleApprovalRecordTypeChange = (draft: AiLeadDraft, nextType: AiDraftApprovalType) => {
     const rebuilt = buildAiDraftApprovalForm({ ...draft, type: nextType });
     setApprovalForm((current) => ({
       ...rebuilt,
@@ -279,16 +485,11 @@ export default function AiDrafts() {
     }));
   };
 
-  const handleApprovalRecordTypeChange = (draft: AiLeadDraft, nextType: AiDraftApprovalType) => {
-    buildApprovalFormForRecordType(draft, nextType);
-  };
-
   const buildConvertedActivityPayload = (draft: AiLeadDraft, form: AiDraftApprovalForm, createdRecord: Record<string, unknown>) => ({
     source: 'ai_draft_approval',
     draftId: draft.id,
     recordType: form.recordType,
     title: form.title || form.name,
-    rawText: draft.rawText,
     createdRecordId: createdRecord?.id || null,
   });
 
@@ -388,7 +589,7 @@ export default function AiDrafts() {
       closeDraftApproval();
       setActiveDraftId(null);
       await reloadDrafts();
-      toast.success(getAiDraftApprovalTypeLabel(form.recordType) + " przeniesiony ze szkicu AI");
+      toast.success(getAiDraftApprovalTypeLabel(form.recordType) + ' przeniesiony ze szkicu AI');
     } catch (error: any) {
       toast.error('Nie udało się zatwierdzić szkicu: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
@@ -396,194 +597,25 @@ export default function AiDrafts() {
     }
   };
 
-
-  const renderApprovalRelationPicker = (
-    kind: AiDraftRelationKind,
-    label: string,
-    options: AiDraftRelationOption[],
-    selectedId: string,
-    field: 'leadId' | 'caseId' | 'clientId',
-  ) => {
-    const searchValue = approvalRelationSearch[kind] || '';
-    const visibleOptions = filterAiDraftRelationOptions(options, searchValue, selectedId);
-
-    return (
-      <div className="space-y-2 rounded-2xl border border-slate-200 bg-white p-3" data-ai-draft-relation-picker={kind}>
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">{label}</p>
-            <p className="text-sm font-semibold text-slate-900">{getAiDraftRelationSelectedLabel(options, selectedId)}</p>
-          </div>
-          {selectedId ? (
-            <Button
-              type="button"
-              size="sm"
-              variant="ghost"
-              onClick={() => updateApprovalForm({ [field]: '' } as Partial<AiDraftApprovalForm>)}
-            >
-              Wyczyść
-            </Button>
-          ) : null}
-        </div>
-
-        <Input
-          className={approvalInputClass}
-          value={searchValue}
-          onChange={(event) => setApprovalRelationSearch((current) => ({ ...current, [kind]: event.target.value }))}
-          placeholder={kind === 'lead' ? 'Szukaj leada po nazwie, telefonie lub emailu' : kind === 'case' ? 'Szukaj sprawy po nazwie lub statusie' : 'Szukaj klienta po nazwie, telefonie lub emailu'}
-          data-ai-draft-relation-search={kind}
-        />
-
-        <div className="max-h-44 space-y-1 overflow-y-auto pr-1">
-          {approvalRelationsLoading ? (
-            <p className="rounded-xl border border-dashed border-slate-200 px-3 py-2 text-xs text-slate-500">Ładuję dane z bazy...</p>
-          ) : null}
-          {!approvalRelationsLoading && visibleOptions.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-slate-200 px-3 py-2 text-xs text-slate-500">Brak wyniku. Zmień wyszukiwanie albo zostaw bez powiązania.</p>
-          ) : null}
-          {visibleOptions.map((option) => {
-            const active = selectedId === option.id;
-            return (
-              <button
-                key={option.id}
-                type="button"
-                className={'w-full rounded-xl border px-3 py-2 text-left transition ' + (active ? 'border-blue-500 bg-blue-50 text-blue-900' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50')}
-                onClick={() => {
-                  updateApprovalForm({ [field]: option.id } as Partial<AiDraftApprovalForm>);
-                  setApprovalRelationSearch((current) => ({ ...current, [kind]: option.label }));
-                }}
-                data-ai-draft-relation-option={kind}
-              >
-                <span className="block text-sm font-semibold">{option.label}</span>
-                <span className="block text-xs text-slate-500">{option.helper}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
-  const renderApprovalPanel = (draft: AiLeadDraft) => {
-    if (approvalDraftId !== draft.id || !approvalForm) return null;
-
-    const recordType = approvalForm.recordType;
-
-    return (
-      <div className="mt-3 rounded-2xl border border-blue-100 bg-blue-50/50 p-4" data-ai-draft-approval-panel="true" data-ai-draft-real-transfer-form="true">
-        <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-bold text-slate-900">Zatwierdź szkic jako finalny rekord</p>
-            <p className="text-xs text-slate-600">Wybierz, gdzie przenieść szkic. Formularz działa jak normalne dodawanie w aplikacji: po zatwierdzeniu rekord trafia do właściwego miejsca, a szkic przechodzi do zatwierdzonych.</p>
-          </div>
-                    <div className="grid gap-2 sm:grid-cols-4" data-ai-draft-transfer-target-selector="true">
-            {approvalTypeOptions.map((option) => {
-              const active = recordType === option.value;
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  className={`rounded-2xl border px-3 py-2 text-left transition ${active ? 'border-blue-500 bg-blue-600 text-white shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50'}`}
-                  onClick={() => handleApprovalRecordTypeChange(draft, option.value)}
-                >
-                  <span className="block text-sm font-bold">{option.label}</span>
-                  <span className={`mt-0.5 block text-[11px] ${active ? 'text-blue-50' : 'text-slate-500'}`}>{option.helper}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {recordType === 'lead' ? (
-          <div className="grid gap-3 md:grid-cols-2">
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Nazwa leada / kontaktu<Input className={approvalInputClass} value={approvalForm.name} onChange={(event) => updateApprovalForm({ name: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Firma<Input className={approvalInputClass} value={approvalForm.company} onChange={(event) => updateApprovalForm({ company: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">E-mail<Input className={approvalInputClass} value={approvalForm.email} onChange={(event) => updateApprovalForm({ email: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Telefon<Input className={approvalInputClass} value={approvalForm.phone} onChange={(event) => updateApprovalForm({ phone: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Źródło<select className={approvalSelectClass} value={approvalForm.source} onChange={(event) => updateApprovalForm({ source: event.target.value })}>{SOURCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Wartość<Input className={approvalInputClass} value={approvalForm.dealValue} onChange={(event) => updateApprovalForm({ dealValue: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600 md:col-span-2">Następny ruch<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
-          </div>
-        ) : null}
-
-        {recordType === 'task' ? (
-          <div className="grid gap-3 md:grid-cols-2">
-            <label className="space-y-1 text-xs font-semibold text-slate-600 md:col-span-2">Tytuł zadania<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Typ zadania<select className={approvalSelectClass} value={approvalForm.taskType} onChange={(event) => updateApprovalForm({ taskType: event.target.value })}>{TASK_TYPES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Termin<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Priorytet<select className={approvalSelectClass} value={approvalForm.priority} onChange={(event) => updateApprovalForm({ priority: event.target.value })}>{PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-          </div>
-        ) : null}
-
-        {recordType === 'event' ? (
-          <div className="grid gap-3 md:grid-cols-2">
-            <label className="space-y-1 text-xs font-semibold text-slate-600 md:col-span-2">Tytuł wydarzenia<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Typ wydarzenia<select className={approvalSelectClass} value={approvalForm.eventType} onChange={(event) => updateApprovalForm({ eventType: event.target.value })}>{EVENT_TYPES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Start<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Koniec<Input type="datetime-local" className={approvalInputClass} value={approvalForm.endAt} onChange={(event) => updateApprovalForm({ endAt: event.target.value })} /></label>
-          </div>
-        ) : null}
-
-        {recordType === 'note' ? (
-          <div className="space-y-3">
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Tytuł notatki<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
-            <label className="space-y-1 text-xs font-semibold text-slate-600">Treść notatki<Textarea className="min-h-28" value={approvalForm.body} onChange={(event) => updateApprovalForm({ body: event.target.value })} /></label>
-          </div>
-        ) : null}
-
-                {recordType !== 'lead' ? (
-          <div className="mt-3 space-y-3" data-ai-draft-relation-picker-panel="true">
-            <div>
-              <p className="text-sm font-bold text-slate-900">Powiąż z istniejącym rekordem</p>
-              <p className="text-xs text-slate-600">Nie wpisuj ID ręcznie. Wyszukaj klienta, leada albo sprawę z bazy i wybierz właściwy rekord.</p>
-            </div>
-            <div className="grid gap-3 lg:grid-cols-3">
-              {renderApprovalRelationPicker('lead', 'Lead', approvalLeadOptions, approvalForm.leadId, 'leadId')}
-              {renderApprovalRelationPicker('case', 'Sprawa', approvalCaseOptions, approvalForm.caseId, 'caseId')}
-              {renderApprovalRelationPicker('client', 'Klient', approvalClientOptions, approvalForm.clientId, 'clientId')}
-            </div>
-          </div>
-        ) : null}
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Button type="button" size="sm" onClick={() => void handleApproveDraftToRecord(draft)} disabled={approvalSaving} data-ai-draft-approve-final-record="true" data-ai-draft-real-record-create="true">
-            <CheckCircle2 className="mr-2 h-4 w-4" />{approvalSaving ? 'Przenoszę...' : 'Przenieś do aplikacji'}
-          </Button>
-          <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>Anuluj zatwierdzanie</Button>
-        </div>
-      </div>
-    );
-  };
-
-
-  const handleCaptureSaved = async () => {
-    if (activeDraftId) {
-      await markAiLeadDraftConvertedAsync(activeDraftId);
-      setActiveDraftId(null);
-      reloadDrafts();
-      toast.success('Szkic oznaczony jako zatwierdzony');
-      return;
-    }
-    reloadDrafts();
-  };
-
   const handleArchive = async (draft: AiLeadDraft) => {
     await archiveAiLeadDraftAsync(draft.id);
-    reloadDrafts();
-    toast.success('Szkic przeniesiony do archiwum');
+    await updateAiLeadDraftAsync(draft.id, { rawText: '' }).catch(() => null);
+    await reloadDrafts();
+    toast.success('Szkic anulowany');
   };
 
   const handleDelete = async (draft: AiLeadDraft) => {
     const confirmed = window.confirm('Usunąć szkic AI? Tej operacji nie będzie można cofnąć.');
     if (!confirmed) return;
     await deleteAiLeadDraftAsync(draft.id);
-    reloadDrafts();
+    await reloadDrafts();
     toast.success('Szkic usunięty');
   };
 
   const handleStartEdit = (draft: AiLeadDraft) => {
+    setActiveDraftId(draft.id);
     setEditingDraftId(draft.id);
-    setEditingText(draft.rawText);
+    setEditingText(draft.rawText || '');
   };
 
   const handleCancelEdit = () => {
@@ -599,194 +631,470 @@ export default function AiDrafts() {
     }
     await updateAiLeadDraftAsync(draft.id, { rawText: nextText });
     handleCancelEdit();
-    reloadDrafts();
+    await reloadDrafts();
     toast.success('Szkic zaktualizowany');
   };
 
   const handleCopyDraftText = async (draft: AiLeadDraft) => {
     try {
       if (!navigator?.clipboard) throw new Error('NO_CLIPBOARD');
-      await navigator.clipboard.writeText(draft.rawText);
+      await navigator.clipboard.writeText(draft.rawText || '');
       toast.success('Treść szkicu skopiowana');
     } catch {
       toast.error('Nie udało się skopiować treści. Zaznacz ją ręcznie.');
     }
   };
 
-  const renderDraftCard = (draft: AiLeadDraft) => {
-    const editing = editingDraftId === draft.id;
+  const renderApprovalRelationPicker = (
+    kind: AiDraftRelationKind,
+    label: string,
+    options: AiDraftRelationOption[],
+    selectedId: string,
+    field: 'leadId' | 'caseId' | 'clientId',
+  ) => {
+    const searchValue = approvalRelationSearch[kind] || '';
+    const visibleOptions = filterAiDraftRelationOptions(options, searchValue, selectedId);
 
     return (
-      <Card key={draft.id} className="border-slate-200 shadow-sm" data-ai-draft-card="true">
-        <CardContent className="space-y-3 p-4">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0 flex-1">
-              <div className="mb-2 flex flex-wrap items-center gap-2">
-                <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusBadgeClassName(draft.status)}`}>
-                  {statusLabel(draft.status)}
-                </span>
-                <Badge variant="outline">{sourceLabel(draft.source)}</Badge>
-                <span className="inline-flex items-center gap-1 text-xs text-slate-500">
-                  <Clock className="h-3.5 w-3.5" />
-                  {formatDraftDate(draft.createdAt)}
-                </span>
-              </div>
+      <div className="ai-drafts-relation-picker" data-ai-draft-relation-picker={kind}>
+        <div className="ai-drafts-relation-picker-head">
+          <div>
+            <p>{label}</p>
+            <strong>{getAiDraftRelationSelectedLabel(options, selectedId)}</strong>
+          </div>
+          {selectedId ? (
+            <button type="button" onClick={() => updateApprovalForm({ [field]: '' } as Partial<AiDraftApprovalForm>)}>
+              Wyczyść
+            </button>
+          ) : null}
+        </div>
 
-              {editing ? (
-                <div className="space-y-2" data-ai-draft-edit-box="true">
-                  <Textarea
-                    value={editingText}
-                    onChange={(event) => setEditingText(event.target.value)}
-                    className="min-h-32"
-                    placeholder="Popraw treść podyktowanej notatki przed zatwierdzeniem."
-                  />
-                  <div className="flex flex-wrap gap-2">
-                    <Button type="button" size="sm" onClick={() => handleSaveEdit(draft)}>
-                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Zapisz zmiany
-                    </Button>
-                    <Button type="button" size="sm" variant="outline" onClick={handleCancelEdit}>
-                      <XCircle className="mr-2 h-4 w-4" />
-                      Anuluj
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <p className="whitespace-pre-wrap text-sm text-slate-800">{draft.rawText || 'Tekst źródłowy został usunięty po zatwierdzeniu albo anulowaniu szkicu.'}</p>
-              )}
+        <Input
+          className={approvalInputClass}
+          value={searchValue}
+          onChange={(event) => setApprovalRelationSearch((current) => ({ ...current, [kind]: event.target.value }))}
+          placeholder={
+            kind === 'lead'
+              ? 'Szukaj leada po nazwie, telefonie lub emailu'
+              : kind === 'case'
+                ? 'Szukaj sprawy po nazwie lub statusie'
+                : 'Szukaj klienta po nazwie, telefonie lub emailu'
+          }
+          data-ai-draft-relation-search={kind}
+        />
+
+        <div className="ai-drafts-relation-options">
+          {approvalRelationsLoading ? <p className="ai-drafts-relation-empty">Ładuję dane z bazy...</p> : null}
+          {!approvalRelationsLoading && visibleOptions.length === 0 ? (
+            <p className="ai-drafts-relation-empty">Brak wyniku. Zmień wyszukiwanie albo zostaw bez powiązania.</p>
+          ) : null}
+          {visibleOptions.map((option) => {
+            const active = selectedId === option.id;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                className={['ai-drafts-relation-option', active ? 'ai-drafts-relation-option-active' : ''].join(' ')}
+                onClick={() => {
+                  updateApprovalForm({ [field]: option.id } as Partial<AiDraftApprovalForm>);
+                  setApprovalRelationSearch((current) => ({ ...current, [kind]: option.label }));
+                }}
+                data-ai-draft-relation-option={kind}
+              >
+                <span>{option.label}</span>
+                <small>{option.helper}</small>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  const renderApprovalPanel = (draft: AiLeadDraft) => {
+    if (approvalDraftId !== draft.id || !approvalForm) return null;
+
+    const recordType = approvalForm.recordType;
+
+    return (
+      <div className="ai-drafts-approval-panel" data-ai-draft-approval-panel="true" data-ai-draft-real-transfer-form="true">
+        <div className="ai-drafts-detail-titlebar">
+          <div>
+            <h3>Sprawdź szkic przed zapisem</h3>
+            <p>Nic nie zostanie zapisane, dopóki tego nie zatwierdzisz.</p>
+          </div>
+          <span>{getAiDraftApprovalTypeLabel(recordType)}</span>
+        </div>
+
+        <div className="ai-drafts-transfer-targets" data-ai-draft-transfer-target-selector="true">
+          {approvalTypeOptions.map((option) => {
+            const active = recordType === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                className={['ai-drafts-transfer-target', active ? 'ai-drafts-transfer-target-active' : ''].join(' ')}
+                onClick={() => handleApprovalRecordTypeChange(draft, option.value)}
+              >
+                <span>{option.label}</span>
+                <small>{option.helper}</small>
+              </button>
+            );
+          })}
+        </div>
+
+        {recordType === 'lead' ? (
+          <div className="ai-drafts-form-grid">
+            <label>Kontakt<Input className={approvalInputClass} value={approvalForm.name} onChange={(event) => updateApprovalForm({ name: event.target.value })} /></label>
+            <label>Firma<Input className={approvalInputClass} value={approvalForm.company} onChange={(event) => updateApprovalForm({ company: event.target.value })} /></label>
+            <label>Telefon<Input className={approvalInputClass} value={approvalForm.phone} onChange={(event) => updateApprovalForm({ phone: event.target.value })} /></label>
+            <label>E-mail<Input className={approvalInputClass} value={approvalForm.email} onChange={(event) => updateApprovalForm({ email: event.target.value })} /></label>
+            <label>Źródło<select className={approvalSelectClass} value={approvalForm.source} onChange={(event) => updateApprovalForm({ source: event.target.value })}>{SOURCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+            <label>Priorytet<select className={approvalSelectClass} value={approvalForm.priority} onChange={(event) => updateApprovalForm({ priority: event.target.value })}>{PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+            <label>Wartość<Input className={approvalInputClass} value={approvalForm.dealValue} onChange={(event) => updateApprovalForm({ dealValue: event.target.value })} /></label>
+            <label>Termin / akcja<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
+          </div>
+        ) : null}
+
+        {recordType === 'task' ? (
+          <div className="ai-drafts-form-grid">
+            <label className="ai-drafts-form-wide">Tytuł<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
+            <label>Typ zadania<select className={approvalSelectClass} value={approvalForm.taskType} onChange={(event) => updateApprovalForm({ taskType: event.target.value })}>{TASK_TYPES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+            <label>Termin<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
+            <label>Priorytet<select className={approvalSelectClass} value={approvalForm.priority} onChange={(event) => updateApprovalForm({ priority: event.target.value })}>{PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+          </div>
+        ) : null}
+
+        {recordType === 'event' ? (
+          <div className="ai-drafts-form-grid">
+            <label className="ai-drafts-form-wide">Tytuł<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
+            <label>Typ wydarzenia<select className={approvalSelectClass} value={approvalForm.eventType} onChange={(event) => updateApprovalForm({ eventType: event.target.value })}>{EVENT_TYPES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+            <label>Start<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
+            <label>Koniec<Input type="datetime-local" className={approvalInputClass} value={approvalForm.endAt} onChange={(event) => updateApprovalForm({ endAt: event.target.value })} /></label>
+          </div>
+        ) : null}
+
+        {recordType === 'note' ? (
+          <div className="ai-drafts-form-stack">
+            <label>Tytuł notatki<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
+            <label>Treść notatki<Textarea className="ai-drafts-approval-textarea" value={approvalForm.body} onChange={(event) => updateApprovalForm({ body: event.target.value })} /></label>
+          </div>
+        ) : null}
+
+        {recordType !== 'lead' ? (
+          <div className="ai-drafts-relation-panel" data-ai-draft-relation-picker-panel="true">
+            <div>
+              <h4>Powiąż z istniejącym rekordem</h4>
+              <p>Wybierz klienta, leada albo sprawę z bazy. Możesz też zostawić szkic bez powiązania.</p>
+            </div>
+            <div className="ai-drafts-relation-grid">
+              {renderApprovalRelationPicker('lead', 'Lead', approvalLeadOptions, approvalForm.leadId, 'leadId')}
+              {renderApprovalRelationPicker('case', 'Sprawa', approvalCaseOptions, approvalForm.caseId, 'caseId')}
+              {renderApprovalRelationPicker('client', 'Klient', approvalClientOptions, approvalForm.clientId, 'clientId')}
             </div>
           </div>
+        ) : null}
 
-          {!editing ? (
-            <>
-            <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-3">
-              {draft.status === 'draft' ? (
-                <Button type="button" size="sm" onClick={() => openDraftApproval(draft)} data-ai-draft-open-approval="true">
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Przejrzyj i zatwierdź
-                </Button>
-              ) : null}
-              {draft.status === 'draft' ? (
-                <Button type="button" size="sm" variant="outline" onClick={() => handleStartEdit(draft)}>
-                  <Pencil className="mr-2 h-4 w-4" />
-                  Edytuj notatkę
-                </Button>
-              ) : null}
-              <Button type="button" size="sm" variant="outline" onClick={() => handleCopyDraftText(draft)}>
-                <Clipboard className="mr-2 h-4 w-4" />
-                Kopiuj treść
-              </Button>
-              {draft.status === 'draft' ? (
-                <Button type="button" size="sm" variant="outline" onClick={() => handleArchive(draft)}>
-                  <Archive className="mr-2 h-4 w-4" />
-                  Archiwizuj
-                </Button>
-              ) : null}
-              <Button type="button" size="sm" variant="outline" onClick={() => handleDelete(draft)}>
-                <Trash2 className="mr-2 h-4 w-4" />
-                Usuń
-              </Button>
+        <div className="ai-drafts-approval-actions">
+          <Button type="button" size="sm" onClick={() => void handleApproveDraftToRecord(draft)} disabled={approvalSaving} data-ai-draft-approve-final-record="true" data-ai-draft-real-record-create="true">
+            <CheckCircle2 className="mr-2 h-4 w-4" />
+            {approvalSaving ? 'Przenoszę...' : 'Zatwierdź i zapisz'}
+          </Button>
+          <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>
+            Anuluj zatwierdzanie
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderDraftDetail = (draft: AiLeadDraft) => {
+    if (activeDraftId !== draft.id) return null;
+    const form = buildAiDraftApprovalForm(draft);
+    const parsed = getDraftParsedData(draft);
+    const missing = parsed?.missingFields;
+    const hasRawText = draft.status === 'draft' && Boolean(asText(draft.rawText));
+
+    return (
+      <div className="ai-drafts-detail-panel">
+        <div className="ai-drafts-detail-titlebar">
+          <div>
+            <h3>Sprawdź szkic przed zapisem</h3>
+            <p>Nic nie zostanie zapisane, dopóki tego nie zatwierdzisz.</p>
+          </div>
+          <span>{getDraftTypeLabel(draft)}</span>
+        </div>
+
+        <div className="ai-drafts-detail-grid">
+          <div className="ai-drafts-detail-box">
+            <p>Typ szkicu</p>
+            <strong>{getDraftTypeLabel(draft)}</strong>
+          </div>
+          <div className="ai-drafts-detail-box">
+            <p>Status</p>
+            <strong>{getDraftStatusLabel(draft)}</strong>
+          </div>
+          <div className="ai-drafts-detail-box">
+            <p>Źródło</p>
+            <strong>{getDraftSourceLabel(draft)}</strong>
+          </div>
+          <div className="ai-drafts-detail-box">
+            <p>Data</p>
+            <strong>{formatDraftDate(draft.createdAt)}</strong>
+          </div>
+        </div>
+
+        <div className="ai-drafts-recognized-card">
+          <h4>Dane rozpoznane</h4>
+          <dl>
+            <div><dt>Kontakt / tytuł</dt><dd>{form.name || form.title || 'Brak danych'}</dd></div>
+            <div><dt>Telefon</dt><dd>{form.phone || 'Brak danych'}</dd></div>
+            <div><dt>E-mail</dt><dd>{form.email || 'Brak danych'}</dd></div>
+            <div><dt>Źródło</dt><dd>{form.source || getDraftSourceLabel(draft)}</dd></div>
+            <div><dt>Termin / akcja</dt><dd>{form.scheduledAt || 'Brak terminu'}</dd></div>
+            <div><dt>Priorytet</dt><dd>{form.priority || 'Brak danych'}</dd></div>
+          </dl>
+        </div>
+
+        <div className="ai-drafts-recognized-card">
+          <h4>Brakujące pola</h4>
+          {Array.isArray(missing) && missing.length > 0 ? (
+            <div className="ai-drafts-missing-list">
+              {missing.map((item) => <span key={String(item)}>{String(item)}</span>)}
             </div>
-            {renderApprovalPanel(draft)}
-            </>
-          ) : null}
-        </CardContent>
-      </Card>
+          ) : draftHasMissingData(draft) ? (
+            <p className="ai-drafts-source-note">Szkic wymaga sprawdzenia, bo brakuje części danych do finalnego zapisu.</p>
+          ) : (
+            <p className="ai-drafts-source-note">Nie wykryto braków krytycznych.</p>
+          )}
+        </div>
+
+        <div className="ai-drafts-recognized-card">
+          <h4>Treść źródłowa</h4>
+          {hasRawText ? (
+            <p className="ai-drafts-source-text">{draft.rawText}</p>
+          ) : (
+            <p className="ai-drafts-source-note">Tekst źródłowy został usunięty po zakończeniu szkicu.</p>
+          )}
+        </div>
+
+        {renderApprovalPanel(draft)}
+      </div>
+    );
+  };
+
+  const renderDraftRow = (draft: AiLeadDraft, index: number) => {
+    const editing = editingDraftId === draft.id;
+    const Icon = getDraftIcon(draft);
+    const status = getDraftStatusKey(draft);
+
+    return (
+      <article key={draft.id} className="ai-drafts-row" data-testid="ai-draft-row">
+        <div className="ai-drafts-row-grid">
+          <div className={['ai-drafts-row-icon', 'ai-drafts-row-icon-' + getDraftType(draft)].join(' ')}>
+            <Icon className="h-4 w-4" />
+          </div>
+
+          <div className="ai-drafts-row-main">
+            <div className="ai-drafts-row-heading">
+              <span className="ai-drafts-type-pill">{getDraftTypeLabel(draft)}</span>
+              {draftHasMissingData(draft) ? <span className="ai-drafts-warning-pill">Błędy / niepełne</span> : null}
+            </div>
+            <h2>{getDraftTitle(draft)}</h2>
+            <p>{getDraftDescription(draft)}</p>
+          </div>
+
+          <div className="ai-drafts-status-col">
+            <span className={['ai-drafts-status-pill', 'ai-drafts-status-' + status].join(' ')}>{getDraftStatusLabel(draft)}</span>
+          </div>
+
+          <div className="ai-drafts-source-col">{getDraftSourceLabel(draft)}</div>
+          <time className="ai-drafts-date-col">{formatDraftDate(draft.createdAt)}</time>
+
+          <div className="ai-drafts-actions-col">
+            {draft.status === 'draft' ? (
+              <>
+                <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() => setActiveDraftId(activeDraftId === draft.id ? null : draft.id)}>Sprawdź</button>
+                <button type="button" className="ai-drafts-action" onClick={() => handleStartEdit(draft)}>Edytuj</button>
+                <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() => openDraftApproval(draft)}>Zatwierdź</button>
+                <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() => void handleArchive(draft)}>Anuluj</button>
+              </>
+            ) : (
+              <>
+                <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() => setActiveDraftId(activeDraftId === draft.id ? null : draft.id)}>Szczegóły</button>
+                <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() => void handleDelete(draft)}>Usuń</button>
+              </>
+            )}
+            <span className="ai-drafts-row-index">{index + 1}</span>
+          </div>
+        </div>
+
+        {editing ? (
+          <div className="ai-drafts-inline-edit">
+            <Textarea value={editingText} onChange={(event) => setEditingText(event.target.value)} />
+            <div>
+              <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() => void handleSaveEdit(draft)}>Zapisz zmiany</button>
+              <button type="button" className="ai-drafts-action" onClick={handleCancelEdit}>Anuluj edycję</button>
+              <button type="button" className="ai-drafts-action" onClick={() => void handleCopyDraftText(draft)}>Kopiuj treść</button>
+            </div>
+          </div>
+        ) : null}
+
+        {renderDraftDetail(draft)}
+      </article>
     );
   };
 
   return (
     <Layout>
-      <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-3 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <main className="ai-drafts-vnext-page" data-ai-drafts-stage={AI_DRAFT_STAGE9_MARKER}>
+        <header className="ai-drafts-page-header">
           <div>
-            <div className="mb-2 inline-flex items-center rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-blue-700">
-              AI inbox
-            </div>
-            <h1 className="text-2xl font-bold text-slate-900">Szkice AI</h1>
-            <p className="mt-1 max-w-3xl text-sm text-slate-600">
-              Notatka głosowa najpierw trafia tutaj. Szkice są zapisywane w Supabase z lokalnym fallbackiem. Lead powstaje dopiero po kliknięciu „Przejrzyj i zatwierdź”, sprawdzeniu pól i ręcznym zapisie.
-            </p>
+            <p className="ai-drafts-kicker">SZKICE DO SPRAWDZENIA</p>
+            <h1>Szkice AI</h1>
+            <p>Rzeczy przygotowane przez asystenta. Sprawdź, popraw i dopiero wtedy zapisz.</p>
           </div>
-          <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">
-            <CheckCircle2 className="h-4 w-4 text-blue-600" />
-            {draftsLoading ? 'Ładowanie...' : stats.draft + ' do sprawdzenia'}
+          <div className="ai-drafts-header-actions">
+            <button type="button" className="ai-drafts-header-button" onClick={() => void reloadDrafts()}>
+              Odśwież
+            </button>
           </div>
-        </div>
+        </header>
 
-        <div className="grid gap-3 sm:grid-cols-4" data-ai-draft-stats="true">
-          <Card className="border-blue-100 bg-blue-50/70">
-            <CardContent className="p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">Do sprawdzenia</p>
-              <p className="mt-1 text-2xl font-bold text-slate-900">{stats.draft}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Zatwierdzone</p>
-              <p className="mt-1 text-2xl font-bold text-slate-900">{stats.converted}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Archiwum</p>
-              <p className="mt-1 text-2xl font-bold text-slate-900">{stats.archived}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Łącznie</p>
-              <p className="mt-1 text-2xl font-bold text-slate-900">{stats.total}</p>
-            </CardContent>
-          </Card>
-        </div>
-        <section className="space-y-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" data-ai-draft-command-center="true">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-slate-900">Centrum szkiców</h2>
-              <p className="text-sm text-slate-500">Najpierw szkic, potem decyzja. Nic z tej listy nie staje się leadem bez ręcznego zatwierdzenia.</p>
-            </div>
-            <div className="relative w-full lg:max-w-sm">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-              <Input
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                className="pl-9"
-                placeholder="Szukaj w podyktowanych notatkach..."
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2" data-ai-drafts-tab="true">
-            {DRAFT_TABS.map((tab) => {
-              const active = activeTab === tab.key;
-              const count = tab.key === 'all' ? stats.total : stats[tab.key];
-              return (
-                <Button
-                  key={tab.key}
-                  type="button"
-                  variant={active ? 'default' : 'outline'}
-                  className="rounded-xl"
-                  onClick={() => setActiveTab(tab.key)}
-                  title={tab.helper}
-                >
-                  {tab.label} ({count})
-                </Button>
-              );
-            })}
-          </div>
-
-          <div className="space-y-3">
-            {filteredDrafts.length ? filteredDrafts.map(renderDraftCard) : (
-              <Card className="border-dashed border-slate-200 bg-white/70">
-                <CardContent className="p-6 text-sm text-slate-500">
-                  Brak szkiców w tym widoku. Gdy zapiszesz notatkę z Szybkiego szkicu albo Asystenta AI, pojawi się tutaj.
-                </CardContent>
-              </Card>
-            )}
-          </div>
+        <section className="ai-drafts-stats-grid" aria-label="Statystyki szkiców AI">
+          <MetricCard label="Do sprawdzenia" value={stats.draft} icon={Sparkles} active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} />
+          <MetricCard label="Leady" value={stats.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} />
+          <MetricCard label="Zadania" value={stats.tasks} icon={Clipboard} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} />
+          <MetricCard label="Wydarzenia" value={stats.events} icon={CalendarClock} active={activeFilter === 'event'} onClick={() => setActiveFilter('event')} />
+          <MetricCard label="Błędy / niepełne" value={stats.errors} icon={AlertTriangle} active={activeFilter === 'errors'} onClick={() => setActiveFilter('errors')} />
+          <MetricCard label="Zatwierdzone" value={stats.converted} icon={CheckCircle2} active={activeFilter === 'converted'} onClick={() => setActiveFilter('converted')} />
         </section>
-      </div>
+
+        <div className="ai-drafts-vnext-shell">
+          <section className="ai-drafts-main-column">
+            <div className="ai-drafts-toolbar-card">
+              <div className="ai-drafts-filter-pills" aria-label="Filtry szkiców AI">
+                {AI_DRAFT_FILTERS.map((filter) => (
+                  <button
+                    key={filter.key}
+                    type="button"
+                    onClick={() => setActiveFilter(filter.key)}
+                    className={['ai-drafts-filter-pill', activeFilter === filter.key ? 'ai-drafts-filter-pill-active' : ''].join(' ')}
+                  >
+                    <span>{filter.label}</span>
+                    <strong>{filterCounts[filter.key] || 0}</strong>
+                  </button>
+                ))}
+              </div>
+
+              <label className="ai-drafts-search-box">
+                <Search className="h-4 w-4" />
+                <input
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Szukaj po treści, typie, kontakcie, leadzie albo terminie..."
+                />
+              </label>
+            </div>
+
+            <section className="ai-drafts-list-card" aria-label="Lista szkiców AI">
+              <div className="ai-drafts-list-head">
+                <div>
+                  <p>Lista szkiców</p>
+                  <h2>Do decyzji operatora</h2>
+                </div>
+                <span>{filteredDrafts.length} / {drafts.length}</span>
+              </div>
+
+              {draftsLoading ? (
+                <div className="ai-drafts-loading-state">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                  <p>Ładowanie szkiców...</p>
+                </div>
+              ) : filteredDrafts.length === 0 ? (
+                <div className="ai-drafts-empty-state">
+                  <Sparkles className="h-8 w-8" />
+                  <h2>Brak szkiców do sprawdzenia</h2>
+                  <p>Gdy asystent przygotuje lead, zadanie albo wydarzenie, zobaczysz je tutaj przed zapisem.</p>
+                </div>
+              ) : (
+                <div className="ai-drafts-rows">
+                  {filteredDrafts.map((draft, index) => renderDraftRow(draft, index))}
+                </div>
+              )}
+            </section>
+          </section>
+
+          <aside className="ai-drafts-right-rail" aria-label="Skrót szkiców AI">
+            <section className="right-card ai-drafts-right-card">
+              <div className="ai-drafts-right-card-head">
+                <Sparkles className="h-4 w-4" />
+                <h2>Szybkie filtry</h2>
+              </div>
+              <button type="button" onClick={() => setActiveFilter('draft')} className="ai-drafts-rail-button">
+                <span>Do sprawdzenia</span>
+                <strong>{stats.draft}</strong>
+              </button>
+              <button type="button" onClick={() => setActiveFilter('errors')} className="ai-drafts-rail-button">
+                <span>Braki do poprawy</span>
+                <strong>{stats.errors}</strong>
+              </button>
+              <button type="button" onClick={() => setActiveFilter('converted')} className="ai-drafts-rail-button">
+                <span>Zatwierdzone</span>
+                <strong>{stats.converted}</strong>
+              </button>
+            </section>
+
+            <section className="right-card ai-drafts-right-card">
+              <div className="ai-drafts-right-card-head">
+                <AlertTriangle className="h-4 w-4" />
+                <h2>Braki do poprawy</h2>
+              </div>
+              {draftsWithGaps.length ? (
+                <div className="ai-drafts-rail-list">
+                  {draftsWithGaps.map((draft) => (
+                    <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() => setActiveDraftId(draft.id)}>
+                      <span>{getDraftStatusLabel(draft)}</span>
+                      <strong>{getDraftTitle(draft)}</strong>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="ai-drafts-rail-empty">Brak szkiców z widocznymi brakami.</p>
+              )}
+            </section>
+
+            <section className="right-card ai-drafts-right-card">
+              <div className="ai-drafts-right-card-head">
+                <CheckCircle2 className="h-4 w-4" />
+                <h2>Ostatnie zatwierdzone</h2>
+              </div>
+              {recentConverted.length ? (
+                <div className="ai-drafts-rail-list">
+                  {recentConverted.map((draft) => (
+                    <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() => setActiveDraftId(draft.id)}>
+                      <span>{formatDraftDate(draft.convertedAt || draft.updatedAt || draft.createdAt)}</span>
+                      <strong>{getDraftTitle(draft)}</strong>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="ai-drafts-rail-empty">Brak zatwierdzonych szkiców.</p>
+              )}
+            </section>
+
+            <section className="right-card ai-drafts-right-card">
+              <div className="ai-drafts-right-card-head">
+                <Clock className="h-4 w-4" />
+                <h2>Jak działa szkic?</h2>
+              </div>
+              <p className="ai-drafts-rail-empty">
+                AI przygotowuje propozycję. Ty sprawdzasz dane, poprawiasz pola i dopiero wtedy zapisujesz finalny rekord.
+              </p>
+            </section>
+          </aside>
+        </div>
+      </main>
     </Layout>
   );
 }
