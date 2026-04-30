@@ -1,0 +1,36 @@
+/* STAGE35_CLIENTS_VALUE_DETAIL_CLEANUP */
+
+[data-client-detail-visible-edit-action="true"] {
+  min-height: 40px;
+  font-weight: 700;
+}
+
+.client-detail-header-actions [data-client-detail-visible-edit-action="true"] {
+  border-color: rgb(37 99 235 / 0.35);
+  color: rgb(30 64 175);
+}
+
+.client-detail-vnext-page .client-detail-side-card :is(h2, h3, h4, p, small, strong) {
+  overflow-wrap: anywhere;
+}
+
+.client-detail-vnext-page :is([data-client-detail-section="extras"], [data-client-detail-extra], .client-detail-extra-section) {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .main-clients-html .row.client-row .statusline {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .main-clients-html .row.client-row .pill.blue {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .client-detail-header-actions [data-client-detail-visible-edit-action="true"] {
+    width: 100%;
+    justify-content: center;
+  }
+}

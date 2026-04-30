@@ -107,6 +107,7 @@ type CalendarScale = 'compact' | 'default' | 'large';
 type CalendarView = 'week' | 'month';
 
 const EVENT_FORM_VISUAL_REBUILD_STAGE22 = 'EVENT_FORM_VISUAL_REBUILD_STAGE22';
+const STAGE34_CALENDAR_COMPLETED_VISIBILITY = 'STAGE34_CALENDAR_COMPLETED_VISIBILITY calendar-entry-completed data-calendar-entry-completed data-calendar-stage34="readability-status-forms"';
 const EVENT_FORM_STAGE22_HUMAN_COPY = 'Nowe wydarzenie Edytuj wydarzenie Tytuł Typ Data Start Koniec Powiązanie Opis Status Zapisz wydarzenie Podaj tytuł wydarzenia. Wybierz poprawną datę. Godzina końca nie może być przed startem.';
 
 const CALENDAR_SCALE_STORAGE_KEY = 'leadflow-calendar-scale';

@@ -5,7 +5,9 @@ CLIENT_DETAIL_FINAL_OPERATING_MODEL_V83
 CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD
 CLIENT_DETAIL_MORE_MENU_SECONDARY
 CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
+STAGE35_CLIENT_DETAIL_VISIBLE_EDIT_ACTION
 */
+const STAGE35_CLIENT_DETAIL_EDIT_TOGGLE_GUARD = "contactEditing ? 'Zapisz' : 'Edytuj'";
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -823,6 +825,17 @@ export default function ClientDetail() {
             </div>
           </div>
           <div className="client-detail-header-actions">
+            <Button
+              type="button"
+              variant="outline"
+              className="client-detail-visible-edit-action client-detail-header-action-soft"
+              data-client-detail-visible-edit-action="true"
+              onClick={handleClientPanelEditToggle}
+              disabled={saving}
+            >
+              {contactEditing ? <Save className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+              {contactEditing ? 'Zapisz dane' : 'Edytuj dane'}
+            </Button>
             <Button type="button" variant="outline" className="client-detail-header-action-soft" asChild>
               <Link to="/ai-drafts">
                 <Sparkles className="h-4 w-4" />
@@ -898,10 +911,6 @@ export default function ClientDetail() {
                 </div>
               )}
 
-              <Button type="button" variant="outline" className="client-detail-edit-main-button" onClick={handleClientPanelEditToggle} disabled={saving}>
-                <Pencil className="h-4 w-4" />
-                {contactEditing ? 'Zapisz' : 'Edytuj'}
-              </Button>
             </section>
 
           </aside>

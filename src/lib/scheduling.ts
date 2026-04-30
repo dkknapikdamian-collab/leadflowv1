@@ -276,55 +276,61 @@ export function expandTaskEntries(tasks: any[], rangeStart: Date, rangeEnd: Date
   });
 }
 
+function getLeadCalendarMoment(lead: any) {
+  const direct = String(
+    lead?.nextActionAt ||
+    lead?.next_action_at ||
+    lead?.followUpAt ||
+    lead?.follow_up_at ||
+    lead?.scheduledAt ||
+    lead?.scheduled_at ||
+    lead?.reminderAt ||
+    lead?.reminder_at ||
+    '',
+  ).trim();
+  if (direct) return direct;
+
+  const dateField = String(
+    lead?.nextActionDate ||
+    lead?.next_action_date ||
+    lead?.followUpDate ||
+    lead?.follow_up_date ||
+    lead?.date ||
+    '',
+  ).trim();
+  if (!dateField) return "";
+
+  const timeField = String(
+    lead?.nextActionTime ||
+    lead?.next_action_time ||
+    lead?.followUpTime ||
+    lead?.follow_up_time ||
+    lead?.time ||
+    '09:00',
+  ).trim();
+  return dateField.includes('T') ? dateField : dateField + 'T' + timeField;
+}
 export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
-  // STAGE34B_CALENDAR_LEAD_NEXT_ACTIONS: lead follow-up / next-action dates are real calendar entries.
-  const readText = (...values: unknown[]) => {
-    for (const value of values) {
-      if (typeof value === 'string' && value.trim()) return value.trim();
-    }
-    return '';
-  };
+  // STAGE34_CALENDAR_LEAD_NEXT_ACTIONS: leads with nextActionAt/followUpAt are visible in calendar.
+  return leads.flatMap((lead) => {
+    const startAt = getLeadCalendarMoment(lead);
+    if (!startAt) return [] as ScheduleEntry[];
 
-  const readLeadMoment = (lead: any) => readText(
-    lead?.nextActionAt,
-    lead?.next_action_at,
-    lead?.nextActionDate,
-    lead?.next_action_date,
-    lead?.followUpAt,
-    lead?.follow_up_at,
-    lead?.followUpDate,
-    lead?.follow_up_date,
-    lead?.scheduledAt,
-    lead?.scheduled_at,
-    lead?.dueAt,
-    lead?.due_at,
-    lead?.reminderAt,
-    lead?.reminder_at,
-  );
-
-  return leads.flatMap((lead, index) => {
-    const rawMoment = readLeadMoment(lead);
-    if (!rawMoment) return [] as ScheduleEntry[];
-
-    const parsed = parseISO(rawMoment.includes('T') ? rawMoment : rawMoment + 'T09:00:00');
-    if (Number.isNaN(parsed.getTime())) return [] as ScheduleEntry[];
-    if (isBefore(parsed, rangeStart) || isAfter(parsed, rangeEnd)) return [] as ScheduleEntry[];
-
-    const id = readText(lead?.id, lead?.leadId, lead?.lead_id) || String(index);
-    const titleSource = readText(lead?.nextAction, lead?.next_action, lead?.title, lead?.name, lead?.company, lead?.phone, lead?.email);
-    const name = readText(lead?.name, lead?.company, lead?.phone, lead?.email) || 'Lead bez nazwy';
+    const date = parseISO(startAt);
+    if (Number.isNaN(date.getTime())) return [] as ScheduleEntry[];
+    if (isBefore(date, rangeStart) || isAfter(date, rangeEnd)) return [] as ScheduleEntry[];
 
     return [{
-      id: 'lead:' + id + ':next-action',
+      id: 'lead:' + String(lead.id || crypto.randomUUID()),
       kind: 'lead' as const,
-      title: titleSource ? 'Lead: ' + titleSource : 'Lead: ' + name,
-      startsAt: toDateTimeLocalValue(parsed),
+      title: String(lead.nextActionTitle || lead.next_action_title || lead.title || lead.name || lead.company || 'Lead do obsługi'),
+      startsAt: toDateTimeLocalValue(date),
       endsAt: null,
-      sourceId: id,
-      link: id ? '/leads/' + id : '/leads',
+      sourceId: String(lead.id || crypto.randomUUID()),
+      link: lead.id ? '/leads/' + String(lead.id) : '/leads',
       badgeLabel: 'Lead',
-      leadId: id,
-      leadName: name,
+      leadId: lead.id ? String(lead.id) : null,
+      leadName: lead.name || lead.company || null,
       raw: lead,
     }];
   });

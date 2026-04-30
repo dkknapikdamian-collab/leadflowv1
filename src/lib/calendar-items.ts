@@ -78,49 +78,28 @@ function asNullableIso(...values: unknown[]) {
 }
 
 function normalizeTaskScheduledAt(row: Record<string, unknown>) {
-  // STAGE34B_CALENDAR_TASK_DATE_FALLBACKS: calendar must see scheduled/due/start/next-action/follow-up task dates.
-  const directMoment = firstText(
-    row.dueAt,
-    row.due_at,
-    row.scheduledAt,
-    row.scheduled_at,
-    row.startAt,
-    row.start_at,
-    row.startsAt,
-    row.starts_at,
-    row.nextActionAt,
-    row.next_action_at,
-    row.nextActionDate,
-    row.next_action_date,
-    row.followUpAt,
-    row.follow_up_at,
-    row.followUpDate,
-    row.follow_up_date,
-    row.reminderAt,
-    row.reminder_at,
+  // STAGE34_CALENDAR_TASK_DATE_FALLBACKS: tasks can come from due/scheduled/start/next-action/follow-up fields.
+  const directDateTime = firstText(
+    row.dueAt, row.due_at,
+    row.scheduledAt, row.scheduled_at,
+    row.startAt, row.start_at,
+    row.nextActionAt, row.next_action_at,
+    row.followUpAt, row.follow_up_at,
+    row.reminderAt, row.reminder_at,
   );
-
-  if (directMoment && isIsoLike(directMoment)) return directMoment;
+  if (directDateTime && isIsoLike(directDateTime)) return directDateTime;
 
   const dateField = firstText(
-    row.date,
-    row.dueDate,
-    row.due_date,
-    row.scheduledDate,
-    row.scheduled_date,
-    row.next_action_date,
-    row.nextActionDate,
-    row.follow_up_date,
-    row.followUpDate,
+    row.date, row.dueDate, row.due_date,
+    row.scheduledDate, row.scheduled_date,
+    row.nextActionDate, row.next_action_date,
+    row.followUpDate, row.follow_up_date,
   );
   const timeField = firstText(
-    row.time,
-    row.scheduled_time,
-    row.due_time,
-    row.next_action_time,
-    row.nextActionTime,
-    row.follow_up_time,
-    row.followUpTime,
+    row.time, row.scheduledTime, row.scheduled_time,
+    row.dueTime, row.due_time,
+    row.nextActionTime, row.next_action_time,
+    row.followUpTime, row.follow_up_time,
   ) || '09:00';
   if (!dateField) return '';
 
@@ -240,7 +219,6 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
 }
 
 export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle> {
-  // STAGE34B_CALENDAR_BUNDLE_LEADS: Calendar includes tasks, events, cases and lead next-actions.
   if (!isSupabaseConfigured() || !hasStoredWorkspaceContext()) return { tasks: [], events: [], leads: [], cases: [] };
 
   const [taskItems, eventItems, caseItems, leadItems] = await Promise.all([
@@ -257,4 +235,3 @@ export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle>
     cases: caseItems as Record<string, unknown>[],
   };
 }
-

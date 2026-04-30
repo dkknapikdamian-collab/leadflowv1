@@ -24,6 +24,49 @@ type ClientRecord = {
   phone?: string;
   archivedAt?: string | null;
 };
+const STAGE35_REAL_CLIENT_VALUE = 'STAGE35_REAL_CLIENT_VALUE';
+
+function getStage35NumericValue(value: unknown) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+  const normalized = String(value || '').replace(/[^0-9,.-]/g, '').replace(',', '.');
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function getStage35FirstMoneyValue(row: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const value = getStage35NumericValue(row[key]);
+    if (value > 0) return value;
+  }
+  return 0;
+}
+
+function getStage35RelationClientId(row: Record<string, unknown>) {
+  return String(row.clientId || row.client_id || row.customerId || row.customer_id || '').trim();
+}
+
+function formatClientMoney(value: number) {
+  return `${Math.round(Number(value || 0)).toLocaleString('pl-PL')} PLN`;
+}
+
+const STAGE35_MONEY_KEYS = [
+  'amount',
+  'value',
+  'dealValue',
+  'deal_value',
+  'estimatedValue',
+  'estimated_value',
+  'budget',
+  'price',
+  'total',
+  'grossAmount',
+  'gross_amount',
+  'netAmount',
+  'net_amount',
+  'commission',
+  'commissionAmount',
+  'commission_amount',
+];
 
 export default function Clients() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
@@ -92,22 +135,86 @@ export default function Clients() {
       return map.get(clientId)!;
     };
     for (const lead of leads) {
-      const clientId = String(lead.clientId || '');
+      const clientId = getStage35RelationClientId(lead);
       if (!clientId) continue;
       touch(clientId).leads += 1;
     }
     for (const caseRecord of cases) {
-      const clientId = String(caseRecord.clientId || '');
+      const clientId = getStage35RelationClientId(caseRecord);
       if (!clientId) continue;
       touch(clientId).cases += 1;
     }
     for (const payment of payments) {
-      const clientId = String(payment.clientId || '');
+      const clientId = getStage35RelationClientId(payment);
       if (!clientId) continue;
       touch(clientId).payments += 1;
     }
     return map;
   }, [cases, leads, payments]);
+
+  const paymentValueByClientId = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const payment of payments as Record<string, unknown>[]) {
+      const clientId = getStage35RelationClientId(payment);
+      if (!clientId) continue;
+      const amount = getStage35FirstMoneyValue(payment, STAGE35_MONEY_KEYS);
+      map.set(clientId, (map.get(clientId) || 0) + amount);
+    }
+    return map;
+  }, [payments]);
+
+  const caseValueByClientId = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const caseRow of cases as Record<string, unknown>[]) {
+      const clientId = getStage35RelationClientId(caseRow);
+      if (!clientId) continue;
+      const value = getStage35FirstMoneyValue(caseRow, STAGE35_MONEY_KEYS);
+      map.set(clientId, (map.get(clientId) || 0) + value);
+    }
+    return map;
+  }, [cases]);
+
+  const leadValueByClientId = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const lead of leads as Record<string, unknown>[]) {
+      const clientId = getStage35RelationClientId(lead);
+      if (!clientId) continue;
+      const value = getStage35FirstMoneyValue(lead, STAGE35_MONEY_KEYS);
+      map.set(clientId, (map.get(clientId) || 0) + value);
+    }
+    return map;
+  }, [leads]);
+
+  const clientFieldValueByClientId = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const client of clients as Record<string, unknown>[]) {
+      const clientId = String(client.id || '').trim();
+      if (!clientId) continue;
+      map.set(clientId, getStage35FirstMoneyValue(client, STAGE35_MONEY_KEYS));
+    }
+    return map;
+  }, [clients]);
+
+  const clientValueByClientId = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const client of clients) {
+      const clientId = String(client.id || '').trim();
+      if (!clientId) continue;
+      const paymentValue = paymentValueByClientId.get(clientId) || 0;
+      const caseValue = caseValueByClientId.get(clientId) || 0;
+      const leadValue = leadValueByClientId.get(clientId) || 0;
+      const fallbackClientValue = clientFieldValueByClientId.get(clientId) || 0;
+      const finalValue = paymentValue > 0
+        ? paymentValue
+        : caseValue > 0
+          ? caseValue
+          : leadValue > 0
+            ? leadValue
+            : fallbackClientValue;
+      map.set(clientId, finalValue);
+    }
+    return map;
+  }, [caseValueByClientId, clientFieldValueByClientId, clients, leadValueByClientId, paymentValueByClientId]);
 
   const clientsWithCases = useMemo(
     () => clients.filter((client) => !client.archivedAt && (countersByClientId.get(client.id)?.cases || 0) > 0).length,
@@ -118,8 +225,8 @@ export default function Clients() {
     [clients, countersByClientId],
   );
   const relationValue = useMemo(
-    () => clients.filter((client) => !client.archivedAt).reduce((sum, client) => sum + Number(countersByClientId.get(client.id)?.payments || 0), 0),
-    [clients, countersByClientId],
+    () => clients.filter((client) => !client.archivedAt).reduce((sum, client) => sum + (clientValueByClientId.get(client.id) || 0), 0),
+    [clientValueByClientId, clients],
   );
   const staleClients = useMemo(
     () => clients.filter((client) => !client.archivedAt && (countersByClientId.get(client.id)?.leads || 0) === 0).length,
@@ -236,7 +343,6 @@ export default function Clients() {
           <div>
             <span className="kicker">Baza relacji</span>
             <h1>Klienci</h1>
-            <p className="lead-copy">Lista klientów nie powinna dublować pracy ze spraw. To kartoteka osób i szybkie przejście do aktywnej sprawy.</p>
           </div>
           <div className="head-actions">
             <Button type="button" variant="outline" className="btn soft-blue">? Zapytaj AI</Button>
@@ -336,7 +442,7 @@ export default function Clients() {
             <div><label>Bez sprawy</label><strong>{clientsWithoutCases}</strong><div className="hint">tylko kontakt</div></div>
           </button>
           <button type="button" className="metric">
-            <div><label>Wartość</label><strong>{relationValue.toLocaleString()} PLN</strong><div className="hint">w relacjach</div></div>
+            <div><label>Wartość</label><strong>{formatClientMoney(relationValue)}</strong><div className="hint">w relacjach</div></div>
           </button>
           <button type="button" className="metric">
             <div><label>Bez ruchu</label><strong>{staleClients}</strong><div className="hint">do sprawdzenia</div></div>
@@ -359,6 +465,7 @@ export default function Clients() {
                 {filtered.map((client, index) => {
                    const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
                    const isArchived = Boolean(client.archivedAt);
+                   const clientValue = clientValueByClientId.get(client.id) || 0;
                    return (
                      <div key={client.id} className="relative group/client-card">
                        <Link to={`/clients/${client.id}`} className="block">
@@ -368,8 +475,9 @@ export default function Clients() {
                            <span className="title">{client.name || 'Klient'}</span>
                            <span className="sub">{client.company || 'Bez firmy'} · {client.email || 'brak e-maila'} · {client.phone || 'brak telefonu'}</span>
                            <span className="statusline">
-                             {isArchived ? <span className="pill amber">W koszu</span> : <span className="pill green">Aktywna sprawa</span>}
+                             {isArchived ? <span className="pill amber">W koszu</span> : counters.cases > 0 ? <span className="pill green">Aktywna sprawa</span> : <span className="pill">Bez sprawy</span>}
                              <span className="pill blue">Leady: {counters.leads}</span>
+                             <span className="pill blue">Wartość: {formatClientMoney(clientValue)}</span>
                              <span className="pill">Ostatni kontakt: {counters.payments > 0 ? 'jest' : 'brak'}</span>
                            </span>
                          </span>
