@@ -1,6 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+const { mojibakeWords } = require('../scripts/mojibake-markers.cjs');
+
 const root = process.cwd();
 
 const files = {
@@ -110,7 +112,7 @@ for (const forbidden of ['zamknięty sprzedażowo', 'lead zamknięty sprzedażow
   if (combined.toLowerCase().includes(forbidden.toLowerCase())) fail(`forbidden copy found: ${forbidden}`);
 }
 
-for (const mojibake of ['BĹ‚Ä…d', 'OtwĂłrz', 'Å¹rĂłdło', 'CyklicznoĹ›Ä‡']) {
+for (const mojibake of Object.values(mojibakeWords)) {
   if (combined.includes(mojibake)) fail(`mojibake found: ${mojibake}`);
 }
 

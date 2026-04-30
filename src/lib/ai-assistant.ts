@@ -73,7 +73,7 @@ function getContextWorkspaceId(context: TodayAiAssistantInput['context']) {
 export async function askTodayAiAssistant(input: TodayAiAssistantInput) {
   const auth = getClientAuthSnapshot();
   const workspaceId = getContextWorkspaceId(input.context);
-  const response = await fetch('/api/assistant', {
+  const response = await fetch('/api/system?kind=ai-assistant', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

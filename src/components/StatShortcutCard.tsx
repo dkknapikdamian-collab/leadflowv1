@@ -45,18 +45,18 @@ export function StatShortcutCard({
     </Card>
   );
 
-  const className = `block w-full rounded-2xl text-left transition-all outline-none focus-visible:outline-none focus-visible:ring-0 ${active ? 'shadow-md' : 'hover:shadow-md'}`;
+  const className = `block w-full rounded-2xl text-left transition-all outline-none focus-visible:outline-none focus-visible:ring-0 ${active ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`;
 
   if (to) {
     return (
-      <Link to={to} className={className} title={title} aria-label={ariaLabel || title || label}>
+      <Link to={to} className={className} title={title} aria-label={ariaLabel || title || label} data-stat-shortcut-card>
         {card}
       </Link>
     );
   }
 
   return (
-    <button type="button" className={className} onClick={onClick} title={title} aria-label={ariaLabel || title || label}>
+    <button type="button" className={className} onClick={onClick} title={title} aria-label={ariaLabel || title || label} data-stat-shortcut-card>
       {card}
     </button>
   );

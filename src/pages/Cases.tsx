@@ -4,8 +4,12 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import {
+  AlertTriangle,
   ChevronRight,
+  Clock,
+  CheckCircle2,
   ExternalLink,
+  FileText,
   Search,
   Sparkles,
   Trash2,
@@ -14,6 +18,7 @@ import {
 import { toast } from 'sonner';
 
 import { ConfirmDialog } from '../components/confirm-dialog';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import Layout from '../components/Layout';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
@@ -69,10 +74,10 @@ function normalizeClientText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function buildClientOptions(cases: CaseRecord[], leads: any[]) {
+function buildClientOptions(cases: CaseRecord[], leads: any[], clients: any[] = []) {
   const map = new Map<string, ClientOption>();
 
-  const push = (rawName: unknown, rawEmail: unknown, rawPhone: unknown, source: 'case' | 'lead') => {
+  const push = (rawName: unknown, rawEmail: unknown, rawPhone: unknown, source: 'case' | 'lead' | 'client') => {
     const name = normalizeClientText(rawName);
     const email = normalizeClientText(rawEmail);
     const phone = normalizeClientText(rawPhone);
@@ -96,6 +101,10 @@ function buildClientOptions(cases: CaseRecord[], leads: any[]) {
 
   for (const lead of leads) {
     push(lead?.name || lead?.company, lead?.email, lead?.phone, 'lead');
+  }
+
+  for (const client of clients) {
+    push(client?.name || client?.company, client?.email, client?.phone, 'client');
   }
 
   return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
@@ -450,7 +459,7 @@ export default function Cases() {
         <div className="page-head">
           <div>
             <span className="kicker">Centrum obsługi</span>
-            <h1>Sprawy</h1>
+            <h1 className="text-3xl font-bold app-text">Sprawy</h1>
             <p className="lead-copy">Lista spraw ma pokazać, które tematy są w pracy, które stoją i co wymaga klienta.</p>
           </div>
           <div className="head-actions">
@@ -618,18 +627,38 @@ export default function Cases() {
         </div>
 
         <div className="grid-4">
-          <button type="button" className={`metric ${caseView === 'all' ? 'active' : ''}`} onClick={() => setCaseView('all')}>
-            <div><label>W realizacji</label><strong>{stats.total}</strong><div className="hint">otwarte</div></div>
-          </button>
-          <button type="button" className={`metric ${caseView === 'waiting' || caseView === 'approval' ? 'active' : ''}`} onClick={() => toggleCaseView('waiting')}>
-            <div><label>Czeka na klienta</label><strong>{stats.waiting}</strong><div className="hint">po stronie klienta</div></div>
-          </button>
-          <button type="button" className={`metric ${caseView === 'blocked' ? 'active' : ''}`} onClick={() => toggleCaseView('blocked')}>
-            <div><label>Zablokowane</label><strong>{stats.blocked}</strong><div className="hint">brak krytycznych</div></div>
-          </button>
-          <button type="button" className={`metric ${caseView === 'ready' ? 'active' : ''}`} onClick={() => toggleCaseView('ready')}>
-            <div><label>Gotowe</label><strong>{stats.ready}</strong><div className="hint">historia</div></div>
-          </button>
+          <StatShortcutCard
+            label="W realizacji"
+            value={stats.total}
+            icon={FileText}
+            active={caseView === 'all'}
+            onClick={() => setCaseView('all')}
+            helper="otwarte"
+          />
+          <StatShortcutCard
+            label="Czeka na klienta"
+            value={stats.waiting}
+            icon={Clock}
+            active={caseView === 'waiting' || caseView === 'approval'}
+            onClick={() => toggleCaseView('waiting')}
+            helper="po stronie klienta"
+          />
+          <StatShortcutCard
+            label="Zablokowane"
+            value={stats.blocked}
+            icon={AlertTriangle}
+            active={caseView === 'blocked'}
+            onClick={() => toggleCaseView('blocked')}
+            helper="braki krytyczne"
+          />
+          <StatShortcutCard
+            label="Gotowe"
+            value={stats.ready}
+            icon={CheckCircle2}
+            active={caseView === 'ready'}
+            onClick={() => toggleCaseView('ready')}
+            helper="historia"
+          />
         </div>
 
         <div className="layout-list">
@@ -667,15 +696,18 @@ export default function Cases() {
                   const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
                   const compactLifecyclePill = compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel;
                   const nextActionLabel = compactNextAction(lifecycle.nextOperatorAction);
-                  const metaSuffix = lifecycle.missingRequiredCount > 0
-                    ? `brakuje ${lifecycle.missingRequiredCount} elementów`
-                    : `${percent}% kompletności`;
+                  const metaParts = [
+                    lifecycle.openActionCount > 0 ? `${lifecycle.openActionCount} działań` : 'brak działań',
+                    lifecycle.waitingApprovalCount > 0 ? `akceptacje ${lifecycle.waitingApprovalCount}` : null,
+                    lifecycle.missingRequiredCount > 0 ? `brakuje ${lifecycle.missingRequiredCount} elementów` : `${percent}% kompletności`,
+                  ].filter(Boolean);
+                  const metaSuffix = metaParts.join(' · ');
                   return (
                     <div key={record.id} className="row case-row">
                       <span className="index">{index + 1}</span>
                       <span className="lead-main-cell min-w-0">
                         <Link to={`/case/${record.id}`} className="title">{record.title || 'Sprawa bez tytułu'}</Link>
-                        <span className="sub">Klient: {record.clientName || 'Brak nazwy klienta'} · {metaSuffix}</span>
+                        <span className="sub">Klient: {record.clientName || 'Brak nazwy klienta'} · {lifecycle.headline} · {metaSuffix}</span>
                         <span className="statusline">
                           <span className={`pill ${record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue'}`}>{statusLabel}</span>
                           {compactLifecyclePill ? <span className={`pill ${lifecycleCompactVariant(record, lifecycle)}`}>{compactLifecyclePill}</span> : null}
@@ -711,10 +743,10 @@ export default function Cases() {
             <aside className="right-card">
               <div className="panel-head"><div><h3>Operacyjne skróty</h3><p>Najczęstsze ruchy dla spraw.</p></div></div>
               <div className="quick-list">
-                <button type="button" onClick={() => toggleCaseView('needs_next_step')}><span>Dodaj brak</span><strong>{stats.needsNextStep}</strong></button>
+                <button type="button" onClick={() => toggleCaseView('needs_next_step')}><span>Bez kroku</span><strong>{stats.needsNextStep}</strong></button>
                 <button type="button" onClick={() => toggleCaseView('linked')}><span>Portal klienta</span><strong>{stats.linked}</strong></button>
                 <button type="button" onClick={() => toggleCaseView('waiting')}><span>Sprawy bez ruchu</span><strong>{stats.waiting}</strong></button>
-                <button type="button" onClick={() => toggleCaseView('approval')}><span>Do akceptacji</span><strong>{stats.approval}</strong></button>
+                <button type="button" onClick={() => toggleCaseView('approval')}><span>Akceptacje</span><strong>{stats.approval}</strong></button>
               </div>
             </aside>
 

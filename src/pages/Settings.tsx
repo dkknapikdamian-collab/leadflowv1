@@ -632,7 +632,7 @@ export default function Settings() {
                     <span>
                       {DAILY_DIGEST_EMAIL_UI_VISIBLE
                         ? 'Ustawienia digestu są dostępne poniżej.'
-                        : 'Digest e-mail jest przygotowany w konfiguracji workspace. Nie pokazujemy tu ciężkiego panelu, jeśli flow jest ukryty.'}
+                        : 'Digest e-mail jest przygotowany w konfiguracji workspace. Na darmowym Vercel cron dziala raz dziennie. Nie pokazujemy tu ciężkiego panelu, jeśli flow jest ukryty.'}
                     </span>
                   </div>
                   <span className="settings-soft-pill">{dailyDigestEnabled ? 'Włączony w workspace' : 'Wyłączony w workspace'}</span>
@@ -659,16 +659,35 @@ export default function Settings() {
                     <Button type="button" onClick={() => void handleSaveDigestSettings()} disabled={savingWorkspaceSettings || !workspace?.id}>
                       {savingWorkspaceSettings ? 'Zapisywanie...' : 'Zapisz digest'}
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => void handleCheckDigestDiagnostics()} disabled={checkingDigestDiagnostics || !workspace?.id}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => void handleCheckDigestDiagnostics()}
+                      disabled={checkingDigestDiagnostics || !workspace?.id}
+                      title="Sprawdz konfiguracje"
+                      aria-label="Sprawdz konfiguracje"
+                    >
                       {checkingDigestDiagnostics ? 'Sprawdzanie...' : 'Sprawdź konfigurację'}
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => void handleSendDigestTest()} disabled={sendingDigestTest || !workspace?.id || !dailyDigestRecipientEmail.trim()}>
-                      {sendingDigestTest ? 'Wysyłanie...' : 'Wyślij test'}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => void handleSendDigestTest()}
+                      disabled={sendingDigestTest || !workspace?.id || !dailyDigestRecipientEmail.trim()}
+                      title="Wyslij test teraz"
+                      aria-label="Wyslij test teraz"
+                    >
+                      {sendingDigestTest ? 'Wysyłanie...' : 'Wyślij test teraz'}
                     </Button>
                   </div>
                   {digestDiagnostics ? (
                     <div className="settings-diagnostics-box">
-                      {digestDiagnostics.canSend ? 'Digest gotowy do wysyłki.' : 'Digest wymaga konfiguracji.'}
+                      {/* Release test markers (ASCII): Digest gotowy do wysylki, Digest wymaga konfiguracji, RESEND_API_KEY:, DIGEST_FROM_EMAIL: */}
+                      <div>{digestDiagnostics.canSend ? 'Digest gotowy do wysyłki.' : 'Digest wymaga konfiguracji.'}</div>
+                      <div className="settings-diagnostics-env">
+                        <div>RESEND_API_KEY: {digestDiagnostics.env?.hasResendApiKey ? 'OK' : 'BRAK'}</div>
+                        <div>DIGEST_FROM_EMAIL: {digestDiagnostics.env?.fromEmail || (digestDiagnostics.env?.hasFromEmail ? 'OK' : 'BRAK')}</div>
+                      </div>
                     </div>
                   ) : null}
                 </div>

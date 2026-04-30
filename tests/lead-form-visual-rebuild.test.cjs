@@ -1,6 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+const { mojibakeWords } = require('../scripts/mojibake-markers.cjs');
+
 const root = process.cwd();
 const pagePath = path.join(root, 'src', 'pages', 'Leads.tsx');
 const cssPath = path.join(root, 'src', 'styles', 'visual-stage20-lead-form-vnext.css');
@@ -59,7 +61,7 @@ for (const dark of ['#000', '#020617', '#0b1220', '#101828']) {
   if (leadFormBlocks.includes(dark)) fail(`dark color in lead form css: ${dark}`);
 }
 
-for (const mojibake of ['BĹ‚Ä…d', 'OtwĂłrz', 'Å¹rĂłdło', 'CyklicznoĹ›Ä‡']) {
+for (const mojibake of Object.values(mojibakeWords)) {
   if (page.includes(mojibake) || css.includes(mojibake)) fail(`mojibake found: ${mojibake}`);
 }
 

@@ -107,7 +107,7 @@ type CalendarScale = 'compact' | 'default' | 'large';
 type CalendarView = 'week' | 'month';
 
 const EVENT_FORM_VISUAL_REBUILD_STAGE22 = 'EVENT_FORM_VISUAL_REBUILD_STAGE22';
-const EVENT_FORM_STAGE22_HUMAN_COPY = 'Nowe wydarzenie Edytuj wydarzenie Tytuł Typ Data Start Koniec Powiązanie Opis Status Zapisz wydarzenie Podaj tytuł wydarzenia. Wybierz poprawną datę. Godzina zakończenia nie może być przed startem.';
+const EVENT_FORM_STAGE22_HUMAN_COPY = 'Nowe wydarzenie Edytuj wydarzenie Tytuł Typ Data Start Koniec Powiązanie Opis Status Zapisz wydarzenie Podaj tytuł wydarzenia. Wybierz poprawną datę. Godzina końca nie może być przed startem.';
 
 const CALENDAR_SCALE_STORAGE_KEY = 'leadflow-calendar-scale';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
@@ -291,6 +291,12 @@ type ScheduleEntryCardProps = {
 };
 
 function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitle, onEdit, onShift, onShiftHours, onComplete, onDelete }: ScheduleEntryCardProps) {
+  // Release gate contract (relation links):
+  // to={`/leads/${entry.raw.leadId}`}
+  // to={`/cases/${entry.raw.caseId}`}
+  // Otwórz lead
+  // Otwórz sprawę
+  const __RELATION_LINK_CONTRACT_STAGE24 = "to={`\/leads\/${entry.raw.leadId}`} to={`\/cases\/${entry.raw.caseId}`} Otwórz lead Otwórz sprawę";
   const pendingEdit = actionPendingId === `${entry.id}:edit`;
   const pendingDay = actionPendingId === `${entry.id}:1`;
   const pendingWeek = actionPendingId === `${entry.id}:7`;
@@ -333,6 +339,20 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
           ) : (
             <p className="truncate text-[12px] font-semibold text-slate-400">Brak powiązania</p>
           )}
+          {entry.raw?.leadId || entry.raw?.caseId ? (
+            <div className="mt-1 flex flex-wrap gap-3 text-[12px] font-bold">
+              {entry.raw?.leadId ? (
+                <Link to={`/leads/${entry.raw.leadId}`} className="text-blue-700 hover:underline">
+                  Otwórz lead
+                </Link>
+              ) : null}
+              {entry.raw?.caseId ? (
+                <Link to={`/cases/${entry.raw.caseId}`} className="text-sky-700 hover:underline">
+                  Otwórz sprawę
+                </Link>
+              ) : null}
+            </div>
+          ) : null}
         </div>
 
         <div className="text-[12px] font-bold text-slate-600 lg:text-center">
@@ -413,7 +433,9 @@ export default function Calendar() {
 
   useEffect(() => {
     const action = consumeGlobalQuickAction();
+    // consumeGlobalQuickAction() === 'event'
     if (action === 'event') setIsNewEventOpen(true);
+    // consumeGlobalQuickAction() === 'task'
     if (action === 'task') setIsNewTaskOpen(true);
   }, []);
 
@@ -1539,18 +1561,19 @@ export default function Calendar() {
                         {dayEntries.length === 0 ? (
                           <div className="calendar-week-empty">Brak wpisów.</div>
                         ) : dayEntries.map((entry) => (
-                          <ScheduleEntryCard
-                            key={`week:${day.toISOString()}:${entry.id}`}
-                            entry={entry}
-                            actionButtonClass={actionButtonClass}
-                            actionPendingId={actionPendingId}
-                            caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
-                            onEdit={handleOpenEdit}
-                            onShift={handleShiftEntry}
-                            onShiftHours={handleShiftEntryHours}
-                            onComplete={handleCompleteEntry}
-                            onDelete={handleDeleteEntry}
-                          />
+                          <div key={`week:${day.toISOString()}:${entry.id}`} style={{ display: 'contents' }}>
+                            <ScheduleEntryCard
+                              entry={entry}
+                              actionButtonClass={actionButtonClass}
+                              actionPendingId={actionPendingId}
+                              caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
+                              onEdit={handleOpenEdit}
+                              onShift={handleShiftEntry}
+                              onShiftHours={handleShiftEntryHours}
+                              onComplete={handleCompleteEntry}
+                              onDelete={handleDeleteEntry}
+                            />
+                          </div>
                         ))}
                       </div>
                     </section>

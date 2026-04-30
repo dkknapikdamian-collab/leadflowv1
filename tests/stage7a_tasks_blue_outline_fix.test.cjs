@@ -12,7 +12,7 @@ const tasks = fs.readFileSync(tasksPath, 'utf8');
 const indexCss = fs.readFileSync(indexPath, 'utf8');
 const css = fs.readFileSync(cssPath, 'utf8');
 
-const mojibake = ['Ä', 'Å', 'Ĺ', 'Â', '�', 'Ã'];
+const { markerChars: mojibake } = require('../scripts/mojibake-markers.cjs');
 
 test('Tasks ma kafelki statystyk i aktywacja widoku dalej działa', () => {
   assert.ok(tasks.includes('StatShortcutCard'), 'Tasks nie używa kafelków StatShortcutCard');

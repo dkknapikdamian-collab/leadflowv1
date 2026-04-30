@@ -7,7 +7,7 @@ const root = process.cwd();
 const filePath = path.join(root, 'src/components/StatShortcutCard.tsx');
 const source = fs.readFileSync(filePath, 'utf8');
 
-const mojibake = ['Ä', 'Å', 'Ĺ', 'Â', '�', 'Ã'];
+const { markerChars: mojibake } = require('../scripts/mojibake-markers.cjs');
 
 test('StatShortcutCard nie daje aktywnej karcie niebieskiego obramowania', () => {
   assert.doesNotMatch(source, /active\s*\?\s*'[^']*\bring-2\b[^']*ring-primary\/40[^']*'/);

@@ -12,7 +12,7 @@ test('ClientDetail keeps final four-tab operating model', () => {
   assert.ok(source.includes('Kartoteka') || source.includes('Dane klienta'));
   assert.ok(source.includes('Relacje'));
   assert.ok(source.includes('Historia'));
-  assert.ok(source.includes('CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ') || source.includes('Więcej'));
+  assert.ok(source.includes('Dodatkowe'));
 });
 
 test('ClientDetail leaves process work in case or active lead, not in client cockpit', () => {
@@ -23,8 +23,8 @@ test('ClientDetail leaves process work in case or active lead, not in client coc
 });
 
 test('ClientDetail exposes secondary more menu without turning it into main workflow', () => {
-  assert.ok(source.includes('CLIENT_DETAIL_MORE_MENU_SECONDARY'));
-  assert.ok(source.includes('Więcej'));
+  assert.ok(source.includes('client-detail-more-menu'));
+  assert.ok(source.includes('Dodatkowe'));
   assert.ok(source.includes('Drugorzędne akcje') || source.includes('drugorzędne akcje') || source.includes('menu pomocnicze'));
 });
 

@@ -170,7 +170,8 @@ function buildClientLeadCaptureDraftAnswer(rawText: string): TodayAiAssistantAns
     noAutoWrite: true,
     intent: 'lead_capture',
     title: 'Szkic leada zapisany do sprawdzenia',
-    summary: 'Zapisałem podyktowaną treść w Szkicach AI. To nie jest jeszcze finalny rekord. Otwórz Szkice AI, sprawdź pola i dopiero wtedy zatwierdź zapis.',
+    summary:
+      'Szkic leada zapisany w Szkicach AI. To nie jest jeszcze finalny rekord. Otwórz Szkice AI, sprawdź pola i dopiero wtedy zatwierdź zapis.',
     rawText,
     suggestedCaptureText: rawText,
     items: [
@@ -430,6 +431,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
         const captureText = String(result.suggestedCaptureText || result.rawText || command || '').trim();
         if (captureText) {
           // AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
+          // saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })
           const draftPayload = getAiDraftPayloadFromAnswer(result);
           saveAiLeadDraft({ rawText: captureText, source: 'today_assistant', type: draftPayload.type, parsedDraft: draftPayload.parsedDraft });
           toast.success('Szkic zapisany w Szkicach AI');
@@ -602,7 +604,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
                 Wszystko przez Szkice AI
               </Button>
               <Button type="button" size="sm" variant={directWriteMode === 'direct_task_event' ? 'default' : 'outline'} onClick={() => handleDirectWriteModeChange('direct_task_event')}>
-                Zapis tylko przez szkice
+                Jasne rekordy od razu
               </Button>
             </div>
             <p className="mt-3 text-xs text-slate-500">Niejasne notatki nadal trafiają do Szkiców AI. Zadania i wydarzenia bez daty albo godziny też wracają do szkicu.</p>

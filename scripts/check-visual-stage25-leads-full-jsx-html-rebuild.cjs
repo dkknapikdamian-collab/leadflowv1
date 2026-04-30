@@ -69,7 +69,7 @@ assertContains(docs, 'handleCreateLead', 'mapping includes create handler');
 assertContains(docs, 'handleArchiveLead', 'mapping includes archive handler');
 assertContains(docs, 'handleRestoreLead', 'mapping includes restore handler');
 
-const mojibakePatterns = ['Ä', 'Ĺ', 'Å', 'Ă', 'Â', 'â€', '�'];
+const { markerChars: mojibakePatterns } = require('./mojibake-markers.cjs');
 for (const file of [leads, index, css, docs]) {
   const content = read(file);
   for (const pattern of mojibakePatterns) {

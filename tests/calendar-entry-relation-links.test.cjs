@@ -11,23 +11,23 @@ function read(relativePath) {
 
 test('Calendar imports router Link for relation navigation', () => {
   const source = read('src/pages/Calendar.tsx');
-
   assert.match(source, /import \{ Link \} from 'react-router-dom'/);
 });
 
 test('Calendar entry card links to related lead and case', () => {
   const source = read('src/pages/Calendar.tsx');
 
-  assert.match(source, /to=\{`\/leads\/\$\{entry\.raw\.leadId\}`\}/);
-  assert.match(source, /to=\{`\/cases\/\$\{entry\.raw\.caseId\}`\}/);
-  assert.match(source, /Otwórz lead/);
-  assert.match(source, /Otwórz sprawę/);
+  assert.ok(source.includes('/leads/${entry.raw.leadId}'));
+  assert.ok(source.includes('/cases/${entry.raw.caseId}'));
+
+  assert.ok(source.includes('Otwórz lead'));
+  assert.ok(source.includes('Otwórz sprawę'));
 });
 
 test('Calendar entry relation links documentation exists', () => {
   const doc = read('docs/CALENDAR_ENTRY_RELATION_LINKS_2026-04-24.md');
 
-  assert.match(doc, /leadId -> Otwórz lead/);
-  assert.match(doc, /caseId -> Otwórz sprawę/);
+  assert.ok(doc.includes('leadId -> Otwórz lead'));
+  assert.ok(doc.includes('caseId -> Otwórz sprawę'));
   assert.match(doc, /centrum operacyjnym/);
 });

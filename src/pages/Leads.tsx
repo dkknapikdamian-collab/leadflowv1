@@ -408,15 +408,19 @@ export default function Leads() {
     }
   };
 
-  const serviceHistoryLeads = useMemo(() => leads.filter((lead) => {
-    const linkedCase = resolveLinkedCaseForLead(lead);
-    return !isLeadInTrash(lead) && isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
-  }), [leads, resolveLinkedCaseForLead]);
+  const activeLeads = useMemo(
+    () => leads.filter((lead) => !isLeadInTrash(lead)),
+    [leads],
+  );
 
-  const activeLeads = useMemo(() => leads.filter((lead) => {
-    const linkedCase = resolveLinkedCaseForLead(lead);
-    return !isLeadInTrash(lead) && !isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
-  }), [leads, resolveLinkedCaseForLead]);
+  const serviceHistoryLeads = useMemo(
+    () =>
+      activeLeads.filter((lead) => {
+        const linkedCase = resolveLinkedCaseForLead(lead);
+        return isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
+      }),
+    [activeLeads, resolveLinkedCaseForLead],
+  );
 
   const trashLeads = useMemo(() => leads.filter((lead) => isLeadInTrash(lead)), [leads]);
 
@@ -439,7 +443,7 @@ export default function Leads() {
   const filteredLeads = useMemo(() => {
     // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka działa po nazwie, telefonie, mailu, firmie, źródle i sprawie.
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
-    const sourceLeads = showTrash ? trashLeads : quickFilter === 'history' ? serviceHistoryLeads : activeLeads;
+    const sourceLeads = showTrash ? trashLeads : activeLeads;
 
     const results = sourceLeads.filter((lead) => {
       const linkedCase = resolveLinkedCaseForLead(lead);
@@ -462,7 +466,7 @@ export default function Leads() {
     }
 
     return results;
-  }, [activeLeads, quickFilter, resolveLinkedCaseForLead, searchQuery, serviceHistoryLeads, showTrash, trashLeads, valueSortEnabled]);
+  }, [activeLeads, quickFilter, resolveLinkedCaseForLead, searchQuery, showTrash, trashLeads, valueSortEnabled]);
 
   const leadSearchSuggestions = useMemo(() => {
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
@@ -763,7 +767,12 @@ export default function Leads() {
           </button>
         </div>
 
-        <div className="layout-list" data-stage25-leads-layout-list="true">
+        {/* STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
+        <div
+          className="layout-list xl:grid-cols-[minmax(0,1fr)_300px]"
+          data-stage25-leads-layout-list="true"
+          data-stage32-leads-value-layout="true"
+        >
           <div className="stack">
             <div className="search" data-leads-search="true">
               <span aria-hidden="true">⌕</span>
@@ -780,16 +789,22 @@ export default function Leads() {
               </datalist>
             </div>
 
-            {searchQuery.trim() && leadSearchSuggestions.length ? (
-              <div className="suggestions" data-stage25-lead-search-suggestions="true">
-                {leadSearchSuggestions.map((suggestion, index) => (
-                  <Link key={suggestion.id} to={`/leads/${suggestion.id}`}>
-                    <span>{index + 1}. {suggestion.name}</span>
-                    <small>{suggestion.meta}</small>
-                    <ChevronRight className="h-4 w-4" />
-                  </Link>
-                ))}
-              </div>
+            {searchQuery.trim() ? (
+              leadSearchSuggestions.length ? (
+                <div className="suggestions lead-search-suggestions-stage31" data-stage31-lead-search-suggestions="true">
+                  {leadSearchSuggestions.map((suggestion, index) => (
+                    <Link key={suggestion.id} to={`/leads/${suggestion.id}`}>
+                      <span>{index + 1}. {suggestion.name}</span>
+                      <small>{suggestion.meta}</small>
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="suggestions lead-search-suggestions-stage31" data-stage31-lead-search-suggestions="true">
+                  <span className="sub">Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.</span>
+                </div>
+              )
             ) : null}
 
             <div className="table-card lead-table-card" data-stage25-lead-table-card="true">
@@ -810,57 +825,61 @@ export default function Leads() {
                   </span>
                 </div>
               ) : filteredLeads.length ? (
-                filteredLeads.map((lead, index) => {
+                filteredLeads.map((lead, leadIndex) => {
                   const leadId = String(lead.id || '');
                   const linkedCase = resolveLinkedCaseForLead(lead);
                   const sourceLabel = formatLeadSourceLabel(lead.source);
                   const statusOption = STATUS_OPTIONS.find((option) => option.value === String(lead.status || 'new'));
                   const statusLabel = statusOption?.label || 'Nowy';
-                  const valueLabel = (Number(lead.dealValue) || 0).toLocaleString() + ' PLN';
-                  const meta = buildLeadCompactMeta(lead, linkedCase, sourceLabel, valueLabel);
+                  const leadValueLabel = (Number(lead.dealValue) || 0).toLocaleString() + ' PLN';
+                  const meta = buildLeadCompactMeta(lead, linkedCase, sourceLabel, leadValueLabel);
                   const nextActionMeta = buildNextActionMeta(nextActionByLeadId.get(leadId));
                   const pending = archivePendingId === leadId;
 
                   return (
-                    <div key={leadId || index} className="row lead-row" data-stage25-lead-row="true">
-                      <span className="index">{index + 1}</span>
+                    <div key={leadId || leadIndex} className="relative group/lead-row">
+                      <Link to={`/leads/${leadId}`} className="block">
+                        <div className="row lead-row" data-stage25-lead-row="true" data-stage31-lead-thin-row="true">
+                        <span className="index">{leadIndex + 1}</span>
 
-                      <span className="lead-main-cell">
-                        <Link to={`/leads/${leadId}`} className="title">{lead.name || 'Lead bez nazwy'}</Link>
-                        <span className="sub">{meta || 'Brak danych kontaktowych'}</span>
-                        <span className="statusline">
-                          <span className="pill blue">{statusLabel}</span>
-                          <span className="pill">{sourceLabel}</span>
-                          {linkedCase ? <span className="pill violet">Sprawa</span> : null}
+                        <span className="lead-main-cell">
+                          <span className="title">{lead.name || 'Lead bez nazwy'}</span>
+                          <span className="sub" data-stage31-lead-one-line-meta="true">{meta || 'Brak danych kontaktowych'}</span>
+                          <span className="statusline">
+                            <span className="pill blue">{statusLabel}</span>
+                            <span className="pill">{sourceLabel}</span>
+                            {linkedCase ? <span className="pill violet">Sprawa</span> : null}
+                          </span>
                         </span>
-                      </span>
 
-                      <span className="lead-value-cell">
-                        <span className="mini">Wartość</span>
-                        <strong>{valueLabel}</strong>
-                      </span>
+                        <span className="lead-value-cell">
+                          <span className="mini">Wartość</span>
+                          <strong>{leadValueLabel}</strong>
+                        </span>
 
-                      <span className="lead-action-cell">
-                        <span className="mini">Najbliższa akcja</span>
-                        <strong className={nextActionMeta.overdue ? 'danger' : ''}>{nextActionMeta.title}</strong>
-                        <span className="sub">{nextActionMeta.subtitle}</span>
-                      </span>
+                        <span className="lead-action-cell">
+                          <span className="mini">Najbliższa akcja</span>
+                          <strong className={nextActionMeta.overdue ? 'danger' : ''}>{nextActionMeta.title}</strong>
+                          <span className="sub">{nextActionMeta.subtitle}</span>
+                        </span>
 
-                      <span className="lead-actions">
-                        <Link to={`/leads/${leadId}`} className="btn ghost" aria-label={`Otwórz leada ${lead.name || ''}`}>
-                          <ChevronRight className="h-4 w-4" />
-                        </Link>
-                        <button
-                          type="button"
-                          className="btn ghost lead-icon-btn"
-                          disabled={pending}
-                          onClick={(event) => (showTrash ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead))}
-                          aria-label={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
-                          title={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
-                        >
-                          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-                        </button>
-                      </span>
+                        <span className="lead-actions">
+                          <span className="btn ghost" aria-hidden="true">
+                            <ChevronRight className="h-4 w-4" />
+                          </span>
+                          <button
+                            type="button"
+                            className="btn ghost lead-icon-btn"
+                            disabled={pending}
+                            onClick={(event) => (showTrash ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead))}
+                            aria-label={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                            title={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                          >
+                            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                          </button>
+                        </span>
+                        </div>
+                      </Link>
                     </div>
                   );
                 })
@@ -868,7 +887,7 @@ export default function Leads() {
                 <div className="row row-empty">
                   <span className="index">0</span>
                   <span>
-                    <span className="title">{showTrash ? 'Kosz jest pusty' : 'Brak leadów w tym widoku'}</span>
+                    <span className="title">{showTrash ? 'Kosz leadów jest pusty.' : 'Brak leadów w tym widoku'}</span>
                     <span className="sub">{showTrash ? 'Nie ma rekordów do przywrócenia.' : 'Zmień filtr albo dodaj pierwszego leada.'}</span>
                   </span>
                 </div>
@@ -876,7 +895,7 @@ export default function Leads() {
             </div>
           </div>
 
-          <div className="lead-right-rail" data-stage25-leads-right-rail="true">
+          <div className="lead-right-rail" data-stage25-leads-right-rail="true" data-stage32-leads-value-rail="true">
             <aside className="right-card lead-right-card lead-top-relations" data-relation-value-board="true">
               <div className="panel-head">
                 <div>
@@ -889,7 +908,12 @@ export default function Leads() {
               {mostValuableRelations.length ? (
                 <div className="quick-list">
                   {mostValuableRelations.map((entry) => (
-                    <Link key={entry.key} to={entry.href || '/leads'} data-stage25-valuable-relation-row="true">
+                    <Link
+                      key={entry.key}
+                      to={entry.href || '/leads'}
+                      data-stage25-valuable-relation-row="true"
+                      data-stage32-valuable-relation-row="true"
+                    >
                       <span>
                         <strong>{entry.label}</strong>
                         <small>{entry.kindLabel}</small>

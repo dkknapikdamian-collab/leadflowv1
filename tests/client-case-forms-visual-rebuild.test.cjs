@@ -1,6 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+const { mojibakeWords } = require('../scripts/mojibake-markers.cjs');
+
 const root = process.cwd();
 const clientsPath = path.join(root, 'src', 'pages', 'Clients.tsx');
 const casesPath = path.join(root, 'src', 'pages', 'Cases.tsx');
@@ -78,7 +80,7 @@ for (const dark of ['#000', '#020617', '#0b1220', '#101828']) {
   if (formBlocks.includes(dark)) fail(`dark color in client/case form css: ${dark}`);
 }
 
-for (const mojibake of ['BĹ‚Ä…d', 'OtwĂłrz', 'Å¹rĂłdło', 'CyklicznoĹ›Ä‡']) {
+for (const mojibake of Object.values(mojibakeWords)) {
   if (combined.includes(mojibake) || css.includes(mojibake)) fail(`mojibake found: ${mojibake}`);
 }
 

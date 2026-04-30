@@ -9,7 +9,7 @@ const cssPath = path.join(root, 'src/styles/visual-stage30-tasks-compact-after-c
 const tasks = fs.readFileSync(tasksPath, 'utf8');
 const css = fs.readFileSync(cssPath, 'utf8');
 
-const mojibake = ['Ä', 'Å', 'Ĺ', 'Â', '�', 'Ã'];
+const { markerChars: mojibake } = require('../scripts/mojibake-markers.cjs');
 
 test('Tasks ma wymagane widoki operacyjne', () => {
   for (const label of ['Aktywne', 'Dziś', 'Ten tydzień', 'Zaległe', 'Zrobione']) {

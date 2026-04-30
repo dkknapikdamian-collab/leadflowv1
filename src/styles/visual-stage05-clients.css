@@ -1,4 +1,10 @@
+/* VISUAL_STAGE_05_CLIENTS
+   Cel: dopasowanie /clients do closeflow_full_app_modern_5s_ui_concept.html.
+   Zakres: wyłącznie warstwa wizualna (CSS), bez zmian danych i logiki.
+*/
+
 /* ETAP 3: Clients visual rebuild (scoped) */
+.main-clients,
 .cf-html-shell .main-clients {
   background:
     radial-gradient(circle at 16% 0%, rgba(37, 99, 235, .10), transparent 28%),

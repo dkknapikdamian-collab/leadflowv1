@@ -1,6 +1,10 @@
 /*
 CLIENT_DETAIL_VISUAL_REBUILD_STAGE12
 Client is a relation record. Operational work after acquisition happens in Case.
+CLIENT_DETAIL_FINAL_OPERATING_MODEL_V83
+CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD
+CLIENT_DETAIL_MORE_MENU_SECONDARY
+CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
 */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -62,6 +66,7 @@ type ClientNextAction = {
 type ClientCaseRow = {
   id: string;
   title: string;
+  leadId?: string | null;
   status: string;
   statusLabel: string;
   nextActionLabel: string;
@@ -496,6 +501,7 @@ function ClientMultiContactField({ kind, label, value, onChange, placeholder }: 
 }
 
 function InfoRow({ icon: Icon, label, value, onCopy }: { icon: any; label: string; value: string; onCopy?: () => void }) {
+  const copyLabel = label === 'Telefon' ? 'Kopiuj telefon' : label === 'E-mail' ? 'Kopiuj email' : `Kopiuj ${label}`;
   return (
     <div className="client-detail-info-row">
       <span className="client-detail-info-icon">
@@ -506,7 +512,7 @@ function InfoRow({ icon: Icon, label, value, onCopy }: { icon: any; label: strin
         <strong>{value || '-'}</strong>
       </span>
       {onCopy && value ? (
-        <button type="button" className="client-detail-icon-button" onClick={onCopy} aria-label={`Kopiuj ${label}`}>
+        <button type="button" className="client-detail-icon-button" onClick={onCopy} aria-label={copyLabel} title={copyLabel}>
           <Copy className="h-4 w-4" />
         </button>
       ) : null}
@@ -671,6 +677,7 @@ export default function ClientDetail() {
       return {
         id: String(caseRecord.id || ''),
         title: getCaseTitle(caseRecord),
+        leadId: caseRecord?.leadId ? String(caseRecord.leadId) : null,
         status: String(caseRecord.status || 'in_progress'),
         statusLabel: caseStatusLabel(String(caseRecord.status || 'in_progress')),
         nextActionLabel: next ? next.title : 'Brak zaplanowanych działań',
@@ -798,7 +805,7 @@ export default function ClientDetail() {
 
   return (
     <Layout>
-      <main className="client-detail-vnext-page">
+      <main className="client-detail-vnext-page" data-client-detail-simplified-card-view="true">
         <header className="client-detail-header">
           <div className="client-detail-header-copy">
             <button type="button" className="client-detail-back-button" onClick={() => navigate('/clients')}>
@@ -824,7 +831,7 @@ export default function ClientDetail() {
             </Button>
             <Button type="button" variant="outline" onClick={openNewCase} disabled={!hasAccess}>
               <Plus className="h-4 w-4" />
-              + Nowa sprawa
+              + Nowa sprawa dla klienta
             </Button>
             <Button type="button" className="client-detail-header-action-primary" onClick={openMainCase} disabled={!mainCase?.id}>
               <Briefcase className="h-4 w-4" />
@@ -835,7 +842,7 @@ export default function ClientDetail() {
 
         <div className="client-detail-shell">
           <aside className="client-detail-left-rail">
-            <section className="client-detail-profile-card client-detail-side-card">
+            <section className="client-detail-profile-card client-detail-side-card" data-client-inline-contact-edit="true">
               <div className="client-detail-avatar-row">
                 <div className="client-detail-avatar">{getInitials(client)}</div>
                 <div>
@@ -893,7 +900,7 @@ export default function ClientDetail() {
 
               <Button type="button" variant="outline" className="client-detail-edit-main-button" onClick={handleClientPanelEditToggle} disabled={saving}>
                 <Pencil className="h-4 w-4" />
-                {contactEditing ? 'Zapisz dane kontaktowe' : 'Edytuj dane kontaktowe'}
+                {contactEditing ? 'Zapisz' : 'Edytuj'}
               </Button>
             </section>
 
@@ -904,12 +911,16 @@ export default function ClientDetail() {
               {[
                 { key: 'summary', label: 'Podsumowanie' },
                 { key: 'cases', label: 'Sprawy' },
-                { key: 'contact', label: 'Kontakt' },
                 { key: 'history', label: 'Historia' },
               ].map((tab) => (
                 <button
                   key={tab.key}
                   type="button"
+                  {...(tab.key === 'summary'
+                    ? { 'data-client-tab-summary': 'true' }
+                    : tab.key === 'cases'
+                      ? { 'data-client-tab-cases': 'true' }
+                      : { 'data-client-tab-history': 'true' })}
                   className={activeTab === tab.key ? 'client-detail-tab-active' : ''}
                   onClick={() => setActiveTab(tab.key as ClientTab)}
                 >
@@ -921,7 +932,7 @@ export default function ClientDetail() {
             {activeTab === 'summary' ? (
               <div className="client-detail-tab-panel">
                 <div className="client-detail-top-cards">
-                  <section className="client-detail-hero-card" aria-label="Następna akcja klienta">
+                  <section className="client-detail-hero-card" aria-label="Następny ruch">
                     <div className="client-detail-hero-kicker">NASTĘPNA AKCJA</div>
                     <div className="client-detail-hero-date">{nextAction.date || formatDate(new Date())}</div>
                     <div className="client-detail-hero-sub">{nextAction.subtitle}</div>
@@ -959,29 +970,57 @@ export default function ClientDetail() {
                 <section className="client-detail-section-card">
                   <div className="client-detail-section-head">
                     <div>
-                      <h2>Relacje klienta</h2>
-                      <p>Nie wykonujemy tu pracy operacyjnej. Praca dzieje się w sprawie.</p>
+                      <h2>Relacje</h2>
+                      <p>Klient jako centrum relacji. Ścieżka klienta: Lead → Klient → Sprawa → Rozliczenia. Praca dzieje się w sprawie.</p>
                     </div>
                     <Button type="button" variant="outline" onClick={() => setActiveTab('history')}>
                       Znajdź w historii
                     </Button>
                   </div>
                   <div className="client-detail-relations-list">
+                    {leads.length ? (
+                      leads.slice(0, 3).map((lead) => (
+                        <article key={String(lead.id)} className="client-detail-relation-row">
+                          <div className="client-detail-relation-main">
+                            <h3>{String(lead.name || lead.company || lead.email || 'Lead')}</h3>
+                            <p>Lead powiązany z klientem.</p>
+                          </div>
+                          <span className="client-detail-pill client-detail-pill-muted">Lead</span>
+                          <div className="client-detail-relation-actions">
+                            <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/leads/${String(lead.id)}`)}>
+                              Otwórz lead
+                            </Button>
+                            {lead.linkedCaseId ? (
+                              <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(lead.linkedCaseId)}`)}>
+                                Otwórz sprawę
+                              </Button>
+                            ) : null}
+                          </div>
+                        </article>
+                      ))
+                    ) : null}
                     {clientCaseRows.length === 0 ? (
                       <div className="client-detail-light-empty">Brak spraw przy tym kliencie. Po pozyskaniu tematu utwórz sprawę i prowadź tam dalszą obsługę.</div>
                     ) : (
-                      clientCaseRows.slice(0, 4).map((caseRow) => (
-                        <article key={caseRow.id} className="client-detail-relation-row">
+                      clientCaseRows.slice(0, 4).map((caseRecord) => (
+                        <article key={caseRecord.id} className="client-detail-relation-row">
                           <div className="client-detail-relation-main">
-                            <h3>{caseRow.title}</h3>
-                            <p>{caseRow.nextActionMeta || `W realizacji · najbliższa akcja ${caseRow.nextActionLabel}`}</p>
+                            <h3>{caseRecord.title}</h3>
+                            <p>{caseRecord.nextActionMeta || `W realizacji · najbliższa akcja ${caseRecord.nextActionLabel}`}</p>
                           </div>
-                          <span className={`client-detail-pill ${statusBadgeClass(caseRow.status)}`}>
-                            {activeCases.some((entry) => String(entry.id) === String(caseRow.id)) ? 'Aktywna' : caseRow.statusLabel}
+                          <span className={`client-detail-pill ${statusBadgeClass(caseRecord.status)}`}>
+                            {activeCases.some((entry) => String(entry.id) === String(caseRecord.id)) ? 'Aktywna' : caseRecord.statusLabel}
                           </span>
-                          <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${caseRow.id}`)}>
-                            Otwórz sprawę
-                          </Button>
+                          <div className="client-detail-relation-actions">
+                            <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>
+                              Otwórz sprawę
+                            </Button>
+                            {caseRecord.leadId ? (
+                              <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/leads/${String(caseRecord.leadId)}`)}>
+                                Otwórz lead
+                              </Button>
+                            ) : null}
+                          </div>
                         </article>
                       ))
                     )}
@@ -1009,43 +1048,9 @@ export default function ClientDetail() {
                       Źródło: <strong>{firstSourceLead?.source || client.source || 'Brak źródła'}</strong>
                     </span>
                     <span>
-                      Lead:{' '}
+                      Lead źródłowy:{' '}
                       <strong>{firstSourceLead ? String(firstSourceLead.name || firstSourceLead.company || 'Lead bez nazwy') : 'Brak powiązanego leada'}</strong>
                     </span>
-                  </div>
-                </section>
-              </div>
-            ) : null}
-
-            {activeTab === 'contact' ? (
-              <div className="client-detail-tab-panel">
-                <section className="client-detail-section-card">
-                  <div className="client-detail-section-head">
-                    <div>
-                      <h2>Kontakt</h2>
-                      <p>Telefon, e-mail, firma i notatka kontaktowa klienta.</p>
-                    </div>
-                    <Button type="button" variant="outline" onClick={() => setContactEditing(true)} disabled={!hasAccess}>
-                      <Pencil className="h-4 w-4" />
-                      Edytuj
-                    </Button>
-                  </div>
-                  <div className="client-detail-contact-panel">
-                    <div className="client-detail-contact-list client-detail-contact-list-wide">
-                      <InfoRow icon={Phone} label="Telefon" value={client.phone || '-'} onCopy={() => copyValue('Telefon', client.phone)} />
-                      <InfoRow icon={Mail} label="E-mail" value={client.email || '-'} onCopy={() => copyValue('E-mail', client.email)} />
-                      <InfoRow icon={Building2} label="Firma" value={client.company || 'Brak firmy'} />
-                      <InfoRow icon={Calendar} label="Ostatni kontakt" value={formatDate(lastActivityDate)} />
-                    </div>
-                    {client.notes ? (
-                      <div className="client-detail-note-inline">
-                        <div className="client-detail-card-title-row">
-                          <FileText className="h-4 w-4" />
-                          <h2>Notatka</h2>
-                        </div>
-                        <p>{String(client.notes)}</p>
-                      </div>
-                    ) : null}
                   </div>
                 </section>
               </div>
@@ -1124,6 +1129,27 @@ export default function ClientDetail() {
           </section>
 
           <aside className="client-detail-right-rail" aria-label="Panel klienta">
+            <section className="right-card client-detail-right-card client-detail-operational-center" aria-label="Centrum operacyjne klienta">
+              <div className="client-detail-card-title-row">
+                <Clock className="h-4 w-4" />
+                <h2>Następny ruch</h2>
+              </div>
+              <div className="client-detail-quick-actions-list">
+                <div>
+                  <span>Zadania klienta</span>
+                  <strong>{activeTaskCount}</strong>
+                </div>
+                <div>
+                  <span>Wydarzenia klienta</span>
+                  <strong>{activeEventCount}</strong>
+                </div>
+                <div>
+                  <span>Aktywność klienta</span>
+                  <strong>{lastActivityDate ? formatDateTime(lastActivityDate) : 'Brak'}</strong>
+                </div>
+              </div>
+            </section>
+
             <section className="right-card client-detail-right-card client-detail-quick-actions">
               <div className="client-detail-card-title-row">
                 <Target className="h-4 w-4" />
@@ -1134,6 +1160,16 @@ export default function ClientDetail() {
                   <span>Nowy temat</span>
                   <Plus className="h-4 w-4" />
                 </button>
+              </div>
+            </section>
+
+            <section className="right-card client-detail-right-card client-detail-more-menu" aria-label="Dodatkowe">
+              <div className="client-detail-card-title-row">
+                <ArrowRight className="h-4 w-4" />
+                <h2>Dodatkowe</h2>
+              </div>
+              <p>Drugorzędne akcje</p>
+              <div className="client-detail-quick-actions-list">
                 <button type="button" disabled title="Do podpięcia w kolejnym etapie">
                   <span>Scal duplikat</span>
                   <ArrowRight className="h-4 w-4" />

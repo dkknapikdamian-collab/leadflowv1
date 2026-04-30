@@ -3,7 +3,7 @@
 LEAD_DETAIL_VISUAL_REBUILD_STAGE14
 Active lead is sales work. Moved lead is acquisition history with a link to Case.
 */
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -20,6 +20,7 @@ import {
   MoreVertical,
   Phone,
   Plus,
+  Sparkles,
   Target,
   Trash2,
   UserRound,
@@ -27,11 +28,14 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import LeadAiFollowupDraft from '../components/LeadAiFollowupDraft';
+import LeadAiNextAction from '../components/LeadAiNextAction';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
@@ -150,6 +154,13 @@ function formatDateTime(value: unknown, fallback = 'Bez terminu') {
 function formatMoney(value: unknown) {
   const amount = Number(value || 0);
   return Number.isFinite(amount) ? `${amount.toLocaleString('pl-PL')} PLN` : '0 PLN';
+}
+
+function getLeadFinance(lead: Record<string, unknown> | null) {
+  const dealValue = Number(lead?.dealValue || 0);
+  const formatted = formatMoney(Number.isFinite(dealValue) ? dealValue : 0);
+  const currency = typeof lead?.currency === 'string' && lead.currency.trim() ? lead.currency.trim() : 'PLN';
+  return { dealValue: Number.isFinite(dealValue) ? dealValue : 0, currency, formatted };
 }
 
 function getLeadName(lead: any) {
@@ -314,7 +325,7 @@ function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; valu
   );
 }
 
-function LeadActionButton({ children, onClick, disabled }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean }) {
+function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
   return (
     <button type="button" className="lead-detail-chip-button" onClick={onClick} disabled={disabled}>
       {children}
@@ -432,7 +443,15 @@ export default function LeadDetail() {
   const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'Powiązana sprawa');
   const serviceCaseStatusLabel = String(associatedCase?.status || createCaseDraft.status || 'ready_to_start').replaceAll('_', ' ');
   const serviceMovedAtLabel = formatDateTime(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
-  const leadInService = Boolean(leadMovedToService || associatedCase || startServiceSuccess);
+  const leadOperationalArchive = Boolean(leadMovedToService || associatedCase || startServiceSuccess);
+  const leadInService = leadOperationalArchive;
+  const showServiceBanner = leadInService;
+  const leadFinance = useMemo(() => getLeadFinance(lead), [lead]);
+
+  useEffect(() => {
+    if (!startServiceSuccess?.caseId) return;
+    navigate(`/case/${startServiceSuccess.caseId}`);
+  }, [startServiceSuccess?.caseId, navigate]);
 
   const sortedLinkedTasks = useMemo(
     () => [...linkedTasks].sort((left, right) => (asDate(getTaskDate(left))?.getTime() ?? Number.MAX_SAFE_INTEGER) - (asDate(getTaskDate(right))?.getTime() ?? Number.MAX_SAFE_INTEGER)),
@@ -595,7 +614,7 @@ export default function LeadDetail() {
     event.preventDefault();
     if (!leadId) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
-    if (leadInService) return toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze zadania w sprawie.');
+    if (leadOperationalArchive) return toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze zadania w sprawie.');
     if (!quickTask.title.trim()) return toast.error('Podaj tytuł zadania');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
@@ -635,7 +654,7 @@ export default function LeadDetail() {
     event.preventDefault();
     if (!leadId) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
-    if (leadInService) return toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze wydarzenia w sprawie.');
+    if (leadOperationalArchive) return toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze wydarzenia w sprawie.');
     if (!quickEvent.title.trim()) return toast.error('Podaj tytuł wydarzenia');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
@@ -977,7 +996,7 @@ export default function LeadDetail() {
   };
 
   const openCase = () => {
-    if (serviceCaseId) navigate(`/cases/${serviceCaseId}`);
+    if (serviceCaseId) navigate(`/case/${serviceCaseId}`);
   };
 
   if (loading) {
@@ -1030,7 +1049,7 @@ export default function LeadDetail() {
             </div>
             <div className="lead-detail-header-meta">
               <span>Źródło: {sourceLabel(lead.source)}</span>
-              <span>Wartość: {formatMoney(lead.dealValue)}</span>
+              <span>Wartość: {leadFinance.formatted}</span>
               <span>Ostatnia aktywność: {formatDate(lead.updatedAt || activities[0]?.createdAt || lead.createdAt)}</span>
               <span>Kontakt: {lead.phone || lead.email || 'Brak kontaktu'}</span>
             </div>
@@ -1054,7 +1073,7 @@ export default function LeadDetail() {
           </div>
         </header>
 
-        {leadInService ? (
+        {showServiceBanner ? (
           <section className="lead-detail-service-box" data-lead-in-service-box="true">
             <div>
               <p className="lead-detail-box-kicker">LEAD JUŻ W OBSŁUDZE</p>
@@ -1090,7 +1109,7 @@ export default function LeadDetail() {
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-green">
                   <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Wartość</h2></div>
-                  <strong>{formatMoney(lead.dealValue)}</strong>
+                  <strong>{leadFinance.formatted}</strong>
                   <p>{sourceLabel(lead.source)} · {statusLabel(lead.status)}</p>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-amber">
@@ -1114,7 +1133,7 @@ export default function LeadDetail() {
                 <InfoLine icon={Mail} label="E-mail" value={String(lead.email || '-')} />
                 <InfoLine icon={FileText} label="Firma" value={String(lead.company || '-')} />
                 <InfoLine icon={Target} label="Źródło" value={sourceLabel(lead.source)} />
-                <InfoLine icon={DollarSign} label="Wartość" value={formatMoney(lead.dealValue)} />
+                <InfoLine icon={DollarSign} label="Wartość" value={leadFinance.formatted} />
               </div>
               <div className="lead-detail-note-box">
                 <small>Notatka</small>
@@ -1238,6 +1257,29 @@ export default function LeadDetail() {
               <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższy ruch</h2></div>
               <p>{nextTimelineEntry ? nextTimelineEntry.title : 'Brak zaplanowanych działań.'}</p>
               <small>{nextTimelineEntry ? nextTimelineEntry.dateLabel : 'Dodaj zadanie albo wydarzenie, jeśli lead jest aktywny.'}</small>
+            </section>
+
+            <section className="right-card lead-detail-right-card">
+              <div className="lead-detail-card-title-row"><Sparkles className="h-4 w-4" /><h2>AI wsparcie</h2></div>
+              <Tabs defaultValue="next-action">
+                <TabsList className="w-full">
+                  <TabsTrigger value="next-action" className="flex-1">Następny ruch</TabsTrigger>
+                  <TabsTrigger value="followup" className="flex-1">Follow-up</TabsTrigger>
+                </TabsList>
+                <TabsContent value="next-action" className="mt-3">
+                  <LeadAiNextAction
+                    lead={lead}
+                    tasks={linkedTasks}
+                    events={linkedEvents}
+                     activities={activities}
+                     disabled={leadInService}
+                     onTaskCreated={() => void loadLead()}
+                   />
+                </TabsContent>
+                <TabsContent value="followup" className="mt-3">
+                  <LeadAiFollowupDraft lead={lead} tasks={linkedTasks} events={linkedEvents} activities={activities} disabled={leadInService} />
+                </TabsContent>
+              </Tabs>
             </section>
           </aside>
         </div>

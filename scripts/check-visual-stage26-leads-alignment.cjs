@@ -26,7 +26,7 @@ assertContains(leads, 'data-visual-stage25-leads-full-jsx="true"', 'Stage25 JSX 
 assertContains(leads, 'data-stage26-leads-head-ai="true"', 'page head AI action added');
 
 const files = [index, leads, css];
-const mojibakePatterns = ['Ä', 'Ĺ', 'Å', 'Ă', 'Â', 'â€', '�'];
+const { markerChars: mojibakePatterns } = require('./mojibake-markers.cjs');
 for (const file of files) {
   const content = read(file);
   for (const pattern of mojibakePatterns) {

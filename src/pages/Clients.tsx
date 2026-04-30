@@ -14,6 +14,7 @@ import { createClientInSupabase, fetchCasesFromSupabase, fetchClientsFromSupabas
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
+const STAGE30_CLIENTS_TRASH_COPY_REMOVED = 'STAGE30_CLIENTS_TRASH_COPY_REMOVED';
 
 type ClientRecord = {
   id: string;
@@ -356,40 +357,44 @@ export default function Clients() {
             ) : (
               <div className="table-card">
                 {filtered.map((client, index) => {
-                  const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
-                  const isArchived = Boolean(client.archivedAt);
-                  return (
-                    <div key={client.id} className="row client-row">
-                      <span className="index">{index + 1}</span>
-                      <span className="lead-main-cell min-w-0">
-                        <Link to={`/clients/${client.id}`} className="title">{client.name || 'Klient'}</Link>
-                        <span className="sub">{client.company || 'Bez firmy'} · {client.email || 'brak e-maila'} · {client.phone || 'brak telefonu'}</span>
-                        <span className="statusline">
-                          {isArchived ? <span className="pill amber">W koszu</span> : <span className="pill green">Aktywna sprawa</span>}
-                          <span className="pill blue">Leady: {counters.leads}</span>
-                          <span className="pill">Ostatni kontakt: {counters.payments > 0 ? 'jest' : 'brak'}</span>
-                        </span>
-                      </span>
-                      <span className="lead-value-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
-                      <span className="lead-action-cell"><span className="mini">Następny ruch</span><strong>{counters.cases > 0 ? 'W obsłudze' : 'Jutro'}</strong></span>
-                      <span className="lead-actions">
-                        <Link to={`/clients/${client.id}`} className="btn ghost" aria-label={`Otwórz klienta ${client.name || ''}`}><UserRound className="h-4 w-4" /></Link>
-                        <button
-                          type="button"
-                          aria-label={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
-                          title={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
-                          disabled={archivePendingId === client.id}
-                          onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
-                          className="btn ghost"
-                        >
-                          {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-                        </button>
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                   const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
+                   const isArchived = Boolean(client.archivedAt);
+                   return (
+                     <div key={client.id} className="relative group/client-card">
+                       <Link to={`/clients/${client.id}`} className="block">
+                         <div className="row client-row">
+                         <span className="index">{index + 1}</span>
+                         <span className="lead-main-cell min-w-0">
+                           <span className="title">{client.name || 'Klient'}</span>
+                           <span className="sub">{client.company || 'Bez firmy'} · {client.email || 'brak e-maila'} · {client.phone || 'brak telefonu'}</span>
+                           <span className="statusline">
+                             {isArchived ? <span className="pill amber">W koszu</span> : <span className="pill green">Aktywna sprawa</span>}
+                             <span className="pill blue">Leady: {counters.leads}</span>
+                             <span className="pill">Ostatni kontakt: {counters.payments > 0 ? 'jest' : 'brak'}</span>
+                           </span>
+                         </span>
+                         <span className="lead-value-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
+                         <span className="lead-action-cell"><span className="mini">Następny ruch</span><strong>{counters.cases > 0 ? 'W obsłudze' : 'Jutro'}</strong></span>
+                         <span className="lead-actions">
+                           <span className="btn ghost" aria-hidden="true"><UserRound className="h-4 w-4" /></span>
+                           <button
+                             type="button"
+                             aria-label={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
+                             title={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
+                             disabled={archivePendingId === client.id}
+                             onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
+                             className="btn ghost"
+                           >
+                             {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                           </button>
+                         </span>
+                         </div>
+                       </Link>
+                     </div>
+                   );
+                 })}
+               </div>
+             )}
           </div>
 
           <div className="clients-right-rail">

@@ -780,6 +780,7 @@ export default function Tasks() {
     today: tasks.filter((task) => !isTaskDone(task) && isTaskForToday(task)).length,
     week: tasks.filter((task) => !isTaskDone(task) && isTaskInCurrentWeek(task)).length,
     overdue: tasks.filter((task) => isTaskOverdueEntry(task)).length,
+    withoutLead: tasks.filter((task) => !isTaskDone(task) && !hasLeadLink(task)).length,
     done: tasks.filter((task) => isTaskDone(task)).length,
   };
 
@@ -1279,7 +1280,7 @@ export default function Tasks() {
               </div>
             </aside>
             <aside className="right-card tasks-right-card">
-              <div className="panel-head"><h3>Podsumowanie</h3><p>Stan operacyjny z realnych danych.</p></div>
+              <div className="panel-head"><h3>Podsumowanie</h3><p>Podsumowanie z realnych danych.</p></div>
               <div className="quick-list">
                 <div className="quick-note">Bez leada: <strong>{taskStats.withoutLead}</strong></div>
                 <div className="quick-note">Najbliższe terminy: <strong>{sortedCurrentDates.length}</strong></div>

@@ -85,7 +85,7 @@ const BILLING_PLANS: PlanCard[] = [
     name: 'Pro',
     monthlyPrice: 39,
     yearlyPrice: 390,
-    badge: 'Najczęściej wybierany',
+    badge: 'Najlepszy wybór',
     description: 'Pełny workflow lead -> klient -> sprawa -> rozliczenie.',
     features: [
       'Pełny przepływ pracy po pozyskaniu leada',
@@ -117,14 +117,14 @@ const ACCESS_COPY: Record<string, { label: string; headline: string; description
     headline: 'Masz aktywny okres testowy',
     description: 'Możesz sprawdzić główny workflow aplikacji przed wyborem płatnego planu.',
     tone: 'amber',
-    cta: 'Przejdź na plan',
+    cta: 'Przejdź do płatności',
   },
   trial_ending: {
     label: 'Trial kończy się',
     headline: 'Trial zaraz się skończy',
     description: 'Dane zostają. Wybierz plan, żeby nie blokować dodawania nowych rekordów.',
     tone: 'amber',
-    cta: 'Przejdź na plan',
+    cta: 'Przejdź do płatności',
   },
   paid_active: {
     label: 'Dostęp aktywny',
@@ -159,7 +159,7 @@ const ACCESS_COPY: Record<string, { label: string; headline: string; description
     headline: 'Dostęp nie jest aktywny',
     description: 'Wybierz plan, żeby odblokować pracę na leadach, zadaniach i wydarzeniach.',
     tone: 'slate',
-    cta: 'Przejdź na plan',
+    cta: 'Przejdź do płatności',
   },
 };
 

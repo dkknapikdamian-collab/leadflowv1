@@ -1,6 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+const { markerChars } = require('../scripts/mojibake-markers.cjs');
+
 const root = process.cwd();
 const pagePath = path.join(root, 'src', 'pages', 'ClientDetail.tsx');
 const cssPath = path.join(root, 'src', 'styles', 'visual-stage12-client-detail-vnext.css');
@@ -78,8 +80,10 @@ for (const dark of ['#000', '#020617', '#101828']) {
   if (railBlocks.includes(dark)) fail(`dark color in client detail rails/cards css: ${dark}`);
 }
 
-if (/[ÃÂÄĹ]/.test(page) || /[ÃÂÄĹ]/.test(css)) {
-  fail('possible mojibake characters detected in page or css');
+for (const marker of markerChars) {
+  if (page.includes(marker) || css.includes(marker)) {
+    fail('possible mojibake characters detected in page or css');
+  }
 }
 
 console.log('PASS client detail visual rebuild');

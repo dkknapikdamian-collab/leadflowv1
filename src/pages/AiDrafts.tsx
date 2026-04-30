@@ -345,15 +345,22 @@ function MetricCard({
   icon: Icon,
   active,
   onClick,
+  dataTab,
 }: {
   label: string;
   value: number;
   icon: any;
   active?: boolean;
   onClick: () => void;
+  dataTab?: string;
 }) {
   return (
-    <button type="button" onClick={onClick} className={['ai-drafts-stat-card', active ? 'ai-drafts-stat-card-active' : ''].join(' ')}>
+    <button
+      type="button"
+      onClick={onClick}
+      data-ai-drafts-tab={dataTab}
+      className={['ai-drafts-stat-card', active ? 'ai-drafts-stat-card-active' : ''].join(' ')}
+    >
       <span className="ai-drafts-stat-content">
         <span className="ai-drafts-stat-label">{label}</span>
         <span className="ai-drafts-stat-value">{value}</span>
@@ -980,7 +987,7 @@ export default function AiDrafts() {
             {draft.status === 'draft' ? (
               <>
                 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() => setActiveDraftId(activeDraftId === draft.id ? null : draft.id)}>Sprawdź</button>
-                <button type="button" className="ai-drafts-action" onClick={() => handleStartEdit(draft)}>Edytuj</button>
+                <button type="button" className="ai-drafts-action" onClick={() => handleStartEdit(draft)}>Edytuj notatkę</button>
                 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() => openDraftApproval(draft)}>Zatwierdź</button>
                 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() => void handleArchive(draft)}>Anuluj</button>
               </>
@@ -1012,12 +1019,13 @@ export default function AiDrafts() {
 
   return (
     <Layout>
-      <main className="ai-drafts-vnext-page" data-ai-drafts-stage={AI_DRAFT_STAGE9_MARKER}>
+      <main className="ai-drafts-vnext-page" data-ai-drafts-stage={AI_DRAFT_STAGE9_MARKER} data-ai-draft-command-center="true">
         <header className="ai-drafts-page-header">
           <div>
             <p className="ai-drafts-kicker">SZKICE DO SPRAWDZENIA</p>
             <h1>Szkice AI</h1>
-            <p>Rzeczy przygotowane przez asystenta. Sprawdź, popraw i dopiero wtedy zapisz.</p>
+            <p>Centrum szkiców. Notatka głosowa najpierw trafia tutaj. Lead powstaje dopiero po kliknięciu.</p>
+            <p>Przejrzyj i zatwierdź. Rzeczy przygotowane przez asystenta. Sprawdź, popraw i dopiero wtedy zapisz.</p>
           </div>
           <div className="ai-drafts-header-actions">
             <button type="button" className="ai-drafts-header-button" onClick={() => void reloadDrafts()}>
@@ -1026,13 +1034,13 @@ export default function AiDrafts() {
           </div>
         </header>
 
-        <section className="ai-drafts-stats-grid" aria-label="Statystyki szkiców AI">
-          <MetricCard label="Do sprawdzenia" value={stats.draft} icon={Sparkles} active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} />
-          <MetricCard label="Leady" value={stats.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} />
-          <MetricCard label="Zadania" value={stats.tasks} icon={Clipboard} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} />
-          <MetricCard label="Wydarzenia" value={stats.events} icon={CalendarClock} active={activeFilter === 'event'} onClick={() => setActiveFilter('event')} />
-          <MetricCard label="Błędy / niepełne" value={stats.errors} icon={AlertTriangle} active={activeFilter === 'errors'} onClick={() => setActiveFilter('errors')} />
-          <MetricCard label="Zatwierdzone" value={stats.converted} icon={CheckCircle2} active={activeFilter === 'converted'} onClick={() => setActiveFilter('converted')} />
+        <section className="ai-drafts-stats-grid" aria-label="Statystyki szkiców AI" data-ai-draft-stats="true">
+          <MetricCard label="Do sprawdzenia" value={stats.draft} icon={Sparkles} active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} dataTab="draft" />
+          <MetricCard label="Leady" value={stats.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} dataTab="lead" />
+          <MetricCard label="Zadania" value={stats.tasks} icon={Clipboard} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} dataTab="task" />
+          <MetricCard label="Wydarzenia" value={stats.events} icon={CalendarClock} active={activeFilter === 'event'} onClick={() => setActiveFilter('event')} dataTab="event" />
+          <MetricCard label="Błędy / niepełne" value={stats.errors} icon={AlertTriangle} active={activeFilter === 'errors'} onClick={() => setActiveFilter('errors')} dataTab="errors" />
+          <MetricCard label="Zatwierdzone" value={stats.converted} icon={CheckCircle2} active={activeFilter === 'converted'} onClick={() => setActiveFilter('converted')} dataTab="converted" />
         </section>
 
         <div className="ai-drafts-vnext-shell">

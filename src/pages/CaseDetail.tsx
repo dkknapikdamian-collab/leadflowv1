@@ -33,6 +33,7 @@ import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
 import {
   createClientPortalTokenInSupabase,
@@ -53,6 +54,7 @@ import {
   updateTaskInSupabase,
   fetchLeadByIdFromSupabase,
 } from '../lib/supabase-fallback';
+import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import '../styles/visual-stage13-case-detail-vnext.css';
 
@@ -466,6 +468,8 @@ export default function CaseDetail() {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
   const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
+  const setIsQuickTaskOpen = setIsAddTaskOpen;
+  const setIsQuickEventOpen = setIsAddEventOpen;
   const [newNote, setNewNote] = useState('');
   const [newItem, setNewItem] = useState({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
   const [newTask, setNewTask] = useState({ title: '', type: 'follow_up', scheduledAt: '', reminderAt: '', priority: 'normal' });
@@ -555,6 +559,36 @@ export default function CaseDetail() {
   const uploadedItems = useMemo(() => items.filter((item) => item.status === 'uploaded'), [items]);
   const blockers = useMemo(() => items.filter((item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected')), [items]);
   const effectiveStatus = useMemo(() => resolveCaseStatusFromItems(items, caseData?.status || 'in_progress'), [caseData?.status, items]);
+  const caseLifecycleV1 = useMemo(
+    () =>
+      resolveCaseLifecycleV1({
+        status: effectiveStatus,
+        items: items.map((item) => ({
+          id: item.id,
+          title: item.title,
+          status: item.status,
+          isRequired: item.isRequired,
+          dueDate: item.dueDate,
+        })),
+        tasks: tasks.map((task) => ({
+          id: task.id,
+          title: task.title,
+          status: task.status,
+          scheduledAt: task.scheduledAt,
+          dueAt: (task as any).dueAt,
+          date: task.date,
+        })),
+        events: events.map((event) => ({
+          id: event.id,
+          title: event.title,
+          status: event.status,
+          startAt: event.startAt,
+          dueAt: event.endAt,
+        })),
+        now: new Date(),
+      }),
+    [effectiveStatus, events, items, tasks],
+  );
   const workItems = useMemo(() => buildWorkItems(openTasks, plannedEvents, items, activities), [activities, items, openTasks, plannedEvents]);
   const nextAction = useMemo(() => workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null, [workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
@@ -610,8 +644,9 @@ export default function CaseDetail() {
   };
 
   const handleItemStatusChange = async (item: CaseItem, status: CaseItemStatus) => {
+    if (!caseId) return;
     try {
-      await updateCaseItemInSupabase({ id: item.id, status, approvedAt: status === 'accepted' ? new Date().toISOString() : null });
+      await updateCaseItemInSupabase({ id: item.id, caseId, status, approvedAt: status === 'accepted' ? new Date().toISOString() : null });
       await recordActivity(status === 'accepted' ? 'decision_made' : 'status_changed', { itemId: item.id, title: item.title, status });
       await refreshStatusAfterMutation();
       await refreshCaseData();
@@ -757,7 +792,7 @@ export default function CaseDetail() {
     }
   };
 
-  const handleLifecycleStatus = async (status: string) => {
+  const setCaseLifecycleStatusV1 = async (status: string) => {
     if (!caseId) return;
     try {
       const previousStatus = caseData?.status || null;
@@ -765,6 +800,7 @@ export default function CaseDetail() {
       await recordActivity(status === 'completed' ? 'case_lifecycle_completed' : previousStatus === 'completed' ? 'case_lifecycle_reopened' : 'case_lifecycle_started', {
         status,
         previousStatus,
+        source: 'case_detail_v1_command_center',
       });
       await refreshCaseData();
       toast.success('Status sprawy zaktualizowany');
@@ -882,23 +918,22 @@ export default function CaseDetail() {
 
         <div className="case-detail-shell">
           <section className="case-detail-main-column">
-            <nav className="case-detail-tabs" aria-label="Zakładki sprawy">
-              {[
-                { key: 'service', label: 'Obsługa' },
-                { key: 'path', label: 'Ścieżka' },
-                { key: 'checklists', label: 'Checklisty' },
-                { key: 'history', label: 'Historia' },
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  type="button"
-                  className={activeTab === tab.key ? 'case-detail-tab-active' : ''}
-                  onClick={() => setActiveTab(tab.key as CaseDetailTab)}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
+              <nav aria-label="Zakładki sprawy">
+                <TabsList className="case-detail-tabs">
+                  {[
+                    { key: 'service', label: 'Obsługa' },
+                    { key: 'path', label: 'Ścieżka' },
+                    { key: 'checklists', label: 'Checklisty' },
+                    { key: 'history', label: 'Historia' },
+                  ].map((tab) => (
+                    <TabsTrigger key={tab.key} value={tab.key} className={activeTab === tab.key ? 'case-detail-tab-active' : ''}>
+                      {tab.label}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </nav>
+            </Tabs>
 
             {activeTab === 'service' ? (
               <section className="case-detail-section-card">
@@ -917,17 +952,18 @@ export default function CaseDetail() {
                     <div className="case-detail-light-empty">Brak działań do pokazania. Dodaj brak, zadanie albo wydarzenie.</div>
                   ) : (
                     workItems.map((entry) => (
-                      <WorkItemRow
-                        key={entry.id}
-                        entry={entry}
-                        onTaskDone={handleTaskDone}
-                        onTaskTomorrow={handleTaskTomorrow}
-                        onEventDone={handleEventDone}
-                        onEventTomorrow={handleEventTomorrow}
-                        onItemAccept={(item) => handleItemStatusChange(item, 'accepted')}
-                        onItemReject={(item) => handleItemStatusChange(item, 'rejected')}
-                        onItemDelete={handleDeleteItem}
-                      />
+                      <div key={entry.id} style={{ display: 'contents' }}>
+                        <WorkItemRow
+                          entry={entry}
+                          onTaskDone={handleTaskDone}
+                          onTaskTomorrow={handleTaskTomorrow}
+                          onEventDone={handleEventDone}
+                          onEventTomorrow={handleEventTomorrow}
+                          onItemAccept={(item) => handleItemStatusChange(item, 'accepted')}
+                          onItemReject={(item) => handleItemStatusChange(item, 'rejected')}
+                          onItemDelete={handleDeleteItem}
+                        />
+                      </div>
                     ))
                   )}
                 </div>
@@ -1055,9 +1091,15 @@ export default function CaseDetail() {
               </div>
               <p className="case-detail-right-note">{getCaseStatusHint(effectiveStatus)}</p>
               <div className="case-detail-right-actions case-detail-right-actions-inline">
-                <button type="button" onClick={() => handleLifecycleStatus('in_progress')}>Start</button>
-                <button type="button" onClick={() => handleLifecycleStatus('completed')}>Zrobione</button>
-                <button type="button" onClick={() => handleLifecycleStatus('in_progress')}>Przywróć</button>
+                <CaseDetailV1CommandCenter
+                  status={effectiveStatus}
+                  lifecycle={caseLifecycleV1}
+                  onSetStatus={setCaseLifecycleStatusV1}
+                  onOpenAddItem={() => setIsAddItemOpen(true)}
+                  onOpenQuickTask={() => setIsQuickTaskOpen(true)}
+                  onOpenQuickEvent={() => setIsQuickEventOpen(true)}
+                  onCopyPortal={handleCopyPortal}
+                />
               </div>
             </section>
 
@@ -1079,6 +1121,54 @@ export default function CaseDetail() {
         <CaseNoteDialog open={isAddNoteOpen} onOpenChange={setIsAddNoteOpen} value={newNote} onChange={setNewNote} onSubmit={handleAddNote} />
       </main>
     </Layout>
+  );
+}
+
+function CaseDetailV1CommandCenter({
+  status,
+  lifecycle,
+  onSetStatus,
+  onOpenAddItem,
+  onOpenQuickTask,
+  onOpenQuickEvent,
+  onCopyPortal,
+}: {
+  status: string;
+  lifecycle: ReturnType<typeof resolveCaseLifecycleV1>;
+  onSetStatus: (status: string) => void;
+  onOpenAddItem: () => void;
+  onOpenQuickTask: () => void;
+  onOpenQuickEvent: () => void;
+  onCopyPortal: () => void;
+}) {
+  const isCompleted = status === 'completed' || lifecycle.bucket === 'completed';
+
+  return (
+    <section className="case-detail-command-center" data-testid="case-detail-v1-command-center">
+      <div className="case-detail-card-title-row">
+        <FileText className="h-4 w-4" />
+        <h2>Centrum dowodzenia sprawy V1</h2>
+      </div>
+
+      <div className="case-detail-command-actions">
+        <button type="button" onClick={onOpenAddItem}>Dodaj brak</button>
+        <button type="button" onClick={onOpenQuickTask}>Dodaj zadanie</button>
+        <button type="button" onClick={onOpenQuickEvent}>Dodaj wydarzenie</button>
+        <button type="button" onClick={onCopyPortal}>Portal klienta</button>
+      </div>
+
+      <div className="case-detail-command-status">
+        <button type="button" onClick={() => onSetStatus('in_progress')} disabled={!isCompleted && status === 'in_progress'}>
+          Start
+        </button>
+        <button type="button" onClick={() => onSetStatus('completed')} disabled={isCompleted}>
+          Zrobione
+        </button>
+        <button type="button" onClick={() => onSetStatus('in_progress')} disabled={!isCompleted}>
+          Przywróć
+        </button>
+      </div>
+    </section>
   );
 }
 

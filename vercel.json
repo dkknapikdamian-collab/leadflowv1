@@ -55,6 +55,14 @@
                          "destination":  "/api/system?kind=service-profiles"
                      },
                      {
+                         "source":  "/api/assistant",
+                         "destination":  "/api/system?kind=ai-assistant"
+                     },
+                     {
+                         "source":  "/api/assistant-context",
+                         "destination":  "/api/system?kind=assistant-context"
+                     },
+                     {
                          "source":  "/((?!api/|assets/|.*\\..*).*)",
                          "destination":  "/"
                      },

@@ -8,23 +8,22 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-test('Client detail uses simplified card view with four tabs', () => {
+test('Client detail uses simplified card view with tabs and inline contact edit', () => {
   const source = read('src/pages/ClientDetail.tsx');
 
   assert.match(source, /data-client-detail-simplified-card-view/);
   assert.match(source, /data-client-tab-summary/);
   assert.match(source, /data-client-tab-cases/);
-  assert.match(source, /data-client-tab-contact/);
   assert.match(source, /data-client-tab-history/);
 
   assert.match(source, /Podsumowanie/);
   assert.match(source, /Sprawy/);
-  assert.match(source, /Kontakt/);
   assert.match(source, /Historia/);
 
-  assert.match(source, /Tu nie prowadzimy pracy/);
   assert.match(source, /\+ Nowa sprawa dla klienta/);
-  assert.match(source, /Edytuj dane kontaktowe/);
+  assert.match(source, /data-client-inline-contact-edit="true"/);
+  assert.match(source, /contactEditing \? 'Zapisz' : 'Edytuj'/);
+  assert.match(source, /Praca dzieje się w sprawie/);
 
   assert.doesNotMatch(source, /Leady klienta/);
   assert.doesNotMatch(source, /Dodaj follow-up/);

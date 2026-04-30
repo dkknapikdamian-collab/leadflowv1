@@ -1,6 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+const { mojibakeWords } = require('../scripts/mojibake-markers.cjs');
+
 const root = process.cwd();
 
 const files = {
@@ -96,7 +98,7 @@ if (/handleArchive[\s\S]{0,900}insertEventToSupabase/.test(page)) {
   fail('cancelled draft appears to create an event');
 }
 
-for (const mojibake of ['BĹ‚Ä…d', 'OtwĂłrz', 'Å¹rĂłdło', 'CyklicznoĹ›Ä‡']) {
+for (const mojibake of Object.values(mojibakeWords)) {
   if (combined.includes(mojibake)) fail(`mojibake found: ${mojibake}`);
 }
 
