@@ -1,11 +1,13 @@
 {
-  "name": "Close Flow",
+  "id": "/",
+  "name": "CloseFlow",
   "short_name": "CloseFlow",
   "description": "Prosta aplikacja do pilnowania leadów, zadań, wydarzeń i spraw.",
   "lang": "pl",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "orientation": "portrait-primary",
   "background_color": "#f8fafc",
   "theme_color": "#0f172a",
@@ -13,7 +15,7 @@
   "icons": [
     {
       "src": "/icons/closeflow-icon.svg",
-      "sizes": "any",
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
@@ -23,7 +25,7 @@
       "name": "Dziś",
       "short_name": "Dziś",
       "description": "Otwórz centrum dnia.",
-      "url": "/today"
+      "url": "/"
     },
     {
       "name": "Leady",

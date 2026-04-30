@@ -12,7 +12,7 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<BeforeInstallPromptChoice>;
 };
 
-const DISMISSED_STORAGE_KEY = 'closeflow:pwa-install:dismissed:v1';
+const DISMISSED_STORAGE_KEY = 'closeflow:pwa-install:dismissed:v2';
 
 function isStandaloneDisplayMode() {
   if (typeof window === 'undefined') return false;
@@ -41,7 +41,7 @@ function writeDismissedFlag() {
   try {
     window.localStorage.setItem(DISMISSED_STORAGE_KEY, '1');
   } catch {
-    // best effort only
+    // Best effort only.
   }
 }
 
@@ -116,9 +116,9 @@ export function PwaInstallPrompt() {
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold text-slate-900">Dodaj Close Flow do ekranu</p>
+            <p className="text-sm font-bold text-slate-900">Dodaj CloseFlow do ekranu głównego telefonu</p>
             <p className="mt-1 text-xs leading-5 text-slate-500">
-              Otwieraj aplikacje jak zwykla apke, bez szukania jej w przegladarce.
+              Otwieraj aplikację jak zwykłą apkę, bez szukania jej w przeglądarce.
             </p>
 
             <div className="mt-3 flex flex-wrap gap-2">
@@ -130,7 +130,7 @@ export function PwaInstallPrompt() {
                 disabled={isInstalling}
               >
                 <Download className="mr-2 h-4 w-4" />
-                {isInstalling ? 'Dodawanie...' : 'Dodaj'}
+                {isInstalling ? 'Dodawanie...' : 'Dodaj do ekranu'}
               </Button>
               <Button
                 type="button"
@@ -148,7 +148,7 @@ export function PwaInstallPrompt() {
             type="button"
             onClick={handleDismiss}
             className="rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
-            aria-label="Ukryj instalacje PWA"
+            aria-label="Ukryj instalację PWA"
           >
             <X className="h-4 w-4" />
           </button>

@@ -10,6 +10,7 @@ import { clearClientAuthSnapshot, setClientAuthSnapshot } from './lib/client-aut
 import { useFirebaseSession } from './hooks/useFirebaseSession';
 import { toast } from 'sonner';
 import { AppChunkErrorBoundary } from './components/AppChunkErrorBoundary';
+import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 
@@ -61,7 +62,7 @@ export default function App() {
   const [profileLoading, setProfileLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'Close Flow';
+    document.title = 'CloseFlow';
   }, []);
 
   useEffect(() => {
@@ -209,6 +210,7 @@ export default function App() {
             </Suspense>
         </AppChunkErrorBoundary>
         <NotificationRuntime enabled={Boolean(user)} />
+        <PwaInstallPrompt />
         <Toaster position="top-right" richColors />
       </Router>
     </TooltipProvider>

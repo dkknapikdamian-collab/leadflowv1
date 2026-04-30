@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'closeflow-v1-pwa-2026-04-25';
+const CACHE_VERSION = 'closeflow-v1-pwa-stage30-2026-04-30';
 const APP_SHELL_URLS = [
   '/',
   '/manifest.webmanifest',
@@ -6,15 +6,44 @@ const APP_SHELL_URLS = [
   '/favicon.ico',
 ];
 
-function isSafeRequest(request) {
+function isLocalGetRequest(request) {
   if (request.method !== 'GET') return false;
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return false;
-  if (url.pathname.startsWith('/api/')) return false;
-  if (url.pathname.startsWith('/supabase/')) return false;
 
   return true;
+}
+
+function isApiOrDataRequest(request) {
+  const url = new URL(request.url);
+  const path = url.pathname.toLowerCase();
+
+  return (
+    path.startsWith('/api/') ||
+    path.startsWith('/supabase/') ||
+    path.startsWith('/firebase/') ||
+    path.includes('/auth/') ||
+    path.includes('/rest/v1/') ||
+    path.includes('/storage/v1/') ||
+    path.includes('/functions/v1/')
+  );
+}
+
+function isCacheableAsset(request) {
+  if (!isLocalGetRequest(request)) return false;
+  if (isApiOrDataRequest(request)) return false;
+
+  const url = new URL(request.url);
+  const path = url.pathname.toLowerCase();
+
+  return (
+    path === '/' ||
+    path === '/manifest.webmanifest' ||
+    path === '/favicon.ico' ||
+    path === '/icons/closeflow-icon.svg' ||
+    path.startsWith('/assets/')
+  );
 }
 
 self.addEventListener('install', (event) => {
@@ -43,16 +72,19 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const request = event.request;
-  if (!isSafeRequest(request)) return;
 
-  const url = new URL(request.url);
+  if (!isLocalGetRequest(request)) return;
+  if (isApiOrDataRequest(request)) return;
+  if (!isCacheableAsset(request)) return;
 
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_VERSION).then((cache) => cache.put('/', copy));
+          if (response.ok && response.type === 'basic') {
+            const copy = response.clone();
+            caches.open(CACHE_VERSION).then((cache) => cache.put('/', copy));
+          }
           return response;
         })
         .catch(() => caches.match('/')),
@@ -60,18 +92,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (url.pathname.startsWith('/assets/') || APP_SHELL_URLS.includes(url.pathname)) {
-    event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) return cached;
-        return fetch(request).then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
-          }
-          return response;
-        });
-      }),
-    );
-  }
+  event.respondWith(
+    caches.match(request).then((cached) => {
+      if (cached) return cached;
+
+      return fetch(request).then((response) => {
+        if (response.ok && response.type === 'basic') {
+          const copy = response.clone();
+          caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
+        }
+        return response;
+      });
+    }),
+  );
 });

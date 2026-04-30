@@ -1,10 +1,5 @@
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1
 /*
-TODAY_FUNNEL_DEDUP_VALUE_STAGE11
-Lejek w Dziś liczy wartość z leadów i klientów bez podwójnego sumowania tej samej osoby.
-*/
-
-/*
 AI_DRAFTS_IN_TODAY_STAGE04
 Szkice AI w Dziś są tylko do przeglądu i przejścia do centrum szkiców.
 Finalny zapis rekordu nie dzieje się z poziomu Dziś.
@@ -14,12 +9,6 @@ Finalny zapis rekordu nie dzieje się z poziomu Dziś.
 TODAY_AI_DRAFTS_TILE_STAGE29
 TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
 Dziś pokazuje mały dolny kafelek Szkice z liczbą niezatwierdzonych szkiców AI. Bez dużej sekcji i bez ingerencji w zwijane listy.
-*/
-
-/*
-TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97
-Today nie renderuje lokalnych kopii Asystenta AI, Szybkiego szkicu ani przycisków dodawania.
-Jedynym miejscem tych akcji jest globalny pasek GlobalQuickActions.
 */
 
 import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
@@ -109,6 +98,7 @@ import {
 
 import { getTodayEntryPriorityReasons } from '../lib/today-v1-final';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
+import { installTodayStage30VisualCleanup } from '../lib/stage30-today-cleanup';
 
 const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
@@ -1300,6 +1290,8 @@ function formatTodayAiDraftCreatedAt(value: unknown) {
 }
 
 export default function Today() {
+  useEffect(() => installTodayStage30VisualCleanup(), []);
+
   // TODAY_AI_DRAFTS_TILE_STAGE29_STATE
   const [todayAiDrafts, setTodayAiDrafts] = useState<AiLeadDraft[]>([]);
   const pendingTodayAiDrafts = useMemo(() => getPendingTodayAiDrafts(todayAiDrafts), [todayAiDrafts]);
@@ -2192,7 +2184,6 @@ export default function Today() {
           <div>
             <span className="kicker">Start pracy</span>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900">Witaj, Damian!</h1>
-            <p className="lead-copy text-sm text-slate-500">Globalne akcje są tylko w górnym pasku: Asystent AI, Szybki szkic, Szkice AI, Lead, Zadanie i Wydarzenie.</p>
           </div>
         </header>
 

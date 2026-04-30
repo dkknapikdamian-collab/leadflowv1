@@ -21,6 +21,7 @@ import {
   Save,
   Shield,
   SlidersHorizontal,
+  Smartphone,
   User,
   Users,
   WalletCards,
@@ -692,6 +693,36 @@ export default function Settings() {
                   ) : null}
                 </div>
               ) : null}
+            </section>
+
+
+            <section className="settings-section-card" data-settings-pwa-help="true">
+              <div className="settings-section-head">
+                <div>
+                  <span><Smartphone className="h-4 w-4" /> PWA / telefon</span>
+                  <h2>Dodaj CloseFlow do ekranu głównego telefonu</h2>
+                  <p>To nadal aplikacja webowa. Nie instalujemy natywnej apki z App Store ani Google Play.</p>
+                </div>
+              </div>
+
+              <div className="settings-info-grid">
+                <article>
+                  <small>Android Chrome</small>
+                  <strong>Menu ⋮ → Dodaj do ekranu głównego</strong>
+                </article>
+                <article>
+                  <small>iPhone Safari</small>
+                  <strong>Udostępnij → Do ekranu początkowego</strong>
+                </article>
+                <article>
+                  <small>Po dodaniu</small>
+                  <strong>CloseFlow otworzy się jak osobna aplikacja</strong>
+                </article>
+                <article>
+                  <small>Gdy przycisk nie jest widoczny</small>
+                  <strong>Użyj menu przeglądarki. iOS nie pokazuje promptu automatycznego.</strong>
+                </article>
+              </div>
             </section>
 
             <section className="settings-section-card">

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-  <title id="title">Close Flow</title>
-  <desc id="desc">Ikona aplikacji Close Flow.</desc>
+  <title id="title">CloseFlow</title>
+  <desc id="desc">Ikona aplikacji CloseFlow.</desc>
   <rect width="512" height="512" rx="112" fill="#0f172a" />
   <path
     d="M142 164c0-18.778 15.222-34 34-34h160c18.778 0 34 15.222 34 34v184c0 18.778-15.222 34-34 34H176c-18.778 0-34-15.222-34-34V164Z"
