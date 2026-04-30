@@ -1,0 +1,913 @@
+/*
+STAGE31_FULL_MOBILE_POLISH
+Mobile QA lock for CloseFlow.
+Scope: layout polish only. No business logic, routing, API or data model changes.
+Goals: no page-level horizontal scroll, readable mobile cards, safe dialogs, right rails under content, no dark right-wrapper corners.
+*/
+
+@media (max-width: 900px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    min-width: 0;
+    touch-action: manipulation;
+  }
+
+  #root,
+  #root * {
+    box-sizing: border-box;
+  }
+
+  #root img,
+  #root svg,
+  #root video,
+  #root canvas {
+    max-width: 100%;
+  }
+
+  #root input,
+  #root select,
+  #root textarea,
+  #root button {
+    max-width: 100%;
+  }
+
+  .closeflow-visual-stage01.app,
+  .cf-html-shell,
+  .closeflow-visual-stage01 .main,
+  .closeflow-visual-stage01 main,
+  .closeflow-visual-stage01 .view,
+  .closeflow-visual-stage01 [data-shell-content="true"],
+  .main-today,
+  .main-leads,
+  .main-lead-detail,
+  .main-clients,
+  .main-client-detail,
+  .main-cases,
+  .main-case-detail {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .closeflow-visual-stage01 .main,
+  .closeflow-visual-stage01 main {
+    padding-left: clamp(12px, 3.4vw, 18px) !important;
+    padding-right: clamp(12px, 3.4vw, 18px) !important;
+  }
+
+  .closeflow-visual-stage01 .view,
+  .closeflow-visual-stage01 [data-shell-content="true"] {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Generic page shells */
+  .settings-vnext-page,
+  .notifications-vnext-page,
+  .activity-vnext-page,
+  .ai-drafts-page,
+  .billing-page,
+  .support-page,
+  .tasks-vnext-page,
+  .calendar-vnext-page,
+  .admin-ai-settings-page,
+  .settings-shell,
+  .notifications-vnext-shell,
+  .activity-vnext-shell,
+  .ai-drafts-shell,
+  .billing-shell,
+  .support-shell,
+  .tasks-shell,
+  .calendar-shell,
+  .client-detail-shell,
+  .case-detail-shell,
+  .lead-detail-shell,
+  .layout-detail,
+  [data-stage32-leads-value-layout],
+  [data-visual-layout-list],
+  [data-visual-detail-layout],
+  [data-visual-hero-grid],
+  [data-visual-page-grid],
+  [data-visual-shell],
+  [data-page-shell] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: 1fr !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Right rails always go below main content on mobile and stay light. */
+  .right-card,
+  .right-rail,
+  .today-right-rail,
+  .today-sidebar,
+  .notifications-right-rail,
+  .notifications-right-card,
+  .activity-right-rail,
+  .ai-drafts-right-rail,
+  .billing-right-rail,
+  .support-right-rail,
+  .settings-side-column,
+  .settings-aside,
+  .client-right-rail,
+  .case-right-rail,
+  .lead-right-rail,
+  [data-visual-right-rail],
+  [data-stage32-leads-value-rail],
+  [class*="right-rail"],
+  [class*="rightRail"],
+  [class*="side-panel"],
+  [class*="sidePanel"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    grid-column: 1 / -1 !important;
+    order: 30 !important;
+    align-self: stretch !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07) !important;
+    overflow: hidden !important;
+  }
+
+  .right-card *,
+  .right-rail *,
+  [data-visual-right-rail] *,
+  [data-stage32-leads-value-rail] *,
+  [class*="right-rail"] *,
+  [class*="rightRail"] *,
+  [class*="side-panel"] *,
+  [class*="sidePanel"] * {
+    color: inherit;
+  }
+
+  .right-card a,
+  .right-rail a,
+  [data-visual-right-rail] a,
+  [data-stage32-leads-value-rail] a,
+  [class*="right-rail"] a,
+  [class*="rightRail"] a,
+  [class*="side-panel"] a,
+  [class*="sidePanel"] a {
+    color: #1d4ed8 !important;
+  }
+
+  /* Dark-wrapper cleanup from previous visual stages. */
+  .hotfix-right-rail-dark,
+  .dark-wrapper,
+  .rail-dark-wrapper,
+  .bg-slate-950,
+  .bg-slate-900,
+  .bg-zinc-950,
+  .bg-zinc-900,
+  .bg-neutral-950,
+  .bg-neutral-900 {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  .mobile-drawer-panel .bg-slate-950,
+  .mobile-drawer-panel .bg-slate-900,
+  .sidebar .bg-slate-950,
+  .sidebar .bg-slate-900 {
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+
+  /* Cards and list rows become clean single-column cards. */
+  .card,
+  [data-slot="card"],
+  .rounded-lg,
+  .rounded-xl,
+  .rounded-2xl,
+  .table-card,
+  .today-list,
+  .today-section-list,
+  .notifications-list-card,
+  .activity-list-card,
+  .ai-drafts-list-card,
+  .settings-section-card,
+  .billing-section-card,
+  .support-section-card,
+  .work-card,
+  [data-work-card],
+  [data-today-tile-card="true"],
+  [data-testid="notification-row"],
+  .notifications-row,
+  .activity-row,
+  .ai-draft-row,
+  .lead-row,
+  .client-row,
+  .case-row,
+  .task-row,
+  .calendar-row {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .grid,
+  .flex,
+  [class*="grid-cols-"],
+  [class*="md:grid-cols-"],
+  [class*="lg:grid-cols-"],
+  [class*="xl:grid-cols-"] {
+    min-width: 0;
+  }
+
+  .main-today .grid,
+  .main-leads .grid,
+  .main-lead-detail .grid,
+  .main-clients .grid,
+  .main-client-detail .grid,
+  .main-cases .grid,
+  .main-case-detail .grid,
+  .settings-vnext-page .grid,
+  .notifications-vnext-page .grid,
+  .activity-vnext-page .grid,
+  .ai-drafts-page .grid,
+  .billing-page .grid,
+  .support-page .grid,
+  .tasks-vnext-page .grid,
+  .calendar-vnext-page .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .main-today .flex,
+  .main-leads .flex,
+  .main-lead-detail .flex,
+  .main-clients .flex,
+  .main-client-detail .flex,
+  .main-cases .flex,
+  .main-case-detail .flex,
+  .settings-vnext-page .flex,
+  .notifications-vnext-page .flex,
+  .activity-vnext-page .flex,
+  .ai-drafts-page .flex,
+  .billing-page .flex,
+  .support-page .flex,
+  .tasks-vnext-page .flex,
+  .calendar-vnext-page .flex {
+    min-width: 0;
+  }
+
+  .page-head,
+  .settings-header,
+  .notifications-page-header,
+  .activity-page-header,
+  .ai-drafts-header,
+  .billing-header,
+  .support-header,
+  .tasks-header,
+  .calendar-header,
+  .detail-header,
+  .hero-grid,
+  [data-visual-page-head],
+  [data-visual-hero-grid] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .page-head h1,
+  .settings-header h1,
+  .notifications-page-header h1,
+  .activity-page-header h1,
+  .ai-drafts-header h1,
+  .billing-header h1,
+  .support-header h1,
+  .tasks-header h1,
+  .calendar-header h1,
+  .detail-header h1 {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    line-height: 1.05;
+  }
+
+  .lead-copy,
+  .page-head p,
+  .settings-header p,
+  .notifications-page-header p,
+  .activity-page-header p,
+  .ai-drafts-header p,
+  .billing-header p,
+  .support-header p,
+  .tasks-header p,
+  .calendar-header p,
+  .detail-header p {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  /* Actions wrap instead of escaping the screen. */
+  .head-actions,
+  .settings-header-actions,
+  .notifications-header-actions,
+  .activity-header-actions,
+  .ai-drafts-header-actions,
+  .billing-header-actions,
+  .support-header-actions,
+  .tasks-header-actions,
+  .calendar-header-actions,
+  .detail-actions,
+  .settings-action-row,
+  .notifications-row-actions,
+  .activity-row-actions,
+  .ai-draft-actions,
+  .row-actions,
+  .card-actions,
+  .form-actions,
+  .dialog-actions,
+  .modal-actions,
+  [data-actions],
+  [class*="actions"] {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .head-actions > *,
+  .settings-header-actions > *,
+  .notifications-header-actions > *,
+  .activity-header-actions > *,
+  .ai-drafts-header-actions > *,
+  .billing-header-actions > *,
+  .support-header-actions > *,
+  .tasks-header-actions > *,
+  .calendar-header-actions > *,
+  .detail-actions > *,
+  .settings-action-row > *,
+  .row-actions > *,
+  .card-actions > *,
+  .form-actions > *,
+  .dialog-actions > *,
+  .modal-actions > *,
+  [data-actions] > * {
+    min-width: 0 !important;
+  }
+
+  .closeflow-visual-stage01 button,
+  .closeflow-visual-stage01 .btn,
+  .closeflow-visual-stage01 a.btn,
+  .closeflow-visual-stage01 [role="button"],
+  .closeflow-visual-stage01 [type="button"],
+  .closeflow-visual-stage01 [type="submit"] {
+    min-height: 38px;
+  }
+
+  .closeflow-visual-stage01 .btn,
+  .closeflow-visual-stage01 a.btn,
+  .head-actions .btn,
+  .settings-action-row .btn,
+  .notifications-header-button,
+  .notifications-action,
+  .activity-action,
+  .ai-draft-action,
+  .billing-action,
+  .support-action,
+  .task-action,
+  .calendar-action {
+    white-space: normal !important;
+    line-height: 1.15 !important;
+  }
+
+  .pill,
+  .badge,
+  [class*="pill"],
+  [class*="badge"] {
+    max-width: 100%;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+
+  /* Top global actions: readable horizontal chips, no page overflow. */
+  .closeflow-visual-stage01 .global-bar {
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .closeflow-visual-stage01 .global-actions {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 2px 2px 8px !important;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .closeflow-visual-stage01 .global-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .closeflow-visual-stage01 .global-actions > *,
+  .closeflow-visual-stage01 .global-actions button,
+  .closeflow-visual-stage01 .global-actions a {
+    flex: 0 0 auto !important;
+    min-height: 40px !important;
+    max-width: 82vw !important;
+    white-space: nowrap !important;
+  }
+
+  /* Tabs are the only intentional horizontal scroller. */
+  [role="tablist"],
+  .tabs-list,
+  .tab-list,
+  .tabs-trigger-list,
+  .settings-tabs,
+  .detail-tabs,
+  .client-detail-tabs,
+  .case-detail-tabs,
+  .lead-detail-tabs,
+  .notifications-filter-pills,
+  .activity-filter-pills,
+  .ai-drafts-filter-pills,
+  .billing-tabs,
+  .calendar-view-tabs {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 8px !important;
+    padding-bottom: 8px !important;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  [role="tablist"]::-webkit-scrollbar,
+  .tabs-list::-webkit-scrollbar,
+  .tab-list::-webkit-scrollbar,
+  .tabs-trigger-list::-webkit-scrollbar,
+  .settings-tabs::-webkit-scrollbar,
+  .detail-tabs::-webkit-scrollbar,
+  .client-detail-tabs::-webkit-scrollbar,
+  .case-detail-tabs::-webkit-scrollbar,
+  .lead-detail-tabs::-webkit-scrollbar,
+  .notifications-filter-pills::-webkit-scrollbar,
+  .activity-filter-pills::-webkit-scrollbar,
+  .ai-drafts-filter-pills::-webkit-scrollbar,
+  .billing-tabs::-webkit-scrollbar,
+  .calendar-view-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  [role="tab"],
+  .tabs-list > *,
+  .tab-list > *,
+  .tabs-trigger-list > *,
+  .settings-tabs > *,
+  .detail-tabs > *,
+  .notifications-filter-pill,
+  .activity-filter-pill,
+  .ai-drafts-filter-pill,
+  .billing-tabs > *,
+  .calendar-view-tabs > * {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+
+  /* Tables stay inside their cards, not inside the whole page. */
+  table,
+  .table,
+  [role="table"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .table-card,
+  .table-wrap,
+  .table-wrapper,
+  .overflow-table,
+  .leads-table-card,
+  .cases-table-card,
+  .clients-table-card,
+  .tasks-table-card,
+  .activity-table-card,
+  .billing-table-card,
+  .notifications-list-card,
+  [data-table-card],
+  [data-visual-table-card] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-card table,
+  .table-wrap table,
+  .table-wrapper table,
+  .overflow-table table,
+  [data-table-card] table,
+  [data-visual-table-card] table {
+    min-width: min(640px, 100%);
+  }
+
+  /* Row-to-card fallback for dense lists. */
+  .notifications-row,
+  .activity-row,
+  .ai-draft-row,
+  .lead-row,
+  .client-row,
+  .case-row,
+  .task-row,
+  .calendar-row,
+  [data-testid="notification-row"],
+  [data-row-card] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    padding: 14px !important;
+    align-items: stretch !important;
+  }
+
+  .notifications-row > *,
+  .activity-row > *,
+  .ai-draft-row > *,
+  .lead-row > *,
+  .client-row > *,
+  .case-row > *,
+  .task-row > *,
+  .calendar-row > *,
+  [data-testid="notification-row"] > *,
+  [data-row-card] > * {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .notifications-row-main h2,
+  .activity-row h2,
+  .ai-draft-row h2,
+  .lead-row h2,
+  .client-row h2,
+  .case-row h2,
+  .task-row h2,
+  .calendar-row h2,
+  [data-row-card] h2,
+  [data-row-card] h3 {
+    overflow-wrap: anywhere;
+  }
+
+  /* Forms and dialogs */
+  .lead-form-vnext-content,
+  [role="dialog"],
+  [data-radix-dialog-content],
+  .dialog-content,
+  .modal-content,
+  .sheet-content,
+  .drawer-content {
+    width: min(100vw - 24px, 720px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100dvh - 24px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    border-radius: 20px !important;
+    margin: 0 auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  [role="dialog"] form,
+  [data-radix-dialog-content] form,
+  .dialog-content form,
+  .modal-content form,
+  .lead-form-vnext {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  [role="dialog"] header,
+  [data-radix-dialog-content] header,
+  .dialog-header,
+  .modal-header,
+  .lead-form-vnext-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #ffffff;
+    padding-top: 2px;
+  }
+
+  [role="dialog"] footer,
+  [data-radix-dialog-content] footer,
+  .dialog-footer,
+  .modal-footer,
+  .lead-form-footer,
+  .lead-form-vnext-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 12px;
+  }
+
+  [role="dialog"] .grid,
+  [data-radix-dialog-content] .grid,
+  .lead-form-vnext .grid,
+  .lead-form-grid,
+  .settings-form-grid,
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  [role="dialog"] input,
+  [role="dialog"] textarea,
+  [role="dialog"] select,
+  [data-radix-dialog-content] input,
+  [data-radix-dialog-content] textarea,
+  [data-radix-dialog-content] select,
+  .lead-form-vnext input,
+  .lead-form-vnext textarea,
+  .lead-form-vnext select {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Calendar mobile polish */
+  .calendar-shell,
+  .calendar-vnext-page,
+  .calendar-layout,
+  .calendar-main,
+  .calendar-grid,
+  .calendar-month,
+  .calendar-week,
+  .calendar-rolling-week,
+  .calendar-days,
+  [data-calendar-layout],
+  [data-calendar-month],
+  [data-calendar-rolling-week] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  .calendar-month,
+  [data-calendar-month] {
+    border-radius: 20px !important;
+  }
+
+  .calendar-day,
+  .calendar-month-day,
+  .calendar-grid-day,
+  [data-calendar-day],
+  [data-day-cell] {
+    min-width: 0 !important;
+    border-radius: 14px !important;
+  }
+
+  .calendar-day[aria-selected="true"],
+  .calendar-month-day[aria-selected="true"],
+  .calendar-grid-day[aria-selected="true"],
+  [data-calendar-day][aria-selected="true"],
+  [data-day-cell][aria-selected="true"],
+  .calendar-day-selected,
+  .selected-day {
+    outline: 2px solid #2563eb !important;
+    outline-offset: 2px !important;
+    background: #eff6ff !important;
+    color: #1d4ed8 !important;
+  }
+
+  .calendar-actions,
+  .calendar-event-actions,
+  .calendar-day-actions {
+    max-width: 100% !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Detail routes: header, tabs, cards, rails. */
+  .main-lead-detail .layout-detail,
+  .main-client-detail .layout-detail,
+  .main-case-detail .layout-detail,
+  .main-lead-detail [data-visual-detail-layout],
+  .main-client-detail [data-visual-detail-layout],
+  .main-case-detail [data-visual-detail-layout],
+  .main-lead-detail [data-visual-hero-grid],
+  .main-client-detail [data-visual-hero-grid],
+  .main-case-detail [data-visual-hero-grid] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .main-lead-detail .person-card,
+  .main-client-detail .person-card,
+  .main-case-detail .person-card,
+  .main-lead-detail .hero,
+  .main-client-detail .hero,
+  .main-case-detail .hero,
+  .main-lead-detail [data-visual-hero],
+  .main-client-detail [data-visual-hero],
+  .main-case-detail [data-visual-hero] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Text never creates hidden overflow. */
+  .closeflow-visual-stage01 h1,
+  .closeflow-visual-stage01 h2,
+  .closeflow-visual-stage01 h3,
+  .closeflow-visual-stage01 p,
+  .closeflow-visual-stage01 span,
+  .closeflow-visual-stage01 strong,
+  .closeflow-visual-stage01 small,
+  .closeflow-visual-stage01 a,
+  .closeflow-visual-stage01 td,
+  .closeflow-visual-stage01 th,
+  .closeflow-visual-stage01 label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 768px) {
+  .closeflow-visual-stage01.app {
+    padding-bottom: calc(86px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .closeflow-visual-stage01 .main {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-top {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel {
+    width: min(92vw, 420px) !important;
+    max-width: 92vw !important;
+    overflow-x: hidden !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-nav,
+  .closeflow-visual-stage01 .mobile-drawer-footer,
+  .closeflow-visual-stage01 .mobile-user-wrap {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-nav {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-nav-btn {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-nav-btn span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .head-actions > .btn,
+  .head-actions > button,
+  .head-actions > a,
+  .settings-action-row > button,
+  .settings-action-row > a,
+  .form-actions > button,
+  .form-actions > a,
+  .dialog-footer > button,
+  .dialog-footer > a,
+  [role="dialog"] footer button,
+  [data-radix-dialog-content] footer button {
+    flex: 1 1 160px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .closeflow-visual-stage01 .main,
+  .closeflow-visual-stage01 main {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .closeflow-visual-stage01 .global-bar {
+    margin-left: -12px !important;
+    margin-right: -12px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .card,
+  [data-slot="card"],
+  .right-card,
+  .table-card,
+  [data-today-tile-card="true"],
+  .settings-section-card,
+  .notifications-list-card,
+  .activity-list-card,
+  .ai-drafts-list-card,
+  .billing-section-card,
+  .support-section-card {
+    border-radius: 18px !important;
+  }
+
+  .page-head h1,
+  .settings-header h1,
+  .notifications-page-header h1,
+  .activity-page-header h1,
+  .ai-drafts-header h1,
+  .billing-header h1,
+  .support-header h1,
+  .tasks-header h1,
+  .calendar-header h1,
+  .detail-header h1 {
+    font-size: clamp(25px, 8vw, 32px) !important;
+  }
+
+  .closeflow-visual-stage01 .global-actions > *,
+  .closeflow-visual-stage01 .global-actions button,
+  .closeflow-visual-stage01 .global-actions a {
+    min-height: 38px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    font-size: 12px !important;
+  }
+
+  [role="dialog"],
+  [data-radix-dialog-content],
+  .dialog-content,
+  .modal-content,
+  .sheet-content,
+  .drawer-content,
+  .lead-form-vnext-content {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    max-height: calc(100dvh - 16px) !important;
+    border-radius: 18px !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel {
+    width: min(94vw, 390px) !important;
+    max-width: 94vw !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .closeflow-visual-stage01 .mobile-nav {
+    gap: 2px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-nav-btn {
+    min-height: 50px !important;
+    border-radius: 14px !important;
+    font-size: 9px !important;
+  }
+
+  .closeflow-visual-stage01 .global-actions > *,
+  .closeflow-visual-stage01 .global-actions button,
+  .closeflow-visual-stage01 .global-actions a {
+    max-width: 78vw !important;
+  }
+
+  .head-actions > .btn,
+  .head-actions > button,
+  .head-actions > a,
+  .settings-action-row > button,
+  .settings-action-row > a,
+  .form-actions > button,
+  .form-actions > a,
+  .dialog-footer > button,
+  .dialog-footer > a {
+    flex-basis: 100% !important;
+  }
+}
