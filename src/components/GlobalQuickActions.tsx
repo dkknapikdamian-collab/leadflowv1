@@ -56,7 +56,7 @@ export default function GlobalQuickActions() {
         </Link>
       </Button>
 
-      <Button asChild className="btn primary" data-global-quick-action="lead">
+      <Button asChild variant="outline" className="btn" data-global-quick-action="lead">
         <Link to="/leads" aria-label="Otwórz leady lub dodaj leada" onClick={() => rememberGlobalQuickAction('lead')}>
           <Plus className="mr-2 h-4 w-4" />
           Lead

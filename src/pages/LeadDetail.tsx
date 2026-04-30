@@ -1165,16 +1165,13 @@ export default function LeadDetail() {
               <ArrowLeft className="h-4 w-4" />
               Leady
             </button>
-            <p className="lead-detail-breadcrumb">Leady / {getLeadName(lead)}</p>
-            <p className="lead-detail-kicker">SZCZEGÓŁY LEADA</p>
             <div className="lead-detail-title-row">
               <h1>{getLeadName(lead)}</h1>
               <span className={`lead-detail-pill ${statusClass(String(lead.status || 'new'))}`}>{statusLabel(String(lead.status || 'new'))}</span>
             </div>
             <div className="lead-detail-header-meta">
-              <span>Źródło: {sourceLabel(lead.source)}</span>
-              <span>Wartość: {leadFinance.formatted}</span>
-              <span>Ostatnia aktywność: {formatDate(lead.updatedAt || activities[0]?.createdAt || lead.createdAt)}</span>
+              <span>Zrodlo: {sourceLabel(lead.source)}</span>
+              <span>Ostatnia aktywnosc: {formatDate(lead.updatedAt || activities[0]?.createdAt || lead.createdAt)}</span>
               <span>Kontakt: {lead.phone || lead.email || 'Brak kontaktu'}</span>
             </div>
           </div>
@@ -1256,12 +1253,11 @@ export default function LeadDetail() {
                 <InfoLine icon={Phone} label="Telefon" value={String(lead.phone || '-')} />
                 <InfoLine icon={Mail} label="E-mail" value={String(lead.email || '-')} />
                 <InfoLine icon={FileText} label="Firma" value={String(lead.company || '-')} />
-                <InfoLine icon={Target} label="Źródło" value={sourceLabel(lead.source)} />
-                <InfoLine icon={DollarSign} label="Wartość" value={leadFinance.formatted} />
+                <InfoLine icon={Target} label="Zrodlo" value={sourceLabel(lead.source)} />
               </div>
               <div className="lead-detail-note-box">
                 <small>Notatka</small>
-                <p>{noteText}</p>
+                <p className="lead-detail-note-text" lang="pl-PL">{noteText}</p>
               </div>
             </section>
 
@@ -1311,8 +1307,8 @@ export default function LeadDetail() {
               </div>
               {!leadInService ? (
                 <form className="lead-detail-note-form" onSubmit={handleAddNote}>
-                  <Textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj kr�tk� notatk� po kontakcie..." />
-                  {noteInterimText ? <p className="text-xs text-slate-500">Dyktowanie: {noteInterimText}</p> : null}
+                  <Textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj krotka notatke po kontakcie..." className="lead-detail-note-input" lang="pl-PL" />
+                  {noteInterimText ? <p className="lead-detail-note-transcript" lang="pl-PL">Dyktowanie: {noteInterimText}</p> : null}
                   <div className="flex flex-wrap gap-2">
                     <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
                       {noteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
@@ -1363,15 +1359,6 @@ export default function LeadDetail() {
               {serviceCaseId ? <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button> : null}
             </section>
 
-            <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><UserRound className="h-4 w-4" /><h2>Kontakt</h2></div>
-              <div className="lead-detail-right-metrics">
-                <span><strong>{lead.phone || '-'}</strong> telefon</span>
-                <span><strong>{lead.email || '-'}</strong> e-mail</span>
-                <span><strong>{lead.company || '-'}</strong> firma</span>
-              </div>
-            </section>
-
             {!leadInService ? (
               <section className="right-card lead-detail-right-card">
                 <div className="lead-detail-card-title-row"><Plus className="h-4 w-4" /><h2>Szybkie akcje</h2></div>
@@ -1390,11 +1377,11 @@ export default function LeadDetail() {
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><Sparkles className="h-4 w-4" /><h2>AI wsparcie</h2></div>
               <Tabs defaultValue="next-action">
-                <TabsList className="w-full">
-                  <TabsTrigger value="next-action" className="flex-1">Następny ruch</TabsTrigger>
-                  <TabsTrigger value="followup" className="flex-1">Follow-up</TabsTrigger>
+                <TabsList className="lead-detail-ai-tabs-list w-full">
+                  <TabsTrigger value="next-action" className="lead-detail-ai-tabs-trigger flex-1">Nastepny ruch</TabsTrigger>
+                  <TabsTrigger value="followup" className="lead-detail-ai-tabs-trigger flex-1">Follow-up</TabsTrigger>
                 </TabsList>
-                <TabsContent value="next-action" className="mt-3">
+                <TabsContent value="next-action" className="lead-detail-ai-tabs-content mt-3">
                   <LeadAiNextAction
                     lead={lead}
                     tasks={linkedTasks}
@@ -1404,7 +1391,7 @@ export default function LeadDetail() {
                      onTaskCreated={() => void loadLead()}
                    />
                 </TabsContent>
-                <TabsContent value="followup" className="mt-3">
+                <TabsContent value="followup" className="lead-detail-ai-tabs-content mt-3">
                   <LeadAiFollowupDraft lead={lead} tasks={linkedTasks} events={linkedEvents} activities={activities} disabled={leadInService} />
                 </TabsContent>
               </Tabs>

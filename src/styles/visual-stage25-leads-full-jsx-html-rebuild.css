@@ -348,6 +348,10 @@
   overflow-wrap: anywhere;
 }
 
+.cf-html-view.main-leads-html .lead-value-cell strong {
+  color: #047857;
+}
+
 .cf-html-view.main-leads-html .pill {
   display: inline-flex;
   align-items: center;
@@ -415,6 +419,16 @@
   margin-bottom: 14px;
 }
 
+.cf-html-view.main-leads-html [data-stage26-leads-head-ai='true'] {
+  color: #2563eb;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.cf-html-view.main-leads-html [data-stage26-leads-head-ai='true'] svg {
+  color: inherit;
+}
+
 .cf-html-view.main-leads-html .panel-head h3 {
   margin: 0;
   color: #111827;
@@ -450,6 +464,25 @@
   font-size: 12px;
   font-weight: 900;
   transition: .15s ease;
+}
+
+.cf-html-view.main-leads-html .lead-top-relations .panel-head {
+  align-items: center;
+}
+
+.cf-html-view.main-leads-html .lead-top-relations .quick-list a {
+  align-items: flex-start;
+}
+
+.cf-html-view.main-leads-html .lead-top-relations .quick-list a > span {
+  gap: 4px;
+}
+
+.cf-html-view.main-leads-html .lead-top-relations .quick-list a > strong.lead-relation-money {
+  min-width: 108px;
+  text-align: right;
+  color: #047857;
+  line-height: 1.25;
 }
 
 .cf-html-view.main-leads-html .quick-list a:hover {

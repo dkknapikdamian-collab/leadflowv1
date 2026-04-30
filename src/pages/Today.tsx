@@ -437,6 +437,7 @@ function openTodayTopTileShortcut(target: TodayTileShortcutTarget) {
   if (shortcutTileId) {
     const header = document.querySelector<HTMLElement>(`[data-today-tile-id="${shortcutTileId}"]`);
     if (header) {
+      expandTodayShortcutSection(header);
       window.setTimeout(() => {
         header.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 80);
@@ -2238,6 +2239,80 @@ export default function Today() {
   return (
     <Layout>
       <div className="today-html-page p-4 md:p-8 max-w-7xl mx-auto w-full space-y-8">
+        <section className="flex flex-nowrap gap-3 overflow-x-auto pb-1" data-today-top-summary-cards="true">
+          {summaryCards.map((card) => {
+            const Icon = card.icon;
+            const handleOpen = () => {
+              if (card.id === 'today') {
+                scrollToFirstSection(card.sectionIds);
+                return;
+              }
+
+              const target =
+                card.id === 'urgent'
+                  ? 'urgent'
+                  : card.id === 'no-step'
+                    ? 'without_action'
+                    : card.id === 'stalled'
+                      ? 'without_movement'
+                      : null;
+
+              if (target) openTodayTopTileShortcut(target);
+            };
+
+            return (
+              <button
+                key={card.id}
+                type="button"
+                onClick={handleOpen}
+                className="min-w-[220px] flex-1 rounded-[28px] border border-slate-200 bg-white px-8 py-7 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-700">{card.title}</p>
+                    <p className="mt-4 text-4xl font-black tracking-tight text-slate-950">{card.value}</p>
+                  </div>
+                  <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full border ${card.bg} ${card.tone}`}>
+                    <Icon className="h-6 w-6" />
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+
+          <button
+            type="button"
+            onClick={() => openTodayTopTileShortcut('ai_drafts')}
+            className="min-w-[220px] flex-1 rounded-[28px] border border-violet-200 bg-white px-8 py-7 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-violet-700">Szkice AI</p>
+                <p className="mt-4 text-4xl font-black tracking-tight text-slate-950">{pendingTodayAiDraftCount}</p>
+              </div>
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-violet-200 bg-violet-50 text-violet-700">
+                <ListTodo className="h-6 w-6" />
+              </span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => openTodayTopTileShortcut('service_transition')}
+            className="min-w-[220px] flex-1 rounded-[28px] border border-fuchsia-200 bg-white px-8 py-7 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-fuchsia-700">Start i obsługa</p>
+                <p className="mt-4 text-4xl font-black tracking-tight text-slate-950">{readyToStartLeads.length + activeServiceLeads.length + blockedCases.length}</p>
+              </div>
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700">
+                <Briefcase className="h-6 w-6" />
+              </span>
+            </div>
+          </button>
+        </section>
+
         <div className="layout-list today-layout grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="today-main-column space-y-8">
             {overdueTasks.length > 0 && (
@@ -2766,44 +2841,6 @@ export default function Today() {
           ) : null}
         </DialogContent>
       </Dialog>
-
-
-        <section
-          id="today-section-ai-drafts"
-          data-today-ai-drafts-tile="true"
-          data-today-ai-drafts-compact-tile="true"
-          data-today-ai-drafts-stage29d-bottom="true"
-          data-today-shortcut-section="ai_drafts"
-          data-today-tile-card="true"
-          className="mt-8 scroll-mt-28"
-        >
-          <button
-            type="button"
-            onClick={() => openTodayTopTileShortcut('ai_drafts')}
-            data-today-tile-header="true"
-            data-today-tile-id="ai_drafts_compact"
-            data-today-tile-title="Szkice do zatwierdzenia"
-            className="group flex w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300/50"
-          >
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
-                <ListTodo className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-bold text-slate-900">Szkice do zatwierdzenia</p>
-                <p className="truncate text-xs text-slate-500">
-                  {pendingTodayAiDraftCount > 0 ? String(pendingTodayAiDraftCount) + ' oczekuje na decyzję' : 'Brak szkiców oczekujących'}
-                </p>
-              </div>
-            </div>
-
-            <span className="inline-flex shrink-0 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700 transition group-hover:border-blue-200 group-hover:bg-white group-hover:text-blue-700">
-              <span data-today-ai-drafts-pending-count="true">{pendingTodayAiDraftCount}</span>
-              <span className="hidden sm:inline">Otwórz Szkice AI</span>
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </span>
-          </button>
-        </section>
     </Layout>
   );
 }

@@ -3,7 +3,7 @@
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, RotateCcw, Search, Target, Trash2, TrendingUp } from 'lucide-react';
+import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, RotateCcw, Search, Sparkles, Target, Trash2, TrendingUp } from 'lucide-react';
 import { format, isPast, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -522,7 +522,8 @@ export default function Leads() {
 
           <div className="head-actions">
             <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
-              âś¦ Zapytaj AI
+              <Sparkles className="h-4 w-4" />
+              Zapytaj AI
             </Link>
             <button
               type="button"
@@ -892,7 +893,6 @@ export default function Leads() {
               <div className="panel-head">
                 <div>
                   <h3>Najcenniejsze relacje</h3>
-                  <p>Top 5 według wartości</p>
                 </div>
                 <span className="pill dark">Lejek razem: {formatRelationValue(relationFunnelValue)}</span>
               </div>
@@ -910,7 +910,7 @@ export default function Leads() {
                         <strong>{entry.label}</strong>
                         <small>{entry.kindLabel}</small>
                       </span>
-                      <strong>{formatRelationValue(entry.value)}</strong>
+                      <strong className="lead-relation-money">{formatRelationValue(entry.value)}</strong>
                     </Link>
                   ))}
                 </div>
