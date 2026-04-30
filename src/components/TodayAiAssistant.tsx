@@ -33,7 +33,7 @@ Co mam dziś do zrobienia?
 Zapisz zadanie jutro o 10 oddzwonić do klienta
 Max {AI_COMMAND_MAX_LENGTH} znaków
 disabled={loading}
-Szkic leada zapisany w Szkicach AI
+Szkic zapisany w Szkicach AI
 */
 
 type SpeechRecognitionLike = {
@@ -74,9 +74,8 @@ const CLIENT_OUT_OF_SCOPE_PATTERNS = [
 ];
 
 const CLIENT_LEAD_CAPTURE_PATTERNS = [
-  /\b(zapisz|dodaj|utworz|utworzmy|stworz|wrzuc|notuj|zanotuj)\b/u,
-  /\b(mam|jest|wpadl|wpada|nowy)\s+(mi\s+)?(lead|leada|lida|kontakt)\b/u,
-  /\b(lead|leada|lida|kontakt)\b.*\b(zapisz|dodaj)\b/u,
+  // AI_APP_CONTEXT_OPERATOR_STAGE26: komendy zapisu obsługuje backendowy operator, nie lokalny lead-only guard.
+  /(?!)/u,
 ];
 
 function normalizeCommandForGuard(value: string) {
@@ -233,6 +232,13 @@ function priorityClassName(priority?: string) {
   return 'border-blue-200 bg-blue-50 text-blue-700';
 }
 
+function getAiDraftPayloadFromAnswer(answer: TodayAiAssistantAnswer | null) {
+  const draft = (answer as any)?.draft;
+  const type = draft?.type === 'task' || draft?.type === 'event' || draft?.type === 'note' || draft?.type === 'lead' ? draft.type : 'lead';
+  const parsedDraft = draft?.parsedDraft && typeof draft.parsedDraft === 'object' ? draft.parsedDraft as Record<string, unknown> : draft && typeof draft === 'object' ? draft as Record<string, unknown> : null;
+  return { type, parsedDraft };
+}
+
 export default function TodayAiAssistant({ leads, tasks, events, cases, clients = [], drafts = [], operatorSnapshot = {}, summary = {}, relations = {}, searchIndex = [], disabled, onCaptureRequest }: TodayAiAssistantProps) {
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
@@ -249,16 +255,17 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
   const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
   // AI_DIRECT_WRITE_MODE_STATE
-  const [directWriteMode, setDirectWriteMode] = useState<AiDirectWriteMode>(() => getStoredAiDirectWriteMode());
+  const [directWriteMode, setDirectWriteMode] = useState<AiDirectWriteMode>('draft_only');
 
   useEffect(() => {
     setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
   }, [aiUsageKey, open, isAdmin]);
 
-  const handleDirectWriteModeChange = (mode: AiDirectWriteMode) => {
-    setDirectWriteMode(mode);
-    persistAiDirectWriteMode(mode);
-    toast.success(mode === 'direct_task_event' ? 'AI może od razu zapisywać jasne leady, zadania i wydarzenia' : 'AI zapisuje wszystko przez Szkice AI');
+  const handleDirectWriteModeChange = (_mode: AiDirectWriteMode) => {
+    // AI_APP_CONTEXT_OPERATOR_STAGE26_NO_DIRECT_WRITE: AI nie tworzy finalnych rekordów bez zatwierdzenia.
+    setDirectWriteMode('draft_only');
+    persistAiDirectWriteMode('draft_only');
+    toast.success('AI zapisuje tylko przez Szkice AI');
   };
 
   const clearAutoAskTimer = () => {
@@ -380,7 +387,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
       setAnswer(buildClientLeadCaptureDraftAnswer(command));
       // AI_ASSISTANT_CLEAR_INPUT_AFTER_RESULT
       setRawText('');
-      toast.success('Szkic leada zapisany w Szkicach AI');
+      toast.success('Szkic zapisany w Szkicach AI');
       return;
     }
 
@@ -423,8 +430,9 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
         const captureText = String(result.suggestedCaptureText || result.rawText || command || '').trim();
         if (captureText) {
           // AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
-          saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' });
-          toast.success('Szkic leada zapisany w Szkicach AI');
+          const draftPayload = getAiDraftPayloadFromAnswer(result);
+          saveAiLeadDraft({ rawText: captureText, source: 'today_assistant', type: draftPayload.type, parsedDraft: draftPayload.parsedDraft });
+          toast.success('Szkic zapisany w Szkicach AI');
         }
       }
       if (shouldRegisterAiUsage(result)) {
@@ -594,7 +602,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
                 Wszystko przez Szkice AI
               </Button>
               <Button type="button" size="sm" variant={directWriteMode === 'direct_task_event' ? 'default' : 'outline'} onClick={() => handleDirectWriteModeChange('direct_task_event')}>
-                Jasne rekordy od razu
+                Zapis tylko przez szkice
               </Button>
             </div>
             <p className="mt-3 text-xs text-slate-500">Niejasne notatki nadal trafiają do Szkiców AI. Zadania i wydarzenia bez daty albo godziny też wracają do szkicu.</p>
@@ -635,7 +643,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
             <Badge variant="outline">Czyta aplikację</Badge>
             <Badge variant="outline">Pełny zakres aplikacji</Badge>
             <Badge variant="outline"></Badge>
-            <Badge variant="outline">Zapisz = wg trybu</Badge>
+            <Badge variant="outline">Zapisz = szkic</Badge>
             <Badge variant="outline">Bez zapisz = szukanie</Badge>
             <Badge variant="outline"></Badge>
             <Badge variant="outline">Dane aplikacji bez limitu</Badge>

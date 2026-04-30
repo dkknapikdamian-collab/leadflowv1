@@ -8,10 +8,26 @@ export type TodayAiAssistantItem = {
   detail?: string;
   href?: string;
   priority?: 'low' | 'medium' | 'high';
+  entityType?: string;
+  id?: string;
+};
+
+export type TodayAiAssistantDraft = {
+  type: 'lead' | 'task' | 'event' | 'note';
+  rawText: string;
+  parsedDraft: Record<string, unknown>;
+  status: 'draft';
+  source: 'assistant_operator';
 };
 
 export type TodayAiAssistantAnswer = {
   ok: boolean;
+  mode?: 'read' | 'draft';
+  answer?: string;
+  draft?: TodayAiAssistantDraft | null;
+  operatorIntent?: string;
+  snapshotMeta?: Record<string, unknown>;
+  systemInstruction?: string[];
   scope: 'assistant_read_or_draft_only';
   provider: string;
   noAutoWrite: boolean;
@@ -40,26 +56,39 @@ export type TodayAiAssistantInput = {
     summary?: Record<string, unknown>;
     relations?: Record<string, unknown>;
     searchIndex?: Record<string, unknown>[];
+    workspaceId?: string | null;
     now?: string;
   };
 };
 
-// AI_OPERATOR_QUALITY_STAGE06_TYPES: typy frontu znają snapshot aplikacji i flagę kosztu odpowiedzi.
+function getContextWorkspaceId(context: TodayAiAssistantInput['context']) {
+  const direct = typeof context.workspaceId === 'string' ? context.workspaceId.trim() : '';
+  const snapshot = context.operatorSnapshot && typeof context.operatorSnapshot === 'object'
+    ? String((context.operatorSnapshot as any).workspaceId || (context.operatorSnapshot as any).workspace_id || '').trim()
+    : '';
+  return direct || snapshot || '';
+}
+
+// AI_APP_CONTEXT_OPERATOR_STAGE26_TYPES: odpowiedź zachowuje stary kontrakt UI i dodaje { mode, answer, items, draft }.
 export async function askTodayAiAssistant(input: TodayAiAssistantInput) {
   const auth = getClientAuthSnapshot();
-  const response = await fetch('/api/system?kind=ai-assistant', {
+  const workspaceId = getContextWorkspaceId(input.context);
+  const response = await fetch('/api/assistant', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'x-user-id': auth.uid,
       'x-user-email': auth.email,
       'x-user-name': auth.fullName,
+      'x-workspace-id': workspaceId,
     },
     body: JSON.stringify({
-      ...input,
+      rawText: input.rawText,
       now: new Date().toISOString(),
+      workspaceId,
       context: {
         ...input.context,
+        workspaceId,
         now: input.context.now || new Date().toISOString(),
       },
     }),
@@ -72,3 +101,5 @@ export async function askTodayAiAssistant(input: TodayAiAssistantInput) {
 
   return data as TodayAiAssistantAnswer;
 }
+
+void ASSISTANT_LEAD_DRAFT_CONTRACT_TITLE;

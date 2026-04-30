@@ -78,7 +78,10 @@ export default function GlobalAiAssistant() {
           clients: asRecordArray(appContext.clients),
           drafts: asRecordArray((appContext as any).drafts),
           // AI_OPERATOR_SNAPSHOT_STAGE02_CONTEXT: przekazujemy metadane snapshotu do asystenta bez dokładania osobnej funkcji Vercel.
-          operatorSnapshot: ((appContext as any).operatorSnapshot && typeof (appContext as any).operatorSnapshot === 'object') ? (appContext as any).operatorSnapshot : {},
+          operatorSnapshot: {
+            ...(((appContext as any).operatorSnapshot && typeof (appContext as any).operatorSnapshot === 'object') ? (appContext as any).operatorSnapshot : {}),
+            workspaceId: (appContext as any).workspaceId || workspace.id,
+          },
           summary: ((appContext as any).summary && typeof (appContext as any).summary === 'object') ? (appContext as any).summary : {},
           relations: ((appContext as any).relations && typeof (appContext as any).relations === 'object') ? (appContext as any).relations : {},
           searchIndex: asRecordArray((appContext as any).searchIndex),

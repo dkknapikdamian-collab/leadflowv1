@@ -255,6 +255,7 @@ export function saveAiLeadDraft(input: {
   rawText: string;
   parsedDraft?: Record<string, unknown> | null;
   source?: AiLeadDraftSource;
+  type?: AiLeadDraft['type'];
 }) {
   const draft = createLocalAiLeadDraft(input);
   const drafts = getAiLeadDrafts();
@@ -269,6 +270,7 @@ export async function saveAiLeadDraftAsync(input: {
   rawText: string;
   parsedDraft?: Record<string, unknown> | null;
   source?: AiLeadDraftSource;
+  type?: AiLeadDraft['type'];
 }) {
   const draft = createLocalAiLeadDraft(input);
   const drafts = getAiLeadDrafts();
