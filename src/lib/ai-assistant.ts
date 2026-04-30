@@ -462,38 +462,55 @@ function getContextWorkspaceId(context: TodayAiAssistantInput['context']) {
 
 // AI_APP_CONTEXT_OPERATOR_STAGE26_TYPES: odpowiedź zachowuje stary kontrakt UI i dodaje { mode, answer, items, draft }.
 export async function askTodayAiAssistant(input: TodayAiAssistantInput) {
-  const stage32LocalAnswer = buildStage32LocalQueryBrainAnswer(input);
-  if (stage32LocalAnswer) return stage32LocalAnswer;
-
+  // AI_ASSISTANT_SEMANTIC_ROUTER_STAGE33_CLIENT
+  // Modelowy router semantyczny jest pierwszą ścieżką dla pytań o aplikację.
+  // Lokalny Stage32 zostaje tylko jako offline/error fallback, a nie jako główny mózg oparty o frazy.
+  const stage32LocalFallback = buildStage32LocalQueryBrainAnswer(input);
   const auth = getClientAuthSnapshot();
   const workspaceId = getContextWorkspaceId(input.context);
-  const response = await fetch('/api/system?kind=ai-assistant', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-user-id': auth.uid,
-      'x-user-email': auth.email,
-      'x-user-name': auth.fullName,
-      'x-workspace-id': workspaceId,
-    },
-    body: JSON.stringify({
-      rawText: input.rawText,
-      now: new Date().toISOString(),
-      workspaceId,
-      context: {
-        ...input.context,
-        workspaceId,
-        now: input.context.now || new Date().toISOString(),
+
+  try {
+    const response = await fetch('/api/system?kind=ai-assistant', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-id': auth.uid,
+        'x-user-email': auth.email,
+        'x-user-name': auth.fullName,
+        'x-workspace-id': workspaceId,
       },
-    }),
-  });
+      body: JSON.stringify({
+        rawText: input.rawText,
+        now: new Date().toISOString(),
+        workspaceId,
+        semanticRouter: true,
+        context: {
+          ...input.context,
+          workspaceId,
+          now: input.context.now || new Date().toISOString(),
+        },
+      }),
+    });
 
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(String(data?.error || 'AI_ASSISTANT_FAILED'));
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(String(data?.error || 'AI_ASSISTANT_FAILED'));
+    }
+
+    return data as TodayAiAssistantAnswer;
+  } catch (error) {
+    if (stage32LocalFallback) {
+      return {
+        ...stage32LocalFallback,
+        warnings: [
+          ...(stage32LocalFallback.warnings || []),
+          'Fallback lokalny: modelowy router semantyczny nie odpowiedział, więc użyto awaryjnych reguł z danych aplikacji.',
+        ],
+      };
+    }
+
+    throw error;
   }
-
-  return data as TodayAiAssistantAnswer;
 }
 
 void ASSISTANT_LEAD_DRAFT_CONTRACT_TITLE;

@@ -1,0 +1,125 @@
+/* AI_DRAFTS_GENERATED_TEXT_CONTRAST_STAGE33A
+   Guardrail: wygenerowany szkic i panel zatwierdzania nie mogą mieć białego tekstu na białym tle. */
+
+.ai-drafts-vnext-page,
+.ai-drafts-vnext-page * {
+  color-scheme: light;
+}
+
+.ai-drafts-vnext-page .ai-drafts-row,
+.ai-drafts-vnext-page .ai-drafts-row-grid,
+.ai-drafts-vnext-page .ai-drafts-detail-panel,
+.ai-drafts-vnext-page .ai-drafts-approval-panel,
+.ai-drafts-vnext-page .ai-drafts-inline-edit,
+.ai-drafts-vnext-page .ai-drafts-recognized-card,
+.ai-drafts-vnext-page .ai-drafts-detail-box,
+.ai-drafts-vnext-page .ai-drafts-relation-picker,
+.ai-drafts-vnext-page .ai-drafts-transfer-target,
+.ai-drafts-vnext-page .ai-drafts-relation-option,
+.ai-drafts-vnext-page .ai-drafts-list-card,
+.ai-drafts-vnext-page .ai-drafts-toolbar-card {
+  color: #111827 !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-detail-panel,
+.ai-drafts-vnext-page .ai-drafts-approval-panel,
+.ai-drafts-vnext-page .ai-drafts-inline-edit {
+  background: #f9fafb !important;
+  border-color: #e4e7ec !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-source-text,
+.ai-drafts-vnext-page .ai-drafts-source-note,
+.ai-drafts-vnext-page .ai-drafts-row-main p,
+.ai-drafts-vnext-page .ai-drafts-detail-titlebar p,
+.ai-drafts-vnext-page .ai-drafts-recognized-card dd,
+.ai-drafts-vnext-page .ai-drafts-relation-option small,
+.ai-drafts-vnext-page .ai-drafts-relation-empty,
+.ai-drafts-vnext-page .ai-drafts-transfer-target small,
+.ai-drafts-vnext-page .ai-drafts-form-grid label,
+.ai-drafts-vnext-page .ai-drafts-form-stack label {
+  color: #475467 !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-row-main h2,
+.ai-drafts-vnext-page .ai-drafts-detail-titlebar h3,
+.ai-drafts-vnext-page .ai-drafts-detail-box strong,
+.ai-drafts-vnext-page .ai-drafts-recognized-card dd,
+.ai-drafts-vnext-page .ai-drafts-relation-picker-head strong,
+.ai-drafts-vnext-page .ai-drafts-relation-option span,
+.ai-drafts-vnext-page .ai-drafts-transfer-target span,
+.ai-drafts-vnext-page .ai-drafts-empty-state h2,
+.ai-drafts-vnext-page .ai-drafts-loading-state h2 {
+  color: #111827 !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-source-text {
+  background: #ffffff !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 16px !important;
+  padding: 12px !important;
+  color: #111827 !important;
+  line-height: 1.55 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-inline-edit textarea,
+.ai-drafts-vnext-page .ai-drafts-approval-textarea,
+.ai-drafts-vnext-page .ai-drafts-approval-input,
+.ai-drafts-vnext-page .ai-drafts-relation-picker input,
+.ai-drafts-vnext-page .ai-drafts-search-box input,
+.ai-drafts-vnext-page textarea,
+.ai-drafts-vnext-page input,
+.ai-drafts-vnext-page select {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #d0d5dd !important;
+  caret-color: #2563eb !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-inline-edit textarea::placeholder,
+.ai-drafts-vnext-page .ai-drafts-approval-textarea::placeholder,
+.ai-drafts-vnext-page .ai-drafts-approval-input::placeholder,
+.ai-drafts-vnext-page .ai-drafts-relation-picker input::placeholder,
+.ai-drafts-vnext-page .ai-drafts-search-box input::placeholder,
+.ai-drafts-vnext-page textarea::placeholder,
+.ai-drafts-vnext-page input::placeholder {
+  color: #98a2b3 !important;
+  opacity: 1 !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-action,
+.ai-drafts-vnext-page .ai-drafts-header-button,
+.ai-drafts-vnext-page .ai-drafts-filter-pill,
+.ai-drafts-vnext-page .ai-drafts-rail-button,
+.ai-drafts-vnext-page button {
+  color: #1f2937;
+}
+
+.ai-drafts-vnext-page .ai-drafts-action-blue,
+.ai-drafts-vnext-page .ai-drafts-filter-pill-active,
+.ai-drafts-vnext-page .ai-drafts-transfer-target-active,
+.ai-drafts-vnext-page .ai-drafts-relation-option-active {
+  color: #1d4ed8 !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-action-green {
+  color: #067647 !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-action-red {
+  color: #c01048 !important;
+}
+
+@media (max-width: 860px) {
+  .ai-drafts-vnext-page .ai-drafts-source-text {
+    max-height: 220px;
+    font-size: 13px !important;
+  }
+
+  .ai-drafts-vnext-page .ai-drafts-row-main p,
+  .ai-drafts-vnext-page .ai-drafts-source-col,
+  .ai-drafts-vnext-page .ai-drafts-date-col {
+    color: #475467 !important;
+  }
+}

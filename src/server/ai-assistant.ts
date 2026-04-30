@@ -1,3 +1,4 @@
+import { tryGenerateJsonWithAiProvider } from './ai-provider.js';
 type AssistantIntent = 'today_briefing' | 'lead_lookup' | 'lead_capture' | 'global_app_search' | 'blocked_out_of_scope' | 'unknown';
 
 type AssistantItem = {
@@ -10,7 +11,7 @@ type AssistantItem = {
 type AssistantResponse = {
   ok: true;
   scope: 'assistant_read_or_draft_only';
-  provider: 'rules';
+  provider: string;
   noAutoWrite: true;
   intent: AssistantIntent;
   title: string;
@@ -614,6 +615,183 @@ function buildDraftReviewAnswer(context: Record<string, unknown>, rawText: strin
   };
 }
 
+
+// AI_ASSISTANT_SEMANTIC_ROUTER_STAGE33_SERVER
+// To nie jest słownik fraz. Model dostaje mapę aplikacji i kompaktowy snapshot danych,
+// sam tworzy plan odpowiedzi i zwraca ustrukturyzowany JSON zgodny z UI asystenta.
+const AI_ASSISTANT_SEMANTIC_ROUTER_STAGE33_SERVER = true;
+
+function stage33ParseRequestBody(req: any): Record<string, unknown> {
+  const body = req?.body;
+  if (!body) return {};
+  if (typeof body === 'string') {
+    try {
+      const parsed = JSON.parse(body);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed as Record<string, unknown> : {};
+    } catch {
+      return {};
+    }
+  }
+  return body && typeof body === 'object' && !Array.isArray(body) ? body as Record<string, unknown> : {};
+}
+
+function stage33CompactRecord(kind: string, row: Record<string, unknown>, index: number) {
+  const id = getId(row) || asText(row.id) || asText(row.uid) || String(index + 1);
+  const title = kind === 'lead'
+    ? getLeadDisplayName(row)
+    : kind === 'client'
+      ? getClientDisplayName(row)
+      : kind === 'case'
+        ? getCaseDisplayName(row)
+        : asText(row.title || row.name || row.subject || row.rawText || row.raw_text) || kind + ' ' + String(index + 1);
+  const moment = kind === 'task'
+    ? getTaskMoment(row)
+    : kind === 'event'
+      ? getEventMoment(row)
+      : asText(row.nextActionAt || row.next_action_at || row.updatedAt || row.updated_at || row.createdAt || row.created_at);
+  return {
+    kind,
+    id,
+    title,
+    status: asText(row.status || row.state || row.stage),
+    priority: asText(row.priority),
+    moment,
+    value: getRecordValue(row),
+    email: asText(row.email || row.mail || row.contactEmail),
+    phone: asText(row.phone || row.telefon || row.mobile || row.contactPhone),
+    company: asText(row.company || row.clientName || row.client_name),
+    leadId: asText(row.leadId || row.lead_id),
+    clientId: asText(row.clientId || row.client_id),
+    caseId: asText(row.caseId || row.case_id),
+    notes: asText(row.notes || row.note || row.description || row.summary || row.rawText || row.raw_text).slice(0, 240),
+  };
+}
+
+function stage33BuildCompactSnapshot(context: Record<string, unknown>) {
+  const take = (kind: string, value: unknown, limit: number) => safeArray(value).slice(0, limit).map((row, index) => stage33CompactRecord(kind, row, index));
+  return {
+    appMap: {
+      today: 'Dziś: priorytety, zadania, terminy, skróty pracy i szkice AI do sprawdzenia.',
+      leads: 'Leady: kontakty sprzedażowe przed przejściem do klienta/sprawy.',
+      clients: 'Klienci: kartoteka osób i firm oraz przejście do aktywnych spraw.',
+      cases: 'Sprawy: obsługa procesu po sprzedaży lub przyjęciu zlecenia.',
+      tasks: 'Zadania: rzeczy do wykonania, statusy, terminy, priorytety.',
+      calendar: 'Kalendarz: wydarzenia, spotkania i plan najbliższych dni.',
+      aiDrafts: 'Szkice AI: robocze zapisy do ręcznego zatwierdzenia.',
+      notifications: 'Powiadomienia: alerty i przypomnienia.',
+      billing: 'Rozliczenia: plan, trial, płatności.',
+      settings: 'Ustawienia: profil, aplikacja, PWA, preferencje i konfiguracje.',
+    },
+    counts: {
+      leads: safeArray(context.leads).length,
+      clients: safeArray((context as any).clients).length,
+      cases: safeArray(context.cases).length,
+      tasks: safeArray(context.tasks).length,
+      events: safeArray(context.events).length,
+      drafts: safeArray((context as any).drafts).length,
+    },
+    leads: take('lead', context.leads, 80),
+    clients: take('client', (context as any).clients, 80),
+    cases: take('case', context.cases, 80),
+    tasks: take('task', context.tasks, 140),
+    events: take('event', context.events, 120),
+    drafts: take('draft', (context as any).drafts, 40),
+  };
+}
+
+function stage33SemanticRouterPrompt(rawText: string, context: Record<string, unknown>, nowIso: string) {
+  const snapshot = stage33BuildCompactSnapshot(context);
+  return [
+    'Jesteś semantycznym operatorem danych aplikacji CloseFlow.',
+    'Nie jesteś słownikiem fraz. Nie dopasowuj gotowych pytań do gotowych odpowiedzi.',
+    'Zrozum intencję użytkownika dowolnie sformułowaną po polsku, utwórz plan zapytania, użyj WYŁĄCZNIE danych z JSON i odpowiedz krótko.',
+    'Jeżeli pytanie dotyczy zapisu/utworzenia rekordu, nie twórz finalnego rekordu. Zwróć canAnswer=false, bo zapis obsługują Szkice AI.',
+    'Jeżeli nie da się odpowiedzieć z danych aplikacji, zwróć canAnswer=false.',
+    'Zwróć tylko poprawny JSON bez markdown. Kształt:',
+    '{"canAnswer":true,"intent":"global_app_search|today_briefing|lead_lookup|unknown","title":"...","summary":"...","items":[{"label":"...","detail":"...","href":"/tasks","priority":"low|medium|high"}],"warnings":[]}',
+    'Dzisiaj/teraz ISO: ' + nowIso,
+    'Pytanie użytkownika: ' + rawText,
+    'Snapshot aplikacji JSON:',
+    JSON.stringify(snapshot),
+  ].join('\n');
+}
+
+function stage33ValidIntent(value: unknown): AssistantIntent {
+  const normalized = asText(value);
+  if (normalized === 'today_briefing' || normalized === 'lead_lookup' || normalized === 'lead_capture' || normalized === 'global_app_search' || normalized === 'blocked_out_of_scope' || normalized === 'unknown') return normalized;
+  return 'global_app_search';
+}
+
+function stage33ValidPriority(value: unknown): 'low' | 'medium' | 'high' {
+  const normalized = asText(value);
+  if (normalized === 'low' || normalized === 'medium' || normalized === 'high') return normalized;
+  return 'medium';
+}
+
+function stage33CoerceItems(value: unknown): AssistantItem[] {
+  return safeArray(value).slice(0, 10).map((item) => ({
+    label: asText(item.label || item.title || item.name) || 'Wynik',
+    detail: asText(item.detail || item.summary || item.description),
+    href: asText(item.href || item.url || item.path) || undefined,
+    priority: stage33ValidPriority(item.priority),
+  })).filter((item) => Boolean(item.label));
+}
+
+function stage33CoerceWarnings(value: unknown) {
+  return Array.isArray(value)
+    ? value.map((entry) => asText(entry)).filter(Boolean).slice(0, 4)
+    : [];
+}
+
+async function tryStage33SemanticAiAnswer(context: Record<string, unknown>, rawText: string, nowIso: string): Promise<AssistantResponse | null> {
+  const command = asText(rawText);
+  if (!command || command.length > ASSISTANT_MAX_COMMAND_LENGTH) return null;
+  const normalized = normalizeText(command);
+  if (!normalized) return null;
+  if (detectCaptureIntent(normalized)) return null;
+  if (OUT_OF_SCOPE_BLOCK_PATTERNS.some((pattern) => pattern.test(normalized))) return null;
+
+  const prompt = stage33SemanticRouterPrompt(command, context, nowIso);
+  const generated = await tryGenerateJsonWithAiProvider(prompt, {
+    operation: 'ai_assistant_semantic_router_stage33',
+    maxOutputTokens: 900,
+    temperature: 0.05,
+  });
+
+  const json = generated?.json;
+  if (!json || json.canAnswer !== true) return null;
+
+  const title = asText(json.title) || 'Odpowiedź z danych aplikacji';
+  const summary = asText(json.summary || json.answer) || 'Sprawdziłem dane aplikacji.';
+
+  return {
+    ok: true,
+    scope: 'assistant_read_or_draft_only',
+    provider: 'semantic_ai:' + generated.provider,
+    costGuard: 'external_ai',
+    noAutoWrite: true,
+    intent: stage33ValidIntent(json.intent),
+    title,
+    summary,
+    rawText: command,
+    items: stage33CoerceItems(json.items),
+    warnings: stage33CoerceWarnings(json.warnings),
+  };
+}
+
+async function tryStage33SemanticAssistantFromRequest(req: any): Promise<AssistantResponse | null> {
+  const body = stage33ParseRequestBody(req);
+  const rawText = asText((body as any).rawText);
+  const context = ((body as any).context && typeof (body as any).context === 'object' && !Array.isArray((body as any).context))
+    ? (body as any).context as Record<string, unknown>
+    : {};
+  const nowIso = asText((body as any).now || (context as any).now) || new Date().toISOString();
+  return tryStage33SemanticAiAnswer(context, rawText, nowIso);
+}
+
+void AI_ASSISTANT_SEMANTIC_ROUTER_STAGE33_SERVER;
+
+
 function detectCaptureIntent(query: string) {
   const saveCommandPattern = /\b(zapisz|dodaj|utworz|stworz|wrzuc|wrzucic|zapamietaj|notuj|zanotuj)\b/u;
   const leadCommandPattern = /\b(mam leada|mam lead|nowy lead|nowego leada|nowy kontakt|nowego klienta|dodaj klienta|dodaj kontakt)\b/u;
@@ -911,6 +1089,12 @@ function buildAssistantAnswer(body: Record<string, unknown>): AssistantResponse 
 }
 
 export default async function aiAssistantHandler(req: any, res: any) {
+  const stage33SemanticEarlyAnswer = await tryStage33SemanticAssistantFromRequest(req).catch(() => null);
+  if (stage33SemanticEarlyAnswer) {
+    res.status(200).json(stage33SemanticEarlyAnswer);
+    return;
+  }
+
   try {
     if (req.method !== 'POST') {
       res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
