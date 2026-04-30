@@ -277,10 +277,53 @@ export function expandTaskEntries(tasks: any[], rangeStart: Date, rangeEnd: Date
 }
 
 export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
-  void leads;
-  void rangeStart;
-  void rangeEnd;
-  return [];
+  // STAGE34_CALENDAR_LEAD_NEXT_ACTIONS: lead follow-up / next-action dates are real calendar entries.
+  const readText = (...values: unknown[]) => {
+    for (const value of values) {
+      if (typeof value === 'string' && value.trim()) return value.trim();
+    }
+    return '';
+  };
+
+  const readLeadMoment = (lead: any) => readText(
+    lead?.nextActionAt,
+    lead?.next_action_at,
+    lead?.followUpAt,
+    lead?.follow_up_at,
+    lead?.scheduledAt,
+    lead?.scheduled_at,
+    lead?.dueAt,
+    lead?.due_at,
+    lead?.reminderAt,
+    lead?.reminder_at,
+  );
+
+  return leads.flatMap((lead, index) => {
+    const rawMoment = readLeadMoment(lead);
+    if (!rawMoment) return [] as ScheduleEntry[];
+
+    const parsed = parseISO(rawMoment);
+    if (Number.isNaN(parsed.getTime())) return [] as ScheduleEntry[];
+    if (isBefore(parsed, rangeStart) || isAfter(parsed, rangeEnd)) return [] as ScheduleEntry[];
+
+    const id = readText(lead?.id, lead?.leadId, lead?.lead_id) || String(index);
+    const titleSource = readText(lead?.nextAction, lead?.next_action, lead?.title, lead?.name, lead?.company, lead?.phone, lead?.email);
+    const name = readText(lead?.name, lead?.company, lead?.phone, lead?.email) || 'Lead bez nazwy';
+
+    return [{
+      id: 'lead:' + id + ':next-action',
+      kind: 'lead' as const,
+      title: titleSource ? 'Lead: ' + titleSource : 'Lead: ' + name,
+      startsAt: toDateTimeLocalValue(parsed),
+      endsAt: null,
+      sourceId: id,
+      link: id ? '/leads/' + id : '/leads',
+      badgeLabel: 'Lead',
+      leadId: id,
+      leadName: name,
+      raw: lead,
+    }];
+  });
 }
 
 function choosePreferredEntry(existing: ScheduleEntry, incoming: ScheduleEntry) {

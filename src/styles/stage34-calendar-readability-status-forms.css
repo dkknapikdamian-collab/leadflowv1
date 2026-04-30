@@ -1,0 +1,263 @@
+/* STAGE34_CALENDAR_READABILITY_STATUS_FORMS
+   Mobile/desktop readability lock for Calendar month/week entries and form fields.
+   Scope: Calendar route and Radix calendar/task/event dialogs only.
+*/
+
+.main[data-current-section="kalendarz"],
+.main [data-calendar-stage34],
+.view[data-calendar-stage34] {
+  overflow-x: clip;
+}
+
+/* Month/week entries: stop hiding the useful part of the title. */
+.main[data-current-section="kalendarz"] .truncate,
+.main[data-current-section="kalendarz"] [class*="truncate"] {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  min-width: 0 !important;
+}
+
+.main[data-current-section="kalendarz"] button,
+.main[data-current-section="kalendarz"] a {
+  min-width: 0;
+}
+
+/* Calendar pills in the month grid. Keep the chip look, but allow two readable lines. */
+.main[data-current-section="kalendarz"] [class*="rounded-full"][class*="border"] {
+  max-width: 100%;
+}
+
+.main[data-current-section="kalendarz"] [class*="rounded-full"][class*="border"] span,
+.main[data-current-section="kalendarz"] [class*="rounded-full"][class*="border"] p,
+.main[data-current-section="kalendarz"] [class*="rounded-full"][class*="border"] strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Month day cards may grow a little instead of turning entries into unreadable scraps. */
+.main[data-current-section="kalendarz"] [class*="grid"] > [class*="rounded"] {
+  min-width: 0;
+}
+
+.main[data-current-section="kalendarz"] [class*="calendar-month"],
+.main[data-current-section="kalendarz"] [data-calendar-month],
+.main[data-current-section="kalendarz"] [data-calendar-view="month"] {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* Completed items: visible strike-through in month, week and detail list. */
+.main[data-current-section="kalendarz"] .calendar-entry-completed,
+.main[data-current-section="kalendarz"] [data-calendar-entry-completed="true"] {
+  opacity: 0.62 !important;
+  filter: grayscale(0.15);
+}
+
+.main[data-current-section="kalendarz"] .calendar-entry-completed,
+.main[data-current-section="kalendarz"] .calendar-entry-completed *,
+.main[data-current-section="kalendarz"] [data-calendar-entry-completed="true"],
+.main[data-current-section="kalendarz"] [data-calendar-entry-completed="true"] * {
+  text-decoration: line-through !important;
+  text-decoration-thickness: 2px !important;
+  text-decoration-color: rgba(71, 85, 105, 0.75) !important;
+}
+
+/* Do not strike action buttons inside completed cards. */
+.main[data-current-section="kalendarz"] .calendar-entry-completed button,
+.main[data-current-section="kalendarz"] .calendar-entry-completed button *,
+.main[data-current-section="kalendarz"] [data-calendar-entry-completed="true"] button,
+.main[data-current-section="kalendarz"] [data-calendar-entry-completed="true"] button * {
+  text-decoration: none !important;
+}
+
+/* Week/day list: dense but readable cards. */
+.main[data-current-section="kalendarz"] [data-calendar-week-list],
+.main[data-current-section="kalendarz"] [data-calendar-day-list] {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.main[data-current-section="kalendarz"] [data-calendar-week-list] > *,
+.main[data-current-section="kalendarz"] [data-calendar-day-list] > * {
+  min-width: 0;
+}
+
+/* Calendar dialog / modal contrast: white fields, dark text, visible placeholders. */
+.main[data-current-section="kalendarz"] input,
+.main[data-current-section="kalendarz"] select,
+.main[data-current-section="kalendarz"] textarea,
+[data-radix-dialog-content] input,
+[data-radix-dialog-content] select,
+[data-radix-dialog-content] textarea,
+[role="dialog"] input,
+[role="dialog"] select,
+[role="dialog"] textarea {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none;
+  caret-color: #2563eb !important;
+}
+
+.main[data-current-section="kalendarz"] input::placeholder,
+.main[data-current-section="kalendarz"] textarea::placeholder,
+[data-radix-dialog-content] input::placeholder,
+[data-radix-dialog-content] textarea::placeholder,
+[role="dialog"] input::placeholder,
+[role="dialog"] textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+.main[data-current-section="kalendarz"] input:focus,
+.main[data-current-section="kalendarz"] select:focus,
+.main[data-current-section="kalendarz"] textarea:focus,
+[data-radix-dialog-content] input:focus,
+[data-radix-dialog-content] select:focus,
+[data-radix-dialog-content] textarea:focus,
+[role="dialog"] input:focus,
+[role="dialog"] select:focus,
+[role="dialog"] textarea:focus {
+  border-color: #2563eb !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16) !important;
+}
+
+/* Native date/time picker icon on dark browsers. */
+.main[data-current-section="kalendarz"] input[type="date"]::-webkit-calendar-picker-indicator,
+.main[data-current-section="kalendarz"] input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+[role="dialog"] input[type="date"]::-webkit-calendar-picker-indicator,
+[role="dialog"] input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  opacity: 0.75;
+  filter: none !important;
+}
+
+/* Dialog shell: remove dark strips/wrappers and prevent cut-off. */
+[data-radix-dialog-content],
+[role="dialog"] {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-radix-dialog-content] *,
+[role="dialog"] * {
+  border-color: rgba(203, 213, 225, 0.95);
+}
+
+[data-radix-dialog-content] [class*="bg-slate-950"],
+[data-radix-dialog-content] [class*="bg-slate-900"],
+[role="dialog"] [class*="bg-slate-950"],
+[role="dialog"] [class*="bg-slate-900"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-radix-dialog-content] [class*="text-white"],
+[role="dialog"] [class*="text-white"] {
+  color: #0f172a !important;
+}
+
+[data-radix-dialog-content] [class*="text-slate-50"],
+[data-radix-dialog-content] [class*="text-slate-100"],
+[data-radix-dialog-content] [class*="text-slate-200"],
+[role="dialog"] [class*="text-slate-50"],
+[role="dialog"] [class*="text-slate-100"],
+[role="dialog"] [class*="text-slate-200"] {
+  color: #334155 !important;
+}
+
+/* Keep real primary submit buttons green/blue and readable. */
+[data-radix-dialog-content] button[class*="bg-emerald"],
+[data-radix-dialog-content] button[class*="bg-green"],
+[role="dialog"] button[class*="bg-emerald"],
+[role="dialog"] button[class*="bg-green"] {
+  color: #052e16 !important;
+}
+
+[data-radix-dialog-content] button[class*="bg-blue"],
+[role="dialog"] button[class*="bg-blue"] {
+  color: #0f172a !important;
+}
+
+/* Calendar form recurrence panels: no grey-on-white / white-on-white. */
+.main[data-current-section="kalendarz"] fieldset,
+.main[data-current-section="kalendarz"] [class*="recurrence"],
+.main[data-current-section="kalendarz"] [class*="reminder"],
+[data-radix-dialog-content] fieldset,
+[data-radix-dialog-content] [class*="recurrence"],
+[data-radix-dialog-content] [class*="reminder"] {
+  color: #334155 !important;
+}
+
+.main[data-current-section="kalendarz"] label,
+[data-radix-dialog-content] label,
+[role="dialog"] label {
+  color: #334155 !important;
+}
+
+/* Mobile polish. */
+@media (max-width: 768px) {
+  .main[data-current-section="kalendarz"] {
+    overflow-x: clip;
+  }
+
+  .main[data-current-section="kalendarz"] [class*="grid-cols-7"] {
+    gap: 8px !important;
+  }
+
+  .main[data-current-section="kalendarz"] [class*="grid-cols-7"] > * {
+    min-width: 0;
+  }
+
+  .main[data-current-section="kalendarz"] [class*="rounded-3xl"],
+  .main[data-current-section="kalendarz"] [class*="rounded-2xl"] {
+    max-width: 100%;
+  }
+
+  .main[data-current-section="kalendarz"] [class*="rounded-full"][class*="border"] {
+    height: auto !important;
+    min-height: 30px !important;
+    align-items: flex-start !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    line-height: 1.2 !important;
+  }
+
+  [data-radix-dialog-content],
+  [role="dialog"] {
+    width: min(100vw - 20px, 760px) !important;
+    max-height: calc(100dvh - 24px) !important;
+    overflow-y: auto !important;
+    border-radius: 22px !important;
+  }
+
+  [data-radix-dialog-content] form,
+  [role="dialog"] form {
+    min-width: 0;
+  }
+
+  [data-radix-dialog-content] input,
+  [data-radix-dialog-content] select,
+  [data-radix-dialog-content] textarea,
+  [role="dialog"] input,
+  [role="dialog"] select,
+  [role="dialog"] textarea {
+    min-height: 44px !important;
+    font-size: 15px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .main[data-current-section="kalendarz"] [class*="grid-cols-7"] {
+    gap: 6px !important;
+  }
+
+  .main[data-current-section="kalendarz"] [class*="rounded-full"][class*="border"] {
+    font-size: 11px !important;
+  }
+
+  .main[data-current-section="kalendarz"] [class*="rounded-full"][class*="border"] [class*="text-"] {
+    font-size: 11px !important;
+  }
+}

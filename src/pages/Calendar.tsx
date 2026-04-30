@@ -175,11 +175,25 @@ function getCalendarEntryStatus(entry: ScheduleEntry) {
 }
 
 function isCompletedCalendarEntry(entry: ScheduleEntry) {
+  // STAGE34_CALENDAR_COMPLETED_VISIBILITY: completed tasks/events stay visible but are clearly crossed out.
   const status = getCalendarEntryStatus(entry);
+  const doneStatuses = new Set([
+    'done',
+    'completed',
+    'complete',
+    'finished',
+    'closed',
+    'zrobione',
+    'wykonane',
+    'archived',
+  ]);
 
   return (
-    (entry.kind === 'task' && status === 'done') ||
-    (entry.kind === 'event' && (status === 'completed' || status === 'done'))
+    doneStatuses.has(status) ||
+    entry.raw?.done === true ||
+    entry.raw?.isDone === true ||
+    entry.raw?.is_done === true ||
+    Boolean(entry.raw?.completedAt || entry.raw?.completed_at || entry.raw?.doneAt || entry.raw?.done_at)
   );
 }
 
@@ -312,7 +326,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
   const deleteActionClass = `${actionButtonClass} border-rose-200 bg-rose-50 text-rose-700 hover:border-rose-300 hover:bg-rose-100`;
 
   return (
-    <div className={`rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md ${isCompletedEntry ? 'opacity-60' : ''}`}>
+    <div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} className={`calendar-entry-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md ${isCompletedEntry ? 'opacity-60' : ''}`}>
       <div className="grid gap-2 lg:grid-cols-[auto_minmax(220px,1fr)_76px_118px_auto] lg:items-center">
         <div className="flex min-w-0 items-center gap-1.5">
           <span className={`inline-flex h-6 shrink-0 items-center rounded-full border px-2.5 text-[12px] font-bold leading-none ${getCalendarEntryTypeClass(entry)}`}>
@@ -1104,6 +1118,7 @@ export default function Calendar() {
   if (loading) {
     return (
       <Layout>
+      <div data-calendar-stage34="readability-status-forms" hidden />
         <div className="flex items-center justify-center h-full">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
