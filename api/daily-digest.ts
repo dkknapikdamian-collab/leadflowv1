@@ -1,4 +1,4 @@
-/* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: poranny e-mail bez duplikatów, z timezone i szkicami AI. */
+﻿/* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: poranny e-mail bez duplikatów, z timezone i szkicami AI. */
 import { buildDailyDigestPayload, buildDigestEmail, shouldSendDigestNow } from '../src/server/_digest.js';
 import { insertWithVariants, selectFirstAvailable, updateWhere } from '../src/server/_supabase.js';
 import { withWorkspaceFilter } from '../src/server/_request-scope.js';
@@ -28,6 +28,15 @@ function asBool(value: unknown, fallback = false) {
   return fallback;
 }
 
+function getDigestEnabledSetting(row: Record<string, unknown>, fallback = true) {
+  const value =
+    row.daily_digest_enabled ??
+    row.dailyDigestEnabled ??
+    row.digest_enabled ??
+    row.digestEnabled;
+
+  return asBool(value, fallback);
+}
 function asInt(value: unknown, fallback: number) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return fallback;
@@ -590,3 +599,4 @@ export default async function handler(req: any, res: any) {
     res.status(500).json({ error: error?.message || 'DAILY_DIGEST_FAILED' });
   }
 }
+

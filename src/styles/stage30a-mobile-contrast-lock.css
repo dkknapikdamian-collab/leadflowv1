@@ -1,0 +1,431 @@
+/*
+STAGE30A_MOBILE_CONTRAST_LOCK
+Cel: naprawa czytelności na telefonie bez ruszania routingu, auth, API, danych ani logiki.
+Zakres:
+- globalny pasek akcji: Asystent AI, Szybki szkic, Szkice AI, Lead, Zadanie, Wydarzenie
+- mobilny drawer/menu z prawej strony
+- dolna mobilna nawigacja
+- kafelki i liczniki w Dziś
+- dropdowny/popover/dialogi używane na mobile
+
+To jest ostatnia warstwa kontrastu. Ma nadpisywać wcześniejsze skóry, które miejscami robiły tekst niewidoczny.
+*/
+
+:root {
+  --cf30a-text: #0f172a;
+  --cf30a-muted: #475569;
+  --cf30a-soft-muted: #64748b;
+  --cf30a-border: #dbe4f0;
+  --cf30a-card: #ffffff;
+  --cf30a-card-soft: #f8fafc;
+  --cf30a-blue: #2563eb;
+  --cf30a-blue-strong: #1d4ed8;
+  --cf30a-blue-soft: #eff6ff;
+  --cf30a-shadow: 0 14px 36px rgba(15, 23, 42, 0.10);
+}
+
+/* Globalny pasek: nie może dziedziczyć białego tekstu z żadnego wrappera. */
+.closeflow-visual-stage01 .global-bar,
+.cf-html-shell .global-bar {
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: var(--cf30a-text) !important;
+  border-bottom-color: var(--cf30a-border) !important;
+}
+
+.closeflow-visual-stage01 .global-actions,
+.cf-html-shell .global-actions,
+.closeflow-visual-stage01 [data-global-quick-actions="true"],
+.cf-html-shell [data-global-quick-actions="true"] {
+  color: var(--cf30a-text) !important;
+}
+
+.closeflow-visual-stage01 [data-global-quick-actions="true"] button,
+.closeflow-visual-stage01 [data-global-quick-actions="true"] a,
+.closeflow-visual-stage01 [data-global-quick-actions="true"] .btn,
+.cf-html-shell [data-global-quick-actions="true"] button,
+.cf-html-shell [data-global-quick-actions="true"] a,
+.cf-html-shell [data-global-quick-actions="true"] .btn {
+  min-height: 40px !important;
+  border: 1px solid #bfdbfe !important;
+  background: #ffffff !important;
+  color: var(--cf30a-blue-strong) !important;
+  -webkit-text-fill-color: var(--cf30a-blue-strong) !important;
+  border-radius: 13px !important;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.closeflow-visual-stage01 [data-global-quick-actions="true"] button svg,
+.closeflow-visual-stage01 [data-global-quick-actions="true"] a svg,
+.closeflow-visual-stage01 [data-global-quick-actions="true"] .btn svg,
+.cf-html-shell [data-global-quick-actions="true"] button svg,
+.cf-html-shell [data-global-quick-actions="true"] a svg,
+.cf-html-shell [data-global-quick-actions="true"] .btn svg {
+  color: var(--cf30a-blue-strong) !important;
+  stroke: currentColor !important;
+}
+
+.closeflow-visual-stage01 [data-global-quick-actions="true"] button:hover,
+.closeflow-visual-stage01 [data-global-quick-actions="true"] a:hover,
+.closeflow-visual-stage01 [data-global-quick-actions="true"] .btn:hover,
+.cf-html-shell [data-global-quick-actions="true"] button:hover,
+.cf-html-shell [data-global-quick-actions="true"] a:hover,
+.cf-html-shell [data-global-quick-actions="true"] .btn:hover {
+  background: var(--cf30a-blue-soft) !important;
+  color: var(--cf30a-blue-strong) !important;
+  -webkit-text-fill-color: var(--cf30a-blue-strong) !important;
+  border-color: #93c5fd !important;
+}
+
+/* Header mobilny i dolna nawigacja: zawsze jasne tło, ciemny tekst, nie "biały na białym". */
+@media (max-width: 760px) {
+  .closeflow-visual-stage01 .mobile-top,
+  .cf-html-shell .mobile-top,
+  .closeflow-visual-stage01 .mobile-nav,
+  .cf-html-shell .mobile-nav {
+    background: rgba(255, 255, 255, 0.97) !important;
+    color: var(--cf30a-text) !important;
+    border-color: var(--cf30a-border) !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-brand,
+  .cf-html-shell .mobile-brand,
+  .closeflow-visual-stage01 .mobile-brand span,
+  .cf-html-shell .mobile-brand span {
+    color: var(--cf30a-text) !important;
+    -webkit-text-fill-color: var(--cf30a-text) !important;
+    opacity: 1 !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-menu-btn,
+  .cf-html-shell .mobile-menu-btn {
+    background: #ffffff !important;
+    color: var(--cf30a-blue-strong) !important;
+    border-color: #bfdbfe !important;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08) !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-menu-btn svg,
+  .cf-html-shell .mobile-menu-btn svg {
+    color: var(--cf30a-blue-strong) !important;
+    stroke: currentColor !important;
+  }
+
+  .closeflow-visual-stage01 .global-bar,
+  .cf-html-shell .global-bar {
+    position: sticky !important;
+    top: 64px !important;
+    background: rgba(255, 255, 255, 0.97) !important;
+    border-bottom: 1px solid var(--cf30a-border) !important;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  .closeflow-visual-stage01 [data-global-quick-actions="true"],
+  .cf-html-shell [data-global-quick-actions="true"] {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    padding: 2px 1px 4px !important;
+    scrollbar-width: none;
+  }
+
+  .closeflow-visual-stage01 [data-global-quick-actions="true"]::-webkit-scrollbar,
+  .cf-html-shell [data-global-quick-actions="true"]::-webkit-scrollbar {
+    display: none;
+  }
+
+  .closeflow-visual-stage01 [data-global-quick-actions="true"] button,
+  .closeflow-visual-stage01 [data-global-quick-actions="true"] a,
+  .closeflow-visual-stage01 [data-global-quick-actions="true"] .btn,
+  .cf-html-shell [data-global-quick-actions="true"] button,
+  .cf-html-shell [data-global-quick-actions="true"] a,
+  .cf-html-shell [data-global-quick-actions="true"] .btn {
+    min-width: max-content !important;
+    min-height: 42px !important;
+    padding-inline: 12px !important;
+    background: #ffffff !important;
+    color: var(--cf30a-blue-strong) !important;
+    -webkit-text-fill-color: var(--cf30a-blue-strong) !important;
+    border-color: #bfdbfe !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-nav-btn,
+  .cf-html-shell .mobile-nav-btn {
+    color: var(--cf30a-muted) !important;
+    -webkit-text-fill-color: var(--cf30a-muted) !important;
+    opacity: 1 !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-nav-btn svg,
+  .cf-html-shell .mobile-nav-btn svg {
+    color: currentColor !important;
+    stroke: currentColor !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-nav-btn.active,
+  .cf-html-shell .mobile-nav-btn.active {
+    background: var(--cf30a-blue-soft) !important;
+    color: var(--cf30a-blue-strong) !important;
+    -webkit-text-fill-color: var(--cf30a-blue-strong) !important;
+  }
+
+  /* Menu z prawej strony na telefonie: jasne, czytelne, bez dziedziczenia białych tekstów. */
+  .closeflow-visual-stage01 .mobile-drawer-panel,
+  .cf-html-shell .mobile-drawer-panel {
+    background: #ffffff !important;
+    color: var(--cf30a-text) !important;
+    border-left: 1px solid var(--cf30a-border) !important;
+    box-shadow: -24px 0 70px rgba(15, 23, 42, 0.22) !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-head,
+  .closeflow-visual-stage01 .mobile-user-wrap,
+  .closeflow-visual-stage01 .mobile-drawer-footer,
+  .cf-html-shell .mobile-drawer-head,
+  .cf-html-shell .mobile-user-wrap,
+  .cf-html-shell .mobile-drawer-footer {
+    border-color: var(--cf30a-border) !important;
+    background: #ffffff !important;
+    color: var(--cf30a-text) !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .brand,
+  .cf-html-shell .mobile-drawer-panel .brand {
+    color: var(--cf30a-text) !important;
+    border-bottom-color: transparent !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .brand-logo,
+  .cf-html-shell .mobile-drawer-panel .brand-logo {
+    background: var(--cf30a-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24) !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .brand-title strong,
+  .closeflow-visual-stage01 .mobile-drawer-panel .brand-title span,
+  .cf-html-shell .mobile-drawer-panel .brand-title strong,
+  .cf-html-shell .mobile-drawer-panel .brand-title span {
+    color: var(--cf30a-text) !important;
+    -webkit-text-fill-color: var(--cf30a-text) !important;
+    opacity: 1 !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .brand-title span,
+  .cf-html-shell .mobile-drawer-panel .brand-title span {
+    color: var(--cf30a-muted) !important;
+    -webkit-text-fill-color: var(--cf30a-muted) !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-head .mobile-menu-btn,
+  .cf-html-shell .mobile-drawer-head .mobile-menu-btn {
+    background: var(--cf30a-blue-soft) !important;
+    color: var(--cf30a-blue-strong) !important;
+    border-color: #bfdbfe !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .nav-caption,
+  .cf-html-shell .mobile-drawer-panel .nav-caption {
+    color: var(--cf30a-soft-muted) !important;
+    -webkit-text-fill-color: var(--cf30a-soft-muted) !important;
+    opacity: 1 !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn,
+  .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn span,
+  .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn .nav-label,
+  .cf-html-shell .mobile-drawer-panel .nav-btn,
+  .cf-html-shell .mobile-drawer-panel .nav-btn span,
+  .cf-html-shell .mobile-drawer-panel .nav-btn .nav-label {
+    color: var(--cf30a-text) !important;
+    -webkit-text-fill-color: var(--cf30a-text) !important;
+    opacity: 1 !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn,
+  .cf-html-shell .mobile-drawer-panel .nav-btn {
+    background: #ffffff !important;
+    border: 1px solid transparent !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .nav-ico,
+  .cf-html-shell .mobile-drawer-panel .nav-ico {
+    background: var(--cf30a-blue-soft) !important;
+    color: var(--cf30a-blue-strong) !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn:hover,
+  .cf-html-shell .mobile-drawer-panel .nav-btn:hover,
+  .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn.active,
+  .cf-html-shell .mobile-drawer-panel .nav-btn.active,
+  .closeflow-visual-stage01 .mobile-drawer-panel a[aria-current="page"],
+  .cf-html-shell .mobile-drawer-panel a[aria-current="page"] {
+    background: var(--cf30a-blue-soft) !important;
+    border-color: #bfdbfe !important;
+    color: var(--cf30a-blue-strong) !important;
+    -webkit-text-fill-color: var(--cf30a-blue-strong) !important;
+    box-shadow: none !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn:hover span,
+  .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn.active span,
+  .cf-html-shell .mobile-drawer-panel .nav-btn:hover span,
+  .cf-html-shell .mobile-drawer-panel .nav-btn.active span {
+    color: var(--cf30a-blue-strong) !important;
+    -webkit-text-fill-color: var(--cf30a-blue-strong) !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .user-card,
+  .cf-html-shell .mobile-drawer-panel .user-card,
+  .closeflow-visual-stage01 .mobile-drawer-panel .trial-card,
+  .cf-html-shell .mobile-drawer-panel .trial-card {
+    background: var(--cf30a-card-soft) !important;
+    border: 1px solid var(--cf30a-border) !important;
+    color: var(--cf30a-text) !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .user-avatar,
+  .cf-html-shell .mobile-drawer-panel .user-avatar {
+    background: var(--cf30a-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .user-card strong,
+  .closeflow-visual-stage01 .mobile-drawer-panel .user-card span,
+  .closeflow-visual-stage01 .mobile-drawer-panel .trial-card,
+  .closeflow-visual-stage01 .mobile-drawer-panel .trial-card *,
+  .cf-html-shell .mobile-drawer-panel .user-card strong,
+  .cf-html-shell .mobile-drawer-panel .user-card span,
+  .cf-html-shell .mobile-drawer-panel .trial-card,
+  .cf-html-shell .mobile-drawer-panel .trial-card * {
+    color: var(--cf30a-text) !important;
+    -webkit-text-fill-color: var(--cf30a-text) !important;
+    opacity: 1 !important;
+  }
+
+  .closeflow-visual-stage01 .mobile-drawer-panel .sidebar-logout,
+  .cf-html-shell .mobile-drawer-panel .sidebar-logout {
+    background: #ffffff !important;
+    color: #b42318 !important;
+    -webkit-text-fill-color: #b42318 !important;
+    border-color: #fecaca !important;
+  }
+}
+
+/* Kafelki i liczby w Dziś: licznik nie może być blady na jasnym tle. */
+.main-today .metric,
+.main-today .stat-shortcut-card,
+.main-today .today-top-tile,
+.main-today .today-metric,
+.main-today [data-stat-shortcut-card],
+.main-today [role="button"].card,
+.main-today [data-today-top-shortcut],
+.main-today [data-today-tile-card="true"] {
+  background: #ffffff !important;
+  color: var(--cf30a-text) !important;
+  border-color: var(--cf30a-border) !important;
+}
+
+.main-today .metric strong,
+.main-today .stat-shortcut-card strong,
+.main-today .today-top-tile strong,
+.main-today .today-metric strong,
+.main-today [data-stat-shortcut-card] strong,
+.main-today [data-today-top-shortcut] strong,
+.main-today [data-today-tile-card="true"] strong,
+.main-today .metric [class*="text-"],
+.main-today .stat-shortcut-card [class*="text-"],
+.main-today .today-top-tile [class*="text-"],
+.main-today [data-stat-shortcut-card] [class*="text-"] {
+  color: var(--cf30a-text) !important;
+  -webkit-text-fill-color: var(--cf30a-text) !important;
+  opacity: 1 !important;
+}
+
+.main-today .metric small,
+.main-today .metric span,
+.main-today .metric p,
+.main-today .stat-shortcut-card small,
+.main-today .stat-shortcut-card span,
+.main-today .stat-shortcut-card p,
+.main-today .today-top-tile small,
+.main-today .today-top-tile span,
+.main-today .today-top-tile p,
+.main-today [data-stat-shortcut-card] small,
+.main-today [data-stat-shortcut-card] span,
+.main-today [data-stat-shortcut-card] p {
+  color: var(--cf30a-muted) !important;
+  -webkit-text-fill-color: var(--cf30a-muted) !important;
+  opacity: 1 !important;
+}
+
+/* Panele, dropdowny, popovery i dialogi: biały panel = ciemny tekst. */
+[data-radix-popper-content-wrapper] [role="menu"],
+[data-radix-popper-content-wrapper] [role="listbox"],
+[data-radix-popper-content-wrapper] [data-radix-dropdown-menu-content],
+[data-radix-popper-content-wrapper] .bg-white,
+[cmdk-root],
+[role="dialog"],
+[role="menu"],
+[role="listbox"] {
+  background-color: #ffffff !important;
+  color: var(--cf30a-text) !important;
+  border-color: var(--cf30a-border) !important;
+}
+
+[data-radix-popper-content-wrapper] [role="menu"] *,
+[data-radix-popper-content-wrapper] [role="listbox"] *,
+[role="dialog"] *,
+[role="menu"] *,
+[role="listbox"] * {
+  text-shadow: none !important;
+}
+
+[data-radix-popper-content-wrapper] [role="menuitem"],
+[data-radix-popper-content-wrapper] [role="option"],
+[role="menuitem"],
+[role="option"] {
+  color: var(--cf30a-text) !important;
+  -webkit-text-fill-color: var(--cf30a-text) !important;
+}
+
+[data-radix-popper-content-wrapper] [role="menuitem"]:focus,
+[data-radix-popper-content-wrapper] [role="menuitem"]:hover,
+[data-radix-popper-content-wrapper] [role="option"]:focus,
+[data-radix-popper-content-wrapper] [role="option"]:hover,
+[role="menuitem"]:focus,
+[role="menuitem"]:hover,
+[role="option"]:focus,
+[role="option"]:hover {
+  background: var(--cf30a-blue-soft) !important;
+  color: var(--cf30a-blue-strong) !important;
+  -webkit-text-fill-color: var(--cf30a-blue-strong) !important;
+}
+
+/* Formularze i selecty na mobile: inputy białe, tekst ciemny. */
+@media (max-width: 760px) {
+  .closeflow-visual-stage01 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  .closeflow-visual-stage01 textarea,
+  .closeflow-visual-stage01 select,
+  .cf-html-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  .cf-html-shell textarea,
+  .cf-html-shell select {
+    background: #ffffff !important;
+    color: var(--cf30a-text) !important;
+    -webkit-text-fill-color: var(--cf30a-text) !important;
+    border-color: var(--cf30a-border) !important;
+  }
+
+  .closeflow-visual-stage01 input::placeholder,
+  .closeflow-visual-stage01 textarea::placeholder,
+  .cf-html-shell input::placeholder,
+  .cf-html-shell textarea::placeholder {
+    color: #64748b !important;
+    -webkit-text-fill-color: #64748b !important;
+    opacity: 1 !important;
+  }
+}

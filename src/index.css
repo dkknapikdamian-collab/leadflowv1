@@ -251,3 +251,5 @@ Do not hide real alerts with text, link or button.
 @import "./styles/hotfix-lead-client-right-rail-dark-wrappers.css";
 @import "./styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css";
 @import './styles/hotfix-ai-drafts-right-rail-stage28.css';
+
+@import './styles/stage30a-mobile-contrast-lock.css';

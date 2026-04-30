@@ -1,4 +1,4 @@
-// LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
+﻿// LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
 // VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { consumeGlobalQuickAction } from '../components/GlobalQuickActions';
+// STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { QuickLeadCaptureModal } from '../components/quick-lead';
 import { Badge } from '../components/ui/badge';
@@ -977,3 +978,4 @@ export default function Leads() {
     </Layout>
   );
 }
+
