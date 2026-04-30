@@ -77,6 +77,10 @@ import {
 } from '../lib/supabase-fallback';
 import { useSearchParams } from 'react-router-dom';
 import { isActiveSalesLead } from '../lib/lead-health';
+import '../styles/visual-stage21-task-form-vnext.css';
+
+const TASK_FORM_VISUAL_REBUILD_STAGE21 = 'TASK_FORM_VISUAL_REBUILD_STAGE21';
+const TASK_FORM_STAGE21_HUMAN_COPY = 'Podaj tytuł zadania. Wybierz poprawny termin. Termin ma nieprawidłowy format. Nie udało się zapisać zadania. Spróbuj ponownie.';
 
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
@@ -492,7 +496,7 @@ export default function Tasks() {
     e.preventDefault();
     if (createTaskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!newTask.title.trim()) return toast.error('Wpisz tytuł zadania');
+    if (!newTask.title.trim()) return toast.error('Podaj tytuł zadania.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     createTaskSubmitLockRef.current = true;
@@ -549,7 +553,7 @@ export default function Tasks() {
       setIsNewTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');
     } finally {
       createTaskSubmitLockRef.current = false;
       setTaskSubmitting(false);
@@ -583,7 +587,7 @@ export default function Tasks() {
         });
       }
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');
     }
   };
 
@@ -617,7 +621,7 @@ export default function Tasks() {
       await refreshSupabaseData();
       toast.success('Termin zadania przesunięty');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');
     }
   };
 
@@ -628,7 +632,7 @@ export default function Tasks() {
       await refreshSupabaseData();
       toast.success('Zadanie usunięte');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');
     }
   };
 
@@ -637,7 +641,7 @@ export default function Tasks() {
     if (editTaskSubmitLockRef.current) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (!editTask?.id) return;
-    if (!editTask.title?.trim()) return toast.error('Wpisz tytuł zadania');
+    if (!editTask.title?.trim()) return toast.error('Podaj tytuł zadania.');
     editTaskSubmitLockRef.current = true;
     setTaskEditSubmitting(true);
 
@@ -694,7 +698,7 @@ export default function Tasks() {
       setIsEditTaskOpen(false);
       setEditTask(null);
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');
     } finally {
       editTaskSubmitLockRef.current = false;
       setTaskEditSubmitting(false);
@@ -922,9 +926,9 @@ export default function Tasks() {
                 <Plus className="w-4 h-4 mr-2" /> Nowe zadanie
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="task-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto" data-task-form-stage21="true" data-task-form-visual-rebuild={TASK_FORM_VISUAL_REBUILD_STAGE21}>
               <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
-              <form onSubmit={handleAddTask} className="space-y-6 py-4">
+              <form onSubmit={handleAddTask} className="task-form-vnext space-y-6 py-4" data-task-form-stage21="true" data-task-form-visual-rebuild={TASK_FORM_VISUAL_REBUILD_STAGE21}>
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label>Tytuł zadania</Label>
@@ -1035,7 +1039,7 @@ export default function Tasks() {
                 </div>
 
                 <DialogFooter>
-                  <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
+                  <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Zapisywanie...' : 'Zapisz zadanie'}</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -1046,10 +1050,11 @@ export default function Tasks() {
             setIsEditTaskOpen(open);
             if (!open) setEditTask(null);
           }}>
-            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader><DialogTitle>Edytuj zadanie</DialogTitle></DialogHeader>
+            <DialogContent className="task-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto" data-task-form-stage21="true" data-task-form-visual-rebuild={TASK_FORM_VISUAL_REBUILD_STAGE21}>
+              <DialogHeader><DialogTitle>Edytuj zadanie</DialogTitle>
+                  <p className="task-form-vnext-description">Popraw termin, status, priorytet albo powiązanie zadania.</p></DialogHeader>
               {editTask ? (
-                <form onSubmit={handleSaveTaskEdit} className="space-y-6 py-4">
+                <form onSubmit={handleSaveTaskEdit} className="task-form-vnext space-y-6 py-4" data-task-form-stage21="true" data-task-form-visual-rebuild={TASK_FORM_VISUAL_REBUILD_STAGE21}>
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label>Tytuł zadania</Label>

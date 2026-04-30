@@ -1,0 +1,279 @@
+/* TASK_FORM_VISUAL_REBUILD_STAGE21 */
+
+.task-form-vnext-content {
+  width: min(760px, calc(100vw - 24px)) !important;
+  max-width: 760px !important;
+  max-height: min(92vh, 900px);
+  overflow: hidden;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #111827 !important;
+  box-shadow: 0 24px 70px rgba(16, 24, 40, 0.16) !important;
+  padding: 0 !important;
+}
+
+.task-form-vnext-content::before,
+.task-form-vnext-content::after,
+.task-form-vnext::before,
+.task-form-vnext::after,
+.task-form-section::before,
+.task-form-section::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.task-form-vnext-header,
+.task-form-vnext-content [data-radix-dialog-header],
+.task-form-vnext-content .task-form-vnext-title-block {
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 34%),
+    #ffffff;
+}
+
+.task-form-vnext-content [data-radix-dialog-header],
+.task-form-vnext-header {
+  border-bottom: 1px solid #e4e7ec;
+  padding: 22px 24px 18px;
+}
+
+.task-form-vnext-title-block {
+  display: grid;
+  gap: 6px;
+}
+
+.task-form-vnext-kicker {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+}
+
+.task-form-vnext-content h2 {
+  color: #111827;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.task-form-vnext-title-block p,
+.task-form-vnext-content [data-description] {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.task-form-vnext {
+  max-height: calc(92vh - 110px);
+  overflow-y: auto;
+  padding: 18px 24px 22px;
+  display: grid;
+  gap: 14px;
+  background: #f9fafb;
+}
+
+.task-form-section,
+.task-form-vnext > .rounded-2xl,
+.task-form-vnext [data-task-edit-reminder-panel="true"] {
+  border: 1px solid #e4e7ec !important;
+  border-radius: 24px !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  padding: 16px !important;
+}
+
+.task-form-section-head {
+  margin-bottom: 14px;
+}
+
+.task-form-section-head h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+}
+
+.task-form-section-head p {
+  margin: 5px 0 0;
+  color: #667085;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.task-form-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.task-form-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.task-form-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.task-form-field {
+  display: grid !important;
+  gap: 7px !important;
+}
+
+.task-form-field-wide {
+  grid-column: 1 / -1;
+}
+
+.task-form-field label,
+.task-form-vnext label {
+  color: #475467;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.task-form-vnext input,
+.task-form-select,
+.task-form-vnext select,
+.task-form-vnext textarea {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  padding: 10px 13px;
+  font-size: 14px;
+  outline: none;
+  box-shadow: 0 4px 12px rgba(16, 24, 40, 0.03);
+}
+
+.task-form-vnext input:focus,
+.task-form-select:focus,
+.task-form-vnext select:focus,
+.task-form-vnext textarea:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.task-form-details {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.task-form-details summary {
+  cursor: pointer;
+  padding: 15px 16px;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 850;
+  list-style: none;
+}
+
+.task-form-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.task-form-details summary::after {
+  content: "+";
+  float: right;
+  color: #2563eb;
+  font-weight: 900;
+}
+
+.task-form-details[open] summary::after {
+  content: "-";
+}
+
+.task-form-details .task-form-grid {
+  border-top: 1px solid #e4e7ec;
+  padding: 16px;
+}
+
+.task-form-footer {
+  position: sticky;
+  bottom: -22px;
+  border-top: 1px solid #e4e7ec;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 14px 0 0;
+  gap: 10px;
+}
+
+.task-form-footer button {
+  width: auto !important;
+  min-height: 42px;
+  border-radius: 16px;
+  font-weight: 800;
+}
+
+.task-action-chip,
+.task-row button:has(+ svg),
+.task-row [role="menuitem"] {
+  border-radius: 999px;
+}
+
+.task-form-vnext-content .task-form-action-strip,
+.task-form-action-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.task-form-vnext-content .task-form-action-chip,
+.task-form-action-chip {
+  border: 1px solid #e4e7ec;
+  border-radius: 999px;
+  background: #fff;
+  color: #475467;
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .task-form-vnext-content {
+    width: calc(100vw - 16px) !important;
+    max-height: 94vh;
+    border-radius: 24px !important;
+  }
+
+  .task-form-vnext-header,
+  .task-form-vnext-content [data-radix-dialog-header] {
+    padding: 18px 16px 14px;
+  }
+
+  .task-form-vnext {
+    max-height: calc(94vh - 98px);
+    padding: 14px;
+  }
+
+  .task-form-grid-2,
+  .task-form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .task-form-field-wide {
+    grid-column: auto;
+  }
+
+  .task-form-footer {
+    display: grid !important;
+    grid-template-columns: 1fr;
+  }
+
+  .task-form-footer button {
+    width: 100% !important;
+  }
+}
+
+
+.task-form-vnext-description {
+  margin: 6px 0 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.5;
+}

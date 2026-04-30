@@ -7,6 +7,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { TASK_TYPES, toDateTimeLocalValue, type EditableTaskRecord } from '../lib/tasks';
 import type { RecurrenceEndType, RecurrenceRule } from '../lib/scheduling';
+import '../styles/visual-stage21-task-form-vnext.css';
 
 type TaskEditorDialogProps = {
   open: boolean;
@@ -68,13 +69,17 @@ export function TaskEditorDialog({ open, onOpenChange, task, leads, onSave }: Ta
   }, [open, task]);
 
   const dialogDescription = useMemo(
-    () => 'Zmień tytuł, datę, priorytet i powiązanie zadania. Zapis od razu odświeży listę i kalendarz.',
-    []
+    () => 'Popraw tytuł, termin, priorytet i powiązanie zadania. Zapis od razu odświeży listę i kalendarz.',
+    [],
   );
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!task) return;
+
+    if (!state.title.trim()) {
+      return;
+    }
 
     void onSave({
       id: task.id,
@@ -93,110 +98,138 @@ export function TaskEditorDialog({ open, onOpenChange, task, leads, onSave }: Ta
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Edytuj zadanie</DialogTitle>
-          <DialogDescription>{dialogDescription}</DialogDescription>
+      <DialogContent
+        className="task-form-vnext-content"
+        data-task-form-stage21="true"
+        aria-describedby="task-editor-stage21-description"
+      >
+        <DialogHeader className="task-form-vnext-header">
+          <div className="task-form-vnext-title-block">
+            <span className="task-form-vnext-kicker">ZADANIE</span>
+            <DialogTitle>Edytuj zadanie</DialogTitle>
+            <DialogDescription id="task-editor-stage21-description">{dialogDescription}</DialogDescription>
+          </div>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 py-2">
-          <div className="space-y-2">
-            <Label>Tytuł</Label>
-            <Input value={state.title} onChange={(event) => setState((prev) => ({ ...prev, title: event.target.value }))} required />
-          </div>
 
-          <LeadPicker
-            leads={leads}
-            selectedLeadId={state.leadId || undefined}
-            query={state.leadSearch}
-            onQueryChange={(value) => setState((prev) => ({ ...prev, leadSearch: value, leadId: '' }))}
-            onSelect={(lead) => setState((prev) => ({ ...prev, leadId: lead?.id || '', leadSearch: lead?.name || '' }))}
-            label="Powiąż z leadem"
-          />
+        <form onSubmit={handleSubmit} className="task-form-vnext" data-task-form-visual-rebuild="TASK_FORM_VISUAL_REBUILD_STAGE21">
+          <section className="task-form-section">
+            <div className="task-form-section-head">
+              <h3>Podstawy</h3>
+              <p>Co trzeba zrobić i do kiedy.</p>
+            </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Typ</Label>
-              <select
-                value={state.type}
-                onChange={(event) => setState((prev) => ({ ...prev, type: event.target.value }))}
-                className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
-              >
-                {TASK_TYPES.map((type) => (
-                  <option key={type.value} value={type.value}>{type.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="space-y-2">
-              <Label>Data</Label>
-              <Input type="date" value={state.date} onChange={(event) => setState((prev) => ({ ...prev, date: event.target.value }))} required />
-            </div>
-          </div>
+            <div className="task-form-grid task-form-grid-2">
+              <div className="task-form-field task-form-field-wide">
+                <Label>Tytuł</Label>
+                <Input value={state.title} onChange={(event) => setState((prev) => ({ ...prev, title: event.target.value }))} required />
+              </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Priorytet</Label>
-              <select
-                value={state.priority}
-                onChange={(event) => setState((prev) => ({ ...prev, priority: event.target.value }))}
-                className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
-              >
-                <option value="low">Niski</option>
-                <option value="medium">Średni</option>
-                <option value="high">Wysoki</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <Label>Przypomnienie</Label>
-              <Input type="datetime-local" value={state.reminderAt} onChange={(event) => setState((prev) => ({ ...prev, reminderAt: event.target.value }))} />
-            </div>
-          </div>
+              <div className="task-form-field">
+                <Label>Typ</Label>
+                <select
+                  value={state.type}
+                  onChange={(event) => setState((prev) => ({ ...prev, type: event.target.value }))}
+                  className="task-form-select"
+                >
+                  {TASK_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Cykliczność</Label>
-              <select
-                value={state.recurrenceRule}
-                onChange={(event) => setState((prev) => ({ ...prev, recurrenceRule: event.target.value as RecurrenceRule }))}
-                className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
-              >
-                <option value="none">Brak</option>
-                <option value="daily">Codziennie</option>
-                <option value="every_2_days">Co 2 dni</option>
-                <option value="weekly">Co tydzień</option>
-                <option value="monthly">Co miesiąc</option>
-                <option value="weekday">Dzień roboczy</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <Label>Koniec cyklu</Label>
-              <select
-                value={state.recurrenceEndType}
-                onChange={(event) => setState((prev) => ({ ...prev, recurrenceEndType: event.target.value as RecurrenceEndType }))}
-                className="app-input flex h-9 w-full rounded-md px-3 py-1 text-sm shadow-sm"
-              >
-                <option value="never">Bez końca</option>
-                <option value="until_date">Do daty</option>
-                <option value="count">Liczba razy</option>
-              </select>
-            </div>
-          </div>
+              <div className="task-form-field">
+                <Label>Termin</Label>
+                <Input type="date" value={state.date} onChange={(event) => setState((prev) => ({ ...prev, date: event.target.value }))} required />
+              </div>
 
-          {state.recurrenceEndType === 'until_date' ? (
-            <div className="space-y-2">
-              <Label>Data końcowa</Label>
-              <Input type="date" value={state.recurrenceEndAt} onChange={(event) => setState((prev) => ({ ...prev, recurrenceEndAt: event.target.value }))} />
-            </div>
-          ) : null}
+              <div className="task-form-field">
+                <Label>Priorytet</Label>
+                <select
+                  value={state.priority}
+                  onChange={(event) => setState((prev) => ({ ...prev, priority: event.target.value }))}
+                  className="task-form-select"
+                >
+                  <option value="low">Niski</option>
+                  <option value="medium">Średni</option>
+                  <option value="high">Wysoki</option>
+                </select>
+              </div>
 
-          {state.recurrenceEndType === 'count' ? (
-            <div className="space-y-2">
-              <Label>Liczba powtórzeń</Label>
-              <Input type="number" min="1" value={state.recurrenceCount} onChange={(event) => setState((prev) => ({ ...prev, recurrenceCount: event.target.value }))} />
+              <div className="task-form-field">
+                <Label>Przypomnienie</Label>
+                <Input type="datetime-local" value={state.reminderAt} onChange={(event) => setState((prev) => ({ ...prev, reminderAt: event.target.value }))} />
+              </div>
             </div>
-          ) : null}
+          </section>
 
-          <DialogFooter>
-            <Button type="submit" className="rounded-xl">Zapisz zadanie</Button>
+          <section className="task-form-section">
+            <div className="task-form-section-head">
+              <h3>Powiązanie</h3>
+              <p>Wybierz leada, jeśli zadanie dotyczy konkretnego tematu sprzedażowego.</p>
+            </div>
+
+            <LeadPicker
+              leads={leads}
+              selectedLeadId={state.leadId || undefined}
+              query={state.leadSearch}
+              onQueryChange={(value) => setState((prev) => ({ ...prev, leadSearch: value, leadId: '' }))}
+              onSelect={(lead) => setState((prev) => ({ ...prev, leadId: lead?.id || '', leadSearch: lead?.name || '' }))}
+              label="Powiązanie"
+            />
+          </section>
+
+          <details className="task-form-section task-form-details">
+            <summary>Cykliczność</summary>
+
+            <div className="task-form-grid task-form-grid-2">
+              <div className="task-form-field">
+                <Label>Cykliczność</Label>
+                <select
+                  value={state.recurrenceRule}
+                  onChange={(event) => setState((prev) => ({ ...prev, recurrenceRule: event.target.value as RecurrenceRule }))}
+                  className="task-form-select"
+                >
+                  <option value="none">Brak</option>
+                  <option value="daily">Codziennie</option>
+                  <option value="every_2_days">Co 2 dni</option>
+                  <option value="weekly">Co tydzień</option>
+                  <option value="monthly">Co miesiąc</option>
+                  <option value="weekday">Dzień roboczy</option>
+                </select>
+              </div>
+
+              <div className="task-form-field">
+                <Label>Koniec cyklu</Label>
+                <select
+                  value={state.recurrenceEndType}
+                  onChange={(event) => setState((prev) => ({ ...prev, recurrenceEndType: event.target.value as RecurrenceEndType }))}
+                  className="task-form-select"
+                >
+                  <option value="never">Bez końca</option>
+                  <option value="until_date">Do daty</option>
+                  <option value="count">Liczba razy</option>
+                </select>
+              </div>
+
+              {state.recurrenceEndType === 'until_date' ? (
+                <div className="task-form-field">
+                  <Label>Data końcowa</Label>
+                  <Input type="date" value={state.recurrenceEndAt} onChange={(event) => setState((prev) => ({ ...prev, recurrenceEndAt: event.target.value }))} />
+                </div>
+              ) : null}
+
+              {state.recurrenceEndType === 'count' ? (
+                <div className="task-form-field">
+                  <Label>Liczba powtórzeń</Label>
+                  <Input type="number" min="1" value={state.recurrenceCount} onChange={(event) => setState((prev) => ({ ...prev, recurrenceCount: event.target.value }))} />
+                </div>
+              ) : null}
+            </div>
+          </details>
+
+          <DialogFooter className="task-form-footer">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button>
+            <Button type="submit">Zapisz zadanie</Button>
           </DialogFooter>
         </form>
       </DialogContent>
