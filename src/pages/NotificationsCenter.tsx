@@ -30,6 +30,8 @@ import {
   getUnreadNotificationCount,
   markAllNotificationsRead,
   setBrowserNotificationsEnabled,
+  setNotificationSnooze,
+  clearNotificationSnooze,
   type NotificationItem,
   type NotificationLogItem,
 } from '../lib/notifications';
@@ -356,7 +358,7 @@ function NotificationsRow({
   onRestore,
 }: {
   row: NotificationRow;
-  onSnooze: (key: string, mode: '15m' | '1h' | 'tomorrow') => void;
+  onSnooze: (key: string, mode: NotificationSnoozeMode) => void;
   onRead: (key: string) => void;
   onRestore: (key: string) => void;
 }) {
@@ -433,7 +435,7 @@ export default function NotificationsCenter() {
   const [activeFilter, setActiveFilter] = useState<NotificationFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [readKeys, setReadKeys] = useState<string[]>([]);
-  const [snoozedUntilByKey, setSnoozedUntilByKey] = useState<Record<string, string>>({});
+  const [snoozedUntilByKey, setSnoozedUntilByKey] = useState<Record<string, string>>(() => getNotificationSnoozedUntilByKey());
 
   useEffect(() => {
     if (workspaceLoading || !workspace?.id) {
@@ -452,6 +454,7 @@ export default function NotificationsCenter() {
           setBundle(nextBundle);
           setBrowserEnabledState(getBrowserNotificationsEnabled());
           setPermission(getBrowserNotificationPermission());
+          setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());
         }
       } catch (error: any) {
         if (!cancelled) {
@@ -555,16 +558,15 @@ export default function NotificationsCenter() {
     toast.success('Historia powiadomień została wyczyszczona.');
   };
 
-  const handleSnooze = (key: string, mode: '15m' | '1h' | 'tomorrow') => {
-    const nextDate = new Date();
-    if (mode === '15m') nextDate.setMinutes(nextDate.getMinutes() + 15);
-    if (mode === '1h') nextDate.setHours(nextDate.getHours() + 1);
-    if (mode === 'tomorrow') {
-      nextDate.setDate(nextDate.getDate() + 1);
-      nextDate.setHours(9, 0, 0, 0);
+  const handleSnooze = (key: string, mode: NotificationSnoozeMode) => {
+    const snooze = setNotificationSnooze(key, mode);
+    setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());
+
+    if (!snooze) {
+      toast.error('Nie udało się odłożyć powiadomienia.');
+      return;
     }
 
-    setSnoozedUntilByKey((current) => ({ ...current, [key]: nextDate.toISOString() }));
     toast.success(mode === 'tomorrow' ? 'Powiadomienie odłożone do jutra.' : 'Powiadomienie odłożone.');
   };
 
@@ -574,11 +576,8 @@ export default function NotificationsCenter() {
   };
 
   const handleRestore = (key: string) => {
-    setSnoozedUntilByKey((current) => {
-      const next = { ...current };
-      delete next[key];
-      return next;
-    });
+    clearNotificationSnooze(key);
+    setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());
     toast.success('Powiadomienie przywrócone.');
   };
 
@@ -618,7 +617,7 @@ export default function NotificationsCenter() {
           <MetricCard label="Zaległe" value={metrics.overdue} icon={Clock3} active={activeFilter === 'overdue'} onClick={() => setActiveFilter('overdue')} />
           <MetricCard label="Dzisiaj" value={metrics.today} icon={CalendarClock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} />
           <MetricCard label="Nadchodzące" value={metrics.upcoming} icon={Bell} active={activeFilter === 'upcoming'} onClick={() => setActiveFilter('upcoming')} />
-          <MetricCard label="Wyciszone" value={metrics.snoozed} icon={RotateCcw} active={activeFilter === 'snoozed'} onClick={() => setActiveFilter('snoozed')} />
+          <MetricCard label="Odłożone" value={metrics.snoozed} icon={RotateCcw} active={activeFilter === 'snoozed'} onClick={() => setActiveFilter('snoozed')} />
           <MetricCard label="Przeczytane" value={metrics.read} icon={Check} active={activeFilter === 'read'} onClick={() => setActiveFilter('read')} />
         </section>
 

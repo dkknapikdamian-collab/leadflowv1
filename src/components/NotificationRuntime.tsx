@@ -9,6 +9,7 @@ import {
   recordDeliveredNotification,
   supportsBrowserNotifications,
   hasDeliveredNotification,
+  getNotificationDeliveryKey,
 } from '../lib/notifications';
 
 type NotificationRuntimeProps = {
@@ -43,14 +44,15 @@ export default function NotificationRuntime({ enabled }: NotificationRuntimeProp
         const pageVisible = typeof document !== 'undefined' ? document.visibilityState === 'visible' : true;
 
         for (const item of items) {
-          if (hasDeliveredNotification(item.key)) continue;
+          const deliveryKey = getNotificationDeliveryKey(item.key);
+          if (hasDeliveredNotification(deliveryKey)) continue;
 
-          recordDeliveredNotification(item);
+          recordDeliveredNotification(item, deliveryKey);
 
           if (!pageVisible && browserEnabled && permission === 'granted' && supportsBrowserNotifications()) {
             const notification = new Notification(item.title, {
               body: item.body,
-              tag: item.key,
+              tag: deliveryKey,
             });
             notification.onclick = () => {
               window.focus();
