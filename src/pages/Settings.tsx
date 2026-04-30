@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   EmailAuthProvider,
   fetchSignInMethodsForEmail,
@@ -8,16 +8,30 @@ import {
   signOut,
   verifyBeforeUpdateEmail,
 } from 'firebase/auth';
-import { AlertTriangle, Bell, KeyRound, Mail, Shield, User } from 'lucide-react';
+import {
+  Bell,
+  Building2,
+  Database,
+  KeyRound,
+  LockKeyhole,
+  LogOut,
+  Mail,
+  MonitorCog,
+  RefreshCw,
+  Save,
+  Shield,
+  SlidersHorizontal,
+  User,
+  Users,
+  WalletCards,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { useAppearance } from '../components/appearance-provider';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { getConflictWarningsEnabled, setConflictWarningsEnabled as storeConflictWarningsEnabled } from '../lib/app-preferences';
@@ -28,7 +42,9 @@ import {
   supportsBrowserNotifications,
 } from '../lib/notifications';
 import { updateProfileSettingsInSupabase, updateWorkspaceSettingsInSupabase } from '../lib/supabase-fallback';
+import '../styles/visual-stage19-settings-vnext.css';
 
+const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
 const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
 
 type ProfileFormState = {
@@ -56,8 +72,48 @@ type DigestDiagnosticsState = {
   hints?: string[];
 };
 
+function humanAccessStatus(status?: string | null) {
+  switch (String(status || 'inactive')) {
+    case 'trial_active':
+      return 'Trial aktywny';
+    case 'trial_ending':
+      return 'Trial kończy się';
+    case 'trial_expired':
+      return 'Trial wygasł';
+    case 'paid_active':
+      return 'Dostęp aktywny';
+    case 'payment_failed':
+      return 'Płatność wymaga reakcji';
+    case 'canceled':
+      return 'Plan wyłączony';
+    default:
+      return 'Brak aktywnego dostępu';
+  }
+}
+
+function humanPlan(planId?: string | null, subscriptionStatus?: string | null) {
+  const normalized = String(planId || '');
+  if (normalized.includes('basic')) return 'Basic';
+  if (normalized.includes('business')) return 'AI / Business';
+  if (normalized.includes('pro') || subscriptionStatus === 'paid_active') return 'Pro';
+  if (normalized.includes('trial')) return 'Trial';
+  return 'Nie ustawiono';
+}
+
+function permissionCopy(permission: NotificationPermission | 'unsupported') {
+  if (permission === 'unsupported') return 'Przeglądarka nie obsługuje powiadomień systemowych.';
+  if (permission === 'granted') return 'Powiadomienia przeglądarki są włączone.';
+  if (permission === 'denied') return 'Powiadomienia są zablokowane w przeglądarce.';
+  return 'Powiadomienia przeglądarki nie są jeszcze włączone.';
+}
+
+function asText(value: unknown, fallback = 'Nie ustawiono') {
+  const text = typeof value === 'string' ? value.trim() : '';
+  return text || fallback;
+}
+
 export default function Settings() {
-  const { workspace, profile: workspaceProfile, loading: workspaceLoading, refresh } = useWorkspace();
+  const { workspace, profile: workspaceProfile, loading: workspaceLoading, refresh, access, isAdmin } = useWorkspace();
   const { skin, setSkin, skinOptions } = useAppearance();
 
   const [profile, setProfile] = useState<ProfileFormState>({ fullName: '', companyName: '' });
@@ -101,14 +157,10 @@ export default function Settings() {
         : getBrowserNotificationsEnabled(),
     );
     setBrowserPermission(getBrowserNotificationPermission());
-    setDailyDigestEnabled(
-      typeof workspace?.dailyDigestEnabled === 'boolean' ? workspace.dailyDigestEnabled : true,
-    );
+    setDailyDigestEnabled(typeof workspace?.dailyDigestEnabled === 'boolean' ? workspace.dailyDigestEnabled : true);
     setDailyDigestHour(String(workspace?.dailyDigestHour ?? 7));
     setDailyDigestTimezone(workspace?.dailyDigestTimezone || workspace?.timezone || 'Europe/Warsaw');
-    setDailyDigestRecipientEmail(
-      workspace?.dailyDigestRecipientEmail || workspaceProfile?.email || auth.currentUser?.email || '',
-    );
+    setDailyDigestRecipientEmail(workspace?.dailyDigestRecipientEmail || workspaceProfile?.email || auth.currentUser?.email || '');
   }, [workspace, workspaceProfile]);
 
   useEffect(() => {
@@ -132,6 +184,21 @@ export default function Settings() {
     void fetchAuthMethods();
   }, [workspaceProfile?.email]);
 
+  const accountEmail = auth.currentUser?.email || workspaceProfile?.email || '';
+  const planLabel = humanPlan(workspace?.planId, workspace?.subscriptionStatus);
+  const accessLabel = humanAccessStatus(access?.status);
+  const workspaceName = asText(workspaceProfile?.companyName || profile.companyName || workspace?.name, 'Workspace CloseFlow');
+
+  const settingsSummary = useMemo(
+    () => [
+      { label: 'Konto', value: asText(profile.fullName || accountEmail, 'Operator') },
+      { label: 'Workspace', value: workspaceName },
+      { label: 'Plan', value: planLabel },
+      { label: 'Dostęp', value: accessLabel },
+    ],
+    [accessLabel, accountEmail, planLabel, profile.fullName, workspaceName],
+  );
+
   const handleUpdateProfile = async () => {
     if (!auth.currentUser) return;
 
@@ -140,13 +207,13 @@ export default function Settings() {
       await updateProfileSettingsInSupabase({
         fullName: profile.fullName,
         companyName: profile.companyName,
-        email: auth.currentUser.email || workspaceProfile?.email || '',
+        email: accountEmail,
         workspaceId: workspace?.id || null,
       });
       toast.success('Profil zaktualizowany');
       refresh();
     } catch (error: any) {
-      toast.error(`Blad: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSavingProfile(false);
     }
@@ -168,13 +235,11 @@ export default function Settings() {
       toast.success('Ustawienia digestu zapisane');
       refresh();
     } catch (error: any) {
-      toast.error(`Blad zapisu digestu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zapisu digestu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSavingWorkspaceSettings(false);
     }
   };
-
-
 
   const handleCheckDigestDiagnostics = async () => {
     if (!workspace?.id) {
@@ -204,14 +269,12 @@ export default function Settings() {
       });
 
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(String(data?.error || 'DIGEST_DIAGNOSTICS_FAILED'));
-      }
+      if (!response.ok) throw new Error(String(data?.error || 'DIGEST_DIAGNOSTICS_FAILED'));
 
       setDigestDiagnostics(data as DigestDiagnosticsState);
-      toast.success(data?.canSend ? 'Digest jest gotowy do wysylki.' : 'Diagnostyka digestu wykryla braki.');
+      toast.success(data?.canSend ? 'Digest jest gotowy do wysyłki.' : 'Diagnostyka digestu wykryła braki.');
     } catch (error: any) {
-      toast.error(`Blad diagnostyki digestu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd diagnostyki digestu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setCheckingDigestDiagnostics(false);
     }
@@ -250,13 +313,11 @@ export default function Settings() {
       });
 
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(String(data?.error || 'DIGEST_TEST_SEND_FAILED'));
-      }
+      if (!response.ok) throw new Error(String(data?.error || 'DIGEST_TEST_SEND_FAILED'));
 
-      toast.success(`Wyslano testowy digest na ${data?.recipientEmail || recipientEmail}.`);
+      toast.success(`Wysłano testowy digest na ${data?.recipientEmail || recipientEmail}.`);
     } catch (error: any) {
-      toast.error(`Blad wysylki testowego digestu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd wysyłki testowego digestu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSendingDigestTest(false);
     }
@@ -265,7 +326,7 @@ export default function Settings() {
   const handleChangeEmail = async () => {
     if (!auth.currentUser?.email) return;
     if (!passwordAuthAvailable) {
-      toast.error('Zmiana e-maila z potwierdzeniem hasla dziala dla kont z logowaniem e-mail + haslo.');
+      toast.error('Zmiana e-maila z potwierdzeniem hasła działa dla kont z logowaniem e-mail + hasło.');
       return;
     }
 
@@ -281,7 +342,7 @@ export default function Settings() {
     }
 
     if (!currentPassword.trim()) {
-      toast.error('Wpisz aktualne haslo, aby potwierdzic zmiane.');
+      toast.error('Wpisz aktualne hasło, aby potwierdzić zmianę.');
       return;
     }
 
@@ -290,12 +351,12 @@ export default function Settings() {
       const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
       await reauthenticateWithCredential(auth.currentUser, credential);
       await verifyBeforeUpdateEmail(auth.currentUser, normalizedEmail);
-      toast.success('Wyslalismy link potwierdzajacy na nowy e-mail. Zmiana zadziala po kliknieciu w link z wiadomosci.');
+      toast.success('Wysłaliśmy link potwierdzający na nowy e-mail.');
       setEmailChangeOpen(false);
       setNewEmail('');
       setCurrentPassword('');
     } catch (error: any) {
-      toast.error(`Blad zmiany e-maila: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zmiany e-maila: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setEmailChangeSubmitting(false);
     }
@@ -304,16 +365,16 @@ export default function Settings() {
   const handleSendPasswordChangeLink = async () => {
     if (!auth.currentUser?.email) return;
     if (!passwordAuthAvailable) {
-      toast.error('To konto nie ma aktywnego logowania e-mail + haslo.');
+      toast.error('To konto nie ma aktywnego logowania e-mail + hasło.');
       return;
     }
 
     setPasswordResetSubmitting(true);
     try {
       await sendPasswordResetEmail(auth, auth.currentUser.email);
-      toast.success('Wyslalismy link do zmiany hasla na Twoj e-mail.');
+      toast.success('Wysłaliśmy link do zmiany hasła na Twój e-mail.');
     } catch (error: any) {
-      toast.error(`Blad wysylki linku: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd wysyłki linku: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setPasswordResetSubmitting(false);
     }
@@ -323,18 +384,18 @@ export default function Settings() {
     if (!auth.currentUser?.email) return;
 
     if (passwordAuthAvailable) {
-      toast.success('To konto ma juz aktywne logowanie e-mail + haslo.');
+      toast.success('To konto ma już aktywne logowanie e-mail + hasło.');
       setSetupPasswordOpen(false);
       return;
     }
 
     if (!setupPassword.trim() || setupPassword.trim().length < 8) {
-      toast.error('Nowe haslo musi miec co najmniej 8 znakow.');
+      toast.error('Nowe hasło musi mieć co najmniej 8 znaków.');
       return;
     }
 
     if (setupPassword !== setupPasswordConfirm) {
-      toast.error('Hasla nie sa takie same.');
+      toast.error('Hasła nie są takie same.');
       return;
     }
 
@@ -350,16 +411,16 @@ export default function Settings() {
       setSetupPassword('');
       setSetupPasswordConfirm('');
       setSetupPasswordOpen(false);
-      toast.success('Haslo do logowania e-mail zostalo ustawione. Teraz mozesz zmieniac e-mail i haslo z poziomu ustawien.');
+      toast.success('Hasło do logowania e-mail zostało ustawione.');
       refresh();
     } catch (error: any) {
       const code = String(error?.code || '');
       if (code === 'auth/provider-already-linked') {
         setPasswordAuthAvailable(true);
         setSetupPasswordOpen(false);
-        toast.success('Logowanie e-mail + haslo bylo juz aktywne dla tego konta.');
+        toast.success('Logowanie e-mail + hasło było już aktywne dla tego konta.');
       } else {
-        toast.error(`Blad ustawiania hasla: ${error?.message || 'REQUEST_FAILED'}`);
+        toast.error(`Błąd ustawiania hasła: ${error?.message || 'REQUEST_FAILED'}`);
       }
     } finally {
       setSetupPasswordSubmitting(false);
@@ -368,19 +429,15 @@ export default function Settings() {
 
   const requestBrowserPermission = async () => {
     if (!supportsBrowserNotifications()) {
-      toast.error('Ta przegladarka nie wspiera powiadomien systemowych.');
+      toast.error('Ta przeglądarka nie wspiera powiadomień systemowych.');
       return;
     }
 
     const result = await Notification.requestPermission();
     setBrowserPermission(result);
-    if (result === 'granted') {
-      toast.success('Powiadomienia przegladarki zostaly wlaczone.');
-    } else if (result === 'denied') {
-      toast.error('Powiadomienia sa zablokowane w przegladarce.');
-    } else {
-      toast.error('Powiadomienia nie zostaly jeszcze zatwierdzone.');
-    }
+    if (result === 'granted') toast.success('Powiadomienia przeglądarki zostały włączone.');
+    else if (result === 'denied') toast.error('Powiadomienia są zablokowane w przeglądarce.');
+    else toast.error('Powiadomienia nie zostały jeszcze zatwierdzone.');
   };
 
   const toggleBrowserNotifications = async () => {
@@ -393,12 +450,12 @@ export default function Settings() {
         browserNotificationsEnabled: nextValue,
         workspaceId: workspace?.id || null,
       });
-      toast.success(nextValue ? 'Live powiadomienia sa aktywne.' : 'Live powiadomienia zostaly wylaczone.');
+      toast.success(nextValue ? 'Live powiadomienia są aktywne.' : 'Live powiadomienia zostały wyłączone.');
       refresh();
     } catch (error: any) {
       setBrowserNotificationsEnabled(!nextValue);
       setBrowserNotificationsEnabledState(!nextValue);
-      toast.error(`Blad zapisu live powiadomien: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zapisu live powiadomień: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -411,18 +468,18 @@ export default function Settings() {
         planningConflictWarningsEnabled: nextValue,
         workspaceId: workspace?.id || null,
       });
-      toast.success(nextValue ? 'Wlaczono ostrzezenia o konfliktach terminow' : 'Wylaczono ostrzezenia o konfliktach terminow');
+      toast.success(nextValue ? 'Włączono ostrzeżenia o konfliktach terminów.' : 'Wyłączono ostrzeżenia o konfliktach terminów.');
       refresh();
     } catch (error: any) {
       setConflictWarningsEnabledState(!nextValue);
       storeConflictWarningsEnabled(!nextValue);
-      toast.error(`Blad zapisu preferencji planowania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zapisu preferencji planowania: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleSignOutEverywhere = async () => {
     if (!auth.currentUser) return;
-    if (!window.confirm('Wylogowac wszystkie urzadzenia, lacznie z tym?')) return;
+    if (!window.confirm('Wylogować wszystkie urządzenia, łącznie z tym?')) return;
 
     setSigningOutEverywhere(true);
     try {
@@ -430,10 +487,10 @@ export default function Settings() {
         forceLogoutAfter: new Date().toISOString(),
         workspaceId: workspace?.id || null,
       });
-      toast.success('Wylogowano wszystkie urzadzenia. Zaloguj sie ponownie.');
+      toast.success('Wylogowano wszystkie urządzenia. Zaloguj się ponownie.');
       await signOut(auth);
     } catch (error: any) {
-      toast.error(`Blad: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSigningOutEverywhere(false);
     }
@@ -442,384 +499,381 @@ export default function Settings() {
   if (workspaceLoading) {
     return (
       <Layout>
-        <div className="p-4 md:p-8 max-w-4xl mx-auto w-full">Ladowanie ustawien...</div>
+        <main className="settings-vnext-page">
+          <div className="settings-loading-card">Ładowanie ustawień...</div>
+        </main>
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <div className="p-4 md:p-8 max-w-4xl mx-auto w-full">
-        <header className="mb-6 md:mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Ustawienia</h1>
-          <p className="text-slate-500">Zarzadzaj swoim kontem i konfiguracja systemu.</p>
+      <main className="settings-vnext-page" data-settings-stage={SETTINGS_VISUAL_REBUILD_STAGE19}>
+        <header className="settings-header">
+          <div>
+            <p className="settings-kicker">USTAWIENIA</p>
+            <h1>Ustawienia</h1>
+            <p>Konto, workspace, powiadomienia i preferencje aplikacji.</p>
+          </div>
+          <div className="settings-header-actions">
+            <Button type="button" variant="outline" onClick={refresh}>
+              <RefreshCw className="h-4 w-4" />
+              Odśwież
+            </Button>
+          </div>
         </header>
 
-        <div className="space-y-6">
-          <Card className="border-none shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <User className="w-5 h-5 text-slate-400" />
-                Profil operatora
-              </CardTitle>
-              <CardDescription>Twoje dane wyswietlane w systemie i dla klientow.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Imie i nazwisko</Label>
-                  <Input value={profile.fullName} onChange={(e) => setProfile((prev) => ({ ...prev, fullName: e.target.value }))} />
+        <section className="settings-summary-grid" aria-label="Podsumowanie ustawień">
+          {settingsSummary.map((item) => (
+            <article key={item.label} className="settings-summary-card">
+              <small>{item.label}</small>
+              <strong>{item.value}</strong>
+            </article>
+          ))}
+        </section>
+
+        <div className="settings-shell">
+          <section className="settings-main-column">
+            <section className="settings-section-card">
+              <div className="settings-section-head">
+                <div>
+                  <span><User className="h-4 w-4" /> Konto</span>
+                  <h2>Profil operatora</h2>
+                  <p>Twoje dane widoczne w systemie i przy obsłudze klienta.</p>
                 </div>
-                <div className="space-y-2">
+              </div>
+
+              <div className="settings-form-grid">
+                <div className="settings-field">
+                  <Label>Imię i nazwisko</Label>
+                  <Input value={profile.fullName} onChange={(event) => setProfile((prev) => ({ ...prev, fullName: event.target.value }))} />
+                </div>
+                <div className="settings-field">
                   <Label>Nazwa firmy</Label>
-                  <Input value={profile.companyName} onChange={(e) => setProfile((prev) => ({ ...prev, companyName: e.target.value }))} />
+                  <Input value={profile.companyName} onChange={(event) => setProfile((prev) => ({ ...prev, companyName: event.target.value }))} />
+                </div>
+                <div className="settings-field">
+                  <Label>E-mail</Label>
+                  <Input value={accountEmail} disabled />
+                </div>
+                <div className="settings-field">
+                  <Label>Rola</Label>
+                  <Input value={isAdmin ? 'Admin' : workspaceProfile?.role || 'Operator'} disabled />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Aktualny e-mail</Label>
-                <Input value={auth.currentUser?.email || workspaceProfile?.email || ''} disabled />
+
+              <div className="settings-action-row">
+                <Button onClick={() => void handleUpdateProfile()} disabled={savingProfile}>
+                  <Save className="h-4 w-4" />
+                  {savingProfile ? 'Zapisywanie...' : 'Zapisz profil'}
+                </Button>
               </div>
-              <Button onClick={() => void handleUpdateProfile()} className="w-full md:w-auto" disabled={savingProfile}>
-                {savingProfile ? 'Zapisywanie...' : 'Zapisz zmiany'}
-              </Button>
-            </CardContent>
-          </Card>
+            </section>
 
-          <Card className="border-none shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-slate-400" />
-                Ustawienia aplikacji
-              </CardTitle>
-              <CardDescription>Tu trzymamy wyglad aplikacji, powiadomienia, planowanie i digest workspace.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="appearance" className="space-y-4">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="appearance">Motyw</TabsTrigger>
-                  <TabsTrigger value="notifications">Powiadomienia</TabsTrigger>
-                  <TabsTrigger value="planning">Planowanie</TabsTrigger>
-                </TabsList>
+            <section className="settings-section-card">
+              <div className="settings-section-head">
+                <div>
+                  <span><Building2 className="h-4 w-4" /> Workspace</span>
+                  <h2>Workspace</h2>
+                  <p>Podstawowe informacje o przestrzeni pracy. Nie budujemy tutaj team managementu od zera.</p>
+                </div>
+              </div>
 
-                <TabsContent value="appearance" className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {skinOptions.map((option) => (
-                      <button
-                        key={option.id}
-                        type="button"
-                        onClick={() => {
-                          void setSkin(option.id)
-                            .then(() => {
-                              toast.success(`Aktywowano motyw: ${option.label}`);
-                              refresh();
-                            })
-                            .catch((error: any) => toast.error(`Blad zapisu motywu: ${error?.message || 'REQUEST_FAILED'}`));
-                        }}
-                        className={`text-left min-h-[104px] p-3 md:p-4 rounded-xl border transition ${
-                          skin === option.id ? 'border-primary bg-primary/5' : 'border-slate-200 hover:border-slate-300'
-                        }`}
-                      >
-                        <p className="font-semibold text-slate-900">{option.label}</p>
-                        <p className="text-sm text-slate-500 mt-1">{option.description}</p>
-                      </button>
-                    ))}
-                  </div>
-                </TabsContent>
+              <div className="settings-info-grid">
+                <article><small>Nazwa</small><strong>{workspaceName}</strong></article>
+                <article><small>Plan</small><strong>{planLabel}</strong></article>
+                <article><small>Status dostępu</small><strong>{accessLabel}</strong></article>
+                <article><small>Użytkownicy</small><strong>{isAdmin ? 'Admin + operatorzy' : 'Nie ustawiono'}</strong></article>
+              </div>
+            </section>
 
-                <TabsContent value="notifications" className="space-y-4">
-                  <div className="rounded-2xl border border-slate-200 p-4">
-                    <div className="flex items-center gap-2 text-slate-900 font-semibold">
-                      <Bell className="w-4 h-4 text-slate-400" />
-                      Powiadomienia przegladarki
-                    </div>
-                    <p className="mt-1 text-sm text-slate-500">
-                      {browserPermission === 'unsupported'
-                        ? 'Ta przegladarka nie wspiera powiadomien systemowych.'
-                        : browserPermission === 'granted'
-                          ? 'Powiadomienia systemowe sa juz wlaczone.'
-                          : browserPermission === 'denied'
-                            ? 'Powiadomienia sa zablokowane w przegladarce. Odblokuj je w ustawieniach przegladarki.'
-                            : 'Powiadomienia nie sa jeszcze zatwierdzone.'}
-                    </p>
-                    <div className="mt-3 flex flex-col gap-3 md:flex-row">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => void requestBrowserPermission()}
-                        disabled={browserPermission === 'granted' || browserPermission === 'unsupported' || browserPermission === 'denied'}
-                      >
-                        {browserPermission === 'granted'
-                          ? 'Powiadomienia przegladarki sa wlaczone'
-                          : browserPermission === 'denied'
-                            ? 'Powiadomienia sa zablokowane'
-                            : browserPermission === 'unsupported'
-                              ? 'Przegladarka nie wspiera powiadomien'
-                              : 'Wlacz powiadomienia przegladarki'}
-                      </Button>
+            <section className="settings-section-card">
+              <div className="settings-section-head">
+                <div>
+                  <span><Bell className="h-4 w-4" /> Powiadomienia</span>
+                  <h2>Powiadomienia</h2>
+                  <p>Ustawienia in-app, browser i digest, jeśli backend je obsługuje.</p>
+                </div>
+              </div>
 
-                      <Button type="button" variant={browserNotificationsEnabled ? 'outline' : 'default'} onClick={() => void toggleBrowserNotifications()}>
-                        {browserNotificationsEnabled ? 'Wylacz live powiadomienia' : 'Wlacz live powiadomienia'}
-                      </Button>
-                    </div>
-                  </div>
-
-                  {DAILY_DIGEST_EMAIL_UI_VISIBLE ? (
-                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
-                    <div>
-                      <div className="flex items-center gap-2 text-slate-900 font-semibold">
-                        <Mail className="w-4 h-4 text-slate-400" />
-                        Daily digest workspace
-                      </div>
-                      <p className="mt-1 text-sm text-slate-500">Te ustawienia sa wspolne dla calego workspace i trafiaja bezposrednio do backendu digestu.</p>
-                    </div>
-
-                    <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={dailyDigestEnabled}
-                        onChange={(event) => setDailyDigestEnabled(event.target.checked)}
-                        className="mt-1 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
-                      />
-                      <div>
-                        <p className="font-semibold text-slate-900">Wlacz codzienny digest</p>
-                        <p className="mt-1 text-sm text-slate-500">Backend wysyla podsumowanie dnia wedlug ustawien workspace.</p>
-                      </div>
-                    </label>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <Label>Godzina wysylki</Label>
-                        <Input
-                          type="number"
-                          min={0}
-                          max={23}
-                          value={dailyDigestHour}
-                          onChange={(e) => setDailyDigestHour(e.target.value)}
-                        />
-                      <p className="mt-1 text-xs text-slate-500">
-                        Na darmowym Vercel cron dziala raz dziennie. Godzina jest zachowana jako ustawienie workspace, ale automatyczna wysylka idzie przy dziennym wywolaniu crona.
-                      </p>
-                      </div>
-                      <div className="space-y-2 md:col-span-2">
-                        <Label>Strefa czasowa</Label>
-                        <Input
-                          value={dailyDigestTimezone}
-                          onChange={(e) => setDailyDigestTimezone(e.target.value)}
-                          placeholder="Europe/Warsaw"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Adres odbiorcy</Label>
-                      <Input
-                        type="email"
-                        value={dailyDigestRecipientEmail}
-                        onChange={(e) => setDailyDigestRecipientEmail(e.target.value)}
-                        placeholder="operator@email.pl"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-2 md:flex-row">
-                      <Button type="button" onClick={() => void handleSaveDigestSettings()} disabled={savingWorkspaceSettings || !workspace?.id}>
-                        {savingWorkspaceSettings ? 'Zapisywanie...' : 'Zapisz ustawienia digestu'}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => void handleCheckDigestDiagnostics()}
-                        disabled={checkingDigestDiagnostics || !workspace?.id}
-                      >
-                        {checkingDigestDiagnostics ? 'Sprawdzanie...' : 'Sprawdz konfiguracje'}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => void handleSendDigestTest()}
-                        disabled={sendingDigestTest || !workspace?.id || !dailyDigestRecipientEmail.trim()}
-                      >
-                        {sendingDigestTest ? 'Wysylanie testu...' : 'Wyslij test teraz'}
-                      </Button>
-                    </div>
-
-                    {digestDiagnostics ? (
-                      <div className={`rounded-2xl border p-4 text-sm ${digestDiagnostics.canSend ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-amber-200 bg-amber-50 text-amber-900'}`}>
-                        <p className="font-semibold">
-                          {digestDiagnostics.canSend ? 'Digest gotowy do wysylki' : 'Digest wymaga konfiguracji'}
-                        </p>
-                        <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
-                          <p>RESEND_API_KEY: {digestDiagnostics.env?.hasResendApiKey ? 'OK' : 'Brak'}</p>
-                          <p>DIGEST_FROM_EMAIL: {digestDiagnostics.env?.fromEmail || 'Brak'}</p>
-                          <p>APP_URL: {digestDiagnostics.env?.appUrl || 'Brak'}</p>
-                          <p>Odbiorca: {digestDiagnostics.workspace?.dailyDigestRecipientEmail || 'Brak'}</p>
-                          <p>Godzina: {digestDiagnostics.workspace?.dailyDigestHour ?? dailyDigestHour}</p>
-                          <p>Strefa: {digestDiagnostics.workspace?.dailyDigestTimezone || dailyDigestTimezone}</p>
-                        </div>
-                        {digestDiagnostics.hints && digestDiagnostics.hints.length > 0 ? (
-                          <p className="mt-3 text-xs">Braki: {digestDiagnostics.hints.join(', ')}</p>
-                        ) : null}
-                      </div>
-                    ) : null}
-                  </div>
-                  ) : null}
-                </TabsContent>
-
-                <TabsContent value="planning" className="space-y-4">
-                  <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={conflictWarningsEnabled}
-                      onChange={(event) => {
-                        void handleConflictWarningsToggle(event.target.checked);
-                      }}
-                      className="mt-1 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
-                    />
-                    <div>
-                      <p className="font-semibold text-slate-900">Pokazuj ostrzezenia o konfliktach terminow</p>
-                      <p className="mt-1 text-sm text-slate-500">Przy dodawaniu lub edycji zadania albo wydarzenia aplikacja pokaze konflikt z istniejacym wpisem i zapyta, czy mimo to zapisac.</p>
-                    </div>
-                  </label>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-
-          <Card className="border-none shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Shield className="w-5 h-5 text-slate-400" />
-                Bezpieczenstwo
-              </CardTitle>
-              <CardDescription>Zarzadzaj dostepem do swojego konta, e-maila i hasla.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div className="settings-toggle-list">
+                <label className="settings-toggle-row">
                   <div>
-                    <div className="flex items-center gap-2 text-slate-900 font-semibold">
-                      <Mail className="w-4 h-4 text-slate-400" />
-                      Zmiana e-maila
-                    </div>
-                    <p className="mt-1 text-sm text-slate-500">
-                      Aktualny adres: {auth.currentUser?.email || 'Brak adresu e-mail'}
-                    </p>
+                    <strong>Live powiadomienia w aplikacji</strong>
+                    <span>Włączone powiadomienia wewnątrz aplikacji i zapis preferencji profilu.</span>
                   </div>
-                  <Button type="button" variant="outline" onClick={() => setEmailChangeOpen((value) => !value)}>
-                    {emailChangeOpen ? 'Anuluj' : 'Zmien e-mail'}
+                  <input type="checkbox" checked={browserNotificationsEnabled} onChange={() => void toggleBrowserNotifications()} />
+                </label>
+
+                <div className="settings-browser-box">
+                  <div>
+                    <strong>Powiadomienia przeglądarki</strong>
+                    <span>{permissionCopy(browserPermission)}</span>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => void requestBrowserPermission()}
+                    disabled={browserPermission === 'granted' || browserPermission === 'unsupported' || browserPermission === 'denied'}
+                  >
+                    {browserPermission === 'granted'
+                      ? 'Włączone'
+                      : browserPermission === 'denied'
+                        ? 'Zablokowane'
+                        : browserPermission === 'unsupported'
+                          ? 'Niedostępne'
+                          : 'Włącz'}
                   </Button>
                 </div>
 
-                {emailChangeOpen ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2 md:col-span-2">
-                      <Label>Nowy e-mail</Label>
-                      <Input
-                        type="email"
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
-                        placeholder="nowy@email.pl"
-                      />
-                    </div>
-                    <div className="space-y-2 md:col-span-2">
-                      <Label>Aktualne haslo</Label>
-                      <Input
-                        type="password"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        placeholder="Potwierdz aktualnym haslem"
-                      />
-                    </div>
-                    <div className="md:col-span-2 flex flex-col gap-2">
-                      <Button type="button" onClick={() => void handleChangeEmail()} disabled={emailChangeSubmitting}>
-                        {emailChangeSubmitting ? 'Wysylanie...' : 'Wyslij potwierdzenie na nowy e-mail'}
-                      </Button>
-                      <p className="text-xs text-slate-500">
-                        Po potwierdzeniu haslem wyslemy link na nowy adres. Zmiana aktywuje sie po kliknieciu w link z wiadomosci.
-                      </p>
-                      {!passwordAuthAvailable ? (
-                        <p className="text-xs text-amber-600">
-                          To konto nie ma aktywnego logowania e-mail + haslo, wiec ta zmiana nie jest teraz dostepna.
-                        </p>
-                      ) : null}
-                    </div>
+                <div className="settings-browser-box">
+                  <div>
+                    <strong>Digest e-mail</strong>
+                    <span>
+                      {DAILY_DIGEST_EMAIL_UI_VISIBLE
+                        ? 'Ustawienia digestu są dostępne poniżej.'
+                        : 'Digest e-mail jest przygotowany w konfiguracji workspace. Nie pokazujemy tu ciężkiego panelu, jeśli flow jest ukryty.'}
+                    </span>
                   </div>
-                ) : null}
+                  <span className="settings-soft-pill">{dailyDigestEnabled ? 'Włączony w workspace' : 'Wyłączony w workspace'}</span>
+                </div>
               </div>
 
-              <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
-                <div className="flex items-center gap-2 text-slate-900 font-semibold">
-                  <KeyRound className="w-4 h-4 text-slate-400" />
-                  Zmiana hasla
-                </div>
-                <p className="text-sm text-slate-500">
-                  Wyslemy bezpieczny link do zmiany hasla na Twoj obecny adres e-mail.
-                </p>
-                <Button type="button" variant="outline" onClick={() => void handleSendPasswordChangeLink()} disabled={passwordResetSubmitting}>
-                  {passwordResetSubmitting ? 'Wysylanie...' : 'Wyslij link do zmiany hasla'}
-                </Button>
-                {!passwordAuthAvailable ? (
-                  <div className="space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
-                    <p className="text-xs text-amber-700">
-                      To konto nie ma jeszcze aktywnego logowania e-mail + haslo. Najpierw ustaw haslo do tego konta.
-                    </p>
-                    <Button type="button" variant="outline" onClick={() => setSetupPasswordOpen((value) => !value)}>
-                      {setupPasswordOpen ? 'Anuluj ustawianie hasla' : 'Ustaw haslo do tego konta'}
+              {DAILY_DIGEST_EMAIL_UI_VISIBLE ? (
+                <div className="settings-digest-panel">
+                  <div className="settings-form-grid">
+                    <div className="settings-field">
+                      <Label>Godzina digestu</Label>
+                      <Input type="number" min={0} max={23} value={dailyDigestHour} onChange={(event) => setDailyDigestHour(event.target.value)} />
+                    </div>
+                    <div className="settings-field">
+                      <Label>Strefa czasowa</Label>
+                      <Input value={dailyDigestTimezone} onChange={(event) => setDailyDigestTimezone(event.target.value)} placeholder="Europe/Warsaw" />
+                    </div>
+                    <div className="settings-field settings-field-wide">
+                      <Label>Adres odbiorcy</Label>
+                      <Input type="email" value={dailyDigestRecipientEmail} onChange={(event) => setDailyDigestRecipientEmail(event.target.value)} />
+                    </div>
+                  </div>
+                  <div className="settings-action-row">
+                    <Button type="button" onClick={() => void handleSaveDigestSettings()} disabled={savingWorkspaceSettings || !workspace?.id}>
+                      {savingWorkspaceSettings ? 'Zapisywanie...' : 'Zapisz digest'}
                     </Button>
-                    {setupPasswordOpen ? (
-                      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                        <div className="space-y-2 md:col-span-2">
-                          <Label>Nowe haslo</Label>
-                          <Input
-                            type="password"
-                            value={setupPassword}
-                            onChange={(e) => setSetupPassword(e.target.value)}
-                            placeholder="Minimum 8 znakow"
-                          />
-                        </div>
-                        <div className="space-y-2 md:col-span-2">
-                          <Label>Powtorz nowe haslo</Label>
-                          <Input
-                            type="password"
-                            value={setupPasswordConfirm}
-                            onChange={(e) => setSetupPasswordConfirm(e.target.value)}
-                            placeholder="Powtorz nowe haslo"
-                          />
-                        </div>
-                        <div className="md:col-span-2 flex flex-col gap-2">
-                          <Button type="button" onClick={() => void handleSetupPassword()} disabled={setupPasswordSubmitting}>
-                            {setupPasswordSubmitting ? 'Ustawianie hasla...' : 'Aktywuj logowanie e-mail + haslo'}
-                          </Button>
-                          <p className="text-xs text-slate-500">
-                            To doda lokalne logowanie e-mail + haslo do obecnego konta. Potem odblokuje zmiane e-maila i zmiane hasla z poziomu ustawien.
-                          </p>
-                        </div>
-                      </div>
-                    ) : null}
+                    <Button type="button" variant="outline" onClick={() => void handleCheckDigestDiagnostics()} disabled={checkingDigestDiagnostics || !workspace?.id}>
+                      {checkingDigestDiagnostics ? 'Sprawdzanie...' : 'Sprawdź konfigurację'}
+                    </Button>
+                    <Button type="button" variant="outline" onClick={() => void handleSendDigestTest()} disabled={sendingDigestTest || !workspace?.id || !dailyDigestRecipientEmail.trim()}>
+                      {sendingDigestTest ? 'Wysyłanie...' : 'Wyślij test'}
+                    </Button>
                   </div>
-                ) : null}
+                  {digestDiagnostics ? (
+                    <div className="settings-diagnostics-box">
+                      {digestDiagnostics.canSend ? 'Digest gotowy do wysyłki.' : 'Digest wymaga konfiguracji.'}
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+            </section>
+
+            <section className="settings-section-card">
+              <div className="settings-section-head">
+                <div>
+                  <span><MonitorCog className="h-4 w-4" /> Preferencje aplikacji</span>
+                  <h2>Preferencje aplikacji</h2>
+                  <p>Motyw, planowanie i ustawienia widoku. Nie dokładamy języków ani gęstości UI, jeśli nie ma ich w kodzie.</p>
+                </div>
               </div>
 
-              <div className="rounded-2xl border border-slate-200 p-4 space-y-3">
-                <div className="flex items-center gap-2 text-slate-900 font-semibold">
-                  <Shield className="w-4 h-4 text-slate-400" />
-                  Wylogowanie globalne
-                </div>
-                <p className="text-sm text-slate-500">
-                  Konczy sesje na wszystkich urzadzeniach, takze na tym, z ktorego teraz korzystasz.
-                </p>
-                <Button
-                  variant="outline"
-                  className="w-full md:w-auto text-red-500 hover:text-red-600 hover:bg-red-50 border-red-100"
-                  onClick={() => void handleSignOutEverywhere()}
-                  disabled={signingOutEverywhere}
-                >
-                  {signingOutEverywhere ? 'Wylogowywanie...' : 'Wyloguj ze wszystkich urzadzen'}
-                </Button>
+              <div className="settings-theme-grid">
+                {skinOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => {
+                      void setSkin(option.id)
+                        .then(() => {
+                          toast.success(`Aktywowano motyw: ${option.label}`);
+                          refresh();
+                        })
+                        .catch((error: any) => toast.error(`Błąd zapisu motywu: ${error?.message || 'REQUEST_FAILED'}`));
+                    }}
+                    className={skin === option.id ? 'settings-theme-card settings-theme-active' : 'settings-theme-card'}
+                  >
+                    <strong>{option.label}</strong>
+                    <span>{option.description}</span>
+                  </button>
+                ))}
               </div>
-            </CardContent>
-          </Card>
+
+              <label className="settings-toggle-row settings-toggle-row-spaced">
+                <div>
+                  <strong>Ostrzeżenia o konfliktach terminów</strong>
+                  <span>Przy dodawaniu lub edycji zadania albo wydarzenia aplikacja ostrzeże o konflikcie.</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={conflictWarningsEnabled}
+                  onChange={(event) => {
+                    void handleConflictWarningsToggle(event.target.checked);
+                  }}
+                />
+              </label>
+            </section>
+
+            <section className="settings-section-card">
+              <div className="settings-section-head">
+                <div>
+                  <span><Shield className="h-4 w-4" /> Dostęp i bezpieczeństwo</span>
+                  <h2>Dostęp i bezpieczeństwo</h2>
+                  <p>Realne akcje konta: e-mail, hasło i wylogowanie urządzeń. Bez 2FA w tym etapie.</p>
+                </div>
+              </div>
+
+              <div className="settings-security-grid">
+                <article className="settings-security-box">
+                  <div>
+                    <Mail className="h-4 w-4" />
+                    <strong>Zmiana e-maila</strong>
+                    <span>Aktualny adres: {accountEmail || 'Brak adresu e-mail'}</span>
+                  </div>
+                  <Button type="button" variant="outline" onClick={() => setEmailChangeOpen((value) => !value)}>
+                    {emailChangeOpen ? 'Anuluj' : 'Zmień e-mail'}
+                  </Button>
+                </article>
+
+                {emailChangeOpen ? (
+                  <div className="settings-inline-panel">
+                    <div className="settings-form-grid">
+                      <div className="settings-field settings-field-wide">
+                        <Label>Nowy e-mail</Label>
+                        <Input type="email" value={newEmail} onChange={(event) => setNewEmail(event.target.value)} placeholder="nowy@email.pl" />
+                      </div>
+                      <div className="settings-field settings-field-wide">
+                        <Label>Aktualne hasło</Label>
+                        <Input type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} placeholder="Potwierdź aktualnym hasłem" />
+                      </div>
+                    </div>
+                    <Button type="button" onClick={() => void handleChangeEmail()} disabled={emailChangeSubmitting || !passwordAuthAvailable}>
+                      {emailChangeSubmitting ? 'Wysyłanie...' : 'Wyślij potwierdzenie'}
+                    </Button>
+                    {!passwordAuthAvailable ? <p>Zmiana e-maila działa dla kont z logowaniem e-mail + hasło.</p> : null}
+                  </div>
+                ) : null}
+
+                <article className="settings-security-box">
+                  <div>
+                    <KeyRound className="h-4 w-4" />
+                    <strong>Hasło</strong>
+                    <span>{passwordAuthAvailable ? 'Logowanie e-mail + hasło jest aktywne.' : 'Hasło nie jest jeszcze ustawione dla tego konta.'}</span>
+                  </div>
+                  <div className="settings-security-actions">
+                    {passwordAuthAvailable ? (
+                      <Button type="button" variant="outline" onClick={() => void handleSendPasswordChangeLink()} disabled={passwordResetSubmitting}>
+                        {passwordResetSubmitting ? 'Wysyłanie...' : 'Wyślij link zmiany hasła'}
+                      </Button>
+                    ) : (
+                      <Button type="button" variant="outline" onClick={() => setSetupPasswordOpen((value) => !value)}>
+                        {setupPasswordOpen ? 'Anuluj' : 'Ustaw hasło'}
+                      </Button>
+                    )}
+                  </div>
+                </article>
+
+                {setupPasswordOpen ? (
+                  <div className="settings-inline-panel">
+                    <div className="settings-form-grid">
+                      <div className="settings-field">
+                        <Label>Nowe hasło</Label>
+                        <Input type="password" value={setupPassword} onChange={(event) => setSetupPassword(event.target.value)} />
+                      </div>
+                      <div className="settings-field">
+                        <Label>Powtórz hasło</Label>
+                        <Input type="password" value={setupPasswordConfirm} onChange={(event) => setSetupPasswordConfirm(event.target.value)} />
+                      </div>
+                    </div>
+                    <Button type="button" onClick={() => void handleSetupPassword()} disabled={setupPasswordSubmitting}>
+                      {setupPasswordSubmitting ? 'Zapisywanie...' : 'Ustaw hasło'}
+                    </Button>
+                  </div>
+                ) : null}
+
+                <article className="settings-security-box">
+                  <div>
+                    <LogOut className="h-4 w-4" />
+                    <strong>Sesja</strong>
+                    <span>Wylogowanie wszystkich urządzeń zapisuje znacznik bezpieczeństwa w profilu.</span>
+                  </div>
+                  <Button type="button" variant="outline" onClick={() => void handleSignOutEverywhere()} disabled={signingOutEverywhere}>
+                    {signingOutEverywhere ? 'Wylogowywanie...' : 'Wyloguj wszystkie urządzenia'}
+                  </Button>
+                </article>
+              </div>
+            </section>
+
+            <section className="settings-section-card">
+              <div className="settings-section-head">
+                <div>
+                  <span><Database className="h-4 w-4" /> Dane</span>
+                  <h2>Dane</h2>
+                  <p>Ten etap nie dodaje ciężkiego importu, eksportu ani usuwania danych bez osobnego wdrożenia.</p>
+                </div>
+              </div>
+              <div className="settings-info-grid">
+                <article><small>Eksport</small><strong>Do podpięcia w kolejnym etapie</strong></article>
+                <article><small>Reset demo</small><strong>Nie ustawiono</strong></article>
+                <article><small>Usuwanie danych</small><strong>Nieaktywne w tym etapie</strong></article>
+              </div>
+            </section>
+          </section>
+
+          <aside className="settings-right-rail" aria-label="Panel ustawień">
+            <section className="right-card settings-right-card">
+              <div className="settings-right-title">
+                <User className="h-4 w-4" />
+                <h2>Konto</h2>
+              </div>
+              <p>{asText(profile.fullName || accountEmail, 'Operator')}</p>
+              <small>{accountEmail || 'Brak e-maila'}</small>
+            </section>
+
+            <section className="right-card settings-right-card">
+              <div className="settings-right-title">
+                <Users className="h-4 w-4" />
+                <h2>Workspace</h2>
+              </div>
+              <p>{workspaceName}</p>
+              <small>Plan: {planLabel}</small>
+            </section>
+
+            <section className="right-card settings-right-card">
+              <div className="settings-right-title">
+                <WalletCards className="h-4 w-4" />
+                <h2>Dostęp</h2>
+              </div>
+              <p>{accessLabel}</p>
+              <small>Stan dostępu pochodzi z istniejącego `useWorkspace` i `access`.</small>
+            </section>
+
+            <section className="right-card settings-right-card">
+              <div className="settings-right-title">
+                <SlidersHorizontal className="h-4 w-4" />
+                <h2>Integracje</h2>
+              </div>
+              <p>Bez nowych integracji</p>
+              <small>Google Calendar, import/export i zaawansowane integracje wymagają osobnych etapów.</small>
+            </section>
+
+            <section className="right-card settings-right-card">
+              <div className="settings-right-title">
+                <LockKeyhole className="h-4 w-4" />
+                <h2>Bezpieczeństwo</h2>
+              </div>
+              <p>{passwordAuthAvailable ? 'Hasło aktywne' : 'Hasło nieustawione'}</p>
+              <small>2FA nie jest budowane w tym etapie.</small>
+            </section>
+          </aside>
         </div>
-      </div>
+      </main>
     </Layout>
   );
 }

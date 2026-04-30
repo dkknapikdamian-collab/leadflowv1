@@ -1,0 +1,458 @@
+/* SETTINGS_VISUAL_REBUILD_STAGE19 */
+
+.settings-vnext-page {
+  min-height: 100%;
+  padding: 28px clamp(16px, 3vw, 36px) 40px;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 30%),
+    linear-gradient(180deg, #f4f6f8 0%, #eef2f6 100%);
+  color: #111827;
+}
+
+.settings-header {
+  max-width: 1480px;
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.settings-kicker {
+  margin: 0 0 8px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+}
+
+.settings-header h1 {
+  margin: 0;
+  color: #111827;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.settings-header p:not(.settings-kicker) {
+  margin: 10px 0 0;
+  color: #667085;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.settings-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.settings-summary-grid,
+.settings-shell {
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+.settings-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.settings-summary-card,
+.settings-section-card,
+.settings-loading-card,
+.right-card.settings-right-card,
+.settings-right-card {
+  background: rgba(255, 255, 255, 0.92) !important;
+  background-image: none !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  color: #111827 !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+.settings-summary-card {
+  min-height: 112px;
+  padding: 16px;
+}
+
+.settings-summary-card small,
+.settings-info-grid small {
+  display: block;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.settings-summary-card strong,
+.settings-info-grid strong {
+  display: block;
+  margin-top: 8px;
+  color: #111827;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+
+.settings-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 22px;
+  align-items: start;
+}
+
+.settings-main-column {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.settings-section-card {
+  padding: 20px;
+}
+
+.settings-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.settings-section-head span,
+.settings-right-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.settings-section-head h2,
+.settings-right-card h2 {
+  margin: 7px 0 0;
+  color: #111827;
+  font-size: 20px;
+  font-weight: 850;
+  letter-spacing: -0.03em;
+}
+
+.settings-section-head p {
+  margin: 5px 0 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.settings-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.settings-field {
+  display: grid;
+  gap: 7px;
+}
+
+.settings-field-wide {
+  grid-column: 1 / -1;
+}
+
+.settings-action-row {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.settings-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.settings-info-grid article {
+  border: 1px solid #e4e7ec;
+  border-radius: 20px;
+  background: #fff;
+  padding: 14px;
+}
+
+.settings-toggle-list {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-toggle-row,
+.settings-browser-box,
+.settings-security-box {
+  border: 1px solid #e4e7ec;
+  border-radius: 20px;
+  background: #fff;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.settings-toggle-row-spaced {
+  margin-top: 16px;
+}
+
+.settings-toggle-row strong,
+.settings-browser-box strong,
+.settings-security-box strong {
+  display: block;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.settings-toggle-row span,
+.settings-browser-box span,
+.settings-security-box span {
+  display: block;
+  margin-top: 4px;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.settings-toggle-row input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  accent-color: #2563eb;
+}
+
+.settings-soft-pill {
+  width: fit-content;
+  border: 1px solid #e4e7ec;
+  border-radius: 999px;
+  background: #f9fafb;
+  color: #475467 !important;
+  padding: 7px 10px;
+  font-size: 12px !important;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.settings-digest-panel,
+.settings-inline-panel {
+  margin-top: 14px;
+  border: 1px solid #e4e7ec;
+  border-radius: 22px;
+  background: #f9fafb;
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.settings-inline-panel p,
+.settings-diagnostics-box {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.settings-diagnostics-box {
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  background: #fff;
+  padding: 12px;
+}
+
+.settings-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.settings-theme-card {
+  min-height: 106px;
+  border: 1px solid #e4e7ec;
+  border-radius: 22px;
+  background: #fff;
+  color: #475467;
+  padding: 15px;
+  text-align: left;
+}
+
+.settings-theme-card strong {
+  display: block;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 850;
+}
+
+.settings-theme-card span {
+  display: block;
+  margin-top: 7px;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.settings-theme-active,
+.settings-theme-card:hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.settings-security-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-security-box svg {
+  color: #2563eb;
+  margin-bottom: 8px;
+}
+
+.settings-security-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.settings-right-rail {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.settings-right-rail::before,
+.settings-right-rail::after,
+.right-card.settings-right-card::before,
+.right-card.settings-right-card::after,
+.settings-right-card::before,
+.settings-right-card::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.settings-right-card {
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.settings-right-title h2 {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.settings-right-card p {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.settings-right-card small {
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.settings-loading-card {
+  max-width: 520px;
+  min-height: 180px;
+  margin: 80px auto;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+  color: #667085;
+}
+
+@media (max-width: 1240px) {
+  .settings-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-right-rail {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .settings-summary-grid,
+  .settings-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .settings-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .settings-header-actions {
+    justify-content: flex-start;
+  }
+
+  .settings-right-rail,
+  .settings-form-grid,
+  .settings-theme-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-field-wide {
+    grid-column: auto;
+  }
+
+  .settings-toggle-row,
+  .settings-browser-box,
+  .settings-security-box {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .settings-vnext-page {
+    padding: 18px 12px 28px;
+  }
+
+  .settings-header h1 {
+    font-size: 32px;
+  }
+
+  .settings-header-actions,
+  .settings-summary-grid,
+  .settings-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-header-actions {
+    display: grid;
+  }
+
+  .settings-section-card {
+    padding: 16px;
+  }
+}
