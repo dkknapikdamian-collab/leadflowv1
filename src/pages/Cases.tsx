@@ -1,5 +1,6 @@
-﻿import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+﻿import {
+ useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import {
@@ -23,6 +24,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { deleteCaseWithRelations } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { requireWorkspaceId } from '../lib/workspace-context';
+import '../styles/visual-stage23-client-case-forms-vnext.css';
 import {
   createCaseInSupabase,
   fetchCasesFromSupabase,
@@ -30,7 +32,11 @@ import {
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
   isSupabaseConfigured,
+  fetchClientsFromSupabase,
 } from '../lib/supabase-fallback';
+
+const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES';
+const CLIENT_CASE_FORMS_STAGE23_HUMAN_COPY = 'Podaj nazwę klienta. Podaj tytuł sprawy. Wybierz klienta albo utwórz nowego. Nie udało się zapisać. Spróbuj ponownie. Rozpocznij obsługę.';
 
 type CaseRecord = {
   id: string;
@@ -50,10 +56,11 @@ type CaseRecord = {
 
 type ClientOption = {
   key: string;
+  id?: string;
   name: string;
   email: string;
   phone: string;
-  source: 'case' | 'lead';
+  source: 'case' | 'lead' | 'client';
 };
 
 type CaseView = 'all' | 'waiting' | 'blocked' | 'approval' | 'ready' | 'needs_next_step' | 'linked';
@@ -191,8 +198,11 @@ function compactNextAction(value: string) {
 
 export default function Cases() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
+  const [searchParams] = useSearchParams();
+  const stage23PrefillHandledRef = useRef(false);
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [leadCandidates, setLeadCandidates] = useState<any[]>([]);
+  const [clientCandidates, setClientCandidates] = useState<any[]>([]);
   const [caseTasks, setCaseTasks] = useState<any[]>([]);
   const [caseEvents, setCaseEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -208,18 +218,21 @@ export default function Cases() {
     clientName: '',
     clientEmail: '',
     clientPhone: '',
+    clientId: '',
     status: 'in_progress',
   });
 
   const refreshCases = async () => {
-    const [caseRows, leadRows, taskRows, eventRows] = await Promise.all([
+    const [caseRows, leadRows, clientRows, taskRows, eventRows] = await Promise.all([
       fetchCasesFromSupabase(),
       fetchLeadsFromSupabase().catch(() => []),
+      fetchClientsFromSupabase().catch(() => []),
       fetchTasksFromSupabase().catch(() => []),
       fetchEventsFromSupabase().catch(() => []),
     ]);
     setCases(caseRows as CaseRecord[]);
     setLeadCandidates(leadRows as any[]);
+    setClientCandidates(clientRows as any[]);
     setCaseTasks(taskRows as any[]);
     setCaseEvents(eventRows as any[]);
   };
@@ -231,6 +244,7 @@ export default function Cases() {
     if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) {
       setCases([]);
       setLeadCandidates([]);
+      setClientCandidates([]);
       setCaseTasks([]);
       setCaseEvents([]);
       setLoading(false);
@@ -242,14 +256,16 @@ export default function Cases() {
     Promise.all([
       fetchCasesFromSupabase(),
       fetchLeadsFromSupabase().catch(() => []),
+      fetchClientsFromSupabase().catch(() => []),
       fetchTasksFromSupabase().catch(() => []),
       fetchEventsFromSupabase().catch(() => []),
     ])
-      .then(([caseRows, leadRows, taskRows, eventRows]) => {
+      .then(([caseRows, leadRows, clientRows, taskRows, eventRows]) => {
         if (!isMounted) return;
         setCases(caseRows as CaseRecord[]);
         setLeadCandidates(leadRows as any[]);
-        setCaseTasks(taskRows as any[]);
+    setClientCandidates(clientRows as any[]);
+    setCaseTasks(taskRows as any[]);
         setCaseEvents(eventRows as any[]);
         setLoading(false);
       })
@@ -258,7 +274,8 @@ export default function Cases() {
         toast.error(`Błąd cases API: ${error.message}`);
         setCases([]);
         setLeadCandidates([]);
-        setCaseTasks([]);
+      setClientCandidates([]);
+      setCaseTasks([]);
         setCaseEvents([]);
         setLoading(false);
       });
@@ -290,7 +307,31 @@ export default function Cases() {
     [leadCandidates]
   );
 
-  const clientOptions = useMemo(() => buildClientOptions(cases, leadCandidates), [cases, leadCandidates]);
+  const clientOptions = useMemo(() => buildClientOptions(cases, leadCandidates, clientCandidates), [cases, clientCandidates, leadCandidates]);
+
+
+  useEffect(() => {
+    if (stage23PrefillHandledRef.current) return;
+
+    const shouldOpen = searchParams.get('new') === '1';
+    const clientIdFromUrl = searchParams.get('clientId') || '';
+    if (!shouldOpen || !clientIdFromUrl) return;
+
+    const client = clientCandidates.find((entry) => String(entry?.id || '') === clientIdFromUrl);
+    if (!client) return;
+
+    stage23PrefillHandledRef.current = true;
+    setNewCase((prev) => ({
+      ...prev,
+      clientId: clientIdFromUrl,
+      clientName: String(client?.name || client?.company || 'Klient'),
+      clientEmail: String(client?.email || ''),
+      clientPhone: String(client?.phone || ''),
+      title: prev.title.trim() ? prev.title : `${String(client?.name || client?.company || 'Klient')} - obsługa`,
+    }));
+    setShowCreateClientFields(false);
+    setIsCreateCaseOpen(true);
+  }, [clientCandidates, searchParams]);
 
   const clientSuggestions = useMemo(() => {
     const normalizedQuery = newCase.clientName.trim().toLowerCase();
@@ -356,12 +397,14 @@ export default function Cases() {
     if (!hasAccess) return toast.error('Trial wygasł.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
-    if (!newCase.title.trim()) return toast.error('Podaj tytuł sprawy');
+    if (!newCase.title.trim()) return toast.error('Podaj tytuł sprawy.');
+    if (!newCase.clientId && !newCase.clientName.trim()) return toast.error('Wybierz klienta albo utwórz nowego.');
 
     try {
       setCreateCasePending(true);
       await createCaseInSupabase({
         title: newCase.title.trim(),
+        clientId: newCase.clientId || null,
         clientName: newCase.clientName.trim(),
         clientEmail: newCase.clientEmail.trim(),
         clientPhone: newCase.clientPhone.trim(),
@@ -379,10 +422,11 @@ export default function Cases() {
         clientName: '',
         clientEmail: '',
         clientPhone: '',
+        clientId: '',
         status: 'in_progress',
       });
     } catch (error: any) {
-      toast.error(`Błąd tworzenia sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error('Nie udało się zapisać. Spróbuj ponownie.');
     } finally {
       setCreateCasePending(false);
     }
@@ -395,6 +439,7 @@ export default function Cases() {
       clientName: option.name,
       clientEmail: option.email,
       clientPhone: option.phone,
+      clientId: option.id || '',
     }));
     setShowCreateClientFields(false);
   }
@@ -423,92 +468,148 @@ export default function Cases() {
                   <Plus className="h-4 w-4" /> Nowa sprawa
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-lg">
-                <DialogHeader>
+              <DialogContent className="client-case-form-content case-form-stage23-content" data-case-form-stage23="true" data-client-case-form-visual-rebuild={CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES}>
+                <DialogHeader className="client-case-form-header">
+                  <span className="client-case-form-kicker">SPRAWA</span>
                   <DialogTitle>Nowa sprawa</DialogTitle>
+                  <p>Utwórz krótką sprawę operacyjną. Klient z kontekstu zostanie przypięty automatycznie.</p>
                 </DialogHeader>
-                <form onSubmit={handleCreateCase} className="space-y-4 py-2">
-                  <div className="space-y-2">
-                    <Label>Tytuł sprawy</Label>
-                    <Input value={newCase.title} onChange={(event) => setNewCase((prev) => ({ ...prev, title: event.target.value }))} placeholder="np. Wdrożenie klienta X" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Klient</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        value={newCase.clientName}
-                        onChange={(event) => setNewCase((prev) => ({ ...prev, clientName: event.target.value }))}
-                        placeholder="Wpisz klienta, a system podpowie z leadów i spraw"
-                      />
-                      <Button
-                        type="button"
-                        variant={showCreateClientFields ? 'default' : 'outline'}
-                        size="icon"
-                        onClick={() => setShowCreateClientFields((prev) => !prev)}
-                        title="Dodaj nowego klienta"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
+
+                <form onSubmit={handleCreateCase} className="client-case-form" data-case-form-fields="case">
+                  <section className="client-case-form-section">
+                    <div className="client-case-form-section-head">
+                      <h3>Dane sprawy</h3>
+                      <p>Tytuł, klient i status startowy. Bez duplikowania pól z klienta.</p>
                     </div>
-                    {clientSuggestions.length > 0 ? (
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2 space-y-1">
-                        {clientSuggestions.map((option) => (
-                          <button
-                            key={option.key}
-                            type="button"
-                            className="w-full rounded-xl px-3 py-2 text-left transition hover:bg-white"
-                            onClick={() => handleSelectClientSuggestion(option)}
-                          >
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="min-w-0">
-                                <p className="text-sm font-semibold text-slate-900 truncate">{option.name}</p>
-                                <p className="text-xs text-slate-500 truncate">
-                                  {[option.email, option.phone].filter(Boolean).join(' • ') || 'Dane klienta zapisane w systemie'}
-                                </p>
-                              </div>
-                              <Badge variant="outline">{option.source === 'lead' ? 'Z leada' : 'Ze sprawy'}</Badge>
+
+                    <div className="client-case-form-grid">
+                      <div className="client-case-form-field client-case-form-field-wide">
+                        <Label>Tytuł sprawy</Label>
+                        <Input
+                          value={newCase.title}
+                          onChange={(event) => setNewCase((prev) => ({ ...prev, title: event.target.value }))}
+                          placeholder="np. Wdrożenie klienta X"
+                        />
+                      </div>
+
+                      <div className="client-case-form-field client-case-form-field-wide">
+                        <Label>Klient</Label>
+                        {newCase.clientId ? (
+                          <div className="client-case-form-locked-client" data-case-form-client-prefilled="true">
+                            <strong>{newCase.clientName || 'Klient z kontekstu'}</strong>
+                            <span>Sprawa będzie przypięta do tego klienta. Nie musisz wybierać go drugi raz.</span>
+                            <button
+                              type="button"
+                              onClick={() => setNewCase((prev) => ({ ...prev, clientId: '', clientName: '', clientEmail: '', clientPhone: '' }))}
+                            >
+                              Zmień klienta
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="client-case-form-client-row">
+                              <Input
+                                value={newCase.clientName}
+                                onChange={(event) => setNewCase((prev) => ({ ...prev, clientName: event.target.value, clientId: '' }))}
+                                placeholder="Wpisz klienta, a system podpowie z klientów, leadów i spraw"
+                              />
+                              <Button
+                                type="button"
+                                variant={showCreateClientFields ? 'default' : 'outline'}
+                                size="icon"
+                                onClick={() => setShowCreateClientFields((prev) => !prev)}
+                                title="Dodaj nowego klienta"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
                             </div>
-                          </button>
-                        ))}
+
+                            {clientSuggestions.length > 0 ? (
+                              <div className="client-case-form-suggestions">
+                                {clientSuggestions.map((option) => (
+                                  <button
+                                    key={option.key}
+                                    type="button"
+                                    onClick={() => handleSelectClientSuggestion(option)}
+                                  >
+                                    <span>
+                                      <strong>{option.name}</strong>
+                                      <small>{[option.email, option.phone].filter(Boolean).join(' • ') || 'Dane klienta zapisane w systemie'}</small>
+                                    </span>
+                                    <Badge variant="outline">{option.source === 'lead' ? 'Z leada' : option.source === 'client' ? 'Klient' : 'Ze sprawy'}</Badge>
+                                  </button>
+                                ))}
+                              </div>
+                            ) : null}
+                          </>
+                        )}
+
+                        {!showCreateClientFields && !newCase.clientId && (newCase.clientEmail || newCase.clientPhone) ? (
+                          <p className="client-case-form-hint">
+                            Wybrany klient: {[newCase.clientEmail, newCase.clientPhone].filter(Boolean).join(' • ')}
+                          </p>
+                        ) : null}
                       </div>
-                    ) : null}
-                    {!showCreateClientFields && (newCase.clientEmail || newCase.clientPhone) ? (
-                      <p className="text-xs text-slate-500">
-                        Wybrany klient: {[newCase.clientEmail, newCase.clientPhone].filter(Boolean).join(' • ')}
-                      </p>
-                    ) : null}
-                  </div>
-                  {showCreateClientFields ? (
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-4">
-                      <p className="text-sm font-semibold text-slate-900">Nowy klient dla tej sprawy</p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label>E-mail klienta</Label>
-                          <Input value={newCase.clientEmail} onChange={(event) => setNewCase((prev) => ({ ...prev, clientEmail: event.target.value }))} placeholder="np. klient@firma.pl" />
+
+                      {showCreateClientFields && !newCase.clientId ? (
+                        <div className="client-case-form-inline-client client-case-form-field-wide">
+                          <p>Nowy klient dla tej sprawy</p>
+                          <div className="client-case-form-grid">
+                            <div className="client-case-form-field">
+                              <Label>E-mail klienta</Label>
+                              <Input
+                                value={newCase.clientEmail}
+                                onChange={(event) => setNewCase((prev) => ({ ...prev, clientEmail: event.target.value }))}
+                                placeholder="np. klient@firma.pl"
+                              />
+                            </div>
+                            <div className="client-case-form-field">
+                              <Label>Telefon klienta</Label>
+                              <Input
+                                value={newCase.clientPhone}
+                                onChange={(event) => setNewCase((prev) => ({ ...prev, clientPhone: event.target.value }))}
+                                placeholder="np. 500 000 000"
+                              />
+                            </div>
+                          </div>
                         </div>
-                        <div className="space-y-2">
-                          <Label>Telefon klienta</Label>
-                          <Input value={newCase.clientPhone} onChange={(event) => setNewCase((prev) => ({ ...prev, clientPhone: event.target.value }))} placeholder="np. 500 000 000" />
+                      ) : null}
+
+                      <div className="client-case-form-field">
+                        <Label>Status</Label>
+                        <select
+                          className="client-case-form-select"
+                          value={newCase.status}
+                          onChange={(event) => setNewCase((prev) => ({ ...prev, status: event.target.value }))}
+                        >
+                          <option value="in_progress">W realizacji</option>
+                          <option value="waiting_on_client">Czeka na klienta</option>
+                          <option value="blocked">Zablokowana</option>
+                          <option value="ready_to_start">Gotowa do startu</option>
+                        </select>
+                      </div>
+
+                      <div className="client-case-form-field">
+                        <Label>Powiązany lead</Label>
+                        <Input value="Jeśli tworzysz sprawę z leada, użyj flow Rozpocznij obsługę w LeadDetail." disabled />
+                      </div>
+
+                      <div className="client-case-form-field client-case-form-field-wide">
+                        <Label>Opis</Label>
+                        <div className="client-case-form-disabled-note">
+                          Opis sprawy nie jest zapisywany w obecnym modelu danych. Ten etap nie udaje pola, którego backend nie obsługuje.
                         </div>
                       </div>
                     </div>
-                  ) : null}
-                  <div className="space-y-2">
-                    <Label>Status startowy</Label>
-                    <select
-                      className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                      value={newCase.status}
-                      onChange={(event) => setNewCase((prev) => ({ ...prev, status: event.target.value }))}
-                    >
-                      <option value="in_progress">W realizacji</option>
-                      <option value="waiting_on_client">Czeka na klienta</option>
-                      <option value="blocked">Zablokowana</option>
-                      <option value="ready_to_start">Gotowa do startu</option>
-                    </select>
-                  </div>
-                  <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)}>Anuluj</Button>
-                    <Button type="submit" disabled={createCasePending || !workspaceReady}>{createCasePending ? 'Tworzenie...' : 'Utwórz sprawę'}</Button>
+                  </section>
+
+                  <DialogFooter className="client-case-form-footer">
+                    <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)}>
+                      Anuluj
+                    </Button>
+                    <Button type="submit" disabled={createCasePending || !workspaceReady}>
+                      {createCasePending ? 'Zapisywanie...' : 'Zapisz sprawę'}
+                    </Button>
                   </DialogFooter>
                 </form>
               </DialogContent>

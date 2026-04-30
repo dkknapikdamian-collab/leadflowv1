@@ -11,6 +11,9 @@ import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { createClientInSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase, updateClientInSupabase } from '../lib/supabase-fallback';
+import '../styles/visual-stage23-client-case-forms-vnext.css';
+
+const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
 
 type ClientRecord = {
   id: string;
@@ -33,7 +36,7 @@ export default function Clients() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createPending, setCreatePending] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
-  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '' });
+  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
 
   const reload = useCallback(async () => {
     if (!workspace?.id) {
@@ -161,10 +164,10 @@ export default function Clients() {
       });
       toast.success('Klient dodany');
       setIsCreateOpen(false);
-      setNewClient({ name: '', company: '', email: '', phone: '' });
+      setNewClient({ name: '', company: '', email: '', phone: '', notes: '' });
       await reload();
     } catch (error: any) {
-      toast.error(`Błąd zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error('Nie udało się zapisać. Spróbuj ponownie.');
     } finally {
       setCreatePending(false);
     }
@@ -245,16 +248,79 @@ export default function Clients() {
               <DialogTrigger asChild>
                 <Button className="btn primary" disabled={!workspace?.id}><Plus className="w-4 h-4" /> Dodaj klienta</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader><DialogTitle>Nowy klient</DialogTitle></DialogHeader>
-                <form onSubmit={handleCreateClient} className="space-y-3 py-2">
-                  <div className="space-y-1"><Label>Nazwa</Label><Input value={newClient.name} onChange={(event) => setNewClient((prev) => ({ ...prev, name: event.target.value }))} required /></div>
-                  <div className="space-y-1"><Label>Firma</Label><Input value={newClient.company} onChange={(event) => setNewClient((prev) => ({ ...prev, company: event.target.value }))} /></div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1"><Label>E-mail</Label><Input type="email" value={newClient.email} onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))} /></div>
-                    <div className="space-y-1"><Label>Telefon</Label><Input value={newClient.phone} onChange={(event) => setNewClient((prev) => ({ ...prev, phone: event.target.value }))} /></div>
-                  </div>
-                  <DialogFooter><Button type="submit" disabled={createPending}>{createPending ? 'Zapisywanie...' : 'Utwórz klienta'}</Button></DialogFooter>
+              <DialogContent className="client-case-form-content client-form-stage23-content" data-client-form-stage23="true" data-client-case-form-visual-rebuild={CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS}>
+                <DialogHeader className="client-case-form-header">
+                  <span className="client-case-form-kicker">KLIENT</span>
+                  <DialogTitle>Nowy klient</DialogTitle>
+                  <p>Dodaj tylko najważniejsze dane kontaktowe. Resztę można uzupełnić później.</p>
+                </DialogHeader>
+
+                <form onSubmit={handleCreateClient} className="client-case-form" data-client-form-fields="contact">
+                  <section className="client-case-form-section">
+                    <div className="client-case-form-section-head">
+                      <h3>Dane podstawowe</h3>
+                      <p>Minimum potrzebne do zapisania klienta i rozpoczęcia sprawy.</p>
+                    </div>
+
+                    <div className="client-case-form-grid">
+                      <div className="client-case-form-field client-case-form-field-wide">
+                        <Label>Imię / nazwa</Label>
+                        <Input
+                          value={newClient.name}
+                          onChange={(event) => setNewClient((prev) => ({ ...prev, name: event.target.value }))}
+                          placeholder="Np. Jan Kowalski albo Firma ABC"
+                          required
+                        />
+                      </div>
+
+                      <div className="client-case-form-field">
+                        <Label>Telefon</Label>
+                        <Input
+                          value={newClient.phone}
+                          onChange={(event) => setNewClient((prev) => ({ ...prev, phone: event.target.value }))}
+                          placeholder="np. 516 000 000"
+                        />
+                      </div>
+
+                      <div className="client-case-form-field">
+                        <Label>E-mail</Label>
+                        <Input
+                          type="email"
+                          value={newClient.email}
+                          onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))}
+                          placeholder="kontakt@email.pl"
+                        />
+                      </div>
+
+                      <div className="client-case-form-field client-case-form-field-wide">
+                        <Label>Firma</Label>
+                        <Input
+                          value={newClient.company}
+                          onChange={(event) => setNewClient((prev) => ({ ...prev, company: event.target.value }))}
+                          placeholder="Opcjonalnie"
+                        />
+                      </div>
+
+                      <div className="client-case-form-field client-case-form-field-wide">
+                        <Label>Notatka</Label>
+                        <textarea
+                          className="client-case-form-textarea"
+                          value={newClient.notes}
+                          onChange={(event) => setNewClient((prev) => ({ ...prev, notes: event.target.value }))}
+                          placeholder="Krótki kontekst relacji, źródło albo ważna informacja."
+                        />
+                      </div>
+                    </div>
+                  </section>
+
+                  <DialogFooter className="client-case-form-footer">
+                    <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
+                      Anuluj
+                    </Button>
+                    <Button type="submit" disabled={createPending}>
+                      {createPending ? 'Zapisywanie...' : 'Zapisz klienta'}
+                    </Button>
+                  </DialogFooter>
                 </form>
               </DialogContent>
             </Dialog>
