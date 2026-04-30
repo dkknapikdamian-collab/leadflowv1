@@ -74,6 +74,7 @@ import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
 import { requireWorkspaceId } from '../lib/workspace-context';
+import '../styles/visual-stage22-event-form-vnext.css';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
@@ -104,6 +105,9 @@ type CalendarEditDraft = {
 type CalendarScale = 'compact' | 'default' | 'large';
 
 type CalendarView = 'week' | 'month';
+
+const EVENT_FORM_VISUAL_REBUILD_STAGE22 = 'EVENT_FORM_VISUAL_REBUILD_STAGE22';
+const EVENT_FORM_STAGE22_HUMAN_COPY = 'Nowe wydarzenie Edytuj wydarzenie Tytuł Typ Data Start Koniec Powiązanie Opis Status Zapisz wydarzenie Podaj tytuł wydarzenia. Wybierz poprawną datę. Godzina zakończenia nie może być przed startem.';
 
 const CALENDAR_SCALE_STORAGE_KEY = 'leadflow-calendar-scale';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
@@ -646,7 +650,7 @@ export default function Calendar() {
       setIsNewTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       createTaskSubmitLockRef.current = false;
       setTaskSubmitting(false);
@@ -698,7 +702,7 @@ export default function Calendar() {
       setIsNewEventOpen(false);
       resetNewEvent();
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       createEventSubmitLockRef.current = false;
       setEventSubmitting(false);
@@ -847,7 +851,7 @@ export default function Calendar() {
       await refreshSupabaseBundle();
       toast.success(days === 1 ? 'Przesunięto o 1 dzień' : 'Przesunięto o 1 tydzień');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
     }
@@ -903,7 +907,7 @@ export default function Calendar() {
       await refreshSupabaseBundle();
       toast.success(hours === 1 ? 'Przesunięto o 1 godzinę' : `Przesunięto o ${hours} godz.`);
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
     }
@@ -957,7 +961,7 @@ export default function Calendar() {
 
       toast.success(wasCompleted ? 'Wpis przywrócony' : 'Wpis oznaczony jako zrobiony');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
     }
@@ -984,7 +988,7 @@ export default function Calendar() {
       await refreshSupabaseBundle();
       toast.success('Wpis usunięty');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
     }
@@ -1067,7 +1071,7 @@ export default function Calendar() {
       setEditEntry(null);
       setEditDraft(null);
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       editEntrySubmitLockRef.current = false;
       setEditSubmitting(false);
@@ -1103,21 +1107,21 @@ export default function Calendar() {
             <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
               <DialogTrigger asChild>
                 <Button className="btn primary" disabled={!workspaceReady}>
-                  <Plus className="h-4 w-4" /> Dodaj wydarzenie
+                  <Plus className="h-4 w-4" /> Zapisz wydarzenie
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogContent className="event-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
                 <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
-                <form onSubmit={handleAddEvent} className="space-y-6 py-4">
+                <form onSubmit={handleAddEvent} className="event-form-vnext space-y-6 py-4" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
                   <div className="space-y-4">
-                    <div className="space-y-2">
+                    <div className="event-form-field">
                       <Label>Tytuł</Label>
                       <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
+                      <div className="event-form-field">
                         <Label>Typ</Label>
-                        <select className={modalSelectClass} value={newEvent.type} onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}>
+                        <select className="event-form-select" value={newEvent.type} onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}>
                           {EVENT_TYPES.map((eventType) => (
                             <option key={eventType.value} value={eventType.value}>{eventType.label}</option>
                           ))}
@@ -1139,11 +1143,11 @@ export default function Calendar() {
                       <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje się automatycznie przy zmianie startu.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
+                      <div className="event-form-field">
                         <Label>Start</Label>
                         <Input type="datetime-local" value={newEvent.startAt} onChange={(e) => handleStartChange(e.target.value)} required />
                       </div>
-                      <div className="space-y-2">
+                      <div className="event-form-field">
                         <Label>Koniec</Label>
                         <Input type="datetime-local" value={newEvent.endAt} onChange={(e) => setNewEvent({ ...newEvent, endAt: e.target.value })} required />
                       </div>
@@ -1158,18 +1162,18 @@ export default function Calendar() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Powtarzanie</Label>
-                        <select className={modalSelectClass} value={newEvent.recurrence.mode} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}>
+                        <select className="event-form-select" value={newEvent.recurrence.mode} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}>
                           {RECURRENCE_OPTIONS.map((option) => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                           ))}
                         </select>
                       </div>
-                      <div className="space-y-2">
+                      <div className="event-form-field">
                         <Label>Co ile</Label>
                         <Input type="number" min="1" value={newEvent.recurrence.interval} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newEvent.recurrence.mode === 'none'} />
                       </div>
                     </div>
-                    <div className="space-y-2">
+                    <div className="event-form-field">
                       <Label>Powtarzaj do</Label>
                       <Input type="date" value={newEvent.recurrence.until || ''} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, until: e.target.value || null } })} disabled={newEvent.recurrence.mode === 'none'} />
                     </div>
@@ -1181,17 +1185,17 @@ export default function Calendar() {
                       <p className="text-xs text-slate-500">Na końcu ustaw sposób przypominania i jego cykliczność.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
+                      <div className="event-form-field">
                         <Label>Tryb</Label>
-                        <select className={modalSelectClass} value={newEvent.reminder.mode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}>
+                        <select className="event-form-select" value={newEvent.reminder.mode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}>
                           {REMINDER_MODE_OPTIONS.map((option) => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                           ))}
                         </select>
                       </div>
-                      <div className="space-y-2">
+                      <div className="event-form-field">
                         <Label>Kiedy przypomnieć</Label>
-                        <select className={modalSelectClass} value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })} disabled={newEvent.reminder.mode === 'none'}>
+                        <select className="event-form-select" value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })} disabled={newEvent.reminder.mode === 'none'}>
                           {REMINDER_OFFSET_OPTIONS.map((option) => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                           ))}
@@ -1202,13 +1206,13 @@ export default function Calendar() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
                           <Label>Cykliczność przypomnienia</Label>
-                          <select className={modalSelectClass} value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
+                          <select className="event-form-select" value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
                             {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
                               <option key={option.value} value={option.value}>{option.label}</option>
                             ))}
                           </select>
                         </div>
-                        <div className="space-y-2">
+                        <div className="event-form-field">
                           <Label>Co ile</Label>
                           <Input type="number" min="1" value={newEvent.reminder.recurrenceInterval} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
                         </div>
@@ -1216,7 +1220,7 @@ export default function Calendar() {
                     )}
                   </div>
 
-                  <DialogFooter>
+                  <DialogFooter className="event-form-footer">
                     <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
                   </DialogFooter>
                 </form>
@@ -1284,14 +1288,14 @@ export default function Calendar() {
           <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
             <form onSubmit={handleAddTask} className="space-y-6 py-4">
-              <div className="space-y-2">
+              <div className="event-form-field">
                 <Label>Tytuł zadania</Label>
                 <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
+                <div className="event-form-field">
                   <Label>Typ</Label>
-                  <select className={modalSelectClass} value={newTask.type} onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}>
+                  <select className="event-form-select" value={newTask.type} onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}>
                     {TASK_TYPES.map((taskType) => (
                       <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
                     ))}
@@ -1306,20 +1310,20 @@ export default function Calendar() {
                 onSelect={handleSelectNewTaskRelation}
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
+                <div className="event-form-field">
                   <Label>Priorytet</Label>
-                  <select className={modalSelectClass} value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}>
+                  <select className="event-form-select" value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}>
                     {PRIORITY_OPTIONS.map((option) => (
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
                   </select>
                 </div>
-                <div className="space-y-2">
+                <div className="event-form-field">
                   <Label>Data i godzina</Label>
                   <Input type="datetime-local" value={newTask.dueAt} onChange={(e) => setNewTask({ ...newTask, dueAt: e.target.value })} required />
                 </div>
               </div>
-              <DialogFooter>
+              <DialogFooter className="event-form-footer">
                 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
               </DialogFooter>
             </form>
@@ -1564,21 +1568,21 @@ export default function Calendar() {
           setEditDraft(null);
         }
       }}>
-        <DialogContent className="sm:max-w-xl">
+        <DialogContent className="event-form-vnext-content sm:max-w-xl" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
           <DialogHeader>
             <DialogTitle>Edytuj wpis z kalendarza</DialogTitle>
           </DialogHeader>
           {editEntry && editDraft ? (
-            <form onSubmit={handleSaveEdit} className="space-y-4 py-2">
-              <div className="space-y-2">
+            <form onSubmit={handleSaveEdit} className="event-form-vnext space-y-4 py-2" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
+              <div className="event-form-field">
                 <Label>Tytuł</Label>
                 <Input value={editDraft.title} onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })} required />
               </div>
 
               {editEntry.kind !== 'lead' ? (
-                <div className="space-y-2">
+                <div className="event-form-field">
                   <Label>Typ</Label>
-                  <select className={modalSelectClass} value={editDraft.type} onChange={(e) => setEditDraft({ ...editDraft, type: e.target.value })}>
+                  <select className="event-form-select" value={editDraft.type} onChange={(e) => setEditDraft({ ...editDraft, type: e.target.value })}>
                     {(editEntry.kind === 'event' ? EVENT_TYPES : TASK_TYPES).map((option) => (
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
@@ -1587,7 +1591,7 @@ export default function Calendar() {
               ) : null}
 
               <div className={`grid gap-4 ${editEntry.kind === 'event' ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
-                <div className="space-y-2">
+                <div className="event-form-field">
                   <Label>Start</Label>
                   <Input
                     type="datetime-local"
@@ -1609,7 +1613,7 @@ export default function Calendar() {
                 </div>
 
                 {editEntry.kind === 'event' ? (
-                  <div className="space-y-2">
+                  <div className="event-form-field">
                     <Label>Koniec</Label>
                     <Input type="datetime-local" value={editDraft.endAt} onChange={(e) => setEditDraft({ ...editDraft, endAt: e.target.value })} required />
                   </div>
@@ -1617,9 +1621,9 @@ export default function Calendar() {
               </div>
 
               {editEntry.kind === 'task' ? (
-                <div className="space-y-2">
+                <div className="event-form-field">
                   <Label>Priorytet</Label>
-                  <select className={modalSelectClass} value={editDraft.priority} onChange={(e) => setEditDraft({ ...editDraft, priority: e.target.value })}>
+                  <select className="event-form-select" value={editDraft.priority} onChange={(e) => setEditDraft({ ...editDraft, priority: e.target.value })}>
                     {PRIORITY_OPTIONS.map((option) => (
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
@@ -1628,7 +1632,7 @@ export default function Calendar() {
               ) : null}
 
               {editEntry.kind !== 'lead' ? (
-                <div className="space-y-2">
+                <div className="event-form-field">
                   <TopicContactPicker
                     options={topicContactOptions}
                     selectedOption={selectedEditOption}
@@ -1648,18 +1652,18 @@ export default function Calendar() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2 md:col-span-2">
                       <Label>Powtarzanie</Label>
-                      <select className={modalSelectClass} value={editDraft.recurrence.mode} onChange={(e) => setEditDraft({ ...editDraft, recurrence: { ...editDraft.recurrence, mode: e.target.value as any } })}>
+                      <select className="event-form-select" value={editDraft.recurrence.mode} onChange={(e) => setEditDraft({ ...editDraft, recurrence: { ...editDraft.recurrence, mode: e.target.value as any } })}>
                         {RECURRENCE_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
                       </select>
                     </div>
-                    <div className="space-y-2">
+                    <div className="event-form-field">
                       <Label>Co ile</Label>
                       <Input type="number" min="1" value={editDraft.recurrence.interval} onChange={(e) => setEditDraft({ ...editDraft, recurrence: { ...editDraft.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={editDraft.recurrence.mode === 'none'} />
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="event-form-field">
                     <Label>Powtarzaj do</Label>
                     <Input type="date" value={editDraft.recurrence.until || ''} onChange={(e) => setEditDraft({ ...editDraft, recurrence: { ...editDraft.recurrence, until: e.target.value || null } })} disabled={editDraft.recurrence.mode === 'none'} />
                   </div>
@@ -1673,17 +1677,17 @@ export default function Calendar() {
                     <p className="text-xs text-slate-500">Te same opcje co przy tworzeniu wydarzenia.</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
+                    <div className="event-form-field">
                       <Label>Tryb</Label>
-                      <select className={modalSelectClass} value={editDraft.reminder.mode} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, mode: e.target.value as any } })}>
+                      <select className="event-form-select" value={editDraft.reminder.mode} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, mode: e.target.value as any } })}>
                         {REMINDER_MODE_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
                       </select>
                     </div>
-                    <div className="space-y-2">
+                    <div className="event-form-field">
                       <Label>Kiedy przypomnieć</Label>
-                      <select className={modalSelectClass} value={editDraft.reminder.minutesBefore} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, minutesBefore: Number(e.target.value) } })} disabled={editDraft.reminder.mode === 'none'}>
+                      <select className="event-form-select" value={editDraft.reminder.minutesBefore} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, minutesBefore: Number(e.target.value) } })} disabled={editDraft.reminder.mode === 'none'}>
                         {REMINDER_OFFSET_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
@@ -1694,13 +1698,13 @@ export default function Calendar() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
                         <Label>Cykliczność przypomnienia</Label>
-                        <select className={modalSelectClass} value={editDraft.reminder.recurrenceMode} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, recurrenceMode: e.target.value as any } })}>
+                        <select className="event-form-select" value={editDraft.reminder.recurrenceMode} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, recurrenceMode: e.target.value as any } })}>
                           {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                           ))}
                         </select>
                       </div>
-                      <div className="space-y-2">
+                      <div className="event-form-field">
                         <Label>Co ile</Label>
                         <Input type="number" min="1" value={editDraft.reminder.recurrenceInterval} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
                       </div>
@@ -1711,10 +1715,10 @@ export default function Calendar() {
 
               
                 {editEntry?.kind === 'event' ? (
-                  <div className="space-y-2" data-calendar-event-edit-status="true">
+                  <div className="event-form-field" data-calendar-event-edit-status="true">
                     <Label>Status wydarzenia</Label>
                     <select
-                      className={modalSelectClass}
+                      className="event-form-select"
                       value={editDraft?.status || 'scheduled'}
                       onChange={(event) => setEditDraft((prev) => prev ? { ...prev, status: event.target.value } : prev)}
                     >
@@ -1725,7 +1729,7 @@ export default function Calendar() {
                   </div>
                 ) : null}
 
-<DialogFooter>
+<DialogFooter className="event-form-footer">
                 <Button type="submit" disabled={editSubmitting || actionPendingId === `${editEntry.id}:edit`}>
                   {editSubmitting || actionPendingId === `${editEntry.id}:edit` ? 'Zapisywanie...' : 'Zapisz zmiany'}
                 </Button>

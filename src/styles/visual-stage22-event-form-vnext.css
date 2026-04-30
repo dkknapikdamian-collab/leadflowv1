@@ -1,0 +1,189 @@
+/* EVENT_FORM_VISUAL_REBUILD_STAGE22 */
+
+.event-form-vnext-content {
+  width: min(780px, calc(100vw - 24px)) !important;
+  max-width: 780px !important;
+  max-height: min(92vh, 900px);
+  overflow: hidden;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #111827 !important;
+  box-shadow: 0 24px 70px rgba(16, 24, 40, 0.16) !important;
+  padding: 0 !important;
+}
+
+.event-form-vnext-content::before,
+.event-form-vnext-content::after,
+.event-form-vnext::before,
+.event-form-vnext::after,
+.event-form-vnext-grid::before,
+.event-form-vnext-grid::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.event-form-vnext-content [data-radix-dialog-header],
+.event-form-vnext-content > div:first-child {
+  border-bottom: 1px solid #e4e7ec;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 34%),
+    #ffffff;
+  padding: 22px 24px 18px;
+}
+
+.event-form-vnext-content h2 {
+  color: #111827;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.event-form-vnext-description {
+  margin: 6px 0 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.event-form-vnext,
+.event-form-vnext-grid {
+  max-height: calc(92vh - 110px);
+  overflow-y: auto;
+  padding: 18px 24px 22px;
+  display: grid;
+  gap: 14px;
+  background: #f9fafb;
+}
+
+.event-form-vnext > .rounded-2xl,
+.event-form-vnext [data-event-edit-reminder-panel="true"],
+.event-form-vnext-grid > .rounded-2xl,
+.event-form-card {
+  border: 1px solid #e4e7ec !important;
+  border-radius: 24px !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  padding: 16px !important;
+}
+
+.event-form-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.event-form-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.event-form-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.event-form-field {
+  display: grid !important;
+  gap: 7px !important;
+}
+
+.event-form-field label,
+.event-form-vnext label,
+.event-form-vnext-grid label {
+  color: #475467;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.event-form-vnext input,
+.event-form-vnext-grid input,
+.event-form-select,
+.event-form-vnext select,
+.event-form-vnext-grid select,
+.event-form-vnext textarea,
+.event-form-vnext-grid textarea {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  padding: 10px 13px;
+  font-size: 14px;
+  outline: none;
+  box-shadow: 0 4px 12px rgba(16, 24, 40, 0.03);
+}
+
+.event-form-vnext input:focus,
+.event-form-vnext-grid input:focus,
+.event-form-select:focus,
+.event-form-vnext select:focus,
+.event-form-vnext-grid select:focus,
+.event-form-vnext textarea:focus,
+.event-form-vnext-grid textarea:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.event-form-footer {
+  position: sticky;
+  bottom: -22px;
+  border-top: 1px solid #e4e7ec;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 14px 0 0;
+  gap: 10px;
+}
+
+.event-form-footer button {
+  width: auto !important;
+  min-height: 42px;
+  border-radius: 16px;
+  font-weight: 800;
+}
+
+.event-action-chip,
+.calendar-event-action-chip {
+  border: 1px solid #e4e7ec;
+  border-radius: 999px;
+  background: #fff;
+  color: #475467;
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .event-form-vnext-content {
+    width: calc(100vw - 16px) !important;
+    max-height: 94vh;
+    border-radius: 24px !important;
+  }
+
+  .event-form-vnext-content [data-radix-dialog-header],
+  .event-form-vnext-content > div:first-child {
+    padding: 18px 16px 14px;
+  }
+
+  .event-form-vnext,
+  .event-form-vnext-grid {
+    max-height: calc(94vh - 98px);
+    padding: 14px;
+  }
+
+  .event-form-grid-2,
+  .event-form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .event-form-footer {
+    display: grid !important;
+    grid-template-columns: 1fr;
+  }
+
+  .event-form-footer button {
+    width: 100% !important;
+  }
+}
