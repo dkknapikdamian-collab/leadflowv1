@@ -1,3 +1,4 @@
+// AI_DRAFT_CONFIRM_RECORDS_STAGE25_PAGE
 import { useEffect, useMemo, useState } from 'react';
 import {
   Archive,
@@ -47,6 +48,7 @@ import {
   fetchLeadsFromSupabase,
   fetchCasesFromSupabase,
 } from '../lib/supabase-fallback';
+import { buildAiDraftConfirmedParsedDraft, getAiDraftCreatedRecordId } from '../lib/ai-draft-confirm-records';
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 
@@ -343,15 +345,22 @@ function MetricCard({
   icon: Icon,
   active,
   onClick,
+  dataTab,
 }: {
   label: string;
   value: number;
   icon: any;
   active?: boolean;
   onClick: () => void;
+  dataTab?: string;
 }) {
   return (
-    <button type="button" onClick={onClick} className={['ai-drafts-stat-card', active ? 'ai-drafts-stat-card-active' : ''].join(' ')}>
+    <button
+      type="button"
+      onClick={onClick}
+      data-ai-drafts-tab={dataTab}
+      className={['ai-drafts-stat-card', active ? 'ai-drafts-stat-card-active' : ''].join(' ')}
+    >
       <span className="ai-drafts-stat-content">
         <span className="ai-drafts-stat-label">{label}</span>
         <span className="ai-drafts-stat-value">{value}</span>
@@ -521,10 +530,16 @@ export default function AiDrafts() {
       toast.error('Notatka nie może być pusta');
       return;
     }
+    if (form.recordType === 'note' && !form.leadId && !form.caseId && !form.clientId) {
+      toast.error('Wybierz powiązanie dla notatki.');
+      return;
+    }
 
     setApprovalSaving(true);
     try {
       let createdRecord: Record<string, unknown> = {};
+      let linkedRecordId = '';
+      const confirmedAt = new Date().toISOString();
 
       if (form.recordType === 'lead') {
         createdRecord = await createLeadFromAiDraftApprovalInSupabase({
@@ -536,6 +551,22 @@ export default function AiDrafts() {
           dealValue: normalizeAiDraftApprovalAmount(form.dealValue),
           nextActionAt: form.scheduledAt || undefined,
         });
+
+        linkedRecordId = getAiDraftCreatedRecordId(createdRecord);
+
+        if (form.scheduledAt && linkedRecordId) {
+          await insertTaskToSupabase({
+            title: title && title !== name ? title : 'Follow-up: ' + name,
+            type: form.taskType || 'follow_up',
+            date: form.scheduledAt.slice(0, 10),
+            scheduledAt: form.scheduledAt,
+            dueAt: form.scheduledAt,
+            priority: form.priority || 'medium',
+            status: 'todo',
+            leadId: linkedRecordId,
+            clientId: form.clientId || null,
+          }).catch(() => null);
+        }
       } else if (form.recordType === 'task') {
         createdRecord = await insertTaskToSupabase({
           title,
@@ -549,6 +580,7 @@ export default function AiDrafts() {
           caseId: form.caseId || null,
           clientId: form.clientId || null,
         });
+        linkedRecordId = getAiDraftCreatedRecordId(createdRecord);
       } else if (form.recordType === 'event') {
         const startAt = form.scheduledAt;
         const endAt = form.endAt || form.scheduledAt;
@@ -562,6 +594,7 @@ export default function AiDrafts() {
           caseId: form.caseId || null,
           clientId: form.clientId || null,
         });
+        linkedRecordId = getAiDraftCreatedRecordId(createdRecord);
       } else {
         createdRecord = await insertActivityToSupabase({
           leadId: form.leadId || null,
@@ -576,21 +609,49 @@ export default function AiDrafts() {
             draftId: draft.id,
           },
         });
+        linkedRecordId = getAiDraftCreatedRecordId(createdRecord) || form.caseId || form.leadId || form.clientId;
+      }
+
+      if (!linkedRecordId) {
+        throw new Error('LINKED_RECORD_ID_MISSING');
       }
 
       await insertActivityToSupabase({
-        leadId: form.recordType === 'lead' ? String((createdRecord as any)?.id || '') || null : form.leadId || null,
+        leadId: form.recordType === 'lead' ? linkedRecordId : form.leadId || null,
         caseId: form.caseId || null,
         actorType: 'operator',
         eventType: 'ai_draft_converted',
-        payload: buildConvertedActivityPayload(draft, form, createdRecord),
+        payload: {
+          ...buildConvertedActivityPayload(draft, form, createdRecord),
+          confirmedAt,
+          linkedRecordId,
+          linkedRecordType: form.recordType,
+          rawTextRemoved: true,
+        },
       }).catch(() => null);
 
-      await markAiLeadDraftConvertedAsync(draft.id);
+      const parsedDraft = buildAiDraftConfirmedParsedDraft({
+        parsedDraft: getDraftParsedData(draft),
+        linkedRecordId,
+        linkedRecordType: form.recordType,
+        confirmedAt,
+      });
+
+      await updateAiLeadDraftAsync(draft.id, {
+        status: 'converted',
+        convertedAt: confirmedAt,
+        confirmedAt,
+        rawText: '',
+        parsedDraft,
+        parsedData: parsedDraft,
+        linkedRecordId,
+        linkedRecordType: form.recordType,
+      } as any);
+
       closeDraftApproval();
       setActiveDraftId(null);
       await reloadDrafts();
-      toast.success(getAiDraftApprovalTypeLabel(form.recordType) + ' przeniesiony ze szkicu AI');
+      toast.success(getAiDraftApprovalTypeLabel(form.recordType) + ' zapisany ze szkicu AI. Otwórz rekord z listy zatwierdzonych.');
     } catch (error: any) {
       toast.error('Nie udało się zatwierdzić szkicu: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
@@ -599,8 +660,18 @@ export default function AiDrafts() {
   };
 
   const handleArchive = async (draft: AiLeadDraft) => {
+    const cancelledAt = new Date().toISOString();
+    await updateAiLeadDraftAsync(draft.id, {
+      status: 'archived',
+      rawText: '',
+      cancelledAt,
+      parsedDraft: {
+        ...(getDraftParsedData(draft) || {}),
+        cancelledAt,
+        rawTextRemoved: true,
+      },
+    } as any);
     await archiveAiLeadDraftAsync(draft.id);
-    await updateAiLeadDraftAsync(draft.id, { rawText: '' }).catch(() => null);
     await reloadDrafts();
     toast.success('Szkic anulowany');
   };
@@ -916,7 +987,7 @@ export default function AiDrafts() {
             {draft.status === 'draft' ? (
               <>
                 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() => setActiveDraftId(activeDraftId === draft.id ? null : draft.id)}>Sprawdź</button>
-                <button type="button" className="ai-drafts-action" onClick={() => handleStartEdit(draft)}>Edytuj</button>
+                <button type="button" className="ai-drafts-action" onClick={() => handleStartEdit(draft)}>Edytuj notatkę</button>
                 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() => openDraftApproval(draft)}>Zatwierdź</button>
                 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() => void handleArchive(draft)}>Anuluj</button>
               </>
@@ -948,12 +1019,13 @@ export default function AiDrafts() {
 
   return (
     <Layout>
-      <main className="ai-drafts-vnext-page" data-ai-drafts-stage={AI_DRAFT_STAGE9_MARKER}>
+      <main className="ai-drafts-vnext-page" data-ai-drafts-stage={AI_DRAFT_STAGE9_MARKER} data-ai-draft-command-center="true">
         <header className="ai-drafts-page-header">
           <div>
             <p className="ai-drafts-kicker">SZKICE DO SPRAWDZENIA</p>
             <h1>Szkice AI</h1>
-            <p>Rzeczy przygotowane przez asystenta. Sprawdź, popraw i dopiero wtedy zapisz.</p>
+            <p>Centrum szkiców. Notatka głosowa najpierw trafia tutaj. Lead powstaje dopiero po kliknięciu.</p>
+            <p>Przejrzyj i zatwierdź. Rzeczy przygotowane przez asystenta. Sprawdź, popraw i dopiero wtedy zapisz.</p>
           </div>
           <div className="ai-drafts-header-actions">
             <button type="button" className="ai-drafts-header-button" onClick={() => void reloadDrafts()}>
@@ -962,13 +1034,13 @@ export default function AiDrafts() {
           </div>
         </header>
 
-        <section className="ai-drafts-stats-grid" aria-label="Statystyki szkiców AI">
-          <MetricCard label="Do sprawdzenia" value={stats.draft} icon={Sparkles} active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} />
-          <MetricCard label="Leady" value={stats.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} />
-          <MetricCard label="Zadania" value={stats.tasks} icon={Clipboard} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} />
-          <MetricCard label="Wydarzenia" value={stats.events} icon={CalendarClock} active={activeFilter === 'event'} onClick={() => setActiveFilter('event')} />
-          <MetricCard label="Błędy / niepełne" value={stats.errors} icon={AlertTriangle} active={activeFilter === 'errors'} onClick={() => setActiveFilter('errors')} />
-          <MetricCard label="Zatwierdzone" value={stats.converted} icon={CheckCircle2} active={activeFilter === 'converted'} onClick={() => setActiveFilter('converted')} />
+        <section className="ai-drafts-stats-grid" aria-label="Statystyki szkiców AI" data-ai-draft-stats="true">
+          <MetricCard label="Do sprawdzenia" value={stats.draft} icon={Sparkles} active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} dataTab="draft" />
+          <MetricCard label="Leady" value={stats.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} dataTab="lead" />
+          <MetricCard label="Zadania" value={stats.tasks} icon={Clipboard} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} dataTab="task" />
+          <MetricCard label="Wydarzenia" value={stats.events} icon={CalendarClock} active={activeFilter === 'event'} onClick={() => setActiveFilter('event')} dataTab="event" />
+          <MetricCard label="Błędy / niepełne" value={stats.errors} icon={AlertTriangle} active={activeFilter === 'errors'} onClick={() => setActiveFilter('errors')} dataTab="errors" />
+          <MetricCard label="Zatwierdzone" value={stats.converted} icon={CheckCircle2} active={activeFilter === 'converted'} onClick={() => setActiveFilter('converted')} dataTab="converted" />
         </section>
 
         <div className="ai-drafts-vnext-shell">

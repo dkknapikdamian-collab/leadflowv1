@@ -677,13 +677,14 @@ export default function NotificationsCenter() {
               ) : (
                 <div className="notifications-rows">
                   {filteredRows.map((row) => (
-                    <NotificationsRow
-                      key={row.key}
-                      row={row}
-                      onSnooze={handleSnooze}
-                      onRead={handleRead}
-                      onRestore={handleRestore}
-                    />
+                    <div key={row.key} style={{ display: 'contents' }}>
+                      <NotificationsRow
+                        row={row}
+                        onSnooze={handleSnooze}
+                        onRead={handleRead}
+                        onRestore={handleRestore}
+                      />
+                    </div>
                   ))}
                 </div>
               )}
