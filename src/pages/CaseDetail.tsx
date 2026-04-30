@@ -859,11 +859,11 @@ export default function CaseDetail() {
             </div>
           </div>
           <div className="case-detail-header-actions">
-            <Button type="button" variant="outline" onClick={handleCopyPortal}>
+            <Button type="button" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>
               <Copy className="h-4 w-4" />
               Kopiuj portal
             </Button>
-            <Button type="button" variant="outline" onClick={() => setIsAddItemOpen(true)}>
+            <Button type="button" variant="outline" className="cf-btn-tone-gap" onClick={() => setIsAddItemOpen(true)}>
               <Paperclip className="h-4 w-4" />
               Dodaj brak
             </Button>
@@ -1048,8 +1048,8 @@ export default function CaseDetail() {
                 <h2>Szybkie akcje</h2>
               </div>
               <div className="case-detail-right-actions">
-                <button type="button" onClick={() => setIsAddItemOpen(true)}>Dodaj brak</button>
-                <button type="button" onClick={() => setIsAddNoteOpen(true)}>Dodaj notatkę</button>
+                <button type="button" className="cf-btn-tone-gap" onClick={() => setIsAddItemOpen(true)}>Dodaj brak</button>
+                <button type="button" className="cf-btn-tone-note" onClick={() => setIsAddNoteOpen(true)}>Dodaj notatkę</button>
               </div>
             </section>
 
@@ -1097,7 +1097,7 @@ export default function CaseDetail() {
               </div>
               <p>{caseData.portalReady ? 'Portal klienta jest gotowy' : 'Portal można skopiować z akcji w nagłówku'}</p>
               <small>Powiązany lead: {caseData.leadId || 'Brak'}</small>
-              <Button type="button" size="sm" variant="outline" onClick={handleCopyPortal}>Kopiuj portal</Button>
+              <Button type="button" size="sm" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>Kopiuj portal</Button>
             </section>
           </aside>
         </div>
@@ -1250,7 +1250,7 @@ function CaseItemDialog({
           <label>Termin<Input type="date" value={value.dueDate} onChange={(event) => onChange({ ...value, dueDate: event.target.value })} /></label>
           <label className="case-detail-checkbox-label"><input type="checkbox" checked={value.isRequired} onChange={(event) => onChange({ ...value, isRequired: event.target.checked })} /> Wymagane do startu / realizacji</label>
         </div>
-        <DialogFooter><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" onClick={onSubmit}>Dodaj brak</Button></DialogFooter>
+        <DialogFooter><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>Dodaj brak</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   );
@@ -1280,7 +1280,7 @@ function CaseTaskDialog({
           <label>Przypomnienie<Input type="datetime-local" value={value.reminderAt} onChange={(event) => onChange({ ...value, reminderAt: event.target.value })} /></label>
           <label>Priorytet<select value={value.priority} onChange={(event) => onChange({ ...value, priority: event.target.value })}><option value="low">Niski</option><option value="normal">Normalny</option><option value="high">Wysoki</option></select></label>
         </div>
-        <DialogFooter><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" onClick={onSubmit}>Dodaj zadanie</Button></DialogFooter>
+        <DialogFooter><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" className="cf-btn-tone-task" onClick={onSubmit}>Dodaj zadanie</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   );
@@ -1310,7 +1310,7 @@ function CaseEventDialog({
           <label>Koniec<Input type="datetime-local" value={value.endAt} onChange={(event) => onChange({ ...value, endAt: event.target.value })} /></label>
           <label>Przypomnienie<Input type="datetime-local" value={value.reminderAt} onChange={(event) => onChange({ ...value, reminderAt: event.target.value })} /></label>
         </div>
-        <DialogFooter><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" onClick={onSubmit}>Dodaj wydarzenie</Button></DialogFooter>
+        <DialogFooter><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" className="cf-btn-tone-event" onClick={onSubmit}>Dodaj wydarzenie</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   );
@@ -1341,3 +1341,4 @@ function CaseNoteDialog({
     </Dialog>
   );
 }
+

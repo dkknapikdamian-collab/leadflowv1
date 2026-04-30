@@ -134,8 +134,8 @@ function getNextActionKindLabel(action: LeadNextAction | null | undefined) {
 function buildNextActionMeta(action: LeadNextAction | null | undefined) {
   if (!action) {
     return {
-      title: 'Brak zaplanowanych działań',
-      subtitle: 'Dodaj zadanie albo wydarzenie, aby temat nie wypadł z procesu.',
+      title: '-',
+      subtitle: '',
       overdue: false,
     };
   }
@@ -852,7 +852,7 @@ export default function Leads() {
                         <span className="lead-action-cell">
                           <span className="mini">Najbliższa akcja</span>
                           <strong className={nextActionMeta.overdue ? 'danger' : ''}>{nextActionMeta.title}</strong>
-                          <span className="sub">{nextActionMeta.subtitle}</span>
+                          {nextActionMeta.subtitle ? <span className="sub">{nextActionMeta.subtitle}</span> : null}
                         </span>
 
                         <span className="lead-actions">

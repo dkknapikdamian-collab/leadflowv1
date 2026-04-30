@@ -1,4 +1,55 @@
 /* STAGE35_CLIENTS_VALUE_DETAIL_CLEANUP */
+/* STAGE35_GLOBAL_SEMANTIC_COLOR_SYSTEM */
+
+:root {
+  --cf-tone-case-active-bg: #ecfdf3;
+  --cf-tone-case-active-text: #047857;
+  --cf-tone-case-active-border: #a7f3d0;
+
+  --cf-tone-no-case-bg: #f8fafc;
+  --cf-tone-no-case-text: #475569;
+  --cf-tone-no-case-border: #cbd5e1;
+
+  --cf-tone-leads-bg: #eff6ff;
+  --cf-tone-leads-text: #1d4ed8;
+  --cf-tone-leads-border: #bfdbfe;
+
+  --cf-tone-value-bg: #f5f3ff;
+  --cf-tone-value-text: #6d28d9;
+  --cf-tone-value-border: #ddd6fe;
+
+  --cf-tone-contact-bg: #fff7ed;
+  --cf-tone-contact-text: #9a3412;
+  --cf-tone-contact-border: #fed7aa;
+
+  --cf-tone-attention-bg: #fff1f2;
+  --cf-tone-attention-text: #be123c;
+  --cf-tone-attention-border: #fecdd3;
+
+  --cf-tone-blocked-bg: #fef2f2;
+  --cf-tone-blocked-text: #b91c1c;
+  --cf-tone-blocked-border: #fecaca;
+
+  --cf-tone-portal-bg: #0f172a;
+  --cf-tone-portal-text: #f8fafc;
+  --cf-tone-portal-border: #1e293b;
+
+  --cf-tone-gap-bg: #fff7ed;
+  --cf-tone-gap-text: #9a3412;
+  --cf-tone-gap-border: #fdba74;
+
+  --cf-tone-task-bg: #eff6ff;
+  --cf-tone-task-text: #1d4ed8;
+  --cf-tone-task-border: #93c5fd;
+
+  --cf-tone-event-bg: #eef2ff;
+  --cf-tone-event-text: #4338ca;
+  --cf-tone-event-border: #a5b4fc;
+
+  --cf-tone-note-bg: #f0fdf4;
+  --cf-tone-note-text: #166534;
+  --cf-tone-note-border: #86efac;
+}
 
 [data-client-detail-visible-edit-action="true"] {
   min-height: 40px;
@@ -20,6 +71,143 @@
 
 .client-detail-vnext-page .client-detail-more-menu {
   display: none !important;
+}
+
+.cf-chip-case-active {
+  background: var(--cf-tone-case-active-bg) !important;
+  color: var(--cf-tone-case-active-text) !important;
+  border-color: var(--cf-tone-case-active-border) !important;
+}
+
+.cf-chip-no-case {
+  background: var(--cf-tone-no-case-bg) !important;
+  color: var(--cf-tone-no-case-text) !important;
+  border-color: var(--cf-tone-no-case-border) !important;
+}
+
+.cf-chip-leads-count {
+  background: var(--cf-tone-leads-bg) !important;
+  color: var(--cf-tone-leads-text) !important;
+  border-color: var(--cf-tone-leads-border) !important;
+}
+
+.cf-chip-client-value {
+  background: var(--cf-tone-value-bg) !important;
+  color: var(--cf-tone-value-text) !important;
+  border-color: var(--cf-tone-value-border) !important;
+}
+
+.cf-chip-last-contact {
+  background: var(--cf-tone-contact-bg) !important;
+  color: var(--cf-tone-contact-text) !important;
+  border-color: var(--cf-tone-contact-border) !important;
+}
+
+.cf-icon-action-button {
+  width: 38px;
+  height: 38px;
+  min-height: 38px;
+  min-width: 38px;
+  border-radius: 999px !important;
+  border: 1px solid #dbe2ea !important;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  padding: 0 !important;
+}
+
+.cf-icon-action-button:hover {
+  background: #eef2ff !important;
+  border-color: #c7d2fe !important;
+}
+
+.cf-icon-action-button-danger:hover {
+  background: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  color: #be123c !important;
+}
+
+.case-detail-pill.case-detail-pill-red {
+  background: var(--cf-tone-blocked-bg) !important;
+  color: var(--cf-tone-blocked-text) !important;
+  border-color: var(--cf-tone-blocked-border) !important;
+}
+
+.activity-attention-pill {
+  background: var(--cf-tone-attention-bg) !important;
+  color: var(--cf-tone-attention-text) !important;
+  border-color: var(--cf-tone-attention-border) !important;
+}
+
+.cf-btn-tone-portal {
+  background: var(--cf-tone-portal-bg) !important;
+  color: var(--cf-tone-portal-text) !important;
+  border-color: var(--cf-tone-portal-border) !important;
+}
+
+.cf-btn-tone-gap {
+  background: var(--cf-tone-gap-bg) !important;
+  color: var(--cf-tone-gap-text) !important;
+  border-color: var(--cf-tone-gap-border) !important;
+}
+
+.cf-btn-tone-task {
+  background: var(--cf-tone-task-bg) !important;
+  color: var(--cf-tone-task-text) !important;
+  border-color: var(--cf-tone-task-border) !important;
+}
+
+.cf-btn-tone-event {
+  background: var(--cf-tone-event-bg) !important;
+  color: var(--cf-tone-event-text) !important;
+  border-color: var(--cf-tone-event-border) !important;
+}
+
+.cf-btn-tone-note {
+  background: var(--cf-tone-note-bg) !important;
+  color: var(--cf-tone-note-text) !important;
+  border-color: var(--cf-tone-note-border) !important;
+}
+
+[data-global-quick-action="lead"] {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+[data-global-quick-action="task"] {
+  background: var(--cf-tone-task-bg) !important;
+  border-color: var(--cf-tone-task-border) !important;
+  color: var(--cf-tone-task-text) !important;
+}
+
+[data-global-quick-action="event"] {
+  background: var(--cf-tone-event-bg) !important;
+  border-color: var(--cf-tone-event-border) !important;
+  color: var(--cf-tone-event-text) !important;
+}
+
+[data-global-quick-action="ai-drafts"] {
+  background: var(--cf-tone-value-bg) !important;
+  border-color: var(--cf-tone-value-border) !important;
+  color: var(--cf-tone-value-text) !important;
+}
+
+@media (max-width: 768px) {
+  .global-actions[data-global-quick-actions="true"] {
+    position: static !important;
+    top: auto !important;
+    z-index: 10 !important;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+  }
+}
+
+.ai-drafts-vnext-page .ai-drafts-vnext-shell,
+.ai-drafts-vnext-page .ai-drafts-right-rail {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
 .main-clients-html .clients-right-rail .quick-list a {

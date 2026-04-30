@@ -8,7 +8,7 @@ CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
 STAGE35_CLIENT_DETAIL_VISIBLE_EDIT_ACTION
 */
 const STAGE35_CLIENT_DETAIL_EDIT_TOGGLE_GUARD = "contactEditing ? 'Zapisz' : 'Edytuj'";
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   Activity,
@@ -23,6 +23,8 @@ import {
   FileText,
   Loader2,
   Mail,
+  Mic,
+  MicOff,
   Pencil,
   Phone,
   Plus,
@@ -76,6 +78,33 @@ type ClientCaseRow = {
   completeness: number;
   blocker: string;
 };
+
+type SpeechRecognitionLike = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: any) => void) | null;
+  onerror: ((event: any) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort?: () => void;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {
+  if (typeof window === 'undefined') return null;
+  const browserWindow = window as any;
+  return browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition || null;
+}
+
+function joinTranscript(previous: string, addition: string) {
+  const base = previous.trim();
+  const next = addition.trim();
+  if (!next) return base;
+  return base ? `${base} ${next}` : next;
+}
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -546,6 +575,11 @@ export default function ClientDetail() {
   const [activeTab, setActiveTab] = useState<ClientTab>('summary');
   const [contactEditing, setContactEditing] = useState(false);
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
+  const [clientNoteListening, setClientNoteListening] = useState(false);
+  const [clientNoteInterimText, setClientNoteInterimText] = useState('');
+  const [clientNoteAutosaving, setClientNoteAutosaving] = useState(false);
+  const clientNoteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const clientNoteVoiceDirtyRef = useRef(false);
 
   const reload = useCallback(async () => {
     if (!workspace?.id || !clientId) {
@@ -763,6 +797,96 @@ export default function ClientDetail() {
     navigate(`/cases?clientId=${encodeURIComponent(clientId)}&new=1`);
   };
 
+  const stopClientNoteSpeech = () => {
+    const recognition = clientNoteRecognitionRef.current;
+    clientNoteRecognitionRef.current = null;
+    setClientNoteListening(false);
+    setClientNoteInterimText('');
+    if (!recognition) return;
+    try {
+      recognition.stop();
+    } catch {
+      try {
+        recognition.abort?.();
+      } catch {
+        // ignore
+      }
+    }
+  };
+
+  const handleToggleClientNoteSpeech = () => {
+    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (clientNoteListening) {
+      stopClientNoteSpeech();
+      return;
+    }
+    const RecognitionConstructor = getSpeechRecognitionConstructor();
+    if (!RecognitionConstructor) {
+      toast.error('Dyktowanie nie jest dostępne w tej przeglądarce.');
+      return;
+    }
+    try {
+      const recognition = new RecognitionConstructor();
+      recognition.lang = 'pl-PL';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.onresult = (event: any) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+        for (let index = event.resultIndex || 0; index < event.results.length; index += 1) {
+          const result = event.results[index];
+          const transcript = String(result?.[0]?.transcript || '').trim();
+          if (!transcript) continue;
+          if (result?.isFinal) finalTranscript = joinTranscript(finalTranscript, transcript);
+          else interimTranscript = joinTranscript(interimTranscript, transcript);
+        }
+        if (finalTranscript) {
+          clientNoteVoiceDirtyRef.current = true;
+          setForm((current) => ({ ...current, notes: joinTranscript(current.notes, finalTranscript) }));
+        }
+        setClientNoteInterimText(interimTranscript);
+      };
+      recognition.onerror = () => {
+        toast.error('Nie udało się dokończyć dyktowania notatki.');
+        stopClientNoteSpeech();
+      };
+      recognition.onend = () => {
+        clientNoteRecognitionRef.current = null;
+        setClientNoteListening(false);
+        setClientNoteInterimText('');
+      };
+      clientNoteRecognitionRef.current = recognition;
+      recognition.start();
+      setClientNoteListening(true);
+      setContactEditing(true);
+      toast.success('Dyktowanie notatki włączone');
+    } catch {
+      toast.error('Nie udało się uruchomić dyktowania.');
+      stopClientNoteSpeech();
+    }
+  };
+
+  useEffect(() => {
+    if (!clientNoteVoiceDirtyRef.current) return;
+    if (!clientId || !hasAccess || !form.notes.trim() || clientNoteAutosaving) return;
+    const timer = window.setTimeout(async () => {
+      try {
+        setClientNoteAutosaving(true);
+        await updateClientInSupabase({ id: clientId, notes: form.notes.trim() });
+        setClient((current: any) => (current ? { ...current, notes: form.notes.trim() } : current));
+        clientNoteVoiceDirtyRef.current = false;
+        toast.success('Notatka klienta zapisana');
+      } catch (error: any) {
+        toast.error(`Błąd zapisu notatki: ${error?.message || 'REQUEST_FAILED'}`);
+      } finally {
+        setClientNoteAutosaving(false);
+      }
+    }, 2000);
+    return () => window.clearTimeout(timer);
+  }, [clientId, form.notes, hasAccess, clientNoteAutosaving]);
+
+  useEffect(() => () => stopClientNoteSpeech(), []);
+
   const openNewLeadForExistingClient = () => {
     if (!clientId) return navigate('/leads');
     navigate(`/leads?clientId=${encodeURIComponent(clientId)}&new=1`);
@@ -889,6 +1013,14 @@ export default function ClientDetail() {
                   <div className="client-detail-edit-field">
                     <Label>Notatka</Label>
                     <Textarea value={form.notes} onChange={(event) => setForm((current) => ({ ...current, notes: event.target.value }))} />
+                    {clientNoteInterimText ? <p className="text-xs text-slate-500">Dyktowanie: {clientNoteInterimText}</p> : null}
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteAutosaving}>
+                        {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                        {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
+                      </Button>
+                      {clientNoteAutosaving ? <span className="text-xs text-slate-500">Zapisywanie za 2s…</span> : null}
+                    </div>
                   </div>
                   <div className="client-detail-edit-actions">
                     <Button type="button" onClick={handleSave} disabled={saving}>
@@ -1173,6 +1305,10 @@ export default function ClientDetail() {
               <Button type="button" variant="outline" size="sm" onClick={() => setContactEditing(true)} disabled={!hasAccess}>
                 Dodaj notatkę
               </Button>
+              <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>
+                {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                Dyktuj
+              </Button>
             </section>
           </aside>
         </div>
@@ -1180,3 +1316,4 @@ export default function ClientDetail() {
     </Layout>
   );
 }
+

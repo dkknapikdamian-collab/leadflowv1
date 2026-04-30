@@ -475,23 +475,23 @@ export default function Clients() {
                            <span className="title">{client.name || 'Klient'}</span>
                            <span className="sub">{client.company || 'Bez firmy'} · {client.email || 'brak e-maila'} · {client.phone || 'brak telefonu'}</span>
                            <span className="statusline">
-                             {isArchived ? <span className="pill amber">W koszu</span> : counters.cases > 0 ? <span className="pill green">Aktywna sprawa</span> : <span className="pill">Bez sprawy</span>}
-                             <span className="pill blue">Leady: {counters.leads}</span>
-                             <span className="pill blue">Wartość: {formatClientMoney(clientValue)}</span>
-                             <span className="pill">Ostatni kontakt: {counters.payments > 0 ? 'jest' : 'brak'}</span>
+                             {isArchived ? <span className="pill amber">W koszu</span> : counters.cases > 0 ? <span className="pill green cf-chip-case-active">Aktywna sprawa</span> : <span className="pill cf-chip-no-case">Bez sprawy</span>}
+                             <span className="pill blue cf-chip-leads-count">Leady: {counters.leads}</span>
+                             <span className="pill blue cf-chip-client-value">Wartość: {formatClientMoney(clientValue)}</span>
+                             <span className="pill cf-chip-last-contact">Ostatni kontakt: {counters.payments > 0 ? 'jest' : 'brak'}</span>
                            </span>
                          </span>
                          <span className="lead-value-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
                          <span className="lead-action-cell"><span className="mini">Następny ruch</span><strong>{counters.cases > 0 ? 'W obsłudze' : 'Jutro'}</strong></span>
                          <span className="lead-actions">
-                           <span className="btn ghost" aria-hidden="true"><UserRound className="h-4 w-4" /></span>
+                           <span className="btn ghost cf-icon-action-button" aria-hidden="true"><UserRound className="h-4 w-4" /></span>
                            <button
                              type="button"
                              aria-label={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
                              title={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
                              disabled={archivePendingId === client.id}
                              onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
-                             className="btn ghost"
+                             className="btn ghost cf-icon-action-button cf-icon-action-button-danger"
                            >
                              {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
                            </button>
@@ -536,3 +536,6 @@ export default function Clients() {
     </Layout>
   );
 }
+
+
+

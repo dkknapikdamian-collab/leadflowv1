@@ -433,16 +433,10 @@ function openTodayTopTileShortcut(target: TodayTileShortcutTarget) {
     return;
   }
 
-  if (target === 'ai_drafts') {
-    window.location.assign('/ai-drafts');
-    return;
-  }
-
   const shortcutTileId = getTodayShortcutTileId(target);
   if (shortcutTileId) {
     const header = document.querySelector<HTMLElement>(`[data-today-tile-id="${shortcutTileId}"]`);
     if (header) {
-      header.click();
       window.setTimeout(() => {
         header.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 80);
@@ -476,6 +470,17 @@ function getTodayShortcutTileId(target: TodayTileShortcutTarget) {
   if (target === 'without_movement') return 'today-section-stale';
   if (target === 'blocked') return 'today-section-blocked-cases';
   if (target === 'service_transition') return 'today-section-ready-to-start';
+  if (target === 'ai_drafts') return 'today-section-ai-drafts-list';
+  return null;
+}
+
+function getTodayShortcutTileIdFromTop(target: TodayTileShortcutTarget) {
+  if (target === 'urgent') return 'today-section-leads';
+  if (target === 'without_action') return 'today-section-no-step';
+  if (target === 'without_movement') return 'today-section-stale';
+  if (target === 'blocked') return 'today-section-blocked-cases';
+  if (target === 'service_transition') return 'today-section-ready-to-start';
+  if (target === 'ai_drafts') return 'today-section-ai-drafts-list';
   return null;
 }
 
@@ -1331,6 +1336,19 @@ function formatTodayAiDraftCreatedAt(value: unknown) {
   });
 }
 
+function getTodayAiDraftTitle(draft: AiLeadDraft) {
+  const parsed = (draft?.parsedDraft || {}) as Record<string, any>;
+  return String(
+    parsed?.lead?.name ||
+    parsed?.task?.title ||
+    parsed?.event?.title ||
+    draft?.rawText ||
+    'Szkic AI',
+  )
+    .trim()
+    .slice(0, 90) || 'Szkic AI';
+}
+
 export default function Today() {
   useEffect(() => installTodayStage30VisualCleanup(), []);
 
@@ -1495,7 +1513,7 @@ export default function Today() {
       const target = explicitTarget || resolveTodayTileShortcutTarget(shortcutElement.textContent);
       if (!target) return;
 
-      const tileId = findTodayTileIdForShortcut(target);
+      const tileId = getTodayShortcutTileIdFromTop(target) || findTodayTileIdForShortcut(target);
       if (!tileId) return;
 
       event.preventDefault();
@@ -2220,41 +2238,6 @@ export default function Today() {
   return (
     <Layout>
       <div className="today-html-page p-4 md:p-8 max-w-7xl mx-auto w-full space-y-8">
-        <TodayFunnelDedupValueCard leads={leads} clients={clients} />
-                <header className="page-head today-page-head">
-          <div>
-            <span className="kicker">Start pracy</span>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Witaj, Damian!</h1>
-          </div>
-        </header>
-
-
-        <div className="grid-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {summaryCards.map((card) => {
-            const Icon = card.icon;
-            return (
-              <button
-                key={card.id}
-                type="button"
-                onClick={() => scrollToFirstSection(card.sectionIds)}
-                className="w-full text-left"
-              >
-                <Card className="metric border-none shadow-sm transition-all hover:shadow-md hover:border-primary/20">
-                  <CardContent className="p-5 flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.title}</p>
-                      <p className={`mt-2 text-2xl font-bold ${card.tone}`}>{card.value}</p>
-                    </div>
-                    <div className={`rounded-2xl p-3 ${card.bg}`}>
-                      <Icon className={`w-6 h-6 ${card.tone}`} />
-                    </div>
-                  </CardContent>
-                </Card>
-              </button>
-            );
-          })}
-        </div>
-
         <div className="layout-list today-layout grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="today-main-column space-y-8">
             {overdueTasks.length > 0 && (
@@ -2533,13 +2516,31 @@ export default function Today() {
                         title={lead.name}
                         subtitle={lead.company || 'Brak firmy'}
                         badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak działań</Badge>}
-                        helperText="Kliknij kartę i zaplanuj zadanie albo wydarzenie dla tego tematu."
                       />
                     ))}
                   </div>
                 </TileCard>
               </section>
             )}
+
+            <section id="today-section-ai-drafts" className="space-y-4">
+              <TileCard id="today-section-ai-drafts-list" title="Szkice do zatwierdzenia" subtitle={`${pendingTodayAiDraftCount} szkiców`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                {pendingTodayAiDrafts.length > 0 ? (
+                  <div className="space-y-2">
+                    {pendingTodayAiDrafts.slice(0, 6).map((draft) => (
+                      <Link key={draft.id} to="/ai-drafts" className="block rounded-lg border border-violet-200 bg-violet-50/40 px-3 py-2 hover:bg-violet-50">
+                        <p className="font-medium text-slate-900">{getTodayAiDraftTitle(draft)}</p>
+                        <p className="text-xs text-violet-700">{formatTodayAiDraftCreatedAt(draft.createdAt || draft.updatedAt)}</p>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <Card className="border-dashed bg-slate-50/50">
+                    <CardContent className="p-6 text-sm text-slate-500">Brak szkiców do zatwierdzenia.</CardContent>
+                  </Card>
+                )}
+              </TileCard>
+            </section>
 
             {(readyToStartLeads.length > 0 || activeServiceLeads.length > 0 || blockedCases.length > 0) && (
               <section id="today-section-service-transition" className="space-y-4">
@@ -2619,38 +2620,7 @@ export default function Today() {
           </div>
 
           <aside className="right-card today-right-rail space-y-8">
-            <TileCard
-              id="pipeline-summary"
-              title="Wartość lejka"
-              subtitle={`${activeLeadsValue.toLocaleString()} PLN`}
-              collapsedMap={collapsedTiles}
-              onToggle={toggleTile}
-              className="bg-slate-900 text-white border-none shadow-xl"
-              titleClassName="text-white"
-              subtitleClassName="text-slate-300 text-2xl font-bold"
-              headerRight={<TrendingUp className="w-10 h-10 text-white/20" />}
-              bodyClassName="border-t border-slate-800"
-            >
-              <p className="text-xs text-slate-400">Suma aktywnych szans sprzedaży</p>
-              <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-800 pt-4">
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Aktywne leady</p>
-                  <p className="text-xl font-bold text-white">{activeLeads.length}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Pilne teraz</p>
-                  <p className="text-xl font-bold text-white">{overdueTasks.length + overdueLeadActions.length}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bez działań</p>
-                  <p className="text-xl font-bold text-white">{noStepLeads.length}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bez ruchu</p>
-                  <p className="text-xl font-bold text-white">{staleLeads.length}</p>
-                </div>
-              </div>
-            </TileCard>
+            <div hidden data-today-stage35-removed-pipeline-summary="true" />
 
             {riskyValuableLeads.length > 0 && (
               <section className="space-y-4">
@@ -2676,7 +2646,6 @@ export default function Today() {
                           {(getDaysWithoutUpdate(lead) || 0) >= 5 ? <Badge variant="outline" className="border-purple-200 text-purple-700">Bez ruchu {getDaysWithoutUpdate(lead)} dni</Badge> : null}
                         </>
                       }
-                      helperText="Kliknij kartę, aby wejść do leada i od razu zareagować."
                     />
                   ))}
                 </div>
@@ -2711,26 +2680,7 @@ export default function Today() {
               </div>
             </section>
 
-            <section className="space-y-4">
-              <h2 className="text-lg font-bold text-slate-900"></h2>
-              <div className="space-y-3">
-                {topValuableLeads.map((lead) => (
-                  <LeadLinkCard
-                    key={lead.id}
-                    leadId={String(lead.id)}
-                    title={lead.name}
-                    subtitle={lead.company || lead.source || 'Lead'}
-                    rightMeta={
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-primary">{(Number(lead.dealValue) || 0).toLocaleString()} PLN</p>
-                        <Badge variant="outline" className="text-[8px] h-4 px-1">TOP</Badge>
-                      </div>
-                    }
-                    helperText="Kliknij kartę, aby otworzyć leada."
-                  />
-                ))}
-              </div>
-            </section>
+            <div hidden data-today-stage35-removed-duplicate-leads-under-upcoming="true" />
           </aside>
         </div>
       </div>

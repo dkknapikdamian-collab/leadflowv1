@@ -3,7 +3,7 @@
 LEAD_DETAIL_VISUAL_REBUILD_STAGE14
 Active lead is sales work. Moved lead is acquisition history with a link to Case.
 */
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -18,6 +18,8 @@ import {
   Loader2,
   Mail,
   MoreVertical,
+  Mic,
+  MicOff,
   Phone,
   Plus,
   Sparkles,
@@ -110,6 +112,33 @@ type TimelineEntry = {
   dateLabel: string;
   raw: any;
 };
+
+type SpeechRecognitionLike = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: any) => void) | null;
+  onerror: ((event: any) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort?: () => void;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {
+  if (typeof window === 'undefined') return null;
+  const browserWindow = window as any;
+  return browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition || null;
+}
+
+function joinTranscript(previous: string, addition: string) {
+  const base = previous.trim();
+  const next = addition.trim();
+  if (!next) return base;
+  return base ? `${base} ${next}` : next;
+}
 
 function asDate(value: unknown) {
   if (!value) return null;
@@ -346,6 +375,9 @@ export default function LeadDetail() {
   const [linkedTasks, setLinkedTasks] = useState<any[]>([]);
   const [linkedEvents, setLinkedEvents] = useState<any[]>([]);
   const [note, setNote] = useState('');
+  const [addingNote, setAddingNote] = useState(false);
+  const [noteListening, setNoteListening] = useState(false);
+  const [noteInterimText, setNoteInterimText] = useState('');
   const [editingNote, setEditingNote] = useState<any | null>(null);
   const [editingNoteContent, setEditingNoteContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -371,6 +403,8 @@ export default function LeadDetail() {
   const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
   const [editLinkedTaskSubmitting, setEditLinkedTaskSubmitting] = useState(false);
   const [editLinkedEventSubmitting, setEditLinkedEventSubmitting] = useState(false);
+  const noteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const noteVoiceDirtyRef = useRef(false);
   const [quickTask, setQuickTask] = useState(() => ({
     title: '',
     type: 'follow_up',
@@ -551,13 +585,103 @@ export default function LeadDetail() {
     }
   };
 
-  const handleAddNote = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!note.trim() || !hasAccess) return;
-    await addActivity('note_added', { content: note.trim() });
-    setNote('');
-    toast.success('Notatka dodana');
+  const stopNoteSpeech = () => {
+    const recognition = noteRecognitionRef.current;
+    noteRecognitionRef.current = null;
+    setNoteListening(false);
+    setNoteInterimText('');
+    if (!recognition) return;
+    try {
+      recognition.stop();
+    } catch {
+      try {
+        recognition.abort?.();
+      } catch {
+        // ignore
+      }
+    }
   };
+
+  const handleToggleNoteSpeech = () => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (noteListening) {
+      stopNoteSpeech();
+      return;
+    }
+
+    const RecognitionConstructor = getSpeechRecognitionConstructor();
+    if (!RecognitionConstructor) {
+      toast.error('Dyktowanie nie jest dostępne w tej przeglądarce.');
+      return;
+    }
+
+    try {
+      const recognition = new RecognitionConstructor();
+      recognition.lang = 'pl-PL';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.onresult = (event: any) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let index = event.resultIndex || 0; index < event.results.length; index += 1) {
+          const result = event.results[index];
+          const transcript = String(result?.[0]?.transcript || '').trim();
+          if (!transcript) continue;
+          if (result?.isFinal) finalTranscript = joinTranscript(finalTranscript, transcript);
+          else interimTranscript = joinTranscript(interimTranscript, transcript);
+        }
+
+        if (finalTranscript) {
+          noteVoiceDirtyRef.current = true;
+          setNote((current) => joinTranscript(current, finalTranscript));
+        }
+        setNoteInterimText(interimTranscript);
+      };
+      recognition.onerror = () => {
+        toast.error('Nie udało się dokończyć dyktowania notatki.');
+        stopNoteSpeech();
+      };
+      recognition.onend = () => {
+        noteRecognitionRef.current = null;
+        setNoteListening(false);
+        setNoteInterimText('');
+      };
+      noteRecognitionRef.current = recognition;
+      recognition.start();
+      setNoteListening(true);
+      toast.success('Dyktowanie notatki włączone');
+    } catch {
+      toast.error('Nie udało się uruchomić dyktowania.');
+      stopNoteSpeech();
+    }
+  };
+
+  const handleAddNote = async (event?: FormEvent, options?: { silent?: boolean }) => {
+    event?.preventDefault();
+    const content = note.trim();
+    if (!content || !hasAccess || addingNote) return;
+    try {
+      setAddingNote(true);
+      await addActivity('note_added', { content });
+      setNote('');
+      noteVoiceDirtyRef.current = false;
+      if (!options?.silent) toast.success('Notatka dodana');
+    } finally {
+      setAddingNote(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!noteVoiceDirtyRef.current) return;
+    if (!note.trim() || addingNote || !hasAccess) return;
+    const timer = window.setTimeout(() => {
+      void handleAddNote(undefined, { silent: true });
+    }, 2000);
+    return () => window.clearTimeout(timer);
+  }, [note, addingNote, hasAccess]);
+
+  useEffect(() => () => stopNoteSpeech(), []);
 
   const openEditNote = (activity: any) => {
     setEditingNote(activity);
@@ -1187,8 +1311,17 @@ export default function LeadDetail() {
               </div>
               {!leadInService ? (
                 <form className="lead-detail-note-form" onSubmit={handleAddNote}>
-                  <Textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj krótką notatkę po kontakcie..." />
-                  <Button type="submit" disabled={!note.trim() || !hasAccess}>Dodaj notatkę</Button>
+                  <Textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj kr�tk� notatk� po kontakcie..." />
+                  {noteInterimText ? <p className="text-xs text-slate-500">Dyktowanie: {noteInterimText}</p> : null}
+                  <div className="flex flex-wrap gap-2">
+                    <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
+                      {noteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                      {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatk�'}
+                    </Button>
+                    <Button type="submit" disabled={!note.trim() || !hasAccess || addingNote}>
+                      {addingNote ? 'Zapisywanie...' : 'Dodaj notatk�'}
+                    </Button>
+                  </div>
                 </form>
               ) : null}
               <div className="lead-detail-history-list">
@@ -1387,3 +1520,4 @@ export default function LeadDetail() {
     </Layout>
   );
 }
+
