@@ -28,31 +28,6 @@ import {
 import { toast } from 'sonner';
 import { useWorkspace } from '../hooks/useWorkspace';
 
-const sourceOptions = [
-  { value: 'all', label: 'Wszystko' },
-  { value: 'today', label: 'Dziś' },
-  { value: 'calendar', label: 'Kalendarz' },
-  { value: 'lead', label: 'Lead' },
-  { value: 'case', label: 'Sprawa' },
-  { value: 'other', label: 'Inne' },
-];
-
-const activityTypeOptions = [
-  { value: 'all', label: 'Wszystkie' },
-  { value: 'completed', label: 'Wykonane' },
-  { value: 'restored', label: 'Przywrócone' },
-  { value: 'deleted', label: 'Usunięte' },
-  { value: 'created', label: 'Utworzone' },
-  { value: 'updated', label: 'Aktualizacje' },
-];
-
-const relationOptions = [
-  { value: 'all', label: 'Wszystkie' },
-  { value: 'lead', label: 'Z leadem' },
-  { value: 'case', label: 'Ze sprawą' },
-  { value: 'none', label: 'Bez relacji' },
-];
-
 const activityFilters = [
   { value: 'all', label: 'Wszystko' },
   { value: 'today', label: 'Dzisiaj' },
@@ -251,21 +226,6 @@ function getActivityTitle(activity: any) {
   const eventType = normalizeLower(activity?.eventType);
   const entity = getActivityEntity(activity);
 
-  if (eventType === 'calendar_entry_completed') return 'Kalendarz: oznaczono wpis jako zrobiony';
-  if (eventType === 'calendar_entry_restored') return 'Kalendarz: przywrócono wpis do pracy';
-  if (eventType === 'calendar_entry_deleted') return 'Kalendarz: usunięto wpis';
-  if (eventType === 'case_lifecycle_started') return 'Rozpoczęto realizację sprawy';
-  if (eventType === 'case_lifecycle_completed') return 'Oznaczono sprawę jako zrobioną';
-  if (eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
-  if (eventType === 'today_task_completed') return 'Dziś: oznaczono zadanie jako zrobione';
-  if (eventType === 'today_task_restored') return 'Dziś: przywrócono zadanie do pracy';
-  if (eventType === 'today_task_deleted') return 'Dziś: usunięto zadanie';
-  if (eventType === 'today_task_snoozed') return 'odłożył zadanie z Dziś';
-  if (eventType === 'today_event_completed') return 'Dziś: oznaczono wydarzenie jako zrobione';
-  if (eventType === 'today_event_restored') return 'Dziś: przywrócono wydarzenie do pracy';
-  if (eventType === 'today_event_deleted') return 'Dziś: usunięto wydarzenie';
-  if (eventType === 'today_event_snoozed') return 'odłożył wydarzenie z Dziś';
-
   if (eventType.includes('note') && (eventType.includes('add') || eventType.includes('create'))) return 'Dodano notatkę';
   if (eventType.includes('status') && entity === 'lead') return 'Zmieniono status leada';
   if (eventType.includes('status') && entity === 'case') return 'Zmieniono status sprawy';
@@ -424,51 +384,6 @@ function isActivityToday(activity: any) {
   return parsed ? isSameCalendarDay(parsed, new Date()) : false;
 }
 
-function getActivitySource(activity: any) {
-  const eventType = normalizeLower(activity?.eventType);
-  const payloadSource = normalizeLower(activity?.payload?.source);
-
-  if (eventType.startsWith('today_') || payloadSource === 'today') return 'today';
-  if (eventType.startsWith('calendar_') || payloadSource === 'calendar') return 'calendar';
-
-  const entity = getActivityEntity(activity);
-  if (entity === 'lead') return 'lead';
-  if (entity === 'case') return 'case';
-
-  return 'other';
-}
-
-function getActivityType(activity: any) {
-  const eventType = normalizeLower(activity?.eventType);
-
-  if (eventType.includes('completed') || eventType.includes('done')) return 'completed';
-  if (eventType.includes('restored') || eventType.includes('reopen')) return 'restored';
-  if (eventType.includes('deleted') || eventType.includes('removed')) return 'deleted';
-  if (eventType.includes('created') || eventType.includes('create') || eventType.includes('added') || eventType.includes('add')) return 'created';
-  if (eventType.includes('updated') || eventType.includes('update') || eventType.includes('change') || eventType.includes('edit')) return 'updated';
-
-  return 'all';
-}
-
-function getActivityRelationKind(activity: any) {
-  const leadId = normalizeText(activity?.leadId || activity?.payload?.leadId || activity?.payload?.lead_id);
-  const caseId = normalizeText(activity?.caseId || activity?.payload?.caseId || activity?.payload?.case_id);
-  if (leadId) return 'lead';
-  if (caseId) return 'case';
-  return 'none';
-}
-
-function safePayloadPreview(payload: any) {
-  try {
-    if (!payload || typeof payload !== 'object') return '';
-    const text = JSON.stringify(payload, null, 2);
-    if (text.length <= 1600) return text;
-    return text.slice(0, 1600) + '\n…';
-  } catch {
-    return '';
-  }
-}
-
 function requiresAttention(activity: any) {
   const eventType = normalizeLower(activity?.eventType);
   const payloadStatus = normalizeLower(activity?.payload?.status || activity?.payload?.nextStatus);
@@ -527,20 +442,14 @@ function MetricCard({
 
 function ActivityRow({
   activity,
-  activityId,
   leadLookup,
   caseLookup,
   index,
-  expanded,
-  onTogglePayload,
 }: {
   activity: any;
-  activityId: string;
   leadLookup: Map<string, string>;
   caseLookup: Map<string, string>;
   index: number;
-  expanded: boolean;
-  onTogglePayload: (id: string) => void;
 }) {
   const Icon = getActivityIcon(activity);
   const relation = getActivityRelation(activity, leadLookup, caseLookup);
@@ -549,9 +458,6 @@ function ActivityRow({
   const meta = getActivityMeta(activity);
   const pill = getActivityPillLabel(activity);
   const tone = getActivityIconTone(activity);
-
-  const leadId = normalizeText(activity?.leadId || activity?.payload?.leadId || activity?.payload?.lead_id);
-  const caseId = normalizeText(activity?.caseId || activity?.payload?.caseId || activity?.payload?.case_id);
 
   return (
     <article className="activity-row" data-testid="activity-row">
@@ -566,23 +472,12 @@ function ActivityRow({
         </div>
         <h2 className="activity-row-title">{title}</h2>
         <p className="activity-row-meta">{meta || 'Zapis operacyjny'}</p>
-        <button type="button" className="activity-payload-toggle" onClick={() => onTogglePayload(activityId)}>
-          {expanded ? 'Ukryj szczegóły techniczne' : 'Pokaż szczegóły techniczne'}
-        </button>
-        {expanded ? (
-          <pre className="activity-payload-preview">{safePayloadPreview(activity?.payload) || '{}'}</pre>
-        ) : null}
       </div>
 
       <div className="activity-row-relation">
         <span className="activity-relation-label">{relation.type || 'Powiązanie'}</span>
-        {leadId ? (
-          <Link to={'/leads/' + leadId} className="activity-relation-link">
-            <Link2 className="h-3.5 w-3.5" />
-            {relation.label}
-          </Link>
-        ) : caseId ? (
-          <Link to={'/cases/' + caseId} className="activity-relation-link">
+        {relation.href ? (
+          <Link to={relation.href} className="activity-relation-link">
             <Link2 className="h-3.5 w-3.5" />
             {relation.label}
           </Link>
@@ -616,10 +511,6 @@ export default function Activity() {
   const [caseLookup, setCaseLookup] = useState<Map<string, string>>(new Map());
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
-  const [sourceFilter, setSourceFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [relationFilter, setRelationFilter] = useState('all');
-  const [expandedPayloadIds, setExpandedPayloadIds] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     let cancelled = false;
@@ -684,13 +575,10 @@ export default function Activity() {
 
     return activities.filter((activity) => {
       if (!shouldShowByFilter(activity, activeFilter)) return false;
-      if (sourceFilter !== 'all' && getActivitySource(activity) !== sourceFilter) return false;
-      if (typeFilter !== 'all' && getActivityType(activity) !== typeFilter) return false;
-      if (relationFilter !== 'all' && getActivityRelationKind(activity) !== relationFilter) return false;
       if (!normalizedQuery) return true;
       return getActivitySearchText(activity, leadLookup, caseLookup).includes(normalizedQuery);
     });
-  }, [activities, query, activeFilter, sourceFilter, typeFilter, relationFilter, leadLookup, caseLookup]);
+  }, [activities, query, activeFilter, leadLookup, caseLookup]);
 
   const recentLeadChanges = useMemo(
     () => activities.filter((activity) => getActivityEntity(activity) === 'lead').slice(0, 4),
@@ -701,13 +589,6 @@ export default function Activity() {
     () => activities.filter((activity) => getActivityEntity(activity) === 'case').slice(0, 4),
     [activities],
   );
-
-  function togglePayload(activityId: string) {
-    setExpandedPayloadIds((prev) => {
-      const current = Boolean(prev[activityId]);
-      return { ...prev, [activityId]: !current };
-    });
-  }
 
   return (
     <Layout>
@@ -746,45 +627,12 @@ export default function Activity() {
                 ))}
               </div>
 
-              <div className="activity-command-center" aria-label="Centrum dowodzenia">
-                <label className="activity-command-filter">
-                  <span>Źródło</span>
-                  <select value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)}>
-                    {sourceOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="activity-command-filter">
-                  <span>Typ</span>
-                  <select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
-                    {activityTypeOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="activity-command-filter">
-                  <span>Relacja</span>
-                  <select value={relationFilter} onChange={(event) => setRelationFilter(event.target.value)}>
-                    {relationOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
               <label className="activity-search-box">
                 <Search className="h-4 w-4" />
                 <input
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Szukaj po tytule, leadzie, sprawie, typie zdarzenia..."
+                  placeholder="Szukaj po nazwie, kliencie, leadzie, sprawie albo treści aktywności..."
                 />
               </label>
             </div>
@@ -816,17 +664,13 @@ export default function Activity() {
                   {filteredActivities.map((activity, index) => {
                     const activityId = normalizeText(activity?.id) || 'activity-' + index;
                     return (
-                      <div key={activityId} style={{ display: 'contents' }}>
-                        <ActivityRow
-                          activity={activity}
-                          activityId={activityId}
-                          leadLookup={leadLookup}
-                          caseLookup={caseLookup}
-                          index={index}
-                          expanded={Boolean(expandedPayloadIds[activityId])}
-                          onTogglePayload={togglePayload}
-                        />
-                      </div>
+                      <ActivityRow
+                        key={activityId}
+                        activity={activity}
+                        leadLookup={leadLookup}
+                        caseLookup={caseLookup}
+                        index={index}
+                      />
                     );
                   })}
                 </div>
