@@ -1148,10 +1148,7 @@ export default function LeadDetail() {
                     <h2>Zadania i wydarzenia</h2>
                     <p>Lista realnych działań sprzedażowych powiązanych z leadem.</p>
                   </div>
-                  <div className="lead-detail-section-actions">
-                    <Button type="button" size="sm" variant="outline" onClick={() => setIsQuickTaskOpen(true)}>Dodaj zadanie</Button>
-                    <Button type="button" size="sm" variant="outline" onClick={() => setIsQuickEventOpen(true)}>Dodaj wydarzenie</Button>
-                  </div>
+                  <div hidden data-lead-detail-stage35-removed-local-create-actions="true" />
                 </div>
                 <div className="lead-detail-work-list">
                   {timeline.length === 0 ? (
@@ -1246,8 +1243,6 @@ export default function LeadDetail() {
               <section className="right-card lead-detail-right-card">
                 <div className="lead-detail-card-title-row"><Plus className="h-4 w-4" /><h2>Szybkie akcje</h2></div>
                 <div className="lead-detail-right-actions">
-                  <button type="button" onClick={() => setIsQuickTaskOpen(true)}>Dodaj zadanie</button>
-                  <button type="button" onClick={() => setIsQuickEventOpen(true)}>Dodaj wydarzenie</button>
                   <button type="button" onClick={() => setIsCreateCaseOpen(true)}>Rozpocznij obsługę</button>
                 </div>
               </section>

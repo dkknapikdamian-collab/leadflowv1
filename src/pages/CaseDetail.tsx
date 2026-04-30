@@ -468,8 +468,6 @@ export default function CaseDetail() {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
   const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
-  const setIsQuickTaskOpen = setIsAddTaskOpen;
-  const setIsQuickEventOpen = setIsAddEventOpen;
   const [newNote, setNewNote] = useState('');
   const [newItem, setNewItem] = useState({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
   const [newTask, setNewTask] = useState({ title: '', type: 'follow_up', scheduledAt: '', reminderAt: '', priority: 'normal' });
@@ -869,14 +867,7 @@ export default function CaseDetail() {
               <Paperclip className="h-4 w-4" />
               Dodaj brak
             </Button>
-            <Button type="button" variant="outline" onClick={() => setIsAddTaskOpen(true)}>
-              <ListChecks className="h-4 w-4" />
-              Dodaj zadanie
-            </Button>
-            <Button type="button" onClick={() => setIsAddEventOpen(true)}>
-              <CalendarClock className="h-4 w-4" />
-              Dodaj wydarzenie
-            </Button>
+            <div hidden data-case-detail-stage35-removed-local-create-actions="true" />
           </div>
         </header>
 
@@ -1058,8 +1049,6 @@ export default function CaseDetail() {
               </div>
               <div className="case-detail-right-actions">
                 <button type="button" onClick={() => setIsAddItemOpen(true)}>Dodaj brak</button>
-                <button type="button" onClick={() => setIsAddTaskOpen(true)}>Dodaj zadanie</button>
-                <button type="button" onClick={() => setIsAddEventOpen(true)}>Dodaj wydarzenie</button>
                 <button type="button" onClick={() => setIsAddNoteOpen(true)}>Dodaj notatkę</button>
               </div>
             </section>
@@ -1096,8 +1085,6 @@ export default function CaseDetail() {
                   lifecycle={caseLifecycleV1}
                   onSetStatus={setCaseLifecycleStatusV1}
                   onOpenAddItem={() => setIsAddItemOpen(true)}
-                  onOpenQuickTask={() => setIsQuickTaskOpen(true)}
-                  onOpenQuickEvent={() => setIsQuickEventOpen(true)}
                   onCopyPortal={handleCopyPortal}
                 />
               </div>
@@ -1129,16 +1116,12 @@ function CaseDetailV1CommandCenter({
   lifecycle,
   onSetStatus,
   onOpenAddItem,
-  onOpenQuickTask,
-  onOpenQuickEvent,
   onCopyPortal,
 }: {
   status: string;
   lifecycle: ReturnType<typeof resolveCaseLifecycleV1>;
   onSetStatus: (status: string) => void;
   onOpenAddItem: () => void;
-  onOpenQuickTask: () => void;
-  onOpenQuickEvent: () => void;
   onCopyPortal: () => void;
 }) {
   const isCompleted = status === 'completed' || lifecycle.bucket === 'completed';
@@ -1152,8 +1135,6 @@ function CaseDetailV1CommandCenter({
 
       <div className="case-detail-command-actions">
         <button type="button" onClick={onOpenAddItem}>Dodaj brak</button>
-        <button type="button" onClick={onOpenQuickTask}>Dodaj zadanie</button>
-        <button type="button" onClick={onOpenQuickEvent}>Dodaj wydarzenie</button>
         <button type="button" onClick={onCopyPortal}>Portal klienta</button>
       </div>
 

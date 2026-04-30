@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { Loader2, Mic, MicOff, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { createQuickAiCaptureDraft, type QuickAiCaptureDraft } from '../lib/ai-capture';
 import { saveAiLeadDraft, type AiLeadDraftSource } from '../lib/ai-drafts';
@@ -13,35 +12,11 @@ import {
   registerAiUsage,
   type AiUsageSnapshot,
 } from '../lib/ai-usage-guard';
-import { insertLeadToSupabase, insertTaskToSupabase } from '../lib/supabase-fallback';
-import { requireWorkspaceId } from '../lib/workspace-context';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-
-const SOURCE_OPTIONS = [
-  { value: 'instagram', label: 'Instagram' },
-  { value: 'facebook', label: 'Facebook' },
-  { value: 'messenger', label: 'Messenger' },
-  { value: 'whatsapp', label: 'WhatsApp' },
-  { value: 'email', label: 'E-mail' },
-  { value: 'form', label: 'Formularz' },
-  { value: 'phone', label: 'Telefon' },
-  { value: 'referral', label: 'Polecenie' },
-  { value: 'cold_outreach', label: 'Cold Outreach' },
-  { value: 'other', label: 'Inne' },
-];
-
-const PRIORITY_OPTIONS = [
-  { value: 'low', label: 'Niski' },
-  { value: 'medium', label: 'Średni' },
-  { value: 'high', label: 'Wysoki' },
-];
-
-const selectClassName = 'flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 type SpeechRecognitionLike = {
   lang: string;
@@ -56,18 +31,6 @@ type SpeechRecognitionLike = {
 };
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
-
-function getCreatedId(result: unknown) {
-  const data = result as any;
-  return String(
-    data?.id
-    || data?.lead?.id
-    || data?.data?.id
-    || data?.data?.[0]?.id
-    || data?.[0]?.id
-    || '',
-  );
-}
 
 function normalizeDraft(input: QuickAiCaptureDraft): QuickAiCaptureDraft {
   return {
@@ -111,8 +74,8 @@ type QuickAiCaptureProps = {
   draftSource?: AiLeadDraftSource;
 };
 
-export default function QuickAiCapture({ onSaved, initialText = '', openSignal = 0, draftSource = 'quick_capture' }: QuickAiCaptureProps) {
-  const { workspace, profile, hasAccess, workspaceReady, isAdmin } = useWorkspace();
+export default function QuickAiCapture({ initialText = '', openSignal = 0, draftSource = 'quick_capture' }: QuickAiCaptureProps) {
+  const { workspace, profile, workspaceReady, isAdmin } = useWorkspace();
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
   const [draft, setDraft] = useState<QuickAiCaptureDraft | null>(null);
@@ -124,10 +87,10 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
   const autoSpeechStartedRef = useRef(false);
   const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
-  const [usage, setUsage] = useState<AiUsageSnapshot>(() => (isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })));
+  const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
 
   useEffect(() => {
-    setUsage(isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
+    setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
   }, [aiUsageKey, open, isAdmin]);
 
   const stopSpeech = () => {
@@ -143,7 +106,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
       try {
         recognition.abort?.();
       } catch {
-        // Browser speech engines may throw when already stopped.
+        // ignore
       }
     }
   };
@@ -182,7 +145,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
 
     const RecognitionConstructor = getSpeechRecognitionConstructor();
     if (!RecognitionConstructor) {
-      toast.error('Dyktowanie nie jest dostępne w tej przeglądarce. Możesz użyć mikrofonu z klawiatury telefonu.');
+      toast.error('Dyktowanie nie jest dostępne w tej przeglądarce.');
       return;
     }
 
@@ -199,20 +162,15 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
           const result = event.results[index];
           const transcript = String(result?.[0]?.transcript || '').trim();
           if (!transcript) continue;
-          if (result?.isFinal) {
-            finalTranscript = joinTranscript(finalTranscript, transcript);
-          } else {
-            interimTranscript = joinTranscript(interimTranscript, transcript);
-          }
+          if (result?.isFinal) finalTranscript = joinTranscript(finalTranscript, transcript);
+          else interimTranscript = joinTranscript(interimTranscript, transcript);
         }
 
-        if (finalTranscript) {
-          appendVoiceText(finalTranscript);
-        }
+        if (finalTranscript) appendVoiceText(finalTranscript);
         setInterimText(interimTranscript);
       };
       recognition.onerror = () => {
-        toast.error('Nie udało się dokończyć dyktowania. Sprawdź uprawnienia mikrofonu.');
+        toast.error('Nie udało się dokończyć dyktowania.');
         stopSpeech();
       };
       recognition.onend = () => {
@@ -230,14 +188,6 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
     }
   };
 
-  const updateLeadDraft = (field: keyof QuickAiCaptureDraft['lead'], value: string | number) => {
-    setDraft((prev) => prev ? { ...prev, lead: { ...prev.lead, [field]: value } } : prev);
-  };
-
-  const updateTaskDraft = (field: keyof QuickAiCaptureDraft['task'], value: string | boolean) => {
-    setDraft((prev) => prev ? { ...prev, task: { ...prev.task, [field]: value } } : prev);
-  };
-
   const handleSaveRawDraft = () => {
     const text = rawText.trim();
     if (!text) {
@@ -247,7 +197,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
 
     saveAiLeadDraft({
       rawText: text,
-      parsedDraft: draft ? draft as unknown as Record<string, unknown> : null,
+      parsedDraft: draft ? (draft as unknown as Record<string, unknown>) : null,
       source: draftSource,
     });
     toast.success('Szkic zapisany w Szkicach AI');
@@ -262,16 +212,16 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
     }
 
     const command = rawText.trim();
-    const latestUsage = isAdmin ? getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) : getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin });
+    const latestUsage = getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin });
     setUsage(latestUsage);
 
     if (command.length > AI_COMMAND_MAX_LENGTH) {
-      toast.error(`Notatka jest za długa. Skróć ją do maksymalnie ${AI_COMMAND_MAX_LENGTH} znaków.`);
+      toast.error(`Notatka jest za długa. Skróć ją do ${AI_COMMAND_MAX_LENGTH} znaków.`);
       return;
     }
 
     if (!latestUsage.canUse && !latestUsage.adminExempt) {
-      toast.error('Dzisiejszy limit AI został wykorzystany. Możesz dodać leada ręcznie.');
+      toast.error('Dzisiejszy limit AI został wykorzystany.');
       return;
     }
 
@@ -279,7 +229,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
       setDraftLoading(true);
       const nextDraft = normalizeDraft(await createQuickAiCaptureDraft(rawText));
       setDraft(nextDraft);
-      const nextUsage = isAdmin ? registerAiUsage(aiUsageKey, undefined, { isAdmin }) : registerAiUsage(aiUsageKey, undefined, { isAdmin });
+      const nextUsage = registerAiUsage(aiUsageKey, undefined, { isAdmin });
       setUsage(nextUsage);
       toast.success('Szkic gotowy do sprawdzenia');
     } catch (error: any) {
@@ -289,85 +239,26 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
     }
   };
 
-  const handleSaveDraft = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!draft || saving) return;
-    if (!hasAccess) {
-      toast.error('Trial wygasł.');
-      return;
-    }
-
-    const workspaceId = requireWorkspaceId(workspace);
-    if (!workspaceId) {
-      toast.error('Kontekst workspace nie jest jeszcze gotowy.');
-      return;
-    }
-
-    if (!draft.lead.name.trim()) {
-      toast.error('Uzupełnij nazwę leada przed zapisem.');
-      return;
-    }
-
-    try {
-      setSaving(true);
-      const leadResult = await insertLeadToSupabase({
-        name: draft.lead.name.trim(),
-        company: draft.lead.company.trim(),
-        email: draft.lead.email.trim(),
-        phone: draft.lead.phone.trim(),
-        source: draft.lead.source || 'other',
-        dealValue: Number(draft.lead.dealValue || 0),
-        nextActionAt: draft.task.enabled ? draft.task.dueAt : undefined,
-        ownerId: auth.currentUser?.uid,
-        workspaceId,
-      });
-
-      const leadId = getCreatedId(leadResult);
-
-      if (draft.task.enabled && draft.task.title.trim() && draft.task.dueAt) {
-        await insertTaskToSupabase({
-          title: draft.task.title.trim(),
-          type: draft.task.type || 'follow_up',
-          date: draft.task.dueAt.slice(0, 10),
-          scheduledAt: draft.task.dueAt,
-          priority: draft.task.priority || 'medium',
-          leadId: leadId || null,
-          ownerId: auth.currentUser?.uid,
-          workspaceId,
-        });
-      }
-
-      await onSaved?.();
-      toast.success(draft.task.enabled ? 'Lead i zadanie zapisane' : 'Lead zapisany');
-      setOpen(false);
-      reset();
-    } catch (error: any) {
-      toast.error('Błąd zapisu: ' + (error?.message || 'REQUEST_FAILED'));
-    } finally {
-      setSaving(false);
-    }
-  };
-
   return (
-    <Dialog open={open} onOpenChange={(nextOpen) => {
-      setOpen(nextOpen);
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
 
-      if (nextOpen) {
-        if (speechSupported && !autoSpeechStartedRef.current) {
-          // QUICK_AI_CAPTURE_AUTO_START_SPEECH
-          autoSpeechStartedRef.current = true;
-          window.setTimeout(() => {
-            if (autoSpeechStartedRef.current && !recognitionRef.current) {
-              handleToggleSpeech();
-            }
-          }, 900);
+        if (nextOpen) {
+          if (speechSupported && !autoSpeechStartedRef.current) {
+            autoSpeechStartedRef.current = true;
+            window.setTimeout(() => {
+              if (autoSpeechStartedRef.current && !recognitionRef.current) handleToggleSpeech();
+            }, 900);
+          }
+          return;
         }
-        return;
-      }
 
-      autoSpeechStartedRef.current = false;
-      reset();
-    }}>
+        autoSpeechStartedRef.current = false;
+        reset();
+      }}
+    >
       <DialogTrigger asChild>
         <Button type="button" variant="outline" className="rounded-xl" disabled={!workspaceReady}>
           <Sparkles className="mr-2 h-4 w-4" /> Szybki szkic
@@ -375,12 +266,12 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
       </DialogTrigger>
       <DialogContent className="sm:max-w-3xl max-h-[92vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Szybki szkic leada</DialogTitle>
+          <DialogTitle>Szybki szkic</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
-            Wklej albo podyktuj notatkę po rozmowie. Po otwarciu spróbuję od razu włączyć dyktowanie. System przygotuje szkic, ale niczego nie zapisze bez Twojego potwierdzenia.
+            Wklej albo podyktuj notatkę. AI przygotuje szkic do sprawdzenia i zapisze go w Szkicach AI — bez automatycznego tworzenia leada, zadania ani wydarzenia.
           </div>
 
           <div className="space-y-2">
@@ -388,15 +279,10 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
             <Textarea
               value={rawText}
               onChange={(event) => setRawText(event.target.value)}
-              placeholder="np. Jan Kowalski dzwonił w sprawie strony WWW, tel. 500 000 000, oddzwonić jutro rano, budżet około 3000 zł"
+              placeholder="np. Jan Kowalski dzwonił w sprawie strony WWW, tel. 500 000 000"
               className="min-h-32"
             />
-            {interimText ? (
-              <p className="rounded-lg bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">Rozpoznaję: {interimText}</p>
-            ) : null}
-            {draft?.rawText ? (
-              <p className="text-xs text-slate-500">Tekst źródłowy zostaje widoczny do sprawdzenia przed zapisem.</p>
-            ) : null}
+            {interimText ? <p className="rounded-lg bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">Rozpoznaję: {interimText}</p> : null}
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -404,7 +290,7 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
               {draftLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
               Zrób szkic
             </Button>
-            <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={!rawText.trim()}>
+            <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={!rawText.trim() || saving}>
               Zapisz szkic
             </Button>
             <Button type="button" variant="outline" onClick={handleToggleSpeech}>
@@ -413,108 +299,31 @@ export default function QuickAiCapture({ onSaved, initialText = '', openSignal =
             </Button>
             {draft ? <Badge variant="outline">Tryb: szkic do potwierdzenia</Badge> : null}
             {draft ? <Badge variant="secondary">Parser: {draft.provider}</Badge> : null}
-            <Badge variant="outline" data-ai-usage-badge="quick-capture">{usage.adminExempt ? 'Admin AI: bez limitu' : 'Limit AI: ' + usage.used + '/' + usage.limit}</Badge>
-            <Badge variant="outline">Max {AI_COMMAND_MAX_LENGTH} znaków</Badge>
+            <Badge variant="outline" data-ai-usage-badge="quick-capture">{usage.adminExempt ? 'Admin AI: bez limitu' : `Limit AI: ${usage.used}/${usage.limit}`}</Badge>
           </div>
 
-          {!usage.canUse && !usage.adminExempt ? (
-            <p data-ai-usage-warning="quick-capture" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
-              Dzisiejszy limit AI został wykorzystany. Nadal możesz dodać leada ręcznie poza szkicem AI.
-            </p>
-          ) : !usage.adminExempt && usage.remaining <= 5 ? (
-            <p data-ai-usage-warning="quick-capture" className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
-              Zostało {usage.remaining} zapytań AI na dziś.
-            </p>
-          ) : null}
-
-          {!speechSupported ? (
-            <p className="text-xs text-slate-500">Dyktowanie w przeglądarce może być niedostępne. Na telefonie możesz użyć mikrofonu z klawiatury systemowej.</p>
-          ) : null}
+          {!speechSupported ? <p className="text-xs text-slate-500">Dyktowanie może być niedostępne w tej przeglądarce.</p> : null}
 
           {draft ? (
-            <form onSubmit={handleSaveDraft} className="space-y-5 border-t border-slate-100 pt-4">
+            <div className="space-y-4 border-t border-slate-100 pt-4">
               {draft.warnings.length ? (
                 <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
                   {draft.warnings.map((warning) => <p key={warning}>{warning}</p>)}
                 </div>
               ) : null}
-
-              <section className="space-y-3">
-                <div>
-                  <h3 className="font-semibold text-slate-900">Dane leada</h3>
-                  <p className="text-sm text-slate-500">Popraw dane przed zapisem, jeśli parser czegoś nie wyłapał.</p>
-                </div>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label>Nazwa / osoba</Label>
-                    <Input value={draft.lead.name} onChange={(event) => updateLeadDraft('name', event.target.value)} required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Firma</Label>
-                    <Input value={draft.lead.company} onChange={(event) => updateLeadDraft('company', event.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Telefon</Label>
-                    <Input value={draft.lead.phone} onChange={(event) => updateLeadDraft('phone', event.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>E-mail</Label>
-                    <Input type="email" value={draft.lead.email} onChange={(event) => updateLeadDraft('email', event.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Źródło</Label>
-                    <select className={selectClassName} value={draft.lead.source} onChange={(event) => updateLeadDraft('source', event.target.value)}>
-                      {SOURCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Wartość PLN</Label>
-                    <Input type="number" value={draft.lead.dealValue || ''} onChange={(event) => updateLeadDraft('dealValue', Number(event.target.value || 0))} />
-                  </div>
-                </div>
-              </section>
-
-              <section className="space-y-3 rounded-2xl border border-slate-200 p-4">
-                <label className="flex items-start gap-3 text-sm font-semibold text-slate-900">
-                  <input
-                    type="checkbox"
-                    className="mt-1"
-                    checked={draft.task.enabled}
-                    onChange={(event) => updateTaskDraft('enabled', event.target.checked)}
-                  />
-                  Utwórz też zadanie follow-up
-                </label>
-                {draft.task.enabled ? (
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2 md:col-span-2">
-                      <Label>Tytuł zadania</Label>
-                      <Input value={draft.task.title} onChange={(event) => updateTaskDraft('title', event.target.value)} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Termin</Label>
-                      <Input type="datetime-local" value={draft.task.dueAt} onChange={(event) => updateTaskDraft('dueAt', event.target.value)} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Priorytet</Label>
-                      <select className={selectClassName} value={draft.task.priority} onChange={(event) => updateTaskDraft('priority', event.target.value)}>
-                        {PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-                      </select>
-                    </div>
-                  </div>
-                ) : null}
-              </section>
-
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+                Szkic jest gotowy. Zapisz go do Szkiców AI i tam zdecyduj, czy ma zostać leadem, zadaniem, wydarzeniem, notatką albo pozostać szkicem.
+              </div>
               <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={saving}>Anuluj</Button>
-                <Button type="submit" disabled={saving || !hasAccess}>
-                  {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Zatwierdź jako lead
+                <Button type="button" variant="outline" onClick={handleSaveRawDraft} disabled={saving}>
+                  Zapisz szkic do AI Drafts
                 </Button>
               </DialogFooter>
-            </form>
+            </div>
           ) : null}
         </div>
       </DialogContent>
     </Dialog>
   );
 }
+

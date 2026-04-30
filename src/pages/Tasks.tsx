@@ -8,7 +8,6 @@ import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
-  Plus,
   CheckSquare,
   Clock,
   AlertTriangle,
@@ -32,7 +31,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from '../components/ui/dialog';
 import { TopicContactPicker } from '../components/topic-contact-picker';
@@ -922,11 +920,6 @@ export default function Tasks() {
           </div>
           <div className="head-actions">
           <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
-            <DialogTrigger asChild>
-              <Button className="rounded-xl shadow-lg shadow-primary/20" disabled={!workspaceReady}>
-                <Plus className="w-4 h-4 mr-2" /> Nowe zadanie
-              </Button>
-            </DialogTrigger>
             <DialogContent className="task-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto" data-task-form-stage21="true" data-task-form-visual-rebuild={TASK_FORM_VISUAL_REBUILD_STAGE21}>
               <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
               <form onSubmit={handleAddTask} className="task-form-vnext space-y-6 py-4" data-task-form-stage21="true" data-task-form-visual-rebuild={TASK_FORM_VISUAL_REBUILD_STAGE21}>

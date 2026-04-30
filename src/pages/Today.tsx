@@ -245,7 +245,7 @@ function findTodayCalendarShortcutElement(target: EventTarget | null) {
 }
 
 
-type TodayTileShortcutTarget = 'urgent' | 'without_action' | 'without_movement' | 'blocked' | 'calendar' | 'ai_drafts';
+type TodayTileShortcutTarget = 'urgent' | 'without_action' | 'without_movement' | 'blocked' | 'service_transition' | 'calendar' | 'ai_drafts';
 
 function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget | null {
   const compact = String(value || '')
@@ -260,6 +260,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
   if (compact === 'without action' || compact === 'without actions' || compact === 'bez dzialan' || compact === 'bez działań') return 'without_action';
   if (compact === 'without movement' || compact === 'bez ruchu') return 'without_movement';
   if (compact === 'blocked' || compact === 'zablokowane') return 'blocked';
+  if (compact === 'service transition' || compact === 'start i obsluga' || compact === 'start i obsługa') return 'service_transition';
   if (compact === 'calendar' || compact === 'kalendarz') return 'calendar';
   if (compact === 'ai drafts' || compact === 'ai draft' || compact === 'szkice' || compact === 'szkice ai' || compact === 'drafts') return 'ai_drafts';
 
@@ -272,6 +273,14 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
     || compact.includes('sprawy stoj')
     || compact.includes('sprawa stoi')
   ) return 'blocked';
+
+  if (
+    compact.includes('start i obsługa')
+    || compact.includes('start i obsluga')
+    || compact.includes('obsługa aktywna')
+    || compact.includes('obsluga aktywna')
+    || compact.includes('gotowe do uruchomienia')
+  ) return 'service_transition';
 
   if (
     compact.includes('bez działań')
@@ -331,6 +340,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
 
 function getTodayTileShortcutPatterns(target: TodayTileShortcutTarget) {
   if (target === 'blocked') return ['zablokowane', 'blok'];
+  if (target === 'service_transition') return ['start i obsługa', 'start i obsluga', 'obsługa aktywna', 'obsluga aktywna', 'gotowe do uruchomienia'];
   if (target === 'without_action') return ['bez działań', 'bez dzialan', 'bez następnego', 'bez nastepnego', 'następny krok', 'nastepny krok'];
   if (target === 'without_movement') return ['bez ruchu', 'brak zmiany', '7 dni'];
   if (target === 'urgent') return ['pilne', 'zaległe', 'zalegle', 'dzisiaj', 'dziś', 'dzis'];
@@ -369,6 +379,7 @@ function getTodayTopShortcutAnchorId(target: TodayTileShortcutTarget) {
   if (target === 'without_action') return 'today-section-without-action';
   if (target === 'without_movement') return 'today-section-without-movement';
   if (target === 'blocked') return 'today-section-blocked';
+  if (target === 'service_transition') return 'today-section-service-transition';
   if (target === 'calendar') return 'today-section-calendar';
   if (target === 'ai_drafts') return 'today-section-ai-drafts';
   return 'today-section-shortcut';
@@ -379,6 +390,7 @@ function getTodayLegacyShortcutHash(target: TodayTileShortcutTarget) {
   if (target === 'without_action') return 'bez-dzialan';
   if (target === 'without_movement') return 'bez-ruchu';
   if (target === 'blocked') return 'zablokowane';
+  if (target === 'service_transition') return 'start-i-obsluga';
   if (target === 'calendar') return 'kalendarz';
   if (target === 'ai_drafts') return 'szkice-ai';
   return 'today';
@@ -426,6 +438,18 @@ function openTodayTopTileShortcut(target: TodayTileShortcutTarget) {
     return;
   }
 
+  const shortcutTileId = getTodayShortcutTileId(target);
+  if (shortcutTileId) {
+    const header = document.querySelector<HTMLElement>(`[data-today-tile-id="${shortcutTileId}"]`);
+    if (header) {
+      header.click();
+      window.setTimeout(() => {
+        header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+      return;
+    }
+  }
+
   const section = getTodayShortcutSectionElement(target);
   const hash = getTodayLegacyShortcutHash(target);
 
@@ -444,6 +468,15 @@ function openTodayTopTileShortcut(target: TodayTileShortcutTarget) {
       window.location.hash = hash;
     }
   }, 80);
+}
+
+function getTodayShortcutTileId(target: TodayTileShortcutTarget) {
+  if (target === 'urgent') return 'today-section-leads';
+  if (target === 'without_action') return 'today-section-no-step';
+  if (target === 'without_movement') return 'today-section-stale';
+  if (target === 'blocked') return 'today-section-blocked-cases';
+  if (target === 'service_transition') return 'today-section-ready-to-start';
+  return null;
 }
 
 function findTodayPipelineShortcutElement(target: EventTarget | null) {
@@ -1109,7 +1142,7 @@ function TodayAiDraftsTopTile({ drafts }: { drafts: AiLeadDraft[] }) {
     <Link
       to="/ai-drafts"
       data-today-ai-drafts-shortcut="true"
-      className="rounded-2xl border border-violet-100 bg-violet-50 p-3 text-left transition hover:border-violet-200 hover:bg-violet-100"
+      className="min-w-[180px] flex-1 rounded-2xl border border-violet-100 bg-violet-50 p-3 text-left transition hover:border-violet-200 hover:bg-violet-100"
     >
       <span className="text-xs font-semibold text-violet-700">Szkice AI</span>
       <strong className="mt-1 block text-2xl text-violet-950">{pendingDrafts.length}</strong>
@@ -1138,6 +1171,7 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
   const withoutActionLeads = activeLeads.filter(todayPipelineIsWithoutAction);
   const withoutMovementLeads = activeLeads.filter(todayPipelineIsWithoutMovement);
   const blockedCases = (cases || []).filter(todayPipelineIsBlockedCase);
+  const serviceTransitionCount = (leads || []).filter((lead) => isLeadMovedToService(lead)).length + blockedCases.length;
 
   const topLeads = [...activeLeadsWithValue]
     .sort((left, right) => todayPipelineLeadAmount(right) - todayPipelineLeadAmount(left))
@@ -1176,7 +1210,7 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
         </div>
 
         <div
-          className="mt-4 grid gap-3 md:grid-cols-5"
+          className="mt-4 flex flex-nowrap gap-3 overflow-x-auto pb-1"
           data-today-top-tiles="true"
           onClick={(event) => {
             const shortcutElement = findTodayPipelineShortcutElement(event.target);
@@ -1189,28 +1223,34 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
             openTodayTopTileShortcut(shortcutTarget);
           }}
         >
-          <button type="button" onClick={() => openTodayTopTileShortcut('urgent')} data-today-pipeline-shortcut="urgent" className="rounded-2xl border border-blue-100 bg-blue-50 p-3 transition hover:border-blue-200 hover:bg-blue-100 text-left">
+          <button type="button" onClick={() => openTodayTopTileShortcut('urgent')} data-today-pipeline-shortcut="urgent" className="min-w-[180px] flex-1 rounded-2xl border border-blue-100 bg-blue-50 p-3 transition hover:border-blue-200 hover:bg-blue-100 text-left">
             <span className="text-xs font-semibold text-blue-700">Pilne leady</span>
             <strong className="mt-1 block text-2xl text-blue-950">{urgentLeads.length}</strong>
             <small className="text-xs text-blue-700">Dziś albo zaległe</small>
           </button>
 
-          <button type="button" onClick={() => openTodayTopTileShortcut('without_action')} data-today-pipeline-shortcut="without_action" className="rounded-2xl border border-amber-100 bg-amber-50 p-3 transition hover:border-amber-200 hover:bg-amber-100 text-left">
+          <button type="button" onClick={() => openTodayTopTileShortcut('without_action')} data-today-pipeline-shortcut="without_action" className="min-w-[180px] flex-1 rounded-2xl border border-amber-100 bg-amber-50 p-3 transition hover:border-amber-200 hover:bg-amber-100 text-left">
             <span className="text-xs font-semibold text-amber-700">Bez działań</span>
             <strong className="mt-1 block text-2xl text-amber-950">{withoutActionLeads.length}</strong>
             <small className="text-xs text-amber-700">Brak następnego kroku</small>
           </button>
 
-          <button type="button" onClick={() => openTodayTopTileShortcut('without_movement')} data-today-pipeline-shortcut="without_movement" className="rounded-2xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 hover:bg-slate-100 text-left">
+          <button type="button" onClick={() => openTodayTopTileShortcut('without_movement')} data-today-pipeline-shortcut="without_movement" className="min-w-[180px] flex-1 rounded-2xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 hover:bg-slate-100 text-left">
             <span className="text-xs font-semibold text-slate-700">Bez ruchu</span>
             <strong className="mt-1 block text-2xl text-slate-950">{withoutMovementLeads.length}</strong>
             <small className="text-xs text-slate-600">Brak zmiany 7+ dni</small>
           </button>
 
-          <button type="button" onClick={() => openTodayTopTileShortcut('blocked')} data-today-pipeline-shortcut="blocked" className="rounded-2xl border border-red-100 bg-red-50 p-3 transition hover:border-red-200 hover:bg-red-100 text-left">
+          <button type="button" onClick={() => openTodayTopTileShortcut('blocked')} data-today-pipeline-shortcut="blocked" className="min-w-[180px] flex-1 rounded-2xl border border-red-100 bg-red-50 p-3 transition hover:border-red-200 hover:bg-red-100 text-left">
             <span className="text-xs font-semibold text-red-700">Zablokowane sprawy</span>
             <strong className="mt-1 block text-2xl text-red-950">{blockedCases.length}</strong>
             <small className="text-xs text-red-700">Wymagają odblokowania</small>
+          </button>
+
+          <button type="button" onClick={() => openTodayTopTileShortcut('service_transition')} data-today-pipeline-shortcut="service_transition" className="min-w-[180px] flex-1 rounded-2xl border border-violet-100 bg-violet-50 p-3 transition hover:border-violet-200 hover:bg-violet-100 text-left">
+            <span className="text-xs font-semibold text-violet-700">Start i obsługa</span>
+            <strong className="mt-1 block text-2xl text-violet-950">{serviceTransitionCount}</strong>
+            <small className="text-xs text-violet-700">Przejścia i blokady</small>
           </button>
 
           <TodayAiDraftsTopTile drafts={aiDraftsStage04} />
@@ -1404,7 +1444,7 @@ export default function Today() {
     }
   }, [collapsedTiles]);
 
-  const openOnlyTodayTile = (id: string) => {
+  const openOnlyTodayTile = (id: string, options?: { scrollToTop?: boolean }) => {
     setCollapsedTiles(() => {
       const next: Record<string, boolean> = {};
       const headers = Array.from(document.querySelectorAll<HTMLElement>('[data-today-tile-header="true"]'));
@@ -1423,10 +1463,12 @@ export default function Today() {
       return next;
     });
 
-    window.setTimeout(() => {
-      const header = document.querySelector<HTMLElement>(`[data-today-tile-id="${id}"]`);
-      header?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
+    if (options?.scrollToTop) {
+      window.setTimeout(() => {
+        const header = document.querySelector<HTMLElement>(`[data-today-tile-id="${id}"]`);
+        header?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    }
   };
 
   const toggleTile = (id: string) => {
@@ -1434,12 +1476,9 @@ export default function Today() {
       const wasCollapsed = Boolean(prev[id]);
       const next: Record<string, boolean> = {};
       const headers = Array.from(document.querySelectorAll<HTMLElement>('[data-today-tile-header="true"]'));
-
       headers.forEach((header) => {
         const tileId = header.dataset.todayTileId;
-        if (tileId) {
-          next[tileId] = true;
-        }
+        if (tileId) next[tileId] = true;
       });
 
       next[id] = !wasCollapsed;
@@ -1463,7 +1502,7 @@ export default function Today() {
       event.stopPropagation();
       event.stopImmediatePropagation();
 
-      openOnlyTodayTile(tileId);
+      openOnlyTodayTile(tileId, { scrollToTop: true });
     };
 
     document.addEventListener('click', handleTodayPipelineShortcutClick, true);
@@ -2485,23 +2524,20 @@ export default function Today() {
 
             {noStepLeads.length > 0 && (
               <section id="today-section-no-step" className="space-y-4">
-                <div className="flex items-center gap-2 text-amber-600">
-                  <AlertTriangle className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Bez zaplanowanych działań</h2>
-                  <Badge variant="outline" className="rounded-full border-amber-200 text-amber-700 bg-amber-50">{noStepLeads.length}</Badge>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {noStepLeads.slice(0, 4).map((lead) => (
-                    <LeadLinkCard
-                      key={lead.id}
-                      leadId={String(lead.id)}
-                      title={lead.name}
-                      subtitle={lead.company || 'Brak firmy'}
-                      badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak działań</Badge>}
-                      helperText="Kliknij kartę i zaplanuj zadanie albo wydarzenie dla tego tematu."
-                    />
-                  ))}
-                </div>
+                <TileCard id="today-section-no-step" title="Bez działań" subtitle={`${noStepLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {noStepLeads.slice(0, 4).map((lead) => (
+                      <LeadLinkCard
+                        key={lead.id}
+                        leadId={String(lead.id)}
+                        title={lead.name}
+                        subtitle={lead.company || 'Brak firmy'}
+                        badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak działań</Badge>}
+                        helperText="Kliknij kartę i zaplanuj zadanie albo wydarzenie dla tego tematu."
+                      />
+                    ))}
+                  </div>
+                </TileCard>
               </section>
             )}
 
@@ -2559,28 +2595,25 @@ export default function Today() {
 
             {staleLeads.length > 0 && (
               <section id="today-section-stale" className="space-y-4">
-                <div className="flex items-center gap-2 text-purple-600">
-                  <Clock className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Bez ruchu za długo</h2>
-                  <Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-purple-50">{staleLeads.length}</Badge>
-                </div>
-                <div className="grid gap-3">
-                  {staleLeads.map((lead) => {
-                    const days = getDaysWithoutUpdate(lead) || 0;
-                    return (
-                      <LeadLinkCard
-                        key={lead.id}
-                        leadId={String(lead.id)}
-                        title={lead.name}
-                        subtitle={`${days} dni bez wyraźnego ruchu • ${lead.company || lead.source || 'Lead'}`}
-                        subtitleClassName="text-purple-500 font-medium"
-                        className="border-purple-100 bg-purple-50/30"
-                        badges={<Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-white">Bez ruchu</Badge>}
-                        helperText="Lead ma ustawiony proces, ale nie było świeżego ruchu. To dobry kandydat do szybkiego sprawdzenia lub follow-upu."
-                      />
-                    );
-                  })}
-                </div>
+                <TileCard id="today-section-stale" title="Bez ruchu" subtitle={`${staleLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  <div className="grid gap-3">
+                    {staleLeads.map((lead) => {
+                      const days = getDaysWithoutUpdate(lead) || 0;
+                      return (
+                        <LeadLinkCard
+                          key={lead.id}
+                          leadId={String(lead.id)}
+                          title={lead.name}
+                          subtitle={`${days} dni bez wyraźnego ruchu • ${lead.company || lead.source || 'Lead'}`}
+                          subtitleClassName="text-purple-500 font-medium"
+                          className="border-purple-100 bg-purple-50/30"
+                          badges={<Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-white">Bez ruchu</Badge>}
+                          helperText="Lead ma ustawiony proces, ale nie było świeżego ruchu. To dobry kandydat do szybkiego sprawdzenia lub follow-upu."
+                        />
+                      );
+                    })}
+                  </div>
+                </TileCard>
               </section>
             )}
           </div>
@@ -2791,12 +2824,16 @@ export default function Today() {
           data-today-ai-drafts-compact-tile="true"
           data-today-ai-drafts-stage29d-bottom="true"
           data-today-shortcut-section="ai_drafts"
+          data-today-tile-card="true"
           className="mt-8 scroll-mt-28"
         >
           <button
             type="button"
             onClick={() => openTodayTopTileShortcut('ai_drafts')}
-            className="group flex w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50/40 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/25"
+            data-today-tile-header="true"
+            data-today-tile-id="ai_drafts_compact"
+            data-today-tile-title="Szkice do zatwierdzenia"
+            className="group flex w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300/50"
           >
             <div className="flex min-w-0 items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700">

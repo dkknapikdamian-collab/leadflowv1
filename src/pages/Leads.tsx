@@ -3,7 +3,7 @@
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, Plus, RotateCcw, Search, Target, Trash2, TrendingUp } from 'lucide-react';
+import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, RotateCcw, Search, Target, Trash2, TrendingUp } from 'lucide-react';
 import { format, isPast, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -12,11 +12,10 @@ import Layout from '../components/Layout';
 import { consumeGlobalQuickAction } from '../components/GlobalQuickActions';
 // STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
 import { StatShortcutCard } from '../components/StatShortcutCard';
-import { QuickLeadCaptureModal } from '../components/quick-lead';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -183,7 +182,6 @@ export default function Leads() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
-  const [isQuickLeadCaptureOpen, setIsQuickLeadCaptureOpen] = useState(false);
   const [newLead, setNewLead] = useState({
     name: '',
     email: '',
@@ -206,9 +204,6 @@ export default function Leads() {
     if (quickActionTarget === 'lead') {
       setIsNewLeadOpen(true);
     }
-    if (quickActionTarget === 'quick-lead') {
-      setIsQuickLeadCaptureOpen(true);
-    }
   }, []);
 
   useEffect(() => {
@@ -218,14 +213,6 @@ export default function Leads() {
     nextParams.delete('quick');
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
-  useEffect(() => {
-    if (searchParams.get('quick') !== 'quick-lead') return;
-    setIsQuickLeadCaptureOpen(true);
-    const nextParams = new URLSearchParams(searchParams);
-    nextParams.delete('quick');
-    setSearchParams(nextParams, { replace: true });
-  }, [searchParams, setSearchParams]);
-
 
   const loadLeads = useCallback(async () => {
     if (!workspace?.id) {
@@ -530,11 +517,7 @@ export default function Leads() {
       <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">
         <div className="page-head">
           <div>
-            <span className="kicker">Lista sprzedażowa</span>
             <h1>Leady</h1>
-            <p className="lead-copy">
-              Ten widok ma odpowiadać na jedno pytanie: z kim teraz pracuję i gdzie jest pieniądz albo ryzyko.
-            </p>
           </div>
 
           <div className="head-actions">
@@ -552,23 +535,7 @@ export default function Leads() {
             </button>
 
 
-            <button
-              type="button"
-              className="btn soft-blue"
-              onClick={() => setIsQuickLeadCaptureOpen(true)}
-              data-stage27-quick-lead-entry="true"
-            >
-              <Plus className="h-4 w-4" />
-              Dodaj szybkiego leada
-            </button>
-
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
-              <DialogTrigger asChild>
-                <button type="button" className="btn primary" disabled={!workspaceReady}>
-                  <Plus className="h-4 w-4" />
-                  Dodaj leada
-                </button>
-              </DialogTrigger>
               <DialogContent className="lead-form-vnext-content" data-lead-form-stage20="true" aria-describedby="lead-form-stage20-description">
                 <DialogHeader className="lead-form-vnext-header">
                   <div>
@@ -717,16 +684,7 @@ export default function Leads() {
                   </DialogFooter>
                 </form>
               </DialogContent>
-            </Dialog>
-
-            <QuickLeadCaptureModal
-              open={isQuickLeadCaptureOpen}
-              onOpenChange={setIsQuickLeadCaptureOpen}
-              workspace={workspace}
-              hasAccess={hasAccess}
-              onLeadCreated={() => { void loadLeads(); }}
-            />
-          </div>
+            </Dialog>          </div>
         </div>
 
         <div className="grid-5">
@@ -809,7 +767,7 @@ export default function Leads() {
         >
           <div className="stack">
             <div className="search" data-leads-search="true">
-              <span aria-hidden="true">⌕</span>
+              <span aria-hidden="true">?</span>
               <input
                 placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...'}
                 value={searchQuery}
@@ -961,21 +919,14 @@ export default function Leads() {
               )}
             </aside>
 
-            <aside className="right-card lead-right-card lead-ai-card">
-              <div className="panel-head">
-                <div>
-                  <h3>AI jako przycisk</h3>
-                  <p>Bez stałego panelu. Klikasz tylko wtedy, kiedy potrzebujesz.</p>
-                </div>
-              </div>
-              <Link to="/ai-drafts" className="btn soft-blue">
-                ✦ Przejdź do szkiców AI
-              </Link>
-            </aside>
+            <div hidden data-leads-stage35-removed-ai-side-card="true" />
           </div>
         </div>
       </div>
     </Layout>
   );
 }
+
+
+
 

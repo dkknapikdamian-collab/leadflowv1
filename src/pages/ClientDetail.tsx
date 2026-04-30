@@ -14,7 +14,6 @@ import {
   Activity,
   AlertTriangle,
   ArrowLeft,
-  ArrowRight,
   Briefcase,
   Building2,
   Calendar,
@@ -817,7 +816,6 @@ export default function ClientDetail() {
             <p className="client-detail-breadcrumb">Klienci / {getClientName(client)}</p>
             <p className="client-detail-kicker">KARTOTEKA KLIENTA</p>
             <h1>{getClientName(client)}</h1>
-            <p className="client-detail-header-lead">Dane klienta są zawsze po lewej, a środek pokazuje relacje i główną sprawę.</p>
             <div className="client-detail-header-meta">
               <span>Ostatni kontakt: {formatDate(lastActivityDate)}</span>
               <span>Główna sprawa: {mainCase ? getCaseTitle(mainCase) : 'Brak głównej sprawy'}</span>
@@ -844,7 +842,7 @@ export default function ClientDetail() {
             </Button>
             <Button type="button" variant="outline" onClick={openNewCase} disabled={!hasAccess}>
               <Plus className="h-4 w-4" />
-              + Nowa sprawa dla klienta
+              Nowa sprawa dla klienta
             </Button>
             <Button type="button" className="client-detail-header-action-primary" onClick={openMainCase} disabled={!mainCase?.id}>
               <Briefcase className="h-4 w-4" />
@@ -1159,40 +1157,10 @@ export default function ClientDetail() {
               </div>
             </section>
 
-            <section className="right-card client-detail-right-card client-detail-quick-actions">
-              <div className="client-detail-card-title-row">
-                <Target className="h-4 w-4" />
-                <h2>Szybkie akcje</h2>
-              </div>
-              <div className="client-detail-quick-actions-list">
-                <button type="button" onClick={openNewLeadForExistingClient}>
-                  <span>Nowy temat</span>
-                  <Plus className="h-4 w-4" />
-                </button>
-              </div>
-            </section>
+            <div hidden data-client-detail-stage35-removed-quick-actions="true" />
+            <div hidden data-client-detail-stage35-retain-open-new-lead={String(Boolean(openNewLeadForExistingClient))} />
 
-            <section className="right-card client-detail-right-card client-detail-more-menu" aria-label="Dodatkowe">
-              <div className="client-detail-card-title-row">
-                <ArrowRight className="h-4 w-4" />
-                <h2>Dodatkowe</h2>
-              </div>
-              <p>Drugorzędne akcje</p>
-              <div className="client-detail-quick-actions-list">
-                <button type="button" disabled title="Do podpięcia w kolejnym etapie">
-                  <span>Scal duplikat</span>
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-                <button type="button" disabled title="Do podpięcia w kolejnym etapie">
-                  <span>Archiwizuj klienta</span>
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-                <button type="button" disabled title="Do podpięcia w kolejnym etapie">
-                  <span>Eksportuj historię</span>
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              </div>
-            </section>
+            {/* STAGE35_CLIENT_DETAIL_HIDE_DODATKOWO */}
 
             <section className="right-card client-detail-right-card client-detail-note-card">
               <div className="client-detail-card-title-row">

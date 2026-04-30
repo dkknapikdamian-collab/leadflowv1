@@ -18,7 +18,7 @@ import GlobalAiAssistant from './GlobalAiAssistant';
 import QuickAiCapture from './QuickAiCapture';
 import { Button } from './ui/button';
 
-export type GlobalQuickActionTarget = 'lead' | 'task' | 'event' | 'quick-lead';
+export type GlobalQuickActionTarget = 'lead' | 'task' | 'event';
 
 const QUICK_ACTION_STORAGE_KEY = 'closeflow:global-quick-action:v1';
 
@@ -32,7 +32,7 @@ export function consumeGlobalQuickAction(): GlobalQuickActionTarget | null {
   const value = window.sessionStorage.getItem(QUICK_ACTION_STORAGE_KEY);
   window.sessionStorage.removeItem(QUICK_ACTION_STORAGE_KEY);
 
-  if (value === 'lead' || value === 'task' || value === 'event' || value === 'quick-lead') return value;
+  if (value === 'lead' || value === 'task' || value === 'event') return value;
   return null;
 }
 
@@ -48,13 +48,6 @@ export default function GlobalQuickActions() {
     >
       <GlobalAiAssistant />
       <QuickAiCapture />
-
-      <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="quick-lead">
-        <Link to="/leads" aria-label="Dodaj szybkiego leada z notatki" onClick={() => rememberGlobalQuickAction('quick-lead')}>
-          <Plus className="mr-2 h-4 w-4" />
-          Szybki lead
-        </Link>
-      </Button>
 
       <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts">
         <Link to="/ai-drafts" aria-label="Otwórz Szkice AI">

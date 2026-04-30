@@ -43,7 +43,7 @@
 
 .main-lead-detail header h1::after,
 .main-lead-detail .lead-detail-title::after {
-  content: 'Dane kontaktowe, najbliższy ruch, historia i przejście do obsługi w jednym miejscu.';
+  content: '';
   display: block;
   margin-top: 7px;
   max-width: 760px;

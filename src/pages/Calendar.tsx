@@ -8,7 +8,6 @@ import { Badge } from '../components/ui/badge';
 import {
   ChevronLeft,
   ChevronRight,
-  Plus,
   Loader2,
   Bell,
   Repeat,
@@ -41,7 +40,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
@@ -1144,11 +1142,6 @@ export default function Calendar() {
               <Sparkles className="h-4 w-4" /> Zapytaj AI
             </Link>
             <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
-              <DialogTrigger asChild>
-                <Button className="btn primary" disabled={!workspaceReady}>
-                  <Plus className="h-4 w-4" /> Zapisz wydarzenie
-                </Button>
-              </DialogTrigger>
               <DialogContent className="event-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
                 <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
                 <form onSubmit={handleAddEvent} className="event-form-vnext space-y-6 py-4" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>

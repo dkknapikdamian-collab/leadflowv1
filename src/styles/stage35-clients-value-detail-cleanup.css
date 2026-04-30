@@ -18,6 +18,61 @@
   display: none !important;
 }
 
+.client-detail-vnext-page .client-detail-more-menu {
+  display: none !important;
+}
+
+.main-clients-html .clients-right-rail .quick-list a {
+  align-items: flex-start;
+  color: #111827 !important;
+  min-height: 52px;
+}
+
+.main-clients-html .clients-right-rail .quick-list a strong {
+  color: #111827 !important;
+  font-weight: 800;
+}
+
+.main-clients-html .clients-right-rail .quick-list a small {
+  color: #475467 !important;
+}
+
+.main-clients-html .clients-right-rail .quick-list a svg {
+  margin-top: 3px;
+  color: #475467 !important;
+}
+
+.case-detail-right-rail,
+.case-detail-right-card,
+.right-card.case-detail-right-card {
+  background: #fff !important;
+  color: #111827 !important;
+}
+
+.case-detail-right-card :is(h2, p, small, span, strong, button) {
+  color: inherit;
+}
+
+.case-detail-right-card .case-detail-right-actions button {
+  background: #f8fafc !important;
+  border: 1px solid #e4e7ec !important;
+  color: #111827 !important;
+}
+
+div[role='dialog'] :is(input, textarea, select) {
+  background: #fff !important;
+  color: #111827 !important;
+  border-color: #d1d5db !important;
+}
+
+div[role='dialog'] :is(label, p, h2, h3, h4, span, strong) {
+  color: #111827 !important;
+}
+
+div[role='dialog'] {
+  color: #111827 !important;
+}
+
 @media (max-width: 768px) {
   .main-clients-html .row.client-row .statusline {
     gap: 6px;
@@ -27,6 +82,11 @@
   .main-clients-html .row.client-row .pill.blue {
     font-size: 12px;
     line-height: 1.2;
+  }
+
+  .main-clients-html .clients-right-rail .quick-list a {
+    align-items: center;
+    min-height: 46px;
   }
 
   .client-detail-header-actions [data-client-detail-visible-edit-action="true"] {
