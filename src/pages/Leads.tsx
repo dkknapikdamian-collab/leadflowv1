@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { consumeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { StatShortcutCard } from '../components/StatShortcutCard';
+import { QuickLeadCaptureModal } from '../components/quick-lead';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -181,6 +182,7 @@ export default function Leads() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
+  const [isQuickLeadCaptureOpen, setIsQuickLeadCaptureOpen] = useState(false);
   const [newLead, setNewLead] = useState({
     name: '',
     email: '',
@@ -199,8 +201,12 @@ export default function Leads() {
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (consumeGlobalQuickAction() === 'lead') {
+    const quickActionTarget = consumeGlobalQuickAction();
+    if (quickActionTarget === 'lead') {
       setIsNewLeadOpen(true);
+    }
+    if (quickActionTarget === 'quick-lead') {
+      setIsQuickLeadCaptureOpen(true);
     }
   }, []);
 
@@ -211,6 +217,14 @@ export default function Leads() {
     nextParams.delete('quick');
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
+  useEffect(() => {
+    if (searchParams.get('quick') !== 'quick-lead') return;
+    setIsQuickLeadCaptureOpen(true);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
 
   const loadLeads = useCallback(async () => {
     if (!workspace?.id) {
@@ -536,6 +550,17 @@ export default function Leads() {
               <span className="pill">{showTrash ? stats.total : stats.trash}</span>
             </button>
 
+
+            <button
+              type="button"
+              className="btn soft-blue"
+              onClick={() => setIsQuickLeadCaptureOpen(true)}
+              data-stage27-quick-lead-entry="true"
+            >
+              <Plus className="h-4 w-4" />
+              Dodaj szybkiego leada
+            </button>
+
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
               <DialogTrigger asChild>
                 <button type="button" className="btn primary" disabled={!workspaceReady}>
@@ -692,6 +717,14 @@ export default function Leads() {
                 </form>
               </DialogContent>
             </Dialog>
+
+            <QuickLeadCaptureModal
+              open={isQuickLeadCaptureOpen}
+              onOpenChange={setIsQuickLeadCaptureOpen}
+              workspace={workspace}
+              hasAccess={hasAccess}
+              onLeadCreated={() => { void loadLeads(); }}
+            />
           </div>
         </div>
 

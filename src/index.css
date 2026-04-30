@@ -246,6 +246,8 @@ Do not hide real alerts with text, link or button.
 }
 @import "./styles/visual-html-theme-v14.css";
 @import "./styles/closeflow-vnext-ui-contract.css";
+@import "./styles/quick-lead-capture-stage27.css";
+@import "./styles/hotfix-task-stat-tiles-clean.css";
 @import "./styles/hotfix-lead-client-right-rail-dark-wrappers.css";
 
 

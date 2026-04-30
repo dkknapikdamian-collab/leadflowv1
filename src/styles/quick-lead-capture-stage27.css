@@ -1,0 +1,112 @@
+/* QUICK_LEAD_CAPTURE_STAGE27_UI */
+.quick-lead-stage27-modal {
+  width: min(760px, calc(100vw - 32px));
+  max-width: 760px;
+  border-radius: 28px;
+  border: 1px solid #e4e7ec;
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.18);
+}
+
+.quick-lead-stage27-header {
+  gap: 8px;
+}
+
+.quick-lead-stage27-kicker {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  padding: 4px 10px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.quick-lead-stage27-header p,
+.quick-lead-stage27-hint {
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.quick-lead-stage27-body {
+  display: grid;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.quick-lead-stage27-textarea,
+.quick-lead-stage27-select {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid #d0d5dd;
+  background: #ffffff;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.quick-lead-stage27-textarea {
+  min-height: 170px;
+  resize: vertical;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.quick-lead-stage27-select {
+  height: 40px;
+  padding: 0 12px;
+  font-size: 14px;
+}
+
+.quick-lead-stage27-textarea:focus,
+.quick-lead-stage27-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.quick-lead-stage27-review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding-top: 8px;
+}
+
+.quick-lead-stage27-field {
+  display: grid;
+  gap: 7px;
+}
+
+.quick-lead-stage27-field-wide {
+  grid-column: 1 / -1;
+}
+
+.quick-lead-stage27-footer {
+  gap: 10px;
+}
+
+@media (max-width: 720px) {
+  .quick-lead-stage27-modal {
+    width: calc(100vw - 20px);
+    border-radius: 22px;
+  }
+
+  .quick-lead-stage27-review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-lead-stage27-footer {
+    flex-direction: column-reverse;
+  }
+
+  .quick-lead-stage27-footer button {
+    width: 100%;
+  }
+}
