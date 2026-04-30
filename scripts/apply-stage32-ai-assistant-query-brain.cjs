@@ -1,67 +1,18 @@
-const ASSISTANT_LEAD_DRAFT_CONTRACT_TITLE = 'Szkic leada zapisany do sprawdzenia';
-import { getClientAuthSnapshot } from './client-auth';
+const fs = require('fs');
+const path = require('path');
 
-export type TodayAiAssistantIntent = 'today_briefing' | 'lead_lookup' | 'lead_capture' | 'global_app_search' | 'blocked_out_of_scope' | 'unknown';
+const repo = process.cwd();
+const targetPath = path.join(repo, 'src', 'lib', 'ai-assistant.ts');
 
-export type TodayAiAssistantItem = {
-  label: string;
-  detail?: string;
-  href?: string;
-  priority?: 'low' | 'medium' | 'high';
-  entityType?: string;
-  id?: string;
-};
+if (!fs.existsSync(targetPath)) {
+  throw new Error('Missing src/lib/ai-assistant.ts');
+}
 
-export type TodayAiAssistantDraft = {
-  type: 'lead' | 'task' | 'event' | 'note';
-  rawText: string;
-  parsedDraft: Record<string, unknown>;
-  status: 'draft';
-  source: 'assistant_operator';
-};
+let source = fs.readFileSync(targetPath, 'utf8');
 
-export type TodayAiAssistantAnswer = {
-  ok: boolean;
-  mode?: 'read' | 'draft';
-  answer?: string;
-  draft?: TodayAiAssistantDraft | null;
-  operatorIntent?: string;
-  snapshotMeta?: Record<string, unknown>;
-  systemInstruction?: string[];
-  scope: 'assistant_read_or_draft_only';
-  provider: string;
-  noAutoWrite: boolean;
-  intent: TodayAiAssistantIntent;
-  title: string;
-  summary: string;
-  rawText: string;
-  items: TodayAiAssistantItem[];
-  warnings: string[];
-  suggestedCaptureText?: string;
-  hardBlock?: boolean;
-  allowedScope?: string[];
-  costGuard?: 'local_rules' | 'external_ai' | 'client_guard';
-};
+const marker = 'AI_ASSISTANT_QUERY_BRAIN_STAGE32';
 
-export type TodayAiAssistantInput = {
-  rawText: string;
-  context: {
-    leads?: Record<string, unknown>[];
-    tasks?: Record<string, unknown>[];
-    events?: Record<string, unknown>[];
-    cases?: Record<string, unknown>[];
-    clients?: Record<string, unknown>[];
-    drafts?: Record<string, unknown>[];
-    operatorSnapshot?: Record<string, unknown>;
-    summary?: Record<string, unknown>;
-    relations?: Record<string, unknown>;
-    searchIndex?: Record<string, unknown>[];
-    workspaceId?: string | null;
-    now?: string;
-  };
-};
-
-
+const helperBlock = String.raw`
 
 // AI_ASSISTANT_QUERY_BRAIN_STAGE32
 // Lokalna warstwa rozumienia danych aplikacji: pytania analityczne o zadania, terminy i mapę systemu
@@ -451,49 +402,27 @@ function buildStage32LocalQueryBrainAnswer(input: TodayAiAssistantInput): TodayA
 }
 
 void AI_ASSISTANT_QUERY_BRAIN_STAGE32;
+`;
 
-function getContextWorkspaceId(context: TodayAiAssistantInput['context']) {
-  const direct = typeof context.workspaceId === 'string' ? context.workspaceId.trim() : '';
-  const snapshot = context.operatorSnapshot && typeof context.operatorSnapshot === 'object'
-    ? String((context.operatorSnapshot as any).workspaceId || (context.operatorSnapshot as any).workspace_id || '').trim()
-    : '';
-  return direct || snapshot || '';
-}
-
-// AI_APP_CONTEXT_OPERATOR_STAGE26_TYPES: odpowiedź zachowuje stary kontrakt UI i dodaje { mode, answer, items, draft }.
-export async function askTodayAiAssistant(input: TodayAiAssistantInput) {
-  const stage32LocalAnswer = buildStage32LocalQueryBrainAnswer(input);
-  if (stage32LocalAnswer) return stage32LocalAnswer;
-
-  const auth = getClientAuthSnapshot();
-  const workspaceId = getContextWorkspaceId(input.context);
-  const response = await fetch('/api/system?kind=ai-assistant', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-user-id': auth.uid,
-      'x-user-email': auth.email,
-      'x-user-name': auth.fullName,
-      'x-workspace-id': workspaceId,
-    },
-    body: JSON.stringify({
-      rawText: input.rawText,
-      now: new Date().toISOString(),
-      workspaceId,
-      context: {
-        ...input.context,
-        workspaceId,
-        now: input.context.now || new Date().toISOString(),
-      },
-    }),
-  });
-
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(String(data?.error || 'AI_ASSISTANT_FAILED'));
+if (!source.includes(marker)) {
+  const anchor = 'function getContextWorkspaceId(context: TodayAiAssistantInput[\'context\']) {';
+  if (!source.includes(anchor)) {
+    throw new Error('Could not find getContextWorkspaceId anchor in src/lib/ai-assistant.ts');
   }
-
-  return data as TodayAiAssistantAnswer;
+  source = source.replace(anchor, helperBlock + '\n' + anchor);
 }
 
-void ASSISTANT_LEAD_DRAFT_CONTRACT_TITLE;
+const callMarker = 'const stage32LocalAnswer = buildStage32LocalQueryBrainAnswer(input);';
+if (!source.includes(callMarker)) {
+  const anchor = 'export async function askTodayAiAssistant(input: TodayAiAssistantInput) {\n';
+  if (!source.includes(anchor)) {
+    throw new Error('Could not find askTodayAiAssistant anchor in src/lib/ai-assistant.ts');
+  }
+  const replacement = anchor
+    + '  const stage32LocalAnswer = buildStage32LocalQueryBrainAnswer(input);\n'
+    + '  if (stage32LocalAnswer) return stage32LocalAnswer;\n\n';
+  source = source.replace(anchor, replacement);
+}
+
+fs.writeFileSync(targetPath, source, 'utf8');
+console.log('stage32-ai-assistant-query-brain: patched src/lib/ai-assistant.ts');
