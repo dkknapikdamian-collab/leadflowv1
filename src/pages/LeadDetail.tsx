@@ -1,3 +1,4 @@
+// LEAD_TO_CASE_FLOW_STAGE24_LEAD_DETAIL
 /*
 LEAD_DETAIL_VISUAL_REBUILD_STAGE14
 Active lead is sales work. Moved lead is acquisition history with a link to Case.
@@ -38,6 +39,7 @@ import { isLeadMovedToService } from '../lib/lead-health';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import { requireWorkspaceId } from '../lib/workspace-context';
+import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import {
   deleteEventFromSupabase,
   deleteLeadFromSupabase,
@@ -895,34 +897,58 @@ export default function LeadDetail() {
     }
   };
 
-  const handleStartService = async () => {
-    if (!leadId) return;
+  const handleStartService = async (event?: FormEvent) => {
+    event?.preventDefault?.();
+
+    if (!leadId || !lead) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
-    if (leadInService && serviceCaseId) return navigate(`/cases/${serviceCaseId}`);
+    if (leadInService && serviceCaseId) {
+      navigate(`/case/${serviceCaseId}`);
+      return;
+    }
+
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
 
     try {
       setCreateCasePending(true);
-      const response = await startLeadServiceInSupabase({
-        id: leadId,
-        title: createCaseDraft.title || `${getLeadName(lead)} - obsługa`,
-        caseStatus: createCaseDraft.status || 'ready_to_start',
-        clientName: createCaseDraft.clientName || lead?.name || '',
-        clientEmail: createCaseDraft.clientEmail || lead?.email || '',
-        clientPhone: createCaseDraft.clientPhone || lead?.phone || '',
+      const result = await startLeadToCaseHandoff({
+        leadId,
+        lead,
+        draft: createCaseDraft,
         workspaceId,
+        tasks: linkedTasks,
+        events: linkedEvents,
+        startLeadService: startLeadServiceInSupabase,
+        updateTask: updateTaskInSupabase,
+        updateEvent: updateEventInSupabase,
       });
-      const caseId = String((response as any)?.caseId || (response as any)?.id || (response as any)?.case?.id || '');
-      const title = String((response as any)?.title || createCaseDraft.title || 'Powiązana sprawa');
-      await addActivity('lead_moved_to_service', { title, caseId });
-      setStartServiceSuccess(caseId ? { caseId, title } : null);
+
+      setStartServiceSuccess({ caseId: result.caseId, title: result.caseTitle });
+      setAssociatedCase(result.case);
+      setLead((prev: any) => ({
+        ...(prev || lead),
+        ...result.lead,
+        linkedCaseId: result.caseId,
+        clientId: result.clientId || result.lead.clientId,
+        status: 'moved_to_service',
+        leadVisibility: 'archived',
+        salesOutcome: 'moved_to_service',
+        movedToService: true,
+        movedToServiceAt: result.movedToServiceAt,
+      }));
       setIsCreateCaseOpen(false);
-      toast.success('Lead przeniesiony do obsługi');
-      if (caseId) navigate(`/cases/${caseId}`);
-      else await loadLead();
+      toast.success('Sprawa utworzona. Przechodzę do obsługi.');
+      await loadLead();
+      navigate(`/case/${result.caseId}`);
     } catch (error: any) {
-      toast.error(`Nie udało się rozpocząć obsługi: ${error?.message || 'REQUEST_FAILED'}`);
+      const message = String(error?.message || 'REQUEST_FAILED');
+      if (message.includes('LEAD_ALREADY_HAS_CASE') && serviceCaseId) {
+        toast.success('Temat jest już w obsłudze. Otwieram sprawę.');
+        navigate(`/case/${serviceCaseId}`);
+        return;
+      }
+      toast.error(`Nie udało się rozpocząć obsługi: ${message}`);
     } finally {
       setCreateCasePending(false);
     }

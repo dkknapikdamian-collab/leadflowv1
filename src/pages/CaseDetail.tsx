@@ -1,5 +1,7 @@
+// LEAD_TO_CASE_FLOW_STAGE24_CASE_DETAIL
 // CASE_DETAIL_VISUAL_REBUILD_STAGE13
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+ useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   AlertCircle,
@@ -49,6 +51,7 @@ import {
   updateCaseItemInSupabase,
   updateEventInSupabase,
   updateTaskInSupabase,
+  fetchLeadByIdFromSupabase,
 } from '../lib/supabase-fallback';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import '../styles/visual-stage13-case-detail-vnext.css';
@@ -455,6 +458,7 @@ export default function CaseDetail() {
   const [activities, setActivities] = useState<CaseActivity[]>([]);
   const [tasks, setTasks] = useState<TaskRecord[]>([]);
   const [events, setEvents] = useState<EventRecord[]>([]);
+  const [sourceLead, setSourceLead] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<CaseDetailTab>('service');
@@ -554,6 +558,7 @@ export default function CaseDetail() {
   const workItems = useMemo(() => buildWorkItems(openTasks, plannedEvents, items, activities), [activities, items, openTasks, plannedEvents]);
   const nextAction = useMemo(() => workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null, [workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
+  const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Źródłowy lead') : caseData?.leadId ? 'Źródłowy lead podpięty' : 'Brak źródłowego leada';
 
   const recordActivity = async (eventType: string, payload: Record<string, any>) => {
     if (!caseId) return;

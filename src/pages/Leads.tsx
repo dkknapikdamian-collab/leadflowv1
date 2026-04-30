@@ -1,3 +1,4 @@
+// LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
 // VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
@@ -407,7 +408,16 @@ export default function Leads() {
     }
   };
 
-  const activeLeads = useMemo(() => leads.filter((lead) => !isLeadInTrash(lead)), [leads]);
+  const serviceHistoryLeads = useMemo(() => leads.filter((lead) => {
+    const linkedCase = resolveLinkedCaseForLead(lead);
+    return !isLeadInTrash(lead) && isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
+  }), [leads, resolveLinkedCaseForLead]);
+
+  const activeLeads = useMemo(() => leads.filter((lead) => {
+    const linkedCase = resolveLinkedCaseForLead(lead);
+    return !isLeadInTrash(lead) && !isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || linkedCase?.id });
+  }), [leads, resolveLinkedCaseForLead]);
+
   const trashLeads = useMemo(() => leads.filter((lead) => isLeadInTrash(lead)), [leads]);
 
   // RELATION_FUNNEL_SUM_FROM_ACTIVE_LEADS_AND_CLIENTS
@@ -429,7 +439,7 @@ export default function Leads() {
   const filteredLeads = useMemo(() => {
     // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka działa po nazwie, telefonie, mailu, firmie, źródle i sprawie.
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
-    const sourceLeads = showTrash ? trashLeads : activeLeads;
+    const sourceLeads = showTrash ? trashLeads : quickFilter === 'history' ? serviceHistoryLeads : activeLeads;
 
     const results = sourceLeads.filter((lead) => {
       const linkedCase = resolveLinkedCaseForLead(lead);
@@ -452,7 +462,7 @@ export default function Leads() {
     }
 
     return results;
-  }, [activeLeads, quickFilter, resolveLinkedCaseForLead, searchQuery, showTrash, trashLeads, valueSortEnabled]);
+  }, [activeLeads, quickFilter, resolveLinkedCaseForLead, searchQuery, serviceHistoryLeads, showTrash, trashLeads, valueSortEnabled]);
 
   const leadSearchSuggestions = useMemo(() => {
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
@@ -475,7 +485,7 @@ export default function Leads() {
     active: activeLeads.filter((lead) => isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || resolveLinkedCaseForLead(lead)?.id })).length,
     value: relationFunnelValue,
     atRisk: activeLeads.filter((lead) => Boolean(lead.isAtRisk)).length,
-    linkedToCase: activeLeads.filter((lead) => isLeadMovedToService({ ...lead, linkedCaseId: lead.linkedCaseId || resolveLinkedCaseForLead(lead)?.id })).length,
+    linkedToCase: serviceHistoryLeads.length,
     trash: trashLeads.length,
   };
 
