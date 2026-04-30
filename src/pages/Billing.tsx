@@ -1,15 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 import { format, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { Check, Loader2, Shield, Sparkles } from 'lucide-react';
+import {
+  AlertTriangle,
+  ArrowRight,
+  BadgeCheck,
+  CalendarClock,
+  Check,
+  CreditCard,
+  Loader2,
+  LockKeyhole,
+  RefreshCw,
+  Shield,
+  Sparkles,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
-import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { useAppearance } from '../components/appearance-provider';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
   fetchCasesFromSupabase,
@@ -18,66 +26,164 @@ import {
   fetchPaymentsFromSupabase,
   createBillingCheckoutSessionInSupabase,
 } from '../lib/supabase-fallback';
+import '../styles/visual-stage16-billing-vnext.css';
 
 type BillingPeriod = 'monthly' | 'yearly';
+type BillingTab = 'plan' | 'settlements';
+type CheckoutPlanKey = 'basic' | 'pro' | 'business';
+type PlanAvailability = 'current' | 'available' | 'disabled' | 'soon';
 
+const BILLING_VISUAL_REBUILD_STAGE16 = 'BILLING_VISUAL_REBUILD_STAGE16';
 const BILLING_STRIPE_BLIK_CONTRACT = 'Stripe/BLIK';
 
 type PlanCard = {
   id: string;
-  key: 'basic' | 'pro' | 'business';
+  key: 'free' | 'basic' | 'pro' | 'ai';
+  checkoutKey?: CheckoutPlanKey;
   name: string;
   monthlyPrice: number;
   yearlyPrice: number;
   description: string;
   badge?: string;
   features: string[];
+  availabilityHint?: string;
 };
 
 const BILLING_PLANS: PlanCard[] = [
   {
+    id: 'trial_14d',
+    key: 'free',
+    name: 'Free',
+    monthlyPrice: 0,
+    yearlyPrice: 0,
+    description: 'Start i test działania aplikacji przed wyborem płatnego planu.',
+    features: [
+      'Podgląd podstawowego workflow',
+      'Dobry etap na pierwsze sprawdzenie aplikacji',
+      'Po zakończeniu triala dane zostają w systemie',
+    ],
+    availabilityHint: 'Dostęp przez trial albo tryb podglądu.',
+  },
+  {
     id: 'closeflow_basic',
     key: 'basic',
+    checkoutKey: 'basic',
     name: 'Basic',
     monthlyPrice: 19,
     yearlyPrice: 190,
-    description: 'Najprostszy start dla jednej osoby i małego procesu sprzedaży.',
+    description: 'Najprostszy płatny start dla jednej osoby.',
     features: [
-      'Leady, klienci, zadania i Today',
-      'Podstawowy pipeline lead -> case',
-      'Płatność kartą lub BLIK przez Stripe za 30 dni albo rok',
+      'Leady, klienci i zadania',
+      'Dziś, podstawowy kalendarz i powiadomienia',
+      'Płatność kartą lub BLIK przez Stripe',
     ],
   },
   {
     id: 'closeflow_pro',
     key: 'pro',
+    checkoutKey: 'pro',
     name: 'Pro',
     monthlyPrice: 39,
     yearlyPrice: 390,
-    badge: 'Najlepszy wybór',
-    description: 'Pełny workflow CloseFlow dla usług solo i sprzedaży.',
+    badge: 'Najczęściej wybierany',
+    description: 'Pełny workflow lead -> klient -> sprawa -> rozliczenie.',
     features: [
-      'Pełny workflow lead -> sprawa -> rozliczenie',
-      'Klienci, sprawy, taski i Today w jednym miejscu',
+      'Pełny przepływ pracy po pozyskaniu leada',
+      'Sprawy, checklisty, zadania i wydarzenia',
       'Portal klienta i moduł rozliczeń V1',
-      'Płatność kartą lub BLIK przez Stripe za 30 dni albo rok',
+      'Najlepszy plan do pierwszych realnych testów',
     ],
   },
   {
     id: 'closeflow_business',
-    key: 'business',
-    name: 'Business',
+    key: 'ai',
+    checkoutKey: 'business',
+    name: 'AI',
     monthlyPrice: 69,
     yearlyPrice: 690,
-    description: 'Dla osób, które chcą więcej miejsca na rozwój i przyszłe funkcje premium.',
+    description: 'Plan przygotowany pod dodatki AI i większy zakres automatyzacji.',
     features: [
       'Wszystko z Pro',
-      'Priorytet pod przyszłe funkcje premium',
-      'Gotowe pod większą liczbę spraw i klientów',
-      'Płatność kartą lub BLIK przez Stripe za 30 dni albo rok',
+      'Szkice AI i asystent jako warstwa pracy',
+      'Przygotowanie pod kolejne moduły premium',
     ],
+    availabilityHint: 'AI jest rozwijane etapami. Nie obiecujemy funkcji, które nie są jeszcze podpięte.',
   },
 ];
+
+const ACCESS_COPY: Record<string, { label: string; headline: string; description: string; tone: 'green' | 'amber' | 'red' | 'slate'; cta: string }> = {
+  trial_active: {
+    label: 'Trial aktywny',
+    headline: 'Masz aktywny okres testowy',
+    description: 'Możesz sprawdzić główny workflow aplikacji przed wyborem płatnego planu.',
+    tone: 'amber',
+    cta: 'Przejdź na plan',
+  },
+  trial_ending: {
+    label: 'Trial kończy się',
+    headline: 'Trial zaraz się skończy',
+    description: 'Dane zostają. Wybierz plan, żeby nie blokować dodawania nowych rekordów.',
+    tone: 'amber',
+    cta: 'Przejdź na plan',
+  },
+  paid_active: {
+    label: 'Dostęp aktywny',
+    headline: 'Plan jest aktywny',
+    description: 'Masz aktywny dostęp do pracy w aplikacji.',
+    tone: 'green',
+    cta: 'Zarządzaj planem',
+  },
+  trial_expired: {
+    label: 'Trial wygasł',
+    headline: 'Trial się zakończył',
+    description: 'Twoje dane zostają. Aby dodawać nowe leady, zadania i wydarzenia, wybierz plan.',
+    tone: 'red',
+    cta: 'Wznów dostęp',
+  },
+  payment_failed: {
+    label: 'Płatność wymaga reakcji',
+    headline: 'Dostęp wymaga odnowienia',
+    description: 'Dane zostają, ale tworzenie nowych rzeczy może być zablokowane do czasu odnowienia planu.',
+    tone: 'red',
+    cta: 'Wznów dostęp',
+  },
+  canceled: {
+    label: 'Plan wyłączony',
+    headline: 'Plan jest nieaktywny',
+    description: 'Workspace jest w trybie bez aktywnej subskrypcji. Dane zostają dostępne do podglądu.',
+    tone: 'slate',
+    cta: 'Wznów dostęp',
+  },
+  inactive: {
+    label: 'Brak aktywnego dostępu',
+    headline: 'Dostęp nie jest aktywny',
+    description: 'Wybierz plan, żeby odblokować pracę na leadach, zadaniach i wydarzeniach.',
+    tone: 'slate',
+    cta: 'Przejdź na plan',
+  },
+};
+
+const LIMIT_ITEMS = [
+  { name: 'Leady', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
+  { name: 'Zadania', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
+  { name: 'Wydarzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
+  { name: 'Kalendarz', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
+  { name: 'Powiadomienia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
+  { name: 'Szkice AI', basic: 'Limit', pro: 'Dostępne', ai: 'Dostępne' },
+  { name: 'Asystent AI', basic: 'Limit', pro: 'Limit', ai: 'Dostępne' },
+  { name: 'Google Calendar', basic: 'Wkrótce', pro: 'Wkrótce', ai: 'Wkrótce' },
+];
+
+const SETTLEMENT_STATUS_LABELS: Record<string, string> = {
+  awaiting_payment: 'Czeka na płatność',
+  partially_paid: 'Częściowo opłacone',
+  fully_paid: 'Opłacone',
+  commission_pending: 'Prowizja do rozliczenia',
+  paid: 'Zapłacone',
+  not_started: 'Nierozpoczęte',
+  refunded: 'Zwrot',
+  written_off: 'Spisane',
+};
 
 function getPlanPrice(plan: PlanCard, period: BillingPeriod) {
   return period === 'yearly' ? plan.yearlyPrice : plan.monthlyPrice;
@@ -87,26 +193,85 @@ function getPlanPeriodLabel(period: BillingPeriod) {
   return period === 'yearly' ? '/rok' : '/30 dni';
 }
 
-function getDisplayPlanId(planId?: string | null, subscriptionStatus?: string | null) {
-  if (['closeflow_basic', 'closeflow_basic_yearly', 'closeflow_pro', 'closeflow_pro_yearly', 'closeflow_business', 'closeflow_business_yearly'].includes(String(planId || ''))) {
-    return String(planId);
+function formatMoney(value: unknown) {
+  const amount = Number(value || 0);
+  return Number.isFinite(amount) ? `${amount.toLocaleString('pl-PL')} PLN` : '0 PLN';
+}
+
+function safeDateLabel(value?: string | null) {
+  if (!value) return 'Nie ustawiono';
+  try {
+    return format(parseISO(value), 'd MMMM yyyy', { locale: pl });
+  } catch {
+    return 'Nie ustawiono';
   }
-  if (['trial_14d', 'solo_mini', 'solo_full', 'team_mini', 'team_full', 'pro'].includes(String(planId || ''))) {
+}
+
+function getAccessCopy(status?: string | null) {
+  return ACCESS_COPY[String(status || 'inactive')] || ACCESS_COPY.inactive;
+}
+
+function getDisplayPlanId(planId?: string | null, subscriptionStatus?: string | null) {
+  const normalized = String(planId || '');
+  if (['closeflow_basic', 'closeflow_basic_yearly', 'closeflow_pro', 'closeflow_pro_yearly', 'closeflow_business', 'closeflow_business_yearly'].includes(normalized)) {
+    return normalized;
+  }
+  if (['solo_mini', 'solo_full', 'team_mini', 'team_full', 'pro'].includes(normalized)) {
     return 'closeflow_pro';
   }
   if (subscriptionStatus === 'paid_active') return 'closeflow_pro';
   return 'trial_14d';
 }
 
-function isPlanActive(displayPlanId: string, plan: PlanCard, isPaidActive: boolean) {
+function getCurrentPlanName(displayPlanId: string, isPaidActive: boolean, isTrialActive: boolean) {
+  if (isPaidActive) {
+    const plan = BILLING_PLANS.find((entry) => displayPlanId === entry.id || displayPlanId === `${entry.id}_yearly`);
+    return plan?.name || 'Pro';
+  }
+  if (isTrialActive) return 'Free / trial';
+  return 'Nie ustawiono';
+}
+
+function isPlanCurrent(displayPlanId: string, plan: PlanCard, isPaidActive: boolean, isTrialActive: boolean) {
+  if (plan.key === 'free') return !isPaidActive && isTrialActive;
   if (!isPaidActive) return false;
   return displayPlanId === plan.id || displayPlanId === `${plan.id}_yearly`;
 }
 
+function getPlanAvailability(displayPlanId: string, plan: PlanCard, isPaidActive: boolean, isTrialActive: boolean): PlanAvailability {
+  if (isPlanCurrent(displayPlanId, plan, isPaidActive, isTrialActive)) return 'current';
+  if (!plan.checkoutKey) return plan.key === 'free' ? 'disabled' : 'soon';
+  return 'available';
+}
+
+function getPlanStatusLabel(status: PlanAvailability) {
+  if (status === 'current') return 'Obecny';
+  if (status === 'available') return 'Dostępny';
+  if (status === 'soon') return 'Wkrótce';
+  return 'Niedostępny';
+}
+
+function getSettlementStatusLabel(status?: string | null) {
+  return SETTLEMENT_STATUS_LABELS[String(status || 'not_started')] || 'Inny status';
+}
+
+function getLimitValue(item: typeof LIMIT_ITEMS[number], planKey: PlanCard['key']) {
+  if (planKey === 'ai') return item.ai;
+  if (planKey === 'pro') return item.pro;
+  if (planKey === 'basic') return item.basic;
+  return item.name === 'Leady' || item.name === 'Zadania' || item.name === 'Wydarzenia' ? 'Limit' : 'Wkrótce';
+}
+
+function getLimitTone(value: string) {
+  if (value === 'Dostępne') return 'billing-limit-ok';
+  if (value === 'Limit') return 'billing-limit-warn';
+  if (value === 'Zablokowane') return 'billing-limit-locked';
+  return 'billing-limit-soon';
+}
+
 export default function Billing() {
   const { workspace, loading, refresh, access } = useWorkspace();
-  const { skin } = useAppearance();
-  const [tab, setTab] = useState<'plan' | 'settlements'>('plan');
+  const [tab, setTab] = useState<BillingTab>('plan');
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
   const [upgradingPlanKey, setUpgradingPlanKey] = useState<string | null>(null);
   const [settlementLoading, setSettlementLoading] = useState(false);
@@ -123,6 +288,7 @@ export default function Billing() {
   useEffect(() => {
     if (tab !== 'settlements') return;
     if (!workspace?.id) return;
+
     let cancelled = false;
     setSettlementLoading(true);
     Promise.all([
@@ -133,10 +299,10 @@ export default function Billing() {
     ])
       .then(([paymentRows, clientRows, leadRows, caseRows]) => {
         if (cancelled) return;
-        setPayments(paymentRows as any[]);
-        setClients(clientRows as any[]);
-        setLeads(leadRows as any[]);
-        setCases(caseRows as any[]);
+        setPayments(Array.isArray(paymentRows) ? paymentRows : []);
+        setClients(Array.isArray(clientRows) ? clientRows : []);
+        setLeads(Array.isArray(leadRows) ? leadRows : []);
+        setCases(Array.isArray(caseRows) ? caseRows : []);
       })
       .catch((error: any) => {
         if (cancelled) return;
@@ -146,19 +312,43 @@ export default function Billing() {
         if (cancelled) return;
         setSettlementLoading(false);
       });
+
     return () => {
       cancelled = true;
     };
   }, [tab, workspace?.id]);
 
+  const accessCopy = getAccessCopy(access?.status);
+  const currentPlanId = getDisplayPlanId(workspace?.planId, workspace?.subscriptionStatus);
+  const currentPlanName = getCurrentPlanName(currentPlanId, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive));
+  const effectivePlan = BILLING_PLANS.find((plan) => isPlanCurrent(currentPlanId, plan, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive))) || BILLING_PLANS.find((plan) => plan.key === 'pro')!;
+  const trialEndsAtLabel = safeDateLabel(workspace?.trialEndsAt);
+  const nextBillingAtLabel = safeDateLabel(workspace?.nextBillingAt);
+  const blockedState = !access?.hasAccess;
+  const daysLeftLabel = access?.isTrialActive
+    ? `${Math.max(0, Number(access.trialDaysLeft || 0))} dni`
+    : workspace?.nextBillingAt
+      ? nextBillingAtLabel
+      : 'Nie ustawiono';
+
+  const filteredPayments = useMemo(() => {
+    return payments.filter((payment) => statusFilter === 'all' || String(payment.status || '') === statusFilter);
+  }, [payments, statusFilter]);
+
+  const settlementFilters = useMemo(() => {
+    return ['all', ...Object.keys(SETTLEMENT_STATUS_LABELS)].filter((status, index, array) => array.indexOf(status) === index);
+  }, []);
+
   const handleUpgrade = async (plan: PlanCard) => {
     if (!workspace?.id) return;
+    if (!plan.checkoutKey) return;
+
     setUpgradingPlanKey(plan.key);
     try {
       const result = await createBillingCheckoutSessionInSupabase({
         workspaceId: workspace.id,
         customerEmail: '',
-        planKey: plan.key,
+        planKey: plan.checkoutKey,
         billingPeriod,
       });
 
@@ -182,162 +372,294 @@ export default function Billing() {
   if (loading || !workspace) {
     return (
       <Layout>
-        <div className="flex h-full items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
+        <main className="billing-vnext-page">
+          <div className="billing-loading-card">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span>Ładowanie rozliczeń...</span>
+          </div>
+        </main>
       </Layout>
     );
   }
 
-  const trialEndsAtLabel = workspace.trialEndsAt ? format(parseISO(workspace.trialEndsAt), 'd MMMM yyyy', { locale: pl }) : null;
-  const isDark = skin === 'forteca-dark' || skin === 'midnight';
-  const currentPlanId = getDisplayPlanId(workspace.planId, workspace.subscriptionStatus);
-
   return (
     <Layout>
-      <div className="mx-auto w-full max-w-6xl space-y-6 p-4 md:p-8">
-        <header className="space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
-            <Sparkles className="h-3.5 w-3.5" /> Cennik i rozliczenia<span className="sr-only">{BILLING_STRIPE_BLIK_CONTRACT}</span>
+      <main className="billing-vnext-page" data-billing-stage={BILLING_VISUAL_REBUILD_STAGE16}>
+        <header className="billing-header">
+          <div>
+            <p className="billing-kicker">ROZLICZENIA</p>
+            <h1>Rozliczenia</h1>
+            <p className="billing-header-description">Plan, dostęp i status subskrypcji w jednym miejscu.</p>
           </div>
-          <h1 className="text-3xl font-bold text-slate-900">Billing</h1>
+          <div className="billing-header-actions">
+            <Button type="button" variant="outline" onClick={refresh}>
+              <RefreshCw className="h-4 w-4" />
+              Odśwież status
+            </Button>
+            <Button type="button" onClick={() => setTab('plan')}>
+              <CreditCard className="h-4 w-4" />
+              {accessCopy.cta}
+            </Button>
+          </div>
         </header>
 
-        <Tabs value={tab} onValueChange={(value) => setTab(value as 'plan' | 'settlements')}>
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="plan">Plan</TabsTrigger>
-            <TabsTrigger value="settlements">Rozliczenia</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <nav className="billing-tabs" aria-label="Zakładki rozliczeń">
+          <button type="button" className={tab === 'plan' ? 'billing-tab-active' : ''} onClick={() => setTab('plan')}>
+            Plan i dostęp
+          </button>
+          <button type="button" className={tab === 'settlements' ? 'billing-tab-active' : ''} onClick={() => setTab('settlements')}>
+            Rozliczenia lead/case
+          </button>
+        </nav>
 
         {tab === 'plan' ? (
-          <>
-            <Card className={`border-none shadow-sm ${isDark ? 'bg-slate-900 text-slate-100' : 'bg-emerald-50'}`}>
-              <CardContent className="flex flex-col gap-2 p-6">
-                <h2 className="text-xl font-bold">{access.headline}</h2>
-                <p>{access.description}</p>
-                {trialEndsAtLabel && (access.isTrialActive || access.status === 'trial_expired') ? (
-                  <p className="text-sm opacity-80">Data końca trialu: {trialEndsAtLabel}</p>
-                ) : null}
-                <Badge variant="outline" className="w-fit">{access.badgeLabel}</Badge>
-              </CardContent>
-            </Card>
-
-            <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-semibold text-slate-900">Wybierz okres dostępu</p>
-                <p className="text-sm text-slate-500">Płatność kartą lub BLIK przez Stripe. Roczny plan daje 365 dni dostępu.</p>
-              </div>
-              <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant={billingPeriod === 'monthly' ? 'default' : 'ghost'}
-                  onClick={() => setBillingPeriod('monthly')}
-                >
-                  30 dni
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant={billingPeriod === 'yearly' ? 'default' : 'ghost'}
-                  onClick={() => setBillingPeriod('yearly')}
-                >
-                  Rok
-                </Button>
-              </div>
-            </div>
-
-
-
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-              {BILLING_PLANS.map((plan) => {
-                const isCurrentPlan = isPlanActive(currentPlanId, plan, access.isPaidActive);
-                const price = getPlanPrice(plan, billingPeriod);
-                const isLoadingPlan = upgradingPlanKey === plan.key;
-
-                return (
-                  <Card key={plan.id} className="flex h-full flex-col border-none shadow-sm">
-                    <CardHeader>
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <CardTitle>{plan.name}</CardTitle>
-                          <CardDescription>{plan.description}</CardDescription>
-                        </div>
-                        {plan.badge || isCurrentPlan ? (
-                          <Badge variant={isCurrentPlan ? 'default' : 'outline'}>
-                            {isCurrentPlan ? 'Aktywny plan' : plan.badge}
-                          </Badge>
-                        ) : null}
-                      </div>
-                    </CardHeader>
-                    <CardContent className="flex-1 space-y-3">
-                      <p className="text-3xl font-bold">
-                        {price} PLN
-                        <span className="text-base font-medium text-slate-500">{getPlanPeriodLabel(billingPeriod)}</span>
-                      </p>
-                      {billingPeriod === 'yearly' ? (
-                        <p className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">
-                          Rocznie wychodzi taniej i daje 365 dni dostępu.
-                        </p>
-                      ) : null}
-                      {plan.features.map((feature) => (
-                        <p key={feature} className="flex items-center gap-2 text-sm text-slate-600">
-                          <Check className="h-4 w-4 text-emerald-500" /> {feature}
-                        </p>
-                      ))}
-                    </CardContent>
-                    <CardFooter>
-                      <Button disabled={Boolean(upgradingPlanKey) || isCurrentPlan} onClick={() => void handleUpgrade(plan)} className="w-full">
-                        {isCurrentPlan ? 'Twój plan' : isLoadingPlan ? 'Przekierowanie...' : 'Przejdź do płatności'}
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                );
-              })}
-            </div>
-
-</>
-        ) : (
-          <Card className="border-none shadow-sm">
-            <CardHeader>
-              <CardTitle>Rozliczenia lead/case</CardTitle>
-              <CardDescription>Filtruj status płatności niezaleznie od statusow sprzedazowych i operacyjnych.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-wrap gap-2">
-                {['all', 'awaiting_payment', 'partially_paid', 'fully_paid', 'commission_pending', 'paid'].map((status) => (
-                  <Button key={status} size="sm" variant={statusFilter === status ? 'default' : 'outline'} onClick={() => setStatusFilter(status)}>
-                    {status === 'all' ? 'Wszystkie' : status}
-                  </Button>
-                ))}
-              </div>
-              {settlementLoading ? (
-                <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-slate-400" /></div>
-              ) : (
-                <div className="space-y-2">
-                  {payments
-                    .filter((payment) => statusFilter === 'all' || String(payment.status || '') === statusFilter)
-                    .map((payment) => (
-                      <div key={payment.id} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 px-4 py-3">
-                        <div className="min-w-0">
-                          <p className="truncate font-semibold text-slate-900">{Number(payment.amount || 0).toLocaleString()} {payment.currency || 'PLN'}</p>
-                          <p className="truncate text-sm text-slate-500">
-                            {clientById.get(String(payment.clientId || '')) || 'Klient nieznany'} · {leadById.get(String(payment.leadId || '')) || 'Bez leada'} · {caseById.get(String(payment.caseId || '')) || 'Bez sprawy'}
-                          </p>
-                        </div>
-                        <Badge variant="outline">{payment.status || 'not_started'}</Badge>
-                      </div>
-                    ))}
-                  {payments.length === 0 ? (
-                    <div className="flex items-center gap-2 py-4 text-sm text-slate-500"><Shield className="h-4 w-4" /> Brak rozliczeń do wyświetlenia.</div>
-                  ) : null}
+          <div className="billing-shell">
+            <section className="billing-main-column">
+              <section className={`billing-status-card billing-status-${accessCopy.tone}`}>
+                <div className="billing-status-copy">
+                  <span className="billing-status-icon">
+                    {blockedState ? <LockKeyhole className="h-5 w-5" /> : <BadgeCheck className="h-5 w-5" />}
+                  </span>
+                  <div>
+                    <p className="billing-status-label">Status dostępu</p>
+                    <h2>{accessCopy.headline}</h2>
+                    <p>{accessCopy.description}</p>
+                  </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+                <div className="billing-status-facts">
+                  <span>{accessCopy.label}</span>
+                  <strong>{currentPlanName}</strong>
+                  <small>{access?.isTrialActive ? `Trial do: ${trialEndsAtLabel}` : `Następny okres: ${nextBillingAtLabel}`}</small>
+                </div>
+              </section>
+
+              <section className="billing-metrics-grid" aria-label="Podsumowanie rozliczeń">
+                <article className="billing-metric-card">
+                  <small>Plan</small>
+                  <strong>{currentPlanName}</strong>
+                  <span>Obecny pakiet</span>
+                </article>
+                <article className="billing-metric-card">
+                  <small>Dostęp</small>
+                  <strong>{accessCopy.label}</strong>
+                  <span>{access?.hasAccess ? 'Możesz pracować' : 'Część akcji zablokowana'}</span>
+                </article>
+                <article className="billing-metric-card">
+                  <small>Trial</small>
+                  <strong>{access?.isTrialActive ? daysLeftLabel : 'Nieaktywny'}</strong>
+                  <span>Koniec: {trialEndsAtLabel}</span>
+                </article>
+                <article className="billing-metric-card">
+                  <small>Limity</small>
+                  <strong>{effectivePlan.name}</strong>
+                  <span>Według planu</span>
+                </article>
+                <article className="billing-metric-card">
+                  <small>Następna płatność / okres</small>
+                  <strong>{nextBillingAtLabel}</strong>
+                  <span>{workspace.cancelAtPeriodEnd ? 'Anulowanie na koniec okresu' : 'Nie ustawiono anulowania'}</span>
+                </article>
+                <article className="billing-metric-card">
+                  <small>Blokady</small>
+                  <strong>{blockedState ? 'Aktywne' : 'Brak'}</strong>
+                  <span>{blockedState ? 'Wybierz plan, żeby dodawać nowe rekordy' : 'Brak blokady dostępu'}</span>
+                </article>
+              </section>
+
+              {blockedState ? (
+                <section className="billing-expired-card">
+                  <AlertTriangle className="h-5 w-5" />
+                  <div>
+                    <h2>Twoje dane zostają</h2>
+                    <p>Aby dodawać nowe leady, zadania i wydarzenia, wybierz plan. Nie usuwamy danych i nie robimy czerwonej ściany paniki.</p>
+                  </div>
+                </section>
+              ) : null}
+
+              <section className="billing-period-card">
+                <div>
+                  <h2>Wybierz okres dostępu</h2>
+                  <p>Płatność kartą lub BLIK przez Stripe. Roczny plan daje niższy koszt w skali roku.</p>
+                </div>
+                <div className="billing-period-switch" role="group" aria-label="Okres rozliczeniowy">
+                  <button type="button" className={billingPeriod === 'monthly' ? 'billing-period-active' : ''} onClick={() => setBillingPeriod('monthly')}>
+                    30 dni
+                  </button>
+                  <button type="button" className={billingPeriod === 'yearly' ? 'billing-period-active' : ''} onClick={() => setBillingPeriod('yearly')}>
+                    Rok
+                  </button>
+                </div>
+              </section>
+
+              <section className="billing-plan-grid" aria-label="Karty planów">
+                {BILLING_PLANS.map((plan) => {
+                  const availability = getPlanAvailability(currentPlanId, plan, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive));
+                  const price = getPlanPrice(plan, billingPeriod);
+                  const isLoadingPlan = upgradingPlanKey === plan.key;
+                  const canCheckout = availability === 'available' && Boolean(plan.checkoutKey);
+
+                  return (
+                    <article key={plan.id} className={['billing-plan-card', availability === 'current' ? 'billing-plan-current' : ''].join(' ')}>
+                      <div className="billing-plan-head">
+                        <div>
+                          <span className="billing-plan-status">{getPlanStatusLabel(availability)}</span>
+                          <h2>{plan.name}</h2>
+                          <p>{plan.description}</p>
+                        </div>
+                        {plan.badge ? <strong>{plan.badge}</strong> : null}
+                      </div>
+                      <div className="billing-plan-price">
+                        <span>{price === 0 ? '0 PLN' : `${price} PLN`}</span>
+                        <small>{price === 0 ? 'trial / podgląd' : getPlanPeriodLabel(billingPeriod)}</small>
+                      </div>
+                      <ul>
+                        {plan.features.map((feature) => (
+                          <li key={feature}>
+                            <Check className="h-4 w-4" />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                      {plan.availabilityHint ? <p className="billing-plan-hint">{plan.availabilityHint}</p> : null}
+                      <Button
+                        type="button"
+                        disabled={Boolean(upgradingPlanKey) || availability === 'current' || !canCheckout}
+                        onClick={() => void handleUpgrade(plan)}
+                        className="billing-plan-button"
+                        variant={availability === 'current' ? 'outline' : 'default'}
+                      >
+                        {availability === 'current'
+                          ? 'Obecny plan'
+                          : isLoadingPlan
+                            ? 'Przekierowanie...'
+                            : canCheckout
+                              ? 'Przejdź na plan'
+                              : 'Do podpięcia w kolejnym etapie'}
+                      </Button>
+                    </article>
+                  );
+                })}
+              </section>
+
+              <section className="billing-limits-card">
+                <div className="billing-section-head">
+                  <h2>Co jest dostępne teraz</h2>
+                  <p>Zakres pokazuje obecny kierunek planów. Funkcji nieudostępnionych backendowo nie udajemy.</p>
+                </div>
+                <div className="billing-limit-list">
+                  {LIMIT_ITEMS.map((item) => {
+                    const value = getLimitValue(item, effectivePlan.key);
+                    return (
+                      <div key={item.name} className="billing-limit-row">
+                        <span>{item.name}</span>
+                        <strong className={getLimitTone(value)}>{value}</strong>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            </section>
+
+            <aside className="billing-right-rail" aria-label="Panel rozliczeń">
+              <section className="right-card billing-right-card">
+                <div className="billing-right-title">
+                  <Shield className="h-4 w-4" />
+                  <h2>Status konta</h2>
+                </div>
+                <p>{accessCopy.label}</p>
+                <small>{accessCopy.description}</small>
+              </section>
+
+              <section className="right-card billing-right-card">
+                <div className="billing-right-title">
+                  <Check className="h-4 w-4" />
+                  <h2>Co masz w planie</h2>
+                </div>
+                <div className="billing-right-list">
+                  <span>Plan: {currentPlanName}</span>
+                  <span>Dostęp: {access?.hasAccess ? 'aktywny' : 'ograniczony'}</span>
+                  <span>Okres: {daysLeftLabel}</span>
+                </div>
+              </section>
+
+              <section className="right-card billing-right-card billing-right-featured">
+                <div className="billing-right-title">
+                  <Sparkles className="h-4 w-4" />
+                  <h2>Najczęściej wybierany</h2>
+                </div>
+                <p>Pro</p>
+                <small>Najlepszy do realnych testów CloseFlow, bo obejmuje pełny przepływ lead → sprawa.</small>
+                <button type="button" onClick={() => setBillingPeriod('monthly')}>
+                  Zobacz Pro <ArrowRight className="h-4 w-4" />
+                </button>
+              </section>
+
+              <section className="right-card billing-right-card">
+                <div className="billing-right-title">
+                  <BadgeCheck className="h-4 w-4" />
+                  <h2>Co odblokuje Pro</h2>
+                </div>
+                <div className="billing-right-list">
+                  <span>Sprawy i checklisty</span>
+                  <span>Pełne powiązania z klientem</span>
+                  <span>Workflow operacyjny po leadzie</span>
+                </div>
+              </section>
+
+              <section className="right-card billing-right-card">
+                <div className="billing-right-title">
+                  <Sparkles className="h-4 w-4" />
+                  <h2>AI jako dodatek</h2>
+                </div>
+                <small>Szkice AI i asystent są rozwijane etapami. Ten ekran nie obiecuje funkcji, które nie są jeszcze realnie podpięte.</small>
+              </section>
+            </aside>
+          </div>
+        ) : (
+          <section className="billing-settlements-card">
+            <div className="billing-section-head">
+              <div>
+                <h2>Rozliczenia lead/case</h2>
+                <p>Widok rozliczeń powiązanych z klientami, leadami i sprawami. Statusy są pokazane ludzkim językiem.</p>
+              </div>
+            </div>
+            <div className="billing-filter-row">
+              {settlementFilters.map((status) => (
+                <button key={status} type="button" className={statusFilter === status ? 'billing-filter-active' : ''} onClick={() => setStatusFilter(status)}>
+                  {status === 'all' ? 'Wszystkie' : getSettlementStatusLabel(status)}
+                </button>
+              ))}
+            </div>
+
+            {settlementLoading ? (
+              <div className="billing-loading-inline">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Ładowanie rozliczeń...</span>
+              </div>
+            ) : (
+              <div className="billing-payment-list">
+                {filteredPayments.map((payment) => (
+                  <article key={payment.id} className="billing-payment-row">
+                    <div>
+                      <h3>{formatMoney(payment.amount)} {payment.currency && payment.currency !== 'PLN' ? payment.currency : ''}</h3>
+                      <p>
+                        {clientById.get(String(payment.clientId || '')) || 'Klient nieznany'} · {leadById.get(String(payment.leadId || '')) || 'Bez leada'} · {caseById.get(String(payment.caseId || '')) || 'Bez sprawy'}
+                      </p>
+                    </div>
+                    <span>{getSettlementStatusLabel(payment.status)}</span>
+                  </article>
+                ))}
+                {filteredPayments.length === 0 ? (
+                  <div className="billing-empty-state">
+                    <Shield className="h-5 w-5" />
+                    <p>Brak rozliczeń do wyświetlenia.</p>
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </section>
         )}
-      </div>
+      </main>
     </Layout>
   );
 }
