@@ -31,6 +31,7 @@ import {
   isSupabaseConfigured,
   updateLeadInSupabase,
 } from '../lib/supabase-fallback';
+import '../styles/visual-stage20-lead-form-vnext.css';
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
@@ -186,6 +187,10 @@ export default function Leads() {
     source: 'other',
     dealValue: '',
     company: '',
+    summary: '',
+    notes: '',
+    status: 'new',
+    isAtRisk: false,
   });
 
   const createLeadSubmitLockRef = useRef(false);
@@ -301,13 +306,17 @@ export default function Leads() {
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
-    if (!newLead.name.trim()) return toast.error('Wpisz nazwę leada');
+    const hasLeadIdentity = Boolean(newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || newLead.company.trim());
+    const hasContactOrNeed = Boolean(newLead.phone.trim() || newLead.email.trim() || newLead.summary.trim() || newLead.notes.trim());
+    if (!hasLeadIdentity) return toast.error('Podaj nazwę albo kontakt.');
+    if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
     createLeadSubmitLockRef.current = true;
     setLeadSubmitting(true);
 
     try {
       await insertLeadToSupabase({
         ...newLead,
+        name: newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || 'Lead bez nazwy',
         dealValue: Number(newLead.dealValue) || 0,
         ownerId: workspace?.ownerId,
         workspaceId,
@@ -315,7 +324,7 @@ export default function Leads() {
       await loadLeads();
       toast.success('Lead dodany');
       setIsNewLeadOpen(false);
-      setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '' });
+      setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', summary: '', notes: '', status: 'new', isAtRisk: false });
     } catch (error: any) {
       toast.error(`Błąd zapisu leada: ${error.message}`);
     } finally {
@@ -520,50 +529,150 @@ export default function Leads() {
                   Dodaj leada
                 </button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Nowy lead</DialogTitle>
+              <DialogContent className="lead-form-vnext-content" data-lead-form-stage20="true" aria-describedby="lead-form-stage20-description">
+                <DialogHeader className="lead-form-vnext-header">
+                  <div>
+                    <span className="lead-form-vnext-kicker">SZYBKIE DODANIE LEADA</span>
+                    <DialogTitle>Nowy lead</DialogTitle>
+                    <p id="lead-form-stage20-description">
+                      Wpisz minimum danych i zapisz kontakt. Szczegóły możesz uzupełnić później.
+                    </p>
+                  </div>
                 </DialogHeader>
-                <form onSubmit={handleCreateLead} className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <Label>Imię i nazwisko / Nazwa</Label>
-                    <Input value={newLead.name} onChange={(e) => setNewLead({ ...newLead, name: e.target.value })} required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Firma</Label>
-                    <Input value={newLead.company} onChange={(e) => setNewLead({ ...newLead, company: e.target.value })} />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Email</Label>
-                      <Input type="email" value={newLead.email} onChange={(e) => setNewLead({ ...newLead, email: e.target.value })} />
+
+                <form onSubmit={handleCreateLead} className="lead-form-vnext" data-lead-form-visual-rebuild="LEAD_FORM_VISUAL_REBUILD_STAGE20">
+                  <section className="lead-form-section lead-form-primary-section">
+                    <div className="lead-form-section-head">
+                      <h3>Podstawowe dane</h3>
+                      <p>Najważniejsze pola do szybkiego zapisania kontaktu.</p>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Telefon</Label>
-                      <Input value={newLead.phone} onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })} />
+
+                    <div className="lead-form-grid">
+                      <div className="lead-form-field lead-form-field-wide">
+                        <Label>Nazwa / kontakt</Label>
+                        <Input
+                          value={newLead.name}
+                          onChange={(event) => setNewLead({ ...newLead, name: event.target.value })}
+                          placeholder="Np. Jan Kowalski albo Firma ABC"
+                        />
+                      </div>
+
+                      <div className="lead-form-field">
+                        <Label>Telefon</Label>
+                        <Input
+                          value={newLead.phone}
+                          onChange={(event) => setNewLead({ ...newLead, phone: event.target.value })}
+                          placeholder="np. 516 000 000"
+                        />
+                      </div>
+
+                      <div className="lead-form-field">
+                        <Label>E-mail</Label>
+                        <Input
+                          type="email"
+                          value={newLead.email}
+                          onChange={(event) => setNewLead({ ...newLead, email: event.target.value })}
+                          placeholder="kontakt@email.pl"
+                        />
+                      </div>
+
+                      <div className="lead-form-field">
+                        <Label>Źródło</Label>
+                        <select
+                          className="lead-form-select"
+                          value={newLead.source}
+                          onChange={(event) => setNewLead({ ...newLead, source: event.target.value })}
+                        >
+                          {SOURCE_OPTIONS.map((source) => (
+                            <option key={source.value} value={source.value}>{source.label}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="lead-form-field">
+                        <Label>Wartość</Label>
+                        <Input
+                          type="number"
+                          value={newLead.dealValue}
+                          onChange={(event) => setNewLead({ ...newLead, dealValue: event.target.value })}
+                          placeholder="0"
+                        />
+                      </div>
+
+                      <div className="lead-form-field lead-form-field-wide">
+                        <Label>Temat / potrzeba</Label>
+                        <Input
+                          value={newLead.summary}
+                          onChange={(event) => setNewLead({ ...newLead, summary: event.target.value })}
+                          placeholder="Np. strona www, kampania, nieruchomość, dokumenty..."
+                        />
+                      </div>
+
+                      <div className="lead-form-field lead-form-field-wide">
+                        <Label>Notatka</Label>
+                        <textarea
+                          className="lead-form-textarea"
+                          value={newLead.notes}
+                          onChange={(event) => setNewLead({ ...newLead, notes: event.target.value })}
+                          placeholder="Krótki kontekst rozmowy. Bez długiej odprawy."
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Wartość (PLN)</Label>
-                      <Input type="number" value={newLead.dealValue} onChange={(e) => setNewLead({ ...newLead, dealValue: e.target.value })} />
+                  </section>
+
+                  <details className="lead-form-section lead-form-details">
+                    <summary>Dodatkowe pola</summary>
+                    <div className="lead-form-grid lead-form-details-grid">
+                      <div className="lead-form-field">
+                        <Label>Firma</Label>
+                        <Input
+                          value={newLead.company}
+                          onChange={(event) => setNewLead({ ...newLead, company: event.target.value })}
+                          placeholder="Opcjonalnie"
+                        />
+                      </div>
+
+                      <div className="lead-form-field">
+                        <Label>Status</Label>
+                        <select
+                          className="lead-form-select"
+                          value={newLead.status}
+                          onChange={(event) => setNewLead({ ...newLead, status: event.target.value })}
+                        >
+                          {STATUS_OPTIONS.filter((status) => status.value !== 'archived').map((status) => (
+                            <option key={status.value} value={status.value}>{status.label}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <label className="lead-form-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={newLead.isAtRisk}
+                          onChange={(event) => setNewLead({ ...newLead, isAtRisk: event.target.checked })}
+                        />
+                        <span>
+                          <strong>Wysoki priorytet</strong>
+                          <small>Oznacz, jeśli lead wymaga szybkiej reakcji.</small>
+                        </span>
+                      </label>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Źródło</Label>
-                      <select
-                        className={nativeSelectClassName()}
-                        value={newLead.source}
-                        onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
-                      >
-                        {SOURCE_OPTIONS.map((source) => (
-                          <option key={source.value} value={source.value}>{source.label}</option>
-                        ))}
-                      </select>
+                  </details>
+
+                  <section className="lead-form-section lead-form-planning-note">
+                    <Clock3 className="h-4 w-4" />
+                    <div>
+                      <h3>Szybkie planowanie</h3>
+                      <p>Dodanie zadania albo wydarzenia bezpośrednio z formularza wymaga osobnego flow. Ten etap nie udaje tej funkcji.</p>
                     </div>
-                  </div>
-                  <DialogFooter>
-                    <Button type="submit" className="w-full" disabled={leadSubmitting || !workspaceReady}>
-                      {leadSubmitting ? 'Dodawanie...' : 'Stwórz leada'}
+                  </section>
+
+                  <DialogFooter className="lead-form-footer">
+                    <Button type="button" variant="outline" onClick={() => setIsNewLeadOpen(false)}>
+                      Anuluj
+                    </Button>
+                    <Button type="submit" disabled={leadSubmitting || !workspaceReady}>
+                      {leadSubmitting ? 'Zapisywanie...' : 'Zapisz leada'}
                     </Button>
                   </DialogFooter>
                 </form>
