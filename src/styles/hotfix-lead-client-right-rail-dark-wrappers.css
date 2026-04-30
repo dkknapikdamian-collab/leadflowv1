@@ -1,0 +1,220 @@
+/* HOTFIX_LEAD_CLIENT_RIGHT_RAIL_DARK_WRAPPERS
+   Scope: LeadDetail + ClientDetail only.
+   Goal: remove dark right/side rail wrappers without touching data, routes or logic.
+*/
+
+:root {
+  --cf-detail-hotfix-card: #ffffff;
+  --cf-detail-hotfix-soft: #f8fafc;
+  --cf-detail-hotfix-border: #e4e7ec;
+  --cf-detail-hotfix-mini-border: #eaecf0;
+  --cf-detail-hotfix-text: #111827;
+  --cf-detail-hotfix-muted: #667085;
+  --cf-detail-hotfix-blue: #2563eb;
+  --cf-detail-hotfix-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+}
+
+/* =========================================================
+   LeadDetail / ClientDetail side rails: no dark wrapper.
+   Sidebar stays untouched because every selector is route scoped.
+   ========================================================= */
+
+html body #root .lead-detail-vnext-page .lead-detail-right-rail,
+html body #root .main-lead-detail .lead-detail-right-rail,
+html body #root .client-detail-vnext-page .client-detail-left-rail,
+html body #root .client-detail-vnext-page .client-detail-right-rail,
+html body #root .main-client-detail .client-detail-left-rail,
+html body #root .main-client-detail .client-detail-right-rail {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  clip-path: none !important;
+  isolation: auto !important;
+}
+
+html body #root .lead-detail-vnext-page .lead-detail-right-rail::before,
+html body #root .lead-detail-vnext-page .lead-detail-right-rail::after,
+html body #root .main-lead-detail .lead-detail-right-rail::before,
+html body #root .main-lead-detail .lead-detail-right-rail::after,
+html body #root .client-detail-vnext-page .client-detail-left-rail::before,
+html body #root .client-detail-vnext-page .client-detail-left-rail::after,
+html body #root .client-detail-vnext-page .client-detail-right-rail::before,
+html body #root .client-detail-vnext-page .client-detail-right-rail::after,
+html body #root .main-client-detail .client-detail-left-rail::before,
+html body #root .main-client-detail .client-detail-left-rail::after,
+html body #root .main-client-detail .client-detail-right-rail::before,
+html body #root .main-client-detail .client-detail-right-rail::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* =========================================================
+   Cards in these rails: white card on transparent rail.
+   ========================================================= */
+
+html body #root .lead-detail-vnext-page .lead-detail-right-rail > *,
+html body #root .main-lead-detail .lead-detail-right-rail > *,
+html body #root .lead-detail-vnext-page .lead-detail-right-card,
+html body #root .main-lead-detail .lead-detail-right-card,
+html body #root .lead-detail-vnext-page .right-card.lead-detail-right-card,
+html body #root .main-lead-detail .right-card.lead-detail-right-card,
+html body #root .client-detail-vnext-page .client-detail-left-rail > *,
+html body #root .client-detail-vnext-page .client-detail-right-rail > *,
+html body #root .main-client-detail .client-detail-left-rail > *,
+html body #root .main-client-detail .client-detail-right-rail > *,
+html body #root .client-detail-vnext-page .client-detail-side-card,
+html body #root .client-detail-vnext-page .client-detail-profile-card,
+html body #root .client-detail-vnext-page .client-detail-actions-card,
+html body #root .client-detail-vnext-page .client-detail-right-card,
+html body #root .client-detail-vnext-page .right-card.client-detail-right-card,
+html body #root .main-client-detail .client-detail-side-card,
+html body #root .main-client-detail .client-detail-profile-card,
+html body #root .main-client-detail .client-detail-actions-card,
+html body #root .main-client-detail .client-detail-right-card,
+html body #root .main-client-detail .right-card.client-detail-right-card {
+  background: var(--cf-detail-hotfix-card) !important;
+  background-color: var(--cf-detail-hotfix-card) !important;
+  background-image: none !important;
+  border: 1px solid var(--cf-detail-hotfix-border) !important;
+  border-radius: 28px !important;
+  box-shadow: var(--cf-detail-hotfix-shadow) !important;
+  color: var(--cf-detail-hotfix-text) !important;
+  overflow: hidden !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  clip-path: none !important;
+}
+
+html body #root .lead-detail-vnext-page .lead-detail-right-card::before,
+html body #root .lead-detail-vnext-page .lead-detail-right-card::after,
+html body #root .main-lead-detail .lead-detail-right-card::before,
+html body #root .main-lead-detail .lead-detail-right-card::after,
+html body #root .client-detail-vnext-page .client-detail-side-card::before,
+html body #root .client-detail-vnext-page .client-detail-side-card::after,
+html body #root .client-detail-vnext-page .client-detail-profile-card::before,
+html body #root .client-detail-vnext-page .client-detail-profile-card::after,
+html body #root .client-detail-vnext-page .client-detail-actions-card::before,
+html body #root .client-detail-vnext-page .client-detail-actions-card::after,
+html body #root .client-detail-vnext-page .client-detail-right-card::before,
+html body #root .client-detail-vnext-page .client-detail-right-card::after,
+html body #root .main-client-detail .client-detail-side-card::before,
+html body #root .main-client-detail .client-detail-side-card::after,
+html body #root .main-client-detail .client-detail-profile-card::before,
+html body #root .main-client-detail .client-detail-profile-card::after,
+html body #root .main-client-detail .client-detail-actions-card::before,
+html body #root .main-client-detail .client-detail-actions-card::after,
+html body #root .main-client-detail .client-detail-right-card::before,
+html body #root .main-client-detail .client-detail-right-card::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* =========================================================
+   Mini rows / buttons inside rails: light, readable, no white text.
+   ========================================================= */
+
+html body #root .lead-detail-vnext-page .lead-detail-right-rail .lead-detail-right-metrics span,
+html body #root .lead-detail-vnext-page .lead-detail-right-rail .lead-detail-right-actions button,
+html body #root .lead-detail-vnext-page .lead-detail-right-rail .lead-detail-light-empty,
+html body #root .main-lead-detail .lead-detail-right-rail .lead-detail-right-metrics span,
+html body #root .main-lead-detail .lead-detail-right-rail .lead-detail-right-actions button,
+html body #root .main-lead-detail .lead-detail-right-rail .lead-detail-light-empty,
+html body #root .client-detail-vnext-page .client-detail-left-rail .client-detail-profile-meta span,
+html body #root .client-detail-vnext-page .client-detail-left-rail .client-detail-stat-cell,
+html body #root .client-detail-vnext-page .client-detail-left-rail .client-detail-info-row,
+html body #root .client-detail-vnext-page .client-detail-left-rail .client-detail-action-grid button,
+html body #root .client-detail-vnext-page .client-detail-right-rail .client-detail-right-metrics span,
+html body #root .client-detail-vnext-page .client-detail-right-rail .client-detail-right-shortcuts button,
+html body #root .client-detail-vnext-page .client-detail-right-rail .client-detail-quick-actions-list button,
+html body #root .client-detail-vnext-page .client-detail-right-rail .client-detail-light-empty,
+html body #root .main-client-detail .client-detail-left-rail .client-detail-profile-meta span,
+html body #root .main-client-detail .client-detail-left-rail .client-detail-stat-cell,
+html body #root .main-client-detail .client-detail-left-rail .client-detail-info-row,
+html body #root .main-client-detail .client-detail-left-rail .client-detail-action-grid button,
+html body #root .main-client-detail .client-detail-right-rail .client-detail-right-metrics span,
+html body #root .main-client-detail .client-detail-right-rail .client-detail-right-shortcuts button,
+html body #root .main-client-detail .client-detail-right-rail .client-detail-quick-actions-list button,
+html body #root .main-client-detail .client-detail-right-rail .client-detail-light-empty {
+  background: var(--cf-detail-hotfix-soft) !important;
+  background-color: var(--cf-detail-hotfix-soft) !important;
+  background-image: none !important;
+  border: 1px solid var(--cf-detail-hotfix-mini-border) !important;
+  border-radius: 16px !important;
+  color: var(--cf-detail-hotfix-text) !important;
+  box-shadow: none !important;
+}
+
+html body #root .lead-detail-vnext-page .lead-detail-right-rail small,
+html body #root .lead-detail-vnext-page .lead-detail-right-rail p,
+html body #root .main-lead-detail .lead-detail-right-rail small,
+html body #root .main-lead-detail .lead-detail-right-rail p,
+html body #root .client-detail-vnext-page .client-detail-left-rail small,
+html body #root .client-detail-vnext-page .client-detail-left-rail p,
+html body #root .client-detail-vnext-page .client-detail-right-rail small,
+html body #root .client-detail-vnext-page .client-detail-right-rail p,
+html body #root .main-client-detail .client-detail-left-rail small,
+html body #root .main-client-detail .client-detail-left-rail p,
+html body #root .main-client-detail .client-detail-right-rail small,
+html body #root .main-client-detail .client-detail-right-rail p {
+  color: var(--cf-detail-hotfix-muted) !important;
+}
+
+html body #root .lead-detail-vnext-page .lead-detail-right-rail strong,
+html body #root .main-lead-detail .lead-detail-right-rail strong,
+html body #root .client-detail-vnext-page .client-detail-left-rail strong,
+html body #root .client-detail-vnext-page .client-detail-right-rail strong,
+html body #root .main-client-detail .client-detail-left-rail strong,
+html body #root .main-client-detail .client-detail-right-rail strong {
+  color: var(--cf-detail-hotfix-text) !important;
+}
+
+/* Keep disabled buttons visible instead of white-on-white. */
+html body #root .lead-detail-vnext-page .lead-detail-right-rail button:disabled,
+html body #root .main-lead-detail .lead-detail-right-rail button:disabled,
+html body #root .client-detail-vnext-page .client-detail-left-rail button:disabled,
+html body #root .client-detail-vnext-page .client-detail-right-rail button:disabled,
+html body #root .main-client-detail .client-detail-left-rail button:disabled,
+html body #root .main-client-detail .client-detail-right-rail button:disabled {
+  color: var(--cf-detail-hotfix-muted) !important;
+  opacity: 0.75 !important;
+}
+
+/* In tablet mode ClientDetail right rail uses grid. Keep the wrapper transparent there too. */
+@media (max-width: 1260px) {
+  html body #root .client-detail-vnext-page .client-detail-right-rail,
+  html body #root .main-client-detail .client-detail-right-rail {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 980px) {
+  html body #root .client-detail-vnext-page .client-detail-right-rail,
+  html body #root .main-client-detail .client-detail-right-rail {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html body #root .lead-detail-vnext-page .lead-detail-right-rail,
+  html body #root .main-lead-detail .lead-detail-right-rail {
+    min-width: 0 !important;
+  }
+}
