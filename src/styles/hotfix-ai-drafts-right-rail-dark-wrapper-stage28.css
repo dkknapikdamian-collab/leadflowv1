@@ -1,0 +1,127 @@
+/* HOTFIX_AI_DRAFTS_RIGHT_RAIL_DARK_WRAPPER_STAGE28
+   Scope: only Szkice AI right rail. Do not touch sidebar or global shell. */
+
+.ai-drafts-vnext-page .ai-drafts-vnext-shell {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-rail,
+.ai-drafts-vnext-page aside.ai-drafts-right-rail,
+.ai-drafts-vnext-page [data-ai-drafts-right-rail="true"],
+.ai-drafts-vnext-page [class*="ai-drafts-right-rail"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  min-width: 300px;
+  overflow: visible !important;
+  color: #111827 !important;
+  isolation: auto !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-rail::before,
+.ai-drafts-vnext-page .ai-drafts-right-rail::after,
+.ai-drafts-vnext-page [class*="ai-drafts-right-rail"]::before,
+.ai-drafts-vnext-page [class*="ai-drafts-right-rail"]::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card,
+.ai-drafts-vnext-page .right-card.ai-drafts-right-card,
+.ai-drafts-vnext-page .ai-drafts-right-rail > .right-card,
+.ai-drafts-vnext-page .ai-drafts-right-rail > section,
+.ai-drafts-vnext-page .ai-drafts-right-rail > article,
+.ai-drafts-vnext-page [class*="ai-drafts-right-card"] {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  color: #111827 !important;
+  overflow: hidden !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card::before,
+.ai-drafts-vnext-page .ai-drafts-right-card::after,
+.ai-drafts-vnext-page .right-card.ai-drafts-right-card::before,
+.ai-drafts-vnext-page .right-card.ai-drafts-right-card::after,
+.ai-drafts-vnext-page [class*="ai-drafts-right-card"]::before,
+.ai-drafts-vnext-page [class*="ai-drafts-right-card"]::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card *,
+.ai-drafts-vnext-page .right-card.ai-drafts-right-card * {
+  color: inherit;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card h1,
+.ai-drafts-vnext-page .ai-drafts-right-card h2,
+.ai-drafts-vnext-page .ai-drafts-right-card h3,
+.ai-drafts-vnext-page .ai-drafts-right-card strong,
+.ai-drafts-vnext-page .ai-drafts-rail-item strong,
+.ai-drafts-vnext-page .ai-drafts-rail-button {
+  color: #111827 !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card p,
+.ai-drafts-vnext-page .ai-drafts-right-card span,
+.ai-drafts-vnext-page .ai-drafts-rail-item span,
+.ai-drafts-vnext-page .ai-drafts-rail-empty {
+  color: #667085 !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-rail-button,
+.ai-drafts-vnext-page .ai-drafts-rail-item,
+.ai-drafts-vnext-page .ai-drafts-right-card li,
+.ai-drafts-vnext-page .ai-drafts-right-card .mini-row,
+.ai-drafts-vnext-page .ai-drafts-right-card [class*="rail-item"] {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid #eaecf0 !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+
+.ai-drafts-vnext-page .ai-drafts-right-card-head {
+  background: transparent !important;
+  background-image: none !important;
+  color: #2563eb !important;
+}
+
+@media (max-width: 1180px) {
+  .ai-drafts-vnext-page .ai-drafts-right-rail,
+  .ai-drafts-vnext-page [class*="ai-drafts-right-rail"] {
+    min-width: 0;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .ai-drafts-vnext-page .ai-drafts-right-rail,
+  .ai-drafts-vnext-page [class*="ai-drafts-right-rail"] {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}

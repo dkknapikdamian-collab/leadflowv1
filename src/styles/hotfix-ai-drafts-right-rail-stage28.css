@@ -1,0 +1,102 @@
+/* STAGE28_AI_DRAFTS_RIGHT_RAIL_LIGHT_HOTFIX
+   Fixes dark wrapper bleed in /ai-drafts right column without touching sidebar/navigation.
+*/
+
+.cf-html-view .ai-drafts-right-rail,
+.cf-html-view .ai-drafts-side,
+.cf-html-view .ai-drafts-sidebar,
+.cf-html-view .drafts-right-rail,
+.cf-html-view .drafts-side,
+.cf-html-view [data-ai-drafts-right-rail="true"],
+.cf-html-view [data-ai-drafts-side="true"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 300px;
+  overflow: visible !important;
+}
+
+.cf-html-view .ai-drafts-right-rail::before,
+.cf-html-view .ai-drafts-right-rail::after,
+.cf-html-view .ai-drafts-side::before,
+.cf-html-view .ai-drafts-side::after,
+.cf-html-view .ai-drafts-sidebar::before,
+.cf-html-view .ai-drafts-sidebar::after,
+.cf-html-view .drafts-right-rail::before,
+.cf-html-view .drafts-right-rail::after,
+.cf-html-view .drafts-side::before,
+.cf-html-view .drafts-side::after,
+.cf-html-view [data-ai-drafts-right-rail="true"]::before,
+.cf-html-view [data-ai-drafts-right-rail="true"]::after,
+.cf-html-view [data-ai-drafts-side="true"]::before,
+.cf-html-view [data-ai-drafts-side="true"]::after {
+  content: none !important;
+  display: none !important;
+}
+
+.cf-html-view .ai-drafts-right-card,
+.cf-html-view .ai-drafts-side-card,
+.cf-html-view .drafts-right-card,
+.cf-html-view .drafts-side-card,
+.cf-html-view .ai-drafts-right-rail > *,
+.cf-html-view .ai-drafts-side > *,
+.cf-html-view .ai-drafts-sidebar > *,
+.cf-html-view .drafts-right-rail > *,
+.cf-html-view .drafts-side > *,
+.cf-html-view [data-ai-drafts-right-rail="true"] > *,
+.cf-html-view [data-ai-drafts-side="true"] > * {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 24px !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  color: #111827 !important;
+  overflow: hidden;
+}
+
+.cf-html-view .ai-drafts-right-card::before,
+.cf-html-view .ai-drafts-right-card::after,
+.cf-html-view .ai-drafts-side-card::before,
+.cf-html-view .ai-drafts-side-card::after,
+.cf-html-view .drafts-right-card::before,
+.cf-html-view .drafts-right-card::after,
+.cf-html-view .drafts-side-card::before,
+.cf-html-view .drafts-side-card::after {
+  content: none !important;
+  display: none !important;
+}
+
+.cf-html-view .ai-drafts-right-card *,
+.cf-html-view .ai-drafts-side-card *,
+.cf-html-view .drafts-right-card *,
+.cf-html-view .drafts-side-card * {
+  color: inherit;
+}
+
+.cf-html-view .ai-drafts-right-card p,
+.cf-html-view .ai-drafts-side-card p,
+.cf-html-view .drafts-right-card p,
+.cf-html-view .drafts-side-card p,
+.cf-html-view .ai-drafts-right-card small,
+.cf-html-view .ai-drafts-side-card small,
+.cf-html-view .drafts-right-card small,
+.cf-html-view .drafts-side-card small {
+  color: #667085 !important;
+}
+
+.cf-html-view .ai-drafts-right-card .pill,
+.cf-html-view .ai-drafts-side-card .pill,
+.cf-html-view .drafts-right-card .pill,
+.cf-html-view .drafts-side-card .pill {
+  background: #f8fafc !important;
+  border: 1px solid #eaecf0 !important;
+  color: #111827 !important;
+}

@@ -1,3 +1,4 @@
+/* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: poranny e-mail bez duplikatów, z timezone i szkicami AI. */
 import { buildDailyDigestPayload, buildDigestEmail, shouldSendDigestNow } from '../src/server/_digest.js';
 import { insertWithVariants, selectFirstAvailable, updateWhere } from '../src/server/_supabase.js';
 import { withWorkspaceFilter } from '../src/server/_request-scope.js';
@@ -58,6 +59,14 @@ function getDateKey(date: Date, timeZone: string) {
     month: '2-digit',
     day: '2-digit',
   }).format(date);
+}
+
+function isSameDigestDay(value: unknown, sentForDate: string, timeZone: string) {
+  const raw = asNullableText(value);
+  if (!raw) return false;
+  const parsed = new Date(raw);
+  if (Number.isNaN(parsed.getTime())) return false;
+  return getDateKey(parsed, timeZone) === sentForDate;
 }
 
 function getAppUrl(req: any) {
@@ -221,6 +230,25 @@ async function writeDigestLog(row: Record<string, unknown>) {
   }
 }
 
+async function updateWorkspaceLastDigestSentAt(workspaceId: string, sentAtIso: string) {
+  if (!workspaceId || !sentAtIso) return;
+
+  const path = `workspaces?id=eq.${encodeURIComponent(workspaceId)}`;
+
+  try {
+    await updateWhere(path, { last_digest_sent_at: sentAtIso });
+    return;
+  } catch {
+    // Compatibility fallback for older local schemas or camelCase contract tests.
+  }
+
+  try {
+    await updateWhere(path, { lastDigestSentAt: sentAtIso });
+  } catch {
+    // Digest email was already sent/logged. A missing optional column must not break the morning mail.
+  }
+}
+
 function shouldEnforceWorkspaceDigestHour() {
   return asBool(process.env.DIGEST_ENFORCE_WORKSPACE_HOUR, false);
 }
@@ -309,10 +337,11 @@ export default async function handler(req: any, res: any) {
         },
         workspace: {
           id: workspaceId,
-          dailyDigestEnabled: asBool(workspaceRow.daily_digest_enabled ?? workspaceRow.dailyDigestEnabled, true),
+          dailyDigestEnabled: getDigestEnabledSetting(workspaceRow, true),
           dailyDigestHour: digestHour,
           dailyDigestTimezone: timeZone,
           dailyDigestRecipientEmail: recipientEmail,
+          lastDigestSentAt: asNullableText(workspaceRow.last_digest_sent_at ?? workspaceRow.lastDigestSentAt),
         },
         hints: [
           hasResendApiKey ? null : 'RESEND_API_KEY_MISSING',
@@ -453,7 +482,7 @@ export default async function handler(req: any, res: any) {
     for (const row of workspaces as Record<string, unknown>[]) {
       const workspaceId = asNullableText(row.id ?? row.workspace_id ?? row.workspaceId);
       const recipientEmail = asNullableText(row.daily_digest_recipient_email ?? row.dailyDigestRecipientEmail)?.toLowerCase() || null;
-      const enabled = asBool(row.daily_digest_enabled ?? row.dailyDigestEnabled, true);
+      const enabled = getDigestEnabledSetting(row, true);
       const timeZone = asNullableText(row.daily_digest_timezone ?? row.dailyDigestTimezone) || asNullableText(row.timezone) || DEFAULT_TZ;
       const digestHour = asInt(row.daily_digest_hour ?? row.dailyDigestHour, DEFAULT_DIGEST_HOUR);
       const sentForDate = getDateKey(now, timeZone);
@@ -524,6 +553,8 @@ export default async function handler(req: any, res: any) {
           errors.push({ email: recipientEmail, error: send.error || 'DIGEST_SEND_FAILED' });
           continue;
         }
+
+        await updateWorkspaceLastDigestSentAt(workspaceId, sentAtIso);
 
         stats.sent += 1;
       } catch (error: any) {

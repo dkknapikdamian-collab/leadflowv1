@@ -1,3 +1,4 @@
+/* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: payload dnia, AI drafts, timezone i szablon maila. */
 type LeadLike = Record<string, unknown>;
 type TaskLike = Record<string, unknown>;
 type EventLike = Record<string, unknown>;
