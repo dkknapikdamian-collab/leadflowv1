@@ -175,7 +175,7 @@ function getCalendarEntryStatus(entry: ScheduleEntry) {
 }
 
 function isCompletedCalendarEntry(entry: ScheduleEntry) {
-  // STAGE34_CALENDAR_COMPLETED_VISIBILITY: completed tasks/events stay visible but are clearly crossed out.
+  // STAGE34B_CALENDAR_COMPLETED_VISIBILITY: completed tasks/events/leads stay visible but are clearly crossed out.
   const status = getCalendarEntryStatus(entry);
   const doneStatuses = new Set([
     'done',
@@ -1118,6 +1118,7 @@ export default function Calendar() {
   if (loading) {
     return (
       <Layout>
+      <div data-calendar-stage34b="complete-polish" hidden />
       <div data-calendar-stage34="readability-status-forms" hidden />
         <div className="flex items-center justify-center h-full">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -1411,7 +1412,7 @@ export default function Calendar() {
                           <button
                             key={entry.id}
                             type="button"
-                            className={`calendar-day-pill ${getEntryTone(entry)} ${isCompletedEntry ? 'is-done' : ''}`}
+                            className={`calendar-day-pill ${getEntryTone(entry)} ${isCompletedCalendarEntry(entry) ? 'calendar-entry-completed calendar-month-entry-completed' : ''} ${isCompletedCalendarEntry(entry) ? 'calendar-entry-completed calendar-month-entry-completed' : ''} ${isCompletedEntry ? 'is-done' : ''}`}
                             onClick={(event) => {
                               event.stopPropagation();
                               setSelectedDate(day);

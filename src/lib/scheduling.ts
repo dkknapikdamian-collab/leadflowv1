@@ -277,7 +277,7 @@ export function expandTaskEntries(tasks: any[], rangeStart: Date, rangeEnd: Date
 }
 
 export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
-  // STAGE34_CALENDAR_LEAD_NEXT_ACTIONS: lead follow-up / next-action dates are real calendar entries.
+  // STAGE34B_CALENDAR_LEAD_NEXT_ACTIONS: lead follow-up / next-action dates are real calendar entries.
   const readText = (...values: unknown[]) => {
     for (const value of values) {
       if (typeof value === 'string' && value.trim()) return value.trim();
@@ -288,8 +288,12 @@ export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date
   const readLeadMoment = (lead: any) => readText(
     lead?.nextActionAt,
     lead?.next_action_at,
+    lead?.nextActionDate,
+    lead?.next_action_date,
     lead?.followUpAt,
     lead?.follow_up_at,
+    lead?.followUpDate,
+    lead?.follow_up_date,
     lead?.scheduledAt,
     lead?.scheduled_at,
     lead?.dueAt,
@@ -302,7 +306,7 @@ export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date
     const rawMoment = readLeadMoment(lead);
     if (!rawMoment) return [] as ScheduleEntry[];
 
-    const parsed = parseISO(rawMoment);
+    const parsed = parseISO(rawMoment.includes('T') ? rawMoment : rawMoment + 'T09:00:00');
     if (Number.isNaN(parsed.getTime())) return [] as ScheduleEntry[];
     if (isBefore(parsed, rangeStart) || isAfter(parsed, rangeEnd)) return [] as ScheduleEntry[];
 

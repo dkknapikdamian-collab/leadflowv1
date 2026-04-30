@@ -1,5 +1,5 @@
-import { isValid, parseISO } from 'date-fns';
-import { fetchCasesFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, hasStoredWorkspaceContext, isSupabaseConfigured } from './supabase-fallback';
+﻿import { isValid, parseISO } from 'date-fns';
+import { fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, hasStoredWorkspaceContext, isSupabaseConfigured } from './supabase-fallback';
 
 export type CalendarTaskItem = {
   id: string;
@@ -45,7 +45,7 @@ export type CalendarEventItem = {
 export type CalendarBundle = {
   tasks: CalendarTaskItem[];
   events: CalendarEventItem[];
-  leads: never[];
+  leads: Record<string, unknown>[];
   cases: Record<string, unknown>[];
 };
 
@@ -78,24 +78,74 @@ function asNullableIso(...values: unknown[]) {
 }
 
 function normalizeTaskScheduledAt(row: Record<string, unknown>) {
-  const dueAt = firstText(row.dueAt, row.due_at);
-  if (dueAt && isIsoLike(dueAt)) return dueAt;
+  // STAGE34B_CALENDAR_TASK_DATE_FALLBACKS: calendar must see scheduled/due/start/next-action/follow-up task dates.
+  const directMoment = firstText(
+    row.dueAt,
+    row.due_at,
+    row.scheduledAt,
+    row.scheduled_at,
+    row.startAt,
+    row.start_at,
+    row.startsAt,
+    row.starts_at,
+    row.nextActionAt,
+    row.next_action_at,
+    row.nextActionDate,
+    row.next_action_date,
+    row.followUpAt,
+    row.follow_up_at,
+    row.followUpDate,
+    row.follow_up_date,
+    row.reminderAt,
+    row.reminder_at,
+  );
 
-  const scheduledAt = firstText(row.scheduledAt, row.scheduled_at);
-  if (scheduledAt && isIsoLike(scheduledAt)) return scheduledAt;
+  if (directMoment && isIsoLike(directMoment)) return directMoment;
 
-  const dateField = firstText(row.date, row.due_date, row.scheduled_date);
-  const timeField = firstText(row.time, row.scheduled_time, row.due_time) || '09:00';
+  const dateField = firstText(
+    row.date,
+    row.dueDate,
+    row.due_date,
+    row.scheduledDate,
+    row.scheduled_date,
+    row.next_action_date,
+    row.nextActionDate,
+    row.follow_up_date,
+    row.followUpDate,
+  );
+  const timeField = firstText(
+    row.time,
+    row.scheduled_time,
+    row.due_time,
+    row.next_action_time,
+    row.nextActionTime,
+    row.follow_up_time,
+    row.followUpTime,
+  ) || '09:00';
   if (!dateField) return '';
 
-  const composed = `${dateField}T${timeField}`;
+  const composed = dateField.includes('T') ? dateField : dateField + 'T' + timeField;
   return isIsoLike(composed) ? composed : '';
 }
 
 function normalizeEventStartAt(row: Record<string, unknown>) {
-  const startAt = firstText(row.startAt, row.start_at, row.scheduledAt, row.scheduled_at);
-  if (!startAt || !isIsoLike(startAt)) return '';
-  return startAt;
+  // STAGE34B_CALENDAR_EVENT_DATE_FALLBACKS: event rows may arrive with legacy scheduled/date fields.
+  const startAt = firstText(
+    row.startAt,
+    row.start_at,
+    row.startsAt,
+    row.starts_at,
+    row.scheduledAt,
+    row.scheduled_at,
+    row.eventAt,
+    row.event_at,
+  );
+  if (startAt && isIsoLike(startAt)) return startAt;
+
+  const dateField = firstText(row.date, row.eventDate, row.event_date, row.scheduledDate, row.scheduled_date);
+  const timeField = firstText(row.time, row.eventTime, row.event_time, row.scheduled_time) || '09:00';
+  const composed = dateField ? dateField + 'T' + timeField : ''; 
+  return composed && isIsoLike(composed) ? composed : '';
 }
 
 function normalizeReminderMinutes(scheduledAt: string, reminderAt?: string | null) {
@@ -190,18 +240,21 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
 }
 
 export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle> {
+  // STAGE34B_CALENDAR_BUNDLE_LEADS: Calendar includes tasks, events, cases and lead next-actions.
   if (!isSupabaseConfigured() || !hasStoredWorkspaceContext()) return { tasks: [], events: [], leads: [], cases: [] };
 
-  const [taskItems, eventItems, caseItems] = await Promise.all([
+  const [taskItems, eventItems, caseItems, leadItems] = await Promise.all([
     fetchTasksFromSupabase(),
     fetchEventsFromSupabase(),
     fetchCasesFromSupabase().catch(() => []),
+    fetchLeadsFromSupabase().catch(() => []),
   ]);
 
   return {
     tasks: (taskItems as Record<string, unknown>[]).map(normalizeCalendarTask).filter((item): item is CalendarTaskItem => Boolean(item)),
     events: (eventItems as Record<string, unknown>[]).map(normalizeCalendarEvent).filter((item): item is CalendarEventItem => Boolean(item)),
-    leads: [],
+    leads: leadItems as Record<string, unknown>[],
     cases: caseItems as Record<string, unknown>[],
   };
 }
+

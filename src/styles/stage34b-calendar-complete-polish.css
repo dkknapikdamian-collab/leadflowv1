@@ -1,0 +1,209 @@
+/* STAGE34B_CALENDAR_COMPLETE_POLISH
+   Completes Stage34: full month readability, completed-entry strike-through, bundle lead actions,
+   task date fallbacks and readable calendar/task/event forms.
+*/
+
+.main[data-current-section="kalendarz"],
+.main[data-current-section="kalendarz"] * {
+  box-sizing: border-box;
+}
+
+.main[data-current-section="kalendarz"] {
+  overflow-x: clip;
+}
+
+/* Month view: text must remain readable without destroying the light card look. */
+.main[data-current-section="kalendarz"] [class*="grid-cols-7"] {
+  max-width: 100%;
+}
+
+.main[data-current-section="kalendarz"] [class*="grid-cols-7"] > * {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.main[data-current-section="kalendarz"] [class*="rounded-full"][class*="border"],
+.main[data-current-section="kalendarz"] a[class*="rounded-full"],
+.main[data-current-section="kalendarz"] button[class*="rounded-full"] {
+  max-width: 100%;
+  min-width: 0;
+  height: auto !important;
+  min-height: 28px;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  align-items: flex-start !important;
+  line-height: 1.22 !important;
+}
+
+.main[data-current-section="kalendarz"] [class*="rounded-full"][class*="border"] *,
+.main[data-current-section="kalendarz"] a[class*="rounded-full"] *,
+.main[data-current-section="kalendarz"] button[class*="rounded-full"] * {
+  min-width: 0;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  text-overflow: clip !important;
+}
+
+.main[data-current-section="kalendarz"] [class*="truncate"],
+.main[data-current-section="kalendarz"] .truncate {
+  min-width: 0 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+/* Completed records must stay visible, but look completed in month and week views. */
+.main[data-current-section="kalendarz"] .calendar-entry-completed,
+.main[data-current-section="kalendarz"] .calendar-month-entry-completed,
+.main[data-current-section="kalendarz"] [data-calendar-entry-completed="true"] {
+  opacity: 0.62 !important;
+  filter: grayscale(0.12);
+}
+
+.main[data-current-section="kalendarz"] .calendar-entry-completed,
+.main[data-current-section="kalendarz"] .calendar-entry-completed :not(button):not(svg),
+.main[data-current-section="kalendarz"] .calendar-month-entry-completed,
+.main[data-current-section="kalendarz"] .calendar-month-entry-completed :not(button):not(svg),
+.main[data-current-section="kalendarz"] [data-calendar-entry-completed="true"],
+.main[data-current-section="kalendarz"] [data-calendar-entry-completed="true"] :not(button):not(svg) {
+  text-decoration-line: line-through !important;
+  text-decoration-thickness: 2px !important;
+  text-decoration-color: rgba(71, 85, 105, 0.72) !important;
+}
+
+.main[data-current-section="kalendarz"] .calendar-entry-completed button,
+.main[data-current-section="kalendarz"] .calendar-entry-completed button *,
+.main[data-current-section="kalendarz"] [data-calendar-entry-completed="true"] button,
+.main[data-current-section="kalendarz"] [data-calendar-entry-completed="true"] button * {
+  text-decoration: none !important;
+}
+
+/* Calendar forms and edit dialogs: no navy/white-on-white fields. */
+.main[data-current-section="kalendarz"] input,
+.main[data-current-section="kalendarz"] select,
+.main[data-current-section="kalendarz"] textarea,
+[data-radix-dialog-content] input,
+[data-radix-dialog-content] select,
+[data-radix-dialog-content] textarea,
+[role="dialog"] input,
+[role="dialog"] select,
+[role="dialog"] textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  caret-color: #2563eb !important;
+  opacity: 1 !important;
+}
+
+.main[data-current-section="kalendarz"] option,
+[data-radix-dialog-content] option,
+[role="dialog"] option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.main[data-current-section="kalendarz"] input::placeholder,
+.main[data-current-section="kalendarz"] textarea::placeholder,
+[data-radix-dialog-content] input::placeholder,
+[data-radix-dialog-content] textarea::placeholder,
+[role="dialog"] input::placeholder,
+[role="dialog"] textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+.main[data-current-section="kalendarz"] input:disabled,
+.main[data-current-section="kalendarz"] select:disabled,
+.main[data-current-section="kalendarz"] textarea:disabled,
+[data-radix-dialog-content] input:disabled,
+[data-radix-dialog-content] select:disabled,
+[data-radix-dialog-content] textarea:disabled,
+[role="dialog"] input:disabled,
+[role="dialog"] select:disabled,
+[role="dialog"] textarea:disabled {
+  background-color: #f8fafc !important;
+  color: #475569 !important;
+  border-color: #dbe3ee !important;
+  -webkit-text-fill-color: #475569 !important;
+}
+
+.main[data-current-section="kalendarz"] input[type="date"]::-webkit-calendar-picker-indicator,
+.main[data-current-section="kalendarz"] input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+[role="dialog"] input[type="date"]::-webkit-calendar-picker-indicator,
+[role="dialog"] input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  opacity: 0.85 !important;
+  filter: none !important;
+}
+
+[data-radix-dialog-content],
+[role="dialog"] {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-radix-dialog-content] [class*="bg-slate-950"],
+[data-radix-dialog-content] [class*="bg-slate-900"],
+[data-radix-dialog-content] [class*="bg-gray-950"],
+[data-radix-dialog-content] [class*="bg-gray-900"],
+[role="dialog"] [class*="bg-slate-950"],
+[role="dialog"] [class*="bg-slate-900"],
+[role="dialog"] [class*="bg-gray-950"],
+[role="dialog"] [class*="bg-gray-900"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-radix-dialog-content] [class*="text-white"],
+[data-radix-dialog-content] [class*="text-slate-50"],
+[data-radix-dialog-content] [class*="text-slate-100"],
+[role="dialog"] [class*="text-white"],
+[role="dialog"] [class*="text-slate-50"],
+[role="dialog"] [class*="text-slate-100"] {
+  color: #0f172a !important;
+}
+
+[data-radix-dialog-content] label,
+[role="dialog"] label,
+.main[data-current-section="kalendarz"] label {
+  color: #334155 !important;
+}
+
+@media (max-width: 768px) {
+  .main[data-current-section="kalendarz"] [class*="grid-cols-7"] {
+    gap: 6px !important;
+  }
+
+  .main[data-current-section="kalendarz"] [class*="rounded-full"][class*="border"],
+  .main[data-current-section="kalendarz"] a[class*="rounded-full"],
+  .main[data-current-section="kalendarz"] button[class*="rounded-full"] {
+    min-height: 31px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    font-size: 11px !important;
+  }
+
+  [data-radix-dialog-content],
+  [role="dialog"] {
+    width: min(100vw - 18px, 760px) !important;
+    max-height: calc(100dvh - 20px) !important;
+    overflow-y: auto !important;
+    border-radius: 22px !important;
+  }
+
+  [data-radix-dialog-content] form,
+  [role="dialog"] form {
+    min-width: 0 !important;
+  }
+
+  [data-radix-dialog-content] input,
+  [data-radix-dialog-content] select,
+  [data-radix-dialog-content] textarea,
+  [role="dialog"] input,
+  [role="dialog"] select,
+  [role="dialog"] textarea {
+    min-height: 44px !important;
+    font-size: 15px !important;
+  }
+}
