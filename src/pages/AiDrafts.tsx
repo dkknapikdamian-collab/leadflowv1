@@ -1,3 +1,4 @@
+// AI_DRAFT_CONFIRM_RECORDS_STAGE25_PAGE
 import { useEffect, useMemo, useState } from 'react';
 import {
   Archive,
@@ -47,6 +48,7 @@ import {
   fetchLeadsFromSupabase,
   fetchCasesFromSupabase,
 } from '../lib/supabase-fallback';
+import { buildAiDraftConfirmedParsedDraft, getAiDraftCreatedRecordId } from '../lib/ai-draft-confirm-records';
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 
@@ -521,10 +523,16 @@ export default function AiDrafts() {
       toast.error('Notatka nie może być pusta');
       return;
     }
+    if (form.recordType === 'note' && !form.leadId && !form.caseId && !form.clientId) {
+      toast.error('Wybierz powiązanie dla notatki.');
+      return;
+    }
 
     setApprovalSaving(true);
     try {
       let createdRecord: Record<string, unknown> = {};
+      let linkedRecordId = '';
+      const confirmedAt = new Date().toISOString();
 
       if (form.recordType === 'lead') {
         createdRecord = await createLeadFromAiDraftApprovalInSupabase({
@@ -536,6 +544,22 @@ export default function AiDrafts() {
           dealValue: normalizeAiDraftApprovalAmount(form.dealValue),
           nextActionAt: form.scheduledAt || undefined,
         });
+
+        linkedRecordId = getAiDraftCreatedRecordId(createdRecord);
+
+        if (form.scheduledAt && linkedRecordId) {
+          await insertTaskToSupabase({
+            title: title && title !== name ? title : 'Follow-up: ' + name,
+            type: form.taskType || 'follow_up',
+            date: form.scheduledAt.slice(0, 10),
+            scheduledAt: form.scheduledAt,
+            dueAt: form.scheduledAt,
+            priority: form.priority || 'medium',
+            status: 'todo',
+            leadId: linkedRecordId,
+            clientId: form.clientId || null,
+          }).catch(() => null);
+        }
       } else if (form.recordType === 'task') {
         createdRecord = await insertTaskToSupabase({
           title,
@@ -549,6 +573,7 @@ export default function AiDrafts() {
           caseId: form.caseId || null,
           clientId: form.clientId || null,
         });
+        linkedRecordId = getAiDraftCreatedRecordId(createdRecord);
       } else if (form.recordType === 'event') {
         const startAt = form.scheduledAt;
         const endAt = form.endAt || form.scheduledAt;
@@ -562,6 +587,7 @@ export default function AiDrafts() {
           caseId: form.caseId || null,
           clientId: form.clientId || null,
         });
+        linkedRecordId = getAiDraftCreatedRecordId(createdRecord);
       } else {
         createdRecord = await insertActivityToSupabase({
           leadId: form.leadId || null,
@@ -576,21 +602,49 @@ export default function AiDrafts() {
             draftId: draft.id,
           },
         });
+        linkedRecordId = getAiDraftCreatedRecordId(createdRecord) || form.caseId || form.leadId || form.clientId;
+      }
+
+      if (!linkedRecordId) {
+        throw new Error('LINKED_RECORD_ID_MISSING');
       }
 
       await insertActivityToSupabase({
-        leadId: form.recordType === 'lead' ? String((createdRecord as any)?.id || '') || null : form.leadId || null,
+        leadId: form.recordType === 'lead' ? linkedRecordId : form.leadId || null,
         caseId: form.caseId || null,
         actorType: 'operator',
         eventType: 'ai_draft_converted',
-        payload: buildConvertedActivityPayload(draft, form, createdRecord),
+        payload: {
+          ...buildConvertedActivityPayload(draft, form, createdRecord),
+          confirmedAt,
+          linkedRecordId,
+          linkedRecordType: form.recordType,
+          rawTextRemoved: true,
+        },
       }).catch(() => null);
 
-      await markAiLeadDraftConvertedAsync(draft.id);
+      const parsedDraft = buildAiDraftConfirmedParsedDraft({
+        parsedDraft: getDraftParsedData(draft),
+        linkedRecordId,
+        linkedRecordType: form.recordType,
+        confirmedAt,
+      });
+
+      await updateAiLeadDraftAsync(draft.id, {
+        status: 'converted',
+        convertedAt: confirmedAt,
+        confirmedAt,
+        rawText: '',
+        parsedDraft,
+        parsedData: parsedDraft,
+        linkedRecordId,
+        linkedRecordType: form.recordType,
+      } as any);
+
       closeDraftApproval();
       setActiveDraftId(null);
       await reloadDrafts();
-      toast.success(getAiDraftApprovalTypeLabel(form.recordType) + ' przeniesiony ze szkicu AI');
+      toast.success(getAiDraftApprovalTypeLabel(form.recordType) + ' zapisany ze szkicu AI. Otwórz rekord z listy zatwierdzonych.');
     } catch (error: any) {
       toast.error('Nie udało się zatwierdzić szkicu: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
@@ -599,8 +653,18 @@ export default function AiDrafts() {
   };
 
   const handleArchive = async (draft: AiLeadDraft) => {
+    const cancelledAt = new Date().toISOString();
+    await updateAiLeadDraftAsync(draft.id, {
+      status: 'archived',
+      rawText: '',
+      cancelledAt,
+      parsedDraft: {
+        ...(getDraftParsedData(draft) || {}),
+        cancelledAt,
+        rawTextRemoved: true,
+      },
+    } as any);
     await archiveAiLeadDraftAsync(draft.id);
-    await updateAiLeadDraftAsync(draft.id, { rawText: '' }).catch(() => null);
     await reloadDrafts();
     toast.success('Szkic anulowany');
   };

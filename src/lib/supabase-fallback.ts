@@ -1,3 +1,4 @@
+// AI_DRAFT_CONFIRM_RECORDS_STAGE25_SUPABASE
 import { getClientAuthSnapshot } from './client-auth';
 import { normalizeCaseContract, normalizeCaseListContract, normalizeEventListContract, normalizeLeadContract, normalizeLeadListContract, normalizeTaskListContract } from './data-contract';
 
@@ -160,6 +161,10 @@ export type AiDraftApiInput = {
   status?: string;
   workspaceId?: string;
   convertedAt?: string | null;
+  confirmedAt?: string | null;
+  cancelledAt?: string | null;
+  linkedRecordId?: string | null;
+  linkedRecordType?: string | null;
 };
 
 export async function fetchAiDraftsFromSupabase(params?: { status?: string; limit?: number }) {

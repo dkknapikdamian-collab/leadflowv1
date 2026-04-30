@@ -1,3 +1,4 @@
+// AI_DRAFT_CONFIRM_RECORDS_STAGE25_LIB
 import { getClientAuthSnapshot } from './client-auth';
 import {
   createAiDraftInSupabase,
@@ -27,6 +28,8 @@ export type AiLeadDraft = {
   confirmedAt?: string | null;
   cancelledAt?: string | null;
   convertedAt?: string | null;
+  linkedRecordId?: string | null;
+  linkedRecordType?: 'lead' | 'task' | 'event' | 'note' | null;
   remoteSynced?: boolean;
 };
 
@@ -91,6 +94,14 @@ function normalizeDraft(input: unknown): AiLeadDraft | null {
     confirmedAt: typeof row.confirmedAt === 'string' ? row.confirmedAt : typeof row.confirmed_at === 'string' ? row.confirmed_at : null,
     cancelledAt: typeof row.cancelledAt === 'string' ? row.cancelledAt : typeof row.cancelled_at === 'string' ? row.cancelled_at : null,
     convertedAt: typeof row.convertedAt === 'string' ? row.convertedAt : typeof row.converted_at === 'string' ? row.converted_at : null,
+    linkedRecordId: typeof row.linkedRecordId === 'string' ? row.linkedRecordId : typeof row.linked_record_id === 'string' ? row.linked_record_id : typeof (parsed as any)?.linkedRecordId === 'string' ? (parsed as any).linkedRecordId : null,
+    linkedRecordType: row.linkedRecordType === 'lead' || row.linkedRecordType === 'task' || row.linkedRecordType === 'event' || row.linkedRecordType === 'note'
+      ? row.linkedRecordType
+      : row.linked_record_type === 'lead' || row.linked_record_type === 'task' || row.linked_record_type === 'event' || row.linked_record_type === 'note'
+        ? row.linked_record_type as any
+        : (parsed as any)?.linkedRecordType === 'lead' || (parsed as any)?.linkedRecordType === 'task' || (parsed as any)?.linkedRecordType === 'event' || (parsed as any)?.linkedRecordType === 'note'
+          ? (parsed as any).linkedRecordType
+          : null,
     remoteSynced: Boolean(row.remoteSynced || row.workspaceId || row.workspace_id),
   };
 }
@@ -270,7 +281,7 @@ export async function saveAiLeadDraftAsync(input: {
   }
 }
 
-export function updateAiLeadDraft(id: string, patch: Partial<Pick<AiLeadDraft, 'rawText' | 'parsedDraft' | 'status' | 'convertedAt'>>) {
+export function updateAiLeadDraft(id: string, patch: Partial<AiLeadDraft>) {
   const drafts = getAiLeadDrafts();
   const now = new Date().toISOString();
   const nextDrafts = drafts.map((draft) => draft.id === id
@@ -285,7 +296,7 @@ export function updateAiLeadDraft(id: string, patch: Partial<Pick<AiLeadDraft, '
   return nextDrafts.find((draft) => draft.id === id) || null;
 }
 
-export async function updateAiLeadDraftAsync(id: string, patch: Partial<Pick<AiLeadDraft, 'rawText' | 'parsedDraft' | 'status' | 'convertedAt'>>) {
+export async function updateAiLeadDraftAsync(id: string, patch: Partial<AiLeadDraft>) {
   const local = updateAiLeadDraft(id, patch);
   try {
     const remote = await updateAiDraftInSupabase({
@@ -294,7 +305,11 @@ export async function updateAiLeadDraftAsync(id: string, patch: Partial<Pick<AiL
       parsedDraft: patch.parsedDraft,
       status: patch.status,
       convertedAt: patch.convertedAt,
-    });
+      confirmedAt: patch.confirmedAt,
+      cancelledAt: patch.cancelledAt,
+      linkedRecordId: patch.linkedRecordId,
+      linkedRecordType: patch.linkedRecordType,
+    } as any);
     return normalizeDraft(remote) || local;
   } catch {
     return local;
@@ -308,11 +323,30 @@ export function markAiLeadDraftConverted(id: string) {
   });
 }
 
-export async function markAiLeadDraftConvertedAsync(id: string) {
+export async function markAiLeadDraftConvertedAsync(id: string, metadata?: { linkedRecordId?: string | null; linkedRecordType?: AiLeadDraft['linkedRecordType']; parsedDraft?: Record<string, unknown> | null }) {
   const convertedAt = new Date().toISOString();
-  const local = updateAiLeadDraft(id, { status: 'converted', convertedAt, rawText: '' });
+  const local = updateAiLeadDraft(id, {
+    status: 'converted',
+    convertedAt,
+    confirmedAt: convertedAt,
+    rawText: '',
+    parsedDraft: metadata?.parsedDraft || undefined,
+    parsedData: metadata?.parsedDraft || undefined,
+    linkedRecordId: metadata?.linkedRecordId || null,
+    linkedRecordType: metadata?.linkedRecordType || null,
+  });
   try {
-    const remote = await updateAiDraftInSupabase({ id, status: 'converted', convertedAt, action: 'convert' } as any);
+    const remote = await updateAiDraftInSupabase({
+      id,
+      status: 'converted',
+      convertedAt,
+      confirmedAt: convertedAt,
+      rawText: '',
+      parsedDraft: metadata?.parsedDraft || undefined,
+      linkedRecordId: metadata?.linkedRecordId || null,
+      linkedRecordType: metadata?.linkedRecordType || null,
+      action: 'convert',
+    } as any);
     return normalizeDraft(remote) || local;
   } catch {
     return local;
@@ -324,9 +358,10 @@ export function archiveAiLeadDraft(id: string) {
 }
 
 export async function archiveAiLeadDraftAsync(id: string) {
-  const local = archiveAiLeadDraft(id);
+  const cancelledAt = new Date().toISOString();
+  const local = updateAiLeadDraft(id, { status: 'archived', rawText: '', cancelledAt });
   try {
-    const remote = await updateAiDraftInSupabase({ id, status: 'archived', action: 'archive' } as any);
+    const remote = await updateAiDraftInSupabase({ id, status: 'archived', rawText: '', cancelledAt, action: 'archive' } as any);
     return normalizeDraft(remote) || local;
   } catch {
     return local;
