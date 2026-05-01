@@ -35,9 +35,38 @@ function headerValue(req: any, name: string) {
 }
 
 export function getBearerToken(req: any) {
-  const authorization = headerValue(req, 'authorization');
-  const match = authorization.match(/^Bearer\s+(.+)$/i);
-  return match?.[1]?.trim() || '';
+  const directAuthorization =
+    headerValue(req, 'authorization')
+    || headerValue(req, 'x-authorization')
+    || headerValue(req, 'x-forwarded-authorization');
+
+  const directMatch = directAuthorization.match(/^Bearer\s+(.+)$/i);
+  if (directMatch?.[1]?.trim()) {
+    return directMatch[1].trim();
+  }
+
+  // Vercel may serialize sensitive headers into x-vercel-sc-headers on rewritten routes.
+  const vercelSerializedHeaders = headerValue(req, 'x-vercel-sc-headers');
+  if (vercelSerializedHeaders) {
+    try {
+      const parsed = JSON.parse(vercelSerializedHeaders);
+      if (parsed && typeof parsed === 'object') {
+        const embeddedAuthorization = asText(
+          (parsed as Record<string, unknown>).Authorization
+          ?? (parsed as Record<string, unknown>).authorization
+          ?? '',
+        );
+        const embeddedMatch = embeddedAuthorization.match(/^Bearer\s+(.+)$/i);
+        if (embeddedMatch?.[1]?.trim()) {
+          return embeddedMatch[1].trim();
+        }
+      }
+    } catch {
+      // ignore malformed header and return empty token
+    }
+  }
+
+  return '';
 }
 
 function getSupabaseAuthConfig() {
