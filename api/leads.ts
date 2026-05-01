@@ -3,6 +3,7 @@ import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { normalizeLeadContract } from '../src/lib/data-contract.js';
 
 const SOURCE_ALIASES: Record<string, string> = {
   instagram: 'instagram',
@@ -129,45 +130,7 @@ function normalizeNextActionTitle(value: unknown) {
 }
 
 function normalizeLead(row: Record<string, unknown>) {
-  const normalizedStatus = normalizeStatus(row.status);
-  const linkedCaseId = asText(row.linked_case_id || row.linkedCaseId) || null;
-  const movedToServiceAt = row.moved_to_service_at || row.movedToServiceAt || row.case_started_at || row.caseStartedAt || null;
-  const leadVisibility = asText(row.lead_visibility || row.leadVisibility) || (normalizedStatus === 'moved_to_service' || linkedCaseId ? 'archived' : 'active');
-  const salesOutcome = asText(row.sales_outcome || row.salesOutcome) || (normalizedStatus === 'moved_to_service' ? 'moved_to_service' : normalizedStatus === 'won' ? 'won' : normalizedStatus === 'lost' ? 'lost' : 'open');
-  const movedToService = normalizedStatus === 'moved_to_service' || leadVisibility === 'archived' || Boolean(linkedCaseId);
-
-  return {
-    id: String(row.id || crypto.randomUUID()),
-    workspaceId: asText(row.workspace_id || row.workspaceId),
-    clientId: asText(row.client_id || row.clientId) || undefined,
-    serviceProfileId: asText(row.service_profile_id || row.serviceProfileId) || undefined,
-    name: asText(row.name || row.title || row.person_name),
-    company: asText(row.company || row.company_name),
-    email: asText(row.email),
-    phone: asText(row.phone),
-    source: normalizeSource(row.source || row.source_label || row.source_type || 'other'),
-    status: normalizedStatus,
-    nextActionAt: asText(row.next_action_at || row.next_step_due_at || row.nextActionAt),
-    nextActionItemId: asText(row.next_action_item_id || row.nextActionItemId),
-    dealValue: Number(row.deal_value || row.value || row.dealValue || 0),
-    partialPayments: normalizePartialPayments(row.partial_payments || row.partialPayments),
-    billingStatus: normalizeEnum(row.billing_status || row.billingStatus, BILLING_STATUSES, 'not_started'),
-    billingModelSnapshot: normalizeEnum(row.billing_model_snapshot || row.billingModelSnapshot, BILLING_MODELS, 'manual'),
-    startRuleSnapshot: normalizeEnum(row.start_rule_snapshot || row.startRuleSnapshot, START_RULES, 'on_acceptance'),
-    winRuleSnapshot: normalizeEnum(row.win_rule_snapshot || row.winRuleSnapshot, WIN_RULES, 'manual'),
-    isAtRisk: Boolean(row.is_at_risk ?? row.isAtRisk ?? (asText(row.priority).toLowerCase() === 'high')),
-    acceptedAt: row.accepted_at || row.acceptedAt || null,
-    caseEligibleAt: row.case_eligible_at || row.caseEligibleAt || null,
-    caseStartedAt: row.case_started_at || row.caseStartedAt || null,
-    linkedCaseId,
-    movedToService,
-    movedToServiceAt,
-    leadVisibility,
-    salesOutcome,
-    closedAt: row.closed_at || row.closedAt || null,
-    updatedAt: row.updated_at || row.updatedAt || null,
-    createdAt: row.created_at || row.createdAt || null,
-  };
+  return normalizeLeadContract(row);
 }
 
 function extractMissingColumn(error: unknown) {
@@ -655,6 +618,5 @@ export default async function handler(req: any, res: any) {
     res.status(statusCode).json({ error: message });
   }
 }
-
 
 

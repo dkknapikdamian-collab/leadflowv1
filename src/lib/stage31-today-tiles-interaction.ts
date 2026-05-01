@@ -1,4 +1,4 @@
-// STAGE31_TODAY_TILES_VISUAL_FIX_V5
+// STAGE31_TODAY_TILES_VISUAL_FIX_V6
 // Zakładka Dziś:
 // - łapie prawdziwy wrapper górnego kafelka, nie tylko wewnętrzny element,
 // - wymusza widoczne cyfry mimo text-white/opacity,
@@ -218,6 +218,15 @@ function isElement(value: unknown): value is HTMLElement {
   return value instanceof HTMLElement;
 }
 
+function readTargetFromElement(element: HTMLElement) {
+  return (element.dataset.todayStage31Shortcut as TodayShortcutTarget | undefined)
+    || (element.dataset.todayPipelineShortcut as TodayShortcutTarget | undefined)
+    || (element.dataset.todayTopShortcut as TodayShortcutTarget | undefined)
+    || (element.dataset.todaySummaryTile as TodayShortcutTarget | undefined)
+    || (element.dataset.todayStatTile as TodayShortcutTarget | undefined)
+    || inferTargetFromText(element.textContent);
+}
+
 function isLikelyTopShortcutRoot(element: HTMLElement) {
   if (element.closest('[data-today-tile-card="true"]')) return false;
   if (element.closest('[role="dialog"]')) return false;
@@ -227,7 +236,7 @@ function isLikelyTopShortcutRoot(element: HTMLElement) {
 
   const rect = element.getBoundingClientRect();
   if (rect.width < 90 || rect.height < 56) return false;
-  if (rect.width > 280 || rect.height > 180) return false;
+  if (rect.width > 320 || rect.height > 220) return false;
 
   return true;
 }
@@ -245,7 +254,7 @@ function findVisualTileRoot(element: HTMLElement) {
     if (!parent) break;
 
     const parentRect = parent.getBoundingClientRect();
-    if (parentRect.width > 360 || parentRect.height > 220) {
+    if (parentRect.width > 420 || parentRect.height > 260) {
       break;
     }
 
@@ -253,15 +262,6 @@ function findVisualTileRoot(element: HTMLElement) {
   }
 
   return best || element;
-}
-
-function readTargetFromElement(element: HTMLElement) {
-  return (element.dataset.todayStage31Shortcut as TodayShortcutTarget | undefined)
-    || (element.dataset.todayPipelineShortcut as TodayShortcutTarget | undefined)
-    || (element.dataset.todayTopShortcut as TodayShortcutTarget | undefined)
-    || (element.dataset.todaySummaryTile as TodayShortcutTarget | undefined)
-    || (element.dataset.todayStatTile as TodayShortcutTarget | undefined)
-    || inferTargetFromText(element.textContent);
 }
 
 function getClickableCandidate(target: EventTarget | null) {
@@ -430,12 +430,8 @@ function collapseOtherSections(targetHeader: HTMLElement) {
 
 function expandSection(targetHeader: HTMLElement) {
   if (targetHeader.getAttribute('aria-expanded') === 'false') {
-    headerClickWithoutBubbling(targetHeader);
+    targetHeader.click();
   }
-}
-
-function headerClickWithoutBubbling(header: HTMLElement) {
-  header.click();
 }
 
 function moveSectionToTop(targetHeader: HTMLElement) {
@@ -464,6 +460,7 @@ function openTargetSection(target: TodayShortcutTarget) {
     if (urgentHeader) {
       collapseOtherSections(urgentHeader);
     }
+    setActiveTopTile(target);
     return;
   }
 

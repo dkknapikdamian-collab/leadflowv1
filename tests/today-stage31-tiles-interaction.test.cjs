@@ -16,9 +16,10 @@ test('Today imports and installs stage31 tiles interaction helper', () => {
   assert.match(source, /return\s+installTodayStage31TilesInteraction\(\)/);
 });
 
-test('stage31 v5 helper forces number visibility and full tile root styling', () => {
+test('stage31 v6 helper forces number visibility and full tile root styling', () => {
   const source = read('src/lib/stage31-today-tiles-interaction.ts');
 
+  assert.match(source, /STAGE31_TODAY_TILES_VISUAL_FIX_V6/);
   assert.match(source, /TOP_TILE_NUMBER_CLASS_NAME/);
   assert.match(source, /findVisualTileRoot/);
   assert.match(source, /opacity:\s*1\s*!important/);
@@ -38,8 +39,8 @@ test('stage31 helper maps Pilne teraz to overdue tasks section first', () => {
 test('stage31 helper CSS interpolation is intact', () => {
   const source = read('src/lib/stage31-today-tiles-interaction.ts');
 
-  assert.match(source, /\.\$\{TOP_TILE_CLASS_NAME\}/);
-  assert.match(source, /\.\$\{TOP_TILE_ACTIVE_CLASS_NAME\}/);
-  assert.doesNotMatch(source, /style\.textContent\s*=\s*\.\\\/);
-  assert.doesNotMatch(source, /\.\\\s*\{/);
+  assert.ok(source.includes('.${TOP_TILE_CLASS_NAME} {'));
+  assert.ok(source.includes('.${TOP_TILE_ACTIVE_CLASS_NAME} {'));
+  assert.ok(!source.includes('style.textContent =\n    .\\'));
+  assert.ok(!source.includes('.\\ {'));
 });

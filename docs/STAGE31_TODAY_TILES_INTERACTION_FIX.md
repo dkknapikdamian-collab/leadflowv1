@@ -1,4 +1,4 @@
-# Stage 31 v5 — Dziś: widoczne cyfry w kafelkach
+# Stage 31 v6 — Dziś: widoczne cyfry w kafelkach
 
 ## Cel
 
@@ -12,10 +12,8 @@ Poprawka po screenie, gdzie górne kafelki w `Dziś` nadal miały prawie niewido
   - `opacity: 1 !important`,
   - ciemny kolor,
   - `-webkit-text-fill-color`.
-- Zachowano poprzednie działanie:
-  - klik kafelka rozwija właściwą sekcję,
-  - sekcja idzie na górę,
-  - pozostałe sekcje zwijają się.
+- Test został poprawiony, bez wadliwego regexa z v5.
+- Skrypt lokalny sprawdza `$LASTEXITCODE` po teście i buildzie.
 
 ## Bez pusha
 

@@ -116,7 +116,7 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
     recurrenceEndAt,
     recurrenceCount,
     leadId: task.leadId,
-    leadName: asNullableText(row.leadName) || asNullableText(row.lead_name),
+    leadName: task.leadName,
     caseId: task.caseId,
     clientId: task.clientId,
   };
@@ -137,7 +137,7 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
     endAt: event.endAt || undefined,
     status: event.status || 'scheduled',
     leadId: event.leadId,
-    leadName: asNullableText(row.leadName) || asNullableText(row.lead_name),
+    leadName: event.leadName,
     caseId: event.caseId,
     clientId: event.clientId,
     reminderAt: event.reminderAt,

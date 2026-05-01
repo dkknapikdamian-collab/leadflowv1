@@ -1,6 +1,6 @@
 export type DataRecord = Record<string, unknown>;
 
-export type NormalizedLeadRecord = DataRecord & {
+export type LeadDto = DataRecord & {
   id: string;
   workspaceId: string;
   clientId?: string;
@@ -23,7 +23,7 @@ export type NormalizedLeadRecord = DataRecord & {
   salesOutcome: string;
 };
 
-export type NormalizedClientRecord = DataRecord & {
+export type ClientDto = DataRecord & {
   id: string;
   workspaceId: string;
   name: string;
@@ -39,7 +39,7 @@ export type NormalizedClientRecord = DataRecord & {
   archivedAt: string | null;
 };
 
-export type NormalizedCaseRecord = DataRecord & {
+export type CaseDto = DataRecord & {
   id: string;
   workspaceId: string;
   clientId?: string;
@@ -54,7 +54,7 @@ export type NormalizedCaseRecord = DataRecord & {
   updatedAt: string | null;
 };
 
-export type NormalizedTaskRecord = DataRecord & {
+export type TaskDto = DataRecord & {
   id: string;
   workspaceId: string;
   title: string;
@@ -66,6 +66,7 @@ export type NormalizedTaskRecord = DataRecord & {
   leadId?: string;
   caseId?: string;
   clientId?: string;
+  leadName?: string;
   reminderAt: string | null;
   recurrenceRule: string;
   createdAt: string | null;
@@ -74,7 +75,7 @@ export type NormalizedTaskRecord = DataRecord & {
   dueAt: string | null;
 };
 
-export type NormalizedEventRecord = DataRecord & {
+export type EventDto = DataRecord & {
   id: string;
   workspaceId: string;
   title: string;
@@ -85,6 +86,7 @@ export type NormalizedEventRecord = DataRecord & {
   leadId?: string;
   caseId?: string;
   clientId?: string;
+  leadName?: string;
   reminderAt: string | null;
   recurrenceRule: string;
   createdAt: string | null;
@@ -93,7 +95,7 @@ export type NormalizedEventRecord = DataRecord & {
   scheduledAt: string | null;
 };
 
-export type NormalizedActivityRecord = DataRecord & {
+export type ActivityDto = DataRecord & {
   id: string;
   workspaceId: string;
   caseId?: string;
@@ -125,7 +127,7 @@ export type NormalizedPaymentRecord = DataRecord & {
   updatedAt: string | null;
 };
 
-export type NormalizedAiDraftRecord = DataRecord & {
+export type AiDraftDto = DataRecord & {
   id: string;
   workspaceId: string;
   type: string;
@@ -144,20 +146,23 @@ export type NormalizedAiDraftRecord = DataRecord & {
   cancelledAt: string | null;
 };
 
-export type NormalizedResponseTemplateRecord = DataRecord & {
+export type ResponseTemplateDto = DataRecord & {
   id: string;
   workspaceId: string;
   name: string;
   title: string;
   body: string;
   category: string;
+  tags: string[];
+  variables: string[];
+  archivedAt: string | null;
   channel: string;
   isArchived: boolean;
   createdAt: string | null;
   updatedAt: string | null;
 };
 
-export type NormalizedCaseItemRecord = DataRecord & {
+export type CaseItemDto = DataRecord & {
   id: string;
   workspaceId: string;
   caseId: string;
@@ -175,6 +180,16 @@ export type NormalizedCaseItemRecord = DataRecord & {
   createdAt: string | null;
   updatedAt: string | null;
 };
+
+export type NormalizedLeadRecord = LeadDto;
+export type NormalizedClientRecord = ClientDto;
+export type NormalizedCaseRecord = CaseDto;
+export type NormalizedTaskRecord = TaskDto;
+export type NormalizedEventRecord = EventDto;
+export type NormalizedActivityRecord = ActivityDto;
+export type NormalizedAiDraftRecord = AiDraftDto;
+export type NormalizedResponseTemplateRecord = ResponseTemplateDto;
+export type NormalizedCaseItemRecord = CaseItemDto;
 
 function pickText(row: DataRecord, keys: string[], fallback = '') {
   for (const key of keys) {
@@ -290,7 +305,7 @@ function clampPercent(value: number) {
   return Math.max(0, Math.min(100, Math.round(Number.isFinite(value) ? value : 0)));
 }
 
-export function normalizeLeadContract(row: DataRecord): NormalizedLeadRecord {
+export function normalizeLeadContract(row: DataRecord): LeadDto {
   const status = normalizeStatus(row.status, 'new');
   const linkedCaseId = pickOptionalText(row, ['linkedCaseId', 'linked_case_id', 'caseId', 'case_id']);
   const movedToServiceAt =
@@ -326,7 +341,7 @@ export function normalizeLeadContract(row: DataRecord): NormalizedLeadRecord {
   };
 }
 
-export function normalizeClientContract(row: DataRecord): NormalizedClientRecord {
+export function normalizeClientContract(row: DataRecord): ClientDto {
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),
@@ -345,7 +360,7 @@ export function normalizeClientContract(row: DataRecord): NormalizedClientRecord
   };
 }
 
-export function normalizeCaseContract(row: DataRecord): NormalizedCaseRecord {
+export function normalizeCaseContract(row: DataRecord): CaseDto {
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),
@@ -363,7 +378,7 @@ export function normalizeCaseContract(row: DataRecord): NormalizedCaseRecord {
   };
 }
 
-export function normalizeTaskContract(row: DataRecord): NormalizedTaskRecord {
+export function normalizeTaskContract(row: DataRecord): TaskDto {
   const scheduledAt =
     toIsoDateTime(row.scheduledAt) ||
     toIsoDateTime(row.scheduled_at) ||
@@ -388,6 +403,7 @@ export function normalizeTaskContract(row: DataRecord): NormalizedTaskRecord {
     leadId: pickOptionalText(row, ['leadId', 'lead_id']),
     caseId: pickOptionalText(row, ['caseId', 'case_id']),
     clientId: pickOptionalText(row, ['clientId', 'client_id']),
+    leadName: pickOptionalText(row, ['leadName', 'lead_name']),
     reminderAt: toIsoDateTime(row.reminderAt) || toIsoDateTime(row.reminder_at) || (typeof row.reminder === 'string' ? toIsoDateTime(row.reminder) : null),
     recurrenceRule: normalizeRecurrence(row.recurrenceRule || row.recurrence_rule || row.recurrence),
     createdAt,
@@ -396,7 +412,7 @@ export function normalizeTaskContract(row: DataRecord): NormalizedTaskRecord {
   };
 }
 
-export function normalizeEventContract(row: DataRecord): NormalizedEventRecord {
+export function normalizeEventContract(row: DataRecord): EventDto {
   const startAt =
     toIsoDateTime(row.startAt) ||
     toIsoDateTime(row.start_at) ||
@@ -417,6 +433,7 @@ export function normalizeEventContract(row: DataRecord): NormalizedEventRecord {
     leadId: pickOptionalText(row, ['leadId', 'lead_id']),
     caseId: pickOptionalText(row, ['caseId', 'case_id']),
     clientId: pickOptionalText(row, ['clientId', 'client_id']),
+    leadName: pickOptionalText(row, ['leadName', 'lead_name']),
     reminderAt: toIsoDateTime(row.reminderAt) || toIsoDateTime(row.reminder_at) || (typeof row.reminder === 'string' ? toIsoDateTime(row.reminder) : null),
     recurrenceRule: normalizeRecurrence(row.recurrenceRule || row.recurrence_rule || row.recurrence),
     createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
@@ -425,7 +442,7 @@ export function normalizeEventContract(row: DataRecord): NormalizedEventRecord {
   };
 }
 
-export function normalizeActivityContract(row: DataRecord): NormalizedActivityRecord {
+export function normalizeActivityContract(row: DataRecord): ActivityDto {
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),
@@ -463,7 +480,7 @@ export function normalizePaymentContract(row: DataRecord): NormalizedPaymentReco
   };
 }
 
-export function normalizeAiDraftContract(row: DataRecord): NormalizedAiDraftRecord {
+export function normalizeAiDraftContract(row: DataRecord): AiDraftDto {
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),
@@ -485,7 +502,7 @@ export function normalizeAiDraftContract(row: DataRecord): NormalizedAiDraftReco
   };
 }
 
-export function normalizeResponseTemplateContract(row: DataRecord): NormalizedResponseTemplateRecord {
+export function normalizeResponseTemplateContract(row: DataRecord): ResponseTemplateDto {
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),
@@ -494,6 +511,9 @@ export function normalizeResponseTemplateContract(row: DataRecord): NormalizedRe
     title: pickText(row, ['title', 'name'], 'Szablon'),
     body: pickText(row, ['body', 'content', 'text'], ''),
     category: pickText(row, ['category', 'type'], 'general'),
+    tags: pickStringArray(row, ['tags']),
+    variables: pickStringArray(row, ['variables']),
+    archivedAt: toIsoDateTime(row.archivedAt) || toIsoDateTime(row.archived_at),
     channel: pickText(row, ['channel'], 'email'),
     isArchived: pickBoolean(row, ['isArchived', 'is_archived', 'archived'], false),
     createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
@@ -501,7 +521,7 @@ export function normalizeResponseTemplateContract(row: DataRecord): NormalizedRe
   };
 }
 
-export function normalizeCaseItemContract(row: DataRecord): NormalizedCaseItemRecord {
+export function normalizeCaseItemContract(row: DataRecord): CaseItemDto {
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),

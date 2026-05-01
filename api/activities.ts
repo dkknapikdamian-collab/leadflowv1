@@ -2,6 +2,7 @@ import { insertWithVariants, selectFirstAvailable } from '../src/server/_supabas
 import { readPortalSession, requireOperatorCaseAccess, requirePortalSessionContext } from '../src/server/_portal-token.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { normalizeActivityContract } from '../src/lib/data-contract.js';
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -35,18 +36,7 @@ function sanitizeActivityPayloadValue(value: unknown): unknown {
 }
 
 function normalizeActivity(row: any) {
-  return {
-    id: String(row.id || ''),
-    caseId: row.case_id ? String(row.case_id) : undefined,
-    leadId: row.lead_id ? String(row.lead_id) : undefined,
-    ownerId: row.owner_id ? String(row.owner_id) : undefined,
-    actorId: row.actor_id ? String(row.actor_id) : undefined,
-    actorType: String(row.actor_type || 'operator'),
-    eventType: String(row.event_type || 'activity'),
-    payload: typeof row.payload === 'object' && row.payload ? row.payload : {},
-    createdAt: row.created_at || null,
-    updatedAt: row.updated_at || null,
-  };
+  return normalizeActivityContract(row);
 }
 
 export default async function handler(req: any, res: any) {
