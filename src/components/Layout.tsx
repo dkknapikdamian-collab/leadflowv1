@@ -32,12 +32,7 @@ import {
   ChevronRight,
   Menu,
   X,
-  Bell,
-  LifeBuoy,
-  ClipboardList,
-  Bot,
   FolderKanban,
-  FileText,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -135,50 +130,26 @@ function UserCard({ userInitial, name, email }: { userInitial: string; name: str
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const user = auth.currentUser;
-  const { workspace, hasAccess, isAdmin } = useWorkspace();
+  const { workspace, hasAccess } = useWorkspace();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navGroups = useMemo<NavGroup[]>(() => {
-    const systemItems: NavItem[] = [
-      { icon: ClipboardList, label: 'Szkice AI', path: '/ai-drafts' },
-      { icon: Bell, label: 'Powiadomienia', path: '/notifications' },
-      { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
-      { icon: LifeBuoy, label: 'Pomoc', path: '/help' },
-      ...(isAdmin ? [{ icon: Bot, label: 'AI admin', path: '/settings/ai', badge: 'AI' }] : []),
-      { icon: Settings, label: 'Ustawienia', path: '/settings' },
-    ];
-
-    return [
-      {
-        caption: 'Start pracy',
-        items: [
-          { icon: LayoutDashboard, label: 'Dziś', path: '/' },
-          { icon: Users, label: 'Leady', path: '/leads' },
-          { icon: Users, label: 'Klienci', path: '/clients' },
-          { icon: Briefcase, label: 'Sprawy', path: '/cases' },
-        ],
-      },
-      {
-        caption: 'Czas i obowiązki',
-        items: [
-          { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
-          { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
-          { icon: History, label: 'Aktywność', path: '/activity' },
-        ],
-      },
-      {
-        caption: 'System',
-        items: systemItems,
-      },
-      {
-        caption: 'Szablony',
-        items: [
-          { icon: FolderKanban, label: 'Szablony spraw', path: '/templates' },
-          { icon: FileText, label: 'Szablony odpowiedzi', path: '/response-templates' },
-        ],
-      },
-    ];
-  }, [isAdmin]);
+  const navGroups = useMemo<NavGroup[]>(() => ([
+    {
+      caption: 'Panel operatora',
+      items: [
+        { icon: LayoutDashboard, label: 'Dziś', path: '/' },
+        { icon: Users, label: 'Leady', path: '/leads' },
+        { icon: Briefcase, label: 'Sprawy', path: '/cases' },
+        { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
+        { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
+        { icon: Users, label: 'Klienci', path: '/clients' },
+        { icon: FolderKanban, label: 'Szablony', path: '/templates' },
+        { icon: History, label: 'Aktywność', path: '/activity' },
+        { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
+        { icon: Settings, label: 'Ustawienia', path: '/settings' },
+      ],
+    },
+  ]), []);
 
   const navItems = useMemo(() => navGroups.flatMap((group) => group.items), [navGroups]);
   const mobileNavItems = useMemo(
