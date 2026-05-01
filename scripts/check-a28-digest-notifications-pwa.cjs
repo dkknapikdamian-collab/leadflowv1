@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 
@@ -7,8 +8,6 @@ const required = [
   'src/server/_mail.ts',
   'src/server/daily-digest-handler.ts',
   'src/server/weekly-report-handler.ts',
-  'api/daily-digest.ts',
-  'api/weekly-report.ts',
   'src/components/NotificationRuntime.tsx',
   'src/pages/NotificationsCenter.tsx',
   'src/pages/Settings.tsx',
@@ -19,6 +18,11 @@ const required = [
 ];
 
 const failures = [];
+
+function exists(rel) {
+  return fs.existsSync(path.join(root, rel));
+}
+
 function read(rel) {
   const full = path.join(root, rel);
   if (!fs.existsSync(full)) {
@@ -27,9 +31,30 @@ function read(rel) {
   }
   return fs.readFileSync(full, 'utf8');
 }
+
+function readOptional(rel) {
+  const full = path.join(root, rel);
+  if (!fs.existsSync(full)) return '';
+  return fs.readFileSync(full, 'utf8');
+}
+
 function mustContain(rel, needle, label = needle) {
   const content = read(rel);
   if (!content.includes(needle)) failures.push(`${rel} missing ${label}`);
+}
+
+function mustContainOptional(content, rel, needle, label = needle) {
+  if (!content.includes(needle)) failures.push(`${rel} missing ${label}`);
+}
+
+function vercelHasRewrite(vercelJson, source, destinationNeedle) {
+  try {
+    const parsed = JSON.parse(vercelJson);
+    const rewrites = Array.isArray(parsed.rewrites) ? parsed.rewrites : [];
+    return rewrites.some((item) => item && item.source === source && String(item.destination || '').includes(destinationNeedle));
+  } catch {
+    return false;
+  }
 }
 
 for (const rel of required) read(rel);
@@ -45,8 +70,26 @@ mustContain('src/server/weekly-report-handler.ts', 'alreadySentWeekly', 'weekly 
 mustContain('src/server/daily-digest-handler.ts', 'digest_logs', 'daily digest logs');
 mustContain('src/server/daily-digest-handler.ts', "report_type: 'daily'", 'daily digest log type');
 mustContain('src/server/daily-digest-handler.ts', 'alreadySentToday', 'daily dedupe');
-mustContain('api/weekly-report.ts', 'weeklyReportHandler', 'weekly report API facade');
-mustContain('api/daily-digest.ts', 'dailyDigestHandler', 'daily digest API facade');
+
+const system = readOptional('api/system.ts');
+const dailyFacade = readOptional('api/daily-digest.ts');
+const weeklyFacade = readOptional('api/weekly-report.ts');
+const vercel = read('vercel.json');
+
+const hasDailyFacade = dailyFacade.includes('dailyDigestHandler');
+const hasDailySystemRoute = system.includes('dailyDigestHandler') && system.includes('daily-digest') && vercelHasRewrite(vercel, '/api/daily-digest', '/api/system?kind=daily-digest');
+
+if (!hasDailyFacade && !hasDailySystemRoute) {
+  failures.push('daily digest API route missing: expected api/daily-digest.ts facade or api/system.ts consolidated route');
+}
+
+const hasWeeklyFacade = weeklyFacade.includes('weeklyReportHandler');
+const hasWeeklySystemRoute = system.includes('weeklyReportHandler') && system.includes('weekly-report') && vercelHasRewrite(vercel, '/api/weekly-report', '/api/system?kind=weekly-report');
+
+if (!hasWeeklyFacade && !hasWeeklySystemRoute) {
+  failures.push('weekly report API route missing: expected api/weekly-report.ts facade or api/system.ts consolidated route');
+}
+
 mustContain('vercel.json', '/api/weekly-report', 'weekly report cron');
 mustContain('public/service-worker.js', 'isApiOrDataRequest', 'API cache guard');
 mustContain('public/service-worker.js', "path.startsWith('/api/')", 'no aggressive API cache');

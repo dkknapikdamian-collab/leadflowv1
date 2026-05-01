@@ -670,19 +670,11 @@ Masz być bezlitosny dla polskich znaków.
 Szukaj:
 
 ```text
-Ä
-Å
-Ĺ
-Ĺ‚
-Ĺ›
-Ĺş
-Å¼
-Ã
-�
-?ródło
-Otw?rz
-Cykliczno?
-BĹ‚Ä…d
+[mojibake: broken UTF-8 / Windows-1250 / Latin-1 artifacts]
+[mojibake: broken Polish letters in UI copy]
+[mojibake: question-mark replacements inside Polish words]
+[mojibake: replacement-character symbols]
+[example: broken error word instead of correct Polish copy]
 ```
 
 Sprawdź:

@@ -101,6 +101,10 @@
     {
       "source": "/((?!api/|assets/|.*\\..*).*)",
       "destination": "/"
+    },
+    {
+      "source": "/api/weekly-report",
+      "destination": "/api/system?kind=weekly-report"
     }
   ]
 }

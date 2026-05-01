@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const fs = require('node:fs');
 
 function read(file) {
@@ -11,6 +12,13 @@ function read(file) {
 function requireIncludes(file, content, marker) {
   if (!content.includes(marker)) {
     console.error(`A27G guard failed: ${file} missing marker: ${marker}`);
+    process.exit(1);
+  }
+}
+
+function requireOneOf(file, content, markers, label) {
+  if (!markers.some((marker) => content.includes(marker))) {
+    console.error(`A27G guard failed: ${file} missing one of ${label}: ${markers.join(' OR ')}`);
     process.exit(1);
   }
 }
@@ -34,13 +42,22 @@ for (const marker of [
   "caption: 'Czas i obowiązki'",
   "label: 'Aktywność'",
   "label: 'Odpowiedzi', path: '/response-templates'",
-  "const userName = user?.displayName || 'Użytkownik';",
   'aria-label="Otwórz menu"',
   'Wyloguj się',
   'Najważniejsze zakładki',
 ]) {
   requireIncludes(layoutFile, layout, marker);
 }
+
+requireOneOf(
+  layoutFile,
+  layout,
+  [
+    "const userName = user?.displayName || 'Użytkownik';",
+    "const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'Użytkownik';",
+  ],
+  'user name marker',
+);
 
 for (const marker of [
   "import { Archive, Copy, MessageSquareText, Plus, Save, Search, ShieldAlert, Sparkles, Tags } from 'lucide-react';",
