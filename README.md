@@ -74,3 +74,16 @@ Warstwy sprzedaży, zadań, wydarzeń, aktywności i spraw są prowadzone po str
 - Nie wolno tworzyć `VITE_GEMINI_API_KEY` ani innych `VITE_*` sekretów AI.
 - Jeśli Gemini jest używane, frontend wywołuje endpoint aplikacji, a endpoint serwerowy dopiero komunikuje się z Gemini.
 - Po buildzie uruchom `npm.cmd run verify:security:gemini-client`, żeby sprawdzić `vite.config.ts`, kod klienta i `dist`.
+
+<!-- closeflow-supabase-first-architecture -->
+## Architektura danych: Supabase-first
+
+Od etapu 00 obowiązuje decyzja: Supabase jest docelowym źródłem prawdy dla danych biznesowych, auth, storage, billing, portalu klienta, AI drafts, szablonów i aktywności.
+
+Firebase / Firestore pozostaje warstwą legacy do migracji. Nie dopisujemy nowych funkcji do Firestore i nie tworzymy dwóch źródeł prawdy.
+
+Szczegóły:
+
+- `docs/SUPABASE_FIRST_ARCHITECTURE.md`
+- `docs/DATA_SOURCE_MAP.md`
+<!-- /closeflow-supabase-first-architecture -->
