@@ -45,7 +45,7 @@ export function StatShortcutCard({
     </Card>
   );
 
-  const className = `block w-full rounded-2xl text-left transition-all outline-none focus-visible:outline-none focus-visible:ring-0 ${active ? 'ring-2 ring-primary/40 shadow-md' : 'hover:shadow-md'}`;
+  const className = `block w-full rounded-2xl text-left transition-all outline-none focus-visible:outline-none focus-visible:ring-0 ${active ? 'shadow-md bg-primary/5' : 'hover:shadow-md'}`;
 
   if (to) {
     return (

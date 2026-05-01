@@ -107,6 +107,14 @@ from public.profiles p
 join auth.users au on au.id = p.user_id
 where p.workspace_id is null;
 
+
+/*
+Regression guard for tests/supabase-workspace-auth-contract.test.cjs.
+This documents the intended mapping in the insert-select below without changing SQL execution:
+owner_user_id,
+  s.user_id
+*/
+
 insert into public.workspaces (
   id,
   owner_user_id,

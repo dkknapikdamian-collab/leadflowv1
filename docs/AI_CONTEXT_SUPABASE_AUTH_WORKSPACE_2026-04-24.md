@@ -269,3 +269,6 @@ Zakres następnego etapu:
 - `src/lib/supabase-fallback.ts`
 
 Cel: usunąć chaos fallbacków i oprzeć workspace context na prawdziwym schemacie.
+
+
+> `public.users is not` the workspace owner source. Właścicielem workspace jest `auth.users.id`, a nie `public.users.id`.

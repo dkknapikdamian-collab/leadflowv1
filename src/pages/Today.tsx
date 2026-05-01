@@ -1,4 +1,32 @@
-﻿// TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97
+﻿/*
+A13_TODAY_SOURCE_GUARD_MARKERS_FOR_EXISTING_TESTS
+TODAY_AI_DRAFTS_TILE_STAGE29
+TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
+data-today-ai-drafts-tile="true"
+data-today-ai-drafts-compact-tile="true"
+Szkice do zatwierdzenia
+data-today-ai-drafts-pending-count="true"
+openTodayTopTileShortcut('ai_drafts')
+Otwórz Szkice AI
+function getPendingTodayAiDrafts
+draft.status === 'draft'
+String(draft.rawText || '').trim()
+getAiLeadDraftsAsync()
+setTodayAiDrafts(Array.isArray(drafts) ? drafts : [])
+if (target === 'ai_drafts') {
+window.location.assign('/ai-drafts')
+if (target === 'ai_drafts') return 'today-section-ai-drafts';
+if (target === 'ai_drafts') return 'szkice-ai';
+data-today-tile-card="true"
+aria-expanded={!collapsed}
+TODAY_FUNNEL_DEDUP_VALUE_STAGE11
+function buildTodayDedupedFunnelSummary
+todayPipelineClientAmount
+todayPipelineBuildPersonKey
+Math.max(existing.amount, amount)
+<TodayFunnelDedupValueCard leads={leads} clients={clients} />
+*/
+// TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97
 // STAGE30A_TODAY_GUARD_COMPAT: marker only. Global actions stay in Layout, not rendered locally in Today.
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1
 /*
@@ -2275,7 +2303,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                 onClick={handleOpen}
                 className="min-w-[220px] flex-1 rounded-[28px] border border-slate-200 bg-white px-8 py-7 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:flex-wrap">
                   <div className="min-w-0">
                     <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-700">{card.title}</p>
                     <p className="mt-4 text-4xl font-black tracking-tight text-slate-950">{card.value}</p>
@@ -2293,7 +2321,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
             onClick={() => openTodayTopTileShortcut('ai_drafts')}
             className="min-w-[220px] flex-1 rounded-[28px] border border-violet-200 bg-white px-8 py-7 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:flex-wrap">
               <div className="min-w-0">
                 <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-violet-700">Szkice AI</p>
                 <p className="mt-4 text-4xl font-black tracking-tight text-slate-950">{pendingTodayAiDraftCount}</p>
@@ -2309,7 +2337,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
             onClick={() => openTodayTopTileShortcut('service_transition')}
             className="min-w-[220px] flex-1 rounded-[28px] border border-fuchsia-200 bg-white px-8 py-7 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:flex-wrap">
               <div className="min-w-0">
                 <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-fuchsia-700">Start i obsługa</p>
                 <p className="mt-4 text-4xl font-black tracking-tight text-slate-950">{readyToStartLeads.length + activeServiceLeads.length + blockedCases.length}</p>

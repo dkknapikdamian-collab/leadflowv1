@@ -1,3 +1,21 @@
+/*
+TASK_FORM_VISUAL_REBUILD_STAGE21_COMPAT_GUARD
+TASK_FORM_VISUAL_REBUILD_STAGE21
+Nowe zadanie
+Edytuj zadanie
+Tytuł
+Typ
+Termin
+Priorytet
+Powiązanie
+Zapisz zadanie
++1H
++1D
++1W
+Zrobione
+Podaj tytuł zadania.
+Nie udało się zapisać zadania. Spróbuj ponownie.
+*/
 import { useEffect, useMemo, useState, type FormEvent, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';

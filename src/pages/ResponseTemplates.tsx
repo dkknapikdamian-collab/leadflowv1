@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import { MessageSquareText, Plus, Save, Search, ShieldAlert, Trash2 } from 'lucide-react';
+import { Copy, MessageSquareText, Plus, Save, Search, ShieldAlert, Sparkles, Tags, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
+import { Badge } from '../components/ui/badge';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
   createResponseTemplateInSupabase,
@@ -32,6 +33,20 @@ function toList(value: string) {
     .split(',')
     .map((entry) => entry.trim())
     .filter(Boolean);
+}
+
+function countTags(rows: ResponseTemplate[]) {
+  const unique = new Set<string>();
+  rows.forEach((row) => (row.tags || []).forEach((tag) => unique.add(tag.toLowerCase())));
+  return unique.size;
+}
+
+async function copyToClipboard(value: string) {
+  if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+  throw new Error('CLIPBOARD_UNAVAILABLE');
 }
 
 export default function ResponseTemplates() {
@@ -68,8 +83,17 @@ export default function ResponseTemplates() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return rows;
-    return rows.filter((row) => `${row.name} ${row.category || ''} ${(row.tags || []).join(' ')} ${row.body}`.toLowerCase().includes(q));
+    return rows.filter((row) => `${row.name} ${row.category || ''} ${(row.tags || []).join(' ')} ${(row.variables || []).join(' ')} ${row.body}`.toLowerCase().includes(q));
   }, [rows, query]);
+
+  const selectedTemplate = filtered[0] || rows[0] || null;
+
+  const stats = useMemo(() => ({
+    total: rows.length,
+    categories: new Set(rows.map((row) => row.category || 'Ogólne')).size,
+    tags: countTags(rows),
+    withVariables: rows.filter((row) => (row.variables || []).length > 0).length,
+  }), [rows]);
 
   const openCreate = () => {
     if (!hasAccess) {
@@ -146,86 +170,194 @@ export default function ResponseTemplates() {
     }
   };
 
+  const handleCopy = async (item: ResponseTemplate) => {
+    try {
+      await copyToClipboard(item.body || '');
+      toast.success('Skopiowano treść szablonu.');
+    } catch {
+      toast.error('Nie udało się skopiować treści w tej przeglądarce.');
+    }
+  };
+
   return (
     <Layout>
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-6 md:px-8">
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] app-muted">Komunikacja</p>
-            <h1 className="text-3xl font-bold app-text">Szablony odpowiedzi</h1>
-            <p className="app-muted">Osobny moduł gotowych odpowiedzi. Niezależny od szablonów spraw/checklist.</p>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="response-templates-v2">
+        <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
+              <MessageSquareText className="h-3.5 w-3.5" /> Szablony odpowiedzi
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold app-text">Biblioteka odpowiedzi</h1>
+              <p className="mt-2 max-w-2xl text-sm md:text-base app-muted">
+                Własne gotowce do follow-upów, przypomnień i wiadomości do klientów. AI może później pracować na tych szablonach, ale źródłem prawdy jest Twoja biblioteka.
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             {!hasAccess ? (
-              <div className="inline-flex items-center gap-2 rounded-xl border border-amber-500/30 px-3 py-2 text-sm text-amber-600">
-                <ShieldAlert className="h-4 w-4" /> Tryb podglądu: zapis zablokowany
+              <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-sm font-medium text-amber-600 dark:text-amber-400">
+                <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis
               </div>
             ) : null}
-            <Button onClick={openCreate}><Plus className="h-4 w-4" /> Nowy szablon</Button>
+            <Button className="rounded-2xl" onClick={openCreate}>
+              <Plus className="h-4 w-4" /> Nowy szablon
+            </Button>
           </div>
         </header>
 
-        <Card className="border-none app-surface-strong">
-          <CardContent className="p-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
-              <Input value={query} onChange={(event) => setQuery(event.target.value)} className="pl-10" placeholder="Szukaj po nazwie, kategorii, tagach, treści..." />
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <Card className="border-none app-surface-strong app-shadow">
+            <CardContent className="flex items-center justify-between p-5">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Szablony</p>
+                <p className="mt-2 text-2xl font-bold app-text">{stats.total}</p>
+              </div>
+              <div className="rounded-2xl p-3 app-primary-chip"><Sparkles className="h-6 w-6" /></div>
+            </CardContent>
+          </Card>
+          <Card className="border-none app-surface-strong app-shadow">
+            <CardContent className="flex items-center justify-between p-5">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Kategorie</p>
+                <p className="mt-2 text-2xl font-bold app-text">{stats.categories}</p>
+              </div>
+              <div className="rounded-2xl bg-indigo-500/12 p-3 text-indigo-600"><MessageSquareText className="h-6 w-6" /></div>
+            </CardContent>
+          </Card>
+          <Card className="border-none app-surface-strong app-shadow">
+            <CardContent className="flex items-center justify-between p-5">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Tagi</p>
+                <p className="mt-2 text-2xl font-bold text-amber-600">{stats.tags}</p>
+              </div>
+              <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-600"><Tags className="h-6 w-6" /></div>
+            </CardContent>
+          </Card>
+          <Card className="border-none app-surface-strong app-shadow">
+            <CardContent className="flex items-center justify-between p-5">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Zmienne</p>
+                <p className="mt-2 text-2xl font-bold text-emerald-600">{stats.withVariables}</p>
+              </div>
+              <div className="rounded-2xl bg-emerald-500/12 p-3 text-emerald-600"><Copy className="h-6 w-6" /></div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <Card className="border-none app-surface-strong app-shadow">
+          <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="relative flex-1">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
+              <Input value={query} onChange={(event) => setQuery(event.target.value)} className="pl-10" placeholder="Szukaj po nazwie, kategorii, tagach, zmiennych albo treści..." />
+            </div>
+            <div className="rounded-2xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] app-muted app-border app-surface">
+              Szablony odpowiedzi są osobne od checklist spraw
             </div>
           </CardContent>
         </Card>
 
         {loading ? (
-          <Card className="border-none app-surface-strong"><CardContent className="p-6">Ładowanie...</CardContent></Card>
+          <Card className="border-none app-surface-strong app-shadow"><CardContent className="p-6 app-muted">Ładowanie szablonów...</CardContent></Card>
         ) : (
-          <div className="grid gap-3">
-            {filtered.map((item) => (
-              <Card key={item.id} className="border-none app-surface-strong">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center justify-between text-lg">
-                    <span className="inline-flex items-center gap-2"><MessageSquareText className="h-4 w-4" /> {item.name}</span>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => openEdit(item)}>Edytuj</Button>
-                      <Button variant="outline" size="sm" onClick={() => void remove(item.id)}><Trash2 className="h-4 w-4" /></Button>
+          <section className="grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)]">
+            <div className="space-y-3">
+              {filtered.map((item) => (
+                <Card key={item.id} className="border-none app-surface-strong app-shadow">
+                  <CardContent className="flex flex-col gap-4 p-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-lg font-bold app-text">{item.name}</h3>
+                          <Badge variant="outline">{item.category || 'Ogólne'}</Badge>
+                        </div>
+                        <p className="line-clamp-2 text-sm app-muted">{item.body || 'Brak treści.'}</p>
+                      </div>
+                      <div className="flex shrink-0 gap-2">
+                        <Button variant="outline" size="sm" className="rounded-2xl" onClick={() => void handleCopy(item)}>
+                          <Copy className="h-4 w-4" /> Kopiuj
+                        </Button>
+                        <Button variant="outline" size="sm" className="rounded-2xl" onClick={() => openEdit(item)}>Edytuj</Button>
+                        <Button variant="outline" size="icon" className="rounded-2xl text-rose-500 hover:bg-rose-500/10 hover:text-rose-500" onClick={() => void remove(item.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <p className="text-sm app-muted">Kategoria: {item.category || '—'}</p>
-                  <p className="text-sm app-muted">Tagi: {(item.tags || []).join(', ') || '—'}</p>
-                  <p className="text-sm app-muted">Zmienne: {(item.variables || []).join(', ') || '—'}</p>
-                  <pre className="whitespace-pre-wrap rounded-xl border p-3 text-sm">{item.body}</pre>
-                </CardContent>
-              </Card>
-            ))}
-            {!filtered.length ? <Card className="border-none app-surface-strong"><CardContent className="p-6">Brak szablonów odpowiedzi.</CardContent></Card> : null}
-          </div>
+                    <div className="flex flex-wrap gap-2">
+                      {(item.tags || []).length ? (item.tags || []).map((tag) => <Badge key={tag} variant="outline">#{tag}</Badge>) : <Badge variant="outline">bez tagów</Badge>}
+                      {(item.variables || []).length ? (item.variables || []).map((variable) => <Badge key={variable} className="bg-emerald-500/12 text-emerald-600 border-emerald-500/20">{`{{${variable}}}`}</Badge>) : null}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              {!filtered.length ? (
+                <Card className="border-dashed app-surface-strong app-shadow">
+                  <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+                    <div className="rounded-full p-4 app-primary-chip"><MessageSquareText className="h-7 w-7" /></div>
+                    <div>
+                      <p className="text-lg font-semibold app-text">Brak szablonów odpowiedzi</p>
+                      <p className="mt-1 max-w-md text-sm app-muted">Dodaj pierwszy gotowiec, żeby szybciej odpowiadać na powtarzalne sytuacje.</p>
+                    </div>
+                    <Button className="rounded-2xl" onClick={openCreate}>
+                      <Plus className="h-4 w-4" /> Dodaj pierwszy szablon
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : null}
+            </div>
+
+            <Card className="border-none app-surface-strong app-shadow xl:sticky xl:top-6 xl:self-start">
+              <CardContent className="space-y-5 p-5">
+                <div className="space-y-2">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Podgląd</p>
+                  <h3 className="text-xl font-bold app-text">{selectedTemplate?.name || 'Wybierz szablon'}</h3>
+                  <p className="text-sm app-muted">{selectedTemplate?.category || 'Ogólne'}</p>
+                </div>
+                {selectedTemplate ? (
+                  <>
+                    <pre className="max-h-[420px] overflow-auto whitespace-pre-wrap rounded-2xl border p-4 text-sm app-border app-surface app-text">{selectedTemplate.body}</pre>
+                    <div className="flex flex-wrap gap-2">
+                      {(selectedTemplate.variables || []).map((variable) => <Badge key={variable} className="bg-emerald-500/12 text-emerald-600 border-emerald-500/20">{`{{${variable}}}`}</Badge>)}
+                      {!(selectedTemplate.variables || []).length ? <span className="text-sm app-muted">Ten szablon nie ma zmiennych.</span> : null}
+                    </div>
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <Button className="rounded-2xl" onClick={() => void handleCopy(selectedTemplate)}><Copy className="h-4 w-4" /> Kopiuj treść</Button>
+                      <Button variant="outline" className="rounded-2xl" onClick={() => openEdit(selectedTemplate)}>Edytuj</Button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="rounded-2xl border border-dashed p-6 text-sm app-border app-muted">Po dodaniu szablonu zobaczysz tutaj szybki podgląd treści.</div>
+                )}
+              </CardContent>
+            </Card>
+          </section>
         )}
 
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
             <DialogHeader>
               <DialogTitle>{editingId ? 'Edytuj szablon odpowiedzi' : 'Nowy szablon odpowiedzi'}</DialogTitle>
             </DialogHeader>
-            <div className="grid gap-3 py-2">
-              <div className="grid gap-1">
+            <div className="grid gap-4 py-2 md:grid-cols-2">
+              <div className="grid gap-2">
                 <Label>Nazwa</Label>
-                <Input value={name} onChange={(event) => setName(event.target.value)} />
+                <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="Np. Przypomnienie po braku odpowiedzi" />
               </div>
-              <div className="grid gap-1">
+              <div className="grid gap-2">
                 <Label>Kategoria</Label>
-                <Input value={category} onChange={(event) => setCategory(event.target.value)} />
+                <Input value={category} onChange={(event) => setCategory(event.target.value)} placeholder="Np. Follow-up" />
               </div>
-              <div className="grid gap-1">
+              <div className="grid gap-2">
                 <Label>Tagi (po przecinku)</Label>
-                <Input value={tags} onChange={(event) => setTags(event.target.value)} />
+                <Input value={tags} onChange={(event) => setTags(event.target.value)} placeholder="np. lead, oferta, przypomnienie" />
               </div>
-              <div className="grid gap-1">
+              <div className="grid gap-2">
                 <Label>Zmienne (po przecinku)</Label>
-                <Input value={variables} onChange={(event) => setVariables(event.target.value)} placeholder="np. firstName, caseTitle" />
+                <Input value={variables} onChange={(event) => setVariables(event.target.value)} placeholder="np. client_name, case_title, my_name" />
               </div>
-              <div className="grid gap-1">
+              <div className="grid gap-2 md:col-span-2">
                 <Label>Treść</Label>
-                <Textarea rows={8} value={body} onChange={(event) => setBody(event.target.value)} />
+                <Textarea rows={10} value={body} onChange={(event) => setBody(event.target.value)} placeholder="Wpisz treść odpowiedzi. Możesz używać zmiennych typu {{client_name}}." />
               </div>
             </div>
             <DialogFooter>

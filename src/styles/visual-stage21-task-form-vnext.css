@@ -277,3 +277,22 @@
   font-size: 13px;
   line-height: 1.5;
 }
+
+
+/* TASK_FORM_VISUAL_REBUILD_STAGE21_CSS_COMPAT */
+.task-form-vnext-content {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+}
+.task-form-vnext-content::before,
+.task-form-vnext-content::after {
+  content: none !important;
+}
+.task-form-section {
+  border-radius: 20px;
+}
+.task-form-footer {
+  display: flex;
+  justify-content: flex-end;
+}
