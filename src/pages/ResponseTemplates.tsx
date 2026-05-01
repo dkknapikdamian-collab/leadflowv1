@@ -1,5 +1,5 @@
-﻿import { useEffect, useMemo, useState } from 'react';
-import { Copy, MessageSquareText, Plus, Save, Search, ShieldAlert, Sparkles, Tags, Archive } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Archive, Copy, MessageSquareText, Plus, Save, Search, ShieldAlert, Sparkles, Tags } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -69,7 +69,7 @@ export default function ResponseTemplates() {
       const data = await fetchResponseTemplatesFromSupabase({ includeArchived: false });
       setRows((Array.isArray(data) ? data : []) as ResponseTemplate[]);
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ pobraÄ‡ szablonĂłw odpowiedzi: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się pobrać szablonów odpowiedzi: ${error?.message || 'REQUEST_FAILED'}`);
       setRows([]);
     } finally {
       setLoading(false);
@@ -90,14 +90,14 @@ export default function ResponseTemplates() {
 
   const stats = useMemo(() => ({
     total: rows.length,
-    categories: new Set(rows.map((row) => row.category || 'OgĂłlne')).size,
+    categories: new Set(rows.map((row) => row.category || 'Ogólne')).size,
     tags: countTags(rows),
     withVariables: rows.filter((row) => (row.variables || []).length > 0).length,
   }), [rows]);
 
   const openCreate = () => {
     if (!hasAccess) {
-      toast.error('Tryb podglÄ…du blokuje zapis.');
+      toast.error('Tryb podglądu blokuje zapis.');
       return;
     }
     setEditingId(null);
@@ -111,7 +111,7 @@ export default function ResponseTemplates() {
 
   const openEdit = (item: ResponseTemplate) => {
     if (!hasAccess) {
-      toast.error('Tryb podglÄ…du blokuje zapis.');
+      toast.error('Tryb podglądu blokuje zapis.');
       return;
     }
     setEditingId(item.id);
@@ -125,11 +125,11 @@ export default function ResponseTemplates() {
 
   const save = async () => {
     if (!hasAccess) {
-      toast.error('Tryb podglÄ…du blokuje zapis.');
+      toast.error('Tryb podglądu blokuje zapis.');
       return;
     }
     if (!name.trim() || !body.trim()) {
-      toast.error('Nazwa i treĹ›Ä‡ sÄ… wymagane.');
+      toast.error('Nazwa i treść są wymagane.');
       return;
     }
     setSaving(true);
@@ -150,7 +150,7 @@ export default function ResponseTemplates() {
       setOpen(false);
       await load();
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zapisaÄ‡: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zapisać: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSaving(false);
     }
@@ -158,7 +158,7 @@ export default function ResponseTemplates() {
 
   const remove = async (id: string) => {
     if (!hasAccess) {
-      toast.error('Tryb podglÄ…du blokuje zapis.');
+      toast.error('Tryb podglądu blokuje zapis.');
       return;
     }
     try {
@@ -166,16 +166,16 @@ export default function ResponseTemplates() {
       toast.success('Zarchiwizowano szablon.');
       await load();
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zarchiwizowaÄ‡: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zarchiwizować: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleCopy = async (item: ResponseTemplate) => {
     try {
       await copyToClipboard(item.body || '');
-      toast.success('Skopiowano treĹ›Ä‡ szablonu.');
+      toast.success('Skopiowano treść szablonu.');
     } catch {
-      toast.error('Nie udaĹ‚o siÄ™ skopiowaÄ‡ treĹ›ci w tej przeglÄ…darce.');
+      toast.error('Nie udało się skopiować treści w tej przeglądarce.');
     }
   };
 
@@ -190,14 +190,14 @@ export default function ResponseTemplates() {
             <div>
               <h1 className="text-3xl font-bold app-text">Biblioteka odpowiedzi</h1>
               <p className="mt-2 max-w-2xl text-sm md:text-base app-muted">
-                WĹ‚asne gotowce do follow-upĂłw, przypomnieĹ„ i wiadomoĹ›ci do klientĂłw. AI moĹĽe pĂłĹşniej pracowaÄ‡ na tych szablonach, ale ĹşrĂłdĹ‚em prawdy jest Twoja biblioteka.
+                Własne gotowce do follow-upów, przypomnień i wiadomości do klientów. AI może później pracować na tych szablonach, ale źródłem prawdy jest Twoja biblioteka.
               </p>
             </div>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             {!hasAccess ? (
               <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-sm font-medium text-amber-600 dark:text-amber-400">
-                <ShieldAlert className="h-4 w-4" /> Tryb podglÄ…du blokuje zapis
+                <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis
               </div>
             ) : null}
             <Button className="rounded-2xl" onClick={openCreate}>
@@ -249,16 +249,16 @@ export default function ResponseTemplates() {
           <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative flex-1">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
-              <Input value={query} onChange={(event) => setQuery(event.target.value)} className="pl-10" placeholder="Szukaj po nazwie, kategorii, tagach, zmiennych albo treĹ›ci..." />
+              <Input value={query} onChange={(event) => setQuery(event.target.value)} className="pl-10" placeholder="Szukaj po nazwie, kategorii, tagach, zmiennych albo treści..." />
             </div>
             <div className="rounded-2xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] app-muted app-border app-surface">
-              Szablony odpowiedzi sÄ… osobne od checklist spraw
+              Szablony odpowiedzi są osobne od checklist spraw
             </div>
           </CardContent>
         </Card>
 
         {loading ? (
-          <Card className="border-none app-surface-strong app-shadow"><CardContent className="p-6 app-muted">Ĺadowanie szablonĂłw...</CardContent></Card>
+          <Card className="border-none app-surface-strong app-shadow"><CardContent className="p-6 app-muted">Ładowanie szablonów...</CardContent></Card>
         ) : (
           <section className="grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)]">
             <div className="space-y-3">
@@ -269,9 +269,9 @@ export default function ResponseTemplates() {
                       <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-lg font-bold app-text">{item.name}</h3>
-                          <Badge variant="outline">{item.category || 'OgĂłlne'}</Badge>
+                          <Badge variant="outline">{item.category || 'Ogólne'}</Badge>
                         </div>
-                        <p className="line-clamp-2 text-sm app-muted">{item.body || 'Brak treĹ›ci.'}</p>
+                        <p className="line-clamp-2 text-sm app-muted">{item.body || 'Brak treści.'}</p>
                       </div>
                       <div className="flex shrink-0 gap-2">
                         <Button variant="outline" size="sm" className="rounded-2xl" onClick={() => void handleCopy(item)}>
@@ -284,7 +284,7 @@ export default function ResponseTemplates() {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {(item.tags || []).length ? (item.tags || []).map((tag) => <Badge key={tag} variant="outline">#{tag}</Badge>) : <Badge variant="outline">bez tagĂłw</Badge>}
+                      {(item.tags || []).length ? (item.tags || []).map((tag) => <Badge key={tag} variant="outline">#{tag}</Badge>) : <Badge variant="outline">bez tagów</Badge>}
                       {(item.variables || []).length ? (item.variables || []).map((variable) => <Badge key={variable} className="bg-emerald-500/12 text-emerald-600 border-emerald-500/20">{`{{${variable}}}`}</Badge>) : null}
                     </div>
                   </CardContent>
@@ -295,8 +295,8 @@ export default function ResponseTemplates() {
                   <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center">
                     <div className="rounded-full p-4 app-primary-chip"><MessageSquareText className="h-7 w-7" /></div>
                     <div>
-                      <p className="text-lg font-semibold app-text">Brak szablonĂłw odpowiedzi</p>
-                      <p className="mt-1 max-w-md text-sm app-muted">Dodaj pierwszy gotowiec, ĹĽeby szybciej odpowiadaÄ‡ na powtarzalne sytuacje.</p>
+                      <p className="text-lg font-semibold app-text">Brak szablonów odpowiedzi</p>
+                      <p className="mt-1 max-w-md text-sm app-muted">Dodaj pierwszy gotowiec, żeby szybciej odpowiadać na powtarzalne sytuacje.</p>
                     </div>
                     <Button className="rounded-2xl" onClick={openCreate}>
                       <Plus className="h-4 w-4" /> Dodaj pierwszy szablon
@@ -309,9 +309,9 @@ export default function ResponseTemplates() {
             <Card className="border-none app-surface-strong app-shadow xl:sticky xl:top-6 xl:self-start">
               <CardContent className="space-y-5 p-5">
                 <div className="space-y-2">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">PodglÄ…d</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Podgląd</p>
                   <h3 className="text-xl font-bold app-text">{selectedTemplate?.name || 'Wybierz szablon'}</h3>
-                  <p className="text-sm app-muted">{selectedTemplate?.category || 'OgĂłlne'}</p>
+                  <p className="text-sm app-muted">{selectedTemplate?.category || 'Ogólne'}</p>
                 </div>
                 {selectedTemplate ? (
                   <>
@@ -321,12 +321,12 @@ export default function ResponseTemplates() {
                       {!(selectedTemplate.variables || []).length ? <span className="text-sm app-muted">Ten szablon nie ma zmiennych.</span> : null}
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row">
-                      <Button className="rounded-2xl" onClick={() => void handleCopy(selectedTemplate)}><Copy className="h-4 w-4" /> Kopiuj treĹ›Ä‡</Button>
+                      <Button className="rounded-2xl" onClick={() => void handleCopy(selectedTemplate)}><Copy className="h-4 w-4" /> Kopiuj treść</Button>
                       <Button variant="outline" className="rounded-2xl" onClick={() => openEdit(selectedTemplate)}>Edytuj</Button>
                     </div>
                   </>
                 ) : (
-                  <div className="rounded-2xl border border-dashed p-6 text-sm app-border app-muted">Po dodaniu szablonu zobaczysz tutaj szybki podglÄ…d treĹ›ci.</div>
+                  <div className="rounded-2xl border border-dashed p-6 text-sm app-border app-muted">Po dodaniu szablonu zobaczysz tutaj szybki podgląd treści.</div>
                 )}
               </CardContent>
             </Card>
@@ -356,8 +356,8 @@ export default function ResponseTemplates() {
                 <Input value={variables} onChange={(event) => setVariables(event.target.value)} placeholder="np. client_name, case_title, my_name" />
               </div>
               <div className="grid gap-2 md:col-span-2">
-                <Label>TreĹ›Ä‡</Label>
-                <Textarea rows={10} value={body} onChange={(event) => setBody(event.target.value)} placeholder="Wpisz treĹ›Ä‡ odpowiedzi. MoĹĽesz uĹĽywaÄ‡ zmiennych typu {{client_name}}." />
+                <Label>Treść</Label>
+                <Textarea rows={10} value={body} onChange={(event) => setBody(event.target.value)} placeholder="Wpisz treść odpowiedzi. Możesz używać zmiennych typu {{client_name}}." />
               </div>
             </div>
             <DialogFooter>
@@ -370,4 +370,3 @@ export default function ResponseTemplates() {
     </Layout>
   );
 }
-
