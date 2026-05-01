@@ -1,6 +1,6 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById, updateWhere } from '../src/server/_supabase.js';
-import { asText, requireAdminAuthContext, requireRequestIdentity, resolveRequestWorkspaceId } from '../src/server/_request-scope.js';
-import { assertWorkspaceAiAllowed } from '../src/server/_access-gate.js';
+import { asText, assertWorkspaceOwnerOrAdmin, requireAdminAuthContext, requireRequestIdentity, resolveRequestWorkspaceId } from '../src/server/_request-scope.js';
+import { assertWorkspaceAiAllowed, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import serviceProfilesHandler from '../src/server/service-profiles.js';
 import aiConfigHandler from '../src/server/ai-config.js';
 import aiFollowupHandler from '../src/server/ai-followup.js';
@@ -201,7 +201,7 @@ async function handleProfileSettings(req: any, res: any) {
       return;
     }
 
-    const workspaceId = (await findWorkspaceId((body as any).workspaceId)) || asNullableString((body as any).workspaceId) || null;
+    const workspaceId = await resolveRequestWorkspaceId(req, body);
     const row = await ensureProfileRow({
       userId: identity.userId,
       email: identity.email,
@@ -281,11 +281,14 @@ async function handleWorkspaceSettings(req: any, res: any) {
     }
 
     const body = parseBody(req.body);
-    const workspaceId = (await findWorkspaceId((body as any).workspaceId)) || asNullableString((body as any).workspaceId);
+    const workspaceId = await resolveRequestWorkspaceId(req, body);
     if (!workspaceId) {
-      res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
+      res.status(401).json({ error: 'WORKSPACE_CONTEXT_REQUIRED' });
       return;
     }
+
+    await assertWorkspaceOwnerOrAdmin(workspaceId, req);
+    await assertWorkspaceWriteAccess(workspaceId, req);
 
     const payload: Record<string, unknown> = {
       updated_at: new Date().toISOString(),

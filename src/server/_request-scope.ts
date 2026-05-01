@@ -93,6 +93,80 @@ export async function requireAdminAuthContext(req: any) {
   }
   return context;
 }
+
+export async function assertWorkspaceOwnerOrAdmin(workspaceId: string, req: any) {
+  const context = await requireAuthContext(req);
+  const normalizedWorkspaceId = asText(workspaceId || context.workspaceId);
+  if (!normalizedWorkspaceId) {
+    throw new RequestAuthError(401, 'WORKSPACE_CONTEXT_REQUIRED');
+  }
+
+  if (context.workspaceId && context.workspaceId !== normalizedWorkspaceId) {
+    throw new RequestAuthError(403, 'WORKSPACE_FORBIDDEN');
+  }
+
+  if (context.isAdmin) {
+    return context;
+  }
+
+  const requesterIds = [
+    asText(context.userId),
+    asText(context.email),
+  ].filter(Boolean);
+
+  if (!requesterIds.length) {
+    throw new RequestAuthError(401, 'AUTH_REQUIRED');
+  }
+
+  const rows = await supabaseRequest(
+    `workspaces?select=id,owner_user_id,owner_id,created_by_user_id&id=eq.${encodeURIComponent(normalizedWorkspaceId)}&limit=1`,
+    {
+      method: 'GET',
+      headers: { Prefer: 'return=representation' },
+    },
+  );
+
+  const workspace = Array.isArray(rows) && rows[0] && typeof rows[0] === 'object'
+    ? rows[0] as Record<string, unknown>
+    : null;
+
+  if (!workspace) {
+    throw new RequestAuthError(404, 'WORKSPACE_NOT_FOUND');
+  }
+
+  const ownerCandidates = [
+    asText(workspace.owner_user_id),
+    asText(workspace.ownerUserId),
+    asText(workspace.owner_id),
+    asText(workspace.ownerId),
+    asText(workspace.created_by_user_id),
+    asText(workspace.createdByUserId),
+  ].filter(Boolean);
+
+  if (ownerCandidates.some((candidate) => requesterIds.includes(candidate))) {
+    return context;
+  }
+
+  const userId = asText(context.userId);
+  if (userId) {
+    try {
+      const memberResult = await selectFirstAvailable([
+        `workspace_members?workspace_id=eq.${encodeURIComponent(normalizedWorkspaceId)}&user_id=eq.${encodeURIComponent(userId)}&select=role&limit=1`,
+      ]);
+      const member = Array.isArray(memberResult.data) && memberResult.data[0]
+        ? memberResult.data[0] as Record<string, unknown>
+        : null;
+      const memberRole = asText(member?.role).toLowerCase();
+      if (memberRole === 'owner' || memberRole === 'admin') {
+        return context;
+      }
+    } catch {
+      // keep forbidden below
+    }
+  }
+
+  throw new RequestAuthError(403, 'WORKSPACE_OWNER_REQUIRED');
+}
 export const requireSupabaseAuthContext = requireAuthContext;
 
 export async function resolveRequestWorkspaceId(req: any, _bodyInput?: any) {

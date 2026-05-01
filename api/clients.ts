@@ -1,6 +1,7 @@
-import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
+import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, requireScopedRow, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { normalizeClientContract } from '../src/lib/data-contract.js';
+import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 
 const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'archived_at']);
 
@@ -114,8 +115,15 @@ export default async function handler(req: any, res: any) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
     const workspaceId = await resolveRequestWorkspaceId(req, body);
 
+    // P0_SERVICE_ROLE_SCOPE_MUTATION_GATE
+    if (!workspaceId) {
+      res.status(401).json({ error: 'CLIENT_WORKSPACE_REQUIRED' });
+      return;
+    }
+    await assertWorkspaceWriteAccess(workspaceId, req);
+
     if (req.method === 'POST') {
-      const finalWorkspaceId = workspaceId || await findWorkspaceId(body.workspaceId);
+      const finalWorkspaceId = workspaceId;
       if (!finalWorkspaceId) throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
       const nowIso = new Date().toISOString();
       const payload = {

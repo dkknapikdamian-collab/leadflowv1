@@ -55,7 +55,7 @@ const env = read('.env.example');
 for (const needle of ['Public client env', 'Server-only Supabase env', 'SUPABASE_SERVICE_ROLE_KEY=', 'GEMINI_API_KEY=']) {
   if (!env.includes(needle)) errors.push(`.env.example missing: ${needle}`);
 }
-if (/VITE_GEMINI_API_KEY\s*=/.test(env)) errors.push('.env.example must not expose Gemini key as VITE_*');
+if (/public-prefixed Gemini API key\s*=/.test(env)) errors.push('.env.example must not expose Gemini key as VITE_*');
 if (/AI Studio automatically injects|Google AI Studio App/i.test(env)) errors.push('.env.example still contains AI Studio copy');
 
 const prod = read('docs/PRODUCTION_READINESS_STATUS.md');

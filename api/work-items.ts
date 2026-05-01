@@ -1,6 +1,7 @@
-import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
+import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { normalizeEventStatus, normalizeTaskStatus } from '../src/lib/domain-statuses.js';
+import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 
 function asIsoDate(value: unknown) {
   if (typeof value !== 'string' || !value.trim()) return null;
@@ -160,6 +161,15 @@ export default async function handler(req: any, res: any) {
       res.status(400).json({ error: 'WORK_ITEM_KIND_REQUIRED' });
       return;
     }
+    // P0_SERVICE_ROLE_SCOPE_MUTATION_GATE
+    // Service role bypasses RLS, so every mutation must use the workspace from auth context only.
+    if (req.method !== 'GET') {
+      if (!workspaceId) {
+        res.status(401).json({ error: kind === 'events' ? 'EVENT_WORKSPACE_REQUIRED' : 'TASK_WORKSPACE_REQUIRED' });
+        return;
+      }
+      await assertWorkspaceWriteAccess(workspaceId, req);
+    }
 
     if (req.method === 'GET') {
       if (!workspaceId) {
@@ -197,6 +207,13 @@ export default async function handler(req: any, res: any) {
       }
 
       const currentRow = await requireScopedRow('work_items', String(body.id), workspaceId, kind === 'events' ? 'EVENT_NOT_FOUND' : 'TASK_NOT_FOUND');
+      // P0_SERVICE_ROLE_SCOPE_RELATION_GUARD
+      if (body.leadId !== undefined && asNullableUuid(body.leadId)) {
+        await requireScopedRow('leads', asNullableUuid(body.leadId)!, workspaceId, 'LEAD_NOT_FOUND');
+      }
+      if (body.caseId !== undefined && asNullableUuid(body.caseId)) {
+        await requireScopedRow('cases', asNullableUuid(body.caseId)!, workspaceId, 'CASE_NOT_FOUND');
+      }
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
 
       if (body.title !== undefined) payload.title = body.title;
@@ -271,13 +288,14 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    const finalWorkspaceId = workspaceId || await findWorkspaceId(body.workspaceId);
+    const finalWorkspaceId = workspaceId;
     if (!finalWorkspaceId) {
       res.status(401).json({ error: kind === 'events' ? 'EVENT_WORKSPACE_REQUIRED' : 'TASK_WORKSPACE_REQUIRED' });
       return;
     }
 
     const nowIso = new Date().toISOString();
+    await assertWorkspaceEntityLimit(finalWorkspaceId, kind === 'events' ? 'event' : 'task');
 
     if (kind === 'tasks') {
       const scheduledAt = body.scheduledAt
@@ -285,6 +303,12 @@ export default async function handler(req: any, res: any) {
         : body.date
           ? new Date(`${body.date}T09:00:00`).toISOString()
           : null;
+      if (body.leadId !== undefined && asNullableUuid(body.leadId)) {
+        await requireScopedRow('leads', asNullableUuid(body.leadId)!, finalWorkspaceId, 'LEAD_NOT_FOUND');
+      }
+      if (body.caseId !== undefined && asNullableUuid(body.caseId)) {
+        await requireScopedRow('cases', asNullableUuid(body.caseId)!, finalWorkspaceId, 'CASE_NOT_FOUND');
+      }
       const payload = {
         workspace_id: finalWorkspaceId,
         created_by_user_id: asNullableUuid(body.ownerId),
@@ -314,6 +338,12 @@ export default async function handler(req: any, res: any) {
     }
 
     const startAt = body.startAt ? new Date(body.startAt).toISOString() : nowIso;
+    if (body.leadId !== undefined && asNullableUuid(body.leadId)) {
+      await requireScopedRow('leads', asNullableUuid(body.leadId)!, finalWorkspaceId, 'LEAD_NOT_FOUND');
+    }
+    if (body.caseId !== undefined && asNullableUuid(body.caseId)) {
+      await requireScopedRow('cases', asNullableUuid(body.caseId)!, finalWorkspaceId, 'CASE_NOT_FOUND');
+    }
     const payload = {
       workspace_id: finalWorkspaceId,
       created_by_user_id: asNullableUuid(body.ownerId),

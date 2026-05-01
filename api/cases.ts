@@ -5,6 +5,7 @@ import { normalizeCaseContract } from '../src/lib/data-contract.js';
 import { CASE_STATUS_VALUES, normalizeCaseStatus } from '../src/lib/domain-statuses.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { readPortalSession, requirePortalSessionContext } from '../src/server/_portal-token.js';
+import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 
 const CASE_STATUSES = new Set<string>(CASE_STATUS_VALUES);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
@@ -224,6 +225,11 @@ export default async function handler(req: any, res: any) {
 
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
 
+    // P0_SERVICE_ROLE_SCOPE_MUTATION_GATE
+    if (req.method !== 'GET') {
+      await assertWorkspaceWriteAccess(workspaceId, req);
+    }
+
     if (req.method === 'POST') {
       const finalWorkspaceId = workspaceId;
       if (!finalWorkspaceId) {
@@ -237,6 +243,10 @@ export default async function handler(req: any, res: any) {
         ? await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(normalizedLeadId)}&limit=1`, finalWorkspaceId))
         : [];
       const linkedLead = linkedLeadRows[0] || null;
+      // P0_SERVICE_ROLE_SCOPE_RELATION_GUARD
+      if (normalizedLeadId && !linkedLead) {
+        throw new Error('LEAD_NOT_FOUND');
+      }
       const existingLeadCaseId = normalizedLeadId ? asText(linkedLead?.linked_case_id || linkedLead?.linkedCaseId) : '';
       if (normalizedLeadId && existingLeadCaseId) {
         throw new Error('LEAD_ALREADY_HAS_CASE');
@@ -247,6 +257,9 @@ export default async function handler(req: any, res: any) {
         clientEmail: body.clientEmail ?? linkedLead?.email,
         clientPhone: body.clientPhone ?? linkedLead?.phone,
       });
+      if (body.clientId && !ensuredClient) {
+        throw new Error('CLIENT_NOT_FOUND');
+      }
       const normalizedClientId = asNullableUuid(ensuredClient?.id || body.clientId || linkedLead?.client_id || linkedLead?.clientId);
 
       const payload: Record<string, unknown> = {
@@ -277,13 +290,13 @@ export default async function handler(req: any, res: any) {
       const insertedId = String((inserted as Record<string, unknown>).id || '');
 
       if (insertedId) {
-        await bestEffortPatch(`leads?linked_case_id=eq.${encodeURIComponent(insertedId)}`, {
+        await bestEffortPatch(withWorkspaceFilter(`leads?linked_case_id=eq.${encodeURIComponent(insertedId)}`, finalWorkspaceId), {
           linked_case_id: null,
           updated_at: nowIso,
         });
         if (normalizedLeadId) {
           await bestEffortPatch(
-            `leads?id=eq.${encodeURIComponent(normalizedLeadId)}`,
+            withWorkspaceFilter(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, finalWorkspaceId),
             buildLeadMovedToServicePayload({
               caseId: insertedId,
               clientId: normalizedClientId,
@@ -311,6 +324,9 @@ export default async function handler(req: any, res: any) {
         ? await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(normalizedLeadId)}&limit=1`, workspaceId))
         : [];
       const linkedLead = linkedLeadRows[0] || null;
+      if (normalizedLeadId && !linkedLead) {
+        throw new Error('LEAD_NOT_FOUND');
+      }
       const ensuredClient = (body.clientId !== undefined || body.clientName !== undefined || body.clientEmail !== undefined || body.clientPhone !== undefined || normalizedLeadId)
         ? await ensureClientForCase(workspaceId, {
             clientId: body.clientId ?? linkedLead?.client_id ?? linkedLead?.clientId,
@@ -350,14 +366,14 @@ export default async function handler(req: any, res: any) {
       const data = await updateCaseWithSchemaFallback(String(body.id), payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
 
-      await bestEffortPatch(`leads?linked_case_id=eq.${encodeURIComponent(String(body.id))}`, {
+      await bestEffortPatch(withWorkspaceFilter(`leads?linked_case_id=eq.${encodeURIComponent(String(body.id))}`, workspaceId), {
         linked_case_id: null,
         updated_at: nowIso,
       });
 
       if (normalizedLeadId) {
         await bestEffortPatch(
-          `leads?id=eq.${encodeURIComponent(normalizedLeadId)}`,
+          withWorkspaceFilter(`leads?id=eq.${encodeURIComponent(normalizedLeadId)}`, workspaceId),
           buildLeadMovedToServicePayload({
             caseId: String(body.id),
             clientId: normalizedClientId,
@@ -381,13 +397,13 @@ export default async function handler(req: any, res: any) {
 
       const nowIso = new Date().toISOString();
 
-      await bestEffortPatch(`work_items?case_id=eq.${encodeURIComponent(id)}`, {
+      await bestEffortPatch(withWorkspaceFilter(`work_items?case_id=eq.${encodeURIComponent(id)}`, workspaceId), {
         case_id: null,
         case_title: null,
         updated_at: nowIso,
       });
 
-      await bestEffortPatch(`leads?linked_case_id=eq.${encodeURIComponent(id)}`, {
+      await bestEffortPatch(withWorkspaceFilter(`leads?linked_case_id=eq.${encodeURIComponent(id)}`, workspaceId), {
         linked_case_id: null,
         updated_at: nowIso,
       });
