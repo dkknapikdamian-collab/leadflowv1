@@ -9,10 +9,14 @@ const failures = [];
 function read(rel) {
   const abs = path.join(root, rel);
   if (!fs.existsSync(abs)) {
-    failures.push(`${rel} is missing`);
+    failures.push(rel + ' is missing');
     return '';
   }
   return fs.readFileSync(abs, 'utf8');
+}
+
+function hasAny(text, markers) {
+  return markers.some((marker) => text.includes(marker));
 }
 
 const calendar = read('src/lib/calendar-items.ts');
@@ -30,37 +34,65 @@ if (!calendar.includes('export async function fetchCalendarBundleFromSupabase'))
   failures.push('src/lib/calendar-items.ts missing fetchCalendarBundleFromSupabase');
 }
 
-for (const marker of [
-  'fetchTasksFromSupabase()',
-  'fetchEventsFromSupabase()',
-  'fetchCasesFromSupabase().catch(() => [])',
-  'fetchLeadsFromSupabase().catch(() => [])',
-]) {
-  if (!calendar.includes(marker)) {
-    failures.push(`src/lib/calendar-items.ts missing API loader marker: ${marker}`);
+const requiredCollections = [
+  {
+    name: 'tasks',
+    markers: [
+      'fetchTasksFromSupabase().catch(() => [])',
+      'readCollection(() => fetchTasksFromSupabase())',
+      'readCalendarCollection(() => fetchTasksFromSupabase())',
+    ],
+  },
+  {
+    name: 'events',
+    markers: [
+      'fetchEventsFromSupabase().catch(() => [])',
+      'readCollection(() => fetchEventsFromSupabase())',
+      'readCalendarCollection(() => fetchEventsFromSupabase())',
+    ],
+  },
+  {
+    name: 'cases',
+    markers: [
+      'fetchCasesFromSupabase().catch(() => [])',
+      'readCollection(() => fetchCasesFromSupabase())',
+      'readCalendarCollection(() => fetchCasesFromSupabase())',
+    ],
+  },
+  {
+    name: 'leads',
+    markers: [
+      'fetchLeadsFromSupabase().catch(() => [])',
+      'readCollection(() => fetchLeadsFromSupabase())',
+      'readCalendarCollection(() => fetchLeadsFromSupabase())',
+    ],
+  },
+];
+
+for (const collection of requiredCollections) {
+  if (!hasAny(calendar, collection.markers)) {
+    failures.push('src/lib/calendar-items.ts missing resilient loader for ' + collection.name);
   }
+}
+
+if (!hasAny(calendar, ['P0_TODAY_403_RESILIENT_BUNDLE', 'readCollection', 'readCalendarCollection'])) {
+  failures.push('src/lib/calendar-items.ts missing Today bundle resilience marker/helper');
+}
+
+if (!hasAny(calendar, ['P0_TODAY_BOOTSTRAP_RETRY', 'ensureWorkspaceContext', 'ensureCalendarWorkspaceBootstrap'])) {
+  failures.push('src/lib/calendar-items.ts missing Today bootstrap retry marker/helper');
 }
 
 if (!today.includes('fetchCalendarBundleFromSupabase')) {
   failures.push('src/pages/Today.tsx must load calendar bundle through Supabase API helper');
 }
 
-if (today.includes("../firebase") || today.includes("'../firebase'") || today.includes('"../firebase"')) {
+if (today.includes('../firebase') || today.includes("'../firebase'") || today.includes('"../firebase"')) {
   failures.push('src/pages/Today.tsx must not import Firebase runtime');
 }
 
 if (today.includes('auth.currentUser') || today.includes('auth.signOut')) {
   failures.push('src/pages/Today.tsx must not use Firebase auth runtime');
-}
-
-
-for (const marker of [
-  'fetchTasksFromSupabase().catch(() => [])',
-  'fetchEventsFromSupabase().catch(() => [])',
-]) {
-  if (!calendar.includes(marker)) {
-    failures.push(`P0 Today bundle resilience missing: ${marker}`);
-  }
 }
 
 if (failures.length) {
@@ -69,4 +101,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('OK: P0 Today loader uses Supabase API without local workspace gate.');
+console.log('OK: P0 Today loader uses Supabase API and resilient per-collection reads.');

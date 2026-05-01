@@ -26,6 +26,7 @@ import {
   isAfter,
   isBefore,
   isEqual,
+  isToday,
   parseISO,
   startOfDay,
   subMinutes,
@@ -466,6 +467,135 @@ function removeLeadShadowEntries(entries: ScheduleEntry[]) {
   return entries.filter((entry) => !shouldHideLeadEntry(entry, entries));
 }
 
+// P0_TODAY_OPERATOR_SECTIONS_FIX
+// Today is an operator dashboard: overdue open tasks and active leads without a
+// next action must stay visible. Otherwise work disappears after the scheduled
+// hour and the user sees a false empty day.
+function isOperatorTodayRange(rangeEnd: Date) {
+  return isToday(rangeEnd);
+}
+
+function getScheduleStatus(value: unknown) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function isClosedTaskStatus(value: unknown) {
+  const status = getScheduleStatus(value);
+  return status === 'done' || status === 'completed' || status === 'canceled' || status === 'cancelled' || status === 'closed';
+}
+
+function isClosedLeadStatus(value: unknown) {
+  const status = getScheduleStatus(value);
+  return status === 'won' || status === 'lost' || status === 'archived' || status === 'moved_to_service';
+}
+
+function isActiveOpenLeadForOperatorToday(lead: ScheduleRawRecord) {
+  const visibility = getScheduleStatus(lead.leadVisibility || lead.lead_visibility || 'active');
+  const outcome = getScheduleStatus(lead.salesOutcome || lead.sales_outcome || 'open');
+  const movedToService = lead.movedToService === true || Boolean(lead.moved_to_service_at || lead.movedToServiceAt);
+
+  if (movedToService) return false;
+  if (visibility === 'archived' || visibility === 'hidden') return false;
+  if (outcome === 'won' || outcome === 'lost' || outcome === 'moved_to_service' || outcome === 'closed') return false;
+  return !isClosedLeadStatus(lead.status);
+}
+
+function parseScheduleMoment(value: unknown) {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  if (!raw) return null;
+  const parsed = parseISO(raw.includes('T') ? raw : raw + 'T09:00:00');
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function isBeforeRangeStart(moment: Date | null, rangeStart: Date) {
+  if (!moment) return false;
+  return isBefore(moment, rangeStart);
+}
+
+function isOnOrBeforeRangeEnd(moment: Date | null, rangeEnd: Date) {
+  if (!moment) return false;
+  return isBefore(moment, rangeEnd) || isEqual(moment, rangeEnd);
+}
+
+function buildOperatorTodayTaskEntry(task: ScheduleRawRecord, moment: Date): ScheduleEntry {
+  const taskId = String(task.id || crypto.randomUUID());
+  return {
+    id: taskId + ':operator-today',
+    kind: 'task' as const,
+    title: readText(task, ['title'], 'Zadanie'),
+    startsAt: toDateTimeLocalValue(moment),
+    endsAt: null,
+    sourceId: taskId,
+    link: '/tasks',
+    badgeLabel: 'Zadanie',
+    leadId: typeof task.leadId === 'string' ? task.leadId : null,
+    leadName: typeof task.leadName === 'string' ? task.leadName : null,
+    raw: task,
+  };
+}
+
+function expandOperatorTodayTaskEntries(tasks: ScheduleRawRecord[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
+  if (!isOperatorTodayRange(rangeEnd)) return [];
+
+  return tasks.flatMap((task) => {
+    if (isClosedTaskStatus(task.status)) return [] as ScheduleEntry[];
+
+    const startAt = getTaskStartAt(task);
+    const moment = parseScheduleMoment(startAt);
+    if (!moment) return [] as ScheduleEntry[];
+
+    const alreadyIncludedByNormalRange = !isBeforeRangeStart(moment, rangeStart);
+    if (alreadyIncludedByNormalRange) return [] as ScheduleEntry[];
+    if (!isOnOrBeforeRangeEnd(moment, rangeEnd)) return [] as ScheduleEntry[];
+
+    return [buildOperatorTodayTaskEntry(task, moment)];
+  });
+}
+
+function buildOperatorTodayLeadEntry(lead: ScheduleRawRecord, moment: Date, reasonLabel: string): ScheduleEntry {
+  const leadId = String(lead.id || crypto.randomUUID());
+  const leadName = readText(lead, ['name', 'company'], 'Lead');
+  const actionTitle = readText(lead, ['nextActionTitle', 'next_action_title'], reasonLabel);
+
+  return {
+    id: 'lead-operator:' + leadId,
+    kind: 'lead' as const,
+    title: actionTitle,
+    startsAt: toDateTimeLocalValue(moment),
+    endsAt: null,
+    sourceId: leadId,
+    link: lead.id ? '/leads/' + leadId : '/leads',
+    badgeLabel: 'Lead',
+    leadId: lead.id ? leadId : null,
+    leadName: leadName || null,
+    raw: lead,
+  };
+}
+
+function expandOperatorTodayLeadEntries(leads: ScheduleRawRecord[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
+  if (!isOperatorTodayRange(rangeEnd)) return [];
+
+  const todayMorning = startOfDay(rangeEnd);
+  todayMorning.setHours(9, 0, 0, 0);
+
+  return leads.flatMap((lead) => {
+    if (!isActiveOpenLeadForOperatorToday(lead)) return [] as ScheduleEntry[];
+
+    const calendarMomentRaw = getLeadCalendarMoment(lead);
+    const calendarMoment = parseScheduleMoment(calendarMomentRaw);
+
+    if (!calendarMoment) {
+      return [buildOperatorTodayLeadEntry(lead, todayMorning, 'Ustal następny krok')];
+    }
+
+    const alreadyIncludedByNormalRange = !isBeforeRangeStart(calendarMoment, rangeStart);
+    if (alreadyIncludedByNormalRange) return [] as ScheduleEntry[];
+    if (!isOnOrBeforeRangeEnd(calendarMoment, rangeEnd)) return [] as ScheduleEntry[];
+
+    return [buildOperatorTodayLeadEntry(lead, calendarMoment, 'Zaległy kontakt')];
+  });
+}
+
 export function combineScheduleEntries({
   events,
   tasks,
@@ -482,7 +612,9 @@ export function combineScheduleEntries({
   const merged = dedupeScheduleEntries([
     ...expandEventEntries(events, rangeStart, rangeEnd),
     ...expandTaskEntries(tasks, rangeStart, rangeEnd),
+    ...expandOperatorTodayTaskEntries(tasks, rangeStart, rangeEnd),
     ...expandLeadEntries(leads, rangeStart, rangeEnd),
+    ...expandOperatorTodayLeadEntries(leads, rangeStart, rangeEnd),
   ]);
 
   return removeLeadShadowEntries(merged)
