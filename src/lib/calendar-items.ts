@@ -1,5 +1,13 @@
 import { isValid, parseISO } from 'date-fns';
-import { fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, isSupabaseConfigured } from './supabase-fallback';
+import {
+  fetchCasesFromSupabase,
+  fetchEventsFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchMeFromSupabase,
+  fetchTasksFromSupabase,
+  getStoredWorkspaceId,
+  isSupabaseConfigured,
+} from './supabase-fallback';
 import { normalizeEventContract, normalizeTaskContract } from './data-contract';
 
 export type CalendarTaskItem = {
@@ -51,6 +59,45 @@ export type CalendarBundle = {
   leads: Record<string, unknown>[];
   cases: Record<string, unknown>[];
 };
+
+const CALENDAR_BOOTSTRAP_DELAYS_MS = [0, 250, 650, 1200, 2000];
+const CALENDAR_READ_DELAYS_MS = [0, 350, 900, 1600, 2600];
+
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function hasWorkspaceContext() {
+  return Boolean(getStoredWorkspaceId());
+}
+
+function shouldRetryRead(error: unknown) {
+  const message = String(error instanceof Error ? error.message : error || '').toLowerCase();
+  return message.includes('workspace') || message.includes('auth') || message.includes('required') || message.includes('forbidden');
+}
+
+async function ensureWorkspaceContext() {
+  if (hasWorkspaceContext()) return;
+  for (const delayMs of CALENDAR_BOOTSTRAP_DELAYS_MS) {
+    if (delayMs > 0) await wait(delayMs);
+    if (hasWorkspaceContext()) return;
+    await fetchMeFromSupabase().catch(() => null);
+    if (hasWorkspaceContext()) return;
+  }
+}
+
+async function readCollection<T>(loader: () => Promise<T[]>): Promise<T[]> {
+  for (const delayMs of CALENDAR_READ_DELAYS_MS) {
+    if (delayMs > 0) await wait(delayMs);
+    try {
+      return await loader();
+    } catch (error) {
+      if (!shouldRetryRead(error)) return [];
+      await ensureWorkspaceContext();
+    }
+  }
+  return [];
+}
 
 function isIsoLike(value?: string | null) {
   if (!value) return false;
@@ -151,16 +198,17 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
 }
 
 // P0_TODAY_403_RESILIENT_BUNDLE
-// The Today screen is an operator dashboard. One forbidden/temporarily broken read
-// endpoint must not blank the whole page. Each collection degrades independently.
+// P0_TODAY_BOOTSTRAP_RETRY
 export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle> {
   if (!isSupabaseConfigured()) return { tasks: [], events: [], leads: [], cases: [] };
 
+  await ensureWorkspaceContext();
+
   const [taskItems, eventItems, caseItems, leadItems] = await Promise.all([
-    fetchTasksFromSupabase().catch(() => []),
-    fetchEventsFromSupabase().catch(() => []),
-    fetchCasesFromSupabase().catch(() => []),
-    fetchLeadsFromSupabase().catch(() => []),
+    readCollection(() => fetchTasksFromSupabase()),
+    readCollection(() => fetchEventsFromSupabase()),
+    readCollection(() => fetchCasesFromSupabase()),
+    readCollection(() => fetchLeadsFromSupabase()),
   ]);
 
   return {
