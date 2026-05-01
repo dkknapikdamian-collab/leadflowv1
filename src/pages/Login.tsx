@@ -261,7 +261,7 @@ export default function Login() {
       </Tabs>
 
       <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3">
-        <p className="text-sm font-semibold text-emerald-900">Startujesz od 14 dni testu.</p>
+        <p className="text-sm font-semibold text-emerald-900">Startujesz od 21 dni testu.</p>
         <p className="mt-1 text-sm text-emerald-700">Możesz od razu wejść, dodać leady i sprawdzić cały przepływ pracy.</p>
       </div>
       <p className="mt-6 text-center text-[10px] text-slate-400">Logując się, akceptujesz regulamin i politykę prywatności.</p>
@@ -282,7 +282,7 @@ export default function Login() {
               </div>
               <div className="mt-5 flex flex-wrap gap-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3"><p className="text-xs uppercase tracking-[0.18em] text-slate-400">Cel</p><p className="mt-1 text-sm font-semibold text-white">Mniej przeoczeń, więcej domkniętych klientów</p></div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3"><p className="text-xs uppercase tracking-[0.18em] text-slate-400">Model</p><p className="mt-1 text-sm font-semibold text-white">14 dni testu na start</p></div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3"><p className="text-xs uppercase tracking-[0.18em] text-slate-400">Model</p><p className="mt-1 text-sm font-semibold text-white">21 dni testu na start</p></div>
               </div>
               <div className="mt-5 grid gap-3 sm:grid-cols-3">{HERO_POINTS.map((point) => (<div key={point} className="rounded-2xl border border-white/10 bg-white/5 p-3"><div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300"><CheckCircle2 className="h-5 w-5" /></div><p className="text-sm leading-6 text-slate-200">{point}</p></div>))}</div>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">{FEATURE_CARDS.map((card) => { const Icon = card.icon; return (<div key={card.title} className="rounded-3xl border border-white/10 bg-slate-900/40 p-4 backdrop-blur-sm"><div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/20 text-primary-foreground"><Icon className="h-5 w-5" /></div><h2 className="mt-3 text-base font-semibold text-white">{card.title}</h2><p className="mt-1.5 text-sm leading-6 text-slate-300">{card.text}</p></div>);})}</div>

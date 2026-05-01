@@ -11,12 +11,13 @@ Pasek działa jako toolbar i jest czytelny na telefonie: role="toolbar", aria-la
  * GlobalQuickActions uses GlobalAiAssistant, which wraps the TodayAiAssistant behavior
  * with full app context. Keep this short marker for the legacy draft-inbox contract test.
  */
-import { ClipboardList, Plus } from 'lucide-react';
+import { ClipboardList, LockKeyhole, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import GlobalAiAssistant from './GlobalAiAssistant';
 import QuickAiCapture from './QuickAiCapture';
 import { Button } from './ui/button';
+import { useWorkspace } from '../hooks/useWorkspace';
 
 export type GlobalQuickActionTarget = 'lead' | 'task' | 'event';
 

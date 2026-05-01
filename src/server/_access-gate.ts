@@ -1,9 +1,12 @@
 import { supabaseRequest } from './_supabase.js';
 import { assertSupabaseEmailVerifiedForMutation } from './_supabase-auth.js';
 import type { AccessState, BillingStatus } from '../lib/domain-statuses.js';
+import { FREE_LIMITS as PLAN_FREE_LIMITS, buildPlanAccessModel, type PlanFeatureKey } from '../lib/plans.js';
 
 type WorkspaceAccessRow = {
   id?: string | null;
+  plan_id?: string | null;
+  planId?: string | null;
   subscription_status?: BillingStatus | null;
   subscriptionStatus?: BillingStatus | null;
   trial_ends_at?: string | null;
@@ -17,12 +20,7 @@ export type WorkspaceWriteAccess = {
   status: AccessState;
 };
 
-export const FREE_LIMITS = {
-  activeLeads: 5,
-  activeTasks: 5,
-  activeEvents: 5,
-  activeDrafts: 3,
-} as const;
+export const FREE_LIMITS = PLAN_FREE_LIMITS;
 
 function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
@@ -132,16 +130,39 @@ export async function assertWorkspaceEntityLimit(workspaceId: string, entity: 'l
   if (drafts >= FREE_LIMITS.activeDrafts) throw new Error('FREE_LIMIT_AI_DRAFTS_REACHED');
 }
 
-export async function assertWorkspaceAiAllowed(workspaceId: string) {
-  const access = await fetchWorkspaceWriteAccess(workspaceId);
-  if (access.status === 'free_active') {
-    throw new Error('AI_NOT_AVAILABLE_ON_FREE');
-  }
+function getUnavailableFeatureErrorCode(feature: PlanFeatureKey) {
+  if (feature === 'ai' || feature === 'fullAi') return 'AI_NOT_AVAILABLE_ON_PLAN';
+  if (feature === 'googleCalendar') return 'GOOGLE_CALENDAR_NOT_AVAILABLE_ON_PLAN';
+  if (feature === 'digest') return 'DIGEST_NOT_AVAILABLE_ON_PLAN';
+  return 'FEATURE_NOT_AVAILABLE_ON_PLAN';
 }
+
+export async function assertWorkspaceFeatureAllowed(workspaceId: string, feature: PlanFeatureKey) {
+  const access = await fetchWorkspaceWriteAccess(workspaceId);
+
+  if (!access.hasWriteAccess) {
+    throw new Error(`WORKSPACE_WRITE_ACCESS_REQUIRED:${access.status}`);
+  }
+
+  if (!access.features[feature]) {
+    throw new Error(`${getUnavailableFeatureErrorCode(feature)}:${access.planId}`);
+  }
+
+  return access;
+}
+
+export async function assertWorkspaceAiAllowed(workspaceId: string) {
+  return assertWorkspaceFeatureAllowed(workspaceId, 'ai');
+}
+
+export async function assertWorkspaceGoogleCalendarAllowed(workspaceId: string) {
+  return assertWorkspaceFeatureAllowed(workspaceId, 'googleCalendar');
+}
+
 
 export async function fetchWorkspaceWriteAccess(workspaceId: string) {
   const rows = await supabaseRequest(
-    `workspaces?select=id,subscription_status,trial_ends_at,next_billing_at&id=eq.${encodeURIComponent(workspaceId)}&limit=1`,
+    `workspaces?select=id,plan_id,subscription_status,trial_ends_at,next_billing_at&id=eq.${encodeURIComponent(workspaceId)}&limit=1`,
     {
       method: 'GET',
       headers: { Prefer: 'return=representation' },
@@ -152,7 +173,20 @@ export async function fetchWorkspaceWriteAccess(workspaceId: string) {
     ? rows[0] as WorkspaceAccessRow
     : null;
 
-  return getWorkspaceWriteAccess(workspace);
+  const writeAccess = getWorkspaceWriteAccess(workspace);
+  const planAccess = buildPlanAccessModel({
+    planId: workspace?.plan_id ?? workspace?.planId ?? null,
+    subscriptionStatus: writeAccess.status,
+    isTrialActive: writeAccess.status === 'trial_active' || writeAccess.status === 'trial_ending',
+  });
+
+  return {
+    ...writeAccess,
+    planId: planAccess.planId,
+    subscriptionStatus: writeAccess.status,
+    limits: planAccess.limits,
+    features: planAccess.features,
+  };
 }
 
 export async function assertWorkspaceWriteAccess(workspaceId: string, req?: any) {

@@ -8,6 +8,7 @@ import {
   persistWorkspaceId,
 } from '../lib/supabase-fallback';
 import { useClientAuthSnapshot } from './useClientAuthSnapshot';
+import { buildPlanAccessModel } from '../lib/plans';
 
 function buildLocalWorkspace(storedWorkspaceId: string, email: string) {
   const workspaceId = normalizeWorkspaceContextId(storedWorkspaceId);
@@ -132,18 +133,40 @@ export function useWorkspace() {
   }, [workspace?.id]);
 
   const fallbackAccess = getAccessSummary(workspace);
+  const fallbackPlanAccess = buildPlanAccessModel({
+    planId: workspace?.planId,
+    subscriptionStatus: fallbackAccess.status,
+    isTrialActive: fallbackAccess.isTrialActive,
+  });
+  const accessOverridePlanAccess = accessOverride
+    ? buildPlanAccessModel({
+        planId: accessOverride.planId ?? workspace?.planId,
+        subscriptionStatus: accessOverride.subscriptionStatus ?? accessOverride.status ?? fallbackAccess.status,
+        isTrialActive:
+          typeof accessOverride.isTrialActive === 'boolean' ? accessOverride.isTrialActive : fallbackAccess.isTrialActive,
+      })
+    : null;
   const access = accessOverride
     ? {
         ...fallbackAccess,
+        ...(accessOverridePlanAccess || fallbackPlanAccess),
         status: accessOverride.status ?? fallbackAccess.status,
+        subscriptionStatus: accessOverride.subscriptionStatus ?? accessOverride.status ?? fallbackAccess.status,
+        planId: accessOverride.planId ?? accessOverridePlanAccess?.planId ?? fallbackPlanAccess.planId,
         hasAccess: typeof accessOverride.hasAccess === 'boolean' ? accessOverride.hasAccess : fallbackAccess.hasAccess,
         isTrialActive:
           typeof accessOverride.isTrialActive === 'boolean' ? accessOverride.isTrialActive : fallbackAccess.isTrialActive,
         isPaidActive:
           typeof accessOverride.isPaidActive === 'boolean' ? accessOverride.isPaidActive : fallbackAccess.isPaidActive,
+        features: accessOverride.features ?? accessOverridePlanAccess?.features ?? fallbackPlanAccess.features,
+        limits: accessOverride.limits ?? accessOverridePlanAccess?.limits ?? fallbackPlanAccess.limits,
       }
-    : fallbackAccess;
-  const isAdmin = profile?.role === 'admin' || profile?.isAdmin === true;
+    : {
+        ...fallbackAccess,
+        ...fallbackPlanAccess,
+        subscriptionStatus: fallbackAccess.status,
+      };
+  const isAdmin = profile?.role  const isAdmin = profile?.role === 'admin' || profile?.isAdmin === true;
   const refresh = () => setRefreshToken((prev) => prev + 1);
   const workspaceReady = Boolean(workspace?.id);
 

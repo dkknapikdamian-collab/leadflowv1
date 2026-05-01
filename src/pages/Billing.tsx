@@ -52,12 +52,12 @@ type PlanCard = {
 
 const BILLING_PLANS: PlanCard[] = [
   {
-    id: 'trial_21d',
+    id: 'free',
     key: 'free',
     name: 'Free',
     monthlyPrice: 0,
     yearlyPrice: 0,
-    description: 'Start i test działania aplikacji przed wyborem płatnego planu.',
+    description: 'Tryb demo i awaryjny po trialu, z limitami Free.',
     features: [
       'Podgląd podstawowego workflow',
       'Dobry etap na pierwsze sprawdzenie aplikacji',
@@ -75,8 +75,8 @@ const BILLING_PLANS: PlanCard[] = [
     description: 'Najprostszy płatny start dla jednej osoby.',
     features: [
       'Leady, klienci i zadania',
-      'Dziś, podstawowy kalendarz i powiadomienia',
-      'Płatność kartą lub BLIK przez Stripe',
+      'Dziś, kalendarz w aplikacji, digest i powiadomienia',
+      'Lekki parser tekstu i szkice bez pełnego asystenta AI',
     ],
   },
   {
@@ -89,10 +89,10 @@ const BILLING_PLANS: PlanCard[] = [
     badge: 'Najlepszy wybór',
     description: 'Pełny workflow lead -> klient -> sprawa -> rozliczenie.',
     features: [
-      'Pełny przepływ pracy po pozyskaniu leada',
-      'Sprawy, checklisty, zadania i wydarzenia',
-      'Portal klienta i moduł rozliczeń V1',
-      'Najlepszy plan do pierwszych realnych testów',
+      'Wszystko z Basic',
+      'Google Calendar sync',
+      'Raport tygodniowy, import CSV i cykliczne przypomnienia',
+      'Bez pełnego asystenta AI',
     ],
   },
   {
@@ -105,8 +105,8 @@ const BILLING_PLANS: PlanCard[] = [
     description: 'Plan przygotowany pod dodatki AI i większy zakres automatyzacji.',
     features: [
       'Wszystko z Pro',
-      'Szkice AI i asystent jako warstwa pracy',
-      'Przygotowanie pod kolejne moduły premium',
+      'Pełny asystent AI w całej aplikacji',
+      'Wyszukiwanie danych, sugestie follow-upów i szkice AI premium',
     ],
     availabilityHint: 'AI jest rozwijane etapami. Nie obiecujemy funkcji, które nie są jeszcze podpięte.',
   },
@@ -241,7 +241,7 @@ function getCurrentPlanName(displayPlanId: string, isPaidActive: boolean, isTria
 }
 
 function isPlanCurrent(displayPlanId: string, plan: PlanCard, isPaidActive: boolean, isTrialActive: boolean) {
-  if (plan.key === 'free') return !isPaidActive && isTrialActive;
+  if (plan.key === 'free') return !isPaidActive && (isTrialActive || displayPlanId === 'free');
   if (!isPaidActive) return false;
   return displayPlanId === plan.id || displayPlanId === `${plan.id}_yearly`;
 }

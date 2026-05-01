@@ -1,8 +1,9 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById, updateWhere } from '../src/server/_supabase.js';
 import { requireSupabaseAuthContext, writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { FREE_LIMITS as PLAN_FREE_LIMITS, PLAN_IDS, TRIAL_DAYS as PLAN_TRIAL_DAYS, TRIAL_MS as PLAN_TRIAL_MS, buildPlanAccessModel, normalizePlanId as normalizeAccessPlanId } from '../src/lib/plans.js';
 
-const DEFAULT_PLAN_ID = 'trial_21d';
-const PAID_PLAN_ID = 'closeflow_pro';
+const DEFAULT_PLAN_ID = PLAN_IDS.trial;
+const PAID_PLAN_ID = PLAN_IDS.pro;
 const PAID_PLAN_IDS = new Set([
   'closeflow_basic',
   'closeflow_basic_yearly',
@@ -12,10 +13,10 @@ const PAID_PLAN_IDS = new Set([
   'closeflow_business_yearly',
 ]);
 const DEFAULT_STATUS = 'trial_active';
-const TRIAL_DAYS = 21;
-const TRIAL_MS = TRIAL_DAYS * 24 * 60 * 60 * 1000;
+const TRIAL_DAYS = PLAN_TRIAL_DAYS;
+const TRIAL_MS = PLAN_TRIAL_MS;
 const BROKEN_BOOTSTRAP_REPAIR_WINDOW_MS = 12 * 60 * 60 * 1000;
-const FREE_LIMITS = { activeLeads: 5, activeTasks: 5, activeEvents: 5, activeDrafts: 3 };
+const FREE_LIMITS = PLAN_FREE_LIMITS;
 
 type NullableString = string | null;
 
@@ -121,27 +122,9 @@ function buildTrialEndsAt() {
 
 
 function normalizePlanId(planId: string | null | undefined, subscriptionStatus?: string | null) {
-  const normalized = asNullableString(planId);
-  const status = asNullableString(subscriptionStatus) || DEFAULT_STATUS;
-
-  if (!normalized) {
-    return status === 'paid_active' ? PAID_PLAN_ID : DEFAULT_PLAN_ID;
-  }
-
-  if (normalized === DEFAULT_PLAN_ID || PAID_PLAN_IDS.has(normalized)) {
-    return normalized;
-  }
-
-  if (['solo_mini', 'solo_full', 'team_mini', 'team_full', 'pro'].includes(normalized)) {
-    return PAID_PLAN_ID;
-  }
-
-  if (normalized === 'free') {
-    return 'free';
-  }
-
-  return status === 'paid_active' ? PAID_PLAN_ID : normalized;
+  return normalizeAccessPlanId(planId, subscriptionStatus);
 }
+
 
 function extractMissingColumn(error: unknown) {
   const message = error instanceof Error ? error.message : String(error || '');
@@ -272,23 +255,25 @@ function buildAccess(workspace: { subscriptionStatus: string; trialEndsAt: Nulla
   return { hasAccess: false, status: statusRaw, isTrialActive: false, isPaidActive: false };
 }
 
-function enrichAccessModel(access: { hasAccess: boolean; status: string; isTrialActive: boolean; isPaidActive: boolean }) {
-  const isFree = access.status === 'free_active';
+function enrichAccessModel(
+  access: { hasAccess: boolean; status: string; isTrialActive: boolean; isPaidActive: boolean },
+  planId: NullableString,
+) {
+  const model = buildPlanAccessModel({
+    planId,
+    subscriptionStatus: access.status,
+    isTrialActive: access.isTrialActive,
+  });
+
   return {
     ...access,
-    limits: {
-      activeLeads: isFree ? FREE_LIMITS.activeLeads : null,
-      activeTasks: isFree ? FREE_LIMITS.activeTasks : null,
-      activeEvents: isFree ? FREE_LIMITS.activeEvents : null,
-      activeDrafts: isFree ? FREE_LIMITS.activeDrafts : null,
-    },
-    features: {
-      ai: !isFree,
-      digest: !isFree,
-      googleCalendar: !isFree,
-    },
+    planId: model.planId,
+    subscriptionStatus: access.status,
+    limits: model.limits,
+    features: model.features,
   };
 }
+
 
 async function fetchProfile(uid: string | null, email: string | null) {
   const queries: string[] = [];
@@ -965,7 +950,7 @@ export default async function handler(req: any, res: any) {
 
     const workspace = normalizeWorkspace(workspaceRow, workspaceId, workspaceOwnerUserId);
     const profile = normalizeProfile(profileRow, uid, email, fullName);
-    const access = enrichAccessModel(buildAccess(workspace));
+    const access = enrichAccessModel(buildAccess(workspace), workspace.planId);
 
     if (workspaceResolutionMode === 'historical_mapping' || workspaceResolutionMode === 'explicit_fallback') {
       await writeRecoveryLog({
@@ -1023,7 +1008,7 @@ export default async function handler(req: any, res: any) {
       browserNotificationsEnabled: true,
       forceLogoutAfter: null,
     };
-    const fallbackAccess = enrichAccessModel(buildAccess(fallbackWorkspace));
+    const fallbackAccess = enrichAccessModel(buildAccess(fallbackWorkspace), fallbackWorkspace.planId);
     res.status(200).json({
       workspace: fallbackWorkspace,
       profile: fallbackProfile,

@@ -1,4 +1,5 @@
 import { differenceInCalendarDays, isValid, parseISO } from 'date-fns';
+import { TRIAL_DAYS } from './plans';
 
 export type WorkspaceLike = {
   subscriptionStatus?: string | null;
@@ -42,7 +43,7 @@ export type AccessSummary = {
   isPaidActive: boolean;
 };
 
-const TRIAL_LENGTH_DAYS = 21;
+const TRIAL_LENGTH_DAYS = TRIAL_DAYS;
 
 function parseAccessDate(value?: string | null) {
   if (!value) return null;
