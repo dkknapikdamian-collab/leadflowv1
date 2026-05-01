@@ -150,12 +150,15 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
   };
 }
 
+// P0_TODAY_403_RESILIENT_BUNDLE
+// The Today screen is an operator dashboard. One forbidden/temporarily broken read
+// endpoint must not blank the whole page. Each collection degrades independently.
 export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle> {
   if (!isSupabaseConfigured()) return { tasks: [], events: [], leads: [], cases: [] };
 
   const [taskItems, eventItems, caseItems, leadItems] = await Promise.all([
-    fetchTasksFromSupabase(),
-    fetchEventsFromSupabase(),
+    fetchTasksFromSupabase().catch(() => []),
+    fetchEventsFromSupabase().catch(() => []),
     fetchCasesFromSupabase().catch(() => []),
     fetchLeadsFromSupabase().catch(() => []),
   ]);

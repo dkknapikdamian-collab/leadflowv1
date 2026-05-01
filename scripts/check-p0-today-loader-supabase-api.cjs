@@ -53,6 +53,16 @@ if (today.includes('auth.currentUser') || today.includes('auth.signOut')) {
   failures.push('src/pages/Today.tsx must not use Firebase auth runtime');
 }
 
+
+for (const marker of [
+  'fetchTasksFromSupabase().catch(() => [])',
+  'fetchEventsFromSupabase().catch(() => [])',
+]) {
+  if (!calendar.includes(marker)) {
+    failures.push(`P0 Today bundle resilience missing: ${marker}`);
+  }
+}
+
 if (failures.length) {
   console.error('P0 Today loader Supabase API guard failed.');
   for (const failure of failures) console.error('- ' + failure);
