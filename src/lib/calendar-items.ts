@@ -17,6 +17,8 @@ export type CalendarTaskItem = {
   dueAt?: string;
   time?: string;
   scheduledAt?: string;
+  startAt?: string;
+  startsAt?: string;
   status: string;
   type?: string;
   priority?: string;
@@ -38,6 +40,8 @@ export type CalendarEventItem = {
   title: string;
   type: string;
   startAt: string;
+  startsAt?: string;
+  scheduledAt?: string;
   endAt?: string;
   status: string;
   leadId?: string;
@@ -149,9 +153,11 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
     id: task.id,
     title: task.title || 'Zadanie bez tytułu',
     date: task.date || scheduledAt.slice(0, 10),
-    dueAt: scheduledAt.slice(0, 16),
+    dueAt: scheduledAt,
     time: scheduledAt.slice(11, 16),
     scheduledAt,
+    startAt: scheduledAt,
+    startsAt: scheduledAt,
     status: task.status || 'todo',
     type: task.type || 'task',
     priority: task.priority,
@@ -181,6 +187,8 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
     title: event.title || 'Wydarzenie bez tytułu',
     type: event.type || 'event',
     startAt,
+    startsAt: startAt,
+    scheduledAt: startAt,
     endAt: event.endAt || undefined,
     status: event.status || 'scheduled',
     leadId: event.leadId,
@@ -199,6 +207,7 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
 
 // P0_TODAY_403_RESILIENT_BUNDLE
 // P0_TODAY_BOOTSTRAP_RETRY
+// P0_TODAY_TIME_FIELD_COMPAT
 export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle> {
   if (!isSupabaseConfigured()) return { tasks: [], events: [], leads: [], cases: [] };
 
