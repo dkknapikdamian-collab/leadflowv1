@@ -35,7 +35,8 @@
     "check:ai-app-context-operator-stage26": "node scripts/check-ai-app-context-operator-stage26.cjs",
     "verify:security:gemini-client": "node scripts/verify-no-client-gemini-secret.cjs",
     "verify:architecture:supabase-first": "node scripts/check-supabase-first-architecture.cjs",
-    "verify:auth:supabase-stage01": "node scripts/check-stage01-supabase-auth.cjs"
+    "verify:auth:supabase-stage01": "node scripts/check-stage01-supabase-auth.cjs",
+    "verify:security:firebase-stage03": "node scripts/check-stage03-firebase-legacy-lockdown.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

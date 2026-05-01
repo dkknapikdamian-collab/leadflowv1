@@ -1,0 +1,51 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // ===============================================================
+    // ETAP 03 — Firebase Storage legacy lockdown
+    // Firebase Storage is legacy. Supabase Storage is the target.
+    //
+    // Security goal:
+    // - no public reads,
+    // - no public uploads,
+    // - no client portal uploads by caseId/file.name,
+    // - no case path access based only on caseId.
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwnUserPath(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isSmallUpload() {
+      return request.resource != null
+        && request.resource.size < 10 * 1024 * 1024;
+    }
+
+    match /users/{userId}/{allPaths=**} {
+      allow read: if isOwnUserPath(userId);
+      allow write: if isOwnUserPath(userId) && isSmallUpload();
+    }
+
+    match /cases/{caseId}/{allPaths=**} {
+      // Legacy client portal path is intentionally closed.
+      // Do not authorize by caseId, itemId, token or file.name.
+      allow read, write: if false;
+    }
+
+    match /client_portal/{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    match /portal/{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

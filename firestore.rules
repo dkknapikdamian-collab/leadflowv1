@@ -2,79 +2,121 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     // ===============================================================
-    // Helper Functions
+    // ETAP 03 — Firebase legacy lockdown
+    // Firebase/Firestore is legacy. Supabase is the source of truth.
+    //
+    // Security goal:
+    // - no public client portal token reads,
+    // - no portal access based only on caseId,
+    // - no token existence checks as authorization,
+    // - only authenticated owners can read/write legacy Firestore data.
     // ===============================================================
+
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-    
-    function isDocOwner() {
-      return isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
+
+    function isOwnerId(ownerId) {
+      return isAuthenticated() && ownerId == request.auth.uid;
     }
 
-    function isWorkspaceOwner(workspaceId) {
-      return isAuthenticated() && get(/databases/$(database)/documents/workspaces/$(workspaceId)).data.ownerId == request.auth.uid;
+    function existingOwner() {
+      return isAuthenticated()
+        && resource != null
+        && resource.data.ownerId == request.auth.uid;
+    }
+
+    function newOwner() {
+      return isAuthenticated()
+        && request.resource != null
+        && request.resource.data.ownerId == request.auth.uid;
+    }
+
+    function existingProfileOwner(profileId) {
+      return isAuthenticated()
+        && (
+          profileId == request.auth.uid
+          || (resource != null && resource.data.ownerId == request.auth.uid)
+          || (resource != null && resource.data.uid == request.auth.uid)
+        );
+    }
+
+    function newProfileOwner(profileId) {
+      return isAuthenticated()
+        && (
+          profileId == request.auth.uid
+          || (request.resource != null && request.resource.data.ownerId == request.auth.uid)
+          || (request.resource != null && request.resource.data.uid == request.auth.uid)
+        );
     }
 
     function isCaseOwner(caseId) {
-      return isAuthenticated() && get(/databases/$(database)/documents/cases/$(caseId)).data.ownerId == request.auth.uid;
+      return isAuthenticated()
+        && get(/databases/$(database)/documents/cases/$(caseId)).data.ownerId == request.auth.uid;
     }
-
-    function isValidClientToken(caseId) {
-      return exists(/databases/$(database)/documents/client_portal_tokens/$(caseId));
-    }
-
-    // ===============================================================
-    // Rules
-    // ===============================================================
 
     match /profiles/{profileId} {
-      allow read, write: if isOwner(profileId);
+      allow get, list: if existingProfileOwner(profileId);
+      allow create: if newProfileOwner(profileId);
+      allow update, delete: if existingProfileOwner(profileId) && newProfileOwner(profileId);
     }
 
     match /workspaces/{workspaceId} {
-      allow read, write: if isOwner(resource.data.ownerId) || (resource == null && isAuthenticated());
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
     }
 
     match /leads/{leadId} {
-      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
     }
 
     match /tasks/{taskId} {
-      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
     }
 
     match /events/{eventId} {
-      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
     }
 
     match /cases/{caseId} {
-      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
-      allow read: if isValidClientToken(caseId);
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
 
       match /items/{itemId} {
-        allow read, write: if isCaseOwner(caseId);
-        allow read, update: if isValidClientToken(caseId);
+        allow get, list: if isCaseOwner(caseId);
+        allow create, update, delete: if isCaseOwner(caseId);
       }
     }
 
     match /activities/{activityId} {
-      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
-      allow create: if isValidClientToken(request.resource.data.caseId);
-      allow read: if isValidClientToken(resource.data.caseId);
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
     }
 
     match /templates/{templateId} {
-      allow read, write: if isAuthenticated() && (resource == null || resource.data.ownerId == request.auth.uid);
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
     }
 
     match /client_portal_tokens/{tokenId} {
-      allow read, write: if isCaseOwner(tokenId);
-      allow get: if true;
+      // No public reads. Token documents are owner-managed only.
+      // tokenId is treated as a case id only for legacy owner maintenance.
+      allow get, list: if isCaseOwner(tokenId);
+      allow create, update, delete: if isCaseOwner(tokenId);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
