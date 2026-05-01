@@ -1,12 +1,13 @@
+#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
+const fail = [];
 const requiredDocs = [
   'docs/SUPABASE_FIRST_ARCHITECTURE.md',
   'docs/DATA_SOURCE_MAP.md',
 ];
-
 const requiredScreens = [
   'Today',
   'Leads',
@@ -20,49 +21,101 @@ const requiredScreens = [
   'Templates',
   'AI Drafts',
   'Billing',
+  'Portal',
   'ClientPortal',
   'Activity',
   'Settings',
 ];
+const runtimeRoots = ['src', 'api'];
+const allowedRuntimeFiles = new Set([
+  'src/firebase.ts',
+  'src/lib/firebase-utils.ts',
+]);
+const forbiddenRuntimePatterns = [
+  /from\s+['"]firebase\/firestore['"]/,
+  /from\s+['"]firebase\/compat\/firestore['"]/,
+  /getFirestore\s*\(/,
+  /collection\s*\(/,
+  /doc\s*\([^)]*,/,
+  /setDoc\s*\(/,
+  /addDoc\s*\(/,
+  /updateDoc\s*\(/,
+  /deleteDoc\s*\(/,
+  /getDoc\s*\(/,
+  /getDocs\s*\(/,
+  /onSnapshot\s*\(/,
+  /runTransaction\s*\(/,
+  /writeBatch\s*\(/,
+];
 
-function read(rel) {
-  return fs.readFileSync(path.join(root, rel), 'utf8');
+function rel(p) { return p.split(path.sep).join('/'); }
+function filePath(file) { return path.join(root, file); }
+function exists(file) { return fs.existsSync(filePath(file)); }
+function read(file) { return fs.readFileSync(filePath(file), 'utf8'); }
+function push(condition, message) { if (!condition) fail.push(message); }
+function normalizedText(value) {
+  return String(value || '')
+    .normalize('NFC')
+    .replace(/\r\n/g, '\n')
+    .replace(/[–—]/g, '-')
+    .toLowerCase();
+}
+function walk(dir, out = []) {
+  const abs = path.join(root, dir);
+  if (!fs.existsSync(abs)) return out;
+  for (const entry of fs.readdirSync(abs, { withFileTypes: true })) {
+    const full = path.join(abs, entry.name);
+    const r = rel(path.relative(root, full));
+    if (entry.isDirectory()) {
+      if (['node_modules', 'dist', 'build', '.git', '.vercel'].includes(entry.name)) continue;
+      walk(r, out);
+    } else if (/\.(ts|tsx|js|jsx|mjs|cjs)$/.test(entry.name)) {
+      out.push(r);
+    }
+  }
+  return out;
 }
 
-function assert(condition, message) {
-  if (!condition) {
-    console.error('ERROR:', message);
-    process.exit(1);
+for (const doc of requiredDocs) push(exists(doc), doc + ' is missing');
+
+const architectureRaw = exists('docs/SUPABASE_FIRST_ARCHITECTURE.md') ? read('docs/SUPABASE_FIRST_ARCHITECTURE.md') : '';
+const mapRaw = exists('docs/DATA_SOURCE_MAP.md') ? read('docs/DATA_SOURCE_MAP.md') : '';
+const architecture = normalizedText(architectureRaw);
+const map = normalizedText(mapRaw);
+const readme = exists('README.md') ? read('README.md') : '';
+const deployReadmeA = exists('README-WDROZENIE.md') ? read('README-WDROZENIE.md') : '';
+const deployReadmeB = exists('README_WDROZENIE.md') ? read('README_WDROZENIE.md') : '';
+const combinedDocs = normalizedText([readme, deployReadmeA, deployReadmeB].join('\n'));
+
+push(architecture.includes('supabase jest docelowym źródłem prawdy'), 'architecture doc must state Supabase as target source of truth');
+push(architecture.includes('firebase / firestore jest warstwą legacy'), 'architecture doc must mark Firebase / Firestore as legacy');
+push(architecture.includes('nie wolno tworzyć dwóch równoległych źródeł prawdy'), 'architecture doc must forbid two sources of truth');
+push(architecture.includes('ai nie może zapisywać finalnych danych bez potwierdzenia użytkownika'), 'architecture doc must preserve AI confirmation rule');
+push(architecture.includes('x-user-id') && architecture.includes('x-user-email') && architecture.includes('x-workspace-id'), 'architecture doc must forbid trusting frontend identity headers');
+
+for (const screen of requiredScreens) push(mapRaw.includes(screen), 'DATA_SOURCE_MAP.md must include ' + screen);
+push(map.includes('docelowym źródłem prawdy jest supabase'), 'data source map must state Supabase target');
+push(map.includes('legacy do migracji'), 'data source map must mark legacy paths');
+push(mapRaw.includes('Supabase + Stripe'), 'data source map must include Billing as Supabase + Stripe');
+push(mapRaw.includes('Supabase + Supabase Storage'), 'data source map must include Portal as Supabase + Supabase Storage');
+push(combinedDocs.includes('supabase-first'), 'README/deployment docs must mention Supabase-first');
+push(!combinedDocs.includes('# leadflow - wdrożenie (firebase)'), 'deployment README must not present Firebase as target deployment architecture');
+
+for (const runtimeRoot of runtimeRoots) {
+  for (const file of walk(runtimeRoot)) {
+    if (allowedRuntimeFiles.has(file)) continue;
+    const content = read(file);
+    for (const pattern of forbiddenRuntimePatterns) {
+      if (pattern.test(content)) {
+        fail.push(file + ' contains forbidden Firestore runtime usage: ' + pattern.toString());
+      }
+    }
   }
 }
 
-for (const doc of requiredDocs) {
-  assert(fs.existsSync(path.join(root, doc)), doc + ' is missing');
+if (fail.length) {
+  console.error('Supabase-first architecture guard failed.');
+  for (const item of fail) console.error('- ' + item);
+  process.exit(1);
 }
-
-const architecture = read('docs/SUPABASE_FIRST_ARCHITECTURE.md');
-const map = read('docs/DATA_SOURCE_MAP.md');
-const readme = fs.existsSync(path.join(root, 'README.md')) ? read('README.md') : '';
-const deployReadmeA = fs.existsSync(path.join(root, 'README-WDROZENIE.md')) ? read('README-WDROZENIE.md') : '';
-const deployReadmeB = fs.existsSync(path.join(root, 'README_WDROZENIE.md')) ? read('README_WDROZENIE.md') : '';
-
-assert(architecture.includes('Supabase jest docelowym źródłem prawdy'), 'architecture doc must state Supabase as target source of truth');
-assert(architecture.includes('Firebase / Firestore jest warstwą legacy'), 'architecture doc must mark Firebase / Firestore as legacy');
-assert(architecture.includes('Nie wolno tworzyć dwóch równoległych źródeł prawdy'), 'architecture doc must forbid two sources of truth');
-assert(architecture.includes('AI nie może zapisywać finalnych danych bez potwierdzenia użytkownika'), 'architecture doc must preserve AI confirmation rule');
-assert(architecture.includes('x-user-id') && architecture.includes('x-user-email') && architecture.includes('x-workspace-id'), 'architecture doc must forbid trusting frontend identity headers');
-
-for (const screen of requiredScreens) {
-  assert(map.includes(screen), 'DATA_SOURCE_MAP.md must include ' + screen);
-}
-
-assert(map.includes('Docelowym źródłem prawdy jest Supabase'), 'data source map must state Supabase target');
-assert(map.includes('legacy do migracji'), 'data source map must mark legacy paths');
-assert(map.includes('Supabase + Stripe'), 'data source map must include Billing as Supabase + Stripe');
-assert(map.includes('Supabase + Supabase Storage'), 'data source map must include ClientPortal as Supabase + Supabase Storage');
-
-const combinedDocs = [readme, deployReadmeA, deployReadmeB].join('\n');
-assert(combinedDocs.includes('Supabase-first'), 'README/deployment docs must mention Supabase-first');
-assert(!combinedDocs.includes('# LeadFlow — wdrożenie (Firebase)'), 'deployment README must not present Firebase as the deployment architecture title');
-
-console.log('OK: Supabase-first architecture docs guard passed.');
+console.log('OK: Supabase-first architecture guard passed.');

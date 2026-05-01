@@ -1,0 +1,27 @@
+/* STAGE_A20E_SIDEBAR_TODAY_TONE_LOCK
+   Fix only sidebar tone when Today is active. No routing, API, Supabase or data changes.
+*/
+
+@media (min-width: 761px) {
+  .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]),
+  .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]):link,
+  .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]):visited {
+    opacity: 1 !important;
+    filter: none !important;
+    color: #e2e8f0 !important;
+    background: rgba(15, 23, 42, 0.52) !important;
+    border-color: rgba(148, 163, 184, 0.26) !important;
+  }
+
+  .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]) .nav-ico,
+  .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]) .nav-label {
+    opacity: 1 !important;
+    filter: none !important;
+    color: #e2e8f0 !important;
+  }
+
+  .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]) .nav-ico {
+    background: rgba(255, 255, 255, 0.10) !important;
+    border-color: rgba(226, 232, 240, 0.16) !important;
+  }
+}
