@@ -6,8 +6,16 @@ on:
       - dev-rollout-freeze
   workflow_dispatch:
 
+concurrency:
+  group: vercel-production-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
   deploy:
+    needs: ci
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Vercel deploy hook

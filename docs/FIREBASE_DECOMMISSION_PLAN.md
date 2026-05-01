@@ -82,6 +82,7 @@ Firebase zostaje tylko chwilowo jako legacy lockdown (bez nowych funkcji i bez n
 
 Decyzja: **zostawić chwilowo jako lockdown-only**.
 Zasada: żadnych nowych kolekcji, żadnych nowych feature’ów, zero publicznych reguł.
+Do not add new collections here. Supabase is the target data layer.
 
 Komentarz wymagany w rules:
 

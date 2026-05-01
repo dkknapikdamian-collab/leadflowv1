@@ -9,8 +9,10 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "node scripts/check-visual-stage18-leads-hard-1to1.cjs && node scripts/check-visual-stage17-today-hard-1to1.cjs && node scripts/check-visual-stage16-today-html-reset.cjs && node scripts/check-visual-html-theme-v14.cjs && node scripts/check-visual-stage08-case-detail.cjs && node scripts/check-visual-stage07-cases.cjs && node scripts/check-visual-stage06-client-detail.cjs && node scripts/check-visual-stage05-clients.cjs && node scripts/check-visual-stage04-lead-detail.cjs && node scripts/check-visual-stage03-leads.cjs && node scripts/check-visual-stage02-today.cjs && node scripts/check-visual-stage01-shell.cjs && node scripts/check-relation-cleanup-today-toggle-sync.cjs && node scripts/check-today-tiles-event-edit-client-cleanup.cjs && node scripts/check-today-week-client-more-ui-text-cleanup.cjs && node scripts/check-task-edit-reminder-and-week-calendar.cjs && node scripts/check-client-inline-edit-and-task-edit.cjs && node scripts/check-task-event-contract.cjs && node scripts/check-data-contract-stage-a1.cjs && node scripts/check-data-contract-stage-a2.cjs && node scripts/check-polish-mojibake.cjs && tsc --noEmit",
+    "test": "node --test \"tests/**/*.test.cjs\"",
     "verify:closeflow": "node scripts/closeflow-release-check.cjs",
     "verify:closeflow:quiet": "node scripts/closeflow-release-check-quiet.cjs",
+    "check:polish-mojibake": "node scripts/check-polish-mojibake.cjs",
     "check:polish": "node scripts/check-polish-mojibake.cjs",
     "check:data-contract-stage-a1": "node scripts/check-data-contract-stage-a1.cjs",
     "check:task-event-contract": "node scripts/check-task-event-contract.cjs",
@@ -37,7 +39,8 @@
     "verify:architecture:supabase-first": "node scripts/check-supabase-first-architecture.cjs",
     "verify:auth:supabase-stage01": "node scripts/check-stage01-supabase-auth.cjs",
     "verify:security:firebase-stage03": "node scripts/check-stage03-firebase-legacy-lockdown.cjs",
-    "verify:data-contract-stage05": "node scripts/check-stage05-supabase-data-contract.cjs"
+    "verify:data-contract-stage05": "node scripts/check-stage05-supabase-data-contract.cjs",
+    "verify:migrations:supabase": "node scripts/check-supabase-migrations-guard.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

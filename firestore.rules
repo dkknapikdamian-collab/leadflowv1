@@ -5,6 +5,7 @@ service cloud.firestore {
     // ETAP 03 — Firebase legacy lockdown
     // Firebase/Firestore is legacy. Supabase is the source of truth.
     // Firebase is legacy. Do not add new business data here.
+    // Do not add new collections here. Supabase is the target data layer.
     //
     // Security goal:
     // - no public client portal token reads,
