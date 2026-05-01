@@ -1,6 +1,7 @@
 import { differenceInCalendarDays, isPast, parseISO, startOfDay } from 'date-fns';
 import type { KnownLeadStatus } from './domain-statuses';
 const A25_NEAREST_PLANNED_ACTION_SOURCE_LOCK = 'Najbliższa zaplanowana akcja liczona z tasks/events';
+const A25E_LEAD_HEALTH_NULL_GUARD_LOCK = 'Lead health helpers accept null lead during route loading';
 
 export const LEAD_ACTIVE_SALES_STATUSES = [
   'new',
@@ -12,7 +13,7 @@ export const LEAD_ACTIVE_SALES_STATUSES = [
   'accepted',
 ] as const;
 
-export type LeadHealthInput = Record<string, unknown> & {
+type LeadHealthRecord = Record<string, unknown> & {
   status?: KnownLeadStatus | string | null;
   leadVisibility?: string | null;
   salesOutcome?: string | null;
@@ -30,8 +31,15 @@ export type LeadHealthInput = Record<string, unknown> & {
   isAtRisk?: boolean | null;
 };
 
+export type LeadHealthInput = LeadHealthRecord | null | undefined;
+
 const CLOSED_STATUSES = new Set(['won', 'lost', 'moved_to_service', 'archived']);
 const WAITING_STATUSES = new Set(['proposal_sent', 'waiting_response', 'negotiation', 'accepted']);
+
+function normalizeLeadHealthInput(lead: LeadHealthInput): LeadHealthRecord | null {
+  if (!lead || typeof lead !== 'object') return null;
+  return lead;
+}
 
 function toDateSafe(value: unknown) {
   if (!value) return null;
@@ -61,37 +69,49 @@ export function isClosedLeadStatus(status?: string) {
 }
 
 export function isLeadMovedToService(lead: LeadHealthInput) {
-  const status = asText(lead.status);
-  const leadVisibility = asText(lead.leadVisibility);
-  const salesOutcome = asText(lead.salesOutcome);
-  const linkedCaseId = asText(lead.linkedCaseId || lead.caseId);
+  const safeLead = normalizeLeadHealthInput(lead);
+  if (!safeLead) return false;
+
+  const status = asText(safeLead.status);
+  const leadVisibility = asText(safeLead.leadVisibility);
+  const salesOutcome = asText(safeLead.salesOutcome);
+  const linkedCaseId = asText(safeLead.linkedCaseId || safeLead.caseId);
 
   return Boolean(
-    lead.movedToService
+    safeLead.movedToService
     || status === 'moved_to_service'
     || leadVisibility === 'archived'
     || salesOutcome === 'moved_to_service'
     || linkedCaseId
-    || toDateSafe(lead.movedToServiceAt)
-    || toDateSafe(lead.caseStartedAt)
-    || toDateSafe(lead.serviceStartedAt),
+    || toDateSafe(safeLead.movedToServiceAt)
+    || toDateSafe(safeLead.caseStartedAt)
+    || toDateSafe(safeLead.serviceStartedAt),
   );
 }
 
 export function isActiveSalesLead(lead: LeadHealthInput) {
-  const status = String(lead.status || '').trim();
-  return LEAD_ACTIVE_SALES_STATUSES.includes(status as typeof LEAD_ACTIVE_SALES_STATUSES[number]) && !isLeadMovedToService(lead);
+  const safeLead = normalizeLeadHealthInput(lead);
+  if (!safeLead) return false;
+
+  const status = String(safeLead.status || '').trim();
+  return LEAD_ACTIVE_SALES_STATUSES.includes(status as typeof LEAD_ACTIVE_SALES_STATUSES[number]) && !isLeadMovedToService(safeLead);
 }
 
 export function getLeadNextActionDate(lead: LeadHealthInput) {
-  return toDateSafe(lead.nextActionAt);
+  const safeLead = normalizeLeadHealthInput(lead);
+  if (!safeLead) return null;
+
+  return toDateSafe(safeLead.nextActionAt);
 }
 
 export function getLeadLastTouchDate(lead: LeadHealthInput) {
+  const safeLead = normalizeLeadHealthInput(lead);
+  if (!safeLead) return null;
+
   return (
-    toDateSafe(lead.lastContactAt) ||
-    toDateSafe(lead.updatedAt) ||
-    toDateSafe(lead.createdAt)
+    toDateSafe(safeLead.lastContactAt) ||
+    toDateSafe(safeLead.updatedAt) ||
+    toDateSafe(safeLead.createdAt)
   );
 }
 
@@ -100,8 +120,11 @@ export function hasNextStep(lead: LeadHealthInput) {
 }
 
 export function isNextStepOverdue(lead: LeadHealthInput) {
-  if (isClosedLeadStatus(String(lead.status || ''))) return false;
-  const nextAction = getLeadNextActionDate(lead);
+  const safeLead = normalizeLeadHealthInput(lead);
+  if (!safeLead) return false;
+
+  if (isClosedLeadStatus(String(safeLead.status || ''))) return false;
+  const nextAction = getLeadNextActionDate(safeLead);
   if (!nextAction) return false;
   return isPast(nextAction);
 }
@@ -113,32 +136,41 @@ export function daysSinceLastTouch(lead: LeadHealthInput) {
 }
 
 export function isWaitingTooLong(lead: LeadHealthInput) {
-  if (isClosedLeadStatus(String(lead.status || ''))) return false;
-  const status = String(lead.status || '');
+  const safeLead = normalizeLeadHealthInput(lead);
+  if (!safeLead) return false;
+
+  if (isClosedLeadStatus(String(safeLead.status || ''))) return false;
+  const status = String(safeLead.status || '');
   if (!WAITING_STATUSES.has(status)) return false;
-  const days = daysSinceLastTouch(lead);
+  const days = daysSinceLastTouch(safeLead);
   return days !== null && days >= 3;
 }
 
 export function isHighValueAtRisk(lead: LeadHealthInput) {
-  if (isClosedLeadStatus(String(lead.status || ''))) return false;
-  const dealValue = Number(lead.dealValue || 0);
+  const safeLead = normalizeLeadHealthInput(lead);
+  if (!safeLead) return false;
+
+  if (isClosedLeadStatus(String(safeLead.status || ''))) return false;
+  const dealValue = Number(safeLead.dealValue || 0);
   if (dealValue < 5000) return false;
-  const days = daysSinceLastTouch(lead) ?? 0;
-  return isNextStepOverdue(lead) || !hasNextStep(lead) || days >= 5 || Boolean(lead.isAtRisk);
+  const days = daysSinceLastTouch(safeLead) ?? 0;
+  return isNextStepOverdue(safeLead) || !hasNextStep(safeLead) || days >= 5 || Boolean(safeLead.isAtRisk);
 }
 
 export function getLeadPriorityScore(lead: LeadHealthInput) {
-  if (isClosedLeadStatus(String(lead.status || ''))) return 0;
+  const safeLead = normalizeLeadHealthInput(lead);
+  if (!safeLead) return 0;
+
+  if (isClosedLeadStatus(String(safeLead.status || ''))) return 0;
 
   let score = 0;
-  const value = Number(lead.dealValue || 0);
-  const days = daysSinceLastTouch(lead) ?? 0;
+  const value = Number(safeLead.dealValue || 0);
+  const days = daysSinceLastTouch(safeLead) ?? 0;
 
-  if (isNextStepOverdue(lead)) score += 60;
-  if (!hasNextStep(lead)) score += 45;
-  if (isWaitingTooLong(lead)) score += 35;
-  if (Boolean(lead.isAtRisk)) score += 25;
+  if (isNextStepOverdue(safeLead)) score += 60;
+  if (!hasNextStep(safeLead)) score += 45;
+  if (isWaitingTooLong(safeLead)) score += 35;
+  if (Boolean(safeLead.isAtRisk)) score += 25;
 
   if (value >= 20000) score += 35;
   else if (value >= 10000) score += 25;
@@ -153,11 +185,14 @@ export function getLeadPriorityScore(lead: LeadHealthInput) {
 }
 
 export function buildLeadAlertReason(lead: LeadHealthInput) {
-  if (isLeadMovedToService(lead)) return 'Temat jest już w obsłudze';
-  if (isNextStepOverdue(lead)) return 'Termin najbliższej akcji już minął';
-  if (!hasNextStep(lead)) return 'Brak zaplanowanej akcji';
-  if (isWaitingTooLong(lead)) return 'Temat czeka za długo bez nowego ruchu';
-  if (isHighValueAtRisk(lead)) return 'Wysoka wartość i zbyt mało ruchu';
-  if (Boolean(lead.isAtRisk)) return 'Temat oznaczony jako zagrożony';
+  const safeLead = normalizeLeadHealthInput(lead);
+  if (!safeLead) return 'Brak danych leada';
+
+  if (isLeadMovedToService(safeLead)) return 'Temat jest już w obsłudze';
+  if (isNextStepOverdue(safeLead)) return 'Termin najbliższej akcji już minął';
+  if (!hasNextStep(safeLead)) return 'Brak zaplanowanej akcji';
+  if (isWaitingTooLong(safeLead)) return 'Temat czeka za długo bez nowego ruchu';
+  if (isHighValueAtRisk(safeLead)) return 'Wysoka wartość i zbyt mało ruchu';
+  if (Boolean(safeLead.isAtRisk)) return 'Temat oznaczony jako zagrożony';
   return 'Wymaga uwagi';
 }
