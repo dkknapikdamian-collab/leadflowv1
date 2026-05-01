@@ -37,7 +37,7 @@ import {
   X,
   FolderKanban,
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
 import GlobalQuickActions from './GlobalQuickActions';
 import { parseISO, differenceInDays } from 'date-fns';
@@ -132,6 +132,7 @@ function UserCard({ userInitial, name, email }: { userInitial: string; name: str
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const user = auth.currentUser;
   const { workspace, hasAccess } = useWorkspace();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -193,6 +194,31 @@ export default function Layout({ children }: LayoutProps) {
   const userInitial = user?.displayName?.charAt(0) || user?.email?.charAt(0).toUpperCase() || 'U';
   const userName = user?.displayName || 'Użytkownik';
 
+  const handleSidebarPointerRouter = (event: any) => {
+    if (event.button !== undefined && event.button !== 0) return;
+    const x = Number(event.clientX);
+    const y = Number(event.clientY);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+
+    const navLinks = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        '[data-shell-sidebar="true"] [data-nav-path], [data-shell-mobile-menu="true"] [data-nav-path], [data-shell-mobile-nav="true"] [data-nav-path]',
+      ),
+    );
+    const matched = navLinks.find((element) => {
+      const rect = element.getBoundingClientRect();
+      return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    });
+
+    const path = matched?.dataset?.navPath || '';
+    if (!path) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    if (mobileMenuOpen) setMobileMenuOpen(false);
+    if (location.pathname !== path) navigate(path);
+  };
+
   const renderNavGroups = (compact = false, onNavigate?: () => void) => (
     <>
       {navGroups.map((group) => (
@@ -215,7 +241,12 @@ export default function Layout({ children }: LayoutProps) {
   );
 
   return (
-    <div className="app closeflow-visual-stage01 cf-html-shell" data-visual-stage="01-shell-sidebar">
+    <div
+      className="app closeflow-visual-stage01 cf-html-shell"
+      data-visual-stage="01-shell-sidebar"
+      data-sidebar-pointer-router="true"
+      onPointerDownCapture={handleSidebarPointerRouter}
+    >
       <aside className="sidebar" data-shell-sidebar="true">
         <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
           <span className="brand-logo" aria-hidden="true">
@@ -323,7 +354,7 @@ export default function Layout({ children }: LayoutProps) {
         {mobileNavItems.map((item) => {
           const isActive = isNavItemActive(location.pathname, item.path);
           return (
-            <Link key={item.path} to={item.path} className={`mobile-nav-btn ${isActive ? 'active' : ''}`} aria-current={isActive ? 'page' : undefined}>
+            <Link key={item.path} to={item.path} className={`mobile-nav-btn ${isActive ? 'active' : ''}`} aria-current={isActive ? 'page' : undefined} data-nav-path={item.path}>
               <item.icon className="h-5 w-5" />
               <span>{item.label}</span>
             </Link>

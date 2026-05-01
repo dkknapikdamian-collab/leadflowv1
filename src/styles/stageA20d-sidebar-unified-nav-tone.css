@@ -1,0 +1,67 @@
+/* STAGE_A20D_SIDEBAR_UNIFIED_NAV_TONE
+   Ujednolica odcien wszystkich przyciskow menu i wzmacnia realny hitbox.
+   Zakres: tylko shell/sidebar, bez API, Supabase i logiki domenowej.
+*/
+
+@media (min-width: 761px) {
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] {
+    contain: none !important;
+    overflow: visible !important;
+  }
+
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-scroll,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-group,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-stack {
+    overflow: visible !important;
+    pointer-events: auto !important;
+  }
+
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:link,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:visited {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    color: #e2e8f0 !important;
+    background: rgba(15, 23, 42, 0.52) !important;
+    border: 1px solid rgba(148, 163, 184, 0.26) !important;
+    box-shadow: none !important;
+  }
+
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn .nav-ico,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:link .nav-ico,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:visited .nav-ico {
+    color: #e2e8f0 !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid rgba(226, 232, 240, 0.16) !important;
+  }
+
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn .nav-label,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:link .nav-label,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:visited .nav-label {
+    color: #e2e8f0 !important;
+  }
+
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:hover,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:focus-visible {
+    color: #ffffff !important;
+    background: rgba(37, 99, 235, 0.28) !important;
+    border-color: rgba(147, 197, 253, 0.48) !important;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18) !important;
+  }
+
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn.active,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn[aria-current="page"] {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    border-color: rgba(191, 219, 254, 0.58) !important;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.34) !important;
+  }
+
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn.active .nav-ico,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn[aria-current="page"] .nav-ico {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.18) !important;
+    border-color: rgba(255, 255, 255, 0.24) !important;
+  }
+}
