@@ -1,5 +1,6 @@
 import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, requireScopedRow, withWorkspaceFilter } from '../src/server/_request-scope.js';
+import { normalizeClientContract } from '../src/lib/data-contract.js';
 
 const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'archived_at']);
 
@@ -28,28 +29,7 @@ function toIso(value: unknown) {
 }
 
 function normalizeClient(row: Record<string, unknown>) {
-  return {
-    id: String(row.id || crypto.randomUUID()),
-    workspaceId: asText(row.workspace_id || row.workspaceId),
-    name: asText(row.name) || 'Klient',
-    company: asText(row.company),
-    email: asText(row.email),
-    phone: asText(row.phone),
-    notes: asText(row.notes),
-    tags: Array.isArray(row.tags) ? row.tags.map((tag) => asText(tag)).filter(Boolean) : [],
-    sourcePrimary: asText(row.source_primary || row.sourcePrimary || 'other') || 'other',
-    dealValue: row.deal_value ?? row.dealValue ?? row.client_value ?? row.clientValue ?? row.contract_value ?? row.contractValue ?? row.total_value ?? row.totalValue ?? row.estimated_value ?? row.estimatedValue ?? row.lifetime_value ?? row.lifetimeValue ?? row.value ?? null,
-    clientValue: row.client_value ?? row.clientValue ?? row.value ?? null,
-    contractValue: row.contract_value ?? row.contractValue ?? null,
-    totalValue: row.total_value ?? row.totalValue ?? null,
-    estimatedValue: row.estimated_value ?? row.estimatedValue ?? null,
-    lifetimeValue: row.lifetime_value ?? row.lifetimeValue ?? null,
-    totalRevenue: row.total_revenue ?? row.totalRevenue ?? null,
-    createdAt: row.created_at || row.createdAt || null,
-    updatedAt: row.updated_at || row.updatedAt || null,
-    lastActivityAt: row.last_activity_at || row.lastActivityAt || null,
-    archivedAt: row.archived_at || row.archivedAt || null,
-  };
+  return normalizeClientContract(row);
 }
 
 function extractMissingColumn(error: unknown) {

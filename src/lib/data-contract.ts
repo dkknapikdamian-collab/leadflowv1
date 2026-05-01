@@ -1,42 +1,10 @@
 export type DataRecord = Record<string, unknown>;
 
-export type NormalizedTaskRecord = DataRecord & {
-  id: string;
-  title: string;
-  type: string;
-  status: string;
-  priority: string;
-  date: string;
-  scheduledAt: string | null;
-  dueAt: string | null;
-  leadId?: string;
-  caseId?: string;
-  clientId?: string;
-  reminderAt: string | null;
-  recurrenceRule: string;
-  createdAt: string | null;
-  updatedAt: string | null;
-};
-
-export type NormalizedEventRecord = DataRecord & {
-  id: string;
-  title: string;
-  type: string;
-  status: string;
-  startAt: string | null;
-  endAt: string | null;
-  scheduledAt: string | null;
-  leadId?: string;
-  caseId?: string;
-  clientId?: string;
-  reminderAt: string | null;
-  recurrenceRule: string;
-  createdAt: string | null;
-  updatedAt: string | null;
-};
-
 export type NormalizedLeadRecord = DataRecord & {
   id: string;
+  workspaceId: string;
+  clientId?: string;
+  linkedCaseId?: string;
   name: string;
   company: string;
   email: string;
@@ -44,24 +12,166 @@ export type NormalizedLeadRecord = DataRecord & {
   source: string;
   status: string;
   dealValue: number;
-  nextActionAt: string | null;
-  nextActionItemId?: string;
-  linkedCaseId?: string;
-  clientId?: string;
-  workspaceId?: string;
+  priority: string;
   createdAt: string | null;
   updatedAt: string | null;
+  movedToServiceAt: string | null;
+  nextActionAt: string | null;
+  nextActionItemId?: string;
+  movedToService: boolean;
+  leadVisibility: string;
+  salesOutcome: string;
+};
+
+export type NormalizedClientRecord = DataRecord & {
+  id: string;
+  workspaceId: string;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  notes: string;
+  tags: string[];
+  sourcePrimary: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+  lastActivityAt: string | null;
+  archivedAt: string | null;
 };
 
 export type NormalizedCaseRecord = DataRecord & {
   id: string;
+  workspaceId: string;
+  clientId?: string;
+  leadId?: string;
   title: string;
   clientName: string;
   status: string;
-  leadId?: string;
-  clientId?: string;
   completenessPercent: number;
   portalReady: boolean;
+  startedAt: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+export type NormalizedTaskRecord = DataRecord & {
+  id: string;
+  workspaceId: string;
+  title: string;
+  status: string;
+  type: string;
+  priority: string;
+  scheduledAt: string | null;
+  date: string;
+  leadId?: string;
+  caseId?: string;
+  clientId?: string;
+  reminderAt: string | null;
+  recurrenceRule: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+  /** Legacy compatibility only. New code should use scheduledAt. */
+  dueAt: string | null;
+};
+
+export type NormalizedEventRecord = DataRecord & {
+  id: string;
+  workspaceId: string;
+  title: string;
+  type: string;
+  status: string;
+  startAt: string | null;
+  endAt: string | null;
+  leadId?: string;
+  caseId?: string;
+  clientId?: string;
+  reminderAt: string | null;
+  recurrenceRule: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+  /** Legacy compatibility only. New code should use startAt. */
+  scheduledAt: string | null;
+};
+
+export type NormalizedActivityRecord = DataRecord & {
+  id: string;
+  workspaceId: string;
+  caseId?: string;
+  leadId?: string;
+  clientId?: string;
+  ownerId?: string;
+  actorId?: string;
+  actorType: string;
+  eventType: string;
+  payload: Record<string, unknown>;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+export type NormalizedPaymentRecord = DataRecord & {
+  id: string;
+  workspaceId: string;
+  clientId?: string;
+  leadId?: string;
+  caseId?: string;
+  type: string;
+  status: string;
+  amount: number;
+  currency: string;
+  paidAt: string | null;
+  dueAt: string | null;
+  note: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+export type NormalizedAiDraftRecord = DataRecord & {
+  id: string;
+  workspaceId: string;
+  type: string;
+  status: string;
+  rawText: string;
+  provider: string;
+  source: string;
+  parsedDraft: Record<string, unknown> | null;
+  parsedData: Record<string, unknown> | null;
+  linkedRecordId: string | null;
+  linkedRecordType: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  confirmedAt: string | null;
+  convertedAt: string | null;
+  cancelledAt: string | null;
+};
+
+export type NormalizedResponseTemplateRecord = DataRecord & {
+  id: string;
+  workspaceId: string;
+  name: string;
+  title: string;
+  body: string;
+  category: string;
+  channel: string;
+  isArchived: boolean;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+export type NormalizedCaseItemRecord = DataRecord & {
+  id: string;
+  workspaceId: string;
+  caseId: string;
+  title: string;
+  description: string;
+  type: string;
+  status: string;
+  isRequired: boolean;
+  order: number;
+  response: string | null;
+  fileUrl: string | null;
+  fileName: string | null;
+  dueDate: string | null;
+  approvedAt: string | null;
   createdAt: string | null;
   updatedAt: string | null;
 };
@@ -80,6 +190,11 @@ function pickOptionalText(row: DataRecord, keys: string[]) {
   return value || undefined;
 }
 
+function pickNullableText(row: DataRecord, keys: string[]) {
+  const value = pickText(row, keys, '');
+  return value || null;
+}
+
 function pickNumber(row: DataRecord, keys: string[], fallback = 0) {
   for (const key of keys) {
     const value = row[key];
@@ -91,6 +206,49 @@ function pickNumber(row: DataRecord, keys: string[], fallback = 0) {
     }
   }
   return fallback;
+}
+
+function pickBoolean(row: DataRecord, keys: string[], fallback = false) {
+  for (const key of keys) {
+    const value = row[key];
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'string' && value.trim()) {
+      const normalized = value.trim().toLowerCase();
+      if (['true', '1', 'yes', 'tak'].includes(normalized)) return true;
+      if (['false', '0', 'no', 'nie'].includes(normalized)) return false;
+    }
+    if (typeof value === 'number' && Number.isFinite(value)) return value !== 0;
+  }
+  return fallback;
+}
+
+function pickStringArray(row: DataRecord, keys: string[]) {
+  for (const key of keys) {
+    const value = row[key];
+    if (Array.isArray(value)) {
+      return value.map((item) => pickText({ item }, ['item'])).filter(Boolean);
+    }
+    if (typeof value === 'string' && value.trim()) {
+      return value.split(',').map((item) => item.trim()).filter(Boolean);
+    }
+  }
+  return [];
+}
+
+function pickPayload(row: DataRecord, keys: string[]) {
+  for (const key of keys) {
+    const value = row[key];
+    if (value && typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>;
+    if (typeof value === 'string' && value.trim()) {
+      try {
+        const parsed = JSON.parse(value);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed as Record<string, unknown>;
+      } catch {
+        return { raw: value };
+      }
+    }
+  }
+  return {};
 }
 
 export function toIsoDateTime(value: unknown) {
@@ -110,6 +268,9 @@ function toDateOnly(value: unknown) {
 
 function normalizeStatus(value: unknown, fallback: string) {
   const status = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  if (status === 'follow_up') return 'waiting_response';
+  if (status === 'accepted_waiting_start') return 'accepted';
+  if (status === 'active_service') return 'moved_to_service';
   return status || fallback;
 }
 
@@ -125,6 +286,83 @@ function normalizePriority(value: unknown) {
   return 'medium';
 }
 
+function clampPercent(value: number) {
+  return Math.max(0, Math.min(100, Math.round(Number.isFinite(value) ? value : 0)));
+}
+
+export function normalizeLeadContract(row: DataRecord): NormalizedLeadRecord {
+  const status = normalizeStatus(row.status, 'new');
+  const linkedCaseId = pickOptionalText(row, ['linkedCaseId', 'linked_case_id', 'caseId', 'case_id']);
+  const movedToServiceAt =
+    toIsoDateTime(row.movedToServiceAt) ||
+    toIsoDateTime(row.moved_to_service_at) ||
+    toIsoDateTime(row.caseStartedAt) ||
+    toIsoDateTime(row.case_started_at);
+  const leadVisibility = pickText(row, ['leadVisibility', 'lead_visibility'], status === 'moved_to_service' || linkedCaseId ? 'archived' : 'active');
+  const salesOutcome = pickText(row, ['salesOutcome', 'sales_outcome'], status === 'moved_to_service' ? 'moved_to_service' : status === 'won' || status === 'lost' ? status : 'open');
+
+  return {
+    ...row,
+    id: pickText(row, ['id'], crypto.randomUUID()),
+    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
+    clientId: pickOptionalText(row, ['clientId', 'client_id']),
+    linkedCaseId,
+    name: pickText(row, ['name', 'fullName', 'full_name', 'title', 'personName', 'person_name'], 'Lead'),
+    company: pickText(row, ['company', 'companyName', 'company_name'], ''),
+    email: pickText(row, ['email'], ''),
+    phone: pickText(row, ['phone'], ''),
+    source: pickText(row, ['source', 'sourceLabel', 'source_label', 'sourceType', 'source_type'], 'other'),
+    status,
+    dealValue: pickNumber(row, ['dealValue', 'deal_value', 'value', 'amount', 'estimatedValue', 'estimated_value'], 0),
+    priority: normalizePriority(row.priority),
+    createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+    movedToServiceAt,
+    nextActionAt: toIsoDateTime(row.nextActionAt) || toIsoDateTime(row.next_action_at) || toIsoDateTime(row.nextStepDueAt) || toIsoDateTime(row.next_step_due_at),
+    nextActionItemId: pickOptionalText(row, ['nextActionItemId', 'next_action_item_id']),
+    movedToService: status === 'moved_to_service' || leadVisibility === 'archived' || Boolean(linkedCaseId),
+    leadVisibility,
+    salesOutcome,
+  };
+}
+
+export function normalizeClientContract(row: DataRecord): NormalizedClientRecord {
+  return {
+    ...row,
+    id: pickText(row, ['id'], crypto.randomUUID()),
+    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
+    name: pickText(row, ['name', 'fullName', 'full_name', 'clientName', 'client_name'], 'Klient'),
+    company: pickText(row, ['company', 'companyName', 'company_name'], ''),
+    email: pickText(row, ['email'], ''),
+    phone: pickText(row, ['phone'], ''),
+    notes: pickText(row, ['notes', 'note'], ''),
+    tags: pickStringArray(row, ['tags']),
+    sourcePrimary: pickText(row, ['sourcePrimary', 'source_primary', 'source'], 'other'),
+    createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+    lastActivityAt: toIsoDateTime(row.lastActivityAt) || toIsoDateTime(row.last_activity_at),
+    archivedAt: toIsoDateTime(row.archivedAt) || toIsoDateTime(row.archived_at),
+  };
+}
+
+export function normalizeCaseContract(row: DataRecord): NormalizedCaseRecord {
+  return {
+    ...row,
+    id: pickText(row, ['id'], crypto.randomUUID()),
+    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
+    clientId: pickOptionalText(row, ['clientId', 'client_id']),
+    leadId: pickOptionalText(row, ['leadId', 'lead_id']),
+    title: pickText(row, ['title', 'name', 'clientName', 'client_name'], 'Sprawa'),
+    clientName: pickText(row, ['clientName', 'client_name', 'name'], ''),
+    status: normalizeStatus(row.status, 'new'),
+    completenessPercent: clampPercent(pickNumber(row, ['completenessPercent', 'completeness_percent', 'completionPercent', 'completion_percent'], 0)),
+    portalReady: pickBoolean(row, ['portalReady', 'portal_ready'], false),
+    startedAt: toIsoDateTime(row.startedAt) || toIsoDateTime(row.started_at) || toIsoDateTime(row.serviceStartedAt) || toIsoDateTime(row.service_started_at),
+    createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+  };
+}
+
 export function normalizeTaskContract(row: DataRecord): NormalizedTaskRecord {
   const scheduledAt =
     toIsoDateTime(row.scheduledAt) ||
@@ -135,27 +373,26 @@ export function normalizeTaskContract(row: DataRecord): NormalizedTaskRecord {
     toIsoDateTime(row.startAt) ||
     toIsoDateTime(row.start_at) ||
     null;
-
   const createdAt = toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at);
-  const updatedAt = toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at);
 
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),
+    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
     title: pickText(row, ['title', 'name', 'summary'], 'Zadanie'),
-    type: pickText(row, ['type', 'taskType', 'task_type', 'recordType', 'record_type'], 'task'),
     status: normalizeStatus(row.status, 'todo'),
+    type: pickText(row, ['type', 'taskType', 'task_type', 'recordType', 'record_type'], 'task'),
     priority: normalizePriority(row.priority),
-    date: toDateOnly(scheduledAt) || toDateOnly(createdAt) || '',
     scheduledAt,
-    dueAt: scheduledAt,
+    date: toDateOnly(scheduledAt) || toDateOnly(createdAt) || '',
     leadId: pickOptionalText(row, ['leadId', 'lead_id']),
     caseId: pickOptionalText(row, ['caseId', 'case_id']),
     clientId: pickOptionalText(row, ['clientId', 'client_id']),
     reminderAt: toIsoDateTime(row.reminderAt) || toIsoDateTime(row.reminder_at) || (typeof row.reminder === 'string' ? toIsoDateTime(row.reminder) : null),
     recurrenceRule: normalizeRecurrence(row.recurrenceRule || row.recurrence_rule || row.recurrence),
     createdAt,
-    updatedAt,
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+    dueAt: scheduledAt,
   };
 }
 
@@ -167,84 +404,136 @@ export function normalizeEventContract(row: DataRecord): NormalizedEventRecord {
     toIsoDateTime(row.scheduled_at) ||
     toIsoDateTime(row.date) ||
     null;
-  const endAt = toIsoDateTime(row.endAt) || toIsoDateTime(row.end_at) || null;
-  const createdAt = toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at);
-  const updatedAt = toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at);
 
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),
+    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
     title: pickText(row, ['title', 'name', 'summary'], 'Wydarzenie'),
     type: pickText(row, ['type', 'eventType', 'event_type', 'recordType', 'record_type'], 'event'),
     status: normalizeStatus(row.status, 'scheduled'),
     startAt,
-    endAt,
-    scheduledAt: startAt,
+    endAt: toIsoDateTime(row.endAt) || toIsoDateTime(row.end_at),
     leadId: pickOptionalText(row, ['leadId', 'lead_id']),
     caseId: pickOptionalText(row, ['caseId', 'case_id']),
     clientId: pickOptionalText(row, ['clientId', 'client_id']),
     reminderAt: toIsoDateTime(row.reminderAt) || toIsoDateTime(row.reminder_at) || (typeof row.reminder === 'string' ? toIsoDateTime(row.reminder) : null),
     recurrenceRule: normalizeRecurrence(row.recurrenceRule || row.recurrence_rule || row.recurrence),
-    createdAt,
-    updatedAt,
+    createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+    scheduledAt: startAt,
   };
 }
 
-export function normalizeLeadContract(row: DataRecord): NormalizedLeadRecord {
-  const createdAt = toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at);
-  const updatedAt = toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at);
-
+export function normalizeActivityContract(row: DataRecord): NormalizedActivityRecord {
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),
-    workspaceId: pickOptionalText(row, ['workspaceId', 'workspace_id']),
-    clientId: pickOptionalText(row, ['clientId', 'client_id']),
-    linkedCaseId: pickOptionalText(row, ['linkedCaseId', 'linked_case_id', 'caseId', 'case_id']),
-    name: pickText(row, ['name', 'fullName', 'full_name', 'title', 'personName', 'person_name'], 'Lead'),
-    company: pickText(row, ['company', 'companyName', 'company_name'], ''),
-    email: pickText(row, ['email'], ''),
-    phone: pickText(row, ['phone'], ''),
-    source: pickText(row, ['source', 'sourceLabel', 'source_label', 'sourceType', 'source_type'], 'other'),
-    status: normalizeStatus(row.status, 'new'),
-    dealValue: pickNumber(row, ['dealValue', 'deal_value', 'value', 'amount', 'estimatedValue', 'estimated_value'], 0),
-    nextActionAt: toIsoDateTime(row.nextActionAt) || toIsoDateTime(row.next_action_at) || toIsoDateTime(row.nextStepDueAt) || toIsoDateTime(row.next_step_due_at),
-    nextActionItemId: pickOptionalText(row, ['nextActionItemId', 'next_action_item_id']),
-    createdAt,
-    updatedAt,
-  };
-}
-
-export function normalizeCaseContract(row: DataRecord): NormalizedCaseRecord {
-  const createdAt = toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at);
-  const updatedAt = toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at);
-
-  return {
-    ...row,
-    id: pickText(row, ['id'], crypto.randomUUID()),
-    title: pickText(row, ['title', 'name', 'clientName', 'client_name'], 'Sprawa'),
-    clientName: pickText(row, ['clientName', 'client_name', 'name'], ''),
-    status: normalizeStatus(row.status, 'new'),
+    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
+    caseId: pickOptionalText(row, ['caseId', 'case_id']),
     leadId: pickOptionalText(row, ['leadId', 'lead_id']),
     clientId: pickOptionalText(row, ['clientId', 'client_id']),
-    completenessPercent: Math.max(0, Math.min(100, Math.round(pickNumber(row, ['completenessPercent', 'completeness_percent', 'completionPercent', 'completion_percent'], 0)))),
-    portalReady: Boolean(row.portalReady ?? row.portal_ready ?? false),
-    createdAt,
-    updatedAt,
+    ownerId: pickOptionalText(row, ['ownerId', 'owner_id']),
+    actorId: pickOptionalText(row, ['actorId', 'actor_id']),
+    actorType: pickText(row, ['actorType', 'actor_type'], 'operator'),
+    eventType: pickText(row, ['eventType', 'event_type', 'type'], 'activity'),
+    payload: pickPayload(row, ['payload', 'data']),
+    createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
   };
 }
 
-export function normalizeTaskListContract(rows: unknown) {
-  return Array.isArray(rows) ? rows.filter(Boolean).map((row) => normalizeTaskContract(row as DataRecord)) : [];
+export function normalizePaymentContract(row: DataRecord): NormalizedPaymentRecord {
+  return {
+    ...row,
+    id: pickText(row, ['id'], crypto.randomUUID()),
+    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
+    clientId: pickOptionalText(row, ['clientId', 'client_id']),
+    leadId: pickOptionalText(row, ['leadId', 'lead_id']),
+    caseId: pickOptionalText(row, ['caseId', 'case_id']),
+    type: pickText(row, ['type'], 'manual'),
+    status: normalizeStatus(row.status, 'not_started'),
+    amount: pickNumber(row, ['amount', 'value', 'total'], 0),
+    currency: pickText(row, ['currency'], 'PLN').toUpperCase(),
+    paidAt: toIsoDateTime(row.paidAt) || toIsoDateTime(row.paid_at),
+    dueAt: toIsoDateTime(row.dueAt) || toIsoDateTime(row.due_at),
+    note: pickText(row, ['note', 'notes'], ''),
+    createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+  };
 }
 
-export function normalizeEventListContract(rows: unknown) {
-  return Array.isArray(rows) ? rows.filter(Boolean).map((row) => normalizeEventContract(row as DataRecord)) : [];
+export function normalizeAiDraftContract(row: DataRecord): NormalizedAiDraftRecord {
+  return {
+    ...row,
+    id: pickText(row, ['id'], crypto.randomUUID()),
+    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
+    type: pickText(row, ['type', 'draftType', 'draft_type'], 'note'),
+    status: normalizeStatus(row.status, 'pending'),
+    rawText: pickText(row, ['rawText', 'raw_text', 'text'], ''),
+    provider: pickText(row, ['provider'], 'manual'),
+    source: pickText(row, ['source'], 'app'),
+    parsedDraft: Object.keys(pickPayload(row, ['parsedDraft', 'parsed_draft'])).length ? pickPayload(row, ['parsedDraft', 'parsed_draft']) : null,
+    parsedData: Object.keys(pickPayload(row, ['parsedData', 'parsed_data'])).length ? pickPayload(row, ['parsedData', 'parsed_data']) : null,
+    linkedRecordId: pickNullableText(row, ['linkedRecordId', 'linked_record_id']),
+    linkedRecordType: pickNullableText(row, ['linkedRecordType', 'linked_record_type']),
+    createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+    confirmedAt: toIsoDateTime(row.confirmedAt) || toIsoDateTime(row.confirmed_at),
+    convertedAt: toIsoDateTime(row.convertedAt) || toIsoDateTime(row.converted_at),
+    cancelledAt: toIsoDateTime(row.cancelledAt) || toIsoDateTime(row.cancelled_at),
+  };
 }
 
-export function normalizeLeadListContract(rows: unknown) {
-  return Array.isArray(rows) ? rows.filter(Boolean).map((row) => normalizeLeadContract(row as DataRecord)) : [];
+export function normalizeResponseTemplateContract(row: DataRecord): NormalizedResponseTemplateRecord {
+  return {
+    ...row,
+    id: pickText(row, ['id'], crypto.randomUUID()),
+    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
+    name: pickText(row, ['name', 'title'], 'Szablon'),
+    title: pickText(row, ['title', 'name'], 'Szablon'),
+    body: pickText(row, ['body', 'content', 'text'], ''),
+    category: pickText(row, ['category', 'type'], 'general'),
+    channel: pickText(row, ['channel'], 'email'),
+    isArchived: pickBoolean(row, ['isArchived', 'is_archived', 'archived'], false),
+    createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+  };
 }
 
-export function normalizeCaseListContract(rows: unknown) {
-  return Array.isArray(rows) ? rows.filter(Boolean).map((row) => normalizeCaseContract(row as DataRecord)) : [];
+export function normalizeCaseItemContract(row: DataRecord): NormalizedCaseItemRecord {
+  return {
+    ...row,
+    id: pickText(row, ['id'], crypto.randomUUID()),
+    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
+    caseId: pickText(row, ['caseId', 'case_id'], ''),
+    title: pickText(row, ['title', 'name'], 'Element sprawy'),
+    description: pickText(row, ['description', 'desc'], ''),
+    type: pickText(row, ['type', 'itemType', 'item_type'], 'document'),
+    status: normalizeStatus(row.status, 'missing'),
+    isRequired: pickBoolean(row, ['isRequired', 'is_required', 'required'], false),
+    order: Math.round(pickNumber(row, ['order', 'sort_order', 'position'], 0)),
+    response: pickNullableText(row, ['response']),
+    fileUrl: pickNullableText(row, ['fileUrl', 'file_url']),
+    fileName: pickNullableText(row, ['fileName', 'file_name']),
+    dueDate: toIsoDateTime(row.dueDate) || toIsoDateTime(row.due_date),
+    approvedAt: toIsoDateTime(row.approvedAt) || toIsoDateTime(row.approved_at),
+    createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+  };
 }
+
+function normalizeList<T>(rows: unknown, normalizer: (row: DataRecord) => T) {
+  return Array.isArray(rows) ? rows.filter(Boolean).map((row) => normalizer(row as DataRecord)) : [];
+}
+
+export function normalizeLeadListContract(rows: unknown) { return normalizeList(rows, normalizeLeadContract); }
+export function normalizeClientListContract(rows: unknown) { return normalizeList(rows, normalizeClientContract); }
+export function normalizeCaseListContract(rows: unknown) { return normalizeList(rows, normalizeCaseContract); }
+export function normalizeTaskListContract(rows: unknown) { return normalizeList(rows, normalizeTaskContract); }
+export function normalizeEventListContract(rows: unknown) { return normalizeList(rows, normalizeEventContract); }
+export function normalizeActivityListContract(rows: unknown) { return normalizeList(rows, normalizeActivityContract); }
+export function normalizePaymentListContract(rows: unknown) { return normalizeList(rows, normalizePaymentContract); }
+export function normalizeAiDraftListContract(rows: unknown) { return normalizeList(rows, normalizeAiDraftContract); }
+export function normalizeResponseTemplateListContract(rows: unknown) { return normalizeList(rows, normalizeResponseTemplateContract); }
+export function normalizeCaseItemListContract(rows: unknown) { return normalizeList(rows, normalizeCaseItemContract); }

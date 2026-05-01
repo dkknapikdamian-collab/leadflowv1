@@ -1,7 +1,7 @@
 // AI_DRAFT_CONFIRM_RECORDS_STAGE25_SUPABASE
 import { getClientAuthSnapshot } from './client-auth';
 import { getSupabaseAccessToken } from './supabase-auth';
-import { normalizeCaseContract, normalizeCaseListContract, normalizeEventListContract, normalizeLeadContract, normalizeLeadListContract, normalizeTaskListContract } from './data-contract';
+import { normalizeActivityListContract, normalizeAiDraftListContract, normalizeCaseContract, normalizeCaseItemListContract, normalizeCaseListContract, normalizeClientContract, normalizeClientListContract, normalizeEventListContract, normalizeLeadContract, normalizeLeadListContract, normalizePaymentListContract, normalizeTaskListContract } from './data-contract';
 
 type SupabaseInsertResult = { [key: string]: unknown };
 type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextActionAt?: string; ownerId?: string; workspaceId?: string };
@@ -120,8 +120,8 @@ export const createLeadFromAiDraftApprovalInSupabase = insertLeadToSupabase;
 export async function startLeadServiceInSupabase(input: { id: string; title: string; caseStatus?: string; clientName?: string; clientEmail?: string; clientPhone?: string; workspaceId?: string }) {
   return callApi<Record<string, unknown>>('/api/leads', { method: 'POST', body: JSON.stringify({ action: 'start_service', ...input }) });
 }
-export async function fetchClientsFromSupabase() { return callApi<Record<string, unknown>[]>('/api/clients'); }
-export async function fetchClientByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/clients?id=${encodeURIComponent(id)}`); }
+export async function fetchClientsFromSupabase() { return callApi<Record<string, unknown>[]>('/api/clients').then(normalizeClientListContract); }
+export async function fetchClientByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/clients?id=${encodeURIComponent(id)}`).then((row) => normalizeClientContract(row)); }
 export async function createClientInSupabase(input: ClientUpsertInput) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateClientInSupabase(input: ClientUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteClientFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/clients?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
@@ -138,7 +138,7 @@ export async function fetchPaymentsFromSupabase(params?: { leadId?: string; case
   if (params?.caseId) query.set('caseId', params.caseId);
   if (params?.clientId) query.set('clientId', params.clientId);
   if (params?.status) query.set('status', params.status);
-  return callApi<Record<string, unknown>[]>(`/api/payments${query.toString() ? `?${query.toString()}` : ''}`);
+  return callApi<Record<string, unknown>[]>(`/api/payments${query.toString() ? `?${query.toString()}` : ''}`).then(normalizePaymentListContract);
 }
 export async function createPaymentInSupabase(input: PaymentUpsertInput) { return callApi<SupabaseInsertResult>('/api/payments', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updatePaymentInSupabase(input: PaymentUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/payments', { method: 'PATCH', body: JSON.stringify(input) }); }
@@ -167,7 +167,7 @@ export async function fetchAiDraftsFromSupabase(params?: { status?: string; limi
   const query = new URLSearchParams();
   if (params?.status) query.set('status', params.status);
   if (params?.limit) query.set('limit', String(params.limit));
-  return callApi<Record<string, unknown>[]>(`/api/system?kind=ai-drafts${query.toString() ? `&${query.toString()}` : ''}`);
+  return callApi<Record<string, unknown>[]>(`/api/system?kind=ai-drafts${query.toString() ? `&${query.toString()}` : ''}`).then(normalizeAiDraftListContract);
 }
 
 export async function createAiDraftInSupabase(input: AiDraftApiInput) {
@@ -225,13 +225,13 @@ export async function fetchCaseByIdFromSupabase(id: string) { return callApi<Rec
 export async function createCaseInSupabase(input: CaseUpsertInput) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateCaseInSupabase(input: CaseUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteCaseFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/cases?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
-export async function fetchCaseItemsFromSupabase(caseId: string) { return callApi<Record<string, unknown>[]>(`/api/case-items?caseId=${encodeURIComponent(caseId)}`); }
+export async function fetchCaseItemsFromSupabase(caseId: string) { return callApi<Record<string, unknown>[]>(`/api/case-items?caseId=${encodeURIComponent(caseId)}`).then(normalizeCaseItemListContract); }
 export async function insertCaseItemToSupabase(input: CaseItemInput) { return callApi<SupabaseInsertResult>('/api/case-items', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateCaseItemInSupabase(input: CaseItemInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/case-items', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteCaseItemFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/case-items?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function fetchActivitiesFromSupabase(params?: { caseId?: string; leadId?: string; limit?: number }) {
   const query = new URLSearchParams(); if (params?.caseId) query.set('caseId', params.caseId); if (params?.leadId) query.set('leadId', params.leadId); if (params?.limit) query.set('limit', String(params.limit));
-  return callApi<Record<string, unknown>[]>(`/api/activities${query.toString() ? `?${query.toString()}` : ''}`);
+  return callApi<Record<string, unknown>[]>(`/api/activities${query.toString() ? `?${query.toString()}` : ''}`).then(normalizeActivityListContract);
 }
 export async function insertActivityToSupabase(input: ActivityInput) { return callApi<SupabaseInsertResult>('/api/activities', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateActivityInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/activities', { method: 'PATCH', body: JSON.stringify(input) }); }

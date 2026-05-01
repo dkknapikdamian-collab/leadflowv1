@@ -1,5 +1,6 @@
 ﻿import { isValid, parseISO } from 'date-fns';
 import { fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchTasksFromSupabase, hasStoredWorkspaceContext, isSupabaseConfigured } from './supabase-fallback';
+import { normalizeEventContract, normalizeTaskContract } from './data-contract';
 
 export type CalendarTaskItem = {
   id: string;
@@ -21,6 +22,7 @@ export type CalendarTaskItem = {
   leadId?: string;
   leadName?: string;
   caseId?: string;
+  clientId?: string;
 };
 
 export type CalendarEventItem = {
@@ -33,6 +35,7 @@ export type CalendarEventItem = {
   leadId?: string;
   leadName?: string;
   caseId?: string;
+  clientId?: string;
   reminderAt?: string | null;
   recurrenceRule?: string;
   recurrenceEndType?: string;
@@ -54,77 +57,8 @@ function isIsoLike(value?: string | null) {
   return isValid(parseISO(value));
 }
 
-function asString(value: unknown) {
-  return typeof value === 'string' ? value.trim() : '';
-}
-
-function firstText(...values: unknown[]) {
-  for (const value of values) {
-    const normalized = asString(value);
-    if (normalized) return normalized;
-  }
-  return '';
-}
-
-function asNullableText(...values: unknown[]) {
-  const normalized = firstText(...values);
-  return normalized || undefined;
-}
-
-function asNullableIso(...values: unknown[]) {
-  const normalized = firstText(...values);
-  if (!normalized) return undefined;
-  return isIsoLike(normalized) ? normalized : undefined;
-}
-
-function normalizeTaskScheduledAt(row: Record<string, unknown>) {
-  // STAGE34_CALENDAR_TASK_DATE_FALLBACKS: tasks can come from due/scheduled/start/next-action/follow-up fields.
-  const directDateTime = firstText(
-    row.dueAt, row.due_at,
-    row.scheduledAt, row.scheduled_at,
-    row.startAt, row.start_at,
-    row.nextActionAt, row.next_action_at,
-    row.followUpAt, row.follow_up_at,
-    row.reminderAt, row.reminder_at,
-  );
-  if (directDateTime && isIsoLike(directDateTime)) return directDateTime;
-
-  const dateField = firstText(
-    row.date, row.dueDate, row.due_date,
-    row.scheduledDate, row.scheduled_date,
-    row.nextActionDate, row.next_action_date,
-    row.followUpDate, row.follow_up_date,
-  );
-  const timeField = firstText(
-    row.time, row.scheduledTime, row.scheduled_time,
-    row.dueTime, row.due_time,
-    row.nextActionTime, row.next_action_time,
-    row.followUpTime, row.follow_up_time,
-  ) || '09:00';
-  if (!dateField) return '';
-
-  const composed = dateField.includes('T') ? dateField : dateField + 'T' + timeField;
-  return isIsoLike(composed) ? composed : '';
-}
-
-function normalizeEventStartAt(row: Record<string, unknown>) {
-  // STAGE34B_CALENDAR_EVENT_DATE_FALLBACKS: event rows may arrive with legacy scheduled/date fields.
-  const startAt = firstText(
-    row.startAt,
-    row.start_at,
-    row.startsAt,
-    row.starts_at,
-    row.scheduledAt,
-    row.scheduled_at,
-    row.eventAt,
-    row.event_at,
-  );
-  if (startAt && isIsoLike(startAt)) return startAt;
-
-  const dateField = firstText(row.date, row.eventDate, row.event_date, row.scheduledDate, row.scheduled_date);
-  const timeField = firstText(row.time, row.eventTime, row.event_time, row.scheduled_time) || '09:00';
-  const composed = dateField ? dateField + 'T' + timeField : ''; 
-  return composed && isIsoLike(composed) ? composed : '';
+function asNullableText(value: unknown) {
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined;
 }
 
 function normalizeReminderMinutes(scheduledAt: string, reminderAt?: string | null) {
@@ -133,85 +67,83 @@ function normalizeReminderMinutes(scheduledAt: string, reminderAt?: string | nul
   return Math.max(0, minutes);
 }
 
-export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTaskItem | null {
-  const scheduledAt = normalizeTaskScheduledAt(row);
-  if (!scheduledAt) return null;
+function normalizeRecurrenceObject(row: Record<string, unknown>, recurrenceRule?: string, recurrenceEndType?: string, recurrenceCount?: number | null) {
+  return row.recurrence && typeof row.recurrence === 'object'
+    ? (row.recurrence as Record<string, unknown>)
+    : { mode: recurrenceRule || 'none', interval: 1, until: null, endType: recurrenceEndType || 'never', count: recurrenceCount ?? null };
+}
 
-  const reminderAt = firstText(row.reminderAt, row.reminder_at) || null;
-  const recurrenceRule = firstText(row.recurrenceRule, row.recurrence_rule) || undefined;
-  const recurrenceEndType = firstText(row.recurrenceEndType, row.recurrence_end_type) || undefined;
-  const recurrenceEndAt = firstText(row.recurrenceEndAt, row.recurrence_end_at) || null;
+function normalizeReminderObject(row: Record<string, unknown>, scheduledAt: string, reminderAt?: string | null) {
+  if (row.reminder && typeof row.reminder === 'object') return row.reminder as Record<string, unknown>;
+  return reminderAt
+    ? { mode: 'once', minutesBefore: normalizeReminderMinutes(scheduledAt, reminderAt), recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
+    : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null };
+}
+
+function getRecurrenceMeta(row: Record<string, unknown>) {
+  const recurrenceEndType = asNullableText(row.recurrenceEndType) || asNullableText(row.recurrence_end_type);
+  const recurrenceEndAt = asNullableText(row.recurrenceEndAt) || asNullableText(row.recurrence_end_at) || null;
   const recurrenceCount = typeof row.recurrenceCount === 'number'
     ? row.recurrenceCount
     : typeof row.recurrence_count === 'number'
       ? row.recurrence_count
       : null;
-  const reminderMinutes = normalizeReminderMinutes(scheduledAt, reminderAt);
+  return { recurrenceEndType, recurrenceEndAt, recurrenceCount };
+}
+
+export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTaskItem | null {
+  const task = normalizeTaskContract(row);
+  const scheduledAt = task.scheduledAt;
+  if (!scheduledAt || !isIsoLike(scheduledAt)) return null;
+
+  const { recurrenceEndType, recurrenceEndAt, recurrenceCount } = getRecurrenceMeta(row);
 
   return {
-    id: String(row.id || crypto.randomUUID()),
-    title: firstText(row.title, row.name) || 'Zadanie bez tytułu',
-    date: scheduledAt.slice(0, 10),
+    id: task.id,
+    title: task.title || 'Zadanie bez tytułu',
+    date: task.date || scheduledAt.slice(0, 10),
     dueAt: scheduledAt.slice(0, 16),
     time: scheduledAt.slice(11, 16),
     scheduledAt,
-    status: firstText(row.status, row.task_status).toLowerCase() || 'todo',
-    type: asNullableText(row.type, row.task_type),
-    priority: asNullableText(row.priority),
-    reminderAt,
-    recurrenceRule,
-    recurrence: row.recurrence && typeof row.recurrence === 'object'
-      ? (row.recurrence as Record<string, unknown>)
-      : { mode: recurrenceRule || 'none', interval: 1, until: null, endType: recurrenceEndType || 'never', count: recurrenceCount },
-    reminder: row.reminder && typeof row.reminder === 'object'
-      ? (row.reminder as Record<string, unknown>)
-      : reminderAt
-        ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
-        : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
+    status: task.status || 'todo',
+    type: task.type || 'task',
+    priority: task.priority,
+    reminderAt: task.reminderAt,
+    recurrenceRule: task.recurrenceRule || undefined,
+    recurrence: normalizeRecurrenceObject(row, task.recurrenceRule, recurrenceEndType, recurrenceCount),
+    reminder: normalizeReminderObject(row, scheduledAt, task.reminderAt),
     recurrenceEndType,
     recurrenceEndAt,
     recurrenceCount,
-    leadId: asNullableText(row.leadId, row.lead_id),
-    leadName: asNullableText(row.leadName, row.lead_name),
-    caseId: asNullableText(row.caseId, row.case_id),
+    leadId: task.leadId,
+    leadName: asNullableText(row.leadName) || asNullableText(row.lead_name),
+    caseId: task.caseId,
+    clientId: task.clientId,
   };
 }
 
 export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEventItem | null {
-  const startAt = normalizeEventStartAt(row);
-  if (!startAt) return null;
+  const event = normalizeEventContract(row);
+  const startAt = event.startAt;
+  if (!startAt || !isIsoLike(startAt)) return null;
 
-  const reminderAt = firstText(row.reminderAt, row.reminder_at) || null;
-  const recurrenceRule = firstText(row.recurrenceRule, row.recurrence_rule) || undefined;
-  const recurrenceEndType = firstText(row.recurrenceEndType, row.recurrence_end_type) || undefined;
-  const recurrenceEndAt = firstText(row.recurrenceEndAt, row.recurrence_end_at) || null;
-  const recurrenceCount = typeof row.recurrenceCount === 'number'
-    ? row.recurrenceCount
-    : typeof row.recurrence_count === 'number'
-      ? row.recurrence_count
-      : null;
-  const reminderMinutes = normalizeReminderMinutes(startAt, reminderAt);
+  const { recurrenceEndType, recurrenceEndAt, recurrenceCount } = getRecurrenceMeta(row);
 
   return {
-    id: String(row.id || crypto.randomUUID()),
-    title: firstText(row.title, row.name) || 'Wydarzenie bez tytułu',
-    type: firstText(row.type, row.event_type) || 'meeting',
+    id: event.id,
+    title: event.title || 'Wydarzenie bez tytułu',
+    type: event.type || 'event',
     startAt,
-    endAt: asNullableIso(row.endAt, row.end_at),
-    status: firstText(row.status, row.event_status).toLowerCase() || 'scheduled',
-    leadId: asNullableText(row.leadId, row.lead_id),
-    leadName: asNullableText(row.leadName, row.lead_name),
-    caseId: asNullableText(row.caseId, row.case_id),
-    reminderAt,
-    recurrenceRule,
-    recurrence: row.recurrence && typeof row.recurrence === 'object'
-      ? (row.recurrence as Record<string, unknown>)
-      : { mode: recurrenceRule || 'none', interval: 1, until: null, endType: recurrenceEndType || 'never', count: recurrenceCount },
-    reminder: row.reminder && typeof row.reminder === 'object'
-      ? (row.reminder as Record<string, unknown>)
-      : reminderAt
-        ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
-        : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
+    endAt: event.endAt || undefined,
+    status: event.status || 'scheduled',
+    leadId: event.leadId,
+    leadName: asNullableText(row.leadName) || asNullableText(row.lead_name),
+    caseId: event.caseId,
+    clientId: event.clientId,
+    reminderAt: event.reminderAt,
+    recurrenceRule: event.recurrenceRule || undefined,
+    recurrence: normalizeRecurrenceObject(row, event.recurrenceRule, recurrenceEndType, recurrenceCount),
+    reminder: normalizeReminderObject(row, startAt, event.reminderAt),
     recurrenceEndType,
     recurrenceEndAt,
     recurrenceCount,

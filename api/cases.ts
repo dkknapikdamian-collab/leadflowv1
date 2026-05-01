@@ -1,6 +1,7 @@
 import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from '../src/server/_supabase.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
+import { normalizeCaseContract } from '../src/lib/data-contract.js';
 
 const CASE_STATUSES = new Set(['new', 'waiting_on_client', 'blocked', 'to_approve', 'ready_to_start', 'in_progress', 'on_hold', 'completed', 'canceled']);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
@@ -34,29 +35,7 @@ function isMissingCasesTableError(error: unknown) {
 }
 
 function normalizeCase(row: Record<string, unknown>) {
-  return {
-    id: String(row.id || crypto.randomUUID()),
-    workspaceId: asText(row.workspace_id || row.workspaceId),
-    title: asText(row.title || row.name) || 'Sprawa bez tytułu',
-    clientName: asText(row.client_name || row.clientName),
-    clientId: asText(row.client_id || row.clientId) || undefined,
-    clientEmail: asText(row.client_email || row.clientEmail),
-    clientPhone: asText(row.client_phone || row.clientPhone),
-    status: normalizeEnum(row.status, CASE_STATUSES, 'in_progress'),
-    billingStatus: normalizeEnum(row.billing_status || row.billingStatus, BILLING_STATUSES, 'not_started'),
-    billingModelSnapshot: normalizeEnum(row.billing_model_snapshot || row.billingModelSnapshot, BILLING_MODELS, 'manual'),
-    completenessPercent: Number(row.completeness_percent || row.completenessPercent || 0),
-    leadId: asText(row.lead_id || row.leadId) || undefined,
-    createdFromLead: Boolean(row.created_from_lead ?? row.createdFromLead ?? row.lead_id ?? row.leadId),
-    serviceStartedAt: row.service_started_at || row.serviceStartedAt || row.started_at || row.startedAt || null,
-    serviceProfileId: asText(row.service_profile_id || row.serviceProfileId) || undefined,
-    portalReady: Boolean(row.portal_ready || row.portalReady || false),
-    startedAt: row.started_at || row.startedAt || null,
-    completedAt: row.completed_at || row.completedAt || null,
-    lastActivityAt: row.last_activity_at || row.lastActivityAt || null,
-    updatedAt: row.updated_at || row.updatedAt || null,
-    createdAt: row.created_at || row.createdAt || null,
-  };
+  return normalizeCaseContract(row);
 }
 
 function extractMissingColumn(error: unknown) {
