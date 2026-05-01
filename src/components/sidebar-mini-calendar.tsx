@@ -17,8 +17,6 @@ import { pl } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-import { onSnapshot, collection, orderBy, query, where } from 'firebase/firestore';
-import { auth, db } from '../firebase';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { isSupabaseConfigured } from '../lib/supabase-fallback';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -36,6 +34,13 @@ function getDayTone(hasEvent: boolean, hasTask: boolean, today: boolean) {
   return 'text-slate-700 hover:bg-slate-100';
 }
 
+function hasValidDate(value: string, day: Date) {
+  if (!value) return false;
+  const parsed = parseISO(value);
+  if (Number.isNaN(parsed.getTime())) return false;
+  return isSameDay(parsed, day);
+}
+
 export function SidebarMiniCalendar() {
   const navigate = useNavigate();
   const { workspace, loading } = useWorkspace();
@@ -45,47 +50,29 @@ export function SidebarMiniCalendar() {
 
   useEffect(() => {
     if (loading) return;
-    if (isSupabaseConfigured()) {
-      if (!workspace?.id) {
-        setTaskDates([]);
-        setEventDates([]);
-        return;
-      }
-      void fetchCalendarBundleFromSupabase()
-        .then((bundle) => {
-          setTaskDates(bundle.tasks.map((item) => ({ date: item.date })));
-          setEventDates(bundle.events.map((item) => ({ date: item.startAt })));
-        })
-        .catch(() => {
-          setTaskDates([]);
-          setEventDates([]);
-        });
-      return;
-    }
 
-    if (!auth.currentUser) {
+    if (!isSupabaseConfigured() || !workspace?.id) {
       setTaskDates([]);
       setEventDates([]);
       return;
     }
 
-    const unsubscribers = [
-      onSnapshot(query(collection(db, 'tasks'), where('ownerId', '==', auth.currentUser.uid), orderBy('date', 'asc')), (snapshot) => {
-        setTaskDates(snapshot.docs
-          .map((entry) => entry.data().date)
-          .filter((date): date is string => typeof date === 'string' && Boolean(date))
-          .map((date) => ({ date })));
-      }),
-      onSnapshot(query(collection(db, 'events'), where('ownerId', '==', auth.currentUser.uid), orderBy('startAt', 'asc')), (snapshot) => {
-        setEventDates(snapshot.docs
-          .map((entry) => entry.data().startAt)
-          .filter((date): date is string => typeof date === 'string' && Boolean(date))
-          .map((date) => ({ date })));
-      }),
-    ];
+    let cancelled = false;
+
+    void fetchCalendarBundleFromSupabase()
+      .then((bundle) => {
+        if (cancelled) return;
+        setTaskDates(bundle.tasks.map((item) => ({ date: item.date })).filter((item) => Boolean(item.date)));
+        setEventDates(bundle.events.map((item) => ({ date: item.startAt })).filter((item) => Boolean(item.date)));
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setTaskDates([]);
+        setEventDates([]);
+      });
 
     return () => {
-      unsubscribers.forEach((unsubscribe) => unsubscribe());
+      cancelled = true;
     };
   }, [loading, workspace?.id]);
 
@@ -123,8 +110,8 @@ export function SidebarMiniCalendar() {
         </div>
         <div className="mt-1 grid grid-cols-7 gap-0.5">
           {monthDays.map((day) => {
-            const hasTask = taskDates.some((item) => isSameDay(parseISO(item.date), day));
-            const hasEvent = eventDates.some((item) => isSameDay(parseISO(item.date), day));
+            const hasTask = taskDates.some((item) => hasValidDate(item.date, day));
+            const hasEvent = eventDates.some((item) => hasValidDate(item.date, day));
 
             return (
               <button
