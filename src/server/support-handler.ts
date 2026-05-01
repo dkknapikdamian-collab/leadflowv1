@@ -1,5 +1,5 @@
-import { insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
-import { asText, requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter, fetchSingleScopedRow } from '../src/server/_request-scope.js';
+import { insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
+import { asText, requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter, fetchSingleScopedRow } from './_request-scope.js';
 
 const RESEND_API_URL = 'https://api.resend.com/emails';
 

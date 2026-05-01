@@ -11,6 +11,10 @@ import aiDraftsHandler from '../src/server/ai-drafts.js';
 import assistantContextHandler from '../src/server/assistant-context.js';
 import recordsHandler from '../src/server/records.js';
 import paymentsHandler from '../src/server/payments.js';
+import responseTemplatesHandler from '../src/server/response-templates-handler.js';
+import caseTemplatesHandler from '../src/server/case-templates-handler.js';
+import supportHandler from '../src/server/support-handler.js';
+import dailyDigestHandler from '../src/server/daily-digest-handler.js';
 
 function parseBody(body: unknown) {
   if (!body) return {};
@@ -859,6 +863,27 @@ export default async function handler(req: any, res: any) {
   }
   if (kind === 'ai-drafts') {
     await aiDraftsHandler(req, res);
+    return;
+  }
+
+  if (kind === 'response-templates') {
+    await responseTemplatesHandler(req, res);
+    return;
+  }
+
+  if (kind === 'case-templates') {
+    await caseTemplatesHandler(req, res);
+    return;
+  }
+
+  if (kind === 'support') {
+    req.query = { ...(req.query || {}), route: (req.query?.route || 'requests') };
+    await supportHandler(req, res);
+    return;
+  }
+
+  if (kind === 'daily-digest') {
+    await dailyDigestHandler(req, res);
     return;
   }
 

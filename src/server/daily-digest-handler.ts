@@ -1,7 +1,7 @@
-﻿/* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: poranny e-mail bez duplikatów, z timezone i szkicami AI. */
-import { buildDailyDigestPayload, buildDigestEmail, shouldSendDigestNow } from '../src/server/_digest.js';
-import { insertWithVariants, selectFirstAvailable, updateWhere } from '../src/server/_supabase.js';
-import { withWorkspaceFilter } from '../src/server/_request-scope.js';
+/* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: poranny e-mail bez duplikat�w, z timezone i szkicami AI. */
+import { buildDailyDigestPayload, buildDigestEmail, shouldSendDigestNow } from './_digest.js';
+import { insertWithVariants, selectFirstAvailable, updateWhere } from './_supabase.js';
+import { withWorkspaceFilter } from './_request-scope.js';
 
 const RESEND_API_URL = 'https://api.resend.com/emails';
 const DEFAULT_TZ = 'Europe/Warsaw';

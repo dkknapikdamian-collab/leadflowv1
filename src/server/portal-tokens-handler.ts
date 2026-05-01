@@ -1,7 +1,7 @@
-import { createPortalToken, readPortalToken, requireOperatorCaseAccess, requirePortalContext, upsertPortalTokenForCase } from '../src/server/_portal-token.js';
-import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
-import { supabaseRequest } from '../src/server/_supabase.js';
-import { requireAuthContext } from '../src/server/_request-scope.js';
+import { createPortalToken, readPortalToken, requireOperatorCaseAccess, requirePortalContext, upsertPortalTokenForCase } from './_portal-token.js';
+import { writeAuthErrorResponse } from './_supabase-auth.js';
+import { supabaseRequest } from './_supabase.js';
+import { requireAuthContext } from './_request-scope.js';
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';

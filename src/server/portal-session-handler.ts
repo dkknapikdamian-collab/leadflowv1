@@ -1,5 +1,5 @@
-import { createPortalSession, requirePortalContext, requirePortalSessionContext, readPortalSession, readPortalToken } from '../src/server/_portal-token.js';
-import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { createPortalSession, requirePortalContext, requirePortalSessionContext, readPortalSession, readPortalToken } from './_portal-token.js';
+import { writeAuthErrorResponse } from './_supabase-auth.js';
 
 function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();

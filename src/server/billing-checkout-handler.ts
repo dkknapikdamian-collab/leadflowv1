@@ -1,6 +1,6 @@
-import { asNullableText, createStripeBlikCheckout, getAppUrl, getStripeConfig, parseBody, resolveStripeBillingPlan } from '../src/server/_stripe.js';
-import { requireAuthContext } from '../src/server/_request-scope.js';
-import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { asNullableText, createStripeBlikCheckout, getAppUrl, getStripeConfig, parseBody, resolveStripeBillingPlan } from './_stripe.js';
+import { requireAuthContext } from './_request-scope.js';
+import { writeAuthErrorResponse } from './_supabase-auth.js';
 
 export default async function handler(req: any, res: any) {
   try {

@@ -1,7 +1,7 @@
-import { selectFirstAvailable, updateWhere } from '../src/server/_supabase.js';
-import { requireAuthContext } from '../src/server/_request-scope.js';
-import { getStripeSubscription, updateStripeSubscription } from '../src/server/_stripe.js';
-import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { selectFirstAvailable, updateWhere } from './_supabase.js';
+import { requireAuthContext } from './_request-scope.js';
+import { getStripeSubscription, updateStripeSubscription } from './_stripe.js';
+import { writeAuthErrorResponse } from './_supabase-auth.js';
 
 function parseBody(req: any) {
   if (!req?.body) return {};

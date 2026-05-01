@@ -1,4 +1,4 @@
-import { insertWithVariants, updateWhere } from '../src/server/_supabase.js';
+import { insertWithVariants, updateWhere } from './_supabase.js';
 import {
   asNullableText,
   buildNextBillingDate,
@@ -8,7 +8,7 @@ import {
   readRawBody,
   unixToIso,
   verifyStripeSignature,
-} from '../src/server/_stripe.js';
+} from './_stripe.js';
 
 export const config = {
   api: {
