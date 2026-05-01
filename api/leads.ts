@@ -4,6 +4,7 @@ import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { normalizeLeadContract } from '../src/lib/data-contract.js';
+import { LEAD_STATUS_VALUES, normalizeLeadStatus } from '../src/lib/domain-statuses.js';
 
 const SOURCE_ALIASES: Record<string, string> = {
   instagram: 'instagram',
@@ -26,19 +27,7 @@ const SOURCE_ALIASES: Record<string, string> = {
   other: 'other',
 };
 
-const LEAD_STATUSES = new Set([
-  'new',
-  'contacted',
-  'qualification',
-  'proposal_sent',
-  'negotiation',
-  'waiting_response',
-  'accepted',
-  'moved_to_service',
-  'won',
-  'lost',
-  'archived',
-]);
+const LEAD_STATUSES = new Set<string>(LEAD_STATUS_VALUES);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
 const START_RULES = new Set(['on_acceptance', 'on_deposit', 'on_full_payment', 'on_manual_approval', 'on_documents_ready', 'on_contract_signed', 'custom']);
 const WIN_RULES = new Set(['on_case_started', 'on_full_payment', 'on_case_completed', 'on_commission_received', 'manual']);
@@ -113,11 +102,7 @@ function toIsoDateTime(value: unknown) {
 }
 
 function normalizeStatus(value: unknown) {
-  const normalized = asText(value);
-  if (normalized === 'follow_up') return 'waiting_response';
-  if (normalized === 'accepted_waiting_start') return 'accepted';
-  if (normalized === 'active_service') return 'moved_to_service';
-  return LEAD_STATUSES.has(normalized) ? normalized : 'new';
+  return normalizeLeadStatus(value);
 }
 
 function normalizeEnum(value: unknown, allowed: Set<string>, fallback: string) {

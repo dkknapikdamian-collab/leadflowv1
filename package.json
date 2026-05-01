@@ -50,7 +50,8 @@
                     "check:a16-no-onchange-write-storm":  "node scripts/check-a16-no-onchange-write-storm.cjs",
                     "check:a18-branding-docs":  "node scripts/check-a18-branding-docs.cjs",
                     "check:a19-admin-role":  "node scripts/check-a19-admin-role.cjs",
-                    "check:a19v2-admin-schema-sidebar":  "node scripts/check-a19v2-admin-schema-sidebar.cjs"
+                    "check:a19v2-admin-schema-sidebar":  "node scripts/check-a19v2-admin-schema-sidebar.cjs",
+                    "check:a20-status-contract-sidebar":  "node scripts/check-a20-status-contract-sidebar.cjs"
                 },
     "dependencies":  {
                          "@base-ui/react":  "^1.3.0",

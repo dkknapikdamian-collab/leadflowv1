@@ -1,5 +1,6 @@
 import { deleteById, findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
+import { normalizeEventStatus, normalizeTaskStatus } from '../src/lib/domain-statuses.js';
 
 function asIsoDate(value: unknown) {
   if (typeof value !== 'string' || !value.trim()) return null;
@@ -57,7 +58,7 @@ function normalizeTask(row: any) {
     date: normalizedDate,
     dueAt: dueAt.slice(0, 16),
     time: dueAt.slice(11, 16),
-    status: String(row.status || 'todo'),
+    status: normalizeTaskStatus(row.status),
     priority: String(row.priority || 'medium'),
     leadId: row.lead_id ? String(row.lead_id) : row.leadId ? String(row.leadId) : undefined,
     leadName: row.lead_name ? String(row.lead_name) : row.leadName ? String(row.leadName) : undefined,
@@ -99,7 +100,7 @@ function normalizeEvent(row: any) {
     type: String(row.type || 'meeting'),
     startAt: String(startAt || ''),
     endAt: endAt ? String(endAt) : '',
-    status: String(row.status || 'scheduled'),
+    status: normalizeEventStatus(row.status),
     reminderAt,
     reminder: reminderAt
       ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
@@ -200,7 +201,7 @@ export default async function handler(req: any, res: any) {
 
       if (body.title !== undefined) payload.title = body.title;
       if (body.type !== undefined) payload.type = body.type;
-      if (body.status !== undefined) payload.status = body.status;
+      if (body.status !== undefined) payload.status = kind === 'events' ? normalizeEventStatus(body.status) : normalizeTaskStatus(body.status);
 
       if (kind === 'tasks') {
         if (body.priority !== undefined) payload.priority = body.priority;
@@ -293,7 +294,7 @@ export default async function handler(req: any, res: any) {
         type: body.type || 'task',
         title: body.title,
         description: '',
-        status: body.status || 'todo',
+        status: normalizeTaskStatus(body.status),
         priority: body.priority || 'medium',
         scheduled_at: scheduledAt,
         start_at: null,
@@ -322,7 +323,7 @@ export default async function handler(req: any, res: any) {
       type: body.type || 'meeting',
       title: body.title,
       description: '',
-      status: body.status || 'scheduled',
+      status: normalizeEventStatus(body.status),
       priority: 'medium',
       scheduled_at: startAt,
       start_at: startAt,

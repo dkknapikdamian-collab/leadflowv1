@@ -2,10 +2,11 @@ import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseR
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { normalizeCaseContract } from '../src/lib/data-contract.js';
+import { CASE_STATUS_VALUES, normalizeCaseStatus } from '../src/lib/domain-statuses.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { readPortalSession, requirePortalSessionContext } from '../src/server/_portal-token.js';
 
-const CASE_STATUSES = new Set(['new', 'waiting_on_client', 'blocked', 'to_approve', 'ready_to_start', 'in_progress', 'on_hold', 'completed', 'canceled']);
+const CASE_STATUSES = new Set<string>(CASE_STATUS_VALUES);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
 const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_completion', 'success_fee', 'recurring', 'manual']);
 const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at']);
@@ -191,7 +192,7 @@ export default async function handler(req: any, res: any) {
         requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : '',
         requestedClientId ? `client_id=eq.${encodeURIComponent(requestedClientId)}&` : '',
         requestedLeadId ? `lead_id=eq.${encodeURIComponent(requestedLeadId)}&` : '',
-        requestedStatus ? `status=eq.${encodeURIComponent(normalizeEnum(requestedStatus, CASE_STATUSES, 'in_progress'))}&` : '',
+        requestedStatus ? `status=eq.${encodeURIComponent(normalizeCaseStatus(requestedStatus, 'in_progress'))}&` : '',
       ].filter(Boolean).join('');
       const caseLimit = requestedId ? 1 : 250;
       let rows: Record<string, unknown>[] = [];
@@ -231,7 +232,7 @@ export default async function handler(req: any, res: any) {
 
       const nowIso = new Date().toISOString();
       const normalizedLeadId = asNullableUuid(body.leadId);
-      const normalizedStatus = normalizeEnum(body.status, CASE_STATUSES, 'in_progress');
+      const normalizedStatus = normalizeCaseStatus(body.status, 'in_progress');
       const linkedLeadRows = normalizedLeadId
         ? await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(normalizedLeadId)}&limit=1`, finalWorkspaceId))
         : [];
@@ -321,7 +322,7 @@ export default async function handler(req: any, res: any) {
       const normalizedClientId = body.clientId !== undefined || ensuredClient
         ? asNullableUuid(ensuredClient?.id || body.clientId || linkedLead?.client_id || linkedLead?.clientId)
         : undefined;
-      const nextStatus = body.status !== undefined ? normalizeEnum(body.status, CASE_STATUSES, 'in_progress') : undefined;
+      const nextStatus = body.status !== undefined ? normalizeCaseStatus(body.status, 'in_progress') : undefined;
       const payload: Record<string, unknown> = {
         updated_at: nowIso,
       };

@@ -1,4 +1,15 @@
-export type { AccessState, BillingStatus } from './domain-statuses';
+import {
+  normalizeAiDraftStatus,
+  normalizeBillingStatus,
+  normalizeCaseStatus,
+  normalizeEventStatus,
+  normalizeLeadStatus,
+  normalizePortalItemStatus,
+  normalizeTaskStatus,
+  type AccessState,
+  type BillingStatus,
+} from './domain-statuses';
+export type { AccessState, BillingStatus };
 export type DataRecord = Record<string, unknown>;
 
 export type LeadDto = DataRecord & {
@@ -307,7 +318,7 @@ function clampPercent(value: number) {
 }
 
 export function normalizeLeadContract(row: DataRecord): LeadDto {
-  const status = normalizeStatus(row.status, 'new');
+  const status = normalizeLeadStatus(row.status);
   const linkedCaseId = pickOptionalText(row, ['linkedCaseId', 'linked_case_id', 'caseId', 'case_id']);
   const movedToServiceAt =
     toIsoDateTime(row.movedToServiceAt) ||
@@ -370,7 +381,7 @@ export function normalizeCaseContract(row: DataRecord): CaseDto {
     leadId: pickOptionalText(row, ['leadId', 'lead_id']),
     title: pickText(row, ['title', 'name', 'clientName', 'client_name'], 'Sprawa'),
     clientName: pickText(row, ['clientName', 'client_name', 'name'], ''),
-    status: normalizeStatus(row.status, 'new'),
+    status: normalizeCaseStatus(row.status),
     completenessPercent: clampPercent(pickNumber(row, ['completenessPercent', 'completeness_percent', 'completionPercent', 'completion_percent'], 0)),
     portalReady: pickBoolean(row, ['portalReady', 'portal_ready'], false),
     startedAt: toIsoDateTime(row.startedAt) || toIsoDateTime(row.started_at) || toIsoDateTime(row.serviceStartedAt) || toIsoDateTime(row.service_started_at),
@@ -396,7 +407,7 @@ export function normalizeTaskContract(row: DataRecord): TaskDto {
     id: pickText(row, ['id'], crypto.randomUUID()),
     workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
     title: pickText(row, ['title', 'name', 'summary'], 'Zadanie'),
-    status: normalizeStatus(row.status, 'todo'),
+    status: normalizeTaskStatus(row.status),
     type: pickText(row, ['type', 'taskType', 'task_type', 'recordType', 'record_type'], 'task'),
     priority: normalizePriority(row.priority),
     scheduledAt,
@@ -428,7 +439,7 @@ export function normalizeEventContract(row: DataRecord): EventDto {
     workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
     title: pickText(row, ['title', 'name', 'summary'], 'Wydarzenie'),
     type: pickText(row, ['type', 'eventType', 'event_type', 'recordType', 'record_type'], 'event'),
-    status: normalizeStatus(row.status, 'scheduled'),
+    status: normalizeEventStatus(row.status),
     startAt,
     endAt: toIsoDateTime(row.endAt) || toIsoDateTime(row.end_at),
     leadId: pickOptionalText(row, ['leadId', 'lead_id']),
@@ -470,7 +481,7 @@ export function normalizePaymentContract(row: DataRecord): NormalizedPaymentReco
     leadId: pickOptionalText(row, ['leadId', 'lead_id']),
     caseId: pickOptionalText(row, ['caseId', 'case_id']),
     type: pickText(row, ['type'], 'manual'),
-    status: normalizeStatus(row.status, 'not_started'),
+    status: normalizeBillingStatus(row.status, 'not_started'),
     amount: pickNumber(row, ['amount', 'value', 'total'], 0),
     currency: pickText(row, ['currency'], 'PLN').toUpperCase(),
     paidAt: toIsoDateTime(row.paidAt) || toIsoDateTime(row.paid_at),
@@ -487,7 +498,7 @@ export function normalizeAiDraftContract(row: DataRecord): AiDraftDto {
     id: pickText(row, ['id'], crypto.randomUUID()),
     workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
     type: pickText(row, ['type', 'draftType', 'draft_type'], 'note'),
-    status: normalizeStatus(row.status, 'pending'),
+    status: normalizeAiDraftStatus(row.status),
     rawText: pickText(row, ['rawText', 'raw_text', 'text'], ''),
     provider: pickText(row, ['provider'], 'manual'),
     source: pickText(row, ['source'], 'app'),
@@ -531,7 +542,7 @@ export function normalizeCaseItemContract(row: DataRecord): CaseItemDto {
     title: pickText(row, ['title', 'name'], 'Element sprawy'),
     description: pickText(row, ['description', 'desc'], ''),
     type: pickText(row, ['type', 'itemType', 'item_type'], 'document'),
-    status: normalizeStatus(row.status, 'missing'),
+    status: normalizePortalItemStatus(row.status),
     isRequired: pickBoolean(row, ['isRequired', 'is_required', 'required'], false),
     order: Math.round(pickNumber(row, ['order', 'sort_order', 'position'], 0)),
     response: pickNullableText(row, ['response']),

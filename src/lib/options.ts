@@ -8,6 +8,8 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
+import { LEAD_STATUS_OPTIONS } from './domain-statuses';
+
 export const SOURCE_OPTIONS = [
   { value: 'instagram', label: 'Instagram' },
   { value: 'facebook', label: 'Facebook' },
@@ -21,18 +23,7 @@ export const SOURCE_OPTIONS = [
   { value: 'other', label: 'Inne' },
 ];
 
-export const STATUS_OPTIONS = [
-  { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
-  { value: 'contacted', label: 'Skontaktowany', color: 'bg-indigo-100 text-indigo-700' },
-  { value: 'qualification', label: 'Kwalifikacja', color: 'bg-purple-100 text-purple-700' },
-  { value: 'proposal_sent', label: 'Oferta wyslana', color: 'bg-amber-100 text-amber-700' },
-  { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
-  { value: 'waiting_response', label: 'Czeka na odpowiedz', color: 'bg-orange-100 text-orange-700' },
-  { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
-  { value: 'moved_to_service', label: 'Przeniesiony do obslugi', color: 'bg-violet-100 text-violet-700' },
-  { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
-  { value: 'archived', label: 'Archiwum', color: 'bg-slate-100 text-slate-700' },
-];
+export const STATUS_OPTIONS = LEAD_STATUS_OPTIONS;
 
 export const TASK_TYPES = [
   { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },

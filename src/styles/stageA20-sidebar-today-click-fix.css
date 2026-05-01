@@ -1,0 +1,104 @@
+/* STAGE_A20_SIDEBAR_TODAY_CLICK_FIX
+   Critical fix: first sidebar group must stay dark and clickable on Today route.
+   Scope only shell/sidebar nav. No routing, auth, Supabase or domain logic changes here.
+*/
+
+.cf-html-shell .sidebar {
+  position: sticky !important;
+  z-index: 80 !important;
+  isolation: isolate !important;
+}
+
+.cf-html-shell .sidebar .nav-scroll,
+.cf-html-shell .sidebar .nav-group,
+.cf-html-shell .sidebar .nav-stack {
+  position: relative !important;
+  z-index: 81 !important;
+  isolation: isolate !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+}
+
+.cf-html-shell .sidebar .nav-group:first-child {
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+}
+
+.cf-html-shell .sidebar .nav-group:first-child::before,
+.cf-html-shell .sidebar .nav-group:first-child::after,
+.cf-html-shell .sidebar .nav-group:first-child .nav-stack::before,
+.cf-html-shell .sidebar .nav-group:first-child .nav-stack::after,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn::before,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn::after {
+  content: none !important;
+  display: none !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.cf-html-shell .sidebar .nav-btn {
+  position: relative !important;
+  z-index: 82 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn:link,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn:visited {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  color: #e2e8f0 !important;
+  background: rgba(15, 23, 42, 0.52) !important;
+  border: 1px solid rgba(148, 163, 184, 0.26) !important;
+  box-shadow: none !important;
+}
+
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn .nav-ico,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn:link .nav-ico,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn:visited .nav-ico {
+  color: #e2e8f0 !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+  border: 1px solid rgba(226, 232, 240, 0.16) !important;
+}
+
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn .nav-label,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn:link .nav-label,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn:visited .nav-label {
+  color: #e2e8f0 !important;
+}
+
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn:hover,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn:focus-visible {
+  color: #ffffff !important;
+  background: rgba(37, 99, 235, 0.28) !important;
+  border-color: rgba(147, 197, 253, 0.48) !important;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18) !important;
+}
+
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn.active,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn[aria-current="page"] {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  border-color: rgba(191, 219, 254, 0.58) !important;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.34) !important;
+}
+
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn.active .nav-ico,
+.cf-html-shell .sidebar .nav-group:first-child .nav-btn[aria-current="page"] .nav-ico {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+}
+
+.cf-html-shell .main-today {
+  position: relative !important;
+  z-index: 1 !important;
+}
