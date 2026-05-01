@@ -1,6 +1,6 @@
 import { findWorkspaceId, selectFirstAvailable, supabaseRequest } from './_supabase.js';
 import { fetchWorkspaceWriteAccess } from './_access-gate.js';
-import { requireSupabaseAuthContext as requireSupabaseRequestContext } from './_supabase-auth.js';
+import { RequestAuthError, requireSupabaseAuthContext as requireSupabaseRequestContext } from './_supabase-auth.js';
 
 export function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
@@ -64,6 +64,17 @@ export async function requireAuthContext(req: any) {
   };
 }
 
+export function isAdminRole(role: unknown) {
+  return asText(role).toLowerCase() === 'admin';
+}
+
+export async function requireAdminAuthContext(req: any) {
+  const context = await requireAuthContext(req);
+  if (!isAdminRole(context.role)) {
+    throw new RequestAuthError(403, 'ADMIN_ROLE_REQUIRED');
+  }
+  return context;
+}
 export const requireSupabaseAuthContext = requireAuthContext;
 
 export async function resolveRequestWorkspaceId(req: any, _bodyInput?: any) {

@@ -1,5 +1,5 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById, updateWhere } from '../src/server/_supabase.js';
-import { asText, requireRequestIdentity, resolveRequestWorkspaceId } from '../src/server/_request-scope.js';
+import { asText, requireAdminAuthContext, requireRequestIdentity, resolveRequestWorkspaceId } from '../src/server/_request-scope.js';
 import { assertWorkspaceAiAllowed } from '../src/server/_access-gate.js';
 import serviceProfilesHandler from '../src/server/service-profiles.js';
 import aiConfigHandler from '../src/server/ai-config.js';
@@ -429,7 +429,6 @@ async function handleClientPortalTokens(req: any, res: any) {
 }
 
 // --- workspace-recovery (admin)
-const DEFAULT_ADMIN_EMAILS = ['dk.knapikdamian@gmail.com'];
 
 function parseJsonBody(req: any) {
   if (!req?.body) return {};
@@ -441,17 +440,6 @@ function parseJsonBody(req: any) {
     }
   }
   return req.body;
-}
-
-function getAdminEmails() {
-  const envRaw = asNullableString(process.env.ADMIN_EMAILS || '');
-  if (!envRaw) return new Set(DEFAULT_ADMIN_EMAILS);
-  return new Set(
-    envRaw
-      .split(',')
-      .map((item) => item.trim().toLowerCase())
-      .filter(Boolean),
-  );
 }
 
 function parseTimestamp(value: unknown) {
@@ -474,34 +462,13 @@ async function safeSelect(query: string) {
   }
 }
 
-async function ensureAdmin(req: any, body: Record<string, unknown>) {
-  const identity = await requireRequestIdentity(req);
-  const requesterEmail = asText(identity.email).toLowerCase();
-  const allowlist = getAdminEmails();
-  const configuredSecret = asNullableString(process.env.ADMIN_API_SECRET);
-  const providedSecret = asNullableString(
-    req?.headers?.['x-admin-secret']
-      || req?.query?.adminSecret
-      || (body as Record<string, unknown>)?.adminSecret,
-  );
-
-  if (configuredSecret && configuredSecret !== providedSecret) {
-    return { ok: false, error: 'ADMIN_SECRET_REQUIRED' };
+async function ensureAdmin(req: any, _body: Record<string, unknown>) {
+  try {
+    const context = await requireAdminAuthContext(req);
+    return { ok: true, requesterEmail: asText(context.email).toLowerCase() };
+  } catch (error: any) {
+    return { ok: false, error: error?.code || error?.message || 'ADMIN_ROLE_REQUIRED' };
   }
-
-  if (requesterEmail && allowlist.has(requesterEmail)) {
-    return { ok: true, requesterEmail };
-  }
-
-  if (!requesterEmail) {
-    return { ok: false, error: 'ADMIN_EMAIL_REQUIRED' };
-  }
-
-  const profileRows = await safeSelect(`profiles?email=eq.${encodeURIComponent(requesterEmail)}&select=*&limit=1`);
-  const profile = profileRows[0] || null;
-  const isAdmin = Boolean((profile as any)?.is_admin ?? (profile as any)?.isAdmin) || String((profile as any)?.role || '').toLowerCase() === 'admin';
-  if (!isAdmin) return { ok: false, error: 'ADMIN_FORBIDDEN' };
-  return { ok: true, requesterEmail };
 }
 
 function uniqueStrings(values: unknown[]) {

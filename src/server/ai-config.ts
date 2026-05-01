@@ -1,7 +1,6 @@
 import { buildAiProviderRuntimeStatus } from './ai-provider.js';
-import { requireSupabaseAuthContext, writeAuthErrorResponse } from './_supabase-auth.js';
-
-const DEFAULT_ADMIN_EMAILS = ['dk.knapikdamian@gmail.com'];
+import { requireAdminAuthContext } from './_request-scope.js';
+import { writeAuthErrorResponse } from './_supabase-auth.js';
 
 function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
@@ -15,25 +14,6 @@ function asBool(value: unknown, fallback = false) {
   if (['1', 'true', 'yes', 'on'].includes(normalized)) return true;
   if (['0', 'false', 'no', 'off'].includes(normalized)) return false;
   return fallback;
-}
-
-function parseList(raw?: string) {
-  return asText(raw)
-    .split(',')
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
-}
-
-function adminEmails() {
-  return new Set([
-    ...DEFAULT_ADMIN_EMAILS,
-    ...parseList(process.env.ADMIN_EMAILS),
-    ...parseList(process.env.CLOSEFLOW_ADMIN_EMAILS),
-  ]);
-}
-
-function isAdminEmail(email: string) {
-  return !!email && adminEmails().has(email.trim().toLowerCase());
 }
 
 function hasEnv(name: string) {
@@ -93,8 +73,8 @@ function buildDiagnostics() {
     notes: [
       'Klucze API sa trzymane w zmiennych srodowiskowych backendu.',
       'Frontend widzi tylko status konfiguracji, nigdy wartosci sekretow.',
-      'Gdy AI jest wylaczone albo provider nie dziala, Quick Lead Capture ma uzyc parsera regulowego.',
-      'AI provider jest jeden i dziala po stronie backendu. Frontend nie dostaje kluczy.',
+      'Panel jest dostepny tylko dla profiles.role = admin zwroconego przez backend.',
+      'AI provider dziala po stronie backendu. Frontend nie dostaje kluczy.',
     ],
   };
 }
@@ -105,16 +85,10 @@ export default async function aiConfigHandler(req: any, res: any) {
     return;
   }
 
-  let requesterEmail = '';
   try {
-    const auth = await requireSupabaseAuthContext(req);
-    requesterEmail = asText(auth.email).toLowerCase();
+    await requireAdminAuthContext(req);
   } catch (error) {
     writeAuthErrorResponse(res, error);
-    return;
-  }
-  if (!isAdminEmail(requesterEmail)) {
-    res.status(403).json({ error: 'ADMIN_ONLY' });
     return;
   }
 

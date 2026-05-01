@@ -1,17 +1,16 @@
-const DEFAULT_ADMIN_EMAILS = ['dk.knapikdamian@gmail.com'];
+export type AdminProfileInput = {
+  role?: string | null;
+  isAdmin?: boolean | null;
+  is_admin?: boolean | null;
+};
 
-function parseAdminEmails(raw?: string) {
-  if (!raw) return [];
-  return raw
-    .split(',')
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
+export function isAdminProfile(profile?: AdminProfileInput | null) {
+  if (!profile) return false;
+  return profile.isAdmin === true || profile.is_admin === true || String(profile.role || '').trim().toLowerCase() === 'admin';
 }
 
-const ADMIN_EMAILS = new Set([
-  ...DEFAULT_ADMIN_EMAILS,
-]);
-
-export function isAdminEmail(email?: string | null) {
-  return !!email && ADMIN_EMAILS.has(email.trim().toLowerCase());
+// Legacy compatibility only.
+// Admin must come from /api/me profile.isAdmin / profile.role, not from a client-side email allowlist.
+export function isAdminEmail(_email?: string | null) {
+  return false;
 }

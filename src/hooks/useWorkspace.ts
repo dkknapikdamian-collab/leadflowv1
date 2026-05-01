@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { getAccessSummary } from '../lib/access';
-import { isAdminEmail } from '../lib/admin';
 import {
   fetchMeFromSupabase,
   getStoredWorkspaceId,
@@ -144,9 +143,7 @@ export function useWorkspace() {
           typeof accessOverride.isPaidActive === 'boolean' ? accessOverride.isPaidActive : fallbackAccess.isPaidActive,
       }
     : fallbackAccess;
-
-  const currentEmail = authSnapshot.email || '';
-  const isAdmin = isAdminEmail(currentEmail) || profile?.role === 'admin' || profile?.isAdmin === true;
+  const isAdmin = profile?.role === 'admin' || profile?.isAdmin === true;
   const refresh = () => setRefreshToken((prev) => prev + 1);
   const workspaceReady = Boolean(workspace?.id);
 

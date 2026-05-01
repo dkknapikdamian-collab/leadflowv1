@@ -1,7 +1,6 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById, updateWhere } from '../src/server/_supabase.js';
 import { requireSupabaseAuthContext, writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
-const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
 const DEFAULT_PLAN_ID = 'trial_21d';
 const PAID_PLAN_ID = 'closeflow_pro';
 const PAID_PLAN_IDS = new Set([
@@ -19,6 +18,32 @@ const BROKEN_BOOTSTRAP_REPAIR_WINDOW_MS = 12 * 60 * 60 * 1000;
 const FREE_LIMITS = { activeLeads: 5, activeTasks: 5, activeEvents: 5, activeDrafts: 3 };
 
 type NullableString = string | null;
+
+function parseServerAdminEmailList(raw: unknown) {
+  if (typeof raw !== 'string') return [];
+  return raw
+    .split(',')
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function isServerConfiguredAdminEmail(email: NullableString) {
+  const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+  if (!normalizedEmail) return false;
+
+  const configuredEmails = [
+    ...parseServerAdminEmailList(process.env.CLOSEFLOW_SERVER_ADMIN_EMAILS),
+    ...parseServerAdminEmailList(process.env.CLOSEFLOW_ADMIN_EMAILS),
+  ];
+
+  return configuredEmails.includes(normalizedEmail);
+}
+
+function isAdminProfileRow(row: Record<string, unknown> | null) {
+  if (!row) return false;
+  const role = String(row.role ?? '').trim().toLowerCase();
+  return role === 'admin' || Boolean(row.is_admin ?? row.isAdmin ?? false);
+}
 
 function isUuid(value: unknown) {
   return typeof value === 'string'
@@ -94,9 +119,6 @@ function buildTrialEndsAt() {
   return new Date(Date.now() + TRIAL_MS).toISOString();
 }
 
-function isAdminEmail(email: NullableString) {
-  return !!email && ADMIN_EMAILS.has(email.trim().toLowerCase());
-}
 
 function normalizePlanId(planId: string | null | undefined, subscriptionStatus?: string | null) {
   const normalized = asNullableString(planId);
@@ -189,7 +211,7 @@ function normalizeProfile(
   fallbackFullName: string | null,
 ) {
   const email = asString(row?.email ?? fallbackEmail ?? '');
-  const admin = Boolean(row?.is_admin ?? row?.isAdmin ?? false) || isAdminEmail(email);
+  const admin = isAdminProfileRow(row) || isServerConfiguredAdminEmail(email);
   return {
     id: asString(
       row?.id
@@ -383,7 +405,7 @@ async function findWorkspaceForProfile(
 }
 
 async function findFallbackWorkspace(email: string | null) {
-  if (!isAdminEmail(email)) {
+  if (!isServerConfiguredAdminEmail(email)) {
     return null;
   }
 
@@ -397,7 +419,7 @@ async function findFallbackWorkspace(email: string | null) {
     if (rows.length === 1) {
       return rows[0] as Record<string, unknown>;
     }
-    if (rows.length > 0 && isAdminEmail(email)) {
+    if (rows.length > 0 && isServerConfiguredAdminEmail(email)) {
       return rows[0] as Record<string, unknown>;
     }
   } catch {
@@ -612,7 +634,7 @@ async function ensureProfile(
   workspaceId: string | null,
 ) {
   const nowIso = new Date().toISOString();
-  const admin = isAdminEmail(email);
+  const admin = isServerConfiguredAdminEmail(email);
   const normalizedUid = uid && isUuid(uid) ? uid : null;
 
   if (!profileRow) {
@@ -994,8 +1016,8 @@ export default async function handler(req: any, res: any) {
       fullName: fullName || '',
       companyName: '',
       email: email || '',
-      role: isAdminEmail(email) ? 'admin' : 'member',
-      isAdmin: isAdminEmail(email),
+      role: isServerConfiguredAdminEmail(email) ? 'admin' : 'member',
+      isAdmin: isServerConfiguredAdminEmail(email),
       appearanceSkin: 'classic-light',
       planningConflictWarningsEnabled: true,
       browserNotificationsEnabled: true,
