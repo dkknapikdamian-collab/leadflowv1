@@ -121,7 +121,7 @@ export default async function handler(req: any, res: any) {
       }
 
       if (req.method !== 'POST') { res.status(405).json({ error: 'METHOD_NOT_ALLOWED' }); return; }
-      const finalWorkspaceId = workspaceId || await findWorkspaceId(body.workspaceId);
+      const finalWorkspaceId = workspaceId;
       const payload = {
         workspace_id: finalWorkspaceId || null,
         case_id: asNullableUuid(body.caseId),
@@ -140,9 +140,13 @@ export default async function handler(req: any, res: any) {
     }
 
     // kind === 'case-items'
+    const workspaceId = await resolveRequestWorkspaceId(req, body);
+    if (!workspaceId) { res.status(401).json({ error: 'AUTH_WORKSPACE_REQUIRED' }); return; }
+
     if (req.method === 'GET') {
       const caseId = asString(req.query?.caseId);
       if (!caseId) { res.status(400).json({ error: 'CASE_ID_REQUIRED' }); return; }
+      await requireScopedRow('cases', caseId, workspaceId, 'CASE_NOT_FOUND');
 
       const result = await selectFirstAvailable([
         `case_items?select=*&case_id=eq.${encodeURIComponent(caseId)}&order=item_order.asc,created_at.asc&limit=500`,
@@ -154,6 +158,7 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === 'POST') {
       if (!body.caseId) { res.status(400).json({ error: 'CASE_ID_REQUIRED' }); return; }
+      await requireScopedRow('cases', String(body.caseId), workspaceId, 'CASE_NOT_FOUND');
       const nowIso = new Date().toISOString();
       const payload = {
         case_id: String(body.caseId),
@@ -179,6 +184,11 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === 'PATCH') {
       if (!body.id) { res.status(400).json({ error: 'CASE_ITEM_ID_REQUIRED' }); return; }
+      const currentResult = await selectFirstAvailable([`case_items?select=case_id&id=eq.${encodeURIComponent(String(body.id))}&limit=1`]);
+      const currentRows = Array.isArray(currentResult.data) ? currentResult.data : [];
+      const currentCaseId = asString((currentRows[0] as any)?.case_id);
+      if (!currentCaseId) { res.status(404).json({ error: 'CASE_ITEM_NOT_FOUND' }); return; }
+      await requireScopedRow('cases', currentCaseId, workspaceId, 'CASE_NOT_FOUND');
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (body.title !== undefined) payload.title = body.title || '';
       if (body.description !== undefined) payload.description = body.description || '';
@@ -200,6 +210,11 @@ export default async function handler(req: any, res: any) {
     if (req.method === 'DELETE') {
       const id = asString(req.query?.id);
       if (!id) { res.status(400).json({ error: 'CASE_ITEM_ID_REQUIRED' }); return; }
+      const currentResult = await selectFirstAvailable([`case_items?select=case_id&id=eq.${encodeURIComponent(id)}&limit=1`]);
+      const currentRows = Array.isArray(currentResult.data) ? currentResult.data : [];
+      const currentCaseId = asString((currentRows[0] as any)?.case_id);
+      if (!currentCaseId) { res.status(404).json({ error: 'CASE_ITEM_NOT_FOUND' }); return; }
+      await requireScopedRow('cases', currentCaseId, workspaceId, 'CASE_NOT_FOUND');
       await deleteById('case_items', id);
       res.status(200).json({ ok: true, id });
       return;
@@ -210,4 +225,3 @@ export default async function handler(req: any, res: any) {
     res.status(500).json({ error: error.message || 'RECORDS_API_FAILED' });
   }
 }
-

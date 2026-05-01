@@ -4,6 +4,7 @@ service cloud.firestore {
     // ===============================================================
     // ETAP 03 — Firebase legacy lockdown
     // Firebase/Firestore is legacy. Supabase is the source of truth.
+    // Firebase is legacy. Do not add new business data here.
     //
     // Security goal:
     // - no public client portal token reads,
@@ -73,6 +74,12 @@ service cloud.firestore {
       allow update, delete: if existingOwner() && newOwner();
     }
 
+    match /clients/{clientId} {
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
+    }
+
     match /tasks/{taskId} {
       allow get, list: if existingOwner();
       allow create: if newOwner();
@@ -96,7 +103,42 @@ service cloud.firestore {
       }
     }
 
+    // Legacy fallback only: if top-level case_items exists, never expose it publicly.
+    match /case_items/{itemId} {
+      allow read, write: if false;
+    }
+
     match /activities/{activityId} {
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
+    }
+
+    match /work_items/{workItemId} {
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
+    }
+
+    match /payments/{paymentId} {
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
+    }
+
+    match /support_requests/{requestId} {
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
+    }
+
+    match /service_profiles/{profileId} {
+      allow get, list: if existingOwner();
+      allow create: if newOwner();
+      allow update, delete: if existingOwner() && newOwner();
+    }
+
+    match /ai_drafts/{draftId} {
       allow get, list: if existingOwner();
       allow create: if newOwner();
       allow update, delete: if existingOwner() && newOwner();
@@ -109,10 +151,9 @@ service cloud.firestore {
     }
 
     match /client_portal_tokens/{tokenId} {
-      // No public reads. Token documents are owner-managed only.
-      // tokenId is treated as a case id only for legacy owner maintenance.
-      allow get, list: if isCaseOwner(tokenId);
-      allow create, update, delete: if isCaseOwner(tokenId);
+      // Legacy portal tokens are fully disabled in Firestore.
+      // Portal V1 runs through Supabase + backend validation only.
+      allow read, write: if false;
     }
 
     match /{document=**} {

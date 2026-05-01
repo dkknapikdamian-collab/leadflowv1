@@ -177,7 +177,6 @@ const ITEM_TYPE_LABELS: Record<string, string> = {
   file: 'Plik',
   decision: 'Decyzja',
   text: 'Tekst',
-  access: 'Dostęp',
 };
 
 const TASK_STATUS_LABELS: Record<string, string> = {
@@ -983,7 +982,7 @@ export default function CaseDetail() {
                 <div className="case-detail-section-head">
                   <div>
                     <h2>Checklisty i braki</h2>
-                    <p>Dokumenty, decyzje, dostępy i inne rzeczy potrzebne do pracy.</p>
+                    <p>Dokumenty, decyzje, informacje i inne rzeczy potrzebne do pracy.</p>
                   </div>
                   <Button type="button" onClick={() => setIsAddItemOpen(true)}>
                     <Plus className="h-4 w-4" />
@@ -1246,7 +1245,7 @@ function CaseItemDialog({
         <div className="case-detail-dialog-grid">
           <label>Tytuł<Input value={value.title} onChange={(event) => onChange({ ...value, title: event.target.value })} placeholder="np. Umowa, skan dokumentu, decyzja" /></label>
           <label>Opis<Textarea value={value.description} onChange={(event) => onChange({ ...value, description: event.target.value })} placeholder="Krótko opisz, czego brakuje." /></label>
-          <label>Typ<select value={value.type} onChange={(event) => onChange({ ...value, type: event.target.value })}><option value="file">Plik</option><option value="decision">Decyzja</option><option value="text">Tekst</option><option value="access">Dostęp</option></select></label>
+          <label>Typ<select value={value.type} onChange={(event) => onChange({ ...value, type: event.target.value })}><option value="file">Plik</option><option value="decision">Decyzja</option><option value="text">Tekst</option></select></label>
           <label>Termin<Input type="date" value={value.dueDate} onChange={(event) => onChange({ ...value, dueDate: event.target.value })} /></label>
           <label className="case-detail-checkbox-label"><input type="checkbox" checked={value.isRequired} onChange={(event) => onChange({ ...value, isRequired: event.target.checked })} /> Wymagane do startu / realizacji</label>
         </div>

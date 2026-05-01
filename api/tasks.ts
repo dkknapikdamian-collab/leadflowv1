@@ -1,6 +1,7 @@
 import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow, asText } from '../src/server/_request-scope.js';
 import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
+import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { normalizeTaskContract, toIsoDateTime } from '../src/lib/data-contract.js';
 
 function parseBody(req: any) {
@@ -87,14 +88,15 @@ function buildTaskPayload(body: Record<string, unknown>, workspaceId: string, mo
 }
 
 export default async function handler(req: any, res: any) {
+  let workspaceId: string | null = null;
   try {
-    if (req.method === 'GET') {
-      const workspaceId = await resolveRequestWorkspaceId(req);
-      if (!workspaceId) {
-        res.status(401).json({ error: 'TASK_WORKSPACE_REQUIRED' });
-        return;
-      }
+    workspaceId = await resolveRequestWorkspaceId(req);
+    if (!workspaceId) {
+      res.status(401).json({ error: 'AUTH_WORKSPACE_REQUIRED' });
+      return;
+    }
 
+    if (req.method === 'GET') {
       const requestedId = asText(req.query?.id);
       const requestedLeadId = asText(req.query?.leadId || req.query?.lead_id);
       const requestedCaseId = asText(req.query?.caseId || req.query?.case_id);
@@ -128,11 +130,6 @@ export default async function handler(req: any, res: any) {
     }
 
     const body = parseBody(req);
-    const workspaceId = await resolveRequestWorkspaceId(req, body);
-    if (!workspaceId) {
-      res.status(400).json({ error: 'TASK_WORKSPACE_REQUIRED' });
-      return;
-    }
 
     if (req.method !== 'GET') {
       await assertWorkspaceWriteAccess(workspaceId);
@@ -174,6 +171,10 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
+    if (error?.code || error?.status) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     res.status(500).json({ error: error?.message || 'TASK_API_FAILED' });
   }
 }

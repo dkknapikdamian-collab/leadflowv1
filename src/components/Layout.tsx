@@ -36,6 +36,8 @@ import {
   LifeBuoy,
   ClipboardList,
   Bot,
+  FolderKanban,
+  FileText,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -167,6 +169,13 @@ export default function Layout({ children }: LayoutProps) {
       {
         caption: 'System',
         items: systemItems,
+      },
+      {
+        caption: 'Szablony',
+        items: [
+          { icon: FolderKanban, label: 'Szablony spraw', path: '/templates' },
+          { icon: FileText, label: 'Szablony odpowiedzi', path: '/response-templates' },
+        ],
       },
     ];
   }, [isAdmin]);

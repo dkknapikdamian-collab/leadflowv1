@@ -20,6 +20,7 @@ import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
+  billingActionInSupabase,
   fetchCasesFromSupabase,
   fetchClientsFromSupabase,
   fetchLeadsFromSupabase,
@@ -274,6 +275,7 @@ export default function Billing() {
   const [tab, setTab] = useState<BillingTab>('plan');
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
   const [upgradingPlanKey, setUpgradingPlanKey] = useState<string | null>(null);
+  const [billingActionLoading, setBillingActionLoading] = useState<'cancel' | 'resume' | null>(null);
   const [settlementLoading, setSettlementLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [payments, setPayments] = useState<any[]>([]);
@@ -284,6 +286,25 @@ export default function Billing() {
   const clientById = useMemo(() => new Map(clients.map((entry) => [String(entry.id), String(entry.name || entry.company || 'Klient')])), [clients]);
   const leadById = useMemo(() => new Map(leads.map((entry) => [String(entry.id), String(entry.name || 'Lead')])), [leads]);
   const caseById = useMemo(() => new Map(cases.map((entry) => [String(entry.id), String(entry.title || 'Sprawa')])), [cases]);
+
+  useEffect(() => {
+    const search = new URLSearchParams(window.location.search);
+    const checkoutState = String(search.get('checkout') || '');
+    if (!checkoutState) return;
+
+    if (checkoutState === 'success') {
+      toast.success('Płatność zakończona. Odświeżam status dostępu...');
+      void refresh();
+    } else if (checkoutState === 'cancelled') {
+      toast.message('Płatność anulowana.');
+      void refresh();
+    }
+
+    search.delete('checkout');
+    const nextQuery = search.toString();
+    const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}${window.location.hash || ''}`;
+    window.history.replaceState({}, '', nextUrl);
+  }, [refresh]);
 
   useEffect(() => {
     if (tab !== 'settlements') return;
@@ -366,6 +387,19 @@ export default function Billing() {
       toast.error(`Błąd uruchamiania płatności Stripe/BLIK: ${error.message || 'REQUEST_FAILED'}`);
     } finally {
       setUpgradingPlanKey(null);
+    }
+  };
+
+  const handleBillingAction = async (action: 'cancel' | 'resume') => {
+    setBillingActionLoading(action);
+    try {
+      const result = await billingActionInSupabase(action);
+      toast.success(result?.note || (action === 'cancel' ? 'Ustawiono anulowanie na koniec okresu.' : 'Wznowiono odnowienie planu.'));
+      await refresh();
+    } catch (error: any) {
+      toast.error(`Błąd akcji billing: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setBillingActionLoading(null);
     }
   };
 
@@ -568,6 +602,25 @@ export default function Billing() {
                 </div>
                 <p>{accessCopy.label}</p>
                 <small>{accessCopy.description}</small>
+                <div className="mt-3 flex gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={Boolean(billingActionLoading) || workspace.cancelAtPeriodEnd}
+                    onClick={() => void handleBillingAction('cancel')}
+                  >
+                    {billingActionLoading === 'cancel' ? 'Ustawianie...' : 'Anuluj odnowienie'}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={Boolean(billingActionLoading) || !workspace.cancelAtPeriodEnd}
+                    onClick={() => void handleBillingAction('resume')}
+                  >
+                    {billingActionLoading === 'resume' ? 'Wznawianie...' : 'Wznów odnowienie'}
+                  </Button>
+                </div>
               </section>
 
               <section className="right-card billing-right-card">

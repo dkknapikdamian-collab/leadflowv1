@@ -4,6 +4,7 @@ service firebase.storage {
     // ===============================================================
     // ETAP 03 — Firebase Storage legacy lockdown
     // Firebase Storage is legacy. Supabase Storage is the target.
+    // Firebase is legacy. Do not add new business data here.
     //
     // Security goal:
     // - no public reads,

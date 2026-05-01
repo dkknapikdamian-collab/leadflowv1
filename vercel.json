@@ -15,14 +15,6 @@
                          "destination":  "/api/work-items?kind=events"
                      },
                      {
-                         "source":  "/api/activities",
-                         "destination":  "/api/records?kind=activities"
-                     },
-                     {
-                         "source":  "/api/case-items",
-                         "destination":  "/api/records?kind=case-items"
-                     },
-                     {
                          "source":  "/api/support-forward",
                          "destination":  "/api/support?route=forward"
                      },
@@ -41,10 +33,6 @@
                      {
                          "source":  "/api/workspace-settings",
                          "destination":  "/api/system?kind=workspace-settings"
-                     },
-                     {
-                         "source":  "/api/client-portal-tokens",
-                         "destination":  "/api/system?kind=client-portal-tokens"
                      },
                      {
                          "source":  "/api/admin/workspace-recovery",

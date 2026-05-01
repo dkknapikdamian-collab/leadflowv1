@@ -31,6 +31,8 @@ const Calendar = lazy(() => import('./pages/Calendar'));
 const Billing = lazy(() => import('./pages/Billing'));
 const SupportCenter = lazy(() => import('./pages/SupportCenter'));
 const NotificationsCenter = lazy(() => import('./pages/NotificationsCenter'));
+const Templates = lazy(() => import('./pages/Templates'));
+const ResponseTemplates = lazy(() => import('./pages/ResponseTemplates'));
 const UiPreviewVNextFull = lazy(() => import('./pages/UiPreviewVNextFull'));
 const UiPreviewVNext = lazy(() => import('./pages/UiPreviewVNext'));
 
@@ -179,6 +181,9 @@ export default function App() {
               <Route path="/activity" element={isLoggedIn ? <Activity /> : <Navigate to="/login" />} />
               <Route path="/ai-drafts" element={isLoggedIn ? <AiDrafts /> : <Navigate to="/login" />} />
               <Route path="/notifications" element={isLoggedIn ? <NotificationsCenter /> : <Navigate to="/login" />} />
+              <Route path="/templates" element={isLoggedIn ? <Templates /> : <Navigate to="/login" />} />
+              <Route path="/case-templates" element={isLoggedIn ? <Navigate to="/templates" replace /> : <Navigate to="/login" />} />
+              <Route path="/response-templates" element={isLoggedIn ? <ResponseTemplates /> : <Navigate to="/login" />} />
               <Route path="/billing" element={isLoggedIn ? <Billing /> : <Navigate to="/login" />} />
               <Route path="/help" element={isLoggedIn ? <SupportCenter /> : <Navigate to="/login" />} />
               <Route path="/settings/ai" element={isLoggedIn ? <AdminAiSettings /> : <Navigate to="/login" />} />

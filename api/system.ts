@@ -898,7 +898,7 @@ if (kind === 'workspace-subscription') {
   }
 
   if (kind === 'client-portal-tokens') {
-    await handleClientPortalTokens(req, res);
+    res.status(410).json({ error: 'USE_DEDICATED_CLIENT_PORTAL_TOKENS_ENDPOINT' });
     return;
   }
 

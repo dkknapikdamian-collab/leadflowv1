@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { storage } from '../firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Progress } from '../components/ui/progress';
@@ -30,13 +28,19 @@ import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
 import {
-  fetchCaseByIdFromSupabase,
-  fetchCaseItemsFromSupabase,
-  insertActivityToSupabase,
+  createPortalSessionFromSupabase,
+  fetchPortalCaseBundleFromSupabase,
+  insertPortalActivityToSupabase,
   isSupabaseConfigured,
-  updateCaseItemInSupabase,
-  validateClientPortalTokenFromSupabase,
+  submitPortalCaseItemInSupabase,
+  uploadPortalFileInSupabase,
 } from '../lib/supabase-fallback';
+
+const SENSITIVE_INPUT_PATTERN = /\b(haslo|hasło|password|passcode|secret|credential|login|api[_ -]?key|token)\b/i;
+
+function containsSensitiveText(value: string) {
+  return SENSITIVE_INPUT_PATTERN.test(value);
+}
 
 export default function ClientPortal() {
   const { caseId, token } = useParams();
@@ -44,6 +48,7 @@ export default function ClientPortal() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isValid, setIsValid] = useState(false);
+  const [portalSession, setPortalSession] = useState('');
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
@@ -51,14 +56,13 @@ export default function ClientPortal() {
   const [file, setFile] = useState<File | null>(null);
   const [invalidReason, setInvalidReason] = useState('Link wygasł lub jest nieprawidłowy');
 
-  async function refreshSupabasePortal() {
+  async function refreshSupabasePortal(session?: string) {
     if (!caseId) return;
-    const [caseRow, itemRows] = await Promise.all([
-      fetchCaseByIdFromSupabase(caseId),
-      fetchCaseItemsFromSupabase(caseId),
-    ]);
-    setCaseData(caseRow);
-    setItems(itemRows);
+    const activeSession = session || portalSession;
+    if (!activeSession) return;
+    const bundle = await fetchPortalCaseBundleFromSupabase(caseId, activeSession);
+    setCaseData(bundle.caseRow);
+    setItems(bundle.items);
   }
 
   useEffect(() => {
@@ -76,11 +80,12 @@ export default function ClientPortal() {
       };
     }
 
-    validateClientPortalTokenFromSupabase(caseId, token)
-      .then(async () => {
+    createPortalSessionFromSupabase(caseId, token)
+      .then(async (sessionResult) => {
         if (cancelled) return;
+        setPortalSession(sessionResult.portalSession);
         setIsValid(true);
-        await refreshSupabasePortal();
+        await refreshSupabasePortal(sessionResult.portalSession);
         if (!cancelled) setLoading(false);
       })
       .catch(() => {
@@ -96,33 +101,69 @@ export default function ClientPortal() {
   }, [caseId, token]);
 
   const handleSubmitResponse = async () => {
-    if (!selectedItem || !caseId) return;
+    if (!selectedItem || !caseId || !portalSession) return;
     setUploading(true);
 
     try {
-      let fileUrl = selectedItem.fileUrl || null;
-      let fileName = selectedItem.fileName || null;
-
-      if (file) {
-        const storageRef = ref(storage, `cases/${caseId}/${selectedItem.id}/${file.name}`);
-        const uploadResult = await uploadBytes(storageRef, file);
-        fileUrl = await getDownloadURL(uploadResult.ref);
-        fileName = file.name;
+      const trimmedResponse = (response || '').trim();
+      if (trimmedResponse && containsSensitiveText(trimmedResponse)) {
+        throw new Error('SENSITIVE_CREDENTIALS_NOT_ALLOWED');
       }
 
-      await updateCaseItemInSupabase({
+      let encodedFile: { name: string; type: string; size: number; dataBase64: string } | null = null;
+      if (file) {
+        const allowedTypes = new Set([
+          'application/pdf',
+          'image/jpeg',
+          'image/png',
+          'image/webp',
+          'text/plain',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ]);
+        if (!allowedTypes.has(file.type)) {
+          throw new Error('PORTAL_FILE_TYPE_NOT_ALLOWED');
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error('PORTAL_FILE_SIZE_LIMIT');
+        }
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+        encodedFile = {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          dataBase64: btoa(binary),
+        };
+      }
+
+      let uploadedPath: string | null = null;
+      let uploadedName: string | null = null;
+      if (encodedFile) {
+        const uploaded = await uploadPortalFileInSupabase({
+          caseId,
+          itemId: selectedItem.id,
+          portalSession,
+          file: encodedFile,
+        });
+        uploadedPath = uploaded.filePath;
+        uploadedName = uploaded.fileName;
+      }
+
+      await submitPortalCaseItemInSupabase({
         id: selectedItem.id,
-        caseId,
+        caseId: caseId!,
+        portalSession,
         status: 'uploaded',
-        response: response || selectedItem.response || null,
-        fileUrl,
-        fileName,
+        response: trimmedResponse || selectedItem.response || null,
+        filePath: uploadedPath,
+        fileName: uploadedName,
       });
 
-      await insertActivityToSupabase({
+      await insertPortalActivityToSupabase({
         caseId,
-        ownerId: caseData?.ownerId ?? null,
-        actorType: 'client',
+        portalSession,
         eventType: file ? 'file_uploaded' : 'response_sent',
         payload: { title: selectedItem.title },
       });
@@ -135,6 +176,10 @@ export default function ClientPortal() {
       setFile(null);
       setSelectedItem(null);
     } catch (error: any) {
+      if (error?.message === 'SENSITIVE_CREDENTIALS_NOT_ALLOWED') {
+        toast.error('Nie wpisuj haseł ani sekretów. Prześlij dokument albo neutralną notatkę.');
+        return;
+      }
       toast.error('Błąd: ' + error.message);
     } finally {
       setUploading(false);
@@ -142,17 +187,18 @@ export default function ClientPortal() {
   };
 
   const handleDecision = async (itemId: string, decision: 'accepted' | 'rejected', title: string) => {
+    if (!caseId || !portalSession) return;
     try {
-      await updateCaseItemInSupabase({
+      await submitPortalCaseItemInSupabase({
         id: itemId,
         caseId: caseId!,
+        portalSession,
         status: decision === 'accepted' ? 'accepted' : 'rejected',
       });
 
-      await insertActivityToSupabase({
+      await insertPortalActivityToSupabase({
         caseId,
-        ownerId: caseData?.ownerId ?? null,
-        actorType: 'client',
+        portalSession,
         eventType: 'decision_made',
         payload: { title, decision },
       });
@@ -289,7 +335,7 @@ export default function ClientPortal() {
                             </DialogContent>
                           </Dialog>
                         )}
-                        {(item.type === 'text' || item.type === 'access') && (
+                        {item.type === 'text' && (
                           <Dialog open={isUploadOpen && selectedItem?.id === item.id} onOpenChange={(open) => {
                             setIsUploadOpen(open);
                             if (open) setSelectedItem(item);
@@ -302,12 +348,15 @@ export default function ClientPortal() {
                             </DialogTrigger>
                             <DialogContent>
                               <DialogHeader>
-                                <DialogTitle>{item.type === 'access' ? 'Podaj dane dostępu' : 'Twoja odpowiedź'}: {item.title}</DialogTitle>
+                                <DialogTitle>Twoja odpowiedź: {item.title}</DialogTitle>
                               </DialogHeader>
                               <div className="space-y-4 py-4">
+                                <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                                  Nie wpisuj haseł, loginów ani sekretów. Użyj załącznika lub neutralnej informacji.
+                                </div>
                                 <div className="space-y-2">
-                                  <Label>{item.type === 'access' ? 'Login, hasło, link' : 'Treść odpowiedzi'}</Label>
-                                  <Textarea placeholder={item.type === 'access' ? 'Wpisz dane dostępu tutaj...' : 'Wpisz swoją odpowiedź tutaj...'} value={response} onChange={e => setResponse(e.target.value)} />
+                                  <Label>Treść odpowiedzi</Label>
+                                  <Textarea placeholder="Wpisz swoją odpowiedź tutaj..." value={response} onChange={e => setResponse(e.target.value)} />
                                 </div>
                               </div>
                               <DialogFooter>

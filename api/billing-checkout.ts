@@ -1,4 +1,6 @@
 import { asNullableText, createStripeBlikCheckout, getAppUrl, getStripeConfig, parseBody, resolveStripeBillingPlan } from '../src/server/_stripe.js';
+import { requireAuthContext } from '../src/server/_request-scope.js';
+import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
 export default async function handler(req: any, res: any) {
   try {
@@ -7,15 +9,22 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
+    const authContext = await requireAuthContext(req);
     const body = parseBody(req);
-    const workspaceId = asNullableText(body.workspaceId || req?.headers?.['x-workspace-id']);
-    const customerEmail = asNullableText(body.customerEmail || req?.headers?.['x-user-email']);
+    const workspaceId = asNullableText(authContext.workspaceId);
+    const requestedWorkspaceId = asNullableText(body.workspaceId || req?.headers?.['x-workspace-id']);
+    const customerEmail = asNullableText(authContext.email || body.customerEmail);
     const planKey = asNullableText(body.planKey || req?.headers?.['x-billing-plan']);
     const billingPeriod = asNullableText(body.billingPeriod || req?.headers?.['x-billing-period']);
     const dryRun = body.dryRun === true || body.dryRun === '1' || req?.headers?.['x-billing-dry-run'] === '1';
 
     if (!workspaceId) {
       res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
+      return;
+    }
+
+    if (requestedWorkspaceId && requestedWorkspaceId !== workspaceId) {
+      res.status(403).json({ error: 'WORKSPACE_FORBIDDEN' });
       return;
     }
 
@@ -83,6 +92,10 @@ export default async function handler(req: any, res: any) {
       accessDays: result.accessDays,
     });
   } catch (error: any) {
+    if (error?.code || error?.status) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     res.status(500).json({ error: error?.message || 'STRIPE_BLIK_CHECKOUT_FAILED' });
   }
 }

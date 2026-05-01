@@ -1,7 +1,8 @@
-import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
+import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
+import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
 const SOURCE_ALIASES: Record<string, string> = {
   instagram: 'instagram',
@@ -436,13 +437,15 @@ function deriveCaseEligibility(status: string, startRule: string, billingStatus:
 }
 
 export default async function handler(req: any, res: any) {
+  let workspaceId: string | null = null;
   try {
+    workspaceId = await resolveRequestWorkspaceId(req);
+    if (!workspaceId) {
+      res.status(401).json({ error: 'AUTH_WORKSPACE_REQUIRED' });
+      return;
+    }
+
     if (req.method === 'GET') {
-      const workspaceId = await resolveRequestWorkspaceId(req);
-      if (!workspaceId) {
-        res.status(401).json({ error: 'LEAD_WORKSPACE_REQUIRED' });
-        return;
-      }
       const requestedId = asText(req.query?.id);
       const requestedClientId = asNullableUuid(req.query?.clientId);
       const requestedLinkedCaseId = asNullableUuid(req.query?.linkedCaseId || req.query?.caseId);
@@ -474,7 +477,6 @@ export default async function handler(req: any, res: any) {
     }
 
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-    const workspaceId = await resolveRequestWorkspaceId(req, body);
 
     if (req.method !== 'GET' && workspaceId) {
       await assertWorkspaceWriteAccess(workspaceId);
@@ -578,8 +580,7 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    const finalWorkspaceId = workspaceId || await findWorkspaceId(body.workspaceId);
-    if (!finalWorkspaceId) throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
+    const finalWorkspaceId = workspaceId;
     await assertWorkspaceWriteAccess(finalWorkspaceId);
     const nowIso = new Date().toISOString();
     const status = normalizeStatus(body.status || 'new');
@@ -636,6 +637,10 @@ export default async function handler(req: any, res: any) {
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
     res.status(200).json(normalizeLead(inserted as Record<string, unknown>));
   } catch (error: any) {
+    if (error?.code || error?.status) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     if (String(error?.message || error || '').startsWith('WORKSPACE_WRITE_ACCESS_REQUIRED')) {
       res.status(402).json({ error: 'WORKSPACE_WRITE_ACCESS_REQUIRED' });
       return;
@@ -645,7 +650,6 @@ export default async function handler(req: any, res: any) {
     res.status(statusCode).json({ error: message });
   }
 }
-
 
 
 

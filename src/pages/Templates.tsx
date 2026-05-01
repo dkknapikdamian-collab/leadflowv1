@@ -1,16 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
+﻿import { useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle,
   CheckCircle2,
@@ -27,7 +15,6 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { auth, db } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -40,6 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Checkbox } from '../components/ui/checkbox';
 import { Textarea } from '../components/ui/textarea';
 import { cn } from '../lib/utils';
+import { createCaseTemplateInSupabase, deleteCaseTemplateFromSupabase, fetchCaseTemplatesFromSupabase, updateCaseTemplateInSupabase } from '../lib/supabase-fallback';
 
 type TemplateItemType = 'file' | 'text' | 'decision' | 'access';
 
@@ -53,7 +41,6 @@ type TemplateItemDraft = {
 type TemplateRecord = {
   id: string;
   name?: string;
-  ownerId?: string;
   items?: TemplateItemDraft[];
 };
 
@@ -61,7 +48,7 @@ const ITEM_TYPE_OPTIONS: { value: TemplateItemType; label: string; badgeClassNam
   { value: 'file', label: 'Plik', badgeClassName: 'bg-sky-500/12 text-sky-500 border-sky-500/20' },
   { value: 'text', label: 'Tekst / brief', badgeClassName: 'bg-indigo-500/12 text-indigo-500 border-indigo-500/20' },
   { value: 'decision', label: 'Decyzja / akceptacja', badgeClassName: 'bg-amber-500/12 text-amber-600 border-amber-500/20' },
-  { value: 'access', label: 'Dostęp / login', badgeClassName: 'bg-emerald-500/12 text-emerald-500 border-emerald-500/20' },
+  { value: 'access', label: 'DostÄ™p / login', badgeClassName: 'bg-emerald-500/12 text-emerald-500 border-emerald-500/20' },
 ];
 
 const EMPTY_ITEM: TemplateItemDraft = {
@@ -103,20 +90,21 @@ export default function Templates() {
   const [draft, setDraft] = useState(createEmptyDraft());
 
   useEffect(() => {
-    if (!auth.currentUser) return;
-
-    const q = query(
-      collection(db, 'templates'),
-      where('ownerId', '==', auth.currentUser.uid),
-      orderBy('createdAt', 'desc')
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setTemplates(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<TemplateRecord, 'id'>) })));
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    let cancelled = false;
+    setLoading(true);
+    fetchCaseTemplatesFromSupabase({ includeArchived: false })
+      .then((data) => {
+        if (cancelled) return;
+        setTemplates((Array.isArray(data) ? data : []) as any);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setTemplates([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
   }, []);
 
   const stats = useMemo(() => {
@@ -157,7 +145,7 @@ export default function Templates() {
 
   function openCreateDialog() {
     if (!hasAccess) {
-      toast.error('Dostęp jest tylko w trybie podglądu. Włącz plan, żeby dodawać i edytować szablony.');
+      toast.error('DostÄ™p jest tylko w trybie podglÄ…du. WĹ‚Ä…cz plan, ĹĽeby dodawaÄ‡ i edytowaÄ‡ szablony.');
       return;
     }
 
@@ -168,7 +156,7 @@ export default function Templates() {
 
   function openEditDialog(template: TemplateRecord) {
     if (!hasAccess) {
-      toast.error('Dostęp jest tylko w trybie podglądu. Włącz plan, żeby edytować szablony.');
+      toast.error('DostÄ™p jest tylko w trybie podglÄ…du. WĹ‚Ä…cz plan, ĹĽeby edytowaÄ‡ szablony.');
       return;
     }
 
@@ -199,9 +187,8 @@ export default function Templates() {
   }
 
   async function handleSaveTemplate() {
-    if (!auth.currentUser) return;
-    if (!hasAccess) {
-      toast.error('Tryb podglądu blokuje zapis.');
+        if (!hasAccess) {
+      toast.error('Tryb podglÄ…du blokuje zapis.');
       return;
     }
 
@@ -209,77 +196,63 @@ export default function Templates() {
     const sanitizedItems = normalizeTemplateItems(draft.items).filter((item) => item.title.length > 0);
 
     if (!sanitizedName) {
-      toast.error('Nadaj nazwę szablonu.');
+      toast.error('Nadaj nazwÄ™ szablonu.');
       return;
     }
 
     if (!sanitizedItems.length) {
-      toast.error('Dodaj przynajmniej jedną pozycję checklisty.');
+      toast.error('Dodaj przynajmniej jednÄ… pozycjÄ™ checklisty.');
       return;
     }
 
     setSaving(true);
     try {
       if (editingTemplateId) {
-        await updateDoc(doc(db, 'templates', editingTemplateId), {
-          name: sanitizedName,
-          items: sanitizedItems,
-          updatedAt: serverTimestamp(),
-        });
-        toast.success('Szablon został zaktualizowany.');
+        await updateCaseTemplateInSupabase({ id: editingTemplateId, name: sanitizedName, items: sanitizedItems });
+        toast.success('Szablon zostaĹ‚ zaktualizowany.');
       } else {
-        await addDoc(collection(db, 'templates'), {
-          name: sanitizedName,
-          items: sanitizedItems,
-          ownerId: auth.currentUser.uid,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-        toast.success('Szablon został dodany.');
+        await createCaseTemplateInSupabase({ name: sanitizedName, items: sanitizedItems });
+        toast.success('Szablon zostaĹ‚ dodany.');
       }
 
       setDialogOpen(false);
       setEditingTemplateId(null);
       setDraft(createEmptyDraft());
     } catch (error: any) {
-      toast.error(`Nie udało się zapisać szablonu: ${error.message}`);
+      toast.error(`Nie udaĹ‚o siÄ™ zapisaÄ‡ szablonu: ${error.message}`);
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDuplicateTemplate(template: TemplateRecord) {
-    if (!auth.currentUser) return;
     if (!hasAccess) {
-      toast.error('Tryb podglądu blokuje zapis.');
+      toast.error('Tryb podglÄ…du blokuje zapis.');
       return;
     }
 
     try {
-      await addDoc(collection(db, 'templates'), {
+      await createCaseTemplateInSupabase({
         name: `${template.name || 'Szablon'} (kopia)`,
         items: normalizeTemplateItems(template.items),
-        ownerId: auth.currentUser.uid,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
       });
-      toast.success('Utworzono kopię szablonu.');
+      toast.success('Utworzono kopiÄ™ szablonu.');
     } catch (error: any) {
-      toast.error(`Nie udało się skopiować szablonu: ${error.message}`);
+      toast.error(`Nie udaĹ‚o siÄ™ skopiowaÄ‡ szablonu: ${error.message}`);
     }
   }
 
   async function handleDeleteTemplate(templateId: string) {
     if (!hasAccess) {
-      toast.error('Tryb podglądu blokuje zapis.');
+      toast.error('Tryb podglÄ…du blokuje zapis.');
       return;
     }
 
     try {
-      await deleteDoc(doc(db, 'templates', templateId));
-      toast.success('Szablon został usunięty.');
+      await deleteCaseTemplateFromSupabase(templateId);
+      toast.success('Szablon zostaĹ‚ usuniÄ™ty.');
     } catch (error: any) {
-      toast.error(`Nie udało się usunąć szablonu: ${error.message}`);
+      toast.error(`Nie udaĹ‚o siÄ™ usunÄ…Ä‡ szablonu: ${error.message}`);
     }
   }
 
@@ -289,19 +262,19 @@ export default function Templates() {
         <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
-              <FolderKanban className="h-3.5 w-3.5" /> Szablony startu
+              <FolderKanban className="h-3.5 w-3.5" /> Szablony spraw
             </div>
             <div>
-              <h1 className="text-3xl font-bold app-text">Szablony</h1>
+              <h1 className="text-3xl font-bold app-text">Szablony spraw / checklist</h1>
               <p className="max-w-2xl text-sm md:text-base app-muted">
-                Tutaj budujesz gotowce dla najczęstszych typów realizacji. Dzięki temu lead wygrany przechodzi w sprawę bez ręcznego układania checklisty od zera.
+                Tutaj budujesz checklisty startowe dla spraw. To nie są szablony odpowiedzi.
               </p>
             </div>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             {!hasAccess ? (
               <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-sm font-medium text-amber-600 dark:text-amber-400">
-                <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis szablonów
+                <ShieldAlert className="h-4 w-4" /> Tryb podglÄ…du blokuje zapis szablonĂłw
               </div>
             ) : null}
             <Button className="rounded-2xl" onClick={openCreateDialog}>
@@ -332,7 +305,7 @@ export default function Templates() {
           <Card className="border-none app-surface-strong">
             <CardContent className="flex items-center justify-between p-5">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Obowiązkowe</p>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">ObowiÄ…zkowe</p>
                 <p className="mt-2 text-2xl font-bold text-amber-500">{stats.requiredItems}</p>
               </div>
               <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-500"><AlertTriangle className="h-6 w-6" /></div>
@@ -361,7 +334,7 @@ export default function Templates() {
               />
             </div>
             <div className="rounded-2xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] app-muted app-border app-surface">
-              Buduj gotowce pod typ realizacji, nie od zera za każdym razem
+              Buduj gotowce pod typ realizacji, nie od zera za kaĹĽdym razem
             </div>
           </CardContent>
         </Card>
@@ -371,7 +344,7 @@ export default function Templates() {
             <Card className="border-none app-surface-strong">
               <CardContent className="flex flex-col items-center justify-center gap-3 py-16">
                 <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-[color:var(--app-primary)]" />
-                <p className="text-sm font-medium app-muted">Ładowanie szablonów...</p>
+                <p className="text-sm font-medium app-muted">Ĺadowanie szablonĂłw...</p>
               </CardContent>
             </Card>
           ) : filteredTemplates.length === 0 ? (
@@ -379,9 +352,9 @@ export default function Templates() {
               <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center">
                 <div className="rounded-full p-4 app-primary-chip"><FolderKanban className="h-7 w-7" /></div>
                 <div>
-                  <p className="text-lg font-semibold app-text">Brak szablonów w tym widoku</p>
+                  <p className="text-lg font-semibold app-text">Brak szablonĂłw w tym widoku</p>
                   <p className="mt-1 max-w-md text-sm app-muted">
-                    Dodaj pierwszy szablon, jeśli chcesz szybciej zamieniać wygranego leada w gotową sprawę z checklistą.
+                    Dodaj pierwszy szablon, jeĹ›li chcesz szybciej zamieniaÄ‡ wygranego leada w gotowÄ… sprawÄ™ z checklistÄ….
                   </p>
                 </div>
                 <Button className="rounded-2xl" onClick={openCreateDialog}>
@@ -402,10 +375,10 @@ export default function Templates() {
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-xl font-bold app-text">{template.name || 'Szablon bez nazwy'}</h3>
                           <Badge variant="outline">{items.length} pozycji</Badge>
-                          {requiredCount > 0 ? <Badge className="bg-amber-500/12 text-amber-600 border-amber-500/20">{requiredCount} obowiązkowych</Badge> : null}
+                          {requiredCount > 0 ? <Badge className="bg-amber-500/12 text-amber-600 border-amber-500/20">{requiredCount} obowiÄ…zkowych</Badge> : null}
                         </div>
                         <p className="text-sm app-muted">
-                          Wybierzesz go podczas przejścia z leada do sprawy. Pozycje poniżej będą od razu skopiowane do checklisty realizacji.
+                          Wybierzesz go podczas przejĹ›cia z leada do sprawy. Pozycje poniĹĽej bÄ™dÄ… od razu skopiowane do checklisty realizacji.
                         </p>
                       </div>
                       <DropdownMenu>
@@ -420,7 +393,7 @@ export default function Templates() {
                             <Copy className="mr-2 h-4 w-4" /> Duplikuj
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-rose-500 focus:text-rose-500" onClick={() => handleDeleteTemplate(template.id)}>
-                            <Trash2 className="mr-2 h-4 w-4" /> Usuń
+                            <Trash2 className="mr-2 h-4 w-4" /> UsuĹ„
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -433,11 +406,11 @@ export default function Templates() {
                           <div key={`${template.id}-${index}`} className="rounded-2xl border p-4 app-border app-surface">
                             <div className="mb-3 flex flex-wrap items-center gap-2">
                               <Badge className={meta.badgeClassName}>{meta.label}</Badge>
-                              {item.isRequired ? <Badge variant="destructive">Obowiązkowe</Badge> : <Badge variant="outline">Opcjonalne</Badge>}
+                              {item.isRequired ? <Badge variant="destructive">ObowiÄ…zkowe</Badge> : <Badge variant="outline">Opcjonalne</Badge>}
                             </div>
                             <p className="font-semibold app-text">{item.title}</p>
                             <p className={cn('mt-2 text-sm', item.description ? 'app-muted' : 'app-muted')}>
-                              {item.description || 'Bez opisu. Warto dopisać krótkie wyjaśnienie dla klienta.'}
+                              {item.description || 'Bez opisu. Warto dopisaÄ‡ krĂłtkie wyjaĹ›nienie dla klienta.'}
                             </p>
                           </div>
                         );
@@ -468,9 +441,9 @@ export default function Templates() {
                 />
               </div>
               <div className="rounded-2xl border p-4 text-sm app-border app-surface">
-                <p className="font-semibold app-text">Jak tego używać</p>
+                <p className="font-semibold app-text">Jak tego uĹĽywaÄ‡</p>
                 <p className="mt-2 app-muted">
-                  Ten szablon pojawi się przy akcji „Rozpocznij obsługę”. Wszystkie pozycje zostaną automatycznie skopiowane do checklisty nowej realizacji.
+                  Ten szablon pojawi siÄ™ przy akcji â€žRozpocznij obsĹ‚ugÄ™â€ť. Wszystkie pozycje zostanÄ… automatycznie skopiowane do checklisty nowej realizacji.
                 </p>
               </div>
             </div>
@@ -481,7 +454,7 @@ export default function Templates() {
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold app-text">Pozycja {index + 1}</p>
-                      <p className="text-xs app-muted">To dokładnie zobaczy operator i klient w dalszym flow.</p>
+                      <p className="text-xs app-muted">To dokĹ‚adnie zobaczy operator i klient w dalszym flow.</p>
                     </div>
                     <Button variant="ghost" size="icon" className="rounded-2xl text-rose-500 hover:bg-rose-500/10 hover:text-rose-500" onClick={() => removeDraftItem(index)}>
                       <Trash2 className="h-4 w-4" />
@@ -490,15 +463,15 @@ export default function Templates() {
 
                   <div className="grid gap-4">
                     <div className="space-y-2">
-                      <Label>Tytuł pozycji</Label>
-                      <Input value={item.title} onChange={(event) => updateDraftItem(index, { title: event.target.value })} placeholder="Np. Dostęp do hostingu" />
+                      <Label>TytuĹ‚ pozycji</Label>
+                      <Input value={item.title} onChange={(event) => updateDraftItem(index, { title: event.target.value })} placeholder="Np. DostÄ™p do hostingu" />
                     </div>
                     <div className="space-y-2">
                       <Label>Opis / instrukcja</Label>
                       <Textarea
                         value={item.description}
                         onChange={(event) => updateDraftItem(index, { description: event.target.value })}
-                        placeholder="Dopisz, co dokładnie klient ma przygotować albo zatwierdzić."
+                        placeholder="Dopisz, co dokĹ‚adnie klient ma przygotowaÄ‡ albo zatwierdziÄ‡."
                         rows={3}
                       />
                     </div>
@@ -518,8 +491,8 @@ export default function Templates() {
                       </div>
                       <div className="flex items-center justify-between rounded-2xl border px-4 py-3 app-border app-surface">
                         <div>
-                          <p className="text-sm font-semibold app-text">Obowiązkowe</p>
-                          <p className="text-xs app-muted">Brak tej pozycji będzie blokował sprawę.</p>
+                          <p className="text-sm font-semibold app-text">ObowiÄ…zkowe</p>
+                          <p className="text-xs app-muted">Brak tej pozycji bÄ™dzie blokowaĹ‚ sprawÄ™.</p>
                         </div>
                         <Checkbox checked={item.isRequired} onCheckedChange={(checked) => updateDraftItem(index, { isRequired: checked === true })} />
                       </div>
@@ -529,14 +502,14 @@ export default function Templates() {
               ))}
 
               <Button variant="outline" className="w-full rounded-2xl" onClick={addDraftItem}>
-                <Plus className="h-4 w-4" /> Dodaj następną pozycję
+                <Plus className="h-4 w-4" /> Dodaj nastÄ™pnÄ… pozycjÄ™
               </Button>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Anuluj</Button>
             <Button onClick={handleSaveTemplate} disabled={saving}>
-              {saving ? 'Zapisywanie...' : editingTemplateId ? 'Zapisz zmiany' : 'Utwórz szablon'}
+              {saving ? 'Zapisywanie...' : editingTemplateId ? 'Zapisz zmiany' : 'UtwĂłrz szablon'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -544,3 +517,6 @@ export default function Templates() {
     </Layout>
   );
 }
+
+
+

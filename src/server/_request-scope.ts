@@ -15,16 +15,18 @@ export async function requireRequestIdentity(req: any) {
   return requireSupabaseRequestContext(req);
 }
 
-export async function resolveRequestWorkspaceId(req: any, _bodyInput?: any) {
+export async function requireAuthContext(req: any) {
   const context = await requireSupabaseRequestContext(req);
-  const candidates = [context.workspaceId, context.userId].filter(Boolean);
+  const workspaceId = await findWorkspaceId(context.userId);
+  return {
+    ...context,
+    workspaceId,
+  };
+}
 
-  for (const candidate of candidates) {
-    const workspaceId = await findWorkspaceId(candidate);
-    if (workspaceId) return workspaceId;
-  }
-
-  return null;
+export async function resolveRequestWorkspaceId(req: any, _bodyInput?: any) {
+  const context = await requireAuthContext(req);
+  return context.workspaceId;
 }
 
 export function withWorkspaceFilter(path: string, workspaceId: string) {

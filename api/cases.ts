@@ -1,7 +1,9 @@
-import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from '../src/server/_supabase.js';
+import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from '../src/server/_supabase.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { normalizeCaseContract } from '../src/lib/data-contract.js';
+import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { readPortalSession, requirePortalSessionContext } from '../src/server/_portal-token.js';
 
 const CASE_STATUSES = new Set(['new', 'waiting_on_client', 'blocked', 'to_approve', 'ready_to_start', 'in_progress', 'on_hold', 'completed', 'canceled']);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
@@ -162,14 +164,25 @@ async function ensureClientForCase(workspaceId: string, input: { clientId?: unkn
 }
 
 export default async function handler(req: any, res: any) {
+  let workspaceId: string | null = null;
   try {
-    if (req.method === 'GET') {
-      const workspaceId = await resolveRequestWorkspaceId(req);
-      if (!workspaceId) {
-        res.status(401).json({ error: 'CASE_WORKSPACE_REQUIRED' });
-        return;
-      }
+    const portalSession = readPortalSession(req);
+    const portalCaseId = asText(req.query?.id || req.query?.caseId);
+    const portalMode = req.method === 'GET' && Boolean(portalSession) && Boolean(portalCaseId);
+    if (portalMode) {
+      const ctx = await requirePortalSessionContext(portalCaseId, portalSession);
+      const normalized = normalizeCase(ctx.caseRow as Record<string, unknown>);
+      res.status(200).json(normalized);
+      return;
+    }
 
+    workspaceId = await resolveRequestWorkspaceId(req);
+    if (!workspaceId) {
+      res.status(401).json({ error: 'AUTH_WORKSPACE_REQUIRED' });
+      return;
+    }
+
+    if (req.method === 'GET') {
       const requestedId = asText(req.query?.id);
       const requestedClientId = asNullableUuid(req.query?.clientId);
       const requestedLeadId = asNullableUuid(req.query?.leadId);
@@ -209,10 +222,9 @@ export default async function handler(req: any, res: any) {
     }
 
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-    const workspaceId = await resolveRequestWorkspaceId(req, body);
 
     if (req.method === 'POST') {
-      const finalWorkspaceId = workspaceId || await findWorkspaceId(body.workspaceId);
+      const finalWorkspaceId = workspaceId;
       if (!finalWorkspaceId) {
         throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
       }
@@ -390,6 +402,10 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
+    if (error?.code || error?.status) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     const message = error?.message || 'CASE_API_FAILED';
     res.status(message === 'CASE_NOT_FOUND' ? 404 : 500).json({ error: message });
   }
