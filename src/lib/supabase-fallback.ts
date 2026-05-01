@@ -68,17 +68,12 @@ export function persistWorkspaceId(workspaceId?: string | null) {
   }
   window.localStorage.removeItem(WORKSPACE_CONTEXT_STORAGE_KEY);
 }
-function getAuthHeaders() {
-  const ctx = getAuthContext();
-  const workspaceId = getStoredWorkspaceId();
-  return Object.fromEntries(
-    Object.entries({
-      'x-user-id': ctx.uid,
-      'x-user-email': ctx.email,
-      'x-user-name': ctx.fullName,
-      'x-workspace-id': workspaceId,
-    }).filter(([, value]) => !!value),
-  );
+async function getAuthHeaders() {
+  const accessToken = await getSupabaseAccessToken();
+
+  return accessToken
+    ? { Authorization: `Bearer ${accessToken}` }
+    : {};
 }
 function getCacheScope() { const ctx = getAuthContext(); return `${ctx.uid || 'anon'}:${ctx.email || 'anon'}`; }
 
@@ -277,4 +272,5 @@ export async function createBillingCheckoutSessionInSupabase(input: { workspaceI
     body: JSON.stringify(input),
   });
 }
+
 
