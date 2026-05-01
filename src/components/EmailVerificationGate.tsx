@@ -22,16 +22,16 @@ export default function EmailVerificationGate({ user }: EmailVerificationGatePro
 
   const handleResend = async () => {
     if (!email) {
-      toast.error('Brakuje adresu e-mail na sesji. Wyloguj siÄ™ i zaloguj ponownie.');
+      toast.error('Brakuje adresu e-mail na sesji. Wyloguj się i zaloguj ponownie.');
       return;
     }
 
     setResending(true);
     try {
       await resendEmailConfirmation(email);
-      toast.success('WysĹ‚aliĹ›my ponownie link potwierdzajÄ…cy e-mail.');
+      toast.success('Wysłaliśmy ponownie link potwierdzający e-mail.');
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ wysĹ‚aÄ‡ linku: ' + (error?.message || 'UNKNOWN_ERROR'));
+      toast.error('Nie udało się wysłać linku: ' + (error?.message || 'UNKNOWN_ERROR'));
     } finally {
       setResending(false);
     }
@@ -42,13 +42,13 @@ export default function EmailVerificationGate({ user }: EmailVerificationGatePro
     try {
       const refreshedUser = await reloadSupabaseUser();
       if (refreshedUser?.emailVerified) {
-        toast.success('E-mail jest potwierdzony. OdĹ›wieĹĽam aplikacjÄ™.');
+        toast.success('E-mail jest potwierdzony. Odświeżam aplikację.');
         window.location.reload();
         return;
       }
-      toast.error('Ten e-mail nadal nie jest potwierdzony. SprawdĹş skrzynkÄ™ i kliknij link.');
+      toast.error('Ten e-mail nadal nie jest potwierdzony. Sprawdź skrzynkę i kliknij link.');
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ sprawdziÄ‡ statusu: ' + (error?.message || 'UNKNOWN_ERROR'));
+      toast.error('Nie udało się sprawdzić statusu: ' + (error?.message || 'UNKNOWN_ERROR'));
     } finally {
       setChecking(false);
     }
@@ -60,7 +60,7 @@ export default function EmailVerificationGate({ user }: EmailVerificationGatePro
       await signOutFromSupabase();
       window.location.href = '/login';
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ wylogowaÄ‡: ' + (error?.message || 'UNKNOWN_ERROR'));
+      toast.error('Nie udało się wylogować: ' + (error?.message || 'UNKNOWN_ERROR'));
       setSigningOut(false);
     }
   };
@@ -74,10 +74,10 @@ export default function EmailVerificationGate({ user }: EmailVerificationGatePro
           </div>
 
           <div className="mx-auto mt-6 max-w-xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">A15 Â· bezpieczeĹ„stwo konta</p>
-            <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">PotwierdĹş e-mail</h1>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">A15 · bezpieczeństwo konta</p>
+            <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">Potwierdź e-mail</h1>
             <p className="mt-4 text-base leading-7 text-slate-600">
-              Konto jest zalogowane, ale adres e-mail nie zostaĹ‚ jeszcze potwierdzony. Zanim zapiszesz peĹ‚ne dane w aplikacji, kliknij link potwierdzajÄ…cy w wiadomoĹ›ci od Supabase.
+              Konto jest zalogowane, ale adres e-mail nie został jeszcze potwierdzony. Zanim zapiszesz pełne dane w aplikacji, kliknij link potwierdzający w wiadomości od Supabase.
             </p>
           </div>
 
@@ -85,25 +85,25 @@ export default function EmailVerificationGate({ user }: EmailVerificationGatePro
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Adres do potwierdzenia</p>
             <p className="mt-1 break-all text-base font-semibold text-slate-900">{email || 'Brak e-maila na sesji'}</p>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Google OAuth nie jest blokowany, jeĹ›li Supabase zwrĂłciĹ‚ zweryfikowany e-mail. Ten ekran dotyczy sesji e-mail/hasĹ‚o bez potwierdzenia.
+              Google OAuth nie jest blokowany, jeśli Supabase zwrócił zweryfikowany e-mail. Ten ekran dotyczy sesji e-mail/hasło bez potwierdzenia.
             </p>
           </div>
 
           <div className="mx-auto mt-6 grid max-w-xl gap-3 sm:grid-cols-2">
             <Button type="button" className="h-12 rounded-xl" onClick={handleResend} disabled={resending || checking || signingOut || !email}>
               {resending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Send className="mr-2 h-5 w-5" />}
-              WyĹ›lij ponownie
+              Wyślij ponownie
             </Button>
             <Button type="button" variant="outline" className="h-12 rounded-xl" onClick={handleRefresh} disabled={checking || resending || signingOut}>
               {checking ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <RefreshCcw className="mr-2 h-5 w-5" />}
-              SprawdziĹ‚em, odĹ›wieĹĽ
+              Sprawdziłem, odśwież
             </Button>
           </div>
 
           <div className="mx-auto mt-5 max-w-xl text-center">
             <Button type="button" variant="ghost" className="rounded-xl text-slate-500" onClick={handleSignOut} disabled={signingOut || checking || resending}>
               {signingOut ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
-              Wyloguj i uĹĽyj innego konta
+              Wyloguj i użyj innego konta
             </Button>
           </div>
         </div>

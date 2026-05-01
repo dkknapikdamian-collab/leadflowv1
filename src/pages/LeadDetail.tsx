@@ -3,6 +3,7 @@
 LEAD_DETAIL_VISUAL_REBUILD_STAGE14
 Active lead is sales work. Moved lead is acquisition history with a link to Case.
 */
+const A16_V2_VOICE_NOTE_AUTOSAVE_ALLOWED = 'voice-notes-may-autosave-after-dictation-silence';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -572,6 +573,23 @@ export default function LeadDetail() {
     );
     setIsEditing(false);
   };
+
+
+  const resetLeadEditDraft = () => {
+    if (!lead) return;
+    setEditLead({ ...lead });
+  };
+
+  const handleStartLeadEditing = () => {
+    resetLeadEditDraft();
+    setIsEditing(true);
+  };
+
+  const handleCancelLeadEditing = () => {
+    resetLeadEditDraft();
+    setIsEditing(false);
+  };
+
 
   const handleDeleteLead = async () => {
     if (!leadId) return;
@@ -1187,7 +1205,7 @@ export default function LeadDetail() {
                 Rozpocznij obsÅ‚ugÄ™
               </Button>
             )}
-            <Button type="button" variant="outline" onClick={() => setIsEditing(true)}>
+            <Button type="button" variant="outline" onClick={handleStartLeadEditing}>
               <Edit2 className="h-4 w-4" />
               Edytuj
             </Button>
@@ -1312,10 +1330,10 @@ export default function LeadDetail() {
                   <div className="flex flex-wrap gap-2">
                     <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
                       {noteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                      {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkê'}
+                      {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkï¿½'}
                     </Button>
                     <Button type="submit" disabled={!note.trim() || !hasAccess || addingNote}>
-                      {addingNote ? 'Zapisywanie...' : 'Dodaj notatkê'}
+                      {addingNote ? 'Zapisywanie...' : 'Dodaj notatkï¿½'}
                     </Button>
                   </div>
                 </form>

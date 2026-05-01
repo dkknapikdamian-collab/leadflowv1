@@ -8,6 +8,7 @@ CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
 STAGE35_CLIENT_DETAIL_VISIBLE_EDIT_ACTION
 */
 const STAGE35_CLIENT_DETAIL_EDIT_TOGGLE_GUARD = "contactEditing ? 'Zapisz' : 'Edytuj'";
+const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -724,6 +725,23 @@ export default function ClientDetail() {
     });
   }, [cases, clientEvents, clientTasks, leads]);
 
+
+
+  const resetClientContactForm = () => {
+    setForm({
+      name: String(client?.name || ''),
+      company: String(client?.company || ''),
+      email: String(client?.email || ''),
+      phone: String(client?.phone || ''),
+      notes: String(client?.notes || ''),
+    });
+  };
+
+  const handleCancelContactEditing = () => {
+    resetClientContactForm();
+    setContactEditing(false);
+  };
+
   const handleSave = async () => {
     if (!clientId) return;
     if (!hasAccess) return toast.error('Twój trial wygasł.');
@@ -768,6 +786,7 @@ export default function ClientDetail() {
       await handleSave();
       return;
     }
+    resetClientContactForm();
     setContactEditing(true);
   };
 
