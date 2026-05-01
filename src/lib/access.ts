@@ -20,6 +20,7 @@ export type AccessState =
   | 'trial_active'
   | 'trial_ending'
   | 'trial_expired'
+  | 'free_active'
   | 'paid_active'
   | 'payment_failed'
   | 'canceled'
@@ -41,7 +42,7 @@ export type AccessSummary = {
   isPaidActive: boolean;
 };
 
-const TRIAL_LENGTH_DAYS = 14;
+const TRIAL_LENGTH_DAYS = 21;
 
 function parseAccessDate(value?: string | null) {
   if (!value) return null;
@@ -182,6 +183,24 @@ export function getAccessSummary(workspace?: WorkspaceLike | null): AccessSummar
       toneClassName: 'text-slate-500 bg-slate-500/10',
       chipClassName: 'bg-slate-500/12 text-slate-600 dark:text-slate-300',
       ctaLabel: 'Aktywuj ponownie',
+      isTrialActive: false,
+      isPaidActive: false,
+    };
+  }
+
+  if (rawStatus === 'free_active') {
+    return {
+      status: 'free_active',
+      hasAccess: true,
+      trialDaysLeft,
+      trialProgressPercent,
+      headline: 'Tryb Free aktywny',
+      description: 'Masz tryb demo z limitami. Podglad i podstawowe akcje dzialaja, ale AI i czesc funkcji premium sa zablokowane.',
+      badgeLabel: 'Free',
+      sidebarLabel: 'Free',
+      toneClassName: 'text-sky-500 bg-sky-500/10',
+      chipClassName: 'bg-sky-500/12 text-sky-600 dark:text-sky-400',
+      ctaLabel: 'Przejdz na plan',
       isTrialActive: false,
       isPaidActive: false,
     };

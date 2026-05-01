@@ -1,5 +1,6 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById, updateWhere } from '../src/server/_supabase.js';
-import { getRequestIdentity, asText } from '../src/server/_request-scope.js';
+import { getRequestIdentity, asText, resolveRequestWorkspaceId } from '../src/server/_request-scope.js';
+import { assertWorkspaceAiAllowed } from '../src/server/_access-gate.js';
 import serviceProfilesHandler from '../src/server/service-profiles.js';
 import aiConfigHandler from '../src/server/ai-config.js';
 import aiFollowupHandler from '../src/server/ai-followup.js';
@@ -55,10 +56,10 @@ function normalizePlanId(value: unknown, subscriptionStatus?: unknown) {
   const status = asNullableString(subscriptionStatus) || 'inactive';
 
   if (!normalized) {
-    return status === 'paid_active' ? 'closeflow_pro' : 'trial_14d';
+    return status === 'paid_active' ? 'closeflow_pro' : 'trial_21d';
   }
 
-  if (normalized === 'trial_14d' || normalized === 'closeflow_pro') {
+  if (normalized === 'trial_21d' || normalized === 'closeflow_pro' || normalized === 'free') {
     return normalized;
   }
 
@@ -67,7 +68,7 @@ function normalizePlanId(value: unknown, subscriptionStatus?: unknown) {
   }
 
   if (normalized === 'free') {
-    return 'trial_14d';
+    return 'free';
   }
 
   return status === 'paid_active' ? 'closeflow_pro' : normalized;
@@ -844,6 +845,15 @@ export default async function handler(req: any, res: any) {
     }
 
   if (kind === 'ai-next-action') {
+    try {
+      const workspaceId = await resolveRequestWorkspaceId(req, body);
+      if (workspaceId) await assertWorkspaceAiAllowed(workspaceId);
+    } catch (error: any) {
+      if (error?.message === 'AI_NOT_AVAILABLE_ON_FREE') {
+        res.status(403).json({ error: 'AI_NOT_AVAILABLE_ON_FREE' });
+        return;
+      }
+    }
     await aiNextActionHandler(req, res);
     return;
   }
@@ -853,27 +863,72 @@ export default async function handler(req: any, res: any) {
   }
 
   if (kind === 'assistant-context') {
+    try {
+      const workspaceId = await resolveRequestWorkspaceId(req, body);
+      if (workspaceId) await assertWorkspaceAiAllowed(workspaceId);
+    } catch (error: any) {
+      if (error?.message === 'AI_NOT_AVAILABLE_ON_FREE') {
+        res.status(403).json({ error: 'AI_NOT_AVAILABLE_ON_FREE' });
+        return;
+      }
+    }
     await assistantContextHandler(req, res);
     return;
   }
 
 
   if (kind === 'ai-assistant') {
+    try {
+      const workspaceId = await resolveRequestWorkspaceId(req, body);
+      if (workspaceId) await assertWorkspaceAiAllowed(workspaceId);
+    } catch (error: any) {
+      if (error?.message === 'AI_NOT_AVAILABLE_ON_FREE') {
+        res.status(403).json({ error: 'AI_NOT_AVAILABLE_ON_FREE' });
+        return;
+      }
+    }
     await aiAssistantHandler(req, res);
     return;
   }
 
   if (kind === 'ai-followup-draft') {
+    try {
+      const workspaceId = await resolveRequestWorkspaceId(req, body);
+      if (workspaceId) await assertWorkspaceAiAllowed(workspaceId);
+    } catch (error: any) {
+      if (error?.message === 'AI_NOT_AVAILABLE_ON_FREE') {
+        res.status(403).json({ error: 'AI_NOT_AVAILABLE_ON_FREE' });
+        return;
+      }
+    }
     await aiFollowupHandler(req, res);
     return;
   }
 
   if (kind === 'ai-config') {
+    try {
+      const workspaceId = await resolveRequestWorkspaceId(req, body);
+      if (workspaceId) await assertWorkspaceAiAllowed(workspaceId);
+    } catch (error: any) {
+      if (error?.message === 'AI_NOT_AVAILABLE_ON_FREE') {
+        res.status(403).json({ error: 'AI_NOT_AVAILABLE_ON_FREE' });
+        return;
+      }
+    }
     await aiConfigHandler(req, res);
     return;
   }
 
   if (kind === 'ai-capture-draft') {
+    try {
+      const workspaceId = await resolveRequestWorkspaceId(req, body);
+      if (workspaceId) await assertWorkspaceAiAllowed(workspaceId);
+    } catch (error: any) {
+      if (error?.message === 'AI_NOT_AVAILABLE_ON_FREE') {
+        res.status(403).json({ error: 'AI_NOT_AVAILABLE_ON_FREE' });
+        return;
+      }
+    }
     await aiCaptureHandler(req, res);
     return;
   }

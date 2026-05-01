@@ -2,7 +2,7 @@ import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById, 
 import { requireSupabaseRequestContext, writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
 const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
-const DEFAULT_PLAN_ID = 'trial_14d';
+const DEFAULT_PLAN_ID = 'trial_21d';
 const PAID_PLAN_ID = 'closeflow_pro';
 const PAID_PLAN_IDS = new Set([
   'closeflow_basic',
@@ -13,9 +13,10 @@ const PAID_PLAN_IDS = new Set([
   'closeflow_business_yearly',
 ]);
 const DEFAULT_STATUS = 'trial_active';
-const TRIAL_DAYS = 14;
+const TRIAL_DAYS = 21;
 const TRIAL_MS = TRIAL_DAYS * 24 * 60 * 60 * 1000;
 const BROKEN_BOOTSTRAP_REPAIR_WINDOW_MS = 12 * 60 * 60 * 1000;
+const FREE_LIMITS = { activeLeads: 5, activeTasks: 5, activeEvents: 5, activeDrafts: 3 };
 
 type NullableString = string | null;
 
@@ -114,7 +115,7 @@ function normalizePlanId(planId: string | null | undefined, subscriptionStatus?:
   }
 
   if (normalized === 'free') {
-    return DEFAULT_PLAN_ID;
+    return 'free';
   }
 
   return status === 'paid_active' ? PAID_PLAN_ID : normalized;
@@ -238,7 +239,33 @@ function buildAccess(workspace: { subscriptionStatus: string; trialEndsAt: Nulla
       : { hasAccess: false, status: 'trial_expired', isTrialActive: false, isPaidActive: false };
   }
 
+  if (statusRaw === 'free_active') {
+    return { hasAccess: true, status: 'free_active', isTrialActive: false, isPaidActive: false };
+  }
+
+  if (statusRaw === 'payment_failed' || statusRaw === 'canceled' || statusRaw === 'inactive') {
+    return { hasAccess: false, status: statusRaw, isTrialActive: false, isPaidActive: false };
+  }
+
   return { hasAccess: false, status: statusRaw, isTrialActive: false, isPaidActive: false };
+}
+
+function enrichAccessModel(access: { hasAccess: boolean; status: string; isTrialActive: boolean; isPaidActive: boolean }) {
+  const isFree = access.status === 'free_active';
+  return {
+    ...access,
+    limits: {
+      activeLeads: isFree ? FREE_LIMITS.activeLeads : null,
+      activeTasks: isFree ? FREE_LIMITS.activeTasks : null,
+      activeEvents: isFree ? FREE_LIMITS.activeEvents : null,
+      activeDrafts: isFree ? FREE_LIMITS.activeDrafts : null,
+    },
+    features: {
+      ai: !isFree,
+      digest: !isFree,
+      googleCalendar: !isFree,
+    },
+  };
 }
 
 async function fetchProfile(uid: string | null, email: string | null) {
@@ -884,7 +911,7 @@ export default async function handler(req: any, res: any) {
 
     const workspace = normalizeWorkspace(workspaceRow, workspaceId, workspaceOwnerUserId);
     const profile = normalizeProfile(profileRow, uid, email, fullName);
-    const access = buildAccess(workspace);
+    const access = enrichAccessModel(buildAccess(workspace));
 
     if (workspaceResolutionMode === 'historical_mapping' || workspaceResolutionMode === 'explicit_fallback') {
       await writeRecoveryLog({
@@ -942,14 +969,11 @@ export default async function handler(req: any, res: any) {
       browserNotificationsEnabled: true,
       forceLogoutAfter: null,
     };
-    const fallbackAccess = buildAccess(fallbackWorkspace);
+    const fallbackAccess = enrichAccessModel(buildAccess(fallbackWorkspace));
     res.status(200).json({
       workspace: fallbackWorkspace,
       profile: fallbackProfile,
-      access: {
-        ...fallbackAccess,
-        hasAccess: true,
-      },
+      access: fallbackAccess,
       degraded: true,
       degradedReason: error?.message || 'WORKSPACE_BOOTSTRAP_DEGRADED',
     });

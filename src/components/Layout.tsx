@@ -102,7 +102,7 @@ function NavButton({
 
 function TrialCard({ trialDaysLeft }: { trialDaysLeft: number }) {
   const safeDays = Math.max(0, trialDaysLeft);
-  const width = Math.max(0, Math.min(100, (safeDays / 14) * 100));
+  const width = Math.max(0, Math.min(100, (safeDays / 21) * 100));
 
   return (
     <div className="trial-card" data-shell-trial-card="true">

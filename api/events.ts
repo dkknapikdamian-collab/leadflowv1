@@ -1,6 +1,6 @@
 import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow, asText } from '../src/server/_request-scope.js';
-import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
+import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { normalizeEventContract, toIsoDateTime } from '../src/lib/data-contract.js';
 
@@ -137,6 +137,7 @@ export default async function handler(req: any, res: any) {
     }
 
     if (req.method === 'POST') {
+      await assertWorkspaceEntityLimit(workspaceId, 'event');
       const payload = buildEventPayload(body, workspaceId, 'insert');
       const result = await insertWithVariants(['work_items'], [payload]);
       const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
@@ -174,6 +175,10 @@ export default async function handler(req: any, res: any) {
   } catch (error: any) {
     if (error?.code || error?.status) {
       writeAuthErrorResponse(res, error);
+      return;
+    }
+    if (error?.message === 'FREE_LIMIT_EVENTS_REACHED') {
+      res.status(403).json({ error: 'FREE_LIMIT_EVENTS_REACHED' });
       return;
     }
     res.status(500).json({ error: error?.message || 'EVENT_API_FAILED' });

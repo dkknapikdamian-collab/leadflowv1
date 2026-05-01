@@ -52,7 +52,7 @@ type PlanCard = {
 
 const BILLING_PLANS: PlanCard[] = [
   {
-    id: 'trial_14d',
+    id: 'trial_21d',
     key: 'free',
     name: 'Free',
     monthlyPrice: 0,
@@ -162,6 +162,13 @@ const ACCESS_COPY: Record<string, { label: string; headline: string; description
     tone: 'slate',
     cta: 'Przejdź do płatności',
   },
+  free_active: {
+    label: 'Free aktywny',
+    headline: 'Masz aktywny tryb Free',
+    description: 'Tryb Free ma limity: 5 aktywnych leadów, 5 aktywnych zadań/wydarzeń, 3 szkice i brak AI.',
+    tone: 'slate',
+    cta: 'Przejdź do płatności',
+  },
 };
 
 const LIMIT_ITEMS = [
@@ -221,7 +228,7 @@ function getDisplayPlanId(planId?: string | null, subscriptionStatus?: string | 
     return 'closeflow_pro';
   }
   if (subscriptionStatus === 'paid_active') return 'closeflow_pro';
-  return 'trial_14d';
+  return 'trial_21d';
 }
 
 function getCurrentPlanName(displayPlanId: string, isPaidActive: boolean, isTrialActive: boolean) {

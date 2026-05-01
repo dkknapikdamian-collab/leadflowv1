@@ -23,10 +23,10 @@ function buildWorkspacePayload(input: { uid: string; email?: string | null; full
   return {
     ownerId: input.uid || null,
     name: buildWorkspaceName(input.fullName),
-    plan: adminAccess ? 'closeflow_pro' : 'trial_14d',
-    planId: adminAccess ? 'closeflow_pro' : 'trial_14d',
+    plan: adminAccess ? 'closeflow_pro' : 'trial_21d',
+    planId: adminAccess ? 'closeflow_pro' : 'trial_21d',
     subscriptionStatus: adminAccess ? 'paid_active' : 'trial_active',
-    trialEndsAt: adminAccess ? null : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    trialEndsAt: adminAccess ? null : new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
   } satisfies Omit<WorkspaceRecord, 'id'>;
 }
 

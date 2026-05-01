@@ -1,7 +1,7 @@
 import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
-import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
+import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
 const SOURCE_ALIASES: Record<string, string> = {
@@ -582,6 +582,7 @@ export default async function handler(req: any, res: any) {
 
     const finalWorkspaceId = workspaceId;
     await assertWorkspaceWriteAccess(finalWorkspaceId);
+    await assertWorkspaceEntityLimit(finalWorkspaceId, 'lead');
     const nowIso = new Date().toISOString();
     const status = normalizeStatus(body.status || 'new');
     const startRuleSnapshot = normalizeEnum(body.startRuleSnapshot, START_RULES, 'on_acceptance');
@@ -645,12 +646,15 @@ export default async function handler(req: any, res: any) {
       res.status(402).json({ error: 'WORKSPACE_WRITE_ACCESS_REQUIRED' });
       return;
     }
+    if (error?.message === 'FREE_LIMIT_LEADS_REACHED') {
+      res.status(403).json({ error: 'FREE_LIMIT_LEADS_REACHED' });
+      return;
+    }
     const message = error?.message || 'LEAD_INSERT_FAILED';
     const statusCode = message === 'LEAD_NOT_FOUND' ? 404 : message === 'LEAD_ALREADY_HAS_CASE' ? 409 : 500;
     res.status(statusCode).json({ error: message });
   }
 }
-
 
 
 

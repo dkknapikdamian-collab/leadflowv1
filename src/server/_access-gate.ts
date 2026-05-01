@@ -10,6 +10,13 @@ type WorkspaceAccessRow = {
   nextBillingAt?: string | null;
 };
 
+export const FREE_LIMITS = {
+  activeLeads: 5,
+  activeTasks: 5,
+  activeEvents: 5,
+  activeDrafts: 3,
+} as const;
+
 function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
   if (value === null || value === undefined) return '';
@@ -66,10 +73,58 @@ export function getWorkspaceWriteAccess(workspace: WorkspaceAccessRow | null) {
     };
   }
 
+  if (status === 'free_active') {
+    return {
+      hasWriteAccess: true,
+      status: 'free_active',
+    };
+  }
+
   return {
     hasWriteAccess: false,
     status,
   };
+}
+
+async function countRows(path: string) {
+  const rows = await supabaseRequest(path, {
+    method: 'GET',
+    headers: { Prefer: 'return=representation' },
+  });
+  return Array.isArray(rows) ? rows.length : 0;
+}
+
+export async function assertWorkspaceEntityLimit(workspaceId: string, entity: 'lead' | 'task' | 'event' | 'ai_draft') {
+  const access = await fetchWorkspaceWriteAccess(workspaceId);
+  if (access.status !== 'free_active') return;
+
+  if (entity === 'lead') {
+    const leads = await countRows(`leads?select=id&workspace_id=eq.${encodeURIComponent(workspaceId)}&lead_visibility=eq.active&limit=${FREE_LIMITS.activeLeads + 1}`);
+    if (leads >= FREE_LIMITS.activeLeads) throw new Error('FREE_LIMIT_LEADS_REACHED');
+    return;
+  }
+
+  if (entity === 'task') {
+    const tasks = await countRows(`work_items?select=id&workspace_id=eq.${encodeURIComponent(workspaceId)}&record_type=eq.task&status=not.in.(done,completed,cancelled)&limit=${FREE_LIMITS.activeTasks + 1}`);
+    if (tasks >= FREE_LIMITS.activeTasks) throw new Error('FREE_LIMIT_TASKS_REACHED');
+    return;
+  }
+
+  if (entity === 'event') {
+    const events = await countRows(`work_items?select=id&workspace_id=eq.${encodeURIComponent(workspaceId)}&record_type=eq.event&status=not.in.(done,completed,cancelled)&limit=${FREE_LIMITS.activeEvents + 1}`);
+    if (events >= FREE_LIMITS.activeEvents) throw new Error('FREE_LIMIT_EVENTS_REACHED');
+    return;
+  }
+
+  const drafts = await countRows(`ai_drafts?select=id&workspace_id=eq.${encodeURIComponent(workspaceId)}&status=eq.draft&limit=${FREE_LIMITS.activeDrafts + 1}`);
+  if (drafts >= FREE_LIMITS.activeDrafts) throw new Error('FREE_LIMIT_AI_DRAFTS_REACHED');
+}
+
+export async function assertWorkspaceAiAllowed(workspaceId: string) {
+  const access = await fetchWorkspaceWriteAccess(workspaceId);
+  if (access.status === 'free_active') {
+    throw new Error('AI_NOT_AVAILABLE_ON_FREE');
+  }
 }
 
 export async function fetchWorkspaceWriteAccess(workspaceId: string) {

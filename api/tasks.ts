@@ -1,6 +1,6 @@
 import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow, asText } from '../src/server/_request-scope.js';
-import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
+import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { normalizeTaskContract, toIsoDateTime } from '../src/lib/data-contract.js';
 
@@ -136,6 +136,7 @@ export default async function handler(req: any, res: any) {
     }
 
     if (req.method === 'POST') {
+      await assertWorkspaceEntityLimit(workspaceId, 'task');
       const payload = buildTaskPayload(body, workspaceId, 'insert');
       const result = await insertWithVariants(['work_items'], [payload]);
       const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
@@ -173,6 +174,10 @@ export default async function handler(req: any, res: any) {
   } catch (error: any) {
     if (error?.code || error?.status) {
       writeAuthErrorResponse(res, error);
+      return;
+    }
+    if (error?.message === 'FREE_LIMIT_TASKS_REACHED') {
+      res.status(403).json({ error: 'FREE_LIMIT_TASKS_REACHED' });
       return;
     }
     res.status(500).json({ error: error?.message || 'TASK_API_FAILED' });

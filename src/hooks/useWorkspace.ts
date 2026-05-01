@@ -17,9 +17,9 @@ function buildLocalWorkspace(storedWorkspaceId: string, email: string) {
   return {
     id: workspaceId,
     ownerId: null,
-    planId: 'trial_14d',
+    planId: 'trial_21d',
     subscriptionStatus: 'trial_active',
-    trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    trialEndsAt: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
     billingProvider: 'manual',
     providerCustomerId: null,
     providerSubscriptionId: null,

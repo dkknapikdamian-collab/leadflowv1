@@ -1,6 +1,6 @@
 import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
 import { asText, getRequestIdentity, requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
-import { assertWorkspaceWriteAccess } from './_access-gate.js';
+import { assertWorkspaceAiAllowed, assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from './_access-gate.js';
 
 type RecordMap = Record<string, unknown>;
 
@@ -109,8 +109,10 @@ export default async function handler(req: any, res: any) {
     }
 
     await assertWorkspaceWriteAccess(workspaceId);
+    await assertWorkspaceAiAllowed(workspaceId);
 
     if (req.method === 'POST') {
+      await assertWorkspaceEntityLimit(workspaceId, 'ai_draft');
       const rawText = asText(body.rawText ?? body.raw_text);
       if (!rawText) {
         res.status(400).json({ error: 'AI_DRAFT_RAW_TEXT_REQUIRED' });
@@ -206,6 +208,14 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
+    if (error?.message === 'AI_NOT_AVAILABLE_ON_FREE') {
+      res.status(403).json({ error: 'AI_NOT_AVAILABLE_ON_FREE' });
+      return;
+    }
+    if (error?.message === 'FREE_LIMIT_AI_DRAFTS_REACHED') {
+      res.status(403).json({ error: 'FREE_LIMIT_AI_DRAFTS_REACHED' });
+      return;
+    }
     res.status(500).json({ error: error?.message || 'AI_DRAFTS_API_FAILED' });
   }
 }
