@@ -1,4 +1,5 @@
 import { supabaseRequest } from './_supabase.js';
+import { assertSupabaseEmailVerifiedForMutation } from './_supabase-auth.js';
 import type { AccessState, BillingStatus } from '../lib/domain-statuses.js';
 
 type WorkspaceAccessRow = {
@@ -154,7 +155,11 @@ export async function fetchWorkspaceWriteAccess(workspaceId: string) {
   return getWorkspaceWriteAccess(workspace);
 }
 
-export async function assertWorkspaceWriteAccess(workspaceId: string) {
+export async function assertWorkspaceWriteAccess(workspaceId: string, req?: any) {
+  if (req) {
+    await assertSupabaseEmailVerifiedForMutation(req);
+  }
+
   const access = await fetchWorkspaceWriteAccess(workspaceId);
 
   if (!access.hasWriteAccess) {

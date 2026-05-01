@@ -442,7 +442,7 @@ export default async function handler(req: any, res: any) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
 
     if (req.method !== 'GET' && workspaceId) {
-      await assertWorkspaceWriteAccess(workspaceId);
+      await assertWorkspaceWriteAccess(workspaceId, req);
     }
 
     if (req.method === 'POST' && asText(body.action) === 'start_service') {
@@ -544,7 +544,7 @@ export default async function handler(req: any, res: any) {
     }
 
     const finalWorkspaceId = workspaceId;
-    await assertWorkspaceWriteAccess(finalWorkspaceId);
+    await assertWorkspaceWriteAccess(finalWorkspaceId, req);
     await assertWorkspaceEntityLimit(finalWorkspaceId, 'lead');
     const nowIso = new Date().toISOString();
     const status = normalizeStatus(body.status || 'new');

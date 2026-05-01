@@ -6,10 +6,11 @@ import { TooltipProvider } from './components/ui/tooltip';
 import { fetchMeFromSupabase, isSupabaseConfigured } from './lib/supabase-fallback';
 import { clearClientAuthSnapshot, setClientAuthSnapshot } from './lib/client-auth';
 import { useSupabaseSession } from './hooks/useSupabaseSession';
-import { signOutFromSupabase } from './lib/supabase-auth';
+import { isSupabaseEmailVerificationRequiredForUser, signOutFromSupabase } from './lib/supabase-auth';
 import { toast } from 'sonner';
 import { AppChunkErrorBoundary } from './components/AppChunkErrorBoundary';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
+import EmailVerificationGate from './components/EmailVerificationGate';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 
@@ -79,6 +80,12 @@ export default function App() {
       email: user.email || '',
       fullName: user.displayName || '',
     });
+
+    if (isSupabaseEmailVerificationRequiredForUser(user)) {
+      setProfile(buildLocalProfile(user));
+      setProfileLoading(false);
+      return;
+    }
 
     if (!isSupabaseConfigured()) {
       setProfile(buildLocalProfile(user));
@@ -159,6 +166,15 @@ export default function App() {
   }
 
   const isLoggedIn = Boolean(user);
+
+  if (isLoggedIn && user && isSupabaseEmailVerificationRequiredForUser(user)) {
+    return (
+      <TooltipProvider>
+        <EmailVerificationGate user={user} />
+        <Toaster position="top-right" richColors />
+      </TooltipProvider>
+    );
+  }
 
   return (
     <TooltipProvider>

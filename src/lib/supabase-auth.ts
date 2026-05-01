@@ -6,6 +6,10 @@ export type SupabaseSessionUser = {
   email: string;
   displayName: string;
   lastSignInAt: string | null;
+  emailConfirmedAt: string | null;
+  emailVerified: boolean;
+  authProvider: string | null;
+  authProviders: string[];
   raw: User;
 };
 
@@ -46,6 +50,43 @@ function displayNameFromUser(user: User | null | undefined) {
   return String(meta.full_name || meta.name || meta.display_name || '').trim();
 }
 
+function getAuthProviders(user: User | null | undefined) {
+  if (!user) return [];
+  const appMeta = ((user as any).app_metadata && typeof (user as any).app_metadata === 'object') ? (user as any).app_metadata : {};
+  const providers = Array.isArray(appMeta.providers) ? appMeta.providers : [];
+  const primary = typeof appMeta.provider === 'string' ? appMeta.provider : '';
+  const identityProviders = Array.isArray((user as any).identities)
+    ? (user as any).identities.map((identity: any) => String(identity?.provider || '').trim()).filter(Boolean)
+    : [];
+  return [...new Set([primary, ...providers, ...identityProviders].map((provider) => String(provider || '').trim().toLowerCase()).filter(Boolean))];
+}
+
+function getPrimaryAuthProvider(user: User | null | undefined) {
+  const providers = getAuthProviders(user);
+  return providers[0] || null;
+}
+
+function getEmailConfirmedAt(user: User | null | undefined) {
+  if (!user) return null;
+  const raw = user as any;
+  const confirmedAt = raw.email_confirmed_at || raw.confirmed_at || null;
+  return typeof confirmedAt === 'string' && confirmedAt.trim() ? confirmedAt : null;
+}
+
+function hasVerifiedEmail(user: User | null | undefined) {
+  if (!user) return false;
+  if (getEmailConfirmedAt(user)) return true;
+
+  const meta = ((user as any).user_metadata && typeof (user as any).user_metadata === 'object') ? (user as any).user_metadata : {};
+  if (meta.email_verified === true || meta.emailVerified === true) return true;
+
+  const identities = Array.isArray((user as any).identities) ? (user as any).identities : [];
+  return identities.some((identity: any) => {
+    const identityData = identity?.identity_data && typeof identity.identity_data === 'object' ? identity.identity_data : {};
+    return identityData.email_verified === true || identityData.emailVerified === true;
+  });
+}
+
 export function mapSupabaseUser(user: User | null | undefined): SupabaseSessionUser | null {
   if (!user) return null;
   return {
@@ -54,6 +95,10 @@ export function mapSupabaseUser(user: User | null | undefined): SupabaseSessionU
     email: user.email || '',
     displayName: displayNameFromUser(user),
     lastSignInAt: user.last_sign_in_at || null,
+    emailConfirmedAt: getEmailConfirmedAt(user),
+    emailVerified: hasVerifiedEmail(user),
+    authProvider: getPrimaryAuthProvider(user),
+    authProviders: getAuthProviders(user),
     raw: user,
   };
 }
@@ -130,6 +175,40 @@ export async function sendPasswordReset(email: string) {
   });
   if (error) throw error;
   return data;
+}
+
+export function isSupabaseEmailVerificationRequiredForUser(user: SupabaseSessionUser | null | undefined) {
+  if (!user) return false;
+  if (user.emailVerified) return false;
+
+  const providers = (user.authProviders || []).map((provider) => String(provider || '').trim().toLowerCase()).filter(Boolean);
+  const primary = String(user.authProvider || '').trim().toLowerCase();
+  const hasEmailPasswordIdentity = primary === 'email' || providers.includes('email') || providers.includes('password') || (!primary && providers.length === 0);
+
+  return hasEmailPasswordIdentity;
+}
+
+export async function resendEmailConfirmation(email: string) {
+  const normalizedEmail = String(email || '').trim();
+  if (!normalizedEmail) throw new Error('EMAIL_REQUIRED');
+
+  const supabase = requireClient();
+  const { data, error } = await supabase.auth.resend({
+    type: 'signup',
+    email: normalizedEmail,
+    options: {
+      emailRedirectTo: getAuthRedirectTo(),
+    },
+  });
+  if (error) throw error;
+  return data;
+}
+
+export async function reloadSupabaseUser() {
+  const supabase = requireClient();
+  const { data, error } = await supabase.auth.getUser();
+  if (error) throw error;
+  return mapSupabaseUser(data.user || null);
 }
 
 export async function signOutFromSupabase() {

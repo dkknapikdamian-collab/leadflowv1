@@ -856,6 +856,38 @@ export default async function handler(req: any, res: any) {
   let authContext;
   try {
     authContext = await requireSupabaseAuthContext(req);
+
+    if (authContext.emailVerified === false && Array.isArray(authContext.authProviders) && authContext.authProviders.includes('email')) {
+      res.status(200).json({
+        workspace: null,
+        profile: {
+          id: authContext.userId,
+          fullName: authContext.fullName || '',
+          companyName: '',
+          email: authContext.email || '',
+          role: 'member',
+          isAdmin: false,
+          appearanceSkin: 'classic-light',
+          planningConflictWarningsEnabled: true,
+          browserNotificationsEnabled: true,
+          forceLogoutAfter: null,
+        },
+        access: {
+          hasAccess: false,
+          status: 'email_unconfirmed',
+          isTrialActive: false,
+          isPaidActive: false,
+        },
+        emailVerification: {
+          required: true,
+          verified: false,
+          email: authContext.email || null,
+          provider: authContext.authProvider || 'email',
+          providers: authContext.authProviders || [],
+        },
+      });
+      return;
+    }
   } catch (error) {
     writeAuthErrorResponse(res, error);
     return;
