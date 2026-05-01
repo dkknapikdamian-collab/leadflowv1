@@ -1,4 +1,4 @@
-﻿@import './styles/visual-stage30-tasks-compact-after-calendar.css';
+@import './styles/visual-stage30-tasks-compact-after-calendar.css';
 @import './styles/stage7a-tasks-blue-outline-fix.css';
 @import './styles/visual-stage28-tasks-vnext.css';
 @import './styles/visual-stage29-calendar-vnext.css';
@@ -256,3 +256,4 @@ Do not hide real alerts with text, link or button.
 @import './styles/stage34-calendar-readability-status-forms.css';
 @import './styles/stage34b-calendar-complete-polish.css';
 @import './styles/stage35-clients-value-detail-cleanup.css';
+@import './styles/stageA19v2-sidebar-nav-contrast-fix.css';

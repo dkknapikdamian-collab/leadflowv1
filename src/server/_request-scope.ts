@@ -42,13 +42,15 @@ export async function requireAuthContext(req: any) {
   if (workspaceId) {
     try {
       const profile = await selectFirstAvailable([
-        `profiles?select=role&auth_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
-        `profiles?select=role&external_auth_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
-        `profiles?select=role&firebase_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
-        context.email ? `profiles?select=role&email=eq.${encodeURIComponent(context.email)}&limit=1` : '',
+        `profiles?select=role,is_admin&auth_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
+        `profiles?select=role,is_admin&external_auth_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
+        `profiles?select=role,is_admin&firebase_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
+        context.email ? `profiles?select=role,is_admin&email=eq.${encodeURIComponent(context.email)}&limit=1` : '',
       ].filter(Boolean));
       const row = Array.isArray(profile.data) && profile.data[0] ? profile.data[0] as Record<string, unknown> : null;
-      role = asText(row?.role) || 'member';
+      const profileRole = asText(row?.role).toLowerCase();
+      const profileIsAdmin = row?.is_admin === true || row?.isAdmin === true;
+      role = profileRole === 'admin' || profileIsAdmin ? 'admin' : (profileRole || 'member');
     } catch {
       role = 'member';
     }
@@ -61,6 +63,7 @@ export async function requireAuthContext(req: any) {
     workspaceId,
     role,
     access,
+    isAdmin: role === 'admin',
   };
 }
 

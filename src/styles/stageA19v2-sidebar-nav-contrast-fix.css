@@ -1,0 +1,74 @@
+/* STAGE_A19V2_SIDEBAR_NAV_CONTRAST_FIX
+   Fixuje biale, malo kontrastowe przyciski w lewym menu po starcie aplikacji.
+   Zakres tylko wizualny: bez zmian routingu, auth, Supabase i logiki klikniec.
+*/
+
+.cf-html-shell .sidebar .nav-btn,
+.cf-html-shell .mobile-drawer .nav-btn {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  color: #dbeafe !important;
+  background: rgba(15, 23, 42, 0.34) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  box-shadow: none !important;
+}
+
+.cf-html-shell .sidebar .nav-btn .nav-ico,
+.cf-html-shell .mobile-drawer .nav-btn .nav-ico {
+  color: #e2e8f0 !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+  border: 1px solid rgba(226, 232, 240, 0.16) !important;
+}
+
+.cf-html-shell .sidebar .nav-btn .nav-label,
+.cf-html-shell .mobile-drawer .nav-btn .nav-label {
+  color: #e2e8f0 !important;
+}
+
+.cf-html-shell .sidebar .nav-btn:hover,
+.cf-html-shell .mobile-drawer .nav-btn:hover {
+  color: #ffffff !important;
+  background: rgba(37, 99, 235, 0.24) !important;
+  border-color: rgba(147, 197, 253, 0.36) !important;
+}
+
+.cf-html-shell .sidebar .nav-btn:hover .nav-ico,
+.cf-html-shell .mobile-drawer .nav-btn:hover .nav-ico {
+  color: #ffffff !important;
+  background: rgba(37, 99, 235, 0.34) !important;
+}
+
+.cf-html-shell .sidebar .nav-btn.active,
+.cf-html-shell .mobile-drawer .nav-btn.active,
+.cf-html-shell .sidebar .nav-btn[aria-current="page"],
+.cf-html-shell .mobile-drawer .nav-btn[aria-current="page"] {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  border-color: rgba(191, 219, 254, 0.55) !important;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.30) !important;
+}
+
+.cf-html-shell .sidebar .nav-btn.active .nav-ico,
+.cf-html-shell .mobile-drawer .nav-btn.active .nav-ico,
+.cf-html-shell .sidebar .nav-btn[aria-current="page"] .nav-ico,
+.cf-html-shell .mobile-drawer .nav-btn[aria-current="page"] .nav-ico {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+.cf-html-shell .sidebar .nav-btn.active .nav-label,
+.cf-html-shell .mobile-drawer .nav-btn.active .nav-label,
+.cf-html-shell .sidebar .nav-btn[aria-current="page"] .nav-label,
+.cf-html-shell .mobile-drawer .nav-btn[aria-current="page"] .nav-label {
+  color: #ffffff !important;
+}
+
+.cf-html-shell .sidebar .nav-btn:disabled,
+.cf-html-shell .sidebar .nav-btn[aria-disabled="true"],
+.cf-html-shell .mobile-drawer .nav-btn:disabled,
+.cf-html-shell .mobile-drawer .nav-btn[aria-disabled="true"] {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+}

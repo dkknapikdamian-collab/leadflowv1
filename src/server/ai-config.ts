@@ -73,8 +73,9 @@ function buildDiagnostics() {
     notes: [
       'Klucze API sa trzymane w zmiennych srodowiskowych backendu.',
       'Frontend widzi tylko status konfiguracji, nigdy wartosci sekretow.',
-      'Panel jest dostepny tylko dla profiles.role = admin zwroconego przez backend.',
-      'AI provider dziala po stronie backendu. Frontend nie dostaje kluczy.',
+      'Gdy AI jest wylaczone albo provider nie dziala, Quick Lead Capture ma uzyc parsera regulowego.',
+      'AI provider jest jeden i dziala po stronie backendu. Frontend nie dostaje kluczy.',
+      'Dostep do tej diagnostyki wymaga profiles.role = admin w Supabase.',
     ],
   };
 }
