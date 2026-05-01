@@ -228,7 +228,7 @@ function normalizeProfile(
     fullName: asString(row?.full_name ?? row?.fullName ?? fallbackFullName ?? ''),
     companyName: asString(row?.company_name ?? row?.companyName ?? ''),
     email,
-    role,
+    role: asString(row?.role ?? (admin ? 'admin' : 'member'), admin ? 'admin' : 'member'),
     isAdmin: admin,
     appearanceSkin: asString(row?.appearance_skin ?? row?.appearanceSkin ?? 'classic-light'),
     planningConflictWarningsEnabled: Boolean(row?.planning_conflict_warnings_enabled ?? row?.planningConflictWarningsEnabled ?? true),
