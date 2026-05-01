@@ -353,6 +353,7 @@ export default function Billing() {
   const trialEndsAtLabel = safeDateLabel(workspace?.trialEndsAt);
   const nextBillingAtLabel = safeDateLabel(workspace?.nextBillingAt);
   const blockedState = !access?.hasAccess;
+  const paidConfirmed = access?.status === 'paid_active';
   const daysLeftLabel = access?.isTrialActive
     ? `${Math.max(0, Number(access.trialDaysLeft || 0))} dni`
     : workspace?.nextBillingAt
@@ -637,7 +638,7 @@ export default function Billing() {
                 </div>
                 <div className="billing-right-list">
                   <span>Plan: {currentPlanName}</span>
-                  <span>Dostęp: {access?.hasAccess ? 'aktywny' : 'ograniczony'}</span>
+                  <span>Dostęp: {paidConfirmed ? 'opłacony aktywny' : access?.hasAccess ? 'trial/free aktywny' : 'ograniczony'}</span>
                   <span>Okres: {daysLeftLabel}</span>
                 </div>
               </section>

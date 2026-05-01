@@ -1,5 +1,6 @@
-import { updateWhere } from '../src/server/_supabase.js';
+import { selectFirstAvailable, updateWhere } from '../src/server/_supabase.js';
 import { requireAuthContext } from '../src/server/_request-scope.js';
+import { getStripeSubscription, updateStripeSubscription } from '../src/server/_stripe.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
 function parseBody(req: any) {
@@ -14,6 +15,23 @@ function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
   if (value === null || value === undefined) return '';
   return String(value).trim();
+}
+
+function asNullableText(value: unknown) {
+  const normalized = asText(value);
+  return normalized || null;
+}
+
+async function fetchWorkspace(workspaceId: string) {
+  try {
+    const result = await selectFirstAvailable([
+      `workspaces?id=eq.${encodeURIComponent(workspaceId)}&select=id,billing_provider,provider_subscription_id,cancel_at_period_end&limit=1`,
+    ]);
+    const rows = Array.isArray(result.data) ? result.data : [];
+    return rows[0] && typeof rows[0] === 'object' ? rows[0] as Record<string, unknown> : null;
+  } catch {
+    return null;
+  }
 }
 
 export default async function handler(req: any, res: any) {
@@ -33,8 +51,32 @@ export default async function handler(req: any, res: any) {
     const body = parseBody(req);
     const action = asText(body.action).toLowerCase();
     const nowIso = new Date().toISOString();
+    const workspace = await fetchWorkspace(workspaceId);
+    const provider = asNullableText(workspace?.billing_provider);
+    const providerSubscriptionId = asNullableText(workspace?.provider_subscription_id);
 
     if (action === 'cancel') {
+      if (provider === 'stripe_blik') {
+        if (!providerSubscriptionId) {
+          res.status(409).json({ error: 'STRIPE_SUBSCRIPTION_REQUIRED' });
+          return;
+        }
+        const subscription = await updateStripeSubscription(providerSubscriptionId, { cancel_at_period_end: true });
+        await updateWhere(`workspaces?id=eq.${encodeURIComponent(workspaceId)}`, {
+          cancel_at_period_end: true,
+          subscription_status: 'paid_active',
+          next_billing_at: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
+          updated_at: nowIso,
+        });
+        res.status(200).json({
+          ok: true,
+          action: 'cancel',
+          cancelAtPeriodEnd: true,
+          note: 'Anulowanie ustawione w Stripe na koniec okresu.',
+        });
+        return;
+      }
+
       await updateWhere(`workspaces?id=eq.${encodeURIComponent(workspaceId)}`, {
         cancel_at_period_end: true,
         updated_at: nowIso,
@@ -49,6 +91,29 @@ export default async function handler(req: any, res: any) {
     }
 
     if (action === 'resume') {
+      if (provider === 'stripe_blik') {
+        if (!providerSubscriptionId) {
+          res.status(409).json({ error: 'STRIPE_SUBSCRIPTION_REQUIRED' });
+          return;
+        }
+        const subscription = await updateStripeSubscription(providerSubscriptionId, { cancel_at_period_end: false });
+        const refreshed = await getStripeSubscription(providerSubscriptionId);
+        await updateWhere(`workspaces?id=eq.${encodeURIComponent(workspaceId)}`, {
+          cancel_at_period_end: false,
+          subscription_status: String(refreshed.status || '').toLowerCase() === 'active' ? 'paid_active' : 'inactive',
+          next_billing_at: refreshed.current_period_end ? new Date(refreshed.current_period_end * 1000).toISOString() : null,
+          updated_at: nowIso,
+        });
+        res.status(200).json({
+          ok: true,
+          action: 'resume',
+          cancelAtPeriodEnd: false,
+          note: 'Odnowienie wznowione w Stripe.',
+          stripeSubscriptionId: subscription.id,
+        });
+        return;
+      }
+
       await updateWhere(`workspaces?id=eq.${encodeURIComponent(workspaceId)}`, {
         cancel_at_period_end: false,
         updated_at: nowIso,

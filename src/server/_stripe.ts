@@ -79,6 +79,14 @@ type StripeBillingPlan = {
   accessDays: number;
 };
 
+type StripeSubscriptionRecord = {
+  id: string;
+  status?: string;
+  cancel_at_period_end?: boolean;
+  current_period_end?: number;
+  customer?: string | null;
+};
+
 const STRIPE_BLIK_BILLING_PLANS: Record<string, StripeBillingPlan> = {
   basic_monthly: {
     planId: 'closeflow_basic',
@@ -218,6 +226,32 @@ async function stripePost<T>(endpoint: string, secretKey: string, params: URLSea
   return data as T;
 }
 
+async function stripeRequestJson<T>(endpoint: string, secretKey: string, init: RequestInit): Promise<T> {
+  const response = await fetch(`https://api.stripe.com/v1/${endpoint.replace(/^\/+/, '')}`, {
+    ...init,
+    headers: {
+      Authorization: `Basic ${basicAuth(secretKey)}`,
+      ...(init.headers || {}),
+    },
+  });
+
+  const text = await response.text();
+  let data: any = null;
+
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = { raw: text };
+  }
+
+  if (!response.ok) {
+    const message = data?.error?.message || data?.raw || text || `STRIPE_REQUEST_FAILED:${response.status}`;
+    throw new Error(String(message));
+  }
+
+  return data as T;
+}
+
 export async function createStripeBlikCheckout({
   workspaceId,
   customerEmail,
@@ -239,7 +273,7 @@ export async function createStripeBlikCheckout({
   const description = `${plan.label} - ${plan.amountPln} PLN`;
 
   const params = new URLSearchParams();
-  params.set('mode', 'payment');
+  params.set('mode', 'subscription');
   params.set('success_url', `${appUrl}/billing?checkout=success`);
   params.set('cancel_url', `${appUrl}/billing?checkout=cancelled`);
   params.set('client_reference_id', workspaceId);
@@ -249,6 +283,7 @@ export async function createStripeBlikCheckout({
 
   params.set('line_items[0][price_data][currency]', config.currency);
   params.set('line_items[0][price_data][unit_amount]', String(amount));
+  params.set('line_items[0][price_data][recurring][interval]', plan.period === 'yearly' ? 'year' : 'month');
   params.set('line_items[0][price_data][product_data][name]', plan.label);
   params.set('line_items[0][quantity]', '1');
 
@@ -258,13 +293,13 @@ export async function createStripeBlikCheckout({
   params.set('metadata[plan_key]', plan.planKey);
   params.set('metadata[billing_period]', plan.period);
   params.set('metadata[access_days]', String(plan.accessDays));
-  params.set('payment_intent_data[metadata][workspace_id]', workspaceId);
-  params.set('payment_intent_data[metadata][billing_provider]', 'stripe_blik');
-  params.set('payment_intent_data[metadata][plan_id]', plan.planId);
-  params.set('payment_intent_data[metadata][plan_key]', plan.planKey);
-  params.set('payment_intent_data[metadata][billing_period]', plan.period);
-  params.set('payment_intent_data[metadata][access_days]', String(plan.accessDays));
-  params.set('payment_intent_data[description]', description);
+  params.set('subscription_data[metadata][workspace_id]', workspaceId);
+  params.set('subscription_data[metadata][billing_provider]', 'stripe_blik');
+  params.set('subscription_data[metadata][plan_id]', plan.planId);
+  params.set('subscription_data[metadata][plan_key]', plan.planKey);
+  params.set('subscription_data[metadata][billing_period]', plan.period);
+  params.set('subscription_data[metadata][access_days]', String(plan.accessDays));
+  params.set('subscription_data[description]', description);
 
   if (customerEmail) {
     params.set('customer_email', customerEmail);
@@ -289,6 +324,54 @@ export async function createStripeBlikCheckout({
     billingPeriod: plan.period,
     accessDays: plan.accessDays,
   };
+}
+
+export function mapStripeSubscriptionStatus(status: unknown) {
+  const normalized = String(status || '').toLowerCase();
+  if (normalized === 'active' || normalized === 'trialing') return 'paid_active';
+  if (normalized === 'past_due' || normalized === 'unpaid' || normalized === 'incomplete_expired') return 'payment_failed';
+  if (normalized === 'canceled') return 'canceled';
+  if (normalized === 'incomplete') return 'inactive';
+  return 'inactive';
+}
+
+export function unixToIso(value: unknown) {
+  const asNumber = Number(value);
+  if (!Number.isFinite(asNumber) || asNumber <= 0) return null;
+  return new Date(asNumber * 1000).toISOString();
+}
+
+export async function getStripeSubscription(subscriptionId: string) {
+  const config = assertStripeCheckoutConfigured();
+  if (!config.ok) {
+    throw new Error('STRIPE_PROVIDER_NOT_CONFIGURED');
+  }
+
+  const id = asText(subscriptionId);
+  if (!id) {
+    throw new Error('STRIPE_SUBSCRIPTION_ID_REQUIRED');
+  }
+
+  return stripeRequestJson<StripeSubscriptionRecord>(`subscriptions/${encodeURIComponent(id)}`, config.secretKey, {
+    method: 'GET',
+  });
+}
+
+export async function updateStripeSubscription(subscriptionId: string, payload: { cancel_at_period_end: boolean }) {
+  const config = assertStripeCheckoutConfigured();
+  if (!config.ok) {
+    throw new Error('STRIPE_PROVIDER_NOT_CONFIGURED');
+  }
+
+  const id = asText(subscriptionId);
+  if (!id) {
+    throw new Error('STRIPE_SUBSCRIPTION_ID_REQUIRED');
+  }
+
+  const params = new URLSearchParams();
+  params.set('cancel_at_period_end', payload.cancel_at_period_end ? 'true' : 'false');
+
+  return stripePost<StripeSubscriptionRecord>(`subscriptions/${encodeURIComponent(id)}`, config.secretKey, params);
 }
 
 export function verifyStripeSignature(rawBody: string, signatureHeader: string, webhookSecret: string) {

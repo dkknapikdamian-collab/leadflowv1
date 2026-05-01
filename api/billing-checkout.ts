@@ -13,7 +13,7 @@ export default async function handler(req: any, res: any) {
     const body = parseBody(req);
     const workspaceId = asNullableText(authContext.workspaceId);
     const requestedWorkspaceId = asNullableText(body.workspaceId);
-    const customerEmail = asNullableText(authContext.email || body.customerEmail);
+    const customerEmail = asNullableText(authContext.email);
     const planKey = asNullableText(body.planKey || req?.headers?.['x-billing-plan']);
     const billingPeriod = asNullableText(body.billingPeriod || req?.headers?.['x-billing-period']);
     const dryRun = body.dryRun === true || body.dryRun === '1' || req?.headers?.['x-billing-dry-run'] === '1';
