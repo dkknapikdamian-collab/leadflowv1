@@ -8,6 +8,11 @@ export function asText(value: unknown) {
   return String(value).trim();
 }
 
+function isUuid(value: unknown) {
+  return typeof value === 'string'
+    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
 export function getRequestIdentity(_req: any, _bodyInput?: any) {
   return { userId: null, email: null, fullName: null, workspaceId: null };
 }
@@ -18,7 +23,21 @@ export async function requireRequestIdentity(req: any) {
 
 export async function requireAuthContext(req: any) {
   const context = await requireSupabaseRequestContext(req);
-  const workspaceId = await findWorkspaceId(context.userId);
+  const workspaceFromLookup = await findWorkspaceId(context.userId);
+  const workspaceFromToken = asText(context.workspaceId);
+  let workspaceId = workspaceFromLookup || (isUuid(workspaceFromToken) ? workspaceFromToken : null);
+  if (!workspaceId && context.email) {
+    try {
+      const profile = await selectFirstAvailable([
+        `profiles?select=workspace_id&email=eq.${encodeURIComponent(context.email)}&limit=1`,
+      ]);
+      const row = Array.isArray(profile.data) && profile.data[0] ? profile.data[0] as Record<string, unknown> : null;
+      const workspaceFromProfile = asText(row?.workspace_id);
+      if (isUuid(workspaceFromProfile)) workspaceId = workspaceFromProfile;
+    } catch {
+      // keep null
+    }
+  }
   let role = 'member';
   if (workspaceId) {
     try {
