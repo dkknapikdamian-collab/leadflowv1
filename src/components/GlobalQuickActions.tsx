@@ -38,6 +38,9 @@ export function consumeGlobalQuickAction(): GlobalQuickActionTarget | null {
 }
 
 export default function GlobalQuickActions() {
+  const { access } = useWorkspace();
+  const aiEnabled = Boolean(access?.features?.ai);
+
   return (
     <div
       role="toolbar"
@@ -46,8 +49,30 @@ export default function GlobalQuickActions() {
       data-global-quick-actions="true"
       data-global-quick-actions-contract="v97"
       data-visual-stage="01-global-actions"
-    >
-      <GlobalAiAssistant />
+    >      {aiEnabled ? (
+      {access?.features?.ai ? (
+        <GlobalAiAssistant />
+      ) : (
+        <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-locked">
+          <Link to="/billing" aria-label="Asystent AI jest w planie AI">
+            <LockKeyhole className="mr-2 h-4 w-4" />
+            Asystent AI jest w planie AI
+          </Link>
+        </Button>
+      )}
+      ) : (
+        <Button
+          type="button"
+          variant="outline"
+          className="btn soft-blue opacity-75"
+          disabled
+          title="Asystent AI jest w planie AI"
+          data-global-quick-action="ai-locked"
+        >
+          <LockKeyhole className="mr-2 h-4 w-4" />
+          Asystent AI jest w planie AI
+        </Button>
+      )}
       <QuickAiCapture />
 
       <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts">

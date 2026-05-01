@@ -172,16 +172,17 @@ const ACCESS_COPY: Record<string, { label: string; headline: string; description
 };
 
 const LIMIT_ITEMS = [
-  { name: 'Leady', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Zadania', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Wydarzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Kalendarz', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Powiadomienia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Szkice AI', basic: 'Limit', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Asystent AI', basic: 'Limit', pro: 'Limit', ai: 'Dostępne' },
-  { name: 'Google Calendar', basic: 'Wkrótce', pro: 'Wkrótce', ai: 'Wkrótce' },
+  { name: 'Leady', basic: 'DostÄ™pne', pro: 'DostÄ™pne', ai: 'DostÄ™pne' },
+  { name: 'Zadania', basic: 'DostÄ™pne', pro: 'DostÄ™pne', ai: 'DostÄ™pne' },
+  { name: 'Wydarzenia', basic: 'DostÄ™pne', pro: 'DostÄ™pne', ai: 'DostÄ™pne' },
+  { name: 'Kalendarz w aplikacji', basic: 'DostÄ™pne', pro: 'DostÄ™pne', ai: 'DostÄ™pne' },
+  { name: 'Poranny digest', basic: 'DostÄ™pne', pro: 'DostÄ™pne', ai: 'DostÄ™pne' },
+  { name: 'Szkice do sprawdzenia', basic: 'DostÄ™pne', pro: 'DostÄ™pne', ai: 'DostÄ™pne' },
+  { name: 'Parser tekstu', basic: 'DostÄ™pne', pro: 'DostÄ™pne', ai: 'DostÄ™pne' },
+  { name: 'Google Calendar', basic: 'Nie', pro: 'DostÄ™pne', ai: 'DostÄ™pne' },
+  { name: 'PeĹ‚ny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'DostÄ™pne' },
+  { name: 'Raport tygodniowy', basic: 'Nie', pro: 'DostÄ™pne', ai: 'DostÄ™pne' },
 ];
-
 const SETTLEMENT_STATUS_LABELS: Record<string, string> = {
   awaiting_payment: 'Czeka na płatność',
   partially_paid: 'Częściowo opłacone',

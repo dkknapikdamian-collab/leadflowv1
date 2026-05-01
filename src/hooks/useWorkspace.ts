@@ -166,7 +166,7 @@ export function useWorkspace() {
         ...fallbackPlanAccess,
         subscriptionStatus: fallbackAccess.status,
       };
-  const isAdmin = profile?.role  const isAdmin = profile?.role === 'admin' || profile?.isAdmin === true;
+  const isAdmin = profile?.role === 'admin' || profile?.isAdmin === true;
   const refresh = () => setRefreshToken((prev) => prev + 1);
   const workspaceReady = Boolean(workspace?.id);
 

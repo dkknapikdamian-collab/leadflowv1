@@ -190,12 +190,7 @@ async function ensureProfileRow(identity: { userId?: string; email?: string; ful
 async function handleProfileSettings(req: any, res: any) {
   try {
     if (req.method !== 'PATCH') {
-      res.status(405).json({ error: '
-    if (kind === 'weekly-report') {
-      await weeklyReportHandler(req, res);
-      return;
-    }
-METHOD_NOT_ALLOWED' });
+      res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
       return;
     }
 
