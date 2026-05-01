@@ -87,3 +87,17 @@ Szczegóły:
 - `docs/SUPABASE_FIRST_ARCHITECTURE.md`
 - `docs/DATA_SOURCE_MAP.md`
 <!-- /closeflow-supabase-first-architecture -->
+
+
+<!-- closeflow-stage01-supabase-auth -->
+## Logowanie: Supabase Auth
+
+Od etapu 01 docelowym modelem logowania jest Supabase Auth.
+
+Frontend używa `Authorization: Bearer <supabase_access_token>` dla requestów do API. Backend ustala użytkownika i workspace na podstawie zweryfikowanego tokenu Supabase, a nie na podstawie nagłówków `x-user-id`, `x-user-email`, `x-workspace-id` z frontu.
+
+Szczegóły wdrożenia:
+
+- `docs/STAGE01_SUPABASE_AUTH.md`
+- `supabase/migrations/2026-05-01_stage01_supabase_auth_identity.sql`
+<!-- /closeflow-stage01-supabase-auth -->

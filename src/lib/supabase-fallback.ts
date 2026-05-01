@@ -1,5 +1,6 @@
 // AI_DRAFT_CONFIRM_RECORDS_STAGE25_SUPABASE
 import { getClientAuthSnapshot } from './client-auth';
+import { getSupabaseAccessToken } from './supabase-auth';
 import { normalizeCaseContract, normalizeCaseListContract, normalizeEventListContract, normalizeLeadContract, normalizeLeadListContract, normalizeTaskListContract } from './data-contract';
 
 type SupabaseInsertResult = { [key: string]: unknown };
@@ -93,7 +94,7 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   }
 
   const requestPromise = (async () => {
-    const response = await fetch(path, { ...init, headers: { ...getAuthHeaders(), 'Content-Type': 'application/json', ...(init?.headers || {}) } });
+    const response = await fetch(path, { ...init, headers: { ...(await getAuthHeaders()), 'Content-Type': 'application/json', ...(init?.headers || {}) } });
     const text = await response.text();
     let data: unknown = null;
     if (text) {
@@ -249,9 +250,8 @@ export async function updateTaskInSupabase(input: Record<string, unknown> & { id
 export async function deleteTaskFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/tasks?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function updateEventInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/events', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteEventFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
-export async function fetchMeFromSupabase(input: { uid?: string; email?: string; fullName?: string }) {
-  const query = new URLSearchParams(); if (input.uid) query.set('uid', input.uid); if (input.email) query.set('email', input.email); if (input.fullName) query.set('fullName', input.fullName);
-  return callApi<MeResponse>(`/api/me${query.toString() ? `?${query.toString()}` : ''}`);
+export async function fetchMeFromSupabase(_input?: { uid?: string; email?: string; fullName?: string }) {
+  return callApi<MeResponse>('/api/me');
 }
 export async function updateProfileSettingsInSupabase(input: ProfileSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/system?kind=profile-settings', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function updateWorkspaceSettingsInSupabase(input: WorkspaceSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/workspace-settings', { method: 'PATCH', body: JSON.stringify(input) }); }

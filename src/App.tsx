@@ -1,13 +1,12 @@
-﻿import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { auth } from './firebase';
-import { getIdTokenResult, signOut } from 'firebase/auth';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import NotificationRuntime from './components/NotificationRuntime';
 import { Toaster } from './components/ui/sonner';
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { TooltipProvider } from './components/ui/tooltip';
 import { fetchMeFromSupabase, isSupabaseConfigured } from './lib/supabase-fallback';
 import { clearClientAuthSnapshot, setClientAuthSnapshot } from './lib/client-auth';
-import { useFirebaseSession } from './hooks/useFirebaseSession';
+import { useSupabaseSession } from './hooks/useSupabaseSession';
+import { signOutFromSupabase } from './lib/supabase-auth';
 import { toast } from 'sonner';
 import { AppChunkErrorBoundary } from './components/AppChunkErrorBoundary';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
@@ -48,7 +47,7 @@ function AppRouteFallback() {
 
 function buildLocalProfile(user: any) {
   return {
-    id: user?.uid || '',
+    id: user?.uid || user?.id || '',
     fullName: user?.displayName || '',
     email: user?.email || '',
     role: 'member',
@@ -57,7 +56,7 @@ function buildLocalProfile(user: any) {
 }
 
 export default function App() {
-  const [user, loading] = useFirebaseSession(auth);
+  const [user, loading] = useSupabaseSession();
   const [profile, setProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
 
@@ -90,36 +89,24 @@ export default function App() {
 
     const syncProfileFromApi = async (showLoading = false) => {
       if (showLoading) setProfileLoading(true);
-
       try {
-        const me = await fetchMeFromSupabase({
-          uid: user.uid,
-          email: user.email || undefined,
-          fullName: user.displayName || undefined,
-        });
+        const me = await fetchMeFromSupabase();
         if (cancelled) return;
 
         const nextProfile = me.profile || null;
         const forceLogoutAfter = typeof nextProfile?.forceLogoutAfter === 'string' ? nextProfile.forceLogoutAfter : '';
 
         if (forceLogoutAfter) {
-          try {
-            const tokenResult = await getIdTokenResult(user);
-            const authTimeMs = Date.parse(String(tokenResult.authTime || ''));
-            const forceLogoutMs = Date.parse(forceLogoutAfter);
+          const authTimeMs = Date.parse(String(user.lastSignInAt || ''));
+          const forceLogoutMs = Date.parse(forceLogoutAfter);
 
-            if (Number.isFinite(authTimeMs) && Number.isFinite(forceLogoutMs) && authTimeMs < forceLogoutMs) {
-              if (typeof window !== 'undefined') {
-                window.sessionStorage.setItem(FORCE_LOGOUT_NOTICE_SESSION_KEY, '1');
-              }
-              clearClientAuthSnapshot();
-              setProfile(null);
-              if (showLoading) setProfileLoading(false);
-              await signOut(auth);
-              return;
-            }
-          } catch (error) {
-            console.error('FORCE_LOGOUT_CHECK_FAILED', error);
+          if (Number.isFinite(authTimeMs) && Number.isFinite(forceLogoutMs) && authTimeMs < forceLogoutMs) {
+            if (typeof window !== 'undefined') window.sessionStorage.setItem(FORCE_LOGOUT_NOTICE_SESSION_KEY, '1');
+            clearClientAuthSnapshot();
+            setProfile(null);
+            if (showLoading) setProfileLoading(false);
+            await signOutFromSupabase();
+            return;
           }
         }
 
@@ -129,22 +116,15 @@ export default function App() {
         console.error('PROFILE_API_BOOTSTRAP_FAILED', error);
         setProfile(buildLocalProfile(user));
       } finally {
-        if (!cancelled && showLoading) {
-          setProfileLoading(false);
-        }
+        if (!cancelled && showLoading) setProfileLoading(false);
       }
     };
 
     void syncProfileFromApi(true);
 
-    const interval = window.setInterval(() => {
-      void syncProfileFromApi(false);
-    }, 60_000);
-
+    const interval = window.setInterval(() => void syncProfileFromApi(false), 60_000);
     const handleVisibilityRefresh = () => {
-      if (document.visibilityState === 'visible') {
-        void syncProfileFromApi(false);
-      }
+      if (document.visibilityState === 'visible') void syncProfileFromApi(false);
     };
 
     window.addEventListener('focus', handleVisibilityRefresh);
@@ -161,7 +141,6 @@ export default function App() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (window.sessionStorage.getItem(FORCE_LOGOUT_NOTICE_SESSION_KEY) !== '1') return;
-
     window.sessionStorage.removeItem(FORCE_LOGOUT_NOTICE_SESSION_KEY);
     toast.success('Wylogowano tę sesję po globalnym wylogowaniu.');
   }, []);
@@ -177,45 +156,43 @@ export default function App() {
     );
   }
 
+  const isLoggedIn = Boolean(user);
+
   return (
     <TooltipProvider>
-      <Router>          <AppChunkErrorBoundary>
+      <Router>
+        <AppChunkErrorBoundary>
           <Suspense fallback={<AppRouteFallback />}>
-          <Routes>
-            <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-            <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
-
-            <Route path="/" element={user ? <Today /> : <Navigate to="/login" />} />
-            <Route path="/leads" element={user ? <Leads /> : <Navigate to="/login" />} />
-            <Route path="/leads/:leadId" element={user ? <LeadDetail /> : <Navigate to="/login" />} />
-            <Route path="/tasks" element={user ? <Tasks /> : <Navigate to="/login" />} />
-            <Route path="/calendar" element={user ? <Calendar /> : <Navigate to="/login" />} />
-            <Route path="/cases" element={user ? <Cases /> : <Navigate to="/login" />} />
-            <Route path="/case/:caseId" element={user ? <CaseDetail /> : <Navigate to="/login" />} />
-            <Route path="/cases/:caseId" element={user ? <CaseDetail /> : <Navigate to="/login" />} />
-            <Route path="/clients" element={user ? <Clients /> : <Navigate to="/login" />} />
-            <Route path="/clients/:clientId" element={user ? <ClientDetail /> : <Navigate to="/login" />} />
-            <Route path="/activity" element={user ? <Activity /> : <Navigate to="/login" />} />
-            <Route path="/ai-drafts" element={user ? <AiDrafts /> : <Navigate to="/login" />} />
-            <Route path="/notifications" element={user ? <NotificationsCenter /> : <Navigate to="/login" />} />
-            <Route path="/billing" element={user ? <Billing /> : <Navigate to="/login" />} />
-            <Route path="/help" element={user ? <SupportCenter /> : <Navigate to="/login" />} />
-            <Route path="/settings/ai" element={user ? <AdminAiSettings /> : <Navigate to="/login" />} />
-            <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
-
-            <Route path="/ui-preview-vnext" element={<UiPreviewVNext />} />
-            <Route path="/ui-preview-vnext-full" element={<UiPreviewVNextFull />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-            </Suspense>
+            <Routes>
+              <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />
+              <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
+              <Route path="/" element={isLoggedIn ? <Today /> : <Navigate to="/login" />} />
+              <Route path="/leads" element={isLoggedIn ? <Leads /> : <Navigate to="/login" />} />
+              <Route path="/leads/:leadId" element={isLoggedIn ? <LeadDetail /> : <Navigate to="/login" />} />
+              <Route path="/tasks" element={isLoggedIn ? <Tasks /> : <Navigate to="/login" />} />
+              <Route path="/calendar" element={isLoggedIn ? <Calendar /> : <Navigate to="/login" />} />
+              <Route path="/cases" element={isLoggedIn ? <Cases /> : <Navigate to="/login" />} />
+              <Route path="/case/:caseId" element={isLoggedIn ? <CaseDetail /> : <Navigate to="/login" />} />
+              <Route path="/cases/:caseId" element={isLoggedIn ? <CaseDetail /> : <Navigate to="/login" />} />
+              <Route path="/clients" element={isLoggedIn ? <Clients /> : <Navigate to="/login" />} />
+              <Route path="/clients/:clientId" element={isLoggedIn ? <ClientDetail /> : <Navigate to="/login" />} />
+              <Route path="/activity" element={isLoggedIn ? <Activity /> : <Navigate to="/login" />} />
+              <Route path="/ai-drafts" element={isLoggedIn ? <AiDrafts /> : <Navigate to="/login" />} />
+              <Route path="/notifications" element={isLoggedIn ? <NotificationsCenter /> : <Navigate to="/login" />} />
+              <Route path="/billing" element={isLoggedIn ? <Billing /> : <Navigate to="/login" />} />
+              <Route path="/help" element={isLoggedIn ? <SupportCenter /> : <Navigate to="/login" />} />
+              <Route path="/settings/ai" element={isLoggedIn ? <AdminAiSettings /> : <Navigate to="/login" />} />
+              <Route path="/settings" element={isLoggedIn ? <Settings /> : <Navigate to="/login" />} />
+              <Route path="/ui-preview-vnext" element={<UiPreviewVNext />} />
+              <Route path="/ui-preview-vnext-full" element={<UiPreviewVNextFull />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </Suspense>
         </AppChunkErrorBoundary>
-        <NotificationRuntime enabled={Boolean(user)} />
+        <NotificationRuntime enabled={isLoggedIn} />
         <PwaInstallPrompt />
         <Toaster position="top-right" richColors />
       </Router>
     </TooltipProvider>
   );
 }
-
-
-
