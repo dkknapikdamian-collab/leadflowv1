@@ -26,6 +26,21 @@ export async function requireAuthContext(req: any) {
   const workspaceFromLookup = await findWorkspaceId(context.userId);
   const workspaceFromToken = asText(context.workspaceId);
   let workspaceId = workspaceFromLookup || (isUuid(workspaceFromToken) ? workspaceFromToken : null);
+
+  // A22_WORKSPACE_MEMBER_DIRECT_LOOKUP
+  // Keep membership lookup explicit in request scope so workspace isolation is visible and guarded.
+  if (!workspaceId && context.userId) {
+    try {
+      const membership = await selectFirstAvailable([
+        `workspace_members?user_id=eq.${encodeURIComponent(context.userId)}&select=workspace_id&limit=1`,
+      ]);
+      const row = Array.isArray(membership.data) && membership.data[0] ? membership.data[0] as Record<string, unknown> : null;
+      const workspaceFromMembership = asText(row?.workspace_id);
+      if (isUuid(workspaceFromMembership)) workspaceId = workspaceFromMembership;
+    } catch {
+      // keep null and continue fallback lookup below
+    }
+  }
   if (!workspaceId && context.email) {
     try {
       const profile = await selectFirstAvailable([

@@ -55,7 +55,8 @@
     "check:a20-runtime-imports": "node scripts/check-a20-runtime-imports.cjs",
     "check:a20c-sidebar-hitbox": "node scripts/check-a20c-sidebar-hitbox.cjs",
     "check:a20d-sidebar-pointer-router": "node scripts/check-a20d-sidebar-pointer-router.cjs",
-    "check:a20e-sidebar-today-tone": "node scripts/check-a20e-sidebar-today-tone.cjs"
+    "check:a20e-sidebar-today-tone": "node scripts/check-a20e-sidebar-today-tone.cjs",
+    "check:a22-supabase-auth-rls-workspace": "node scripts/check-a22-supabase-auth-rls-workspace.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
