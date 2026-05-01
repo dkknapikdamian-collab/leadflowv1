@@ -73,7 +73,8 @@
     "check:a26-activities-ai-drafts-supabase": "node scripts/check-a26-activities-ai-drafts-supabase.cjs",
     "check:p0-plan-access-gating": "node scripts/check-p0-plan-access-gating.cjs",
     "verify:security:server-only-secrets": "node scripts/verify-server-only-secrets.cjs",
-    "check:p0-api-workspace-scope": "node scripts/check-p0-api-workspace-scope.cjs"
+    "check:p0-api-workspace-scope": "node scripts/check-p0-api-workspace-scope.cjs",
+    "check:p0-supabase-rls-schema-confirmation": "node scripts/check-p0-supabase-rls-schema-confirmation.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
