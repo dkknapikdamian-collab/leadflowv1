@@ -26,7 +26,6 @@ import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Checkbox } from '../components/ui/checkbox';
 import { Textarea } from '../components/ui/textarea';
-import { cn } from '../lib/utils';
 import {
   createCaseTemplateInSupabase,
   deleteCaseTemplateFromSupabase,
@@ -50,10 +49,10 @@ type TemplateRecord = {
 };
 
 const ITEM_TYPE_OPTIONS: { value: TemplateItemType; label: string; badgeClassName: string }[] = [
-  { value: 'file', label: 'Plik', badgeClassName: 'bg-sky-500/12 text-sky-600 border-sky-500/20' },
-  { value: 'text', label: 'Tekst / brief', badgeClassName: 'bg-indigo-500/12 text-indigo-600 border-indigo-500/20' },
-  { value: 'decision', label: 'Decyzja / akceptacja', badgeClassName: 'bg-amber-500/12 text-amber-600 border-amber-500/20' },
-  { value: 'access', label: 'Dostęp / login', badgeClassName: 'bg-emerald-500/12 text-emerald-600 border-emerald-500/20' },
+  { value: 'file', label: 'Plik', badgeClassName: 'border-sky-200 bg-sky-50 text-sky-700' },
+  { value: 'text', label: 'Tekst / brief', badgeClassName: 'border-indigo-200 bg-indigo-50 text-indigo-700' },
+  { value: 'decision', label: 'Decyzja / akceptacja', badgeClassName: 'border-amber-200 bg-amber-50 text-amber-700' },
+  { value: 'access', label: 'Dostęp / login', badgeClassName: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
 ];
 
 const EMPTY_ITEM: TemplateItemDraft = {
@@ -94,6 +93,34 @@ function getTemplateItemCount(template: TemplateRecord) {
 
 function getRequiredItemCount(template: TemplateRecord) {
   return normalizeTemplateItems(template.items).filter((item) => item.isRequired).length;
+}
+
+function LightMetricCard({
+  label,
+  value,
+  icon: Icon,
+  iconClassName,
+  valueClassName = 'text-slate-950',
+}: {
+  label: string;
+  value: number;
+  icon: typeof Sparkles;
+  iconClassName: string;
+  valueClassName?: string;
+}) {
+  return (
+    <Card className="border border-slate-200 bg-white shadow-sm">
+      <CardContent className="flex min-h-[96px] items-center justify-between gap-4 p-5">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{label}</p>
+          <p className={`mt-2 text-3xl font-black leading-none ${valueClassName}`}>{value}</p>
+        </div>
+        <div className={`rounded-2xl p-3 ${iconClassName}`}>
+          <Icon className="h-6 w-6" />
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
 
 export default function Templates() {
@@ -274,82 +301,52 @@ export default function Templates() {
 
   return (
     <Layout>
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="case-templates-v2">
-        <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
-              <FolderKanban className="h-3.5 w-3.5" /> Szablony spraw
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold app-text">Szablony spraw i checklist</h1>
-              <p className="mt-2 max-w-2xl text-sm md:text-base app-muted">
-                Gotowe checklisty do startu obsługi. Używasz ich przy przejściu z leada do sprawy, żeby nie układać realizacji od zera.
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            {!hasAccess ? (
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-sm font-medium text-amber-600 dark:text-amber-400">
-                <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis szablonów
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 text-slate-900 md:px-8 md:py-8" data-a16-template-light-ui="true">
+        <header className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="space-y-3">
+              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
+                <FolderKanban className="h-3.5 w-3.5" /> Szablony spraw
               </div>
-            ) : null}
-            <Button className="rounded-2xl" onClick={openCreateDialog}>
-              <Plus className="h-4 w-4" /> Nowy szablon
-            </Button>
+              <div>
+                <h1 className="text-3xl font-black tracking-tight text-slate-950">Szablony spraw i checklist</h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 md:text-base">
+                  Gotowe checklisty do startu obsługi. Używasz ich przy przejściu z leada do sprawy, żeby nie układać realizacji od zera.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              {!hasAccess ? (
+                <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700">
+                  <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis szablonów
+                </div>
+              ) : null}
+              <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
+                <Plus className="h-4 w-4" /> Nowy szablon
+              </Button>
+            </div>
           </div>
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <Card className="border-none app-surface-strong app-shadow">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Szablony</p>
-                <p className="mt-2 text-2xl font-bold app-text">{stats.totalTemplates}</p>
-              </div>
-              <div className="rounded-2xl p-3 app-primary-chip"><Sparkles className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong app-shadow">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Pozycje</p>
-                <p className="mt-2 text-2xl font-bold app-text">{stats.totalItems}</p>
-              </div>
-              <div className="rounded-2xl bg-indigo-500/12 p-3 text-indigo-600"><FileText className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong app-shadow">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Obowiązkowe</p>
-                <p className="mt-2 text-2xl font-bold text-amber-600">{stats.requiredItems}</p>
-              </div>
-              <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-600"><AlertTriangle className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong app-shadow">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Akceptacje</p>
-                <p className="mt-2 text-2xl font-bold text-emerald-600">{stats.decisionItems}</p>
-              </div>
-              <div className="rounded-2xl bg-emerald-500/12 p-3 text-emerald-600"><CheckCircle2 className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
+          <LightMetricCard label="Szablony" value={stats.totalTemplates} icon={Sparkles} iconClassName="bg-emerald-50 text-emerald-700" />
+          <LightMetricCard label="Pozycje" value={stats.totalItems} icon={FileText} iconClassName="bg-indigo-50 text-indigo-700" />
+          <LightMetricCard label="Obowiązkowe" value={stats.requiredItems} icon={AlertTriangle} iconClassName="bg-amber-50 text-amber-700" valueClassName="text-amber-600" />
+          <LightMetricCard label="Akceptacje" value={stats.decisionItems} icon={CheckCircle2} iconClassName="bg-emerald-50 text-emerald-700" valueClassName="text-emerald-600" />
         </section>
 
-        <Card className="border-none app-surface-strong app-shadow">
+        <Card className="border border-slate-200 bg-white shadow-sm">
           <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input
                 placeholder="Szukaj po nazwie szablonu albo pozycjach checklisty..."
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                className="pl-10"
+                className="h-11 border-slate-200 bg-white pl-10 text-slate-900 placeholder:text-slate-400 focus-visible:ring-emerald-500/20"
               />
             </div>
-            <div className="rounded-2xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] app-muted app-border app-surface">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-600">
               Gotowce do spraw, nie szablony odpowiedzi
             </div>
           </CardContent>
@@ -357,23 +354,23 @@ export default function Templates() {
 
         <section className="space-y-4">
           {loading ? (
-            <Card className="border-none app-surface-strong app-shadow">
+            <Card className="border border-slate-200 bg-white shadow-sm">
               <CardContent className="flex flex-col items-center justify-center gap-3 py-16">
-                <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-[color:var(--app-primary)]" />
-                <p className="text-sm font-medium app-muted">Ładowanie szablonów...</p>
+                <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-emerald-600" />
+                <p className="text-sm font-semibold text-slate-500">Ładowanie szablonów...</p>
               </CardContent>
             </Card>
           ) : filteredTemplates.length === 0 ? (
-            <Card className="border-dashed app-surface-strong app-shadow">
-              <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-                <div className="rounded-full p-4 app-primary-chip"><FolderKanban className="h-7 w-7" /></div>
+            <Card className="border border-dashed border-slate-300 bg-white shadow-sm">
+              <CardContent className="flex min-h-[260px] flex-col items-center justify-center gap-4 px-6 py-16 text-center">
+                <div className="rounded-3xl bg-emerald-50 p-4 text-emerald-700"><FolderKanban className="h-8 w-8" /></div>
                 <div>
-                  <p className="text-lg font-semibold app-text">Brak szablonów w tym widoku</p>
-                  <p className="mt-1 max-w-md text-sm app-muted">
+                  <p className="text-xl font-black text-slate-950">Brak szablonów w tym widoku</p>
+                  <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
                     Dodaj pierwszy szablon, jeśli chcesz szybciej zamieniać pozyskany temat w sprawę z checklistą.
                   </p>
                 </div>
-                <Button className="rounded-2xl" onClick={openCreateDialog}>
+                <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
                   <Plus className="h-4 w-4" /> Dodaj pierwszy szablon
                 </Button>
               </CardContent>
@@ -384,22 +381,22 @@ export default function Templates() {
               const requiredCount = items.filter((item) => item.isRequired).length;
 
               return (
-                <Card key={template.id} className="border-none app-surface-strong app-shadow">
+                <Card key={template.id} className="border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                   <CardContent className="flex flex-col gap-5 p-5">
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                       <div className="space-y-3">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-xl font-bold app-text">{template.name || 'Szablon bez nazwy'}</h3>
-                          <Badge variant="outline">{items.length} pozycji</Badge>
-                          {requiredCount > 0 ? <Badge className="bg-amber-500/12 text-amber-600 border-amber-500/20">{requiredCount} obowiązkowych</Badge> : null}
+                          <h3 className="text-xl font-black text-slate-950">{template.name || 'Szablon bez nazwy'}</h3>
+                          <Badge variant="outline" className="border-slate-200 bg-slate-50 text-slate-700">{items.length} pozycji</Badge>
+                          {requiredCount > 0 ? <Badge className="border border-amber-200 bg-amber-50 text-amber-700">{requiredCount} obowiązkowych</Badge> : null}
                         </div>
-                        <p className="text-sm app-muted">
+                        <p className="text-sm leading-6 text-slate-500">
                           Po wybraniu szablonu pozycje zostaną skopiowane do checklisty nowej sprawy.
                         </p>
                       </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="outline" size="icon" className="rounded-2xl">
+                          <Button variant="outline" size="icon" className="rounded-2xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -408,7 +405,7 @@ export default function Templates() {
                           <DropdownMenuItem onClick={() => void handleDuplicateTemplate(template)}>
                             <Copy className="mr-2 h-4 w-4" /> Duplikuj
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-rose-500 focus:text-rose-500" onClick={() => void handleDeleteTemplate(template.id)}>
+                          <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={() => void handleDeleteTemplate(template.id)}>
                             <Trash2 className="mr-2 h-4 w-4" /> Usuń
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -419,13 +416,13 @@ export default function Templates() {
                       {items.map((item, index) => {
                         const meta = itemTypeMeta(item.type);
                         return (
-                          <div key={`${template.id}-${index}`} className="rounded-2xl border p-4 app-border app-surface">
+                          <div key={`${template.id}-${index}`} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                             <div className="mb-3 flex flex-wrap items-center gap-2">
-                              <Badge className={meta.badgeClassName}>{meta.label}</Badge>
-                              {item.isRequired ? <Badge variant="destructive">Obowiązkowe</Badge> : <Badge variant="outline">Opcjonalne</Badge>}
+                              <Badge variant="outline" className={meta.badgeClassName}>{meta.label}</Badge>
+                              {item.isRequired ? <Badge className="bg-rose-600 text-white">Obowiązkowe</Badge> : <Badge variant="outline" className="border-slate-200 bg-white text-slate-700">Opcjonalne</Badge>}
                             </div>
-                            <p className="font-semibold app-text">{item.title}</p>
-                            <p className={cn('mt-2 text-sm', item.description ? 'app-muted' : 'app-muted')}>
+                            <p className="font-bold text-slate-950">{item.title}</p>
+                            <p className="mt-2 text-sm leading-6 text-slate-500">
                               {item.description || 'Bez opisu. Warto dopisać krótkie wyjaśnienie dla klienta.'}
                             </p>
                           </div>
@@ -441,24 +438,25 @@ export default function Templates() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[90vh] overflow-hidden sm:max-w-4xl">
+        <DialogContent className="max-h-[90vh] overflow-hidden border-slate-200 bg-white text-slate-900 shadow-2xl sm:max-w-4xl">
           <DialogHeader>
-            <DialogTitle>{editingTemplateId ? 'Edytuj szablon sprawy' : 'Nowy szablon sprawy'}</DialogTitle>
+            <DialogTitle className="text-slate-950">{editingTemplateId ? 'Edytuj szablon sprawy' : 'Nowy szablon sprawy'}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-6 overflow-y-auto py-2 pr-1 md:grid-cols-[280px_minmax(0,1fr)]">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="template-name">Nazwa szablonu</Label>
+                <Label htmlFor="template-name" className="text-slate-700">Nazwa szablonu</Label>
                 <Input
                   id="template-name"
                   value={draft.name}
                   onChange={(event) => setDraft((prev) => ({ ...prev, name: event.target.value }))}
                   placeholder="Np. Strona internetowa + formularz"
+                  className="border-slate-200 bg-white text-slate-900"
                 />
               </div>
-              <div className="rounded-2xl border p-4 text-sm app-border app-surface">
-                <p className="font-semibold app-text">Jak tego używać</p>
-                <p className="mt-2 app-muted">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
+                <p className="font-bold text-slate-950">Jak tego używać</p>
+                <p className="mt-2 leading-6 text-slate-500">
                   Ten szablon pojawi się przy akcji „Rozpocznij obsługę”. Wszystkie pozycje zostaną automatycznie skopiowane do checklisty nowej sprawy.
                 </p>
               </div>
@@ -466,36 +464,37 @@ export default function Templates() {
 
             <div className="space-y-4">
               {draft.items.map((item, index) => (
-                <div key={`draft-item-${index}`} className="rounded-2xl border p-4 app-border app-surface-strong">
+                <div key={`draft-item-${index}`} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <div>
-                      <p className="text-sm font-semibold app-text">Pozycja {index + 1}</p>
-                      <p className="text-xs app-muted">To dokładnie zobaczy operator i klient w dalszym flow.</p>
+                      <p className="text-sm font-bold text-slate-950">Pozycja {index + 1}</p>
+                      <p className="text-xs text-slate-500">To dokładnie zobaczy operator i klient w dalszym flow.</p>
                     </div>
-                    <Button variant="ghost" size="icon" className="rounded-2xl text-rose-500 hover:bg-rose-500/10 hover:text-rose-500" onClick={() => removeDraftItem(index)}>
+                    <Button variant="ghost" size="icon" className="rounded-2xl text-rose-600 hover:bg-rose-50 hover:text-rose-700" onClick={() => removeDraftItem(index)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
 
                   <div className="grid gap-4">
                     <div className="space-y-2">
-                      <Label>Tytuł pozycji</Label>
-                      <Input value={item.title} onChange={(event) => updateDraftItem(index, { title: event.target.value })} placeholder="Np. Dostęp do hostingu" />
+                      <Label className="text-slate-700">Tytuł pozycji</Label>
+                      <Input value={item.title} onChange={(event) => updateDraftItem(index, { title: event.target.value })} placeholder="Np. Dostęp do hostingu" className="border-slate-200 bg-white text-slate-900" />
                     </div>
                     <div className="space-y-2">
-                      <Label>Opis / instrukcja</Label>
+                      <Label className="text-slate-700">Opis / instrukcja</Label>
                       <Textarea
                         value={item.description}
                         onChange={(event) => updateDraftItem(index, { description: event.target.value })}
                         placeholder="Dopisz, co dokładnie klient ma przygotować albo zatwierdzić."
                         rows={3}
+                        className="border-slate-200 bg-white text-slate-900"
                       />
                     </div>
                     <div className="grid gap-4 md:grid-cols-[220px_minmax(0,1fr)] md:items-end">
                       <div className="space-y-2">
-                        <Label>Typ pozycji</Label>
+                        <Label className="text-slate-700">Typ pozycji</Label>
                         <Select value={item.type} onValueChange={(value) => updateDraftItem(index, { type: value as TemplateItemType })}>
-                          <SelectTrigger>
+                          <SelectTrigger className="border-slate-200 bg-white text-slate-900">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -505,10 +504,10 @@ export default function Templates() {
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="flex items-center justify-between rounded-2xl border px-4 py-3 app-border app-surface">
+                      <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                         <div>
-                          <p className="text-sm font-semibold app-text">Obowiązkowe</p>
-                          <p className="text-xs app-muted">Brak tej pozycji będzie blokował sprawę.</p>
+                          <p className="text-sm font-bold text-slate-950">Obowiązkowe</p>
+                          <p className="text-xs text-slate-500">Brak tej pozycji będzie blokował sprawę.</p>
                         </div>
                         <Checkbox checked={item.isRequired} onCheckedChange={(checked) => updateDraftItem(index, { isRequired: checked === true })} />
                       </div>
@@ -517,14 +516,14 @@ export default function Templates() {
                 </div>
               ))}
 
-              <Button variant="outline" className="w-full rounded-2xl" onClick={addDraftItem}>
+              <Button variant="outline" className="w-full rounded-2xl border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={addDraftItem}>
                 <Plus className="h-4 w-4" /> Dodaj następną pozycję
               </Button>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Anuluj</Button>
-            <Button onClick={() => void handleSaveTemplate()} disabled={saving}>
+            <Button variant="outline" className="border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={() => setDialogOpen(false)}>Anuluj</Button>
+            <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => void handleSaveTemplate()} disabled={saving}>
               {saving ? 'Zapisywanie...' : editingTemplateId ? 'Zapisz zmiany' : 'Utwórz szablon'}
             </Button>
           </DialogFooter>
