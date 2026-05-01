@@ -8,7 +8,7 @@ import {
   normalizeTaskStatus,
   type AccessState,
   type BillingStatus,
-} from './domain-statuses';
+} from './domain-statuses.js';
 export type { AccessState, BillingStatus };
 export type DataRecord = Record<string, unknown>;
 
