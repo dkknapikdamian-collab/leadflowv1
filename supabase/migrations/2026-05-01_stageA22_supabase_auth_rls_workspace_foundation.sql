@@ -81,6 +81,37 @@ alter table if exists public.workspaces add column if not exists daily_digest_re
 alter table if exists public.workspaces add column if not exists created_at timestamptz not null default now();
 alter table if exists public.workspaces add column if not exists updated_at timestamptz not null default now();
 
+-- A22C_PROFILES_ID_SCHEMA_REPAIR
+-- Older installs may already have public.profiles without an id column.
+-- The RLS helpers and bootstrap use profiles.id, so repair it before creating functions/policies.
+alter table if exists public.profiles add column if not exists id uuid;
+alter table if exists public.profiles alter column id set default gen_random_uuid();
+update public.profiles set id = gen_random_uuid() where id is null;
+do $
+begin
+  if to_regclass('public.profiles') is not null then
+    if exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'profiles'
+        and column_name = 'id'
+        and is_nullable = 'YES'
+    ) then
+      execute 'alter table public.profiles alter column id set not null';
+    end if;
+    if not exists (
+      select 1
+      from pg_indexes
+      where schemaname = 'public'
+        and tablename = 'profiles'
+        and indexname = 'profiles_id_unique_idx'
+    ) then
+      execute 'create unique index profiles_id_unique_idx on public.profiles(id)';
+    end if;
+  end if;
+end $;
+
 alter table if exists public.profiles add column if not exists auth_user_id uuid;
 alter table if exists public.profiles add column if not exists firebase_uid uuid;
 alter table if exists public.profiles add column if not exists auth_uid uuid;
@@ -140,11 +171,11 @@ as $$
     select 1
     from public.profiles p
     where (
-      p.auth_user_id = auth.uid()
-      or p.id = auth.uid()
-      or p.firebase_uid = auth.uid()
-      or p.auth_uid = auth.uid()
-      or p.external_auth_uid = auth.uid()
+      p.auth_user_id::text = auth.uid()::text
+      or p.id::text = auth.uid()::text
+      or p.firebase_uid::text = auth.uid()::text
+      or p.auth_uid::text = auth.uid()::text
+      or p.external_auth_uid::text = auth.uid()::text
     )
     and (p.role = 'admin' or p.is_admin is true)
   );
@@ -165,16 +196,16 @@ as $$
         select 1
         from public.workspace_members wm
         where wm.workspace_id::text = target_workspace_id
-          and wm.user_id = auth.uid()
+          and wm.user_id::text = auth.uid()::text
       )
       or exists (
         select 1
         from public.workspaces w
         where w.id::text = target_workspace_id
           and (
-            w.owner_user_id = auth.uid()
-            or w.owner_id = auth.uid()
-            or w.created_by_user_id = auth.uid()
+            w.owner_user_id::text = auth.uid()::text
+            or w.owner_id::text = auth.uid()::text
+            or w.created_by_user_id::text = auth.uid()::text
           )
       )
       or public.closeflow_is_admin()
@@ -309,11 +340,11 @@ drop policy if exists profiles_select_self_or_workspace on public.profiles;
 create policy profiles_select_self_or_workspace on public.profiles
 for select using (
   auth.uid() is not null and (
-    auth_user_id = auth.uid()
-    or id = auth.uid()
-    or firebase_uid = auth.uid()
-    or auth_uid = auth.uid()
-    or external_auth_uid = auth.uid()
+    auth_user_id::text = auth.uid()::text
+    or id::text = auth.uid()::text
+    or firebase_uid::text = auth.uid()::text
+    or auth_uid::text = auth.uid()::text
+    or external_auth_uid::text = auth.uid()::text
     or public.closeflow_is_workspace_member(workspace_id::text)
   )
 );
@@ -322,20 +353,20 @@ drop policy if exists profiles_update_self on public.profiles;
 create policy profiles_update_self on public.profiles
 for update using (
   auth.uid() is not null and (
-    auth_user_id = auth.uid()
-    or id = auth.uid()
-    or firebase_uid = auth.uid()
-    or auth_uid = auth.uid()
-    or external_auth_uid = auth.uid()
+    auth_user_id::text = auth.uid()::text
+    or id::text = auth.uid()::text
+    or firebase_uid::text = auth.uid()::text
+    or auth_uid::text = auth.uid()::text
+    or external_auth_uid::text = auth.uid()::text
     or public.closeflow_is_admin()
   )
 ) with check (
   auth.uid() is not null and (
-    auth_user_id = auth.uid()
-    or id = auth.uid()
-    or firebase_uid = auth.uid()
-    or auth_uid = auth.uid()
-    or external_auth_uid = auth.uid()
+    auth_user_id::text = auth.uid()::text
+    or id::text = auth.uid()::text
+    or firebase_uid::text = auth.uid()::text
+    or auth_uid::text = auth.uid()::text
+    or external_auth_uid::text = auth.uid()::text
     or public.closeflow_is_admin()
   )
 );
@@ -348,16 +379,16 @@ drop policy if exists workspaces_update_owner_admin on public.workspaces;
 create policy workspaces_update_owner_admin on public.workspaces
 for update using (
   auth.uid() is not null and (
-    owner_user_id = auth.uid()
-    or owner_id = auth.uid()
-    or created_by_user_id = auth.uid()
+    owner_user_id::text = auth.uid()::text
+    or owner_id::text = auth.uid()::text
+    or created_by_user_id::text = auth.uid()::text
     or public.closeflow_is_admin()
   )
 ) with check (
   auth.uid() is not null and (
-    owner_user_id = auth.uid()
-    or owner_id = auth.uid()
-    or created_by_user_id = auth.uid()
+    owner_user_id::text = auth.uid()::text
+    or owner_id::text = auth.uid()::text
+    or created_by_user_id::text = auth.uid()::text
     or public.closeflow_is_admin()
   )
 );
@@ -374,7 +405,7 @@ for all using (
     select 1
     from public.workspaces w
     where w.id = workspace_members.workspace_id
-      and (w.owner_user_id = auth.uid() or w.owner_id = auth.uid() or w.created_by_user_id = auth.uid())
+      and (w.owner_user_id::text = auth.uid()::text or w.owner_id::text = auth.uid()::text or w.created_by_user_id::text = auth.uid()::text)
   )
 ) with check (
   public.closeflow_is_admin()
@@ -382,7 +413,7 @@ for all using (
     select 1
     from public.workspaces w
     where w.id = workspace_members.workspace_id
-      and (w.owner_user_id = auth.uid() or w.owner_id = auth.uid() or w.created_by_user_id = auth.uid())
+      and (w.owner_user_id::text = auth.uid()::text or w.owner_id::text = auth.uid()::text or w.created_by_user_id::text = auth.uid()::text)
   )
 );
 
