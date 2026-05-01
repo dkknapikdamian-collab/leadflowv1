@@ -66,3 +66,11 @@ Aktualny kierunek produktu to:
 - Supabase dla danych aplikacyjnych i endpointów API
 
 Warstwy sprzedaży, zadań, wydarzeń, aktywności i spraw są prowadzone po stronie Supabase.
+<!-- closeflow-ai-env-policy -->
+## Bezpieczeństwo AI / Gemini
+
+- `GEMINI_API_KEY` jest wyłącznie zmienną backendową/serwerową.
+- Frontend nie może czytać `GEMINI_API_KEY` przez `process.env`, `import.meta.env`, `define` w Vite ani globalne stałe.
+- Nie wolno tworzyć `VITE_GEMINI_API_KEY` ani innych `VITE_*` sekretów AI.
+- Jeśli Gemini jest używane, frontend wywołuje endpoint aplikacji, a endpoint serwerowy dopiero komunikuje się z Gemini.
+- Po buildzie uruchom `npm.cmd run verify:security:gemini-client`, żeby sprawdzić `vite.config.ts`, kod klienta i `dist`.
