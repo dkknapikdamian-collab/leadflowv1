@@ -468,9 +468,12 @@ function removeLeadShadowEntries(entries: ScheduleEntry[]) {
 }
 
 // P0_TODAY_OPERATOR_SECTIONS_FIX
+// P0_TODAY_OPERATOR_SECTIONS_DAY_BUCKET_FIX
 // Today is an operator dashboard: overdue open tasks and active leads without a
 // next action must stay visible. Otherwise work disappears after the scheduled
 // hour and the user sees a false empty day.
+// Operator catch-up entries are rendered in today's bucket, because getEntriesForDay
+// filters by visible startsAt and would otherwise drop older overdue records again.
 function isOperatorTodayRange(rangeEnd: Date) {
   return isToday(rangeEnd);
 }
@@ -537,6 +540,9 @@ function buildOperatorTodayTaskEntry(task: ScheduleRawRecord, moment: Date): Sch
 function expandOperatorTodayTaskEntries(tasks: ScheduleRawRecord[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
   if (!isOperatorTodayRange(rangeEnd)) return [];
 
+  const todayMorning = startOfDay(rangeEnd);
+  todayMorning.setHours(9, 0, 0, 0);
+
   return tasks.flatMap((task) => {
     if (isClosedTaskStatus(task.status)) return [] as ScheduleEntry[];
 
@@ -548,7 +554,8 @@ function expandOperatorTodayTaskEntries(tasks: ScheduleRawRecord[], rangeStart: 
     if (alreadyIncludedByNormalRange) return [] as ScheduleEntry[];
     if (!isOnOrBeforeRangeEnd(moment, rangeEnd)) return [] as ScheduleEntry[];
 
-    return [buildOperatorTodayTaskEntry(task, moment)];
+    const displayMoment = isBefore(moment, startOfDay(rangeEnd)) ? todayMorning : moment;
+    return [buildOperatorTodayTaskEntry(task, displayMoment)];
   });
 }
 
@@ -592,7 +599,8 @@ function expandOperatorTodayLeadEntries(leads: ScheduleRawRecord[], rangeStart: 
     if (alreadyIncludedByNormalRange) return [] as ScheduleEntry[];
     if (!isOnOrBeforeRangeEnd(calendarMoment, rangeEnd)) return [] as ScheduleEntry[];
 
-    return [buildOperatorTodayLeadEntry(lead, calendarMoment, 'Zaległy kontakt')];
+    const displayMoment = isBefore(calendarMoment, startOfDay(rangeEnd)) ? todayMorning : calendarMoment;
+    return [buildOperatorTodayLeadEntry(lead, displayMoment, 'Zaległy kontakt')];
   });
 }
 
