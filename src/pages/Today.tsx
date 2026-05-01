@@ -287,7 +287,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
   if (!compact) return null;
 
   if (compact === 'urgent' || compact === 'pilne') return 'urgent';
-  if (compact === 'without action' || compact === 'without actions' || compact === 'bez dzialan' || compact === 'bez działań') return 'without_action';
+  if (compact === 'without action' || compact === 'without actions' || compact === 'bez dzialan' || compact === 'bez zaplanowanej akcji') return 'without_action';
   if (compact === 'without movement' || compact === 'bez ruchu') return 'without_movement';
   if (compact === 'blocked' || compact === 'zablokowane') return 'blocked';
   if (compact === 'service transition' || compact === 'start i obsluga' || compact === 'start i obsługa') return 'service_transition';
@@ -313,13 +313,13 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
   ) return 'service_transition';
 
   if (
-    compact.includes('bez działań')
+    compact.includes('bez zaplanowanej akcji')
     || compact.includes('bez dzialan')
     || compact.includes('bez następnego')
     || compact.includes('bez nastepnego')
     || compact.includes('brak następnego')
     || compact.includes('brak nastepnego')
-    || compact.includes('następny krok')
+    || compact.includes('najbliższa zaplanowana akcja')
     || compact.includes('nastepny krok')
     || compact.includes('brak kolejnego')
     || compact.includes('bez kolejnego')
@@ -371,7 +371,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
 function getTodayTileShortcutPatterns(target: TodayTileShortcutTarget) {
   if (target === 'blocked') return ['zablokowane', 'blok'];
   if (target === 'service_transition') return ['start i obsługa', 'start i obsluga', 'obsługa aktywna', 'obsluga aktywna', 'gotowe do uruchomienia'];
-  if (target === 'without_action') return ['bez działań', 'bez dzialan', 'bez następnego', 'bez nastepnego', 'następny krok', 'nastepny krok'];
+  if (target === 'without_action') return ['bez zaplanowanej akcji', 'bez dzialan', 'bez następnego', 'bez nastepnego', 'najbliższa zaplanowana akcja', 'nastepny krok'];
   if (target === 'without_movement') return ['bez ruchu', 'brak zmiany', '7 dni'];
   if (target === 'urgent') return ['pilne', 'zaległe', 'zalegle', 'dzisiaj', 'dziś', 'dzis'];
   if (target === 'calendar') return ['kalendarz', 'najbliższe', 'najblizsze', 'terminy', 'wydarzenia'];
@@ -1266,9 +1266,9 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
           </button>
 
           <button type="button" onClick={() => openTodayTopTileShortcut('without_action')} data-today-pipeline-shortcut="without_action" className="min-w-[180px] flex-1 rounded-2xl border border-amber-100 bg-amber-50 p-3 transition hover:border-amber-200 hover:bg-amber-100 text-left">
-            <span className="text-xs font-semibold text-amber-700">Bez działań</span>
+            <span className="text-xs font-semibold text-amber-700">Bez zaplanowanej akcji</span>
             <strong className="mt-1 block text-2xl text-amber-950">{withoutActionLeads.length}</strong>
-            <small className="text-xs text-amber-700">Brak następnego kroku</small>
+            <small className="text-xs text-amber-700">Bez zaplanowanej akcji</small>
           </button>
 
           <button type="button" onClick={() => openTodayTopTileShortcut('without_movement')} data-today-pipeline-shortcut="without_movement" className="min-w-[180px] flex-1 rounded-2xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 hover:bg-slate-100 text-left">
@@ -2254,7 +2254,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
     },
     {
       id: 'no-step',
-      title: 'Bez działań',
+      title: 'Bez zaplanowanej akcji',
       value: noStepLeads.length,
       tone: 'text-amber-600',
       bg: 'bg-amber-50',
@@ -2618,7 +2618,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
 
             {noStepLeads.length > 0 && (
               <section id="today-section-no-step" className="space-y-4">
-                <TileCard id="today-section-no-step" title="Bez działań" subtitle={`${noStepLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-no-step" title="Bez zaplanowanej akcji" subtitle={`${noStepLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {noStepLeads.slice(0, 4).map((lead) => (
                       <LeadLinkCard

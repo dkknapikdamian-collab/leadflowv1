@@ -877,7 +877,7 @@ export default function CaseDetail() {
               <h2>Najbliższa akcja</h2>
             </div>
             <strong>{nextAction ? nextAction.title : 'Brak zaplanowanego ruchu'}</strong>
-            <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} · ${nextAction.dateLabel}` : 'Dodaj zadanie, wydarzenie albo brak, żeby sprawa miała następny krok.'}</p>
+            <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} · ${nextAction.dateLabel}` : 'Dodaj zadanie, wydarzenie albo brak, żeby sprawa miała najbliższa zaplanowana akcja.'}</p>
           </article>
           <article className="case-detail-top-card case-detail-top-card-green">
             <div className="case-detail-card-title-row">

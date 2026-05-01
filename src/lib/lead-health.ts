@@ -1,5 +1,6 @@
 import { differenceInCalendarDays, isPast, parseISO, startOfDay } from 'date-fns';
 import type { KnownLeadStatus } from './domain-statuses';
+const A25_NEAREST_PLANNED_ACTION_SOURCE_LOCK = 'Najbliższa zaplanowana akcja liczona z tasks/events';
 
 export const LEAD_ACTIVE_SALES_STATUSES = [
   'new',
