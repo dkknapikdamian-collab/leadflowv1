@@ -1,0 +1,69 @@
+/* STAGE_A20C_SIDEBAR_TODAY_HITBOX_FIX
+   Critical fix for desktop sidebar clicks when the Today route is open.
+   Scope: CSS stacking and pointer-event hitbox only.
+*/
+
+@media (min-width: 761px) {
+  .cf-html-shell {
+    isolation: isolate !important;
+  }
+
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 2147483000 !important;
+    pointer-events: auto !important;
+    isolation: isolate !important;
+    transform: translateZ(0) !important;
+  }
+
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .brand,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-scroll,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-group,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-stack,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-ico,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-label,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+    position: relative !important;
+    z-index: 2147483001 !important;
+    pointer-events: auto !important;
+  }
+
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:link,
+  .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:visited {
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .cf-html-shell .main-today[data-shell-main="true"] {
+    position: relative !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .cf-html-shell .main-today[data-shell-main="true"] > .global-bar,
+  .cf-html-shell .main-today[data-shell-main="true"] > .access-warning,
+  .cf-html-shell .main-today[data-shell-main="true"] > [data-shell-content="true"],
+  .cf-html-shell .main-today[data-shell-main="true"] > [data-shell-content="true"] * {
+    pointer-events: auto !important;
+  }
+
+  .cf-html-shell .main-today[data-shell-main="true"]::before,
+  .cf-html-shell .main-today[data-shell-main="true"]::after,
+  .cf-html-shell .main-today[data-shell-main="true"] > [data-shell-content="true"]::before,
+  .cf-html-shell .main-today[data-shell-main="true"] > [data-shell-content="true"]::after {
+    pointer-events: none !important;
+  }
+
+  .cf-html-shell .main-today[data-shell-main="true"] .global-bar {
+    z-index: 2 !important;
+  }
+
+  .cf-html-shell .main-today[data-shell-main="true"] [data-shell-content="true"] {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+}
