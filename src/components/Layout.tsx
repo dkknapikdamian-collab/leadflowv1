@@ -16,7 +16,6 @@ Zakres: ciemny sidebar, grupy menu, global-bar, mobile-top, mobile-nav i footer 
 Nie zmienia logiki ekranów, routingu, Supabase, AI, auth ani billing/access.
 */
 import { ReactNode, useMemo, useState } from 'react';
-import { auth } from '../firebase';
 import {
   LayoutDashboard,
   Users,
@@ -40,6 +39,8 @@ import {
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
+import { signOutFromSupabase } from '../lib/supabase-auth';
 import GlobalQuickActions from './GlobalQuickActions';
 import { parseISO, differenceInDays } from 'date-fns';
 
@@ -134,8 +135,8 @@ function UserCard({ userInitial, name, email }: { userInitial: string; name: str
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const user = auth.currentUser;
-  const { workspace, hasAccess } = useWorkspace();
+  const [supabaseUser] = useSupabaseSession();
+  const { workspace, hasAccess, profile } = useWorkspace();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navGroups = useMemo<NavGroup[]>(() => ([
@@ -193,9 +194,17 @@ export default function Layout({ children }: LayoutProps) {
   const isCaseDetailRoute = /^\/(?:case|cases)\/[^/]+$/.test(location.pathname);
   const currentSection = isTodayRoute ? 'today' : isLeadsRoute ? 'leads' : isLeadDetailRoute ? 'lead-detail' : isClientsRoute ? 'clients' : isClientDetailRoute ? 'client-detail' : isCasesRoute ? 'cases' : isCaseDetailRoute ? 'case-detail' : currentTitle.toLowerCase();
   const trialDaysLeft = workspace?.trialEndsAt ? differenceInDays(parseISO(workspace.trialEndsAt), new Date()) : 0;
-  const userInitial = user?.displayName?.charAt(0) || user?.email?.charAt(0).toUpperCase() || 'U';
-  const userName = user?.displayName || 'Użytkownik';
+  const userEmail = profile?.email || supabaseUser?.email || '';
+  const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'Użytkownik';
+  const userInitial = (userName.trim().charAt(0) || userEmail.trim().charAt(0) || 'U').toUpperCase();
 
+  const handleSignOut = async () => {
+    try {
+      await signOutFromSupabase();
+    } catch (error) {
+      console.error('SUPABASE_SIGN_OUT_FAILED', error);
+    }
+  };
   const handleSidebarPointerRouter = (event: any) => {
     if (event.button !== undefined && event.button !== 0) return;
     const x = Number(event.clientX);
@@ -266,8 +275,8 @@ export default function Layout({ children }: LayoutProps) {
 
         <div className="sidebar-footer">
           {workspace?.subscriptionStatus === 'trial_active' ? <TrialCard trialDaysLeft={trialDaysLeft} /> : null}
-          <UserCard userInitial={userInitial} name={userName} email={user?.email} />
-          <button type="button" className="sidebar-logout" onClick={() => auth.signOut()}>
+          <UserCard userInitial={userInitial} name={userName} email={userEmail} />
+          <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
             <LogOut className="h-4 w-4" />
             <span>Wyloguj się</span>
           </button>
@@ -302,7 +311,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             <div className="mobile-user-wrap">
-              <UserCard userInitial={userInitial} name={userName} email={user?.email} />
+              <UserCard userInitial={userInitial} name={userName} email={userEmail} />
             </div>
 
             <nav className="mobile-drawer-nav" aria-label="Menu mobilne CloseFlow">
@@ -311,7 +320,7 @@ export default function Layout({ children }: LayoutProps) {
 
             <div className="mobile-drawer-footer">
               {workspace?.subscriptionStatus === 'trial_active' ? <TrialCard trialDaysLeft={trialDaysLeft} /> : null}
-              <button type="button" className="sidebar-logout" onClick={() => auth.signOut()}>
+              <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
                 <LogOut className="h-4 w-4" />
                 <span>Wyloguj się</span>
               </button>

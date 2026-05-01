@@ -64,7 +64,8 @@
     "check:a23-firestore-supabase-migration": "node scripts/check-a23-firestore-supabase-migration.cjs",
     "check:a24-lead-to-case-flow": "node scripts/check-a24-lead-to-case-flow.cjs",
     "check:a25-nearest-planned-action": "node scripts/check-a25-nearest-planned-action.cjs",
-    "check:a28-digest-notifications-pwa": "node scripts/check-a28-digest-notifications-pwa.cjs"
+    "check:a28-digest-notifications-pwa": "node scripts/check-a28-digest-notifications-pwa.cjs",
+    "check:a29-supabase-runtime-shell": "node scripts/check-a29-supabase-runtime-shell.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
