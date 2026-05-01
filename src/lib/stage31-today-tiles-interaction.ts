@@ -1,9 +1,14 @@
-// STAGE31_TODAY_TILES_INTERACTION_FIX_V4
-// Zakładka Dziś: spójne kafelki, widoczne cyfry/ikony, klik -> właściwa sekcja,
-// wybrana sekcja na górę, pozostałe sekcje zwinięte.
+// STAGE31_TODAY_TILES_VISUAL_FIX_V5
+// Zakładka Dziś:
+// - łapie prawdziwy wrapper górnego kafelka, nie tylko wewnętrzny element,
+// - wymusza widoczne cyfry mimo text-white/opacity,
+// - utrzymuje klik kafelka -> właściwa sekcja,
+// - wybrana sekcja idzie na górę,
+// - pozostałe sekcje zwijają się.
 
 type TodayShortcutTarget =
   | 'urgent'
+  | 'today'
   | 'without_action'
   | 'without_movement'
   | 'blocked'
@@ -18,6 +23,8 @@ type TargetConfig = {
 
 const TOP_TILE_CLASS_NAME = 'today-stage31-shortcut-tile';
 const TOP_TILE_ACTIVE_CLASS_NAME = 'today-stage31-shortcut-tile-active';
+const TOP_TILE_NUMBER_CLASS_NAME = 'today-stage31-shortcut-number';
+const TOP_TILE_ICON_CLASS_NAME = 'today-stage31-shortcut-icon';
 const STYLE_ID = 'today-stage31-tiles-interaction-style';
 const OBSERVER_DEBOUNCE_MS = 120;
 
@@ -46,6 +53,27 @@ const TARGETS: Record<TodayShortcutTarget, TargetConfig> = {
       'do ruchu dzis',
     ],
     hash: 'zalegle-zadania',
+  },
+  today: {
+    aliases: [
+      'na dziś',
+      'na dzis',
+      'dzisiaj',
+      'dziś',
+      'dzis',
+    ],
+    sectionAliases: [
+      'na dziś',
+      'na dzis',
+      'dzisiaj',
+      'dziś',
+      'dzis',
+      'zadania na dziś',
+      'zadania na dzis',
+      'wydarzenia dziś',
+      'wydarzenia dzis',
+    ],
+    hash: 'na-dzis',
   },
   without_action: {
     aliases: [
@@ -190,6 +218,43 @@ function isElement(value: unknown): value is HTMLElement {
   return value instanceof HTMLElement;
 }
 
+function isLikelyTopShortcutRoot(element: HTMLElement) {
+  if (element.closest('[data-today-tile-card="true"]')) return false;
+  if (element.closest('[role="dialog"]')) return false;
+
+  const text = normalizeText(element.textContent);
+  if (!inferTargetFromText(text)) return false;
+
+  const rect = element.getBoundingClientRect();
+  if (rect.width < 90 || rect.height < 56) return false;
+  if (rect.width > 280 || rect.height > 180) return false;
+
+  return true;
+}
+
+function findVisualTileRoot(element: HTMLElement) {
+  let current: HTMLElement | null = element;
+  let best: HTMLElement | null = null;
+
+  while (current && current !== document.body) {
+    if (isLikelyTopShortcutRoot(current)) {
+      best = current;
+    }
+
+    const parent = current.parentElement;
+    if (!parent) break;
+
+    const parentRect = parent.getBoundingClientRect();
+    if (parentRect.width > 360 || parentRect.height > 220) {
+      break;
+    }
+
+    current = parent;
+  }
+
+  return best || element;
+}
+
 function readTargetFromElement(element: HTMLElement) {
   return (element.dataset.todayStage31Shortcut as TodayShortcutTarget | undefined)
     || (element.dataset.todayPipelineShortcut as TodayShortcutTarget | undefined)
@@ -204,6 +269,9 @@ function getClickableCandidate(target: EventTarget | null) {
   if (target.closest('[data-today-tile-header="true"]')) return null;
   if (target.closest('[role="dialog"]')) return null;
 
+  const direct = target.closest('[data-today-stage31-shortcut]');
+  if (isElement(direct)) return direct;
+
   const selectors = [
     '[data-today-pipeline-shortcut]',
     '[data-today-top-shortcut]',
@@ -215,18 +283,22 @@ function getClickableCandidate(target: EventTarget | null) {
     '[role="button"]',
     '.rounded-2xl',
     '.rounded-xl',
+    '.rounded-full',
   ];
 
   for (const selector of selectors) {
     const element = target.closest(selector);
-    if (isElement(element)) return element;
+    if (!isElement(element)) continue;
+
+    const root = findVisualTileRoot(element);
+    if (readTargetFromElement(root) || readTargetFromElement(element)) return root;
   }
 
   return null;
 }
 
-function findTopShortcutTileElements() {
-  const candidates = Array.from(
+function findPotentialTopShortcutElements() {
+  return Array.from(
     document.querySelectorAll<HTMLElement>(
       [
         '[data-today-pipeline-shortcut]',
@@ -239,24 +311,55 @@ function findTopShortcutTileElements() {
         '[role="button"]',
         '.rounded-2xl',
         '.rounded-xl',
+        '.rounded-full',
       ].join(','),
     ),
   );
+}
 
+function findTopShortcutTileElements() {
   const unique = new Set<HTMLElement>();
 
-  for (const element of candidates) {
+  for (const element of findPotentialTopShortcutElements()) {
     if (element.closest('[data-today-tile-card="true"]')) continue;
     if (element.closest('[data-today-tile-header="true"]')) continue;
     if (element.closest('[role="dialog"]')) continue;
 
-    const target = readTargetFromElement(element);
+    const root = findVisualTileRoot(element);
+    const target = readTargetFromElement(root) || readTargetFromElement(element);
     if (!target) continue;
 
-    unique.add(element);
+    unique.add(root);
   }
 
   return Array.from(unique);
+}
+
+function markNumberLikeChildren(tile: HTMLElement) {
+  const children = Array.from(tile.querySelectorAll<HTMLElement>('span, p, div, strong'));
+
+  for (const child of children) {
+    const text = String(child.textContent || '').trim();
+
+    if (/^\d+$/.test(text)) {
+      child.classList.add(TOP_TILE_NUMBER_CLASS_NAME);
+      continue;
+    }
+
+    const className = String(child.getAttribute('class') || '');
+    if (/\btext-(2xl|3xl|4xl|5xl|6xl)\b/.test(className) || /\bfont-(bold|black|extrabold)\b/.test(className)) {
+      child.classList.add(TOP_TILE_NUMBER_CLASS_NAME);
+    }
+  }
+}
+
+function markIconLikeChildren(tile: HTMLElement) {
+  const iconWrappers = Array.from(tile.querySelectorAll<HTMLElement>('svg, [class*="rounded-full"], [class*="rounded-xl"], [class*="rounded-2xl"]'));
+
+  for (const icon of iconWrappers) {
+    if (icon.closest('[data-today-tile-header="true"]')) continue;
+    icon.classList.add(TOP_TILE_ICON_CLASS_NAME);
+  }
 }
 
 function normalizeTopShortcutTiles() {
@@ -266,6 +369,7 @@ function normalizeTopShortcutTiles() {
 
     tile.classList.add(TOP_TILE_CLASS_NAME);
     tile.dataset.todayStage31Shortcut = target;
+    tile.setAttribute('data-today-stage31-shortcut', target);
 
     if (!tile.getAttribute('role') && tile.tagName.toLowerCase() !== 'button' && tile.tagName.toLowerCase() !== 'a') {
       tile.setAttribute('role', 'button');
@@ -274,6 +378,9 @@ function normalizeTopShortcutTiles() {
     if (!tile.getAttribute('tabindex') && tile.tagName.toLowerCase() !== 'button' && tile.tagName.toLowerCase() !== 'a') {
       tile.setAttribute('tabindex', '0');
     }
+
+    markNumberLikeChildren(tile);
+    markIconLikeChildren(tile);
   }
 }
 
@@ -323,8 +430,12 @@ function collapseOtherSections(targetHeader: HTMLElement) {
 
 function expandSection(targetHeader: HTMLElement) {
   if (targetHeader.getAttribute('aria-expanded') === 'false') {
-    targetHeader.click();
+    headerClickWithoutBubbling(targetHeader);
   }
+}
+
+function headerClickWithoutBubbling(header: HTMLElement) {
+  header.click();
 }
 
 function moveSectionToTop(targetHeader: HTMLElement) {
@@ -348,6 +459,14 @@ function setActiveTopTile(target: TodayShortcutTarget) {
 }
 
 function openTargetSection(target: TodayShortcutTarget) {
+  if (target === 'today') {
+    const urgentHeader = findSectionHeader('urgent');
+    if (urgentHeader) {
+      collapseOtherSections(urgentHeader);
+    }
+    return;
+  }
+
   const header = findSectionHeader(target);
 
   if (!header) {
@@ -436,17 +555,38 @@ function installStyle() {
       color: rgb(15 23 42) !important;
     }
 
+    .${TOP_TILE_CLASS_NAME} :where([class*="opacity-"], [style*="opacity"]) {
+      opacity: 1 !important;
+    }
+
+    .${TOP_TILE_CLASS_NAME} .${TOP_TILE_NUMBER_CLASS_NAME} {
+      color: rgb(15 23 42) !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      -webkit-text-fill-color: rgb(15 23 42) !important;
+      text-shadow: none !important;
+    }
+
     .${TOP_TILE_CLASS_NAME} :where(svg) {
       color: rgb(71 85 105) !important;
       stroke: currentColor !important;
+      opacity: 1 !important;
     }
 
     .${TOP_TILE_CLASS_NAME} :where([class*="text-white"], [class*="text-blue"], [class*="text-red"], [class*="text-orange"], [class*="text-amber"], [class*="text-green"]) {
       color: rgb(15 23 42) !important;
+      opacity: 1 !important;
     }
 
-    .${TOP_TILE_CLASS_NAME} :where(.text-2xl, .text-3xl, .text-4xl, [class*="font-bold"]) {
+    .${TOP_TILE_CLASS_NAME} :where(.text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl, [class*="font-bold"], [class*="font-black"]) {
       color: rgb(15 23 42) !important;
+      opacity: 1 !important;
+      -webkit-text-fill-color: rgb(15 23 42) !important;
+    }
+
+    .${TOP_TILE_CLASS_NAME} .${TOP_TILE_ICON_CLASS_NAME}:where([class*="rounded"]) {
+      color: rgb(51 65 85) !important;
+      opacity: 1 !important;
     }
 
     [data-today-tile-card="true"] {

@@ -1,5 +1,5 @@
 const ASSISTANT_LEAD_DRAFT_CONTRACT_TITLE = 'Szkic leada zapisany do sprawdzenia';
-import { getClientAuthSnapshot } from './client-auth';
+import { getSupabaseAccessToken } from './supabase-auth';
 
 export type TodayAiAssistantIntent = 'today_briefing' | 'lead_lookup' | 'lead_capture' | 'global_app_search' | 'blocked_out_of_scope' | 'unknown';
 
@@ -466,18 +466,15 @@ export async function askTodayAiAssistant(input: TodayAiAssistantInput) {
   // Modelowy router semantyczny jest pierwszą ścieżką dla pytań o aplikację.
   // Lokalny Stage32 zostaje tylko jako offline/error fallback, a nie jako główny mózg oparty o frazy.
   const stage32LocalFallback = buildStage32LocalQueryBrainAnswer(input);
-  const auth = getClientAuthSnapshot();
   const workspaceId = getContextWorkspaceId(input.context);
+  const accessToken = await getSupabaseAccessToken();
 
   try {
     const response = await fetch('/api/system?kind=ai-assistant', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-user-id': auth.uid,
-        'x-user-email': auth.email,
-        'x-user-name': auth.fullName,
-        'x-workspace-id': workspaceId,
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
       body: JSON.stringify({
         rawText: input.rawText,

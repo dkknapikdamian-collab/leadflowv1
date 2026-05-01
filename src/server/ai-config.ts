@@ -1,4 +1,5 @@
 import { buildAiProviderRuntimeStatus } from './ai-provider.js';
+import { requireSupabaseAuthContext, writeAuthErrorResponse } from './_supabase-auth.js';
 
 const DEFAULT_ADMIN_EMAILS = ['dk.knapikdamian@gmail.com'];
 
@@ -104,7 +105,14 @@ export default async function aiConfigHandler(req: any, res: any) {
     return;
   }
 
-  const requesterEmail = asText(req?.headers?.['x-user-email'] || req?.query?.email).toLowerCase();
+  let requesterEmail = '';
+  try {
+    const auth = await requireSupabaseAuthContext(req);
+    requesterEmail = asText(auth.email).toLowerCase();
+  } catch (error) {
+    writeAuthErrorResponse(res, error);
+    return;
+  }
   if (!isAdminEmail(requesterEmail)) {
     res.status(403).json({ error: 'ADMIN_ONLY' });
     return;

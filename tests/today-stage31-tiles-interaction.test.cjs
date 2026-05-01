@@ -16,6 +16,16 @@ test('Today imports and installs stage31 tiles interaction helper', () => {
   assert.match(source, /return\s+installTodayStage31TilesInteraction\(\)/);
 });
 
+test('stage31 v5 helper forces number visibility and full tile root styling', () => {
+  const source = read('src/lib/stage31-today-tiles-interaction.ts');
+
+  assert.match(source, /TOP_TILE_NUMBER_CLASS_NAME/);
+  assert.match(source, /findVisualTileRoot/);
+  assert.match(source, /opacity:\s*1\s*!important/);
+  assert.match(source, /-webkit-text-fill-color:\s*rgb\(15 23 42\)\s*!important/);
+  assert.match(source, /markNumberLikeChildren/);
+});
+
 test('stage31 helper maps Pilne teraz to overdue tasks section first', () => {
   const source = read('src/lib/stage31-today-tiles-interaction.ts');
 
@@ -23,7 +33,6 @@ test('stage31 helper maps Pilne teraz to overdue tasks section first', () => {
   assert.match(source, /zaległe zadania/);
   assert.match(source, /collapseOtherSections/);
   assert.match(source, /moveSectionToTop/);
-  assert.match(source, /TOP_TILE_CLASS_NAME/);
 });
 
 test('stage31 helper CSS interpolation is intact', () => {
@@ -31,5 +40,6 @@ test('stage31 helper CSS interpolation is intact', () => {
 
   assert.match(source, /\.\$\{TOP_TILE_CLASS_NAME\}/);
   assert.match(source, /\.\$\{TOP_TILE_ACTIVE_CLASS_NAME\}/);
-  assert.doesNotMatch(source, /style\.textContent\s*=\s*\.\\/);
+  assert.doesNotMatch(source, /style\.textContent\s*=\s*\.\\\/);
+  assert.doesNotMatch(source, /\.\\\s*\{/);
 });

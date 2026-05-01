@@ -1,5 +1,5 @@
 import { insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
-import { asText, getRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter, fetchSingleScopedRow } from '../src/server/_request-scope.js';
+import { asText, requireRequestIdentity, resolveRequestWorkspaceId, withWorkspaceFilter, fetchSingleScopedRow } from '../src/server/_request-scope.js';
 
 const RESEND_API_URL = 'https://api.resend.com/emails';
 
@@ -50,8 +50,8 @@ function normalizeTicket(row: any) {
   };
 }
 
-function buildTicketQuery(req: any, workspaceId: string) {
-  const identity = getRequestIdentity(req);
+async function buildTicketQuery(req: any, workspaceId: string) {
+  const identity = await requireRequestIdentity(req);
   const includeAll = asText(req.query?.includeAll) === '1';
   const ownerId = asText(req.query?.ownerId) || identity.userId;
   const ownerEmail = asText(req.query?.ownerEmail) || identity.email;
@@ -138,13 +138,13 @@ async function handleRequests(req: any, res: any, body: any) {
 
   if (req.method === 'GET') {
     if (!workspaceId) { res.status(401).json({ error: 'SUPPORT_WORKSPACE_REQUIRED' }); return; }
-    const result = await selectFirstAvailable([buildTicketQuery(req, workspaceId)]);
+    const result = await selectFirstAvailable([await buildTicketQuery(req, workspaceId)]);
     res.status(200).json((result.data || []).map(normalizeTicket));
     return;
   }
 
   if (req.method === 'POST') {
-    const identity = getRequestIdentity(req, body);
+    const identity = await requireRequestIdentity(req);
     const subject = asText(body.subject);
     const message = asText(body.message);
     const ownerId = asText(body.ownerId) || identity.userId;

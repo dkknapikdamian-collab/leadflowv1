@@ -12,7 +12,7 @@ export default async function handler(req: any, res: any) {
     const authContext = await requireAuthContext(req);
     const body = parseBody(req);
     const workspaceId = asNullableText(authContext.workspaceId);
-    const requestedWorkspaceId = asNullableText(body.workspaceId || req?.headers?.['x-workspace-id']);
+    const requestedWorkspaceId = asNullableText(body.workspaceId);
     const customerEmail = asNullableText(authContext.email || body.customerEmail);
     const planKey = asNullableText(body.planKey || req?.headers?.['x-billing-plan']);
     const billingPeriod = asNullableText(body.billingPeriod || req?.headers?.['x-billing-period']);

@@ -1,5 +1,5 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById, updateWhere } from '../src/server/_supabase.js';
-import { getRequestIdentity, asText, resolveRequestWorkspaceId } from '../src/server/_request-scope.js';
+import { asText, requireRequestIdentity, resolveRequestWorkspaceId } from '../src/server/_request-scope.js';
 import { assertWorkspaceAiAllowed } from '../src/server/_access-gate.js';
 import serviceProfilesHandler from '../src/server/service-profiles.js';
 import aiConfigHandler from '../src/server/ai-config.js';
@@ -190,7 +190,7 @@ async function handleProfileSettings(req: any, res: any) {
     }
 
     const body = parseBody(req.body);
-    const identity = getRequestIdentity(req, body);
+    const identity = await requireRequestIdentity(req);
     if (!asNullableString(identity.userId || null) && !asNullableString(identity.email || null)) {
       res.status(401).json({ error: 'PROFILE_IDENTITY_REQUIRED' });
       return;
@@ -471,7 +471,7 @@ async function safeSelect(query: string) {
 }
 
 async function ensureAdmin(req: any, body: Record<string, unknown>) {
-  const identity = getRequestIdentity(req, body);
+  const identity = await requireRequestIdentity(req);
   const requesterEmail = asText(identity.email).toLowerCase();
   const allowlist = getAdminEmails();
   const configuredSecret = asNullableString(process.env.ADMIN_API_SECRET);
@@ -719,7 +719,7 @@ async function handleWorkspaceRecovery(req: any, res: any) {
     const targetUid = asNullableString(req.query?.targetUid || (body as any).targetUid || null);
     const explicitWorkspaceId = asNullableString(req.query?.workspaceId || (body as any).workspaceId || null);
     const reason = asText((body as any).reason || req.query?.reason || 'manual_recovery');
-    const identity = getRequestIdentity(req, body);
+    const identity = await requireRequestIdentity(req);
     const fallbackEmail = asNullableString(identity.email || null);
 
     const effectiveEmail = targetEmail || fallbackEmail;

@@ -1,30 +1,22 @@
-# Stage 31 — Dziś: kafelki i rozwijanie sekcji
+# Stage 31 v5 — Dziś: widoczne cyfry w kafelkach
 
 ## Cel
 
-Naprawa zakładki `Dziś`:
+Poprawka po screenie, gdzie górne kafelki w `Dziś` nadal miały prawie niewidoczne liczby.
 
-- ujednolicenie wyglądu górnych kafelków,
-- naprawa niewidocznych cyfr i ikon,
-- kliknięcie kafelka rozwija właściwą sekcję,
-- otwarta sekcja idzie na górę listy,
-- pozostałe sekcje od razu się zwijają.
+## Co zmieniono
 
-## Mapowanie kafelków
+- Helper łapie prawdziwy wrapper kafelka, nie tylko wewnętrzny element.
+- Duże liczby dostają klasę runtime `today-stage31-shortcut-number`.
+- W CSS wymuszono:
+  - `opacity: 1 !important`,
+  - ciemny kolor,
+  - `-webkit-text-fill-color`.
+- Zachowano poprzednie działanie:
+  - klik kafelka rozwija właściwą sekcję,
+  - sekcja idzie na górę,
+  - pozostałe sekcje zwijają się.
 
-- `Pilne teraz` -> `Zaległe zadania`
-- `Bez działań` -> sekcja bez zaplanowanej akcji
-- `Bez ruchu` -> sekcja bez ruchu
-- `Zablokowane` -> sekcja blokad
-- `Start i obsługa` -> sekcja obsługi
-- `Szkice AI` -> sekcja szkiców
+## Bez pusha
 
-## Nie zmieniono
-
-- API,
-- Supabase,
-- routing,
-- zadania,
-- wydarzenia,
-- billing,
-- auth.
+Ten etap jest lokalny. Skrypt nie robi commita ani pusha.

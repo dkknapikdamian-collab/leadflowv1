@@ -1,4 +1,4 @@
-import { getClientAuthSnapshot } from './client-auth';
+import { getSupabaseAccessToken } from './supabase-auth';
 
 export type AiProviderDiagnostics = {
   configured: boolean;
@@ -31,14 +31,12 @@ export type AiConfigDiagnostics = {
 };
 
 export async function fetchAiConfigDiagnostics() {
-  const auth = getClientAuthSnapshot();
+  const accessToken = await getSupabaseAccessToken();
   const response = await fetch('/api/system?kind=ai-config', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-id': auth.uid,
-      'x-user-email': auth.email,
-      'x-user-name': auth.fullName,
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });
 

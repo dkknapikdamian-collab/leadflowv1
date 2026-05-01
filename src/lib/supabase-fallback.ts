@@ -1,6 +1,6 @@
 // AI_DRAFT_CONFIRM_RECORDS_STAGE25_SUPABASE
 import { getClientAuthSnapshot } from './client-auth';
-import { auth } from '../firebase';
+import { getSupabaseAccessToken } from './supabase-auth';
 import { normalizeActivityListContract, normalizeAiDraftListContract, normalizeCaseContract, normalizeCaseItemListContract, normalizeCaseListContract, normalizeClientContract, normalizeClientListContract, normalizeEventListContract, normalizeLeadContract, normalizeLeadListContract, normalizePaymentListContract, normalizeTaskListContract } from './data-contract';
 
 type SupabaseInsertResult = { [key: string]: unknown };
@@ -69,7 +69,7 @@ export function persistWorkspaceId(workspaceId?: string | null) {
   window.localStorage.removeItem(WORKSPACE_CONTEXT_STORAGE_KEY);
 }
 async function getAuthHeaders() {
-  const accessToken = await auth.currentUser?.getIdToken();
+  const accessToken = await getSupabaseAccessToken();
 
   return accessToken
     ? { Authorization: `Bearer ${accessToken}` }

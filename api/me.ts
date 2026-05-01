@@ -1,5 +1,5 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById, updateWhere } from '../src/server/_supabase.js';
-import { requireSupabaseRequestContext, writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import { requireSupabaseAuthContext, writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
 const ADMIN_EMAILS = new Set(['dk.knapikdamian@gmail.com']);
 const DEFAULT_PLAN_ID = 'trial_21d';
@@ -855,7 +855,7 @@ async function ensureWorkspace(
 export default async function handler(req: any, res: any) {
   let authContext;
   try {
-    authContext = await requireSupabaseRequestContext(req);
+    authContext = await requireSupabaseAuthContext(req);
   } catch (error) {
     writeAuthErrorResponse(res, error);
     return;

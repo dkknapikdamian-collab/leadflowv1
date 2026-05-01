@@ -1,4 +1,4 @@
-import { getClientAuthSnapshot } from './client-auth';
+import { getSupabaseAccessToken } from './supabase-auth';
 
 export type QuickAiCaptureLeadDraft = {
   name: string;
@@ -29,14 +29,12 @@ export type QuickAiCaptureDraft = {
 };
 
 export async function createQuickAiCaptureDraft(text: string) {
-  const auth = getClientAuthSnapshot();
+  const accessToken = await getSupabaseAccessToken();
   const response = await fetch('/api/system?kind=ai-capture-draft', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-id': auth.uid,
-      'x-user-email': auth.email,
-      'x-user-name': auth.fullName,
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
     body: JSON.stringify({ text }),
   });

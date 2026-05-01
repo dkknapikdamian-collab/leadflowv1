@@ -1,5 +1,6 @@
-import { findWorkspaceId, supabaseRequest } from './_supabase.js';
-import { requireSupabaseRequestContext } from './_supabase-auth.js';
+import { findWorkspaceId, selectFirstAvailable, supabaseRequest } from './_supabase.js';
+import { fetchWorkspaceWriteAccess } from './_access-gate.js';
+import { requireSupabaseAuthContext as requireSupabaseRequestContext } from './_supabase-auth.js';
 
 export function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
@@ -18,11 +19,33 @@ export async function requireRequestIdentity(req: any) {
 export async function requireAuthContext(req: any) {
   const context = await requireSupabaseRequestContext(req);
   const workspaceId = await findWorkspaceId(context.userId);
+  let role = 'member';
+  if (workspaceId) {
+    try {
+      const profile = await selectFirstAvailable([
+        `profiles?select=role&auth_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
+        `profiles?select=role&external_auth_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
+        `profiles?select=role&firebase_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
+        context.email ? `profiles?select=role&email=eq.${encodeURIComponent(context.email)}&limit=1` : '',
+      ].filter(Boolean));
+      const row = Array.isArray(profile.data) && profile.data[0] ? profile.data[0] as Record<string, unknown> : null;
+      role = asText(row?.role) || 'member';
+    } catch {
+      role = 'member';
+    }
+  }
+  const access = workspaceId
+    ? await fetchWorkspaceWriteAccess(workspaceId).catch(() => ({ hasWriteAccess: false, status: 'inactive' }))
+    : { hasWriteAccess: false, status: 'inactive' };
   return {
     ...context,
     workspaceId,
+    role,
+    access,
   };
 }
+
+export const requireSupabaseAuthContext = requireAuthContext;
 
 export async function resolveRequestWorkspaceId(req: any, _bodyInput?: any) {
   const context = await requireAuthContext(req);

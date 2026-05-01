@@ -1,5 +1,5 @@
 import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
-import { asText, getRequestIdentity, requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { asText, requireRequestIdentity, requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { assertWorkspaceAiAllowed, assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from './_access-gate.js';
 
 type RecordMap = Record<string, unknown>;
@@ -119,7 +119,7 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
-      const identity = getRequestIdentity(req, body);
+      const identity = await requireRequestIdentity(req);
       const nowIso = new Date().toISOString();
       const type = normalizeEnum(body.type, TYPES, 'lead');
       const status = normalizeEnum(body.status, STATUSES, 'draft');

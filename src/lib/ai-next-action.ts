@@ -1,4 +1,4 @@
-import { getClientAuthSnapshot } from './client-auth';
+import { getSupabaseAccessToken } from './supabase-auth';
 
 export type LeadNextActionSuggestionInput = {
   lead: Record<string, unknown>;
@@ -35,14 +35,12 @@ export type LeadNextActionSuggestionResponse = {
 };
 
 export async function createLeadNextActionSuggestion(input: LeadNextActionSuggestionInput) {
-  const auth = getClientAuthSnapshot();
+  const accessToken = await getSupabaseAccessToken();
   const response = await fetch('/api/system?kind=ai-next-action', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-id': auth.uid,
-      'x-user-email': auth.email,
-      'x-user-name': auth.fullName,
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
     body: JSON.stringify(input),
   });
