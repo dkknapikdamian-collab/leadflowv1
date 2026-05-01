@@ -42,8 +42,8 @@ Dziś pokazuje mały dolny kafelek Szkice z liczbą niezatwierdzonych szkiców A
 */
 
 import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
-import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -1414,6 +1414,8 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
     };
   }, []);
   const { workspace, profile, hasAccess, loading: wsLoading, workspaceReady, refresh } = useWorkspace();
+  const [supabaseUser, supabaseSessionLoading] = useSupabaseSession();
+  const activeUserId = supabaseUser?.uid || supabaseUser?.id || '';
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
   const [clients, setClients] = useState<any[]>([]);
@@ -1623,7 +1625,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   };
 
   useEffect(() => {
-    if (!auth.currentUser || wsLoading || !workspace?.id) {
+    if (supabaseSessionLoading || !activeUserId || wsLoading || !workspace?.id) {
       setLoading(wsLoading);
       return;
     }
@@ -1753,8 +1755,8 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
 
     try {
       await insertActivityToSupabase({
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        ownerId: (activeUserId || null),
+        actorId: (activeUserId || null),
         actorType: 'operator',
         eventType: 'reminder_scheduled',
         payload: {
@@ -1777,8 +1779,8 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   ) => {
     try {
       await insertActivityToSupabase({
-        ownerId: auth.currentUser?.uid ?? null,
-        actorId: auth.currentUser?.uid ?? null,
+        ownerId: (activeUserId || null),
+        actorId: (activeUserId || null),
         actorType: 'operator',
         eventType,
         leadId: entry?.raw?.leadId ?? entry?.leadId ?? null,
@@ -1812,7 +1814,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       await insertLeadToSupabase({
         ...newLead,
         dealValue: Number(newLead.dealValue) || 0,
-        ownerId: auth.currentUser?.uid,
+        ownerId: (activeUserId || undefined),
         workspaceId,
       });
       await refreshSupabaseBundle();
@@ -1857,7 +1859,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
         caseId: newTask.caseId || null,
         reminderAt,
         recurrenceRule: newTask.recurrence.mode,
-        ownerId: auth.currentUser?.uid,
+        ownerId: (activeUserId || undefined),
         workspaceId,
       });
       await registerReminderScheduled({
