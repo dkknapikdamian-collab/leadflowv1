@@ -93,7 +93,7 @@ Firebase / Firestore jest traktowany wyłącznie jako warstwa legacy/decommissio
 ## Bezpieczeństwo AI
 
 - `GEMINI_API_KEY` i inne sekrety AI są wyłącznie backendowe.
-- Nie wolno tworzyć `VITE_GEMINI_API_KEY` ani innych publicznych sekretów.
+- Nie wolno tworzyć `public-prefixed Gemini API key` ani innych publicznych sekretów.
 - Frontend komunikuje się z AI tylko przez endpoint aplikacji.
 - AI może przygotowywać szkice, ale finalne rekordy wymagają zatwierdzenia użytkownika.
 

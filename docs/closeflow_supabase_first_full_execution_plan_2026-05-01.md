@@ -552,7 +552,7 @@ process.env.GEMINI_API_KEY
 Nie dodawaj:
 
 ```text
-VITE_GEMINI_API_KEY
+public-prefixed Gemini API key
 ```
 
 AI tylko przez backend endpoint.

@@ -11,8 +11,7 @@ function getSupabaseConfig() {
     process.env.VITE_SUPABASE_URL ||
     process.env.SUPABASE_URL;
   const serviceRole =
-    process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !serviceRole) {
     throw new Error('SUPABASE_SERVER_CONFIG_MISSING');
