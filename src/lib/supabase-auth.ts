@@ -15,8 +15,13 @@ export type SupabaseSessionUser = {
 
 const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() || '';
 const SUPABASE_ANON_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined)?.trim() || '';
+const AUTH_ACCESS_TOKEN_RETRY_DELAYS_MS = [0, 120, 240, 480];
 
 let client: SupabaseClient | null = null;
+
+function sleepForAuthBootstrap(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export function isSupabaseAuthConfigured() {
   return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
@@ -123,8 +128,16 @@ export async function getSupabaseSession() {
 }
 
 export async function getSupabaseAccessToken() {
-  const session = await getSupabaseSession();
-  return session?.access_token || '';
+  // P0_AUTH_HEADERS_WAIT_FOR_SESSION
+  // After OAuth redirect Supabase can need a short moment to hydrate the browser
+  // session. Without this, first Today/API requests may go out without Authorization.
+  for (const delayMs of AUTH_ACCESS_TOKEN_RETRY_DELAYS_MS) {
+    if (delayMs > 0) await sleepForAuthBootstrap(delayMs);
+    const session = await getSupabaseSession();
+    if (session?.access_token) return session.access_token;
+  }
+
+  return '';
 }
 
 export async function refreshSupabaseSession() {
