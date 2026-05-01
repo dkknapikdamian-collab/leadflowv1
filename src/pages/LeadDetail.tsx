@@ -4,6 +4,7 @@ LEAD_DETAIL_VISUAL_REBUILD_STAGE14
 Active lead is sales work. Moved lead is acquisition history with a link to Case.
 */
 const A16_V2_VOICE_NOTE_AUTOSAVE_ALLOWED = 'voice-notes-may-autosave-after-dictation-silence';
+const A24_LEAD_TO_CASE_COPY_LOCK = 'Rozpocznij obsługę | Ten temat jest już w obsłudze | Otwórz sprawę';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -275,7 +276,7 @@ function getActivityTitle(activity: any) {
     case 'case_linked':
       return 'Podpięto sprawę';
     case 'lead_moved_to_service':
-      return 'Temat przekazany do obsługi';
+      return 'Ten temat jest już w obsłudze';
     case 'task_updated':
     case 'task_status_toggled':
       return 'Zmieniono zadanie';

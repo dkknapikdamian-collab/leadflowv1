@@ -1,0 +1,71 @@
+/* A24 - Today / Najcenniejsze relacje label alignment
+   Scope: only Today right rail lead relation links. No layout rebuild.
+*/
+
+.main-today .right-card a[href^="/leads/"],
+.main-today .today-right-rail a[href^="/leads/"],
+.main-today .today-sidebar a[href^="/leads/"],
+.main-today [data-visual-right-rail] a[href^="/leads/"],
+.main-today aside a[href^="/leads/"] {
+  min-height: 44px !important;
+  height: auto !important;
+  align-items: flex-start !important;
+  overflow: visible !important;
+  gap: 10px !important;
+  line-height: 1.12 !important;
+}
+
+.main-today .right-card a[href^="/leads/"] > :first-child,
+.main-today .today-right-rail a[href^="/leads/"] > :first-child,
+.main-today .today-sidebar a[href^="/leads/"] > :first-child,
+.main-today [data-visual-right-rail] a[href^="/leads/"] > :first-child,
+.main-today aside a[href^="/leads/"] > :first-child {
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 4px !important;
+  overflow: visible !important;
+}
+
+.main-today .right-card a[href^="/leads/"] span,
+.main-today .right-card a[href^="/leads/"] small,
+.main-today .right-card a[href^="/leads/"] p,
+.main-today .today-right-rail a[href^="/leads/"] span,
+.main-today .today-right-rail a[href^="/leads/"] small,
+.main-today .today-right-rail a[href^="/leads/"] p,
+.main-today aside a[href^="/leads/"] span,
+.main-today aside a[href^="/leads/"] small,
+.main-today aside a[href^="/leads/"] p {
+  max-width: 100% !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+}
+
+.main-today .right-card a[href^="/leads/"] [class*="text-blue"],
+.main-today .right-card a[href^="/leads/"] [class*="text-sky"],
+.main-today .right-card a[href^="/leads/"] [class*="text-primary"],
+.main-today .today-right-rail a[href^="/leads/"] [class*="text-blue"],
+.main-today .today-right-rail a[href^="/leads/"] [class*="text-sky"],
+.main-today .today-right-rail a[href^="/leads/"] [class*="text-primary"],
+.main-today aside a[href^="/leads/"] [class*="text-blue"],
+.main-today aside a[href^="/leads/"] [class*="text-sky"],
+.main-today aside a[href^="/leads/"] [class*="text-primary"] {
+  display: block !important;
+  margin-top: 1px !important;
+  line-height: 1 !important;
+  text-align: left !important;
+}
+
+.main-today .right-card a[href^="/leads/"] > :last-child,
+.main-today .today-right-rail a[href^="/leads/"] > :last-child,
+.main-today .today-sidebar a[href^="/leads/"] > :last-child,
+.main-today [data-visual-right-rail] a[href^="/leads/"] > :last-child,
+.main-today aside a[href^="/leads/"] > :last-child {
+  flex: 0 0 auto !important;
+  align-self: flex-start !important;
+  margin-top: 2px !important;
+  white-space: nowrap !important;
+}

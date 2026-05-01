@@ -1,4 +1,4 @@
-import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
+import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
@@ -186,6 +186,78 @@ async function insertActivityWithSchemaFallback(payload: Record<string, unknown>
   throw new Error('ACTIVITY_INSERT_SCHEMA_FALLBACK_EXHAUSTED');
 }
 
+
+
+function asRecord(value: unknown) {
+  return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
+}
+
+function isMissingLeadServiceRpc(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return (
+    message.includes('PGRST202') ||
+    message.includes('Could not find the function') ||
+    message.includes('closeflow_start_lead_service')
+  );
+}
+
+async function startLeadServiceWithSupabaseRpc(input: {
+  body: Record<string, unknown>;
+  workspaceId: string;
+  leadId: string;
+  leadRow: Record<string, unknown>;
+}) {
+  try {
+    const data = await supabaseRequest('rpc/closeflow_start_lead_service', {
+      method: 'POST',
+      body: JSON.stringify({
+        p_workspace_id: input.workspaceId,
+        p_lead_id: input.leadId,
+        p_title: asText(input.body.title) || asText(input.leadRow.name) || asText(input.leadRow.company) || 'Nowa sprawa',
+        p_case_status: asText(input.body.caseStatus || input.body.status) || 'in_progress',
+        p_client_name: asText(input.body.clientName) || asText(input.leadRow.name || input.leadRow.company),
+        p_client_email: asText(input.body.clientEmail) || asText(input.leadRow.email),
+        p_client_phone: asText(input.body.clientPhone) || asText(input.leadRow.phone),
+      }),
+    });
+
+    const result = asRecord(Array.isArray(data) ? data[0] : data);
+    if (!Object.keys(result).length) {
+      throw new Error('LEAD_SERVICE_RPC_EMPTY_RESULT');
+    }
+
+    const lead = asRecord(result.lead);
+    const caseRow = asRecord(result.case);
+    const client = asRecord(result.client);
+    const caseId = asText(result.caseId || caseRow.id || lead.linkedCaseId || lead.linked_case_id);
+    if (!caseId) {
+      throw new Error('CASE_CREATE_FAILED');
+    }
+
+    return {
+      lead: normalizeLead({ ...lead, id: input.leadId }),
+      case: {
+        ...caseRow,
+        id: caseId,
+        title: asText(caseRow.title) || asText(input.body.title) || 'Powiązana sprawa',
+        leadId: input.leadId,
+        clientId: asText(result.clientId || caseRow.clientId || caseRow.client_id || client.id) || undefined,
+        createdFromLead: true,
+        serviceStartedAt: asText(result.movedToServiceAt || caseRow.serviceStartedAt || caseRow.service_started_at) || new Date().toISOString(),
+      },
+      client: {
+        ...client,
+        id: asText(result.clientId || client.id),
+      },
+    };
+  } catch (error) {
+    if (isMissingLeadServiceRpc(error)) {
+      return null;
+    }
+    throw error;
+  }
+}
+
 async function safeSelectRows(query: string) {
   try {
     const result = await selectFirstAvailable([query]);
@@ -265,6 +337,13 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
   const existingCases = await safeSelectRows(withWorkspaceFilter(`cases?select=id&lead_id=eq.${encodeURIComponent(leadId)}&limit=1`, workspaceId));
   if (existingCases[0]) {
     throw new Error('LEAD_ALREADY_HAS_CASE');
+  }
+
+  // A24_RPC_HANDOFF_BEFORE_LEGACY_FALLBACK
+  // Prefer one Supabase transaction via RPC. Keep legacy fallback until migration is applied.
+  const rpcResult = await startLeadServiceWithSupabaseRpc({ body, workspaceId, leadId, leadRow });
+  if (rpcResult) {
+    return rpcResult;
   }
 
   const nowIso = new Date().toISOString();
@@ -367,6 +446,24 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
   };
 }
 
+
+function isLeadActiveForApiList(lead: Record<string, unknown>) {
+  // A24_DEFAULT_ACTIVE_LEADS_FILTER
+  // Default list endpoints represent active sales work. Moved leads stay accessible by id/history.
+  const status = asText(lead.status).toLowerCase();
+  const visibility = asText(lead.leadVisibility || lead.lead_visibility).toLowerCase();
+  const outcome = asText(lead.salesOutcome || lead.sales_outcome).toLowerCase();
+  const linkedCaseId = asText(lead.linkedCaseId || lead.linked_case_id || lead.caseId || lead.case_id);
+
+  return (
+    status !== 'moved_to_service' &&
+    status !== 'archived' &&
+    visibility !== 'archived' &&
+    outcome !== 'moved_to_service' &&
+    !linkedCaseId
+  );
+}
+
 function deriveCaseEligibility(status: string, startRule: string, billingStatus: string, acceptedAtRaw: unknown, caseEligibleAtRaw: unknown) {
   const acceptedAt = toIsoDateTime(acceptedAtRaw as string) || (typeof acceptedAtRaw === 'string' ? acceptedAtRaw : null);
   const existingEligible = toIsoDateTime(caseEligibleAtRaw as string) || (typeof caseEligibleAtRaw === 'string' ? caseEligibleAtRaw : null);
@@ -411,6 +508,8 @@ export default async function handler(req: any, res: any) {
       const fallback = withWorkspaceFilter(`leads?select=*&${leadFilters}order=created_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
       const result = await selectFirstAvailable([base, fallback]);
       const normalized = (result.data || []).map((row: Record<string, unknown>) => normalizeLead(row));
+      const defaultActiveList = !requestedId && !requestedVisibility && !requestedStatus && !requestedClientId && !requestedLinkedCaseId;
+      const visibleLeads = defaultActiveList ? normalized.filter((lead: Record<string, unknown>) => isLeadActiveForApiList(lead)) : normalized;
       if (requestedId) {
         const match = normalized.find((lead: Record<string, unknown>) => String(lead.id) === requestedId);
         if (!match) {
@@ -420,7 +519,7 @@ export default async function handler(req: any, res: any) {
         res.status(200).json(match);
         return;
       }
-      res.status(200).json(normalized);
+      res.status(200).json(visibleLeads);
       return;
     }
 
