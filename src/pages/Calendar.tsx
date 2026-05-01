@@ -112,20 +112,39 @@ const CALENDAR_SCALE_STORAGE_KEY = 'leadflow-calendar-scale';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
+function readCalendarRawText(value: unknown, fallback = '') {
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return fallback;
+}
+function readScheduleRawText(raw: ScheduleEntry['raw'] | null | undefined, key: string, fallback = '') {
+  if (!raw || typeof raw !== 'object') return fallback;
+  const value = (raw as Record<string, unknown>)[key];
+  if (typeof value === 'string') return value.trim() || fallback;
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return fallback;
+}
+
 function createEntryActionClass() {
   return 'inline-flex h-[30px] w-auto min-w-0 items-center justify-center rounded-full border border-slate-200 bg-white px-3 text-[12px] font-bold leading-none text-slate-700 shadow-none transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-50';
+}
+
+function toCalendarDateInput(value: unknown, fallback: string) {
+  if (value instanceof Date && Number.isFinite(value.getTime())) return value.toISOString();
+  if (typeof value === 'string' && value.trim()) return value.trim();
+  return fallback;
 }
 
 function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
   if (entry.kind === 'event') {
     return {
-      title: entry.raw?.title || entry.title,
-      type: entry.raw?.type || 'meeting',
-      startAt: entry.raw?.startAt || entry.startsAt,
-      endAt: entry.raw?.endAt || entry.endsAt || buildStartEndPair(entry.startsAt).endAt,
-      leadId: entry.raw?.leadId || '',
-      caseId: entry.raw?.caseId || '',
-      relationQuery: entry.raw?.caseId ? (entry.raw?.title || entry.title) : (entry.raw?.leadName || ''),
+      title: readCalendarRawText(entry.raw?.title, entry.title),
+      type: readCalendarRawText(entry.raw?.type, 'meeting'),
+      startAt: readCalendarRawText(entry.raw?.startAt, entry.startsAt),
+      endAt: readCalendarRawText(entry.raw?.endAt, entry.endsAt || buildStartEndPair(entry.startsAt).endAt),
+      leadId: readCalendarRawText(entry.raw?.leadId),
+      caseId: readCalendarRawText(entry.raw?.caseId),
+      relationQuery: entry.raw?.caseId ? (readCalendarRawText(entry.raw?.title, entry.title)) : readCalendarRawText(entry.raw?.leadName),
       priority: 'medium',
       recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
       reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
@@ -134,14 +153,14 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
 
   if (entry.kind === 'task') {
     return {
-      title: entry.raw?.title || entry.title,
-      type: entry.raw?.type || 'follow_up',
+      title: readCalendarRawText(entry.raw?.title, entry.title),
+      type: readCalendarRawText(entry.raw?.type, 'follow_up'),
       startAt: getTaskStartAt(entry.raw) || entry.startsAt,
       endAt: '',
-      leadId: entry.raw?.leadId || '',
-      caseId: entry.raw?.caseId || '',
-      relationQuery: entry.raw?.caseId ? (entry.raw?.title || entry.title) : (entry.raw?.leadName || ''),
-      priority: entry.raw?.priority || 'medium',
+      leadId: readCalendarRawText(entry.raw?.leadId),
+      caseId: readCalendarRawText(entry.raw?.caseId),
+      relationQuery: entry.raw?.caseId ? (readCalendarRawText(entry.raw?.title, entry.title)) : readCalendarRawText(entry.raw?.leadName),
+      priority: readCalendarRawText(entry.raw?.priority, 'medium'),
       recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
       reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
     };
@@ -152,10 +171,10 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
     type: 'follow_up',
     startAt: entry.startsAt,
     endAt: '',
-    leadId: entry.raw?.leadId || '',
-    caseId: entry.raw?.caseId || '',
-    relationQuery: entry.raw?.leadName || '',
-    priority: entry.raw?.priority || 'medium',
+    leadId: readCalendarRawText(entry.raw?.leadId),
+    caseId: readCalendarRawText(entry.raw?.caseId),
+    relationQuery: readCalendarRawText(entry.raw?.leadName),
+    priority: readCalendarRawText(entry.raw?.priority, 'medium'),
     recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
     reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
   };
@@ -800,15 +819,15 @@ export default function Calendar() {
         actorId: auth.currentUser?.uid ?? null,
         actorType: 'operator',
         eventType,
-        leadId: entry.raw?.leadId ?? null,
-        caseId: entry.raw?.caseId ?? null,
+        leadId: readCalendarRawText(entry.raw?.leadId) || null,
+        caseId: readCalendarRawText(entry.raw?.caseId) || null,
         workspaceId: workspace?.id ?? null,
         payload: {
           source: 'calendar',
           entryId: entry.id,
           sourceId: entry.sourceId,
           kind: entry.kind,
-          title: entry.raw?.title || entry.title,
+          title: readCalendarRawText(entry.raw?.title, entry.title),
           startsAt: entry.startsAt,
           status: getCalendarEntryStatus(entry),
           ...extraPayload,
@@ -848,19 +867,19 @@ export default function Calendar() {
       setActionPendingId(`${entry.id}:${days}`);
 
       if (entry.kind === 'event') {
-        const nextStart = toDateTimeLocalValue(addDays(parseISO(entry.raw.startAt || entry.startsAt), days));
+        const nextStart = toDateTimeLocalValue(addDays(parseISO(toCalendarDateInput(entry.raw.startAt, entry.startsAt)), days));
         const nextEnd = entry.raw?.endAt
-          ? toDateTimeLocalValue(addDays(parseISO(entry.raw.endAt), days))
+          ? toDateTimeLocalValue(addDays(parseISO(toCalendarDateInput(entry.raw.endAt, entry.endsAt || entry.startsAt)), days))
           : null;
 
         await updateEventInSupabase({
           id: entry.sourceId,
-          title: entry.raw?.title || entry.title,
-          type: entry.raw?.type || 'meeting',
+          title: readCalendarRawText(entry.raw?.title, entry.title),
+          type: readCalendarRawText(entry.raw?.type, 'meeting'),
           startAt: nextStart,
           endAt: nextEnd,
-          leadId: entry.raw?.leadId ?? null,
-          caseId: entry.raw?.caseId ?? null,
+          leadId: readCalendarRawText(entry.raw?.leadId) || null,
+          caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
       } else if (entry.kind === 'task') {
         const nextStart = addDays(parseISO(getTaskStartAt(entry.raw) || entry.startsAt), days);
@@ -874,12 +893,12 @@ export default function Calendar() {
         await updateTaskInSupabase({
           id: entry.sourceId,
           title: taskPayload.title,
-          type: taskPayload.type,
+          type: readScheduleRawText(entry.raw, 'type', 'follow_up'),
           date: taskPayload.date,
           status: taskPayload.status,
-          priority: taskPayload.priority,
+          priority: readScheduleRawText(entry.raw, 'priority', 'medium'),
           leadId: taskPayload.leadId ?? null,
-          caseId: entry.raw?.caseId ?? null,
+          caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
       }
 
@@ -902,20 +921,20 @@ export default function Calendar() {
       setActionPendingId(`${entry.id}:h${hours}`);
 
       if (entry.kind === 'event') {
-        const baseStart = parseISO(entry.raw?.startAt || entry.startsAt);
+        const baseStart = parseISO(toCalendarDateInput(entry.raw?.startAt, entry.startsAt));
         const nextStart = toDateTimeLocalValue(addHours(baseStart, hours));
         const nextEnd = entry.raw?.endAt
-          ? toDateTimeLocalValue(addHours(parseISO(entry.raw.endAt), hours))
+          ? toDateTimeLocalValue(addHours(parseISO(toCalendarDateInput(entry.raw.endAt, entry.endsAt || entry.startsAt)), hours))
           : null;
 
         await updateEventInSupabase({
           id: entry.sourceId,
-          title: entry.raw?.title || entry.title,
-          type: entry.raw?.type || 'meeting',
+          title: readCalendarRawText(entry.raw?.title, entry.title),
+          type: readCalendarRawText(entry.raw?.type, 'meeting'),
           startAt: nextStart,
           endAt: nextEnd,
-          leadId: entry.raw?.leadId ?? null,
-          caseId: entry.raw?.caseId ?? null,
+          leadId: readCalendarRawText(entry.raw?.leadId) || null,
+          caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
       } else if (entry.kind === 'task') {
         const baseStart = parseISO(getTaskStartAt(entry.raw) || entry.startsAt);
@@ -930,12 +949,12 @@ export default function Calendar() {
         await updateTaskInSupabase({
           id: entry.sourceId,
           title: taskPayload.title,
-          type: taskPayload.type,
+          type: readScheduleRawText(entry.raw, 'type', 'follow_up'),
           date: taskPayload.date,
           status: taskPayload.status,
-          priority: taskPayload.priority,
+          priority: readScheduleRawText(entry.raw, 'priority', 'medium'),
           leadId: taskPayload.leadId ?? null,
-          caseId: entry.raw?.caseId ?? null,
+          caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
       }
 
@@ -961,24 +980,24 @@ export default function Calendar() {
       if (entry.kind === 'event') {
         await updateEventInSupabase({
           id: entry.sourceId,
-          title: entry.raw?.title || entry.title,
-          type: entry.raw?.type || 'meeting',
-          startAt: entry.raw?.startAt || entry.startsAt,
+          title: readCalendarRawText(entry.raw?.title, entry.title),
+          type: readCalendarRawText(entry.raw?.type, 'meeting'),
+          startAt: readCalendarRawText(entry.raw?.startAt, entry.startsAt),
           endAt: entry.raw?.endAt || entry.endsAt || null,
           status: wasCompleted ? 'scheduled' : 'completed',
-          leadId: entry.raw?.leadId ?? null,
-          caseId: entry.raw?.caseId ?? null,
+          leadId: readCalendarRawText(entry.raw?.leadId) || null,
+          caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
       } else if (entry.kind === 'task') {
         await updateTaskInSupabase({
           id: entry.sourceId,
-          title: entry.raw?.title || entry.title,
+          title: readCalendarRawText(entry.raw?.title, entry.title),
           type: entry.raw?.type,
           date: entry.raw?.date || entry.startsAt.slice(0, 10),
           status: wasCompleted ? 'todo' : 'done',
           priority: entry.raw?.priority,
-          leadId: entry.raw?.leadId ?? null,
-          caseId: entry.raw?.caseId ?? null,
+          leadId: readCalendarRawText(entry.raw?.leadId) || null,
+          caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
       }
 

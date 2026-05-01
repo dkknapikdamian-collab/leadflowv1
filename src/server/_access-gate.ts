@@ -1,13 +1,19 @@
 import { supabaseRequest } from './_supabase.js';
+import type { AccessState, BillingStatus } from '../lib/domain-statuses.js';
 
 type WorkspaceAccessRow = {
   id?: string | null;
-  subscription_status?: string | null;
-  subscriptionStatus?: string | null;
+  subscription_status?: BillingStatus | null;
+  subscriptionStatus?: BillingStatus | null;
   trial_ends_at?: string | null;
   trialEndsAt?: string | null;
   next_billing_at?: string | null;
   nextBillingAt?: string | null;
+};
+
+export type WorkspaceWriteAccess = {
+  hasWriteAccess: boolean;
+  status: AccessState;
 };
 
 export const FREE_LIMITS = {
@@ -40,7 +46,12 @@ function isPastDate(value: unknown) {
   return !!date && date.getTime() < Date.now();
 }
 
-export function getWorkspaceWriteAccess(workspace: WorkspaceAccessRow | null) {
+function toAccessState(value: unknown): AccessState {
+  const status = asText(value);
+  return (status || 'inactive') as AccessState;
+}
+
+export function getWorkspaceWriteAccess(workspace: WorkspaceAccessRow | null): WorkspaceWriteAccess {
   if (!workspace) {
     return {
       hasWriteAccess: false,
@@ -48,7 +59,7 @@ export function getWorkspaceWriteAccess(workspace: WorkspaceAccessRow | null) {
     };
   }
 
-  const status = asText(workspace.subscription_status ?? workspace.subscriptionStatus) || 'inactive';
+  const status = toAccessState(workspace.subscription_status ?? workspace.subscriptionStatus);
   const trialEndsAt = workspace.trial_ends_at ?? workspace.trialEndsAt ?? null;
   const nextBillingAt = workspace.next_billing_at ?? workspace.nextBillingAt ?? null;
 

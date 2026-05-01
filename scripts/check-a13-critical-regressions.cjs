@@ -184,6 +184,15 @@ check('templates UI matches light app shell', () => {
   reject('src/pages/ResponseTemplates.tsx', /DostÄ|Ĺ|Ă|â€/, 'ResponseTemplates.tsx contains mojibake');
 });
 
+check('unified light pages visual lock', () => {
+  grep('src/index.css', /stage36-unified-light-pages\.css/);
+  grep('src/styles/stage36-unified-light-pages.css', /STAGE36_UNIFIED_LIGHT_PAGES/);
+  grep('src/styles/stage36-unified-light-pages.css', /\[data-a16-template-light-ui\]/);
+  grep('src/styles/stage36-unified-light-pages.css', /\.ai-drafts-vnext-page/);
+  grep('src/styles/stage36-unified-light-pages.css', /html\[data-skin\] \[data-a16-template-light-ui\]/);
+  grep('src/styles/stage36-unified-light-pages.css', /ai-drafts-toolbar-card/);
+});
+
 if (failures.length) {
   console.error('A13 critical regression guard failed.');
   for (const failure of failures) console.error(`- ${failure}`);

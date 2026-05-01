@@ -1,3 +1,4 @@
+export type { AccessState, BillingStatus } from './domain-statuses';
 export type DataRecord = Record<string, unknown>;
 
 export type LeadDto = DataRecord & {

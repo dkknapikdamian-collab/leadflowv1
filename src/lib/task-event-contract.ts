@@ -10,7 +10,7 @@ export type TaskEventDateSource = {
 };
 
 export type TaskLike = TaskEventDateSource & {
-  id?: string;
+  id?: string | number;
   title?: string;
   status?: string | null;
   type?: string | null;
@@ -21,7 +21,7 @@ export type TaskLike = TaskEventDateSource & {
 };
 
 export type EventLike = TaskEventDateSource & {
-  id?: string;
+  id?: string | number;
   title?: string;
   status?: string | null;
   type?: string | null;

@@ -31,6 +31,38 @@ import {
   subMinutes,
 } from 'date-fns';
 
+export type ScheduleRawRecord = Record<string, unknown> & {
+  id?: string | number;
+  title?: string;
+  name?: string;
+  company?: string;
+  status?: string | null;
+  type?: string | null;
+  priority?: string | null;
+  startAt?: string | Date | null;
+  startsAt?: string | Date | null;
+  endAt?: string | Date | null;
+  endsAt?: string | Date | null;
+  scheduledAt?: string | Date | null;
+  dueAt?: string | Date | null;
+  dateTime?: string | Date | null;
+  date?: string | Date | null;
+  time?: string | null;
+  reminderAt?: string | Date | null;
+  recurrence?: unknown;
+  recurrenceRule?: string | null;
+  leadId?: string | null;
+  leadName?: string | null;
+  caseId?: string | null;
+  caseTitle?: string | null;
+  clientId?: string | null;
+  clientName?: string | null;
+  customerName?: string | null;
+  nextActionTitle?: string | null;
+  next_action_title?: string | null;
+  nextActionItemId?: string | null;
+};
+
 export type RecurrenceRule = 'none' | 'daily' | 'every_2_days' | 'weekly' | 'monthly' | 'weekday';
 export type RecurrenceEndType = 'never' | 'until_date' | 'count';
 export type RecurrenceMode = RecurrenceRule;
@@ -64,7 +96,36 @@ export interface ScheduleEntry {
   badgeLabel?: string;
   leadId?: string | null;
   leadName?: string | null;
-  raw: any;
+  raw: ScheduleRawRecord;
+}
+
+function isRecord(value: unknown): value is ScheduleRawRecord {
+  return Boolean(value && typeof value === 'object' && !Array.isArray(value));
+}
+
+function asRecord(value: unknown): ScheduleRawRecord {
+  return isRecord(value) ? value : {};
+}
+
+function readText(record: ScheduleRawRecord, keys: string[], fallback = '') {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+    if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  }
+  return fallback;
+}
+
+function readNumber(record: ScheduleRawRecord, keys: string[], fallback = 0) {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === 'number' && Number.isFinite(value)) return value;
+    if (typeof value === 'string' && value.trim()) {
+      const parsed = Number(value);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  return fallback;
 }
 
 export function toDateValue(date: Date) {
@@ -95,31 +156,36 @@ export function createDefaultReminder(): ReminderConfig {
   };
 }
 
-export function normalizeRecurrenceConfig(value: any): RecurrenceConfig {
-  const legacyRule = typeof value?.recurrenceRule === 'string' ? value.recurrenceRule : typeof value === 'string' ? value : null;
-  const rawMode = value?.mode ?? legacyRule;
+export function normalizeRecurrenceConfig(value: unknown): RecurrenceConfig {
+  const record = asRecord(value);
+  const legacyRule = typeof record.recurrenceRule === 'string'
+    ? record.recurrenceRule
+    : typeof value === 'string'
+      ? value
+      : null;
+  const rawMode = record.mode ?? legacyRule;
   const mode: RecurrenceMode = rawMode === 'daily' || rawMode === 'every_2_days' || rawMode === 'weekly' || rawMode === 'monthly' || rawMode === 'weekday'
     ? rawMode
     : 'none';
   const interval = mode === 'every_2_days'
     ? 2
-    : Number.isFinite(Number(value?.interval)) && Number(value.interval) > 0
-      ? Number(value.interval)
+    : readNumber(record, ['interval'], 1) > 0
+      ? readNumber(record, ['interval'], 1)
       : 1;
-  const endType: RecurrenceEndType = value?.endType === 'until_date' || value?.endType === 'count'
-    ? value.endType
-    : value?.recurrenceEndType === 'until_date' || value?.recurrenceEndType === 'count'
-      ? value.recurrenceEndType
+  const endType: RecurrenceEndType = record.endType === 'until_date' || record.endType === 'count'
+    ? record.endType
+    : record.recurrenceEndType === 'until_date' || record.recurrenceEndType === 'count'
+      ? record.recurrenceEndType
       : 'never';
-  const until = typeof value?.until === 'string' && value.until
-    ? value.until
-    : typeof value?.recurrenceEndAt === 'string' && value.recurrenceEndAt
-      ? value.recurrenceEndAt
+  const until = typeof record.until === 'string' && record.until
+    ? record.until
+    : typeof record.recurrenceEndAt === 'string' && record.recurrenceEndAt
+      ? record.recurrenceEndAt
       : null;
-  const count = Number.isFinite(Number(value?.count)) && Number(value.count) > 0
-    ? Number(value.count)
-    : Number.isFinite(Number(value?.recurrenceCount)) && Number(value.recurrenceCount) > 0
-      ? Number(value.recurrenceCount)
+  const count = readNumber(record, ['count'], 0) > 0
+    ? readNumber(record, ['count'], 0)
+    : readNumber(record, ['recurrenceCount'], 0) > 0
+      ? readNumber(record, ['recurrenceCount'], 0)
       : null;
 
   return {
@@ -131,17 +197,18 @@ export function normalizeRecurrenceConfig(value: any): RecurrenceConfig {
   };
 }
 
-export function normalizeReminderConfig(value: any): ReminderConfig {
+export function normalizeReminderConfig(value: unknown): ReminderConfig {
+  const record = asRecord(value);
   return {
-    mode: value?.mode === 'once' || value?.mode === 'recurring' ? value.mode : 'none',
-    minutesBefore: Number.isFinite(Number(value?.minutesBefore)) && Number(value.minutesBefore) >= 0 ? Number(value.minutesBefore) : 30,
-    recurrenceMode: value?.recurrenceMode === 'weekly' || value?.recurrenceMode === 'monthly' ? value.recurrenceMode : 'daily',
-    recurrenceInterval: Number.isFinite(Number(value?.recurrenceInterval)) && Number(value.recurrenceInterval) > 0 ? Number(value.recurrenceInterval) : 1,
-    until: typeof value?.until === 'string' && value.until ? value.until : null,
+    mode: record.mode === 'once' || record.mode === 'recurring' ? record.mode : 'none',
+    minutesBefore: readNumber(record, ['minutesBefore'], 30) >= 0 ? readNumber(record, ['minutesBefore'], 30) : 30,
+    recurrenceMode: record.recurrenceMode === 'weekly' || record.recurrenceMode === 'monthly' ? record.recurrenceMode : 'daily',
+    recurrenceInterval: readNumber(record, ['recurrenceInterval'], 1) > 0 ? readNumber(record, ['recurrenceInterval'], 1) : 1,
+    until: typeof record.until === 'string' && record.until ? record.until : null,
   };
 }
 
-export function toReminderAtIso(startAt: string, reminderInput: any): string | null {
+export function toReminderAtIso(startAt: string, reminderInput: unknown): string | null {
   const reminder = normalizeReminderConfig(reminderInput);
   if (reminder.mode === 'none') return null;
   const startDate = parseISO(startAt);
@@ -185,7 +252,7 @@ function getSafeUntil(until: string | null) {
   return until ? endOfDay(parseISO(until)) : null;
 }
 
-export function expandRecurringMoments(baseStartAt: string, recurrenceInput: any, rangeStart: Date, rangeEnd: Date) {
+export function expandRecurringMoments(baseStartAt: string, recurrenceInput: unknown, rangeStart: Date, rangeEnd: Date) {
   const recurrence = normalizeRecurrenceConfig(recurrenceInput);
   const baseDate = parseISO(baseStartAt);
 
@@ -221,34 +288,35 @@ export function expandRecurringMoments(baseStartAt: string, recurrenceInput: any
   return results;
 }
 
-export function expandEventEntries(events: any[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
+export function expandEventEntries(events: ScheduleRawRecord[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
   return events.flatMap((event) => {
-    if (!event?.startAt) return [] as ScheduleEntry[];
+    if (!event.startAt || typeof event.startAt !== 'string') return [] as ScheduleEntry[];
 
     return expandRecurringMoments(event.startAt, event.recurrence, rangeStart, rangeEnd).map((occurrence, index) => {
-      const baseStart = parseISO(event.startAt);
-      const baseEnd = event.endAt ? parseISO(event.endAt) : null;
+      const baseStart = parseISO(String(event.startAt));
+      const baseEnd = typeof event.endAt === 'string' ? parseISO(event.endAt) : null;
       const duration = baseEnd ? baseEnd.getTime() - baseStart.getTime() : 0;
       const occurrenceEnd = duration > 0 ? new Date(occurrence.getTime() + duration) : null;
+      const eventId = String(event.id || crypto.randomUUID());
 
       return {
-        id: `${event.id}:${index}`,
+        id: eventId + ':' + String(index),
         kind: 'event' as const,
-        title: event.title,
+        title: readText(event, ['title'], 'Wydarzenie'),
         startsAt: toDateTimeLocalValue(occurrence),
         endsAt: occurrenceEnd ? toDateTimeLocalValue(occurrenceEnd) : null,
-        sourceId: event.id,
+        sourceId: eventId,
         link: '/calendar',
         badgeLabel: 'Wydarzenie',
-        leadId: event.leadId ?? null,
-        leadName: event.leadName ?? null,
+        leadId: typeof event.leadId === 'string' ? event.leadId : null,
+        leadName: typeof event.leadName === 'string' ? event.leadName : null,
         raw: event,
       };
     });
   });
 }
 
-export function expandTaskEntries(tasks: any[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
+export function expandTaskEntries(tasks: ScheduleRawRecord[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
   return tasks.flatMap((task) => {
     const startAt = getTaskStartAt(task);
     if (!startAt) return [] as ScheduleEntry[];
@@ -260,57 +328,59 @@ export function expandTaskEntries(tasks: any[], rangeStart: Date, rangeEnd: Date
       recurrenceCount: task.recurrenceCount,
     };
 
-    return expandRecurringMoments(startAt, recurrenceSource, rangeStart, rangeEnd).map((occurrence, index) => ({
-      id: `${task.id}:${index}`,
-      kind: 'task' as const,
-      title: task.title,
-      startsAt: toDateTimeLocalValue(occurrence),
-      endsAt: null,
-      sourceId: task.id,
-      link: '/tasks',
-      badgeLabel: 'Zadanie',
-      leadId: task.leadId ?? null,
-      leadName: task.leadName ?? null,
-      raw: task,
-    }));
+    return expandRecurringMoments(startAt, recurrenceSource, rangeStart, rangeEnd).map((occurrence, index) => {
+      const taskId = String(task.id || crypto.randomUUID());
+
+      return {
+        id: taskId + ':' + String(index),
+        kind: 'task' as const,
+        title: readText(task, ['title'], 'Zadanie'),
+        startsAt: toDateTimeLocalValue(occurrence),
+        endsAt: null,
+        sourceId: taskId,
+        link: '/tasks',
+        badgeLabel: 'Zadanie',
+        leadId: typeof task.leadId === 'string' ? task.leadId : null,
+        leadName: typeof task.leadName === 'string' ? task.leadName : null,
+        raw: task,
+      };
+    });
   });
 }
 
-function getLeadCalendarMoment(lead: any) {
-  const direct = String(
-    lead?.nextActionAt ||
-    lead?.next_action_at ||
-    lead?.followUpAt ||
-    lead?.follow_up_at ||
-    lead?.scheduledAt ||
-    lead?.scheduled_at ||
-    lead?.reminderAt ||
-    lead?.reminder_at ||
-    '',
-  ).trim();
+function getLeadCalendarMoment(lead: ScheduleRawRecord) {
+  const direct = readText(lead, [
+    'nextActionAt',
+    'next_action_at',
+    'followUpAt',
+    'follow_up_at',
+    'scheduledAt',
+    'scheduled_at',
+    'reminderAt',
+    'reminder_at',
+  ]);
   if (direct) return direct;
 
-  const dateField = String(
-    lead?.nextActionDate ||
-    lead?.next_action_date ||
-    lead?.followUpDate ||
-    lead?.follow_up_date ||
-    lead?.date ||
-    '',
-  ).trim();
-  if (!dateField) return "";
+  const dateField = readText(lead, [
+    'nextActionDate',
+    'next_action_date',
+    'followUpDate',
+    'follow_up_date',
+    'date',
+  ]);
+  if (!dateField) return '';
 
-  const timeField = String(
-    lead?.nextActionTime ||
-    lead?.next_action_time ||
-    lead?.followUpTime ||
-    lead?.follow_up_time ||
-    lead?.time ||
-    '09:00',
-  ).trim();
+  const timeField = readText(lead, [
+    'nextActionTime',
+    'next_action_time',
+    'followUpTime',
+    'follow_up_time',
+    'time',
+  ], '09:00');
   return dateField.includes('T') ? dateField : dateField + 'T' + timeField;
 }
-export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
+
+export function expandLeadEntries(leads: ScheduleRawRecord[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {
   // STAGE34_CALENDAR_LEAD_NEXT_ACTIONS: leads with nextActionAt/followUpAt are visible in calendar.
   return leads.flatMap((lead) => {
     const startAt = getLeadCalendarMoment(lead);
@@ -320,25 +390,29 @@ export function expandLeadEntries(leads: any[], rangeStart: Date, rangeEnd: Date
     if (Number.isNaN(date.getTime())) return [] as ScheduleEntry[];
     if (isBefore(date, rangeStart) || isAfter(date, rangeEnd)) return [] as ScheduleEntry[];
 
+    const leadId = String(lead.id || crypto.randomUUID());
+    const title = readText(lead, ['nextActionTitle', 'next_action_title', 'title', 'name', 'company'], 'Lead do obsługi');
+    const leadName = readText(lead, ['name', 'company']);
+
     return [{
-      id: 'lead:' + String(lead.id || crypto.randomUUID()),
+      id: 'lead:' + leadId,
       kind: 'lead' as const,
-      title: String(lead.nextActionTitle || lead.next_action_title || lead.title || lead.name || lead.company || 'Lead do obsługi'),
+      title,
       startsAt: toDateTimeLocalValue(date),
       endsAt: null,
-      sourceId: String(lead.id || crypto.randomUUID()),
-      link: lead.id ? '/leads/' + String(lead.id) : '/leads',
+      sourceId: leadId,
+      link: lead.id ? '/leads/' + leadId : '/leads',
       badgeLabel: 'Lead',
-      leadId: lead.id ? String(lead.id) : null,
-      leadName: lead.name || lead.company || null,
+      leadId: lead.id ? leadId : null,
+      leadName: leadName || null,
       raw: lead,
     }];
   });
 }
 
 function choosePreferredEntry(existing: ScheduleEntry, incoming: ScheduleEntry) {
-  const existingDone = existing.kind === 'task' && existing.raw?.status === 'done';
-  const incomingDone = incoming.kind === 'task' && incoming.raw?.status === 'done';
+  const existingDone = existing.kind === 'task' && existing.raw.status === 'done';
+  const incomingDone = incoming.kind === 'task' && incoming.raw.status === 'done';
 
   if (existingDone !== incomingDone) {
     return incomingDone ? incoming : existing;
@@ -351,7 +425,7 @@ function dedupeScheduleEntries(entries: ScheduleEntry[]) {
   const deduped = new Map<string, ScheduleEntry>();
 
   for (const entry of entries) {
-    const dedupeKey = `${entry.kind}::${entry.sourceId}::${entry.startsAt}`;
+    const dedupeKey = entry.kind + '::' + entry.sourceId + '::' + entry.startsAt;
     const existing = deduped.get(dedupeKey);
     if (!existing) {
       deduped.set(dedupeKey, entry);
@@ -370,9 +444,7 @@ function normalizeComparableTitle(value: unknown) {
 function shouldHideLeadEntry(leadEntry: ScheduleEntry, entries: ScheduleEntry[]) {
   if (leadEntry.kind !== 'lead') return false;
 
-  const linkedItemId = String(
-    leadEntry.raw?.nextActionItemId || leadEntry.raw?.next_action_item_id || '',
-  ).trim();
+  const linkedItemId = readText(leadEntry.raw, ['nextActionItemId', 'next_action_item_id']);
   const leadTitle = normalizeComparableTitle(leadEntry.title);
 
   return entries.some((entry) => {
@@ -401,9 +473,9 @@ export function combineScheduleEntries({
   rangeStart,
   rangeEnd,
 }: {
-  events: any[];
-  tasks: any[];
-  leads: any[];
+  events: ScheduleRawRecord[];
+  tasks: ScheduleRawRecord[];
+  leads: ScheduleRawRecord[];
   rangeStart: Date;
   rangeEnd: Date;
 }) {

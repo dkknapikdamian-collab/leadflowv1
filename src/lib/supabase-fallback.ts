@@ -4,6 +4,13 @@ import { getSupabaseAccessToken } from './supabase-auth';
 import { normalizeActivityListContract, normalizeAiDraftListContract, normalizeCaseContract, normalizeCaseItemListContract, normalizeCaseListContract, normalizeClientContract, normalizeClientListContract, normalizeEventListContract, normalizeLeadContract, normalizeLeadListContract, normalizePaymentListContract, normalizeTaskListContract } from './data-contract';
 
 type SupabaseInsertResult = { [key: string]: unknown };
+type CaseTemplateItemInput = {
+  title: string;
+  description?: string;
+  type?: string;
+  isRequired?: boolean;
+  order?: number;
+};
 type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextActionAt?: string; ownerId?: string; workspaceId?: string };
 type ClientUpsertInput = { id?: string; name?: string; company?: string; email?: string; phone?: string; notes?: string; tags?: string[]; sourcePrimary?: string; lastActivityAt?: string | null; archivedAt?: string | null; workspaceId?: string };
 type ServiceProfileUpsertInput = { id?: string; name?: string; description?: string; startRule?: string; winRule?: string; billingModel?: string; caseCreationMode?: string; isDefault?: boolean; isArchived?: boolean; workspaceId?: string };
@@ -331,7 +338,7 @@ export async function fetchCaseTemplatesFromSupabase(params?: { includeArchived?
   if (params?.includeArchived) query.set('includeArchived', '1');
   return callApi<Record<string, unknown>[]>(`/api/case-templates${query.toString() ? `?${query.toString()}` : ''}`);
 }
-export async function createCaseTemplateInSupabase(input: { name: string; items: any[]; archivedAt?: string | null }) {
+export async function createCaseTemplateInSupabase(input: { name: string; items: CaseTemplateItemInput[]; archivedAt?: string | null }) {
   return callApi<Record<string, unknown>>('/api/case-templates', { method: 'POST', body: JSON.stringify(input) });
 }
 export async function updateCaseTemplateInSupabase(input: { id: string; name?: string; items?: any[]; archivedAt?: string | null }) {
