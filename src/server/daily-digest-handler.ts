@@ -1,4 +1,4 @@
-/* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: poranny e-mail bez duplikatów, z timezone i szkicami AI. */
+/* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: poranny e-mail bez duplikatï¿½w, z timezone i szkicami AI. */
 import { buildDailyDigestPayload, buildDigestEmail, shouldSendDigestNow } from './_digest.js';
 import { insertWithVariants, selectFirstAvailable, updateWhere } from './_supabase.js';
 import { withWorkspaceFilter } from './_request-scope.js';
@@ -104,7 +104,7 @@ async function readDigestWorkspaces() {
 async function alreadySentToday(profileEmail: string, sentForDate: string) {
   try {
     const result = await selectFirstAvailable([
-      `digest_logs?select=id&profile_email=eq.${encodeURIComponent(profileEmail)}&sent_for_date=eq.${encodeURIComponent(sentForDate)}&limit=1`,
+      `digest_logs?select=id&profile_email=eq.${encodeURIComponent(profileEmail)}&report_type=eq.daily&sent_for_date=eq.${encodeURIComponent(sentForDate)}&limit=1`,
     ]);
     return Array.isArray(result.data) && result.data.length > 0;
   } catch {
@@ -431,6 +431,7 @@ export default async function handler(req: any, res: any) {
       try {
         await writeDigestLog({
           workspace_id: workspaceId,
+          report_type: 'daily',
           profile_id: null,
           profile_email: recipientEmail,
           sent_for_date: sentForDate,
@@ -548,6 +549,7 @@ export default async function handler(req: any, res: any) {
 
         await writeDigestLog({
           workspace_id: workspaceId,
+          report_type: 'daily',
           profile_id: null,
           profile_email: recipientEmail,
           sent_for_date: sentForDate,
@@ -574,7 +576,8 @@ export default async function handler(req: any, res: any) {
         try {
           await writeDigestLog({
             workspace_id: workspaceId,
-            profile_id: null,
+          report_type: 'daily',
+          profile_id: null,
             profile_email: recipientEmail,
             sent_for_date: sentForDate,
             sent_at: new Date().toISOString(),

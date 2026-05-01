@@ -3,36 +3,104 @@
     {
       "path": "/api/daily-digest",
       "schedule": "5 5 * * *"
+    },
+    {
+      "path": "/api/weekly-report",
+      "schedule": "15 6 * * 1"
     }
   ],
   "rewrites": [
-    { "source": "/api/tasks", "destination": "/api/work-items?kind=tasks" },
-    { "source": "/api/events", "destination": "/api/work-items?kind=events" },
-
-    { "source": "/api/response-templates", "destination": "/api/system?kind=response-templates" },
-    { "source": "/api/case-templates", "destination": "/api/system?kind=case-templates" },
-    { "source": "/api/support-forward", "destination": "/api/system?kind=support&route=forward" },
-    { "source": "/api/support-requests", "destination": "/api/system?kind=support&route=requests" },
-    { "source": "/api/daily-digest", "destination": "/api/system?kind=daily-digest" },
-
-    { "source": "/api/workspace-subscription", "destination": "/api/system?kind=workspace-subscription" },
-    { "source": "/api/profile-settings", "destination": "/api/system?kind=profile-settings" },
-    { "source": "/api/workspace-settings", "destination": "/api/system?kind=workspace-settings" },
-    { "source": "/api/admin/workspace-recovery", "destination": "/api/system?kind=workspace-recovery" },
-    { "source": "/api/service-profiles", "destination": "/api/system?kind=service-profiles" },
-    { "source": "/api/assistant", "destination": "/api/system?kind=ai-assistant" },
-    { "source": "/api/assistant-context", "destination": "/api/system?kind=assistant-context" },
-    { "source": "/api/payments", "destination": "/api/system?apiRoute=payments" },
-    { "source": "/api/records", "destination": "/api/system?apiRoute=records" },
-
-    { "source": "/api/client-portal-session", "destination": "/api/portal?route=session" },
-    { "source": "/api/client-portal-tokens", "destination": "/api/portal?route=tokens" },
-
-    { "source": "/api/billing-checkout", "destination": "/api/billing?route=checkout" },
-    { "source": "/api/billing-actions", "destination": "/api/billing?route=actions" },
-    { "source": "/api/billing-webhook", "destination": "/api/billing?route=webhook" },
-    { "source": "/api/stripe-webhook", "destination": "/api/billing?route=stripe-webhook" },
-
-    { "source": "/((?!api/|assets/|.*\\..*).*)", "destination": "/" }
+    {
+      "source": "/api/tasks",
+      "destination": "/api/work-items?kind=tasks"
+    },
+    {
+      "source": "/api/events",
+      "destination": "/api/work-items?kind=events"
+    },
+    {
+      "source": "/api/response-templates",
+      "destination": "/api/system?kind=response-templates"
+    },
+    {
+      "source": "/api/case-templates",
+      "destination": "/api/system?kind=case-templates"
+    },
+    {
+      "source": "/api/support-forward",
+      "destination": "/api/system?kind=support&route=forward"
+    },
+    {
+      "source": "/api/support-requests",
+      "destination": "/api/system?kind=support&route=requests"
+    },
+    {
+      "source": "/api/daily-digest",
+      "destination": "/api/system?kind=daily-digest"
+    },
+    {
+      "source": "/api/workspace-subscription",
+      "destination": "/api/system?kind=workspace-subscription"
+    },
+    {
+      "source": "/api/profile-settings",
+      "destination": "/api/system?kind=profile-settings"
+    },
+    {
+      "source": "/api/workspace-settings",
+      "destination": "/api/system?kind=workspace-settings"
+    },
+    {
+      "source": "/api/admin/workspace-recovery",
+      "destination": "/api/system?kind=workspace-recovery"
+    },
+    {
+      "source": "/api/service-profiles",
+      "destination": "/api/system?kind=service-profiles"
+    },
+    {
+      "source": "/api/assistant",
+      "destination": "/api/system?kind=ai-assistant"
+    },
+    {
+      "source": "/api/assistant-context",
+      "destination": "/api/system?kind=assistant-context"
+    },
+    {
+      "source": "/api/payments",
+      "destination": "/api/system?apiRoute=payments"
+    },
+    {
+      "source": "/api/records",
+      "destination": "/api/system?apiRoute=records"
+    },
+    {
+      "source": "/api/client-portal-session",
+      "destination": "/api/portal?route=session"
+    },
+    {
+      "source": "/api/client-portal-tokens",
+      "destination": "/api/portal?route=tokens"
+    },
+    {
+      "source": "/api/billing-checkout",
+      "destination": "/api/billing?route=checkout"
+    },
+    {
+      "source": "/api/billing-actions",
+      "destination": "/api/billing?route=actions"
+    },
+    {
+      "source": "/api/billing-webhook",
+      "destination": "/api/billing?route=webhook"
+    },
+    {
+      "source": "/api/stripe-webhook",
+      "destination": "/api/billing?route=stripe-webhook"
+    },
+    {
+      "source": "/((?!api/|assets/|.*\\..*).*)",
+      "destination": "/"
+    }
   ]
 }

@@ -1,8 +1,10 @@
-const CACHE_VERSION = 'closeflow-v1-pwa-stage30-2026-04-30';
+const CACHE_VERSION = 'closeflow-v1-pwa-stage-a28-2026-05-01';
 const APP_SHELL_URLS = [
   '/',
   '/manifest.webmanifest',
   '/icons/closeflow-icon.svg',
+  '/icons/closeflow-icon-192.png',
+  '/icons/closeflow-icon-512.png',
   '/favicon.ico',
 ];
 
@@ -42,6 +44,8 @@ function isCacheableAsset(request) {
     path === '/manifest.webmanifest' ||
     path === '/favicon.ico' ||
     path === '/icons/closeflow-icon.svg' ||
+    path === '/icons/closeflow-icon-192.png' ||
+    path === '/icons/closeflow-icon-512.png' ||
     path.startsWith('/assets/')
   );
 }

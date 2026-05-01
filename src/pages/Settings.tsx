@@ -46,7 +46,7 @@ import { updateProfileSettingsInSupabase, updateWorkspaceSettingsInSupabase } fr
 import '../styles/visual-stage19-settings-vnext.css';
 
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
-const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
+const DAILY_DIGEST_EMAIL_UI_VISIBLE = true;
 
 type ProfileFormState = {
   fullName: string;
