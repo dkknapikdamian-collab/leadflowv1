@@ -296,3 +296,57 @@
   display: flex;
   justify-content: flex-end;
 }
+/* STAGE_A18_TASK_ACTION_CONTRAST
+   Małe akcje w wierszach zadań muszą być czytelne na białym tle. */
+.task-row button,
+.task-row .task-action-chip,
+.task-row .task-form-action-chip,
+.task-row [role="button"],
+.task-form-action-chip {
+  border-color: #cbd5e1 !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  opacity: 1 !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06) !important;
+}
+
+.task-row button svg,
+.task-row [role="button"] svg,
+.task-form-action-chip svg {
+  color: #475569 !important;
+  stroke: #475569 !important;
+  stroke-width: 2.25 !important;
+  opacity: 1 !important;
+}
+
+.task-row button:disabled,
+.task-row button[disabled],
+.task-row .task-action-chip:disabled,
+.task-row .task-form-action-chip:disabled {
+  border-color: #d1d5db !important;
+  background: #f8fafc !important;
+  color: #475569 !important;
+  opacity: 1 !important;
+}
+
+.task-row button:not(:disabled):hover,
+.task-row .task-action-chip:not(:disabled):hover,
+.task-row .task-form-action-chip:not(:disabled):hover {
+  border-color: #94a3b8 !important;
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.task-row .text-slate-300,
+.task-row .text-slate-400,
+.task-row .text-gray-300,
+.task-row .text-gray-400 {
+  color: #475569 !important;
+}
+
+.task-row .border-slate-100,
+.task-row .border-slate-200,
+.task-row .border-gray-100,
+.task-row .border-gray-200 {
+  border-color: #cbd5e1 !important;
+}

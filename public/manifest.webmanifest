@@ -2,16 +2,23 @@
   "id": "/",
   "name": "CloseFlow",
   "short_name": "CloseFlow",
-  "description": "Prosta aplikacja do pilnowania leadów, zadań, wydarzeń i spraw.",
+  "description": "Supabase-first SaaS do pilnowania leadów, follow-upów, zadań, wydarzeń i spraw.",
   "lang": "pl",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui", "browser"],
+  "display_override": [
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
   "orientation": "portrait-primary",
   "background_color": "#f8fafc",
   "theme_color": "#0f172a",
-  "categories": ["business", "productivity"],
+  "categories": [
+    "business",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "/icons/closeflow-icon.svg",
@@ -32,6 +39,12 @@
       "short_name": "Leady",
       "description": "Otwórz listę leadów.",
       "url": "/leads"
+    },
+    {
+      "name": "Zadania",
+      "short_name": "Zadania",
+      "description": "Otwórz zadania i follow-upy.",
+      "url": "/tasks"
     },
     {
       "name": "Kalendarz",

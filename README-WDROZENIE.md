@@ -1,44 +1,104 @@
-# LeadFlow — wdrożenie (Supabase-first)
+# CloseFlow — wdrożenie
 
-## Co jest wdrożone
-- auth Firebase (email/hasło + Google + reset hasła),
-- workspace + trial/subskrypcja,
-- moduły: Dziś, Leady, Zadania, Kalendarz, Sprawy, Portal klienta, Billing, Ustawienia,
-- PWA (manifest + service worker),
-- bezpieczniejszy flow portalu klienta:
-  - link oparty o token jawny tylko w URL,
-  - w bazie trzymany wyłącznie `tokenHash`,
-  - sesja klienta `client_portal_sessions`.
+## Cel dokumentu
 
-## Jak uruchomić
-1. Uzupełnij konfigurację Firebase w `firebase-applet-config.json`.
-2. Zainstaluj zależności:
-   - `npm install`
-3. Uruchom dev:
-   - `npm run dev`
-4. Build produkcyjny:
-   - `npm run build`
+Ten dokument opisuje wdrożenie CloseFlow jako aplikacji SaaS lead/case follow-up z architekturą Supabase-first.
 
-## Firebase / Firestore legacy
-- wdroż aktualne reguły z `firestore.rules`,
-- upewnij się, że w Firebase Auth jest włączone:
-  - Email/Password,
-  - Google,
-  - Anonymous (wymagane przez portal klienta z sesją tokenową).
+## Co jest wdrożone w repo
 
-<!-- closeflow-supabase-first-deployment -->
-## Supabase-first / Firebase legacy
+- aplikacja React + Vite + TypeScript,
+- routing i widoki operacyjne: Dziś, Leady, Klienci, Sprawy, Zadania, Kalendarz, Aktywność, Szkice AI, Ustawienia, Billing, Pomoc,
+- Supabase Auth jako docelowy model logowania,
+- API w katalogu `api/`, które pracuje na zweryfikowanym kontekście użytkownika/workspace,
+- Supabase jako docelowe źródło danych biznesowych,
+- PWA: manifest, ikony i tryb standalone,
+- AI backend-only: frontend nie trzyma sekretów AI,
+- podstawowe guardy jakości, w tym kontrola polskich znaków i architektury.
 
-Ten plik wdrożeniowy należy czytać zgodnie z aktualną decyzją architektoniczną:
+## Jak uruchomić lokalnie
 
-- Supabase jest docelowym źródłem prawdy dla danych biznesowych, auth, storage, billing, portalu klienta, AI drafts, szablonów i aktywności.
-- Firebase / Firestore jest legacy i ma zostać wygaszony po migracji.
-- Nie dopisujemy nowych funkcji do Firestore.
-- Nie ufamy nagłówkom `x-user-id`, `x-user-email`, `x-workspace-id` z frontu jako źródłu autoryzacji.
-- AI nie zapisuje finalnych danych bez potwierdzenia użytkownika.
+1. Zainstaluj zależności:
 
-Dokumenty źródłowe:
+```bash
+npm install
+```
 
-- `docs/SUPABASE_FIRST_ARCHITECTURE.md`
-- `docs/DATA_SOURCE_MAP.md`
-<!-- /closeflow-supabase-first-deployment -->
+2. Skopiuj `.env.example` do `.env.local` i uzupełnij wartości.
+
+3. Uruchom dev server:
+
+```bash
+npm run dev
+```
+
+4. Zbuduj produkcyjnie:
+
+```bash
+npm run build
+```
+
+## Vercel
+
+CloseFlow jest przygotowany pod wdrożenie na Vercel.
+
+Na Vercel ustaw osobno:
+
+- publiczne zmienne klienta `VITE_*`,
+- zmienne serwerowe Supabase,
+- zmienne billingowe,
+- zmienne e-mail/digest,
+- zmienne AI backend-only.
+
+Nie ustawiaj sekretów jako `VITE_*`.
+
+## Supabase-first
+
+Supabase jest docelowym źródłem prawdy dla:
+
+- auth,
+- workspace,
+- leadów,
+- klientów,
+- spraw,
+- zadań,
+- wydarzeń,
+- aktywności,
+- szkiców AI,
+- szablonów,
+- portalu klienta,
+- billing/access state.
+
+Firebase / Firestore jest tylko legacy/decommission. Nie budujemy nowych funkcji na Firestore.
+
+## Billing
+
+Repo zawiera elementy billingowe i checkoutowe. Przed użyciem produkcyjnym trzeba potwierdzić:
+
+- poprawne env providera płatności,
+- webhooki,
+- mapping planów,
+- trial/access state,
+- test od checkoutu do odblokowania dostępu.
+
+Nie traktuj billing jako gotowy do sprzedaży bez testu end-to-end.
+
+## AI
+
+AI w CloseFlow działa wyłącznie przez backend.
+
+Zasady:
+
+- brak sekretów AI w kodzie klienta,
+- brak `VITE_*` dla kluczy AI,
+- AI nie zapisuje finalnych danych bez zatwierdzenia użytkownika,
+- komendy tworzące dane mają trafiać do szkiców albo ekranów potwierdzenia.
+
+## Status produkcyjny
+
+Zawsze sprawdź:
+
+- `docs/PRODUCTION_READINESS_STATUS.md`,
+- wyniki `npm run test:critical`,
+- wyniki `npm run check:polish-mojibake`,
+- aktualne migracje Supabase,
+- konfigurację env na Vercel.

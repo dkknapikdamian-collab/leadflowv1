@@ -53,7 +53,7 @@ Potwierdzony model:
 ```text
 public.workspaces.id uuid NOT NULL default gen_random_uuid()
 public.workspaces.owner_user_id uuid NOT NULL
-public.workspaces.name text NOT NULL default 'LeadFlow'
+public.workspaces.name text NOT NULL default 'CloseFlow'
 public.workspaces.created_at timestamptz NOT NULL default now()
 public.workspaces.updated_at timestamptz NOT NULL default now()
 public.workspaces.timezone text NULL default 'Europe/Warsaw'
