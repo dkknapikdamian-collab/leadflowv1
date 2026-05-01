@@ -184,13 +184,13 @@ check('templates UI matches light app shell', () => {
   reject('src/pages/ResponseTemplates.tsx', /DostÄ|Ĺ|Ă|â€/, 'ResponseTemplates.tsx contains mojibake');
 });
 
-check('unified light pages visual lock', () => {
-  grep('src/index.css', /stage36-unified-light-pages\.css/);
-  grep('src/styles/stage36-unified-light-pages.css', /STAGE36_UNIFIED_LIGHT_PAGES/);
-  grep('src/styles/stage36-unified-light-pages.css', /\[data-a16-template-light-ui\]/);
-  grep('src/styles/stage36-unified-light-pages.css', /\.ai-drafts-vnext-page/);
-  grep('src/styles/stage36-unified-light-pages.css', /html\[data-skin\] \[data-a16-template-light-ui\]/);
-  grep('src/styles/stage36-unified-light-pages.css', /ai-drafts-toolbar-card/);
+check('unified light pages CSS stays reference-only', () => {
+  reject('src/index.css', /stage36-unified-light-pages\.css/, 'stage36-unified-light-pages.css must not be imported globally because it breaks the live UI');
+
+  if (fs.existsSync(path.join(root, 'src/styles/stage36-unified-light-pages.css'))) {
+    grep('src/styles/stage36-unified-light-pages.css', /STAGE36_UNIFIED_LIGHT_PAGES/);
+    grep('src/styles/stage36-unified-light-pages.css', /\[data-a16-template-light-ui\]/);
+  }
 });
 
 if (failures.length) {

@@ -22,7 +22,11 @@ function expectAny(file, needles, label) {
   console.log(`OK: ${file} contains ${label || needles.join(' OR ')}`);
 }
 
-expect('src/index.css', 'visual-stage17-today-hard-1to1.css', 'Stage17 CSS import');
+const indexCss = read('src/index.css');
+if (indexCss.includes('visual-stage17-today-hard-1to1.css')) {
+  throw new Error('src/index.css: Stage17 CSS import is disabled because it breaks the live UI. Keep the CSS file as reference only.');
+}
+console.log('OK: src/index.css keeps Stage17 broad CSS unimported.');
 expect('src/styles/visual-stage17-today-hard-1to1.css', 'VISUAL_STAGE17_TODAY_HTML_HARD_1TO1_CSS', 'Stage17 CSS marker');
 expect('src/styles/visual-stage17-today-hard-1to1.css', '--cf17-sidebar: #101828', 'HTML sidebar color token');
 expect('src/styles/visual-stage17-today-hard-1to1.css', '.main-today .grid-4', 'Today metric grid selector');

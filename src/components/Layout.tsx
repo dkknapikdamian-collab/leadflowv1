@@ -29,6 +29,9 @@ import {
   CheckSquare,
   CreditCard,
   AlertTriangle,
+  Bell,
+  LifeBuoy,
+  Sparkles,
   ChevronRight,
   Menu,
   X,
@@ -135,22 +138,35 @@ export default function Layout({ children }: LayoutProps) {
 
   const navGroups = useMemo<NavGroup[]>(() => ([
     {
-      caption: 'Panel operatora',
+      caption: 'Start pracy',
       items: [
         { icon: LayoutDashboard, label: 'Dziś', path: '/' },
         { icon: Users, label: 'Leady', path: '/leads' },
+        { icon: Users, label: 'Klienci', path: '/clients' },
         { icon: Briefcase, label: 'Sprawy', path: '/cases' },
+      ],
+    },
+    {
+      caption: 'Czas i obowiązki',
+      items: [
         { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
         { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
-        { icon: Users, label: 'Klienci', path: '/clients' },
         { icon: FolderKanban, label: 'Szablony', path: '/templates' },
         { icon: History, label: 'Aktywność', path: '/activity' },
+      ],
+    },
+    {
+      caption: 'System',
+      items: [
+        { icon: CheckCircle2, label: 'Szkice AI', path: '/ai-drafts' },
+        { icon: AlertTriangle, label: 'Powiadomienia', path: '/notifications' },
         { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
+        { icon: CheckCircle2, label: 'Pomoc', path: '/help' },
+        { icon: Settings, label: 'Admin AI', path: '/settings/ai' },
         { icon: Settings, label: 'Ustawienia', path: '/settings' },
       ],
     },
   ]), []);
-
   const navItems = useMemo(() => navGroups.flatMap((group) => group.items), [navGroups]);
   const mobileNavItems = useMemo(
     () => [
