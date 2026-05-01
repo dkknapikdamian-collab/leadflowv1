@@ -1,4 +1,4 @@
-// VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_LAYOUT
+﻿// VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_LAYOUT
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1_LAYOUT
 /* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-stage01" */
 /* VISUAL_HTML_THEME_V14_LAYOUT */
@@ -11,9 +11,9 @@ VISUAL_STAGE_05_CLIENTS_ROUTE_SCOPE
 VISUAL_STAGE_06_CLIENT_DETAIL_ROUTE_SCOPE
 VISUAL_STAGE_07_CASES_ROUTE_SCOPE
 VISUAL_STAGE_08_CASE_DETAIL_ROUTE_SCOPE
-Globalny shell CloseFlow został przepięty na docelowy system wizualny z HTML-a.
+Globalny shell CloseFlow zostaĹ‚ przepiÄ™ty na docelowy system wizualny z HTML-a.
 Zakres: ciemny sidebar, grupy menu, global-bar, mobile-top, mobile-nav i footer konta/trialu.
-Nie zmienia logiki ekranów, routingu, Supabase, AI, auth ani billing/access.
+Nie zmienia logiki ekranĂłw, routingu, Supabase, AI, auth ani billing/access.
 */
 import { ReactNode, useMemo, useState } from 'react';
 import { auth } from '../firebase';
@@ -36,6 +36,7 @@ import {
   Menu,
   X,
   FolderKanban,
+  MessageSquareText,
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -141,19 +142,20 @@ export default function Layout({ children }: LayoutProps) {
     {
       caption: 'Start pracy',
       items: [
-        { icon: LayoutDashboard, label: 'Dziś', path: '/' },
+        { icon: LayoutDashboard, label: 'DziĹ›', path: '/' },
         { icon: Users, label: 'Leady', path: '/leads' },
         { icon: Users, label: 'Klienci', path: '/clients' },
         { icon: Briefcase, label: 'Sprawy', path: '/cases' },
       ],
     },
     {
-      caption: 'Czas i obowiązki',
+      caption: 'Czas i obowiÄ…zki',
       items: [
         { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
         { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
         { icon: FolderKanban, label: 'Szablony', path: '/templates' },
-        { icon: History, label: 'Aktywność', path: '/activity' },
+        { icon: MessageSquareText, label: 'Odpowiedzi', path: '/response-templates' },
+        { icon: History, label: 'AktywnoĹ›Ä‡', path: '/activity' },
       ],
     },
     {
@@ -171,7 +173,7 @@ export default function Layout({ children }: LayoutProps) {
   const navItems = useMemo(() => navGroups.flatMap((group) => group.items), [navGroups]);
   const mobileNavItems = useMemo(
     () => [
-      { icon: LayoutDashboard, label: 'Dziś', path: '/' },
+      { icon: LayoutDashboard, label: 'DziĹ›', path: '/' },
       { icon: Users, label: 'Leady', path: '/leads' },
       { icon: Users, label: 'Klienci', path: '/clients' },
       { icon: Briefcase, label: 'Sprawy', path: '/cases' },
@@ -192,7 +194,7 @@ export default function Layout({ children }: LayoutProps) {
   const currentSection = isTodayRoute ? 'today' : isLeadsRoute ? 'leads' : isLeadDetailRoute ? 'lead-detail' : isClientsRoute ? 'clients' : isClientDetailRoute ? 'client-detail' : isCasesRoute ? 'cases' : isCaseDetailRoute ? 'case-detail' : currentTitle.toLowerCase();
   const trialDaysLeft = workspace?.trialEndsAt ? differenceInDays(parseISO(workspace.trialEndsAt), new Date()) : 0;
   const userInitial = user?.displayName?.charAt(0) || user?.email?.charAt(0).toUpperCase() || 'U';
-  const userName = user?.displayName || 'Użytkownik';
+  const userName = user?.displayName || 'UĹĽytkownik';
 
   const handleSidebarPointerRouter = (event: any) => {
     if (event.button !== undefined && event.button !== 0) return;
@@ -248,17 +250,17 @@ export default function Layout({ children }: LayoutProps) {
       onPointerDownCapture={handleSidebarPointerRouter}
     >
       <aside className="sidebar" data-shell-sidebar="true">
-        <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
+        <Link to="/" className="brand" aria-label="CloseFlow - przejdĹş do DziĹ›">
           <span className="brand-logo" aria-hidden="true">
             CF
           </span>
           <span className="brand-title">
             <strong>CloseFlow</strong>
-            <span>Panel domykania leadów</span>
+            <span>Panel domykania leadĂłw</span>
           </span>
         </Link>
 
-        <nav className="nav-scroll" aria-label="Główne menu CloseFlow">
+        <nav className="nav-scroll" aria-label="GĹ‚Ăłwne menu CloseFlow">
           {renderNavGroups()}
         </nav>
 
@@ -267,17 +269,17 @@ export default function Layout({ children }: LayoutProps) {
           <UserCard userInitial={userInitial} name={userName} email={user?.email} />
           <button type="button" className="sidebar-logout" onClick={() => auth.signOut()}>
             <LogOut className="h-4 w-4" />
-            <span>Wyloguj się</span>
+            <span>Wyloguj siÄ™</span>
           </button>
         </div>
       </aside>
 
       <div className="mobile-top" data-shell-mobile-top="true">
-        <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
+        <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdĹş do DziĹ›">
           <span className="brand-logo" aria-hidden="true">CF</span>
           <span>CloseFlow</span>
         </Link>
-        <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="Otwórz menu">
+        <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="OtwĂłrz menu">
           <Menu className="h-6 w-6" />
         </button>
       </div>
@@ -311,7 +313,7 @@ export default function Layout({ children }: LayoutProps) {
               {workspace?.subscriptionStatus === 'trial_active' ? <TrialCard trialDaysLeft={trialDaysLeft} /> : null}
               <button type="button" className="sidebar-logout" onClick={() => auth.signOut()}>
                 <LogOut className="h-4 w-4" />
-                <span>Wyloguj się</span>
+                <span>Wyloguj siÄ™</span>
               </button>
             </div>
           </div>
@@ -338,7 +340,7 @@ export default function Layout({ children }: LayoutProps) {
         {workspace && !hasAccess && (
           <div className="access-warning" data-shell-access-warning="true">
             <AlertTriangle className="h-4 w-4 shrink-0" />
-            <p>Twój okres próbny wygasł. Niektóre funkcje są zablokowane.</p>
+            <p>TwĂłj okres prĂłbny wygasĹ‚. NiektĂłre funkcje sÄ… zablokowane.</p>
             <Link to="/billing" className="access-warning-action">
               Aktywuj plan
             </Link>
@@ -350,7 +352,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </main>
 
-      <nav className="mobile-nav" aria-label="Najważniejsze zakładki" data-shell-mobile-nav="true">
+      <nav className="mobile-nav" aria-label="NajwaĹĽniejsze zakĹ‚adki" data-shell-mobile-nav="true">
         {mobileNavItems.map((item) => {
           const isActive = isNavItemActive(location.pathname, item.path);
           return (
@@ -364,3 +366,4 @@ export default function Layout({ children }: LayoutProps) {
     </div>
   );
 }
+
