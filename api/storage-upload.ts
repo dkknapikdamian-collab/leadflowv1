@@ -1,5 +1,10 @@
 import { readPortalSession, requirePortalSessionContext } from '../src/server/_portal-token.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
+import {
+  isAllowedPortalUploadFileType,
+  requirePortalStorageServerConfig,
+  sanitizePortalUploadFileName,
+} from '../src/server/_portal-storage.js';
 
 function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
@@ -15,37 +20,22 @@ function parseBody(req: any) {
   return req.body || {};
 }
 
-function isAllowedFileType(fileType: string) {
-  const allowed = new Set([
-    'application/pdf',
-    'image/jpeg',
-    'image/png',
-    'image/webp',
-    'text/plain',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  ]);
-  return allowed.has(fileType);
-}
-
 async function uploadPortalFile(caseId: string, itemId: string, file: { name: string; type: string; size: number; dataBase64: string }) {
-  if (!isAllowedFileType(file.type)) throw new Error('PORTAL_FILE_TYPE_NOT_ALLOWED');
-  if (!Number.isFinite(file.size) || file.size <= 0 || file.size > 10 * 1024 * 1024) throw new Error('PORTAL_FILE_SIZE_LIMIT');
+  const config = requirePortalStorageServerConfig();
 
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-120) || 'upload.bin';
+  if (!isAllowedPortalUploadFileType(file.type, config.allowedMimeTypes)) throw new Error('PORTAL_FILE_TYPE_NOT_ALLOWED');
+  if (!Number.isFinite(file.size) || file.size <= 0 || file.size > config.maxBytes) throw new Error('PORTAL_FILE_SIZE_LIMIT');
+
+  const safeName = sanitizePortalUploadFileName(file.name);
   const path = `portal/${caseId}/${itemId}/${Date.now()}-${safeName}`;
   const binary = Buffer.from(file.dataBase64, 'base64');
   if (binary.byteLength !== file.size) throw new Error('PORTAL_FILE_SIZE_MISMATCH');
 
-  const url = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '').replace(/\/+$/, '');
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-  const bucket = process.env.SUPABASE_PORTAL_BUCKET || 'portal-uploads';
-  if (!url || !key) throw new Error('SUPABASE_SERVER_CONFIG_MISSING');
-
-  const response = await fetch(`${url}/storage/v1/object/${bucket}/${encodeURIComponent(path)}`, {
+  const response = await fetch(`${config.supabaseUrl}/storage/v1/object/${config.bucket}/${encodeURIComponent(path)}`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${key}`,
-      apikey: key,
+      Authorization: `Bearer ${config.serviceRoleKey}`,
+      apikey: config.serviceRoleKey,
       'Content-Type': file.type,
       'x-upsert': 'true',
     },
@@ -94,4 +84,3 @@ export default async function handler(req: any, res: any) {
     res.status(status).json({ error: message });
   }
 }
-
