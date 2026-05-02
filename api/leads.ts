@@ -356,7 +356,7 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
   const clientRow = await ensureClientForLead(workspaceId, leadContext);
   const clientId = asNullableUuid(clientRow.id);
   const caseStatus = normalizeEnum(body.caseStatus || body.status, new Set(['new', 'waiting_on_client', 'blocked', 'to_approve', 'ready_to_start', 'in_progress', 'on_hold', 'completed', 'canceled']), 'in_progress');
-  const caseTitle = asText(body.title) || asText(leadRow.name) || `${asText(clientRow.name) || 'Klient'} - obsluga`;
+  const caseTitle = asText(body.title) || asText(leadRow.name) || `${asText(clientRow.name) || 'Klient'} - obsługa`;
 
   const casePayload: Record<string, unknown> = {
     workspace_id: workspaceId,

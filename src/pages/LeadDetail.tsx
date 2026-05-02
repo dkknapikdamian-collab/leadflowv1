@@ -484,7 +484,9 @@ export default function LeadDetail() {
   const showServiceBanner = leadInService;
   const leadFinance = useMemo(() => getLeadFinance(lead), [lead]);
 
-  useEffect(() => {
+  
+  const leadServiceLockedMessage = 'Ten temat jest już w obsłudze. Dalszą pracę prowadź w sprawie.';
+useEffect(() => {
     if (!startServiceSuccess?.caseId) return;
     navigate(`/case/${startServiceSuccess.caseId}`);
   }, [startServiceSuccess?.caseId, navigate]);
@@ -1411,7 +1413,7 @@ export default function LeadDetail() {
                    />
                 </TabsContent>
                 <TabsContent value="followup" className="lead-detail-ai-tabs-content mt-3">
-                  <LeadAiFollowupDraft lead={lead} tasks={linkedTasks} events={linkedEvents} activities={activities} disabled={leadInService} />
+                  {!leadInService && (<LeadAiFollowupDraft lead={lead} tasks={linkedTasks} events={linkedEvents} activities={activities} disabled={leadInService} />)}
                 </TabsContent>
               </Tabs>
             </section>
