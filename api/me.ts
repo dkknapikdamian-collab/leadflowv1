@@ -194,7 +194,8 @@ function normalizeProfile(
   fallbackFullName: string | null,
 ) {
   const email = asString(row?.email ?? fallbackEmail ?? '');
-  const admin = isAdminProfileRow(row) || isServerConfiguredAdminEmail(email);
+  const appOwner = isServerConfiguredAdminEmail(email);
+  const admin = isAdminProfileRow(row) || appOwner;
   return {
     id: asString(
       row?.id
@@ -213,6 +214,8 @@ function normalizeProfile(
     email,
     role: asString(row?.role ?? (admin ? 'admin' : 'member'), admin ? 'admin' : 'member'),
     isAdmin: admin,
+    isAppOwner: appOwner,
+    appRole: appOwner ? 'creator' : 'workspace',
     appearanceSkin: asString(row?.appearance_skin ?? row?.appearanceSkin ?? 'classic-light'),
     planningConflictWarningsEnabled: Boolean(row?.planning_conflict_warnings_enabled ?? row?.planningConflictWarningsEnabled ?? true),
     browserNotificationsEnabled: Boolean(row?.browser_notifications_enabled ?? row?.browserNotificationsEnabled ?? true),

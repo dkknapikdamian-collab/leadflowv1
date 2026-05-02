@@ -85,7 +85,8 @@
     "check:p10-ai-draft-only": "node scripts/check-p10-ai-draft-only.cjs",
     "check:p10d-today-stable-rowlink-key": "node scripts/check-p10d-today-stable-rowlink-key.cjs",
     "check:p11-ai-drafts-supabase-source": "node scripts/check-p11-ai-drafts-supabase-source.cjs",
-    "check:p12-admin-full-access-override": "node scripts/check-p12-admin-full-access-override.cjs"
+    "check:p12-admin-full-access-override": "node scripts/check-p12c-creator-only-access-correction.cjs",
+    "check:p12c-creator-only-access-correction": "node scripts/check-p12c-creator-only-access-correction.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

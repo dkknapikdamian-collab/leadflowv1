@@ -40,7 +40,8 @@ function normalizeWorkspaceRecord(workspace: any) {
 }
 
 
-const ADMIN_FULL_FEATURES = {
+
+const CREATOR_FULL_FEATURES = {
   ai: true,
   fullAi: true,
   digest: true,
@@ -53,26 +54,32 @@ const ADMIN_FULL_FEATURES = {
   browserNotifications: true,
 };
 
-const ADMIN_UNLIMITED_LIMITS = {
+const CREATOR_UNLIMITED_LIMITS = {
   activeLeads: null,
   activeTasks: null,
   activeEvents: null,
   activeDrafts: null,
 };
 
-function buildAdminAccessOverride(access: any) {
+function isCreatorProfile(profile: any) {
+  const appRole = String(profile?.appRole ?? profile?.app_role ?? '').trim().toLowerCase();
+  return profile?.isAppOwner === true || profile?.is_app_owner === true || appRole === 'creator' || appRole === 'app_owner';
+}
+
+function buildCreatorAccessOverride(access: any) {
   return {
     ...access,
-    adminOverride: true,
+    creatorOverride: true,
+    adminOverride: false,
     hasAccess: true,
     isPaidActive: true,
     limits: {
       ...(access?.limits || {}),
-      ...ADMIN_UNLIMITED_LIMITS,
+      ...CREATOR_UNLIMITED_LIMITS,
     },
     features: {
       ...(access?.features || {}),
-      ...ADMIN_FULL_FEATURES,
+      ...CREATOR_FULL_FEATURES,
     },
   };
 }
@@ -85,6 +92,8 @@ function buildLocalProfile(activeUserId: string, fullName: string, email: string
     email,
     role: 'member',
     isAdmin: false,
+    isAppOwner: false,
+    appRole: 'workspace',
     appearanceSkin: 'classic-light',
     planningConflictWarningsEnabled: true,
     browserNotificationsEnabled: true,
@@ -205,7 +214,8 @@ export function useWorkspace() {
         subscriptionStatus: fallbackAccess.status,
       };
   const isAdmin = profile?.role === 'admin' || profile?.isAdmin === true;
-  const finalAccess = isAdmin ? buildAdminAccessOverride(access) : access;
+  const isAppOwner = isCreatorProfile(profile);
+  const finalAccess = isAppOwner ? buildCreatorAccessOverride(access) : access;
   const refresh = () => setRefreshToken((prev) => prev + 1);
   const workspaceReady = Boolean(workspace?.id);
 
@@ -215,8 +225,9 @@ export function useWorkspace() {
     loading,
     workspaceReady,
     workspaceError,
-    hasAccess: finalAccess.hasAccess,
+    hasAccess: finalAccess.hasAccess || isAppOwner,
     isAdmin,
+    isAppOwner,
     isTrialActive: finalAccess.isTrialActive,
     isPaidActive: finalAccess.isPaidActive,
     access: finalAccess,

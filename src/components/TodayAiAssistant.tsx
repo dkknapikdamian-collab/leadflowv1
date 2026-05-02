@@ -278,12 +278,13 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
   const pendingAutoAskTimerRef = useRef<number | null>(null);
   const lastAutoSubmittedRef = useRef('');
   const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
-  const { workspace, profile, isAdmin } = useWorkspace();
+  const { workspace, profile, isAppOwner } = useWorkspace();
+  const aiUsageAdminExempt = Boolean(isAppOwner);
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
-  const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
+  const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin: aiUsageAdminExempt }));
   useEffect(() => {
-    setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
-  }, [aiUsageKey, open, isAdmin]);
+    setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin: aiUsageAdminExempt }));
+  }, [aiUsageKey, open, aiUsageAdminExempt]);
 
   const clearAutoAskTimer = () => {
     if (pendingAutoAskTimerRef.current !== null) {
@@ -323,7 +324,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
       lastAutoSubmittedRef.current = command;
     }
 
-    const latestUsage = getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin });
+    const latestUsage = getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin: aiUsageAdminExempt });
     setUsage(latestUsage);
 
     if (command.length > AI_COMMAND_MAX_LENGTH) {
@@ -401,10 +402,10 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
         }
       }
       if (shouldRegisterAiUsage(result)) {
-        const nextUsage = registerAiUsage(aiUsageKey, undefined, { isAdmin });
+        const nextUsage = registerAiUsage(aiUsageKey, undefined, { isAdmin: aiUsageAdminExempt });
         setUsage(nextUsage);
       } else {
-        setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
+        setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin: aiUsageAdminExempt }));
       }
       toast.success(result.costGuard === 'local_rules' || result.provider === 'rules' ? 'Asystent sprawdził dane aplikacji' : 'Asystent przygotował odpowiedź');
     } catch (error: any) {
