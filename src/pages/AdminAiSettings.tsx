@@ -18,7 +18,7 @@ function StatusBadge({ configured, available }: { configured: boolean; available
     return <Badge variant="outline">Skonfigurowany</Badge>;
   }
 
-  return <Badge variant="secondary">Brak konfiguracji</Badge>;
+  return <Badge variant="secondary">Wymaga konfiguracji</Badge>;
 }
 
 function ProviderCard({

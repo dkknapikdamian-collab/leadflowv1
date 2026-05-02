@@ -2,9 +2,9 @@ const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
-const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+const read = (p) => fs.readFileSync(path.join(root, p), 'utf8').replace(/^\uFEFF/, '');
 const problems = [];
-const has = (file, needle) => read(file).includes(needle);
+
 const selectedFiles = [
   'src/components/Layout.tsx',
   'src/pages/Login.tsx',
@@ -29,15 +29,15 @@ if (!/21\s*dni|21-dni/i.test(login)) problems.push('Login.tsx: login/trial copy 
 const billing = read('src/pages/Billing.tsx');
 if (billing.includes('Stripe nie jest jeszcze skonfigurowany w Vercel.')) problems.push('Billing.tsx: Stripe copy still says generic not configured instead of Wymaga konfiguracji.');
 if (!billing.includes('Stripe wymaga konfiguracji w Vercel.')) problems.push('Billing.tsx: missing Stripe Wymaga konfiguracji copy.');
-if (billing.includes("{ name: 'Google Calendar', basic: 'Nie', pro: 'Dostępne', ai: 'Dostępne' },")) problems.push('Billing.tsx: Google Calendar is still shown as fully available.');
-if (!billing.includes("{ name: 'Pełny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Beta' },")) problems.push('Billing.tsx: AI assistant must be marked Beta.');
+if (/Google Calendar[^\n]+pro:\s*'Dostępne'[^\n]+ai:\s*'Dostępne'/.test(billing)) problems.push('Billing.tsx: Google Calendar is still shown as fully available.');
+if (!/Pełny asystent AI[^\n]+ai:\s*'Beta'/.test(billing)) problems.push('Billing.tsx: AI assistant must be marked Beta.');
 if (!billing.includes("badge: 'Beta'")) problems.push('Billing.tsx: AI plan card must show Beta badge.');
 if (!billing.includes('W przygotowaniu')) problems.push('Billing.tsx: missing W przygotowaniu state.');
 if (!billing.includes('Wymaga konfiguracji')) problems.push('Billing.tsx: missing Wymaga konfiguracji state.');
 
 const settings = read('src/pages/Settings.tsx');
 for (const bad of ['Sprawdz konfiguracje', 'Wyslij test teraz', 'dziala raz dziennie']) {
-  if (settings.includes(bad)) problems.push(`Settings.tsx: ASCII copy left: ${bad}`);
+  if (settings.includes(bad)) problems.push('Settings.tsx: ASCII copy left: ' + bad);
 }
 
 const adminAi = read('src/pages/AdminAiSettings.tsx');
@@ -47,10 +47,10 @@ if (!adminAi.includes('Wymaga konfiguracji')) problems.push('AdminAiSettings.tsx
 if (!adminAi.includes('W przygotowaniu')) problems.push('AdminAiSettings.tsx: missing W przygotowaniu.');
 if (!adminAi.includes('Beta')) problems.push('AdminAiSettings.tsx: missing Beta state.');
 
-for (const file of selectedFiles) {
-  const content = read(file);
-  if (/\bUzupelnij\b/.test(content)) problems.push(`${file}: contains Uzupelnij without Polish character.`);
-  if (/\bobsluga\b/.test(content)) problems.push(`${file}: contains obsluga without Polish character.`);
+for (const fileName of selectedFiles) {
+  const content = read(fileName);
+  if (/\bUzupelnij\b/.test(content)) problems.push(fileName + ': contains Uzupelnij without Polish character.');
+  if (/\bobsluga\b/.test(content)) problems.push(fileName + ': contains obsluga without Polish character.');
 }
 
 if (problems.length) {

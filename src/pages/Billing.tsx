@@ -102,7 +102,8 @@ const BILLING_PLANS: PlanCard[] = [
     name: 'AI',
     monthlyPrice: 69,
     yearlyPrice: 690,
-    badge: 'Beta',
+   badge: 'Beta',
+     badge: 'Beta',
     description: 'Plan przygotowany pod dodatki AI i większy zakres automatyzacji.',
     features: [
       'Wszystko z Pro',
@@ -385,7 +386,7 @@ export default function Billing() {
 
       if (!result?.url) {
         if (result?.error === 'STRIPE_PROVIDER_NOT_CONFIGURED') {
-          toast.error('Stripe: wymaga konfiguracji w Vercel. UzupeĹ‚nij STRIPE_SECRET_KEY i webhook, zanim pokaĹĽesz pĹ‚atnoĹ›Ä‡ jako gotowÄ….');
+          toast.error('Stripe wymaga konfiguracji w Vercel. Uzupełnij STRIPE_SECRET_KEY i webhook, zanim pokażesz płatność jako gotową.');
           return;
         }
 

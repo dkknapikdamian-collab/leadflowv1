@@ -665,8 +665,8 @@ export default function Settings() {
                       variant="outline"
                       onClick={() => void handleCheckDigestDiagnostics()}
                       disabled={checkingDigestDiagnostics || !workspace?.id}
-                      title="Sprawdz konfiguracje"
-                      aria-label="Sprawdz konfiguracje"
+                      title="Sprawdź konfigurację"
+                      aria-label="Sprawdź konfigurację"
                     >
                       {checkingDigestDiagnostics ? 'Sprawdzanie...' : 'Sprawdź konfigurację'}
                     </Button>
@@ -675,8 +675,8 @@ export default function Settings() {
                       variant="outline"
                       onClick={() => void handleSendDigestTest()}
                       disabled={sendingDigestTest || !workspace?.id || !dailyDigestRecipientEmail.trim()}
-                      title="Wyslij test teraz"
-                      aria-label="Wyslij test teraz"
+                      title="Wyślij test teraz"
+                      aria-label="Wyślij test teraz"
                     >
                       {sendingDigestTest ? 'Wysyłanie...' : 'Wyślij test teraz'}
                     </Button>
