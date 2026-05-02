@@ -19,9 +19,17 @@ const useWorkspace = read('src/hooks/useWorkspace.ts');
 const todayAi = read('src/components/TodayAiAssistant.tsx');
 const pkg = JSON.parse(read('package.json'));
 
-expect(apiMe.includes('const appOwner = isServerConfiguredAdminEmail(email);'), 'api/me must resolve app owner from server email allowlist');
+expect(apiMe.includes('type AppOwnerIdentity'), 'api/me must define AppOwnerIdentity');
+expect(apiMe.includes('resolveAppOwnerIdentity'), 'api/me must resolve app owner identity');
+expect(apiMe.includes('fetchAppOwnerGrant'), 'api/me must support app_owners backend lookup');
+expect(apiMe.includes('app_owners?status=eq.active'), 'api/me must query active app_owners grants');
+expect(apiMe.includes('CLOSEFLOW_APP_OWNER_UIDS'), 'api/me must support UID owner env');
+expect(apiMe.includes('CLOSEFLOW_SERVER_APP_OWNER_UIDS'), 'api/me must support server UID owner env');
 expect(apiMe.includes('isAppOwner: appOwner'), 'api/me must return isAppOwner');
-expect(apiMe.includes("appRole: appOwner ? 'creator' : 'workspace'"), 'api/me must expose creator/workspace appRole');
+expect(apiMe.includes("appRole: appOwner ? appOwnerRole : 'workspace'"), 'api/me must expose resolved app owner role or workspace');
+expect(apiMe.includes('appOwnerSource'), 'api/me must expose appOwnerSource diagnostics');
+expect(!apiMe.includes("const appOwner = isServerConfiguredAdminEmail(email);"), 'api/me must not resolve app owner from email only');
+
 expect(fallback.includes('isAppOwner?: boolean'), 'client MeResponse type must include isAppOwner');
 expect(fallback.includes('appRole?: string'), 'client MeResponse type must include appRole');
 
@@ -53,9 +61,9 @@ expect(pkg.scripts && pkg.scripts['check:p12c-creator-only-access-correction'], 
 expect(pkg.scripts && pkg.scripts['check:p12-admin-full-access-override'] === 'node scripts/check-p12c-creator-only-access-correction.cjs', 'old P12 script must point to corrected creator-only guard');
 
 if (fail.length) {
-  console.error('P12C creator-only access correction guard failed.');
+  console.error('P12C/P13 creator-only identity guard failed.');
   for (const item of fail) console.error('- ' + item);
   process.exit(1);
 }
 
-console.log('OK: P12C creator-only access correction guard passed.');
+console.log('OK: P12C/P13 creator-only identity guard passed.');

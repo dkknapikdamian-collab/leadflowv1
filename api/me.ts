@@ -20,6 +20,12 @@ const FREE_LIMITS = PLAN_FREE_LIMITS;
 
 type NullableString = string | null;
 
+type AppOwnerIdentity = {
+  isAppOwner: boolean;
+  source: 'app_owners' | 'env_uid' | 'env_email' | 'none';
+  role: 'owner' | 'developer' | 'creator' | 'workspace';
+};
+
 function parseServerAdminEmailList(raw: unknown) {
   if (typeof raw !== 'string') return [];
   return raw
@@ -39,6 +45,125 @@ function isServerConfiguredAdminEmail(email: NullableString) {
 
   return configuredEmails.includes(normalizedEmail);
 }
+
+function parseServerAppOwnerUidList(raw: unknown) {
+  if (typeof raw !== 'string') return [];
+  return raw
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function isServerConfiguredAppOwnerUid(uid: NullableString) {
+  const normalizedUid = typeof uid === 'string' ? uid.trim() : '';
+  if (!normalizedUid) return false;
+
+  const configuredUids = [
+    ...parseServerAppOwnerUidList(process.env.CLOSEFLOW_APP_OWNER_UIDS),
+    ...parseServerAppOwnerUidList(process.env.CLOSEFLOW_SERVER_APP_OWNER_UIDS),
+  ];
+
+  return configuredUids.includes(normalizedUid);
+}
+
+function normalizeAppOwnerRole(value: unknown): AppOwnerIdentity['role'] {
+  const role = String(value || '').trim().toLowerCase();
+  if (role === 'owner') return 'owner';
+  if (role === 'developer') return 'developer';
+  if (role === 'creator') return 'creator';
+  return 'creator';
+}
+
+function getAppOwnerUidCandidates(row: Record<string, unknown> | null, uid: string | null) {
+  return uniqueStrings([
+    uid,
+    row?.id,
+    row?.firebase_uid,
+    row?.firebaseUid,
+    row?.auth_uid,
+    row?.authUid,
+    row?.external_auth_uid,
+    row?.externalAuthUid,
+  ]);
+}
+
+function getAppOwnerUuidCandidates(row: Record<string, unknown> | null, uid: string | null) {
+  return uniqueUuidStrings([
+    uid,
+    row?.id,
+    row?.firebase_uid,
+    row?.firebaseUid,
+    row?.auth_uid,
+    row?.authUid,
+    row?.external_auth_uid,
+    row?.externalAuthUid,
+  ]);
+}
+
+async function fetchAppOwnerGrant(row: Record<string, unknown> | null, uid: string | null, email: string | null) {
+  const uidCandidates = getAppOwnerUidCandidates(row, uid);
+  const uuidCandidates = getAppOwnerUuidCandidates(row, uid);
+  const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+  const queries: string[] = [];
+
+  for (const candidate of uidCandidates) {
+    queries.push(`app_owners?status=eq.active&auth_uid=eq.${encodeURIComponent(candidate)}&select=*&limit=1`);
+  }
+
+  for (const candidate of uuidCandidates) {
+    queries.push(`app_owners?status=eq.active&user_id=eq.${encodeURIComponent(candidate)}&select=*&limit=1`);
+    queries.push(`app_owners?status=eq.active&profile_id=eq.${encodeURIComponent(candidate)}&select=*&limit=1`);
+  }
+
+  if (normalizedEmail) {
+    queries.push(`app_owners?status=eq.active&email=eq.${encodeURIComponent(normalizedEmail)}&select=*&limit=1`);
+  }
+
+  if (!queries.length) return null;
+
+  try {
+    const result = await selectFirstAvailable(queries);
+    const rowResult = Array.isArray(result.data) ? result.data[0] : null;
+    return rowResult && typeof rowResult === 'object' ? rowResult as Record<string, unknown> : null;
+  } catch {
+    return null;
+  }
+}
+
+async function resolveAppOwnerIdentity(row: Record<string, unknown> | null, uid: string | null, email: string | null): Promise<AppOwnerIdentity> {
+  const grant = await fetchAppOwnerGrant(row, uid, email);
+  if (grant) {
+    return {
+      isAppOwner: true,
+      source: 'app_owners',
+      role: normalizeAppOwnerRole(grant.role),
+    };
+  }
+
+  const uidOwner = getAppOwnerUidCandidates(row, uid).some((candidate) => isServerConfiguredAppOwnerUid(candidate));
+  if (uidOwner) {
+    return {
+      isAppOwner: true,
+      source: 'env_uid',
+      role: 'owner',
+    };
+  }
+
+  if (isServerConfiguredAdminEmail(email)) {
+    return {
+      isAppOwner: true,
+      source: 'env_email',
+      role: 'creator',
+    };
+  }
+
+  return {
+    isAppOwner: false,
+    source: 'none',
+    role: 'workspace',
+  };
+}
+
 
 function isAdminProfileRow(row: Record<string, unknown> | null) {
   if (!row) return false;
@@ -192,9 +317,14 @@ function normalizeProfile(
   fallbackUid: string | null,
   fallbackEmail: string | null,
   fallbackFullName: string | null,
+  appOwnerIdentity: AppOwnerIdentity = { isAppOwner: false, source: 'none', role: 'workspace' },
 ) {
   const email = asString(row?.email ?? fallbackEmail ?? '');
-  const appOwner = isServerConfiguredAdminEmail(email);
+  const fallbackUidOwner = getAppOwnerUidCandidates(row, fallbackUid).some((candidate) => isServerConfiguredAppOwnerUid(candidate));
+  const fallbackEmailOwner = isServerConfiguredAdminEmail(email);
+  const appOwner = Boolean(appOwnerIdentity.isAppOwner || fallbackUidOwner || fallbackEmailOwner);
+  const appOwnerRole = appOwner ? normalizeAppOwnerRole(appOwnerIdentity.role) : 'workspace';
+  const appOwnerSource = appOwnerIdentity.isAppOwner ? appOwnerIdentity.source : fallbackUidOwner ? 'env_uid' : fallbackEmailOwner ? 'env_email' : 'none';
   const admin = isAdminProfileRow(row) || appOwner;
   return {
     id: asString(
@@ -215,7 +345,8 @@ function normalizeProfile(
     role: asString(row?.role ?? (admin ? 'admin' : 'member'), admin ? 'admin' : 'member'),
     isAdmin: admin,
     isAppOwner: appOwner,
-    appRole: appOwner ? 'creator' : 'workspace',
+    appRole: appOwner ? appOwnerRole : 'workspace',
+    appOwnerSource,
     appearanceSkin: asString(row?.appearance_skin ?? row?.appearanceSkin ?? 'classic-light'),
     planningConflictWarningsEnabled: Boolean(row?.planning_conflict_warnings_enabled ?? row?.planningConflictWarningsEnabled ?? true),
     browserNotificationsEnabled: Boolean(row?.browser_notifications_enabled ?? row?.browserNotificationsEnabled ?? true),
@@ -622,8 +753,8 @@ async function ensureProfile(
   workspaceId: string | null,
 ) {
   const nowIso = new Date().toISOString();
-  const admin = isServerConfiguredAdminEmail(email);
   const normalizedUid = uid && isUuid(uid) ? uid : null;
+  const admin = isServerConfiguredAdminEmail(email) || isServerConfiguredAppOwnerUid(uid);
 
   if (!profileRow) {
     const generatedId = crypto.randomUUID();
@@ -952,7 +1083,7 @@ export default async function handler(req: any, res: any) {
     profileRow = await ensureProfile(profileRow, uid, email, fullName, workspaceId);
 
     const workspace = normalizeWorkspace(workspaceRow, workspaceId, workspaceOwnerUserId);
-    const profile = normalizeProfile(profileRow, uid, email, fullName);
+    const profile = normalizeProfile(profileRow, uid, email, fullName, await resolveAppOwnerIdentity(profileRow, uid, email));
     const access = enrichAccessModel(buildAccess(workspace), workspace.planId);
 
     if (workspaceResolutionMode === 'historical_mapping' || workspaceResolutionMode === 'explicit_fallback') {
