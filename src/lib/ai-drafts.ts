@@ -1,4 +1,5 @@
 // AI_DRAFT_CONFIRM_RECORDS_STAGE25_LIB
+// AI_DRAFTS_SUPABASE_SOURCE_OF_TRUTH_STAGE11
 import { getClientAuthSnapshot } from './client-auth';
 import {
   createAiDraftInSupabase,
@@ -35,6 +36,7 @@ export type AiLeadDraft = {
 
 const STORAGE_PREFIX = 'closeflow:ai-lead-drafts:v1';
 export const AI_DRAFTS_SUPABASE_SYNC_STAGE13_MARKER = 'AI_DRAFTS_SUPABASE_SYNC_STAGE13';
+export const AI_DRAFTS_SUPABASE_SOURCE_OF_TRUTH_STAGE11 = true;
 
 function getStorageKey() {
   const auth = getClientAuthSnapshot();
@@ -44,6 +46,21 @@ function getStorageKey() {
 
 function canUseStorage() {
   return typeof window !== 'undefined' && Boolean(window.localStorage);
+}
+
+function getViteEnv() {
+  return (((import.meta as any)?.env || {}) as Record<string, unknown>);
+}
+
+function isProductionRuntime() {
+  const env = getViteEnv();
+  return env.PROD === true || String(env.MODE || '').toLowerCase() === 'production';
+}
+
+function canUseDevLocalDraftFallback() {
+  const env = getViteEnv();
+  if (isProductionRuntime()) return false;
+  return env.DEV === true || String(env.VITE_AI_DRAFTS_DEV_LOCAL_FALLBACK || '').toLowerCase() === 'true';
 }
 
 function makeId() {
@@ -85,7 +102,7 @@ function normalizeDraft(input: unknown): AiLeadDraft | null {
     rawText,
     parsedDraft: parsed && typeof parsed === 'object' ? parsed as Record<string, unknown> : null,
     parsedData: parsed && typeof parsed === 'object' ? parsed as Record<string, unknown> : null,
-    provider: typeof row.provider === 'string' ? row.provider : 'local',
+    provider: typeof row.provider === 'string' ? row.provider : 'supabase',
     source: normalizeSource(row.source),
     status,
     createdAt,
@@ -102,11 +119,11 @@ function normalizeDraft(input: unknown): AiLeadDraft | null {
         : (parsed as any)?.linkedRecordType === 'lead' || (parsed as any)?.linkedRecordType === 'task' || (parsed as any)?.linkedRecordType === 'event' || (parsed as any)?.linkedRecordType === 'note'
           ? (parsed as any).linkedRecordType
           : null,
-    remoteSynced: Boolean(row.remoteSynced || row.workspaceId || row.workspace_id),
+    remoteSynced: true,
   };
 }
 
-export function getAiLeadDrafts() {
+function readLocalAiDraftsUnsafe() {
   if (!canUseStorage()) return [] as AiLeadDraft[];
 
   try {
@@ -120,9 +137,61 @@ export function getAiLeadDrafts() {
   }
 }
 
+function sanitizeDraftForLocalCache(draft: AiLeadDraft): AiLeadDraft {
+  const sanitized = {
+    ...draft,
+    parsedData: draft.parsedDraft || draft.parsedData || null,
+  };
+
+  if (sanitized.status !== 'draft') {
+    return {
+      ...sanitized,
+      rawText: '',
+      parsedDraft: {
+        ...(sanitized.parsedDraft || {}),
+        rawTextRemoved: true,
+      },
+      parsedData: {
+        ...(sanitized.parsedData || {}),
+        rawTextRemoved: true,
+      },
+    };
+  }
+
+  return sanitized;
+}
+
 function persistAiLeadDrafts(drafts: AiLeadDraft[]) {
+  if (!canUseDevLocalDraftFallback() || !canUseStorage()) return;
+  const sanitized = drafts.map(sanitizeDraftForLocalCache).slice(0, 300);
+  window.localStorage.setItem(getStorageKey(), JSON.stringify(sanitized));
+}
+
+function removeAiDraftFromLocalCache(id: string) {
   if (!canUseStorage()) return;
-  window.localStorage.setItem(getStorageKey(), JSON.stringify(drafts));
+  const next = readLocalAiDraftsUnsafe().filter((draft) => draft.id !== id);
+  if (!canUseDevLocalDraftFallback()) {
+    window.localStorage.setItem(getStorageKey(), JSON.stringify(next.map((draft) => ({ ...draft, rawText: '' }))));
+    return;
+  }
+  persistAiLeadDrafts(next);
+}
+
+function replaceAiDraftInLocalCache(draft: AiLeadDraft) {
+  if (!canUseDevLocalDraftFallback() || !canUseStorage()) return;
+  const current = readLocalAiDraftsUnsafe().filter((entry) => entry.id !== draft.id);
+  persistAiLeadDrafts([draft, ...current]);
+}
+
+function clearAiDraftLocalRawText(id: string) {
+  if (!canUseStorage()) return;
+  const next = readLocalAiDraftsUnsafe().map((draft) => draft.id === id ? sanitizeDraftForLocalCache({ ...draft, rawText: '', status: draft.status }) : draft);
+  window.localStorage.setItem(getStorageKey(), JSON.stringify(next));
+}
+
+function clearProductionLocalDrafts() {
+  if (!canUseStorage() || canUseDevLocalDraftFallback()) return;
+  window.localStorage.removeItem(getStorageKey());
 }
 
 function dedupeDrafts(drafts: AiLeadDraft[]) {
@@ -146,35 +215,6 @@ async function tryFetchRemoteDrafts() {
     : [];
 }
 
-function mergeRemoteAndLocalDrafts(remoteDrafts: AiLeadDraft[], localDrafts: AiLeadDraft[]) {
-  const remoteKeys = new Set(remoteDrafts.map((draft) => draft.id));
-  const localOnlyDrafts = localDrafts.filter((draft) => {
-    if (!draft.rawText && draft.status === 'draft') return false;
-    if (remoteKeys.has(draft.id)) return false;
-    return !draft.remoteSynced;
-  });
-
-  return dedupeDrafts([...remoteDrafts, ...localOnlyDrafts]).slice(0, 300);
-}
-
-async function pushAiLeadDraftToSupabase(draft: AiLeadDraft) {
-  const remote = await createAiDraftInSupabase({
-    rawText: draft.rawText,
-    parsedDraft: draft.parsedDraft || null,
-    source: draft.source,
-    provider: draft.provider || 'local',
-    type: draft.type || 'lead',
-    status: draft.status,
-  });
-
-  const normalized = normalizeDraft(remote);
-  if (!normalized) return draft;
-
-  const current = getAiLeadDrafts().filter((entry) => entry.id !== draft.id);
-  persistAiLeadDrafts(dedupeDrafts([normalized, ...current]).slice(0, 300));
-  return normalized;
-}
-
 function createLocalAiLeadDraft(input: { rawText: string; parsedDraft?: Record<string, unknown> | null; source?: AiLeadDraftSource; type?: AiLeadDraft['type']; }) {
   const rawText = String(input.rawText || '').trim();
   if (!rawText) throw new Error('AI_DRAFT_RAW_TEXT_REQUIRED');
@@ -187,7 +227,7 @@ function createLocalAiLeadDraft(input: { rawText: string; parsedDraft?: Record<s
     rawText,
     parsedDraft: input.parsedDraft || null,
     parsedData: input.parsedDraft || null,
-    provider: 'local',
+    provider: 'local_dev_fallback',
     source: input.source || 'manual',
     status: 'draft' as const,
     createdAt: now,
@@ -197,58 +237,91 @@ function createLocalAiLeadDraft(input: { rawText: string; parsedDraft?: Record<s
   };
 }
 
+async function createAiLeadDraftInSupabaseRequired(input: {
+  rawText: string;
+  parsedDraft?: Record<string, unknown> | null;
+  source?: AiLeadDraftSource;
+  type?: AiLeadDraft['type'];
+  status?: AiLeadDraftStatus;
+}) {
+  const rawText = String(input.rawText || '').trim();
+  if (!rawText) throw new Error('AI_DRAFT_RAW_TEXT_REQUIRED');
+
+  const remote = await createAiDraftInSupabase({
+    rawText,
+    parsedDraft: input.parsedDraft || null,
+    source: input.source || 'manual',
+    provider: 'supabase',
+    type: input.type || 'lead',
+    status: input.status || 'draft',
+  });
+
+  const normalized = normalizeDraft(remote);
+  if (!normalized) throw new Error('AI_DRAFT_SUPABASE_RESPONSE_INVALID');
+
+  replaceAiDraftInLocalCache(normalized);
+  return normalized;
+}
+
+export function getAiLeadDrafts() {
+  if (!canUseDevLocalDraftFallback()) {
+    clearProductionLocalDrafts();
+    return [] as AiLeadDraft[];
+  }
+  return dedupeDrafts(readLocalAiDraftsUnsafe()).slice(0, 300);
+}
+
 export async function syncLocalAiDraftsToSupabase() {
-  const localDrafts = getAiLeadDrafts().filter((draft) => draft.status === 'draft' && draft.rawText && !draft.remoteSynced);
+  if (!canUseDevLocalDraftFallback()) {
+    clearProductionLocalDrafts();
+    return [] as AiLeadDraft[];
+  }
+
+  const localDrafts = readLocalAiDraftsUnsafe().filter((draft) => draft.status === 'draft' && draft.rawText && !draft.remoteSynced);
   if (!localDrafts.length) return [] as AiLeadDraft[];
 
   const synced: AiLeadDraft[] = [];
   for (const draft of localDrafts) {
-    try {
-      const remote = await createAiDraftInSupabase({
-        rawText: draft.rawText,
-        parsedDraft: draft.parsedDraft || null,
-        source: draft.source,
-        provider: draft.provider || 'local',
-        type: draft.type || 'lead',
-        status: draft.status,
-      });
-      const normalized = normalizeDraft(remote);
-      if (normalized) synced.push(normalized);
-    } catch {
-      // Supabase may be unavailable locally. Local fallback remains the safety net.
-    }
+    const remote = await createAiLeadDraftInSupabaseRequired({
+      rawText: draft.rawText,
+      parsedDraft: draft.parsedDraft || null,
+      source: draft.source,
+      type: draft.type || 'lead',
+      status: draft.status,
+    });
+    synced.push(remote);
   }
 
-  if (synced.length) {
-    const localIds = new Set(localDrafts.map((draft) => draft.id));
-    const remaining = getAiLeadDrafts().filter((draft) => !localIds.has(draft.id));
-    persistAiLeadDrafts(dedupeDrafts([...synced, ...remaining]));
-  }
-
+  const syncedIds = new Set(localDrafts.map((draft) => draft.id));
+  const remaining = readLocalAiDraftsUnsafe().filter((draft) => !syncedIds.has(draft.id));
+  persistAiLeadDrafts(dedupeDrafts([...synced, ...remaining]));
   return synced;
 }
 
 export async function getAiLeadDraftsAsync() {
-  const localDrafts = getAiLeadDrafts();
+  const remoteDrafts = await tryFetchRemoteDrafts();
 
-  try {
-    if (localDrafts.some((draft) => draft.status === 'draft' && draft.rawText && !draft.remoteSynced)) {
-      await syncLocalAiDraftsToSupabase();
-    }
-
-    const latestLocalDrafts = getAiLeadDrafts();
-    const remoteDrafts = await tryFetchRemoteDrafts();
-    const mergedDrafts = mergeRemoteAndLocalDrafts(remoteDrafts, latestLocalDrafts);
-
-    if (mergedDrafts.length) {
-      persistAiLeadDrafts(mergedDrafts);
-      return mergedDrafts;
-    }
-  } catch {
-    // Keep local mode for offline/demo/dev.
+  if (!canUseDevLocalDraftFallback()) {
+    clearProductionLocalDrafts();
+    return remoteDrafts;
   }
 
-  return localDrafts;
+  const localDrafts = readLocalAiDraftsUnsafe();
+  const unsyncedLocalDrafts = localDrafts.filter((draft) => draft.status === 'draft' && draft.rawText && !draft.remoteSynced);
+
+  if (unsyncedLocalDrafts.length) {
+    const synced = await syncLocalAiDraftsToSupabase().catch(() => []);
+    const latestLocalDrafts = readLocalAiDraftsUnsafe().filter((draft) => !unsyncedLocalDrafts.some((entry) => entry.id === draft.id));
+    const merged = dedupeDrafts([...remoteDrafts, ...synced, ...latestLocalDrafts]).slice(0, 300);
+    persistAiLeadDrafts(merged);
+    return merged;
+  }
+
+  const remoteKeys = new Set(remoteDrafts.map((draft) => draft.id));
+  const localOnly = localDrafts.filter((draft) => !remoteKeys.has(draft.id) && !draft.remoteSynced);
+  const merged = dedupeDrafts([...remoteDrafts, ...localOnly]).slice(0, 300);
+  persistAiLeadDrafts(merged);
+  return merged;
 }
 
 export function saveAiLeadDraft(input: {
@@ -257,11 +330,15 @@ export function saveAiLeadDraft(input: {
   source?: AiLeadDraftSource;
   type?: AiLeadDraft['type'];
 }) {
-  const draft = createLocalAiLeadDraft(input);
-  const drafts = getAiLeadDrafts();
-  persistAiLeadDrafts([draft, ...drafts].slice(0, 300));
+  if (!canUseDevLocalDraftFallback()) {
+    throw new Error('AI_DRAFT_SUPABASE_REQUIRED_USE_ASYNC');
+  }
 
-  void pushAiLeadDraftToSupabase(draft).catch(() => null);
+  const draft = createLocalAiLeadDraft(input);
+  persistAiLeadDrafts([draft, ...readLocalAiDraftsUnsafe()]);
+  void createAiLeadDraftInSupabaseRequired({ ...input, status: 'draft' })
+    .then((remote) => replaceAiDraftInLocalCache(remote))
+    .catch(() => null);
 
   return draft;
 }
@@ -272,34 +349,38 @@ export async function saveAiLeadDraftAsync(input: {
   source?: AiLeadDraftSource;
   type?: AiLeadDraft['type'];
 }) {
-  const draft = createLocalAiLeadDraft(input);
-  const drafts = getAiLeadDrafts();
-  persistAiLeadDrafts([draft, ...drafts].slice(0, 300));
-
   try {
-    return await pushAiLeadDraftToSupabase(draft);
-  } catch {
-    return draft;
+    return await createAiLeadDraftInSupabaseRequired({ ...input, status: 'draft' });
+  } catch (error) {
+    if (canUseDevLocalDraftFallback()) {
+      const draft = createLocalAiLeadDraft(input);
+      persistAiLeadDrafts([draft, ...readLocalAiDraftsUnsafe()]);
+      return draft;
+    }
+    throw error;
   }
 }
 
 export function updateAiLeadDraft(id: string, patch: Partial<AiLeadDraft>) {
-  const drafts = getAiLeadDrafts();
+  if (!canUseDevLocalDraftFallback()) {
+    throw new Error('AI_DRAFT_SUPABASE_REQUIRED_USE_ASYNC');
+  }
+
+  const drafts = readLocalAiDraftsUnsafe();
   const now = new Date().toISOString();
   const nextDrafts = drafts.map((draft) => draft.id === id
-    ? {
+    ? sanitizeDraftForLocalCache({
         ...draft,
         ...patch,
         rawText: typeof patch.rawText === 'string' ? patch.rawText.trim() : draft.rawText,
         updatedAt: now,
-      }
+      })
     : draft);
   persistAiLeadDrafts(nextDrafts);
   return nextDrafts.find((draft) => draft.id === id) || null;
 }
 
 export async function updateAiLeadDraftAsync(id: string, patch: Partial<AiLeadDraft>) {
-  const local = updateAiLeadDraft(id, patch);
   try {
     const remote = await updateAiDraftInSupabase({
       id,
@@ -312,9 +393,21 @@ export async function updateAiLeadDraftAsync(id: string, patch: Partial<AiLeadDr
       linkedRecordId: patch.linkedRecordId,
       linkedRecordType: patch.linkedRecordType,
     } as any);
-    return normalizeDraft(remote) || local;
-  } catch {
-    return local;
+
+    const normalized = normalizeDraft(remote);
+    if (normalized) {
+      if (normalized.status !== 'draft') clearAiDraftLocalRawText(id);
+      replaceAiDraftInLocalCache(normalized);
+    } else if (patch.status === 'converted' || patch.status === 'archived' || patch.rawText === '') {
+      clearAiDraftLocalRawText(id);
+    }
+
+    return normalized;
+  } catch (error) {
+    if (canUseDevLocalDraftFallback()) {
+      return updateAiLeadDraft(id, patch);
+    }
+    throw error;
   }
 }
 
@@ -322,12 +415,13 @@ export function markAiLeadDraftConverted(id: string) {
   return updateAiLeadDraft(id, {
     status: 'converted',
     convertedAt: new Date().toISOString(),
+    rawText: '',
   });
 }
 
 export async function markAiLeadDraftConvertedAsync(id: string, metadata?: { linkedRecordId?: string | null; linkedRecordType?: AiLeadDraft['linkedRecordType']; parsedDraft?: Record<string, unknown> | null }) {
   const convertedAt = new Date().toISOString();
-  const local = updateAiLeadDraft(id, {
+  const result = await updateAiLeadDraftAsync(id, {
     status: 'converted',
     convertedAt,
     confirmedAt: convertedAt,
@@ -336,56 +430,37 @@ export async function markAiLeadDraftConvertedAsync(id: string, metadata?: { lin
     parsedData: metadata?.parsedDraft || undefined,
     linkedRecordId: metadata?.linkedRecordId || null,
     linkedRecordType: metadata?.linkedRecordType || null,
-  });
-  try {
-    const remote = await updateAiDraftInSupabase({
-      id,
-      status: 'converted',
-      convertedAt,
-      confirmedAt: convertedAt,
-      rawText: '',
-      parsedDraft: metadata?.parsedDraft || undefined,
-      linkedRecordId: metadata?.linkedRecordId || null,
-      linkedRecordType: metadata?.linkedRecordType || null,
-      action: 'convert',
-    } as any);
-    return normalizeDraft(remote) || local;
-  } catch {
-    return local;
-  }
+  } as any);
+
+  clearAiDraftLocalRawText(id);
+  return result;
 }
 
 export function archiveAiLeadDraft(id: string) {
-  return updateAiLeadDraft(id, { status: 'archived' });
+  return updateAiLeadDraft(id, { status: 'archived', rawText: '', cancelledAt: new Date().toISOString() });
 }
 
 export async function archiveAiLeadDraftAsync(id: string) {
   const cancelledAt = new Date().toISOString();
-  const local = updateAiLeadDraft(id, { status: 'archived', rawText: '', cancelledAt });
-  try {
-    const remote = await updateAiDraftInSupabase({ id, status: 'archived', rawText: '', cancelledAt, action: 'archive' } as any);
-    return normalizeDraft(remote) || local;
-  } catch {
-    return local;
-  }
+  const result = await updateAiLeadDraftAsync(id, { status: 'archived', rawText: '', cancelledAt, action: 'archive' } as any);
+  clearAiDraftLocalRawText(id);
+  return result;
 }
 
 export function deleteAiLeadDraft(id: string) {
-  const drafts = getAiLeadDrafts();
-  const nextDrafts = drafts.filter((draft) => draft.id !== id);
-  persistAiLeadDrafts(nextDrafts);
+  if (!canUseDevLocalDraftFallback()) {
+    throw new Error('AI_DRAFT_SUPABASE_REQUIRED_USE_ASYNC');
+  }
+  removeAiDraftFromLocalCache(id);
 }
 
 export async function deleteAiLeadDraftAsync(id: string) {
-  deleteAiLeadDraft(id);
-  try {
-    await deleteAiDraftFromSupabase(id);
-  } catch {
-    // Local fallback already removed it from the visible inbox.
-  }
+  await deleteAiDraftFromSupabase(id);
+  removeAiDraftFromLocalCache(id);
 }
 
 export function countAiLeadDrafts(status: AiLeadDraftStatus = 'draft') {
+  if (!canUseDevLocalDraftFallback()) return 0;
   return getAiLeadDrafts().filter((draft) => draft.status === status).length;
 }
 
@@ -393,3 +468,5 @@ export async function countAiLeadDraftsAsync(status: AiLeadDraftStatus = 'draft'
   const drafts = await getAiLeadDraftsAsync();
   return drafts.filter((draft) => draft.status === status).length;
 }
+
+void AI_DRAFTS_SUPABASE_SOURCE_OF_TRUTH_STAGE11;

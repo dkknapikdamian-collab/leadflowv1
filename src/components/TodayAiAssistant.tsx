@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { askTodayAiAssistant, type TodayAiAssistantAnswer } from '../lib/ai-assistant';
-import { saveAiLeadDraft } from '../lib/ai-drafts';
+import { saveAiLeadDraftAsync } from '../lib/ai-drafts';
 import {
   AI_COMMAND_MAX_LENGTH,
   buildAiUsageKey,
@@ -336,11 +336,20 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
     const draftCommandType = getAiDraftTypeForWriteCommand(command);
     if (draftCommandType || isClientLeadCaptureCommand(command)) {
       const type = draftCommandType || 'lead';
-      saveAiLeadDraft({ rawText: command, source: 'today_assistant', type, parsedDraft: { type, rawText: command } });
-      setAnswer(buildClientLeadCaptureDraftAnswer(command, type));
-      // AI_ASSISTANT_CLEAR_INPUT_AFTER_RESULT
-      setRawText('');
-      toast.success('Szkic zapisany w Szkicach AI');
+      setLoading(true);
+      try {
+        await saveAiLeadDraftAsync({ rawText: command, source: 'today_assistant', type, parsedDraft: { type, rawText: command } });
+        setAnswer(buildClientLeadCaptureDraftAnswer(command, type));
+        // AI_ASSISTANT_CLEAR_INPUT_AFTER_RESULT
+        setRawText('');
+        toast.success('Szkic zapisany w Supabase');
+      } catch (error: any) {
+        const message = 'Nie udało się zapisać szkicu AI w Supabase. Spróbuj ponownie za chwilę.';
+        setAnswer(buildClientBlockedAnswer(command, message));
+        toast.error(message);
+      } finally {
+        setLoading(false);
+      }
       return;
     }
 
@@ -382,11 +391,13 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
       if (result.intent === 'lead_capture' && !result.hardBlock) {
         const captureText = String(result.suggestedCaptureText || result.rawText || command || '').trim();
         if (captureText) {
-          // AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
-          // saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })
           const draftPayload = getAiDraftPayloadFromAnswer(result);
-          saveAiLeadDraft({ rawText: captureText, source: 'today_assistant', type: draftPayload.type, parsedDraft: draftPayload.parsedDraft });
-          toast.success('Szkic zapisany w Szkicach AI');
+          try {
+            await saveAiLeadDraftAsync({ rawText: captureText, source: 'today_assistant', type: draftPayload.type, parsedDraft: draftPayload.parsedDraft });
+            toast.success('Szkic zapisany w Supabase');
+          } catch {
+            toast.error('Nie udało się zapisać szkicu AI w Supabase.');
+          }
         }
       }
       if (shouldRegisterAiUsage(result)) {
@@ -413,15 +424,19 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
     }, 1300);
   };
 
-  const handleSaveCaptureDraft = () => {
+  const handleSaveCaptureDraft = async () => {
     const text = String(answer?.suggestedCaptureText || answer?.rawText || rawText || '').trim();
     if (!text) {
       toast.error('Brak treści do zapisania w Szkicach AI');
       return;
     }
 
-    saveAiLeadDraft({ rawText: text, source: 'today_assistant' });
-    toast.success('Szkic zapisany w Szkicach AI');
+    try {
+      await saveAiLeadDraftAsync({ rawText: text, source: 'today_assistant' });
+      toast.success('Szkic zapisany w Supabase');
+    } catch {
+      toast.error('Nie udało się zapisać szkicu AI w Supabase.');
+    }
   };
 
   const handleTransferCapture = () => {

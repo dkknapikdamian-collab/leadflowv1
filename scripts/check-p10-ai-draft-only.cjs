@@ -45,13 +45,14 @@ for (const needle of forbiddenToday) {
 expect(!/<Badge[^>]*>\s*<\/Badge>/.test(today), 'TodayAiAssistant must not render empty badges');
 expect(today.includes('AI przygotowuje szkic. Ty zatwierdzasz zapis.'), 'TodayAiAssistant must show draft-only safety copy');
 expect(today.includes('getAiDraftTypeForWriteCommand'), 'TodayAiAssistant must route write commands into AI drafts');
-expect(today.includes("saveAiLeadDraft({ rawText: command, source: 'today_assistant', type"), 'write commands must save AI drafts with type');
+expect(today.includes("await saveAiLeadDraftAsync({ rawText: command, source: 'today_assistant', type"), 'write commands must await Supabase AI draft save with type');
 expect(today.includes("type AiDraftCommandType = 'lead' | 'task' | 'event' | 'note'"), 'TodayAiAssistant draft answer must support lead/task/event/note');
 expect(today.includes('Bez zapisz = szukanie'), 'TodayAiAssistant must keep read-only query explanation');
 
 // P10C_SYNTAX_SEAM_GUARD: previous patch versions could glue repeated fragments together.
 expect(!today.includes('const EXAMPLES = [const EXAMPLES = ['), 'TodayAiAssistant must not contain duplicated EXAMPLES seam');
 expect(!today.includes('if (!latestUsage.canUse && !latestUsage.adminExempt) {    if (!latestUsage.canUse && !latestUsage.adminExempt) {'), 'TodayAiAssistant must not contain duplicated latestUsage seam');
+expect(!today.includes('if (!latestUsage.canUse && !latestUsage.adminExempt) {\n    if (!latestUsage.canUse && !latestUsage.adminExempt) {'), 'TodayAiAssistant must not contain duplicated latestUsage newline seam');
 
 expect(directGuard.includes('AI_DIRECT_WRITE_ENABLED = false'), 'ai-direct-write-guard must hard-disable direct write');
 expect(directGuard.includes('if (!AI_DIRECT_WRITE_ENABLED) return null;'), 'direct write parser must return null when disabled');

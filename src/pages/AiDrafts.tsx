@@ -397,6 +397,9 @@ export default function AiDrafts() {
     setDraftsLoading(true);
     try {
       setDrafts(await getAiLeadDraftsAsync());
+    } catch (error: any) {
+      setDrafts([]);
+      toast.error('Nie udało się pobrać szkiców AI z Supabase: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setDraftsLoading(false);
     }
