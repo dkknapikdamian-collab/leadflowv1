@@ -104,3 +104,21 @@ Aktualny stan gotowości produkcyjnej jest opisany w:
 - `docs/PRODUCTION_READINESS_STATUS.md`
 
 Ten dokument ma być źródłem prawdy dla ostrzeżeń, braków i elementów wymagających sprawdzenia przed sprzedażą.
+
+## Portal klienta: wymagane sekrety
+
+Portal klienta nie może działać produkcyjnie na domyślnych sekretach.
+
+W środowisku produkcyjnym ustaw jako zmienne serwerowe:
+
+```bash
+PORTAL_TOKEN_PEPPER=
+PORTAL_SESSION_SECRET=
+```
+
+Zasady:
+
+- nie dodawaj tych wartości jako `VITE_*`,
+- zmiana `PORTAL_TOKEN_PEPPER` unieważnia stare linki portalu,
+- zmiana `PORTAL_SESSION_SECRET` unieważnia aktywne sesje portalu,
+- jeśli `NODE_ENV=production` albo `VERCEL_ENV=production` i brakuje sekretów, endpointy portalu zwracają `PORTAL_SECRET_CONFIG_MISSING`.

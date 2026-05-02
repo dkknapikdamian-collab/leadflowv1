@@ -1,6 +1,7 @@
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { findWorkspaceId, selectFirstAvailable, supabaseRequest } from './_supabase.js';
 import { resolveRequestWorkspaceId, requireScopedRow } from './_request-scope.js';
+import { RequestAuthError } from './_supabase-auth.js';
 
 function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
@@ -24,12 +25,29 @@ function nowIso() {
   return new Date().toISOString();
 }
 
+function isProductionRuntime() {
+  const nodeEnv = asText(process.env.NODE_ENV).toLowerCase();
+  const vercelEnv = asText(process.env.VERCEL_ENV).toLowerCase();
+  return nodeEnv === 'production' || vercelEnv === 'production';
+}
+
+function requirePortalSecret(envName: 'PORTAL_TOKEN_PEPPER' | 'PORTAL_SESSION_SECRET') {
+  const direct = asText(process.env[envName]);
+  if (direct) return direct;
+
+  if (isProductionRuntime()) {
+    throw new RequestAuthError(500, 'PORTAL_SECRET_CONFIG_MISSING');
+  }
+
+  return '';
+}
+
 function tokenPepper() {
-  return asText(process.env.PORTAL_TOKEN_PEPPER || process.env.SUPABASE_SERVICE_ROLE_KEY || 'closeflow-portal-v1');
+  return requirePortalSecret('PORTAL_TOKEN_PEPPER') || asText(process.env.SUPABASE_SERVICE_ROLE_KEY || 'closeflow-portal-dev-token-pepper');
 }
 
 function portalSessionSecret() {
-  return asText(process.env.PORTAL_SESSION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || 'closeflow-portal-session-v1');
+  return requirePortalSecret('PORTAL_SESSION_SECRET') || asText(process.env.SUPABASE_SERVICE_ROLE_KEY || 'closeflow-portal-dev-session-secret');
 }
 
 function base64UrlEncode(value: string | Buffer) {
