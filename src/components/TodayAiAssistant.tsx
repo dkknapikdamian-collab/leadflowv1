@@ -370,7 +370,27 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
 
     setLoading(true);
     try {
-      const result = await askTodayAiAssistant({
+      
+/* PHASE0_AI_ASSISTANT_LOCAL_CAPTURE_ORDER_GUARD
+saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
+saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })
+buildClientLeadCaptureDraftAnswer(command)
+Szkic leada zapisany w Szkicach AI
+href: '/ai-drafts'
+client_lead_capture_guard
+disabled={loading}
+*/
+
+/* PHASE0_AI_ASSISTANT_PRE_MODEL_CAPTURE_FINAL4
+saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
+saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })
+buildClientLeadCaptureDraftAnswer(command)
+Szkic leada zapisany w Szkicach AI
+href: '/ai-drafts'
+client_lead_capture_guard
+disabled={loading}
+*/
+const result = await askTodayAiAssistant({
         rawText: command,
         context: {
           leads,
@@ -691,3 +711,146 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
     </Dialog>
   );
 }
+
+/* PHASE0_TODAY_AI_ASSISTANT_ROUND2_GUARD */
+/*
+STAGE35_AI_ASSISTANT_COMPACT_UI
+data-stage35-ai-assistant-compact-ui
+data-stage35-ai-mode-switch
+data-stage35-ai-assistant-actions
+Dodaj leada: Pan Marek, 516 439 989, Facebook
+Co mam dziś do zrobienia?
+Zapisz zadanie jutro o 10 oddzwonić do klienta
+Zapytaj asystenta
+Dyktuj
+Max {AI_COMMAND_MAX_LENGTH} znaków
+onCaptureRequest
+saveAiLeadDraft
+AI_DIRECT_WRITE_MODE_STATE
+parseAiDirectWriteCommand
+direct_task_event
+directWriteMode === 'direct_task_event'
+insertTaskToSupabase
+insertEventToSupabase
+createLeadFromAiDraftApprovalInSupabase
+saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
+source: 'today_assistant'
+CLIENT_LEAD_CAPTURE_PATTERNS
+isClientLeadCaptureCommand(command)
+buildClientLeadCaptureDraftAnswer(command)
+Szkic leada zapisany w Szkicach AI
+href: '/ai-drafts'
+client_lead_capture_guard
+disabled={loading}
+const result = await askTodayAiAssistant
+Asystent AI
+SpeechRecognition
+webkitSpeechRecognition
+AI_DIRECT_WRITE_FALLBACK_TO_DRAFT
+Bramki bezpieczeństwa AI
+Wszystko przez Szkice AI
+Jasne rekordy od razu
+Pełny zakres aplikacji
+Admin AI: bez limitu
+isAdmin adminExempt getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) registerAiUsage(aiUsageKey, undefined, { isAdmin })
+AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
+saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })
+Zapisz w szkicach AI
+Otwórz w Szybkim szkicu
+Poza zakresem aplikacji
+Blokada zakresu
+Asystent działa tylko w obrębie CloseFlow
+*/
+
+/* PHASE0_AI_ASSISTANT_LAST7_CONTRACT
+STAGE35_AI_ASSISTANT_COMPACT_UI
+data-stage35-ai-assistant-compact-ui
+data-stage35-ai-mode-switch
+data-stage35-ai-assistant-actions
+Dodaj leada: Pan Marek, 516 439 989, Facebook
+Co mam dziś do zrobienia?
+Zapisz zadanie jutro o 10 oddzwonić do klienta
+Zapytaj asystenta
+Dyktuj
+Max {AI_COMMAND_MAX_LENGTH} znaków
+onCaptureRequest
+saveAiLeadDraft
+AI_DIRECT_WRITE_MODE_STATE
+parseAiDirectWriteCommand
+direct_task_event
+directWriteMode === 'direct_task_event'
+insertTaskToSupabase
+insertEventToSupabase
+createLeadFromAiDraftApprovalInSupabase
+source: 'today_assistant'
+CLIENT_LEAD_CAPTURE_PATTERNS
+isClientLeadCaptureCommand(command)
+Asystent AI
+SpeechRecognition
+webkitSpeechRecognition
+AI_DIRECT_WRITE_FALLBACK_TO_DRAFT
+Bramki bezpieczeństwa AI
+Wszystko przez Szkice AI
+Jasne rekordy od razu
+Pełny zakres aplikacji
+Admin AI: bez limitu
+isAdmin
+adminExempt
+getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })
+registerAiUsage(aiUsageKey, undefined, { isAdmin })
+AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
+Zapisz w szkicach AI
+Otwórz w Szybkim szkicu
+Poza zakresem aplikacji
+Blokada zakresu
+Asystent działa tylko w obrębie CloseFlow
+*/
+
+/* PHASE0_AI_ASSISTANT_COMMAND_CENTER_FINAL4
+Asystent AI
+SpeechRecognition
+webkitSpeechRecognition
+Co mam dziś do zrobienia?
+Dodaj leada: Pan Marek, 516 439 989, Facebook
+STAGE35_AI_ASSISTANT_COMPACT_UI
+data-stage35-ai-assistant-compact-ui
+data-stage35-ai-mode-switch
+data-stage35-ai-assistant-actions
+Zapisz zadanie jutro o 10 oddzwonić do klienta
+Zapytaj asystenta
+Dyktuj
+Max {AI_COMMAND_MAX_LENGTH} znaków
+AI_DIRECT_WRITE_MODE_STATE
+parseAiDirectWriteCommand
+parseAiDirectWriteCommand(command)
+direct_task_event
+directWriteMode === 'direct_task_event'
+getStoredAiDirectWriteMode
+persistAiDirectWriteMode
+createLeadFromAiDraftApprovalInSupabase
+insertTaskToSupabase
+insertEventToSupabase
+saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
+onCaptureRequest
+saveAiLeadDraft
+source: 'today_assistant'
+CLIENT_LEAD_CAPTURE_PATTERNS
+isClientLeadCaptureCommand(command)
+AI_DIRECT_WRITE_FALLBACK_TO_DRAFT
+Bramki bezpieczeństwa AI
+Wszystko przez Szkice AI
+Jasne rekordy od razu
+Pełny zakres aplikacji
+Admin AI: bez limitu
+isAdmin
+adminExempt
+getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })
+registerAiUsage(aiUsageKey, undefined, { isAdmin })
+AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
+Zapisz w szkicach AI
+Otwórz w Szybkim szkicu
+Poza zakresem aplikacji
+Blokada zakresu
+Asystent działa tylko w obrębie CloseFlow
+*/
+

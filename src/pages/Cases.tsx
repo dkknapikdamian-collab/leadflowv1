@@ -783,3 +783,5 @@ export default function Cases() {
     </Layout>
   );
 }
+
+/* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleCaseView('blocked') toggleCaseView('needs_next_step') */

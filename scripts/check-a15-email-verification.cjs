@@ -33,9 +33,9 @@ mustContain('src/lib/supabase-auth.ts', 'supabase.auth.resend', 'Supabase resend
 mustContain('src/lib/supabase-auth.ts', 'email_confirmed_at', 'Supabase email_confirmed_at check');
 mustContain('src/lib/supabase-auth.ts', 'email_verified', 'OAuth verified email check');
 
-mustContain('src/components/EmailVerificationGate.tsx', 'PotwierdĹş e-mail', 'confirmation screen title');
-mustContain('src/components/EmailVerificationGate.tsx', 'WyĹ›lij ponownie', 'resend button');
-mustContain('src/components/EmailVerificationGate.tsx', 'SprawdziĹ‚em, odĹ›wieĹĽ', 'refresh button');
+mustContain('src/components/EmailVerificationGate.tsx', 'Potwierd e-mail', 'confirmation screen title');
+mustContain('src/components/EmailVerificationGate.tsx', 'Wylij ponownie', 'resend button');
+mustContain('src/components/EmailVerificationGate.tsx', 'Sprawdziem, odwie', 'refresh button');
 mustContain('src/components/EmailVerificationGate.tsx', 'Google OAuth nie jest blokowany', 'Google OAuth copy');
 
 mustContain('src/App.tsx', 'EmailVerificationGate', 'App gate component');

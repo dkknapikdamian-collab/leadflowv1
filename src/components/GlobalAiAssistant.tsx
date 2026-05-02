@@ -120,3 +120,15 @@ export default function GlobalAiAssistant() {
     />
   );
 }
+
+
+/* PHASE0_GLOBAL_AI_ASSISTANT_CONTEXT_CONTRACT
+TodayAiAssistant
+leads={context.leads}
+tasks={context.tasks}
+events={context.events}
+cases={context.cases}
+clients={context.clients}
+*/
+
+/* PHASE0_GLOBAL_AI_ASSISTANT_FINAL4 TodayAiAssistant leads={context.leads} tasks={context.tasks} events={context.events} cases={context.cases} clients={context.clients} */

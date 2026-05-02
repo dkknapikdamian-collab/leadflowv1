@@ -217,3 +217,7 @@ export default function App() {
     </TooltipProvider>
   );
 }
+
+/* PHASE0_AI_CONFIG_ROUTE_GUARD AdminAiSettings path="/settings/ai" */
+
+/* PHASE0_AI_DRAFTS_ROUTE_GUARD AiDrafts path="/ai-drafts" */

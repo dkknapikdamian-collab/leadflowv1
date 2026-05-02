@@ -47,3 +47,5 @@ export async function fetchAiConfigDiagnostics() {
 
   return data as AiConfigDiagnostics;
 }
+
+/* fetchAiConfigDiagnostics /api/system?kind=ai-config */

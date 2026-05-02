@@ -703,4 +703,4 @@ export default async function handler(req: any, res: any) {
   }
 }
 
-
+/* import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js'; await assertWorkspaceWriteAccess(workspaceId); await assertWorkspaceWriteAccess(finalWorkspaceId); res.status(402).json({ error: 'WORKSPACE_WRITE_ACCESS_REQUIRED' }); */

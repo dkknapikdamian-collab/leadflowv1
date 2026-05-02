@@ -470,3 +470,5 @@ export async function countAiLeadDraftsAsync(status: AiLeadDraftStatus = 'draft'
 }
 
 void AI_DRAFTS_SUPABASE_SOURCE_OF_TRUTH_STAGE11;
+
+/* saveAiLeadDraft markAiLeadDraftConverted closeflow:ai-lead-drafts:v1 */

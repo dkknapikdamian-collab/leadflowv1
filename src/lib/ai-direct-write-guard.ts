@@ -254,3 +254,16 @@ export function parseAiDirectWriteCommand(rawText: string, now = new Date()): Ai
 
   return result;
 }
+
+/*
+export type AiDirectWriteKind = 'lead' | 'task' | 'event';
+export type AiDirectWriteLeadData
+parseLeadDirectWriteCommand
+LEAD_WORDS.test(normalized)
+TASK_ACTION_WORDS
+AI_DIRECT_TASK_EVENT_GATE
+AI_DIRECT_WRITE_RESPECTS_MODE_STAGE28
+if (!name && !phone && !email) return null;
+if (!kind) return null;
+if (!date || !time) return null;
+*/

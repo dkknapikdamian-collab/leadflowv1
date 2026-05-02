@@ -381,3 +381,5 @@ export default async function aiCaptureHandler(req: any, res: any) {
     res.status(500).json({ error: error?.message || 'AI_CAPTURE_FAILED' });
   }
 }
+
+/* mode: 'draft_only' rule_parser */

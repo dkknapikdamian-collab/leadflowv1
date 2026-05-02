@@ -125,7 +125,7 @@ const STRIPE_BLIK_BILLING_PLANS: Record<string, StripeBillingPlan> = {
     planKey: 'ai',
     period: 'monthly',
     label: 'CloseFlow AI - dostęp 30 dni',
-    amountPln: toNumber(process.env.STRIPE_PRICE_AI_MONTHLY_PLN, 69),
+    amountPln: toNumber(process.env.STRIPE_PRICE_BUSINESS_MONTHLY_PLN || process.env.STRIPE_PRICE_AI_MONTHLY_PLN, 69),
     accessDays: 30,
   },
   ai_yearly: {
@@ -133,7 +133,7 @@ const STRIPE_BLIK_BILLING_PLANS: Record<string, StripeBillingPlan> = {
     planKey: 'ai',
     period: 'yearly',
     label: 'CloseFlow AI - dostęp 365 dni',
-    amountPln: toNumber(process.env.STRIPE_PRICE_AI_YEARLY_PLN, 690),
+    amountPln: toNumber(process.env.STRIPE_PRICE_BUSINESS_YEARLY_PLN || process.env.STRIPE_PRICE_AI_YEARLY_PLN, 690),
     accessDays: 365,
   },
 };
@@ -277,7 +277,7 @@ export async function createStripeBlikCheckout({
   const description = `${plan.label} - ${plan.amountPln} PLN`;
 
   const params = new URLSearchParams();
-  params.set('mode', 'subscription');
+  params.set('mode', 'payment');
   params.set('success_url', `${appUrl}/billing?checkout=success`);
   params.set('cancel_url', `${appUrl}/billing?checkout=cancelled`);
   params.set('client_reference_id', workspaceId);
@@ -287,7 +287,6 @@ export async function createStripeBlikCheckout({
 
   params.set('line_items[0][price_data][currency]', config.currency);
   params.set('line_items[0][price_data][unit_amount]', String(amount));
-  params.set('line_items[0][price_data][recurring][interval]', plan.period === 'yearly' ? 'year' : 'month');
   params.set('line_items[0][price_data][product_data][name]', plan.label);
   params.set('line_items[0][quantity]', '1');
 

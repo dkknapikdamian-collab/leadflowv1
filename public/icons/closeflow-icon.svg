@@ -1,4 +1,5 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Close Flow</title>
   <rect width="512" height="512" rx="112" fill="#0F172A"/>
   <path d="M150 170C150 147.909 167.909 130 190 130H322C344.091 130 362 147.909 362 170V342C362 364.091 344.091 382 322 382H190C167.909 382 150 364.091 150 342V170Z" fill="#F8FAFC"/>
   <path d="M198 206H314" stroke="#0F172A" stroke-width="24" stroke-linecap="round"/>

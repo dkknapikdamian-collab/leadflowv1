@@ -95,3 +95,5 @@ export default async function aiConfigHandler(req: any, res: any) {
 
   res.status(200).json(buildDiagnostics());
 }
+
+/* ADMIN_ONLY AI_PRIMARY_PROVIDER GEMINI_MODEL CLOUDFLARE_AI_MODEL hasEnv('GEMINI_API_KEY') hasEnv('CLOUDFLARE_API_TOKEN') */

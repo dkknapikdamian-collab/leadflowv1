@@ -1,17 +1,17 @@
 ﻿# CloseFlow
 
-CloseFlow to aplikacja SaaS do pilnowania leadĂłw, follow-upĂłw, zadaĹ„, wydarzeĹ„ i spraw po sprzedaĹĽy w jednym miejscu.
+CloseFlow to aplikacja SaaS do pilnowania leadw, follow-upw, zada, wydarze i spraw po sprzeday w jednym miejscu.
 
-Produkt jest pozycjonowany jako prosty system operacyjny dla osoby, ktĂłra sama obsĹ‚uguje sprzedaĹĽ i realizacjÄ™: widzi, kogo trzeba ruszyÄ‡, czego nie wolno przegapiÄ‡ i ktĂłre tematy mogÄ… uciec.
+Produkt jest pozycjonowany jako prosty system operacyjny dla osoby, ktra sama obsuguje sprzeda i realizację: widzi, kogo trzeba ruszyć, czego nie wolno przegapić i ktre tematy mogą uciec.
 
 ## Co robi produkt
 
-- pokazuje priorytety w widoku **DziĹ›**,
-- prowadzi leady z nastÄ™pnym krokiem i historiÄ… kontaktu,
-- Ĺ‚Ä…czy zadania, wydarzenia, przypomnienia, leady, klientĂłw i sprawy,
-- pozwala przejĹ›Ä‡ z wygranego leada do sprawy,
+- pokazuje priorytety w widoku **Dzi**,
+- prowadzi leady z następnym krokiem i historią kontaktu,
+- ączy zadania, wydarzenia, przypomnienia, leady, klientw i sprawy,
+- pozwala przejć z wygranego leada do sprawy,
 - wspiera notatki, szkice AI i follow-upy bez automatycznego zapisywania finalnych danych przez AI,
-- dziaĹ‚a jako aplikacja webowa/PWA gotowa do wdroĹĽenia na Vercel.
+- dziaa jako aplikacja webowa/PWA gotowa do wdroenia na Vercel.
 
 ## Stack techniczny
 
@@ -20,41 +20,41 @@ Produkt jest pozycjonowany jako prosty system operacyjny dla osoby, ktĂłra sam
 - **Auth:** Supabase Auth jako docelowy model logowania.
 - **Dane aplikacyjne:** Supabase przez endpointy w katalogu `api/`.
 - **Hosting:** Vercel.
-- **Billing:** moduĹ‚y billingowe/checkout sÄ… w repo, ale produkcyjne uĹĽycie wymaga poprawnej konfiguracji providerĂłw, webhookĂłw i testu end-to-end.
-- **AI:** wyĹ‚Ä…cznie backend-only. Sekrety AI nie mogÄ… byÄ‡ wystawiane jako `VITE_*`. Frontend moĹĽe wywoĹ‚ywaÄ‡ tylko endpoint aplikacji.
+- **Billing:** moduy billingowe/checkout są w repo, ale produkcyjne uycie wymaga poprawnej konfiguracji providerw, webhookw i testu end-to-end.
+- **AI:** wyącznie backend-only. Sekrety AI nie mogą być wystawiane jako `VITE_*`. Frontend moe wywoywać tylko endpoint aplikacji.
 
-## GĹ‚Ăłwne widoki
+## Gwne widoki
 
-- **DziĹ›** â€“ centrum decyzji i najpilniejsze dziaĹ‚ania.
-- **Leady** â€“ lista sprzedaĹĽowa z kolejnym krokiem.
-- **Lead Detail** â€“ karta leada z kontaktem, notatkami, zadaniami, wydarzeniami i historiÄ….
-- **Klienci** â€“ relacje i powiÄ…zane sprawy/leady.
-- **Sprawy** â€“ etap realizacji po sprzedaĹĽy.
+- **Dzi** â€“ centrum decyzji i najpilniejsze dziaania.
+- **Leady** â€“ lista sprzedaowa z kolejnym krokiem.
+- **Lead Detail** â€“ karta leada z kontaktem, notatkami, zadaniami, wydarzeniami i historią.
+- **Klienci** â€“ relacje i powiązane sprawy/leady.
+- **Sprawy** â€“ etap realizacji po sprzeday.
 - **Case Detail** â€“ operacyjny hub sprawy.
 - **Zadania** â€“ zadania i follow-upy.
-- **Kalendarz** â€“ wspĂłlna oĹ› czasu dla zadaĹ„ i wydarzeĹ„.
-- **Szkice AI** â€“ miejsce zatwierdzania treĹ›ci przygotowanych przez AI.
+- **Kalendarz** â€“ wsplna o czasu dla zada i wydarze.
+- **Szkice AI** â€“ miejsce zatwierdzania treci przygotowanych przez AI.
 - **Ustawienia / Rozliczenia / Pomoc** â€“ konfiguracja konta i aplikacji.
 
 ## Uruchomienie lokalne
 
-### 1. Instalacja zaleĹĽnoĹ›ci
+### 1. Instalacja zalenoci
 
 ```bash
 npm install
 ```
 
-### 2. Konfiguracja Ĺ›rodowiska
+### 2. Konfiguracja rodowiska
 
-Skopiuj `.env.example` do `.env.local` albo ustaw te same zmienne w Ĺ›rodowisku Vercel.
+Skopiuj `.env.example` do `.env.local` albo ustaw te same zmienne w rodowisku Vercel.
 
-NajwaĹĽniejsze grupy zmiennych:
+Najwaniejsze grupy zmiennych:
 
 - publiczne zmienne klienta: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
 - zmienne serwerowe: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
 - billing/email/AI: tylko po stronie serwera.
 
-Nie dodawaj sekretĂłw jako `VITE_*`.
+Nie dodawaj sekretw jako `VITE_*`.
 
 ### 3. Start dev
 
@@ -70,7 +70,7 @@ npm run build
 
 ## Testy i guardy
 
-NajczÄ™Ĺ›ciej uĹĽywane krĂłtkie checki:
+Najczęciej uywane krtkie checki:
 
 ```bash
 npm run test:critical
@@ -78,7 +78,7 @@ npm run check:polish-mojibake
 npm run check:a18-branding-docs
 ```
 
-PeĹ‚ny release guard:
+Peny release guard:
 
 ```bash
 npm run verify:closeflow:quiet
@@ -86,30 +86,30 @@ npm run verify:closeflow:quiet
 
 ## Architektura danych: Supabase-first
 
-Supabase jest docelowym ĹşrĂłdĹ‚em prawdy dla danych biznesowych, auth, storage, billing, portalu klienta, szkicĂłw AI, szablonĂłw i aktywnoĹ›ci.
+Supabase jest docelowym rdem prawdy dla danych biznesowych, auth, storage, billing, portalu klienta, szkicw AI, szablonw i aktywnoci.
 
-Firebase / Firestore jest traktowany wyĹ‚Ä…cznie jako warstwa legacy/decommission. Nie dopisujemy nowych funkcji do Firestore i nie tworzymy dwĂłch ĹşrĂłdeĹ‚ prawdy.
+Firebase / Firestore jest traktowany wyącznie jako warstwa legacy/decommission. Nie dopisujemy nowych funkcji do Firestore i nie tworzymy dwch rde prawdy.
 
-## BezpieczeĹ„stwo AI
+## Bezpieczestwo AI
 
-- `GEMINI_API_KEY` i inne sekrety AI sÄ… wyĹ‚Ä…cznie backendowe.
-- Nie wolno tworzyÄ‡ `public-prefixed Gemini API key` ani innych publicznych sekretĂłw.
-- Frontend komunikuje siÄ™ z AI tylko przez endpoint aplikacji.
-- AI moĹĽe przygotowywaÄ‡ szkice, ale finalne rekordy wymagajÄ… zatwierdzenia uĹĽytkownika.
+- `GEMINI_API_KEY` i inne sekrety AI są wyącznie backendowe.
+- Nie wolno tworzyć `public-prefixed Gemini API key` ani innych publicznych sekretw.
+- Frontend komunikuje się z AI tylko przez endpoint aplikacji.
+- AI moe przygotowywać szkice, ale finalne rekordy wymagają zatwierdzenia uytkownika.
 
 ## Status produkcyjny
 
-Aktualny stan gotowoĹ›ci produkcyjnej jest opisany w:
+Aktualny stan gotowoci produkcyjnej jest opisany w:
 
 - `docs/PRODUCTION_READINESS_STATUS.md`
 
-Ten dokument ma byÄ‡ ĹşrĂłdĹ‚em prawdy dla ostrzeĹĽeĹ„, brakĂłw i elementĂłw wymagajÄ…cych sprawdzenia przed sprzedaĹĽÄ….
+Ten dokument ma być rdem prawdy dla ostrzee, brakw i elementw wymagających sprawdzenia przed sprzedaą.
 
 ## Portal klienta: wymagane sekrety
 
-Portal klienta nie moĹĽe dziaĹ‚aÄ‡ produkcyjnie na domyĹ›lnych sekretach.
+Portal klienta nie moe dziaać produkcyjnie na domylnych sekretach.
 
-W Ĺ›rodowisku produkcyjnym ustaw jako zmienne serwerowe:
+W rodowisku produkcyjnym ustaw jako zmienne serwerowe:
 
 ```bash
 PORTAL_TOKEN_PEPPER=
@@ -118,15 +118,15 @@ PORTAL_SESSION_SECRET=
 
 Zasady:
 
-- nie dodawaj tych wartoĹ›ci jako `VITE_*`,
-- zmiana `PORTAL_TOKEN_PEPPER` uniewaĹĽnia stare linki portalu,
-- zmiana `PORTAL_SESSION_SECRET` uniewaĹĽnia aktywne sesje portalu,
-- jeĹ›li `NODE_ENV=production` albo `VERCEL_ENV=production` i brakuje sekretĂłw, endpointy portalu zwracajÄ… `PORTAL_SECRET_CONFIG_MISSING`.
+- nie dodawaj tych wartoci jako `VITE_*`,
+- zmiana `PORTAL_TOKEN_PEPPER` uniewania stare linki portalu,
+- zmiana `PORTAL_SESSION_SECRET` uniewania aktywne sesje portalu,
+- jeli `NODE_ENV=production` albo `VERCEL_ENV=production` i brakuje sekretw, endpointy portalu zwracają `PORTAL_SECRET_CONFIG_MISSING`.
 ## Portal upload: Supabase Storage
 
-Portal klienta moĹĽe przyjmowaÄ‡ pliki przez endpoint pi/storage-upload.ts. Upload nie idzie bezpoĹ›rednio z przeglÄ…darki do publicznego bucketu. Frontend wysyĹ‚a plik do backendu, backend sprawdza sesjÄ™ portalu i zapisuje obiekt w Supabase Storage przez SUPABASE_SERVICE_ROLE_KEY.
+Portal klienta moe przyjmować pliki przez endpoint pi/storage-upload.ts. Upload nie idzie bezporednio z przeglądarki do publicznego bucketu. Frontend wysya plik do backendu, backend sprawdza sesję portalu i zapisuje obiekt w Supabase Storage przez SUPABASE_SERVICE_ROLE_KEY.
 
-W Ĺ›rodowisku produkcyjnym ustaw jako zmienne serwerowe:
+W rodowisku produkcyjnym ustaw jako zmienne serwerowe:
 
 `ash
 SUPABASE_PORTAL_BUCKET=portal-uploads
@@ -135,7 +135,7 @@ PORTAL_UPLOAD_ALLOWED_MIME_TYPES=application/pdf,image/jpeg,image/png,image/webp
 PORTAL_STORAGE_HEALTH_SECRET=
 `
 
-Bucket portal-uploads musi byÄ‡ prywatny. Nie wĹ‚Ä…czaj publicznego listowania ani publicznych policy dla storage.objects.
+Bucket portal-uploads musi być prywatny. Nie wączaj publicznego listowania ani publicznych policy dla storage.objects.
 
 SQL do utworzenia bucketu:
 
@@ -143,7 +143,7 @@ SQL do utworzenia bucketu:
 supabase/migrations/20260502_portal_uploads_storage_bucket.sql
 `
 
-Diagnostyka po wdroĹĽeniu:
+Diagnostyka po wdroeniu:
 
 `ash
 GET /api/storage-upload-health

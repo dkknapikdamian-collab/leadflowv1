@@ -1170,7 +1170,7 @@ Na telefonie da się używać aplikacji bez frustracji i refresh drama.
 ## Etap 9.2 — Polish mojibake guard
 
 ### Cel
-Wyłapać krzaki typu `Ä`, `Ĺ`, `Å`, ``, ``.
+Wyłapać typowe sekwencje mojibake bez utrwalania ich literalnie w repo.
 
 ### Dlaczego
 Krzaki w polskim UI natychmiast robią wrażenie niedokończonej aplikacji.

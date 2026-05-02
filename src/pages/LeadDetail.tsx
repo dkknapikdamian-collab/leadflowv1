@@ -1333,10 +1333,10 @@ useEffect(() => {
                   <div className="flex flex-wrap gap-2">
                     <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
                       {noteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                      {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatk�'}
+                      {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatk'}
                     </Button>
                     <Button type="submit" disabled={!note.trim() || !hasAccess || addingNote}>
-                      {addingNote ? 'Zapisywanie...' : 'Dodaj notatk�'}
+                      {addingNote ? 'Zapisywanie...' : 'Dodaj notatk'}
                     </Button>
                   </div>
                 </form>

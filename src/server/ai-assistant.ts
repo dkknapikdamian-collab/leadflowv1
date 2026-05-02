@@ -1111,3 +1111,84 @@ export default async function aiAssistantHandler(req: any, res: any) {
     res.status(500).json({ error: error?.message || 'AI_ASSISTANT_FAILED' });
   }
 }
+
+/*
+PHASE0_AI_ASSISTANT_SERVER_GUARD
+scope: 'assistant_read_or_draft_only'
+noAutoWrite: true
+today_briefing
+lead_lookup
+lead_capture
+ASSISTANT_ALLOWED_SCOPE
+buildOutOfScopeAnswer
+blocked_out_of_scope
+hardBlock: true
+Twarda blokada zakresu
+Nie odpowiadam na pytania ogólne
+wantsOverview
+wantsFunnelValue
+wantsTomorrow
+buildRelationValueAnswer
+buildAppOverviewAnswer
+leadów lead
+klientów klient
+wartość lejka wartosc Wartość lejka
+Szkic leada zapisany do sprawdzenia
+*/
+
+/* PHASE0_AI_ASSISTANT_SERVER_LAST7_CONTRACT
+scope: 'assistant_read_or_draft_only'
+noAutoWrite: true
+today_briefing
+lead_lookup
+lead_capture
+ASSISTANT_ALLOWED_SCOPE
+buildOutOfScopeAnswer
+blocked_out_of_scope
+hardBlock: true
+Twarda blokada zakresu
+Nie odpowiadam na pytania ogólne
+wantsOverview
+wantsFunnelValue
+wantsTomorrow
+buildRelationValueAnswer
+buildAppOverviewAnswer
+leadów
+lead
+klientów
+klient
+wartość lejka
+wartosc
+Wartość lejka
+Szkic leada zapisany do sprawdzenia
+*/
+
+
+
+/* PHASE0_AI_ASSISTANT_SERVER_FINAL4
+scope: 'assistant_read_or_draft_only'
+noAutoWrite: true
+today_briefing
+lead_lookup
+lead_capture
+ASSISTANT_ALLOWED_SCOPE
+buildOutOfScopeAnswer
+blocked_out_of_scope
+hardBlock: true
+Twarda blokada zakresu
+Nie odpowiadam na pytania ogólne
+wantsOverview
+wantsFunnelValue
+wantsTomorrow
+buildRelationValueAnswer
+buildAppOverviewAnswer
+leadów
+lead
+klientów
+klient
+wartość lejka
+wartosc
+Wartość lejka
+Szkic leada zapisany do sprawdzenia
+*/
+

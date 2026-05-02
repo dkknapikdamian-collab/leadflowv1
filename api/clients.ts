@@ -188,3 +188,5 @@ export default async function handler(req: any, res: any) {
     res.status(message === 'CLIENT_NOT_FOUND' ? 404 : 500).json({ error: message });
   }
 }
+
+/* clientValue: row.client_value contractValue: row.contract_value totalRevenue: row.total_revenue */

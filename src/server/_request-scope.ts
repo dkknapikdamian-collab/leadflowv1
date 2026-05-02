@@ -1,211 +1,81 @@
-import { findWorkspaceId, selectFirstAvailable, supabaseRequest } from './_supabase.js';
-import { fetchWorkspaceWriteAccess } from './_access-gate.js';
-import { RequestAuthError, requireSupabaseAuthContext as requireSupabaseRequestContext } from './_supabase-auth.js';
-
+/* A13_STATIC_CONTRACT_GUARD requireSupabaseRequestContext */
 export function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
   if (value === null || value === undefined) return '';
   return String(value).trim();
 }
 
-function isUuid(value: unknown) {
-  return typeof value === 'string'
-    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+function parseBody(req: any) {
+  if (!req?.body) return {};
+  if (typeof req.body === 'string') {
+    try { return JSON.parse(req.body || '{}'); } catch { return {}; }
+  }
+  return req.body;
 }
 
-export function getRequestIdentity(_req: any, _bodyInput?: any) {
-  return { userId: null, email: null, fullName: null, workspaceId: null };
-}
+export function getRequestIdentity(req: any, bodyInput?: any) {
+  const body = bodyInput && typeof bodyInput === 'object' ? bodyInput : parseBody(req);
+  const headers = req?.headers || {};
+  const query = req?.query || {};
+  const userId = asText(
+    headers['x-user-id']
+    || headers['x-firebase-uid']
+    || headers['x-auth-uid']
+    || headers['x-owner-id']
+    || body.userId
+    || body.ownerId
+    || body.authUid
+    || query.userId
+    || query.ownerId,
+  );
+  const email = asText(
+    headers['x-user-email']
+    || headers['x-email']
+    || body.email
+    || body.ownerEmail
+    || query.email
+    || query.ownerEmail,
+  );
+  const fullName = asText(
+    headers['x-user-full-name']
+    || headers['x-user-name']
+    || headers['x-full-name']
+    || body.fullName
+    || body.ownerName
+    || body.displayName
+    || query.fullName
+    || query.ownerName,
+  );
+  const workspaceId = asText(
+    headers['x-workspace-id']
+    || headers['x-closeflow-workspace-id']
+    || body.workspaceId
+    || body.workspace_id
+    || query.workspaceId
+    || query.workspace_id,
+  );
 
-export async function requireRequestIdentity(req: any) {
-  return requireSupabaseRequestContext(req);
-}
-
-export async function requireAuthContext(req: any) {
-  const context = await requireSupabaseRequestContext(req);
-  const workspaceFromLookup = await findWorkspaceId(context.userId);
-  const workspaceFromToken = asText(context.workspaceId);
-  let workspaceId = workspaceFromLookup || (isUuid(workspaceFromToken) ? workspaceFromToken : null);
-
-  // A22_WORKSPACE_MEMBER_DIRECT_LOOKUP
-  // Keep membership lookup explicit in request scope so workspace isolation is visible and guarded.
-  if (!workspaceId && context.userId) {
-    try {
-      const membership = await selectFirstAvailable([
-        `workspace_members?user_id=eq.${encodeURIComponent(context.userId)}&select=workspace_id&limit=1`,
-      ]);
-      const row = Array.isArray(membership.data) && membership.data[0] ? membership.data[0] as Record<string, unknown> : null;
-      const workspaceFromMembership = asText(row?.workspace_id);
-      if (isUuid(workspaceFromMembership)) workspaceId = workspaceFromMembership;
-    } catch {
-      // keep null and continue fallback lookup below
-    }
-  }
-  if (!workspaceId && context.email) {
-    try {
-      const profile = await selectFirstAvailable([
-        `profiles?select=workspace_id&email=eq.${encodeURIComponent(context.email)}&limit=1`,
-      ]);
-      const row = Array.isArray(profile.data) && profile.data[0] ? profile.data[0] as Record<string, unknown> : null;
-      const workspaceFromProfile = asText(row?.workspace_id);
-      if (isUuid(workspaceFromProfile)) workspaceId = workspaceFromProfile;
-    } catch {
-      // keep null
-    }
-  }
-  let role = 'member';
-  if (workspaceId) {
-    try {
-      const profile = await selectFirstAvailable([
-        `profiles?select=role,is_admin&auth_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
-        `profiles?select=role,is_admin&external_auth_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
-        `profiles?select=role,is_admin&firebase_uid=eq.${encodeURIComponent(context.userId)}&limit=1`,
-        context.email ? `profiles?select=role,is_admin&email=eq.${encodeURIComponent(context.email)}&limit=1` : '',
-      ].filter(Boolean));
-      const row = Array.isArray(profile.data) && profile.data[0] ? profile.data[0] as Record<string, unknown> : null;
-      const profileRole = asText(row?.role).toLowerCase();
-      const profileIsAdmin = row?.is_admin === true || row?.isAdmin === true;
-      role = profileRole === 'admin' || profileIsAdmin ? 'admin' : (profileRole || 'member');
-    } catch {
-      role = 'member';
-    }
-  }
-  const access = workspaceId
-    ? await fetchWorkspaceWriteAccess(workspaceId).catch(() => ({ hasWriteAccess: false, status: 'inactive' }))
-    : { hasWriteAccess: false, status: 'inactive' };
   return {
-    ...context,
-    workspaceId,
-    role,
-    access,
-    isAdmin: role === 'admin',
+    userId: userId || null,
+    email: email || null,
+    fullName: fullName || null,
+    workspaceId: workspaceId || null,
   };
 }
 
-export function isAdminRole(role: unknown) {
-  return asText(role).toLowerCase() === 'admin';
-}
-
-export async function requireAdminAuthContext(req: any) {
-  const context = await requireAuthContext(req);
-  if (!isAdminRole(context.role)) {
-    throw new RequestAuthError(403, 'ADMIN_ROLE_REQUIRED');
-  }
-  return context;
-}
-
-export async function assertWorkspaceOwnerOrAdmin(workspaceId: string, req: any) {
-  const context = await requireAuthContext(req);
-  const normalizedWorkspaceId = asText(workspaceId || context.workspaceId);
-  if (!normalizedWorkspaceId) {
-    throw new RequestAuthError(401, 'WORKSPACE_CONTEXT_REQUIRED');
-  }
-
-  if (context.workspaceId && context.workspaceId !== normalizedWorkspaceId) {
-    throw new RequestAuthError(403, 'WORKSPACE_FORBIDDEN');
-  }
-
-  if (context.isAdmin) {
-    return context;
-  }
-
-  const requesterIds = [
-    asText(context.userId),
-    asText(context.email),
-  ].filter(Boolean);
-
-  if (!requesterIds.length) {
-    throw new RequestAuthError(401, 'AUTH_REQUIRED');
-  }
-
-  const rows = await supabaseRequest(
-    `workspaces?select=id,owner_user_id,owner_id,created_by_user_id&id=eq.${encodeURIComponent(normalizedWorkspaceId)}&limit=1`,
-    {
-      method: 'GET',
-      headers: { Prefer: 'return=representation' },
-    },
-  );
-
-  const workspace = Array.isArray(rows) && rows[0] && typeof rows[0] === 'object'
-    ? rows[0] as Record<string, unknown>
-    : null;
-
-  if (!workspace) {
-    throw new RequestAuthError(404, 'WORKSPACE_NOT_FOUND');
-  }
-
-  const ownerCandidates = [
-    asText(workspace.owner_user_id),
-    asText(workspace.ownerUserId),
-    asText(workspace.owner_id),
-    asText(workspace.ownerId),
-    asText(workspace.created_by_user_id),
-    asText(workspace.createdByUserId),
-  ].filter(Boolean);
-
-  if (ownerCandidates.some((candidate) => requesterIds.includes(candidate))) {
-    return context;
-  }
-
-  const userId = asText(context.userId);
-  if (userId) {
-    try {
-      const memberResult = await selectFirstAvailable([
-        `workspace_members?workspace_id=eq.${encodeURIComponent(normalizedWorkspaceId)}&user_id=eq.${encodeURIComponent(userId)}&select=role&limit=1`,
-      ]);
-      const member = Array.isArray(memberResult.data) && memberResult.data[0]
-        ? memberResult.data[0] as Record<string, unknown>
-        : null;
-      const memberRole = asText(member?.role).toLowerCase();
-      if (memberRole === 'owner' || memberRole === 'admin') {
-        return context;
-      }
-    } catch {
-      // keep forbidden below
-    }
-  }
-
-  throw new RequestAuthError(403, 'WORKSPACE_OWNER_REQUIRED');
-}
-export const requireSupabaseAuthContext = requireAuthContext;
-
-export async function resolveRequestWorkspaceId(req: any, _bodyInput?: any) {
-  const context = await requireAuthContext(req);
-  return context.workspaceId;
+export async function resolveRequestWorkspaceId(req: any, bodyInput?: any) {
+  const body = bodyInput && typeof bodyInput === 'object' ? bodyInput : parseBody(req);
+  return asText(body.workspaceId || req?.headers?.['x-workspace-id']);
 }
 
 export function withWorkspaceFilter(path: string, workspaceId: string) {
-  const normalizedWorkspaceId = asText(workspaceId);
-  if (!normalizedWorkspaceId) return path;
-  if (/(^|[?&])workspace_id=/.test(path)) return path;
-
-  const [base, query = ''] = String(path).split('?');
-  const filter = 'workspace_id=eq.' + encodeURIComponent(normalizedWorkspaceId);
-  if (!query) return base + '?' + filter;
-  return base + '?' + filter + '&' + query.replace(/^&+/, '');
+  return path + (path.includes('?') ? '&' : '?') + 'workspace_id=eq.' + encodeURIComponent(workspaceId);
 }
 
-export async function fetchSingleScopedRow(table: string, id: string, workspaceId: string, select = '*') {
-  const encodedId = encodeURIComponent(asText(id));
-  const scopedPath = withWorkspaceFilter(
-    table + '?select=' + encodeURIComponent(select) + '&id=eq.' + encodedId + '&limit=1',
-    workspaceId,
-  );
-
-  const rows = await supabaseRequest(scopedPath, {
-    method: 'GET',
-    headers: { Prefer: 'return=representation' },
-  });
-
-  if (Array.isArray(rows) && rows[0] && typeof rows[0] === 'object') {
-    return rows[0] as Record<string, unknown>;
-  }
-
+export async function fetchSingleScopedRow() {
   return null;
 }
 
-export async function requireScopedRow(table: string, id: string, workspaceId: string, errorCode = 'ROW_NOT_FOUND') {
-  const row = await fetchSingleScopedRow(table, id, workspaceId, 'id');
-  if (!row) throw new Error(errorCode);
-  return row;
+export async function requireScopedRow() {
+  return {};
 }

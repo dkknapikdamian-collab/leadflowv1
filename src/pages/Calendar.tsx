@@ -819,12 +819,10 @@ export default function Calendar() {
         actorId: auth.currentUser?.uid ?? null,
         actorType: 'operator',
         eventType,
-        leadId: readCalendarRawText(entry.raw?.leadId) || null,
-        caseId: readCalendarRawText(entry.raw?.caseId) || null,
-        workspaceId: workspace?.id ?? null,
-                leadId: entry.raw?.leadId ?? null,
+        leadId: entry.raw?.leadId ?? null,
         caseId: entry.raw?.caseId ?? null,
-payload: {
+        workspaceId: workspace?.id ?? null,
+        payload: {
           source: 'calendar',
           entryId: entry.id,
           sourceId: entry.sourceId,

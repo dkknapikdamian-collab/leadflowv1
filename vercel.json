@@ -105,6 +105,26 @@
     {
       "source": "/api/weekly-report",
       "destination": "/api/system?kind=weekly-report"
+    },
+    {
+      "source": "/api/support",
+      "destination": "/api/support"
+    },
+    {
+      "source": "/api/portal",
+      "destination": "/api/system?kind=portal"
+    },
+    {
+      "source": "/api/storage-upload",
+      "destination": "/api/system?kind=storage-upload"
+    },
+    {
+      "source": "/api/storage-upload-health",
+      "destination": "/api/system?kind=storage-upload-health"
+    },
+    {
+      "source": "/api/billing",
+      "destination": "/api/system?kind=billing"
     }
   ]
 }

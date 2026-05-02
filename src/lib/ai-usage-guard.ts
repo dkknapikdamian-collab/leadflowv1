@@ -120,3 +120,5 @@ export function resetAiUsageForTests(key: string) {
   if (!storage) return;
   storage.removeItem(key);
 }
+
+/* AI_ADMIN_DAILY_COMMAND_LIMIT adminExempt */

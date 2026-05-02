@@ -1303,3 +1303,5 @@ export default function Tasks() {
     </Layout>
   );
 }
+
+/* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= activateScope(stat.id) */

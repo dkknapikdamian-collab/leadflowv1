@@ -1,7 +1,7 @@
 # Release Candidate Evidence — CloseFlow / LeadFlow
 
-**Data wygenerowania:** 2026-05-02T12:54:39.883Z  
-**Status evidence gate:** ❌ **FAIL**  
+**Data wygenerowania:** 2026-05-02T14:24:54.144Z  
+**Status evidence gate:** ⚠️ **WARN**  
 **Zakres:** ETAP 0.1 — Release Candidate Evidence Gate  
 **Uwaga:** ten dokument nie zmienia działania aplikacji. To dowód release’u dla audytu.
 
@@ -14,10 +14,10 @@
 | Repo root | `C:/Users/malim/Desktop/biznesy_ai/2.closeflow` |
 | Repo remote | `https://github.com/dkknapikdamian-collab/leadflowv1.git` |
 | Branch | `dev-rollout-freeze` |
-| Commit | `2fc7701ef003d1f330dd34482d1952cfc98ef903` |
-| Short commit | `2fc7701` |
-| Commit date | `2026-05-02T12:22:34+02:00` |
-| Commit subject | Fix P14 duplicate billing badge guard |
+| Commit | `c00dadddf6b8a766758dd3ac6116c43d602d5d82` |
+| Short commit | `c00dadd` |
+| Commit date | `2026-05-02T15:41:28+02:00` |
+| Commit subject | docs: add audit-updated execution stages |
 | Preview URL | [https://closeflowapp.vercel.app](https://closeflowapp.vercel.app) |
 | Working tree | DIRTY |
 | Node | `v24.14.0` |
@@ -28,12 +28,62 @@
 ### Git working tree
 
 ```text
-M package.json
+M .env.example
+ M .gitignore
+ M README.md
+ D api/_supabase.ts
+ D api/billing.ts
+ M api/clients.ts
+ M api/leads.ts
+ M api/me.ts
+ D api/portal.ts
+ D api/storage-upload-health.ts
+ D api/storage-upload.ts
+ M api/system.ts
+ M docs/release/RELEASE_CANDIDATE_2026-05-02.md
+ M docs/roadmap/closeflow_audit_updated_execution_stages_2026-05-02.md
+ M public/icons/closeflow-icon.svg
+ M public/manifest.webmanifest
+ M public/service-worker.js
+ M scripts/check-a15-email-verification.cjs
+ M scripts/check-p7-lead-service-closeout.cjs
+ M src/App.tsx
+ M src/components/GlobalAiAssistant.tsx
+ M src/components/GlobalQuickActions.tsx
+ M src/components/Layout.tsx
+ M src/components/QuickAiCapture.tsx
+ M src/components/StatShortcutCard.tsx
+ M src/components/TodayAiAssistant.tsx
+ M src/lib/ai-assistant.ts
+ M src/lib/ai-capture.ts
+ M src/lib/ai-config.ts
+ M src/lib/ai-direct-write-guard.ts
+ M src/lib/ai-drafts.ts
+ M src/lib/ai-usage-guard.ts
+ M src/lib/relation-value.ts
+ M src/pages/AdminAiSettings.tsx
+ M src/pages/AiDrafts.tsx
  M src/pages/Calendar.tsx
-?? docs/P14H_BOM_SAFE_FINAL_2026-05-02.md
-?? docs/release/
-?? scripts/print-release-evidence.cjs
-?? test-results/
+ M src/pages/Cases.tsx
+ M src/pages/ClientDetail.tsx
+ M src/pages/LeadDetail.tsx
+ M src/pages/Leads.tsx
+ M src/pages/Login.tsx
+ M src/pages/Settings.tsx
+ M src/pages/Tasks.tsx
+ M src/pages/Today.tsx
+ M src/server/_access-gate.ts
+ M src/server/_request-scope.ts
+ M src/server/_stripe.ts
+ M src/server/ai-assistant.ts
+ M src/server/ai-capture.ts
+ M src/server/ai-config.ts
+D  test-results/last-test-summary.txt
+ M vercel.json
+?? api/billing-checkout.ts
+?? api/daily-digest.ts
+?? api/stripe-webhook.ts
+?? api/support.ts
 ```
 
 ---
@@ -138,9 +188,9 @@ M package.json
 | Script | Status | Exit code | Czas |
 |---|---:|---:|---:|
 | `check:polish-mojibake` | PASS | 0 | 0.4s |
-| `verify:closeflow:quiet` | FAIL | 1 | 7.9s |
+| `verify:closeflow:quiet` | PASS | 0 | 22.3s |
 | `test:critical` | PASS | 0 | 0.6s |
-| `build` | PASS | 0 | 5.0s |
+| `build` | PASS | 0 | 20.7s |
 
 ### Wynik builda
 
@@ -254,11 +304,11 @@ STDOUT:
 OK: no Polish mojibake detected.
 ```
 
-### FAIL: `verify:closeflow:quiet`
+### PASS: `verify:closeflow:quiet`
 
 - Command: `npm.cmd run verify:closeflow:quiet`
-- Exit code: `1`
-- Duration: `7.9s`
+- Exit code: `0`
+- Duration: `22.3s`
 
 ```text
 STDOUT:
@@ -289,30 +339,81 @@ OK tests/cases-v1-lifecycle-command-board.test.cjs
 OK tests/cases-filetext-runtime.test.cjs
 OK tests/case-detail-v1-command-center.test.cjs
 OK tests/client-detail-v1-operational-center.test.cjs
+OK tests/client-detail-simplified-card-view.test.cjs
+OK tests/client-detail-final-operating-model.test.cjs
+OK tests/today-quick-snooze-options.test.cjs
+OK tests/today-quick-snooze-click-edit-polish.test.cjs
+OK tests/today-quick-snooze-hard-click-fix.test.cjs
+OK tests/pwa-foundation.test.cjs
+OK tests/daily-digest-email-runtime.test.cjs
+OK tests/email-digest-domain-gate.test.cjs
+OK tests/billing-stripe-blik-foundation.test.cjs
+OK tests/billing-foundation-test-polish-label-regression.test.cjs
+OK tests/billing-stripe-blik-multi-plan-pricing.test.cjs
+OK tests/billing-checkout-vercel-api-type-guard.test.cjs
+OK tests/billing-ui-polish-and-diagnostics.test.cjs
+OK tests/ui-copy-and-billing-cleanup.test.cjs
+OK tests/ai-config-admin-foundation.test.cjs
+OK tests/ai-config-no-secret-leak.test.cjs
+OK tests/cases-page-helper-copy-cleanup.test.cjs
+OK tests/stat-shortcut-cards-standard.test.cjs
+OK tests/ui-completed-label-consistency.test.cjs
+OK tests/leads-history-copy-cleanup.test.cjs
+OK tests/ai-quick-capture-foundation.test.cjs
+OK tests/ai-quick-capture-voice-and-today.test.cjs
+OK tests/ai-followup-draft.test.cjs
+OK tests/ai-next-action-suggestion.test.cjs
+OK tests/ai-next-action-create-task.test.cjs
+OK tests/ai-assistant-command-center.test.cjs
+OK tests/ai-capture-speech-parser.test.cjs
+OK tests/ai-assistant-scope-budget-guard.test.cjs
+OK tests/ai-assistant-capture-handoff.test.cjs
+OK tests/billing-stripe-diagnostics-dry-run.test.cjs
+OK tests/billing-dry-run-test-order-regression.test.cjs
+OK tests/stripe-checkout-app-url-normalization.test.cjs
+OK tests/daily-digest-diagnostics.test.cjs
+OK tests/daily-digest-cron-auth.test.cjs
+OK tests/today-action-layout-not-column-cramped.test.cjs
+OK tests/vercel-hobby-function-budget.test.cjs
+OK tests/request-scope-server-helper.test.cjs
+OK tests/request-identity-vercel-api-signature.test.cjs
+OK tests/polish-mojibake-audit.test.cjs
+OK tests/stage30-leads-clients-trash-contract.test.cjs
+OK tests/stage31-leads-thin-list-search.test.cjs
+OK tests/stage32-leads-value-right-rail.test.cjs
+OK tests/stage32e-relation-rail-copy-compat.test.cjs
+OK tests/stage32g-relation-funnel-full-gate-contract.test.cjs
+OK tests/stage32f-relation-funnel-contract.test.cjs
+OK tests/stage35c-ai-autospeech-compact-contract-fix.test.cjs
+OK tests/stage35-ai-assistant-compact-ui.test.cjs
+OK tests/layout-brand-label.test.cjs
+OK tests/lead-start-service-case-redirect.test.cjs
+OK tests/billing-checkout-no-prefilled-personal-email.test.cjs
+OK tests/lead-write-access-gate.test.cjs
+OK tests/billing-access-plan-normalization.test.cjs
+OK tests/today-quick-snooze-real-button-click.test.cjs
+OK tests/google-mobile-login-webview-guard.test.cjs
+OK tests/relation-funnel-value.test.cjs
+OK tests/global-quick-actions-open-modals.test.cjs
+OK tests/ai-draft-inbox-flow.test.cjs
+OK tests/ai-draft-inbox-command-center.test.cjs
+OK tests/global-quick-actions-sticky-single-source.test.cjs
+OK tests/global-quick-actions-no-duplicates.test.cjs
+OK tests/global-quick-actions-toolbar-a11y.test.cjs
+OK tests/ai-usage-limit-guard.test.cjs
+OK tests/ai-real-provider-wiring.test.cjs
+OK tests/ai-cloudflare-provider-wiring.test.cjs
+OK tests/ai-assistant-global-app-search.test.cjs
+OK tests/ai-assistant-autospeech-and-clear-input.test.cjs
+OK tests/ai-assistant-save-vs-search-rule.test.cjs
+OK tests/ai-assistant-admin-and-app-scope.test.cjs
+OK tests/ai-safety-gates-direct-write.test.cjs
+OK tests/ai-direct-write-respects-mode-stage28.test.cjs
+OK tests/today-ai-drafts-tile-stage29.test.cjs
+OK tests/stage29d-today-ai-drafts-compact-tile.test.cjs
+OK tests/supabase-first-readiness-stage16.test.cjs
 
-
-STDERR:
-]) {\r\n' +
-    "  const caseId = String(caseRecord?.id || '');\r\n" +
-    "  const caseTasks = tasks.filter((task) => String(task.caseId || '') === caseId && !isDoneStatus(task.status));\r\n" +
-    "  const caseEvents = events.filter((event) => String(event.caseId || '') === caseId && !isDoneStatus(event.status));\r\n" +
-    '  const entries = [\r\n' +
-    '    ...caseTasks.map((task) => ({\r\n' +
-    "      kind: 'task' as const,\r\n" +
-    "      title: String(task.title || '"... 44352 more characters
-  
-      at TestContext.<anonymous> (C:\Users\malim\Desktop\biznesy_ai\2.closeflow\tests\client-detail-simplified-card-view.test.cjs:23:10)
-      at Test.runInAsyncScope (node:async_hooks:228:14)
-      at Test.run (node:internal/test_runner/test:1118:25)
-      at Test.start (node:internal/test_runner/test:1015:17)
-      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
-    generatedMessage: true,
-    code: 'ERR_ASSERTION',
-    actual: '/*\nCLIENT_DETAIL_VISUAL_REBUILD_STAGE12\nClient is a relation record. Operational work after acquisition happens in Case.\nCLIENT_DETAIL_FINAL_OPERATING_MODEL_V83\r\nCLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD\r\nCLIENT_DETAIL_MORE_MENU_SECONDARY\r\nCLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ\nSTAGE35_CLIENT_DETAIL_VISIBLE_EDIT_ACTION\n*/\nconst STAGE35_CLIENT_DETAIL_EDIT_TOGGLE_GUARD = "contactEditing ? \'Zapisz\' : \'Edytuj\'";\nconst A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";\nimport { useCallback, useEffect, useMemo, useRef, useState } from \'react\';\nimport { Link, useNavigate, useParams } from \'react-router-dom\';\r\nimport {\r\n  Activity,\r\n  AlertTriangle,\r\n  ArrowLeft,\r\n  Briefcase,\r\n  Building2,\r\n  Calendar,\r\n  CheckCircle2,\r\n  Clock,\r\n  Copy,\r\n  FileText,\r\n  Loader2,\r\n  Mail,\n  Mic,\n  MicOff,\n  Pencil,\r\n  Phone,\r\n  Plus,\r\n  Save,\r\n  Sparkles,\r\n  Target,\r\n  UserRound,\r\n} from \'lucide-react\';\r\nimport { toast } from \'sonner\';\r\n\r\nimport Layout from \'../components/Layout\';\r\nimport { Button } from \'../components/ui/button\';\r\nimport { Input } from \'../components/ui/input\';\r\nimport { Label } from \'../components/ui/label\';\r\nimport { Textarea } from \'../components/ui/textarea\';\r\nimport { useWorkspace } from \'../hooks/useWorkspace\';\r\nimport {\r\n  fetchActivitiesFromSupabase,\r\n  fetchCasesFromSupabase,\r\n  fetchClientByIdFromSupabase,\r\n  fetchEventsFromSupabase,\r\n  fetchLeadsFromSupabase,\r\n  fetchPaymentsFromSupabase,\r\n  fetchTasksFromSupabase,\r\n  updateClientInSupabase,\r\n  updateLeadInSupabase,\r\n} from \'../lib/supabase-fallback\';\r\nimport \'../styles/visual-stage12-client-detail-vnext.css\';\r\n\r\ntype ClientTab = \'summary\' | \'cases\' | \'contact\' | \'history\';\r\n\r\ntype ClientNextAction = {\r\n  kind: \'task\' | \'event\' | \'case\' | \'lead\' | \'empty\';\r\n  title: string;\r\n  subtitle: string;\r\n  to?: string;\r\n  date?: string;\r\n  relationId?: string;\r\n  tone: \'red\' | \'amber\' | \'blue\' | \'emerald\' | \'slate\';\r\n};\r\n\r\ntype ClientCaseRow = {\n  id: string;\r\n  title: string;\r\n  leadId?: string | null;\r\n  status: string;\r\n  statusLabel: string;\r\n  nextActionLabel: string;\r\n  nextActionMeta: string;\r\n  sourceLabel: string;\r\n  completeness: number;\r\n  blocker: string;\n};\n\ntype SpeechRecognitionLike = {\n  lang: string;\n  continuous: boolean;\n  interimResults: boolean;\n  onresult: ((event: any) => void) | null;\n  onerror: ((event: any) => void) | null;\n  onend: (() => void) | null;\n  start: () => void;\n  stop: () => void;\n  abort?: () => void;\n};\n\ntype SpeechRecognitionConstructor = new () => SpeechRecognitionLike;\n\nfunction getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {\n  if (typeof window === \'undefined\') return null;\n  const browserWindow = window as any;\n  return browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition || null;\n}\n\nfunction joinTranscript(previous: string, addition: string) {\n  const base = previous.trim();\n  const next = addition.trim();\n  if (!next) return base;\n  return base ? `${base} ${next}` : next;\n}\n\r\nfunction asText(value: unknown) {\r\n  return typeof value === \'string\' ? value.trim() : \'\';\r\n}\r\n\r\nfunction asDate(value: unknown) {\r\n  if (!value) return null;\r\n  const parsed = new Date(String(value));\r\n  return Number.isNaN(parsed.getTime()) ? null : parsed;\r\n}\r\n\r\nfunction formatDate(value: unknown) {\r\n  const parsed = asDate(value);\r\n  if (!parsed) return \'Brak daty\';\r\n  return parsed.toLocaleDateString(\'pl-PL\', {\r\n    day: \'2-digit\',\r\n    month: \'2-digit\',\r\n    year: \'numeric\',\r\n  });\r\n}\r\n\r\nfunction formatDateTime(value: unknown) {\r\n  const parsed = asDate(value);\r\n  if (!parsed) return \'Brak daty\';\r\n  return parsed.toLocaleString(\'pl-PL\', {\r\n    day: \'2-digit\',\r\n    month: \'2-digit\',\r\n    year: \'numeric\',\r\n    hour: \'2-digit\',\r\n    minute: \'2-digit\',\r\n  });\r\n}\r\n\r\nfunction formatMoney(value: unknown) {\r\n  const amount = Number(value || 0);\r\n  return Number.isFinite(amount) ? `${amount.toLocaleString(\'pl-PL\')} PLN` : \'0 PLN\';\r\n}\r\n\r\nfunction getTaskDate(task: any) {\r\n  return String(task?.scheduledAt || task?.dueAt || task?.reminderAt || task?.date || task?.createdAt || \'\');\r\n}\r\n\r\nfunction getEventDate(event: any) {\r\n  return String(event?.startAt || event?.scheduledAt || event?.reminderAt || event?.createdAt || \'\');\r\n}\r\n\r\nfunction isDoneStatus(status: unknown) {\r\n  return [\'done\', \'completed\', \'archived\', \'cancelled\', \'canceled\'].includes(String(status || \'\').toLowerCase());\r\n}\r\n\r\nfunction getActivityTime(activity: any) {\r\n  return String(activity?.createdAt || activity?.updatedAt || activity?.happenedAt || \'\');\r\n}\r\n\r\nfunction leadStatusLabel(status?: string) {\r\n  switch (status) {\r\n    case \'new\':\r\n      return \'Nowy\';\r\n    case \'contacted\':\r\n      return \'Skontaktowany\';\r\n    case \'qualification\':\r\n      return \'Kwalifikacja\';\r\n    case \'proposal_sent\':\r\n      return \'Oferta wysłana\';\r\n    case \'waiting_response\':\r\n      return \'Czeka na odpowiedź\';\r\n    case \'accepted\':\r\n      return \'Zaakceptowany\';\r\n    case \'moved_to_service\':\r\n      return \'W obsłudze\';\r\n    case \'won\':\r\n      return \'Wygrany\';\r\n    case \'lost\':\r\n      return \'Przegrany\';\r\n    case \'archived\':\r\n      return \'Archiwum\';\r\n    default:\r\n      return status || \'Lead\';\r\n  }\r\n}\r\n\r\nfunction caseStatusLabel(status?: string) {\r\n  switch (status) {\r\n    case \'new\':\r\n      return \'Nowa\';\r\n    case \'waiting_on_client\':\r\n      return \'Czeka na klienta\';\r\n    case \'blocked\':\r\n      return \'Zablokowana\';\r\n    case \'to_approve\':\r\n      return \'Do akceptacji\';\r\n    case \'ready_to_start\':\r\n      return \'Gotowa do startu\';\r\n    case \'in_progress\':\r\n      return \'W realizacji\';\r\n    case \'on_hold\':\r\n      return \'Wstrzymana\';\r\n    case \'completed\':\r\n      return \'Zakończona\';\r\n    case \'canceled\':\r\n      return \'Anulowana\';\r\n    default:\r\n      return status || \'Sprawa\';\r\n  }\r\n}\r\n\r\nfunction paymentStatusLabel(status?: string) {\r\n  switch (status) {\r\n    case \'paid\':\r\n    case \'fully_paid\':\r\n      return \'Opłacone\';\r\n    case \'partially_paid\':\r\n      return \'Częściowo opłacone\';\r\n    case \'awaiting_payment\':\r\n      return \'Czeka na płatność\';\r\n    case \'deposit_paid\':\r\n      return \'Zaliczka\';\r\n    case \'refunded\':\r\n      return \'Zwrot\';\r\n    case \'written_off\':\r\n      return \'Spisane\';\r\n    default:\r\n      return status || \'Rozliczenie\';\r\n  }\r\n}\r\n\r\nfunction activityLabel(activity: any) {\r\n  const eventType = String(activity?.eventType || activity?.activityType || \'activity\');\r\n  const title = asText(activity?.payload?.title) || asText(activity?.title);\r\n\r\n  switch (eventType) {\r\n    case \'calendar_entry_completed\':\r\n      return title ? `Wpis kalendarza wykonany: ${title}` : \'Wpis kalendarza wykonany\';\r\n    case \'calendar_entry_restored\':\r\n      return title ? `Wpis kalendarza przywrócony: ${title}` : \'Wpis kalendarza przywrócony\';\r\n    case \'calendar_entry_deleted\':\r\n      return title ? `Wpis kalendarza usunięty: ${title}` : \'Wpis kalendarza usunięty\';\r\n    case \'today_task_completed\':\r\n      return title ? `Zadanie wykonane: ${title}` : \'Zadanie wykonane\';\r\n    case \'today_task_restored\':\r\n      return title ? `Zadanie przywrócone: ${title}` : \'Zadanie przywrócone\';\r\n    case \'today_task_snoozed\':\r\n      return title ? `Zadanie przesunięte: ${title}` : \'Zadanie przesunięte\';\r\n    case \'today_event_snoozed\':\r\n      return title ? `Wydarzenie przesunięte: ${title}` : \'Wydarzenie przesunięte\';\r\n    case \'case_lifecycle_started\':\r\n      return title ? `Sprawa rozpoczęta: ${title}` : \'Sprawa rozpoczęta\';\r\n    case \'case_lifecycle_completed\':\r\n      return title ? `Sprawa zakończona: ${title}` : \'Sprawa zakończona\';\r\n    case \'case_lifecycle_reopened\':\r\n      return title ? `Sprawa wznowiona: ${title}` : \'Sprawa wznowiona\';\r\n    case \'ai_draft_converted\':\r\n      return title ? `Szkic zatwierdzony: ${title}` : \'Szkic zatwierdzony\';\r\n    default:\r\n      return title || \'Aktywność klienta\';\r\n  }\r\n}\r\n\r\nfunction getInitials(client: any) {\r\n  const source = String(client?.name || client?.company || \'Klient\');\r\n  const initials = source\r\n    .split(/\\s+/)\r\n    .filter(Boolean)\r\n    .slice(0, 2)\r\n    .map((part) => part[0]?.toUpperCase())\r\n    .join(\'\');\r\n  return initials || \'K\';\r\n}\r\n\r\nfunction getClientName(client: any) {\r\n  return String(client?.name || client?.company || \'Klient bez nazwy\');\r\n}\r\n\r\nfunction getCaseTitle(caseRecord: any) {\r\n  return String(caseRecord?.title || caseRecord?.clientName || \'Sprawa klienta\');\r\n}\r\n\r\nfunction getCaseCompleteness(caseRecord: any) {\r\n  const value = Number(caseRecord?.completenessPercent || caseRecord?.completionPercent || 0);\r\n  return Number.isFinite(value) ? Math.max(0, Math.min(100, Math.round(value))) : 0;\r\n}\r\n\r\nfunction getCaseBlocker(caseRecord: any) {\r\n  const explicit = asText(caseRecord?.blocker) || asText(caseRecord?.blockReason) || asText(caseRecord?.missingReason);\r\n  if (explicit) return explicit;\r\n  const status = String(caseRecord?.status || \'\');\r\n  if (status === \'blocked\') return \'blokada w sprawie\';\r\n  if (status === \'waiting_on_client\') return \'czeka na klienta\';\r\n  if (status === \'to_approve\') return \'czeka na akceptację\';\r\n  if (status === \'on_hold\') return \'sprawa wstrzymana\';\r\n  return \'\';\r\n}\r\n\r\nfunction getCaseSourceLead(caseRecord: any, leads: any[]) {\r\n  const caseId = String(caseRecord?.id || \'\');\r\n  const directLeadId = String(caseRecord?.leadId || caseRecord?.sourceLeadId || \'\');\r\n  return (\r\n    leads.find((lead) => String(lead.id || \'\') === directLeadId) ||\r\n    leads.find((lead) => String(lead.linkedCaseId || lead.caseId || \'\') === caseId) ||\r\n    null\r\n  );\r\n}\r\n\r\nfunction getCaseNextAction(caseRecord: any, tasks: any[], events: any[]) {\r\n  const caseId = String(caseRecord?.id || \'\');\r\n  const caseTasks = tasks.filter((task) => String(task.caseId || \'\') === caseId && !isDoneStatus(task.status));\r\n  const caseEvents = events.filter((event) => String(event.caseId || \'\') === caseId && !isDoneStatus(event.status));\r\n  const entries = [\r\n    ...caseTasks.map((task) => ({\r\n      kind: \'task\' as const,\r\n      title: String(task.title || \''... 44352 more characters,
-    expected: /\+ Nowa sprawa dla klienta/,
-    operator: 'match',
-    diff: 'simple'
-  }
+CloseFlow quiet release gate passed.
 ```
 
 ### PASS: `test:critical`
@@ -330,7 +431,7 @@ STDOUT:
 == CloseFlow compact test summary ==
 Mode: critical
 Critical files: 6
-Tests: 13 | Pass: 13 | Fail: 0 | 196 ms
+Tests: 13 | Pass: 13 | Fail: 0 | 219 ms
 Full log: test-results\last-test-full.log
 
 OK: testy przeszły.
@@ -340,7 +441,7 @@ OK: testy przeszły.
 
 - Command: `npm.cmd run build`
 - Exit code: `0`
-- Duration: `5.0s`
+- Duration: `20.7s`
 
 ```text
 STDOUT:
@@ -368,69 +469,50 @@ computing gzip size...
 [2mdist/[22m[35massets/ClientDetail-H5r4uBB6.css                            [39m[1m[2m 15.46 kB[22m[1m[22m[2m │ gzip:   3.00 kB[22m
 [2mdist/[22m[35massets/AiDrafts-ICOvzt1S.css                                [39m[1m[2m 17.60 kB[22m[1m[22m[2m │ gzip:   3.26 kB[22m
 [2mdist/[22m[35massets/index-B3l78PTx.css                                   [39m[1m[2m354.30 kB[22m[1m[22m[2m │ gzip:  49.43 kB[22m
-[2mdist/[22m[36massets/workspace-context-CZUNSIKY.js                        [39m[1m[2m  0.10 kB[22m[1m[22m[2m │ gzip:   0.12 kB[22m
+[2mdist/[22m[36massets/workspace-context-CTXOxGub.js                        [39m[1m[2m  0.10 kB[22m[1m[22m[2m │ gzip:   0.12 kB[22m
 [2mdist/[22m[36massets/app-preferences-OunjYGCB.js                          [39m[1m[2m  0.25 kB[22m[1m[22m[2m │ gzip:   0.19 kB[22m
-[2mdist/[22m[36massets/label-PnG2hTmW.js                                    [39m[1m[2m  0.39 kB[22m[1m[22m[2m │ gzip:   0.28 kB[22m
+[2mdist/[22m[36massets/label-DAMh3UYh.js                                    [39m[1m[2m  0.39 kB[22m[1m[22m[2m │ gzip:   0.28 kB[22m
 [2mdist/[22m[36massets/firebase-gKjVCrxB.js                                 [39m[1m[2m  0.53 kB[22m[1m[22m[2m │ gzip:   0.38 kB[22m
-[2mdist/[22m[36massets/input-DmJo-IU5.js                                    [39m[1m[2m  0.61 kB[22m[1m[22m[2m │ gzip:   0.38 kB[22m
+[2mdist/[22m[36massets/input-DgtT69g_.js                                    [39m[1m[2m  0.61 kB[22m[1m[22m[2m │ gzip:   0.38 kB[22m
 [2mdist/[22m[36massets/browser-DU5MMTTh.js                                  [39m[1m[2m  0.62 kB[22m[1m[22m[2m │ gzip:   0.43 kB[22m
-[2mdist/[22m[36massets/card-OhchSc7U.js                                     [39m[1m[2m  1.03 kB[22m[1m[22m[2m │ gzip:   0.40 kB[22m
-[2mdist/[22m[36massets/tabs-Caz79luu.js                                     [39m[1m[2m  1.14 kB[22m[1m[22m[2m │ gzip:   0.48 kB[22m
-[2mdist/[22m[36massets/options-D422aFpW.js                                  [39m[1m[2m  1.60 kB[22m[1m[22m[2m │ gzip:   0.62 kB[22m
-[2mdist/[22m[36massets/textarea-DL7BsMp2.js                                 [39m[1m[2m  2.73 kB[22m[1m[22m[2m │ gzip:   1.04 kB[22m
-[2mdist/[22m[36massets/schedule-conflicts-BCvORYDB.js                       [39m[1m[2m  2.76 kB[22m[1m[22m[2m │ gzip:   1.13 kB[22m
+[2mdist/[22m[36massets/card-OY7eCKsh.js                                     [39m[1m[2m  1.03 kB[22m[1m[22m[2m │ gzip:   0.40 kB[22m
+[2mdist/[22m[36massets/tabs-PR71iQtR.js                                     [39m[1m[2m  1.14 kB[22m[1m[22m[2m │ gzip:   0.48 kB[22m
+[2mdist/[22m[36massets/options-Dm6iEn3Z.js                                  [39m[1m[2m  1.60 kB[22m[1m[22m[2m │ gzip:   0.62 kB[22m
+[2mdist/[22m[36massets/textarea-B1ADIIeB.js                                 [39m[1m[2m  2.73 kB[22m[1m[22m[2m │ gzip:   1.03 kB[22m
+[2mdist/[22m[36massets/schedule-conflicts-BUDtjVOW.js                       [39m[1m[2m  2.76 kB[22m[1m[22m[2m │ gzip:   1.13 kB[22m
 [2mdist/[22m[36massets/case-lifecycle-v1-BrO9kis0.js                        [39m[1m[2m  2.98 kB[22m[1m[22m[2m │ gzip:   1.12 kB[22m
 [2mdist/[22m[36massets/UiPreviewVNext-DJaXv13B.js                           [39m[1m[2m  6.63 kB[22m[1m[22m[2m │ gzip:   1.77 kB[22m
-[2mdist/[22m[36massets/AdminAiSettings-DGWEKbwX.js                          [39m[1m[2m  6.78 kB[22m[1m[22m[2m │ gzip:   2.42 kB[22m
-[2mdist/[22m[36massets/ClientPortal-ETtcBFKn.js                             [39m[1m[2m  9.52 kB[22m[1m[22m[2m │ gzip:   3.48 kB[22m
-[2mdist/[22m[36massets/TodayStable-CUr-dTCl.js                              [39m[1m[2m 11.01 kB[22m[1m[22m[2m │ gzip:   3.61 kB[22m
-[2mdist/[22m[36massets/TasksStable-au0lhnlc.js                              [39m[1m[2m 12.33 kB[22m[1m[22m[2m │ gzip:   4.05 kB[22m
-[2mdist/[22m[36massets/ResponseTemplates-C2gqcGzo.js                        [39m[1m[2m 12.38 kB[22m[1m[22m[2m │ gzip:   3.57 kB[22m
-[2mdist/[22m[36massets/Login-DwvyBNX5.js                                    [39m[1m[2m 13.95 kB[22m[1m[22m[2m │ gzip:   4.27 kB[22m
-[2mdist/[22m[36massets/Clients-xlkh_HXX.js                                  [39m[1m[2m 14.52 kB[22m[1m[22m[2m │ gzip:   4.38 kB[22m
-[2mdist/[22m[36massets/SupportCenter-Tl1jOu9F.js                            [39m[1m[2m 16.05 kB[22m[1m[22m[2m │ gzip:   5.17 kB[22m
-[2mdist/[22m[36massets/NotificationsCenter-DtGOLySF.js                      [39m[1m[2m 17.52 kB[22m[1m[22m[2m │ gzip:   5.24 kB[22m
-[2mdist/[22m[36massets/Billing-CHULm39X.js                                  [39m[1m[2m 19.18 kB[22m[1m[22m[2m │ gzip:   6.14 kB[22m
-[2mdist/[22m[36massets/Activity-sWvEY50t.js                                 [39m[1m[2m 20.10 kB[22m[1m[22m[2m │ gzip:   5.44 kB[22m
-[2mdist/[22m[36massets/Cases-CBvDpCeI.js                                    [39m[1m[2m 20.32 kB[22m[1m[22m[2m │ gzip:   6.60 kB[22m
-[2mdist/[22m[36massets/Templates-BXsBrXoF.js                                [39m[1m[2m 23.32 kB[22m[1m[22m[2m │ gzip:   6.43 kB[22m
-[2mdist/[22m[36massets/Settings-BWzzT6G0.js                                 [39m[1m[2m 24.23 kB[22m[1m[22m[2m │ gzip:   6.24 kB[22m
-[2mdist/[22m[36massets/Leads-DI0luwPZ.js                                    [39m[1m[2m 24.72 kB[22m[1m[22m[2m │ gzip:   7.73 kB[22m
-[2mdist/[22m[36massets/ClientDetail-C_aNTpRu.js                             [39m[1m[2m 30.30 kB[22m[1m[22m[2m │ gzip:   8.40 kB[22m
-[2mdist/[22m[36massets/AiDrafts-BVnlVtBL.js                                 [39m[1m[2m 32.59 kB[22m[1m[22m[2m │ gzip:   9.18 kB[22m
+[2mdist/[22m[36massets/AdminAiSettings-DnZjlQQy.js                          [39m[1m[2m  6.78 kB[22m[1m[22m[2m │ gzip:   2.42 kB[22m
+[2mdist/[22m[36massets/ClientPortal-CDFgBi48.js                             [39m[1m[2m  9.52 kB[22m[1m[22m[2m │ gzip:   3.48 kB[22m
+[2mdist/[22m[36massets/TodayStable-DGfvbE-2.js                              [39m[1m[2m 11.01 kB[22m[1m[22m[2m │ gzip:   3.61 kB[22m
+[2mdist/[22m[36massets/TasksStable-BAJ0gBSa.js                              [39m[1m[2m 12.33 kB[22m[1m[22m[2m │ gzip:   4.05 kB[22m
+[2mdist/[22m[36massets/ResponseTemplates-sc7wiK1b.js                        [39m[1m[2m 12.38 kB[22m[1m[22m[2m │ gzip:   3.56 kB[22m
+[2mdist/[22m[36massets/Login-x_dMQ2JQ.js                                    [39m[1m[2m 13.95 kB[22m[1m[22m[2m │ gzip:   4.27 kB[22m
+[2mdist/[22m[36massets/Clients-51MlY1y6.js                                  [39m[1m[2m 14.52 kB[22m[1m[22m[2m │ gzip:   4.38 kB[22m
+[2mdist/[22m[36massets/SupportCenter-CRQN-f5e.js                            [39m[1m[2m 16.05 kB[22m[1m[22m[2m │ gzip:   5.17 kB[22m
+[2mdist/[22m[36massets/NotificationsCenter-Bw5NXS76.js                      [39m[1m[2m 17.52 kB[22m[1m[22m[2m │ gzip:   5.24 kB[22m
+[2mdist/[22m[36massets/Billing-DNO8---A.js                                  [39m[1m[2m 19.18 kB[22m[1m[22m[2m │ gzip:   6.14 kB[22m
+[2mdist/[22m[36massets/Activity-BjBu5O2h.js                                 [39m[1m[2m 20.10 kB[22m[1m[22m[2m │ gzip:   5.44 kB[22m
+[2mdist/[22m[36massets/Settings-bhkZIVnU.js                                 [39m[1m[2m 20.26 kB[22m[1m[22m[2m │ gzip:   5.46 kB[22m
+[2mdist/[22m[36massets/Cases-CxsbBOeo.js                                    [39m[1m[2m 20.32 kB[22m[1m[22m[2m │ gzip:   6.60 kB[22m
+[2mdist/[22m[36massets/Templates-Bb5ksQZ3.js                                [39m[1m[2m 23.32 kB[22m[1m[22m[2m │ gzip:   6.43 kB[22m
+[2mdist/[22m[36massets/Leads-D1ihSHp0.js                                    [39m[1m[2m 24.72 kB[22m[1m[22m[2m │ gzip:   7.72 kB[22m
+[2mdist/[22m[36massets/ClientDetail-CzIMxeEs.js                             [39m[1m[2m 30.30 kB[22m[1m[22m[2m │ gzip:   8.40 kB[22m
+[2mdist/[22m[36massets/AiDrafts-DDRU8Oal.js                                 [39m[1m[2m 32.59 kB[22m[1m[22m[2m │ gzip:   9.18 kB[22m
 [2mdist/[22m[36massets/vendor-feedback-CWL61Qmj.js                          [39m[1m[2m 33.84 kB[22m[1m[22m[2m │ gzip:   9.57 kB[22m
 [2mdist/[22m[36massets/vendor-date-DxUNpV6I.js                              [39m[1m[2m 34.31 kB[22m[1m[22m[2m │ gzip:   9.69 kB[22m
-[2mdist/[22m[36massets/CaseDetail-DxlxqgvT.js                               [39m[1m[2m 34.52 kB[22m[1m[22m[2m │ gzip:   8.92 kB[22m
+[2mdist/[22m[36massets/CaseDetail-VIkn_GJC.js                               [39m[1m[2m 34.52 kB[22m[1m[22m[2m │ gzip:   8.92 kB[22m
 [2mdist/[22m[36massets/vendor-routing-DzBk4N5V.js                           [39m[1m[2m 38.21 kB[22m[1m[22m[2m │ gzip:  13.69 kB[22m
 [2mdist/[22m[36massets/vendor-icons-BHsd-uM9.js                             [39m[1m[2m 39.06 kB[22m[1m[22m[2m │ gzip:   7.67 kB[22m
-[2mdist/[22m[36massets/Calendar-yFhpYf5t.js                                 [39m[1m[2m 48.26 kB[22m[1m[22m[2m │ gzip:  12.45 kB[22m
-[2mdist/[22m[36massets/Layout-ixGR_IJU.js                                   [39m[1m[2m 53.34 kB[22m[1m[22m[2m │ gzip:  16.59 kB[22m
-[2mdist/[22m[36massets/LeadDetail-C7iIUaq9.js                               [39m[1m[2m 54.07 kB[22m[1m[22m[2m │ gzip:  13.63 kB[22m
+[2mdist/[22m[36massets/Calendar-BLr7ulBN.js                                 [39m[1m[2m 48.16 kB[22m[1m[22m[2m │ gzip:  12.44 kB[22m
+[2mdist/[22m[36massets/Layout-BCCCgthh.js                                   [39m[1m[2m 53.34 kB[22m[1m[22m[2m │ gzip:  16.59 kB[22m
+[2mdist/[22m[36massets/LeadDetail-B7WBaim_.js                               [39m[1m[2m 54.07 kB[22m[1m[22m[2m │ gzip:  13.62 kB[22m
 [2mdist/[22m[36massets/UiPreviewVNextFull-BeANUZ-K.js                       [39m[1m[2m 71.76 kB[22m[1m[22m[2m │ gzip:  13.86 kB[22m
 [2mdist/[22m[36massets/vendor-radix-fPQS1UQN.js                             [39m[1m[2m 78.01 kB[22m[1m[22m[2m │ gzip:  23.55 kB[22m
 [2mdist/[22m[36massets/vendor-firebase-DmwLizUx.js                          [39m[1m[2m183.59 kB[22m[1m[22m[2m │ gzip:  37.96 kB[22m
-[2mdist/[22m[36massets/index-TzUR_C2_.js                                    [39m[1m[2m218.96 kB[22m[1m[22m[2m │ gzip:  62.05 kB[22m
+[2mdist/[22m[36massets/index-CP4kSHku.js                                    [39m[1m[2m218.95 kB[22m[1m[22m[2m │ gzip:  62.06 kB[22m
 [2mdist/[22m[36massets/vendor-react-8zHiQ6Mn.js                             [39m[1m[2m336.75 kB[22m[1m[22m[2m │ gzip: 110.36 kB[22m
-[32m✓ built in 4.21s[39m
-
-
-STDERR:
-[33m[plugin vite:esbuild] src/pages/Calendar.tsx: [33mDuplicate key "leadId" in object literal[33m
-823|          caseId: readCalendarRawText(entry.raw?.caseId) || null,
-824|          workspaceId: workspace?.id ?? null,
-825|                  leadId: entry.raw?.leadId ?? null,
-   |                  ^
-826|          caseId: entry.raw?.caseId ?? null,
-827|  payload: {
-[39m
-[33m[plugin vite:esbuild] src/pages/Calendar.tsx: [33mDuplicate key "caseId" in object literal[33m
-824|          workspaceId: workspace?.id ?? null,
-825|                  leadId: entry.raw?.leadId ?? null,
-826|          caseId: entry.raw?.caseId ?? null,
-   |          ^
-827|  payload: {
-828|            source: 'calendar',
-[39m
+[32m✓ built in 19.73s[39m
 ```
 
 ---
@@ -438,5 +520,5 @@ STDERR:
 ## 8. Decyzja gate
 
 
+⚠️ Gate ma ostrzeżenia. Nie podpisywać release’u bez wyjaśnienia preview URL / dirty tree / braków E2E.
 
-❌ Gate nie przeszedł. Nie przekazywać aplikacji użytkownikowi, dopóki czerwone checki lub brak package.json / brak builda nie zostaną naprawione.

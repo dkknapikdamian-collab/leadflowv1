@@ -23,8 +23,8 @@ function isApiOrDataRequest(request) {
   const path = url.pathname.toLowerCase();
 
   return (
-    path.startsWith('/api/') ||
-    path.startsWith('/supabase/') ||
+    url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith('/supabase/') ||
     path.startsWith('/firebase/') ||
     path.includes('/auth/') ||
     path.includes('/rest/v1/') ||

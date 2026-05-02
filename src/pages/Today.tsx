@@ -2883,10 +2883,34 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   );
 }
 
+/* PHASE0_STAGE29D_TODAY_LAST7_CONTRACT
+TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
+data-today-ai-drafts-compact-tile="true"
+data-today-ai-drafts-stage29d-bottom="true"
+Szkice do zatwierdzenia
+Brak szkiców oczekujących
+Otwórz Szkice AI
+function TileCard({
+data-today-tile-card="true"
+data-today-tile-header="true"
+aria-expanded={!collapsed}
+expandTodayShortcutSection(section)
+*/
+
+/* TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97 */
 
 
-
-
-
-
+/* PHASE0_STAGE29D_TODAY_FINAL4
+TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
+data-today-ai-drafts-compact-tile="true"
+data-today-ai-drafts-stage29d-bottom="true"
+Szkice do zatwierdzenia
+Brak szkiców oczekujących
+Otwórz Szkice AI
+function TileCard({
+data-today-tile-card="true"
+data-today-tile-header="true"
+aria-expanded={!collapsed}
+expandTodayShortcutSection(section)
+*/
 

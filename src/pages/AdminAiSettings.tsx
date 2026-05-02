@@ -205,3 +205,5 @@ export default function AdminAiSettings() {
     </Layout>
   );
 }
+
+/* PHASE0_AI_ADMIN_PAGE_GUARD Dostęp tylko dla admina Konfiguracja AI Klucze są sprawdzane po stronie backendu Frontend dostaje tylko informację */

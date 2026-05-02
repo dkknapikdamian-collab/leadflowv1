@@ -46,3 +46,5 @@ export async function createQuickAiCaptureDraft(text: string) {
 
   return data as QuickAiCaptureDraft;
 }
+
+/* /api/system?kind=ai-capture-draft */

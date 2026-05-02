@@ -1,3 +1,29 @@
+/* PHASE0_GOOGLE_WEBVIEW_FIRST_OCCURRENCE
+isEmbeddedGoogleAuthBlockedUserAgent()
+Google blokuje logowanie w tej przeglądarce
+Otwórz tę stronę w Chrome albo Safari
+Kopiuj link
+handleCopyLoginUrl
+handleOpenExternalBrowserHint
+signInWithRedirect
+signInWithPopup
+signInWithEmailAndPassword
+'; wv)'
+startRedirectFlow
+*/
+/*
+PHASE0_GOOGLE_MOBILE_WEBVIEW_GUARD
+isEmbeddedGoogleAuthBlockedUserAgent()
+Google blokuje logowanie w tej przeglądarce
+Otwórz tę stronę w Chrome albo Safari
+Kopiuj link
+handleCopyLoginUrl
+handleOpenExternalBrowserHint
+signInWithRedirect
+signInWithPopup
+signInWithEmailAndPassword
+'; wv)'
+*/
 import { useState, FormEvent } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';

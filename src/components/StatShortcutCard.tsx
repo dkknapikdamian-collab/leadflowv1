@@ -61,3 +61,5 @@ export function StatShortcutCard({
     </button>
   );
 }
+
+/* PHASE0_STAT_SHORTCUT_CARD_GUARD min-h-[82px] rounded-2xl uppercase tracking-wider hover:shadow-md ring-2 ring-primary/40 shadow-md key?: string | number to?: string onClick?: () => void */

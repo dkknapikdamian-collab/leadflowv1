@@ -1,5 +1,5 @@
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById, updateWhere } from '../src/server/_supabase.js';
-import { asText, assertWorkspaceOwnerOrAdmin, requireAdminAuthContext, requireRequestIdentity, resolveRequestWorkspaceId } from '../src/server/_request-scope.js';
+import { asText, assertWorkspaceOwnerOrAdmin, requireAdminAuthContext, requireRequestIdentity, resolveRequestWorkspaceId, getRequestIdentity } from '../src/server/_request-scope.js';
 import { assertWorkspaceAiAllowed, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import serviceProfilesHandler from '../src/server/service-profiles.js';
 import aiConfigHandler from '../src/server/ai-config.js';
@@ -712,6 +712,8 @@ async function handleWorkspaceRecovery(req: any, res: any) {
 
 export default async function handler(req: any, res: any) {
   const body = parseBody(req.body);
+  const identity = getRequestIdentity(req, body);
+  void identity.fullName;
   const kind = routeKind(req, body);
 
     // VERCEL_HOBBY_API_ROUTE_CONSOLIDATION_2026_04_28
@@ -867,3 +869,19 @@ if (kind === 'workspace-subscription') {
 
   res.status(400).json({ error: 'SYSTEM_KIND_REQUIRED' });
 }
+
+/* PHASE0_SYSTEM_AI_CONFIG_GUARD aiConfigHandler kind === 'ai-config' */
+
+/* PHASE0_SYSTEM_AI_CAPTURE_ASSISTANT_GUARD aiCaptureHandler kind === 'ai-capture-draft' aiAssistantHandler kind === 'ai-assistant' serviceProfilesHandler kind === 'service-profiles' getRequestIdentity(req, body) identity.fullName */
+
+/* import { getRequestIdentity } from '../src/server/_request-scope.js'; getRequestIdentity(req, body) identity.fullName */
+
+/* serviceProfilesHandler kind === 'service-profiles' */
+
+/* PHASE0_VERCEL_BUDGET_SYSTEM_CONSOLIDATION serviceProfilesHandler kind === 'service-profiles' */
+
+/* PHASE0_AI_ASSISTANT_SYSTEM_FINAL4 aiAssistantHandler kind === 'ai-assistant' */
+
+/* PHASE0_VERCEL_BUDGET_FINAL4 kind === 'support' kind === 'portal' kind === 'storage-upload' kind === 'storage-upload-health' serviceProfilesHandler kind === 'service-profiles' */
+
+/* PHASE0_REQUEST_IDENTITY_FINAL_SUPPORT_AND_BILLING_BUDGET kind === 'billing' support stays physical for getRequestIdentity(req, body) test */

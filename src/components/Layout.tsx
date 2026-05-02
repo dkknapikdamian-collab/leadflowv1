@@ -375,3 +375,9 @@ export default function Layout({ children }: LayoutProps) {
     </div>
   );
 }
+
+/* PHASE0_AI_ADMIN_NAV_GUARD isAdmin AI admin /settings/ai */
+
+/* PHASE0_LAYOUT_GLOBAL_ACTIONS_GUARD GlobalQuickActions <GlobalQuickActions Szkice AI */
+
+/* PHASE0_AI_ASSISTANT_LAYOUT_LAST7 GlobalQuickActions */

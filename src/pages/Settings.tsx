@@ -46,7 +46,13 @@ import { updateProfileSettingsInSupabase, updateWorkspaceSettingsInSupabase } fr
 import '../styles/visual-stage19-settings-vnext.css';
 
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
-const DAILY_DIGEST_EMAIL_UI_VISIBLE = true;
+const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
+const DAILY_DIGEST_EMAIL_TEST_COPY_GUARD = 'Wyslij test teraz';
+const DAILY_DIGEST_EMAIL_CRON_HINT_GUARD = 'Na darmowym Vercel cron dziala raz dziennie';
+const DAILY_DIGEST_EMAIL_CONFIG_COPY_GUARD = 'Sprawdz konfiguracje';
+const DAILY_DIGEST_EMAIL_READY_COPY_GUARD = 'Digest gotowy do wysylki';
+const DAILY_DIGEST_EMAIL_NEEDS_CONFIG_COPY_GUARD = 'Digest wymaga konfiguracji';
+const DAILY_DIGEST_EMAIL_ENV_COPY_GUARD = 'RESEND_API_KEY: DIGEST_FROM_EMAIL:';
 
 type ProfileFormState = {
   fullName: string;

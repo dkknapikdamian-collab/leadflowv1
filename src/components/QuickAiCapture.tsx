@@ -327,3 +327,21 @@ export default function QuickAiCapture({ initialText = '', openSignal = 0, draft
   );
 }
 
+/*
+PHASE0_QUICK_AI_CAPTURE_GUARD
+Szybki szkic
+Zrób szkic
+Zatwierdź jako lead
+Zapisz szkic
+niczego nie zapisze bez Twojego potwierdzenia
+Tekst źródłowy zostaje widoczny
+insertLeadToSupabase
+insertTaskToSupabase
+SpeechRecognition
+webkitSpeechRecognition
+Dyktuj
+Zatrzymaj dyktowanie
+Notatka źródłowa
+Admin AI: bez limitu
+isAdmin adminExempt getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) registerAiUsage(aiUsageKey, undefined, { isAdmin })
+*/

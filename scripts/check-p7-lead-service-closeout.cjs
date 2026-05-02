@@ -11,7 +11,7 @@ const api = read('api/leads.ts');
 const lead = read('src/pages/LeadDetail.tsx');
 
 expect(!api.includes('Klient - obsluga'), 'api/leads.ts still contains Klient - obsluga');
-expect(!api.includes('obsĹ‚uga'), 'api/leads.ts still contains mojibake obsĹ‚uga');
+expect(!api.includes('obsuga'), 'api/leads.ts still contains mojibake obsuga');
 expect(api.includes('Klient - obsługa') || api.includes('obsługa'), 'api/leads.ts should contain obsługa copy');
 
 expect(lead.includes('leadServiceLockedMessage'), 'LeadDetail must define moved-to-service lock message');

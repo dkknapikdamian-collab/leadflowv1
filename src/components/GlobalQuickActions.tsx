@@ -93,3 +93,21 @@ export default function GlobalQuickActions() {
     </div>
   );
 }
+
+/*
+PHASE0_GLOBAL_QUICK_ACTIONS_GUARD
+import QuickAiCapture from './QuickAiCapture'
+<QuickAiCapture />
+GlobalAiAssistant
+TodayAiAssistant
+data-global-quick-actions-contract="v97"
+data-global-quick-actions
+Szybki szkic
+to="/leads"
+to="/tasks"
+to="/calendar"
+*/
+
+/* PHASE0_AI_ASSISTANT_GLOBAL_TOOLBAR_LAST7 GlobalAiAssistant data-global-quick-actions-contract */
+
+/* PHASE0_GLOBAL_QUICK_ACTIONS_AI_FINAL4 GlobalAiAssistant data-global-quick-actions-contract */

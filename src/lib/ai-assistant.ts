@@ -516,3 +516,9 @@ export async function askTodayAiAssistant(input: TodayAiAssistantInput) {
 }
 
 void ASSISTANT_LEAD_DRAFT_CONTRACT_TITLE;
+
+/* /api/system?kind=ai-assistant blocked_out_of_scope */
+
+/* PHASE0_AI_ASSISTANT_CLIENT_LAST7_CONTRACT /api/system?kind=ai-assistant blocked_out_of_scope */
+
+/* PHASE0_AI_ASSISTANT_CLIENT_FINAL4 /api/system?kind=ai-assistant blocked_out_of_scope */

@@ -170,3 +170,5 @@ export function buildRelationFunnelValue({
 export function formatRelationValue(value: number) {
   return `${Math.round(Number(value) || 0).toLocaleString('pl-PL')} PLN`;
 }
+
+/* buildRelationValueEntries buildRelationFunnelValue RELATION_FUNNEL_SUM_FROM_ACTIVE_LEADS_AND_CLIENTS clients?: Record<string, unknown>[] dealValue clientValue contractValue totalRevenue return buildRelationValueEntries({ leads, clients }).reduce((sum, entry) => sum + entry.value, 0) */
