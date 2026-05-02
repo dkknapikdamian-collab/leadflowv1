@@ -49,6 +49,10 @@ expect(today.includes("saveAiLeadDraft({ rawText: command, source: 'today_assist
 expect(today.includes("type AiDraftCommandType = 'lead' | 'task' | 'event' | 'note'"), 'TodayAiAssistant draft answer must support lead/task/event/note');
 expect(today.includes('Bez zapisz = szukanie'), 'TodayAiAssistant must keep read-only query explanation');
 
+// P10C_SYNTAX_SEAM_GUARD: previous patch versions could glue repeated fragments together.
+expect(!today.includes('const EXAMPLES = [const EXAMPLES = ['), 'TodayAiAssistant must not contain duplicated EXAMPLES seam');
+expect(!today.includes('if (!latestUsage.canUse && !latestUsage.adminExempt) {    if (!latestUsage.canUse && !latestUsage.adminExempt) {'), 'TodayAiAssistant must not contain duplicated latestUsage seam');
+
 expect(directGuard.includes('AI_DIRECT_WRITE_ENABLED = false'), 'ai-direct-write-guard must hard-disable direct write');
 expect(directGuard.includes('if (!AI_DIRECT_WRITE_ENABLED) return null;'), 'direct write parser must return null when disabled');
 expect(assistantLib.includes('AI_DRAFT_ONLY_POLICY_STAGE10_CLIENT_NORMALIZE'), 'ai-assistant client must normalize noAutoWrite true');

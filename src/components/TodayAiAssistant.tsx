@@ -212,7 +212,7 @@ function getAiDraftTypeForWriteCommand(value: string): AiDraftCommandType | null
   return 'note';
 }
 
-const EXAMPLES = [const EXAMPLES = [
+const EXAMPLES = [
   'Dodaj leada: Pan Marek, 516 439 989, Facebook',
   'Co mam dziś do zrobienia?',
   'Zapisz zadanie jutro o 10 oddzwonić do klienta',
@@ -344,7 +344,7 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
       return;
     }
 
-    if (!latestUsage.canUse && !latestUsage.adminExempt) {    if (!latestUsage.canUse && !latestUsage.adminExempt) {
+    if (!latestUsage.canUse && !latestUsage.adminExempt) {
       const message = `Dzisiejszy limit AI został wykorzystany: ${latestUsage.used}/${latestUsage.limit}. Wróć jutro albo użyj zwykłych formularzy.`;
       setAnswer(buildClientBlockedAnswer(command, message));
       toast.error('Dzisiejszy limit AI został wykorzystany');

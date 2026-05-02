@@ -187,7 +187,7 @@ function StableCard({ children }: { children: ReactNode }) {
   return <Card className="border-slate-100 shadow-sm"><CardContent className="p-0">{children}</CardContent></Card>;
 }
 
-function RowLink({ to, title, meta, helper, badge }: { to: string; title: string; meta?: string; helper?: string; badge?: string }) {
+function RowLink({ to, title, meta, helper, badge }: { key?: string; to: string; title: string; meta?: string; helper?: string; badge?: string }) {
   return (
     <Link to={to} className="block border-b border-slate-100 last:border-b-0 transition hover:bg-slate-50">
       <div className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
