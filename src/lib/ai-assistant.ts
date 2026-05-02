@@ -494,7 +494,12 @@ export async function askTodayAiAssistant(input: TodayAiAssistantInput) {
       throw new Error(String(data?.error || 'AI_ASSISTANT_FAILED'));
     }
 
-    return data as TodayAiAssistantAnswer;
+    // AI_DRAFT_ONLY_POLICY_STAGE10_CLIENT_NORMALIZE: even provider answers cannot enable direct writes.
+    return {
+      ...(data as TodayAiAssistantAnswer),
+      scope: 'assistant_read_or_draft_only',
+      noAutoWrite: true,
+    } as TodayAiAssistantAnswer;
   } catch (error) {
     if (stage32LocalFallback) {
       return {

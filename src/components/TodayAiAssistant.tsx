@@ -6,13 +6,6 @@ import { toast } from 'sonner';
 import { askTodayAiAssistant, type TodayAiAssistantAnswer } from '../lib/ai-assistant';
 import { saveAiLeadDraft } from '../lib/ai-drafts';
 import {
-  getStoredAiDirectWriteMode,
-  parseAiDirectWriteCommand,
-  persistAiDirectWriteMode,
-  type AiDirectWriteMode,
-} from '../lib/ai-direct-write-guard';
-import { createLeadFromAiDraftApprovalInSupabase, insertEventToSupabase, insertTaskToSupabase } from '../lib/supabase-fallback';
-import {
   AI_COMMAND_MAX_LENGTH,
   buildAiUsageKey,
   getAiUsageSnapshot,
@@ -162,31 +155,64 @@ function buildClientBlockedAnswer(rawText: string, summary?: string): TodayAiAss
   };
 }
 
-function buildClientLeadCaptureDraftAnswer(rawText: string): TodayAiAssistantAnswer {
+type AiDraftCommandType = 'lead' | 'task' | 'event' | 'note';
+
+function getAiDraftTypeLabel(type: AiDraftCommandType) {
+  if (type === 'task') return 'zadania';
+  if (type === 'event') return 'wydarzenia';
+  if (type === 'note') return 'notatki';
+  return 'leada';
+}
+
+function buildClientLeadCaptureDraftAnswer(rawText: string, type: AiDraftCommandType = 'lead'): TodayAiAssistantAnswer {
+  const typeLabel = getAiDraftTypeLabel(type);
   return {
     ok: true,
     scope: 'assistant_read_or_draft_only',
-    provider: 'client_lead_capture_guard',
+    provider: 'client_draft_only_guard',
     noAutoWrite: true,
     intent: 'lead_capture',
-    title: 'Szkic leada zapisany do sprawdzenia',
+    title: 'Szkic AI zapisany do sprawdzenia',
     summary:
-      'Szkic leada zapisany w Szkicach AI. To nie jest jeszcze finalny rekord. Otwórz Szkice AI, sprawdź pola i dopiero wtedy zatwierdź zapis.',
+      'AI przygotowuje szkic. Ty zatwierdzasz zapis. Utworzyłem szkic ' + typeLabel + ', ale nie zapisałem finalnego rekordu.',
     rawText,
     suggestedCaptureText: rawText,
+    draft: {
+      type,
+      rawText,
+      parsedDraft: { type, rawText },
+      status: 'draft',
+      source: 'assistant_operator',
+    },
     items: [
       {
         label: 'Otwórz Szkice AI',
-        detail: 'Tam zobaczysz dokładny tekst dyktowania i robocze dane do sprawdzenia przed utworzeniem rekordu.',
+        detail: 'Tam sprawdzisz pola i dopiero ręcznie zatwierdzisz finalny zapis.',
         href: '/ai-drafts',
         priority: 'high',
       },
     ],
-    warnings: ['Bezpieczny tryb: asystent zapisał tylko szkic, nie utworzył finalnego leada, zadania ani wydarzenia.'],
+    warnings: ['Bezpieczny tryb: AI utworzyło tylko szkic. Finalny lead, zadanie, wydarzenie albo notatka wymaga zatwierdzenia.'],
   };
 }
 
-const EXAMPLES = [
+const AI_WRITE_COMMAND_WORDS = /\b(zapisz|dodaj|utworz|utwórz|utworzmy|utwórzmy|stworz|stwórz|wrzuc|wrzuć|notuj|zanotuj|zapamietaj|zapamiętaj|mam leada|nowy lead|nowego leada|nowy kontakt)\b/u;
+const AI_LEAD_DRAFT_WORDS = /\b(lead|leada|lida|kontakt|kontaktu|klient|klienta|mam leada|nowy lead|nowego leada|nowy kontakt)\b/u;
+const AI_TASK_DRAFT_WORDS = /\b(zadanie|task|todo|przypomnienie|followup|follow-up|oddzwonic|oddzwonić|zadzwonic|zadzwonić|wyslac|wysłać|napisac|napisać|sprawdzic|sprawdzić|zrobic|zrobić)\b/u;
+const AI_EVENT_DRAFT_WORDS = /\b(wydarzenie|spotkanie|termin|wizyta|rozmowa|call|prezentacja)\b/u;
+const AI_NOTE_DRAFT_WORDS = /\b(notatka|notatke|notatkę|notuj|zanotuj|zapamietaj|zapamiętaj)\b/u;
+
+function getAiDraftTypeForWriteCommand(value: string): AiDraftCommandType | null {
+  const normalized = normalizeCommandForGuard(value);
+  if (!normalized || !AI_WRITE_COMMAND_WORDS.test(normalized)) return null;
+  if (AI_EVENT_DRAFT_WORDS.test(normalized)) return 'event';
+  if (AI_TASK_DRAFT_WORDS.test(normalized)) return 'task';
+  if (AI_NOTE_DRAFT_WORDS.test(normalized)) return 'note';
+  if (AI_LEAD_DRAFT_WORDS.test(normalized)) return 'lead';
+  return 'note';
+}
+
+const EXAMPLES = [const EXAMPLES = [
   'Dodaj leada: Pan Marek, 516 439 989, Facebook',
   'Co mam dziś do zrobienia?',
   'Zapisz zadanie jutro o 10 oddzwonić do klienta',
@@ -255,19 +281,9 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
   const { workspace, profile, isAdmin } = useWorkspace();
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
   const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
-  // AI_DIRECT_WRITE_MODE_STATE
-  const [directWriteMode, setDirectWriteMode] = useState<AiDirectWriteMode>('draft_only');
-
   useEffect(() => {
     setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
   }, [aiUsageKey, open, isAdmin]);
-
-  const handleDirectWriteModeChange = (_mode: AiDirectWriteMode) => {
-    // AI_APP_CONTEXT_OPERATOR_STAGE26_NO_DIRECT_WRITE: AI nie tworzy finalnych rekordów bez zatwierdzenia.
-    setDirectWriteMode('draft_only');
-    persistAiDirectWriteMode('draft_only');
-    toast.success('AI zapisuje tylko przez Szkice AI');
-  };
 
   const clearAutoAskTimer = () => {
     if (pendingAutoAskTimerRef.current !== null) {
@@ -317,82 +333,18 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
       return;
     }
 
-    // AI_DIRECT_WRITE_TASK_EVENT_BRANCH
-    // AI_DIRECT_WRITE_LEAD_BRANCH_STAGE28
-    const directWriteCandidate = directWriteMode === 'direct_task_event' ? parseAiDirectWriteCommand(command) : null;
-    if (directWriteCandidate) {
-      setLoading(true);
-      try {
-        if (directWriteCandidate.kind === 'lead') {
-          const leadData = directWriteCandidate.leadData;
-          await createLeadFromAiDraftApprovalInSupabase({
-            name: leadData?.name || directWriteCandidate.title,
-            email: leadData?.email,
-            phone: leadData?.phone,
-            company: leadData?.company,
-            source: leadData?.source || 'ai_direct_write',
-            workspaceId: workspace?.id,
-          });
-        } else if (directWriteCandidate.kind === 'event') {
-          await insertEventToSupabase({
-            title: directWriteCandidate.title,
-            type: 'meeting',
-            startAt: directWriteCandidate.startAt || directWriteCandidate.scheduledAt || new Date().toISOString(),
-            endAt: directWriteCandidate.endAt,
-            status: 'scheduled',
-            workspaceId: workspace?.id,
-          });
-        } else {
-          await insertTaskToSupabase({
-            title: directWriteCandidate.title,
-            type: 'manual',
-            date: directWriteCandidate.scheduledAt ? directWriteCandidate.scheduledAt.slice(0, 10) : undefined,
-            scheduledAt: directWriteCandidate.scheduledAt,
-            status: 'todo',
-            priority: 'medium',
-            workspaceId: workspace?.id,
-          });
-        }
-
-        const writtenLabel = directWriteCandidate.kind === 'lead' ? 'Lead zapisany' : directWriteCandidate.kind === 'event' ? 'Wydarzenie zapisane' : 'Zadanie zapisane';
-        const writtenSummary = directWriteCandidate.scheduledAt ? directWriteCandidate.title + ' — ' + directWriteCandidate.scheduledAt.replace('T', ' ').slice(0, 16) : directWriteCandidate.title;
-        setAnswer({
-          ok: true,
-          scope: 'assistant_read_or_draft_only',
-          provider: 'client_direct_write_guard',
-          noAutoWrite: false,
-          intent: 'lead_capture',
-          title: writtenLabel,
-          summary: writtenSummary,
-          rawText: command,
-          suggestedCaptureText: command,
-          items: [],
-          warnings: ['Bramka bezpieczeństwa AI: bezpośredni zapis działa tylko dla jasnych leadów/kontaktów oraz zadań i wydarzeń z datą i godziną.'],
-        });
-        setRawText('');
-        toast.success(writtenLabel);
-      } catch (error) {
-        // AI_DIRECT_WRITE_FALLBACK_TO_DRAFT
-        saveAiLeadDraft({ rawText: command, source: 'today_assistant' });
-        setAnswer(buildClientLeadCaptureDraftAnswer(command));
-        setRawText('');
-        toast.error('Nie udało się zapisać od razu. Komenda trafiła do Szkiców AI.');
-      } finally {
-        setLoading(false);
-      }
-      return;
-    }
-
-    if (isClientLeadCaptureCommand(command)) {
-      saveAiLeadDraft({ rawText: command, source: 'today_assistant' });
-      setAnswer(buildClientLeadCaptureDraftAnswer(command));
+    const draftCommandType = getAiDraftTypeForWriteCommand(command);
+    if (draftCommandType || isClientLeadCaptureCommand(command)) {
+      const type = draftCommandType || 'lead';
+      saveAiLeadDraft({ rawText: command, source: 'today_assistant', type, parsedDraft: { type, rawText: command } });
+      setAnswer(buildClientLeadCaptureDraftAnswer(command, type));
       // AI_ASSISTANT_CLEAR_INPUT_AFTER_RESULT
       setRawText('');
       toast.success('Szkic zapisany w Szkicach AI');
       return;
     }
 
-    if (!latestUsage.canUse && !latestUsage.adminExempt) {
+    if (!latestUsage.canUse && !latestUsage.adminExempt) {    if (!latestUsage.canUse && !latestUsage.adminExempt) {
       const message = `Dzisiejszy limit AI został wykorzystany: ${latestUsage.used}/${latestUsage.limit}. Wróć jutro albo użyj zwykłych formularzy.`;
       setAnswer(buildClientBlockedAnswer(command, message));
       toast.error('Dzisiejszy limit AI został wykorzystany');
@@ -591,23 +543,15 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
         </DialogHeader>
 
         <div className="space-y-4" data-stage35-ai-assistant-compact-ui="true">
-          <div data-ai-safety-gates="direct-write" data-stage35-ai-mode-switch="true" className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div data-ai-safety-gates="draft-only" data-stage35-ai-mode-switch="false" className="rounded-2xl border border-slate-200 bg-white p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-bold text-slate-900">Bramki bezpieczeństwa AI</p>
-                <p className="mt-1 text-xs leading-relaxed text-slate-600">Domyślnie AI zapisuje przez Szkice AI. Możesz pozwolić na natychmiastowy zapis jasnych leadów/kontaktów oraz zadań i wydarzeń z datą oraz godziną.</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600">AI przygotowuje szkic. Ty zatwierdzasz zapis.</p>
               </div>
-              <Badge variant="outline">AI_DIRECT_TASK_EVENT_GATE</Badge>
+              <Badge variant="outline">Tylko Szkice AI</Badge>
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Button type="button" size="sm" variant={directWriteMode === 'draft_only' ? 'default' : 'outline'} onClick={() => handleDirectWriteModeChange('draft_only')}>
-                Wszystko przez Szkice AI
-              </Button>
-              <Button type="button" size="sm" variant={directWriteMode === 'direct_task_event' ? 'default' : 'outline'} onClick={() => handleDirectWriteModeChange('direct_task_event')}>
-                Jasne rekordy od razu
-              </Button>
-            </div>
-            <p className="mt-3 text-xs text-slate-500">Niejasne notatki nadal trafiają do Szkiców AI. Zadania i wydarzenia bez daty albo godziny też wracają do szkicu.</p>
+            <p className="mt-3 text-xs text-slate-500">Komendy „zapisz”, „dodaj”, „nowy lead” albo „mam leada” tworzą szkic. Pytania bez komendy zapisu tylko czytają dane aplikacji.</p>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -644,10 +588,8 @@ export default function TodayAiAssistant({ leads, tasks, events, cases, clients 
             </Button>
             <Badge variant="outline">Czyta aplikację</Badge>
             <Badge variant="outline">Pełny zakres aplikacji</Badge>
-            <Badge variant="outline"></Badge>
             <Badge variant="outline">Zapisz = szkic</Badge>
             <Badge variant="outline">Bez zapisz = szukanie</Badge>
-            <Badge variant="outline"></Badge>
             <Badge variant="outline">Dane aplikacji bez limitu</Badge>
             <Badge variant="outline">Snapshot aplikacji</Badge>
             <Badge variant="outline" data-ai-usage-badge="today-assistant">{usage.adminExempt ? 'Admin AI: bez limitu' : 'Limit AI: ' + usage.used + '/' + usage.limit}</Badge>

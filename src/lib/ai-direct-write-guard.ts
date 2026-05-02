@@ -1,5 +1,7 @@
 export type AiDirectWriteMode = 'draft_only' | 'direct_task_event';
 
+export const AI_DIRECT_WRITE_ENABLED = false;
+
 export type AiDirectWriteKind = 'lead' | 'task' | 'event';
 
 export type AiDirectWriteLeadData = {
@@ -33,13 +35,12 @@ function canUseStorage() {
 }
 
 export function getStoredAiDirectWriteMode(): AiDirectWriteMode {
-  if (!canUseStorage()) return 'draft_only';
-  return window.localStorage.getItem(STORAGE_KEY) === 'direct_task_event' ? 'direct_task_event' : 'draft_only';
+  return 'draft_only';
 }
 
-export function persistAiDirectWriteMode(mode: AiDirectWriteMode) {
+export function persistAiDirectWriteMode(_mode: AiDirectWriteMode) {
   if (!canUseStorage()) return;
-  window.localStorage.setItem(STORAGE_KEY, mode);
+  window.localStorage.setItem(STORAGE_KEY, 'draft_only');
 }
 
 function pad2(value: number) {
@@ -212,6 +213,10 @@ function parseLeadDirectWriteCommand(rawText: string): AiDirectWriteCommand | nu
 }
 
 export function parseAiDirectWriteCommand(rawText: string, now = new Date()): AiDirectWriteCommand | null {
+  void rawText;
+  void now;
+  // AI_DRAFT_ONLY_POLICY_STAGE10: direct write is disabled. This parser remains only as a dormant legacy utility.
+  if (!AI_DIRECT_WRITE_ENABLED) return null;
   // AI_DIRECT_TASK_EVENT_GATE
   // AI_DIRECT_WRITE_RESPECTS_MODE_STAGE28
   const normalized = normalize(rawText);
