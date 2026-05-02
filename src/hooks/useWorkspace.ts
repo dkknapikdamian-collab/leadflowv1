@@ -39,6 +39,44 @@ function normalizeWorkspaceRecord(workspace: any) {
   return { ...workspace, id: workspaceId };
 }
 
+
+const ADMIN_FULL_FEATURES = {
+  ai: true,
+  fullAi: true,
+  digest: true,
+  lightParser: true,
+  lightDrafts: true,
+  googleCalendar: true,
+  weeklyReport: true,
+  csvImport: true,
+  recurringReminders: true,
+  browserNotifications: true,
+};
+
+const ADMIN_UNLIMITED_LIMITS = {
+  activeLeads: null,
+  activeTasks: null,
+  activeEvents: null,
+  activeDrafts: null,
+};
+
+function buildAdminAccessOverride(access: any) {
+  return {
+    ...access,
+    adminOverride: true,
+    hasAccess: true,
+    isPaidActive: true,
+    limits: {
+      ...(access?.limits || {}),
+      ...ADMIN_UNLIMITED_LIMITS,
+    },
+    features: {
+      ...(access?.features || {}),
+      ...ADMIN_FULL_FEATURES,
+    },
+  };
+}
+
 function buildLocalProfile(activeUserId: string, fullName: string, email: string) {
   return {
     id: activeUserId,
@@ -167,6 +205,7 @@ export function useWorkspace() {
         subscriptionStatus: fallbackAccess.status,
       };
   const isAdmin = profile?.role === 'admin' || profile?.isAdmin === true;
+  const finalAccess = isAdmin ? buildAdminAccessOverride(access) : access;
   const refresh = () => setRefreshToken((prev) => prev + 1);
   const workspaceReady = Boolean(workspace?.id);
 
@@ -176,11 +215,11 @@ export function useWorkspace() {
     loading,
     workspaceReady,
     workspaceError,
-    hasAccess: access.hasAccess || isAdmin,
+    hasAccess: finalAccess.hasAccess,
     isAdmin,
-    isTrialActive: access.isTrialActive,
-    isPaidActive: access.isPaidActive,
-    access,
+    isTrialActive: finalAccess.isTrialActive,
+    isPaidActive: finalAccess.isPaidActive,
+    access: finalAccess,
     refresh,
   };
 }
