@@ -822,7 +822,9 @@ export default function Calendar() {
         leadId: readCalendarRawText(entry.raw?.leadId) || null,
         caseId: readCalendarRawText(entry.raw?.caseId) || null,
         workspaceId: workspace?.id ?? null,
-        payload: {
+                leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
+payload: {
           source: 'calendar',
           entryId: entry.id,
           sourceId: entry.sourceId,

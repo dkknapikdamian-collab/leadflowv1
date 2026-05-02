@@ -92,7 +92,8 @@
     "check:p15-portal-storage-bucket": "node scripts/check-p15-portal-storage-bucket.cjs",
     "check:p13-digest-pwa-notifications-qa": "node scripts/check-p13-digest-pwa-notifications-qa.cjs",
     "check:p14-ui-truth-copy-menu": "node scripts/check-p14-ui-truth-copy-menu.cjs",
-    "check:p14-billing-no-duplicate-badge": "node scripts/check-p14-billing-no-duplicate-badge.cjs"
+    "check:p14-billing-no-duplicate-badge": "node scripts/check-p14-billing-no-duplicate-badge.cjs",
+    "audit:release-evidence": "node scripts/print-release-evidence.cjs --write"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

@@ -1,0 +1,7 @@
+== CloseFlow compact test summary ==
+Mode: critical
+Critical files: 6
+Tests: 13 | Pass: 13 | Fail: 0 | 196 ms
+Full log: test-results\last-test-full.log
+
+OK: testy przeszły.
