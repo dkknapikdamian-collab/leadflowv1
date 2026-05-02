@@ -1,0 +1,470 @@
+/*
+P0_TASKS_STABLE_REBUILD
+Stable Tasks screen avoids the legacy Firebase auth.currentUser load gate.
+It reads and writes through the same Supabase API helpers used by the rest of the app.
+*/
+
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
+import Layout from '../components/Layout';
+import { Card, CardContent } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
+import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, Plus, RefreshCcw, Search, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
+import {
+  deleteTaskFromSupabase,
+  fetchCasesFromSupabase,
+  fetchTasksFromSupabase,
+  insertTaskToSupabase,
+  updateTaskInSupabase,
+} from '../lib/supabase-fallback';
+import { useWorkspace } from '../hooks/useWorkspace';
+import { requireWorkspaceId } from '../lib/workspace-context';
+import { toDateTimeLocalValue } from '../lib/scheduling';
+
+const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
+void P0_TASKS_STABLE_REBUILD;
+
+type TaskScope = 'active' | 'today' | 'overdue' | 'done';
+
+type TaskFormState = {
+  id?: string;
+  title: string;
+  type: string;
+  dueAt: string;
+  priority: string;
+  status?: string;
+  leadId?: string | null;
+  caseId?: string | null;
+  clientId?: string | null;
+};
+
+const defaultTaskForm = (): TaskFormState => ({
+  title: '',
+  type: 'follow_up',
+  dueAt: toDateTimeLocalValue(new Date()),
+  priority: 'medium',
+  status: 'todo',
+  leadId: null,
+  caseId: null,
+  clientId: null,
+});
+
+function localDateKey(date = new Date()) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-');
+}
+
+function readText(record: any, keys: string[], fallback = '') {
+  for (const key of keys) {
+    const value = record?.[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+    if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  }
+  return fallback;
+}
+
+function getTaskMomentRaw(task: any) {
+  const direct = readText(task, ['scheduledAt', 'scheduled_at', 'dueAt', 'due_at', 'startAt', 'start_at', 'startsAt', 'starts_at', 'dateTime', 'date_time']);
+  if (direct) return direct;
+
+  const date = readText(task, ['date'], '');
+  if (!date) return '';
+  const time = readText(task, ['time'], '09:00');
+  return date.includes('T') ? date : date + 'T' + time;
+}
+
+function getTaskDateKey(task: any) {
+  return getTaskMomentRaw(task).slice(0, 10);
+}
+
+function parseTaskTime(task: any) {
+  const raw = getTaskMomentRaw(task);
+  if (!raw) return Number.POSITIVE_INFINITY;
+  const parsed = new Date(raw.includes('T') ? raw : raw + 'T09:00');
+  const time = parsed.getTime();
+  return Number.isFinite(time) ? time : Number.POSITIVE_INFINITY;
+}
+
+function isTaskDone(task: any) {
+  const status = String(task?.status || '').trim().toLowerCase();
+  return status === 'done' || status === 'completed' || status === 'closed' || status === 'cancelled' || status === 'canceled';
+}
+
+function isTaskToday(task: any) {
+  return getTaskDateKey(task) === localDateKey();
+}
+
+function isTaskOverdue(task: any) {
+  const dateKey = getTaskDateKey(task);
+  return Boolean(dateKey) && dateKey < localDateKey() && !isTaskDone(task);
+}
+
+function getTaskTitle(task: any) {
+  return readText(task, ['title', 'name'], 'Zadanie bez tytułu');
+}
+
+function formatTaskMoment(task: any) {
+  const raw = getTaskMomentRaw(task);
+  if (!raw) return 'Brak terminu';
+  const dateKey = raw.slice(0, 10);
+  const time = raw.includes('T') ? raw.slice(11, 16) : '09:00';
+  return dateKey + (time ? ', ' + time : '');
+}
+
+function getCaseTitle(caseRecord: any) {
+  return readText(caseRecord, ['title', 'clientName', 'client_name', 'name'], 'Sprawa');
+}
+
+function getStatusBadge(task: any) {
+  if (isTaskDone(task)) return 'Zrobione';
+  if (isTaskOverdue(task)) return 'Zaległe';
+  if (isTaskToday(task)) return 'Dziś';
+  return 'Aktywne';
+}
+
+function getBadgeClass(task: any) {
+  if (isTaskDone(task)) return 'bg-emerald-50 text-emerald-700 border-emerald-100';
+  if (isTaskOverdue(task)) return 'bg-rose-50 text-rose-700 border-rose-100';
+  if (isTaskToday(task)) return 'bg-blue-50 text-blue-700 border-blue-100';
+  return 'bg-slate-50 text-slate-700 border-slate-100';
+}
+
+export default function TasksStable() {
+  const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [cases, setCases] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [scope, setScope] = useState<TaskScope>('active');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [form, setForm] = useState<TaskFormState>(() => defaultTaskForm());
+
+  const refreshData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [taskRows, caseRows] = await Promise.all([
+        fetchTasksFromSupabase().catch(() => []),
+        fetchCasesFromSupabase().catch(() => []),
+      ]);
+      setTasks(Array.isArray(taskRows) ? taskRows : []);
+      setCases(Array.isArray(caseRows) ? caseRows : []);
+    } catch (error: any) {
+      toast.error('Nie udało się pobrać zadań.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshData();
+  }, [refreshData]);
+
+  useEffect(() => {
+    const handleFocus = () => void refreshData();
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') void refreshData();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [refreshData]);
+
+  const casesById = useMemo(() => new Map(cases.map((caseRecord: any) => [String(caseRecord.id || ''), caseRecord])), [cases]);
+
+  const stats = useMemo(() => ({
+    active: tasks.filter((task) => !isTaskDone(task)).length,
+    today: tasks.filter((task) => !isTaskDone(task) && isTaskToday(task)).length,
+    overdue: tasks.filter((task) => isTaskOverdue(task)).length,
+    done: tasks.filter((task) => isTaskDone(task)).length,
+  }), [tasks]);
+
+  const filteredTasks = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return tasks
+      .filter((task) => {
+        if (scope === 'done') return isTaskDone(task);
+        if (scope === 'today') return !isTaskDone(task) && isTaskToday(task);
+        if (scope === 'overdue') return isTaskOverdue(task);
+        return !isTaskDone(task);
+      })
+      .filter((task) => {
+        if (!query) return true;
+        const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
+        return [
+          getTaskTitle(task),
+          readText(task, ['type'], ''),
+          readText(task, ['priority'], ''),
+          readText(task, ['leadName', 'lead_name'], ''),
+          caseRecord ? getCaseTitle(caseRecord) : '',
+        ].join(' ').toLowerCase().includes(query);
+      })
+      .slice()
+      .sort((a, b) => {
+        if (scope === 'done') return parseTaskTime(b) - parseTaskTime(a);
+        if (isTaskOverdue(a) !== isTaskOverdue(b)) return isTaskOverdue(a) ? -1 : 1;
+        return parseTaskTime(a) - parseTaskTime(b);
+      });
+  }, [casesById, scope, searchQuery, tasks]);
+
+  const openNewTask = () => {
+    setForm(defaultTaskForm());
+    setIsDialogOpen(true);
+  };
+
+  const openEditTask = (task: any) => {
+    setForm({
+      id: String(task.id || ''),
+      title: getTaskTitle(task),
+      type: readText(task, ['type'], 'follow_up'),
+      dueAt: getTaskMomentRaw(task) || toDateTimeLocalValue(new Date()),
+      priority: readText(task, ['priority'], 'medium'),
+      status: readText(task, ['status'], 'todo'),
+      leadId: task.leadId || task.lead_id || null,
+      caseId: task.caseId || task.case_id || null,
+      clientId: task.clientId || task.client_id || null,
+    });
+    setIsDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    if (saving) return;
+    setIsDialogOpen(false);
+    setForm(defaultTaskForm());
+  };
+
+  const handleSaveTask = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!form.title.trim()) return toast.error('Podaj tytuł zadania.');
+
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+
+    setSaving(true);
+    try {
+      const payload = {
+        title: form.title.trim(),
+        type: form.type || 'follow_up',
+        date: form.dueAt.slice(0, 10),
+        scheduledAt: form.dueAt,
+        priority: form.priority || 'medium',
+        status: form.status || 'todo',
+        leadId: form.leadId || null,
+        caseId: form.caseId || null,
+        clientId: form.clientId || null,
+        workspaceId,
+      };
+
+      if (form.id) {
+        await updateTaskInSupabase({ id: form.id, ...payload });
+        toast.success('Zadanie zapisane');
+      } else {
+        await insertTaskToSupabase(payload);
+        toast.success('Zadanie dodane');
+      }
+
+      setIsDialogOpen(false);
+      setForm(defaultTaskForm());
+      await refreshData();
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać zadania.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const toggleTask = async (task: any) => {
+    const nextStatus = isTaskDone(task) ? 'todo' : 'done';
+    try {
+      await updateTaskInSupabase({
+        id: String(task.id),
+        title: getTaskTitle(task),
+        type: readText(task, ['type'], 'follow_up'),
+        date: getTaskDateKey(task),
+        scheduledAt: getTaskMomentRaw(task),
+        priority: readText(task, ['priority'], 'medium'),
+        status: nextStatus,
+        leadId: task.leadId || task.lead_id || null,
+        caseId: task.caseId || task.case_id || null,
+        clientId: task.clientId || task.client_id || null,
+      });
+      await refreshData();
+    } catch {
+      toast.error('Nie udało się zapisać zadania.');
+    }
+  };
+
+  const deleteTask = async (task: any) => {
+    if (!window.confirm('Usunąć zadanie?')) return;
+    try {
+      await deleteTaskFromSupabase(String(task.id));
+      toast.success('Zadanie usunięte');
+      await refreshData();
+    } catch {
+      toast.error('Nie udało się usunąć zadania.');
+    }
+  };
+
+  const statCards = [
+    { id: 'active' as TaskScope, label: 'Aktywne', value: stats.active, icon: CheckSquare, tone: 'text-slate-900' },
+    { id: 'today' as TaskScope, label: 'Dziś', value: stats.today, icon: Clock, tone: 'text-blue-700' },
+    { id: 'overdue' as TaskScope, label: 'Zaległe', value: stats.overdue, icon: AlertTriangle, tone: 'text-rose-700' },
+    { id: 'done' as TaskScope, label: 'Zrobione', value: stats.done, icon: CheckCircle2, tone: 'text-emerald-700' },
+  ];
+
+  return (
+    <Layout>
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true">
+        <section className="rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <Badge className="mb-3 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-50">Zadania</Badge>
+              <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Lista zadań</h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-600">Stabilny widok Supabase bez bramki Firebase. Dane ładują się od razu po wejściu w zakładkę.</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button type="button" variant="outline" onClick={() => void refreshData()} disabled={loading || workspaceLoading}>
+                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
+                Odśwież
+              </Button>
+              <Button type="button" onClick={openNewTask} disabled={!hasAccess || workspaceLoading}>
+                <Plus className="mr-2 h-4 w-4" /> Nowe zadanie
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {statCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <button key={card.id} type="button" onClick={() => setScope(card.id)} className={'rounded-2xl border bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ' + (scope === card.id ? 'border-blue-200 ring-2 ring-blue-100' : 'border-slate-100')}>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{card.label}</p>
+                  <Icon className={'h-5 w-5 ' + card.tone} />
+                </div>
+                <p className={'mt-2 text-3xl font-black ' + card.tone}>{card.value}</p>
+              </button>
+            );
+          })}
+        </section>
+
+        <Card className="border-slate-100 shadow-sm">
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="relative w-full sm:max-w-md">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Szukaj zadania, sprawy albo priorytetu..." className="pl-9" />
+              </div>
+              <p className="text-sm font-semibold text-slate-500">Widoczne: {filteredTasks.length}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <section className="space-y-3">
+          {loading ? (
+            <Card className="border-slate-100"><CardContent className="flex items-center gap-3 p-5 text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> Ładowanie zadań...</CardContent></Card>
+          ) : filteredTasks.length ? filteredTasks.map((task) => {
+            const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
+            return (
+              <Card key={String(task.id || getTaskTitle(task))} className="border-slate-100 shadow-sm">
+                <CardContent className="p-4 sm:p-5">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge variant="outline" className={getBadgeClass(task)}>{getStatusBadge(task)}</Badge>
+                        <Badge variant="outline" className="rounded-full">{readText(task, ['priority'], 'medium')}</Badge>
+                        <Badge variant="outline" className="rounded-full">{readText(task, ['type'], 'task')}</Badge>
+                      </div>
+                      <h2 className={'mt-3 text-base font-bold text-slate-950 sm:text-lg ' + (isTaskDone(task) ? 'line-through opacity-60' : '')}>{getTaskTitle(task)}</h2>
+                      <p className="mt-1 text-sm font-medium text-slate-500">{formatTaskMoment(task)}</p>
+                      {caseRecord ? <p className="mt-1 text-sm text-slate-600">Sprawa: {getCaseTitle(caseRecord)}</p> : null}
+                      {readText(task, ['leadName', 'lead_name'], '') ? <p className="mt-1 text-sm text-slate-600">Lead: {readText(task, ['leadName', 'lead_name'], '')}</p> : null}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button type="button" variant="outline" onClick={() => void toggleTask(task)}>{isTaskDone(task) ? 'Przywróć' : 'Zrobione'}</Button>
+                      <Button type="button" variant="outline" onClick={() => openEditTask(task)}>Edytuj</Button>
+                      <Button type="button" variant="outline" className="text-rose-700 hover:text-rose-800" onClick={() => void deleteTask(task)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          }) : (
+            <Card className="border-slate-100"><CardContent className="p-6 text-sm text-slate-500">Brak zadań w tym widoku.</CardContent></Card>
+          )}
+        </section>
+
+        <Dialog open={isDialogOpen} onOpenChange={(open) => (open ? setIsDialogOpen(true) : closeDialog())}>
+          <DialogContent className="max-w-xl">
+            <DialogHeader>
+              <DialogTitle>{form.id ? 'Edytuj zadanie' : 'Nowe zadanie'}</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSaveTask} className="space-y-4">
+              <div className="space-y-2">
+                <Label>Tytuł</Label>
+                <Input value={form.title} onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))} placeholder="Co trzeba zrobić?" />
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Termin</Label>
+                  <Input type="datetime-local" value={form.dueAt} onChange={(event) => setForm((prev) => ({ ...prev, dueAt: event.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Priorytet</Label>
+                  <select className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm" value={form.priority} onChange={(event) => setForm((prev) => ({ ...prev, priority: event.target.value }))}>
+                    <option value="low">Niski</option>
+                    <option value="medium">Średni</option>
+                    <option value="normal">Normalny</option>
+                    <option value="high">Wysoki</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Typ</Label>
+                  <select className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm" value={form.type} onChange={(event) => setForm((prev) => ({ ...prev, type: event.target.value }))}>
+                    <option value="follow_up">Follow-up</option>
+                    <option value="todo">Do zrobienia</option>
+                    <option value="phone">Telefon</option>
+                    <option value="meeting">Spotkanie</option>
+                    <option value="other">Inne</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Status</Label>
+                  <select className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm" value={form.status || 'todo'} onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value }))}>
+                    <option value="todo">Do zrobienia</option>
+                    <option value="done">Zrobione</option>
+                  </select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>Anuluj</Button>
+                <Button type="submit" disabled={saving}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz zadanie</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </main>
+    </Layout>
+  );
+}
