@@ -27,7 +27,7 @@ const AiDrafts = lazy(() => import('./pages/AiDrafts'));
 const Settings = lazy(() => import('./pages/Settings'));
 const AdminAiSettings = lazy(() => import('./pages/AdminAiSettings'));
 const Login = lazy(() => import('./pages/Login'));
-const Tasks = lazy(() => import('./pages/Tasks'));
+const Tasks = lazy(() => import('./pages/TasksStable'));
 const Calendar = lazy(() => import('./pages/Calendar'));
 const Billing = lazy(() => import('./pages/Billing'));
 const SupportCenter = lazy(() => import('./pages/SupportCenter'));
