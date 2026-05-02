@@ -103,7 +103,6 @@ const BILLING_PLANS: PlanCard[] = [
     monthlyPrice: 69,
     yearlyPrice: 690,
    badge: 'Beta',
-     badge: 'Beta',
     description: 'Plan przygotowany pod dodatki AI i większy zakres automatyzacji.',
     features: [
       'Wszystko z Pro',
