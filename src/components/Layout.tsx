@@ -1,4 +1,4 @@
-// VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_LAYOUT
+﻿// VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_LAYOUT
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1_LAYOUT
 /* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-stage01" */
 /* VISUAL_HTML_THEME_V14_LAYOUT */
@@ -136,7 +136,7 @@ export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [supabaseUser] = useSupabaseSession();
-  const { workspace, hasAccess, profile } = useWorkspace();
+  const { workspace, hasAccess, profile, isAdmin } = useWorkspace();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navGroups = useMemo<NavGroup[]>(() => ([
@@ -166,11 +166,11 @@ export default function Layout({ children }: LayoutProps) {
         { icon: AlertTriangle, label: 'Powiadomienia', path: '/notifications' },
         { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
         { icon: CheckCircle2, label: 'Pomoc', path: '/help' },
-        { icon: Settings, label: 'Admin AI', path: '/settings/ai' },
+        ...(isAdmin ? [{ icon: Settings, label: 'Admin AI', path: '/settings/ai' }] : []),
         { icon: Settings, label: 'Ustawienia', path: '/settings' },
       ],
     },
-  ]), []);
+  ]), [isAdmin]);
   const navItems = useMemo(() => navGroups.flatMap((group) => group.items), [navGroups]);
   const mobileNavItems = useMemo(
     () => [

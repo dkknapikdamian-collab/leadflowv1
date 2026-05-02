@@ -102,13 +102,14 @@ const BILLING_PLANS: PlanCard[] = [
     name: 'AI',
     monthlyPrice: 69,
     yearlyPrice: 690,
+    badge: 'Beta',
     description: 'Plan przygotowany pod dodatki AI i większy zakres automatyzacji.',
     features: [
       'Wszystko z Pro',
       'Pełny asystent AI w całej aplikacji',
       'Wyszukiwanie danych, sugestie follow-upów i szkice AI premium',
     ],
-    availabilityHint: 'AI jest rozwijane etapami. Nie obiecujemy funkcji, które nie są jeszcze podpięte.',
+    availabilityHint: 'Beta. Wymaga konfiguracji AI w Vercel. Nie obiecujemy funkcji, które nie są jeszcze realnie podpięte.',
   },
 ];
 
@@ -179,8 +180,8 @@ const LIMIT_ITEMS = [
   { name: 'Poranny digest', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
   { name: 'Szkice do sprawdzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
   { name: 'Parser tekstu', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Google Calendar', basic: 'Nie', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Pełny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Dostępne' },
+  { name: 'Google Calendar', basic: 'Nie', pro: 'W przygotowaniu', ai: 'W przygotowaniu' },
+  { name: 'Pełny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Beta' },
   { name: 'Raport tygodniowy', basic: 'Nie', pro: 'Dostępne', ai: 'Dostępne' },
 ];
 const SETTLEMENT_STATUS_LABELS: Record<string, string> = {
@@ -384,7 +385,7 @@ export default function Billing() {
 
       if (!result?.url) {
         if (result?.error === 'STRIPE_PROVIDER_NOT_CONFIGURED') {
-          toast.error('Stripe nie jest jeszcze skonfigurowany w Vercel.');
+          toast.error('Stripe: wymaga konfiguracji w Vercel. UzupeĹ‚nij STRIPE_SECRET_KEY i webhook, zanim pokaĹĽesz pĹ‚atnoĹ›Ä‡ jako gotowÄ….');
           return;
         }
 
@@ -577,7 +578,7 @@ export default function Billing() {
                             ? 'Przekierowanie...'
                             : canCheckout
                               ? 'Przejdź na plan'
-                              : 'Do podpięcia w kolejnym etapie'}
+                              : 'W przygotowaniu'}
                       </Button>
                     </article>
                   );
@@ -671,9 +672,9 @@ export default function Billing() {
               <section className="right-card billing-right-card">
                 <div className="billing-right-title">
                   <Sparkles className="h-4 w-4" />
-                  <h2>AI jako dodatek</h2>
+                  <h2>AI jako dodatek Beta</h2>
                 </div>
-                <small>Szkice AI i asystent są rozwijane etapami. Ten ekran nie obiecuje funkcji, które nie są jeszcze realnie podpięte.</small>
+                <small>Szkice AI i asystent są w trybie Beta. Jeśli provider AI nie jest skonfigurowany, funkcja wymaga konfiguracji w Vercel.</small>
               </section>
             </aside>
           </div>

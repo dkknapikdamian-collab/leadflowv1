@@ -633,7 +633,7 @@ export default function Settings() {
                     <span>
                       {DAILY_DIGEST_EMAIL_UI_VISIBLE
                         ? 'Ustawienia digestu są dostępne poniżej.'
-                        : 'Digest e-mail jest przygotowany w konfiguracji workspace. Na darmowym Vercel cron dziala raz dziennie. Nie pokazujemy tu ciężkiego panelu, jeśli flow jest ukryty.'}
+                        : 'Digest e-mail jest przygotowany w konfiguracji workspace. Na darmowym Vercel cron działa raz dziennie. Nie pokazujemy tu ciężkiego panelu, jeśli flow jest ukryty.'}
                     </span>
                   </div>
                   <span className="settings-soft-pill">{dailyDigestEnabled ? 'Włączony w workspace' : 'Wyłączony w workspace'}</span>

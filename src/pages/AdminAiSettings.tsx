@@ -146,15 +146,15 @@ export default function AdminAiSettings() {
           <CardContent className="grid gap-4 md:grid-cols-4">
             <div className="rounded-2xl border border-slate-200 p-4">
               <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">AI</p>
-              <p className="mt-2 text-lg font-bold app-text">{diagnostics?.ai.enabled ? 'Włączone' : 'Wyłączone'}</p>
+              <p className="mt-2 text-lg font-bold app-text">{diagnostics?.ai.enabled ? 'Włączone' : 'Wymaga konfiguracji'}</p>
             </div>
             <div className="rounded-2xl border border-slate-200 p-4">
               <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Quick Capture</p>
-              <p className="mt-2 text-lg font-bold app-text">{diagnostics?.ai.quickLeadCaptureEnabled ? 'Włączony' : 'Wyłączony'}</p>
+              <p className="mt-2 text-lg font-bold app-text">{diagnostics?.ai.quickLeadCaptureEnabled ? 'Beta' : 'W przygotowaniu'}</p>
             </div>
             <div className="rounded-2xl border border-slate-200 p-4">
               <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Główny provider</p>
-              <p className="mt-2 text-lg font-bold app-text">{diagnostics?.ai.primaryProvider || '-'}</p>
+              <p className="mt-2 text-lg font-bold app-text">{diagnostics?.ai.primaryProvider || 'Wymaga konfiguracji'}</p>
             </div>
             <div className="rounded-2xl border border-slate-200 p-4">
               <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">TTL szkicu</p>
