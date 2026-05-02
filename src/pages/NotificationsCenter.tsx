@@ -706,8 +706,8 @@ export default function NotificationsCenter() {
               </div>
               <div className="notifications-channel-card">
                 <strong>Poranny digest e-mail</strong>
-                <span>Poranny digest e-mail jest przygotowany jako kolejny etap.</span>
-                <em>Do podpięcia w kolejnym etapie</em>
+                <span>Poranny digest e-mail jest aktywny po konfiguracji w Ustawieniach. Wysyłka używa timezone workspace i logów antyduplikacyjnych.</span>
+                <em>Konfiguracja w Ustawieniach</em>
               </div>
             </section>
 

@@ -83,6 +83,31 @@ function getWeeklyEnabledSetting(row: Record<string, unknown>, fallback = true) 
   return asBool(dailyDigestEnabled, fallback);
 }
 
+
+function getWeeklyPlanId(row: Record<string, unknown>) {
+  return asText(row.plan_id ?? row.planId).toLowerCase();
+}
+
+function getWeeklySubscriptionStatus(row: Record<string, unknown>) {
+  return asText(row.subscription_status ?? row.subscriptionStatus).toLowerCase();
+}
+
+function isWeeklyReportBlockedByPlan(row: Record<string, unknown>) {
+  const planId = getWeeklyPlanId(row);
+  return planId === 'free';
+}
+
+function getWeeklyPlanGateStatus(row: Record<string, unknown>) {
+  const planId = getWeeklyPlanId(row) || 'unknown';
+  const subscriptionStatus = getWeeklySubscriptionStatus(row) || 'unknown';
+  return {
+    planId,
+    subscriptionStatus,
+    allowed: !isWeeklyReportBlockedByPlan(row),
+  };
+}
+
+
 async function readWeeklyReportWorkspaces() {
   const result = await selectFirstAvailable([
     'workspaces?select=*&daily_digest_recipient_email=not.is.null&limit=2000',
@@ -221,11 +246,14 @@ export default async function handler(req: any, res: any) {
       res.status(200).json({
         ok: true,
         diagnostics: true,
-        canSend: Boolean(diagnostics.hasResendApiKey && diagnostics.hasFromEmail && recipientEmail && getWeeklyEnabledSetting(workspaceRow, true)),
+        canSend: Boolean(diagnostics.hasResendApiKey && diagnostics.hasFromEmail && recipientEmail && getWeeklyEnabledSetting(workspaceRow, true) && getWeeklyPlanGateStatus(workspaceRow).allowed),
         env: diagnostics,
         workspace: {
           id: workspaceId,
           weeklyReportEnabled: getWeeklyEnabledSetting(workspaceRow, true),
+          planId: getWeeklyPlanGateStatus(workspaceRow).planId,
+          subscriptionStatus: getWeeklyPlanGateStatus(workspaceRow).subscriptionStatus,
+          planAllowsWeeklyReport: getWeeklyPlanGateStatus(workspaceRow).allowed,
           recipientEmail,
           timeZone: asNullableText(workspaceRow.daily_digest_timezone ?? workspaceRow.dailyDigestTimezone ?? workspaceRow.timezone) || DEFAULT_TZ,
           lastWeeklyReportSentAt: asNullableText(workspaceRow.last_weekly_report_sent_at ?? workspaceRow.lastWeeklyReportSentAt),
@@ -258,6 +286,11 @@ export default async function handler(req: any, res: any) {
         ? workspaceResult.data[0] as Record<string, unknown>
         : { id: workspaceId };
       const recipientEmail = asNullableText((body as any)?.recipientEmail || workspaceRow.daily_digest_recipient_email || workspaceRow.dailyDigestRecipientEmail || requesterEmail)?.toLowerCase() || null;
+      const planGate = getWeeklyPlanGateStatus(workspaceRow);
+      if (!planGate.allowed) {
+        res.status(403).json({ ok: false, error: 'WEEKLY_REPORT_NOT_AVAILABLE_ON_FREE', planId: planGate.planId });
+        return;
+      }
       const timeZone = asNullableText((body as any)?.dailyDigestTimezone || workspaceRow.daily_digest_timezone || workspaceRow.dailyDigestTimezone || workspaceRow.timezone) || DEFAULT_TZ;
       if (!recipientEmail) {
         res.status(400).json({ error: 'WEEKLY_REPORT_RECIPIENT_EMAIL_REQUIRED' });
@@ -318,6 +351,7 @@ export default async function handler(req: any, res: any) {
       skippedNoEmail: 0,
       skippedNoWorkspace: 0,
       skippedDisabled: 0,
+      skippedPlan: 0,
       skippedDuplicate: 0,
       failed: 0,
     };
@@ -340,6 +374,10 @@ export default async function handler(req: any, res: any) {
       }
       if (!enabled) {
         stats.skippedDisabled += 1;
+        continue;
+      }
+      if (isWeeklyReportBlockedByPlan(row)) {
+        stats.skippedPlan += 1;
         continue;
       }
       if (!force && await alreadySentWeekly(recipientEmail, sentForDate)) {

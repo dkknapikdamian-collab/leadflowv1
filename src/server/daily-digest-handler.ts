@@ -1,4 +1,4 @@
-/* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: poranny e-mail bez duplikat�w, z timezone i szkicami AI. */
+/* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: poranny e-mail bez duplikatow, z timezone i szkicami AI. */
 import { buildDailyDigestPayload, buildDigestEmail, shouldSendDigestNow } from './_digest.js';
 import { insertWithVariants, selectFirstAvailable, updateWhere } from './_supabase.js';
 import { withWorkspaceFilter } from './_request-scope.js';
@@ -37,6 +37,31 @@ function getDigestEnabledSetting(row: Record<string, unknown>, fallback = true) 
 
   return asBool(value, fallback);
 }
+
+
+function getDigestPlanId(row: Record<string, unknown>) {
+  return asText(row.plan_id ?? row.planId).toLowerCase();
+}
+
+function getDigestSubscriptionStatus(row: Record<string, unknown>) {
+  return asText(row.subscription_status ?? row.subscriptionStatus).toLowerCase();
+}
+
+function isDigestBlockedByPlan(row: Record<string, unknown>) {
+  const planId = getDigestPlanId(row);
+  return planId === 'free';
+}
+
+function getDigestPlanGateStatus(row: Record<string, unknown>) {
+  const planId = getDigestPlanId(row) || 'unknown';
+  const subscriptionStatus = getDigestSubscriptionStatus(row) || 'unknown';
+  return {
+    planId,
+    subscriptionStatus,
+    allowed: !isDigestBlockedByPlan(row),
+  };
+}
+
 function asInt(value: unknown, fallback: number) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return fallback;
@@ -259,7 +284,7 @@ async function updateWorkspaceLastDigestSentAt(workspaceId: string, sentAtIso: s
 }
 
 function shouldEnforceWorkspaceDigestHour() {
-  return asBool(process.env.DIGEST_ENFORCE_WORKSPACE_HOUR, false);
+  return asBool(process.env.DIGEST_ENFORCE_WORKSPACE_HOUR, true);
 }
 
 function isRequestAuthorized(req: any, body: Record<string, unknown>) {
@@ -328,7 +353,8 @@ export default async function handler(req: any, res: any) {
       const hasResendApiKey = Boolean(asNullableText(process.env.RESEND_API_KEY));
       const hasFromEmail = Boolean(fromEmail);
       const hasAppUrl = Boolean(appUrl);
-      const canSend = Boolean(hasResendApiKey && hasFromEmail && recipientEmail);
+      const planGate = getDigestPlanGateStatus(workspaceRow);
+      const canSend = Boolean(hasResendApiKey && hasFromEmail && recipientEmail && planGate.allowed);
 
       res.status(200).json({
         ok: true,
@@ -347,6 +373,9 @@ export default async function handler(req: any, res: any) {
         workspace: {
           id: workspaceId,
           dailyDigestEnabled: getDigestEnabledSetting(workspaceRow, true),
+          planId: planGate.planId,
+          subscriptionStatus: planGate.subscriptionStatus,
+          planAllowsDigest: planGate.allowed,
           dailyDigestHour: digestHour,
           dailyDigestTimezone: timeZone,
           dailyDigestRecipientEmail: recipientEmail,
@@ -394,6 +423,11 @@ export default async function handler(req: any, res: any) {
       const timeZone =
         asNullableText((body as any)?.dailyDigestTimezone || workspaceRow.daily_digest_timezone || workspaceRow.dailyDigestTimezone || workspaceRow.timezone)
         || DEFAULT_TZ;
+      const planGate = getDigestPlanGateStatus(workspaceRow);
+      if (!planGate.allowed) {
+        res.status(403).json({ ok: false, error: 'DIGEST_NOT_AVAILABLE_ON_FREE', planId: planGate.planId });
+        return;
+      }
       const workspaceName = asNullableText(workspaceRow.name) || undefined;
 
       if (!recipientEmail) {
@@ -482,6 +516,7 @@ export default async function handler(req: any, res: any) {
       skippedNoEmail: 0,
       skippedNoWorkspace: 0,
       skippedDisabled: 0,
+      skippedPlan: 0,
       skippedHour: 0,
       skippedDuplicate: 0,
       failed: 0,
@@ -508,6 +543,10 @@ export default async function handler(req: any, res: any) {
       }
       if (!enabled) {
         stats.skippedDisabled += 1;
+        continue;
+      }
+      if (isDigestBlockedByPlan(row)) {
+        stats.skippedPlan += 1;
         continue;
       }
       if (!force && shouldEnforceWorkspaceDigestHour() && !shouldSendDigestNow(timeZone, now, digestHour)) {

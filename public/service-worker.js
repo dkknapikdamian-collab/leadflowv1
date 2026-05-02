@@ -17,6 +17,7 @@ function isLocalGetRequest(request) {
   return true;
 }
 
+// P13_API_NETWORK_ONLY: API, auth, REST and storage requests are never cached by the PWA service worker.
 function isApiOrDataRequest(request) {
   const url = new URL(request.url);
   const path = url.pathname.toLowerCase();
