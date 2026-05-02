@@ -14,7 +14,7 @@ import EmailVerificationGate from './components/EmailVerificationGate';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 
-const Today = lazy(() => import('./pages/Today'));
+const Today = lazy(() => import('./pages/TodayStable'));
 const Leads = lazy(() => import('./pages/Leads'));
 const LeadDetail = lazy(() => import('./pages/LeadDetail'));
 const Cases = lazy(() => import('./pages/Cases'));
