@@ -87,7 +87,8 @@
     "check:p11-ai-drafts-supabase-source": "node scripts/check-p11-ai-drafts-supabase-source.cjs",
     "check:p12-admin-full-access-override": "node scripts/check-p12c-creator-only-access-correction.cjs",
     "check:p12c-creator-only-access-correction": "node scripts/check-p12c-creator-only-access-correction.cjs",
-    "check:p13-app-owner-identity-hardening": "node scripts/check-p13-app-owner-identity-hardening.cjs"
+    "check:p13-app-owner-identity-hardening": "node scripts/check-p13-app-owner-identity-hardening.cjs",
+    "check:p14-billing-production-validation": "node scripts/check-p14-billing-production-validation.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

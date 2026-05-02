@@ -65,6 +65,8 @@ async function registerWebhookEvent(eventId: string, eventType: string, workspac
   }
 }
 
+const BILLING_WEBHOOK_PAID_ACCESS_SOURCE_OF_TRUTH_STAGE14 = true;
+
 async function markWorkspacePaidFromCheckout(session: Record<string, any>) {
   const workspaceId = resolveWorkspaceId(session);
   const paymentStatus = String(session.payment_status || '').toLowerCase();

@@ -69,7 +69,7 @@ export default async function handler(req: any, res: any) {
         res.status(501).json({
           ...result,
           provider: 'stripe_blik',
-          message: 'Stripe nie jest jeszcze skonfigurowany. Uzupelnij STRIPE_SECRET_KEY w Vercel.',
+          message: 'Stripe nie jest jeszcze skonfigurowany. Uzupełnij STRIPE_SECRET_KEY w Vercel. Dostęp płatny aktywuje wyłącznie webhook Stripe po potwierdzeniu płatności.',
         });
         return;
       }

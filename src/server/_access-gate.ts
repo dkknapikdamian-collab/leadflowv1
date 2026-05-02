@@ -160,6 +160,8 @@ export async function assertWorkspaceGoogleCalendarAllowed(workspaceId: string) 
 }
 
 
+export const BILLING_WEBHOOK_ONLY_PAID_ACCESS_STAGE14 = true;
+
 export async function fetchWorkspaceWriteAccess(workspaceId: string) {
   const rows = await supabaseRequest(
     `workspaces?select=id,plan_id,subscription_status,trial_ends_at,next_billing_at&id=eq.${encodeURIComponent(workspaceId)}&limit=1`,

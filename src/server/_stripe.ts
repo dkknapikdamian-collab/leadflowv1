@@ -92,7 +92,7 @@ const STRIPE_BLIK_BILLING_PLANS: Record<string, StripeBillingPlan> = {
     planId: 'closeflow_basic',
     planKey: 'basic',
     period: 'monthly',
-    label: 'CloseFlow Basic - dostep 30 dni',
+    label: 'CloseFlow Basic - dostęp 30 dni',
     amountPln: toNumber(process.env.STRIPE_PRICE_BASIC_MONTHLY_PLN, 19),
     accessDays: 30,
   },
@@ -100,7 +100,7 @@ const STRIPE_BLIK_BILLING_PLANS: Record<string, StripeBillingPlan> = {
     planId: 'closeflow_basic_yearly',
     planKey: 'basic',
     period: 'yearly',
-    label: 'CloseFlow Basic - dostep 365 dni',
+    label: 'CloseFlow Basic - dostęp 365 dni',
     amountPln: toNumber(process.env.STRIPE_PRICE_BASIC_YEARLY_PLN, 190),
     accessDays: 365,
   },
@@ -108,7 +108,7 @@ const STRIPE_BLIK_BILLING_PLANS: Record<string, StripeBillingPlan> = {
     planId: 'closeflow_pro',
     planKey: 'pro',
     period: 'monthly',
-    label: 'CloseFlow Pro - dostep 30 dni',
+    label: 'CloseFlow Pro - dostęp 30 dni',
     amountPln: toNumber(process.env.STRIPE_PRICE_PRO_MONTHLY_PLN, 39),
     accessDays: 30,
   },
@@ -116,24 +116,24 @@ const STRIPE_BLIK_BILLING_PLANS: Record<string, StripeBillingPlan> = {
     planId: 'closeflow_pro_yearly',
     planKey: 'pro',
     period: 'yearly',
-    label: 'CloseFlow Pro - dostep 365 dni',
+    label: 'CloseFlow Pro - dostęp 365 dni',
     amountPln: toNumber(process.env.STRIPE_PRICE_PRO_YEARLY_PLN, 390),
     accessDays: 365,
   },
-  business_monthly: {
-    planId: 'closeflow_business',
-    planKey: 'business',
+  ai_monthly: {
+    planId: 'closeflow_ai',
+    planKey: 'ai',
     period: 'monthly',
-    label: 'CloseFlow Business - dostep 30 dni',
-    amountPln: toNumber(process.env.STRIPE_PRICE_BUSINESS_MONTHLY_PLN, 69),
+    label: 'CloseFlow AI - dostęp 30 dni',
+    amountPln: toNumber(process.env.STRIPE_PRICE_AI_MONTHLY_PLN, 69),
     accessDays: 30,
   },
-  business_yearly: {
-    planId: 'closeflow_business_yearly',
-    planKey: 'business',
+  ai_yearly: {
+    planId: 'closeflow_ai_yearly',
+    planKey: 'ai',
     period: 'yearly',
-    label: 'CloseFlow Business - dostep 365 dni',
-    amountPln: toNumber(process.env.STRIPE_PRICE_BUSINESS_YEARLY_PLN, 690),
+    label: 'CloseFlow AI - dostęp 365 dni',
+    amountPln: toNumber(process.env.STRIPE_PRICE_AI_YEARLY_PLN, 690),
     accessDays: 365,
   },
 };
@@ -145,8 +145,12 @@ export function normalizeStripeBillingPeriod(value: unknown): BillingPeriod {
 export function normalizeStripePlanKey(value: unknown) {
   const normalized = String(value || '').toLowerCase();
 
-  if (normalized === 'basic' || normalized === 'pro' || normalized === 'business') {
+  if (normalized === 'basic' || normalized === 'pro' || normalized === 'ai') {
     return normalized;
+  }
+
+  if (normalized === 'business' || normalized === 'closeflow_business') {
+    return 'ai';
   }
 
   return 'basic';

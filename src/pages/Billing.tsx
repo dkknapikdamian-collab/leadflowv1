@@ -31,7 +31,7 @@ import '../styles/visual-stage16-billing-vnext.css';
 
 type BillingPeriod = 'monthly' | 'yearly';
 type BillingTab = 'plan' | 'settlements';
-type CheckoutPlanKey = 'basic' | 'pro' | 'business';
+type CheckoutPlanKey = 'basic' | 'pro' | 'ai';
 type PlanAvailability = 'current' | 'available' | 'disabled' | 'soon';
 
 const BILLING_VISUAL_REBUILD_STAGE16 = 'BILLING_VISUAL_REBUILD_STAGE16';
@@ -96,9 +96,9 @@ const BILLING_PLANS: PlanCard[] = [
     ],
   },
   {
-    id: 'closeflow_business',
+    id: 'closeflow_ai',
     key: 'ai',
-    checkoutKey: 'business',
+    checkoutKey: 'ai',
     name: 'AI',
     monthlyPrice: 69,
     yearlyPrice: 690,
@@ -301,7 +301,7 @@ export default function Billing() {
     if (!checkoutState) return;
 
     if (checkoutState === 'success') {
-      toast.success('Płatność zakończona. Odświeżam status dostępu...');
+      toast.success('Płatność przyjęta przez Stripe. Status dostępu aktywuje webhook po potwierdzeniu płatności. Odświeżam...');
       void refresh();
     } else if (checkoutState === 'cancelled') {
       toast.message('Płatność anulowana.');
@@ -522,7 +522,7 @@ export default function Billing() {
               <section className="billing-period-card">
                 <div>
                   <h2>Wybierz okres dostępu</h2>
-                  <p>Płatność kartą lub BLIK przez Stripe. Roczny plan daje niższy koszt w skali roku.</p>
+                  <p>Płatność kartą lub BLIK przez Stripe. Aktywny plan pojawi się dopiero po webhooku Stripe. Roczny plan daje niższy koszt w skali roku.</p>
                 </div>
                 <div className="billing-period-switch" role="group" aria-label="Okres rozliczeniowy">
                   <button type="button" className={billingPeriod === 'monthly' ? 'billing-period-active' : ''} onClick={() => setBillingPeriod('monthly')}>
