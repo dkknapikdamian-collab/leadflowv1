@@ -154,24 +154,25 @@ function closeFlowEventForGoogle(row: any, body: any) {
   const leadLabel = String(row?.lead_name || row?.leadName || body?.leadName || '').trim();
   const caseLabel = String(row?.case_title || row?.caseTitle || body?.caseTitle || '').trim();
   const relationLabel = caseLabel || leadLabel || '';
-  const googleRemindersUseDefault = nullableBool(
-    body?.googleRemindersUseDefault
+
+  const googleCalendarReminders =
+    row?.google_calendar_reminders
+    || row?.googleCalendarReminders
+    || body?.googleCalendarReminders
+    || body?.google_calendar_reminders
+    || null;
+  const googleRemindersOverrides =
+    row?.google_reminders_overrides
+    || row?.googleRemindersOverrides
+    || body?.googleRemindersOverrides
+    || body?.google_reminders_overrides
+    || null;
+  const googleRemindersUseDefaultRaw =
+    row?.google_reminders_use_default
+    ?? row?.googleRemindersUseDefault
+    ?? body?.googleRemindersUseDefault
     ?? body?.google_reminders_use_default
-    ?? row?.google_reminders_use_default
-    ?? row?.googleRemindersUseDefault,
-  );
-  const googleRemindersOverrides = parseGoogleReminderOverrides(
-    body?.googleRemindersOverrides
-    ?? body?.google_reminders_overrides
-    ?? row?.google_reminders_overrides
-    ?? row?.googleRemindersOverrides,
-  );
-  const googleAllDay = nullableBool(
-    body?.googleAllDay
-    ?? body?.google_all_day
-    ?? row?.google_all_day
-    ?? row?.googleAllDay,
-  );
+    ?? null;
 
   return {
     id: String(row?.id || body?.id || ''),
@@ -185,17 +186,17 @@ function closeFlowEventForGoogle(row: any, body: any) {
     recurrenceCount: typeof row?.recurrence_count === 'number' ? row.recurrence_count : typeof body?.recurrenceCount === 'number' ? body.recurrenceCount : null,
     googleReminderMethod: googleReminderMethodFrom(row, body),
     googleReminderMinutesBefore: googleReminderMinutesFrom(row, body),
-    googleRemindersUseDefault,
+    googleCalendarReminders,
+    googleRemindersUseDefault: googleRemindersUseDefaultRaw === null ? null : asBoolean(googleRemindersUseDefaultRaw),
     googleRemindersOverrides,
-    googleAllDay,
-    googleStartDate: dateOnly(body?.googleStartDate ?? body?.google_start_date ?? row?.google_start_date ?? row?.googleStartDate),
-    googleEndDate: dateOnly(body?.googleEndDate ?? body?.google_end_date ?? row?.google_end_date ?? row?.googleEndDate),
+    googleAllDay: asBoolean(row?.google_all_day) || asBoolean(row?.googleAllDay) || asBoolean(body?.googleAllDay) || asBoolean(body?.google_all_day),
+    googleStartDate: row?.google_start_date || row?.googleStartDate || body?.googleStartDate || body?.google_start_date || null,
+    googleEndDate: row?.google_end_date || row?.googleEndDate || body?.googleEndDate || body?.google_end_date || null,
     description: String(row?.description || body?.description || '').trim(),
     kind: recordType === 'task' ? 'task' : 'event',
     relationLabel,
   };
 }
-
 async function writeGoogleCalendarSyncState(id: unknown, payload: Record<string, unknown>) {
   const normalizedId = asNullableString(id);
   if (!normalizedId) return;

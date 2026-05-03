@@ -181,6 +181,7 @@ function buildConflictMessage(event: GoogleEvent, conflicts: WorkItemRow[]) {
   return `Wpis z Google Calendar „${title}” nakłada się z: ${conflictTitle}. Sprawdź kalendarz przed potwierdzeniem terminu.`;
 }
 function basePayload(workspaceId: string, googleEvent: GoogleEvent, existing?: WorkItemRow | null, conflicts: WorkItemRow[] = []) {
+  // GOOGLE_CALENDAR_STAGE11H_INBOUND_PARITY_CONFIRMED
   const startAt = googleEventStart(googleEvent);
   const endAt = googleEventEnd(googleEvent, startAt);
   const googleId = asText(googleEvent.id);
