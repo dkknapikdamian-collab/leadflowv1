@@ -116,7 +116,8 @@
     "check:google-calendar-stage08d-runtime-ui-sync": "node scripts/check-google-calendar-stage08d-runtime-ui-sync.cjs",
     "check:google-calendar-stage09b-full-calendar-parity": "node scripts/check-google-calendar-stage09b-full-calendar-parity.cjs",
     "check:google-calendar-stage09e-safe-source-url": "node scripts/check-google-calendar-stage09e-safe-source-url.cjs",
-    "check:google-calendar-stage10k-inbound-sync-global": "node scripts/check-google-calendar-stage10k-inbound-sync-global.cjs"
+    "check:google-calendar-stage10k-inbound-sync-global": "node scripts/check-google-calendar-stage10k-inbound-sync-global.cjs",
+    "check:google-calendar-stage10n-auto-pull-call": "node scripts/check-google-calendar-stage10n-auto-pull-call.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

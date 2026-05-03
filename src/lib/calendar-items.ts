@@ -238,6 +238,8 @@ export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle>
 
   await ensureWorkspaceContext();
 
+  await maybePullGoogleCalendarInboundBeforeBundle(); // GOOGLE_CALENDAR_STAGE10N_AUTO_PULL_CALL
+
   const [taskItems, eventItems, caseItems, leadItems] = await Promise.all([
     readCollection(() => fetchTasksFromSupabase()),
     readCollection(() => fetchEventsFromSupabase()),
