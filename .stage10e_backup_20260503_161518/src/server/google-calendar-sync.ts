@@ -56,11 +56,6 @@ type CloseFlowCalendarEvent = {
   sourceUrl?: string | null;
   googleReminderMethod?: GoogleReminderMethod | null;
   googleReminderMinutesBefore?: number | null;
-  googleRemindersUseDefault?: boolean | null;
-  googleRemindersOverrides?: Array<{ method?: string; minutes?: number }> | null;
-  googleAllDay?: boolean | null;
-  googleStartDate?: string | null;
-  googleEndDate?: string | null;
 };
 
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
@@ -353,15 +348,6 @@ function minutesFromReminderAt(event: CloseFlowCalendarEvent) {
 
 // GOOGLE_CALENDAR_SYNC_V1_STAGE05_REMINDER_METHOD_BACKEND
 function buildReminderOverrides(event: CloseFlowCalendarEvent) {
-  // GOOGLE_CALENDAR_STAGE11C_EXACT_REMINDER_OUTBOUND
-  if (typeof event.googleRemindersUseDefault === 'boolean') {
-    if (event.googleRemindersUseDefault) return { useDefault: true };
-    return {
-      useDefault: false,
-      overrides: normalizeExactGoogleReminderOverrides(event.googleRemindersOverrides),
-    };
-  }
-
   const method = normalizeGoogleReminderMethod(event.googleReminderMethod || (event.reminderAt ? 'popup' : 'default'));
   if (method === 'default') return { useDefault: true };
 
@@ -483,64 +469,16 @@ function getGoogleCalendarSourceUrl(event: CloseFlowCalendarEvent) {
   return '';
 }
 
-function normalizeExactGoogleReminderOverrides(value: unknown) {
-  // GOOGLE_CALENDAR_STAGE11C_EXACT_REMINDER_OVERRIDES
-  const items = Array.isArray(value) ? value : [];
-  return items
-    .map((item) => {
-      if (!item || typeof item !== 'object') return null;
-      const row = item as { method?: unknown; minutes?: unknown };
-      const method = String(row.method || '').trim().toLowerCase();
-      if (method !== 'popup' && method !== 'email') return null;
-      const minutes = clampGoogleReminderMinutes(row.minutes);
-      if (minutes === null) return null;
-      return { method, minutes };
-    })
-    .filter(Boolean);
-}
-
-function normalizeGoogleDateOnly(value?: string | null) {
-  const raw = String(value || '').trim();
-  if (!raw) return '';
-  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
-  const date = new Date(raw);
-  if (!Number.isFinite(date.getTime())) return '';
-  return date.toISOString().slice(0, 10);
-}
-
-function addOneGoogleDateOnly(value: string) {
-  const date = new Date(value + 'T00:00:00.000Z');
-  if (!Number.isFinite(date.getTime())) return value;
-  date.setUTCDate(date.getUTCDate() + 1);
-  return date.toISOString().slice(0, 10);
-}
-
-function buildGoogleTimeFields(event: CloseFlowCalendarEvent) {
-  // GOOGLE_CALENDAR_STAGE11C_ALL_DAY_OUTBOUND
-  if (event.googleAllDay === true) {
-    const startDate = normalizeGoogleDateOnly(event.googleStartDate) || normalizeGoogleDateOnly(event.startAt);
-    const endDate = normalizeGoogleDateOnly(event.googleEndDate) || (startDate ? addOneGoogleDateOnly(startDate) : '');
-    if (startDate && endDate) return { start: { date: startDate }, end: { date: endDate } };
-  }
-
-  const start = new Date(event.startAt);
-  const end = event.endAt ? new Date(event.endAt) : new Date(start.getTime() + 60 * 60 * 1000);
-  return {
-    start: { dateTime: start.toISOString() },
-    end: { dateTime: end.toISOString() },
-  };
-}
-
 function buildGoogleEventBody(event: CloseFlowCalendarEvent) {
   // GOOGLE_CALENDAR_STAGE09B_FULL_BODY_PARITY
   // GOOGLE_CALENDAR_STAGE09E_SAFE_SOURCE_URL_BODY
-  // GOOGLE_CALENDAR_STAGE11C_REMINDER_ALL_DAY_PARITY_BODY
-  const timeFields = buildGoogleTimeFields(event);
+  const start = new Date(event.startAt);
+  const end = event.endAt ? new Date(event.endAt) : new Date(start.getTime() + 60 * 60 * 1000);
   const body: Record<string, unknown> = {
     summary: event.title || 'CloseFlow event',
     description: event.description || undefined,
-    start: timeFields.start,
-    end: timeFields.end,
+    start: { dateTime: start.toISOString() },
+    end: { dateTime: end.toISOString() },
     reminders: buildReminderOverrides(event),
     extendedProperties: buildGoogleExtendedProperties(event),
   };
@@ -551,6 +489,43 @@ function buildGoogleEventBody(event: CloseFlowCalendarEvent) {
   const recurrence = normalizeGoogleCalendarRecurrence(event.recurrenceRule);
   if (recurrence) body.recurrence = recurrence;
   return body;
+}
+
+export async function listGoogleCalendarEvents(connection: GoogleCalendarConnection, input?: { timeMin?: string; timeMax?: string; maxPages?: number }) {
+  // GOOGLE_CALENDAR_STAGE10B_INBOUND_LIST_EVENTS
+  const accessToken = await getUsableAccessToken(connection);
+  const calendarId = encodeURIComponent(String(connection.google_calendar_id || 'primary'));
+  const now = new Date();
+  const timeMin = input?.timeMin || new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const timeMax = input?.timeMax || new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000).toISOString();
+  const maxPages = Math.max(1, Math.min(5, Number(input?.maxPages || 3)));
+  const events: Record<string, unknown>[] = [];
+  let pageToken = '';
+
+  for (let page = 0; page < maxPages; page += 1) {
+    const params = new URLSearchParams({
+      timeMin,
+      timeMax,
+      singleEvents: 'true',
+      showDeleted: 'true',
+      orderBy: 'startTime',
+      maxResults: '2500',
+    });
+    if (pageToken) params.set('pageToken', pageToken);
+
+    const response = await fetch(`${GOOGLE_CALENDAR_API_BASE}/calendars/${calendarId}/events?${params.toString()}`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(String((data as any)?.error?.message || 'GOOGLE_EVENTS_LIST_FAILED'));
+
+    if (Array.isArray((data as any).items)) events.push(...((data as any).items as Record<string, unknown>[]));
+    pageToken = String((data as any).nextPageToken || '');
+    if (!pageToken) break;
+  }
+
+  return events;
 }
 
 export async function createGoogleCalendarEvent(connection: GoogleCalendarConnection, event: CloseFlowCalendarEvent) {
@@ -599,45 +574,4 @@ export async function deleteGoogleCalendarEvent(connection: GoogleCalendarConnec
     throw new Error(String((data as any)?.error?.message || 'GOOGLE_EVENT_DELETE_FAILED'));
   }
   return { ok: true };
-}
-
-export async function listGoogleCalendarEvents(connection: GoogleCalendarConnection, options?: {
-  timeMin?: string | null;
-  timeMax?: string | null;
-  updatedMin?: string | null;
-  syncToken?: string | null;
-  maxResults?: number | null;
-}) {
-  // GOOGLE_CALENDAR_STAGE10K_INBOUND_LIST_EVENTS
-  const accessToken = await getUsableAccessToken(connection);
-  const calendarId = encodeURIComponent(String(connection.google_calendar_id || 'primary'));
-  const baseParams = new URLSearchParams();
-  baseParams.set('showDeleted', 'true');
-  baseParams.set('maxResults', String(Math.max(1, Math.min(2500, Number(options?.maxResults || 2500)))));
-  if (options?.syncToken) {
-    baseParams.set('syncToken', String(options.syncToken));
-  } else {
-    if (options?.timeMin) baseParams.set('timeMin', String(options.timeMin));
-    if (options?.timeMax) baseParams.set('timeMax', String(options.timeMax));
-    if (options?.updatedMin) baseParams.set('updatedMin', String(options.updatedMin));
-    baseParams.set('singleEvents', 'true');
-    baseParams.set('orderBy', 'startTime');
-  }
-  const items: any[] = [];
-  let nextPageToken = '';
-  let nextSyncToken = '';
-  do {
-    const params = new URLSearchParams(baseParams);
-    if (nextPageToken) params.set('pageToken', nextPageToken);
-    const response = await fetch(GOOGLE_CALENDAR_API_BASE + '/calendars/' + calendarId + '/events?' + params.toString(), {
-      method: 'GET',
-      headers: { Authorization: 'Bearer ' + accessToken },
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(String((data as any)?.error?.message || 'GOOGLE_EVENT_LIST_FAILED'));
-    if (Array.isArray((data as any).items)) items.push(...(data as any).items);
-    nextPageToken = String((data as any).nextPageToken || '');
-    nextSyncToken = String((data as any).nextSyncToken || nextSyncToken || '');
-  } while (nextPageToken);
-  return { items, nextSyncToken };
 }

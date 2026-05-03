@@ -35,21 +35,11 @@ function toIso(value: unknown) {
   return date ? date.toISOString() : null;
 }
 function googleEventStart(event: GoogleEvent) {
-  // GOOGLE_CALENDAR_STAGE11C_ALL_DAY_INBOUND_START
-  if (googleEventIsAllDay(event)) {
-    const dateOnly = googleEventStartDate(event);
-    return dateOnly ? dateOnly + 'T00:00:00.000Z' : null;
-  }
-  const value = event?.start?.dateTime || '';
+  const value = event?.start?.dateTime || (event?.start?.date ? `${event.start.date}T09:00:00.000Z` : '');
   return toIso(value);
 }
 function googleEventEnd(event: GoogleEvent, startAt: string | null) {
-  // GOOGLE_CALENDAR_STAGE11C_ALL_DAY_INBOUND_END
-  if (googleEventIsAllDay(event)) {
-    const dateOnly = googleEventEndDate(event);
-    return dateOnly ? dateOnly + 'T00:00:00.000Z' : startAt;
-  }
-  const value = event?.end?.dateTime || '';
+  const value = event?.end?.dateTime || (event?.end?.date ? `${event.end.date}T10:00:00.000Z` : '');
   const parsed = toIso(value);
   if (parsed) return parsed;
   if (!startAt) return null;
@@ -57,35 +47,6 @@ function googleEventEnd(event: GoogleEvent, startAt: string | null) {
 }
 function getPrivateProperty(event: GoogleEvent, key: string) {
   return asText(event?.extendedProperties?.private?.[key]);
-}
-
-// GOOGLE_CALENDAR_STAGE11C_INBOUND_REMINDER_ALL_DAY_HELPERS
-function googleEventIsAllDay(event: GoogleEvent) {
-  return Boolean(event?.start?.date && !event?.start?.dateTime);
-}
-function googleEventStartDate(event: GoogleEvent) {
-  return asText(event?.start?.date);
-}
-function googleEventEndDate(event: GoogleEvent) {
-  return asText(event?.end?.date);
-}
-function normalizeGoogleReminderOverridesFromEvent(event: GoogleEvent) {
-  const overrides = Array.isArray(event?.reminders?.overrides) ? event.reminders.overrides : [];
-  return overrides
-    .map((item: any) => {
-      const method = asText(item?.method).toLowerCase();
-      const minutes = typeof item?.minutes === 'number' ? item.minutes : Number(item?.minutes);
-      if (method !== 'popup' && method !== 'email') return null;
-      if (!Number.isFinite(minutes)) return null;
-      return { method, minutes: Math.max(0, Math.min(40320, Math.round(minutes))) };
-    })
-    .filter(Boolean);
-}
-function googleReminderAtForLegacyField(event: GoogleEvent, startAt: string | null) {
-  if (!startAt || event?.reminders?.useDefault === true) return 'none';
-  const first = normalizeGoogleReminderOverridesFromEvent(event)[0] as any;
-  if (!first) return 'none';
-  return new Date(new Date(startAt).getTime() - Number(first.minutes || 0) * 60_000).toISOString();
 }
 function extractMissingColumn(error: unknown) {
   const message = error instanceof Error ? error.message : String(error || '');
@@ -186,8 +147,6 @@ function basePayload(workspaceId: string, googleEvent: GoogleEvent, existing?: W
   const googleId = asText(googleEvent.id);
   const conflictMessage = buildConflictMessage(googleEvent, conflicts);
   const isExistingTask = asText(existing?.record_type || existing?.recordType).toLowerCase() === 'task';
-  const reminderValue = googleReminderAtForLegacyField(googleEvent, startAt);
-  const allDay = googleEventIsAllDay(googleEvent);
   const payload: Record<string, unknown> = {
     workspace_id: workspaceId,
     record_type: isExistingTask ? 'task' : 'event',
@@ -200,7 +159,7 @@ function basePayload(workspaceId: string, googleEvent: GoogleEvent, existing?: W
     start_at: isExistingTask ? (existing?.start_at || null) : startAt,
     end_at: isExistingTask ? (existing?.end_at || null) : endAt,
     recurrence: Array.isArray(googleEvent.recurrence) && googleEvent.recurrence[0] ? String(googleEvent.recurrence[0]) : (existing?.recurrence || 'none'),
-    reminder: reminderValue,
+    reminder: existing?.reminder || 'none',
     show_in_calendar: true,
     show_in_tasks: Boolean(isExistingTask || existing?.show_in_tasks),
     google_calendar_id: 'primary',
@@ -210,12 +169,6 @@ function basePayload(workspaceId: string, googleEvent: GoogleEvent, existing?: W
     google_calendar_synced_at: nowIso(),
     google_calendar_sync_status: 'synced',
     google_calendar_sync_error: null,
-    google_calendar_reminders: googleEvent.reminders || null,
-    google_reminders_use_default: Boolean(googleEvent?.reminders?.useDefault),
-    google_reminders_overrides: normalizeGoogleReminderOverridesFromEvent(googleEvent),
-    google_all_day: allDay,
-    google_start_date: allDay ? googleEventStartDate(googleEvent) : null,
-    google_end_date: allDay ? googleEventEndDate(googleEvent) : null,
     source_provider: 'google_calendar',
     source_external_id: googleId,
     source_updated_at: toIso(googleEvent.updated),

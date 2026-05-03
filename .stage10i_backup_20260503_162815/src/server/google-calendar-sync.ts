@@ -56,11 +56,6 @@ type CloseFlowCalendarEvent = {
   sourceUrl?: string | null;
   googleReminderMethod?: GoogleReminderMethod | null;
   googleReminderMinutesBefore?: number | null;
-  googleRemindersUseDefault?: boolean | null;
-  googleRemindersOverrides?: Array<{ method?: string; minutes?: number }> | null;
-  googleAllDay?: boolean | null;
-  googleStartDate?: string | null;
-  googleEndDate?: string | null;
 };
 
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
@@ -353,15 +348,6 @@ function minutesFromReminderAt(event: CloseFlowCalendarEvent) {
 
 // GOOGLE_CALENDAR_SYNC_V1_STAGE05_REMINDER_METHOD_BACKEND
 function buildReminderOverrides(event: CloseFlowCalendarEvent) {
-  // GOOGLE_CALENDAR_STAGE11C_EXACT_REMINDER_OUTBOUND
-  if (typeof event.googleRemindersUseDefault === 'boolean') {
-    if (event.googleRemindersUseDefault) return { useDefault: true };
-    return {
-      useDefault: false,
-      overrides: normalizeExactGoogleReminderOverrides(event.googleRemindersOverrides),
-    };
-  }
-
   const method = normalizeGoogleReminderMethod(event.googleReminderMethod || (event.reminderAt ? 'popup' : 'default'));
   if (method === 'default') return { useDefault: true };
 
@@ -483,64 +469,16 @@ function getGoogleCalendarSourceUrl(event: CloseFlowCalendarEvent) {
   return '';
 }
 
-function normalizeExactGoogleReminderOverrides(value: unknown) {
-  // GOOGLE_CALENDAR_STAGE11C_EXACT_REMINDER_OVERRIDES
-  const items = Array.isArray(value) ? value : [];
-  return items
-    .map((item) => {
-      if (!item || typeof item !== 'object') return null;
-      const row = item as { method?: unknown; minutes?: unknown };
-      const method = String(row.method || '').trim().toLowerCase();
-      if (method !== 'popup' && method !== 'email') return null;
-      const minutes = clampGoogleReminderMinutes(row.minutes);
-      if (minutes === null) return null;
-      return { method, minutes };
-    })
-    .filter(Boolean);
-}
-
-function normalizeGoogleDateOnly(value?: string | null) {
-  const raw = String(value || '').trim();
-  if (!raw) return '';
-  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
-  const date = new Date(raw);
-  if (!Number.isFinite(date.getTime())) return '';
-  return date.toISOString().slice(0, 10);
-}
-
-function addOneGoogleDateOnly(value: string) {
-  const date = new Date(value + 'T00:00:00.000Z');
-  if (!Number.isFinite(date.getTime())) return value;
-  date.setUTCDate(date.getUTCDate() + 1);
-  return date.toISOString().slice(0, 10);
-}
-
-function buildGoogleTimeFields(event: CloseFlowCalendarEvent) {
-  // GOOGLE_CALENDAR_STAGE11C_ALL_DAY_OUTBOUND
-  if (event.googleAllDay === true) {
-    const startDate = normalizeGoogleDateOnly(event.googleStartDate) || normalizeGoogleDateOnly(event.startAt);
-    const endDate = normalizeGoogleDateOnly(event.googleEndDate) || (startDate ? addOneGoogleDateOnly(startDate) : '');
-    if (startDate && endDate) return { start: { date: startDate }, end: { date: endDate } };
-  }
-
-  const start = new Date(event.startAt);
-  const end = event.endAt ? new Date(event.endAt) : new Date(start.getTime() + 60 * 60 * 1000);
-  return {
-    start: { dateTime: start.toISOString() },
-    end: { dateTime: end.toISOString() },
-  };
-}
-
 function buildGoogleEventBody(event: CloseFlowCalendarEvent) {
   // GOOGLE_CALENDAR_STAGE09B_FULL_BODY_PARITY
   // GOOGLE_CALENDAR_STAGE09E_SAFE_SOURCE_URL_BODY
-  // GOOGLE_CALENDAR_STAGE11C_REMINDER_ALL_DAY_PARITY_BODY
-  const timeFields = buildGoogleTimeFields(event);
+  const start = new Date(event.startAt);
+  const end = event.endAt ? new Date(event.endAt) : new Date(start.getTime() + 60 * 60 * 1000);
   const body: Record<string, unknown> = {
     summary: event.title || 'CloseFlow event',
     description: event.description || undefined,
-    start: timeFields.start,
-    end: timeFields.end,
+    start: { dateTime: start.toISOString() },
+    end: { dateTime: end.toISOString() },
     reminders: buildReminderOverrides(event),
     extendedProperties: buildGoogleExtendedProperties(event),
   };
@@ -551,6 +489,330 @@ function buildGoogleEventBody(event: CloseFlowCalendarEvent) {
   const recurrence = normalizeGoogleCalendarRecurrence(event.recurrenceRule);
   if (recurrence) body.recurrence = recurrence;
   return body;
+}
+
+type GoogleCalendarInboundConflict = {
+  id: string;
+  title: string;
+  recordType: string;
+  startAt: string;
+  endAt: string;
+};
+
+type GoogleCalendarInboundChangedItem = {
+  id: string;
+  title: string;
+  googleEventId: string;
+  startAt: string;
+  endAt: string;
+  conflicts: GoogleCalendarInboundConflict[];
+};
+
+type GoogleCalendarInboundSyncResult = {
+  ok: true;
+  connected: boolean;
+  imported: number;
+  updated: number;
+  deleted: number;
+  skipped: number;
+  conflicts: GoogleCalendarInboundChangedItem[];
+  errors: string[];
+};
+
+function googleInboundText(value: unknown) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function googleInboundIso(value: unknown) {
+  const raw = googleInboundText(value);
+  if (!raw) return '';
+  const parsed = new Date(raw);
+  return Number.isFinite(parsed.getTime()) ? parsed.toISOString() : '';
+}
+
+function googleInboundDateTime(value: unknown, fallbackHour = '09:00:00') {
+  if (!value || typeof value !== 'object') return '';
+  const row = value as Record<string, unknown>;
+  const dateTime = googleInboundIso(row.dateTime);
+  if (dateTime) return dateTime;
+  const date = googleInboundText(row.date);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return '';
+  return new Date(`${date}T${fallbackHour}`).toISOString();
+}
+
+function googleInboundEventStart(event: Record<string, unknown>) {
+  return googleInboundDateTime(event.start, '09:00:00');
+}
+
+function googleInboundEventEnd(event: Record<string, unknown>, startAt: string) {
+  const end = googleInboundDateTime(event.end, '10:00:00');
+  if (end && new Date(end).getTime() > new Date(startAt).getTime()) return end;
+  return new Date(new Date(startAt).getTime() + 60 * 60_000).toISOString();
+}
+
+function googleInboundPrivateProps(event: Record<string, unknown>) {
+  const extended = event.extendedProperties && typeof event.extendedProperties === 'object'
+    ? event.extendedProperties as Record<string, unknown>
+    : {};
+  const privateProps = extended.private && typeof extended.private === 'object'
+    ? extended.private as Record<string, unknown>
+    : {};
+  return privateProps;
+}
+
+function googleInboundSafeUuid(value: unknown) {
+  const raw = googleInboundText(value);
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(raw) ? raw : '';
+}
+
+export async function listGoogleCalendarEventsForInbound(input: {
+  connection: GoogleCalendarConnection;
+  timeMin: string;
+  timeMax: string;
+  updatedMin?: string | null;
+}) {
+  // GOOGLE_CALENDAR_STAGE10G_INBOUND_LIST_EVENTS_HELPER
+  const accessToken = await getUsableAccessToken(input.connection);
+  const calendarId = encodeURIComponent(String(input.connection.google_calendar_id || 'primary'));
+  const params = new URLSearchParams({
+    timeMin: input.timeMin,
+    timeMax: input.timeMax,
+    singleEvents: 'true',
+    orderBy: 'updated',
+    showDeleted: 'true',
+    maxResults: '2500',
+  });
+  if (input.updatedMin) params.set('updatedMin', input.updatedMin);
+
+  const response = await fetch(`${GOOGLE_CALENDAR_API_BASE}/calendars/${calendarId}/events?${params.toString()}`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(String((data as any)?.error?.message || 'GOOGLE_INBOUND_EVENTS_LIST_FAILED'));
+  }
+  return Array.isArray((data as any).items) ? (data as any).items as Record<string, unknown>[] : [];
+}
+
+async function selectGoogleInboundExistingWorkItem(workspaceId: string, event: Record<string, unknown>) {
+  const googleEventId = googleInboundText(event.id);
+  const closeflowId = googleInboundSafeUuid(googleInboundPrivateProps(event).closeflowId);
+  const calendarQueries = [
+    closeflowId ? `work_items?workspace_id=eq.${encodeURIComponent(workspaceId)}&id=eq.${encodeURIComponent(closeflowId)}&select=*&limit=1` : '',
+    googleEventId ? `work_items?workspace_id=eq.${encodeURIComponent(workspaceId)}&google_calendar_event_id=eq.${encodeURIComponent(googleEventId)}&select=*&limit=1` : '',
+    googleEventId ? `work_items?workspace_id=eq.${encodeURIComponent(workspaceId)}&source_provider=eq.google_calendar&source_external_id=eq.${encodeURIComponent(googleEventId)}&select=*&limit=1` : '',
+  ].filter(Boolean);
+
+  for (const query of calendarQueries) {
+    try {
+      const rows = await supabaseRequest(query, { method: 'GET' });
+      if (Array.isArray(rows) && rows[0]) return rows[0] as Record<string, unknown>;
+    } catch {
+      // Missing optional source columns before migration must not block fallback lookups.
+    }
+  }
+  return null;
+}
+
+function buildGoogleInboundWorkItemPayload(input: {
+  workspaceId: string;
+  event: Record<string, unknown>;
+  existing?: Record<string, unknown> | null;
+}) {
+  const event = input.event;
+  const existing = input.existing || {};
+  const googleEventId = googleInboundText(event.id);
+  const startAt = googleInboundEventStart(event);
+  const endAt = googleInboundEventEnd(event, startAt || new Date().toISOString());
+  const recordType = googleInboundText(existing.record_type || existing.recordType) || 'event';
+  const isTask = recordType === 'task';
+
+  return {
+    workspace_id: input.workspaceId,
+    record_type: recordType,
+    type: googleInboundText(existing.type) || 'external_google_event',
+    title: googleInboundText(event.summary) || 'Wydarzenie z Google Calendar',
+    description: googleInboundText(event.description),
+    status: 'planned',
+    priority: googleInboundText(existing.priority) || 'medium',
+    scheduled_at: startAt || null,
+    start_at: isTask ? (existing.start_at || null) : (startAt || null),
+    end_at: isTask ? (existing.end_at || null) : (endAt || null),
+    recurrence: 'none',
+    reminder: 'none',
+    show_in_tasks: isTask ? true : false,
+    show_in_calendar: true,
+    google_calendar_sync_enabled: true,
+    google_calendar_id: 'primary',
+    google_calendar_event_id: googleEventId || null,
+    google_calendar_event_etag: googleInboundText(event.etag) || null,
+    google_calendar_html_link: googleInboundText(event.htmlLink) || null,
+    google_calendar_synced_at: new Date().toISOString(),
+    google_calendar_sync_status: 'synced',
+    google_calendar_sync_error: null,
+    source_provider: 'google_calendar',
+    source_external_id: googleEventId || null,
+    source_calendar_id: 'primary',
+    source_updated_at: googleInboundIso(event.updated) || null,
+    source_synced_at: new Date().toISOString(),
+    source_payload: event,
+    updated_at: new Date().toISOString(),
+  };
+}
+
+function googleInboundWindow(row: Record<string, unknown>) {
+  const startRaw = googleInboundIso(row.start_at) || googleInboundIso(row.scheduled_at);
+  if (!startRaw) return null;
+  const endRaw = googleInboundIso(row.end_at);
+  const startMs = new Date(startRaw).getTime();
+  const endMs = endRaw ? new Date(endRaw).getTime() : startMs + 60 * 60_000;
+  return {
+    startAt: new Date(startMs).toISOString(),
+    endAt: new Date(Math.max(endMs, startMs + 15 * 60_000)).toISOString(),
+  };
+}
+
+async function findGoogleInboundConflicts(workspaceId: string, currentId: string, row: Record<string, unknown>) {
+  // GOOGLE_CALENDAR_STAGE10G_INBOUND_CONFLICT_DETECTION
+  const currentWindow = googleInboundWindow(row);
+  if (!currentWindow) return [] as GoogleCalendarInboundConflict[];
+  let candidates: Record<string, unknown>[] = [];
+  try {
+    const rows = await supabaseRequest(
+      `work_items?workspace_id=eq.${encodeURIComponent(workspaceId)}&show_in_calendar=eq.true&select=id,title,record_type,start_at,end_at,scheduled_at&limit=500`,
+      { method: 'GET' },
+    );
+    candidates = Array.isArray(rows) ? rows as Record<string, unknown>[] : [];
+  } catch {
+    return [];
+  }
+
+  const draftStart = new Date(currentWindow.startAt).getTime();
+  const draftEnd = new Date(currentWindow.endAt).getTime();
+
+  return candidates
+    .filter((candidate) => String(candidate.id || '') !== currentId)
+    .map((candidate) => ({ candidate, window: googleInboundWindow(candidate) }))
+    .filter((item) => item.window)
+    .filter((item) => {
+      const start = new Date(item.window!.startAt).getTime();
+      const end = new Date(item.window!.endAt).getTime();
+      return draftStart < end && start < draftEnd;
+    })
+    .slice(0, 10)
+    .map((item) => ({
+      id: String(item.candidate.id || ''),
+      title: googleInboundText(item.candidate.title) || 'Wpis w CloseFlow',
+      recordType: googleInboundText(item.candidate.record_type) || 'event',
+      startAt: item.window!.startAt,
+      endAt: item.window!.endAt,
+    }));
+}
+
+async function deleteGoogleInboundWorkItem(workspaceId: string, id: string) {
+  return supabaseRequest(
+    `work_items?workspace_id=eq.${encodeURIComponent(workspaceId)}&id=eq.${encodeURIComponent(id)}`,
+    { method: 'DELETE', headers: { Prefer: 'return=representation' } },
+  );
+}
+
+async function upsertGoogleInboundWorkItem(workspaceId: string, event: Record<string, unknown>) {
+  const existing = await selectGoogleInboundExistingWorkItem(workspaceId, event);
+  const payload = buildGoogleInboundWorkItemPayload({ workspaceId, event, existing });
+  if (existing?.id) {
+    const rows = await supabaseRequest(`work_items?id=eq.${encodeURIComponent(String(existing.id))}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+    return Array.isArray(rows) && rows[0] ? rows[0] as Record<string, unknown> : { ...existing, ...payload };
+  }
+  const rows = await supabaseRequest('work_items', {
+    method: 'POST',
+    body: JSON.stringify({ ...payload, created_at: new Date().toISOString() }),
+  });
+  return Array.isArray(rows) && rows[0] ? rows[0] as Record<string, unknown> : payload;
+}
+
+export async function syncInboundGoogleCalendarToCloseFlow(input: {
+  workspaceId: string;
+  userId?: string;
+  timeMin?: string;
+  timeMax?: string;
+  updatedMin?: string | null;
+}): Promise<GoogleCalendarInboundSyncResult> {
+  // GOOGLE_CALENDAR_STAGE10G_INBOUND_SYNC_BACKEND
+  const connection = await getGoogleCalendarConnection(input.workspaceId, input.userId || undefined);
+  if (!connection || connection.sync_enabled === false) {
+    return { ok: true, connected: false, imported: 0, updated: 0, deleted: 0, skipped: 0, conflicts: [], errors: [] };
+  }
+
+  const now = Date.now();
+  const timeMin = googleInboundIso(input.timeMin) || new Date(now - 30 * 24 * 60 * 60_000).toISOString();
+  const timeMax = googleInboundIso(input.timeMax) || new Date(now + 90 * 24 * 60 * 60_000).toISOString();
+  const events = await listGoogleCalendarEventsForInbound({
+    connection,
+    timeMin,
+    timeMax,
+    updatedMin: input.updatedMin || null,
+  });
+
+  let imported = 0;
+  let updated = 0;
+  let deleted = 0;
+  let skipped = 0;
+  const conflicts: GoogleCalendarInboundChangedItem[] = [];
+  const errors: string[] = [];
+
+  for (const event of events) {
+    const googleEventId = googleInboundText(event.id);
+    if (!googleEventId) {
+      skipped += 1;
+      continue;
+    }
+
+    try {
+      const existing = await selectGoogleInboundExistingWorkItem(input.workspaceId, event);
+      const status = googleInboundText(event.status).toLowerCase();
+      if (status === 'cancelled') {
+        if (existing?.id) {
+          await deleteGoogleInboundWorkItem(input.workspaceId, String(existing.id));
+          deleted += 1;
+        } else {
+          skipped += 1;
+        }
+        continue;
+      }
+
+      const startAt = googleInboundEventStart(event);
+      if (!startAt) {
+        skipped += 1;
+        continue;
+      }
+
+      const row = await upsertGoogleInboundWorkItem(input.workspaceId, event);
+      const rowId = String(row.id || existing?.id || '');
+      if (existing?.id) updated += 1;
+      else imported += 1;
+
+      const foundConflicts = rowId ? await findGoogleInboundConflicts(input.workspaceId, rowId, row) : [];
+      if (foundConflicts.length) {
+        const window = googleInboundWindow(row);
+        conflicts.push({
+          id: rowId,
+          title: googleInboundText(row.title) || googleInboundText(event.summary) || 'Wydarzenie z Google Calendar',
+          googleEventId,
+          startAt: window?.startAt || startAt,
+          endAt: window?.endAt || googleInboundEventEnd(event, startAt),
+          conflicts: foundConflicts,
+        });
+      }
+    } catch (error) {
+      errors.push(String(error instanceof Error ? error.message : error).slice(0, 500));
+    }
+  }
+
+  return { ok: true, connected: true, imported, updated, deleted, skipped, conflicts, errors };
 }
 
 export async function createGoogleCalendarEvent(connection: GoogleCalendarConnection, event: CloseFlowCalendarEvent) {
@@ -599,45 +861,4 @@ export async function deleteGoogleCalendarEvent(connection: GoogleCalendarConnec
     throw new Error(String((data as any)?.error?.message || 'GOOGLE_EVENT_DELETE_FAILED'));
   }
   return { ok: true };
-}
-
-export async function listGoogleCalendarEvents(connection: GoogleCalendarConnection, options?: {
-  timeMin?: string | null;
-  timeMax?: string | null;
-  updatedMin?: string | null;
-  syncToken?: string | null;
-  maxResults?: number | null;
-}) {
-  // GOOGLE_CALENDAR_STAGE10K_INBOUND_LIST_EVENTS
-  const accessToken = await getUsableAccessToken(connection);
-  const calendarId = encodeURIComponent(String(connection.google_calendar_id || 'primary'));
-  const baseParams = new URLSearchParams();
-  baseParams.set('showDeleted', 'true');
-  baseParams.set('maxResults', String(Math.max(1, Math.min(2500, Number(options?.maxResults || 2500)))));
-  if (options?.syncToken) {
-    baseParams.set('syncToken', String(options.syncToken));
-  } else {
-    if (options?.timeMin) baseParams.set('timeMin', String(options.timeMin));
-    if (options?.timeMax) baseParams.set('timeMax', String(options.timeMax));
-    if (options?.updatedMin) baseParams.set('updatedMin', String(options.updatedMin));
-    baseParams.set('singleEvents', 'true');
-    baseParams.set('orderBy', 'startTime');
-  }
-  const items: any[] = [];
-  let nextPageToken = '';
-  let nextSyncToken = '';
-  do {
-    const params = new URLSearchParams(baseParams);
-    if (nextPageToken) params.set('pageToken', nextPageToken);
-    const response = await fetch(GOOGLE_CALENDAR_API_BASE + '/calendars/' + calendarId + '/events?' + params.toString(), {
-      method: 'GET',
-      headers: { Authorization: 'Bearer ' + accessToken },
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(String((data as any)?.error?.message || 'GOOGLE_EVENT_LIST_FAILED'));
-    if (Array.isArray((data as any).items)) items.push(...(data as any).items);
-    nextPageToken = String((data as any).nextPageToken || '');
-    nextSyncToken = String((data as any).nextSyncToken || nextSyncToken || '');
-  } while (nextPageToken);
-  return { items, nextSyncToken };
 }

@@ -1,0 +1,47 @@
+﻿google-calendar-sync.ts markers:
+228: // GOOGLE_CALENDAR_STAGE08D_WORKSPACE_CONNECTION_FALLBACK
+349: // GOOGLE_CALENDAR_SYNC_V1_STAGE05_REMINDER_METHOD_BACKEND
+367: // GOOGLE_CALENDAR_STAGE09_FULL_CALENDAR_PARITY
+434: function normalizeGoogleCalendarSourceUrl(input?: string | null) {
+435: // GOOGLE_CALENDAR_STAGE09E_SAFE_SOURCE_URL
+472: function buildGoogleEventBody(event: CloseFlowCalendarEvent) {
+473: // GOOGLE_CALENDAR_STAGE09B_FULL_BODY_PARITY
+474: // GOOGLE_CALENDAR_STAGE09E_SAFE_SOURCE_URL_BODY
+
+google-calendar-handler.ts routes:
+5: disconnectGoogleCalendarConnection,
+7: getGoogleCalendarConfigStatus,
+8: getGoogleCalendarConnection,
+9: upsertGoogleCalendarConnection,
+11: } from './google-calendar-sync.js';
+35: function route(req: any, body: any) {
+36: const raw = req.query?.route || req.query?.action || body?.route || body?.action || 'status';
+37: return String(Array.isArray(raw) ? raw[0] : raw || 'status').trim().toLowerCase();
+41: export default async function handler(req: any, res: any) {
+44: const action = route(req, body);
+46: if (action === 'callback') {
+50: res.status(400).json({ error: 'GOOGLE_CALENDAR_CALLBACK_REQUIRED' });
+56: await upsertGoogleCalendarConnection({
+63: const returnTo = verified.returnTo || '/settings?googleCalendar=connected';
+64: res.status(302).setHeader('Location', returnTo.includes('?') ? `${returnTo}&googleCalendar=connected` : `${returnTo}?googleCalendar=connected`).end();
+70: res.status(401).json({ error: 'GOOGLE_CALENDAR_WORKSPACE_REQUIRED' });
+76: res.status(401).json({ error: 'GOOGLE_CALENDAR_USER_REQUIRED' });
+80: if (req.method === 'GET' && action === 'status') {
+81: const cfg = getGoogleCalendarConfigStatus();
+82: const connection = await getGoogleCalendarConnection(workspaceId, userId).catch(() => null);
+83: res.status(200).json({
+87: connected: Boolean(connection),
+88: connection: connection
+90: googleCalendarId: connection.google_calendar_id || 'primary',
+91: googleAccountEmail: connection.google_account_email || '',
+92: syncEnabled: connection.sync_enabled !== false,
+99: if (req.method === 'POST' && action === 'connect') {
+101: const cfg = getGoogleCalendarConfigStatus();
+103: res.status(409).json({ error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED', missing: cfg.missing });
+111: res.status(200).json({ ok: true, authUrl, configured: true, userEmail: getUserEmail(req) });
+115: if ((req.method === 'DELETE' || req.method === 'POST') && action === 'disconnect') {
+117: await disconnectGoogleCalendarConnection(workspaceId, userId);
+118: res.status(200).json({ ok: true, disconnected: true });
+122: res.status(405).json({ error: 'GOOGLE_CALENDAR_ROUTE_NOT_ALLOWED' });
+125: const status = message.includes('CONFIG_REQUIRED') ? 409
+129: res.status(status).json({ error: message });

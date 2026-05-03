@@ -56,11 +56,6 @@ type CloseFlowCalendarEvent = {
   sourceUrl?: string | null;
   googleReminderMethod?: GoogleReminderMethod | null;
   googleReminderMinutesBefore?: number | null;
-  googleRemindersUseDefault?: boolean | null;
-  googleRemindersOverrides?: Array<{ method?: string; minutes?: number }> | null;
-  googleAllDay?: boolean | null;
-  googleStartDate?: string | null;
-  googleEndDate?: string | null;
 };
 
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
@@ -353,15 +348,6 @@ function minutesFromReminderAt(event: CloseFlowCalendarEvent) {
 
 // GOOGLE_CALENDAR_SYNC_V1_STAGE05_REMINDER_METHOD_BACKEND
 function buildReminderOverrides(event: CloseFlowCalendarEvent) {
-  // GOOGLE_CALENDAR_STAGE11C_EXACT_REMINDER_OUTBOUND
-  if (typeof event.googleRemindersUseDefault === 'boolean') {
-    if (event.googleRemindersUseDefault) return { useDefault: true };
-    return {
-      useDefault: false,
-      overrides: normalizeExactGoogleReminderOverrides(event.googleRemindersOverrides),
-    };
-  }
-
   const method = normalizeGoogleReminderMethod(event.googleReminderMethod || (event.reminderAt ? 'popup' : 'default'));
   if (method === 'default') return { useDefault: true };
 
@@ -483,64 +469,16 @@ function getGoogleCalendarSourceUrl(event: CloseFlowCalendarEvent) {
   return '';
 }
 
-function normalizeExactGoogleReminderOverrides(value: unknown) {
-  // GOOGLE_CALENDAR_STAGE11C_EXACT_REMINDER_OVERRIDES
-  const items = Array.isArray(value) ? value : [];
-  return items
-    .map((item) => {
-      if (!item || typeof item !== 'object') return null;
-      const row = item as { method?: unknown; minutes?: unknown };
-      const method = String(row.method || '').trim().toLowerCase();
-      if (method !== 'popup' && method !== 'email') return null;
-      const minutes = clampGoogleReminderMinutes(row.minutes);
-      if (minutes === null) return null;
-      return { method, minutes };
-    })
-    .filter(Boolean);
-}
-
-function normalizeGoogleDateOnly(value?: string | null) {
-  const raw = String(value || '').trim();
-  if (!raw) return '';
-  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
-  const date = new Date(raw);
-  if (!Number.isFinite(date.getTime())) return '';
-  return date.toISOString().slice(0, 10);
-}
-
-function addOneGoogleDateOnly(value: string) {
-  const date = new Date(value + 'T00:00:00.000Z');
-  if (!Number.isFinite(date.getTime())) return value;
-  date.setUTCDate(date.getUTCDate() + 1);
-  return date.toISOString().slice(0, 10);
-}
-
-function buildGoogleTimeFields(event: CloseFlowCalendarEvent) {
-  // GOOGLE_CALENDAR_STAGE11C_ALL_DAY_OUTBOUND
-  if (event.googleAllDay === true) {
-    const startDate = normalizeGoogleDateOnly(event.googleStartDate) || normalizeGoogleDateOnly(event.startAt);
-    const endDate = normalizeGoogleDateOnly(event.googleEndDate) || (startDate ? addOneGoogleDateOnly(startDate) : '');
-    if (startDate && endDate) return { start: { date: startDate }, end: { date: endDate } };
-  }
-
-  const start = new Date(event.startAt);
-  const end = event.endAt ? new Date(event.endAt) : new Date(start.getTime() + 60 * 60 * 1000);
-  return {
-    start: { dateTime: start.toISOString() },
-    end: { dateTime: end.toISOString() },
-  };
-}
-
 function buildGoogleEventBody(event: CloseFlowCalendarEvent) {
   // GOOGLE_CALENDAR_STAGE09B_FULL_BODY_PARITY
   // GOOGLE_CALENDAR_STAGE09E_SAFE_SOURCE_URL_BODY
-  // GOOGLE_CALENDAR_STAGE11C_REMINDER_ALL_DAY_PARITY_BODY
-  const timeFields = buildGoogleTimeFields(event);
+  const start = new Date(event.startAt);
+  const end = event.endAt ? new Date(event.endAt) : new Date(start.getTime() + 60 * 60 * 1000);
   const body: Record<string, unknown> = {
     summary: event.title || 'CloseFlow event',
     description: event.description || undefined,
-    start: timeFields.start,
-    end: timeFields.end,
+    start: { dateTime: start.toISOString() },
+    end: { dateTime: end.toISOString() },
     reminders: buildReminderOverrides(event),
     extendedProperties: buildGoogleExtendedProperties(event),
   };

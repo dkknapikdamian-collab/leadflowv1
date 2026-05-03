@@ -87,38 +87,6 @@ function googleReminderMinutesFrom(row: any, body: any) {
 }
 
 
-
-// GOOGLE_CALENDAR_STAGE11C_WORK_ITEM_REMINDER_ALL_DAY_HELPERS
-function parseGoogleReminderOverrides(value: unknown) {
-  if (Array.isArray(value)) return value;
-  if (typeof value === 'string' && value.trim()) {
-    try {
-      const parsed = JSON.parse(value);
-      return Array.isArray(parsed) ? parsed : null;
-    } catch {
-      return null;
-    }
-  }
-  return null;
-}
-
-function nullableBool(value: unknown) {
-  if (typeof value === 'boolean') return value;
-  if (typeof value === 'string') {
-    const raw = value.trim().toLowerCase();
-    if (raw === 'true' || raw === '1' || raw === 'yes') return true;
-    if (raw === 'false' || raw === '0' || raw === 'no') return false;
-  }
-  return null;
-}
-
-function dateOnly(value: unknown) {
-  const raw = typeof value === 'string' ? value.trim() : '';
-  if (!raw) return null;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
-  const parsed = new Date(raw);
-  return Number.isFinite(parsed.getTime()) ? parsed.toISOString().slice(0, 10) : null;
-}
 function buildGoogleCalendarDescription(row: any, body: any) {
   // GOOGLE_CALENDAR_STAGE09B_WORK_ITEM_FULL_PARITY
   const parts = [
@@ -154,24 +122,6 @@ function closeFlowEventForGoogle(row: any, body: any) {
   const leadLabel = String(row?.lead_name || row?.leadName || body?.leadName || '').trim();
   const caseLabel = String(row?.case_title || row?.caseTitle || body?.caseTitle || '').trim();
   const relationLabel = caseLabel || leadLabel || '';
-  const googleRemindersUseDefault = nullableBool(
-    body?.googleRemindersUseDefault
-    ?? body?.google_reminders_use_default
-    ?? row?.google_reminders_use_default
-    ?? row?.googleRemindersUseDefault,
-  );
-  const googleRemindersOverrides = parseGoogleReminderOverrides(
-    body?.googleRemindersOverrides
-    ?? body?.google_reminders_overrides
-    ?? row?.google_reminders_overrides
-    ?? row?.googleRemindersOverrides,
-  );
-  const googleAllDay = nullableBool(
-    body?.googleAllDay
-    ?? body?.google_all_day
-    ?? row?.google_all_day
-    ?? row?.googleAllDay,
-  );
 
   return {
     id: String(row?.id || body?.id || ''),
@@ -185,11 +135,6 @@ function closeFlowEventForGoogle(row: any, body: any) {
     recurrenceCount: typeof row?.recurrence_count === 'number' ? row.recurrence_count : typeof body?.recurrenceCount === 'number' ? body.recurrenceCount : null,
     googleReminderMethod: googleReminderMethodFrom(row, body),
     googleReminderMinutesBefore: googleReminderMinutesFrom(row, body),
-    googleRemindersUseDefault,
-    googleRemindersOverrides,
-    googleAllDay,
-    googleStartDate: dateOnly(body?.googleStartDate ?? body?.google_start_date ?? row?.google_start_date ?? row?.googleStartDate),
-    googleEndDate: dateOnly(body?.googleEndDate ?? body?.google_end_date ?? row?.google_end_date ?? row?.googleEndDate),
     description: String(row?.description || body?.description || '').trim(),
     kind: recordType === 'task' ? 'task' : 'event',
     relationLabel,
@@ -274,11 +219,6 @@ async function syncGoogleCalendarEventAfterMutation(input: {
       google_calendar_sync_status: 'synced',
       google_calendar_sync_error: null,
       google_calendar_reminders: googleEvent?.reminders || null,
-      google_reminders_use_default: Boolean(googleEvent?.reminders?.useDefault),
-      google_reminders_overrides: Array.isArray(googleEvent?.reminders?.overrides) ? googleEvent.reminders.overrides : [],
-      google_all_day: Boolean(googleEvent?.start?.date && !googleEvent?.start?.dateTime),
-      google_start_date: googleEvent?.start?.date || null,
-      google_end_date: googleEvent?.end?.date || null,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error || 'GOOGLE_CALENDAR_SYNC_FAILED');
