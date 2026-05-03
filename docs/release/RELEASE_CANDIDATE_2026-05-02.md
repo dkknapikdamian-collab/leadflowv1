@@ -1,6 +1,6 @@
 # Release Candidate Evidence — CloseFlow / LeadFlow
 
-**Data wygenerowania:** 2026-05-03T08:56:06.755Z  
+**Data wygenerowania:** 2026-05-03T09:04:09.121Z  
 **Status evidence gate:** ✅ **PASS**  
 **Zakres:** ETAP 0.1 — Release Candidate Evidence Gate  
 **Uwaga:** ten dokument nie zmienia działania aplikacji. To dowód release’u dla audytu.
@@ -14,10 +14,10 @@
 | Repo root | `C:/Users/malim/Desktop/biznesy_ai/2.closeflow` |
 | Repo remote | `https://github.com/dkknapikdamian-collab/leadflowv1.git` |
 | Branch | `dev-rollout-freeze` |
-| Commit | `5cbfd492a996cc02c9c9fe1a6b74fba12bee4159` |
-| Short commit | `5cbfd49` |
-| Commit date | `2026-05-03T10:55:39+02:00` |
-| Commit subject | Fix CloseFlow access gate helper contract tests |
+| Commit | `65dd3f72821b61f99a67f0785465af1ef836fc18` |
+| Short commit | `65dd3f7` |
+| Commit date | `2026-05-03T11:03:12+02:00` |
+| Commit subject | Fix CloseFlow workspace write access runtime gate |
 | Preview URL | [https://closeflowapp.vercel.app](https://closeflowapp.vercel.app) |
 | Working tree | CLEAN |
 | Node | `v24.14.0` |
@@ -133,9 +133,9 @@ clean
 | Script | Status | Exit code | Czas |
 |---|---:|---:|---:|
 | `check:polish-mojibake` | PASS | 0 | 0.5s |
-| `verify:closeflow:quiet` | PASS | 0 | 19.4s |
+| `verify:closeflow:quiet` | PASS | 0 | 36.3s |
 | `test:critical` | PASS | 0 | 0.7s |
-| `build` | PASS | 0 | 6.0s |
+| `build` | PASS | 0 | 18.2s |
 
 ### Wynik builda
 
@@ -253,7 +253,7 @@ OK: no Polish mojibake detected.
 
 - Command: `npm.cmd run verify:closeflow:quiet`
 - Exit code: `0`
-- Duration: `19.4s`
+- Duration: `36.3s`
 
 ```text
 STDOUT:
@@ -376,7 +376,7 @@ STDOUT:
 == CloseFlow compact test summary ==
 Mode: critical
 Critical files: 6
-Tests: 13 | Pass: 13 | Fail: 0 | 203 ms
+Tests: 13 | Pass: 13 | Fail: 0 | 196 ms
 Full log: test-results\last-test-full.log
 
 OK: testy przeszły.
@@ -386,7 +386,7 @@ OK: testy przeszły.
 
 - Command: `npm.cmd run build`
 - Exit code: `0`
-- Duration: `6.0s`
+- Duration: `18.2s`
 
 ```text
 STDOUT:
@@ -457,7 +457,7 @@ computing gzip size...
 [2mdist/[22m[36massets/vendor-firebase-DmwLizUx.js                          [39m[1m[2m183.59 kB[22m[1m[22m[2m │ gzip:  37.96 kB[22m
 [2mdist/[22m[36massets/index-DcBF9dS3.js                                    [39m[1m[2m219.42 kB[22m[1m[22m[2m │ gzip:  62.23 kB[22m
 [2mdist/[22m[36massets/vendor-react-8zHiQ6Mn.js                             [39m[1m[2m336.75 kB[22m[1m[22m[2m │ gzip: 110.36 kB[22m
-[32m✓ built in 5.04s[39m
+[32m✓ built in 17.05s[39m
 ```
 
 ---
