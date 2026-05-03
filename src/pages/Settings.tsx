@@ -44,6 +44,8 @@ import {
   supportsBrowserNotifications,
 } from '../lib/notifications';
 import { updateProfileSettingsInSupabase, updateWorkspaceSettingsInSupabase } from '../lib/supabase-fallback';
+import { GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS } from '../lib/options';
+import { getGoogleCalendarReminderPreference, setGoogleCalendarReminderPreference } from '../lib/google-calendar-reminder-preferences';
 import '../styles/visual-stage19-settings-vnext.css';
 
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
@@ -165,6 +167,8 @@ export default function Settings() {
   const [checkingGoogleCalendar, setCheckingGoogleCalendar] = useState(false);
   const [connectingGoogleCalendar, setConnectingGoogleCalendar] = useState(false);
   const [disconnectingGoogleCalendar, setDisconnectingGoogleCalendar] = useState(false);
+  const [googleCalendarReminderMethod, setGoogleCalendarReminderMethod] = useState(() => getGoogleCalendarReminderPreference().method);
+  const [googleCalendarReminderMinutes, setGoogleCalendarReminderMinutes] = useState(() => String(getGoogleCalendarReminderPreference().minutesBefore));
 
 useEffect(() => {
     setProfile({
@@ -336,6 +340,14 @@ useEffect(() => {
     } finally {
       setDisconnectingGoogleCalendar(false);
     }
+  };
+
+  const handleSaveGoogleCalendarReminderPreference = () => {
+    setGoogleCalendarReminderPreference({
+      method: googleCalendarReminderMethod as any,
+      minutesBefore: Number(googleCalendarReminderMinutes || '30'),
+    });
+    toast.success('Ustawienia przypomnieĹ„ Google Calendar zapisane.');
   };
 
   const handleUpdateProfile = async () => {
@@ -673,7 +685,53 @@ useEffect(() => {
 
         <div className="settings-shell">
           <section className="settings-main-column">
-            <section className="settings-section-card">
+                        <section className="settings-section-card" data-google-calendar-reminder-ui="stage06">
+              <div className="settings-section-head">
+                <div>
+                  <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
+                  <h2>Przypomnienia Google Calendar</h2>
+                  <p>Ustaw domyĹ›lny typ przypomnienia wysyĹ‚any do Google przy nowych i edytowanych wydarzeniach.</p>
+                </div>
+              </div>
+
+              <div className="settings-form-grid">
+                <div className="settings-field">
+                  <Label>Typ przypomnienia Google</Label>
+                  <select
+                    className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                    value={googleCalendarReminderMethod}
+                    onChange={(event) => setGoogleCalendarReminderMethod(event.target.value as any)}
+                  >
+                    {GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="settings-field">
+                  <Label>Ile minut wczeĹ›niej</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={40320}
+                    value={googleCalendarReminderMinutes}
+                    disabled={googleCalendarReminderMethod === 'default'}
+                    onChange={(event) => setGoogleCalendarReminderMinutes(event.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="settings-action-row">
+                <Button type="button" onClick={handleSaveGoogleCalendarReminderPreference}>
+                  <Save className="h-4 w-4" />
+                  Zapisz przypomnienia Google
+                </Button>
+                <span className="settings-muted-note">
+                  Przy opcji domyĹ›lnej Google uĹĽyje ustawieĹ„ z Twojego kalendarza. Przy popup/e-mail CloseFlow wysyĹ‚a override do Google Calendar.
+                </span>
+              </div>
+            </section>
+
+<section className="settings-section-card">
               <div className="settings-section-head">
                 <div>
                   <span><User className="h-4 w-4" /> Konto</span>

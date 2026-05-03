@@ -108,7 +108,8 @@
     "check:admin-ai-role-gate": "node scripts/check-admin-ai-role-gate.cjs",
     "check:google-calendar-stage04-oauth-env-smoke-docs": "node scripts/check-google-calendar-stage04-oauth-env-smoke-docs.cjs",
     "check:vercel-hobby-function-budget-rule-doc": "node scripts/check-vercel-hobby-function-budget-rule-doc.cjs",
-    "check:google-calendar-stage05-reminder-method-backend": "node scripts/check-google-calendar-stage05-reminder-method-backend.cjs"
+    "check:google-calendar-stage05-reminder-method-backend": "node scripts/check-google-calendar-stage05-reminder-method-backend.cjs",
+    "check:google-calendar-stage06-reminder-method-ui": "node scripts/check-google-calendar-stage06-reminder-method-ui.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
