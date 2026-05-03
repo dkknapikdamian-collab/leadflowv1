@@ -86,6 +86,19 @@ function googleReminderMinutesFrom(row: any, body: any) {
   return Number.isFinite(parsed) ? Math.max(0, Math.min(40320, Math.round(parsed))) : null;
 }
 
+
+function buildGoogleCalendarDescription(row: any, body: any) {
+  // GOOGLE_CALENDAR_STAGE09B_WORK_ITEM_FULL_PARITY
+  const parts = [
+    'Źródło: CloseFlow',
+    row?.record_type || body?.kind ? 'Typ: ' + String(row?.record_type || body?.kind) : '',
+    row?.description || body?.description ? String(row?.description || body?.description) : '',
+    row?.lead_id || body?.leadId ? 'Lead ID: ' + String(row?.lead_id || body?.leadId) : '',
+    row?.case_id || body?.caseId ? 'Sprawa ID: ' + String(row?.case_id || body?.caseId) : '',
+  ].filter(Boolean);
+  return parts.join('\n');
+}
+
 function closeFlowEventForGoogle(row: any, body: any) {
   const startAt =
     asIsoDate(row?.start_at)
@@ -105,6 +118,10 @@ function closeFlowEventForGoogle(row: any, body: any) {
     || asIsoDate(row?.reminderAt)
     || asIsoDate(body?.reminderAt)
     || null;
+  const recordType = String(row?.record_type || row?.recordType || body?.kind || body?.recordType || 'event').toLowerCase();
+  const leadLabel = String(row?.lead_name || row?.leadName || body?.leadName || '').trim();
+  const caseLabel = String(row?.case_title || row?.caseTitle || body?.caseTitle || '').trim();
+  const relationLabel = caseLabel || leadLabel || '';
 
   return {
     id: String(row?.id || body?.id || ''),
@@ -113,8 +130,14 @@ function closeFlowEventForGoogle(row: any, body: any) {
     endAt,
     reminderAt,
     recurrenceRule: row?.recurrence ? String(row.recurrence) : body?.recurrenceRule ? String(body.recurrenceRule) : null,
+    recurrenceEndType: row?.recurrence_end_type || row?.recurrenceEndType || body?.recurrenceEndType || null,
+    recurrenceEndAt: asIsoDate(row?.recurrence_end_at) || asIsoDate(row?.recurrenceEndAt) || asIsoDate(body?.recurrenceEndAt) || null,
+    recurrenceCount: typeof row?.recurrence_count === 'number' ? row.recurrence_count : typeof body?.recurrenceCount === 'number' ? body.recurrenceCount : null,
     googleReminderMethod: googleReminderMethodFrom(row, body),
     googleReminderMinutesBefore: googleReminderMinutesFrom(row, body),
+    description: String(row?.description || body?.description || '').trim(),
+    kind: recordType === 'task' ? 'task' : 'event',
+    relationLabel,
   };
 }
 
@@ -132,6 +155,7 @@ async function writeGoogleCalendarSyncState(id: unknown, payload: Record<string,
 }
 
 // GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_WIRING
+// GOOGLE_CALENDAR_STAGE09_WORK_ITEM_PARITY
 // Non-blocking: CloseFlow event writes must survive Google API failures.
 async function syncGoogleCalendarEventAfterMutation(input: {
   action: 'create' | 'update' | 'delete';
@@ -142,7 +166,7 @@ async function syncGoogleCalendarEventAfterMutation(input: {
 }) {
   const userId = getRequestUserId(input.req);
   const rowId = input.row?.id || input.body?.id;
-  if (!input.workspaceId || !userId || !rowId) return;
+  if (!input.workspaceId || !rowId) return;
 
   if (googleSyncOptedOut(input.body)) {
     await writeGoogleCalendarSyncState(rowId, {
@@ -155,13 +179,20 @@ async function syncGoogleCalendarEventAfterMutation(input: {
 
   let connection: any = null;
   try {
-    connection = await getGoogleCalendarConnection(input.workspaceId, userId);
+    connection = await getGoogleCalendarConnection(input.workspaceId, userId || undefined);
   } catch (error) {
     console.warn('GOOGLE_CALENDAR_CONNECTION_LOOKUP_FAILED', error instanceof Error ? error.message : String(error));
     return;
   }
 
-  if (!connection || connection.sync_enabled === false) return;
+  if (!connection || connection.sync_enabled === false) {
+    await writeGoogleCalendarSyncState(rowId, {
+      google_calendar_sync_enabled: true,
+      google_calendar_sync_status: 'not_connected',
+      google_calendar_sync_error: 'GOOGLE_CALENDAR_CONNECTION_NOT_FOUND',
+    });
+    return;
+  }
 
   const event = closeFlowEventForGoogle(input.row, input.body);
   const existingGoogleEventId = googleEventIdFrom(input.row, input.body);

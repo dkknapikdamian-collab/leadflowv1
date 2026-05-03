@@ -5,6 +5,7 @@ import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/s
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { normalizeLeadContract } from '../src/lib/data-contract.js';
 import { LEAD_STATUS_VALUES, normalizeLeadStatus } from '../src/lib/domain-statuses.js';
+import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendarConnection, updateGoogleCalendarEvent } from '../src/server/google-calendar-sync.js';
 
 const SOURCE_ALIASES: Record<string, string> = {
   instagram: 'instagram',
@@ -56,6 +57,13 @@ const OPTIONAL_LEAD_COLUMNS = new Set([
   'moved_to_service_at',
   'lead_visibility',
   'sales_outcome',
+  'google_calendar_id',
+  'google_calendar_event_id',
+  'google_calendar_event_etag',
+  'google_calendar_html_link',
+  'google_calendar_synced_at',
+  'google_calendar_sync_status',
+  'google_calendar_sync_error',
 ]);
 const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at']);
 const OPTIONAL_ACTIVITY_COLUMNS = new Set(['owner_id', 'actor_id', 'actor_type', 'event_type', 'payload', 'lead_id', 'case_id', 'workspace_id', 'created_at', 'updated_at']);
@@ -447,6 +455,138 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
 }
 
 
+function getRequestUserIdForLeadGoogle(req: any) {
+  const raw =
+    req.headers?.['x-user-id']
+    || req.headers?.['x-auth-uid']
+    || req.headers?.['x-firebase-uid']
+    || '';
+  return Array.isArray(raw) ? String(raw[0] || '') : String(raw || '').trim();
+}
+
+function readLeadGoogleEventId(row: Record<string, unknown>, body: Record<string, unknown>) {
+  return asText(
+    row.google_calendar_event_id
+    || row.googleCalendarEventId
+    || body.googleCalendarEventId
+    || body.google_calendar_event_id
+  );
+}
+
+function readLeadNextActionAt(row: Record<string, unknown>, body: Record<string, unknown>) {
+  if (body.nextActionAt !== undefined) return toIsoDateTime(body.nextActionAt);
+  return toIsoDateTime(row.next_action_at || row.nextActionAt);
+}
+
+function buildLeadGoogleCalendarEvent(row: Record<string, unknown>, body: Record<string, unknown>) {
+  const startAt = readLeadNextActionAt(row, body) || new Date().toISOString();
+  const title = asText(body.nextActionTitle || row.next_action_title || row.nextActionTitle)
+    || ('Lead: ' + (asText(row.name || body.name || row.company || body.company) || 'następny krok'));
+  const leadName = asText(row.name || body.name || row.company || body.company) || 'Lead';
+  const contact = [asText(row.phone || body.phone), asText(row.email || body.email)].filter(Boolean).join(' / ');
+  const description = [
+    'Źródło: CloseFlow',
+    'Typ: lead_next_action',
+    'Lead: ' + leadName,
+    contact ? 'Kontakt: ' + contact : '',
+    asText(row.summary || body.summary) ? 'Temat: ' + asText(row.summary || body.summary) : '',
+    asText(row.notes || body.notes) ? 'Notatka: ' + asText(row.notes || body.notes) : '',
+  ].filter(Boolean).join('\n');
+  return {
+    id: String(row.id || body.id || ''),
+    title,
+    startAt,
+    endAt: new Date(new Date(startAt).getTime() + 30 * 60_000).toISOString(),
+    reminderAt: null,
+    recurrenceRule: null,
+    description,
+    sourceType: 'lead_next_action',
+  };
+}
+
+async function writeLeadGoogleCalendarSyncState(leadId: string, payload: Record<string, unknown>) {
+  if (!leadId) return;
+  try {
+    await updateLeadWithSchemaFallback(leadId, {
+      ...payload,
+      updated_at: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('LEAD_GOOGLE_CALENDAR_SYNC_STATE_WRITE_FAILED', error instanceof Error ? error.message : String(error));
+  }
+}
+
+async function syncGoogleCalendarLeadAfterMutation(input: {
+  action: 'create' | 'update' | 'delete';
+  req: any;
+  workspaceId: string;
+  row: Record<string, unknown>;
+  previousRow?: Record<string, unknown> | null;
+  body: Record<string, unknown>;
+}) {
+  // GOOGLE_CALENDAR_STAGE09B_LEAD_NEXT_ACTION_PARITY
+  const leadId = asText(input.row.id || input.body.id);
+  if (!input.workspaceId || !leadId) return;
+  const userId = getRequestUserIdForLeadGoogle(input.req);
+  const existingGoogleEventId = readLeadGoogleEventId(input.row, input.body) || readLeadGoogleEventId(input.previousRow || {}, input.body);
+  const nextActionAt = readLeadNextActionAt(input.row, input.body);
+
+  let connection: any = null;
+  try {
+    connection = await getGoogleCalendarConnection(input.workspaceId, userId || undefined);
+  } catch (error) {
+    await writeLeadGoogleCalendarSyncState(leadId, {
+      google_calendar_sync_status: 'failed',
+      google_calendar_sync_error: String(error instanceof Error ? error.message : error).slice(0, 500),
+    });
+    return;
+  }
+
+  if (!connection || connection.sync_enabled === false) {
+    await writeLeadGoogleCalendarSyncState(leadId, {
+      google_calendar_sync_status: 'not_connected',
+      google_calendar_sync_error: connection?.sync_enabled === false ? 'GOOGLE_CALENDAR_SYNC_DISABLED' : 'GOOGLE_CALENDAR_CONNECTION_NOT_FOUND',
+    });
+    return;
+  }
+
+  try {
+    if (input.action === 'delete' || !nextActionAt) {
+      if (existingGoogleEventId) await deleteGoogleCalendarEvent(connection, existingGoogleEventId);
+      await writeLeadGoogleCalendarSyncState(leadId, {
+        google_calendar_event_id: null,
+        google_calendar_event_etag: null,
+        google_calendar_html_link: null,
+        google_calendar_synced_at: new Date().toISOString(),
+        google_calendar_sync_status: 'deleted',
+        google_calendar_sync_error: null,
+      });
+      return;
+    }
+
+    const event = buildLeadGoogleCalendarEvent(input.row, input.body);
+    const googleEvent = existingGoogleEventId
+      ? await updateGoogleCalendarEvent(connection, existingGoogleEventId, event)
+      : await createGoogleCalendarEvent(connection, event);
+
+    await writeLeadGoogleCalendarSyncState(leadId, {
+      google_calendar_id: connection.google_calendar_id || 'primary',
+      google_calendar_event_id: googleEvent?.id || existingGoogleEventId || null,
+      google_calendar_event_etag: googleEvent?.etag || null,
+      google_calendar_html_link: googleEvent?.htmlLink || null,
+      google_calendar_synced_at: new Date().toISOString(),
+      google_calendar_sync_status: 'synced',
+      google_calendar_sync_error: null,
+    });
+  } catch (error) {
+    await writeLeadGoogleCalendarSyncState(leadId, {
+      google_calendar_sync_status: 'failed',
+      google_calendar_sync_error: String(error instanceof Error ? error.message : error).slice(0, 500),
+    });
+  }
+}
+
+
 function isLeadActiveForApiList(lead: Record<string, unknown>) {
   // A24_DEFAULT_ACTIVE_LEADS_FILTER
   // Default list endpoints represent active sales work. Moved leads stay accessible by id/history.
@@ -544,7 +684,7 @@ export default async function handler(req: any, res: any) {
         res.status(400).json({ error: 'LEAD_ID_REQUIRED' });
         return;
       }
-      await requireScopedRow('leads', String(body.id), workspaceId, 'LEAD_NOT_FOUND');
+      const currentLeadRow = await requireScopedRow('leads', String(body.id), workspaceId, 'LEAD_NOT_FOUND');
 
       const nextStatus = body.status !== undefined ? normalizeStatus(body.status) : undefined;
       const nextStartRule = body.startRuleSnapshot !== undefined ? normalizeEnum(body.startRuleSnapshot, START_RULES, 'on_acceptance') : undefined;
@@ -606,6 +746,8 @@ export default async function handler(req: any, res: any) {
 
       const data = await updateLeadWithSchemaFallback(String(body.id), payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
+      // GOOGLE_CALENDAR_STAGE09B_LEAD_PATCH_SYNC_CALL
+      await syncGoogleCalendarLeadAfterMutation({ action: 'update', req, workspaceId, row: updated as Record<string, unknown>, previousRow: currentLeadRow as Record<string, unknown>, body });
       res.status(200).json(normalizeLead(updated as Record<string, unknown>));
       return;
     }
@@ -616,7 +758,12 @@ export default async function handler(req: any, res: any) {
         res.status(400).json({ error: 'LEAD_ID_REQUIRED' });
         return;
       }
-      await requireScopedRow('leads', id, workspaceId, 'LEAD_NOT_FOUND');
+      const currentLeadRow = await requireScopedRow('leads', id, workspaceId, 'LEAD_NOT_FOUND');
+
+      // GOOGLE_CALENDAR_STAGE09B_LEAD_DELETE_SYNC_CALL
+
+      await syncGoogleCalendarLeadAfterMutation({ action: 'delete', req, workspaceId, row: currentLeadRow as Record<string, unknown>, previousRow: currentLeadRow as Record<string, unknown>, body });
+
       await deleteById('leads', id);
       res.status(200).json({ ok: true, id });
       return;
@@ -683,6 +830,10 @@ export default async function handler(req: any, res: any) {
 
     const result = await insertLeadWithSchemaFallback(payload);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
+    // GOOGLE_CALENDAR_STAGE09B_LEAD_CREATE_SYNC_CALL
+
+    await syncGoogleCalendarLeadAfterMutation({ action: 'create', req, workspaceId: finalWorkspaceId, row: inserted as Record<string, unknown>, body });
+
     res.status(200).json(normalizeLead(inserted as Record<string, unknown>));
   } catch (error: any) {
     if (error?.code || error?.status) {

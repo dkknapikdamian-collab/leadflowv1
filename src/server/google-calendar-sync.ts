@@ -46,6 +46,9 @@ type CloseFlowCalendarEvent = {
   endAt?: string | null;
   reminderAt?: string | null;
   recurrenceRule?: string | null;
+  description?: string | null;
+  sourceType?: string | null;
+  sourceUrl?: string | null;
   googleReminderMethod?: GoogleReminderMethod | null;
   googleReminderMinutesBefore?: number | null;
 };
@@ -356,19 +359,92 @@ function buildReminderOverrides(event: CloseFlowCalendarEvent) {
   };
 }
 
+// GOOGLE_CALENDAR_STAGE09_FULL_CALENDAR_PARITY
+// Every CloseFlow calendar-visible item should carry its real title, time, reminder and recurrence into Google Calendar.
+function buildGoogleRecurrenceRules(event: CloseFlowCalendarEvent) {
+  const raw = String(event.recurrenceRule || '').trim().toLowerCase();
+  if (!raw || raw === 'none') return undefined;
+
+  const rules: string[] = [];
+  if (raw === 'daily') rules.push('FREQ=DAILY');
+  else if (raw === 'every_2_days') rules.push('FREQ=DAILY', 'INTERVAL=2');
+  else if (raw === 'weekly') rules.push('FREQ=WEEKLY');
+  else if (raw === 'monthly') rules.push('FREQ=MONTHLY');
+  else if (raw === 'weekday') rules.push('FREQ=WEEKLY', 'BYDAY=MO,TU,WE,TH,FR');
+  else return undefined;
+
+  if (event.recurrenceEndType === 'count' && typeof event.recurrenceCount === 'number' && event.recurrenceCount > 0) {
+    rules.push('COUNT=' + Math.min(366, Math.round(event.recurrenceCount)));
+  }
+
+  if (event.recurrenceEndType === 'until_date' && event.recurrenceEndAt) {
+    const until = new Date(event.recurrenceEndAt);
+    if (Number.isFinite(until.getTime())) {
+      const y = until.getUTCFullYear();
+      const m = String(until.getUTCMonth() + 1).padStart(2, '0');
+      const d = String(until.getUTCDate()).padStart(2, '0');
+      rules.push('UNTIL=' + y + m + d + 'T235959Z');
+    }
+  }
+
+  return ['RRULE:' + rules.join(';')];
+}
+
+function buildGoogleDescription(event: CloseFlowCalendarEvent) {
+  const lines = [
+    event.description ? String(event.description).trim() : '',
+    event.kind ? 'Typ CloseFlow: ' + event.kind : '',
+    event.relationLabel ? 'Powiązanie: ' + event.relationLabel : '',
+    'Źródło: CloseFlow',
+  ].filter(Boolean);
+  return lines.join('\n');
+}
+
+
+function normalizeGoogleCalendarRecurrence(rule: unknown) {
+  const raw = String(rule || '').trim();
+  if (!raw || raw === 'none' || raw === 'null' || raw === 'undefined') return null;
+  if (/^RRULE:/i.test(raw)) return [raw.toUpperCase()];
+  const normalized = raw.toLowerCase();
+  const map: Record<string, string> = {
+    daily: 'RRULE:FREQ=DAILY',
+    every_2_days: 'RRULE:FREQ=DAILY;INTERVAL=2',
+    weekly: 'RRULE:FREQ=WEEKLY',
+    monthly: 'RRULE:FREQ=MONTHLY',
+    weekday: 'RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR',
+  };
+  return map[normalized] ? [map[normalized]] : null;
+}
+
+function buildGoogleExtendedProperties(event: CloseFlowCalendarEvent) {
+  return {
+    private: {
+      closeflowId: event.id || '',
+      closeflowKind: event.sourceType || 'calendar_item',
+      closeflowSync: 'stage09b_full_calendar_parity',
+    },
+  };
+}
+
 function buildGoogleEventBody(event: CloseFlowCalendarEvent) {
+  // GOOGLE_CALENDAR_STAGE09B_FULL_BODY_PARITY
   const start = new Date(event.startAt);
   const end = event.endAt ? new Date(event.endAt) : new Date(start.getTime() + 60 * 60 * 1000);
-  return {
+  const body: Record<string, unknown> = {
     summary: event.title || 'CloseFlow event',
+    description: event.description || undefined,
     start: { dateTime: start.toISOString() },
     end: { dateTime: end.toISOString() },
     reminders: buildReminderOverrides(event),
+    extendedProperties: buildGoogleExtendedProperties(event),
     source: {
       title: 'CloseFlow',
-      url: env('APP_URL') || env('RELEASE_PREVIEW_URL') || '',
+      url: event.sourceUrl || env('APP_URL') || env('RELEASE_PREVIEW_URL') || '',
     },
   };
+  const recurrence = normalizeGoogleCalendarRecurrence(event.recurrenceRule);
+  if (recurrence) body.recurrence = recurrence;
+  return body;
 }
 
 export async function createGoogleCalendarEvent(connection: GoogleCalendarConnection, event: CloseFlowCalendarEvent) {
