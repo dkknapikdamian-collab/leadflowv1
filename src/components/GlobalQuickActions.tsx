@@ -11,7 +11,7 @@ Pasek działa jako toolbar i jest czytelny na telefonie: role="toolbar", aria-la
  * GlobalQuickActions uses GlobalAiAssistant, which wraps the TodayAiAssistant behavior
  * with full app context. Keep this short marker for the legacy draft-inbox contract test.
  */
-import { ClipboardList, LockKeyhole, Plus } from 'lucide-react';
+import { ClipboardList, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import GlobalAiAssistant from './GlobalAiAssistant';
@@ -54,7 +54,9 @@ export function subscribeGlobalQuickAction(listener: (target: GlobalQuickActionT
 
 export default function GlobalQuickActions() {
   const { access } = useWorkspace();
-  const aiEnabled = Boolean(access?.features?.ai);
+  const canUseFullAiAssistantByPlan = Boolean(access?.features?.fullAi);
+  const canUseQuickAiCaptureByPlan = Boolean(access?.features?.lightDrafts || access?.features?.lightParser || access?.features?.fullAi);
+  const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi);
 
   return (
     <div
@@ -65,25 +67,20 @@ export default function GlobalQuickActions() {
       data-global-quick-actions-contract="v97"
       data-visual-stage="01-global-actions"
     >
-      {aiEnabled ? (
+      {canUseFullAiAssistantByPlan ? (
         <GlobalAiAssistant />
-      ) : (
-        <Button asChild variant="outline" className="btn soft-blue opacity-75" data-global-quick-action="ai-locked">
-          <Link to="/billing" aria-label="Asystent AI jest w planie AI" title="Asystent AI jest w planie AI">
-            <LockKeyhole className="mr-2 h-4 w-4" />
-            Asystent AI jest w planie AI
+      ) : null}
+
+      {canUseQuickAiCaptureByPlan ? <QuickAiCapture /> : null}
+
+      {canUseAiDraftsByPlan ? (
+        <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts">
+          <Link to="/ai-drafts" aria-label="Otwórz Szkice AI">
+            <ClipboardList className="mr-2 h-4 w-4" />
+            Szkice AI
           </Link>
         </Button>
-      )}
-
-      <QuickAiCapture />
-
-      <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts">
-        <Link to="/ai-drafts" aria-label="Otwórz Szkice AI">
-          <ClipboardList className="mr-2 h-4 w-4" />
-          Szkice AI
-        </Link>
-      </Button>
+      ) : null}
 
       <Button asChild variant="outline" className="btn" data-global-quick-action="lead">
         <Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() => rememberGlobalQuickAction('lead')}>

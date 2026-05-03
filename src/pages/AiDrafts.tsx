@@ -19,6 +19,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
@@ -372,7 +373,7 @@ function MetricCard({
   );
 }
 
-export default function AiDrafts() {
+function AiDraftsInner() {
   const [drafts, setDrafts] = useState<AiLeadDraft[]>([]);
   const [activeDraftId, setActiveDraftId] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<DraftFilter>('draft');
@@ -1176,3 +1177,38 @@ export default function AiDrafts() {
 }
 
 /* Szkice AI Przejrzyj i zatwierdź markAiLeadDraftConverted */
+
+export default function AiDrafts() {
+  const { access, isAdmin, isAppOwner, loading } = useWorkspace();
+  const canUseAiDraftsByPlan = Boolean(isAdmin || isAppOwner || access?.features?.lightDrafts || access?.features?.fullAi);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm" data-plan-route-loading="ai-drafts">
+          Ładowanie dostępu...
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!canUseAiDraftsByPlan) {
+    return (
+      <Layout>
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm" data-plan-route-blocker="ai-drafts" data-plan-visibility-stage32d="true">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Dostępne od planu Basic</p>
+          <h1 className="mt-2 text-2xl font-black text-slate-950">Szkice są ukryte w Twoim planie</h1>
+          <p className="mt-3 max-w-2xl text-sm text-slate-600">
+            W obecnym planie widzisz podstawowy CRM. Szkice i szybkie notatki są dostępne od planu Basic, a pełny asystent AI w planie AI.
+          </p>
+          <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
+            Zobacz plany
+          </a>
+        </div>
+      </Layout>
+    );
+  }
+
+  return <AiDraftsInner />;
+}
+

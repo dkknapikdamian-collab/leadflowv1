@@ -136,8 +136,9 @@ export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [supabaseUser] = useSupabaseSession();
-  const { workspace, hasAccess, profile, isAdmin } = useWorkspace();
+  const { workspace, hasAccess, profile, isAdmin, access } = useWorkspace();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi);
 
   const navGroups = useMemo<NavGroup[]>(() => ([
     {
@@ -162,7 +163,7 @@ export default function Layout({ children }: LayoutProps) {
     {
       caption: 'System',
       items: [
-        { icon: CheckCircle2, label: 'Szkice AI', path: '/ai-drafts' },
+        ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Szkice AI', path: '/ai-drafts' }] : []),
         { icon: AlertTriangle, label: 'Powiadomienia', path: '/notifications' },
         { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
         { icon: CheckCircle2, label: 'Pomoc', path: '/help' },
@@ -170,7 +171,7 @@ export default function Layout({ children }: LayoutProps) {
         { icon: Settings, label: 'Ustawienia', path: '/settings' },
       ],
     },
-  ]), [isAdmin]);
+  ]), [isAdmin, canUseAiDraftsByPlan]);
   const navItems = useMemo(() => navGroups.flatMap((group) => group.items), [navGroups]);
   const mobileNavItems = useMemo(
     () => [

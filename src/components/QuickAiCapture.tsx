@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Loader2, Mic, MicOff, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -75,7 +75,7 @@ type QuickAiCaptureProps = {
 };
 
 export default function QuickAiCapture({ initialText = '', openSignal = 0, draftSource = 'quick_capture' }: QuickAiCaptureProps) {
-  const { workspace, profile, workspaceReady, isAdmin } = useWorkspace();
+  const { workspace, profile, workspaceReady, isAdmin, access } = useWorkspace();
   const [open, setOpen] = useState(false);
   const [rawText, setRawText] = useState('');
   const [draft, setDraft] = useState<QuickAiCaptureDraft | null>(null);
@@ -88,6 +88,7 @@ export default function QuickAiCapture({ initialText = '', openSignal = 0, draft
   const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
   const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
   const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
+  const quickAiVisibleByPlan = Boolean(isAdmin || access?.features?.lightDrafts || access?.features?.lightParser || access?.features?.fullAi);
 
   useEffect(() => {
     setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }));
@@ -238,6 +239,8 @@ export default function QuickAiCapture({ initialText = '', openSignal = 0, draft
       setDraftLoading(false);
     }
   };
+
+  if (!quickAiVisibleByPlan) return null;
 
   return (
     <Dialog
