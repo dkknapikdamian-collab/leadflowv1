@@ -1,29 +1,37 @@
-# CloseFlow Stage02B — CaseDetail write access gate
+# Stage02B - CaseDetail write access gate
 
-Data: 2026-05-03
+Date: 2026-05-03
 Branch: dev-rollout-freeze
 
-## Cel
+## Purpose
 
-Zamknąć jedyny warning z Stage02A: `src/pages/CaseDetail.tsx` nie miał jawnego śladu access/workspace gate.
+Stage02B closes the last Stage02A warning for `src/pages/CaseDetail.tsx`.
 
-## Zakres
+The page may still read an existing case after access expiry, but write operations must be guarded by workspace access. This keeps the product behavior aligned with the access model: expired trial users can see historical data, but cannot create or mutate operational records.
 
-Dodano jawny gate w `CaseDetail`:
+## Contract
 
-- `useWorkspace()`,
+`CaseDetail.tsx` must include:
+
+- `useWorkspace()` usage,
 - `hasAccess`,
 - `access.status`,
-- lokalny `guardCaseDetailWriteAccess()`,
-- blokada operacji zapisujących po braku dostępu,
-- komunikat dla `trial_expired`: dane zostają do podglądu, ale nowe akcje są zablokowane.
+- local `guardCaseDetailWriteAccess(actionLabel)`,
+- write handlers that call the guard before mutations,
+- user-facing toast for blocked writes.
 
-## Ważne
+## Guard
 
-Odczyt sprawy zostaje dostępny. Ten etap blokuje wyłącznie akcje operatora, które tworzą lub zmieniają dane sprawy.
+The contract is checked by:
 
-## Weryfikacja
+```powershell
+npm.cmd run check:case-detail-write-access-gate-stage02b
+```
 
-- `node tests/case-detail-write-access-gate-stage02b.test.cjs`
-- `npm.cmd run check:access-billing-source-of-truth-stage02a`
-- `npm.cmd run verify:closeflow:quiet`
+The wider source-of-truth guard is checked by:
+
+```powershell
+npm.cmd run check:access-billing-source-of-truth-stage02a
+```
+
+Stage02A must report zero warnings after Stage02B.
