@@ -1,4 +1,4 @@
-import { syncGoogleCalendarOutboundInSupabase, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   EmailAuthProvider, fetchSignInMethodsForEmail, linkWithCredential, reauthenticateWithCredential, sendPasswordResetEmail, signOut, verifyBeforeUpdateEmail, } from 'firebase/auth';
 import {
@@ -348,7 +348,18 @@ useEffect(() => {
     setSyncingGoogleCalendarOutbound(true);
     setGoogleCalendarOutboundResult(null);
     try {
-      const data = await syncGoogleCalendarOutboundInSupabase({ mode: 'all', limit: 200, daysBack: 30, daysForward: 365 });
+      const response = await fetch('/api/google-calendar?route=sync-outbound', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-workspace-id': workspace.id,
+          'x-user-id': activeUserId,
+          'x-user-email': activeUserEmail,
+        },
+        body: JSON.stringify({ mode: 'all', limit: 200, daysBack: 30, daysForward: 365 }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(String(data?.error || 'GOOGLE_CALENDAR_SYNC_OUTBOUND_FAILED'));
       setGoogleCalendarOutboundResult(data as GoogleCalendarOutboundResultState);
 
       if (!data?.connected) {

@@ -123,7 +123,8 @@
     "check:google-calendar-stage11f-bom-duplicate-helper-repair": "node scripts/check-google-calendar-stage11f-bom-duplicate-helper-repair.cjs",
     "check:google-calendar-stage11h-code-parity": "node scripts/check-google-calendar-stage11h-code-parity.cjs",
     "check:google-calendar-stage11i-guard-compat": "node scripts/check-google-calendar-stage11i-guard-compat.cjs",
-    "check:google-calendar-stage12-outbound-backfill": "node scripts/check-google-calendar-stage12-outbound-backfill.cjs"
+    "check:google-calendar-stage12-outbound-backfill": "node scripts/check-google-calendar-stage12-outbound-backfill.cjs",
+    "check:google-calendar-stage12b-runtime-import-hotfix": "node scripts/check-google-calendar-stage12b-runtime-import-hotfix.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
