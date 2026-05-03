@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
@@ -54,7 +54,7 @@ const workItems = read('api/work-items.ts');
 for (const marker of [
   'function googleReminderMethodFrom',
   'function googleReminderMinutesFrom',
-  'googleReminderMethod: googleReminderMethodFrom(row, body) || null',
+  'googleReminderMethod: googleReminderMethodFrom(row, body)',
   'googleReminderMinutesBefore: googleReminderMinutesFrom(row, body)',
 ]) {
   assert(workItems.includes(marker), 'api/work-items.ts missing existing Stage 05 backend marker: ' + marker);

@@ -48,7 +48,9 @@ function googleEventIdFrom(row: any, body: any) {
   ).trim();
 }
 
-function googleReminderMethodFrom(row: any, body: any) {
+type GoogleReminderMethod = 'default' | 'popup' | 'email' | 'popup_email';
+
+function googleReminderMethodFrom(row: any, body: any): GoogleReminderMethod | null {
   const raw =
     body?.googleCalendarReminderMethod
     || body?.google_calendar_reminder_method
@@ -60,8 +62,11 @@ function googleReminderMethodFrom(row: any, body: any) {
     || row?.googleCalendarReminderMethod
     || '';
   const value = String(raw || '').trim().toLowerCase();
-  if (value === 'default' || value === 'popup' || value === 'email' || value === 'popup_email' || value === 'popup+email' || value === 'both') return value;
-  return '';
+  if (value === 'default') return 'default';
+  if (value === 'email') return 'email';
+  if (value === 'popup') return 'popup';
+  if (value === 'popup_email' || value === 'popup+email' || value === 'both') return 'popup_email';
+  return null;
 }
 
 function googleReminderMinutesFrom(row: any, body: any) {
@@ -108,7 +113,7 @@ function closeFlowEventForGoogle(row: any, body: any) {
     endAt,
     reminderAt,
     recurrenceRule: row?.recurrence ? String(row.recurrence) : body?.recurrenceRule ? String(body.recurrenceRule) : null,
-    googleReminderMethod: googleReminderMethodFrom(row, body) || null,
+    googleReminderMethod: googleReminderMethodFrom(row, body),
     googleReminderMinutesBefore: googleReminderMinutesFrom(row, body),
   };
 }
