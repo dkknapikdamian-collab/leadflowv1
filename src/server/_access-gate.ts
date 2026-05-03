@@ -1,15 +1,11 @@
 import { selectFirstAvailable } from './_supabase.js';
+import { FREE_LIMITS as PLAN_FREE_LIMITS } from '../lib/plans.js';
 
 /* A13_STATIC_CONTRACT_GUARD trial_expired free_active FREE_LIMITS */
 /* PHASE0_WORKSPACE_WRITE_ACCESS_RUNTIME_REQ_COMPAT_2026_05_03 */
 /* P0_WORKSPACE_WRITE_ACCESS_STATUS_COMPAT_2026_05_03 */
 
-export const FREE_LIMITS = {
-  activeLeads: 5,
-  activeTasks: 5,
-  activeEvents: 5,
-  activeDrafts: 3,
-} as const;
+export const FREE_LIMITS = PLAN_FREE_LIMITS;
 
 type WorkspaceAccessRow = Record<string, unknown>;
 
