@@ -10,6 +10,7 @@ import {
   verifyGoogleOAuthState,
 } from './google-calendar-sync.js';
 import { syncGoogleCalendarInbound } from './google-calendar-inbound.js';
+import { syncGoogleCalendarOutbound } from './google-calendar-outbound.js';
 
 function getUserId(req: any) {
   const raw =
@@ -87,6 +88,21 @@ export default async function handler(req: any, res: any) {
         daysBack: body.daysBack,
         daysForward: body.daysForward,
         updatedMin: body.updatedMin || null,
+      });
+      res.status(200).json(result);
+      return;
+    }
+
+    if (req.method === 'POST' && (action === 'sync-outbound' || action === 'sync-now')) {
+      // GOOGLE_CALENDAR_STAGE12_SYNC_OUTBOUND_ROUTE
+      await assertWorkspaceWriteAccess(workspaceId, req);
+      const result = await syncGoogleCalendarOutbound({
+        workspaceId,
+        userId,
+        mode: body.mode,
+        limit: body.limit,
+        daysBack: body.daysBack,
+        daysForward: body.daysForward,
       });
       res.status(200).json(result);
       return;

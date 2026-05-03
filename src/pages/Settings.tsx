@@ -1,32 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { syncGoogleCalendarOutboundInSupabase, useEffect, useMemo, useState } from 'react';
 import {
-  EmailAuthProvider,
-  fetchSignInMethodsForEmail,
-  linkWithCredential,
-  reauthenticateWithCredential,
-  sendPasswordResetEmail,
-  signOut,
-  verifyBeforeUpdateEmail,
-} from 'firebase/auth';
+  EmailAuthProvider, fetchSignInMethodsForEmail, linkWithCredential, reauthenticateWithCredential, sendPasswordResetEmail, signOut, verifyBeforeUpdateEmail, } from 'firebase/auth';
 import {
-  Bell,
-  Building2,
-  CalendarDays,
-  Database,
-  KeyRound,
-  LockKeyhole,
-  LogOut,
-  Mail,
-  MonitorCog,
-  RefreshCw,
-  Save,
-  Shield,
-  SlidersHorizontal,
-  Smartphone,
-  User,
-  Users,
-  WalletCards,
-} from 'lucide-react';
+  Bell, Building2, CalendarDays, Database, KeyRound, LockKeyhole, LogOut, Mail, MonitorCog, RefreshCw, Save, Shield, SlidersHorizontal, Smartphone, User, Users, WalletCards, } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -39,11 +15,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { useClientAuthSnapshot } from '../hooks/useClientAuthSnapshot';
 import { getConflictWarningsEnabled, setConflictWarningsEnabled as storeConflictWarningsEnabled } from '../lib/app-preferences';
 import {
-  getBrowserNotificationPermission,
-  getBrowserNotificationsEnabled,
-  setBrowserNotificationsEnabled,
-  supportsBrowserNotifications,
-} from '../lib/notifications';
+  getBrowserNotificationPermission, getBrowserNotificationsEnabled, setBrowserNotificationsEnabled, supportsBrowserNotifications, } from '../lib/notifications';
 import { updateProfileSettingsInSupabase, updateWorkspaceSettingsInSupabase } from '../lib/supabase-fallback';
 import { GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS } from '../lib/options';
 import { getGoogleCalendarReminderPreference, setGoogleCalendarReminderPreference } from '../lib/google-calendar-reminder-preferences';
@@ -94,6 +66,19 @@ type GoogleCalendarStatusState = {
     googleAccountEmail?: string;
     syncEnabled?: boolean;
   } | null;
+};
+
+type GoogleCalendarOutboundResultState = {
+  ok?: boolean;
+  connected?: boolean;
+  mode?: string;
+  connectedCalendarId?: string;
+  scanned?: number;
+  created?: number;
+  updated?: number;
+  skipped?: number;
+  failed?: number;
+  errors?: Array<{ id?: string; title?: string; error?: string }>;
 };
 
 function humanAccessStatus(status?: string | null) {
@@ -169,6 +154,8 @@ export default function Settings() {
   const [checkingGoogleCalendar, setCheckingGoogleCalendar] = useState(false);
   const [connectingGoogleCalendar, setConnectingGoogleCalendar] = useState(false);
   const [disconnectingGoogleCalendar, setDisconnectingGoogleCalendar] = useState(false);
+  const [syncingGoogleCalendarOutbound, setSyncingGoogleCalendarOutbound] = useState(false);
+  const [googleCalendarOutboundResult, setGoogleCalendarOutboundResult] = useState<GoogleCalendarOutboundResultState | null>(null);
   const [googleCalendarReminderMethod, setGoogleCalendarReminderMethod] = useState(() => getGoogleCalendarReminderPreference().method);
   const [googleCalendarReminderMinutes, setGoogleCalendarReminderMinutes] = useState(() => String(getGoogleCalendarReminderPreference().minutesBefore));
 
@@ -344,6 +331,42 @@ useEffect(() => {
       toast.error(`BĹ‚Ä…d rozĹ‚Ä…czania Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setDisconnectingGoogleCalendar(false);
+    }
+  };
+
+  const handleSyncGoogleCalendarOutbound = async () => {
+    if (!workspace?.id || !activeUserId) {
+      toast.error('Workspace albo użytkownik nie jest jeszcze gotowy. Odśwież stronę po zalogowaniu.');
+      return;
+    }
+
+    if (!canUseGoogleCalendarByPlan) {
+      toast.error('Google Calendar Sync jest dostępny dla płatnych planów.');
+      return;
+    }
+
+    setSyncingGoogleCalendarOutbound(true);
+    setGoogleCalendarOutboundResult(null);
+    try {
+      const data = await syncGoogleCalendarOutboundInSupabase({ mode: 'all', limit: 200, daysBack: 30, daysForward: 365 });
+      setGoogleCalendarOutboundResult(data as GoogleCalendarOutboundResultState);
+
+      if (!data?.connected) {
+        toast.error('Google Calendar nie jest połączony. Najpierw połącz konto Google.');
+        return;
+      }
+
+      const changed = Number(data.created || 0) + Number(data.updated || 0);
+      if (Number(data.failed || 0) > 0) {
+        toast.error('Google Calendar: ' + (data.failed || 0) + ' pozycji z błędem, ' + changed + ' zsynchronizowano.');
+      } else {
+        toast.success('Google Calendar zsynchronizowany: ' + changed + ' pozycji.');
+      }
+      await loadGoogleCalendarStatus();
+    } catch (error: any) {
+      toast.error('Błąd synchronizacji Google Calendar: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setSyncingGoogleCalendarOutbound(false);
     }
   };
 
@@ -690,6 +713,32 @@ useEffect(() => {
 
         <div className="settings-shell">
           <section className="settings-main-column">
+              <section className="settings-section-card" data-google-calendar-stage12="outbound-backfill">
+                <div className="settings-section-head">
+                  <div>
+                    <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
+                    <h2>Synchronizacja z Google</h2>
+                    <p>Zsynchronizuj istniejące zadania i wydarzenia z CloseFlow z Google Calendar. To pomaga po świeżym połączeniu konta albo po błędzie synchronizacji.</p>
+                  </div>
+                </div>
+
+                <div className="settings-action-row">
+                  <Button type="button" onClick={() => void handleSyncGoogleCalendarOutbound()} disabled={syncingGoogleCalendarOutbound || checkingGoogleCalendar || !canUseGoogleCalendarByPlan}>
+                    <RefreshCw className="h-4 w-4" />
+                    {syncingGoogleCalendarOutbound ? 'Synchronizuję...' : 'Synchronizuj teraz z Google Calendar'}
+                  </Button>
+                  <span className="settings-muted-note">
+                    CloseFlow pozostaje źródłem prawdy. Google Calendar jest zewnętrznym widokiem i kanałem powiadomień.
+                  </span>
+                </div>
+
+                {googleCalendarOutboundResult ? (
+                  <div className="settings-muted-note" data-google-calendar-stage12-result="true">
+                    Sprawdzono: {googleCalendarOutboundResult.scanned ?? 0}. Utworzono: {googleCalendarOutboundResult.created ?? 0}. Zaktualizowano: {googleCalendarOutboundResult.updated ?? 0}. Pominięto: {googleCalendarOutboundResult.skipped ?? 0}. Błędy: {googleCalendarOutboundResult.failed ?? 0}.
+                  </div>
+                ) : null}
+              </section>
+
                         <section className="settings-section-card" data-google-calendar-reminder-ui="stage06">
               <div className="settings-section-head">
                 <div>
