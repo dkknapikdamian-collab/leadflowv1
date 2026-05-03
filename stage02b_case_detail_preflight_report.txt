@@ -7,21 +7,21 @@ OK preflight found handleAddTask
 OK preflight found handleAddEvent
 OK preflight found handleAddNote
 OK preflight found handleCopyPortal
-OK inserted useWorkspace import
-OK inserted useWorkspace hook after navigate
-OK inserted guardCaseDetailWriteAccess block
-OK inserted guard in handleCopyPortal
-OK inserted guard in handleAddItem
-OK inserted guard in handleItemStatusChange
-OK inserted guard in handleDeleteItem
-OK inserted guard in handleAddTask
-OK inserted guard in handleTaskDone
+OK useWorkspace import already present
+OK CaseDetail workspace hook/guard already present
+OK guardCaseDetailWriteAccess already present
+OK handleCopyPortal already guarded
+OK handleAddItem already guarded
+OK handleItemStatusChange already guarded
+OK handleDeleteItem already guarded
+OK handleAddTask already guarded
+OK handleTaskDone already guarded
 WARN function handleTaskReschedule not found; guard not inserted
-OK inserted guard in handleAddEvent
-OK inserted guard in handleEventDone
+OK handleAddEvent already guarded
+OK handleEventDone already guarded
 WARN function handleEventReschedule not found; guard not inserted
-OK inserted guard in handleAddNote
+OK handleAddNote already guarded
 WARN function handleLifecycleAction not found; guard not inserted
 OK wrote Stage02B CaseDetail write access gate test
 OK patched package.json with Stage02B script
-OK inserted Stage02B test into quiet release gate before lead-write-access-gate
+OK quiet release gate already contains Stage02B test
