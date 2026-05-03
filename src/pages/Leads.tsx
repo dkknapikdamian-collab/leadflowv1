@@ -1,4 +1,4 @@
-﻿// LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
+// LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
 // VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
@@ -9,7 +9,7 @@ import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { consumeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 // STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Badge } from '../components/ui/badge';
@@ -198,6 +198,10 @@ export default function Leads() {
   const createLeadSubmitLockRef = useRef(false);
   const [leadSubmitting, setLeadSubmitting] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
+
+  useEffect(() => subscribeGlobalQuickAction((target) => {
+    if (target === 'lead') setIsNewLeadOpen(true);
+  }), []);
 
   useEffect(() => {
     const quickActionTarget = consumeGlobalQuickAction();
@@ -932,3 +936,5 @@ export default function Leads() {
 
 
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleQuickFilter('active') toggleValueSorting */
+
+/* GLOBAL_QUICK_ACTIONS_STAGE08D_LEAD_MODAL_EVENT_BUS */

@@ -22,10 +22,13 @@ import { useWorkspace } from '../hooks/useWorkspace';
 export type GlobalQuickActionTarget = 'lead' | 'task' | 'event';
 
 const QUICK_ACTION_STORAGE_KEY = 'closeflow:global-quick-action:v1';
+const QUICK_ACTION_EVENT = 'closeflow:global-quick-action';
 
 export function rememberGlobalQuickAction(target: GlobalQuickActionTarget) {
   if (typeof window === 'undefined') return;
   window.sessionStorage.setItem(QUICK_ACTION_STORAGE_KEY, target);
+  // GLOBAL_QUICK_ACTIONS_STAGE08D_EVENT_BUS: same-route clicks must open the modal without route remount.
+  window.dispatchEvent(new CustomEvent<GlobalQuickActionTarget>(QUICK_ACTION_EVENT, { detail: target }));
 }
 
 export function consumeGlobalQuickAction(): GlobalQuickActionTarget | null {
@@ -35,6 +38,18 @@ export function consumeGlobalQuickAction(): GlobalQuickActionTarget | null {
 
   if (value === 'lead' || value === 'task' || value === 'event') return value;
   return null;
+}
+
+export function subscribeGlobalQuickAction(listener: (target: GlobalQuickActionTarget) => void) {
+  if (typeof window === 'undefined') return () => undefined;
+
+  const handler = (event: Event) => {
+    const target = (event as CustomEvent<GlobalQuickActionTarget>).detail;
+    if (target === 'lead' || target === 'task' || target === 'event') listener(target);
+  };
+
+  window.addEventListener(QUICK_ACTION_EVENT, handler as EventListener);
+  return () => window.removeEventListener(QUICK_ACTION_EVENT, handler as EventListener);
 }
 
 export default function GlobalQuickActions() {
@@ -71,21 +86,21 @@ export default function GlobalQuickActions() {
       </Button>
 
       <Button asChild variant="outline" className="btn" data-global-quick-action="lead">
-        <Link to="/leads" aria-label="Otwórz leady lub dodaj leada" onClick={() => rememberGlobalQuickAction('lead')}>
+        <Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() => rememberGlobalQuickAction('lead')}>
           <Plus className="mr-2 h-4 w-4" />
           Lead
         </Link>
       </Button>
 
       <Button asChild variant="outline" className="btn" data-global-quick-action="task">
-        <Link to="/tasks" aria-label="Otwórz zadania lub dodaj zadanie" onClick={() => rememberGlobalQuickAction('task')}>
+        <Link to="/tasks?quick=task" aria-label="Otwórz zadania lub dodaj zadanie" onClick={() => rememberGlobalQuickAction('task')}>
           <Plus className="mr-2 h-4 w-4" />
           Zadanie
         </Link>
       </Button>
 
       <Button asChild variant="outline" className="btn" data-global-quick-action="event">
-        <Link to="/calendar" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() => rememberGlobalQuickAction('event')}>
+        <Link to="/calendar?quick=event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() => rememberGlobalQuickAction('event')}>
           <Plus className="mr-2 h-4 w-4" />
           Wydarzenie
         </Link>
@@ -111,3 +126,5 @@ to="/calendar"
 /* PHASE0_AI_ASSISTANT_GLOBAL_TOOLBAR_LAST7 GlobalAiAssistant data-global-quick-actions-contract */
 
 /* PHASE0_GLOBAL_QUICK_ACTIONS_AI_FINAL4 GlobalAiAssistant data-global-quick-actions-contract */
+
+/* GLOBAL_QUICK_ACTIONS_STAGE08D_SAME_ROUTE_MODAL_FIX to="/leads?quick=lead" to="/tasks?quick=task" to="/calendar?quick=event" subscribeGlobalQuickAction */

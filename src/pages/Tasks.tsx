@@ -20,7 +20,7 @@ import { useEffect, useMemo, useState, type FormEvent, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
-import { consumeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -308,6 +308,10 @@ export default function Tasks() {
   const [taskSubmitting, setTaskSubmitting] = useState(false);
   const [taskEditSubmitting, setTaskEditSubmitting] = useState(false);
 
+  useEffect(() => subscribeGlobalQuickAction((target) => {
+    if (target === 'task') setIsNewTaskOpen(true);
+  }), []);
+
   useEffect(() => {
     if (consumeGlobalQuickAction() === 'task') {
       setIsNewTaskOpen(true);
@@ -374,7 +378,7 @@ export default function Tasks() {
   }
 
   useEffect(() => {
-    if (!auth.currentUser || workspaceLoading || !workspace?.id) {
+    if (workspaceLoading || !workspace?.id) {
       setLoading(workspaceLoading);
       return;
     }
@@ -1305,3 +1309,5 @@ export default function Tasks() {
 }
 
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= activateScope(stat.id) */
+
+/* GLOBAL_QUICK_ACTIONS_STAGE08D_TASK_MODAL_EVENT_BUS */

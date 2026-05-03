@@ -438,12 +438,9 @@ export default async function handler(req: any, res: any) {
         );
       }
 
-      if (kind === 'events') {
-
-
+      if (kind === 'events' || kind === 'tasks') {
+        // GOOGLE_CALENDAR_STAGE08D_TASK_EVENT_UPDATE_SYNC
         await syncGoogleCalendarEventAfterMutation({ action: 'update', req, workspaceId, row: updatedRow as any, body });
-
-
       }
 
 
@@ -464,7 +461,8 @@ export default async function handler(req: any, res: any) {
       }
 
       const currentRow = await requireScopedRow('work_items', id, workspaceId, kind === 'events' ? 'EVENT_NOT_FOUND' : 'TASK_NOT_FOUND');
-      if (kind === 'events') {
+      if (kind === 'events' || kind === 'tasks') {
+        // GOOGLE_CALENDAR_STAGE08D_TASK_EVENT_DELETE_SYNC
         await syncGoogleCalendarEventAfterMutation({ action: 'delete', req, workspaceId, row: currentRow, body: { ...body, id } });
       }
       if (currentRow?.lead_id) await clearLeadNextActionIfCurrent(currentRow.lead_id, id, workspaceId);
@@ -523,6 +521,8 @@ export default async function handler(req: any, res: any) {
       const result = await insertWithVariants(['work_items'], [payload]);
       const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
       if (body.leadId) await syncLeadNextAction(body.leadId, { id: (inserted as any).id, title: body.title, scheduledAt }, finalWorkspaceId);
+      // GOOGLE_CALENDAR_STAGE08D_TASK_CREATE_SYNC
+      await syncGoogleCalendarEventAfterMutation({ action: 'create', req, workspaceId: finalWorkspaceId, row: inserted as any, body });
       res.status(200).json(normalizeTask(inserted));
       return;
     }

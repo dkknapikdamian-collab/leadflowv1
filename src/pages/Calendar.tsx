@@ -2,7 +2,7 @@ import { useState, useEffect, FormEvent, useMemo, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
-import { consumeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
@@ -416,7 +416,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
 
 export default function Calendar() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [calendarView, setCalendarView] = useState<CalendarView>('week');
@@ -471,12 +471,40 @@ export default function Calendar() {
     if (action === 'task') setIsNewTaskOpen(true);
   }, []);
 
+  useEffect(() => subscribeGlobalQuickAction((target) => {
+    if (target === 'event') setIsNewEventOpen(true);
+    if (target === 'task') setIsNewTaskOpen(true);
+  }), []);
+
+
+  useEffect(() => {
+    const quick = searchParams.get('quick');
+    // GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_QUERY_FIX
+    if (quick === 'event') setIsNewEventOpen(true);
+    if (quick === 'task') setIsNewTaskOpen(true);
+  }, [searchParams]);
+
   useEffect(() => {
     const forcedCalendarView = searchParams.get('view');
     if (forcedCalendarView === 'week' || forcedCalendarView === 'month') {
       setCalendarView(forcedCalendarView);
     }
   }, [searchParams]);
+
+  // GOOGLE_CALENDAR_STAGE08C_CALENDAR_QUICK_PARAM_OPEN
+  // Globalny pasek jest jedynym miejscem dodawania zadań i wydarzeń.
+  // Parametr quick musi działać także wtedy, gdy użytkownik jest już na /calendar.
+  useEffect(() => {
+    const quick = searchParams.get('quick');
+    if (quick !== 'event' && quick !== 'task') return;
+
+    if (quick === 'event') setIsNewEventOpen(true);
+    if (quick === 'task') setIsNewTaskOpen(true);
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -519,7 +547,7 @@ export default function Calendar() {
   }
 
   useEffect(() => {
-    if (!auth.currentUser || workspaceLoading || !workspace?.id) {
+    if (workspaceLoading || !workspace?.id) {
       setLoading(workspaceLoading);
       return;
     }
@@ -704,7 +732,7 @@ export default function Calendar() {
       setIsNewTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
+      toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');
     } finally {
       createTaskSubmitLockRef.current = false;
       setTaskSubmitting(false);
@@ -1794,3 +1822,5 @@ export default function Calendar() {
   );
 }
 
+
+/* CALENDAR_STAGE08D_NO_FIREBASE_BOOT_BLOCK GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_MODAL_EVENT_BUS */

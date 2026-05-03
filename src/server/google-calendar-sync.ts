@@ -217,15 +217,38 @@ export async function refreshGoogleCalendarAccessToken(connection: GoogleCalenda
 }
 
 export async function getGoogleCalendarConnection(workspaceId: string, userId?: string) {
-  const filter = [
-    `workspace_id=eq.${encodeURIComponent(workspaceId)}`,
-    userId ? `user_id=eq.${encodeURIComponent(userId)}` : '',
-    'disconnected_at=is.null',
-    'select=*',
-    'limit=1',
-  ].filter(Boolean).join('&');
-  const rows = await supabaseRequest(`google_calendar_connections?${filter}`, { method: 'GET' });
-  return Array.isArray(rows) && rows[0] ? rows[0] as GoogleCalendarConnection : null;
+  // GOOGLE_CALENDAR_STAGE08D_WORKSPACE_CONNECTION_FALLBACK
+  // Runtime writes may arrive with a Supabase profile id while the OAuth state stored a different legacy uid.
+  // First try the exact user connection, then safely fall back to the active workspace connection.
+  const filters = [
+    userId ? [
+      `workspace_id=eq.${encodeURIComponent(workspaceId)}`,
+      `user_id=eq.${encodeURIComponent(userId)}`,
+      'disconnected_at=is.null',
+      'select=*',
+      'limit=1',
+    ].join('&') : '',
+    [
+      `workspace_id=eq.${encodeURIComponent(workspaceId)}`,
+      'disconnected_at=is.null',
+      'sync_enabled=eq.true',
+      'select=*',
+      'limit=1',
+    ].join('&'),
+    [
+      `workspace_id=eq.${encodeURIComponent(workspaceId)}`,
+      'disconnected_at=is.null',
+      'select=*',
+      'limit=1',
+    ].join('&'),
+  ].filter(Boolean);
+
+  for (const filter of filters) {
+    const rows = await supabaseRequest(`google_calendar_connections?${filter}`, { method: 'GET' });
+    if (Array.isArray(rows) && rows[0]) return rows[0] as GoogleCalendarConnection;
+  }
+
+  return null;
 }
 
 export async function upsertGoogleCalendarConnection(input: {
