@@ -134,7 +134,9 @@
     "audit:stage02-access-release-evidence": "node scripts/print-stage02-access-release-evidence.cjs",
     "check:stage02-access-billing-release-evidence": "node tests/stage02-access-billing-release-evidence.test.cjs",
     "check:stage03a-api-schema-contract": "node scripts/check-stage03a-api-schema-contract.cjs",
-    "test:stage03a-api-schema-contract": "node --test tests/stage03a-api-schema-contract.test.cjs"
+    "test:stage03a-api-schema-contract": "node --test tests/stage03a-api-schema-contract.test.cjs",
+    "check:ui-developer-copy-paid-readiness": "node scripts/check-ui-developer-copy-paid-readiness.cjs",
+    "test:ui-developer-copy-paid-readiness": "node --test tests/ui-developer-copy-paid-readiness.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

@@ -1596,7 +1596,7 @@ export default function Calendar() {
             <section className="right-card calendar-week-plan">
               <div className="panel-head">
                 <h3>Plan najbliższych dni</h3>
-                <p>Układ osi czasu jest szybszy niż ciężka siatka.</p>
+                <p>Oś czasu pokazuje ostatnie działania w czytelnej kolejności.</p>
               </div>
 
               <div className="calendar-week-plan-list">
