@@ -1,0 +1,644 @@
+{
+  "generatedAt": "2026-05-03T17:20:44.468Z",
+  "changedFiles": [],
+  "mojibakeBeforeRepair": [
+    {
+      "file": "scripts/check-a13-critical-regressions.cjs",
+      "line": 183,
+      "text": "reject('src/pages/Templates.tsx', /Dost\u00c4|\u0139|\u0102|\u00e2\u20ac/, 'Templates.tsx contains mojibake');"
+    },
+    {
+      "file": "scripts/check-a13-critical-regressions.cjs",
+      "line": 184,
+      "text": "reject('src/pages/ResponseTemplates.tsx', /Dost\u00c4|\u0139|\u0102|\u00e2\u20ac/, 'ResponseTemplates.tsx contains mojibake');"
+    },
+    {
+      "file": "scripts/check-a27g-response-template-encoding.cjs",
+      "line": 84,
+      "text": "'\u0139',"
+    },
+    {
+      "file": "scripts/check-a27g-response-template-encoding.cjs",
+      "line": 85,
+      "text": "'\u00c4',"
+    },
+    {
+      "file": "scripts/check-a27g-response-template-encoding.cjs",
+      "line": 86,
+      "text": "'\u0102',"
+    },
+    {
+      "file": "scripts/check-closeflow-cumulative-next-stages.cjs",
+      "line": 22,
+      "text": "mustNot(rel, /\u00c4|\u0139|\u00c5|\u00c3/, 'mojibake');"
+    },
+    {
+      "file": "scripts/check-polish-mojibake.cjs",
+      "line": 30,
+      "text": "// Generated diagnostics may quote raw guard regexes such as \u00c4|\u0139|\u0102."
+    },
+    {
+      "file": "scripts/sanitize-polish-text-reports.cjs",
+      "line": 8,
+      "text": "return value.replace(/[\u00c4\u0139\u0102\u00c5\u00c3]/g, function (ch) {"
+    },
+    {
+      "file": "tests/ai-draft-relation-picker-stage24.test.cjs",
+      "line": 46,
+      "text": "for (const marker of ['\u00c4', '\u00c5', '\u00c3', '\u0139']) {"
+    }
+  ],
+  "asciiPolishSuspects": [
+    {
+      "file": "docs/A14_CALENDAR_TYPES_FINAL_HOTFIX_2026-05-01.md",
+      "line": 16,
+      "text": "- Nie wlaczono `strict: true`."
+    },
+    {
+      "file": "docs/architecture/VERCEL_HOBBY_API_FUNCTION_BUDGET_RULE_2026-05-03.md",
+      "line": 26,
+      "text": "Typowy blad:"
+    },
+    {
+      "file": "docs/BILLING_FOUNDATION_TEST_POLISH_LABEL_FIX_2026-04-26.md",
+      "line": 9,
+      "text": "`Przejdz do platnosci`"
+    },
+    {
+      "file": "docs/BILLING_STRIPE_BLIK_FOUNDATION_2026-04-25.md",
+      "line": 11,
+      "text": "BLIK w Stripe jest platnoscia jednorazowa, nie automatyczna subskrypcja. Dlatego model V1 to:"
+    },
+    {
+      "file": "docs/BILLING_STRIPE_BLIK_FOUNDATION_2026-04-25.md",
+      "line": 13,
+      "text": "- platnosc za 30 dni dostepu,"
+    },
+    {
+      "file": "docs/BILLING_STRIPE_BLIK_FOUNDATION_2026-04-25.md",
+      "line": 49,
+      "text": "W Stripe trzeba wlaczyc BLIK jako metode platnosci oraz miec konto zdolne do obslugi platnosci w PLN."
+    },
+    {
+      "file": "docs/BILLING_STRIPE_BLIK_FOUNDATION_2026-04-25.md",
+      "line": 67,
+      "text": "- klikniecie platnosci tworzy Stripe Checkout,"
+    },
+    {
+      "file": "docs/BILLING_STRIPE_BLIK_MULTI_PLAN_PRICING_2026-04-25.md",
+      "line": 17,
+      "text": "BLIK w Stripe traktujemy jako platnosc jednorazowa."
+    },
+    {
+      "file": "docs/BILLING_STRIPE_BLIK_VERCEL_API_TYPE_FIX_2026-04-25.md",
+      "line": 7,
+      "text": "Vercel build przeszedl frontend Vite, ale pozniej TypeScript dla API route pokazal bledy w api/billing-checkout.ts."
+    },
+    {
+      "file": "docs/CLIENT_DETAIL_OPERATIONAL_TEST_ENCODING_FIX_2026-04-24.md",
+      "line": 17,
+      "text": "- verify:closeflow:quiet moze przejsc bez falszywego bledu kodowania."
+    },
+    {
+      "file": "docs/DAILY_DIGEST_DIAGNOSTICS_2026-04-25.md",
+      "line": 7,
+      "text": "Domknac etap daily digest tak, zeby operator widzial w ustawieniach czy backend jest gotowy do wysylki maili."
+    },
+    {
+      "file": "docs/DAILY_DIGEST_DIAGNOSTICS_2026-04-25.md",
+      "line": 12,
+      "text": "- przycisk Sprawdz konfiguracje w Ustawieniach,"
+    },
+    {
+      "file": "docs/DAILY_DIGEST_DIAGNOSTICS_2026-04-25.md",
+      "line": 20,
+      "text": "Sam przycisk wysylki testowej nie tlumaczy, czego brakuje. Diagnostyka pokazuje od razu czy problem jest po stronie ENV Vercel, odbiorcy albo workspace."
+    },
+    {
+      "file": "docs/DAILY_DIGEST_DIAGNOSTICS_2026-04-25.md",
+      "line": 31,
+      "text": "- w ustawieniach digestu widac Sprawdz konfiguracje,"
+    },
+    {
+      "file": "docs/EMAIL_DIGEST_DOMAIN_GATE_2026-04-25.md",
+      "line": 18,
+      "text": "Resend bez zweryfikowanej domeny pozwala wysylac tylko na adres wlasciciela konta. Pokazywanie tej opcji zwyklemu uzytkownikowi powoduje blad i zamieszanie."
+    },
+    {
+      "file": "docs/integrations/GOOGLE_CALENDAR_OAUTH_SETUP_2026-05-03.md",
+      "line": 50,
+      "text": "- gotowosc do polaczenia,"
+    },
+    {
+      "file": "docs/integrations/GOOGLE_CALENDAR_OAUTH_SETUP_2026-05-03.md",
+      "line": 51,
+      "text": "- polaczenie aktywne,"
+    },
+    {
+      "file": "docs/integrations/GOOGLE_CALENDAR_OAUTH_SETUP_2026-05-03.md",
+      "line": 54,
+      "text": "## Typowy blad"
+    },
+    {
+      "file": "docs/integrations/GOOGLE_CALENDAR_SYNC_V1_SCOPE_2026-05-03.md",
+      "line": 13,
+      "text": "1. Uzytkownik laczy konto Google w ustawieniach."
+    },
+    {
+      "file": "docs/integrations/GOOGLE_CALENDAR_SYNC_V1_SCOPE_2026-05-03.md",
+      "line": 28,
+      "text": "Funkcja ma byc dostepna w kazdym planie platnym."
+    },
+    {
+      "file": "docs/integrations/GOOGLE_CALENDAR_SYNC_V1_SCOPE_2026-05-03.md",
+      "line": 35,
+      "text": "- Sa limity projektu Google Cloud oraz limity per uzytkownik."
+    },
+    {
+      "file": "docs/POLISH_MOJIBAKE_FULL_AUDIT_AND_STRIPE_URL_FIX_2026-04-25.md",
+      "line": 28,
+      "text": "- Stripe Checkout nie wyrzuca bledu Invalid URL"
+    },
+    {
+      "file": "docs/POLISH_MOJIBAKE_SELF_SCAN_FIX_V2_2026-04-25.md",
+      "line": 13,
+      "text": "- skaner i test nie oznaczaja juz samych siebie jako blednych"
+    },
+    {
+      "file": "docs/POLISH_UI_TEXT_GLOBAL_REPAIR_STAGE01.md",
+      "line": 11,
+      "text": "Ważne: brak polskich znaków typu `uzytkownik` jest raportowany, ale nie jest ślepo zamieniany globalnie, bo może występować w identyfikatorach, kluczach, ścieżkach lub danych technicznych."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_2026-05-03.md",
+      "line": 11,
+      "text": "Gdy istnieje aktywne polaczenie Google Calendar dla workspace/uzytkownika:"
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_2026-05-03.md",
+      "line": 23,
+      "text": "- zapis eventu w CloseFlow nie moze pasc tylko dlatego, ze Google API ma blad,"
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_2026-05-03.md",
+      "line": 24,
+      "text": "- blad Google jest zapisywany w `google_calendar_sync_status = failed`,"
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_2026-05-03.md",
+      "line": 25,
+      "text": "- szczegol bledu trafia do `google_calendar_sync_error`,"
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_2026-05-03.md",
+      "line": 48,
+      "text": "Wtedy dodamy panel w ustawieniach, status polaczenia, connect/disconnect i informacje o wymaganych ENV."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE03_SETTINGS_UI_CONNECT_2026-05-03.md",
+      "line": 42,
+      "text": "- Nie wlacza Google Calendar jako bezwarunkowo aktywnej funkcji w UI/billing copy."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md",
+      "line": 65,
+      "text": "2. Wlacz Google Calendar API."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md",
+      "line": 85,
+      "text": "1. Zaloguj sie jako admin albo uzytkownik platnego planu."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md",
+      "line": 104,
+      "text": "W Supabase sprawdz:"
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md",
+      "line": 130,
+      "text": "- `google_calendar_connections` ma aktywne polaczenie,"
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md",
+      "line": 134,
+      "text": "- zwykly uzytkownik bez platnego planu nie ma aktywnego syncu."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md",
+      "line": 141,
+      "text": "- Nie wlaczamy tej funkcji dla Free jako aktywnej funkcji platnej."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_MANUAL_SMOKE_EVIDENCE_2026-05-03.md",
+      "line": 41,
+      "text": "- Google Calendar API wlaczone:"
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_MANUAL_SMOKE_EVIDENCE_2026-05-03.md",
+      "line": 65,
+      "text": "| Zwykly user bez planu platnego nie ma aktywnego sync |  |  |"
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md",
+      "line": 45,
+      "text": "6. Supabase zapisuje aktywne polaczenie w `google_calendar_connections`."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md",
+      "line": 49,
+      "text": "10. Wybor przypomnienia z Ustawien jest widoczny w Google Calendar."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md",
+      "line": 51,
+      "text": "12. Zwykly uzytkownik bez planu platnego nie ma aktywnego Google sync."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md",
+      "line": 68,
+      "text": "6. Po powrocie sprawdz status `connected`."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md",
+      "line": 71,
+      "text": "9. Sprawdz w Google Calendar, czy event istnieje."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md",
+      "line": 73,
+      "text": "11. Sprawdz w Google Calendar, czy tytul sie zmienil."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md",
+      "line": 75,
+      "text": "13. Sprawdz w Google Calendar, czy event zniknal albo jest anulowany."
+    },
+    {
+      "file": "docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md",
+      "line": 77,
+      "text": "15. Sprawdz w Supabase `google_calendar_connections`, czy `disconnected_at` zostalo ustawione."
+    },
+    {
+      "file": "docs/REQUEST_IDENTITY_VERCEL_API_SIGNATURE_FIX_2026-04-25.md",
+      "line": 7,
+      "text": "Vercel typecheck pokazal bledy:"
+    },
+    {
+      "file": "docs/REQUEST_SCOPE_SERVER_HELPER_FIX_2026-04-25.md",
+      "line": 11,
+      "text": "a plik src/server/_request-scope.ts nie istnial. To powodowalo bledy TypeScript na Vercel i pozniej FUNCTION_INVOCATION_FAILED przy odczycie planu dnia."
+    },
+    {
+      "file": "docs/roadmap/closeflow_phase0_runtime_api_workspace_headers_fix_2026-05-02.md",
+      "line": 9,
+      "text": "Frontend wysylal glownie Authorization, ale nie dosylal stalego kontekstu workspace i snapshotu uzytkownika do endpointow GET. Endpointy serwerowe wymagaly workspace_id do filtrowania danych. Bez niego zwracaly AUTH_WORKSPACE_REQUIRED albo "
+    },
+    {
+      "file": "docs/roadmap/closeflow_phase0_runtime_api_workspace_headers_fix_2026-05-02.md",
+      "line": 19,
+      "text": "## Po wdrozeniu sprawdz"
+    },
+    {
+      "file": "docs/roadmap/closeflow_phase0_runtime_api_workspace_headers_fix_2026-05-02.md",
+      "line": 23,
+      "text": "3. W DevTools Network sprawdz, czy /api/leads, /api/cases, /api/tasks, /api/events i /api/system?kind=ai-drafts nie zwracaja 401/500."
+    },
+    {
+      "file": "docs/roadmap/closeflow_phase0_runtime_api_workspace_headers_fix_2026-05-02.md",
+      "line": 24,
+      "text": "4. Odswiez strone i sprawdz, czy dane zostaja."
+    },
+    {
+      "file": "docs/STAGE20_BILLING_AND_TEST_CONTRACT_FINAL_FIX_2026-04-28.md",
+      "line": 6,
+      "text": "- test Stage18 mial bledny zapis regexu i nie parsowal sie w Node/TypeScript."
+    },
+    {
+      "file": "docs/STAGE20_BILLING_AND_TEST_CONTRACT_FINAL_FIX_2026-04-28.md",
+      "line": 8,
+      "text": "Nie zmienia logiki platnosci. Nie wykonuje SQL. Nie usuwa Stripe."
+    },
+    {
+      "file": "docs/STAGE21_BILLING_LABEL_COMPAT_2026-04-28.md",
+      "line": 9,
+      "text": "- nie zmienia logiki platnosci, Stripe ani planow."
+    },
+    {
+      "file": "docs/STAGE21_BILLING_LABEL_COMPAT_2026-04-28.md",
+      "line": 11,
+      "text": "Po wdrozeniu sprawdz:"
+    },
+    {
+      "file": "docs/STAGE22_BILLING_ERROR_LABEL_FIX_2026-04-28.md",
+      "line": 6,
+      "text": "- komunikat bledu checkoutu wraca do formy `Stripe/BLIK`, ktorej wymagaja istniejace testy release gate,"
+    },
+    {
+      "file": "docs/STAGE22_BILLING_ERROR_LABEL_FIX_2026-04-28.md",
+      "line": 7,
+      "text": "- widoczna etykieta `Platnosc karta lub BLIK` pozostaje zachowana,"
+    },
+    {
+      "file": "docs/STAGE22_BILLING_ERROR_LABEL_FIX_2026-04-28.md",
+      "line": 8,
+      "text": "- logika platnosci i integracja Stripe nie sa ruszane."
+    },
+    {
+      "file": "docs/STAGE22_BILLING_ERROR_LABEL_FIX_2026-04-28.md",
+      "line": 10,
+      "text": "Po wdrozeniu sprawdz:"
+    },
+    {
+      "file": "docs/STAGE23_MOJIBAKE_TEST_MARKER_FIX_2026-04-28.md",
+      "line": 5,
+      "text": "Po Stage 22 aplikacja przechodzila build i test Stage 22, ale `verify:closeflow:quiet` zatrzymywal sie na audycie kodowania. Problem nie byl w UI ani logice aplikacji. Czesc testow zawierala literalne znaki-marker uzywane do wykrywania bled"
+    },
+    {
+      "file": "docs/STAGE23_MOJIBAKE_TEST_MARKER_FIX_2026-04-28.md",
+      "line": 18,
+      "text": "## Po wdrozeniu sprawdz"
+    },
+    {
+      "file": "docs/STAGE25_CLIENT_EDIT_SAVE_AND_MULTI_CONTACT_2026-04-28.md",
+      "line": 28,
+      "text": "## Po wdrozeniu sprawdz"
+    },
+    {
+      "file": "docs/STAGE25_CLIENT_EDIT_SAVE_AND_MULTI_CONTACT_2026-04-28.md",
+      "line": 41,
+      "text": "- Uzytkownik moze dodac kilka emaili i kilka telefonow bez wpisywania technicznych ID."
+    },
+    {
+      "file": "docs/STAGE29A_TODAY_AI_DRAFTS_TEST_QUOTE_HOTFIX_2026-04-28.md",
+      "line": 4,
+      "text": "Naprawa bledu skladni w tescie tests/today-ai-drafts-tile-stage29.test.cjs po Stage29."
+    },
+    {
+      "file": "docs/STAGE_A19V3_ADMIN_GUARD_COMPLETION.md",
+      "line": 39,
+      "text": "5. Zwykly uzytkownik bez roli admin nie powinien widziec ani uzywac narzedzi admin-only."
+    },
+    {
+      "file": "docs/STAGE_A20B_API_RUNTIME_IMPORT_HOTFIX.md",
+      "line": 5,
+      "text": "Naprawic produkcyjny blad 500 / FUNCTION_INVOCATION_FAILED po A20."
+    },
+    {
+      "file": "docs/STAGE_A20B_API_RUNTIME_IMPORT_HOTFIX.md",
+      "line": 25,
+      "text": "1. Po deployu odswiez aplikacje."
+    },
+    {
+      "file": "docs/STAGE_A20B_API_RUNTIME_IMPORT_HOTFIX.md",
+      "line": 26,
+      "text": "2. Sprawdz, czy `/api/leads`, `/api/cases` i `/api/clients` nie zwracaja juz 500."
+    },
+    {
+      "file": "docs/STAGE_A20B_API_RUNTIME_IMPORT_HOTFIX.md",
+      "line": 27,
+      "text": "3. Sprawdz ekran Dzis, Leady, Klienci i Sprawy."
+    },
+    {
+      "file": "docs/STAGE_A20D3_SIDEBAR_POINTER_ROUTER_FIX.md",
+      "line": 5,
+      "text": "Domknac blad, w ktorym ekran Dzis blokowal pierwsza grupe nawigacji w lewym menu. CSS z A20c nie wystarczyl, wiec poprawka idzie w shellu aplikacji."
+    },
+    {
+      "file": "docs/STAGE_A20D3_SIDEBAR_POINTER_ROUTER_FIX.md",
+      "line": 33,
+      "text": "9. Sprawdz, czy Zadania nadal dzialaja."
+    },
+    {
+      "file": "docs/STAGE_A25E_LEAD_DETAIL_NULL_STATUS_HOTFIX.md",
+      "line": 5,
+      "text": "Naprawia crash przy otwieraniu szczegolow leada:"
+    },
+    {
+      "file": "docs/STRIPE_CHECKOUT_APP_URL_SCHEME_FIX_V2_2026-04-25.md",
+      "line": 7,
+      "text": "Stripe/BLIK checkout zwracal blad:"
+    },
+    {
+      "file": "docs/STRIPE_CHECKOUT_APP_URL_SCHEME_FIX_V2_2026-04-25.md",
+      "line": 23,
+      "text": "- Stripe checkout nie zwraca bledu Invalid URL"
+    },
+    {
+      "file": "docs/TODO_DIGEST_MAIL_PROVIDER_ENV.md",
+      "line": 1,
+      "text": "# TODO: mail provider / digest env przed realna wysylka"
+    },
+    {
+      "file": "docs/TODO_DIGEST_MAIL_PROVIDER_ENV.md",
+      "line": 12,
+      "text": "Przed pierwszym realnym testem wysylki digestu ustawic:"
+    },
+    {
+      "file": "docs/TODO_DIGEST_MAIL_PROVIDER_ENV.md",
+      "line": 27,
+      "text": "- Dopiero gdy bedziemy gotowi na realna wysylke e-maili."
+    },
+    {
+      "file": "docs/TODO_DIGEST_MAIL_PROVIDER_ENV.md",
+      "line": 69,
+      "text": "5. Kliknac `Sprawdz konfiguracje`."
+    },
+    {
+      "file": "docs/TODO_DIGEST_MAIL_PROVIDER_ENV.md",
+      "line": 76,
+      "text": "- Diagnostyka digestu pokazuje gotowosc wysylki."
+    },
+    {
+      "file": "docs/VERCEL_HOBBY_DAILY_DIGEST_CRON_FIX_2026-04-25.md",
+      "line": 7,
+      "text": "Deploy na Vercel Hobby padal z bledem:"
+    },
+    {
+      "file": "docs/VISUAL_STAGE22_LEADS_FINAL_LOCK_2026-04-29.md",
+      "line": 31,
+      "text": "| Metryka Wartosc | `StatShortcutCard` | `grid-5` / `metric` | Tak | Klik nadal wlacza sortowanie po wartosci. |"
+    },
+    {
+      "file": "docs/VISUAL_STAGE23_LEADS_HTML_PARITY_FIX_2026-04-29.md",
+      "line": 28,
+      "text": "| Link do szczegolu leada | `/leads/:id` | klik w rekord | Tak | Routing bez zmian. |"
+    },
+    {
+      "file": "scripts/check-faza1-etap11-ui-copy-legal-truth.cjs",
+      "line": 51,
+      "text": "for (const bad of ['Sprawdz konfiguracje', 'Wyslij test teraz', 'dziala raz dziennie', 'wysylki']) {"
+    },
+    {
+      "file": "scripts/check-p14-ui-truth-copy-menu.cjs",
+      "line": 39,
+      "text": "for (const bad of ['Sprawdz konfiguracje', 'Wyslij test teraz', 'dziala raz dziennie']) {"
+    },
+    {
+      "file": "scripts/check-ui-truth-claims.cjs",
+      "line": 116,
+      "text": "for (const bad of ['Sprawdz konfiguracje', 'Wyslij test teraz', 'dziala raz dziennie', 'wysylki']) {"
+    },
+    {
+      "file": "scripts/mojibake-markers.cjs",
+      "line": 17,
+      "text": "blad: cp(66, 313, 8218, 196, 8230, 100),"
+    },
+    {
+      "file": "scripts/mojibake-markers.cjs",
+      "line": 19,
+      "text": "zrodlo: cp(197, 185, 114, 258, 322, 100, 322, 111),"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 127,
+      "text": "headline: 'Platnosc wymaga reakcji',"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 128,
+      "text": "description: 'Oplacony okres dostepu minal. Mozesz dalej przegladac dane, ale tworzenie i edycja rekordow sa zablokowane do czasu odnowienia platnosci.',"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 129,
+      "text": "badgeLabel: 'Platnosc wymagana',"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 130,
+      "text": "sidebarLabel: 'Platnosc wymagana',"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 162,
+      "text": "headline: 'Platnosc wymaga reakcji',"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 164,
+      "text": "badgeLabel: 'Platnosc nieudana',"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 165,
+      "text": "sidebarLabel: 'Platnosc nieudana',"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 180,
+      "text": "headline: 'Plan jest wylaczony',"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 182,
+      "text": "badgeLabel: 'Plan wylaczony',"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 183,
+      "text": "sidebarLabel: 'Plan wylaczony',"
+    },
+    {
+      "file": "src/lib/ai-direct-write-guard.ts",
+      "line": 31,
+      "text": "const TASK_ACTION_WORDS = /\\b(oddzwonic|oddzwonić|zadzwonic|zadzwonić|wyslac|wysłać|napisac|napisać|przypomniec|przypomnieć|sprawdzic|sprawdzić|zrobic|zrobić|wysylka|wysyłka)\\b/u;"
+    },
+    {
+      "file": "src/lib/domain-statuses.ts",
+      "line": 279,
+      "text": "failed: 'Blad',"
+    },
+    {
+      "file": "src/lib/domain-statuses.ts",
+      "line": 287,
+      "text": "paid_active: 'Platny aktywny',"
+    },
+    {
+      "file": "src/lib/domain-statuses.ts",
+      "line": 288,
+      "text": "payment_failed: 'Platnosc nieudana',"
+    },
+    {
+      "file": "src/lib/domain-statuses.ts",
+      "line": 294,
+      "text": "awaiting_payment: 'Czeka na platnosc',"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1194,
+      "text": "<span>Zrodlo: {sourceLabel(lead.source)}</span>"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1277,
+      "text": "<InfoLine icon={Target} label=\"Zrodlo\" value={sourceLabel(lead.source)} />"
+    },
+    {
+      "file": "src/server/ai-capture.ts",
+      "line": 61,
+      "text": "'sprawdz',"
+    },
+    {
+      "file": "src/server/ai-config.ts",
+      "line": 76,
+      "text": "'Gdy AI jest wylaczone albo provider nie dziala, Quick Lead Capture ma uzyc parsera regulowego.',"
+    },
+    {
+      "file": "src/styles/visual-stage10-notifications-vnext.css",
+      "line": 880,
+      "text": ".notifications-vnext-page [aria-label=\"Panel powiadomien\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage10-notifications-vnext.css",
+      "line": 890,
+      "text": ".notifications-vnext-page [aria-label=\"Panel powiadomien\"]::before,"
+    },
+    {
+      "file": "src/styles/visual-stage10-notifications-vnext.css",
+      "line": 891,
+      "text": ".notifications-vnext-page [aria-label=\"Panel powiadomien\"]::after,"
+    },
+    {
+      "file": "tests/billing-foundation-test-polish-label-regression.test.cjs",
+      "line": 17,
+      "text": "assert.doesNotMatch(foundationTest, /Przejdz do platnosci/);"
+    },
+    {
+      "file": "tests/billing-foundation-test-polish-label-regression.test.cjs",
+      "line": 20,
+      "text": "assert.doesNotMatch(billing, /Przejdz do platnosci/);"
+    },
+    {
+      "file": "tests/billing-ui-polish-and-diagnostics.test.cjs",
+      "line": 28,
+      "text": "assert.doesNotMatch(source, /Platnosc/);"
+    },
+    {
+      "file": "tests/billing-ui-polish-and-diagnostics.test.cjs",
+      "line": 29,
+      "text": "assert.doesNotMatch(source, /Przejdz do platnosci/);"
+    },
+    {
+      "file": "tests/billing-ui-polish-and-diagnostics.test.cjs",
+      "line": 31,
+      "text": "assert.doesNotMatch(source, /Blad uruchamiania platnosci/);"
+    },
+    {
+      "file": "tests/daily-digest-diagnostics.test.cjs",
+      "line": 28,
+      "text": "assert.match(settings, /Sprawdz konfiguracje/);"
+    },
+    {
+      "file": "tests/daily-digest-diagnostics.test.cjs",
+      "line": 29,
+      "text": "assert.match(settings, /Digest gotowy do wysylki/);"
+    },
+    {
+      "file": "tests/email-digest-domain-gate.test.cjs",
+      "line": 30,
+      "text": "assert.match(settings, /Sprawdz konfiguracje/);"
+    }
+  ],
+  "note": "Mojibake is auto-repaired. ASCII suspects are reported, not blindly repaired, to avoid breaking identifiers/API keys/routes."
+}

@@ -2,11 +2,11 @@
 
 ## Cel
 
-ZablokowaÄ‡ powrĂłt faĹ‚szywych obietnic w UI, copy i publicznych tekstach produktu.
+Zablokować powrót fałszywych obietnic w UI, copy i publicznych tekstach produktu.
 
-Ten etap nie dodaje nowej funkcji. Dodaje straĹĽnikĂłw, ktĂłrzy majÄ… zatrzymaÄ‡ build, jeĹ›li aplikacja znowu zacznie obiecywaÄ‡ rzeczy bez pokrycia.
+Ten etap nie dodaje nowej funkcji. Dodaje strażników, którzy mają zatrzymać build, jeśli aplikacja znowu zacznie obiecywać rzeczy bez pokrycia.
 
-## Zakres guardĂłw
+## Zakres guardów
 
 Dodane skrypty:
 
@@ -24,7 +24,7 @@ Dodane komendy:
 
 ## Blokowane claimy
 
-Guardy majÄ… blokowaÄ‡ miÄ™dzy innymi:
+Guardy mają blokować między innymi:
 
 - `SOC 2 certified`
 - `SOC2 certified`
@@ -33,12 +33,12 @@ Guardy majÄ… blokowaÄ‡ miÄ™dzy innymi:
 - `AI saved`
 - automatyczny finalny zapis przez AI bez potwierdzenia
 - natywna aplikacja z App Store / Google Play
-- digest jako dziaĹ‚ajÄ…cy bez konfiguracji mail providera
-- `cancel anytime` jako miÄ™kka obietnica bez spiÄ™cia z realnym billingiem
+- digest jako działający bez konfiguracji mail providera
+- `cancel anytime` jako miękka obietnica bez spięcia z realnym billingiem
 
 ## Wymagane statusy z Etapu 1.1
 
-Etap 1.2 wymaga, ĹĽeby `src/lib/product-truth.ts` nadal zawieraĹ‚:
+Etap 1.2 wymaga, żeby `src/lib/product-truth.ts` nadal zawierał:
 
 - Stripe / BLIK / subskrypcje: `requires_config`
 - Poranny digest e-mail: `requires_config`
@@ -47,9 +47,9 @@ Etap 1.2 wymaga, ĹĽeby `src/lib/product-truth.ts` nadal zawieraĹ‚:
 - Admin AI: `internal_only`
 - PWA / telefon: `active`
 
-## Kryterium zakoĹ„czenia
+## Kryterium zakończenia
 
-Etap jest zakoĹ„czony, gdy przechodzÄ…:
+Etap jest zakończony, gdy przechodzą:
 
 - `npm run check:ui-truth`
 - `npm run check:public-security-claims`
@@ -58,10 +58,10 @@ Etap jest zakoĹ„czony, gdy przechodzÄ…:
 - `npm run check:faza1-etap11-ui-copy-legal-truth`
 - `npm run build`
 
-## NastÄ™pny etap
+## Następny etap
 
-Po tym etapie roadmapa bezpieczeĹ„stwa prowadzi do:
+Po tym etapie roadmapa bezpieczeństwa prowadzi do:
 
 **FAZA 2 - Etap 2.1 - Workspace isolation i request scope**
 
-Google Calendar Sync V1 jest sensownÄ… funkcjÄ… produktowÄ…, ale powinien wejĹ›Ä‡ jako osobny etap po zabezpieczeniu truth guardĂłw.
+Google Calendar Sync V1 jest sensowną funkcją produktową, ale powinien wejść jako osobny etap po zabezpieczeniu truth guardów.

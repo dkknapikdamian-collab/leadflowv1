@@ -25,16 +25,16 @@ Produkt jest pozycjonowany jako prosty system operacyjny dla osoby, ktra sama ob
 
 ## Gwne widoki
 
-- **Dzi** â€“ centrum decyzji i najpilniejsze dziaania.
-- **Leady** â€“ lista sprzedaowa z kolejnym krokiem.
-- **Lead Detail** â€“ karta leada z kontaktem, notatkami, zadaniami, wydarzeniami i historią.
-- **Klienci** â€“ relacje i powiązane sprawy/leady.
-- **Sprawy** â€“ etap realizacji po sprzeday.
-- **Case Detail** â€“ operacyjny hub sprawy.
-- **Zadania** â€“ zadania i follow-upy.
-- **Kalendarz** â€“ wsplna o czasu dla zada i wydarze.
-- **Szkice AI** â€“ miejsce zatwierdzania treci przygotowanych przez AI.
-- **Ustawienia / Rozliczenia / Pomoc** â€“ konfiguracja konta i aplikacji.
+- **Dzi** – centrum decyzji i najpilniejsze dziaania.
+- **Leady** – lista sprzedaowa z kolejnym krokiem.
+- **Lead Detail** – karta leada z kontaktem, notatkami, zadaniami, wydarzeniami i historią.
+- **Klienci** – relacje i powiązane sprawy/leady.
+- **Sprawy** – etap realizacji po sprzeday.
+- **Case Detail** – operacyjny hub sprawy.
+- **Zadania** – zadania i follow-upy.
+- **Kalendarz** – wsplna o czasu dla zada i wydarze.
+- **Szkice AI** – miejsce zatwierdzania treci przygotowanych przez AI.
+- **Ustawienia / Rozliczenia / Pomoc** – konfiguracja konta i aplikacji.
 
 ## Uruchomienie lokalne
 

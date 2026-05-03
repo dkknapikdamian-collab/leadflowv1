@@ -80,13 +80,13 @@ const uiFiles = [
 const bannedClaims = [
   { label: 'SOC 2 certified', pattern: /SOC\s*2\s*certified/i },
   { label: 'SOC2 certified', pattern: /SOC2\s*certified/i },
-  { label: 'Google Calendar connected', pattern: /Google Calendar\s+(connected|poĹ‚Ä…czony|podĹ‚Ä…czony|aktywny|dziaĹ‚a)/i },
-  { label: 'Google Calendar sync active', pattern: /Google Calendar sync\s*(aktywny|active|dziaĹ‚a|gotowy)/i },
-  { label: 'AI final auto-save', pattern: /AI\s+(automatycznie\s+)?(zapisuje|zapisaĹ‚o|saved)\s+(rekord|leada|zadanie|event|wydarzenie)/i },
+  { label: 'Google Calendar connected', pattern: /Google Calendar\s+(connected|połączony|podłączony|aktywny|działa)/i },
+  { label: 'Google Calendar sync active', pattern: /Google Calendar sync\s*(aktywny|active|działa|gotowy)/i },
+  { label: 'AI final auto-save', pattern: /AI\s+(automatycznie\s+)?(zapisuje|zapisało|saved)\s+(rekord|leada|zadanie|event|wydarzenie)/i },
   { label: 'AI saved without approval', pattern: /(AI saved|zapisane przez AI bez potwierdzenia)/i },
   { label: 'Native App Store app', pattern: /natywna aplikacja (z|w) App Store/i },
   { label: 'Native Google Play app', pattern: /natywna aplikacja (z|w) Google Play/i },
-  { label: 'Digest sent without config', pattern: /digest (jest )?(wysyĹ‚any|wyslany|wysĹ‚any|dziaĹ‚a) bez konfiguracji/i },
+  { label: 'Digest sent without config', pattern: /digest (jest )?(wysyłany|wyslany|wysłany|działa) bez konfiguracji/i },
   { label: 'Cancel anytime as guarantee', pattern: /cancel anytime|anuluj kiedy chcesz/i },
 ];
 
@@ -102,13 +102,13 @@ for (const file of uiFiles) {
 const billing = exists('src/pages/Billing.tsx') ? read('src/pages/Billing.tsx') : '';
 assert(/Google Calendar/i.test(billing), 'Billing must mention Google Calendar');
 assert(hasNear(billing, /Google Calendar/i, /(w przygotowaniu|wymaga konfiguracji|OAuth)/i, 260), 'Billing must describe Google Calendar as coming soon/config dependent');
-assert(/PeĹ‚ny asystent AI|asystent AI/i.test(billing), 'Billing must mention AI assistant');
-assert(/PeĹ‚ny asystent AI\s*Beta/i.test(billing) || (/asystent AI/i.test(billing) && /Beta/i.test(billing)), 'Billing must describe AI as Beta');
+assert(/Pełny asystent AI|asystent AI/i.test(billing), 'Billing must mention AI assistant');
+assert(/Pełny asystent AI\s*Beta/i.test(billing) || (/asystent AI/i.test(billing) && /Beta/i.test(billing)), 'Billing must describe AI as Beta');
 assert(/konfiguracji providera|konfiguracji AI|provider/i.test(billing), 'Billing must describe AI as config/provider dependent');
 assert(/szkic/i.test(billing) && /(zatwierdzenia|potwierdzenia)/i.test(billing), 'Billing must keep manual approval copy for AI drafts');
 assert(/digest/i.test(billing) && /konfiguracji mail providera/i.test(billing), 'Billing must mark digest as config dependent');
 assert(!billing.includes("'Google Calendar sync',"), 'Billing has old unconditional Google Calendar sync copy');
-assert(!billing.includes('PeĹ‚ny asystent AI w caĹ‚ej aplikacji'), 'Billing has old full AI claim');
+assert(!billing.includes('Pełny asystent AI w całej aplikacji'), 'Billing has old full AI claim');
 
 const settings = exists('src/pages/Settings.tsx') ? read('src/pages/Settings.tsx') : '';
 assert(/Digest e-mail/i.test(settings) && /wymaga konfiguracji mail providera/i.test(settings), 'Settings must describe digest as config dependent');

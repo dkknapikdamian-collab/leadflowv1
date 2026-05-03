@@ -84,12 +84,12 @@ Po ustawieniu ENV zrob Redeploy w Vercel, potem:
 
 1. Zaloguj sie jako admin albo uzytkownik platnego planu.
 2. Wejdz: Ustawienia -> Google Calendar.
-3. Kliknij `OdĹ›wieĹĽ status`.
+3. Kliknij `Odśwież status`.
 4. Oczekiwany wynik: brak komunikatu o brakujacych ENV.
-5. Kliknij `PoĹ‚Ä…cz Google`.
+5. Kliknij `Połącz Google`.
 6. Zatwierdz OAuth Google.
-7. Po powrocie do aplikacji kliknij ponownie `OdĹ›wieĹĽ status`.
-8. Oczekiwany wynik: status `PoĹ‚Ä…czone`.
+7. Po powrocie do aplikacji kliknij ponownie `Odśwież status`.
+8. Oczekiwany wynik: status `Połączone`.
 9. Wejdz w kalendarz CloseFlow.
 10. Dodaj wydarzenie z tytulem testowym, np. `GCAL SMOKE TEST - CloseFlow`.
 11. Otworz Google Calendar.

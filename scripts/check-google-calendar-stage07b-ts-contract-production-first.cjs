@@ -38,9 +38,9 @@ for (const marker of [
   'CloseFlow pracuje production-first',
   'Vercel ENV ustawiamy przynajmniej dla `Production`',
   'Redirect URI ustawiamy na produkcyjny publiczny adres aplikacji',
-  'JeĹĽeli dostawca technicznie blokuje publikacjÄ™ produkcyjnÄ… do czasu weryfikacji',
+  'Jeżeli dostawca technicznie blokuje publikację produkcyjną do czasu weryfikacji',
   'https://closeflowapp.vercel.app/api/google-calendar?route=callback',
-  'Nie uĹĽywaÄ‡ `/api/system` jako redirect URI',
+  'Nie używać `/api/system` jako redirect URI',
 ]) {
   assert(prod.includes(marker), 'production-first doc missing marker: ' + marker);
 }

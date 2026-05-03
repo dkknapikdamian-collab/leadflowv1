@@ -247,7 +247,7 @@ useEffect(() => {
       setGoogleCalendarStatus(data as GoogleCalendarStatusState);
     } catch (error: any) {
       setGoogleCalendarStatus({ configured: false, connected: false, missing: ['STATUS_CHECK_FAILED'] });
-      toast.error(`BĹ‚Ä…d statusu Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd statusu Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setCheckingGoogleCalendar(false);
     }
@@ -259,12 +259,12 @@ useEffect(() => {
 
   const handleConnectGoogleCalendar = async () => {
     if (!workspace?.id || !activeUserId) {
-      toast.error('Workspace albo uĹĽytkownik nie jest jeszcze gotowy. OdĹ›wieĹĽ stronÄ™ po zalogowaniu.');
+      toast.error('Workspace albo użytkownik nie jest jeszcze gotowy. Odśwież stronę po zalogowaniu.');
       return;
     }
 
     if (!canUseGoogleCalendarByPlan) {
-      toast.error('Google Calendar Sync jest przewidziany dla pĹ‚atnych planĂłw.');
+      toast.error('Google Calendar Sync jest przewidziany dla płatnych planów.');
       return;
     }
 
@@ -296,9 +296,9 @@ useEffect(() => {
         return;
       }
 
-      toast.error('Google nie zwrĂłciĹ‚ adresu autoryzacji.');
+      toast.error('Google nie zwrócił adresu autoryzacji.');
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d poĹ‚Ä…czenia Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd połączenia Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setConnectingGoogleCalendar(false);
     }
@@ -307,7 +307,7 @@ useEffect(() => {
   const handleDisconnectGoogleCalendar = async () => {
     if (!workspace?.id || !activeUserId) return;
 
-    if (!window.confirm('RozĹ‚Ä…czyÄ‡ Google Calendar dla tego workspace? Nowe wydarzenia nie bÄ™dÄ… synchronizowane.')) return;
+    if (!window.confirm('Rozłączyć Google Calendar dla tego workspace? Nowe wydarzenia nie będą synchronizowane.')) return;
 
     setDisconnectingGoogleCalendar(true);
     try {
@@ -325,10 +325,10 @@ useEffect(() => {
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(String(data?.error || 'GOOGLE_CALENDAR_DISCONNECT_FAILED'));
 
-      toast.success('Google Calendar zostaĹ‚ rozĹ‚Ä…czony.');
+      toast.success('Google Calendar został rozłączony.');
       await loadGoogleCalendarStatus();
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d rozĹ‚Ä…czania Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd rozłączania Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setDisconnectingGoogleCalendar(false);
     }
@@ -386,7 +386,7 @@ useEffect(() => {
       method: googleCalendarReminderMethod as any,
       minutesBefore: Number(googleCalendarReminderMinutes || '30'),
     });
-    toast.success('Ustawienia przypomnieĹ„ Google Calendar zapisane.');
+    toast.success('Ustawienia przypomnień Google Calendar zapisane.');
   };
 
   const handleUpdateProfile = async () => {
@@ -755,7 +755,7 @@ useEffect(() => {
                 <div>
                   <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
                   <h2>Przypomnienia Google Calendar</h2>
-                  <p>Ustaw domyĹ›lny typ przypomnienia wysyĹ‚any do Google przy nowych i edytowanych wydarzeniach.</p>
+                  <p>Ustaw domyślny typ przypomnienia wysyłany do Google przy nowych i edytowanych wydarzeniach.</p>
                 </div>
               </div>
 
@@ -773,7 +773,7 @@ useEffect(() => {
                   </select>
                 </div>
                 <div className="settings-field">
-                  <Label>Ile minut wczeĹ›niej</Label>
+                  <Label>Ile minut wcześniej</Label>
                   <Input
                     type="number"
                     min={0}
@@ -791,7 +791,7 @@ useEffect(() => {
                   Zapisz przypomnienia Google
                 </Button>
                 <span className="settings-muted-note">
-                  Przy opcji domyĹ›lnej Google uĹĽyje ustawieĹ„ z Twojego kalendarza. Przy popup/e-mail CloseFlow wysyĹ‚a override do Google Calendar.
+                  Przy opcji domyślnej Google użyje ustawień z Twojego kalendarza. Przy popup/e-mail CloseFlow wysyła override do Google Calendar.
                 </span>
               </div>
             </section>
@@ -963,7 +963,7 @@ useEffect(() => {
                 <div>
                   <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
                   <h2>Google Calendar Sync V1</h2>
-                  <p>Jednokierunkowy sync CloseFlow â†’ Google Calendar. Wymaga OAuth, ENV i aktywnego poĹ‚Ä…czenia uĹĽytkownika.</p>
+                  <p>Jednokierunkowy sync CloseFlow â†’ Google Calendar. Wymaga OAuth, ENV i aktywnego połączenia użytkownika.</p>
                 </div>
               </div>
 
@@ -974,23 +974,23 @@ useEffect(() => {
                     {checkingGoogleCalendar
                       ? 'Sprawdzanie statusu...'
                       : googleCalendarStatus?.connected
-                        ? 'PoĹ‚Ä…czenie aktywne. Nowe wydarzenia z CloseFlow bÄ™dÄ… kopiowane do Google Calendar.'
+                        ? 'Połączenie aktywne. Nowe wydarzenia z CloseFlow będą kopiowane do Google Calendar.'
                         : googleCalendarStatus?.configured
-                          ? 'Konfiguracja serwera wyglÄ…da poprawnie. MoĹĽesz poĹ‚Ä…czyÄ‡ konto Google.'
-                          : 'Integracja wymaga konfiguracji ENV i OAuth przed uĹĽyciem.'}
+                          ? 'Konfiguracja serwera wygląda poprawnie. Możesz połączyć konto Google.'
+                          : 'Integracja wymaga konfiguracji ENV i OAuth przed użyciem.'}
                   </span>
                   {googleCalendarMissingText ? (
-                    <span>BrakujÄ…ce ENV: {googleCalendarMissingText}</span>
+                    <span>Brakujące ENV: {googleCalendarMissingText}</span>
                   ) : null}
                   {!canUseGoogleCalendarByPlan ? (
-                    <span>Funkcja jest przewidziana dla pĹ‚atnych planĂłw. Admin moĹĽe uĹĽyÄ‡ jej do testĂłw.</span>
+                    <span>Funkcja jest przewidziana dla płatnych planów. Admin może użyć jej do testów.</span>
                   ) : null}
                 </div>
                 <span className="settings-soft-pill">
                   {googleCalendarStatus?.connected
-                    ? 'PoĹ‚Ä…czone'
+                    ? 'Połączone'
                     : googleCalendarStatus?.configured
-                      ? 'Gotowe do poĹ‚Ä…czenia'
+                      ? 'Gotowe do połączenia'
                       : 'Wymaga konfiguracji'}
                 </span>
               </div>
@@ -1002,7 +1002,7 @@ useEffect(() => {
                   onClick={() => void loadGoogleCalendarStatus()}
                   disabled={checkingGoogleCalendar || !workspace?.id}
                 >
-                  {checkingGoogleCalendar ? 'Sprawdzanie...' : 'OdĹ›wieĹĽ status'}
+                  {checkingGoogleCalendar ? 'Sprawdzanie...' : 'Odśwież status'}
                 </Button>
                 {googleCalendarStatus?.connected ? (
                   <Button
@@ -1011,7 +1011,7 @@ useEffect(() => {
                     onClick={() => void handleDisconnectGoogleCalendar()}
                     disabled={disconnectingGoogleCalendar || !workspace?.id}
                   >
-                    {disconnectingGoogleCalendar ? 'RozĹ‚Ä…czanie...' : 'RozĹ‚Ä…cz Google'}
+                    {disconnectingGoogleCalendar ? 'Rozłączanie...' : 'Rozłącz Google'}
                   </Button>
                 ) : (
                   <Button
@@ -1019,14 +1019,14 @@ useEffect(() => {
                     onClick={() => void handleConnectGoogleCalendar()}
                     disabled={connectingGoogleCalendar || checkingGoogleCalendar || !workspace?.id || !canUseGoogleCalendarByPlan}
                   >
-                    {connectingGoogleCalendar ? 'Przekierowanie...' : 'PoĹ‚Ä…cz Google'}
+                    {connectingGoogleCalendar ? 'Przekierowanie...' : 'Połącz Google'}
                   </Button>
                 )}
               </div>
 
               <div className="settings-diagnostics-box">
-                <div>Zakres V1: CloseFlow jest ĹşrĂłdĹ‚em prawdy, Google Calendar jest kopiÄ… wydarzeĹ„.</div>
-                <div>Przypomnienia Google sÄ… zapisywane razem z wydarzeniem jako domyĹ›lne albo popup/email wedĹ‚ug danych eventu.</div>
+                <div>Zakres V1: CloseFlow jest źródłem prawdy, Google Calendar jest kopią wydarzeń.</div>
+                <div>Przypomnienia Google są zapisywane razem z wydarzeniem jako domyślne albo popup/email według danych eventu.</div>
               </div>
             </section>
 

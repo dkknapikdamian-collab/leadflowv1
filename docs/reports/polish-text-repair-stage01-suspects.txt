@@ -1,0 +1,118 @@
+docs/A14_CALENDAR_TYPES_FINAL_HOTFIX_2026-05-01.md:16: - Nie wlaczono `strict: true`.
+docs/architecture/VERCEL_HOBBY_API_FUNCTION_BUDGET_RULE_2026-05-03.md:26: Typowy blad:
+docs/BILLING_FOUNDATION_TEST_POLISH_LABEL_FIX_2026-04-26.md:9: `Przejdz do platnosci`
+docs/BILLING_STRIPE_BLIK_FOUNDATION_2026-04-25.md:11: BLIK w Stripe jest platnoscia jednorazowa, nie automatyczna subskrypcja. Dlatego model V1 to:
+docs/BILLING_STRIPE_BLIK_FOUNDATION_2026-04-25.md:13: - platnosc za 30 dni dostepu,
+docs/BILLING_STRIPE_BLIK_FOUNDATION_2026-04-25.md:49: W Stripe trzeba wlaczyc BLIK jako metode platnosci oraz miec konto zdolne do obslugi platnosci w PLN.
+docs/BILLING_STRIPE_BLIK_FOUNDATION_2026-04-25.md:67: - klikniecie platnosci tworzy Stripe Checkout,
+docs/BILLING_STRIPE_BLIK_MULTI_PLAN_PRICING_2026-04-25.md:17: BLIK w Stripe traktujemy jako platnosc jednorazowa.
+docs/BILLING_STRIPE_BLIK_VERCEL_API_TYPE_FIX_2026-04-25.md:7: Vercel build przeszedl frontend Vite, ale pozniej TypeScript dla API route pokazal bledy w api/billing-checkout.ts.
+docs/CLIENT_DETAIL_OPERATIONAL_TEST_ENCODING_FIX_2026-04-24.md:17: - verify:closeflow:quiet moze przejsc bez falszywego bledu kodowania.
+docs/DAILY_DIGEST_DIAGNOSTICS_2026-04-25.md:7: Domknac etap daily digest tak, zeby operator widzial w ustawieniach czy backend jest gotowy do wysylki maili.
+docs/DAILY_DIGEST_DIAGNOSTICS_2026-04-25.md:12: - przycisk Sprawdz konfiguracje w Ustawieniach,
+docs/DAILY_DIGEST_DIAGNOSTICS_2026-04-25.md:20: Sam przycisk wysylki testowej nie tlumaczy, czego brakuje. Diagnostyka pokazuje od razu czy problem jest po stronie ENV Vercel, odbiorcy albo workspace.
+docs/DAILY_DIGEST_DIAGNOSTICS_2026-04-25.md:31: - w ustawieniach digestu widac Sprawdz konfiguracje,
+docs/EMAIL_DIGEST_DOMAIN_GATE_2026-04-25.md:18: Resend bez zweryfikowanej domeny pozwala wysylac tylko na adres wlasciciela konta. Pokazywanie tej opcji zwyklemu uzytkownikowi powoduje blad i zamieszanie.
+docs/integrations/GOOGLE_CALENDAR_OAUTH_SETUP_2026-05-03.md:50: - gotowosc do polaczenia,
+docs/integrations/GOOGLE_CALENDAR_OAUTH_SETUP_2026-05-03.md:51: - polaczenie aktywne,
+docs/integrations/GOOGLE_CALENDAR_OAUTH_SETUP_2026-05-03.md:54: ## Typowy blad
+docs/integrations/GOOGLE_CALENDAR_SYNC_V1_SCOPE_2026-05-03.md:13: 1. Uzytkownik laczy konto Google w ustawieniach.
+docs/integrations/GOOGLE_CALENDAR_SYNC_V1_SCOPE_2026-05-03.md:28: Funkcja ma byc dostepna w kazdym planie platnym.
+docs/integrations/GOOGLE_CALENDAR_SYNC_V1_SCOPE_2026-05-03.md:35: - Sa limity projektu Google Cloud oraz limity per uzytkownik.
+docs/POLISH_MOJIBAKE_FULL_AUDIT_AND_STRIPE_URL_FIX_2026-04-25.md:28: - Stripe Checkout nie wyrzuca bledu Invalid URL
+docs/POLISH_MOJIBAKE_SELF_SCAN_FIX_V2_2026-04-25.md:13: - skaner i test nie oznaczaja juz samych siebie jako blednych
+docs/POLISH_UI_TEXT_GLOBAL_REPAIR_STAGE01.md:11: Ważne: brak polskich znaków typu `uzytkownik` jest raportowany, ale nie jest ślepo zamieniany globalnie, bo może występować w identyfikatorach, kluczach, ścieżkach lub danych technicznych.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_2026-05-03.md:11: Gdy istnieje aktywne polaczenie Google Calendar dla workspace/uzytkownika:
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_2026-05-03.md:23: - zapis eventu w CloseFlow nie moze pasc tylko dlatego, ze Google API ma blad,
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_2026-05-03.md:24: - blad Google jest zapisywany w `google_calendar_sync_status = failed`,
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_2026-05-03.md:25: - szczegol bledu trafia do `google_calendar_sync_error`,
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_2026-05-03.md:48: Wtedy dodamy panel w ustawieniach, status polaczenia, connect/disconnect i informacje o wymaganych ENV.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE03_SETTINGS_UI_CONNECT_2026-05-03.md:42: - Nie wlacza Google Calendar jako bezwarunkowo aktywnej funkcji w UI/billing copy.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md:65: 2. Wlacz Google Calendar API.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md:85: 1. Zaloguj sie jako admin albo uzytkownik platnego planu.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md:104: W Supabase sprawdz:
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md:130: - `google_calendar_connections` ma aktywne polaczenie,
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md:134: - zwykly uzytkownik bez platnego planu nie ma aktywnego syncu.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md:141: - Nie wlaczamy tej funkcji dla Free jako aktywnej funkcji platnej.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_MANUAL_SMOKE_EVIDENCE_2026-05-03.md:41: - Google Calendar API wlaczone:
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_MANUAL_SMOKE_EVIDENCE_2026-05-03.md:65: | Zwykly user bez planu platnego nie ma aktywnego sync |  |  |
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md:45: 6. Supabase zapisuje aktywne polaczenie w `google_calendar_connections`.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md:49: 10. Wybor przypomnienia z Ustawien jest widoczny w Google Calendar.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md:51: 12. Zwykly uzytkownik bez planu platnego nie ma aktywnego Google sync.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md:68: 6. Po powrocie sprawdz status `connected`.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md:71: 9. Sprawdz w Google Calendar, czy event istnieje.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md:73: 11. Sprawdz w Google Calendar, czy tytul sie zmienil.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md:75: 13. Sprawdz w Google Calendar, czy event zniknal albo jest anulowany.
+docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07_OAUTH_SMOKE_EVIDENCE_GATE_2026-05-03.md:77: 15. Sprawdz w Supabase `google_calendar_connections`, czy `disconnected_at` zostalo ustawione.
+docs/REQUEST_IDENTITY_VERCEL_API_SIGNATURE_FIX_2026-04-25.md:7: Vercel typecheck pokazal bledy:
+docs/REQUEST_SCOPE_SERVER_HELPER_FIX_2026-04-25.md:11: a plik src/server/_request-scope.ts nie istnial. To powodowalo bledy TypeScript na Vercel i pozniej FUNCTION_INVOCATION_FAILED przy odczycie planu dnia.
+docs/roadmap/closeflow_phase0_runtime_api_workspace_headers_fix_2026-05-02.md:9: Frontend wysylal glownie Authorization, ale nie dosylal stalego kontekstu workspace i snapshotu uzytkownika do endpointow GET. Endpointy serwerowe wymagaly workspace_id do filtrowania danych. Bez niego zwracaly AUTH_WORKSPACE_REQUIRED albo 
+docs/roadmap/closeflow_phase0_runtime_api_workspace_headers_fix_2026-05-02.md:19: ## Po wdrozeniu sprawdz
+docs/roadmap/closeflow_phase0_runtime_api_workspace_headers_fix_2026-05-02.md:23: 3. W DevTools Network sprawdz, czy /api/leads, /api/cases, /api/tasks, /api/events i /api/system?kind=ai-drafts nie zwracaja 401/500.
+docs/roadmap/closeflow_phase0_runtime_api_workspace_headers_fix_2026-05-02.md:24: 4. Odswiez strone i sprawdz, czy dane zostaja.
+docs/STAGE20_BILLING_AND_TEST_CONTRACT_FINAL_FIX_2026-04-28.md:6: - test Stage18 mial bledny zapis regexu i nie parsowal sie w Node/TypeScript.
+docs/STAGE20_BILLING_AND_TEST_CONTRACT_FINAL_FIX_2026-04-28.md:8: Nie zmienia logiki platnosci. Nie wykonuje SQL. Nie usuwa Stripe.
+docs/STAGE21_BILLING_LABEL_COMPAT_2026-04-28.md:9: - nie zmienia logiki platnosci, Stripe ani planow.
+docs/STAGE21_BILLING_LABEL_COMPAT_2026-04-28.md:11: Po wdrozeniu sprawdz:
+docs/STAGE22_BILLING_ERROR_LABEL_FIX_2026-04-28.md:6: - komunikat bledu checkoutu wraca do formy `Stripe/BLIK`, ktorej wymagaja istniejace testy release gate,
+docs/STAGE22_BILLING_ERROR_LABEL_FIX_2026-04-28.md:7: - widoczna etykieta `Platnosc karta lub BLIK` pozostaje zachowana,
+docs/STAGE22_BILLING_ERROR_LABEL_FIX_2026-04-28.md:8: - logika platnosci i integracja Stripe nie sa ruszane.
+docs/STAGE22_BILLING_ERROR_LABEL_FIX_2026-04-28.md:10: Po wdrozeniu sprawdz:
+docs/STAGE23_MOJIBAKE_TEST_MARKER_FIX_2026-04-28.md:5: Po Stage 22 aplikacja przechodzila build i test Stage 22, ale `verify:closeflow:quiet` zatrzymywal sie na audycie kodowania. Problem nie byl w UI ani logice aplikacji. Czesc testow zawierala literalne znaki-marker uzywane do wykrywania bled
+docs/STAGE23_MOJIBAKE_TEST_MARKER_FIX_2026-04-28.md:18: ## Po wdrozeniu sprawdz
+docs/STAGE25_CLIENT_EDIT_SAVE_AND_MULTI_CONTACT_2026-04-28.md:28: ## Po wdrozeniu sprawdz
+docs/STAGE25_CLIENT_EDIT_SAVE_AND_MULTI_CONTACT_2026-04-28.md:41: - Uzytkownik moze dodac kilka emaili i kilka telefonow bez wpisywania technicznych ID.
+docs/STAGE29A_TODAY_AI_DRAFTS_TEST_QUOTE_HOTFIX_2026-04-28.md:4: Naprawa bledu skladni w tescie tests/today-ai-drafts-tile-stage29.test.cjs po Stage29.
+docs/STAGE_A19V3_ADMIN_GUARD_COMPLETION.md:39: 5. Zwykly uzytkownik bez roli admin nie powinien widziec ani uzywac narzedzi admin-only.
+docs/STAGE_A20B_API_RUNTIME_IMPORT_HOTFIX.md:5: Naprawic produkcyjny blad 500 / FUNCTION_INVOCATION_FAILED po A20.
+docs/STAGE_A20B_API_RUNTIME_IMPORT_HOTFIX.md:25: 1. Po deployu odswiez aplikacje.
+docs/STAGE_A20B_API_RUNTIME_IMPORT_HOTFIX.md:26: 2. Sprawdz, czy `/api/leads`, `/api/cases` i `/api/clients` nie zwracaja juz 500.
+docs/STAGE_A20B_API_RUNTIME_IMPORT_HOTFIX.md:27: 3. Sprawdz ekran Dzis, Leady, Klienci i Sprawy.
+docs/STAGE_A20D3_SIDEBAR_POINTER_ROUTER_FIX.md:5: Domknac blad, w ktorym ekran Dzis blokowal pierwsza grupe nawigacji w lewym menu. CSS z A20c nie wystarczyl, wiec poprawka idzie w shellu aplikacji.
+docs/STAGE_A20D3_SIDEBAR_POINTER_ROUTER_FIX.md:33: 9. Sprawdz, czy Zadania nadal dzialaja.
+docs/STAGE_A25E_LEAD_DETAIL_NULL_STATUS_HOTFIX.md:5: Naprawia crash przy otwieraniu szczegolow leada:
+docs/STRIPE_CHECKOUT_APP_URL_SCHEME_FIX_V2_2026-04-25.md:7: Stripe/BLIK checkout zwracal blad:
+docs/STRIPE_CHECKOUT_APP_URL_SCHEME_FIX_V2_2026-04-25.md:23: - Stripe checkout nie zwraca bledu Invalid URL
+docs/TODO_DIGEST_MAIL_PROVIDER_ENV.md:1: # TODO: mail provider / digest env przed realna wysylka
+docs/TODO_DIGEST_MAIL_PROVIDER_ENV.md:12: Przed pierwszym realnym testem wysylki digestu ustawic:
+docs/TODO_DIGEST_MAIL_PROVIDER_ENV.md:27: - Dopiero gdy bedziemy gotowi na realna wysylke e-maili.
+docs/TODO_DIGEST_MAIL_PROVIDER_ENV.md:69: 5. Kliknac `Sprawdz konfiguracje`.
+docs/TODO_DIGEST_MAIL_PROVIDER_ENV.md:76: - Diagnostyka digestu pokazuje gotowosc wysylki.
+docs/VERCEL_HOBBY_DAILY_DIGEST_CRON_FIX_2026-04-25.md:7: Deploy na Vercel Hobby padal z bledem:
+docs/VISUAL_STAGE22_LEADS_FINAL_LOCK_2026-04-29.md:31: | Metryka Wartosc | `StatShortcutCard` | `grid-5` / `metric` | Tak | Klik nadal wlacza sortowanie po wartosci. |
+docs/VISUAL_STAGE23_LEADS_HTML_PARITY_FIX_2026-04-29.md:28: | Link do szczegolu leada | `/leads/:id` | klik w rekord | Tak | Routing bez zmian. |
+scripts/check-faza1-etap11-ui-copy-legal-truth.cjs:51: for (const bad of ['Sprawdz konfiguracje', 'Wyslij test teraz', 'dziala raz dziennie', 'wysylki']) {
+scripts/check-p14-ui-truth-copy-menu.cjs:39: for (const bad of ['Sprawdz konfiguracje', 'Wyslij test teraz', 'dziala raz dziennie']) {
+scripts/check-ui-truth-claims.cjs:116: for (const bad of ['Sprawdz konfiguracje', 'Wyslij test teraz', 'dziala raz dziennie', 'wysylki']) {
+scripts/mojibake-markers.cjs:17: blad: cp(66, 313, 8218, 196, 8230, 100),
+scripts/mojibake-markers.cjs:19: zrodlo: cp(197, 185, 114, 258, 322, 100, 322, 111),
+src/lib/access.ts:127: headline: 'Platnosc wymaga reakcji',
+src/lib/access.ts:128: description: 'Oplacony okres dostepu minal. Mozesz dalej przegladac dane, ale tworzenie i edycja rekordow sa zablokowane do czasu odnowienia platnosci.',
+src/lib/access.ts:129: badgeLabel: 'Platnosc wymagana',
+src/lib/access.ts:130: sidebarLabel: 'Platnosc wymagana',
+src/lib/access.ts:162: headline: 'Platnosc wymaga reakcji',
+src/lib/access.ts:164: badgeLabel: 'Platnosc nieudana',
+src/lib/access.ts:165: sidebarLabel: 'Platnosc nieudana',
+src/lib/access.ts:180: headline: 'Plan jest wylaczony',
+src/lib/access.ts:182: badgeLabel: 'Plan wylaczony',
+src/lib/access.ts:183: sidebarLabel: 'Plan wylaczony',
+src/lib/ai-direct-write-guard.ts:31: const TASK_ACTION_WORDS = /\b(oddzwonic|oddzwonić|zadzwonic|zadzwonić|wyslac|wysłać|napisac|napisać|przypomniec|przypomnieć|sprawdzic|sprawdzić|zrobic|zrobić|wysylka|wysyłka)\b/u;
+src/lib/domain-statuses.ts:279: failed: 'Blad',
+src/lib/domain-statuses.ts:287: paid_active: 'Platny aktywny',
+src/lib/domain-statuses.ts:288: payment_failed: 'Platnosc nieudana',
+src/lib/domain-statuses.ts:294: awaiting_payment: 'Czeka na platnosc',
+src/pages/LeadDetail.tsx:1194: <span>Zrodlo: {sourceLabel(lead.source)}</span>
+src/pages/LeadDetail.tsx:1277: <InfoLine icon={Target} label="Zrodlo" value={sourceLabel(lead.source)} />
+src/server/ai-capture.ts:61: 'sprawdz',
+src/server/ai-config.ts:76: 'Gdy AI jest wylaczone albo provider nie dziala, Quick Lead Capture ma uzyc parsera regulowego.',
+src/styles/visual-stage10-notifications-vnext.css:880: .notifications-vnext-page [aria-label="Panel powiadomien"] {
+src/styles/visual-stage10-notifications-vnext.css:890: .notifications-vnext-page [aria-label="Panel powiadomien"]::before,
+src/styles/visual-stage10-notifications-vnext.css:891: .notifications-vnext-page [aria-label="Panel powiadomien"]::after,
+tests/billing-foundation-test-polish-label-regression.test.cjs:17: assert.doesNotMatch(foundationTest, /Przejdz do platnosci/);
+tests/billing-foundation-test-polish-label-regression.test.cjs:20: assert.doesNotMatch(billing, /Przejdz do platnosci/);
+tests/billing-ui-polish-and-diagnostics.test.cjs:28: assert.doesNotMatch(source, /Platnosc/);
+tests/billing-ui-polish-and-diagnostics.test.cjs:29: assert.doesNotMatch(source, /Przejdz do platnosci/);
+tests/billing-ui-polish-and-diagnostics.test.cjs:31: assert.doesNotMatch(source, /Blad uruchamiania platnosci/);
+tests/daily-digest-diagnostics.test.cjs:28: assert.match(settings, /Sprawdz konfiguracje/);
+tests/daily-digest-diagnostics.test.cjs:29: assert.match(settings, /Digest gotowy do wysylki/);
+tests/email-digest-domain-gate.test.cjs:30: assert.match(settings, /Sprawdz konfiguracje/);

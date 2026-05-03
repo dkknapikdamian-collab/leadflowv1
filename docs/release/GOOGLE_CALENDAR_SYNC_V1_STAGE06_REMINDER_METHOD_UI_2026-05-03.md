@@ -2,18 +2,18 @@
 
 ## Cel
 
-DodaÄ‡ uĹĽytkownikowi ustawienie typu przypomnienia wysyĹ‚anego do Google Calendar.
+Dodać użytkownikowi ustawienie typu przypomnienia wysyłanego do Google Calendar.
 
-To jest ustawienie domyĹ›lne dla nowych i edytowanych wydarzeĹ„.
+To jest ustawienie domyślne dla nowych i edytowanych wydarzeń.
 
 ## Opcje
 
-- `default` - domyĹ›lne przypomnienia z Google Calendar,
+- `default` - domyślne przypomnienia z Google Calendar,
 - `popup` - powiadomienie w Google Calendar,
 - `email` - e-mail z Google Calendar,
 - `popup_email` - powiadomienie + e-mail.
 
-## Co wdroĹĽono
+## Co wdrożono
 
 - `src/lib/google-calendar-reminder-preferences.ts`
   - localStorage preference,
@@ -29,19 +29,19 @@ To jest ustawienie domyĹ›lne dla nowych i edytowanych wydarzeĹ„.
   - `insertEventToSupabase` dokleja preference,
   - `updateEventInSupabase` dokleja preference.
 
-## RĂłĹĽnica v3
+## Różnica v3
 
-v2 padĹ‚ na dokĹ‚adnym anchorze JSX w `Settings.tsx`. v3 uĹĽywa regexu po strukturze:
+v2 padł na dokładnym anchorze JSX w `Settings.tsx`. v3 używa regexu po strukturze:
 
 `<section className="settings-main-column">`
 
-i nie zaleĹĽy od CRLF.
+i nie zależy od CRLF.
 
 ## Brak SQL
 
 Ten etap nie wymaga SQL.
 
-## Kryterium zakoĹ„czenia
+## Kryterium zakończenia
 
 Przechodzi:
 

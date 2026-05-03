@@ -24,6 +24,19 @@ const badPatterns = [
   chars(0x00c3, 0x00b3),
 ];
 
+function shouldSkip(file) {
+  const rel = path.relative(repo, file).replace(/\\/g, '/');
+
+  // Generated diagnostics may quote raw guard regexes such as Ä|Ĺ|Ă.
+  // They are not UI copy and should not fail the legacy mojibake gate.
+  if (rel.startsWith('docs/reports/')) return true;
+
+  // Patch backups are local implementation artifacts, not product text.
+  if (rel.includes('/.stage') || rel.startsWith('.stage')) return true;
+
+  return false;
+}
+
 function walk(dir, result) {
   result = result || [];
   if (!fs.existsSync(dir)) return result;
@@ -32,6 +45,7 @@ function walk(dir, result) {
     const target = path.join(dir, entry.name);
 
     if (entry.isDirectory()) {
+      if (['node_modules', 'dist', '.git', '.vercel', 'reports'].includes(entry.name) && target.includes(path.join('docs', 'reports'))) continue;
       if (['node_modules', 'dist', '.git', '.vercel'].includes(entry.name)) continue;
       walk(target, result);
       continue;
@@ -48,7 +62,7 @@ const files = roots
     return walk(root);
   })
   .filter(function (file) {
-    return exts.has(path.extname(file));
+    return exts.has(path.extname(file)) && !shouldSkip(file);
   });
 
 const hits = [];

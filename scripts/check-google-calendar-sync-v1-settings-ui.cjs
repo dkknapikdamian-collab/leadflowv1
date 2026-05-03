@@ -26,10 +26,10 @@ for (const marker of [
   '/api/google-calendar?route=status',
   '/api/google-calendar?route=connect',
   '/api/google-calendar?route=disconnect',
-  'PoĹ‚Ä…cz Google',
-  'RozĹ‚Ä…cz Google',
-  'BrakujÄ…ce ENV',
-  'CloseFlow jest ĹşrĂłdĹ‚em prawdy',
+  'Połącz Google',
+  'Rozłącz Google',
+  'Brakujące ENV',
+  'CloseFlow jest źródłem prawdy',
 ]) {
   assert(settings.includes(marker), 'Settings.tsx missing marker: ' + marker);
 }

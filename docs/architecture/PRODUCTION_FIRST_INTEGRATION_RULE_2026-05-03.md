@@ -8,30 +8,30 @@ Permanentna zasada architektoniczna dla projektu CloseFlow / LeadFlow.
 
 CloseFlow pracuje production-first.
 
-Dla integracji zewnÄ™trznych, OAuth, ENV, redirect URI, webhookĂłw i deploymentĂłw ustawiamy docelowe konfiguracje produkcyjne, a nie tymczasowe ustawienia testowe.
+Dla integracji zewnętrznych, OAuth, ENV, redirect URI, webhooków i deploymentów ustawiamy docelowe konfiguracje produkcyjne, a nie tymczasowe ustawienia testowe.
 
 ## Co to znaczy w praktyce
 
 1. Vercel ENV ustawiamy przynajmniej dla `Production`.
 2. Redirect URI ustawiamy na produkcyjny publiczny adres aplikacji.
-3. OAuth Client tworzony dla funkcji produkcyjnej ma nazwÄ™ i konfiguracjÄ™ produkcyjnÄ….
-4. Dokumentacja release ma mĂłwiÄ‡, co jest aktywne produkcyjnie, co wymaga konfiguracji, a co czeka na weryfikacjÄ™ dostawcy.
-5. Nie zostawiamy rzeczy jako `testing-only`, jeĹĽeli da siÄ™ ustawiÄ‡ je docelowo produkcyjnie.
+3. OAuth Client tworzony dla funkcji produkcyjnej ma nazwę i konfigurację produkcyjną.
+4. Dokumentacja release ma mówić, co jest aktywne produkcyjnie, co wymaga konfiguracji, a co czeka na weryfikację dostawcy.
+5. Nie zostawiamy rzeczy jako `testing-only`, jeżeli da się ustawić je docelowo produkcyjnie.
 
-## WyjÄ…tek
+## Wyjątek
 
-JeĹĽeli dostawca technicznie blokuje publikacjÄ™ produkcyjnÄ… do czasu weryfikacji, konfigurujemy wszystko produkcyjnie, ale status u dostawcy moĹĽe tymczasowo pozostaÄ‡ jako wymuszony stan przejĹ›ciowy.
+Jeżeli dostawca technicznie blokuje publikację produkcyjną do czasu weryfikacji, konfigurujemy wszystko produkcyjnie, ale status u dostawcy może tymczasowo pozostać jako wymuszony stan przejściowy.
 
-PrzykĹ‚ad:
+Przykład:
 
-Google OAuth dla `https://www.googleapis.com/auth/calendar.events` moĹĽe wymagaÄ‡ Google verification. Wtedy:
+Google OAuth dla `https://www.googleapis.com/auth/calendar.events` może wymagać Google verification. Wtedy:
 
-- uĹĽywamy produkcyjnego Google Cloud projektu,
-- uĹĽywamy produkcyjnego OAuth Clienta,
-- uĹĽywamy produkcyjnego redirect URI,
+- używamy produkcyjnego Google Cloud projektu,
+- używamy produkcyjnego OAuth Clienta,
+- używamy produkcyjnego redirect URI,
 - ustawiamy Vercel Production ENV,
-- nie zmieniamy statusu funkcji w aplikacji na `active`, dopĂłki verification/smoke evidence nie przejdzie,
-- w dokumentacji zapisujemy, ĹĽe blokada wynika z procesu dostawcy, nie z testowego modelu wdroĹĽenia.
+- nie zmieniamy statusu funkcji w aplikacji na `active`, dopóki verification/smoke evidence nie przejdzie,
+- w dokumentacji zapisujemy, że blokada wynika z procesu dostawcy, nie z testowego modelu wdrożenia.
 
 ## Google Calendar aktualna zasada
 
@@ -41,21 +41,21 @@ Dla Google Calendar Sync V1 produkcyjny redirect URI to:
 https://closeflowapp.vercel.app/api/google-calendar?route=callback
 ```
 
-Nie uĹĽywaÄ‡ `/api/system` jako redirect URI, mimo ĹĽe Vercel rewrite kieruje `/api/google-calendar` do `api/system.ts`.
+Nie używać `/api/system` jako redirect URI, mimo że Vercel rewrite kieruje `/api/google-calendar` do `api/system.ts`.
 
 ## Czego nie wolno
 
-- Nie ustawiaÄ‡ losowych preview redirectĂłw jako docelowej konfiguracji.
-- Nie zostawiaÄ‡ aplikacji w trybie testowym, jeĹ›li da siÄ™ przejĹ›Ä‡ na produkcjÄ™.
-- Nie mieszaÄ‡ klienta OAuth od logowania z klientem OAuth od integracji, jeĹ›li grozi to rozbiciem logowania.
-- Nie oznaczaÄ‡ funkcji jako `active`, dopĂłki nie ma realnego smoke evidence.
+- Nie ustawiać losowych preview redirectów jako docelowej konfiguracji.
+- Nie zostawiać aplikacji w trybie testowym, jeśli da się przejść na produkcję.
+- Nie mieszać klienta OAuth od logowania z klientem OAuth od integracji, jeśli grozi to rozbiciem logowania.
+- Nie oznaczać funkcji jako `active`, dopóki nie ma realnego smoke evidence.
 
 ## Kryterium zmiany statusu funkcji na active
 
-Funkcja integracji moĹĽe byÄ‡ oznaczona jako `active`, gdy:
+Funkcja integracji może być oznaczona jako `active`, gdy:
 
-1. Production ENV sÄ… ustawione.
-2. Production redirect URI dziaĹ‚a.
-3. Provider nie blokuje dostÄ™pu albo verification jest zakoĹ„czona.
-4. Manual smoke evidence jest uzupeĹ‚nione.
-5. Guardy i build przechodzÄ….
+1. Production ENV są ustawione.
+2. Production redirect URI działa.
+3. Provider nie blokuje dostępu albo verification jest zakończona.
+4. Manual smoke evidence jest uzupełnione.
+5. Guardy i build przechodzą.

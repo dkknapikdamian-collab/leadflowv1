@@ -65,7 +65,7 @@ export const REMINDER_OFFSET_OPTIONS = [
 ];
 
 export const GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS = [
-  { value: 'default', label: 'DomyĹ›lne z Google Calendar' },
+  { value: 'default', label: 'Domyślne z Google Calendar' },
   { value: 'popup', label: 'Powiadomienie w Google Calendar' },
   { value: 'email', label: 'E-mail z Google Calendar' },
   { value: 'popup_email', label: 'Powiadomienie + e-mail' },

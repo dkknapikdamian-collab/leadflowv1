@@ -49,7 +49,7 @@ const adminAi = exists('src/pages/AdminAiSettings.tsx') ? read('src/pages/AdminA
 assert(/Stripe wymaga konfiguracji/i.test(billing), 'Billing must expose Stripe requires config copy');
 assert(/Google Calendar/i.test(billing) && /(w przygotowaniu|wymaga konfiguracji|OAuth)/i.test(billing), 'Billing must mark Google Calendar as coming soon/config dependent');
 assert(/digest/i.test(billing) && /konfiguracji mail providera/i.test(billing), 'Billing must mark digest as config dependent');
-assert(/PeĹ‚ny asystent AI|asystent AI/i.test(billing) && /Beta/i.test(billing) && /(konfiguracji|provider|szkic)/i.test(billing), 'Billing must mark AI as beta/config dependent');
+assert(/Pełny asystent AI|asystent AI/i.test(billing) && /Beta/i.test(billing) && /(konfiguracji|provider|szkic)/i.test(billing), 'Billing must mark AI as beta/config dependent');
 
 assert(/Digest e-mail/i.test(settings) && /wymaga konfiguracji mail providera/i.test(settings), 'Settings must mark digest as mail provider dependent');
 assert(/To nadal aplikacja webowa/i.test(settings), 'Settings must mark PWA as web app');
