@@ -136,7 +136,9 @@
     "check:stage03a-api-schema-contract": "node scripts/check-stage03a-api-schema-contract.cjs",
     "test:stage03a-api-schema-contract": "node --test tests/stage03a-api-schema-contract.test.cjs",
     "check:ui-developer-copy-paid-readiness": "node scripts/check-ui-developer-copy-paid-readiness.cjs",
-    "test:ui-developer-copy-paid-readiness": "node --test tests/ui-developer-copy-paid-readiness.test.cjs"
+    "test:ui-developer-copy-paid-readiness": "node --test tests/ui-developer-copy-paid-readiness.test.cjs",
+    "check:stage03b-system-fallback-boundary": "node scripts/check-stage03b-system-fallback-boundary.cjs",
+    "test:stage03b-system-fallback-boundary": "node --test tests/stage03b-system-fallback-boundary.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

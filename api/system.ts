@@ -95,6 +95,56 @@ function extractMissingColumn(error: unknown) {
   return altMatch?.[1] || null;
 }
 
+const SYSTEM_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<string, Set<string>> = {
+  profiles: new Set([
+    'id',
+    'email',
+    'full_name',
+    'company_name',
+    'workspace_id',
+    'role',
+    'is_admin',
+    'appearance_skin',
+    'planning_conflict_warnings_enabled',
+    'browser_notifications_enabled',
+    'force_logout_after',
+    'created_at',
+    'updated_at',
+    'firebase_uid',
+    'auth_uid',
+    'external_auth_uid',
+  ]),
+  workspaces: new Set([
+    'updated_at',
+    'plan_id',
+    'subscription_status',
+    'trial_ends_at',
+    'billing_provider',
+    'provider_customer_id',
+    'provider_subscription_id',
+    'next_billing_at',
+    'cancel_at_period_end',
+    'daily_digest_enabled',
+    'daily_digest_hour',
+    'daily_digest_timezone',
+    'daily_digest_recipient_email',
+    'timezone',
+  ]),
+};
+
+function getSystemSchemaFallbackTableName(tableOrPath: string) {
+  return String(tableOrPath || '').split('?')[0].trim();
+}
+
+function isSystemSchemaFallbackColumnAllowed(tableOrPath: string, column: string) {
+  const table = getSystemSchemaFallbackTableName(tableOrPath);
+  return Boolean(SYSTEM_SCHEMA_FALLBACK_ALLOWED_COLUMNS[table]?.has(column));
+}
+
+function shouldDropMissingColumnForSystemFallback(tableOrPath: string, column: string | null, payload: Record<string, unknown>) {
+  return Boolean(column && column in payload && isSystemSchemaFallbackColumnAllowed(tableOrPath, column));
+}
+
 async function safeUpdateById(table: string, id: string, payload: Record<string, unknown>) {
   let currentPayload = { ...payload };
   for (let attempt = 0; attempt < 12; attempt += 1) {
@@ -102,8 +152,8 @@ async function safeUpdateById(table: string, id: string, payload: Record<string,
       return await updateById(table, id, currentPayload);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!missingColumn || !(missingColumn in currentPayload)) throw error;
-      delete currentPayload[missingColumn];
+      if (!shouldDropMissingColumnForSystemFallback(table, missingColumn, currentPayload)) throw error;
+      delete currentPayload[missingColumn as string];
     }
   }
   throw new Error('SAFE_UPDATE_BY_ID_EXHAUSTED');
@@ -116,8 +166,8 @@ async function safeUpdateWhere(path: string, payload: Record<string, unknown>) {
       return await updateWhere(path, currentPayload);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!missingColumn || !(missingColumn in currentPayload)) throw error;
-      delete currentPayload[missingColumn];
+      if (!shouldDropMissingColumnForSystemFallback(path, missingColumn, currentPayload)) throw error;
+      delete currentPayload[missingColumn as string];
     }
   }
   throw new Error('SAFE_UPDATE_WHERE_EXHAUSTED');
@@ -130,8 +180,8 @@ async function safeInsert(table: string, payload: Record<string, unknown>) {
       return await insertWithVariants([table], [currentPayload]);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!missingColumn || !(missingColumn in currentPayload)) throw error;
-      delete currentPayload[missingColumn];
+      if (!shouldDropMissingColumnForSystemFallback(table, missingColumn, currentPayload)) throw error;
+      delete currentPayload[missingColumn as string];
     }
   }
   throw new Error('SAFE_INSERT_EXHAUSTED');
