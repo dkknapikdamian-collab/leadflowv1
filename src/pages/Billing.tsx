@@ -75,7 +75,7 @@ const BILLING_PLANS: PlanCard[] = [
     description: 'Najprostszy płatny start dla jednej osoby.',
     features: [
       'Leady, klienci i zadania',
-      'Dziś, kalendarz w aplikacji, digest i powiadomienia',
+      'Dziś, kalendarz w aplikacji, digest po konfiguracji mail providera i powiadomienia',
       'Lekki parser tekstu i szkice bez pełnego asystenta AI',
     ],
   },
@@ -90,8 +90,8 @@ const BILLING_PLANS: PlanCard[] = [
     description: 'Pełny workflow lead -> klient -> sprawa -> rozliczenie.',
     features: [
       'Wszystko z Basic',
-      'Google Calendar sync',
-      'Raport tygodniowy, import CSV i cykliczne przypomnienia',
+      'Google Calendar sync — w przygotowaniu / wymaga konfiguracji OAuth',
+      'Raport tygodniowy, import CSV i cykliczne przypomnienia po konfiguracji',
       'Bez pełnego asystenta AI',
     ],
   },
@@ -106,8 +106,8 @@ const BILLING_PLANS: PlanCard[] = [
     description: 'Plan przygotowany pod dodatki AI i większy zakres automatyzacji.',
     features: [
       'Wszystko z Pro',
-      'Pełny asystent AI w całej aplikacji',
-      'Wyszukiwanie danych, sugestie follow-upów i szkice AI premium',
+      'Pełny asystent AI Beta, po konfiguracji providera',
+      'Wyszukiwanie danych aplikacji, sugestie follow-upów i szkice do ręcznego zatwierdzenia',
     ],
     availabilityHint: 'Beta. Wymaga konfiguracji AI w Vercel. Nie obiecujemy funkcji, które nie są jeszcze realnie podpięte.',
   },
@@ -177,12 +177,12 @@ const LIMIT_ITEMS = [
   { name: 'Zadania', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
   { name: 'Wydarzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
   { name: 'Kalendarz w aplikacji', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Poranny digest', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
+  { name: 'Poranny digest', basic: 'Wymaga konfiguracji', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
   { name: 'Szkice do sprawdzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
   { name: 'Parser tekstu', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
   { name: 'Google Calendar', basic: 'Nie', pro: 'W przygotowaniu', ai: 'W przygotowaniu' },
   { name: 'Pełny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Beta' },
-  { name: 'Raport tygodniowy', basic: 'Nie', pro: 'Dostępne', ai: 'Dostępne' },
+  { name: 'Raport tygodniowy', basic: 'Nie', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
 ];
 const SETTLEMENT_STATUS_LABELS: Record<string, string> = {
   awaiting_payment: 'Czeka na płatność',
