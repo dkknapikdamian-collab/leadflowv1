@@ -1,4 +1,4 @@
-﻿# CloseFlow â€” Stage03A API/Supabase schema contract map
+# CloseFlow - Stage03A API/Supabase schema contract map
 
 **Date:** 2026-05-03  
 **Branch:** `dev-rollout-freeze`  
