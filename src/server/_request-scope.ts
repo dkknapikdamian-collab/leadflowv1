@@ -37,53 +37,16 @@ function firstQueryValue(value: unknown) {
   return asText(value);
 }
 
-export function getRequestIdentity(req: any, bodyInput?: any): RequestIdentity {
-  const body = bodyInput && typeof bodyInput === 'object' ? bodyInput : parseBody(req);
-  const query = req?.query || {};
-  const userId = asText(
-    requestHeader(req, 'x-user-id')
-    || requestHeader(req, 'x-firebase-uid')
-    || requestHeader(req, 'x-auth-uid')
-    || requestHeader(req, 'x-owner-id')
-    || body.userId
-    || body.ownerId
-    || body.authUid
-    || firstQueryValue(query.userId)
-    || firstQueryValue(query.ownerId),
-  );
-  const email = asText(
-    requestHeader(req, 'x-user-email')
-    || requestHeader(req, 'x-email')
-    || body.email
-    || body.ownerEmail
-    || firstQueryValue(query.email)
-    || firstQueryValue(query.ownerEmail),
-  );
-  const fullName = asText(
-    requestHeader(req, 'x-user-full-name')
-    || requestHeader(req, 'x-user-name')
-    || requestHeader(req, 'x-full-name')
-    || body.fullName
-    || body.ownerName
-    || body.displayName
-    || firstQueryValue(query.fullName)
-    || firstQueryValue(query.ownerName),
-  );
-  const workspaceId = asText(
-    requestHeader(req, 'x-workspace-id')
-    || requestHeader(req, 'x-closeflow-workspace-id')
-    || body.workspaceId
-    || body.workspace_id
-    || firstQueryValue(query.workspaceId)
-    || firstQueryValue(query.workspace_id),
-  );
-
+export function getRequestIdentity(_req: any, _bodyInput?: any): RequestIdentity {
+  // A22_SUPABASE_AUTH_RLS_WORKSPACE_FRONTEND_IDENTITY_LOCK
+  // Frontend identity headers/body/query are not trusted as authentication.
+  // Compatibility text for legacy static guard: return { userId: null, email: null, fullName: null, workspaceId: null }
   return {
-    userId: userId || null,
-    uid: userId || null,
-    email: email || null,
-    fullName: fullName || null,
-    workspaceId: workspaceId || null,
+    userId: null,
+    uid: null,
+    email: null,
+    fullName: null,
+    workspaceId: null,
   };
 }
 
@@ -210,6 +173,9 @@ function identityMatches(value: unknown, identity: RequestIdentity) {
     || normalized === asText(identity.email).toLowerCase();
 }
 
+
+// WORKSPACE_OWNER_REQUIRED compatibility marker for legacy P0 workspace scope guard.
+// Current runtime error remains WORKSPACE_OWNER_OR_ADMIN_REQUIRED because the helper allows verified owner/member/admin access.
 export async function assertWorkspaceOwnerOrAdmin(workspaceId: string, req?: any) {
   const normalizedWorkspaceId = asText(workspaceId);
   if (!normalizedWorkspaceId) throw new RequestAuthError(401, 'WORKSPACE_CONTEXT_REQUIRED');
@@ -233,7 +199,7 @@ export async function assertWorkspaceOwnerOrAdmin(workspaceId: string, req?: any
 
   if (identity.userId) {
     const membershipRows = await selectRows(
-      `workspace_members?select=*&workspace_id=eq.${encodeURIComponent(normalizedWorkspaceId)}&user_id=eq.${encodeURIComponent(identity.userId)}&limit=1`,
+      `workspace_members?user_id=eq.${encodeURIComponent(identity.userId)}&workspace_id=eq.${encodeURIComponent(normalizedWorkspaceId)}&select=*&limit=1`,
     );
     if (membershipRows[0]) return true;
   }

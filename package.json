@@ -142,7 +142,9 @@
     "check:stage03c-leads-fallback-boundary": "node scripts/check-stage03c-leads-fallback-boundary.cjs",
     "test:stage03c-leads-fallback-boundary": "node --test tests/stage03c-leads-fallback-boundary.test.cjs",
     "check:stage03d-optional-columns-evidence": "node scripts/check-stage03d-optional-columns-evidence.cjs",
-    "test:stage03d-optional-columns-evidence": "node --test tests/stage03d-optional-columns-evidence.test.cjs"
+    "test:stage03d-optional-columns-evidence": "node --test tests/stage03d-optional-columns-evidence.test.cjs",
+    "check:faza2-etap21-workspace-isolation": "node scripts/check-faza2-etap21-workspace-isolation.cjs",
+    "test:faza2-etap21-workspace-isolation": "node --test tests/faza2-etap21-workspace-isolation.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
