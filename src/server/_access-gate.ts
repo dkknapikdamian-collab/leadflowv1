@@ -249,7 +249,10 @@ export async function assertWorkspaceFeatureAccess(
   throw makeGateError('WORKSPACE_FEATURE_ACCESS_REQUIRED', 402);
 }
 
-export async function assertWorkspaceAiAllowed(workspaceInput: unknown = {}, planInput?: unknown) {
+export async function assertWorkspaceAiAllowed(
+  workspaceInput: unknown = {},
+  planInput?: unknown,
+) {
   if (process.env.VITE_AI_USAGE_UNLIMITED === 'true' && process.env.NODE_ENV !== 'production') return true;
 
   try {
@@ -257,30 +260,6 @@ export async function assertWorkspaceAiAllowed(workspaceInput: unknown = {}, pla
   } catch {
     throw makeGateError('WORKSPACE_AI_ACCESS_REQUIRED', 402);
   }
-}, planInput?: unknown) {
-  const workspace = await resolveWorkspaceAccessInput(workspaceInput, planInput);
-  const row = asRecord(workspace);
-  const status = readWorkspaceStatus(workspace);
-  const nextBillingAt = readNextBillingAt(workspace);
-  const plan = asLowerText(
-    isRequestLike(planInput)
-      ? row.plan ?? row.planKey ?? row.plan_key ?? row.billing_plan ?? row.subscription_plan ?? row.product_plan
-      : planInput
-        ?? row.plan
-        ?? row.planKey
-        ?? row.plan_key
-        ?? row.billing_plan
-        ?? row.subscription_plan
-        ?? row.product_plan,
-  );
-
-  if (process.env.VITE_AI_USAGE_UNLIMITED === 'true') return true;
-  if (process.env.AI_ENABLED === 'true' && (status === 'trial_active' || status === 'trial_ending')) return true;
-  if (status === 'paid_active' && !isPastDate(nextBillingAt) && (plan === 'ai' || plan.includes('ai') || plan === 'pro')) return true;
-  if (status === 'trial_active' || status === 'trial_ending') return true;
-  if (status === 'active' || status === 'trialing' || status === 'trial') return true;
-
-  throw makeGateError('WORKSPACE_AI_ACCESS_REQUIRED', 402);
 }
 
 function normalizeLimitKey(entityName: unknown) {
