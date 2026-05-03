@@ -1,6 +1,6 @@
 # Release Candidate Evidence — CloseFlow / LeadFlow
 
-**Data wygenerowania:** 2026-05-02T14:24:54.144Z  
+**Data wygenerowania:** 2026-05-03T07:48:11.476Z  
 **Status evidence gate:** ⚠️ **WARN**  
 **Zakres:** ETAP 0.1 — Release Candidate Evidence Gate  
 **Uwaga:** ten dokument nie zmienia działania aplikacji. To dowód release’u dla audytu.
@@ -14,10 +14,10 @@
 | Repo root | `C:/Users/malim/Desktop/biznesy_ai/2.closeflow` |
 | Repo remote | `https://github.com/dkknapikdamian-collab/leadflowv1.git` |
 | Branch | `dev-rollout-freeze` |
-| Commit | `c00dadddf6b8a766758dd3ac6116c43d602d5d82` |
-| Short commit | `c00dadd` |
-| Commit date | `2026-05-02T15:41:28+02:00` |
-| Commit subject | docs: add audit-updated execution stages |
+| Commit | `24b33afede3ca4601be6317154bddf2c882e4e1f` |
+| Short commit | `24b33af` |
+| Commit date | `2026-05-02T16:24:55+02:00` |
+| Commit subject | Fix CloseFlow A13 critical release gate |
 | Preview URL | [https://closeflowapp.vercel.app](https://closeflowapp.vercel.app) |
 | Working tree | DIRTY |
 | Node | `v24.14.0` |
@@ -28,62 +28,10 @@
 ### Git working tree
 
 ```text
-M .env.example
- M .gitignore
- M README.md
- D api/_supabase.ts
- D api/billing.ts
- M api/clients.ts
- M api/leads.ts
- M api/me.ts
- D api/portal.ts
- D api/storage-upload-health.ts
- D api/storage-upload.ts
- M api/system.ts
- M docs/release/RELEASE_CANDIDATE_2026-05-02.md
- M docs/roadmap/closeflow_audit_updated_execution_stages_2026-05-02.md
- M public/icons/closeflow-icon.svg
- M public/manifest.webmanifest
- M public/service-worker.js
- M scripts/check-a15-email-verification.cjs
- M scripts/check-p7-lead-service-closeout.cjs
- M src/App.tsx
- M src/components/GlobalAiAssistant.tsx
- M src/components/GlobalQuickActions.tsx
- M src/components/Layout.tsx
- M src/components/QuickAiCapture.tsx
- M src/components/StatShortcutCard.tsx
- M src/components/TodayAiAssistant.tsx
- M src/lib/ai-assistant.ts
- M src/lib/ai-capture.ts
- M src/lib/ai-config.ts
- M src/lib/ai-direct-write-guard.ts
- M src/lib/ai-drafts.ts
- M src/lib/ai-usage-guard.ts
- M src/lib/relation-value.ts
- M src/pages/AdminAiSettings.tsx
- M src/pages/AiDrafts.tsx
- M src/pages/Calendar.tsx
- M src/pages/Cases.tsx
- M src/pages/ClientDetail.tsx
- M src/pages/LeadDetail.tsx
- M src/pages/Leads.tsx
- M src/pages/Login.tsx
- M src/pages/Settings.tsx
- M src/pages/Tasks.tsx
- M src/pages/Today.tsx
- M src/server/_access-gate.ts
+M src/lib/supabase-fallback.ts
  M src/server/_request-scope.ts
- M src/server/_stripe.ts
- M src/server/ai-assistant.ts
- M src/server/ai-capture.ts
- M src/server/ai-config.ts
-D  test-results/last-test-summary.txt
- M vercel.json
-?? api/billing-checkout.ts
-?? api/daily-digest.ts
-?? api/stripe-webhook.ts
-?? api/support.ts
+?? docs/roadmap/closeflow_phase0_runtime_api_workspace_headers_fix_2026-05-02.md
+?? tests/phase0-api-client-workspace-headers.test.cjs
 ```
 
 ---
@@ -188,9 +136,9 @@ D  test-results/last-test-summary.txt
 | Script | Status | Exit code | Czas |
 |---|---:|---:|---:|
 | `check:polish-mojibake` | PASS | 0 | 0.4s |
-| `verify:closeflow:quiet` | PASS | 0 | 22.3s |
-| `test:critical` | PASS | 0 | 0.6s |
-| `build` | PASS | 0 | 20.7s |
+| `verify:closeflow:quiet` | PASS | 0 | 16.4s |
+| `test:critical` | PASS | 0 | 0.7s |
+| `build` | PASS | 0 | 5.2s |
 
 ### Wynik builda
 
@@ -308,7 +256,7 @@ OK: no Polish mojibake detected.
 
 - Command: `npm.cmd run verify:closeflow:quiet`
 - Exit code: `0`
-- Duration: `22.3s`
+- Duration: `16.4s`
 
 ```text
 STDOUT:
@@ -420,7 +368,7 @@ CloseFlow quiet release gate passed.
 
 - Command: `npm.cmd run test:critical`
 - Exit code: `0`
-- Duration: `0.6s`
+- Duration: `0.7s`
 
 ```text
 STDOUT:
@@ -431,7 +379,7 @@ STDOUT:
 == CloseFlow compact test summary ==
 Mode: critical
 Critical files: 6
-Tests: 13 | Pass: 13 | Fail: 0 | 219 ms
+Tests: 13 | Pass: 13 | Fail: 0 | 179 ms
 Full log: test-results\last-test-full.log
 
 OK: testy przeszły.
@@ -441,7 +389,7 @@ OK: testy przeszły.
 
 - Command: `npm.cmd run build`
 - Exit code: `0`
-- Duration: `20.7s`
+- Duration: `5.2s`
 
 ```text
 STDOUT:
@@ -469,50 +417,50 @@ computing gzip size...
 [2mdist/[22m[35massets/ClientDetail-H5r4uBB6.css                            [39m[1m[2m 15.46 kB[22m[1m[22m[2m │ gzip:   3.00 kB[22m
 [2mdist/[22m[35massets/AiDrafts-ICOvzt1S.css                                [39m[1m[2m 17.60 kB[22m[1m[22m[2m │ gzip:   3.26 kB[22m
 [2mdist/[22m[35massets/index-B3l78PTx.css                                   [39m[1m[2m354.30 kB[22m[1m[22m[2m │ gzip:  49.43 kB[22m
-[2mdist/[22m[36massets/workspace-context-CTXOxGub.js                        [39m[1m[2m  0.10 kB[22m[1m[22m[2m │ gzip:   0.12 kB[22m
+[2mdist/[22m[36massets/workspace-context-CGkulUyh.js                        [39m[1m[2m  0.10 kB[22m[1m[22m[2m │ gzip:   0.12 kB[22m
 [2mdist/[22m[36massets/app-preferences-OunjYGCB.js                          [39m[1m[2m  0.25 kB[22m[1m[22m[2m │ gzip:   0.19 kB[22m
-[2mdist/[22m[36massets/label-DAMh3UYh.js                                    [39m[1m[2m  0.39 kB[22m[1m[22m[2m │ gzip:   0.28 kB[22m
+[2mdist/[22m[36massets/label-B27kwzLI.js                                    [39m[1m[2m  0.39 kB[22m[1m[22m[2m │ gzip:   0.28 kB[22m
 [2mdist/[22m[36massets/firebase-gKjVCrxB.js                                 [39m[1m[2m  0.53 kB[22m[1m[22m[2m │ gzip:   0.38 kB[22m
-[2mdist/[22m[36massets/input-DgtT69g_.js                                    [39m[1m[2m  0.61 kB[22m[1m[22m[2m │ gzip:   0.38 kB[22m
+[2mdist/[22m[36massets/input-BfNGUCHo.js                                    [39m[1m[2m  0.61 kB[22m[1m[22m[2m │ gzip:   0.38 kB[22m
 [2mdist/[22m[36massets/browser-DU5MMTTh.js                                  [39m[1m[2m  0.62 kB[22m[1m[22m[2m │ gzip:   0.43 kB[22m
-[2mdist/[22m[36massets/card-OY7eCKsh.js                                     [39m[1m[2m  1.03 kB[22m[1m[22m[2m │ gzip:   0.40 kB[22m
-[2mdist/[22m[36massets/tabs-PR71iQtR.js                                     [39m[1m[2m  1.14 kB[22m[1m[22m[2m │ gzip:   0.48 kB[22m
-[2mdist/[22m[36massets/options-Dm6iEn3Z.js                                  [39m[1m[2m  1.60 kB[22m[1m[22m[2m │ gzip:   0.62 kB[22m
-[2mdist/[22m[36massets/textarea-B1ADIIeB.js                                 [39m[1m[2m  2.73 kB[22m[1m[22m[2m │ gzip:   1.03 kB[22m
-[2mdist/[22m[36massets/schedule-conflicts-BUDtjVOW.js                       [39m[1m[2m  2.76 kB[22m[1m[22m[2m │ gzip:   1.13 kB[22m
+[2mdist/[22m[36massets/card-n57dbNAw.js                                     [39m[1m[2m  1.03 kB[22m[1m[22m[2m │ gzip:   0.40 kB[22m
+[2mdist/[22m[36massets/tabs-D_TiDakG.js                                     [39m[1m[2m  1.14 kB[22m[1m[22m[2m │ gzip:   0.48 kB[22m
+[2mdist/[22m[36massets/options-BgH3h7l-.js                                  [39m[1m[2m  1.60 kB[22m[1m[22m[2m │ gzip:   0.62 kB[22m
+[2mdist/[22m[36massets/textarea-D0o1MHyI.js                                 [39m[1m[2m  2.73 kB[22m[1m[22m[2m │ gzip:   1.03 kB[22m
+[2mdist/[22m[36massets/schedule-conflicts-Cy0IzNR-.js                       [39m[1m[2m  2.76 kB[22m[1m[22m[2m │ gzip:   1.13 kB[22m
 [2mdist/[22m[36massets/case-lifecycle-v1-BrO9kis0.js                        [39m[1m[2m  2.98 kB[22m[1m[22m[2m │ gzip:   1.12 kB[22m
 [2mdist/[22m[36massets/UiPreviewVNext-DJaXv13B.js                           [39m[1m[2m  6.63 kB[22m[1m[22m[2m │ gzip:   1.77 kB[22m
-[2mdist/[22m[36massets/AdminAiSettings-DnZjlQQy.js                          [39m[1m[2m  6.78 kB[22m[1m[22m[2m │ gzip:   2.42 kB[22m
-[2mdist/[22m[36massets/ClientPortal-CDFgBi48.js                             [39m[1m[2m  9.52 kB[22m[1m[22m[2m │ gzip:   3.48 kB[22m
-[2mdist/[22m[36massets/TodayStable-DGfvbE-2.js                              [39m[1m[2m 11.01 kB[22m[1m[22m[2m │ gzip:   3.61 kB[22m
-[2mdist/[22m[36massets/TasksStable-BAJ0gBSa.js                              [39m[1m[2m 12.33 kB[22m[1m[22m[2m │ gzip:   4.05 kB[22m
-[2mdist/[22m[36massets/ResponseTemplates-sc7wiK1b.js                        [39m[1m[2m 12.38 kB[22m[1m[22m[2m │ gzip:   3.56 kB[22m
-[2mdist/[22m[36massets/Login-x_dMQ2JQ.js                                    [39m[1m[2m 13.95 kB[22m[1m[22m[2m │ gzip:   4.27 kB[22m
-[2mdist/[22m[36massets/Clients-51MlY1y6.js                                  [39m[1m[2m 14.52 kB[22m[1m[22m[2m │ gzip:   4.38 kB[22m
-[2mdist/[22m[36massets/SupportCenter-CRQN-f5e.js                            [39m[1m[2m 16.05 kB[22m[1m[22m[2m │ gzip:   5.17 kB[22m
-[2mdist/[22m[36massets/NotificationsCenter-Bw5NXS76.js                      [39m[1m[2m 17.52 kB[22m[1m[22m[2m │ gzip:   5.24 kB[22m
-[2mdist/[22m[36massets/Billing-DNO8---A.js                                  [39m[1m[2m 19.18 kB[22m[1m[22m[2m │ gzip:   6.14 kB[22m
-[2mdist/[22m[36massets/Activity-BjBu5O2h.js                                 [39m[1m[2m 20.10 kB[22m[1m[22m[2m │ gzip:   5.44 kB[22m
-[2mdist/[22m[36massets/Settings-bhkZIVnU.js                                 [39m[1m[2m 20.26 kB[22m[1m[22m[2m │ gzip:   5.46 kB[22m
-[2mdist/[22m[36massets/Cases-CxsbBOeo.js                                    [39m[1m[2m 20.32 kB[22m[1m[22m[2m │ gzip:   6.60 kB[22m
-[2mdist/[22m[36massets/Templates-Bb5ksQZ3.js                                [39m[1m[2m 23.32 kB[22m[1m[22m[2m │ gzip:   6.43 kB[22m
-[2mdist/[22m[36massets/Leads-D1ihSHp0.js                                    [39m[1m[2m 24.72 kB[22m[1m[22m[2m │ gzip:   7.72 kB[22m
-[2mdist/[22m[36massets/ClientDetail-CzIMxeEs.js                             [39m[1m[2m 30.30 kB[22m[1m[22m[2m │ gzip:   8.40 kB[22m
-[2mdist/[22m[36massets/AiDrafts-DDRU8Oal.js                                 [39m[1m[2m 32.59 kB[22m[1m[22m[2m │ gzip:   9.18 kB[22m
+[2mdist/[22m[36massets/AdminAiSettings-BniXl2E-.js                          [39m[1m[2m  6.78 kB[22m[1m[22m[2m │ gzip:   2.41 kB[22m
+[2mdist/[22m[36massets/ClientPortal-DH7s3bvD.js                             [39m[1m[2m  9.52 kB[22m[1m[22m[2m │ gzip:   3.48 kB[22m
+[2mdist/[22m[36massets/TodayStable-CfhA3MR4.js                              [39m[1m[2m 11.01 kB[22m[1m[22m[2m │ gzip:   3.61 kB[22m
+[2mdist/[22m[36massets/TasksStable-sBr6-X9l.js                              [39m[1m[2m 12.33 kB[22m[1m[22m[2m │ gzip:   4.05 kB[22m
+[2mdist/[22m[36massets/ResponseTemplates-CPUxvTKF.js                        [39m[1m[2m 12.38 kB[22m[1m[22m[2m │ gzip:   3.56 kB[22m
+[2mdist/[22m[36massets/Login-C5wY_Vnc.js                                    [39m[1m[2m 13.95 kB[22m[1m[22m[2m │ gzip:   4.27 kB[22m
+[2mdist/[22m[36massets/Clients-BzyAJrdy.js                                  [39m[1m[2m 14.52 kB[22m[1m[22m[2m │ gzip:   4.38 kB[22m
+[2mdist/[22m[36massets/SupportCenter-DEUpXmPM.js                            [39m[1m[2m 16.05 kB[22m[1m[22m[2m │ gzip:   5.17 kB[22m
+[2mdist/[22m[36massets/NotificationsCenter-PHLguS5D.js                      [39m[1m[2m 17.52 kB[22m[1m[22m[2m │ gzip:   5.24 kB[22m
+[2mdist/[22m[36massets/Billing-Clgoqd3j.js                                  [39m[1m[2m 19.18 kB[22m[1m[22m[2m │ gzip:   6.14 kB[22m
+[2mdist/[22m[36massets/Activity-BPfTtcqt.js                                 [39m[1m[2m 20.10 kB[22m[1m[22m[2m │ gzip:   5.44 kB[22m
+[2mdist/[22m[36massets/Settings-CXyhtPuW.js                                 [39m[1m[2m 20.26 kB[22m[1m[22m[2m │ gzip:   5.46 kB[22m
+[2mdist/[22m[36massets/Cases-0yQPsYmE.js                                    [39m[1m[2m 20.32 kB[22m[1m[22m[2m │ gzip:   6.60 kB[22m
+[2mdist/[22m[36massets/Templates-naiaEWvR.js                                [39m[1m[2m 23.32 kB[22m[1m[22m[2m │ gzip:   6.43 kB[22m
+[2mdist/[22m[36massets/Leads-BGjA9dMO.js                                    [39m[1m[2m 24.72 kB[22m[1m[22m[2m │ gzip:   7.72 kB[22m
+[2mdist/[22m[36massets/ClientDetail-DczLN-ib.js                             [39m[1m[2m 30.30 kB[22m[1m[22m[2m │ gzip:   8.40 kB[22m
+[2mdist/[22m[36massets/AiDrafts-Dek2GrHO.js                                 [39m[1m[2m 32.59 kB[22m[1m[22m[2m │ gzip:   9.18 kB[22m
 [2mdist/[22m[36massets/vendor-feedback-CWL61Qmj.js                          [39m[1m[2m 33.84 kB[22m[1m[22m[2m │ gzip:   9.57 kB[22m
 [2mdist/[22m[36massets/vendor-date-DxUNpV6I.js                              [39m[1m[2m 34.31 kB[22m[1m[22m[2m │ gzip:   9.69 kB[22m
-[2mdist/[22m[36massets/CaseDetail-VIkn_GJC.js                               [39m[1m[2m 34.52 kB[22m[1m[22m[2m │ gzip:   8.92 kB[22m
+[2mdist/[22m[36massets/CaseDetail-CeW5gXem.js                               [39m[1m[2m 34.52 kB[22m[1m[22m[2m │ gzip:   8.92 kB[22m
 [2mdist/[22m[36massets/vendor-routing-DzBk4N5V.js                           [39m[1m[2m 38.21 kB[22m[1m[22m[2m │ gzip:  13.69 kB[22m
 [2mdist/[22m[36massets/vendor-icons-BHsd-uM9.js                             [39m[1m[2m 39.06 kB[22m[1m[22m[2m │ gzip:   7.67 kB[22m
-[2mdist/[22m[36massets/Calendar-BLr7ulBN.js                                 [39m[1m[2m 48.16 kB[22m[1m[22m[2m │ gzip:  12.44 kB[22m
-[2mdist/[22m[36massets/Layout-BCCCgthh.js                                   [39m[1m[2m 53.34 kB[22m[1m[22m[2m │ gzip:  16.59 kB[22m
-[2mdist/[22m[36massets/LeadDetail-B7WBaim_.js                               [39m[1m[2m 54.07 kB[22m[1m[22m[2m │ gzip:  13.62 kB[22m
+[2mdist/[22m[36massets/Calendar-DoU6nNK-.js                                 [39m[1m[2m 48.16 kB[22m[1m[22m[2m │ gzip:  12.43 kB[22m
+[2mdist/[22m[36massets/Layout-CBmzpTm1.js                                   [39m[1m[2m 53.34 kB[22m[1m[22m[2m │ gzip:  16.59 kB[22m
+[2mdist/[22m[36massets/LeadDetail-DLz2_QqY.js                               [39m[1m[2m 54.07 kB[22m[1m[22m[2m │ gzip:  13.62 kB[22m
 [2mdist/[22m[36massets/UiPreviewVNextFull-BeANUZ-K.js                       [39m[1m[2m 71.76 kB[22m[1m[22m[2m │ gzip:  13.86 kB[22m
 [2mdist/[22m[36massets/vendor-radix-fPQS1UQN.js                             [39m[1m[2m 78.01 kB[22m[1m[22m[2m │ gzip:  23.55 kB[22m
 [2mdist/[22m[36massets/vendor-firebase-DmwLizUx.js                          [39m[1m[2m183.59 kB[22m[1m[22m[2m │ gzip:  37.96 kB[22m
-[2mdist/[22m[36massets/index-CP4kSHku.js                                    [39m[1m[2m218.95 kB[22m[1m[22m[2m │ gzip:  62.06 kB[22m
+[2mdist/[22m[36massets/index-DcBF9dS3.js                                    [39m[1m[2m219.42 kB[22m[1m[22m[2m │ gzip:  62.23 kB[22m
 [2mdist/[22m[36massets/vendor-react-8zHiQ6Mn.js                             [39m[1m[2m336.75 kB[22m[1m[22m[2m │ gzip: 110.36 kB[22m
-[32m✓ built in 19.73s[39m
+[32m✓ built in 4.40s[39m
 ```
 
 ---

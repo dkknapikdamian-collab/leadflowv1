@@ -1,3 +1,4 @@
+import { requireSupabaseRequestContext } from './_supabase-auth.js';
 /* A13_STATIC_CONTRACT_GUARD requireSupabaseRequestContext */
 export function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
@@ -11,6 +12,14 @@ function parseBody(req: any) {
     try { return JSON.parse(req.body || '{}'); } catch { return {}; }
   }
   return req.body;
+}
+
+function requestHeader(req: any, name: string) {
+  const headers = req?.headers || {};
+  const lower = name.toLowerCase();
+  const direct = headers[name] ?? headers[lower] ?? headers[name.toUpperCase()];
+  if (Array.isArray(direct)) return asText(direct[0]);
+  return asText(direct);
 }
 
 export function getRequestIdentity(req: any, bodyInput?: any) {
@@ -65,7 +74,24 @@ export function getRequestIdentity(req: any, bodyInput?: any) {
 
 export async function resolveRequestWorkspaceId(req: any, bodyInput?: any) {
   const body = bodyInput && typeof bodyInput === 'object' ? bodyInput : parseBody(req);
-  return asText(body.workspaceId || req?.headers?.['x-workspace-id']);
+  const query = req?.query || {};
+  const directWorkspaceId = asText(
+    body.workspaceId
+    || body.workspace_id
+    || requestHeader(req, 'x-workspace-id')
+    || requestHeader(req, 'x-closeflow-workspace-id')
+    || query.workspaceId
+    || query.workspace_id,
+  );
+
+  if (directWorkspaceId) return directWorkspaceId;
+
+  try {
+    const context = await requireSupabaseRequestContext(req);
+    return asText(context.workspaceId);
+  } catch {
+    return '';
+  }
 }
 
 export function withWorkspaceFilter(path: string, workspaceId: string) {

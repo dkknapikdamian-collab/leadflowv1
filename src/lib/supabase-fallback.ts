@@ -77,12 +77,26 @@ export function persistWorkspaceId(workspaceId?: string | null) {
 }
 async function getAuthHeaders() {
   const accessToken = await getSupabaseAccessToken();
+  const authContext = getAuthContext();
+  const workspaceId = getStoredWorkspaceId();
+  const headers: Record<string, string> = {};
 
-  return accessToken
-    ? { Authorization: `Bearer ${accessToken}` }
-    : {};
+  if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+  if (authContext.uid) {
+    headers['x-user-id'] = authContext.uid;
+    headers['x-firebase-uid'] = authContext.uid;
+    headers['x-auth-uid'] = authContext.uid;
+  }
+  if (authContext.email) headers['x-user-email'] = authContext.email;
+  if (authContext.fullName) headers['x-user-full-name'] = authContext.fullName;
+  if (workspaceId) {
+    headers['x-workspace-id'] = workspaceId;
+    headers['x-closeflow-workspace-id'] = workspaceId;
+  }
+
+  return headers;
 }
-function getCacheScope() { const ctx = getAuthContext(); return `${ctx.uid || 'anon'}:${ctx.email || 'anon'}`; }
+function getCacheScope() { const ctx = getAuthContext(); return `${ctx.uid || 'anon'}:${ctx.email || 'anon'}:${getStoredWorkspaceId() || 'no-workspace'}`; }
 
 async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   const method = (init?.method || 'GET').toUpperCase();
@@ -276,8 +290,16 @@ export async function updateTaskInSupabase(input: Record<string, unknown> & { id
 export async function deleteTaskFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/tasks?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function updateEventInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/events', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteEventFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
-export async function fetchMeFromSupabase(_input?: { uid?: string; email?: string; fullName?: string }) {
-  return callApi<MeResponse>('/api/me');
+export async function fetchMeFromSupabase(input?: { uid?: string; email?: string; fullName?: string }) {
+  const headers: Record<string, string> = {};
+  if (input?.uid) {
+    headers['x-user-id'] = input.uid;
+    headers['x-firebase-uid'] = input.uid;
+    headers['x-auth-uid'] = input.uid;
+  }
+  if (input?.email) headers['x-user-email'] = input.email;
+  if (input?.fullName) headers['x-user-full-name'] = input.fullName;
+  return callApi<MeResponse>('/api/me', { headers });
 }
 export async function updateProfileSettingsInSupabase(input: ProfileSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/system?kind=profile-settings', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function updateWorkspaceSettingsInSupabase(input: WorkspaceSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/workspace-settings', { method: 'PATCH', body: JSON.stringify(input) }); }
