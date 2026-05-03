@@ -371,4 +371,27 @@ export async function deleteCaseTemplateFromSupabase(id: string) {
   return callApi<Record<string, unknown>>(`/api/case-templates?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
 }
 
+export async function syncGoogleCalendarInboundInSupabase(input?: { daysBack?: number; daysForward?: number; updatedMin?: string | null }) {
+  // GOOGLE_CALENDAR_STAGE10L_CLIENT_INBOUND_SYNC_HELPER_REPAIR
+  // GOOGLE_CALENDAR_STAGE10K_CLIENT_INBOUND_SYNC_HELPER
+  return callApi<{
+    ok: boolean;
+    connected?: boolean;
+    scanned?: number;
+    created?: number;
+    updated?: number;
+    deleted?: number;
+    conflicts?: Array<{
+      googleEventId?: string;
+      title?: string;
+      startAt?: string | null;
+      endAt?: string | null;
+      conflictCount?: number;
+      message?: string | null;
+    }>;
+  }>('/api/system?kind=google-calendar&route=sync-inbound', {
+    method: 'POST',
+    body: JSON.stringify(input || {}),
+  });
+}
 

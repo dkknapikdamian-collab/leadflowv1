@@ -1,10 +1,12 @@
 import { isValid, parseISO } from 'date-fns';
+import { toast } from 'sonner';
 import {
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchMeFromSupabase,
   fetchTasksFromSupabase,
+  syncGoogleCalendarInboundInSupabase,
   getStoredWorkspaceId,
   isSupabaseConfigured,
 } from './supabase-fallback';
@@ -203,6 +205,29 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
     recurrenceEndAt,
     recurrenceCount,
   };
+}
+
+let lastGoogleCalendarInboundPullAt = 0;
+const GOOGLE_CALENDAR_STAGE10K_INBOUND_PULL_THROTTLE_MS = 60_000;
+
+async function maybePullGoogleCalendarInboundBeforeBundle() {
+  // GOOGLE_CALENDAR_STAGE10K_AUTO_PULL_BEFORE_BUNDLE
+  if (typeof window === 'undefined') return;
+  const now = Date.now();
+  if (now - lastGoogleCalendarInboundPullAt < GOOGLE_CALENDAR_STAGE10K_INBOUND_PULL_THROTTLE_MS) return;
+  lastGoogleCalendarInboundPullAt = now;
+  try {
+    const result = await syncGoogleCalendarInboundInSupabase({ daysBack: 30, daysForward: 90 });
+    const conflicts = Array.isArray(result?.conflicts) ? result.conflicts : [];
+    if (conflicts.length) {
+      const first = conflicts[0] || {};
+      toast.warning('Konflikt z Google Calendar', {
+        description: first.message || ('Wykryto ' + conflicts.length + ' konfliktów terminów po synchronizacji z Google Calendar.'),
+      });
+    }
+  } catch (error) {
+    console.warn('GOOGLE_CALENDAR_STAGE10K_INBOUND_PULL_FAILED', error);
+  }
 }
 
 // P0_TODAY_403_RESILIENT_BUNDLE

@@ -9,6 +9,7 @@ import {
   upsertGoogleCalendarConnection,
   verifyGoogleOAuthState,
 } from './google-calendar-sync.js';
+import { syncGoogleCalendarInbound } from './google-calendar-inbound.js';
 
 function getUserId(req: any) {
   const raw =
@@ -74,6 +75,20 @@ export default async function handler(req: any, res: any) {
     const userId = getUserId(req);
     if (!userId) {
       res.status(401).json({ error: 'GOOGLE_CALENDAR_USER_REQUIRED' });
+      return;
+    }
+
+    if (req.method === 'POST' && action === 'sync-inbound') {
+      // GOOGLE_CALENDAR_STAGE10K_SYNC_INBOUND_ROUTE
+      await assertWorkspaceWriteAccess(workspaceId, req);
+      const result = await syncGoogleCalendarInbound({
+        workspaceId,
+        userId,
+        daysBack: body.daysBack,
+        daysForward: body.daysForward,
+        updatedMin: body.updatedMin || null,
+      });
+      res.status(200).json(result);
       return;
     }
 

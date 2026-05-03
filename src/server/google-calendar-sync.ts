@@ -538,3 +538,44 @@ export async function deleteGoogleCalendarEvent(connection: GoogleCalendarConnec
   }
   return { ok: true };
 }
+
+export async function listGoogleCalendarEvents(connection: GoogleCalendarConnection, options?: {
+  timeMin?: string | null;
+  timeMax?: string | null;
+  updatedMin?: string | null;
+  syncToken?: string | null;
+  maxResults?: number | null;
+}) {
+  // GOOGLE_CALENDAR_STAGE10K_INBOUND_LIST_EVENTS
+  const accessToken = await getUsableAccessToken(connection);
+  const calendarId = encodeURIComponent(String(connection.google_calendar_id || 'primary'));
+  const baseParams = new URLSearchParams();
+  baseParams.set('showDeleted', 'true');
+  baseParams.set('maxResults', String(Math.max(1, Math.min(2500, Number(options?.maxResults || 2500)))));
+  if (options?.syncToken) {
+    baseParams.set('syncToken', String(options.syncToken));
+  } else {
+    if (options?.timeMin) baseParams.set('timeMin', String(options.timeMin));
+    if (options?.timeMax) baseParams.set('timeMax', String(options.timeMax));
+    if (options?.updatedMin) baseParams.set('updatedMin', String(options.updatedMin));
+    baseParams.set('singleEvents', 'true');
+    baseParams.set('orderBy', 'startTime');
+  }
+  const items: any[] = [];
+  let nextPageToken = '';
+  let nextSyncToken = '';
+  do {
+    const params = new URLSearchParams(baseParams);
+    if (nextPageToken) params.set('pageToken', nextPageToken);
+    const response = await fetch(GOOGLE_CALENDAR_API_BASE + '/calendars/' + calendarId + '/events?' + params.toString(), {
+      method: 'GET',
+      headers: { Authorization: 'Bearer ' + accessToken },
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(String((data as any)?.error?.message || 'GOOGLE_EVENT_LIST_FAILED'));
+    if (Array.isArray((data as any).items)) items.push(...(data as any).items);
+    nextPageToken = String((data as any).nextPageToken || '');
+    nextSyncToken = String((data as any).nextSyncToken || nextSyncToken || '');
+  } while (nextPageToken);
+  return { items, nextSyncToken };
+}
