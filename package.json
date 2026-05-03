@@ -156,7 +156,9 @@
     "check:faza3-etap32c-access-gate-runtime-hotfix-v3": "node scripts/check-faza3-etap32c-access-gate-runtime-hotfix-v3.cjs",
     "test:faza3-etap32c-access-gate-runtime-hotfix-v3": "node --test tests/faza3-etap32c-access-gate-runtime-hotfix-v3.test.cjs",
     "check:faza3-etap32d-plan-based-ui-visibility": "node scripts/check-faza3-etap32d-plan-based-ui-visibility.cjs",
-    "test:faza3-etap32d-plan-based-ui-visibility": "node --test tests/faza3-etap32d-plan-based-ui-visibility.test.cjs"
+    "test:faza3-etap32d-plan-based-ui-visibility": "node --test tests/faza3-etap32d-plan-based-ui-visibility.test.cjs",
+    "check:faza3-etap32e-settings-digest-billing-visibility-smoke": "node scripts/check-faza3-etap32e-settings-digest-billing-visibility-smoke.cjs",
+    "test:faza3-etap32e-settings-digest-billing-visibility-smoke": "node --test tests/faza3-etap32e-settings-digest-billing-visibility-smoke.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

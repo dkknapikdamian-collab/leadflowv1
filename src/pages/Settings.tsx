@@ -218,10 +218,9 @@ useEffect(() => {
       { label: 'Dostęp', value: accessLabel },
     ],
     [accessLabel, accountEmail, planLabel, profile.fullName, workspaceName],
-  );
-
-
-  const canUseGoogleCalendarByPlan = Boolean(isAdmin || isAppOwner || access?.features?.googleCalendar);
+  );  const canUseGoogleCalendarByPlan = Boolean(isAdmin || isAppOwner || access?.features?.googleCalendar);
+  const canUseDigestByPlan = Boolean(isAdmin || isAppOwner || access?.features?.digest);
+  const digestUiVisibleByPlan = DAILY_DIGEST_EMAIL_UI_VISIBLE && canUseDigestByPlan;
   const googleCalendarMissingText = googleCalendarStatus?.missing?.length
     ? googleCalendarStatus.missing.join(', ')
     : '';
@@ -229,6 +228,11 @@ useEffect(() => {
   // GOOGLE_CALENDAR_SYNC_V1_STAGE03_SETTINGS_UI_CONNECT
   const loadGoogleCalendarStatus = async () => {
     if (!workspace?.id || !activeUserId) return;
+
+    if (!canUseGoogleCalendarByPlan) {
+      setGoogleCalendarStatus({ configured: false, connected: false, missing: ['DISABLED_BY_PLAN'] });
+      return;
+    }
 
     setCheckingGoogleCalendar(true);
     try {
@@ -254,8 +258,13 @@ useEffect(() => {
   };
 
   useEffect(() => {
+    if (!canUseGoogleCalendarByPlan) {
+      setGoogleCalendarStatus({ configured: false, connected: false, missing: ['DISABLED_BY_PLAN'] });
+      return;
+    }
+
     void loadGoogleCalendarStatus();
-  }, [workspace?.id, activeUserId, activeUserEmail]);
+  }, [workspace?.id, activeUserId, activeUserEmail, canUseGoogleCalendarByPlan]);
 
   const handleConnectGoogleCalendar = async () => {
     if (!workspace?.id || !activeUserId) {
@@ -724,7 +733,7 @@ useEffect(() => {
 
         <div className="settings-shell">
           <section className="settings-main-column">
-              <section className="settings-section-card" data-google-calendar-stage12="outbound-backfill">
+              <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-stage12="outbound-backfill">
                 <div className="settings-section-head">
                   <div>
                     <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
@@ -750,7 +759,7 @@ useEffect(() => {
                 ) : null}
               </section>
 
-                        <section className="settings-section-card" data-google-calendar-reminder-ui="stage06">
+                        <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06">
               <div className="settings-section-head">
                 <div>
                   <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
@@ -892,7 +901,7 @@ useEffect(() => {
                   <div>
                     <strong>Digest e-mail</strong>
                     <span>
-                      {DAILY_DIGEST_EMAIL_UI_VISIBLE
+                      {digestUiVisibleByPlan
                         ? 'Ustawienia digestu są dostępne poniżej.'
                         : 'Digest e-mail jest w przygotowaniu i wymaga konfiguracji mail providera. Na darmowym Vercel cron działa raz dziennie. Panel jest ukryty, dopóki flow nie jest gotowy do pokazania użytkownikowi.'}
                     </span>
@@ -901,7 +910,7 @@ useEffect(() => {
                 </div>
               </div>
 
-              {DAILY_DIGEST_EMAIL_UI_VISIBLE ? (
+              {digestUiVisibleByPlan ? (
                 <div className="settings-digest-panel">
                   <div className="settings-form-grid">
                     <div className="settings-field">
@@ -958,7 +967,7 @@ useEffect(() => {
 
 
             
-            <section className="settings-section-card" data-google-calendar-sync-v1-stage03="true">
+            <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true">
               <div className="settings-section-head">
                 <div>
                   <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>

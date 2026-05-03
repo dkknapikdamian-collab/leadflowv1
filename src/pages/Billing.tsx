@@ -535,7 +535,7 @@ export default function Billing() {
                 </div>
               </section>
 
-              <section className="billing-plan-grid" aria-label="Karty planów">
+              <section className="billing-plan-grid" aria-label="Karty planów" data-plan-visibility-stage32e="billing-plan-comparison">
                 {BILLING_PLANS.map((plan) => {
                   const availability = getPlanAvailability(currentPlanId, plan, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive));
                   const price = getPlanPrice(plan, billingPeriod);
@@ -585,7 +585,7 @@ export default function Billing() {
                 })}
               </section>
 
-              <section className="billing-limits-card">
+              <section className="billing-limits-card" data-plan-visibility-stage32e="billing-feature-matrix">
                 <div className="billing-section-head">
                   <h2>Co jest dostępne teraz</h2>
                   <p>Zakres pokazuje obecny kierunek planów. Funkcji nieudostępnionych backendowo nie udajemy.</p>

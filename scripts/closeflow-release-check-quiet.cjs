@@ -90,6 +90,7 @@ const requiredTests = [
   'tests/faza3-etap32b-plan-visibility-contract.test.cjs',
   'tests/faza3-etap32c-access-gate-runtime-hotfix-v3.test.cjs',
   'tests/faza3-etap32d-plan-based-ui-visibility.test.cjs',
+  'tests/faza3-etap32e-settings-digest-billing-visibility-smoke.test.cjs',
   'tests/ui-developer-copy-paid-readiness.test.cjs',
   'tests/case-detail-write-access-gate-stage02b.test.cjs',
   'tests/lead-write-access-gate.test.cjs',
