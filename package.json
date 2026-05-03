@@ -164,7 +164,9 @@
     "check:faza3-etap32g-ai-draft-cancel-smoke": "node scripts/check-faza3-etap32g-ai-draft-cancel-smoke.cjs",
     "test:faza3-etap32g-ai-draft-cancel-smoke": "node --test tests/faza3-etap32g-ai-draft-cancel-smoke.test.cjs",
     "check:faza3-etap32h-lead-limit-placement-hotfix": "node scripts/check-faza3-etap32h-lead-limit-placement-hotfix.cjs",
-    "test:faza3-etap32h-lead-limit-placement-hotfix": "node --test tests/faza3-etap32h-lead-limit-placement-hotfix.test.cjs"
+    "test:faza3-etap32h-lead-limit-placement-hotfix": "node --test tests/faza3-etap32h-lead-limit-placement-hotfix.test.cjs",
+    "check:faza4-etap41-data-contract-map": "node scripts/check-faza4-etap41-data-contract-map.cjs",
+    "test:faza4-etap41-data-contract-map": "node --test tests/faza4-etap41-data-contract-map.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

@@ -12,6 +12,138 @@ import {
 export type { AccessState, BillingStatus };
 export type DataRecord = Record<string, unknown>;
 
+export const DATA_CONTRACT_FIELD_MAP = {
+  leads: {
+    id: ['id'],
+    workspaceId: ['workspaceId', 'workspace_id'],
+    clientId: ['clientId', 'client_id'],
+    linkedCaseId: ['linkedCaseId', 'linked_case_id', 'caseId', 'case_id'],
+    name: ['name', 'fullName', 'full_name', 'title', 'personName', 'person_name'],
+    company: ['company', 'companyName', 'company_name'],
+    email: ['email'],
+    phone: ['phone'],
+    source: ['source', 'sourceLabel', 'source_label', 'sourceType', 'source_type'],
+    status: ['status'],
+    dealValue: ['dealValue', 'deal_value', 'value', 'amount', 'estimatedValue', 'estimated_value'],
+    priority: ['priority'],
+    createdAt: ['createdAt', 'created_at'],
+    updatedAt: ['updatedAt', 'updated_at'],
+    movedToServiceAt: ['movedToServiceAt', 'moved_to_service_at', 'caseStartedAt', 'case_started_at'],
+    nextActionAt: ['nextActionAt', 'next_action_at', 'nextStepDueAt', 'next_step_due_at'],
+    nextActionItemId: ['nextActionItemId', 'next_action_item_id'],
+    leadVisibility: ['leadVisibility', 'lead_visibility'],
+    salesOutcome: ['salesOutcome', 'sales_outcome'],
+  },
+  clients: {
+    id: ['id'],
+    workspaceId: ['workspaceId', 'workspace_id'],
+    name: ['name', 'fullName', 'full_name', 'clientName', 'client_name'],
+    company: ['company', 'companyName', 'company_name'],
+    email: ['email'],
+    phone: ['phone'],
+    notes: ['notes', 'note'],
+    tags: ['tags'],
+    sourcePrimary: ['sourcePrimary', 'source_primary', 'source'],
+    createdAt: ['createdAt', 'created_at'],
+    updatedAt: ['updatedAt', 'updated_at'],
+    lastActivityAt: ['lastActivityAt', 'last_activity_at'],
+    archivedAt: ['archivedAt', 'archived_at'],
+  },
+  cases: {
+    id: ['id'],
+    workspaceId: ['workspaceId', 'workspace_id'],
+    clientId: ['clientId', 'client_id'],
+    leadId: ['leadId', 'lead_id'],
+    title: ['title', 'name', 'clientName', 'client_name'],
+    clientName: ['clientName', 'client_name', 'name'],
+    status: ['status'],
+    completenessPercent: ['completenessPercent', 'completeness_percent', 'completionPercent', 'completion_percent'],
+    portalReady: ['portalReady', 'portal_ready'],
+    startedAt: ['startedAt', 'started_at', 'serviceStartedAt', 'service_started_at'],
+    createdAt: ['createdAt', 'created_at'],
+    updatedAt: ['updatedAt', 'updated_at'],
+  },
+  tasks: {
+    id: ['id'],
+    workspaceId: ['workspaceId', 'workspace_id'],
+    title: ['title', 'name', 'summary'],
+    status: ['status'],
+    type: ['type', 'taskType', 'task_type', 'recordType', 'record_type'],
+    priority: ['priority'],
+    scheduledAt: ['scheduledAt', 'scheduled_at', 'dueAt', 'due_at', 'date', 'startAt', 'start_at'],
+    leadId: ['leadId', 'lead_id'],
+    caseId: ['caseId', 'case_id'],
+    clientId: ['clientId', 'client_id'],
+    leadName: ['leadName', 'lead_name'],
+    reminderAt: ['reminderAt', 'reminder_at', 'reminder'],
+    recurrenceRule: ['recurrenceRule', 'recurrence_rule', 'recurrence'],
+    createdAt: ['createdAt', 'created_at'],
+    updatedAt: ['updatedAt', 'updated_at'],
+  },
+  events: {
+    id: ['id'],
+    workspaceId: ['workspaceId', 'workspace_id'],
+    title: ['title', 'name', 'summary'],
+    type: ['type', 'eventType', 'event_type', 'recordType', 'record_type'],
+    status: ['status'],
+    startAt: ['startAt', 'start_at', 'scheduledAt', 'scheduled_at', 'date'],
+    endAt: ['endAt', 'end_at'],
+    leadId: ['leadId', 'lead_id'],
+    caseId: ['caseId', 'case_id'],
+    clientId: ['clientId', 'client_id'],
+    leadName: ['leadName', 'lead_name'],
+    reminderAt: ['reminderAt', 'reminder_at', 'reminder'],
+    recurrenceRule: ['recurrenceRule', 'recurrence_rule', 'recurrence'],
+    createdAt: ['createdAt', 'created_at'],
+    updatedAt: ['updatedAt', 'updated_at'],
+  },
+  ai_drafts: {
+    id: ['id'],
+    workspaceId: ['workspaceId', 'workspace_id'],
+    type: ['type', 'draftType', 'draft_type'],
+    status: ['status'],
+    rawText: ['rawText', 'raw_text', 'text'],
+    provider: ['provider'],
+    source: ['source'],
+    parsedDraft: ['parsedDraft', 'parsed_draft'],
+    parsedData: ['parsedData', 'parsed_data'],
+    linkedRecordId: ['linkedRecordId', 'linked_record_id'],
+    linkedRecordType: ['linkedRecordType', 'linked_record_type'],
+    createdAt: ['createdAt', 'created_at'],
+    updatedAt: ['updatedAt', 'updated_at'],
+    confirmedAt: ['confirmedAt', 'confirmed_at'],
+    convertedAt: ['convertedAt', 'converted_at'],
+    cancelledAt: ['cancelledAt', 'cancelled_at'],
+  },
+  activities: {
+    id: ['id'],
+    workspaceId: ['workspaceId', 'workspace_id'],
+    caseId: ['caseId', 'case_id'],
+    leadId: ['leadId', 'lead_id'],
+    clientId: ['clientId', 'client_id'],
+    ownerId: ['ownerId', 'owner_id'],
+    actorId: ['actorId', 'actor_id'],
+    actorType: ['actorType', 'actor_type'],
+    eventType: ['eventType', 'event_type', 'type'],
+    payload: ['payload', 'data'],
+    createdAt: ['createdAt', 'created_at'],
+    updatedAt: ['updatedAt', 'updated_at'],
+  },
+  workspaces: {
+    id: ['id'],
+    ownerId: ['ownerId', 'owner_id', 'userId', 'user_id'],
+    name: ['name', 'workspaceName', 'workspace_name'],
+    planId: ['planId', 'plan_id', 'plan'],
+    subscriptionStatus: ['subscriptionStatus', 'subscription_status'],
+    accessStatus: ['accessStatus', 'access_status'],
+    trialEndsAt: ['trialEndsAt', 'trial_ends_at', 'trialEnds', 'trial_ends'],
+    createdAt: ['createdAt', 'created_at'],
+    updatedAt: ['updatedAt', 'updated_at'],
+  },
+} as const;
+
+export type DataContractEntity = keyof typeof DATA_CONTRACT_FIELD_MAP;
+
 export type LeadDto = DataRecord & {
   id: string;
   workspaceId: string;
@@ -139,6 +271,18 @@ export type NormalizedPaymentRecord = DataRecord & {
   updatedAt: string | null;
 };
 
+export type WorkspaceDto = DataRecord & {
+  id: string;
+  ownerId?: string;
+  name: string;
+  planId: string;
+  subscriptionStatus: string;
+  accessStatus: string;
+  trialEndsAt: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
 export type AiDraftDto = DataRecord & {
   id: string;
   workspaceId: string;
@@ -200,6 +344,7 @@ export type NormalizedTaskRecord = TaskDto;
 export type NormalizedEventRecord = EventDto;
 export type NormalizedActivityRecord = ActivityDto;
 export type NormalizedAiDraftRecord = AiDraftDto;
+export type NormalizedWorkspaceRecord = WorkspaceDto;
 export type NormalizedResponseTemplateRecord = ResponseTemplateDto;
 export type NormalizedCaseItemRecord = CaseItemDto;
 
@@ -472,6 +617,21 @@ export function normalizeActivityContract(row: DataRecord): ActivityDto {
   };
 }
 
+export function normalizeWorkspaceContract(row: DataRecord): WorkspaceDto {
+  return {
+    ...row,
+    id: pickText(row, ['id'], crypto.randomUUID()),
+    ownerId: pickOptionalText(row, ['ownerId', 'owner_id', 'userId', 'user_id']),
+    name: pickText(row, ['name', 'workspaceName', 'workspace_name'], 'Workspace'),
+    planId: pickText(row, ['planId', 'plan_id', 'plan'], 'free'),
+    subscriptionStatus: pickText(row, ['subscriptionStatus', 'subscription_status'], ''),
+    accessStatus: pickText(row, ['accessStatus', 'access_status'], ''),
+    trialEndsAt: toIsoDateTime(row.trialEndsAt) || toIsoDateTime(row.trial_ends_at) || toIsoDateTime(row.trialEnds) || toIsoDateTime(row.trial_ends),
+    createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
+    updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+  };
+}
+
 export function normalizePaymentContract(row: DataRecord): NormalizedPaymentRecord {
   return {
     ...row,
@@ -567,5 +727,6 @@ export function normalizeEventListContract(rows: unknown) { return normalizeList
 export function normalizeActivityListContract(rows: unknown) { return normalizeList(rows, normalizeActivityContract); }
 export function normalizePaymentListContract(rows: unknown) { return normalizeList(rows, normalizePaymentContract); }
 export function normalizeAiDraftListContract(rows: unknown) { return normalizeList(rows, normalizeAiDraftContract); }
+export function normalizeWorkspaceListContract(rows: unknown) { return normalizeList(rows, normalizeWorkspaceContract); }
 export function normalizeResponseTemplateListContract(rows: unknown) { return normalizeList(rows, normalizeResponseTemplateContract); }
 export function normalizeCaseItemListContract(rows: unknown) { return normalizeList(rows, normalizeCaseItemContract); }
