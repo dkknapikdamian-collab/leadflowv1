@@ -82,6 +82,7 @@ const requiredTests = [
   'tests/stage03a-api-schema-contract.test.cjs',
   'tests/stage03b-system-fallback-boundary.test.cjs',
   'tests/stage03c-leads-fallback-boundary.test.cjs',
+  'tests/stage03d-optional-columns-evidence.test.cjs',
   'tests/ui-developer-copy-paid-readiness.test.cjs',
   'tests/case-detail-write-access-gate-stage02b.test.cjs',
   'tests/lead-write-access-gate.test.cjs',
