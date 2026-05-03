@@ -148,7 +148,9 @@
     "check:faza2-etap22-rls-backend-security-proof": "node scripts/check-faza2-etap22-rls-backend-security-proof.cjs",
     "test:faza2-etap22-rls-backend-security-proof": "node --test tests/faza2-etap22-rls-backend-security-proof.test.cjs",
     "check:faza3-etap31-plan-source-of-truth": "node scripts/check-faza3-etap31-plan-source-of-truth.cjs",
-    "test:faza3-etap31-plan-source-of-truth": "node --test tests/faza3-etap31-plan-source-of-truth.test.cjs"
+    "test:faza3-etap31-plan-source-of-truth": "node --test tests/faza3-etap31-plan-source-of-truth.test.cjs",
+    "check:faza3-etap32-plan-feature-access-gate": "node scripts/check-faza3-etap32-plan-feature-access-gate.cjs",
+    "test:faza3-etap32-plan-feature-access-gate": "node --test tests/faza3-etap32-plan-feature-access-gate.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

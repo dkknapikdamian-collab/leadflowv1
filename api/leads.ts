@@ -1,7 +1,7 @@
 import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
-import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
+import { assertWorkspaceEntityLimit, assertWorkspaceFeatureAccess, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { normalizeLeadContract } from '../src/lib/data-contract.js';
 import { LEAD_STATUS_VALUES, normalizeLeadStatus } from '../src/lib/domain-statuses.js';
@@ -537,6 +537,16 @@ async function syncGoogleCalendarLeadAfterMutation(input: {
   // GOOGLE_CALENDAR_STAGE09B_LEAD_NEXT_ACTION_PARITY
   const leadId = asText(input.row.id || input.body.id);
   if (!input.workspaceId || !leadId) return;
+
+  try {
+    await assertWorkspaceFeatureAccess(input.workspaceId, 'googleCalendar');
+  } catch {
+    await writeLeadGoogleCalendarSyncState(leadId, {
+      google_calendar_sync_status: 'disabled_by_plan',
+      google_calendar_sync_error: 'GOOGLE_CALENDAR_REQUIRES_PRO',
+    });
+    return;
+  }
   const userId = getRequestUserIdForLeadGoogle(input.req);
   const existingGoogleEventId = readLeadGoogleEventId(input.row, input.body) || readLeadGoogleEventId(input.previousRow || {}, input.body);
   const nextActionAt = readLeadNextActionAt(input.row, input.body);

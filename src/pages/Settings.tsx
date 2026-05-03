@@ -221,7 +221,7 @@ useEffect(() => {
   );
 
 
-  const canUseGoogleCalendarByPlan = isAdmin || isAppOwner || access?.isPaidActive || access?.status === 'paid_active';
+  const canUseGoogleCalendarByPlan = Boolean(isAdmin || isAppOwner || access?.features?.googleCalendar);
   const googleCalendarMissingText = googleCalendarStatus?.missing?.length
     ? googleCalendarStatus.missing.join(', ')
     : '';

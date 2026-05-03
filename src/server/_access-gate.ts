@@ -1,5 +1,5 @@
 import { selectFirstAvailable } from './_supabase.js';
-import { FREE_LIMITS as PLAN_FREE_LIMITS } from '../lib/plans.js';
+import { FREE_LIMITS as PLAN_FREE_LIMITS, isPlanFeatureEnabled } from '../lib/plans.js';
 
 /* A13_STATIC_CONTRACT_GUARD trial_expired free_active FREE_LIMITS */
 /* PHASE0_WORKSPACE_WRITE_ACCESS_RUNTIME_REQ_COMPAT_2026_05_03 */
@@ -222,7 +222,42 @@ export async function assertWorkspaceWriteAccess(
   throw makeGateError('WORKSPACE_WRITE_ACCESS_REQUIRED', 402);
 }
 
+
+export async function assertWorkspaceFeatureAccess(
+  workspaceInput: unknown = {},
+  featureInput?: unknown,
+  planInput?: unknown,
+) {
+  const featureName = asText(featureInput);
+  if (!featureName) {
+    throw makeGateError('WORKSPACE_FEATURE_NAME_REQUIRED', 400);
+  }
+
+  const workspace = await resolveWorkspaceAccessInput(workspaceInput, planInput);
+  const status = normalizeWorkspaceAccessStatus(workspace);
+  const nextBillingAt = readNextBillingAt(workspace);
+  const plan = readPlanId(workspace, planInput);
+
+  if (!isAllowedWriteStatus(status, nextBillingAt)) {
+    throw makeGateError('WORKSPACE_FEATURE_ACCESS_REQUIRED', 402);
+  }
+
+  if (isPlanFeatureEnabled(plan, featureName as any, status)) {
+    return true;
+  }
+
+  throw makeGateError('WORKSPACE_FEATURE_ACCESS_REQUIRED', 402);
+}
+
 export async function assertWorkspaceAiAllowed(workspaceInput: unknown = {}, planInput?: unknown) {
+  if (process.env.VITE_AI_USAGE_UNLIMITED === 'true' && process.env.NODE_ENV !== 'production') return true;
+
+  try {
+    return await assertWorkspaceFeatureAccess(workspaceInput, 'fullAi', planInput);
+  } catch {
+    throw makeGateError('WORKSPACE_AI_ACCESS_REQUIRED', 402);
+  }
+}, planInput?: unknown) {
   const workspace = await resolveWorkspaceAccessInput(workspaceInput, planInput);
   const row = asRecord(workspace);
   const status = readWorkspaceStatus(workspace);
