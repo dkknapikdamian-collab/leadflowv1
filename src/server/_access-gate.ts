@@ -1,5 +1,5 @@
 import { selectFirstAvailable } from './_supabase.js';
-import { FREE_LIMITS as PLAN_FREE_LIMITS, isPlanFeatureEnabled } from '../lib/plans.js';
+import { FREE_LIMITS as PLAN_FREE_LIMITS, getPlanLimits, normalizePlanId, PLAN_IDS, isPlanFeatureEnabled } from '../lib/plans.js';
 
 /* A13_STATIC_CONTRACT_GUARD trial_expired free_active FREE_LIMITS */
 /* PHASE0_WORKSPACE_WRITE_ACCESS_RUNTIME_REQ_COMPAT_2026_05_03 */
@@ -262,6 +262,8 @@ export async function assertWorkspaceAiAllowed(
   }
 }
 
+type WorkspaceEntityLimitKey = keyof typeof FREE_LIMITS;
+
 function normalizeLimitKey(entityName: unknown) {
   const raw = asText(entityName);
   const normalized = raw.toLowerCase();
@@ -269,22 +271,101 @@ function normalizeLimitKey(entityName: unknown) {
   if (normalized === 'task' || normalized === 'tasks' || normalized === 'work_item' || normalized === 'work_items' || normalized === 'active_tasks') return 'activeTasks';
   if (normalized === 'event' || normalized === 'events' || normalized === 'calendar' || normalized === 'active_events') return 'activeEvents';
   if (normalized === 'draft' || normalized === 'drafts' || normalized === 'ai_draft' || normalized === 'ai_drafts' || normalized === 'active_drafts') return 'activeDrafts';
-  return raw as keyof typeof FREE_LIMITS;
+  return raw as WorkspaceEntityLimitKey;
+}
+
+function getWorkspaceIdForEntityLimit(workspaceInput: unknown, workspaceRow: unknown) {
+  const direct = asText(workspaceInput);
+  if (typeof workspaceInput === 'string' && direct) return direct;
+  const row = asRecord(workspaceRow);
+  return asText(row.id ?? row.workspace_id ?? row.workspaceId);
+}
+
+function getWorkspaceEntityLimitQueries(workspaceId: string, key: WorkspaceEntityLimitKey, limit: number) {
+  const encodedWorkspaceId = encodeURIComponent(workspaceId);
+  const cappedLimit = Math.max(1, Math.floor(limit) + 1);
+  const workspaceFilter = 'workspace_id=eq.' + encodedWorkspaceId;
+
+  if (key === 'activeLeads') {
+    return [
+      'leads?select=id&' + workspaceFilter + '&lead_visibility=neq.archived&status=neq.moved_to_service&limit=' + cappedLimit,
+      'leads?select=id&' + workspaceFilter + '&status=neq.moved_to_service&limit=' + cappedLimit,
+      'leads?select=id&' + workspaceFilter + '&limit=' + cappedLimit,
+    ];
+  }
+
+  if (key === 'activeTasks') {
+    return [
+      'work_items?select=id&' + workspaceFilter + '&record_type=eq.task&status=neq.done&limit=' + cappedLimit,
+      'work_items?select=id&' + workspaceFilter + '&show_in_tasks=is.true&limit=' + cappedLimit,
+      'work_items?select=id&' + workspaceFilter + '&type=eq.task&limit=' + cappedLimit,
+    ];
+  }
+
+  if (key === 'activeEvents') {
+    return [
+      'work_items?select=id&' + workspaceFilter + '&record_type=eq.event&status=neq.cancelled&limit=' + cappedLimit,
+      'work_items?select=id&' + workspaceFilter + '&show_in_calendar=is.true&show_in_tasks=is.false&limit=' + cappedLimit,
+      'work_items?select=id&' + workspaceFilter + '&start_at=not.is.null&limit=' + cappedLimit,
+    ];
+  }
+
+  if (key === 'activeDrafts') {
+    return [
+      'ai_drafts?select=id&' + workspaceFilter + '&status=in.(pending,draft,failed)&limit=' + cappedLimit,
+      'ai_drafts?select=id&' + workspaceFilter + '&status=neq.confirmed&limit=' + cappedLimit,
+      'ai_drafts?select=id&' + workspaceFilter + '&limit=' + cappedLimit,
+    ];
+  }
+
+  return [];
+}
+
+async function countWorkspaceEntitiesForLimit(workspaceId: string, key: WorkspaceEntityLimitKey, limit: number) {
+  const queries = getWorkspaceEntityLimitQueries(workspaceId, key, limit);
+  if (!queries.length) return Number.NaN;
+
+  try {
+    const result = await selectFirstAvailable(queries);
+    const rows = Array.isArray(result?.data) ? result.data : [];
+    return rows.length;
+  } catch {
+    return Number.NaN;
+  }
 }
 
 export async function assertWorkspaceEntityLimit(
-  _workspaceInput: unknown = {},
+  workspaceInput: unknown = {},
   entityName?: unknown,
   currentCountInput?: unknown,
   explicitLimitInput?: unknown,
 ) {
-  const currentCount = Number(currentCountInput);
-  const explicitLimit = Number(explicitLimitInput);
-  const key = normalizeLimitKey(entityName) as keyof typeof FREE_LIMITS;
-  const limit = Number.isFinite(explicitLimit) && explicitLimit > 0 ? explicitLimit : Number(FREE_LIMITS[key] || 0);
+  const key = normalizeLimitKey(entityName) as WorkspaceEntityLimitKey;
+  const workspace = await resolveWorkspaceAccessInput(workspaceInput);
+  const status = normalizeWorkspaceAccessStatus(workspace);
+  const isFreeWorkspace = normalizePlanId(readPlanId(workspace), status) === PLAN_IDS.free;
 
-  if (!Number.isFinite(currentCount) || currentCount < 0 || !Number.isFinite(limit) || limit <= 0) return true;
+  if (!isFreeWorkspace) return true;
+
+  const planLimits = getPlanLimits(readPlanId(workspace), status);
+  const configuredLimit = planLimits[key];
+  const explicitLimit = Number(explicitLimitInput);
+  const limit = Number.isFinite(explicitLimit) && explicitLimit > 0 ? explicitLimit : Number(configuredLimit);
+
+  if (!Number.isFinite(limit) || limit <= 0) return true;
+
+  const explicitCurrentCount = Number(currentCountInput);
+  const workspaceId = getWorkspaceIdForEntityLimit(workspaceInput, workspace);
+  const currentCount = Number.isFinite(explicitCurrentCount)
+    ? explicitCurrentCount
+    : await countWorkspaceEntitiesForLimit(workspaceId, key, limit);
+
+  if (!Number.isFinite(currentCount) || currentCount < 0) return true;
   if (currentCount < limit) return true;
 
-  throw makeGateError('WORKSPACE_ENTITY_LIMIT_REACHED', 402);
+  const error: any = makeGateError('WORKSPACE_ENTITY_LIMIT_REACHED', 402);
+  error.entity = key;
+  error.limit = limit;
+  error.currentCount = currentCount;
+  throw error;
 }

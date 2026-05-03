@@ -392,6 +392,7 @@ export async function updateAiLeadDraftAsync(id: string, patch: Partial<AiLeadDr
       cancelledAt: patch.cancelledAt,
       linkedRecordId: patch.linkedRecordId,
       linkedRecordType: patch.linkedRecordType,
+      action: (patch as any).action,
     } as any);
 
     const normalized = normalizeDraft(remote);

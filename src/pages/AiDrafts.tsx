@@ -664,20 +664,13 @@ function AiDraftsInner() {
   };
 
   const handleArchive = async (draft: AiLeadDraft) => {
-    const cancelledAt = new Date().toISOString();
-    await updateAiLeadDraftAsync(draft.id, {
-      status: 'archived',
-      rawText: '',
-      cancelledAt,
-      parsedDraft: {
-        ...(getDraftParsedData(draft) || {}),
-        cancelledAt,
-        rawTextRemoved: true,
-      },
-    } as any);
-    await archiveAiLeadDraftAsync(draft.id);
-    await reloadDrafts();
-    toast.success('Szkic anulowany');
+    try {
+      await archiveAiLeadDraftAsync(draft.id);
+      await reloadDrafts();
+      toast.success('Szkic anulowany');
+    } catch (error: any) {
+      toast.error('Nie udało się anulować szkicu: ' + (error?.message || 'REQUEST_FAILED'));
+    }
   };
 
   const handleDelete = async (draft: AiLeadDraft) => {

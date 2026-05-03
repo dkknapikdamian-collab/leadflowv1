@@ -36,6 +36,23 @@ function asJsonObject(value: unknown) {
   return value as RecordMap;
 }
 
+function isAiDraftCleanupMutation(req: any, body: RecordMap) {
+  if (req?.method === 'DELETE') return true;
+  if (req?.method !== 'PATCH') return false;
+
+  const action = asText(body.action).toLowerCase();
+  const status = asText(body.status).toLowerCase();
+
+  return (
+    action === 'cancel'
+    || action === 'archive'
+    || action === 'expire'
+    || status === 'archived'
+    || status === 'cancelled'
+    || status === 'expired'
+  );
+}
+
 function normalizeRawText(row: RecordMap) {
   return asText(row.raw_text ?? row.rawText ?? '');
 }
@@ -197,7 +214,9 @@ export default async function handler(req: any, res: any) {
     }
 
     await assertWorkspaceWriteAccess(workspaceId);
-    await assertWorkspaceAiAllowed(workspaceId);
+    if (!isAiDraftCleanupMutation(req, body)) {
+      await assertWorkspaceAiAllowed(workspaceId);
+    }
 
     if (req.method === 'POST') {
       await assertWorkspaceEntityLimit(workspaceId, 'ai_draft');
@@ -302,6 +321,15 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
+    const errorCode = error?.code || error?.message || '';
+    if (errorCode === 'WORKSPACE_AI_ACCESS_REQUIRED' || errorCode === 'WORKSPACE_FEATURE_ACCESS_REQUIRED') {
+      res.status(402).json({ error: errorCode });
+      return;
+    }
+    if (errorCode === 'WORKSPACE_ENTITY_LIMIT_REACHED') {
+      res.status(402).json({ error: 'WORKSPACE_ENTITY_LIMIT_REACHED' });
+      return;
+    }
     if (error?.message === 'AI_NOT_AVAILABLE_ON_FREE') {
       res.status(403).json({ error: 'AI_NOT_AVAILABLE_ON_FREE' });
       return;

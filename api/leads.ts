@@ -316,6 +316,8 @@ async function findExistingClient(workspaceId: string, leadRow: Record<string, u
 async function ensureClientForLead(workspaceId: string, leadRow: Record<string, unknown>) {
   const existing = await findExistingClient(workspaceId, leadRow);
   if (existing) return existing;
+    await assertWorkspaceEntityLimit(workspaceId, 'lead');
+
 
   const nowIso = new Date().toISOString();
   const payload: Record<string, unknown> = {
