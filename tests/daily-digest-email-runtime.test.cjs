@@ -47,8 +47,8 @@ test('settings page exposes digest schedule, hint, and test-send control', () =>
   assert.match(settings, /handleSaveDigestSettings/);
   assert.match(settings, /handleSendDigestTest/);
   assert.match(settings, /mode: 'workspace-test'/);
-  assert.match(settings, /Wyslij test teraz/);
-  assert.match(settings, /Na darmowym Vercel cron dziala raz dziennie/);
+  assert.match(settings, /Wy\u015blij test teraz|Wyslij test teraz/);
+  assert.match(settings, /Na darmowym Vercel cron dzia\u0142a raz dziennie|Na darmowym Vercel cron dziala raz dziennie/);
 });
 
 test('release gates include daily digest runtime regression test', () => {

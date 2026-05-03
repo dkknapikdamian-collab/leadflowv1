@@ -1,0 +1,704 @@
+﻿diff --git a/README.md b/README.md
+index f7b1c47..e9f0e3c 100644
+--- a/README.md
++++ b/README.md
+@@ -25,16 +25,16 @@ Produkt jest pozycjonowany jako prosty system operacyjny dla osoby, ktra sama ob
+ 
+ ## Gwne widoki
+ 
+-- **Dzi** ├óÔéČÔÇť centrum decyzji i najpilniejsze dziaania.
+-- **Leady** ├óÔéČÔÇť lista sprzedaowa z kolejnym krokiem.
+-- **Lead Detail** ├óÔéČÔÇť karta leada z kontaktem, notatkami, zadaniami, wydarzeniami i histori─ů.
+-- **Klienci** ├óÔéČÔÇť relacje i powi─ůzane sprawy/leady.
+-- **Sprawy** ├óÔéČÔÇť etap realizacji po sprzeday.
+-- **Case Detail** ├óÔéČÔÇť operacyjny hub sprawy.
+-- **Zadania** ├óÔéČÔÇť zadania i follow-upy.
+-- **Kalendarz** ├óÔéČÔÇť wsplna o czasu dla zada i wydarze.
+-- **Szkice AI** ├óÔéČÔÇť miejsce zatwierdzania treci przygotowanych przez AI.
+-- **Ustawienia / Rozliczenia / Pomoc** ├óÔéČÔÇť konfiguracja konta i aplikacji.
++- **Dzi** ÔÇô centrum decyzji i najpilniejsze dziaania.
++- **Leady** ÔÇô lista sprzedaowa z kolejnym krokiem.
++- **Lead Detail** ÔÇô karta leada z kontaktem, notatkami, zadaniami, wydarzeniami i histori─ů.
++- **Klienci** ÔÇô relacje i powi─ůzane sprawy/leady.
++- **Sprawy** ÔÇô etap realizacji po sprzeday.
++- **Case Detail** ÔÇô operacyjny hub sprawy.
++- **Zadania** ÔÇô zadania i follow-upy.
++- **Kalendarz** ÔÇô wsplna o czasu dla zada i wydarze.
++- **Szkice AI** ÔÇô miejsce zatwierdzania treci przygotowanych przez AI.
++- **Ustawienia / Rozliczenia / Pomoc** ÔÇô konfiguracja konta i aplikacji.
+ 
+ ## Uruchomienie lokalne
+ 
+diff --git a/docs/architecture/PRODUCTION_FIRST_INTEGRATION_RULE_2026-05-03.md b/docs/architecture/PRODUCTION_FIRST_INTEGRATION_RULE_2026-05-03.md
+index e64e3c5..ba910e1 100644
+--- a/docs/architecture/PRODUCTION_FIRST_INTEGRATION_RULE_2026-05-03.md
++++ b/docs/architecture/PRODUCTION_FIRST_INTEGRATION_RULE_2026-05-03.md
+@@ -8,30 +8,30 @@ Permanentna zasada architektoniczna dla projektu CloseFlow / LeadFlow.
+ 
+ CloseFlow pracuje production-first.
+ 
+-Dla integracji zewn├äÔäótrznych, OAuth, ENV, redirect URI, webhook─é┼éw i deployment─é┼éw ustawiamy docelowe konfiguracje produkcyjne, a nie tymczasowe ustawienia testowe.
++Dla integracji zewn─Ötrznych, OAuth, ENV, redirect URI, webhook├│w i deployment├│w ustawiamy docelowe konfiguracje produkcyjne, a nie tymczasowe ustawienia testowe.
+ 
+ ## Co to znaczy w praktyce
+ 
+ 1. Vercel ENV ustawiamy przynajmniej dla `Production`.
+ 2. Redirect URI ustawiamy na produkcyjny publiczny adres aplikacji.
+-3. OAuth Client tworzony dla funkcji produkcyjnej ma nazw├äÔäó i konfiguracj├äÔäó produkcyjn├äÔÇŽ.
+-4. Dokumentacja release ma m─é┼éwi├äÔÇí, co jest aktywne produkcyjnie, co wymaga konfiguracji, a co czeka na weryfikacj├äÔäó dostawcy.
+-5. Nie zostawiamy rzeczy jako `testing-only`, je─╣─Żeli da si├äÔäó ustawi├äÔÇí je docelowo produkcyjnie.
++3. OAuth Client tworzony dla funkcji produkcyjnej ma nazw─Ö i konfiguracj─Ö produkcyjn─ů.
++4. Dokumentacja release ma m├│wi─ç, co jest aktywne produkcyjnie, co wymaga konfiguracji, a co czeka na weryfikacj─Ö dostawcy.
++5. Nie zostawiamy rzeczy jako `testing-only`, je┼╝eli da si─Ö ustawi─ç je docelowo produkcyjnie.
+ 
+-## Wyj├äÔÇŽtek
++## Wyj─ůtek
+ 
+-Je─╣─Żeli dostawca technicznie blokuje publikacj├äÔäó produkcyjn├äÔÇŽ do czasu weryfikacji, konfigurujemy wszystko produkcyjnie, ale status u dostawcy mo─╣─Że tymczasowo pozosta├äÔÇí jako wymuszony stan przej─╣ÔÇ║ciowy.
++Je┼╝eli dostawca technicznie blokuje publikacj─Ö produkcyjn─ů do czasu weryfikacji, konfigurujemy wszystko produkcyjnie, ale status u dostawcy mo┼╝e tymczasowo pozosta─ç jako wymuszony stan przej┼Ťciowy.
+ 
+-Przyk─╣ÔÇÜad:
++Przyk┼éad:
+ 
+-Google OAuth dla `https://www.googleapis.com/auth/calendar.events` mo─╣─Że wymaga├äÔÇí Google verification. Wtedy:
++Google OAuth dla `https://www.googleapis.com/auth/calendar.events` mo┼╝e wymaga─ç Google verification. Wtedy:
+ 
+-- u─╣─Żywamy produkcyjnego Google Cloud projektu,
+-- u─╣─Żywamy produkcyjnego OAuth Clienta,
+-- u─╣─Żywamy produkcyjnego redirect URI,
++- u┼╝ywamy produkcyjnego Google Cloud projektu,
++- u┼╝ywamy produkcyjnego OAuth Clienta,
++- u┼╝ywamy produkcyjnego redirect URI,
+ - ustawiamy Vercel Production ENV,
+-- nie zmieniamy statusu funkcji w aplikacji na `active`, dop─é┼éki verification/smoke evidence nie przejdzie,
+-- w dokumentacji zapisujemy, ─╣─Że blokada wynika z procesu dostawcy, nie z testowego modelu wdro─╣─Żenia.
++- nie zmieniamy statusu funkcji w aplikacji na `active`, dop├│ki verification/smoke evidence nie przejdzie,
++- w dokumentacji zapisujemy, ┼╝e blokada wynika z procesu dostawcy, nie z testowego modelu wdro┼╝enia.
+ 
+ ## Google Calendar aktualna zasada
+ 
+@@ -41,21 +41,21 @@ Dla Google Calendar Sync V1 produkcyjny redirect URI to:
+ https://closeflowapp.vercel.app/api/google-calendar?route=callback
+ ```
+ 
+-Nie u─╣─Żywa├äÔÇí `/api/system` jako redirect URI, mimo ─╣─Że Vercel rewrite kieruje `/api/google-calendar` do `api/system.ts`.
++Nie u┼╝ywa─ç `/api/system` jako redirect URI, mimo ┼╝e Vercel rewrite kieruje `/api/google-calendar` do `api/system.ts`.
+ 
+ ## Czego nie wolno
+ 
+-- Nie ustawia├äÔÇí losowych preview redirect─é┼éw jako docelowej konfiguracji.
+-- Nie zostawia├äÔÇí aplikacji w trybie testowym, je─╣ÔÇ║li da si├äÔäó przej─╣ÔÇ║├äÔÇí na produkcj├äÔäó.
+-- Nie miesza├äÔÇí klienta OAuth od logowania z klientem OAuth od integracji, je─╣ÔÇ║li grozi to rozbiciem logowania.
+-- Nie oznacza├äÔÇí funkcji jako `active`, dop─é┼éki nie ma realnego smoke evidence.
++- Nie ustawia─ç losowych preview redirect├│w jako docelowej konfiguracji.
++- Nie zostawia─ç aplikacji w trybie testowym, je┼Ťli da si─Ö przej┼Ť─ç na produkcj─Ö.
++- Nie miesza─ç klienta OAuth od logowania z klientem OAuth od integracji, je┼Ťli grozi to rozbiciem logowania.
++- Nie oznacza─ç funkcji jako `active`, dop├│ki nie ma realnego smoke evidence.
+ 
+ ## Kryterium zmiany statusu funkcji na active
+ 
+-Funkcja integracji mo─╣─Że by├äÔÇí oznaczona jako `active`, gdy:
++Funkcja integracji mo┼╝e by─ç oznaczona jako `active`, gdy:
+ 
+-1. Production ENV s├äÔÇŽ ustawione.
+-2. Production redirect URI dzia─╣ÔÇÜa.
+-3. Provider nie blokuje dost├äÔäópu albo verification jest zako─╣ÔÇ×czona.
+-4. Manual smoke evidence jest uzupe─╣ÔÇÜnione.
+-5. Guardy i build przechodz├äÔÇŽ.
++1. Production ENV s─ů ustawione.
++2. Production redirect URI dzia┼éa.
++3. Provider nie blokuje dost─Öpu albo verification jest zako┼äczona.
++4. Manual smoke evidence jest uzupe┼énione.
++5. Guardy i build przechodz─ů.
+diff --git a/docs/release/FAZA1_ETAP12_GUARD_UI_TRUTH_2026-05-03.md b/docs/release/FAZA1_ETAP12_GUARD_UI_TRUTH_2026-05-03.md
+index 8d8e5f4..9c087f2 100644
+--- a/docs/release/FAZA1_ETAP12_GUARD_UI_TRUTH_2026-05-03.md
++++ b/docs/release/FAZA1_ETAP12_GUARD_UI_TRUTH_2026-05-03.md
+@@ -2,11 +2,11 @@
+ 
+ ## Cel
+ 
+-Zablokowa├äÔÇí powr─é┼ét fa─╣ÔÇÜszywych obietnic w UI, copy i publicznych tekstach produktu.
++Zablokowa─ç powr├│t fa┼észywych obietnic w UI, copy i publicznych tekstach produktu.
+ 
+-Ten etap nie dodaje nowej funkcji. Dodaje stra─╣─Żnik─é┼éw, kt─é┼érzy maj├äÔÇŽ zatrzyma├äÔÇí build, je─╣ÔÇ║li aplikacja znowu zacznie obiecywa├äÔÇí rzeczy bez pokrycia.
++Ten etap nie dodaje nowej funkcji. Dodaje stra┼╝nik├│w, kt├│rzy maj─ů zatrzyma─ç build, je┼Ťli aplikacja znowu zacznie obiecywa─ç rzeczy bez pokrycia.
+ 
+-## Zakres guard─é┼éw
++## Zakres guard├│w
+ 
+ Dodane skrypty:
+ 
+@@ -24,7 +24,7 @@ Dodane komendy:
+ 
+ ## Blokowane claimy
+ 
+-Guardy maj├äÔÇŽ blokowa├äÔÇí mi├äÔäódzy innymi:
++Guardy maj─ů blokowa─ç mi─Ödzy innymi:
+ 
+ - `SOC 2 certified`
+ - `SOC2 certified`
+@@ -33,12 +33,12 @@ Guardy maj├äÔÇŽ blokowa├äÔÇí mi├äÔäódzy innymi:
+ - `AI saved`
+ - automatyczny finalny zapis przez AI bez potwierdzenia
+ - natywna aplikacja z App Store / Google Play
+-- digest jako dzia─╣ÔÇÜaj├äÔÇŽcy bez konfiguracji mail providera
+-- `cancel anytime` jako mi├äÔäókka obietnica bez spi├äÔäócia z realnym billingiem
++- digest jako dzia┼éaj─ůcy bez konfiguracji mail providera
++- `cancel anytime` jako mi─Ökka obietnica bez spi─Öcia z realnym billingiem
+ 
+ ## Wymagane statusy z Etapu 1.1
+ 
+-Etap 1.2 wymaga, ─╣─Żeby `src/lib/product-truth.ts` nadal zawiera─╣ÔÇÜ:
++Etap 1.2 wymaga, ┼╝eby `src/lib/product-truth.ts` nadal zawiera┼é:
+ 
+ - Stripe / BLIK / subskrypcje: `requires_config`
+ - Poranny digest e-mail: `requires_config`
+@@ -47,9 +47,9 @@ Etap 1.2 wymaga, ─╣─Żeby `src/lib/product-truth.ts` nadal zawiera─╣ÔÇÜ:
+ - Admin AI: `internal_only`
+ - PWA / telefon: `active`
+ 
+-## Kryterium zako─╣ÔÇ×czenia
++## Kryterium zako┼äczenia
+ 
+-Etap jest zako─╣ÔÇ×czony, gdy przechodz├äÔÇŽ:
++Etap jest zako┼äczony, gdy przechodz─ů:
+ 
+ - `npm run check:ui-truth`
+ - `npm run check:public-security-claims`
+@@ -58,10 +58,10 @@ Etap jest zako─╣ÔÇ×czony, gdy przechodz├äÔÇŽ:
+ - `npm run check:faza1-etap11-ui-copy-legal-truth`
+ - `npm run build`
+ 
+-## Nast├äÔäópny etap
++## Nast─Öpny etap
+ 
+-Po tym etapie roadmapa bezpiecze─╣ÔÇ×stwa prowadzi do:
++Po tym etapie roadmapa bezpiecze┼ästwa prowadzi do:
+ 
+ **FAZA 2 - Etap 2.1 - Workspace isolation i request scope**
+ 
+-Google Calendar Sync V1 jest sensown├äÔÇŽ funkcj├äÔÇŽ produktow├äÔÇŽ, ale powinien wej─╣ÔÇ║├äÔÇí jako osobny etap po zabezpieczeniu truth guard─é┼éw.
++Google Calendar Sync V1 jest sensown─ů funkcj─ů produktow─ů, ale powinien wej┼Ť─ç jako osobny etap po zabezpieczeniu truth guard├│w.
+diff --git a/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md b/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md
+index f0c8822..d5fecca 100644
+--- a/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md
++++ b/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE04_OAUTH_ENV_MANUAL_SMOKE_2026-05-03.md
+@@ -84,12 +84,12 @@ Po ustawieniu ENV zrob Redeploy w Vercel, potem:
+ 
+ 1. Zaloguj sie jako admin albo uzytkownik platnego planu.
+ 2. Wejdz: Ustawienia -> Google Calendar.
+-3. Kliknij `Od─╣ÔÇ║wie─╣─Ż status`.
++3. Kliknij `Od┼Ťwie┼╝ status`.
+ 4. Oczekiwany wynik: brak komunikatu o brakujacych ENV.
+-5. Kliknij `Po─╣ÔÇÜ├äÔÇŽcz Google`.
++5. Kliknij `Po┼é─ůcz Google`.
+ 6. Zatwierdz OAuth Google.
+-7. Po powrocie do aplikacji kliknij ponownie `Od─╣ÔÇ║wie─╣─Ż status`.
+-8. Oczekiwany wynik: status `Po─╣ÔÇÜ├äÔÇŽczone`.
++7. Po powrocie do aplikacji kliknij ponownie `Od┼Ťwie┼╝ status`.
++8. Oczekiwany wynik: status `Po┼é─ůczone`.
+ 9. Wejdz w kalendarz CloseFlow.
+ 10. Dodaj wydarzenie z tytulem testowym, np. `GCAL SMOKE TEST - CloseFlow`.
+ 11. Otworz Google Calendar.
+diff --git a/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE06_REMINDER_METHOD_UI_2026-05-03.md b/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE06_REMINDER_METHOD_UI_2026-05-03.md
+index d8a1b0c..25f88a1 100644
+--- a/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE06_REMINDER_METHOD_UI_2026-05-03.md
++++ b/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE06_REMINDER_METHOD_UI_2026-05-03.md
+@@ -2,18 +2,18 @@
+ 
+ ## Cel
+ 
+-Doda├äÔÇí u─╣─Żytkownikowi ustawienie typu przypomnienia wysy─╣ÔÇÜanego do Google Calendar.
++Doda─ç u┼╝ytkownikowi ustawienie typu przypomnienia wysy┼éanego do Google Calendar.
+ 
+-To jest ustawienie domy─╣ÔÇ║lne dla nowych i edytowanych wydarze─╣ÔÇ×.
++To jest ustawienie domy┼Ťlne dla nowych i edytowanych wydarze┼ä.
+ 
+ ## Opcje
+ 
+-- `default` - domy─╣ÔÇ║lne przypomnienia z Google Calendar,
++- `default` - domy┼Ťlne przypomnienia z Google Calendar,
+ - `popup` - powiadomienie w Google Calendar,
+ - `email` - e-mail z Google Calendar,
+ - `popup_email` - powiadomienie + e-mail.
+ 
+-## Co wdro─╣─Żono
++## Co wdro┼╝ono
+ 
+ - `src/lib/google-calendar-reminder-preferences.ts`
+   - localStorage preference,
+@@ -29,19 +29,19 @@ To jest ustawienie domy─╣ÔÇ║lne dla nowych i edytowanych wydarze─╣ÔÇ×.
+   - `insertEventToSupabase` dokleja preference,
+   - `updateEventInSupabase` dokleja preference.
+ 
+-## R─é┼é─╣─Żnica v3
++## R├│┼╝nica v3
+ 
+-v2 pad─╣ÔÇÜ na dok─╣ÔÇÜadnym anchorze JSX w `Settings.tsx`. v3 u─╣─Żywa regexu po strukturze:
++v2 pad┼é na dok┼éadnym anchorze JSX w `Settings.tsx`. v3 u┼╝ywa regexu po strukturze:
+ 
+ `<section className="settings-main-column">`
+ 
+-i nie zale─╣─Ży od CRLF.
++i nie zale┼╝y od CRLF.
+ 
+ ## Brak SQL
+ 
+ Ten etap nie wymaga SQL.
+ 
+-## Kryterium zako─╣ÔÇ×czenia
++## Kryterium zako┼äczenia
+ 
+ Przechodzi:
+ 
+diff --git a/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07B_TS_CONTRACT_PRODUCTION_FIRST_HOTFIX_2026-05-03.md b/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07B_TS_CONTRACT_PRODUCTION_FIRST_HOTFIX_2026-05-03.md
+index 5f23f02..fc163e4 100644
+--- a/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07B_TS_CONTRACT_PRODUCTION_FIRST_HOTFIX_2026-05-03.md
++++ b/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07B_TS_CONTRACT_PRODUCTION_FIRST_HOTFIX_2026-05-03.md
+@@ -2,17 +2,17 @@
+ 
+ ## Cel
+ 
+-Naprawi├äÔÇí TypeScript contract Google Calendar po Stage 05/06 oraz zapisa├äÔÇí zasad├äÔäó production-first.
++Naprawi─ç TypeScript contract Google Calendar po Stage 05/06 oraz zapisa─ç zasad─Ö production-first.
+ 
+ ## Problem
+ 
+-Vercel pokaza─╣ÔÇÜ b─╣ÔÇÜ├äÔÇŽd:
++Vercel pokaza┼é b┼é─ůd:
+ 
+ ```text
+ api/work-items.ts(...): Type 'string' is not assignable to type 'GoogleReminderMethod'
+ ```
+ 
+-Pow─é┼éd: `googleReminderMethodFrom` zwraca─╣ÔÇÜ surowy `string`, a `google-calendar-sync.ts` oczekuje unii:
++Pow├│d: `googleReminderMethodFrom` zwraca┼é surowy `string`, a `google-calendar-sync.ts` oczekuje unii:
+ 
+ ```text
+ 'default' | 'popup' | 'email' | 'popup_email'
+@@ -23,17 +23,17 @@ Pow─é┼éd: `googleReminderMethodFrom` zwraca─╣ÔÇÜ surowy `string`, a `google-cale
+ - `api/work-items.ts`
+   - dodano lokalny typ `GoogleReminderMethod`,
+   - `googleReminderMethodFrom` zwraca `GoogleReminderMethod | null`,
+-  - aliasy `popup+email` i `both` s├äÔÇŽ normalizowane do `popup_email`,
++  - aliasy `popup+email` i `both` s─ů normalizowane do `popup_email`,
+   - brak metody zwraca `null`, nie pusty string.
+ - `scripts/check-google-calendar-stage06-reminder-method-ui.cjs`
+   - guard Stage 06 zaktualizowany do nowego typed contract.
+ - `docs/architecture/PRODUCTION_FIRST_INTEGRATION_RULE_2026-05-03.md`
+-  - zapisano zasad├äÔäó production-first,
+-  - dopisano wyj├äÔÇŽtek dla provider─é┼éw blokuj├äÔÇŽcych publikacj├äÔäó do czasu verification.
++  - zapisano zasad─Ö production-first,
++  - dopisano wyj─ůtek dla provider├│w blokuj─ůcych publikacj─Ö do czasu verification.
+ 
+-## R─é┼é─╣─Żnica v2
++## R├│┼╝nica v2
+ 
+-v1 naprawia─╣ÔÇÜ kod, ale stary guard Stage 06 nadal wymaga─╣ÔÇÜ tekstu:
++v1 naprawia┼é kod, ale stary guard Stage 06 nadal wymaga┼é tekstu:
+ 
+ ```text
+ googleReminderMethodFrom(row, body) || null
+diff --git a/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07C_SETTINGS_SUPABASE_AUTH_SNAPSHOT_HOTFIX_2026-05-03.md b/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07C_SETTINGS_SUPABASE_AUTH_SNAPSHOT_HOTFIX_2026-05-03.md
+index f3b6ebc..16f289f 100644
+--- a/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07C_SETTINGS_SUPABASE_AUTH_SNAPSHOT_HOTFIX_2026-05-03.md
++++ b/docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE07C_SETTINGS_SUPABASE_AUTH_SNAPSHOT_HOTFIX_2026-05-03.md
+@@ -2,21 +2,21 @@
+ 
+ ## Cel
+ 
+-Naprawi├äÔÇí panel Google Calendar w Ustawieniach, kt─é┼éry nadal opiera─╣ÔÇÜ si├äÔäó miejscami na Firebase `auth.currentUser`.
++Naprawi─ç panel Google Calendar w Ustawieniach, kt├│ry nadal opiera┼é si─Ö miejscami na Firebase `auth.currentUser`.
+ 
+ ## Objaw
+ 
+ W UI:
+ 
+ ```text
+-Workspace albo u─╣─Żytkownik nie jest jeszcze gotowy.
++Workspace albo u┼╝ytkownik nie jest jeszcze gotowy.
+ ```
+ 
+-albo brak reakcji przy klikni├äÔäóciu status/connect.
++albo brak reakcji przy klikni─Öciu status/connect.
+ 
+ ## Przyczyna
+ 
+-Aplikacja dzia─╣ÔÇÜa ju─╣─Ż po Supabase/client-auth snapshot, ale Google Calendar UI w `Settings.tsx` sprawdza─╣ÔÇÜ wci├äÔÇŽ─╣─Ż wy─╣ÔÇÜ├äÔÇŽcznie:
++Aplikacja dzia┼éa ju┼╝ po Supabase/client-auth snapshot, ale Google Calendar UI w `Settings.tsx` sprawdza┼é wci─ů┼╝ wy┼é─ůcznie:
+ 
+ ```text
+ auth.currentUser?.uid
+@@ -26,32 +26,32 @@ auth.currentUser?.uid
+ 
+ - `Settings.tsx` importuje `useClientAuthSnapshot`.
+ - Dodano `activeUserId`:
+-  - Firebase UID, je─╣─Żeli istnieje,
++  - Firebase UID, je┼╝eli istnieje,
+   - Supabase auth snapshot UID,
+   - fallback `workspaceProfile.id`.
+ - Dodano `activeUserEmail`:
+   - Firebase email,
+   - Supabase auth snapshot email,
+   - fallback `workspaceProfile.email`.
+-- Ca─╣ÔÇÜy blok Google Calendar od `GOOGLE_CALENDAR_SYNC_V1_STAGE03_SETTINGS_UI_CONNECT` do `handleSaveGoogleCalendarReminderPreference` jest czyszczony regexem:
++- Ca┼éy blok Google Calendar od `GOOGLE_CALENDAR_SYNC_V1_STAGE03_SETTINGS_UI_CONNECT` do `handleSaveGoogleCalendarReminderPreference` jest czyszczony regexem:
+   - `auth.currentUser?.uid` -> `activeUserId`,
+   - `auth.currentUser.uid` -> `activeUserId`,
+   - email z Firebase fallback -> `activeUserEmail`.
+-- App owner ma dost├äÔäóp do Google Calendar tak samo jak admin.
++- App owner ma dost─Öp do Google Calendar tak samo jak admin.
+ - Nie dodano nowego `api/*.ts`.
+ - Nie dodano SQL.
+ 
+-## R─é┼é─╣─Żnica v4
++## R├│┼╝nica v4
+ 
+-v3 nadal opiera─╣ÔÇÜo si├äÔäó na zbyt dok─╣ÔÇÜadnym tek─╣ÔÇ║cie. v4 dzia─╣ÔÇÜa blokowo i usuwa ka─╣─Żde u─╣─Życie Firebase UID w sekcji Google Calendar.
++v3 nadal opiera┼éo si─Ö na zbyt dok┼éadnym tek┼Ťcie. v4 dzia┼éa blokowo i usuwa ka┼╝de u┼╝ycie Firebase UID w sekcji Google Calendar.
+ 
+ ## Manual smoke
+ 
+ Po zielonym deployu:
+ 
+-1. Wejd─╣┼č w produkcj├äÔäó.
+-2. Wejd─╣┼č: Ustawienia -> Google Calendar.
+-3. Kliknij: Od─╣ÔÇ║wie─╣─Ż status.
+-4. Status nie mo─╣─Że milcze├äÔÇí przez brak `auth.currentUser`.
+-5. Kliknij: Po─╣ÔÇÜ├äÔÇŽcz Google.
+-6. Je─╣─Żeli ENV s├äÔÇŽ OK, powinien przej─╣ÔÇ║├äÔÇí redirect do Google OAuth.
++1. Wejd┼║ w produkcj─Ö.
++2. Wejd┼║: Ustawienia -> Google Calendar.
++3. Kliknij: Od┼Ťwie┼╝ status.
++4. Status nie mo┼╝e milcze─ç przez brak `auth.currentUser`.
++5. Kliknij: Po┼é─ůcz Google.
++6. Je┼╝eli ENV s─ů OK, powinien przej┼Ť─ç redirect do Google OAuth.
+diff --git a/package.json b/package.json
+index 2c49560..2a2c228 100644
+--- a/package.json
++++ b/package.json
+@@ -124,7 +124,9 @@
+     "check:google-calendar-stage11h-code-parity": "node scripts/check-google-calendar-stage11h-code-parity.cjs",
+     "check:google-calendar-stage11i-guard-compat": "node scripts/check-google-calendar-stage11i-guard-compat.cjs",
+     "check:google-calendar-stage12-outbound-backfill": "node scripts/check-google-calendar-stage12-outbound-backfill.cjs",
+-    "check:google-calendar-stage12b-runtime-import-hotfix": "node scripts/check-google-calendar-stage12b-runtime-import-hotfix.cjs"
++    "check:google-calendar-stage12b-runtime-import-hotfix": "node scripts/check-google-calendar-stage12b-runtime-import-hotfix.cjs",
++    "repair:polish-text-global": "node scripts/repair-polish-text-global.cjs",
++    "check:polish-text-global": "node scripts/check-polish-text-global.cjs"
+   },
+   "dependencies": {
+     "@base-ui/react": "^1.3.0",
+diff --git a/scripts/check-google-calendar-stage07b-ts-contract-production-first.cjs b/scripts/check-google-calendar-stage07b-ts-contract-production-first.cjs
+index 37d2859..647be65 100644
+--- a/scripts/check-google-calendar-stage07b-ts-contract-production-first.cjs
++++ b/scripts/check-google-calendar-stage07b-ts-contract-production-first.cjs
+@@ -38,9 +38,9 @@ for (const marker of [
+   'CloseFlow pracuje production-first',
+   'Vercel ENV ustawiamy przynajmniej dla `Production`',
+   'Redirect URI ustawiamy na produkcyjny publiczny adres aplikacji',
+-  'Je─╣─Żeli dostawca technicznie blokuje publikacj├äÔäó produkcyjn├äÔÇŽ do czasu weryfikacji',
++  'Je┼╝eli dostawca technicznie blokuje publikacj─Ö produkcyjn─ů do czasu weryfikacji',
+   'https://closeflowapp.vercel.app/api/google-calendar?route=callback',
+-  'Nie u─╣─Żywa├äÔÇí `/api/system` jako redirect URI',
++  'Nie u┼╝ywa─ç `/api/system` jako redirect URI',
+ ]) {
+   assert(prod.includes(marker), 'production-first doc missing marker: ' + marker);
+ }
+diff --git a/scripts/check-google-calendar-sync-v1-settings-ui.cjs b/scripts/check-google-calendar-sync-v1-settings-ui.cjs
+index ebc6769..a9add61 100644
+--- a/scripts/check-google-calendar-sync-v1-settings-ui.cjs
++++ b/scripts/check-google-calendar-sync-v1-settings-ui.cjs
+@@ -26,10 +26,10 @@ for (const marker of [
+   '/api/google-calendar?route=status',
+   '/api/google-calendar?route=connect',
+   '/api/google-calendar?route=disconnect',
+-  'Po─╣ÔÇÜ├äÔÇŽcz Google',
+-  'Roz─╣ÔÇÜ├äÔÇŽcz Google',
+-  'Brakuj├äÔÇŽce ENV',
+-  'CloseFlow jest ─╣┼čr─é┼éd─╣ÔÇÜem prawdy',
++  'Po┼é─ůcz Google',
++  'Roz┼é─ůcz Google',
++  'Brakuj─ůce ENV',
++  'CloseFlow jest ┼║r├│d┼éem prawdy',
+ ]) {
+   assert(settings.includes(marker), 'Settings.tsx missing marker: ' + marker);
+ }
+diff --git a/scripts/check-integration-status-copy.cjs b/scripts/check-integration-status-copy.cjs
+index 562e350..23600e4 100644
+--- a/scripts/check-integration-status-copy.cjs
++++ b/scripts/check-integration-status-copy.cjs
+@@ -49,7 +49,7 @@ const adminAi = exists('src/pages/AdminAiSettings.tsx') ? read('src/pages/AdminA
+ assert(/Stripe wymaga konfiguracji/i.test(billing), 'Billing must expose Stripe requires config copy');
+ assert(/Google Calendar/i.test(billing) && /(w przygotowaniu|wymaga konfiguracji|OAuth)/i.test(billing), 'Billing must mark Google Calendar as coming soon/config dependent');
+ assert(/digest/i.test(billing) && /konfiguracji mail providera/i.test(billing), 'Billing must mark digest as config dependent');
+-assert(/Pe─╣ÔÇÜny asystent AI|asystent AI/i.test(billing) && /Beta/i.test(billing) && /(konfiguracji|provider|szkic)/i.test(billing), 'Billing must mark AI as beta/config dependent');
++assert(/Pe┼ény asystent AI|asystent AI/i.test(billing) && /Beta/i.test(billing) && /(konfiguracji|provider|szkic)/i.test(billing), 'Billing must mark AI as beta/config dependent');
+ 
+ assert(/Digest e-mail/i.test(settings) && /wymaga konfiguracji mail providera/i.test(settings), 'Settings must mark digest as mail provider dependent');
+ assert(/To nadal aplikacja webowa/i.test(settings), 'Settings must mark PWA as web app');
+diff --git a/scripts/check-public-security-claims.cjs b/scripts/check-public-security-claims.cjs
+index 4a1f035..3d89a0f 100644
+--- a/scripts/check-public-security-claims.cjs
++++ b/scripts/check-public-security-claims.cjs
+@@ -32,8 +32,8 @@ const banned = [
+   { label: 'SOC 2 certified', pattern: /SOC\s*2\s*certified/i },
+   { label: 'SOC2 certified', pattern: /SOC2\s*certified/i },
+   { label: 'ISO certified without proof', pattern: /ISO\s*27001\s*certified/i },
+-  { label: 'GDPR/RODO guaranteed compliant', pattern: /(GDPR|RODO)\s*(certified|guaranteed|gwarantowane|w pe─╣ÔÇÜni zgodne)/i },
+-  { label: 'bank level security', pattern: /bank[- ]?level security|bezpiecze─╣ÔÇ×stwo bankowe/i },
++  { label: 'GDPR/RODO guaranteed compliant', pattern: /(GDPR|RODO)\s*(certified|guaranteed|gwarantowane|w pe┼éni zgodne)/i },
++  { label: 'bank level security', pattern: /bank[- ]?level security|bezpiecze┼ästwo bankowe/i },
+ ];
+ 
+ for (const file of files) {
+@@ -55,7 +55,7 @@ const socSlice = socIndex >= 0 ? truth.slice(socIndex, socIndex + 900) : '';
+ if (!/SOC\s*2\s*certified/i.test(socSlice)) {
+   problems.push('product truth registry missing SOC 2 certified warning reference');
+ }
+-if (!/(certyfikat|certyfikatu|dow─é┼éd|dowodu|dokument)/i.test(socSlice)) {
++if (!/(certyfikat|certyfikatu|dow├│d|dowodu|dokument)/i.test(socSlice)) {
+   problems.push('product truth registry missing proof/document requirement for SOC/security claims');
+ }
+ 
+diff --git a/scripts/check-ui-truth-claims.cjs b/scripts/check-ui-truth-claims.cjs
+index d0fcb43..838efca 100644
+--- a/scripts/check-ui-truth-claims.cjs
++++ b/scripts/check-ui-truth-claims.cjs
+@@ -80,13 +80,13 @@ const uiFiles = [
+ const bannedClaims = [
+   { label: 'SOC 2 certified', pattern: /SOC\s*2\s*certified/i },
+   { label: 'SOC2 certified', pattern: /SOC2\s*certified/i },
+-  { label: 'Google Calendar connected', pattern: /Google Calendar\s+(connected|po─╣ÔÇÜ├äÔÇŽczony|pod─╣ÔÇÜ├äÔÇŽczony|aktywny|dzia─╣ÔÇÜa)/i },
+-  { label: 'Google Calendar sync active', pattern: /Google Calendar sync\s*(aktywny|active|dzia─╣ÔÇÜa|gotowy)/i },
+-  { label: 'AI final auto-save', pattern: /AI\s+(automatycznie\s+)?(zapisuje|zapisa─╣ÔÇÜo|saved)\s+(rekord|leada|zadanie|event|wydarzenie)/i },
++  { label: 'Google Calendar connected', pattern: /Google Calendar\s+(connected|po┼é─ůczony|pod┼é─ůczony|aktywny|dzia┼éa)/i },
++  { label: 'Google Calendar sync active', pattern: /Google Calendar sync\s*(aktywny|active|dzia┼éa|gotowy)/i },
++  { label: 'AI final auto-save', pattern: /AI\s+(automatycznie\s+)?(zapisuje|zapisa┼éo|saved)\s+(rekord|leada|zadanie|event|wydarzenie)/i },
+   { label: 'AI saved without approval', pattern: /(AI saved|zapisane przez AI bez potwierdzenia)/i },
+   { label: 'Native App Store app', pattern: /natywna aplikacja (z|w) App Store/i },
+   { label: 'Native Google Play app', pattern: /natywna aplikacja (z|w) Google Play/i },
+-  { label: 'Digest sent without config', pattern: /digest (jest )?(wysy─╣ÔÇÜany|wyslany|wys─╣ÔÇÜany|dzia─╣ÔÇÜa) bez konfiguracji/i },
++  { label: 'Digest sent without config', pattern: /digest (jest )?(wysy┼éany|wyslany|wys┼éany|dzia┼éa) bez konfiguracji/i },
+   { label: 'Cancel anytime as guarantee', pattern: /cancel anytime|anuluj kiedy chcesz/i },
+ ];
+ 
+@@ -102,13 +102,13 @@ for (const file of uiFiles) {
+ const billing = exists('src/pages/Billing.tsx') ? read('src/pages/Billing.tsx') : '';
+ assert(/Google Calendar/i.test(billing), 'Billing must mention Google Calendar');
+ assert(hasNear(billing, /Google Calendar/i, /(w przygotowaniu|wymaga konfiguracji|OAuth)/i, 260), 'Billing must describe Google Calendar as coming soon/config dependent');
+-assert(/Pe─╣ÔÇÜny asystent AI|asystent AI/i.test(billing), 'Billing must mention AI assistant');
+-assert(/Pe─╣ÔÇÜny asystent AI\s*Beta/i.test(billing) || (/asystent AI/i.test(billing) && /Beta/i.test(billing)), 'Billing must describe AI as Beta');
++assert(/Pe┼ény asystent AI|asystent AI/i.test(billing), 'Billing must mention AI assistant');
++assert(/Pe┼ény asystent AI\s*Beta/i.test(billing) || (/asystent AI/i.test(billing) && /Beta/i.test(billing)), 'Billing must describe AI as Beta');
+ assert(/konfiguracji providera|konfiguracji AI|provider/i.test(billing), 'Billing must describe AI as config/provider dependent');
+ assert(/szkic/i.test(billing) && /(zatwierdzenia|potwierdzenia)/i.test(billing), 'Billing must keep manual approval copy for AI drafts');
+ assert(/digest/i.test(billing) && /konfiguracji mail providera/i.test(billing), 'Billing must mark digest as config dependent');
+ assert(!billing.includes("'Google Calendar sync',"), 'Billing has old unconditional Google Calendar sync copy');
+-assert(!billing.includes('Pe─╣ÔÇÜny asystent AI w ca─╣ÔÇÜej aplikacji'), 'Billing has old full AI claim');
++assert(!billing.includes('Pe┼ény asystent AI w ca┼éej aplikacji'), 'Billing has old full AI claim');
+ 
+ const settings = exists('src/pages/Settings.tsx') ? read('src/pages/Settings.tsx') : '';
+ assert(/Digest e-mail/i.test(settings) && /wymaga konfiguracji mail providera/i.test(settings), 'Settings must describe digest as config dependent');
+diff --git a/src/lib/options.ts b/src/lib/options.ts
+index 654a8b6..a760d96 100644
+--- a/src/lib/options.ts
++++ b/src/lib/options.ts
+@@ -65,7 +65,7 @@ export const REMINDER_OFFSET_OPTIONS = [
+ ];
+ 
+ export const GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS = [
+-  { value: 'default', label: 'Domy─╣ÔÇ║lne z Google Calendar' },
++  { value: 'default', label: 'Domy┼Ťlne z Google Calendar' },
+   { value: 'popup', label: 'Powiadomienie w Google Calendar' },
+   { value: 'email', label: 'E-mail z Google Calendar' },
+   { value: 'popup_email', label: 'Powiadomienie + e-mail' },
+diff --git a/src/lib/product-truth.ts b/src/lib/product-truth.ts
+index bd007bb..b3112ae 100644
+--- a/src/lib/product-truth.ts
++++ b/src/lib/product-truth.ts
+@@ -42,8 +42,8 @@ export const PRODUCT_TRUTH_STATUS: ProductTruthItem[] = [
+     key: 'google_calendar',
+     label: 'Google Calendar',
+     status: 'requires_config',
+-    userCopy: 'Integracja Google Calendar wymaga OAuth, ENV i aktywnego po─╣ÔÇÜ├äÔÇŽczenia u─╣─Żytkownika.',
+-    operatorNote: 'Dost├äÔäópne jako p─╣ÔÇÜatna funkcja po konfiguracji GOOGLE_CLIENT_ID/SECRET/REDIRECT_URI i token encryption.',
++    userCopy: 'Integracja Google Calendar wymaga OAuth, ENV i aktywnego po┼é─ůczenia u┼╝ytkownika.',
++    operatorNote: 'Dost─Öpne jako p┼éatna funkcja po konfiguracji GOOGLE_CLIENT_ID/SECRET/REDIRECT_URI i token encryption.',
+   },
+   {
+     key: 'ai_assistant',
+diff --git a/src/pages/Settings.tsx b/src/pages/Settings.tsx
+index d27ded2..c9936fa 100644
+--- a/src/pages/Settings.tsx
++++ b/src/pages/Settings.tsx
+@@ -247,7 +247,7 @@ useEffect(() => {
+       setGoogleCalendarStatus(data as GoogleCalendarStatusState);
+     } catch (error: any) {
+       setGoogleCalendarStatus({ configured: false, connected: false, missing: ['STATUS_CHECK_FAILED'] });
+-      toast.error(`B─╣ÔÇÜ├äÔÇŽd statusu Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
++      toast.error(`B┼é─ůd statusu Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
+     } finally {
+       setCheckingGoogleCalendar(false);
+     }
+@@ -259,12 +259,12 @@ useEffect(() => {
+ 
+   const handleConnectGoogleCalendar = async () => {
+     if (!workspace?.id || !activeUserId) {
+-      toast.error('Workspace albo u─╣─Żytkownik nie jest jeszcze gotowy. Od─╣ÔÇ║wie─╣─Ż stron├äÔäó po zalogowaniu.');
++      toast.error('Workspace albo u┼╝ytkownik nie jest jeszcze gotowy. Od┼Ťwie┼╝ stron─Ö po zalogowaniu.');
+       return;
+     }
+ 
+     if (!canUseGoogleCalendarByPlan) {
+-      toast.error('Google Calendar Sync jest przewidziany dla p─╣ÔÇÜatnych plan─é┼éw.');
++      toast.error('Google Calendar Sync jest przewidziany dla p┼éatnych plan├│w.');
+       return;
+     }
+ 
+@@ -296,9 +296,9 @@ useEffect(() => {
+         return;
+       }
+ 
+-      toast.error('Google nie zwr─é┼éci─╣ÔÇÜ adresu autoryzacji.');
++      toast.error('Google nie zwr├│ci┼é adresu autoryzacji.');
+     } catch (error: any) {
+-      toast.error(`B─╣ÔÇÜ├äÔÇŽd po─╣ÔÇÜ├äÔÇŽczenia Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
++      toast.error(`B┼é─ůd po┼é─ůczenia Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
+     } finally {
+       setConnectingGoogleCalendar(false);
+     }
+@@ -307,7 +307,7 @@ useEffect(() => {
+   const handleDisconnectGoogleCalendar = async () => {
+     if (!workspace?.id || !activeUserId) return;
+ 
+-    if (!window.confirm('Roz─╣ÔÇÜ├äÔÇŽczy├äÔÇí Google Calendar dla tego workspace? Nowe wydarzenia nie b├äÔäód├äÔÇŽ synchronizowane.')) return;
++    if (!window.confirm('Roz┼é─ůczy─ç Google Calendar dla tego workspace? Nowe wydarzenia nie b─Öd─ů synchronizowane.')) return;
+ 
+     setDisconnectingGoogleCalendar(true);
+     try {
+@@ -325,10 +325,10 @@ useEffect(() => {
+       const data = await response.json().catch(() => ({}));
+       if (!response.ok) throw new Error(String(data?.error || 'GOOGLE_CALENDAR_DISCONNECT_FAILED'));
+ 
+-      toast.success('Google Calendar zosta─╣ÔÇÜ roz─╣ÔÇÜ├äÔÇŽczony.');
++      toast.success('Google Calendar zosta┼é roz┼é─ůczony.');
+       await loadGoogleCalendarStatus();
+     } catch (error: any) {
+-      toast.error(`B─╣ÔÇÜ├äÔÇŽd roz─╣ÔÇÜ├äÔÇŽczania Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
++      toast.error(`B┼é─ůd roz┼é─ůczania Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
+     } finally {
+       setDisconnectingGoogleCalendar(false);
+     }
+@@ -386,7 +386,7 @@ useEffect(() => {
+       method: googleCalendarReminderMethod as any,
+       minutesBefore: Number(googleCalendarReminderMinutes || '30'),
+     });
+-    toast.success('Ustawienia przypomnie─╣ÔÇ× Google Calendar zapisane.');
++    toast.success('Ustawienia przypomnie┼ä Google Calendar zapisane.');
+   };
+ 
+   const handleUpdateProfile = async () => {
+@@ -755,7 +755,7 @@ useEffect(() => {
+                 <div>
+                   <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
+                   <h2>Przypomnienia Google Calendar</h2>
+-                  <p>Ustaw domy─╣ÔÇ║lny typ przypomnienia wysy─╣ÔÇÜany do Google przy nowych i edytowanych wydarzeniach.</p>
++                  <p>Ustaw domy┼Ťlny typ przypomnienia wysy┼éany do Google przy nowych i edytowanych wydarzeniach.</p>
+                 </div>
+               </div>
+ 
+@@ -773,7 +773,7 @@ useEffect(() => {
+                   </select>
+                 </div>
+                 <div className="settings-field">
+-                  <Label>Ile minut wcze─╣ÔÇ║niej</Label>
++                  <Label>Ile minut wcze┼Ťniej</Label>
+                   <Input
+                     type="number"
+                     min={0}
+@@ -791,7 +791,7 @@ useEffect(() => {
+                   Zapisz przypomnienia Google
+                 </Button>
+                 <span className="settings-muted-note">
+-                  Przy opcji domy─╣ÔÇ║lnej Google u─╣─Żyje ustawie─╣ÔÇ× z Twojego kalendarza. Przy popup/e-mail CloseFlow wysy─╣ÔÇÜa override do Google Calendar.
++                  Przy opcji domy┼Ťlnej Google u┼╝yje ustawie┼ä z Twojego kalendarza. Przy popup/e-mail CloseFlow wysy┼éa override do Google Calendar.
+                 </span>
+               </div>
+             </section>
+@@ -963,7 +963,7 @@ useEffect(() => {
+                 <div>
+                   <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
+                   <h2>Google Calendar Sync V1</h2>
+-                  <p>Jednokierunkowy sync CloseFlow ├óÔÇáÔÇÖ Google Calendar. Wymaga OAuth, ENV i aktywnego po─╣ÔÇÜ├äÔÇŽczenia u─╣─Żytkownika.</p>
++                  <p>Jednokierunkowy sync CloseFlow ├óÔÇáÔÇÖ Google Calendar. Wymaga OAuth, ENV i aktywnego po┼é─ůczenia u┼╝ytkownika.</p>
+                 </div>
+               </div>
+ 
+@@ -974,23 +974,23 @@ useEffect(() => {
+                     {checkingGoogleCalendar
+                       ? 'Sprawdzanie statusu...'
+                       : googleCalendarStatus?.connected
+-                        ? 'Po─╣ÔÇÜ├äÔÇŽczenie aktywne. Nowe wydarzenia z CloseFlow b├äÔäód├äÔÇŽ kopiowane do Google Calendar.'
++                        ? 'Po┼é─ůczenie aktywne. Nowe wydarzenia z CloseFlow b─Öd─ů kopiowane do Google Calendar.'
+                         : googleCalendarStatus?.configured
+-                          ? 'Konfiguracja serwera wygl├äÔÇŽda poprawnie. Mo─╣─Żesz po─╣ÔÇÜ├äÔÇŽczy├äÔÇí konto Google.'
+-                          : 'Integracja wymaga konfiguracji ENV i OAuth przed u─╣─Życiem.'}
++                          ? 'Konfiguracja serwera wygl─ůda poprawnie. Mo┼╝esz po┼é─ůczy─ç konto Google.'
++                          : 'Integracja wymaga konfiguracji ENV i OAuth przed u┼╝yciem.'}
+                   </span>
+                   {googleCalendarMissingText ? (
+-                    <span>Brakuj├äÔÇŽce ENV: {googleCalendarMissingText}</span>
++                    <span>Brakuj─ůce ENV: {googleCalendarMissingText}</span>
+                   ) : null}
+                   {!canUseGoogleCalendarByPlan ? (
+-                    <span>Funkcja jest przewidziana dla p─╣ÔÇÜatnych plan─é┼éw. Admin mo─╣─Że u─╣─Ży├äÔÇí jej do test─é┼éw.</span>
++                    <span>Funkcja jest przewidziana dla p┼éatnych plan├│w. Admin mo┼╝e u┼╝y─ç jej do test├│w.</span>
+                   ) : null}
+                 </div>
+                 <span className="settings-soft-pill">
+                   {googleCalendarStatus?.connected
+-                    ? 'Po─╣ÔÇÜ├äÔÇŽczone'
++                    ? 'Po┼é─ůczone'
+                     : googleCalendarStatus?.configured
+-                      ? 'Gotowe do po─╣ÔÇÜ├äÔÇŽczenia'
++                      ? 'Gotowe do po┼é─ůczenia'
+                       : 'Wymaga konfiguracji'}
+                 </span>
+               </div>
+@@ -1002,7 +1002,7 @@ useEffect(() => {
+                   onClick={() => void loadGoogleCalendarStatus()}
+                   disabled={checkingGoogleCalendar || !workspace?.id}
+                 >
+-                  {checkingGoogleCalendar ? 'Sprawdzanie...' : 'Od─╣ÔÇ║wie─╣─Ż status'}
++                  {checkingGoogleCalendar ? 'Sprawdzanie...' : 'Od┼Ťwie┼╝ status'}
+                 </Button>
+                 {googleCalendarStatus?.connected ? (
+                   <Button
+@@ -1011,7 +1011,7 @@ useEffect(() => {
+                     onClick={() => void handleDisconnectGoogleCalendar()}
+                     disabled={disconnectingGoogleCalendar || !workspace?.id}
+                   >
+-                    {disconnectingGoogleCalendar ? 'Roz─╣ÔÇÜ├äÔÇŽczanie...' : 'Roz─╣ÔÇÜ├äÔÇŽcz Google'}
++                    {disconnectingGoogleCalendar ? 'Roz┼é─ůczanie...' : 'Roz┼é─ůcz Google'}
+                   </Button>
+                 ) : (
+                   <Button
+@@ -1019,14 +1019,14 @@ useEffect(() => {
+                     onClick={() => void handleConnectGoogleCalendar()}
+                     disabled={connectingGoogleCalendar || checkingGoogleCalendar || !workspace?.id || !canUseGoogleCalendarByPlan}
+                   >
+-                    {connectingGoogleCalendar ? 'Przekierowanie...' : 'Po─╣ÔÇÜ├äÔÇŽcz Google'}
++                    {connectingGoogleCalendar ? 'Przekierowanie...' : 'Po┼é─ůcz Google'}
+                   </Button>
+                 )}
+               </div>
+ 
+               <div className="settings-diagnostics-box">
+-                <div>Zakres V1: CloseFlow jest ─╣┼čr─é┼éd─╣ÔÇÜem prawdy, Google Calendar jest kopi├äÔÇŽ wydarze─╣ÔÇ×.</div>
+-                <div>Przypomnienia Google s├äÔÇŽ zapisywane razem z wydarzeniem jako domy─╣ÔÇ║lne albo popup/email wed─╣ÔÇÜug danych eventu.</div>
++                <div>Zakres V1: CloseFlow jest ┼║r├│d┼éem prawdy, Google Calendar jest kopi─ů wydarze┼ä.</div>
++                <div>Przypomnienia Google s─ů zapisywane razem z wydarzeniem jako domy┼Ťlne albo popup/email wed┼éug danych eventu.</div>
+               </div>
+             </section>
+ 

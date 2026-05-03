@@ -12,7 +12,7 @@ const skipFiles = new Set([
   'scripts/repair-polish-text-global.cjs',
   'scripts/check-polish-text-global.cjs',
 ]);
-const suspiciousRe = /[ÄĹĂÅÃÂ�]/;
+const suspiciousRe = /[\u00c4\u0139\u0102\u00c5\u00c3\u00c2\ufffd]/;
 const forbiddenVisibleWords = [/Wypchnij/i];
 
 function shouldSkipLine(line) {

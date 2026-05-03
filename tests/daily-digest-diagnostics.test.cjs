@@ -25,8 +25,8 @@ test('settings page exposes digest diagnostics button and status panel', () => {
 
   assert.match(settings, /DigestDiagnosticsState/);
   assert.match(settings, /handleCheckDigestDiagnostics/);
-  assert.match(settings, /Sprawdz konfiguracje/);
-  assert.match(settings, /Digest gotowy do wysylki/);
+  assert.match(settings, /Sprawd\u017a konfiguracj\u0119|Sprawdz konfiguracje/);
+  assert.match(settings, /Digest gotowy do wysy\u0142ki|Digest gotowy do wysylki/);
   assert.match(settings, /Digest wymaga konfiguracji/);
   assert.match(settings, /RESEND_API_KEY:/);
   assert.match(settings, /DIGEST_FROM_EMAIL:/);

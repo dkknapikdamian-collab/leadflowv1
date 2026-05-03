@@ -1,0 +1,46 @@
+﻿diff --git a/api/work-items.ts b/api/work-items.ts
+index 61f4eca..885351b 100644
+--- a/api/work-items.ts
++++ b/api/work-items.ts
+@@ -292,6 +292,25 @@ async function syncGoogleCalendarEventAfterMutation(input: {
+   }
+ }
+ 
++
++// GOOGLE_CALENDAR_STAGE13_SYNC_META_HELPER
++function googleCalendarSyncMeta(row: any) {
++  const syncEnabled = row?.google_calendar_sync_enabled ?? row?.googleCalendarSyncEnabled ?? null;
++  const syncStatus = row?.google_calendar_sync_status ?? row?.googleCalendarSyncStatus ?? '';
++  const htmlLink = row?.google_calendar_html_link ?? row?.googleCalendarHtmlLink ?? '';
++  const eventId = row?.google_calendar_event_id ?? row?.googleCalendarEventId ?? '';
++  const syncedAt = row?.google_calendar_synced_at ?? row?.googleCalendarSyncedAt ?? '';
++  const syncError = row?.google_calendar_sync_error ?? row?.googleCalendarSyncError ?? '';
++  return {
++    googleCalendarSyncEnabled: typeof syncEnabled === 'boolean' ? syncEnabled : syncEnabled === null ? null : Boolean(syncEnabled),
++    googleCalendarSyncStatus: syncStatus ? String(syncStatus) : '',
++    googleCalendarHtmlLink: htmlLink ? String(htmlLink) : '',
++    googleCalendarEventId: eventId ? String(eventId) : '',
++    googleCalendarSyncedAt: syncedAt ? String(syncedAt) : '',
++    googleCalendarSyncError: syncError ? String(syncError) : '',
++  };
++}
++
+ function isTaskRow(row: any) {
+   const recordType = String(row.record_type || row.recordType || '').toLowerCase();
+   const hasStartAt = Boolean(row.start_at || row.startAt || row.end_at || row.endAt);
+@@ -342,6 +361,7 @@ function normalizeTask(row: any) {
+     recurrenceEndType: row.recurrence_end_type ? String(row.recurrence_end_type) : undefined,
+     recurrenceEndAt: asIsoDate(row.recurrence_end_at) || null,
+     recurrenceCount: typeof row.recurrence_count === 'number' ? row.recurrence_count : null,
++    ...googleCalendarSyncMeta(row), // GOOGLE_CALENDAR_STAGE13_TASK_SYNC_META
+   };
+ }
+ 
+@@ -380,6 +400,7 @@ function normalizeEvent(row: any) {
+     leadId: row.lead_id ? String(row.lead_id) : row.leadId ? String(row.leadId) : undefined,
+     leadName: row.lead_name ? String(row.lead_name) : row.leadName ? String(row.leadName) : undefined,
+     caseId: row.case_id ? String(row.case_id) : row.caseId ? String(row.caseId) : undefined,
++    ...googleCalendarSyncMeta(row), // GOOGLE_CALENDAR_STAGE13_EVENT_SYNC_META
+   };
+ }
+ 

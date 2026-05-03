@@ -1,0 +1,72 @@
+﻿diff --git a/src/lib/calendar-items.ts b/src/lib/calendar-items.ts
+index 9b95b37..a0c7e7d 100644
+--- a/src/lib/calendar-items.ts
++++ b/src/lib/calendar-items.ts
+@@ -35,6 +35,12 @@ export type CalendarTaskItem = {
+   leadName?: string;
+   caseId?: string;
+   clientId?: string;
++  googleCalendarSyncEnabled?: boolean | null;
++  googleCalendarSyncStatus?: string;
++  googleCalendarHtmlLink?: string;
++  googleCalendarEventId?: string;
++  googleCalendarSyncedAt?: string;
++  googleCalendarSyncError?: string;
+ };
+ 
+ export type CalendarEventItem = {
+@@ -57,6 +63,12 @@ export type CalendarEventItem = {
+   recurrenceCount?: number | null;
+   recurrence?: Record<string, unknown>;
+   reminder?: Record<string, unknown>;
++  googleCalendarSyncEnabled?: boolean | null;
++  googleCalendarSyncStatus?: string;
++  googleCalendarHtmlLink?: string;
++  googleCalendarEventId?: string;
++  googleCalendarSyncedAt?: string;
++  googleCalendarSyncError?: string;
+ };
+ 
+ export type CalendarBundle = {
+@@ -144,6 +156,25 @@ function getRecurrenceMeta(row: Record<string, unknown>) {
+   return { recurrenceEndType, recurrenceEndAt, recurrenceCount };
+ }
+ 
++
++// GOOGLE_CALENDAR_STAGE13_BUNDLE_SYNC_META_HELPER
++function googleCalendarSyncMeta(row: Record<string, unknown>) {
++  const syncEnabled = row.googleCalendarSyncEnabled ?? row.google_calendar_sync_enabled ?? null;
++  const syncStatus = row.googleCalendarSyncStatus ?? row.google_calendar_sync_status ?? '';
++  const htmlLink = row.googleCalendarHtmlLink ?? row.google_calendar_html_link ?? '';
++  const eventId = row.googleCalendarEventId ?? row.google_calendar_event_id ?? '';
++  const syncedAt = row.googleCalendarSyncedAt ?? row.google_calendar_synced_at ?? '';
++  const syncError = row.googleCalendarSyncError ?? row.google_calendar_sync_error ?? '';
++  return {
++    googleCalendarSyncEnabled: typeof syncEnabled === 'boolean' ? syncEnabled : syncEnabled === null ? null : Boolean(syncEnabled),
++    googleCalendarSyncStatus: syncStatus ? String(syncStatus) : '',
++    googleCalendarHtmlLink: htmlLink ? String(htmlLink) : '',
++    googleCalendarEventId: eventId ? String(eventId) : '',
++    googleCalendarSyncedAt: syncedAt ? String(syncedAt) : '',
++    googleCalendarSyncError: syncError ? String(syncError) : '',
++  };
++}
++
+ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTaskItem | null {
+   const task = normalizeTaskContract(row);
+   const scheduledAt = task.scheduledAt;
+@@ -174,6 +205,7 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
+     leadName: task.leadName,
+     caseId: task.caseId,
+     clientId: task.clientId,
++    ...googleCalendarSyncMeta(row), // GOOGLE_CALENDAR_STAGE13_CALENDAR_TASK_SYNC_META
+   };
+ }
+ 
+@@ -204,6 +236,7 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
+     recurrenceEndType,
+     recurrenceEndAt,
+     recurrenceCount,
++    ...googleCalendarSyncMeta(row), // GOOGLE_CALENDAR_STAGE13_CALENDAR_EVENT_SYNC_META
+   };
+ }
+ 

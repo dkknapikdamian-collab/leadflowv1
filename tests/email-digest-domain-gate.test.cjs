@@ -26,8 +26,8 @@ test('email digest backend handlers remain in code for later domain activation',
   assert.match(settings, /handleSaveDigestSettings/);
   assert.match(settings, /handleCheckDigestDiagnostics/);
   assert.match(settings, /handleSendDigestTest/);
-  assert.match(settings, /Wyslij test teraz/);
-  assert.match(settings, /Sprawdz konfiguracje/);
+  assert.match(settings, /Wy\u015blij test teraz|Wyslij test teraz/);
+  assert.match(settings, /Sprawd\u017a konfiguracj\u0119|Sprawdz konfiguracje/);
 });
 
 test('release gates include email digest domain gate regression test', () => {
