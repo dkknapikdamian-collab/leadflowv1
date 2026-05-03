@@ -66,6 +66,7 @@ const requiredTests = [
   'tests/request-scope-server-helper.test.cjs',
   'tests/request-identity-vercel-api-signature.test.cjs',
   'tests/polish-mojibake-audit.test.cjs',
+  'tests/repo-backup-folders-not-tracked.test.cjs',
   'tests/stage30-leads-clients-trash-contract.test.cjs',
   'tests/stage31-leads-thin-list-search.test.cjs',
   'tests/stage32-leads-value-right-rail.test.cjs',
