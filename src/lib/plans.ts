@@ -62,6 +62,61 @@ export type PlanFeatures = {
 
 export type PlanFeatureKey = keyof PlanFeatures;
 
+export type PlanFeatureVisibility = 'available' | 'hidden_by_plan' | 'upsell_in_billing' | 'blocked_direct_route';
+
+export type PlanVisibilitySurface =
+  | 'main_flow'
+  | 'sidebar'
+  | 'global_action'
+  | 'settings'
+  | 'billing'
+  | 'plan_comparison'
+  | 'blocked_direct_route';
+
+export const PLAN_FEATURE_MINIMUM_PLANS: Record<PlanFeatureKey, PlanId> = {
+  ai: PLAN_IDS.ai,
+  fullAi: PLAN_IDS.ai,
+  digest: PLAN_IDS.basic,
+  lightParser: PLAN_IDS.basic,
+  lightDrafts: PLAN_IDS.basic,
+  googleCalendar: PLAN_IDS.pro,
+  weeklyReport: PLAN_IDS.pro,
+  csvImport: PLAN_IDS.pro,
+  recurringReminders: PLAN_IDS.pro,
+  browserNotifications: PLAN_IDS.basic,
+};
+
+export const PLAN_FEATURE_VISIBILITY_RULES = {
+  defaultDeniedVisibility: 'hidden_by_plan' as PlanFeatureVisibility,
+  allowedUpsellSurfaces: ['billing', 'plan_comparison', 'blocked_direct_route'] as PlanVisibilitySurface[],
+};
+
+export function getMinimumPlanForFeature(feature: PlanFeatureKey): PlanId {
+  return PLAN_FEATURE_MINIMUM_PLANS[feature] || PLAN_IDS.ai;
+}
+
+export function getPlanFeatureVisibility(
+  planId: string | null | undefined,
+  feature: PlanFeatureKey,
+  subscriptionStatus?: string | null,
+  surface: PlanVisibilitySurface = 'main_flow',
+): PlanFeatureVisibility {
+  if (isPlanFeatureEnabled(planId, feature, subscriptionStatus)) return 'available';
+  if (surface === 'blocked_direct_route') return 'blocked_direct_route';
+  if (PLAN_FEATURE_VISIBILITY_RULES.allowedUpsellSurfaces.includes(surface)) return 'upsell_in_billing';
+  return PLAN_FEATURE_VISIBILITY_RULES.defaultDeniedVisibility;
+}
+
+export function shouldExposePlanFeature(
+  planId: string | null | undefined,
+  feature: PlanFeatureKey,
+  subscriptionStatus?: string | null,
+  surface: PlanVisibilitySurface = 'main_flow',
+) {
+  return getPlanFeatureVisibility(planId, feature, subscriptionStatus, surface) !== 'hidden_by_plan';
+}
+
+
 export type PlanDefinition = {
   id: PlanId;
   name: string;

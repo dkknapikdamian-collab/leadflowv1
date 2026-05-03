@@ -87,6 +87,7 @@ const requiredTests = [
   'tests/faza2-etap22-rls-backend-security-proof.test.cjs',
   'tests/faza3-etap31-plan-source-of-truth.test.cjs',
   'tests/faza3-etap32-plan-feature-access-gate.test.cjs',
+  'tests/faza3-etap32b-plan-visibility-contract.test.cjs',
   'tests/ui-developer-copy-paid-readiness.test.cjs',
   'tests/case-detail-write-access-gate-stage02b.test.cjs',
   'tests/lead-write-access-gate.test.cjs',

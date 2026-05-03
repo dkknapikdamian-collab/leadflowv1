@@ -74,3 +74,18 @@ node --test tests/faza3-etap32-plan-feature-access-gate.test.cjs
 ```text
 FAZA 3 - Etap 3.2B - Plan-based UI visibility and feature smoke
 ```
+
+## Visibility contract
+
+Detailed visibility and upsell rules are locked in:
+
+```text
+docs/technical/PLAN_VISIBILITY_CONTRACT_STAGE32B_2026-05-03.md
+```
+
+Main rule:
+
+```text
+Lower plans must not see higher-plan operational features in normal product flow.
+Show upgrade messaging only in Billing / plan comparison / blocked direct route.
+```

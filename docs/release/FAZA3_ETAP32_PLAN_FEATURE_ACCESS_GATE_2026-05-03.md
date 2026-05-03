@@ -170,3 +170,27 @@ PWA/notifications
 ```
 
 i ukryć / pokazać funkcje według planu.
+
+## Stage 3.2B visibility contract addendum
+
+Detailed plan visibility rules are locked in:
+
+```text
+docs/technical/PLAN_VISIBILITY_CONTRACT_STAGE32B_2026-05-03.md
+```
+
+Main rule:
+
+```text
+Lower plans must not see higher-plan operational features in normal product flow.
+Show upgrade messaging only in Billing / plan comparison / blocked direct route.
+```
+
+Examples:
+
+```text
+Free must not see AI assistant in normal workflow.
+Basic must not see Google Calendar sync in normal workflow.
+Pro must not see full AI assistant in normal workflow.
+AI and Trial can see full AI, still confirm-first.
+```

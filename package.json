@@ -150,7 +150,9 @@
     "check:faza3-etap31-plan-source-of-truth": "node scripts/check-faza3-etap31-plan-source-of-truth.cjs",
     "test:faza3-etap31-plan-source-of-truth": "node --test tests/faza3-etap31-plan-source-of-truth.test.cjs",
     "check:faza3-etap32-plan-feature-access-gate": "node scripts/check-faza3-etap32-plan-feature-access-gate.cjs",
-    "test:faza3-etap32-plan-feature-access-gate": "node --test tests/faza3-etap32-plan-feature-access-gate.test.cjs"
+    "test:faza3-etap32-plan-feature-access-gate": "node --test tests/faza3-etap32-plan-feature-access-gate.test.cjs",
+    "check:faza3-etap32b-plan-visibility-contract": "node scripts/check-faza3-etap32b-plan-visibility-contract.cjs",
+    "test:faza3-etap32b-plan-visibility-contract": "node --test tests/faza3-etap32b-plan-visibility-contract.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
