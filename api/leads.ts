@@ -316,9 +316,6 @@ async function findExistingClient(workspaceId: string, leadRow: Record<string, u
 async function ensureClientForLead(workspaceId: string, leadRow: Record<string, unknown>) {
   const existing = await findExistingClient(workspaceId, leadRow);
   if (existing) return existing;
-    await assertWorkspaceEntityLimit(workspaceId, 'lead');
-
-
   const nowIso = new Date().toISOString();
   const payload: Record<string, unknown> = {
     workspace_id: workspaceId,
@@ -849,6 +846,8 @@ export default async function handler(req: any, res: any) {
       created_at: nowIso,
       updated_at: nowIso,
     };
+
+    await assertWorkspaceEntityLimit(workspaceId, 'lead');
 
     const result = await insertLeadWithSchemaFallback(payload);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;

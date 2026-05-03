@@ -92,6 +92,7 @@ const requiredTests = [
   'tests/faza3-etap32d-plan-based-ui-visibility.test.cjs',
   'tests/faza3-etap32e-settings-digest-billing-visibility-smoke.test.cjs',
   'tests/faza3-etap32g-ai-draft-cancel-smoke.test.cjs',
+  'tests/faza3-etap32h-lead-limit-placement-hotfix.test.cjs',
   'tests/faza3-etap32f-backend-entity-limits-smoke.test.cjs',
   'tests/ui-developer-copy-paid-readiness.test.cjs',
   'tests/case-detail-write-access-gate-stage02b.test.cjs',
