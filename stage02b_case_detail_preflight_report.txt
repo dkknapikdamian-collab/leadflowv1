@@ -1,0 +1,27 @@
+OK restored Stage02B partial files from HEAD
+OK preflight found CaseDetail export
+OK preflight found useNavigate call
+OK preflight found toast import/use
+OK preflight found handleAddItem
+OK preflight found handleAddTask
+OK preflight found handleAddEvent
+OK preflight found handleAddNote
+OK preflight found handleCopyPortal
+OK inserted useWorkspace import
+OK inserted useWorkspace hook after navigate
+OK inserted guardCaseDetailWriteAccess block
+OK inserted guard in handleCopyPortal
+OK inserted guard in handleAddItem
+OK inserted guard in handleItemStatusChange
+OK inserted guard in handleDeleteItem
+OK inserted guard in handleAddTask
+OK inserted guard in handleTaskDone
+WARN function handleTaskReschedule not found; guard not inserted
+OK inserted guard in handleAddEvent
+OK inserted guard in handleEventDone
+WARN function handleEventReschedule not found; guard not inserted
+OK inserted guard in handleAddNote
+WARN function handleLifecycleAction not found; guard not inserted
+OK wrote Stage02B CaseDetail write access gate test
+OK patched package.json with Stage02B script
+OK inserted Stage02B test into quiet release gate before lead-write-access-gate

@@ -29,6 +29,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
@@ -454,6 +455,7 @@ function getWorkKindLabel(kind: WorkItem['kind']) {
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
+  const { hasAccess, access } = useWorkspace();
   const [caseData, setCaseData] = useState<CaseRecord | null>(null);
   const [items, setItems] = useState<CaseItem[]>([]);
   const [activities, setActivities] = useState<CaseActivity[]>([]);
@@ -590,6 +592,14 @@ export default function CaseDetail() {
   const nextAction = useMemo(() => workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null, [workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
   const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Źródłowy lead') : caseData?.leadId ? 'Źródłowy lead podpięty' : 'Brak źródłowego leada';
+  const caseDetailWriteAccessDenied = !hasAccess;
+  const caseDetailAccessStatus = String(access?.status || 'inactive');
+  const guardCaseDetailWriteAccess = (actionLabel: string) => {
+    if (!caseDetailWriteAccessDenied) return true;
+    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasl.' : 'Brak aktywnego dostepu.';
+    toast.error(reason + ' Nie mozna teraz ' + actionLabel + '.');
+    return false;
+  };
 
   const recordActivity = async (eventType: string, payload: Record<string, any>) => {
     if (!caseId) return;
@@ -603,6 +613,7 @@ export default function CaseDetail() {
   };
 
   const handleCopyPortal = async () => {
+    if (!guardCaseDetailWriteAccess('wygenerowac linku do portalu')) return;
     if (!caseId) return;
     try {
       const payload = await createClientPortalTokenInSupabase(caseId);
@@ -615,6 +626,7 @@ export default function CaseDetail() {
   };
 
   const handleAddItem = async () => {
+    if (!guardCaseDetailWriteAccess('dodac braku')) return;
     if (!caseId || !newItem.title.trim()) {
       toast.error('Podaj nazwę braku');
       return;
@@ -641,6 +653,7 @@ export default function CaseDetail() {
   };
 
   const handleItemStatusChange = async (item: CaseItem, status: CaseItemStatus) => {
+    if (!guardCaseDetailWriteAccess('zmienic statusu braku')) return;
     if (!caseId) return;
     try {
       await updateCaseItemInSupabase({ id: item.id, caseId, status, approvedAt: status === 'accepted' ? new Date().toISOString() : null });
@@ -654,6 +667,7 @@ export default function CaseDetail() {
   };
 
   const handleDeleteItem = async (item: CaseItem) => {
+    if (!guardCaseDetailWriteAccess('usunac braku')) return;
     if (!window.confirm('Usunąć ten brak ze sprawy?')) return;
     try {
       await deleteCaseItemFromSupabase(item.id);
@@ -666,6 +680,7 @@ export default function CaseDetail() {
   };
 
   const handleAddTask = async () => {
+    if (!guardCaseDetailWriteAccess('dodac zadania')) return;
     if (!caseId || !newTask.title.trim()) {
       toast.error('Podaj tytuł zadania');
       return;
@@ -697,6 +712,7 @@ export default function CaseDetail() {
   };
 
   const handleTaskDone = async (task: TaskRecord) => {
+    if (!guardCaseDetailWriteAccess('oznaczyc zadania jako zrobione')) return;
     try {
       await updateTaskInSupabase({ id: task.id, status: 'done' });
       await recordActivity('task_status_changed', { title: task.title, taskId: task.id, status: 'done' });
@@ -720,6 +736,7 @@ export default function CaseDetail() {
   };
 
   const handleAddEvent = async () => {
+    if (!guardCaseDetailWriteAccess('dodac wydarzenia')) return;
     if (!caseId || !newEvent.title.trim() || !newEvent.startAt) {
       toast.error('Podaj tytuł i start wydarzenia');
       return;
@@ -750,6 +767,7 @@ export default function CaseDetail() {
   };
 
   const handleEventDone = async (event: EventRecord) => {
+    if (!guardCaseDetailWriteAccess('oznaczyc wydarzenia jako odbyte')) return;
     try {
       await updateEventInSupabase({ id: event.id, status: 'done' });
       await recordActivity('event_status_changed', { title: event.title, eventId: event.id, status: 'done' });
@@ -774,6 +792,7 @@ export default function CaseDetail() {
   };
 
   const handleAddNote = async () => {
+    if (!guardCaseDetailWriteAccess('dodac notatki')) return;
     if (!caseId || !newNote.trim()) {
       toast.error('Notatka nie może być pusta');
       return;

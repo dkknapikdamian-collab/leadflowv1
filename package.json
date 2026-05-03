@@ -129,7 +129,8 @@
     "check:polish-text-global": "node scripts/check-polish-text-global.cjs",
     "sanitize:polish-text-reports": "node scripts/sanitize-polish-text-reports.cjs",
     "check:access-billing-source-of-truth-stage02a": "node scripts/check-access-billing-source-of-truth-stage02a.cjs",
-    "check:repo-backup-hygiene": "node tests/repo-backup-folders-not-tracked.test.cjs"
+    "check:repo-backup-hygiene": "node tests/repo-backup-folders-not-tracked.test.cjs",
+    "check:case-detail-write-access-gate-stage02b": "node tests/case-detail-write-access-gate-stage02b.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
