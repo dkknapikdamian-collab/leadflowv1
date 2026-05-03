@@ -1,7 +1,7 @@
 # Release Candidate Evidence — CloseFlow / LeadFlow
 
-**Data wygenerowania:** 2026-05-03T08:41:49.644Z  
-**Status evidence gate:** ❌ **FAIL**  
+**Data wygenerowania:** 2026-05-03T08:56:06.755Z  
+**Status evidence gate:** ✅ **PASS**  
 **Zakres:** ETAP 0.1 — Release Candidate Evidence Gate  
 **Uwaga:** ten dokument nie zmienia działania aplikacji. To dowód release’u dla audytu.
 
@@ -14,12 +14,12 @@
 | Repo root | `C:/Users/malim/Desktop/biznesy_ai/2.closeflow` |
 | Repo remote | `https://github.com/dkknapikdamian-collab/leadflowv1.git` |
 | Branch | `dev-rollout-freeze` |
-| Commit | `d96b70419832751bd592ef0e777e09aa4efea224` |
-| Short commit | `d96b704` |
-| Commit date | `2026-05-03T09:48:11+02:00` |
-| Commit subject | Fix runtime workspace headers gate test |
+| Commit | `5cbfd492a996cc02c9c9fe1a6b74fba12bee4159` |
+| Short commit | `5cbfd49` |
+| Commit date | `2026-05-03T10:55:39+02:00` |
+| Commit subject | Fix CloseFlow access gate helper contract tests |
 | Preview URL | [https://closeflowapp.vercel.app](https://closeflowapp.vercel.app) |
-| Working tree | DIRTY |
+| Working tree | CLEAN |
 | Node | `v24.14.0` |
 | npm | `11.9.0` |
 | package | `closeflow` |
@@ -28,15 +28,7 @@
 ### Git working tree
 
 ```text
-M docs/release/RELEASE_CANDIDATE_2026-05-02.md
- M src/server/_access-gate.ts
- M src/server/_request-scope.ts
-?? docs/roadmap/closeflow_phase0_require_auth_context_alias_tsc_fix_2026-05-03.md
-?? docs/roadmap/closeflow_phase0_vercel_typecheck_runtime_helpers_fix_2026-05-03.md
-?? docs/roadmap/closeflow_phase0_vercel_typecheck_runtime_helpers_fix_v3_2026-05-03.md
-?? docs/roadmap/closeflow_phase0_vercel_typecheck_runtime_helpers_fix_v4_fast_push_2026-05-03.md
-?? tests/phase0-require-auth-context-alias.test.cjs
-?? tests/phase0-vercel-typecheck-runtime-helpers.test.cjs
+clean
 ```
 
 ---
@@ -141,9 +133,9 @@ M docs/release/RELEASE_CANDIDATE_2026-05-02.md
 | Script | Status | Exit code | Czas |
 |---|---:|---:|---:|
 | `check:polish-mojibake` | PASS | 0 | 0.5s |
-| `verify:closeflow:quiet` | FAIL | 1 | 16.6s |
-| `test:critical` | PASS | 0 | 0.8s |
-| `build` | PASS | 0 | 6.2s |
+| `verify:closeflow:quiet` | PASS | 0 | 19.4s |
+| `test:critical` | PASS | 0 | 0.7s |
+| `build` | PASS | 0 | 6.0s |
 
 ### Wynik builda
 
@@ -257,11 +249,11 @@ STDOUT:
 OK: no Polish mojibake detected.
 ```
 
-### FAIL: `verify:closeflow:quiet`
+### PASS: `verify:closeflow:quiet`
 
 - Command: `npm.cmd run verify:closeflow:quiet`
-- Exit code: `1`
-- Duration: `16.6s`
+- Exit code: `0`
+- Duration: `19.4s`
 
 ```text
 STDOUT:
@@ -342,45 +334,38 @@ OK tests/stage35-ai-assistant-compact-ui.test.cjs
 OK tests/layout-brand-label.test.cjs
 OK tests/lead-start-service-case-redirect.test.cjs
 OK tests/billing-checkout-no-prefilled-personal-email.test.cjs
+OK tests/lead-write-access-gate.test.cjs
+OK tests/billing-access-plan-normalization.test.cjs
+OK tests/today-quick-snooze-real-button-click.test.cjs
+OK tests/google-mobile-login-webview-guard.test.cjs
+OK tests/relation-funnel-value.test.cjs
+OK tests/global-quick-actions-open-modals.test.cjs
+OK tests/ai-draft-inbox-flow.test.cjs
+OK tests/ai-draft-inbox-command-center.test.cjs
+OK tests/global-quick-actions-sticky-single-source.test.cjs
+OK tests/global-quick-actions-no-duplicates.test.cjs
+OK tests/global-quick-actions-toolbar-a11y.test.cjs
+OK tests/ai-usage-limit-guard.test.cjs
+OK tests/ai-real-provider-wiring.test.cjs
+OK tests/ai-cloudflare-provider-wiring.test.cjs
+OK tests/ai-assistant-global-app-search.test.cjs
+OK tests/ai-assistant-autospeech-and-clear-input.test.cjs
+OK tests/ai-assistant-save-vs-search-rule.test.cjs
+OK tests/ai-assistant-admin-and-app-scope.test.cjs
+OK tests/ai-safety-gates-direct-write.test.cjs
+OK tests/ai-direct-write-respects-mode-stage28.test.cjs
+OK tests/today-ai-drafts-tile-stage29.test.cjs
+OK tests/stage29d-today-ai-drafts-compact-tile.test.cjs
+OK tests/supabase-first-readiness-stage16.test.cjs
 
-
-STDERR:
-
-FAILED: tests/lead-write-access-gate.test.cjs
-✖ lead writes require active workspace access (1.731ms)
-ℹ tests 1
-ℹ suites 0
-ℹ pass 0
-ℹ fail 1
-ℹ cancelled 0
-ℹ skipped 0
-ℹ todo 0
-ℹ duration_ms 65.4238
-
-✖ failing tests:
-
-test at tests\lead-write-access-gate.test.cjs:12:1
-✖ lead writes require active workspace access (1.731ms)
-  AssertionError [ERR_ASSERTION]: no date check
-      at TestContext.<anonymous> (C:\Users\malim\Desktop\biznesy_ai\2.closeflow\tests\lead-write-access-gate.test.cjs:22:10)
-      at Test.runInAsyncScope (node:async_hooks:228:14)
-      at Test.run (node:internal/test_runner/test:1118:25)
-      at Test.start (node:internal/test_runner/test:1015:17)
-      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: false,
-    expected: true,
-    operator: '==',
-    diff: 'simple'
-  }
+CloseFlow quiet release gate passed.
 ```
 
 ### PASS: `test:critical`
 
 - Command: `npm.cmd run test:critical`
 - Exit code: `0`
-- Duration: `0.8s`
+- Duration: `0.7s`
 
 ```text
 STDOUT:
@@ -391,7 +376,7 @@ STDOUT:
 == CloseFlow compact test summary ==
 Mode: critical
 Critical files: 6
-Tests: 13 | Pass: 13 | Fail: 0 | 230 ms
+Tests: 13 | Pass: 13 | Fail: 0 | 203 ms
 Full log: test-results\last-test-full.log
 
 OK: testy przeszły.
@@ -401,7 +386,7 @@ OK: testy przeszły.
 
 - Command: `npm.cmd run build`
 - Exit code: `0`
-- Duration: `6.2s`
+- Duration: `6.0s`
 
 ```text
 STDOUT:
@@ -472,13 +457,13 @@ computing gzip size...
 [2mdist/[22m[36massets/vendor-firebase-DmwLizUx.js                          [39m[1m[2m183.59 kB[22m[1m[22m[2m │ gzip:  37.96 kB[22m
 [2mdist/[22m[36massets/index-DcBF9dS3.js                                    [39m[1m[2m219.42 kB[22m[1m[22m[2m │ gzip:  62.23 kB[22m
 [2mdist/[22m[36massets/vendor-react-8zHiQ6Mn.js                             [39m[1m[2m336.75 kB[22m[1m[22m[2m │ gzip: 110.36 kB[22m
-[32m✓ built in 5.29s[39m
+[32m✓ built in 5.04s[39m
 ```
 
 ---
 
 ## 8. Decyzja gate
 
+✅ Gate techniczny przeszedł. Nadal wymagany jest manualny smoke test krytycznych ścieżek.
 
 
-❌ Gate nie przeszedł. Nie przekazywać aplikacji użytkownikowi, dopóki czerwone checki lub brak package.json / brak builda nie zostaną naprawione.
