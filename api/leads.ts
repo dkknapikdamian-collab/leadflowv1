@@ -68,6 +68,12 @@ const OPTIONAL_LEAD_COLUMNS = new Set([
 const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at']);
 const OPTIONAL_ACTIVITY_COLUMNS = new Set(['owner_id', 'actor_id', 'actor_type', 'event_type', 'payload', 'lead_id', 'case_id', 'workspace_id', 'created_at', 'updated_at']);
 
+const LEAD_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<'leads' | 'cases' | 'activities', Set<string>> = {
+  leads: OPTIONAL_LEAD_COLUMNS,
+  cases: OPTIONAL_CASE_COLUMNS,
+  activities: OPTIONAL_ACTIVITY_COLUMNS,
+};
+
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -138,6 +144,10 @@ function omitMissingColumn(payload: Record<string, unknown>, column: string) {
   return nextPayload;
 }
 
+function shouldDropMissingColumnForLeadFallback(table: 'leads' | 'cases' | 'activities', column: string | null, payload: Record<string, unknown>) {
+  return Boolean(column && column in payload && LEAD_SCHEMA_FALLBACK_ALLOWED_COLUMNS[table]?.has(column));
+}
+
 async function insertLeadWithSchemaFallback(payload: Record<string, unknown>) {
   let currentPayload = { ...payload };
   for (let attempt = 0; attempt < 12; attempt += 1) {
@@ -145,7 +155,7 @@ async function insertLeadWithSchemaFallback(payload: Record<string, unknown>) {
       return await insertWithVariants(['leads'], [currentPayload]);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!missingColumn || !OPTIONAL_LEAD_COLUMNS.has(missingColumn) || !(missingColumn in currentPayload)) throw error;
+      if (!shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;
       currentPayload = omitMissingColumn(currentPayload, missingColumn);
     }
   }
@@ -159,7 +169,7 @@ async function updateLeadWithSchemaFallback(id: string, payload: Record<string, 
       return await updateById('leads', id, currentPayload);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!missingColumn || !OPTIONAL_LEAD_COLUMNS.has(missingColumn) || !(missingColumn in currentPayload)) throw error;
+      if (!shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;
       currentPayload = omitMissingColumn(currentPayload, missingColumn);
     }
   }
@@ -173,7 +183,7 @@ async function insertCaseWithSchemaFallback(payload: Record<string, unknown>) {
       return await insertWithVariants(['cases'], [currentPayload]);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!missingColumn || !OPTIONAL_CASE_COLUMNS.has(missingColumn) || !(missingColumn in currentPayload)) throw error;
+      if (!shouldDropMissingColumnForLeadFallback('cases', missingColumn, currentPayload)) throw error;
       currentPayload = omitMissingColumn(currentPayload, missingColumn);
     }
   }
@@ -187,7 +197,7 @@ async function insertActivityWithSchemaFallback(payload: Record<string, unknown>
       return await insertWithVariants(['activities'], [currentPayload]);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
-      if (!missingColumn || !OPTIONAL_ACTIVITY_COLUMNS.has(missingColumn) || !(missingColumn in currentPayload)) throw error;
+      if (!shouldDropMissingColumnForLeadFallback('activities', missingColumn, currentPayload)) throw error;
       currentPayload = omitMissingColumn(currentPayload, missingColumn);
     }
   }
