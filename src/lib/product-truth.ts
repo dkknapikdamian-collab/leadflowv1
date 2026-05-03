@@ -41,9 +41,9 @@ export const PRODUCT_TRUTH_STATUS: ProductTruthItem[] = [
   {
     key: 'google_calendar',
     label: 'Google Calendar',
-    status: 'coming_soon',
-    userCopy: 'Integracja Google Calendar jest w przygotowaniu i wymaga OAuth.',
-    operatorNote: 'Nie opisywać jako connected/sync active bez pełnego OAuth i testu sync.',
+    status: 'requires_config',
+    userCopy: 'Integracja Google Calendar wymaga OAuth, ENV i aktywnego poĹ‚Ä…czenia uĹĽytkownika.',
+    operatorNote: 'DostÄ™pne jako pĹ‚atna funkcja po konfiguracji GOOGLE_CLIENT_ID/SECRET/REDIRECT_URI i token encryption.',
   },
   {
     key: 'ai_assistant',

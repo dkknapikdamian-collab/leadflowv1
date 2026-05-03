@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
@@ -59,7 +59,7 @@ assert(exists('docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_SYNC_WIRING_20
 const truth = read('src/lib/product-truth.ts');
 const googleIndex = truth.indexOf("key: 'google_calendar'");
 const googleSlice = googleIndex >= 0 ? truth.slice(googleIndex, googleIndex + 700) : '';
-assert(googleSlice.includes("status: 'coming_soon'"), 'Stage 02 backend wiring must not claim Google Calendar as active yet');
+assert(/status:\s*'(coming_soon|requires_config)'/.test(googleSlice), 'Google Calendar must stay non-active until full UI/config/manual smoke is complete');
 
 if (problems.length) {
   console.error('Google Calendar Sync V1 Stage 02 event wiring guard failed:');

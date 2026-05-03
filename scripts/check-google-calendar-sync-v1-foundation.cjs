@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
@@ -75,7 +75,7 @@ for (const marker of [
 const truth = exists('src/lib/product-truth.ts') ? read('src/lib/product-truth.ts') : '';
 const googleIndex = truth.indexOf("key: 'google_calendar'");
 const googleSlice = googleIndex >= 0 ? truth.slice(googleIndex, googleIndex + 700) : '';
-assert(googleSlice.includes("status: 'coming_soon'"), 'foundation stage must not claim Google Calendar as active yet');
+assert(/status:\s*'(coming_soon|requires_config)'/.test(googleSlice), 'Google Calendar must stay non-active until full UI/config/manual smoke is complete');
 
 if (problems.length) {
   console.error('Google Calendar Sync V1 Stage 01 foundation guard failed:');

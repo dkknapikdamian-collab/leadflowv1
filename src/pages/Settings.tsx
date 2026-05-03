@@ -11,6 +11,7 @@ import {
 import {
   Bell,
   Building2,
+  CalendarDays,
   Database,
   KeyRound,
   LockKeyhole,
@@ -77,6 +78,19 @@ type DigestDiagnosticsState = {
     dailyDigestRecipientEmail?: string | null;
   };
   hints?: string[];
+};
+
+
+type GoogleCalendarStatusState = {
+  ok?: boolean;
+  configured?: boolean;
+  missing?: string[];
+  connected?: boolean;
+  connection?: {
+    googleCalendarId?: string;
+    googleAccountEmail?: string;
+    syncEnabled?: boolean;
+  } | null;
 };
 
 function humanAccessStatus(status?: string | null) {
@@ -147,8 +161,12 @@ export default function Settings() {
   const [dailyDigestHour, setDailyDigestHour] = useState('7');
   const [dailyDigestTimezone, setDailyDigestTimezone] = useState('Europe/Warsaw');
   const [dailyDigestRecipientEmail, setDailyDigestRecipientEmail] = useState('');
+  const [googleCalendarStatus, setGoogleCalendarStatus] = useState<GoogleCalendarStatusState | null>(null);
+  const [checkingGoogleCalendar, setCheckingGoogleCalendar] = useState(false);
+  const [connectingGoogleCalendar, setConnectingGoogleCalendar] = useState(false);
+  const [disconnectingGoogleCalendar, setDisconnectingGoogleCalendar] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
     setProfile({
       fullName: workspaceProfile?.fullName || auth.currentUser?.displayName || '',
       companyName: workspaceProfile?.companyName || '',
@@ -205,6 +223,120 @@ export default function Settings() {
     ],
     [accessLabel, accountEmail, planLabel, profile.fullName, workspaceName],
   );
+
+
+  const canUseGoogleCalendarByPlan = isAdmin || access?.isPaidActive || access?.status === 'paid_active';
+  const googleCalendarMissingText = googleCalendarStatus?.missing?.length
+    ? googleCalendarStatus.missing.join(', ')
+    : '';
+
+  // GOOGLE_CALENDAR_SYNC_V1_STAGE03_SETTINGS_UI_CONNECT
+  const loadGoogleCalendarStatus = async () => {
+    if (!workspace?.id || !auth.currentUser?.uid) return;
+
+    setCheckingGoogleCalendar(true);
+    try {
+      const response = await fetch('/api/google-calendar?route=status', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-workspace-id': workspace.id,
+          'x-user-id': auth.currentUser.uid,
+          'x-user-email': auth.currentUser.email || workspaceProfile?.email || '',
+        },
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(String(data?.error || 'GOOGLE_CALENDAR_STATUS_FAILED'));
+      setGoogleCalendarStatus(data as GoogleCalendarStatusState);
+    } catch (error: any) {
+      setGoogleCalendarStatus({ configured: false, connected: false, missing: ['STATUS_CHECK_FAILED'] });
+      toast.error(`BĹ‚Ä…d statusu Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setCheckingGoogleCalendar(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadGoogleCalendarStatus();
+  }, [workspace?.id, workspaceProfile?.email]);
+
+  const handleConnectGoogleCalendar = async () => {
+    if (!workspace?.id || !auth.currentUser?.uid) {
+      toast.error('Workspace albo uĹĽytkownik nie jest jeszcze gotowy.');
+      return;
+    }
+
+    if (!canUseGoogleCalendarByPlan) {
+      toast.error('Google Calendar Sync jest przewidziany dla pĹ‚atnych planĂłw.');
+      return;
+    }
+
+    setConnectingGoogleCalendar(true);
+    try {
+      const response = await fetch('/api/google-calendar?route=connect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-workspace-id': workspace.id,
+          'x-user-id': auth.currentUser.uid,
+          'x-user-email': auth.currentUser.email || workspaceProfile?.email || '',
+        },
+        body: JSON.stringify({ returnTo: '/settings' }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 409 && Array.isArray(data?.missing)) {
+          setGoogleCalendarStatus({ configured: false, connected: false, missing: data.missing });
+          toast.error(`Brakuje ENV Google: ${data.missing.join(', ')}`);
+          return;
+        }
+        throw new Error(String(data?.error || 'GOOGLE_CALENDAR_CONNECT_FAILED'));
+      }
+
+      if (data?.authUrl) {
+        window.location.assign(String(data.authUrl));
+        return;
+      }
+
+      toast.error('Google nie zwrĂłciĹ‚ adresu autoryzacji.');
+    } catch (error: any) {
+      toast.error(`BĹ‚Ä…d poĹ‚Ä…czenia Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setConnectingGoogleCalendar(false);
+    }
+  };
+
+  const handleDisconnectGoogleCalendar = async () => {
+    if (!workspace?.id || !auth.currentUser?.uid) return;
+
+    if (!window.confirm('RozĹ‚Ä…czyÄ‡ Google Calendar dla tego workspace? Nowe wydarzenia nie bÄ™dÄ… synchronizowane.')) return;
+
+    setDisconnectingGoogleCalendar(true);
+    try {
+      const response = await fetch('/api/google-calendar?route=disconnect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-workspace-id': workspace.id,
+          'x-user-id': auth.currentUser.uid,
+          'x-user-email': auth.currentUser.email || workspaceProfile?.email || '',
+        },
+        body: JSON.stringify({}),
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(String(data?.error || 'GOOGLE_CALENDAR_DISCONNECT_FAILED'));
+
+      toast.success('Google Calendar zostaĹ‚ rozĹ‚Ä…czony.');
+      await loadGoogleCalendarStatus();
+    } catch (error: any) {
+      toast.error(`BĹ‚Ä…d rozĹ‚Ä…czania Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setDisconnectingGoogleCalendar(false);
+    }
+  };
 
   const handleUpdateProfile = async () => {
     if (!auth.currentUser) return;
@@ -702,7 +834,80 @@ export default function Settings() {
             </section>
 
 
-            <section className="settings-section-card" data-settings-pwa-help="true">
+            
+            <section className="settings-section-card" data-google-calendar-sync-v1-stage03="true">
+              <div className="settings-section-head">
+                <div>
+                  <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
+                  <h2>Google Calendar Sync V1</h2>
+                  <p>Jednokierunkowy sync CloseFlow â†’ Google Calendar. Wymaga OAuth, ENV i aktywnego poĹ‚Ä…czenia uĹĽytkownika.</p>
+                </div>
+              </div>
+
+              <div className="settings-browser-box">
+                <div>
+                  <strong>Status integracji</strong>
+                  <span>
+                    {checkingGoogleCalendar
+                      ? 'Sprawdzanie statusu...'
+                      : googleCalendarStatus?.connected
+                        ? 'PoĹ‚Ä…czenie aktywne. Nowe wydarzenia z CloseFlow bÄ™dÄ… kopiowane do Google Calendar.'
+                        : googleCalendarStatus?.configured
+                          ? 'Konfiguracja serwera wyglÄ…da poprawnie. MoĹĽesz poĹ‚Ä…czyÄ‡ konto Google.'
+                          : 'Integracja wymaga konfiguracji ENV i OAuth przed uĹĽyciem.'}
+                  </span>
+                  {googleCalendarMissingText ? (
+                    <span>BrakujÄ…ce ENV: {googleCalendarMissingText}</span>
+                  ) : null}
+                  {!canUseGoogleCalendarByPlan ? (
+                    <span>Funkcja jest przewidziana dla pĹ‚atnych planĂłw. Admin moĹĽe uĹĽyÄ‡ jej do testĂłw.</span>
+                  ) : null}
+                </div>
+                <span className="settings-soft-pill">
+                  {googleCalendarStatus?.connected
+                    ? 'PoĹ‚Ä…czone'
+                    : googleCalendarStatus?.configured
+                      ? 'Gotowe do poĹ‚Ä…czenia'
+                      : 'Wymaga konfiguracji'}
+                </span>
+              </div>
+
+              <div className="settings-action-row">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => void loadGoogleCalendarStatus()}
+                  disabled={checkingGoogleCalendar || !workspace?.id}
+                >
+                  {checkingGoogleCalendar ? 'Sprawdzanie...' : 'OdĹ›wieĹĽ status'}
+                </Button>
+                {googleCalendarStatus?.connected ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => void handleDisconnectGoogleCalendar()}
+                    disabled={disconnectingGoogleCalendar || !workspace?.id}
+                  >
+                    {disconnectingGoogleCalendar ? 'RozĹ‚Ä…czanie...' : 'RozĹ‚Ä…cz Google'}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={() => void handleConnectGoogleCalendar()}
+                    disabled={connectingGoogleCalendar || checkingGoogleCalendar || !workspace?.id || !canUseGoogleCalendarByPlan}
+                  >
+                    {connectingGoogleCalendar ? 'Przekierowanie...' : 'PoĹ‚Ä…cz Google'}
+                  </Button>
+                )}
+              </div>
+
+              <div className="settings-diagnostics-box">
+                <div>Zakres V1: CloseFlow jest ĹşrĂłdĹ‚em prawdy, Google Calendar jest kopiÄ… wydarzeĹ„.</div>
+                <div>Przypomnienia Google sÄ… zapisywane razem z wydarzeniem jako domyĹ›lne albo popup/email wedĹ‚ug danych eventu.</div>
+              </div>
+            </section>
+
+<section className="settings-section-card" data-settings-pwa-help="true">
               <div className="settings-section-head">
                 <div>
                   <span><Smartphone className="h-4 w-4" /> PWA / telefon</span>
