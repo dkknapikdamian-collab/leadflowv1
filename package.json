@@ -101,7 +101,8 @@
     "check:public-security-claims": "node scripts/check-public-security-claims.cjs",
     "check:integration-status-copy": "node scripts/check-integration-status-copy.cjs",
     "check:faza1-etap12-guard-ui-truth": "node scripts/check-faza1-etap12-guard-ui-truth.cjs",
-    "check:google-calendar-sync-v1-foundation": "node scripts/check-google-calendar-sync-v1-foundation.cjs"
+    "check:google-calendar-sync-v1-foundation": "node scripts/check-google-calendar-sync-v1-foundation.cjs",
+    "check:google-calendar-sync-v1-event-wiring": "node scripts/check-google-calendar-sync-v1-event-wiring.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

@@ -2,6 +2,7 @@ import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { normalizeEventStatus, normalizeTaskStatus } from '../src/lib/domain-statuses.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
+import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendarConnection, updateGoogleCalendarEvent } from '../src/server/google-calendar-sync.js';
 
 function asIsoDate(value: unknown) {
   if (typeof value !== 'string' || !value.trim()) return null;
@@ -21,6 +22,142 @@ function asNullableString(value: unknown) {
 function asNullableUuid(value: unknown) {
   const normalized = asNullableString(value);
   return normalized && isUuid(normalized) ? normalized : null;
+}
+
+
+function getRequestUserId(req: any) {
+  const raw =
+    req.headers?.['x-user-id']
+    || req.headers?.['x-auth-uid']
+    || req.headers?.['x-firebase-uid']
+    || '';
+  return Array.isArray(raw) ? String(raw[0] || '') : String(raw || '').trim();
+}
+
+function googleSyncOptedOut(body: any) {
+  return body?.googleCalendarSyncEnabled === false || body?.syncToGoogleCalendar === false;
+}
+
+function googleEventIdFrom(row: any, body: any) {
+  return String(
+    row?.google_calendar_event_id
+    || row?.googleCalendarEventId
+    || body?.googleCalendarEventId
+    || body?.google_calendar_event_id
+    || ''
+  ).trim();
+}
+
+function closeFlowEventForGoogle(row: any, body: any) {
+  const startAt =
+    asIsoDate(row?.start_at)
+    || asIsoDate(row?.scheduled_at)
+    || asIsoDate(row?.startAt)
+    || asIsoDate(body?.startAt)
+    || asIsoDate(body?.scheduledAt)
+    || new Date().toISOString();
+  const endAt =
+    asIsoDate(row?.end_at)
+    || asIsoDate(row?.endAt)
+    || asIsoDate(body?.endAt)
+    || null;
+  const reminderAt =
+    asIsoDate(row?.reminder)
+    || asIsoDate(row?.reminder_at)
+    || asIsoDate(row?.reminderAt)
+    || asIsoDate(body?.reminderAt)
+    || null;
+
+  return {
+    id: String(row?.id || body?.id || ''),
+    title: String(row?.title || body?.title || 'CloseFlow event'),
+    startAt,
+    endAt,
+    reminderAt,
+    recurrenceRule: row?.recurrence ? String(row.recurrence) : body?.recurrenceRule ? String(body.recurrenceRule) : null,
+  };
+}
+
+async function writeGoogleCalendarSyncState(id: unknown, payload: Record<string, unknown>) {
+  const normalizedId = asNullableString(id);
+  if (!normalizedId) return;
+  try {
+    await updateById('work_items', normalizedId, {
+      ...payload,
+      updated_at: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('GOOGLE_CALENDAR_SYNC_STATE_WRITE_FAILED', error instanceof Error ? error.message : String(error));
+  }
+}
+
+// GOOGLE_CALENDAR_SYNC_V1_STAGE02_EVENT_WIRING
+// Non-blocking: CloseFlow event writes must survive Google API failures.
+async function syncGoogleCalendarEventAfterMutation(input: {
+  action: 'create' | 'update' | 'delete';
+  req: any;
+  workspaceId: string;
+  row: any;
+  body: any;
+}) {
+  const userId = getRequestUserId(input.req);
+  const rowId = input.row?.id || input.body?.id;
+  if (!input.workspaceId || !userId || !rowId) return;
+
+  if (googleSyncOptedOut(input.body)) {
+    await writeGoogleCalendarSyncState(rowId, {
+      google_calendar_sync_enabled: false,
+      google_calendar_sync_status: 'disabled',
+      google_calendar_sync_error: null,
+    });
+    return;
+  }
+
+  let connection: any = null;
+  try {
+    connection = await getGoogleCalendarConnection(input.workspaceId, userId);
+  } catch (error) {
+    console.warn('GOOGLE_CALENDAR_CONNECTION_LOOKUP_FAILED', error instanceof Error ? error.message : String(error));
+    return;
+  }
+
+  if (!connection || connection.sync_enabled === false) return;
+
+  const event = closeFlowEventForGoogle(input.row, input.body);
+  const existingGoogleEventId = googleEventIdFrom(input.row, input.body);
+
+  try {
+    if (input.action === 'delete') {
+      if (existingGoogleEventId) {
+        await deleteGoogleCalendarEvent(connection, existingGoogleEventId);
+      }
+      return;
+    }
+
+    const googleEvent = existingGoogleEventId
+      ? await updateGoogleCalendarEvent(connection, existingGoogleEventId, event)
+      : await createGoogleCalendarEvent(connection, event);
+
+    await writeGoogleCalendarSyncState(rowId, {
+      google_calendar_sync_enabled: true,
+      google_calendar_id: connection.google_calendar_id || 'primary',
+      google_calendar_event_id: googleEvent?.id || existingGoogleEventId || null,
+      google_calendar_event_etag: googleEvent?.etag || null,
+      google_calendar_html_link: googleEvent?.htmlLink || null,
+      google_calendar_synced_at: new Date().toISOString(),
+      google_calendar_sync_status: 'synced',
+      google_calendar_sync_error: null,
+      google_calendar_reminders: googleEvent?.reminders || null,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error || 'GOOGLE_CALENDAR_SYNC_FAILED');
+    console.error('GOOGLE_CALENDAR_SYNC_FAILED_NON_BLOCKING', message);
+    await writeGoogleCalendarSyncState(rowId, {
+      google_calendar_sync_enabled: true,
+      google_calendar_sync_status: 'failed',
+      google_calendar_sync_error: message.slice(0, 500),
+    });
+  }
 }
 
 function isTaskRow(row: any) {
@@ -261,6 +398,16 @@ export default async function handler(req: any, res: any) {
         );
       }
 
+      if (kind === 'events') {
+
+
+        await syncGoogleCalendarEventAfterMutation({ action: 'update', req, workspaceId, row: updatedRow as any, body });
+
+
+      }
+
+
+
       res.status(200).json(kind === 'events' ? normalizeEvent(updatedRow) : normalizeTask(updatedRow));
       return;
     }
@@ -277,6 +424,9 @@ export default async function handler(req: any, res: any) {
       }
 
       const currentRow = await requireScopedRow('work_items', id, workspaceId, kind === 'events' ? 'EVENT_NOT_FOUND' : 'TASK_NOT_FOUND');
+      if (kind === 'events') {
+        await syncGoogleCalendarEventAfterMutation({ action: 'delete', req, workspaceId, row: currentRow, body: { ...body, id } });
+      }
       if (currentRow?.lead_id) await clearLeadNextActionIfCurrent(currentRow.lead_id, id, workspaceId);
       await deleteById('work_items', id);
       res.status(200).json({ ok: true, id });
@@ -368,6 +518,7 @@ export default async function handler(req: any, res: any) {
     const result = await insertWithVariants(['work_items'], [payload]);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
     if (body.leadId) await syncLeadNextAction(body.leadId, { id: (inserted as any).id, title: body.title, startAt }, finalWorkspaceId);
+    await syncGoogleCalendarEventAfterMutation({ action: 'create', req, workspaceId: finalWorkspaceId, row: inserted as any, body });
     res.status(200).json(normalizeEvent(inserted));
   } catch (error: any) {
     const message = error?.message || 'WORK_ITEMS_API_FAILED';
