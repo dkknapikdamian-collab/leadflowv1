@@ -16,3 +16,4 @@ test-results/
 .global_*_backup_*/
 .*_failed_attempts_backup_*/
 stage*_preflight_report.txt
+stage03*_preflight_report.txt

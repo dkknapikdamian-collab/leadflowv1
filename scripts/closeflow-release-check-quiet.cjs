@@ -79,6 +79,7 @@ const requiredTests = [
   'tests/lead-start-service-case-redirect.test.cjs',
   'tests/billing-checkout-no-prefilled-personal-email.test.cjs',
   'tests/stage02-access-billing-release-evidence.test.cjs',
+  'tests/stage03a-api-schema-contract.test.cjs',
   'tests/case-detail-write-access-gate-stage02b.test.cjs',
   'tests/lead-write-access-gate.test.cjs',
   'tests/billing-access-plan-normalization.test.cjs',
