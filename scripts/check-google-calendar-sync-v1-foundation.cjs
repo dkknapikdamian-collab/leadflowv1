@@ -17,7 +17,7 @@ function assert(condition, message) {
 }
 
 const requiredFiles = [
-  'api/google-calendar.ts',
+  'src/server/google-calendar-handler.ts',
   'src/server/google-calendar-sync.ts',
   'supabase/migrations/20260503_google_calendar_sync_v1_stage01_foundation.sql',
   'docs/release/GOOGLE_CALENDAR_SYNC_V1_STAGE01_FOUNDATION_2026-05-03.md',
@@ -46,7 +46,7 @@ for (const marker of [
 assert(server.includes('aes-256-gcm'), 'google tokens must be encrypted with aes-256-gcm');
 assert(!server.includes('VITE_GOOGLE_CLIENT_SECRET'), 'server must not use VITE Google client secret');
 
-const api = exists('api/google-calendar.ts') ? read('api/google-calendar.ts') : '';
+const api = exists('src/server/google-calendar-handler.ts') ? read('src/server/google-calendar-handler.ts') : '';
 for (const marker of [
   "action === 'callback'",
   "action === 'connect'",
@@ -55,8 +55,12 @@ for (const marker of [
   'assertWorkspaceWriteAccess',
   'resolveRequestWorkspaceId',
 ]) {
-  assert(api.includes(marker), 'api/google-calendar.ts missing marker: ' + marker);
+  assert(api.includes(marker), 'google-calendar-handler.ts missing marker: ' + marker);
 }
+
+const system = read('api/system.ts');
+assert(system.includes("kind === 'google-calendar'"), 'api/system.ts must route kind=google-calendar');
+assert(system.includes('google-calendar-handler.js'), 'api/system.ts must import google-calendar-handler');
 
 const sql = exists('supabase/migrations/20260503_google_calendar_sync_v1_stage01_foundation.sql')
   ? read('supabase/migrations/20260503_google_calendar_sync_v1_stage01_foundation.sql')

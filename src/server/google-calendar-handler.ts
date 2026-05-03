@@ -1,5 +1,5 @@
-﻿import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
-import { resolveRequestWorkspaceId } from '../src/server/_request-scope.js';
+import { assertWorkspaceWriteAccess } from './_access-gate.js';
+import { resolveRequestWorkspaceId } from './_request-scope.js';
 import {
   buildGoogleCalendarOAuthUrl,
   disconnectGoogleCalendarConnection,
@@ -8,7 +8,7 @@ import {
   getGoogleCalendarConnection,
   upsertGoogleCalendarConnection,
   verifyGoogleOAuthState,
-} from '../src/server/google-calendar-sync.js';
+} from './google-calendar-sync.js';
 
 function getUserId(req: any) {
   const raw =
@@ -37,6 +37,7 @@ function route(req: any, body: any) {
   return String(Array.isArray(raw) ? raw[0] : raw || 'status').trim().toLowerCase();
 }
 
+// GOOGLE_CALENDAR_SYSTEM_ROUTE_CONSOLIDATION_2026_05_03
 export default async function handler(req: any, res: any) {
   try {
     const body = parseBody(req);

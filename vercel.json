@@ -99,6 +99,10 @@
       "destination": "/api/billing?route=stripe-webhook"
     },
     {
+      "source": "/api/google-calendar",
+      "destination": "/api/system?kind=google-calendar"
+    },
+    {
       "source": "/((?!api/|assets/|.*\\..*).*)",
       "destination": "/"
     },

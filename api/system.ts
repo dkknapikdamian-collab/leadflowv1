@@ -16,6 +16,7 @@ import caseTemplatesHandler from '../src/server/case-templates-handler.js';
 import supportHandler from '../src/server/support-handler.js';
 import dailyDigestHandler from '../src/server/daily-digest-handler.js';
 import weeklyReportHandler from '../src/server/weekly-report-handler.js';
+import googleCalendarHandler from '../src/server/google-calendar-handler.js';
 
 function parseBody(body: unknown) {
   if (!body) return {};
@@ -726,7 +727,12 @@ export default async function handler(req: any, res: any) {
     if (apiRoute === 'records') {
       await recordsHandler(req, res);
       return;
-    }
+    }  if (kind === 'google-calendar') {
+    await googleCalendarHandler(req, res);
+    return;
+  }
+
+
 
   if (kind === 'ai-next-action') {
     try {
