@@ -36,6 +36,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { useClientAuthSnapshot } from '../hooks/useClientAuthSnapshot';
 import { getConflictWarningsEnabled, setConflictWarningsEnabled as storeConflictWarningsEnabled } from '../lib/app-preferences';
 import {
   getBrowserNotificationPermission,
@@ -136,8 +137,9 @@ function asText(value: unknown, fallback = 'Nie ustawiono') {
 }
 
 export default function Settings() {
-  const { workspace, profile: workspaceProfile, loading: workspaceLoading, refresh, access, isAdmin } = useWorkspace();
+  const { workspace, profile: workspaceProfile, loading: workspaceLoading, refresh, access, isAdmin, isAppOwner } = useWorkspace();
   const { skin, setSkin, skinOptions } = useAppearance();
+  const authSnapshot = useClientAuthSnapshot();
 
   const [profile, setProfile] = useState<ProfileFormState>({ fullName: '', companyName: '' });
   const [savingProfile, setSavingProfile] = useState(false);
@@ -213,10 +215,13 @@ useEffect(() => {
     void fetchAuthMethods();
   }, [workspaceProfile?.email]);
 
-  const accountEmail = auth.currentUser?.email || workspaceProfile?.email || '';
+  const accountEmail = auth.currentUser?.email || authSnapshot.email || workspaceProfile?.email || '';
   const planLabel = humanPlan(workspace?.planId, workspace?.subscriptionStatus);
   const accessLabel = humanAccessStatus(access?.status);
   const workspaceName = asText(workspaceProfile?.companyName || profile.companyName || workspace?.name, 'Workspace CloseFlow');
+  // GOOGLE_CALENDAR_STAGE07C_SUPABASE_AUTH_SNAPSHOT
+  const activeUserId = auth.currentUser?.uid || authSnapshot.uid || workspaceProfile?.id || '';
+  const activeUserEmail = auth.currentUser?.email || authSnapshot.email || workspaceProfile?.email || '';
 
   const settingsSummary = useMemo(
     () => [
@@ -229,14 +234,14 @@ useEffect(() => {
   );
 
 
-  const canUseGoogleCalendarByPlan = isAdmin || access?.isPaidActive || access?.status === 'paid_active';
+  const canUseGoogleCalendarByPlan = isAdmin || isAppOwner || access?.isPaidActive || access?.status === 'paid_active';
   const googleCalendarMissingText = googleCalendarStatus?.missing?.length
     ? googleCalendarStatus.missing.join(', ')
     : '';
 
   // GOOGLE_CALENDAR_SYNC_V1_STAGE03_SETTINGS_UI_CONNECT
   const loadGoogleCalendarStatus = async () => {
-    if (!workspace?.id || !auth.currentUser?.uid) return;
+    if (!workspace?.id || !activeUserId) return;
 
     setCheckingGoogleCalendar(true);
     try {
@@ -245,8 +250,8 @@ useEffect(() => {
         headers: {
           'Content-Type': 'application/json',
           'x-workspace-id': workspace.id,
-          'x-user-id': auth.currentUser.uid,
-          'x-user-email': auth.currentUser.email || workspaceProfile?.email || '',
+          'x-user-id': activeUserId,
+          'x-user-email': activeUserEmail,
         },
       });
 
@@ -263,11 +268,11 @@ useEffect(() => {
 
   useEffect(() => {
     void loadGoogleCalendarStatus();
-  }, [workspace?.id, workspaceProfile?.email]);
+  }, [workspace?.id, activeUserId, activeUserEmail]);
 
   const handleConnectGoogleCalendar = async () => {
-    if (!workspace?.id || !auth.currentUser?.uid) {
-      toast.error('Workspace albo uĹĽytkownik nie jest jeszcze gotowy.');
+    if (!workspace?.id || !activeUserId) {
+      toast.error('Workspace albo uĹĽytkownik nie jest jeszcze gotowy. OdĹ›wieĹĽ stronÄ™ po zalogowaniu.');
       return;
     }
 
@@ -283,8 +288,8 @@ useEffect(() => {
         headers: {
           'Content-Type': 'application/json',
           'x-workspace-id': workspace.id,
-          'x-user-id': auth.currentUser.uid,
-          'x-user-email': auth.currentUser.email || workspaceProfile?.email || '',
+          'x-user-id': activeUserId,
+          'x-user-email': activeUserEmail,
         },
         body: JSON.stringify({ returnTo: '/settings' }),
       });
@@ -313,7 +318,7 @@ useEffect(() => {
   };
 
   const handleDisconnectGoogleCalendar = async () => {
-    if (!workspace?.id || !auth.currentUser?.uid) return;
+    if (!workspace?.id || !activeUserId) return;
 
     if (!window.confirm('RozĹ‚Ä…czyÄ‡ Google Calendar dla tego workspace? Nowe wydarzenia nie bÄ™dÄ… synchronizowane.')) return;
 
@@ -324,8 +329,8 @@ useEffect(() => {
         headers: {
           'Content-Type': 'application/json',
           'x-workspace-id': workspace.id,
-          'x-user-id': auth.currentUser.uid,
-          'x-user-email': auth.currentUser.email || workspaceProfile?.email || '',
+          'x-user-id': activeUserId,
+          'x-user-email': activeUserEmail,
         },
         body: JSON.stringify({}),
       });
