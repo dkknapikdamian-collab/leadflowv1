@@ -115,22 +115,79 @@ function envList(names: string[]) {
     .filter(Boolean);
 }
 
+function profileHasAdminRole(row: Record<string, unknown> | null | undefined) {
+  if (!row) return false;
+  const role = asText((row as any).role || '').toLowerCase();
+  const appRole = asText((row as any).app_role || (row as any).appRole || '').toLowerCase();
+  return role === 'admin'
+    || role === 'owner'
+    || appRole === 'admin'
+    || appRole === 'owner'
+    || appRole === 'creator'
+    || appRole === 'app_owner'
+    || (row as any).is_admin === true
+    || (row as any).isAdmin === true
+    || (row as any).is_app_owner === true
+    || (row as any).isAppOwner === true;
+}
+
+function isLikelyUuid(value: unknown) {
+  return typeof value === 'string'
+    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+async function findAdminProfileForIdentity(identity: RequestIdentity) {
+  const queries: string[] = [];
+  const userId = asText(identity.userId || identity.uid || '');
+  const email = asText(identity.email || '').toLowerCase();
+
+  if (email) queries.push(`profiles?email=eq.${encodeURIComponent(email)}&select=*&limit=1`);
+  if (userId) {
+    queries.push(`profiles?firebase_uid=eq.${encodeURIComponent(userId)}&select=*&limit=1`);
+    queries.push(`profiles?auth_uid=eq.${encodeURIComponent(userId)}&select=*&limit=1`);
+    queries.push(`profiles?external_auth_uid=eq.${encodeURIComponent(userId)}&select=*&limit=1`);
+    if (isLikelyUuid(userId)) queries.push(`profiles?id=eq.${encodeURIComponent(userId)}&select=*&limit=1`);
+  }
+
+  for (const query of queries) {
+    const rows = await selectRows(query);
+    const row = rows[0] || null;
+    if (profileHasAdminRole(row)) return row;
+  }
+
+  return null;
+}
+
+// ADMIN_AI_PROFILE_ROLE_GATE_2026_05_03
+// Admin-only calls must be based on verified Supabase context, not spoofable x-user-email headers.
 export async function requireAdminAuthContext(req: any, bodyInput?: any) {
-  const identity = await requireRequestIdentity(req, bodyInput);
-  const email = asText(identity.email).toLowerCase();
-  const adminEmails = envList(['CLOSEFLOW_ADMIN_EMAILS', 'CLOSEFLOW_ADMIN_EMAIL', 'APP_OWNER_EMAIL', 'ADMIN_EMAIL', 'VITE_APP_OWNER_EMAIL']);
-  if (adminEmails.length > 0 && email && adminEmails.includes(email)) return identity;
+  const headerIdentity = await requireRequestIdentity(req, bodyInput);
 
   try {
     const context = await requireSupabaseRequestContext(req);
+    const identity: RequestIdentity = {
+      userId: asText(context.userId) || headerIdentity.userId || null,
+      uid: asText(context.userId) || headerIdentity.uid || null,
+      email: asText(context.email) || headerIdentity.email || null,
+      fullName: asText(context.fullName) || headerIdentity.fullName || null,
+      workspaceId: asText(context.workspaceId) || headerIdentity.workspaceId || null,
+    };
+
+    const email = asText(identity.email).toLowerCase();
+    const adminEmails = envList(['CLOSEFLOW_ADMIN_EMAILS', 'CLOSEFLOW_ADMIN_EMAIL', 'APP_OWNER_EMAIL', 'ADMIN_EMAIL', 'VITE_APP_OWNER_EMAIL']);
+    if (adminEmails.length > 0 && email && adminEmails.includes(email)) return identity;
+
     const appMeta = context.rawUser?.app_metadata && typeof context.rawUser.app_metadata === 'object'
       ? context.rawUser.app_metadata as Record<string, unknown>
       : {};
     const role = asText(appMeta.role || appMeta.claims_role || '').toLowerCase();
     const roles = Array.isArray(appMeta.roles) ? appMeta.roles.map((item) => asText(item).toLowerCase()) : [];
     if (role === 'admin' || role === 'owner' || roles.includes('admin') || roles.includes('owner')) return identity;
-  } catch {
-    // Header identity is enough for normal API calls, but not enough for admin-only calls.
+
+    const profileRow = await findAdminProfileForIdentity(identity);
+    if (profileRow) return identity;
+  } catch (error) {
+    if (error instanceof RequestAuthError && error.status !== 401) throw error;
   }
 
   throw new RequestAuthError(403, 'ADMIN_ROLE_REQUIRED');
