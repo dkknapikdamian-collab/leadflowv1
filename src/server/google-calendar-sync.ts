@@ -46,6 +46,11 @@ type CloseFlowCalendarEvent = {
   endAt?: string | null;
   reminderAt?: string | null;
   recurrenceRule?: string | null;
+  recurrenceEndType?: string | null;
+  recurrenceEndAt?: string | null;
+  recurrenceCount?: number | null;
+  kind?: string | null;
+  relationLabel?: string | null;
   description?: string | null;
   sourceType?: string | null;
   sourceUrl?: string | null;
@@ -426,8 +431,47 @@ function buildGoogleExtendedProperties(event: CloseFlowCalendarEvent) {
   };
 }
 
+function normalizeGoogleCalendarSourceUrl(input?: string | null) {
+  // GOOGLE_CALENDAR_STAGE09E_SAFE_SOURCE_URL
+  const raw = String(input || '').trim();
+  if (!raw) return '';
+
+  const candidate =
+    /^https?:\/\//i.test(raw)
+      ? raw
+      : (!raw.includes('://') && raw.includes('.'))
+        ? 'https://' + raw
+        : raw;
+
+  try {
+    const url = new URL(candidate);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return '';
+    if (!url.hostname || !url.hostname.includes('.')) return '';
+    return url.toString();
+  } catch {
+    return '';
+  }
+}
+
+function getGoogleCalendarSourceUrl(event: CloseFlowCalendarEvent) {
+  const candidates = [
+    event.sourceUrl,
+    env('APP_URL'),
+    env('RELEASE_PREVIEW_URL'),
+    env('VERCEL_URL'),
+  ];
+
+  for (const candidate of candidates) {
+    const normalized = normalizeGoogleCalendarSourceUrl(candidate);
+    if (normalized) return normalized;
+  }
+
+  return '';
+}
+
 function buildGoogleEventBody(event: CloseFlowCalendarEvent) {
   // GOOGLE_CALENDAR_STAGE09B_FULL_BODY_PARITY
+  // GOOGLE_CALENDAR_STAGE09E_SAFE_SOURCE_URL_BODY
   const start = new Date(event.startAt);
   const end = event.endAt ? new Date(event.endAt) : new Date(start.getTime() + 60 * 60 * 1000);
   const body: Record<string, unknown> = {
@@ -437,11 +481,11 @@ function buildGoogleEventBody(event: CloseFlowCalendarEvent) {
     end: { dateTime: end.toISOString() },
     reminders: buildReminderOverrides(event),
     extendedProperties: buildGoogleExtendedProperties(event),
-    source: {
-      title: 'CloseFlow',
-      url: event.sourceUrl || env('APP_URL') || env('RELEASE_PREVIEW_URL') || '',
-    },
   };
+
+  const sourceUrl = getGoogleCalendarSourceUrl(event);
+  if (sourceUrl) body.source = { title: 'CloseFlow', url: sourceUrl };
+
   const recurrence = normalizeGoogleCalendarRecurrence(event.recurrenceRule);
   if (recurrence) body.recurrence = recurrence;
   return body;
