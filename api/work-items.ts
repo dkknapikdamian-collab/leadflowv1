@@ -48,6 +48,39 @@ function googleEventIdFrom(row: any, body: any) {
   ).trim();
 }
 
+function googleReminderMethodFrom(row: any, body: any) {
+  const raw =
+    body?.googleCalendarReminderMethod
+    || body?.google_calendar_reminder_method
+    || body?.googleCalendarReminder?.method
+    || body?.google_calendar_reminder?.method
+    || body?.reminder?.googleCalendarMethod
+    || body?.reminder?.googleMethod
+    || row?.google_calendar_reminder_method
+    || row?.googleCalendarReminderMethod
+    || '';
+  const value = String(raw || '').trim().toLowerCase();
+  if (value === 'default' || value === 'popup' || value === 'email' || value === 'popup_email' || value === 'popup+email' || value === 'both') return value;
+  return '';
+}
+
+function googleReminderMinutesFrom(row: any, body: any) {
+  const raw =
+    body?.googleCalendarReminderMinutesBefore
+    || body?.googleCalendarReminderMinutes
+    || body?.google_calendar_reminder_minutes_before
+    || body?.googleCalendarReminder?.minutesBefore
+    || body?.google_calendar_reminder?.minutesBefore
+    || body?.reminder?.googleCalendarMinutesBefore
+    || body?.reminder?.googleMinutesBefore
+    || body?.reminder?.minutesBefore
+    || row?.google_calendar_reminder_minutes_before
+    || row?.googleCalendarReminderMinutesBefore
+    || null;
+  const parsed = typeof raw === 'number' ? raw : typeof raw === 'string' && raw.trim() ? Number(raw) : Number.NaN;
+  return Number.isFinite(parsed) ? Math.max(0, Math.min(40320, Math.round(parsed))) : null;
+}
+
 function closeFlowEventForGoogle(row: any, body: any) {
   const startAt =
     asIsoDate(row?.start_at)
@@ -75,6 +108,8 @@ function closeFlowEventForGoogle(row: any, body: any) {
     endAt,
     reminderAt,
     recurrenceRule: row?.recurrence ? String(row.recurrence) : body?.recurrenceRule ? String(body.recurrenceRule) : null,
+    googleReminderMethod: googleReminderMethodFrom(row, body) || null,
+    googleReminderMinutesBefore: googleReminderMinutesFrom(row, body),
   };
 }
 

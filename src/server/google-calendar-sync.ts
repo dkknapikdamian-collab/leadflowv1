@@ -1,4 +1,4 @@
-﻿import crypto from 'crypto';
+import crypto from 'crypto';
 import { supabaseRequest } from './_supabase.js';
 
 type GoogleCalendarConfigStatus = {
@@ -37,6 +37,8 @@ type GoogleCalendarConnection = {
   sync_enabled?: boolean;
 };
 
+type GoogleReminderMethod = 'default' | 'popup' | 'email' | 'popup_email';
+
 type CloseFlowCalendarEvent = {
   id: string;
   title: string;
@@ -44,6 +46,8 @@ type CloseFlowCalendarEvent = {
   endAt?: string | null;
   reminderAt?: string | null;
   recurrenceRule?: string | null;
+  googleReminderMethod?: GoogleReminderMethod | null;
+  googleReminderMinutesBefore?: number | null;
 };
 
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
@@ -285,12 +289,47 @@ async function getUsableAccessToken(connection: GoogleCalendarConnection) {
   return (await refreshGoogleCalendarAccessToken(connection)).accessToken;
 }
 
+function normalizeGoogleReminderMethod(value: unknown): GoogleReminderMethod {
+  const raw = String(value || '').trim().toLowerCase();
+  if (raw === 'email') return 'email';
+  if (raw === 'popup_email' || raw === 'popup+email' || raw === 'both') return 'popup_email';
+  if (raw === 'default') return 'default';
+  return 'popup';
+}
+
+function clampGoogleReminderMinutes(value: unknown) {
+  const parsed = typeof value === 'number'
+    ? value
+    : typeof value === 'string' && value.trim()
+      ? Number(value)
+      : Number.NaN;
+  if (!Number.isFinite(parsed)) return null;
+  return Math.max(0, Math.min(40320, Math.round(parsed)));
+}
+
+function minutesFromReminderAt(event: CloseFlowCalendarEvent) {
+  if (!event.reminderAt || !event.startAt) return null;
+  const startMs = new Date(event.startAt).getTime();
+  const reminderMs = new Date(event.reminderAt).getTime();
+  if (!Number.isFinite(startMs) || !Number.isFinite(reminderMs)) return null;
+  return Math.max(0, Math.min(40320, Math.round((startMs - reminderMs) / 60000)));
+}
+
+// GOOGLE_CALENDAR_SYNC_V1_STAGE05_REMINDER_METHOD_BACKEND
 function buildReminderOverrides(event: CloseFlowCalendarEvent) {
-  if (!event.reminderAt || !event.startAt) return { useDefault: true };
-  const minutes = Math.max(0, Math.min(40320, Math.round((new Date(event.startAt).getTime() - new Date(event.reminderAt).getTime()) / 60000)));
+  const method = normalizeGoogleReminderMethod(event.googleReminderMethod || (event.reminderAt ? 'popup' : 'default'));
+  if (method === 'default') return { useDefault: true };
+
+  const minutes = clampGoogleReminderMinutes(event.googleReminderMinutesBefore) ?? minutesFromReminderAt(event);
+  if (minutes === null) return { useDefault: true };
+
+  const overrides = method === 'popup_email'
+    ? [{ method: 'popup', minutes }, { method: 'email', minutes }]
+    : [{ method, minutes }];
+
   return {
     useDefault: false,
-    overrides: [{ method: 'popup', minutes }],
+    overrides,
   };
 }
 
