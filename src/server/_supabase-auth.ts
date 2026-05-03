@@ -229,5 +229,15 @@ export function writeAuthErrorResponse(res: any, error: unknown) {
     res.status(error.status).json({ error: error.code });
     return;
   }
+
+  const row = error && typeof error === 'object' ? error as Record<string, unknown> : {};
+  const status = Number(row.status ?? row.statusCode ?? 0);
+  const code = asText(row.code ?? (error instanceof Error ? error.message : '')) || 'AUTH_CONTEXT_FAILED';
+
+  if (Number.isFinite(status) && status >= 400 && status <= 599) {
+    res.status(status).json({ error: code });
+    return;
+  }
+
   res.status(500).json({ error: error instanceof Error ? error.message : 'AUTH_CONTEXT_FAILED' });
 }
