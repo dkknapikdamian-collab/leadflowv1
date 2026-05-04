@@ -1152,3 +1152,134 @@
   background: #f9fafb !important;
   opacity: 0.72;
 }
+
+/* STAGE50_CLIENT_DETAIL_EDIT_HEADER_POLISH
+   Naprawa: edycja danych klienta, nagłówek i widoczność akcji notatek.
+   Zakres tylko ClientDetail. Bez zmian API / danych / routingu.
+*/
+.client-detail-vnext-page .client-detail-breadcrumb {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-header-meta {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 6px !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  padding-bottom: 2px !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.client-detail-vnext-page .client-detail-header-meta span {
+  flex: 0 0 auto !important;
+  min-height: 24px !important;
+  padding: 4px 8px !important;
+  border-radius: 999px !important;
+  font-size: 10.5px !important;
+  line-height: 1.1 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.01em !important;
+  white-space: nowrap !important;
+  color: #1f2937 !important;
+  background: #ffffff !important;
+  border-color: #d0d5dd !important;
+}
+
+.client-detail-vnext-page .client-detail-header-meta span:nth-child(1) {
+  color: #1d4ed8 !important;
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+.client-detail-vnext-page .client-detail-header-meta span:nth-child(2) {
+  color: #047857 !important;
+  background: #ecfdf3 !important;
+  border-color: #abefc6 !important;
+}
+
+.client-detail-vnext-page .client-detail-header-meta span:nth-child(3) {
+  color: #b45309 !important;
+  background: #fffaeb !important;
+  border-color: #fedf89 !important;
+}
+
+.client-detail-vnext-page .client-detail-header-meta span:nth-child(4) {
+  color: #be123c !important;
+  background: #fff1f3 !important;
+  border-color: #fecdd3 !important;
+}
+
+.client-detail-vnext-page .client-detail-edit-form,
+.client-detail-vnext-page .client-detail-edit-field,
+.client-detail-vnext-page .client-detail-contact-repeat-list,
+.client-detail-vnext-page .client-detail-contact-repeat-row {
+  color: #111827 !important;
+}
+
+.client-detail-vnext-page .client-detail-edit-form label,
+.client-detail-vnext-page .client-detail-edit-field label,
+.client-detail-vnext-page .client-detail-edit-label-row label {
+  color: #344054 !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+.client-detail-vnext-page .client-detail-edit-form input,
+.client-detail-vnext-page .client-detail-edit-form textarea,
+.client-detail-vnext-page .client-detail-edit-field input,
+.client-detail-vnext-page .client-detail-edit-field textarea,
+.client-detail-vnext-page [data-client-contact-repeat-row] input {
+  background: #ffffff !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  border-color: #d0d5dd !important;
+  caret-color: #2563eb !important;
+  box-shadow: none !important;
+}
+
+.client-detail-vnext-page .client-detail-edit-form input::placeholder,
+.client-detail-vnext-page .client-detail-edit-form textarea::placeholder,
+.client-detail-vnext-page .client-detail-edit-field input::placeholder,
+.client-detail-vnext-page .client-detail-edit-field textarea::placeholder {
+  color: #98a2b3 !important;
+  -webkit-text-fill-color: #98a2b3 !important;
+}
+
+.client-detail-vnext-page .client-detail-edit-form input:focus,
+.client-detail-vnext-page .client-detail-edit-form textarea:focus,
+.client-detail-vnext-page .client-detail-edit-field input:focus,
+.client-detail-vnext-page .client-detail-edit-field textarea:focus {
+  border-color: #2563eb !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+}
+
+.client-detail-vnext-page .client-detail-edit-actions button,
+.client-detail-vnext-page .client-detail-mini-button,
+.client-detail-vnext-page .client-detail-quick-actions-list button,
+.client-detail-vnext-page button[data-client-note-dictate],
+.client-detail-vnext-page button[data-client-note-save],
+.client-detail-vnext-page button[aria-label*="notat" i],
+.client-detail-vnext-page button[aria-label*="dykt" i] {
+  background: #ffffff !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  border: 1px solid #d0d5dd !important;
+  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.06) !important;
+}
+
+.client-detail-vnext-page .client-detail-edit-actions button:hover,
+.client-detail-vnext-page .client-detail-mini-button:hover,
+.client-detail-vnext-page .client-detail-quick-actions-list button:hover,
+.client-detail-vnext-page button[data-client-note-dictate]:hover,
+.client-detail-vnext-page button[data-client-note-save]:hover,
+.client-detail-vnext-page button[aria-label*="notat" i]:hover,
+.client-detail-vnext-page button[aria-label*="dykt" i]:hover {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  -webkit-text-fill-color: #1d4ed8 !important;
+  border-color: #bfdbfe !important;
+}

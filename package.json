@@ -192,7 +192,9 @@
     "verify:tasks-visible-actions-stage47": "node scripts/verify-tasks-visible-actions-stage47.mjs",
     "verify:tasks-compact-stage48": "node scripts/verify-tasks-compact-stage48.mjs",
     "check:faza5-etap52-today-collapsible-masonry": "node scripts/check-faza5-etap52-today-collapsible-masonry.cjs",
-    "check:stage49-client-detail-visible-actions": "node scripts/check-stage49-client-detail-visible-actions.cjs"
+    "check:stage49-client-detail-visible-actions": "node scripts/check-stage49-client-detail-visible-actions.cjs",
+    "check:stage50-client-detail-edit-header-polish": "node scripts/check-stage50-client-detail-edit-header-polish.cjs",
+    "test:stage50-client-detail-edit-header-polish": "node --test tests/stage50-client-detail-edit-header-polish.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
