@@ -798,3 +798,110 @@
     order: -10 !important;
   }
 }
+
+/* STAGE58_CASE_RECENT_MOVES_PANEL */
+.case-detail-vnext-page .case-detail-recent-moves-panel {
+  gap: 14px;
+}
+
+.case-detail-vnext-page .case-detail-link-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+.case-detail-vnext-page .case-detail-recent-moves-list {
+  display: grid;
+  gap: 10px;
+}
+
+.case-detail-vnext-page .case-detail-recent-move {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 12px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+}
+
+.case-detail-vnext-page .case-detail-recent-move-dot {
+  width: 10px;
+  height: 10px;
+  margin-top: 7px;
+  border-radius: 999px;
+  background: #64748b;
+  box-shadow: 0 0 0 4px rgba(100, 116, 139, 0.12);
+}
+
+.case-detail-vnext-page .case-detail-recent-move-dot-task {
+  background: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.case-detail-vnext-page .case-detail-recent-move-dot-event {
+  background: #7c3aed;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
+}
+
+.case-detail-vnext-page .case-detail-recent-move-dot-item {
+  background: #d97706;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.14);
+}
+
+.case-detail-vnext-page .case-detail-recent-move-dot-status {
+  background: #059669;
+  box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.13);
+}
+
+.case-detail-vnext-page .case-detail-recent-move-dot-note {
+  background: #475569;
+  box-shadow: 0 0 0 4px rgba(71, 85, 105, 0.12);
+}
+
+.case-detail-vnext-page .case-detail-recent-move-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #475569;
+}
+
+.case-detail-vnext-page .case-detail-recent-move-topline time {
+  flex: 0 0 auto;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.case-detail-vnext-page .case-detail-recent-move p {
+  margin: 0;
+  color: #111827;
+  -webkit-text-fill-color: #111827;
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 750;
+}
+
+.case-detail-vnext-page .case-detail-recent-move small {
+  display: block;
+  margin-top: 4px;
+  color: #475569;
+  -webkit-text-fill-color: #475569;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+@media (max-width: 720px) {
+  .case-detail-vnext-page .case-detail-recent-move-topline {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+}

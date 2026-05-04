@@ -1,3 +1,4 @@
+/* STAGE58_CASE_RECENT_MOVES_PANEL */
 /* STAGE57_CASE_CREATE_ACTION_HUB */
 /* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
 // LEAD_TO_CASE_FLOW_STAGE24_CASE_DETAIL
@@ -350,6 +351,15 @@ function sortCaseItems(items: CaseItem[]) {
 function sortActivities(activities: CaseActivity[]) {
   return [...activities].sort((first, second) => sortTime(second.createdAt, 0) - sortTime(first.createdAt, 0));
 }
+function getCaseRecentMoveMeta(activity: CaseActivity) {
+  const eventType = String(activity.eventType || '');
+  if (eventType.includes('task')) return { label: 'Zadanie', className: 'case-detail-recent-move-dot-task' };
+  if (eventType.includes('event')) return { label: 'Wydarzenie', className: 'case-detail-recent-move-dot-event' };
+  if (eventType.includes('item') || eventType.includes('file') || eventType.includes('decision')) return { label: 'KompletnoĹ›Ä‡', className: 'case-detail-recent-move-dot-item' };
+  if (eventType.includes('status') || eventType.includes('lifecycle')) return { label: 'Status', className: 'case-detail-recent-move-dot-status' };
+  if (eventType.includes('note')) return { label: 'Notatka', className: 'case-detail-recent-move-dot-note' };
+  return { label: 'Ruch', className: 'case-detail-recent-move-dot-note' };
+}
 
 function calculateCompletion(items: CaseItem[]) {
   if (items.length === 0) return 0;
@@ -591,6 +601,7 @@ export default function CaseDetail() {
     [effectiveStatus, events, items, tasks],
   );
   const workItems = useMemo(() => buildWorkItems(openTasks, plannedEvents, items, activities), [activities, items, openTasks, plannedEvents]);
+  const recentCaseMoves = useMemo(() => activities.slice(0, 5), [activities]);
   const nextAction = useMemo(() => workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null, [workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
   const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Źródłowy lead') : caseData?.leadId ? 'Źródłowy lead podpięty' : 'Brak źródłowego leada';
@@ -1124,6 +1135,51 @@ export default function CaseDetail() {
                 <button type="button" className="cf-btn-tone-note" onClick={() => setIsAddNoteOpen(true)}>Dodaj notatkę</button>
               </div>
             </section>
+              <section className="case-detail-card case-detail-recent-moves-panel" data-case-recent-moves-panel="true">
+                <div className="case-detail-section-heading">
+                  <div>
+                    <p className="case-detail-eyebrow">Kontekst</p>
+                    <h2>Ostatnie 5 ruchĂłw</h2>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="case-detail-link-button"
+                    onClick={() => setActiveTab('history')}
+                    data-case-recent-moves-open-history="true"
+                  >
+                    Zobacz caĹ‚Ä… aktywnoĹ›Ä‡
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {recentCaseMoves.length === 0 ? (
+                  <div className="case-detail-empty-state" data-case-recent-moves-empty="true">
+                    Brak ruchĂłw w tej sprawie. Dodaj notatkÄ™, zadanie albo brak, ĹĽeby historia zaczÄ™Ĺ‚a ĹĽyÄ‡.
+                  </div>
+                ) : (
+                  <div className="case-detail-recent-moves-list">
+                    {recentCaseMoves.map((move) => {
+                      const meta = getCaseRecentMoveMeta(move);
+                      const noteText = typeof move.payload?.note === 'string' ? move.payload.note.trim() : '';
+                      return (
+                        <article key={move.id} className="case-detail-recent-move" data-case-recent-move="true">
+                          <span className={`case-detail-recent-move-dot ${meta.className}`} aria-hidden="true" />
+                          <div>
+                            <div className="case-detail-recent-move-topline">
+                              <span>{meta.label}</span>
+                              <time>{formatDateTime(move.createdAt, 'Brak daty')}</time>
+                            </div>
+                            <p>{getActivityText(move)}</p>
+                            {noteText ? <small>{noteText}</small> : null}
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
+              </section>
 
             <section className="right-card case-detail-right-card">
               <div className="case-detail-card-title-row">
