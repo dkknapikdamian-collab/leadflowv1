@@ -57,7 +57,7 @@ assertNoteButtonPlacement();
 contains('src/styles/visual-stage13-case-detail-vnext.css', marker, 'Stage61 CSS marker');
 contains('package.json', 'check:stage61-case-note-action-button-swap', 'Stage61 check script');
 contains('package.json', 'test:stage61-case-note-action-button-swap', 'Stage61 test script');
-contains('package.json', 'check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run verify:client-detail-operational-ui', 'Stage61 included in case operational verify');
+contains('package.json', 'check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run verify:client-detail-operational-ui', 'Stage61 included in case operational verify');
 contains('tests/stage61-case-note-action-button-swap.test.cjs', marker, 'Stage61 test marker');
 contains('docs/release/STAGE61_CASE_NOTE_ACTION_BUTTON_SWAP_2026-05-04.md', marker, 'Stage61 release marker');
 console.log('PASS ' + marker);

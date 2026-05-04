@@ -23,7 +23,7 @@ contains('src/styles/visual-stage13-case-detail-vnext.css', '.case-detail-vnext-
 contains('src/styles/visual-stage13-case-detail-vnext.css', '.case-detail-vnext-page .case-detail-recent-move', 'row CSS');
 contains('package.json', 'check:stage58-case-recent-moves-panel', 'Stage58 check script');
 contains('package.json', 'test:stage58-case-recent-moves-panel', 'Stage58 test script');
-contains('package.json', 'check:stage58-case-recent-moves-panel && npm.cmd run check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run verify:client-detail-operational-ui', 'Stage58 included in case operational verify');
+contains('package.json', 'check:stage58-case-recent-moves-panel && npm.cmd run check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run verify:client-detail-operational-ui', 'Stage58 included in case operational verify');
 contains('tests/stage58-case-recent-moves-panel.test.cjs', marker, 'Stage58 test marker');
 contains('docs/release/STAGE58_CASE_RECENT_MOVES_PANEL_2026-05-04.md', marker, 'Stage58 release marker');
 console.log('PASS ' + marker);

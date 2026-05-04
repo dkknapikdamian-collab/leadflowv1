@@ -46,7 +46,7 @@ test('STAGE61_CASE_NOTE_ACTION_BUTTON_SWAP: guard chain includes Stage61', () =>
   const css = read('src/styles/visual-stage13-case-detail-vnext.css');
   expectIncludes(pkg, 'check:stage61-case-note-action-button-swap', 'Stage61 check script');
   expectIncludes(pkg, 'test:stage61-case-note-action-button-swap', 'Stage61 test script');
-  expectIncludes(pkg, 'check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run verify:client-detail-operational-ui', 'Stage61 verify chain');
+  expectIncludes(pkg, 'check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run verify:client-detail-operational-ui', 'Stage61 verify chain');
   expectIncludes(check, marker, 'Stage61 check marker');
   expectIncludes(css, marker, 'Stage61 CSS marker');
 });

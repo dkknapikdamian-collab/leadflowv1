@@ -993,3 +993,9 @@
 
 
 /* STAGE61_CASE_NOTE_ACTION_BUTTON_SWAP */
+
+
+/* STAGE62_CASE_IMPORTANT_ACTIONS_HEADER_NOTE_BUTTON_REMOVE */
+.case-detail-vnext-page [data-case-create-action="note"] {
+  white-space: nowrap;
+}

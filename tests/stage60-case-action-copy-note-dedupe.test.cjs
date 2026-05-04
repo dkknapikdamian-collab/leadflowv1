@@ -26,6 +26,6 @@ test('STAGE60_CASE_ACTION_COPY_NOTE_DEDUPE: guards and verify chain know the Sta
   expectIncludes(stage57, 'note action button retained in create panel', 'Stage57 note dedupe guard');
   expectIncludes(pkg, 'check:stage60-case-action-copy-note-dedupe', 'Stage60 check script');
   expectIncludes(pkg, 'test:stage60-case-action-copy-note-dedupe', 'Stage60 test script');
-  expectIncludes(pkg, 'check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run verify:client-detail-operational-ui', 'Stage60 verify chain');
+  expectIncludes(pkg, 'check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run verify:client-detail-operational-ui', 'Stage60 verify chain');
 });
 

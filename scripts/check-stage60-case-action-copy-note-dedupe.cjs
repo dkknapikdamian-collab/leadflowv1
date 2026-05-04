@@ -26,7 +26,7 @@ contains('src/styles/visual-stage13-case-detail-vnext.css', marker, 'Stage60 CSS
 contains('scripts/check-stage57-case-create-action-hub.cjs', 'note action button retained in create panel', 'Stage57 guard updated');
 contains('package.json', 'check:stage60-case-action-copy-note-dedupe', 'Stage60 check script');
 contains('package.json', 'test:stage60-case-action-copy-note-dedupe', 'Stage60 test script');
-contains('package.json', 'check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run verify:client-detail-operational-ui', 'Stage60 included in case operational verify');
+contains('package.json', 'check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run verify:client-detail-operational-ui', 'Stage60 included in case operational verify');
 contains('tests/stage60-case-action-copy-note-dedupe.test.cjs', marker, 'Stage60 test marker');
 contains('docs/release/STAGE60_CASE_ACTION_COPY_NOTE_DEDUPE_2026-05-04.md', marker, 'Stage60 release marker');
 console.log('PASS ' + marker);

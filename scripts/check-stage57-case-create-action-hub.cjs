@@ -35,7 +35,7 @@ contains('src/styles/visual-stage13-case-detail-vnext.css', '-webkit-text-fill-c
 contains('package.json', 'check:stage57-case-create-action-hub', 'Stage57 check script');
 contains('package.json', 'test:stage57-case-create-action-hub', 'Stage57 test script');
 contains('package.json', 'verify:case-create-flow', 'case create flow verify script');
-contains('package.json', 'check:stage57-case-create-action-hub && npm.cmd run check:stage58-case-recent-moves-panel && npm.cmd run check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run verify:client-detail-operational-ui', 'Stage57 included in case operational verify');
+contains('package.json', 'check:stage57-case-create-action-hub && npm.cmd run check:stage58-case-recent-moves-panel && npm.cmd run check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run verify:client-detail-operational-ui', 'Stage57 included in case operational verify');
 contains('tests/stage57-case-create-action-hub.test.cjs', marker, 'Stage57 test marker');
 contains('docs/release/STAGE57_CASE_CREATE_ACTION_HUB_2026-05-04.md', marker, 'Stage57 release marker');
 console.log('PASS ' + marker);
