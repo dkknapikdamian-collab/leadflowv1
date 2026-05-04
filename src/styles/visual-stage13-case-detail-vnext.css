@@ -737,3 +737,64 @@
 .case-detail-vnext-page .case-detail-row-action-danger svg {
   color: #be123c !important;
 }
+
+/* STAGE57_CASE_CREATE_ACTION_HUB */
+.case-detail-vnext-page .case-detail-create-action-card {
+  gap: 12px !important;
+  border-color: #bfdbfe !important;
+  background: #ffffff !important;
+}
+
+.case-detail-vnext-page .case-detail-create-action-card > small:first-child {
+  color: #2563eb !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+}
+
+.case-detail-vnext-page .case-detail-create-action-card > p {
+  color: #111827 !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+.case-detail-vnext-page .case-detail-create-actions {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 8px !important;
+}
+
+.case-detail-vnext-page .case-detail-create-actions button,
+.case-detail-vnext-page [data-case-create-action] {
+  width: 100% !important;
+  min-height: 38px !important;
+  justify-content: flex-start !important;
+  border: 1px solid #d0d5dd !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.08) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+.case-detail-vnext-page .case-detail-create-actions button svg,
+.case-detail-vnext-page [data-case-create-action] svg {
+  color: #2563eb !important;
+  stroke: currentColor !important;
+}
+
+.case-detail-vnext-page .case-detail-create-actions button:hover,
+.case-detail-vnext-page [data-case-create-action]:hover {
+  border-color: #93c5fd !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  -webkit-text-fill-color: #1d4ed8 !important;
+}
+
+@media (min-width: 1221px) {
+  .case-detail-vnext-page .case-detail-create-action-card {
+    order: -10 !important;
+  }
+}

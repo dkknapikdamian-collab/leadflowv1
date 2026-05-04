@@ -1,3 +1,4 @@
+/* STAGE57_CASE_CREATE_ACTION_HUB */
 /* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
 // LEAD_TO_CASE_FLOW_STAGE24_CASE_DETAIL
 // CASE_DETAIL_VISUAL_REBUILD_STAGE13
@@ -602,6 +603,37 @@ export default function CaseDetail() {
     return false;
   };
 
+
+  const openCaseTaskDialog = () => {
+    if (!guardCaseDetailWriteAccess('dodac zadania')) return;
+    setNewTask({
+      title: '',
+      type: 'follow_up',
+      scheduledAt: '',
+      reminderAt: '',
+      priority: 'normal',
+    });
+    setIsAddTaskOpen(true);
+  };
+
+  const openCaseEventDialog = () => {
+    if (!guardCaseDetailWriteAccess('dodac wydarzenia')) return;
+    setNewEvent({
+      title: '',
+      type: 'meeting',
+      startAt: '',
+      endAt: '',
+      reminderAt: '',
+    });
+    setIsAddEventOpen(true);
+  };
+
+  const openCaseNoteDialog = () => {
+    if (!guardCaseDetailWriteAccess('dodac notatki')) return;
+    setNewNote('');
+    setIsAddNoteOpen(true);
+  };
+
   const recordActivity = async (eventType: string, payload: Record<string, any>) => {
     if (!caseId) return;
     await insertActivityToSupabase({ caseId, actorType: 'operator', eventType, payload }).catch(() => null);
@@ -738,8 +770,8 @@ export default function CaseDetail() {
 
   const handleAddEvent = async () => {
     if (!guardCaseDetailWriteAccess('dodac wydarzenia')) return;
-    if (!caseId || !newEvent.title.trim() || !newEvent.startAt) {
-      toast.error('Podaj tytuł i start wydarzenia');
+    if (!caseId || !newEvent.title.trim()) {
+      toast.error('Podaj tytuł wydarzenia');
       return;
     }
     try {
@@ -1061,6 +1093,27 @@ export default function CaseDetail() {
           </section>
 
           <aside className="case-detail-right-rail" aria-label="Panel sprawy">
+
+        <div className="case-detail-right-card case-detail-create-action-card" data-case-create-actions-panel="true">
+          <small>Dodaj do sprawy</small>
+          <p>Zadanie, wydarzenie albo notatka</p>
+          <div className="case-detail-right-actions case-detail-create-actions">
+            <Button type="button" variant="outline" size="sm" onClick={openCaseTaskDialog} data-case-create-action="task" data-case-quick-action="true">
+              <ListChecks className="h-4 w-4" />
+              Zadanie
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={openCaseEventDialog} data-case-create-action="event" data-case-quick-action="true">
+              <CalendarClock className="h-4 w-4" />
+              Wydarzenie
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={openCaseNoteDialog} data-case-create-action="note" data-case-quick-action="true">
+              <StickyNote className="h-4 w-4" />
+              Notatka
+            </Button>
+          </div>
+          <small className="case-detail-right-note">Zadanie i wydarzenie zostaną automatycznie podpięte pod tę sprawę oraz klienta.</small>
+        </div>
+
             <section className="right-card case-detail-right-card">
               <div className="case-detail-card-title-row">
                 <Send className="h-4 w-4" />
