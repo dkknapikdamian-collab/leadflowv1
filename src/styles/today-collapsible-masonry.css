@@ -1,0 +1,37 @@
+/*
+FAZA5_ETAP52_TODAY_COLLAPSIBLE_MASONRY
+Cel: sekcje w Dziś są zwijane i mają niezależną wysokość.
+Nie pozwalamy, żeby jedna długa sekcja rozciągała sąsiednią krótką sekcję w tym samym rzędzie siatki.
+*/
+
+[data-today-tile-card="true"],
+[data-today-collapsible-section="true"],
+.today-independent-section {
+  align-self: start !important;
+  height: fit-content !important;
+  min-height: 0 !important;
+}
+
+[data-today-tile-card="true"] > *,
+[data-today-collapsible-section="true"] > *,
+.today-independent-section > * {
+  min-height: 0 !important;
+}
+
+[data-today-tile-header="true"] {
+  cursor: pointer;
+}
+
+[data-today-tile-body="true"] {
+  min-height: 0 !important;
+}
+
+@media (min-width: 768px) {
+  [data-today-layout-grid="true"],
+  .today-layout-grid,
+  .today-sections-grid,
+  main [class*="grid-cols"]:has([data-today-tile-card="true"]),
+  main [class*="grid-cols"]:has([data-today-collapsible-section="true"]) {
+    align-items: start !important;
+  }
+}

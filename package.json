@@ -190,7 +190,8 @@
     "audit:ui-surface-stage45": "node scripts/audit-closeflow-ui-surface-stage45.mjs",
     "verify:client-acquisition-history-only": "node scripts/verify-client-acquisition-history-only.mjs",
     "verify:tasks-visible-actions-stage47": "node scripts/verify-tasks-visible-actions-stage47.mjs",
-    "verify:tasks-compact-stage48": "node scripts/verify-tasks-compact-stage48.mjs"
+    "verify:tasks-compact-stage48": "node scripts/verify-tasks-compact-stage48.mjs",
+    "check:faza5-etap52-today-collapsible-masonry": "node scripts/check-faza5-etap52-today-collapsible-masonry.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

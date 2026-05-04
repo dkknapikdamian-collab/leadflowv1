@@ -1,4 +1,5 @@
 ﻿/*
+FAZA5_ETAP52_TODAY_COLLAPSIBLE_MASONRY
 A13_TODAY_SOURCE_GUARD_MARKERS_FOR_EXISTING_TESTS
 TODAY_AI_DRAFTS_TILE_STAGE29
 TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
@@ -131,6 +132,8 @@ import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 import { installTodayStage30VisualCleanup } from '../lib/stage30-today-cleanup';
 import { installTodayStage31TilesInteraction } from '../lib/stage31-today-tiles-interaction';
 import { installTodayStage32RelationsLoadingPolish } from '../lib/stage32-today-relations-loading-polish';
+
+import '../styles/today-collapsible-masonry.css';
 
 const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
@@ -546,8 +549,9 @@ function TileCard({
     <Card
       id={shortcutAnchorId}
       data-today-tile-card="true"
+      data-today-collapsible-section="true"
       data-today-shortcut-section={shortcutTarget || undefined}
-      className={`scroll-mt-28 shadow-sm border-slate-100 ${className}`}
+      className={`today-independent-section scroll-mt-28 self-start h-fit shadow-sm border-slate-100 ${className}`}
     >
       <CardContent className="p-0">
         <button
@@ -575,7 +579,7 @@ function TileCard({
           </div>
         </button>
         {!collapsed ? (
-          <div className={`border-t border-slate-100 p-4 pt-3 ${bodyClassName}`}>
+          <div data-today-tile-body="true" className={`border-t border-slate-100 p-4 pt-3 ${bodyClassName}`}>
             {children}
           </div>
         ) : null}
