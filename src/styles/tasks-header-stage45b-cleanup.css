@@ -1,0 +1,17 @@
+/* TASKS_HEADER_STAGE45B_CLEANUP_CSS */
+/* Route-scoped safety net for Tasks header readability after visual stages. */
+.main[data-current-section="zadania"] [data-shell-content="true"] h1,
+.main[data-current-section="zadania"] [data-shell-content="true"] h2 {
+  color: #0f172a !important;
+}
+
+.main[data-current-section="zadania"] [data-shell-content="true"] h1.text-white,
+.main[data-current-section="zadania"] [data-shell-content="true"] h1.text-slate-50,
+.main[data-current-section="zadania"] [data-shell-content="true"] h1.text-slate-100,
+.main[data-current-section="zadania"] [data-shell-content="true"] h1.text-slate-200,
+.main[data-current-section="zadania"] [data-shell-content="true"] h2.text-white,
+.main[data-current-section="zadania"] [data-shell-content="true"] h2.text-slate-50,
+.main[data-current-section="zadania"] [data-shell-content="true"] h2.text-slate-100,
+.main[data-current-section="zadania"] [data-shell-content="true"] h2.text-slate-200 {
+  color: #0f172a !important;
+}
