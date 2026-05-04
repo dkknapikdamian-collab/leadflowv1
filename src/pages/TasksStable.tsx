@@ -331,7 +331,7 @@ export default function TasksStable() {
 
   return (
     <Layout>
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true">
+      <main className="mx-auto flex w-full max-w-5xl flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-stage48="true">
         <section className="rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -374,46 +374,36 @@ export default function TasksStable() {
           </CardContent>
         </Card>
 
-        <section className="space-y-3">
+        <section className="space-y-2" data-tasks-compact-list-stage48="true">
           {loading ? (
             <Card className="border-slate-100"><CardContent className="flex items-center gap-3 p-5 text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> Ładowanie zadań...</CardContent></Card>
           ) : filteredTasks.length ? filteredTasks.map((task) => {
             const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
             return (
-              <Card key={String(task.id || getTaskTitle(task))} className="border-slate-100 shadow-sm">
-                <CardContent className="p-4 sm:p-5">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <Card key={String(task.id || getTaskTitle(task))} className="border-slate-100 shadow-sm tasks-stage48-task-card">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <Badge variant="outline" className={getBadgeClass(task)}>{getStatusBadge(task)}</Badge>
                         <Badge variant="outline" className="rounded-full">{readText(task, ['priority'], 'medium')}</Badge>
                         <Badge variant="outline" className="rounded-full">{readText(task, ['type'], 'task')}</Badge>
                       </div>
-                      <h2 className={'mt-3 text-base font-bold text-slate-950 sm:text-lg ' + (isTaskDone(task) ? 'line-through opacity-60' : '')}>{getTaskTitle(task)}</h2>
-                      <p className="mt-1 text-sm font-medium text-slate-500">{formatTaskMoment(task)}</p>
+                      <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1" data-task-title-date-row-stage48="true">
+                        <h2 className={'text-base font-bold text-slate-950 sm:text-lg ' + (isTaskDone(task) ? 'line-through opacity-60' : '')}>{getTaskTitle(task)}</h2>
+                        <span className="text-xs font-bold text-slate-500" data-task-date-inline-stage48="true">{formatTaskMoment(task)}</span>
+                      </div>
                       {caseRecord ? <p className="mt-1 text-sm text-slate-600">Sprawa: {getCaseTitle(caseRecord)}</p> : null}
                       {readText(task, ['leadName', 'lead_name'], '') ? <p className="mt-1 text-sm text-slate-600">Lead: {readText(task, ['leadName', 'lead_name'], '')}</p> : null}
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="tasks-stage47-action-button border-slate-300 bg-white text-slate-950 shadow-sm hover:bg-slate-50 hover:text-slate-950"
-                        data-tasks-action-visible-stage47="done"
-                        onClick={() => void toggleTask(task)}
-                      >
+                      <Button type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button" data-task-action-visible-stage48="done-toggle" onClick={() => void toggleTask(task)}>
                         {isTaskDone(task) ? 'Przywróć' : 'Zrobione'}
                       </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="tasks-stage47-action-button border-slate-300 bg-white text-slate-950 shadow-sm hover:bg-slate-50 hover:text-slate-950"
-                        data-tasks-action-visible-stage47="edit"
-                        onClick={() => openEditTask(task)}
-                      >
+                      <Button type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button" data-task-action-visible-stage48="edit" onClick={() => openEditTask(task)}>
                         Edytuj
                       </Button>
-                      <Button type="button" variant="outline" className="text-rose-700 hover:text-rose-800" onClick={() => void deleteTask(task)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</Button>
+                      <Button type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action" data-task-action-visible-stage48="delete" onClick={() => void deleteTask(task)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</Button>
                     </div>
                   </div>
                 </CardContent>

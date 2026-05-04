@@ -59,3 +59,56 @@ html[data-skin] .tasks-stage47-action-button:hover {
 html[data-skin] .tasks-stage47-action-button svg {
   color: currentColor !important;
 }
+
+/* TASKS_COMPACT_CARDS_STAGE48
+   Real TasksStable cards must be narrower and denser, with due date beside title. */
+[data-tasks-compact-stage48="true"] {
+  max-width: 64rem !important;
+}
+
+[data-tasks-compact-list-stage48="true"] {
+  max-width: 52rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.tasks-stage48-task-card,
+html[data-skin] .tasks-stage48-task-card {
+  border-radius: 18px !important;
+}
+
+.tasks-stage48-task-card [data-slot="card-content"] {
+  padding: 0.85rem 1rem !important;
+}
+
+[data-task-title-date-row-stage48="true"] {
+  align-items: baseline !important;
+}
+
+[data-task-date-inline-stage48="true"] {
+  color: #475569 !important;
+  white-space: nowrap !important;
+}
+
+.tasks-stage48-task-action-button,
+html[data-skin] .tasks-stage48-task-action-button {
+  min-height: 2.25rem !important;
+  padding-inline: 0.8rem !important;
+  color: #0f172a !important;
+  background: #ffffff !important;
+  border-color: #94a3b8 !important;
+  font-weight: 800 !important;
+}
+
+.tasks-stage48-task-action-button:hover,
+html[data-skin] .tasks-stage48-task-action-button:hover {
+  color: #0f172a !important;
+  background: #f8fafc !important;
+  border-color: #64748b !important;
+}
+
+.tasks-stage48-danger-action,
+html[data-skin] .tasks-stage48-danger-action {
+  color: #be123c !important;
+  border-color: #fecdd3 !important;
+}

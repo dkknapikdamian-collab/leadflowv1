@@ -344,9 +344,6 @@ export default function TodayStable() {
             <div>
               <Badge className="mb-3 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-50">Dziś</Badge>
               <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Centrum pracy na dziś</h1>
-              <p className="mt-2 max-w-2xl text-sm text-slate-600">
-                Stabilny widok operatora: zaległe i dzisiejsze zadania, leady bez następnego kroku, wydarzenia oraz szkice AI.
-              </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               {lastLoadedAt ? <span className="text-xs font-semibold text-slate-500">Ostatni odczyt: {lastLoadedAt}</span> : null}
