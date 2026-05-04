@@ -4,18 +4,31 @@ Stable Today screen reads the same Supabase API collections that Network diagnos
 This page intentionally bypasses the legacy Today.tsx scheduler stack for operator sections.
 */
 
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  subscribeCloseflowDataMutations,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { Card, CardContent } from '../components/ui/card';
+import { Card,
+  CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { ArrowRight, CalendarDays, CheckSquare, FileText, Loader2, RefreshCcw, UserRound } from 'lucide-react';
+import { ArrowRight,
+  CalendarDays,
+  CheckSquare,
+  FileText,
+  Loader2,
+  RefreshCcw,
+  UserRound } from 'lucide-react';
 import {
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
-  fetchTasksFromSupabase,
+  fetchTasksFromSupabase
 } from '../lib/supabase-fallback';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 
@@ -259,6 +272,27 @@ export default function TodayStable() {
     return () => {
       window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [refreshData]);
+
+  useEffect(() => {
+    // FAZA4_ETAP44B_TODAY_LIVE_REFRESH: Today must refetch after mutations from Tasks, Calendar, Leads, Cases and AI drafts.
+    let refreshTimer: ReturnType<typeof window.setTimeout> | null = null;
+
+    const unsubscribe = subscribeCloseflowDataMutations((detail) => {
+      if (!['task', 'event', 'lead', 'case', 'client', 'aiDraft', 'activity', 'payment'].includes(detail.entity)) return;
+
+      if (refreshTimer) window.clearTimeout(refreshTimer);
+      refreshTimer = window.setTimeout(() => {
+        void refreshData().catch((error: any) => {
+          console.warn('TODAY_LIVE_REFRESH_FAILED', error);
+        });
+      }, 120);
+    });
+
+    return () => {
+      if (refreshTimer) window.clearTimeout(refreshTimer);
+      unsubscribe();
     };
   }, [refreshData]);
 
