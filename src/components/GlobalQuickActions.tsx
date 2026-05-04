@@ -19,14 +19,6 @@ import QuickAiCapture from './QuickAiCapture';
 import { Button } from './ui/button';
 import { useWorkspace } from '../hooks/useWorkspace';
 
-import { useState, type FormEvent } from 'react';
-import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { toDateTimeLocalValue } from '../lib/scheduling';
-import { insertTaskToSupabase } from '../lib/supabase-fallback';
-import { requireWorkspaceId } from '../lib/workspace-context';
 export type GlobalQuickActionTarget = 'lead' | 'task' | 'event';
 
 const QUICK_ACTION_STORAGE_KEY = 'closeflow:global-quick-action:v1';
@@ -65,70 +57,6 @@ export default function GlobalQuickActions() {
   const canUseFullAiAssistantByPlan = Boolean(access?.features?.fullAi);
   const canUseQuickAiCaptureByPlan = Boolean(access?.features?.lightDrafts || access?.features?.lightParser || access?.features?.fullAi);
   const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi);
-  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
-  const [globalTaskTitle, setGlobalTaskTitle] = useState('');
-  const [globalTaskDueAt, setGlobalTaskDueAt] = useState(() => toDateTimeLocalValue(new Date()));
-  const [globalTaskPriority, setGlobalTaskPriority] = useState('medium');
-  const [globalTaskSubmitting, setGlobalTaskSubmitting] = useState(false);
-
-  const resetGlobalTaskDialog = () => {
-    setGlobalTaskTitle('');
-    setGlobalTaskDueAt(toDateTimeLocalValue(new Date()));
-    setGlobalTaskPriority('medium');
-  };
-
-  const openGlobalTaskDialog = () => {
-    setGlobalTaskDueAt(toDateTimeLocalValue(new Date()));
-    setIsTaskDialogOpen(true);
-  };
-
-  const handleGlobalTaskSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (globalTaskSubmitting) return;
-    if (!hasAccess) {
-      toast.error('Brak dostępu do zapisu w tym planie.');
-      return;
-    }
-
-    const title = globalTaskTitle.trim();
-    if (!title) {
-      toast.error('Podaj tytuł zadania.');
-      return;
-    }
-
-    const workspaceId = requireWorkspaceId(workspace);
-    if (!workspaceId) {
-      toast.error('Kontekst workspace nie jest jeszcze gotowy.');
-      return;
-    }
-
-    setGlobalTaskSubmitting(true);
-    try {
-      await insertTaskToSupabase({
-        title,
-        type: 'follow_up',
-        date: globalTaskDueAt.slice(0, 10),
-        scheduledAt: globalTaskDueAt,
-        priority: globalTaskPriority,
-        workspaceId,
-      });
-
-      toast.success('Zadanie dodane');
-      setIsTaskDialogOpen(false);
-      resetGlobalTaskDialog();
-    } catch (error: any) {
-      const message = String(error?.message || '');
-      if (message.includes('WORKSPACE_ENTITY_LIMIT_REACHED')) {
-        toast.error('Limit zadań w tym planie został osiągnięty.');
-      } else {
-        toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');
-      }
-    } finally {
-      setGlobalTaskSubmitting(false);
-    }
-  };
-
-
   return (
     <>
       <div
@@ -162,17 +90,13 @@ export default function GlobalQuickActions() {
       </Button>
 
             {/* STAGE01_GLOBAL_TASK_QUICK_ACTION_BRIDGE_COMPAT_STAGE45A_V7: rememberGlobalQuickAction('task') marker only; toolbar opens task dialog in place. */}
-      <Button
-        type="button"
-        variant="outline"
-        className="btn"
-        data-global-quick-action="task"
-        data-global-task-create-dialog-trigger="true"
-        aria-label="Dodaj zadanie"
-        onClick={openGlobalTaskDialog}
-      >
-        <Plus className="mr-2 h-4 w-4" />
-        Zadanie
+      
+      {/* STAGE45C_GLOBAL_TASK_SINGLE_MODAL: rememberGlobalQuickAction('task'); to="/tasks" compatibility; global Zadanie opens the Tasks page modal, not a second toolbar modal. */}
+      <Button asChild variant="outline" className="btn" data-global-quick-action="task" data-global-task-unified-modal-trigger="true">
+        <Link to="/tasks?quick=task" aria-label="Otwórz zadania lub dodaj zadanie" onClick={() => rememberGlobalQuickAction('task')}>
+          <Plus className="mr-2 h-4 w-4" />
+          Zadanie
+        </Link>
       </Button>
 
       <Button asChild variant="outline" className="btn" data-global-quick-action="event">
@@ -183,68 +107,6 @@ export default function GlobalQuickActions() {
       </Button>
       </div>
 
-      {/* GLOBAL_TASK_ACTION_MODAL_NO_ROUTE_HOTFIX: top-bar Zadanie opens modal in place, not /tasks navigation. */}
-      <Dialog
-        open={isTaskDialogOpen}
-        onOpenChange={(open) => {
-          setIsTaskDialogOpen(open);
-          if (!open) resetGlobalTaskDialog();
-        }}
-      >
-        <DialogContent data-global-task-create-dialog="true" aria-describedby={undefined}>
-          <DialogHeader>
-            <DialogTitle>Nowe zadanie</DialogTitle>
-          </DialogHeader>
-
-          <form className="space-y-4" data-global-task-create-form="true" onSubmit={handleGlobalTaskSubmit}>
-            <div className="space-y-2">
-              <Label htmlFor="global-task-title">Tytuł</Label>
-              <Input
-                id="global-task-title"
-                value={globalTaskTitle}
-                onChange={(event) => setGlobalTaskTitle(event.target.value)}
-                placeholder="Co trzeba zrobić?"
-                autoFocus
-              />
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="global-task-due-at">Termin</Label>
-                <Input
-                  id="global-task-due-at"
-                  type="datetime-local"
-                  value={globalTaskDueAt}
-                  onChange={(event) => setGlobalTaskDueAt(event.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="global-task-priority">Priorytet</Label>
-                <select
-                  id="global-task-priority"
-                  className="w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                  value={globalTaskPriority}
-                  onChange={(event) => setGlobalTaskPriority(event.target.value)}
-                >
-                  <option value="low">Niski</option>
-                  <option value="medium">Średni</option>
-                  <option value="high">Wysoki</option>
-                </select>
-              </div>
-            </div>
-
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsTaskDialogOpen(false)}>
-                Anuluj
-              </Button>
-              <Button type="submit" className="btn primary" disabled={globalTaskSubmitting}>
-                {globalTaskSubmitting ? 'Zapisywanie...' : 'Zapisz zadanie'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

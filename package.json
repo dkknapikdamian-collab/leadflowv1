@@ -185,7 +185,8 @@
     "check:hotfix-global-task-action-modal-no-route": "node scripts/check-hotfix-global-task-action-modal-no-route.cjs",
     "test:hotfix-global-task-action-modal-no-route": "node --test tests/hotfix-global-task-action-modal-no-route.test.cjs",
     "verify:task-reminders": "node scripts/verify-task-reminders.mjs",
-    "verify:tasks-header-cleanup": "node scripts/verify-tasks-header-cleanup.mjs"
+    "verify:tasks-header-cleanup": "node scripts/verify-tasks-header-cleanup.mjs",
+    "verify:global-task-unified-modal": "node scripts/verify-global-task-unified-modal.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
