@@ -1,3 +1,4 @@
+/* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
 /* STAGE55_CLIENT_CASE_OPERATIONAL_PACK */
 /* STAGE54_CLIENT_CASES_COMPACT_FIT */
 /* STAGE53_CLIENT_OPERATIONAL_RECENT_MOVES */
@@ -109,11 +110,46 @@ function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null 
   return browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition || null;
 }
 
-function joinTranscript(previous: string, addition: string) {
+function normalizeTranscriptText(value: string) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[.,!?;:]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function dedupeTranscriptAppend(previous: string, addition: string) {
   const base = previous.trim();
   const next = addition.trim();
   if (!next) return base;
-  return base ? `${base} ${next}` : next;
+  if (!base) return next;
+
+  const baseNormalized = normalizeTranscriptText(base);
+  const nextNormalized = normalizeTranscriptText(next);
+  if (!nextNormalized) return base;
+  if (baseNormalized.endsWith(nextNormalized)) return base;
+  if (nextNormalized.startsWith(baseNormalized)) return next;
+
+  const baseWords = base.split(/\s+/).filter(Boolean);
+  const nextWords = next.split(/\s+/).filter(Boolean);
+  const normalizedBaseWords = baseWords.map(normalizeTranscriptText);
+  const normalizedNextWords = nextWords.map(normalizeTranscriptText);
+  const maxOverlap = Math.min(normalizedBaseWords.length, normalizedNextWords.length, 18);
+
+  for (let size = maxOverlap; size > 0; size -= 1) {
+    const left = normalizedBaseWords.slice(-size).join(' ');
+    const right = normalizedNextWords.slice(0, size).join(' ');
+    if (left && left === right) {
+      const rest = nextWords.slice(size).join(' ').trim();
+      return rest ? `${base} ${rest}` : base;
+    }
+  }
+
+  return `${base} ${next}`;
+}
+
+function joinTranscript(previous: string, addition: string) {
+  return dedupeTranscriptAppend(previous, addition);
 }
 
 function asText(value: unknown) {

@@ -205,7 +205,10 @@
     "test:stage54-client-cases-compact-fit": "node --test tests/stage54-client-cases-compact-fit.test.cjs",
     "check:stage55-client-case-operational-pack": "node scripts/check-stage55-client-case-operational-pack.cjs",
     "test:stage55-client-case-operational-pack": "node --test tests/stage55-client-case-operational-pack.test.cjs",
-    "verify:client-detail-operational-ui": "npm.cmd run check:stage53-client-operational-recent-moves && npm.cmd run check:stage54-client-cases-compact-fit && npm.cmd run check:stage55-client-case-operational-pack && npm.cmd run verify:ui-contrast"
+    "verify:client-detail-operational-ui": "npm.cmd run check:stage53-client-operational-recent-moves && npm.cmd run check:stage54-client-cases-compact-fit && npm.cmd run check:stage55-client-case-operational-pack && npm.cmd run verify:ui-contrast",
+    "check:stage56-case-quick-actions-dictation-dedupe": "node scripts/check-stage56-case-quick-actions-dictation-dedupe.cjs",
+    "test:stage56-case-quick-actions-dictation-dedupe": "node --test tests/stage56-case-quick-actions-dictation-dedupe.test.cjs",
+    "verify:case-operational-ui": "npm.cmd run check:stage56-case-quick-actions-dictation-dedupe && npm.cmd run verify:client-detail-operational-ui && npm.cmd run verify:ui-contrast"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
