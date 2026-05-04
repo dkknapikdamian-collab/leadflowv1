@@ -6,6 +6,7 @@ CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD
 CLIENT_DETAIL_MORE_MENU_SECONDARY
 CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
 STAGE35_CLIENT_DETAIL_VISIBLE_EDIT_ACTION
+CLIENT_DETAIL_STAGE46_ACQUISITION_HISTORY_ONLY
 */
 const STAGE35_CLIENT_DETAIL_EDIT_TOGGLE_GUARD = "contactEditing ? 'Zapisz' : 'Edytuj'";
 const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu Drugorzędne akcje menu pomocnicze';
@@ -1217,50 +1218,48 @@ export default function ClientDetail() {
               </div>
             ) : null}
 
-            {activeTab === 'cases' ? (
-              <div className="client-detail-tab-panel">
+                        {activeTab === 'cases' ? (
+              <div className="client-detail-tab-panel" data-client-relations-acquisition-only="true">
                 <section className="client-detail-section-card">
                   <div className="client-detail-section-head">
                     <div>
-                      <h2>Sprawy</h2>
-                      <p>Klient jest rekordem zbiorczym. Po wejściu w obsługę pracuj na konkretnej sprawie.</p>
+                      <h2>Historia pozyskania</h2>
+                      <p>Jedno miejsce pokazujące, skąd przyszedł klient. Bez dublowania przejść do tego samego leada.</p>
                     </div>
-                    <Button type="button" onClick={openNewCase} disabled={!hasAccess}>
-                      <Plus className="h-4 w-4" />
-                      Nowa sprawa
-                    </Button>
                   </div>
-                  <div className="client-detail-case-list">
-                    {clientCaseRows.length === 0 ? (
-                      <div className="client-detail-light-empty">Brak spraw do pokazania.</div>
-                    ) : (
-                      clientCaseRows.map((caseRow) => (
-                        <article key={caseRow.id} className="client-detail-case-row client-detail-case-row-wide">
-                          <div>
-                            <h3>{caseRow.title}</h3>
-                            <p>{caseRow.sourceLabel}</p>
+
+                  {leads.length ? (
+                    <div className="client-detail-relations-list client-detail-relations-list-acquisition-only">
+                      {leads.map((lead) => {
+                        const leadId = String(lead.id || lead.leadId || lead.name || lead.createdAt || 'lead');
+                        const leadName = String(lead.name || lead.company || 'Lead bez nazwy');
+                        const source = asText(lead.source) || asText(lead.sourceName) || asText(lead.channel) || asText(lead.origin) || asText(lead.acquisitionSource) || 'Nie podano';
+                        const status = leadStatusLabel(String(lead.status || 'new'));
+                        return (
+                          <div
+                            key={leadId}
+                            className="client-detail-relation-row client-detail-relation-row-acquisition-only"
+                            data-client-acquisition-history-row="true"
+                          >
+                            <div className="client-detail-relation-main">
+                              <h3>{leadName}</h3>
+                              <p><strong>Źródło:</strong> {source}</p>
+                              <p><strong>Status przy pozyskaniu:</strong> {status} · <strong>Utworzono:</strong> {formatDate(lead.createdAt || lead.updatedAt)}</p>
+                            </div>
                           </div>
-                          <span className={`client-detail-pill ${statusBadgeClass(caseRow.status)}`}>{caseRow.statusLabel}</span>
-                          <div>
-                            <strong>{caseRow.nextActionLabel}</strong>
-                            <p>{caseRow.nextActionMeta}</p>
-                          </div>
-                          <div>
-                            <strong>{caseRow.completeness}%</strong>
-                            <p>{caseRow.blocker || 'Brak blokady'}</p>
-                          </div>
-                          <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${caseRow.id}`)}>
-                            Otwórz sprawę
-                          </Button>
-                        </article>
-                      ))
-                    )}
-                  </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="client-detail-light-empty">
+                      Brak zapisanej historii pozyskania dla tego klienta.
+                    </div>
+                  )}
                 </section>
               </div>
             ) : null}
 
-            {activeTab === 'history' ? (
+{activeTab === 'history' ? (
               <div className="client-detail-tab-panel">
                 <section className="client-detail-section-card">
                   <div className="client-detail-section-head">

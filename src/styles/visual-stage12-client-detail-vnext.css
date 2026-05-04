@@ -1033,3 +1033,23 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* CLIENT_DETAIL_STAGE46_ACQUISITION_HISTORY_ONLY */
+.client-detail-relations-list-acquisition-only {
+  gap: 10px;
+}
+
+.client-detail-relation-row-acquisition-only {
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-items: start !important;
+}
+
+.client-detail-relation-row-acquisition-only .client-detail-relation-main p strong {
+  color: #111827;
+  font-weight: 850;
+}
+
+.client-detail-vnext-page [data-client-relations-acquisition-only="true"] .client-detail-section-head {
+  margin-bottom: 14px;
+}
