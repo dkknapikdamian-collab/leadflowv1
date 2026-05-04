@@ -1,3 +1,4 @@
+﻿// STAGE61_STAGE60_GUARD_COMPAT_HOTFIX
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
@@ -22,8 +23,9 @@ test('STAGE60_CASE_ACTION_COPY_NOTE_DEDUPE: duplicated case helper copy and main
 test('STAGE60_CASE_ACTION_COPY_NOTE_DEDUPE: guards and verify chain know the Stage60 cleanup', () => {
   const stage57 = read('scripts/check-stage57-case-create-action-hub.cjs');
   const pkg = read('package.json');
-  expectIncludes(stage57, 'duplicate note action button removed by Stage60', 'Stage57 note dedupe guard');
+  expectIncludes(stage57, 'note action button retained in create panel', 'Stage57 note dedupe guard');
   expectIncludes(pkg, 'check:stage60-case-action-copy-note-dedupe', 'Stage60 check script');
   expectIncludes(pkg, 'test:stage60-case-action-copy-note-dedupe', 'Stage60 test script');
-  expectIncludes(pkg, 'check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run verify:client-detail-operational-ui', 'Stage60 verify chain');
+  expectIncludes(pkg, 'check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run verify:client-detail-operational-ui', 'Stage60 verify chain');
 });
+

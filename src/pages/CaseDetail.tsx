@@ -1,3 +1,4 @@
+/* STAGE61_CASE_NOTE_ACTION_BUTTON_SWAP */
 /* STAGE60_CASE_ACTION_COPY_NOTE_DEDUPE */
 /* STAGE59_CASE_NOTE_FOLLOW_UP_PROMPT */
 /* STAGE58_CASE_RECENT_MOVES_PANEL */
@@ -1219,6 +1220,10 @@ export default function CaseDetail() {
             <Button type="button" variant="outline" size="sm" onClick={openCaseEventDialog} data-case-create-action="event" data-case-quick-action="true">
               <CalendarClock className="h-4 w-4" />
               Wydarzenie
+            </Button>
+            <Button type="button" variant="outline" data-case-create-action="note" onClick={openCaseNoteDialog}>
+              <StickyNote className="h-4 w-4" />
+              Dodaj notatkę
             </Button>
           </div>
           <small className="case-detail-right-note">Zadanie i wydarzenie zostaną automatycznie podpięte pod tę sprawę oraz klienta.</small>
