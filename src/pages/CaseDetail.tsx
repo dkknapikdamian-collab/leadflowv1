@@ -1,3 +1,4 @@
+﻿/* STAGE64_CASE_DETAIL_WORK_ITEM_DEDUPE */
 /* STAGE63_CASE_MAIN_NOTE_HEADER_BUTTON_REMOVE */
 /* STAGE62_CASE_IMPORTANT_ACTIONS_HEADER_NOTE_BUTTON_REMOVE */
 /* STAGE61_CASE_NOTE_ACTION_BUTTON_SWAP */
@@ -418,6 +419,104 @@ function belongsToCase(
   if (String(entry.clientId || '') && String(entry.clientId || '') === String(caseRecord?.clientId || '')) return true;
   return false;
 }
+function normalizeCaseRelationId(value: unknown) {
+  return String(value || '').trim();
+}
+
+function normalizeCaseDedupePart(value: unknown) {
+  return normalizeCaseRelationId(value).toLowerCase();
+}
+
+function getCaseRelationPriority(
+  entry: { caseId?: string | null; leadId?: string | null; clientId?: string | null },
+  caseId?: string,
+  caseRecord?: CaseRecord | null,
+) {
+  if (normalizeCaseRelationId(entry.caseId) && normalizeCaseRelationId(entry.caseId) === normalizeCaseRelationId(caseId)) return 0;
+  if (normalizeCaseRelationId(entry.leadId) && normalizeCaseRelationId(entry.leadId) === normalizeCaseRelationId(caseRecord?.leadId)) return 1;
+  if (normalizeCaseRelationId(entry.clientId) && normalizeCaseRelationId(entry.clientId) === normalizeCaseRelationId(caseRecord?.clientId)) return 2;
+  return 9;
+}
+
+function getCaseTaskDedupeKey(task: TaskRecord) {
+  const id = normalizeCaseRelationId(task.id);
+  if (id) return `task:id:${id}`;
+  return [
+    'task:fallback',
+    task.title,
+    task.type,
+    task.status,
+    getTaskMainDate(task) || task.reminderAt || task.date,
+    task.caseId,
+    task.leadId,
+    task.clientId,
+  ]
+    .map(normalizeCaseDedupePart)
+    .join('|');
+}
+
+function getCaseEventDedupeKey(event: EventRecord) {
+  const id = normalizeCaseRelationId(event.id);
+  if (id) return `event:id:${id}`;
+  return [
+    'event:fallback',
+    event.title,
+    event.type,
+    event.status,
+    getEventMainDate(event) || event.reminderAt || event.endAt,
+    event.caseId,
+    event.leadId,
+    event.clientId,
+  ]
+    .map(normalizeCaseDedupePart)
+    .join('|');
+}
+
+function pickBetterCaseLinkedRecord<T extends { caseId?: string | null; leadId?: string | null; clientId?: string | null }>(
+  current: T,
+  next: T,
+  caseId?: string,
+  caseRecord?: CaseRecord | null,
+) {
+  const currentPriority = getCaseRelationPriority(current, caseId, caseRecord);
+  const nextPriority = getCaseRelationPriority(next, caseId, caseRecord);
+  return nextPriority < currentPriority ? next : current;
+}
+
+function dedupeCaseTasks(tasks: TaskRecord[], caseId?: string, caseRecord?: CaseRecord | null) {
+  const byKey = new Map<string, TaskRecord>();
+  for (const task of tasks) {
+    const key = getCaseTaskDedupeKey(task);
+    const current = byKey.get(key);
+    byKey.set(key, current ? pickBetterCaseLinkedRecord(current, task, caseId, caseRecord) : task);
+  }
+  return Array.from(byKey.values());
+}
+
+function dedupeCaseEvents(events: EventRecord[], caseId?: string, caseRecord?: CaseRecord | null) {
+  const byKey = new Map<string, EventRecord>();
+  for (const event of events) {
+    const key = getCaseEventDedupeKey(event);
+    const current = byKey.get(key);
+    byKey.set(key, current ? pickBetterCaseLinkedRecord(current, event, caseId, caseRecord) : event);
+  }
+  return Array.from(byKey.values());
+}
+
+function getCaseWorkItemDedupeKey(item: WorkItem) {
+  const id = normalizeCaseRelationId(item.id);
+  if (id) return `${item.kind}:id:${id}`;
+  return [item.kind, item.title, item.status, item.dateLabel].map(normalizeCaseDedupePart).join('|');
+}
+
+function dedupeCaseWorkItems(workItems: WorkItem[]) {
+  const byKey = new Map<string, WorkItem>();
+  for (const item of workItems) {
+    const key = getCaseWorkItemDedupeKey(item);
+    if (!byKey.has(key)) byKey.set(key, item);
+  }
+  return Array.from(byKey.values()).sort((first, second) => first.sortTime - second.sortTime);
+}
 
 function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseItem[], activities: CaseActivity[]) {
   const taskItems: WorkItem[] = tasks.map((task) => ({
@@ -557,8 +656,20 @@ export default function CaseDetail() {
       setCaseData(normalizedCase);
       setItems(sortCaseItems((Array.isArray(itemRowsRaw) ? itemRowsRaw : []) as CaseItem[]));
       setActivities(sortActivities((Array.isArray(activityRowsRaw) ? activityRowsRaw : []) as CaseActivity[]));
-      setTasks(((Array.isArray(taskRowsRaw) ? taskRowsRaw : []) as TaskRecord[]).filter((task) => belongsToCase(task, caseId, normalizedCase)));
-      setEvents(((Array.isArray(eventRowsRaw) ? eventRowsRaw : []) as EventRecord[]).filter((event) => belongsToCase(event, caseId, normalizedCase)));
+      setTasks(
+        dedupeCaseTasks(
+          ((Array.isArray(taskRowsRaw) ? taskRowsRaw : []) as TaskRecord[]).filter((task) => belongsToCase(task, caseId, normalizedCase)),
+          caseId,
+          normalizedCase,
+        ),
+      );
+      setEvents(
+        dedupeCaseEvents(
+          ((Array.isArray(eventRowsRaw) ? eventRowsRaw : []) as EventRecord[]).filter((event) => belongsToCase(event, caseId, normalizedCase)),
+          caseId,
+          normalizedCase,
+        ),
+      );
     } catch (error: any) {
       setCaseData(null);
       setItems([]);
@@ -626,7 +737,7 @@ export default function CaseDetail() {
       }),
     [effectiveStatus, events, items, tasks],
   );
-  const workItems = useMemo(() => buildWorkItems(openTasks, plannedEvents, items, activities), [activities, items, openTasks, plannedEvents]);
+  const workItems = useMemo(() => dedupeCaseWorkItems(buildWorkItems(openTasks, plannedEvents, items, activities)), [activities, items, openTasks, plannedEvents]);
   const recentCaseMoves = useMemo(() => activities.slice(0, 5), [activities]);
   const nextAction = useMemo(() => workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null, [workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
@@ -1570,4 +1681,5 @@ function CaseNoteDialog({
     </Dialog>
   );
 }
+
 
