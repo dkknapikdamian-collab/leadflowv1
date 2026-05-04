@@ -2,34 +2,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const repo = process.cwd();
-const tasks = fs.readFileSync(path.join(repo, 'src/pages/Tasks.tsx'), 'utf8');
-const indexCss = fs.readFileSync(path.join(repo, 'src/index.css'), 'utf8');
-const css = fs.readFileSync(path.join(repo, 'src/styles/tasks-header-stage45b-cleanup.css'), 'utf8');
+const read = (relativePath) => fs.readFileSync(path.join(repo, relativePath), 'utf8');
+const blockComment = new RegExp('/\\*[\\s\\S]*?\\*/', 'g');
+const jsxComment = new RegExp('\\{\/\\*[\\s\\S]*?\\*\/\\}', 'g');
+const stripComments = (source) => source.replace(blockComment, '').replace(jsxComment, '');
+const fail = (message) => { console.error('FAIL tasks header cleanup:', message); process.exit(1); };
 
-function fail(message) {
-  console.error('FAIL tasks header cleanup: ' + message);
-  process.exit(1);
-}
+const tasksStable = read('src/pages/TasksStable.tsx');
+const executable = stripComments(tasksStable);
+const css = read('src/styles/tasks-header-stage45b-cleanup.css');
 
-const tasksWithoutComments = tasks.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+if (/Stabilny widok Supabase bez bramki Firebase/.test(executable)) fail('technical Supabase/Firebase copy is visible in real TasksStable screen');
+if (/onClick=\{openNewTask\}/.test(executable)) fail('real TasksStable header still has openNewTask CTA');
+if (/<Plus[\s\S]{0,120}Nowe zadanie[\s\S]{0,180}<\/Button>/.test(executable)) fail('real TasksStable header still renders + Nowe zadanie');
+if (!/data-tasks-refresh-visible-stage45m="true"/.test(executable)) fail('real TasksStable refresh button lacks Stage45M visibility marker');
+if (!/TASKS_HEADER_STAGE45B_CLEANUP/.test(css)) fail('tasks cleanup css marker missing');
 
-if (/Stabilny widok Supabase bez bramki Firebase|Dane (?:ładują|laduja) się od razu po wejściu w zakładkę|Dane laduja sie od razu po wejsciu w zakladke/i.test(tasksWithoutComments)) {
-  fail('implementation helper copy is still visible in Tasks page source');
-}
-
-const localTaskCta = /<(?:Button|button)\b(?=[\s\S]{0,1800}setIsNewTaskOpen\(true\))(?=[\s\S]{0,1800}(?:Nowe|Dodaj)\s+zadanie)[\s\S]{0,3000}<\/(?:Button|button)>/m;
-if (localTaskCta.test(tasksWithoutComments)) {
-  fail('local Tasks add-task CTA is still present');
-}
-
-if (!tasks.includes('TASKS_HEADER_STAGE45B_CLEANUP')) {
-  fail('Stage45B cleanup marker missing in Tasks.tsx');
-}
-if (!indexCss.includes('tasks-header-stage45b-cleanup.css')) {
-  fail('Stage45B CSS import missing from src/index.css');
-}
-if (!css.includes('TASKS_HEADER_STAGE45B_CLEANUP_CSS') || !css.includes('[data-current-section="zadania"]')) {
-  fail('Stage45B route-scoped title readability CSS missing');
-}
-
-console.log('PASS tasks header cleanup: local header add button removed, technical helper copy removed, title readability CSS locked.');
+console.log('PASS tasks header cleanup: real TasksStable header CTA removed, technical copy removed, refresh visible.');

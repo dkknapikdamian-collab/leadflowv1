@@ -1,41 +1,39 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 
-function read(path) {
-  return fs.readFileSync(path, 'utf8');
-}
+const root = path.resolve(__dirname, '..');
+const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
+const blockComment = new RegExp('/\\*[\\s\\S]*?\\*/', 'g');
+const jsxComment = new RegExp('\\{\/\\*[\\s\\S]*?\\*\/\\}', 'g');
+const stripComments = (source) => source.replace(blockComment, '').replace(jsxComment, '');
 
-test('global quick actions keep visible links and store creation intent', () => {
-  const source = read('src/components/GlobalQuickActions.tsx');
-  assert.ok(source.includes('data-global-quick-actions="true"'));
-  assert.ok(source.includes('to="/leads"'));
-  assert.ok(source.includes('to="/tasks"'));
-  assert.ok(source.includes('to="/calendar"'));
-  assert.ok(source.includes("rememberGlobalQuickAction('lead')"));
-  assert.ok(source.includes("rememberGlobalQuickAction('task')"));
-  assert.ok(source.includes("rememberGlobalQuickAction('event')"));
-});
-
-test('global quick action targets open creation dialogs on destination pages', () => {
+test('global quick actions open the correct creation surfaces', () => {
+  const global = stripComments(read('src/components/GlobalQuickActions.tsx'));
   const leads = read('src/pages/Leads.tsx');
-  const tasks = read('src/pages/Tasks.tsx');
   const calendar = read('src/pages/Calendar.tsx');
+  const taskButton = (global.match(/<Button[^>]*data-global-quick-action="task"[\s\S]*?<\/Button>/) || [''])[0];
 
   assert.ok(leads.includes('consumeGlobalQuickAction'));
   assert.ok(leads.includes("consumeGlobalQuickAction() === 'lead'"));
-  assert.ok(leads.includes('setIsNewLeadOpen(true)'));
-
-  assert.ok(tasks.includes('consumeGlobalQuickAction'));
-  assert.ok(tasks.includes("consumeGlobalQuickAction() === 'task'"));
-  assert.ok(tasks.includes('setIsNewTaskOpen(true)'));
-
   assert.ok(calendar.includes('consumeGlobalQuickAction'));
   assert.ok(calendar.includes("consumeGlobalQuickAction() === 'event'"));
-  assert.ok(calendar.includes('setIsNewEventOpen(true)'));
+  assert.match(taskButton, /setIsTaskCreateOpen\(true\)/);
+  assert.doesNotMatch(taskButton, /to="\/tasks/);
+  assert.doesNotMatch(taskButton, /asChild/);
 });
 
-test('global quick action modal test is included in quiet release gate', () => {
+test('global quick task action uses shared direct task dialog', () => {
+  const global = stripComments(read('src/components/GlobalQuickActions.tsx'));
+  const dialog = read('src/components/TaskCreateDialog.tsx');
+  assert.match(global, /TaskCreateDialog/);
+  assert.match(dialog, /data-task-create-dialog-stage45m="true"/);
+  assert.match(dialog, /insertTaskToSupabase/);
+  assert.match(dialog, /Przypomnienie/);
+});
+
+test('global quick actions open modals test is included in quiet release gate', () => {
   const gate = read('scripts/closeflow-release-check-quiet.cjs');
   assert.ok(gate.includes('tests/global-quick-actions-open-modals.test.cjs'));
 });

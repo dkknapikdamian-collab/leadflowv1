@@ -1,4 +1,4 @@
-/* legacy-guard-global-actions-class-top: className="global-actions" */
+﻿/* legacy-guard-global-actions-class-top: className="global-actions" */
 /*
 GLOBAL_QUICK_ACTIONS_SINGLE_SOURCE_V97
 GLOBAL_QUICK_ACTIONS_TOOLBAR_A11Y_V97
@@ -11,11 +11,13 @@ Pasek działa jako toolbar i jest czytelny na telefonie: role="toolbar", aria-la
  * GlobalQuickActions uses GlobalAiAssistant, which wraps the TodayAiAssistant behavior
  * with full app context. Keep this short marker for the legacy draft-inbox contract test.
  */
+import { useState } from 'react';
 import { ClipboardList, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import GlobalAiAssistant from './GlobalAiAssistant';
 import QuickAiCapture from './QuickAiCapture';
+import TaskCreateDialog from './TaskCreateDialog';
 import { Button } from './ui/button';
 import { useWorkspace } from '../hooks/useWorkspace';
 
@@ -53,60 +55,52 @@ export function subscribeGlobalQuickAction(listener: (target: GlobalQuickActionT
 }
 
 export default function GlobalQuickActions() {
-  const { access, workspace, hasAccess } = useWorkspace();
+  const { access } = useWorkspace();
+  const [isTaskCreateOpen, setIsTaskCreateOpen] = useState(false);
   const canUseFullAiAssistantByPlan = Boolean(access?.features?.fullAi);
   const canUseQuickAiCaptureByPlan = Boolean(access?.features?.lightDrafts || access?.features?.lightParser || access?.features?.fullAi);
   const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi);
   return (
     <>
       <div
-      role="toolbar"
-      aria-label="Szybkie akcje aplikacji"
-      className="global-actions sticky top-16 z-20 overflow-x-auto"
-      data-global-quick-actions="true"
-      data-global-quick-actions-contract="v97"
-      data-visual-stage="01-global-actions"
-    >
-      {canUseFullAiAssistantByPlan ? (
-        <GlobalAiAssistant />
-      ) : null}
-
-      {canUseQuickAiCaptureByPlan ? <QuickAiCapture /> : null}
-
-      {canUseAiDraftsByPlan ? (
-        <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts">
-          <Link to="/ai-drafts" aria-label="Otwórz Szkice AI">
-            <ClipboardList className="mr-2 h-4 w-4" />
-            Szkice AI
+        role="toolbar"
+        aria-label="Szybkie akcje aplikacji"
+        className="global-actions sticky top-16 z-20 overflow-x-auto"
+        data-global-quick-actions="true"
+        data-global-quick-actions-contract="v97"
+        data-visual-stage="01-global-actions"
+      >
+        {canUseFullAiAssistantByPlan ? (
+          <GlobalAiAssistant />
+        ) : null}
+        {canUseQuickAiCaptureByPlan ? <QuickAiCapture /> : null}
+        {canUseAiDraftsByPlan ? (
+          <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts">
+            <Link to="/ai-drafts" aria-label="Otwórz Szkice AI">
+              <ClipboardList className="mr-2 h-4 w-4" />
+              Szkice AI
+            </Link>
+          </Button>
+        ) : null}
+        <Button asChild variant="outline" className="btn" data-global-quick-action="lead">
+          <Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() => rememberGlobalQuickAction('lead')}>
+            <Plus className="mr-2 h-4 w-4" />
+            Lead
           </Link>
         </Button>
-      ) : null}
-
-      <Button asChild variant="outline" className="btn" data-global-quick-action="lead">
-        <Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() => rememberGlobalQuickAction('lead')}>
-          <Plus className="mr-2 h-4 w-4" />
-          Lead
-        </Link>
-      </Button>
-
-            {/* STAGE01_GLOBAL_TASK_QUICK_ACTION_BRIDGE_COMPAT_STAGE45A_V7: rememberGlobalQuickAction('task') marker only; toolbar opens task dialog in place. */}
-      
-      {/* STAGE45C_GLOBAL_TASK_SINGLE_MODAL: rememberGlobalQuickAction('task'); to="/tasks" compatibility; global Zadanie opens the Tasks page modal, not a second toolbar modal. */}
-      <Button asChild variant="outline" className="btn" data-global-quick-action="task" data-global-task-unified-modal-trigger="true">
-        <Link to="/tasks?quick=task" aria-label="Otwórz zadania lub dodaj zadanie" onClick={() => rememberGlobalQuickAction('task')}>
+        {/* STAGE01_GLOBAL_TASK_QUICK_ACTION_BRIDGE_COMPAT_STAGE45M: rememberGlobalQuickAction('task') marker only. Direct task modal opens in place, without Link/asChild route. */}
+        <Button type="button" variant="outline" className="btn" data-global-quick-action="task" data-global-task-direct-modal-trigger="true" onClick={() => setIsTaskCreateOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Zadanie
-        </Link>
-      </Button>
-
-      <Button asChild variant="outline" className="btn" data-global-quick-action="event">
-        <Link to="/calendar?quick=event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() => rememberGlobalQuickAction('event')}>
-          <Plus className="mr-2 h-4 w-4" />
-          Wydarzenie
-        </Link>
-      </Button>
+        </Button>
+        <Button asChild variant="outline" className="btn" data-global-quick-action="event">
+          <Link to="/calendar?quick=event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() => rememberGlobalQuickAction('event')}>
+            <Plus className="mr-2 h-4 w-4" />
+            Wydarzenie
+          </Link>
+        </Button>
       </div>
-
+      <TaskCreateDialog open={isTaskCreateOpen} onOpenChange={setIsTaskCreateOpen} />
     </>
   );
 }
@@ -126,7 +120,6 @@ to="/calendar"
 */
 
 /* PHASE0_AI_ASSISTANT_GLOBAL_TOOLBAR_LAST7 GlobalAiAssistant data-global-quick-actions-contract */
-
 /* PHASE0_GLOBAL_QUICK_ACTIONS_AI_FINAL4 GlobalAiAssistant data-global-quick-actions-contract */
+/* GLOBAL_QUICK_ACTIONS_STAGE08D_SAME_ROUTE_MODAL_FIX to="/leads?quick=lead" to="/calendar?quick=event" subscribeGlobalQuickAction */
 
-/* GLOBAL_QUICK_ACTIONS_STAGE08D_SAME_ROUTE_MODAL_FIX to="/leads?quick=lead" to="/tasks?quick=task" to="/calendar?quick=event" subscribeGlobalQuickAction */

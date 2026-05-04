@@ -15,3 +15,25 @@
 .main[data-current-section="zadania"] [data-shell-content="true"] h2.text-slate-200 {
   color: #0f172a !important;
 }
+
+
+/* STAGE45L_TASKS_REFRESH_VISIBLE */
+[data-tasks-refresh-visible-stage45l="true"] {
+  border-color: rgb(203 213 225) !important;
+  background: #ffffff !important;
+  color: rgb(15 23 42) !important;
+}
+[data-tasks-refresh-visible-stage45l="true"] svg {
+  color: rgb(15 23 42) !important;
+}
+
+
+/* STAGE45M_TASKS_REFRESH_VISIBLE */
+[data-tasks-refresh-visible-stage45m="true"] {
+  border-color: rgb(203 213 225) !important;
+  background: #ffffff !important;
+  color: rgb(15 23 42) !important;
+}
+[data-tasks-refresh-visible-stage45m="true"] svg {
+  color: rgb(15 23 42) !important;
+}

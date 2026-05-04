@@ -2,35 +2,24 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const repo = process.cwd();
-function read(relativePath) {
-  return fs.readFileSync(path.join(repo, relativePath), 'utf8').replace(/^\uFEFF/, '');
-}
-function stripComments(source) {
-  return source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
-}
-function fail(message) {
-  console.error('FAIL global task unified modal: ' + message);
-  process.exit(1);
-}
+const read = (relativePath) => fs.readFileSync(path.join(repo, relativePath), 'utf8');
+const blockComment = new RegExp('/\\*[\\s\\S]*?\\*/', 'g');
+const jsxComment = new RegExp('\\{\/\\*[\\s\\S]*?\\*\/\\}', 'g');
+const stripComments = (source) => source.replace(blockComment, '').replace(jsxComment, '');
+const fail = (message) => { console.error('FAIL global task direct modal:', message); process.exit(1); };
 
 const globalRaw = read('src/components/GlobalQuickActions.tsx');
-const globalSource = stripComments(globalRaw);
-const tasksRaw = read('src/pages/Tasks.tsx');
-const tasksSource = stripComments(tasksRaw);
-const pkg = JSON.parse(read('package.json'));
+const global = stripComments(globalRaw);
+const taskDialog = read('src/components/TaskCreateDialog.tsx');
+const taskButton = global.match(/<Button[^>]*data-global-quick-action="task"[\s\S]*?<\/Button>/)?.[0] || '';
 
-if (!globalRaw.includes('STAGE45C_GLOBAL_TASK_SINGLE_MODAL')) fail('missing Stage45C marker');
-if (!/to="\/tasks\?quick=task"/.test(globalSource)) fail('global Zadanie does not route to /tasks?quick=task');
-if (!/rememberGlobalQuickAction\(['"]task['"]\)/.test(globalSource)) fail('global Zadanie does not store task intent');
-if (/data-global-task-create-dialog="true"|data-global-task-create-form="true"|openGlobalTaskDialog|insertTaskToSupabase/.test(globalSource)) {
-  fail('separate toolbar task modal or direct write path is still present');
-}
-if (!/consumeGlobalQuickAction/.test(tasksSource) || !/consumeGlobalQuickAction\(\) === ['"]task['"]/.test(tasksSource) || !/setIsNewTaskOpen\(true\)/.test(tasksSource)) {
-  fail('Tasks page is not the owner of the global task create modal');
-}
-if (!/TaskReminderEditor/.test(tasksSource)) fail('Tasks create/edit flow does not keep reminder editor');
-if (pkg.scripts?.['verify:global-task-unified-modal'] !== 'node scripts/verify-global-task-unified-modal.mjs') {
-  fail('package script verify:global-task-unified-modal missing');
-}
+if (!taskButton) fail('global task button missing');
+if (!/type="button"/.test(taskButton)) fail('global task button must be a button, not a route link');
+if (!/setIsTaskCreateOpen\(true\)/.test(taskButton)) fail('global task button does not open the modal directly');
+if (/asChild/.test(taskButton) || /<Link\b/.test(taskButton) || /to="\/tasks/.test(taskButton)) fail('global task button still routes to Tasks instead of opening direct modal');
+if (!/<TaskCreateDialog open=\{isTaskCreateOpen\}/.test(global)) fail('shared TaskCreateDialog not mounted from global toolbar');
+if (!/data-task-create-dialog-stage45m="true"/.test(taskDialog)) fail('TaskCreateDialog Stage45M marker missing');
+if (!/insertTaskToSupabase/.test(taskDialog)) fail('TaskCreateDialog does not save tasks');
+if (!/Przypomnienie/.test(taskDialog)) fail('TaskCreateDialog does not expose reminder field');
 
-console.log('PASS global task unified modal: global Zadanie opens the Tasks page modal and the separate toolbar task modal is removed.');
+console.log('PASS global task direct modal: global Zadanie opens shared task dialog without route navigation.');

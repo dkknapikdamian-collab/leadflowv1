@@ -16,9 +16,8 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '../components/ui/dialog';
-import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, Plus, RefreshCcw, Search, Trash2 } from 'lucide-react';
+  DialogTitle} from '../components/ui/dialog';
+import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, RefreshCcw, Search, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   deleteTaskFromSupabase,
@@ -338,15 +337,11 @@ export default function TasksStable() {
             <div>
               <Badge className="mb-3 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-50">Zadania</Badge>
               <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Lista zadań</h1>
-              <p className="mt-2 max-w-2xl text-sm text-slate-600">Stabilny widok Supabase bez bramki Firebase. Dane ładują się od razu po wejściu w zakładkę.</p>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button type="button" variant="outline" onClick={() => void refreshData()} disabled={loading || workspaceLoading}>
+              <Button type="button" variant="outline" className="border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950" onClick={() => void refreshData()} disabled={loading || workspaceLoading} data-tasks-refresh-visible-stage45m="true">
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
                 Odśwież
-              </Button>
-              <Button type="button" onClick={openNewTask} disabled={!hasAccess || workspaceLoading}>
-                <Plus className="mr-2 h-4 w-4" /> Nowe zadanie
               </Button>
             </div>
           </div>
