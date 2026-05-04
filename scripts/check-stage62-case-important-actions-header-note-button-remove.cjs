@@ -36,7 +36,7 @@ pass('src/pages/CaseDetail.tsx: exactly one create-panel note button retained');
 contains('src/styles/visual-stage13-case-detail-vnext.css', marker, 'Stage62 CSS marker');
 contains('package.json', 'check:stage62-case-important-actions-header-note-button-remove', 'Stage62 check script');
 contains('package.json', 'test:stage62-case-important-actions-header-note-button-remove', 'Stage62 test script');
-contains('package.json', 'check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run verify:client-detail-operational-ui', 'Stage62 included after Stage61 in verify chain');
+contains('package.json', 'check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run check:stage63-case-main-note-header-button-remove && npm.cmd run verify:client-detail-operational-ui', 'Stage62 included after Stage61 in verify chain');
 contains('tests/stage62-case-important-actions-header-note-button-remove.test.cjs', marker, 'Stage62 test marker');
 contains('docs/release/STAGE62_CASE_IMPORTANT_ACTIONS_HEADER_NOTE_BUTTON_REMOVE_2026-05-04.md', marker, 'Stage62 release marker');
 console.log('PASS ' + marker);

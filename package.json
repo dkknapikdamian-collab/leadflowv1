@@ -208,7 +208,7 @@
     "verify:client-detail-operational-ui": "npm.cmd run check:stage53-client-operational-recent-moves && npm.cmd run check:stage54-client-cases-compact-fit && npm.cmd run check:stage55-client-case-operational-pack && npm.cmd run verify:ui-contrast",
     "check:stage56-case-quick-actions-dictation-dedupe": "node scripts/check-stage56-case-quick-actions-dictation-dedupe.cjs",
     "test:stage56-case-quick-actions-dictation-dedupe": "node --test tests/stage56-case-quick-actions-dictation-dedupe.test.cjs",
-    "verify:case-operational-ui": "npm.cmd run check:stage56-case-quick-actions-dictation-dedupe && npm.cmd run check:stage57-case-create-action-hub && npm.cmd run check:stage58-case-recent-moves-panel && npm.cmd run check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run verify:client-detail-operational-ui && npm.cmd run verify:ui-contrast",
+    "verify:case-operational-ui": "npm.cmd run check:stage56-case-quick-actions-dictation-dedupe && npm.cmd run check:stage57-case-create-action-hub && npm.cmd run check:stage58-case-recent-moves-panel && npm.cmd run check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run check:stage63-case-main-note-header-button-remove && npm.cmd run verify:client-detail-operational-ui && npm.cmd run verify:ui-contrast",
     "check:stage57-case-create-action-hub": "node scripts/check-stage57-case-create-action-hub.cjs",
     "test:stage57-case-create-action-hub": "node --test tests/stage57-case-create-action-hub.test.cjs",
     "verify:case-create-flow": "npm.cmd run check:stage56-case-quick-actions-dictation-dedupe && npm.cmd run check:stage57-case-create-action-hub",
@@ -221,7 +221,9 @@
     "check:stage61-case-note-action-button-swap": "node scripts/check-stage61-case-note-action-button-swap.cjs",
     "test:stage61-case-note-action-button-swap": "node --test tests/stage61-case-note-action-button-swap.test.cjs",
     "check:stage62-case-important-actions-header-note-button-remove": "node scripts/check-stage62-case-important-actions-header-note-button-remove.cjs",
-    "test:stage62-case-important-actions-header-note-button-remove": "node --test tests/stage62-case-important-actions-header-note-button-remove.test.cjs"
+    "test:stage62-case-important-actions-header-note-button-remove": "node --test tests/stage62-case-important-actions-header-note-button-remove.test.cjs",
+    "check:stage63-case-main-note-header-button-remove": "node scripts/check-stage63-case-main-note-header-button-remove.cjs",
+    "test:stage63-case-main-note-header-button-remove": "node --test tests/stage63-case-main-note-header-button-remove.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

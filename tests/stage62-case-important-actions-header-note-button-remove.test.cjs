@@ -32,5 +32,5 @@ test('STAGE62_CASE_IMPORTANT_ACTIONS_HEADER_NOTE_BUTTON_REMOVE: removes only the
 test('STAGE62_CASE_IMPORTANT_ACTIONS_HEADER_NOTE_BUTTON_REMOVE: verify chain includes Stage62', () => {
   const pkg = read('package.json');
   assert.ok(pkg.includes('check:stage62-case-important-actions-header-note-button-remove'), 'missing Stage62 check script');
-  assert.ok(pkg.includes('check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run verify:client-detail-operational-ui'), 'verify chain should run Stage62 after Stage61');
+  assert.ok(pkg.includes('check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run check:stage63-case-main-note-header-button-remove && npm.cmd run verify:client-detail-operational-ui'), 'verify chain should run Stage62 after Stage61');
 });

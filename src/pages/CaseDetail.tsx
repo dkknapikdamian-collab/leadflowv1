@@ -1,3 +1,4 @@
+/* STAGE63_CASE_MAIN_NOTE_HEADER_BUTTON_REMOVE */
 /* STAGE62_CASE_IMPORTANT_ACTIONS_HEADER_NOTE_BUTTON_REMOVE */
 /* STAGE61_CASE_NOTE_ACTION_BUTTON_SWAP */
 /* STAGE60_CASE_ACTION_COPY_NOTE_DEDUPE */
@@ -1100,10 +1101,6 @@ export default function CaseDetail() {
                     <h2>Najważniejsze działania</h2>
                     <p></p>
                   </div>
-                  <Button type="button" variant="outline" onClick={() => setIsAddNoteOpen(true)}>
-                    <StickyNote className="h-4 w-4" />
-                    Dodaj notatkę
-                  </Button>
                 </div>
                 <div className="case-detail-work-list">
                   {workItems.length === 0 ? (
@@ -1237,7 +1234,6 @@ export default function CaseDetail() {
               </div>
               <div className="case-detail-right-actions">
                 <button type="button" className="cf-btn-tone-gap" onClick={() => setIsAddItemOpen(true)}>Dodaj brak</button>
-                <button type="button" className="cf-btn-tone-note" onClick={() => setIsAddNoteOpen(true)}>Dodaj notatkę</button>
               </div>
             </section>
               <section className="case-detail-card case-detail-recent-moves-panel" data-case-recent-moves-panel="true">
