@@ -1,4 +1,5 @@
-import { useState, useEffect, FormEvent, useMemo, useRef } from 'react';
+import {
+  subscribeCloseflowDataMutations, useState, useEffect, FormEvent, useMemo, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -545,6 +546,29 @@ export default function Calendar() {
     setClients(clientRows as any[]);
     return { ...bundle, cases: caseRows as any[], clients: clientRows as any[] };
   }
+
+  useEffect(() => {
+    // FAZA4_ETAP44A_CALENDAR_LIVE_REFRESH: refetch mounted Calendar after task/event/lead mutations.
+    if (workspaceLoading || !workspace?.id) return undefined;
+
+    let refreshTimer: ReturnType<typeof window.setTimeout> | null = null;
+
+    const unsubscribe = subscribeCloseflowDataMutations((detail) => {
+      if (!['task', 'event', 'lead', 'case', 'client'].includes(detail.entity)) return;
+
+      if (refreshTimer) window.clearTimeout(refreshTimer);
+      refreshTimer = window.setTimeout(() => {
+        void refreshSupabaseBundle().catch((error: any) => {
+          console.warn('CALENDAR_LIVE_REFRESH_FAILED', error);
+        });
+      }, 120);
+    });
+
+    return () => {
+      if (refreshTimer) window.clearTimeout(refreshTimer);
+      unsubscribe();
+    };
+  }, [workspace?.id, workspaceLoading]);
 
   useEffect(() => {
     if (workspaceLoading || !workspace?.id) {

@@ -31,6 +31,53 @@ type MeResponse = { workspace: { id: string; ownerId?: string | null; planId?: s
 type ApiCacheEntry = { expiresAt: number; data?: unknown; promise?: Promise<unknown> };
 
 const API_GET_CACHE_TTL_MS = 10_000;
+export const CLOSEFLOW_DATA_MUTATED_EVENT = 'closeflow:data-mutated';
+
+export type CloseflowDataMutationDetail = {
+  path: string;
+  method: string;
+  entity: string;
+  occurredAt: string;
+};
+
+function resolveCloseflowMutationEntity(path: string) {
+  const normalized = String(path || '').toLowerCase();
+  if (normalized.includes('/api/tasks') || normalized.includes('kind=tasks')) return 'task';
+  if (normalized.includes('/api/events') || normalized.includes('kind=events')) return 'event';
+  if (normalized.includes('/api/leads')) return 'lead';
+  if (normalized.includes('/api/cases')) return 'case';
+  if (normalized.includes('/api/clients')) return 'client';
+  if (normalized.includes('/api/system?kind=ai-drafts')) return 'aiDraft';
+  if (normalized.includes('/api/activities')) return 'activity';
+  if (normalized.includes('/api/payments')) return 'payment';
+  return 'unknown';
+}
+
+function emitCloseflowDataMutation(path: string, method: string) {
+  if (typeof window === 'undefined') return;
+  if (String(method || '').toUpperCase() === 'GET') return;
+
+  const detail: CloseflowDataMutationDetail = {
+    path,
+    method: String(method || '').toUpperCase(),
+    entity: resolveCloseflowMutationEntity(path),
+    occurredAt: new Date().toISOString(),
+  };
+
+  window.dispatchEvent(new CustomEvent(CLOSEFLOW_DATA_MUTATED_EVENT, { detail }));
+}
+
+export function subscribeCloseflowDataMutations(handler: (detail: CloseflowDataMutationDetail) => void) {
+  if (typeof window === 'undefined') return () => {};
+
+  const listener = (event: Event) => {
+    handler((event as CustomEvent<CloseflowDataMutationDetail>).detail);
+  };
+
+  window.addEventListener(CLOSEFLOW_DATA_MUTATED_EVENT, listener);
+  return () => window.removeEventListener(CLOSEFLOW_DATA_MUTATED_EVENT, listener);
+}
+
 const apiGetCache = new Map<string, ApiCacheEntry>();
 const WORKSPACE_CONTEXT_STORAGE_KEY = 'closeflow:workspace-id';
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -128,7 +175,7 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   if (useCache) apiGetCache.set(cacheKey, { expiresAt: Date.now() + API_GET_CACHE_TTL_MS, promise: requestPromise });
   try {
     const result = await requestPromise;
-    if (useCache) apiGetCache.set(cacheKey, { expiresAt: Date.now() + API_GET_CACHE_TTL_MS, data: result }); else clearApiGetCache();
+    if (useCache) apiGetCache.set(cacheKey, { expiresAt: Date.now() + API_GET_CACHE_TTL_MS, data: result }); else { clearApiGetCache(); emitCloseflowDataMutation(path, method); }
     return result;
   } catch (error) {
     if (useCache) apiGetCache.delete(cacheKey);

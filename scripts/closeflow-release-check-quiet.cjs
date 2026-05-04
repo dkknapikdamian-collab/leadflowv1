@@ -96,6 +96,7 @@ const requiredTests = [
   'tests/faza4-etap41-data-contract-map.test.cjs',
   'tests/faza4-etap42-task-event-contract-normalization.test.cjs',
   'tests/faza4-etap43-critical-crud-smoke.test.cjs',
+  'tests/faza4-etap44a-live-refresh-mutation-bus.test.cjs',
   'tests/faza3-etap32f-backend-entity-limits-smoke.test.cjs',
   'tests/ui-developer-copy-paid-readiness.test.cjs',
   'tests/case-detail-write-access-gate-stage02b.test.cjs',

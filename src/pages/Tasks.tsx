@@ -16,7 +16,8 @@ Zrobione
 Podaj tytuł zadania.
 Nie udało się zapisać zadania. Spróbuj ponownie.
 */
-import { useEffect, useMemo, useState, type FormEvent, useRef } from 'react';
+import {
+  subscribeCloseflowDataMutations, useEffect, useMemo, useState, type FormEvent, useRef } from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -376,6 +377,29 @@ export default function Tasks() {
       clientRows: clientRows as any[],
     };
   }
+
+  useEffect(() => {
+    // FAZA4_ETAP44A_TASKS_LIVE_REFRESH: refetch mounted Tasks after mutations from other UI surfaces.
+    if (workspaceLoading || !workspace?.id) return undefined;
+
+    let refreshTimer: ReturnType<typeof window.setTimeout> | null = null;
+
+    const unsubscribe = subscribeCloseflowDataMutations((detail) => {
+      if (!['task', 'event', 'lead', 'case', 'client', 'aiDraft'].includes(detail.entity)) return;
+
+      if (refreshTimer) window.clearTimeout(refreshTimer);
+      refreshTimer = window.setTimeout(() => {
+        void refreshSupabaseData().catch((error: any) => {
+          console.warn('TASKS_LIVE_REFRESH_FAILED', error);
+        });
+      }, 120);
+    });
+
+    return () => {
+      if (refreshTimer) window.clearTimeout(refreshTimer);
+      unsubscribe();
+    };
+  }, [workspace?.id, workspaceLoading]);
 
   useEffect(() => {
     if (workspaceLoading || !workspace?.id) {
