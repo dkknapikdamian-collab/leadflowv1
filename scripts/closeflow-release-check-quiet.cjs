@@ -100,6 +100,7 @@ const requiredTests = [
   'tests/faza4-etap44b-today-live-refresh-listener.test.cjs',
   'tests/faza4-etap44b-today-live-refresh-import-hotfix.test.cjs',
   'tests/faza4-etap44c-mutation-bus-coverage-smoke.test.cjs',
+  'tests/faza5-etap51-ai-read-vs-draft-intent.test.cjs',
   'tests/faza3-etap32f-backend-entity-limits-smoke.test.cjs',
   'tests/ui-developer-copy-paid-readiness.test.cjs',
   'tests/case-detail-write-access-gate-stage02b.test.cjs',
