@@ -1,3 +1,4 @@
+/* STAGE53_CLIENT_OPERATIONAL_RECENT_MOVES */
 /* STAGE51_CLIENTS_CASE_CONTRAST_HOTFIX */
 /*
 CLIENT_DETAIL_VISUAL_REBUILD_STAGE12
@@ -683,6 +684,15 @@ export default function ClientDetail() {
       .sort((left, right) => (asDate(getActivityTime(right))?.getTime() ?? 0) - (asDate(getActivityTime(left))?.getTime() ?? 0));
   }, [activities, clientId, relationIds.caseIds, relationIds.leadIds]);
 
+
+  const recentClientMovements = useMemo(() => {
+    return clientActivities.slice(0, 5).map((activity: any, index: number) => ({
+      id: String(activity?.id || activity?.activityId || activity?.eventId || (getActivityTime(activity) + '-' + index)),
+      title: activityLabel(activity),
+      time: formatDateTime(getActivityTime(activity)),
+      meta: String(activity?.eventType || activity?.activityType || 'Aktywność'),
+    }));
+  }, [clientActivities]);
   const activeCases = useMemo(
     () => cases.filter((caseRecord) => !['completed', 'canceled'].includes(String(caseRecord.status || ''))),
     [cases],
@@ -1135,8 +1145,7 @@ export default function ClientDetail() {
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Relacje</h2>
-                      <p>Klient jako centrum relacji. Ścieżka klienta: Lead → Klient → Sprawa → Rozliczenia. Praca dzieje się w sprawie.</p>
-                    </div>
+</div>
                     <Button type="button" variant="outline" onClick={() => setActiveTab('history')}>
                       Znajdź w historii
                     </Button>
@@ -1291,7 +1300,31 @@ export default function ClientDetail() {
           </section>
 
           <aside className="client-detail-right-rail" aria-label="Panel klienta">
-            <section className="right-card client-detail-right-card client-detail-operational-center" aria-label="Centrum operacyjne klienta">
+                    <section className="client-detail-right-card client-detail-recent-moves-card" data-client-recent-moves-panel="true">
+          <div className="client-detail-card-title-row">
+            <Activity className="h-4 w-4" />
+            <h2>Ostatnie ruchy</h2>
+          </div>
+          {recentClientMovements.length ? (
+            <div className="client-detail-recent-moves-list">
+              {recentClientMovements.map((move) => (
+                <Link key={move.id} to="/activity" className="client-detail-recent-move-row">
+                  <span>
+                    <strong>{move.title}</strong>
+                    <small>{move.meta}</small>
+                  </span>
+                  <em>{move.time}</em>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="client-detail-light-empty">Brak ostatnich ruchów dla tego klienta.</p>
+          )}
+          <Link to="/activity" className="client-detail-recent-moves-link">
+            Zobacz całą aktywność
+          </Link>
+        </section>
+<section className="right-card client-detail-right-card client-detail-operational-center" aria-label="Centrum operacyjne klienta">
               <div className="client-detail-card-title-row">
                 <Clock className="h-4 w-4" />
                 <h2>Następny ruch</h2>

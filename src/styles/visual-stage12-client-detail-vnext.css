@@ -1318,3 +1318,65 @@
   padding: 4px 8px !important;
   font-size: 11px !important;
 }
+
+/* STAGE53_CLIENT_OPERATIONAL_RECENT_MOVES */
+.client-detail-vnext-page .client-detail-recent-moves-card {
+  gap: 12px !important;
+}
+
+.client-detail-vnext-page .client-detail-recent-moves-list {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.client-detail-vnext-page .client-detail-recent-move-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+  align-items: center !important;
+  padding: 10px 11px !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  text-decoration: none !important;
+  color: #111827 !important;
+}
+
+.client-detail-vnext-page .client-detail-recent-move-row strong {
+  display: block !important;
+  color: #111827 !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  font-weight: 850 !important;
+}
+
+.client-detail-vnext-page .client-detail-recent-move-row small {
+  display: block !important;
+  margin-top: 3px !important;
+  color: #475467 !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+}
+
+.client-detail-vnext-page .client-detail-recent-move-row em {
+  color: #667085 !important;
+  font-size: 11px !important;
+  font-style: normal !important;
+  white-space: nowrap !important;
+}
+
+.client-detail-vnext-page .client-detail-recent-moves-link {
+  display: inline-flex !important;
+  width: fit-content !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 32px !important;
+  padding: 6px 11px !important;
+  border-radius: 999px !important;
+  border: 1px solid #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  text-decoration: none !important;
+}

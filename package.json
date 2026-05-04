@@ -198,7 +198,9 @@
     "check:stage51-clients-case-contrast-hotfix": "node scripts/check-stage51-clients-case-contrast-hotfix.cjs",
     "check:stage52-ui-contrast-regression-guard": "node scripts/check-stage52-ui-contrast-regression-guard.cjs",
     "test:stage52-ui-contrast-regression-guard": "node --test tests/stage52-ui-contrast-regression-guard.test.cjs",
-    "verify:ui-contrast": "npm.cmd run check:stage49-client-detail-visible-actions && npm.cmd run check:stage50-client-detail-edit-header-polish && npm.cmd run check:stage51-clients-case-contrast-hotfix && npm.cmd run check:stage52-ui-contrast-regression-guard"
+    "verify:ui-contrast": "npm.cmd run check:stage49-client-detail-visible-actions && npm.cmd run check:stage50-client-detail-edit-header-polish && npm.cmd run check:stage51-clients-case-contrast-hotfix && npm.cmd run check:stage52-ui-contrast-regression-guard",
+    "check:stage53-client-operational-recent-moves": "node scripts/check-stage53-client-operational-recent-moves.cjs",
+    "test:stage53-client-operational-recent-moves": "node --test tests/stage53-client-operational-recent-moves.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
