@@ -273,3 +273,41 @@
   .cf-html-view.main-clients-html .lead-actions { grid-column: 2; }
   .cf-html-view.main-clients-html .lead-actions { justify-content: flex-start; }
 }
+
+/* STAGE51_CLIENTS_CASE_CONTRAST_HOTFIX */
+.clients-page .right-card,
+.clients-page .right-card * {
+  color: inherit;
+}
+
+.clients-page .right-card p,
+.clients-page .right-card small,
+.clients-page .right-card .muted,
+.clients-page .clients-filter-caption,
+.clients-page .clients-filter-description,
+.clients-page [data-clients-simple-filters="true"] p,
+.clients-page [data-clients-simple-filters="true"] small {
+  color: #475467 !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+.clients-page .right-card strong,
+.clients-page .right-card h2,
+.clients-page .right-card h3,
+.clients-page .right-card button,
+.clients-page .right-card [role="button"],
+.clients-page [data-clients-simple-filters="true"] strong,
+.clients-page [data-clients-simple-filters="true"] button,
+.clients-page [data-clients-simple-filters="true"] h2,
+.clients-page [data-clients-simple-filters="true"] h3 {
+  color: #111827 !important;
+}
+
+.clients-page .right-card button,
+.clients-page .right-card [role="button"],
+.clients-page [data-clients-simple-filters="true"] button,
+.clients-page [data-clients-simple-filters="true"] [role="button"] {
+  border-color: #e4e7ec !important;
+  background: #ffffff !important;
+}

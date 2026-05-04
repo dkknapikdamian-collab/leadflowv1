@@ -190,3 +190,43 @@ No business logic, API, Supabase, auth, billing, upload, checklist, portal or li
     justify-content: flex-start;
   }
 }
+
+/* STAGE51_CLIENTS_CASE_CONTRAST_HOTFIX */
+.case-detail-page p,
+.case-detail-vnext-page p,
+.case-detail-page small,
+.case-detail-vnext-page small,
+.case-detail-page .muted,
+.case-detail-vnext-page .muted {
+  color: #475467 !important;
+}
+
+.case-detail-page strong,
+.case-detail-vnext-page strong,
+.case-detail-page h1,
+.case-detail-page h2,
+.case-detail-page h3,
+.case-detail-vnext-page h1,
+.case-detail-vnext-page h2,
+.case-detail-vnext-page h3,
+.case-detail-page button,
+.case-detail-vnext-page button {
+  color: #111827 !important;
+}
+
+.case-detail-page .case-detail-pill,
+.case-detail-vnext-page .case-detail-pill,
+.case-detail-page [class*="pill"],
+.case-detail-vnext-page [class*="pill"] {
+  min-height: 24px !important;
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+}
+
+.case-detail-page .case-detail-card p,
+.case-detail-vnext-page .case-detail-card p,
+.case-detail-page .case-detail-section p,
+.case-detail-vnext-page .case-detail-section p {
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}

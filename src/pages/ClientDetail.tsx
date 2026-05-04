@@ -1,3 +1,4 @@
+/* STAGE51_CLIENTS_CASE_CONTRAST_HOTFIX */
 /*
 CLIENT_DETAIL_VISUAL_REBUILD_STAGE12
 Client is a relation record. Operational work after acquisition happens in Case.

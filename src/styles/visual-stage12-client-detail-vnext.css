@@ -1283,3 +1283,38 @@
   -webkit-text-fill-color: #1d4ed8 !important;
   border-color: #bfdbfe !important;
 }
+
+/* STAGE51_CLIENTS_CASE_CONTRAST_HOTFIX */
+.client-detail-vnext-page .client-detail-right-card p,
+.client-detail-vnext-page .client-detail-case-row strong,
+.client-detail-vnext-page .client-detail-summary-card strong,
+.client-detail-vnext-page .client-detail-relation-main h3,
+.client-detail-vnext-page .client-detail-history-row h3,
+.client-detail-vnext-page .client-detail-source-grid strong {
+  color: #111827 !important;
+}
+
+.client-detail-vnext-page .client-detail-relation-main p,
+.client-detail-vnext-page .client-detail-history-row p,
+.client-detail-vnext-page .client-detail-note-inline p,
+.client-detail-vnext-page .client-detail-section-head p,
+.client-detail-vnext-page .client-detail-case-row p,
+.client-detail-vnext-page .client-detail-right-card small,
+.client-detail-vnext-page .client-detail-info-row small,
+.client-detail-vnext-page .client-detail-note-text {
+  color: #475467 !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+.client-detail-vnext-page .client-detail-case-row strong,
+.client-detail-vnext-page .client-detail-right-card p {
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+.client-detail-vnext-page .client-detail-pill {
+  min-height: 24px !important;
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+}
