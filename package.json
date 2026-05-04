@@ -181,7 +181,9 @@
     "check:faza4-etap44c-mutation-bus-coverage-smoke": "node scripts/check-faza4-etap44c-mutation-bus-coverage-smoke.cjs",
     "test:faza4-etap44c-mutation-bus-coverage-smoke": "node --test tests/faza4-etap44c-mutation-bus-coverage-smoke.test.cjs",
     "check:faza5-etap51-ai-read-vs-draft-intent": "node scripts/check-faza5-etap51-ai-read-vs-draft-intent.cjs",
-    "test:faza5-etap51-ai-read-vs-draft-intent": "node --test tests/faza5-etap51-ai-read-vs-draft-intent.test.cjs"
+    "test:faza5-etap51-ai-read-vs-draft-intent": "node --test tests/faza5-etap51-ai-read-vs-draft-intent.test.cjs",
+    "check:hotfix-global-task-action-modal-no-route": "node scripts/check-hotfix-global-task-action-modal-no-route.cjs",
+    "test:hotfix-global-task-action-modal-no-route": "node --test tests/hotfix-global-task-action-modal-no-route.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

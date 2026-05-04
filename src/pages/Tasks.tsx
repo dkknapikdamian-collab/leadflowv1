@@ -16,6 +16,7 @@ Zrobione
 Podaj tytuł zadania.
 Nie udało się zapisać zadania. Spróbuj ponownie.
 */
+/* TASKS_PAGE_GREEN_ADD_BUTTON_REMOVED_HOTFIX: dodawanie zadania zostaje w globalnym pasku Zadanie; zielony przycisk w /tasks jest skasowany. */
 import {
   useEffect,
   useMemo,
