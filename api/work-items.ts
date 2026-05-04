@@ -339,7 +339,7 @@ function normalizeTask(row: any) {
   };
 }
 
-function isEventRow(row: any) {function isEventRow(row: any) {
+function isEventRow(row: any) {
   const recordType = String(row.record_type || row.recordType || '').toLowerCase();
   const hasStartAt = Boolean(row.start_at || row.startAt || row.end_at || row.endAt);
   if (recordType === 'task') return false;
@@ -380,7 +380,7 @@ function normalizeEvent(row: any) {
   };
 }
 
-async function syncLeadNextActionasync function syncLeadNextAction(
+async function syncLeadNextAction(
   leadId: unknown,
   item: { id?: unknown; title?: unknown; scheduledAt?: unknown; startAt?: unknown },
   workspaceId: string,
@@ -658,4 +658,5 @@ export default async function handler(req: any, res: any) {
     res.status(statusCode).json({ error: message });
   }
 }
+
 
