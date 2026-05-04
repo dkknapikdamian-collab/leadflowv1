@@ -24,7 +24,7 @@ Ten etap jest mały i celowy. Przed większym etapem z listy produktu trzeba dom
 {
   "stage": "Stage47",
   "purpose": "Tasks UI truth/readability after Stage45/46 and current-state scan before heavier AI/voice-note stages.",
-  "scannedAt": "2026-05-04T18:01:06.796Z",
+  "scannedAt": "2026-05-04T18:04:51.269Z",
   "branchExpectation": "dev-rollout-freeze",
   "observedFazaScripts": [
     "check:faza5-etap51-ai-read-vs-draft-intent",
@@ -64,9 +64,7 @@ Ten etap jest mały i celowy. Przed większym etapem z listy produktu trzeba dom
     "verify:tasks-header-cleanup",
     "verify:tasks-visible-actions-stage47"
   ],
-  "removedTechnicalCopyFrom": [
-    "src/pages/TasksStable.tsx"
-  ],
+  "removedTechnicalCopyFrom": [],
   "immediateFixes": [
     "Remove visible technical Supabase/Firebase copy from source UI surface if present.",
     "Force readable TasksStable Zrobione/Przywróć and Edytuj action buttons.",
