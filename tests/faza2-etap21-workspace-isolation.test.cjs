@@ -33,7 +33,7 @@ test('Faza 2 Etap 2.1 workspace isolation audit is documented and wired', () => 
 
 test('Request scope helpers and known compatibility debt are visible', () => {
   const requestScope = read('src/server/_request-scope.ts');
-  const apiSupabaseCompat = read('api/_supabase.ts');
+  const serverSupabaseHelper = read('src/server/_supabase.ts');
   const doc = read('docs/release/FAZA2_ETAP21_WORKSPACE_ISOLATION_AUDIT_CHECKLIST_2026-05-03.md');
 
   for (const marker of [
@@ -50,7 +50,8 @@ test('Request scope helpers and known compatibility debt are visible', () => {
   assert.match(requestScope, /body\.workspaceId/);
   assert.match(doc, /body\.workspaceId/);
   assert.match(doc, /manual_evidence_required/);
-  assert.match(apiSupabaseCompat, /\.\.\/src\/server\/_supabase\.js/);
+  assert.match(serverSupabaseHelper, /export async function supabaseRequest/);
+  assert.match(serverSupabaseHelper, /export async function selectFirstAvailable/);
   assert.match(requestScope, /getRequestIdentity\(_req/);
   assert.match(requestScope, /return \{ userId: null, email: null, fullName: null, workspaceId: null \}/);
   assert.match(requestScope, /workspace_members\?user_id=eq\./);

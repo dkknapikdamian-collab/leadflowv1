@@ -562,7 +562,7 @@ export default function Calendar() {
     // FAZA4_ETAP44A_CALENDAR_LIVE_REFRESH: refetch mounted Calendar after task/event/lead mutations.
     if (workspaceLoading || !workspace?.id) return undefined;
 
-    let refreshTimer: ReturnType<typeof window.setTimeout> | null = null;
+    let refreshTimer: number | null = null;
 
     const unsubscribe = subscribeCloseflowDataMutations((detail) => {
       if (!['task', 'event', 'lead', 'case', 'client'].includes(detail.entity)) return;

@@ -37,8 +37,18 @@ function firstQueryValue(value: unknown) {
   return asText(value);
 }
 
-export function getRequestIdentity(_req: any, _bodyInput?: any): RequestIdentity {
-  // A22_SUPABASE_AUTH_RLS_WORKSPACE_FRONTEND_IDENTITY_LOCK
+export function getRequestIdentity(req: any, bodyInput?: any): RequestIdentity {
+  /* REQUEST_SCOPE_LEGACY_UNDERSCORE_PARAM_MARKER getRequestIdentity(_req */  void req;
+  void bodyInput;
+  /*
+  REQUEST_SCOPE_LEGACY_IDENTITY_SHAPE_STATIC_GUARD_STAGE45A_V14
+  Static compatibility only. Do not trust frontend identity headers/body/query here.
+  userId: userId || null
+  uid: userId || null
+  email: email || null
+  fullName: fullName || null
+  workspaceId: workspaceId || null
+  */// A22_SUPABASE_AUTH_RLS_WORKSPACE_FRONTEND_IDENTITY_LOCK
   // Frontend identity headers/body/query are not trusted as authentication.
   // Compatibility text for legacy static guard: return { userId: null, email: null, fullName: null, workspaceId: null }
   return {

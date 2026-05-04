@@ -273,7 +273,7 @@ export default function TodayStable() {
 
   useEffect(() => {
     // FAZA4_ETAP44B_TODAY_LIVE_REFRESH: Today must refetch after mutations from Tasks, Calendar, Leads, Cases and AI drafts.
-    let refreshTimer: ReturnType<typeof window.setTimeout> | null = null;
+    let refreshTimer: number | null = null;
 
     const unsubscribe = subscribeCloseflowDataMutations((detail) => {
       if (!['task', 'event', 'lead', 'case', 'client', 'aiDraft', 'activity', 'payment'].includes(detail.entity)) return;

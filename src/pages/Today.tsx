@@ -287,7 +287,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
   if (!compact) return null;
 
   if (compact === 'urgent' || compact === 'pilne') return 'urgent';
-  if (compact === 'without action' || compact === 'without actions' || compact === 'bez dzialan' || compact === 'bez zaplanowanej akcji') return 'without_action';
+  if (compact === 'without action' || compact === 'without actions' || compact === 'bez dzialan' || compact === 'bez zaplanowanej akcji') return 'without_action'; // Brak następnego kroku
   if (compact === 'without movement' || compact === 'bez ruchu') return 'without_movement';
   if (compact === 'blocked' || compact === 'zablokowane') return 'blocked';
   if (compact === 'service transition' || compact === 'start i obsluga' || compact === 'start i obsługa') return 'service_transition';

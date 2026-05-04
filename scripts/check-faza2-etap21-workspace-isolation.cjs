@@ -40,7 +40,7 @@ const requestScopePath = 'src/server/_request-scope.ts';
 const accessGatePath = 'src/server/_access-gate.ts';
 const supabaseAuthPath = 'src/server/_supabase-auth.ts';
 const meApiPath = 'api/me.ts';
-const apiSupabaseCompatPath = 'api/_supabase.ts';
+const serverSupabaseHelperPath = 'src/server/_supabase.ts';
 const pkgPath = 'package.json';
 const quietPath = 'scripts/closeflow-release-check-quiet.cjs';
 
@@ -49,7 +49,7 @@ const requestScope = readRequired(requestScopePath);
 const accessGate = readRequired(accessGatePath);
 const supabaseAuth = readRequired(supabaseAuthPath);
 const meApi = readRequired(meApiPath);
-const apiSupabaseCompat = readRequired(apiSupabaseCompatPath);
+const serverSupabaseHelper = readRequired(serverSupabaseHelperPath);
 const pkgRaw = readRequired(pkgPath);
 const quiet = readRequired(quietPath);
 
@@ -60,6 +60,7 @@ for (const file of [
   accessGatePath,
   supabaseAuthPath,
   meApiPath,
+  serverSupabaseHelperPath,
 ]) {
   if (exists(file)) pass(file, 'exists');
   else fail(file, 'missing');
@@ -94,8 +95,11 @@ assertIncludes(docPath, doc, 'WORKSPACE_OWNER_REQUIRED', 'Legacy P0 workspace ow
 assertIncludes(requestScopePath, requestScope, 'body.workspaceId', 'Legacy body workspace fallback remains visible');
 assertIncludes(docPath, doc, 'body.workspaceId', 'Legacy body workspace fallback is documented');
 
-assertIncludes(apiSupabaseCompatPath, apiSupabaseCompat, '../src/server/_supabase.js', 'api/_supabase.ts re-exports server Supabase helper');
-assertIncludes(requestScopePath, requestScope, 'getRequestIdentity(_req', 'Request identity ignores spoofable frontend request identity input');
+assertIncludes(serverSupabaseHelperPath, serverSupabaseHelper, 'export async function supabaseRequest', 'Server Supabase helper lives outside api function directory');
+assertIncludes(serverSupabaseHelperPath, serverSupabaseHelper, 'export async function selectFirstAvailable', 'Server Supabase helper exposes selectFirstAvailable');
+assertIncludes(requestScopePath, requestScope, 'getRequestIdentity(req: any, bodyInput?: any)', 'Request identity has Vercel API compatible signature');
+assertIncludes(requestScopePath, requestScope, 'void req;', 'Request identity ignores spoofable req input at runtime');
+assertIncludes(requestScopePath, requestScope, 'void bodyInput;', 'Request identity ignores spoofable body input at runtime');
 assertIncludes(requestScopePath, requestScope, 'return { userId: null, email: null, fullName: null, workspaceId: null }', 'A22 static contract documents null frontend identity');
 assertIncludes(requestScopePath, requestScope, 'workspace_members?user_id=eq.', 'Workspace membership lookup includes user_id-first query marker');
 

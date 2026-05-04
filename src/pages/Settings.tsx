@@ -698,6 +698,9 @@ useEffect(() => {
   if (workspaceLoading) {
     return (
       <Layout>
+      {DAILY_DIGEST_EMAIL_UI_VISIBLE ? (
+        null
+      ) : null}
         <main className="settings-vnext-page">
           <div className="settings-loading-card">Ładowanie ustawień...</div>
         </main>

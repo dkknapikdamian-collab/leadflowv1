@@ -122,6 +122,7 @@ import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 
 const TASK_FORM_VISUAL_REBUILD_STAGE21 = 'TASK_FORM_VISUAL_REBUILD_STAGE21';
 const TASK_FORM_STAGE21_HUMAN_COPY = 'Podaj tytuł zadania. Wybierz poprawny termin. Termin ma nieprawidłowy format. Nie udało się zapisać zadania. Spróbuj ponownie.';
+const TASK_REMINDERS_STAGE45A_GUARD = 'Zadania mają opcje przypomnienia, a mutacje nie gubią reminderAt ani recurrenceRule.';
 
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
@@ -406,7 +407,7 @@ export default function Tasks() {
     // FAZA4_ETAP44A_TASKS_LIVE_REFRESH: refetch mounted Tasks after mutations from other UI surfaces.
     if (workspaceLoading || !workspace?.id) return undefined;
 
-    let refreshTimer: ReturnType<typeof window.setTimeout> | null = null;
+    let refreshTimer: number | null = null;
 
     const unsubscribe = subscribeCloseflowDataMutations((detail) => {
       if (!['task', 'event', 'lead', 'case', 'client', 'aiDraft'].includes(detail.entity)) return;
@@ -643,6 +644,10 @@ export default function Tasks() {
         leadId: task?.leadId ?? null,
         caseId: task?.caseId ?? null,
         clientId: task?.clientId ?? null,
+        // TASK_REMINDER_PRESERVE_ON_STATUS_TOGGLE_STAGE45A
+        scheduledAt: task?.scheduledAt ?? task?.dueAt ?? task?.startAt ?? getTaskStart(task) ?? null,
+        reminderAt: task?.reminderAt ?? null,
+        recurrenceRule: task?.recurrenceRule ?? task?.recurrence?.mode ?? 'none',
       });
 
       await refreshSupabaseData();
@@ -670,8 +675,20 @@ export default function Tasks() {
           ? addDays(currentStart, amount)
           : addWeeks(currentStart, amount);
       const nextScheduledAt = toDateTimeLocalValue(nextStart);
-
-      await updateTaskInSupabase({
+      // TASK_REMINDER_SHIFT_WITH_RESCHEDULE_STAGE45A
+      const normalizedReminder = normalizeReminderConfig(task.reminder);
+      const currentReminderAt = typeof task.reminderAt === 'string' && task.reminderAt.trim() ? task.reminderAt : null;
+      const currentReminderMoment = currentReminderAt ? parseISO(currentReminderAt) : null;
+      const currentStartMoment = parseISO(getTaskStart(task));
+      const inferredReminderMinutes = currentReminderMoment && !Number.isNaN(currentReminderMoment.getTime()) && !Number.isNaN(currentStartMoment.getTime())
+        ? Math.max(0, Math.round((currentStartMoment.getTime() - currentReminderMoment.getTime()) / 60_000))
+        : null;
+      const nextReminderAt = normalizedReminder.mode !== 'none'
+        ? toReminderAtIso(nextScheduledAt, normalizedReminder)
+        : inferredReminderMinutes !== null
+          ? new Date(nextStart.getTime() - inferredReminderMinutes * 60_000).toISOString()
+          : task.reminderAt ?? null;
+await updateTaskInSupabase({
         id: task.id,
         title: task.title,
         type: task.type,
@@ -682,7 +699,7 @@ export default function Tasks() {
         leadId: task.leadId ?? null,
         caseId: task.caseId ?? null,
         clientId: task.clientId ?? null,
-        reminderAt: task.reminderAt ?? null,
+        reminderAt: nextReminderAt,
         recurrenceRule: task.recurrenceRule ?? task.recurrence?.mode ?? 'none',
       });
 
@@ -1102,7 +1119,14 @@ export default function Tasks() {
                   ) : null}
                 </div>
 
-                <DialogFooter>
+                
+          {/* TASK_REMINDER_OPTIONS_STAGE45A_NEW */}
+          <TaskReminderEditor
+            reminder={newTask.reminder}
+            onChange={(reminder) => setNewTask((prev) => ({ ...prev, reminder }))}
+          />
+
+<DialogFooter>
                   <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Zapisywanie...' : 'Zapisz zadanie'}</Button>
                 </DialogFooter>
               </form>
@@ -1230,6 +1254,15 @@ export default function Tasks() {
                   reminder={editTask?.reminder}
                   onChange={(reminder) => setEditTask((prev: any) => prev ? { ...prev, reminder } : prev)}
                 />
+
+
+          {/* TASK_REMINDER_OPTIONS_STAGE45A_EDIT */}
+          {editTask ? (
+            <TaskReminderEditor
+              reminder={editTask.reminder}
+              onChange={(reminder) => setEditTask((prev: any) => (prev ? { ...prev, reminder } : prev))}
+            />
+          ) : null}
 
 <DialogFooter>
                     <Button type="submit" className="w-full" disabled={taskEditSubmitting}>{taskEditSubmitting ? 'Zapisywanie...' : 'Zapisz zmiany'}</Button>

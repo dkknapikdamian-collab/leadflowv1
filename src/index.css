@@ -10,6 +10,7 @@
 @import './styles/visual-stage20-tasks-safe-css.css';
 @import './styles/visual-stage19-clients-safe-css.css';
 @import './styles/visual-stage18-leads-hard-1to1.css';
+@import "./styles/visual-stage16-today-html-reset.css";
 @import "tailwindcss";
 @import "./styles/case-detail-simplified.css";
 @import "./styles/case-detail-stage2.css";

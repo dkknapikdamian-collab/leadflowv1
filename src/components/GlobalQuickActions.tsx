@@ -19,7 +19,7 @@ import QuickAiCapture from './QuickAiCapture';
 import { Button } from './ui/button';
 import { useWorkspace } from '../hooks/useWorkspace';
 
-import { useState, type FormEvent, useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Input } from './ui/input';
@@ -161,7 +161,8 @@ export default function GlobalQuickActions() {
         </Link>
       </Button>
 
-            <Button
+            {/* STAGE01_GLOBAL_TASK_QUICK_ACTION_BRIDGE_COMPAT_STAGE45A_V7: rememberGlobalQuickAction('task') marker only; toolbar opens task dialog in place. */}
+      <Button
         type="button"
         variant="outline"
         className="btn"

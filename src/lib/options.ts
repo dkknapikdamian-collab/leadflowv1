@@ -28,8 +28,8 @@ export const STATUS_OPTIONS = LEAD_STATUS_OPTIONS;
 export const TASK_TYPES = [
   { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },
   { value: 'phone', label: 'Telefon', icon: Phone },
-  { value: 'reply', label: 'Odpisac', icon: MessageSquareReply },
-  { value: 'send_offer', label: 'Wyslij oferte', icon: FileText },
+  { value: 'reply', label: 'Odpisać', icon: MessageSquareReply },
+  { value: 'send_offer', label: 'Wyślij ofertę', icon: FileText },
   { value: 'meeting', label: 'Spotkanie', icon: CalendarDays },
   { value: 'other', label: 'Inne', icon: CircleDot },
 ];
@@ -39,14 +39,14 @@ export const EVENT_TYPES = [
   { value: 'phone_call', label: 'Rozmowa', icon: Phone },
   { value: 'follow_up', label: 'Follow-up', icon: MessageSquareReply },
   { value: 'deadline', label: 'Deadline', icon: FileText },
-  { value: 'custom', label: 'Wlasne wydarzenie', icon: CircleDot },
+  { value: 'custom', label: 'Własne wydarzenie', icon: CircleDot },
 ];
 
 export const RECURRENCE_OPTIONS = [
   { value: 'none', label: 'Brak' },
   { value: 'daily', label: 'Codziennie' },
-  { value: 'weekly', label: 'Co tydzien' },
-  { value: 'monthly', label: 'Co miesiac' },
+  { value: 'weekly', label: 'Co tydzień' },
+  { value: 'monthly', label: 'Co miesiąc' },
 ];
 
 export const REMINDER_MODE_OPTIONS = [
@@ -57,11 +57,12 @@ export const REMINDER_MODE_OPTIONS = [
 
 export const REMINDER_OFFSET_OPTIONS = [
   { value: 0, label: 'W momencie terminu' },
-  { value: 10, label: '10 minut wczesniej' },
-  { value: 30, label: '30 minut wczesniej' },
-  { value: 60, label: '1 godzine wczesniej' },
-  { value: 1440, label: '1 dzien wczesniej' },
-  { value: 10080, label: '1 tydzien wczesniej' },
+  { value: 10, label: '10 minut wcześniej' },
+  { value: 15, label: '15 minut wcześniej' },
+  { value: 30, label: '30 minut wcześniej' },
+  { value: 60, label: '1 godzinę wcześniej' },
+  { value: 1440, label: '1 dzień wcześniej' },
+  { value: 10080, label: '1 tydzień wcześniej' },
 ];
 
 export const GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS = [
@@ -73,7 +74,7 @@ export const GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS = [
 
 export const PRIORITY_OPTIONS = [
   { value: 'low', label: 'Niski' },
-  { value: 'medium', label: 'Sredni' },
+  { value: 'medium', label: 'Średni' },
   { value: 'high', label: 'Wysoki' },
 ];
 
