@@ -1,7 +1,5 @@
 /*
 P0_TASKS_STABLE_REBUILD
-Stable Tasks screen avoids the legacy Firebase auth.currentUser load gate.
-It reads and writes through the same Supabase API helpers used by the rest of the app.
 */
 
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
@@ -32,6 +30,8 @@ import { toDateTimeLocalValue } from '../lib/scheduling';
 
 const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
 void P0_TASKS_STABLE_REBUILD;
+const TASKS_VISIBLE_ACTIONS_STAGE47 = 'TASKS_VISIBLE_ACTIONS_STAGE47';
+void TASKS_VISIBLE_ACTIONS_STAGE47;
 
 type TaskScope = 'active' | 'today' | 'overdue' | 'done';
 
@@ -395,8 +395,24 @@ export default function TasksStable() {
                       {readText(task, ['leadName', 'lead_name'], '') ? <p className="mt-1 text-sm text-slate-600">Lead: {readText(task, ['leadName', 'lead_name'], '')}</p> : null}
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <Button type="button" variant="outline" onClick={() => void toggleTask(task)}>{isTaskDone(task) ? 'Przywróć' : 'Zrobione'}</Button>
-                      <Button type="button" variant="outline" onClick={() => openEditTask(task)}>Edytuj</Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="tasks-stage47-action-button border-slate-300 bg-white text-slate-950 shadow-sm hover:bg-slate-50 hover:text-slate-950"
+                        data-tasks-action-visible-stage47="done"
+                        onClick={() => void toggleTask(task)}
+                      >
+                        {isTaskDone(task) ? 'Przywróć' : 'Zrobione'}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="tasks-stage47-action-button border-slate-300 bg-white text-slate-950 shadow-sm hover:bg-slate-50 hover:text-slate-950"
+                        data-tasks-action-visible-stage47="edit"
+                        onClick={() => openEditTask(task)}
+                      >
+                        Edytuj
+                      </Button>
                       <Button type="button" variant="outline" className="text-rose-700 hover:text-rose-800" onClick={() => void deleteTask(task)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</Button>
                     </div>
                   </div>

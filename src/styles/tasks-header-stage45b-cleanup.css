@@ -37,3 +37,25 @@
 [data-tasks-refresh-visible-stage45m="true"] svg {
   color: rgb(15 23 42) !important;
 }
+
+
+/* TASKS_VISIBLE_ACTIONS_STAGE47
+   Real TasksStable action buttons must stay readable across visual layers and skins. */
+.tasks-stage47-action-button,
+html[data-skin] .tasks-stage47-action-button {
+  color: #0f172a !important;
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+.tasks-stage47-action-button:hover,
+html[data-skin] .tasks-stage47-action-button:hover {
+  color: #0f172a !important;
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+}
+
+.tasks-stage47-action-button svg,
+html[data-skin] .tasks-stage47-action-button svg {
+  color: currentColor !important;
+}
