@@ -1,4 +1,4 @@
-﻿import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
+import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { normalizeEventStatus, normalizeTaskStatus } from '../src/lib/domain-statuses.js';
 import { normalizeEventContract, normalizeTaskContract } from '../src/lib/data-contract.js';

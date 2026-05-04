@@ -168,7 +168,10 @@
     "check:faza4-etap41-data-contract-map": "node scripts/check-faza4-etap41-data-contract-map.cjs",
     "test:faza4-etap41-data-contract-map": "node --test tests/faza4-etap41-data-contract-map.test.cjs",
     "check:faza4-etap42-task-event-contract-normalization": "node scripts/check-faza4-etap42-task-event-contract-normalization.cjs",
-    "test:faza4-etap42-task-event-contract-normalization": "node --test tests/faza4-etap42-task-event-contract-normalization.test.cjs"
+    "test:faza4-etap42-task-event-contract-normalization": "node --test tests/faza4-etap42-task-event-contract-normalization.test.cjs",
+    "smoke:critical-crud": "node scripts/smoke-critical-crud.cjs",
+    "check:faza4-etap43-critical-crud-smoke": "node scripts/check-faza4-etap43-critical-crud-smoke.cjs",
+    "test:faza4-etap43-critical-crud-smoke": "node --test tests/faza4-etap43-critical-crud-smoke.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
