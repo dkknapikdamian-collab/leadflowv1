@@ -1053,3 +1053,102 @@
 .client-detail-vnext-page [data-client-relations-acquisition-only="true"] .client-detail-section-head {
   margin-bottom: 14px;
 }
+
+/* CLIENT_DETAIL_STAGE49_VISIBLE_NEXT_ACTION_AND_NOTE_ACTIONS
+   Fix: next action text and note action buttons must stay readable on white/light callouts.
+   Scope is intentionally limited to ClientDetail vnext shell. */
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-danger,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-amber,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-blue,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-green,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-muted {
+  color: #111827 !important;
+}
+
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-danger strong,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-amber strong,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-blue strong,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-green strong,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-muted strong,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-danger h3,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-amber h3,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-blue h3,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-green h3,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-muted h3 {
+  color: #111827 !important;
+}
+
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-danger p,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-amber p,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-blue p,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-green p,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-muted p,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-danger small,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-amber small,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-blue small,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-green small,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-muted small {
+  color: #475467 !important;
+}
+
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-danger a,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-amber a,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-blue a,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-green a,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-muted a,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-danger button,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-amber button,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-blue button,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-green button,
+.client-detail-vnext-page .client-detail-summary-card.client-detail-callout-muted button {
+  color: #1d4ed8 !important;
+}
+
+.client-detail-vnext-page .client-detail-note-inline button,
+.client-detail-vnext-page .client-detail-quick-actions-list button,
+.client-detail-vnext-page .client-detail-action-grid button,
+.client-detail-vnext-page [data-client-note-actions="true"] button,
+.client-detail-vnext-page [data-client-note-action],
+.client-detail-vnext-page [data-client-voice-note-action],
+.client-detail-vnext-page [data-client-add-note-action] {
+  min-height: 42px;
+  border: 1px solid #d0d5dd !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.04) !important;
+}
+
+.client-detail-vnext-page .client-detail-note-inline button svg,
+.client-detail-vnext-page .client-detail-quick-actions-list button svg,
+.client-detail-vnext-page .client-detail-action-grid button svg,
+.client-detail-vnext-page [data-client-note-actions="true"] button svg,
+.client-detail-vnext-page [data-client-note-action] svg,
+.client-detail-vnext-page [data-client-voice-note-action] svg,
+.client-detail-vnext-page [data-client-add-note-action] svg {
+  color: #1d4ed8 !important;
+  stroke: currentColor !important;
+}
+
+.client-detail-vnext-page .client-detail-note-inline button:hover,
+.client-detail-vnext-page .client-detail-quick-actions-list button:hover,
+.client-detail-vnext-page .client-detail-action-grid button:hover,
+.client-detail-vnext-page [data-client-note-actions="true"] button:hover,
+.client-detail-vnext-page [data-client-note-action]:hover,
+.client-detail-vnext-page [data-client-voice-note-action]:hover,
+.client-detail-vnext-page [data-client-add-note-action]:hover {
+  border-color: #93c5fd !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+.client-detail-vnext-page .client-detail-note-inline button:disabled,
+.client-detail-vnext-page .client-detail-quick-actions-list button:disabled,
+.client-detail-vnext-page .client-detail-action-grid button:disabled,
+.client-detail-vnext-page [data-client-note-actions="true"] button:disabled,
+.client-detail-vnext-page [data-client-note-action]:disabled,
+.client-detail-vnext-page [data-client-voice-note-action]:disabled,
+.client-detail-vnext-page [data-client-add-note-action]:disabled {
+  color: #667085 !important;
+  background: #f9fafb !important;
+  opacity: 0.72;
+}
