@@ -1,3 +1,4 @@
+/* STAGE59_CASE_NOTE_FOLLOW_UP_PROMPT */
 /* STAGE58_CASE_RECENT_MOVES_PANEL */
 /* STAGE57_CASE_CREATE_ACTION_HUB */
 /* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
@@ -64,6 +65,7 @@ import '../styles/visual-stage13-case-detail-vnext.css';
 
 type CaseDetailTab = 'service' | 'path' | 'checklists' | 'history';
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
+type CaseNoteFollowUpChoice = 'today' | 'tomorrow' | 'two_days' | 'week' | 'custom';
 
 type CaseRecord = {
   id: string;
@@ -269,6 +271,23 @@ function addDurationToIso(startIso: string, durationMs: number) {
   return new Date(start.getTime() + durationMs).toISOString();
 }
 
+
+function buildCaseNoteFollowUpIso(choice: CaseNoteFollowUpChoice, customValue?: string) {
+  if (choice === 'custom') return toIsoFromLocalInput(customValue || '');
+  if (choice === 'today') return buildQuickRescheduleIso(0, null, 16);
+  if (choice === 'tomorrow') return buildQuickRescheduleIso(1, null, 9);
+  if (choice === 'two_days') return buildQuickRescheduleIso(2, null, 9);
+  return buildQuickRescheduleIso(7, null, 9);
+}
+
+function getCaseNoteFollowUpChoiceLabel(choice: CaseNoteFollowUpChoice) {
+  if (choice === 'today') return 'Dziś';
+  if (choice === 'tomorrow') return 'Jutro';
+  if (choice === 'two_days') return 'Za 2 dni';
+  if (choice === 'week') return 'Za tydzień';
+  return 'Własny termin';
+}
+
 function getEventDurationMs(event: EventRecord) {
   const start = toDate(event.startAt);
   const end = toDate(event.endAt);
@@ -355,7 +374,7 @@ function getCaseRecentMoveMeta(activity: CaseActivity) {
   const eventType = String(activity.eventType || '');
   if (eventType.includes('task')) return { label: 'Zadanie', className: 'case-detail-recent-move-dot-task' };
   if (eventType.includes('event')) return { label: 'Wydarzenie', className: 'case-detail-recent-move-dot-event' };
-  if (eventType.includes('item') || eventType.includes('file') || eventType.includes('decision')) return { label: 'KompletnoĹ›Ä‡', className: 'case-detail-recent-move-dot-item' };
+  if (eventType.includes('item') || eventType.includes('file') || eventType.includes('decision')) return { label: 'Kompletność', className: 'case-detail-recent-move-dot-item' };
   if (eventType.includes('status') || eventType.includes('lifecycle')) return { label: 'Status', className: 'case-detail-recent-move-dot-status' };
   if (eventType.includes('note')) return { label: 'Notatka', className: 'case-detail-recent-move-dot-note' };
   return { label: 'Ruch', className: 'case-detail-recent-move-dot-note' };
@@ -485,6 +504,9 @@ export default function CaseDetail() {
   const [newItem, setNewItem] = useState({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
   const [newTask, setNewTask] = useState({ title: '', type: 'follow_up', scheduledAt: '', reminderAt: '', priority: 'normal' });
   const [newEvent, setNewEvent] = useState({ title: '', type: 'meeting', startAt: '', endAt: '', reminderAt: '' });
+  const [pendingNoteFollowUp, setPendingNoteFollowUp] = useState<{ note: string; createdAt: string } | null>(null);
+  const [customNoteFollowUpAt, setCustomNoteFollowUpAt] = useState('');
+  const [isCreatingNoteFollowUp, setIsCreatingNoteFollowUp] = useState(false);
 
   const refreshCaseData = useCallback(async () => {
     if (!caseId) {
@@ -609,14 +631,14 @@ export default function CaseDetail() {
   const caseDetailAccessStatus = String(access?.status || 'inactive');
   const guardCaseDetailWriteAccess = (actionLabel: string) => {
     if (!caseDetailWriteAccessDenied) return true;
-    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasl.' : 'Brak aktywnego dostepu.';
+    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasł.' : 'Brak aktywnego dostepu.';
     toast.error(reason + ' Nie mozna teraz ' + actionLabel + '.');
     return false;
   };
 
 
   const openCaseTaskDialog = () => {
-    if (!guardCaseDetailWriteAccess('dodac zadania')) return;
+    if (!guardCaseDetailWriteAccess('dodać zadania')) return;
     setNewTask({
       title: '',
       type: 'follow_up',
@@ -628,7 +650,7 @@ export default function CaseDetail() {
   };
 
   const openCaseEventDialog = () => {
-    if (!guardCaseDetailWriteAccess('dodac wydarzenia')) return;
+    if (!guardCaseDetailWriteAccess('dodać wydarzenia')) return;
     setNewEvent({
       title: '',
       type: 'meeting',
@@ -640,7 +662,7 @@ export default function CaseDetail() {
   };
 
   const openCaseNoteDialog = () => {
-    if (!guardCaseDetailWriteAccess('dodac notatki')) return;
+    if (!guardCaseDetailWriteAccess('dodać notatki')) return;
     setNewNote('');
     setIsAddNoteOpen(true);
   };
@@ -650,6 +672,54 @@ export default function CaseDetail() {
     await insertActivityToSupabase({ caseId, actorType: 'operator', eventType, payload }).catch(() => null);
   };
 
+
+  const closeNoteFollowUpPrompt = () => {
+    setPendingNoteFollowUp(null);
+    setCustomNoteFollowUpAt('');
+  };
+
+  const handleCreateCaseNoteFollowUp = async (choice: CaseNoteFollowUpChoice) => {
+    if (!guardCaseDetailWriteAccess('dodać follow-upu po notatce')) return;
+    if (!caseId || !pendingNoteFollowUp) return;
+    const scheduledAt = buildCaseNoteFollowUpIso(choice, customNoteFollowUpAt);
+    if (!scheduledAt) {
+      toast.error('Wybierz termin follow-upu');
+      return;
+    }
+    const title = `Follow-up: ${getCaseTitle(caseData)}`;
+    try {
+      setIsCreatingNoteFollowUp(true);
+      const created = await insertTaskToSupabase({
+        title,
+        type: 'follow_up',
+        status: 'todo',
+        priority: 'normal',
+        scheduledAt,
+        reminderAt: scheduledAt,
+        date: buildDateOnlyFromIso(scheduledAt),
+        caseId,
+        clientId: caseData?.clientId || null,
+        leadId: caseData?.leadId || null,
+      });
+      await recordActivity('case_note_follow_up_added', {
+        title,
+        scheduledAt,
+        taskId: (created as any)?.id || null,
+        source: 'case_note_follow_up_prompt',
+        choice: getCaseNoteFollowUpChoiceLabel(choice),
+        notePreview: pendingNoteFollowUp.note.slice(0, 160),
+      });
+      await updateCaseInSupabase({ id: caseId, lastActivityAt: new Date().toISOString() }).catch(() => null);
+      closeNoteFollowUpPrompt();
+      await refreshCaseData();
+      toast.success('Follow-up dodany do sprawy');
+    } catch (error: any) {
+      toast.error(`Nie udało się dodać follow-upu: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setIsCreatingNoteFollowUp(false);
+    }
+  };
+
   const refreshStatusAfterMutation = async (nextStatus?: string) => {
     if (!caseId) return;
     const status = nextStatus || resolveCaseStatusFromItems(items, caseData?.status || 'in_progress');
@@ -657,7 +727,7 @@ export default function CaseDetail() {
   };
 
   const handleCopyPortal = async () => {
-    if (!guardCaseDetailWriteAccess('wygenerowac linku do portalu')) return;
+    if (!guardCaseDetailWriteAccess('wygenerować linku do portalu')) return;
     if (!caseId) return;
     try {
       const payload = await createClientPortalTokenInSupabase(caseId);
@@ -670,7 +740,7 @@ export default function CaseDetail() {
   };
 
   const handleAddItem = async () => {
-    if (!guardCaseDetailWriteAccess('dodac braku')) return;
+    if (!guardCaseDetailWriteAccess('dodać braku')) return;
     if (!caseId || !newItem.title.trim()) {
       toast.error('Podaj nazwę braku');
       return;
@@ -697,7 +767,7 @@ export default function CaseDetail() {
   };
 
   const handleItemStatusChange = async (item: CaseItem, status: CaseItemStatus) => {
-    if (!guardCaseDetailWriteAccess('zmienic statusu braku')) return;
+    if (!guardCaseDetailWriteAccess('zmienić statusu braku')) return;
     if (!caseId) return;
     try {
       await updateCaseItemInSupabase({ id: item.id, caseId, status, approvedAt: status === 'accepted' ? new Date().toISOString() : null });
@@ -711,7 +781,7 @@ export default function CaseDetail() {
   };
 
   const handleDeleteItem = async (item: CaseItem) => {
-    if (!guardCaseDetailWriteAccess('usunac braku')) return;
+    if (!guardCaseDetailWriteAccess('usunąć braku')) return;
     if (!window.confirm('Usunąć ten brak ze sprawy?')) return;
     try {
       await deleteCaseItemFromSupabase(item.id);
@@ -724,7 +794,7 @@ export default function CaseDetail() {
   };
 
   const handleAddTask = async () => {
-    if (!guardCaseDetailWriteAccess('dodac zadania')) return;
+    if (!guardCaseDetailWriteAccess('dodać zadania')) return;
     if (!caseId || !newTask.title.trim()) {
       toast.error('Podaj tytuł zadania');
       return;
@@ -780,7 +850,7 @@ export default function CaseDetail() {
   };
 
   const handleAddEvent = async () => {
-    if (!guardCaseDetailWriteAccess('dodac wydarzenia')) return;
+    if (!guardCaseDetailWriteAccess('dodać wydarzenia')) return;
     if (!caseId || !newEvent.title.trim()) {
       toast.error('Podaj tytuł wydarzenia');
       return;
@@ -836,17 +906,21 @@ export default function CaseDetail() {
   };
 
   const handleAddNote = async () => {
-    if (!guardCaseDetailWriteAccess('dodac notatki')) return;
-    if (!caseId || !newNote.trim()) {
-      toast.error('Notatka nie może być pusta');
+    if (!guardCaseDetailWriteAccess('dodać notatki')) return;
+    const note = newNote.trim();
+    if (!caseId || !note) {
+      toast.error('Wpisz treść notatki');
       return;
     }
     try {
-      await insertActivityToSupabase({ caseId, actorType: 'operator', eventType: 'operator_note', payload: { note: newNote.trim(), title: 'Notatka' } });
+      await recordActivity('operator_note', { note });
+      await updateCaseInSupabase({ id: caseId, lastActivityAt: new Date().toISOString() }).catch(() => null);
       setNewNote('');
       setIsAddNoteOpen(false);
+      setPendingNoteFollowUp({ note, createdAt: new Date().toISOString() });
+      setCustomNoteFollowUpAt('');
       await refreshCaseData();
-      toast.success('Notatka dodana');
+      toast.success('Notatka dodana do sprawy');
     } catch (error: any) {
       toast.error(`Nie udało się dodać notatki: ${error?.message || 'REQUEST_FAILED'}`);
     }
@@ -971,7 +1045,35 @@ export default function CaseDetail() {
 
         <div className="case-detail-shell">
           <section className="case-detail-main-column">
-            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
+      
+      {pendingNoteFollowUp ? (
+        <section className="case-detail-note-follow-up-panel" data-case-note-follow-up-prompt="true">
+          <div className="case-detail-note-follow-up-head">
+            <div>
+              <p className="case-detail-eyebrow">Następny ruch</p>
+              <h3>Ustawić follow-up do tej notatki?</h3>
+              <p>Notatka jest zapisana. Teraz możesz od razu przypiąć kolejny ruch do tej sprawy.</p>
+            </div>
+            <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
+              Nie teraz
+            </Button>
+          </div>
+          <div className="case-detail-note-follow-up-preview">{pendingNoteFollowUp.note}</div>
+          <div className="case-detail-note-follow-up-actions">
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('today')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="today">Dziś</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('tomorrow')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="tomorrow">Jutro</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('two_days')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="two_days">Za 2 dni</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('week')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="week">Za tydzień</Button>
+          </div>
+          <div className="case-detail-note-follow-up-custom">
+            <Label htmlFor="case-note-follow-up-at">Własny termin</Label>
+            <Input id="case-note-follow-up-at" type="datetime-local" value={customNoteFollowUpAt} onChange={(event) => setCustomNoteFollowUpAt(event.target.value)} data-case-note-follow-up-custom-input="true" />
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('custom')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="custom">Ustaw własny</Button>
+          </div>
+        </section>
+      ) : null}
+
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
               <nav aria-label="Zakładki sprawy">
                 <TabsList className="case-detail-tabs">
                   {[

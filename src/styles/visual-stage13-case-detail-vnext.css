@@ -905,3 +905,85 @@
     gap: 2px;
   }
 }
+
+/* STAGE59_CASE_NOTE_FOLLOW_UP_PROMPT */
+.case-detail-vnext-page .case-detail-note-follow-up-panel {
+  margin: 14px 0 18px;
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.98), rgba(255, 255, 255, 0.98));
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+  padding: 16px;
+  color: #111827 !important;
+}
+
+.case-detail-vnext-page .case-detail-note-follow-up-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.case-detail-vnext-page .case-detail-note-follow-up-head h3 {
+  margin: 2px 0 4px;
+  font-size: 1rem;
+  line-height: 1.25;
+  color: #111827 !important;
+}
+
+.case-detail-vnext-page .case-detail-note-follow-up-head p,
+.case-detail-vnext-page .case-detail-note-follow-up-custom label {
+  color: #374151 !important;
+  -webkit-text-fill-color: #374151 !important;
+}
+
+.case-detail-vnext-page .case-detail-note-follow-up-preview {
+  margin-top: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(255, 255, 255, 0.82);
+  padding: 10px 12px;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  max-height: 74px;
+  overflow: auto;
+}
+
+.case-detail-vnext-page .case-detail-note-follow-up-actions,
+.case-detail-vnext-page .case-detail-note-follow-up-custom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.case-detail-vnext-page .case-detail-note-follow-up-actions button,
+.case-detail-vnext-page .case-detail-note-follow-up-custom button,
+.case-detail-vnext-page .case-detail-note-follow-up-head button {
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+.case-detail-vnext-page .case-detail-note-follow-up-custom input {
+  min-width: 220px;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  background: #ffffff !important;
+}
+
+@media (max-width: 720px) {
+  .case-detail-vnext-page .case-detail-note-follow-up-head,
+  .case-detail-vnext-page .case-detail-note-follow-up-custom {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .case-detail-vnext-page .case-detail-note-follow-up-actions button,
+  .case-detail-vnext-page .case-detail-note-follow-up-custom button,
+  .case-detail-vnext-page .case-detail-note-follow-up-custom input {
+    width: 100%;
+  }
+}
