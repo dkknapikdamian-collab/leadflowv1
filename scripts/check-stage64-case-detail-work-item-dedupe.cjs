@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const repoRoot = process.cwd();
@@ -18,7 +18,7 @@ if (!fs.existsSync(caseDetailPath)) fail('missing src/pages/CaseDetail.tsx');
 if (!fs.existsSync(packagePath)) fail('missing package.json');
 
 const source = fs.readFileSync(caseDetailPath, 'utf8');
-const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8').replace(/^\\uFEFF/, ''));
 
 const requiredFragments = [
   'STAGE64_CASE_DETAIL_WORK_ITEM_DEDUPE',

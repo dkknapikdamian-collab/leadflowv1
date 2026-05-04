@@ -1,5 +1,5 @@
 const stage60CaseActionCopyNoteDedupe = 'STAGE60_CASE_ACTION_COPY_NOTE_DEDUPE';
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 const marker = 'STAGE57_CASE_CREATE_ACTION_HUB';
 function read(file) { return fs.readFileSync(path.join(process.cwd(), file), 'utf8'); }
