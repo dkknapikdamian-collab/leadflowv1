@@ -1,6 +1,7 @@
-import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
+﻿import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { normalizeEventStatus, normalizeTaskStatus } from '../src/lib/domain-statuses.js';
+import { normalizeEventContract, normalizeTaskContract } from '../src/lib/data-contract.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendarConnection, updateGoogleCalendarEvent } from '../src/server/google-calendar-sync.js';
 
@@ -303,49 +304,42 @@ function isTaskRow(row: any) {
 }
 
 function normalizeTask(row: any) {
-  const dueAt =
-    asIsoDate(row.scheduled_at)
-    || asIsoDate(row.due_at)
-    || asIsoDate(row.date)
-    || asIsoDate(row.dueAt)
-    || asIsoDate(row.start_at)
-    || asIsoDate(row.created_at)
-    || new Date().toISOString();
-  const normalizedDate = dueAt.slice(0, 10);
-  const reminderAt =
-    asIsoDate(row.reminder_at)
-    || asIsoDate(row.reminderAt)
-    || (typeof row.reminder === 'string' && row.reminder !== 'none' ? asIsoDate(row.reminder) : null);
-  const recurrenceRule = String(row.recurrence_rule || row.recurrenceRule || row.recurrence || 'none');
-  const reminderMinutes = reminderAt
-    ? Math.max(0, Math.round((new Date(dueAt).getTime() - new Date(reminderAt).getTime()) / 60_000))
+  const task = normalizeTaskContract(row || {});
+  const scheduledAt = task.scheduledAt || task.createdAt || '';
+  const reminderAt = task.reminderAt || null;
+  const scheduledDate = scheduledAt ? new Date(scheduledAt) : null;
+  const reminderDate = reminderAt ? new Date(reminderAt) : null;
+  const reminderMinutes = scheduledDate && reminderDate && Number.isFinite(scheduledDate.getTime()) && Number.isFinite(reminderDate.getTime())
+    ? Math.max(0, Math.round((scheduledDate.getTime() - reminderDate.getTime()) / 60_000))
     : 30;
+  const recurrenceRule = task.recurrenceRule || 'none';
 
   return {
-    id: String(row.id || crypto.randomUUID()),
-    title: String(row.title || ''),
-    type: String(row.type || row.task_type || 'task'),
-    date: normalizedDate,
-    dueAt: dueAt.slice(0, 16),
-    time: dueAt.slice(11, 16),
-    status: normalizeTaskStatus(row.status),
-    priority: String(row.priority || 'medium'),
-    leadId: row.lead_id ? String(row.lead_id) : row.leadId ? String(row.leadId) : undefined,
-    leadName: row.lead_name ? String(row.lead_name) : row.leadName ? String(row.leadName) : undefined,
-    caseId: row.case_id ? String(row.case_id) : row.caseId ? String(row.caseId) : undefined,
+    ...task,
+    title: String(task.title || ''),
+    type: String(task.type || 'task'),
+    date: task.date || (scheduledAt ? scheduledAt.slice(0, 10) : ''),
+    dueAt: scheduledAt ? scheduledAt.slice(0, 16) : '',
+    time: scheduledAt ? scheduledAt.slice(11, 16) : '',
+    status: normalizeTaskStatus(task.status),
+    priority: String(task.priority || 'medium'),
+    leadId: task.leadId,
+    leadName: task.leadName,
+    caseId: task.caseId,
+    clientId: task.clientId,
     reminderAt,
     reminder: reminderAt
       ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
       : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
     recurrenceRule,
     recurrence: { mode: recurrenceRule, interval: 1, until: null, endType: 'never', count: null },
-    recurrenceEndType: row.recurrence_end_type ? String(row.recurrence_end_type) : undefined,
-    recurrenceEndAt: asIsoDate(row.recurrence_end_at) || null,
-    recurrenceCount: typeof row.recurrence_count === 'number' ? row.recurrence_count : null,
+    recurrenceEndType: row.recurrence_end_type ? String(row.recurrence_end_type) : row.recurrenceEndType ? String(row.recurrenceEndType) : undefined,
+    recurrenceEndAt: asIsoDate(row.recurrence_end_at) || asIsoDate(row.recurrenceEndAt) || null,
+    recurrenceCount: typeof row.recurrence_count === 'number' ? row.recurrence_count : typeof row.recurrenceCount === 'number' ? row.recurrenceCount : null,
   };
 }
 
-function isEventRow(row: any) {
+function isEventRow(row: any) {function isEventRow(row: any) {
   const recordType = String(row.record_type || row.recordType || '').toLowerCase();
   const hasStartAt = Boolean(row.start_at || row.startAt || row.end_at || row.endAt);
   if (recordType === 'task') return false;
@@ -356,34 +350,37 @@ function isEventRow(row: any) {
 }
 
 function normalizeEvent(row: any) {
-  const startAt = row.start_at || row.scheduled_at || row.startAt || null;
-  const endAt = row.end_at || row.endAt || null;
-  const reminderAt = row.reminder && row.reminder !== 'none' ? String(row.reminder) : '';
-  const recurrenceRule = String(row.recurrence || 'none');
-  const reminderMinutes = reminderAt && startAt
-    ? Math.max(0, Math.round((new Date(String(startAt)).getTime() - new Date(reminderAt).getTime()) / 60_000))
+  const event = normalizeEventContract(row || {});
+  const startAt = event.startAt || event.scheduledAt || '';
+  const reminderAt = event.reminderAt || '';
+  const startDate = startAt ? new Date(startAt) : null;
+  const reminderDate = reminderAt ? new Date(reminderAt) : null;
+  const reminderMinutes = startDate && reminderDate && Number.isFinite(startDate.getTime()) && Number.isFinite(reminderDate.getTime())
+    ? Math.max(0, Math.round((startDate.getTime() - reminderDate.getTime()) / 60_000))
     : 30;
+  const recurrenceRule = event.recurrenceRule || 'none';
 
   return {
-    id: String(row.id || crypto.randomUUID()),
-    title: String(row.title || ''),
-    type: String(row.type || 'meeting'),
-    startAt: String(startAt || ''),
-    endAt: endAt ? String(endAt) : '',
-    status: normalizeEventStatus(row.status),
+    ...event,
+    title: String(event.title || ''),
+    type: String(event.type || 'meeting'),
+    startAt: startAt,
+    endAt: event.endAt || '',
+    status: normalizeEventStatus(event.status),
     reminderAt,
     reminder: reminderAt
       ? { mode: 'once', minutesBefore: reminderMinutes, recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
       : { mode: 'none', minutesBefore: 30, recurrenceMode: 'daily', recurrenceInterval: 1, until: null },
     recurrenceRule,
     recurrence: { mode: recurrenceRule, interval: 1, until: null, endType: 'never', count: null },
-    leadId: row.lead_id ? String(row.lead_id) : row.leadId ? String(row.leadId) : undefined,
-    leadName: row.lead_name ? String(row.lead_name) : row.leadName ? String(row.leadName) : undefined,
-    caseId: row.case_id ? String(row.case_id) : row.caseId ? String(row.caseId) : undefined,
+    leadId: event.leadId,
+    leadName: event.leadName,
+    caseId: event.caseId,
+    clientId: event.clientId,
   };
 }
 
-async function syncLeadNextAction(
+async function syncLeadNextActionasync function syncLeadNextAction(
   leadId: unknown,
   item: { id?: unknown; title?: unknown; scheduledAt?: unknown; startAt?: unknown },
   workspaceId: string,
@@ -661,3 +658,4 @@ export default async function handler(req: any, res: any) {
     res.status(statusCode).json({ error: message });
   }
 }
+
