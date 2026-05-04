@@ -1,3 +1,4 @@
+/* STAGE60_CASE_ACTION_COPY_NOTE_DEDUPE */
 /* STAGE59_CASE_NOTE_FOLLOW_UP_PROMPT */
 /* STAGE58_CASE_RECENT_MOVES_PANEL */
 /* STAGE57_CASE_CREATE_ACTION_HUB */
@@ -1095,7 +1096,7 @@ export default function CaseDetail() {
                 <div className="case-detail-section-head">
                   <div>
                     <h2>Najważniejsze działania</h2>
-                    <p>Zadania, wydarzenia, braki i notatki powiązane ze sprawą.</p>
+                    <p></p>
                   </div>
                   <Button type="button" variant="outline" onClick={() => setIsAddNoteOpen(true)}>
                     <StickyNote className="h-4 w-4" />
@@ -1218,10 +1219,6 @@ export default function CaseDetail() {
             <Button type="button" variant="outline" size="sm" onClick={openCaseEventDialog} data-case-create-action="event" data-case-quick-action="true">
               <CalendarClock className="h-4 w-4" />
               Wydarzenie
-            </Button>
-            <Button type="button" variant="outline" size="sm" onClick={openCaseNoteDialog} data-case-create-action="note" data-case-quick-action="true">
-              <StickyNote className="h-4 w-4" />
-              Notatka
             </Button>
           </div>
           <small className="case-detail-right-note">Zadanie i wydarzenie zostaną automatycznie podpięte pod tę sprawę oraz klienta.</small>
