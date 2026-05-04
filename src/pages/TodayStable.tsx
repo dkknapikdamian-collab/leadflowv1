@@ -5,26 +5,21 @@ This page intentionally bypasses the legacy Today.tsx scheduler stack for operat
 */
 
 import {
-  subscribeCloseflowDataMutations,
   useCallback,
   useEffect,
   useMemo,
   useState,
-  type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import Layout from '../components/Layout';
-import { Card,
-  CardContent } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { ArrowRight,
+  type ReactNode
+} from 'react';
+import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
+import { Link } from 'react-router-dom'; import Layout from '../components/Layout'; import { Card,
+  CardContent } from '../components/ui/card'; import { Button } from '../components/ui/button'; import { Badge } from '../components/ui/badge'; import { ArrowRight,
   CalendarDays,
   CheckSquare,
   FileText,
   Loader2,
   RefreshCcw,
-  UserRound } from 'lucide-react';
-import {
+  UserRound } from 'lucide-react'; import {
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
