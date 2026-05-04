@@ -1460,3 +1460,101 @@
     align-items: stretch !important;
   }
 }
+
+/* STAGE55_CLIENT_CASE_OPERATIONAL_PACK
+   Hard operational cleanup for ClientDetail case cards.
+   Goal: case rows inside client detail must fit, stay scannable, and avoid marketing/help copy bloat. */
+.client-detail-vnext-page .client-detail-header-lead:empty {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-case-list {
+  gap: 8px !important;
+}
+
+.client-detail-vnext-page .client-detail-case-row,
+.client-detail-vnext-page .client-detail-case-row-wide {
+  grid-template-columns: minmax(0, 1.15fr) minmax(82px, .42fr) minmax(0, .92fr) minmax(70px, .34fr) auto !important;
+  gap: 8px !important;
+  align-items: start !important;
+  padding: 10px 11px !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+.client-detail-vnext-page .client-detail-case-row > *,
+.client-detail-vnext-page .client-detail-case-row-wide > * {
+  min-width: 0 !important;
+}
+
+.client-detail-vnext-page .client-detail-case-row h3,
+.client-detail-vnext-page .client-detail-case-row-wide h3 {
+  font-size: 12px !important;
+  line-height: 1.22 !important;
+  letter-spacing: -0.02em !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+.client-detail-vnext-page .client-detail-case-row p,
+.client-detail-vnext-page .client-detail-case-row-wide p {
+  margin-top: 3px !important;
+  font-size: 10.5px !important;
+  line-height: 1.28 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+.client-detail-vnext-page .client-detail-case-row strong,
+.client-detail-vnext-page .client-detail-case-row-wide strong {
+  font-size: 11px !important;
+  line-height: 1.2 !important;
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.client-detail-vnext-page .client-detail-case-row .client-detail-pill,
+.client-detail-vnext-page .client-detail-case-row-wide .client-detail-pill {
+  min-height: 21px !important;
+  padding: 3px 7px !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.client-detail-vnext-page .client-detail-case-row a,
+.client-detail-vnext-page .client-detail-case-row button,
+.client-detail-vnext-page .client-detail-case-row-wide a,
+.client-detail-vnext-page .client-detail-case-row-wide button {
+  min-height: 28px !important;
+  padding: 5px 8px !important;
+  border-radius: 10px !important;
+  font-size: 10.5px !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 1320px) {
+  .client-detail-vnext-page .client-detail-case-row,
+  .client-detail-vnext-page .client-detail-case-row-wide {
+    grid-template-columns: minmax(0, 1.1fr) minmax(74px, .36fr) minmax(0, .8fr) auto !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .client-detail-vnext-page .client-detail-case-row,
+  .client-detail-vnext-page .client-detail-case-row-wide {
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+    padding: 10px !important;
+  }
+}
