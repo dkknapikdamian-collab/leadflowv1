@@ -1,0 +1,966 @@
+{
+  "generatedAt": "2026-05-04T17:18:50.961Z",
+  "routeMap": [
+    {
+      "path": "/login",
+      "component": "Login",
+      "file": "src/pages/Login.tsx"
+    },
+    {
+      "path": "/portal/:caseId/:token",
+      "component": "ClientPortal",
+      "file": "src/pages/ClientPortal.tsx"
+    },
+    {
+      "path": "/",
+      "component": "Today",
+      "file": "src/pages/TodayStable.tsx"
+    },
+    {
+      "path": "/leads",
+      "component": "Leads",
+      "file": "src/pages/Leads.tsx"
+    },
+    {
+      "path": "/leads/:leadId",
+      "component": "LeadDetail",
+      "file": "src/pages/LeadDetail.tsx"
+    },
+    {
+      "path": "/tasks",
+      "component": "Tasks",
+      "file": "src/pages/TasksStable.tsx"
+    },
+    {
+      "path": "/calendar",
+      "component": "Calendar",
+      "file": "src/pages/Calendar.tsx"
+    },
+    {
+      "path": "/cases",
+      "component": "Cases",
+      "file": "src/pages/Cases.tsx"
+    },
+    {
+      "path": "/case/:caseId",
+      "component": "CaseDetail",
+      "file": "src/pages/CaseDetail.tsx"
+    },
+    {
+      "path": "/cases/:caseId",
+      "component": "CaseDetail",
+      "file": "src/pages/CaseDetail.tsx"
+    },
+    {
+      "path": "/clients",
+      "component": "Clients",
+      "file": "src/pages/Clients.tsx"
+    },
+    {
+      "path": "/clients/:clientId",
+      "component": "ClientDetail",
+      "file": "src/pages/ClientDetail.tsx"
+    },
+    {
+      "path": "/activity",
+      "component": "Activity",
+      "file": "src/pages/Activity.tsx"
+    },
+    {
+      "path": "/ai-drafts",
+      "component": "AiDrafts",
+      "file": "src/pages/AiDrafts.tsx"
+    },
+    {
+      "path": "/notifications",
+      "component": "NotificationsCenter",
+      "file": "src/pages/NotificationsCenter.tsx"
+    },
+    {
+      "path": "/templates",
+      "component": "Templates",
+      "file": "src/pages/Templates.tsx"
+    },
+    {
+      "path": "/case-templates",
+      "component": "ResponseTemplates",
+      "file": "src/pages/ResponseTemplates.tsx"
+    },
+    {
+      "path": "/billing",
+      "component": "Billing",
+      "file": "src/pages/Billing.tsx"
+    },
+    {
+      "path": "/help",
+      "component": "SupportCenter",
+      "file": "src/pages/SupportCenter.tsx"
+    },
+    {
+      "path": "/settings/ai",
+      "component": "AdminAiSettings",
+      "file": "src/pages/AdminAiSettings.tsx"
+    },
+    {
+      "path": "/settings",
+      "component": "Settings",
+      "file": "src/pages/Settings.tsx"
+    },
+    {
+      "path": "/ui-preview-vnext",
+      "component": "UiPreviewVNext",
+      "file": "src/pages/UiPreviewVNext.tsx"
+    },
+    {
+      "path": "/ui-preview-vnext-full",
+      "component": "UiPreviewVNextFull",
+      "file": "src/pages/UiPreviewVNextFull.tsx"
+    },
+    {
+      "path": "*",
+      "component": "PwaInstallPrompt",
+      "file": null
+    }
+  ],
+  "tasksRoute": {
+    "path": "/tasks",
+    "component": "Tasks",
+    "file": "src/pages/TasksStable.tsx"
+  },
+  "counts": {
+    "total": 92,
+    "high": 24,
+    "medium": 3,
+    "low": 65
+  },
+  "findings": [
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/audit-closeflow-ui-surface-stage45.mjs",
+      "line": 104,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "const noComments = stripComments(source); const idx = noComments.indexOf('src/pages/Tasks.tsx'); if (idx >= 0) { addFinding( findings, 'HIGH', 'dead-guard', file, lineOf(source, source.indexOf('src/pages/Tasks.tsx')), 'Guard/test sprawd",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/check-access-billing-source-of-truth-stage02a.cjs",
+      "line": 135,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "rface'); const screens = [ 'src/pages/Today.tsx', 'src/pages/Leads.tsx', 'src/pages/Tasks.tsx', 'src/pages/Calendar.tsx', 'src/pages/LeadDetail.tsx', 'src/pages/CaseDetail.tsx', ]; for (const screen of screens) { const content = readRequired(screen); const hasWorkspaceHook = /useWork",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/check-client-inline-edit-and-task-edit.cjs",
+      "line": 17,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": ") { console.error(message); process.exit(1); } } const tasks = read('src/pages/Tasks.tsx'); const clientDetail = read('src/pages/ClientDetail.tsx'); const topicContact = read('src/lib/topic-contact.ts'); assert(tasks.includes('clientId: newTask.clientId || null'), 'Tasks add flow does no",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/check-faza4-etap44a-live-refresh-mutation-bus.cjs",
+      "line": 34,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "=='); } const files = { fallback: 'src/lib/supabase-fallback.ts', tasks: 'src/pages/Tasks.tsx', calendar: 'src/pages/Calendar.tsx', releaseDoc: 'docs/release/FAZA4_ETAP44A_LIVE_REFRESH_MUTATION_BUS_2026-05-04.md', technicalDoc: 'docs/technical/LIVE_REFRESH_MUTATION_BUS_STAGE44A_2026-05-0",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/check-faza4-etap44c-mutation-bus-coverage-smoke.cjs",
+      "line": 53,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "ny}`); } const files = { fallback: 'src/lib/supabase-fallback.ts', tasks: 'src/pages/Tasks.tsx', calendar: 'src/pages/Calendar.tsx', today: 'src/pages/TodayStable.tsx', releaseDoc: 'docs/release/FAZA4_ETAP44C_MUTATION_BUS_COVERAGE_SMOKE_2026-05-04.md', technicalDoc: 'docs/technical/LIVE",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/check-google-calendar-stage08d-runtime-ui-sync.cjs",
+      "line": 16,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "ar must not block data load on Firebase auth.currentUser'); const tasks = read('src/pages/Tasks.tsx'); assert(tasks.includes('subscribeGlobalQuickAction'), 'Tasks must subscribe to same-route global actions'); assert(!tasks.includes('if (!auth.currentUser || workspaceLoading || !workspace?.id)'), 'T",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/check-hotfix-global-task-action-modal-no-route.cjs",
+      "line": 25,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": ".tsx'); const globalSource = stripComments(globalRaw); const tasksRaw = read('src/pages/Tasks.tsx'); const tasksSource = stripComments(tasksRaw); const pkgRaw = read('package.json'); const quiet = read('scripts/closeflow-release-check-quiet.cjs'); expect('src/components/GlobalQuickActions.ts",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/check-task-edit-reminder-and-week-calendar.cjs",
+      "line": 17,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": ") { console.error(message); process.exit(1); } } const tasks = read('src/pages/Tasks.tsx'); const today = read('src/pages/Today.tsx'); const calendar = read('src/pages/Calendar.tsx'); assert(tasks.includes('function TaskReminderEditor('), 'Tasks missing TaskReminderEditor'); assert(tasks",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/verify-global-task-unified-modal.mjs",
+      "line": 18,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": ".tsx'); const globalSource = stripComments(globalRaw); const tasksRaw = read('src/pages/Tasks.tsx'); const tasksSource = stripComments(tasksRaw); const pkg = JSON.parse(read('package.json')); if (!globalRaw.includes('STAGE45C_GLOBAL_TASK_SINGLE_MODAL')) fail('missing Stage45C marker'); if (!",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/verify-task-reminders.mjs",
+      "line": 13,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "(message) => console.log('PASS task reminders:', message); const tasks = read('src/pages/Tasks.tsx'); const options = read('src/lib/options.ts'); function getBetween(source, startNeedle, endNeedle) { const start = source.indexOf(startNeedle); if (start === -1) return ''; const end = source.i",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "scripts/verify-tasks-header-cleanup.mjs",
+      "line": 5,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "const repo = process.cwd(); const tasks = fs.readFileSync(path.join(repo, 'src/pages/Tasks.tsx'), 'utf8'); const indexCss = fs.readFileSync(path.join(repo, 'src/index.css'), 'utf8'); const css = fs.readFileSync(path.join(repo, 'src/styles/tasks-header-stage45b-cleanup.css'), 'utf8'); funct",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "ui-copy",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 341,
+      "title": "Widoczny techniczny tekst na ekranie Zadań",
+      "evidence": "zadań</h1> <p className=\"mt-2 max-w-2xl text-sm text-slate-600\">Stabilny widok Supabase bez bramki Firebase. Dane ładują się od razu po wejściu w zakładkę.</p> </div> <div className=\"flex flex-wrap gap-2\"> <Button type=\"button\" variant=\"outlin",
+      "recommendation": "Usunąć techniczne copy z UI. Użytkownik nie powinien widzieć Firebase/Supabase/Stable."
+    },
+    {
+      "severity": "HIGH",
+      "category": "ui-copy",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 341,
+      "title": "Widoczny techniczny tekst na ekranie Zadań",
+      "evidence": "max-w-2xl text-sm text-slate-600\">Stabilny widok Supabase bez bramki Firebase. Dane ładują się od razu po wejściu w zakładkę.</p> </div> <div className=\"flex flex-wrap gap-2\"> <Button type=\"button\" variant=\"outline\" onClick={() => void refreshData()} disable",
+      "recommendation": "Usunąć techniczne copy z UI. Użytkownik nie powinien widzieć Firebase/Supabase/Stable."
+    },
+    {
+      "severity": "HIGH",
+      "category": "duplicate-action",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 344,
+      "title": "Lokalny przycisk dodawania zadania jest nadal w realnym ekranie",
+      "evidence": "<Button type=\"button\" onClick={openNewTask} disabled={!hasAccess || workspaceLoading}> <Plus className=\"mr-2 h-4 w-4\" /> Nowe zadanie </Button>",
+      "recommendation": "Usunąć lokalny CTA z nagłówka. Dodawanie ma iść z globalnego panelu operatora."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "tests/faza4-etap44a-live-refresh-mutation-bus.test.cjs",
+      "line": 23,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "A Tasks and Calendar listen without full reload', () => { const tasks = read('src/pages/Tasks.tsx'); const calendar = read('src/pages/Calendar.tsx'); assert.match(tasks, /FAZA4_ETAP44A_TASKS_LIVE_REFRESH/); assert.match(tasks, /subscribeCloseflowDataMutations\\(\\(detail\\)[\\s\\S]*refreshSupaba",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "tests/faza4-etap44c-mutation-bus-coverage-smoke.test.cjs",
+      "line": 27,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "d screens import and subscribe exactly once', () => { const screens = [ ['src/pages/Tasks.tsx', /refreshSupabaseData\\s*\\(/], ['src/pages/Calendar.tsx', /refreshSupabaseBundle\\s*\\(/], ['src/pages/TodayStable.tsx', /refreshData\\s*\\(\\s*\\)/], ]; for (const [relativePath, refreshRegex]",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "tests/global-quick-actions-open-modals.test.cjs",
+      "line": 22,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "', () => { const leads = read('src/pages/Leads.tsx'); const tasks = read('src/pages/Tasks.tsx'); const calendar = read('src/pages/Calendar.tsx'); assert.ok(leads.includes('consumeGlobalQuickAction')); assert.ok(leads.includes(\"consumeGlobalQuickAction() === 'lead'\")); assert.ok(l",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "tests/hotfix-global-task-action-modal-no-route.test.cjs",
+      "line": 48,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "asks page remains owner of the task create modal', () => { const raw = read('src/pages/Tasks.tsx'); const source = stripComments(raw); assert.match(source, /consumeGlobalQuickAction/); assert.match(source, /consumeGlobalQuickAction\\(\\) === ['\"]task['\"]/); assert.match(source, /setIs",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "tests/hotfix-task-stat-tiles-clean.test.cjs",
+      "line": 31,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "asks page still uses shared stat shortcut cards', () => { const tasks = read('src/pages/Tasks.tsx'); assertIncludes(tasks, 'StatShortcutCard', 'Tasks.tsx'); });",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "tests/stage7_tasks_compact_after_calendar.test.cjs",
+      "line": 7,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "node:test'); const root = process.cwd(); const tasksPath = path.join(root, 'src/pages/Tasks.tsx'); const cssPath = path.join(root, 'src/styles/visual-stage30-tasks-compact-after-calendar.css'); const tasks = fs.readFileSync(tasksPath, 'utf8'); const css = fs.readFileSync(cssPath, 'utf8');",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "tests/stage7a_tasks_blue_outline_fix.test.cjs",
+      "line": 7,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "node:test'); const root = process.cwd(); const tasksPath = path.join(root, 'src/pages/Tasks.tsx'); const indexPath = path.join(root, 'src/index.css'); const cssPath = path.join(root, 'src/styles/stage7a-tasks-blue-outline-fix.css'); const tasks = fs.readFileSync(tasksPath, 'utf8'); const i",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "tests/stat-shortcut-cards-standard.test.cjs",
+      "line": 25,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "the same shared clickable stat card component', () => { for (const file of ['src/pages/Tasks.tsx', 'src/pages/Leads.tsx', 'src/pages/Cases.tsx']) { const source = read(file); assert.match(source, /StatShortcutCard/); assert.match(source, /onClick=/); assert.doesNotMatch(source, /c",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "tests/ui-completed-label-consistency.test.cjs",
+      "line": 14,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "); } const uiFiles = [ 'src/pages/Today.tsx', 'src/pages/Calendar.tsx', 'src/pages/Tasks.tsx', 'src/pages/Cases.tsx', 'src/pages/CaseDetail.tsx', 'src/pages/Dashboard.tsx', ]; test('completed action/status wording is consistent in main UI screens', () => { for (const file of uiFiles)",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "HIGH",
+      "category": "dead-guard",
+      "file": "tests/ui-copy-and-billing-cleanup.test.cjs",
+      "line": 25,
+      "title": "Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx",
+      "evidence": "s/Leads.tsx', 'src/pages/CaseDetail.tsx', 'src/pages/Clients.tsx', 'src/pages/Tasks.tsx', 'src/pages/Cases.tsx', ]; const offenders = files.filter((file) => { const source = fs.existsSync(path.join(root, file)) ? read(file) : ''; return forbiddenCopy.some((pattern) => pa",
+      "recommendation": "Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "duplicate-modal-surface",
+      "file": "src/components/TaskCreateDialog.tsx",
+      "line": 102,
+      "title": "Inny plik poza realnym route zawiera modal/otwieranie zadania",
+      "evidence": "sk-create-dialog-stage45i=\"true\"> <DialogHeader> <DialogTitle>Nowe zadanie</DialogTitle> </DialogHeader> <form onSubmit={handleSubmit} className=\"space-y-4\"> <div className=\"space-y-2\"> <Label>Tytuł</Label> <Input valu",
+      "recommendation": "Ustalić, czy to aktywny ekran, czy martwy legacy. Dla aktywnych powierzchni użyć wspólnego TaskCreateDialog."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "duplicate-modal-surface",
+      "file": "src/pages/Calendar.tsx",
+      "line": 444,
+      "title": "Inny plik poza realnym route zawiera modal/otwieranie zadania",
+      "evidence": "[isNewEventOpen, setIsNewEventOpen] = useState(false); const [isNewTaskOpen, setIsNewTaskOpen] = useState(false); const [editEntry, setEditEntry] = useState<ScheduleEntry | null>(null); const [editDraft, setEditDraft] = useState<CalendarEditDraft | null>(null); const [actionPendingId, se",
+      "recommendation": "Ustalić, czy to aktywny ekran, czy martwy legacy. Dla aktywnych powierzchni użyć wspólnego TaskCreateDialog."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "duplicate-modal-surface",
+      "file": "src/pages/Tasks.tsx",
+      "line": 4,
+      "title": "Inny plik poza realnym route zawiera modal/otwieranie zadania",
+      "evidence": "TASK_FORM_VISUAL_REBUILD_STAGE21_COMPAT_GUARD TASK_FORM_VISUAL_REBUILD_STAGE21 Nowe zadanie Edytuj zadanie Tytuł Typ Termin Priorytet Powiązanie Zapisz zadanie +1H +1D +1W Zrobione Podaj tytuł zadania. Nie udało się zapisać zadania. Spróbuj ponownie. */ /* TASKS_PAGE_GREEN_ADD_BUTTON_REMOVED_HOTFIX",
+      "recommendation": "Ustalić, czy to aktywny ekran, czy martwy legacy. Dla aktywnych powierzchni użyć wspólnego TaskCreateDialog."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Activity.tsx",
+      "line": 628,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "Effect(() => { let cancelled = false; setLoading(true); if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) { setActivities([]); setLeadLookup(new Map()); setCaseLookup(new Map());",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 403,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "ny) { setDrafts([]); toast.error('Nie udało się pobrać szkiców AI z Supabase: ' + (error?.message || 'REQUEST_FAILED')); } finally { setDraftsLoading(false); } }; useEffect(() => { void reloadDrafts(); }",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Calendar.tsx",
+      "line": 572,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "freshTimer); refreshTimer = window.setTimeout(() => { void refreshSupabaseBundle().catch((error: any) => { console.warn('CALENDAR_LIVE_REFRESH_FAILED', error); }); }, 120); }); return () => {",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 42,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "ientPortalTokenInSupabase, deleteCaseItemFromSupabase, fetchActivitiesFromSupabase, fetchCaseByIdFromSupabase, fetchCaseItemsFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, in",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 42,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "ientPortalTokenInSupabase, deleteCaseItemFromSupabase, fetchActivitiesFromSupabase, fetchCaseByIdFromSupabase, fetchCaseItemsFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, in",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 43,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "deleteCaseItemFromSupabase, fetchActivitiesFromSupabase, fetchCaseByIdFromSupabase, fetchCaseItemsFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, ins",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 43,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "deleteCaseItemFromSupabase, fetchActivitiesFromSupabase, fetchCaseByIdFromSupabase, fetchCaseItemsFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, ins",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 44,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "fetchActivitiesFromSupabase, fetchCaseByIdFromSupabase, fetchCaseItemsFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTa",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 44,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "fetchActivitiesFromSupabase, fetchCaseByIdFromSupabase, fetchCaseItemsFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTa",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 45,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "fetchCaseByIdFromSupabase, fetchCaseItemsFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseC",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 45,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "fetchCaseByIdFromSupabase, fetchCaseItemsFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseC",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 46,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "se, fetchCaseItemsFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInS",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 46,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "se, fetchCaseItemsFromSupabase, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInS",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 47,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "base, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInSupabase, updateCaseItemInS",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 47,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "base, fetchEventsFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInSupabase, updateCaseItemInS",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 48,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "ase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInSupabase, updateCaseItemInSupabase, updateEventInSupa",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 48,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "ase, fetchTasksFromSupabase, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInSupabase, updateCaseItemInSupabase, updateEventInSupa",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 49,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "base, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInSupabase, updateCaseItemInSupabase, updateEventInSupabase, updateTaskInSupab",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 49,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "base, insertActivityToSupabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInSupabase, updateCaseItemInSupabase, updateEventInSupabase, updateTaskInSupab",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 50,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "Supabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInSupabase, updateCaseItemInSupabase, updateEventInSupabase, updateTaskInSupabase, fetchLeadByIdFrom",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 50,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "Supabase, insertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInSupabase, updateCaseItemInSupabase, updateEventInSupabase, updateTaskInSupabase, fetchLeadByIdFrom",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 51,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "sertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInSupabase, updateCaseItemInSupabase, updateEventInSupabase, updateTaskInSupabase, fetchLeadByIdFromSupabase, } fr",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 51,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "sertCaseItemToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, updateCaseInSupabase, updateCaseItemInSupabase, updateEventInSupabase, updateTaskInSupabase, fetchLeadByIdFromSupabase, } fr",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 484,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "awy w adresie.'); setLoading(false); return; } if (!isSupabaseConfigured()) { setLoadError('Brak konfiguracji Supabase. Sprawdź zmienne środowiskowe aplikacji.'); setLoading(false); return;",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 484,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "awy w adresie.'); setLoading(false); return; } if (!isSupabaseConfigured()) { setLoadError('Brak konfiguracji Supabase. Sprawdź zmienne środowiskowe aplikacji.'); setLoading(false); return;",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 485,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "} if (!isSupabaseConfigured()) { setLoadError('Brak konfiguracji Supabase. Sprawdź zmienne środowiskowe aplikacji.'); setLoading(false); return; } let timeoutId: number | undefined; try {",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 485,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "} if (!isSupabaseConfigured()) { setLoadError('Brak konfiguracji Supabase. Sprawdź zmienne środowiskowe aplikacji.'); setLoading(false); return; } let timeoutId: number | undefined; try {",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Cases.tsx",
+      "line": 253,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "eEffect(() => { let isMounted = true; setLoading(true); if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) { setCases([]); setLeadCandidates([]); setClientCandidates([]); setCaseT",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 43,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "fetchActivitiesFromSupabase, fetchCasesFromSupabase, fetchClientByIdFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase, fetchTasksFromSupabase, updateClientInSupabase, updateLe",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 74,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "ken) return; let cancelled = false; setLoading(true); if (!isSupabaseConfigured()) { setInvalidReason('Portal klienta wymaga skonfigurowanego Supabase.'); setIsValid(false); setLoading(false);",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 75,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "Configured()) { setInvalidReason('Portal klienta wymaga skonfigurowanego Supabase.'); setIsValid(false); setLoading(false); return () => { cancelled = true; }; } createPortalSessionFro",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 51,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "mport { deleteEventFromSupabase, deleteLeadFromSupabase, deleteTaskFromSupabase, fetchActivitiesFromSupabase, fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadByIdFromSupabase, fetchTasksFromSupabase, ins",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 52,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "se, deleteLeadFromSupabase, deleteTaskFromSupabase, fetchActivitiesFromSupabase, fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadByIdFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insert",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 53,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "se, deleteTaskFromSupabase, fetchActivitiesFromSupabase, fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadByIdFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertEventToSupabase, insertT",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 54,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "e, fetchActivitiesFromSupabase, fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadByIdFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabase",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 55,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "ase, fetchCasesFromSupabase, fetchEventsFromSupabase, fetchLeadByIdFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, startLeadServic",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 56,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "ase, fetchEventsFromSupabase, fetchLeadByIdFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, startLeadServiceInSupabase, updateActiv",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 57,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "se, fetchLeadByIdFromSupabase, fetchTasksFromSupabase, insertActivityToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, startLeadServiceInSupabase, updateActivityInSupabase, deleteActiv",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 58,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "pabase, fetchTasksFromSupabase, insertActivityToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, startLeadServiceInSupabase, updateActivityInSupabase, deleteActivityFromSupabase, update",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 59,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "Supabase, insertActivityToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, startLeadServiceInSupabase, updateActivityInSupabase, deleteActivityFromSupabase, updateEventInSupabase, updat",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 60,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "sertActivityToSupabase, insertEventToSupabase, insertTaskToSupabase, isSupabaseConfigured, startLeadServiceInSupabase, updateActivityInSupabase, deleteActivityFromSupabase, updateEventInSupabase, updateLeadInSupabase",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 466,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "useEffect(() => { if (!leadId || !workspaceReady) return; if (!isSupabaseConfigured()) { setLoadError('Brak konfiguracji Supabase.'); setLoading(false); return; } void loadLead(); }, [leadId,",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1083,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "ks, events: linkedEvents, startLeadService: startLeadServiceInSupabase, updateTask: updateTaskInSupabase, updateEvent: updateEventInSupabase, }); setStartServiceSuccess({ caseId: result.ca",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1084,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "startLeadService: startLeadServiceInSupabase, updateTask: updateTaskInSupabase, updateEvent: updateEventInSupabase, }); setStartServiceSuccess({ caseId: result.caseId, title: result.caseTitle }); se",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1085,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": ", updateTask: updateTaskInSupabase, updateEvent: updateEventInSupabase, }); setStartServiceSuccess({ caseId: result.caseId, title: result.caseTitle }); setAssociatedCase(result.case); setLead(",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Leads.tsx",
+      "line": 251,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "ading(false); } }, [workspace?.id]); useEffect(() => { if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) { setLoading(workspaceLoading); return; } void loadLeads(); }, [loadLeads",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Login.tsx",
+      "line": 69,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "oogleLogin = async () => { if (!authConfig.configured) { toast.error('Supabase Auth nie jest skonfigurowany. Uzupełnij VITE_SUPABASE_URL i VITE_SUPABASE_ANON_KEY.'); return; } if (isEmbeddedGoogleAuthBlockedUserAgent",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Login.tsx",
+      "line": 69,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "red) { toast.error('Supabase Auth nie jest skonfigurowany. Uzupełnij VITE_SUPABASE_URL i VITE_SUPABASE_ANON_KEY.'); return; } if (isEmbeddedGoogleAuthBlockedUserAgent()) { setGoogleWebViewBlocked(true); toast",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Login.tsx",
+      "line": 69,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "rror('Supabase Auth nie jest skonfigurowany. Uzupełnij VITE_SUPABASE_URL i VITE_SUPABASE_ANON_KEY.'); return; } if (isEmbeddedGoogleAuthBlockedUserAgent()) { setGoogleWebViewBlocked(true); toast.error('Google bloku",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Login.tsx",
+      "line": 105,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "assword(email, password, fullName); toast.success('Konto utworzone. Jeśli Supabase wymaga potwierdzenia, sprawdź e-mail.'); } catch (error: any) { toast.error('Błąd rejestracji: ' + (error?.message || 'UNKNOWN_ERROR'));",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Login.tsx",
+      "line": 183,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "order border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900\"> Supabase Auth nie jest jeszcze skonfigurowany. Uzupełnij zmienne środowiskowe i redirect URL w panelu Supabase. </div> ) : null} <Tabs defa",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Login.tsx",
+      "line": 183,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "jeszcze skonfigurowany. Uzupełnij zmienne środowiskowe i redirect URL w panelu Supabase. </div> ) : null} <Tabs defaultValue=\"login\" className=\"space-y-6\"> <TabsList className=\"grid w-full grid-cols-2 rounded-2",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/Login.tsx",
+      "line": 221,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: guard",
+      "evidence": "/div> {googleWebViewBlocked ? ( <div data-google-webview-guard=\"true\" className=\"rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900\"> <p className=\"font-semibold\">Google blokuje l",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 331,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: stable",
+      "evidence": "assName=\"mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6\" data-p0-tasks-stable-rebuild=\"true\"> <section className=\"rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6\"> <div className=\"flex flex-",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 337,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Firebase",
+      "evidence": "Name=\"mt-2 max-w-2xl text-sm text-slate-600\">Stabilny widok Supabase bez bramki Firebase. Dane ładują się od razu po wejściu w zakładkę.</p> </div> <div className=\"flex flex-wrap gap-2\"> <Button type",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 337,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: Supabase",
+      "evidence": "<p className=\"mt-2 max-w-2xl text-sm text-slate-600\">Stabilny widok Supabase bez bramki Firebase. Dane ładują się od razu po wejściu w zakładkę.</p> </div> <div className=\"flex flex-wrap gap-2\">",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 337,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: stable",
+      "evidence": "assName=\"mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6\" data-p0-today-stable-rebuild=\"true\"> <section className=\"rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6\"> <div className=\"flex flex-co",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 371,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: stable",
+      "evidence": "</section> <section className=\"grid gap-4 xl:grid-cols-2\"> <StableCard> <SectionHeader title=\"Leady do ruchu\" count={operatorLeads.length} icon={<UserRound className=\"h-5 w-5\" />} tone=\"bg-blue-50 text-blue-7",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 383,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: stable",
+      "evidence": ")) : <EmptyState text=\"Brak leadów wymagających ruchu.\" />} </StableCard> <StableCard> <SectionHeader title=\"Zadania na dziś\" count={operatorTasks.length} icon={<CheckSquare className=\"h-5 w-5\" />} t",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 385,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: stable",
+      "evidence": "text=\"Brak leadów wymagających ruchu.\" />} </StableCard> <StableCard> <SectionHeader title=\"Zadania na dziś\" count={operatorTasks.length} icon={<CheckSquare className=\"h-5 w-5\" />} tone=\"bg-emerald-50 text-",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 400,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: stable",
+      "evidence": "}) : <EmptyState text=\"Brak zadań zaległych lub na dziś.\" />} </StableCard> <StableCard> <SectionHeader title=\"Wydarzenia\" count={todayEvents.length} icon={<CalendarDays className=\"h-5 w-5\" />} tone=\"b",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 402,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: stable",
+      "evidence": "ext=\"Brak zadań zaległych lub na dziś.\" />} </StableCard> <StableCard> <SectionHeader title=\"Wydarzenia\" count={todayEvents.length} icon={<CalendarDays className=\"h-5 w-5\" />} tone=\"bg-indigo-50 text-indigo-",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 414,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: stable",
+      "evidence": "/> )) : <EmptyState text=\"Brak wydarzeń na dziś.\" />} </StableCard> <StableCard> <SectionHeader title=\"Szkice do zatwierdzenia\" count={pendingDrafts.length} icon={<FileText className=\"h-5 w-5\"",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 416,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: stable",
+      "evidence": "mptyState text=\"Brak wydarzeń na dziś.\" />} </StableCard> <StableCard> <SectionHeader title=\"Szkice do zatwierdzenia\" count={pendingDrafts.length} icon={<FileText className=\"h-5 w-5\" />} tone=\"bg-amber-50 te",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    },
+    {
+      "severity": "LOW",
+      "category": "possible-tech-copy",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 427,
+      "title": "Możliwy techniczny tekst w routowanym ekranie: stable",
+      "evidence": ")) : <EmptyState text=\"Brak szkiców do zatwierdzenia.\" />} </StableCard> </section> {loading ? ( <div className=\"fixed bottom-4 right-4 rounded-full border border-slate-200 bg-white px-4 py-2 te",
+      "recommendation": "Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy."
+    }
+  ]
+}
