@@ -17,7 +17,12 @@ Podaj tytuł zadania.
 Nie udało się zapisać zadania. Spróbuj ponownie.
 */
 import {
-  subscribeCloseflowDataMutations, useEffect, useMemo, useState, type FormEvent, useRef } from 'react';
+  useEffect,
+  useMemo,
+  useState,
+  type FormEvent,
+  useRef
+} from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -38,9 +43,21 @@ import {
   Repeat,
   Link2,
   ListTodo,
-  CheckCircle2,
+  CheckCircle2
 } from 'lucide-react';
-import { addDays, addHours, addWeeks, endOfWeek, format, isPast, isToday, isTomorrow, isWithinInterval, parseISO, startOfDay } from 'date-fns';
+import {
+  addDays,
+  addHours,
+  addWeeks,
+  endOfWeek,
+  format,
+  isPast,
+  isToday,
+  isTomorrow,
+  isWithinInterval,
+  parseISO,
+  startOfDay
+} from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { Input } from '../components/ui/input';
@@ -50,14 +67,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogFooter
 } from '../components/ui/dialog';
 import { TopicContactPicker } from '../components/topic-contact-picker';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '../components/ui/dropdown-menu';
 import {
   createDefaultRecurrence,
@@ -68,17 +85,22 @@ import {
   normalizeReminderConfig,
   syncTaskDerivedFields,
   toReminderAtIso,
-  toDateTimeLocalValue,
+  toDateTimeLocalValue
 } from '../lib/scheduling';
 import {
   PRIORITY_OPTIONS,
   RECURRENCE_OPTIONS,
   REMINDER_OFFSET_OPTIONS,
   REMINDER_MODE_OPTIONS,
-  TASK_TYPES,
+  TASK_TYPES
 } from '../lib/options';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
-import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
+import {
+  buildTopicContactOptions,
+  findTopicContactOption,
+  resolveTopicContactLink,
+  type TopicContactOption
+} from '../lib/topic-contact';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   deleteTaskFromSupabase,
@@ -90,11 +112,12 @@ import {
   insertActivityToSupabase,
   insertTaskToSupabase,
   updateLeadInSupabase,
-  updateTaskInSupabase,
+  updateTaskInSupabase
 } from '../lib/supabase-fallback';
 import { useSearchParams } from 'react-router-dom';
 import { isActiveSalesLead } from '../lib/lead-health';
 import '../styles/visual-stage21-task-form-vnext.css';
+import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 
 const TASK_FORM_VISUAL_REBUILD_STAGE21 = 'TASK_FORM_VISUAL_REBUILD_STAGE21';
 const TASK_FORM_STAGE21_HUMAN_COPY = 'Podaj tytuł zadania. Wybierz poprawny termin. Termin ma nieprawidłowy format. Nie udało się zapisać zadania. Spróbuj ponownie.';

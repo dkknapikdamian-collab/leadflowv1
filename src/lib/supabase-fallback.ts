@@ -53,7 +53,7 @@ function resolveCloseflowMutationEntity(path: string) {
   return 'unknown';
 }
 
-function emitCloseflowDataMutation(path: string, method: string) {
+export function emitCloseflowDataMutation(path: string, method: string) {
   if (typeof window === 'undefined') return;
   if (String(method || '').toUpperCase() === 'GET') return;
 

@@ -1,5 +1,10 @@
 import {
-  subscribeCloseflowDataMutations, useState, useEffect, FormEvent, useMemo, useRef } from 'react';
+  useState,
+  useEffect,
+  FormEvent,
+  useMemo,
+  useRef
+} from 'react';
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
@@ -14,7 +19,7 @@ import {
   Repeat,
   Sparkles,
   CheckSquare,
-  Trash2,
+  Trash2
 } from 'lucide-react';
 import {
   format,
@@ -30,7 +35,7 @@ import {
   parseISO,
   isSameDay,
   addDays,
-  addHours,
+  addHours
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -41,7 +46,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogFooter
 } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -59,7 +64,7 @@ import {
   syncTaskDerivedFields,
   toReminderAtIso,
   toDateTimeLocalValue,
-  type ScheduleEntry,
+  type ScheduleEntry
 } from '../lib/scheduling';
 import {
   EVENT_TYPES,
@@ -67,11 +72,16 @@ import {
   RECURRENCE_OPTIONS,
   REMINDER_OFFSET_OPTIONS,
   REMINDER_MODE_OPTIONS,
-  TASK_TYPES,
+  TASK_TYPES
 } from '../lib/options';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
-import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
+import {
+  buildTopicContactOptions,
+  findTopicContactOption,
+  resolveTopicContactLink,
+  type TopicContactOption
+} from '../lib/topic-contact';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import '../styles/visual-stage22-event-form-vnext.css';
 import {
@@ -83,8 +93,9 @@ import {
   insertEventToSupabase,
   insertTaskToSupabase,
   updateEventInSupabase,
-  updateTaskInSupabase,
+  updateTaskInSupabase
 } from '../lib/supabase-fallback';
+import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 
 type CalendarEditDraft = {
   title: string;

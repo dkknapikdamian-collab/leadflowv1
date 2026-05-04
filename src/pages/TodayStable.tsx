@@ -11,8 +11,8 @@ import {
   useState,
   type ReactNode
 } from 'react';
-import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
-import { Link } from 'react-router-dom'; import Layout from '../components/Layout'; import { Card,
+import { Link } from 'react-router-dom';
+import Layout from '../components/Layout'; import { Card,
   CardContent } from '../components/ui/card'; import { Button } from '../components/ui/button'; import { Badge } from '../components/ui/badge'; import { ArrowRight,
   CalendarDays,
   CheckSquare,
@@ -26,6 +26,7 @@ import { Link } from 'react-router-dom'; import Layout from '../components/Layou
   fetchTasksFromSupabase
 } from '../lib/supabase-fallback';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
+import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 
 const P0_TODAY_STABLE_REBUILD = 'P0_TODAY_STABLE_REBUILD';
 void P0_TODAY_STABLE_REBUILD;
