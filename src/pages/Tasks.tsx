@@ -1,3 +1,4 @@
+/* STAGE69H_SOFT_NEXT_STEP_PACKAGE_FINAL */
 /*
 TASK_FORM_VISUAL_REBUILD_STAGE21_COMPAT_GUARD
 TASK_FORM_VISUAL_REBUILD_STAGE21
@@ -539,9 +540,91 @@ export default function Tasks() {
     leadName?: string;
     fallbackTitle?: string;
   }) => {
-    void leadId;
-    void leadName;
-    void fallbackTitle;
+    try {
+      if (!leadId) return;
+      const lead = leads.find((entry: any) => String(entry.id || '') === String(leadId));
+      if (!lead || !isActiveSalesLead(lead)) return;
+      if (lead.nextActionAt) return;
+      const workspaceId = requireWorkspaceId(workspace);
+      if (!workspaceId) return;
+
+      const targetName = String(lead.name || leadName || 'lead').trim();
+      const completedTaskTitle = String(fallbackTitle || 'zadanie').trim();
+      const scheduledAt = getSoftNextStepDefaultDueAt();
+      const promptText = [
+        `Zamknąłeś zadanie przy aktywnym leadzie: ${targetName}.`,
+        'Ten lead nie ma kolejnego kroku.',
+        '',
+        'Co zrobić?',
+        '1 - ustaw follow-up na jutro rano',
+        '2 - ustaw przypomnienie na jutro rano',
+        '3 - zostaw świadomie bez kolejnego kroku',
+      ].join('\n');
+      const choice = window.prompt(promptText, '1')?.trim();
+      if (!choice) return;
+
+      if (choice === '3') {
+        await insertActivityToSupabase({
+          leadId,
+          ownerId: auth.currentUser?.uid ?? null,
+          actorId: auth.currentUser?.uid ?? null,
+          actorType: 'operator',
+          eventType: 'lead_next_step_skipped',
+          workspaceId,
+          payload: {
+            source: 'task_done',
+            completedTaskTitle,
+            leadName: targetName,
+          },
+        });
+        toast.success('Lead zostawiony bez kolejnego kroku');
+        return;
+      }
+
+      if (choice !== '1' && choice !== '2') return;
+
+      const title = choice === '2'
+        ? `Przypomnij: ${targetName}`
+        : `Follow-up: ${targetName}`;
+      await insertTaskToSupabase({
+        title,
+        type: 'follow_up',
+        date: scheduledAt.slice(0, 10),
+        scheduledAt,
+        priority: 'medium',
+        leadId,
+        clientId: lead.clientId ?? null,
+        caseId: lead.linkedCaseId ?? lead.caseId ?? null,
+        ownerId: auth.currentUser?.uid ?? undefined,
+        workspaceId,
+      });
+      await updateLeadInSupabase({
+        id: String(leadId),
+        nextActionAt: scheduledAt,
+        workspaceId,
+      });
+      await insertActivityToSupabase({
+        leadId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'lead_next_step_created',
+        workspaceId,
+        payload: {
+          source: 'task_done',
+          title,
+          scheduledAt,
+          completedTaskTitle,
+          leadName: targetName,
+          mode: choice === '2' ? 'reminder' : 'follow_up',
+        },
+      });
+      await refreshSupabaseData();
+      toast.success('Ustawiono kolejny krok dla leada');
+    } catch (error) {
+      console.warn('SOFT_NEXT_STEP_AFTER_TASK_COMPLETION_FAILED', error);
+      toast.error('Zadanie zamknięte, ale nie udało się ustawić kolejnego kroku.');
+    }
   };
 
   const openEditTask = (task: any) => {
