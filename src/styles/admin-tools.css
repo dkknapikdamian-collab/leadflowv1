@@ -1,6 +1,7 @@
 .admin-debug-toolbar {
   position: relative;
-  z-index: 60;
+  z-index: 2147483000;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -44,6 +45,7 @@
 
 .admin-tool-popover {
   position: absolute;
+  z-index: 2147483003;
   top: calc(100% + 8px);
   right: 0;
   width: 320px;
@@ -100,19 +102,23 @@
 .admin-tool-dialog-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 2147483001;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 96px 20px 20px;
+  padding: 72px 20px 20px;
   background: rgba(15, 23, 42, 0.52);
   overflow: auto;
+  pointer-events: auto;
   /* ADMIN_DIALOG_DRAG_LOWER_STAGE87B */
+  /* ADMIN_DIALOG_STACK_FIX_STAGE87C */
 }
 
 .admin-tool-dialog {
+  position: relative;
+  z-index: 2147483002;
   width: min(520px, 96vw);
-  max-height: calc(100vh - 128px);
+  max-height: calc(100vh - 112px);
   overflow: auto;
   will-change: transform;
   display: grid;

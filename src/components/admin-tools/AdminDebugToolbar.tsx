@@ -55,6 +55,7 @@ type AdminDialogDragState = {
 };
 
 const ADMIN_DIALOG_DRAG_LOWER_STAGE87B = 'admin dialogs open lower and can be dragged by header';
+const ADMIN_DIALOG_STACK_FIX_STAGE87C = 'admin dialogs stay above app content and expose reset position';
 
 const REVIEW_PRESETS = [
   'Przenieść wyżej',
@@ -346,6 +347,13 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
     return { transform: `translate3d(${position.x}px, ${position.y}px, 0)` };
   };
 
+  const resetDialogPosition = (key: AdminDialogKey) => {
+    setDialogPositions((prev) => ({
+      ...prev,
+      [key]: { x: 0, y: 0 },
+    }));
+  };
+
   return (
     <div className="admin-debug-toolbar" data-admin-tool-ui="true" data-admin-debug-toolbar-stage87="true">
       <button type="button" className={activeTool === 'review' ? 'active' : ''} onClick={() => chooseTool('review')} data-admin-tool-ui="true">
@@ -420,6 +428,7 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
               title="PrzeciÄ…gnij okno"
             >
               <strong>Bug Note Recorder</strong>
+              <button type="button" onClick={() => resetDialogPosition('bug')} data-admin-tool-ui="true">Reset pozycji</button>
               <button type="button" onClick={() => setBugOpen(false)} data-admin-tool-ui="true">Zamknij</button>
             </div>
             <label>Co zrobiłem<textarea value={bugWhatIDid} onChange={(event) => setBugWhatIDid(event.target.value)} data-admin-tool-ui="true" /></label>
@@ -457,6 +466,7 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
               title="PrzeciÄ…gnij okno"
             >
               <strong>{targetDialog.mode === 'copy' ? 'Copy Review' : 'UI Review'}</strong>
+              <button type="button" onClick={() => resetDialogPosition('target')} data-admin-tool-ui="true">Reset pozycji</button>
               <button type="button" onClick={() => setTargetDialog(null)} data-admin-tool-ui="true">Zamknij</button>
             </div>
             <div className="admin-target-card">
