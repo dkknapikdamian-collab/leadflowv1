@@ -1408,9 +1408,9 @@ export default function ClientDetail() {
               <p className="client-detail-note-text">
                 {client.notes ? String(client.notes) : 'Brak osobnej notatki. Dodaj, jeśli jest coś ważnego.'}
               </p>
-              <Button type="button" variant="outline" size="sm" onClick={() => setContactEditing(true)} disabled={!hasAccess}>
-                Dodaj notatkę
-              </Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => openClientContextAction('note')} disabled={!hasAccess}>
+                      Dodaj notatkę
+                    </Button>
               <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>
                 {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 Dyktuj

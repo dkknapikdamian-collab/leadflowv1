@@ -47,7 +47,6 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import { isLeadMovedToService } from '../lib/lead-health';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
-import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import {
@@ -398,10 +397,6 @@ export default function LeadDetail() {
     status: 'ready_to_start',
   });
   const [startServiceSuccess, setStartServiceSuccess] = useState<{ caseId: string; title: string } | null>(null);
-  const [isQuickTaskOpen, setIsQuickTaskOpen] = useState(false);
-  const [isQuickEventOpen, setIsQuickEventOpen] = useState(false);
-  const [quickTaskSubmitting, setQuickTaskSubmitting] = useState(false);
-  const [quickEventSubmitting, setQuickEventSubmitting] = useState(false);
   const [linkedEntryActionId, setLinkedEntryActionId] = useState<string | null>(null);
   const [editLinkedTask, setEditLinkedTask] = useState<any | null>(null);
   const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
@@ -409,16 +404,6 @@ export default function LeadDetail() {
   const [editLinkedEventSubmitting, setEditLinkedEventSubmitting] = useState(false);
   const noteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const noteVoiceDirtyRef = useRef(false);
-  const [quickTask, setQuickTask] = useState(() => ({
-    title: '',
-    type: 'follow_up',
-    dueAt: toDateTimeLocalValue(new Date()),
-    priority: 'medium',
-  }));
-  const [quickEvent, setQuickEvent] = useState(() => {
-    const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
-    return { title: '', type: 'meeting', startAt: pair.startAt, endAt: pair.endAt };
-  });
 
   const loadLead = async () => {
     if (!leadId) return;
@@ -647,16 +632,6 @@ useEffect(() => {
     [allCases, leadId],
   );
 
-  const caseTitleById = useMemo(
-    () => new Map(allCases.map((item: any) => [String(item.id || ''), String(item.title || item.clientName || 'Powiązana sprawa')])),
-    [allCases],
-  );
-
-  const loadConflictCandidates = async () => {
-    const [taskRows, eventRows] = await Promise.all([fetchTasksFromSupabase(), fetchEventsFromSupabase()]);
-    return buildConflictCandidates({ tasks: taskRows as any[], events: eventRows as any[], caseTitleById });
-  };
-
   const addActivity = async (eventType: string, payload: Record<string, unknown>) => {
     if (!leadId) return;
     const workspaceId = requireWorkspaceId(workspace);
@@ -881,93 +856,6 @@ useEffect(() => {
       await loadLead();
     } catch (error: any) {
       toast.error(`Błąd usuwania notatki: ${error?.message || 'REQUEST_FAILED'}`);
-    }
-  };
-
-  const resetQuickTask = () => {
-    setQuickTask({ title: '', type: 'follow_up', dueAt: toDateTimeLocalValue(new Date()), priority: 'medium' });
-  };
-
-  const resetQuickEvent = () => {
-    const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
-    setQuickEvent({ title: '', type: 'meeting', startAt: pair.startAt, endAt: pair.endAt });
-  };
-
-  const handleCreateQuickTask = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!leadId) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (leadOperationalArchive) return toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze zadania w sprawie.');
-    if (!quickTask.title.trim()) return toast.error('Podaj tytuł zadania');
-    const workspaceId = requireWorkspaceId(workspace);
-    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
-
-    try {
-      setQuickTaskSubmitting(true);
-      const shouldSave = confirmScheduleConflicts({
-        draft: { kind: 'task', title: quickTask.title.trim(), startAt: quickTask.dueAt },
-        candidates: await loadConflictCandidates(),
-      });
-      if (!shouldSave) return;
-
-      await insertTaskToSupabase({
-        title: quickTask.title.trim(),
-        type: quickTask.type,
-        date: quickTask.dueAt.slice(0, 10),
-        scheduledAt: quickTask.dueAt,
-        dueAt: quickTask.dueAt,
-        priority: quickTask.priority,
-        status: 'todo',
-        leadId,
-        workspaceId,
-      });
-      await addActivity('task_updated', { title: quickTask.title.trim(), status: 'todo' });
-      toast.success('Zadanie dodane');
-      setIsQuickTaskOpen(false);
-      resetQuickTask();
-      await loadLead();
-    } catch (error: any) {
-      toast.error(`Błąd dodawania zadania: ${error?.message || 'REQUEST_FAILED'}`);
-    } finally {
-      setQuickTaskSubmitting(false);
-    }
-  };
-
-  const handleCreateQuickEvent = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!leadId) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (leadOperationalArchive) return toast.error('Ten lead jest już w obsłudze. Dodawaj dalsze wydarzenia w sprawie.');
-    if (!quickEvent.title.trim()) return toast.error('Podaj tytuł wydarzenia');
-    const workspaceId = requireWorkspaceId(workspace);
-    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
-
-    try {
-      setQuickEventSubmitting(true);
-      const shouldSave = confirmScheduleConflicts({
-        draft: { kind: 'event', title: quickEvent.title.trim(), startAt: quickEvent.startAt, endAt: quickEvent.endAt },
-        candidates: await loadConflictCandidates(),
-      });
-      if (!shouldSave) return;
-
-      await insertEventToSupabase({
-        title: quickEvent.title.trim(),
-        type: quickEvent.type,
-        startAt: quickEvent.startAt,
-        endAt: quickEvent.endAt,
-        status: 'scheduled',
-        leadId,
-        workspaceId,
-      });
-      await addActivity('event_updated', { title: quickEvent.title.trim(), status: 'scheduled' });
-      toast.success('Wydarzenie dodane');
-      setIsQuickEventOpen(false);
-      resetQuickEvent();
-      await loadLead();
-    } catch (error: any) {
-      toast.error(`Błąd dodawania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
-    } finally {
-      setQuickEventSubmitting(false);
     }
   };
 
@@ -1583,32 +1471,6 @@ useEffect(() => {
               {linkCaseId ? <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>{linkingCase ? 'Podpinam...' : 'Podepnij sprawę'}</Button> : null}
               <Button type="button" onClick={handleStartService} disabled={createCasePending}>{createCasePending ? 'Tworzę...' : 'Rozpocznij obsługę'}</Button>
             </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={isQuickTaskOpen} onOpenChange={setIsQuickTaskOpen}>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
-            <form className="lead-detail-dialog-grid" onSubmit={handleCreateQuickTask}>
-              <Label>Tytuł<Input value={quickTask.title} onChange={(event) => setQuickTask((current) => ({ ...current, title: event.target.value }))} /></Label>
-              <Label>Typ<select className={modalSelectClass} value={quickTask.type} onChange={(event) => setQuickTask((current) => ({ ...current, type: event.target.value }))}>{TASK_TYPES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
-              <Label>Termin<Input type="datetime-local" value={quickTask.dueAt} onChange={(event) => setQuickTask((current) => ({ ...current, dueAt: event.target.value }))} /></Label>
-              <Label>Priorytet<select className={modalSelectClass} value={quickTask.priority} onChange={(event) => setQuickTask((current) => ({ ...current, priority: event.target.value }))}>{PRIORITY_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
-              <DialogFooter><Button type="button" variant="outline" onClick={() => setIsQuickTaskOpen(false)}>Anuluj</Button><Button type="submit" disabled={quickTaskSubmitting}>{quickTaskSubmitting ? 'Dodaję...' : 'Dodaj zadanie'}</Button></DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={isQuickEventOpen} onOpenChange={setIsQuickEventOpen}>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Dodaj wydarzenie</DialogTitle></DialogHeader>
-            <form className="lead-detail-dialog-grid" onSubmit={handleCreateQuickEvent}>
-              <Label>Tytuł<Input value={quickEvent.title} onChange={(event) => setQuickEvent((current) => ({ ...current, title: event.target.value }))} /></Label>
-              <Label>Typ<select className={modalSelectClass} value={quickEvent.type} onChange={(event) => setQuickEvent((current) => ({ ...current, type: event.target.value }))}>{EVENT_TYPES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
-              <Label>Start<Input type="datetime-local" value={quickEvent.startAt} onChange={(event) => { const pair = buildStartEndPair(event.target.value); setQuickEvent((current) => ({ ...current, startAt: pair.startAt, endAt: pair.endAt })); }} /></Label>
-              <Label>Koniec<Input type="datetime-local" value={quickEvent.endAt} onChange={(event) => setQuickEvent((current) => ({ ...current, endAt: event.target.value }))} /></Label>
-              <DialogFooter><Button type="button" variant="outline" onClick={() => setIsQuickEventOpen(false)}>Anuluj</Button><Button type="submit" disabled={quickEventSubmitting}>{quickEventSubmitting ? 'Dodaję...' : 'Dodaj wydarzenie'}</Button></DialogFooter>
-            </form>
           </DialogContent>
         </Dialog>
 
