@@ -33,6 +33,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import LeadAiFollowupDraft from '../components/LeadAiFollowupDraft';
 import LeadAiNextAction from '../components/LeadAiNextAction';
 import { Button } from '../components/ui/button';
@@ -487,6 +488,17 @@ export default function LeadDetail() {
 
   
   const leadServiceLockedMessage = 'Ten temat jest już w obsłudze. Dalszą pracę prowadź w sprawie.';
+  const STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS = 'Lead detail uses shared context action dialogs instead of local simplified quick forms';
+  const openLeadContextAction = (kind: ContextActionKind) => {
+    if (!leadId) return;
+    openContextQuickAction({
+      kind,
+      recordType: 'lead',
+      recordId: leadId,
+      leadId,
+      recordLabel: getLeadName(lead),
+    });
+  };
 useEffect(() => {
     if (!startServiceSuccess?.caseId) return;
     navigate(`/case/${startServiceSuccess.caseId}`);
@@ -595,10 +607,10 @@ useEffect(() => {
 
       {!leadInService ? (
         <div className="lead-detail-work-actions" aria-label="Szybkie akcje na leadzie">
-          <LeadActionButton onClick={() => setIsQuickTaskOpen(true)} disabled={!hasAccess}>
+          <LeadActionButton onClick={() => openLeadContextAction('task')} disabled={!hasAccess}>
             <Phone className="h-4 w-4" /> Zaplanuj telefon / follow-up
           </LeadActionButton>
-          <LeadActionButton onClick={() => setIsQuickEventOpen(true)} disabled={!hasAccess}>
+          <LeadActionButton onClick={() => openLeadContextAction('event')} disabled={!hasAccess}>
             <Calendar className="h-4 w-4" /> Zaplanuj spotkanie
           </LeadActionButton>
           <LeadActionButton onClick={() => handleUpdateStatus('contacted')} disabled={!hasAccess}>
@@ -610,7 +622,7 @@ useEffect(() => {
           <LeadActionButton onClick={() => handleUpdateStatus('waiting_response')} disabled={!hasAccess}>
             <Clock className="h-4 w-4" /> Oznacz waiting
           </LeadActionButton>
-          <LeadActionButton onClick={() => document.getElementById('lead-detail-note-box')?.focus()} disabled={!hasAccess}>
+          <LeadActionButton onClick={() => openLeadContextAction('note')} disabled={!hasAccess}>
             <FileText className="h-4 w-4" /> Dopisz notatkę
           </LeadActionButton>
           {serviceCaseId ? (

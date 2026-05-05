@@ -32,7 +32,7 @@ function assertNoteButtonPlacement() {
   if (noteDialogCalls < 2) fail('src/pages/CaseDetail.tsx: expected openCaseNoteDialog helper and one visible action');
   pass('src/pages/CaseDetail.tsx: note dialog helper/action retained');
 
-  const importantHeaderIndex = page.indexOf('NajwaĹĽniejsze dziaĹ‚ania');
+  const importantHeaderIndex = page.indexOf('Najważniejsze działania');
   const workListIndex = page.indexOf('data-case-work-list');
   if (importantHeaderIndex >= 0 && workListIndex > importantHeaderIndex) {
     const headerSlice = page.slice(importantHeaderIndex, workListIndex);
@@ -51,7 +51,7 @@ contains('src/pages/CaseDetail.tsx', 'data-case-create-action="note"', 'note act
 contains('src/pages/CaseDetail.tsx', 'const openCaseNoteDialog = () =>', 'note dialog helper retained');
 contains('src/pages/CaseDetail.tsx', 'setIsAddNoteOpen(true)', 'note modal opener retained');
 contains('src/pages/CaseDetail.tsx', 'pendingNoteFollowUp', 'Stage59 follow-up prompt retained');
-notContains('src/pages/CaseDetail.tsx', 'Zadania, wydarzenia, braki i notatki powiÄ…zane ze sprawÄ….', 'duplicated related-items helper copy');
+notContains('src/pages/CaseDetail.tsx', 'Zadania, wydarzenia, braki i notatki powiązane ze sprawą.', 'duplicated related-items helper copy');
 notContains('src/pages/CaseDetail.tsx', 'Zadania, wydarzenia, braki i notatki powiazane ze sprawa.', 'duplicated related-items helper copy without diacritics');
 assertNoteButtonPlacement();
 contains('src/styles/visual-stage13-case-detail-vnext.css', marker, 'Stage61 CSS marker');

@@ -28,15 +28,27 @@ type TaskCreateFormState = {
   reminderOffsetMinutes: number;
 };
 
+export type TaskCreateDialogContext = {
+  recordType?: 'lead' | 'client' | 'case';
+  recordId?: string;
+  recordLabel?: string;
+  leadId?: string | null;
+  caseId?: string | null;
+  clientId?: string | null;
+};
+
+const STAGE85_TASK_CREATE_DIALOG_CONTEXT = 'TaskCreateDialog supports relation context from lead, client and case detail screens';
+
 type TaskCreateDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSaved?: () => void | Promise<void>;
+  context?: TaskCreateDialogContext;
 };
 
-function defaultTaskCreateForm(): TaskCreateFormState {
+function defaultTaskCreateForm(context?: TaskCreateDialogContext): TaskCreateFormState {
   return {
-    title: '',
+    title: context?.recordLabel ? `Follow-up: ${context.recordLabel}` : '',
     type: 'follow_up',
     dueAt: toDateTimeLocalValue(new Date()),
     priority: 'medium',
@@ -53,19 +65,19 @@ function calculateReminderAt(dueAt: string, reminderMode: string, reminderOffset
   return new Date(dueTime - Number(reminderOffsetMinutes || 0) * 60_000).toISOString();
 }
 
-export default function TaskCreateDialog({ open, onOpenChange, onSaved }: TaskCreateDialogProps) {
+export default function TaskCreateDialog({ open, onOpenChange, onSaved, context }: TaskCreateDialogProps) {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
-  const [form, setForm] = useState<TaskCreateFormState>(() => defaultTaskCreateForm());
+  const [form, setForm] = useState<TaskCreateFormState>(() => defaultTaskCreateForm(context));
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (open) setForm(defaultTaskCreateForm());
-  }, [open]);
+    if (open) setForm(defaultTaskCreateForm(context));
+  }, [open, context?.recordType, context?.recordId, context?.recordLabel]);
 
   const closeDialog = () => {
     if (saving) return;
     onOpenChange(false);
-    setForm(defaultTaskCreateForm());
+    setForm(defaultTaskCreateForm(context));
   };
 
   const handleSubmit = async (event: FormEvent) => {
@@ -88,11 +100,14 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved }: TaskCr
         status: form.status || 'todo',
         reminderAt: calculateReminderAt(form.dueAt, form.reminderMode, form.reminderOffsetMinutes),
         recurrenceRule: form.reminderMode === 'recurring' ? 'FREQ=DAILY' : undefined,
+        leadId: context?.leadId || undefined,
+        caseId: context?.caseId || undefined,
+        clientId: context?.clientId || undefined,
         workspaceId,
       });
       toast.success('Zadanie dodane');
       onOpenChange(false);
-      setForm(defaultTaskCreateForm());
+      setForm(defaultTaskCreateForm(context));
       await onSaved?.();
     } catch {
       toast.error('Nie udało się zapisać zadania.');
@@ -107,6 +122,11 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved }: TaskCr
         <DialogHeader>
           <DialogTitle>Nowe zadanie</DialogTitle>
         </DialogHeader>
+        {context?.recordLabel ? (
+          <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-900" data-stage85-context-relation="true">
+            Powiązanie: {context.recordLabel}
+          </div>
+        ) : null}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label>Tytuł</Label>

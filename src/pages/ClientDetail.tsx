@@ -47,6 +47,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -759,6 +760,17 @@ export default function ClientDetail() {
   const nextAction = useMemo(() => buildClientNextAction(leads, cases, clientTasks, clientEvents), [cases, clientEvents, clientTasks, leads]);
   const lastActivityDate = clientActivities[0]?.createdAt || clientActivities[0]?.updatedAt || client?.updatedAt || client?.createdAt;
   const firstSourceLead = leads[0] || null;
+  const STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS = 'Client detail uses shared context action dialogs instead of local simplified quick forms';
+  const openClientContextAction = (kind: ContextActionKind) => {
+    if (!clientId) return;
+    openContextQuickAction({
+      kind,
+      recordType: 'client',
+      recordId: clientId,
+      clientId,
+      recordLabel: getClientName(client),
+    });
+  };
 
   const clientCaseRows = useMemo<ClientCaseRow[]>(() => {
     return cases.map((caseRecord) => {

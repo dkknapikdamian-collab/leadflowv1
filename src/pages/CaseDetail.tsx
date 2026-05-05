@@ -40,6 +40,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
@@ -620,6 +621,20 @@ export default function CaseDetail() {
   const [customNoteFollowUpAt, setCustomNoteFollowUpAt] = useState('');
   const [isCreatingNoteFollowUp, setIsCreatingNoteFollowUp] = useState(false);
 
+  const STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS = 'Case detail uses shared context action dialogs instead of local simplified task, event and note forms';
+  const openCaseContextAction = (kind: ContextActionKind) => {
+    if (!caseId) return;
+    openContextQuickAction({
+      kind,
+      recordType: 'case',
+      recordId: caseId,
+      caseId,
+      leadId: caseData?.leadId || null,
+      clientId: caseData?.clientId || null,
+      recordLabel: getCaseTitle(caseData),
+    });
+  };
+
   const refreshCaseData = useCallback(async () => {
     if (!caseId) {
       setLoadError('Brak identyfikatora sprawy w adresie.');
@@ -770,7 +785,7 @@ export default function CaseDetail() {
       reminderAt: '',
       priority: 'normal',
     });
-    setIsAddTaskOpen(true);
+    openCaseContextAction('task');
   };
 
   const openCaseEventDialog = () => {
@@ -782,13 +797,13 @@ export default function CaseDetail() {
       endAt: '',
       reminderAt: '',
     });
-    setIsAddEventOpen(true);
+    openCaseContextAction('event');
   };
 
   const openCaseNoteDialog = () => {
     if (!guardCaseDetailWriteAccess('dodać notatki')) return;
     setNewNote('');
-    setIsAddNoteOpen(true);
+    openCaseContextAction('note');
   };
 
   const recordActivity = async (eventType: string, payload: Record<string, any>) => {

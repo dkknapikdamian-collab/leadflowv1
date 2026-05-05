@@ -42,6 +42,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import { signOutFromSupabase } from '../lib/supabase-auth';
 import GlobalQuickActions from './GlobalQuickActions';
+import ContextActionDialogsHost from './ContextActionDialogs';
 import { parseISO, differenceInDays } from 'date-fns';
 
 interface LayoutProps {
@@ -345,6 +346,7 @@ export default function Layout({ children }: LayoutProps) {
             </span>
           </div>
           <GlobalQuickActions />
+          <ContextActionDialogsHost />
         </div>
 
         {workspace && !hasAccess && (
