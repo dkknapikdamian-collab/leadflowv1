@@ -31,6 +31,7 @@ import {
   startOfDay,
   subMinutes,
 } from 'date-fns';
+import type { CalendarReminderRule } from './work-items/normalize';
 
 export type ScheduleRawRecord = Record<string, unknown> & {
   id?: string | number;
@@ -84,6 +85,54 @@ export interface ReminderConfig {
   recurrenceMode: RecurrenceMode;
   recurrenceInterval: number;
   until: string | null;
+}
+
+function isCalendarReminderRule(value: unknown): value is CalendarReminderRule {
+  return Boolean(value && typeof value === 'object' && 'kind' in (value as Record<string, unknown>));
+}
+
+function parseTimeParts(value: string) {
+  const match = /^(\d{2}):(\d{2})$/.exec(String(value || '').trim());
+  if (!match) return null;
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
+  if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
+  return { hours, minutes };
+}
+
+export function reminderRuleToReminderAtIso(startAt: string, rule: CalendarReminderRule | null): string | null {
+  if (!rule) return null;
+  const startDate = parseISO(startAt);
+  if (Number.isNaN(startDate.getTime())) return null;
+  const time = parseTimeParts((rule as any).time || '09:00');
+  if (!time) return null;
+  const reminderDate = new Date(startDate);
+  reminderDate.setSeconds(0, 0);
+  reminderDate.setHours(time.hours, time.minutes, 0, 0);
+
+  if (rule.kind === 'same_day_at') {
+    if (reminderDate.getTime() >= startDate.getTime()) return null;
+    return reminderDate.toISOString();
+  }
+  if (rule.kind === 'day_before_at') {
+    reminderDate.setDate(reminderDate.getDate() - 1);
+    return reminderDate.toISOString();
+  }
+  if (rule.kind === 'two_days_before_at') {
+    reminderDate.setDate(reminderDate.getDate() - 2);
+    return reminderDate.toISOString();
+  }
+  if (rule.kind === 'week_before_at') {
+    reminderDate.setDate(reminderDate.getDate() - 7);
+    return reminderDate.toISOString();
+  }
+  if (rule.kind === 'custom') {
+    const amount = Math.max(1, Math.floor(Number(rule.amount) || 0));
+    reminderDate.setDate(reminderDate.getDate() - (rule.unit === 'weeks' ? amount * 7 : amount));
+    return reminderDate.toISOString();
+  }
+  return null;
 }
 
 export interface ScheduleEntry {
@@ -210,6 +259,9 @@ export function normalizeReminderConfig(value: unknown): ReminderConfig {
 }
 
 export function toReminderAtIso(startAt: string, reminderInput: unknown): string | null {
+  if (isCalendarReminderRule(reminderInput)) {
+    return reminderRuleToReminderAtIso(startAt, reminderInput);
+  }
   const reminder = normalizeReminderConfig(reminderInput);
   if (reminder.mode === 'none') return null;
   const startDate = parseISO(startAt);

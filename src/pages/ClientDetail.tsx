@@ -64,6 +64,8 @@ import {
   updateClientInSupabase,
   updateLeadInSupabase,
 } from '../lib/supabase-fallback';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
 import '../styles/visual-stage12-client-detail-vnext.css';
 
 type ClientTab = 'summary' | 'cases' | 'contact' | 'history';
@@ -202,11 +204,11 @@ function isPaidPaymentStatus(status: unknown) {
 }
 
 function getTaskDate(task: any) {
-  return String(task?.scheduledAt || task?.dueAt || task?.reminderAt || task?.date || task?.createdAt || '');
+  return String(normalizeWorkItem(task).dateAt || task?.createdAt || '');
 }
 
 function getEventDate(event: any) {
-  return String(event?.startAt || event?.scheduledAt || event?.reminderAt || event?.createdAt || '');
+  return String(normalizeWorkItem(event).dateAt || event?.createdAt || '');
 }
 
 function isDoneStatus(status: unknown) {
@@ -367,25 +369,18 @@ function getCaseSourceLead(caseRecord: any, leads: any[]) {
 }
 
 function getCaseNextAction(caseRecord: any, tasks: any[], events: any[]) {
-  const caseId = String(caseRecord?.id || '');
-  const caseTasks = tasks.filter((task) => String(task.caseId || '') === caseId && !isDoneStatus(task.status));
-  const caseEvents = events.filter((event) => String(event.caseId || '') === caseId && !isDoneStatus(event.status));
-  const entries = [
-    ...caseTasks.map((task) => ({
-      kind: 'task' as const,
-      title: String(task.title || 'Zadanie'),
-      date: getTaskDate(task),
-      time: asDate(getTaskDate(task))?.getTime() ?? Number.MAX_SAFE_INTEGER,
-    })),
-    ...caseEvents.map((event) => ({
-      kind: 'event' as const,
-      title: String(event.title || 'Wydarzenie'),
-      date: getEventDate(event),
-      time: asDate(getEventDate(event))?.getTime() ?? Number.MAX_SAFE_INTEGER,
-    })),
-  ].sort((left, right) => left.time - right.time);
-
-  return entries[0] || null;
+  const caseId = String(caseRecord?.id || '').trim();
+  const nearest = getNearestPlannedAction({
+    recordType: 'case',
+    recordId: caseId,
+    items: [...tasks, ...events],
+  });
+  if (!nearest) return null;
+  return {
+    kind: nearest.type === 'event' || nearest.type === 'meeting' ? 'event' as const : 'task' as const,
+    title: nearest.title,
+    date: nearest.when,
+  };
 }
 
 function relativeActionLabel(value: unknown) {
@@ -418,7 +413,31 @@ function nextActionToneClass(tone: ClientNextAction['tone']) {
   return 'client-detail-callout-muted';
 }
 
-function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events: any[]): ClientNextAction {
+function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events: any[], clientId: string): ClientNextAction {
+  const relatedLeadIds = leads.map((lead) => String(lead?.id || '')).filter(Boolean);
+  const relatedCaseIds = cases.map((caseRecord) => String(caseRecord?.id || '')).filter(Boolean);
+  const nearest = getNearestPlannedAction({
+    recordType: 'client',
+    recordId: String(clientId || ''),
+    relatedLeadIds,
+    relatedCaseIds,
+    items: [...tasks, ...events],
+  });
+  if (nearest) {
+    const isEvent = nearest.type === 'event' || nearest.type === 'meeting';
+    const targetCaseId = String(nearest.caseId || '');
+    const targetLeadId = String(nearest.leadId || '');
+    return {
+      kind: isEvent ? 'event' : 'task',
+      title: nearest.title,
+      subtitle: `${isEvent ? 'Wydarzenie' : 'Zadanie'} · ${formatDateTime(nearest.when)}`,
+      date: nearest.when,
+      relationId: targetCaseId || targetLeadId || String(clientId || ''),
+      to: targetCaseId ? `/cases/${targetCaseId}` : targetLeadId ? `/leads/${targetLeadId}` : '/today',
+      tone: 'amber',
+    };
+  }
+
   const now = Date.now();
   const overdueTask = tasks
     .filter((task) => !isDoneStatus(task?.status))
@@ -498,7 +517,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
 
   return {
     kind: 'empty',
-    title: 'Brak aktywnego ruchu',
+    title: 'Brak zaplanowanych działań',
     subtitle: 'Ten klient nie ma teraz otwartego zadania, wydarzenia, leada ani sprawy.',
     tone: 'slate',
   };
@@ -812,7 +831,7 @@ export default function ClientDetail() {
   const mainCaseCompleteness = mainCase ? getCaseCompleteness(mainCase) : 0;
   const activeTaskCount = useMemo(() => clientTasks.filter((task) => !isDoneStatus(task.status)).length, [clientTasks]);
   const activeEventCount = useMemo(() => clientEvents.filter((event) => !isDoneStatus(event.status)).length, [clientEvents]);
-  const nextAction = useMemo(() => buildClientNextAction(leads, cases, clientTasks, clientEvents), [cases, clientEvents, clientTasks, leads]);
+  const nextAction = useMemo(() => buildClientNextAction(leads, cases, clientTasks, clientEvents, String(clientId || '')), [cases, clientEvents, clientId, clientTasks, leads]);
   const lastActivityDate = clientActivities[0]?.createdAt || clientActivities[0]?.updatedAt || client?.updatedAt || client?.createdAt;
   const firstSourceLead = leads[0] || null;
   const STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS = 'Client detail uses shared context action dialogs instead of local simplified quick forms';
@@ -1211,8 +1230,8 @@ export default function ClientDetail() {
             {activeTab === 'summary' ? (
               <div className="client-detail-tab-panel">
                 <div className="client-detail-top-cards">
-                  <section className="client-detail-hero-card" aria-label="NastÄ™pny ruch">
-                    <div className="client-detail-hero-kicker">NASTÄPNA AKCJA</div>
+                  <section className="client-detail-hero-card" aria-label="Najbliższa zaplanowana akcja">
+                    <div className="client-detail-hero-kicker">NAJBLIŻSZA ZAPLANOWANA AKCJA</div>
                     <div className="client-detail-hero-date">{nextAction.date || formatDate(new Date())}</div>
                     <div className="client-detail-hero-sub">{nextAction.subtitle}</div>
                     <Button
@@ -1456,7 +1475,7 @@ export default function ClientDetail() {
 <section className="right-card client-detail-right-card client-detail-operational-center" aria-label="Centrum operacyjne klienta">
               <div className="client-detail-card-title-row">
                 <Clock className="h-4 w-4" />
-                <h2>NastÄ™pny ruch</h2>
+                <h2>Najbliższa zaplanowana akcja</h2>
               </div>
               <div className="client-detail-quick-actions-list">
                 <div>

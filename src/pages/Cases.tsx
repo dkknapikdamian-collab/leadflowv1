@@ -28,6 +28,7 @@ import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { deleteCaseWithRelations } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import {
@@ -203,6 +204,15 @@ function compactNextAction(value: string) {
   if (!text) return 'Brak zaplanowanych działań';
   const firstSentence = text.split(/[.!?]/)[0]?.trim() || text;
   return firstSentence.slice(0, 56);
+}
+
+function formatNearestCaseAction(action: ReturnType<typeof getNearestPlannedAction>) {
+  if (!action) return 'Brak zaplanowanych działań';
+  const parsed = new Date(action.when);
+  const dateLabel = Number.isNaN(parsed.getTime())
+    ? action.when
+    : format(parsed, 'd MMM yyyy, HH:mm', { locale: pl });
+  return `${action.title} · ${dateLabel}`;
 }
 
 export default function Cases() {
@@ -695,7 +705,12 @@ export default function Cases() {
                   const statusLabel = caseStatusLabel(record.status);
                   const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
                   const compactLifecyclePill = compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel;
-                  const nextActionLabel = compactNextAction(lifecycle.nextOperatorAction);
+                  const nearestCaseAction = getNearestPlannedAction({
+                    recordType: 'case',
+                    recordId: String(record.id || ''),
+                    items: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
+                  });
+                  const nextActionLabel = nearestCaseAction ? formatNearestCaseAction(nearestCaseAction) : compactNextAction(lifecycle.nextOperatorAction);
                   const metaParts = [
                     lifecycle.openActionCount > 0 ? `${lifecycle.openActionCount} działań` : 'brak działań',
                     lifecycle.waitingApprovalCount > 0 ? `akceptacje ${lifecycle.waitingApprovalCount}` : null,
@@ -719,7 +734,7 @@ export default function Cases() {
                         <strong>{percent}%</strong>
                       </span>
                       <span className="lead-action-cell">
-                        <span className="mini">Następny ruch</span>
+                        <span className="mini">Najbliższy termin w sprawie</span>
                         <strong className="next-action-text">{nextActionLabel}</strong>
                         {updatedAt ? <span className="sub next-action-date">{format(updatedAt, 'd MMM yyyy', { locale: pl })}</span> : null}
                       </span>
@@ -743,7 +758,7 @@ export default function Cases() {
             <aside className="right-card">
               <div className="panel-head"><div><h3>Operacyjne skróty</h3><p>Najczęstsze ruchy dla spraw.</p></div></div>
               <div className="quick-list">
-                <button type="button" onClick={() => toggleCaseView('needs_next_step')}><span>Bez kroku</span><strong>{stats.needsNextStep}</strong></button>
+                <button type="button" onClick={() => toggleCaseView('needs_next_step')}><span>Bez zaplanowanej akcji</span><strong>{stats.needsNextStep}</strong></button>
                 <button type="button" onClick={() => toggleCaseView('linked')}><span>Portal klienta</span><strong>{stats.linked}</strong></button>
                 <button type="button" onClick={() => toggleCaseView('waiting')}><span>Sprawy bez ruchu</span><strong>{stats.waiting}</strong></button>
                 <button type="button" onClick={() => toggleCaseView('approval')}><span>Akceptacje</span><strong>{stats.approval}</strong></button>

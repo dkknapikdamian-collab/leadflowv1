@@ -10,7 +10,8 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
-import { createClientInSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase, updateClientInSupabase } from '../lib/supabase-fallback';
+import { createClientInSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase, fetchTasksFromSupabase, updateClientInSupabase } from '../lib/supabase-fallback';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
@@ -75,6 +76,8 @@ export default function Clients() {
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [showArchived, setShowArchived] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -89,16 +92,20 @@ export default function Clients() {
     }
     setLoading(true);
     try {
-      const [clientRows, leadRows, caseRows, paymentRows] = await Promise.all([
+      const [clientRows, leadRows, caseRows, paymentRows, taskRows, eventRows] = await Promise.all([
         fetchClientsFromSupabase(),
         fetchLeadsFromSupabase().catch(() => []),
         fetchCasesFromSupabase().catch(() => []),
         fetchPaymentsFromSupabase().catch(() => []),
+        fetchTasksFromSupabase().catch(() => []),
+        fetchEventsFromSupabase().catch(() => []),
       ]);
       setClients(clientRows as ClientRecord[]);
       setLeads(leadRows as any[]);
       setCases(caseRows as any[]);
       setPayments(paymentRows as any[]);
+      setTasks(taskRows as any[]);
+      setEvents(eventRows as any[]);
     } catch (error: any) {
       toast.error(`Błąd odczytu klientów: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -215,6 +222,39 @@ export default function Clients() {
     }
     return map;
   }, [caseValueByClientId, clientFieldValueByClientId, clients, leadValueByClientId, paymentValueByClientId]);
+
+  const nearestActionByClientId = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const client of clients) {
+      const clientId = String(client.id || '').trim();
+      if (!clientId) continue;
+      const relatedLeadIds = (leads as Record<string, unknown>[])
+        .filter((lead) => getStage35RelationClientId(lead) === clientId)
+        .map((lead) => String(lead.id || '').trim())
+        .filter(Boolean);
+      const relatedCaseIds = (cases as Record<string, unknown>[])
+        .filter((caseRow) => getStage35RelationClientId(caseRow) === clientId)
+        .map((caseRow) => String(caseRow.id || '').trim())
+        .filter(Boolean);
+      const nearest = getNearestPlannedAction({
+        recordType: 'client',
+        recordId: clientId,
+        relatedLeadIds,
+        relatedCaseIds,
+        items: [...tasks, ...events],
+      });
+      if (!nearest) {
+        map.set(clientId, 'Brak zaplanowanych działań');
+        continue;
+      }
+      const parsed = new Date(nearest.when);
+      const dateLabel = Number.isNaN(parsed.getTime())
+        ? nearest.when
+        : parsed.toLocaleString('pl-PL', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+      map.set(clientId, `${nearest.title} · ${dateLabel}`);
+    }
+    return map;
+  }, [cases, clients, events, leads, tasks]);
 
   const clientsWithCases = useMemo(
     () => clients.filter((client) => !client.archivedAt && (countersByClientId.get(client.id)?.cases || 0) > 0).length,
@@ -482,7 +522,7 @@ export default function Clients() {
                            </span>
                          </span>
                          <span className="lead-value-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
-                         <span className="lead-action-cell"><span className="mini">Następny ruch</span><strong>{counters.cases > 0 ? 'W obsłudze' : 'Jutro'}</strong></span>
+                         <span className="lead-action-cell"><span className="mini">Najbliższa zaplanowana akcja</span><strong>{nearestActionByClientId.get(client.id) || 'Brak zaplanowanych działań'}</strong></span>
                          <span className="lead-actions">
                            <span className="btn ghost cf-icon-action-button" aria-hidden="true"><UserRound className="h-4 w-4" /></span>
                            <button

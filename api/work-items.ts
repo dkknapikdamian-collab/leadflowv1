@@ -1,7 +1,7 @@
 import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { normalizeEventStatus, normalizeTaskStatus } from '../src/lib/domain-statuses.js';
-import { normalizeEventContract, normalizeTaskContract } from '../src/lib/data-contract.js';
+import { normalizeWorkItem } from '../src/lib/work-items/normalize.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendarConnection, updateGoogleCalendarEvent } from '../src/server/google-calendar-sync.js';
 
@@ -304,7 +304,7 @@ function isTaskRow(row: any) {
 }
 
 function normalizeTask(row: any) {
-  const task = normalizeTaskContract(row || {});
+  const task = normalizeWorkItem(row || {});
   const scheduledAt = task.scheduledAt || task.createdAt || '';
   const reminderAt = task.reminderAt || null;
   const scheduledDate = scheduledAt ? new Date(scheduledAt) : null;
@@ -339,6 +339,64 @@ function normalizeTask(row: any) {
   };
 }
 
+type CalendarReminderRule =
+  | { kind: 'same_day_at'; time: string }
+  | { kind: 'day_before_at'; time: string }
+  | { kind: 'two_days_before_at'; time: string }
+  | { kind: 'week_before_at'; time: string }
+  | { kind: 'custom'; amount: number; unit: 'days' | 'weeks'; time: string };
+
+function parseTimeParts(value: unknown) {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  const match = /^(\d{2}):(\d{2})$/.exec(raw);
+  if (!match) return null;
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
+  if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
+  return { hours, minutes };
+}
+
+function parseCalendarReminderRule(value: unknown): CalendarReminderRule | null {
+  if (!value || typeof value !== 'object') return null;
+  const row = value as Record<string, unknown>;
+  const kind = String(row.kind || '').trim().toLowerCase();
+  const time = String(row.time || '09:00').trim();
+  if (!parseTimeParts(time)) return null;
+  if (kind === 'same_day_at') return { kind: 'same_day_at', time };
+  if (kind === 'day_before_at') return { kind: 'day_before_at', time };
+  if (kind === 'two_days_before_at') return { kind: 'two_days_before_at', time };
+  if (kind === 'week_before_at') return { kind: 'week_before_at', time };
+  if (kind === 'custom') {
+    const amount = Number(row.amount);
+    const unit = String(row.unit || '').trim().toLowerCase();
+    if (!Number.isFinite(amount) || amount <= 0) return null;
+    if (unit !== 'days' && unit !== 'weeks') return null;
+    return { kind: 'custom', amount: Math.floor(amount), unit, time };
+  }
+  return null;
+}
+
+function reminderRuleToIso(startAtIso: string, rule: CalendarReminderRule | null) {
+  if (!rule) return null;
+  const start = new Date(startAtIso);
+  if (!Number.isFinite(start.getTime())) return null;
+  const time = parseTimeParts(rule.time);
+  if (!time) return null;
+  const reminder = new Date(start);
+  reminder.setHours(time.hours, time.minutes, 0, 0);
+
+  if (rule.kind === 'same_day_at') {
+    if (reminder.getTime() >= start.getTime()) return null;
+    return reminder.toISOString();
+  }
+  if (rule.kind === 'day_before_at') reminder.setDate(reminder.getDate() - 1);
+  if (rule.kind === 'two_days_before_at') reminder.setDate(reminder.getDate() - 2);
+  if (rule.kind === 'week_before_at') reminder.setDate(reminder.getDate() - 7);
+  if (rule.kind === 'custom') reminder.setDate(reminder.getDate() - (rule.unit === 'weeks' ? rule.amount * 7 : rule.amount));
+  return reminder.toISOString();
+}
+
 function isEventRow(row: any) {
   const recordType = String(row.record_type || row.recordType || '').toLowerCase();
   const hasStartAt = Boolean(row.start_at || row.startAt || row.end_at || row.endAt);
@@ -350,7 +408,7 @@ function isEventRow(row: any) {
 }
 
 function normalizeEvent(row: any) {
-  const event = normalizeEventContract(row || {});
+  const event = normalizeWorkItem(row || {});
   const startAt = event.startAt || event.scheduledAt || '';
   const reminderAt = event.reminderAt || '';
   const startDate = startAt ? new Date(startAt) : null;
@@ -487,21 +545,39 @@ export default async function handler(req: any, res: any) {
       if (body.status !== undefined) payload.status = kind === 'events' ? normalizeEventStatus(body.status) : normalizeTaskStatus(body.status);
 
       if (kind === 'tasks') {
+        const reminderRule = parseCalendarReminderRule(body.reminderRule);
         if (body.priority !== undefined) payload.priority = body.priority;
         if (body.date !== undefined) payload.scheduled_at = body.date ? new Date(`${body.date}T09:00:00`).toISOString() : null;
         if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? new Date(body.scheduledAt).toISOString() : null;
         if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
         if (body.caseId !== undefined) payload.case_id = asNullableUuid(body.caseId);
-        if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
+        if (body.reminderRule !== undefined) {
+          const startForReminder = String(body.scheduledAt || payload.scheduled_at || currentRow?.scheduled_at || '');
+          const computed = reminderRuleToIso(startForReminder, reminderRule);
+          if (reminderRule && !computed) {
+            res.status(400).json({ error: 'INVALID_REMINDER_RULE' });
+            return;
+          }
+          payload.reminder = computed || 'none';
+        } else if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
         if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
       } else {
+        const reminderRule = parseCalendarReminderRule(body.reminderRule);
         if (body.startAt !== undefined) {
           const iso = body.startAt ? new Date(body.startAt).toISOString() : null;
           payload.start_at = iso;
           payload.scheduled_at = iso;
         }
         if (body.endAt !== undefined) payload.end_at = body.endAt ? new Date(body.endAt).toISOString() : null;
-        if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
+        if (body.reminderRule !== undefined) {
+          const startForReminder = String(body.startAt || payload.start_at || currentRow?.start_at || currentRow?.scheduled_at || '');
+          const computed = reminderRuleToIso(startForReminder, reminderRule);
+          if (reminderRule && !computed) {
+            res.status(400).json({ error: 'INVALID_REMINDER_RULE' });
+            return;
+          }
+          payload.reminder = computed || 'none';
+        } else if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
         if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
         if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
         if (body.caseId !== undefined) payload.case_id = asNullableUuid(body.caseId);
@@ -580,6 +656,12 @@ export default async function handler(req: any, res: any) {
         : body.date
           ? new Date(`${body.date}T09:00:00`).toISOString()
           : null;
+      const reminderRule = parseCalendarReminderRule(body.reminderRule);
+      const reminderAtFromRule = scheduledAt && reminderRule ? reminderRuleToIso(scheduledAt, reminderRule) : null;
+      if (scheduledAt && reminderRule && !reminderAtFromRule) {
+        res.status(400).json({ error: 'INVALID_REMINDER_RULE' });
+        return;
+      }
       if (body.leadId !== undefined && asNullableUuid(body.leadId)) {
         await requireScopedRow('leads', asNullableUuid(body.leadId)!, finalWorkspaceId, 'LEAD_NOT_FOUND');
       }
@@ -601,7 +683,7 @@ export default async function handler(req: any, res: any) {
         start_at: null,
         end_at: null,
         recurrence: body.recurrenceRule || 'none',
-        reminder: body.reminderAt || 'none',
+        reminder: reminderAtFromRule || body.reminderAt || 'none',
         show_in_tasks: true,
         show_in_calendar: true,
         created_at: nowIso,
@@ -617,6 +699,12 @@ export default async function handler(req: any, res: any) {
     }
 
     const startAt = body.startAt ? new Date(body.startAt).toISOString() : nowIso;
+    const reminderRule = parseCalendarReminderRule(body.reminderRule);
+    const reminderAtFromRule = reminderRule ? reminderRuleToIso(startAt, reminderRule) : null;
+    if (reminderRule && !reminderAtFromRule) {
+      res.status(400).json({ error: 'INVALID_REMINDER_RULE' });
+      return;
+    }
     if (body.leadId !== undefined && asNullableUuid(body.leadId)) {
       await requireScopedRow('leads', asNullableUuid(body.leadId)!, finalWorkspaceId, 'LEAD_NOT_FOUND');
     }
@@ -638,7 +726,7 @@ export default async function handler(req: any, res: any) {
       start_at: startAt,
       end_at: body.endAt ? new Date(body.endAt).toISOString() : null,
       recurrence: body.recurrenceRule || 'none',
-      reminder: body.reminderAt || 'none',
+      reminder: reminderAtFromRule || body.reminderAt || 'none',
       show_in_tasks: false,
       show_in_calendar: true,
       created_at: nowIso,

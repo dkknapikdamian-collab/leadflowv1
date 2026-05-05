@@ -119,6 +119,7 @@ import {
 } from '../lib/supabase-fallback';
 import { useSearchParams } from 'react-router-dom';
 import { isActiveSalesLead } from '../lib/lead-health';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
 import '../styles/visual-stage21-task-form-vnext.css';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 
@@ -131,7 +132,8 @@ const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-whit
 type TaskScope = 'active' | 'today' | 'week' | 'overdue' | 'without-lead' | 'done';
 
 function getTaskStart(task: any) {
-  return getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
+  const normalized = normalizeWorkItem(task);
+  return getTaskStartAt(task) || normalized.dateAt || `${getTaskDate(task)}T09:00`;
 }
 
 function hasLeadLink(task: any) {
@@ -151,7 +153,8 @@ function isTaskForToday(task: any) {
 }
 
 function hasTaskTerm(task: any) {
-  return Boolean(task.scheduledAt || task.dueAt || task.startAt || task.date || task.reminderAt);
+  const normalized = normalizeWorkItem(task);
+  return Boolean(normalized.dateAt || normalized.scheduledAt || normalized.startAt || normalized.reminderAt);
 }
 
 function isTaskInCurrentWeek(task: any) {
@@ -392,7 +395,7 @@ export default function Tasks() {
     ]);
     const clientRows = await fetchClientsFromSupabase().catch(() => []);
 
-    setTasks(taskRows as any[]);
+    setTasks((taskRows as any[]).map((row) => ({ ...row, ...normalizeWorkItem(row) })));
     setLeads(leadRows as any[]);
     setCases(caseRows as any[]);
     setClients(clientRows as any[]);
@@ -447,7 +450,7 @@ export default function Tasks() {
         ]);
 
         if (cancelled) return;
-        setTasks(taskRows as any[]);
+        setTasks((taskRows as any[]).map((row) => ({ ...row, ...normalizeWorkItem(row) })));
         setLeads(leadRows as any[]);
         setCases(caseRows as any[]);
         setClients(clientRows as any[]);
@@ -1021,7 +1024,7 @@ await updateTaskInSupabase({
         ? `Lead: ${task.leadName}`
         : clientName
           ? `Klient: ${clientName}`
-          : 'Brak powiązań';
+          : 'Niepowiązane z leadem/sprawą/klientem';
     const statusLabel = getTaskStatusLabel(task);
     const statusTone = done
       ? 'is-done'

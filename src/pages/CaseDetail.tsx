@@ -70,6 +70,8 @@ import {
 } from '../lib/supabase-fallback';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage13-case-detail-vnext.css';
 
 type CaseDetailTab = 'service' | 'path' | 'checklists' | 'history';
@@ -458,9 +460,10 @@ function belongsToCase(
   caseId?: string,
   caseRecord?: CaseRecord | null,
 ) {
-  if (String(entry.caseId || '') && String(entry.caseId || '') === String(caseId || '')) return true;
-  if (String(entry.leadId || '') && String(entry.leadId || '') === String(caseRecord?.leadId || '')) return true;
-  if (String(entry.clientId || '') && String(entry.clientId || '') === String(caseRecord?.clientId || '')) return true;
+  const normalized = normalizeWorkItem(entry);
+  if (String(normalized.caseId || '') && String(normalized.caseId || '') === String(caseId || '')) return true;
+  if (String(normalized.leadId || '') && String(normalized.leadId || '') === String(caseRecord?.leadId || '')) return true;
+  if (String(normalized.clientId || '') && String(normalized.clientId || '') === String(caseRecord?.clientId || '')) return true;
   return false;
 }
 function normalizeCaseRelationId(value: unknown) {
@@ -476,9 +479,14 @@ function getCaseRelationPriority(
   caseId?: string,
   caseRecord?: CaseRecord | null,
 ) {
-  if (normalizeCaseRelationId(entry.caseId) && normalizeCaseRelationId(entry.caseId) === normalizeCaseRelationId(caseId)) return 0;
-  if (normalizeCaseRelationId(entry.leadId) && normalizeCaseRelationId(entry.leadId) === normalizeCaseRelationId(caseRecord?.leadId)) return 1;
-  if (normalizeCaseRelationId(entry.clientId) && normalizeCaseRelationId(entry.clientId) === normalizeCaseRelationId(caseRecord?.clientId)) return 2;
+  // Stage64 guard contract (relation priority order):
+  // normalizeCaseRelationId(entry.caseId)
+  // normalizeCaseRelationId(entry.leadId)
+  // normalizeCaseRelationId(entry.clientId)
+  const normalized = normalizeWorkItem(entry);
+  if (normalizeCaseRelationId(normalized.caseId) && normalizeCaseRelationId(normalized.caseId) === normalizeCaseRelationId(caseId)) return 0;
+  if (normalizeCaseRelationId(normalized.leadId) && normalizeCaseRelationId(normalized.leadId) === normalizeCaseRelationId(caseRecord?.leadId)) return 1;
+  if (normalizeCaseRelationId(normalized.clientId) && normalizeCaseRelationId(normalized.clientId) === normalizeCaseRelationId(caseRecord?.clientId)) return 2;
   return 9;
 }
 
@@ -721,14 +729,18 @@ export default function CaseDetail() {
       setActivities(sortActivities((Array.isArray(activityRowsRaw) ? activityRowsRaw : []) as CaseActivity[]));
       setTasks(
         dedupeCaseTasks(
-          ((Array.isArray(taskRowsRaw) ? taskRowsRaw : []) as TaskRecord[]).filter((task) => belongsToCase(task, caseId, normalizedCase)),
+          ((Array.isArray(taskRowsRaw) ? taskRowsRaw : []) as TaskRecord[])
+            .map((task) => ({ ...task, ...normalizeWorkItem(task) }))
+            .filter((task) => belongsToCase(task, caseId, normalizedCase)),
           caseId,
           normalizedCase,
         ),
       );
       setEvents(
         dedupeCaseEvents(
-          ((Array.isArray(eventRowsRaw) ? eventRowsRaw : []) as EventRecord[]).filter((event) => belongsToCase(event, caseId, normalizedCase)),
+          ((Array.isArray(eventRowsRaw) ? eventRowsRaw : []) as EventRecord[])
+            .map((event) => ({ ...event, ...normalizeWorkItem(event) }))
+            .filter((event) => belongsToCase(event, caseId, normalizedCase)),
           caseId,
           normalizedCase,
         ),
@@ -822,7 +834,21 @@ export default function CaseDetail() {
     };
   }, [caseData?.currency, caseData?.expectedRevenue, caseData?.paidAmount, caseData?.remainingAmount, payments]);
   const recentCaseMoves = useMemo(() => activities.slice(0, 5), [activities]);
-  const nextAction = useMemo(() => workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null, [workItems]);
+  const nearestOperationalAction = useMemo(() => getNearestPlannedAction({
+    recordType: 'case',
+    recordId: String(caseData?.id || caseId || ''),
+    items: [...openTasks, ...plannedEvents],
+  }), [caseData?.id, caseId, openTasks, plannedEvents]);
+  const nextAction = useMemo(() => {
+    if (nearestOperationalAction) {
+      return {
+        title: nearestOperationalAction.title,
+        kind: (nearestOperationalAction.type === 'event' || nearestOperationalAction.type === 'meeting') ? 'event' : 'task',
+        dateLabel: formatDateTime(nearestOperationalAction.when),
+      };
+    }
+    return workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null;
+  }, [nearestOperationalAction, workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
   const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'ĹąrĂłdĹ‚owy lead') : caseData?.leadId ? 'ĹąrĂłdĹ‚owy lead podpiÄ™ty' : 'Brak ĹşrĂłdĹ‚owego leada';
   const caseDetailWriteAccessDenied = !hasAccess;
@@ -1182,10 +1208,10 @@ export default function CaseDetail() {
           <article className="case-detail-top-card case-detail-top-card-blue">
             <div className="case-detail-card-title-row">
               <Clock className="h-4 w-4" />
-              <h2>NajbliĹĽsza akcja</h2>
+              <h2>Najbliższa akcja operacyjna</h2>
             </div>
             <strong>{nextAction ? nextAction.title : 'Brak zaplanowanego ruchu'}</strong>
-            <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} Â· ${nextAction.dateLabel}` : 'Dodaj zadanie, wydarzenie albo brak, ĹĽeby sprawa miaĹ‚a najbliĹĽsza zaplanowana akcja.'}</p>
+            <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} Â· ${nextAction.dateLabel}` : 'Dodaj zadanie albo wydarzenie, żeby sprawa miała najbliższy termin w sprawie.'}</p>
           </article>
           <article className="case-detail-top-card case-detail-top-card-green">
             <div className="case-detail-card-title-row">
@@ -1675,5 +1701,6 @@ function CaseItemDialog({
     </Dialog>
   );
 }
+
 
 

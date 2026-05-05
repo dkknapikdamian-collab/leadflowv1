@@ -10,7 +10,7 @@ import {
   getStoredWorkspaceId,
   isSupabaseConfigured,
 } from './supabase-fallback';
-import { normalizeEventContract, normalizeTaskContract } from './data-contract';
+import { normalizeWorkItem } from './work-items/normalize';
 
 export type CalendarTaskItem = {
   id: string;
@@ -127,6 +127,7 @@ function normalizeRecurrenceObject(row: Record<string, unknown>, recurrenceRule?
 }
 
 function normalizeReminderObject(row: Record<string, unknown>, scheduledAt: string, reminderAt?: string | null) {
+  if (row.reminderRule && typeof row.reminderRule === 'object') return row.reminderRule as Record<string, unknown>;
   if (row.reminder && typeof row.reminder === 'object') return row.reminder as Record<string, unknown>;
   return reminderAt
     ? { mode: 'once', minutesBefore: normalizeReminderMinutes(scheduledAt, reminderAt), recurrenceMode: 'daily', recurrenceInterval: 1, until: null }
@@ -145,8 +146,8 @@ function getRecurrenceMeta(row: Record<string, unknown>) {
 }
 
 export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTaskItem | null {
-  const task = normalizeTaskContract(row);
-  const scheduledAt = task.scheduledAt;
+  const task = normalizeWorkItem(row);
+  const scheduledAt = task.dateAt || task.scheduledAt;
   if (!scheduledAt || !isIsoLike(scheduledAt)) return null;
 
   const { recurrenceEndType, recurrenceEndAt, recurrenceCount } = getRecurrenceMeta(row);
@@ -154,7 +155,7 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
   return {
     id: task.id,
     title: task.title || 'Zadanie bez tytułu',
-    date: task.date || scheduledAt.slice(0, 10),
+    date: scheduledAt.slice(0, 10),
     dueAt: scheduledAt,
     time: scheduledAt.slice(11, 16),
     scheduledAt,
@@ -162,7 +163,7 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
     startsAt: scheduledAt,
     status: task.status || 'todo',
     type: task.type || 'task',
-    priority: task.priority,
+    priority: typeof row.priority === 'string' ? row.priority : undefined,
     reminderAt: task.reminderAt,
     recurrenceRule: task.recurrenceRule || undefined,
     recurrence: normalizeRecurrenceObject(row, task.recurrenceRule, recurrenceEndType, recurrenceCount),
@@ -178,8 +179,8 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
 }
 
 export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEventItem | null {
-  const event = normalizeEventContract(row);
-  const startAt = event.startAt;
+  const event = normalizeWorkItem(row);
+  const startAt = event.dateAt || event.startAt;
   if (!startAt || !isIsoLike(startAt)) return null;
 
   const { recurrenceEndType, recurrenceEndAt, recurrenceCount } = getRecurrenceMeta(row);
