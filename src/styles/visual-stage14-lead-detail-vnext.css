@@ -879,3 +879,107 @@
     padding-right: 0 !important;
   }
 }
+
+
+/* STAGE89_RIGHT_RAIL_WORK_CENTER_UNCRAMP */
+.lead-detail-shell {
+  grid-template-columns: minmax(0, 1fr) minmax(400px, 440px);
+}
+
+.lead-detail-right-rail {
+  min-width: 380px;
+}
+
+.lead-detail-right-rail .lead-detail-work-center {
+  margin: 0;
+  padding: 16px;
+  overflow: visible !important;
+}
+
+.lead-detail-right-rail .lead-detail-work-center-header {
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.lead-detail-right-rail .lead-detail-work-center-header h2 {
+  font-size: 18px;
+  line-height: 1.18;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+.lead-detail-right-rail .lead-detail-work-center-header p {
+  max-width: 270px;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+.lead-detail-right-rail .lead-detail-work-center-grid {
+  grid-template-columns: repeat(3, minmax(96px, 1fr));
+  gap: 10px;
+}
+
+.lead-detail-right-rail .lead-detail-work-metric,
+.lead-detail-right-rail .lead-detail-work-reason {
+  min-width: 0;
+  padding: 11px;
+}
+
+.lead-detail-right-rail .lead-detail-work-metric small,
+.lead-detail-right-rail .lead-detail-work-reason small {
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: none !important;
+  letter-spacing: 0.035em !important;
+  line-height: 1.25 !important;
+}
+
+.lead-detail-right-rail .lead-detail-work-metric strong,
+.lead-detail-right-rail .lead-detail-work-reason p {
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+  hyphens: none !important;
+  line-height: 1.35 !important;
+}
+
+.lead-detail-right-rail .lead-detail-work-metric-wide strong {
+  font-size: 13px;
+}
+
+@media (max-width: 1280px) {
+  .lead-detail-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 390px);
+  }
+
+  .lead-detail-right-rail {
+    min-width: 340px;
+  }
+
+  .lead-detail-right-rail .lead-detail-work-center-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lead-detail-right-rail .lead-detail-work-metric-wide {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1120px) {
+  .lead-detail-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .lead-detail-right-rail {
+    min-width: 0;
+  }
+
+  .lead-detail-right-rail .lead-detail-work-center-grid {
+    grid-template-columns: repeat(3, minmax(96px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .lead-detail-right-rail .lead-detail-work-center-grid {
+    grid-template-columns: 1fr;
+  }
+}

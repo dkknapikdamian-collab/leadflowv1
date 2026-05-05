@@ -127,6 +127,15 @@ export function clearAdminToolsStorage() {
   });
 }
 
+export function clearAdminFeedbackItems() {
+  writeReviewItems([]);
+  writeBugItems([]);
+  writeCopyItems([]);
+  writeButtonSnapshots([]);
+}
+
+// ADMIN_FEEDBACK_EXPORT_CLEAR_COUNTERS_STAGE89
+
 export function readFullAdminFeedbackExport(): Omit<AdminFeedbackExport, 'generatedAt' | 'commit' | 'route' | 'userAgent' | 'viewport'> {
   return {
     version: 'admin_tools_v1',

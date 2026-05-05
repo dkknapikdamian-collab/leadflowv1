@@ -21,6 +21,7 @@ import {
   readCopyItems,
   readReviewItems,
   readAdminToolsSettings,
+  clearAdminFeedbackItems,
   writeActiveAdminTool,
   writeAdminToolsSettings,
   writeButtonSnapshots,
@@ -55,6 +56,7 @@ type QuickEditorDragState = {
 const ADMIN_CLICK_TO_ANNOTATE_STAGE87D = 'admin tools select element first, then quick note, Enter saves';
 const ADMIN_QUICK_EDITOR_PORTAL_DRAG_STAGE87F = 'quick editor is portaled to body and draggable below topbar';
 const ADMIN_TOOLBAR_UTF8_PORTAL_FORCE_STAGE87G = 'toolbar copied as utf8 source file to prevent PowerShell mojibake';
+const ADMIN_EXPORT_CLEARS_COUNTERS_STAGE89 = 'export downloads feedback and clears local counters immediately';
 const ADMIN_DIALOG_STACK_FIX_STAGE87C = 'superseded by Stage87D click-to-annotate quick editor';
 const ADMIN_DIALOG_DRAG_LOWER_STAGE87B = 'superseded by Stage87D click-to-annotate quick editor';
 
@@ -425,6 +427,31 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
     setQuickEditorPosition(DEFAULT_QUICK_EDITOR_POSITION);
   };
 
+  const refreshAdminFeedbackCounters = () => {
+    setReviewCount(readReviewItems().length);
+    setBugCount(readBugItems().length);
+    setCopyCount(readCopyItems().length);
+    setButtonSnapshots(readButtonSnapshots());
+  };
+
+  const clearExportedAdminFeedback = (kind: 'JSON' | 'Markdown') => {
+    clearAdminFeedbackItems();
+    refreshAdminFeedbackCounters();
+    setTargetDialog(null);
+    clearAdminTargetMarks();
+    setLastSaveMessage(`Wyeksportowano ${kind} i wyczyszczono licznik zgłoszeń.`);
+  };
+
+  const exportJsonAndClear = () => {
+    exportAdminFeedbackJson();
+    clearExportedAdminFeedback('JSON');
+  };
+
+  const exportMarkdownAndClear = () => {
+    exportAdminFeedbackMarkdown();
+    clearExportedAdminFeedback('Markdown');
+  };
+
   const getQuickEditorStyle = (): CSSProperties => ({
     top: quickEditorPosition.top,
     right: quickEditorPosition.right,
@@ -610,9 +637,9 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
         {activeTool === 'export' ? (
           <div className="admin-tool-popover" data-admin-tool-ui="true">
             <strong>Export Center</strong>
-            <button type="button" onClick={exportAdminFeedbackJson} data-admin-tool-ui="true">Pobierz JSON</button>
-            <button type="button" onClick={exportAdminFeedbackMarkdown} data-admin-tool-ui="true">Pobierz Markdown</button>
-            <small>Pliki trafią do Downloads przez mechanizm przeglądarki.</small>
+            <button type="button" onClick={exportJsonAndClear} data-admin-tool-ui="true">Pobierz JSON i wyczyść licznik</button>
+            <button type="button" onClick={exportMarkdownAndClear} data-admin-tool-ui="true">Pobierz Markdown i wyczyść licznik</button>
+            <small>Po eksporcie lokalne zgłoszenia i licznik zostaną wyczyszczone. Pliki trafią do Downloads.</small>
           </div>
         ) : null}
       </div>
@@ -627,3 +654,5 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
 // ADMIN_CLICK_TO_ANNOTATE_STAGE87D
 // ADMIN_QUICK_EDITOR_PORTAL_DRAG_STAGE87F
 // ADMIN_TOOLBAR_UTF8_PORTAL_FORCE_STAGE87G
+
+// ADMIN_EXPORT_CLEARS_COUNTERS_STAGE89
