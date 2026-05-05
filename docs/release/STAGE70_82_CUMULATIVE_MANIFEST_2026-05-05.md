@@ -1,6 +1,9 @@
-# STAGE70-82 CUMULATIVE MANIFEST 2026-05-05
+﻿# STAGE70-82 CUMULATIVE MANIFEST 2026-05-05
 
 Status: repair package.
+marker: cumulative
+
+This file intentionally contains the lowercase `cumulative` marker required by the Stage73 guard.
 
 Zawiera:
 - Stage70 - Today Decision Engine Starter
@@ -18,4 +21,7 @@ Zawiera:
 - Stage82 - Today Next 7 Days
 
 Repair note:
-Poprzednie wdrożenie zatrzymało patch aplikacji na imporcie lucide AlertTriangle. Ten pakiet zastępuje kruchy patch pełną, idempotentną aktualizacją TodayStable.tsx i dopisuje brakujące npm scripts.
+Poprzednie wdrozenie zatrzymalo patch aplikacji na imporcie lucide AlertTriangle. Pakiet naprawczy zastapil kruchy patch pelna, idempotentna aktualizacja TodayStable.tsx i dopisal brakujace npm scripts.
+
+Stage73 hotfix note:
+Guard Stage73 wymaga doslownego markera `cumulative`. Ten hotfix dopisuje marker bez ruszania aplikacji, CSS, logiki biznesowej ani TodayStable.tsx.
