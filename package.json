@@ -297,7 +297,7 @@
     "check:admin-button-matrix": "node scripts/check-admin-button-matrix.cjs",
     "check:admin-feedback-export": "node scripts/check-admin-feedback-export.cjs",
     "test:admin-tools": "node --test tests/admin-tools.test.cjs",
-    "verify:admin-tools": "npm.cmd run check:admin-debug-toolbar && npm.cmd run check:admin-review-mode && npm.cmd run check:admin-button-matrix && npm.cmd run check:admin-feedback-export && npm.cmd run test:admin-tools && npm.cmd run check:admin-dialog-drag-lower && npm.cmd run test:admin-dialog-drag-lower && npm.cmd run check:admin-dialog-stack-fix && npm.cmd run test:admin-dialog-stack-fix && npm.cmd run check:admin-click-to-annotate && npm.cmd run test:admin-click-to-annotate && npm.cmd run test:admin-review-mode-compat && npm.cmd run check:admin-quick-editor-portal-drag && npm.cmd run test:admin-quick-editor-portal-drag",
+    "verify:admin-tools": "npm.cmd run check:admin-debug-toolbar && npm.cmd run check:admin-review-mode && npm.cmd run check:admin-button-matrix && npm.cmd run check:admin-feedback-export && npm.cmd run test:admin-tools && npm.cmd run check:admin-dialog-drag-lower && npm.cmd run test:admin-dialog-drag-lower && npm.cmd run check:admin-dialog-stack-fix && npm.cmd run test:admin-dialog-stack-fix && npm.cmd run check:admin-click-to-annotate && npm.cmd run test:admin-click-to-annotate && npm.cmd run test:admin-review-mode-compat && npm.cmd run check:admin-quick-editor-portal-drag && npm.cmd run test:admin-quick-editor-portal-drag && npm.cmd run check:admin-toolbar-utf8-portal-force && npm.cmd run test:admin-toolbar-utf8-portal-force",
     "check:admin-dialog-drag-lower": "node scripts/check-admin-dialog-drag-lower.cjs",
     "test:admin-dialog-drag-lower": "node --test tests/admin-dialog-drag-lower.test.cjs",
     "check:admin-dialog-stack-fix": "node scripts/check-admin-dialog-stack-fix.cjs",
@@ -306,7 +306,9 @@
     "test:admin-click-to-annotate": "node --test tests/admin-click-to-annotate.test.cjs",
     "test:admin-review-mode-compat": "node --test tests/admin-review-mode-compat.test.cjs",
     "check:admin-quick-editor-portal-drag": "node scripts/check-admin-quick-editor-portal-drag.cjs",
-    "test:admin-quick-editor-portal-drag": "node --test tests/admin-quick-editor-portal-drag.test.cjs"
+    "test:admin-quick-editor-portal-drag": "node --test tests/admin-quick-editor-portal-drag.test.cjs",
+    "check:admin-toolbar-utf8-portal-force": "node scripts/check-admin-toolbar-utf8-portal-force.cjs",
+    "test:admin-toolbar-utf8-portal-force": "node --test tests/admin-toolbar-utf8-portal-force.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

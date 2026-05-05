@@ -377,3 +377,13 @@
     bottom: auto;
   }
 }
+
+/* ADMIN_TOOLBAR_UTF8_PORTAL_FORCE_STAGE87G */
+.admin-tool-quick-editor {
+  top: 136px;
+  bottom: auto;
+}
+
+.admin-tool-quick-editor-head {
+  cursor: grab;
+}
