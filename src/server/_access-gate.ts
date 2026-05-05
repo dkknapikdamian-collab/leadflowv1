@@ -4,6 +4,7 @@ import { FREE_LIMITS as PLAN_FREE_LIMITS, getPlanLimits, normalizePlanId, PLAN_I
 /* A13_STATIC_CONTRACT_GUARD trial_expired free_active FREE_LIMITS */
 /* PHASE0_WORKSPACE_WRITE_ACCESS_RUNTIME_REQ_COMPAT_2026_05_03 */
 /* P0_WORKSPACE_WRITE_ACCESS_STATUS_COMPAT_2026_05_03 */
+/* BILLING_WEBHOOK_ONLY_PAID_ACCESS_STAGE14 */
 
 export const FREE_LIMITS = PLAN_FREE_LIMITS;
 
@@ -123,6 +124,18 @@ function isPaidPlan(plan: string) {
     'team_mini',
     'team_full',
   ].includes(plan);
+}
+
+
+const BILLING_BLOCKED_ACCESS_STATUS_STAGE86B = [
+  { status: 'payment_failed', reason: 'Stripe webhook reported failed payment' },
+  { status: 'trial_expired', reason: 'Trial expired without paid webhook confirmation' },
+  { status: 'inactive', reason: 'No active trial, Free fallback or paid webhook confirmation' },
+  { status: 'canceled', reason: 'Subscription canceled by Stripe or user action' },
+] as const;
+
+function isBlockedBillingAccessStatus(status: string) {
+  return BILLING_BLOCKED_ACCESS_STATUS_STAGE86B.some((entry) => entry.status === status);
 }
 
 function normalizeWorkspaceAccessStatus(workspaceInput: unknown, statusInput?: unknown) {
