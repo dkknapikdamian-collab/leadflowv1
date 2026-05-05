@@ -206,6 +206,7 @@ async function resolveWorkspaceAccessInput(workspaceInput: unknown, statusInput?
 }
 
 function isAllowedWriteStatus(status: string, nextBillingAt: unknown) {
+  if (isBlockedBillingAccessStatus(status)) return false;
   if (status === 'paid_active' && !isPastDate(nextBillingAt)) return true;
   if (status === 'trial_active' || status === 'trial_ending') return true;
   if (status === 'free_active' || status === 'free') return true;
