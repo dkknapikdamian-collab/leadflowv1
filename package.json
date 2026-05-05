@@ -312,7 +312,10 @@
     "check:stage88-lead-admin-feedback-hotfix": "node scripts/check-stage88-lead-admin-feedback-hotfix.cjs",
     "test:stage88-lead-admin-feedback-hotfix": "node --test tests/stage88-lead-admin-feedback-hotfix.test.cjs",
     "check:stage89-right-rail-export-clear": "node scripts/check-stage89-right-rail-export-clear.cjs",
-    "test:stage89-right-rail-export-clear": "node --test tests/stage89-right-rail-export-clear.test.cjs"
+    "test:stage89-right-rail-export-clear": "node --test tests/stage89-right-rail-export-clear.test.cjs",
+    "check:stage89c-manual-acceptance": "node scripts/check-stage89c-manual-acceptance.cjs",
+    "test:stage89c-manual-acceptance": "node --test tests/stage89c-manual-acceptance.test.cjs",
+    "verify:stage89-accepted": "npm.cmd run check:stage89c-manual-acceptance && npm.cmd run test:stage89c-manual-acceptance && npm.cmd run verify:admin-tools"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
