@@ -1,3 +1,4 @@
+const BILLING_UI_STRIPE_SUBSCRIPTION_CARD_ONLY_STAGE86O = 'Recurring Stripe subscription checkout is card-only; BLIK requires a separate one-time payment flow.';
 import { useEffect, useMemo, useState } from 'react';
 import { format, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
@@ -35,7 +36,7 @@ type CheckoutPlanKey = 'basic' | 'pro' | 'ai';
 type PlanAvailability = 'current' | 'available' | 'disabled' | 'soon';
 
 const BILLING_VISUAL_REBUILD_STAGE16 = 'BILLING_VISUAL_REBUILD_STAGE16';
-const BILLING_STRIPE_BLIK_CONTRACT = 'Stripe/BLIK';
+const BILLING_STRIPE_BLIK_CONTRACT = 'Stripe';
 const BILLING_UI_WEBHOOK_ACTIVATES_PAID_PLAN_STAGE86J = 'paid plan appears only after Stripe webhook confirmation';
 const BILLING_STRIPE_STAGE86_E2E_GATE = 'checkout → webhook → paid_active → access refresh → cancel/resume';
 
@@ -396,7 +397,7 @@ export default function Billing() {
 
       window.location.assign(result.url);
     } catch (error: any) {
-      toast.error(`Błąd uruchamiania płatności Stripe/BLIK: ${error.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd uruchamiania płatności Stripe: ${error.message || 'REQUEST_FAILED'}`);
     } finally {
       setUpgradingPlanKey(null);
     }

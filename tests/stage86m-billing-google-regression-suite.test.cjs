@@ -33,7 +33,8 @@ test('Stage86M protects Stripe subscription checkout and webhook source of truth
   assert.equal(stripe.includes("params.set('mode', 'payment')"), false);
   assert.ok(stripe.includes('subscription_data[metadata][workspace_id]'));
   assert.ok(stripe.includes('line_items[0][price_data][recurring][interval]'));
-  assert.ok(stripe.includes("params.set('payment_method_types[1]', 'blik')"));
+  assert.ok(stripe.includes('STAGE86O_STRIPE_SUBSCRIPTION_CARD_ONLY_SAFE_PATCH'));
+  assert.equal(stripe.includes("params.set('payment_method_types[1]', 'blik')"), false);
 
   assert.ok(webhook.includes('BILLING_WEBHOOK_PAID_ACCESS_SOURCE_OF_TRUTH_STAGE14'));
   assert.ok(webhook.includes("type === 'checkout.session.completed'"));

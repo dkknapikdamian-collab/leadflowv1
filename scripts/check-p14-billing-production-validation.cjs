@@ -68,7 +68,8 @@ expect(!stripe.includes('business_monthly'), 'Stripe must not keep business_mont
 expect(stripe.includes("if (normalized === 'business' || normalized === 'closeflow_business')"), 'Stripe must keep business alias mapped to ai for compatibility');
 expect(stripe.includes("params.set('mode', 'subscription')"), 'Stripe checkout must be subscription mode');
 expect(!stripe.includes("params.set('mode', 'payment')"), 'Stripe checkout must not use payment mode with subscription_data');
-expect(stripe.includes("params.set('payment_method_types[1]', 'blik')"), 'Stripe checkout must include BLIK');
+expect(stripe.includes('STAGE86O_STRIPE_SUBSCRIPTION_CARD_ONLY_SAFE_PATCH'), 'Stripe subscription checkout must carry Stage86O card-only marker');
+expect(!stripe.includes("params.set('payment_method_types[1]', 'blik')"), 'Stripe subscription checkout must not include BLIK because Stripe rejects BLIK in subscription mode');
 expect(stripe.includes('recurring][interval]'), 'Stripe checkout must set recurring interval');
 expect(stripe.includes('subscription_data[metadata][workspace_id]'), 'Stripe checkout must keep subscription metadata for webhook paid activation');
 

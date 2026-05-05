@@ -158,7 +158,8 @@ expectNotIncludes(stripe, "params.set('mode', 'payment')", 'Stripe checkout must
 expectIncludes(stripe, 'subscription_data[metadata][workspace_id]', 'Stripe checkout must preserve workspace metadata for webhook');
 expectIncludes(stripe, 'line_items[0][price_data][recurring][interval]', 'Stripe checkout must use recurring price data');
 expectIncludes(stripe, "params.set('payment_method_types[0]', 'card')", 'Stripe checkout must support card');
-expectIncludes(stripe, "params.set('payment_method_types[1]', 'blik')", 'Stripe checkout must support BLIK');
+expectIncludes(stripe, 'STAGE86O_STRIPE_SUBSCRIPTION_CARD_ONLY_SAFE_PATCH', 'Stripe checkout must document subscription card-only rule');
+expectNotIncludes(stripe, "params.set('payment_method_types[1]', 'blik')", 'Stripe subscription checkout must not include BLIK');
 expectIncludes(stripe, 'ai_monthly', 'Stripe plan map must include ai_monthly');
 expectIncludes(stripe, 'ai_yearly', 'Stripe plan map must include ai_yearly');
 expectIncludes(stripe, "planId: 'closeflow_ai'", 'AI monthly must map to closeflow_ai');

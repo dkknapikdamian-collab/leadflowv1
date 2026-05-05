@@ -282,8 +282,10 @@ export async function createStripeBlikCheckout({
   params.set('cancel_url', `${appUrl}/billing?checkout=cancelled`);
   params.set('client_reference_id', workspaceId);
 
+  // STAGE86O_STRIPE_SUBSCRIPTION_CARD_ONLY_SAFE_PATCH
+  // Stripe rejects BLIK in subscription mode. Recurring billing needs subscription mode for cancel/resume.
+  // BLIK can only return later as a separate one-time payment flow, not inside this recurring checkout.
   params.set('payment_method_types[0]', 'card');
-  params.set('payment_method_types[1]', 'blik');
 
   params.set('line_items[0][price_data][currency]', config.currency);
   params.set('line_items[0][price_data][unit_amount]', String(amount));
