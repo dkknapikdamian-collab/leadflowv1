@@ -33,6 +33,7 @@ const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_pay
 const START_RULES = new Set(['on_acceptance', 'on_deposit', 'on_full_payment', 'on_manual_approval', 'on_documents_ready', 'on_contract_signed', 'custom']);
 const WIN_RULES = new Set(['on_case_started', 'on_full_payment', 'on_case_completed', 'on_commission_received', 'manual']);
 const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_completion', 'success_fee', 'recurring', 'manual']);
+const PAID_PAYMENT_STATUSES = new Set(['deposit_paid', 'partially_paid', 'fully_paid', 'paid']);
 
 const OPTIONAL_LEAD_COLUMNS = new Set([
   'is_at_risk',
@@ -66,7 +67,7 @@ const OPTIONAL_LEAD_COLUMNS = new Set([
   'google_calendar_sync_status',
   'google_calendar_sync_error',
 ]);
-const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'currency']);
+const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency']);
 const OPTIONAL_ACTIVITY_COLUMNS = new Set(['owner_id', 'actor_id', 'actor_type', 'event_type', 'payload', 'lead_id', 'case_id', 'workspace_id', 'created_at', 'updated_at']);
 
 const LEAD_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<'leads' | 'cases' | 'activities', Set<string>> = {
@@ -141,6 +142,12 @@ function sumPartialPayments(value: unknown) {
     const amount = Number((row as Record<string, unknown>).amount || 0);
     return Number.isFinite(amount) && amount > 0 ? acc + amount : acc;
   }, 0);
+}
+
+function asNumber(value: unknown) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.max(0, parsed);
 }
 
 function normalizeLead(row: Record<string, unknown>) {
@@ -300,6 +307,16 @@ async function safeSelectRows(query: string) {
   }
 }
 
+async function sumLeadPaidPayments(workspaceId: string, leadId: string) {
+  if (!workspaceId || !leadId) return 0;
+  const statuses = Array.from(PAID_PAYMENT_STATUSES).join(',');
+  const rows = await safeSelectRows(
+    withWorkspaceFilter(`payments?select=amount,status&lead_id=eq.${encodeURIComponent(leadId)}&status=in.(${statuses})&limit=500`, workspaceId),
+  );
+  if (!rows.length) return 0;
+  return rows.reduce((sum, row) => sum + asNumber(row.amount), 0);
+}
+
 async function findExistingClient(workspaceId: string, leadRow: Record<string, unknown>) {
   const explicitClientId = asNullableUuid(leadRow.client_id || leadRow.clientId);
   if (explicitClientId) {
@@ -390,6 +407,11 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
   const caseStatus = normalizeEnum(body.caseStatus || body.status, new Set(['new', 'waiting_on_client', 'blocked', 'to_approve', 'ready_to_start', 'in_progress', 'on_hold', 'completed', 'canceled']), 'in_progress');
   const caseTitle = asText(body.title) || asText(leadRow.name) || `${asText(clientRow.name) || 'Klient'} - obsługa`;
 
+  const paidFromPayments = await sumLeadPaidPayments(workspaceId, leadId);
+  const paidFromLegacy = sumPartialPayments(leadRow.partial_payments || leadRow.partialPayments);
+  const paidAmount = paidFromPayments > 0 ? paidFromPayments : paidFromLegacy;
+  const expectedRevenue = asNumber(leadRow.value || leadRow.deal_value);
+
   const casePayload: Record<string, unknown> = {
     workspace_id: workspaceId,
     lead_id: leadId,
@@ -402,8 +424,9 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
     status: caseStatus,
     billing_status: normalizeEnum(leadRow.billing_status || leadRow.billingStatus, BILLING_STATUSES, 'not_started'),
     billing_model_snapshot: normalizeEnum(leadRow.billing_model_snapshot || leadRow.billingModelSnapshot, BILLING_MODELS, 'manual'),
-    expected_revenue: Number(leadRow.value || leadRow.deal_value || 0) || 0,
-    paid_amount: sumPartialPayments(leadRow.partial_payments || leadRow.partialPayments),
+    expected_revenue: expectedRevenue,
+    paid_amount: paidAmount,
+    remaining_amount: Math.max(0, expectedRevenue - paidAmount),
     currency: normalizeCurrency(leadRow.currency),
     completeness_percent: 0,
     portal_ready: false,

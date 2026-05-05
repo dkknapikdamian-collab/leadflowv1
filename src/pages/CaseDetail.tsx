@@ -55,7 +55,9 @@ import {
   fetchCaseByIdFromSupabase,
   fetchCaseItemsFromSupabase,
   fetchEventsFromSupabase,
+  fetchPaymentsFromSupabase,
   fetchTasksFromSupabase,
+  createPaymentInSupabase,
   insertActivityToSupabase,
   insertCaseItemToSupabase,
   insertTaskToSupabase,
@@ -254,6 +256,28 @@ function formatMoney(value: unknown, currency?: string) {
   const safeAmount = Number.isFinite(amount) ? amount : 0;
   const safeCurrency = typeof currency === 'string' && currency.trim() ? currency.trim().toUpperCase() : 'PLN';
   return `${safeAmount.toLocaleString('pl-PL')} ${safeCurrency}`;
+}
+
+function isPaidPaymentStatus(status: unknown) {
+  return ['deposit_paid', 'partially_paid', 'fully_paid', 'paid'].includes(String(status || '').toLowerCase());
+}
+
+function billingStatusLabel(status?: string) {
+  switch (String(status || '').toLowerCase()) {
+    case 'deposit_paid':
+      return 'Zaliczka wpłacona';
+    case 'partially_paid':
+      return 'Częściowo opłacone';
+    case 'fully_paid':
+    case 'paid':
+      return 'Opłacone';
+    case 'awaiting_payment':
+      return 'Czeka na płatność';
+    case 'not_started':
+      return 'Brak wpłaty';
+    default:
+      return status || 'Brak statusu';
+  }
 }
 
 function sortTime(value: any, fallback = Number.MAX_SAFE_INTEGER) {
@@ -615,6 +639,7 @@ export default function CaseDetail() {
   const [activities, setActivities] = useState<CaseActivity[]>([]);
   const [tasks, setTasks] = useState<TaskRecord[]>([]);
   const [events, setEvents] = useState<EventRecord[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
   const [sourceLead, setSourceLead] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -624,6 +649,15 @@ export default function CaseDetail() {
   const [pendingNoteFollowUp, setPendingNoteFollowUp] = useState<{ note: string; createdAt: string } | null>(null);
   const [customNoteFollowUpAt, setCustomNoteFollowUpAt] = useState('');
   const [isCreatingNoteFollowUp, setIsCreatingNoteFollowUp] = useState(false);
+  const [isCasePaymentOpen, setIsCasePaymentOpen] = useState(false);
+  const [casePaymentSubmitting, setCasePaymentSubmitting] = useState(false);
+  const [casePaymentDraft, setCasePaymentDraft] = useState({
+    type: 'deposit',
+    amount: '',
+    status: 'deposit_paid',
+    dueAt: '',
+    note: '',
+  });
 
   const STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS = 'Case detail uses shared context action dialogs instead of local simplified task, event and note forms';
   const openCaseContextAction = (kind: ContextActionKind) => {
@@ -666,9 +700,10 @@ export default function CaseDetail() {
         fetchActivitiesFromSupabase({ caseId, limit: 80 }).catch(() => []),
         fetchTasksFromSupabase().catch(() => []),
         fetchEventsFromSupabase().catch(() => []),
+        fetchPaymentsFromSupabase({ caseId }).catch(() => []),
       ]);
 
-      const [caseRowRaw, itemRowsRaw, activityRowsRaw, taskRowsRaw, eventRowsRaw] = await Promise.race([dataPromise, timeoutPromise]);
+      const [caseRowRaw, itemRowsRaw, activityRowsRaw, taskRowsRaw, eventRowsRaw, paymentRowsRaw] = await Promise.race([dataPromise, timeoutPromise]);
       const normalizedCase = normalizeRecord<CaseRecord>(caseRowRaw);
 
       if (!normalizedCase?.id) {
@@ -698,12 +733,14 @@ export default function CaseDetail() {
           normalizedCase,
         ),
       );
+      setPayments(Array.isArray(paymentRowsRaw) ? paymentRowsRaw : []);
     } catch (error: any) {
       setCaseData(null);
       setItems([]);
       setActivities([]);
       setTasks([]);
       setEvents([]);
+      setPayments([]);
       setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ĺadowanie sprawy trwa za dĹ‚ugo. SprĂłbuj ponownie.' : `Nie moĹĽna wczytaÄ‡ sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       if (timeoutId) window.clearTimeout(timeoutId);
@@ -768,17 +805,22 @@ export default function CaseDetail() {
   const workItems = useMemo(() => dedupeCaseWorkItems(buildWorkItems(openTasks, plannedEvents, items, activities)), [activities, items, openTasks, plannedEvents]);
   const caseFinance = useMemo(() => {
     const expected = Number(caseData?.expectedRevenue || 0);
-    const paid = Number(caseData?.paidAmount || 0);
+    const paidFromPayments = payments
+      .filter((entry) => isPaidPaymentStatus(entry?.status))
+      .reduce((sum, entry) => sum + (Number(entry?.amount) || 0), 0);
+    const paid = paidFromPayments > 0 ? paidFromPayments : Number(caseData?.paidAmount || 0);
     const remainingFromCase = Number(caseData?.remainingAmount);
     const remaining = Number.isFinite(remainingFromCase) ? Math.max(0, remainingFromCase) : Math.max(0, expected - paid);
     const currency = typeof caseData?.currency === 'string' && caseData.currency.trim() ? caseData.currency.trim().toUpperCase() : 'PLN';
+    const billingStatus = paid <= 0 ? 'not_started' : paid >= expected && expected > 0 ? 'fully_paid' : 'partially_paid';
     return {
       expected: Number.isFinite(expected) ? Math.max(0, expected) : 0,
       paid: Number.isFinite(paid) ? Math.max(0, paid) : 0,
       remaining,
       currency,
+      billingStatus,
     };
-  }, [caseData?.currency, caseData?.expectedRevenue, caseData?.paidAmount, caseData?.remainingAmount]);
+  }, [caseData?.currency, caseData?.expectedRevenue, caseData?.paidAmount, caseData?.remainingAmount, payments]);
   const recentCaseMoves = useMemo(() => activities.slice(0, 5), [activities]);
   const nextAction = useMemo(() => workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null, [workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
@@ -806,6 +848,76 @@ export default function CaseDetail() {
   const openCaseNoteDialog = () => {
     if (!guardCaseDetailWriteAccess('dodaÄ‡ notatki')) return;
     openCaseContextAction('note');
+  };
+
+  const openCasePaymentDialog = (type: 'deposit' | 'partial') => {
+    if (!guardCaseDetailWriteAccess('dodać płatności')) return;
+    setCasePaymentDraft({
+      type,
+      amount: '',
+      status: type === 'deposit' ? 'deposit_paid' : 'partially_paid',
+      dueAt: '',
+      note: '',
+    });
+    setIsCasePaymentOpen(true);
+  };
+
+  const markCaseFullyPaid = async () => {
+    if (!caseId || !guardCaseDetailWriteAccess('oznaczyć sprawy jako opłaconej')) return;
+    const remaining = Number(caseFinance.remaining || 0);
+    if (remaining <= 0) {
+      toast.message('Ta sprawa jest już rozliczona.');
+      return;
+    }
+    try {
+      await createPaymentInSupabase({
+        caseId,
+        clientId: caseData?.clientId || null,
+        leadId: caseData?.leadId || null,
+        type: 'final',
+        status: 'fully_paid',
+        amount: remaining,
+        currency: caseFinance.currency,
+        paidAt: new Date().toISOString(),
+        note: 'Rozliczenie końcowe sprawy',
+      });
+      await updateCaseInSupabase({ id: caseId, paidAmount: caseFinance.paid + remaining, remainingAmount: 0 }).catch(() => null);
+      await refreshCaseData();
+      toast.success('Sprawa oznaczona jako opłacona.');
+    } catch (error: any) {
+      toast.error(`Nie udało się domknąć płatności: ${error?.message || 'REQUEST_FAILED'}`);
+    }
+  };
+
+  const handleSaveCasePayment = async () => {
+    if (!caseId || !guardCaseDetailWriteAccess('zapisać płatności')) return;
+    const amount = Number(casePaymentDraft.amount || 0);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      toast.error('Podaj poprawną kwotę płatności.');
+      return;
+    }
+    try {
+      setCasePaymentSubmitting(true);
+      await createPaymentInSupabase({
+        caseId,
+        clientId: caseData?.clientId || null,
+        leadId: caseData?.leadId || null,
+        type: casePaymentDraft.type,
+        status: casePaymentDraft.status || 'awaiting_payment',
+        amount,
+        currency: caseFinance.currency,
+        dueAt: casePaymentDraft.dueAt || null,
+        paidAt: isPaidPaymentStatus(casePaymentDraft.status) ? new Date().toISOString() : null,
+        note: casePaymentDraft.note || '',
+      });
+      await refreshCaseData();
+      setIsCasePaymentOpen(false);
+      toast.success('Płatność sprawy zapisana.');
+    } catch (error: any) {
+      toast.error(`Nie udało się zapisać płatności: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setCasePaymentSubmitting(false);
+    }
   };
 
   const recordActivity = async (eventType: string, payload: Record<string, any>) => {
@@ -1291,14 +1403,20 @@ export default function CaseDetail() {
                 <button type="button" className="cf-btn-tone-gap" onClick={() => setIsAddItemOpen(true)}>Dodaj brak</button>
               </div>
             </section>
-            <section className="right-card case-detail-right-card">
+            <section className="right-card case-detail-right-card" data-case-finance-panel="true">
               <div className="case-detail-card-title-row">
                 <Paperclip className="h-4 w-4" />
-                <h2>Finanse sprawy</h2>
+                <h2>Rozliczenie sprawy</h2>
               </div>
               <small>Wartość: {formatMoney(caseFinance.expected, caseFinance.currency)}</small>
               <small>Wpłacono: {formatMoney(caseFinance.paid, caseFinance.currency)}</small>
               <small>Pozostało: {formatMoney(caseFinance.remaining, caseFinance.currency)}</small>
+              <small>Status płatności: {billingStatusLabel(caseFinance.billingStatus)}</small>
+              <div className="case-detail-right-actions">
+                <button type="button" onClick={() => openCasePaymentDialog('deposit')}>Dodaj zaliczkę</button>
+                <button type="button" onClick={() => openCasePaymentDialog('partial')}>Płatność częściowa</button>
+                <button type="button" onClick={markCaseFullyPaid}>Oznacz opłacone</button>
+              </div>
             </section>
               <section className="case-detail-card case-detail-recent-moves-panel" data-case-recent-moves-panel="true">
                 <div className="case-detail-section-heading">
@@ -1395,6 +1513,18 @@ export default function CaseDetail() {
           </aside>
         </div>
 
+        <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
+          <DialogContent>
+            <DialogHeader><DialogTitle>{casePaymentDraft.type === 'deposit' ? 'Dodaj zaliczkę' : 'Dodaj płatność częściową'}</DialogTitle></DialogHeader>
+            <div className="case-detail-dialog-grid">
+              <label>Kwota<Input type="number" min="0" step="0.01" value={casePaymentDraft.amount} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, amount: event.target.value }))} /></label>
+              <label>Status<select value={casePaymentDraft.status} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, status: event.target.value }))}><option value="awaiting_payment">Czeka na płatność</option><option value="deposit_paid">Zaliczka wpłacona</option><option value="partially_paid">Częściowo opłacone</option><option value="paid">Opłacone</option></select></label>
+              <label>Termin płatności<Input type="date" value={casePaymentDraft.dueAt} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, dueAt: event.target.value }))} /></label>
+              <label>Notatka<Textarea value={casePaymentDraft.note} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, note: event.target.value }))} /></label>
+            </div>
+            <DialogFooter><Button type="button" variant="outline" onClick={() => setIsCasePaymentOpen(false)}>Anuluj</Button><Button type="button" onClick={handleSaveCasePayment} disabled={casePaymentSubmitting}>{casePaymentSubmitting ? 'Zapisywanie...' : 'Zapisz płatność'}</Button></DialogFooter>
+          </DialogContent>
+        </Dialog>
         <CaseItemDialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen} value={newItem} onChange={setNewItem} onSubmit={handleAddItem} />
       </main>
     </Layout>
