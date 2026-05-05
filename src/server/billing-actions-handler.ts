@@ -1,7 +1,9 @@
 import { selectFirstAvailable, updateWhere } from './_supabase.js';
-import { requireAuthContext } from './_request-scope.js';
+import { resolveRequestWorkspaceId } from './_request-scope.js';
 import { getStripeSubscription, updateStripeSubscription } from './_stripe.js';
 import { writeAuthErrorResponse } from './_supabase-auth.js';
+
+const BILLING_ACTIONS_RESOLVE_SCOPED_WORKSPACE_STAGE86K = 'billing actions resolve workspace through verified request scope';
 
 function parseBody(req: any) {
   if (!req?.body) return {};
@@ -41,14 +43,13 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    const auth = await requireAuthContext(req);
-    const workspaceId = asText(auth.workspaceId);
+    const body = parseBody(req);
+    const workspaceId = asText(await resolveRequestWorkspaceId(req, body));
     if (!workspaceId) {
       res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
       return;
     }
 
-    const body = parseBody(req);
     const action = asText(body.action).toLowerCase();
     const nowIso = new Date().toISOString();
     const workspace = await fetchWorkspace(workspaceId);
@@ -85,7 +86,7 @@ export default async function handler(req: any, res: any) {
         ok: true,
         action: 'cancel',
         cancelAtPeriodEnd: true,
-        note: 'Plan nie odnawia się po bieżącym okresie. Aktywacja/dezaktywacja dostępu jest liczona przez webhook + next_billing_at.',
+        note: 'Plan nie odnawia siÄ™ po bieĹĽÄ…cym okresie. Aktywacja/dezaktywacja dostÄ™pu jest liczona przez webhook + next_billing_at.',
       });
       return;
     }

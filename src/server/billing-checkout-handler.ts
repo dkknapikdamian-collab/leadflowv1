@@ -1,6 +1,9 @@
 import { asNullableText, createStripeBlikCheckout, getAppUrl, getStripeConfig, parseBody, resolveStripeBillingPlan } from './_stripe.js';
-import { requireAuthContext } from './_request-scope.js';
+import { requireAuthContext, resolveRequestWorkspaceId } from './_request-scope.js';
 import { writeAuthErrorResponse } from './_supabase-auth.js';
+
+const BILLING_CHECKOUT_WEBHOOK_SOURCE_OF_TRUTH_STAGE86J = 'paid access is activated only by Stripe webhook after confirmed payment';
+const BILLING_CHECKOUT_RESOLVES_SCOPED_WORKSPACE_STAGE86K = 'checkout resolves workspace through verified request scope, not raw body trust';
 
 export default async function handler(req: any, res: any) {
   try {
@@ -9,10 +12,10 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    const authContext = await requireAuthContext(req);
     const body = parseBody(req);
-    const workspaceId = asNullableText(authContext.workspaceId);
-    const requestedWorkspaceId = asNullableText(body.workspaceId);
+    const authContext = await requireAuthContext(req, body);
+    const workspaceId = asNullableText(await resolveRequestWorkspaceId(req, body));
+    const requestedWorkspaceId = asNullableText(body.workspaceId || body.workspace_id);
     const customerEmail = asNullableText(authContext.email);
     const planKey = asNullableText(body.planKey || req?.headers?.['x-billing-plan']);
     const billingPeriod = asNullableText(body.billingPeriod || req?.headers?.['x-billing-period']);
@@ -23,6 +26,8 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
+    // Do not trust body.workspaceId as the source of truth. resolveRequestWorkspaceId verifies the hint
+    // against Supabase auth context, membership/profile rows, or the authenticated context workspace.
     if (requestedWorkspaceId && requestedWorkspaceId !== workspaceId) {
       res.status(403).json({ error: 'WORKSPACE_FORBIDDEN' });
       return;
@@ -41,6 +46,7 @@ export default async function handler(req: any, res: any) {
         checkoutConfigured: Boolean(stripeConfig.secretKey),
         webhookConfigured: Boolean(stripeConfig.webhookSecret),
         appUrl,
+        workspaceId,
         planId: plan.planId,
         planKey: plan.planKey,
         billingPeriod: plan.period,
@@ -69,7 +75,7 @@ export default async function handler(req: any, res: any) {
         res.status(501).json({
           ...result,
           provider: 'stripe_blik',
-          message: 'Stripe nie jest jeszcze skonfigurowany. Uzupełnij STRIPE_SECRET_KEY w Vercel. Dostęp płatny aktywuje wyłącznie webhook Stripe po potwierdzeniu płatności.',
+          message: 'Stripe nie jest jeszcze skonfigurowany. UzupeĹ‚nij STRIPE_SECRET_KEY w Vercel. DostÄ™p pĹ‚atny aktywuje wyĹ‚Ä…cznie webhook Stripe po potwierdzeniu pĹ‚atnoĹ›ci.',
         });
         return;
       }
@@ -99,4 +105,3 @@ export default async function handler(req: any, res: any) {
     res.status(500).json({ error: error?.message || 'STRIPE_BLIK_CHECKOUT_FAILED' });
   }
 }
-

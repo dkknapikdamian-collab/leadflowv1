@@ -36,6 +36,7 @@ type PlanAvailability = 'current' | 'available' | 'disabled' | 'soon';
 
 const BILLING_VISUAL_REBUILD_STAGE16 = 'BILLING_VISUAL_REBUILD_STAGE16';
 const BILLING_STRIPE_BLIK_CONTRACT = 'Stripe/BLIK';
+const BILLING_UI_WEBHOOK_ACTIVATES_PAID_PLAN_STAGE86J = 'paid plan appears only after Stripe webhook confirmation';
 const BILLING_STRIPE_STAGE86_E2E_GATE = 'checkout → webhook → paid_active → access refresh → cancel/resume';
 
 type PlanCard = {
