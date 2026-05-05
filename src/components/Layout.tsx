@@ -43,6 +43,7 @@ import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import { signOutFromSupabase } from '../lib/supabase-auth';
 import GlobalQuickActions from './GlobalQuickActions';
 import ContextActionDialogsHost from './ContextActionDialogs';
+import AdminDebugToolbar from './admin-tools/AdminDebugToolbar';
 import { parseISO, differenceInDays } from 'date-fns';
 
 interface LayoutProps {
@@ -137,9 +138,10 @@ export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [supabaseUser] = useSupabaseSession();
-  const { workspace, hasAccess, profile, isAdmin, access } = useWorkspace();
+  const { workspace, hasAccess, profile, isAdmin, isAppOwner, access } = useWorkspace();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi);
+  const canUseAdminDebugToolbar = Boolean(isAdmin || isAppOwner);
 
   const navGroups = useMemo<NavGroup[]>(() => ([
     {
@@ -345,6 +347,7 @@ export default function Layout({ children }: LayoutProps) {
               Panel operatora <strong>{currentTitle}</strong>
             </span>
           </div>
+          {canUseAdminDebugToolbar ? <AdminDebugToolbar currentSection={currentSection} /> : null}
           <GlobalQuickActions />
           <ContextActionDialogsHost />
         </div>
@@ -384,3 +387,5 @@ export default function Layout({ children }: LayoutProps) {
 /* PHASE0_LAYOUT_GLOBAL_ACTIONS_GUARD GlobalQuickActions <GlobalQuickActions Szkice AI */
 
 /* PHASE0_AI_ASSISTANT_LAYOUT_LAST7 GlobalQuickActions */
+
+/* ADMIN_DEBUG_TOOLBAR_LAYOUT_STAGE87 isAdmin || isAppOwner */

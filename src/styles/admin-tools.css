@@ -1,0 +1,176 @@
+.admin-debug-toolbar {
+  position: relative;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.36);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.88);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+}
+
+.admin-debug-toolbar button,
+.admin-debug-toolbar select,
+.admin-debug-toolbar input,
+.admin-debug-toolbar textarea {
+  font: inherit;
+}
+
+.admin-debug-toolbar > button,
+.admin-tool-popover button,
+.admin-tool-dialog button,
+.admin-preset-grid button {
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+  cursor: pointer;
+}
+
+.admin-debug-toolbar button.active,
+.admin-tool-segment button.active {
+  border-color: rgba(96, 165, 250, 0.95);
+  background: rgba(37, 99, 235, 0.88);
+}
+
+.admin-debug-toolbar button span {
+  margin-left: 4px;
+  opacity: 0.75;
+}
+
+.admin-tool-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 320px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  border-radius: 16px;
+  background: #0f172a;
+  color: #f8fafc;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.38);
+}
+
+.admin-tool-wide {
+  width: min(720px, 92vw);
+}
+
+.admin-tool-segment,
+.admin-tool-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-tool-row {
+  justify-content: space-between;
+}
+
+.admin-button-list {
+  display: grid;
+  gap: 8px;
+  max-height: 360px;
+  overflow: auto;
+}
+
+.admin-button-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 130px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.admin-button-row small,
+.admin-tool-popover small,
+.admin-target-card small {
+  display: block;
+  color: #cbd5e1;
+}
+
+.admin-tool-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.52);
+}
+
+.admin-tool-dialog {
+  width: min(520px, 96vw);
+  max-height: 88vh;
+  overflow: auto;
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 20px;
+  background: #0f172a;
+  color: #f8fafc;
+  box-shadow: 0 28px 90px rgba(15, 23, 42, 0.48);
+}
+
+.admin-tool-dialog-large {
+  width: min(760px, 96vw);
+}
+
+.admin-tool-dialog label {
+  display: grid;
+  gap: 5px;
+  color: #e2e8f0;
+  font-size: 13px;
+}
+
+.admin-tool-dialog textarea,
+.admin-tool-dialog input,
+.admin-tool-dialog select,
+.admin-tool-popover select {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  border-radius: 12px;
+  padding: 8px 10px;
+  background: #020617;
+  color: #f8fafc;
+}
+
+.admin-tool-dialog textarea {
+  min-height: 72px;
+}
+
+.admin-target-card {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid rgba(96, 165, 250, 0.42);
+  border-radius: 14px;
+  background: rgba(30, 64, 175, 0.16);
+}
+
+.admin-preset-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+@media (max-width: 900px) {
+  .admin-debug-toolbar {
+    max-width: 100%;
+    overflow-x: auto;
+    border-radius: 14px;
+  }
+
+  .admin-tool-popover {
+    right: auto;
+    left: 0;
+  }
+}

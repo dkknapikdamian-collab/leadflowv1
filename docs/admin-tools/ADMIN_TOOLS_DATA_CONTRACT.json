@@ -1,0 +1,87 @@
+{
+  "version": "admin_tools_v1",
+  "storageKeys": {
+    "activeTool": "closeflow:admin-tools:active-tool:v1",
+    "reviewItems": "closeflow:admin-tools:review-items:v1",
+    "bugItems": "closeflow:admin-tools:bug-items:v1",
+    "copyItems": "closeflow:admin-tools:copy-items:v1",
+    "buttonSnapshots": "closeflow:admin-tools:button-snapshots:v1",
+    "settings": "closeflow:admin-tools:settings:v1"
+  },
+  "export": {
+    "json": "closeflow_admin_feedback_YYYY-MM-DD_HH-mm.json",
+    "markdown": "closeflow_admin_feedback_YYYY-MM-DD_HH-mm.md",
+    "defaultDownloadWindows": "C:\\Users\\malim\\Downloads"
+  },
+  "reviewItem": {
+    "id": "string",
+    "kind": "ui_review",
+    "createdAt": "ISO",
+    "status": "todo|done|ignored",
+    "priority": "P0|P1|P2|P3",
+    "type": "visual|position|copy|behavior|bug|mobile|performance|other",
+    "route": "string",
+    "screen": "string",
+    "comment": "string",
+    "currentBehavior": "string",
+    "expectedBehavior": "string",
+    "target": {
+      "selectorHint": "string",
+      "tag": "string",
+      "text": "string",
+      "ariaLabel": "string",
+      "role": "string",
+      "id": "string",
+      "className": "string",
+      "dataAttributes": {},
+      "candidateIndex": "number",
+      "candidateCount": "number",
+      "composedPathSummary": []
+    },
+    "rect": {
+      "x": "number",
+      "y": "number",
+      "width": "number",
+      "height": "number"
+    },
+    "viewport": {
+      "width": "number",
+      "height": "number",
+      "devicePixelRatio": "number"
+    },
+    "scroll": {
+      "x": "number",
+      "y": "number"
+    }
+  },
+  "buttonMatrixItem": {
+    "id": "string",
+    "kind": "button_matrix_item",
+    "route": "string",
+    "text": "string",
+    "selectorHint": "string",
+    "tag": "string",
+    "role": "string",
+    "disabled": "boolean",
+    "visible": "boolean",
+    "qaStatus": "unchecked|ok|bug|move|rename|remove"
+  },
+  "bugItem": {
+    "id": "string",
+    "kind": "bug_note",
+    "route": "string",
+    "whatIDid": "string",
+    "whatHappened": "string",
+    "expected": "string",
+    "priority": "P0|P1|P2|P3"
+  },
+  "copyItem": {
+    "id": "string",
+    "kind": "copy_review",
+    "route": "string",
+    "oldText": "string",
+    "proposedText": "string",
+    "reason": "string",
+    "target": "same as review target"
+  }
+}
