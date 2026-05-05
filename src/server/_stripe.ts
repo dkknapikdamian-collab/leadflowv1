@@ -277,7 +277,7 @@ export async function createStripeBlikCheckout({
   const description = `${plan.label} - ${plan.amountPln} PLN`;
 
   const params = new URLSearchParams();
-  params.set('mode', 'payment');
+  params.set('mode', 'subscription');
   params.set('success_url', `${appUrl}/billing?checkout=success`);
   params.set('cancel_url', `${appUrl}/billing?checkout=cancelled`);
   params.set('client_reference_id', workspaceId);
@@ -287,6 +287,7 @@ export async function createStripeBlikCheckout({
 
   params.set('line_items[0][price_data][currency]', config.currency);
   params.set('line_items[0][price_data][unit_amount]', String(amount));
+  params.set('line_items[0][price_data][recurring][interval]', plan.period === 'yearly' ? 'year' : 'month');
   params.set('line_items[0][price_data][product_data][name]', plan.label);
   params.set('line_items[0][quantity]', '1');
 

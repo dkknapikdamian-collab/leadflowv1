@@ -29,6 +29,7 @@ const DAILY_DIGEST_EMAIL_CONFIG_COPY_GUARD = 'Sprawdź konfigurację';
 const DAILY_DIGEST_EMAIL_READY_COPY_GUARD = 'Digest gotowy do wysyłki';
 const DAILY_DIGEST_EMAIL_NEEDS_CONFIG_COPY_GUARD = 'Digest wymaga konfiguracji';
 const DAILY_DIGEST_EMAIL_ENV_COPY_GUARD = 'RESEND_API_KEY: DIGEST_FROM_EMAIL:';
+const GOOGLE_CALENDAR_CONFIG_REQUIRED_IS_NOT_USER_ERROR_STAGE86 = 'Google Calendar wymaga konfiguracji w Vercel';
 
 type ProfileFormState = {
   fullName: string;
@@ -294,7 +295,7 @@ useEffect(() => {
       if (!response.ok) {
         if (response.status === 409 && Array.isArray(data?.missing)) {
           setGoogleCalendarStatus({ configured: false, connected: false, missing: data.missing });
-          toast.error(`Brakuje ENV Google: ${data.missing.join(', ')}`);
+          toast.message(`Google Calendar wymaga konfiguracji w Vercel: ${data.missing.join(', ')}`);
           return;
         }
         throw new Error(String(data?.error || 'GOOGLE_CALENDAR_CONNECT_FAILED'));

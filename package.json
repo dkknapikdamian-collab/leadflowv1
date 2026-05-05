@@ -278,7 +278,9 @@
     "check:stage85d-context-dialog-finalizer": "node scripts/check-stage85d-context-dialog-finalizer.cjs",
     "test:stage85d-context-dialog-finalizer": "node --test tests/stage85d-context-dialog-finalizer.test.cjs",
     "test:stage87-p0-workspace-security-hardening": "node --test tests/stage87-p0-workspace-security-hardening.test.cjs",
-    "test:stage88-schema-contract-finance-baseline": "node --test tests/stage88-schema-contract-finance-baseline.test.cjs"
+    "test:stage88-schema-contract-finance-baseline": "node --test tests/stage88-schema-contract-finance-baseline.test.cjs",
+    "check:stage86-billing-google-e2e-readiness": "node scripts/check-stage86-billing-google-e2e-readiness.cjs",
+    "test:stage86-billing-google-e2e-readiness": "node --test tests/stage86-billing-google-e2e-readiness.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
