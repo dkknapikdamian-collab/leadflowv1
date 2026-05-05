@@ -32,8 +32,17 @@ const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
 void P0_TASKS_STABLE_REBUILD;
 const TASKS_VISIBLE_ACTIONS_STAGE47 = 'TASKS_VISIBLE_ACTIONS_STAGE47';
 void TASKS_VISIBLE_ACTIONS_STAGE47;
+const STAGE83_TASK_DONE_NEXT_STEP_PROMPT = 'STAGE83_TASK_DONE_NEXT_STEP_PROMPT';
+void STAGE83_TASK_DONE_NEXT_STEP_PROMPT;
 
 type TaskScope = 'active' | 'today' | 'overdue' | 'done';
+
+type NextStepPromptState = {
+  sourceTask: any;
+  title: string;
+  dueAt: string;
+  priority: string;
+};
 
 type TaskFormState = {
   id?: string;
@@ -141,6 +150,37 @@ function getBadgeClass(task: any) {
   return 'bg-slate-50 text-slate-700 border-slate-100';
 }
 
+function getTaskRelationIds(task: any) {
+  return {
+    leadId: task?.leadId || task?.lead_id || null,
+    caseId: task?.caseId || task?.case_id || null,
+    clientId: task?.clientId || task?.client_id || null,
+  };
+}
+
+function shouldOfferNextStepPrompt(task: any) {
+  const relationIds = getTaskRelationIds(task);
+  const taskType = readText(task, ['type'], '').toLowerCase();
+  return Boolean(relationIds.leadId || relationIds.caseId || relationIds.clientId || taskType.includes('follow'));
+}
+
+function buildNextStepDefaultDueAt() {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  date.setHours(9, 0, 0, 0);
+  return toDateTimeLocalValue(date);
+}
+
+function buildNextStepPromptState(task: any): NextStepPromptState {
+  const cleanTitle = getTaskTitle(task).replace(/^follow[- ]?up:\s*/i, '').trim();
+  return {
+    sourceTask: task,
+    title: cleanTitle ? 'Kolejny krok: ' + cleanTitle : 'Kolejny follow-up',
+    dueAt: buildNextStepDefaultDueAt(),
+    priority: readText(task, ['priority'], 'medium') || 'medium',
+  };
+}
+
 export default function TasksStable() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [tasks, setTasks] = useState<any[]>([]);
@@ -151,6 +191,8 @@ export default function TasksStable() {
   const [scope, setScope] = useState<TaskScope>('active');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [form, setForm] = useState<TaskFormState>(() => defaultTaskForm());
+  const [nextStepPrompt, setNextStepPrompt] = useState<NextStepPromptState | null>(null);
+  const [nextStepSaving, setNextStepSaving] = useState(false);
 
   const refreshData = useCallback(async () => {
     setLoading(true);
@@ -293,6 +335,7 @@ export default function TasksStable() {
   const toggleTask = async (task: any) => {
     const nextStatus = isTaskDone(task) ? 'todo' : 'done';
     try {
+      const relationIds = getTaskRelationIds(task);
       await updateTaskInSupabase({
         id: String(task.id),
         title: getTaskTitle(task),
@@ -301,13 +344,62 @@ export default function TasksStable() {
         scheduledAt: getTaskMomentRaw(task),
         priority: readText(task, ['priority'], 'medium'),
         status: nextStatus,
-        leadId: task.leadId || task.lead_id || null,
-        caseId: task.caseId || task.case_id || null,
-        clientId: task.clientId || task.client_id || null,
+        leadId: relationIds.leadId,
+        caseId: relationIds.caseId,
+        clientId: relationIds.clientId,
       });
       await refreshData();
+
+      if (nextStatus === 'done') {
+        toast.success('Zadanie oznaczone jako zrobione');
+        if (shouldOfferNextStepPrompt(task)) {
+          setNextStepPrompt(buildNextStepPromptState(task));
+        }
+      } else {
+        toast.success('Zadanie przywrócone');
+      }
     } catch {
       toast.error('Nie udało się zapisać zadania.');
+    }
+  };
+
+  const closeNextStepPrompt = () => {
+    if (nextStepSaving) return;
+    setNextStepPrompt(null);
+  };
+
+  const handleCreateNextStepTask = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!nextStepPrompt) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!nextStepPrompt.title.trim()) return toast.error('Podaj tytuł kolejnego kroku.');
+
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+
+    const relationIds = getTaskRelationIds(nextStepPrompt.sourceTask);
+
+    setNextStepSaving(true);
+    try {
+      await insertTaskToSupabase({
+        title: nextStepPrompt.title.trim(),
+        type: 'follow_up',
+        date: nextStepPrompt.dueAt.slice(0, 10),
+        scheduledAt: nextStepPrompt.dueAt,
+        priority: nextStepPrompt.priority || 'medium',
+        status: 'todo',
+        leadId: relationIds.leadId,
+        caseId: relationIds.caseId,
+        clientId: relationIds.clientId,
+        workspaceId,
+      });
+      toast.success('Kolejny krok dodany');
+      setNextStepPrompt(null);
+      await refreshData();
+    } catch {
+      toast.error('Nie udało się dodać kolejnego kroku.');
+    } finally {
+      setNextStepSaving(false);
     }
   };
 
@@ -331,7 +423,7 @@ export default function TasksStable() {
 
   return (
     <Layout>
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-stage48="true">
+      <main className="mx-auto flex w-full max-w-5xl flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-stage48="true" data-stage83-task-done-next-step-prompt="true">
         <section className="rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -461,6 +553,57 @@ export default function TasksStable() {
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>Anuluj</Button>
                 <Button type="submit" disabled={saving}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz zadanie</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={Boolean(nextStepPrompt)} onOpenChange={(open) => (!open ? closeNextStepPrompt() : undefined)}>
+          <DialogContent className="max-w-lg" data-stage83-task-done-next-step-prompt="dialog">
+            <DialogHeader>
+              <DialogTitle>Ustaw kolejny krok</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleCreateNextStepTask} className="space-y-4">
+              <p className="text-sm text-slate-600">
+                Zadanie jest zrobione. Ustaw następny follow-up, żeby lead albo sprawa nie wypadły z procesu.
+              </p>
+              <div className="space-y-2">
+                <Label>Tytuł kolejnego kroku</Label>
+                <Input
+                  value={nextStepPrompt?.title || ''}
+                  onChange={(event) => setNextStepPrompt((current) => (current ? { ...current, title: event.target.value } : current))}
+                  placeholder="Np. Zadzwonić ponownie / wysłać ofertę"
+                />
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Termin</Label>
+                  <Input
+                    type="datetime-local"
+                    value={nextStepPrompt?.dueAt || ''}
+                    onChange={(event) => setNextStepPrompt((current) => (current ? { ...current, dueAt: event.target.value } : current))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Priorytet</Label>
+                  <select
+                    className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm"
+                    value={nextStepPrompt?.priority || 'medium'}
+                    onChange={(event) => setNextStepPrompt((current) => (current ? { ...current, priority: event.target.value } : current))}
+                  >
+                    <option value="low">Niski</option>
+                    <option value="medium">Średni</option>
+                    <option value="normal">Normalny</option>
+                    <option value="high">Wysoki</option>
+                  </select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>Pomiń</Button>
+                <Button type="submit" disabled={nextStepSaving}>
+                  {nextStepSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Ustaw kolejny krok
+                </Button>
               </DialogFooter>
             </form>
           </DialogContent>

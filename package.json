@@ -256,7 +256,9 @@
     "collect:stage77-runtime-evidence": "node scripts/collect-stage77-runtime-evidence.cjs",
     "collect:stage78-failure-snapshot": "node scripts/collect-stage78-failure-snapshot.cjs",
     "collect:stage80-one-command-result-summary": "node scripts/collect-stage80-one-command-result-summary.cjs",
-    "verify:stage70-82-cumulative": "node scripts/verify-stage70-82-cumulative.cjs"
+    "verify:stage70-82-cumulative": "node scripts/verify-stage70-82-cumulative.cjs",
+    "check:stage83-task-done-next-step-prompt": "node scripts/check-stage83-task-done-next-step-prompt.cjs",
+    "verify:stage83-task-next-step": "npm.cmd run check:stage83-task-done-next-step-prompt && npm.cmd run build"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
