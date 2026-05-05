@@ -83,24 +83,20 @@
       "destination": "/api/portal?route=tokens"
     },
     {
-      "source": "/api/billing-checkout",
-      "destination": "/api/billing?route=checkout"
+      "source": "/api/google-calendar",
+      "destination": "/api/system?kind=google-calendar"
     },
     {
       "source": "/api/billing-actions",
-      "destination": "/api/billing?route=actions"
+      "destination": "/api/billing-checkout?route=actions"
     },
     {
       "source": "/api/billing-webhook",
-      "destination": "/api/billing?route=webhook"
+      "destination": "/api/stripe-webhook?route=webhook"
     },
     {
-      "source": "/api/stripe-webhook",
-      "destination": "/api/billing?route=stripe-webhook"
-    },
-    {
-      "source": "/api/google-calendar",
-      "destination": "/api/system?kind=google-calendar"
+      "source": "/api/billing",
+      "destination": "/api/billing-checkout?route=checkout"
     },
     {
       "source": "/((?!api/|assets/|.*\\..*).*)",
@@ -125,10 +121,6 @@
     {
       "source": "/api/storage-upload-health",
       "destination": "/api/system?kind=storage-upload-health"
-    },
-    {
-      "source": "/api/billing",
-      "destination": "/api/system?kind=billing"
     }
   ]
 }
