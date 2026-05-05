@@ -315,7 +315,11 @@
     "test:stage89-right-rail-export-clear": "node --test tests/stage89-right-rail-export-clear.test.cjs",
     "check:stage89c-manual-acceptance": "node scripts/check-stage89c-manual-acceptance.cjs",
     "test:stage89c-manual-acceptance": "node --test tests/stage89c-manual-acceptance.test.cjs",
-    "verify:stage89-accepted": "npm.cmd run check:stage89c-manual-acceptance && npm.cmd run test:stage89c-manual-acceptance && npm.cmd run verify:admin-tools"
+    "verify:stage89-accepted": "npm.cmd run check:stage89c-manual-acceptance && npm.cmd run test:stage89c-manual-acceptance && npm.cmd run verify:admin-tools",
+    "stage90:write-env-smoke-evidence": "node scripts/write-stage90-env-smoke-evidence.cjs",
+    "check:stage90-env-portal-button-qa": "node scripts/check-stage90-env-portal-button-qa.cjs",
+    "test:stage90-env-portal-button-qa": "node --test tests/stage90-env-portal-button-qa.test.cjs",
+    "verify:stage90-env-portal-button-qa": "npm.cmd run stage90:write-env-smoke-evidence && npm.cmd run check:stage90-env-portal-button-qa && npm.cmd run test:stage90-env-portal-button-qa"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
