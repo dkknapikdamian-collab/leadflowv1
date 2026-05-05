@@ -5,6 +5,7 @@ Active lead is sales work. Moved lead is acquisition history with a link to Case
 */
 const A16_V2_VOICE_NOTE_AUTOSAVE_ALLOWED = 'voice-notes-may-autosave-after-dictation-silence';
 const A24_LEAD_TO_CASE_COPY_LOCK = 'Rozpocznij obsługę | Ten temat jest już w obsłudze | Otwórz sprawę';
+const STAGE84_LEAD_DETAIL_WORK_CENTER = 'Lead Detail pokazuje centrum pracy: ostatni ruch, dni bez ruchu, najblizsza akcja i powod ryzyka';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -503,6 +504,131 @@ useEffect(() => {
 
   const timeline = useMemo(() => buildTimeline(sortedLinkedTasks, sortedLinkedEvents), [sortedLinkedEvents, sortedLinkedTasks]);
   const nextTimelineEntry = useMemo(() => timeline.find((entry) => !isDoneStatus(entry.status)) || null, [timeline]);
+  const leadWorkCenter = useMemo(() => {
+    const nowMs = Date.now();
+    const activityDates = activities
+      .map((activity) => asDate(activity?.happenedAt || activity?.createdAt || activity?.updatedAt || activity?.payload?.createdAt))
+      .filter(Boolean) as Date[];
+    const taskDates = sortedLinkedTasks.map((task) => asDate(getTaskDate(task))).filter(Boolean) as Date[];
+    const eventDates = sortedLinkedEvents.map((event) => asDate(getEventDate(event))).filter(Boolean) as Date[];
+    const leadDates = [lead?.lastContactAt, lead?.lastActivityAt, lead?.updatedAt, lead?.createdAt]
+      .map((value) => asDate(value))
+      .filter(Boolean) as Date[];
+    const dates = [...activityDates, ...taskDates, ...eventDates, ...leadDates].sort((left, right) => right.getTime() - left.getTime());
+    const lastTouch = dates[0] || null;
+    const daysWithoutMovement = lastTouch ? Math.max(0, Math.floor((nowMs - lastTouch.getTime()) / 86400000)) : null;
+    const nextActionDate = asDate(nextTimelineEntry?.dateValue);
+    const isOverdue = Boolean(nextActionDate && nextActionDate.getTime() < nowMs && !leadInService);
+    const hasNoPlannedAction = Boolean(!nextTimelineEntry && !leadInService);
+    const isWaitingTooLong = Boolean(String(lead?.status || '') === 'waiting_response' && typeof daysWithoutMovement === 'number' && daysWithoutMovement >= 3 && !leadInService);
+    const dealValue = Number(lead?.dealValue || 0);
+    const isHighValueCold = Boolean(dealValue >= 5000 && typeof daysWithoutMovement === 'number' && daysWithoutMovement >= 5 && !leadInService);
+
+    let riskLabel = 'OgarniÄ™ty';
+    let riskTone = 'good';
+    let riskReason = leadInService
+      ? 'Temat jest juĹĽ w obsĹ‚udze. Dalsza praca powinna iĹ›Ä‡ przez sprawÄ™.'
+      : 'Lead ma zaplanowany ruch albo nie wymaga pilnej reakcji.';
+
+    if (isOverdue) {
+      riskLabel = 'Po terminie';
+      riskTone = 'danger';
+      riskReason = 'NajbliĹĽsza zaplanowana akcja ma termin w przeszĹ‚oĹ›ci.';
+    } else if (hasNoPlannedAction) {
+      riskLabel = 'Brak akcji';
+      riskTone = 'danger';
+      riskReason = 'Aktywny lead nie ma ĹĽadnego zaplanowanego zadania ani wydarzenia.';
+    } else if (isWaitingTooLong) {
+      riskLabel = 'Czeka za dĹ‚ugo';
+      riskTone = 'warn';
+      riskReason = 'Lead jest w statusie oczekiwania i nie miaĹ‚ ruchu od kilku dni.';
+    } else if (isHighValueCold) {
+      riskLabel = 'Wysoka wartoĹ›Ä‡ bez ruchu';
+      riskTone = 'warn';
+      riskReason = 'Lead ma wysokÄ… wartoĹ›Ä‡ i dĹ‚ugo nie byĹ‚o przy nim aktywnoĹ›ci.';
+    }
+
+    return {
+      lastTouchLabel: lastTouch ? formatDateTime(lastTouch) : 'Brak zapisanego ruchu',
+      daysWithoutMovementLabel: typeof daysWithoutMovement === 'number' ? `${daysWithoutMovement} dni` : 'Brak danych',
+      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} Â· ${nextTimelineEntry.dateLabel}` : 'Brak zaplanowanych dziaĹ‚aĹ„',
+      isOverdue,
+      hasNoPlannedAction,
+      riskLabel,
+      riskTone,
+      riskReason,
+    };
+  }, [activities, lead, leadInService, nextTimelineEntry, sortedLinkedEvents, sortedLinkedTasks]);
+
+  const workCenterPanel = (
+    <section className="lead-detail-work-center" data-stage="stage84-lead-detail-work-center">
+      <div className="lead-detail-work-center-header">
+        <div>
+          <span>Centrum pracy leada</span>
+          <h2>Co tu trzeba zrobiÄ‡ teraz</h2>
+          <p>KrĂłtki panel decyzyjny bez skakania po zadaniach, kalendarzu i historii.</p>
+        </div>
+        <span className={`lead-detail-work-risk lead-detail-work-risk-${leadWorkCenter.riskTone}`}>
+          {leadWorkCenter.riskLabel}
+        </span>
+      </div>
+
+      <div className="lead-detail-work-center-grid">
+        <div className="lead-detail-work-metric">
+          <small>Ostatni ruch</small>
+          <strong>{leadWorkCenter.lastTouchLabel}</strong>
+        </div>
+        <div className="lead-detail-work-metric">
+          <small>Dni bez ruchu</small>
+          <strong>{leadWorkCenter.daysWithoutMovementLabel}</strong>
+        </div>
+        <div className="lead-detail-work-metric lead-detail-work-metric-wide">
+          <small>NajbliĹĽsza akcja</small>
+          <strong>{leadWorkCenter.nextActionLabel}</strong>
+        </div>
+      </div>
+
+      <div className="lead-detail-work-reason">
+        <small>PowĂłd ryzyka</small>
+        <p>{leadWorkCenter.riskReason}</p>
+      </div>
+
+      {!leadInService ? (
+        <div className="lead-detail-work-actions" aria-label="Szybkie akcje na leadzie">
+          <LeadActionButton onClick={() => setIsQuickTaskOpen(true)} disabled={!hasAccess}>
+            <Phone className="h-4 w-4" /> Zaplanuj telefon / follow-up
+          </LeadActionButton>
+          <LeadActionButton onClick={() => setIsQuickEventOpen(true)} disabled={!hasAccess}>
+            <Calendar className="h-4 w-4" /> Zaplanuj spotkanie
+          </LeadActionButton>
+          <LeadActionButton onClick={() => handleUpdateStatus('contacted')} disabled={!hasAccess}>
+            <CheckCircle2 className="h-4 w-4" /> Kontakt wykonany
+          </LeadActionButton>
+          <LeadActionButton onClick={() => handleUpdateStatus('proposal_sent')} disabled={!hasAccess}>
+            <Mail className="h-4 w-4" /> Oferta wysĹ‚ana
+          </LeadActionButton>
+          <LeadActionButton onClick={() => handleUpdateStatus('waiting_response')} disabled={!hasAccess}>
+            <Clock className="h-4 w-4" /> Oznacz waiting
+          </LeadActionButton>
+          <LeadActionButton onClick={() => document.getElementById('lead-detail-note-box')?.focus()} disabled={!hasAccess}>
+            <FileText className="h-4 w-4" /> Dopisz notatkÄ™
+          </LeadActionButton>
+          {serviceCaseId ? (
+            <LeadActionButton onClick={() => navigate(`/case/${serviceCaseId}`)}>
+              <Briefcase className="h-4 w-4" /> OtwĂłrz sprawÄ™
+            </LeadActionButton>
+          ) : null}
+        </div>
+      ) : (
+        <div className="lead-detail-work-actions lead-detail-work-actions-service">
+          <LeadActionButton onClick={() => serviceCaseId && navigate(`/case/${serviceCaseId}`)} disabled={!serviceCaseId}>
+            <Briefcase className="h-4 w-4" /> OtwĂłrz sprawÄ™
+          </LeadActionButton>
+          <span>{leadServiceLockedMessage}</span>
+        </div>
+      )}
+    </section>
+  );
 
   const availableCasesToLink = useMemo(
     () => allCases.filter((item) => !String(item.leadId || '') || String(item.leadId || '') === leadId),
@@ -1328,7 +1454,7 @@ useEffect(() => {
               </div>
               {!leadInService ? (
                 <form className="lead-detail-note-form" onSubmit={handleAddNote}>
-                  <Textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj krotka notatke po kontakcie..." className="lead-detail-note-input" lang="pl-PL" />
+                  <Textarea id="lead-detail-note-box" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj krotka notatke po kontakcie..." className="lead-detail-note-input" lang="pl-PL" />
                   {noteInterimText ? <p className="lead-detail-note-transcript" lang="pl-PL">Dyktowanie: {noteInterimText}</p> : null}
                   <div className="flex flex-wrap gap-2">
                     <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
@@ -1397,6 +1523,7 @@ useEffect(() => {
 
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><Sparkles className="h-4 w-4" /><h2>AI wsparcie</h2></div>
+              {workCenterPanel}
               <Tabs defaultValue="next-action">
                 <TabsList className="lead-detail-ai-tabs-list w-full">
                   <TabsTrigger value="next-action" className="lead-detail-ai-tabs-trigger flex-1">Nastepny ruch</TabsTrigger>

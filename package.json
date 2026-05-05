@@ -253,6 +253,7 @@
     "check:stage80-one-command-result-summary": "node scripts/check-stage80-one-command-result-summary.cjs",
     "check:stage81-today-risk-reason-next-action": "node scripts/check-stage81-today-risk-reason-next-action.cjs",
     "check:stage82-today-next-7-days": "node scripts/check-stage82-today-next-7-days.cjs",
+    "check:stage84-lead-detail-work-center": "node scripts/check-stage84-lead-detail-work-center.cjs",
     "collect:stage77-runtime-evidence": "node scripts/collect-stage77-runtime-evidence.cjs",
     "collect:stage78-failure-snapshot": "node scripts/collect-stage78-failure-snapshot.cjs",
     "collect:stage80-one-command-result-summary": "node scripts/collect-stage80-one-command-result-summary.cjs",
