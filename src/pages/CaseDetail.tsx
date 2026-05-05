@@ -1360,7 +1360,7 @@ export default function CaseDetail() {
                 <div className="case-detail-section-heading">
                   <div>
                     <p className="case-detail-eyebrow">Kontekst</p>
-                    <h2>Ostatnie 5 ruchĂłw</h2>
+                    <h2>Ostatnie 5 ruchów</h2>
                   </div>
                   <Button
                     type="button"
@@ -1370,14 +1370,14 @@ export default function CaseDetail() {
                     onClick={() => setActiveTab('history')}
                     data-case-recent-moves-open-history="true"
                   >
-                    Zobacz caĹ‚Ä… aktywnoĹ›Ä‡
+                    Zobacz całą aktywność
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
 
                 {recentCaseMoves.length === 0 ? (
                   <div className="case-detail-empty-state" data-case-recent-moves-empty="true">
-                    Brak ruchĂłw w tej sprawie. Dodaj notatkÄ™, zadanie albo brak, ĹĽeby historia zaczÄ™Ĺ‚a ĹĽyÄ‡.
+                    Brak ruchów w tej sprawie. Dodaj notatkę, zadanie albo brak, żeby historia zaczęła żyć.
                   </div>
                 ) : (
                   <div className="case-detail-recent-moves-list">

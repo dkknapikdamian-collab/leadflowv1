@@ -1,36 +1,49 @@
 const fs = require('fs');
 const path = require('path');
 
-const root = process.cwd();
-const files = {
-  leadDetail: path.join(root, 'src/pages/LeadDetail.tsx'),
-  css: path.join(root, 'src/styles/visual-stage14-lead-detail-vnext.css'),
-  doc: path.join(root, 'docs/release/STAGE84_LEAD_DETAIL_WORK_CENTER_2026-05-05.md'),
-};
-
-function read(file) {
-  if (!fs.existsSync(file)) throw new Error(`Missing file: ${path.relative(root, file)}`);
-  return fs.readFileSync(file, 'utf8');
+const repo = process.cwd();
+function read(rel) {
+  return fs.readFileSync(path.join(repo, rel), 'utf8');
+}
+function assertContains(file, text) {
+  const body = read(file);
+  if (!body.includes(text)) {
+    console.error('FAIL ' + file + ': missing ' + text);
+    process.exit(1);
+  }
+  console.log('PASS ' + file + ': contains ' + text);
+}
+function assertNotContains(file, text) {
+  const body = read(file);
+  if (body.includes(text)) {
+    console.error('FAIL ' + file + ': contains forbidden mojibake ' + text);
+    process.exit(1);
+  }
 }
 
-function mustContain(name, text, needle) {
-  if (!text.includes(needle)) throw new Error(`${name} missing: ${needle}`);
-  console.log(`PASS ${name}: contains ${needle}`);
-}
+const leadDetail = 'src/pages/LeadDetail.tsx';
+const css = 'src/styles/visual-stage14-lead-detail-vnext.css';
+const doc = 'docs/release/STAGE84_LEAD_DETAIL_WORK_CENTER_2026-05-05.md';
 
-const leadDetail = read(files.leadDetail);
-const css = read(files.css);
-const doc = read(files.doc);
+[
+  'STAGE84_LEAD_DETAIL_WORK_CENTER',
+  'data-stage="stage84-lead-detail-work-center"',
+  'Centrum pracy leada',
+  'Ostatni ruch',
+  'Dni bez ruchu',
+  'Najbliższa akcja',
+  'Powód ryzyka',
+  'Otwórz sprawę',
+  'Dopisz notatkę',
+  'Oferta wysłana',
+  'lead-detail-note-box',
+].forEach((text) => assertContains(leadDetail, text));
 
-mustContain('LeadDetail.tsx', leadDetail, 'STAGE84_LEAD_DETAIL_WORK_CENTER');
-mustContain('LeadDetail.tsx', leadDetail, 'data-stage="stage84-lead-detail-work-center"');
-mustContain('LeadDetail.tsx', leadDetail, 'Centrum pracy leada');
-mustContain('LeadDetail.tsx', leadDetail, 'Ostatni ruch');
-mustContain('LeadDetail.tsx', leadDetail, 'Dni bez ruchu');
-mustContain('LeadDetail.tsx', leadDetail, 'NajbliĹĽsza akcja');
-mustContain('LeadDetail.tsx', leadDetail, 'PowĂłd ryzyka');
-mustContain('LeadDetail.tsx', leadDetail, 'lead-detail-note-box');
-mustContain('CSS', css, 'STAGE84_LEAD_DETAIL_WORK_CENTER');
-mustContain('CSS', css, '.lead-detail-work-center');
-mustContain('Release doc', doc, 'Stage84');
+['NajbliĹĽsza', 'PowĂłd', 'OtwĂłrz', 'sprawÄ™', 'notatkÄ™', 'wysĹ‚ana'].forEach((text) => assertNotContains(leadDetail, text));
+
+assertContains(css, 'STAGE84_LEAD_DETAIL_WORK_CENTER');
+assertContains(css, '.lead-detail-work-center');
+assertContains(doc, 'Stage84');
+assertContains(doc, 'Lead Detail jako centrum pracy');
+
 console.log('PASS STAGE84_LEAD_DETAIL_WORK_CENTER');

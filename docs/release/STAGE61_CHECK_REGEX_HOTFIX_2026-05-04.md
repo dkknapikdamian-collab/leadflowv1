@@ -9,7 +9,7 @@ Naprawa guarda Stage61 po awarii parsera Node na regex literal w `scripts/check-
 - przepisano Stage61 check bez regex literal,
 - przepisano Stage61 test bez regex literal,
 - nie zmieniono logiki runtime,
-- nie zmieniono UI poza wczeĹ›niejszym Stage61.
+- nie zmieniono UI poza wcześniejszym Stage61.
 
 ## Kryterium
 - `npm.cmd run check:stage61-case-note-action-button-swap` przechodzi,

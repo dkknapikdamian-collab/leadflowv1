@@ -259,7 +259,15 @@
     "collect:stage80-one-command-result-summary": "node scripts/collect-stage80-one-command-result-summary.cjs",
     "verify:stage70-82-cumulative": "node scripts/verify-stage70-82-cumulative.cjs",
     "check:stage83-task-done-next-step-prompt": "node scripts/check-stage83-task-done-next-step-prompt.cjs",
-    "verify:stage83-task-next-step": "npm.cmd run check:stage83-task-done-next-step-prompt && npm.cmd run build"
+    "verify:stage83-task-next-step": "npm.cmd run check:stage83-task-done-next-step-prompt && npm.cmd run build",
+    "check:stage84b-lead-detail-polish-hotfix": "node scripts/check-stage84g-lead-detail-polish-clean-sweep.cjs",
+    "check:stage84c-lead-detail-polish-real-fix": "node scripts/check-stage84g-lead-detail-polish-clean-sweep.cjs",
+    "check:stage84d-lead-detail-polish-final": "node scripts/check-stage84f-lead-detail-mojibake-sweep.cjs",
+    "check:stage84e-lead-detail-polish-no-false-success": "node scripts/check-stage84g-lead-detail-polish-clean-sweep.cjs",
+    "check:stage84f-lead-detail-mojibake-sweep": "node scripts/check-stage84g-lead-detail-polish-clean-sweep.cjs",
+    "test:stage84-lead-detail-work-center": "node --test tests/stage84-lead-detail-work-center.test.cjs",
+    "check:stage84g-lead-detail-polish-clean-sweep": "node scripts/check-stage84g-lead-detail-polish-clean-sweep.cjs",
+    "test:stage84g-lead-detail-polish-clean-sweep": "node --test tests/stage84g-lead-detail-polish-clean-sweep.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

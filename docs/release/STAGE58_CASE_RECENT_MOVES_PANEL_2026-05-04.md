@@ -1,7 +1,7 @@
 # STAGE58_CASE_RECENT_MOVES_PANEL
 
 ## Cel
-DodaÄ‡ w widoku sprawy maĹ‚y panel `Ostatnie 5 ruchĂłw`, ĹĽeby operator po wejĹ›ciu w sprawÄ™ widziaĹ‚ ostatni kontekst pracy bez przechodzenia od razu do peĹ‚nej historii.
+Dodać w widoku sprawy mały panel `Ostatnie 5 ruchów`, żeby operator po wejściu w sprawę widział ostatni kontekst pracy bez przechodzenia od razu do pełnej historii.
 
 ## Zakres
 - `src/pages/CaseDetail.tsx`
@@ -11,18 +11,18 @@ DodaÄ‡ w widoku sprawy maĹ‚y panel `Ostatnie 5 ruchĂłw`, ĹĽeby operato
 - `package.json`
 
 ## Co zmieniono
-- Dodano selektor `recentCaseMoves` oparty o pierwsze 5 posortowanych aktywnoĹ›ci sprawy.
+- Dodano selektor `recentCaseMoves` oparty o pierwsze 5 posortowanych aktywności sprawy.
 - Dodano panel `data-case-recent-moves-panel="true"` po hubie szybkich akcji sprawy.
-- Panel pokazuje typ ruchu, datÄ™, opis z istniejÄ…cego `getActivityText` oraz skrĂłconÄ… notatkÄ™, jeĹ›li istnieje.
-- Dodano akcjÄ™ `Zobacz caĹ‚Ä… aktywnoĹ›Ä‡`, ktĂłra przeĹ‚Ä…cza kartÄ™ na `history`.
-- Dodano scoped CSS dla czytelnoĹ›ci panelu i mobilnej responsywnoĹ›ci.
+- Panel pokazuje typ ruchu, datę, opis z istniejącego `getActivityText` oraz skróconą notatkę, jeśli istnieje.
+- Dodano akcję `Zobacz całą aktywność`, która przełącza kartę na `history`.
+- Dodano scoped CSS dla czytelności panelu i mobilnej responsywności.
 
 ## Czego nie zmieniono
-- Nie dodano nowego moduĹ‚u.
+- Nie dodano nowego modułu.
 - Nie zmieniono API.
 - Nie zmieniono modelu danych.
 - Nie zmieniono flow lead -> sprawa.
-- Nie dodano automatycznego tworzenia zadaĹ„ ani wydarzeĹ„.
+- Nie dodano automatycznego tworzenia zadań ani wydarzeń.
 
 ## Weryfikacja
 ```powershell
@@ -32,5 +32,5 @@ npm.cmd run verify:case-operational-ui
 npm.cmd run build
 ```
 
-## Kryterium zakoĹ„czenia
-Widok sprawy pokazuje kompaktowy kontekst ostatnich 5 ruchĂłw, bez przeciÄ…ĹĽania UI i bez ryzyka automatycznego zapisu danych.
+## Kryterium zakończenia
+Widok sprawy pokazuje kompaktowy kontekst ostatnich 5 ruchów, bez przeciążania UI i bez ryzyka automatycznego zapisu danych.

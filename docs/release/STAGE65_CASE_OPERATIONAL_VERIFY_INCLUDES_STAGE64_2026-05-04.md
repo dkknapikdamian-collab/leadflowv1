@@ -6,28 +6,28 @@ Branch: `dev-rollout-freeze`
 
 ## Cel
 
-DomknÄ…Ä‡ Stage64 jako staĹ‚Ä… czÄ™Ĺ›Ä‡ bramki `verify:case-operational-ui`.
+Domknąć Stage64 jako stałą część bramki `verify:case-operational-ui`.
 
-Po naprawie duplikowania zadaĹ„/wydarzeĹ„ w szczegĂłĹ‚ach sprawy nie wystarczy mieÄ‡ osobny check. Guard deduplikacji musi odpalaÄ‡ siÄ™ razem z pakietem operacyjnym spraw, ĹĽeby regresja nie wrĂłciĹ‚a przy kolejnym etapie UI.
+Po naprawie duplikowania zadań/wydarzeń w szczegółach sprawy nie wystarczy mieć osobny check. Guard deduplikacji musi odpalać się razem z pakietem operacyjnym spraw, żeby regresja nie wróciła przy kolejnym etapie UI.
 
 ## Zakres
 
-- dopisaÄ‡ `npm.cmd run check:stage64-case-detail-work-item-dedupe` do `verify:case-operational-ui`,
-- dopisaÄ‡ go na koĹ„cu istniejÄ…cego chaina, po `verify:ui-contrast`, ĹĽeby nie zĹ‚amaÄ‡ starszych guardĂłw szukajÄ…cych dokĹ‚adnego fragmentu Stage57-Stage63,
-- dodaÄ‡ guard `check:stage65-case-operational-verify-includes-stage64`,
-- dodaÄ‡ test `test:stage65-case-operational-verify-includes-stage64`,
-- pilnowaÄ‡, ĹĽeby `package.json` nie dostaĹ‚ BOM ani `\u0026` w miejscu operatorĂłw `&&`.
+- dopisać `npm.cmd run check:stage64-case-detail-work-item-dedupe` do `verify:case-operational-ui`,
+- dopisać go na końcu istniejącego chaina, po `verify:ui-contrast`, żeby nie złamać starszych guardów szukających dokładnego fragmentu Stage57-Stage63,
+- dodać guard `check:stage65-case-operational-verify-includes-stage64`,
+- dodać test `test:stage65-case-operational-verify-includes-stage64`,
+- pilnować, żeby `package.json` nie dostał BOM ani `\u0026` w miejscu operatorów `&&`.
 
-## Nie zmieniaÄ‡
+## Nie zmieniać
 
-- nie zmieniaÄ‡ logiki deduplikacji Stage64,
-- nie zmieniaÄ‡ UI,
-- nie czyĹ›ciÄ‡ rekordĂłw w bazie,
-- nie ruszaÄ‡ Google Calendar ani billing.
+- nie zmieniać logiki deduplikacji Stage64,
+- nie zmieniać UI,
+- nie czyścić rekordów w bazie,
+- nie ruszać Google Calendar ani billing.
 
 ## Sprawdzenie
 
-Po wdroĹĽeniu przechodzÄ…:
+Po wdrożeniu przechodzą:
 
 ```text
 npm.cmd run check:stage65-case-operational-verify-includes-stage64
@@ -38,6 +38,6 @@ npm.cmd run verify:case-operational-ui
 npm.cmd run build
 ```
 
-## Kryterium zakoĹ„czenia
+## Kryterium zakończenia
 
-`verify:case-operational-ui` obejmuje Stage64 i nadal przechodzÄ… stare guardy Stage57 oraz build produkcyjny.
+`verify:case-operational-ui` obejmuje Stage64 i nadal przechodzą stare guardy Stage57 oraz build produkcyjny.

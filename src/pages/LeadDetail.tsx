@@ -524,34 +524,34 @@ useEffect(() => {
     const dealValue = Number(lead?.dealValue || 0);
     const isHighValueCold = Boolean(dealValue >= 5000 && typeof daysWithoutMovement === 'number' && daysWithoutMovement >= 5 && !leadInService);
 
-    let riskLabel = 'OgarniÄ™ty';
+    let riskLabel = 'Ogarnięty';
     let riskTone = 'good';
     let riskReason = leadInService
-      ? 'Temat jest juĹĽ w obsĹ‚udze. Dalsza praca powinna iĹ›Ä‡ przez sprawÄ™.'
+      ? 'Temat jest już w obsłudze. Dalsza praca powinna iść przez sprawę.'
       : 'Lead ma zaplanowany ruch albo nie wymaga pilnej reakcji.';
 
     if (isOverdue) {
       riskLabel = 'Po terminie';
       riskTone = 'danger';
-      riskReason = 'NajbliĹĽsza zaplanowana akcja ma termin w przeszĹ‚oĹ›ci.';
+      riskReason = 'Najbliższa zaplanowana akcja ma termin w przeszłości.';
     } else if (hasNoPlannedAction) {
       riskLabel = 'Brak akcji';
       riskTone = 'danger';
-      riskReason = 'Aktywny lead nie ma ĹĽadnego zaplanowanego zadania ani wydarzenia.';
+      riskReason = 'Aktywny lead nie ma żadnego zaplanowanego zadania ani wydarzenia.';
     } else if (isWaitingTooLong) {
-      riskLabel = 'Czeka za dĹ‚ugo';
+      riskLabel = 'Czeka za długo';
       riskTone = 'warn';
-      riskReason = 'Lead jest w statusie oczekiwania i nie miaĹ‚ ruchu od kilku dni.';
+      riskReason = 'Lead jest w statusie oczekiwania i nie miał ruchu od kilku dni.';
     } else if (isHighValueCold) {
-      riskLabel = 'Wysoka wartoĹ›Ä‡ bez ruchu';
+      riskLabel = 'Wysoka wartość bez ruchu';
       riskTone = 'warn';
-      riskReason = 'Lead ma wysokÄ… wartoĹ›Ä‡ i dĹ‚ugo nie byĹ‚o przy nim aktywnoĹ›ci.';
+      riskReason = 'Lead ma wysoką wartość i długo nie było przy nim aktywności.';
     }
 
     return {
       lastTouchLabel: lastTouch ? formatDateTime(lastTouch) : 'Brak zapisanego ruchu',
       daysWithoutMovementLabel: typeof daysWithoutMovement === 'number' ? `${daysWithoutMovement} dni` : 'Brak danych',
-      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} Â· ${nextTimelineEntry.dateLabel}` : 'Brak zaplanowanych dziaĹ‚aĹ„',
+      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} · ${nextTimelineEntry.dateLabel}` : 'Brak zaplanowanych działań',
       isOverdue,
       hasNoPlannedAction,
       riskLabel,
@@ -565,8 +565,8 @@ useEffect(() => {
       <div className="lead-detail-work-center-header">
         <div>
           <span>Centrum pracy leada</span>
-          <h2>Co tu trzeba zrobiÄ‡ teraz</h2>
-          <p>KrĂłtki panel decyzyjny bez skakania po zadaniach, kalendarzu i historii.</p>
+          <h2>Co tu trzeba zrobić teraz</h2>
+          <p>Krótki panel decyzyjny bez skakania po zadaniach, kalendarzu i historii.</p>
         </div>
         <span className={`lead-detail-work-risk lead-detail-work-risk-${leadWorkCenter.riskTone}`}>
           {leadWorkCenter.riskLabel}
@@ -583,13 +583,13 @@ useEffect(() => {
           <strong>{leadWorkCenter.daysWithoutMovementLabel}</strong>
         </div>
         <div className="lead-detail-work-metric lead-detail-work-metric-wide">
-          <small>NajbliĹĽsza akcja</small>
+          <small>Najbliższa akcja</small>
           <strong>{leadWorkCenter.nextActionLabel}</strong>
         </div>
       </div>
 
       <div className="lead-detail-work-reason">
-        <small>PowĂłd ryzyka</small>
+        <small>Powód ryzyka</small>
         <p>{leadWorkCenter.riskReason}</p>
       </div>
 
@@ -605,24 +605,24 @@ useEffect(() => {
             <CheckCircle2 className="h-4 w-4" /> Kontakt wykonany
           </LeadActionButton>
           <LeadActionButton onClick={() => handleUpdateStatus('proposal_sent')} disabled={!hasAccess}>
-            <Mail className="h-4 w-4" /> Oferta wysĹ‚ana
+            <Mail className="h-4 w-4" /> Oferta wysłana
           </LeadActionButton>
           <LeadActionButton onClick={() => handleUpdateStatus('waiting_response')} disabled={!hasAccess}>
             <Clock className="h-4 w-4" /> Oznacz waiting
           </LeadActionButton>
           <LeadActionButton onClick={() => document.getElementById('lead-detail-note-box')?.focus()} disabled={!hasAccess}>
-            <FileText className="h-4 w-4" /> Dopisz notatkÄ™
+            <FileText className="h-4 w-4" /> Dopisz notatkę
           </LeadActionButton>
           {serviceCaseId ? (
             <LeadActionButton onClick={() => navigate(`/case/${serviceCaseId}`)}>
-              <Briefcase className="h-4 w-4" /> OtwĂłrz sprawÄ™
+              <Briefcase className="h-4 w-4" /> Otwórz sprawę
             </LeadActionButton>
           ) : null}
         </div>
       ) : (
         <div className="lead-detail-work-actions lead-detail-work-actions-service">
           <LeadActionButton onClick={() => serviceCaseId && navigate(`/case/${serviceCaseId}`)} disabled={!serviceCaseId}>
-            <Briefcase className="h-4 w-4" /> OtwĂłrz sprawÄ™
+            <Briefcase className="h-4 w-4" /> Otwórz sprawę
           </LeadActionButton>
           <span>{leadServiceLockedMessage}</span>
         </div>
