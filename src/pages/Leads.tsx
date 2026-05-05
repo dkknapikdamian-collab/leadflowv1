@@ -38,6 +38,10 @@ import '../styles/visual-stage20-lead-form-vnext.css';
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
 const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\n\\nTen lead ma powiązaną sprawę';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, ĹşrĂłdĹ‚o albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
@@ -856,7 +860,7 @@ export default function Leads() {
                         </span>
 
                         <span className="lead-action-cell">
-                          <span className="mini">Najbli|sza zaplanowana akcja</span>
+                          <span className="mini">Najbli?sza zaplanowana akcja</span>
                           <strong className={nextActionMeta.overdue ? 'danger' : ''}>{nextActionMeta.title}</strong>
                           {nextActionMeta.subtitle ? <span className="sub">{nextActionMeta.subtitle}</span> : null}
                         </span>
@@ -870,8 +874,8 @@ export default function Leads() {
                             className="btn ghost lead-icon-btn"
                             disabled={pending}
                             onClick={(event) => (showTrash ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead))}
-                            aria-label={showTrash ? 'PrzywrBďż˝! leada' : 'Przenie9: leada do kosza'}
-                            title={showTrash ? 'PrzywrBďż˝! leada' : 'Przenie9: leada do kosza'}
+                            aria-label={showTrash ? 'PrzywrBďż˝! leada' : 'Przenie? leada do kosza'}
+                            title={showTrash ? 'PrzywrBďż˝! leada' : 'Przenie? leada do kosza'}
                           >
                             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
                           </button>
@@ -908,6 +912,7 @@ export default function Leads() {
                     <Link
                       key={entry.key}
                       to={entry.href || '/leads'}
+                      title={`${entry.label} ? ${entry.kindLabel} ? ${formatRelationValue(entry.value)}`}
                       data-stage25-valuable-relation-row="true"
                       data-stage32-valuable-relation-row="true"
                     >

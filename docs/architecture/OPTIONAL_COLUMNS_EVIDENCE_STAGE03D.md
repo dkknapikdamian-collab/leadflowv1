@@ -99,6 +99,7 @@ Do not remove a column from fallback or promote it to required until one of thes
 | cases | `service_started_at` | fallback_allowed_pending_migration_evidence | Case fields are used during lead-to-case handoff, but production schema evidence is not locked in this stage. |
 | cases | `expected_revenue` | fallback_allowed_pending_migration_evidence | Case financial baseline (potential revenue) is now part of runtime contract, but rollout evidence still controls when fallback can be removed. |
 | cases | `paid_amount` | fallback_allowed_pending_migration_evidence | Case financial baseline (paid amount) is now part of runtime contract, but rollout evidence still controls when fallback can be removed. |
+| cases | `remaining_amount` | fallback_allowed_pending_migration_evidence | Case financial baseline (remaining amount) is now part of runtime contract, but rollout evidence still controls when fallback can be removed. |
 | cases | `currency` | fallback_allowed_pending_migration_evidence | Case financial baseline (currency) is now part of runtime contract, but rollout evidence still controls when fallback can be removed. |
 | activities | `owner_id` | fallback_allowed_pending_migration_evidence | Activity fields are used for audit/history inserts, but production schema evidence is not locked in this stage. |
 | activities | `actor_id` | fallback_allowed_pending_migration_evidence | Activity fields are used for audit/history inserts, but production schema evidence is not locked in this stage. |

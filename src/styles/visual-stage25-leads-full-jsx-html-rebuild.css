@@ -471,11 +471,24 @@
 }
 
 .cf-html-view.main-leads-html .lead-top-relations .quick-list a {
-  align-items: flex-start;
+  align-items: center;
 }
 
 .cf-html-view.main-leads-html .lead-top-relations .quick-list a > span {
-  gap: 4px;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cf-html-view.main-leads-html .lead-top-relations .quick-list a > strong.lead-relation-money {

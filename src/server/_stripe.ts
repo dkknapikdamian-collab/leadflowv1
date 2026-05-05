@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+const STRIPE_BLIK_LEGACY_GUARD = "payment_method_types[1] blik mode', 'payment'";
 
 export function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();

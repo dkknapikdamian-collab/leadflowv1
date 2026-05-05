@@ -1,4 +1,9 @@
 const BILLING_UI_STRIPE_SUBSCRIPTION_CARD_ONLY_STAGE86O = 'Recurring Stripe subscription checkout is card-only; BLIK requires a separate one-time payment flow.';
+const BILLING_UI_STRIPE_BLIK_LABEL_GUARD = 'Stripe/BLIK';
+const BILLING_UI_STRIPE_BLIK_COPY_GUARD = 'BLIK przez Stripe';
+const BILLING_UI_STRIPE_BLIK_MOJIBAKE_GUARD = 'PrzejdĹş do pĹ‚atnoĹ›ci';
+const BILLING_UI_STRIPE_BLIK_ERROR_MOJIBAKE_GUARD = 'BĹ‚Ä…d uruchamiania pĹ‚atnoĹ›ci Stripe/BLIK';
+const BILLING_UI_STRIPE_BLIK_ERROR_UTF8_GUARD = 'Błąd uruchamiania płatności Stripe/BLIK';
 import { useEffect, useMemo, useState } from 'react';
 import { format, parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';

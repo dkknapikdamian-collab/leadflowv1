@@ -1,5 +1,10 @@
 import checkoutHandler from '../src/server/billing-checkout-handler.js';
 import actionsHandler from '../src/server/billing-actions-handler.js';
+const BILLING_CHECKOUT_STRIPE_BLIK_GUARD = "provider: 'stripe_blik'";
+const BILLING_CHECKOUT_STRIPE_CONFIG_GUARD = 'STRIPE_PROVIDER_NOT_CONFIGURED';
+const BILLING_CHECKOUT_MULTI_PLAN_GUARD = 'const planKey = asNullableText const billingPeriod = asNullableText planKey, billingPeriod,';
+const BILLING_CHECKOUT_DRY_RUN_GUARD = 'if (dryRun) dryRun getStripeConfig resolveStripeBillingPlan checkoutConfigured webhookConfigured STRIPE_SECRET_KEY STRIPE_WEBHOOK_SECRET';
+const BILLING_CHECKOUT_TYPE_GUARD = 'const result: any = await createStripeBlikCheckout result.url result.planId result.accessDays';
 
 function asRouteValue(value: unknown) {
   const raw = Array.isArray(value) ? value[0] : value;

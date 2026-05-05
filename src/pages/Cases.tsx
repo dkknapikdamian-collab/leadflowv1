@@ -471,8 +471,7 @@ export default function Cases() {
           <div>
             <span className="kicker">Centrum obsługi</span>
             <h1 className="text-3xl font-bold app-text">Sprawy</h1>
-            <p className="lead-copy">Lista spraw ma pokazać, które tematy są w pracy, które stoją i co wymaga klienta.</p>
-          </div>
+                      </div>
           <div className="head-actions">
             <Button type="button" variant="outline" className="btn soft-blue">
               <Sparkles className="h-4 w-4" /> Zapytaj AI
@@ -801,3 +800,4 @@ export default function Cases() {
 }
 
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleCaseView('blocked') toggleCaseView('needs_next_step') */
+

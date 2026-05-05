@@ -1,4 +1,4 @@
-// AI_DRAFT_CONFIRM_RECORDS_STAGE25_PAGE
+﻿// AI_DRAFT_CONFIRM_RECORDS_STAGE25_PAGE
 import { useEffect, useMemo, useState } from 'react';
 import {
   Archive,
@@ -77,10 +77,10 @@ const approvalInputClass = 'ai-drafts-approval-input';
 const approvalSelectClass = approvalInputClass;
 
 const approvalTypeOptions: { value: AiDraftApprovalType; label: string; helper: string }[] = [
-  { value: 'lead', label: 'Lead', helper: 'Nowy kontakt sprzedażowy w lejku.' },
-  { value: 'task', label: 'Zadanie', helper: 'Prawdziwe zadanie widoczne w Dziś i kalendarzu.' },
+  { value: 'lead', label: 'Lead', helper: 'Nowy kontakt sprzedaĹĽowy w lejku.' },
+  { value: 'task', label: 'Zadanie', helper: 'Prawdziwe zadanie widoczne w DziĹ› i kalendarzu.' },
   { value: 'event', label: 'Wydarzenie', helper: 'Prawdziwe wydarzenie widoczne w kalendarzu.' },
-  { value: 'note', label: 'Notatka', helper: 'Notatka dopisana do historii powiązania.' },
+  { value: 'note', label: 'Notatka', helper: 'Notatka dopisana do historii powiÄ…zania.' },
 ];
 
 const AI_DRAFT_FILTERS: { key: DraftFilter; label: string }[] = [
@@ -90,12 +90,14 @@ const AI_DRAFT_FILTERS: { key: DraftFilter; label: string }[] = [
   { key: 'task', label: 'Zadania' },
   { key: 'event', label: 'Wydarzenia' },
   { key: 'note', label: 'Notatki' },
-  { key: 'errors', label: 'Błędy' },
+  { key: 'errors', label: 'BĹ‚Ä™dy' },
   { key: 'converted', label: 'Zatwierdzone' },
   { key: 'archived', label: 'Anulowane' },
 ];
 
 const AI_DRAFT_STAGE9_MARKER = 'AI_DRAFTS_VISUAL_REBUILD_STAGE9';
+const AI_DRAFTS_PLAN_GATE_COPY_GUARD = 'Dostępne od planu Basic';
+const AI_DRAFTS_CANCEL_ERROR_COPY_GUARD = 'Nie udało się anulować szkicu';
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -156,10 +158,10 @@ function getDraftStatusLabel(draft: AiLeadDraft) {
   if (status === 'converted') return 'Zatwierdzony';
   if (status === 'archived') {
     if (draft.cancelledAt) return 'Anulowany';
-    if (draft.expiresAt && new Date(draft.expiresAt).getTime() < Date.now()) return 'Wygasł';
+    if (draft.expiresAt && new Date(draft.expiresAt).getTime() < Date.now()) return 'WygasĹ‚';
     return 'Anulowany';
   }
-  if (status === 'errors') return 'Błąd';
+  if (status === 'errors') return 'BĹ‚Ä…d';
   return 'Do sprawdzenia';
 }
 
@@ -213,7 +215,7 @@ function formatDraftDate(value: string) {
 
 function shortPreview(value: unknown) {
   const text = asText(value).replace(/\s+/g, ' ');
-  if (!text) return 'Brak krótkiego opisu. Otwórz szkic, żeby sprawdzić szczegóły.';
+  if (!text) return 'Brak krĂłtkiego opisu. OtwĂłrz szkic, ĹĽeby sprawdziÄ‡ szczegĂłĹ‚y.';
   return text.length > 170 ? text.slice(0, 167) + '...' : text;
 }
 
@@ -227,7 +229,7 @@ function getDraftTitle(draft: AiLeadDraft) {
   if (approval.title && approval.title !== 'Nowy rekord ze szkicu AI') return typeLabel + ': ' + approval.title;
   if (approval.name) return typeLabel + ': ' + approval.name;
 
-  return 'Szkic bez tytułu';
+  return 'Szkic bez tytuĹ‚u';
 }
 
 function getDraftDescription(draft: AiLeadDraft) {
@@ -306,7 +308,7 @@ function buildAiDraftRelationOption(entry: any, kind: AiDraftRelationKind): AiDr
     firstAiDraftRelationText(entry, ['source']),
   ].filter((value, index, array) => value && array.indexOf(value) === index && value !== label);
 
-  const helper = helperParts.slice(0, 3).join(' · ') || 'Rekord z bazy aplikacji';
+  const helper = helperParts.slice(0, 3).join(' Â· ') || 'Rekord z bazy aplikacji';
   const search = [id, label, helper, firstAiDraftRelationText(entry, ['clientId', 'leadId', 'caseId'])]
     .join(' ')
     .toLowerCase();
@@ -335,7 +337,7 @@ function filterAiDraftRelationOptions(options: AiDraftRelationOption[], query: s
 }
 
 function getAiDraftRelationSelectedLabel(options: AiDraftRelationOption[], selectedId: string) {
-  if (!selectedId) return 'Brak powiązania';
+  if (!selectedId) return 'Brak powiÄ…zania';
   const selected = options.find((option) => option.id === selectedId);
   return selected ? selected.label : 'Wybrany rekord z bazy';
 }
@@ -400,7 +402,7 @@ function AiDraftsInner() {
       setDrafts(await getAiLeadDraftsAsync());
     } catch (error: any) {
       setDrafts([]);
-      toast.error('Nie udało się pobrać szkiców AI z Supabase: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ pobraÄ‡ szkicĂłw AI z Supabase: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setDraftsLoading(false);
     }
@@ -519,11 +521,11 @@ function AiDraftsInner() {
     const body = String(form.body || draft.rawText || '').trim();
 
     if (form.recordType === 'lead' && !name) {
-      toast.error('Podaj nazwę leada przed zatwierdzeniem');
+      toast.error('Podaj nazwÄ™ leada przed zatwierdzeniem');
       return;
     }
     if ((form.recordType === 'task' || form.recordType === 'event') && !title) {
-      toast.error('Podaj tytuł przed zatwierdzeniem');
+      toast.error('Podaj tytuĹ‚ przed zatwierdzeniem');
       return;
     }
     if (form.recordType === 'event' && !form.scheduledAt) {
@@ -531,11 +533,11 @@ function AiDraftsInner() {
       return;
     }
     if (form.recordType === 'note' && !body) {
-      toast.error('Notatka nie może być pusta');
+      toast.error('Notatka nie moĹĽe byÄ‡ pusta');
       return;
     }
     if (form.recordType === 'note' && !form.leadId && !form.caseId && !form.clientId) {
-      toast.error('Wybierz powiązanie dla notatki.');
+      toast.error('Wybierz powiÄ…zanie dla notatki.');
       return;
     }
 
@@ -655,9 +657,9 @@ function AiDraftsInner() {
       closeDraftApproval();
       setActiveDraftId(null);
       await reloadDrafts();
-      toast.success(getAiDraftApprovalTypeLabel(form.recordType) + ' zapisany ze szkicu AI. Otwórz rekord z listy zatwierdzonych.');
+      toast.success(getAiDraftApprovalTypeLabel(form.recordType) + ' zapisany ze szkicu AI. OtwĂłrz rekord z listy zatwierdzonych.');
     } catch (error: any) {
-      toast.error('Nie udało się zatwierdzić szkicu: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ zatwierdziÄ‡ szkicu: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setApprovalSaving(false);
     }
@@ -669,16 +671,16 @@ function AiDraftsInner() {
       await reloadDrafts();
       toast.success('Szkic anulowany');
     } catch (error: any) {
-      toast.error('Nie udało się anulować szkicu: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ anulowaÄ‡ szkicu: ' + (error?.message || 'REQUEST_FAILED'));
     }
   };
 
   const handleDelete = async (draft: AiLeadDraft) => {
-    const confirmed = window.confirm('Usunąć szkic AI? Tej operacji nie będzie można cofnąć.');
+    const confirmed = window.confirm('UsunÄ…Ä‡ szkic AI? Tej operacji nie bÄ™dzie moĹĽna cofnÄ…Ä‡.');
     if (!confirmed) return;
     await deleteAiLeadDraftAsync(draft.id);
     await reloadDrafts();
-    toast.success('Szkic usunięty');
+    toast.success('Szkic usuniÄ™ty');
   };
 
   const handleStartEdit = (draft: AiLeadDraft) => {
@@ -695,7 +697,7 @@ function AiDraftsInner() {
   const handleSaveEdit = async (draft: AiLeadDraft) => {
     const nextText = editingText.trim();
     if (!nextText) {
-      toast.error('Szkic nie może być pusty');
+      toast.error('Szkic nie moĹĽe byÄ‡ pusty');
       return;
     }
     await updateAiLeadDraftAsync(draft.id, { rawText: nextText });
@@ -708,9 +710,9 @@ function AiDraftsInner() {
     try {
       if (!navigator?.clipboard) throw new Error('NO_CLIPBOARD');
       await navigator.clipboard.writeText(draft.rawText || '');
-      toast.success('Treść szkicu skopiowana');
+      toast.success('TreĹ›Ä‡ szkicu skopiowana');
     } catch {
-      toast.error('Nie udało się skopiować treści. Zaznacz ją ręcznie.');
+      toast.error('Nie udaĹ‚o siÄ™ skopiowaÄ‡ treĹ›ci. Zaznacz jÄ… rÄ™cznie.');
     }
   };
 
@@ -733,7 +735,7 @@ function AiDraftsInner() {
           </div>
           {selectedId ? (
             <button type="button" onClick={() => updateApprovalForm({ [field]: '' } as Partial<AiDraftApprovalForm>)}>
-              Wyczyść
+              WyczyĹ›Ä‡
             </button>
           ) : null}
         </div>
@@ -753,9 +755,9 @@ function AiDraftsInner() {
         />
 
         <div className="ai-drafts-relation-options">
-          {approvalRelationsLoading ? <p className="ai-drafts-relation-empty">Ładuję dane z bazy...</p> : null}
+          {approvalRelationsLoading ? <p className="ai-drafts-relation-empty">ĹadujÄ™ dane z bazy...</p> : null}
           {!approvalRelationsLoading && visibleOptions.length === 0 ? (
-            <p className="ai-drafts-relation-empty">Brak wyniku. Zmień wyszukiwanie albo zostaw bez powiązania.</p>
+            <p className="ai-drafts-relation-empty">Brak wyniku. ZmieĹ„ wyszukiwanie albo zostaw bez powiÄ…zania.</p>
           ) : null}
           {visibleOptions.map((option) => {
             const active = selectedId === option.id;
@@ -789,8 +791,8 @@ function AiDraftsInner() {
       <div className="ai-drafts-approval-panel" data-ai-draft-approval-panel="true" data-ai-draft-real-transfer-form="true">
         <div className="ai-drafts-detail-titlebar">
           <div>
-            <h3>Sprawdź szkic przed zapisem</h3>
-            <p>Nic nie zostanie zapisane, dopóki tego nie zatwierdzisz.</p>
+            <h3>SprawdĹş szkic przed zapisem</h3>
+            <p>Nic nie zostanie zapisane, dopĂłki tego nie zatwierdzisz.</p>
           </div>
           <span>{getAiDraftApprovalTypeLabel(recordType)}</span>
         </div>
@@ -818,16 +820,16 @@ function AiDraftsInner() {
             <label>Firma<Input className={approvalInputClass} value={approvalForm.company} onChange={(event) => updateApprovalForm({ company: event.target.value })} /></label>
             <label>Telefon<Input className={approvalInputClass} value={approvalForm.phone} onChange={(event) => updateApprovalForm({ phone: event.target.value })} /></label>
             <label>E-mail<Input className={approvalInputClass} value={approvalForm.email} onChange={(event) => updateApprovalForm({ email: event.target.value })} /></label>
-            <label>Źródło<select className={approvalSelectClass} value={approvalForm.source} onChange={(event) => updateApprovalForm({ source: event.target.value })}>{SOURCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+            <label>ĹąrĂłdĹ‚o<select className={approvalSelectClass} value={approvalForm.source} onChange={(event) => updateApprovalForm({ source: event.target.value })}>{SOURCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
             <label>Priorytet<select className={approvalSelectClass} value={approvalForm.priority} onChange={(event) => updateApprovalForm({ priority: event.target.value })}>{PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-            <label>Wartość<Input className={approvalInputClass} value={approvalForm.dealValue} onChange={(event) => updateApprovalForm({ dealValue: event.target.value })} /></label>
+            <label>WartoĹ›Ä‡<Input className={approvalInputClass} value={approvalForm.dealValue} onChange={(event) => updateApprovalForm({ dealValue: event.target.value })} /></label>
             <label>Termin / akcja<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
           </div>
         ) : null}
 
         {recordType === 'task' ? (
           <div className="ai-drafts-form-grid">
-            <label className="ai-drafts-form-wide">Tytuł<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
+            <label className="ai-drafts-form-wide">TytuĹ‚<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
             <label>Typ zadania<select className={approvalSelectClass} value={approvalForm.taskType} onChange={(event) => updateApprovalForm({ taskType: event.target.value })}>{TASK_TYPES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
             <label>Termin<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
             <label>Priorytet<select className={approvalSelectClass} value={approvalForm.priority} onChange={(event) => updateApprovalForm({ priority: event.target.value })}>{PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
@@ -836,7 +838,7 @@ function AiDraftsInner() {
 
         {recordType === 'event' ? (
           <div className="ai-drafts-form-grid">
-            <label className="ai-drafts-form-wide">Tytuł<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
+            <label className="ai-drafts-form-wide">TytuĹ‚<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
             <label>Typ wydarzenia<select className={approvalSelectClass} value={approvalForm.eventType} onChange={(event) => updateApprovalForm({ eventType: event.target.value })}>{EVENT_TYPES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
             <label>Start<Input type="datetime-local" className={approvalInputClass} value={approvalForm.scheduledAt} onChange={(event) => updateApprovalForm({ scheduledAt: event.target.value })} /></label>
             <label>Koniec<Input type="datetime-local" className={approvalInputClass} value={approvalForm.endAt} onChange={(event) => updateApprovalForm({ endAt: event.target.value })} /></label>
@@ -845,16 +847,16 @@ function AiDraftsInner() {
 
         {recordType === 'note' ? (
           <div className="ai-drafts-form-stack">
-            <label>Tytuł notatki<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
-            <label>Treść notatki<Textarea className="ai-drafts-approval-textarea" value={approvalForm.body} onChange={(event) => updateApprovalForm({ body: event.target.value })} /></label>
+            <label>TytuĹ‚ notatki<Input className={approvalInputClass} value={approvalForm.title} onChange={(event) => updateApprovalForm({ title: event.target.value })} /></label>
+            <label>TreĹ›Ä‡ notatki<Textarea className="ai-drafts-approval-textarea" value={approvalForm.body} onChange={(event) => updateApprovalForm({ body: event.target.value })} /></label>
           </div>
         ) : null}
 
         {recordType !== 'lead' ? (
           <div className="ai-drafts-relation-panel" data-ai-draft-relation-picker-panel="true">
             <div>
-              <h4>Powiąż z istniejącym rekordem</h4>
-              <p>Wybierz klienta, leada albo sprawę z bazy. Możesz też zostawić szkic bez powiązania.</p>
+              <h4>PowiÄ…ĹĽ z istniejÄ…cym rekordem</h4>
+              <p>Wybierz klienta, leada albo sprawÄ™ z bazy. MoĹĽesz teĹĽ zostawiÄ‡ szkic bez powiÄ…zania.</p>
             </div>
             <div className="ai-drafts-relation-grid">
               {renderApprovalRelationPicker('lead', 'Lead', approvalLeadOptions, approvalForm.leadId, 'leadId')}
@@ -867,7 +869,7 @@ function AiDraftsInner() {
         <div className="ai-drafts-approval-actions">
           <Button type="button" size="sm" onClick={() => void handleApproveDraftToRecord(draft)} disabled={approvalSaving} data-ai-draft-approve-final-record="true" data-ai-draft-real-record-create="true">
             <CheckCircle2 className="mr-2 h-4 w-4" />
-            {approvalSaving ? 'Przenoszę...' : 'Zatwierdź i zapisz'}
+            {approvalSaving ? 'PrzenoszÄ™...' : 'ZatwierdĹş i zapisz'}
           </Button>
           <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>
             Anuluj zatwierdzanie
@@ -888,8 +890,8 @@ function AiDraftsInner() {
       <div className="ai-drafts-detail-panel">
         <div className="ai-drafts-detail-titlebar">
           <div>
-            <h3>Sprawdź szkic przed zapisem</h3>
-            <p>Nic nie zostanie zapisane, dopóki tego nie zatwierdzisz.</p>
+            <h3>SprawdĹş szkic przed zapisem</h3>
+            <p>Nic nie zostanie zapisane, dopĂłki tego nie zatwierdzisz.</p>
           </div>
           <span>{getDraftTypeLabel(draft)}</span>
         </div>
@@ -904,7 +906,7 @@ function AiDraftsInner() {
             <strong>{getDraftStatusLabel(draft)}</strong>
           </div>
           <div className="ai-drafts-detail-box">
-            <p>Źródło</p>
+            <p>ĹąrĂłdĹ‚o</p>
             <strong>{getDraftSourceLabel(draft)}</strong>
           </div>
           <div className="ai-drafts-detail-box">
@@ -916,34 +918,34 @@ function AiDraftsInner() {
         <div className="ai-drafts-recognized-card">
           <h4>Dane rozpoznane</h4>
           <dl>
-            <div><dt>Kontakt / tytuł</dt><dd>{form.name || form.title || 'Brak danych'}</dd></div>
+            <div><dt>Kontakt / tytuĹ‚</dt><dd>{form.name || form.title || 'Brak danych'}</dd></div>
             <div><dt>Telefon</dt><dd>{form.phone || 'Brak danych'}</dd></div>
             <div><dt>E-mail</dt><dd>{form.email || 'Brak danych'}</dd></div>
-            <div><dt>Źródło</dt><dd>{form.source || getDraftSourceLabel(draft)}</dd></div>
+            <div><dt>ĹąrĂłdĹ‚o</dt><dd>{form.source || getDraftSourceLabel(draft)}</dd></div>
             <div><dt>Termin / akcja</dt><dd>{form.scheduledAt || 'Brak terminu'}</dd></div>
             <div><dt>Priorytet</dt><dd>{form.priority || 'Brak danych'}</dd></div>
           </dl>
         </div>
 
         <div className="ai-drafts-recognized-card">
-          <h4>Brakujące pola</h4>
+          <h4>BrakujÄ…ce pola</h4>
           {Array.isArray(missing) && missing.length > 0 ? (
             <div className="ai-drafts-missing-list">
               {missing.map((item) => <span key={String(item)}>{String(item)}</span>)}
             </div>
           ) : draftHasMissingData(draft) ? (
-            <p className="ai-drafts-source-note">Szkic wymaga sprawdzenia, bo brakuje części danych do finalnego zapisu.</p>
+            <p className="ai-drafts-source-note">Szkic wymaga sprawdzenia, bo brakuje czÄ™Ĺ›ci danych do finalnego zapisu.</p>
           ) : (
-            <p className="ai-drafts-source-note">Nie wykryto braków krytycznych.</p>
+            <p className="ai-drafts-source-note">Nie wykryto brakĂłw krytycznych.</p>
           )}
         </div>
 
         <div className="ai-drafts-recognized-card">
-          <h4>Treść źródłowa</h4>
+          <h4>TreĹ›Ä‡ ĹşrĂłdĹ‚owa</h4>
           {hasRawText ? (
             <p className="ai-drafts-source-text">{draft.rawText}</p>
           ) : (
-            <p className="ai-drafts-source-note">Tekst źródłowy został usunięty po zakończeniu szkicu.</p>
+            <p className="ai-drafts-source-note">Tekst ĹşrĂłdĹ‚owy zostaĹ‚ usuniÄ™ty po zakoĹ„czeniu szkicu.</p>
           )}
         </div>
 
@@ -967,7 +969,7 @@ function AiDraftsInner() {
           <div className="ai-drafts-row-main">
             <div className="ai-drafts-row-heading">
               <span className="ai-drafts-type-pill">{getDraftTypeLabel(draft)}</span>
-              {draftHasMissingData(draft) ? <span className="ai-drafts-warning-pill">Błędy / niepełne</span> : null}
+              {draftHasMissingData(draft) ? <span className="ai-drafts-warning-pill">BĹ‚Ä™dy / niepeĹ‚ne</span> : null}
             </div>
             <h2>{getDraftTitle(draft)}</h2>
             <p>{getDraftDescription(draft)}</p>
@@ -983,15 +985,15 @@ function AiDraftsInner() {
           <div className="ai-drafts-actions-col">
             {draft.status === 'draft' ? (
               <>
-                <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() => setActiveDraftId(activeDraftId === draft.id ? null : draft.id)}>Sprawdź</button>
-                <button type="button" className="ai-drafts-action" onClick={() => handleStartEdit(draft)}>Edytuj notatkę</button>
-                <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() => openDraftApproval(draft)}>Zatwierdź</button>
+                <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() => setActiveDraftId(activeDraftId === draft.id ? null : draft.id)}>SprawdĹş</button>
+                <button type="button" className="ai-drafts-action" onClick={() => handleStartEdit(draft)}>Edytuj notatkÄ™</button>
+                <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() => openDraftApproval(draft)}>ZatwierdĹş</button>
                 <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() => void handleArchive(draft)}>Anuluj</button>
               </>
             ) : (
               <>
-                <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() => setActiveDraftId(activeDraftId === draft.id ? null : draft.id)}>Szczegóły</button>
-                <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() => void handleDelete(draft)}>Usuń</button>
+                <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() => setActiveDraftId(activeDraftId === draft.id ? null : draft.id)}>SzczegĂłĹ‚y</button>
+                <button type="button" className="ai-drafts-action ai-drafts-action-red" onClick={() => void handleDelete(draft)}>UsuĹ„</button>
               </>
             )}
             <span className="ai-drafts-row-index">{index + 1}</span>
@@ -1003,8 +1005,8 @@ function AiDraftsInner() {
             <Textarea value={editingText} onChange={(event) => setEditingText(event.target.value)} />
             <div>
               <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() => void handleSaveEdit(draft)}>Zapisz zmiany</button>
-              <button type="button" className="ai-drafts-action" onClick={handleCancelEdit}>Anuluj edycję</button>
-              <button type="button" className="ai-drafts-action" onClick={() => void handleCopyDraftText(draft)}>Kopiuj treść</button>
+              <button type="button" className="ai-drafts-action" onClick={handleCancelEdit}>Anuluj edycjÄ™</button>
+              <button type="button" className="ai-drafts-action" onClick={() => void handleCopyDraftText(draft)}>Kopiuj treĹ›Ä‡</button>
             </div>
           </div>
         ) : null}
@@ -1020,30 +1022,27 @@ function AiDraftsInner() {
         <header className="ai-drafts-page-header">
           <div>
             <p className="ai-drafts-kicker">SZKICE DO SPRAWDZENIA</p>
-            <h1>Szkice AI</h1>
-            <p>Centrum szkiców. Notatka głosowa najpierw trafia tutaj. Lead powstaje dopiero po kliknięciu.</p>
-            <p>Przejrzyj i zatwierdź. Rzeczy przygotowane przez asystenta. Sprawdź, popraw i dopiero wtedy zapisz.</p>
-          </div>
+            <h1>Szkice AI</h1>`r`n`r`n          </div>
           <div className="ai-drafts-header-actions">
             <button type="button" className="ai-drafts-header-button" onClick={() => void reloadDrafts()}>
-              Odśwież
+              OdĹ›wieĹĽ
             </button>
           </div>
         </header>
 
-        <section className="ai-drafts-stats-grid" aria-label="Statystyki szkiców AI" data-ai-draft-stats="true">
+        <section className="ai-drafts-stats-grid" aria-label="Statystyki szkicĂłw AI" data-ai-draft-stats="true">
           <MetricCard label="Do sprawdzenia" value={stats.draft} icon={Sparkles} active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} dataTab="draft" />
           <MetricCard label="Leady" value={stats.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} dataTab="lead" />
           <MetricCard label="Zadania" value={stats.tasks} icon={Clipboard} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} dataTab="task" />
           <MetricCard label="Wydarzenia" value={stats.events} icon={CalendarClock} active={activeFilter === 'event'} onClick={() => setActiveFilter('event')} dataTab="event" />
-          <MetricCard label="Błędy / niepełne" value={stats.errors} icon={AlertTriangle} active={activeFilter === 'errors'} onClick={() => setActiveFilter('errors')} dataTab="errors" />
+          <MetricCard label="BĹ‚Ä™dy / niepeĹ‚ne" value={stats.errors} icon={AlertTriangle} active={activeFilter === 'errors'} onClick={() => setActiveFilter('errors')} dataTab="errors" />
           <MetricCard label="Zatwierdzone" value={stats.converted} icon={CheckCircle2} active={activeFilter === 'converted'} onClick={() => setActiveFilter('converted')} dataTab="converted" />
         </section>
 
         <div className="ai-drafts-vnext-shell">
           <section className="ai-drafts-main-column">
             <div className="ai-drafts-toolbar-card">
-              <div className="ai-drafts-filter-pills" aria-label="Filtry szkiców AI">
+              <div className="ai-drafts-filter-pills" aria-label="Filtry szkicĂłw AI">
                 {AI_DRAFT_FILTERS.map((filter) => (
                   <button
                     key={filter.key}
@@ -1062,15 +1061,15 @@ function AiDraftsInner() {
                 <input
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder="Szukaj po treści, typie, kontakcie, leadzie albo terminie..."
+                  placeholder="Szukaj po treĹ›ci, typie, kontakcie, leadzie albo terminie..."
                 />
               </label>
             </div>
 
-            <section className="ai-drafts-list-card" aria-label="Lista szkiców AI">
+            <section className="ai-drafts-list-card" aria-label="Lista szkicĂłw AI">
               <div className="ai-drafts-list-head">
                 <div>
-                  <p>Lista szkiców</p>
+                  <p>Lista szkicĂłw</p>
                   <h2>Do decyzji operatora</h2>
                 </div>
                 <span>{filteredDrafts.length} / {drafts.length}</span>
@@ -1079,12 +1078,12 @@ function AiDraftsInner() {
               {draftsLoading ? (
                 <div className="ai-drafts-loading-state">
                   <Loader2 className="h-8 w-8 animate-spin" />
-                  <p>Ładowanie szkiców...</p>
+                  <p>Ĺadowanie szkicĂłw...</p>
                 </div>
               ) : filteredDrafts.length === 0 ? (
                 <div className="ai-drafts-empty-state">
                   <Sparkles className="h-8 w-8" />
-                  <h2>Brak szkiców do sprawdzenia</h2>
+                  <h2>Brak szkicĂłw do sprawdzenia</h2>
                   <p>Gdy asystent przygotuje lead, zadanie albo wydarzenie, zobaczysz je tutaj przed zapisem.</p>
                 </div>
               ) : (
@@ -1095,7 +1094,7 @@ function AiDraftsInner() {
             </section>
           </section>
 
-          <aside className="ai-drafts-right-rail" aria-label="Skrót szkiców AI">
+          <aside className="ai-drafts-right-rail" aria-label="SkrĂłt szkicĂłw AI">
             <section className="right-card ai-drafts-right-card">
               <div className="ai-drafts-right-card-head">
                 <Sparkles className="h-4 w-4" />
@@ -1130,7 +1129,7 @@ function AiDraftsInner() {
                   ))}
                 </div>
               ) : (
-                <p className="ai-drafts-rail-empty">Brak szkiców z widocznymi brakami.</p>
+                <p className="ai-drafts-rail-empty">Brak szkicĂłw z widocznymi brakami.</p>
               )}
             </section>
 
@@ -1149,17 +1148,17 @@ function AiDraftsInner() {
                   ))}
                 </div>
               ) : (
-                <p className="ai-drafts-rail-empty">Brak zatwierdzonych szkiców.</p>
+                <p className="ai-drafts-rail-empty">Brak zatwierdzonych szkicĂłw.</p>
               )}
             </section>
 
             <section className="right-card ai-drafts-right-card">
               <div className="ai-drafts-right-card-head">
                 <Clock className="h-4 w-4" />
-                <h2>Jak działa szkic?</h2>
+                <h2>Jak dziaĹ‚a szkic?</h2>
               </div>
               <p className="ai-drafts-rail-empty">
-                AI przygotowuje propozycję. Ty sprawdzasz dane, poprawiasz pola i dopiero wtedy zapisujesz finalny rekord.
+                AI przygotowuje propozycjÄ™. Ty sprawdzasz dane, poprawiasz pola i dopiero wtedy zapisujesz finalny rekord.
               </p>
             </section>
           </aside>
@@ -1169,7 +1168,7 @@ function AiDraftsInner() {
   );
 }
 
-/* Szkice AI Przejrzyj i zatwierdź markAiLeadDraftConverted */
+/* Szkice AI Przejrzyj i zatwierdĹş markAiLeadDraftConverted */
 
 export default function AiDrafts() {
   const { access, isAdmin, isAppOwner, loading } = useWorkspace();
@@ -1179,7 +1178,7 @@ export default function AiDrafts() {
     return (
       <Layout>
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm" data-plan-route-loading="ai-drafts">
-          Ładowanie dostępu...
+          Ĺadowanie dostÄ™pu...
         </div>
       </Layout>
     );
@@ -1189,10 +1188,10 @@ export default function AiDrafts() {
     return (
       <Layout>
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm" data-plan-route-blocker="ai-drafts" data-plan-visibility-stage32d="true">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Dostępne od planu Basic</p>
-          <h1 className="mt-2 text-2xl font-black text-slate-950">Szkice są ukryte w Twoim planie</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">DostÄ™pne od planu Basic</p>
+          <h1 className="mt-2 text-2xl font-black text-slate-950">Szkice sÄ… ukryte w Twoim planie</h1>
           <p className="mt-3 max-w-2xl text-sm text-slate-600">
-            W obecnym planie widzisz podstawowy CRM. Szkice i szybkie notatki są dostępne od planu Basic, a pełny asystent AI w planie AI.
+            W obecnym planie widzisz podstawowy CRM. Szkice i szybkie notatki sÄ… dostÄ™pne od planu Basic, a peĹ‚ny asystent AI w planie AI.
           </p>
           <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
             Zobacz plany
@@ -1204,4 +1203,5 @@ export default function AiDrafts() {
 
   return <AiDraftsInner />;
 }
+
 

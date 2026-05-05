@@ -11,7 +11,7 @@ import {
   useState,
   type ReactNode
 } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -28,12 +28,15 @@ import {
   UserRound,
 } from 'lucide-react';
 import {
+  deleteEventFromSupabase,
+  deleteTaskFromSupabase,
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
-  subscribeCloseflowDataMutations,
+  updateLeadInSupabase,
 } from '../lib/supabase-fallback';
+import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
@@ -353,21 +356,52 @@ function StableCard({ children }: { children: ReactNode }) {
   return <Card className="border-slate-100 shadow-sm"><CardContent className="p-0">{children}</CardContent></Card>;
 }
 
-function RowLink({ to, title, meta, helper, badge }: { key?: string; to: string; title: string; meta?: string; helper?: string; badge?: string }) {
+function RowLink({
+  to,
+  title,
+  meta,
+  helper,
+  badge,
+  onEdit,
+  onDelete,
+  deleting,
+}: {
+  key?: string;
+  to: string;
+  title: string;
+  meta?: string;
+  helper?: string;
+  badge?: string;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  deleting?: boolean;
+}) {
   return (
-    <Link to={to} className="block border-b border-slate-100 last:border-b-0 transition hover:bg-slate-50">
+    <div className="border-b border-slate-100 last:border-b-0 transition hover:bg-slate-50">
       <div className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="font-semibold text-slate-900 break-words">{title}</p>
+            <Link to={to} className="font-semibold text-slate-900 break-words hover:underline">
+              {title}
+            </Link>
             {badge ? <Badge variant="outline" className="rounded-full">{badge}</Badge> : null}
           </div>
           {helper ? <p className="mt-1 text-sm text-slate-600 break-words">{helper}</p> : null}
           {meta ? <p className="mt-1 text-xs font-medium text-slate-500">{meta}</p> : null}
         </div>
-        <ArrowRight className="h-4 w-4 shrink-0 text-slate-400" />
+        <div className="flex items-center gap-2">
+          {onEdit ? <Button type="button" size="sm" variant="outline" onClick={onEdit}>Edytuj</Button> : null}
+          {onDelete ? (
+            <Button type="button" size="sm" variant="ghost" onClick={onDelete} disabled={deleting}>
+              {deleting ? 'Usuwanie...' : 'Kosz'}
+            </Button>
+          ) : null}
+          <Link to={to} className="inline-flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
+            <ArrowRight className="h-4 w-4 shrink-0" />
+          </Link>
+        </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -390,10 +424,13 @@ async function loadStableTodayData(): Promise<DashboardData> {
 }
 
 export default function TodayStable() {
+  const navigate = useNavigate();
   const [status, setStatus] = useState<DashboardStatus>('idle');
   const [data, setData] = useState<DashboardData>(emptyData);
   const [lastLoadedAt, setLastLoadedAt] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [expandedSection, setExpandedSection] = useState<'all' | 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming'>('all');
+  const [actionPendingId, setActionPendingId] = useState<string>('');
 
   const refreshData = useCallback(async () => {
     setStatus((current) => (current === 'ready' ? 'ready' : 'loading'));
@@ -594,6 +631,49 @@ export default function TodayStable() {
   }, [data.drafts]);
 
   const loading = status === 'loading' || status === 'idle';
+  const sectionVisible = (key: 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming') =>
+    expandedSection === 'all' || expandedSection === key;
+
+  const handleArchiveLead = useCallback(async (lead: any) => {
+    const leadId = String(lead?.id || '');
+    if (!leadId) return;
+    setActionPendingId(`lead:${leadId}`);
+    try {
+      await updateLeadInSupabase({
+        id: leadId,
+        status: 'archived',
+        leadVisibility: 'trash',
+        salesOutcome: 'archived',
+      });
+      await refreshData();
+    } finally {
+      setActionPendingId('');
+    }
+  }, [refreshData]);
+
+  const handleDeleteTask = useCallback(async (task: any) => {
+    const taskId = String(task?.id || '');
+    if (!taskId) return;
+    setActionPendingId(`task:${taskId}`);
+    try {
+      await deleteTaskFromSupabase(taskId);
+      await refreshData();
+    } finally {
+      setActionPendingId('');
+    }
+  }, [refreshData]);
+
+  const handleDeleteEvent = useCallback(async (event: any) => {
+    const eventId = String(event?.id || '');
+    if (!eventId) return;
+    setActionPendingId(`event:${eventId}`);
+    try {
+      await deleteEventFromSupabase(eventId);
+      await refreshData();
+    } finally {
+      setActionPendingId('');
+    }
+  }, [refreshData]);
 
   return (
     <Layout>
@@ -621,13 +701,21 @@ export default function TodayStable() {
         ) : null}
 
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Leady do ruchu</p><p className="mt-2 text-3xl font-black text-blue-700">{operatorLeads.length}</p></CardContent></Card>
-          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Bez najbliższej zaplanowanej akcji</p><p className="mt-2 text-3xl font-black text-amber-700">{noActionLeads.length}</p></CardContent></Card>
-          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Wysoka wartość / ryzyko</p><p className="mt-2 text-3xl font-black text-rose-700">{highValueAtRiskRows.length}</p></CardContent></Card>
-          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Następne 7 dni</p><p className="mt-2 text-3xl font-black text-indigo-700">{upcomingRows.length}</p></CardContent></Card>
+          <button type="button" onClick={() => setExpandedSection(expandedSection === 'leads' ? 'all' : 'leads')} className="text-left">
+            <Card className="border-slate-100 transition hover:border-blue-200 hover:shadow-md"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Leady do ruchu</p><p className="mt-2 text-3xl font-black text-blue-700">{operatorLeads.length}</p></CardContent></Card>
+          </button>
+          <button type="button" onClick={() => setExpandedSection(expandedSection === 'no_action' ? 'all' : 'no_action')} className="text-left">
+            <Card className="border-slate-100 transition hover:border-amber-200 hover:shadow-md"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Bez najbli?szej zaplanowanej akcji</p><p className="mt-2 text-3xl font-black text-amber-700">{noActionLeads.length}</p></CardContent></Card>
+          </button>
+          <button type="button" onClick={() => setExpandedSection(expandedSection === 'risk' ? 'all' : 'risk')} className="text-left">
+            <Card className="border-slate-100 transition hover:border-rose-200 hover:shadow-md"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Wysoka warto?? / ryzyko</p><p className="mt-2 text-3xl font-black text-rose-700">{highValueAtRiskRows.length}</p></CardContent></Card>
+          </button>
+          <button type="button" onClick={() => setExpandedSection(expandedSection === 'upcoming' ? 'all' : 'upcoming')} className="text-left">
+            <Card className="border-slate-100 transition hover:border-indigo-200 hover:shadow-md"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Nast?pne 7 dni</p><p className="mt-2 text-3xl font-black text-indigo-700">{upcomingRows.length}</p></CardContent></Card>
+          </button>
         </section>
 
-        <section className="grid gap-4 xl:grid-cols-3">
+        <section className="grid gap-4 xl:grid-cols-3" hidden={!sectionVisible('risk') && !sectionVisible('no_action') && !sectionVisible('waiting')}>
           <StableCard>
             <SectionHeader title="Leady bez najbliższej zaplanowanej akcji" count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" />
             {noActionLeads.length ? noActionLeads.map(({ lead, risk }) => (
@@ -638,6 +726,9 @@ export default function TodayStable() {
                 helper={'Powód: ' + risk.reason}
                 meta={'Ruch: ' + risk.suggestedAction}
                 badge={readText(lead, ['status'], 'open')}
+                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
+                onDelete={() => void handleArchiveLead(lead)}
+                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
               />
             )) : <EmptyState text="Brak leadów bez najbliższej zaplanowanej akcji." />}
           </StableCard>
@@ -652,6 +743,9 @@ export default function TodayStable() {
                 helper={'Powód: ' + risk.reason}
                 meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
                 badge={String(getLeadValue(lead)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' PLN'}
+                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
+                onDelete={() => void handleArchiveLead(lead)}
+                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
               />
             )) : <EmptyState text="Brak wartościowych leadów w ryzyku." />}
           </StableCard>
@@ -666,12 +760,15 @@ export default function TodayStable() {
                 helper={'Powód: ' + risk.reason}
                 meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
                 badge={readText(lead, ['status'], 'waiting')}
+                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
+                onDelete={() => void handleArchiveLead(lead)}
+                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
               />
             )) : <EmptyState text="Brak leadów w trybie waiting wymagających pilnej kontroli." />}
           </StableCard>
         </section>
 
-        <section className="grid gap-4 xl:grid-cols-2">
+        <section className="grid gap-4 xl:grid-cols-2" hidden={!sectionVisible('leads') && !sectionVisible('tasks') && !sectionVisible('events') && !sectionVisible('drafts')}>
           <StableCard>
             <SectionHeader title="Leady do ruchu" count={operatorLeads.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" />
             {operatorLeads.length ? operatorLeads.map(({ lead, momentRaw, risk }) => (
@@ -682,6 +779,9 @@ export default function TodayStable() {
                 helper={'Powód: ' + risk.reason}
                 meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
                 badge={readText(lead, ['status'], 'open')}
+                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
+                onDelete={() => void handleArchiveLead(lead)}
+                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
               />
             )) : <EmptyState text="Brak leadów wymagających ruchu." />}
           </StableCard>
@@ -698,6 +798,9 @@ export default function TodayStable() {
                   helper={caseRecord ? getCaseTitle(caseRecord) : readText(task, ['leadName', 'lead_name'], '')}
                   meta={formatDateTime(momentRaw)}
                   badge={getDateKey(momentRaw) < todayKey ? 'Zaległe' : 'Dziś'}
+                onEdit={() => navigate('/tasks')}
+                  onDelete={() => void handleDeleteTask(task)}
+                  deleting={actionPendingId === `task:${String(task.id || '')}`}
                 />
               );
             }) : <EmptyState text="Brak zadań zaległych lub na dziś." />}
@@ -713,6 +816,9 @@ export default function TodayStable() {
                 helper={readText(event, ['type'], 'event')}
                 meta={formatDateTime(momentRaw)}
                 badge="Dziś"
+              onEdit={() => navigate('/calendar')}
+                onDelete={() => void handleDeleteEvent(event)}
+                deleting={actionPendingId === `event:${String(event.id || '')}`}
               />
             )) : <EmptyState text="Brak wydarzeń na dziś." />}
           </StableCard>
@@ -731,6 +837,7 @@ export default function TodayStable() {
           </StableCard>
         </section>
 
+        <div hidden={!sectionVisible('upcoming')}>
         <StableCard>
           <SectionHeader title="Następne 7 dni" count={upcomingRows.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" />
           {upcomingRows.length ? upcomingRows.map((row) => (
@@ -744,6 +851,7 @@ export default function TodayStable() {
             />
           )) : <EmptyState text="Brak zaplanowanych akcji w kolejnych 7 dniach." />}
         </StableCard>
+        </div>
 
         {loading ? (
           <div className="fixed bottom-4 right-4 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-lg">

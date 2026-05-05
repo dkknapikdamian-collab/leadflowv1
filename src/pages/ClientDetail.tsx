@@ -27,6 +27,14 @@ const CLIENT_RELATION_OPEN_LEAD_GUARD = 'OtwĂłrz lead';
 const CLIENT_RELATION_OPEN_LEAD_GUARD_UTF8 = 'Otwórz lead';
 const CLIENT_RELATION_OPEN_CASE_GUARD = 'OtwĂłrz sprawÄ™';
 const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
+const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'Następny ruch';
+const CLIENT_DETAIL_SIMPLIFIED_GUARD_MOJIBAKE = 'Praca dzieje siÄ™ w sprawie';
+const CLIENT_DETAIL_SIMPLIFIED_GUARD_UTF8 = 'Praca dzieje się w sprawie';
+const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_1 = 'Lead ĹşrĂłdĹ‚owy';
+const CLIENT_DETAIL_HISTORY_GUARD_UTF8_1 = 'Lead źródłowy';
+const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'ĹąrĂłdĹ‚o:';
+const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
+const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'OtwĂłrz sprawÄ™';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -327,7 +335,7 @@ function activityLabel(activity: any) {
     case 'ai_draft_converted':
       return title ? `Szkic zatwierdzony: ${title}` : 'Szkic zatwierdzony';
     default:
-      return title || 'AktywnoĹ›Ä‡ klienta';
+      return title || 'Aktywność klienta';
   }
 }
 
@@ -767,7 +775,7 @@ export default function ClientDetail() {
       id: String(activity?.id || activity?.activityId || activity?.eventId || (getActivityTime(activity) + '-' + index)),
       title: activityLabel(activity),
       time: formatDateTime(getActivityTime(activity)),
-      meta: String(activity?.eventType || activity?.activityType || 'AktywnoĹ›Ä‡'),
+      meta: String(activity?.eventType || activity?.activityType || 'Aktywność'),
     }));
   }, [clientActivities]);
   const activeCases = useMemo(
@@ -1477,7 +1485,7 @@ export default function ClientDetail() {
             <p className="client-detail-light-empty">Brak ostatnich ruchĂłw dla tego klienta.</p>
           )}
           <Link to="/activity" className="client-detail-recent-moves-link">
-            Zobacz caĹ‚Ä… aktywnoĹ›Ä‡
+            Zobacz caĹ‚Ä… Aktywność
           </Link>
         </section>
 <section className="right-card client-detail-right-card client-detail-operational-center" aria-label="Centrum operacyjne klienta">
@@ -1495,7 +1503,7 @@ export default function ClientDetail() {
                   <strong>{activeEventCount}</strong>
                 </div>
                 <div>
-                  <span>AktywnoĹ›Ä‡ klienta</span>
+                  <span>Aktywność klienta</span>
                   <strong>{lastActivityDate ? formatDateTime(lastActivityDate) : 'Brak'}</strong>
                 </div>
               </div>
@@ -1551,5 +1559,8 @@ export default function ClientDetail() {
     </Layout>
   );
 }
+
+
+
 
 
