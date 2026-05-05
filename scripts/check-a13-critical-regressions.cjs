@@ -180,8 +180,8 @@ check('templates UI matches light app shell', () => {
   grep('src/pages/ResponseTemplates.tsx', /app-text/);
   grep('src/pages/ResponseTemplates.tsx', /app-muted/);
   reject('src/pages/Templates.tsx', /app-surface-strong|app-text|app-muted/, 'Templates.tsx must not use dark app shell tokens for the light templates page');
-  reject('src/pages/Templates.tsx', /DostÄ|Ĺ|Ă|/, 'Templates.tsx contains mojibake');
-  reject('src/pages/ResponseTemplates.tsx', /DostÄ|Ĺ|Ă|/, 'ResponseTemplates.tsx contains mojibake');
+  reject('src/pages/Templates.tsx', /DostÄ|Ĺ|Ă/, 'Templates.tsx contains mojibake');
+  reject('src/pages/ResponseTemplates.tsx', /DostÄ|Ĺ|Ă/, 'ResponseTemplates.tsx contains mojibake');
 });
 
 check('unified light pages CSS stays reference-only', () => {

@@ -1,0 +1,8 @@
+## dev-rollout-freeze...origin/dev-rollout-freeze
+ M package.json
+ M scripts/check-a13-critical-regressions.cjs
+ M src/pages/Templates.tsx
+?? docs/release/ETAP0_ZAMROZENIE_STANU_EVIDENCE_2026-05-05.md
+?? docs/release/ETAP0_ZAMROZENIE_STANU_I_DOWODY_README_2026-05-05.md
+?? docs/release/evidence/
+?? scripts/collect-etap0-freeze-evidence.cjs
