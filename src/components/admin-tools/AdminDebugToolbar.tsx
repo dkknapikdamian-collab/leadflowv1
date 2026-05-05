@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import {
   AdminBugItem,
   AdminCopyItem,
@@ -34,40 +34,26 @@ type Props = {
 };
 
 type TargetDialogState = {
-  mode: 'review' | 'copy';
+  mode: 'review' | 'copy' | 'bug';
   candidates: AdminTargetCandidate[];
   selectedIndex: number;
 };
 
-type AdminDialogKey = 'bug' | 'target';
-
-type AdminDialogPosition = {
-  x: number;
-  y: number;
-};
-
-type AdminDialogDragState = {
-  key: AdminDialogKey;
-  startClientX: number;
-  startClientY: number;
-  startX: number;
-  startY: number;
-};
-
-const ADMIN_DIALOG_DRAG_LOWER_STAGE87B = 'admin dialogs open lower and can be dragged by header';
-const ADMIN_DIALOG_STACK_FIX_STAGE87C = 'admin dialogs stay above app content and expose reset position';
+const ADMIN_CLICK_TO_ANNOTATE_STAGE87D = 'admin tools select element first, then quick note, Enter saves';
+const ADMIN_DIALOG_STACK_FIX_STAGE87C = 'superseded by Stage87D click-to-annotate quick editor';
+const ADMIN_DIALOG_DRAG_LOWER_STAGE87B = 'superseded by Stage87D click-to-annotate quick editor';
 
 const REVIEW_PRESETS = [
-  'Przenieść wyżej',
-  'Przenieść niżej',
-  'Zmniejszyć',
-  'Powiększyć',
-  'Zły tekst',
-  'Zły przycisk / złe działanie',
-  'Ukryć',
-  'Dodać wyraźniejszy CTA',
-  'Za dużo chaosu',
-  'Nie działa po kliknięciu',
+  'PrzenieĹ›Ä‡ wyĹĽej',
+  'PrzenieĹ›Ä‡ niĹĽej',
+  'ZmniejszyÄ‡',
+  'PowiÄ™kszyÄ‡',
+  'ZĹ‚y tekst',
+  'ZĹ‚y przycisk / zĹ‚e dziaĹ‚anie',
+  'UkryÄ‡',
+  'DodaÄ‡ wyraĹşniejszy CTA',
+  'Za duĹĽo chaosu',
+  'Nie dziaĹ‚a po klikniÄ™ciu',
 ];
 
 function getRoute() {
@@ -87,16 +73,6 @@ function isVisible(element: HTMLElement) {
   const rect = element.getBoundingClientRect();
   const style = window.getComputedStyle(element);
   return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
-}
-
-function clampAdminDialogPosition(next: AdminDialogPosition): AdminDialogPosition {
-  if (typeof window === 'undefined') return next;
-  const maxX = Math.max(120, Math.floor(window.innerWidth * 0.42));
-  const maxY = Math.max(120, Math.floor(window.innerHeight * 0.55));
-  return {
-    x: Math.max(-maxX, Math.min(maxX, next.x)),
-    y: Math.max(-84, Math.min(maxY, next.y)),
-  };
 }
 
 function candidateToButtonSnapshot(candidate: AdminTargetCandidate) {
@@ -121,6 +97,32 @@ function selectedCandidate(dialog: TargetDialogState | null) {
   return dialog.candidates[dialog.selectedIndex] || dialog.candidates[0] || null;
 }
 
+function clearAdminTargetMarks() {
+  if (typeof document === 'undefined') return;
+  document.querySelectorAll('[data-admin-debug-selected-stage87d="true"]').forEach((element) => {
+    element.removeAttribute('data-admin-debug-selected-stage87d');
+  });
+}
+
+function markSelectedCandidate(candidate: AdminTargetCandidate | null | undefined) {
+  clearAdminTargetMarks();
+  if (!candidate?.element) return;
+  candidate.element.setAttribute('data-admin-debug-selected-stage87d', 'true');
+}
+
+function markSavedCandidate(candidate: AdminTargetCandidate | null | undefined) {
+  if (!candidate?.element) return;
+  candidate.element.setAttribute('data-admin-debug-saved-stage87d', 'true');
+  window.setTimeout(() => {
+    candidate.element.removeAttribute('data-admin-debug-saved-stage87d');
+  }, 2400);
+}
+
+function targetLabel(candidate: AdminTargetCandidate | null | undefined) {
+  if (!candidate) return 'Brak elementu';
+  return candidate.target.text || candidate.target.ariaLabel || candidate.target.title || candidate.target.selectorHint || candidate.target.tag;
+}
+
 export default function AdminDebugToolbar({ currentSection }: Props) {
   const [activeTool, setActiveTool] = useState<AdminToolMode>(() => readActiveAdminTool());
   const [reviewMode, setReviewMode] = useState<AdminReviewMode>(() => readAdminToolsSettings().reviewMode || 'off');
@@ -133,7 +135,6 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
   const [copyProposed, setCopyProposed] = useState('');
   const [copyReason, setCopyReason] = useState('');
   const [copyPriority, setCopyPriority] = useState<AdminPriority>('P2');
-  const [bugOpen, setBugOpen] = useState(false);
   const [bugWhatIDid, setBugWhatIDid] = useState('');
   const [bugWhatHappened, setBugWhatHappened] = useState('');
   const [bugExpected, setBugExpected] = useState('');
@@ -142,14 +143,12 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
   const [copyCount, setCopyCount] = useState(() => readCopyItems().length);
   const [bugCount, setBugCount] = useState(() => readBugItems().length);
   const [buttonSnapshots, setButtonSnapshots] = useState(() => readButtonSnapshots());
-  const [dialogPositions, setDialogPositions] = useState<Record<AdminDialogKey, AdminDialogPosition>>({
-    bug: { x: 0, y: 0 },
-    target: { x: 0, y: 0 },
-  });
-  const [dialogDragState, setDialogDragState] = useState<AdminDialogDragState | null>(null);
+  const [lastSaveMessage, setLastSaveMessage] = useState('');
 
-  const canCollect = activeTool === 'review' && reviewMode === 'collect';
-  const canCopyCollect = activeTool === 'copy';
+  const canPickElement =
+    activeTool === 'copy'
+    || activeTool === 'bug'
+    || (activeTool === 'review' && reviewMode === 'collect');
 
   useEffect(() => {
     writeActiveAdminTool(activeTool);
@@ -160,12 +159,20 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
   }, [reviewMode]);
 
   useEffect(() => {
-    if (!canCollect && !canCopyCollect) return;
+    if (!lastSaveMessage) return;
+    const timeout = window.setTimeout(() => setLastSaveMessage(''), 2600);
+    return () => window.clearTimeout(timeout);
+  }, [lastSaveMessage]);
+
+  useEffect(() => () => clearAdminTargetMarks(), []);
+
+  useEffect(() => {
+    if (!canPickElement) return;
 
     const handlePointerDown = (event: PointerEvent) => {
       if (isAdminToolClick(event)) return;
       if (activeTool === 'review' && reviewMode !== 'collect') return;
-      if (activeTool !== 'review' && activeTool !== 'copy') return;
+      if (activeTool !== 'review' && activeTool !== 'copy' && activeTool !== 'bug') return;
 
       event.preventDefault();
       event.stopPropagation();
@@ -179,29 +186,45 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
 
       if (!candidates.length) return;
 
-      const mode = activeTool === 'copy' ? 'copy' : 'review';
-      setTargetDialog({ mode, candidates, selectedIndex: 0 });
+      const mode = activeTool === 'copy' ? 'copy' : activeTool === 'bug' ? 'bug' : 'review';
+      const nextDialog: TargetDialogState = { mode, candidates, selectedIndex: 0 };
+      setTargetDialog(nextDialog);
+      markSelectedCandidate(candidates[0]);
 
+      const label = targetLabel(candidates[0]);
       if (mode === 'copy') {
-        const candidate = candidates[0];
-        setCopyProposed(candidate.target.text || candidate.target.ariaLabel || '');
+        setCopyProposed(candidates[0].target.text || candidates[0].target.ariaLabel || '');
+        setCopyReason('');
+      }
+      if (mode === 'bug') {
+        setBugWhatIDid(`KlikniÄ™to element: ${label}`);
+        setBugWhatHappened('');
+        setBugExpected('');
+      }
+      if (mode === 'review') {
+        setReviewComment('');
+        setCurrentBehavior('');
+        setExpectedBehavior('');
       }
     };
 
     document.addEventListener('pointerdown', handlePointerDown, true);
     return () => document.removeEventListener('pointerdown', handlePointerDown, true);
-  }, [activeTool, canCollect, canCopyCollect, currentSection, reviewMode]);
+  }, [activeTool, canPickElement, currentSection, reviewMode]);
 
   const currentCandidate = selectedCandidate(targetDialog);
   const dialogTitle = useMemo(() => describeAdminTarget(currentCandidate), [currentCandidate]);
 
   const chooseTool = (tool: AdminToolMode) => {
+    setTargetDialog(null);
+    clearAdminTargetMarks();
     setActiveTool((prev) => (prev === tool ? 'off' : tool));
     if (tool === 'review' && reviewMode === 'off') setReviewMode('collect');
-    if (tool === 'bug') setBugOpen(true);
   };
 
   const scanButtons = () => {
+    setTargetDialog(null);
+    clearAdminTargetMarks();
     const snapshots = scanActionElements(getRoute()).map(candidateToButtonSnapshot);
     writeButtonSnapshots(snapshots);
     setButtonSnapshots(snapshots);
@@ -212,6 +235,18 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
     const next = buttonSnapshots.map((item) => (item.id === id ? { ...item, qaStatus } : item));
     writeButtonSnapshots(next);
     setButtonSnapshots(next);
+  };
+
+  const closeQuickEditor = () => {
+    setTargetDialog(null);
+    clearAdminTargetMarks();
+  };
+
+  const finishSave = (candidate: AdminTargetCandidate | null | undefined, label: string) => {
+    markSavedCandidate(candidate);
+    clearAdminTargetMarks();
+    setTargetDialog(null);
+    setLastSaveMessage(`Zapisano: ${label}. MoĹĽesz kliknÄ…Ä‡ kolejny element.`);
   };
 
   const saveReview = () => {
@@ -241,7 +276,7 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
     setReviewComment('');
     setCurrentBehavior('');
     setExpectedBehavior('');
-    setTargetDialog(null);
+    finishSave(candidate, 'uwaga UI');
   };
 
   const saveCopy = () => {
@@ -264,98 +299,73 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
     setCopyCount(readCopyItems().length);
     setCopyProposed('');
     setCopyReason('');
-    setTargetDialog(null);
+    finishSave(candidate, 'copy');
   };
 
   const saveBug = () => {
-    if (!bugWhatIDid.trim() || !bugWhatHappened.trim()) return;
+    const candidate = currentCandidate;
+    if (!candidate || !bugWhatHappened.trim()) return;
+
     const item: AdminBugItem = {
       id: createAdminToolId('bug'),
       kind: 'bug_note',
       createdAt: new Date().toISOString(),
       route: getRoute(),
-      whatIDid: bugWhatIDid.trim(),
+      whatIDid: bugWhatIDid.trim() || `KlikniÄ™to element: ${targetLabel(candidate)}`,
       whatHappened: bugWhatHappened.trim(),
       expected: bugExpected.trim(),
       priority: bugPriority,
-      target: null,
+      target: candidate.target,
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
       viewport: getViewport(),
     };
+
     appendBugItem(item);
     setBugCount(readBugItems().length);
     setBugWhatIDid('');
     setBugWhatHappened('');
     setBugExpected('');
-    setBugOpen(false);
+    finishSave(candidate, 'bug');
+  };
+
+  const saveCurrentQuickEditor = () => {
+    if (targetDialog?.mode === 'bug') saveBug();
+    if (targetDialog?.mode === 'copy') saveCopy();
+    if (targetDialog?.mode === 'review') saveReview();
+  };
+
+  const saveOnEnter = (event: KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    if (event.key !== 'Enter' || event.shiftKey) return;
+    event.preventDefault();
+    saveCurrentQuickEditor();
   };
 
   const moveCandidate = (direction: -1 | 1) => {
     setTargetDialog((prev) => {
       if (!prev) return prev;
       const nextIndex = Math.max(0, Math.min(prev.candidates.length - 1, prev.selectedIndex + direction));
-      return { ...prev, selectedIndex: nextIndex };
+      const next = { ...prev, selectedIndex: nextIndex };
+      window.setTimeout(() => markSelectedCandidate(next.candidates[nextIndex]), 0);
+      return next;
     });
   };
 
-  useEffect(() => {
-    if (!dialogDragState) return;
+  const toolHint = (() => {
+    if (activeTool === 'bug') return 'BUG: kliknij element na stronie, wpisz co nie dziaĹ‚a i naciĹ›nij Enter.';
+    if (activeTool === 'copy') return 'COPY: kliknij tekst/przycisk, wpisz nowÄ… treĹ›Ä‡ i naciĹ›nij Enter.';
+    if (activeTool === 'review' && reviewMode === 'collect') return 'REVIEW: kliknij element, wpisz uwagÄ™ i naciĹ›nij Enter.';
+    if (activeTool === 'buttons') return 'BUTTONS: zeskanowano akcje na ekranie.';
+    return '';
+  })();
 
-    const handlePointerMove = (event: PointerEvent) => {
-      event.preventDefault();
-      const deltaX = event.clientX - dialogDragState.startClientX;
-      const deltaY = event.clientY - dialogDragState.startClientY;
-      const next = clampAdminDialogPosition({
-        x: dialogDragState.startX + deltaX,
-        y: dialogDragState.startY + deltaY,
-      });
-      setDialogPositions((prev) => ({
-        ...prev,
-        [dialogDragState.key]: next,
-      }));
-    };
-
-    const handlePointerUp = () => setDialogDragState(null);
-
-    window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerup', handlePointerUp, { once: true });
-    window.addEventListener('pointercancel', handlePointerUp, { once: true });
-
-    return () => {
-      window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('pointerup', handlePointerUp);
-      window.removeEventListener('pointercancel', handlePointerUp);
-    };
-  }, [dialogDragState]);
-
-  const startDialogDrag = (event: React.PointerEvent<HTMLElement>, key: AdminDialogKey) => {
-    const target = event.target as HTMLElement | null;
-    if (target?.closest('button, input, textarea, select, a')) return;
-    event.preventDefault();
-    const current = dialogPositions[key] || { x: 0, y: 0 };
-    setDialogDragState({
-      key,
-      startClientX: event.clientX,
-      startClientY: event.clientY,
-      startX: current.x,
-      startY: current.y,
-    });
-  };
-
-  const getDialogDragStyle = (key: AdminDialogKey) => {
-    const position = dialogPositions[key] || { x: 0, y: 0 };
-    return { transform: `translate3d(${position.x}px, ${position.y}px, 0)` };
-  };
-
-  const resetDialogPosition = (key: AdminDialogKey) => {
-    setDialogPositions((prev) => ({
-      ...prev,
-      [key]: { x: 0, y: 0 },
-    }));
-  };
+  const quickEditorTitle = targetDialog?.mode === 'bug'
+    ? 'Bug Note Recorder'
+    : targetDialog?.mode === 'copy'
+      ? 'Copy Review'
+      : 'UI Review';
 
   return (
-    <div className="admin-debug-toolbar" data-admin-tool-ui="true" data-admin-debug-toolbar-stage87="true">
+    <div className="admin-debug-toolbar" data-admin-tool-ui="true" data-admin-debug-toolbar-stage87="true" data-admin-click-to-annotate-stage87d="true">
       <button type="button" className={activeTool === 'review' ? 'active' : ''} onClick={() => chooseTool('review')} data-admin-tool-ui="true">
         Review {reviewCount ? <span>{reviewCount}</span> : null}
       </button>
@@ -372,6 +382,9 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
         Export
       </button>
 
+      {toolHint ? <div className="admin-tool-mode-hint" data-admin-tool-ui="true">{toolHint}</div> : null}
+      {lastSaveMessage ? <div className="admin-tool-save-toast" data-admin-tool-ui="true">{lastSaveMessage}</div> : null}
+
       {activeTool === 'review' ? (
         <div className="admin-tool-popover" data-admin-tool-ui="true">
           <strong>UI Review Mode</strong>
@@ -382,7 +395,7 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
               </button>
             ))}
           </div>
-          <small>{reviewMode === 'collect' ? 'Klik element zatrzyma akcję i otworzy uwagę.' : 'Browse przepuszcza kliknięcia normalnie.'}</small>
+          <small>{reviewMode === 'collect' ? 'Kliknij element, wpisz uwagÄ™, Enter zapisuje.' : 'Browse przepuszcza klikniÄ™cia normalnie.'}</small>
         </div>
       ) : null}
 
@@ -397,47 +410,18 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
               <div key={item.id} className="admin-button-row">
                 <div>
                   <strong>{item.text || item.selectorHint || item.tag}</strong>
-                  <small>{item.route} · {item.tag} · {item.visible ? 'visible' : 'hidden'} · {item.disabled ? 'disabled' : 'enabled'}</small>
+                  <small>{item.route} Â· {item.tag} Â· {item.visible ? 'visible' : 'hidden'} Â· {item.disabled ? 'disabled' : 'enabled'}</small>
                 </div>
                 <select value={item.qaStatus} onChange={(event) => updateButtonStatus(item.id, event.target.value as any)} data-admin-tool-ui="true">
                   <option value="unchecked">unchecked</option>
                   <option value="ok">OK</option>
-                  <option value="bug">Nie działa</option>
-                  <option value="move">Przenieść</option>
-                  <option value="rename">Zły tekst</option>
-                  <option value="remove">Usuń</option>
+                  <option value="bug">Nie dziaĹ‚a</option>
+                  <option value="move">PrzenieĹ›Ä‡</option>
+                  <option value="rename">ZĹ‚y tekst</option>
+                  <option value="remove">UsuĹ„</option>
                 </select>
               </div>
             )) : <small>Brak skanu na tej trasie.</small>}
-          </div>
-        </div>
-      ) : null}
-
-      {bugOpen ? (
-        <div className="admin-tool-dialog-backdrop" data-admin-tool-ui="true">
-          <div
-            className="admin-tool-dialog admin-tool-dialog-draggable"
-            style={getDialogDragStyle('bug')}
-            data-admin-tool-ui="true"
-            data-admin-dialog-draggable-stage87b="true"
-          >
-            <div
-              className="admin-tool-row admin-tool-dialog-drag-handle"
-              onPointerDown={(event) => startDialogDrag(event, 'bug')}
-              data-admin-tool-ui="true"
-              title="PrzeciÄ…gnij okno"
-            >
-              <strong>Bug Note Recorder</strong>
-              <button type="button" onClick={() => resetDialogPosition('bug')} data-admin-tool-ui="true">Reset pozycji</button>
-              <button type="button" onClick={() => setBugOpen(false)} data-admin-tool-ui="true">Zamknij</button>
-            </div>
-            <label>Co zrobiłem<textarea value={bugWhatIDid} onChange={(event) => setBugWhatIDid(event.target.value)} data-admin-tool-ui="true" /></label>
-            <label>Co się stało<textarea value={bugWhatHappened} onChange={(event) => setBugWhatHappened(event.target.value)} data-admin-tool-ui="true" /></label>
-            <label>Co miało się stać<textarea value={bugExpected} onChange={(event) => setBugExpected(event.target.value)} data-admin-tool-ui="true" /></label>
-            <label>Priorytet<select value={bugPriority} onChange={(event) => setBugPriority(event.target.value as AdminPriority)} data-admin-tool-ui="true">
-              <option value="P0">P0</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option>
-            </select></label>
-            <button type="button" onClick={saveBug} data-admin-tool-ui="true">Zapisz błąd</button>
           </div>
         </div>
       ) : null}
@@ -447,77 +431,80 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
           <strong>Export Center</strong>
           <button type="button" onClick={exportAdminFeedbackJson} data-admin-tool-ui="true">Pobierz JSON</button>
           <button type="button" onClick={exportAdminFeedbackMarkdown} data-admin-tool-ui="true">Pobierz Markdown</button>
-          <small>Pliki trafią do Downloads przez mechanizm przeglądarki.</small>
+          <small>Pliki trafiÄ… do Downloads przez mechanizm przeglÄ…darki.</small>
         </div>
       ) : null}
 
       {targetDialog ? (
-        <div className="admin-tool-dialog-backdrop" data-admin-tool-ui="true">
-          <div
-            className="admin-tool-dialog admin-tool-dialog-large admin-tool-dialog-draggable"
-            style={getDialogDragStyle('target')}
-            data-admin-tool-ui="true"
-            data-admin-dialog-draggable-stage87b="true"
-          >
-            <div
-              className="admin-tool-row admin-tool-dialog-drag-handle"
-              onPointerDown={(event) => startDialogDrag(event, 'target')}
-              data-admin-tool-ui="true"
-              title="PrzeciÄ…gnij okno"
-            >
-              <strong>{targetDialog.mode === 'copy' ? 'Copy Review' : 'UI Review'}</strong>
-              <button type="button" onClick={() => resetDialogPosition('target')} data-admin-tool-ui="true">Reset pozycji</button>
-              <button type="button" onClick={() => setTargetDialog(null)} data-admin-tool-ui="true">Zamknij</button>
-            </div>
-            <div className="admin-target-card">
-              <span>Wybrano: {dialogTitle}</span>
-              <small>{currentCandidate?.reason} · {currentCandidate?.target.selectorHint}</small>
-              {currentCandidate?.target.composedPathSummary?.[0]?.includes('svg') ? (
-                <small>Kliknięto ikonę, wybrano nadrzędny element z listy kandydatów.</small>
-              ) : null}
-              <div className="admin-tool-row">
-                <button type="button" onClick={() => moveCandidate(1)} data-admin-tool-ui="true">Zaznacz większy</button>
-                <button type="button" onClick={() => moveCandidate(-1)} data-admin-tool-ui="true">Zaznacz mniejszy</button>
-              </div>
-              <select value={targetDialog.selectedIndex} onChange={(event) => setTargetDialog({ ...targetDialog, selectedIndex: Number(event.target.value) })} data-admin-tool-ui="true">
-                {targetDialog.candidates.slice(0, 6).map((candidate, index) => (
-                  <option key={`${candidate.target.selectorHint}-${index}`} value={index}>
-                    {index + 1}. {describeAdminTarget(candidate)} · score {candidate.score}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {targetDialog.mode === 'review' ? (
-              <>
-                <div className="admin-preset-grid">
-                  {REVIEW_PRESETS.map((preset) => (
-                    <button key={preset} type="button" onClick={() => setReviewComment(preset)} data-admin-tool-ui="true">{preset}</button>
-                  ))}
-                </div>
-                <label>Komentarz *<textarea value={reviewComment} onChange={(event) => setReviewComment(event.target.value)} data-admin-tool-ui="true" /></label>
-                <label>Typ<select value={reviewType} onChange={(event) => setReviewType(event.target.value as AdminReviewType)} data-admin-tool-ui="true">
-                  <option value="visual">wygląd</option><option value="position">pozycja</option><option value="copy">tekst</option><option value="behavior">działanie</option><option value="bug">błąd</option><option value="mobile">mobile</option><option value="performance">performance</option><option value="other">inne</option>
-                </select></label>
-                <label>Priorytet<select value={reviewPriority} onChange={(event) => setReviewPriority(event.target.value as AdminPriority)} data-admin-tool-ui="true">
-                  <option value="P0">P0</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option>
-                </select></label>
-                <label>Obecne zachowanie<textarea value={currentBehavior} onChange={(event) => setCurrentBehavior(event.target.value)} data-admin-tool-ui="true" /></label>
-                <label>Oczekiwane zachowanie<textarea value={expectedBehavior} onChange={(event) => setExpectedBehavior(event.target.value)} data-admin-tool-ui="true" /></label>
-                <button type="button" onClick={saveReview} disabled={!reviewComment.trim()} data-admin-tool-ui="true">Zapisz uwagę</button>
-              </>
-            ) : (
-              <>
-                <label>Stary tekst<input value={currentCandidate?.target.text || currentCandidate?.target.ariaLabel || ''} readOnly data-admin-tool-ui="true" /></label>
-                <label>Nowy tekst<textarea value={copyProposed} onChange={(event) => setCopyProposed(event.target.value)} data-admin-tool-ui="true" /></label>
-                <label>Powód<textarea value={copyReason} onChange={(event) => setCopyReason(event.target.value)} data-admin-tool-ui="true" /></label>
-                <label>Priorytet<select value={copyPriority} onChange={(event) => setCopyPriority(event.target.value as AdminPriority)} data-admin-tool-ui="true">
-                  <option value="P0">P0</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option>
-                </select></label>
-                <button type="button" onClick={saveCopy} disabled={!copyProposed.trim()} data-admin-tool-ui="true">Zapisz zmianę copy</button>
-              </>
-            )}
+        <div className={`admin-tool-quick-editor admin-tool-quick-editor-${targetDialog.mode}`} data-admin-tool-ui="true" data-admin-click-to-annotate-editor-stage87d="true">
+          <div className="admin-tool-row admin-tool-quick-editor-head">
+            <strong>{quickEditorTitle}</strong>
+            <button type="button" onClick={closeQuickEditor} data-admin-tool-ui="true">Zamknij</button>
           </div>
+
+          <div className="admin-target-card">
+            <span>Wybrano: {dialogTitle}</span>
+            <small>{currentCandidate?.reason} Â· {currentCandidate?.target.selectorHint}</small>
+            <div className="admin-tool-row">
+              <button type="button" onClick={() => moveCandidate(1)} data-admin-tool-ui="true">WiÄ™kszy cel</button>
+              <button type="button" onClick={() => moveCandidate(-1)} data-admin-tool-ui="true">Mniejszy cel</button>
+            </div>
+            <select value={targetDialog.selectedIndex} onChange={(event) => {
+              const selectedIndex = Number(event.target.value);
+              setTargetDialog({ ...targetDialog, selectedIndex });
+              markSelectedCandidate(targetDialog.candidates[selectedIndex]);
+            }} data-admin-tool-ui="true">
+              {targetDialog.candidates.slice(0, 6).map((candidate, index) => (
+                <option key={`${candidate.target.selectorHint}-${index}`} value={index}>
+                  {index + 1}. {describeAdminTarget(candidate)} Â· score {candidate.score}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {targetDialog.mode === 'bug' ? (
+            <>
+              <label>Co zrobiĹ‚em<input value={bugWhatIDid} onChange={(event) => setBugWhatIDid(event.target.value)} onKeyDown={saveOnEnter} data-admin-tool-ui="true" /></label>
+              <label>Co nie dziaĹ‚a *<textarea autoFocus value={bugWhatHappened} onChange={(event) => setBugWhatHappened(event.target.value)} onKeyDown={saveOnEnter} placeholder="np. ten przycisk nie dziaĹ‚a" data-admin-tool-ui="true" /></label>
+              <label>Co powinno siÄ™ staÄ‡<textarea value={bugExpected} onChange={(event) => setBugExpected(event.target.value)} onKeyDown={saveOnEnter} placeholder="opcjonalnie" data-admin-tool-ui="true" /></label>
+              <label>Priorytet<select value={bugPriority} onChange={(event) => setBugPriority(event.target.value as AdminPriority)} data-admin-tool-ui="true">
+                <option value="P0">P0</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option>
+              </select></label>
+              <button type="button" onClick={saveBug} disabled={!bugWhatHappened.trim()} data-admin-tool-ui="true">Zapisz bug Â· Enter</button>
+            </>
+          ) : null}
+
+          {targetDialog.mode === 'review' ? (
+            <>
+              <div className="admin-preset-grid">
+                {REVIEW_PRESETS.map((preset) => (
+                  <button key={preset} type="button" onClick={() => setReviewComment(preset)} data-admin-tool-ui="true">{preset}</button>
+                ))}
+              </div>
+              <label>Uwaga *<textarea autoFocus value={reviewComment} onChange={(event) => setReviewComment(event.target.value)} onKeyDown={saveOnEnter} placeholder="np. ten napis jest za wysoko, przemieĹ›Ä‡ niĹĽej" data-admin-tool-ui="true" /></label>
+              <label>Typ<select value={reviewType} onChange={(event) => setReviewType(event.target.value as AdminReviewType)} data-admin-tool-ui="true">
+                <option value="visual">wyglÄ…d</option><option value="position">pozycja</option><option value="copy">tekst</option><option value="behavior">dziaĹ‚anie</option><option value="bug">bĹ‚Ä…d</option><option value="mobile">mobile</option><option value="performance">performance</option><option value="other">inne</option>
+              </select></label>
+              <label>Priorytet<select value={reviewPriority} onChange={(event) => setReviewPriority(event.target.value as AdminPriority)} data-admin-tool-ui="true">
+                <option value="P0">P0</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option>
+              </select></label>
+              <label>Obecne zachowanie<textarea value={currentBehavior} onChange={(event) => setCurrentBehavior(event.target.value)} onKeyDown={saveOnEnter} data-admin-tool-ui="true" /></label>
+              <label>Oczekiwane zachowanie<textarea value={expectedBehavior} onChange={(event) => setExpectedBehavior(event.target.value)} onKeyDown={saveOnEnter} data-admin-tool-ui="true" /></label>
+              <button type="button" onClick={saveReview} disabled={!reviewComment.trim()} data-admin-tool-ui="true">Zapisz uwagÄ™ Â· Enter</button>
+            </>
+          ) : null}
+
+          {targetDialog.mode === 'copy' ? (
+            <>
+              <label>Stary tekst<input value={currentCandidate?.target.text || currentCandidate?.target.ariaLabel || ''} readOnly data-admin-tool-ui="true" /></label>
+              <label>Nowy tekst *<textarea autoFocus value={copyProposed} onChange={(event) => setCopyProposed(event.target.value)} onKeyDown={saveOnEnter} data-admin-tool-ui="true" /></label>
+              <label>PowĂłd<textarea value={copyReason} onChange={(event) => setCopyReason(event.target.value)} onKeyDown={saveOnEnter} placeholder="opcjonalnie" data-admin-tool-ui="true" /></label>
+              <label>Priorytet<select value={copyPriority} onChange={(event) => setCopyPriority(event.target.value as AdminPriority)} data-admin-tool-ui="true">
+                <option value="P0">P0</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option>
+              </select></label>
+              <button type="button" onClick={saveCopy} disabled={!copyProposed.trim()} data-admin-tool-ui="true">Zapisz copy Â· Enter</button>
+            </>
+          ) : null}
         </div>
       ) : null}
     </div>
@@ -526,3 +513,4 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
 
 // ADMIN_DEBUG_TOOLBAR_STAGE87
 // ADMIN_DEBUG_TOOLBAR_NO_BACKEND_STAGE87
+// ADMIN_CLICK_TO_ANNOTATE_STAGE87D
