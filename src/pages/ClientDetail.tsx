@@ -791,6 +791,23 @@ export default function ClientDetail() {
       hasMixedCurrencies: new Set(currencies).size > 1,
     };
   }, [cases, client?.currency, leads, payments]);
+  const clientFinanceSummary = useMemo(() => {
+    const caseValueTotal = cases.reduce((sum, caseRecord) => sum + (Number(caseRecord?.expectedRevenue || caseRecord?.dealValue || 0) || 0), 0);
+    const paymentsTotal = payments.reduce((sum, entry) => sum + (Number(entry?.amount) || 0), 0);
+    const remainingTotal = Math.max(0, caseValueTotal - paymentsTotal);
+    const recentPayments = [...payments]
+      .filter((entry) => Number(entry?.amount) > 0)
+      .sort((left, right) => (asDate(right?.paidAt || right?.createdAt)?.getTime() ?? 0) - (asDate(left?.paidAt || left?.createdAt)?.getTime() ?? 0))
+      .slice(0, 3);
+    return {
+      caseValueTotal,
+      paymentsTotal,
+      remainingTotal,
+      recentPayments,
+      activeCases: activeCases.length,
+      settledCases: closedCases.length,
+    };
+  }, [activeCases.length, cases, closedCases.length, payments]);
   const mainCase = activeCases[0] || cases[0] || null;
   const mainCaseCompleteness = mainCase ? getCaseCompleteness(mainCase) : 0;
   const activeTaskCount = useMemo(() => clientTasks.filter((task) => !isDoneStatus(task.status)).length, [clientTasks]);
@@ -1477,6 +1494,29 @@ export default function ClientDetail() {
                 {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 Dyktuj
               </Button>
+            </section>
+
+            <section className="right-card client-detail-right-card" data-client-finance-summary="true">
+              <div className="client-detail-card-title-row">
+                <Target className="h-4 w-4" />
+                <h2>Podsumowanie finansów</h2>
+              </div>
+              <small>Suma wartości spraw: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>
+              <small>Suma wpłat: {formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</small>
+              <small>Pozostało do zapłaty: {formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</small>
+              <small>Sprawy aktywne / rozliczone: {clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</small>
+              <div className="client-detail-quick-actions-list">
+                {clientFinanceSummary.recentPayments.length === 0 ? (
+                  <div><span>Ostatnie wpłaty</span><strong>Brak</strong></div>
+                ) : (
+                  clientFinanceSummary.recentPayments.map((entry) => (
+                    <div key={String(entry.id || `${entry.amount}-${entry.paidAt || entry.createdAt}`)}>
+                      <span>{formatDate(entry.paidAt || entry.createdAt)}</span>
+                      <strong>{formatMoneyWithCurrency(entry.amount, entry.currency || clientFinance.currency)}</strong>
+                    </div>
+                  ))
+                )}
+              </div>
             </section>
           </aside>
         </div>
