@@ -10,7 +10,7 @@ import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 const CASE_STATUSES = new Set<string>(CASE_STATUS_VALUES);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
 const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_completion', 'success_fee', 'recurring', 'manual']);
-const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'currency']);
+const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency']);
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -287,6 +287,7 @@ export default async function handler(req: any, res: any) {
         billing_model_snapshot: normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual'),
         expected_revenue: asNumber(body.expectedRevenue ?? body.dealValue ?? linkedLead?.value ?? linkedLead?.deal_value),
         paid_amount: asNumber(body.paidAmount),
+        remaining_amount: asNumber(body.remainingAmount ?? (asNumber(body.expectedRevenue ?? body.dealValue ?? linkedLead?.value ?? linkedLead?.deal_value) - asNumber(body.paidAmount))),
         currency: normalizeCurrency(body.currency ?? linkedLead?.currency),
         completeness_percent: Number(body.completenessPercent || 0),
         portal_ready: Boolean(body.portalReady || false),
@@ -372,6 +373,7 @@ export default async function handler(req: any, res: any) {
       if (body.billingModelSnapshot !== undefined) payload.billing_model_snapshot = normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual');
       if (body.expectedRevenue !== undefined || body.dealValue !== undefined) payload.expected_revenue = asNumber(body.expectedRevenue ?? body.dealValue);
       if (body.paidAmount !== undefined) payload.paid_amount = asNumber(body.paidAmount);
+      if (body.remainingAmount !== undefined) payload.remaining_amount = asNumber(body.remainingAmount);
       if (body.currency !== undefined) payload.currency = normalizeCurrency(body.currency);
       if (body.serviceStartedAt !== undefined) payload.service_started_at = toIso(body.serviceStartedAt);
       if (body.startedAt !== undefined) payload.started_at = toIso(body.startedAt);

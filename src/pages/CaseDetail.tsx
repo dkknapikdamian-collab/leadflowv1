@@ -87,6 +87,10 @@ type CaseRecord = {
   createdFromLead?: boolean;
   serviceStartedAt?: string | null;
   portalReady?: boolean;
+  expectedRevenue?: number;
+  paidAmount?: number;
+  remainingAmount?: number;
+  currency?: string;
   updatedAt?: any;
   createdAt?: any;
   lastActivityAt?: string | null;
@@ -243,6 +247,13 @@ function formatDate(value: any, fallback = 'Bez terminu') {
   const date = toDate(value);
   if (!date) return fallback;
   return date.toLocaleDateString('pl-PL', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function formatMoney(value: unknown, currency?: string) {
+  const amount = Number(value || 0);
+  const safeAmount = Number.isFinite(amount) ? amount : 0;
+  const safeCurrency = typeof currency === 'string' && currency.trim() ? currency.trim().toUpperCase() : 'PLN';
+  return `${safeAmount.toLocaleString('pl-PL')} ${safeCurrency}`;
 }
 
 function sortTime(value: any, fallback = Number.MAX_SAFE_INTEGER) {
@@ -755,6 +766,19 @@ export default function CaseDetail() {
     [effectiveStatus, events, items, tasks],
   );
   const workItems = useMemo(() => dedupeCaseWorkItems(buildWorkItems(openTasks, plannedEvents, items, activities)), [activities, items, openTasks, plannedEvents]);
+  const caseFinance = useMemo(() => {
+    const expected = Number(caseData?.expectedRevenue || 0);
+    const paid = Number(caseData?.paidAmount || 0);
+    const remainingFromCase = Number(caseData?.remainingAmount);
+    const remaining = Number.isFinite(remainingFromCase) ? Math.max(0, remainingFromCase) : Math.max(0, expected - paid);
+    const currency = typeof caseData?.currency === 'string' && caseData.currency.trim() ? caseData.currency.trim().toUpperCase() : 'PLN';
+    return {
+      expected: Number.isFinite(expected) ? Math.max(0, expected) : 0,
+      paid: Number.isFinite(paid) ? Math.max(0, paid) : 0,
+      remaining,
+      currency,
+    };
+  }, [caseData?.currency, caseData?.expectedRevenue, caseData?.paidAmount, caseData?.remainingAmount]);
   const recentCaseMoves = useMemo(() => activities.slice(0, 5), [activities]);
   const nextAction = useMemo(() => workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null, [workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
@@ -1266,6 +1290,15 @@ export default function CaseDetail() {
               <div className="case-detail-right-actions">
                 <button type="button" className="cf-btn-tone-gap" onClick={() => setIsAddItemOpen(true)}>Dodaj brak</button>
               </div>
+            </section>
+            <section className="right-card case-detail-right-card">
+              <div className="case-detail-card-title-row">
+                <Paperclip className="h-4 w-4" />
+                <h2>Finanse sprawy</h2>
+              </div>
+              <small>Wartość: {formatMoney(caseFinance.expected, caseFinance.currency)}</small>
+              <small>Wpłacono: {formatMoney(caseFinance.paid, caseFinance.currency)}</small>
+              <small>Pozostało: {formatMoney(caseFinance.remaining, caseFinance.currency)}</small>
             </section>
               <section className="case-detail-card case-detail-recent-moves-panel" data-case-recent-moves-panel="true">
                 <div className="case-detail-section-heading">

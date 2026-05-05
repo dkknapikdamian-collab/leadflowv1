@@ -1,4 +1,4 @@
-/* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
+﻿/* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
 /* STAGE55_CLIENT_CASE_OPERATIONAL_PACK */
 /* STAGE54_CLIENT_CASES_COMPACT_FIT */
 /* STAGE53_CLIENT_OPERATIONAL_RECENT_MOVES */
@@ -15,8 +15,8 @@ CLIENT_DETAIL_STAGE46_ACQUISITION_HISTORY_ONLY
 STAGE50_CLIENT_DETAIL_EDIT_HEADER_POLISH
 */
 const STAGE35_CLIENT_DETAIL_EDIT_TOGGLE_GUARD = "contactEditing ? 'Zapisz' : 'Edytuj'";
-const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu Drugorzędne akcje menu pomocnicze';
-const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe Drugorzędne akcje';
+const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu DrugorzÄ™dne akcje menu pomocnicze';
+const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe DrugorzÄ™dne akcje';
 const CLIENT_DETAIL_NEW_CASE_FOR_CLIENT_COPY_GUARD = '+ Nowa sprawa dla klienta';
 const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -190,6 +190,17 @@ function formatMoney(value: unknown) {
   return Number.isFinite(amount) ? `${amount.toLocaleString('pl-PL')} PLN` : '0 PLN';
 }
 
+function formatMoneyWithCurrency(value: unknown, currency?: string) {
+  const amount = Number(value || 0);
+  const safeAmount = Number.isFinite(amount) ? amount : 0;
+  const safeCurrency = typeof currency === 'string' && currency.trim() ? currency.trim().toUpperCase() : 'PLN';
+  return `${safeAmount.toLocaleString('pl-PL')} ${safeCurrency}`;
+}
+
+function isPaidPaymentStatus(status: unknown) {
+  return ['deposit_paid', 'partially_paid', 'fully_paid', 'paid'].includes(String(status || '').toLowerCase());
+}
+
 function getTaskDate(task: any) {
   return String(task?.scheduledAt || task?.dueAt || task?.reminderAt || task?.date || task?.createdAt || '');
 }
@@ -215,13 +226,13 @@ function leadStatusLabel(status?: string) {
     case 'qualification':
       return 'Kwalifikacja';
     case 'proposal_sent':
-      return 'Oferta wysłana';
+      return 'Oferta wysĹ‚ana';
     case 'waiting_response':
-      return 'Czeka na odpowiedź';
+      return 'Czeka na odpowiedĹş';
     case 'accepted':
       return 'Zaakceptowany';
     case 'moved_to_service':
-      return 'W obsłudze';
+      return 'W obsĹ‚udze';
     case 'won':
       return 'Wygrany';
     case 'lost':
@@ -250,7 +261,7 @@ function caseStatusLabel(status?: string) {
     case 'on_hold':
       return 'Wstrzymana';
     case 'completed':
-      return 'Zakończona';
+      return 'ZakoĹ„czona';
     case 'canceled':
       return 'Anulowana';
     default:
@@ -262,11 +273,11 @@ function paymentStatusLabel(status?: string) {
   switch (status) {
     case 'paid':
     case 'fully_paid':
-      return 'Opłacone';
+      return 'OpĹ‚acone';
     case 'partially_paid':
-      return 'Częściowo opłacone';
+      return 'CzÄ™Ĺ›ciowo opĹ‚acone';
     case 'awaiting_payment':
-      return 'Czeka na płatność';
+      return 'Czeka na pĹ‚atnoĹ›Ä‡';
     case 'deposit_paid':
       return 'Zaliczka';
     case 'refunded':
@@ -286,27 +297,27 @@ function activityLabel(activity: any) {
     case 'calendar_entry_completed':
       return title ? `Wpis kalendarza wykonany: ${title}` : 'Wpis kalendarza wykonany';
     case 'calendar_entry_restored':
-      return title ? `Wpis kalendarza przywrócony: ${title}` : 'Wpis kalendarza przywrócony';
+      return title ? `Wpis kalendarza przywrĂłcony: ${title}` : 'Wpis kalendarza przywrĂłcony';
     case 'calendar_entry_deleted':
-      return title ? `Wpis kalendarza usunięty: ${title}` : 'Wpis kalendarza usunięty';
+      return title ? `Wpis kalendarza usuniÄ™ty: ${title}` : 'Wpis kalendarza usuniÄ™ty';
     case 'today_task_completed':
       return title ? `Zadanie wykonane: ${title}` : 'Zadanie wykonane';
     case 'today_task_restored':
-      return title ? `Zadanie przywrócone: ${title}` : 'Zadanie przywrócone';
+      return title ? `Zadanie przywrĂłcone: ${title}` : 'Zadanie przywrĂłcone';
     case 'today_task_snoozed':
-      return title ? `Zadanie przesunięte: ${title}` : 'Zadanie przesunięte';
+      return title ? `Zadanie przesuniÄ™te: ${title}` : 'Zadanie przesuniÄ™te';
     case 'today_event_snoozed':
-      return title ? `Wydarzenie przesunięte: ${title}` : 'Wydarzenie przesunięte';
+      return title ? `Wydarzenie przesuniÄ™te: ${title}` : 'Wydarzenie przesuniÄ™te';
     case 'case_lifecycle_started':
-      return title ? `Sprawa rozpoczęta: ${title}` : 'Sprawa rozpoczęta';
+      return title ? `Sprawa rozpoczÄ™ta: ${title}` : 'Sprawa rozpoczÄ™ta';
     case 'case_lifecycle_completed':
-      return title ? `Sprawa zakończona: ${title}` : 'Sprawa zakończona';
+      return title ? `Sprawa zakoĹ„czona: ${title}` : 'Sprawa zakoĹ„czona';
     case 'case_lifecycle_reopened':
       return title ? `Sprawa wznowiona: ${title}` : 'Sprawa wznowiona';
     case 'ai_draft_converted':
       return title ? `Szkic zatwierdzony: ${title}` : 'Szkic zatwierdzony';
     default:
-      return title || 'Aktywność klienta';
+      return title || 'AktywnoĹ›Ä‡ klienta';
   }
 }
 
@@ -340,7 +351,7 @@ function getCaseBlocker(caseRecord: any) {
   const status = String(caseRecord?.status || '');
   if (status === 'blocked') return 'blokada w sprawie';
   if (status === 'waiting_on_client') return 'czeka na klienta';
-  if (status === 'to_approve') return 'czeka na akceptację';
+  if (status === 'to_approve') return 'czeka na akceptacjÄ™';
   if (status === 'on_hold') return 'sprawa wstrzymana';
   return '';
 }
@@ -418,7 +429,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
   if (overdueTask) {
     return {
       kind: 'task',
-      title: String(overdueTask.title || 'Zaległe zadanie'),
+      title: String(overdueTask.title || 'ZalegĹ‚e zadanie'),
       subtitle: `Termin: ${formatDateTime(getTaskDate(overdueTask))}`,
       date: getTaskDate(overdueTask),
       relationId: String(overdueTask.caseId || overdueTask.leadId || ''),
@@ -435,7 +446,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
   if (nextTask) {
     return {
       kind: 'task',
-      title: String(nextTask.title || 'Następne zadanie'),
+      title: String(nextTask.title || 'NastÄ™pne zadanie'),
       subtitle: `Termin: ${formatDateTime(getTaskDate(nextTask))}`,
       date: getTaskDate(nextTask),
       relationId: String(nextTask.caseId || nextTask.leadId || ''),
@@ -452,7 +463,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
   if (nextEvent) {
     return {
       kind: 'event',
-      title: String(nextEvent.title || 'Następne wydarzenie'),
+      title: String(nextEvent.title || 'NastÄ™pne wydarzenie'),
       subtitle: `Start: ${formatDateTime(getEventDate(nextEvent))}`,
       date: getEventDate(nextEvent),
       relationId: String(nextEvent.caseId || nextEvent.leadId || ''),
@@ -466,7 +477,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
     return {
       kind: 'case',
       title: getCaseTitle(activeCase),
-      subtitle: `${caseStatusLabel(String(activeCase.status || 'in_progress'))} · kompletność ${getCaseCompleteness(activeCase)}%`,
+      subtitle: `${caseStatusLabel(String(activeCase.status || 'in_progress'))} Â· kompletnoĹ›Ä‡ ${getCaseCompleteness(activeCase)}%`,
       relationId: String(activeCase.id || ''),
       to: `/cases/${String(activeCase.id)}`,
       tone: 'emerald',
@@ -565,9 +576,9 @@ function ClientMultiContactField({ kind, label, value, onChange, placeholder }: 
                 type="button"
                 className="client-detail-mini-button client-detail-mini-button-muted"
                 onClick={() => removeValue(index)}
-                aria-label={kind === 'email' ? 'Usuń email klienta' : 'Usuń telefon klienta'}
+                aria-label={kind === 'email' ? 'UsuĹ„ email klienta' : 'UsuĹ„ telefon klienta'}
               >
-                Usuń
+                UsuĹ„
               </button>
             ) : null}
           </div>
@@ -661,7 +672,7 @@ export default function ClientDetail() {
         notes: String((clientRow as any)?.notes || ''),
       });
     } catch (error: any) {
-      toast.error(`Błąd odczytu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d odczytu klienta: ${error?.message || 'REQUEST_FAILED'}`);
       setClient(null);
     } finally {
       setLoading(false);
@@ -729,7 +740,7 @@ export default function ClientDetail() {
       id: String(activity?.id || activity?.activityId || activity?.eventId || (getActivityTime(activity) + '-' + index)),
       title: activityLabel(activity),
       time: formatDateTime(getActivityTime(activity)),
-      meta: String(activity?.eventType || activity?.activityType || 'Aktywność'),
+      meta: String(activity?.eventType || activity?.activityType || 'AktywnoĹ›Ä‡'),
     }));
   }, [clientActivities]);
   const activeCases = useMemo(
@@ -752,7 +763,34 @@ export default function ClientDetail() {
     [cases],
   );
 
-  const paymentTotal = useMemo(() => payments.reduce((sum, entry) => sum + (Number(entry.amount) || 0), 0), [payments]);
+  const clientFinance = useMemo(() => {
+    const activeLeadPotential = leads
+      .filter((lead) => {
+        const status = String(lead?.status || '').toLowerCase();
+        const linkedCaseId = String(lead?.linkedCaseId || lead?.caseId || '');
+        return !['moved_to_service', 'won', 'lost', 'archived'].includes(status) && !linkedCaseId;
+      })
+      .reduce((sum, lead) => sum + (Number(lead?.dealValue) || 0), 0);
+
+    const casesExpected = cases.reduce((sum, caseRecord) => sum + (Number(caseRecord?.expectedRevenue || caseRecord?.dealValue || 0) || 0), 0);
+    const paidTotal = payments
+      .filter((entry) => isPaidPaymentStatus(entry?.status))
+      .reduce((sum, entry) => sum + (Number(entry?.amount) || 0), 0);
+    const potentialTotal = Math.max(0, activeLeadPotential + casesExpected);
+    const remainingTotal = Math.max(0, potentialTotal - paidTotal);
+    const currencies = [client?.currency, ...leads.map((lead) => lead?.currency), ...cases.map((entry) => entry?.currency), ...payments.map((entry) => entry?.currency)]
+      .map((value) => String(value || '').trim().toUpperCase())
+      .filter((value) => /^[A-Z]{3}$/.test(value));
+    const currency = currencies[0] || 'PLN';
+
+    return {
+      potentialTotal,
+      paidTotal,
+      remainingTotal,
+      currency,
+      hasMixedCurrencies: new Set(currencies).size > 1,
+    };
+  }, [cases, client?.currency, leads, payments]);
   const mainCase = activeCases[0] || cases[0] || null;
   const mainCaseCompleteness = mainCase ? getCaseCompleteness(mainCase) : 0;
   const activeTaskCount = useMemo(() => clientTasks.filter((task) => !isDoneStatus(task.status)).length, [clientTasks]);
@@ -782,8 +820,8 @@ export default function ClientDetail() {
         leadId: caseRecord?.leadId ? String(caseRecord.leadId) : null,
         status: String(caseRecord.status || 'in_progress'),
         statusLabel: caseStatusLabel(String(caseRecord.status || 'in_progress')),
-        nextActionLabel: next ? next.title : 'Brak zaplanowanych działań',
-        nextActionMeta: next ? `${next.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} · ${relativeActionLabel(next.date)}` : 'Dodaj zadanie albo wydarzenie w sprawie.',
+        nextActionLabel: next ? next.title : 'Brak zaplanowanych dziaĹ‚aĹ„',
+        nextActionMeta: next ? `${next.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} Â· ${relativeActionLabel(next.date)}` : 'Dodaj zadanie albo wydarzenie w sprawie.',
         sourceLabel: sourceLead ? `Lead: ${String(sourceLead.name || sourceLead.company || 'bez nazwy')}` : `Utworzono: ${formatDate(caseRecord.createdAt)}`,
         completeness: getCaseCompleteness(caseRecord),
         blocker: getCaseBlocker(caseRecord),
@@ -810,7 +848,7 @@ export default function ClientDetail() {
 
   const handleSave = async () => {
     if (!clientId) return;
-    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
     try {
       setSaving(true);
       await updateClientInSupabase({
@@ -835,13 +873,13 @@ export default function ClientDetail() {
       const failedLeadSyncs = linkedLeadResults.filter((result) => result.status === 'rejected').length;
 
       if (failedLeadSyncs > 0) {
-        toast.error('Klient zapisany, ale nie udało się zsynchronizować części powiązanych leadów.');
+        toast.error('Klient zapisany, ale nie udaĹ‚o siÄ™ zsynchronizowaÄ‡ czÄ™Ĺ›ci powiÄ…zanych leadĂłw.');
       } else {
         toast.success('Klient zaktualizowany');
       }
       await reload();
     } catch (error: any) {
-      toast.error(`Błąd zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSaving(false);
     }
@@ -868,12 +906,12 @@ export default function ClientDetail() {
   };
 
   const copyValue = async (label: string, value: string) => {
-    if (!value) return toast.error(`Brak wartości: ${label}`);
+    if (!value) return toast.error(`Brak wartoĹ›ci: ${label}`);
     try {
       await navigator.clipboard.writeText(value);
       toast.success(`${label} skopiowano`);
     } catch {
-      toast.error('Nie udało się skopiować.');
+      toast.error('Nie udaĹ‚o siÄ™ skopiowaÄ‡.');
     }
   };
 
@@ -900,14 +938,14 @@ export default function ClientDetail() {
   };
 
   const handleToggleClientNoteSpeech = () => {
-    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
     if (clientNoteListening) {
       stopClientNoteSpeech();
       return;
     }
     const RecognitionConstructor = getSpeechRecognitionConstructor();
     if (!RecognitionConstructor) {
-      toast.error('Dyktowanie nie jest dostępne w tej przeglądarce.');
+      toast.error('Dyktowanie nie jest dostÄ™pne w tej przeglÄ…darce.');
       return;
     }
     try {
@@ -932,7 +970,7 @@ export default function ClientDetail() {
         setClientNoteInterimText(interimTranscript);
       };
       recognition.onerror = () => {
-        toast.error('Nie udało się dokończyć dyktowania notatki.');
+        toast.error('Nie udaĹ‚o siÄ™ dokoĹ„czyÄ‡ dyktowania notatki.');
         stopClientNoteSpeech();
       };
       recognition.onend = () => {
@@ -944,9 +982,9 @@ export default function ClientDetail() {
       recognition.start();
       setClientNoteListening(true);
       setContactEditing(true);
-      toast.success('Dyktowanie notatki włączone');
+      toast.success('Dyktowanie notatki wĹ‚Ä…czone');
     } catch {
-      toast.error('Nie udało się uruchomić dyktowania.');
+      toast.error('Nie udaĹ‚o siÄ™ uruchomiÄ‡ dyktowania.');
       stopClientNoteSpeech();
     }
   };
@@ -962,7 +1000,7 @@ export default function ClientDetail() {
         clientNoteVoiceDirtyRef.current = false;
         toast.success('Notatka klienta zapisana');
       } catch (error: any) {
-        toast.error(`Błąd zapisu notatki: ${error?.message || 'REQUEST_FAILED'}`);
+        toast.error(`BĹ‚Ä…d zapisu notatki: ${error?.message || 'REQUEST_FAILED'}`);
       } finally {
         setClientNoteAutosaving(false);
       }
@@ -988,7 +1026,7 @@ export default function ClientDetail() {
         <main className="client-detail-vnext-page">
           <div className="client-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Ładowanie klienta...</span>
+            <span>Ĺadowanie klienta...</span>
           </div>
         </main>
       </Layout>
@@ -1002,10 +1040,10 @@ export default function ClientDetail() {
           <section className="client-detail-empty-card">
             <UserRound className="h-8 w-8" />
             <h1>Nie znaleziono klienta</h1>
-            <p>Ten rekord mógł zostać usunięty albo nie należy do aktualnego workspace.</p>
+            <p>Ten rekord mĂłgĹ‚ zostaÄ‡ usuniÄ™ty albo nie naleĹĽy do aktualnego workspace.</p>
             <Button type="button" onClick={() => navigate('/clients')} variant="outline">
               <ArrowLeft className="h-4 w-4" />
-              Wróć do klientów
+              WrĂłÄ‡ do klientĂłw
             </Button>
           </section>
         </main>
@@ -1027,8 +1065,8 @@ export default function ClientDetail() {
             <h1>{getClientName(client)}</h1>
             <div className="client-detail-header-meta">
               <span>Ostatni kontakt: {formatDate(lastActivityDate)}</span>
-              <span>Główna sprawa: {mainCase ? getCaseTitle(mainCase) : 'Brak głównej sprawy'}</span>
-              <span>Status relacji: {activeCases.length > 0 ? 'Aktywna obsługa' : leads.length > 0 ? 'Kontakt po leadzie' : 'Kartoteka'}</span>
+              <span>GĹ‚Ăłwna sprawa: {mainCase ? getCaseTitle(mainCase) : 'Brak gĹ‚Ăłwnej sprawy'}</span>
+              <span>Status relacji: {activeCases.length > 0 ? 'Aktywna obsĹ‚uga' : leads.length > 0 ? 'Kontakt po leadzie' : 'Kartoteka'}</span>
             </div>
           </div>
           <div className="client-detail-header-actions">
@@ -1055,7 +1093,7 @@ export default function ClientDetail() {
             </Button>
             <Button type="button" className="client-detail-header-action-primary" onClick={openMainCase} disabled={!mainCase?.id}>
               <Briefcase className="h-4 w-4" />
-              Otwórz główną sprawę
+              OtwĂłrz gĹ‚ĂłwnÄ… sprawÄ™
             </Button>
           </div>
         </header>
@@ -1067,7 +1105,7 @@ export default function ClientDetail() {
                 <div className="client-detail-avatar">{getInitials(client)}</div>
                 <div>
                   <h2>{getClientName(client)}</h2>
-                  <p>{mainCase ? 'Klient · główna sprawa aktywna' : 'Klient · brak aktywnej sprawy'}</p>
+                  <p>{mainCase ? 'Klient Â· gĹ‚Ăłwna sprawa aktywna' : 'Klient Â· brak aktywnej sprawy'}</p>
                 </div>
               </div>
 
@@ -1102,15 +1140,15 @@ export default function ClientDetail() {
                     <div className="mt-2 flex flex-wrap gap-2">
                       <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteAutosaving}>
                         {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                        {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
+                        {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkÄ™'}
                       </Button>
-                      {clientNoteAutosaving ? <span className="text-xs text-slate-500">Zapisywanie za 2s…</span> : null}
+                      {clientNoteAutosaving ? <span className="text-xs text-slate-500">Zapisywanie za 2sâ€¦</span> : null}
                     </div>
                   </div>
                   <div className="client-detail-edit-actions">
                     <Button type="button" onClick={handleSave} disabled={saving}>
                       <Save className="h-4 w-4" />
-                      {saving ? 'Zapisuję...' : 'Zapisz'}
+                      {saving ? 'ZapisujÄ™...' : 'Zapisz'}
                     </Button>
                     <Button type="button" variant="outline" onClick={cancelClientPanelEdit} disabled={saving}>
                       Anuluj
@@ -1131,7 +1169,7 @@ export default function ClientDetail() {
           </aside>
 
           <section className="client-detail-main-column">
-            <nav className="client-detail-tabs" aria-label="Zakładki klienta">
+            <nav className="client-detail-tabs" aria-label="ZakĹ‚adki klienta">
               {[
                 { key: 'summary', label: 'Podsumowanie' },
                 { key: 'cases', label: 'Sprawy' },
@@ -1156,8 +1194,8 @@ export default function ClientDetail() {
             {activeTab === 'summary' ? (
               <div className="client-detail-tab-panel">
                 <div className="client-detail-top-cards">
-                  <section className="client-detail-hero-card" aria-label="Następny ruch">
-                    <div className="client-detail-hero-kicker">NASTĘPNA AKCJA</div>
+                  <section className="client-detail-hero-card" aria-label="NastÄ™pny ruch">
+                    <div className="client-detail-hero-kicker">NASTÄPNA AKCJA</div>
                     <div className="client-detail-hero-date">{nextAction.date || formatDate(new Date())}</div>
                     <div className="client-detail-hero-sub">{nextAction.subtitle}</div>
                     <Button
@@ -1170,25 +1208,49 @@ export default function ClientDetail() {
                       }}
                       disabled={!hasAccess && !mainCase?.id && !nextAction.to}
                     >
-                      Otwórz sprawę
+                      OtwĂłrz sprawÄ™
                     </Button>
                   </section>
 
-                  <section className="client-detail-completeness-card" aria-label="Kompletność sprawy">
-                    <div className="client-detail-card-title-row">
-                      <CheckCircle2 className="h-4 w-4" />
-                      <h2>Kompletność sprawy</h2>
-                    </div>
-                    <strong>{mainCase ? `${mainCaseCompleteness}%` : '0%'}</strong>
-                    <p>{mainCase ? getCaseTitle(mainCase) : 'Główna sprawa nie ma kompletu elementów.'}</p>
-                    {mainCase ? <div className="client-detail-progress"><span style={{ width: `${mainCaseCompleteness}%` }} /></div> : null}
-                    {blockers.length > 0 ? (
-                      <div className="client-detail-completeness-note">
-                        <AlertTriangle className="h-4 w-4" />
-                        <span>Blokady: {blockers[0] ? blockers[0].blocker : blockers.length}</span>
+                                    <div className="client-detail-top-cards-side">
+                    <section className="client-detail-completeness-card" aria-label="Kompletność sprawy">
+                      <div className="client-detail-card-title-row">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <h2>Kompletność sprawy</h2>
                       </div>
-                    ) : null}
-                  </section>
+                      <strong>{mainCase ? `${mainCaseCompleteness}%` : '0%'}</strong>
+                      <p>{mainCase ? getCaseTitle(mainCase) : 'Główna sprawa nie ma kompletu elementów.'}</p>
+                      {mainCase ? <div className="client-detail-progress"><span style={{ width: `${mainCaseCompleteness}%` }} /></div> : null}
+                      {blockers.length > 0 ? (
+                        <div className="client-detail-completeness-note">
+                          <AlertTriangle className="h-4 w-4" />
+                          <span>Blokady: {blockers[0] ? blockers[0].blocker : blockers.length}</span>
+                        </div>
+                      ) : null}
+                    </section>
+
+                    <section className="client-detail-summary-card client-detail-finance-card" aria-label="Finanse klienta">
+                      <div className="client-detail-card-title-row">
+                        <Target className="h-4 w-4" />
+                        <h2>Finanse klienta</h2>
+                      </div>
+                      <div className="client-detail-finance-metrics">
+                        <div>
+                          <small>Możliwy przychód</small>
+                          <strong>{formatMoneyWithCurrency(clientFinance.potentialTotal, clientFinance.currency)}</strong>
+                        </div>
+                        <div>
+                          <small>Wpłacono</small>
+                          <strong>{formatMoneyWithCurrency(clientFinance.paidTotal, clientFinance.currency)}</strong>
+                        </div>
+                        <div>
+                          <small>Pozostało</small>
+                          <strong>{formatMoneyWithCurrency(clientFinance.remainingTotal, clientFinance.currency)}</strong>
+                        </div>
+                      </div>
+                      {clientFinance.hasMixedCurrencies ? <p>Wykryto wiele walut, podsumowanie pokazuje walutę dominującą.</p> : null}
+                    </section>
+                  </div>
                 </div>
 
                 <section className="client-detail-section-card">
@@ -1197,7 +1259,7 @@ export default function ClientDetail() {
                       <h2>Relacje</h2>
 </div>
                     <Button type="button" variant="outline" onClick={() => setActiveTab('history')}>
-                      Znajdź w historii
+                      ZnajdĹş w historii
                     </Button>
                   </div>
                   <div className="client-detail-relations-list">
@@ -1206,16 +1268,16 @@ export default function ClientDetail() {
                         <article key={String(lead.id)} className="client-detail-relation-row">
                           <div className="client-detail-relation-main">
                             <h3>{String(lead.name || lead.company || lead.email || 'Lead')}</h3>
-                            <p>Lead powiązany z klientem.</p>
+                            <p>Lead powiÄ…zany z klientem.</p>
                           </div>
                           <span className="client-detail-pill client-detail-pill-muted">Lead</span>
                           <div className="client-detail-relation-actions">
                             <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/leads/${String(lead.id)}`)}>
-                              Otwórz lead
+                              OtwĂłrz lead
                             </Button>
                             {lead.linkedCaseId ? (
                               <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(lead.linkedCaseId)}`)}>
-                                Otwórz sprawę
+                                OtwĂłrz sprawÄ™
                               </Button>
                             ) : null}
                           </div>
@@ -1223,24 +1285,24 @@ export default function ClientDetail() {
                       ))
                     ) : null}
                     {clientCaseRows.length === 0 ? (
-                      <div className="client-detail-light-empty">Brak spraw przy tym kliencie. Po pozyskaniu tematu utwórz sprawę i prowadź tam dalszą obsługę.</div>
+                      <div className="client-detail-light-empty">Brak spraw przy tym kliencie. Po pozyskaniu tematu utwĂłrz sprawÄ™ i prowadĹş tam dalszÄ… obsĹ‚ugÄ™.</div>
                     ) : (
                       clientCaseRows.slice(0, 4).map((caseRecord) => (
                         <article key={caseRecord.id} className="client-detail-relation-row">
                           <div className="client-detail-relation-main">
                             <h3>{caseRecord.title}</h3>
-                            <p>{caseRecord.nextActionMeta || `W realizacji · najbliższa akcja ${caseRecord.nextActionLabel}`}</p>
+                            <p>{caseRecord.nextActionMeta || `W realizacji Â· najbliĹĽsza akcja ${caseRecord.nextActionLabel}`}</p>
                           </div>
                           <span className={`client-detail-pill ${statusBadgeClass(caseRecord.status)}`}>
                             {activeCases.some((entry) => String(entry.id) === String(caseRecord.id)) ? 'Aktywna' : caseRecord.statusLabel}
                           </span>
                           <div className="client-detail-relation-actions">
                             <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>
-                              Otwórz sprawę
+                              OtwĂłrz sprawÄ™
                             </Button>
                             {caseRecord.leadId ? (
                               <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/leads/${String(caseRecord.leadId)}`)}>
-                                Otwórz lead
+                                OtwĂłrz lead
                               </Button>
                             ) : null}
                           </div>
@@ -1254,11 +1316,11 @@ export default function ClientDetail() {
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Historia pozyskania</h2>
-                      <p>Pierwszy kontakt, źródło i połączenie z leadem źródłowym.</p>
+                      <p>Pierwszy kontakt, ĹşrĂłdĹ‚o i poĹ‚Ä…czenie z leadem ĹşrĂłdĹ‚owym.</p>
                     </div>
                     {firstSourceLead ? (
                       <Button type="button" variant="outline" onClick={() => navigate(`/leads/${String(firstSourceLead.id)}`)}>
-                        Otwórz lead
+                        OtwĂłrz lead
                       </Button>
                     ) : null}
                   </div>
@@ -1268,11 +1330,11 @@ export default function ClientDetail() {
                       <strong>{firstSourceLead ? formatDate(firstSourceLead.createdAt || firstSourceLead.updatedAt) : formatDate(client.createdAt)}</strong>
                     </span>
                     <span>
-                      Źródło: <strong>{firstSourceLead?.source || client.source || 'Brak źródła'}</strong>
+                      ĹąrĂłdĹ‚o: <strong>{firstSourceLead?.source || client.source || 'Brak ĹşrĂłdĹ‚a'}</strong>
                     </span>
                     <span>
-                      Lead źródłowy:{' '}
-                      <strong>{firstSourceLead ? String(firstSourceLead.name || firstSourceLead.company || 'Lead bez nazwy') : 'Brak powiązanego leada'}</strong>
+                      Lead ĹşrĂłdĹ‚owy:{' '}
+                      <strong>{firstSourceLead ? String(firstSourceLead.name || firstSourceLead.company || 'Lead bez nazwy') : 'Brak powiÄ…zanego leada'}</strong>
                     </span>
                   </div>
                 </section>
@@ -1285,7 +1347,7 @@ export default function ClientDetail() {
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Historia pozyskania</h2>
-                      <p>Jedno miejsce pokazujące, skąd przyszedł klient. Bez dublowania przejść do tego samego leada.</p>
+                      <p>Jedno miejsce pokazujÄ…ce, skÄ…d przyszedĹ‚ klient. Bez dublowania przejĹ›Ä‡ do tego samego leada.</p>
                     </div>
                   </div>
 
@@ -1304,8 +1366,8 @@ export default function ClientDetail() {
                           >
                             <div className="client-detail-relation-main">
                               <h3>{leadName}</h3>
-                              <p><strong>Źródło:</strong> {source}</p>
-                              <p><strong>Status przy pozyskaniu:</strong> {status} · <strong>Utworzono:</strong> {formatDate(lead.createdAt || lead.updatedAt)}</p>
+                              <p><strong>ĹąrĂłdĹ‚o:</strong> {source}</p>
+                              <p><strong>Status przy pozyskaniu:</strong> {status} Â· <strong>Utworzono:</strong> {formatDate(lead.createdAt || lead.updatedAt)}</p>
                             </div>
                           </div>
                         );
@@ -1326,7 +1388,7 @@ export default function ClientDetail() {
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Historia</h2>
-                      <p>Lekka oś ostatnich ruchów powiązanych z klientem, leadami i sprawami.</p>
+                      <p>Lekka oĹ› ostatnich ruchĂłw powiÄ…zanych z klientem, leadami i sprawami.</p>
                     </div>
                   </div>
                   <div className="client-detail-history-list">
@@ -1368,16 +1430,16 @@ export default function ClientDetail() {
               ))}
             </div>
           ) : (
-            <p className="client-detail-light-empty">Brak ostatnich ruchów dla tego klienta.</p>
+            <p className="client-detail-light-empty">Brak ostatnich ruchĂłw dla tego klienta.</p>
           )}
           <Link to="/activity" className="client-detail-recent-moves-link">
-            Zobacz całą aktywność
+            Zobacz caĹ‚Ä… aktywnoĹ›Ä‡
           </Link>
         </section>
 <section className="right-card client-detail-right-card client-detail-operational-center" aria-label="Centrum operacyjne klienta">
               <div className="client-detail-card-title-row">
                 <Clock className="h-4 w-4" />
-                <h2>Następny ruch</h2>
+                <h2>NastÄ™pny ruch</h2>
               </div>
               <div className="client-detail-quick-actions-list">
                 <div>
@@ -1389,7 +1451,7 @@ export default function ClientDetail() {
                   <strong>{activeEventCount}</strong>
                 </div>
                 <div>
-                  <span>Aktywność klienta</span>
+                  <span>AktywnoĹ›Ä‡ klienta</span>
                   <strong>{lastActivityDate ? formatDateTime(lastActivityDate) : 'Brak'}</strong>
                 </div>
               </div>
@@ -1403,13 +1465,13 @@ export default function ClientDetail() {
             <section className="right-card client-detail-right-card client-detail-note-card">
               <div className="client-detail-card-title-row">
                 <FileText className="h-4 w-4" />
-                <h2>Krótka notatka</h2>
+                <h2>KrĂłtka notatka</h2>
               </div>
               <p className="client-detail-note-text">
-                {client.notes ? String(client.notes) : 'Brak osobnej notatki. Dodaj, jeśli jest coś ważnego.'}
+                {client.notes ? String(client.notes) : 'Brak osobnej notatki. Dodaj, jeĹ›li jest coĹ› waĹĽnego.'}
               </p>
                     <Button type="button" variant="outline" size="sm" onClick={() => openClientContextAction('note')} disabled={!hasAccess}>
-                      Dodaj notatkę
+                      Dodaj notatkÄ™
                     </Button>
               <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>
                 {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
@@ -1422,4 +1484,5 @@ export default function ClientDetail() {
     </Layout>
   );
 }
+
 

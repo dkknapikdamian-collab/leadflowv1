@@ -458,6 +458,12 @@
   align-items: stretch;
 }
 
+.client-detail-top-cards-side {
+  display: grid;
+  gap: 14px;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
 .client-detail-hero-card {
   min-height: 190px;
   border-radius: 28px;
@@ -541,6 +547,27 @@
   font-size: 22px;
   line-height: 1.15;
   letter-spacing: -0.03em;
+}
+
+.client-detail-finance-card {
+  min-height: 190px;
+}
+
+.client-detail-finance-metrics {
+  display: grid;
+  gap: 8px;
+}
+
+.client-detail-finance-metrics small {
+  display: block;
+  color: #475467;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.client-detail-finance-metrics strong {
+  font-size: 18px;
 }
 
 .client-detail-summary-card p {
