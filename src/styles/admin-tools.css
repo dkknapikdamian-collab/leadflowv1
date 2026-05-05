@@ -101,16 +101,20 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  display: grid;
-  place-items: center;
-  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 96px 20px 20px;
   background: rgba(15, 23, 42, 0.52);
+  overflow: auto;
+  /* ADMIN_DIALOG_DRAG_LOWER_STAGE87B */
 }
 
 .admin-tool-dialog {
   width: min(520px, 96vw);
-  max-height: 88vh;
+  max-height: calc(100vh - 128px);
   overflow: auto;
+  will-change: transform;
   display: grid;
   gap: 12px;
   padding: 16px;
@@ -172,5 +176,47 @@
   .admin-tool-popover {
     right: auto;
     left: 0;
+  }
+}
+
+
+.admin-tool-dialog-draggable {
+  touch-action: none;
+}
+
+.admin-tool-dialog-drag-handle {
+  cursor: grab;
+  user-select: none;
+  padding: 2px 0 8px;
+}
+
+.admin-tool-dialog-drag-handle:active {
+  cursor: grabbing;
+}
+
+.admin-tool-dialog-drag-handle strong::after {
+  content: " Â· przeciÄ…gnij";
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+@media (max-height: 720px) {
+  .admin-tool-dialog-backdrop {
+    padding-top: 72px;
+  }
+
+  .admin-tool-dialog {
+    max-height: calc(100vh - 96px);
+  }
+}
+
+@media (max-height: 560px) {
+  .admin-tool-dialog-backdrop {
+    padding-top: 48px;
+  }
+
+  .admin-tool-dialog {
+    max-height: calc(100vh - 64px);
   }
 }

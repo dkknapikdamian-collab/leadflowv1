@@ -39,6 +39,23 @@ type TargetDialogState = {
   selectedIndex: number;
 };
 
+type AdminDialogKey = 'bug' | 'target';
+
+type AdminDialogPosition = {
+  x: number;
+  y: number;
+};
+
+type AdminDialogDragState = {
+  key: AdminDialogKey;
+  startClientX: number;
+  startClientY: number;
+  startX: number;
+  startY: number;
+};
+
+const ADMIN_DIALOG_DRAG_LOWER_STAGE87B = 'admin dialogs open lower and can be dragged by header';
+
 const REVIEW_PRESETS = [
   'Przenieść wyżej',
   'Przenieść niżej',
@@ -69,6 +86,16 @@ function isVisible(element: HTMLElement) {
   const rect = element.getBoundingClientRect();
   const style = window.getComputedStyle(element);
   return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+}
+
+function clampAdminDialogPosition(next: AdminDialogPosition): AdminDialogPosition {
+  if (typeof window === 'undefined') return next;
+  const maxX = Math.max(120, Math.floor(window.innerWidth * 0.42));
+  const maxY = Math.max(120, Math.floor(window.innerHeight * 0.55));
+  return {
+    x: Math.max(-maxX, Math.min(maxX, next.x)),
+    y: Math.max(-84, Math.min(maxY, next.y)),
+  };
 }
 
 function candidateToButtonSnapshot(candidate: AdminTargetCandidate) {
@@ -114,6 +141,11 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
   const [copyCount, setCopyCount] = useState(() => readCopyItems().length);
   const [bugCount, setBugCount] = useState(() => readBugItems().length);
   const [buttonSnapshots, setButtonSnapshots] = useState(() => readButtonSnapshots());
+  const [dialogPositions, setDialogPositions] = useState<Record<AdminDialogKey, AdminDialogPosition>>({
+    bug: { x: 0, y: 0 },
+    target: { x: 0, y: 0 },
+  });
+  const [dialogDragState, setDialogDragState] = useState<AdminDialogDragState | null>(null);
 
   const canCollect = activeTool === 'review' && reviewMode === 'collect';
   const canCopyCollect = activeTool === 'copy';
@@ -265,6 +297,55 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
     });
   };
 
+  useEffect(() => {
+    if (!dialogDragState) return;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      event.preventDefault();
+      const deltaX = event.clientX - dialogDragState.startClientX;
+      const deltaY = event.clientY - dialogDragState.startClientY;
+      const next = clampAdminDialogPosition({
+        x: dialogDragState.startX + deltaX,
+        y: dialogDragState.startY + deltaY,
+      });
+      setDialogPositions((prev) => ({
+        ...prev,
+        [dialogDragState.key]: next,
+      }));
+    };
+
+    const handlePointerUp = () => setDialogDragState(null);
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp, { once: true });
+    window.addEventListener('pointercancel', handlePointerUp, { once: true });
+
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointercancel', handlePointerUp);
+    };
+  }, [dialogDragState]);
+
+  const startDialogDrag = (event: React.PointerEvent<HTMLElement>, key: AdminDialogKey) => {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('button, input, textarea, select, a')) return;
+    event.preventDefault();
+    const current = dialogPositions[key] || { x: 0, y: 0 };
+    setDialogDragState({
+      key,
+      startClientX: event.clientX,
+      startClientY: event.clientY,
+      startX: current.x,
+      startY: current.y,
+    });
+  };
+
+  const getDialogDragStyle = (key: AdminDialogKey) => {
+    const position = dialogPositions[key] || { x: 0, y: 0 };
+    return { transform: `translate3d(${position.x}px, ${position.y}px, 0)` };
+  };
+
   return (
     <div className="admin-debug-toolbar" data-admin-tool-ui="true" data-admin-debug-toolbar-stage87="true">
       <button type="button" className={activeTool === 'review' ? 'active' : ''} onClick={() => chooseTool('review')} data-admin-tool-ui="true">
@@ -326,8 +407,18 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
 
       {bugOpen ? (
         <div className="admin-tool-dialog-backdrop" data-admin-tool-ui="true">
-          <div className="admin-tool-dialog" data-admin-tool-ui="true">
-            <div className="admin-tool-row">
+          <div
+            className="admin-tool-dialog admin-tool-dialog-draggable"
+            style={getDialogDragStyle('bug')}
+            data-admin-tool-ui="true"
+            data-admin-dialog-draggable-stage87b="true"
+          >
+            <div
+              className="admin-tool-row admin-tool-dialog-drag-handle"
+              onPointerDown={(event) => startDialogDrag(event, 'bug')}
+              data-admin-tool-ui="true"
+              title="PrzeciÄ…gnij okno"
+            >
               <strong>Bug Note Recorder</strong>
               <button type="button" onClick={() => setBugOpen(false)} data-admin-tool-ui="true">Zamknij</button>
             </div>
@@ -353,8 +444,18 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
 
       {targetDialog ? (
         <div className="admin-tool-dialog-backdrop" data-admin-tool-ui="true">
-          <div className="admin-tool-dialog admin-tool-dialog-large" data-admin-tool-ui="true">
-            <div className="admin-tool-row">
+          <div
+            className="admin-tool-dialog admin-tool-dialog-large admin-tool-dialog-draggable"
+            style={getDialogDragStyle('target')}
+            data-admin-tool-ui="true"
+            data-admin-dialog-draggable-stage87b="true"
+          >
+            <div
+              className="admin-tool-row admin-tool-dialog-drag-handle"
+              onPointerDown={(event) => startDialogDrag(event, 'target')}
+              data-admin-tool-ui="true"
+              title="PrzeciÄ…gnij okno"
+            >
               <strong>{targetDialog.mode === 'copy' ? 'Copy Review' : 'UI Review'}</strong>
               <button type="button" onClick={() => setTargetDialog(null)} data-admin-tool-ui="true">Zamknij</button>
             </div>
