@@ -286,7 +286,10 @@
     "check:stage86d-access-gate-block-call": "node scripts/check-stage86d-access-gate-block-call.cjs",
     "test:stage86d-access-gate-block-call": "node --test tests/stage86d-access-gate-block-call.test.cjs",
     "check:stage86k-billing-workspace-resolution": "node scripts/check-stage86k-billing-workspace-resolution.cjs",
-    "test:stage86k-billing-workspace-resolution": "node --test tests/stage86k-billing-workspace-resolution.test.cjs"
+    "test:stage86k-billing-workspace-resolution": "node --test tests/stage86k-billing-workspace-resolution.test.cjs",
+    "check:stage86m-billing-google-regression-suite": "node scripts/check-stage86m-billing-google-regression-suite.cjs",
+    "test:stage86m-billing-google-regression-suite": "node --test tests/stage86m-billing-google-regression-suite.test.cjs",
+    "verify:stage86-billing-google-hardening": "npm.cmd run check:stage86m-billing-google-regression-suite && npm.cmd run test:stage86m-billing-google-regression-suite && npm.cmd run check:stage86k-billing-workspace-resolution && npm.cmd run test:stage86k-billing-workspace-resolution && npm.cmd run check:p14-billing-production-validation && npm.cmd run check:stage86b-access-gate-billing-truth && npm.cmd run check:stage86d-access-gate-block-call"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
