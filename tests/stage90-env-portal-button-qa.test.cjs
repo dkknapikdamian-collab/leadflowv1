@@ -14,18 +14,18 @@ function read(file) {
   }
 }
 
-test('Stage90C documents that env smoke is required and not faked', () => {
+test('Stage90E documents that env smoke is required and not faked', () => {
   const readFirst = read('00_READ_FIRST_STAGE90_QA_SMOKE_PWA_DIGEST_PORTAL_BUTTON_MATRIX.md');
   const evidence = read('docs/qa/STAGE90_ENV_SMOKE_EVIDENCE.latest.md');
 
   assert.ok(readFirst.includes('QA_SMOKE_REQUIRED'));
-  assert.ok(readFirst.includes('CUMULATIVE_STAGE90C'));
+  assert.match(readFirst, /CUMULATIVE_STAGE90[A-Z]/);
   assert.ok(readFirst.includes('Kod i guardy nie są dowodem'));
   assert.ok(evidence.includes('Live smoke required'));
   assert.ok(evidence.includes('Do not mark Stage13/14/15 as fully DONE'));
 });
 
-test('Stage90C checklist covers required Button Matrix columns and critical routes', () => {
+test('Stage90E checklist covers required Button Matrix columns and critical routes', () => {
   const checklist = read('docs/qa/CHECKLISTA_QA_PRZYCISKOW_CLOSEFLOW_2026-05-05.md');
 
   assert.ok(checklist.includes('| Trasa | Przycisk / akcja | Oczekiwany efekt | Typ efektu | Wynik po reloadzie | Test / guard | Status live | Uwagi |'));
@@ -36,7 +36,7 @@ test('Stage90C checklist covers required Button Matrix columns and critical rout
   assert.ok(checklist.includes('PENDING'));
 });
 
-test('Stage90C static contracts cover notifications, digest, portal, and package scripts', () => {
+test('Stage90E static contracts cover notifications, digest, portal, and package scripts', () => {
   const notificationRuntime = read('src/components/NotificationRuntime.tsx');
   const appText = read('src/App.tsx') + '\n' + read('src/components/Layout.tsx');
   const vercel = read('vercel.json');

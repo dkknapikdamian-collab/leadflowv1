@@ -319,7 +319,11 @@
     "stage90:write-env-smoke-evidence": "node scripts/write-stage90-env-smoke-evidence.cjs",
     "check:stage90-env-portal-button-qa": "node scripts/check-stage90-env-portal-button-qa.cjs",
     "test:stage90-env-portal-button-qa": "node --test tests/stage90-env-portal-button-qa.test.cjs",
-    "verify:stage90-env-portal-button-qa": "npm.cmd run stage90:write-env-smoke-evidence && npm.cmd run check:stage90-env-portal-button-qa && npm.cmd run test:stage90-env-portal-button-qa"
+    "verify:stage90-env-portal-button-qa": "npm.cmd run stage90:write-env-smoke-evidence && npm.cmd run check:stage90-env-portal-button-qa && npm.cmd run test:stage90-env-portal-button-qa",
+    "stage90d:live-smoke": "node scripts/stage90d-live-smoke.cjs",
+    "check:stage90d-live-smoke-runner": "node scripts/check-stage90d-live-smoke-runner.cjs",
+    "test:stage90d-live-smoke-runner": "node --test tests/stage90d-live-smoke-runner.test.cjs",
+    "verify:stage90d-smoke-runner": "npm.cmd run verify:stage90-env-portal-button-qa && npm.cmd run check:stage90d-live-smoke-runner && npm.cmd run test:stage90d-live-smoke-runner"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

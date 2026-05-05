@@ -16,6 +16,7 @@ function expect(condition, message) {
 
 const readFirst = read('00_READ_FIRST_STAGE90_QA_SMOKE_PWA_DIGEST_PORTAL_BUTTON_MATRIX.md');
 const release = read('docs/release/STAGE90_ENV_SMOKE_PWA_DIGEST_PORTAL_BUTTON_MATRIX_2026-05-05.md');
+const releaseE = read('docs/release/STAGE90E_GUARD_COMPAT_2026-05-05.md');
 const checklist = read('docs/qa/CHECKLISTA_QA_PRZYCISKOW_CLOSEFLOW_2026-05-05.md');
 const evidence = read('docs/qa/STAGE90_ENV_SMOKE_EVIDENCE.latest.md');
 const writer = read('scripts/write-stage90-env-smoke-evidence.cjs');
@@ -41,11 +42,12 @@ const portalText = portalFiles.map((item) => `\n/* ${item.rel} */\n${item.text}`
 const intervalRegex = /60000|60_000|60\s*\*\s*1000|POLL_INTERVAL|pollInterval|setInterval/i;
 
 expect(readFirst.includes('QA_SMOKE_REQUIRED'), 'root read-first Stage90 doc missing QA_SMOKE_REQUIRED');
-expect(readFirst.includes('CUMULATIVE_STAGE90C'), 'root read-first doc must mark cumulative Stage90C');
+expect(/CUMULATIVE_STAGE90[A-Z]/.test(readFirst), 'root read-first doc must mark cumulative Stage90 marker');
 expect(release.includes('Stage90C - Env smoke'), 'release doc missing Stage90C title');
 expect(release.includes('Etap 13'), 'release doc must mention Etap 13');
 expect(release.includes('Etap 14'), 'release doc must mention Etap 14');
 expect(release.includes('Etap 15'), 'release doc must mention Etap 15');
+expect(releaseE.includes('GUARD_COMPAT_FIXED'), 'Stage90E guard compatibility doc missing');
 
 expect(checklist.includes('CHECKLISTA QA PRZYCISKÓW CLOSEFLOW 2026-05-05'), 'Button Matrix checklist title missing');
 expect(checklist.includes('| Trasa | Przycisk / akcja | Oczekiwany efekt |'), 'Button Matrix checklist table missing');
@@ -55,7 +57,7 @@ expect(checklist.includes('Admin toolbar'), 'Button Matrix checklist must includ
 expect(checklist.includes('Status live'), 'Button Matrix checklist must track live status');
 
 expect(evidence.includes('Stage90 Env Smoke Evidence'), 'evidence file missing');
-expect(evidence.includes('CUMULATIVE_STAGE90C'), 'evidence must mark cumulative Stage90C');
+expect(/CUMULATIVE_STAGE90[A-Z]/.test(evidence), 'evidence must mark cumulative Stage90 marker');
 expect(evidence.includes('Live smoke required'), 'evidence must explicitly require live smoke');
 expect(evidence.includes('Do not mark Stage13/14/15 as fully DONE'), 'evidence must block fake DONE status');
 

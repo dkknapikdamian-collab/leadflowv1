@@ -70,7 +70,7 @@ lines.push('# Stage90 Env Smoke Evidence');
 lines.push('');
 lines.push(`GeneratedAt: ${new Date().toISOString()}`);
 lines.push('Status: EVIDENCE_TEMPLATE_NOT_LIVE_COMPLETE');
-lines.push('Package: CUMULATIVE_STAGE90C');
+lines.push('Package: CUMULATIVE_STAGE90F');
 lines.push('');
 lines.push('## Env status');
 lines.push('');

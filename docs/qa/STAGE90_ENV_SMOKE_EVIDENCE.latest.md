@@ -1,8 +1,8 @@
 # Stage90 Env Smoke Evidence
 
-GeneratedAt: 2026-05-05T17:56:28.367Z
+GeneratedAt: 2026-05-05T18:05:24.064Z
 Status: EVIDENCE_TEMPLATE_NOT_LIVE_COMPLETE
-Package: CUMULATIVE_STAGE90C
+Package: CUMULATIVE_STAGE90F
 
 ## Env status
 
@@ -28,11 +28,11 @@ Package: CUMULATIVE_STAGE90C
 | NotificationRuntime interval/poll contract | YES | accepts 60000, 60_000, 60*1000, pollInterval/setInterval |
 | Notification runtime mounted | YES | App/Layout scan |
 | Service worker avoids API/auth/storage cache | YES | public/src SW scan |
-| Daily digest API/server contract | YES | scanned 105 relevant files |
+| Daily digest API/server contract | YES | scanned 111 relevant files |
 | Resend contract referenced | YES | digest scan |
 | Vercel cron configured | YES | /api/daily-digest @ 5 5 * * *; /api/weekly-report @ 15 6 * * 1 |
 | Vercel rewrite daily digest/system | YES | vercel.json scan |
-| Portal relevant files found | YES | scanned 103 relevant files |
+| Portal relevant files found | YES | scanned 109 relevant files |
 | Portal token/session contract | YES | portal scan |
 | Portal storage/upload/bucket contract | YES | portal/storage recursive scan |
 | Portal blocks missing token/session | YES | portal/upload scan |
@@ -57,10 +57,10 @@ Package: CUMULATIVE_STAGE90C
 - docs/P12_ADMIN_FULL_ACCESS_OVERRIDE.md
 - docs/P13_DIGEST_PWA_NOTIFICATIONS_QA.md
 - docs/profile-workspace-source-of-truth.md
+- docs/qa/STAGE90D_LIVE_SMOKE_COMMANDS.md
 - docs/qa/STAGE90_ENV_SMOKE_EVIDENCE.latest.md
 - docs/release/FAZA1_ETAP11_PRODUCT_TRUTH_STATUS_MATRIX_2026-05-03.md
 - docs/release/FAZA1_ETAP11_UI_COPY_LEGAL_TRUTH_2026-05-03.md
-- docs/release/FAZA1_ETAP12_GUARD_UI_TRUTH_2026-05-03.md
 
 ### Portal / storage
 - 00_READ_FIRST_STAGE90_QA_SMOKE_PWA_DIGEST_PORTAL_BUTTON_MATRIX.md
@@ -89,10 +89,10 @@ Package: CUMULATIVE_STAGE90C
 - docs/P9_REMOVE_LEGACY_PLAINTEXT_PORTAL_HANDLER.md
 - docs/PRODUCTION_READINESS_STATUS.md
 - docs/qa/CHECKLISTA_QA_PRZYCISKOW_CLOSEFLOW_2026-05-05.md
+- docs/qa/STAGE90D_LIVE_SMOKE_COMMANDS.md
 - docs/qa/STAGE90_ENV_SMOKE_EVIDENCE.latest.md
 - docs/release/FAZA2_ETAP22_RLS_BACKEND_SECURITY_PROOF_2026-05-03.md
 - docs/release/RELEASE_CANDIDATE_2026-05-02.md
-- docs/release/STAGE87F_ADMIN_QUICK_EDITOR_PORTAL_DRAG_2026-05-05.md
 
 ## Live smoke required
 
