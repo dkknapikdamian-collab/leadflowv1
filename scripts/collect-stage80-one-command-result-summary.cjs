@@ -1,6 +1,11 @@
-const fs = require('fs');
 const { execSync } = require('child_process');
-function sh(cmd) { try { return execSync(cmd, { encoding: 'utf8', stdio: ['ignore','pipe','pipe'] }).trim(); } catch(e) { return 'ERR: ' + (e.stderr?.toString() || e.message).trim(); } }
-const pkg = fs.existsSync('package.json') ? JSON.parse(fs.readFileSync('package.json','utf8')) : {scripts:{}};
-const report = ['# Stage80 one command result summary','branch: ' + sh('git branch --show-current'),'commit: ' + sh('git log -1 --pretty=format:%h'),'working tree:', sh('git status --short') || 'clean','verify script: ' + (pkg.scripts?.['verify:stage70-82-cumulative'] ? 'yes' : 'missing'),'stage82: ' + (fs.existsSync('scripts/check-stage82-today-next-7-days.cjs') ? 'yes' : 'missing')].join('\n');
-console.log(report);
+const fs = require('fs');
+const STAGE80_ONE_COMMAND_RESULT_SUMMARY = true;
+function run(cmd) { try { return execSync(cmd, { encoding: 'utf8', stdio: ['ignore','pipe','pipe'] }).trim(); } catch (e) { return 'FAILED: ' + (e.message || cmd); } }
+const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
+console.log('STAGE80_ONE_COMMAND_RESULT_SUMMARY');
+console.log('branch=' + run('git rev-parse --abbrev-ref HEAD'));
+console.log('commit=' + run('git rev-parse --short HEAD'));
+console.log('status=' + (run('git status --short') || 'clean'));
+console.log('has_verify_stage70_82=' + Boolean(pkg.scripts && pkg.scripts['verify:stage70-82-cumulative']));
+console.log('next= npm.cmd run verify:stage70-82-cumulative && npm.cmd run build');

@@ -12,24 +12,38 @@ import {
   type ReactNode
 } from 'react';
 import { Link } from 'react-router-dom';
-import Layout from '../components/Layout'; import { Card,
-  CardContent } from '../components/ui/card'; import { Button } from '../components/ui/button'; import { Badge } from '../components/ui/badge'; import { ArrowRight,
+import Layout from '../components/Layout';
+import { Card, CardContent } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import {
+  AlertTriangle,
+  ArrowRight,
   CalendarDays,
   CheckSquare,
   FileText,
   Loader2,
   RefreshCcw,
-  UserRound } from 'lucide-react'; import {
+  TrendingUp,
+  UserRound,
+} from 'lucide-react';
+import {
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
-  fetchTasksFromSupabase
+  fetchTasksFromSupabase,
+  subscribeCloseflowDataMutations,
 } from '../lib/supabase-fallback';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
-import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 
 const P0_TODAY_STABLE_REBUILD = 'P0_TODAY_STABLE_REBUILD';
+const STAGE70_TODAY_DECISION_ENGINE_STARTER = 'STAGE70_TODAY_DECISION_ENGINE_STARTER';
+const STAGE81_TODAY_RISK_REASON_NEXT_ACTION = 'STAGE81_TODAY_RISK_REASON_NEXT_ACTION';
+const STAGE82_TODAY_NEXT_7_DAYS = 'STAGE82_TODAY_NEXT_7_DAYS';
 void P0_TODAY_STABLE_REBUILD;
+void STAGE70_TODAY_DECISION_ENGINE_STARTER;
+void STAGE81_TODAY_RISK_REASON_NEXT_ACTION;
+void STAGE82_TODAY_NEXT_7_DAYS;
 
 type DashboardStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -39,6 +53,24 @@ type DashboardData = {
   events: any[];
   cases: any[];
   drafts: AiLeadDraft[];
+};
+
+type TodayLeadRisk = {
+  reason: string;
+  suggestedAction: string;
+  score: number;
+  tone: 'red' | 'amber' | 'blue' | 'slate';
+};
+
+type UpcomingRow = {
+  id: string;
+  kind: 'task' | 'event' | 'lead';
+  title: string;
+  helper: string;
+  meta: string;
+  momentRaw: string;
+  to: string;
+  badge: string;
 };
 
 const emptyData: DashboardData = {
@@ -81,6 +113,12 @@ function localDateKey(date = new Date()) {
   ].join('-');
 }
 
+function addDaysKey(days: number) {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return localDateKey(date);
+}
+
 function readText(record: any, keys: string[], fallback = '') {
   for (const key of keys) {
     const value = record?.[key];
@@ -115,7 +153,7 @@ function getLeadMomentRaw(lead: any) {
 
   const date = readText(lead, ['nextActionDate', 'next_action_date', 'followUpDate', 'follow_up_date'], '');
   if (!date) return '';
-  const time = readText(lead, ['nextActionTime', 'next_action_time', 'followUpTime', 'follow_up_time'], '09:00');
+  const time = readText(lead, ['nextActionTime', 'next_action_time', 'FollowUpTime', 'follow_up_time'], '09:00');
   return date.includes('T') ? date : date + 'T' + time;
 }
 
@@ -161,6 +199,123 @@ function getDraftText(draft: any) {
 
 function sortByMoment(a: { momentRaw: string }, b: { momentRaw: string }) {
   return parseTime(a.momentRaw) - parseTime(b.momentRaw);
+}
+
+function getLeadValue(lead: any) {
+  const candidates = [lead?.dealValue, lead?.deal_value, lead?.value, lead?.estimatedValue, lead?.estimated_value, lead?.budget, lead?.amount];
+  for (const candidate of candidates) {
+    if (typeof candidate === 'number' && Number.isFinite(candidate)) return candidate;
+    if (typeof candidate === 'string' && candidate.trim()) {
+      const parsed = Number(candidate.replace(/\s+/g, '').replace(',', '.').replace(/[^0-9.-]/g, ''));
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  return 0;
+}
+
+function getLeadFreshnessDays(lead: any) {
+  const raw = readMomentRaw(lead, ['lastActivityAt', 'last_activity_at', 'updatedAt', 'updated_at', 'createdAt', 'created_at']);
+  if (!raw) return null;
+  const parsed = new Date(raw);
+  if (!Number.isFinite(parsed.getTime())) return null;
+  const diffMs = Date.now() - parsed.getTime();
+  return Math.max(0, Math.floor(diffMs / 86_400_000));
+}
+
+function getLeadStatus(lead: any) {
+  return String(lead?.status || '').trim().toLowerCase();
+}
+
+function getLeadRisk(lead: any, momentRaw: string, todayKey: string): TodayLeadRisk {
+  const value = getLeadValue(lead);
+  const freshnessDays = getLeadFreshnessDays(lead);
+  const dateKey = getDateKey(momentRaw);
+  const status = getLeadStatus(lead);
+  const hasNoAction = !dateKey;
+  const isOverdue = Boolean(dateKey) && dateKey < todayKey;
+  const isToday = Boolean(dateKey) && dateKey === todayKey;
+  const isWaiting = status.includes('waiting') || status.includes('czeka') || status.includes('proposal') || status.includes('negotiation');
+  const highValue = value >= 5000;
+  const stale = typeof freshnessDays === 'number' && freshnessDays >= 7;
+
+  if (isOverdue && highValue) {
+    return {
+      reason: 'zaległy follow-up przy wartościowym leadzie',
+      suggestedAction: 'skontaktuj się dziś albo ustaw konkretny nowy termin',
+      score: 120 + value / 1000,
+      tone: 'red',
+    };
+  }
+
+  if (isOverdue) {
+    return {
+      reason: 'zaległy termin kontaktu',
+      suggestedAction: 'wykonaj kontakt albo przesuń termin na realną datę',
+      score: 95,
+      tone: 'red',
+    };
+  }
+
+  if (hasNoAction && highValue) {
+    return {
+      reason: 'wysoka wartość i brak następnego kroku',
+      suggestedAction: 'ustaw follow-up albo zdecyduj, czy temat zamknąć',
+      score: 90 + value / 1000,
+      tone: 'amber',
+    };
+  }
+
+  if (hasNoAction) {
+    return {
+      reason: 'brak następnego kroku',
+      suggestedAction: 'ustaw follow-up albo zamknij temat jako utracony',
+      score: 78,
+      tone: 'amber',
+    };
+  }
+
+  if (isWaiting && stale) {
+    return {
+      reason: 'waiting za długo bez świeżego ruchu',
+      suggestedAction: 'wyślij krótkie przypomnienie albo ustaw ostatni follow-up',
+      score: 72,
+      tone: 'amber',
+    };
+  }
+
+  if (isToday && highValue) {
+    return {
+      reason: 'dzisiejszy kontakt przy wartościowym leadzie',
+      suggestedAction: 'obsłuż ten kontakt przed zwykłymi zadaniami',
+      score: 70 + value / 1000,
+      tone: 'blue',
+    };
+  }
+
+  if (isToday) {
+    return {
+      reason: 'kontakt zaplanowany na dziś',
+      suggestedAction: 'wykonaj kontakt i ustaw kolejny konkretny ruch',
+      score: 55,
+      tone: 'blue',
+    };
+  }
+
+  if (stale) {
+    return {
+      reason: 'brak świeżej aktywności od ' + freshnessDays + ' dni',
+      suggestedAction: 'sprawdź, czy lead nadal ma sens albo zamknij temat',
+      score: 45,
+      tone: 'slate',
+    };
+  }
+
+  return {
+    reason: 'lead wymaga kontroli procesu',
+    suggestedAction: 'sprawdź szczegóły i potwierdź kolejny krok',
+    score: 20,
+    tone: 'slate',
+  };
 }
 
 function SectionHeader({
@@ -293,6 +448,7 @@ export default function TodayStable() {
   }, [refreshData]);
 
   const todayKey = localDateKey();
+  const next7EndKey = addDaysKey(7);
 
   const casesById = useMemo(() => new Map(data.cases.map((caseRecord: any) => [String(caseRecord.id || ''), caseRecord])), [data.cases]);
 
@@ -310,17 +466,25 @@ export default function TodayStable() {
   const operatorLeads = useMemo(() => {
     return data.leads
       .filter((lead) => !isClosedLead(lead))
-      .map((lead) => ({ lead, momentRaw: getLeadMomentRaw(lead) }))
+      .map((lead) => {
+        const momentRaw = getLeadMomentRaw(lead);
+        return { lead, momentRaw, risk: getLeadRisk(lead, momentRaw, todayKey) };
+      })
       .filter((entry) => {
         const dateKey = getDateKey(entry.momentRaw);
         return !dateKey || dateKey <= todayKey;
       })
       .sort((a, b) => {
+        if (b.risk.score !== a.risk.score) return b.risk.score - a.risk.score;
         if (!a.momentRaw && b.momentRaw) return -1;
         if (a.momentRaw && !b.momentRaw) return 1;
         return parseTime(a.momentRaw) - parseTime(b.momentRaw);
       });
   }, [data.leads, todayKey]);
+
+  const noActionLeads = useMemo(() => operatorLeads.filter((entry) => !getDateKey(entry.momentRaw)).slice(0, 5), [operatorLeads]);
+  const highValueAtRiskRows = useMemo(() => operatorLeads.filter((entry) => getLeadValue(entry.lead) >= 5000 || entry.risk.reason.includes('wartości')).slice(0, 5), [operatorLeads]);
+  const waitingLeadRows = useMemo(() => operatorLeads.filter((entry) => entry.risk.reason.includes('waiting') || getLeadStatus(entry.lead).includes('waiting') || getLeadStatus(entry.lead).includes('czeka')).slice(0, 5), [operatorLeads]);
 
   const todayEvents = useMemo(() => {
     return data.events
@@ -330,6 +494,68 @@ export default function TodayStable() {
       .sort(sortByMoment);
   }, [data.events, todayKey]);
 
+  const upcomingRows = useMemo<UpcomingRow[]>(() => {
+    const taskRows = data.tasks
+      .filter((task) => !isClosedStatus(task?.status))
+      .map((task) => ({ task, momentRaw: getTaskMomentRaw(task) }))
+      .filter((entry) => {
+        const dateKey = getDateKey(entry.momentRaw);
+        return Boolean(dateKey) && dateKey > todayKey && dateKey <= next7EndKey;
+      })
+      .map((entry) => ({
+        id: 'task:' + String(entry.task.id || getTaskTitle(entry.task)),
+        kind: 'task' as const,
+        title: getTaskTitle(entry.task),
+        helper: 'Powód: zaplanowane zadanie w najbliższych dniach',
+        meta: 'Ruch: przygotuj materiały albo obsłuż w terminie · ' + formatDateTime(entry.momentRaw),
+        momentRaw: entry.momentRaw,
+        to: '/tasks',
+        badge: 'Zadanie',
+      }));
+
+    const eventRows = data.events
+      .filter((event) => !isClosedStatus(event?.status))
+      .map((event) => ({ event, momentRaw: getEventMomentRaw(event) }))
+      .filter((entry) => {
+        const dateKey = getDateKey(entry.momentRaw);
+        return Boolean(dateKey) && dateKey > todayKey && dateKey <= next7EndKey;
+      })
+      .map((entry) => ({
+        id: 'event:' + String(entry.event.id || entry.event.title),
+        kind: 'event' as const,
+        title: readText(entry.event, ['title'], 'Wydarzenie'),
+        helper: 'Powód: wydarzenie w najbliższych 7 dniach',
+        meta: 'Ruch: sprawdź przygotowanie i kontekst · ' + formatDateTime(entry.momentRaw),
+        momentRaw: entry.momentRaw,
+        to: '/calendar',
+        badge: 'Wydarzenie',
+      }));
+
+    const leadRows = data.leads
+      .filter((lead) => !isClosedLead(lead))
+      .map((lead) => {
+        const momentRaw = getLeadMomentRaw(lead);
+        const risk = getLeadRisk(lead, momentRaw, todayKey);
+        return { lead, momentRaw, risk };
+      })
+      .filter((entry) => {
+        const dateKey = getDateKey(entry.momentRaw);
+        return Boolean(dateKey) && dateKey > todayKey && dateKey <= next7EndKey;
+      })
+      .map((entry) => ({
+        id: 'lead:' + String(entry.lead.id || getLeadTitle(entry.lead)),
+        kind: 'lead' as const,
+        title: getLeadTitle(entry.lead),
+        helper: 'Powód: ' + entry.risk.reason,
+        meta: 'Ruch: ' + entry.risk.suggestedAction + ' · ' + formatDateTime(entry.momentRaw),
+        momentRaw: entry.momentRaw,
+        to: entry.lead.id ? '/leads/' + String(entry.lead.id) : '/leads',
+        badge: 'Lead',
+      }));
+
+    return [...taskRows, ...eventRows, ...leadRows].sort(sortByMoment).slice(0, 10);
+  }, [data.events, data.leads, data.tasks, next7EndKey, todayKey]);
+
   const pendingDrafts = useMemo(() => {
     return data.drafts.filter((draft: any) => String(draft?.status || '').toLowerCase() === 'draft');
   }, [data.drafts]);
@@ -338,7 +564,7 @@ export default function TodayStable() {
 
   return (
     <Layout>
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true">
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
         <section className="rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -363,21 +589,65 @@ export default function TodayStable() {
 
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Leady do ruchu</p><p className="mt-2 text-3xl font-black text-blue-700">{operatorLeads.length}</p></CardContent></Card>
-          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Zadania zaległe i dziś</p><p className="mt-2 text-3xl font-black text-emerald-700">{operatorTasks.length}</p></CardContent></Card>
-          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Wydarzenia dziś</p><p className="mt-2 text-3xl font-black text-indigo-700">{todayEvents.length}</p></CardContent></Card>
-          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Szkice AI</p><p className="mt-2 text-3xl font-black text-amber-700">{pendingDrafts.length}</p></CardContent></Card>
+          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Bez następnego kroku</p><p className="mt-2 text-3xl font-black text-amber-700">{noActionLeads.length}</p></CardContent></Card>
+          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Wysoka wartość / ryzyko</p><p className="mt-2 text-3xl font-black text-rose-700">{highValueAtRiskRows.length}</p></CardContent></Card>
+          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Następne 7 dni</p><p className="mt-2 text-3xl font-black text-indigo-700">{upcomingRows.length}</p></CardContent></Card>
+        </section>
+
+        <section className="grid gap-4 xl:grid-cols-3">
+          <StableCard>
+            <SectionHeader title="Leady bez następnego kroku" count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" />
+            {noActionLeads.length ? noActionLeads.map(({ lead, risk }) => (
+              <RowLink
+                key={String(lead.id || getLeadTitle(lead))}
+                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
+                title={getLeadTitle(lead)}
+                helper={'Powód: ' + risk.reason}
+                meta={'Ruch: ' + risk.suggestedAction}
+                badge={readText(lead, ['status'], 'open')}
+              />
+            )) : <EmptyState text="Brak leadów bez następnego kroku." />}
+          </StableCard>
+
+          <StableCard>
+            <SectionHeader title="Wysoka wartość / ryzyko" count={highValueAtRiskRows.length} icon={<TrendingUp className="h-5 w-5" />} tone="bg-rose-50 text-rose-700" />
+            {highValueAtRiskRows.length ? highValueAtRiskRows.map(({ lead, risk, momentRaw }) => (
+              <RowLink
+                key={String(lead.id || getLeadTitle(lead))}
+                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
+                title={getLeadTitle(lead)}
+                helper={'Powód: ' + risk.reason}
+                meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
+                badge={String(getLeadValue(lead)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' PLN'}
+              />
+            )) : <EmptyState text="Brak wartościowych leadów w ryzyku." />}
+          </StableCard>
+
+          <StableCard>
+            <SectionHeader title="Waiting za długo" count={waitingLeadRows.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" />
+            {waitingLeadRows.length ? waitingLeadRows.map(({ lead, risk, momentRaw }) => (
+              <RowLink
+                key={String(lead.id || getLeadTitle(lead))}
+                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
+                title={getLeadTitle(lead)}
+                helper={'Powód: ' + risk.reason}
+                meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
+                badge={readText(lead, ['status'], 'waiting')}
+              />
+            )) : <EmptyState text="Brak leadów w trybie waiting wymagających pilnej kontroli." />}
+          </StableCard>
         </section>
 
         <section className="grid gap-4 xl:grid-cols-2">
           <StableCard>
             <SectionHeader title="Leady do ruchu" count={operatorLeads.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" />
-            {operatorLeads.length ? operatorLeads.map(({ lead, momentRaw }) => (
+            {operatorLeads.length ? operatorLeads.map(({ lead, momentRaw, risk }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
                 to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
                 title={getLeadTitle(lead)}
-                helper={momentRaw ? 'Zaległy lub dzisiejszy kontakt' : 'Brak następnego kroku'}
-                meta={momentRaw ? formatDateTime(momentRaw) : 'Ustal następny krok'}
+                helper={'Powód: ' + risk.reason}
+                meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
                 badge={readText(lead, ['status'], 'open')}
               />
             )) : <EmptyState text="Brak leadów wymagających ruchu." />}
@@ -427,6 +697,20 @@ export default function TodayStable() {
             )) : <EmptyState text="Brak szkiców do zatwierdzenia." />}
           </StableCard>
         </section>
+
+        <StableCard>
+          <SectionHeader title="Następne 7 dni" count={upcomingRows.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" />
+          {upcomingRows.length ? upcomingRows.map((row) => (
+            <RowLink
+              key={row.id}
+              to={row.to}
+              title={row.title}
+              helper={row.helper}
+              meta={row.meta}
+              badge={row.badge}
+            />
+          )) : <EmptyState text="Brak zaplanowanych akcji w kolejnych 7 dniach." />}
+        </StableCard>
 
         {loading ? (
           <div className="fixed bottom-4 right-4 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-lg">

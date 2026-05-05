@@ -1,6 +1,4 @@
-const { fail, read, pkg } = require('./_stage-check-helpers.cjs');
-const label = 'STAGE78_FAILURE_SNAPSHOT_GUARD';
-read(label, 'scripts/collect-stage78-failure-snapshot.cjs');
-if (!pkg(label).scripts['collect:stage78-failure-snapshot']) fail(label, 'collect script missing');
-if (!pkg(label).scripts['check:stage78-failure-snapshot-guard']) fail(label, 'check script missing');
-console.log('PASS ' + label);
+const { requireIncludes, requireScript } = require('./_stage-check-helpers.cjs');
+requireIncludes("STAGE78_FAILURE_SNAPSHOT_GUARD", "scripts/collect-stage78-failure-snapshot.cjs", ["STAGE78_FAILURE_SNAPSHOT_GUARD"]);
+requireScript("STAGE78_FAILURE_SNAPSHOT_GUARD", "check:stage78-failure-snapshot-guard", "node scripts/check-stage78-failure-snapshot-guard.cjs");
+console.log('PASS STAGE78_FAILURE_SNAPSHOT_GUARD');

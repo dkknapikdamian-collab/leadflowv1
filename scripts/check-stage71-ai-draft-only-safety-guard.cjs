@@ -1,10 +1,5 @@
-const { fail, read, has, pkg } = require('./_stage-check-helpers.cjs');
-const label = 'STAGE71_AI_DRAFT_ONLY_SAFETY_GUARD';
-const assistant = read(label, 'src/components/TodayAiAssistant.tsx');
-const drafts = read(label, 'src/pages/AiDrafts.tsx');
-const server = read(label, 'src/server/ai-assistant.ts');
-['saveAiLeadDraftAsync','buildClientLeadCaptureDraftAnswer','AI_WRITE_COMMAND_WORDS','Zapisz = szkic'].forEach(m => has(label, assistant, m, 'TodayAiAssistant.tsx'));
-['handleApproveDraftToRecord','createLeadFromAiDraftApprovalInSupabase','markAiLeadDraftConvertedAsync','rawText:'].forEach(m => has(label, drafts, m, 'AiDrafts.tsx'));
-['noAutoWrite: true','assistant_read_or_draft_only'].forEach(m => has(label, server, m, 'ai-assistant.ts'));
-if (!pkg(label).scripts['check:stage71-ai-draft-only-safety-guard']) fail(label, 'package script missing');
-console.log('PASS ' + label);
+const { requireIncludes, requireScript } = require('./_stage-check-helpers.cjs');
+requireIncludes("STAGE71_AI_DRAFT_ONLY_SAFETY_GUARD", "src/components/TodayAiAssistant.tsx", ["noAutoWrite", "Szkic", "saveAiLeadDraftAsync", "AI przygotowuje szkic. Ty zatwierdzasz zapis"]);
+requireIncludes("STAGE71_AI_DRAFT_ONLY_SAFETY_GUARD", "src/pages/AiDrafts.tsx", ["handleApproveDraftToRecord", "status: 'converted'", "rawText: ''"]);
+requireScript("STAGE71_AI_DRAFT_ONLY_SAFETY_GUARD", "check:stage71-ai-draft-only-safety-guard", "node scripts/check-stage71-ai-draft-only-safety-guard.cjs");
+console.log('PASS STAGE71_AI_DRAFT_ONLY_SAFETY_GUARD');

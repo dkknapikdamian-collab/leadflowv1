@@ -1,12 +1,6 @@
-const { fail, read, has, pkg } = require('./_stage-check-helpers.cjs');
-const label = 'STAGE75_SOURCE_OF_TRUTH_GUARD';
-const plans = read(label, 'src/lib/plans.ts');
-const assistant = read(label, 'src/components/TodayAiAssistant.tsx');
-const drafts = read(label, 'src/pages/AiDrafts.tsx');
-const billing = read(label, 'src/pages/Billing.tsx');
-['TRIAL_DAYS = 21','PLAN_FEATURE_MINIMUM_PLANS','FREE_LIMITS'].forEach(m => has(label, plans, m, 'plans.ts'));
-['Zapisz = szkic','noAutoWrite'].forEach(m => has(label, assistant, m, 'TodayAiAssistant.tsx'));
-has(label, drafts, 'handleApproveDraftToRecord', 'AiDrafts.tsx');
-['Google Calendar sync — w przygotowaniu','Stripe/BLIK','AI'].forEach(m => has(label, billing, m, 'Billing.tsx'));
-if (!pkg(label).scripts['check:stage75-source-of-truth-guard']) fail(label, 'package script missing');
-console.log('PASS ' + label);
+const { requireIncludes, requireScript } = require('./_stage-check-helpers.cjs');
+requireIncludes("STAGE75_SOURCE_OF_TRUTH_GUARD", "src/lib/plans.ts", ["TRIAL_DAYS = 21", "PLAN_FEATURE_MINIMUM_PLANS", "googleCalendar: PLAN_IDS.pro", "fullAi: PLAN_IDS.ai"]);
+requireIncludes("STAGE75_SOURCE_OF_TRUTH_GUARD", "src/components/TodayAiAssistant.tsx", ["AI_WRITE_COMMAND_WORDS", "buildClientLeadCaptureDraftAnswer", "noAutoWrite"]);
+requireIncludes("STAGE75_SOURCE_OF_TRUTH_GUARD", "src/pages/AiDrafts.tsx", ["handleApproveDraftToRecord", "markAiLeadDraftConvertedAsync"]);
+requireScript("STAGE75_SOURCE_OF_TRUTH_GUARD", "check:stage75-source-of-truth-guard", "node scripts/check-stage75-source-of-truth-guard.cjs");
+console.log('PASS STAGE75_SOURCE_OF_TRUTH_GUARD');

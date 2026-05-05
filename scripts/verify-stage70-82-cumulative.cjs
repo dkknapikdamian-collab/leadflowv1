@@ -14,9 +14,8 @@ const checks = [
   'check:stage81-today-risk-reason-next-action',
   'check:stage82-today-next-7-days',
 ];
-for (const script of checks) {
-  const cmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-  const result = spawnSync(cmd, ['run', script], { stdio: 'inherit', shell: false });
+for (const check of checks) {
+  const result = spawnSync('npm.cmd', ['run', check], { stdio: 'inherit', shell: true });
   if (result.status !== 0) process.exit(result.status || 1);
 }
-console.log('PASS STAGE70_82_CUMULATIVE_VERIFY');
+console.log('PASS VERIFY_STAGE70_82_CUMULATIVE');
