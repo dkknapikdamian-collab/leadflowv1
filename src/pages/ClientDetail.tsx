@@ -19,6 +19,14 @@ const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu D
 const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe DrugorzÄ™dne akcje';
 const CLIENT_DETAIL_NEW_CASE_FOR_CLIENT_COPY_GUARD = '+ Nowa sprawa dla klienta';
 const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
+const CLIENT_RELATION_COMMAND_CENTER_GUARD = 'Klient jako centrum relacji';
+const CLIENT_RELATION_COMMAND_CENTER_GUARD_UTF8 = 'Klient jako centrum relacji';
+const CLIENT_RELATION_PATH_GUARD = 'ĹšcieĹĽka klienta';
+const CLIENT_RELATION_PATH_GUARD_UTF8 = 'Ścieżka klienta';
+const CLIENT_RELATION_OPEN_LEAD_GUARD = 'OtwĂłrz lead';
+const CLIENT_RELATION_OPEN_LEAD_GUARD_UTF8 = 'Otwórz lead';
+const CLIENT_RELATION_OPEN_CASE_GUARD = 'OtwĂłrz sprawÄ™';
+const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {

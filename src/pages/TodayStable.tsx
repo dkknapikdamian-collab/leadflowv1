@@ -35,6 +35,8 @@ import {
   subscribeCloseflowDataMutations,
 } from '../lib/supabase-fallback';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 const P0_TODAY_STABLE_REBUILD = 'P0_TODAY_STABLE_REBUILD';
 const STAGE70_TODAY_DECISION_ENGINE_STARTER = 'STAGE70_TODAY_DECISION_ENGINE_STARTER';
@@ -138,8 +140,8 @@ function readMomentRaw(record: any, keys: string[]) {
 }
 
 function getTaskMomentRaw(task: any) {
-  const direct = readMomentRaw(task, ['scheduledAt', 'scheduled_at', 'dueAt', 'due_at', 'startAt', 'start_at', 'startsAt', 'starts_at', 'dateTime', 'date_time']);
-  if (direct) return direct;
+  const normalized = normalizeWorkItem(task);
+  if (normalized.dateAt) return normalized.dateAt;
 
   const date = readText(task, ['date'], '');
   if (!date) return '';
@@ -158,7 +160,7 @@ function getLeadMomentRaw(lead: any) {
 }
 
 function getEventMomentRaw(event: any) {
-  return readMomentRaw(event, ['startAt', 'start_at', 'startsAt', 'starts_at', 'scheduledAt', 'scheduled_at', 'dateTime', 'date_time']);
+  return normalizeWorkItem(event).dateAt || readMomentRaw(event, ['startAt', 'start_at', 'startsAt', 'starts_at', 'scheduledAt', 'scheduled_at', 'dateTime', 'date_time']);
 }
 
 function getDateKey(raw: string) {
@@ -258,7 +260,7 @@ function getLeadRisk(lead: any, momentRaw: string, todayKey: string): TodayLeadR
 
   if (hasNoAction && highValue) {
     return {
-      reason: 'wysoka wartość i brak następnego kroku',
+      reason: 'wysoka wartość i brak najbliższej zaplanowanej akcji',
       suggestedAction: 'ustaw follow-up albo zdecyduj, czy temat zamknąć',
       score: 90 + value / 1000,
       tone: 'amber',
@@ -267,7 +269,7 @@ function getLeadRisk(lead: any, momentRaw: string, todayKey: string): TodayLeadR
 
   if (hasNoAction) {
     return {
-      reason: 'brak następnego kroku',
+      reason: 'brak najbliższej zaplanowanej akcji',
       suggestedAction: 'ustaw follow-up albo zamknij temat jako utracony',
       score: 78,
       tone: 'amber',
@@ -451,6 +453,39 @@ export default function TodayStable() {
   const next7EndKey = addDaysKey(7);
 
   const casesById = useMemo(() => new Map(data.cases.map((caseRecord: any) => [String(caseRecord.id || ''), caseRecord])), [data.cases]);
+  const leadCasesByLeadId = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const caseRecord of data.cases) {
+      const leadId = String(caseRecord?.leadId || '');
+      const caseId = String(caseRecord?.id || '');
+      if (!leadId || !caseId) continue;
+      const current = map.get(leadId) || [];
+      current.push(caseId);
+      map.set(leadId, current);
+    }
+    return map;
+  }, [data.cases]);
+  const allWorkItems = useMemo(() => [...data.tasks, ...data.events], [data.events, data.tasks]);
+  const activeLeadsWithPlannedAction = useMemo(() => {
+    return data.leads
+      .filter((lead) => !isClosedLead(lead))
+      .map((lead) => {
+        const leadId = String(lead?.id || '');
+        const action = getNearestPlannedAction({
+          recordType: 'lead',
+          recordId: leadId,
+          relatedCaseIds: leadCasesByLeadId.get(leadId) || [],
+          items: allWorkItems,
+        });
+        return {
+          ...lead,
+          nextActionAt: action?.when || null,
+          nextActionTitle: action?.title || null,
+          nextActionStatus: action?.status || null,
+          nextActionType: action?.type || null,
+        };
+      });
+  }, [allWorkItems, data.leads, leadCasesByLeadId]);
 
   const operatorTasks = useMemo(() => {
     return data.tasks
@@ -464,8 +499,7 @@ export default function TodayStable() {
   }, [data.tasks, todayKey]);
 
   const operatorLeads = useMemo(() => {
-    return data.leads
-      .filter((lead) => !isClosedLead(lead))
+    return activeLeadsWithPlannedAction
       .map((lead) => {
         const momentRaw = getLeadMomentRaw(lead);
         return { lead, momentRaw, risk: getLeadRisk(lead, momentRaw, todayKey) };
@@ -480,7 +514,7 @@ export default function TodayStable() {
         if (a.momentRaw && !b.momentRaw) return 1;
         return parseTime(a.momentRaw) - parseTime(b.momentRaw);
       });
-  }, [data.leads, todayKey]);
+  }, [activeLeadsWithPlannedAction, todayKey]);
 
   const noActionLeads = useMemo(() => operatorLeads.filter((entry) => !getDateKey(entry.momentRaw)).slice(0, 5), [operatorLeads]);
   const highValueAtRiskRows = useMemo(() => operatorLeads.filter((entry) => getLeadValue(entry.lead) >= 5000 || entry.risk.reason.includes('wartości')).slice(0, 5), [operatorLeads]);
@@ -531,8 +565,7 @@ export default function TodayStable() {
         badge: 'Wydarzenie',
       }));
 
-    const leadRows = data.leads
-      .filter((lead) => !isClosedLead(lead))
+    const leadRows = activeLeadsWithPlannedAction
       .map((lead) => {
         const momentRaw = getLeadMomentRaw(lead);
         const risk = getLeadRisk(lead, momentRaw, todayKey);
@@ -554,7 +587,7 @@ export default function TodayStable() {
       }));
 
     return [...taskRows, ...eventRows, ...leadRows].sort(sortByMoment).slice(0, 10);
-  }, [data.events, data.leads, data.tasks, next7EndKey, todayKey]);
+  }, [activeLeadsWithPlannedAction, data.events, data.tasks, next7EndKey, todayKey]);
 
   const pendingDrafts = useMemo(() => {
     return data.drafts.filter((draft: any) => String(draft?.status || '').toLowerCase() === 'draft');
@@ -589,14 +622,14 @@ export default function TodayStable() {
 
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Leady do ruchu</p><p className="mt-2 text-3xl font-black text-blue-700">{operatorLeads.length}</p></CardContent></Card>
-          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Bez następnego kroku</p><p className="mt-2 text-3xl font-black text-amber-700">{noActionLeads.length}</p></CardContent></Card>
+          <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Bez najbliższej zaplanowanej akcji</p><p className="mt-2 text-3xl font-black text-amber-700">{noActionLeads.length}</p></CardContent></Card>
           <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Wysoka wartość / ryzyko</p><p className="mt-2 text-3xl font-black text-rose-700">{highValueAtRiskRows.length}</p></CardContent></Card>
           <Card className="border-slate-100"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Następne 7 dni</p><p className="mt-2 text-3xl font-black text-indigo-700">{upcomingRows.length}</p></CardContent></Card>
         </section>
 
         <section className="grid gap-4 xl:grid-cols-3">
           <StableCard>
-            <SectionHeader title="Leady bez następnego kroku" count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" />
+            <SectionHeader title="Leady bez najbliższej zaplanowanej akcji" count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" />
             {noActionLeads.length ? noActionLeads.map(({ lead, risk }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
@@ -606,7 +639,7 @@ export default function TodayStable() {
                 meta={'Ruch: ' + risk.suggestedAction}
                 badge={readText(lead, ['status'], 'open')}
               />
-            )) : <EmptyState text="Brak leadów bez następnego kroku." />}
+            )) : <EmptyState text="Brak leadów bez najbliższej zaplanowanej akcji." />}
           </StableCard>
 
           <StableCard>
@@ -721,3 +754,4 @@ export default function TodayStable() {
     </Layout>
   );
 }
+

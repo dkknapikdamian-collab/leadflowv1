@@ -1,3 +1,5 @@
+import { normalizeWorkItem } from './work-items/normalize';
+
 export type TaskEventDateSource = {
   scheduledAt?: string | Date | null;
   dueAt?: string | Date | null;
@@ -80,17 +82,8 @@ export function normalizeScheduleDateTimeValue(value: unknown): string | null {
 }
 
 export function getTaskStartAt(task: TaskLike | null | undefined): string | null {
-  const direct = normalizeScheduleDateTimeValue(
-    task?.scheduledAt ?? task?.dueAt ?? task?.dateTime ?? task?.startsAt ?? task?.startAt,
-  );
-  if (direct) return direct;
-
-  if (typeof task?.date === 'string' && task.date) {
-    const time = typeof task?.time === 'string' && task.time ? task.time : '09:00';
-    return task.date + 'T' + time;
-  }
-
-  return normalizeScheduleDateTimeValue(task?.reminderAt);
+  const normalized = normalizeWorkItem(task);
+  return normalizeScheduleDateTimeValue(normalized.dateAt ?? normalized.scheduledAt ?? normalized.startAt ?? normalized.reminderAt);
 }
 
 export function getTaskMainDate(task: TaskLike | null | undefined): string | null {
@@ -120,11 +113,13 @@ export function syncTaskDerivedFields<T extends TaskLike>(task: T): T & {
 }
 
 export function getEventStartAt(event: EventLike | null | undefined): string | null {
-  return normalizeScheduleDateTimeValue(event?.startAt ?? event?.scheduledAt ?? event?.date ?? event?.reminderAt);
+  const normalized = normalizeWorkItem(event);
+  return normalizeScheduleDateTimeValue(normalized.dateAt ?? normalized.startAt ?? normalized.scheduledAt ?? normalized.reminderAt);
 }
 
 export function getEventEndAt(event: EventLike | null | undefined): string | null {
-  return normalizeScheduleDateTimeValue(event?.endAt ?? event?.endsAt);
+  const normalized = normalizeWorkItem(event);
+  return normalizeScheduleDateTimeValue(normalized.endAt);
 }
 
 export function getEventMainDate(event: EventLike | null | undefined): string | null {

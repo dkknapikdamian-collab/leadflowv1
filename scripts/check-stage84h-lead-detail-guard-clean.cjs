@@ -31,7 +31,7 @@ const forbidden = [
 ];
 
 const required = [
-  'Najbliższa akcja',
+  'Najbliższa zaplanowana akcja',
   'Powód ryzyka',
   'Otwórz sprawę',
   'Dopisz notatkę',

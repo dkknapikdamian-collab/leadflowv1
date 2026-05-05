@@ -96,6 +96,7 @@ import {
   updateTaskInSupabase
 } from '../lib/supabase-fallback';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 type CalendarEditDraft = {
   title: string;
@@ -148,14 +149,15 @@ function toCalendarDateInput(value: unknown, fallback: string) {
 }
 
 function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
+  const normalized = normalizeWorkItem(entry.raw);
   if (entry.kind === 'event') {
     return {
       title: readCalendarRawText(entry.raw?.title, entry.title),
       type: readCalendarRawText(entry.raw?.type, 'meeting'),
-      startAt: readCalendarRawText(entry.raw?.startAt, entry.startsAt),
-      endAt: readCalendarRawText(entry.raw?.endAt, entry.endsAt || buildStartEndPair(entry.startsAt).endAt),
-      leadId: readCalendarRawText(entry.raw?.leadId),
-      caseId: readCalendarRawText(entry.raw?.caseId),
+      startAt: normalized.dateAt || normalized.startAt || entry.startsAt,
+      endAt: normalized.endAt || readCalendarRawText(entry.raw?.endAt, entry.endsAt || buildStartEndPair(entry.startsAt).endAt),
+      leadId: readCalendarRawText(normalized.leadId),
+      caseId: readCalendarRawText(normalized.caseId),
       relationQuery: entry.raw?.caseId ? (readCalendarRawText(entry.raw?.title, entry.title)) : readCalendarRawText(entry.raw?.leadName),
       priority: 'medium',
       recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
@@ -167,10 +169,10 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
     return {
       title: readCalendarRawText(entry.raw?.title, entry.title),
       type: readCalendarRawText(entry.raw?.type, 'follow_up'),
-      startAt: getTaskStartAt(entry.raw) || entry.startsAt,
+      startAt: normalized.dateAt || getTaskStartAt(entry.raw) || entry.startsAt,
       endAt: '',
-      leadId: readCalendarRawText(entry.raw?.leadId),
-      caseId: readCalendarRawText(entry.raw?.caseId),
+      leadId: readCalendarRawText(normalized.leadId),
+      caseId: readCalendarRawText(normalized.caseId),
       relationQuery: entry.raw?.caseId ? (readCalendarRawText(entry.raw?.title, entry.title)) : readCalendarRawText(entry.raw?.leadName),
       priority: readCalendarRawText(entry.raw?.priority, 'medium'),
       recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
@@ -181,10 +183,10 @@ function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
   return {
     title: entry.title,
     type: 'follow_up',
-    startAt: entry.startsAt,
+    startAt: normalized.dateAt || entry.startsAt,
     endAt: '',
-    leadId: readCalendarRawText(entry.raw?.leadId),
-    caseId: readCalendarRawText(entry.raw?.caseId),
+    leadId: readCalendarRawText(normalized.leadId),
+    caseId: readCalendarRawText(normalized.caseId),
     relationQuery: readCalendarRawText(entry.raw?.leadName),
     priority: readCalendarRawText(entry.raw?.priority, 'medium'),
     recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
@@ -550,8 +552,8 @@ export default function Calendar() {
       fetchCasesFromSupabase(),
       fetchClientsFromSupabase().catch(() => []),
     ]);
-    setEvents(bundle.events);
-    setTasks(bundle.tasks);
+          setEvents((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[]);
+          setTasks((bundle.tasks || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[]);
     setLeads(bundle.leads);
     setCases(caseRows as any[]);
     setClients(clientRows as any[]);
@@ -598,8 +600,8 @@ export default function Calendar() {
           fetchClientsFromSupabase().catch(() => []),
         ]);
         if (cancelled) return;
-        setEvents(bundle.events);
-        setTasks(bundle.tasks);
+        setEvents((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[]);
+        setTasks((bundle.tasks || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[]);
         setLeads(bundle.leads);
         setCases(caseRows as any[]);
         setClients(clientRows as any[]);

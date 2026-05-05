@@ -13,7 +13,7 @@ const files = [
 ];
 
 const requiredLeadTexts = [
-  'Najbliższa akcja',
+  'Najbliższa zaplanowana akcja',
   'Powód ryzyka',
   'Otwórz sprawę',
   'Dopisz notatkę',

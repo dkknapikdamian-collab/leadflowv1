@@ -34,7 +34,7 @@ const doc = 'docs/release/STAGE84_LEAD_DETAIL_WORK_CENTER_2026-05-05.md';
   'Centrum pracy leada',
   'Ostatni ruch',
   'Dni bez ruchu',
-  'Najbliższa akcja',
+  'Najbliższa zaplanowana akcja',
   'Powód ryzyka',
   'Otwórz sprawę',
   'Dopisz notatkę',

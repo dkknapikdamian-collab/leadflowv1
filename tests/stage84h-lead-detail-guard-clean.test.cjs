@@ -1,4 +1,4 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -39,7 +39,8 @@ test('Stage84H guard files do not contain literal mojibake markers', () => {
 
 test('Stage84H LeadDetail keeps clean Polish labels', () => {
   const body = read('src/pages/LeadDetail.tsx');
-  for (const text of ['Najbliższa akcja', 'Powód ryzyka', 'Otwórz sprawę', 'Dopisz notatkę', 'Oferta wysłana']) {
+  for (const text of ['Najbliższa zaplanowana akcja', 'Powód ryzyka', 'Otwórz sprawę', 'Dopisz notatkę', 'Oferta wysłana']) {
     assert.ok(body.includes(text), 'Missing clean label: ' + text);
   }
 });
+

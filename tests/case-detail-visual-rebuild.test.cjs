@@ -1,4 +1,4 @@
-const fs = require('node:fs');
+﻿const fs = require('node:fs');
 const path = require('node:path');
 
 const { mojibakeWords } = require('../scripts/mojibake-markers.cjs');
@@ -22,10 +22,10 @@ const requiredPage = [
   'CASE_DETAIL_VISUAL_REBUILD_STAGE13',
   'Sprawy /',
   'Klient:',
-  'Postęp sprawy',
-  'Najbliższa akcja',
-  'Obsługa',
-  'Ścieżka',
+  'PostÄ™p sprawy',
+  'Najbliższa zaplanowana akcja',
+  'ObsĹ‚uga',
+  'ĹšcieĹĽka',
   'Checklisty',
   'Historia',
   'Dodaj brak',
@@ -33,7 +33,7 @@ const requiredPage = [
   'Dodaj wydarzenie',
   'Zrobione',
   'Klient w tle',
-  'Otwórz klienta',
+  'OtwĂłrz klienta',
 ];
 
 for (const needle of requiredPage) {
@@ -41,8 +41,8 @@ for (const needle of requiredPage) {
 }
 
 const tabRegexes = [
-  /key:\s*'service'[\s\S]*label:\s*'Obsługa'/,
-  /key:\s*'path'[\s\S]*label:\s*'Ścieżka'/,
+  /key:\s*'service'[\s\S]*label:\s*'ObsĹ‚uga'/,
+  /key:\s*'path'[\s\S]*label:\s*'ĹšcieĹĽka'/,
   /key:\s*'checklists'[\s\S]*label:\s*'Checklisty'/,
   /key:\s*'history'[\s\S]*label:\s*'Historia'/,
 ];
@@ -94,3 +94,4 @@ for (const mojibake of Object.values(mojibakeWords)) {
 }
 
 console.log('PASS case detail visual rebuild');
+

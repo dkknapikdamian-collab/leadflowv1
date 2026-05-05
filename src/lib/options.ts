@@ -56,13 +56,10 @@ export const REMINDER_MODE_OPTIONS = [
 ];
 
 export const REMINDER_OFFSET_OPTIONS = [
-  { value: 0, label: 'W momencie terminu' },
-  { value: 10, label: '10 minut wcześniej' },
-  { value: 15, label: '15 minut wcześniej' },
-  { value: 30, label: '30 minut wcześniej' },
-  { value: 60, label: '1 godzinę wcześniej' },
-  { value: 1440, label: '1 dzień wcześniej' },
-  { value: 10080, label: '1 tydzień wcześniej' },
+  { value: 540, label: 'Tego samego dnia o 09:00' },
+  { value: 1440, label: 'Dzień wcześniej o 09:00' },
+  { value: 2880, label: '2 dni wcześniej o 09:00' },
+  { value: 10080, label: '1 tydzień wcześniej o 09:00' },
 ];
 
 export const GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS = [

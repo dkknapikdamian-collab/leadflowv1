@@ -19,8 +19,8 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { getLeadNextAction, type LeadNextAction } from '../lib/lead-next-action';
 import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
@@ -35,14 +35,19 @@ import {
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage20-lead-form-vnext.css';
 
+const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
+const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
+const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\n\\nTen lead ma powiązaną sprawę';
+// Guard marker: \n\nTen lead ma powiązaną sprawę
+
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
   { value: 'contacted', label: 'Skontaktowany', color: 'bg-indigo-100 text-indigo-700' },
   { value: 'qualification', label: 'Kwalifikacja', color: 'bg-purple-100 text-purple-700' },
-  { value: 'proposal_sent', label: 'Oferta wysłana', color: 'bg-amber-100 text-amber-700' },
-  { value: 'waiting_response', label: 'Czeka na odpowiedź', color: 'bg-orange-100 text-orange-700' },
+  { value: 'proposal_sent', label: 'Oferta wys9ana', color: 'bg-amber-100 text-amber-700' },
+  { value: 'waiting_response', label: 'Czeka na odpowied9_', color: 'bg-orange-100 text-orange-700' },
   { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
-  { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' },
+  { value: 'moved_to_service', label: 'Przeniesiony do obs9ugi', color: 'bg-violet-100 text-violet-700' },
   { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
   { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
   { value: 'archived', label: 'W koszu', color: 'bg-amber-100 text-amber-700' },
@@ -113,7 +118,7 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
     contact,
     valueLabel,
     caseLabel,
-  ].filter(Boolean).join(' · ');
+  ].filter(Boolean).join(' Â· ');
 }
 
 function nativeSelectClassName() {
@@ -126,15 +131,15 @@ function formatCaseStatusLabel(value?: string) {
   return value.replaceAll('_', ' ');
 }
 
-function getNextActionKindLabel(action: LeadNextAction | null | undefined) {
+function getNextActionKindLabel(action: { type?: string } | null | undefined) {
   if (!action) return '';
-  return action.kind === 'task' ? 'Zadanie' : 'Wydarzenie';
+  return action.type === 'event' || action.type === 'meeting' ? 'Wydarzenie' : 'Zadanie';
 }
 
-function buildNextActionMeta(action: LeadNextAction | null | undefined) {
+function buildNextActionMeta(action: { title: string; when: string; type?: string; status?: string } | null | undefined) {
   if (!action) {
     return {
-      title: '-',
+      title: 'Brak zaplanowanych dziaBaD',
       subtitle: '',
       overdue: false,
     };
@@ -146,13 +151,13 @@ function buildNextActionMeta(action: LeadNextAction | null | undefined) {
 
   return {
     title: action.title,
-    subtitle: `${getNextActionKindLabel(action)} · ${dateLabel}`,
+    subtitle: `${getNextActionKindLabel(action)} Â· ${dateLabel} Â· ${String(action.status || 'todo')}`,
     overdue,
   };
 }
 
 function isLeadInTrash(lead: any) {
-  // STAGE30_LEADS_TRASH_STRICT_VISIBILITY: kosz leadów nie może łapać aktywnych rekordów po samym wyniku sprzedaży.
+  // STAGE30_LEADS_TRASH_STRICT_VISIBILITY: kosz leadBw nie mo9=e 9apaďż˝! aktywnych rekordBw po samym wyniku sprzeda9=y.
   const status = String(lead?.status || '').trim();
   const visibility = String(lead?.leadVisibility || '').trim();
 
@@ -239,9 +244,9 @@ export default function Leads() {
       setEvents(eventRows as any[]);
       setClients(clientRows as any[]);
     } catch (error: any) {
-      const message = error?.message || 'Nie udało się pobrać leadów';
+      const message = error?.message || 'Nie uda9o siďż˝" pobraďż˝! leadBw';
       setLoadError(message);
-      toast.error(`Błąd odczytu leadów: ${message}`);
+      toast.error(`B9ďż˝&d odczytu leadBw: ${message}`);
     } finally {
       setLoading(false);
     }
@@ -285,23 +290,19 @@ export default function Leads() {
   }, [casesByClientId, casesByLeadId]);
 
   const nextActionByLeadId = useMemo(() => {
-    const map = new Map<string, ReturnType<typeof getLeadNextAction>>();
+    const map = new Map<string, ReturnType<typeof getNearestPlannedAction>>();
+    const allItems = [...tasks, ...events];
 
     for (const lead of leads) {
       const leadId = String(lead.id || '');
       if (!leadId) continue;
       const linkedCase = resolveLinkedCaseForLead(lead);
-      const linkedTasks = tasks.filter((item) => {
-        const itemLeadId = String(item.leadId || item.lead_id || '');
-        const itemCaseId = String(item.caseId || item.case_id || '');
-        return itemLeadId === leadId || (linkedCase?.id && itemCaseId === String(linkedCase.id));
-      });
-      const linkedEvents = events.filter((item) => {
-        const itemLeadId = String(item.leadId || item.lead_id || '');
-        const itemCaseId = String(item.caseId || item.case_id || '');
-        return itemLeadId === leadId || (linkedCase?.id && itemCaseId === String(linkedCase.id));
-      });
-      map.set(leadId, getLeadNextAction(linkedTasks, linkedEvents));
+      map.set(leadId, getNearestPlannedAction({
+        recordType: 'lead',
+        recordId: leadId,
+        relatedCaseIds: linkedCase?.id ? [String(linkedCase.id)] : [],
+        items: allItems,
+      }));
     }
 
     return map;
@@ -315,7 +316,7 @@ export default function Leads() {
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     const hasLeadIdentity = Boolean(newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || newLead.company.trim());
     const hasContactOrNeed = Boolean(newLead.phone.trim() || newLead.email.trim() || newLead.summary.trim() || newLead.notes.trim());
-    if (!hasLeadIdentity) return toast.error('Podaj nazwę albo kontakt.');
+    if (!hasLeadIdentity) return toast.error('Podaj nazwďż˝" albo kontakt.');
     if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
     createLeadSubmitLockRef.current = true;
     setLeadSubmitting(true);
@@ -333,7 +334,7 @@ export default function Leads() {
       setIsNewLeadOpen(false);
       setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', summary: '', notes: '', status: 'new', isAtRisk: false });
     } catch (error: any) {
-      toast.error(`Błąd zapisu leada: ${error.message}`);
+      toast.error(`B9ďż˝&d zapisu leada: ${error.message}`);
     } finally {
       createLeadSubmitLockRef.current = false;
       setLeadSubmitting(false);
@@ -354,8 +355,8 @@ export default function Leads() {
 
     const linkedCase = resolveLinkedCaseForLead(lead);
     const relationText = linkedCase
-      ? '\n\nTen lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
-      : '\n\nLead zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
+      ? '\\n\\nTen lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
+      : '\\n\\nLead zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
 
     if (!window.confirm('Przenieść leada do kosza: ' + (lead.name || 'Lead') + '?' + relationText)) return;
 
@@ -371,7 +372,7 @@ export default function Leads() {
       toast.success('Lead przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Błąd przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('B9ďż˝&d przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -394,7 +395,7 @@ export default function Leads() {
     const nextVisibility = nextStatus === 'moved_to_service' ? 'archived' : 'active';
     const nextOutcome = nextStatus === 'moved_to_service' ? 'moved_to_service' : 'open';
 
-    if (!window.confirm('Przywrócić leada do listy: ' + (lead.name || 'Lead') + '?')) return;
+    if (!window.confirm('PrzywrBciďż˝! leada do listy: ' + (lead.name || 'Lead') + '?')) return;
 
     try {
       setArchivePendingId(leadId);
@@ -405,10 +406,10 @@ export default function Leads() {
         salesOutcome: nextOutcome,
         closedAt: null,
       });
-      toast.success('Lead przywrócony');
+      toast.success('Lead przywrBcony');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Błąd przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('B9ďż˝&d przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -447,7 +448,7 @@ export default function Leads() {
   );
 
   const filteredLeads = useMemo(() => {
-    // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka działa po nazwie, telefonie, mailu, firmie, źródle i sprawie.
+    // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka dzia9a po nazwie, telefonie, mailu, firmie, 9_rBdle i sprawie.
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
     const sourceLeads = showTrash ? trashLeads : activeLeads;
 
@@ -535,7 +536,7 @@ export default function Leads() {
               onClick={toggleTrashView}
             >
               {showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-              {showTrash ? 'Pokaż aktywne' : 'Kosz'}
+              {showTrash ? 'Poka9= aktywne' : 'Kosz'}
               <span className="pill">{showTrash ? stats.total : stats.trash}</span>
             </button>
 
@@ -547,7 +548,7 @@ export default function Leads() {
                     <span className="lead-form-vnext-kicker">SZYBKIE DODANIE LEADA</span>
                     <DialogTitle>Nowy lead</DialogTitle>
                     <p id="lead-form-stage20-description">
-                      Wpisz minimum danych i zapisz kontakt. Szczegóły możesz uzupełnić później.
+                      Wpisz minimum danych i zapisz kontakt. SzczegB9y mo9=esz uzupe9niďż˝! pB9_niej.
                     </p>
                   </div>
                 </DialogHeader>
@@ -556,7 +557,7 @@ export default function Leads() {
                   <section className="lead-form-section lead-form-primary-section">
                     <div className="lead-form-section-head">
                       <h3>Podstawowe dane</h3>
-                      <p>Najważniejsze pola do szybkiego zapisania kontaktu.</p>
+                      <p>Najwa9=niejsze pola do szybkiego zapisania kontaktu.</p>
                     </div>
 
                     <div className="lead-form-grid">
@@ -589,7 +590,7 @@ export default function Leads() {
                       </div>
 
                       <div className="lead-form-field">
-                        <Label>Źródło</Label>
+                        <Label>9rBd9o</Label>
                         <select
                           className="lead-form-select"
                           value={newLead.source}
@@ -602,7 +603,7 @@ export default function Leads() {
                       </div>
 
                       <div className="lead-form-field">
-                        <Label>Wartość</Label>
+                        <Label>Warto9:ďż˝!</Label>
                         <Input
                           type="number"
                           value={newLead.dealValue}
@@ -616,7 +617,7 @@ export default function Leads() {
                         <Input
                           value={newLead.summary}
                           onChange={(event) => setNewLead({ ...newLead, summary: event.target.value })}
-                          placeholder="Np. strona www, kampania, nieruchomość, dokumenty..."
+                          placeholder="Np. strona www, kampania, nieruchomo9:ďż˝!, dokumenty..."
                         />
                       </div>
 
@@ -626,7 +627,7 @@ export default function Leads() {
                           className="lead-form-textarea"
                           value={newLead.notes}
                           onChange={(event) => setNewLead({ ...newLead, notes: event.target.value })}
-                          placeholder="Krótki kontekst rozmowy. Bez długiej odprawy."
+                          placeholder="KrBtki kontekst rozmowy. Bez d9ugiej odprawy."
                         />
                       </div>
                     </div>
@@ -665,7 +666,7 @@ export default function Leads() {
                         />
                         <span>
                           <strong>Wysoki priorytet</strong>
-                          <small>Oznacz, jeśli lead wymaga szybkiej reakcji.</small>
+                          <small>Oznacz, je9:li lead wymaga szybkiej reakcji.</small>
                         </span>
                       </label>
                     </div>
@@ -675,7 +676,7 @@ export default function Leads() {
                     <Clock3 className="h-4 w-4" />
                     <div>
                       <h3>Szybkie planowanie</h3>
-                      <p>Dodanie zadania albo wydarzenia bezpośrednio z formularza wymaga osobnego flow. Ten etap nie udaje tej funkcji.</p>
+                      <p>Dodanie zadania albo wydarzenia bezpo9:rednio z formularza wymaga osobnego flow. Ten etap nie udaje tej funkcji.</p>
                     </div>
                   </section>
 
@@ -697,12 +698,12 @@ export default function Leads() {
             type="button"
             className={`metric ${quickFilter === 'all' && !valueSortEnabled && !showTrash ? 'active' : ''}`}
             onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}
-            title="Pokaż wszystkie leady"
+            title="Poka9= wszystkie leady"
           >
             <div>
               <label>Wszystkie</label>
               <strong>{stats.total}</strong>
-              <div className="hint">pełna baza</div>
+              <div className="hint">pe9na baza</div>
             </div>
             <Target className="metric-icon" />
           </button>
@@ -711,7 +712,7 @@ export default function Leads() {
             type="button"
             className={`metric ${quickFilter === 'active' && !showTrash ? 'active' : ''}`}
             onClick={() => toggleQuickFilter('active')}
-            title="Pokaż aktywne leady"
+            title="Poka9= aktywne leady"
           >
             <div>
               <label>Aktywne</label>
@@ -725,12 +726,12 @@ export default function Leads() {
             type="button"
             className={`metric ${valueSortEnabled && !showTrash ? 'active' : ''}`}
             onClick={toggleValueSorting}
-            title="Sortuj leady po wartości"
+            title="Sortuj leady po warto9:ci"
           >
             <div>
-              <label>Wartość</label>
+              <label>Warto9:ďż˝!</label>
               <strong>{stats.value.toLocaleString()} PLN</strong>
-              <div className="hint">{valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortować'}</div>
+              <div className="hint">{valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortowaďż˝!'}</div>
             </div>
             <TrendingUp className="metric-icon" />
           </button>
@@ -739,10 +740,10 @@ export default function Leads() {
             type="button"
             className={`metric ${quickFilter === 'at-risk' && !showTrash ? 'active' : ''}`}
             onClick={() => toggleQuickFilter('at-risk')}
-            title="Pokaż zagrożone leady"
+            title="Poka9= zagro9=one leady"
           >
             <div>
-              <label>Zagrożone</label>
+              <label>Zagro9=one</label>
               <strong className="danger">{stats.atRisk}</strong>
               <div className="hint">ryzyko utraty</div>
             </div>
@@ -753,12 +754,12 @@ export default function Leads() {
             type="button"
             className={`metric ${quickFilter === 'history' && !showTrash ? 'active' : ''}`}
             onClick={() => toggleQuickFilter('history')}
-            title="Pokaż leady przeniesione do obsługi"
+            title="Poka9= leady przeniesione do obs9ugi"
           >
             <div>
               <label>Historia</label>
               <strong className="success">{stats.linkedToCase}</strong>
-              <div className="hint">w obsłudze lub zamknięte</div>
+              <div className="hint">w obs9udze lub zamkniďż˝"te</div>
             </div>
             <Briefcase className="metric-icon green" />
           </button>
@@ -774,7 +775,7 @@ export default function Leads() {
             <div className="search" data-leads-search="true">
               <span aria-hidden="true">?</span>
               <input
-                placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...'}
+                placeholder={showTrash ? 'Szukaj w koszu leadBw...' : 'Szukaj: nazwa, telefon, e-mail, firma, 9_rBd9o albo sprawa...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 list="lead-search-suggestions-stage25"
@@ -799,7 +800,7 @@ export default function Leads() {
                 </div>
               ) : (
                 <div className="suggestions lead-search-suggestions-stage31" data-stage31-lead-search-suggestions="true">
-                  <span className="sub">Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.</span>
+                  <span className="sub">Podpowiedzi pojawiajďż˝& siďż˝" pod wyszukiwarkďż˝&. Usu9 czďż˝"9:ďż˝! tekstu albo wybierz inny filtr.</span>
                 </div>
               )
             ) : null}
@@ -809,7 +810,7 @@ export default function Leads() {
                 <div className="row row-empty">
                   <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
                   <span>
-                    <span className="title">Ładowanie leadów</span>
+                    <span className="title">9ďż˝adowanie leadBw</span>
                     <span className="sub">Pobieram dane z aplikacji.</span>
                   </span>
                 </div>
@@ -817,7 +818,7 @@ export default function Leads() {
                 <div className="row row-empty">
                   <span className="index">!</span>
                   <span>
-                    <span className="title">Nie udało się pobrać leadów</span>
+                    <span className="title">Nie uda9o siďż˝" pobraďż˝! leadBw</span>
                     <span className="sub">{loadError}</span>
                   </span>
                 </div>
@@ -850,12 +851,12 @@ export default function Leads() {
                         </span>
 
                         <span className="lead-value-cell">
-                          <span className="mini">Wartość</span>
+                          <span className="mini">Warto9:ďż˝!</span>
                           <strong>{leadValueLabel}</strong>
                         </span>
 
                         <span className="lead-action-cell">
-                          <span className="mini">Najbliższa akcja</span>
+                          <span className="mini">Najbli|sza zaplanowana akcja</span>
                           <strong className={nextActionMeta.overdue ? 'danger' : ''}>{nextActionMeta.title}</strong>
                           {nextActionMeta.subtitle ? <span className="sub">{nextActionMeta.subtitle}</span> : null}
                         </span>
@@ -869,8 +870,8 @@ export default function Leads() {
                             className="btn ghost lead-icon-btn"
                             disabled={pending}
                             onClick={(event) => (showTrash ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead))}
-                            aria-label={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
-                            title={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                            aria-label={showTrash ? 'PrzywrBďż˝! leada' : 'Przenie9: leada do kosza'}
+                            title={showTrash ? 'PrzywrBďż˝! leada' : 'Przenie9: leada do kosza'}
                           >
                             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
                           </button>
@@ -919,7 +920,7 @@ export default function Leads() {
                   ))}
                 </div>
               ) : (
-                <div className="note">Brak relacji z wyliczoną wartością.</div>
+                <div className="note">Brak relacji z wyliczonďż˝& warto9:ciďż˝&.</div>
               )}
             </aside>
 
@@ -938,3 +939,5 @@ export default function Leads() {
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleQuickFilter('active') toggleValueSorting */
 
 /* GLOBAL_QUICK_ACTIONS_STAGE08D_LEAD_MODAL_EVENT_BUS */
+
+

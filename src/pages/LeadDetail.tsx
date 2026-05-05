@@ -48,6 +48,8 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import { isLeadMovedToService } from '../lib/lead-health';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import {
@@ -272,11 +274,13 @@ function statusClass(status?: string) {
 }
 
 function getTaskDate(task: any) {
-  return String(task?.scheduledAt || task?.dueAt || task?.date || task?.reminderAt || task?.updatedAt || task?.createdAt || '');
+  const normalized = normalizeWorkItem(task);
+  return String(normalized.scheduledAt || normalized.reminderAt || task?.updatedAt || task?.createdAt || '');
 }
 
 function getEventDate(event: any) {
-  return String(event?.startAt || event?.scheduledAt || event?.reminderAt || event?.updatedAt || event?.createdAt || '');
+  const normalized = normalizeWorkItem(event);
+  return String(normalized.startAt || normalized.scheduledAt || normalized.reminderAt || event?.updatedAt || event?.createdAt || '');
 }
 
 function isDoneStatus(status: unknown) {
@@ -294,8 +298,9 @@ function dedupeById<T extends Record<string, unknown>>(items: T[]) {
 }
 
 function isLinkedThroughLeadOrCase(item: Record<string, unknown>, leadId: string, caseId?: string | null) {
-  const directLeadId = String(item.leadId || '');
-  const directCaseId = String(item.caseId || '');
+  const normalized = normalizeWorkItem(item);
+  const directLeadId = String(normalized.leadId || '');
+  const directCaseId = String(normalized.caseId || '');
   if (directLeadId === leadId) return true;
   if (caseId && directCaseId === caseId) return true;
   return false;
@@ -470,8 +475,16 @@ export default function LeadDetail() {
         allCaseRows.find((item) => String(item.id || '') === String((leadRow as any)?.linkedCaseId || (leadRow as any)?.caseId || '')) ||
         null;
       const currentCaseId = currentCase?.id ? String(currentCase.id) : null;
-      const linkedTaskRows = dedupeById((Array.isArray(taskRows) ? taskRows : []).filter((item: any) => isLinkedThroughLeadOrCase(item, leadId, currentCaseId)));
-      const linkedEventRows = dedupeById((Array.isArray(eventRows) ? eventRows : []).filter((item: any) => isLinkedThroughLeadOrCase(item, leadId, currentCaseId)));
+      const linkedTaskRows = dedupeById(
+        (Array.isArray(taskRows) ? taskRows : [])
+          .map((item: any) => ({ ...item, ...normalizeWorkItem(item) }))
+          .filter((item: any) => isLinkedThroughLeadOrCase(item, leadId, currentCaseId)),
+      );
+      const linkedEventRows = dedupeById(
+        (Array.isArray(eventRows) ? eventRows : [])
+          .map((item: any) => ({ ...item, ...normalizeWorkItem(item) }))
+          .filter((item: any) => isLinkedThroughLeadOrCase(item, leadId, currentCaseId)),
+      );
 
       setLead(leadRow || null);
       setEditLead(leadRow || null);
@@ -544,6 +557,14 @@ export default function LeadDetail() {
       recordLabel: getLeadName(lead),
     });
   };
+  const handleCreateQuickTask = () => {
+    if (leadOperationalArchive) return toast.error('Dodawaj dalsze zadania w sprawie.');
+    openLeadContextAction('task');
+  };
+  const handleCreateQuickEvent = () => {
+    if (leadOperationalArchive) return toast.error('Dodawaj dalsze wydarzenia w sprawie.');
+    openLeadContextAction('event');
+  };
   const openLeadPaymentDialog = (type: 'deposit' | 'partial') => {
     setLeadPaymentDraft({
       type,
@@ -606,7 +627,16 @@ useEffect(() => {
   );
 
   const timeline = useMemo(() => buildTimeline(sortedLinkedTasks, sortedLinkedEvents), [sortedLinkedEvents, sortedLinkedTasks]);
-  const nextTimelineEntry = useMemo(() => timeline.find((entry) => !isDoneStatus(entry.status)) || null, [timeline]);
+  const nearestPlannedAction = useMemo(() => getNearestPlannedAction({
+    recordType: 'lead',
+    recordId: String(leadId || ''),
+    relatedCaseIds: associatedCase?.id ? [String(associatedCase.id)] : [],
+    items: [...linkedTasks, ...linkedEvents],
+  }), [associatedCase?.id, leadId, linkedEvents, linkedTasks]);
+  const nextTimelineEntry = useMemo(() => {
+    if (!nearestPlannedAction) return timeline.find((entry) => !isDoneStatus(entry.status)) || null;
+    return timeline.find((entry) => String(entry.raw?.id || '') === nearestPlannedAction.id) || timeline.find((entry) => !isDoneStatus(entry.status)) || null;
+  }, [nearestPlannedAction, timeline]);
   const leadWorkCenter = useMemo(() => {
     const nowMs = Date.now();
     const activityDates = activities
@@ -698,10 +728,10 @@ useEffect(() => {
 
       {!leadInService ? (
         <div className="lead-detail-work-actions" aria-label="Szybkie akcje na leadzie">
-          <LeadActionButton onClick={() => openLeadContextAction('task')} disabled={!hasAccess}>
+          <LeadActionButton onClick={handleCreateQuickTask} disabled={!hasAccess}>
             <Phone className="h-4 w-4" /> Zaplanuj telefon / follow-up
           </LeadActionButton>
-          <LeadActionButton onClick={() => openLeadContextAction('event')} disabled={!hasAccess}>
+          <LeadActionButton onClick={handleCreateQuickEvent} disabled={!hasAccess}>
             <Calendar className="h-4 w-4" /> Zaplanuj spotkanie
           </LeadActionButton>
           <LeadActionButton onClick={() => handleUpdateStatus('contacted')} disabled={!hasAccess}>

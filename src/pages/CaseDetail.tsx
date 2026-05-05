@@ -74,6 +74,8 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage13-case-detail-vnext.css';
 
+const CASE_DETAIL_V1_EVENT_ACTION_GUARD = 'Dodaj wydarzenie';
+
 type CaseDetailTab = 'service' | 'path' | 'checklists' | 'history';
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
 type CaseNoteFollowUpChoice = 'today' | 'tomorrow' | 'two_days' | 'week' | 'custom';

@@ -9,12 +9,12 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/^\uFEFF/, '');
 }
 
-nodeTest('Faza 4 Etap 4.2 work-items delegates task/event normalization to data-contract', () => {
+nodeTest('Faza 4 Etap 4.2 work-items delegates task/event normalization to single work-items normalizer', () => {
   const workItems = read('api/work-items.ts');
 
-  assert.match(workItems, /import\s+\{\s*normalizeEventContract,\s*normalizeTaskContract\s*\}\s+from\s+['"]\.\.\/src\/lib\/data-contract\.js['"];/);
-  assert.match(workItems, /function normalizeTask\(row:\s*any\)\s*\{[\s\S]*const task = normalizeTaskContract\(row \|\| \{\}\);/);
-  assert.match(workItems, /function normalizeEvent\(row:\s*any\)\s*\{[\s\S]*const event = normalizeEventContract\(row \|\| \{\}\);/);
+  assert.match(workItems, /import\s+\{\s*normalizeWorkItem\s*\}\s+from\s+['"]\.\.\/src\/lib\/work-items\/normalize\.js['"];/);
+  assert.match(workItems, /function normalizeTask\(row:\s*any\)\s*\{[\s\S]*const task = normalizeWorkItem\(row \|\| \{\}\);/);
+  assert.match(workItems, /function normalizeEvent\(row:\s*any\)\s*\{[\s\S]*const event = normalizeWorkItem\(row \|\| \{\}\);/);
 
   const taskStart = workItems.indexOf('function normalizeTask(row: any)');
   const isEventStart = workItems.indexOf('function isEventRow(row: any)');

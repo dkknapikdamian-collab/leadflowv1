@@ -132,6 +132,8 @@ import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 import { installTodayStage30VisualCleanup } from '../lib/stage30-today-cleanup';
 import { installTodayStage31TilesInteraction } from '../lib/stage31-today-tiles-interaction';
 import { installTodayStage32RelationsLoadingPolish } from '../lib/stage32-today-relations-loading-polish';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 
 import '../styles/today-collapsible-masonry.css';
 
@@ -1241,7 +1243,7 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
           <div>
             <p className="text-sm font-bold text-slate-900">Dziś w skrócie</p>
             <p className="mt-1 text-xs text-slate-500">
-              Pilne leady, brak następnego kroku, brak ruchu i sprawy zatrzymane w miejscu.
+              Pilne leady, brak najbliższej zaplanowanej akcji, brak ruchu i sprawy zatrzymane w miejscu.
             </p>
           </div>
           <Badge className="w-fit bg-emerald-50 text-emerald-700 border border-emerald-100">
@@ -1610,8 +1612,8 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
     setLeads(bundle.leads);
     setCases(bundle.cases || []);
     setClients(clientRows as any[]);
-    setTasks(bundle.tasks);
-    setEvents(bundle.events);
+    setTasks((bundle.tasks || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })));
+    setEvents((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })));
   }
 
   const handleSoftNextStepAfterCompletion = async ({
@@ -1647,8 +1649,8 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
         setLeads(bundle.leads);
         setCases(bundle.cases || []);
         setClients(clientRows as any[]);
-        setTasks(bundle.tasks);
-        setEvents(bundle.events);
+        setTasks((bundle.tasks || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })));
+        setEvents((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })));
       } catch (error: any) {
         if (!cancelled) {
           toast.error(`Błąd odczytu planu dnia: ${error.message}`);
@@ -1738,7 +1740,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
     id: `today-task:${task.id}`,
     kind: 'task',
     title: task.title,
-    startsAt: getTaskStartAt(task) || `${getTaskDate(task)}T09:00`,
+    startsAt: getTaskStartAt(task) || normalizeWorkItem(task).dateAt || `${getTaskDate(task)}T09:00`,
     sourceId: task.id,
     leadName: task.leadName || '',
     raw: task,
@@ -1796,7 +1798,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
           sourceId: entry?.sourceId ?? entry?.raw?.id ?? null,
           kind: entry?.kind ?? null,
           title: entry?.raw?.title || entry?.title || '',
-          startsAt: entry?.startsAt || getTaskStartAt(entry?.raw) || null,
+          startsAt: entry?.startsAt || normalizeWorkItem(entry?.raw).dateAt || getTaskStartAt(entry?.raw) || null,
           status: getTodayEntryStatus(entry),
           ...extraPayload,
         },
@@ -2023,7 +2025,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
         id: entry.sourceId,
         title: entry.raw?.title || entry.title,
         type: entry.raw?.type || 'meeting',
-        startAt: entry.raw?.startAt || entry.startsAt,
+      startAt: normalizeWorkItem(entry.raw).startAt || entry.startsAt,
         endAt: entry.raw?.endAt || null,
         status: nextStatus,
         leadId: entry.raw?.leadId ?? null,
@@ -2110,7 +2112,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
 
   const handleSnoozeTodayEvent = async (entry: any, optionKey: string) => {
     const nextStartAt = resolveTodaySnoozeAt(optionKey);
-    const currentStart = parseMoment(entry.raw?.startAt || entry.startsAt) || new Date();
+    const currentStart = parseMoment(normalizeWorkItem(entry.raw).startAt || entry.startsAt) || new Date();
     const currentEnd = parseMoment(entry.raw?.endAt) || new Date(currentStart.getTime() + 60 * 60_000);
     const durationMs = Math.max(currentEnd.getTime() - currentStart.getTime(), 60 * 60_000);
     const nextEndAt = toDateTimeLocalValue(new Date(parseISO(nextStartAt).getTime() + durationMs));
@@ -2192,7 +2194,34 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   const today = new Date();
   const todayStart = startOfDay(today);
   const todayEnd = endOfDay(today);
-  const activeLeads = leads.filter((lead) => isActiveSalesLead(lead));
+  const leadCasesByLeadId = new Map<string, string[]>();
+  for (const caseRecord of cases) {
+    const leadId = String(caseRecord?.leadId || '');
+    const caseId = String(caseRecord?.id || '');
+    if (!leadId || !caseId) continue;
+    const current = leadCasesByLeadId.get(leadId) || [];
+    current.push(caseId);
+    leadCasesByLeadId.set(leadId, current);
+  }
+  const allWorkItems = [...tasks, ...events];
+  const activeLeads = leads
+    .filter((lead) => isActiveSalesLead(lead))
+    .map((lead) => {
+      const leadId = String(lead?.id || '');
+      const action = getNearestPlannedAction({
+        recordType: 'lead',
+        recordId: leadId,
+        relatedCaseIds: leadCasesByLeadId.get(leadId) || [],
+        items: allWorkItems,
+      });
+      return {
+        ...lead,
+        nextActionAt: action?.when || null,
+        nextActionTitle: action?.title || null,
+        nextActionStatus: action?.status || null,
+        nextActionType: action?.type || null,
+      };
+    });
   const activeLeadsValue = activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0);
   const leadsWithAction = activeLeads.filter((lead) => parseMoment(lead.nextActionAt));
   const todayEntries = sortTodayEntriesForDisplay(combineScheduleEntries({
@@ -2369,7 +2398,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                 >
                   <div className="grid gap-3">
                     {overdueTasks.map((task) => {
-                      const startAt = getTaskStartAt(task) || `${getTaskDate(task)}T09:00`;
+                      const startAt = getTaskStartAt(task) || normalizeWorkItem(task).dateAt || `${getTaskDate(task)}T09:00`;
                       const previewTask = buildTaskPreviewEntry(task);
 
                       return (
@@ -2917,4 +2946,3 @@ data-today-tile-header="true"
 aria-expanded={!collapsed}
 expandTodayShortcutSection(section)
 */
-

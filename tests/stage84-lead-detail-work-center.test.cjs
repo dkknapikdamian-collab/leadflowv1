@@ -1,4 +1,4 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -16,7 +16,7 @@ test('Stage84 LeadDetail exposes work center contract with clean Polish copy', (
   assert.match(leadDetail, /Centrum pracy leada/);
   assert.match(leadDetail, /Ostatni ruch/);
   assert.match(leadDetail, /Dni bez ruchu/);
-  assert.match(leadDetail, /Najbliższa akcja/);
+  assert.match(leadDetail, /Najbliższa zaplanowana akcja/);
   assert.match(leadDetail, /Powód ryzyka/);
   assert.match(leadDetail, /Otwórz sprawę/);
   assert.match(leadDetail, /Dopisz notatkę/);
@@ -44,3 +44,4 @@ test('Stage84 styles are present', () => {
   assert.match(css, /STAGE84_LEAD_DETAIL_WORK_CENTER/);
   assert.match(css, /\.lead-detail-work-center/);
 });
+
