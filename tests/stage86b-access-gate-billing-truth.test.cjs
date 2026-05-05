@@ -1,4 +1,4 @@
-const test = require('node:test');
+﻿const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
@@ -11,5 +11,6 @@ test('Stage86B access gate documents webhook-only paid access and blocks failed 
   assert.match(accessGate, /status: 'payment_failed'/);
   assert.match(accessGate, /status: 'trial_expired'/);
   assert.match(accessGate, /status: 'canceled'/);
-  assert.match(accessGate, /isBlockedBillingAccessStatus(status)/);
+  assert.ok(accessGate.includes('isBlockedBillingAccessStatus(status)'), 'access gate must evaluate blocked billing statuses before allow-list');
 });
+
