@@ -339,3 +339,41 @@
     max-width: calc(100vw - 24px);
   }
 }
+
+/* ADMIN_QUICK_EDITOR_PORTAL_DRAG_STAGE87F */
+.admin-tool-quick-editor {
+  top: 136px;
+  right: 24px;
+  bottom: auto;
+  z-index: 2147483006;
+}
+
+.admin-tool-quick-editor-head {
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.admin-tool-quick-editor-head:active {
+  cursor: grabbing;
+}
+
+.admin-tool-quick-editor-head strong::after {
+  content: " Â· przeciÄ…gnij";
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.admin-tool-quick-editor-head-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 760px) {
+  .admin-tool-quick-editor {
+    top: 96px;
+    right: 12px;
+    bottom: auto;
+  }
+}

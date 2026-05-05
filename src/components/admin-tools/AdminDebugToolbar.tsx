@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
+import { createPortal } from 'react-dom';
 import {
   AdminBugItem,
   AdminCopyItem,
@@ -39,9 +40,27 @@ type TargetDialogState = {
   selectedIndex: number;
 };
 
+type QuickEditorPosition = {
+  top: number;
+  right: number;
+};
+
+type QuickEditorDragState = {
+  startClientX: number;
+  startClientY: number;
+  startTop: number;
+  startRight: number;
+};
+
 const ADMIN_CLICK_TO_ANNOTATE_STAGE87D = 'admin tools select element first, then quick note, Enter saves';
+const ADMIN_QUICK_EDITOR_PORTAL_DRAG_STAGE87F = 'quick editor is portaled to body and draggable below topbar';
 const ADMIN_DIALOG_STACK_FIX_STAGE87C = 'superseded by Stage87D click-to-annotate quick editor';
 const ADMIN_DIALOG_DRAG_LOWER_STAGE87B = 'superseded by Stage87D click-to-annotate quick editor';
+
+const DEFAULT_QUICK_EDITOR_POSITION: QuickEditorPosition = {
+  top: 136,
+  right: 24,
+};
 
 const REVIEW_PRESETS = [
   'PrzenieĹ›Ä‡ wyĹĽej',
@@ -73,6 +92,17 @@ function isVisible(element: HTMLElement) {
   const rect = element.getBoundingClientRect();
   const style = window.getComputedStyle(element);
   return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+}
+
+function clampQuickEditorPosition(next: QuickEditorPosition): QuickEditorPosition {
+  if (typeof window === 'undefined') return next;
+  const maxTop = Math.max(96, window.innerHeight - 180);
+  const maxRight = Math.max(12, window.innerWidth - 180);
+
+  return {
+    top: Math.max(84, Math.min(maxTop, Math.round(next.top))),
+    right: Math.max(8, Math.min(maxRight, Math.round(next.right))),
+  };
 }
 
 function candidateToButtonSnapshot(candidate: AdminTargetCandidate) {
@@ -144,6 +174,8 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
   const [bugCount, setBugCount] = useState(() => readBugItems().length);
   const [buttonSnapshots, setButtonSnapshots] = useState(() => readButtonSnapshots());
   const [lastSaveMessage, setLastSaveMessage] = useState('');
+  const [quickEditorPosition, setQuickEditorPosition] = useState<QuickEditorPosition>(DEFAULT_QUICK_EDITOR_POSITION);
+  const [quickEditorDragState, setQuickEditorDragState] = useState<QuickEditorDragState | null>(null);
 
   const canPickElement =
     activeTool === 'copy'
@@ -165,6 +197,33 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
   }, [lastSaveMessage]);
 
   useEffect(() => () => clearAdminTargetMarks(), []);
+
+  useEffect(() => {
+    if (!quickEditorDragState) return;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      event.preventDefault();
+      const deltaX = event.clientX - quickEditorDragState.startClientX;
+      const deltaY = event.clientY - quickEditorDragState.startClientY;
+      const nextPosition = clampQuickEditorPosition({
+        top: quickEditorDragState.startTop + deltaY,
+        right: quickEditorDragState.startRight - deltaX,
+      });
+      setQuickEditorPosition(nextPosition);
+    };
+
+    const stopDrag = () => setQuickEditorDragState(null);
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', stopDrag, { once: true });
+    window.addEventListener('pointercancel', stopDrag, { once: true });
+
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', stopDrag);
+      window.removeEventListener('pointercancel', stopDrag);
+    };
+  }, [quickEditorDragState]);
 
   useEffect(() => {
     if (!canPickElement) return;
@@ -350,6 +409,28 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
     });
   };
 
+  const startQuickEditorDrag = (event: ReactPointerEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('button, input, textarea, select, a')) return;
+    event.preventDefault();
+    setQuickEditorDragState({
+      startClientX: event.clientX,
+      startClientY: event.clientY,
+      startTop: quickEditorPosition.top,
+      startRight: quickEditorPosition.right,
+    });
+  };
+
+  const resetQuickEditorPosition = () => {
+    setQuickEditorPosition(DEFAULT_QUICK_EDITOR_POSITION);
+  };
+
+  const getQuickEditorStyle = (): CSSProperties => ({
+    top: quickEditorPosition.top,
+    right: quickEditorPosition.right,
+    bottom: 'auto',
+  });
+
   const toolHint = (() => {
     if (activeTool === 'bug') return 'BUG: kliknij element na stronie, wpisz co nie dziaĹ‚a i naciĹ›nij Enter.';
     if (activeTool === 'copy') return 'COPY: kliknij tekst/przycisk, wpisz nowÄ… treĹ›Ä‡ i naciĹ›nij Enter.';
@@ -364,82 +445,30 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
       ? 'Copy Review'
       : 'UI Review';
 
-  return (
-    <div className="admin-debug-toolbar" data-admin-tool-ui="true" data-admin-debug-toolbar-stage87="true" data-admin-click-to-annotate-stage87d="true">
-      <button type="button" className={activeTool === 'review' ? 'active' : ''} onClick={() => chooseTool('review')} data-admin-tool-ui="true">
-        Review {reviewCount ? <span>{reviewCount}</span> : null}
-      </button>
-      <button type="button" className={activeTool === 'buttons' ? 'active' : ''} onClick={scanButtons} data-admin-tool-ui="true">
-        Buttons {buttonSnapshots.length ? <span>{buttonSnapshots.length}</span> : null}
-      </button>
-      <button type="button" className={activeTool === 'bug' ? 'active' : ''} onClick={() => chooseTool('bug')} data-admin-tool-ui="true">
-        Bug {bugCount ? <span>{bugCount}</span> : null}
-      </button>
-      <button type="button" className={activeTool === 'copy' ? 'active' : ''} onClick={() => chooseTool('copy')} data-admin-tool-ui="true">
-        Copy {copyCount ? <span>{copyCount}</span> : null}
-      </button>
-      <button type="button" className={activeTool === 'export' ? 'active' : ''} onClick={() => chooseTool('export')} data-admin-tool-ui="true">
-        Export
-      </button>
-
+  const floatingAdminTools = (
+    <>
       {toolHint ? <div className="admin-tool-mode-hint" data-admin-tool-ui="true">{toolHint}</div> : null}
       {lastSaveMessage ? <div className="admin-tool-save-toast" data-admin-tool-ui="true">{lastSaveMessage}</div> : null}
 
-      {activeTool === 'review' ? (
-        <div className="admin-tool-popover" data-admin-tool-ui="true">
-          <strong>UI Review Mode</strong>
-          <div className="admin-tool-segment">
-            {(['off', 'collect', 'browse'] as AdminReviewMode[]).map((mode) => (
-              <button key={mode} type="button" className={reviewMode === mode ? 'active' : ''} onClick={() => setReviewMode(mode)} data-admin-tool-ui="true">
-                {mode === 'off' ? 'OFF' : mode === 'collect' ? 'Zbieraj' : 'Browse'}
-              </button>
-            ))}
-          </div>
-          <small>{reviewMode === 'collect' ? 'Kliknij element, wpisz uwagÄ™, Enter zapisuje.' : 'Browse przepuszcza klikniÄ™cia normalnie.'}</small>
-        </div>
-      ) : null}
-
-      {activeTool === 'buttons' ? (
-        <div className="admin-tool-popover admin-tool-wide" data-admin-tool-ui="true">
-          <div className="admin-tool-row">
-            <strong>Button Matrix</strong>
-            <button type="button" onClick={scanButtons} data-admin-tool-ui="true">Skanuj ponownie</button>
-          </div>
-          <div className="admin-button-list">
-            {buttonSnapshots.length ? buttonSnapshots.map((item) => (
-              <div key={item.id} className="admin-button-row">
-                <div>
-                  <strong>{item.text || item.selectorHint || item.tag}</strong>
-                  <small>{item.route} Â· {item.tag} Â· {item.visible ? 'visible' : 'hidden'} Â· {item.disabled ? 'disabled' : 'enabled'}</small>
-                </div>
-                <select value={item.qaStatus} onChange={(event) => updateButtonStatus(item.id, event.target.value as any)} data-admin-tool-ui="true">
-                  <option value="unchecked">unchecked</option>
-                  <option value="ok">OK</option>
-                  <option value="bug">Nie dziaĹ‚a</option>
-                  <option value="move">PrzenieĹ›Ä‡</option>
-                  <option value="rename">ZĹ‚y tekst</option>
-                  <option value="remove">UsuĹ„</option>
-                </select>
-              </div>
-            )) : <small>Brak skanu na tej trasie.</small>}
-          </div>
-        </div>
-      ) : null}
-
-      {activeTool === 'export' ? (
-        <div className="admin-tool-popover" data-admin-tool-ui="true">
-          <strong>Export Center</strong>
-          <button type="button" onClick={exportAdminFeedbackJson} data-admin-tool-ui="true">Pobierz JSON</button>
-          <button type="button" onClick={exportAdminFeedbackMarkdown} data-admin-tool-ui="true">Pobierz Markdown</button>
-          <small>Pliki trafiÄ… do Downloads przez mechanizm przeglÄ…darki.</small>
-        </div>
-      ) : null}
-
       {targetDialog ? (
-        <div className={`admin-tool-quick-editor admin-tool-quick-editor-${targetDialog.mode}`} data-admin-tool-ui="true" data-admin-click-to-annotate-editor-stage87d="true">
-          <div className="admin-tool-row admin-tool-quick-editor-head">
+        <div
+          className={`admin-tool-quick-editor admin-tool-quick-editor-${targetDialog.mode}`}
+          style={getQuickEditorStyle()}
+          data-admin-tool-ui="true"
+          data-admin-click-to-annotate-editor-stage87d="true"
+          data-admin-quick-editor-portal-drag-stage87f="true"
+        >
+          <div
+            className="admin-tool-row admin-tool-quick-editor-head"
+            onPointerDown={startQuickEditorDrag}
+            data-admin-tool-ui="true"
+            title="PrzeciÄ…gnij okno"
+          >
             <strong>{quickEditorTitle}</strong>
-            <button type="button" onClick={closeQuickEditor} data-admin-tool-ui="true">Zamknij</button>
+            <div className="admin-tool-row admin-tool-quick-editor-head-actions">
+              <button type="button" onClick={resetQuickEditorPosition} data-admin-tool-ui="true">Reset pozycji</button>
+              <button type="button" onClick={closeQuickEditor} data-admin-tool-ui="true">Zamknij</button>
+            </div>
           </div>
 
           <div className="admin-target-card">
@@ -507,10 +536,91 @@ export default function AdminDebugToolbar({ currentSection }: Props) {
           ) : null}
         </div>
       ) : null}
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      <div
+        className="admin-debug-toolbar"
+        data-admin-tool-ui="true"
+        data-admin-debug-toolbar-stage87="true"
+        data-admin-click-to-annotate-stage87d="true"
+        data-admin-quick-editor-portal-drag-stage87f="true"
+      >
+        <button type="button" className={activeTool === 'review' ? 'active' : ''} onClick={() => chooseTool('review')} data-admin-tool-ui="true">
+          Review {reviewCount ? <span>{reviewCount}</span> : null}
+        </button>
+        <button type="button" className={activeTool === 'buttons' ? 'active' : ''} onClick={scanButtons} data-admin-tool-ui="true">
+          Buttons {buttonSnapshots.length ? <span>{buttonSnapshots.length}</span> : null}
+        </button>
+        <button type="button" className={activeTool === 'bug' ? 'active' : ''} onClick={() => chooseTool('bug')} data-admin-tool-ui="true">
+          Bug {bugCount ? <span>{bugCount}</span> : null}
+        </button>
+        <button type="button" className={activeTool === 'copy' ? 'active' : ''} onClick={() => chooseTool('copy')} data-admin-tool-ui="true">
+          Copy {copyCount ? <span>{copyCount}</span> : null}
+        </button>
+        <button type="button" className={activeTool === 'export' ? 'active' : ''} onClick={() => chooseTool('export')} data-admin-tool-ui="true">
+          Export
+        </button>
+
+        {activeTool === 'review' ? (
+          <div className="admin-tool-popover" data-admin-tool-ui="true">
+            <strong>UI Review Mode</strong>
+            <div className="admin-tool-segment">
+              {(['off', 'collect', 'browse'] as AdminReviewMode[]).map((mode) => (
+                <button key={mode} type="button" className={reviewMode === mode ? 'active' : ''} onClick={() => setReviewMode(mode)} data-admin-tool-ui="true">
+                  {mode === 'off' ? 'OFF' : mode === 'collect' ? 'Zbieraj' : 'Browse'}
+                </button>
+              ))}
+            </div>
+            <small>{reviewMode === 'collect' ? 'Kliknij element, wpisz uwagÄ™, Enter zapisuje.' : 'Browse przepuszcza klikniÄ™cia normalnie.'}</small>
+          </div>
+        ) : null}
+
+        {activeTool === 'buttons' ? (
+          <div className="admin-tool-popover admin-tool-wide" data-admin-tool-ui="true">
+            <div className="admin-tool-row">
+              <strong>Button Matrix</strong>
+              <button type="button" onClick={scanButtons} data-admin-tool-ui="true">Skanuj ponownie</button>
+            </div>
+            <div className="admin-button-list">
+              {buttonSnapshots.length ? buttonSnapshots.map((item) => (
+                <div key={item.id} className="admin-button-row">
+                  <div>
+                    <strong>{item.text || item.selectorHint || item.tag}</strong>
+                    <small>{item.route} Â· {item.tag} Â· {item.visible ? 'visible' : 'hidden'} Â· {item.disabled ? 'disabled' : 'enabled'}</small>
+                  </div>
+                  <select value={item.qaStatus} onChange={(event) => updateButtonStatus(item.id, event.target.value as any)} data-admin-tool-ui="true">
+                    <option value="unchecked">unchecked</option>
+                    <option value="ok">OK</option>
+                    <option value="bug">Nie dziaĹ‚a</option>
+                    <option value="move">PrzenieĹ›Ä‡</option>
+                    <option value="rename">ZĹ‚y tekst</option>
+                    <option value="remove">UsuĹ„</option>
+                  </select>
+                </div>
+              )) : <small>Brak skanu na tej trasie.</small>}
+            </div>
+          </div>
+        ) : null}
+
+        {activeTool === 'export' ? (
+          <div className="admin-tool-popover" data-admin-tool-ui="true">
+            <strong>Export Center</strong>
+            <button type="button" onClick={exportAdminFeedbackJson} data-admin-tool-ui="true">Pobierz JSON</button>
+            <button type="button" onClick={exportAdminFeedbackMarkdown} data-admin-tool-ui="true">Pobierz Markdown</button>
+            <small>Pliki trafiÄ… do Downloads przez mechanizm przeglÄ…darki.</small>
+          </div>
+        ) : null}
+      </div>
+
+      {typeof document !== 'undefined' ? createPortal(floatingAdminTools, document.body) : null}
+    </>
   );
 }
 
 // ADMIN_DEBUG_TOOLBAR_STAGE87
 // ADMIN_DEBUG_TOOLBAR_NO_BACKEND_STAGE87
 // ADMIN_CLICK_TO_ANNOTATE_STAGE87D
+// ADMIN_QUICK_EDITOR_PORTAL_DRAG_STAGE87F
