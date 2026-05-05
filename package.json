@@ -208,7 +208,7 @@
     "verify:client-detail-operational-ui": "npm.cmd run check:stage53-client-operational-recent-moves && npm.cmd run check:stage54-client-cases-compact-fit && npm.cmd run check:stage55-client-case-operational-pack && npm.cmd run verify:ui-contrast",
     "check:stage56-case-quick-actions-dictation-dedupe": "node scripts/check-stage56-case-quick-actions-dictation-dedupe.cjs",
     "test:stage56-case-quick-actions-dictation-dedupe": "node --test tests/stage56-case-quick-actions-dictation-dedupe.test.cjs",
-    "verify:case-operational-ui": "npm.cmd run check:stage56-case-quick-actions-dictation-dedupe && npm.cmd run check:stage57-case-create-action-hub && npm.cmd run check:stage58-case-recent-moves-panel && npm.cmd run check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run check:stage63-case-main-note-header-button-remove && npm.cmd run verify:client-detail-operational-ui && npm.cmd run verify:ui-contrast && npm.cmd run check:stage64-case-detail-work-item-dedupe && npm.cmd run check:stage66-case-history-passive-copy",
+    "verify:case-operational-ui": "npm.cmd run check:stage56-case-quick-actions-dictation-dedupe && npm.cmd run check:stage57-case-create-action-hub && npm.cmd run check:stage58-case-recent-moves-panel && npm.cmd run check:stage59-case-note-follow-up-prompt && npm.cmd run check:stage60-case-action-copy-note-dedupe && npm.cmd run check:stage61-case-note-action-button-swap && npm.cmd run check:stage62-case-important-actions-header-note-button-remove && npm.cmd run check:stage63-case-main-note-header-button-remove && npm.cmd run verify:client-detail-operational-ui && npm.cmd run verify:ui-contrast && npm.cmd run check:stage64-case-detail-work-item-dedupe && npm.cmd run check:stage66-case-history-passive-copy && npm.cmd run check:stage68p-case-history-package-final",
     "check:stage57-case-create-action-hub": "node scripts/check-stage57-case-create-action-hub.cjs",
     "test:stage57-case-create-action-hub": "node --test tests/stage57-case-create-action-hub.test.cjs",
     "verify:case-create-flow": "npm.cmd run check:stage56-case-quick-actions-dictation-dedupe && npm.cmd run check:stage57-case-create-action-hub",
@@ -231,7 +231,9 @@
     "check:stage66-case-history-passive-copy": "node scripts/check-stage66-case-history-passive-copy.cjs",
     "test:stage66-case-history-passive-copy": "node --test tests/stage66-case-history-passive-copy.test.cjs",
     "check:stage67-package-json-hygiene": "node scripts/check-stage67-package-json-hygiene.cjs",
-    "test:stage67-package-json-hygiene": "node --test tests/stage67-package-json-hygiene.test.cjs"
+    "test:stage67-package-json-hygiene": "node --test tests/stage67-package-json-hygiene.test.cjs",
+    "check:stage68p-case-history-package-final": "node scripts/check-stage68p-case-history-package-final.cjs",
+    "test:stage68p-case-history-package-final": "node --test tests/stage68p-case-history-package-final.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

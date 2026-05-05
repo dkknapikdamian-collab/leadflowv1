@@ -1,3 +1,4 @@
+/* STAGE68P_CASE_HISTORY_PACKAGE_FINAL */
 /* STAGE66_CASE_HISTORY_PASSIVE_COPY */
 /* STAGE64_CASE_DETAIL_WORK_ITEM_DEDUPE */
 /* STAGE63_CASE_MAIN_NOTE_HEADER_BUTTON_REMOVE */
@@ -347,19 +348,19 @@ function getActivityText(activity: CaseActivity) {
   const title = activity.payload?.title || activity.payload?.itemTitle || 'element';
 
   if (activity.eventType === 'item_added') return `Dodano brak: ${title}`;
-  if (activity.eventType === 'status_changed') return `Zmieniono status â€ž${title}â€ť na: ${getItemStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'status_changed') return `Zmieniono status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;
   if (activity.eventType === 'file_uploaded') return `Dodano plik: ${title}`;
-  if (activity.eventType === 'decision_made') return `Dodano decyzjÄ™: ${title}`;
-  if (activity.eventType === 'operator_note') return 'Dodano notatkÄ™';
+  if (activity.eventType === 'decision_made') return `Dodano decyzję: ${title}`;
+  if (activity.eventType === 'operator_note') return 'Dodano notatkę';
   if (activity.eventType === 'task_added') return `Dodano zadanie: ${title}`;
   if (activity.eventType === 'event_added') return `Dodano wydarzenie: ${title}`;
-  if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania â€ž${title}â€ť na: ${getTaskStatusLabel(activity.payload?.status)}`;
-  if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia â€ž${title}â€ť na: ${getEventStatusLabel(activity.payload?.status)}`;
-  if (activity.eventType === 'task_rescheduled') return `PrzeĹ‚oĹĽono zadanie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.scheduledAt)}`;
-  if (activity.eventType === 'event_rescheduled') return `PrzeĹ‚oĹĽono wydarzenie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.startAt)}`;
-  if (activity.eventType === 'case_lifecycle_started') return 'RozpoczÄ™to realizacjÄ™ sprawy';
-  if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawÄ™ jako zrobionÄ…';
-  if (activity.eventType === 'case_lifecycle_reopened') return 'PrzywrĂłcono sprawÄ™ do pracy';
+  if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania „${title}” na: ${getTaskStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia „${title}” na: ${getEventStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'task_rescheduled') return `Przełożono zadanie „${title}” na: ${formatDateTime(activity.payload?.scheduledAt)}`;
+  if (activity.eventType === 'event_rescheduled') return `Przełożono wydarzenie „${title}” na: ${formatDateTime(activity.payload?.startAt)}`;
+  if (activity.eventType === 'case_lifecycle_started') return 'Rozpoczęto realizację sprawy';
+  if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawę jako zrobioną';
+  if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
   return 'Dodano ruch w sprawie';
 }
 
@@ -375,6 +376,14 @@ function sortCaseItems(items: CaseItem[]) {
 function sortActivities(activities: CaseActivity[]) {
   return [...activities].sort((first, second) => sortTime(second.createdAt, 0) - sortTime(first.createdAt, 0));
 }
+function getCaseActivityActorLabel(activity: CaseActivity) {
+  return activity.actorType === 'operator' ? 'Operator' : 'Klient';
+}
+
+function getCaseActivityRecentMoveMeta(activity: CaseActivity) {
+  return getCaseRecentMoveMeta(activity);
+}
+
 function getCaseRecentMoveMeta(activity: CaseActivity) {
   const eventType = String(activity.eventType || '');
   if (eventType.includes('task')) return { label: 'Zadanie', className: 'case-detail-recent-move-dot-task' };
