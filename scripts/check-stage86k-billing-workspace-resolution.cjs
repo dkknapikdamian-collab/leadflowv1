@@ -22,7 +22,11 @@ expect(actions.includes("import { resolveRequestWorkspaceId } from './_request-s
 expect(actions.includes('resolveRequestWorkspaceId(req, body)'), 'actions must resolve workspace from verified request scope');
 expect(!actions.includes('const workspaceId = asText(auth.workspaceId)'), 'actions must not use auth.workspaceId as only workspace source');
 
-expect(fallback.includes('headers[\\'x-workspace-id\\'] = workspaceId') || fallback.includes('headers["x-workspace-id"] = workspaceId'), 'client must send x-workspace-id when stored');
+expect(
+  fallback.includes("headers['x-workspace-id'] = workspaceId") ||
+    fallback.includes('headers["x-workspace-id"] = workspaceId'),
+  'client must send x-workspace-id when stored',
+);
 expect(fallback.includes('body: JSON.stringify(input)'), 'checkout client must send workspaceId in body');
 
 if (fail.length) {

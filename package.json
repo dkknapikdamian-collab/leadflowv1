@@ -284,7 +284,9 @@
     "check:stage86b-access-gate-billing-truth": "node scripts/check-stage86b-access-gate-billing-truth.cjs",
     "test:stage86b-access-gate-billing-truth": "node --test tests/stage86b-access-gate-billing-truth.test.cjs",
     "check:stage86d-access-gate-block-call": "node scripts/check-stage86d-access-gate-block-call.cjs",
-    "test:stage86d-access-gate-block-call": "node --test tests/stage86d-access-gate-block-call.test.cjs"
+    "test:stage86d-access-gate-block-call": "node --test tests/stage86d-access-gate-block-call.test.cjs",
+    "check:stage86k-billing-workspace-resolution": "node scripts/check-stage86k-billing-workspace-resolution.cjs",
+    "test:stage86k-billing-workspace-resolution": "node --test tests/stage86k-billing-workspace-resolution.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
