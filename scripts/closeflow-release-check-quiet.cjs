@@ -128,6 +128,7 @@ const requiredTests = [
   'tests/today-ai-drafts-tile-stage29.test.cjs',
   'tests/stage29d-today-ai-drafts-compact-tile.test.cjs',
   'tests/supabase-first-readiness-stage16.test.cjs',
+  'tests/stage94-ai-layer-separation-copy.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

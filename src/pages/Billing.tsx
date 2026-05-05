@@ -106,8 +106,8 @@ const BILLING_PLANS: PlanCard[] = [
     description: 'Plan przygotowany pod dodatki AI i większy zakres automatyzacji.',
     features: [
       'Wszystko z Pro',
-      'Pełny asystent AI Beta, po konfiguracji providera',
-      'Wyszukiwanie danych aplikacji, sugestie follow-upów i szkice do ręcznego zatwierdzenia',
+      'Asystent aplikacji i dyktowanie AI w trybie warunkowym (provider + env)',
+      'AI lokalne/regułowe i szkice do ręcznego zatwierdzenia działają także bez zewnętrznego modelu',
     ],
     availabilityHint: 'Beta. Wymaga konfiguracji AI w Vercel. Nie obiecujemy funkcji, które nie są jeszcze realnie podpięte.',
   },
@@ -181,7 +181,7 @@ const LIMIT_ITEMS = [
   { name: 'Szkice do sprawdzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
   { name: 'Parser tekstu', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
   { name: 'Google Calendar', basic: 'Nie', pro: 'W przygotowaniu', ai: 'W przygotowaniu' },
-  { name: 'Pełny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Beta' },
+  { name: 'Asystent AI (provider + env)', basic: 'Nie', pro: 'Nie', ai: 'Warunkowy' },
   { name: 'Raport tygodniowy', basic: 'Nie', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
 ];
 const SETTLEMENT_STATUS_LABELS: Record<string, string> = {
@@ -674,7 +674,7 @@ export default function Billing() {
                   <Sparkles className="h-4 w-4" />
                   <h2>AI jako dodatek Beta</h2>
                 </div>
-                <small>Szkice AI i asystent są w trybie Beta. Jeśli provider AI nie jest skonfigurowany, funkcja wymaga konfiguracji w Vercel.</small>
+                <small>Warstwy AI: lokalne/regułowe (bez modelu), asystent aplikacji (czyta dane i zapisuje szkice), zewnętrzny model dopiero po konfiguracji providera i env w Vercel.</small>
               </section>
             </aside>
           </div>
