@@ -6,6 +6,7 @@ import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateByI
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { assertWorkspaceWriteAccess } from './_access-gate.js';
 import { writeAuthErrorResponse } from './_supabase-auth.js';
+import { normalizePaymentContract } from '../lib/data-contract.js';
 
 const PAYMENT_TYPES = new Set(['deposit', 'partial', 'final', 'commission', 'recurring', 'manual']);
 const PAYMENT_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
@@ -43,22 +44,30 @@ function isMissingPaymentsTableError(error: unknown) {
 }
 
 function normalizePayment(row: Record<string, unknown>) {
-  return {
-    id: String(row.id || crypto.randomUUID()),
-    workspaceId: asText(row.workspace_id || row.workspaceId),
-    clientId: asText(row.client_id || row.clientId) || null,
-    leadId: asText(row.lead_id || row.leadId) || null,
-    caseId: asText(row.case_id || row.caseId) || null,
-    type: normalizeEnum(row.type, PAYMENT_TYPES, 'partial'),
-    status: normalizeEnum(row.status, PAYMENT_STATUSES, 'not_started'),
-    amount: asNumber(row.amount),
-    currency: asText(row.currency) || 'PLN',
-    paidAt: row.paid_at || row.paidAt || null,
-    dueAt: row.due_at || row.dueAt || null,
-    note: asText(row.note),
-    createdAt: row.created_at || row.createdAt || null,
-    updatedAt: row.updated_at || row.updatedAt || null,
-  };
+  return normalizePaymentContract(row);
+}
+
+function normalizeCurrency(value: unknown) {
+  const normalized = asText(value).toUpperCase();
+  return /^[A-Z]{3}$/.test(normalized) ? normalized : 'PLN';
+}
+
+const PAID_PAYMENT_STATUSES = new Set(['deposit_paid', 'partially_paid', 'fully_paid', 'paid']);
+
+async function recalculateCasePaidAmount(workspaceId: string, caseId: string) {
+  if (!workspaceId || !caseId) return;
+  const statuses = Array.from(PAID_PAYMENT_STATUSES).join(',');
+  const result = await selectFirstAvailable([
+    withWorkspaceFilter(`payments?select=amount,status,currency&case_id=eq.${encodeURIComponent(caseId)}&status=in.(${statuses})&limit=500`, workspaceId),
+  ]).catch(() => ({ data: [] as Record<string, unknown>[] }));
+  const rows = Array.isArray(result.data) ? result.data as Record<string, unknown>[] : [];
+  const paidAmount = rows.reduce((acc, row) => acc + asNumber(row.amount), 0);
+  const currency = normalizeCurrency(rows[0]?.currency);
+  await updateById('cases', caseId, {
+    paid_amount: paidAmount,
+    currency,
+    updated_at: new Date().toISOString(),
+  }).catch(() => null);
 }
 
 export default async function handler(req: any, res: any) {
@@ -135,7 +144,7 @@ export default async function handler(req: any, res: any) {
         type: normalizeEnum(body.type, PAYMENT_TYPES, 'partial'),
         status: normalizeEnum(body.status, PAYMENT_STATUSES, 'not_started'),
         amount: asNumber(body.amount),
-        currency: asText(body.currency) || 'PLN',
+        currency: normalizeCurrency(body.currency),
         paid_at: toIso(body.paidAt),
         due_at: toIso(body.dueAt),
         note: asText(body.note) || null,
@@ -144,6 +153,7 @@ export default async function handler(req: any, res: any) {
       };
       const result = await insertWithVariants(['payments'], [payload]);
       const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
+      if (caseId) await recalculateCasePaidAmount(finalWorkspaceId, caseId);
       res.status(200).json(normalizePayment(inserted as Record<string, unknown>));
       return;
     }
@@ -155,6 +165,7 @@ export default async function handler(req: any, res: any) {
         return;
       }
       await requireScopedRow('payments', id, workspaceId, 'PAYMENT_NOT_FOUND');
+      const currentPayment = await requireScopedRow('payments', id, workspaceId, 'PAYMENT_NOT_FOUND');
       const clientId = body.clientId !== undefined ? asNullableUuid(body.clientId) : null;
       const leadId = body.leadId !== undefined ? asNullableUuid(body.leadId) : null;
       const caseId = body.caseId !== undefined ? asNullableUuid(body.caseId) : null;
@@ -168,12 +179,16 @@ export default async function handler(req: any, res: any) {
       if (body.type !== undefined) payload.type = normalizeEnum(body.type, PAYMENT_TYPES, 'partial');
       if (body.status !== undefined) payload.status = normalizeEnum(body.status, PAYMENT_STATUSES, 'not_started');
       if (body.amount !== undefined) payload.amount = asNumber(body.amount);
-      if (body.currency !== undefined) payload.currency = asText(body.currency) || 'PLN';
+      if (body.currency !== undefined) payload.currency = normalizeCurrency(body.currency);
       if (body.paidAt !== undefined) payload.paid_at = toIso(body.paidAt);
       if (body.dueAt !== undefined) payload.due_at = toIso(body.dueAt);
       if (body.note !== undefined) payload.note = asText(body.note) || null;
       const data = await updateById('payments', id, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id, ...payload };
+      const previousCaseId = asText(currentPayment.case_id || currentPayment.caseId);
+      const nextCaseId = asText(updated.case_id || updated.caseId || caseId);
+      if (previousCaseId) await recalculateCasePaidAmount(workspaceId, previousCaseId);
+      if (nextCaseId && nextCaseId !== previousCaseId) await recalculateCasePaidAmount(workspaceId, nextCaseId);
       res.status(200).json(normalizePayment(updated as Record<string, unknown>));
       return;
     }
@@ -184,8 +199,10 @@ export default async function handler(req: any, res: any) {
         res.status(400).json({ error: 'PAYMENT_ID_REQUIRED' });
         return;
       }
-      await requireScopedRow('payments', id, workspaceId, 'PAYMENT_NOT_FOUND');
+      const currentPayment = await requireScopedRow('payments', id, workspaceId, 'PAYMENT_NOT_FOUND');
       await deleteById('payments', id);
+      const previousCaseId = asText(currentPayment.case_id || currentPayment.caseId);
+      if (previousCaseId) await recalculateCasePaidAmount(workspaceId, previousCaseId);
       res.status(200).json({ ok: true, id });
       return;
     }

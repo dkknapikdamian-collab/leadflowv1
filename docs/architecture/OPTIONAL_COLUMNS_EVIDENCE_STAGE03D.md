@@ -81,6 +81,7 @@ Do not remove a column from fallback or promote it to required until one of thes
 | leads | `moved_to_service_at` | fallback_allowed_pending_migration_evidence | Lead fields are used by current API/UI/Google Calendar flows, but production schema evidence is not locked in this stage. |
 | leads | `lead_visibility` | fallback_allowed_pending_migration_evidence | Lead fields are used by current API/UI/Google Calendar flows, but production schema evidence is not locked in this stage. |
 | leads | `sales_outcome` | fallback_allowed_pending_migration_evidence | Lead fields are used by current API/UI/Google Calendar flows, but production schema evidence is not locked in this stage. |
+| leads | `currency` | fallback_allowed_pending_migration_evidence | Lead financial contract now carries currency, but migration rollout evidence is still required before making it hard-required in every environment. |
 | leads | `google_calendar_id` | fallback_allowed_pending_migration_evidence | Lead fields are used by current API/UI/Google Calendar flows, but production schema evidence is not locked in this stage. |
 | leads | `google_calendar_event_id` | fallback_allowed_pending_migration_evidence | Lead fields are used by current API/UI/Google Calendar flows, but production schema evidence is not locked in this stage. |
 | leads | `google_calendar_event_etag` | fallback_allowed_pending_migration_evidence | Lead fields are used by current API/UI/Google Calendar flows, but production schema evidence is not locked in this stage. |
@@ -96,6 +97,9 @@ Do not remove a column from fallback or promote it to required until one of thes
 | cases | `last_activity_at` | fallback_allowed_pending_migration_evidence | Case fields are used during lead-to-case handoff, but production schema evidence is not locked in this stage. |
 | cases | `created_from_lead` | fallback_allowed_pending_migration_evidence | Case fields are used during lead-to-case handoff, but production schema evidence is not locked in this stage. |
 | cases | `service_started_at` | fallback_allowed_pending_migration_evidence | Case fields are used during lead-to-case handoff, but production schema evidence is not locked in this stage. |
+| cases | `expected_revenue` | fallback_allowed_pending_migration_evidence | Case financial baseline (potential revenue) is now part of runtime contract, but rollout evidence still controls when fallback can be removed. |
+| cases | `paid_amount` | fallback_allowed_pending_migration_evidence | Case financial baseline (paid amount) is now part of runtime contract, but rollout evidence still controls when fallback can be removed. |
+| cases | `currency` | fallback_allowed_pending_migration_evidence | Case financial baseline (currency) is now part of runtime contract, but rollout evidence still controls when fallback can be removed. |
 | activities | `owner_id` | fallback_allowed_pending_migration_evidence | Activity fields are used for audit/history inserts, but production schema evidence is not locked in this stage. |
 | activities | `actor_id` | fallback_allowed_pending_migration_evidence | Activity fields are used for audit/history inserts, but production schema evidence is not locked in this stage. |
 | activities | `actor_type` | fallback_allowed_pending_migration_evidence | Activity fields are used for audit/history inserts, but production schema evidence is not locked in this stage. |

@@ -25,6 +25,7 @@ export const DATA_CONTRACT_FIELD_MAP = {
     source: ['source', 'sourceLabel', 'source_label', 'sourceType', 'source_type'],
     status: ['status'],
     dealValue: ['dealValue', 'deal_value', 'value', 'amount', 'estimatedValue', 'estimated_value'],
+    currency: ['currency', 'dealCurrency', 'deal_currency'],
     priority: ['priority'],
     createdAt: ['createdAt', 'created_at'],
     updatedAt: ['updatedAt', 'updated_at'],
@@ -59,6 +60,10 @@ export const DATA_CONTRACT_FIELD_MAP = {
     status: ['status'],
     completenessPercent: ['completenessPercent', 'completeness_percent', 'completionPercent', 'completion_percent'],
     portalReady: ['portalReady', 'portal_ready'],
+    expectedRevenue: ['expectedRevenue', 'expected_revenue', 'dealValue', 'deal_value', 'value', 'amount'],
+    paidAmount: ['paidAmount', 'paid_amount'],
+    remainingAmount: ['remainingAmount', 'remaining_amount'],
+    currency: ['currency', 'dealCurrency', 'deal_currency'],
     startedAt: ['startedAt', 'started_at', 'serviceStartedAt', 'service_started_at'],
     createdAt: ['createdAt', 'created_at'],
     updatedAt: ['updatedAt', 'updated_at'],
@@ -156,6 +161,7 @@ export type LeadDto = DataRecord & {
   source: string;
   status: string;
   dealValue: number;
+  currency: string;
   priority: string;
   createdAt: string | null;
   updatedAt: string | null;
@@ -193,6 +199,10 @@ export type CaseDto = DataRecord & {
   status: string;
   completenessPercent: number;
   portalReady: boolean;
+  expectedRevenue: number;
+  paidAmount: number;
+  remainingAmount: number;
+  currency: string;
   startedAt: string | null;
   createdAt: string | null;
   updatedAt: string | null;
@@ -462,6 +472,11 @@ function clampPercent(value: number) {
   return Math.max(0, Math.min(100, Math.round(Number.isFinite(value) ? value : 0)));
 }
 
+function normalizeCurrency(value: unknown, fallback = 'PLN') {
+  const normalized = typeof value === 'string' ? value.trim().toUpperCase() : '';
+  return /^[A-Z]{3}$/.test(normalized) ? normalized : fallback;
+}
+
 export function normalizeLeadContract(row: DataRecord): LeadDto {
   const status = normalizeLeadStatus(row.status);
   const linkedCaseId = pickOptionalText(row, ['linkedCaseId', 'linked_case_id', 'caseId', 'case_id']);
@@ -486,6 +501,7 @@ export function normalizeLeadContract(row: DataRecord): LeadDto {
     source: pickText(row, ['source', 'sourceLabel', 'source_label', 'sourceType', 'source_type'], 'other'),
     status,
     dealValue: pickNumber(row, ['dealValue', 'deal_value', 'value', 'amount', 'estimatedValue', 'estimated_value'], 0),
+    currency: normalizeCurrency(pickText(row, ['currency', 'dealCurrency', 'deal_currency'], 'PLN')),
     priority: normalizePriority(row.priority),
     createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
     updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
@@ -518,6 +534,12 @@ export function normalizeClientContract(row: DataRecord): ClientDto {
 }
 
 export function normalizeCaseContract(row: DataRecord): CaseDto {
+  const expectedRevenue = pickNumber(row, ['expectedRevenue', 'expected_revenue', 'dealValue', 'deal_value', 'value', 'amount'], 0);
+  const paidAmount = pickNumber(row, ['paidAmount', 'paid_amount'], 0);
+  const remainingFromRow = pickNumber(row, ['remainingAmount', 'remaining_amount'], Number.NaN);
+  const remainingAmount = Number.isFinite(remainingFromRow)
+    ? Math.max(0, remainingFromRow)
+    : Math.max(0, expectedRevenue - paidAmount);
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),
@@ -529,6 +551,10 @@ export function normalizeCaseContract(row: DataRecord): CaseDto {
     status: normalizeCaseStatus(row.status),
     completenessPercent: clampPercent(pickNumber(row, ['completenessPercent', 'completeness_percent', 'completionPercent', 'completion_percent'], 0)),
     portalReady: pickBoolean(row, ['portalReady', 'portal_ready'], false),
+    expectedRevenue: Math.max(0, expectedRevenue),
+    paidAmount: Math.max(0, paidAmount),
+    remainingAmount,
+    currency: normalizeCurrency(pickText(row, ['currency', 'dealCurrency', 'deal_currency'], 'PLN')),
     startedAt: toIsoDateTime(row.startedAt) || toIsoDateTime(row.started_at) || toIsoDateTime(row.serviceStartedAt) || toIsoDateTime(row.service_started_at),
     createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
     updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
@@ -643,7 +669,7 @@ export function normalizePaymentContract(row: DataRecord): NormalizedPaymentReco
     type: pickText(row, ['type'], 'manual'),
     status: normalizeBillingStatus(row.status, 'not_started'),
     amount: pickNumber(row, ['amount', 'value', 'total'], 0),
-    currency: pickText(row, ['currency'], 'PLN').toUpperCase(),
+    currency: normalizeCurrency(pickText(row, ['currency'], 'PLN')),
     paidAt: toIsoDateTime(row.paidAt) || toIsoDateTime(row.paid_at),
     dueAt: toIsoDateTime(row.dueAt) || toIsoDateTime(row.due_at),
     note: pickText(row, ['note', 'notes'], ''),

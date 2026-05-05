@@ -57,6 +57,7 @@ const OPTIONAL_LEAD_COLUMNS = new Set([
   'moved_to_service_at',
   'lead_visibility',
   'sales_outcome',
+  'currency',
   'google_calendar_id',
   'google_calendar_event_id',
   'google_calendar_event_etag',
@@ -65,7 +66,7 @@ const OPTIONAL_LEAD_COLUMNS = new Set([
   'google_calendar_sync_status',
   'google_calendar_sync_error',
 ]);
-const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at']);
+const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'currency']);
 const OPTIONAL_ACTIVITY_COLUMNS = new Set(['owner_id', 'actor_id', 'actor_type', 'event_type', 'payload', 'lead_id', 'case_id', 'workspace_id', 'created_at', 'updated_at']);
 
 const LEAD_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<'leads' | 'cases' | 'activities', Set<string>> = {
@@ -126,6 +127,20 @@ function normalizeEnum(value: unknown, allowed: Set<string>, fallback: string) {
 
 function normalizeNextActionTitle(value: unknown) {
   return asText(value);
+}
+
+function normalizeCurrency(value: unknown) {
+  const normalized = asText(value).toUpperCase();
+  return /^[A-Z]{3}$/.test(normalized) ? normalized : 'PLN';
+}
+
+function sumPartialPayments(value: unknown) {
+  if (!Array.isArray(value)) return 0;
+  return value.reduce((acc, row) => {
+    if (!row || typeof row !== 'object') return acc;
+    const amount = Number((row as Record<string, unknown>).amount || 0);
+    return Number.isFinite(amount) && amount > 0 ? acc + amount : acc;
+  }, 0);
 }
 
 function normalizeLead(row: Record<string, unknown>) {
@@ -387,6 +402,9 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
     status: caseStatus,
     billing_status: normalizeEnum(leadRow.billing_status || leadRow.billingStatus, BILLING_STATUSES, 'not_started'),
     billing_model_snapshot: normalizeEnum(leadRow.billing_model_snapshot || leadRow.billingModelSnapshot, BILLING_MODELS, 'manual'),
+    expected_revenue: Number(leadRow.value || leadRow.deal_value || 0) || 0,
+    paid_amount: sumPartialPayments(leadRow.partial_payments || leadRow.partialPayments),
+    currency: normalizeCurrency(leadRow.currency),
     completeness_percent: 0,
     portal_ready: false,
     started_at: caseStatus === 'in_progress' ? nowIso : null,
@@ -717,6 +735,7 @@ export default async function handler(req: any, res: any) {
       if (body.phone !== undefined) payload.phone = asText(body.phone);
       if (body.source !== undefined) payload.source = normalizeSource(body.source);
       if (body.dealValue !== undefined) payload.value = Number(body.dealValue) || 0;
+      if (body.currency !== undefined) payload.currency = normalizeCurrency(body.currency);
       if (body.partialPayments !== undefined) payload.partial_payments = normalizePartialPayments(body.partialPayments);
       if (nextStatus !== undefined) payload.status = nextStatus;
       if (body.nextActionAt !== undefined) payload.next_action_at = toIsoDateTime(body.nextActionAt);
@@ -823,6 +842,7 @@ export default async function handler(req: any, res: any) {
       phone: asText(body.phone),
       source: normalizeSource(body.source),
       value: Number(body.dealValue) || 0,
+      currency: normalizeCurrency(body.currency),
       partial_payments: normalizePartialPayments(body.partialPayments),
       summary: asText(body.summary),
       notes: asText(body.notes),

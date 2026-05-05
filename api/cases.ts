@@ -10,7 +10,7 @@ import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 const CASE_STATUSES = new Set<string>(CASE_STATUS_VALUES);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
 const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_completion', 'success_fee', 'recurring', 'manual']);
-const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at']);
+const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'currency']);
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -31,6 +31,17 @@ function toIso(value: unknown) {
   if (!normalized) return null;
   const parsed = new Date(normalized);
   return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+}
+
+function asNumber(value: unknown) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.max(0, parsed);
+}
+
+function normalizeCurrency(value: unknown) {
+  const normalized = asText(value).toUpperCase();
+  return /^[A-Z]{3}$/.test(normalized) ? normalized : 'PLN';
 }
 
 function isMissingCasesTableError(error: unknown) {
@@ -274,6 +285,9 @@ export default async function handler(req: any, res: any) {
         status: normalizedStatus,
         billing_status: normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started'),
         billing_model_snapshot: normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual'),
+        expected_revenue: asNumber(body.expectedRevenue ?? body.dealValue ?? linkedLead?.value ?? linkedLead?.deal_value),
+        paid_amount: asNumber(body.paidAmount),
+        currency: normalizeCurrency(body.currency ?? linkedLead?.currency),
         completeness_percent: Number(body.completenessPercent || 0),
         portal_ready: Boolean(body.portalReady || false),
         created_from_lead: normalizedLeadId ? true : Boolean(body.createdFromLead),
@@ -356,6 +370,9 @@ export default async function handler(req: any, res: any) {
       if (body.serviceProfileId !== undefined) payload.service_profile_id = asNullableUuid(body.serviceProfileId);
       if (body.billingStatus !== undefined) payload.billing_status = normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started');
       if (body.billingModelSnapshot !== undefined) payload.billing_model_snapshot = normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual');
+      if (body.expectedRevenue !== undefined || body.dealValue !== undefined) payload.expected_revenue = asNumber(body.expectedRevenue ?? body.dealValue);
+      if (body.paidAmount !== undefined) payload.paid_amount = asNumber(body.paidAmount);
+      if (body.currency !== undefined) payload.currency = normalizeCurrency(body.currency);
       if (body.serviceStartedAt !== undefined) payload.service_started_at = toIso(body.serviceStartedAt);
       if (body.startedAt !== undefined) payload.started_at = toIso(body.startedAt);
       if (body.completedAt !== undefined) payload.completed_at = toIso(body.completedAt);

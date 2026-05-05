@@ -23,6 +23,7 @@ To była błędna ścieżka z wcześniejszych iteracji naprawczych.
 ## Aktywny plik repair
 
 - `2026-04-24_workspace_context_repair_v11_auth_users_schema_safe_casts.sql`
+- `2026-05-05_case_financial_baseline_stage88.sql`
 
 To jest aktualny repair pod realny schemat:
 
