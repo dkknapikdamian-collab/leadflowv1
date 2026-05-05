@@ -189,6 +189,15 @@ function getLinkedRecordType(value: unknown) {
   return LINKED_RECORD_TYPES.has(normalized) ? normalized : null;
 }
 
+function getLinkedTable(linkedType: string | null) {
+  if (!linkedType) return null;
+  if (linkedType === 'lead') return 'leads';
+  if (linkedType === 'task' || linkedType === 'event') return 'work_items';
+  if (linkedType === 'case') return 'cases';
+  if (linkedType === 'client') return 'clients';
+  return null;
+}
+
 export default async function handler(req: any, res: any) {
   try {
     const body = parseBody(req);
@@ -213,7 +222,7 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    await assertWorkspaceWriteAccess(workspaceId);
+    await assertWorkspaceWriteAccess(workspaceId, req);
     if (!isAiDraftCleanupMutation(req, body)) {
       await assertWorkspaceAiAllowed(workspaceId);
     }
@@ -231,6 +240,11 @@ export default async function handler(req: any, res: any) {
       const type = normalizeEnum(body.type, TYPES, 'lead');
       const status = normalizeDbStatus(body.status, 'draft');
       const linkedRecordType = getLinkedRecordType(body.linkedRecordType ?? body.linked_record_type);
+      const linkedRecordId = asText(body.linkedRecordId ?? body.linked_record_id);
+      const linkedTable = getLinkedTable(linkedRecordType);
+      if (linkedTable && linkedRecordId) {
+        await requireScopedRow(linkedTable, linkedRecordId, workspaceId, 'AI_DRAFT_LINKED_RECORD_NOT_FOUND');
+      }
       const payload: RecordMap = {
         workspace_id: workspaceId,
         user_id: asText(body.userId ?? body.user_id ?? identity.userId) || null,
@@ -247,7 +261,7 @@ export default async function handler(req: any, res: any) {
         confirmed_at: status === 'confirmed' ? nowIso : null,
         cancelled_at: status === 'cancelled' ? nowIso : null,
         converted_at: status === 'confirmed' ? nowIso : null,
-        linked_record_id: asText(body.linkedRecordId ?? body.linked_record_id) || null,
+        linked_record_id: linkedRecordId || null,
         linked_record_type: linkedRecordType,
       };
 
@@ -289,6 +303,16 @@ export default async function handler(req: any, res: any) {
       if (body.rawText !== undefined || body.raw_text !== undefined) payload.raw_text = asText(body.rawText ?? body.raw_text);
       if (body.linkedRecordId !== undefined || body.linked_record_id !== undefined) payload.linked_record_id = asText(body.linkedRecordId ?? body.linked_record_id) || null;
       if (body.linkedRecordType !== undefined || body.linked_record_type !== undefined) payload.linked_record_type = getLinkedRecordType(body.linkedRecordType ?? body.linked_record_type);
+      const linkedRecordType = payload.linked_record_type !== undefined
+        ? getLinkedRecordType(payload.linked_record_type)
+        : getLinkedRecordType(body.linkedRecordType ?? body.linked_record_type);
+      const linkedRecordId = payload.linked_record_id !== undefined
+        ? asText(payload.linked_record_id)
+        : asText(body.linkedRecordId ?? body.linked_record_id);
+      const linkedTable = getLinkedTable(linkedRecordType);
+      if (linkedTable && linkedRecordId) {
+        await requireScopedRow(linkedTable, linkedRecordId, workspaceId, 'AI_DRAFT_LINKED_RECORD_NOT_FOUND');
+      }
 
       if (finalStatus) {
         payload.status = finalStatus;

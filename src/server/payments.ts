@@ -2,8 +2,10 @@
 VERCEL_HOBBY_API_BUDGET_HOTFIX_2026_04_28
 Moved from api/ to src/server/ and routed through api/system.ts to keep the Vercel Hobby function budget green.
 */
-import { deleteById, findWorkspaceId, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
+import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { assertWorkspaceWriteAccess } from './_access-gate.js';
+import { writeAuthErrorResponse } from './_supabase-auth.js';
 
 const PAYMENT_TYPES = new Set(['deposit', 'partial', 'final', 'commission', 'recurring', 'manual']);
 const PAYMENT_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
@@ -107,15 +109,29 @@ export default async function handler(req: any, res: any) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
     const workspaceId = await resolveRequestWorkspaceId(req, body);
 
+    if (req.method !== 'GET') {
+      if (!workspaceId) {
+        res.status(401).json({ error: 'PAYMENT_WORKSPACE_REQUIRED' });
+        return;
+      }
+      await assertWorkspaceWriteAccess(workspaceId, req);
+    }
+
     if (req.method === 'POST') {
-      const finalWorkspaceId = workspaceId || await findWorkspaceId(body.workspaceId);
+      const finalWorkspaceId = workspaceId;
       if (!finalWorkspaceId) throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
+      const clientId = asNullableUuid(body.clientId);
+      const leadId = asNullableUuid(body.leadId);
+      const caseId = asNullableUuid(body.caseId);
+      if (clientId) await requireScopedRow('clients', clientId, finalWorkspaceId, 'CLIENT_NOT_FOUND');
+      if (leadId) await requireScopedRow('leads', leadId, finalWorkspaceId, 'LEAD_NOT_FOUND');
+      if (caseId) await requireScopedRow('cases', caseId, finalWorkspaceId, 'CASE_NOT_FOUND');
       const nowIso = new Date().toISOString();
       const payload = {
         workspace_id: finalWorkspaceId,
-        client_id: asNullableUuid(body.clientId),
-        lead_id: asNullableUuid(body.leadId),
-        case_id: asNullableUuid(body.caseId),
+        client_id: clientId,
+        lead_id: leadId,
+        case_id: caseId,
         type: normalizeEnum(body.type, PAYMENT_TYPES, 'partial'),
         status: normalizeEnum(body.status, PAYMENT_STATUSES, 'not_started'),
         amount: asNumber(body.amount),
@@ -139,10 +155,16 @@ export default async function handler(req: any, res: any) {
         return;
       }
       await requireScopedRow('payments', id, workspaceId, 'PAYMENT_NOT_FOUND');
+      const clientId = body.clientId !== undefined ? asNullableUuid(body.clientId) : null;
+      const leadId = body.leadId !== undefined ? asNullableUuid(body.leadId) : null;
+      const caseId = body.caseId !== undefined ? asNullableUuid(body.caseId) : null;
+      if (body.clientId !== undefined && clientId) await requireScopedRow('clients', clientId, workspaceId, 'CLIENT_NOT_FOUND');
+      if (body.leadId !== undefined && leadId) await requireScopedRow('leads', leadId, workspaceId, 'LEAD_NOT_FOUND');
+      if (body.caseId !== undefined && caseId) await requireScopedRow('cases', caseId, workspaceId, 'CASE_NOT_FOUND');
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
-      if (body.clientId !== undefined) payload.client_id = asNullableUuid(body.clientId);
-      if (body.leadId !== undefined) payload.lead_id = asNullableUuid(body.leadId);
-      if (body.caseId !== undefined) payload.case_id = asNullableUuid(body.caseId);
+      if (body.clientId !== undefined) payload.client_id = clientId;
+      if (body.leadId !== undefined) payload.lead_id = leadId;
+      if (body.caseId !== undefined) payload.case_id = caseId;
       if (body.type !== undefined) payload.type = normalizeEnum(body.type, PAYMENT_TYPES, 'partial');
       if (body.status !== undefined) payload.status = normalizeEnum(body.status, PAYMENT_STATUSES, 'not_started');
       if (body.amount !== undefined) payload.amount = asNumber(body.amount);
@@ -170,7 +192,15 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
+    if (error?.code || error?.status) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     const message = error?.message || 'PAYMENT_API_FAILED';
-    res.status(message === 'PAYMENT_NOT_FOUND' ? 404 : 500).json({ error: message });
+    const statusCode =
+      message === 'PAYMENT_NOT_FOUND' || message === 'LEAD_NOT_FOUND' || message === 'CASE_NOT_FOUND' || message === 'CLIENT_NOT_FOUND'
+        ? 404
+        : 500;
+    res.status(statusCode).json({ error: message });
   }
 }

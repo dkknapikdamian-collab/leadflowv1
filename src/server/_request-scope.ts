@@ -71,7 +71,7 @@ export async function requireRequestIdentity(req: any, bodyInput?: any): Promise
       uid: asText(context.userId) || null,
       email: asText(context.email) || null,
       fullName: asText(context.fullName) || null,
-      workspaceId: asText(context.workspaceId) || headerIdentity.workspaceId || null,
+      workspaceId: asText(context.workspaceId) || null,
     };
     if (identity.userId || identity.email) return identity;
   } catch (error) {
@@ -231,29 +231,75 @@ export async function assertWorkspaceOwnerOrAdmin(workspaceId: string, req?: any
 export async function resolveRequestWorkspaceId(req: any, bodyInput?: any) {
   const body = bodyInput && typeof bodyInput === 'object' ? bodyInput : parseBody(req);
   const query = req?.query || {};
-  const headerWorkspaceId = asText(
+  const hintedWorkspaceId = asText(
     requestHeader(req, 'x-workspace-id')
     || requestHeader(req, 'x-closeflow-workspace-id'),
-  );
-  if (headerWorkspaceId) return headerWorkspaceId;
-
-  try {
-    const context = await requireSupabaseRequestContext(req);
-    const contextWorkspaceId = asText(context.workspaceId);
-    if (contextWorkspaceId) return contextWorkspaceId;
-  } catch {
-    // Fall back to explicit runtime identity below.
-  }
-
-  const identityWorkspaceId = asText(getRequestIdentity(req, body).workspaceId);
-  if (identityWorkspaceId) return identityWorkspaceId;
-
-  return asText(
+  ) || asText(
     body.workspaceId
     || body.workspace_id
     || firstQueryValue(query.workspaceId)
     || firstQueryValue(query.workspace_id),
   );
+
+  const context = await requireSupabaseRequestContext(req);
+  const contextWorkspaceId = asText(context.workspaceId);
+  if (contextWorkspaceId) return contextWorkspaceId;
+
+  const contextUserId = asText(context.userId);
+  const contextEmail = asText(context.email).toLowerCase();
+  if (!contextUserId && !contextEmail) {
+    throw new RequestAuthError(401, 'AUTH_WORKSPACE_REQUIRED');
+  }
+
+  if (hintedWorkspaceId) {
+    if (contextUserId) {
+      const membershipRows = await selectRows(
+        `workspace_members?user_id=eq.${encodeURIComponent(contextUserId)}&workspace_id=eq.${encodeURIComponent(hintedWorkspaceId)}&select=workspace_id&limit=1`,
+      );
+      if (membershipRows[0]) return hintedWorkspaceId;
+    }
+
+    const profileQueries = [
+      contextEmail
+        ? `profiles?workspace_id=eq.${encodeURIComponent(hintedWorkspaceId)}&email=eq.${encodeURIComponent(contextEmail)}&select=workspace_id&limit=1`
+        : '',
+      contextUserId
+        ? `profiles?workspace_id=eq.${encodeURIComponent(hintedWorkspaceId)}&auth_uid=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1`
+        : '',
+      contextUserId
+        ? `profiles?workspace_id=eq.${encodeURIComponent(hintedWorkspaceId)}&firebase_uid=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1`
+        : '',
+      isLikelyUuid(contextUserId)
+        ? `profiles?workspace_id=eq.${encodeURIComponent(hintedWorkspaceId)}&id=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1`
+        : '',
+    ].filter(Boolean);
+    for (const profileQuery of profileQueries) {
+      const profileRows = await selectRows(profileQuery);
+      if (profileRows[0]) return hintedWorkspaceId;
+    }
+  }
+
+  if (contextUserId) {
+    const membershipRows = await selectRows(
+      `workspace_members?user_id=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1`,
+    );
+    const membershipWorkspaceId = asText(membershipRows[0]?.workspace_id);
+    if (membershipWorkspaceId) return membershipWorkspaceId;
+  }
+
+  const profileQueries = [
+    contextEmail ? `profiles?email=eq.${encodeURIComponent(contextEmail)}&select=workspace_id&limit=1` : '',
+    contextUserId ? `profiles?auth_uid=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1` : '',
+    contextUserId ? `profiles?firebase_uid=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1` : '',
+    isLikelyUuid(contextUserId) ? `profiles?id=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1` : '',
+  ].filter(Boolean);
+  for (const profileQuery of profileQueries) {
+    const profileRows = await selectRows(profileQuery);
+    const profileWorkspaceId = asText(profileRows[0]?.workspace_id);
+    if (profileWorkspaceId) return profileWorkspaceId;
+  }
+
+  throw new RequestAuthError(401, 'AUTH_WORKSPACE_REQUIRED');
 }
 
 export function withWorkspaceFilter(path: string, workspaceId: string) {
