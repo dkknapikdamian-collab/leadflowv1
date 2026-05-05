@@ -15,7 +15,7 @@ test('Faza 3 Etap 3.2D hides AI navigation and global actions by plan', () => {
   const quickAi = read('src/components/QuickAiCapture.tsx');
 
   assert.match(layout, /canUseAiDraftsByPlan\s*=\s*Boolean\([\s\S]*lightDrafts[\s\S]*fullAi[\s\S]*\)/);
-  assert.match(layout, /\.\.\.\(canUseAiDraftsByPlan\s*\?\s*\[\{ icon: CheckCircle2, label: 'Szkice AI', path: '\/ai-drafts' \}\]\s*:\s*\[\]\)/);
+  assert.match(layout, /\.\.\.\(canUseAiDraftsByPlan\s*\?\s*\[\{ icon: CheckCircle2, label: 'Inbox szkiców', path: '\/ai-drafts' \}\]\s*:\s*\[\]\)/);
 
   assert.match(globalActions, /canUseFullAiAssistantByPlan\s*=\s*Boolean\([\s\S]*fullAi[\s\S]*\)/);
   assert.match(globalActions, /\{canUseFullAiAssistantByPlan \? \([\s\S]*<GlobalAiAssistant \/>[\s\S]*\) : null\}/);

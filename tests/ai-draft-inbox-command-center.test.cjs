@@ -33,10 +33,12 @@ test('Global quick actions link to AI drafts from every protected screen', () =>
   const global = read('src/components/GlobalQuickActions.tsx');
 
   assert.ok(global.includes('to="/ai-drafts"'));
-  assert.ok(global.includes('Szkice AI'));
+  assert.ok(global.includes('Inbox szkiców'));
+  assert.ok(global.includes('aria-label="Otwórz Inbox szkiców"'));
   assert.ok(global.includes('data-global-quick-action="ai-drafts"'));
   assert.ok(global.includes('TodayAiAssistant'));
   assert.ok(global.includes('QuickAiCapture'));
+  assert.ok(global.includes('<GlobalAiAssistant />'));
 });
 
 test('AI draft command center test is included in quiet release gate', () => {

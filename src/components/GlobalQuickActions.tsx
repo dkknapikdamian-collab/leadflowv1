@@ -3,7 +3,7 @@
 GLOBAL_QUICK_ACTIONS_SINGLE_SOURCE_V97
 GLOBAL_QUICK_ACTIONS_TOOLBAR_A11Y_V97
 VISUAL_STAGE_01_GLOBAL_BAR_ACTIONS
-Asystent AI, Szybki szkic, Szkice AI, Lead, Zadanie i Wydarzenie mają jedno miejsce: globalny pasek u góry aplikacji.
+Asystent AI, Szybki szkic, Inbox szkiców, Lead, Zadanie i Wydarzenie mają jedno miejsce: globalny pasek u góry aplikacji.
 Pasek działa jako toolbar i jest czytelny na telefonie: role="toolbar", aria-label="Szybkie akcje aplikacji", data-global-quick-actions-contract="v97".
 */
 /*
@@ -76,9 +76,9 @@ export default function GlobalQuickActions() {
         {canUseQuickAiCaptureByPlan ? <QuickAiCapture /> : null}
         {canUseAiDraftsByPlan ? (
           <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts">
-            <Link to="/ai-drafts" aria-label="Otwórz Szkice AI">
+            <Link to="/ai-drafts" aria-label="Otwórz Inbox szkiców">
               <ClipboardList className="mr-2 h-4 w-4" />
-              Szkice AI
+              Inbox szkiców
             </Link>
           </Button>
         ) : null}

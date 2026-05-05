@@ -40,14 +40,14 @@ test('Global quick actions are available from protected app layout', () => {
 
   assert.ok(layout.includes('GlobalQuickActions'), 'Layout must import/render GlobalQuickActions');
   assert.ok(layout.includes('<GlobalQuickActions'), 'Layout must render the global action bar');
-  assert.ok(layout.includes('Szkice AI'));
+  assert.ok(layout.includes('Inbox szkiców'));
   assert.ok(app.includes('AiDrafts'));
   assert.ok(app.includes('path="/ai-drafts"'));
   assert.ok(global.includes('TodayAiAssistant'));
   assert.ok(global.includes('QuickAiCapture'));
-  assert.ok(global.includes('to="/leads"'));
-  assert.ok(global.includes('to="/tasks"'));
-  assert.ok(global.includes('to="/calendar"'));
+  assert.ok(global.includes('to="/leads?quick=lead"'));
+  assert.ok(global.includes('data-global-task-direct-modal-trigger="true"'));
+  assert.ok(global.includes('to="/calendar?quick=event"'));
   assert.ok(global.includes('data-global-quick-actions'));
 });
 

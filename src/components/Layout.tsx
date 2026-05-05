@@ -164,7 +164,7 @@ export default function Layout({ children }: LayoutProps) {
     {
       caption: 'System',
       items: [
-        ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Szkice AI', path: '/ai-drafts' }] : []),
+        ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : []),
         { icon: AlertTriangle, label: 'Powiadomienia', path: '/notifications' },
         { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
         { icon: CheckCircle2, label: 'Pomoc', path: '/help' },
