@@ -5,6 +5,8 @@ import {
 } from './admin-tools-types';
 import { readFullAdminFeedbackExport } from './admin-tools-storage';
 
+const ADMIN_FEEDBACK_EXPORT_SANITIZE_STAGE88 = 'admin feedback export sanitizes mojibake and never emits COMMIT_SHA_PLACEHOLDER';
+
 function pad(value: number) {
   return String(value).padStart(2, '0');
 }
@@ -39,15 +41,82 @@ function getUserAgent() {
   return typeof navigator !== 'undefined' ? navigator.userAgent : '';
 }
 
+function getBuildCommit() {
+  const metaEnv = typeof import.meta !== 'undefined' ? (import.meta as any).env || {} : {};
+  const value =
+    metaEnv.VITE_COMMIT_SHA ||
+    metaEnv.VITE_GIT_COMMIT_SHA ||
+    metaEnv.VITE_VERCEL_GIT_COMMIT_SHA ||
+    metaEnv.VITE_DEPLOY_COMMIT ||
+    '';
+
+  const normalized = String(value || '').trim();
+  return normalized && normalized !== 'COMMIT_SHA_PLACEHOLDER' ? normalized : 'unknown_local_build';
+}
+
+const MOJIBAKE_REPLACEMENTS: Array<[string, string]> = [
+  ['KlikniÄ™to', 'Kliknięto'],
+  ['dziaĹ‚a', 'działa'],
+  ['naciĹ›nij', 'naciśnij'],
+  ['uwagÄ™', 'uwagę'],
+  ['treĹ›Ä‡', 'treść'],
+  ['PrzenieĹ›Ä‡', 'Przenieść'],
+  ['PrzenieĹ›Ä‡', 'Przenieść'],
+  ['PrzenieĹ›Ä‡', 'Przenieść'],
+  ['PrzenieĹ›', 'Przenieś'],
+  ['ZĹ‚y', 'Zły'],
+  ['UsuĹ„', 'Usuń'],
+  ['MoĹĽesz', 'Możesz'],
+  ['kliknÄ…Ä‡', 'kliknąć'],
+  ['siÄ™', 'się'],
+  ['staÄ‡', 'stać'],
+  ['PowĂłd', 'Powód'],
+  ['wyglÄ…d', 'wygląd'],
+  ['bĹ‚Ä…d', 'błąd'],
+  ['przemieĹ›Ä‡', 'przemieść'],
+  ['niĹĽej', 'niżej'],
+  ['wyĹĽej', 'wyżej'],
+  ['ZmniejszyÄ‡', 'Zmniejszyć'],
+  ['PowiÄ™kszyÄ‡', 'Powiększyć'],
+  ['DodaÄ‡', 'Dodać'],
+  ['wyraĹşniejszy', 'wyraźniejszy'],
+  ['duĹĽo', 'dużo'],
+  ['klikniÄ™cia', 'kliknięcia'],
+  ['trafiÄ…', 'trafią'],
+  ['przeglÄ…darki', 'przeglądarki'],
+  ['Â·', '·'],
+];
+
+export function sanitizeAdminFeedbackText(value: string) {
+  let next = String(value || '');
+  for (const [from, to] of MOJIBAKE_REPLACEMENTS) {
+    next = next.split(from).join(to);
+  }
+  return next;
+}
+
+function sanitizeAdminFeedbackPayload<T>(value: T): T {
+  if (typeof value === 'string') return sanitizeAdminFeedbackText(value) as T;
+  if (Array.isArray(value)) return value.map((item) => sanitizeAdminFeedbackPayload(item)) as T;
+  if (value && typeof value === 'object') {
+    const output: Record<string, unknown> = {};
+    for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+      output[key] = sanitizeAdminFeedbackPayload(entry);
+    }
+    return output as T;
+  }
+  return value;
+}
+
 export function buildAdminFeedbackExport(): AdminFeedbackExport {
-  return {
+  return sanitizeAdminFeedbackPayload({
     ...readFullAdminFeedbackExport(),
     generatedAt: new Date().toISOString(),
-    commit: 'COMMIT_SHA_PLACEHOLDER',
+    commit: getBuildCommit(),
     route: getRoute(),
     userAgent: getUserAgent(),
     viewport: getViewport(),
-  };
+  });
 }
 
 function groupByPriority(items: AdminReviewItem[]) {
@@ -59,22 +128,23 @@ function groupByPriority(items: AdminReviewItem[]) {
 }
 
 export function buildAdminFeedbackMarkdown(exportData: AdminFeedbackExport) {
+  const sanitized = sanitizeAdminFeedbackPayload(exportData);
   const lines: string[] = [];
   lines.push('# CloseFlow Admin Feedback Export');
   lines.push('');
-  lines.push(`Generated: ${exportData.generatedAt}`);
-  lines.push(`Route: ${exportData.route}`);
-  lines.push(`Commit: ${exportData.commit}`);
-  lines.push(`Viewport: ${exportData.viewport.width}x${exportData.viewport.height} @${exportData.viewport.devicePixelRatio}`);
+  lines.push(`Generated: ${sanitized.generatedAt}`);
+  lines.push(`Route: ${sanitized.route}`);
+  lines.push(`Commit: ${sanitized.commit}`);
+  lines.push(`Viewport: ${sanitized.viewport.width}x${sanitized.viewport.height} @${sanitized.viewport.devicePixelRatio}`);
   lines.push('');
   lines.push('## Blokery P0');
-  const blockers = exportData.reviewItems.filter((item) => item.priority === 'P0');
+  const blockers = sanitized.reviewItems.filter((item) => item.priority === 'P0');
   if (!blockers.length) lines.push('- Brak');
   blockers.forEach((item) => lines.push(`- ${item.route}: ${item.comment} (${item.target.selectorHint})`));
   lines.push('');
 
   lines.push('## Uwagi UI');
-  groupByPriority(exportData.reviewItems).forEach((group) => {
+  groupByPriority(sanitized.reviewItems).forEach((group) => {
     if (!group.items.length) return;
     lines.push(`### ${group.priority}`);
     group.items.forEach((item) => {
@@ -87,15 +157,15 @@ export function buildAdminFeedbackMarkdown(exportData: AdminFeedbackExport) {
   lines.push('');
 
   lines.push('## Button Matrix');
-  if (!exportData.buttonSnapshots.length) lines.push('- Brak skanu');
-  exportData.buttonSnapshots.forEach((item) => {
+  if (!sanitized.buttonSnapshots.length) lines.push('- Brak skanu');
+  sanitized.buttonSnapshots.forEach((item) => {
     lines.push(`- [${item.qaStatus}] ${item.route}: ${item.text || item.selectorHint} (${item.tag}, disabled=${item.disabled}, visible=${item.visible})`);
   });
   lines.push('');
 
   lines.push('## Bug Notes');
-  if (!exportData.bugItems.length) lines.push('- Brak');
-  exportData.bugItems.forEach((item) => {
+  if (!sanitized.bugItems.length) lines.push('- Brak');
+  sanitized.bugItems.forEach((item) => {
     lines.push(`- [${item.priority}] ${item.route}`);
     lines.push(`  - zrobiłem: ${item.whatIDid}`);
     lines.push(`  - stało się: ${item.whatHappened}`);
@@ -104,19 +174,19 @@ export function buildAdminFeedbackMarkdown(exportData: AdminFeedbackExport) {
   lines.push('');
 
   lines.push('## Zmiany tekstów do wdrożenia');
-  if (!exportData.copyItems.length) lines.push('- Brak');
-  exportData.copyItems.forEach((item) => {
+  if (!sanitized.copyItems.length) lines.push('- Brak');
+  sanitized.copyItems.forEach((item) => {
     lines.push(`- ${item.route}: "${item.oldText}" -> "${item.proposedText}"`);
     if (item.reason) lines.push(`  - powód: ${item.reason}`);
   });
   lines.push('');
 
   lines.push('## Dane techniczne');
-  lines.push(`- userAgent: ${exportData.userAgent}`);
-  lines.push(`- reviewItems: ${exportData.reviewItems.length}`);
-  lines.push(`- bugItems: ${exportData.bugItems.length}`);
-  lines.push(`- copyItems: ${exportData.copyItems.length}`);
-  lines.push(`- buttonSnapshots: ${exportData.buttonSnapshots.length}`);
+  lines.push(`- userAgent: ${sanitized.userAgent}`);
+  lines.push(`- reviewItems: ${sanitized.reviewItems.length}`);
+  lines.push(`- bugItems: ${sanitized.bugItems.length}`);
+  lines.push(`- copyItems: ${sanitized.copyItems.length}`);
+  lines.push(`- buttonSnapshots: ${sanitized.buttonSnapshots.length}`);
   lines.push('');
 
   lines.push('## Sugestia pakietów wdrożeniowych');
@@ -154,3 +224,4 @@ export function exportAdminFeedbackMarkdown() {
 }
 
 // ADMIN_DEBUG_TOOLBAR_EXPORT_DOWNLOAD_STAGE87
+// ADMIN_FEEDBACK_EXPORT_SANITIZE_STAGE88

@@ -6,6 +6,7 @@ Active lead is sales work. Moved lead is acquisition history with a link to Case
 const A16_V2_VOICE_NOTE_AUTOSAVE_ALLOWED = 'voice-notes-may-autosave-after-dictation-silence';
 const A24_LEAD_TO_CASE_COPY_LOCK = 'Rozpocznij obsługę | Ten temat jest już w obsłudze | Otwórz sprawę';
 const STAGE84_LEAD_DETAIL_WORK_CENTER = 'Lead Detail pokazuje centrum pracy: ostatni ruch, dni bez ruchu, najblizsza akcja i powod ryzyka';
+const STAGE88_LEAD_DETAIL_ADMIN_FEEDBACK_HOTFIX = 'LeadDetail cleans noisy helper copy and protects right rail readability';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -685,7 +686,7 @@ useEffect(() => {
           <strong>{leadWorkCenter.daysWithoutMovementLabel}</strong>
         </div>
         <div className="lead-detail-work-metric lead-detail-work-metric-wide">
-          <small>Najbliższa akcja</small>
+          <small>Najbliższa zaplanowana akcja</small>
           <strong>{leadWorkCenter.nextActionLabel}</strong>
         </div>
       </div>
@@ -1369,7 +1370,7 @@ useEffect(() => {
             {!leadInService ? (
               <section className="lead-detail-top-grid">
                 <article className="lead-detail-top-card lead-detail-callout-blue">
-                  <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa akcja</h2></div>
+                  <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa zaplanowana akcja</h2></div>
                   {nextTimelineEntry ? (
                     <>
                       <strong>{nextTimelineEntry.title}</strong>
@@ -1454,7 +1455,7 @@ useEffect(() => {
               <div className="lead-detail-section-head">
                 <div>
                   <h2>Historia kontaktu</h2>
-                  <p>Krótka historia kontaktu i przekazania tematu.</p>
+                  
                 </div>
               </div>
               {!leadInService ? (
@@ -1537,7 +1538,7 @@ useEffect(() => {
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższy ruch</h2></div>
               <p>{nextTimelineEntry ? nextTimelineEntry.title : 'Brak zaplanowanych działań.'}</p>
-              <small>{nextTimelineEntry ? nextTimelineEntry.dateLabel : 'Dodaj zadanie albo wydarzenie, jeśli lead jest aktywny.'}</small>
+              <small>{nextTimelineEntry ? nextTimelineEntry.dateLabel : ''}</small>
             </section>
 
             <section className="right-card lead-detail-right-card">
@@ -1661,4 +1662,5 @@ useEffect(() => {
     </Layout>
   );
 }
+
 
