@@ -5,6 +5,9 @@ const repo = process.cwd();
 function read(rel) {
   return fs.readFileSync(path.join(repo, rel), 'utf8');
 }
+function chars() {
+  return String.fromCharCode.apply(String, arguments);
+}
 function assertContains(file, text) {
   const body = read(file);
   if (!body.includes(text)) {
@@ -39,7 +42,19 @@ const doc = 'docs/release/STAGE84_LEAD_DETAIL_WORK_CENTER_2026-05-05.md';
   'lead-detail-note-box',
 ].forEach((text) => assertContains(leadDetail, text));
 
-['NajbliĹĽsza', 'PowĂłd', 'OtwĂłrz', 'sprawÄ™', 'notatkÄ™', 'wysĹ‚ana'].forEach((text) => assertNotContains(leadDetail, text));
+const forbiddenMojibakePatterns = [
+  chars(0x0139),
+  chars(0x00c4),
+  chars(0x0102),
+  chars(0x00e2, 0x20ac),
+  chars(0x00c5, 0x00bc),
+  chars(0x00c5, 0x00ba),
+  chars(0x00c5, 0x201a),
+  chars(0x00c5, 0x201e),
+  chars(0x00c5, 0x203a),
+  chars(0x00c3, 0x00b3),
+];
+forbiddenMojibakePatterns.forEach((text) => assertNotContains(leadDetail, text));
 
 assertContains(css, 'STAGE84_LEAD_DETAIL_WORK_CENTER');
 assertContains(css, '.lead-detail-work-center');
