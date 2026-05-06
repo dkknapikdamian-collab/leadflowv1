@@ -3,7 +3,7 @@
 // STAGE3_AI_APPLICATION_BRAIN_V1
 // Deterministic AI Application Brain V1. It reads CloseFlow data and creates review drafts only.
 
-import type { AssistantContext, AssistantContextItem } from "./assistant-context";
+import { buildAssistantContextFromRequest, type AssistantContext, type AssistantContextItem } from "./assistant-context";
 import { getItemDate, itemSearchText } from "./assistant-context";
 import { detectAssistantIntent as detectAssistantIntentV1 } from "../lib/assistant-intents";
 import { normalizeAssistantResult } from "../lib/assistant-result-schema";
@@ -63,11 +63,11 @@ export type RunAssistantQueryInput = {
   now?: string | Date;
 };
 
-const WRITE_RE = /\b(zapisz|dodaj|utw[oĂł]rz|stw[oĂł]rz|za[lĹ‚][oĂł][zĹĽ]|wpisz|przygotuj\s+szkic|mam\s+leada)\b/i;
-const READ_RE = /\b(co|czy|kiedy|na\s+kiedy|znajd[zĹş]|poka[zĹĽ]|wyszukaj|mam|najbli[zĹĽ]szy|najbli[zĹĽ]sza|gdzie|ile)\b/i;
-const PHONE_RE = /(?:numer|telefon|tel\.?|kom[oĂł]rka|kontakt)\s+(?:do\s+)?([\p{L}][\p{L}\-']*)/iu;
+const WRITE_RE = /\b(zapisz|dodaj|utworz|stworz|zaloz|wpisz|przygotuj\s+szkic|mam\s+leada)\b/i;
+const READ_RE = /\b(co|czy|kiedy|na\s+kiedy|znajdz|pokaz|wyszukaj|mam|najblizszy|najblizsza|gdzie|ile)\b/i;
+const PHONE_RE = /(?:numer|telefon|tel\.?|komorka|kontakt)\s+(?:do\s+)?([\p{L}][\p{L}\-']*)/iu;
 
-export const STAGE6_EMPTY_PROMPT_ANSWER = "Napisz pytanie albo komendÄ™. Nie odpowiadam z pustego prompta.";
+export const STAGE6_EMPTY_PROMPT_ANSWER = "Napisz pytanie albo komende. Nie odpowiadam z pustego prompta.";
 export const STAGE6_NO_DATA_ANSWER = "Nie znalazłem tego w danych aplikacji.";
 
 function normalizeText(value: string): string {
@@ -133,21 +133,19 @@ function itemOverlapsWindow(item: AssistantContextItem, start: Date, end: Date):
 }
 
 const NAME_INFLECTIONS: Record<string, string[]> = {
-  marka: ["marek"],
-  markowi: ["marek"],
-  markiem: ["marek"],
-  anny: ["anna"],
-  anne: ["anna"],
-  annÄ™: ["anna"],
-  jana: ["jan"],
-  janowi: ["jan"],
-  piotra: ["piotr"],
-  piotrowi: ["piotr"],
-  tomka: ["tomek"],
-  tomaszowi: ["tomasz"],
-  doroty: ["dorota"],
-  dorote: ["dorota"],
-  dorotÄ™: ["dorota"],
+  "marka": ["marek"],
+  "markowi": ["marek"],
+  "markiem": ["marek"],
+  "anny": ["anna"],
+  "anne": ["anna"],
+  "jana": ["jan"],
+  "janowi": ["jan"],
+  "piotra": ["piotr"],
+  "piotrowi": ["piotr"],
+  "tomka": ["tomek"],
+  "tomaszowi": ["tomasz"],
+  "doroty": ["dorota"],
+  "dorote": ["dorota"],
 };
 
 function expandLookupTerms(value: string): string[] {
@@ -289,7 +287,7 @@ function answerNearest(query: string, context: AssistantContext): AssistantQuery
 function answerPhoneLookup(query: string, context: AssistantContext): AssistantQueryResult | null {
   const match = query.match(PHONE_RE);
   if (!match && !/numer|telefon|kontakt/i.test(query)) return null;
-  const wanted = normalizeText(match?.[1] || query.replace(/znajd[zĹş]|numer|telefon|kontakt|do/gi, "")).trim();
+  const wanted = normalizeText(match?.[1] || query.replace(/znajdz|numer|telefon|kontakt|do/gi, "")).trim();
   if (!wanted) return null;
 
   const candidates = [...context.leads, ...context.clients, ...context.cases]
@@ -389,7 +387,7 @@ function draftTypeFor(query: string): AssistantDraftType {
 function titleForDraft(query: string): string {
   let title = query
     .replace(WRITE_RE, " ")
-    .replace(/\b(mi|prosz[eÄ™]|zadanie|task|wydarzenie|event|notatk[eaÄ™i]?|lead|kontakt|jutro|dzisiaj|dzis|pojutrze|na|o|po)\b/gi, " ")
+    .replace(/\b(mi|prosze|zadanie|task|wydarzenie|event|notatka|notatke|notatki|lead|kontakt|jutro|dzisiaj|dzis|pojutrze|na|o|po)\b/gi, " ")
     .replace(/\b\d{1,2}([:.]\d{2})?\b/g, " ")
     .replace(/\b\d{1,2}[.\-/]\d{1,2}([.\-/]\d{2,4})?\b/g, " ")
     .replace(/\s+/g, " ")
@@ -494,4 +492,51 @@ export const queryAiAssistant = handleAiAssistantPrompt;
 export const STAGE5_AI_READ_QUERY_HARDENING_V1 = true;
 
 export const STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1 = true;
+
+function parseBody(req: any) {
+  if (!req?.body) return {};
+  if (typeof req.body === "string") {
+    try {
+      return JSON.parse(req.body || "{}");
+    } catch {
+      return {};
+    }
+  }
+  return req.body as Record<string, unknown>;
+}
+
+export default async function aiAssistantHandler(req: any, res: any) {
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "METHOD_NOT_ALLOWED" });
+    return;
+  }
+
+  try {
+    const body = parseBody(req);
+    const query = String(body.query || body.rawText || body.prompt || "").trim();
+    if (!query) {
+      res.status(400).json({
+        mode: "read",
+        intent: "read",
+        answer: STAGE6_EMPTY_PROMPT_ANSWER,
+        items: [],
+        draft: null,
+      });
+      return;
+    }
+
+    const context = await buildAssistantContextFromRequest({
+      query,
+      timezone: typeof body.timezone === "string" ? body.timezone : "Europe/Warsaw",
+      now: typeof body.now === "string" ? body.now : undefined,
+      seed: (body.context || body.snapshot || body.seed || undefined) as any,
+      request: { headers: req.headers || {}, url: req.url },
+    });
+
+    const result = runAssistantQuery({ query, context, now: body.now as any });
+    res.status(200).json(normalizeAssistantResult(result));
+  } catch (error: any) {
+    res.status(500).json({ error: error?.message || "AI_ASSISTANT_FAILED" });
+  }
+}
 

@@ -198,3 +198,8 @@ export async function deleteById(table: string, id: string) {
     },
   });
 }
+
+export function withWorkspaceFilter(path: string, workspaceId: string) {
+  const separator = path.includes('?') ? '&' : '?';
+  return `${path}${separator}workspace_id=eq.${encodeURIComponent(workspaceId)}`;
+}
