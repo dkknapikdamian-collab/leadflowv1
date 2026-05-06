@@ -1,3 +1,4 @@
+/* PWA_STAGE13_NOTIFICATION_RUNTIME_SAFE: runtime powiadomień bez offline sejfu danych i bez ukrytych klików poza aplikację. */
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
@@ -17,6 +18,10 @@ type NotificationRuntimeProps = {
   enabled: boolean;
 };
 
+function isInternalNotificationLink(link: string) {
+  return typeof link === 'string' && link.startsWith('/') && !link.startsWith('//');
+}
+
 export default function NotificationRuntime({ enabled }: NotificationRuntimeProps) {
   const scanPendingRef = useRef(false);
   const { profile, workspace, loading } = useWorkspace();
@@ -30,6 +35,7 @@ export default function NotificationRuntime({ enabled }: NotificationRuntimeProp
 
     const runScan = async () => {
       if (scanPendingRef.current) return;
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
       scanPendingRef.current = true;
 
       try {
@@ -62,7 +68,9 @@ export default function NotificationRuntime({ enabled }: NotificationRuntimeProp
             });
             notification.onclick = () => {
               window.focus();
-              window.location.assign(item.link);
+              if (isInternalNotificationLink(item.link)) {
+                window.location.assign(item.link);
+              }
             };
           } else {
             toast(item.title, {
@@ -88,12 +96,14 @@ export default function NotificationRuntime({ enabled }: NotificationRuntimeProp
     };
 
     window.addEventListener('focus', handleFocus);
+    window.addEventListener('online', handleFocus);
     document.addEventListener('visibilitychange', handleFocus);
 
     return () => {
       cancelled = true;
       window.clearInterval(interval);
       window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('online', handleFocus);
       document.removeEventListener('visibilitychange', handleFocus);
     };
   }, [enabled, loading, profile?.browserNotificationsEnabled, workspace?.id]);

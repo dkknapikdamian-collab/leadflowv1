@@ -423,7 +423,9 @@
     "test:reminder-runtime": "node --test tests/reminder-runtime.test.cjs",
     "test:reminder-snooze": "node --test tests/reminder-snooze.test.cjs",
     "check:digest-env-truth": "node scripts/check-digest-env-truth.cjs",
-    "test:digest-email": "node --test tests/digest-email.test.cjs"
+    "test:digest-email": "node --test tests/digest-email.test.cjs",
+    "check:pwa-safe-cache": "node scripts/check-pwa-safe-cache.cjs",
+    "test:pwa-safe-cache": "node --test tests/pwa-safe-cache.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

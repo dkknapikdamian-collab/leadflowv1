@@ -1,6 +1,6 @@
-/* STAGE_A28_PWA_INSTALL_PROMPT: instalacja PWA bez natywnej apki i z fallbackiem dla iOS. */
+/* STAGE13_PWA_MOBILE_SAFE_MODE: instalacja PWA bez natywnej apki i bez obietnicy offline danych biznesowych. */
 import { useEffect, useMemo, useState } from 'react';
-import { Download, Smartphone, X } from 'lucide-react';
+import { Download, ShieldCheck, Smartphone, X } from 'lucide-react';
 import { Button } from './ui/button';
 
 type BeforeInstallPromptChoice = {
@@ -13,7 +13,7 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<BeforeInstallPromptChoice>;
 };
 
-const DISMISSED_STORAGE_KEY = 'closeflow:pwa-install:dismissed:v3';
+const DISMISSED_STORAGE_KEY = 'closeflow:pwa-install:dismissed:stage13';
 
 function isStandaloneDisplayMode() {
   if (typeof window === 'undefined') return false;
@@ -78,8 +78,18 @@ export function PwaInstallPrompt() {
       setDismissed(true);
     };
 
+    const handleDisplayModeChange = () => {
+      if (isStandaloneDisplayMode()) {
+        setInstalled(true);
+        setInstallPrompt(null);
+      }
+    };
+
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleInstalled);
+
+    const media = window.matchMedia?.('(display-mode: standalone)');
+    media?.addEventListener?.('change', handleDisplayModeChange);
 
     const manualTimer = window.setTimeout(() => {
       if (!isStandaloneDisplayMode() && isMobileLike()) setManualPromptReady(true);
@@ -88,6 +98,7 @@ export function PwaInstallPrompt() {
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleInstalled);
+      media?.removeEventListener?.('change', handleDisplayModeChange);
       window.clearTimeout(manualTimer);
     };
   }, []);
@@ -130,17 +141,27 @@ export function PwaInstallPrompt() {
     : 'Jeśli przycisk instalacji nie pojawia się, użyj menu przeglądarki: Dodaj do ekranu głównego.';
 
   return (
-    <div className="fixed inset-x-3 bottom-20 z-50 md:left-auto md:right-6 md:bottom-6 md:w-[380px]" data-pwa-install-prompt="stage-a28">
+    <div
+      className="fixed inset-x-3 bottom-20 z-50 pb-[env(safe-area-inset-bottom)] md:left-auto md:right-6 md:bottom-6 md:w-[380px] md:pb-0"
+      data-pwa-install-prompt="stage13"
+      data-pwa-mobile-safe-mode="true"
+      role="region"
+      aria-label="Instalacja CloseFlow jako PWA"
+    >
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-900/15">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Smartphone className="h-5 w-5" />
           </div>
 
           <div className="min-w-0 flex-1">
             <p className="text-sm font-bold text-slate-900">Dodaj CloseFlow do ekranu głównego telefonu</p>
             <p className="mt-1 text-xs leading-5 text-slate-500">
-              Otwieraj aplikację jak zwykłą apkę. Nie cache’ujemy agresywnie API, więc dane nadal odświeżają się z bazy.
+              Otwieraj aplikację jak zwykłą apkę. Service worker cache’uje tylko shell i assety, a API, auth i dane biznesowe idą przez sieć.
+            </p>
+            <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Dane klientów nie są sejfem offline w cache przeglądarki.
             </p>
             {!installPrompt ? <p className="mt-2 text-xs font-medium text-slate-600">{manualCopy}</p> : null}
 
@@ -149,7 +170,7 @@ export function PwaInstallPrompt() {
                 <Button
                   type="button"
                   size="sm"
-                  className="h-9 rounded-xl px-3 text-xs font-bold"
+                  className="min-h-10 rounded-xl px-3 text-xs font-bold"
                   onClick={handleInstall}
                   disabled={isInstalling}
                 >
@@ -161,7 +182,7 @@ export function PwaInstallPrompt() {
                 type="button"
                 size="sm"
                 variant="ghost"
-                className="h-9 rounded-xl px-3 text-xs font-bold text-slate-500"
+                className="min-h-10 rounded-xl px-3 text-xs font-bold text-slate-500"
                 onClick={handleDismiss}
               >
                 Nie teraz
@@ -172,7 +193,7 @@ export function PwaInstallPrompt() {
           <button
             type="button"
             onClick={handleDismiss}
-            className="rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="flex min-h-10 min-w-10 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
             aria-label="Ukryj instalację PWA"
           >
             <X className="h-4 w-4" />
