@@ -1,4 +1,4 @@
-﻿{
+{
     "name":  "closeflow",
     "private":  true,
     "version":  "0.0.0",
@@ -329,7 +329,9 @@
                     "check:stage4-ai-draft-confirm-bridge-v1":  "node scripts/check-stage4-ai-draft-confirm-bridge-v1.cjs",
                     "test:stage4-ai-draft-confirm-bridge-v1":  "node --test tests/stage4-ai-draft-confirm-bridge-v1.test.cjs",
                     "check:stage5-ai-read-query-hardening-v1":  "node scripts/check-stage5-ai-read-query-hardening-v1.cjs",
-                    "test:stage5-ai-read-query-hardening-v1":  "node --test tests/stage5-ai-read-query-hardening-v1.test.cjs"
+                    "test:stage5-ai-read-query-hardening-v1":  "node --test tests/stage5-ai-read-query-hardening-v1.test.cjs",
+                    "test:stage5b-package-json-bom-build-gate-v1":  "node --test tests/stage5b-package-json-bom-build-gate.test.cjs",
+                    "check:stage5b-package-json-bom-build-gate-v1":  "node scripts/check-stage5b-package-json-bom-build-gate.cjs"
                 },
     "dependencies":  {
                          "@base-ui/react":  "^1.3.0",
