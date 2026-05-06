@@ -58,3 +58,11 @@ AI nadal tworzy draft/pending_review, nie finalny rekord.
 ## Ryzyko ograniczone
 
 Ten etap ogranicza ryzyko, że asystent zabrzmi pewnie mimo braku danych. To jest ważniejsze niż efektowna odpowiedź, bo produkt ma być operatorem aplikacji, nie kreatywnym chatbotem.
+
+## Stage6B — korekta dokumentu i gate
+
+STAGE6B_STAGE6_DOC_AND_GATE_REPAIR_V1
+
+- Nie odpowiada z pustego prompta.
+- Nie zmyśla przy pustym kontekście.
+- FAIL w checku blokuje dalsze wdrożenie przed buildem, commitem i pushem.
