@@ -59,6 +59,10 @@
       "destination": "/api/system?kind=service-profiles"
     },
     {
+      "source": "/api/assistant/query",
+      "destination": "/api/system?kind=assistant-query"
+    },
+    {
       "source": "/api/assistant",
       "destination": "/api/system?kind=ai-assistant"
     },

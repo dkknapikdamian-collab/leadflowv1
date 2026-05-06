@@ -9,6 +9,7 @@ import aiCaptureHandler from '../src/server/ai-capture.js';
 import aiAssistantHandler from '../src/server/ai-assistant.js';
 import aiDraftsHandler from '../src/server/ai-drafts.js';
 import assistantContextHandler from '../src/server/assistant-context.js';
+import assistantQueryHandler from '../src/server/assistant-query-handler.js';
 import recordsHandler from '../src/server/records.js';
 import paymentsHandler from '../src/server/payments.js';
 import responseTemplatesHandler from '../src/server/response-templates-handler.js';
@@ -762,6 +763,13 @@ async function handleWorkspaceRecovery(req: any, res: any) {
 }
 
 export default async function handler(req: any, res: any) {
+  // STAGE10C_ASSISTANT_QUERY_SYSTEM_KIND_ROUTE
+  const __stage10cBody = parseBody((req as any).body);
+  const __stage10cKind = routeKind(req, __stage10cBody);
+  if (__stage10cKind === 'assistant-query') {
+    return assistantQueryHandler(req, res);
+  }
+
   const body = parseBody(req.body);
   const identity = getRequestIdentity(req, body);
   void identity.fullName;

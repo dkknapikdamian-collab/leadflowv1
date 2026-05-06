@@ -6,38 +6,21 @@ Branch: `dev-rollout-freeze`
 
 ## Cel
 
-Domknac techniczny kontrakt endpointu `/api/assistant/query` po Stage3-Stage6D.
+Utrzymać publiczny kontrakt `/api/assistant/query` jako structured API contract dla UI asystenta.
 
-Ten etap nie dodaje kolejnej warstwy "magii AI". On ma dac szybki, powtarzalny smoke test, ze endpoint ma structured API contract i nie zamienia sie w luzny chatbotowy response.
+Po Stage10C kontrakt działa without separate Vercel function: publiczna ścieżka `/api/assistant/query` jest rewrite'owana do `/api/system?kind=assistant-query`, a fizyczny handler mieszka w `src/server/assistant-query-handler.ts`.
 
-## Zakres
+## Chronione zachowania
 
-- `/api/assistant/query` dalej przyjmuje tylko `POST`.
-- Empty prompt zwraca jawny structured response z `mode: "unknown"`, `intent: "unknown"`, `items: []`, `draft: null` i `meta.dataPolicy: "app_data_only"`.
-- Za duzy body payload zwraca `413` i `payload_too_large`.
-- Normalne zapytanie dalej buduje kontekst przez `buildAssistantContextFromRequest()`.
-- Wynik dalej przechodzi przez `runAssistantQuery()`.
-- Seed testowy moze wejsc przez `snapshot` albo `data`.
+- empty prompt zwraca structured response, nie pusty błąd.
+- `payload_too_large` zwraca 413.
+- odpowiedź niesie `dataPolicy: app_data_only`.
+- write intent nadal daje szkic do sprawdzenia, nie finalny rekord.
+- `/api/assistant/query` nie dodaje osobnej funkcji serverless na Vercel Hobby.
 
-## Nie zmienia
+## Kryterium zakończenia
 
-- Nie tworzy finalnych rekordow.
-- Nie zmienia flow zatwierdzania szkicow.
-- Nie dotyka billing/trial/plans.
-- Nie podpina drogiego LLM.
-
-## Kryterium zakonczenia
-
-- `npm.cmd run check:stage6-ai-no-hallucination-data-truth-v1` przechodzi.
-- `npm.cmd run test:stage6-ai-no-hallucination-data-truth-v1` przechodzi.
-- `npm.cmd run check:stage6b-stage6-doc-and-gate-repair-v1` przechodzi.
-- `npm.cmd run test:stage6b-stage6-doc-and-gate-repair-v1` przechodzi.
-- `npm.cmd run check:stage6d-stage6b-gate-phrase-ascii-repair-v1` przechodzi.
-- `npm.cmd run test:stage6d-stage6b-gate-phrase-ascii-repair-v1` przechodzi.
-- `npm.cmd run check:stage7-ai-assistant-query-api-contract-smoke-v1` przechodzi.
-- `npm.cmd run test:stage7-ai-assistant-query-api-contract-smoke-v1` przechodzi.
-- `npm.cmd run build` przechodzi przed commitem i pushem.
-
-## Powod
-
-Po naprawieniu no-hallucination policy i bramek procesowych potrzebny jest maly kontrakt API, ktory lapie regresje na granicy frontend/backend. Bez tego UI moze wygladac dobrze, a endpoint moze zaczac zwracac odpowiedz bez `meta`, bez `dataPolicy`, albo bez twardej blokady empty prompt.
+- `api/assistant/query.ts` nie istnieje.
+- `vercel.json` ma rewrite `/api/assistant/query` -> `/api/system?kind=assistant-query`.
+- `api/system.ts` route'uje `kind=assistant-query` do `assistant-query-handler`.
+- Stage7 check/test przechodzą.
