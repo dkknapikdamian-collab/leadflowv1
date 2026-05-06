@@ -337,7 +337,11 @@
     "check:stage6b-stage6-doc-and-gate-repair-v1": "node scripts/check-stage6b-stage6-doc-and-gate-repair.cjs",
     "test:stage6b-stage6-doc-and-gate-repair-v1": "node --test tests/stage6b-stage6-doc-and-gate-repair.test.cjs",
     "check:stage6d-stage6b-gate-phrase-ascii-repair-v1": "node scripts/check-stage6d-stage6b-gate-phrase-ascii-repair.cjs",
-    "test:stage6d-stage6b-gate-phrase-ascii-repair-v1": "node --test tests/stage6d-stage6b-gate-phrase-ascii-repair.test.cjs"
+    "test:stage6d-stage6b-gate-phrase-ascii-repair-v1": "node --test tests/stage6d-stage6b-gate-phrase-ascii-repair.test.cjs",
+    "check:stage7-ai-assistant-query-api-contract-smoke-v1": "node scripts/check-stage7-ai-assistant-query-api-contract-smoke.cjs",
+    "test:stage7-ai-assistant-query-api-contract-smoke-v1": "node --test tests/stage7-ai-assistant-query-api-contract-smoke.test.cjs",
+    "check:stage7b-stage7-payload-copy-repair-v1": "node scripts/check-stage7b-stage7-payload-copy-repair.cjs",
+    "test:stage7b-stage7-payload-copy-repair-v1": "node --test tests/stage7b-stage7-payload-copy-repair.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
