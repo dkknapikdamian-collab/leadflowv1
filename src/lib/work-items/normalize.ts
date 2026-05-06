@@ -34,6 +34,7 @@ export type CanonicalTask = {
   leadId: string | null;
   caseId: string | null;
   clientId: string | null;
+  leadName?: string | null;
   workspaceId: string | null;
   createdAt: string | null;
   updatedAt: string | null;
@@ -51,6 +52,7 @@ export type CanonicalEvent = {
   leadId: string | null;
   caseId: string | null;
   clientId: string | null;
+  leadName?: string | null;
   workspaceId: string | null;
   createdAt: string | null;
   updatedAt: string | null;
@@ -102,6 +104,10 @@ export type WorkItem = DateBearingItem & {
   reminderAt: string | null;
   recurrenceRule: string | null;
   completedAt: string | null;
+  date?: string | null;
+  priority?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
   leadName?: string | null;
   caseTitle?: string | null;
 };
@@ -215,6 +221,10 @@ export function normalizeWorkItem(input: unknown): WorkItem {
     reminderRule,
     recurrenceRule: asNullableText(row.recurrenceRule) || asNullableText(row.recurrence),
     completedAt: pickIso(row, ['completedAt', 'completed_at', 'doneAt', 'done_at']),
+    date: asNullableText(row.date) || (dateAt ? dateAt.slice(0, 10) : null),
+    priority: asNullableText(row.priority),
+    createdAt: pickIso(row, ['createdAt', 'created_at']),
+    updatedAt: pickIso(row, ['updatedAt', 'updated_at']),
     leadName: asNullableText(row.leadName) || asNullableText(row.lead_name),
     caseTitle: asNullableText(row.caseTitle) || asNullableText(row.case_title),
   };
@@ -239,6 +249,7 @@ export function normalizeTaskV1(input: unknown): CanonicalTask {
     leadId: item.leadId,
     caseId: item.caseId,
     clientId: item.clientId,
+    leadName: item.leadName,
     workspaceId: asNullableText(row.workspaceId) || asNullableText(row.workspace_id),
     createdAt: pickIso(row, ['createdAt', 'created_at']),
     updatedAt: pickIso(row, ['updatedAt', 'updated_at']),
@@ -260,6 +271,7 @@ export function normalizeEventV1(input: unknown): CanonicalEvent {
     leadId: item.leadId,
     caseId: item.caseId,
     clientId: item.clientId,
+    leadName: item.leadName,
     workspaceId: asNullableText(row.workspaceId) || asNullableText(row.workspace_id),
     createdAt: pickIso(row, ['createdAt', 'created_at']),
     updatedAt: pickIso(row, ['updatedAt', 'updated_at']),

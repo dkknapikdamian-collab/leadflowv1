@@ -171,9 +171,8 @@ export function buildTargetFromElement(
 }
 
 export function buildTargetCandidates(pathLike: EventTarget[] | Element[], route: string, screen: string): AdminTargetCandidate[] {
-  const elements = pathLike
-    .filter(isHTMLElement)
-    .filter((element) => !['html', 'body'].includes(element.tagName.toLowerCase()));
+  const htmlElements = pathLike.filter(isHTMLElement) as HTMLElement[];
+  const elements = htmlElements.filter((element) => !['html', 'body'].includes(element.tagName.toLowerCase()));
 
   const filtered = elements.filter((element) => !isAdminToolElement(element));
   const composedPathSummary = elements.slice(0, 8).map((element) => summarizeElement(element));

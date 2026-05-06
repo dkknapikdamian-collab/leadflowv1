@@ -234,6 +234,8 @@ useEffect(() => {
   const googleCalendarMissingText = googleCalendarStatus?.missing?.length
     ? googleCalendarStatus.missing.join(', ')
     : '';
+  const googleCalendarConfigured = googleCalendarStatus?.configured === true;
+  const googleCalendarConnected = googleCalendarStatus?.connected === true;
 
   // GOOGLE_CALENDAR_SYNC_V1_STAGE03_SETTINGS_UI_CONNECT
   const loadGoogleCalendarStatus = async () => {
@@ -378,7 +380,14 @@ useEffect(() => {
         body: JSON.stringify({ mode: 'all', limit: 200, daysBack: 30, daysForward: 365 }),
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(String(data?.error || 'GOOGLE_CALENDAR_SYNC_OUTBOUND_FAILED'));
+      if (!response.ok) {
+        if (response.status === 409 && Array.isArray(data?.missing)) {
+          setGoogleCalendarStatus({ configured: false, connected: false, missing: data.missing });
+          toast.message(`Google Calendar wymaga konfiguracji w Vercel: ${data.missing.join(', ')}`);
+          return;
+        }
+        throw new Error(String(data?.error || 'GOOGLE_CALENDAR_SYNC_OUTBOUND_FAILED'));
+      }
       setGoogleCalendarOutboundResult(data as GoogleCalendarOutboundResultState);
 
       if (!data?.connected) {
@@ -763,7 +772,7 @@ useEffect(() => {
                 </div>
 
                 <div className="settings-action-row">
-                  <Button type="button" onClick={() => void handleSyncGoogleCalendarOutbound()} disabled={syncingGoogleCalendarOutbound || checkingGoogleCalendar || !canUseGoogleCalendarByPlan}>
+                  <Button type="button" onClick={() => void handleSyncGoogleCalendarOutbound()} disabled={syncingGoogleCalendarOutbound || checkingGoogleCalendar || !canUseGoogleCalendarByPlan || !googleCalendarConfigured || !googleCalendarConnected}>
                     <RefreshCw className="h-4 w-4" />
                     {syncingGoogleCalendarOutbound ? 'Synchronizuję...' : 'Synchronizuj teraz z Google Calendar'}
                   </Button>
@@ -1085,7 +1094,7 @@ useEffect(() => {
                 >
                   {checkingGoogleCalendar ? 'Sprawdzanie...' : 'Odśwież status'}
                 </Button>
-                {googleCalendarStatus?.connected ? (
+                {googleCalendarConnected ? (
                   <Button
                     type="button"
                     variant="outline"
@@ -1098,9 +1107,9 @@ useEffect(() => {
                   <Button
                     type="button"
                     onClick={() => void handleConnectGoogleCalendar()}
-                    disabled={connectingGoogleCalendar || checkingGoogleCalendar || !workspace?.id || !canUseGoogleCalendarByPlan}
+                    disabled={connectingGoogleCalendar || checkingGoogleCalendar || !workspace?.id || !canUseGoogleCalendarByPlan || googleCalendarStatus?.configured === false}
                   >
-                    {connectingGoogleCalendar ? 'Przekierowanie...' : 'Połącz Google'}
+                    {connectingGoogleCalendar ? 'Przekierowanie...' : googleCalendarStatus?.configured === false ? 'Wymaga konfiguracji' : 'Polacz Google'}
                   </Button>
                 )}
               </div>
@@ -1342,3 +1351,4 @@ useEffect(() => {
     </Layout>
   );
 }
+

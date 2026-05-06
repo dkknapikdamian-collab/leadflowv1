@@ -81,6 +81,11 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === 'POST' && action === 'sync-inbound') {
       // GOOGLE_CALENDAR_STAGE10K_SYNC_INBOUND_ROUTE
+      const cfg = getGoogleCalendarConfigStatus();
+      if (!cfg.configured) {
+        res.status(409).json({ error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED', missing: cfg.missing });
+        return;
+      }
       await assertWorkspaceWriteAccess(workspaceId, req);
       const result = await syncGoogleCalendarInbound({
         workspaceId,
@@ -95,6 +100,11 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === 'POST' && (action === 'sync-outbound' || action === 'sync-now')) {
       // GOOGLE_CALENDAR_STAGE12_SYNC_OUTBOUND_ROUTE
+      const cfg = getGoogleCalendarConfigStatus();
+      if (!cfg.configured) {
+        res.status(409).json({ error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED', missing: cfg.missing });
+        return;
+      }
       await assertWorkspaceWriteAccess(workspaceId, req);
       const result = await syncGoogleCalendarOutbound({
         workspaceId,
