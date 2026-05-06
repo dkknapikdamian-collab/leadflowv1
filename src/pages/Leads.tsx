@@ -38,8 +38,8 @@ import '../styles/visual-stage20-lead-form-vnext.css';
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
 const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\n\\nTen lead ma powiązaną sprawę';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, ĹşrĂłdĹ‚o albo sprawa...';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
 // Guard marker: \n\nTen lead ma powiązaną sprawę
@@ -122,7 +122,7 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
     contact,
     valueLabel,
     caseLabel,
-  ].filter(Boolean).join(' Â· ');
+  ].filter(Boolean).join(' · ');
 }
 
 function nativeSelectClassName() {
@@ -155,7 +155,7 @@ function buildNextActionMeta(action: { title: string | null; at: string | null; 
 
   return {
     title: action.title,
-    subtitle: `${getNextActionKindLabel(action)} Â· ${dateLabel} Â· ${String(action.status || 'todo')}`,
+    subtitle: `${getNextActionKindLabel(action)} · ${dateLabel} · ${String(action.status || 'todo')}`,
     overdue,
   };
 }
@@ -320,7 +320,7 @@ export default function Leads() {
     const hasLeadIdentity = Boolean(newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || newLead.company.trim());
     const hasContactOrNeed = Boolean(newLead.phone.trim() || newLead.email.trim() || newLead.summary.trim() || newLead.notes.trim());
     if (!hasLeadIdentity) return toast.error('Podaj nazwďż˝" albo kontakt.');
-    if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
+    if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrżeby.');
     createLeadSubmitLockRef.current = true;
     setLeadSubmitting(true);
 

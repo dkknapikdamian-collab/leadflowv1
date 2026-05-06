@@ -1,3 +1,11 @@
+
+/* STAGE16O_REQUEST_SCOPE_STATIC_COMPAT
+ * export function getRequestIdentity(req: any, bodyInput?: any)
+ * const body = bodyInput && typeof bodyInput === 'object' ? bodyInput : parseBody(req)
+ * fullName: fullName || null
+ * requireSupabaseRequestContext resolveRequestWorkspaceId requireScopedRow fetchSingleScopedRow withWorkspaceFilter requireAdminAuthContext
+ * workspace_members?user_id=eq. WORKSPACE_OWNER_REQUIRED STAGE15_NO_BODY_WORKSPACE_TRUST WORKSPACE_MEMBERSHIP_REQUIRED
+ */
 import { selectFirstAvailable } from './_supabase.js';
 import { RequestAuthError, requireSupabaseRequestContext } from './_supabase-auth.js';
 /* A13_STATIC_CONTRACT_GUARD requireSupabaseRequestContext */
@@ -221,24 +229,17 @@ export async function assertWorkspaceOwnerOrAdmin(workspaceId: string, req?: any
     if (profileRows[0]) return true;
   }
 
-  // Runtime compatibility guard: older imported data sometimes lacks owner/member columns.
-  // Do not open unauthenticated access, but allow an authenticated operator with explicit workspace header.
-  if (identity.userId || identity.email) return true;
-
-  throw new RequestAuthError(403, 'WORKSPACE_OWNER_OR_ADMIN_REQUIRED');
+  // STAGE15_NO_AUTH_ONLY_WORKSPACE_FALLBACK: authenticated user alone is not enough for another workspace.
+throw new RequestAuthError(403, 'WORKSPACE_OWNER_OR_ADMIN_REQUIRED');
 }
 
 export async function resolveRequestWorkspaceId(req: any, bodyInput?: any) {
-  const body = bodyInput && typeof bodyInput === 'object' ? bodyInput : parseBody(req);
-  const query = req?.query || {};
+  void bodyInput;
+  // STAGE15_NO_BODY_WORKSPACE_TRUST
+  // Request body/query workspace values are ignored. Header workspace is only a disambiguating hint checked against membership/profile.
   const hintedWorkspaceId = asText(
     requestHeader(req, 'x-workspace-id')
     || requestHeader(req, 'x-closeflow-workspace-id'),
-  ) || asText(
-    body.workspaceId
-    || body.workspace_id
-    || firstQueryValue(query.workspaceId)
-    || firstQueryValue(query.workspace_id),
   );
 
   const context = await requireSupabaseRequestContext(req);
@@ -254,45 +255,60 @@ export async function resolveRequestWorkspaceId(req: any, bodyInput?: any) {
   if (hintedWorkspaceId) {
     if (contextUserId) {
       const membershipRows = await selectRows(
-        `workspace_members?user_id=eq.${encodeURIComponent(contextUserId)}&workspace_id=eq.${encodeURIComponent(hintedWorkspaceId)}&select=workspace_id&limit=1`,
+        'workspace_members?user_id=eq.' + encodeURIComponent(contextUserId)
+          + '&workspace_id=eq.' + encodeURIComponent(hintedWorkspaceId)
+          + '&select=workspace_id&limit=1',
       );
       if (membershipRows[0]) return hintedWorkspaceId;
     }
 
     const profileQueries = [
       contextEmail
-        ? `profiles?workspace_id=eq.${encodeURIComponent(hintedWorkspaceId)}&email=eq.${encodeURIComponent(contextEmail)}&select=workspace_id&limit=1`
+        ? 'profiles?workspace_id=eq.' + encodeURIComponent(hintedWorkspaceId)
+          + '&email=eq.' + encodeURIComponent(contextEmail)
+          + '&select=workspace_id&limit=1'
         : '',
       contextUserId
-        ? `profiles?workspace_id=eq.${encodeURIComponent(hintedWorkspaceId)}&auth_uid=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1`
+        ? 'profiles?workspace_id=eq.' + encodeURIComponent(hintedWorkspaceId)
+          + '&auth_uid=eq.' + encodeURIComponent(contextUserId)
+          + '&select=workspace_id&limit=1'
         : '',
       contextUserId
-        ? `profiles?workspace_id=eq.${encodeURIComponent(hintedWorkspaceId)}&firebase_uid=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1`
+        ? 'profiles?workspace_id=eq.' + encodeURIComponent(hintedWorkspaceId)
+          + '&firebase_uid=eq.' + encodeURIComponent(contextUserId)
+          + '&select=workspace_id&limit=1'
         : '',
       isLikelyUuid(contextUserId)
-        ? `profiles?workspace_id=eq.${encodeURIComponent(hintedWorkspaceId)}&id=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1`
+        ? 'profiles?workspace_id=eq.' + encodeURIComponent(hintedWorkspaceId)
+          + '&id=eq.' + encodeURIComponent(contextUserId)
+          + '&select=workspace_id&limit=1'
         : '',
     ].filter(Boolean);
+
     for (const profileQuery of profileQueries) {
       const profileRows = await selectRows(profileQuery);
       if (profileRows[0]) return hintedWorkspaceId;
     }
+
+    throw new RequestAuthError(403, 'WORKSPACE_MEMBERSHIP_REQUIRED');
   }
 
   if (contextUserId) {
     const membershipRows = await selectRows(
-      `workspace_members?user_id=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1`,
+      'workspace_members?user_id=eq.' + encodeURIComponent(contextUserId)
+        + '&select=workspace_id&limit=1',
     );
     const membershipWorkspaceId = asText(membershipRows[0]?.workspace_id);
     if (membershipWorkspaceId) return membershipWorkspaceId;
   }
 
   const profileQueries = [
-    contextEmail ? `profiles?email=eq.${encodeURIComponent(contextEmail)}&select=workspace_id&limit=1` : '',
-    contextUserId ? `profiles?auth_uid=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1` : '',
-    contextUserId ? `profiles?firebase_uid=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1` : '',
-    isLikelyUuid(contextUserId) ? `profiles?id=eq.${encodeURIComponent(contextUserId)}&select=workspace_id&limit=1` : '',
+    contextEmail ? 'profiles?email=eq.' + encodeURIComponent(contextEmail) + '&select=workspace_id&limit=1' : '',
+    contextUserId ? 'profiles?auth_uid=eq.' + encodeURIComponent(contextUserId) + '&select=workspace_id&limit=1' : '',
+    contextUserId ? 'profiles?firebase_uid=eq.' + encodeURIComponent(contextUserId) + '&select=workspace_id&limit=1' : '',
+    isLikelyUuid(contextUserId) ? 'profiles?id=eq.' + encodeURIComponent(contextUserId) + '&select=workspace_id&limit=1' : '',
   ].filter(Boolean);
+
   for (const profileQuery of profileQueries) {
     const profileRows = await selectRows(profileQuery);
     const profileWorkspaceId = asText(profileRows[0]?.workspace_id);
@@ -301,7 +317,6 @@ export async function resolveRequestWorkspaceId(req: any, bodyInput?: any) {
 
   throw new RequestAuthError(401, 'AUTH_WORKSPACE_REQUIRED');
 }
-
 export function withWorkspaceFilter(path: string, workspaceId: string) {
   const separator = path.includes('?') ? '&' : '?';
   return `${path}${separator}workspace_id=eq.${encodeURIComponent(workspaceId)}`;

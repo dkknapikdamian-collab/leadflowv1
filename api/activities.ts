@@ -1,4 +1,5 @@
-import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
+/* STAGE16_SCOPED_MUTATION_ENDPOINT: workspace-owned mutations must scope service-role writes by workspace_id. */
+import { deleteById, insertWithVariants, selectFirstAvailable, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from '../src/server/_supabase.js';
 import { readPortalSession, requireOperatorCaseAccess, requirePortalSessionContext } from '../src/server/_portal-token.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
@@ -140,7 +141,7 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
-      const updated = await updateById('activities', id, patch);
+      const updated = await updateByIdScoped('activities', id, workspaceId, patch);
       const row = Array.isArray(updated) && updated[0] ? updated[0] : { id, workspace_id: workspaceId, ...patch };
       res.status(200).json(normalizeActivity(row));
       return;
@@ -160,7 +161,7 @@ export default async function handler(req: any, res: any) {
         return;
       }
       await requireScopedRow('activities', id, workspaceId, 'ACTIVITY_NOT_FOUND');
-      await deleteById('activities', id);
+      await deleteByIdScoped('activities', id, workspaceId);
       res.status(200).json({ ok: true, id });
       return;
     }

@@ -140,7 +140,7 @@ export default function Templates() {
       setTemplates((Array.isArray(data) ? data : []) as TemplateRecord[]);
     } catch (error: any) {
       setTemplates([]);
-      toast.error(`Nie udaBo si pobra szablon�w: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się pobrać szablonów: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLoading(false);
     }
@@ -260,7 +260,7 @@ export default function Templates() {
       setDraft(createEmptyDraft());
       await loadTemplates();
     } catch (error: any) {
-      toast.error(`Nie udaBo si zapisa szablonu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zapisać szablonu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSaving(false);
     }
@@ -280,7 +280,7 @@ export default function Templates() {
       toast.success('Utworzono kopi szablonu.');
       await loadTemplates();
     } catch (error: any) {
-      toast.error(`Nie udaBo si skopiowa szablonu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się skopiować szablonu: ${error?.message || 'REQUEST_FAILED'}`);
     }
   }
 
@@ -295,7 +295,7 @@ export default function Templates() {
       toast.success('Szablon zostaB usunity.');
       await loadTemplates();
     } catch (error: any) {
-      toast.error(`Nie udaBo si usun szablonu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się usunąć szablonu: ${error?.message || 'REQUEST_FAILED'}`);
     }
   }
 
@@ -318,7 +318,7 @@ export default function Templates() {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               {!hasAccess ? (
                 <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700">
-                  <ShieldAlert className="h-4 w-4" /> Tryb podgldu blokuje zapis szablon�w
+                  <ShieldAlert className="h-4 w-4" /> Tryb podgldu blokuje zapis szablonów
                 </div>
               ) : null}
               <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
@@ -357,7 +357,7 @@ export default function Templates() {
             <Card className="border border-slate-200 bg-white shadow-sm">
               <CardContent className="flex flex-col items-center justify-center gap-3 py-16">
                 <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-emerald-600" />
-                <p className="text-sm font-semibold text-slate-500">Aadowanie szablon�w...</p>
+                <p className="text-sm font-semibold text-slate-500">Ładowanie szablonów...</p>
               </CardContent>
             </Card>
           ) : filteredTemplates.length === 0 ? (
@@ -365,7 +365,7 @@ export default function Templates() {
               <CardContent className="flex min-h-[260px] flex-col items-center justify-center gap-4 px-6 py-16 text-center">
                 <div className="rounded-3xl bg-emerald-50 p-4 text-emerald-700"><FolderKanban className="h-8 w-8" /></div>
                 <div>
-                  <p className="text-xl font-black text-slate-950">Brak szablon�w w tym widoku</p>
+                  <p className="text-xl font-black text-slate-950">Brak szablonów w tym widoku</p>
                   <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
                     Dodaj pierwszy szablon, je[li chcesz szybciej zamienia pozyskany temat w spraw z checklist.
                   </p>
@@ -423,7 +423,7 @@ export default function Templates() {
                             </div>
                             <p className="font-bold text-slate-950">{item.title}</p>
                             <p className="mt-2 text-sm leading-6 text-slate-500">
-                              {item.description || 'Bez opisu. Warto dopisa kr�tkie wyja[nienie dla klienta.'}
+                              {item.description || 'Bez opisu. Warto dopisa krótkie wyjaśnienie dla klienta.'}
                             </p>
                           </div>
                         );
@@ -524,7 +524,7 @@ export default function Templates() {
           <DialogFooter>
             <Button variant="outline" className="border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={() => setDialogOpen(false)}>Anuluj</Button>
             <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => void handleSaveTemplate()} disabled={saving}>
-              {saving ? 'Zapisywanie...' : editingTemplateId ? 'Zapisz zmiany' : 'Utw�rz szablon'}
+              {saving ? 'Zapisywanie...' : editingTemplateId ? 'Zapisz zmiany' : 'Utwórz szablon'}
             </Button>
           </DialogFooter>
         </DialogContent>

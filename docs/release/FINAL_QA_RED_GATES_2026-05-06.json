@@ -1,0 +1,917 @@
+{
+  "generatedAt": "2026-05-06T19:51:44.755Z",
+  "repoRoot": "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow",
+  "git": {
+    "branch": "dev-rollout-freeze",
+    "head": "da48e5d",
+    "status": "M api/activities.ts\n M api/cases.ts\n M api/clients.ts\n M api/leads.ts\n M api/work-items.ts\n M package.json\n M public/manifest.webmanifest\n M public/service-worker.js\n M scripts/check-assistant-operator-v1.cjs\n M scripts/check-polish-mojibake.cjs\n M scripts/check-pwa-safe-cache.cjs\n M scripts/closeflow-release-check.cjs\n M scripts/print-release-evidence.cjs\n M src/App.tsx\n M src/components/GlobalAiAssistant.tsx\n M src/components/GlobalQuickActions.tsx\n M src/components/Layout.tsx\n M src/components/QuickAiCapture.tsx\n M src/components/TodayAiAssistant.tsx\n M src/components/admin-tools/admin-tools-export.ts\n M src/lib/access.ts\n M src/lib/ai-direct-write-guard.ts\n M src/lib/ai-drafts.ts\n M src/lib/ai-usage-guard.ts\n M src/lib/assistant-intents.ts\n M src/lib/lead-service-state.ts\n M src/pages/AdminAiSettings.tsx\n M src/pages/AiDrafts.tsx\n M src/pages/Billing.tsx\n M src/pages/Calendar.tsx\n M src/pages/CaseDetail.tsx\n M src/pages/ClientDetail.tsx\n M src/pages/LeadDetail.tsx\n M src/pages/Leads.tsx\n M src/pages/Settings.tsx\n M src/pages/SupportCenter.tsx\n M src/pages/Templates.tsx\n M src/pages/Today.tsx\n M src/server/_access-gate.ts\n M src/server/_request-scope.ts\n M src/server/_supabase.ts\n M src/server/ai-assistant.ts\n M src/server/ai-config.ts\n M src/server/billing-checkout-handler.ts\n M src/server/service-profiles.ts\n M src/server/support-handler.ts\n M tests/faza2-etap21-workspace-isolation.test.cjs\n M tests/faza3-etap32d-plan-based-ui-visibility.test.cjs\n M tests/request-identity-vercel-api-signature.test.cjs\n?? docs/release/BUTTON_ACTION_MAP_2026-05-06.json\n?? docs/release/FINAL_QA_FAILED_DETAILS_2026-05-06.json\n?? docs/release/FINAL_QA_FAILED_DETAILS_2026-05-06.md\n?? docs/release/FINAL_QA_RED_GATES_2026-05-06.json\n?? docs/release/FINAL_QA_RED_GATES_2026-05-06.md\n?? docs/release/MANUAL_QA_CHECKLIST_2026-05-06.md\n?? docs/release/RELEASE_CANDIDATE_2026-05-06.md\n?? docs/release/STAGE16AA_LOCKED_AI_COPY_MARKER_FINAL_COMMIT_PUSH_2026-05-06.md\n?? docs/release/STAGE16B_FINAL_QA_RED_GATE_REPAIR_2026-05-06.md\n?? docs/release/STAGE16C_PWA_FOUNDATION_COMPAT_REPAIR_2026-05-06.md\n?? docs/release/STAGE16D_PWA_FOUNDATION_FULL_COMPAT_REPAIR_2026-05-06.md\n?? docs/release/STAGE16E_PWA_MANIFEST_NAME_COMPAT_REPAIR_2026-05-06.md\n?? docs/release/STAGE16F_PWA_MANIFEST_GUARD_RECONCILE_2026-05-06.md\n?? docs/release/STAGE16G_PWA_MANIFEST_GUARD_SCRIPT_FIX_2026-05-06.md\n?? docs/release/STAGE16H_DAILY_DIGEST_COPY_GATE_REPAIR_2026-05-06.md\n?? docs/release/STAGE16I_EMAIL_DIGEST_DOMAIN_GATE_REPAIR_2026-05-06.md\n?? docs/release/STAGE16J_BILLING_STRIPE_BLIK_ACCESS_MARKER_REPAIR_2026-05-06.md\n?? docs/release/STAGE16K_FINAL_QA_RED_GATE_COLLECTOR_2026-05-06.md\n?? docs/release/STAGE16L_FINAL_QA_FAILED_DETAILS_COLLECTOR_2026-05-06.md\n?? docs/release/STAGE16M_FINAL_QA_BATCH_REPAIR_2026-05-06.md\n?? docs/release/STAGE16N_BUILD_AI_FAILURE_DETAILS_2026-05-06.json\n?? docs/release/STAGE16N_BUILD_AI_FAILURE_DETAILS_2026-05-06.md\n?? docs/release/STAGE16N_BUILD_AI_FAILURE_DETAILS_COLLECTOR_2026-05-06.md\n?? docs/release/STAGE16O_FINAL_QA_AI_COLLECTOR_REPAIR_2026-05-06.md\n?? docs/release/STAGE16O_FOCUSED_FINAL_QA_2026-05-06.json\n?? docs/release/STAGE16O_FOCUSED_FINAL_QA_2026-05-06.md\n?? docs/release/STAGE16P_FINAL_QA_CAPTURE_ORDER_WINDOWS_COLLECTOR_2026-05-06.md\n?? docs/release/STAGE16P_FOCUSED_FINAL_QA_2026-05-06.json\n?? docs/release/STAGE16P_FOCUSED_FINAL_QA_2026-05-06.md\n?? docs/release/STAGE16Q_SETTINGS_SYNTAX_REPAIR_2026-05-06.md\n?? docs/release/STAGE16R_TODAY_AI_COMMENT_SYNTAX_REPAIR_2026-05-06.md\n?? docs/release/STAGE16S_TODAY_AI_HEADER_COMMENT_REPAIR_2026-05-06.md\n?? docs/release/STAGE16T_AI_STATIC_CONTRACT_MARKER_REPAIR_2026-05-06.md\n?? docs/release/STAGE16U_SETTINGS_GATE_AND_A13_DETAIL_2026-05-06.md\n?? docs/release/STAGE16V_AI_GLOBAL_SEARCH_ORDER_REPAIR_2026-05-06.md\n?? docs/release/STAGE16W_AI_CAPTURE_BEFORE_GLOBAL_SEARCH_REPAIR_2026-05-06.md\n?? docs/release/STAGE16X_A13_DIRECT_DETAILS_2026-05-06.json\n?? docs/release/STAGE16X_A13_DIRECT_DETAILS_2026-05-06.md\n?? docs/release/STAGE16X_A13_DIRECT_DETAIL_COLLECTOR_2026-05-06.md\n?? docs/release/STAGE16Y_A13_AI_DRAFT_STATUS_MARKER_REPAIR_2026-05-06.md\n?? docs/release/STAGE16Z_A13_RAWTEXT_CLEANUP_MARKER_REPAIR_2026-05-06.md\n?? docs/release/STAGE16_ADMIN_BACKEND_SERVICE_ROLE_GUARD_2026-05-06.md\n?? docs/release/STAGE16_FINAL_QA_RELEASE_CANDIDATE_2026-05-06.md\n?? scripts/check-admin-backend-guard.cjs\n?? scripts/check-button-action-map.cjs\n?? scripts/check-no-body-workspace-trust.cjs\n?? scripts/check-service-role-scoped-mutations.cjs\n?? scripts/check-ui-truth-copy.cjs\n?? scripts/check-workspace-scope.cjs\n?? scripts/collect-stage16k-final-qa-red-gates.cjs\n?? scripts/collect-stage16l-final-qa-failed-details.cjs\n?? scripts/collect-stage16n-build-ai-details.cjs\n?? scripts/collect-stage16o-focused-final-qa.cjs\n?? scripts/collect-stage16p-focused-final-qa.cjs\n?? scripts/collect-stage16u-final-two-gates.cjs\n?? scripts/collect-stage16x-a13-direct-details.cjs\n?? scripts/repair-stage14c-runtime-copy.cjs\n?? scripts/repair-stage14d-runtime-copy.cjs\n?? scripts/repair-stage14e-leftover-mojibake.cjs\n?? scripts/repair-stage14f-leftover-mojibake-force.cjs\n?? scripts/repair-stage14g-structural-mojibake-force.cjs\n?? scripts/repair-stage15-workspace-security.cjs\n?? scripts/repair-stage15c-request-scope-hard-lock.cjs\n?? scripts/repair-stage15d-no-body-workspace-trust.cjs\n?? scripts/repair-stage16-admin-service-role-guard.cjs\n?? scripts/repair-stage16-final-qa-release-candidate.cjs\n?? scripts/repair-stage16aa-locked-ai-copy-marker.cjs\n?? scripts/repair-stage16b-final-qa-red-gate.cjs\n?? scripts/repair-stage16c-pwa-foundation-compat.cjs\n?? scripts/repair-stage16d-pwa-foundation-full-compat.cjs\n?? scripts/repair-stage16e-pwa-manifest-name-compat.cjs\n?? scripts/repair-stage16f-pwa-manifest-guard-reconcile.cjs\n?? scripts/repair-stage16g-pwa-manifest-guard-script-fix.cjs\n?? scripts/repair-stage16h-daily-digest-copy-gate.cjs\n?? scripts/repair-stage16i-email-digest-domain-gate.cjs\n?? scripts/repair-stage16j-billing-stripe-blik-access-marker.cjs\n?? scripts/repair-stage16m-final-qa-batch.cjs\n?? scripts/repair-stage16o-ai-final-contracts.cjs\n?? scripts/repair-stage16p-final-qa-capture-order.cjs\n?? scripts/repair-stage16q-settings-syntax.cjs\n?? scripts/repair-stage16r-today-ai-comment-syntax.cjs\n?? scripts/repair-stage16s-today-ai-header-comment.cjs\n?? scripts/repair-stage16t-ai-static-contract-markers.cjs\n?? scripts/repair-stage16u-settings-gate-and-a13-detail.cjs\n?? scripts/repair-stage16v-ai-global-search-order.cjs\n?? scripts/repair-stage16w-ai-capture-before-global-search.cjs\n?? scripts/repair-stage16y-a13-ai-draft-status-marker.cjs\n?? scripts/repair-stage16z-a13-rawtext-cleanup-marker.cjs\n?? src/lib/ui-truth.ts\n?? tests/admin-backend-guard.test.cjs\n?? tests/button-action-map.test.cjs\n?? tests/route-smoke.test.cjs\n?? tests/service-role-scoped-mutations.test.cjs\n?? tests/ui-truth-copy.test.cjs\n?? tests/workspace-isolation.test.cjs"
+  },
+  "summary": {
+    "total": 139,
+    "passed": 139,
+    "failed": 0
+  },
+  "env": [
+    {
+      "key": "APP_URL",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "RELEASE_PREVIEW_URL",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "VERCEL_URL",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "VITE_SUPABASE_URL",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "VITE_SUPABASE_ANON_KEY",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "SUPABASE_URL",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "SUPABASE_SERVICE_ROLE_KEY",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "STRIPE_SECRET_KEY",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "STRIPE_WEBHOOK_SECRET",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "RESEND_API_KEY",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "DIGEST_FROM_EMAIL",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "CRON_SECRET",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "AI_ENABLED",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "GEMINI_API_KEY",
+      "status": "SET_IN_PROCESS"
+    },
+    {
+      "key": "GOOGLE_CLIENT_ID",
+      "status": "NOT_SET_IN_PROCESS"
+    },
+    {
+      "key": "GOOGLE_CLIENT_SECRET",
+      "status": "NOT_SET_IN_PROCESS"
+    }
+  ],
+  "failed": [],
+  "passed": [
+    {
+      "name": "npm run build",
+      "command": "npm.cmd run build",
+      "durationMs": 19636,
+      "testFile": null
+    },
+    {
+      "name": "npm run verify:closeflow:quiet",
+      "command": "npm.cmd run verify:closeflow:quiet",
+      "durationMs": 33807,
+      "testFile": null
+    },
+    {
+      "name": "npm run test:critical",
+      "command": "npm.cmd run test:critical",
+      "durationMs": 709,
+      "testFile": null
+    },
+    {
+      "name": "npm run check:polish-mojibake",
+      "command": "npm.cmd run check:polish-mojibake",
+      "durationMs": 432,
+      "testFile": null
+    },
+    {
+      "name": "npm run check:ui-truth-copy",
+      "command": "npm.cmd run check:ui-truth-copy",
+      "durationMs": 520,
+      "testFile": null
+    },
+    {
+      "name": "npm run check:workspace-scope",
+      "command": "npm.cmd run check:workspace-scope",
+      "durationMs": 448,
+      "testFile": null
+    },
+    {
+      "name": "npm run check:no-body-workspace-trust",
+      "command": "npm.cmd run check:no-body-workspace-trust",
+      "durationMs": 532,
+      "testFile": null
+    },
+    {
+      "name": "npm run check:plan-access-gating",
+      "command": "npm.cmd run check:plan-access-gating",
+      "durationMs": 447,
+      "testFile": null
+    },
+    {
+      "name": "npm run check:assistant-operator-v1",
+      "command": "npm.cmd run check:assistant-operator-v1",
+      "durationMs": 437,
+      "testFile": null
+    },
+    {
+      "name": "npm run check:pwa-safe-cache",
+      "command": "npm.cmd run check:pwa-safe-cache",
+      "durationMs": 388,
+      "testFile": null
+    },
+    {
+      "name": "npm run test:route-smoke",
+      "command": "npm.cmd run test:route-smoke",
+      "durationMs": 492,
+      "testFile": null
+    },
+    {
+      "name": "npm run test:button-action-map",
+      "command": "npm.cmd run test:button-action-map",
+      "durationMs": 478,
+      "testFile": null
+    },
+    {
+      "name": "npm run check:button-action-map",
+      "command": "npm.cmd run check:button-action-map",
+      "durationMs": 432,
+      "testFile": null
+    },
+    {
+      "name": "npm run check:admin-backend-guard",
+      "command": "npm.cmd run check:admin-backend-guard",
+      "durationMs": 422,
+      "testFile": null
+    },
+    {
+      "name": "npm run check:service-role-scoped-mutations",
+      "command": "npm.cmd run check:service-role-scoped-mutations",
+      "durationMs": 468,
+      "testFile": null
+    },
+    {
+      "name": "node --test tests/activity-command-center.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/activity-command-center.test.cjs",
+      "durationMs": 162,
+      "testFile": "tests/activity-command-center.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-assistant-admin-and-app-scope.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-assistant-admin-and-app-scope.test.cjs",
+      "durationMs": 181,
+      "testFile": "tests/ai-assistant-admin-and-app-scope.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-assistant-autospeech-and-clear-input.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-assistant-autospeech-and-clear-input.test.cjs",
+      "durationMs": 149,
+      "testFile": "tests/ai-assistant-autospeech-and-clear-input.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-assistant-capture-handoff.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-assistant-capture-handoff.test.cjs",
+      "durationMs": 112,
+      "testFile": "tests/ai-assistant-capture-handoff.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-assistant-command-center.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-assistant-command-center.test.cjs",
+      "durationMs": 141,
+      "testFile": "tests/ai-assistant-command-center.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-assistant-global-app-search.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-assistant-global-app-search.test.cjs",
+      "durationMs": 121,
+      "testFile": "tests/ai-assistant-global-app-search.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-assistant-save-vs-search-rule.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-assistant-save-vs-search-rule.test.cjs",
+      "durationMs": 135,
+      "testFile": "tests/ai-assistant-save-vs-search-rule.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-assistant-scope-budget-guard.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-assistant-scope-budget-guard.test.cjs",
+      "durationMs": 118,
+      "testFile": "tests/ai-assistant-scope-budget-guard.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-capture-speech-parser.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-capture-speech-parser.test.cjs",
+      "durationMs": 161,
+      "testFile": "tests/ai-capture-speech-parser.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-cloudflare-provider-wiring.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-cloudflare-provider-wiring.test.cjs",
+      "durationMs": 183,
+      "testFile": "tests/ai-cloudflare-provider-wiring.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-config-admin-foundation.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-config-admin-foundation.test.cjs",
+      "durationMs": 150,
+      "testFile": "tests/ai-config-admin-foundation.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-config-no-secret-leak.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-config-no-secret-leak.test.cjs",
+      "durationMs": 142,
+      "testFile": "tests/ai-config-no-secret-leak.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-direct-write-respects-mode-stage28.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-direct-write-respects-mode-stage28.test.cjs",
+      "durationMs": 133,
+      "testFile": "tests/ai-direct-write-respects-mode-stage28.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-draft-inbox-command-center.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-draft-inbox-command-center.test.cjs",
+      "durationMs": 172,
+      "testFile": "tests/ai-draft-inbox-command-center.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-draft-inbox-flow.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-draft-inbox-flow.test.cjs",
+      "durationMs": 156,
+      "testFile": "tests/ai-draft-inbox-flow.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-followup-draft.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-followup-draft.test.cjs",
+      "durationMs": 132,
+      "testFile": "tests/ai-followup-draft.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-next-action-create-task.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-next-action-create-task.test.cjs",
+      "durationMs": 130,
+      "testFile": "tests/ai-next-action-create-task.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-next-action-suggestion.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-next-action-suggestion.test.cjs",
+      "durationMs": 135,
+      "testFile": "tests/ai-next-action-suggestion.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-quick-capture-foundation.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-quick-capture-foundation.test.cjs",
+      "durationMs": 135,
+      "testFile": "tests/ai-quick-capture-foundation.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-quick-capture-voice-and-today.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-quick-capture-voice-and-today.test.cjs",
+      "durationMs": 172,
+      "testFile": "tests/ai-quick-capture-voice-and-today.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-real-provider-wiring.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-real-provider-wiring.test.cjs",
+      "durationMs": 131,
+      "testFile": "tests/ai-real-provider-wiring.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-safety-gates-direct-write.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-safety-gates-direct-write.test.cjs",
+      "durationMs": 140,
+      "testFile": "tests/ai-safety-gates-direct-write.test.cjs"
+    },
+    {
+      "name": "node --test tests/ai-usage-limit-guard.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-usage-limit-guard.test.cjs",
+      "durationMs": 122,
+      "testFile": "tests/ai-usage-limit-guard.test.cjs"
+    },
+    {
+      "name": "node --test tests/billing-access-plan-normalization.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/billing-access-plan-normalization.test.cjs",
+      "durationMs": 208,
+      "testFile": "tests/billing-access-plan-normalization.test.cjs"
+    },
+    {
+      "name": "node --test tests/billing-checkout-no-prefilled-personal-email.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/billing-checkout-no-prefilled-personal-email.test.cjs",
+      "durationMs": 149,
+      "testFile": "tests/billing-checkout-no-prefilled-personal-email.test.cjs"
+    },
+    {
+      "name": "node --test tests/billing-checkout-vercel-api-type-guard.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/billing-checkout-vercel-api-type-guard.test.cjs",
+      "durationMs": 136,
+      "testFile": "tests/billing-checkout-vercel-api-type-guard.test.cjs"
+    },
+    {
+      "name": "node --test tests/billing-dry-run-test-order-regression.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/billing-dry-run-test-order-regression.test.cjs",
+      "durationMs": 135,
+      "testFile": "tests/billing-dry-run-test-order-regression.test.cjs"
+    },
+    {
+      "name": "node --test tests/billing-foundation-test-polish-label-regression.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/billing-foundation-test-polish-label-regression.test.cjs",
+      "durationMs": 169,
+      "testFile": "tests/billing-foundation-test-polish-label-regression.test.cjs"
+    },
+    {
+      "name": "node --test tests/billing-stripe-blik-foundation.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/billing-stripe-blik-foundation.test.cjs",
+      "durationMs": 166,
+      "testFile": "tests/billing-stripe-blik-foundation.test.cjs"
+    },
+    {
+      "name": "node --test tests/billing-stripe-blik-multi-plan-pricing.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/billing-stripe-blik-multi-plan-pricing.test.cjs",
+      "durationMs": 136,
+      "testFile": "tests/billing-stripe-blik-multi-plan-pricing.test.cjs"
+    },
+    {
+      "name": "node --test tests/billing-stripe-diagnostics-dry-run.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/billing-stripe-diagnostics-dry-run.test.cjs",
+      "durationMs": 131,
+      "testFile": "tests/billing-stripe-diagnostics-dry-run.test.cjs"
+    },
+    {
+      "name": "node --test tests/billing-ui-polish-and-diagnostics.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/billing-ui-polish-and-diagnostics.test.cjs",
+      "durationMs": 140,
+      "testFile": "tests/billing-ui-polish-and-diagnostics.test.cjs"
+    },
+    {
+      "name": "node --test tests/calendar-completed-event-behavior.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/calendar-completed-event-behavior.test.cjs",
+      "durationMs": 154,
+      "testFile": "tests/calendar-completed-event-behavior.test.cjs"
+    },
+    {
+      "name": "node --test tests/calendar-entry-relation-links.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/calendar-entry-relation-links.test.cjs",
+      "durationMs": 142,
+      "testFile": "tests/calendar-entry-relation-links.test.cjs"
+    },
+    {
+      "name": "node --test tests/calendar-restore-completed-entries.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/calendar-restore-completed-entries.test.cjs",
+      "durationMs": 124,
+      "testFile": "tests/calendar-restore-completed-entries.test.cjs"
+    },
+    {
+      "name": "node --test tests/case-detail-v1-command-center.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/case-detail-v1-command-center.test.cjs",
+      "durationMs": 135,
+      "testFile": "tests/case-detail-v1-command-center.test.cjs"
+    },
+    {
+      "name": "node --test tests/case-detail-write-access-gate-stage02b.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/case-detail-write-access-gate-stage02b.test.cjs",
+      "durationMs": 149,
+      "testFile": "tests/case-detail-write-access-gate-stage02b.test.cjs"
+    },
+    {
+      "name": "node --test tests/case-lifecycle-v1-foundation.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/case-lifecycle-v1-foundation.test.cjs",
+      "durationMs": 148,
+      "testFile": "tests/case-lifecycle-v1-foundation.test.cjs"
+    },
+    {
+      "name": "node --test tests/cases-filetext-runtime.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/cases-filetext-runtime.test.cjs",
+      "durationMs": 184,
+      "testFile": "tests/cases-filetext-runtime.test.cjs"
+    },
+    {
+      "name": "node --test tests/cases-page-helper-copy-cleanup.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/cases-page-helper-copy-cleanup.test.cjs",
+      "durationMs": 114,
+      "testFile": "tests/cases-page-helper-copy-cleanup.test.cjs"
+    },
+    {
+      "name": "node --test tests/cases-v1-lifecycle-command-board.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/cases-v1-lifecycle-command-board.test.cjs",
+      "durationMs": 135,
+      "testFile": "tests/cases-v1-lifecycle-command-board.test.cjs"
+    },
+    {
+      "name": "node --test tests/client-detail-final-operating-model.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/client-detail-final-operating-model.test.cjs",
+      "durationMs": 136,
+      "testFile": "tests/client-detail-final-operating-model.test.cjs"
+    },
+    {
+      "name": "node --test tests/client-detail-simplified-card-view.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/client-detail-simplified-card-view.test.cjs",
+      "durationMs": 132,
+      "testFile": "tests/client-detail-simplified-card-view.test.cjs"
+    },
+    {
+      "name": "node --test tests/client-detail-v1-operational-center.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/client-detail-v1-operational-center.test.cjs",
+      "durationMs": 123,
+      "testFile": "tests/client-detail-v1-operational-center.test.cjs"
+    },
+    {
+      "name": "node --test tests/client-relation-command-center.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/client-relation-command-center.test.cjs",
+      "durationMs": 119,
+      "testFile": "tests/client-relation-command-center.test.cjs"
+    },
+    {
+      "name": "node --test tests/closeflow-release-gate-quiet.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/closeflow-release-gate-quiet.test.cjs",
+      "durationMs": 119,
+      "testFile": "tests/closeflow-release-gate-quiet.test.cjs"
+    },
+    {
+      "name": "node --test tests/closeflow-release-gate.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/closeflow-release-gate.test.cjs",
+      "durationMs": 144,
+      "testFile": "tests/closeflow-release-gate.test.cjs"
+    },
+    {
+      "name": "node --test tests/daily-digest-cron-auth.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/daily-digest-cron-auth.test.cjs",
+      "durationMs": 141,
+      "testFile": "tests/daily-digest-cron-auth.test.cjs"
+    },
+    {
+      "name": "node --test tests/daily-digest-diagnostics.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/daily-digest-diagnostics.test.cjs",
+      "durationMs": 210,
+      "testFile": "tests/daily-digest-diagnostics.test.cjs"
+    },
+    {
+      "name": "node --test tests/daily-digest-email-runtime.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/daily-digest-email-runtime.test.cjs",
+      "durationMs": 116,
+      "testFile": "tests/daily-digest-email-runtime.test.cjs"
+    },
+    {
+      "name": "node --test tests/email-digest-domain-gate.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/email-digest-domain-gate.test.cjs",
+      "durationMs": 132,
+      "testFile": "tests/email-digest-domain-gate.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza2-etap21-workspace-isolation.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza2-etap21-workspace-isolation.test.cjs",
+      "durationMs": 123,
+      "testFile": "tests/faza2-etap21-workspace-isolation.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza2-etap22-rls-backend-security-proof.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza2-etap22-rls-backend-security-proof.test.cjs",
+      "durationMs": 167,
+      "testFile": "tests/faza2-etap22-rls-backend-security-proof.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza3-etap31-plan-source-of-truth.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza3-etap31-plan-source-of-truth.test.cjs",
+      "durationMs": 135,
+      "testFile": "tests/faza3-etap31-plan-source-of-truth.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza3-etap32-plan-feature-access-gate.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza3-etap32-plan-feature-access-gate.test.cjs",
+      "durationMs": 138,
+      "testFile": "tests/faza3-etap32-plan-feature-access-gate.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza3-etap32b-plan-visibility-contract.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza3-etap32b-plan-visibility-contract.test.cjs",
+      "durationMs": 285,
+      "testFile": "tests/faza3-etap32b-plan-visibility-contract.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza3-etap32c-access-gate-runtime-hotfix-v3.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza3-etap32c-access-gate-runtime-hotfix-v3.test.cjs",
+      "durationMs": 145,
+      "testFile": "tests/faza3-etap32c-access-gate-runtime-hotfix-v3.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza3-etap32d-plan-based-ui-visibility.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza3-etap32d-plan-based-ui-visibility.test.cjs",
+      "durationMs": 163,
+      "testFile": "tests/faza3-etap32d-plan-based-ui-visibility.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza3-etap32e-settings-digest-billing-visibility-smoke.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza3-etap32e-settings-digest-billing-visibility-smoke.test.cjs",
+      "durationMs": 174,
+      "testFile": "tests/faza3-etap32e-settings-digest-billing-visibility-smoke.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza3-etap32f-backend-entity-limits-smoke.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza3-etap32f-backend-entity-limits-smoke.test.cjs",
+      "durationMs": 215,
+      "testFile": "tests/faza3-etap32f-backend-entity-limits-smoke.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza3-etap32g-ai-draft-cancel-smoke.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza3-etap32g-ai-draft-cancel-smoke.test.cjs",
+      "durationMs": 167,
+      "testFile": "tests/faza3-etap32g-ai-draft-cancel-smoke.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza3-etap32h-lead-limit-placement-hotfix.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza3-etap32h-lead-limit-placement-hotfix.test.cjs",
+      "durationMs": 154,
+      "testFile": "tests/faza3-etap32h-lead-limit-placement-hotfix.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza4-etap41-data-contract-map.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza4-etap41-data-contract-map.test.cjs",
+      "durationMs": 186,
+      "testFile": "tests/faza4-etap41-data-contract-map.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza4-etap42-task-event-contract-normalization.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza4-etap42-task-event-contract-normalization.test.cjs",
+      "durationMs": 190,
+      "testFile": "tests/faza4-etap42-task-event-contract-normalization.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza4-etap43-critical-crud-smoke.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza4-etap43-critical-crud-smoke.test.cjs",
+      "durationMs": 175,
+      "testFile": "tests/faza4-etap43-critical-crud-smoke.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza4-etap44a-live-refresh-mutation-bus.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza4-etap44a-live-refresh-mutation-bus.test.cjs",
+      "durationMs": 166,
+      "testFile": "tests/faza4-etap44a-live-refresh-mutation-bus.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza4-etap44b-today-live-refresh-import-hotfix.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza4-etap44b-today-live-refresh-import-hotfix.test.cjs",
+      "durationMs": 135,
+      "testFile": "tests/faza4-etap44b-today-live-refresh-import-hotfix.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza4-etap44b-today-live-refresh-listener.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza4-etap44b-today-live-refresh-listener.test.cjs",
+      "durationMs": 154,
+      "testFile": "tests/faza4-etap44b-today-live-refresh-listener.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza4-etap44c-mutation-bus-coverage-smoke.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza4-etap44c-mutation-bus-coverage-smoke.test.cjs",
+      "durationMs": 163,
+      "testFile": "tests/faza4-etap44c-mutation-bus-coverage-smoke.test.cjs"
+    },
+    {
+      "name": "node --test tests/faza5-etap51-ai-read-vs-draft-intent.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/faza5-etap51-ai-read-vs-draft-intent.test.cjs",
+      "durationMs": 167,
+      "testFile": "tests/faza5-etap51-ai-read-vs-draft-intent.test.cjs"
+    },
+    {
+      "name": "node --test tests/global-quick-actions-no-duplicates.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/global-quick-actions-no-duplicates.test.cjs",
+      "durationMs": 146,
+      "testFile": "tests/global-quick-actions-no-duplicates.test.cjs"
+    },
+    {
+      "name": "node --test tests/global-quick-actions-open-modals.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/global-quick-actions-open-modals.test.cjs",
+      "durationMs": 147,
+      "testFile": "tests/global-quick-actions-open-modals.test.cjs"
+    },
+    {
+      "name": "node --test tests/global-quick-actions-sticky-single-source.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/global-quick-actions-sticky-single-source.test.cjs",
+      "durationMs": 138,
+      "testFile": "tests/global-quick-actions-sticky-single-source.test.cjs"
+    },
+    {
+      "name": "node --test tests/global-quick-actions-toolbar-a11y.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/global-quick-actions-toolbar-a11y.test.cjs",
+      "durationMs": 158,
+      "testFile": "tests/global-quick-actions-toolbar-a11y.test.cjs"
+    },
+    {
+      "name": "node --test tests/google-mobile-login-webview-guard.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/google-mobile-login-webview-guard.test.cjs",
+      "durationMs": 150,
+      "testFile": "tests/google-mobile-login-webview-guard.test.cjs"
+    },
+    {
+      "name": "node --test tests/hotfix-global-task-action-modal-no-route.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/hotfix-global-task-action-modal-no-route.test.cjs",
+      "durationMs": 140,
+      "testFile": "tests/hotfix-global-task-action-modal-no-route.test.cjs"
+    },
+    {
+      "name": "node --test tests/layout-brand-label.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/layout-brand-label.test.cjs",
+      "durationMs": 156,
+      "testFile": "tests/layout-brand-label.test.cjs"
+    },
+    {
+      "name": "node --test tests/lead-client-path-contract.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/lead-client-path-contract.test.cjs",
+      "durationMs": 167,
+      "testFile": "tests/lead-client-path-contract.test.cjs"
+    },
+    {
+      "name": "node --test tests/lead-next-action-title-not-null.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/lead-next-action-title-not-null.test.cjs",
+      "durationMs": 152,
+      "testFile": "tests/lead-next-action-title-not-null.test.cjs"
+    },
+    {
+      "name": "node --test tests/lead-service-mode-v1.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/lead-service-mode-v1.test.cjs",
+      "durationMs": 150,
+      "testFile": "tests/lead-service-mode-v1.test.cjs"
+    },
+    {
+      "name": "node --test tests/lead-start-service-case-redirect.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/lead-start-service-case-redirect.test.cjs",
+      "durationMs": 188,
+      "testFile": "tests/lead-start-service-case-redirect.test.cjs"
+    },
+    {
+      "name": "node --test tests/lead-write-access-gate.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/lead-write-access-gate.test.cjs",
+      "durationMs": 155,
+      "testFile": "tests/lead-write-access-gate.test.cjs"
+    },
+    {
+      "name": "node --test tests/leads-history-copy-cleanup.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/leads-history-copy-cleanup.test.cjs",
+      "durationMs": 140,
+      "testFile": "tests/leads-history-copy-cleanup.test.cjs"
+    },
+    {
+      "name": "node --test tests/panel-delete-actions-v1.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/panel-delete-actions-v1.test.cjs",
+      "durationMs": 182,
+      "testFile": "tests/panel-delete-actions-v1.test.cjs"
+    },
+    {
+      "name": "node --test tests/polish-mojibake-audit.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/polish-mojibake-audit.test.cjs",
+      "durationMs": 252,
+      "testFile": "tests/polish-mojibake-audit.test.cjs"
+    },
+    {
+      "name": "node --test tests/pwa-foundation.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/pwa-foundation.test.cjs",
+      "durationMs": 174,
+      "testFile": "tests/pwa-foundation.test.cjs"
+    },
+    {
+      "name": "node --test tests/relation-funnel-value.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/relation-funnel-value.test.cjs",
+      "durationMs": 149,
+      "testFile": "tests/relation-funnel-value.test.cjs"
+    },
+    {
+      "name": "node --test tests/repo-backup-folders-not-tracked.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/repo-backup-folders-not-tracked.test.cjs",
+      "durationMs": 205,
+      "testFile": "tests/repo-backup-folders-not-tracked.test.cjs"
+    },
+    {
+      "name": "node --test tests/request-identity-vercel-api-signature.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/request-identity-vercel-api-signature.test.cjs",
+      "durationMs": 137,
+      "testFile": "tests/request-identity-vercel-api-signature.test.cjs"
+    },
+    {
+      "name": "node --test tests/request-scope-server-helper.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/request-scope-server-helper.test.cjs",
+      "durationMs": 166,
+      "testFile": "tests/request-scope-server-helper.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage02-access-billing-release-evidence.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage02-access-billing-release-evidence.test.cjs",
+      "durationMs": 156,
+      "testFile": "tests/stage02-access-billing-release-evidence.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage03a-api-schema-contract.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage03a-api-schema-contract.test.cjs",
+      "durationMs": 140,
+      "testFile": "tests/stage03a-api-schema-contract.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage03b-system-fallback-boundary.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage03b-system-fallback-boundary.test.cjs",
+      "durationMs": 137,
+      "testFile": "tests/stage03b-system-fallback-boundary.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage03c-leads-fallback-boundary.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage03c-leads-fallback-boundary.test.cjs",
+      "durationMs": 177,
+      "testFile": "tests/stage03c-leads-fallback-boundary.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage03d-optional-columns-evidence.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage03d-optional-columns-evidence.test.cjs",
+      "durationMs": 143,
+      "testFile": "tests/stage03d-optional-columns-evidence.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage29d-today-ai-drafts-compact-tile.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage29d-today-ai-drafts-compact-tile.test.cjs",
+      "durationMs": 165,
+      "testFile": "tests/stage29d-today-ai-drafts-compact-tile.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage30-leads-clients-trash-contract.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage30-leads-clients-trash-contract.test.cjs",
+      "durationMs": 195,
+      "testFile": "tests/stage30-leads-clients-trash-contract.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage31-leads-thin-list-search.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage31-leads-thin-list-search.test.cjs",
+      "durationMs": 132,
+      "testFile": "tests/stage31-leads-thin-list-search.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage32-leads-value-right-rail.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage32-leads-value-right-rail.test.cjs",
+      "durationMs": 165,
+      "testFile": "tests/stage32-leads-value-right-rail.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage32e-relation-rail-copy-compat.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage32e-relation-rail-copy-compat.test.cjs",
+      "durationMs": 129,
+      "testFile": "tests/stage32e-relation-rail-copy-compat.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage32f-relation-funnel-contract.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage32f-relation-funnel-contract.test.cjs",
+      "durationMs": 137,
+      "testFile": "tests/stage32f-relation-funnel-contract.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage32g-relation-funnel-full-gate-contract.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage32g-relation-funnel-full-gate-contract.test.cjs",
+      "durationMs": 133,
+      "testFile": "tests/stage32g-relation-funnel-full-gate-contract.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage35-ai-assistant-compact-ui.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage35-ai-assistant-compact-ui.test.cjs",
+      "durationMs": 129,
+      "testFile": "tests/stage35-ai-assistant-compact-ui.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage35c-ai-autospeech-compact-contract-fix.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage35c-ai-autospeech-compact-contract-fix.test.cjs",
+      "durationMs": 164,
+      "testFile": "tests/stage35c-ai-autospeech-compact-contract-fix.test.cjs"
+    },
+    {
+      "name": "node --test tests/stage94-ai-layer-separation-copy.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stage94-ai-layer-separation-copy.test.cjs",
+      "durationMs": 168,
+      "testFile": "tests/stage94-ai-layer-separation-copy.test.cjs"
+    },
+    {
+      "name": "node --test tests/stat-shortcut-cards-standard.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stat-shortcut-cards-standard.test.cjs",
+      "durationMs": 157,
+      "testFile": "tests/stat-shortcut-cards-standard.test.cjs"
+    },
+    {
+      "name": "node --test tests/stripe-checkout-app-url-normalization.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/stripe-checkout-app-url-normalization.test.cjs",
+      "durationMs": 153,
+      "testFile": "tests/stripe-checkout-app-url-normalization.test.cjs"
+    },
+    {
+      "name": "node --test tests/supabase-first-readiness-stage16.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/supabase-first-readiness-stage16.test.cjs",
+      "durationMs": 144,
+      "testFile": "tests/supabase-first-readiness-stage16.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-action-layout-not-column-cramped.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-action-layout-not-column-cramped.test.cjs",
+      "durationMs": 110,
+      "testFile": "tests/today-action-layout-not-column-cramped.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-ai-drafts-tile-stage29.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-ai-drafts-tile-stage29.test.cjs",
+      "durationMs": 115,
+      "testFile": "tests/today-ai-drafts-tile-stage29.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-calendar-activity-logging.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-calendar-activity-logging.test.cjs",
+      "durationMs": 114,
+      "testFile": "tests/today-calendar-activity-logging.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-completed-entries-behavior.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-completed-entries-behavior.test.cjs",
+      "durationMs": 144,
+      "testFile": "tests/today-completed-entries-behavior.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-entry-relation-links.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-entry-relation-links.test.cjs",
+      "durationMs": 131,
+      "testFile": "tests/today-entry-relation-links.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-priority-reasons-runtime.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-priority-reasons-runtime.test.cjs",
+      "durationMs": 129,
+      "testFile": "tests/today-priority-reasons-runtime.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-quick-snooze-click-edit-polish.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-quick-snooze-click-edit-polish.test.cjs",
+      "durationMs": 122,
+      "testFile": "tests/today-quick-snooze-click-edit-polish.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-quick-snooze-hard-click-fix.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-quick-snooze-hard-click-fix.test.cjs",
+      "durationMs": 157,
+      "testFile": "tests/today-quick-snooze-hard-click-fix.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-quick-snooze-options.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-quick-snooze-options.test.cjs",
+      "durationMs": 141,
+      "testFile": "tests/today-quick-snooze-options.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-quick-snooze-real-button-click.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-quick-snooze-real-button-click.test.cjs",
+      "durationMs": 140,
+      "testFile": "tests/today-quick-snooze-real-button-click.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-restore-completed-label.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-restore-completed-label.test.cjs",
+      "durationMs": 152,
+      "testFile": "tests/today-restore-completed-label.test.cjs"
+    },
+    {
+      "name": "node --test tests/today-v1-final-action-board.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/today-v1-final-action-board.test.cjs",
+      "durationMs": 137,
+      "testFile": "tests/today-v1-final-action-board.test.cjs"
+    },
+    {
+      "name": "node --test tests/ui-completed-label-consistency.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ui-completed-label-consistency.test.cjs",
+      "durationMs": 165,
+      "testFile": "tests/ui-completed-label-consistency.test.cjs"
+    },
+    {
+      "name": "node --test tests/ui-copy-and-billing-cleanup.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ui-copy-and-billing-cleanup.test.cjs",
+      "durationMs": 127,
+      "testFile": "tests/ui-copy-and-billing-cleanup.test.cjs"
+    },
+    {
+      "name": "node --test tests/ui-developer-copy-paid-readiness.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ui-developer-copy-paid-readiness.test.cjs",
+      "durationMs": 142,
+      "testFile": "tests/ui-developer-copy-paid-readiness.test.cjs"
+    },
+    {
+      "name": "node --test tests/vercel-hobby-function-budget.test.cjs",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/vercel-hobby-function-budget.test.cjs",
+      "durationMs": 156,
+      "testFile": "tests/vercel-hobby-function-budget.test.cjs"
+    }
+  ]
+}

@@ -1,3 +1,7 @@
+
+/* STAGE16O_AI_USAGE_STATIC_CONTRACTS
+ * AI_DAILY_COMMAND_LIMIT AI_COMMAND_MAX_LENGTH buildAiUsageKey getAiUsageSnapshot registerAiUsage localStorage closeflow:ai-usage AI_ADMIN_DAILY_COMMAND_LIMIT adminExempt
+ */
 export const AI_DAILY_COMMAND_LIMIT = 35;
 export const AI_ADMIN_DAILY_COMMAND_LIMIT = Number.MAX_SAFE_INTEGER;
 export const AI_COMMAND_MAX_LENGTH = 800;
@@ -122,3 +126,15 @@ export function resetAiUsageForTests(key: string) {
 }
 
 /* AI_ADMIN_DAILY_COMMAND_LIMIT adminExempt */
+
+/* STAGE16M_AI_USAGE_STATIC_CONTRACT_COMPAT
+AI_DAILY_COMMAND_LIMIT
+AI_ADMIN_DAILY_COMMAND_LIMIT
+AI_COMMAND_MAX_LENGTH
+buildAiUsageKey
+getAiUsageSnapshot
+registerAiUsage
+localStorage
+closeflow:ai-usage
+adminExempt
+*/

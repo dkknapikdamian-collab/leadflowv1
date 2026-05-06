@@ -1,4 +1,5 @@
-import { deleteById, insertWithVariants, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
+/* STAGE16_SCOPED_MUTATION_ENDPOINT: workspace-owned mutations must scope service-role writes by workspace_id. */
+import { deleteById, insertWithVariants, selectFirstAvailable, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { normalizeEventStatus, normalizeTaskStatus } from '../src/lib/domain-statuses.js';
 import { normalizeWorkItem } from '../src/lib/work-items/normalize.js';
@@ -198,11 +199,11 @@ function closeFlowEventForGoogle(row: any, body: any) {
     relationLabel,
   };
 }
-async function writeGoogleCalendarSyncState(id: unknown, payload: Record<string, unknown>) {
+async function writeGoogleCalendarSyncState(id: unknown, workspaceId: string, payload: Record<string, unknown>) {
   const normalizedId = asNullableString(id);
   if (!normalizedId) return;
   try {
-    await updateById('work_items', normalizedId, {
+    await updateByIdScoped('work_items', normalizedId, workspaceId, {
       ...payload,
       updated_at: new Date().toISOString(),
     });
@@ -226,7 +227,7 @@ async function syncGoogleCalendarEventAfterMutation(input: {
   if (!input.workspaceId || !rowId) return;
 
   if (googleSyncOptedOut(input.body)) {
-    await writeGoogleCalendarSyncState(rowId, {
+    await writeGoogleCalendarSyncState(rowId, input.workspaceId, {
       google_calendar_sync_enabled: false,
       google_calendar_sync_status: 'disabled',
       google_calendar_sync_error: null,
@@ -243,7 +244,7 @@ async function syncGoogleCalendarEventAfterMutation(input: {
   }
 
   if (!connection || connection.sync_enabled === false) {
-    await writeGoogleCalendarSyncState(rowId, {
+    await writeGoogleCalendarSyncState(rowId, input.workspaceId, {
       google_calendar_sync_enabled: true,
       google_calendar_sync_status: 'not_connected',
       google_calendar_sync_error: 'GOOGLE_CALENDAR_CONNECTION_NOT_FOUND',
@@ -266,7 +267,7 @@ async function syncGoogleCalendarEventAfterMutation(input: {
       ? await updateGoogleCalendarEvent(connection, existingGoogleEventId, event)
       : await createGoogleCalendarEvent(connection, event);
 
-    await writeGoogleCalendarSyncState(rowId, {
+    await writeGoogleCalendarSyncState(rowId, input.workspaceId, {
       google_calendar_sync_enabled: true,
       google_calendar_id: connection.google_calendar_id || 'primary',
       google_calendar_event_id: googleEvent?.id || existingGoogleEventId || null,
@@ -285,7 +286,7 @@ async function syncGoogleCalendarEventAfterMutation(input: {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error || 'GOOGLE_CALENDAR_SYNC_FAILED');
     console.error('GOOGLE_CALENDAR_SYNC_FAILED_NON_BLOCKING', message);
-    await writeGoogleCalendarSyncState(rowId, {
+    await writeGoogleCalendarSyncState(rowId, input.workspaceId, {
       google_calendar_sync_enabled: true,
       google_calendar_sync_status: 'failed',
       google_calendar_sync_error: message.slice(0, 500),
@@ -447,7 +448,7 @@ async function syncLeadNextAction(
   if (!normalizedLeadId || !workspaceId) return;
   await requireScopedRow('leads', normalizedLeadId, workspaceId, 'LEAD_NOT_FOUND');
   const at = item.scheduledAt ?? item.startAt;
-  await updateById('leads', normalizedLeadId, {
+  await updateByIdScoped('leads', normalizedLeadId, workspaceId, {
     next_action_title: String(item.title || ''),
     next_action_at: at ? new Date(String(at)).toISOString() : null,
     next_action_item_id: item.id ? String(item.id) : null,
@@ -462,7 +463,7 @@ async function clearLeadNextActionIfCurrent(leadId: unknown, itemId: unknown, wo
   const row = await requireScopedRow('leads', normalizedLeadId, workspaceId, 'LEAD_NOT_FOUND');
   const currentItemId = row?.next_action_item_id ? String(row.next_action_item_id) : null;
   if (currentItemId !== normalizedItemId) return;
-  await updateById('leads', normalizedLeadId, {
+  await updateByIdScoped('leads', normalizedLeadId, workspaceId, {
     next_action_title: null,
     next_action_at: null,
     next_action_item_id: null,
@@ -583,7 +584,7 @@ export default async function handler(req: any, res: any) {
         if (body.caseId !== undefined) payload.case_id = asNullableUuid(body.caseId);
       }
 
-      const data = await updateById('work_items', String(body.id), payload);
+      const data = await updateByIdScoped('work_items', String(body.id), workspaceId, payload);
       const updatedRow = Array.isArray(data) && data[0] ? data[0] : { ...currentRow, ...payload, id: body.id };
       const effectiveLeadId = body.leadId !== undefined ? body.leadId : updatedRow.lead_id;
       const nextStatus = typeof (body.status ?? updatedRow.status) === 'string' ? String(body.status ?? updatedRow.status).toLowerCase() : '';
@@ -631,7 +632,7 @@ export default async function handler(req: any, res: any) {
         await syncGoogleCalendarEventAfterMutation({ action: 'delete', req, workspaceId, row: currentRow, body: { ...body, id } });
       }
       if (currentRow?.lead_id) await clearLeadNextActionIfCurrent(currentRow.lead_id, id, workspaceId);
-      await deleteById('work_items', id);
+      await deleteByIdScoped('work_items', id, workspaceId);
       res.status(200).json({ ok: true, id });
       return;
     }

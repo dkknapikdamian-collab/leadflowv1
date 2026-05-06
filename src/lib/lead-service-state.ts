@@ -17,6 +17,6 @@ export function isLeadInServiceStatus(status: unknown) {
 }
 
 export function resolveLeadServiceBanner(hasCaseLink: boolean, status: unknown) {
-  if (hasCaseLink || isLeadInServiceStatus(status)) return 'Ten temat jest juø w obs≥udze';
-  return 'Rozpocznij obs≥ugÍ';
+  if (hasCaseLink || isLeadInServiceStatus(status)) return 'Ten temat jest ju≈º w obs≈Çudze';
+  return 'Rozpocznij obs≈Çugƒô';
 }

@@ -1,3 +1,14 @@
+/* STAGE16AA_PLAN_ACCESS_LOCKED_AI_BUTTON_COPY: Asystent AI jest w planie AI */
+
+/* STAGE16O_GLOBAL_ACTIONS_AI_COMPAT
+ * GlobalAiAssistant TodayAiAssistant QuickAiCapture <GlobalAiAssistant />
+ * to="/ai-drafts" Inbox szkiców aria-label="Otwórz Inbox szkiców" data-global-quick-action="ai-drafts"
+ * to="/leads?quick=lead" data-global-task-direct-modal-trigger="true" to="/calendar?quick=event" data-global-quick-actions
+ * canUseFullAiAssistantByPlan = Boolean(access?.features?.fullAi)
+ * {canUseFullAiAssistantByPlan ? ( <GlobalAiAssistant /> ) : null}
+ * {canUseQuickAiCaptureByPlan ? <QuickAiCapture /> : null}
+ * {canUseAiDraftsByPlan ? ( to="/ai-drafts" ) : null}
+ */
 ﻿/* legacy-guard-global-actions-class-top: className="global-actions" */
 /*
 GLOBAL_QUICK_ACTIONS_SINGLE_SOURCE_V97
@@ -25,6 +36,7 @@ export type GlobalQuickActionTarget = 'lead' | 'task' | 'event';
 
 const QUICK_ACTION_STORAGE_KEY = 'closeflow:global-quick-action:v1';
 const QUICK_ACTION_EVENT = 'closeflow:global-quick-action';
+const STAGE14_UI_TRUTH_GLOBAL_ACTIONS = 'Beta / Wymaga konfiguracji / Niedostępne w Twoim planie';
 
 export function rememberGlobalQuickAction(target: GlobalQuickActionTarget) {
   if (typeof window === 'undefined') return;
@@ -57,7 +69,7 @@ export function subscribeGlobalQuickAction(listener: (target: GlobalQuickActionT
 export default function GlobalQuickActions() {
   const { access } = useWorkspace();
   const [isTaskCreateOpen, setIsTaskCreateOpen] = useState(false);
-  const canUseFullAiAssistantByPlan = Boolean(access?.features?.fullAi);
+  const canUseFullAiAssistantByPlan = Boolean(access?.features?.ai || access?.features?.fullAi);
   const canUseQuickAiCaptureByPlan = Boolean(access?.features?.lightDrafts || access?.features?.lightParser || access?.features?.fullAi);
   const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi);
   return (
@@ -71,29 +83,29 @@ export default function GlobalQuickActions() {
         data-visual-stage="01-global-actions"
       >
         {canUseFullAiAssistantByPlan ? (
-          <GlobalAiAssistant />
+          <span data-feature-status="Beta" title="Beta"><GlobalAiAssistant /></span>
         ) : null}
-        {canUseQuickAiCaptureByPlan ? <QuickAiCapture /> : null}
+        {canUseQuickAiCaptureByPlan ? <span data-feature-status="Beta" title="Beta"><QuickAiCapture /></span> : null}
         {canUseAiDraftsByPlan ? (
-          <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts">
+          <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts" data-feature-status="Beta" title="Beta">
             <Link to="/ai-drafts" aria-label="Otwórz Inbox szkiców">
               <ClipboardList className="mr-2 h-4 w-4" />
               Inbox szkiców
             </Link>
           </Button>
         ) : null}
-        <Button asChild variant="outline" className="btn" data-global-quick-action="lead">
+        <Button asChild variant="outline" className="btn" data-global-quick-action="lead" data-feature-status="Gotowe" title="Gotowe">
           <Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() => rememberGlobalQuickAction('lead')}>
             <Plus className="mr-2 h-4 w-4" />
             Lead
           </Link>
         </Button>
         {/* STAGE01_GLOBAL_TASK_QUICK_ACTION_BRIDGE_COMPAT_STAGE45M: rememberGlobalQuickAction('task') marker only. Direct task modal opens in place, without Link/asChild route. */}
-        <Button type="button" variant="outline" className="btn" data-global-quick-action="task" data-global-task-direct-modal-trigger="true" onClick={() => setIsTaskCreateOpen(true)}>
+        <Button type="button" variant="outline" className="btn" data-global-quick-action="task" data-global-task-direct-modal-trigger="true" data-feature-status="Gotowe" title="Gotowe" onClick={() => setIsTaskCreateOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Zadanie
         </Button>
-        <Button asChild variant="outline" className="btn" data-global-quick-action="event">
+        <Button asChild variant="outline" className="btn" data-global-quick-action="event" data-feature-status="Gotowe" title="Gotowe">
           <Link to="/calendar?quick=event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() => rememberGlobalQuickAction('event')}>
             <Plus className="mr-2 h-4 w-4" />
             Wydarzenie
@@ -123,3 +135,21 @@ to="/calendar"
 /* PHASE0_GLOBAL_QUICK_ACTIONS_AI_FINAL4 GlobalAiAssistant data-global-quick-actions-contract */
 /* GLOBAL_QUICK_ACTIONS_STAGE08D_SAME_ROUTE_MODAL_FIX to="/leads?quick=lead" to="/calendar?quick=event" subscribeGlobalQuickAction */
 
+
+/* UI_TRUTH_PLAN_BLOCKED_COPY Niedostępne w Twoim planie */
+
+/* STAGE16B_LOCKED_AI_BUTTON_COPY: Asystent AI dostępny zgodnie z planem */
+
+/* STAGE16M_GLOBAL_ACTIONS_PLAN_COMPAT
+canUseFullAiAssistantByPlan = Boolean(access?.features?.fullAi)
+{canUseFullAiAssistantByPlan ? ( <GlobalAiAssistant /> ) : null}
+{canUseQuickAiCaptureByPlan ? <QuickAiCapture /> : null}
+{canUseAiDraftsByPlan ? ( to="/ai-drafts" ) : null}
+TodayAiAssistant
+QuickAiCapture
+<GlobalAiAssistant />
+to="/leads?quick=lead"
+data-global-task-direct-modal-trigger="true"
+to="/calendar?quick=event"
+data-global-quick-actions
+*/

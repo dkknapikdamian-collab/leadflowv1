@@ -11,11 +11,11 @@ import { fetchAiConfigDiagnostics, type AiConfigDiagnostics, type AiProviderDiag
 
 function StatusBadge({ configured, available }: { configured: boolean; available?: boolean }) {
   if (available) {
-    return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Aktywny</Badge>;
+    return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Gotowe</Badge>;
   }
 
   if (configured) {
-    return <Badge variant="outline">Skonfigurowany</Badge>;
+    return <Badge variant="outline">Wymaga konfiguracji</Badge>;
   }
 
   return <Badge variant="secondary">Wymaga konfiguracji</Badge>;
@@ -64,6 +64,7 @@ function ProviderCard({
   );
 }
 
+// STAGE16_ADMIN_UI_API_ME_ONLY: admin visibility is derived from useWorkspace()/api/me, not localStorage or query params.
 export default function AdminAiSettings() {
   const { isAdmin, loading } = useWorkspace();
   const [diagnostics, setDiagnostics] = useState<AiConfigDiagnostics | null>(null);

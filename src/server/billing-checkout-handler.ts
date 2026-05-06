@@ -14,8 +14,7 @@ export default async function handler(req: any, res: any) {
 
     const body = parseBody(req);
     const authContext = await requireAuthContext(req, body);
-    const workspaceId = asNullableText(await resolveRequestWorkspaceId(req, body));
-    const requestedWorkspaceId = asNullableText(body.workspaceId || body.workspace_id);
+    const workspaceId = asNullableText(await resolveRequestWorkspaceId(req));
     const customerEmail = asNullableText(authContext.email);
     const planKey = asNullableText(body.planKey || req?.headers?.['x-billing-plan']);
     const billingPeriod = asNullableText(body.billingPeriod || req?.headers?.['x-billing-period']);
@@ -25,13 +24,7 @@ export default async function handler(req: any, res: any) {
       res.status(400).json({ error: 'WORKSPACE_ID_REQUIRED' });
       return;
     }
-
-    // Do not trust body.workspaceId as the source of truth. resolveRequestWorkspaceId verifies the hint
-    // against Supabase auth context, membership/profile rows, or the authenticated context workspace.
-    if (requestedWorkspaceId && requestedWorkspaceId !== workspaceId) {
-      res.status(403).json({ error: 'WORKSPACE_FORBIDDEN' });
-      return;
-    }
+    // STAGE15D_SCOPED_BILLING_CHECKOUT_NO_RAW_WORKSPACE_HINT
 
     if (dryRun) {
       const stripeConfig = getStripeConfig();

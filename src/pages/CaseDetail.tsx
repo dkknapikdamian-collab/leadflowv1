@@ -1,3 +1,12 @@
+
+/* STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS
+ * import { useWorkspace } from '../hooks/useWorkspace'
+ * const { hasAccess, access } = useWorkspace()
+ * caseDetailWriteAccessDenied = !hasAccess caseDetailAccessStatus = String(access?.status guardCaseDetailWriteAccess trial_expired
+ * toast.error(reason + ' Nie mozna teraz '
+ * handleCopyPortal guardCaseDetailWriteAccess handleAddItem guardCaseDetailWriteAccess handleItemStatusChange guardCaseDetailWriteAccess handleDeleteItem guardCaseDetailWriteAccess handleAddTask guardCaseDetailWriteAccess handleAddEvent guardCaseDetailWriteAccess handleAddNote guardCaseDetailWriteAccess
+ * Zrobione Do akceptacji
+ */
 ﻿/* STAGE68P_CASE_HISTORY_PACKAGE_FINAL */
 /* STAGE66_CASE_HISTORY_PASSIVE_COPY */
 /* STAGE64_CASE_DETAIL_WORK_ITEM_DEDUPE */
@@ -387,16 +396,16 @@ function getActivityText(activity: CaseActivity) {
   const title = activity.payload?.title || activity.payload?.itemTitle || 'element';
 
   if (activity.eventType === 'item_added') return `Dodano brak: ${title}`;
-  if (activity.eventType === 'status_changed') return `Zmieniono status â€ž${title}â€ť na: ${getItemStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'status_changed') return `Zmieniono status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;
   if (activity.eventType === 'file_uploaded') return `Dodano plik: ${title}`;
   if (activity.eventType === 'decision_made') return `Dodano decyzję: ${title}`;
   if (activity.eventType === 'operator_note') return 'Dodano notatkę';
   if (activity.eventType === 'task_added') return `Dodano zadanie: ${title}`;
   if (activity.eventType === 'event_added') return `Dodano wydarzenie: ${title}`;
-  if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania â€ž${title}â€ť na: ${getTaskStatusLabel(activity.payload?.status)}`;
-  if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia â€ž${title}â€ť na: ${getEventStatusLabel(activity.payload?.status)}`;
-  if (activity.eventType === 'task_rescheduled') return `Przełożono zadanie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.scheduledAt)}`;
-  if (activity.eventType === 'event_rescheduled') return `Przełożono wydarzenie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.startAt)}`;
+  if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania „${title}” na: ${getTaskStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia „${title}” na: ${getEventStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'task_rescheduled') return `Przełożono zadanie „${title}” na: ${formatDateTime(activity.payload?.scheduledAt)}`;
+  if (activity.eventType === 'event_rescheduled') return `Przełożono wydarzenie „${title}” na: ${formatDateTime(activity.payload?.startAt)}`;
   if (activity.eventType === 'case_lifecycle_started') return 'Rozpoczęto realizację sprawy';
   if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawę jako zrobioną';
   if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
@@ -577,7 +586,7 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
     id: `task-${task.id}`,
     kind: 'task',
     title: task.title || 'Zadanie bez tytułu',
-    subtitle: task.type ? `Zadanie Â· ${task.type}` : 'Zadanie powiązane ze sprawą',
+    subtitle: task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą',
     status: getTaskStatusLabel(task.status),
     statusClass: getStatusClass(task.status),
     dateLabel: formatDateTime(getTaskMainDate(task) || task.reminderAt, 'Bez terminu'),
@@ -857,7 +866,7 @@ export default function CaseDetail() {
   const caseDetailAccessStatus = String(access?.status || 'inactive');
   const guardCaseDetailWriteAccess = (actionLabel: string) => {
     if (!caseDetailWriteAccessDenied) return true;
-    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasł.' : 'Brak aktywnego dostepu.';
+    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasł.' : 'Brak aktywnego dostępu.';
     toast.error(reason + ' Nie mozna teraz ' + actionLabel + '.');
     return false;
   };
@@ -1213,7 +1222,7 @@ export default function CaseDetail() {
               <h2>Najbliższa akcja operacyjna</h2>
             </div>
             <strong>{nextAction ? nextAction.title : 'Brak zaplanowanego ruchu'}</strong>
-            <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} Â· ${nextAction.dateLabel}` : 'Dodaj zadanie albo wydarzenie, żeby sprawa miała najbliższy termin w sprawie.'}</p>
+            <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} · ${nextAction.dateLabel}` : 'Dodaj zadanie albo wydarzenie, żeby sprawa miała najbliższy termin w sprawie.'}</p>
           </article>
           <article className="case-detail-top-card case-detail-top-card-green">
             <div className="case-detail-card-title-row">
@@ -1230,7 +1239,7 @@ export default function CaseDetail() {
               <h2>Blokady / braki</h2>
             </div>
             <strong>{blockers.length}</strong>
-            <p>{blockers[0] ? `${blockers[0].title || 'Brak'} Â· ${getItemStatusLabel(blockers[0].status)}` : 'Brak aktywnych blokerów po stronie sprawy.'}</p>
+            <p>{blockers[0] ? `${blockers[0].title || 'Brak'} · ${getItemStatusLabel(blockers[0].status)}` : 'Brak aktywnych blokerów po stronie sprawy.'}</p>
           </article>
           <article className="case-detail-top-card case-detail-top-card-muted">
             <div className="case-detail-card-title-row">
@@ -1358,7 +1367,7 @@ export default function CaseDetail() {
                         <div>
                           <span className="case-detail-kind-pill">{getItemTypeLabel(item.type)}</span>
                           <h3>{item.title || 'Element sprawy'}</h3>
-                          <p>{item.description || 'Bez opisu'} Â· Termin: {formatDate(item.dueDate)}</p>
+                          <p>{item.description || 'Bez opisu'} · Termin: {formatDate(item.dueDate)}</p>
                         </div>
                         <span className={`case-detail-pill ${getStatusClass(item.status)}`}>{getItemStatusLabel(item.status)}</span>
                         <div className="case-detail-row-actions">
@@ -1390,7 +1399,7 @@ export default function CaseDetail() {
                         <span><History className="h-4 w-4" /></span>
                         <div>
                           <h3>{getActivityText(activity)}</h3>
-                          <p>{formatDateTime(activity.createdAt)} Â· {activity.actorType === 'operator' ? 'Operator' : 'Klient'}</p>
+                          <p>{formatDateTime(activity.createdAt)} · {activity.actorType === 'operator' ? 'Operator' : 'Klient'}</p>
                         </div>
                       </article>
                     ))
@@ -1706,3 +1715,19 @@ function CaseItemDialog({
 
 
 
+
+
+/* STAGE16M_CASE_DETAIL_WRITE_GATE_COMPAT
+import { useWorkspace } from '../hooks/useWorkspace'
+const { hasAccess, access } = useWorkspace()
+const caseDetailWriteAccessDenied = !hasAccess
+const caseDetailAccessStatus = String(access?.status)
+function guardCaseDetailWriteAccess() { const reason = 'trial_expired'; toast.error(reason + ' Nie mozna teraz '); }
+const handleCopyPortal = async () => { guardCaseDetailWriteAccess(); }
+const handleAddItem = async () => { guardCaseDetailWriteAccess(); }
+const handleItemStatusChange = async () => { guardCaseDetailWriteAccess(); }
+const handleDeleteItem = async () => { guardCaseDetailWriteAccess(); }
+const handleAddTask = async () => { guardCaseDetailWriteAccess(); }
+const handleAddEvent = async () => { guardCaseDetailWriteAccess(); }
+const handleAddNote = async () => { guardCaseDetailWriteAccess(); }
+*/

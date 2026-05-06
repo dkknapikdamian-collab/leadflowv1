@@ -185,6 +185,7 @@ export default function App() {
               <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />
               <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
               <Route path="/" element={isLoggedIn ? <Today /> : <Navigate to="/login" />} />
+              <Route path="/today" element={isLoggedIn ? <Today /> : <Navigate to="/login" />} />
               <Route path="/leads" element={isLoggedIn ? <Leads /> : <Navigate to="/login" />} />
               <Route path="/leads/:leadId" element={isLoggedIn ? <LeadDetail /> : <Navigate to="/login" />} />
               <Route path="/tasks" element={isLoggedIn ? <Tasks /> : <Navigate to="/login" />} />
@@ -202,6 +203,7 @@ export default function App() {
               <Route path="/response-templates" element={isLoggedIn ? <ResponseTemplates /> : <Navigate to="/login" />} />
               <Route path="/billing" element={isLoggedIn ? <Billing /> : <Navigate to="/login" />} />
               <Route path="/help" element={isLoggedIn ? <SupportCenter /> : <Navigate to="/login" />} />
+              <Route path="/support" element={isLoggedIn ? <SupportCenter /> : <Navigate to="/login" />} />
               <Route path="/settings/ai" element={isLoggedIn ? <AdminAiSettings /> : <Navigate to="/login" />} />
               <Route path="/settings" element={isLoggedIn ? <Settings /> : <Navigate to="/login" />} />
               <Route path="/ui-preview-vnext" element={<UiPreviewVNext />} />
@@ -221,3 +223,5 @@ export default function App() {
 /* PHASE0_AI_CONFIG_ROUTE_GUARD AdminAiSettings path="/settings/ai" */
 
 /* PHASE0_AI_DRAFTS_ROUTE_GUARD AiDrafts path="/ai-drafts" */
+
+/* STAGE16_FINAL_QA_RELEASE_CANDIDATE_2026_05_06: /today and /support route aliases are release-candidate smoke routes. */

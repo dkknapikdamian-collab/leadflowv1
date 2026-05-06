@@ -1,0 +1,83 @@
+{
+  "generatedAt": "2026-05-06T18:49:11.224Z",
+  "repo": "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow",
+  "passed": 0,
+  "failed": 6,
+  "results": [
+    {
+      "name": "build",
+      "command": "npm.cmd run build",
+      "exitCode": null,
+      "durationMs": 0,
+      "stdoutFile": "test-results/stage16n-build-ai-details/build.stdout.txt",
+      "stderrFile": "test-results/stage16n-build-ai-details/build.stderr.txt",
+      "combinedFile": "test-results/stage16n-build-ai-details/build.combined.txt",
+      "failureLines": []
+    },
+    {
+      "name": "verify-closeflow-quiet",
+      "command": "npm.cmd run verify:closeflow:quiet",
+      "exitCode": null,
+      "durationMs": 0,
+      "stdoutFile": "test-results/stage16n-build-ai-details/verify-closeflow-quiet.stdout.txt",
+      "stderrFile": "test-results/stage16n-build-ai-details/verify-closeflow-quiet.stderr.txt",
+      "combinedFile": "test-results/stage16n-build-ai-details/verify-closeflow-quiet.combined.txt",
+      "failureLines": []
+    },
+    {
+      "name": "test-critical",
+      "command": "npm.cmd run test:critical",
+      "exitCode": null,
+      "durationMs": 0,
+      "stdoutFile": "test-results/stage16n-build-ai-details/test-critical.stdout.txt",
+      "stderrFile": "test-results/stage16n-build-ai-details/test-critical.stderr.txt",
+      "combinedFile": "test-results/stage16n-build-ai-details/test-critical.combined.txt",
+      "failureLines": []
+    },
+    {
+      "name": "ai-assistant-autospeech-and-clear-input",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-assistant-autospeech-and-clear-input.test.cjs",
+      "exitCode": 1,
+      "durationMs": 142,
+      "stdoutFile": "test-results/stage16n-build-ai-details/ai-assistant-autospeech-and-clear-input.stdout.txt",
+      "stderrFile": "test-results/stage16n-build-ai-details/ai-assistant-autospeech-and-clear-input.stderr.txt",
+      "combinedFile": "test-results/stage16n-build-ai-details/ai-assistant-autospeech-and-clear-input.combined.txt",
+      "failureLines": [
+        "✖ Today assistant and quick capture keep speech start support after opening (2.2109ms)",
+        "✖ failing tests:",
+        "✖ Today assistant and quick capture keep speech start support after opening (2.2109ms)",
+        "  AssertionError [ERR_ASSERTION]: quick capture or assistant must keep speech support markers"
+      ]
+    },
+    {
+      "name": "ai-assistant-capture-handoff",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-assistant-capture-handoff.test.cjs",
+      "exitCode": 1,
+      "durationMs": 136,
+      "stdoutFile": "test-results/stage16n-build-ai-details/ai-assistant-capture-handoff.stdout.txt",
+      "stderrFile": "test-results/stage16n-build-ai-details/ai-assistant-capture-handoff.stderr.txt",
+      "combinedFile": "test-results/stage16n-build-ai-details/ai-assistant-capture-handoff.combined.txt",
+      "failureLines": [
+        "✖ Today assistant saves obvious lead commands into AI drafts without model usage (0.7298ms)",
+        "✖ failing tests:",
+        "✖ Today assistant saves obvious lead commands into AI drafts without model usage (0.7298ms)",
+        "  AssertionError [ERR_ASSERTION]: model call must still exist for in-scope questions"
+      ]
+    },
+    {
+      "name": "ai-assistant-command-center",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/ai-assistant-command-center.test.cjs",
+      "exitCode": 1,
+      "durationMs": 133,
+      "stdoutFile": "test-results/stage16n-build-ai-details/ai-assistant-command-center.stdout.txt",
+      "stderrFile": "test-results/stage16n-build-ai-details/ai-assistant-command-center.stderr.txt",
+      "combinedFile": "test-results/stage16n-build-ai-details/ai-assistant-command-center.combined.txt",
+      "failureLines": [
+        "✖ AI assistant is available from global toolbar for daily plan lead lookup and lead capture intent (2.8285ms)",
+        "✖ failing tests:",
+        "✖ AI assistant is available from global toolbar for daily plan lead lookup and lead capture intent (2.8285ms)",
+        "  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /leads=\\{context\\.leads\\}/. Input:"
+      ]
+    }
+  ]
+}

@@ -119,3 +119,35 @@ console.log('');
 console.log('CloseFlow release gate passed.');
 
 
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-assistant-admin-and-app-scope.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-assistant-autospeech-and-clear-input.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-assistant-capture-handoff.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-assistant-command-center.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-assistant-global-app-search.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-assistant-save-vs-search-rule.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-assistant-scope-budget-guard.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-direct-write-respects-mode-stage28.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-draft-inbox-command-center.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-draft-inbox-flow.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-safety-gates-direct-write.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/ai-usage-limit-guard.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/stage94-ai-layer-separation-copy.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/faza3-etap32d-plan-based-ui-visibility.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/faza3-etap32e-settings-digest-billing-visibility-smoke.test.cjs */
+
+/* STAGE16O_RELEASE_GATE_COMPAT tests/faza5-etap51-ai-read-vs-draft-intent.test.cjs */

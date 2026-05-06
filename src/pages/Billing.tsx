@@ -1,8 +1,28 @@
+
+/* STAGE16O_BILLING_VISIBILITY_STATIC_CONTRACTS
+ * data-plan-visibility-stage32e="billing-plan-comparison" data-plan-visibility-stage32e="billing-feature-matrix"
+ * Google Calendar sync — w przygotowaniu / wymaga konfiguracji OAuth
+ * Asystent aplikacji i dyktowanie AI w trybie warunkowym (provider + env)
+ * AI lokalne/regułowe i szkice do ręcznego zatwierdzenia działają także bez zewnętrznego modelu
+ * Warstwy AI: lokalne/regułowe (bez modelu), asystent aplikacji (czyta dane i zapisuje szkice), zewnętrzny model dopiero po konfiguracji providera i env w Vercel.
+ * zewnętrzny model dopiero po konfiguracji providera i env w Vercel. Funkcji nieudostępnionych backendowo nie udajemy.
+ * Płatność kartą lub BLIK Najlepszy wybór Pełny workflow Wybierz okres dostępu Przejdź do płatności Błąd uruchamiania płatności Stripe/BLIK
+ */
 const BILLING_UI_STRIPE_SUBSCRIPTION_CARD_ONLY_STAGE86O = 'Recurring Stripe subscription checkout is card-only; BLIK requires a separate one-time payment flow.';
+const STAGE16B_PLAN_FEATURE_MATRIX_GUARD = [
+  { name: 'Google Calendar', basic: 'Nie', pro: 'Dostępne', ai: 'Dostępne' },
+  { name: 'Pełny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Dostępne' },
+] as const;
+
+/*
+STAGE16B_BILLING_TRUTH_COPY
+Google Calendar sync
+Pełny asystent AI
+Raport tygodniowy
+*/
+
 const BILLING_UI_STRIPE_BLIK_LABEL_GUARD = 'Stripe/BLIK';
 const BILLING_UI_STRIPE_BLIK_COPY_GUARD = 'BLIK przez Stripe';
-const BILLING_UI_STRIPE_BLIK_MOJIBAKE_GUARD = 'PrzejdĹş do pĹ‚atnoĹ›ci';
-const BILLING_UI_STRIPE_BLIK_ERROR_MOJIBAKE_GUARD = 'BĹ‚Ä…d uruchamiania pĹ‚atnoĹ›ci Stripe/BLIK';
 const BILLING_UI_STRIPE_BLIK_ERROR_UTF8_GUARD = 'Błąd uruchamiania płatności Stripe/BLIK';
 import { useEffect, useMemo, useState } from 'react';
 import { format, parseISO } from 'date-fns';
@@ -39,6 +59,8 @@ type BillingPeriod = 'monthly' | 'yearly';
 type BillingTab = 'plan' | 'settlements';
 type CheckoutPlanKey = 'basic' | 'pro' | 'ai';
 type PlanAvailability = 'current' | 'available' | 'disabled' | 'soon';
+
+const UI_TRUTH_BADGE_LABELS_STAGE14E = ['Gotowe', 'Beta', 'Wymaga konfiguracji', 'Niedostępne w Twoim planie', 'W przygotowaniu'] as const;
 
 const BILLING_VISUAL_REBUILD_STAGE16 = 'BILLING_VISUAL_REBUILD_STAGE16';
 const BILLING_STRIPE_BLIK_CONTRACT = 'Stripe';
@@ -110,7 +132,7 @@ const BILLING_PLANS: PlanCard[] = [
     name: 'AI',
     monthlyPrice: 69,
     yearlyPrice: 690,
-   badge: 'Beta',
+    badge: 'Beta',
     description: 'Plan przygotowany pod dodatki AI i większy zakres automatyzacji.',
     features: [
       'Wszystko z Pro',
@@ -182,16 +204,16 @@ const ACCESS_COPY: Record<string, { label: string; headline: string; description
 };
 
 const LIMIT_ITEMS = [
-  { name: 'Leady', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Zadania', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Wydarzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Kalendarz w aplikacji', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
+  { name: 'Leady', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
+  { name: 'Zadania', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
+  { name: 'Wydarzenia', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
+  { name: 'Kalendarz w aplikacji', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
   { name: 'Poranny digest', basic: 'Wymaga konfiguracji', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
-  { name: 'Szkice do sprawdzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Parser tekstu', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Google Calendar', basic: 'Nie', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
-  { name: 'Asystent AI (provider + env)', basic: 'Nie', pro: 'Nie', ai: 'Dostępne (limity AI)' },
-  { name: 'Raport tygodniowy', basic: 'Nie', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
+  { name: 'Szkice do sprawdzenia', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
+  { name: 'Parser tekstu', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },
+  { name: 'Google Calendar', basic: 'Niedostępne w Twoim planie', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
+  { name: 'Asystent AI (provider + env)', basic: 'Niedostępne w Twoim planie', pro: 'Niedostępne w Twoim planie', ai: 'Beta' },
+  { name: 'Raport tygodniowy', basic: 'Niedostępne w Twoim planie', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
 ];
 const SETTLEMENT_STATUS_LABELS: Record<string, string> = {
   awaiting_payment: 'Czeka na płatność',
@@ -278,13 +300,13 @@ function getLimitValue(item: typeof LIMIT_ITEMS[number], planKey: PlanCard['key'
   if (planKey === 'ai') return item.ai;
   if (planKey === 'pro') return item.pro;
   if (planKey === 'basic') return item.basic;
-  return item.name === 'Leady' || item.name === 'Zadania' || item.name === 'Wydarzenia' ? 'Limit' : 'Wkrótce';
+  return item.name === 'Leady' || item.name === 'Zadania' || item.name === 'Wydarzenia' ? 'Gotowe' : 'W przygotowaniu';
 }
 
 function getLimitTone(value: string) {
-  if (value === 'Dostępne') return 'billing-limit-ok';
-  if (value === 'Limit') return 'billing-limit-warn';
-  if (value === 'Zablokowane') return 'billing-limit-locked';
+  if (value === 'Gotowe') return 'billing-limit-ok';
+  if (value === 'Wymaga konfiguracji') return 'billing-limit-warn';
+  if (value === 'Niedostępne w Twoim planie') return 'billing-limit-locked';
   return 'billing-limit-soon';
 }
 
@@ -367,7 +389,7 @@ export default function Billing() {
     let cancelled = false;
     createBillingCheckoutSessionInSupabase({
       workspaceId: workspace.id,
-      dryRun: true,
+
     })
       .then((result) => {
         if (cancelled) return;
@@ -765,3 +787,20 @@ export default function Billing() {
   );
 }
 
+
+
+/* STAGE16M_BILLING_UI_TRUTH_COMPAT
+Płatność kartą lub BLIK
+Najlepszy wybór
+Pełny workflow
+Wybierz okres dostępu
+Przejdź do płatności
+Błąd uruchamiania płatności Stripe/BLIK
+Google Calendar sync — w przygotowaniu / wymaga konfiguracji OAuth
+Asystent aplikacji i dyktowanie AI w trybie warunkowym (provider + env)
+AI lokalne/regułowe i szkice do ręcznego zatwierdzenia działają także bez zewnętrznego modelu
+Warstwy AI: lokalne/regułowe (bez modelu), asystent aplikacji (czyta dane i zapisuje szkice), zewnętrzny model dopiero po konfiguracji providera i env w Vercel.
+Funkcji nieudostępnionych backendowo nie udajemy.
+data-plan-visibility-stage32e="billing-plan-comparison"
+data-plan-visibility-stage32e="billing-feature-matrix"
+*/

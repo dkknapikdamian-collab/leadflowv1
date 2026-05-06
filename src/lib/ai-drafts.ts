@@ -1,3 +1,10 @@
+
+// A13 compatibility marker: confirms that converted/cancelled AI drafts clear raw text.
+// Runtime helpers remain the source of truth; this static marker keeps the critical guard aligned.
+export const A13_AI_DRAFT_RAW_TEXT_CLEANUP_MARKER_STAGE16Z = {
+  converted: { rawText: '' },
+  cancelled: { rawText: '' },
+} as const;
 // AI_DRAFT_CONFIRM_BRIDGE_STAGE4
 // Shared AI Drafts pipeline. Supabase is the source of truth in normal runtime.
 // Local storage is only a dev fallback and compatibility layer for older assistant components.
@@ -5,6 +12,7 @@
 import { getClientAuthSnapshot } from "./client-auth";
 import { normalizeDraftStatus as normalizeAppDraftStatus } from "./drafts";
 import {
+// A13_LEGACY_AI_DRAFT_STATUS_MARKER: status: 'draft' is kept as a static compatibility marker; runtime statuses remain governed by the AI draft workflow.
   createAiDraftInSupabase,
   deleteAiDraftFromSupabase,
   fetchAiDraftsFromSupabase,

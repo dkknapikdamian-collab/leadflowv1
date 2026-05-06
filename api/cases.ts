@@ -1,4 +1,5 @@
-import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from '../src/server/_supabase.js';
+/* STAGE16_SCOPED_MUTATION_ENDPOINT: workspace-owned mutations must scope service-role writes by workspace_id. */
+import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from '../src/server/_supabase.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { normalizeCaseContract } from '../src/lib/data-contract.js';
@@ -65,11 +66,11 @@ function omitMissingColumn(payload: Record<string, unknown>, column: string) {
   return next;
 }
 
-async function updateCaseWithSchemaFallback(id: string, payload: Record<string, unknown>) {
+async function updateCaseWithSchemaFallback(id: string, workspaceId: string, payload: Record<string, unknown>) {
   let current = { ...payload };
   for (let attempt = 0; attempt < 8; attempt += 1) {
     try {
-      return await updateById('cases', id, current);
+      return await updateByIdScoped('cases', id, workspaceId, current);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
       if (!missingColumn || !OPTIONAL_CASE_COLUMNS.has(missingColumn) || !(missingColumn in current)) throw error;
@@ -382,7 +383,7 @@ export default async function handler(req: any, res: any) {
       if (nextStatus === 'in_progress' && body.startedAt === undefined) payload.started_at = nowIso;
       if (nextStatus === 'completed' && body.completedAt === undefined) payload.completed_at = nowIso;
 
-      const data = await updateCaseWithSchemaFallback(String(body.id), payload);
+      const data = await updateCaseWithSchemaFallback(String(body.id), workspaceId, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
 
       await bestEffortPatch(withWorkspaceFilter(`leads?linked_case_id=eq.${encodeURIComponent(String(body.id))}`, workspaceId), {
@@ -429,8 +430,8 @@ export default async function handler(req: any, res: any) {
 
       await bestEffortDelete(`client_portal_tokens?case_id=eq.${encodeURIComponent(id)}`);
       await bestEffortDelete(`case_items?case_id=eq.${encodeURIComponent(id)}`);
-      await bestEffortDelete(`activities?case_id=eq.${encodeURIComponent(id)}`);
-      await deleteById('cases', id);
+      await bestEffortDelete(withWorkspaceFilter(`activities?case_id=eq.${encodeURIComponent(id)}`, workspaceId));
+      await deleteByIdScoped('cases', id, workspaceId);
 
       res.status(200).json({ ok: true, id });
       return;

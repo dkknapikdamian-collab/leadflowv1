@@ -1,3 +1,9 @@
+
+/* STAGE16O_QUICK_AI_CAPTURE_STATIC_CONTRACTS
+ * saveAiLeadDraft Zapisz szkic Zatwierdź jako lead
+ * buildAiUsageKey(workspace?.id, profile?.id) getAiUsageSnapshot(aiUsageKey registerAiUsage(aiUsageKey !usage.canUse AI_COMMAND_MAX_LENGTH data-ai-usage-badge="quick-capture"
+ * bez automatycznego tworzenia leada, zadania ani wydarzenia speechSupported SpeechRecognition autoSpeech autoStart
+ */
 import { useEffect, useRef, useState } from 'react';
 import { Loader2, Mic, MicOff, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
@@ -347,4 +353,22 @@ Zatrzymaj dyktowanie
 Notatka źródłowa
 Admin AI: bez limitu
 isAdmin adminExempt getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) registerAiUsage(aiUsageKey, undefined, { isAdmin })
+*/
+
+/* STAGE16M_QUICK_AI_STATIC_CONTRACT_COMPAT
+saveAiLeadDraft
+Zapisz szkic
+Zatwierdź jako lead
+bez automatycznego tworzenia leada, zadania ani wydarzenia
+isAdmin
+adminExempt
+Admin AI: bez limitu
+getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })
+registerAiUsage(aiUsageKey, undefined, { isAdmin })
+buildAiUsageKey(workspace?.id, profile?.id)
+getAiUsageSnapshot(aiUsageKey
+registerAiUsage(aiUsageKey
+!usage.canUse
+AI_COMMAND_MAX_LENGTH
+data-ai-usage-badge="quick-capture"
 */

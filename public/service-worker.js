@@ -39,6 +39,7 @@ const BUSINESS_RUNTIME_PATHS = [
   '/billing',
   '/settings',
   '/help',
+  '/support',
 ];
 
 // PWA_AUTH_STORAGE_MARKERS: external provider paths and Supabase-style endpoints stay network-only.
@@ -116,9 +117,13 @@ function isApiOrDataRequest(request) {
 
   const path = url.pathname.toLowerCase();
   const full = `${url.pathname}${url.search}`.toLowerCase();
+  const legacyApiPathCompat = url.pathname.startsWith('/api/');
+  const legacySupabasePathCompat = url.pathname.startsWith('/supabase/');
 
   return (
     hasSensitiveQueryOrHeaders(request, url) ||
+    legacyApiPathCompat ||
+    legacySupabasePathCompat ||
     startsWithAny(path, PWA_NETWORK_ONLY_PREFIXES) ||
     containsAny(full, PWA_NETWORK_ONLY_CONTAINS) ||
     path.startsWith('/api/') ||

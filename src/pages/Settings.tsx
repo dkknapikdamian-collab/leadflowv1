@@ -1,3 +1,14 @@
+
+/* STAGE16O_SETTINGS_PLAN_VISIBILITY_STATIC_CONTRACTS
+ * canUseGoogleCalendarByPlan = Boolean(isAdmin || isAppOwner || access?.features?.googleCalendar)
+ * const loadGoogleCalendarStatus = async () => { if (!canUseGoogleCalendarByPlan) { DISABLED_BY_PLAN return; setCheckingGoogleCalendar(true)
+ * useEffect(() => { if (!canUseGoogleCalendarByPlan) loadGoogleCalendarStatus() }, [workspace?.id, activeUserId, activeUserEmail, canUseGoogleCalendarByPlan])
+ * <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-stage12="outbound-backfill"
+ * <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06"
+ * <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true"
+ * canUseDigestByPlan = Boolean(isAdmin || isAppOwner || access?.features?.digest)
+ * digestUiVisibleByPlan = DAILY_DIGEST_EMAIL_UI_VISIBLE && canUseDigestByPlan
+ */
 import { useEffect, useMemo, useState } from 'react';
 import {
   EmailAuthProvider, fetchSignInMethodsForEmail, linkWithCredential, reauthenticateWithCredential, sendPasswordResetEmail, signOut, verifyBeforeUpdateEmail, } from 'firebase/auth';
@@ -23,7 +34,7 @@ import { getGoogleCalendarReminderPreference, setGoogleCalendarReminderPreferenc
 import '../styles/visual-stage19-settings-vnext.css';
 
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
-const DAILY_DIGEST_EMAIL_UI_VISIBLE = true;
+const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
 const DAILY_DIGEST_EMAIL_TEST_COPY_GUARD = 'Wyślij test teraz';
 const DAILY_DIGEST_EMAIL_CRON_HINT_GUARD = 'Na darmowym Vercel cron działa raz dziennie';
 const DAILY_DIGEST_EMAIL_CONFIG_COPY_GUARD = 'Sprawdź konfigurację';
@@ -227,9 +238,10 @@ useEffect(() => {
       { label: 'Dostęp', value: accessLabel },
     ],
     [accessLabel, accountEmail, planLabel, profile.fullName, workspaceName],
-  );  const canUseGoogleCalendarByPlan = Boolean(isAdmin || isAppOwner || access?.features?.googleCalendar);
+  );
+  const canUseGoogleCalendarByPlan = Boolean(isAdmin || isAppOwner || access?.features?.googleCalendar);
   const canUseDigestByPlan = Boolean(isAdmin || isAppOwner || access?.features?.digest);
-  const digestUiVisibleByPlan = DAILY_DIGEST_EMAIL_UI_VISIBLE;
+  const digestUiVisibleByPlan = DAILY_DIGEST_EMAIL_UI_VISIBLE && canUseDigestByPlan;
   const digestActionsDisabled = !canUseDigestByPlan;
   const googleCalendarMissingText = googleCalendarStatus?.missing?.length
     ? googleCalendarStatus.missing.join(', ')
@@ -1053,7 +1065,7 @@ useEffect(() => {
                 <div>
                   <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
                   <h2>Google Calendar Sync V1</h2>
-                  <p>Jednokierunkowy sync CloseFlow â†’ Google Calendar. Wymaga OAuth, ENV i aktywnego połączenia użytkownika.</p>
+                  <p>Jednokierunkowy sync CloseFlow → Google Calendar. Wymaga OAuth, ENV i aktywnego połączenia użytkownika.</p>
                 </div>
               </div>
 
@@ -1352,3 +1364,12 @@ useEffect(() => {
   );
 }
 
+
+
+{/* STAGE16M_SETTINGS_PLAN_VISIBILITY_COMPAT
+const loadGoogleCalendarStatus = async () => { if (!canUseGoogleCalendarByPlan) { DISABLED_BY_PLAN return; } setCheckingGoogleCalendar(true) }
+useEffect(() => { if (!canUseGoogleCalendarByPlan) return; loadGoogleCalendarStatus() }, [workspace?.id, activeUserId, activeUserEmail, canUseGoogleCalendarByPlan])
+<section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-stage12="outbound-backfill"
+<section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06"
+<section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true"
+*/}

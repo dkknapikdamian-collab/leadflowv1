@@ -2736,14 +2736,14 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
 
             {completedTodayEntries.length > 0 && (
               <section id="today-section-completed-today" className="space-y-4">
-                <TileCard id="today-section-completed-today" title="Dzisiaj zakończone" subtitle={`${completedTodayEntries.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-completed-today" title="Dzisiaj zrobioneone" subtitle={`${completedTodayEntries.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   <div className="space-y-2">
                     {completedTodayEntries.slice(0, 8).map((entry) => (
                       <Card key={`completed-${entry.id}`} className="border-emerald-100 bg-emerald-50/30">
                         <CardContent className="p-3 flex items-center justify-between gap-3">
                           <div className="min-w-0">
                             <p className="font-semibold text-slate-900 line-through">{entry.title}</p>
-                            <p className="text-xs text-emerald-700">Powód: zakończone dzisiaj</p>
+                            <p className="text-xs text-emerald-700">Powód: zrobioneone dzisiaj</p>
                           </div>
                           <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none">Zamknięte</Badge>
                         </CardContent>

@@ -139,7 +139,7 @@ function detectRepoRoot() {
 const ROOT = detectRepoRoot();
 const SHOULD_WRITE = hasFlag("--write");
 const SKIP_CHECKS = hasFlag("--skip-checks") || hasFlag("--no-checks");
-const OUTPUT_PATH = getArg("out") || path.join("docs", "release", "RELEASE_CANDIDATE_2026-05-02.md");
+const OUTPUT_PATH = getArg("out") || path.join("docs", "release", "RELEASE_CANDIDATE_2026-05-06.md");
 const PREVIEW_URL_ARG = getArg("preview-url") || getArg("preview") || process.env.RELEASE_PREVIEW_URL || "";
 const CHECKS_ARG = getArg("checks");
 const EXTRA_LIMITATIONS = getRepeatedArg("known-limitation");
@@ -562,3 +562,5 @@ if (SHOULD_WRITE) {
 console.log(markdown);
 
 process.exit(overall === "FAIL" ? 1 : 0);
+
+/* STAGE16_FINAL_QA_RELEASE_CANDIDATE_2026_05_06: supports route smoke, button action map, env matrix and RC evidence output. */

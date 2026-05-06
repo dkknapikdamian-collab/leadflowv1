@@ -186,6 +186,7 @@ async function selectWorkspaceAccessRow(workspaceId: string) {
   }
 }
 
+// STAGE15_ACCESS_GATE_REQUIRES_WORKSPACE_ID
 async function resolveWorkspaceAccessInput(workspaceInput: unknown, statusInput?: unknown) {
   const workspaceId = asText(workspaceInput);
 
@@ -199,7 +200,7 @@ async function resolveWorkspaceAccessInput(workspaceInput: unknown, statusInput?
   }
 
   if (isRequestLike(workspaceInput)) {
-    return { access_status: 'trial_active' };
+    throw makeGateError('WORKSPACE_ID_REQUIRED_FOR_ACCESS_GATE', 401);
   }
 
   return workspaceInput;
@@ -275,6 +276,35 @@ export async function assertWorkspaceAiAllowed(
     throw makeGateError('WORKSPACE_AI_ACCESS_REQUIRED', 402);
   }
 }
+
+
+export async function assertWorkspaceFeatureAllowed(
+  workspaceInput: unknown = {},
+  featureInput?: unknown,
+  planInput?: unknown,
+) {
+  const requestedFeature = asText(featureInput);
+  const normalizedFeature = requestedFeature === 'ai' ? 'fullAi' : requestedFeature;
+
+  try {
+    return await assertWorkspaceFeatureAccess(workspaceInput, normalizedFeature, planInput);
+  } catch (error) {
+    if (requestedFeature === 'ai' || requestedFeature === 'fullAi') {
+      throw makeGateError('AI_NOT_AVAILABLE_ON_PLAN', 402);
+    }
+    if (requestedFeature === 'googleCalendar') {
+      throw makeGateError('GOOGLE_CALENDAR_NOT_AVAILABLE_ON_PLAN', 402);
+    }
+    throw error;
+  }
+}
+
+/*
+STAGE16B_PLAN_ACCESS_GATING_MARKERS
+backend feature gate: assertWorkspaceFeatureAllowed
+feature keys: 'ai' 'googleCalendar'
+errors: AI_NOT_AVAILABLE_ON_PLAN GOOGLE_CALENDAR_NOT_AVAILABLE_ON_PLAN
+*/
 
 type WorkspaceEntityLimitKey = keyof typeof FREE_LIMITS;
 

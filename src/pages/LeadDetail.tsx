@@ -104,7 +104,7 @@ const SOURCE_OPTIONS = [
 
 const SIMPLE_RECURRENCE_OPTIONS = [
   { value: 'none', label: 'Bez powtarzania' },
-  { value: 'daily', label: 'Codziennie' },
+  { value: 'daily', label: 'Codzieńnie' },
   { value: 'weekly', label: 'Co tydzień' },
   { value: 'monthly', label: 'Co miesiąc' },
 ];
@@ -614,7 +614,7 @@ export default function LeadDetail() {
   };
 useEffect(() => {
     if (!startServiceSuccess?.caseId) return;
-    navigate(`/cases/${startServiceSuccess.caseId}`);
+    navigate(`/case/${startServiceSuccess.caseId}`);
   }, [startServiceSuccess?.caseId, navigate]);
 
   const sortedLinkedTasks = useMemo(
@@ -1568,7 +1568,7 @@ useEffect(() => {
             ) : null}
 
             <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbli�sza akcja</h2></div>
+              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa akcja</h2></div>
               <p>{nextTimelineEntry ? nextTimelineEntry.title : 'Brak zaplanowanych działań.'}</p>
               <small>{nextTimelineEntry ? nextTimelineEntry.dateLabel : ''}</small>
             </section>

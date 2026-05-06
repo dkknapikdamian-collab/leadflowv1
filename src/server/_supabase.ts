@@ -174,6 +174,7 @@ export async function selectFirstAvailable(tableQueries: string[]) {
   throw lastError || new Error('SUPABASE_SELECT_FAILED');
 }
 
+// STAGE16_SERVICE_ROLE_SCOPED_MUTATION_HELPERS: service-role writes that touch workspace-owned business rows must prefer the scoped helpers below.
 export async function updateById(table: string, id: string, payload: RecordMap) {
   const encodedId = encodeURIComponent(id);
   return supabaseRequest(`${table}?id=eq.${encodedId}`, {
@@ -182,6 +183,39 @@ export async function updateById(table: string, id: string, payload: RecordMap) 
   });
 }
 
+
+export async function updateByWorkspaceAndId(
+  table: string,
+  id: string,
+  workspaceId: string,
+  payload: RecordMap,
+  idColumn = 'id',
+  workspaceColumn = 'workspace_id',
+) {
+  const encodedId = encodeURIComponent(id);
+  const encodedWorkspaceId = encodeURIComponent(workspaceId);
+  return supabaseRequest(`${table}?${idColumn}=eq.${encodedId}&${workspaceColumn}=eq.${encodedWorkspaceId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteByWorkspaceAndId(
+  table: string,
+  id: string,
+  workspaceId: string,
+  idColumn = 'id',
+  workspaceColumn = 'workspace_id',
+) {
+  const encodedId = encodeURIComponent(id);
+  const encodedWorkspaceId = encodeURIComponent(workspaceId);
+  return supabaseRequest(`${table}?${idColumn}=eq.${encodedId}&${workspaceColumn}=eq.${encodedWorkspaceId}`, {
+    method: 'DELETE',
+    headers: {
+      Prefer: 'return=representation',
+    },
+  });
+}
 export async function updateWhere(path: string, payload: RecordMap) {
   return supabaseRequest(path, {
     method: 'PATCH',
@@ -199,6 +233,28 @@ export async function deleteById(table: string, id: string) {
   });
 }
 
+
+// STAGE15_SCOPED_SERVICE_ROLE_MUTATIONS
+// Service role bypasses RLS, therefore workspace-owned rows must be mutated with an explicit workspace_id filter.
+export async function updateByIdScoped(table: string, id: string, workspaceId: string, payload: RecordMap, idColumn = 'id', workspaceColumn = 'workspace_id') {
+  const encodedId = encodeURIComponent(id);
+  const encodedWorkspaceId = encodeURIComponent(workspaceId);
+  return supabaseRequest(table + '?' + idColumn + '=eq.' + encodedId + '&' + workspaceColumn + '=eq.' + encodedWorkspaceId, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteByIdScoped(table: string, id: string, workspaceId: string, idColumn = 'id', workspaceColumn = 'workspace_id') {
+  const encodedId = encodeURIComponent(id);
+  const encodedWorkspaceId = encodeURIComponent(workspaceId);
+  return supabaseRequest(table + '?' + idColumn + '=eq.' + encodedId + '&' + workspaceColumn + '=eq.' + encodedWorkspaceId, {
+    method: 'DELETE',
+    headers: {
+      Prefer: 'return=representation',
+    },
+  });
+}
 export function withWorkspaceFilter(path: string, workspaceId: string) {
   const separator = path.includes('?') ? '&' : '?';
   return `${path}${separator}workspace_id=eq.${encodeURIComponent(workspaceId)}`;

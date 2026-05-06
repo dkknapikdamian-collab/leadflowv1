@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-05-06T19:26:16.941Z",
+  "branch": "dev-rollout-freeze",
+  "head": "da48e5d",
+  "checks": [
+    {
+      "label": "a13-direct",
+      "command": "C:\\Program Files\\nodejs\\node.exe scripts/check-a13-critical-regressions.cjs",
+      "exitCode": 1,
+      "durationMs": 135,
+      "error": null,
+      "failureLines": [
+        "A13 critical regression guard failed.",
+        "- AI drafts confirmation and raw text cleanup: pending/draft status missing"
+      ]
+    },
+    {
+      "label": "a13-test-wrapper",
+      "command": "C:\\Program Files\\nodejs\\node.exe --test tests/a13-critical-regressions.test.cjs",
+      "exitCode": 1,
+      "durationMs": 291,
+      "error": null,
+      "failureLines": [
+        "✖ A13 guards catch critical auth, access, data, portal, AI, Firestore, Gemini and template UI regressions (147.7554ms)",
+        "✖ A13 guards catch critical auth, access, data, portal, AI, Firestore, Gemini and template UI regressions (147.7554ms)",
+        "AssertionError [ERR_ASSERTION]: A13 critical regression guard failed.",
+        "- AI drafts confirmation and raw text cleanup: pending/draft status missing"
+      ]
+    },
+    {
+      "label": "test-critical-compact",
+      "command": "C:\\Program Files\\nodejs\\node.exe scripts/run-tests-compact.cjs --critical",
+      "exitCode": 1,
+      "durationMs": 393,
+      "error": null,
+      "failureLines": [
+        "1. A13 guards catch critical auth, access, data, portal, AI, Firestore, Gemini and template UI regressions"
+      ]
+    }
+  ]
+}

@@ -98,7 +98,7 @@ const FAQ_ITEMS = [
   },
   {
     question: 'Co zrobić, gdy coś nie działa?',
-    answer: 'Wyślij zgłoszenie z opisem miejsca, kroków i oczekiwanego efektu. Najlepiej dopisz, czy problem był na telefonie czy komputerze.',
+    answer: 'Zapisz zgłoszenie z opisem miejsca, kroków i oczekiwanego efektu. Najlepiej dopisz, czy problem był na telefonie czy komputerze.',
   },
 ];
 
@@ -289,13 +289,13 @@ export default function SupportCenter() {
         subject: subject.trim(),
         message: message.trim(),
       });
-      toast.success('Zgłoszenie wysłane.');
+      toast.success('Zgłoszenie zapisane.');
       setSubject('');
       setMessage('');
       await loadTickets();
     } catch (error: any) {
       console.error('SUPPORT_REQUEST_CREATE_FAILED', error);
-      toast.error(`Nie udało się wysłać zgłoszenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zapisać zgłoszenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSending(false);
     }
@@ -318,7 +318,7 @@ export default function SupportCenter() {
         workspaceId: workspace.id,
       });
       setReplyDrafts((prev) => ({ ...prev, [ticket.id]: '' }));
-      toast.success(actorType === 'admin' ? 'Odpowiedź supportu zapisana.' : 'Odpowiedź została dopisana.');
+      toast.success(actorType === 'admin' ? 'Odpowiedź supportu zapisana.' : 'Odpowiedź została zapisana.');
       await loadTickets();
     } catch (error: any) {
       console.error('SUPPORT_REPLY_FAILED', error);
@@ -413,7 +413,7 @@ export default function SupportCenter() {
             <MessageSquare className="h-5 w-5" />
             <span>Szybki kontakt</span>
             <strong>Opisz problem albo pytanie</strong>
-            <p>Wysyłka zapisuje zgłoszenie w systemie supportu. Nie tworzymy tutaj osobnego mail composera.</p>
+            <p>Zapis zgłoszenia tworzy wpis w systemie supportu. Nie tworzymy tutaj osobnego mail composera.</p>
           </article>
           <article className="support-hero-card">
             <ShieldCheck className="h-5 w-5" />
@@ -435,7 +435,7 @@ export default function SupportCenter() {
               <section className="support-form-card">
                 <div className="support-section-head">
                   <div>
-                    <h2>Wyślij zgłoszenie</h2>
+                    <h2>Zapisz zgłoszenie</h2>
                     <p>Wypełnij temat i opis. Im konkretniej opiszesz kroki, tym szybciej da się sprawdzić temat.</p>
                   </div>
                 </div>
@@ -493,12 +493,12 @@ export default function SupportCenter() {
                     {sending ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Wysyłanie...
+                        Zapisywanie...
                       </>
                     ) : (
                       <>
                         <Send className="h-4 w-4" />
-                        Wyślij zgłoszenie
+                        Zapisz zgłoszenie
                       </>
                     )}
                   </Button>
@@ -605,7 +605,7 @@ export default function SupportCenter() {
                           ) : (
                             <>
                               <Send className="h-4 w-4" />
-                              {isAdmin ? 'Wyślij odpowiedź' : 'Dopisz odpowiedź'}
+                              {isAdmin ? 'Zapisz odpowiedź' : 'Dopisz odpowiedź'}
                             </>
                           )}
                         </Button>

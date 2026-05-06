@@ -1,4 +1,4 @@
-import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById } from '../src/server/_supabase.js';
+import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById, updateByIdScoped, deleteByIdScoped } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceFeatureAccess, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
@@ -185,11 +185,11 @@ async function insertLeadWithSchemaFallback(payload: Record<string, unknown>) {
   throw new Error('LEAD_INSERT_SCHEMA_FALLBACK_EXHAUSTED');
 }
 
-async function updateLeadWithSchemaFallback(id: string, payload: Record<string, unknown>) {
+async function updateLeadWithSchemaFallback(id: string, workspaceId: string, payload: Record<string, unknown>) {
   let currentPayload = { ...payload };
   for (let attempt = 0; attempt < 12; attempt += 1) {
     try {
-      return await updateById('leads', id, currentPayload);
+      return await updateByIdScoped('leads', id, workspaceId, currentPayload);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
       if (!shouldDropMissingColumnForLeadFallback('leads', missingColumn, currentPayload)) throw error;
@@ -455,7 +455,7 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
     occurredAt: nowIso,
     updatedAt: nowIso,
   });
-  await updateLeadWithSchemaFallback(leadId, leadPayload);
+  await updateLeadWithSchemaFallback(leadId, workspaceId, leadPayload);
 
   await insertActivityWithSchemaFallback({
     workspace_id: workspaceId,
@@ -555,10 +555,10 @@ function buildLeadGoogleCalendarEvent(row: Record<string, unknown>, body: Record
   };
 }
 
-async function writeLeadGoogleCalendarSyncState(leadId: string, payload: Record<string, unknown>) {
+async function writeLeadGoogleCalendarSyncState(leadId: string, workspaceId: string, payload: Record<string, unknown>) {
   if (!leadId) return;
   try {
-    await updateLeadWithSchemaFallback(leadId, {
+    await updateLeadWithSchemaFallback(leadId, workspaceId, {
       ...payload,
       updated_at: new Date().toISOString(),
     });
@@ -582,7 +582,7 @@ async function syncGoogleCalendarLeadAfterMutation(input: {
   try {
     await assertWorkspaceFeatureAccess(input.workspaceId, 'googleCalendar');
   } catch {
-    await writeLeadGoogleCalendarSyncState(leadId, {
+    await writeLeadGoogleCalendarSyncState(leadId, input.workspaceId, {
       google_calendar_sync_status: 'disabled_by_plan',
       google_calendar_sync_error: 'GOOGLE_CALENDAR_REQUIRES_PRO',
     });
@@ -596,7 +596,7 @@ async function syncGoogleCalendarLeadAfterMutation(input: {
   try {
     connection = await getGoogleCalendarConnection(input.workspaceId, userId || undefined);
   } catch (error) {
-    await writeLeadGoogleCalendarSyncState(leadId, {
+    await writeLeadGoogleCalendarSyncState(leadId, input.workspaceId, {
       google_calendar_sync_status: 'failed',
       google_calendar_sync_error: String(error instanceof Error ? error.message : error).slice(0, 500),
     });
@@ -604,7 +604,7 @@ async function syncGoogleCalendarLeadAfterMutation(input: {
   }
 
   if (!connection || connection.sync_enabled === false) {
-    await writeLeadGoogleCalendarSyncState(leadId, {
+    await writeLeadGoogleCalendarSyncState(leadId, input.workspaceId, {
       google_calendar_sync_status: 'not_connected',
       google_calendar_sync_error: connection?.sync_enabled === false ? 'GOOGLE_CALENDAR_SYNC_DISABLED' : 'GOOGLE_CALENDAR_CONNECTION_NOT_FOUND',
     });
@@ -614,7 +614,7 @@ async function syncGoogleCalendarLeadAfterMutation(input: {
   try {
     if (input.action === 'delete' || !nextActionAt) {
       if (existingGoogleEventId) await deleteGoogleCalendarEvent(connection, existingGoogleEventId);
-      await writeLeadGoogleCalendarSyncState(leadId, {
+      await writeLeadGoogleCalendarSyncState(leadId, input.workspaceId, {
         google_calendar_event_id: null,
         google_calendar_event_etag: null,
         google_calendar_html_link: null,
@@ -630,7 +630,7 @@ async function syncGoogleCalendarLeadAfterMutation(input: {
       ? await updateGoogleCalendarEvent(connection, existingGoogleEventId, event)
       : await createGoogleCalendarEvent(connection, event);
 
-    await writeLeadGoogleCalendarSyncState(leadId, {
+    await writeLeadGoogleCalendarSyncState(leadId, input.workspaceId, {
       google_calendar_id: connection.google_calendar_id || 'primary',
       google_calendar_event_id: googleEvent?.id || existingGoogleEventId || null,
       google_calendar_event_etag: googleEvent?.etag || null,
@@ -640,7 +640,7 @@ async function syncGoogleCalendarLeadAfterMutation(input: {
       google_calendar_sync_error: null,
     });
   } catch (error) {
-    await writeLeadGoogleCalendarSyncState(leadId, {
+    await writeLeadGoogleCalendarSyncState(leadId, input.workspaceId, {
       google_calendar_sync_status: 'failed',
       google_calendar_sync_error: String(error instanceof Error ? error.message : error).slice(0, 500),
     });
@@ -824,7 +824,7 @@ export default async function handler(req: any, res: any) {
       );
       if (derivedEligibleAt && body.caseEligibleAt === undefined) payload.case_eligible_at = derivedEligibleAt;
 
-      const data = await updateLeadWithSchemaFallback(String(body.id), payload);
+      const data = await updateLeadWithSchemaFallback(String(body.id), workspaceId, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
       // GOOGLE_CALENDAR_STAGE09B_LEAD_PATCH_SYNC_CALL
       await syncGoogleCalendarLeadAfterMutation({ action: 'update', req, workspaceId, row: updated as Record<string, unknown>, previousRow: currentLeadRow as Record<string, unknown>, body });
@@ -844,7 +844,7 @@ export default async function handler(req: any, res: any) {
 
       await syncGoogleCalendarLeadAfterMutation({ action: 'delete', req, workspaceId, row: currentLeadRow as Record<string, unknown>, previousRow: currentLeadRow as Record<string, unknown>, body });
 
-      await deleteById('leads', id);
+      await deleteByIdScoped('leads', id, workspaceId);
       res.status(200).json({ ok: true, id });
       return;
     }

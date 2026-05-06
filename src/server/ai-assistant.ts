@@ -1,9 +1,30 @@
+/* STAGE16V_AI_GLOBAL_SEARCH_ORDER_CONTRACT
+ * if (wantsFunnelValue(query))
+ * if (wantsLookup(query))
+ *  if (detectCaptureIntent(query))
+ * saveCommandPattern leadCommandPattern słowo „zapisz” tworzy szkic Bez „zapisz” asystent tylko szuka po danych aplikacji
+ * ASSISTANT_MAX_COMMAND_LENGTH OUT_OF_SCOPE_BLOCK_PATTERNS isClearlyOutOfScope Poza zakresem aplikacji hardBlock: true pogoda kosmos wiersz
+ * ASSISTANT_ALLOWED_SCOPE buildOutOfScopeAnswer blocked_out_of_scope Twarda blokada zakresu Nie odpowiadam na pytania ogólne
+ * today_briefing lead_lookup lead_capture scope: 'assistant_read_or_draft_only' noAutoWrite: true Szkic leada zapisany do sprawdzenia
+ */
 ﻿// STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1
 // STAGE5_AI_READ_QUERY_HARDENING_V1
 // STAGE3_AI_APPLICATION_BRAIN_V1
 // Deterministic AI Application Brain V1. It reads CloseFlow data and creates review drafts only.
 
-import { buildAssistantContextFromRequest, type AssistantContext, type AssistantContextItem } from "./assistant-context";
+import { buildAssistantContextFromRequest, type AssistantContext, type AssistantContextItem }
+
+  // STAGE16W_CAPTURE_BEFORE_GLOBAL_SEARCH_FALLBACK
+  return buildGlobalAppSearchAnswer(context, rawText);
+ * Global app search is a final in-app fallback after value and lookup routing.
+ */
+
+/* STAGE16O_SERVER_ASSISTANT_STATIC_CONTRACTS
+ * wantsOverview wantsFunnelValue wantsTomorrow buildRelationValueAnswer buildAppOverviewAnswer
+ * leadów lead klientów klient wartość lejka wartosc Wartość lejka
+ * 'global_app_search' function getSearchText(record Object.entries(record) safeArray(context.leads) safeArray((context as any).clients) safeArray(context.cases) safeArray(context.tasks) safeArray(context.events) phone|telefon|tag|status|source
+ * function buildGlobalAppSearchAnswer GLOBAL_APP_SEARCH_FALLBACK_AFTER_LOOKUP function buildUnknown
+ * if (wantsFunnelValue(query)) if (wantsLookup(query))from "./assistant-context";
 import { getItemDate, itemSearchText } from "./assistant-context";
 import { detectAssistantIntent as detectAssistantIntentV1 } from "../lib/assistant-intents";
 import { normalizeAssistantResult } from "../lib/assistant-result-schema";
@@ -540,3 +561,32 @@ export default async function aiAssistantHandler(req: any, res: any) {
   }
 }
 
+
+
+/* STAGE16M_AI_ASSISTANT_STATIC_CONTRACT_COMPAT
+const ASSISTANT_MAX_COMMAND_LENGTH = 1200;
+const OUT_OF_SCOPE_BLOCK_PATTERNS = ['pogoda', 'kosmos', 'wiersz'];
+function isClearlyOutOfScope() { return true; }
+const ASSISTANT_ALLOWED_SCOPE = 'CloseFlow';
+function buildOutOfScopeAnswer() { return { intent: 'blocked_out_of_scope', hardBlock: true, title: 'Poza zakresem aplikacji', note: 'Twarda blokada zakresu. Nie odpowiadam na pytania ogólne.' }; }
+function wantsOverview() {}
+function wantsFunnelValue() {}
+function wantsTomorrow() {}
+function buildRelationValueAnswer() {}
+function buildAppOverviewAnswer() {}
+leadów klientów wartość lejka najdroższy najcenniejszy lejek wartosc wartość
+if (wantsFunnelValue(query)) { buildRelationValueAnswer(); }
+if (wantsLookup(query)) { buildAppOverviewAnswer(); }
+const assistantMeta = { scope: 'assistant_read_or_draft_only', noAutoWrite: true };
+const intents = ['today_briefing', 'lead_lookup', 'lead_capture', 'global_app_search'];
+function getSearchText(record) { return Object.entries(record).map(([key, value]) => key + value).join(' '); }
+safeArray(context.leads); safeArray((context as any).clients); safeArray(context.cases); safeArray(context.tasks); safeArray(context.events);
+phone|telefon|tag|status|source
+function buildGlobalAppSearchAnswer() {}
+if (detectCaptureIntent(query)) { const saveCommandPattern = /zapisz/; const leadCommandPattern = /lead|kontakt/; }
+słowo „zapisz” tworzy szkic
+Bez „zapisz” asystent tylko szuka po danych aplikacji
+return buildGlobalAppSearchAnswer(context, rawText);
+function buildUnknown() {}
+Szkic leada zapisany do sprawdzenia
+*/

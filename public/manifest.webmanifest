@@ -1,10 +1,10 @@
 {
   "id": "/",
-  "name": "CloseFlow",
+  "name": "Close Flow",
   "short_name": "CloseFlow",
   "description": "CloseFlow pilnuje leadów, follow-upów, zadań, wydarzeń i spraw na komputerze oraz telefonie.",
   "lang": "pl",
-  "start_url": "/?source=pwa",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "display_override": [
@@ -44,8 +44,14 @@
     {
       "name": "Dziś",
       "short_name": "Dziś",
-      "description": "Otwórz centrum dnia.",
-      "url": "/"
+      "description": "Otwórz dzisiejszy plan pracy",
+      "url": "/today",
+      "icons": [
+        {
+          "src": "/icons/closeflow-icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Leady",

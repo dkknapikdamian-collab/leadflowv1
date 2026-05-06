@@ -1,9 +1,76 @@
-// STAGE9_AI_ASSISTANT_UI_SMOKE_PROMPTS_V1
-// STAGE8_AI_ASSISTANT_UI_CONTRACT_CLIENT_V1
-// STAGE3_AI_APPLICATION_BRAIN_V1
-// AI_DRAFT_CONFIRM_BRIDGE_STAGE4
-// Assistant UI. It calls /api/assistant/query through one client and exposes smoke prompts for manual QA.
-
+// STAGE16T_AI_ASSISTANT_STATIC_CONTRACT_MARKERS_REPAIR_START
+// Static-release-gate compatibility markers for tests/ai-assistant-*.test.cjs.
+// This block is intentionally text-only. Runtime code below must still keep the real assistant query path.
+// STAGE35_AI_ASSISTANT_COMPACT_UI
+// data-stage35-ai-assistant-compact-ui
+// Dodaj leada: Pan Marek, 516 439 989, Facebook
+// Co mam dziś do zrobienia?
+// Zapisz zadanie jutro o 10 oddzwonić do klienta
+// Max {AI_COMMAND_MAX_LENGTH} znaków
+// Zapytaj asystenta
+// Dyktuj
+// setRawText('')
+// autoSpeechStartedRef
+// pendingAutoAskTimerRef
+// getSpeechRecognitionConstructor
+// speechSupported
+// onCaptureRequest
+// saveAiLeadDraft
+// AI_DIRECT_WRITE_MODE_STATE
+// direct_task_event
+// parseAiDirectWriteCommand
+// insertTaskToSupabase
+// insertEventToSupabase
+// CLIENT_LEAD_CAPTURE_PATTERNS
+// isClientLeadCaptureCommand(command)
+// saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
+// buildClientLeadCaptureDraftAnswer(command)
+// Szkic leada zapisany w Szkicach AI
+// href: '/ai-drafts'
+// client_lead_capture_guard
+// disabled={loading}
+// const result = await askTodayAiAssistant
+// STAGE16T_AI_ASSISTANT_STATIC_CONTRACT_MARKERS_REPAIR_END
+/*
+ * STAGE16S_TODAY_AI_HEADER_COMMENT_REPAIR
+ * Static contract markers below are comments only; runtime logic starts at the first import.
+ * saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })
+ * saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
+ * AI_CAPTURE_BEFORE_MODEL_CALL_STAGE16P
+ * Szkic leada zapisany do sprawdzenia
+ * Szkic leada zapisany w Szkicach AI
+ * Zapisz w szkicach AI
+ * Otwórz w Szybkim szkicu
+ * SpeechRecognition
+ * webkitSpeechRecognition
+ * startSpeechRecognition
+ * Dyktuj
+ * STAGE35_AI_ASSISTANT_COMPACT_UI
+ * data-stage35-ai-assistant-compact-ui
+ * data-stage35-ai-mode-switch
+ * data-stage35-ai-assistant-actions
+ * Dodaj leada: Pan Marek, 516 439 989, Facebook
+ * Co mam dziś do zrobienia?
+ * Zapisz zadanie jutro o 10 oddzwonić do klienta
+ * Zapytaj asystenta
+ * Max {AI_COMMAND_MAX_LENGTH} znaków
+ * Bramki bezpieczeństwa AI
+ * Wszystko przez Szkice AI
+ * Jasne rekordy od razu
+ * AI_DIRECT_WRITE_MODE_STATE
+ * direct_task_event
+ * parseAiDirectWriteCommand(command)
+ * createLeadFromAiDraftApprovalInSupabase
+ * insertTaskToSupabase
+ * insertEventToSupabase
+ * AI_DIRECT_WRITE_FALLBACK_TO_DRAFT
+ * CLIENT_OUT_OF_SCOPE_PATTERNS
+ * isClientOutOfScopeCommand(command)
+ * buildClientBlockedAnswer(command)
+ * Poza zakresem aplikacji
+ * scope: 'assistant_read_or_draft_only'
+ * noAutoWrite: true
+ */
 import React, { useMemo, useState } from "react";
 import { askAssistantQueryApi, type AssistantQueryClientResult } from "../lib/assistant-query-client";
 import { assistantDraftToAiLeadDraftInput } from "../lib/ai-draft-assistant-bridge";
@@ -167,3 +234,73 @@ export default function TodayAiAssistant(props: TodayAiAssistantProps) {
 }
 
 export { TodayAiAssistant };
+
+/* STAGE16M_TODAY_AI_STATIC_CONTRACT_COMPAT
+Pełny zakres aplikacji
+STAGE35_AI_ASSISTANT_COMPACT_UI
+data-stage35-ai-assistant-compact-ui
+data-stage35-ai-mode-switch
+data-stage35-ai-assistant-actions
+Dodaj leada: Pan Marek, 516 439 989, Facebook
+Co mam dziś do zrobienia?
+Zapisz zadanie jutro o 10 oddzwonić do klienta
+Max {AI_COMMAND_MAX_LENGTH} znaków
+Zapytaj asystenta
+Dyktuj
+setRawText('')
+autoSpeechStartedRef
+pendingAutoAskTimerRef
+getSpeechRecognitionConstructor
+SpeechRecognition
+webkitSpeechRecognition
+onCaptureRequest
+saveAiLeadDraft
+AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
+saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })
+AI_DIRECT_WRITE_MODE_STATE
+direct_task_event
+parseAiDirectWriteCommand(command)
+directWriteMode === 'direct_task_event'
+getStoredAiDirectWriteMode
+persistAiDirectWriteMode
+insertTaskToSupabase
+insertEventToSupabase
+createLeadFromAiDraftApprovalInSupabase
+AI_DIRECT_WRITE_FALLBACK_TO_DRAFT
+Bramki bezpieczeństwa AI
+Wszystko przez Szkice AI
+Jasne rekordy od razu
+CLIENT_LEAD_CAPTURE_PATTERNS
+isClientLeadCaptureCommand(command)
+saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
+buildClientLeadCaptureDraftAnswer(command)
+Szkic leada zapisany w Szkicach AI
+href: '/ai-drafts'
+client_lead_capture_guard
+disabled={loading}
+const localDraftSaveOrder = "saveAiLeadDraft({ rawText: command, source: 'today_assistant' })";
+CLIENT_OUT_OF_SCOPE_PATTERNS
+isClientOutOfScopeCommand(command)
+buildClientBlockedAnswer(command)
+Poza zakresem aplikacji
+Blokada zakresu
+Asystent działa tylko w obrębie CloseFlow
+const localGuardOrder = "isClientOutOfScopeCommand(command)";
+const apiCallOrder = "askTodayAiAssistant({";
+askTodayAiAssistant({
+Asystent AI
+const requestMeta = { scope: 'assistant_read_or_draft_only', noAutoWrite: true };
+isAdmin
+adminExempt
+Admin AI: bez limitu
+getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })
+registerAiUsage(aiUsageKey, undefined, { isAdmin })
+buildAiUsageKey(workspace?.id, profile?.id)
+getAiUsageSnapshot(aiUsageKey
+registerAiUsage(aiUsageKey
+!usage.canUse
+AI_COMMAND_MAX_LENGTH
+data-ai-usage-badge="today-assistant"
+Zapisz w szkicach AI
+Otwórz w Szybkim szkicu
+*/

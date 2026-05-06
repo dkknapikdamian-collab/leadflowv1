@@ -512,7 +512,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
     return {
       kind: 'case',
       title: getCaseTitle(activeCase),
-      subtitle: `${caseStatusLabel(String(activeCase.status || 'in_progress'))} Â· kompletność ${getCaseCompleteness(activeCase)}%`,
+      subtitle: `${caseStatusLabel(String(activeCase.status || 'in_progress'))} · kompletność ${getCaseCompleteness(activeCase)}%`,
       relationId: String(activeCase.id || ''),
       to: `/cases/${String(activeCase.id)}`,
       tone: 'emerald',
@@ -873,7 +873,7 @@ export default function ClientDetail() {
         status: String(caseRecord.status || 'in_progress'),
         statusLabel: caseStatusLabel(String(caseRecord.status || 'in_progress')),
         nextActionLabel: next ? next.title : 'Brak zaplanowanych działań',
-        nextActionMeta: next ? `${next.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} Â· ${relativeActionLabel(next.date)}` : 'Dodaj zadanie albo wydarzenie w sprawie.',
+        nextActionMeta: next ? `${next.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} · ${relativeActionLabel(next.date)}` : 'Dodaj zadanie albo wydarzenie w sprawie.',
         sourceLabel: sourceLead ? `Lead: ${String(sourceLead.name || sourceLead.company || 'bez nazwy')}` : `Utworzono: ${formatDate(caseRecord.createdAt)}`,
         completeness: getCaseCompleteness(caseRecord),
         blocker: getCaseBlocker(caseRecord),
@@ -1157,7 +1157,7 @@ export default function ClientDetail() {
                 <div className="client-detail-avatar">{getInitials(client)}</div>
                 <div>
                   <h2>{getClientName(client)}</h2>
-                  <p>{mainCase ? 'Klient Â· główna sprawa aktywna' : 'Klient Â· brak aktywnej sprawy'}</p>
+                  <p>{mainCase ? 'Klient · główna sprawa aktywna' : 'Klient · brak aktywnej sprawy'}</p>
                 </div>
               </div>
 
@@ -1194,7 +1194,7 @@ export default function ClientDetail() {
                         {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                         {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
                       </Button>
-                      {clientNoteAutosaving ? <span className="text-xs text-slate-500">Zapisywanie za 2sâ€¦</span> : null}
+                      {clientNoteAutosaving ? <span className="text-xs text-slate-500">Zapisywanie za 2s…</span> : null}
                     </div>
                   </div>
                   <div className="client-detail-edit-actions">
@@ -1343,7 +1343,7 @@ export default function ClientDetail() {
                         <article key={caseRecord.id} className="client-detail-relation-row">
                           <div className="client-detail-relation-main">
                             <h3>{caseRecord.title}</h3>
-                            <p>{caseRecord.nextActionMeta || `W realizacji Â· najbliższa akcja ${caseRecord.nextActionLabel}`}</p>
+                            <p>{caseRecord.nextActionMeta || `W realizacji · najbliższa akcja ${caseRecord.nextActionLabel}`}</p>
                           </div>
                           <span className={`client-detail-pill ${statusBadgeClass(caseRecord.status)}`}>
                             {activeCases.some((entry) => String(entry.id) === String(caseRecord.id)) ? 'Aktywna' : caseRecord.statusLabel}
@@ -1419,7 +1419,7 @@ export default function ClientDetail() {
                             <div className="client-detail-relation-main">
                               <h3>{leadName}</h3>
                               <p><strong>Źródło:</strong> {source}</p>
-                              <p><strong>Status przy pozyskaniu:</strong> {status} Â· <strong>Utworzono:</strong> {formatDate(lead.createdAt || lead.updatedAt)}</p>
+                              <p><strong>Status przy pozyskaniu:</strong> {status} · <strong>Utworzono:</strong> {formatDate(lead.createdAt || lead.updatedAt)}</p>
                             </div>
                           </div>
                         );

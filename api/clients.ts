@@ -1,4 +1,5 @@
-import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from '../src/server/_supabase.js';
+/* STAGE16_SCOPED_MUTATION_ENDPOINT: workspace-owned mutations must scope service-role writes by workspace_id. */
+import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, requireScopedRow, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { normalizeClientContract } from '../src/lib/data-contract.js';
 import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
@@ -64,11 +65,11 @@ async function insertWithSchemaFallback(payload: Record<string, unknown>) {
   throw new Error('CLIENT_INSERT_SCHEMA_FALLBACK_EXHAUSTED');
 }
 
-async function updateWithSchemaFallback(id: string, payload: Record<string, unknown>) {
+async function updateWithSchemaFallback(id: string, workspaceId: string, payload: Record<string, unknown>) {
   let current = { ...payload };
   for (let index = 0; index < 8; index += 1) {
     try {
-      return await updateById('clients', id, current);
+      return await updateByIdScoped('clients', id, workspaceId, current);
     } catch (error) {
       const missingColumn = extractMissingColumn(error);
       if (!missingColumn || !OPTIONAL_CLIENT_COLUMNS.has(missingColumn) || !(missingColumn in current)) throw error;
@@ -164,7 +165,7 @@ export default async function handler(req: any, res: any) {
       if (body.lastActivityAt !== undefined) payload.last_activity_at = toIso(body.lastActivityAt);
       if (body.archivedAt !== undefined) payload.archived_at = toIso(body.archivedAt);
 
-      const data = await updateWithSchemaFallback(id, payload);
+      const data = await updateWithSchemaFallback(id, workspaceId, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id, ...payload };
       res.status(200).json(normalizeClient(updated as Record<string, unknown>));
       return;
@@ -177,7 +178,7 @@ export default async function handler(req: any, res: any) {
         return;
       }
       await requireScopedRow('clients', id, workspaceId, 'CLIENT_NOT_FOUND');
-      await deleteById('clients', id);
+      await deleteByIdScoped('clients', id, workspaceId);
       res.status(200).json({ ok: true, id });
       return;
     }

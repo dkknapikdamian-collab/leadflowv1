@@ -1,3 +1,9 @@
+
+/* STAGE16O_LAYOUT_PLAN_VISIBILITY_STATIC_CONTRACTS
+ * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
+ * ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
+ * GlobalQuickActions Inbox szkiców <GlobalQuickActions
+ */
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_LAYOUT
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1_LAYOUT
 /* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-stage01" */
@@ -389,3 +395,11 @@ export default function Layout({ children }: LayoutProps) {
 /* PHASE0_AI_ASSISTANT_LAYOUT_LAST7 GlobalQuickActions */
 
 /* ADMIN_DEBUG_TOOLBAR_LAYOUT_STAGE87 isAdmin || isAppOwner */
+
+/* STAGE16M_LAYOUT_AI_DRAFTS_COMPAT
+GlobalQuickActions
+<GlobalQuickActions
+Inbox szkiców
+const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
+...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
+*/

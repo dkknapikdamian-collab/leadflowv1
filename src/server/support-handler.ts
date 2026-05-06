@@ -88,7 +88,7 @@ async function handleForward(req: any, res: any, body: any) {
   const message = asString(body.message) || 'Brak treści';
   const ownerEmail = asString(body.ownerEmail) || 'brak';
   const ownerId = asString(body.ownerId) || 'brak';
-  const workspaceId = asString(body.workspaceId) || 'brak';
+  const workspaceId = asString(await resolveRequestWorkspaceId(req)) || 'brak';
 
   if (!resendApiKey || !supportForwardEmail) {
     res.status(200).json({ forwarded: false, reason: 'EMAIL_NOT_CONFIGURED' });
@@ -134,7 +134,7 @@ async function handleForward(req: any, res: any, body: any) {
 }
 
 async function handleRequests(req: any, res: any, body: any) {
-  const workspaceId = await resolveRequestWorkspaceId(req, body);
+  const workspaceId = await resolveRequestWorkspaceId(req);
 
   if (req.method === 'GET') {
     if (!workspaceId) { res.status(401).json({ error: 'SUPPORT_WORKSPACE_REQUIRED' }); return; }

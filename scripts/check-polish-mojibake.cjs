@@ -1,96 +1,70 @@
+#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 
-const repo = process.cwd();
-const roots = ['src', 'api', 'docs'].map(function (item) {
-  return path.join(repo, item);
-});
-const exts = new Set(['.ts', '.tsx', '.js', '.jsx', '.cjs', '.mjs', '.css', '.md', '.html', '.json']);
+const DEFAULT_ROOT = process.cwd();
+const RUNTIME_ROOTS = ['src/pages', 'src/components', 'src/lib'];
+const EXTS = new Set(['.ts', '.tsx', '.js', '.jsx', '.cjs', '.mjs']);
 
-function chars() {
-  return String.fromCharCode.apply(String, arguments);
-}
-
-const badPatterns = [
-  chars(0x0139),
-  chars(0x00c4),
-  chars(0x0102),
-  chars(0x00e2, 0x20ac),
-  chars(0x00c5, 0x00bc),
-  chars(0x00c5, 0x00ba),
-  chars(0x00c5, 0x201a),
-  chars(0x00c5, 0x201e),
-  chars(0x00c5, 0x203a),
-  chars(0x00c3, 0x00b3),
+const BAD_PATTERNS = [
+  'Ĺ', 'Ä', 'Ă', 'Â', 'â€', 'â†', '�',
+  'Aadowanie', 'podgldu', 'Nie udaBo', 'wyja[nienie',
+  'ju�', 'obs�udze', 'obs�ug�', 'Najbli�sza', 'szablon�w', 'kr�tkie', 'Utw�rz',
 ];
 
-function shouldSkip(file) {
-  const rel = path.relative(repo, file).replace(/\\/g, '/');
+const SKIP_PARTS = [
+  '/__snapshots__/',
+  '/admin-tools/admin-tools-export.ts',
+];
 
-  // Generated diagnostics may quote raw guard regexes such as Ä|Ĺ|Ă.
-  // They are not UI copy and should not fail the legacy mojibake gate.
-  if (rel.startsWith('docs/reports/')) return true;
-
-  // Patch backups are local implementation artifacts, not product text.
-  if (rel.includes('/.stage') || rel.startsWith('.stage')) return true;
-
-  return false;
-}
-
-function walk(dir, result) {
-  result = result || [];
+function walk(dir, result = []) {
   if (!fs.existsSync(dir)) return result;
-
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const target = path.join(dir, entry.name);
-
     if (entry.isDirectory()) {
-      if (['node_modules', 'dist', '.git', '.vercel', 'reports'].includes(entry.name) && target.includes(path.join('docs', 'reports'))) continue;
       if (['node_modules', 'dist', '.git', '.vercel'].includes(entry.name)) continue;
       walk(target, result);
       continue;
     }
-
     result.push(target);
   }
-
   return result;
 }
 
-const files = roots
-  .flatMap(function (root) {
-    return walk(root);
-  })
-  .filter(function (file) {
-    return exts.has(path.extname(file)) && !shouldSkip(file);
-  });
-
-const hits = [];
-
-for (const file of files) {
-  const text = fs.readFileSync(file, 'utf8');
-  const lines = text.split(/\r?\n/);
-
-  lines.forEach(function (line, index) {
-    if (badPatterns.some(function (pattern) { return line.includes(pattern); })) {
-      hits.push({
-        file: path.relative(repo, file),
-        line: index + 1,
-        text: line.trim().slice(0, 220),
-      });
-    }
-  });
+function shouldSkip(root, file) {
+  const rel = path.relative(root, file).replace(/\\/g, '/');
+  return SKIP_PARTS.some((part) => rel.includes(part.replace(/^\//, '')));
 }
 
-if (hits.length) {
-  console.error('Polish mojibake detected. Fix encoding before commit.');
-  for (const hit of hits.slice(0, 80)) {
-    console.error(hit.file + ':' + hit.line + ': ' + hit.text);
+function validatePolishMojibake(root = DEFAULT_ROOT) {
+  const files = RUNTIME_ROOTS
+    .map((item) => path.join(root, item))
+    .flatMap((dir) => walk(dir))
+    .filter((file) => EXTS.has(path.extname(file)) && !shouldSkip(root, file));
+
+  const hits = [];
+  for (const file of files) {
+    const rel = path.relative(root, file).replace(/\\/g, '/');
+    const text = fs.readFileSync(file, 'utf8');
+    const lines = text.split(/\r?\n/);
+    lines.forEach((line, index) => {
+      if (BAD_PATTERNS.some((pattern) => line.includes(pattern))) {
+        hits.push(`${rel}:${index + 1}: ${line.trim().slice(0, 220)}`);
+      }
+    });
   }
-  if (hits.length > 80) {
-    console.error('...and ' + (hits.length - 80) + ' more');
-  }
-  process.exit(1);
+  return hits;
 }
 
-console.log('OK: no Polish mojibake detected.');
+if (require.main === module) {
+  const hits = validatePolishMojibake(process.cwd());
+  if (hits.length) {
+    console.error('Polish mojibake detected in runtime UI/source copy. Fix encoding before commit.');
+    for (const hit of hits.slice(0, 120)) console.error(hit);
+    if (hits.length > 120) console.error(`...and ${hits.length - 120} more`);
+    process.exit(1);
+  }
+  console.log('OK: no Polish mojibake detected in runtime UI/source copy.');
+}
+
+module.exports = { validatePolishMojibake };

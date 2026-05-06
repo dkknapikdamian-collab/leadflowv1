@@ -1,0 +1,132 @@
+{
+  "passed": 3,
+  "failed": 5,
+  "results": [
+    {
+      "label": "build",
+      "command": [
+        "npm.cmd",
+        "run",
+        "build"
+      ],
+      "exitCode": null,
+      "signal": null,
+      "duration": "0.0s",
+      "ok": false,
+      "highlights": [],
+      "log": "test-results/stage16o-focused-final-qa/build.log"
+    },
+    {
+      "label": "verify-closeflow-quiet",
+      "command": [
+        "npm.cmd",
+        "run",
+        "verify:closeflow:quiet"
+      ],
+      "exitCode": null,
+      "signal": null,
+      "duration": "0.0s",
+      "ok": false,
+      "highlights": [],
+      "log": "test-results/stage16o-focused-final-qa/verify-closeflow-quiet.log"
+    },
+    {
+      "label": "test-critical",
+      "command": [
+        "npm.cmd",
+        "run",
+        "test:critical"
+      ],
+      "exitCode": null,
+      "signal": null,
+      "duration": "0.0s",
+      "ok": false,
+      "highlights": [],
+      "log": "test-results/stage16o-focused-final-qa/test-critical.log"
+    },
+    {
+      "label": "ai-assistant-autospeech-and-clear-input",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tests/ai-assistant-autospeech-and-clear-input.test.cjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "duration": "0.1s",
+      "ok": true,
+      "highlights": [
+        "ℹ fail 0"
+      ],
+      "log": "test-results/stage16o-focused-final-qa/ai-assistant-autospeech-and-clear-input.log"
+    },
+    {
+      "label": "ai-assistant-capture-handoff",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tests/ai-assistant-capture-handoff.test.cjs"
+      ],
+      "exitCode": 1,
+      "signal": null,
+      "duration": "0.2s",
+      "ok": false,
+      "highlights": [
+        "✖ Today assistant saves obvious lead commands into AI drafts without model usage (1.1786ms)",
+        "ℹ fail 1",
+        "✖ failing tests:",
+        "✖ Today assistant saves obvious lead commands into AI drafts without model usage (1.1786ms)",
+        "  AssertionError [ERR_ASSERTION]: lead capture must be handled before any remote model call",
+        "    actual: false,",
+        "    expected: true,"
+      ],
+      "log": "test-results/stage16o-focused-final-qa/ai-assistant-capture-handoff.log"
+    },
+    {
+      "label": "ai-assistant-command-center",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tests/ai-assistant-command-center.test.cjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "duration": "0.1s",
+      "ok": true,
+      "highlights": [
+        "ℹ fail 0"
+      ],
+      "log": "test-results/stage16o-focused-final-qa/ai-assistant-command-center.log"
+    },
+    {
+      "label": "billing-ui-polish-and-diagnostics",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tests/billing-ui-polish-and-diagnostics.test.cjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "duration": "0.1s",
+      "ok": true,
+      "highlights": [
+        "ℹ fail 0"
+      ],
+      "log": "test-results/stage16o-focused-final-qa/billing-ui-polish-and-diagnostics.log"
+    },
+    {
+      "label": "final-red-gates-collector",
+      "command": [
+        "npm.cmd",
+        "run",
+        "check:final-qa-red-gates:collect"
+      ],
+      "exitCode": null,
+      "signal": null,
+      "duration": "0.0s",
+      "ok": false,
+      "highlights": [],
+      "log": "test-results/stage16o-focused-final-qa/final-red-gates-collector.log"
+    }
+  ]
+}

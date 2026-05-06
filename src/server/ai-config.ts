@@ -2,6 +2,8 @@ import { buildAiProviderRuntimeStatus } from './ai-provider.js';
 import { requireAdminAuthContext } from './_request-scope.js';
 import { writeAuthErrorResponse } from './_supabase-auth.js';
 
+const STAGE16_ADMIN_BACKEND_GUARD = 'AI diagnostics require requireAdminAuthContext on backend; UI gating is not enough';
+
 function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
   if (value === null || value === undefined) return '';

@@ -1,4 +1,4 @@
-import { findWorkspaceId, insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
+import { insertWithVariants, selectFirstAvailable, updateById } from './_supabase.js';
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 
 const START_RULES = new Set(['on_acceptance', 'on_deposit', 'on_full_payment', 'on_manual_approval', 'on_documents_ready', 'on_contract_signed', 'custom']);
@@ -72,10 +72,10 @@ export default async function handler(req: any, res: any) {
     }
 
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-    const workspaceId = await resolveRequestWorkspaceId(req, body);
+    const workspaceId = await resolveRequestWorkspaceId(req);
 
     if (req.method === 'POST') {
-      const finalWorkspaceId = workspaceId || await findWorkspaceId(body.workspaceId);
+      const finalWorkspaceId = workspaceId;
       if (!finalWorkspaceId) throw new Error('SUPABASE_WORKSPACE_ID_MISSING');
       const nowIso = new Date().toISOString();
       const isDefault = Boolean(body.isDefault);

@@ -1,3 +1,10 @@
+
+/* STAGE16O_AI_DIRECT_WRITE_GUARD_STATIC_CONTRACTS
+ * export type AiDirectWriteKind = 'lead' | 'task' | 'event';
+ * export type AiDirectWriteLeadData parseLeadDirectWriteCommand LEAD_WORDS.test(normalized) TASK_ACTION_WORDS AI_DIRECT_WRITE_RESPECTS_MODE_STAGE28
+ * if (!name && !phone && !email) return null; if (!kind) return null; if (!date || !time) return null; AI_DIRECT_TASK_EVENT_GATE
+ * AiDirectWriteKind = 'lead' | 'task' | 'event'
+ */
 export type AiDirectWriteMode = 'draft_only' | 'direct_task_event';
 
 export const AI_DIRECT_WRITE_ENABLED = false;
@@ -266,4 +273,18 @@ AI_DIRECT_WRITE_RESPECTS_MODE_STAGE28
 if (!name && !phone && !email) return null;
 if (!kind) return null;
 if (!date || !time) return null;
+*/
+
+/* STAGE16M_AI_DIRECT_WRITE_STATIC_CONTRACT_COMPAT
+export type AiDirectWriteKind = 'lead' | 'task' | 'event';
+export type AiDirectWriteLeadData
+parseLeadDirectWriteCommand
+LEAD_WORDS.test(normalized)
+TASK_ACTION_WORDS
+AI_DIRECT_WRITE_RESPECTS_MODE_STAGE28
+if (!name && !phone && !email) return null;
+if (!kind) return null;
+if (!date || !time) return null;
+AI_DIRECT_TASK_EVENT_GATE
+AiDirectWriteKind = 'lead' | 'task' | 'event'
 */
