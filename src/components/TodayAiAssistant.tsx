@@ -1,8 +1,10 @@
+// STAGE8_AI_ASSISTANT_UI_CONTRACT_CLIENT_V1
 // STAGE3_AI_APPLICATION_BRAIN_V1
 // AI_DRAFT_CONFIRM_BRIDGE_STAGE4
 // Assistant UI. It calls /api/assistant/query and saves write intents as Supabase-backed review drafts.
 
 import React, { useMemo, useState } from "react";
+import { askAssistantQueryApi, type AssistantQueryClientResult } from "../lib/assistant-query-client";
 import { assistantDraftToAiLeadDraftInput } from "../lib/ai-draft-assistant-bridge";
 import { saveAiLeadDraftAsync } from "../lib/ai-drafts";
 
@@ -17,21 +19,7 @@ type TodayAiAssistantProps = {
   compact?: boolean;
 };
 
-type AssistantResult = {
-  mode: "read" | "draft" | "unknown";
-  intent?: "read" | "draft" | "unknown";
-  answer: string;
-  items?: Array<{
-    id: string;
-    kind: string;
-    title: string;
-    scheduledAt?: string | null;
-    startAt?: string | null;
-    phone?: string | null;
-    email?: string | null;
-  }>;
-  draft?: any | null;
-};
+type AssistantResult = AssistantQueryClientResult;
 
 export default function TodayAiAssistant(props: TodayAiAssistantProps) {
   const [query, setQuery] = useState("");
@@ -61,14 +49,7 @@ export default function TodayAiAssistant(props: TodayAiAssistantProps) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/assistant/query", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        credentials: "same-origin",
-        body: JSON.stringify({ query: text, timezone: "Europe/Warsaw", snapshot }),
-      });
-      const data = (await response.json()) as AssistantResult;
-      if (!response.ok) throw new Error(data?.answer || "Asystent nie odpowiedział.");
+      const data = await askAssistantQueryApi({ query: text, timezone: "Europe/Warsaw", snapshot });
 
       if (data.mode === "draft" && data.draft) {
         const bridgeInput = assistantDraftToAiLeadDraftInput(data.draft);
@@ -85,7 +66,7 @@ export default function TodayAiAssistant(props: TodayAiAssistantProps) {
   }
 
   return (
-    <section className="ai-assistant-card" data-stage="STAGE3_AI_APPLICATION_BRAIN_V1" data-stage4="AI_DRAFT_CONFIRM_BRIDGE_STAGE4">
+    <section className="ai-assistant-card" data-stage="STAGE3_AI_APPLICATION_BRAIN_V1" data-stage4="AI_DRAFT_CONFIRM_BRIDGE_STAGE4" data-stage8="STAGE8_AI_ASSISTANT_UI_CONTRACT_CLIENT_V1">
       <div className="ai-assistant-card__header">
         <div>
           <strong>Asystent AI</strong>
@@ -110,6 +91,12 @@ export default function TodayAiAssistant(props: TodayAiAssistantProps) {
       {result ? (
         <div className="ai-assistant-card__answer">
           <p>{result.answer}</p>
+          {result.meta?.dataPolicy === "app_data_only" ? (
+            <small data-assistant-data-policy="app_data_only">Odpowiedź tylko z danych aplikacji.</small>
+          ) : null}
+          {result.meta?.noData ? (
+            <small data-assistant-no-data="true">Brak danych aplikacji do sprawdzenia.</small>
+          ) : null}
           {result.mode === "draft" ? <strong>Szkic zapisany do sprawdzenia. Finalny rekord nie został utworzony.</strong> : null}
           {Array.isArray(result.items) && result.items.length ? (
             <ul>
