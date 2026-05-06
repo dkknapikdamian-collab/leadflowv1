@@ -1,856 +1,132 @@
-import { useEffect, useRef, useState } from 'react';
-import { Bot, Loader2, Mic, MicOff, Send, Sparkles } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { toast } from 'sonner';
+// STAGE3_AI_APPLICATION_BRAIN_V1
+// AI_DRAFT_CONFIRM_BRIDGE_STAGE4
+// Assistant UI. It calls /api/assistant/query and saves write intents as Supabase-backed review drafts.
 
-import { askTodayAiAssistant, type TodayAiAssistantAnswer } from '../lib/ai-assistant';
-import { saveAiLeadDraftAsync } from '../lib/ai-drafts';
-import {
-  AI_COMMAND_MAX_LENGTH,
-  buildAiUsageKey,
-  getAiUsageSnapshot,
-  registerAiUsage,
-  type AiUsageSnapshot,
-} from '../lib/ai-usage-guard';
-import { useWorkspace } from '../hooks/useWorkspace';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import { Textarea } from './ui/textarea';
-
-/*
-AI assistant stable source markers for release tests:
-STAGE35_AI_ASSISTANT_COMPACT_UI
-Dodaj leada: Pan Marek, 516 439 989, Facebook
-Co mam dziś do zrobienia?
-Zapisz zadanie jutro o 10 oddzwonić do klienta
-Max {AI_COMMAND_MAX_LENGTH} znaków
-disabled={loading}
-Szkic zapisany w Szkicach AI
-*/
-
-type SpeechRecognitionLike = {
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  onresult: ((event: any) => void) | null;
-  onerror: ((event: any) => void) | null;
-  onend: (() => void) | null;
-  start: () => void;
-  stop: () => void;
-  abort?: () => void;
-};
-
-type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+import React, { useMemo, useState } from "react";
+import { assistantDraftToAiLeadDraftInput } from "../lib/ai-draft-assistant-bridge";
+import { saveAiLeadDraftAsync } from "../lib/ai-drafts";
 
 type TodayAiAssistantProps = {
-  leads: Record<string, unknown>[];
-  tasks: Record<string, unknown>[];
-  events: Record<string, unknown>[];
-  cases: Record<string, unknown>[];
-  clients?: Record<string, unknown>[];
-  drafts?: Record<string, unknown>[];
-  operatorSnapshot?: Record<string, unknown>;
-  summary?: Record<string, unknown>;
-  relations?: Record<string, unknown>;
-  searchIndex?: Record<string, unknown>[];
-  disabled?: boolean;
-  onCaptureRequest?: (rawText: string) => void;
+  leads?: unknown[];
+  clients?: unknown[];
+  cases?: unknown[];
+  tasks?: unknown[];
+  events?: unknown[];
+  activities?: unknown[];
+  drafts?: unknown[];
+  compact?: boolean;
 };
 
-const CLIENT_OUT_OF_SCOPE_PATTERNS = [
-  /\b(pogoda|pogode|temperatura|deszcz|snieg|wiatr)\b/u,
-  /\b(kosmos|wszechswiat|planeta|galaktyka|czarna dziura)\b/u,
-  /\b(wiersz|poemat|opowiadanie|bajka|zart|dowcip|piosenka)\b/u,
-  /\b(przepis|ugotuj|obiad|kolacja|sniadanie|ciasto)\b/u,
-  /\b(polityka|wybory|wojna|religia|historia)\b/u,
-];
+type AssistantResult = {
+  mode: "read" | "draft" | "unknown";
+  intent?: "read" | "draft" | "unknown";
+  answer: string;
+  items?: Array<{
+    id: string;
+    kind: string;
+    title: string;
+    scheduledAt?: string | null;
+    startAt?: string | null;
+    phone?: string | null;
+    email?: string | null;
+  }>;
+  draft?: any | null;
+};
 
-const CLIENT_LEAD_CAPTURE_PATTERNS = [
-  // AI_APP_CONTEXT_OPERATOR_STAGE26: komendy zapisu obsługuje backendowy operator, nie lokalny lead-only guard.
-  /(?!)/u,
-];
-
-function normalizeCommandForGuard(value: string) {
-  return value
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function normalizeSpeechText(value: string) {
-  return normalizeCommandForGuard(value)
-    .replace(/[^a-z0-9ąćęłńóśźż\s:.-]/giu, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function mergeSpeechTranscript(previous: string, addition: string) {
-  const base = previous.trim();
-  const next = addition.trim();
-
-  if (!next) return base;
-  if (!base) return next;
-
-  const baseNorm = normalizeSpeechText(base);
-  const nextNorm = normalizeSpeechText(next);
-
-  if (!nextNorm) return base;
-  if (baseNorm === nextNorm) return base;
-  if (nextNorm.startsWith(baseNorm + ' ')) return next;
-  if (baseNorm.startsWith(nextNorm + ' ')) return base;
-  if (baseNorm.endsWith(' ' + nextNorm) || baseNorm.includes(nextNorm)) return base;
-
-  const baseWords = base.split(/\s+/).filter(Boolean);
-  const nextWords = next.split(/\s+/).filter(Boolean);
-  const baseNormWords = baseNorm.split(/\s+/).filter(Boolean);
-  const nextNormWords = nextNorm.split(/\s+/).filter(Boolean);
-  const sharedWords = nextNormWords.filter((word) => baseNormWords.includes(word)).length;
-  if (nextNormWords.length > 0 && sharedWords / Math.max(nextNormWords.length, 1) >= 0.8) return base;
-
-  const maxOverlap = Math.min(baseNormWords.length, nextNormWords.length);
-
-  for (let overlap = maxOverlap; overlap >= 1; overlap -= 1) {
-    const baseTail = baseNormWords.slice(baseNormWords.length - overlap).join(' ');
-    const nextHead = nextNormWords.slice(0, overlap).join(' ');
-    if (baseTail === nextHead) {
-      return [...baseWords, ...nextWords.slice(overlap)].join(' ').trim();
-    }
-  }
-
-  return `${base} ${next}`.replace(/\s+/g, ' ').trim();
-}
-
-function isClientOutOfScopeCommand(value: string) {
-  const normalized = normalizeCommandForGuard(value);
-  return CLIENT_OUT_OF_SCOPE_PATTERNS.some((pattern) => pattern.test(normalized));
-}
-
-function isClientLeadCaptureCommand(value: string) {
-  const normalized = normalizeCommandForGuard(value);
-  return CLIENT_LEAD_CAPTURE_PATTERNS.some((pattern) => pattern.test(normalized));
-}
-
-function buildClientBlockedAnswer(rawText: string, summary?: string): TodayAiAssistantAnswer {
-  return {
-    ok: true,
-    scope: 'assistant_read_or_draft_only',
-    provider: 'client_guard',
-    noAutoWrite: true,
-    intent: 'blocked_out_of_scope',
-    title: 'Poza zakresem aplikacji',
-    summary: summary || 'Asystent działa tylko w obrębie CloseFlow: leady, zadania, wydarzenia, sprawy i plan dnia. Takie pytanie nie idzie do AI, żeby nie zużywać limitów.',
-    rawText,
-    items: [],
-    warnings: ['Twarda blokada kosztów: polecenie nie zostało wysłane do modelu.'],
-    hardBlock: true,
-    allowedScope: [
-      'tworzenie szkicu z podyktowanej notatki',
-      'plan dnia z zadań i wydarzeń w aplikacji',
-      'sprawdzenie kolejnego kroku dla istniejącego leada',
-      'sprawdzenie powiązanych zadań, wydarzeń i spraw',
-    ],
-  };
-}
-
-type AiDraftCommandType = 'lead' | 'task' | 'event' | 'note';
-
-function getAiDraftTypeLabel(type: AiDraftCommandType) {
-  if (type === 'task') return 'zadania';
-  if (type === 'event') return 'wydarzenia';
-  if (type === 'note') return 'notatki';
-  return 'leada';
-}
-
-function buildClientLeadCaptureDraftAnswer(rawText: string, type: AiDraftCommandType = 'lead'): TodayAiAssistantAnswer {
-  const typeLabel = getAiDraftTypeLabel(type);
-  return {
-    ok: true,
-    scope: 'assistant_read_or_draft_only',
-    provider: 'client_draft_only_guard',
-    noAutoWrite: true,
-    intent: 'lead_capture',
-    title: 'Szkic AI zapisany do sprawdzenia',
-    summary:
-      'AI przygotowuje szkic. Ty zatwierdzasz zapis. Utworzyłem szkic ' + typeLabel + ', ale nie zapisałem finalnego rekordu.',
-    rawText,
-    suggestedCaptureText: rawText,
-    draft: {
-      type,
-      rawText,
-      parsedDraft: { type, rawText },
-      status: 'draft',
-      source: 'assistant_operator',
-    },
-    items: [
-      {
-        label: 'Otwórz Szkice AI',
-        detail: 'Tam sprawdzisz pola i dopiero ręcznie zatwierdzisz finalny zapis.',
-        href: '/ai-drafts',
-        priority: 'high',
-      },
-    ],
-    warnings: ['Bezpieczny tryb: AI utworzyło tylko szkic. Finalny lead, zadanie, wydarzenie albo notatka wymaga zatwierdzenia.'],
-  };
-}
-
-const AI_WRITE_COMMAND_WORDS = /\b(zapisz|dodaj|utworz|utwórz|utworzmy|utwórzmy|stworz|stwórz|wrzuc|wrzuć|notuj|zanotuj|zapamietaj|zapamiętaj|mam leada|nowy lead|nowego leada|nowy kontakt)\b/u;
-const AI_LEAD_DRAFT_WORDS = /\b(lead|leada|lida|kontakt|kontaktu|klient|klienta|mam leada|nowy lead|nowego leada|nowy kontakt)\b/u;
-const AI_TASK_DRAFT_WORDS = /\b(zadanie|task|todo|przypomnienie|followup|follow-up|oddzwonic|oddzwonić|zadzwonic|zadzwonić|wyslac|wysłać|napisac|napisać|sprawdzic|sprawdzić|zrobic|zrobić)\b/u;
-const AI_EVENT_DRAFT_WORDS = /\b(wydarzenie|spotkanie|termin|wizyta|rozmowa|call|prezentacja)\b/u;
-const AI_NOTE_DRAFT_WORDS = /\b(notatka|notatke|notatkę|notuj|zanotuj|zapamietaj|zapamiętaj)\b/u;
-
-function getAiDraftTypeForWriteCommand(value: string): AiDraftCommandType | null {
-  const normalized = normalizeCommandForGuard(value);
-  if (!normalized || !AI_WRITE_COMMAND_WORDS.test(normalized)) return null;
-  if (AI_EVENT_DRAFT_WORDS.test(normalized)) return 'event';
-  if (AI_TASK_DRAFT_WORDS.test(normalized)) return 'task';
-  if (AI_NOTE_DRAFT_WORDS.test(normalized)) return 'note';
-  if (AI_LEAD_DRAFT_WORDS.test(normalized)) return 'lead';
-  return 'note';
-}
-
-const EXAMPLES = [
-  'Dodaj leada: Pan Marek, 516 439 989, Facebook',
-  'Co mam dziś do zrobienia?',
-  'Zapisz zadanie jutro o 10 oddzwonić do klienta',
-];
-
-
-function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {
-  if (typeof window === 'undefined') return null;
-  const browserWindow = window as any;
-  return browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition || null;
-}
-
-function joinTranscript(previous: string, addition: string) {
-  const base = previous.trim();
-  const next = addition.trim();
-  if (!next) return base;
-  return base ? `${base} ${next}` : next;
-}
-
-
-function shouldRegisterAiUsage(answer: TodayAiAssistantAnswer) {
-  // AI_OPERATOR_QUALITY_STAGE06_COST_GUARD: odpowiedzi policzone z danych aplikacji nie zużywają dziennego limitu AI.
-  const provider = String(answer.provider || '').toLowerCase();
-  const costGuard = String((answer as any).costGuard || '').toLowerCase();
-
-  if (answer.hardBlock) return false;
-  if (provider.includes('client_guard')) return false;
-  if (provider.includes('client_lead_capture_guard')) return false;
-  if (provider === 'rules' || costGuard === 'local_rules') return false;
-  return true;
-}
-
-function intentLabel(intent: TodayAiAssistantAnswer['intent']) {
-  if (intent === 'today_briefing') return 'Plan dnia';
-  if (intent === 'lead_lookup') return 'Dane aplikacji';
-  if (intent === 'lead_capture') return 'Szkic AI';
-  if (intent === 'blocked_out_of_scope') return 'Poza zakresem';
-  return 'Pytanie';
-}
-
-function priorityClassName(priority?: string) {
-  if (priority === 'high') return 'border-red-200 bg-red-50 text-red-700';
-  if (priority === 'low') return 'border-slate-200 bg-slate-50 text-slate-600';
-  return 'border-blue-200 bg-blue-50 text-blue-700';
-}
-
-function getAiDraftPayloadFromAnswer(answer: TodayAiAssistantAnswer | null) {
-  const draft = (answer as any)?.draft;
-  const type = draft?.type === 'task' || draft?.type === 'event' || draft?.type === 'note' || draft?.type === 'lead' ? draft.type : 'lead';
-  const parsedDraft = draft?.parsedDraft && typeof draft.parsedDraft === 'object' ? draft.parsedDraft as Record<string, unknown> : draft && typeof draft === 'object' ? draft as Record<string, unknown> : null;
-  return { type, parsedDraft };
-}
-
-export default function TodayAiAssistant({ leads, tasks, events, cases, clients = [], drafts = [], operatorSnapshot = {}, summary = {}, relations = {}, searchIndex = [], disabled, onCaptureRequest }: TodayAiAssistantProps) {
-  const [open, setOpen] = useState(false);
-  const [rawText, setRawText] = useState('');
-  const [answer, setAnswer] = useState<TodayAiAssistantAnswer | null>(null);
+export default function TodayAiAssistant(props: TodayAiAssistantProps) {
+  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [listening, setListening] = useState(false);
-  const [interimText, setInterimText] = useState('');
-  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
-  const autoSpeechStartedRef = useRef(false);
-  const pendingAutoAskTimerRef = useRef<number | null>(null);
-  const lastAutoSubmittedRef = useRef('');
-  const speechSupported = typeof window !== 'undefined' && Boolean(getSpeechRecognitionConstructor());
-  const { workspace, profile, isAppOwner } = useWorkspace();
-  const aiUsageAdminExempt = Boolean(isAppOwner);
-  const aiUsageKey = buildAiUsageKey(workspace?.id, profile?.id);
-  const [usage, setUsage] = useState<AiUsageSnapshot>(() => getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin: aiUsageAdminExempt }));
-  useEffect(() => {
-    setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin: aiUsageAdminExempt }));
-  }, [aiUsageKey, open, aiUsageAdminExempt]);
+  const [result, setResult] = useState<AssistantResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const clearAutoAskTimer = () => {
-    if (pendingAutoAskTimerRef.current !== null) {
-      window.clearTimeout(pendingAutoAskTimerRef.current);
-      pendingAutoAskTimerRef.current = null;
-    }
-  };
+  const snapshot = useMemo(
+    () => ({
+      leads: props.leads || [],
+      clients: props.clients || [],
+      cases: props.cases || [],
+      tasks: props.tasks || [],
+      events: props.events || [],
+      activities: props.activities || [],
+      drafts: props.drafts || [],
+    }),
+    [props.leads, props.clients, props.cases, props.tasks, props.events, props.activities, props.drafts],
+  );
 
-  const stopSpeech = () => {
-    clearAutoAskTimer();
-    const recognition = recognitionRef.current;
-    recognitionRef.current = null;
-    setListening(false);
-    setInterimText('');
-
-    if (!recognition) return;
-    try {
-      recognition.stop();
-    } catch {
-      try {
-        recognition.abort?.();
-      } catch {
-        // Some browsers throw when speech recognition is already stopped.
-      }
-    }
-  };
-
-  const handleAsk = async (overrideText?: string, options?: { autoSpeech?: boolean }) => {
-    clearAutoAskTimer();
-    const command = String(overrideText ?? rawText).trim();
-    if (!command) return toast.error('Powiedz albo wpisz polecenie dla asystenta');
-
-    if (options?.autoSpeech && lastAutoSubmittedRef.current === command) {
+  async function askAssistant() {
+    const text = query.trim();
+    if (!text) {
+      setError("Wpisz pytanie albo komendę.");
       return;
     }
-    if (options?.autoSpeech) {
-      lastAutoSubmittedRef.current = command;
-    }
-
-    const latestUsage = getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin: aiUsageAdminExempt });
-    setUsage(latestUsage);
-
-    if (command.length > AI_COMMAND_MAX_LENGTH) {
-      const message = `Polecenie jest za długie. Skróć je do maksymalnie ${AI_COMMAND_MAX_LENGTH} znaków.`;
-      setAnswer(buildClientBlockedAnswer(command, message));
-      toast.error(message);
-      return;
-    }
-
-    const draftCommandType = getAiDraftTypeForWriteCommand(command);
-    if (draftCommandType || isClientLeadCaptureCommand(command)) {
-      const type = draftCommandType || 'lead';
-      setLoading(true);
-      try {
-        await saveAiLeadDraftAsync({ rawText: command, source: 'today_assistant', type, parsedDraft: { type, rawText: command } });
-        setAnswer(buildClientLeadCaptureDraftAnswer(command, type));
-        // AI_ASSISTANT_CLEAR_INPUT_AFTER_RESULT
-        setRawText('');
-        toast.success('Szkic zapisany w Supabase');
-      } catch (error: any) {
-        const message = 'Nie udało się zapisać szkicu AI w Supabase. Spróbuj ponownie za chwilę.';
-        setAnswer(buildClientBlockedAnswer(command, message));
-        toast.error(message);
-      } finally {
-        setLoading(false);
-      }
-      return;
-    }
-
-    if (!latestUsage.canUse && !latestUsage.adminExempt) {
-      const message = `Dzisiejszy limit AI został wykorzystany: ${latestUsage.used}/${latestUsage.limit}. Wróć jutro albo użyj zwykłych formularzy.`;
-      setAnswer(buildClientBlockedAnswer(command, message));
-      toast.error('Dzisiejszy limit AI został wykorzystany');
-      return;
-    }
-
-    if (isClientOutOfScopeCommand(command)) {
-      const blocked = buildClientBlockedAnswer(command);
-      setAnswer(blocked);
-      toast.error('Poza zakresem aplikacji');
-      return;
-    }
-
     setLoading(true);
+    setError(null);
     try {
-      
-/* PHASE0_AI_ASSISTANT_LOCAL_CAPTURE_ORDER_GUARD
-saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
-saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })
-buildClientLeadCaptureDraftAnswer(command)
-Szkic leada zapisany w Szkicach AI
-href: '/ai-drafts'
-client_lead_capture_guard
-disabled={loading}
-*/
-
-/* PHASE0_AI_ASSISTANT_PRE_MODEL_CAPTURE_FINAL4
-saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
-saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })
-buildClientLeadCaptureDraftAnswer(command)
-Szkic leada zapisany w Szkicach AI
-href: '/ai-drafts'
-client_lead_capture_guard
-disabled={loading}
-*/
-const result = await askTodayAiAssistant({
-        rawText: command,
-        context: {
-          leads,
-          tasks,
-          events,
-          cases,
-          clients,
-          drafts,
-          // AI_OPERATOR_SNAPSHOT_STAGE02_PAYLOAD: snapshot aplikacji idzie razem z pytaniem, ale nadal bez automatycznego zapisu.
-          operatorSnapshot,
-          summary,
-          relations,
-          searchIndex,
-          now: new Date().toISOString(),
-        },
+      const response = await fetch("/api/assistant/query", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ query: text, timezone: "Europe/Warsaw", snapshot }),
       });
-      setAnswer(result);
-      setRawText('');
-      if (result.intent === 'lead_capture' && !result.hardBlock) {
-        const captureText = String(result.suggestedCaptureText || result.rawText || command || '').trim();
-        if (captureText) {
-          const draftPayload = getAiDraftPayloadFromAnswer(result);
-          try {
-            await saveAiLeadDraftAsync({ rawText: captureText, source: 'today_assistant', type: draftPayload.type, parsedDraft: draftPayload.parsedDraft });
-            toast.success('Szkic zapisany w Supabase');
-          } catch {
-            toast.error('Nie udało się zapisać szkicu AI w Supabase.');
-          }
-        }
+      const data = (await response.json()) as AssistantResult;
+      if (!response.ok) throw new Error(data?.answer || "Asystent nie odpowiedział.");
+
+      if (data.mode === "draft" && data.draft) {
+        const bridgeInput = assistantDraftToAiLeadDraftInput(data.draft);
+        await saveAiLeadDraftAsync(bridgeInput);
+        window.dispatchEvent(new CustomEvent("closeflow:ai-draft-created", { detail: bridgeInput }));
       }
-      if (shouldRegisterAiUsage(result)) {
-        const nextUsage = registerAiUsage(aiUsageKey, undefined, { isAdmin: aiUsageAdminExempt });
-        setUsage(nextUsage);
-      } else {
-        setUsage(getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin: aiUsageAdminExempt }));
-      }
-      toast.success(result.costGuard === 'local_rules' || result.provider === 'rules' ? 'Asystent sprawdził dane aplikacji' : 'Asystent przygotował odpowiedź');
-    } catch (error: any) {
-      toast.error(`Błąd asystenta: ${error?.message || 'REQUEST_FAILED'}`);
+
+      setResult(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nie udało się zapytać asystenta.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const scheduleAutoAsk = (text: string) => {
-    const command = text.trim();
-    if (!command || loading) return;
-    clearAutoAskTimer();
-    pendingAutoAskTimerRef.current = window.setTimeout(() => {
-      pendingAutoAskTimerRef.current = null;
-      void handleAsk(command, { autoSpeech: true });
-    }, 1300);
-  };
-
-  const handleSaveCaptureDraft = async () => {
-    const text = String(answer?.suggestedCaptureText || answer?.rawText || rawText || '').trim();
-    if (!text) {
-      toast.error('Brak treści do zapisania w Szkicach AI');
-      return;
-    }
-
-    try {
-      await saveAiLeadDraftAsync({ rawText: text, source: 'today_assistant' });
-      toast.success('Szkic zapisany w Supabase');
-    } catch {
-      toast.error('Nie udało się zapisać szkicu AI w Supabase.');
-    }
-  };
-
-  const handleTransferCapture = () => {
-    const text = String(answer?.suggestedCaptureText || answer?.rawText || rawText || '').trim();
-    if (!text) {
-      toast.error('Brak treści do przeniesienia do Szybkiego szkicu');
-      return;
-    }
-
-    if (!onCaptureRequest) {
-      toast.error('Szybki szkic nie jest dostępny w tym widoku');
-      return;
-    }
-
-    onCaptureRequest(text);
-    setOpen(false);
-    toast.success('Przeniesiono do Szybkiego szkicu');
-  };
-
-  const handleToggleSpeech = () => {
-    if (listening) {
-      stopSpeech();
-      return;
-    }
-
-    const RecognitionConstructor = getSpeechRecognitionConstructor();
-    if (!RecognitionConstructor) {
-      toast.error('Dyktowanie nie jest dostępne w tej przeglądarce. Możesz użyć mikrofonu z klawiatury telefonu.');
-      return;
-    }
-
-    try {
-      // AI_SPEECH_START_CLEARS_STALE_TEXT_V109: nowa sesja dyktowania nie dziedziczy starej treści z pola ani z poprzedniej odpowiedzi.
-      setRawText('');
-      setInterimText('');
-      setAnswer(null);
-      lastAutoSubmittedRef.current = '';
-      const recognition = new RecognitionConstructor();
-      recognition.lang = 'pl-PL';
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.onresult = (event: any) => {
-        let finalTranscript = '';
-        let interimTranscript = '';
-
-        for (let index = event.resultIndex || 0; index < event.results.length; index += 1) {
-          const result = event.results[index];
-          const transcript = String(result?.[0]?.transcript || '').trim();
-          if (!transcript) continue;
-          if (result?.isFinal) {
-            finalTranscript = joinTranscript(finalTranscript, transcript);
-          } else {
-            interimTranscript = joinTranscript(interimTranscript, transcript);
-          }
-        }
-
-        if (finalTranscript) {
-          setRawText((current) => {
-            const merged = mergeSpeechTranscript(current, finalTranscript);
-            scheduleAutoAsk(merged);
-            return merged;
-          });
-        }
-        setInterimText(interimTranscript);
-      };
-      recognition.onerror = () => {
-        toast.error('Nie udało się dokończyć dyktowania. Sprawdź uprawnienia mikrofonu.');
-        stopSpeech();
-      };
-      recognition.onend = () => {
-        recognitionRef.current = null;
-        setListening(false);
-        setInterimText('');
-      };
-      recognitionRef.current = recognition;
-      recognition.start();
-      setListening(true);
-      toast.success('Dyktowanie włączone');
-    } catch {
-      toast.error('Nie udało się uruchomić dyktowania.');
-      stopSpeech();
-    }
-  };
-
-  const handleOpenChange = (nextOpen: boolean) => {
-    setOpen(nextOpen);
-
-    if (nextOpen) {
-      lastAutoSubmittedRef.current = '';
-      if (speechSupported && !autoSpeechStartedRef.current) {
-        autoSpeechStartedRef.current = true;
-        window.setTimeout(() => {
-          if (autoSpeechStartedRef.current && !recognitionRef.current) {
-            handleToggleSpeech();
-          }
-        }, 900);
-      }
-      return;
-    }
-
-    autoSpeechStartedRef.current = false;
-    stopSpeech();
-  };
+  }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button type="button" variant="outline" className="rounded-xl bg-white" disabled={disabled} data-ai-today-assistant-trigger="true">
-          <Bot className="mr-2 h-4 w-4" />
-          Asystent AI
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-blue-600" />
-            Asystent pracy
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-4" data-stage35-ai-assistant-compact-ui="true">
-          <div data-ai-safety-gates="draft-only" data-stage35-ai-mode-switch="false" className="rounded-2xl border border-slate-200 bg-white p-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-bold text-slate-900">Bramki bezpieczeństwa AI</p>
-                <p className="mt-1 text-xs leading-relaxed text-slate-600">AI przygotowuje szkic. Ty zatwierdzasz zapis.</p>
-              </div>
-              <Badge variant="outline">Tylko Szkice AI</Badge>
-            </div>
-            <p className="mt-3 text-xs text-slate-500">Komendy „zapisz”, „dodaj”, „nowy lead” albo „mam leada” tworzą szkic. Pytania bez komendy zapisu tylko czytają dane aplikacji.</p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {EXAMPLES.map((example) => (
-              <Button key={example} type="button" variant="outline" size="sm" onClick={() => setRawText(example)}>
-                {example}
-              </Button>
-            ))}
-          </div>
-
-          <div className="space-y-2">
-            <Textarea
-              value={rawText}
-              onChange={(event) => setRawText(event.target.value)}
-              placeholder="Zapytaj o dane aplikacji albo powiedz: Zapisz mi zadanie na 28.05 12:00 rozgraniczenie"
-              className="min-h-28"
-            />
-            {interimText ? (
-              <p className="rounded-lg bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">Rozpoznaję: {interimText}</p>
-            ) : null}
-            {!speechSupported ? (
-              <p className="text-xs text-slate-500">Dyktowanie w przeglądarce może być niedostępne. Na telefonie możesz użyć mikrofonu z klawiatury systemowej.</p>
-            ) : null}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2" data-stage35-ai-assistant-actions="true">
-            <Button type="button" onClick={() => void handleAsk()} disabled={loading}>
-              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
-              Zapytaj asystenta
-            </Button>
-            <Button type="button" variant="outline" onClick={handleToggleSpeech}>
-              {listening ? <MicOff className="mr-2 h-4 w-4" /> : <Mic className="mr-2 h-4 w-4" />}
-              {listening ? 'Zatrzymaj dyktowanie' : 'Dyktuj'}
-            </Button>
-            <Badge variant="outline">Czyta aplikację</Badge>
-            <Badge variant="outline">Pełny zakres aplikacji</Badge>
-            <Badge variant="outline">Zapisz = szkic</Badge>
-            <Badge variant="outline">Bez zapisz = szukanie</Badge>
-            <Badge variant="outline">Dane aplikacji bez limitu</Badge>
-            <Badge variant="outline">Snapshot aplikacji</Badge>
-            <Badge variant="outline" data-ai-usage-badge="today-assistant">{usage.adminExempt ? 'Admin AI: bez limitu' : 'Limit AI: ' + usage.used + '/' + usage.limit}</Badge>
-            <Badge variant="outline">Max {AI_COMMAND_MAX_LENGTH} znaków</Badge>
-          </div>
-
-          {!usage.canUse && !usage.adminExempt ? (
-            <div data-ai-usage-warning="today-assistant" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
-              Dzisiejszy limit AI został wykorzystany. Formularze nadal działają ręcznie, a komendy „zapisz” mogą trafić do Szkiców AI bez użycia modelu.
-            </div>
-          ) : !usage.adminExempt && usage.remaining <= 5 ? (
-            <div data-ai-usage-warning="today-assistant" className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
-              Zostało {usage.remaining} zapytań AI na dziś. Używaj asystenta do konkretnych akcji w aplikacji.
-            </div>
-          ) : null}
-
-          {answer ? (
-            <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="secondary">{intentLabel(answer.intent)}</Badge>
-                {answer.hardBlock ? <Badge variant="destructive">Blokada zakresu</Badge> : null}
-              </div>
-
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">{answer.title}</h3>
-                <p className="mt-1 text-sm text-slate-600">{answer.summary}</p>
-                {answer.hardBlock ? (
-                  <p className="mt-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">Asystent nie odpowiada na pytania spoza aplikacji, żeby nie zużywać limitów AI poza obsługą leadów i pracy dziennej.</p>
-                ) : null}
-              </div>
-
-              {answer.warnings.length ? (
-                <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
-                  {answer.warnings.map((warning) => <p key={warning}>• {warning}</p>)}
-                </div>
-              ) : null}
-
-              {answer.items.length ? (
-                <div className="space-y-2">
-                  {answer.items.map((item, index) => {
-                    const content = (
-                      <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-semibold text-slate-900">{index + 1}. {item.label}</span>
-                          <span className={`rounded-full border px-2 py-0.5 text-[11px] font-semibold ${priorityClassName(item.priority)}`}>
-                            {item.priority || 'medium'}
-                          </span>
-                        </div>
-                        {item.detail ? <p className="mt-1 text-sm text-slate-600">{item.detail}</p> : null}
-                      </div>
-                    );
-
-                    return item.href ? (
-                      <Link key={`${item.label}:${index}`} to={item.href} onClick={() => setOpen(false)} className="block">
-                        {content}
-                      </Link>
-                    ) : (
-                      <div key={`${item.label}:${index}`}>{content}</div>
-                    );
-                  })}
-                </div>
-              ) : null}
-
-              {answer.intent === 'lead_capture' ? (
-                <div className="space-y-2 rounded-xl border border-blue-100 bg-blue-50/70 p-3">
-                  <p className="text-xs text-blue-900">
-                    Jeżeli to szkic z asystenta, znajdziesz go już w „Szkicach AI”. Tam AI przepisze pola roboczo, a zapis zrobisz dopiero po sprawdzeniu.
-                  </p>
-                  <Button type="button" size="sm" variant="outline" onClick={handleSaveCaptureDraft} data-ai-assistant-save-draft="true">
-                    Zapisz w szkicach AI
-                  </Button>
-                  {onCaptureRequest ? (
-                    <Button type="button" size="sm" onClick={handleTransferCapture} data-ai-assistant-open-capture="true">
-                      Otwórz w Szybkim szkicu
-                    </Button>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
+    <section className="ai-assistant-card" data-stage="STAGE3_AI_APPLICATION_BRAIN_V1" data-stage4="AI_DRAFT_CONFIRM_BRIDGE_STAGE4">
+      <div className="ai-assistant-card__header">
+        <div>
+          <strong>Asystent AI</strong>
+          <p>Czyta dane aplikacji. Komendy zapisu tworzą tylko szkice do sprawdzenia.</p>
+        </div>
+      </div>
+      <div className="ai-assistant-card__inputRow">
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) askAssistant();
+          }}
+          placeholder="Np. Co mam jutro? / Znajdź numer do Marka / Zapisz zadanie jutro 12 rozgraniczenie"
+          aria-label="Pytanie do asystenta AI"
+        />
+        <button type="button" onClick={askAssistant} disabled={loading}>
+          {loading ? "Sprawdzam..." : "Zapytaj"}
+        </button>
+      </div>
+      {error ? <p className="ai-assistant-card__error">{error}</p> : null}
+      {result ? (
+        <div className="ai-assistant-card__answer">
+          <p>{result.answer}</p>
+          {result.mode === "draft" ? <strong>Szkic zapisany do sprawdzenia. Finalny rekord nie został utworzony.</strong> : null}
+          {Array.isArray(result.items) && result.items.length ? (
+            <ul>
+              {result.items.slice(0, 5).map((item) => (
+                <li key={`${item.kind}-${item.id}`}>
+                  <span>{item.title}</span>
+                  {item.phone ? <small>tel. {item.phone}</small> : null}
+                  {item.email ? <small>{item.email}</small> : null}
+                  {item.startAt || item.scheduledAt ? <small>{item.startAt || item.scheduledAt}</small> : null}
+                </li>
+              ))}
+            </ul>
           ) : null}
         </div>
-      </DialogContent>
-    </Dialog>
+      ) : null}
+    </section>
   );
 }
 
-/* PHASE0_TODAY_AI_ASSISTANT_ROUND2_GUARD */
-/*
-STAGE35_AI_ASSISTANT_COMPACT_UI
-data-stage35-ai-assistant-compact-ui
-data-stage35-ai-mode-switch
-data-stage35-ai-assistant-actions
-Dodaj leada: Pan Marek, 516 439 989, Facebook
-Co mam dziś do zrobienia?
-Zapisz zadanie jutro o 10 oddzwonić do klienta
-Zapytaj asystenta
-Dyktuj
-Max {AI_COMMAND_MAX_LENGTH} znaków
-onCaptureRequest
-saveAiLeadDraft
-AI_DIRECT_WRITE_MODE_STATE
-parseAiDirectWriteCommand
-direct_task_event
-directWriteMode === 'direct_task_event'
-insertTaskToSupabase
-insertEventToSupabase
-createLeadFromAiDraftApprovalInSupabase
-saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
-source: 'today_assistant'
-CLIENT_LEAD_CAPTURE_PATTERNS
-isClientLeadCaptureCommand(command)
-buildClientLeadCaptureDraftAnswer(command)
-Szkic leada zapisany w Szkicach AI
-href: '/ai-drafts'
-client_lead_capture_guard
-disabled={loading}
-const result = await askTodayAiAssistant
-Asystent AI
-SpeechRecognition
-webkitSpeechRecognition
-AI_DIRECT_WRITE_FALLBACK_TO_DRAFT
-Bramki bezpieczeństwa AI
-Wszystko przez Szkice AI
-Jasne rekordy od razu
-Pełny zakres aplikacji
-Admin AI: bez limitu
-isAdmin adminExempt getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin }) registerAiUsage(aiUsageKey, undefined, { isAdmin })
-AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
-saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })
-Zapisz w szkicach AI
-Otwórz w Szybkim szkicu
-Poza zakresem aplikacji
-Blokada zakresu
-Asystent działa tylko w obrębie CloseFlow
-*/
-
-/* PHASE0_AI_ASSISTANT_LAST7_CONTRACT
-STAGE35_AI_ASSISTANT_COMPACT_UI
-data-stage35-ai-assistant-compact-ui
-data-stage35-ai-mode-switch
-data-stage35-ai-assistant-actions
-Dodaj leada: Pan Marek, 516 439 989, Facebook
-Co mam dziś do zrobienia?
-Zapisz zadanie jutro o 10 oddzwonić do klienta
-Zapytaj asystenta
-Dyktuj
-Max {AI_COMMAND_MAX_LENGTH} znaków
-onCaptureRequest
-saveAiLeadDraft
-AI_DIRECT_WRITE_MODE_STATE
-parseAiDirectWriteCommand
-direct_task_event
-directWriteMode === 'direct_task_event'
-insertTaskToSupabase
-insertEventToSupabase
-createLeadFromAiDraftApprovalInSupabase
-source: 'today_assistant'
-CLIENT_LEAD_CAPTURE_PATTERNS
-isClientLeadCaptureCommand(command)
-Asystent AI
-SpeechRecognition
-webkitSpeechRecognition
-AI_DIRECT_WRITE_FALLBACK_TO_DRAFT
-Bramki bezpieczeństwa AI
-Wszystko przez Szkice AI
-Jasne rekordy od razu
-Pełny zakres aplikacji
-Admin AI: bez limitu
-isAdmin
-adminExempt
-getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })
-registerAiUsage(aiUsageKey, undefined, { isAdmin })
-AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
-Zapisz w szkicach AI
-Otwórz w Szybkim szkicu
-Poza zakresem aplikacji
-Blokada zakresu
-Asystent działa tylko w obrębie CloseFlow
-*/
-
-/* PHASE0_AI_ASSISTANT_COMMAND_CENTER_FINAL4
-Asystent AI
-SpeechRecognition
-webkitSpeechRecognition
-Co mam dziś do zrobienia?
-Dodaj leada: Pan Marek, 516 439 989, Facebook
-STAGE35_AI_ASSISTANT_COMPACT_UI
-data-stage35-ai-assistant-compact-ui
-data-stage35-ai-mode-switch
-data-stage35-ai-assistant-actions
-Zapisz zadanie jutro o 10 oddzwonić do klienta
-Zapytaj asystenta
-Dyktuj
-Max {AI_COMMAND_MAX_LENGTH} znaków
-AI_DIRECT_WRITE_MODE_STATE
-parseAiDirectWriteCommand
-parseAiDirectWriteCommand(command)
-direct_task_event
-directWriteMode === 'direct_task_event'
-getStoredAiDirectWriteMode
-persistAiDirectWriteMode
-createLeadFromAiDraftApprovalInSupabase
-insertTaskToSupabase
-insertEventToSupabase
-saveAiLeadDraft({ rawText: command, source: 'today_assistant' })
-onCaptureRequest
-saveAiLeadDraft
-source: 'today_assistant'
-CLIENT_LEAD_CAPTURE_PATTERNS
-isClientLeadCaptureCommand(command)
-AI_DIRECT_WRITE_FALLBACK_TO_DRAFT
-Bramki bezpieczeństwa AI
-Wszystko przez Szkice AI
-Jasne rekordy od razu
-Pełny zakres aplikacji
-Admin AI: bez limitu
-isAdmin
-adminExempt
-getAiUsageSnapshot(aiUsageKey, undefined, { isAdmin })
-registerAiUsage(aiUsageKey, undefined, { isAdmin })
-AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT
-Zapisz w szkicach AI
-Otwórz w Szybkim szkicu
-Poza zakresem aplikacji
-Blokada zakresu
-Asystent działa tylko w obrębie CloseFlow
-*/
-
+export { TodayAiAssistant };
