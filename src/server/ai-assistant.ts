@@ -1,3 +1,4 @@
+// STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1
 // STAGE5_AI_READ_QUERY_HARDENING_V1
 // STAGE3_AI_APPLICATION_BRAIN_V1
 // Deterministic AI Application Brain V1. It reads CloseFlow data and creates review drafts only.
@@ -48,6 +49,9 @@ export type AssistantQueryResult = {
     source: "app_snapshot";
     safety: "read_only_or_draft_only";
     matchedItems: number;
+    dataPolicy: "app_data_only";
+    noData: boolean;
+    emptyPrompt: boolean;
   };
 };
 
@@ -60,6 +64,9 @@ export type RunAssistantQueryInput = {
 const WRITE_RE = /\b(zapisz|dodaj|utw[oó]rz|stw[oó]rz|za[lł][oó][zż]|wpisz|przygotuj\s+szkic|mam\s+leada)\b/i;
 const READ_RE = /\b(co|czy|kiedy|na\s+kiedy|znajd[zź]|poka[zż]|wyszukaj|mam|najbli[zż]szy|najbli[zż]sza|gdzie|ile)\b/i;
 const PHONE_RE = /(?:numer|telefon|tel\.?|kom[oó]rka|kontakt)\s+(?:do\s+)?([\p{L}][\p{L}\-']*)/iu;
+
+export const STAGE6_EMPTY_PROMPT_ANSWER = "Napisz pytanie albo komendę. Nie odpowiadam z pustego prompta.";
+export const STAGE6_NO_DATA_ANSWER = "Nie mam jeszcze danych aplikacji do sprawdzenia. Dodaj albo zsynchronizuj leady, zadania, wydarzenia lub klientów.";
 
 function normalizeText(value: string): string {
   return value
@@ -231,6 +238,14 @@ function parseRelativeWindow(query: string, now: Date): { start: Date; end: Date
 
 function relevantTimedItems(context: AssistantContext): AssistantContextItem[] {
   return [...context.tasks, ...context.events, ...context.cases, ...context.leads].filter((item) => getItemDate(item));
+}
+
+function hasReadableApplicationData(context: AssistantContext): boolean {
+  return Boolean(
+    context &&
+      context.stats &&
+      Number(context.stats.totalItems || 0) > 0
+  );
 }
 
 function answerTimeWindow(query: string, context: AssistantContext, now: Date): AssistantQueryResult | null {
@@ -429,6 +444,9 @@ function result(
       source: "app_snapshot",
       safety: "read_only_or_draft_only",
       matchedItems: items.length,
+      dataPolicy: "app_data_only",
+      noData: !hasReadableApplicationData(context),
+      emptyPrompt: answer === STAGE6_EMPTY_PROMPT_ANSWER,
     },
   };
 }
@@ -439,10 +457,14 @@ export function runAssistantQuery(input: RunAssistantQueryInput): AssistantQuery
   const now = new Date(input.now || context.generatedAt || Date.now());
 
   if (!query) {
-    return result("unknown", "Napisz pytanie albo komendę. Nie odpowiadam z pustego prompta.", [], null, context);
+    return result("unknown", STAGE6_EMPTY_PROMPT_ANSWER, [], null, context);
   }
 
   const intent = detectAssistantIntent(query);
+
+  if (intent !== "draft" && !hasReadableApplicationData(context)) {
+    return result("read", STAGE6_NO_DATA_ANSWER, [], null, context);
+  }
 
   if (intent === "draft") {
     const draft = createDraft(query, context, now);
@@ -472,3 +494,5 @@ export const askAiAssistant = handleAiAssistantPrompt;
 export const queryAiAssistant = handleAiAssistantPrompt;
 
 export const STAGE5_AI_READ_QUERY_HARDENING_V1 = true;
+
+export const STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1 = true;
