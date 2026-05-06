@@ -24,6 +24,7 @@ type LeadHealthRecord = Record<string, unknown> & {
   caseStartedAt?: string | Date | null;
   serviceStartedAt?: string | Date | null;
   nextActionAt?: string | Date | null;
+  nearestActionAt?: string | Date | null;
   lastContactAt?: string | Date | null;
   updatedAt?: string | Date | null;
   createdAt?: string | Date | null;
@@ -101,7 +102,7 @@ export function getLeadNextActionDate(lead: LeadHealthInput) {
   const safeLead = normalizeLeadHealthInput(lead);
   if (!safeLead) return null;
 
-  return toDateSafe(safeLead.nextActionAt);
+  return toDateSafe(safeLead.nearestActionAt || safeLead.nextActionAt);
 }
 
 export function getLeadLastTouchDate(lead: LeadHealthInput) {
@@ -195,4 +196,15 @@ export function buildLeadAlertReason(lead: LeadHealthInput) {
   if (isHighValueAtRisk(safeLead)) return 'Wysoka wartość i zbyt mało ruchu';
   if (Boolean(safeLead.isAtRisk)) return 'Temat oznaczony jako zagrożony';
   return 'Wymaga uwagi';
+}
+
+export function getLeadTodayDecisionReason(lead: LeadHealthInput) {
+  const safeLead = normalizeLeadHealthInput(lead);
+  if (!safeLead) return 'Brak danych';
+  if (isLeadMovedToService(safeLead)) return 'Lead jest już w obsłudze';
+  if (isNextStepOverdue(safeLead)) return 'Zaległa najbliższa akcja';
+  if (!hasNextStep(safeLead)) return 'Bez zaplanowanej akcji';
+  if (isWaitingTooLong(safeLead)) return 'Waiting za długo';
+  if (isHighValueAtRisk(safeLead)) return 'Wysoka wartość / ryzyko';
+  return 'Do ruchu dziś';
 }

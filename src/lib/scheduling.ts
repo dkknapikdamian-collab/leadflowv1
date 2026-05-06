@@ -3,6 +3,7 @@ import {
   getEventStartAt,
   getTaskStartAt,
 } from './task-event-contract';
+import { normalizeLeadV1 } from './work-items/normalize';
 
 export {
   getEventEndAt,
@@ -402,16 +403,8 @@ export function expandTaskEntries(tasks: ScheduleRawRecord[], rangeStart: Date, 
 }
 
 function getLeadCalendarMoment(lead: ScheduleRawRecord) {
-  const direct = readText(lead, [
-    'nextActionAt',
-    'next_action_at',
-    'followUpAt',
-    'follow_up_at',
-    'scheduledAt',
-    'scheduled_at',
-    'reminderAt',
-    'reminder_at',
-  ]);
+  const normalizedLead = normalizeLeadV1(lead);
+  const direct = readText(lead, ['nextActionAt', 'next_action_at', 'followUpAt', 'follow_up_at']);
   if (direct) return direct;
 
   const dateField = readText(lead, [
@@ -430,7 +423,8 @@ function getLeadCalendarMoment(lead: ScheduleRawRecord) {
     'follow_up_time',
     'time',
   ], '09:00');
-  return dateField.includes('T') ? dateField : dateField + 'T' + timeField;
+  const seedDate = dateField.includes('T') ? dateField : dateField + 'T' + timeField;
+  return seedDate || (normalizedLead.createdAt || '');
 }
 
 export function expandLeadEntries(leads: ScheduleRawRecord[], rangeStart: Date, rangeEnd: Date): ScheduleEntry[] {

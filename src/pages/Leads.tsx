@@ -20,7 +20,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
-import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { getNearestPlannedAction } from '../lib/nearest-action';
 import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
@@ -135,21 +135,21 @@ function formatCaseStatusLabel(value?: string) {
   return value.replaceAll('_', ' ');
 }
 
-function getNextActionKindLabel(action: { type?: string } | null | undefined) {
+function getNextActionKindLabel(action: { kind?: string } | null | undefined) {
   if (!action) return '';
-  return action.type === 'event' || action.type === 'meeting' ? 'Wydarzenie' : 'Zadanie';
+  return action.kind === 'event' ? 'Wydarzenie' : 'Zadanie';
 }
 
-function buildNextActionMeta(action: { title: string; when: string; type?: string; status?: string } | null | undefined) {
-  if (!action) {
+function buildNextActionMeta(action: { title: string | null; at: string | null; kind?: string | null; status?: string } | null | undefined) {
+  if (!action?.at || !action?.title) {
     return {
-      title: 'Brak zaplanowanych dziaBaD',
+      title: 'Brak zaplanowanych działań',
       subtitle: '',
       overdue: false,
     };
   }
 
-  const actionDate = parseISO(action.when);
+  const actionDate = parseISO(action.at);
   const overdue = isPast(actionDate);
   const dateLabel = format(actionDate, 'd MMM yyyy, HH:mm', { locale: pl });
 
@@ -295,17 +295,16 @@ export default function Leads() {
 
   const nextActionByLeadId = useMemo(() => {
     const map = new Map<string, ReturnType<typeof getNearestPlannedAction>>();
-    const allItems = [...tasks, ...events];
 
     for (const lead of leads) {
       const leadId = String(lead.id || '');
       if (!leadId) continue;
       const linkedCase = resolveLinkedCaseForLead(lead);
       map.set(leadId, getNearestPlannedAction({
-        recordType: 'lead',
-        recordId: leadId,
-        relatedCaseIds: linkedCase?.id ? [String(linkedCase.id)] : [],
-        items: allItems,
+        leadId,
+        caseId: linkedCase?.id ? String(linkedCase.id) : undefined,
+        tasks,
+        events,
       }));
     }
 
@@ -420,7 +419,7 @@ export default function Leads() {
   };
 
   const activeLeads = useMemo(
-    () => leads.filter((lead) => !isLeadInTrash(lead)),
+    () => leads.filter((lead) => !isLeadInTrash(lead) && !isLeadMovedToService(lead)),
     [leads],
   );
 

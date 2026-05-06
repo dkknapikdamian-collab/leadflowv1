@@ -8,6 +8,7 @@ import aiNextActionHandler from '../src/server/ai-next-action.js';
 import aiCaptureHandler from '../src/server/ai-capture.js';
 import aiAssistantHandler from '../src/server/ai-assistant.js';
 import aiDraftsHandler from '../src/server/ai-drafts.js';
+import draftsHandler from '../src/server/drafts.js';
 import assistantContextHandler from '../src/server/assistant-context.js';
 import assistantQueryHandler from '../src/server/assistant-query-handler.js';
 import recordsHandler from '../src/server/records.js';
@@ -108,6 +109,9 @@ const SYSTEM_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<string, Set<string>> = {
     'appearance_skin',
     'planning_conflict_warnings_enabled',
     'browser_notifications_enabled',
+    'live_notifications_enabled',
+    'default_reminder_minutes',
+    'default_snooze_minutes',
     'force_logout_after',
     'created_at',
     'updated_at',
@@ -280,6 +284,9 @@ async function handleProfileSettings(req: any, res: any) {
     if ((body as any).appearanceSkin !== undefined) payload.appearance_skin = asNullableString((body as any).appearanceSkin) || 'classic-light';
     if ((body as any).planningConflictWarningsEnabled !== undefined) payload.planning_conflict_warnings_enabled = asBoolean((body as any).planningConflictWarningsEnabled, true);
     if ((body as any).browserNotificationsEnabled !== undefined) payload.browser_notifications_enabled = asBoolean((body as any).browserNotificationsEnabled, true);
+    if ((body as any).liveNotificationsEnabled !== undefined) payload.live_notifications_enabled = asBoolean((body as any).liveNotificationsEnabled, true);
+    if ((body as any).defaultReminderMinutes !== undefined) payload.default_reminder_minutes = Math.max(0, Math.min(1440, Number((body as any).defaultReminderMinutes) || 30));
+    if ((body as any).defaultSnoozeMinutes !== undefined) payload.default_snooze_minutes = Math.max(5, Math.min(10080, Number((body as any).defaultSnoozeMinutes) || 15));
     if ((body as any).forceLogoutAfter !== undefined) payload.force_logout_after = toIso((body as any).forceLogoutAfter);
     if ((body as any).workspaceId !== undefined) payload.workspace_id = workspaceId;
 
@@ -316,6 +323,9 @@ async function handleProfileSettings(req: any, res: any) {
         appearanceSkin: (nextRow as any).appearance_skin ?? (body as any).appearanceSkin ?? 'classic-light',
         planningConflictWarningsEnabled: Boolean((nextRow as any).planning_conflict_warnings_enabled ?? (body as any).planningConflictWarningsEnabled ?? true),
         browserNotificationsEnabled: Boolean((nextRow as any).browser_notifications_enabled ?? (body as any).browserNotificationsEnabled ?? true),
+        liveNotificationsEnabled: Boolean((nextRow as any).live_notifications_enabled ?? (body as any).liveNotificationsEnabled ?? true),
+        defaultReminderMinutes: Number((nextRow as any).default_reminder_minutes ?? (body as any).defaultReminderMinutes ?? 30),
+        defaultSnoozeMinutes: Number((nextRow as any).default_snooze_minutes ?? (body as any).defaultSnoozeMinutes ?? 15),
         forceLogoutAfter: (nextRow as any).force_logout_after ?? (body as any).forceLogoutAfter ?? null,
         workspaceId: (nextRow as any).workspace_id ?? workspaceId,
       },
@@ -809,6 +819,10 @@ export default async function handler(req: any, res: any) {
     await aiDraftsHandler(req, res);
     return;
   }
+  if (kind === 'drafts') {
+    await draftsHandler(req, res);
+    return;
+  }
 
   if (kind === 'response-templates') {
     await responseTemplatesHandler(req, res);
@@ -828,6 +842,11 @@ export default async function handler(req: any, res: any) {
 
   if (kind === 'daily-digest') {
     await dailyDigestHandler(req, res);
+    return;
+  }
+
+  if (kind === 'weekly-report') {
+    await weeklyReportHandler(req, res);
     return;
   }
 

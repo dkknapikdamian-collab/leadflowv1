@@ -116,6 +116,7 @@ const BILLING_PLANS: PlanCard[] = [
       'Wszystko z Pro',
       'Asystent aplikacji i dyktowanie AI w trybie warunkowym (provider + env)',
       'AI lokalne/regułowe i szkice do ręcznego zatwierdzenia działają także bez zewnętrznego modelu',
+      'Limity AI: 30/dzień i 300/miesiąc',
     ],
     availabilityHint: 'Beta. Wymaga konfiguracji AI w Vercel. Nie obiecujemy funkcji, które nie są jeszcze realnie podpięte.',
   },
@@ -188,8 +189,8 @@ const LIMIT_ITEMS = [
   { name: 'Poranny digest', basic: 'Wymaga konfiguracji', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
   { name: 'Szkice do sprawdzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
   { name: 'Parser tekstu', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Google Calendar', basic: 'Nie', pro: 'W przygotowaniu', ai: 'W przygotowaniu' },
-  { name: 'Asystent AI (provider + env)', basic: 'Nie', pro: 'Nie', ai: 'Warunkowy' },
+  { name: 'Google Calendar', basic: 'Nie', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
+  { name: 'Asystent AI (provider + env)', basic: 'Nie', pro: 'Nie', ai: 'Dostępne (limity AI)' },
   { name: 'Raport tygodniowy', basic: 'Nie', pro: 'Wymaga konfiguracji', ai: 'Wymaga konfiguracji' },
 ];
 const SETTLEMENT_STATUS_LABELS: Record<string, string> = {

@@ -47,9 +47,10 @@ import { Textarea } from '../components/ui/textarea';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import { isLeadMovedToService } from '../lib/lead-health';
+import { isLeadInServiceStatus } from '../lib/lead-service-state';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
-import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { getNearestPlannedAction } from '../lib/nearest-action';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import {
@@ -527,7 +528,7 @@ export default function LeadDetail() {
   const serviceCaseStatusLabel = String(associatedCase?.status || createCaseDraft.status || 'ready_to_start').replaceAll('_', ' ');
   const serviceMovedAtLabel = formatDateTime(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
   const leadOperationalArchive = Boolean(leadMovedToService || associatedCase || startServiceSuccess);
-  const leadInService = leadOperationalArchive;
+  const leadInService = Boolean(leadOperationalArchive || isLeadInServiceStatus(lead?.status));
   const showServiceBanner = leadInService;
   const leadFinance = useMemo(() => getLeadFinance(lead), [lead]);
   const leadFinancePanel = useMemo(() => {
@@ -613,7 +614,7 @@ export default function LeadDetail() {
   };
 useEffect(() => {
     if (!startServiceSuccess?.caseId) return;
-    navigate(`/case/${startServiceSuccess.caseId}`);
+    navigate(`/cases/${startServiceSuccess.caseId}`);
   }, [startServiceSuccess?.caseId, navigate]);
 
   const sortedLinkedTasks = useMemo(
@@ -628,13 +629,13 @@ useEffect(() => {
 
   const timeline = useMemo(() => buildTimeline(sortedLinkedTasks, sortedLinkedEvents), [sortedLinkedEvents, sortedLinkedTasks]);
   const nearestPlannedAction = useMemo(() => getNearestPlannedAction({
-    recordType: 'lead',
-    recordId: String(leadId || ''),
-    relatedCaseIds: associatedCase?.id ? [String(associatedCase.id)] : [],
-    items: [...linkedTasks, ...linkedEvents],
+    leadId: String(leadId || ''),
+    caseId: associatedCase?.id ? String(associatedCase.id) : undefined,
+    tasks: linkedTasks,
+    events: linkedEvents,
   }), [associatedCase?.id, leadId, linkedEvents, linkedTasks]);
   const nextTimelineEntry = useMemo(() => {
-    if (!nearestPlannedAction) return timeline.find((entry) => !isDoneStatus(entry.status)) || null;
+    if (!nearestPlannedAction?.id) return timeline.find((entry) => !isDoneStatus(entry.status)) || null;
     return timeline.find((entry) => String(entry.raw?.id || '') === nearestPlannedAction.id) || timeline.find((entry) => !isDoneStatus(entry.status)) || null;
   }, [nearestPlannedAction, timeline]);
   const leadWorkCenter = useMemo(() => {
@@ -747,14 +748,14 @@ useEffect(() => {
             <FileText className="h-4 w-4" /> Dopisz notatkę
           </LeadActionButton>
           {serviceCaseId ? (
-            <LeadActionButton onClick={() => navigate(`/case/${serviceCaseId}`)}>
+            <LeadActionButton onClick={() => navigate(`/cases/${serviceCaseId}`)}>
               <Briefcase className="h-4 w-4" /> Otwórz sprawę
             </LeadActionButton>
           ) : null}
         </div>
       ) : (
         <div className="lead-detail-work-actions lead-detail-work-actions-service">
-          <LeadActionButton onClick={() => serviceCaseId && navigate(`/case/${serviceCaseId}`)} disabled={!serviceCaseId}>
+          <LeadActionButton onClick={() => serviceCaseId && navigate(`/cases/${serviceCaseId}`)} disabled={!serviceCaseId}>
             <Briefcase className="h-4 w-4" /> Otwórz sprawę
           </LeadActionButton>
           <span>{leadServiceLockedMessage}</span>
@@ -1229,7 +1230,7 @@ useEffect(() => {
     if (!leadId || !lead) return;
     if (!hasAccess) return toast.error('Trial wygasł.');
     if (leadInService && serviceCaseId) {
-      navigate(`/case/${serviceCaseId}`);
+      navigate(`/cases/${serviceCaseId}`);
       return;
     }
 
@@ -1266,12 +1267,12 @@ useEffect(() => {
       setIsCreateCaseOpen(false);
       toast.success('Sprawa utworzona. Przechodzę do obsługi.');
       await loadLead();
-      navigate(`/case/${result.caseId}`);
+      navigate(`/cases/${result.caseId}`);
     } catch (error: any) {
       const message = String(error?.message || 'REQUEST_FAILED');
       if (message.includes('LEAD_ALREADY_HAS_CASE') && serviceCaseId) {
         toast.success('Temat jest już w obsłudze. Otwieram sprawę.');
-        navigate(`/case/${serviceCaseId}`);
+        navigate(`/cases/${serviceCaseId}`);
         return;
       }
       toast.error(`Nie udało się rozpocząć obsługi: ${message}`);
@@ -1303,7 +1304,7 @@ useEffect(() => {
   };
 
   const openCase = () => {
-    if (serviceCaseId) navigate(`/case/${serviceCaseId}`);
+    if (serviceCaseId) navigate(`/cases/${serviceCaseId}`);
   };
 
   if (loading) {
@@ -1528,6 +1529,7 @@ useEffect(() => {
             </section>
           </section>
 
+          {!leadInService ? (
           <aside className="lead-detail-right-rail" aria-label="Panel leada">
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><Target className="h-4 w-4" /><h2>Status leada</h2></div>
@@ -1566,7 +1568,7 @@ useEffect(() => {
             ) : null}
 
             <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższy ruch</h2></div>
+              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbli�sza akcja</h2></div>
               <p>{nextTimelineEntry ? nextTimelineEntry.title : 'Brak zaplanowanych działań.'}</p>
               <small>{nextTimelineEntry ? nextTimelineEntry.dateLabel : ''}</small>
             </section>
@@ -1595,6 +1597,7 @@ useEffect(() => {
               </Tabs>
             </section>
           </aside>
+          ) : null}
         </div>
 
         <Dialog open={isLeadPaymentOpen} onOpenChange={setIsLeadPaymentOpen}>
@@ -1692,5 +1695,11 @@ useEffect(() => {
     </Layout>
   );
 }
+
+
+
+
+
+
 
 

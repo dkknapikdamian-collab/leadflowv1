@@ -3,6 +3,7 @@ import { pl } from 'date-fns/locale';
 import type { CalendarBundle } from './calendar-items';
 import { isActiveSalesLead } from './lead-health';
 import { combineScheduleEntries, type ScheduleEntry } from './scheduling';
+import { buildAdditionalReminderItems } from './reminders';
 import {
   buildNotificationDedupeKey,
   buildNotificationReminderWindow,
@@ -15,6 +16,7 @@ export {
   getNotificationDeliveryKey,
   getNotificationSnoozedUntilByKey,
   setNotificationSnooze,
+  setNotificationSnoozeCustom,
   type NotificationSnoozeMode,
 } from './notification-snooze';
 
@@ -26,7 +28,7 @@ export type NotificationSeverity = 'overdue' | 'soon';
 export type NotificationItem = {
   id: string;
   key: string;
-  kind: 'task' | 'event' | 'lead';
+  kind: 'task' | 'event' | 'lead' | 'ai_draft';
   title: string;
   body: string;
   startsAt: string;
@@ -89,7 +91,7 @@ export function buildRuntimeNotificationItems(bundle: CalendarBundle, now = new 
   const rangeStart = addMinutes(now, -120);
   const rangeEnd = addMinutes(now, 30);
 
-  return combineScheduleEntries({
+  const scheduledItems = combineScheduleEntries({
     events: bundle.events,
     tasks: bundle.tasks,
     leads: bundle.leads,
@@ -99,15 +101,22 @@ export function buildRuntimeNotificationItems(bundle: CalendarBundle, now = new 
     .map((entry) => mapEntryToItem(entry, now))
     .filter((item): item is NotificationItem => Boolean(item))
     .filter((item) => item.minutesUntil >= -120 && item.minutesUntil <= 30)
-    .filter((item) => !isNotificationSnoozedActive(item.key, now))
-    .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
+    .filter((item) => !isNotificationSnoozedActive(item.key, now));
+
+  const additionalItems = buildAdditionalReminderItems({
+    bundle,
+    pendingDraftCount: 0,
+    now,
+  }).filter((item) => !isNotificationSnoozedActive(item.key, now));
+
+  return [...scheduledItems, ...additionalItems].sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
 }
 
 export function buildTodayNotificationItems(bundle: CalendarBundle, now = new Date()) {
   const rangeStart = startOfDay(now);
   const rangeEnd = endOfDay(now);
 
-  return combineScheduleEntries({
+  const scheduledItems = combineScheduleEntries({
     events: bundle.events,
     tasks: bundle.tasks,
     leads: bundle.leads,
@@ -115,8 +124,15 @@ export function buildTodayNotificationItems(bundle: CalendarBundle, now = new Da
     rangeEnd,
   })
     .map((entry) => mapEntryToItem(entry, now))
-    .filter((item): item is NotificationItem => Boolean(item))
-    .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
+    .filter((item): item is NotificationItem => Boolean(item));
+
+  const additionalItems = buildAdditionalReminderItems({
+    bundle,
+    pendingDraftCount: 0,
+    now,
+  });
+
+  return [...scheduledItems, ...additionalItems].sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
 }
 
 export function supportsBrowserNotifications() {

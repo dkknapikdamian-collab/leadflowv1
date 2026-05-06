@@ -31,12 +31,14 @@ import {
   markAllNotificationsRead,
   setBrowserNotificationsEnabled,
   setNotificationSnooze,
+  setNotificationSnoozeCustom,
   clearNotificationSnooze,
   getNotificationSnoozedUntilByKey,
   type NotificationItem,
   type NotificationLogItem,
   type NotificationSnoozeMode,
 } from '../lib/notifications';
+import { buildReminderCustomDate } from '../lib/reminders';
 import { toast } from 'sonner';
 import '../styles/visual-stage10-notifications-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
@@ -183,6 +185,7 @@ function relationTypeFromKind(kind: NotificationRowKind) {
 function rowKindFromItem(kind: NotificationItem['kind']): NotificationRowKind {
   if (kind === 'task') return 'task';
   if (kind === 'event') return 'event';
+  if (kind === 'ai_draft') return 'ai_draft';
   return 'lead';
 }
 
@@ -356,11 +359,13 @@ function PermissionCopy({ permission, browserEnabled }: { permission: Notificati
 function NotificationsRow({
   row,
   onSnooze,
+  onSnoozeCustom,
   onRead,
   onRestore,
 }: {
   row: NotificationRow;
   onSnooze: (key: string, mode: NotificationSnoozeMode) => void;
+  onSnoozeCustom: (key: string) => void;
   onRead: (key: string) => void;
   onRestore: (key: string) => void;
 }) {
@@ -413,6 +418,7 @@ function NotificationsRow({
             <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż 15m" title="Odłóż 15m" onClick={() => onSnooze(row.key, '15m')}>15m</button>
             <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż 1h" title="Odłóż 1h" onClick={() => onSnooze(row.key, '1h')}>1h</button>
             <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż do jutra" title="Odłóż do jutra" onClick={() => onSnooze(row.key, 'tomorrow')}>Jutro</button>
+            <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż na datę" title="Odłóż na datę" onClick={() => onSnoozeCustom(row.key)}>Data</button>
           </>
         ) : null}
 
@@ -572,6 +578,23 @@ export default function NotificationsCenter() {
     toast.success(mode === 'tomorrow' ? 'Powiadomienie odłożone do jutra.' : 'Powiadomienie odłożone.');
   };
 
+  const handleSnoozeCustom = (key: string) => {
+    const input = window.prompt('Podaj datę i godzinę (YYYY-MM-DD HH:mm)');
+    if (!input) return;
+    const normalizedIso = buildReminderCustomDate(input.replace(' ', 'T'));
+    if (!normalizedIso) {
+      toast.error('Nieprawidłowy format daty.');
+      return;
+    }
+    const snooze = setNotificationSnoozeCustom(key, normalizedIso);
+    setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());
+    if (!snooze) {
+      toast.error('Nie udało się odłożyć powiadomienia.');
+      return;
+    }
+    toast.success('Powiadomienie odłożone do wybranej daty.');
+  };
+
   const handleRead = (key: string) => {
     setReadKeys((current) => (current.includes(key) ? current : [...current, key]));
     toast.success('Oznaczono jako przeczytane.');
@@ -682,6 +705,7 @@ export default function NotificationsCenter() {
                       <NotificationsRow
                         row={row}
                         onSnooze={handleSnooze}
+                        onSnoozeCustom={handleSnoozeCustom}
                         onRead={handleRead}
                         onRestore={handleRestore}
                       />
@@ -706,7 +730,7 @@ export default function NotificationsCenter() {
               </div>
               <div className="notifications-channel-card">
                 <strong>Poranny digest e-mail</strong>
-                <span>Poranny digest e-mail jest aktywny po konfiguracji w Ustawieniach. Wysyłka używa timezone workspace i logów antyduplikacyjnych.</span>
+                <span>Digest działa tylko po konfiguracji (plan + ENV + adres odbiorcy). Status sprawdzisz w Ustawieniach.</span>
                 <em>Konfiguracja w Ustawieniach</em>
               </div>
             </section>

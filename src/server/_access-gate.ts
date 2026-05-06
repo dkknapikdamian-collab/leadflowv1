@@ -348,6 +348,27 @@ async function countWorkspaceEntitiesForLimit(workspaceId: string, key: Workspac
   }
 }
 
+function getWorkspaceCombinedTaskEventQueries(workspaceId: string, limit: number) {
+  const encodedWorkspaceId = encodeURIComponent(workspaceId);
+  const cappedLimit = Math.max(1, Math.floor(limit) + 1);
+  const workspaceFilter = 'workspace_id=eq.' + encodedWorkspaceId;
+  return [
+    'work_items?select=id,record_type&' + workspaceFilter + '&or=(record_type.eq.task,record_type.eq.event)&limit=' + cappedLimit,
+    'work_items?select=id,show_in_tasks,show_in_calendar&' + workspaceFilter + '&or=(show_in_tasks.is.true,show_in_calendar.is.true)&limit=' + cappedLimit,
+  ];
+}
+
+async function countWorkspaceCombinedTasksAndEvents(workspaceId: string, limit: number) {
+  const queries = getWorkspaceCombinedTaskEventQueries(workspaceId, limit);
+  try {
+    const result = await selectFirstAvailable(queries);
+    const rows = Array.isArray(result?.data) ? result.data : [];
+    return rows.length;
+  } catch {
+    return Number.NaN;
+  }
+}
+
 export async function assertWorkspaceEntityLimit(
   workspaceInput: unknown = {},
   entityName?: unknown,
@@ -373,6 +394,20 @@ export async function assertWorkspaceEntityLimit(
   const currentCount = Number.isFinite(explicitCurrentCount)
     ? explicitCurrentCount
     : await countWorkspaceEntitiesForLimit(workspaceId, key, limit);
+
+  if (key === 'activeTasks' || key === 'activeEvents') {
+    const combinedLimit = Number(planLimits.activeTasksAndEvents ?? limit);
+    if (Number.isFinite(combinedLimit) && combinedLimit > 0) {
+      const combinedCount = await countWorkspaceCombinedTasksAndEvents(workspaceId, combinedLimit);
+      if (Number.isFinite(combinedCount) && combinedCount >= combinedLimit) {
+        const combinedError: any = makeGateError('FREE_LIMIT_ACTIVE_TASKS_EVENTS_REACHED', 402);
+        combinedError.entity = 'activeTasksAndEvents';
+        combinedError.limit = combinedLimit;
+        combinedError.currentCount = combinedCount;
+        throw combinedError;
+      }
+    }
+  }
 
   if (!Number.isFinite(currentCount) || currentCount < 0) return true;
   if (currentCount < limit) return true;

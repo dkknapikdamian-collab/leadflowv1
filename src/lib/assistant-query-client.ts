@@ -2,8 +2,8 @@
 // Browser-side contract client for /api/assistant/query.
 // The UI must not reimplement assistant logic or bypass the backend contract.
 
-export type AssistantQueryClientMode = 'read' | 'draft' | 'unknown';
-export type AssistantQueryClientIntent = 'read' | 'draft' | 'unknown';
+export type AssistantQueryClientMode = 'read' | 'draft';
+export type AssistantQueryClientIntent = 'read' | 'draft';
 
 export type AssistantQueryClientItem = {
   id: string;
@@ -51,11 +51,11 @@ const EMPTY_PROMPT_ANSWER = 'Napisz pytanie albo komendę. Nie odpowiadam z pust
 const FALLBACK_ERROR_ANSWER = 'Asystent nie odpowiedział poprawnym kontraktem API.';
 
 function isMode(value: unknown): value is AssistantQueryClientMode {
-  return value === 'read' || value === 'draft' || value === 'unknown';
+  return value === 'read' || value === 'draft';
 }
 
 function isIntent(value: unknown): value is AssistantQueryClientIntent {
-  return value === 'read' || value === 'draft' || value === 'unknown';
+  return value === 'read' || value === 'draft';
 }
 
 function asObject(value: unknown): Record<string, unknown> {
@@ -104,8 +104,8 @@ function normalizeMeta(value: unknown): AssistantQueryClientMeta {
 
 export function normalizeAssistantQueryClientResult(payload: unknown, fallbackAnswer = FALLBACK_ERROR_ANSWER): AssistantQueryClientResult {
   const row = asObject(payload);
-  const mode = isMode(row.mode) ? row.mode : 'unknown';
-  const intent = isIntent(row.intent) ? row.intent : mode === 'draft' ? 'draft' : mode === 'read' ? 'read' : 'unknown';
+  const mode = isMode(row.mode) ? row.mode : 'read';
+  const intent = isIntent(row.intent) ? row.intent : mode === 'draft' ? 'draft' : 'read';
   const answer = asString(row.answer) || fallbackAnswer;
   const items = Array.isArray(row.items)
     ? row.items.map((item, index) => normalizeItem(item, index)).filter(Boolean) as AssistantQueryClientItem[]
@@ -136,8 +136,8 @@ export async function askAssistantQueryApi(input: AssistantQueryClientInput): Pr
 
   if (!query) {
     return normalizeAssistantQueryClientResult({
-      mode: 'unknown',
-      intent: 'unknown',
+      mode: 'read',
+      intent: 'read',
       answer: EMPTY_PROMPT_ANSWER,
       items: [],
       draft: null,

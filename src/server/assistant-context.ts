@@ -245,7 +245,7 @@ async function fetchJsonSafe(url: string, headers: Record<string, string>): Prom
 
 export async function buildAssistantContextFromRequest(input: BuildAssistantContextInput = {}): Promise<AssistantContext> {
   const explicitSeed = input.seed || {};
-  const hasExplicitSeed = Object.values(explicitSeed).some((value) => Array.isArray(value));
+  const hasExplicitSeed = Object.values(explicitSeed).some((value) => Array.isArray(value) && value.length > 0);
   if (hasExplicitSeed || !input.request) {
     return buildAssistantContext(input);
   }
@@ -309,4 +309,57 @@ export function getItemDate(item: AssistantContextItem): Date | null {
   if (!value) return null;
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function parseBody(req: any) {
+  if (!req?.body) return {};
+  if (typeof req.body === "string") {
+    try {
+      return JSON.parse(req.body || "{}");
+    } catch {
+      return {};
+    }
+  }
+  return req.body as Record<string, unknown>;
+}
+
+function asText(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+export default async function assistantContextHandler(req: any, res: any) {
+  if (req.method !== "GET" && req.method !== "POST") {
+    res.status(405).json({ error: "METHOD_NOT_ALLOWED" });
+    return;
+  }
+
+  const body = parseBody(req);
+  const query = asText(req?.query?.query || body.query || "");
+  const timezone = asText(req?.query?.timezone || body.timezone || "Europe/Warsaw") || "Europe/Warsaw";
+
+  const context = await buildAssistantContextFromRequest({
+    query,
+    timezone,
+    seed: (body.snapshot || body.seed || undefined) as AssistantContextSeed | undefined,
+    request: {
+      headers: req.headers || {},
+      url: req.url,
+    },
+  });
+
+  res.status(200).json({
+    generatedAt: context.generatedAt,
+    timezone: context.timezone,
+    stats: context.stats,
+    snapshot: {
+      leads: context.leads,
+      clients: context.clients,
+      cases: context.cases,
+      tasks: context.tasks,
+      events: context.events,
+      drafts: context.drafts,
+      activities: context.activities,
+      items: context.items,
+    },
+  });
 }

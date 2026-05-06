@@ -4,6 +4,7 @@
 
 import { buildAssistantContextFromRequest } from './assistant-context';
 import { runAssistantQuery } from './ai-assistant';
+import { normalizeAssistantResult } from '../lib/assistant-result-schema';
 
 export const MAX_ASSISTANT_QUERY_BODY_BYTES = 1024 * 1024;
 
@@ -27,8 +28,8 @@ function assistantMeta(input: { timezone?: string; now?: string | Date; noData?:
 
 export function emptyPromptApiResult(input: { timezone?: string; now?: string | Date } = {}) {
   return {
-    mode: 'unknown',
-    intent: 'unknown',
+    mode: 'read',
+    intent: 'read',
     answer: 'Napisz pytanie albo komendę. Nie odpowiadam z pustego prompta.',
     items: [],
     draft: null,
@@ -38,8 +39,8 @@ export function emptyPromptApiResult(input: { timezone?: string; now?: string | 
 
 function methodNotAllowedApiResult(input: { timezone?: string; now?: string | Date } = {}) {
   return {
-    mode: 'unknown',
-    intent: 'unknown',
+    mode: 'read',
+    intent: 'read',
     answer: 'Endpoint /api/assistant/query przyjmuje tylko POST.',
     items: [],
     draft: null,
@@ -50,8 +51,8 @@ function methodNotAllowedApiResult(input: { timezone?: string; now?: string | Da
 
 function payloadTooLargeApiResult(input: { timezone?: string; now?: string | Date } = {}) {
   return {
-    mode: 'unknown',
-    intent: 'unknown',
+    mode: 'read',
+    intent: 'read',
     answer: 'Payload zapytania asystenta jest za duży.',
     items: [],
     draft: null,
@@ -126,6 +127,6 @@ export default async function assistantQueryHandler(req: any, res: any) {
     },
   });
 
-  const result = runAssistantQuery({ query, context, now });
+  const result = normalizeAssistantResult(runAssistantQuery({ query, context, now }));
   return sendJson(res, 200, result);
 }

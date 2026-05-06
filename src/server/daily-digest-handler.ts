@@ -1,9 +1,8 @@
 /* STAGE28_DAILY_DIGEST_EMAIL_FOUNDATION: poranny e-mail bez duplikatow, z timezone i szkicami AI. */
 import { buildDailyDigestPayload, buildDigestEmail, shouldSendDigestNow } from './_digest.js';
+import { getAppUrlFromRequest, getMailDiagnostics, sendResendEmail } from './_mail-provider.js';
 import { insertWithVariants, selectFirstAvailable, updateWhere } from './_supabase.js';
 import { withWorkspaceFilter } from './_request-scope.js';
-
-const RESEND_API_URL = 'https://api.resend.com/emails';
 const DEFAULT_TZ = 'Europe/Warsaw';
 const DEFAULT_DIGEST_HOUR = 7;
 
@@ -103,15 +102,6 @@ function isSameDigestDay(value: unknown, sentForDate: string, timeZone: string) 
   return getDateKey(parsed, timeZone) === sentForDate;
 }
 
-function getAppUrl(req: any) {
-  const configured = asNullableText(process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || process.env.VITE_APP_URL);
-  if (configured) return configured.replace(/\/+$/, '');
-  const host = asNullableText(req?.headers?.host);
-  if (!host) return 'https://closeflowapp.vercel.app';
-  const protocol = host.includes('localhost') ? 'http' : 'https';
-  return `${protocol}://${host}`;
-}
-
 function isDuplicateLogError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error || '');
   return message.includes('23505') || message.includes('duplicate key value');
@@ -208,50 +198,6 @@ return {
 };
 }
 
-async function sendDigestEmail({
-  to,
-  subject,
-  plain,
-  html,
-}: {
-  to: string;
-  subject: string;
-  plain: string;
-  html: string;
-}) {
-  const resendApiKey = asNullableText(process.env.RESEND_API_KEY);
-  const digestFromEmail = asNullableText(process.env.DIGEST_FROM_EMAIL) || 'CloseFlow <onboarding@resend.dev>';
-  if (!resendApiKey) {
-    return { ok: false, error: 'RESEND_API_KEY_MISSING' };
-  }
-
-  try {
-    const response = await fetch(RESEND_API_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: digestFromEmail,
-        to: [to],
-        subject,
-        text: plain,
-        html,
-      }),
-    });
-
-    if (!response.ok) {
-      const details = await response.text();
-      return { ok: false, error: `RESEND_SEND_FAILED:${details || response.status}` };
-    }
-
-    return { ok: true, error: null as string | null };
-  } catch (error: any) {
-    return { ok: false, error: error?.message || 'RESEND_REQUEST_FAILED' };
-  }
-}
-
 async function writeDigestLog(row: Record<string, unknown>) {
   try {
     await insertWithVariants(['digest_logs'], [row]);
@@ -297,13 +243,8 @@ function isRequestAuthorized(req: any, body: Record<string, unknown>) {
 
   const vercelCron = asNullableText(req?.headers?.['x-vercel-cron']);
   if (vercelCron) return true;
-
-  if (cronSecret) {
-    return providedSecret === cronSecret;
-  }
-  if (asBool(req?.query?.manual, false)) return true;
-  if (asBool((body as any)?.manual, false)) return true;
-  return false;
+  if (!cronSecret) return false;
+  return providedSecret === cronSecret;
 }
 
 export default async function handler(req: any, res: any) {
@@ -348,10 +289,11 @@ export default async function handler(req: any, res: any) {
         asNullableText((body as any)?.dailyDigestTimezone || workspaceRow.daily_digest_timezone || workspaceRow.dailyDigestTimezone || workspaceRow.timezone)
         || DEFAULT_TZ;
       const digestHour = asInt((body as any)?.dailyDigestHour ?? workspaceRow.daily_digest_hour ?? workspaceRow.dailyDigestHour, DEFAULT_DIGEST_HOUR);
-      const fromEmail = asNullableText(process.env.DIGEST_FROM_EMAIL) || 'CloseFlow <onboarding@resend.dev>';
-      const appUrl = getAppUrl(req);
-      const hasResendApiKey = Boolean(asNullableText(process.env.RESEND_API_KEY));
-      const hasFromEmail = Boolean(fromEmail);
+      const mailDiagnostics = getMailDiagnostics();
+      const fromEmail = mailDiagnostics.fromEmail;
+      const appUrl = getAppUrlFromRequest(req);
+      const hasResendApiKey = Boolean(mailDiagnostics.hasResendApiKey);
+      const hasFromEmail = Boolean(mailDiagnostics.hasFromEmail);
       const hasAppUrl = Boolean(appUrl);
       const planGate = getDigestPlanGateStatus(workspaceRow);
       const canSend = Boolean(hasResendApiKey && hasFromEmail && recipientEmail && planGate.allowed);
@@ -366,7 +308,7 @@ export default async function handler(req: any, res: any) {
           hasAppUrl,
           fromEmail,
           appUrl,
-          usesFallbackFromEmail: !asNullableText(process.env.DIGEST_FROM_EMAIL),
+          usesFallbackFromEmail: mailDiagnostics.usesFallbackFromEmail,
           cronSecretConfigured: Boolean(asNullableText(process.env.CRON_SECRET)),
           enforceWorkspaceHour: shouldEnforceWorkspaceDigestHour(),
         },
@@ -436,7 +378,7 @@ export default async function handler(req: any, res: any) {
       }
 
       const now = new Date();
-      const appUrl = getAppUrl(req);
+      const appUrl = getAppUrlFromRequest(req);
       const bundle = await loadWorkspaceBundle(workspaceId);
       const payload = buildDailyDigestPayload({
         leads: bundle.leads,
@@ -454,7 +396,7 @@ export default async function handler(req: any, res: any) {
         timeZone,
       });
 
-      const send = await sendDigestEmail({
+      const send = await sendResendEmail({
         to: recipientEmail,
         subject: 'CloseFlow - test planu dnia',
         plain,
@@ -506,7 +448,7 @@ export default async function handler(req: any, res: any) {
 
     const now = new Date();
     const force = asBool(req.query?.force ?? body.force, false);
-    const appUrl = getAppUrl(req);
+    const appUrl = getAppUrlFromRequest(req);
     const subject = 'CloseFlow - Plan dnia na dzis';
     const workspaces = await readDigestWorkspaces();
 
@@ -576,7 +518,7 @@ export default async function handler(req: any, res: any) {
           timeZone,
         });
 
-        const send = await sendDigestEmail({
+        const send = await sendResendEmail({
           to: recipientEmail,
           subject,
           plain,

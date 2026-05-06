@@ -16,13 +16,14 @@ import { useClientAuthSnapshot } from '../hooks/useClientAuthSnapshot';
 import { getConflictWarningsEnabled, setConflictWarningsEnabled as storeConflictWarningsEnabled } from '../lib/app-preferences';
 import {
   getBrowserNotificationPermission, getBrowserNotificationsEnabled, setBrowserNotificationsEnabled, supportsBrowserNotifications, } from '../lib/notifications';
+import { getReminderSettings, setReminderSettings } from '../lib/reminders';
 import { updateProfileSettingsInSupabase, updateWorkspaceSettingsInSupabase } from '../lib/supabase-fallback';
 import { GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS } from '../lib/options';
 import { getGoogleCalendarReminderPreference, setGoogleCalendarReminderPreference } from '../lib/google-calendar-reminder-preferences';
 import '../styles/visual-stage19-settings-vnext.css';
 
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
-const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
+const DAILY_DIGEST_EMAIL_UI_VISIBLE = true;
 const DAILY_DIGEST_EMAIL_TEST_COPY_GUARD = 'Wyślij test teraz';
 const DAILY_DIGEST_EMAIL_CRON_HINT_GUARD = 'Na darmowym Vercel cron działa raz dziennie';
 const DAILY_DIGEST_EMAIL_CONFIG_COPY_GUARD = 'Sprawdź konfigurację';
@@ -146,8 +147,11 @@ export default function Settings() {
   const [setupPassword, setSetupPassword] = useState('');
   const [setupPasswordConfirm, setSetupPasswordConfirm] = useState('');
   const [browserNotificationsEnabled, setBrowserNotificationsEnabledState] = useState(true);
+  const [liveNotificationsEnabled, setLiveNotificationsEnabled] = useState(true);
   const [browserPermission, setBrowserPermission] = useState<NotificationPermission | 'unsupported'>('unsupported');
   const [dailyDigestEnabled, setDailyDigestEnabled] = useState(true);
+  const [defaultReminderMinutes, setDefaultReminderMinutes] = useState('30');
+  const [defaultSnoozeMinutes, setDefaultSnoozeMinutes] = useState('15');
   const [dailyDigestHour, setDailyDigestHour] = useState('7');
   const [dailyDigestTimezone, setDailyDigestTimezone] = useState('Europe/Warsaw');
   const [dailyDigestRecipientEmail, setDailyDigestRecipientEmail] = useState('');
@@ -176,6 +180,10 @@ useEffect(() => {
         : getBrowserNotificationsEnabled(),
     );
     setBrowserPermission(getBrowserNotificationPermission());
+    const reminderSettings = getReminderSettings();
+    setLiveNotificationsEnabled(reminderSettings.liveNotificationsEnabled);
+    setDefaultReminderMinutes(String(reminderSettings.defaultReminderMinutes));
+    setDefaultSnoozeMinutes(String(reminderSettings.defaultSnoozeMinutes));
     setDailyDigestEnabled(typeof workspace?.dailyDigestEnabled === 'boolean' ? workspace.dailyDigestEnabled : true);
     setDailyDigestHour(String(workspace?.dailyDigestHour ?? 7));
     setDailyDigestTimezone(workspace?.dailyDigestTimezone || workspace?.timezone || 'Europe/Warsaw');
@@ -221,7 +229,8 @@ useEffect(() => {
     [accessLabel, accountEmail, planLabel, profile.fullName, workspaceName],
   );  const canUseGoogleCalendarByPlan = Boolean(isAdmin || isAppOwner || access?.features?.googleCalendar);
   const canUseDigestByPlan = Boolean(isAdmin || isAppOwner || access?.features?.digest);
-  const digestUiVisibleByPlan = DAILY_DIGEST_EMAIL_UI_VISIBLE && canUseDigestByPlan;
+  const digestUiVisibleByPlan = DAILY_DIGEST_EMAIL_UI_VISIBLE;
+  const digestActionsDisabled = !canUseDigestByPlan;
   const googleCalendarMissingText = googleCalendarStatus?.missing?.length
     ? googleCalendarStatus.missing.join(', ')
     : '';
@@ -252,7 +261,7 @@ useEffect(() => {
       setGoogleCalendarStatus(data as GoogleCalendarStatusState);
     } catch (error: any) {
       setGoogleCalendarStatus({ configured: false, connected: false, missing: ['STATUS_CHECK_FAILED'] });
-      toast.error(`Błąd statusu Google Calendar: ${error?.message || 'REQUEST_FAILED'}`);
+      console.warn('GOOGLE_CALENDAR_STATUS_FAILED', error);
     } finally {
       setCheckingGoogleCalendar(false);
     }
@@ -431,6 +440,13 @@ useEffect(() => {
         dailyDigestTimezone: dailyDigestTimezone.trim() || 'Europe/Warsaw',
         dailyDigestRecipientEmail: dailyDigestRecipientEmail.trim() || null,
         timezone: workspace.timezone || 'Europe/Warsaw',
+      });
+      setReminderSettings({
+        browserNotificationsEnabled,
+        liveNotificationsEnabled,
+        dailyDigestEnabled,
+        defaultReminderMinutes: Number(defaultReminderMinutes || '30'),
+        defaultSnoozeMinutes: Number(defaultSnoozeMinutes || '15'),
       });
       toast.success('Ustawienia digestu zapisane');
       refresh();
@@ -880,6 +896,22 @@ useEffect(() => {
                   <input type="checkbox" checked={browserNotificationsEnabled} onChange={() => void toggleBrowserNotifications()} />
                 </label>
 
+                <label className="settings-toggle-row">
+                  <div>
+                    <strong>Powiadomienia in-app</strong>
+                    <span>Włącz wyświetlanie przypomnień w runtime aplikacji.</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={liveNotificationsEnabled}
+                    onChange={(event) => {
+                      const next = event.target.checked;
+                      setLiveNotificationsEnabled(next);
+                      setReminderSettings({ liveNotificationsEnabled: next });
+                    }}
+                  />
+                </label>
+
                 <div className="settings-browser-box">
                   <div>
                     <strong>Powiadomienia przeglądarki</strong>
@@ -905,12 +937,43 @@ useEffect(() => {
                   <div>
                     <strong>Digest e-mail</strong>
                     <span>
-                      {digestUiVisibleByPlan
+                      {canUseDigestByPlan
                         ? 'Ustawienia digestu są dostępne poniżej.'
-                        : 'Digest e-mail jest w przygotowaniu i wymaga konfiguracji mail providera. Na darmowym Vercel cron działa raz dziennie. Panel jest ukryty, dopóki flow nie jest gotowy do pokazania użytkownikowi.'}
+                        : 'Digest jest dostępny od planu Basic. Na Free zobaczysz konfigurację, ale wysyłka będzie zablokowana.'}
                     </span>
                   </div>
                   <span className="settings-soft-pill">{dailyDigestEnabled ? 'Włączony w workspace' : 'Wyłączony w workspace'}</span>
+                </div>
+
+                <div className="settings-form-grid">
+                  <div className="settings-field">
+                    <Label>Domyślne przypomnienie (min)</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      max={1440}
+                      value={defaultReminderMinutes}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setDefaultReminderMinutes(value);
+                        setReminderSettings({ defaultReminderMinutes: Number(value || '30') });
+                      }}
+                    />
+                  </div>
+                  <div className="settings-field">
+                    <Label>Domyślne odłożenie (min)</Label>
+                    <Input
+                      type="number"
+                      min={5}
+                      max={10080}
+                      value={defaultSnoozeMinutes}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setDefaultSnoozeMinutes(value);
+                        setReminderSettings({ defaultSnoozeMinutes: Number(value || '15') });
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -948,13 +1011,18 @@ useEffect(() => {
                       type="button"
                       variant="outline"
                       onClick={() => void handleSendDigestTest()}
-                      disabled={sendingDigestTest || !workspace?.id || !dailyDigestRecipientEmail.trim()}
+                      disabled={sendingDigestTest || !workspace?.id || !dailyDigestRecipientEmail.trim() || digestActionsDisabled}
                       title="Wyślij test teraz"
                       aria-label="Wyślij test teraz"
                     >
                       {sendingDigestTest ? 'Wysyłanie...' : 'Wyślij test teraz'}
                     </Button>
                   </div>
+                  {!canUseDigestByPlan ? (
+                    <div className="settings-diagnostics-box">
+                      <div>Plan Free: digest jest zablokowany. Przejdź na Basic/Pro/AI, żeby uruchomić wysyłkę.</div>
+                    </div>
+                  ) : null}
                   {digestDiagnostics ? (
                     <div className="settings-diagnostics-box">
                       {/* Release test markers: Digest gotowy do wysyłki, Digest wymaga konfiguracji, RESEND_API_KEY:, DIGEST_FROM_EMAIL: */}

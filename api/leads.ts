@@ -6,6 +6,7 @@ import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { normalizeLeadContract } from '../src/lib/data-contract.js';
 import { LEAD_STATUS_VALUES, normalizeLeadStatus } from '../src/lib/domain-statuses.js';
 import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendarConnection, updateGoogleCalendarEvent } from '../src/server/google-calendar-sync.js';
+import { startLeadServiceOperation } from '../src/server/lead-to-case.js';
 
 const SOURCE_ALIASES: Record<string, string> = {
   instagram: 'instagram',
@@ -734,7 +735,25 @@ export default async function handler(req: any, res: any) {
         res.status(400).json({ error: 'LEAD_WORKSPACE_REQUIRED' });
         return;
       }
-      const data = await handleStartService(body, workspaceId);
+      const leadId = asText(body.id || body.leadId);
+      if (!leadId) {
+        res.status(400).json({ error: 'LEAD_ID_REQUIRED' });
+        return;
+      }
+      await requireScopedRow('leads', leadId, workspaceId, 'LEAD_NOT_FOUND');
+      const leadRows = await safeSelectRows(withWorkspaceFilter(`leads?select=*&id=eq.${encodeURIComponent(leadId)}&limit=1`, workspaceId));
+      const leadRow = leadRows[0];
+      if (!leadRow) {
+        res.status(404).json({ error: 'LEAD_NOT_FOUND' });
+        return;
+      }
+      const existingCaseId = asText(leadRow.linked_case_id || leadRow.linkedCaseId);
+      if (existingCaseId) {
+        res.status(409).json({ error: 'LEAD_ALREADY_HAS_CASE' });
+        return;
+      }
+      const rpcResult = await startLeadServiceWithSupabaseRpc({ body, workspaceId, leadId, leadRow });
+      const data = rpcResult || await startLeadServiceOperation({ body, workspaceId, leadId, leadRow });
       res.status(200).json(data);
       return;
     }

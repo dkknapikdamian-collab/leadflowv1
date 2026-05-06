@@ -22,6 +22,72 @@ export type DateBearingItem = {
   reminderRule: CalendarReminderRule;
 };
 
+export type CanonicalTask = {
+  id: string;
+  title: string;
+  status: string;
+  type: string;
+  priority: string;
+  scheduledAt: string | null;
+  reminderAt: string | null;
+  recurrenceRule: string | null;
+  leadId: string | null;
+  caseId: string | null;
+  clientId: string | null;
+  workspaceId: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+export type CanonicalEvent = {
+  id: string;
+  title: string;
+  status: string;
+  type: string;
+  startAt: string | null;
+  endAt: string | null;
+  reminderAt: string | null;
+  recurrenceRule: string | null;
+  leadId: string | null;
+  caseId: string | null;
+  clientId: string | null;
+  workspaceId: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+export type CanonicalLead = {
+  id: string;
+  name: string;
+  company: string | null;
+  email: string | null;
+  phone: string | null;
+  source: string | null;
+  status: string;
+  dealValue: number;
+  priority: string;
+  isInService: boolean;
+  linkedClientId: string | null;
+  linkedCaseId: string | null;
+  movedToServiceAt: string | null;
+  workspaceId: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+export type CanonicalCase = {
+  id: string;
+  title: string;
+  clientId: string | null;
+  leadId: string | null;
+  status: string;
+  completenessPercent: number;
+  portalReady: boolean;
+  workspaceId: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
 export type WorkItem = DateBearingItem & {
   id: string;
   type: WorkItemType;
@@ -73,6 +139,26 @@ function pickIso(row: Record<string, unknown>, keys: string[]) {
     if (value) return value;
   }
   return null;
+}
+
+function asBool(value: unknown) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value !== 0;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'tak') return true;
+    if (normalized === 'false' || normalized === '0' || normalized === 'no' || normalized === 'nie') return false;
+  }
+  return false;
+}
+
+function asNumber(value: unknown) {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string' && value.trim()) {
+    const parsed = Number(value.replace(',', '.'));
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return 0;
 }
 
 function normalizeReminderRule(value: unknown): CalendarReminderRule {
@@ -136,4 +222,88 @@ export function normalizeWorkItem(input: unknown): WorkItem {
 
 export function normalizeDateBearingItem(input: unknown): DateBearingItem {
   return normalizeWorkItem(input);
+}
+
+export function normalizeTaskV1(input: unknown): CanonicalTask {
+  const row = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
+  const item = normalizeWorkItem(row);
+  return {
+    id: item.id,
+    title: item.title,
+    status: item.status,
+    type: item.type,
+    priority: asText(row.priority).toLowerCase() || 'medium',
+    scheduledAt: item.scheduledAt,
+    reminderAt: item.reminderAt,
+    recurrenceRule: item.recurrenceRule,
+    leadId: item.leadId,
+    caseId: item.caseId,
+    clientId: item.clientId,
+    workspaceId: asNullableText(row.workspaceId) || asNullableText(row.workspace_id),
+    createdAt: pickIso(row, ['createdAt', 'created_at']),
+    updatedAt: pickIso(row, ['updatedAt', 'updated_at']),
+  };
+}
+
+export function normalizeEventV1(input: unknown): CanonicalEvent {
+  const row = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
+  const item = normalizeWorkItem(row);
+  return {
+    id: item.id,
+    title: item.title,
+    status: item.status || 'scheduled',
+    type: item.type === 'task' ? 'event' : item.type,
+    startAt: item.startAt || item.scheduledAt,
+    endAt: item.endAt,
+    reminderAt: item.reminderAt,
+    recurrenceRule: item.recurrenceRule,
+    leadId: item.leadId,
+    caseId: item.caseId,
+    clientId: item.clientId,
+    workspaceId: asNullableText(row.workspaceId) || asNullableText(row.workspace_id),
+    createdAt: pickIso(row, ['createdAt', 'created_at']),
+    updatedAt: pickIso(row, ['updatedAt', 'updated_at']),
+  };
+}
+
+export function normalizeLeadV1(input: unknown): CanonicalLead {
+  const row = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
+  const status = asText(row.status).toLowerCase() || 'new';
+  const linkedCaseId = asNullableText(row.linkedCaseId) || asNullableText(row.linked_case_id) || asNullableText(row.caseId) || asNullableText(row.case_id);
+  const movedToServiceAt = pickIso(row, ['movedToServiceAt', 'moved_to_service_at', 'serviceStartedAt', 'service_started_at']);
+  const isInService = status === 'moved_to_service' || Boolean(linkedCaseId) || Boolean(movedToServiceAt);
+  return {
+    id: asText(row.id) || '',
+    name: asText(row.name) || asText(row.company) || 'Lead',
+    company: asNullableText(row.company),
+    email: asNullableText(row.email),
+    phone: asNullableText(row.phone),
+    source: asNullableText(row.source),
+    status,
+    dealValue: asNumber(row.dealValue ?? row.deal_value ?? row.value),
+    priority: asText(row.priority).toLowerCase() || 'medium',
+    isInService,
+    linkedClientId: asNullableText(row.clientId) || asNullableText(row.client_id),
+    linkedCaseId,
+    movedToServiceAt,
+    workspaceId: asNullableText(row.workspaceId) || asNullableText(row.workspace_id),
+    createdAt: pickIso(row, ['createdAt', 'created_at']),
+    updatedAt: pickIso(row, ['updatedAt', 'updated_at']),
+  };
+}
+
+export function normalizeCaseV1(input: unknown): CanonicalCase {
+  const row = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
+  return {
+    id: asText(row.id) || '',
+    title: asText(row.title) || 'Sprawa',
+    clientId: asNullableText(row.clientId) || asNullableText(row.client_id),
+    leadId: asNullableText(row.leadId) || asNullableText(row.lead_id),
+    status: asText(row.status).toLowerCase() || 'new',
+    completenessPercent: Math.max(0, Math.min(100, Math.round(asNumber(row.completenessPercent ?? row.completeness_percent)))),
+    portalReady: asBool(row.portalReady ?? row.portal_ready),
+    workspaceId: asNullableText(row.workspaceId) || asNullableText(row.workspace_id),
+    createdAt: pickIso(row, ['createdAt', 'created_at']),
+    updatedAt: pickIso(row, ['updatedAt', 'updated_at']),
+  };
 }

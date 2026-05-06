@@ -109,7 +109,7 @@ import {
   TASK_TYPES,
 } from '../lib/options';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
-import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
+import { isActiveSalesLead, isLeadMovedToService, isWaitingTooLong } from '../lib/lead-health';
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import { buildTopicContactOptions, findTopicContactOption, resolveTopicContactLink, type TopicContactOption } from '../lib/topic-contact';
 import { requireWorkspaceId } from '../lib/workspace-context';
@@ -133,7 +133,8 @@ import { installTodayStage30VisualCleanup } from '../lib/stage30-today-cleanup';
 import { installTodayStage31TilesInteraction } from '../lib/stage31-today-tiles-interaction';
 import { installTodayStage32RelationsLoadingPolish } from '../lib/stage32-today-relations-loading-polish';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
-import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { getNearestPlannedAction } from '../lib/nearest-action';
+import { buildTodaySections, dedupeTodaySectionEntries } from '../lib/today-sections';
 
 import '../styles/today-collapsible-masonry.css';
 
@@ -325,8 +326,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
     || compact.includes('brak następnego')
     || compact.includes('brak nastepnego')
     || compact.includes('najbliższa zaplanowana akcja')
-    || compact.includes('nastepny krok')
-    || compact.includes('brak kolejnego')
+        || compact.includes('brak kolejnego')
     || compact.includes('bez kolejnego')
   ) return 'without_action';
 
@@ -376,7 +376,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
 function getTodayTileShortcutPatterns(target: TodayTileShortcutTarget) {
   if (target === 'blocked') return ['zablokowane', 'blok'];
   if (target === 'service_transition') return ['start i obsługa', 'start i obsluga', 'obsługa aktywna', 'obsluga aktywna', 'gotowe do uruchomienia'];
-  if (target === 'without_action') return ['bez zaplanowanej akcji', 'bez dzialan', 'bez następnego', 'bez nastepnego', 'najbliższa zaplanowana akcja', 'nastepny krok'];
+  if (target === 'without_action') return ['bez zaplanowanej akcji', 'bez dzialan', 'bez następnego', 'bez nastepnego', 'najbliższa zaplanowana akcja'];
   if (target === 'without_movement') return ['bez ruchu', 'brak zmiany', '7 dni'];
   if (target === 'urgent') return ['pilne', 'zaległe', 'zalegle', 'dzisiaj', 'dziś', 'dzis'];
   if (target === 'calendar') return ['kalendarz', 'najbliższe', 'najblizsze', 'terminy', 'wydarzenia'];
@@ -2203,23 +2203,23 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
     current.push(caseId);
     leadCasesByLeadId.set(leadId, current);
   }
-  const allWorkItems = [...tasks, ...events];
   const activeLeads = leads
-    .filter((lead) => isActiveSalesLead(lead))
+    .filter((lead) => isActiveSalesLead(lead) && !isLeadMovedToService(lead))
     .map((lead) => {
       const leadId = String(lead?.id || '');
       const action = getNearestPlannedAction({
-        recordType: 'lead',
-        recordId: leadId,
-        relatedCaseIds: leadCasesByLeadId.get(leadId) || [],
-        items: allWorkItems,
+        leadId,
+        caseId: (leadCasesByLeadId.get(leadId) || [])[0],
+        tasks,
+        events,
       });
       return {
         ...lead,
-        nextActionAt: action?.when || null,
+        nextActionAt: action?.at || null,
+        nearestActionAt: action?.at || null,
         nextActionTitle: action?.title || null,
         nextActionStatus: action?.status || null,
-        nextActionType: action?.type || null,
+        nextActionType: action?.kind || null,
       };
     });
   const activeLeadsValue = activeLeads.reduce((acc, lead) => acc + (Number(lead.dealValue) || 0), 0);
@@ -2234,6 +2234,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   const todayTasks = todayEntries.filter((entry) => entry.kind === 'task');
   const todayEvents = todayEntries.filter((entry) => entry.kind === 'event');
   const todayLeadActions = todayEntries.filter((entry) => entry.kind === 'lead');
+  const completedTodayEntries = todayEntries.filter((entry) => isCompletedTodayEntry(entry));
 
   const overdueTasks = tasks.filter((task) => {
     const startAt = getTaskStartAt(task);
@@ -2251,6 +2252,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   const activeServiceLeads = leads.filter((lead) => isLeadMovedToService(lead));
   const blockedCases = cases.filter((caseRecord) => String(caseRecord.status || '') === 'blocked');
   const noStepLeads = activeLeads.filter((lead) => !parseMoment(lead.nextActionAt));
+  const waitingTooLongLeads = activeLeads.filter((lead) => isWaitingTooLong(lead));
   const staleLeads = activeLeads
     .filter((lead) => {
       const days = getDaysWithoutUpdate(lead);
@@ -2266,44 +2268,68 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
     })
     .sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0))
     .slice(0, 5);
+  const riskyValuableLeadEntries = dedupeTodaySectionEntries(riskyValuableLeads);
   const topValuableLeads = [...activeLeads].sort((a, b) => (Number(b.dealValue) || 0) - (Number(a.dealValue) || 0)).slice(0, 3);
+  const nextDaysCount = [1, 2, 3].reduce((sum, days) => {
+    const date = addDays(new Date(), days);
+    const dayStart = startOfDay(date);
+    const dayEnd = endOfDay(date);
+    return sum + combineScheduleEntries({
+      events,
+      tasks,
+      leads: leadsWithAction,
+      rangeStart: dayStart,
+      rangeEnd: dayEnd,
+    }).length;
+  }, 0);
+
+  const todayDecisionSections = buildTodaySections({
+    reviewCount: pendingTodayAiDraftCount,
+    overdueCount: overdueTasks.length + overdueLeadActions.length,
+    moveTodayCount: todayEntries.length,
+    noActionCount: noStepLeads.length,
+    waitingTooLongCount: waitingTooLongLeads.length,
+    nextDaysCount,
+    highValueRiskCount: riskyValuableLeadEntries.length,
+    completedTodayCount: completedTodayEntries.length,
+  });
 
   const summaryCards = [
     {
-      id: 'urgent',
-      title: 'Pilne teraz',
-      value: overdueTasks.length + overdueLeadActions.length,
+      id: 'overdue',
+      title: 'Zaległe',
+      value: todayDecisionSections.find((section) => section.key === 'overdue')?.count || 0,
       tone: 'text-rose-600',
       bg: 'bg-rose-50',
       icon: AlertTriangle,
       sectionIds: ['today-section-overdue-tasks', 'today-section-overdue-leads'],
     },
     {
-      id: 'today',
-      title: 'Na dziś',
-      value: todayEntries.length,
+      id: 'move_today',
+      title: 'Do ruchu dziś',
+      value: todayDecisionSections.find((section) => section.key === 'move_today')?.count || 0,
       tone: 'text-blue-600',
       bg: 'bg-blue-50',
       icon: Clock,
       sectionIds: ['today-section-main'],
     },
     {
-      id: 'no-step',
+      id: 'no_action',
       title: 'Bez zaplanowanej akcji',
-      value: noStepLeads.length,
+      value: todayDecisionSections.find((section) => section.key === 'no_action')?.count || 0,
       tone: 'text-amber-600',
       bg: 'bg-amber-50',
       icon: ListTodo,
       sectionIds: ['today-section-no-step'],
     },
     {
-      id: 'stalled',
-      title: 'Bez ruchu',
-      value: staleLeads.length,
+      id: 'waiting_too_long',
+      title: 'Waiting za długo',
+      value: todayDecisionSections.find((section) => section.key === 'waiting_too_long')?.count || 0,
       tone: 'text-purple-600',
       bg: 'bg-purple-50',
       icon: ShieldAlert,
-      sectionIds: ['today-section-stale'],
+      sectionIds: ['today-section-waiting-too-long'],
     },
   ];
 
@@ -2320,11 +2346,11 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
               }
 
               const target =
-                card.id === 'urgent'
+                card.id === 'overdue'
                   ? 'urgent'
-                  : card.id === 'no-step'
+                  : card.id === 'no_action'
                     ? 'without_action'
-                    : card.id === 'stalled'
+                    : card.id === 'waiting_too_long'
                       ? 'without_movement'
                       : null;
 
@@ -2670,7 +2696,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
             )}
 
             <section id="today-section-ai-drafts" className="space-y-4">
-              <TileCard id="today-section-ai-drafts-list" title="Szkice do zatwierdzenia" subtitle={`${pendingTodayAiDraftCount} szkiców`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+              <TileCard id="today-section-ai-drafts-list" title="Do sprawdzenia" subtitle={`${pendingTodayAiDraftCount} szkiców`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                 {pendingTodayAiDrafts.length > 0 ? (
                   <div className="space-y-2">
                     {pendingTodayAiDrafts.slice(0, 6).map((draft) => (
@@ -2687,6 +2713,46 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                 )}
               </TileCard>
             </section>
+
+            {waitingTooLongLeads.length > 0 && (
+              <section id="today-section-waiting-too-long" className="space-y-4">
+                <TileCard id="today-section-waiting-too-long" title="Waiting za długo" subtitle={`${waitingTooLongLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  <div className="grid gap-3">
+                    {waitingTooLongLeads.slice(0, 6).map((lead) => (
+                      <LeadLinkCard
+                        key={lead.id}
+                        leadId={String(lead.id)}
+                        title={lead.name}
+                        subtitle={lead.company || 'Oczekuje za długo'}
+                        subtitleClassName="text-purple-600 font-medium"
+                        badges={<Badge variant="outline" className="border-purple-200 text-purple-700 bg-white">Waiting za długo</Badge>}
+                        helperText="Powód: temat długo czeka bez nowego ruchu i wymaga decyzji operatora."
+                      />
+                    ))}
+                  </div>
+                </TileCard>
+              </section>
+            )}
+
+            {completedTodayEntries.length > 0 && (
+              <section id="today-section-completed-today" className="space-y-4">
+                <TileCard id="today-section-completed-today" title="Dzisiaj zakończone" subtitle={`${completedTodayEntries.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  <div className="space-y-2">
+                    {completedTodayEntries.slice(0, 8).map((entry) => (
+                      <Card key={`completed-${entry.id}`} className="border-emerald-100 bg-emerald-50/30">
+                        <CardContent className="p-3 flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="font-semibold text-slate-900 line-through">{entry.title}</p>
+                            <p className="text-xs text-emerald-700">Powód: zakończone dzisiaj</p>
+                          </div>
+                          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none">Zamknięte</Badge>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TileCard>
+              </section>
+            )}
 
             {(readyToStartLeads.length > 0 || activeServiceLeads.length > 0 || blockedCases.length > 0) && (
               <section id="today-section-service-transition" className="space-y-4">
@@ -2769,8 +2835,8 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
             <div hidden data-today-stage35-removed-pipeline-summary="true" />
 
             {riskyValuableLeads.length > 0 && (
-              <section className="space-y-4">
-                <h2 className="text-lg font-bold text-slate-900"> zagrożone</h2>
+              <section id="today-section-high-value-risk" className="space-y-4">
+                <h2 className="text-lg font-bold text-slate-900">Wysoka wartość / ryzyko</h2>
                 <div className="space-y-3">
                   {riskyValuableLeads.map((lead) => (
                     <LeadLinkCard
@@ -2798,7 +2864,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
               </section>
             )}
 
-            <section className="space-y-4">
+            <section id="today-section-next-days" className="space-y-4">
               <h2 className="text-lg font-bold text-slate-900">Najbliższe dni</h2>
               <div className="space-y-3">
                 {[1, 2, 3].map((days) => {
@@ -2946,3 +3012,6 @@ data-today-tile-header="true"
 aria-expanded={!collapsed}
 expandTodayShortcutSection(section)
 */
+
+
+

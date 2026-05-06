@@ -64,6 +64,7 @@ export default function TodayAiAssistant(props: TodayAiAssistantProps) {
   );
 
   const snapshotItemsCount = useMemo(() => countSnapshotItems(snapshot), [snapshot]);
+  const snapshotPayload = snapshotItemsCount > 0 ? snapshot : undefined;
 
   async function askAssistant(nextQuery?: string) {
     const text = (nextQuery ?? query).trim();
@@ -75,7 +76,7 @@ export default function TodayAiAssistant(props: TodayAiAssistantProps) {
     setLoading(true);
     setError(null);
     try {
-      const data = await askAssistantQueryApi({ query: text, timezone: "Europe/Warsaw", snapshot });
+      const data = await askAssistantQueryApi({ query: text, timezone: "Europe/Warsaw", snapshot: snapshotPayload });
 
       if (data.mode === "draft" && data.draft) {
         const bridgeInput = assistantDraftToAiLeadDraftInput(data.draft);

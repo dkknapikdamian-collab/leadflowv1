@@ -10,7 +10,7 @@ import {
   getStoredWorkspaceId,
   isSupabaseConfigured,
 } from './supabase-fallback';
-import { normalizeWorkItem } from './work-items/normalize';
+import { normalizeEventV1, normalizeTaskV1 } from './work-items/normalize';
 
 export type CalendarTaskItem = {
   id: string;
@@ -146,8 +146,8 @@ function getRecurrenceMeta(row: Record<string, unknown>) {
 }
 
 export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTaskItem | null {
-  const task = normalizeWorkItem(row);
-  const scheduledAt = task.dateAt || task.scheduledAt;
+  const task = normalizeTaskV1(row);
+  const scheduledAt = task.scheduledAt;
   if (!scheduledAt || !isIsoLike(scheduledAt)) return null;
 
   const { recurrenceEndType, recurrenceEndAt, recurrenceCount } = getRecurrenceMeta(row);
@@ -179,8 +179,8 @@ export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTas
 }
 
 export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEventItem | null {
-  const event = normalizeWorkItem(row);
-  const startAt = event.dateAt || event.startAt;
+  const event = normalizeEventV1(row);
+  const startAt = event.startAt;
   if (!startAt || !isIsoLike(startAt)) return null;
 
   const { recurrenceEndType, recurrenceEndAt, recurrenceCount } = getRecurrenceMeta(row);

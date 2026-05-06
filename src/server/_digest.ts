@@ -28,6 +28,7 @@ export type DigestPayload = {
   staleLeads: DigestSectionItem[];
   riskyValuableLeads: DigestSectionItem[];
   pendingAiDrafts: DigestSectionItem[];
+  nearestUpcoming: DigestSectionItem[];
   summary: {
     urgentCount: number;
     todayCount: number;
@@ -35,6 +36,7 @@ export type DigestPayload = {
     stalledCount: number;
     aiDraftCount: number;
     caseNoActionCount: number;
+    nearestUpcomingCount: number;
   };
 };
 
@@ -408,6 +410,39 @@ export function buildDailyDigestPayload({
       reason: 'Wartościowy lead wymaga kontroli',
     }));
 
+  const nearestUpcoming = [
+    ...todayTasks.map((row) => ({ ...row, reason: row.reason || 'Zadanie na dziś' })),
+    ...todayEvents.map((row) => ({ ...row, reason: row.reason || 'Wydarzenie na dziś' })),
+    ...safeRows(tasks)
+      .filter((task) => {
+        const startAt = normalizeTaskDate(task);
+        return Boolean(startAt && startAt.getTime() > now.getTime() && !isTaskDone(task));
+      })
+      .map((task) => ({
+        id: stableId(task, 'task'),
+        title: mapTaskTitle(task),
+        when: normalizeTaskDate(task)?.toISOString(),
+        leadName: mapLeadName(task),
+        caseName: mapCaseName(task),
+        reason: 'Nadchodzące zadanie',
+      })),
+    ...safeRows(events)
+      .filter((event) => {
+        const startAt = normalizeEventDate(event);
+        return Boolean(startAt && startAt.getTime() > now.getTime() && !isEventDone(event));
+      })
+      .map((event) => ({
+        id: stableId(event, 'event'),
+        title: mapEventTitle(event),
+        when: normalizeEventDate(event)?.toISOString(),
+        leadName: mapLeadName(event),
+        caseName: mapCaseName(event),
+        reason: 'Nadchodzące wydarzenie',
+      })),
+  ]
+    .sort((a, b) => (parseIso(a.when)?.getTime() ?? Number.MAX_SAFE_INTEGER) - (parseIso(b.when)?.getTime() ?? Number.MAX_SAFE_INTEGER))
+    .slice(0, 12);
+
   return {
     overdueTasks,
     overdueEvents,
@@ -419,6 +454,7 @@ export function buildDailyDigestPayload({
     staleLeads,
     riskyValuableLeads,
     pendingAiDrafts,
+    nearestUpcoming,
     summary: {
       urgentCount: overdueTasks.length + overdueEvents.length + overdueLeads.length,
       todayCount: todayTasks.length + todayEvents.length,
@@ -426,6 +462,7 @@ export function buildDailyDigestPayload({
       stalledCount: staleLeads.length,
       aiDraftCount: pendingAiDrafts.length,
       caseNoActionCount: casesWithoutPlannedAction.length,
+      nearestUpcomingCount: nearestUpcoming.length,
     },
   };
 }
@@ -486,6 +523,7 @@ export function buildDigestEmail({
     `Sprawy bez akcji: ${payload.summary.caseNoActionCount}`,
     `Bez ruchu: ${payload.summary.stalledCount}`,
     `Szkice do sprawdzenia: ${payload.summary.aiDraftCount}`,
+    `Najbliższe terminy: ${payload.summary.nearestUpcomingCount}`,
     '',
     ...sectionPlain('Zaległe zadania', payload.overdueTasks),
     '',
@@ -502,6 +540,8 @@ export function buildDigestEmail({
     ...sectionPlain('Sprawy bez zaplanowanej akcji', payload.casesWithoutPlannedAction),
     '',
     ...sectionPlain('Szkice do sprawdzenia', payload.pendingAiDrafts),
+    '',
+    ...sectionPlain('Najbliższe terminy', payload.nearestUpcoming),
     '',
     'Top leady do ruszenia:',
     ...(topLeads.length ? topLeads.map((lead, index) => `${index + 1}. ${lead.title} (${lead.value || 0} PLN)`) : ['Brak']),
@@ -525,6 +565,7 @@ export function buildDigestEmail({
       ${sectionHtml('Leady bez zaplanowanej akcji', payload.noStepLeads)}
       ${sectionHtml('Sprawy bez zaplanowanej akcji', payload.casesWithoutPlannedAction)}
       ${sectionHtml('Szkice do sprawdzenia', payload.pendingAiDrafts)}
+      ${sectionHtml('Najbliższe terminy', payload.nearestUpcoming)}
       <a href="${todayUrl}" style="display:inline-block;padding:10px 14px;background:#0f172a;color:#fff;text-decoration:none;border-radius:8px">Otwórz Dziś</a>
     </div>
   `;

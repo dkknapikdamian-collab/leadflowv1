@@ -35,7 +35,10 @@ export type PlanLimits = {
   activeLeads: number | null;
   activeTasks: number | null;
   activeEvents: number | null;
+  activeTasksAndEvents: number | null;
   activeDrafts: number | null;
+  aiDaily: number | null;
+  aiMonthly: number | null;
 };
 
 export type PlanFeatures = {
@@ -129,7 +132,10 @@ const UNLIMITED_LIMITS: PlanLimits = {
   activeLeads: null,
   activeTasks: null,
   activeEvents: null,
+  activeTasksAndEvents: null,
   activeDrafts: null,
+  aiDaily: null,
+  aiMonthly: null,
 };
 
 const NO_FEATURES: PlanFeatures = {
@@ -172,7 +178,12 @@ export const PLAN_DEFINITIONS: Record<PlanId, PlanDefinition> = {
     id: PLAN_IDS.free,
     name: 'Free',
     role: 'demo',
-    limits: { ...FREE_LIMITS },
+    limits: {
+      ...FREE_LIMITS,
+      activeTasksAndEvents: 5,
+      aiDaily: null,
+      aiMonthly: null,
+    },
     features: { ...NO_FEATURES },
   },
   [PLAN_IDS.basic]: {
@@ -193,14 +204,22 @@ export const PLAN_DEFINITIONS: Record<PlanId, PlanDefinition> = {
     id: PLAN_IDS.ai,
     name: 'AI',
     role: 'premium',
-    limits: { ...UNLIMITED_LIMITS },
+    limits: {
+      ...UNLIMITED_LIMITS,
+      aiDaily: 30,
+      aiMonthly: 300,
+    },
     features: { ...AI_FEATURES },
   },
   [PLAN_IDS.trial]: {
     id: PLAN_IDS.trial,
     name: 'Trial 21 dni',
     role: 'trial',
-    limits: { ...UNLIMITED_LIMITS },
+    limits: {
+      ...UNLIMITED_LIMITS,
+      aiDaily: 30,
+      aiMonthly: 300,
+    },
     features: { ...AI_FEATURES },
   },
 };

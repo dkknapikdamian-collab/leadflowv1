@@ -1,4 +1,4 @@
-import { normalizeWorkItem } from './work-items/normalize';
+import { normalizeEventV1, normalizeTaskV1 } from './work-items/normalize';
 
 export type TaskEventDateSource = {
   scheduledAt?: string | Date | null;
@@ -82,8 +82,8 @@ export function normalizeScheduleDateTimeValue(value: unknown): string | null {
 }
 
 export function getTaskStartAt(task: TaskLike | null | undefined): string | null {
-  const normalized = normalizeWorkItem(task);
-  return normalizeScheduleDateTimeValue(normalized.dateAt ?? normalized.scheduledAt ?? normalized.startAt ?? normalized.reminderAt);
+  const normalized = normalizeTaskV1(task);
+  return normalizeScheduleDateTimeValue(normalized.scheduledAt ?? normalized.reminderAt);
 }
 
 export function getTaskMainDate(task: TaskLike | null | undefined): string | null {
@@ -113,12 +113,12 @@ export function syncTaskDerivedFields<T extends TaskLike>(task: T): T & {
 }
 
 export function getEventStartAt(event: EventLike | null | undefined): string | null {
-  const normalized = normalizeWorkItem(event);
-  return normalizeScheduleDateTimeValue(normalized.dateAt ?? normalized.startAt ?? normalized.scheduledAt ?? normalized.reminderAt);
+  const normalized = normalizeEventV1(event);
+  return normalizeScheduleDateTimeValue(normalized.startAt ?? normalized.reminderAt);
 }
 
 export function getEventEndAt(event: EventLike | null | undefined): string | null {
-  const normalized = normalizeWorkItem(event);
+  const normalized = normalizeEventV1(event);
   return normalizeScheduleDateTimeValue(normalized.endAt);
 }
 

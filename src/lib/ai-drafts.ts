@@ -3,6 +3,7 @@
 // Local storage is only a dev fallback and compatibility layer for older assistant components.
 
 import { getClientAuthSnapshot } from "./client-auth";
+import { normalizeDraftStatus as normalizeAppDraftStatus } from "./drafts";
 import {
   createAiDraftInSupabase,
   deleteAiDraftFromSupabase,
@@ -106,8 +107,9 @@ function stringOrNull(value: unknown): string | null {
 }
 
 function normalizeStatus(value: unknown): AiLeadDraftStatus {
-  if (value === "converted" || value === "confirmed") return "converted";
-  if (value === "archived" || value === "cancelled" || value === "expired") return "archived";
+  const appStatus = normalizeAppDraftStatus(value);
+  if (appStatus === "confirmed") return "converted";
+  if (appStatus === "cancelled" || appStatus === "expired" || appStatus === "failed") return "archived";
   return "draft";
 }
 

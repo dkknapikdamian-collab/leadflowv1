@@ -178,14 +178,14 @@ const CASE_STATUS_LABELS: Record<string, string> = {
 };
 
 const CASE_STATUS_HINTS: Record<string, string> = {
-  new: 'Dodaj pierwszy brak albo zaplanuj pierwszÄ… akcjÄ™.',
+  new: 'Dodaj pierwszy brak albo zaplanuj pierwszą akcję.',
   waiting_on_client: 'Czekamy na klienta. Najpierw zdejmij braki po jego stronie.',
-  in_progress: 'Sprawa jest w pracy. Pilnuj najbliĹĽszej akcji i terminĂłw.',
-  to_approve: 'Klient coĹ› przesĹ‚aĹ‚. SprawdĹş i zaakceptuj albo odrzuÄ‡.',
-  blocked: 'Sprawa stoi. UsuĹ„ blokery zanim przejdziesz dalej.',
+  in_progress: 'Sprawa jest w pracy. Pilnuj najbliższej akcji i terminów.',
+  to_approve: 'Klient coś przesłał. Sprawdź i zaakceptuj albo odrzuć.',
+  blocked: 'Sprawa stoi. Usuń blokery zanim przejdziesz dalej.',
   ready_to_start: 'Sprawa jest gotowa do dalszej pracy operacyjnej.',
-  completed: 'Sprawa zrobiona. Historia zostaje jako Ĺ›lad pracy.',
-  canceled: 'Sprawa zostaĹ‚a anulowana.',
+  completed: 'Sprawa zrobiona. Historia zostaje jako ślad pracy.',
+  canceled: 'Sprawa została anulowana.',
 };
 
 const ITEM_STATUS_LABELS: Record<string, string> = {
@@ -193,7 +193,7 @@ const ITEM_STATUS_LABELS: Record<string, string> = {
   uploaded: 'Do akceptacji',
   accepted: 'Zaakceptowane',
   rejected: 'Odrzucone',
-  sent: 'WysĹ‚ane',
+  sent: 'Wysłane',
 };
 
 const ITEM_TYPE_LABELS: Record<string, string> = {
@@ -327,11 +327,11 @@ function buildCaseNoteFollowUpIso(choice: CaseNoteFollowUpChoice, customValue?: 
 }
 
 function getCaseNoteFollowUpChoiceLabel(choice: CaseNoteFollowUpChoice) {
-  if (choice === 'today') return 'DziĹ›';
+  if (choice === 'today') return 'Dziś';
   if (choice === 'tomorrow') return 'Jutro';
   if (choice === 'two_days') return 'Za 2 dni';
-  if (choice === 'week') return 'Za tydzieĹ„';
-  return 'WĹ‚asny termin';
+  if (choice === 'week') return 'Za tydzień';
+  return 'Własny termin';
 }
 
 function getEventDurationMs(event: EventRecord) {
@@ -351,8 +351,8 @@ function getCaseStatusLabel(status?: string) {
 }
 
 function getCaseStatusHint(status?: string) {
-  if (!status) return 'Ustal status sprawy i najbliĹĽszy ruch.';
-  return CASE_STATUS_HINTS[status] || 'SprawdĹş najbliĹĽsze dziaĹ‚ania i blokery.';
+  if (!status) return 'Ustal status sprawy i najbliższy ruch.';
+  return CASE_STATUS_HINTS[status] || 'Sprawdź najbliższe działania i blokery.';
 }
 
 function getItemStatusLabel(status?: string) {
@@ -389,17 +389,17 @@ function getActivityText(activity: CaseActivity) {
   if (activity.eventType === 'item_added') return `Dodano brak: ${title}`;
   if (activity.eventType === 'status_changed') return `Zmieniono status â€ž${title}â€ť na: ${getItemStatusLabel(activity.payload?.status)}`;
   if (activity.eventType === 'file_uploaded') return `Dodano plik: ${title}`;
-  if (activity.eventType === 'decision_made') return `Dodano decyzjÄ™: ${title}`;
-  if (activity.eventType === 'operator_note') return 'Dodano notatkÄ™';
+  if (activity.eventType === 'decision_made') return `Dodano decyzję: ${title}`;
+  if (activity.eventType === 'operator_note') return 'Dodano notatkę';
   if (activity.eventType === 'task_added') return `Dodano zadanie: ${title}`;
   if (activity.eventType === 'event_added') return `Dodano wydarzenie: ${title}`;
   if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania â€ž${title}â€ť na: ${getTaskStatusLabel(activity.payload?.status)}`;
   if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia â€ž${title}â€ť na: ${getEventStatusLabel(activity.payload?.status)}`;
-  if (activity.eventType === 'task_rescheduled') return `PrzeĹ‚oĹĽono zadanie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.scheduledAt)}`;
-  if (activity.eventType === 'event_rescheduled') return `PrzeĹ‚oĹĽono wydarzenie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.startAt)}`;
-  if (activity.eventType === 'case_lifecycle_started') return 'RozpoczÄ™to realizacjÄ™ sprawy';
-  if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawÄ™ jako zrobionÄ…';
-  if (activity.eventType === 'case_lifecycle_reopened') return 'PrzywrĂłcono sprawÄ™ do pracy';
+  if (activity.eventType === 'task_rescheduled') return `Przełożono zadanie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.scheduledAt)}`;
+  if (activity.eventType === 'event_rescheduled') return `Przełożono wydarzenie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.startAt)}`;
+  if (activity.eventType === 'case_lifecycle_started') return 'Rozpoczęto realizację sprawy';
+  if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawę jako zrobioną';
+  if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
   return 'Dodano ruch w sprawie';
 }
 
@@ -427,7 +427,7 @@ function getCaseRecentMoveMeta(activity: CaseActivity) {
   const eventType = String(activity.eventType || '');
   if (eventType.includes('task')) return { label: 'Zadanie', className: 'case-detail-recent-move-dot-task' };
   if (eventType.includes('event')) return { label: 'Wydarzenie', className: 'case-detail-recent-move-dot-event' };
-  if (eventType.includes('item') || eventType.includes('file') || eventType.includes('decision')) return { label: 'KompletnoĹ›Ä‡', className: 'case-detail-recent-move-dot-item' };
+  if (eventType.includes('item') || eventType.includes('file') || eventType.includes('decision')) return { label: 'Kompletność', className: 'case-detail-recent-move-dot-item' };
   if (eventType.includes('status') || eventType.includes('lifecycle')) return { label: 'Status', className: 'case-detail-recent-move-dot-status' };
   if (eventType.includes('note')) return { label: 'Notatka', className: 'case-detail-recent-move-dot-note' };
   return { label: 'Ruch', className: 'case-detail-recent-move-dot-note' };
@@ -576,8 +576,8 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
   const taskItems: WorkItem[] = tasks.map((task) => ({
     id: `task-${task.id}`,
     kind: 'task',
-    title: task.title || 'Zadanie bez tytuĹ‚u',
-    subtitle: task.type ? `Zadanie Â· ${task.type}` : 'Zadanie powiÄ…zane ze sprawÄ…',
+    title: task.title || 'Zadanie bez tytułu',
+    subtitle: task.type ? `Zadanie Â· ${task.type}` : 'Zadanie powiązane ze sprawą',
     status: getTaskStatusLabel(task.status),
     statusClass: getStatusClass(task.status),
     dateLabel: formatDateTime(getTaskMainDate(task) || task.reminderAt, 'Bez terminu'),
@@ -588,8 +588,8 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
   const eventItems: WorkItem[] = events.map((event) => ({
     id: `event-${event.id}`,
     kind: 'event',
-    title: event.title || 'Wydarzenie bez tytuĹ‚u',
-    subtitle: event.endAt ? `Wydarzenie do ${formatDateTime(event.endAt)}` : 'Wydarzenie powiÄ…zane ze sprawÄ…',
+    title: event.title || 'Wydarzenie bez tytułu',
+    subtitle: event.endAt ? `Wydarzenie do ${formatDateTime(event.endAt)}` : 'Wydarzenie powiązane ze sprawą',
     status: getEventStatusLabel(event.status),
     statusClass: getStatusClass(event.status),
     dateLabel: formatDateTime(getEventMainDate(event) || event.reminderAt, 'Bez terminu'),
@@ -691,7 +691,7 @@ export default function CaseDetail() {
     }
 
     if (!isSupabaseConfigured()) {
-      setLoadError('Brak konfiguracji Supabase. SprawdĹş zmienne Ĺ›rodowiskowe aplikacji.');
+      setLoadError('Brak konfiguracji Supabase. Sprawdź zmienne środowiskowe aplikacji.');
       setLoading(false);
       return;
     }
@@ -755,7 +755,7 @@ export default function CaseDetail() {
       setTasks([]);
       setEvents([]);
       setPayments([]);
-      setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ĺadowanie sprawy trwa za dĹ‚ugo. SprĂłbuj ponownie.' : `Nie moĹĽna wczytaÄ‡ sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ładowanie sprawy trwa za długo. Spróbuj ponownie.' : `Nie można wczytać sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       if (timeoutId) window.clearTimeout(timeoutId);
       setLoading(false);
@@ -852,29 +852,29 @@ export default function CaseDetail() {
     return workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null;
   }, [nearestOperationalAction, workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
-  const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'ĹąrĂłdĹ‚owy lead') : caseData?.leadId ? 'ĹąrĂłdĹ‚owy lead podpiÄ™ty' : 'Brak ĹşrĂłdĹ‚owego leada';
+  const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Źródłowy lead') : caseData?.leadId ? 'Źródłowy lead podpięty' : 'Brak źródłowego leada';
   const caseDetailWriteAccessDenied = !hasAccess;
   const caseDetailAccessStatus = String(access?.status || 'inactive');
   const guardCaseDetailWriteAccess = (actionLabel: string) => {
     if (!caseDetailWriteAccessDenied) return true;
-    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasĹ‚.' : 'Brak aktywnego dostepu.';
+    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasł.' : 'Brak aktywnego dostepu.';
     toast.error(reason + ' Nie mozna teraz ' + actionLabel + '.');
     return false;
   };
 
 
   const openCaseTaskDialog = () => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ zadania')) return;
+    if (!guardCaseDetailWriteAccess('dodać zadania')) return;
     openCaseContextAction('task');
   };
 
   const openCaseEventDialog = () => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ wydarzenia')) return;
+    if (!guardCaseDetailWriteAccess('dodać wydarzenia')) return;
     openCaseContextAction('event');
   };
 
   const openCaseNoteDialog = () => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ notatki')) return;
+    if (!guardCaseDetailWriteAccess('dodać notatki')) return;
     openCaseContextAction('note');
   };
 
@@ -960,7 +960,7 @@ export default function CaseDetail() {
   };
 
   const handleCreateCaseNoteFollowUp = async (choice: CaseNoteFollowUpChoice) => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ follow-upu po notatce')) return;
+    if (!guardCaseDetailWriteAccess('dodać follow-upu po notatce')) return;
     if (!caseId || !pendingNoteFollowUp) return;
     const scheduledAt = buildCaseNoteFollowUpIso(choice, customNoteFollowUpAt);
     if (!scheduledAt) {
@@ -995,7 +995,7 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Follow-up dodany do sprawy');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ dodaÄ‡ follow-upu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się dodać follow-upu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setIsCreatingNoteFollowUp(false);
     }
@@ -1008,7 +1008,7 @@ export default function CaseDetail() {
   };
 
   const handleCopyPortal = async () => {
-    if (!guardCaseDetailWriteAccess('wygenerowaÄ‡ linku do portalu')) return;
+    if (!guardCaseDetailWriteAccess('wygenerować linku do portalu')) return;
     if (!caseId) return;
     try {
       const payload = await createClientPortalTokenInSupabase(caseId);
@@ -1016,14 +1016,14 @@ export default function CaseDetail() {
       await navigator.clipboard.writeText(url);
       toast.success('Link do portalu skopiowany');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ skopiowaÄ‡ portalu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się skopiować portalu: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleAddItem = async () => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ braku')) return;
+    if (!guardCaseDetailWriteAccess('dodać braku')) return;
     if (!caseId || !newItem.title.trim()) {
-      toast.error('Podaj nazwÄ™ braku');
+      toast.error('Podaj nazwę braku');
       return;
     }
     try {
@@ -1043,12 +1043,12 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Brak dodany do sprawy');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ dodaÄ‡ braku: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się dodać braku: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleItemStatusChange = async (item: CaseItem, status: CaseItemStatus) => {
-    if (!guardCaseDetailWriteAccess('zmieniÄ‡ statusu braku')) return;
+    if (!guardCaseDetailWriteAccess('zmienić statusu braku')) return;
     if (!caseId) return;
     try {
       await updateCaseItemInSupabase({ id: item.id, caseId, status, approvedAt: status === 'accepted' ? new Date().toISOString() : null });
@@ -1057,20 +1057,20 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Status braku zmieniony');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zmieniÄ‡ statusu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zmienić statusu: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleDeleteItem = async (item: CaseItem) => {
-    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ braku')) return;
-    if (!window.confirm('UsunÄ…Ä‡ ten brak ze sprawy?')) return;
+    if (!guardCaseDetailWriteAccess('usunąć braku')) return;
+    if (!window.confirm('Usunąć ten brak ze sprawy?')) return;
     try {
       await deleteCaseItemFromSupabase(item.id);
       await recordActivity('item_deleted', { itemId: item.id, title: item.title });
       await refreshCaseData();
-      toast.success('Brak usuniÄ™ty');
+      toast.success('Brak usunięty');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ usunÄ…Ä‡ braku: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się usunąć braku: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1083,7 +1083,7 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Zrobione');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zamknÄ…Ä‡ zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zamknąć zadania: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1093,9 +1093,9 @@ export default function CaseDetail() {
       await updateTaskInSupabase({ id: task.id, scheduledAt: nextDate, dueAt: nextDate, date: buildDateOnlyFromIso(nextDate) });
       await recordActivity('task_rescheduled', { title: task.title, taskId: task.id, scheduledAt: nextDate });
       await refreshCaseData();
-      toast.success('Zadanie przeĹ‚oĹĽone na jutro');
+      toast.success('Zadanie przełożone na jutro');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ przeĹ‚oĹĽyÄ‡ zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się przełożyć zadania: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1108,7 +1108,7 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Wydarzenie oznaczone jako zrobione');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zamknÄ…Ä‡ wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zamknąć wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1119,9 +1119,9 @@ export default function CaseDetail() {
       await updateEventInSupabase({ id: event.id, startAt: nextStart, endAt: nextEnd });
       await recordActivity('event_rescheduled', { title: event.title, eventId: event.id, startAt: nextStart });
       await refreshCaseData();
-      toast.success('Wydarzenie przeĹ‚oĹĽone na jutro');
+      toast.success('Wydarzenie przełożone na jutro');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ przeĹ‚oĹĽyÄ‡ wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się przełożyć wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1138,7 +1138,7 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Status sprawy zaktualizowany');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zmieniÄ‡ statusu sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zmienić statusu sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1148,7 +1148,7 @@ export default function CaseDetail() {
         <main className="case-detail-vnext-page">
           <section className="case-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Ĺadowanie sprawy...</span>
+            <span>Ładowanie sprawy...</span>
           </section>
         </main>
       </Layout>
@@ -1161,11 +1161,11 @@ export default function CaseDetail() {
         <main className="case-detail-vnext-page">
           <section className="case-detail-empty-card">
             <AlertCircle className="h-8 w-8" />
-            <h1>Nie moĹĽna otworzyÄ‡ sprawy</h1>
+            <h1>Nie można otworzyć sprawy</h1>
             <p>{loadError || 'Nie znaleziono tej sprawy w aktualnym workspace.'}</p>
             <Button type="button" variant="outline" onClick={() => navigate('/cases')}>
               <ArrowLeft className="h-4 w-4" />
-              WrĂłÄ‡ do spraw
+              Wróć do spraw
             </Button>
           </section>
         </main>
@@ -1190,7 +1190,7 @@ export default function CaseDetail() {
             <div className="case-detail-header-meta">
               <span>Klient: {caseData.clientName || 'Brak klienta'}</span>
               <span>Ostatnia zmiana: {formatDateTime(lastActivityAt)}</span>
-              <span>ĹąrĂłdĹ‚o: {caseData.leadId ? 'Lead' : caseData.createdFromLead ? 'Lead' : 'Sprawa rÄ™czna'}</span>
+              <span>Źródło: {caseData.leadId ? 'Lead' : caseData.createdFromLead ? 'Lead' : 'Sprawa ręczna'}</span>
             </div>
           </div>
           <div className="case-detail-header-actions">
@@ -1218,10 +1218,10 @@ export default function CaseDetail() {
           <article className="case-detail-top-card case-detail-top-card-green">
             <div className="case-detail-card-title-row">
               <CheckCircle2 className="h-4 w-4" />
-              <h2>PostÄ™p sprawy</h2>
+              <h2>Postęp sprawy</h2>
             </div>
             <strong>{completionPercent}%</strong>
-            <p>{items.length > 0 ? `${items.filter((item) => item.status === 'accepted').length} z ${items.length} elementĂłw zaakceptowanych` : 'Brak checklisty do przeliczenia.'}</p>
+            <p>{items.length > 0 ? `${items.filter((item) => item.status === 'accepted').length} z ${items.length} elementów zaakceptowanych` : 'Brak checklisty do przeliczenia.'}</p>
             <div className="case-detail-progress"><span style={{ width: `${completionPercent}%` }} /></div>
           </article>
           <article className="case-detail-top-card case-detail-top-card-amber">
@@ -1230,7 +1230,7 @@ export default function CaseDetail() {
               <h2>Blokady / braki</h2>
             </div>
             <strong>{blockers.length}</strong>
-            <p>{blockers[0] ? `${blockers[0].title || 'Brak'} Â· ${getItemStatusLabel(blockers[0].status)}` : 'Brak aktywnych blokerĂłw po stronie sprawy.'}</p>
+            <p>{blockers[0] ? `${blockers[0].title || 'Brak'} Â· ${getItemStatusLabel(blockers[0].status)}` : 'Brak aktywnych blokerów po stronie sprawy.'}</p>
           </article>
           <article className="case-detail-top-card case-detail-top-card-muted">
             <div className="case-detail-card-title-row">
@@ -1249,9 +1249,9 @@ export default function CaseDetail() {
         <section className="case-detail-note-follow-up-panel" data-case-note-follow-up-prompt="true">
           <div className="case-detail-note-follow-up-head">
             <div>
-              <p className="case-detail-eyebrow">NastÄ™pny ruch</p>
-              <h3>UstawiÄ‡ follow-up do tej notatki?</h3>
-              <p>Notatka jest zapisana. Teraz moĹĽesz od razu przypiÄ…Ä‡ kolejny ruch do tej sprawy.</p>
+              <p className="case-detail-eyebrow">Następny ruch</p>
+              <h3>Ustawić follow-up do tej notatki?</h3>
+              <p>Notatka jest zapisana. Teraz możesz od razu przypiąć kolejny ruch do tej sprawy.</p>
             </div>
             <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
               Nie teraz
@@ -1259,25 +1259,25 @@ export default function CaseDetail() {
           </div>
           <div className="case-detail-note-follow-up-preview">{pendingNoteFollowUp.note}</div>
           <div className="case-detail-note-follow-up-actions">
-            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('today')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="today">DziĹ›</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('today')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="today">Dziś</Button>
             <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('tomorrow')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="tomorrow">Jutro</Button>
             <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('two_days')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="two_days">Za 2 dni</Button>
-            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('week')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="week">Za tydzieĹ„</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('week')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="week">Za tydzień</Button>
           </div>
           <div className="case-detail-note-follow-up-custom">
-            <Label htmlFor="case-note-follow-up-at">WĹ‚asny termin</Label>
+            <Label htmlFor="case-note-follow-up-at">Własny termin</Label>
             <Input id="case-note-follow-up-at" type="datetime-local" value={customNoteFollowUpAt} onChange={(event) => setCustomNoteFollowUpAt(event.target.value)} data-case-note-follow-up-custom-input="true" />
-            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('custom')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="custom">Ustaw wĹ‚asny</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('custom')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="custom">Ustaw własny</Button>
           </div>
         </section>
       ) : null}
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
-              <nav aria-label="ZakĹ‚adki sprawy">
+              <nav aria-label="Zakładki sprawy">
                 <TabsList className="case-detail-tabs">
                   {[
-                    { key: 'service', label: 'ObsĹ‚uga' },
-                    { key: 'path', label: 'ĹšcieĹĽka' },
+                    { key: 'service', label: 'Obsługa' },
+                    { key: 'path', label: 'Ścieżka' },
                     { key: 'checklists', label: 'Checklisty' },
                     { key: 'history', label: 'Historia' },
                   ].map((tab) => (
@@ -1293,13 +1293,13 @@ export default function CaseDetail() {
               <section className="case-detail-section-card">
                 <div className="case-detail-section-head">
                   <div>
-                    <h2>NajwaĹĽniejsze dziaĹ‚ania</h2>
+                    <h2>Najważniejsze działania</h2>
                     <p></p>
                   </div>
                 </div>
                 <div className="case-detail-work-list">
                   {workItems.length === 0 ? (
-                    <div className="case-detail-light-empty">Brak dziaĹ‚aĹ„ do pokazania. Dodaj brak, zadanie albo wydarzenie.</div>
+                    <div className="case-detail-light-empty">Brak działań do pokazania. Dodaj brak, zadanie albo wydarzenie.</div>
                   ) : (
                     workItems.map((entry) => (
                       <div key={entry.id} style={{ display: 'contents' }}>
@@ -1324,14 +1324,14 @@ export default function CaseDetail() {
               <section className="case-detail-section-card">
                 <div className="case-detail-section-head">
                   <div>
-                    <h2>ĹšcieĹĽka sprawy</h2>
-                    <p>Operacyjny skrĂłt tego, co blokuje start albo realizacjÄ™.</p>
+                    <h2>Ścieżka sprawy</h2>
+                    <p>Operacyjny skrót tego, co blokuje start albo realizację.</p>
                   </div>
                 </div>
                 <div className="case-detail-path-grid">
-                  <PathCard label="Braki" value={missingItems.length} helper="Elementy, ktĂłre trzeba jeszcze dostaÄ‡." tone="amber" />
-                  <PathCard label="Do akceptacji" value={uploadedItems.length} helper="Elementy przesĹ‚ane i czekajÄ…ce na decyzjÄ™." tone="blue" />
-                  <PathCard label="Zadania" value={openTasks.length} helper="Otwarte zadania powiÄ…zane ze sprawÄ…." tone="green" />
+                  <PathCard label="Braki" value={missingItems.length} helper="Elementy, które trzeba jeszcze dostać." tone="amber" />
+                  <PathCard label="Do akceptacji" value={uploadedItems.length} helper="Elementy przesłane i czekające na decyzję." tone="blue" />
+                  <PathCard label="Zadania" value={openTasks.length} helper="Otwarte zadania powiązane ze sprawą." tone="green" />
                   <PathCard label="Wydarzenia" value={plannedEvents.length} helper="Zaplanowane spotkania i terminy." tone="neutral" />
                 </div>
               </section>
@@ -1362,9 +1362,9 @@ export default function CaseDetail() {
                         </div>
                         <span className={`case-detail-pill ${getStatusClass(item.status)}`}>{getItemStatusLabel(item.status)}</span>
                         <div className="case-detail-row-actions">
-                          <button type="button" onClick={() => handleItemStatusChange(item, 'uploaded')}>WysĹ‚ane</button>
+                          <button type="button" onClick={() => handleItemStatusChange(item, 'uploaded')}>Wysłane</button>
                           <button type="button" onClick={() => handleItemStatusChange(item, 'accepted')}>Akceptuj</button>
-                          <button type="button" onClick={() => handleItemStatusChange(item, 'rejected')}>OdrzuÄ‡</button>
+                          <button type="button" onClick={() => handleItemStatusChange(item, 'rejected')}>Odrzuć</button>
                         </div>
                       </article>
                     ))
@@ -1378,7 +1378,7 @@ export default function CaseDetail() {
                 <div className="case-detail-section-head">
                   <div>
                     <h2>Historia</h2>
-                    <p>KrĂłtka oĹ› dziaĹ‚aĹ„ bez technicznych danych i bez JSON-a.</p>
+                    <p>Krótka oś działań bez technicznych danych i bez JSON-a.</p>
                   </div>
                 </div>
                 <div className="case-detail-history-list">
@@ -1416,10 +1416,10 @@ export default function CaseDetail() {
             </Button>
             <Button type="button" variant="outline" data-case-create-action="note" onClick={openCaseNoteDialog}>
               <StickyNote className="h-4 w-4" />
-              Dodaj notatkÄ™
+              Dodaj notatkę
             </Button>
           </div>
-          <small className="case-detail-right-note">Zadanie i wydarzenie zostanÄ… automatycznie podpiÄ™te pod tÄ™ sprawÄ™ oraz klienta.</small>
+          <small className="case-detail-right-note">Zadanie i wydarzenie zostaną automatycznie podpięte pod tę sprawę oraz klienta.</small>
         </div>
 
             <section className="right-card case-detail-right-card">
@@ -1450,7 +1450,7 @@ export default function CaseDetail() {
                 <div className="case-detail-section-heading">
                   <div>
                     <p className="case-detail-eyebrow">Kontekst</p>
-                    <h2>Ostatnie 5 ruchĂłw</h2>
+                    <h2>Ostatnie 5 ruchów</h2>
                   </div>
                   <Button
                     type="button"
@@ -1460,14 +1460,14 @@ export default function CaseDetail() {
                     onClick={() => setActiveTab('history')}
                     data-case-recent-moves-open-history="true"
                   >
-                    Zobacz caĹ‚Ä… aktywnoĹ›Ä‡
+                    Zobacz całą aktywność
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
 
                 {recentCaseMoves.length === 0 ? (
                   <div className="case-detail-empty-state" data-case-recent-moves-empty="true">
-                    Brak ruchĂłw w tej sprawie. Dodaj notatkÄ™, zadanie albo brak, ĹĽeby historia zaczÄ™Ĺ‚a ĹĽyÄ‡.
+                    Brak ruchów w tej sprawie. Dodaj notatkę, zadanie albo brak, żeby historia zaczęła żyć.
                   </div>
                 ) : (
                   <div className="case-detail-recent-moves-list">
@@ -1501,8 +1501,8 @@ export default function CaseDetail() {
               <small>{caseData.clientPhone || 'Brak telefonu'}</small>
               <small>{caseData.clientEmail || 'Brak e-maila'}</small>
               <div className="case-detail-right-actions case-detail-right-actions-inline">
-                <button type="button" disabled={!caseData.clientId} onClick={() => navigate(`/clients/${String(caseData.clientId)}`)}>OtwĂłrz klienta</button>
-                <button type="button" disabled={!caseData.leadId} onClick={() => navigate(`/leads/${String(caseData.leadId)}`)}>OtwĂłrz lead</button>
+                <button type="button" disabled={!caseData.clientId} onClick={() => navigate(`/clients/${String(caseData.clientId)}`)}>Otwórz klienta</button>
+                <button type="button" disabled={!caseData.leadId} onClick={() => navigate(`/leads/${String(caseData.leadId)}`)}>Otwórz lead</button>
               </div>
             </section>
 
@@ -1513,9 +1513,9 @@ export default function CaseDetail() {
               </div>
               <div className="case-detail-right-metrics">
                 <span><strong>{getCaseStatusLabel(effectiveStatus)}</strong> stan sprawy</span>
-                <span><strong>{completionPercent}%</strong> gotowoĹ›Ä‡</span>
-                <span><strong>{openTasks.length}</strong> powiÄ…zane zadania</span>
-                <span><strong>{plannedEvents.length}</strong> powiÄ…zane wydarzenia</span>
+                <span><strong>{completionPercent}%</strong> gotowość</span>
+                <span><strong>{openTasks.length}</strong> powiązane zadania</span>
+                <span><strong>{plannedEvents.length}</strong> powiązane wydarzenia</span>
               </div>
               <p className="case-detail-right-note">{getCaseStatusHint(effectiveStatus)}</p>
               <div className="case-detail-right-actions case-detail-right-actions-inline">
@@ -1532,10 +1532,10 @@ export default function CaseDetail() {
             <section className="right-card case-detail-right-card">
               <div className="case-detail-card-title-row">
                 <ExternalLink className="h-4 w-4" />
-                <h2>Portal i ĹşrĂłdĹ‚a</h2>
+                <h2>Portal i źródła</h2>
               </div>
-              <p>{caseData.portalReady ? 'Portal klienta jest gotowy' : 'Portal moĹĽna skopiowaÄ‡ z akcji w nagĹ‚Ăłwku'}</p>
-              <small>PowiÄ…zany lead: {caseData.leadId || 'Brak'}</small>
+              <p>{caseData.portalReady ? 'Portal klienta jest gotowy' : 'Portal można skopiować z akcji w nagłówku'}</p>
+              <small>Powiązany lead: {caseData.leadId || 'Brak'}</small>
               <Button type="button" size="sm" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>Kopiuj portal</Button>
             </section>
           </aside>
@@ -1594,7 +1594,7 @@ function CaseDetailV1CommandCenter({
           Zrobione
         </button>
         <button type="button" onClick={() => onSetStatus('in_progress')} disabled={!isCompleted}>
-          PrzywrĂłÄ‡
+          Przywróć
         </button>
       </div>
     </section>
@@ -1665,8 +1665,8 @@ function WorkItemRow({
         {entry.kind === 'missing' ? (
           <>
             <button type="button" onClick={() => onItemAccept(entry.source as CaseItem)}>Akceptuj</button>
-            <button type="button" onClick={() => onItemReject(entry.source as CaseItem)}>OdrzuÄ‡</button>
-            <button type="button" className="case-detail-row-action-danger" onClick={() => onItemDelete(entry.source as CaseItem)}>UsuĹ„</button>
+            <button type="button" onClick={() => onItemReject(entry.source as CaseItem)}>Odrzuć</button>
+            <button type="button" className="case-detail-row-action-danger" onClick={() => onItemDelete(entry.source as CaseItem)}>Usuń</button>
           </>
         ) : null}
       </div>
@@ -1692,8 +1692,8 @@ function CaseItemDialog({
       <DialogContent>
         <DialogHeader><DialogTitle>Dodaj brak</DialogTitle></DialogHeader>
         <div className="case-detail-dialog-grid">
-          <label>TytuĹ‚<Input value={value.title} onChange={(event) => onChange({ ...value, title: event.target.value })} placeholder="np. Umowa, skan dokumentu, decyzja" /></label>
-          <label>Opis<Textarea value={value.description} onChange={(event) => onChange({ ...value, description: event.target.value })} placeholder="KrĂłtko opisz, czego brakuje." /></label>
+          <label>Tytuł<Input value={value.title} onChange={(event) => onChange({ ...value, title: event.target.value })} placeholder="np. Umowa, skan dokumentu, decyzja" /></label>
+          <label>Opis<Textarea value={value.description} onChange={(event) => onChange({ ...value, description: event.target.value })} placeholder="Krótko opisz, czego brakuje." /></label>
           <label>Typ<select value={value.type} onChange={(event) => onChange({ ...value, type: event.target.value })}><option value="file">Plik</option><option value="decision">Decyzja</option><option value="text">Tekst</option></select></label>
           <label>Termin<Input type="date" value={value.dueDate} onChange={(event) => onChange({ ...value, dueDate: event.target.value })} /></label>
           <label className="case-detail-checkbox-label"><input type="checkbox" checked={value.isRequired} onChange={(event) => onChange({ ...value, isRequired: event.target.checked })} /> Wymagane do startu / realizacji</label>

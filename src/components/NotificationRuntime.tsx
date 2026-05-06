@@ -11,6 +11,7 @@ import {
   hasDeliveredNotification,
   getNotificationDeliveryKey,
 } from '../lib/notifications';
+import { getReminderSettings } from '../lib/reminders';
 
 type NotificationRuntimeProps = {
   enabled: boolean;
@@ -36,12 +37,17 @@ export default function NotificationRuntime({ enabled }: NotificationRuntimeProp
         if (cancelled) return;
 
         const items = buildRuntimeNotificationItems(bundle, new Date());
+        const reminderSettings = getReminderSettings();
         const permission = getBrowserNotificationPermission();
         const browserEnabled =
-          typeof profile?.browserNotificationsEnabled === 'boolean'
+          reminderSettings.browserNotificationsEnabled
+          && (typeof profile?.browserNotificationsEnabled === 'boolean'
             ? profile.browserNotificationsEnabled
-            : getBrowserNotificationsEnabled();
+            : getBrowserNotificationsEnabled());
+        const liveEnabled = reminderSettings.liveNotificationsEnabled;
         const pageVisible = typeof document !== 'undefined' ? document.visibilityState === 'visible' : true;
+
+        if (!liveEnabled) return;
 
         for (const item of items) {
           const deliveryKey = getNotificationDeliveryKey(item.key);

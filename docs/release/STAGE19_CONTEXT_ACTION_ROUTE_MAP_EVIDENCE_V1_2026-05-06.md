@@ -1,48 +1,25 @@
-# STAGE19_CONTEXT_ACTION_ROUTE_MAP_EVIDENCE_V1
+# Stage19 â€” context action route map evidence
 
-Data: 2026-05-06  
-Repo: `dkknapikdamian-collab/leadflowv1`  
-Branch: `dev-rollout-freeze`
+Marker: STAGE19_CONTEXT_ACTION_ROUTE_MAP_EVIDENCE_V1
 
 ## Cel
 
-Dodac jednoznaczna mape tras akcji kontekstowych bez zmiany wygladu UI.
+Stage19 dokumentuje mapÄ™ tras i miejsc wywoĹ‚ania wspĂłlnego hosta akcji kontekstowych dla task/event/note.
 
-## Problem
+## Mapa routingu akcji
 
-Przyciski o tej samej nazwie moga z czasem zaczac prowadzic do roznych okienek albo roznych zapisow. To jest ryzykowne szczegolnie dla akcji:
+- `src/lib/context-action-contract.ts` â€” centralny kontrakt typĂłw `task`, `event`, `note`, targetĂłw zapisu i relacji.
+- `src/components/ContextActionDialogs.tsx` â€” jeden host dialogĂłw, obsĹ‚uga explicit trigger i legacy fallback.
+- `src/pages/LeadDetail.tsx` â€” routing akcji przez `openContextQuickAction`, bez bezpoĹ›rednich importĂłw task/event dialogĂłw.
+- `src/pages/ClientDetail.tsx` â€” routing akcji przez `openContextQuickAction`, bez bezpoĹ›rednich importĂłw task/event dialogĂłw.
+- `src/pages/CaseDetail.tsx` â€” routing akcji przez `openContextQuickAction`, bez bezpoĹ›rednich importĂłw task/event dialogĂłw.
 
-- zadanie,
-- wydarzenie,
-- notatka.
+## DowĂłd runtime contract
 
-## Rozwiazanie
+- task zapisuje przez `TaskCreateDialog` / `insertTaskToSupabase`.
+- event zapisuje przez `EventCreateDialog` / `insertEventToSupabase`.
+- note zapisuje przez `ContextNoteDialog` do `activities` z relacjami kontekstowymi.
 
-Stage19 dodaje audit route map:
+## Kryterium
 
-- `scripts/audit-context-action-route-map.cjs`,
-- `scripts/check-stage19-context-action-route-map-evidence.cjs`,
-- `tests/stage19-context-action-route-map-evidence.test.cjs`.
-
-Audit generuje:
-
-- `docs/release/STAGE19_CONTEXT_ACTION_ROUTE_MAP_EVIDENCE_LATEST.md`.
-
-## Kontrakt
-
-- `task` idzie przez `ContextActionDialogsHost` -> `TaskCreateDialog` -> `insertTaskToSupabase` -> `tasks`.
-- `event` idzie przez `ContextActionDialogsHost` -> `EventCreateDialog` -> `insertEventToSupabase` -> `events`.
-- `note` idzie przez `ContextActionDialogsHost` -> `ContextNoteDialog` -> `insertActivityToSupabase` -> `activities`.
-
-## Nie zmieniaj
-
-- Nie zmienia wygladu przyciskow.
-- Nie dodaje nowych funkcji w `api/`.
-- Nie tworzy alternatywnych lokalnych dialogow.
-
-## Kryterium zakonczenia
-
-- `npm.cmd run audit:stage19-context-action-route-map` przechodzi.
-- `npm.cmd run check:stage19-context-action-route-map-evidence-v1` przechodzi.
-- `npm.cmd run test:stage19-context-action-route-map-evidence-v1` przechodzi.
-- `npm.cmd run build` przechodzi.
+Nie ma osobnych fizycznych dialogĂłw task/event na stronach detail. Wszystkie strony idÄ… przez jeden host i jeden kontrakt.

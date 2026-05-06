@@ -106,6 +106,9 @@ export type BillingStatus = (typeof BILLING_STATUS_VALUES)[number];
 export type AccessState = BillingStatus;
 
 export type LeadPriority = 'low' | 'medium' | 'high' | 'urgent';
+export const DATA_CONTRACT_TASK_TYPES = ['task', 'follow_up', 'deadline'] as const;
+export const DATA_CONTRACT_EVENT_TYPES = ['event', 'meeting'] as const;
+export const DATA_CONTRACT_PRIORITIES = ['low', 'medium', 'high', 'urgent'] as const;
 
 type StatusMeta<T extends string> = {
   value: T;

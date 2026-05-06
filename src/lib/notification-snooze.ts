@@ -1,6 +1,6 @@
 const SNOOZE_KEY = 'closeflow:notifications:snoozed:v1';
 
-export type NotificationSnoozeMode = '15m' | '1h' | 'tomorrow';
+export type NotificationSnoozeMode = '15m' | '1h' | 'tomorrow' | 'custom';
 export type NotificationReminderType = 'overdue' | '30min' | 'today_morning' | 'ai_draft_review' | 'lead_no_action';
 
 export type NotificationSnoozeEntry = {
@@ -85,7 +85,7 @@ export function buildNotificationReminderWindow(startsAt: string, reminderType: 
   return parsed.toISOString().slice(0, 16);
 }
 
-export function computeNotificationSnoozeUntil(mode: NotificationSnoozeMode, now = new Date()) {
+export function computeNotificationSnoozeUntil(mode: Exclude<NotificationSnoozeMode, 'custom'>, now = new Date()) {
   const next = new Date(now);
 
   if (mode === '15m') {
@@ -130,10 +130,32 @@ export function setNotificationSnooze(key: string, mode: NotificationSnoozeMode,
   const safeKey = String(key || '').trim();
   if (!safeKey) return null;
 
+  if (mode === 'custom') return null;
+
   const entry: NotificationSnoozeEntry = {
     key: safeKey,
     until: computeNotificationSnoozeUntil(mode, now),
     mode,
+    createdAt: now.toISOString(),
+  };
+
+  const map = readSnoozeMap();
+  map[safeKey] = entry;
+  saveSnoozeMap(map);
+  return entry;
+}
+
+export function setNotificationSnoozeCustom(key: string, untilIso: string, now = new Date()) {
+  const safeKey = String(key || '').trim();
+  if (!safeKey) return null;
+  const until = parseDate(untilIso);
+  if (!until) return null;
+  if (until.getTime() <= now.getTime()) return null;
+
+  const entry: NotificationSnoozeEntry = {
+    key: safeKey,
+    until: until.toISOString(),
+    mode: 'custom',
     createdAt: now.toISOString(),
   };
 
