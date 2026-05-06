@@ -1,0 +1,188 @@
+Produkt końcowy
+
+To ma być:
+
+jeden system do domykania i uruchamiania klienta
+
+Czyli:
+
+Warstwa 1: Sprzedaż / Lead Flow
+
+Pilnuje:
+
+kto wymaga ruchu dziś
+kto jest zagrożony
+jaki jest next step
+gdzie kasa może uciec
+Warstwa 2: Start realizacji / kompletność
+
+Pilnuje:
+
+czego klient jeszcze nie dosłał
+czego jeszcze nie zatwierdził
+gdzie projekt stoi
+czego brakuje do startu
+co jest zablokowane
+Najważniejsza zasada
+
+User nie ma czuć, że „wchodzi do drugiej aplikacji”.
+Ma czuć:
+
+lead przeszedł dalej i system pilnuje kolejnego rodzaju ruchu.
+
+3. Docelowa architektura produktu
+Jeden rekord klienta, jedna historia, różne etapy
+Poziom 1 — kontakt / klient
+
+Jedna osoba / firma
+
+Poziom 2 — lead
+
+Etap sprzedażowy:
+
+status
+wartość
+priorytet
+next step
+risk
+historia sprzedażowa
+Poziom 3 — sprawa / case / deal operacyjny
+
+Powstaje po:
+
+wygraniu
+gotowości do startu
+wejściu w etap operacyjny
+Poziom 4 — checklista kompletności
+
+Do sprawy przypinamy:
+
+materiały
+decyzje
+zgody
+pliki
+akceptacje
+braki
+blokery
+Poziom 5 — aktywność i przypomnienia
+
+System liczy:
+
+co jest zaległe
+czy czekamy na klienta
+czy czekamy na nas
+czy sprawa stoi
+jaki jest następny ruch
+4. Docelowe menu aplikacji
+
+Nie robiłbym osobnego menu „Portal”.
+Portal klienta jest wejściem z linku, nie głównym modułem operatora.
+
+Finalne menu operatora
+Dziś
+Leady
+Sprawy
+Zadania
+Kalendarz
+Klienci albo na start ukryte w Lead / Case modelu
+Szablony
+Aktywność
+Rozliczenia
+Ustawienia
+
+Na bardzo wczesnym etapie możesz zostawić:
+
+Dziś
+Leady
+Zadania
+Kalendarz
+Sprawy
+Aktywność
+Rozliczenia
+Ustawienia
+
+I Klienci / Szablony dołożyć chwilę później, ale architektura musi je przewidywać.
+
+5. Nowa skórka: decyzja o wyglądzie
+
+Tu decyzja jest bardzo prosta:
+
+Tak, bierzemy nową skórkę z Fortecy jako kierunek głównego UI
+
+Bo z Twoich screenów widać, że dla Ciebie ten układ jest:
+
+czytelniejszy
+bardziej produktowy
+lepiej hierarchizuje informacje
+dobrze nadaje się do modułu Sprawy
+Ale nie robimy tego jako „przeklejenie kolorów”
+
+Robimy to jako:
+
+Visual System Lock
+
+Czyli:
+
+sidebar
+top paddings
+cards
+stats cards
+search + filters bar
+list cards
+detail headers
+status badges
+operator shell
+klient portal shell
+dialogi i formularze
+
+mają zostać ujednolicone w tej nowej skórce.
+
+6. Co zostaje z obecnego Lead Flow, a co zmieniamy
+Zostaje
+logika produktu jako panel pilnowania ruchu sprzedażowego
+Today jako centrum dowodzenia
+logika next step / overdue / risk / waiting too long
+zadania, kalendarz, przypomnienia, snooze, settings, billing, auth, workspace, trial, dane online, RLS, jedna baza prawdy
+Zmieniamy
+skórkę i komponenty widokowe na styl Forteca
+IA aplikacji tak, żeby Sprawy były pełnoprawnym modułem
+model danych tak, żeby po „won” lead przechodził w sprawę
+dashboard Today tak, żeby pokazywał także blokady po sprzedaży
+lead detail tak, żeby miał sekcję „Start realizacji”
+dokładamy portal klienta, checklisty, uploady, akceptacje, status kompletności
+7. Kolejność budowy: ogólny werdykt
+
+Najlepsza kolejność nie jest taka:
+
+najpierw wszystko backendowo
+albo najpierw pełen visual polish
+
+Najlepsza jest taka:
+
+Faza 1
+
+Zamrożenie architektury i nowej skórki rdzenia
+
+Faza 2
+
+Domknięcie rdzenia Lead Flow w nowej skórce
+
+Faza 3
+
+Dołożenie Spraw jako modułu po sprzedaży
+
+Faza 4
+
+Portal klienta + checklisty + uploady + akceptacje
+
+Faza 5
+
+Automatyzacje, blokery, dashboard połączony
+
+Faza 6
+
+Twarde domknięcie bezpieczeństwa, billingu, accessu, QA
+
+8. Szczegółowa roadmapa wdrożeniowa
+
+Poniżej masz to już w formacie pakietów wdrożeniowych.
