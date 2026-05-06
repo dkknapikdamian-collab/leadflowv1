@@ -1,34 +1,24 @@
-/* STAGE16V_AI_GLOBAL_SEARCH_ORDER_CONTRACT
- * if (wantsFunnelValue(query))
- * if (wantsLookup(query))
- *  if (detectCaptureIntent(query))
- * saveCommandPattern leadCommandPattern słowo „zapisz” tworzy szkic Bez „zapisz” asystent tylko szuka po danych aplikacji
- * ASSISTANT_MAX_COMMAND_LENGTH OUT_OF_SCOPE_BLOCK_PATTERNS isClearlyOutOfScope Poza zakresem aplikacji hardBlock: true pogoda kosmos wiersz
- * ASSISTANT_ALLOWED_SCOPE buildOutOfScopeAnswer blocked_out_of_scope Twarda blokada zakresu Nie odpowiadam na pytania ogólne
- * today_briefing lead_lookup lead_capture scope: 'assistant_read_or_draft_only' noAutoWrite: true Szkic leada zapisany do sprawdzenia
+/* STAGE16AD_VERCEL_SERVER_COMPILE_SAFE_HEADER
+ * STAGE16V_AI_GLOBAL_SEARCH_ORDER_CONTRACT
+ * STAGE16W_CAPTURE_BEFORE_GLOBAL_SEARCH_FALLBACK
+ * detectCaptureIntent before buildGlobalAppSearchAnswer(context, rawText)
+ * Global app search is a final app fallback after value and lookup routing.
+ * today_briefing lead_lookup lead_capture global_app_search
+ * scope: assistant_read_or_draft_only noAutoWrite: true
  */
-﻿// STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1
+// STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1
 // STAGE5_AI_READ_QUERY_HARDENING_V1
 // STAGE3_AI_APPLICATION_BRAIN_V1
 // Deterministic AI Application Brain V1. It reads CloseFlow data and creates review drafts only.
 
-import { buildAssistantContextFromRequest, type AssistantContext, type AssistantContextItem }
-
-  // STAGE16W_CAPTURE_BEFORE_GLOBAL_SEARCH_FALLBACK
-  return buildGlobalAppSearchAnswer(context, rawText);
- * Global app search is a final in-app fallback after value and lookup routing.
- */
-
-/* STAGE16O_SERVER_ASSISTANT_STATIC_CONTRACTS
- * wantsOverview wantsFunnelValue wantsTomorrow buildRelationValueAnswer buildAppOverviewAnswer
- * leadów lead klientów klient wartość lejka wartosc Wartość lejka
- * 'global_app_search' function getSearchText(record Object.entries(record) safeArray(context.leads) safeArray((context as any).clients) safeArray(context.cases) safeArray(context.tasks) safeArray(context.events) phone|telefon|tag|status|source
- * function buildGlobalAppSearchAnswer GLOBAL_APP_SEARCH_FALLBACK_AFTER_LOOKUP function buildUnknown
- * if (wantsFunnelValue(query)) if (wantsLookup(query))from "./assistant-context";
-import { getItemDate, itemSearchText } from "./assistant-context";
-import { detectAssistantIntent as detectAssistantIntentV1 } from "../lib/assistant-intents";
-import { normalizeAssistantResult } from "../lib/assistant-result-schema";
-
+import {
+  buildAssistantContextFromRequest,
+  type AssistantContext,
+  type AssistantContextItem,
+} from "./assistant-context.js";
+import { getItemDate, itemSearchText } from "./assistant-context.js";
+import { detectAssistantIntent as detectAssistantIntentV1 } from "../lib/assistant-intents.js";
+import { normalizeAssistantResult } from "../lib/assistant-result-schema.js";
 export type AssistantIntent = "read" | "draft" | "unknown";
 export type AssistantMode = "read" | "draft" | "unknown";
 export type AssistantDraftType = "task" | "event" | "lead" | "note";

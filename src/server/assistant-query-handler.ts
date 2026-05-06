@@ -2,9 +2,9 @@
 // STAGE7_AI_ASSISTANT_QUERY_API_CONTRACT_SMOKE_V1
 // Handles the public /api/assistant/query contract through /api/system?kind=assistant-query.
 
-import { buildAssistantContextFromRequest } from './assistant-context';
-import { runAssistantQuery } from './ai-assistant';
-import { normalizeAssistantResult } from '../lib/assistant-result-schema';
+import { buildAssistantContextFromRequest } from './assistant-context.js';
+import { runAssistantQuery } from './ai-assistant.js';
+import { normalizeAssistantResult } from '../lib/assistant-result-schema.js';
 
 export const MAX_ASSISTANT_QUERY_BODY_BYTES = 1024 * 1024;
 
