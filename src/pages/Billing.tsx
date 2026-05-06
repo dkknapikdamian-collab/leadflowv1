@@ -300,6 +300,7 @@ export default function Billing() {
   const [clients, setClients] = useState<any[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
+  const [stripeCheckoutConfigured, setStripeCheckoutConfigured] = useState<boolean | null>(null);
 
   const clientById = useMemo(() => new Map(clients.map((entry) => [String(entry.id), String(entry.name || entry.company || 'Klient')])), [clients]);
   const leadById = useMemo(() => new Map(leads.map((entry) => [String(entry.id), String(entry.name || 'Lead')])), [leads]);
@@ -356,6 +357,31 @@ export default function Billing() {
       cancelled = true;
     };
   }, [tab, workspace?.id]);
+
+  useEffect(() => {
+    if (!workspace?.id) {
+      setStripeCheckoutConfigured(null);
+      return;
+    }
+
+    let cancelled = false;
+    createBillingCheckoutSessionInSupabase({
+      workspaceId: workspace.id,
+      dryRun: true,
+    })
+      .then((result) => {
+        if (cancelled) return;
+        setStripeCheckoutConfigured(Boolean(result?.checkoutConfigured));
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setStripeCheckoutConfigured(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [workspace?.id]);
 
   const accessCopy = getAccessCopy(access?.status);
   const currentPlanId = getDisplayPlanId(workspace?.planId, workspace?.subscriptionStatus);
@@ -549,7 +575,8 @@ export default function Billing() {
                   const availability = getPlanAvailability(currentPlanId, plan, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive));
                   const price = getPlanPrice(plan, billingPeriod);
                   const isLoadingPlan = upgradingPlanKey === plan.key;
-                  const canCheckout = availability === 'available' && Boolean(plan.checkoutKey);
+                  const stripeReady = stripeCheckoutConfigured !== false;
+                  const canCheckout = availability === 'available' && Boolean(plan.checkoutKey) && stripeReady;
 
                   return (
                     <article key={plan.id} className={['billing-plan-card', availability === 'current' ? 'billing-plan-current' : ''].join(' ')}>
@@ -587,7 +614,9 @@ export default function Billing() {
                             ? 'Przekierowanie...'
                             : canCheckout
                               ? 'Przejdź na plan'
-                              : 'W przygotowaniu'}
+                              : stripeCheckoutConfigured === false
+                                ? 'Wymaga konfiguracji'
+                                : 'W przygotowaniu'}
                       </Button>
                     </article>
                   );
@@ -735,3 +764,4 @@ export default function Billing() {
     </Layout>
   );
 }
+
