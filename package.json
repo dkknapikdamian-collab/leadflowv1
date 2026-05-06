@@ -343,7 +343,9 @@
     "check:stage7b-stage7-payload-copy-repair-v1": "node scripts/check-stage7b-stage7-payload-copy-repair.cjs",
     "test:stage7b-stage7-payload-copy-repair-v1": "node --test tests/stage7b-stage7-payload-copy-repair.test.cjs",
     "check:stage8-ai-assistant-ui-contract-client-v1": "node scripts/check-stage8-ai-assistant-ui-contract-client.cjs",
-    "test:stage8-ai-assistant-ui-contract-client-v1": "node --test tests/stage8-ai-assistant-ui-contract-client.test.cjs"
+    "test:stage8-ai-assistant-ui-contract-client-v1": "node --test tests/stage8-ai-assistant-ui-contract-client.test.cjs",
+    "check:stage9-ai-assistant-ui-smoke-prompts-v1": "node scripts/check-stage9-ai-assistant-ui-smoke-prompts.cjs",
+    "test:stage9-ai-assistant-ui-smoke-prompts-v1": "node --test tests/stage9-ai-assistant-ui-smoke-prompts.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

@@ -1,7 +1,8 @@
+// STAGE9_AI_ASSISTANT_UI_SMOKE_PROMPTS_V1
 // STAGE8_AI_ASSISTANT_UI_CONTRACT_CLIENT_V1
 // STAGE3_AI_APPLICATION_BRAIN_V1
 // AI_DRAFT_CONFIRM_BRIDGE_STAGE4
-// Assistant UI. It calls /api/assistant/query and saves write intents as Supabase-backed review drafts.
+// Assistant UI. It calls /api/assistant/query through one client and exposes smoke prompts for manual QA.
 
 import React, { useMemo, useState } from "react";
 import { askAssistantQueryApi, type AssistantQueryClientResult } from "../lib/assistant-query-client";
@@ -20,6 +21,28 @@ type TodayAiAssistantProps = {
 };
 
 type AssistantResult = AssistantQueryClientResult;
+
+export const STAGE9_AI_ASSISTANT_UI_SMOKE_PROMPTS_V1 = true;
+
+const QUICK_ASSISTANT_SMOKE_PROMPTS = [
+  "Co mam jutro?",
+  "Czy jutro o 17 coś mam?",
+  "Czy w przeciągu 4 godzin mam spotkanie?",
+  "Na kiedy mam najbliższy akt notarialny?",
+  "Znajdź numer do Marka.",
+  "Zapisz zadanie jutro 12 rozgraniczenie.",
+];
+
+function getAssistantModeLabel(mode: AssistantResult["mode"], result: AssistantResult | null) {
+  if (mode === "draft") return "Szkic do sprawdzenia";
+  if (mode === "read" && result?.meta?.noData) return "Brak danych w aplikacji";
+  if (mode === "read") return "Odczyt z danych aplikacji";
+  return "Nieznany tryb";
+}
+
+function countSnapshotItems(snapshot: Record<string, unknown[]>) {
+  return Object.values(snapshot).reduce((sum, list) => sum + (Array.isArray(list) ? list.length : 0), 0);
+}
 
 export default function TodayAiAssistant(props: TodayAiAssistantProps) {
   const [query, setQuery] = useState("");
@@ -40,8 +63,11 @@ export default function TodayAiAssistant(props: TodayAiAssistantProps) {
     [props.leads, props.clients, props.cases, props.tasks, props.events, props.activities, props.drafts],
   );
 
-  async function askAssistant() {
-    const text = query.trim();
+  const snapshotItemsCount = useMemo(() => countSnapshotItems(snapshot), [snapshot]);
+
+  async function askAssistant(nextQuery?: string) {
+    const text = (nextQuery ?? query).trim();
+    if (nextQuery !== undefined) setQuery(text);
     if (!text) {
       setError("Wpisz pytanie albo komendę.");
       return;
@@ -66,31 +92,54 @@ export default function TodayAiAssistant(props: TodayAiAssistantProps) {
   }
 
   return (
-    <section className="ai-assistant-card" data-stage="STAGE3_AI_APPLICATION_BRAIN_V1" data-stage4="AI_DRAFT_CONFIRM_BRIDGE_STAGE4" data-stage8="STAGE8_AI_ASSISTANT_UI_CONTRACT_CLIENT_V1">
+    <section
+      className="ai-assistant-card"
+      data-stage="STAGE3_AI_APPLICATION_BRAIN_V1"
+      data-stage4="AI_DRAFT_CONFIRM_BRIDGE_STAGE4"
+      data-stage8="STAGE8_AI_ASSISTANT_UI_CONTRACT_CLIENT_V1"
+      data-stage9="STAGE9_AI_ASSISTANT_UI_SMOKE_PROMPTS_V1"
+    >
       <div className="ai-assistant-card__header">
         <div>
           <strong>Asystent AI</strong>
           <p>Czyta dane aplikacji. Komendy zapisu tworzą tylko szkice do sprawdzenia.</p>
+          <small data-assistant-snapshot-count={snapshotItemsCount}>Kontekst aplikacji: {snapshotItemsCount} rekordów.</small>
         </div>
       </div>
+
+      <div className="ai-assistant-card__smoke" data-assistant-smoke-prompts="STAGE9_AI_ASSISTANT_UI_SMOKE_PROMPTS_V1">
+        {QUICK_ASSISTANT_SMOKE_PROMPTS.map((prompt) => (
+          <button
+            key={prompt}
+            type="button"
+            data-assistant-smoke-prompt={prompt}
+            onClick={() => void askAssistant(prompt)}
+            disabled={loading}
+          >
+            {prompt}
+          </button>
+        ))}
+      </div>
+
       <div className="ai-assistant-card__inputRow">
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === "Enter" && !event.shiftKey) askAssistant();
+            if (event.key === "Enter" && !event.shiftKey) void askAssistant();
           }}
           placeholder="Np. Co mam jutro? / Znajdź numer do Marka / Zapisz zadanie jutro 12 rozgraniczenie"
           aria-label="Pytanie do asystenta AI"
         />
-        <button type="button" onClick={askAssistant} disabled={loading}>
+        <button type="button" onClick={() => void askAssistant()} disabled={loading}>
           {loading ? "Sprawdzam..." : "Zapytaj"}
         </button>
       </div>
       {error ? <p className="ai-assistant-card__error">{error}</p> : null}
       {result ? (
-        <div className="ai-assistant-card__answer">
+        <div className="ai-assistant-card__answer" data-assistant-result-mode={result.mode}>
           <p>{result.answer}</p>
+          <small data-assistant-mode={result.mode}>{getAssistantModeLabel(result.mode, result)}</small>
           {result.meta?.dataPolicy === "app_data_only" ? (
             <small data-assistant-data-policy="app_data_only">Odpowiedź tylko z danych aplikacji.</small>
           ) : null}
