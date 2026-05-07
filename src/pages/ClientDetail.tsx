@@ -659,7 +659,7 @@ function StatCell({ label, value }: { label: string; value: string | number }) {
 }
 
 
-const CLIENT_DETAIL_TOP_TILES_REPAIR2_GUARD = 'client-detail-top-tiles repair2 above tabs';
+const CLIENT_DETAIL_TOP_TILES_REPAIR6_GUARD = 'client-detail-top-tiles repair6 compact unified safe';
 
 function getClientPaymentAmount(payment: any) {
   const raw =
@@ -692,72 +692,80 @@ type ClientTopTilesProps = {
 
 function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpenCases }: ClientTopTilesProps) {
   const nextAction = buildClientNextAction(leads, cases, tasks, events, clientId);
-  const paidTotal = payments
-    .filter((payment) => isPaidPaymentStatus(payment?.status))
-    .reduce((sum, payment) => sum + getClientPaymentAmount(payment), 0);
+  const paidPayments = payments.filter((payment) => isPaidPaymentStatus(payment?.status));
+  const paidTotal = paidPayments.reduce((sum, payment) => sum + getClientPaymentAmount(payment), 0);
   const declaredTotal = payments.reduce((sum, payment) => sum + getClientPaymentAmount(payment), 0);
   const unpaidTotal = Math.max(0, declaredTotal - paidTotal);
   const activeCases = cases.filter((caseRecord) => !isClientCaseClosed(caseRecord));
   const blockedCases = cases.filter((caseRecord) =>
     ['blocked', 'waiting_on_client', 'to_approve', 'on_hold'].includes(String(caseRecord?.status || '').toLowerCase()),
   );
-  const newestCase = [...cases].sort((left, right) => {
-    const leftTime = asDate(left?.updatedAt || left?.createdAt)?.getTime() ?? 0;
-    const rightTime = asDate(right?.updatedAt || right?.createdAt)?.getTime() ?? 0;
-    return rightTime - leftTime;
-  })[0];
 
   return (
-    <section className="client-detail-top-tiles" data-client-top-tiles="true" aria-label="Szybkie podsumowanie klienta">
+    <section className="client-detail-top-tiles entity-overview-tiles" data-client-top-tiles="true" aria-label="Szybkie podsumowanie klienta">
       <article
-        className={'client-detail-top-tile client-detail-top-tile-action ' + nextActionToneClass(nextAction.tone)}
+        className={'client-detail-top-tile entity-overview-tile entity-overview-tile-action ' + nextActionToneClass(nextAction.tone)}
         data-client-top-tile="next-action"
       >
-        <div className="client-detail-top-tile-head">
-          <span className="client-detail-top-tile-icon"><Clock className="h-4 w-4" /></span>
-          <small>NajbliĹĽsza zaplanowana akcja</small>
+        <div className="entity-overview-tile-head">
+          <span className="entity-overview-tile-icon"><Clock className="h-4 w-4" /></span>
+          <small>Najbliższa zaplanowana akcja</small>
         </div>
         <strong>{nextAction.title}</strong>
         <p>{nextAction.subtitle}</p>
         {nextAction.to ? (
-          <Link to={nextAction.to} className="client-detail-top-tile-link">
-            OtwĂłrz
+          <Link to={nextAction.to} className="entity-overview-tile-link">
+            Otwórz
           </Link>
-        ) : null}
+        ) : (
+          <span className="entity-overview-tile-chip entity-overview-tile-chip-muted">Brak szybkiego przejścia</span>
+        )}
       </article>
 
-      <article className="client-detail-top-tile client-detail-top-tile-finance" data-client-top-tile="finance-summary">
-        <div className="client-detail-top-tile-head">
-          <span className="client-detail-top-tile-icon"><FileText className="h-4 w-4" /></span>
-          <small>Podsumowanie finansĂłw</small>
+      <article className="client-detail-top-tile entity-overview-tile entity-overview-tile-finance" data-client-top-tile="finance-summary">
+        <div className="entity-overview-tile-head">
+          <span className="entity-overview-tile-icon"><FileText className="h-4 w-4" /></span>
+          <small>Podsumowanie finansów</small>
         </div>
         <strong>{formatMoneyWithCurrency(paidTotal)}</strong>
-        <p>
-          OpĹ‚acone z rozliczeĹ„ klienta. Do domkniÄ™cia: <b>{formatMoneyWithCurrency(unpaidTotal)}</b>.
-        </p>
-        <span className="client-detail-top-tile-muted">Rozliczenia: {payments.length}</span>
+        <div className="entity-overview-metrics">
+          <div className="entity-overview-metric-row">
+            <span>Opłacone</span>
+            <b>{formatMoneyWithCurrency(paidTotal)}</b>
+          </div>
+          <div className="entity-overview-metric-row">
+            <span>Do domknięcia</span>
+            <b>{formatMoneyWithCurrency(unpaidTotal)}</b>
+          </div>
+          <div className="entity-overview-metric-row">
+            <span>Rozliczenia</span>
+            <b>{payments.length}</b>
+          </div>
+        </div>
       </article>
 
-      <article className="client-detail-top-tile client-detail-top-tile-cases" data-client-top-tile="cases-summary">
-        <div className="client-detail-top-tile-head">
-          <span className="client-detail-top-tile-icon"><Briefcase className="h-4 w-4" /></span>
+      <article className="client-detail-top-tile entity-overview-tile entity-overview-tile-cases" data-client-top-tile="cases-summary">
+        <div className="entity-overview-tile-head">
+          <span className="entity-overview-tile-icon"><Briefcase className="h-4 w-4" /></span>
           <small>Sprawy</small>
         </div>
         <strong>{activeCases.length} aktywne / {cases.length} razem</strong>
         <p>
           {blockedCases.length > 0
             ? `${blockedCases.length} wymaga uwagi.`
-            : newestCase
-              ? `Ostatnia: ${getCaseTitle(newestCase)} Â· ${caseStatusLabel(String(newestCase.status || 'new'))}`
-              : 'Brak spraw przypiÄ™tych do klienta.'}
+            : cases.length > 0
+              ? 'Klient ma przypięte sprawy i bieżący kontekst pracy.'
+              : 'Brak spraw przypiętych do klienta.'}
         </p>
-        <button type="button" className="client-detail-top-tile-link" onClick={onOpenCases}>
-          PokaĹĽ sprawy
+        <button type="button" className="entity-overview-tile-link" onClick={onOpenCases}>
+          Pokaż sprawy
         </button>
       </article>
     </section>
   );
 }
+
+
 export default function ClientDetail() {
   const { clientId } = useParams();
   const navigate = useNavigate();
