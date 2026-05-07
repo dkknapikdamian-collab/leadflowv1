@@ -45,10 +45,14 @@ const P0_TODAY_STABLE_REBUILD = 'P0_TODAY_STABLE_REBUILD';
 const STAGE70_TODAY_DECISION_ENGINE_STARTER = 'STAGE70_TODAY_DECISION_ENGINE_STARTER';
 const STAGE81_TODAY_RISK_REASON_NEXT_ACTION = 'STAGE81_TODAY_RISK_REASON_NEXT_ACTION';
 const STAGE82_TODAY_NEXT_7_DAYS = 'STAGE82_TODAY_NEXT_7_DAYS';
+const STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE = 'STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE';
+const STAGE16AI_TODAY_TILES_MATCH_LISTS = 'STAGE16AI_TODAY_TILES_MATCH_LISTS';
 void P0_TODAY_STABLE_REBUILD;
 void STAGE70_TODAY_DECISION_ENGINE_STARTER;
 void STAGE81_TODAY_RISK_REASON_NEXT_ACTION;
 void STAGE82_TODAY_NEXT_7_DAYS;
+void STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE;
+void STAGE16AI_TODAY_TILES_MATCH_LISTS;
 
 type DashboardStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -428,11 +432,14 @@ export default function TodayStable() {
   const [status, setStatus] = useState<DashboardStatus>('idle');
   const [data, setData] = useState<DashboardData>(emptyData);
   const [lastLoadedAt, setLastLoadedAt] = useState<string>('');
+  const [manualRefreshing, setManualRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [expandedSection, setExpandedSection] = useState<'all' | 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming'>('all');
   const [actionPendingId, setActionPendingId] = useState<string>('');
 
-  const refreshData = useCallback(async () => {
+  const refreshData = useCallback(async (options?: { manual?: boolean }) => {
+    const manual = Boolean(options?.manual);
+    if (manual) setManualRefreshing(true);
     setStatus((current) => (current === 'ready' ? 'ready' : 'loading'));
     setErrorMessage('');
 
@@ -444,6 +451,8 @@ export default function TodayStable() {
     } catch (error: any) {
       setErrorMessage(error?.message || 'Nie udało się pobrać danych.');
       setStatus('error');
+    } finally {
+      if (manual) setManualRefreshing(false);
     }
   }, []);
 
@@ -634,6 +643,35 @@ export default function TodayStable() {
   const sectionVisible = (key: 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming') =>
     expandedSection === 'all' || expandedSection === key;
 
+  const todaySectionLabels = {
+    no_action: 'Leady bez najbliższej akcji',
+    risk: 'Wysoka wartość / ryzyko',
+    waiting: 'Leady czekające',
+    leads: 'Leady do obsługi dziś',
+    tasks: 'Zadania do wykonania dziś',
+    events: 'Wydarzenia dziś',
+    upcoming: 'Najbliższe 7 dni',
+    drafts: 'Szkice AI do sprawdzenia',
+  } as const;
+
+  const todayTiles: Array<{
+    key: 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming';
+    title: string;
+    count: number;
+    tone: string;
+    activeTone: string;
+    icon: ReactNode;
+  }> = [
+    { key: 'no_action', title: todaySectionLabels.no_action, count: noActionLeads.length, tone: 'text-amber-700', activeTone: 'hover:border-amber-200', icon: <AlertTriangle className="h-4 w-4" /> },
+    { key: 'risk', title: todaySectionLabels.risk, count: highValueAtRiskRows.length, tone: 'text-rose-700', activeTone: 'hover:border-rose-200', icon: <TrendingUp className="h-4 w-4" /> },
+    { key: 'waiting', title: todaySectionLabels.waiting, count: waitingLeadRows.length, tone: 'text-orange-700', activeTone: 'hover:border-orange-200', icon: <UserRound className="h-4 w-4" /> },
+    { key: 'leads', title: todaySectionLabels.leads, count: operatorLeads.length, tone: 'text-blue-700', activeTone: 'hover:border-blue-200', icon: <UserRound className="h-4 w-4" /> },
+    { key: 'tasks', title: todaySectionLabels.tasks, count: operatorTasks.length, tone: 'text-emerald-700', activeTone: 'hover:border-emerald-200', icon: <CheckSquare className="h-4 w-4" /> },
+    { key: 'events', title: todaySectionLabels.events, count: todayEvents.length, tone: 'text-violet-700', activeTone: 'hover:border-violet-200', icon: <CalendarDays className="h-4 w-4" /> },
+    { key: 'upcoming', title: todaySectionLabels.upcoming, count: upcomingRows.length, tone: 'text-slate-700', activeTone: 'hover:border-slate-300', icon: <CalendarDays className="h-4 w-4" /> },
+    { key: 'drafts', title: todaySectionLabels.drafts, count: pendingDrafts.length, tone: 'text-indigo-700', activeTone: 'hover:border-indigo-200', icon: <FileText className="h-4 w-4" /> },
+  ];
+
   const handleArchiveLead = useCallback(async (lead: any) => {
     const leadId = String(lead?.id || '');
     if (!leadId) return;
@@ -686,9 +724,9 @@ export default function TodayStable() {
             </div>
             <div className="flex flex-wrap items-center gap-2">
               {lastLoadedAt ? <span className="text-xs font-semibold text-slate-500">Ostatni odczyt: {lastLoadedAt}</span> : null}
-              <Button type="button" variant="outline" onClick={() => void refreshData()} disabled={loading}>
-                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
-                Odśwież dane
+              <Button type="button" variant="outline" onClick={() => void refreshData({ manual: true })} disabled={loading || manualRefreshing}>
+                {manualRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
+                {manualRefreshing ? 'Odświeżanie...' : 'Odśwież dane'}
               </Button>
             </div>
           </div>
@@ -700,24 +738,33 @@ export default function TodayStable() {
           </div>
         ) : null}
 
-        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <button type="button" onClick={() => setExpandedSection(expandedSection === 'leads' ? 'all' : 'leads')} className="text-left">
-            <Card className="border-slate-100 transition hover:border-blue-200 hover:shadow-md"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Leady do ruchu</p><p className="mt-2 text-3xl font-black text-blue-700">{operatorLeads.length}</p></CardContent></Card>
-          </button>
-          <button type="button" onClick={() => setExpandedSection(expandedSection === 'no_action' ? 'all' : 'no_action')} className="text-left">
-            <Card className="border-slate-100 transition hover:border-amber-200 hover:shadow-md"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Bez najbli?szej zaplanowanej akcji</p><p className="mt-2 text-3xl font-black text-amber-700">{noActionLeads.length}</p></CardContent></Card>
-          </button>
-          <button type="button" onClick={() => setExpandedSection(expandedSection === 'risk' ? 'all' : 'risk')} className="text-left">
-            <Card className="border-slate-100 transition hover:border-rose-200 hover:shadow-md"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Wysoka warto?? / ryzyko</p><p className="mt-2 text-3xl font-black text-rose-700">{highValueAtRiskRows.length}</p></CardContent></Card>
-          </button>
-          <button type="button" onClick={() => setExpandedSection(expandedSection === 'upcoming' ? 'all' : 'upcoming')} className="text-left">
-            <Card className="border-slate-100 transition hover:border-indigo-200 hover:shadow-md"><CardContent className="p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Nast?pne 7 dni</p><p className="mt-2 text-3xl font-black text-indigo-700">{upcomingRows.length}</p></CardContent></Card>
-          </button>
+                <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-stage16ai-today-tiles-match-lists="true">
+          {todayTiles.map((tile) => {
+            const active = expandedSection === tile.key;
+            return (
+              <button key={tile.key} type="button" onClick={() => setExpandedSection(active ? 'all' : tile.key)} className="text-left">
+                <Card className={
+                  'border-slate-100 transition hover:shadow-md ' +
+                  tile.activeTone +
+                  (active ? ' ring-2 ring-slate-200' : '')
+                }>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{tile.title}</p>
+                      <span className={'rounded-full bg-slate-50 p-2 ' + tile.tone}>{tile.icon}</span>
+                    </div>
+                    <p className={'mt-2 text-3xl font-black ' + tile.tone}>{tile.count}</p>
+                    <p className="mt-1 text-xs font-medium text-slate-500">Tyle samo co w sekcji poniżej</p>
+                  </CardContent>
+                </Card>
+              </button>
+            );
+          })}
         </section>
 
         <section className="grid gap-4 xl:grid-cols-3" hidden={!sectionVisible('risk') && !sectionVisible('no_action') && !sectionVisible('waiting')}>
           <StableCard>
-            <SectionHeader title="Leady bez najbliższej zaplanowanej akcji" count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" />
+            <SectionHeader title={todaySectionLabels.no_action} count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" />
             {noActionLeads.length ? noActionLeads.map(({ lead, risk }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
@@ -734,7 +781,7 @@ export default function TodayStable() {
           </StableCard>
 
           <StableCard>
-            <SectionHeader title="Wysoka wartość / ryzyko" count={highValueAtRiskRows.length} icon={<TrendingUp className="h-5 w-5" />} tone="bg-rose-50 text-rose-700" />
+            <SectionHeader title={todaySectionLabels.risk} count={highValueAtRiskRows.length} icon={<TrendingUp className="h-5 w-5" />} tone="bg-rose-50 text-rose-700" />
             {highValueAtRiskRows.length ? highValueAtRiskRows.map(({ lead, risk, momentRaw }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
@@ -751,7 +798,7 @@ export default function TodayStable() {
           </StableCard>
 
           <StableCard>
-            <SectionHeader title="Waiting za długo" count={waitingLeadRows.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" />
+            <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" />
             {waitingLeadRows.length ? waitingLeadRows.map(({ lead, risk, momentRaw }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
@@ -770,7 +817,7 @@ export default function TodayStable() {
 
         <section className="grid gap-4 xl:grid-cols-2" hidden={!sectionVisible('leads') && !sectionVisible('tasks') && !sectionVisible('events') && !sectionVisible('drafts')}>
           <StableCard>
-            <SectionHeader title="Leady do ruchu" count={operatorLeads.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" />
+            <SectionHeader title={todaySectionLabels.leads} count={operatorLeads.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" />
             {operatorLeads.length ? operatorLeads.map(({ lead, momentRaw, risk }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
@@ -787,7 +834,7 @@ export default function TodayStable() {
           </StableCard>
 
           <StableCard>
-            <SectionHeader title="Zadania na dziś" count={operatorTasks.length} icon={<CheckSquare className="h-5 w-5" />} tone="bg-emerald-50 text-emerald-700" />
+            <SectionHeader title={todaySectionLabels.tasks} count={operatorTasks.length} icon={<CheckSquare className="h-5 w-5" />} tone="bg-emerald-50 text-emerald-700" />
             {operatorTasks.length ? operatorTasks.map(({ task, momentRaw }) => {
               const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
               return (
@@ -807,7 +854,7 @@ export default function TodayStable() {
           </StableCard>
 
           <StableCard>
-            <SectionHeader title="Wydarzenia" count={todayEvents.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" />
+            <SectionHeader title={todaySectionLabels.events} count={todayEvents.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" />
             {todayEvents.length ? todayEvents.map(({ event, momentRaw }) => (
               <RowLink
                 key={String(event.id || event.title)}
@@ -824,7 +871,7 @@ export default function TodayStable() {
           </StableCard>
 
           <StableCard>
-            <SectionHeader title="Szkice do zatwierdzenia" count={pendingDrafts.length} icon={<FileText className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" />
+            <SectionHeader title={todaySectionLabels.drafts} count={pendingDrafts.length} icon={<FileText className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" />
             {pendingDrafts.length ? pendingDrafts.map((draft: any) => (
               <RowLink
                 key={String(draft.id || getDraftText(draft))}
@@ -839,7 +886,7 @@ export default function TodayStable() {
 
         <div hidden={!sectionVisible('upcoming')}>
         <StableCard>
-          <SectionHeader title="Następne 7 dni" count={upcomingRows.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" />
+          <SectionHeader title={todaySectionLabels.upcoming} count={upcomingRows.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" />
           {upcomingRows.length ? upcomingRows.map((row) => (
             <RowLink
               key={row.id}
