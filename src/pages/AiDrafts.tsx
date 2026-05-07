@@ -107,6 +107,9 @@ const AI_DRAFT_FILTERS: { key: DraftFilter; label: string }[] = [
 const AI_DRAFT_STAGE9_MARKER = 'AI_DRAFTS_VISUAL_REBUILD_STAGE9';
 const AI_DRAFTS_PLAN_GATE_COPY_GUARD = 'Dostępne od planu Basic';
 const AI_DRAFTS_CANCEL_ERROR_COPY_GUARD = 'Nie udało się anulować szkicu';
+const AI_DRAFTS_METRIC_CARD_ALIAS_REPAIR = 'AI_DRAFTS_METRIC_CARD_ALIAS_REPAIR_2026_05_07';
+void AI_DRAFTS_METRIC_CARD_ALIAS_REPAIR;
+const MetricCard = StatShortcutCard;
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';

@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 
 import { useWorkspace } from '../hooks/useWorkspace';
 import { createQuickAiCaptureDraft, type QuickAiCaptureDraft } from '../lib/ai-capture';
-import { saveAiLeadDraft, type AiLeadDraftSource } from '../lib/ai-drafts';
+import { saveAiLeadDraftAsync, type AiLeadDraftSource } from '../lib/ai-drafts';
 import {
   AI_COMMAND_MAX_LENGTH,
   buildAiUsageKey,
@@ -195,21 +195,28 @@ export default function QuickAiCapture({ initialText = '', openSignal = 0, draft
     }
   };
 
-  const handleSaveRawDraft = () => {
+  const handleSaveRawDraft = async () => {
     const text = rawText.trim();
     if (!text) {
       toast.error('Wklej albo podyktuj notatkę przed zapisem szkicu.');
       return;
     }
 
-    saveAiLeadDraft({
-      rawText: text,
-      parsedDraft: draft ? (draft as unknown as Record<string, unknown>) : null,
-      source: draftSource,
-    });
-    toast.success('Szkic zapisany w Szkicach AI');
-    setOpen(false);
-    reset();
+    setSaving(true);
+    try {
+      await saveAiLeadDraftAsync({
+        rawText: text,
+        parsedDraft: draft ? (draft as unknown as Record<string, unknown>) : null,
+        source: draftSource,
+      });
+      toast.success('Szkic zapisany w Szkicach AI');
+      setOpen(false);
+      reset();
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać szkicu AI w Supabase: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleBuildDraft = async () => {
