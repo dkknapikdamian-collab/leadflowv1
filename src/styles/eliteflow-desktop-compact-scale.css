@@ -1,0 +1,50 @@
+/* ELITEFLOW_DESKTOP_COMPACT_SCALE_2026_05_07
+   Desktop-only app scale. Goal: make the app open closer to the user's preferred 80-85% browser zoom,
+   without changing browser zoom and without triggering responsive breakpoints.
+   This is a fast product test layer. If sticky/modals feel wrong, replace with a real density system.
+*/
+
+@media (min-width: 1024px) and (min-height: 640px) {
+  :root {
+    --eliteflow-desktop-scale: 0.84;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    overflow-x: hidden !important;
+    background: #f4f6f8;
+  }
+
+  #root {
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .closeflow-visual-stage01.app {
+    width: calc(100vw / var(--eliteflow-desktop-scale)) !important;
+    min-height: calc(100vh / var(--eliteflow-desktop-scale)) !important;
+    transform: scale(var(--eliteflow-desktop-scale)) !important;
+    transform-origin: top left !important;
+    will-change: transform;
+  }
+
+  .closeflow-visual-stage01 .global-bar {
+    top: 0;
+  }
+}
+
+/* Never scale mobile/tablet. They need real responsive layout, not desktop shrinking. */
+@media (max-width: 1023px), (max-height: 639px) {
+  .closeflow-visual-stage01.app {
+    width: auto !important;
+    min-height: 100vh !important;
+    transform: none !important;
+  }
+}
+
