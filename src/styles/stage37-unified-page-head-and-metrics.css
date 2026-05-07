@@ -6,8 +6,8 @@
   padding: 16px 20px;
 }
 
-.cf-html-view .grid-4 .metric,
-.cf-html-view .grid-5 .metric {
+.cf-html-view .grid-4 > .metric,
+.cf-html-view .grid-5 > .metric {
   min-height: 92px;
   border: 1px solid #e2e8f0 !important;
   border-radius: 16px !important;
@@ -18,10 +18,12 @@
   justify-content: space-between;
   gap: 10px;
   padding: 14px !important;
+  height: auto !important;
+  min-width: 0 !important;
 }
 
-.cf-html-view .grid-4 .metric > div,
-.cf-html-view .grid-5 .metric > div {
+.cf-html-view .grid-4 > .metric > div,
+.cf-html-view .grid-5 > .metric > div {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -29,8 +31,8 @@
   flex: 1;
 }
 
-.cf-html-view .grid-4 .metric label,
-.cf-html-view .grid-5 .metric label {
+.cf-html-view .grid-4 > .metric label,
+.cf-html-view .grid-5 > .metric label {
   margin: 0 !important;
   min-width: 0;
   flex: 1;
@@ -39,10 +41,12 @@
   font-weight: 800 !important;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
-.cf-html-view .grid-4 .metric strong,
-.cf-html-view .grid-5 .metric strong {
+.cf-html-view .grid-4 > .metric strong,
+.cf-html-view .grid-5 > .metric strong {
   margin: 0 !important;
   font-size: 28px !important;
   line-height: 1 !important;
@@ -50,13 +54,13 @@
   white-space: nowrap;
 }
 
-.cf-html-view .grid-4 .metric .hint,
-.cf-html-view .grid-5 .metric .hint {
+.cf-html-view .grid-4 > .metric .hint,
+.cf-html-view .grid-5 > .metric .hint {
   display: none !important;
 }
 
-.cf-html-view .grid-4 .metric .metric-icon,
-.cf-html-view .grid-5 .metric .metric-icon {
+.cf-html-view .grid-4 > .metric .metric-icon,
+.cf-html-view .grid-5 > .metric .metric-icon {
   width: 36px !important;
   height: 36px !important;
   min-width: 36px;

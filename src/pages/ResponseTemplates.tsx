@@ -3,6 +3,7 @@ import { Archive, Copy, MessageSquareText, Plus, Save, Search, ShieldAlert, Spar
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
@@ -207,34 +208,10 @@ export default function ResponseTemplates() {
         </header>
 
         <section className="grid-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="metric">
-            <div>
-              <label>Szablony</label>
-              <strong className="app-text">{stats.total}</strong>
-            </div>
-            <Sparkles className="metric-icon app-primary-chip" />
-          </div>
-          <div className="metric">
-            <div>
-              <label>Kategorie</label>
-              <strong className="app-text">{stats.categories}</strong>
-            </div>
-            <MessageSquareText className="metric-icon bg-indigo-500/12 text-indigo-600" />
-          </div>
-          <div className="metric">
-            <div>
-              <label>Tagi</label>
-              <strong className="text-amber-600">{stats.tags}</strong>
-            </div>
-            <Tags className="metric-icon bg-amber-500/12 text-amber-600" />
-          </div>
-          <div className="metric">
-            <div>
-              <label>Zmienne</label>
-              <strong className="text-emerald-600">{stats.withVariables}</strong>
-            </div>
-            <Copy className="metric-icon bg-emerald-500/12 text-emerald-600" />
-          </div>
+          <StatShortcutCard label="Szablony" value={stats.total} icon={Sparkles} iconClassName="app-primary-chip" valueClassName="app-text" />
+          <StatShortcutCard label="Kategorie" value={stats.categories} icon={MessageSquareText} iconClassName="bg-indigo-500/12 text-indigo-600" valueClassName="app-text" />
+          <StatShortcutCard label="Tagi" value={stats.tags} icon={Tags} iconClassName="bg-amber-500/12 text-amber-600" valueClassName="text-amber-600" />
+          <StatShortcutCard label="Zmienne" value={stats.withVariables} icon={Copy} iconClassName="bg-emerald-500/12 text-emerald-600" valueClassName="text-emerald-600" />
         </section>
 
         <Card className="border-none app-surface-strong app-shadow">

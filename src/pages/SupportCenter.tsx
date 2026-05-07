@@ -413,7 +413,6 @@ export default function SupportCenter() {
             <MessageSquare className="h-5 w-5" />
             <span>Szybki kontakt</span>
             <strong>Opisz problem albo pytanie</strong>
-            <p>Zapis zgłoszenia tworzy wpis w systemie supportu. Nie tworzymy tutaj osobnego mail composera.</p>
           </article>
           <article className="support-hero-card">
             <ShieldCheck className="h-5 w-5" />

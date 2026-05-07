@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -95,30 +96,6 @@ function getRequiredItemCount(template: TemplateRecord) {
   return normalizeTemplateItems(template.items).filter((item) => item.isRequired).length;
 }
 
-function LightMetricCard({
-  label,
-  value,
-  icon: Icon,
-  iconClassName,
-  valueClassName = 'text-slate-950',
-}: {
-  label: string;
-  value: number;
-  icon: typeof Sparkles;
-  iconClassName: string;
-  valueClassName?: string;
-}) {
-  return (
-    <div className="metric">
-      <div>
-        <label>{label}</label>
-        <strong className={valueClassName}>{value}</strong>
-      </div>
-      <Icon className={`metric-icon ${iconClassName}`} />
-    </div>
-  );
-}
-
 function LightMetricCardRow({
   stats,
 }: {
@@ -131,10 +108,10 @@ function LightMetricCardRow({
 }) {
   return (
     <section className="grid-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <LightMetricCard label="Szablony" value={stats.totalTemplates} icon={Sparkles} iconClassName="bg-emerald-50 text-emerald-700" />
-      <LightMetricCard label="Pozycje" value={stats.totalItems} icon={FileText} iconClassName="bg-indigo-50 text-indigo-700" />
-      <LightMetricCard label="Obowiązkowe" value={stats.requiredItems} icon={AlertTriangle} iconClassName="bg-amber-50 text-amber-700" valueClassName="text-amber-600" />
-      <LightMetricCard label="Akceptacje" value={stats.decisionItems} icon={CheckCircle2} iconClassName="bg-emerald-50 text-emerald-700" valueClassName="text-emerald-600" />
+      <StatShortcutCard label="Szablony" value={stats.totalTemplates} icon={Sparkles} iconClassName="bg-emerald-50 text-emerald-700" />
+      <StatShortcutCard label="Pozycje" value={stats.totalItems} icon={FileText} iconClassName="bg-indigo-50 text-indigo-700" />
+      <StatShortcutCard label="Obowiązkowe" value={stats.requiredItems} icon={AlertTriangle} iconClassName="bg-amber-50 text-amber-700" valueClassName="text-amber-600" />
+      <StatShortcutCard label="Akceptacje" value={stats.decisionItems} icon={CheckCircle2} iconClassName="bg-emerald-50 text-emerald-700" valueClassName="text-emerald-600" />
     </section>
   );
 }

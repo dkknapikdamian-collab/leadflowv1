@@ -28,6 +28,7 @@ import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
@@ -348,39 +349,6 @@ function getAiDraftRelationSelectedLabel(options: AiDraftRelationOption[], selec
   if (!selectedId) return 'Brak powiązania';
   const selected = options.find((option) => option.id === selectedId);
   return selected ? selected.label : 'Wybrany rekord z bazy';
-}
-
-function MetricCard({
-  label,
-  value,
-  icon: Icon,
-  active,
-  onClick,
-  dataTab,
-}: {
-  label: string;
-  value: number;
-  icon: any;
-  active?: boolean;
-  onClick: () => void;
-  dataTab?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      data-ai-drafts-tab={dataTab}
-      className={['ai-drafts-stat-card', active ? 'ai-drafts-stat-card-active' : ''].join(' ')}
-    >
-      <span className="ai-drafts-stat-content">
-        <span className="ai-drafts-stat-label">{label}</span>
-        <span className="ai-drafts-stat-value">{value}</span>
-      </span>
-      <span className="ai-drafts-stat-icon" aria-hidden="true">
-        <Icon className="h-5 w-5" />
-      </span>
-    </button>
-  );
 }
 
 function AiDraftsInner() {

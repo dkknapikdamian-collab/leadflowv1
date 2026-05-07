@@ -1,6 +1,7 @@
 import Layout from '../components/Layout';
 import '../styles/visual-stage8-activity-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import {
   ArrowUpRight,
   Bell,
@@ -495,36 +496,6 @@ function shouldShowByFilter(activity: any, filter: string) {
   return getActivityEntity(activity) === filter;
 }
 
-function MetricCard({
-  label,
-  value,
-  icon: Icon,
-  active,
-  onClick,
-}: {
-  label: string;
-  value: number;
-  icon: any;
-  active?: boolean;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={['activity-stat-card', active ? 'activity-stat-card-active' : ''].join(' ')}
-    >
-      <span className="activity-stat-content">
-        <span className="activity-stat-label">{label}</span>
-        <span className="activity-stat-value">{value}</span>
-      </span>
-      <span className="activity-stat-icon" aria-hidden="true">
-        <Icon className="h-5 w-5" />
-      </span>
-    </button>
-  );
-}
-
 function ActivityRow({
   activity,
   activityId,
@@ -720,12 +691,12 @@ export default function Activity() {
         </header>
 
         <section className="activity-stats-grid" aria-label="Statystyki aktywności">
-          <MetricCard label="Wszystkie" value={metrics.all} icon={FileText} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} />
-          <MetricCard label="Dzisiaj" value={metrics.today} icon={Clock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} />
-          <MetricCard label="Leady" value={metrics.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} />
-          <MetricCard label="Sprawy" value={metrics.cases} icon={Briefcase} active={activeFilter === 'case'} onClick={() => setActiveFilter('case')} />
-          <MetricCard label="Zadania" value={metrics.tasks} icon={ListChecks} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} />
-          <MetricCard label="Wymaga uwagi" value={metrics.attention} icon={Bell} active={activeFilter === 'attention'} onClick={() => setActiveFilter('attention')} />
+          <StatShortcutCard label="Wszystkie" value={metrics.all} icon={FileText} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />
+          <StatShortcutCard label="Dzisiaj" value={metrics.today} icon={Clock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} iconClassName="bg-blue-50 text-blue-500" valueClassName="text-blue-600" />
+          <StatShortcutCard label="Leady" value={metrics.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} iconClassName="bg-indigo-50 text-indigo-500" />
+          <StatShortcutCard label="Sprawy" value={metrics.cases} icon={Briefcase} active={activeFilter === 'case'} onClick={() => setActiveFilter('case')} iconClassName="bg-slate-100 text-slate-500" />
+          <StatShortcutCard label="Zadania" value={metrics.tasks} icon={ListChecks} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} iconClassName="bg-emerald-50 text-emerald-500" valueClassName="text-emerald-600" />
+          <StatShortcutCard label="Wymaga uwagi" value={metrics.attention} icon={Bell} active={activeFilter === 'attention'} onClick={() => setActiveFilter('attention')} iconClassName="bg-rose-50 text-rose-500" valueClassName="text-rose-600" />
         </section>
 
         <div className="activity-vnext-shell">

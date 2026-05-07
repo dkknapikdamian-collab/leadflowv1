@@ -698,75 +698,64 @@ export default function Leads() {
         </div>
 
         <div className="grid-5">
-          <button
-            type="button"
-            className={`metric ${quickFilter === 'all' && !valueSortEnabled && !showTrash ? 'active' : ''}`}
+          <StatShortcutCard
+            label="Wszystkie"
+            value={stats.total}
+            icon={Target}
+            active={quickFilter === 'all' && !valueSortEnabled && !showTrash}
             onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}
             title="Pokaż wszystkie leady"
-          >
-            <div>
-              <label>Wszystkie</label>
-              <strong>{stats.total}</strong>
-              <div className="hint">pełna baza</div>
-            </div>
-            <Target className="metric-icon" />
-          </button>
+            ariaLabel="Pokaż wszystkie leady"
+          />
 
-          <button
-            type="button"
-            className={`metric ${quickFilter === 'active' && !showTrash ? 'active' : ''}`}
+          <StatShortcutCard
+            label="Aktywne"
+            value={stats.active}
+            icon={TrendingUp}
+            active={quickFilter === 'active' && !showTrash}
             onClick={() => toggleQuickFilter('active')}
             title="Pokaż aktywne leady"
-          >
-            <div>
-              <label>Aktywne</label>
-              <strong>{stats.active}</strong>
-              <div className="hint">do prowadzenia</div>
-            </div>
-            <TrendingUp className="metric-icon blue" />
-          </button>
+            ariaLabel="Pokaż aktywne leady"
+            valueClassName="text-slate-900"
+            iconClassName="bg-blue-50 text-blue-500"
+          />
 
-          <button
-            type="button"
-            className={`metric ${valueSortEnabled && !showTrash ? 'active' : ''}`}
+          <StatShortcutCard
+            label="Wartość"
+            value={`${stats.value.toLocaleString('pl-PL')} PLN`}
+            icon={TrendingUp}
+            active={valueSortEnabled && !showTrash}
             onClick={toggleValueSorting}
             title="Sortuj leady po wartości"
-          >
-            <div>
-              <label>Wartość</label>
-              <strong>{stats.value.toLocaleString()} PLN</strong>
-              <div className="hint">{valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortować!'}</div>
-            </div>
-            <TrendingUp className="metric-icon" />
-          </button>
+            ariaLabel="Sortuj leady po wartości"
+            valueClassName="text-slate-900"
+            iconClassName="bg-slate-100 text-slate-500"
+            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortować!'}
+          />
 
-          <button
-            type="button"
-            className={`metric ${quickFilter === 'at-risk' && !showTrash ? 'active' : ''}`}
+          <StatShortcutCard
+            label="Zagrożone"
+            value={stats.atRisk}
+            icon={AlertTriangle}
+            active={quickFilter === 'at-risk' && !showTrash}
             onClick={() => toggleQuickFilter('at-risk')}
             title="Pokaż zagrożone leady"
-          >
-            <div>
-              <label>Zagrożone</label>
-              <strong className="danger">{stats.atRisk}</strong>
-              <div className="hint">ryzyko utraty</div>
-            </div>
-            <AlertTriangle className="metric-icon red" />
-          </button>
+            ariaLabel="Pokaż zagrożone leady"
+            valueClassName="text-rose-600"
+            iconClassName="bg-rose-50 text-rose-500"
+          />
 
-          <button
-            type="button"
-            className={`metric ${quickFilter === 'history' && !showTrash ? 'active' : ''}`}
+          <StatShortcutCard
+            label="Historia"
+            value={stats.linkedToCase}
+            icon={Briefcase}
+            active={quickFilter === 'history' && !showTrash}
             onClick={() => toggleQuickFilter('history')}
             title="Pokaż leady przeniesione do obsługi"
-          >
-            <div>
-              <label>Historia</label>
-              <strong className="success">{stats.linkedToCase}</strong>
-              <div className="hint">w obsłudze lub zamknięte</div>
-            </div>
-            <Briefcase className="metric-icon green" />
-          </button>
+            ariaLabel="Pokaż leady przeniesione do obsługi"
+            valueClassName="text-emerald-600"
+            iconClassName="bg-emerald-50 text-emerald-500"
+          />
         </div>
 
         {/* STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}

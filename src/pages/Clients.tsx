@@ -4,6 +4,7 @@ import { AlertTriangle, Briefcase, Loader2, Plus, RotateCcw, Search, Target, Tra
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
@@ -475,22 +476,48 @@ export default function Clients() {
         </div>
 
         <div className="grid-4">
-          <button type="button" className={`metric ${!showArchived ? 'active' : ''}`} onClick={() => setShowArchived(false)}>
-            <div><label>Aktywni</label><strong>{activeCount}</strong><div className="hint">z otwartą sprawą</div></div>
-            <Target className="metric-icon" />
-          </button>
-          <button type="button" className="metric">
-            <div><label>Bez sprawy</label><strong>{clientsWithoutCases}</strong><div className="hint">tylko kontakt</div></div>
-            <Briefcase className="metric-icon" />
-          </button>
-          <button type="button" className="metric">
-            <div><label>Wartość</label><strong>{formatClientMoney(relationValue)}</strong><div className="hint">w relacjach</div></div>
-            <Wallet className="metric-icon" />
-          </button>
-          <button type="button" className="metric">
-            <div><label>Bez ruchu</label><strong>{staleClients}</strong><div className="hint">do sprawdzenia</div></div>
-            <AlertTriangle className="metric-icon" />
-          </button>
+          <StatShortcutCard
+            label="Aktywni"
+            value={activeCount}
+            icon={Target}
+            active={!showArchived}
+            onClick={() => setShowArchived(false)}
+            title="Pokaż aktywnych klientów"
+            ariaLabel="Pokaż aktywnych klientów"
+            iconClassName="bg-blue-50 text-blue-500"
+            helper="z otwartą sprawą"
+          />
+          <StatShortcutCard
+            label="Bez sprawy"
+            value={clientsWithoutCases}
+            icon={Briefcase}
+            onClick={() => setShowArchived(false)}
+            title="Pokaż klientów bez sprawy"
+            ariaLabel="Pokaż klientów bez sprawy"
+            iconClassName="bg-slate-100 text-slate-500"
+            helper="tylko kontakt"
+          />
+          <StatShortcutCard
+            label="Wartość"
+            value={formatClientMoney(relationValue)}
+            icon={Wallet}
+            onClick={() => setShowArchived(false)}
+            title="Pokaż wartość relacji"
+            ariaLabel="Pokaż wartość relacji"
+            iconClassName="bg-slate-100 text-slate-500"
+            helper="w relacjach"
+          />
+          <StatShortcutCard
+            label="Bez ruchu"
+            value={staleClients}
+            icon={AlertTriangle}
+            onClick={() => setShowArchived(false)}
+            title="Pokaż klientów bez ruchu"
+            ariaLabel="Pokaż klientów bez ruchu"
+            valueClassName="text-rose-600"
+            iconClassName="bg-rose-50 text-rose-500"
+            helper="do sprawdzenia"
+          />
         </div>
 
         <div className="layout-list">

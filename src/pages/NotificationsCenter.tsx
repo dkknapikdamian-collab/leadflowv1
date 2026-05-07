@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
@@ -637,13 +638,13 @@ export default function NotificationsCenter() {
         </header>
 
         <section className="notifications-stats-grid" aria-label="Statystyki powiadomień">
-          <MetricCard label="Wszystkie" value={metrics.all} icon={BellRing} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} />
-          <MetricCard label="Do reakcji" value={metrics.action} icon={ShieldAlert} active={activeFilter === 'action'} onClick={() => setActiveFilter('action')} />
-          <MetricCard label="Zaległe" value={metrics.overdue} icon={Clock3} active={activeFilter === 'overdue'} onClick={() => setActiveFilter('overdue')} />
-          <MetricCard label="Dzisiaj" value={metrics.today} icon={CalendarClock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} />
-          <MetricCard label="Nadchodzące" value={metrics.upcoming} icon={Bell} active={activeFilter === 'upcoming'} onClick={() => setActiveFilter('upcoming')} />
-          <MetricCard label="Odłożone" value={metrics.snoozed} icon={RotateCcw} active={activeFilter === 'snoozed'} onClick={() => setActiveFilter('snoozed')} />
-          <MetricCard label="Przeczytane" value={metrics.read} icon={Check} active={activeFilter === 'read'} onClick={() => setActiveFilter('read')} />
+          <StatShortcutCard label="Wszystkie" value={metrics.all} icon={BellRing} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />
+          <StatShortcutCard label="Do reakcji" value={metrics.action} icon={ShieldAlert} active={activeFilter === 'action'} onClick={() => setActiveFilter('action')} iconClassName="bg-blue-50 text-blue-500" valueClassName="text-blue-600" />
+          <StatShortcutCard label="Zaległe" value={metrics.overdue} icon={Clock3} active={activeFilter === 'overdue'} onClick={() => setActiveFilter('overdue')} iconClassName="bg-rose-50 text-rose-500" valueClassName="text-rose-600" />
+          <StatShortcutCard label="Dzisiaj" value={metrics.today} icon={CalendarClock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} iconClassName="bg-indigo-50 text-indigo-500" />
+          <StatShortcutCard label="Nadchodzące" value={metrics.upcoming} icon={Bell} active={activeFilter === 'upcoming'} onClick={() => setActiveFilter('upcoming')} iconClassName="bg-slate-100 text-slate-500" />
+          <StatShortcutCard label="Odłożone" value={metrics.snoozed} icon={RotateCcw} active={activeFilter === 'snoozed'} onClick={() => setActiveFilter('snoozed')} iconClassName="bg-amber-50 text-amber-600" valueClassName="text-amber-600" />
+          <StatShortcutCard label="Przeczytane" value={metrics.read} icon={Check} active={activeFilter === 'read'} onClick={() => setActiveFilter('read')} iconClassName="bg-emerald-50 text-emerald-500" valueClassName="text-emerald-600" />
         </section>
 
         <div className="notifications-vnext-shell">

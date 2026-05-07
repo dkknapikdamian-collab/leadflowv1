@@ -80,10 +80,10 @@
 }
 
 .support-hero-card {
-  min-height: 142px;
+  min-height: 132px;
   padding: 18px;
   display: grid;
-  align-content: start;
+  align-content: center;
   gap: 8px;
 }
 
