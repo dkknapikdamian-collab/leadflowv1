@@ -2272,3 +2272,145 @@ button.client-detail-top-tile-link {
 .client-detail-vnext-page .client-detail-right-rail [data-client-finance-summary="true"] {
   display: none !important;
 }
+
+
+/* stage22a client detail feedback ui cleanup */
+.client-detail-vnext-page .client-detail-top-tiles.entity-overview-tiles {
+  gap: 10px !important;
+  min-height: 0 !important;
+}
+
+.client-detail-vnext-page .client-detail-top-tile.entity-overview-tile {
+  min-height: 118px !important;
+  padding: 12px 14px !important;
+  border-radius: 18px !important;
+}
+
+.client-detail-vnext-page .entity-overview-tile-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  min-height: 24px !important;
+}
+
+.client-detail-vnext-page .entity-overview-tile-icon {
+  width: 26px !important;
+  height: 26px !important;
+  flex: 0 0 26px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.client-detail-vnext-page .entity-overview-tile strong {
+  font-size: 17px !important;
+  line-height: 1.15 !important;
+}
+
+.client-detail-vnext-page .entity-overview-tile p,
+.client-detail-vnext-page .entity-overview-metric-row {
+  font-size: 12px !important;
+  line-height: 1.3 !important;
+}
+
+.client-detail-vnext-page .client-detail-note-card,
+.client-detail-vnext-page .client-detail-note-card *:not(svg):not(path) {
+  color: #172033 !important;
+}
+
+.client-detail-vnext-page .client-detail-note-card .client-detail-note-text:empty,
+.client-detail-vnext-page .client-detail-note-card .client-detail-note-text[data-empty="true"] {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-note-card .client-detail-note-text {
+  color: #334155 !important;
+  opacity: 1 !important;
+}
+
+.client-detail-vnext-page .client-detail-note-card button,
+.client-detail-vnext-page .client-detail-note-card a {
+  color: #0f172a !important;
+}
+
+.client-detail-vnext-page [data-client-relations-acquisition-only="true"] {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-recent-moves-card {
+  max-height: 360px !important;
+  overflow: auto !important;
+}
+
+.client-detail-vnext-page .client-detail-recent-moves-card h2,
+.client-detail-vnext-page .client-detail-recent-moves-card h3,
+.client-detail-vnext-page .client-detail-recent-moves-card [class*="title"] {
+  color: #0f172a !important;
+}
+
+.client-detail-vnext-page .client-detail-completeness-card a,
+.client-detail-vnext-page .client-detail-completeness-card .client-detail-open-case-link,
+.client-detail-vnext-page .client-detail-top-cards-side a[href*="/cases/"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 34px !important;
+  padding: 8px 12px !important;
+  margin-top: 8px !important;
+  border-radius: 999px !important;
+  background: #0f172a !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  text-decoration: none !important;
+}
+
+@media (max-width: 760px) {
+  aside.sidebar[data-shell-sidebar="true"],
+  aside.sidebar {
+    width: 176px !important;
+    min-width: 176px !important;
+  }
+
+  aside.sidebar[data-shell-sidebar="true"] a,
+  aside.sidebar[data-shell-sidebar="true"] button,
+  aside.sidebar a,
+  aside.sidebar button {
+    gap: 7px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    font-size: 11px !important;
+    line-height: 1.15 !important;
+  }
+
+  aside.sidebar[data-shell-sidebar="true"] svg,
+  aside.sidebar svg {
+    width: 15px !important;
+    height: 15px !important;
+    flex: 0 0 15px !important;
+  }
+
+  aside.sidebar[data-shell-sidebar="true"] span,
+  aside.sidebar[data-shell-sidebar="true"] small,
+  aside.sidebar[data-shell-sidebar="true"] strong,
+  aside.sidebar span,
+  aside.sidebar small,
+  aside.sidebar strong {
+    display: inline !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    max-width: 116px !important;
+    white-space: normal !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .client-detail-vnext-page .client-detail-top-tile.entity-overview-tile {
+    min-height: 104px !important;
+    padding: 10px 12px !important;
+  }
+
+  .client-detail-vnext-page .entity-overview-tile strong {
+    font-size: 15px !important;
+  }
+}

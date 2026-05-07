@@ -31,8 +31,8 @@ const CLIENT_RELATION_PATH_GUARD = 'Ścieżka klienta';
 const CLIENT_RELATION_PATH_GUARD_UTF8 = 'Ścieżka klienta';
 const CLIENT_RELATION_OPEN_LEAD_GUARD = 'Otwórz lead';
 const CLIENT_RELATION_OPEN_LEAD_GUARD_UTF8 = 'Otwórz lead';
-const CLIENT_RELATION_OPEN_CASE_GUARD = 'Otwórz sprawę';
-const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
+const CLIENT_RELATION_OPEN_CASE_GUARD = 'Przejdź do sprawy';
+const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Przejdź do sprawy';
 const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'Następny ruch';
 const CLIENT_DETAIL_SIMPLIFIED_GUARD_MOJIBAKE = 'Praca dzieje się w sprawie';
 const CLIENT_DETAIL_SIMPLIFIED_GUARD_UTF8 = 'Praca dzieje się w sprawie';
@@ -40,7 +40,7 @@ const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_1 = 'Lead źródłowy';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_1 = 'Lead źródłowy';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
-const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Otwórz sprawę';
+const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Przejdź do sprawy';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -754,8 +754,7 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpe
           {blockedCases.length > 0
             ? `${blockedCases.length} wymaga uwagi.`
             : cases.length > 0
-              ? ''
-              : 'Brak spraw przypiętych do klienta.'}
+              ? 'Brak dodatkowego opisu.' : 'Brak spraw przypiętych do klienta.'}
         </p>
         <button type="button" className="entity-overview-tile-link" onClick={onOpenCases}>
           Pokaż sprawy
@@ -1414,7 +1413,7 @@ export default function ClientDetail() {
           <section className="client-detail-right-card client-detail-recent-moves-card" data-client-recent-moves-panel="true">
                     <div className="client-detail-card-title-row">
                       <Activity className="h-4 w-4" />
-                      <h2>Ostatnie ruchy</h2>
+                      <h2>Roadmapa</h2>
                     </div>
                     {recentClientMovements.length ? (
                       <div className="client-detail-recent-moves-list">
@@ -1479,7 +1478,7 @@ export default function ClientDetail() {
                       }}
                       disabled={!hasAccess && !mainCase?.id && !nextAction.to}
                     >
-                      Otwórz sprawę
+                      Przejdź do sprawy
                     </Button>
                   </section>
 
@@ -1548,7 +1547,7 @@ export default function ClientDetail() {
                             </Button>
                             {lead.linkedCaseId ? (
                               <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(lead.linkedCaseId)}`)}>
-                                Otwórz sprawę
+                                Przejdź do sprawy
                               </Button>
                             ) : null}
                           </div>
@@ -1569,7 +1568,7 @@ export default function ClientDetail() {
                           </span>
                           <div className="client-detail-relation-actions">
                             <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>
-                              Otwórz sprawę
+                              Przejdź do sprawy
                             </Button>
                             {caseRecord.leadId ? (
                               <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/leads/${String(caseRecord.leadId)}`)}>
@@ -1586,8 +1585,8 @@ export default function ClientDetail() {
                 <section className="client-detail-section-card">
                   <div className="client-detail-section-head">
                     <div>
-                      <h2>Historia pozyskania</h2>
-                      <p>Pierwszy kontakt, źródło i połączenie z leadem źródłowym.</p>
+                      <h2>Aktywne sprawy</h2>
+                      <p>Aktywne sprawy klienta i przejście do prowadzenia tematu.</p>
                     </div>
                     {firstSourceLead ? (
                       <Button type="button" variant="outline" onClick={() => navigate(`/leads/${String(firstSourceLead.id)}`)}>
@@ -1617,8 +1616,8 @@ export default function ClientDetail() {
                 <section className="client-detail-section-card">
                   <div className="client-detail-section-head">
                     <div>
-                      <h2>Historia pozyskania</h2>
-                      <p>Jedno miejsce pokazujące, skąd przyszedł klient. Bez dublowania przejść do tego samego leada.</p>
+                      <h2>Aktywne sprawy</h2>
+                      <p>Aktywne sprawy klienta. Wejdź w sprawę, żeby prowadzić zadania, wydarzenia i notatki.</p>
                     </div>
                   </div>
 
@@ -1716,7 +1715,7 @@ export default function ClientDetail() {
                 <h2>Krótka notatka</h2>
               </div>
               <p className="client-detail-note-text">
-                {client.notes ? String(client.notes) : 'Brak osobnej notatki. Dodaj, jeśli jest coś ważnego.'}
+                {client.notes ? String(client.notes) : ''}
               </p>
                     <Button type="button" variant="outline" size="sm" onClick={() => openClientContextAction('note')} disabled={!hasAccess}>
                       Dodaj notatkę
