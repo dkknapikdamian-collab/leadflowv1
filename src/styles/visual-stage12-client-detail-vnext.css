@@ -2161,3 +2161,114 @@ button.client-detail-top-tile-link {
     margin: 0 auto 12px;
   }
 }
+
+/* STAGE21_CLIENT_DETAIL_ADMIN_FEEDBACK_LAYOUT_START */
+/*
+  Source: docs/admin-feedback/closeflow_admin_feedback_2026-05-07_21-53.json
+  Goal:
+  - lift client profile and recent moves higher in ClientDetail
+  - remove duplicated finance/operational/nearest-action cards from client view
+  - keep this as narrow visual-stage patch; no data/API changes
+*/
+
+.client-detail-vnext-page [data-client-finance-summary="true"],
+.client-detail-vnext-page [data-client-left-finance-tile="true"],
+.client-detail-vnext-page .client-detail-today-info-tile-finance,
+.client-detail-vnext-page .client-detail-operational-center,
+.client-detail-vnext-page [data-client-left-next-action-tile="true"] {
+  display: none !important;
+}
+
+/*
+  The old left info-tiles section contained the removed next-action and finance tiles.
+  Hide the wrapper too, so the client card can move up instead of leaving an empty title/gap.
+*/
+.client-detail-vnext-page .client-detail-today-info-tiles {
+  display: none !important;
+}
+
+/*
+  After removing the noisy tiles, the left rail becomes:
+  quick/action area -> client data -> recent moves.
+*/
+.client-detail-vnext-page .client-detail-left-rail {
+  display: flex !important;
+  flex-direction: column !important;
+  align-self: start !important;
+  gap: 12px !important;
+}
+
+.client-detail-vnext-page [data-client-inline-contact-edit="true"].client-detail-profile-card,
+.client-detail-vnext-page .client-detail-profile-card[data-client-inline-contact-edit="true"] {
+  order: 20 !important;
+  margin-top: 0 !important;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-panel="true"].client-detail-recent-moves-card,
+.client-detail-vnext-page .client-detail-recent-moves-card[data-client-recent-moves-panel="true"] {
+  order: 30 !important;
+  margin-top: 0 !important;
+}
+
+/*
+  If the right rail only existed for the removed client panels, do not leave a lonely empty rail.
+  Chrome supports :has(); if a future browser ignores it, the direct hidden cards still work.
+*/
+.client-detail-vnext-page .client-detail-right-rail:has([data-client-finance-summary="true"]):has(.client-detail-operational-center) {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-shell:has(.client-detail-right-rail[style*="display: none"]),
+.client-detail-vnext-page .client-detail-shell:has(.client-detail-right-rail:empty) {
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) !important;
+}
+
+@media (max-width: 920px) {
+  .client-detail-vnext-page .client-detail-left-rail {
+    gap: 10px !important;
+  }
+
+  .client-detail-vnext-page [data-client-inline-contact-edit="true"].client-detail-profile-card,
+  .client-detail-vnext-page .client-detail-profile-card[data-client-inline-contact-edit="true"],
+  .client-detail-vnext-page [data-client-recent-moves-panel="true"].client-detail-recent-moves-card,
+  .client-detail-vnext-page .client-detail-recent-moves-card[data-client-recent-moves-panel="true"] {
+    width: 100% !important;
+  }
+}
+/* STAGE21_CLIENT_DETAIL_ADMIN_FEEDBACK_LAYOUT_END */
+
+
+/* stage21c admin feedback client detail cleanup */
+.client-detail-vnext-page [data-client-finance-summary="true"],
+.client-detail-vnext-page [data-client-left-finance-tile="true"],
+.client-detail-vnext-page [data-client-operational-center="true"],
+.client-detail-vnext-page [data-client-nearest-planned-action="true"],
+.client-detail-vnext-page .client-detail-today-info-tile-finance,
+.client-detail-vnext-page .client-detail-operational-center-card {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-left-rail {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-detail-vnext-page [data-client-today-info-tiles="true"] {
+  order: 0;
+}
+
+.client-detail-vnext-page [data-client-inline-contact-edit="true"],
+.client-detail-vnext-page .client-detail-profile-card[data-client-inline-contact-edit="true"] {
+  order: 1;
+  margin-top: 0 !important;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-panel="true"],
+.client-detail-vnext-page .client-detail-recent-moves-card[data-client-recent-moves-panel="true"] {
+  order: 2;
+  margin-top: 0 !important;
+}
+
+.client-detail-vnext-page .client-detail-right-rail [data-client-finance-summary="true"] {
+  display: none !important;
+}

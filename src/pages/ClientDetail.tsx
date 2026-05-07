@@ -754,7 +754,7 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpe
           {blockedCases.length > 0
             ? `${blockedCases.length} wymaga uwagi.`
             : cases.length > 0
-              ? 'Klient ma przypięte sprawy i bieżący kontekst pracy.'
+              ? ''
               : 'Brak spraw przypiętych do klienta.'}
         </p>
         <button type="button" className="entity-overview-tile-link" onClick={onOpenCases}>
@@ -1755,6 +1755,7 @@ export default function ClientDetail() {
     </Layout>
   );
 }
+
 
 
 
