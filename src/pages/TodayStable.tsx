@@ -49,6 +49,8 @@ const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COP
 void ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX;
 const ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES = 'ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES';
 void ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES;
+const ADMIN_FEEDBACK_P1_TODAY_SECTION_CLICK_REPAIR = 'ADMIN_FEEDBACK_P1_TODAY_SECTION_CLICK_REPAIR';
+void ADMIN_FEEDBACK_P1_TODAY_SECTION_CLICK_REPAIR;
 const P0_TODAY_STABLE_REBUILD = 'P0_TODAY_STABLE_REBUILD';
 const STAGE70_TODAY_DECISION_ENGINE_STARTER = 'STAGE70_TODAY_DECISION_ENGINE_STARTER';
 const STAGE81_TODAY_RISK_REASON_NEXT_ACTION = 'STAGE81_TODAY_RISK_REASON_NEXT_ACTION';
@@ -442,11 +444,10 @@ function normalizeSemanticLabel(value: unknown) {
   return String(value || '')
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/s+/g, ' ')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
     .trim();
 }
-
 function semanticBadgeClass(label: string) {
   const normalized = normalizeSemanticLabel(label);
   let tone = 'neutral';
@@ -791,7 +792,7 @@ export default function TodayStable() {
 
   const loading = status === 'loading' || status === 'idle';
   const sectionVisible = (key: TodaySectionKey) =>
-    visibleTodaySectionSet.has(key) && (expandedSection === 'all' || expandedSection === key);
+    visibleTodaySectionSet.has(key);
   const isCollapsed = (key: TodaySectionKey) => collapsedSections.includes(key);
   const toggleSectionCollapse = (key: TodaySectionKey) => {
     setCollapsedSections((current) => (
@@ -814,6 +815,13 @@ export default function TodayStable() {
       const target = event.target as HTMLElement | null;
       const tile = target?.closest('button, a, [data-eliteflow-today-metric-lock="true"]') as HTMLElement | null;
       if (!tile) return;
+
+      // ADMIN_FEEDBACK_P1_TODAY_SECTION_CLICK_REPAIR:
+      // section headers already own expand/collapse through aria-expanded.
+      // The top metric tile bridge must not run for bottom section headers,
+      // otherwise one click opens the section and the header handler closes it again.
+      if (tile.hasAttribute('aria-expanded')) return;
+
       const sectionKey = getTodaySectionFromTileText(tile.textContent || '');
       if (!sectionKey) return;
       openTodaySection(sectionKey);
