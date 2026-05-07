@@ -451,7 +451,9 @@
     "check:unified-top-metric-tiles": "node scripts/check-unified-top-metric-tiles.cjs",
     "test:unified-top-metric-tiles": "node --test tests/unified-top-metric-tiles.test.cjs",
     "check:metric-tile-icons-next-to-value": "node scripts/check-metric-tile-icons-next-to-value.cjs",
-    "test:metric-tile-icons-next-to-value": "node --test tests/metric-tile-icons-next-to-value.test.cjs"
+    "test:metric-tile-icons-next-to-value": "node --test tests/metric-tile-icons-next-to-value.test.cjs",
+    "check:today-view-customizer": "node scripts/check-today-view-customizer.cjs",
+    "test:today-view-customizer": "node --test tests/today-view-customizer.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

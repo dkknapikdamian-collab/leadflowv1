@@ -24,6 +24,7 @@ import {
   FileText,
   Loader2,
   RefreshCcw,
+  SlidersHorizontal,
   TrendingUp,
   UserRound,
 } from 'lucide-react';
@@ -47,12 +48,15 @@ const STAGE81_TODAY_RISK_REASON_NEXT_ACTION = 'STAGE81_TODAY_RISK_REASON_NEXT_AC
 const STAGE82_TODAY_NEXT_7_DAYS = 'STAGE82_TODAY_NEXT_7_DAYS';
 const STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE = 'STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE';
 const STAGE16AI_TODAY_TILES_MATCH_LISTS = 'STAGE16AI_TODAY_TILES_MATCH_LISTS';
+const STAGE16AN_TODAY_VIEW_CUSTOMIZER = 'STAGE16AN_TODAY_VIEW_CUSTOMIZER';
+const TODAY_VIEW_STORAGE_KEY = 'closeflow:today:view-sections:v1';
 void P0_TODAY_STABLE_REBUILD;
 void STAGE70_TODAY_DECISION_ENGINE_STARTER;
 void STAGE81_TODAY_RISK_REASON_NEXT_ACTION;
 void STAGE82_TODAY_NEXT_7_DAYS;
 void STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE;
 void STAGE16AI_TODAY_TILES_MATCH_LISTS;
+void STAGE16AN_TODAY_VIEW_CUSTOMIZER;
 
 type DashboardStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -81,6 +85,48 @@ type UpcomingRow = {
   to: string;
   badge: string;
 };
+
+type TodaySectionKey = 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming';
+
+const TODAY_SECTION_KEYS: TodaySectionKey[] = [
+  'no_action',
+  'risk',
+  'waiting',
+  'leads',
+  'tasks',
+  'events',
+  'upcoming',
+  'drafts',
+];
+
+function sanitizeTodayVisibleSections(value: unknown): TodaySectionKey[] {
+  if (!Array.isArray(value)) return [...TODAY_SECTION_KEYS];
+  const unique = new Set<TodaySectionKey>();
+  for (const item of value) {
+    if (TODAY_SECTION_KEYS.includes(item as TodaySectionKey)) unique.add(item as TodaySectionKey);
+  }
+  return [...unique];
+}
+
+function readTodayVisibleSections(): TodaySectionKey[] {
+  if (typeof window === 'undefined') return [...TODAY_SECTION_KEYS];
+  try {
+    const raw = window.localStorage.getItem(TODAY_VIEW_STORAGE_KEY);
+    if (!raw) return [...TODAY_SECTION_KEYS];
+    return sanitizeTodayVisibleSections(JSON.parse(raw));
+  } catch {
+    return [...TODAY_SECTION_KEYS];
+  }
+}
+
+function writeTodayVisibleSections(keys: TodaySectionKey[]) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(TODAY_VIEW_STORAGE_KEY, JSON.stringify(sanitizeTodayVisibleSections(keys)));
+  } catch {
+    // Local storage is a convenience only. The dashboard must still work without it.
+  }
+}
 
 const emptyData: DashboardData = {
   tasks: [],
@@ -434,7 +480,9 @@ export default function TodayStable() {
   const [lastLoadedAt, setLastLoadedAt] = useState<string>('');
   const [manualRefreshing, setManualRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [expandedSection, setExpandedSection] = useState<'all' | 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming'>('all');
+  const [expandedSection, setExpandedSection] = useState<'all' | TodaySectionKey>('all');
+  const [todayViewOpen, setTodayViewOpen] = useState(false);
+  const [visibleTodaySections, setVisibleTodaySections] = useState<TodaySectionKey[]>(() => readTodayVisibleSections());
   const [actionPendingId, setActionPendingId] = useState<string>('');
 
   const refreshData = useCallback(async (options?: { manual?: boolean }) => {
@@ -639,9 +687,11 @@ export default function TodayStable() {
     return data.drafts.filter((draft: any) => String(draft?.status || '').toLowerCase() === 'draft');
   }, [data.drafts]);
 
+  const visibleTodaySectionSet = useMemo(() => new Set(visibleTodaySections), [visibleTodaySections]);
+
   const loading = status === 'loading' || status === 'idle';
-  const sectionVisible = (key: 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming') =>
-    expandedSection === 'all' || expandedSection === key;
+  const sectionVisible = (key: TodaySectionKey) =>
+    visibleTodaySectionSet.has(key) && (expandedSection === 'all' || expandedSection === key);
 
   const todaySectionLabels = {
     no_action: 'Leady bez najbliższej akcji',
@@ -655,7 +705,7 @@ export default function TodayStable() {
   } as const;
 
   const todayTiles: Array<{
-    key: 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming';
+    key: TodaySectionKey;
     title: string;
     count: number;
     tone: string;
@@ -671,6 +721,30 @@ export default function TodayStable() {
     { key: 'upcoming', title: todaySectionLabels.upcoming, count: upcomingRows.length, tone: 'text-slate-700', activeTone: 'hover:border-slate-300', icon: <CalendarDays className="h-4 w-4" /> },
     { key: 'drafts', title: todaySectionLabels.drafts, count: pendingDrafts.length, tone: 'text-indigo-700', activeTone: 'hover:border-indigo-200', icon: <FileText className="h-4 w-4" /> },
   ];
+
+  const visibleTodayTiles = todayTiles.filter((tile) => visibleTodaySectionSet.has(tile.key));
+  const hiddenTodaySectionsCount = todayTiles.length - visibleTodayTiles.length;
+
+  const toggleTodaySectionVisibility = useCallback((key: TodaySectionKey) => {
+    setVisibleTodaySections((current) => {
+      const currentSet = new Set(current);
+      if (currentSet.has(key)) {
+        currentSet.delete(key);
+      } else {
+        currentSet.add(key);
+      }
+      const next = TODAY_SECTION_KEYS.filter((entry) => currentSet.has(entry));
+      writeTodayVisibleSections(next);
+      if (!next.includes(key) && expandedSection === key) setExpandedSection('all');
+      return next;
+    });
+  }, [expandedSection]);
+
+  const showAllTodaySections = useCallback(() => {
+    const next = [...TODAY_SECTION_KEYS];
+    writeTodayVisibleSections(next);
+    setVisibleTodaySections(next);
+  }, []);
 
   const handleArchiveLead = useCallback(async (lead: any) => {
     const leadId = String(lead?.id || '');
@@ -739,7 +813,49 @@ export default function TodayStable() {
         ) : null}
 
                 <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-stage16ai-today-tiles-match-lists="true">
-          {todayTiles.map((tile) => {
+        <div className="col-span-full rounded-2xl border border-slate-100 bg-white p-3 shadow-sm" data-today-view-customizer="true">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Widok</p>
+              <p className="text-xs font-medium text-slate-500">Wybierz, ktore kafelki i listy w sekcji Dzis sa widoczne.</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="secondary" className="rounded-full bg-slate-100 text-slate-700">
+                {visibleTodayTiles.length}/{todayTiles.length} widoczne
+              </Badge>
+              <Button type="button" size="sm" variant="outline" onClick={() => setTodayViewOpen((value) => !value)} data-today-view-toggle="true">
+                <SlidersHorizontal className="mr-2 h-4 w-4" /> Widok
+              </Button>
+              {hiddenTodaySectionsCount > 0 ? (
+                <Button type="button" size="sm" variant="ghost" onClick={showAllTodaySections} data-today-view-show-all="true">
+                  Pokaz wszystko
+                </Button>
+              ) : null}
+            </div>
+          </div>
+          {todayViewOpen ? (
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4" data-today-view-options="true">
+              {visibleTodayTiles.map((tile) => {
+                const checked = visibleTodaySectionSet.has(tile.key);
+                return (
+                  <label key={tile.key} className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100" data-today-view-option={tile.key}>
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className={'rounded-lg bg-white p-1.5 ' + tile.tone}>{tile.icon}</span>
+                      <span className="truncate">{tile.title}</span>
+                    </span>
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 rounded border-slate-300 accent-slate-900"
+                      checked={checked}
+                      onChange={() => toggleTodaySectionVisibility(tile.key)}
+                    />
+                  </label>
+                );
+              })}
+            </div>
+          ) : null}
+        </div>
+          {visibleTodayTiles.map((tile) => {
             const active = expandedSection === tile.key;
             return (
               <button key={tile.key} type="button" onClick={() => setExpandedSection(active ? 'all' : tile.key)} className="text-left">
