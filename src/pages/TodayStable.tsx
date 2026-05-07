@@ -49,6 +49,7 @@ const STAGE82_TODAY_NEXT_7_DAYS = 'STAGE82_TODAY_NEXT_7_DAYS';
 const STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE = 'STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE';
 const STAGE16AI_TODAY_TILES_MATCH_LISTS = 'STAGE16AI_TODAY_TILES_MATCH_LISTS';
 const STAGE16AN_TODAY_VIEW_CUSTOMIZER = 'STAGE16AN_TODAY_VIEW_CUSTOMIZER';
+const STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED = 'STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED';
 const TODAY_VIEW_STORAGE_KEY = 'closeflow:today:view-sections:v1';
 void P0_TODAY_STABLE_REBUILD;
 void STAGE70_TODAY_DECISION_ENGINE_STARTER;
@@ -57,6 +58,7 @@ void STAGE82_TODAY_NEXT_7_DAYS;
 void STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE;
 void STAGE16AI_TODAY_TILES_MATCH_LISTS;
 void STAGE16AN_TODAY_VIEW_CUSTOMIZER;
+void STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED;
 
 type DashboardStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -833,26 +835,71 @@ export default function TodayStable() {
               ) : null}
             </div>
           </div>
-          {todayViewOpen ? (
-            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4" data-today-view-options="true">
-              {visibleTodayTiles.map((tile) => {
-                const checked = visibleTodaySectionSet.has(tile.key);
-                return (
-                  <label key={tile.key} className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100" data-today-view-option={tile.key}>
-                    <span className="flex min-w-0 items-center gap-2">
-                      <span className={'rounded-lg bg-white p-1.5 ' + tile.tone}>{tile.icon}</span>
-                      <span className="truncate">{tile.title}</span>
-                    </span>
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-slate-300 accent-slate-900"
-                      checked={checked}
-                      onChange={() => toggleTodaySectionVisibility(tile.key)}
-                    />
-                  </label>
-                );
-              })}
-            </div>
+                    {todayViewOpen ? (
+            <Card className="border-slate-100 shadow-sm">
+              <CardContent className="space-y-3 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Widok Dziś</p>
+                    <p className="text-xs font-medium text-slate-500">Wybierz, które kafelki i listy mają być widoczne. Odznaczone opcje nadal zostają na tej liście.</p>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const allKeys = todayTiles.map((tile) => tile.key);
+                      setVisibleTodaySections(allKeys);
+                      writeTodayVisibleSections(allKeys);
+                      setExpandedSection('all');
+                    }}
+                  >
+                    Pokaż wszystko
+                  </Button>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                  {todayTiles.map((tile) => {
+                    const checked = visibleTodaySectionSet.has(tile.key);
+                    return (
+                      <label
+                        key={tile.key}
+                        className={
+                          'flex cursor-pointer items-center gap-3 rounded-2xl border p-3 text-sm transition ' +
+                          (checked ? 'border-slate-300 bg-white text-slate-900 shadow-sm' : 'border-slate-100 bg-slate-50 text-slate-500')
+                        }
+                      >
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 rounded border-slate-300"
+                          checked={checked}
+                          onChange={(event) => {
+                            const shouldShow = event.currentTarget.checked;
+                            if (!shouldShow) {
+                              setExpandedSection((current) => current === tile.key ? 'all' : current);
+                            }
+                            setVisibleTodaySections((current) => {
+                              const base = sanitizeTodayVisibleSections(current);
+                              const next = shouldShow
+                                ? sanitizeTodayVisibleSections([...base, tile.key])
+                                : base.filter((key) => key !== tile.key);
+                              writeTodayVisibleSections(next);
+                              return next;
+                            });
+                          }}
+                        />
+                        <span className={'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-slate-100 ' + tile.tone}>
+                          {tile.icon}
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block truncate font-semibold">{tile.title}</span>
+                          <span className="block text-xs text-slate-500">{tile.count} wpisów</span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
           ) : null}
         </div>
           {visibleTodayTiles.map((tile) => {
