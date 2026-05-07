@@ -465,7 +465,8 @@
     "check:eliteflow-tasks-tiles-text-clip-repair": "node scripts/check-eliteflow-tasks-tiles-text-clip-repair.cjs",
     "check:admin-feedback-p1-hotfix": "node scripts/check-admin-feedback-p1-hotfix.cjs",
     "check:admin-feedback-p1-followup": "node scripts/check-admin-feedback-p1-followup.cjs",
-    "check:today-section-click-repair": "node scripts/check-today-section-click-repair.cjs"
+    "check:today-section-click-repair": "node scripts/check-today-section-click-repair.cjs",
+    "check:today-top-tile-focus": "node scripts/check-today-top-tile-focus.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

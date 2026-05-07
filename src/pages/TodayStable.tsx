@@ -51,6 +51,8 @@ const ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES = 'ADMIN_FEEDBACK_P1_FOLL
 void ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES;
 const ADMIN_FEEDBACK_P1_TODAY_SECTION_CLICK_REPAIR = 'ADMIN_FEEDBACK_P1_TODAY_SECTION_CLICK_REPAIR';
 void ADMIN_FEEDBACK_P1_TODAY_SECTION_CLICK_REPAIR;
+const ADMIN_FEEDBACK_P1_TODAY_TOP_TILE_FOCUS_REPAIR = 'ADMIN_FEEDBACK_P1_TODAY_TOP_TILE_FOCUS_REPAIR';
+void ADMIN_FEEDBACK_P1_TODAY_TOP_TILE_FOCUS_REPAIR;
 const P0_TODAY_STABLE_REBUILD = 'P0_TODAY_STABLE_REBUILD';
 const STAGE70_TODAY_DECISION_ENGINE_STARTER = 'STAGE70_TODAY_DECISION_ENGINE_STARTER';
 const STAGE81_TODAY_RISK_REASON_NEXT_ACTION = 'STAGE81_TODAY_RISK_REASON_NEXT_ACTION';
@@ -476,15 +478,35 @@ function getTodaySectionFromTileText(value: string): TodaySectionKey | null {
   return null;
 }
 
-function scrollToTodaySection(key: TodaySectionKey) {
-  if (typeof document === 'undefined') return;
+function getTodaySectionHeaderElement(key: TodaySectionKey) {
+  if (typeof document === 'undefined') return null;
   const title = TODAY_SECTION_TITLES[key];
   const root = document.querySelector('[data-p0-today-stable-rebuild="true"]') as HTMLElement | null;
-  if (!root || !title) return;
+  if (!root || !title) return null;
 
-  const headers = Array.from(root.querySelectorAll('button')) as HTMLElement[];
-  const header = headers.find((element) => (element.textContent || '').includes(title));
-  const target = (header?.closest('.rounded-xl.border, .rounded-xl, section, div') || header) as HTMLElement | null;
+  const headers = Array.from(root.querySelectorAll('button[aria-expanded]')) as HTMLElement[];
+  return headers.find((element) => (element.textContent || '').includes(title)) || null;
+}
+
+function getTodaySectionCardElement(key: TodaySectionKey) {
+  const header = getTodaySectionHeaderElement(key);
+  if (!header) return null;
+  return (header.closest('[data-cf-today-section-card="true"], .rounded-xl.border, .rounded-xl, section') || header.parentElement) as HTMLElement | null;
+}
+
+function moveTodaySectionToTop(key: TodaySectionKey) {
+  const target = getTodaySectionCardElement(key);
+  if (!target || !target.parentElement) return;
+  const parent = target.parentElement;
+  const first = TODAY_SECTION_KEYS
+    .map((sectionKey) => getTodaySectionCardElement(sectionKey))
+    .find((element): element is HTMLElement => Boolean(element && element.parentElement === parent));
+
+  if (first && first !== target) parent.insertBefore(target, first);
+}
+
+function scrollToTodaySection(key: TodaySectionKey) {
+  const target = getTodaySectionCardElement(key);
   target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -585,6 +607,7 @@ export default function TodayStable() {
   const [visibleTodaySections, setVisibleTodaySections] = useState<TodaySectionKey[]>(() => readTodayVisibleSections());
   const [actionPendingId, setActionPendingId] = useState<string>('');
   const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>(() => [...TODAY_SECTION_KEYS]);
+  const [activeTodaySection, setActiveTodaySection] = useState<TodaySectionKey | null>(null);
 
   const refreshData = useCallback(async (options?: { manual?: boolean }) => {
     const manual = Boolean(options?.manual);
@@ -796,14 +819,27 @@ export default function TodayStable() {
   const isCollapsed = (key: TodaySectionKey) => collapsedSections.includes(key);
   const toggleSectionCollapse = (key: TodaySectionKey) => {
     setCollapsedSections((current) => (
-      current.includes(key) ? current.filter((entry) => entry !== key) : [...current, key]
+      current.includes(key)
+        ? TODAY_SECTION_KEYS.filter((entry) => entry !== key)
+        : Array.from(new Set([...current, key]))
     ));
   };
 
   const openTodaySection = useCallback((key: TodaySectionKey) => {
     setExpandedSection('all');
-    setCollapsedSections((current) => current.filter((entry) => entry !== key));
-    window.setTimeout(() => scrollToTodaySection(key), 60);
+    setActiveTodaySection(key);
+    setVisibleTodaySections((current) => {
+      const sanitized = sanitizeTodayVisibleSections(current);
+      const base = sanitized.includes(key) ? sanitized : [...sanitized, key];
+      const next = [key, ...base.filter((entry) => entry !== key)];
+      writeTodayVisibleSections(next);
+      return next;
+    });
+    setCollapsedSections(TODAY_SECTION_KEYS.filter((entry) => entry !== key));
+    window.setTimeout(() => {
+      moveTodaySectionToTop(key);
+      scrollToTodaySection(key);
+    }, 80);
   }, []);
 
   useEffect(() => {
@@ -820,7 +856,7 @@ export default function TodayStable() {
       // section headers already own expand/collapse through aria-expanded.
       // The top metric tile bridge must not run for bottom section headers,
       // otherwise one click opens the section and the header handler closes it again.
-      if (tile.hasAttribute('aria-expanded')) return;
+      if (tile.hasAttribute('aria-expanded') && tile.querySelector('h2')) return;
 
       const sectionKey = getTodaySectionFromTileText(tile.textContent || '');
       if (!sectionKey) return;
@@ -830,6 +866,12 @@ export default function TodayStable() {
     root.addEventListener('click', handleMetricClick, true);
     return () => root.removeEventListener('click', handleMetricClick, true);
   }, [openTodaySection]);
+
+  useEffect(() => {
+    if (!activeTodaySection) return undefined;
+    const timer = window.setTimeout(() => moveTodaySectionToTop(activeTodaySection), 0);
+    return () => window.clearTimeout(timer);
+  }, [activeTodaySection, collapsedSections, visibleTodaySections]);
 
   const todaySectionLabels = {
     no_action: 'Leady bez najbliższej akcji',
