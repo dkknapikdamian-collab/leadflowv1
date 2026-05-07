@@ -20,6 +20,7 @@ const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe Drugorzędne akcje';
 const CLIENT_DETAIL_NEW_CASE_FOR_CLIENT_COPY_GUARD = '+ Nowa sprawa dla klienta';
 const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
 const CLIENT_DETAIL_LEFT_MANAGEMENT_TILES_V9_GUARD = 'client detail management tiles v9';
+const CLIENT_DETAIL_CLIENT_NEXT_ACTION_V10_GUARD = 'clientNextAction defined before client detail render';
 const CLIENT_DETAIL_RECENT_MOVES_EXACT_PANEL_V7_GUARD = 'exact recent moves panel under client data';
 const CLIENT_DETAIL_EDIT_BUTTON_UNDER_DATA_GUARD = 'edit button under client data';
 const CLIENT_DETAIL_RECENT_MOVES_UNDER_DATA_GUARD = 'recent moves under client data';
@@ -1075,6 +1076,14 @@ export default function ClientDetail() {
     if (!mainCase?.id) return;
     navigate(`/cases/${String(mainCase.id)}`);
   };
+  const clientNextAction = buildClientNextAction(
+    leads,
+    cases,
+    clientTasks,
+    clientEvents,
+    String(clientId || ''),
+  );
+
 
   if (loading || workspaceLoading) {
     return (
@@ -1097,8 +1106,8 @@ export default function ClientDetail() {
             <UserRound className="h-8 w-8" />
             <h1>Nie znaleziono klienta</h1>
             <p>Ten rekord mógł zostać usunięty albo nie należy do aktualnego workspace.</p>
-            <Button type="button" onClick={() => navigate('/clients')} variant="default">
-              <ArrowLeft className="h-4 w-4 client-detail-edit-main-button-visible" />
+            <Button type="button" onClick={() => navigate('/clients')} variant="outline">
+              <ArrowLeft className="h-4 w-4" />
               Wróć do klientów
             </Button>
           </section>
