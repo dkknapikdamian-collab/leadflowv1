@@ -21,6 +21,7 @@ const CLIENT_DETAIL_NEW_CASE_FOR_CLIENT_COPY_GUARD = '+ Nowa sprawa dla klienta'
 const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
 const CLIENT_DETAIL_LEFT_MANAGEMENT_TILES_V9_GUARD = 'client detail management tiles v9';
 const CLIENT_DETAIL_CLIENT_NEXT_ACTION_V10_GUARD = 'clientNextAction defined before client detail render';
+const CLIENT_DETAIL_TODAY_STYLE_INFO_TILES_V11_GUARD = 'client detail today style info tiles v11';
 const CLIENT_DETAIL_RECENT_MOVES_EXACT_PANEL_V7_GUARD = 'exact recent moves panel under client data';
 const CLIENT_DETAIL_EDIT_BUTTON_UNDER_DATA_GUARD = 'edit button under client data';
 const CLIENT_DETAIL_RECENT_MOVES_UNDER_DATA_GUARD = 'recent moves under client data';
@@ -1156,30 +1157,27 @@ export default function ClientDetail() {
         <div className="client-detail-shell">
           <aside className="client-detail-left-rail">
             
-          <section className="client-detail-side-card client-detail-left-management-tiles" data-client-left-management-tiles="true">
-            <div className="client-detail-card-title-row client-detail-left-management-title">
-              <Target className="h-4 w-4" />
-              <h2>Zarządzanie klientem</h2>
-            </div>
-            <div className="client-detail-left-tile-grid">
-              <section
-                className={`client-detail-summary-card client-detail-left-tile ${nextActionToneClass(clientNextAction.tone)}`}
-                data-client-left-next-action-tile="true"
-              >
-                <small>Najbliższa zaplanowana akcja</small>
-                <strong>{clientNextAction.title}</strong>
-                <p>{clientNextAction.subtitle}</p>
+                      <section className="client-detail-today-info-tiles" data-client-left-management-tiles="true" data-client-today-style-info-tiles="true" aria-label="Informacje o kliencie">
+              <article className={`client-detail-today-info-tile ${nextActionToneClass(clientNextAction.tone)}`} data-client-left-next-action-tile="true">
+                <div className="client-detail-today-info-tile-icon">
+                  <Target className="h-4 w-4" />
+                </div>
+                <div className="client-detail-today-info-tile-body">
+                  <small>Najbliższa zaplanowana akcja</small>
+                  <strong>{clientNextAction.title}</strong>
+                  <p>{clientNextAction.subtitle}</p>
+                </div>
                 {clientNextAction.to ? (
                   <Button
                     type="button"
                     variant="outline"
-                    className="client-detail-left-tile-button"
+                    className="client-detail-today-info-tile-action"
                     onClick={() => navigate(clientNextAction.to!)}
                   >
                     Otwórz
                   </Button>
                 ) : null}
-              </section>
+              </article>
               {(() => {
                 const currency = payments.find((payment) => typeof payment?.currency === 'string' && payment.currency.trim())?.currency || 'PLN';
                 const amountOfPayment = (payment: any) =>
@@ -1198,19 +1196,25 @@ export default function ClientDetail() {
                 const remaining = Math.max(0, total - paid);
                 const paymentsLabel = payments.length === 1 ? 'pozycja' : payments.length < 5 ? 'pozycje' : 'pozycji';
                 return (
-                  <section className="client-detail-summary-card client-detail-left-tile client-detail-finance-mini-card" data-client-left-finance-tile="true">
-                    <small>Podsumowanie finansów</small>
-                    <strong>{formatMoneyWithCurrency(paid, currency)}</strong>
-                    <p>Opłacone · {payments.length} {paymentsLabel}</p>
-                    <div className="client-detail-finance-mini-metrics">
+                  <article className="client-detail-today-info-tile client-detail-today-info-tile-finance" data-client-left-finance-tile="true">
+                    <div className="client-detail-today-info-tile-icon">
+                      <Briefcase className="h-4 w-4" />
+                    </div>
+                    <div className="client-detail-today-info-tile-body">
+                      <small>Podsumowanie finansów</small>
+                      <strong>{formatMoneyWithCurrency(paid, currency)}</strong>
+                      <p>Opłacone · {payments.length} {paymentsLabel}</p>
+                    </div>
+                    <div className="client-detail-today-info-tile-meta">
                       <span>Łącznie: {formatMoneyWithCurrency(total, currency)}</span>
                       <span>Do rozliczenia: {formatMoneyWithCurrency(remaining, currency)}</span>
                     </div>
-                  </section>
+                  </article>
                 );
               })()}
-            </div>
-          </section>
+            </section>
+
+
 
 <section className="client-detail-profile-card client-detail-side-card" data-client-inline-contact-edit="true">
               <div className="client-detail-avatar-row">
