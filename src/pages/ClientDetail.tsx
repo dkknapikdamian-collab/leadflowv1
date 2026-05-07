@@ -1,4 +1,4 @@
-﻿/* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
+/* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
 /* STAGE55_CLIENT_CASE_OPERATIONAL_PACK */
 /* STAGE54_CLIENT_CASES_COMPACT_FIT */
 /* STAGE53_CLIENT_OPERATIONAL_RECENT_MOVES */
@@ -19,6 +19,9 @@ const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu D
 const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe Drugorzędne akcje';
 const CLIENT_DETAIL_NEW_CASE_FOR_CLIENT_COPY_GUARD = '+ Nowa sprawa dla klienta';
 const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
+const CLIENT_DETAIL_RECENT_MOVES_EXACT_PANEL_V7_GUARD = 'exact recent moves panel under client data';
+const CLIENT_DETAIL_EDIT_BUTTON_UNDER_DATA_GUARD = 'edit button under client data';
+const CLIENT_DETAIL_RECENT_MOVES_UNDER_DATA_GUARD = 'recent moves under client data';
 const CLIENT_RELATION_COMMAND_CENTER_GUARD = 'Klient jako centrum relacji';
 const CLIENT_RELATION_COMMAND_CENTER_GUARD_UTF8 = 'Klient jako centrum relacji';
 const CLIENT_RELATION_PATH_GUARD = 'Ścieżka klienta';
@@ -1122,17 +1125,7 @@ export default function ClientDetail() {
             </div>
           </div>
           <div className="client-detail-header-actions">
-            <Button
-              type="button"
-              variant="outline"
-              className="client-detail-visible-edit-action client-detail-header-action-soft"
-              data-client-detail-visible-edit-action="true"
-              onClick={handleClientPanelEditToggle}
-              disabled={saving}
-            >
-              {contactEditing ? <Save className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
-              {contactEditing ? 'Zapisz dane' : 'Edytuj dane'}
-            </Button>
+            
             <Button type="button" variant="outline" className="client-detail-header-action-soft" asChild>
               <Link to="/ai-drafts">
                 <Sparkles className="h-4 w-4" />
@@ -1161,7 +1154,19 @@ export default function ClientDetail() {
                 </div>
               </div>
 
-              {contactEditing ? (
+                            <Button
+                type="button"
+                variant="outline"
+                className="client-detail-visible-edit-action client-detail-edit-main-button"
+                data-client-detail-visible-edit-action="true"
+                data-client-edit-under-data="true"
+                onClick={handleClientPanelEditToggle}
+                disabled={saving}
+              >
+                {contactEditing ? <Save className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                {contactEditing ? 'Zapisz dane' : 'Edytuj dane'}
+              </Button>
+{contactEditing ? (
                 <div className="client-detail-edit-form">
                   <div className="client-detail-edit-field">
                     <Label>Nazwa klienta</Label>
@@ -1217,6 +1222,32 @@ export default function ClientDetail() {
               )}
 
             </section>
+
+          <section className="client-detail-right-card client-detail-recent-moves-card" data-client-recent-moves-panel="true">
+                    <div className="client-detail-card-title-row">
+                      <Activity className="h-4 w-4" />
+                      <h2>Ostatnie ruchy</h2>
+                    </div>
+                    {recentClientMovements.length ? (
+                      <div className="client-detail-recent-moves-list">
+                        {recentClientMovements.map((move) => (
+                          <Link key={move.id} to="/activity" className="client-detail-recent-move-row">
+                            <span>
+                              <strong>{move.title}</strong>
+                              <small>{move.meta}</small>
+                            </span>
+                            <em>{move.time}</em>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="client-detail-light-empty">Brak ostatnich ruchów dla tego klienta.</p>
+                    )}
+                    <Link to="/activity" className="client-detail-recent-moves-link">
+                      Zobacz całą Aktywność
+                    </Link>
+                  </section>
+
 
           </aside>
 
@@ -1464,30 +1495,7 @@ export default function ClientDetail() {
           </section>
 
           <aside className="client-detail-right-rail" aria-label="Panel klienta">
-                    <section className="client-detail-right-card client-detail-recent-moves-card" data-client-recent-moves-panel="true">
-          <div className="client-detail-card-title-row">
-            <Activity className="h-4 w-4" />
-            <h2>Ostatnie ruchy</h2>
-          </div>
-          {recentClientMovements.length ? (
-            <div className="client-detail-recent-moves-list">
-              {recentClientMovements.map((move) => (
-                <Link key={move.id} to="/activity" className="client-detail-recent-move-row">
-                  <span>
-                    <strong>{move.title}</strong>
-                    <small>{move.meta}</small>
-                  </span>
-                  <em>{move.time}</em>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <p className="client-detail-light-empty">Brak ostatnich ruchów dla tego klienta.</p>
-          )}
-          <Link to="/activity" className="client-detail-recent-moves-link">
-            Zobacz całą Aktywność
-          </Link>
-        </section>
+                    
 <section className="right-card client-detail-right-card client-detail-operational-center" aria-label="Centrum operacyjne klienta">
               <div className="client-detail-card-title-row">
                 <Clock className="h-4 w-4" />

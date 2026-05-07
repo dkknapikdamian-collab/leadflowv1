@@ -1585,3 +1585,32 @@
     padding: 10px !important;
   }
 }
+/* CLIENT_DETAIL_LAYOUT_REPAIR_V5 */
+.client-detail-vnext-page [data-client-edit-under-data="true"] {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-under-data="true"] {
+  margin-top: 18px;
+}
+
+
+/* CLIENT_DETAIL_RECENT_MOVES_UNDER_DATA_V6 */
+.client-detail-left-rail [data-client-recent-moves-under-data="true"] {
+  width: 100%;
+}
+
+.client-detail-left-rail .client-detail-recent-moves-card {
+  padding: 18px;
+}
+
+
+/* CLIENT_DETAIL_RECENT_MOVES_EXACT_PANEL_V7_CSS */
+.client-detail-left-rail .client-detail-recent-moves-card {
+  width: 100%;
+}
+
+.client-detail-left-rail .client-detail-recent-moves-card .client-detail-card-title-row {
+  margin-bottom: 10px;
+}
