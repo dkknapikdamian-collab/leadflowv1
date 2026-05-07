@@ -1,0 +1,130 @@
+/* ELITEFLOW_SEMANTIC_BADGES_AND_TODAY_SECTIONS_2026_05_07
+   Central semantic color tokens for small badges / pills and Today collapsed section behavior.
+   Source of truth for status colors:
+   - danger / trash / overdue = red
+   - event / calendar = blue
+   - task / done / active = green
+   - note / draft / waiting = amber
+   - lead = indigo
+   - case = violet
+   - client = cyan
+*/
+
+:root {
+  --cf-semantic-danger-bg: #fff1f2;
+  --cf-semantic-danger-border: #fecdd3;
+  --cf-semantic-danger-text: #be123c;
+
+  --cf-semantic-event-bg: #eff6ff;
+  --cf-semantic-event-border: #bfdbfe;
+  --cf-semantic-event-text: #1d4ed8;
+
+  --cf-semantic-task-bg: #ecfdf5;
+  --cf-semantic-task-border: #a7f3d0;
+  --cf-semantic-task-text: #047857;
+
+  --cf-semantic-note-bg: #fffbeb;
+  --cf-semantic-note-border: #fde68a;
+  --cf-semantic-note-text: #b45309;
+
+  --cf-semantic-lead-bg: #eef2ff;
+  --cf-semantic-lead-border: #c7d2fe;
+  --cf-semantic-lead-text: #4338ca;
+
+  --cf-semantic-case-bg: #f5f3ff;
+  --cf-semantic-case-border: #ddd6fe;
+  --cf-semantic-case-text: #6d28d9;
+
+  --cf-semantic-client-bg: #ecfeff;
+  --cf-semantic-client-border: #a5f3fc;
+  --cf-semantic-client-text: #0e7490;
+
+  --cf-semantic-neutral-bg: #f8fafc;
+  --cf-semantic-neutral-border: #e2e8f0;
+  --cf-semantic-neutral-text: #475569;
+}
+
+html body #root .cf-semantic-badge,
+html body #root [data-cf-semantic-badge="true"] {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-radius: 999px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  white-space: nowrap !important;
+}
+
+html body #root .cf-semantic-badge-danger,
+html body #root [data-cf-semantic-tone="danger"] {
+  background: var(--cf-semantic-danger-bg) !important;
+  border-color: var(--cf-semantic-danger-border) !important;
+  color: var(--cf-semantic-danger-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-danger-text) !important;
+}
+
+html body #root .cf-semantic-badge-event,
+html body #root [data-cf-semantic-tone="event"] {
+  background: var(--cf-semantic-event-bg) !important;
+  border-color: var(--cf-semantic-event-border) !important;
+  color: var(--cf-semantic-event-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-event-text) !important;
+}
+
+html body #root .cf-semantic-badge-task,
+html body #root [data-cf-semantic-tone="task"] {
+  background: var(--cf-semantic-task-bg) !important;
+  border-color: var(--cf-semantic-task-border) !important;
+  color: var(--cf-semantic-task-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-task-text) !important;
+}
+
+html body #root .cf-semantic-badge-note,
+html body #root [data-cf-semantic-tone="note"] {
+  background: var(--cf-semantic-note-bg) !important;
+  border-color: var(--cf-semantic-note-border) !important;
+  color: var(--cf-semantic-note-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-note-text) !important;
+}
+
+html body #root .cf-semantic-badge-lead,
+html body #root [data-cf-semantic-tone="lead"] {
+  background: var(--cf-semantic-lead-bg) !important;
+  border-color: var(--cf-semantic-lead-border) !important;
+  color: var(--cf-semantic-lead-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-lead-text) !important;
+}
+
+html body #root .cf-semantic-badge-case,
+html body #root [data-cf-semantic-tone="case"] {
+  background: var(--cf-semantic-case-bg) !important;
+  border-color: var(--cf-semantic-case-border) !important;
+  color: var(--cf-semantic-case-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-case-text) !important;
+}
+
+html body #root .cf-semantic-badge-client,
+html body #root [data-cf-semantic-tone="client"] {
+  background: var(--cf-semantic-client-bg) !important;
+  border-color: var(--cf-semantic-client-border) !important;
+  color: var(--cf-semantic-client-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-client-text) !important;
+}
+
+html body #root .cf-semantic-badge-neutral,
+html body #root [data-cf-semantic-tone="neutral"] {
+  background: var(--cf-semantic-neutral-bg) !important;
+  border-color: var(--cf-semantic-neutral-border) !important;
+  color: var(--cf-semantic-neutral-text) !important;
+  -webkit-text-fill-color: var(--cf-semantic-neutral-text) !important;
+}
+
+/* Today sections are compact by default; the user opens the needed section from the section header or top metric tile. */
+html body #root [data-p0-today-stable-rebuild="true"] [aria-expanded="false"] {
+  cursor: pointer;
+}
+
+html body #root [data-p0-today-stable-rebuild="true"] [aria-expanded="false"] h2 {
+  color: #334155 !important;
+}

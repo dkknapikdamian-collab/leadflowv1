@@ -17,7 +17,14 @@ function fail(message) {
 
 const importLine = "@import './styles/eliteflow-admin-feedback-p1-hotfix.css';";
 if (!indexCss.includes(importLine)) fail('missing admin feedback css import');
-if (!indexCss.trim().endsWith(importLine)) fail('admin feedback css import must be last');
+const semanticImportLine = "@import './styles/eliteflow-semantic-badges-and-today-sections.css';";
+if (indexCss.includes(semanticImportLine)) {
+  if (indexCss.indexOf(importLine) > indexCss.indexOf(semanticImportLine)) {
+    fail('admin feedback css import must load before semantic follow-up import');
+  }
+} else if (!indexCss.trim().endsWith(importLine)) {
+  fail('admin feedback css import must be last when semantic follow-up import is absent');
+}
 
 [
   'ELITEFLOW_ADMIN_FEEDBACK_P1_HOTFIX_2026_05_07',

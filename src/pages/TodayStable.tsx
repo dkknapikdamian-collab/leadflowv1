@@ -47,6 +47,8 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX';
 void ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX;
+const ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES = 'ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES';
+void ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES;
 const P0_TODAY_STABLE_REBUILD = 'P0_TODAY_STABLE_REBUILD';
 const STAGE70_TODAY_DECISION_ENGINE_STARTER = 'STAGE70_TODAY_DECISION_ENGINE_STARTER';
 const STAGE81_TODAY_RISK_REASON_NEXT_ACTION = 'STAGE81_TODAY_RISK_REASON_NEXT_ACTION';
@@ -338,7 +340,7 @@ function getLeadRisk(lead: any, momentRaw: string, todayKey: string): TodayLeadR
 
   if (isWaiting && stale) {
     return {
-      reason: 'waiting za długo bez świeżego ruchu',
+      reason: 'czeka za długo bez świeżego ruchu',
       suggestedAction: 'wyślij krótkie przypomnienie albo ustaw ostatni follow-up',
       score: 72,
       tone: 'amber',
@@ -425,6 +427,66 @@ function StableCard({ children }: { children: ReactNode }) {
   return <Card className="border-slate-100 shadow-sm"><CardContent className="p-0">{children}</CardContent></Card>;
 }
 
+const TODAY_SECTION_TITLES: Record<TodaySectionKey, string> = {
+  no_action: 'Leady bez najbliższej akcji',
+  risk: 'Wysoka wartość / ryzyko',
+  waiting: 'Leady czekające',
+  leads: 'Leady do obsługi dziś',
+  tasks: 'Zadania do wykonania dziś',
+  events: 'Wydarzenia dziś',
+  upcoming: 'Najbliższe 7 dni',
+  drafts: 'Szkice AI do sprawdzenia',
+};
+
+function normalizeSemanticLabel(value: unknown) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/s+/g, ' ')
+    .trim();
+}
+
+function semanticBadgeClass(label: string) {
+  const normalized = normalizeSemanticLabel(label);
+  let tone = 'neutral';
+
+  if (/(zalegl|po terminie|ryzy|blok|kosz|usun|usunieto|zagroz|awaria)/.test(normalized)) tone = 'danger';
+  else if (/(wydarzenie|spotkanie|kalendarz|calendar|termin)/.test(normalized)) tone = 'event';
+  else if (/(zadanie|zrobione|gotowe|aktywne|brak blokerow|wykonane)/.test(normalized)) tone = 'task';
+  else if (/(notat|szkic|czeka|do sprawdzenia|oczekuje|przypomnienie)/.test(normalized)) tone = 'note';
+  else if (/(lead|leady)/.test(normalized)) tone = 'lead';
+  else if (/(sprawa|sprawy)/.test(normalized)) tone = 'case';
+  else if (/(klient|klienci)/.test(normalized)) tone = 'client';
+
+  return 'cf-semantic-badge cf-semantic-badge-' + tone + ' rounded-full';
+}
+
+function getTodaySectionFromTileText(value: string): TodaySectionKey | null {
+  const text = normalizeSemanticLabel(value);
+  if (text.includes('leady bez najblizszej akcji') || text.includes('bez najblizszej zaplanowanej akcji')) return 'no_action';
+  if (text.includes('wysoka wartosc') || text.includes('ryzyko')) return 'risk';
+  if (text.includes('leady czekajace') || text.includes('czeka za dlugo')) return 'waiting';
+  if (text.includes('leady do obslugi dzis') || text.includes('leady do ruchu')) return 'leads';
+  if (text.includes('zadania do wykonania dzis') || text.includes('zadania dzis')) return 'tasks';
+  if (text.includes('wydarzenia dzis') || text.includes('wydarzenie dzis')) return 'events';
+  if (text.includes('najblizsze 7 dni')) return 'upcoming';
+  if (text.includes('szkice ai') || text.includes('inbox szkicow')) return 'drafts';
+  return null;
+}
+
+function scrollToTodaySection(key: TodaySectionKey) {
+  if (typeof document === 'undefined') return;
+  const title = TODAY_SECTION_TITLES[key];
+  const root = document.querySelector('[data-p0-today-stable-rebuild="true"]') as HTMLElement | null;
+  if (!root || !title) return;
+
+  const headers = Array.from(root.querySelectorAll('button')) as HTMLElement[];
+  const header = headers.find((element) => (element.textContent || '').includes(title));
+  const target = (header?.closest('.rounded-xl.border, .rounded-xl, section, div') || header) as HTMLElement | null;
+  target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function RowLink({
   to,
   title,
@@ -453,7 +515,7 @@ function RowLink({
             <Link to={to} className="font-semibold text-slate-900 break-words hover:underline">
               {title}
             </Link>
-            {badge ? <Badge variant="outline" className="rounded-full">{badge}</Badge> : null}
+            {badge ? <Badge variant="outline" className={semanticBadgeClass(badge)}>{badge}</Badge> : null}
           </div>
           {helper ? <p className="mt-1 text-sm text-slate-600 break-words">{helper}</p> : null}
           {meta ? (
@@ -521,7 +583,7 @@ export default function TodayStable() {
   const [todayViewOpen, setTodayViewOpen] = useState(false);
   const [visibleTodaySections, setVisibleTodaySections] = useState<TodaySectionKey[]>(() => readTodayVisibleSections());
   const [actionPendingId, setActionPendingId] = useState<string>('');
-  const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>([]);
+  const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>(() => [...TODAY_SECTION_KEYS]);
 
   const refreshData = useCallback(async (options?: { manual?: boolean }) => {
     const manual = Boolean(options?.manual);
@@ -650,7 +712,7 @@ export default function TodayStable() {
 
   const noActionLeads = useMemo(() => operatorLeads.filter((entry) => !getDateKey(entry.momentRaw)).slice(0, 5), [operatorLeads]);
   const highValueAtRiskRows = useMemo(() => operatorLeads.filter((entry) => getLeadValue(entry.lead) >= 5000 || entry.risk.reason.includes('wartości')).slice(0, 5), [operatorLeads]);
-  const waitingLeadRows = useMemo(() => operatorLeads.filter((entry) => entry.risk.reason.includes('waiting') || getLeadStatus(entry.lead).includes('waiting') || getLeadStatus(entry.lead).includes('czeka')).slice(0, 5), [operatorLeads]);
+  const waitingLeadRows = useMemo(() => operatorLeads.filter((entry) => entry.risk.reason.includes('czeka za długo') || getLeadStatus(entry.lead).includes('waiting') || getLeadStatus(entry.lead).includes('czeka')).slice(0, 5), [operatorLeads]);
 
   const todayEvents = useMemo(() => {
     return data.events
@@ -736,6 +798,30 @@ export default function TodayStable() {
       current.includes(key) ? current.filter((entry) => entry !== key) : [...current, key]
     ));
   };
+
+  const openTodaySection = useCallback((key: TodaySectionKey) => {
+    setExpandedSection('all');
+    setCollapsedSections((current) => current.filter((entry) => entry !== key));
+    window.setTimeout(() => scrollToTodaySection(key), 60);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+    const root = document.querySelector('[data-p0-today-stable-rebuild="true"]');
+    if (!root) return undefined;
+
+    const handleMetricClick = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      const tile = target?.closest('button, a, [data-eliteflow-today-metric-lock="true"]') as HTMLElement | null;
+      if (!tile) return;
+      const sectionKey = getTodaySectionFromTileText(tile.textContent || '');
+      if (!sectionKey) return;
+      openTodaySection(sectionKey);
+    };
+
+    root.addEventListener('click', handleMetricClick, true);
+    return () => root.removeEventListener('click', handleMetricClick, true);
+  }, [openTodaySection]);
 
   const todaySectionLabels = {
     no_action: 'Leady bez najbliższej akcji',
