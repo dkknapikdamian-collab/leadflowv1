@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { AppChunkErrorBoundary } from './components/AppChunkErrorBoundary';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 import EmailVerificationGate from './components/EmailVerificationGate';
+import './styles/closeflow-metric-tiles.css';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 

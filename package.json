@@ -447,7 +447,9 @@
     "check:stage16p:focused": "node scripts/collect-stage16p-focused-final-qa.cjs",
     "check:stage16u:two-gates": "node scripts/collect-stage16u-final-two-gates.cjs",
     "check:today-refresh-tiles-match-lists": "node scripts/check-today-refresh-tiles-match-lists.cjs",
-    "test:today-refresh-tiles-match-lists": "node --test tests/today-refresh-tiles-match-lists.test.cjs"
+    "test:today-refresh-tiles-match-lists": "node --test tests/today-refresh-tiles-match-lists.test.cjs",
+    "check:unified-top-metric-tiles": "node scripts/check-unified-top-metric-tiles.cjs",
+    "test:unified-top-metric-tiles": "node --test tests/unified-top-metric-tiles.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

@@ -1,0 +1,164 @@
+/* STAGE16AK_UNIFIED_TOP_METRIC_TILES_CSS */
+:root {
+  --cf-metric-tile-radius: 16px;
+  --cf-metric-tile-border: #e2e8f0;
+  --cf-metric-tile-bg: #ffffff;
+  --cf-metric-tile-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --cf-metric-tile-shadow-hover: 0 10px 24px rgba(15, 23, 42, 0.08);
+  --cf-metric-tile-label: #64748b;
+  --cf-metric-tile-value: #0f172a;
+  --cf-metric-tile-helper: #64748b;
+  --cf-metric-tile-icon-bg: #f1f5f9;
+  --cf-metric-tile-icon: #64748b;
+}
+
+.cf-top-metric-tile,
+.cf-html-view .metric,
+.cf-html-view .stat-card,
+.cf-html-view .summary-card,
+.cf-html-view .dashboard-stat-card {
+  min-height: 92px;
+  border: 1px solid var(--cf-metric-tile-border) !important;
+  border-radius: var(--cf-metric-tile-radius) !important;
+  background: var(--cf-metric-tile-bg) !important;
+  color: var(--cf-metric-tile-value);
+  box-shadow: var(--cf-metric-tile-shadow) !important;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
+}
+
+.cf-html-view .metric,
+.cf-html-view .stat-card,
+.cf-html-view .summary-card,
+.cf-html-view .dashboard-stat-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  text-align: left;
+}
+
+.cf-top-metric-tile:hover,
+.cf-html-view .metric:hover,
+.cf-html-view .stat-card:hover,
+.cf-html-view .summary-card:hover,
+.cf-html-view .dashboard-stat-card:hover {
+  box-shadow: var(--cf-metric-tile-shadow-hover) !important;
+  transform: translateY(-1px);
+}
+
+.cf-top-metric-tile.is-active,
+.cf-html-view .metric.active,
+.cf-html-view .metric.is-active,
+.cf-html-view .stat-card.active,
+.cf-html-view .summary-card.active,
+.cf-html-view .dashboard-stat-card.active {
+  border-color: rgba(37, 99, 235, 0.24) !important;
+  background: rgba(37, 99, 235, 0.05) !important;
+}
+
+.cf-top-metric-tile-label,
+.cf-html-view .metric label,
+.cf-html-view .stat-card label,
+.cf-html-view .summary-card label,
+.cf-html-view .dashboard-stat-card label,
+.cf-html-view .metric .label,
+.cf-html-view .stat-card .label,
+.cf-html-view .summary-card .label,
+.cf-html-view .dashboard-stat-card .label {
+  display: block;
+  margin: 0 0 4px;
+  color: var(--cf-metric-tile-label) !important;
+  font-size: 12px !important;
+  line-height: 1.2;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cf-top-metric-tile-value,
+.cf-html-view .metric strong,
+.cf-html-view .stat-card strong,
+.cf-html-view .summary-card strong,
+.cf-html-view .dashboard-stat-card strong,
+.cf-html-view .metric .value,
+.cf-html-view .stat-card .value,
+.cf-html-view .summary-card .value,
+.cf-html-view .dashboard-stat-card .value {
+  display: block;
+  color: var(--cf-metric-tile-value) !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em;
+}
+
+.cf-top-metric-tile-helper,
+.cf-html-view .metric .hint,
+.cf-html-view .stat-card .hint,
+.cf-html-view .summary-card .hint,
+.cf-html-view .dashboard-stat-card .hint,
+.cf-html-view .metric small,
+.cf-html-view .stat-card small,
+.cf-html-view .summary-card small,
+.cf-html-view .dashboard-stat-card small {
+  display: block;
+  margin-top: 8px;
+  color: var(--cf-metric-tile-helper) !important;
+  font-size: 11px !important;
+  line-height: 1.25;
+  font-weight: 650 !important;
+}
+
+.cf-top-metric-tile-icon,
+.cf-html-view .metric .metric-icon,
+.cf-html-view .stat-card .metric-icon,
+.cf-html-view .summary-card .metric-icon,
+.cf-html-view .dashboard-stat-card .metric-icon,
+.cf-html-view .metric svg.metric-icon,
+.cf-html-view .stat-card svg.metric-icon,
+.cf-html-view .summary-card svg.metric-icon,
+.cf-html-view .dashboard-stat-card svg.metric-icon {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px;
+  border-radius: 16px !important;
+  background: var(--cf-metric-tile-icon-bg) !important;
+  color: var(--cf-metric-tile-icon) !important;
+  padding: 10px !important;
+}
+
+.cf-top-metric-tile-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.cf-html-view .grid-5,
+.cf-html-view .stats-grid,
+.cf-html-view .stat-grid,
+.cf-html-view .metric-grid,
+.cf-html-view .summary-grid {
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .cf-top-metric-tile,
+  .cf-html-view .metric,
+  .cf-html-view .stat-card,
+  .cf-html-view .summary-card,
+  .cf-html-view .dashboard-stat-card {
+    min-height: 84px;
+  }
+
+  .cf-top-metric-tile-value,
+  .cf-html-view .metric strong,
+  .cf-html-view .stat-card strong,
+  .cf-html-view .summary-card strong,
+  .cf-html-view .dashboard-stat-card strong,
+  .cf-html-view .metric .value,
+  .cf-html-view .stat-card .value,
+  .cf-html-view .summary-card .value,
+  .cf-html-view .dashboard-stat-card .value {
+    font-size: 24px !important;
+  }
+}
