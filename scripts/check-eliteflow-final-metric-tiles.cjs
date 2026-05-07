@@ -13,10 +13,15 @@ function fail(message) {
   process.exit(1);
 }
 
-const importLine = "@import './styles/eliteflow-final-metric-tiles-hard-lock.css';";
-if (!indexCss.includes(importLine)) fail('src/index.css does not import final metric tile hard lock');
+const finalImport = "@import './styles/eliteflow-final-metric-tiles-hard-lock.css';";
+const colorImport = "@import './styles/eliteflow-metric-tiles-color-font-parity.css';";
+if (!indexCss.includes(finalImport)) fail('src/index.css does not import final metric tile hard lock');
+if (!indexCss.includes(colorImport)) fail('src/index.css does not import metric tile color/font parity layer');
+if (indexCss.lastIndexOf(finalImport) > indexCss.lastIndexOf(colorImport)) {
+  fail('final metric tile hard lock must load before color/font parity layer');
+}
 const trimmed = indexCss.trim();
-if (!trimmed.endsWith(importLine)) fail('final metric tile hard lock import must be the last non-empty line in src/index.css');
+if (!trimmed.endsWith(colorImport)) fail('metric tile color/font parity import must be the last non-empty line in src/index.css');
 
 if (stat.includes("'cf-top-metric-tile-content metric'") || stat.includes('"cf-top-metric-tile-content metric"')) {
   fail('StatShortcutCard visible content still carries legacy .metric class, which lets old page CSS create nested broken tiles');
@@ -39,4 +44,4 @@ if (!stat.includes('data-eliteflow-today-metric-lock="true"')) {
   if (!lockCss.includes(needle)) fail('lock CSS missing required marker: ' + needle);
 });
 
-console.log('[eliteflow-final-metric-tiles] OK: final hard lock is imported last and blocks legacy blue metric tiles');
+console.log('[eliteflow-final-metric-tiles] OK: hard lock loads before color/font parity and blocks legacy blue metric tiles');

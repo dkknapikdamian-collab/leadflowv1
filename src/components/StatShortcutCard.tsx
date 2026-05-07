@@ -5,10 +5,12 @@ const STAGE16AK_UNIFIED_TOP_METRIC_TILES = 'STAGE16AK_UNIFIED_TOP_METRIC_TILES';
 const STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE = 'STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE';
 const ELITEFLOW_TODAY_METRIC_TILE_LOCK = 'ELITEFLOW_TODAY_METRIC_TILE_LOCK_2026_05_07';
 const ELITEFLOW_FINAL_METRIC_TILES_HARD_LOCK = 'ELITEFLOW_FINAL_METRIC_TILES_HARD_LOCK_2026_05_07';
+const ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY = 'ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY_2026_05_07';
 void STAGE16AK_UNIFIED_TOP_METRIC_TILES;
 void STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE;
 void ELITEFLOW_TODAY_METRIC_TILE_LOCK;
 void ELITEFLOW_FINAL_METRIC_TILES_HARD_LOCK;
+void ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY;
 
 export type StatShortcutCardProps = {
   key?: string | number;
@@ -25,6 +27,36 @@ export type StatShortcutCardProps = {
   ariaLabel?: string;
 };
 
+function normalizeMetricToneText(value: unknown) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/_/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function resolveMetricTone(label: string, valueClassName: string, iconClassName: string) {
+  const classText = normalizeMetricToneText(`${valueClassName} ${iconClassName}`);
+  const labelText = normalizeMetricToneText(label);
+
+  if (classText.includes('rose') || classText.includes('red')) return 'red';
+  if (classText.includes('emerald') || classText.includes('green') || classText.includes('teal')) return 'green';
+  if (classText.includes('purple') || classText.includes('violet')) return 'purple';
+  if (classText.includes('amber') || classText.includes('orange') || classText.includes('yellow')) return 'orange';
+  if (classText.includes('blue') || classText.includes('sky') || classText.includes('indigo')) return 'blue';
+
+  if (labelText.includes('zagro') || labelText.includes('ryzy') || labelText.includes('zaleg') || labelText.includes('blok') || labelText.includes('brak')) return 'red';
+  if (labelText.includes('wartosc') || labelText.includes('wartoĹ›Ä‡') || labelText.includes('platn') || labelText.includes('pĹ‚atn') || labelText.includes('przychod')) return 'green';
+  if (labelText.includes('aktywn') || labelText.includes('dzis') || labelText.includes('dziĹ›') || labelText.includes('obslugi') || labelText.includes('obsĹ‚ugi')) return 'blue';
+  if (labelText.includes('czek') || labelText.includes('historia') || labelText.includes('kosz')) return 'orange';
+  if (labelText.includes('wydar') || labelText.includes('szkic') || labelText.includes('akcept')) return 'purple';
+  if (labelText.includes('zadania') || labelText.includes('zrobione') || labelText.includes('obowiazk') || labelText.includes('obowiÄ…zk')) return 'green';
+
+  return 'slate';
+}
+
 export function StatShortcutCard({
   label,
   value,
@@ -38,6 +70,7 @@ export function StatShortcutCard({
   title,
   ariaLabel,
 }: StatShortcutCardProps) {
+  const tone = resolveMetricTone(label, valueClassName, iconClassName);
   const card = (
     <div
       className={[
@@ -46,6 +79,7 @@ export function StatShortcutCard({
         active ? 'is-active' : '',
       ].filter(Boolean).join(' ')}
       data-eliteflow-today-metric-lock="true"
+      data-eliteflow-metric-tone={tone}
     >
       <div className="cf-top-metric-tile-left min-w-0 flex-1">
         <p className="cf-top-metric-tile-label truncate text-[13px] font-extrabold uppercase tracking-[0.035em] text-slate-500">
@@ -112,3 +146,4 @@ export function StatShortcutCard({
 /* STAGE16AK_UNIFIED_TOP_METRIC_TILES_GUARD cf-top-metric-tile min-h-[92px] text-[28px] h-4 w-4 data-unified-top-metric-tile */
 /* STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE_GUARD cf-top-metric-tile-value-row data-metric-icon-next-to-value cf-top-metric-tile-icon */
 /* ELITEFLOW_TODAY_METRIC_TILE_LOCK_GUARD min-h-[72px] rounded-[22px] cf-top-metric-tile-label cf-top-metric-tile-value-row */
+/* ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY_GUARD data-eliteflow-metric-tone resolveMetricTone */
