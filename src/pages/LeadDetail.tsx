@@ -143,10 +143,31 @@ function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null 
 }
 
 function joinTranscript(previous: string, addition: string) {
+  // ADMIN_FEEDBACK_P1_NOTE_TRANSCRIPT_DEDUPE
   const base = previous.trim();
-  const next = addition.trim();
+  const next = addition.trim().replace(/\s+/g, ' ');
   if (!next) return base;
-  return base ? `${base} ${next}` : next;
+  if (!base) return next;
+
+  const baseNorm = base.toLowerCase();
+  const nextNorm = next.toLowerCase();
+
+  if (baseNorm.endsWith(nextNorm) || baseNorm.includes(nextNorm)) return base;
+  if (nextNorm.startsWith(baseNorm)) return next;
+
+  const baseWords = base.split(/\s+/);
+  const nextWords = next.split(/\s+/);
+  const maxOverlap = Math.min(baseWords.length, nextWords.length, 12);
+
+  for (let size = maxOverlap; size > 0; size -= 1) {
+    const left = baseWords.slice(-size).join(' ').toLowerCase();
+    const right = nextWords.slice(0, size).join(' ').toLowerCase();
+    if (left === right) {
+      return `${base} ${nextWords.slice(size).join(' ')}`.trim();
+    }
+  }
+
+  return `${base} ${next}`.trim();
 }
 
 function asDate(value: unknown) {
@@ -544,6 +565,29 @@ export default function LeadDetail() {
     const billingStatus = deriveBillingStatus(potential, paid, leadPayments);
     return { potential, paid, remaining, billingStatus };
   }, [lead?.partialPayments, leadFinance.dealValue, leadPayments]);
+
+  const leadPrimaryNoteText = useMemo(() => {
+    const directNote =
+      asText(lead?.note) ||
+      asText(lead?.notes) ||
+      asText(lead?.noteText) ||
+      asText(lead?.note_text);
+
+    if (directNote) return directNote;
+
+    const noteActivities = [...activities]
+      .filter((activity) => {
+        const type = String(activity?.eventType || activity?.event_type || activity?.type || '').toLowerCase();
+        return type === 'note_added' || type.includes('note');
+      })
+      .sort((left, right) => {
+        const leftDate = asDate(left?.happenedAt || left?.createdAt || left?.updatedAt);
+        const rightDate = asDate(right?.happenedAt || right?.createdAt || right?.updatedAt);
+        return (rightDate?.getTime() || 0) - (leftDate?.getTime() || 0);
+      });
+
+    return noteActivities[0] ? getActivityDescription(noteActivities[0]) : '';
+  }, [activities, lead?.note, lead?.notes, lead?.noteText, lead?.note_text]);
 
   
   const leadServiceLockedMessage = 'Ten temat jest już w obsłudze. Dalszą pracę prowadź w sprawie.';
@@ -1441,7 +1485,7 @@ useEffect(() => {
               </div>
               <div className="lead-detail-note-box">
                 <small>Notatka</small>
-                <p className="lead-detail-note-text" lang="pl-PL">{noteText}</p>
+                <p className="lead-detail-note-text" lang="pl-PL">{leadPrimaryNoteText || 'Brak notatki.'}</p>
               </div>
             </section>
 
@@ -1450,7 +1494,7 @@ useEffect(() => {
                 <div className="lead-detail-section-head">
                   <div>
                     <h2>Zadania i wydarzenia</h2>
-                    <p>Lista realnych działań sprzedażowych powiązanych z leadem.</p>
+                    <p></p>
                   </div>
                   <div hidden data-lead-detail-stage35-removed-local-create-actions="true" />
                 </div>

@@ -1,0 +1,197 @@
+/* ELITEFLOW_ADMIN_FEEDBACK_P1_HOTFIX_2026_05_07
+   Admin feedback P1 repair layer.
+   Scope:
+   - sidebar user footer must live below nav, not over nav items,
+   - lead/list search question mark artifact,
+   - metric tile label white strip artifact and lead one-row width,
+   - lead detail note input/readability,
+   - lead detail helper copy visual cleanup.
+*/
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  overflow: hidden !important;
+  background-color: #0b1220 !important;
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.26), transparent 35%),
+    linear-gradient(180deg, #101828 0%, #0b1220 100%) !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .nav-scroll {
+  min-height: 0 !important;
+  height: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 2px !important;
+  padding-bottom: 8px !important;
+  background: transparent !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+  position: static !important;
+  z-index: auto !important;
+  display: grid !important;
+  grid-template-rows: auto auto !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 10px 0 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+  background: #0b1220 !important;
+  box-shadow: none !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::before,
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::after {
+  display: none !important;
+  content: none !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] {
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 58px !important;
+  width: 100% !important;
+  padding: 9px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.045)) !important;
+  background-color: rgba(15, 23, 42, 0.78) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  overflow: hidden !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] > .min-w-0 {
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong,
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong {
+  color: rgba(255, 255, 255, 0.94) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.94) !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+  font-weight: 900 !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+  margin-top: 3px !important;
+  color: rgba(255, 255, 255, 0.66) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.66) !important;
+  font-size: 10px !important;
+  line-height: 1.15 !important;
+  font-weight: 700 !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout {
+  width: 100% !important;
+  min-height: 40px !important;
+  justify-content: flex-start !important;
+  border-radius: 15px !important;
+  background: rgba(255, 255, 255, 0.045) !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+  color: rgba(255, 255, 255, 0.78) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.78) !important;
+}
+
+/* Leads list: remove visible question mark search artifact. */
+html body #root .cf-html-view.main-leads-html .search > span {
+  display: none !important;
+}
+
+html body #root .cf-html-view.main-leads-html .search input {
+  padding-left: 16px !important;
+}
+
+/* Leads metric tiles: fit all five in one row and remove white label bars. */
+@media (min-width: 1280px) {
+  html body #root .cf-html-view.main-leads-html .grid-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  html body #root .cf-html-view.main-leads-html [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"] > [data-eliteflow-today-metric-lock="true"] {
+    min-height: 64px !important;
+    padding: 13px 16px !important;
+  }
+}
+
+html body #root .cf-html-view.main-leads-html [data-eliteflow-today-metric-lock="true"] :is(.cf-top-metric-tile-label, .cf-top-metric-tile-helper),
+html body #root .cf-html-view :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid) :is(label, .label, .metric-label, .stat-label, .cf-top-metric-tile-label) {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  border: 0 !important;
+}
+
+/* Lead detail note visibility and note box readability. */
+html body #root .lead-detail-vnext-page textarea#lead-detail-note-box,
+html body #root .lead-detail-vnext-page .lead-detail-note-input {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #2563eb !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), 0 1px 2px rgba(15,23,42,0.04) !important;
+}
+
+html body #root .lead-detail-vnext-page textarea#lead-detail-note-box::placeholder,
+html body #root .lead-detail-vnext-page .lead-detail-note-input::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+html body #root .lead-detail-vnext-page .lead-detail-note-box {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05) !important;
+}
+
+html body #root .lead-detail-vnext-page .lead-detail-note-box,
+html body #root .lead-detail-vnext-page .lead-detail-note-box * {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+/* Remove noisy helper text below selected lead detail section heads. */
+html body #root .lead-detail-vnext-page .lead-detail-section-head p:empty {
+  display: none !important;
+}
+
+@media (max-width: 1220px) {
+  html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+    display: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {
+    display: none !important;
+  }
+}

@@ -45,6 +45,8 @@ import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 
+const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX';
+void ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX;
 const P0_TODAY_STABLE_REBUILD = 'P0_TODAY_STABLE_REBUILD';
 const STAGE70_TODAY_DECISION_ENGINE_STARTER = 'STAGE70_TODAY_DECISION_ENGINE_STARTER';
 const STAGE81_TODAY_RISK_REASON_NEXT_ACTION = 'STAGE81_TODAY_RISK_REASON_NEXT_ACTION';
@@ -541,13 +543,13 @@ export default function TodayStable() {
   }, []);
 
   useEffect(() => {
-    void refreshData();
+    void refreshData({ manual: true });
   }, [refreshData]);
 
   useEffect(() => {
-    const handleFocus = () => void refreshData();
+    const handleFocus = () => void refreshData({ manual: true });
     const handleVisibility = () => {
-      if (document.visibilityState === 'visible') void refreshData();
+      if (document.visibilityState === 'visible') void refreshData({ manual: true });
     };
 
     window.addEventListener('focus', handleFocus);
@@ -567,7 +569,7 @@ export default function TodayStable() {
 
       if (refreshTimer) window.clearTimeout(refreshTimer);
       refreshTimer = window.setTimeout(() => {
-        void refreshData().catch((error: any) => {
+        void refreshData({ manual: true }).catch((error: any) => {
           console.warn('TODAY_LIVE_REFRESH_FAILED', error);
         });
       }, 120);
