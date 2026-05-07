@@ -661,6 +661,7 @@ function StatCell({ label, value }: { label: string; value: string | number }) {
 
 const CLIENT_DETAIL_TOP_TILES_REPAIR6_GUARD = 'client-detail-top-tiles repair6 compact unified safe';
 const STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD = 'client cases visible panel with safe actions';
+const STAGE24A_CLIENT_SIDE_QUICK_ACTIONS_GUARD = 'client side quick actions use context action host';
 
 function getClientPaymentAmount(payment: any) {
   const raw =
@@ -1583,7 +1584,7 @@ export default function ClientDetail() {
                   </div>
                 </section>
 
-                <section className="client-detail-section-card">
+                <section className="client-detail-section-card" data-client-summary-source-lead-panel="true">
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Aktywne sprawy</h2>
@@ -1618,7 +1619,6 @@ export default function ClientDetail() {
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Aktywne sprawy</h2>
-                      <p>Lista spraw klienta. Wejdź w sprawę, żeby edytować nazwę, wartość, zadania i dalszą obsługę.</p>
                     </div>
                   </div>
 
@@ -1710,7 +1710,84 @@ export default function ClientDetail() {
 
             {/* STAGE35_CLIENT_DETAIL_HIDE_DODATKOWO */}
 
-            <section className="right-card client-detail-right-card client-detail-note-card">
+            
+              <section className="right-card client-detail-right-card client-detail-side-quick-actions-card" data-client-side-quick-actions="true">
+                <div className="client-detail-card-title-row">
+                  <Sparkles className="h-4 w-4" />
+                  <h2>Szybkie akcje</h2>
+                </div>
+                <div className="client-detail-side-quick-actions-grid">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    data-context-action-kind="task"
+                    data-context-record-type="client"
+                    data-context-record-id={String(client.id)}
+                    data-context-record-label={getClientName(client)}
+                    onClick={() =>
+                      openContextQuickAction({
+                        kind: 'task',
+                        recordType: 'client',
+                        recordId: String(client.id),
+                        clientId: String(client.id),
+                        leadId: firstSourceLead?.id ? String(firstSourceLead.id) : null,
+                        caseId: mainCase?.id ? String(mainCase.id) : null,
+                        recordLabel: getClientName(client),
+                      })
+                    }
+                    disabled={!hasAccess}
+                  >
+                    Dodaj zadanie
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    data-context-action-kind="event"
+                    data-context-record-type="client"
+                    data-context-record-id={String(client.id)}
+                    data-context-record-label={getClientName(client)}
+                    onClick={() =>
+                      openContextQuickAction({
+                        kind: 'event',
+                        recordType: 'client',
+                        recordId: String(client.id),
+                        clientId: String(client.id),
+                        leadId: firstSourceLead?.id ? String(firstSourceLead.id) : null,
+                        caseId: mainCase?.id ? String(mainCase.id) : null,
+                        recordLabel: getClientName(client),
+                      })
+                    }
+                    disabled={!hasAccess}
+                  >
+                    Dodaj wydarzenie
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    data-context-action-kind="note"
+                    data-context-record-type="client"
+                    data-context-record-id={String(client.id)}
+                    data-context-record-label={getClientName(client)}
+                    onClick={() => openClientContextAction('note')}
+                    disabled={!hasAccess}
+                  >
+                    Dodaj notatkę
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwórz sprawę klienta.'))}
+                  >
+                    Finanse w sprawie
+                  </Button>
+                </div>
+              </section>
+
+<section className="right-card client-detail-right-card client-detail-note-card">
               <div className="client-detail-card-title-row">
                 <FileText className="h-4 w-4" />
                 <h2>Krótka notatka</h2>
