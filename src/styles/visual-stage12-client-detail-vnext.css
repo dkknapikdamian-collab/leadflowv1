@@ -1976,3 +1976,18 @@ button.client-detail-top-tile-link {
     padding: 16px;
   }
 }
+
+/* CLIENT_DETAIL_TOP_TILES_REPAIR4_POSITION
+   Client top cards are placed directly under the detail header and before the page shell. */
+.client-detail-vnext-page > .client-detail-top-tiles,
+.client-detail-top-tiles {
+  max-width: 1480px;
+  margin: 0 auto 18px;
+}
+
+@media (max-width: 640px) {
+  .client-detail-vnext-page > .client-detail-top-tiles,
+  .client-detail-top-tiles {
+    margin: 0 auto 14px;
+  }
+}

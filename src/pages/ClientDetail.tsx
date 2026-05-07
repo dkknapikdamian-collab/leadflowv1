@@ -1253,7 +1253,15 @@ export default function ClientDetail() {
             </Button>
           </div>
         </header>
-
+        <ClientTopTiles
+        clientId={String(clientId || '')}
+        leads={leads}
+        cases={cases}
+        payments={payments}
+        tasks={clientTasks}
+        events={clientEvents}
+        onOpenCases={() => setActiveTab('cases')}
+        />
         <div className="client-detail-shell">
           <aside className="client-detail-left-rail">
             
