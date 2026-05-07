@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 const STAGE16AK_UNIFIED_TOP_METRIC_TILES = 'STAGE16AK_UNIFIED_TOP_METRIC_TILES';
 const STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE = 'STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE';
 const ELITEFLOW_TODAY_METRIC_TILE_LOCK = 'ELITEFLOW_TODAY_METRIC_TILE_LOCK_2026_05_07';
+const ELITEFLOW_FINAL_METRIC_TILES_HARD_LOCK = 'ELITEFLOW_FINAL_METRIC_TILES_HARD_LOCK_2026_05_07';
 void STAGE16AK_UNIFIED_TOP_METRIC_TILES;
 void STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE;
 void ELITEFLOW_TODAY_METRIC_TILE_LOCK;
+void ELITEFLOW_FINAL_METRIC_TILES_HARD_LOCK;
 
 export type StatShortcutCardProps = {
   key?: string | number;
@@ -39,9 +41,9 @@ export function StatShortcutCard({
   const card = (
     <div
       className={[
-        'cf-top-metric-tile-content metric',
+        'cf-top-metric-tile-content',
         'flex min-h-[72px] w-full items-center justify-between gap-4 rounded-[22px] border border-slate-100 bg-white px-5 py-4 shadow-sm transition',
-        active ? 'is-active active' : '',
+        active ? 'is-active' : '',
       ].filter(Boolean).join(' ')}
       data-eliteflow-today-metric-lock="true"
     >

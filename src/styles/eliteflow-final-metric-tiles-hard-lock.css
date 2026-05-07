@@ -1,0 +1,320 @@
+/* ELITEFLOW_FINAL_METRIC_TILES_HARD_LOCK_2026_05_07
+   Final lock: all top metric/stat tiles must visually match the Today top tiles.
+   Imported last from src/index.css to beat older visual-stage CSS.
+*/
+
+:root {
+  --eliteflow-metric-radius: 22px;
+  --eliteflow-metric-border: #eef2f7;
+  --eliteflow-metric-bg: #ffffff;
+  --eliteflow-metric-label: #56637a;
+  --eliteflow-metric-value: #0b1220;
+  --eliteflow-metric-icon-bg: #f6f8fb;
+  --eliteflow-metric-icon: #64748b;
+  --eliteflow-metric-shadow: 0 14px 32px rgba(15, 23, 42, 0.055);
+  --eliteflow-metric-shadow-hover: 0 18px 40px rgba(15, 23, 42, 0.085);
+  --eliteflow-metric-min-height: 72px;
+  --eliteflow-metric-gap: 18px;
+}
+
+/* Today-like width rhythm: 4 tiles per row on desktop, 2 on tablet, 1 on mobile. */
+html body #root :where(
+  .main-leads-html,
+  .main-clients-html,
+  .main-cases-html,
+  .main-templates-html,
+  .main-response-templates-html,
+  .main-ai-drafts-html,
+  .main-activity-html,
+  .main-billing-html,
+  .main-calendar-html,
+  .cf-html-view[data-a16-template-light-ui="true"]
+) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid) {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--eliteflow-metric-gap) !important;
+  align-items: stretch !important;
+}
+
+/* StatShortcutCard root: kill legacy blue cards, oversized padding and nested shells. */
+html body #root [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"],
+html body #root .cf-html-view [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"],
+html body #root .cf-html-view .grid-5 > [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"],
+html body #root .cf-html-view .grid-4 > [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"],
+html body #root .cf-html-view .grid-3 > [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"] {
+  min-height: 0 !important;
+  height: auto !important;
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--eliteflow-metric-radius) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--eliteflow-metric-value) !important;
+  text-decoration: none !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+
+/* StatShortcutCard visible tile. */
+html body #root [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"] > [data-eliteflow-today-metric-lock="true"],
+html body #root .cf-top-metric-tile-content[data-eliteflow-today-metric-lock="true"],
+html body #root .cf-html-view .cf-top-metric-tile-content[data-eliteflow-today-metric-lock="true"] {
+  min-height: var(--eliteflow-metric-min-height) !important;
+  height: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 16px 18px !important;
+  border: 1px solid var(--eliteflow-metric-border) !important;
+  border-radius: var(--eliteflow-metric-radius) !important;
+  background: var(--eliteflow-metric-bg) !important;
+  background-color: var(--eliteflow-metric-bg) !important;
+  background-image: none !important;
+  box-shadow: var(--eliteflow-metric-shadow) !important;
+  color: var(--eliteflow-metric-value) !important;
+  text-align: left !important;
+  transform: none !important;
+  overflow: hidden !important;
+}
+
+html body #root [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"]:hover > [data-eliteflow-today-metric-lock="true"],
+html body #root [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"]:focus-visible > [data-eliteflow-today-metric-lock="true"] {
+  box-shadow: var(--eliteflow-metric-shadow-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+html body #root [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"].is-active > [data-eliteflow-today-metric-lock="true"] {
+  border-color: rgba(59, 130, 246, 0.22) !important;
+  background: var(--eliteflow-metric-bg) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.08), var(--eliteflow-metric-shadow) !important;
+}
+
+/* Tile text layout. */
+html body #root .cf-top-metric-tile-left {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  display: block !important;
+}
+
+html body #root .cf-top-metric-tile-value-row {
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+}
+
+html body #root .cf-top-metric-tile-label,
+html body #root .cf-html-view .cf-top-metric-tile-label {
+  display: block !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+  color: var(--eliteflow-metric-label) !important;
+  -webkit-text-fill-color: var(--eliteflow-metric-label) !important;
+  font-size: 13px !important;
+  line-height: 1.18 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  text-shadow: none !important;
+}
+
+html body #root .cf-top-metric-tile-helper,
+html body #root .cf-html-view .cf-top-metric-tile-helper {
+  margin-top: 4px !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  text-shadow: none !important;
+}
+
+html body #root .cf-top-metric-tile-value,
+html body #root .cf-html-view .cf-top-metric-tile-value {
+  display: block !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  max-width: 12rem !important;
+  color: inherit !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.045em !important;
+  text-align: right !important;
+  text-shadow: none !important;
+}
+
+html body #root .cf-top-metric-tile-icon,
+html body #root .cf-html-view .cf-top-metric-tile-icon,
+html body #root .cf-html-view .metric-icon.cf-top-metric-tile-icon {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+  background-color: var(--eliteflow-metric-icon-bg) !important;
+  background-image: none !important;
+  color: var(--eliteflow-metric-icon) !important;
+  padding: 10px !important;
+  box-shadow: none !important;
+}
+
+html body #root .cf-top-metric-tile-icon svg,
+html body #root .cf-html-view .cf-top-metric-tile-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+  stroke-width: 2.35 !important;
+}
+
+/* Hardcoded / older tiles not using StatShortcutCard. */
+html body #root .cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content),
+html body #root .cf-html-view :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid) > :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) {
+  min-height: var(--eliteflow-metric-min-height) !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 16px 18px !important;
+  border: 1px solid var(--eliteflow-metric-border) !important;
+  border-radius: var(--eliteflow-metric-radius) !important;
+  background: var(--eliteflow-metric-bg) !important;
+  background-color: var(--eliteflow-metric-bg) !important;
+  background-image: none !important;
+  color: var(--eliteflow-metric-value) !important;
+  box-shadow: var(--eliteflow-metric-shadow) !important;
+  text-align: left !important;
+  transform: none !important;
+  overflow: hidden !important;
+}
+
+/* Tasks Stable hardcoded stat buttons. */
+html body #root main[data-p0-tasks-stable-rebuild="true"] > section.grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--eliteflow-metric-gap) !important;
+  align-items: stretch !important;
+}
+
+html body #root main[data-p0-tasks-stable-rebuild="true"] > section.grid > button {
+  min-height: var(--eliteflow-metric-min-height) !important;
+  height: auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 16px 18px !important;
+  border: 1px solid var(--eliteflow-metric-border) !important;
+  border-radius: var(--eliteflow-metric-radius) !important;
+  background: var(--eliteflow-metric-bg) !important;
+  background-color: var(--eliteflow-metric-bg) !important;
+  background-image: none !important;
+  color: var(--eliteflow-metric-value) !important;
+  box-shadow: var(--eliteflow-metric-shadow) !important;
+  text-align: left !important;
+  transform: none !important;
+}
+
+html body #root main[data-p0-tasks-stable-rebuild="true"] > section.grid > button > div {
+  display: contents !important;
+}
+
+html body #root main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:first-of-type {
+  grid-column: 1 !important;
+  margin: 0 !important;
+  color: var(--eliteflow-metric-label) !important;
+  -webkit-text-fill-color: var(--eliteflow-metric-label) !important;
+  font-size: 13px !important;
+  line-height: 1.18 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase !important;
+}
+
+html body #root main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:last-of-type {
+  grid-column: 2 !important;
+  margin: 0 !important;
+  color: inherit !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.045em !important;
+  text-align: right !important;
+}
+
+html body #root main[data-p0-tasks-stable-rebuild="true"] > section.grid > button svg {
+  grid-column: 3 !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 16px !important;
+  background: var(--eliteflow-metric-icon-bg) !important;
+  padding: 10px !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 1180px) {
+  html body #root :where(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-templates-html,
+    .main-response-templates-html,
+    .main-ai-drafts-html,
+    .main-activity-html,
+    .main-billing-html,
+    .main-calendar-html,
+    .cf-html-view[data-a16-template-light-ui="true"]
+  ) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
+  html body #root main[data-p0-tasks-stable-rebuild="true"] > section.grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --eliteflow-metric-min-height: 70px;
+    --eliteflow-metric-gap: 12px;
+  }
+
+  html body #root :where(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-templates-html,
+    .main-response-templates-html,
+    .main-ai-drafts-html,
+    .main-activity-html,
+    .main-billing-html,
+    .main-calendar-html,
+    .cf-html-view[data-a16-template-light-ui="true"]
+  ) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
+  html body #root main[data-p0-tasks-stable-rebuild="true"] > section.grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  html body #root [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"] > [data-eliteflow-today-metric-lock="true"],
+  html body #root .cf-top-metric-tile-content[data-eliteflow-today-metric-lock="true"],
+  html body #root main[data-p0-tasks-stable-rebuild="true"] > section.grid > button {
+    padding: 14px 16px !important;
+  }
+
+  html body #root .cf-top-metric-tile-value,
+  html body #root main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:last-of-type {
+    font-size: 25px !important;
+  }
+}
