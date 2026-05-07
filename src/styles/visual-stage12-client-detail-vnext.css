@@ -1840,3 +1840,139 @@
   background: #ecfdf3;
   color: #047857;
 }
+/* CLIENT_DETAIL_TOP_TILES_REPAIR2
+   Kafelki klienta majÄ… staÄ‡ nad zakĹ‚adkami Podsumowanie / Sprawy / Historia.
+   Styl jest lekki, czytelny i zgodny z kartami aplikacji. */
+.client-detail-top-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+
+.client-detail-top-tile {
+  min-height: 168px;
+  border: 1px solid #e4e7ec;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #111827;
+  padding: 18px;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.client-detail-top-tile-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.client-detail-top-tile-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 14px;
+  background: #eff6ff;
+  color: #2563eb;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.client-detail-top-tile small {
+  color: #667085;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.client-detail-top-tile strong {
+  display: block;
+  color: #111827;
+  font-size: 22px;
+  line-height: 1.12;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.client-detail-top-tile p {
+  margin: 0;
+  color: #475467;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.client-detail-top-tile p b {
+  color: #111827;
+  font-weight: 850;
+}
+
+.client-detail-top-tile-link {
+  margin-top: auto;
+  min-height: 34px;
+  border: 1px solid #dbeafe;
+  border-radius: 999px;
+  background: #fff;
+  color: #1d4ed8;
+  padding: 7px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+button.client-detail-top-tile-link {
+  cursor: pointer;
+}
+
+.client-detail-top-tile-link:hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.client-detail-top-tile-muted {
+  margin-top: auto;
+  border: 1px solid #e4e7ec;
+  border-radius: 999px;
+  background: #f9fafb;
+  color: #667085;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.client-detail-top-tile-action.client-detail-callout-danger,
+.client-detail-top-tile-action.client-detail-callout-amber,
+.client-detail-top-tile-action.client-detail-callout-blue,
+.client-detail-top-tile-action.client-detail-callout-green,
+.client-detail-top-tile-action.client-detail-callout-muted {
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+}
+
+.client-detail-top-tiles[data-client-top-tiles="true"] ~ .client-detail-tabs + .client-detail-tab-panel .client-detail-top-cards {
+  display: none;
+}
+
+@media (max-width: 1260px) {
+  .client-detail-top-tiles {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .client-detail-top-tile {
+    min-height: 150px;
+    border-radius: 24px;
+    padding: 16px;
+  }
+}

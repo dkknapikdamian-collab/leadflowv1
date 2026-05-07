@@ -658,6 +658,106 @@ function StatCell({ label, value }: { label: string; value: string | number }) {
   );
 }
 
+
+const CLIENT_DETAIL_TOP_TILES_REPAIR2_GUARD = 'client-detail-top-tiles repair2 above tabs';
+
+function getClientPaymentAmount(payment: any) {
+  const raw =
+    payment?.amount ??
+    payment?.amountPln ??
+    payment?.value ??
+    payment?.total ??
+    payment?.totalAmount ??
+    payment?.paidAmount ??
+    payment?.grossAmount ??
+    payment?.netAmount ??
+    0;
+  const amount = Number(raw);
+  return Number.isFinite(amount) ? amount : 0;
+}
+
+function isClientCaseClosed(caseRecord: any) {
+  return ['completed', 'done', 'canceled', 'cancelled', 'archived', 'lost'].includes(String(caseRecord?.status || '').toLowerCase());
+}
+
+type ClientTopTilesProps = {
+  clientId: string;
+  leads: any[];
+  cases: any[];
+  payments: any[];
+  tasks: any[];
+  events: any[];
+  onOpenCases: () => void;
+};
+
+function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpenCases }: ClientTopTilesProps) {
+  const nextAction = buildClientNextAction(leads, cases, tasks, events, clientId);
+  const paidTotal = payments
+    .filter((payment) => isPaidPaymentStatus(payment?.status))
+    .reduce((sum, payment) => sum + getClientPaymentAmount(payment), 0);
+  const declaredTotal = payments.reduce((sum, payment) => sum + getClientPaymentAmount(payment), 0);
+  const unpaidTotal = Math.max(0, declaredTotal - paidTotal);
+  const activeCases = cases.filter((caseRecord) => !isClientCaseClosed(caseRecord));
+  const blockedCases = cases.filter((caseRecord) =>
+    ['blocked', 'waiting_on_client', 'to_approve', 'on_hold'].includes(String(caseRecord?.status || '').toLowerCase()),
+  );
+  const newestCase = [...cases].sort((left, right) => {
+    const leftTime = asDate(left?.updatedAt || left?.createdAt)?.getTime() ?? 0;
+    const rightTime = asDate(right?.updatedAt || right?.createdAt)?.getTime() ?? 0;
+    return rightTime - leftTime;
+  })[0];
+
+  return (
+    <section className="client-detail-top-tiles" data-client-top-tiles="true" aria-label="Szybkie podsumowanie klienta">
+      <article
+        className={'client-detail-top-tile client-detail-top-tile-action ' + nextActionToneClass(nextAction.tone)}
+        data-client-top-tile="next-action"
+      >
+        <div className="client-detail-top-tile-head">
+          <span className="client-detail-top-tile-icon"><Clock className="h-4 w-4" /></span>
+          <small>NajbliĹĽsza zaplanowana akcja</small>
+        </div>
+        <strong>{nextAction.title}</strong>
+        <p>{nextAction.subtitle}</p>
+        {nextAction.to ? (
+          <Link to={nextAction.to} className="client-detail-top-tile-link">
+            OtwĂłrz
+          </Link>
+        ) : null}
+      </article>
+
+      <article className="client-detail-top-tile client-detail-top-tile-finance" data-client-top-tile="finance-summary">
+        <div className="client-detail-top-tile-head">
+          <span className="client-detail-top-tile-icon"><FileText className="h-4 w-4" /></span>
+          <small>Podsumowanie finansĂłw</small>
+        </div>
+        <strong>{formatMoneyWithCurrency(paidTotal)}</strong>
+        <p>
+          OpĹ‚acone z rozliczeĹ„ klienta. Do domkniÄ™cia: <b>{formatMoneyWithCurrency(unpaidTotal)}</b>.
+        </p>
+        <span className="client-detail-top-tile-muted">Rozliczenia: {payments.length}</span>
+      </article>
+
+      <article className="client-detail-top-tile client-detail-top-tile-cases" data-client-top-tile="cases-summary">
+        <div className="client-detail-top-tile-head">
+          <span className="client-detail-top-tile-icon"><Briefcase className="h-4 w-4" /></span>
+          <small>Sprawy</small>
+        </div>
+        <strong>{activeCases.length} aktywne / {cases.length} razem</strong>
+        <p>
+          {blockedCases.length > 0
+            ? `${blockedCases.length} wymaga uwagi.`
+            : newestCase
+              ? `Ostatnia: ${getCaseTitle(newestCase)} Â· ${caseStatusLabel(String(newestCase.status || 'new'))}`
+              : 'Brak spraw przypiÄ™tych do klienta.'}
+        </p>
+        <button type="button" className="client-detail-top-tile-link" onClick={onOpenCases}>
+          PokaĹĽ sprawy
+        </button>
+      </article>
+    </section>
+  );
+}
 export default function ClientDetail() {
   const { clientId } = useParams();
   const navigate = useNavigate();
