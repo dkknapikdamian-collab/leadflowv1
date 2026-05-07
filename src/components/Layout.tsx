@@ -275,7 +275,6 @@ export default function Layout({ children }: LayoutProps) {
           </span>
           <span className="brand-title">
             <strong>CloseFlow</strong>
-            <span>Panel domykania leadów</span>
           </span>
         </Link>
 

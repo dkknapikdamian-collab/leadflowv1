@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2, Plus, RotateCcw, Search, Trash2, UserRound } from 'lucide-react';
+import { AlertTriangle, Briefcase, Loader2, Plus, RotateCcw, Search, Target, Trash2, UserRound, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -477,15 +477,19 @@ export default function Clients() {
         <div className="grid-4">
           <button type="button" className={`metric ${!showArchived ? 'active' : ''}`} onClick={() => setShowArchived(false)}>
             <div><label>Aktywni</label><strong>{activeCount}</strong><div className="hint">z otwartą sprawą</div></div>
+            <Target className="metric-icon" />
           </button>
           <button type="button" className="metric">
             <div><label>Bez sprawy</label><strong>{clientsWithoutCases}</strong><div className="hint">tylko kontakt</div></div>
+            <Briefcase className="metric-icon" />
           </button>
           <button type="button" className="metric">
             <div><label>Wartość</label><strong>{formatClientMoney(relationValue)}</strong><div className="hint">w relacjach</div></div>
+            <Wallet className="metric-icon" />
           </button>
           <button type="button" className="metric">
             <div><label>Bez ruchu</label><strong>{staleClients}</strong><div className="hint">do sprawdzenia</div></div>
+            <AlertTriangle className="metric-icon" />
           </button>
         </div>
 

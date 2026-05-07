@@ -261,7 +261,8 @@ export default function Cases() {
     let isMounted = true;
     setLoading(true);
 
-    if (!isSupabaseConfigured() || workspaceLoading || !workspace?.id) {
+    const allowDevPreview = import.meta.env.DEV && !isSupabaseConfigured();
+    if ((!isSupabaseConfigured() && !allowDevPreview) || workspaceLoading || !workspace?.id) {
       setCases([]);
       setLeadCandidates([]);
       setClientCandidates([]);
@@ -643,7 +644,6 @@ export default function Cases() {
             icon={FileText}
             active={caseView === 'all'}
             onClick={() => setCaseView('all')}
-            helper="otwarte"
           />
           <StatShortcutCard
             label="Czeka na klienta"
@@ -651,7 +651,6 @@ export default function Cases() {
             icon={Clock}
             active={caseView === 'waiting' || caseView === 'approval'}
             onClick={() => toggleCaseView('waiting')}
-            helper="po stronie klienta"
           />
           <StatShortcutCard
             label="Zablokowane"
@@ -659,7 +658,6 @@ export default function Cases() {
             icon={AlertTriangle}
             active={caseView === 'blocked'}
             onClick={() => toggleCaseView('blocked')}
-            helper="braki krytyczne"
           />
           <StatShortcutCard
             label="Gotowe"
@@ -667,7 +665,6 @@ export default function Cases() {
             icon={CheckCircle2}
             active={caseView === 'ready'}
             onClick={() => toggleCaseView('ready')}
-            helper="historia"
           />
         </div>
 

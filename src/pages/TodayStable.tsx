@@ -20,11 +20,14 @@ import {
   AlertTriangle,
   ArrowRight,
   CalendarDays,
+  ChevronDown,
+  ChevronUp,
   CheckSquare,
   FileText,
   Loader2,
   RefreshCcw,
   SlidersHorizontal,
+  Trash2,
   TrendingUp,
   UserRound,
 } from 'lucide-react';
@@ -380,14 +383,23 @@ function SectionHeader({
   count,
   icon,
   tone,
+  collapsed,
+  onToggle,
 }: {
   title: string;
   count: number;
   icon: ReactNode;
   tone: string;
+  collapsed?: boolean;
+  onToggle?: () => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4">
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={!collapsed}
+      className="flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-slate-50"
+    >
       <div className="flex items-center gap-3">
         <div className={'rounded-2xl p-2 ' + tone}>{icon}</div>
         <div>
@@ -395,8 +407,11 @@ function SectionHeader({
           <p className="text-xs font-medium text-slate-500">{count} wpisów</p>
         </div>
       </div>
-      <Badge variant="secondary" className="rounded-full bg-slate-100 text-slate-700">{count}</Badge>
-    </div>
+      <div className="flex items-center gap-2">
+        <Badge variant="secondary" className="rounded-full bg-slate-100 text-slate-700">{count}</Badge>
+        {collapsed ? <ChevronDown className="h-4 w-4 text-slate-400" /> : <ChevronUp className="h-4 w-4 text-slate-400" />}
+      </div>
+    </button>
   );
 }
 
@@ -439,13 +454,31 @@ function RowLink({
             {badge ? <Badge variant="outline" className="rounded-full">{badge}</Badge> : null}
           </div>
           {helper ? <p className="mt-1 text-sm text-slate-600 break-words">{helper}</p> : null}
-          {meta ? <p className="mt-1 text-xs font-medium text-slate-500">{meta}</p> : null}
+          {meta ? (
+            <p className="mt-1 text-xs font-medium text-slate-500">
+              {meta.startsWith('Ruch:') ? (
+                <>
+                  <span className="font-semibold text-blue-700">Ruch:</span>
+                  {' ' + meta.slice(5).trim()}
+                </>
+              ) : meta}
+            </p>
+          ) : null}
         </div>
         <div className="flex items-center gap-2">
           {onEdit ? <Button type="button" size="sm" variant="outline" onClick={onEdit}>Edytuj</Button> : null}
           {onDelete ? (
-            <Button type="button" size="sm" variant="ghost" onClick={onDelete} disabled={deleting}>
-              {deleting ? 'Usuwanie...' : 'Kosz'}
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={onDelete}
+              disabled={deleting}
+              className="text-rose-600 hover:text-rose-700"
+              aria-label={deleting ? 'Usuwanie' : 'Kosz'}
+              title={deleting ? 'Usuwanie' : 'Kosz'}
+            >
+              {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
             </Button>
           ) : null}
           <Link to={to} className="inline-flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
@@ -486,6 +519,7 @@ export default function TodayStable() {
   const [todayViewOpen, setTodayViewOpen] = useState(false);
   const [visibleTodaySections, setVisibleTodaySections] = useState<TodaySectionKey[]>(() => readTodayVisibleSections());
   const [actionPendingId, setActionPendingId] = useState<string>('');
+  const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>([]);
 
   const refreshData = useCallback(async (options?: { manual?: boolean }) => {
     const manual = Boolean(options?.manual);
@@ -496,7 +530,7 @@ export default function TodayStable() {
     try {
       const nextData = await loadStableTodayData();
       setData(nextData);
-      setLastLoadedAt(new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }));
+      setLastLoadedAt(new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
       setStatus('ready');
     } catch (error: any) {
       setErrorMessage(error?.message || 'Nie udało się pobrać danych.');
@@ -694,6 +728,12 @@ export default function TodayStable() {
   const loading = status === 'loading' || status === 'idle';
   const sectionVisible = (key: TodaySectionKey) =>
     visibleTodaySectionSet.has(key) && (expandedSection === 'all' || expandedSection === key);
+  const isCollapsed = (key: TodaySectionKey) => collapsedSections.includes(key);
+  const toggleSectionCollapse = (key: TodaySectionKey) => {
+    setCollapsedSections((current) => (
+      current.includes(key) ? current.filter((entry) => entry !== key) : [...current, key]
+    ));
+  };
 
   const todaySectionLabels = {
     no_action: 'Leady bez najbliższej akcji',
@@ -725,7 +765,6 @@ export default function TodayStable() {
   ];
 
   const visibleTodayTiles = todayTiles.filter((tile) => visibleTodaySectionSet.has(tile.key));
-  const hiddenTodaySectionsCount = todayTiles.length - visibleTodayTiles.length;
 
   const toggleTodaySectionVisibility = useCallback((key: TodaySectionKey) => {
     setVisibleTodaySections((current) => {
@@ -741,12 +780,6 @@ export default function TodayStable() {
       return next;
     });
   }, [expandedSection]);
-
-  const showAllTodaySections = useCallback(() => {
-    const next = [...TODAY_SECTION_KEYS];
-    writeTodayVisibleSections(next);
-    setVisibleTodaySections(next);
-  }, []);
 
   const handleArchiveLead = useCallback(async (lead: any) => {
     const leadId = String(lead?.id || '');
@@ -792,17 +825,23 @@ export default function TodayStable() {
   return (
     <Layout>
       <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
-        <section className="rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <Badge className="mb-3 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-50">Dziś</Badge>
-              <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Centrum pracy na dziś</h1>
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Centrum dnia</p>
+              <p className="mt-1 text-xl font-black text-slate-900 sm:text-2xl">Priorytety i najbliższe ruchy</p>
+              <p className="mt-1 text-sm text-slate-500">Szybki przegląd tego, co wymaga reakcji teraz i co warto zaplanować dalej.</p>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {lastLoadedAt ? <span className="text-xs font-semibold text-slate-500">Ostatni odczyt: {lastLoadedAt}</span> : null}
-              <Button type="button" variant="outline" onClick={() => void refreshData({ manual: true })} disabled={loading || manualRefreshing}>
-                {manualRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
-                {manualRefreshing ? 'Odświeżanie...' : 'Odśwież dane'}
+            <div className="flex flex-col items-end gap-2">
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                {lastLoadedAt ? <span className="text-xs font-semibold text-slate-500">Ostatni odczyt: {lastLoadedAt}</span> : null}
+                <Button type="button" variant="outline" onClick={() => void refreshData({ manual: true })} disabled={loading || manualRefreshing}>
+                  {manualRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
+                  {manualRefreshing ? 'Odświeżanie...' : 'Odśwież dane'}
+                </Button>
+              </div>
+              <Button type="button" size="sm" variant="outline" onClick={() => setTodayViewOpen((value) => !value)} data-today-view-toggle="true">
+                <SlidersHorizontal className="mr-2 h-4 w-4" /> Widok
               </Button>
             </div>
           </div>
@@ -814,28 +853,8 @@ export default function TodayStable() {
           </div>
         ) : null}
 
-                <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-stage16ai-today-tiles-match-lists="true">
-        <div className="col-span-full rounded-2xl border border-slate-100 bg-white p-3 shadow-sm" data-today-view-customizer="true">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Widok</p>
-              <p className="text-xs font-medium text-slate-500">Wybierz, ktore kafelki i listy w sekcji Dzis sa widoczne.</p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary" className="rounded-full bg-slate-100 text-slate-700">
-                {visibleTodayTiles.length}/{todayTiles.length} widoczne
-              </Badge>
-              <Button type="button" size="sm" variant="outline" onClick={() => setTodayViewOpen((value) => !value)} data-today-view-toggle="true">
-                <SlidersHorizontal className="mr-2 h-4 w-4" /> Widok
-              </Button>
-              {hiddenTodaySectionsCount > 0 ? (
-                <Button type="button" size="sm" variant="ghost" onClick={showAllTodaySections} data-today-view-show-all="true">
-                  Pokaz wszystko
-                </Button>
-              ) : null}
-            </div>
-          </div>
-                    {todayViewOpen ? (
+        {todayViewOpen ? (
+          <section className="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm" data-today-view-customizer="true">
             <Card className="border-slate-100 shadow-sm">
               <CardContent className="space-y-3 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -900,8 +919,10 @@ export default function TodayStable() {
                 </div>
               </CardContent>
             </Card>
-          ) : null}
-        </div>
+          </section>
+        ) : null}
+
+                <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" data-stage16ai-today-tiles-match-lists="true">
           {visibleTodayTiles.map((tile) => {
             const active = expandedSection === tile.key;
             return (
@@ -912,12 +933,11 @@ export default function TodayStable() {
                   (active ? ' ring-2 ring-slate-200' : '')
                 }>
                   <CardContent className="p-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{tile.title}</p>
-                      <span className={'rounded-full bg-slate-50 p-2 ' + tile.tone}>{tile.icon}</span>
+                    <div className="flex items-center gap-2">
+                      <p className="min-w-0 flex-1 truncate text-xs font-bold uppercase tracking-wide text-slate-500">{tile.title}</p>
+                      <p className={'text-2xl font-black leading-none ' + tile.tone}>{tile.count}</p>
+                      <span className={'rounded-full bg-slate-50 p-2 shrink-0 ' + tile.tone}>{tile.icon}</span>
                     </div>
-                    <p className={'mt-2 text-3xl font-black ' + tile.tone}>{tile.count}</p>
-                    <p className="mt-1 text-xs font-medium text-slate-500">Tyle samo co w sekcji poniżej</p>
                   </CardContent>
                 </Card>
               </button>
@@ -927,7 +947,8 @@ export default function TodayStable() {
 
         <section className="grid gap-4 xl:grid-cols-3" hidden={!sectionVisible('risk') && !sectionVisible('no_action') && !sectionVisible('waiting')}>
           <StableCard>
-            <SectionHeader title={todaySectionLabels.no_action} count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" />
+            <SectionHeader title={todaySectionLabels.no_action} count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" collapsed={isCollapsed('no_action')} onToggle={() => toggleSectionCollapse('no_action')} />
+            <div hidden={isCollapsed('no_action')}>
             {noActionLeads.length ? noActionLeads.map(({ lead, risk }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
@@ -941,10 +962,12 @@ export default function TodayStable() {
                 deleting={actionPendingId === `lead:${String(lead.id || '')}`}
               />
             )) : <EmptyState text="Brak leadów bez najbliższej zaplanowanej akcji." />}
+            </div>
           </StableCard>
 
           <StableCard>
-            <SectionHeader title={todaySectionLabels.risk} count={highValueAtRiskRows.length} icon={<TrendingUp className="h-5 w-5" />} tone="bg-rose-50 text-rose-700" />
+            <SectionHeader title={todaySectionLabels.risk} count={highValueAtRiskRows.length} icon={<TrendingUp className="h-5 w-5" />} tone="bg-rose-50 text-rose-700" collapsed={isCollapsed('risk')} onToggle={() => toggleSectionCollapse('risk')} />
+            <div hidden={isCollapsed('risk')}>
             {highValueAtRiskRows.length ? highValueAtRiskRows.map(({ lead, risk, momentRaw }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
@@ -958,10 +981,12 @@ export default function TodayStable() {
                 deleting={actionPendingId === `lead:${String(lead.id || '')}`}
               />
             )) : <EmptyState text="Brak wartościowych leadów w ryzyku." />}
+            </div>
           </StableCard>
 
           <StableCard>
-            <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" />
+            <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
+            <div hidden={isCollapsed('waiting')}>
             {waitingLeadRows.length ? waitingLeadRows.map(({ lead, risk, momentRaw }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
@@ -975,12 +1000,14 @@ export default function TodayStable() {
                 deleting={actionPendingId === `lead:${String(lead.id || '')}`}
               />
             )) : <EmptyState text="Brak leadów w trybie waiting wymagających pilnej kontroli." />}
+            </div>
           </StableCard>
         </section>
 
         <section className="grid gap-4 xl:grid-cols-2" hidden={!sectionVisible('leads') && !sectionVisible('tasks') && !sectionVisible('events') && !sectionVisible('drafts')}>
           <StableCard>
-            <SectionHeader title={todaySectionLabels.leads} count={operatorLeads.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" />
+            <SectionHeader title={todaySectionLabels.leads} count={operatorLeads.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
+            <div hidden={isCollapsed('leads')}>
             {operatorLeads.length ? operatorLeads.map(({ lead, momentRaw, risk }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
@@ -994,10 +1021,12 @@ export default function TodayStable() {
                 deleting={actionPendingId === `lead:${String(lead.id || '')}`}
               />
             )) : <EmptyState text="Brak leadów wymagających ruchu." />}
+            </div>
           </StableCard>
 
           <StableCard>
-            <SectionHeader title={todaySectionLabels.tasks} count={operatorTasks.length} icon={<CheckSquare className="h-5 w-5" />} tone="bg-emerald-50 text-emerald-700" />
+            <SectionHeader title={todaySectionLabels.tasks} count={operatorTasks.length} icon={<CheckSquare className="h-5 w-5" />} tone="bg-emerald-50 text-emerald-700" collapsed={isCollapsed('tasks')} onToggle={() => toggleSectionCollapse('tasks')} />
+            <div hidden={isCollapsed('tasks')}>
             {operatorTasks.length ? operatorTasks.map(({ task, momentRaw }) => {
               const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
               return (
@@ -1014,10 +1043,12 @@ export default function TodayStable() {
                 />
               );
             }) : <EmptyState text="Brak zadań zaległych lub na dziś." />}
+            </div>
           </StableCard>
 
           <StableCard>
-            <SectionHeader title={todaySectionLabels.events} count={todayEvents.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" />
+            <SectionHeader title={todaySectionLabels.events} count={todayEvents.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" collapsed={isCollapsed('events')} onToggle={() => toggleSectionCollapse('events')} />
+            <div hidden={isCollapsed('events')}>
             {todayEvents.length ? todayEvents.map(({ event, momentRaw }) => (
               <RowLink
                 key={String(event.id || event.title)}
@@ -1031,10 +1062,12 @@ export default function TodayStable() {
                 deleting={actionPendingId === `event:${String(event.id || '')}`}
               />
             )) : <EmptyState text="Brak wydarzeń na dziś." />}
+            </div>
           </StableCard>
 
           <StableCard>
-            <SectionHeader title={todaySectionLabels.drafts} count={pendingDrafts.length} icon={<FileText className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" />
+            <SectionHeader title={todaySectionLabels.drafts} count={pendingDrafts.length} icon={<FileText className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" collapsed={isCollapsed('drafts')} onToggle={() => toggleSectionCollapse('drafts')} />
+            <div hidden={isCollapsed('drafts')}>
             {pendingDrafts.length ? pendingDrafts.map((draft: any) => (
               <RowLink
                 key={String(draft.id || getDraftText(draft))}
@@ -1044,12 +1077,14 @@ export default function TodayStable() {
                 badge="Szkic"
               />
             )) : <EmptyState text="Brak szkiców do zatwierdzenia." />}
+            </div>
           </StableCard>
         </section>
 
         <div hidden={!sectionVisible('upcoming')}>
         <StableCard>
-          <SectionHeader title={todaySectionLabels.upcoming} count={upcomingRows.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" />
+          <SectionHeader title={todaySectionLabels.upcoming} count={upcomingRows.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" collapsed={isCollapsed('upcoming')} onToggle={() => toggleSectionCollapse('upcoming')} />
+          <div hidden={isCollapsed('upcoming')}>
           {upcomingRows.length ? upcomingRows.map((row) => (
             <RowLink
               key={row.id}
@@ -1060,6 +1095,7 @@ export default function TodayStable() {
               badge={row.badge}
             />
           )) : <EmptyState text="Brak zaplanowanych akcji w kolejnych 7 dniach." />}
+          </div>
         </StableCard>
         </div>
 

@@ -181,7 +181,7 @@ export default function ResponseTemplates() {
 
   return (
     <Layout>
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="response-templates-v2">
+      <div className="cf-html-view mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="response-templates-v2">
         <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
@@ -206,43 +206,35 @@ export default function ResponseTemplates() {
           </div>
         </header>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <Card className="border-none app-surface-strong app-shadow">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Szablony</p>
-                <p className="mt-2 text-2xl font-bold app-text">{stats.total}</p>
-              </div>
-              <div className="rounded-2xl p-3 app-primary-chip"><Sparkles className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong app-shadow">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Kategorie</p>
-                <p className="mt-2 text-2xl font-bold app-text">{stats.categories}</p>
-              </div>
-              <div className="rounded-2xl bg-indigo-500/12 p-3 text-indigo-600"><MessageSquareText className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong app-shadow">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Tagi</p>
-                <p className="mt-2 text-2xl font-bold text-amber-600">{stats.tags}</p>
-              </div>
-              <div className="rounded-2xl bg-amber-500/12 p-3 text-amber-600"><Tags className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
-          <Card className="border-none app-surface-strong app-shadow">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Zmienne</p>
-                <p className="mt-2 text-2xl font-bold text-emerald-600">{stats.withVariables}</p>
-              </div>
-              <div className="rounded-2xl bg-emerald-500/12 p-3 text-emerald-600"><Copy className="h-6 w-6" /></div>
-            </CardContent>
-          </Card>
+        <section className="grid-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="metric">
+            <div>
+              <label>Szablony</label>
+              <strong className="app-text">{stats.total}</strong>
+            </div>
+            <Sparkles className="metric-icon app-primary-chip" />
+          </div>
+          <div className="metric">
+            <div>
+              <label>Kategorie</label>
+              <strong className="app-text">{stats.categories}</strong>
+            </div>
+            <MessageSquareText className="metric-icon bg-indigo-500/12 text-indigo-600" />
+          </div>
+          <div className="metric">
+            <div>
+              <label>Tagi</label>
+              <strong className="text-amber-600">{stats.tags}</strong>
+            </div>
+            <Tags className="metric-icon bg-amber-500/12 text-amber-600" />
+          </div>
+          <div className="metric">
+            <div>
+              <label>Zmienne</label>
+              <strong className="text-emerald-600">{stats.withVariables}</strong>
+            </div>
+            <Copy className="metric-icon bg-emerald-500/12 text-emerald-600" />
+          </div>
         </section>
 
         <Card className="border-none app-surface-strong app-shadow">

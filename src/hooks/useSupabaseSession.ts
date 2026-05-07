@@ -33,6 +33,29 @@ export function useSupabaseSession() {
     let cancelled = false;
 
     if (!isSupabaseAuthConfigured()) {
+      // Local UI work often does not need a real Supabase session. In dev, when auth
+      // is not configured, expose a lightweight fake user so routes (e.g. /today)
+      // can be previewed without setting up credentials.
+      if (import.meta.env.DEV) {
+        const devUser: SupabaseSessionUser = {
+          uid: 'dev-local-user',
+          id: 'dev-local-user',
+          email: 'dev@localhost',
+          displayName: 'Dev Local',
+          lastSignInAt: new Date().toISOString(),
+          emailConfirmedAt: new Date().toISOString(),
+          emailVerified: true,
+          authProvider: 'dev',
+          authProviders: ['dev'],
+          raw: {} as any,
+        };
+
+        syncClientAuthSnapshotFromSessionUser(devUser);
+        setUser(devUser);
+        setLoading(false);
+        return () => undefined;
+      }
+
       clearClientAuthSnapshot();
       setUser(null);
       setLoading(false);

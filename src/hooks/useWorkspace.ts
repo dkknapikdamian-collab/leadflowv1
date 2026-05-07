@@ -11,7 +11,8 @@ import { useClientAuthSnapshot } from './useClientAuthSnapshot';
 import { buildPlanAccessModel } from '../lib/plans';
 
 function buildLocalWorkspace(storedWorkspaceId: string, email: string) {
-  const workspaceId = normalizeWorkspaceContextId(storedWorkspaceId);
+  const normalizedWorkspaceId = normalizeWorkspaceContextId(storedWorkspaceId);
+  const workspaceId = normalizedWorkspaceId || (import.meta.env.DEV ? '11111111-1111-4111-8111-111111111111' : '');
   if (!workspaceId) return null;
 
   return {

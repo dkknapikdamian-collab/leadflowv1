@@ -716,7 +716,6 @@ export default function Activity() {
           <div>
             <p className="activity-kicker">AKTYWNOŚĆ</p>
             <h1>Aktywność</h1>
-            <p>Ostatnie ruchy, zmiany i zdarzenia w jednym miejscu.</p>
           </div>
         </header>
 

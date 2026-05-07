@@ -26,7 +26,6 @@ import { useState } from 'react';
 import { ClipboardList, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import GlobalAiAssistant from './GlobalAiAssistant';
 import QuickAiCapture from './QuickAiCapture';
 import TaskCreateDialog from './TaskCreateDialog';
 import { Button } from './ui/button';
@@ -69,7 +68,6 @@ export function subscribeGlobalQuickAction(listener: (target: GlobalQuickActionT
 export default function GlobalQuickActions() {
   const { access } = useWorkspace();
   const [isTaskCreateOpen, setIsTaskCreateOpen] = useState(false);
-  const canUseFullAiAssistantByPlan = Boolean(access?.features?.ai || access?.features?.fullAi);
   const canUseQuickAiCaptureByPlan = Boolean(access?.features?.lightDrafts || access?.features?.lightParser || access?.features?.fullAi);
   const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi);
   return (
@@ -82,9 +80,6 @@ export default function GlobalQuickActions() {
         data-global-quick-actions-contract="v97"
         data-visual-stage="01-global-actions"
       >
-        {canUseFullAiAssistantByPlan ? (
-          <span data-feature-status="Beta" title="Beta"><GlobalAiAssistant /></span>
-        ) : null}
         {canUseQuickAiCaptureByPlan ? <span data-feature-status="Beta" title="Beta"><QuickAiCapture /></span> : null}
         {canUseAiDraftsByPlan ? (
           <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts" data-feature-status="Beta" title="Beta">

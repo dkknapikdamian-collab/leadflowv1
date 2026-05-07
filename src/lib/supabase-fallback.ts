@@ -32,6 +32,63 @@ type ApiCacheEntry = { expiresAt: number; data?: unknown; promise?: Promise<unkn
 
 const API_GET_CACHE_TTL_MS = 10_000;
 export const CLOSEFLOW_DATA_MUTATED_EVENT = 'closeflow:data-mutated';
+const DEV_PREVIEW_DATA_FLAG = 'closeflow:dev-preview-data';
+
+function shouldUseDevNoAuthMocks() {
+  // Only for local dev UI preview when Supabase is not configured.
+  return import.meta.env.DEV && !isSupabaseConfigured();
+}
+
+function isDevPreviewDataEnabled() {
+  if (!shouldUseDevNoAuthMocks()) return false;
+  if (typeof window === 'undefined') return true;
+  try {
+    return window.localStorage.getItem(DEV_PREVIEW_DATA_FLAG) !== '0';
+  } catch {
+    return true;
+  }
+}
+
+function getDevPreviewData() {
+  const now = Date.now();
+  const iso = (offsetHours: number) => new Date(now + offsetHours * 3_600_000).toISOString();
+  const dateOnly = (offsetDays: number) => new Date(now + offsetDays * 86_400_000).toISOString().slice(0, 10);
+
+  const clients = [
+    { id: 'dev-client-1', name: 'Anna Kowalska', company: 'Nova Home Studio', email: 'anna@novahome.pl', phone: '+48 600 111 222', notes: 'Klient premium, długie opisy i dużo kontekstu.', archivedAt: null },
+    { id: 'dev-client-2', name: 'Michał Zieliński', company: 'M&Z Nieruchomości', email: 'michal@mz.com', phone: '+48 602 333 444', archivedAt: null },
+    { id: 'dev-client-3', name: 'Katarzyna Wrona', company: 'K&W Legal Support', email: 'kontakt@kwlegal.pl', phone: '+48 603 555 666', archivedAt: null },
+  ];
+
+  const leads = [
+    { id: 'dev-lead-1', name: 'Anna Kowalska', company: 'Nova Home Studio', email: 'anna@novahome.pl', phone: '+48 600 111 222', source: 'instagram', status: 'new', dealValue: 12000, isAtRisk: false, leadVisibility: 'active', nextActionAt: iso(3), clientId: 'dev-client-1' },
+    { id: 'dev-lead-2', name: 'Michał Zieliński', company: 'M&Z Nieruchomości', email: 'michal@mz.com', phone: '+48 602 333 444', source: 'referral', status: 'waiting_response', dealValue: 4500, isAtRisk: true, leadVisibility: 'active', nextActionAt: iso(-8), clientId: 'dev-client-2' },
+    { id: 'dev-lead-3', name: 'Fundacja "Lepsze Jutro"', company: 'Fundacja Lepsze Jutro', email: 'zarzad@fundacja.pl', phone: '+48 605 777 888', source: 'email', status: 'proposal_sent', dealValue: 7800, isAtRisk: false, leadVisibility: 'active', nextActionAt: iso(24) },
+  ];
+
+  const cases = [
+    { id: 'dev-case-1', title: 'Wdrożenie strony sprzedażowej + automatyzacja formularzy i follow-up', clientName: 'Anna Kowalska', clientId: 'dev-client-1', leadId: 'dev-lead-1', status: 'in_progress', completenessPercent: 42, updatedAt: iso(-2) },
+    { id: 'dev-case-2', title: 'Pakiet dokumentów i onboarding klienta korporacyjnego', clientName: 'Michał Zieliński', clientId: 'dev-client-2', leadId: 'dev-lead-2', status: 'waiting_on_client', completenessPercent: 68, updatedAt: iso(-26) },
+  ];
+
+  const tasks = [
+    { id: 'dev-task-1', title: 'Przygotować propozycję harmonogramu i zakresu prac', status: 'todo', date: dateOnly(0), time: '13:30', leadId: 'dev-lead-1', caseId: 'dev-case-1', clientId: 'dev-client-1' },
+    { id: 'dev-task-2', title: 'Follow-up po ofercie (wiadomość + telefon)', status: 'todo', date: dateOnly(1), time: '09:15', leadId: 'dev-lead-2', caseId: 'dev-case-2', clientId: 'dev-client-2' },
+    { id: 'dev-task-3', title: 'Sprawdzić komplet dokumentów od klienta', status: 'in_progress', date: dateOnly(-1), time: '16:40', clientId: 'dev-client-3' },
+  ];
+
+  const events = [
+    { id: 'dev-event-1', title: 'Call kickoff - Nova Home Studio', startAt: iso(4), type: 'call', leadId: 'dev-lead-1', caseId: 'dev-case-1', clientId: 'dev-client-1' },
+    { id: 'dev-event-2', title: 'Przegląd umowy i checklisty', startAt: iso(30), type: 'meeting', caseId: 'dev-case-2', clientId: 'dev-client-2' },
+  ];
+
+  const payments = [
+    { id: 'dev-pay-1', clientId: 'dev-client-1', leadId: 'dev-lead-1', caseId: 'dev-case-1', amount: 6000, currency: 'PLN', status: 'paid', paidAt: iso(-48) },
+    { id: 'dev-pay-2', clientId: 'dev-client-2', leadId: 'dev-lead-2', caseId: 'dev-case-2', amount: 2500, currency: 'PLN', status: 'pending', dueAt: iso(72) },
+  ];
+
+  return { leads, clients, cases, tasks, events, payments };
+}
 
 export type CloseflowDataMutationDetail = {
   path: string;
@@ -189,7 +246,10 @@ export const createLeadFromAiDraftApprovalInSupabase = insertLeadToSupabase;
 export async function startLeadServiceInSupabase(input: { id: string; title: string; caseStatus?: string; clientName?: string; clientEmail?: string; clientPhone?: string; workspaceId?: string }) {
   return callApi<Record<string, unknown>>('/api/leads', { method: 'POST', body: JSON.stringify({ action: 'start_service', ...input }) });
 }
-export async function fetchClientsFromSupabase() { return callApi<Record<string, unknown>[]>('/api/clients').then(normalizeClientListContract); }
+export async function fetchClientsFromSupabase() {
+  if (isDevPreviewDataEnabled()) return getDevPreviewData().clients as Record<string, unknown>[];
+  return callApi<Record<string, unknown>[]>('/api/clients').then(normalizeClientListContract);
+}
 export async function fetchClientByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/clients?id=${encodeURIComponent(id)}`).then((row) => normalizeClientContract(row)); }
 export async function createClientInSupabase(input: ClientUpsertInput) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateClientInSupabase(input: ClientUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'PATCH', body: JSON.stringify(input) }); }
@@ -202,6 +262,16 @@ export async function fetchServiceProfilesFromSupabase(params?: { includeArchive
 export async function createServiceProfileInSupabase(input: ServiceProfileUpsertInput) { return callApi<SupabaseInsertResult>('/api/service-profiles', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateServiceProfileInSupabase(input: ServiceProfileUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/service-profiles', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function fetchPaymentsFromSupabase(params?: { leadId?: string; caseId?: string; clientId?: string; status?: string }) {
+  if (isDevPreviewDataEnabled()) {
+    const all = getDevPreviewData().payments as Record<string, unknown>[];
+    return normalizePaymentListContract(all.filter((row) => {
+      if (params?.leadId && String((row as any).leadId || '') !== params.leadId) return false;
+      if (params?.caseId && String((row as any).caseId || '') !== params.caseId) return false;
+      if (params?.clientId && String((row as any).clientId || '') !== params.clientId) return false;
+      if (params?.status && String((row as any).status || '') !== params.status) return false;
+      return true;
+    }));
+  }
   const query = new URLSearchParams();
   if (params?.leadId) query.set('leadId', params.leadId);
   if (params?.caseId) query.set('caseId', params.caseId);
@@ -272,6 +342,17 @@ export async function fetchAssistantContextFromSupabase() {
 }
 
 export async function fetchLeadsFromSupabase(params?: { clientId?: string; linkedCaseId?: string; caseId?: string; status?: string; visibility?: string }) {
+  if (isDevPreviewDataEnabled()) {
+    const all = getDevPreviewData().leads as Record<string, unknown>[];
+    return normalizeLeadListContract(all.filter((row) => {
+      if (params?.clientId && String((row as any).clientId || '') !== params.clientId) return false;
+      if (params?.caseId && String((row as any).caseId || '') !== params.caseId) return false;
+      if (params?.status && String((row as any).status || '') !== params.status) return false;
+      if (params?.visibility && String((row as any).leadVisibility || '') !== params.visibility) return false;
+      return true;
+    }));
+  }
+  if (shouldUseDevNoAuthMocks()) return [];
   const query = new URLSearchParams();
   if (params?.clientId) query.set('clientId', params.clientId);
   if (params?.linkedCaseId) query.set('linkedCaseId', params.linkedCaseId);
@@ -281,9 +362,27 @@ export async function fetchLeadsFromSupabase(params?: { clientId?: string; linke
   return callApi<Record<string, unknown>[]>(`/api/leads${query.toString() ? `?${query.toString()}` : ''}`).then(normalizeLeadListContract);
 }
 export async function fetchLeadByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/leads?id=${encodeURIComponent(id)}`).then((row) => normalizeLeadContract(row)); }
-export async function fetchTasksFromSupabase() { return callApi<Record<string, unknown>[]>('/api/tasks').then(normalizeTaskListContract); }
-export async function fetchEventsFromSupabase() { return callApi<Record<string, unknown>[]>('/api/events').then(normalizeEventListContract); }
+export async function fetchTasksFromSupabase() {
+  if (isDevPreviewDataEnabled()) return normalizeTaskListContract(getDevPreviewData().tasks as Record<string, unknown>[]);
+  if (shouldUseDevNoAuthMocks()) return [];
+  return callApi<Record<string, unknown>[]>('/api/tasks').then(normalizeTaskListContract);
+}
+export async function fetchEventsFromSupabase() {
+  if (isDevPreviewDataEnabled()) return normalizeEventListContract(getDevPreviewData().events as Record<string, unknown>[]);
+  if (shouldUseDevNoAuthMocks()) return [];
+  return callApi<Record<string, unknown>[]>('/api/events').then(normalizeEventListContract);
+}
 export async function fetchCasesFromSupabase(params?: { clientId?: string; leadId?: string; status?: string }) {
+  if (isDevPreviewDataEnabled()) {
+    const all = getDevPreviewData().cases as Record<string, unknown>[];
+    return normalizeCaseListContract(all.filter((row) => {
+      if (params?.clientId && String((row as any).clientId || '') !== params.clientId) return false;
+      if (params?.leadId && String((row as any).leadId || '') !== params.leadId) return false;
+      if (params?.status && String((row as any).status || '') !== params.status) return false;
+      return true;
+    }));
+  }
+  if (shouldUseDevNoAuthMocks()) return [];
   const query = new URLSearchParams();
   if (params?.clientId) query.set('clientId', params.clientId);
   if (params?.leadId) query.set('leadId', params.leadId);

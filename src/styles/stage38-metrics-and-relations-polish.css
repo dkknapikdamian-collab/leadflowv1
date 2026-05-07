@@ -1,0 +1,34 @@
+.main-leads [data-relation-value-board="true"] .quick-list {
+  width: 100%;
+  min-width: 0;
+}
+
+.main-leads [data-stage32-valuable-relation-row="true"] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.main-leads .lead-relation-label-wrap {
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.main-leads .lead-relation-label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.main-leads .lead-relation-money {
+  color: #0f766e !important;
+  font-weight: 900 !important;
+  flex: 0 0 auto;
+}
+
+.main-cases .cf-top-metric-tile-helper {
+  display: none !important;
+}

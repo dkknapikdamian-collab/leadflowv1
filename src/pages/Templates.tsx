@@ -109,17 +109,33 @@ function LightMetricCard({
   valueClassName?: string;
 }) {
   return (
-    <Card className="border border-slate-200 bg-white shadow-sm">
-      <CardContent className="flex min-h-[96px] items-center justify-between gap-4 p-5">
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{label}</p>
-          <p className={`mt-2 text-3xl font-black leading-none ${valueClassName}`}>{value}</p>
-        </div>
-        <div className={`rounded-2xl p-3 ${iconClassName}`}>
-          <Icon className="h-6 w-6" />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="metric">
+      <div>
+        <label>{label}</label>
+        <strong className={valueClassName}>{value}</strong>
+      </div>
+      <Icon className={`metric-icon ${iconClassName}`} />
+    </div>
+  );
+}
+
+function LightMetricCardRow({
+  stats,
+}: {
+  stats: {
+    totalTemplates: number;
+    totalItems: number;
+    requiredItems: number;
+    decisionItems: number;
+  };
+}) {
+  return (
+    <section className="grid-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <LightMetricCard label="Szablony" value={stats.totalTemplates} icon={Sparkles} iconClassName="bg-emerald-50 text-emerald-700" />
+      <LightMetricCard label="Pozycje" value={stats.totalItems} icon={FileText} iconClassName="bg-indigo-50 text-indigo-700" />
+      <LightMetricCard label="Obowiązkowe" value={stats.requiredItems} icon={AlertTriangle} iconClassName="bg-amber-50 text-amber-700" valueClassName="text-amber-600" />
+      <LightMetricCard label="Akceptacje" value={stats.decisionItems} icon={CheckCircle2} iconClassName="bg-emerald-50 text-emerald-700" valueClassName="text-emerald-600" />
+    </section>
   );
 }
 
@@ -301,7 +317,7 @@ export default function Templates() {
 
   return (
     <Layout>
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 text-slate-900 md:px-8 md:py-8" data-a16-template-light-ui="true">
+      <div className="cf-html-view mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 text-slate-900 md:px-8 md:py-8" data-a16-template-light-ui="true">
         <header className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-3">
@@ -310,9 +326,6 @@ export default function Templates() {
               </div>
               <div>
                 <h1 className="text-3xl font-black tracking-tight text-slate-950">Szablony spraw i checklist</h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 md:text-base">
-                  Gotowe checklisty do startu obsBugi. U|ywasz ich przy przej[ciu z leada do sprawy, |eby nie ukBada realizacji od zera.
-                </p>
               </div>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -328,12 +341,7 @@ export default function Templates() {
           </div>
         </header>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <LightMetricCard label="Szablony" value={stats.totalTemplates} icon={Sparkles} iconClassName="bg-emerald-50 text-emerald-700" />
-          <LightMetricCard label="Pozycje" value={stats.totalItems} icon={FileText} iconClassName="bg-indigo-50 text-indigo-700" />
-          <LightMetricCard label="Obowizkowe" value={stats.requiredItems} icon={AlertTriangle} iconClassName="bg-amber-50 text-amber-700" valueClassName="text-amber-600" />
-          <LightMetricCard label="Akceptacje" value={stats.decisionItems} icon={CheckCircle2} iconClassName="bg-emerald-50 text-emerald-700" valueClassName="text-emerald-600" />
-        </section>
+        <LightMetricCardRow stats={stats} />
 
         <Card className="border border-slate-200 bg-white shadow-sm">
           <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
