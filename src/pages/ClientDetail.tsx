@@ -660,6 +660,7 @@ function StatCell({ label, value }: { label: string; value: string | number }) {
 
 
 const CLIENT_DETAIL_TOP_TILES_REPAIR6_GUARD = 'client-detail-top-tiles repair6 compact unified safe';
+const STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD = 'client cases visible panel with safe actions';
 
 function getClientPaymentAmount(payment: any) {
   const raw =
@@ -1586,7 +1587,7 @@ export default function ClientDetail() {
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Aktywne sprawy</h2>
-                      <p>Aktywne sprawy klienta i przejście do prowadzenia tematu.</p>
+                      <p>Lista spraw klienta z szybkim wejściem do prowadzenia.</p>
                     </div>
                     {firstSourceLead ? (
                       <Button type="button" variant="outline" onClick={() => navigate(`/leads/${String(firstSourceLead.id)}`)}>
@@ -1612,12 +1613,12 @@ export default function ClientDetail() {
             ) : null}
 
                         {activeTab === 'cases' ? (
-              <div className="client-detail-tab-panel" data-client-relations-acquisition-only="true">
+              <div className="client-detail-tab-panel" data-client-cases-list-panel="true">
                 <section className="client-detail-section-card">
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Aktywne sprawy</h2>
-                      <p>Aktywne sprawy klienta. Wejdź w sprawę, żeby prowadzić zadania, wydarzenia i notatki.</p>
+                      <p>Lista spraw klienta. Wejdź w sprawę, żeby edytować nazwę, wartość, zadania i dalszą obsługę.</p>
                     </div>
                   </div>
 

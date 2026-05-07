@@ -470,7 +470,8 @@
     "check:ai-drafts-route-runtime-repair": "node scripts/check-ai-drafts-route-runtime-repair.cjs",
     "check:stage21-client-feedback-layout": "node scripts/check-stage21-client-detail-admin-feedback-layout.cjs",
     "check:stage21-client-detail-admin-feedback-layout": "node scripts/check-stage21-client-detail-admin-feedback-layout.cjs",
-    "check:stage22a-client-detail-feedback-ui-cleanup": "node scripts/check-stage22a-client-detail-feedback-ui-cleanup.cjs"
+    "check:stage22a-client-detail-feedback-ui-cleanup": "node scripts/check-stage22a-client-detail-feedback-ui-cleanup.cjs",
+    "check:stage23a-client-detail-cases-visibility-contrast": "node scripts/check-stage23a-client-detail-cases-visibility-contrast.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
