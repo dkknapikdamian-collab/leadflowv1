@@ -642,6 +642,7 @@ export default function Cases() {
             label="W realizacji"
             value={stats.total}
             icon={FileText}
+            iconClassName="bg-blue-50 text-blue-600"
             active={caseView === 'all'}
             onClick={() => setCaseView('all')}
           />
@@ -649,6 +650,7 @@ export default function Cases() {
             label="Czeka na klienta"
             value={stats.waiting}
             icon={Clock}
+            iconClassName="bg-amber-50 text-amber-600"
             active={caseView === 'waiting' || caseView === 'approval'}
             onClick={() => toggleCaseView('waiting')}
           />
@@ -656,6 +658,7 @@ export default function Cases() {
             label="Zablokowane"
             value={stats.blocked}
             icon={AlertTriangle}
+            iconClassName="bg-rose-50 text-rose-600"
             active={caseView === 'blocked'}
             onClick={() => toggleCaseView('blocked')}
           />
@@ -663,6 +666,7 @@ export default function Cases() {
             label="Gotowe"
             value={stats.ready}
             icon={CheckCircle2}
+            iconClassName="bg-emerald-50 text-emerald-600"
             active={caseView === 'ready'}
             onClick={() => toggleCaseView('ready')}
           />
@@ -732,7 +736,7 @@ export default function Cases() {
                       </span>
                       <span className="lead-action-cell">
                         <span className="mini">Najbliższy termin w sprawie</span>
-                        <strong className="next-action-text">{nextActionLabel}</strong>
+                        <strong className="next-action-text" title={nextActionLabel}>{nextActionLabel}</strong>
                         {updatedAt ? <span className="sub next-action-date">{format(updatedAt, 'd MMM yyyy', { locale: pl })}</span> : null}
                       </span>
                       <span className="lead-actions">
@@ -752,8 +756,8 @@ export default function Cases() {
           </div>
 
           <div className="cases-right-rail">
-            <aside className="right-card">
-              <div className="panel-head"><div><h3>Operacyjne skróty</h3><p>Najczęstsze ruchy dla spraw.</p></div></div>
+            <aside className="right-card cases-shortcuts-rail-card">
+              <div className="panel-head"><div><h3>Operacyjne skróty</h3></div></div>
               <div className="quick-list">
                 <button type="button" onClick={() => toggleCaseView('needs_next_step')}><span>Bez zaplanowanej akcji</span><strong>{stats.needsNextStep}</strong></button>
                 <button type="button" onClick={() => toggleCaseView('linked')}><span>Portal klienta</span><strong>{stats.linked}</strong></button>
@@ -762,14 +766,15 @@ export default function Cases() {
               </div>
             </aside>
 
-            <aside className="right-card">
-              <div className="panel-head"><div><h3>Blokery i ryzyko</h3><p>Podgląd stanu na podstawie lifecycle.</p></div></div>
+            <aside className="right-card cases-risk-rail-card">
+              <div className="panel-head"><div><h3>Blokery i ryzyko</h3></div></div>
               <div className="quick-list">
                 {filteredCases.slice(0, 4).map((record) => {
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
+                  const riskTitle = `${record.title || 'Sprawa'} — ${lifecycleRiskLabel(lifecycle.riskLevel)} · Braki ${lifecycle.missingRequiredCount}`;
                   return (
-                    <Link key={record.id} to={`/case/${record.id}`}>
-                      <span><strong>{record.title || 'Sprawa'}</strong><small>{lifecycleRiskLabel(lifecycle.riskLevel)} · Braki {lifecycle.missingRequiredCount}</small></span>
+                    <Link key={record.id} to={`/case/${record.id}`} title={riskTitle}>
+                      <span><strong title={record.title || 'Sprawa'}>{record.title || 'Sprawa'}</strong><small>{lifecycleRiskLabel(lifecycle.riskLevel)} · Braki {lifecycle.missingRequiredCount}</small></span>
                       <ChevronRight className="h-4 w-4" />
                     </Link>
                   );

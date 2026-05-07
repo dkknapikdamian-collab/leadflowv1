@@ -1,6 +1,5 @@
 import type { ComponentType } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent } from './ui/card';
 
 const STAGE16AK_UNIFIED_TOP_METRIC_TILES = 'STAGE16AK_UNIFIED_TOP_METRIC_TILES';
 const STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE = 'STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE';
@@ -36,25 +35,23 @@ export function StatShortcutCard({
   ariaLabel,
 }: StatShortcutCardProps) {
   const card = (
-    <Card className="h-full border-slate-100 bg-white shadow-sm">
-      <CardContent
-        className={[
-          'cf-top-metric-tile-content flex min-h-[92px] flex-col justify-center rounded-2xl border border-slate-100 bg-white p-4 transition',
-          active ? 'bg-primary/5 ring-2 ring-primary/20' : '',
-        ].filter(Boolean).join(' ')}
-      >
-        <div className="min-w-0">
-          <p className="cf-top-metric-tile-label mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">{label}</p>
-          <div className="cf-top-metric-tile-value-row flex w-full items-center justify-between gap-3" data-metric-icon-next-to-value="true">
-            <h3 className={['cf-top-metric-tile-value min-w-0 break-words text-[28px] font-black leading-none tracking-tight', valueClassName].filter(Boolean).join(' ')}>{value}</h3>
-            <div className={['cf-top-metric-tile-icon shrink-0 rounded-2xl p-2.5', iconClassName].filter(Boolean).join(' ')} aria-hidden="true">
-              <Icon className="h-4 w-4" />
-            </div>
+    <div
+      className={[
+        'cf-top-metric-tile-content metric flex min-h-[92px] flex-col justify-center rounded-2xl border border-slate-100 bg-white p-4 transition',
+        active ? 'bg-primary/5 ring-2 ring-primary/20' : '',
+      ].filter(Boolean).join(' ')}
+    >
+      <div className="min-w-0">
+        <p className="cf-top-metric-tile-label mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">{label}</p>
+        <div className="cf-top-metric-tile-value-row flex w-full items-center justify-between gap-3" data-metric-icon-next-to-value="true">
+          <h3 className={['cf-top-metric-tile-value min-w-0 break-words text-[28px] font-black leading-none tracking-tight', valueClassName].filter(Boolean).join(' ')}>{value}</h3>
+          <div className={['cf-top-metric-tile-icon metric-icon shrink-0 rounded-2xl p-2.5', iconClassName].filter(Boolean).join(' ')} aria-hidden="true">
+            <Icon className="h-4 w-4" />
           </div>
-          {helper ? <p className="cf-top-metric-tile-helper mt-2 text-[11px] font-semibold leading-snug text-slate-500">{helper}</p> : null}
         </div>
-      </CardContent>
-    </Card>
+        {helper ? <p className="cf-top-metric-tile-helper mt-2 text-[11px] font-semibold leading-snug text-slate-500">{helper}</p> : null}
+      </div>
+    </div>
   );
 
   const className = [

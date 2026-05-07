@@ -7,6 +7,8 @@
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
+    "preview:prod": "vite build && vite preview --host=0.0.0.0 --port=3000",
+    "env:pull": "vercel env pull .env.local",
     "clean": "rm -rf dist",
     "lint": "node scripts/check-a13-critical-regressions.cjs && node scripts/check-visual-stage18-leads-hard-1to1.cjs && node scripts/check-visual-stage17-today-hard-1to1.cjs && node scripts/check-visual-stage16-today-html-reset.cjs && node scripts/check-visual-html-theme-v14.cjs && node scripts/check-visual-stage08-case-detail.cjs && node scripts/check-visual-stage07-cases.cjs && node scripts/check-visual-stage06-client-detail.cjs && node scripts/check-visual-stage05-clients.cjs && node scripts/check-visual-stage04-lead-detail.cjs && node scripts/check-visual-stage03-leads.cjs && node scripts/check-visual-stage02-today.cjs && node scripts/check-visual-stage01-shell.cjs && node scripts/check-relation-cleanup-today-toggle-sync.cjs && node scripts/check-today-tiles-event-edit-client-cleanup.cjs && node scripts/check-today-week-client-more-ui-text-cleanup.cjs && node scripts/check-task-edit-reminder-and-week-calendar.cjs && node scripts/check-client-inline-edit-and-task-edit.cjs && node scripts/check-task-event-contract.cjs && node scripts/check-data-contract-stage-a1.cjs && node scripts/check-data-contract-stage-a2.cjs && node scripts/check-polish-mojibake.cjs && node scripts/check-access-billing-source-of-truth-stage02a.cjs && tsc --noEmit && npm.cmd run check:repo-backup-hygiene",
     "test": "node scripts/run-tests-compact.cjs",

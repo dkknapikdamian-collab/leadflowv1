@@ -56,6 +56,25 @@ Najwaniejsze grupy zmiennych:
 
 Nie dodawaj sekretw jako `VITE_*`.
 
+### 3. Preview produkcyjny 1:1 (rekomendowane do UI)
+
+Dev server (`npm run dev`) potrafi rónic się od tego, co widzisz na Vercel (CSS order, bundling, minifikacja, runtime flags).
+
+Do poprawiania UI używaj lokalnego preview po buildzie + te same ENV co Vercel:
+
+```bash
+# 1) Zaciągnij ENV z Vercela do pliku lokalnego (nie commituj .env.local)
+vercel env pull .env.local
+
+# 2) Produkcyjny build + preview
+npm ci
+npm run build
+npm run preview -- --host 0.0.0.0 --port 3000
+```
+
+Jeśli `vercel env pull` pyta o projekt albo środowisko, wybierz ten sam projekt co `closeflowapp.vercel.app`
+i środowisko `Production` (albo `Preview` jeśli porównujesz z preview deployem).
+
 ### 3. Start dev
 
 ```bash

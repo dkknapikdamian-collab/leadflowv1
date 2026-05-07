@@ -3,7 +3,18 @@
   min-width: 0;
 }
 
+.cf-html-view.main-leads-html [data-relation-value-board="true"] .quick-list {
+  width: 100%;
+  min-width: 0;
+}
+
 .main-leads [data-stage32-valuable-relation-row="true"] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.cf-html-view.main-leads-html [data-stage32-valuable-relation-row="true"] {
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -13,9 +24,25 @@
   display: block;
   min-width: 0;
   flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.cf-html-view.main-leads-html .lead-relation-label-wrap {
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .main-leads .lead-relation-label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cf-html-view.main-leads-html .lead-relation-label {
   display: block;
   min-width: 0;
   overflow: hidden;
@@ -29,6 +56,119 @@
   flex: 0 0 auto;
 }
 
+.cf-html-view.main-leads-html .lead-relation-money {
+  color: #0f766e !important;
+  font-weight: 900 !important;
+  flex: 0 0 auto;
+}
+
+.closeflow-visual-stage01 .sidebar .user-card,
+.cf-html-shell .sidebar .user-card {
+  background: rgba(255, 255, 255, 0.10) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  opacity: 1 !important;
+}
+
+.closeflow-visual-stage01 .sidebar .user-card strong,
+.closeflow-visual-stage01 .sidebar .user-card span,
+.cf-html-shell .sidebar .user-card strong,
+.cf-html-shell .sidebar .user-card span {
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.closeflow-visual-stage01 .sidebar .user-card strong,
+.cf-html-shell .sidebar .user-card strong {
+  color: rgba(255, 255, 255, 0.92) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.closeflow-visual-stage01 .sidebar .user-card span,
+.cf-html-shell .sidebar .user-card span {
+  color: rgba(255, 255, 255, 0.70) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.70) !important;
+}
+
 .main-cases .cf-top-metric-tile-helper {
   display: none !important;
+}
+
+/* STAGE39 cases parity with "Dzis" metric tiles + right rail readability */
+.cf-html-view.main-cases-html .cf-top-metric-tile {
+  min-height: 92px;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+}
+
+.cf-html-view.main-cases-html .cf-top-metric-tile .cf-top-metric-tile-content {
+  min-height: 92px;
+  border: 0 !important;
+  border-radius: 16px !important;
+  background: transparent !important;
+  padding: 14px !important;
+  display: flex;
+  align-items: center;
+}
+
+.cf-html-view.main-cases-html .cf-top-metric-tile .cf-top-metric-tile-label {
+  margin: 0;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em;
+  color: #64748b !important;
+}
+
+.cf-html-view.main-cases-html .cf-top-metric-tile .cf-top-metric-tile-value {
+  margin: 0 !important;
+  font-size: 44px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em;
+  color: #0f172a !important;
+}
+
+.cf-html-view.main-cases-html .cf-top-metric-tile .cf-top-metric-tile-icon {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  border-radius: 14px !important;
+  padding: 9px !important;
+}
+
+.cf-html-view.main-cases-html .cf-top-metric-tile.is-active {
+  border-color: #93c5fd !important;
+  background: #eff6ff !important;
+}
+
+.cf-html-view.main-cases-html .cases-right-rail .right-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+}
+
+.cf-html-view.main-cases-html .cases-right-rail .right-card,
+.cf-html-view.main-cases-html .cases-right-rail .right-card * {
+  color: #0f172a !important;
+}
+
+.cf-html-view.main-cases-html .cases-right-rail .right-card .quick-list button,
+.cf-html-view.main-cases-html .cases-right-rail .right-card .quick-list a {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.cf-html-view.main-cases-html .cases-right-rail .right-card .quick-list small {
+  color: #64748b !important;
+}
+
+.cf-html-view.main-cases-html .cases-risk-rail-card .quick-list a > span > strong {
+  display: block;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
 }
