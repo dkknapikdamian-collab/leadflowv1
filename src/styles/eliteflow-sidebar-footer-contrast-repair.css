@@ -1,0 +1,132 @@
+/* ELITEFLOW_SIDEBAR_FOOTER_CONTRAST_REPAIR_2026_05_07
+   Fix bottom sidebar footer after desktop compact/scaled views:
+   - keep footer on the same dark panel background,
+   - restore readable user card,
+   - keep logout visible,
+   - do not affect mobile drawer.
+*/
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {
+  background-color: #0b1220 !important;
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.26), transparent 35%),
+    linear-gradient(180deg, #101828 0%, #0b1220 100%) !important;
+  overflow: hidden !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .nav-scroll {
+  min-height: 0 !important;
+  background: transparent !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+  position: relative !important;
+  z-index: 2 !important;
+  flex: 0 0 auto !important;
+  margin-top: auto !important;
+  margin-left: -4px !important;
+  margin-right: -4px !important;
+  padding: 12px 4px 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+  background:
+    linear-gradient(180deg, rgba(11, 18, 32, 0.00) 0%, rgba(11, 18, 32, 0.74) 18%, rgba(11, 18, 32, 0.98) 100%) !important;
+  box-shadow: 0 -18px 34px rgba(11, 18, 32, 0.34) !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::before {
+  content: "" !important;
+  position: absolute !important;
+  left: -18px !important;
+  right: -18px !important;
+  top: -20px !important;
+  height: 42px !important;
+  pointer-events: none !important;
+  background: linear-gradient(180deg, rgba(11, 18, 32, 0.00), rgba(11, 18, 32, 0.86)) !important;
+  z-index: -1 !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"],
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer .user-card[data-shell-user-card="true"] {
+  min-height: 58px !important;
+  padding: 9px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.115), rgba(255, 255, 255, 0.055)) !important;
+  background-color: rgba(15, 23, 42, 0.72) !important;
+  color: #ffffff !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 26px rgba(0, 0, 0, 0.20) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] .user-avatar {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.10) !important;
+  opacity: 1 !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong,
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong {
+  color: rgba(255, 255, 255, 0.94) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.94) !important;
+  font-weight: 900 !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+  color: rgba(255, 255, 255, 0.68) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.68) !important;
+  font-weight: 700 !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout {
+  min-height: 42px !important;
+  border-radius: 15px !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.060), rgba(255, 255, 255, 0.028)) !important;
+  color: rgba(255, 255, 255, 0.78) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.78) !important;
+  box-shadow: none !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout:hover {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: rgba(180, 35, 24, 0.24) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout svg {
+  color: currentColor !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 1220px) {
+  html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+    display: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {
+    display: none !important;
+  }
+}
