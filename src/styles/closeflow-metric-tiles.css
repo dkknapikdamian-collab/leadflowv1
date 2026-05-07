@@ -1,24 +1,39 @@
 /* STAGE16AK_UNIFIED_TOP_METRIC_TILES_CSS */
 /* STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE_CSS */
+/* ELITEFLOW_TODAY_METRIC_TILE_LOCK_2026_05_07
+   Wzorzec: górne kafelki z zakładki Dziś. Ten plik jest jedyną blokadą stylu kafelków metryk
+   dla Leady, Klienci, Sprawy, Zadania, Szablony, Odpowiedzi/Szkice i Aktywność.
+*/
 :root {
-  --cf-metric-tile-radius: 16px;
-  --cf-metric-tile-border: #e2e8f0;
+  --cf-metric-tile-radius: 22px;
+  --cf-metric-tile-border: #eef2f7;
   --cf-metric-tile-bg: #ffffff;
-  --cf-metric-tile-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --cf-metric-tile-shadow-hover: 0 10px 24px rgba(15, 23, 42, 0.08);
-  --cf-metric-tile-label: #64748b;
-  --cf-metric-tile-value: #0f172a;
+  --cf-metric-tile-shadow: 0 14px 32px rgba(15, 23, 42, 0.055);
+  --cf-metric-tile-shadow-hover: 0 18px 40px rgba(15, 23, 42, 0.085);
+  --cf-metric-tile-label: #56637a;
+  --cf-metric-tile-value: #0b1220;
   --cf-metric-tile-helper: #64748b;
-  --cf-metric-tile-icon-bg: #f1f5f9;
+  --cf-metric-tile-icon-bg: #f6f8fb;
   --cf-metric-tile-icon: #64748b;
+  --cf-metric-tile-min-height: 72px;
+  --cf-metric-tile-gap: 18px;
 }
 
-.cf-top-metric-tile,
-.cf-html-view .metric,
-.cf-html-view .stat-card,
-.cf-html-view .summary-card,
-.cf-html-view .dashboard-stat-card {
-  min-height: 92px;
+.cf-top-metric-tile {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+.cf-top-metric-tile-content {
+  min-height: var(--cf-metric-tile-min-height) !important;
+  width: 100%;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 16px 18px !important;
   border: 1px solid var(--cf-metric-tile-border) !important;
   border-radius: var(--cf-metric-tile-radius) !important;
   background: var(--cf-metric-tile-bg) !important;
@@ -27,183 +42,272 @@
   transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
 }
 
-.cf-html-view .metric,
-.cf-html-view .stat-card,
-.cf-html-view .summary-card,
-.cf-html-view .dashboard-stat-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px;
-  text-align: left;
-}
-
-.cf-top-metric-tile:hover,
-.cf-html-view .metric:hover,
-.cf-html-view .stat-card:hover,
-.cf-html-view .summary-card:hover,
-.cf-html-view .dashboard-stat-card:hover {
+.cf-top-metric-tile:hover .cf-top-metric-tile-content,
+.cf-top-metric-tile:focus-visible .cf-top-metric-tile-content {
   box-shadow: var(--cf-metric-tile-shadow-hover) !important;
   transform: translateY(-1px);
 }
 
-.cf-top-metric-tile.is-active,
-.cf-html-view .metric.active,
-.cf-html-view .metric.is-active,
-.cf-html-view .stat-card.active,
-.cf-html-view .summary-card.active,
-.cf-html-view .dashboard-stat-card.active {
-  border-color: rgba(37, 99, 235, 0.24) !important;
-  background: rgba(37, 99, 235, 0.05) !important;
+.cf-top-metric-tile.is-active .cf-top-metric-tile-content,
+.cf-top-metric-tile-content.is-active,
+.cf-top-metric-tile-content.active {
+  border-color: rgba(59, 130, 246, 0.18) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.08), var(--cf-metric-tile-shadow) !important;
 }
 
-.cf-top-metric-tile-content {
-  width: 100%;
+.cf-top-metric-tile-left {
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .cf-top-metric-tile-value-row {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  flex: 0 0 auto;
+  min-width: 0;
 }
 
-.cf-top-metric-tile-label,
-.cf-html-view .metric label,
-.cf-html-view .stat-card label,
-.cf-html-view .summary-card label,
-.cf-html-view .dashboard-stat-card label,
-.cf-html-view .metric .label,
-.cf-html-view .stat-card .label,
-.cf-html-view .summary-card .label,
-.cf-html-view .dashboard-stat-card .label {
+.cf-top-metric-tile-label {
   display: block;
-  margin: 0 0 4px;
+  margin: 0 !important;
   color: var(--cf-metric-tile-label) !important;
-  font-size: 12px !important;
-  line-height: 1.2;
-  font-weight: 800 !important;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 13px !important;
+  line-height: 1.18 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase !important;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
-.cf-top-metric-tile-value,
-.cf-html-view .metric strong,
-.cf-html-view .stat-card strong,
-.cf-html-view .summary-card strong,
-.cf-html-view .dashboard-stat-card strong,
-.cf-html-view .metric .value,
-.cf-html-view .stat-card .value,
-.cf-html-view .summary-card .value,
-.cf-html-view .dashboard-stat-card .value {
+.cf-top-metric-tile-value {
   display: block;
   min-width: 0;
   color: var(--cf-metric-tile-value) !important;
   font-size: 28px !important;
   line-height: 1 !important;
-  font-weight: 900 !important;
-  letter-spacing: -0.04em;
+  font-weight: 950 !important;
+  letter-spacing: -0.045em !important;
 }
 
-.cf-top-metric-tile-helper,
-.cf-html-view .metric .hint,
-.cf-html-view .stat-card .hint,
-.cf-html-view .summary-card .hint,
-.cf-html-view .dashboard-stat-card .hint,
-.cf-html-view .metric small,
-.cf-html-view .stat-card small,
-.cf-html-view .summary-card small,
-.cf-html-view .dashboard-stat-card small {
+.cf-top-metric-tile-helper {
   display: block;
-  margin-top: 8px;
+  margin-top: 4px;
   color: var(--cf-metric-tile-helper) !important;
   font-size: 11px !important;
   line-height: 1.25;
-  font-weight: 650 !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
 }
 
-.cf-top-metric-tile-icon,
-.cf-html-view .metric .metric-icon,
-.cf-html-view .stat-card .metric-icon,
-.cf-html-view .summary-card .metric-icon,
-.cf-html-view .dashboard-stat-card .metric-icon,
-.cf-html-view .metric svg.metric-icon,
-.cf-html-view .stat-card svg.metric-icon,
-.cf-html-view .summary-card svg.metric-icon,
-.cf-html-view .dashboard-stat-card svg.metric-icon,
-.cf-html-view .metric:not(:has(.metric-icon)):not(:has(svg))::after,
-.cf-html-view .stat-card:not(:has(.metric-icon)):not(:has(svg))::after,
-.cf-html-view .summary-card:not(:has(.metric-icon)):not(:has(svg))::after,
-.cf-html-view .dashboard-stat-card:not(:has(.metric-icon)):not(:has(svg))::after {
+.cf-top-metric-tile-icon {
   width: 38px !important;
   height: 38px !important;
-  min-width: 38px;
+  min-width: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   border-radius: 16px !important;
   background-color: var(--cf-metric-tile-icon-bg) !important;
   color: var(--cf-metric-tile-icon) !important;
-}
-
-.cf-top-metric-tile-icon,
-.cf-html-view .metric .metric-icon,
-.cf-html-view .stat-card .metric-icon,
-.cf-html-view .summary-card .metric-icon,
-.cf-html-view .dashboard-stat-card .metric-icon,
-.cf-html-view .metric svg.metric-icon,
-.cf-html-view .stat-card svg.metric-icon,
-.cf-html-view .summary-card svg.metric-icon,
-.cf-html-view .dashboard-stat-card svg.metric-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   padding: 10px !important;
 }
 
-.cf-html-view .metric:not(:has(.metric-icon)):not(:has(svg))::after,
-.cf-html-view .stat-card:not(:has(.metric-icon)):not(:has(svg))::after,
-.cf-html-view .summary-card:not(:has(.metric-icon)):not(:has(svg))::after,
-.cf-html-view .dashboard-stat-card:not(:has(.metric-icon)):not(:has(svg))::after {
-  content: '';
-  display: block;
-  flex: 0 0 38px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3v18h18'/%3E%3Cpath d='m19 9-5 5-4-4-3 3'/%3E%3C/svg%3E");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 16px 16px;
+.cf-top-metric-tile-icon svg,
+.cf-top-metric-tile .metric-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+  stroke-width: 2.35 !important;
 }
 
-.cf-top-metric-tile-icon svg {
-  width: 16px;
-  height: 16px;
+/* Szerokość jak w Dziś: cztery kafelki w rzędzie, reszta zawija się w ten sam rytm. */
+:where(
+  .main-leads-html,
+  .main-clients-html,
+  .main-cases-html,
+  .main-templates-html,
+  .main-response-templates-html,
+  .main-ai-drafts-html,
+  .main-activity-html,
+  .main-billing-html,
+  .main-calendar-html,
+  .cf-html-view[data-a16-template-light-ui="true"]
+) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid) {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--cf-metric-tile-gap) !important;
+  align-items: stretch !important;
 }
 
-.cf-html-view .grid-5,
-.cf-html-view .stats-grid,
-.cf-html-view .stat-grid,
-.cf-html-view .metric-grid,
-.cf-html-view .summary-grid {
-  gap: 12px;
+/* Zadania Stable mają własny układ bez cf-html-view, więc łapiemy tylko sekcję top metryk. */
+main[data-p0-tasks-stable-rebuild="true"] > section.grid,
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--cf-metric-tile-gap) !important;
+  align-items: stretch !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button {
+  min-height: var(--cf-metric-tile-min-height) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 16px 18px !important;
+  border: 1px solid var(--cf-metric-tile-border) !important;
+  border-radius: var(--cf-metric-tile-radius) !important;
+  background: var(--cf-metric-tile-bg) !important;
+  color: var(--cf-metric-tile-value) !important;
+  box-shadow: var(--cf-metric-tile-shadow) !important;
+  text-align: left !important;
+  transform: none !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:hover {
+  box-shadow: var(--cf-metric-tile-shadow-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button > div {
+  display: contents !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:first-of-type {
+  margin: 0 !important;
+  color: var(--cf-metric-tile-label) !important;
+  font-size: 13px !important;
+  line-height: 1.18 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase !important;
+  order: 1;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:last-of-type {
+  margin: 0 50px 0 auto !important;
+  color: inherit !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.045em !important;
+  text-align: right !important;
+  order: 2;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button svg {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 16px !important;
+  background: var(--cf-metric-tile-icon-bg) !important;
+  padding: 10px !important;
+  order: 3;
+}
+
+/* Fallback dla starszych/hardcoded kafelków metryk poza StatShortcutCard. */
+.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content),
+.cf-html-view :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid) > :is(.metric, .stat-card, .summary-card, .dashboard-stat-card) {
+  min-height: var(--cf-metric-tile-min-height) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 16px 18px !important;
+  border: 1px solid var(--cf-metric-tile-border) !important;
+  border-radius: var(--cf-metric-tile-radius) !important;
+  background: var(--cf-metric-tile-bg) !important;
+  color: var(--cf-metric-tile-value) !important;
+  box-shadow: var(--cf-metric-tile-shadow) !important;
+  text-align: left !important;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
+}
+
+.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content):hover {
+  box-shadow: var(--cf-metric-tile-shadow-hover) !important;
+  transform: translateY(-1px);
+}
+
+.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(label, .label, .metric-label, .stat-label, span:first-child, p:first-child) {
+  margin: 0 !important;
+  color: var(--cf-metric-tile-label) !important;
+  font-size: 13px !important;
+  line-height: 1.18 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase !important;
+}
+
+.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(strong, .value, .metric-value, .stat-value) {
+  color: var(--cf-metric-tile-value) !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(.metric-icon, .stat-icon, svg:last-child) {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 16px !important;
+  background-color: var(--cf-metric-tile-icon-bg) !important;
+  color: var(--cf-metric-tile-icon) !important;
+  padding: 10px !important;
+}
+
+@media (max-width: 1180px) {
+  :where(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-templates-html,
+    .main-response-templates-html,
+    .main-ai-drafts-html,
+    .main-activity-html,
+    .main-billing-html,
+    .main-calendar-html,
+    .cf-html-view[data-a16-template-light-ui="true"]
+  ) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
+  main[data-p0-tasks-stable-rebuild="true"] > section.grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
 }
 
 @media (max-width: 640px) {
-  .cf-top-metric-tile,
-  .cf-html-view .metric,
-  .cf-html-view .stat-card,
-  .cf-html-view .summary-card,
-  .cf-html-view .dashboard-stat-card {
-    min-height: 84px;
+  :root {
+    --cf-metric-tile-min-height: 70px;
+    --cf-metric-tile-gap: 12px;
+  }
+
+  :where(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-templates-html,
+    .main-response-templates-html,
+    .main-ai-drafts-html,
+    .main-activity-html,
+    .main-billing-html,
+    .main-calendar-html,
+    .cf-html-view[data-a16-template-light-ui="true"]
+  ) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
+  main[data-p0-tasks-stable-rebuild="true"] > section.grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .cf-top-metric-tile-content,
+  main[data-p0-tasks-stable-rebuild="true"] > section.grid > button {
+    padding: 14px 16px !important;
   }
 
   .cf-top-metric-tile-value,
-  .cf-html-view .metric strong,
-  .cf-html-view .stat-card strong,
-  .cf-html-view .summary-card strong,
-  .cf-html-view .dashboard-stat-card strong,
-  .cf-html-view .metric .value,
-  .cf-html-view .stat-card .value,
-  .cf-html-view .summary-card .value,
-  .cf-html-view .dashboard-stat-card .value {
-    font-size: 24px !important;
+  main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:last-of-type,
+  .cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(strong, .value, .metric-value, .stat-value) {
+    font-size: 25px !important;
   }
 }
