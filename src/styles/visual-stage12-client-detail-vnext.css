@@ -1614,3 +1614,102 @@
 .client-detail-left-rail .client-detail-recent-moves-card .client-detail-card-title-row {
   margin-bottom: 10px;
 }
+
+
+/* CLIENT_DETAIL_VISIBILITY_AND_TILES_V9 */
+.client-detail-vnext-page [data-client-edit-under-data="true"],
+.client-detail-vnext-page .client-detail-edit-main-button-visible {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  min-height: 46px !important;
+  margin-top: 14px !important;
+  border-radius: 16px !important;
+  background: #2563eb !important;
+  border: 1px solid #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 900 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.24) !important;
+}
+
+.client-detail-vnext-page [data-client-edit-under-data="true"]:hover,
+.client-detail-vnext-page [data-client-edit-under-data="true"]:focus-visible,
+.client-detail-vnext-page .client-detail-edit-main-button-visible:hover,
+.client-detail-vnext-page .client-detail-edit-main-button-visible:focus-visible {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+.client-detail-vnext-page [data-client-edit-under-data="true"] svg,
+.client-detail-vnext-page .client-detail-edit-main-button-visible svg {
+  color: #ffffff !important;
+}
+
+.client-detail-left-management-tiles {
+  padding: 18px !important;
+}
+
+.client-detail-left-management-title {
+  margin-bottom: 12px !important;
+}
+
+.client-detail-left-tile-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.client-detail-left-tile {
+  min-height: auto !important;
+  padding: 18px !important;
+}
+
+.client-detail-left-tile small {
+  display: block;
+  color: #667085;
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.client-detail-left-tile strong {
+  display: block;
+  margin-top: 6px;
+  color: #111827;
+  font-size: 21px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.client-detail-left-tile p {
+  margin: 8px 0 0;
+  color: #475467;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.client-detail-left-tile-button {
+  width: 100%;
+  margin-top: 12px !important;
+  border-radius: 14px !important;
+}
+
+.client-detail-finance-mini-metrics {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.client-detail-finance-mini-metrics span {
+  border: 1px solid #e4e7ec;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #475467;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+}

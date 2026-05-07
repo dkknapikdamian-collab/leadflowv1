@@ -19,6 +19,7 @@ const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu D
 const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe Drugorzędne akcje';
 const CLIENT_DETAIL_NEW_CASE_FOR_CLIENT_COPY_GUARD = '+ Nowa sprawa dla klienta';
 const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
+const CLIENT_DETAIL_LEFT_MANAGEMENT_TILES_V9_GUARD = 'client detail management tiles v9';
 const CLIENT_DETAIL_RECENT_MOVES_EXACT_PANEL_V7_GUARD = 'exact recent moves panel under client data';
 const CLIENT_DETAIL_EDIT_BUTTON_UNDER_DATA_GUARD = 'edit button under client data';
 const CLIENT_DETAIL_RECENT_MOVES_UNDER_DATA_GUARD = 'recent moves under client data';
@@ -1096,8 +1097,8 @@ export default function ClientDetail() {
             <UserRound className="h-8 w-8" />
             <h1>Nie znaleziono klienta</h1>
             <p>Ten rekord mógł zostać usunięty albo nie należy do aktualnego workspace.</p>
-            <Button type="button" onClick={() => navigate('/clients')} variant="outline">
-              <ArrowLeft className="h-4 w-4" />
+            <Button type="button" onClick={() => navigate('/clients')} variant="default">
+              <ArrowLeft className="h-4 w-4 client-detail-edit-main-button-visible" />
               Wróć do klientów
             </Button>
           </section>
@@ -1126,13 +1127,13 @@ export default function ClientDetail() {
           </div>
           <div className="client-detail-header-actions">
             
-            <Button type="button" variant="outline" className="client-detail-header-action-soft" asChild>
+            <Button type="button" variant="default" className="client-detail-header-action-soft" asChild>
               <Link to="/ai-drafts">
                 <Sparkles className="h-4 w-4" />
                 Zapytaj AI
               </Link>
             </Button>
-            <Button type="button" variant="outline" onClick={openNewCase} disabled={!hasAccess}>
+            <Button type="button" variant="default" onClick={openNewCase} disabled={!hasAccess}>
               <Plus className="h-4 w-4" />
               Nowa sprawa dla klienta
             </Button>
@@ -1145,7 +1146,64 @@ export default function ClientDetail() {
 
         <div className="client-detail-shell">
           <aside className="client-detail-left-rail">
-            <section className="client-detail-profile-card client-detail-side-card" data-client-inline-contact-edit="true">
+            
+          <section className="client-detail-side-card client-detail-left-management-tiles" data-client-left-management-tiles="true">
+            <div className="client-detail-card-title-row client-detail-left-management-title">
+              <Target className="h-4 w-4" />
+              <h2>Zarządzanie klientem</h2>
+            </div>
+            <div className="client-detail-left-tile-grid">
+              <section
+                className={`client-detail-summary-card client-detail-left-tile ${nextActionToneClass(clientNextAction.tone)}`}
+                data-client-left-next-action-tile="true"
+              >
+                <small>Najbliższa zaplanowana akcja</small>
+                <strong>{clientNextAction.title}</strong>
+                <p>{clientNextAction.subtitle}</p>
+                {clientNextAction.to ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="client-detail-left-tile-button"
+                    onClick={() => navigate(clientNextAction.to!)}
+                  >
+                    Otwórz
+                  </Button>
+                ) : null}
+              </section>
+              {(() => {
+                const currency = payments.find((payment) => typeof payment?.currency === 'string' && payment.currency.trim())?.currency || 'PLN';
+                const amountOfPayment = (payment: any) =>
+                  Number(
+                    payment?.amount ??
+                      payment?.grossAmount ??
+                      payment?.totalAmount ??
+                      payment?.value ??
+                      payment?.price ??
+                      0,
+                  ) || 0;
+                const total = payments.reduce((sum, payment) => sum + amountOfPayment(payment), 0);
+                const paid = payments
+                  .filter((payment) => isPaidPaymentStatus(payment?.status))
+                  .reduce((sum, payment) => sum + amountOfPayment(payment), 0);
+                const remaining = Math.max(0, total - paid);
+                const paymentsLabel = payments.length === 1 ? 'pozycja' : payments.length < 5 ? 'pozycje' : 'pozycji';
+                return (
+                  <section className="client-detail-summary-card client-detail-left-tile client-detail-finance-mini-card" data-client-left-finance-tile="true">
+                    <small>Podsumowanie finansów</small>
+                    <strong>{formatMoneyWithCurrency(paid, currency)}</strong>
+                    <p>Opłacone · {payments.length} {paymentsLabel}</p>
+                    <div className="client-detail-finance-mini-metrics">
+                      <span>Łącznie: {formatMoneyWithCurrency(total, currency)}</span>
+                      <span>Do rozliczenia: {formatMoneyWithCurrency(remaining, currency)}</span>
+                    </div>
+                  </section>
+                );
+              })()}
+            </div>
+          </section>
+
+<section className="client-detail-profile-card client-detail-side-card" data-client-inline-contact-edit="true">
               <div className="client-detail-avatar-row">
                 <div className="client-detail-avatar">{getInitials(client)}</div>
                 <div>
@@ -1156,10 +1214,11 @@ export default function ClientDetail() {
 
                             <Button
                 type="button"
-                variant="outline"
+                variant="default"
                 className="client-detail-visible-edit-action client-detail-edit-main-button"
                 data-client-detail-visible-edit-action="true"
                 data-client-edit-under-data="true"
+                data-client-edit-main-visible="true"
                 onClick={handleClientPanelEditToggle}
                 disabled={saving}
               >
