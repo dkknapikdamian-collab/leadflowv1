@@ -1,0 +1,82 @@
+/* ELITEFLOW_TASKS_TILES_TEXT_CLIP_REPAIR_2026_05_07
+   Final small repair after color/font parity:
+   - metric text/value must not be clipped
+   - Tasks top counters must use StatShortcutCard parity instead of old centered cards
+*/
+
+html body #root [data-eliteflow-today-metric-lock="true"],
+html body #root [data-eliteflow-today-metric-lock="true"] *,
+html body #root .cf-html-view [data-eliteflow-today-metric-lock="true"],
+html body #root .cf-html-view [data-eliteflow-today-metric-lock="true"] * {
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+html body #root [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"] > [data-eliteflow-today-metric-lock="true"],
+html body #root .cf-top-metric-tile-content[data-eliteflow-today-metric-lock="true"],
+html body #root .cf-html-view .cf-top-metric-tile-content[data-eliteflow-today-metric-lock="true"] {
+  min-height: 72px !important;
+  overflow: visible !important;
+}
+
+html body #root .cf-top-metric-tile-left,
+html body #root .cf-top-metric-tile-value-row {
+  overflow: visible !important;
+}
+
+html body #root .cf-top-metric-tile-label,
+html body #root .cf-html-view .cf-top-metric-tile-label {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  line-height: 1.22 !important;
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
+}
+
+html body #root .cf-top-metric-tile-helper,
+html body #root .cf-html-view .cf-top-metric-tile-helper {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  line-height: 1.28 !important;
+}
+
+html body #root .cf-top-metric-tile-value,
+html body #root .cf-html-view .cf-top-metric-tile-value {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  max-width: none !important;
+  line-height: 1.16 !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+/* Tasks page now renders StatShortcutCard. Keep the same grid rhythm as Dzis/top metric tiles. */
+html body #root main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+}
+
+html body #root main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] [data-stat-shortcut-card] {
+  min-width: 0 !important;
+}
+
+html body #root main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-content {
+  min-height: 72px !important;
+}
+
+@media (max-width: 1180px) {
+  html body #root main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html body #root main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

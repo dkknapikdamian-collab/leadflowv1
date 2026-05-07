@@ -6,11 +6,13 @@ const STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE = 'STAGE16AL_METRIC_TILE_ICONS_N
 const ELITEFLOW_TODAY_METRIC_TILE_LOCK = 'ELITEFLOW_TODAY_METRIC_TILE_LOCK_2026_05_07';
 const ELITEFLOW_FINAL_METRIC_TILES_HARD_LOCK = 'ELITEFLOW_FINAL_METRIC_TILES_HARD_LOCK_2026_05_07';
 const ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY = 'ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY_2026_05_07';
+const ELITEFLOW_TASKS_TILES_TEXT_CLIP_REPAIR = 'ELITEFLOW_TASKS_TILES_TEXT_CLIP_REPAIR_2026_05_07';
 void STAGE16AK_UNIFIED_TOP_METRIC_TILES;
 void STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE;
 void ELITEFLOW_TODAY_METRIC_TILE_LOCK;
 void ELITEFLOW_FINAL_METRIC_TILES_HARD_LOCK;
 void ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY;
+void ELITEFLOW_TASKS_TILES_TEXT_CLIP_REPAIR;
 
 export type StatShortcutCardProps = {
   key?: string | number;
@@ -82,18 +84,18 @@ export function StatShortcutCard({
       data-eliteflow-metric-tone={tone}
     >
       <div className="cf-top-metric-tile-left min-w-0 flex-1">
-        <p className="cf-top-metric-tile-label truncate text-[13px] font-extrabold uppercase tracking-[0.035em] text-slate-500">
+        <p className="cf-top-metric-tile-label text-[13px] font-extrabold uppercase tracking-[0.035em] text-slate-500">
           {label}
         </p>
         {helper ? (
-          <p className="cf-top-metric-tile-helper mt-1 truncate text-[11px] font-semibold leading-snug text-slate-500">
+          <p className="cf-top-metric-tile-helper mt-1 text-[11px] font-semibold leading-snug text-slate-500">
             {helper}
           </p>
         ) : null}
       </div>
 
       <div className="cf-top-metric-tile-value-row flex shrink-0 items-center justify-end gap-3" data-metric-icon-next-to-value="true">
-        <h3 className={['cf-top-metric-tile-value min-w-0 max-w-[11rem] truncate text-right text-[28px] font-black leading-none tracking-tight', valueClassName].filter(Boolean).join(' ')}>
+        <h3 className={['cf-top-metric-tile-value min-w-0 text-right text-[28px] font-black leading-none tracking-tight', valueClassName].filter(Boolean).join(' ')}>
           {value}
         </h3>
         <div className={['cf-top-metric-tile-icon metric-icon shrink-0 rounded-2xl p-2.5', iconClassName].filter(Boolean).join(' ')} aria-hidden="true">
@@ -147,3 +149,4 @@ export function StatShortcutCard({
 /* STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE_GUARD cf-top-metric-tile-value-row data-metric-icon-next-to-value cf-top-metric-tile-icon */
 /* ELITEFLOW_TODAY_METRIC_TILE_LOCK_GUARD min-h-[72px] rounded-[22px] cf-top-metric-tile-label cf-top-metric-tile-value-row */
 /* ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY_GUARD data-eliteflow-metric-tone resolveMetricTone */
+/* ELITEFLOW_TASKS_TILES_TEXT_CLIP_REPAIR_GUARD no-truncate metric-value line-height-safe */

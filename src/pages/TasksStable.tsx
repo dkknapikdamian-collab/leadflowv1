@@ -4,6 +4,7 @@ P0_TASKS_STABLE_REBUILD
 
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import Layout from '../components/Layout';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -415,10 +416,38 @@ export default function TasksStable() {
   };
 
   const statCards = [
-    { id: 'active' as TaskScope, label: 'Aktywne', value: stats.active, icon: CheckSquare, tone: 'text-slate-900' },
-    { id: 'today' as TaskScope, label: 'Dziś', value: stats.today, icon: Clock, tone: 'text-blue-700' },
-    { id: 'overdue' as TaskScope, label: 'Zaległe', value: stats.overdue, icon: AlertTriangle, tone: 'text-rose-700' },
-    { id: 'done' as TaskScope, label: 'Zrobione', value: stats.done, icon: CheckCircle2, tone: 'text-emerald-700' },
+    {
+      id: 'active' as TaskScope,
+      label: 'Aktywne',
+      value: stats.active,
+      icon: CheckSquare,
+      tone: 'text-slate-900',
+      iconClassName: 'bg-slate-100 text-slate-700',
+    },
+    {
+      id: 'today' as TaskScope,
+      label: 'Dziś',
+      value: stats.today,
+      icon: Clock,
+      tone: 'text-blue-700',
+      iconClassName: 'bg-blue-50 text-blue-600',
+    },
+    {
+      id: 'overdue' as TaskScope,
+      label: 'Zaległe',
+      value: stats.overdue,
+      icon: AlertTriangle,
+      tone: 'text-rose-700',
+      iconClassName: 'bg-rose-50 text-rose-600',
+    },
+    {
+      id: 'done' as TaskScope,
+      label: 'Zrobione',
+      value: stats.done,
+      icon: CheckCircle2,
+      tone: 'text-emerald-700',
+      iconClassName: 'bg-emerald-50 text-emerald-700',
+    },
   ];
 
   return (
@@ -439,19 +468,21 @@ export default function TasksStable() {
           </div>
         </section>
 
-        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {statCards.map((card) => {
-            const Icon = card.icon;
-            return (
-              <button key={card.id} type="button" onClick={() => setScope(card.id)} className={'rounded-2xl border bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ' + (scope === card.id ? 'border-blue-200 ring-2 ring-blue-100' : 'border-slate-100')}>
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{card.label}</p>
-                  <Icon className={'h-5 w-5 ' + card.tone} />
-                </div>
-                <p className={'mt-2 text-3xl font-black ' + card.tone}>{card.value}</p>
-              </button>
-            );
-          })}
+        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" data-eliteflow-task-stat-grid="true">
+          {statCards.map((card) => (
+            <StatShortcutCard
+              key={card.id}
+              label={card.label}
+              value={card.value}
+              icon={card.icon}
+              active={scope === card.id}
+              onClick={() => setScope(card.id)}
+              valueClassName={card.tone}
+              iconClassName={card.iconClassName}
+              title={`Pokaż zadania: ${card.label}`}
+              ariaLabel={`Pokaż zadania: ${card.label}`}
+            />
+          ))}
         </section>
 
         <Card className="border-slate-100 shadow-sm">
