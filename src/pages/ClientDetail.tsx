@@ -70,12 +70,11 @@ import {
   UserRound,
 
 
-
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { EntityActionButton, actionButtonClass } from '../components/entity-actions';
+import { EntityActionButton, actionButtonClass, formActionsClass } from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -96,7 +95,6 @@ import {
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import '../styles/visual-stage12-client-detail-vnext.css';
-
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
   entity: 'client',
   entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),
@@ -118,7 +116,6 @@ const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
     copy: 'info-row-inline-action',
   },
 } as const;
-
 type ClientTab = 'summary' | 'cases' | 'contact' | 'history';
 
 type ClientNextAction = {
@@ -157,13 +154,11 @@ type SpeechRecognitionLike = {
 };
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
-
 function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {
   if (typeof window === 'undefined') return null;
   const browserWindow = window as any;
   return browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition || null;
 }
-
 function normalizeTranscriptText(value: string) {
   return String(value || '')
     .toLowerCase()
@@ -171,7 +166,6 @@ function normalizeTranscriptText(value: string) {
     .replace(/\s+/g, ' ')
     .trim();
 }
-
 function dedupeTranscriptAppend(previous: string, addition: string) {
   const base = previous.trim();
   const next = addition.trim();
@@ -201,21 +195,17 @@ function dedupeTranscriptAppend(previous: string, addition: string) {
 
   return `${base} ${next}`;
 }
-
 function joinTranscript(previous: string, addition: string) {
   return dedupeTranscriptAppend(previous, addition);
 }
-
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
-
 function asDate(value: unknown) {
   if (!value) return null;
   const parsed = new Date(String(value));
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
-
 function formatDate(value: unknown) {
   const parsed = asDate(value);
   if (!parsed) return 'Brak daty';
@@ -225,7 +215,6 @@ function formatDate(value: unknown) {
     year: 'numeric',
   });
 }
-
 function formatDateTime(value: unknown) {
   const parsed = asDate(value);
   if (!parsed) return 'Brak daty';
@@ -237,39 +226,31 @@ function formatDateTime(value: unknown) {
     minute: '2-digit',
   });
 }
-
 function formatMoney(value: unknown) {
   const amount = Number(value || 0);
   return Number.isFinite(amount) ? `${amount.toLocaleString('pl-PL')} PLN` : '0 PLN';
 }
-
 function formatMoneyWithCurrency(value: unknown, currency?: string) {
   const amount = Number(value || 0);
   const safeAmount = Number.isFinite(amount) ? amount : 0;
   const safeCurrency = typeof currency === 'string' && currency.trim() ? currency.trim().toUpperCase() : 'PLN';
   return `${safeAmount.toLocaleString('pl-PL')} ${safeCurrency}`;
 }
-
 function isPaidPaymentStatus(status: unknown) {
   return ['deposit_paid', 'partially_paid', 'fully_paid', 'paid'].includes(String(status || '').toLowerCase());
 }
-
 function getTaskDate(task: any) {
   return String(normalizeWorkItem(task).dateAt || task?.createdAt || '');
 }
-
 function getEventDate(event: any) {
   return String(normalizeWorkItem(event).dateAt || event?.createdAt || '');
 }
-
 function isDoneStatus(status: unknown) {
   return ['done', 'completed', 'archived', 'cancelled', 'canceled'].includes(String(status || '').toLowerCase());
 }
-
 function getActivityTime(activity: any) {
   return String(activity?.createdAt || activity?.updatedAt || activity?.happenedAt || '');
 }
-
 function leadStatusLabel(status?: string) {
   switch (status) {
     case 'new':
@@ -296,7 +277,6 @@ function leadStatusLabel(status?: string) {
       return status || 'Lead';
   }
 }
-
 function caseStatusLabel(status?: string) {
   switch (status) {
     case 'new':
@@ -321,7 +301,6 @@ function caseStatusLabel(status?: string) {
       return status || 'Sprawa';
   }
 }
-
 function paymentStatusLabel(status?: string) {
   switch (status) {
     case 'paid':
@@ -341,7 +320,6 @@ function paymentStatusLabel(status?: string) {
       return status || 'Rozliczenie';
   }
 }
-
 function activityLabel(activity: any) {
   const eventType = String(activity?.eventType || activity?.activityType || 'activity');
   const title = asText(activity?.payload?.title) || asText(activity?.title);
@@ -373,7 +351,6 @@ function activityLabel(activity: any) {
       return title || 'Aktywność klienta';
   }
 }
-
 function getInitials(client: any) {
   const source = String(client?.name || client?.company || 'Klient');
   const initials = source
@@ -384,11 +361,9 @@ function getInitials(client: any) {
     .join('');
   return initials || 'K';
 }
-
 function getClientName(client: any) {
   return String(client?.name || client?.company || 'Klient bez nazwy');
 }
-
 function getCaseTitle(caseRecord: any) {
   const rawTitle = asText(caseRecord?.title) || asText(caseRecord?.name);
   const clientName = asText(caseRecord?.clientName);
@@ -403,7 +378,6 @@ function getCaseTitle(caseRecord: any) {
   }
   return String(rawTitle || 'Sprawa obsługowa');
 }
-
 function getCaseValueLabel(caseRecord: any) {
   const raw =
     caseRecord?.value ??
@@ -417,12 +391,10 @@ function getCaseValueLabel(caseRecord: any) {
     0;
   return formatMoneyWithCurrency(raw, caseRecord?.currency);
 }
-
 function getCaseCompleteness(caseRecord: any) {
   const value = Number(caseRecord?.completenessPercent || caseRecord?.completionPercent || 0);
   return Number.isFinite(value) ? Math.max(0, Math.min(100, Math.round(value))) : 0;
 }
-
 function getCaseBlocker(caseRecord: any) {
   const explicit = asText(caseRecord?.blocker) || asText(caseRecord?.blockReason) || asText(caseRecord?.missingReason);
   if (explicit) return explicit;
@@ -433,7 +405,6 @@ function getCaseBlocker(caseRecord: any) {
   if (status === 'on_hold') return 'sprawa wstrzymana';
   return '';
 }
-
 function getCaseSourceLead(caseRecord: any, leads: any[]) {
   const caseId = String(caseRecord?.id || '');
   const directLeadId = String(caseRecord?.leadId || caseRecord?.sourceLeadId || '');
@@ -443,7 +414,6 @@ function getCaseSourceLead(caseRecord: any, leads: any[]) {
     null
   );
 }
-
 function getCaseNextAction(caseRecord: any, tasks: any[], events: any[]) {
   const caseId = String(caseRecord?.id || '').trim();
   const nearest = getNearestPlannedAction({
@@ -458,7 +428,6 @@ function getCaseNextAction(caseRecord: any, tasks: any[], events: any[]) {
     date: nearest.when,
   };
 }
-
 function relativeActionLabel(value: unknown) {
   const parsed = asDate(value);
   if (!parsed) return 'Brak terminu';
@@ -471,7 +440,6 @@ function relativeActionLabel(value: unknown) {
   if (diff === -1) return 'Wczoraj';
   return formatDate(value);
 }
-
 function statusBadgeClass(status: unknown) {
   const normalized = String(status || '').toLowerCase();
   if (['blocked', 'overdue'].includes(normalized)) return 'client-detail-pill-danger';
@@ -480,7 +448,6 @@ function statusBadgeClass(status: unknown) {
   if (['canceled', 'cancelled', 'lost'].includes(normalized)) return 'client-detail-pill-muted';
   return 'client-detail-pill-blue';
 }
-
 function nextActionToneClass(tone: ClientNextAction['tone']) {
   if (tone === 'red') return 'client-detail-callout-danger';
   if (tone === 'amber') return 'client-detail-callout-amber';
@@ -488,7 +455,6 @@ function nextActionToneClass(tone: ClientNextAction['tone']) {
   if (tone === 'blue') return 'client-detail-callout-blue';
   return 'client-detail-callout-muted';
 }
-
 function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events: any[], clientId: string): ClientNextAction {
   const relatedLeadIds = leads.map((lead) => String(lead?.id || '')).filter(Boolean);
   const relatedCaseIds = cases.map((caseRecord) => String(caseRecord?.id || '')).filter(Boolean);
@@ -608,7 +574,6 @@ type ClientMultiContactFieldProps = {
   onChange: (value: string) => void;
   placeholder?: string;
 };
-
 function splitClientContactValue(value?: string | null) {
   const parts = String(value || '')
     .split(/[;\n]+/g)
@@ -617,14 +582,12 @@ function splitClientContactValue(value?: string | null) {
 
   return parts.length ? parts : [''];
 }
-
 function joinClientContactValue(values: string[]) {
   return values
     .map((entry) => String(entry || '').trim())
     .filter(Boolean)
     .join('; ');
 }
-
 function ClientMultiContactField({ kind, label, value, onChange, placeholder }: ClientMultiContactFieldProps) {
   const values = splitClientContactValue(value);
 
@@ -682,7 +645,6 @@ function ClientMultiContactField({ kind, label, value, onChange, placeholder }: 
     </div>
   );
 }
-
 function InfoRow({ icon: Icon, label, value, onCopy }: { icon: any; label: string; value: string; onCopy?: () => void }) {
   const copyLabel = label === 'Telefon' ? 'Kopiuj telefon' : label === 'E-mail' ? 'Kopiuj email' : `Kopiuj ${label}`;
   return (
@@ -702,7 +664,6 @@ function InfoRow({ icon: Icon, label, value, onCopy }: { icon: any; label: strin
     </div>
   );
 }
-
 function StatCell({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="client-detail-stat-cell">
@@ -728,7 +689,6 @@ const STAGE27G_CLIENT_NOTE_LISTENER_ID_RUNTIME_FINAL_GUARD = 'client note listen
 const STAGE27D_CLIENT_NOTES_RUNTIME_FINAL_GUARD = 'client notes runtime visibility final';
 const STAGE27A_CLIENT_NOTES_TRASH2_GUARD = 'client notes visible after save and Trash2 imported';
 const STAGE27B_TRASH2_IMPORT_AND_NOTES_FINAL_GUARD = 'Trash2 import fixed and client notes final';
-
 function getClientPaymentAmount(payment: any) {
   const raw =
     payment?.amount ??
@@ -743,7 +703,6 @@ function getClientPaymentAmount(payment: any) {
   const amount = Number(raw);
   return Number.isFinite(amount) ? amount : 0;
 }
-
 function isClientCaseClosed(caseRecord: any) {
   return ['completed', 'done', 'canceled', 'cancelled', 'archived', 'lost'].includes(String(caseRecord?.status || '').toLowerCase());
 }
@@ -757,7 +716,6 @@ type ClientTopTilesProps = {
   events: any[];
   onOpenCases: () => void;
 };
-
 function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpenCases }: ClientTopTilesProps) {
   const nextAction = buildClientNextAction(leads, cases, tasks, events, clientId);
   const paidPayments = payments.filter((payment) => isPaidPaymentStatus(payment?.status));
@@ -832,6 +790,7 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpe
   );
 }
 
+const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CLIENT_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
 export default function ClientDetail() {
   const { clientId } = useParams();
@@ -847,7 +806,6 @@ export default function ClientDetail() {
   const [events, setEvents] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
   const [clientPinnedNoteIds, setClientPinnedNoteIds] = useState<string[]>([]);
-
 
 
   const clientNotePinStorageKey = useMemo(
@@ -1195,7 +1153,6 @@ export default function ClientDetail() {
   }, [cases, clientEvents, clientTasks, leads]);
 
 
-
   const resetClientContactForm = () => {
     setForm({
       name: String(client?.name || ''),
@@ -1530,7 +1487,6 @@ export default function ClientDetail() {
             </section>
 
 
-
 <section className="client-detail-profile-card client-detail-side-card" data-client-inline-contact-edit="true">
               <div className="client-detail-avatar-row">
                 <div className="client-detail-avatar">{getInitials(client)}</div>
@@ -1589,7 +1545,7 @@ export default function ClientDetail() {
                       {clientNoteAutosaving ? <span className="text-xs text-slate-500">Zapisywanie za 2s…</span> : null}
                     </div>
                   </div>
-                  <div className="client-detail-edit-actions">
+                  <div className={formActionsClass('client-detail-edit-actions')}>
                     <Button type="button" onClick={handleSave} disabled={saving}>
                       <Save className="h-4 w-4" />
                       {saving ? 'Zapisuję...' : 'Zapisz'}
@@ -2158,8 +2114,6 @@ export default function ClientDetail() {
     </Layout>
   );
 }
-
-
 function getClientVisibleNotes(activityRows: any[], clientRecord: any) {
   const clientId = String(clientRecord?.id || '').trim();
   return (activityRows || [])
@@ -2192,7 +2146,6 @@ function getClientVisibleNotes(activityRows: any[], clientRecord: any) {
     })
     .slice(0, 8);
 }
-
 function getClientNotesForRender(notes: any[], pinnedIds: string[] = []) {
   return [...(notes || [])].sort((left, right) => {
     const leftPinned = pinnedIds.includes(String(left?.id || ''));
@@ -2203,3 +2156,4 @@ function getClientNotesForRender(notes: any[], pinnedIds: string[] = []) {
     return rightTime - leftTime;
   });
 }
+

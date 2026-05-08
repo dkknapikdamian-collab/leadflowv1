@@ -4,7 +4,7 @@ import { AlertTriangle, Briefcase, Loader2, Plus, RotateCcw, Search, Target, Tra
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { actionIconClass } from '../components/entity-actions';
+import { actionIconClass, modalFooterClass} from '../components/entity-actions';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
@@ -29,12 +29,14 @@ type ClientRecord = {
 };
 const STAGE35_REAL_CLIENT_VALUE = 'STAGE35_REAL_CLIENT_VALUE';
 
+
 function getStage35NumericValue(value: unknown) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
   const normalized = String(value || '').replace(/[^0-9,.-]/g, '').replace(',', '.');
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : 0;
 }
+
 
 function getStage35FirstMoneyValue(row: Record<string, unknown>, keys: string[]) {
   for (const key of keys) {
@@ -44,9 +46,11 @@ function getStage35FirstMoneyValue(row: Record<string, unknown>, keys: string[])
   return 0;
 }
 
+
 function getStage35RelationClientId(row: Record<string, unknown>) {
   return String(row.clientId || row.client_id || row.customerId || row.customer_id || '').trim();
 }
+
 
 function formatClientMoney(value: number) {
   return `${Math.round(Number(value || 0)).toLocaleString('pl-PL')} PLN`;
@@ -70,6 +74,8 @@ const STAGE35_MONEY_KEYS = [
   'commissionAmount',
   'commission_amount',
 ];
+
+const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CLIENTS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
 export default function Clients() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
@@ -462,7 +468,7 @@ export default function Clients() {
                     </div>
                   </section>
 
-                  <DialogFooter className="client-case-form-footer">
+                  <DialogFooter className={modalFooterClass('client-case-form-footer')}>
                     <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
                       Anuluj
                     </Button>
@@ -611,6 +617,7 @@ export default function Clients() {
     </Layout>
   );
 }
+
 
 
 

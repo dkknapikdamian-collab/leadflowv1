@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T13:14:26.813Z
+Generated: 2026-05-08T13:50:31.178Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -137,6 +137,11 @@ Generated: 2026-05-08T13:14:26.813Z
 - --cf-case-info: src/styles/closeflow-case-detail-focus.css:18
 - --cf-case-info-bg: src/styles/closeflow-case-detail-focus.css:19
 - --cf-case-shadow: src/styles/closeflow-case-detail-focus.css:20
+- --cf-form-actions-gap: src/styles/closeflow-form-actions.css:7
+- --cf-form-actions-mobile-gap: src/styles/closeflow-form-actions.css:8
+- --cf-form-actions-padding-top: src/styles/closeflow-form-actions.css:9
+- --cf-form-actions-border: src/styles/closeflow-form-actions.css:10
+- --cf-form-actions-danger-gap: src/styles/closeflow-form-actions.css:11
 - --cf-list-row-contact-text: src/styles/closeflow-list-row-tokens.css:5
 - --cf-list-row-contact-bg: src/styles/closeflow-list-row-tokens.css:6
 - --cf-list-row-contact-border: src/styles/closeflow-list-row-tokens.css:7
@@ -498,11 +503,6 @@ Generated: 2026-05-08T13:14:26.813Z
 - --stage20-line-2: src/styles/visual-stage20-tasks-safe-css.css:12
 - --stage20-card: src/styles/visual-stage20-tasks-safe-css.css:13
 - --stage20-card-strong: src/styles/visual-stage20-tasks-safe-css.css:14
-- --stage20-card-soft: src/styles/visual-stage20-tasks-safe-css.css:15
-- --stage20-blue: src/styles/visual-stage20-tasks-safe-css.css:16
-- --stage20-blue-soft: src/styles/visual-stage20-tasks-safe-css.css:17
-- --stage20-green: src/styles/visual-stage20-tasks-safe-css.css:18
-- --stage20-green-soft: src/styles/visual-stage20-tasks-safe-css.css:19
 
 ## Danger/red local classes
 - border-rose-200: src/components/AppChunkErrorBoundary.tsx:100
@@ -545,15 +545,15 @@ Generated: 2026-05-08T13:14:26.813Z
 - text-red-600: src/pages/Dashboard.tsx:333
 - bg-red-50: src/pages/Dashboard.tsx:335
 - text-red-500: src/pages/Dashboard.tsx:336
-- text-rose-600: src/pages/Leads.tsx:744
-- bg-rose-50: src/pages/Leads.tsx:745
-- text-rose-500: src/pages/Leads.tsx:745
+- text-rose-600: src/pages/Leads.tsx:758
+- bg-rose-50: src/pages/Leads.tsx:759
+- text-rose-500: src/pages/Leads.tsx:759
 - bg-rose-50: src/pages/NotificationsCenter.tsx:643
 - text-rose-500: src/pages/NotificationsCenter.tsx:643
 - text-rose-600: src/pages/NotificationsCenter.tsx:643
-- bg-rose-50: src/pages/TasksStable.tsx:150
-- text-rose-700: src/pages/TasksStable.tsx:150
-- border-rose-100: src/pages/TasksStable.tsx:150
+- bg-rose-50: src/pages/TasksStable.tsx:163
+- text-rose-700: src/pages/TasksStable.tsx:163
+- border-rose-100: src/pages/TasksStable.tsx:163
 - bg-rose-600: src/pages/Templates.tsx:410
 - border-red-100: src/pages/Today.tsx:1286
 - bg-red-50: src/pages/Today.tsx:1286
@@ -620,10 +620,10 @@ Generated: 2026-05-08T13:14:26.813Z
 - src/pages/Activity.tsx:789
 - src/pages/Calendar.tsx:1476
 - src/pages/Calendar.tsx:1658
-- src/pages/CaseDetail.tsx:1375
-- src/pages/CaseDetail.tsx:1499
-- src/pages/Cases.tsx:741
-- src/pages/ClientDetail.tsx:1693
+- src/pages/CaseDetail.tsx:1326
+- src/pages/CaseDetail.tsx:1449
+- src/pages/Cases.tsx:757
+- src/pages/ClientDetail.tsx:1649
 - src/pages/NotificationsCenter.tsx:705
 - src/pages/Today.tsx:808
 - src/pages/UiPreviewVNext.tsx:8

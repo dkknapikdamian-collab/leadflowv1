@@ -34,7 +34,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { actionButtonClass } from '../components/entity-actions';
+import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import LeadAiFollowupDraft from '../components/LeadAiFollowupDraft';
 import LeadAiNextAction from '../components/LeadAiNextAction';
@@ -158,13 +158,11 @@ type SpeechRecognitionLike = {
 };
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
-
 function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | null {
   if (typeof window === 'undefined') return null;
   const browserWindow = window as any;
   return browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition || null;
 }
-
 function joinTranscript(previous: string, addition: string) {
   // ADMIN_FEEDBACK_P1_NOTE_TRANSCRIPT_DEDUPE
   const base = previous.trim();
@@ -192,7 +190,6 @@ function joinTranscript(previous: string, addition: string) {
 
   return `${base} ${next}`.trim();
 }
-
 function asDate(value: unknown) {
   if (!value) return null;
   if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
@@ -210,17 +207,14 @@ function asDate(value: unknown) {
   }
   return null;
 }
-
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
-
 function formatDate(value: unknown, fallback = 'Brak daty') {
   const parsed = asDate(value);
   if (!parsed) return fallback;
   return parsed.toLocaleDateString('pl-PL', { day: '2-digit', month: 'short', year: 'numeric' });
 }
-
 function formatDateTime(value: unknown, fallback = 'Bez terminu') {
   const parsed = asDate(value);
   if (!parsed) return fallback;
@@ -232,23 +226,19 @@ function formatDateTime(value: unknown, fallback = 'Bez terminu') {
     minute: '2-digit',
   });
 }
-
 function formatMoney(value: unknown) {
   const amount = Number(value || 0);
   return Number.isFinite(amount) ? `${amount.toLocaleString('pl-PL')} PLN` : '0 PLN';
 }
-
 function getLeadFinance(lead: Record<string, unknown> | null) {
   const dealValue = Number(lead?.dealValue || 0);
   const formatted = formatMoney(Number.isFinite(dealValue) ? dealValue : 0);
   const currency = typeof lead?.currency === 'string' && lead.currency.trim() ? lead.currency.trim() : 'PLN';
   return { dealValue: Number.isFinite(dealValue) ? dealValue : 0, currency, formatted };
 }
-
 function isPaidPaymentStatus(status: unknown) {
   return ['deposit_paid', 'partially_paid', 'fully_paid', 'paid'].includes(String(status || '').toLowerCase());
 }
-
 function deriveBillingStatus(potential: number, paid: number, payments: any[]) {
   const normalizedPotential = Math.max(0, Number(potential) || 0);
   const normalizedPaid = Math.max(0, Number(paid) || 0);
@@ -258,19 +248,15 @@ function deriveBillingStatus(potential: number, paid: number, payments: any[]) {
   if (hasDeposit) return 'deposit_paid';
   return 'partially_paid';
 }
-
 function getLeadName(lead: any) {
   return String(lead?.name || lead?.company || 'Lead bez nazwy');
 }
-
 function statusLabel(status?: string) {
   return STATUS_OPTIONS.find((entry) => entry.value === status)?.label || status || 'Lead';
 }
-
 function sourceLabel(source?: string) {
   return SOURCE_OPTIONS.find((entry) => entry.value === source)?.label || source || 'Brak źródła';
 }
-
 function billingStatusLabel(status?: string) {
   switch (String(status || '').toLowerCase()) {
     case 'deposit_paid':
@@ -288,28 +274,23 @@ function billingStatusLabel(status?: string) {
       return status || 'Brak statusu';
   }
 }
-
 function taskTypeLabel(type?: string) {
   return TASK_TYPES.find((entry) => entry.value === type)?.label || 'Zadanie';
 }
-
 function eventTypeLabel(type?: string) {
   return EVENT_TYPES.find((entry) => entry.value === type)?.label || 'Wydarzenie';
 }
-
 function taskStatusLabel(status?: string) {
   if (status === 'done' || status === 'completed') return 'Zrobione';
   if (status === 'cancelled' || status === 'canceled') return 'Anulowane';
   if (status === 'in_progress') return 'W trakcie';
   return 'Do zrobienia';
 }
-
 function eventStatusLabel(status?: string) {
   if (status === 'done' || status === 'completed') return 'Zrobione';
   if (status === 'cancelled' || status === 'canceled') return 'Anulowane';
   return 'Zaplanowane';
 }
-
 function statusClass(status?: string) {
   if (status === 'done' || status === 'completed') return 'lead-detail-pill-green';
   if (status === 'lost' || status === 'cancelled' || status === 'canceled') return 'lead-detail-pill-muted';
@@ -317,21 +298,17 @@ function statusClass(status?: string) {
   if (status === 'moved_to_service' || status === 'accepted') return 'lead-detail-pill-purple';
   return 'lead-detail-pill-blue';
 }
-
 function getTaskDate(task: any) {
   const normalized = normalizeWorkItem(task);
   return String(normalized.scheduledAt || normalized.reminderAt || task?.updatedAt || task?.createdAt || '');
 }
-
 function getEventDate(event: any) {
   const normalized = normalizeWorkItem(event);
   return String(normalized.startAt || normalized.scheduledAt || normalized.reminderAt || event?.updatedAt || event?.createdAt || '');
 }
-
 function isDoneStatus(status: unknown) {
   return ['done', 'completed', 'cancelled', 'canceled', 'archived'].includes(String(status || '').toLowerCase());
 }
-
 function dedupeById<T extends Record<string, unknown>>(items: T[]) {
   const map = new Map<string, T>();
   for (const item of items) {
@@ -341,7 +318,6 @@ function dedupeById<T extends Record<string, unknown>>(items: T[]) {
   }
   return [...map.values()];
 }
-
 function isLinkedThroughLeadOrCase(item: Record<string, unknown>, leadId: string, caseId?: string | null) {
   const normalized = normalizeWorkItem(item);
   const directLeadId = String(normalized.leadId || '');
@@ -350,7 +326,6 @@ function isLinkedThroughLeadOrCase(item: Record<string, unknown>, leadId: string
   if (caseId && directCaseId === caseId) return true;
   return false;
 }
-
 function getActivityTitle(activity: any) {
   switch (activity?.eventType) {
     case 'status_changed':
@@ -377,7 +352,6 @@ function getActivityTitle(activity: any) {
       return 'Aktywność';
   }
 }
-
 function getActivityDescription(activity: any) {
   const payload = activity?.payload || {};
   return (
@@ -388,17 +362,14 @@ function getActivityDescription(activity: any) {
     'Ruch zapisany w historii leada.'
   );
 }
-
 function addDuration(value: unknown, amountMs: number) {
   const base = asDate(value) || new Date();
   return new Date(base.getTime() + amountMs).toISOString();
 }
-
 function toLocalDateTime(value: unknown) {
   const parsed = asDate(value) || new Date();
   return toDateTimeLocalValue(parsed);
 }
-
 function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
   const taskEntries = tasks.map((task) => ({
     id: `task:${String(task.id || '')}`,
@@ -429,7 +400,6 @@ function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
     return (asDate(left.dateValue)?.getTime() ?? Number.MAX_SAFE_INTEGER) - (asDate(right.dateValue)?.getTime() ?? Number.MAX_SAFE_INTEGER);
   });
 }
-
 function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
     <div className="lead-detail-info-line">
@@ -441,7 +411,6 @@ function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; valu
     </div>
   );
 }
-
 function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
   return (
     <button type="button" className="lead-detail-chip-button" onClick={onClick} disabled={disabled}>
@@ -449,6 +418,8 @@ function LeadActionButton({ children, onClick, disabled }: { children: ReactNode
     </button>
   );
 }
+
+const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_LEAD_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
 export default function LeadDetail() {
   const { leadId } = useParams();
@@ -1676,7 +1647,7 @@ useEffect(() => {
               <Label>Termin płatności<Input type="date" value={leadPaymentDraft.dueAt} onChange={(event) => setLeadPaymentDraft((current) => ({ ...current, dueAt: event.target.value }))} /></Label>
               <Label>Notatka<Textarea value={leadPaymentDraft.note} onChange={(event) => setLeadPaymentDraft((current) => ({ ...current, note: event.target.value }))} /></Label>
             </div>
-            <DialogFooter><Button type="button" variant="outline" onClick={() => setIsLeadPaymentOpen(false)}>Anuluj</Button><Button type="button" onClick={handleSaveLeadPayment} disabled={leadPaymentSubmitting}>{leadPaymentSubmitting ? 'Zapisywanie...' : 'Zapisz płatność'}</Button></DialogFooter>
+            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setIsLeadPaymentOpen(false)}>Anuluj</Button><Button type="button" onClick={handleSaveLeadPayment} disabled={leadPaymentSubmitting}>{leadPaymentSubmitting ? 'Zapisywanie...' : 'Zapisz płatność'}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
 
@@ -1699,7 +1670,7 @@ useEffect(() => {
                 </Label>
               ) : null}
             </div>
-            <DialogFooter>
+            <DialogFooter className={modalFooterClass()}>
               <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)}>Anuluj</Button>
               {linkCaseId ? <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>{linkingCase ? 'Podpinam...' : 'Podepnij sprawę'}</Button> : null}
               <Button type="button" onClick={handleStartService} disabled={createCasePending}>{createCasePending ? 'Tworzę...' : 'Rozpocznij obsługę'}</Button>
@@ -1719,7 +1690,7 @@ useEffect(() => {
               <Label>Wartość<Input type="number" value={editLead?.dealValue || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, dealValue: event.target.value }))} /></Label>
               <Label>Notatka<Textarea value={editLead?.note || editLead?.notes || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, note: event.target.value }))} /></Label>
             </div>
-            <DialogFooter><Button type="button" variant="outline" onClick={() => setIsEditing(false)}>Anuluj</Button><Button type="button" onClick={handleUpdateLead}>Zapisz</Button></DialogFooter>
+            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setIsEditing(false)}>Anuluj</Button><Button type="button" onClick={handleUpdateLead}>Zapisz</Button></DialogFooter>
           </DialogContent>
         </Dialog>
 
@@ -1733,7 +1704,7 @@ useEffect(() => {
               <Label>Status<select className={modalSelectClass} value={editLinkedTask.status} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, status: event.target.value }))}><option value="todo">Do zrobienia</option><option value="in_progress">W trakcie</option><option value="done">Zrobione</option></select></Label>
               <Label>Powtarzanie<select className={modalSelectClass} value={editLinkedTask.recurrenceRule} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, recurrenceRule: event.target.value }))}>{SIMPLE_RECURRENCE_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
             </div> : null}
-            <DialogFooter><Button type="button" variant="outline" onClick={() => setEditLinkedTask(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedTaskEdit} disabled={editLinkedTaskSubmitting}>{editLinkedTaskSubmitting ? 'Zapisuję...' : 'Zapisz'}</Button></DialogFooter>
+            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedTask(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedTaskEdit} disabled={editLinkedTaskSubmitting}>{editLinkedTaskSubmitting ? 'Zapisuję...' : 'Zapisz'}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
 
@@ -1747,7 +1718,7 @@ useEffect(() => {
               <Label>Koniec<Input type="datetime-local" value={editLinkedEvent.endAt} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, endAt: event.target.value }))} /></Label>
               <Label>Status<select className={modalSelectClass} value={editLinkedEvent.status} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, status: event.target.value }))}><option value="scheduled">Zaplanowane</option><option value="completed">Zrobione</option><option value="cancelled">Anulowane</option></select></Label>
             </div> : null}
-            <DialogFooter><Button type="button" variant="outline" onClick={() => setEditLinkedEvent(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedEventEdit} disabled={editLinkedEventSubmitting}>{editLinkedEventSubmitting ? 'Zapisuję...' : 'Zapisz'}</Button></DialogFooter>
+            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedEvent(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedEventEdit} disabled={editLinkedEventSubmitting}>{editLinkedEventSubmitting ? 'Zapisuję...' : 'Zapisz'}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
 
@@ -1755,18 +1726,13 @@ useEffect(() => {
           <DialogContent>
             <DialogHeader><DialogTitle>Edytuj notatkę</DialogTitle></DialogHeader>
             <Textarea value={editingNoteContent} onChange={(event) => setEditingNoteContent(event.target.value)} />
-            <DialogFooter><Button type="button" variant="outline" onClick={() => setEditingNote(null)}>Anuluj</Button><Button type="button" onClick={handleSaveEditedNote}>Zapisz</Button></DialogFooter>
+            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditingNote(null)}>Anuluj</Button><Button type="button" onClick={handleSaveEditedNote}>Zapisz</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </main>
     </Layout>
   );
 }
-
-
-
-
-
 
 
 

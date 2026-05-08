@@ -54,6 +54,50 @@ export function dangerActionZoneClass(className?: string) {
   return cn('cf-danger-action-zone', className);
 }
 
+
+export const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT = {
+  formActions: 'cf-form-actions',
+  primary: 'cf-form-actions-primary',
+  secondary: 'cf-form-actions-secondary',
+  danger: 'cf-form-actions-danger',
+  modalFooter: 'cf-modal-footer',
+  modalFooterLeft: 'cf-modal-footer-left',
+  modalFooterRight: 'cf-modal-footer-right',
+  mobileActionStack: 'cf-mobile-action-stack',
+} as const;
+
+export function formActionsClass(className?: string) {
+  return cn(CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT.formActions, className);
+}
+
+export function formActionsPrimaryClass(className?: string) {
+  return cn(CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT.primary, className);
+}
+
+export function formActionsSecondaryClass(className?: string) {
+  return cn(CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT.secondary, className);
+}
+
+export function formActionsDangerClass(className?: string) {
+  return cn(CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT.danger, className);
+}
+
+export function modalFooterClass(className?: string) {
+  return cn(CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT.modalFooter, CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT.formActions, className);
+}
+
+export function modalFooterLeftClass(className?: string) {
+  return cn(CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT.modalFooterLeft, className);
+}
+
+export function modalFooterRightClass(className?: string) {
+  return cn(CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT.modalFooterRight, className);
+}
+
+export function mobileActionStackClass(className?: string) {
+  return cn(CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT.mobileActionStack, className);
+}
+
 export type EntityActionButtonProps = ButtonProps & {
   tone?: EntityActionTone;
   iconOnly?: boolean;

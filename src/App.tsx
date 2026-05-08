@@ -13,6 +13,7 @@ import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 import EmailVerificationGate from './components/EmailVerificationGate';
 import './styles/closeflow-action-tokens.css';
 import './styles/closeflow-action-clusters.css';
+import './styles/closeflow-form-actions.css';
 import './styles/closeflow-surface-tokens.css';
 import './styles/closeflow-metric-tiles.css';
 import './styles/closeflow-page-header.css';

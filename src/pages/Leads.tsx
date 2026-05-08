@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
-import { actionIconClass } from '../components/entity-actions';
+import { actionIconClass, modalFooterClass} from '../components/entity-actions';
 // STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Badge } from '../components/ui/badge';
@@ -82,10 +82,12 @@ type CaseRecord = {
 
 type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history';
 
+
 function formatLeadSourceLabel(value: unknown) {
   const normalized = String(value || 'other');
   return SOURCE_OPTIONS.find((option) => option.value === normalized)?.label || 'Inne';
 }
+
 
 function normalizeLeadSearchValue(value: unknown) {
   return String(value || '')
@@ -96,9 +98,11 @@ function normalizeLeadSearchValue(value: unknown) {
     .trim();
 }
 
+
 function getLeadPrimaryContact(lead: any) {
   return String(lead?.phone || lead?.email || '').trim();
 }
+
 
 function buildLeadSearchText(lead: any, linkedCase?: CaseRecord) {
   return [
@@ -113,6 +117,7 @@ function buildLeadSearchText(lead: any, linkedCase?: CaseRecord) {
   ].map(normalizeLeadSearchValue).filter(Boolean).join(' ');
 }
 
+
 function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sourceLabel: string) {
   const contact = getLeadPrimaryContact(lead);
   const company = String(lead?.company || '').trim();
@@ -126,9 +131,11 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
   ].filter(Boolean).join(' · ');
 }
 
+
 function nativeSelectClassName() {
   return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 }
+
 
 
 function formatCaseStatusLabel(value?: string) {
@@ -136,10 +143,12 @@ function formatCaseStatusLabel(value?: string) {
   return value.replaceAll('_', ' ');
 }
 
+
 function getNextActionKindLabel(action: { kind?: string } | null | undefined) {
   if (!action) return '';
   return action.kind === 'event' ? 'Wydarzenie' : 'Zadanie';
 }
+
 
 function buildNextActionMeta(action: { title: string | null; at: string | null; kind?: string | null; status?: string } | null | undefined) {
   if (!action?.at || !action?.title) {
@@ -161,6 +170,7 @@ function buildNextActionMeta(action: { title: string | null; at: string | null; 
   };
 }
 
+
 function isLeadInTrash(lead: any) {
   // STAGE30_LEADS_TRASH_STRICT_VISIBILITY: kosz leadow nie moze lapac aktywnych rekordow po samym wyniku sprzedazy.
   const status = String(lead?.status || '').trim();
@@ -169,12 +179,15 @@ function isLeadInTrash(lead: any) {
   return visibility === 'trash' || status === 'archived';
 }
 
+
 function getRestoreStatusForLead(lead: any, linkedCase?: CaseRecord) {
   if (linkedCase || lead?.linkedCaseId || lead?.caseId || lead?.movedToServiceAt || lead?.caseStartedAt) {
     return 'moved_to_service';
   }
   return 'new';
 }
+
+const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_LEADS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
 export default function Leads() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
@@ -521,7 +534,8 @@ export default function Leads() {
     setQuickFilter('all');
     setShowTrash((current) => !current);
   };
-  return (
+
+  return (
     <Layout>
       <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">
         <div className="page-head">
@@ -684,7 +698,7 @@ export default function Leads() {
                     </div>
                   </section>
 
-                  <DialogFooter className="lead-form-footer">
+                  <DialogFooter className={modalFooterClass('lead-form-footer')}>
                     <Button type="button" variant="outline" onClick={() => setIsNewLeadOpen(false)}>
                       Anuluj
                     </Button>
@@ -937,6 +951,7 @@ export default function Leads() {
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleQuickFilter('active') toggleValueSorting */
 
 /* GLOBAL_QUICK_ACTIONS_STAGE08D_LEAD_MODAL_EVENT_BUS */
+
 
 
 

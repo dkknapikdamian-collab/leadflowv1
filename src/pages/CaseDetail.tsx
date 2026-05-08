@@ -1,7 +1,7 @@
 
 /* STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS
  * import { useWorkspace } from '../hooks/useWorkspace'
- * const { hasAccess, access } = useWorkspace()
+const { hasAccess, access } = useWorkspace()
  * caseDetailWriteAccessDenied = !hasAccess caseDetailAccessStatus = String(access?.status guardCaseDetailWriteAccess trial_expired
  * toast.error(reason + ' Nie mozna teraz '
  * handleCopyPortal guardCaseDetailWriteAccess handleAddItem guardCaseDetailWriteAccess handleItemStatusChange guardCaseDetailWriteAccess handleDeleteItem guardCaseDetailWriteAccess handleAddTask guardCaseDetailWriteAccess handleAddEvent guardCaseDetailWriteAccess handleAddNote guardCaseDetailWriteAccess
@@ -49,7 +49,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { EntityActionButton, actionButtonClass } from '../components/entity-actions';
+import { EntityActionButton, actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
@@ -271,13 +271,11 @@ const EVENT_STATUS_LABELS: Record<string, string> = {
   completed: 'Odbyte',
   cancelled: 'Anulowane',
 };
-
 function normalizeRecord<T>(value: unknown): T | null {
   if (Array.isArray(value)) return (value[0] || null) as T | null;
   if (value && typeof value === 'object') return value as T;
   return null;
 }
-
 function toDate(value: any): Date | null {
   if (!value) return null;
   if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
@@ -288,7 +286,6 @@ function toDate(value: any): Date | null {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : date;
 }
-
 function formatDateTime(value: any, fallback = 'Brak daty') {
   const date = toDate(value);
   if (!date) return fallback;
@@ -300,24 +297,20 @@ function formatDateTime(value: any, fallback = 'Brak daty') {
     minute: '2-digit',
   });
 }
-
 function formatDate(value: any, fallback = 'Bez terminu') {
   const date = toDate(value);
   if (!date) return fallback;
   return date.toLocaleDateString('pl-PL', { day: '2-digit', month: 'short', year: 'numeric' });
 }
-
 function formatMoney(value: unknown, currency?: string) {
   const amount = Number(value || 0);
   const safeAmount = Number.isFinite(amount) ? amount : 0;
   const safeCurrency = typeof currency === 'string' && currency.trim() ? currency.trim().toUpperCase() : 'PLN';
   return `${safeAmount.toLocaleString('pl-PL')} ${safeCurrency}`;
 }
-
 function isPaidPaymentStatus(status: unknown) {
   return ['deposit_paid', 'partially_paid', 'fully_paid', 'paid'].includes(String(status || '').toLowerCase());
 }
-
 function billingStatusLabel(status?: string) {
   switch (String(status || '').toLowerCase()) {
     case 'deposit_paid':
@@ -335,14 +328,11 @@ function billingStatusLabel(status?: string) {
       return status || 'Brak statusu';
   }
 }
-
-
 function getPaymentAmount(payment: CasePaymentRecord) {
   const raw = payment.amount ?? payment.value ?? payment.paidAmount ?? 0;
   const amount = Number(raw || 0);
   return Number.isFinite(amount) ? amount : 0;
 }
-
 function getCaseExpectedRevenue(caseData?: CaseRecord | null) {
   const raw =
     caseData?.expectedRevenue ??
@@ -353,7 +343,6 @@ function getCaseExpectedRevenue(caseData?: CaseRecord | null) {
   const amount = Number(raw || 0);
   return Number.isFinite(amount) ? amount : 0;
 }
-
 function getCaseFinanceSummary(caseData: CaseRecord | null, payments: CasePaymentRecord[]) {
   const currency = String(caseData?.currency || payments.find((payment) => payment.currency)?.currency || 'PLN').toUpperCase();
   const expected = getCaseExpectedRevenue(caseData);
@@ -372,7 +361,6 @@ function getCaseFinanceSummary(caseData: CaseRecord | null, payments: CasePaymen
           : 'Częściowo opłacone';
   return { expected, paid, remaining, progress, status, currency };
 }
-
 function sortCasePayments(payments: CasePaymentRecord[]) {
   return [...payments].sort((first, second) => {
     const firstTime = sortTime(first.paidAt || first.createdAt || first.dueAt, 0);
@@ -380,21 +368,17 @@ function sortCasePayments(payments: CasePaymentRecord[]) {
     return secondTime - firstTime;
   });
 }
-
 function sortTime(value: any, fallback = Number.MAX_SAFE_INTEGER) {
   return toDate(value)?.getTime() || fallback;
 }
-
 function toIsoFromLocalInput(value: string) {
   if (!value) return '';
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? '' : date.toISOString();
 }
-
 function toDateOnlyFromLocalInput(value: string) {
   return value ? value.slice(0, 10) : '';
 }
-
 function buildQuickRescheduleIso(daysFromNow: number, sourceDate?: any, fallbackHour = 9) {
   const source = toDate(sourceDate);
   const target = new Date();
@@ -403,18 +387,14 @@ function buildQuickRescheduleIso(daysFromNow: number, sourceDate?: any, fallback
   else target.setHours(fallbackHour, 0, 0, 0);
   return target.toISOString();
 }
-
 function buildDateOnlyFromIso(value: string) {
   return value ? value.slice(0, 10) : '';
 }
-
 function addDurationToIso(startIso: string, durationMs: number) {
   const start = toDate(startIso);
   if (!start) return '';
   return new Date(start.getTime() + durationMs).toISOString();
 }
-
-
 function buildCaseNoteFollowUpIso(choice: CaseNoteFollowUpChoice, customValue?: string) {
   if (choice === 'custom') return toIsoFromLocalInput(customValue || '');
   if (choice === 'today') return buildQuickRescheduleIso(0, null, 16);
@@ -422,7 +402,6 @@ function buildCaseNoteFollowUpIso(choice: CaseNoteFollowUpChoice, customValue?: 
   if (choice === 'two_days') return buildQuickRescheduleIso(2, null, 9);
   return buildQuickRescheduleIso(7, null, 9);
 }
-
 function getCaseNoteFollowUpChoiceLabel(choice: CaseNoteFollowUpChoice) {
   if (choice === 'today') return 'Dziś';
   if (choice === 'tomorrow') return 'Jutro';
@@ -430,48 +409,39 @@ function getCaseNoteFollowUpChoiceLabel(choice: CaseNoteFollowUpChoice) {
   if (choice === 'week') return 'Za tydzień';
   return 'Własny termin';
 }
-
 function getEventDurationMs(event: EventRecord) {
   const start = toDate(event.startAt);
   const end = toDate(event.endAt);
   if (start && end && end.getTime() > start.getTime()) return end.getTime() - start.getTime();
   return 60 * 60 * 1000;
 }
-
 function getCaseTitle(caseData?: CaseRecord | null) {
   return String(caseData?.title || caseData?.clientName || 'Sprawa bez nazwy');
 }
-
 function getCaseStatusLabel(status?: string) {
   if (!status) return 'Bez statusu';
   return CASE_STATUS_LABELS[status] || status;
 }
-
 function getCaseStatusHint(status?: string) {
   if (!status) return 'Ustal status sprawy i najbliższy ruch.';
   return CASE_STATUS_HINTS[status] || 'Sprawdź najbliższe działania i blokery.';
 }
-
 function getItemStatusLabel(status?: string) {
   if (!status) return 'Brak';
   return ITEM_STATUS_LABELS[status] || status;
 }
-
 function getItemTypeLabel(type?: string) {
   if (!type) return 'Element';
   return ITEM_TYPE_LABELS[type] || type;
 }
-
 function getTaskStatusLabel(status?: string) {
   if (!status) return 'Do zrobienia';
   return TASK_STATUS_LABELS[status] || status;
 }
-
 function getEventStatusLabel(status?: string) {
   if (!status) return 'Zaplanowane';
   return EVENT_STATUS_LABELS[status] || status;
 }
-
 function getStatusClass(status?: string) {
   if (['accepted', 'done', 'completed', 'ready_to_start'].includes(String(status || ''))) return 'case-detail-pill-green';
   if (['uploaded', 'to_approve', 'in_progress', 'scheduled', 'planned', 'open'].includes(String(status || ''))) return 'case-detail-pill-blue';
@@ -479,7 +449,6 @@ function getStatusClass(status?: string) {
   if (['missing', 'waiting_on_client', 'on_hold'].includes(String(status || ''))) return 'case-detail-pill-amber';
   return 'case-detail-pill-muted';
 }
-
 function getActivityText(activity: CaseActivity) {
   const title = activity.payload?.title || activity.payload?.itemTitle || 'element';
 
@@ -499,7 +468,6 @@ function getActivityText(activity: CaseActivity) {
   if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
   return 'Dodano ruch w sprawie';
 }
-
 function sortCaseItems(items: CaseItem[]) {
   return [...items].sort((first, second) => {
     const firstOrder = typeof first.order === 'number' ? first.order : Number.MAX_SAFE_INTEGER;
@@ -508,18 +476,15 @@ function sortCaseItems(items: CaseItem[]) {
     return sortTime(first.dueDate) - sortTime(second.dueDate);
   });
 }
-
 function sortActivities(activities: CaseActivity[]) {
   return [...activities].sort((first, second) => sortTime(second.createdAt, 0) - sortTime(first.createdAt, 0));
 }
 function getCaseActivityActorLabel(activity: CaseActivity) {
   return activity.actorType === 'operator' ? 'Operator' : 'Klient';
 }
-
 function getCaseActivityRecentMoveMeta(activity: CaseActivity) {
   return getCaseRecentMoveMeta(activity);
 }
-
 function getCaseRecentMoveMeta(activity: CaseActivity) {
   const eventType = String(activity.eventType || '');
   if (eventType.includes('task')) return { label: 'Zadanie', className: 'case-detail-recent-move-dot-task' };
@@ -529,13 +494,11 @@ function getCaseRecentMoveMeta(activity: CaseActivity) {
   if (eventType.includes('note')) return { label: 'Notatka', className: 'case-detail-recent-move-dot-note' };
   return { label: 'Ruch', className: 'case-detail-recent-move-dot-note' };
 }
-
 function calculateCompletion(items: CaseItem[]) {
   if (items.length === 0) return 0;
   const accepted = items.filter((item) => item.status === 'accepted').length;
   return Math.round((accepted / items.length) * 100);
 }
-
 function resolveCaseStatusFromItems(items: CaseItem[], fallback = 'in_progress') {
   if (items.length === 0) return fallback;
   const allAccepted = items.every((item) => item.status === 'accepted');
@@ -546,14 +509,12 @@ function resolveCaseStatusFromItems(items: CaseItem[], fallback = 'in_progress')
   if (hasToApprove) return 'to_approve';
   return 'waiting_on_client';
 }
-
 function buildPortalUrl(caseId: string, tokenPayload: Record<string, unknown>) {
   const explicitUrl = typeof tokenPayload.url === 'string' ? tokenPayload.url : '';
   if (explicitUrl) return explicitUrl;
   const token = typeof tokenPayload.token === 'string' ? tokenPayload.token : typeof tokenPayload.portalToken === 'string' ? tokenPayload.portalToken : '';
   return token ? `${window.location.origin}/portal/${caseId}/${token}` : `${window.location.origin}/portal/${caseId}`;
 }
-
 function belongsToCase(
   entry: { caseId?: string | null; leadId?: string | null; clientId?: string | null },
   caseId?: string,
@@ -568,11 +529,9 @@ function belongsToCase(
 function normalizeCaseRelationId(value: unknown) {
   return String(value || '').trim();
 }
-
 function normalizeCaseDedupePart(value: unknown) {
   return normalizeCaseRelationId(value).toLowerCase();
 }
-
 function getCaseRelationPriority(
   entry: { caseId?: string | null; leadId?: string | null; clientId?: string | null },
   caseId?: string,
@@ -588,7 +547,6 @@ function getCaseRelationPriority(
   if (normalizeCaseRelationId(normalized.clientId) && normalizeCaseRelationId(normalized.clientId) === normalizeCaseRelationId(caseRecord?.clientId)) return 2;
   return 9;
 }
-
 function getCaseTaskDedupeKey(task: TaskRecord) {
   const id = normalizeCaseRelationId(task.id);
   if (id) return `task:id:${id}`;
@@ -605,7 +563,6 @@ function getCaseTaskDedupeKey(task: TaskRecord) {
     .map(normalizeCaseDedupePart)
     .join('|');
 }
-
 function getCaseEventDedupeKey(event: EventRecord) {
   const id = normalizeCaseRelationId(event.id);
   if (id) return `event:id:${id}`;
@@ -622,7 +579,6 @@ function getCaseEventDedupeKey(event: EventRecord) {
     .map(normalizeCaseDedupePart)
     .join('|');
 }
-
 function pickBetterCaseLinkedRecord<T extends { caseId?: string | null; leadId?: string | null; clientId?: string | null }>(
   current: T,
   next: T,
@@ -633,7 +589,6 @@ function pickBetterCaseLinkedRecord<T extends { caseId?: string | null; leadId?:
   const nextPriority = getCaseRelationPriority(next, caseId, caseRecord);
   return nextPriority < currentPriority ? next : current;
 }
-
 function dedupeCaseTasks(tasks: TaskRecord[], caseId?: string, caseRecord?: CaseRecord | null) {
   const byKey = new Map<string, TaskRecord>();
   for (const task of tasks) {
@@ -643,7 +598,6 @@ function dedupeCaseTasks(tasks: TaskRecord[], caseId?: string, caseRecord?: Case
   }
   return Array.from(byKey.values());
 }
-
 function dedupeCaseEvents(events: EventRecord[], caseId?: string, caseRecord?: CaseRecord | null) {
   const byKey = new Map<string, EventRecord>();
   for (const event of events) {
@@ -653,13 +607,11 @@ function dedupeCaseEvents(events: EventRecord[], caseId?: string, caseRecord?: C
   }
   return Array.from(byKey.values());
 }
-
 function getCaseWorkItemDedupeKey(item: WorkItem) {
   const id = normalizeCaseRelationId(item.id);
   if (id) return `${item.kind}:id:${id}`;
   return [item.kind, item.title, item.status, item.dateLabel].map(normalizeCaseDedupePart).join('|');
 }
-
 function dedupeCaseWorkItems(workItems: WorkItem[]) {
   const byKey = new Map<string, WorkItem>();
   for (const item of workItems) {
@@ -668,7 +620,6 @@ function dedupeCaseWorkItems(workItems: WorkItem[]) {
   }
   return Array.from(byKey.values()).sort((first, second) => first.sortTime - second.sortTime);
 }
-
 function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseItem[], activities: CaseActivity[]) {
   const taskItems: WorkItem[] = tasks.map((task) => ({
     id: `task-${task.id}`,
@@ -722,20 +673,20 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
 
   return [...taskItems, ...eventItems, ...missingItems, ...noteItems].sort((first, second) => first.sortTime - second.sortTime);
 }
-
 function WorkKindIcon({ kind }: { kind: WorkItem['kind'] }) {
   if (kind === 'task') return <ListChecks className="h-4 w-4" />;
   if (kind === 'event') return <CalendarClock className="h-4 w-4" />;
   if (kind === 'missing') return <FileText className="h-4 w-4" />;
   return <History className="h-4 w-4" />;
 }
-
 function getWorkKindLabel(kind: WorkItem['kind']) {
   if (kind === 'task') return 'Zadanie';
   if (kind === 'event') return 'Wydarzenie';
   if (kind === 'missing') return 'Brak';
   return 'Notatka';
 }
+
+const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CASE_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
 export default function CaseDetail() {
   const { caseId } = useParams();
@@ -1465,7 +1416,6 @@ export default function CaseDetail() {
       </section>
 
 
-
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
               <nav aria-label="Zakładki sprawy">
                 <TabsList className="case-detail-tabs">
@@ -1744,7 +1694,7 @@ export default function CaseDetail() {
               <label>Termin płatności<Input type="date" value={casePaymentDraft.dueAt} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, dueAt: event.target.value }))} /></label>
               <label>Notatka<Textarea value={casePaymentDraft.note} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, note: event.target.value }))} /></label>
             </div>
-            <DialogFooter><Button type="button" variant="outline" onClick={() => setIsCasePaymentOpen(false)}>Anuluj</Button><Button type="button" onClick={handleSaveCasePayment} disabled={casePaymentSubmitting}>{casePaymentSubmitting ? 'Zapisywanie...' : 'Zapisz płatność'}</Button></DialogFooter>
+            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setIsCasePaymentOpen(false)}>Anuluj</Button><Button type="button" onClick={handleSaveCasePayment} disabled={casePaymentSubmitting}>{casePaymentSubmitting ? 'Zapisywanie...' : 'Zapisz płatność'}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
         <CaseItemDialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen} value={newItem} onChange={setNewItem} onSubmit={handleAddItem} />
@@ -1804,7 +1754,7 @@ export default function CaseDetail() {
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className={modalFooterClass()}>
             <Button type="button" variant="outline" onClick={() => setIsCasePaymentOpen(false)}>
               Anuluj
             </Button>
@@ -1818,7 +1768,6 @@ export default function CaseDetail() {
 </Layout>
   );
 }
-
 function CaseDetailV1CommandCenter({
   status,
   lifecycle,
@@ -1860,13 +1809,11 @@ function CaseDetailV1CommandCenter({
     </section>
   );
 }
-
 function ShieldStatusIcon({ status }: { status?: string }) {
   if (status === 'blocked') return <AlertCircle className="h-4 w-4" />;
   if (status === 'completed' || status === 'ready_to_start') return <CheckCircle2 className="h-4 w-4" />;
   return <Clock className="h-4 w-4" />;
 }
-
 function PathCard({ label, value, helper, tone }: { label: string; value: number; helper: string; tone: 'amber' | 'blue' | 'green' | 'neutral' }) {
   return (
     <article className={`case-detail-path-card case-detail-path-card-${tone}`}>
@@ -1876,7 +1823,6 @@ function PathCard({ label, value, helper, tone }: { label: string; value: number
     </article>
   );
 }
-
 function WorkItemRow({
   entry,
   onTaskDone,
@@ -1933,7 +1879,6 @@ function WorkItemRow({
     </article>
   );
 }
-
 function CaseItemDialog({
   open,
   onOpenChange,
@@ -1958,14 +1903,11 @@ function CaseItemDialog({
           <label>Termin<Input type="date" value={value.dueDate} onChange={(event) => onChange({ ...value, dueDate: event.target.value })} /></label>
           <label className="case-detail-checkbox-label"><input type="checkbox" checked={value.isRequired} onChange={(event) => onChange({ ...value, isRequired: event.target.checked })} /> Wymagane do startu / realizacji</label>
         </div>
-        <DialogFooter><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>Dodaj brak</Button></DialogFooter>
+        <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>Dodaj brak</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
-
-
-
 
 
 /* STAGE16M_CASE_DETAIL_WRITE_GATE_COMPAT
@@ -1982,3 +1924,4 @@ const handleAddTask = async () => { guardCaseDetailWriteAccess(); }
 const handleAddEvent = async () => { guardCaseDetailWriteAccess(); }
 const handleAddNote = async () => { guardCaseDetailWriteAccess(); }
 */
+

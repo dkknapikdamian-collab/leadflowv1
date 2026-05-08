@@ -5,7 +5,7 @@ P0_TASKS_STABLE_REBUILD
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import Layout from '../components/Layout';
 import { StatShortcutCard } from '../components/StatShortcutCard';
-import { actionButtonClass } from '../components/entity-actions';
+import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -69,6 +69,7 @@ const defaultTaskForm = (): TaskFormState => ({
   clientId: null,
 });
 
+
 function localDateKey(date = new Date()) {
   return [
     date.getFullYear(),
@@ -76,6 +77,7 @@ function localDateKey(date = new Date()) {
     String(date.getDate()).padStart(2, '0'),
   ].join('-');
 }
+
 
 function readText(record: any, keys: string[], fallback = '') {
   for (const key of keys) {
@@ -85,6 +87,7 @@ function readText(record: any, keys: string[], fallback = '') {
   }
   return fallback;
 }
+
 
 function getTaskMomentRaw(task: any) {
   const direct = readText(task, ['scheduledAt', 'scheduled_at', 'dueAt', 'due_at', 'startAt', 'start_at', 'startsAt', 'starts_at', 'dateTime', 'date_time']);
@@ -96,9 +99,11 @@ function getTaskMomentRaw(task: any) {
   return date.includes('T') ? date : date + 'T' + time;
 }
 
+
 function getTaskDateKey(task: any) {
   return getTaskMomentRaw(task).slice(0, 10);
 }
+
 
 function parseTaskTime(task: any) {
   const raw = getTaskMomentRaw(task);
@@ -108,23 +113,28 @@ function parseTaskTime(task: any) {
   return Number.isFinite(time) ? time : Number.POSITIVE_INFINITY;
 }
 
+
 function isTaskDone(task: any) {
   const status = String(task?.status || '').trim().toLowerCase();
   return status === 'done' || status === 'completed' || status === 'closed' || status === 'cancelled' || status === 'canceled';
 }
 
+
 function isTaskToday(task: any) {
   return getTaskDateKey(task) === localDateKey();
 }
+
 
 function isTaskOverdue(task: any) {
   const dateKey = getTaskDateKey(task);
   return Boolean(dateKey) && dateKey < localDateKey() && !isTaskDone(task);
 }
 
+
 function getTaskTitle(task: any) {
   return readText(task, ['title', 'name'], 'Zadanie bez tytułu');
 }
+
 
 function formatTaskMoment(task: any) {
   const raw = getTaskMomentRaw(task);
@@ -134,9 +144,11 @@ function formatTaskMoment(task: any) {
   return dateKey + (time ? ', ' + time : '');
 }
 
+
 function getCaseTitle(caseRecord: any) {
   return readText(caseRecord, ['title', 'clientName', 'client_name', 'name'], 'Sprawa');
 }
+
 
 function getStatusBadge(task: any) {
   if (isTaskDone(task)) return 'Zrobione';
@@ -145,12 +157,14 @@ function getStatusBadge(task: any) {
   return 'Aktywne';
 }
 
+
 function getBadgeClass(task: any) {
   if (isTaskDone(task)) return 'bg-emerald-50 text-emerald-700 border-emerald-100';
   if (isTaskOverdue(task)) return 'bg-rose-50 text-rose-700 border-rose-100';
   if (isTaskToday(task)) return 'bg-blue-50 text-blue-700 border-blue-100';
   return 'bg-slate-50 text-slate-700 border-slate-100';
 }
+
 
 function getTaskRelationIds(task: any) {
   return {
@@ -160,11 +174,13 @@ function getTaskRelationIds(task: any) {
   };
 }
 
+
 function shouldOfferNextStepPrompt(task: any) {
   const relationIds = getTaskRelationIds(task);
   const taskType = readText(task, ['type'], '').toLowerCase();
   return Boolean(relationIds.leadId || relationIds.caseId || relationIds.clientId || taskType.includes('follow'));
 }
+
 
 function buildNextStepDefaultDueAt() {
   const date = new Date();
@@ -172,6 +188,7 @@ function buildNextStepDefaultDueAt() {
   date.setHours(9, 0, 0, 0);
   return toDateTimeLocalValue(date);
 }
+
 
 function buildNextStepPromptState(task: any): NextStepPromptState {
   const cleanTitle = getTaskTitle(task).replace(/^follow[- ]?up:\s*/i, '').trim();
@@ -182,6 +199,8 @@ function buildNextStepPromptState(task: any): NextStepPromptState {
     priority: readText(task, ['priority'], 'medium') || 'medium',
   };
 }
+
+const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_TASKS_STABLE = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
 export default function TasksStable() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
@@ -577,7 +596,7 @@ export default function TasksStable() {
                   </select>
                 </div>
               </div>
-              <DialogFooter>
+              <DialogFooter className={modalFooterClass()}>
                 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>Anuluj</Button>
                 <Button type="submit" disabled={saving}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz zadanie</Button>
               </DialogFooter>
@@ -625,7 +644,7 @@ export default function TasksStable() {
                   </select>
                 </div>
               </div>
-              <DialogFooter>
+              <DialogFooter className={modalFooterClass()}>
                 <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>Pomiń</Button>
                 <Button type="submit" disabled={nextStepSaving}>
                   {nextStepSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
@@ -639,3 +658,4 @@ export default function TasksStable() {
     </Layout>
   );
 }
+

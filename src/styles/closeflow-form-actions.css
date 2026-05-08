@@ -1,0 +1,105 @@
+/* CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT
+   One source of truth for form and modal footer actions.
+   Covers save/cancel/close/delete/refresh layout on desktop and mobile.
+*/
+
+:root {
+  --cf-form-actions-gap: 0.625rem;
+  --cf-form-actions-mobile-gap: 0.75rem;
+  --cf-form-actions-padding-top: 1rem;
+  --cf-form-actions-border: rgba(148, 163, 184, 0.24);
+  --cf-form-actions-danger-gap: 1rem;
+}
+
+.cf-form-actions,
+.cf-modal-footer {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--cf-form-actions-gap);
+  padding-top: var(--cf-form-actions-padding-top);
+}
+
+.cf-modal-footer {
+  border-top: 1px solid var(--cf-form-actions-border);
+}
+
+.cf-form-actions-primary,
+.cf-form-actions-secondary,
+.cf-form-actions-danger,
+.cf-modal-footer-left,
+.cf-modal-footer-right,
+.cf-mobile-action-stack {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--cf-form-actions-gap);
+}
+
+.cf-form-actions-primary,
+.cf-modal-footer-right {
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.cf-form-actions-secondary,
+.cf-modal-footer-left {
+  justify-content: flex-start;
+}
+
+.cf-form-actions-danger {
+  justify-content: flex-start;
+  margin-right: var(--cf-form-actions-danger-gap);
+}
+
+.cf-form-actions > [data-cf-action-tone="danger"],
+.cf-modal-footer > [data-cf-action-tone="danger"],
+.cf-form-actions-danger > * {
+  margin-right: var(--cf-form-actions-danger-gap);
+}
+
+.cf-mobile-action-stack {
+  justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+  .cf-form-actions,
+  .cf-modal-footer,
+  .cf-mobile-action-stack {
+    align-items: stretch;
+    justify-content: stretch;
+    gap: var(--cf-form-actions-mobile-gap);
+  }
+
+  .cf-form-actions-primary,
+  .cf-form-actions-secondary,
+  .cf-form-actions-danger,
+  .cf-modal-footer-left,
+  .cf-modal-footer-right {
+    width: 100%;
+    justify-content: stretch;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .cf-form-actions > *,
+  .cf-modal-footer > *,
+  .cf-mobile-action-stack > *,
+  .cf-form-actions-primary > *,
+  .cf-form-actions-secondary > *,
+  .cf-form-actions-danger > *,
+  .cf-modal-footer-left > *,
+  .cf-modal-footer-right > * {
+    width: 100%;
+    min-height: 2.75rem;
+  }
+
+  .cf-form-actions > [data-cf-action-tone="danger"],
+  .cf-modal-footer > [data-cf-action-tone="danger"],
+  .cf-form-actions-danger > * {
+    margin-right: 0;
+    margin-top: 0.25rem;
+  }
+}

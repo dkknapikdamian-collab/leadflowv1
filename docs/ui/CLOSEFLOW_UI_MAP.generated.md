@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T13:14:26.335Z
+Generated: 2026-05-08T13:50:30.615Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -111,118 +111,118 @@ Source files scanned: 196
 - Zapisz: src/pages/Calendar.tsx:1851
 - Dodaj: src/pages/Calendar.tsx:1405
 - Dodaj: src/pages/Calendar.tsx:1443
-- Dodaj notatkę: src/pages/CaseDetail.tsx:1613
-- Dodaj notatkę: src/pages/CaseDetail.tsx:1664
-- Dodaj zadanie: src/pages/CaseDetail.tsx:1366
+- Dodaj notatkę: src/pages/CaseDetail.tsx:1563
+- Dodaj notatkę: src/pages/CaseDetail.tsx:1614
+- Dodaj zadanie: src/pages/CaseDetail.tsx:1317
 - Usuń: src/pages/CaseDetail.tsx:237
-- Usuń: src/pages/CaseDetail.tsx:1929
-- Zapisz: src/pages/CaseDetail.tsx:1747
-- Zapisz: src/pages/CaseDetail.tsx:1813
-- Anuluj: src/pages/CaseDetail.tsx:1747
-- Anuluj: src/pages/CaseDetail.tsx:1809
-- Anuluj: src/pages/CaseDetail.tsx:1961
-- Kopiuj: src/pages/CaseDetail.tsx:1349
-- Kopiuj: src/pages/CaseDetail.tsx:1733
+- Usuń: src/pages/CaseDetail.tsx:1875
+- Zapisz: src/pages/CaseDetail.tsx:1697
+- Zapisz: src/pages/CaseDetail.tsx:1763
+- Anuluj: src/pages/CaseDetail.tsx:1697
+- Anuluj: src/pages/CaseDetail.tsx:1759
+- Anuluj: src/pages/CaseDetail.tsx:1906
+- Kopiuj: src/pages/CaseDetail.tsx:1300
+- Kopiuj: src/pages/CaseDetail.tsx:1683
 - Dodaj: src/pages/CaseDetail.tsx:109
 - Dodaj: src/pages/CaseDetail.tsx:233
-- Dodaj: src/pages/CaseDetail.tsx:1353
-- Dodaj: src/pages/CaseDetail.tsx:1366
-- Dodaj: src/pages/CaseDetail.tsx:1461
-- Dodaj: src/pages/CaseDetail.tsx:1496
-- Dodaj: src/pages/CaseDetail.tsx:1543
-- Dodaj: src/pages/CaseDetail.tsx:1548
-- Dodaj: src/pages/CaseDetail.tsx:1600
-- Dodaj: src/pages/CaseDetail.tsx:1613
-- Dodaj: src/pages/CaseDetail.tsx:1625
-- Dodaj: src/pages/CaseDetail.tsx:1638
-- Dodaj: src/pages/CaseDetail.tsx:1664
-- Dodaj: src/pages/CaseDetail.tsx:1740
-- Dodaj: src/pages/CaseDetail.tsx:1740
-- Dodaj: src/pages/CaseDetail.tsx:1756
-- Dodaj: src/pages/CaseDetail.tsx:1845
-- Dodaj: src/pages/CaseDetail.tsx:1953
-- Dodaj: src/pages/CaseDetail.tsx:1961
-- Usuń: src/pages/Cases.tsx:801
-- Zapisz: src/pages/Cases.tsx:631
-- Anuluj: src/pages/Cases.tsx:628
-- Nowa sprawa: src/pages/Cases.tsx:488
-- Nowa sprawa: src/pages/Cases.tsx:494
-- Dodaj: src/pages/Cases.tsx:541
-- Dodaj notatkę: src/pages/ClientDetail.tsx:2065
-- Dodaj notatkę: src/pages/ClientDetail.tsx:2087
-- Dodaj zadanie: src/pages/ClientDetail.tsx:1189
-- Dodaj zadanie: src/pages/ClientDetail.tsx:2029
-- Usuń: src/pages/ClientDetail.tsx:674
-- Usuń: src/pages/ClientDetail.tsx:674
-- Usuń: src/pages/ClientDetail.tsx:676
-- Usuń: src/pages/ClientDetail.tsx:1887
-- Usuń: src/pages/ClientDetail.tsx:1888
-- Usuń: src/pages/ClientDetail.tsx:2118
-- Usuń: src/pages/ClientDetail.tsx:2118
+- Dodaj: src/pages/CaseDetail.tsx:1304
+- Dodaj: src/pages/CaseDetail.tsx:1317
+- Dodaj: src/pages/CaseDetail.tsx:1412
+- Dodaj: src/pages/CaseDetail.tsx:1446
+- Dodaj: src/pages/CaseDetail.tsx:1493
+- Dodaj: src/pages/CaseDetail.tsx:1498
+- Dodaj: src/pages/CaseDetail.tsx:1550
+- Dodaj: src/pages/CaseDetail.tsx:1563
+- Dodaj: src/pages/CaseDetail.tsx:1575
+- Dodaj: src/pages/CaseDetail.tsx:1588
+- Dodaj: src/pages/CaseDetail.tsx:1614
+- Dodaj: src/pages/CaseDetail.tsx:1690
+- Dodaj: src/pages/CaseDetail.tsx:1690
+- Dodaj: src/pages/CaseDetail.tsx:1706
+- Dodaj: src/pages/CaseDetail.tsx:1794
+- Dodaj: src/pages/CaseDetail.tsx:1898
+- Dodaj: src/pages/CaseDetail.tsx:1906
+- Usuń: src/pages/Cases.tsx:817
+- Zapisz: src/pages/Cases.tsx:647
+- Anuluj: src/pages/Cases.tsx:644
+- Nowa sprawa: src/pages/Cases.tsx:504
+- Nowa sprawa: src/pages/Cases.tsx:510
+- Dodaj: src/pages/Cases.tsx:557
+- Dodaj notatkę: src/pages/ClientDetail.tsx:2021
+- Dodaj notatkę: src/pages/ClientDetail.tsx:2043
+- Dodaj zadanie: src/pages/ClientDetail.tsx:1147
+- Dodaj zadanie: src/pages/ClientDetail.tsx:1985
+- Usuń: src/pages/ClientDetail.tsx:637
+- Usuń: src/pages/ClientDetail.tsx:637
+- Usuń: src/pages/ClientDetail.tsx:639
+- Usuń: src/pages/ClientDetail.tsx:1843
+- Usuń: src/pages/ClientDetail.tsx:1844
+- Usuń: src/pages/ClientDetail.tsx:2074
+- Usuń: src/pages/ClientDetail.tsx:2074
 - Edytuj: src/pages/ClientDetail.tsx:17
-- Edytuj: src/pages/ClientDetail.tsx:906
-- Edytuj: src/pages/ClientDetail.tsx:1554
-- Edytuj: src/pages/ClientDetail.tsx:1878
-- Edytuj: src/pages/ClientDetail.tsx:2115
-- Edytuj: src/pages/ClientDetail.tsx:2115
+- Edytuj: src/pages/ClientDetail.tsx:864
+- Edytuj: src/pages/ClientDetail.tsx:1510
+- Edytuj: src/pages/ClientDetail.tsx:1834
+- Edytuj: src/pages/ClientDetail.tsx:2071
+- Edytuj: src/pages/ClientDetail.tsx:2071
 - Zapisz: src/pages/ClientDetail.tsx:17
-- Zapisz: src/pages/ClientDetail.tsx:1554
-- Zapisz: src/pages/ClientDetail.tsx:1595
-- Anuluj: src/pages/ClientDetail.tsx:1598
-- Kopiuj: src/pages/ClientDetail.tsx:687
-- Kopiuj: src/pages/ClientDetail.tsx:687
-- Kopiuj: src/pages/ClientDetail.tsx:687
-- Dyktuj: src/pages/ClientDetail.tsx:1587
-- Dyktuj: src/pages/ClientDetail.tsx:2091
+- Zapisz: src/pages/ClientDetail.tsx:1510
+- Zapisz: src/pages/ClientDetail.tsx:1551
+- Anuluj: src/pages/ClientDetail.tsx:1554
+- Kopiuj: src/pages/ClientDetail.tsx:649
+- Kopiuj: src/pages/ClientDetail.tsx:649
+- Kopiuj: src/pages/ClientDetail.tsx:649
+- Dyktuj: src/pages/ClientDetail.tsx:1543
+- Dyktuj: src/pages/ClientDetail.tsx:2047
 - Nowa sprawa: src/pages/ClientDetail.tsx:20
-- Nowa sprawa: src/pages/ClientDetail.tsx:1455
-- Dodaj: src/pages/ClientDetail.tsx:655
-- Dodaj: src/pages/ClientDetail.tsx:655
-- Dodaj: src/pages/ClientDetail.tsx:1189
-- Dodaj: src/pages/ClientDetail.tsx:2029
-- Dodaj: src/pages/ClientDetail.tsx:2052
-- Dodaj: src/pages/ClientDetail.tsx:2065
-- Dodaj: src/pages/ClientDetail.tsx:2087
+- Nowa sprawa: src/pages/ClientDetail.tsx:1412
+- Dodaj: src/pages/ClientDetail.tsx:618
+- Dodaj: src/pages/ClientDetail.tsx:618
+- Dodaj: src/pages/ClientDetail.tsx:1147
+- Dodaj: src/pages/ClientDetail.tsx:1985
+- Dodaj: src/pages/ClientDetail.tsx:2008
+- Dodaj: src/pages/ClientDetail.tsx:2021
+- Dodaj: src/pages/ClientDetail.tsx:2043
 - Anuluj: src/pages/ClientPortal.tsx:330
 - Anuluj: src/pages/ClientPortal.tsx:363
 - Dodaj: src/pages/ClientPortal.tsx:326
-- Zapisz: src/pages/Clients.tsx:470
-- Anuluj: src/pages/Clients.tsx:467
-- Dodaj: src/pages/Clients.tsx:398
+- Zapisz: src/pages/Clients.tsx:476
+- Anuluj: src/pages/Clients.tsx:473
 - Dodaj: src/pages/Clients.tsx:404
+- Dodaj: src/pages/Clients.tsx:410
 - Anuluj: src/pages/Dashboard.tsx:281
 - Nowa sprawa: src/pages/Dashboard.tsx:245
-- Usuń: src/pages/LeadDetail.tsx:1543
-- Usuń: src/pages/LeadDetail.tsx:1589
-- Edytuj: src/pages/LeadDetail.tsx:1443
-- Edytuj: src/pages/LeadDetail.tsx:1538
-- Edytuj: src/pages/LeadDetail.tsx:1588
-- Edytuj: src/pages/LeadDetail.tsx:1712
-- Edytuj: src/pages/LeadDetail.tsx:1728
-- Edytuj: src/pages/LeadDetail.tsx:1742
-- Edytuj: src/pages/LeadDetail.tsx:1756
-- Zapisz: src/pages/LeadDetail.tsx:1679
-- Zapisz: src/pages/LeadDetail.tsx:1722
-- Zapisz: src/pages/LeadDetail.tsx:1736
-- Zapisz: src/pages/LeadDetail.tsx:1750
-- Zapisz: src/pages/LeadDetail.tsx:1758
-- Anuluj: src/pages/LeadDetail.tsx:1679
-- Anuluj: src/pages/LeadDetail.tsx:1703
-- Anuluj: src/pages/LeadDetail.tsx:1722
-- Anuluj: src/pages/LeadDetail.tsx:1736
-- Anuluj: src/pages/LeadDetail.tsx:1750
-- Anuluj: src/pages/LeadDetail.tsx:1758
-- Dyktuj: src/pages/LeadDetail.tsx:1566
-- Dodaj: src/pages/LeadDetail.tsx:1561
-- Dodaj: src/pages/LeadDetail.tsx:1569
-- Dodaj: src/pages/LeadDetail.tsx:1622
-- Dodaj: src/pages/LeadDetail.tsx:1672
-- Dodaj: src/pages/LeadDetail.tsx:1672
+- Usuń: src/pages/LeadDetail.tsx:1514
+- Usuń: src/pages/LeadDetail.tsx:1560
+- Edytuj: src/pages/LeadDetail.tsx:1414
+- Edytuj: src/pages/LeadDetail.tsx:1509
+- Edytuj: src/pages/LeadDetail.tsx:1559
+- Edytuj: src/pages/LeadDetail.tsx:1683
+- Edytuj: src/pages/LeadDetail.tsx:1699
+- Edytuj: src/pages/LeadDetail.tsx:1713
+- Edytuj: src/pages/LeadDetail.tsx:1727
+- Zapisz: src/pages/LeadDetail.tsx:1650
+- Zapisz: src/pages/LeadDetail.tsx:1693
+- Zapisz: src/pages/LeadDetail.tsx:1707
+- Zapisz: src/pages/LeadDetail.tsx:1721
+- Zapisz: src/pages/LeadDetail.tsx:1729
+- Anuluj: src/pages/LeadDetail.tsx:1650
+- Anuluj: src/pages/LeadDetail.tsx:1674
+- Anuluj: src/pages/LeadDetail.tsx:1693
+- Anuluj: src/pages/LeadDetail.tsx:1707
+- Anuluj: src/pages/LeadDetail.tsx:1721
+- Anuluj: src/pages/LeadDetail.tsx:1729
+- Dyktuj: src/pages/LeadDetail.tsx:1537
+- Dodaj: src/pages/LeadDetail.tsx:1532
+- Dodaj: src/pages/LeadDetail.tsx:1540
+- Dodaj: src/pages/LeadDetail.tsx:1593
+- Dodaj: src/pages/LeadDetail.tsx:1643
+- Dodaj: src/pages/LeadDetail.tsx:1643
 - Usuń: src/pages/Leads.tsx:44
 - Usuń: src/pages/Leads.tsx:46
-- Usuń: src/pages/Leads.tsx:796
-- Zapisz: src/pages/Leads.tsx:692
-- Anuluj: src/pages/Leads.tsx:689
+- Usuń: src/pages/Leads.tsx:810
+- Zapisz: src/pages/Leads.tsx:706
+- Anuluj: src/pages/Leads.tsx:703
 - Kopiuj: src/pages/Login.tsx:5
 - Kopiuj: src/pages/Login.tsx:19
 - Kopiuj: src/pages/Login.tsx:250
@@ -247,21 +247,21 @@ Source files scanned: 196
 - Zapisz: src/pages/SupportCenter.tsx:500
 - Zapisz: src/pages/SupportCenter.tsx:607
 - Dodaj: src/pages/SupportCenter.tsx:657
-- Dodaj zadanie: src/pages/Tasks.tsx:1094
-- Usuń: src/pages/Tasks.tsx:1075
+- Dodaj zadanie: src/pages/Tasks.tsx:1096
+- Usuń: src/pages/Tasks.tsx:1077
 - Edytuj: src/pages/Tasks.tsx:6
-- Edytuj: src/pages/Tasks.tsx:1060
-- Edytuj: src/pages/Tasks.tsx:1225
+- Edytuj: src/pages/Tasks.tsx:1062
+- Edytuj: src/pages/Tasks.tsx:1227
 - Zapisz: src/pages/Tasks.tsx:12
-- Zapisz: src/pages/Tasks.tsx:1213
-- Zapisz: src/pages/Tasks.tsx:1351
-- Dodaj: src/pages/Tasks.tsx:1094
-- Dodaj: src/pages/Tasks.tsx:1399
-- Usuń: src/pages/TasksStable.tsx:525
-- Edytuj: src/pages/TasksStable.tsx:523
-- Edytuj: src/pages/TasksStable.tsx:539
-- Zapisz: src/pages/TasksStable.tsx:582
-- Anuluj: src/pages/TasksStable.tsx:581
+- Zapisz: src/pages/Tasks.tsx:1215
+- Zapisz: src/pages/Tasks.tsx:1353
+- Dodaj: src/pages/Tasks.tsx:1096
+- Dodaj: src/pages/Tasks.tsx:1401
+- Usuń: src/pages/TasksStable.tsx:544
+- Edytuj: src/pages/TasksStable.tsx:542
+- Edytuj: src/pages/TasksStable.tsx:558
+- Zapisz: src/pages/TasksStable.tsx:601
+- Anuluj: src/pages/TasksStable.tsx:600
 - Usuń: src/pages/Templates.tsx:396
 - Edytuj: src/pages/Templates.tsx:390
 - Edytuj: src/pages/Templates.tsx:431
@@ -543,7 +543,7 @@ import {
 - CheckSquare: src/pages/Calendar.tsx
 - Trash2: src/pages/Calendar.tsx
 - useWorkspace } from '../hooks/useWorkspace'
- * const { hasAccess: src/pages/CaseDetail.tsx
+const { hasAccess: src/pages/CaseDetail.tsx
 - access } = useWorkspace()
  * caseDetailWriteAccessDenied = !hasAccess caseDetailAccessStatus = String(access?.status guardCaseDetailWriteAccess trial_expired
  * toast.error(reason + ' Nie mozna teraz '
@@ -891,7 +891,8 @@ import {
 - type FormEvent } from 'react';
 import Layout from '../components/Layout';
 import { StatShortcutCard } from '../components/StatShortcutCard';
-import { actionButtonClass } from '../components/entity-actions';
+import { actionButtonClass: src/pages/TasksStable.tsx
+- modalFooterClass} from '../components/entity-actions';
 import { Card: src/pages/TasksStable.tsx
 - CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -974,7 +975,6 @@ import {
 - ArrowRight: src/pages/TodayStable.tsx
 - CalendarDays: src/pages/TodayStable.tsx
 - ChevronDown: src/pages/TodayStable.tsx
-- ChevronUp: src/pages/TodayStable.tsx
 
 ## Button/link snippets
 - src/components/AppChunkErrorBoundary.tsx:86 <button type="button" className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white" onClick={() =>
@@ -1054,69 +1054,69 @@ import {
 - src/pages/Calendar.tsx:1380 <button type="button" className="nav-today" onClick={() =>
 - src/pages/Calendar.tsx:1383 <button type="button" className="nav-btn" onClick={() =>
 - src/pages/Calendar.tsx:1443 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
-- src/pages/CaseDetail.tsx:1316 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:1331 <button type="button" className="case-detail-back-button" onClick={() =>
-- src/pages/CaseDetail.tsx:1347 <Button type="button" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>
-- src/pages/CaseDetail.tsx:1351 <Button type="button" variant="outline" className="cf-btn-tone-gap" onClick={() =>
-- src/pages/CaseDetail.tsx:1406 <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
-- src/pages/CaseDetail.tsx:1603 <Button type="button" variant="outline" size="sm" onClick={openCaseTaskDialog} data-case-create-action="task" data-case-quick-action="true">
-- src/pages/CaseDetail.tsx:1607 <Button type="button" variant="outline" size="sm" onClick={openCaseEventDialog} data-case-create-action="event" data-case-quick-action="true">
-- src/pages/CaseDetail.tsx:1611 <Button type="button" variant="outline" data-case-create-action="note" onClick={openCaseNoteDialog}>
-- src/pages/CaseDetail.tsx:1625 <button type="button" className="cf-btn-tone-gap" onClick={() =>
-- src/pages/CaseDetail.tsx:1649 <Button type="button" variant="ghost" size="sm" className="case-detail-link-button" onClick={() =>
-- src/pages/CaseDetail.tsx:1733 <Button type="button" size="sm" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>
-- src/pages/CaseDetail.tsx:1747 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:1808 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:1961 <Button type="button" variant="outline" onClick={() =>
-- src/pages/CaseDetail.tsx:1961 <Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>
-- src/pages/Cases.tsx:477 <Button type="button" variant="outline" className="btn soft-blue">
-- src/pages/Cases.tsx:487 <Button className="btn primary" disabled={!workspaceReady}>
-- src/pages/Cases.tsx:627 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Cases.tsx:727 <Link to={`/case/${record.id}`} className="title">
-- src/pages/Cases.tsx:749 <Button variant="outline" className="btn ghost" asChild>
-- src/pages/ClientDetail.tsx:650 <button type="button" className="client-detail-mini-button" onClick={addValue} data-client-contact-repeat-add={kind} aria-label={kind === 'email' ? 'Dodaj kolejny email k
-- src/pages/ClientDetail.tsx:670 <button type="button" className="client-detail-mini-button client-detail-mini-button-muted" onClick={() =>
-- src/pages/ClientDetail.tsx:698 <button type="button" className="client-detail-icon-button" onClick={onCopy} aria-label={copyLabel} title={copyLabel}>
-- src/pages/ClientDetail.tsx:785 <Link to={nextAction.to} className="entity-overview-tile-link">
-- src/pages/ClientDetail.tsx:827 <button type="button" className="entity-overview-tile-link" onClick={onOpenCases}>
-- src/pages/ClientDetail.tsx:1432 <button type="button" className="client-detail-back-button" onClick={() =>
-- src/pages/ClientDetail.tsx:1447 <Button type="button" variant="default" className="client-detail-header-action-soft" asChild>
-- src/pages/ClientDetail.tsx:1453 <Button type="button" variant="default" onClick={openNewCase} disabled={!hasAccess}>
-- src/pages/ClientDetail.tsx:1457 <Button type="button" className="client-detail-header-action-primary" onClick={openMainCase} disabled={!mainCase?.id}>
-- src/pages/ClientDetail.tsx:1486 <Button type="button" variant="outline" className="client-detail-today-info-tile-action" onClick={() =>
-- src/pages/ClientDetail.tsx:1543 <Button type="button" variant="default" className="client-detail-visible-edit-action client-detail-edit-main-button" data-client-detail-visible-edit-action=
-- src/pages/ClientDetail.tsx:1585 <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteAutosaving}>
-- src/pages/ClientDetail.tsx:1597 <Button type="button" variant="outline" onClick={cancelClientPanelEdit} disabled={saving}>
-- src/pages/ClientDetail.tsx:1621 <Link key={move.id} to="/activity" className="client-detail-recent-move-row">
-- src/pages/ClientDetail.tsx:1633 <Link to="/activity" className="client-detail-recent-moves-link">
-- src/pages/ClientDetail.tsx:1671 <Button type="button" className="client-detail-hero-cta" onClick={() =>
-- src/pages/ClientDetail.tsx:1731 <Button type="button" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:1745 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:1749 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:1770 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:1774 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:1792 <Button type="button" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:1877 <Button type="button" size="sm" variant="outline" onClick={() =>
-- src/pages/ClientDetail.tsx:2008 <Button type="button" variant="outline" size="sm" data-context-action-kind="task" data-context-record-type="client" 
-- src/pages/ClientDetail.tsx:2031 <Button type="button" variant="outline" size="sm" data-context-action-kind="event" data-context-record-type="client" 
-- src/pages/ClientDetail.tsx:2054 <Button type="button" variant="outline" size="sm" data-context-action-kind="note" data-context-record-type="client" 
-- src/pages/ClientDetail.tsx:2067 <Button type="button" variant="outline" size="sm" onClick={() =>
-- src/pages/ClientDetail.tsx:2086 <Button type="button" variant="outline" size="sm" onClick={() =>
-- src/pages/ClientDetail.tsx:2089 <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>
-- src/pages/ClientDetail.tsx:2109 <button type="button" title="Przypnij notatkę" aria-label="Przypnij notatkę" onClick={() =>
-- src/pages/ClientDetail.tsx:2112 <button type="button" title="Podgląd całej notatki" aria-label="Podgląd całej notatki" onClick={() =>
-- src/pages/ClientDetail.tsx:2115 <button type="button" title="Edytuj notatkę" aria-label="Edytuj notatkę" onClick={() =>
+- src/pages/CaseDetail.tsx:1267 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:1282 <button type="button" className="case-detail-back-button" onClick={() =>
+- src/pages/CaseDetail.tsx:1298 <Button type="button" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>
+- src/pages/CaseDetail.tsx:1302 <Button type="button" variant="outline" className="cf-btn-tone-gap" onClick={() =>
+- src/pages/CaseDetail.tsx:1357 <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
+- src/pages/CaseDetail.tsx:1553 <Button type="button" variant="outline" size="sm" onClick={openCaseTaskDialog} data-case-create-action="task" data-case-quick-action="true">
+- src/pages/CaseDetail.tsx:1557 <Button type="button" variant="outline" size="sm" onClick={openCaseEventDialog} data-case-create-action="event" data-case-quick-action="true">
+- src/pages/CaseDetail.tsx:1561 <Button type="button" variant="outline" data-case-create-action="note" onClick={openCaseNoteDialog}>
+- src/pages/CaseDetail.tsx:1575 <button type="button" className="cf-btn-tone-gap" onClick={() =>
+- src/pages/CaseDetail.tsx:1599 <Button type="button" variant="ghost" size="sm" className="case-detail-link-button" onClick={() =>
+- src/pages/CaseDetail.tsx:1683 <Button type="button" size="sm" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>
+- src/pages/CaseDetail.tsx:1697 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:1758 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:1906 <Button type="button" variant="outline" onClick={() =>
+- src/pages/CaseDetail.tsx:1906 <Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>
+- src/pages/Cases.tsx:493 <Button type="button" variant="outline" className="btn soft-blue">
+- src/pages/Cases.tsx:503 <Button className="btn primary" disabled={!workspaceReady}>
+- src/pages/Cases.tsx:643 <Button type="button" variant="outline" onClick={() =>
+- src/pages/Cases.tsx:743 <Link to={`/case/${record.id}`} className="title">
+- src/pages/Cases.tsx:765 <Button variant="outline" className="btn ghost" asChild>
+- src/pages/ClientDetail.tsx:613 <button type="button" className="client-detail-mini-button" onClick={addValue} data-client-contact-repeat-add={kind} aria-label={kind === 'email' ? 'Dodaj kolejny email k
+- src/pages/ClientDetail.tsx:633 <button type="button" className="client-detail-mini-button client-detail-mini-button-muted" onClick={() =>
+- src/pages/ClientDetail.tsx:660 <button type="button" className="client-detail-icon-button" onClick={onCopy} aria-label={copyLabel} title={copyLabel}>
+- src/pages/ClientDetail.tsx:743 <Link to={nextAction.to} className="entity-overview-tile-link">
+- src/pages/ClientDetail.tsx:785 <button type="button" className="entity-overview-tile-link" onClick={onOpenCases}>
+- src/pages/ClientDetail.tsx:1389 <button type="button" className="client-detail-back-button" onClick={() =>
+- src/pages/ClientDetail.tsx:1404 <Button type="button" variant="default" className="client-detail-header-action-soft" asChild>
+- src/pages/ClientDetail.tsx:1410 <Button type="button" variant="default" onClick={openNewCase} disabled={!hasAccess}>
+- src/pages/ClientDetail.tsx:1414 <Button type="button" className="client-detail-header-action-primary" onClick={openMainCase} disabled={!mainCase?.id}>
+- src/pages/ClientDetail.tsx:1443 <Button type="button" variant="outline" className="client-detail-today-info-tile-action" onClick={() =>
+- src/pages/ClientDetail.tsx:1499 <Button type="button" variant="default" className="client-detail-visible-edit-action client-detail-edit-main-button" data-client-detail-visible-edit-action=
+- src/pages/ClientDetail.tsx:1541 <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteAutosaving}>
+- src/pages/ClientDetail.tsx:1553 <Button type="button" variant="outline" onClick={cancelClientPanelEdit} disabled={saving}>
+- src/pages/ClientDetail.tsx:1577 <Link key={move.id} to="/activity" className="client-detail-recent-move-row">
+- src/pages/ClientDetail.tsx:1589 <Link to="/activity" className="client-detail-recent-moves-link">
+- src/pages/ClientDetail.tsx:1627 <Button type="button" className="client-detail-hero-cta" onClick={() =>
+- src/pages/ClientDetail.tsx:1687 <Button type="button" variant="outline" onClick={() =>
+- src/pages/ClientDetail.tsx:1701 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/ClientDetail.tsx:1705 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/ClientDetail.tsx:1726 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/ClientDetail.tsx:1730 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/ClientDetail.tsx:1748 <Button type="button" variant="outline" onClick={() =>
+- src/pages/ClientDetail.tsx:1833 <Button type="button" size="sm" variant="outline" onClick={() =>
+- src/pages/ClientDetail.tsx:1964 <Button type="button" variant="outline" size="sm" data-context-action-kind="task" data-context-record-type="client" 
+- src/pages/ClientDetail.tsx:1987 <Button type="button" variant="outline" size="sm" data-context-action-kind="event" data-context-record-type="client" 
+- src/pages/ClientDetail.tsx:2010 <Button type="button" variant="outline" size="sm" data-context-action-kind="note" data-context-record-type="client" 
+- src/pages/ClientDetail.tsx:2023 <Button type="button" variant="outline" size="sm" onClick={() =>
+- src/pages/ClientDetail.tsx:2042 <Button type="button" variant="outline" size="sm" onClick={() =>
+- src/pages/ClientDetail.tsx:2045 <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>
+- src/pages/ClientDetail.tsx:2065 <button type="button" title="Przypnij notatkę" aria-label="Przypnij notatkę" onClick={() =>
+- src/pages/ClientDetail.tsx:2068 <button type="button" title="Podgląd całej notatki" aria-label="Podgląd całej notatki" onClick={() =>
+- src/pages/ClientDetail.tsx:2071 <button type="button" title="Edytuj notatkę" aria-label="Edytuj notatkę" onClick={() =>
 - src/pages/ClientPortal.tsx:310 <Button size="sm" variant="outline" className="gap-2">
 - src/pages/ClientPortal.tsx:330 <Button variant="outline" onClick={() =>
 - src/pages/ClientPortal.tsx:344 <Button size="sm" variant="outline" className="gap-2">
 - src/pages/ClientPortal.tsx:363 <Button variant="outline" onClick={() =>
 - src/pages/ClientPortal.tsx:373 <Button size="sm" variant="outline" className="gap-2 text-green-600 hover:bg-green-50" onClick={() =>
 - src/pages/ClientPortal.tsx:377 <Button size="sm" variant="outline" className="gap-2 text-red-600 hover:bg-red-50" onClick={() =>
-- src/pages/Clients.tsx:390 <Button type="button" variant="outline" className="btn soft-blue">
-- src/pages/Clients.tsx:391 <Button type="button" variant="outline" className="btn" onClick={() =>
-- src/pages/Clients.tsx:398 <Button className="btn primary" disabled={!workspace?.id}>
-- src/pages/Clients.tsx:466 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Clients.tsx:542 <Link to={`/clients/${client.id}`} className="block">
+- src/pages/Clients.tsx:396 <Button type="button" variant="outline" className="btn soft-blue">
+- src/pages/Clients.tsx:397 <Button type="button" variant="outline" className="btn" onClick={() =>
+- src/pages/Clients.tsx:404 <Button className="btn primary" disabled={!workspace?.id}>
+- src/pages/Clients.tsx:472 <Button type="button" variant="outline" onClick={() =>
+- src/pages/Clients.tsx:548 <Link to={`/clients/${client.id}`} className="block">
 - src/pages/Dashboard.tsx:214 <Button variant="ghost" className="w-full justify-start gap-3 bg-slate-100 text-primary">
 - src/pages/Dashboard.tsx:218 <Button variant="ghost" className="w-full justify-start gap-3 text-slate-600">
 - src/pages/Dashboard.tsx:222 <Button variant="ghost" className="w-full justify-start gap-3 text-slate-600">
@@ -1124,23 +1124,23 @@ import {
 - src/pages/Dashboard.tsx:243 <Button size="lg" className="gap-2 shadow-lg shadow-primary/20">
 - src/pages/Dashboard.tsx:281 <Button variant="outline" onClick={() =>
 - src/pages/Dashboard.tsx:366 <Button variant="outline" className="h-11 gap-2 bg-white">
-- src/pages/LeadDetail.tsx:447 <button type="button" className="lead-detail-chip-button" onClick={onClick} disabled={disabled}>
-- src/pages/LeadDetail.tsx:1398 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:1415 <button type="button" className="lead-detail-back-button" onClick={() =>
-- src/pages/LeadDetail.tsx:1441 <Button type="button" variant="outline" onClick={handleStartLeadEditing}>
-- src/pages/LeadDetail.tsx:1564 <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
-- src/pages/LeadDetail.tsx:1611 <Button type="button" size="sm" variant="outline" onClick={openCase}>
-- src/pages/LeadDetail.tsx:1679 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:1703 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:1704 <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>
-- src/pages/LeadDetail.tsx:1722 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:1736 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:1750 <Button type="button" variant="outline" onClick={() =>
-- src/pages/LeadDetail.tsx:1758 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Leads.tsx:533 <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
-- src/pages/Leads.tsx:537 <button type="button" className="btn" onClick={toggleTrashView} >
-- src/pages/Leads.tsx:688 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Leads.tsx:833 <Link to={`/leads/${leadId}`} className="block">
+- src/pages/LeadDetail.tsx:416 <button type="button" className="lead-detail-chip-button" onClick={onClick} disabled={disabled}>
+- src/pages/LeadDetail.tsx:1369 <Button type="button" variant="outline" onClick={() =>
+- src/pages/LeadDetail.tsx:1386 <button type="button" className="lead-detail-back-button" onClick={() =>
+- src/pages/LeadDetail.tsx:1412 <Button type="button" variant="outline" onClick={handleStartLeadEditing}>
+- src/pages/LeadDetail.tsx:1535 <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
+- src/pages/LeadDetail.tsx:1582 <Button type="button" size="sm" variant="outline" onClick={openCase}>
+- src/pages/LeadDetail.tsx:1650 <Button type="button" variant="outline" onClick={() =>
+- src/pages/LeadDetail.tsx:1674 <Button type="button" variant="outline" onClick={() =>
+- src/pages/LeadDetail.tsx:1675 <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>
+- src/pages/LeadDetail.tsx:1693 <Button type="button" variant="outline" onClick={() =>
+- src/pages/LeadDetail.tsx:1707 <Button type="button" variant="outline" onClick={() =>
+- src/pages/LeadDetail.tsx:1721 <Button type="button" variant="outline" onClick={() =>
+- src/pages/LeadDetail.tsx:1729 <Button type="button" variant="outline" onClick={() =>
+- src/pages/Leads.tsx:547 <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
+- src/pages/Leads.tsx:551 <button type="button" className="btn" onClick={toggleTrashView} >
+- src/pages/Leads.tsx:702 <Button type="button" variant="outline" onClick={() =>
+- src/pages/Leads.tsx:847 <Link to={`/leads/${leadId}`} className="block">
 - src/pages/Login.tsx:183 <Button type="submit" className="h-12 w-full rounded-xl" disabled={loading || !authConfig.configured}>
 - src/pages/Login.tsx:184 <Button type="button" variant="ghost" className="w-full" onClick={() =>
 - src/pages/Login.tsx:236 <Button type="submit" className="h-11 w-full rounded-xl font-semibold" disabled={loading || !authConfig.configured}>
@@ -1181,19 +1181,19 @@ import {
 - src/pages/Settings.tsx:1292 <Button type="button" variant="outline" onClick={() =>
 - src/pages/SupportCenter.tsx:404 <Button type="button" variant="outline" onClick={() =>
 - src/pages/SupportCenter.tsx:613 <Button type="button" variant="outline" disabled={statusPendingId === selectedTicket.id || (selectedTicket.status || 'new') === 'closed'
-- src/pages/Tasks.tsx:1059 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} onClick={() =>
-- src/pages/Tasks.tsx:1062 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>
-- src/pages/Tasks.tsx:1065 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>
-- src/pages/Tasks.tsx:1068 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>
-- src/pages/Tasks.tsx:1074 <Button variant="outline" size="sm" className={actionButtonClass('danger', 'task-action-btn task-action-danger rounded-xl')} onClick={() =>
-- src/pages/Tasks.tsx:1213 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
-- src/pages/Tasks.tsx:1351 <Button type="submit" className="w-full" disabled={taskEditSubmitting}>
-- src/pages/TasksStable.tsx:460 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() =>
-- src/pages/TasksStable.tsx:519 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="done-toggle" onClick={() =>
-- src/pages/TasksStable.tsx:522 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() =>
-- src/pages/TasksStable.tsx:525 <Button type="button" variant="outline" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48="delete" onClic
-- src/pages/TasksStable.tsx:581 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
-- src/pages/TasksStable.tsx:629 <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>
+- src/pages/Tasks.tsx:1061 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} onClick={() =>
+- src/pages/Tasks.tsx:1064 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>
+- src/pages/Tasks.tsx:1067 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>
+- src/pages/Tasks.tsx:1070 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>
+- src/pages/Tasks.tsx:1076 <Button variant="outline" size="sm" className={actionButtonClass('danger', 'task-action-btn task-action-danger rounded-xl')} onClick={() =>
+- src/pages/Tasks.tsx:1215 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
+- src/pages/Tasks.tsx:1353 <Button type="submit" className="w-full" disabled={taskEditSubmitting}>
+- src/pages/TasksStable.tsx:479 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() =>
+- src/pages/TasksStable.tsx:538 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="done-toggle" onClick={() =>
+- src/pages/TasksStable.tsx:541 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() =>
+- src/pages/TasksStable.tsx:544 <Button type="button" variant="outline" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48="delete" onClic
+- src/pages/TasksStable.tsx:600 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
+- src/pages/TasksStable.tsx:648 <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>
 - src/pages/Templates.tsx:315 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
 - src/pages/Templates.tsx:359 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
 - src/pages/Templates.tsx:385 <Button variant="outline" size="icon" className="rounded-2xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
@@ -1345,209 +1345,208 @@ import {
 - src/pages/Calendar.tsx:1224 `head-actions`
 - src/pages/Calendar.tsx:1553 `right-card calendar-week-filter`
 - src/pages/Calendar.tsx:1633 `right-card calendar-week-plan`
-- src/pages/CaseDetail.tsx:1299 `case-detail-loading-card`
-- src/pages/CaseDetail.tsx:1312 `case-detail-empty-card`
-- src/pages/CaseDetail.tsx:1331 `case-detail-back-button`
-- src/pages/CaseDetail.tsx:1346 `case-detail-header-actions`
-- src/pages/CaseDetail.tsx:1360 `case-detail-top-card case-detail-top-card-blue`
-- src/pages/CaseDetail.tsx:1361 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:1368 `case-detail-top-card case-detail-top-card-green`
-- src/pages/CaseDetail.tsx:1369 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:1377 `case-detail-top-card case-detail-top-card-amber`
-- src/pages/CaseDetail.tsx:1378 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:1385 `case-detail-top-card case-detail-top-card-muted`
-- src/pages/CaseDetail.tsx:1386 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:1399 `case-detail-note-follow-up-panel`
-- src/pages/CaseDetail.tsx:1400 `case-detail-note-follow-up-head`
-- src/pages/CaseDetail.tsx:1410 `case-detail-note-follow-up-preview`
-- src/pages/CaseDetail.tsx:1411 `case-detail-note-follow-up-actions`
-- src/pages/CaseDetail.tsx:1417 `case-detail-note-follow-up-custom`
-- src/pages/CaseDetail.tsx:1487 `case-detail-section-card`
-- src/pages/CaseDetail.tsx:1518 `case-detail-section-card`
-- src/pages/CaseDetail.tsx:1535 `case-detail-section-card`
-- src/pages/CaseDetail.tsx:1558 `case-detail-row-actions`
-- src/pages/CaseDetail.tsx:1571 `case-detail-section-card`
-- src/pages/CaseDetail.tsx:1599 `case-detail-right-card case-detail-create-action-card`
-- src/pages/CaseDetail.tsx:1602 `case-detail-right-actions case-detail-create-actions`
-- src/pages/CaseDetail.tsx:1616 `case-detail-right-note`
-- src/pages/CaseDetail.tsx:1619 `right-card case-detail-right-card`
-- src/pages/CaseDetail.tsx:1620 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:1624 `case-detail-right-actions`
-- src/pages/CaseDetail.tsx:1628 `right-card case-detail-right-card`
-- src/pages/CaseDetail.tsx:1629 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:1637 `case-detail-right-actions`
-- src/pages/CaseDetail.tsx:1643 `case-detail-card case-detail-recent-moves-panel`
-- src/pages/CaseDetail.tsx:1653 `case-detail-link-button`
-- src/pages/CaseDetail.tsx:1689 `right-card case-detail-right-card`
-- src/pages/CaseDetail.tsx:1690 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:1697 `case-detail-right-actions case-detail-right-actions-inline`
-- src/pages/CaseDetail.tsx:1703 `right-card case-detail-right-card`
-- src/pages/CaseDetail.tsx:1704 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:1708 `case-detail-right-metrics`
-- src/pages/CaseDetail.tsx:1714 `case-detail-right-note`
-- src/pages/CaseDetail.tsx:1715 `case-detail-right-actions case-detail-right-actions-inline`
-- src/pages/CaseDetail.tsx:1726 `right-card case-detail-right-card`
-- src/pages/CaseDetail.tsx:1727 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:1839 `case-detail-card-title-row`
-- src/pages/CaseDetail.tsx:1844 `case-detail-command-actions`
-- src/pages/CaseDetail.tsx:1901 `case-detail-work-icon`
-- src/pages/CaseDetail.tsx:1912 `case-detail-row-actions`
-- src/pages/CaseDetail.tsx:1929 `case-detail-row-action-danger`
-- src/pages/Cases.tsx:476 `head-actions`
-- src/pages/Cases.tsx:619 `client-case-form-disabled-note`
-- src/pages/Cases.tsx:686 `table-card`
-- src/pages/Cases.tsx:693 `table-card`
-- src/pages/Cases.tsx:700 `table-card`
-- src/pages/Cases.tsx:743 `lead-action-cell`
-- src/pages/Cases.tsx:745 `next-action-text`
-- src/pages/Cases.tsx:746 `sub next-action-date`
-- src/pages/Cases.tsx:748 `lead-actions`
-- src/pages/Cases.tsx:765 `right-card cases-shortcuts-rail-card`
-- src/pages/Cases.tsx:775 `right-card cases-risk-rail-card`
-- src/pages/Cases.tsx:788 `note`
-- src/pages/ClientDetail.tsx:652 `client-detail-mini-button`
-- src/pages/ClientDetail.tsx:672 `client-detail-mini-button client-detail-mini-button-muted`
-- src/pages/ClientDetail.tsx:690 `client-detail-info-icon`
-- src/pages/ClientDetail.tsx:698 `client-detail-icon-button`
-- src/pages/ClientDetail.tsx:773 `client-detail-top-tiles entity-overview-tiles`
-- src/pages/ClientDetail.tsx:775 `client-detail-top-tile entity-overview-tile entity-overview-tile-action `
-- src/pages/ClientDetail.tsx:778 `entity-overview-tile-head`
-- src/pages/ClientDetail.tsx:779 `entity-overview-tile-icon`
+- src/pages/CaseDetail.tsx:1250 `case-detail-loading-card`
+- src/pages/CaseDetail.tsx:1263 `case-detail-empty-card`
+- src/pages/CaseDetail.tsx:1282 `case-detail-back-button`
+- src/pages/CaseDetail.tsx:1297 `case-detail-header-actions`
+- src/pages/CaseDetail.tsx:1311 `case-detail-top-card case-detail-top-card-blue`
+- src/pages/CaseDetail.tsx:1312 `case-detail-card-title-row`
+- src/pages/CaseDetail.tsx:1319 `case-detail-top-card case-detail-top-card-green`
+- src/pages/CaseDetail.tsx:1320 `case-detail-card-title-row`
+- src/pages/CaseDetail.tsx:1328 `case-detail-top-card case-detail-top-card-amber`
+- src/pages/CaseDetail.tsx:1329 `case-detail-card-title-row`
+- src/pages/CaseDetail.tsx:1336 `case-detail-top-card case-detail-top-card-muted`
+- src/pages/CaseDetail.tsx:1337 `case-detail-card-title-row`
+- src/pages/CaseDetail.tsx:1350 `case-detail-note-follow-up-panel`
+- src/pages/CaseDetail.tsx:1351 `case-detail-note-follow-up-head`
+- src/pages/CaseDetail.tsx:1361 `case-detail-note-follow-up-preview`
+- src/pages/CaseDetail.tsx:1362 `case-detail-note-follow-up-actions`
+- src/pages/CaseDetail.tsx:1368 `case-detail-note-follow-up-custom`
+- src/pages/CaseDetail.tsx:1437 `case-detail-section-card`
+- src/pages/CaseDetail.tsx:1468 `case-detail-section-card`
+- src/pages/CaseDetail.tsx:1485 `case-detail-section-card`
+- src/pages/CaseDetail.tsx:1508 `case-detail-row-actions`
+- src/pages/CaseDetail.tsx:1521 `case-detail-section-card`
+- src/pages/CaseDetail.tsx:1549 `case-detail-right-card case-detail-create-action-card`
+- src/pages/CaseDetail.tsx:1552 `case-detail-right-actions case-detail-create-actions`
+- src/pages/CaseDetail.tsx:1566 `case-detail-right-note`
+- src/pages/CaseDetail.tsx:1569 `right-card case-detail-right-card`
+- src/pages/CaseDetail.tsx:1570 `case-detail-card-title-row`
+- src/pages/CaseDetail.tsx:1574 `case-detail-right-actions`
+- src/pages/CaseDetail.tsx:1578 `right-card case-detail-right-card`
+- src/pages/CaseDetail.tsx:1579 `case-detail-card-title-row`
+- src/pages/CaseDetail.tsx:1587 `case-detail-right-actions`
+- src/pages/CaseDetail.tsx:1593 `case-detail-card case-detail-recent-moves-panel`
+- src/pages/CaseDetail.tsx:1603 `case-detail-link-button`
+- src/pages/CaseDetail.tsx:1639 `right-card case-detail-right-card`
+- src/pages/CaseDetail.tsx:1640 `case-detail-card-title-row`
+- src/pages/CaseDetail.tsx:1647 `case-detail-right-actions case-detail-right-actions-inline`
+- src/pages/CaseDetail.tsx:1653 `right-card case-detail-right-card`
+- src/pages/CaseDetail.tsx:1654 `case-detail-card-title-row`
+- src/pages/CaseDetail.tsx:1658 `case-detail-right-metrics`
+- src/pages/CaseDetail.tsx:1664 `case-detail-right-note`
+- src/pages/CaseDetail.tsx:1665 `case-detail-right-actions case-detail-right-actions-inline`
+- src/pages/CaseDetail.tsx:1676 `right-card case-detail-right-card`
+- src/pages/CaseDetail.tsx:1677 `case-detail-card-title-row`
+- src/pages/CaseDetail.tsx:1788 `case-detail-card-title-row`
+- src/pages/CaseDetail.tsx:1793 `case-detail-command-actions`
+- src/pages/CaseDetail.tsx:1847 `case-detail-work-icon`
+- src/pages/CaseDetail.tsx:1858 `case-detail-row-actions`
+- src/pages/CaseDetail.tsx:1875 `case-detail-row-action-danger`
+- src/pages/Cases.tsx:492 `head-actions`
+- src/pages/Cases.tsx:635 `client-case-form-disabled-note`
+- src/pages/Cases.tsx:702 `table-card`
+- src/pages/Cases.tsx:709 `table-card`
+- src/pages/Cases.tsx:716 `table-card`
+- src/pages/Cases.tsx:759 `lead-action-cell`
+- src/pages/Cases.tsx:761 `next-action-text`
+- src/pages/Cases.tsx:762 `sub next-action-date`
+- src/pages/Cases.tsx:764 `lead-actions`
+- src/pages/Cases.tsx:781 `right-card cases-shortcuts-rail-card`
+- src/pages/Cases.tsx:791 `right-card cases-risk-rail-card`
+- src/pages/Cases.tsx:804 `note`
+- src/pages/ClientDetail.tsx:615 `client-detail-mini-button`
+- src/pages/ClientDetail.tsx:635 `client-detail-mini-button client-detail-mini-button-muted`
+- src/pages/ClientDetail.tsx:652 `client-detail-info-icon`
+- src/pages/ClientDetail.tsx:660 `client-detail-icon-button`
+- src/pages/ClientDetail.tsx:731 `client-detail-top-tiles entity-overview-tiles`
+- src/pages/ClientDetail.tsx:733 `client-detail-top-tile entity-overview-tile entity-overview-tile-action `
+- src/pages/ClientDetail.tsx:736 `entity-overview-tile-head`
+- src/pages/ClientDetail.tsx:737 `entity-overview-tile-icon`
+- src/pages/ClientDetail.tsx:743 `entity-overview-tile-link`
+- src/pages/ClientDetail.tsx:747 `entity-overview-tile-chip entity-overview-tile-chip-muted`
+- src/pages/ClientDetail.tsx:751 `client-detail-top-tile entity-overview-tile entity-overview-tile-finance`
+- src/pages/ClientDetail.tsx:752 `entity-overview-tile-head`
+- src/pages/ClientDetail.tsx:753 `entity-overview-tile-icon`
+- src/pages/ClientDetail.tsx:757 `entity-overview-metrics`
+- src/pages/ClientDetail.tsx:758 `entity-overview-metric-row`
+- src/pages/ClientDetail.tsx:762 `entity-overview-metric-row`
+- src/pages/ClientDetail.tsx:766 `entity-overview-metric-row`
+- src/pages/ClientDetail.tsx:773 `client-detail-top-tile entity-overview-tile entity-overview-tile-cases`
+- src/pages/ClientDetail.tsx:774 `entity-overview-tile-head`
+- src/pages/ClientDetail.tsx:775 `entity-overview-tile-icon`
 - src/pages/ClientDetail.tsx:785 `entity-overview-tile-link`
-- src/pages/ClientDetail.tsx:789 `entity-overview-tile-chip entity-overview-tile-chip-muted`
-- src/pages/ClientDetail.tsx:793 `client-detail-top-tile entity-overview-tile entity-overview-tile-finance`
-- src/pages/ClientDetail.tsx:794 `entity-overview-tile-head`
-- src/pages/ClientDetail.tsx:795 `entity-overview-tile-icon`
-- src/pages/ClientDetail.tsx:799 `entity-overview-metrics`
-- src/pages/ClientDetail.tsx:800 `entity-overview-metric-row`
-- src/pages/ClientDetail.tsx:804 `entity-overview-metric-row`
-- src/pages/ClientDetail.tsx:808 `entity-overview-metric-row`
-- src/pages/ClientDetail.tsx:815 `client-detail-top-tile entity-overview-tile entity-overview-tile-cases`
-- src/pages/ClientDetail.tsx:816 `entity-overview-tile-head`
-- src/pages/ClientDetail.tsx:817 `entity-overview-tile-icon`
-- src/pages/ClientDetail.tsx:827 `entity-overview-tile-link`
-- src/pages/ClientDetail.tsx:1400 `client-detail-loading-card`
-- src/pages/ClientDetail.tsx:1413 `client-detail-empty-card`
-- src/pages/ClientDetail.tsx:1432 `client-detail-back-button`
-- src/pages/ClientDetail.tsx:1445 `client-detail-header-actions`
-- src/pages/ClientDetail.tsx:1447 `client-detail-header-action-soft`
-- src/pages/ClientDetail.tsx:1457 `client-detail-header-action-primary`
-- src/pages/ClientDetail.tsx:1475 `client-detail-today-info-tiles`
-- src/pages/ClientDetail.tsx:1477 `client-detail-today-info-tile-icon`
-- src/pages/ClientDetail.tsx:1480 `client-detail-today-info-tile-body`
-- src/pages/ClientDetail.tsx:1489 `client-detail-today-info-tile-action`
-- src/pages/ClientDetail.tsx:1514 `client-detail-today-info-tile client-detail-today-info-tile-finance`
-- src/pages/ClientDetail.tsx:1515 `client-detail-today-info-tile-icon`
-- src/pages/ClientDetail.tsx:1518 `client-detail-today-info-tile-body`
-- src/pages/ClientDetail.tsx:1523 `client-detail-today-info-tile-meta`
-- src/pages/ClientDetail.tsx:1534 `client-detail-profile-card client-detail-side-card`
-- src/pages/ClientDetail.tsx:1546 `client-detail-visible-edit-action client-detail-edit-main-button`
-- src/pages/ClientDetail.tsx:1592 `client-detail-edit-actions`
-- src/pages/ClientDetail.tsx:1613 `client-detail-right-card client-detail-recent-moves-card`
-- src/pages/ClientDetail.tsx:1614 `client-detail-card-title-row`
-- src/pages/ClientDetail.tsx:1666 `client-detail-top-cards`
-- src/pages/ClientDetail.tsx:1667 `client-detail-hero-card`
-- src/pages/ClientDetail.tsx:1685 `client-detail-top-cards-side`
-- src/pages/ClientDetail.tsx:1686 `client-detail-completeness-card`
-- src/pages/ClientDetail.tsx:1687 `client-detail-card-title-row`
-- src/pages/ClientDetail.tsx:1695 `client-detail-completeness-note`
-- src/pages/ClientDetail.tsx:1702 `client-detail-summary-card client-detail-finance-card`
-- src/pages/ClientDetail.tsx:1703 `client-detail-card-title-row`
-- src/pages/ClientDetail.tsx:1707 `client-detail-finance-metrics`
-- src/pages/ClientDetail.tsx:1726 `client-detail-section-card`
-- src/pages/ClientDetail.tsx:1744 `client-detail-relation-actions`
-- src/pages/ClientDetail.tsx:1769 `client-detail-relation-actions`
-- src/pages/ClientDetail.tsx:1785 `client-detail-section-card`
-- src/pages/ClientDetail.tsx:1816 `client-detail-section-card`
-- src/pages/ClientDetail.tsx:1860 `client-detail-case-smart-card`
-- src/pages/ClientDetail.tsx:1873 `client-detail-case-smart-actions`
-- src/pages/ClientDetail.tsx:1886 `client-detail-case-smart-delete-icon-button`
-- src/pages/ClientDetail.tsx:1946 `client-detail-section-card`
-- src/pages/ClientDetail.tsx:1975 `right-card client-detail-right-card client-detail-operational-center`
-- src/pages/ClientDetail.tsx:1976 `client-detail-card-title-row`
-- src/pages/ClientDetail.tsx:1980 `client-detail-quick-actions-list`
-- src/pages/ClientDetail.tsx:2002 `right-card client-detail-right-card client-detail-side-quick-actions-card`
-- src/pages/ClientDetail.tsx:2003 `client-detail-card-title-row`
-- src/pages/ClientDetail.tsx:2007 `client-detail-side-quick-actions-grid`
-- src/pages/ClientDetail.tsx:2078 `right-card client-detail-right-card client-detail-note-card`
-- src/pages/ClientDetail.tsx:2079 `client-detail-card-title-row`
-- src/pages/ClientDetail.tsx:2083 `client-detail-note-text`
-- src/pages/ClientDetail.tsx:2094 `client-detail-notes-list`
-- src/pages/ClientDetail.tsx:2095 `client-detail-notes-list-head`
-- src/pages/ClientDetail.tsx:2100 `client-detail-notes-items`
-- src/pages/ClientDetail.tsx:2104 `client-detail-note-item`
-- src/pages/ClientDetail.tsx:2108 `client-detail-note-item-toolbar`
-- src/pages/ClientDetail.tsx:2118 `client-detail-note-delete-button`
-- src/pages/ClientDetail.tsx:2128 `client-detail-notes-empty`
-- src/pages/ClientDetail.tsx:2133 `right-card client-detail-right-card`
-- src/pages/ClientDetail.tsx:2134 `client-detail-card-title-row`
-- src/pages/ClientDetail.tsx:2142 `client-detail-quick-actions-list`
+- src/pages/ClientDetail.tsx:1357 `client-detail-loading-card`
+- src/pages/ClientDetail.tsx:1370 `client-detail-empty-card`
+- src/pages/ClientDetail.tsx:1389 `client-detail-back-button`
+- src/pages/ClientDetail.tsx:1402 `client-detail-header-actions`
+- src/pages/ClientDetail.tsx:1404 `client-detail-header-action-soft`
+- src/pages/ClientDetail.tsx:1414 `client-detail-header-action-primary`
+- src/pages/ClientDetail.tsx:1432 `client-detail-today-info-tiles`
+- src/pages/ClientDetail.tsx:1434 `client-detail-today-info-tile-icon`
+- src/pages/ClientDetail.tsx:1437 `client-detail-today-info-tile-body`
+- src/pages/ClientDetail.tsx:1446 `client-detail-today-info-tile-action`
+- src/pages/ClientDetail.tsx:1471 `client-detail-today-info-tile client-detail-today-info-tile-finance`
+- src/pages/ClientDetail.tsx:1472 `client-detail-today-info-tile-icon`
+- src/pages/ClientDetail.tsx:1475 `client-detail-today-info-tile-body`
+- src/pages/ClientDetail.tsx:1480 `client-detail-today-info-tile-meta`
+- src/pages/ClientDetail.tsx:1490 `client-detail-profile-card client-detail-side-card`
+- src/pages/ClientDetail.tsx:1502 `client-detail-visible-edit-action client-detail-edit-main-button`
+- src/pages/ClientDetail.tsx:1569 `client-detail-right-card client-detail-recent-moves-card`
+- src/pages/ClientDetail.tsx:1570 `client-detail-card-title-row`
+- src/pages/ClientDetail.tsx:1622 `client-detail-top-cards`
+- src/pages/ClientDetail.tsx:1623 `client-detail-hero-card`
+- src/pages/ClientDetail.tsx:1641 `client-detail-top-cards-side`
+- src/pages/ClientDetail.tsx:1642 `client-detail-completeness-card`
+- src/pages/ClientDetail.tsx:1643 `client-detail-card-title-row`
+- src/pages/ClientDetail.tsx:1651 `client-detail-completeness-note`
+- src/pages/ClientDetail.tsx:1658 `client-detail-summary-card client-detail-finance-card`
+- src/pages/ClientDetail.tsx:1659 `client-detail-card-title-row`
+- src/pages/ClientDetail.tsx:1663 `client-detail-finance-metrics`
+- src/pages/ClientDetail.tsx:1682 `client-detail-section-card`
+- src/pages/ClientDetail.tsx:1700 `client-detail-relation-actions`
+- src/pages/ClientDetail.tsx:1725 `client-detail-relation-actions`
+- src/pages/ClientDetail.tsx:1741 `client-detail-section-card`
+- src/pages/ClientDetail.tsx:1772 `client-detail-section-card`
+- src/pages/ClientDetail.tsx:1816 `client-detail-case-smart-card`
+- src/pages/ClientDetail.tsx:1829 `client-detail-case-smart-actions`
+- src/pages/ClientDetail.tsx:1842 `client-detail-case-smart-delete-icon-button`
+- src/pages/ClientDetail.tsx:1902 `client-detail-section-card`
+- src/pages/ClientDetail.tsx:1931 `right-card client-detail-right-card client-detail-operational-center`
+- src/pages/ClientDetail.tsx:1932 `client-detail-card-title-row`
+- src/pages/ClientDetail.tsx:1936 `client-detail-quick-actions-list`
+- src/pages/ClientDetail.tsx:1958 `right-card client-detail-right-card client-detail-side-quick-actions-card`
+- src/pages/ClientDetail.tsx:1959 `client-detail-card-title-row`
+- src/pages/ClientDetail.tsx:1963 `client-detail-side-quick-actions-grid`
+- src/pages/ClientDetail.tsx:2034 `right-card client-detail-right-card client-detail-note-card`
+- src/pages/ClientDetail.tsx:2035 `client-detail-card-title-row`
+- src/pages/ClientDetail.tsx:2039 `client-detail-note-text`
+- src/pages/ClientDetail.tsx:2050 `client-detail-notes-list`
+- src/pages/ClientDetail.tsx:2051 `client-detail-notes-list-head`
+- src/pages/ClientDetail.tsx:2056 `client-detail-notes-items`
+- src/pages/ClientDetail.tsx:2060 `client-detail-note-item`
+- src/pages/ClientDetail.tsx:2064 `client-detail-note-item-toolbar`
+- src/pages/ClientDetail.tsx:2074 `client-detail-note-delete-button`
+- src/pages/ClientDetail.tsx:2084 `client-detail-notes-empty`
+- src/pages/ClientDetail.tsx:2089 `right-card client-detail-right-card`
+- src/pages/ClientDetail.tsx:2090 `client-detail-card-title-row`
+- src/pages/ClientDetail.tsx:2098 `client-detail-quick-actions-list`
 - src/pages/ClientPortal.tsx:223 `w-16 h-16 text-red-500 mx-auto mb-4`
 - src/pages/ClientPortal.tsx:276 `text-[10px] h-4 px-1.5 border border-red-200 text-red-500 rounded-full inline-flex items-center`
 - src/pages/ClientPortal.tsx:377 `gap-2 text-red-600 hover:bg-red-50`
-- src/pages/Clients.tsx:389 `head-actions`
-- src/pages/Clients.tsx:531 `table-card`
-- src/pages/Clients.tsx:533 `table-card`
-- src/pages/Clients.tsx:535 `table-card`
-- src/pages/Clients.tsx:541 `relative group/client-card`
-- src/pages/Clients.tsx:560 `lead-action-cell`
-- src/pages/Clients.tsx:561 `lead-actions`
-- src/pages/Clients.tsx:562 `btn ghost cf-icon-action-button`
-- src/pages/Clients.tsx:584 `right-card`
-- src/pages/Clients.tsx:594 `right-card`
-- src/pages/Clients.tsx:605 `note`
+- src/pages/Clients.tsx:395 `head-actions`
+- src/pages/Clients.tsx:537 `table-card`
+- src/pages/Clients.tsx:539 `table-card`
+- src/pages/Clients.tsx:541 `table-card`
+- src/pages/Clients.tsx:547 `relative group/client-card`
+- src/pages/Clients.tsx:566 `lead-action-cell`
+- src/pages/Clients.tsx:567 `lead-actions`
+- src/pages/Clients.tsx:568 `btn ghost cf-icon-action-button`
+- src/pages/Clients.tsx:590 `right-card`
+- src/pages/Clients.tsx:600 `right-card`
+- src/pages/Clients.tsx:611 `note`
 - src/pages/Dashboard.tsx:228 `w-full justify-start gap-3 text-red-500 hover:text-red-600 hover:bg-red-50`
 - src/pages/Dashboard.tsx:333 `text-2xl font-bold text-red-600`
 - src/pages/Dashboard.tsx:335 `bg-red-50 p-3 rounded-xl`
 - src/pages/Dashboard.tsx:336 `w-6 h-6 text-red-500`
-- src/pages/LeadDetail.tsx:447 `lead-detail-chip-button`
-- src/pages/LeadDetail.tsx:778 `lead-detail-work-metric`
-- src/pages/LeadDetail.tsx:782 `lead-detail-work-metric`
-- src/pages/LeadDetail.tsx:786 `lead-detail-work-metric lead-detail-work-metric-wide`
-- src/pages/LeadDetail.tsx:798 `lead-detail-work-actions`
-- src/pages/LeadDetail.tsx:824 `lead-detail-work-actions lead-detail-work-actions-service`
-- src/pages/LeadDetail.tsx:1381 `lead-detail-loading-card`
-- src/pages/LeadDetail.tsx:1394 `lead-detail-empty-card`
-- src/pages/LeadDetail.tsx:1415 `lead-detail-back-button`
-- src/pages/LeadDetail.tsx:1429 `lead-detail-header-actions`
-- src/pages/LeadDetail.tsx:1470 `lead-detail-top-card lead-detail-callout-blue`
-- src/pages/LeadDetail.tsx:1471 `lead-detail-card-title-row`
-- src/pages/LeadDetail.tsx:1482 `lead-detail-top-card lead-detail-callout-green`
-- src/pages/LeadDetail.tsx:1483 `lead-detail-card-title-row`
-- src/pages/LeadDetail.tsx:1487 `lead-detail-top-card lead-detail-callout-amber`
-- src/pages/LeadDetail.tsx:1488 `lead-detail-card-title-row`
-- src/pages/LeadDetail.tsx:1495 `lead-detail-section-card`
-- src/pages/LeadDetail.tsx:1509 `lead-detail-note-box`
-- src/pages/LeadDetail.tsx:1511 `lead-detail-note-text`
-- src/pages/LeadDetail.tsx:1516 `lead-detail-section-card`
-- src/pages/LeadDetail.tsx:1530 `lead-detail-work-icon`
-- src/pages/LeadDetail.tsx:1537 `lead-detail-row-actions`
-- src/pages/LeadDetail.tsx:1552 `lead-detail-section-card`
-- src/pages/LeadDetail.tsx:1560 `lead-detail-note-form`
-- src/pages/LeadDetail.tsx:1561 `lead-detail-note-input`
-- src/pages/LeadDetail.tsx:1562 `lead-detail-note-transcript`
-- src/pages/LeadDetail.tsx:1587 `lead-detail-history-actions`
-- src/pages/LeadDetail.tsx:1601 `right-card lead-detail-right-card`
-- src/pages/LeadDetail.tsx:1602 `lead-detail-card-title-row`
-- src/pages/LeadDetail.tsx:1607 `right-card lead-detail-right-card`
-- src/pages/LeadDetail.tsx:1608 `lead-detail-card-title-row`
+- src/pages/LeadDetail.tsx:416 `lead-detail-chip-button`
+- src/pages/LeadDetail.tsx:749 `lead-detail-work-metric`
+- src/pages/LeadDetail.tsx:753 `lead-detail-work-metric`
+- src/pages/LeadDetail.tsx:757 `lead-detail-work-metric lead-detail-work-metric-wide`
+- src/pages/LeadDetail.tsx:769 `lead-detail-work-actions`
+- src/pages/LeadDetail.tsx:795 `lead-detail-work-actions lead-detail-work-actions-service`
+- src/pages/LeadDetail.tsx:1352 `lead-detail-loading-card`
+- src/pages/LeadDetail.tsx:1365 `lead-detail-empty-card`
+- src/pages/LeadDetail.tsx:1386 `lead-detail-back-button`
+- src/pages/LeadDetail.tsx:1400 `lead-detail-header-actions`
+- src/pages/LeadDetail.tsx:1441 `lead-detail-top-card lead-detail-callout-blue`
+- src/pages/LeadDetail.tsx:1442 `lead-detail-card-title-row`
+- src/pages/LeadDetail.tsx:1453 `lead-detail-top-card lead-detail-callout-green`
+- src/pages/LeadDetail.tsx:1454 `lead-detail-card-title-row`
+- src/pages/LeadDetail.tsx:1458 `lead-detail-top-card lead-detail-callout-amber`
+- src/pages/LeadDetail.tsx:1459 `lead-detail-card-title-row`
+- src/pages/LeadDetail.tsx:1466 `lead-detail-section-card`
+- src/pages/LeadDetail.tsx:1480 `lead-detail-note-box`
+- src/pages/LeadDetail.tsx:1482 `lead-detail-note-text`
+- src/pages/LeadDetail.tsx:1487 `lead-detail-section-card`
+- src/pages/LeadDetail.tsx:1501 `lead-detail-work-icon`
+- src/pages/LeadDetail.tsx:1508 `lead-detail-row-actions`
+- src/pages/LeadDetail.tsx:1523 `lead-detail-section-card`
+- src/pages/LeadDetail.tsx:1531 `lead-detail-note-form`
+- src/pages/LeadDetail.tsx:1532 `lead-detail-note-input`
+- src/pages/LeadDetail.tsx:1533 `lead-detail-note-transcript`
+- src/pages/LeadDetail.tsx:1558 `lead-detail-history-actions`
+- src/pages/LeadDetail.tsx:1572 `right-card lead-detail-right-card`
+- src/pages/LeadDetail.tsx:1573 `lead-detail-card-title-row`
+- src/pages/LeadDetail.tsx:1578 `right-card lead-detail-right-card`
+- src/pages/LeadDetail.tsx:1579 `lead-detail-card-title-row`
+- src/pages/LeadDetail.tsx:1585 `right-card lead-detail-right-card`
+- src/pages/LeadDetail.tsx:1586 `lead-detail-card-title-row`
+- src/pages/LeadDetail.tsx:1592 `lead-detail-right-actions`
+- src/pages/LeadDetail.tsx:1600 `right-card lead-detail-right-card`
+- src/pages/LeadDetail.tsx:1601 `lead-detail-card-title-row`
+- src/pages/LeadDetail.tsx:1602 `lead-detail-right-actions`
+- src/pages/LeadDetail.tsx:1608 `right-card lead-detail-right-card`
+- src/pages/LeadDetail.tsx:1609 `lead-detail-card-title-row`
 - src/pages/LeadDetail.tsx:1614 `right-card lead-detail-right-card`
 - src/pages/LeadDetail.tsx:1615 `lead-detail-card-title-row`
-- src/pages/LeadDetail.tsx:1621 `lead-detail-right-actions`
-- src/pages/LeadDetail.tsx:1629 `right-card lead-detail-right-card`
-- src/pages/LeadDetail.tsx:1630 `lead-detail-card-title-row`
-- src/pages/LeadDetail.tsx:1631 `lead-detail-right-actions`
-- src/pages/LeadDetail.tsx:1637 `right-card lead-detail-right-card`
-- src/pages/LeadDetail.tsx:1638 `lead-detail-card-title-row`
-- src/pages/LeadDetail.tsx:1643 `right-card lead-detail-right-card`
-- src/pages/LeadDetail.tsx:1644 `lead-detail-card-title-row`
-- src/pages/Leads.tsx:532 `head-actions`
-- src/pages/Leads.tsx:679 `lead-form-section lead-form-planning-note`
-- src/pages/Leads.tsx:801 `table-card lead-table-card`
-- src/pages/Leads.tsx:856 `lead-action-cell`
-- src/pages/Leads.tsx:862 `lead-actions`
-- src/pages/Leads.tsx:895 `right-card lead-right-card lead-top-relations`
-- src/pages/Leads.tsx:921 `note`
+- src/pages/Leads.tsx:546 `head-actions`
+- src/pages/Leads.tsx:693 `lead-form-section lead-form-planning-note`
+- src/pages/Leads.tsx:815 `table-card lead-table-card`
+- src/pages/Leads.tsx:870 `lead-action-cell`
+- src/pages/Leads.tsx:876 `lead-actions`
+- src/pages/Leads.tsx:909 `right-card lead-right-card lead-top-relations`
+- src/pages/Leads.tsx:935 `note`
 - src/pages/NotificationsCenter.tsx:317 `notifications-stat-icon`
 - src/pages/NotificationsCenter.tsx:402 `notifications-row-actions`
 - src/pages/NotificationsCenter.tsx:404 `notifications-action notifications-action-open`
@@ -1579,3 +1578,4 @@ import {
 - src/pages/NotificationsCenter.tsx:778 `notifications-right-card-head`
 - src/pages/Settings.tsx:6 `settings-section-card`
 - src/pages/Settings.tsx:7 `settings-section-card`
+- src/pages/Settings.tsx:8 `settings-section-card`
