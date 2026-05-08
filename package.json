@@ -489,7 +489,8 @@
     "check:closeflow-ui-premap-contract": "node scripts/check-closeflow-ui-premap-contract.cjs",
     "check:closeflow-danger-style-contract": "node scripts/check-closeflow-danger-style-contract.cjs",
     "check:closeflow-surface-contract": "node scripts/check-closeflow-surface-contract.cjs",
-    "check:closeflow-metric-icon-tone-contract": "node scripts/check-closeflow-metric-icon-tone-contract.cjs"
+    "check:closeflow-metric-icon-tone-contract": "node scripts/check-closeflow-metric-icon-tone-contract.cjs",
+    "check:closeflow-page-header-copy-contract": "node scripts/check-closeflow-page-header-copy-contract.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

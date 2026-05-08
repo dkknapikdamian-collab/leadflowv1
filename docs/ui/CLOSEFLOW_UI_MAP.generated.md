@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T12:10:35.169Z
+Generated: 2026-05-08T12:24:28.865Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -90,16 +90,16 @@ Source files scanned: 196
 - Usuń: src/pages/AiDrafts.tsx:975
 - Edytuj: src/pages/AiDrafts.tsx:5
 - Edytuj: src/pages/AiDrafts.tsx:968
-- Edytuj: src/pages/AiDrafts.tsx:1194
+- Edytuj: src/pages/AiDrafts.tsx:1196
 - Zapisz: src/pages/AiDrafts.tsx:5
 - Zapisz: src/pages/AiDrafts.tsx:986
-- Zapisz: src/pages/AiDrafts.tsx:1195
+- Zapisz: src/pages/AiDrafts.tsx:1197
 - Anuluj: src/pages/AiDrafts.tsx:854
 - Anuluj: src/pages/AiDrafts.tsx:970
 - Anuluj: src/pages/AiDrafts.tsx:987
 - Kopiuj: src/pages/AiDrafts.tsx:5
 - Kopiuj: src/pages/AiDrafts.tsx:988
-- Kopiuj: src/pages/AiDrafts.tsx:1196
+- Kopiuj: src/pages/AiDrafts.tsx:1198
 - Anuluj: src/pages/Billing.tsx:683
 - Dodaj zadanie: src/pages/Calendar.tsx:1405
 - Dodaj zadanie: src/pages/Calendar.tsx:1443
@@ -262,6 +262,7 @@ Source files scanned: 196
 - Edytuj: src/pages/TasksStable.tsx:539
 - Zapisz: src/pages/TasksStable.tsx:582
 - Anuluj: src/pages/TasksStable.tsx:581
+- Usuń: src/pages/Templates.tsx:396
 - Edytuj: src/pages/Templates.tsx:390
 - Edytuj: src/pages/Templates.tsx:431
 - Zapisz: src/pages/Templates.tsx:515
@@ -1039,10 +1040,10 @@ import {
 - src/pages/AiDrafts.tsx:986 <button type="button" className="ai-drafts-action ai-drafts-action-green" onClick={() =>
 - src/pages/AiDrafts.tsx:987 <button type="button" className="ai-drafts-action" onClick={handleCancelEdit}>
 - src/pages/AiDrafts.tsx:988 <button type="button" className="ai-drafts-action" onClick={() =>
-- src/pages/AiDrafts.tsx:1006 <button type="button" className="ai-drafts-header-button" onClick={() =>
-- src/pages/AiDrafts.tsx:1104 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
-- src/pages/AiDrafts.tsx:1123 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
-- src/pages/AiDrafts.tsx:1175 <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
+- src/pages/AiDrafts.tsx:1008 <button type="button" className="ai-drafts-header-button" onClick={() =>
+- src/pages/AiDrafts.tsx:1106 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
+- src/pages/AiDrafts.tsx:1125 <button key={draft.id} type="button" className="ai-drafts-rail-item" onClick={() =>
+- src/pages/AiDrafts.tsx:1177 <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
 - src/pages/Billing.tsx:496 <Button type="button" variant="outline" onClick={refresh}>
 - src/pages/Billing.tsx:676 <Button type="button" size="sm" variant="outline" disabled={Boolean(billingActionLoading) || workspace.cancelAtPeriodEnd} 
 - src/pages/Calendar.tsx:392 <Link to={`/leads/${entry.raw.leadId}`} className="text-blue-700 hover:underline">
@@ -1306,21 +1307,21 @@ import {
 - src/pages/AiDrafts.tsx:986 `ai-drafts-action ai-drafts-action-green`
 - src/pages/AiDrafts.tsx:987 `ai-drafts-action`
 - src/pages/AiDrafts.tsx:988 `ai-drafts-action`
-- src/pages/AiDrafts.tsx:1005 `ai-drafts-header-actions`
-- src/pages/AiDrafts.tsx:1006 `ai-drafts-header-button`
-- src/pages/AiDrafts.tsx:1023 `ai-drafts-toolbar-card`
-- src/pages/AiDrafts.tsx:1048 `ai-drafts-list-card`
-- src/pages/AiDrafts.tsx:1077 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1078 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.tsx:1082 `ai-drafts-rail-button`
-- src/pages/AiDrafts.tsx:1086 `ai-drafts-rail-button`
-- src/pages/AiDrafts.tsx:1090 `ai-drafts-rail-button`
-- src/pages/AiDrafts.tsx:1096 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1097 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.tsx:1115 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1116 `ai-drafts-right-card-head`
-- src/pages/AiDrafts.tsx:1134 `right-card ai-drafts-right-card`
-- src/pages/AiDrafts.tsx:1135 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.tsx:1007 `ai-drafts-header-actions`
+- src/pages/AiDrafts.tsx:1008 `ai-drafts-header-button`
+- src/pages/AiDrafts.tsx:1025 `ai-drafts-toolbar-card`
+- src/pages/AiDrafts.tsx:1050 `ai-drafts-list-card`
+- src/pages/AiDrafts.tsx:1079 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.tsx:1080 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.tsx:1084 `ai-drafts-rail-button`
+- src/pages/AiDrafts.tsx:1088 `ai-drafts-rail-button`
+- src/pages/AiDrafts.tsx:1092 `ai-drafts-rail-button`
+- src/pages/AiDrafts.tsx:1098 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.tsx:1099 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.tsx:1117 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.tsx:1118 `ai-drafts-right-card-head`
+- src/pages/AiDrafts.tsx:1136 `right-card ai-drafts-right-card`
+- src/pages/AiDrafts.tsx:1137 `ai-drafts-right-card-head`
 - src/pages/Billing.tsx:477 `billing-loading-card`
 - src/pages/Billing.tsx:495 `billing-header-actions`
 - src/pages/Billing.tsx:521 `billing-status-icon`

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T12:10:35.169Z",
+  "generatedAt": "2026-05-08T12:24:28.865Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -345,7 +345,7 @@
     {
       "term": "Edytuj",
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1194
+      "line": 1196
     },
     {
       "term": "Zapisz",
@@ -360,7 +360,7 @@
     {
       "term": "Zapisz",
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1195
+      "line": 1197
     },
     {
       "term": "Anuluj",
@@ -390,7 +390,7 @@
     {
       "term": "Kopiuj",
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1196
+      "line": 1198
     },
     {
       "term": "Anuluj",
@@ -1203,6 +1203,11 @@
       "line": 581
     },
     {
+      "term": "Usuń",
+      "file": "src/pages/Templates.tsx",
+      "line": 396
+    },
+    {
       "term": "Edytuj",
       "file": "src/pages/Templates.tsx",
       "line": 390
@@ -1870,25 +1875,25 @@
     {
       "tag": "button",
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1006,
+      "line": 1008,
       "snippet": "<button type=\"button\" className=\"ai-drafts-header-button\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1104,
+      "line": 1106,
       "snippet": "<button key={draft.id} type=\"button\" className=\"ai-drafts-rail-item\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1123,
+      "line": 1125,
       "snippet": "<button key={draft.id} type=\"button\" className=\"ai-drafts-rail-item\" onClick={() =>"
     },
     {
       "tag": "a",
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1175,
+      "line": 1177,
       "snippet": "<a href=\"/billing\" className=\"mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white\">"
     },
     {
@@ -5490,77 +5495,77 @@
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1005,
+      "line": 1007,
       "className": "ai-drafts-header-actions"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1006,
+      "line": 1008,
       "className": "ai-drafts-header-button"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1023,
+      "line": 1025,
       "className": "ai-drafts-toolbar-card"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1048,
+      "line": 1050,
       "className": "ai-drafts-list-card"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1077,
+      "line": 1079,
       "className": "right-card ai-drafts-right-card"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1078,
+      "line": 1080,
       "className": "ai-drafts-right-card-head"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1082,
+      "line": 1084,
       "className": "ai-drafts-rail-button"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1086,
+      "line": 1088,
       "className": "ai-drafts-rail-button"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1090,
+      "line": 1092,
       "className": "ai-drafts-rail-button"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1096,
+      "line": 1098,
       "className": "right-card ai-drafts-right-card"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1097,
+      "line": 1099,
       "className": "ai-drafts-right-card-head"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1115,
+      "line": 1117,
       "className": "right-card ai-drafts-right-card"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1116,
+      "line": 1118,
       "className": "ai-drafts-right-card-head"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1134,
+      "line": 1136,
       "className": "right-card ai-drafts-right-card"
     },
     {
       "file": "src/pages/AiDrafts.tsx",
-      "line": 1135,
+      "line": 1137,
       "className": "ai-drafts-right-card-head"
     },
     {
@@ -7317,6 +7322,11 @@
       "file": "src/pages/Today.tsx",
       "line": 2850,
       "className": "text-[8px] h-4 px-1 border-rose-200 text-rose-700"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 974,
+      "className": "cf-section-head-actions flex flex-col items-end gap-2"
     },
     {
       "file": "src/pages/TodayStable.tsx",

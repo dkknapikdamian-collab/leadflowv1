@@ -44,7 +44,7 @@ const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma
 const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
-// Guard marker: \n\nTen lead ma powiÄ…zanÄ… sprawÄ™
+// Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
@@ -163,7 +163,7 @@ function buildNextActionMeta(action: { title: string | null; at: string | null; 
 }
 
 function isLeadInTrash(lead: any) {
-  // STAGE30_LEADS_TRASH_STRICT_VISIBILITY: kosz leadBw nie mo9=e 9apaÄŹĹĽËť! aktywnych rekordBw po samym wyniku sprzeda9=y.
+  // STAGE30_LEADS_TRASH_STRICT_VISIBILITY: kosz leadow nie moze lapac aktywnych rekordow po samym wyniku sprzedazy.
   const status = String(lead?.status || '').trim();
   const visibility = String(lead?.leadVisibility || '').trim();
 
@@ -323,7 +323,7 @@ export default function Leads() {
     const hasLeadIdentity = Boolean(newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || newLead.company.trim());
     const hasContactOrNeed = Boolean(newLead.phone.trim() || newLead.email.trim() || newLead.summary.trim() || newLead.notes.trim());
     if (!hasLeadIdentity) return toast.error('Podaj nazwę albo kontakt.');
-    if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrĹĽeby.');
+    if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
     createLeadSubmitLockRef.current = true;
     setLeadSubmitting(true);
 
@@ -364,7 +364,7 @@ export default function Leads() {
       ? '\\n\\nTen lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
       : '\\n\\nLead zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
 
-    if (!window.confirm('PrzenieĹ›Ä‡ leada do kosza: ' + (lead.name || 'Lead') + '?' + relationText)) return;
+    if (!window.confirm('Przenieść leada do kosza: ' + (lead.name || 'Lead') + '?' + relationText)) return;
 
     try {
       setArchivePendingId(leadId);
@@ -454,7 +454,7 @@ export default function Leads() {
   );
 
   const filteredLeads = useMemo(() => {
-    // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka dzia9a po nazwie, telefonie, mailu, firmie, 9_rBdle i sprawie.
+    // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka dziala po nazwie, telefonie, mailu, firmie, zrodle i sprawie.
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
     const sourceLeads = showTrash ? trashLeads : activeLeads;
 

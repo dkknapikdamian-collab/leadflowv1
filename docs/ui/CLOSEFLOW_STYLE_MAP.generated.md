@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T12:10:35.172Z
+Generated: 2026-05-08T12:24:28.873Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -169,6 +169,10 @@ Generated: 2026-05-08T12:10:35.172Z
 - --cf-metric-tone-purple-icon: src/styles/closeflow-metric-tiles.css:37
 - --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:359
 - --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:360
+- --cf-page-head-title: src/styles/closeflow-page-header.css:5
+- --cf-page-head-muted: src/styles/closeflow-page-header.css:6
+- --cf-page-head-kicker: src/styles/closeflow-page-header.css:7
+- --cf-page-head-action-gap: src/styles/closeflow-page-header.css:8
 - --cf-surface-page: src/styles/closeflow-surface-tokens.css:2
 - --cf-surface-card: src/styles/closeflow-surface-tokens.css:3
 - --cf-surface-card-muted: src/styles/closeflow-surface-tokens.css:4
@@ -499,10 +503,6 @@ Generated: 2026-05-08T12:10:35.172Z
 - --cf21-amber-soft: src/styles/visual-stage21-today-final-lock.css:25
 - --cf21-violet: src/styles/visual-stage21-today-final-lock.css:26
 - --cf21-violet-soft: src/styles/visual-stage21-today-final-lock.css:27
-- --cf21-shadow: src/styles/visual-stage21-today-final-lock.css:28
-- --cf21-shadow-soft: src/styles/visual-stage21-today-final-lock.css:29
-- --cf21-radius-xl: src/styles/visual-stage21-today-final-lock.css:30
-- --cf21-radius-lg: src/styles/visual-stage21-today-final-lock.css:31
 
 ## Danger/red local classes
 - border-rose-200: src/components/AppChunkErrorBoundary.tsx:100

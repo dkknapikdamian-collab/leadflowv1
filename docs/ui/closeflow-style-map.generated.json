@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T12:10:35.172Z",
+  "generatedAt": "2026-05-08T12:24:28.873Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -830,6 +830,26 @@
       "name": "--cf-metric-tile-gap",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 360
+    },
+    {
+      "name": "--cf-page-head-title",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 5
+    },
+    {
+      "name": "--cf-page-head-muted",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-page-head-kicker",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-page-head-action-gap",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 8
     },
     {
       "name": "--cf-surface-page",
@@ -4026,6 +4046,11 @@
       "name": "--cf-metric-tile-gap",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 360
+    },
+    {
+      "name": "--cf-page-head-action-gap",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 8
     },
     {
       "name": "--eliteflow-metric-radius",

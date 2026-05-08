@@ -1001,7 +1001,9 @@ function AiDraftsInner() {
         <header className="ai-drafts-page-header">
           <div>
             <p className="ai-drafts-kicker">SZKICE DO SPRAWDZENIA</p>
-            <h1>Szkice AI</h1>`r`n`r`n          </div>
+            <h1>Szkice AI</h1>
+            <p>Sprawdź, popraw i zatwierdź szkice przed zapisem w CRM.</p>
+          </div>
           <div className="ai-drafts-header-actions">
             <button type="button" className="ai-drafts-header-button" onClick={() => void reloadDrafts()}>
               Odśwież

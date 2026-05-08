@@ -54,7 +54,7 @@ const ITEM_TYPE_OPTIONS: { value: TemplateItemType; label: string; badgeClassNam
   { value: 'file', label: 'Plik', badgeClassName: 'border-sky-200 bg-sky-50 text-sky-700' },
   { value: 'text', label: 'Tekst / brief', badgeClassName: 'border-indigo-200 bg-indigo-50 text-indigo-700' },
   { value: 'decision', label: 'Decyzja / akceptacja', badgeClassName: 'border-amber-200 bg-amber-50 text-amber-700' },
-  { value: 'access', label: 'Dostp / login', badgeClassName: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
+  { value: 'access', label: 'Dostęp / login', badgeClassName: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
 ];
 
 const EMPTY_ITEM: TemplateItemDraft = {
@@ -179,7 +179,7 @@ export default function Templates() {
 
   function openCreateDialog() {
     if (!hasAccess) {
-      toast.error('Dostp jest tylko w trybie podgldu. WBcz plan, |eby dodawa i edytowa szablony.');
+      toast.error('Dostęp jest tylko w trybie podglądu. Włącz plan, żeby dodawać i edytować szablony.');
       return;
     }
 
@@ -190,7 +190,7 @@ export default function Templates() {
 
   function openEditDialog(template: TemplateRecord) {
     if (!hasAccess) {
-      toast.error('Dostp jest tylko w trybie podgldu. WBcz plan, |eby edytowa szablony.');
+      toast.error('Dostęp jest tylko w trybie podglądu. Włącz plan, żeby edytować szablony.');
       return;
     }
 
@@ -222,7 +222,7 @@ export default function Templates() {
 
   async function handleSaveTemplate() {
     if (!hasAccess) {
-      toast.error('Tryb podgldu blokuje zapis.');
+      toast.error('Tryb podglądu blokuje zapis.');
       return;
     }
 
@@ -230,12 +230,12 @@ export default function Templates() {
     const sanitizedItems = normalizeTemplateItems(draft.items).filter((item) => item.title.length > 0);
 
     if (!sanitizedName) {
-      toast.error('Nadaj nazw szablonu.');
+      toast.error('Nadaj nazwę szablonu.');
       return;
     }
 
     if (!sanitizedItems.length) {
-      toast.error('Dodaj przynajmniej jedn pozycj checklisty.');
+      toast.error('Dodaj przynajmniej jedną pozycję checklisty.');
       return;
     }
 
@@ -243,10 +243,10 @@ export default function Templates() {
     try {
       if (editingTemplateId) {
         await updateCaseTemplateInSupabase({ id: editingTemplateId, name: sanitizedName, items: sanitizedItems });
-        toast.success('Szablon zostaB zaktualizowany.');
+        toast.success('Szablon został zaktualizowany.');
       } else {
         await createCaseTemplateInSupabase({ name: sanitizedName, items: sanitizedItems });
-        toast.success('Szablon zostaB dodany.');
+        toast.success('Szablon został dodany.');
       }
 
       setDialogOpen(false);
@@ -262,7 +262,7 @@ export default function Templates() {
 
   async function handleDuplicateTemplate(template: TemplateRecord) {
     if (!hasAccess) {
-      toast.error('Tryb podgldu blokuje zapis.');
+      toast.error('Tryb podglądu blokuje zapis.');
       return;
     }
 
@@ -271,7 +271,7 @@ export default function Templates() {
         name: `${template.name || 'Szablon'} (kopia)`,
         items: normalizeTemplateItems(template.items),
       });
-      toast.success('Utworzono kopi szablonu.');
+      toast.success('Utworzono kopię szablonu.');
       await loadTemplates();
     } catch (error: any) {
       toast.error(`Nie udało się skopiować szablonu: ${error?.message || 'REQUEST_FAILED'}`);
@@ -280,13 +280,13 @@ export default function Templates() {
 
   async function handleDeleteTemplate(templateId: string) {
     if (!hasAccess) {
-      toast.error('Tryb podgldu blokuje zapis.');
+      toast.error('Tryb podglądu blokuje zapis.');
       return;
     }
 
     try {
       await deleteCaseTemplateFromSupabase(templateId);
-      toast.success('Szablon zostaB usunity.');
+      toast.success('Szablon został usunięty.');
       await loadTemplates();
     } catch (error: any) {
       toast.error(`Nie udało się usunąć szablonu: ${error?.message || 'REQUEST_FAILED'}`);
@@ -309,7 +309,7 @@ export default function Templates() {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               {!hasAccess ? (
                 <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700">
-                  <ShieldAlert className="h-4 w-4" /> Tryb podgldu blokuje zapis szablonów
+                  <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis szablonów
                 </div>
               ) : null}
               <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
@@ -353,7 +353,7 @@ export default function Templates() {
                 <div>
                   <p className="text-xl font-black text-slate-950">Brak szablonów w tym widoku</p>
                   <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
-                    Dodaj pierwszy szablon, je[li chcesz szybciej zamienia pozyskany temat w spraw z checklist.
+                    Dodaj pierwszy szablon, jeśli chcesz szybciej zamieniać pozyskany temat w sprawę z checklistą.
                   </p>
                 </div>
                 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
@@ -374,10 +374,10 @@ export default function Templates() {
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-xl font-black text-slate-950">{template.name || 'Szablon bez nazwy'}</h3>
                           <Badge variant="outline" className="border-slate-200 bg-slate-50 text-slate-700">{items.length} pozycji</Badge>
-                          {requiredCount > 0 ? <Badge className="border border-amber-200 bg-amber-50 text-amber-700">{requiredCount} obowizkowych</Badge> : null}
+                          {requiredCount > 0 ? <Badge className="border border-amber-200 bg-amber-50 text-amber-700">{requiredCount} obowiązkowych</Badge> : null}
                         </div>
                         <p className="text-sm leading-6 text-slate-500">
-                          Po wybraniu szablonu pozycje zostan skopiowane do checklisty nowej sprawy.
+                          Po wybraniu szablonu pozycje zostaną skopiowane do checklisty nowej sprawy.
                         </p>
                       </div>
                       <DropdownMenu>
@@ -393,7 +393,7 @@ export default function Templates() {
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <EntityActionButton type="button" tone="danger" className="w-full justify-start rounded-sm px-2 py-1.5 text-sm font-normal shadow-none" onClick={() => void handleDeleteTemplate(template.id)}>
-                            <Trash2 className="mr-2 h-4 w-4" /> UsuD
+                            <Trash2 className="mr-2 h-4 w-4" /> Usuń
                             </EntityActionButton>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -407,11 +407,11 @@ export default function Templates() {
                           <div key={`${template.id}-${index}`} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                             <div className="mb-3 flex flex-wrap items-center gap-2">
                               <Badge variant="outline" className={meta.badgeClassName}>{meta.label}</Badge>
-                              {item.isRequired ? <Badge className="bg-rose-600 text-white">Obowizkowe</Badge> : <Badge variant="outline" className="border-slate-200 bg-white text-slate-700">Opcjonalne</Badge>}
+                              {item.isRequired ? <Badge className="bg-rose-600 text-white">Obowiązkowe</Badge> : <Badge variant="outline" className="border-slate-200 bg-white text-slate-700">Opcjonalne</Badge>}
                             </div>
                             <p className="font-bold text-slate-950">{item.title}</p>
                             <p className="mt-2 text-sm leading-6 text-slate-500">
-                              {item.description || 'Bez opisu. Warto dopisa krótkie wyjaśnienie dla klienta.'}
+                              {item.description || 'Bez opisu. Warto dopisać krótkie wyjaśnienie dla klienta.'}
                             </p>
                           </div>
                         );
@@ -443,9 +443,9 @@ export default function Templates() {
                 />
               </div>
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
-                <p className="font-bold text-slate-950">Jak tego u|ywa</p>
+                <p className="font-bold text-slate-950">Jak tego używać</p>
                 <p className="mt-2 leading-6 text-slate-500">
-                  Ten szablon pojawi si przy akcji Rozpocznij obsBug. Wszystkie pozycje zostan automatycznie skopiowane do checklisty nowej sprawy.
+                  Ten szablon pojawi się przy akcji "Rozpocznij obsługę". Wszystkie pozycje zostaną automatycznie skopiowane do checklisty nowej sprawy.
                 </p>
               </div>
             </div>
@@ -456,7 +456,7 @@ export default function Templates() {
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <div>
                       <p className="text-sm font-bold text-slate-950">Pozycja {index + 1}</p>
-                      <p className="text-xs text-slate-500">To dokBadnie zobaczy operator i klient w dalszym flow.</p>
+                      <p className="text-xs text-slate-500">To dokładnie zobaczy operator i klient w dalszym flow.</p>
                     </div>
                     <EntityActionButton type="button" variant="ghost" size="icon" tone="danger" iconOnly className="rounded-2xl" onClick={() => removeDraftItem(index)}>
                       <Trash2 className="h-4 w-4" />
@@ -465,15 +465,15 @@ export default function Templates() {
 
                   <div className="grid gap-4">
                     <div className="space-y-2">
-                      <Label className="text-slate-700">TytuB pozycji</Label>
-                      <Input value={item.title} onChange={(event) => updateDraftItem(index, { title: event.target.value })} placeholder="Np. Dostp do hostingu" className="border-slate-200 bg-white text-slate-900" />
+                      <Label className="text-slate-700">Tytuł pozycji</Label>
+                      <Input value={item.title} onChange={(event) => updateDraftItem(index, { title: event.target.value })} placeholder="Np. Dostęp do hostingu" className="border-slate-200 bg-white text-slate-900" />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-slate-700">Opis / instrukcja</Label>
                       <Textarea
                         value={item.description}
                         onChange={(event) => updateDraftItem(index, { description: event.target.value })}
-                        placeholder="Dopisz, co dokBadnie klient ma przygotowa albo zatwierdzi."
+                        placeholder="Dopisz, co dokładnie klient ma przygotować albo zatwierdzić."
                         rows={3}
                         className="border-slate-200 bg-white text-slate-900"
                       />
@@ -494,8 +494,8 @@ export default function Templates() {
                       </div>
                       <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                         <div>
-                          <p className="text-sm font-bold text-slate-950">Obowizkowe</p>
-                          <p className="text-xs text-slate-500">Brak tej pozycji bdzie blokowaB spraw.</p>
+                          <p className="text-sm font-bold text-slate-950">Obowiązkowe</p>
+                          <p className="text-xs text-slate-500">Brak tej pozycji będzie blokował sprawę.</p>
                         </div>
                         <Checkbox checked={item.isRequired} onCheckedChange={(checked) => updateDraftItem(index, { isRequired: checked === true })} />
                       </div>
@@ -505,7 +505,7 @@ export default function Templates() {
               ))}
 
               <Button variant="outline" className="w-full rounded-2xl border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={addDraftItem}>
-                <Plus className="h-4 w-4" /> Dodaj nastpn pozycj
+                <Plus className="h-4 w-4" /> Dodaj następną pozycję
               </Button>
             </div>
           </div>

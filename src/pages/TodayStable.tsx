@@ -965,13 +965,13 @@ export default function TodayStable() {
     <Layout>
       <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
         <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="cf-section-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Centrum dnia</p>
-              <p className="mt-1 text-xl font-black text-slate-900 sm:text-2xl">Priorytety i najbliższe ruchy</p>
+              <p className="cf-section-head-kicker text-xs font-bold uppercase tracking-wide text-slate-500">Centrum dnia</p>
+              <p className="cf-section-head-title mt-1 text-xl font-black text-slate-900 sm:text-2xl">Priorytety i najbliższe ruchy</p>
               <p className="mt-1 text-sm text-slate-500">Szybki przegląd tego, co wymaga reakcji teraz i co warto zaplanować dalej.</p>
             </div>
-            <div className="flex flex-col items-end gap-2">
+            <div className="cf-section-head-actions flex flex-col items-end gap-2">
               <div className="flex flex-wrap items-center justify-end gap-2">
                 {lastLoadedAt ? <span className="text-xs font-semibold text-slate-500">Ostatni odczyt: {lastLoadedAt}</span> : null}
                 <Button type="button" variant="outline" onClick={() => void refreshData({ manual: true })} disabled={loading || manualRefreshing}>

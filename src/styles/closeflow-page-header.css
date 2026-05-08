@@ -1,0 +1,95 @@
+/* CLOSEFLOW_PAGE_HEADER_CONTRACT
+   One source of truth for page-head, page headers and compact section headers.
+*/
+:root {
+  --cf-page-head-title: #0f172a;
+  --cf-page-head-muted: #64748b;
+  --cf-page-head-kicker: #475569;
+  --cf-page-head-action-gap: 8px;
+}
+
+.page-head,
+.ai-drafts-page-header,
+.activity-page-header,
+.notifications-page-header,
+.cf-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  min-width: 0;
+}
+
+.page-head h1,
+.ai-drafts-page-header h1,
+.activity-page-header h1,
+.notifications-page-header h1 {
+  margin: 6px 0 0;
+  color: var(--cf-page-head-title);
+  font-size: clamp(28px, 3vw, 36px);
+  line-height: 1.05;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.page-head .lead-copy,
+.page-head p:not(.kicker):not(.pill),
+.ai-drafts-page-header p:not(.ai-drafts-kicker),
+.activity-page-header p:not(.activity-kicker),
+.notifications-page-header p:not(.notifications-kicker),
+.cf-section-head p {
+  color: var(--cf-page-head-muted);
+}
+
+.page-head .kicker,
+.ai-drafts-kicker,
+.activity-kicker,
+.notifications-kicker,
+.cf-section-head-kicker {
+  color: var(--cf-page-head-kicker);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.head-actions,
+.ai-drafts-header-actions,
+.activity-header-actions,
+.notifications-header-actions,
+.cf-section-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--cf-page-head-action-gap);
+}
+
+.cf-section-head-title {
+  margin: 4px 0 0;
+  color: var(--cf-page-head-title);
+  font-size: clamp(20px, 2.2vw, 26px);
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+@media (max-width: 720px) {
+  .page-head,
+  .ai-drafts-page-header,
+  .activity-page-header,
+  .notifications-page-header,
+  .cf-section-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .head-actions,
+  .ai-drafts-header-actions,
+  .activity-header-actions,
+  .notifications-header-actions,
+  .cf-section-head-actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}

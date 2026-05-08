@@ -14,6 +14,7 @@ import EmailVerificationGate from './components/EmailVerificationGate';
 import './styles/closeflow-action-tokens.css';
 import './styles/closeflow-surface-tokens.css';
 import './styles/closeflow-metric-tiles.css';
+import './styles/closeflow-page-header.css';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 
