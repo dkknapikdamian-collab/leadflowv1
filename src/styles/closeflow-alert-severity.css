@@ -170,3 +170,11 @@
 .cf-severity-text-success {
   color: var(--cf-alert-success-text);
 }
+
+.cf-severity-hover-error:hover {
+  border-color: var(--cf-alert-error-border);
+}
+
+.cf-severity-hover-warning:hover {
+  border-color: var(--cf-alert-warning-border);
+}

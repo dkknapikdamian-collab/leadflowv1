@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T17:21:33.264Z",
+  "generatedAt": "2026-05-08T17:37:31.589Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -3331,172 +3331,172 @@
     {
       "className": "border-red-100",
       "file": "src/pages/Today.tsx",
-      "line": 1286
+      "line": 1290
     },
     {
       "className": "bg-red-50",
       "file": "src/pages/Today.tsx",
-      "line": 1286
+      "line": 1290
     },
     {
       "className": "border-red-200",
       "file": "src/pages/Today.tsx",
-      "line": 1286
+      "line": 1290
     },
     {
       "className": "bg-red-100",
       "file": "src/pages/Today.tsx",
-      "line": 1286
+      "line": 1290
     },
     {
       "className": "text-red-700",
       "file": "src/pages/Today.tsx",
-      "line": 1287
+      "line": 1291
     },
     {
       "className": "text-red-950",
       "file": "src/pages/Today.tsx",
-      "line": 1288
+      "line": 1292
     },
     {
       "className": "text-red-700",
       "file": "src/pages/Today.tsx",
-      "line": 1289
+      "line": 1293
     },
     {
       "className": "border-red-100",
       "file": "src/pages/Today.tsx",
-      "line": 1304
+      "line": 1308
     },
     {
       "className": "bg-red-50",
       "file": "src/pages/Today.tsx",
-      "line": 1304
+      "line": 1308
     },
     {
       "className": "text-red-800",
       "file": "src/pages/Today.tsx",
-      "line": 1305
+      "line": 1309
     },
     {
       "className": "border-red-100",
       "file": "src/pages/Today.tsx",
-      "line": 1314
+      "line": 1318
     },
     {
       "className": "border-red-200",
       "file": "src/pages/Today.tsx",
-      "line": 1314
+      "line": 1318
     },
     {
       "className": "bg-red-50",
       "file": "src/pages/Today.tsx",
-      "line": 1314
+      "line": 1318
     },
     {
       "className": "text-red-950",
       "file": "src/pages/Today.tsx",
-      "line": 1316
+      "line": 1320
     },
     {
       "className": "text-red-700",
       "file": "src/pages/Today.tsx",
-      "line": 1317
+      "line": 1321
     },
     {
       "className": "border-rose-200",
       "file": "src/pages/Today.tsx",
-      "line": 2182
+      "line": 2186
     },
     {
       "className": "text-rose-700",
       "file": "src/pages/Today.tsx",
-      "line": 2184
+      "line": 2188
     },
     {
       "className": "text-rose-600",
       "file": "src/pages/Today.tsx",
-      "line": 2302
+      "line": 2306
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/Today.tsx",
-      "line": 2303
+      "line": 2307
     },
     {
       "className": "border-rose-100",
       "file": "src/pages/Today.tsx",
-      "line": 2422
+      "line": 2426
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/Today.tsx",
-      "line": 2422
+      "line": 2426
     },
     {
       "className": "border-rose-100",
       "file": "src/pages/Today.tsx",
-      "line": 2431
+      "line": 2435
     },
     {
       "className": "text-rose-500",
       "file": "src/pages/Today.tsx",
-      "line": 2446
+      "line": 2450
     },
     {
       "className": "text-rose-600",
       "file": "src/pages/Today.tsx",
-      "line": 2473
+      "line": 2477
     },
     {
       "className": "text-rose-500",
       "file": "src/pages/Today.tsx",
-      "line": 2485
+      "line": 2489
     },
     {
       "className": "border-rose-100",
       "file": "src/pages/Today.tsx",
-      "line": 2486
+      "line": 2490
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/Today.tsx",
-      "line": 2486
+      "line": 2490
     },
     {
       "className": "border-rose-200",
       "file": "src/pages/Today.tsx",
-      "line": 2798
+      "line": 2802
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/Today.tsx",
-      "line": 2798
+      "line": 2802
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/Today.tsx",
-      "line": 2798
+      "line": 2802
     },
     {
       "className": "text-rose-700",
       "file": "src/pages/Today.tsx",
-      "line": 2800
+      "line": 2804
     },
     {
       "className": "text-rose-600",
       "file": "src/pages/Today.tsx",
-      "line": 2849
+      "line": 2853
     },
     {
       "className": "border-rose-200",
       "file": "src/pages/Today.tsx",
-      "line": 2850
+      "line": 2854
     },
     {
       "className": "text-rose-700",
       "file": "src/pages/Today.tsx",
-      "line": 2850
+      "line": 2854
     },
     {
       "className": "text-rose-500",
@@ -3626,7 +3626,7 @@
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 808
+      "line": 812
     },
     {
       "file": "src/pages/UiPreviewVNext.tsx",

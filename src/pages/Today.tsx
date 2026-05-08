@@ -1,4 +1,8 @@
 ﻿/*
+LEGACY_TODAY_TSX_INACTIVE_UI_SURFACE_STAGE15
+Stage15 decision: this file is retained as an inactive legacy UI surface. Active / and /today route through TodayStable in src/App.tsx. Do not refactor this file inside active UI cleanup stages.
+*/
+/*
 FAZA5_ETAP52_TODAY_COLLAPSIBLE_MASONRY
 A13_TODAY_SOURCE_GUARD_MARKERS_FOR_EXISTING_TESTS
 TODAY_AI_DRAFTS_TILE_STAGE29

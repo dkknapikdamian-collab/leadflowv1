@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T17:21:32.692Z
+Generated: 2026-05-08T17:37:31.054Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -271,12 +271,12 @@ Source files scanned: 196
 - Dodaj: src/pages/Templates.tsx:357
 - Dodaj: src/pages/Templates.tsx:361
 - Dodaj: src/pages/Templates.tsx:509
-- Usuń: src/pages/Today.tsx:2459
-- Usuń: src/pages/Today.tsx:2592
-- Usuń: src/pages/Today.tsx:2660
-- Usuń: src/pages/Today.tsx:2952
-- Edytuj: src/pages/Today.tsx:832
-- Edytuj: src/pages/Today.tsx:834
+- Usuń: src/pages/Today.tsx:2463
+- Usuń: src/pages/Today.tsx:2596
+- Usuń: src/pages/Today.tsx:2664
+- Usuń: src/pages/Today.tsx:2956
+- Edytuj: src/pages/Today.tsx:836
+- Edytuj: src/pages/Today.tsx:838
 - Edytuj: src/pages/TodayStable.tsx:581
 - Dodaj notatkę: src/pages/UiPreviewVNextFull.tsx:20
 - Dodaj notatkę: src/pages/UiPreviewVNextFull.tsx:20
@@ -1200,29 +1200,29 @@ import {
 - src/pages/Templates.tsx:508 <Button variant="outline" className="w-full rounded-2xl border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={addDraftItem}>
 - src/pages/Templates.tsx:514 <Button variant="outline" className="border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={() =>
 - src/pages/Templates.tsx:515 <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={() =>
-- src/pages/Today.tsx:559 <button type="button" data-today-tile-header="true" data-today-tile-id={id} data-today-tile-title={title} onClick={handleHeaderClick} aria-expanded={!collapsed}
-- src/pages/Today.tsx:604 <Link to={`/leads/${leadId}`} className="block group">
-- src/pages/Today.tsx:700 <Link to={`/leads/${leadId}`} className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:
-- src/pages/Today.tsx:708 <Link to={`/cases/${caseId}`} className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-sky-200 hover:b
-- src/pages/Today.tsx:1184 <Link to="/ai-drafts" data-today-ai-drafts-shortcut="true" className="min-w-[180px] flex-1 rounded-2xl border border-violet-100 bg-violet-50 p-3 text-left transition hover:border-violet-200 hover:bg-vio
-- src/pages/Today.tsx:1311 <Link key={caseItem.id} to={caseItem.id ? `/cases/${caseItem.id}` : '/cases'} className="rounded-xl border border-red-100 bg-white p-2 text-sm transition 
-- src/pages/Today.tsx:1332 <Link key={lead.id} to={lead.id ? `/leads/${lead.id}` : '/leads'} className="rounded-xl border border-emerald-100 bg-white p-2 text-sm transition hover:bo
-- src/pages/Today.tsx:2361 <button key={card.id} type="button" onClick={handleOpen} className="min-w-[220px] flex-1 rounded-[28px] border border-slate-200 bg-white px-8 py-7 text-left
-- src/pages/Today.tsx:2452 <Button variant="outline" size="sm" onClick={() =>
-- src/pages/Today.tsx:2455 <Button variant="outline" size="sm" onClick={() =>
-- src/pages/Today.tsx:2458 <Button variant="ghost" size="sm" onClick={() =>
-- src/pages/Today.tsx:2509 <Link key={entry.id} to={entry.link || `/leads/${entry.sourceId}`} className="block group">
-- src/pages/Today.tsx:2585 <Button variant="outline" size="sm" onClick={() =>
-- src/pages/Today.tsx:2588 <Button variant="outline" size="sm" onClick={() =>
-- src/pages/Today.tsx:2591 <Button variant="ghost" size="sm" onClick={() =>
-- src/pages/Today.tsx:2653 <Button variant="outline" size="sm" onClick={() =>
-- src/pages/Today.tsx:2656 <Button variant="outline" size="sm" onClick={() =>
-- src/pages/Today.tsx:2659 <Button variant="ghost" size="sm" onClick={() =>
-- src/pages/Today.tsx:2703 <Link key={draft.id} to="/ai-drafts" className="block rounded-lg border border-violet-200 bg-violet-50/40 px-3 py-2 hover:bg-violet-50">
-- src/pages/Today.tsx:2798 <Link key={String(caseRecord.id)} to={`/case/${String(caseRecord.id)}`} className="block rounded-lg border border-rose-200 bg-rose-50/40 px-3 py-2 hover:bg-rose-50">
-- src/pages/Today.tsx:2946 <Button variant="ghost" size="sm" onClick={() =>
-- src/pages/Today.tsx:2954 <Button variant="outline" size="sm" onClick={() =>
-- src/pages/Today.tsx:2971 <Button variant="outline" size="sm" asChild>
+- src/pages/Today.tsx:563 <button type="button" data-today-tile-header="true" data-today-tile-id={id} data-today-tile-title={title} onClick={handleHeaderClick} aria-expanded={!collapsed}
+- src/pages/Today.tsx:608 <Link to={`/leads/${leadId}`} className="block group">
+- src/pages/Today.tsx:704 <Link to={`/leads/${leadId}`} className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:
+- src/pages/Today.tsx:712 <Link to={`/cases/${caseId}`} className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-sky-200 hover:b
+- src/pages/Today.tsx:1188 <Link to="/ai-drafts" data-today-ai-drafts-shortcut="true" className="min-w-[180px] flex-1 rounded-2xl border border-violet-100 bg-violet-50 p-3 text-left transition hover:border-violet-200 hover:bg-vio
+- src/pages/Today.tsx:1315 <Link key={caseItem.id} to={caseItem.id ? `/cases/${caseItem.id}` : '/cases'} className="rounded-xl border border-red-100 bg-white p-2 text-sm transition 
+- src/pages/Today.tsx:1336 <Link key={lead.id} to={lead.id ? `/leads/${lead.id}` : '/leads'} className="rounded-xl border border-emerald-100 bg-white p-2 text-sm transition hover:bo
+- src/pages/Today.tsx:2365 <button key={card.id} type="button" onClick={handleOpen} className="min-w-[220px] flex-1 rounded-[28px] border border-slate-200 bg-white px-8 py-7 text-left
+- src/pages/Today.tsx:2456 <Button variant="outline" size="sm" onClick={() =>
+- src/pages/Today.tsx:2459 <Button variant="outline" size="sm" onClick={() =>
+- src/pages/Today.tsx:2462 <Button variant="ghost" size="sm" onClick={() =>
+- src/pages/Today.tsx:2513 <Link key={entry.id} to={entry.link || `/leads/${entry.sourceId}`} className="block group">
+- src/pages/Today.tsx:2589 <Button variant="outline" size="sm" onClick={() =>
+- src/pages/Today.tsx:2592 <Button variant="outline" size="sm" onClick={() =>
+- src/pages/Today.tsx:2595 <Button variant="ghost" size="sm" onClick={() =>
+- src/pages/Today.tsx:2657 <Button variant="outline" size="sm" onClick={() =>
+- src/pages/Today.tsx:2660 <Button variant="outline" size="sm" onClick={() =>
+- src/pages/Today.tsx:2663 <Button variant="ghost" size="sm" onClick={() =>
+- src/pages/Today.tsx:2707 <Link key={draft.id} to="/ai-drafts" className="block rounded-lg border border-violet-200 bg-violet-50/40 px-3 py-2 hover:bg-violet-50">
+- src/pages/Today.tsx:2802 <Link key={String(caseRecord.id)} to={`/case/${String(caseRecord.id)}`} className="block rounded-lg border border-rose-200 bg-rose-50/40 px-3 py-2 hover:bg-rose-50">
+- src/pages/Today.tsx:2950 <Button variant="ghost" size="sm" onClick={() =>
+- src/pages/Today.tsx:2958 <Button variant="outline" size="sm" onClick={() =>
+- src/pages/Today.tsx:2975 <Button variant="outline" size="sm" asChild>
 - src/pages/TodayStable.tsx:430 <button type="button" onClick={onToggle} aria-expanded={!collapsed} className="flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-
 - src/pages/TodayStable.tsx:559 <Link to={to} className="font-semibold text-slate-900 break-words hover:underline">
 - src/pages/TodayStable.tsx:581 <Button type="button" size="sm" variant="outline" onClick={onEdit}>

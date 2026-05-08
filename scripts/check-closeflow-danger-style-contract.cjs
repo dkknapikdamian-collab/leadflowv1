@@ -5,7 +5,9 @@ const root = process.cwd();
 const src = path.join(root, 'src');
 const exts = new Set(['.tsx', '.ts', '.jsx', '.js']);
 const stage8DocPath = path.join(root, 'docs/ui/CLOSEFLOW_UI_CONTRACT_AUDIT_STAGE8_2026-05-08.md');
+const stage15DocPath = path.join(root, 'docs/ui/CLOSEFLOW_LEGACY_TODAY_ROUTE_STAGE15_2026-05-08.md');
 const STAGE8_DOCUMENTED_LEGACY_EXCEPTIONS = 'STAGE8_DOCUMENTED_LEGACY_EXCEPTIONS';
+const LEGACY_TODAY_TSX_INACTIVE_UI_SURFACE_STAGE15 = 'LEGACY_TODAY_TSX_INACTIVE_UI_SURFACE_STAGE15';
 
 function walk(dir, acc = []) {
   if (!fs.existsSync(dir)) return acc;
@@ -25,7 +27,26 @@ function lineNo(text, idx) {
   return text.slice(0, idx).split(/\r?\n/).length;
 }
 
+function isLegacyInactiveTodaySurface(file) {
+  if (file !== 'src/pages/Today.tsx') return false;
+  const todayPath = path.join(root, 'src/pages/Today.tsx');
+  const appPath = path.join(root, 'src/App.tsx');
+  if (!fs.existsSync(todayPath) || !fs.existsSync(appPath) || !fs.existsSync(stage15DocPath)) return false;
+
+  const todayText = fs.readFileSync(todayPath, 'utf8');
+  const appText = fs.readFileSync(appPath, 'utf8');
+  const docText = fs.readFileSync(stage15DocPath, 'utf8');
+
+  return todayText.includes(LEGACY_TODAY_TSX_INACTIVE_UI_SURFACE_STAGE15)
+    && docText.includes(LEGACY_TODAY_TSX_INACTIVE_UI_SURFACE_STAGE15)
+    && appText.includes("const Today = lazy(() => import('./pages/TodayStable'))")
+    && appText.includes('<Route path="/" element={isLoggedIn ? <Today />')
+    && appText.includes('<Route path="/today" element={isLoggedIn ? <Today />')
+    && !appText.includes("import('./pages/Today')");
+}
+
 function categorizeFinding(file, className) {
+  if (isLegacyInactiveTodaySurface(file)) return 'legacy inactive Today.tsx exception';
   if (/AppChunkErrorBoundary|Dashboard/.test(file)) return 'real system alert/error';
   if (/Activity|NotificationsCenter|Calendar|Today|TodayStable/.test(file)) return 'real system alert/error or schedule/status surface';
   if (/TasksStable|Leads|Templates/.test(file)) return 'status/progress';

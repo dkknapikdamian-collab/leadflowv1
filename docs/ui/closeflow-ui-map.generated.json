@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T17:21:32.692Z",
+  "generatedAt": "2026-05-08T17:37:31.054Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -1250,32 +1250,32 @@
     {
       "term": "Usuń",
       "file": "src/pages/Today.tsx",
-      "line": 2459
+      "line": 2463
     },
     {
       "term": "Usuń",
       "file": "src/pages/Today.tsx",
-      "line": 2592
+      "line": 2596
     },
     {
       "term": "Usuń",
       "file": "src/pages/Today.tsx",
-      "line": 2660
+      "line": 2664
     },
     {
       "term": "Usuń",
       "file": "src/pages/Today.tsx",
-      "line": 2952
+      "line": 2956
     },
     {
       "term": "Edytuj",
       "file": "src/pages/Today.tsx",
-      "line": 832
+      "line": 836
     },
     {
       "term": "Edytuj",
       "file": "src/pages/Today.tsx",
-      "line": 834
+      "line": 838
     },
     {
       "term": "Edytuj",
@@ -2835,139 +2835,139 @@
     {
       "tag": "button",
       "file": "src/pages/Today.tsx",
-      "line": 559,
+      "line": 563,
       "snippet": "<button\n          type=\"button\"\n          data-today-tile-header=\"true\"\n          data-today-tile-id={id}\n          data-today-tile-title={title}\n          onClick={handleHeaderClick}\n          aria-expanded={!collapsed}"
     },
     {
       "tag": "Link",
       "file": "src/pages/Today.tsx",
-      "line": 604,
+      "line": 608,
       "snippet": "<Link to={`/leads/${leadId}`} className=\"block group\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/Today.tsx",
-      "line": 700,
+      "line": 704,
       "snippet": "<Link\n          to={`/leads/${leadId}`}\n          className=\"inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:"
     },
     {
       "tag": "Link",
       "file": "src/pages/Today.tsx",
-      "line": 708,
+      "line": 712,
       "snippet": "<Link\n          to={`/cases/${caseId}`}\n          className=\"inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-sky-200 hover:b"
     },
     {
       "tag": "Link",
       "file": "src/pages/Today.tsx",
-      "line": 1184,
+      "line": 1188,
       "snippet": "<Link\n      to=\"/ai-drafts\"\n      data-today-ai-drafts-shortcut=\"true\"\n      className=\"min-w-[180px] flex-1 rounded-2xl border border-violet-100 bg-violet-50 p-3 text-left transition hover:border-violet-200 hover:bg-vio"
     },
     {
       "tag": "Link",
       "file": "src/pages/Today.tsx",
-      "line": 1311,
+      "line": 1315,
       "snippet": "<Link\n                      key={caseItem.id}\n                      to={caseItem.id ? `/cases/${caseItem.id}` : '/cases'}\n                      className=\"rounded-xl border border-red-100 bg-white p-2 text-sm transition "
     },
     {
       "tag": "Link",
       "file": "src/pages/Today.tsx",
-      "line": 1332,
+      "line": 1336,
       "snippet": "<Link\n                      key={lead.id}\n                      to={lead.id ? `/leads/${lead.id}` : '/leads'}\n                      className=\"rounded-xl border border-emerald-100 bg-white p-2 text-sm transition hover:bo"
     },
     {
       "tag": "button",
       "file": "src/pages/Today.tsx",
-      "line": 2361,
+      "line": 2365,
       "snippet": "<button\n                key={card.id}\n                type=\"button\"\n                onClick={handleOpen}\n                className=\"min-w-[220px] flex-1 rounded-[28px] border border-slate-200 bg-white px-8 py-7 text-left"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2452,
+      "line": 2456,
       "snippet": "<Button variant=\"outline\" size=\"sm\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2455,
+      "line": 2459,
       "snippet": "<Button variant=\"outline\" size=\"sm\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2458,
+      "line": 2462,
       "snippet": "<Button variant=\"ghost\" size=\"sm\" onClick={() =>"
     },
     {
       "tag": "Link",
       "file": "src/pages/Today.tsx",
-      "line": 2509,
+      "line": 2513,
       "snippet": "<Link key={entry.id} to={entry.link || `/leads/${entry.sourceId}`} className=\"block group\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2585,
+      "line": 2589,
       "snippet": "<Button variant=\"outline\" size=\"sm\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2588,
+      "line": 2592,
       "snippet": "<Button variant=\"outline\" size=\"sm\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2591,
+      "line": 2595,
       "snippet": "<Button variant=\"ghost\" size=\"sm\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2653,
+      "line": 2657,
       "snippet": "<Button variant=\"outline\" size=\"sm\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2656,
+      "line": 2660,
       "snippet": "<Button variant=\"outline\" size=\"sm\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2659,
+      "line": 2663,
       "snippet": "<Button variant=\"ghost\" size=\"sm\" onClick={() =>"
     },
     {
       "tag": "Link",
       "file": "src/pages/Today.tsx",
-      "line": 2703,
+      "line": 2707,
       "snippet": "<Link key={draft.id} to=\"/ai-drafts\" className=\"block rounded-lg border border-violet-200 bg-violet-50/40 px-3 py-2 hover:bg-violet-50\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/Today.tsx",
-      "line": 2798,
+      "line": 2802,
       "snippet": "<Link key={String(caseRecord.id)} to={`/case/${String(caseRecord.id)}`} className=\"block rounded-lg border border-rose-200 bg-rose-50/40 px-3 py-2 hover:bg-rose-50\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2946,
+      "line": 2950,
       "snippet": "<Button\n                    variant=\"ghost\"\n                    size=\"sm\"\n                    onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2954,
+      "line": 2958,
       "snippet": "<Button\n                    variant=\"outline\"\n                    size=\"sm\"\n                    onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Today.tsx",
-      "line": 2971,
+      "line": 2975,
       "snippet": "<Button variant=\"outline\" size=\"sm\" asChild>"
     },
     {
@@ -7264,107 +7264,107 @@
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 1286,
+      "line": 1290,
       "className": "min-w-[180px] flex-1 rounded-2xl border border-red-100 bg-red-50 p-3 transition hover:border-red-200 hover:bg-red-100 text-left"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 1287,
+      "line": 1291,
       "className": "text-xs font-semibold text-red-700"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 1288,
+      "line": 1292,
       "className": "mt-1 block text-2xl text-red-950"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 1289,
+      "line": 1293,
       "className": "text-xs text-red-700"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 1304,
+      "line": 1308,
       "className": "rounded-2xl border border-red-100 bg-red-50/60 p-3"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 1305,
+      "line": 1309,
       "className": "mb-2 flex items-center gap-2 text-sm font-bold text-red-800"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 1314,
+      "line": 1318,
       "className": "rounded-xl border border-red-100 bg-white p-2 text-sm transition hover:border-red-200 hover:bg-red-50"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 1316,
+      "line": 1320,
       "className": "block text-red-950"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 1317,
+      "line": 1321,
       "className": "mt-0.5 block text-xs text-red-700"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2182,
+      "line": 2186,
       "className": "border-rose-200"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2184,
+      "line": 2188,
       "className": "text-lg font-bold text-rose-700"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2422,
+      "line": 2426,
       "className": "border-rose-100 bg-rose-50/30"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2431,
+      "line": 2435,
       "className": "border-rose-100"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2446,
+      "line": 2450,
       "className": "text-sm text-rose-500 break-words font-medium"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2473,
+      "line": 2477,
       "className": "flex items-center gap-2 text-rose-600"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2486,
+      "line": 2490,
       "className": "border-rose-100 bg-rose-50/30"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2798,
+      "line": 2802,
       "className": "block rounded-lg border border-rose-200 bg-rose-50/40 px-3 py-2 hover:bg-rose-50"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2800,
+      "line": 2804,
       "className": "text-sm text-rose-700"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2834,
+      "line": 2838,
       "className": "right-card today-right-rail space-y-8"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2849,
+      "line": 2853,
       "className": "text-sm font-bold text-rose-600"
     },
     {
       "file": "src/pages/Today.tsx",
-      "line": 2850,
+      "line": 2854,
       "className": "text-[8px] h-4 px-1 border-rose-200 text-rose-700"
     },
     {

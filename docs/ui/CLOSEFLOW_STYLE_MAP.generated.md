@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T17:21:33.264Z
+Generated: 2026-05-08T17:37:31.589Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -540,40 +540,40 @@ Generated: 2026-05-08T17:21:33.264Z
 - bg-rose-50: src/pages/NotificationsCenter.tsx:650
 - text-rose-500: src/pages/NotificationsCenter.tsx:650
 - text-rose-600: src/pages/NotificationsCenter.tsx:650
-- border-red-100: src/pages/Today.tsx:1286
-- bg-red-50: src/pages/Today.tsx:1286
-- border-red-200: src/pages/Today.tsx:1286
-- bg-red-100: src/pages/Today.tsx:1286
-- text-red-700: src/pages/Today.tsx:1287
-- text-red-950: src/pages/Today.tsx:1288
-- text-red-700: src/pages/Today.tsx:1289
-- border-red-100: src/pages/Today.tsx:1304
-- bg-red-50: src/pages/Today.tsx:1304
-- text-red-800: src/pages/Today.tsx:1305
-- border-red-100: src/pages/Today.tsx:1314
-- border-red-200: src/pages/Today.tsx:1314
-- bg-red-50: src/pages/Today.tsx:1314
-- text-red-950: src/pages/Today.tsx:1316
-- text-red-700: src/pages/Today.tsx:1317
-- border-rose-200: src/pages/Today.tsx:2182
-- text-rose-700: src/pages/Today.tsx:2184
-- text-rose-600: src/pages/Today.tsx:2302
-- bg-rose-50: src/pages/Today.tsx:2303
-- border-rose-100: src/pages/Today.tsx:2422
-- bg-rose-50: src/pages/Today.tsx:2422
-- border-rose-100: src/pages/Today.tsx:2431
-- text-rose-500: src/pages/Today.tsx:2446
-- text-rose-600: src/pages/Today.tsx:2473
-- text-rose-500: src/pages/Today.tsx:2485
-- border-rose-100: src/pages/Today.tsx:2486
-- bg-rose-50: src/pages/Today.tsx:2486
-- border-rose-200: src/pages/Today.tsx:2798
-- bg-rose-50: src/pages/Today.tsx:2798
-- bg-rose-50: src/pages/Today.tsx:2798
-- text-rose-700: src/pages/Today.tsx:2800
-- text-rose-600: src/pages/Today.tsx:2849
-- border-rose-200: src/pages/Today.tsx:2850
-- text-rose-700: src/pages/Today.tsx:2850
+- border-red-100: src/pages/Today.tsx:1290
+- bg-red-50: src/pages/Today.tsx:1290
+- border-red-200: src/pages/Today.tsx:1290
+- bg-red-100: src/pages/Today.tsx:1290
+- text-red-700: src/pages/Today.tsx:1291
+- text-red-950: src/pages/Today.tsx:1292
+- text-red-700: src/pages/Today.tsx:1293
+- border-red-100: src/pages/Today.tsx:1308
+- bg-red-50: src/pages/Today.tsx:1308
+- text-red-800: src/pages/Today.tsx:1309
+- border-red-100: src/pages/Today.tsx:1318
+- border-red-200: src/pages/Today.tsx:1318
+- bg-red-50: src/pages/Today.tsx:1318
+- text-red-950: src/pages/Today.tsx:1320
+- text-red-700: src/pages/Today.tsx:1321
+- border-rose-200: src/pages/Today.tsx:2186
+- text-rose-700: src/pages/Today.tsx:2188
+- text-rose-600: src/pages/Today.tsx:2306
+- bg-rose-50: src/pages/Today.tsx:2307
+- border-rose-100: src/pages/Today.tsx:2426
+- bg-rose-50: src/pages/Today.tsx:2426
+- border-rose-100: src/pages/Today.tsx:2435
+- text-rose-500: src/pages/Today.tsx:2450
+- text-rose-600: src/pages/Today.tsx:2477
+- text-rose-500: src/pages/Today.tsx:2489
+- border-rose-100: src/pages/Today.tsx:2490
+- bg-rose-50: src/pages/Today.tsx:2490
+- border-rose-200: src/pages/Today.tsx:2802
+- bg-rose-50: src/pages/Today.tsx:2802
+- bg-rose-50: src/pages/Today.tsx:2802
+- text-rose-700: src/pages/Today.tsx:2804
+- text-rose-600: src/pages/Today.tsx:2853
+- border-rose-200: src/pages/Today.tsx:2854
+- text-rose-700: src/pages/Today.tsx:2854
 - text-rose-500: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
 - text-rose-600: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
 - text-rose-700: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
@@ -603,7 +603,7 @@ Generated: 2026-05-08T17:21:33.264Z
 - src/pages/Cases.tsx:757
 - src/pages/ClientDetail.tsx:1649
 - src/pages/NotificationsCenter.tsx:712
-- src/pages/Today.tsx:808
+- src/pages/Today.tsx:812
 - src/pages/UiPreviewVNext.tsx:8
 - src/pages/UiPreviewVNext.tsx:9
 - src/pages/UiPreviewVNext.tsx:14
