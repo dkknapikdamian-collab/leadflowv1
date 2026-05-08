@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T15:55:17.137Z
+Generated: 2026-05-08T17:01:24.793Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -537,15 +537,9 @@ Generated: 2026-05-08T15:55:17.137Z
 - text-red-500: src/pages/Dashboard.tsx:228
 - text-red-600: src/pages/Dashboard.tsx:228
 - bg-red-50: src/pages/Dashboard.tsx:228
-- text-rose-600: src/pages/Leads.tsx:758
-- bg-rose-50: src/pages/Leads.tsx:759
-- text-rose-500: src/pages/Leads.tsx:759
 - bg-rose-50: src/pages/NotificationsCenter.tsx:650
 - text-rose-500: src/pages/NotificationsCenter.tsx:650
 - text-rose-600: src/pages/NotificationsCenter.tsx:650
-- bg-rose-50: src/pages/TasksStable.tsx:163
-- text-rose-700: src/pages/TasksStable.tsx:163
-- border-rose-100: src/pages/TasksStable.tsx:163
 - border-red-100: src/pages/Today.tsx:1286
 - bg-red-50: src/pages/Today.tsx:1286
 - border-red-200: src/pages/Today.tsx:1286

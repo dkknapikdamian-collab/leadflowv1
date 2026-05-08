@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T15:55:17.137Z",
+  "generatedAt": "2026-05-08T17:01:24.793Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -3314,21 +3314,6 @@
       "line": 228
     },
     {
-      "className": "text-rose-600",
-      "file": "src/pages/Leads.tsx",
-      "line": 758
-    },
-    {
-      "className": "bg-rose-50",
-      "file": "src/pages/Leads.tsx",
-      "line": 759
-    },
-    {
-      "className": "text-rose-500",
-      "file": "src/pages/Leads.tsx",
-      "line": 759
-    },
-    {
       "className": "bg-rose-50",
       "file": "src/pages/NotificationsCenter.tsx",
       "line": 650
@@ -3342,21 +3327,6 @@
       "className": "text-rose-600",
       "file": "src/pages/NotificationsCenter.tsx",
       "line": 650
-    },
-    {
-      "className": "bg-rose-50",
-      "file": "src/pages/TasksStable.tsx",
-      "line": 163
-    },
-    {
-      "className": "text-rose-700",
-      "file": "src/pages/TasksStable.tsx",
-      "line": 163
-    },
-    {
-      "className": "border-rose-100",
-      "file": "src/pages/TasksStable.tsx",
-      "line": 163
     },
     {
       "className": "border-red-100",

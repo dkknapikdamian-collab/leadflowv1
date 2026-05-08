@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T15:55:16.608Z
+Generated: 2026-05-08T17:01:24.084Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -220,9 +220,9 @@ Source files scanned: 196
 - Dodaj: src/pages/LeadDetail.tsx:1643
 - Usuń: src/pages/Leads.tsx:44
 - Usuń: src/pages/Leads.tsx:46
-- Usuń: src/pages/Leads.tsx:810
-- Zapisz: src/pages/Leads.tsx:706
-- Anuluj: src/pages/Leads.tsx:703
+- Usuń: src/pages/Leads.tsx:817
+- Zapisz: src/pages/Leads.tsx:718
+- Anuluj: src/pages/Leads.tsx:715
 - Kopiuj: src/pages/Login.tsx:5
 - Kopiuj: src/pages/Login.tsx:19
 - Kopiuj: src/pages/Login.tsx:250
@@ -257,11 +257,11 @@ Source files scanned: 196
 - Zapisz: src/pages/Tasks.tsx:1353
 - Dodaj: src/pages/Tasks.tsx:1096
 - Dodaj: src/pages/Tasks.tsx:1401
-- Usuń: src/pages/TasksStable.tsx:544
-- Edytuj: src/pages/TasksStable.tsx:542
-- Edytuj: src/pages/TasksStable.tsx:558
-- Zapisz: src/pages/TasksStable.tsx:601
-- Anuluj: src/pages/TasksStable.tsx:600
+- Usuń: src/pages/TasksStable.tsx:548
+- Edytuj: src/pages/TasksStable.tsx:546
+- Edytuj: src/pages/TasksStable.tsx:562
+- Zapisz: src/pages/TasksStable.tsx:605
+- Anuluj: src/pages/TasksStable.tsx:604
 - Usuń: src/pages/Templates.tsx:397
 - Edytuj: src/pages/Templates.tsx:391
 - Edytuj: src/pages/Templates.tsx:432
@@ -1137,10 +1137,10 @@ import {
 - src/pages/LeadDetail.tsx:1707 <Button type="button" variant="outline" onClick={() =>
 - src/pages/LeadDetail.tsx:1721 <Button type="button" variant="outline" onClick={() =>
 - src/pages/LeadDetail.tsx:1729 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Leads.tsx:547 <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
-- src/pages/Leads.tsx:551 <button type="button" className="btn" onClick={toggleTrashView} >
-- src/pages/Leads.tsx:702 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Leads.tsx:847 <Link to={`/leads/${leadId}`} className="block">
+- src/pages/Leads.tsx:559 <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
+- src/pages/Leads.tsx:563 <button type="button" className="btn" onClick={toggleTrashView} >
+- src/pages/Leads.tsx:714 <Button type="button" variant="outline" onClick={() =>
+- src/pages/Leads.tsx:854 <Link to={`/leads/${leadId}`} className="block">
 - src/pages/Login.tsx:183 <Button type="submit" className="h-12 w-full rounded-xl" disabled={loading || !authConfig.configured}>
 - src/pages/Login.tsx:184 <Button type="button" variant="ghost" className="w-full" onClick={() =>
 - src/pages/Login.tsx:236 <Button type="submit" className="h-11 w-full rounded-xl font-semibold" disabled={loading || !authConfig.configured}>
@@ -1188,12 +1188,12 @@ import {
 - src/pages/Tasks.tsx:1076 <Button variant="outline" size="sm" className={actionButtonClass('danger', 'task-action-btn task-action-danger rounded-xl')} onClick={() =>
 - src/pages/Tasks.tsx:1215 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
 - src/pages/Tasks.tsx:1353 <Button type="submit" className="w-full" disabled={taskEditSubmitting}>
-- src/pages/TasksStable.tsx:479 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() =>
-- src/pages/TasksStable.tsx:538 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="done-toggle" onClick={() =>
-- src/pages/TasksStable.tsx:541 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() =>
-- src/pages/TasksStable.tsx:544 <Button type="button" variant="outline" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48="delete" onClic
-- src/pages/TasksStable.tsx:600 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
-- src/pages/TasksStable.tsx:648 <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>
+- src/pages/TasksStable.tsx:483 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() =>
+- src/pages/TasksStable.tsx:542 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="done-toggle" onClick={() =>
+- src/pages/TasksStable.tsx:545 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() =>
+- src/pages/TasksStable.tsx:548 <Button type="button" variant="outline" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48="delete" onClic
+- src/pages/TasksStable.tsx:604 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
+- src/pages/TasksStable.tsx:652 <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>
 - src/pages/Templates.tsx:316 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
 - src/pages/Templates.tsx:360 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
 - src/pages/Templates.tsx:386 <Button variant="outline" size="icon" className="rounded-2xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
@@ -1539,13 +1539,13 @@ import {
 - src/pages/LeadDetail.tsx:1609 `lead-detail-card-title-row`
 - src/pages/LeadDetail.tsx:1614 `right-card lead-detail-right-card`
 - src/pages/LeadDetail.tsx:1615 `lead-detail-card-title-row`
-- src/pages/Leads.tsx:546 `head-actions`
-- src/pages/Leads.tsx:693 `lead-form-section lead-form-planning-note`
-- src/pages/Leads.tsx:815 `table-card lead-table-card`
-- src/pages/Leads.tsx:870 `lead-action-cell`
-- src/pages/Leads.tsx:876 `lead-actions`
-- src/pages/Leads.tsx:909 `right-card lead-right-card lead-top-relations`
-- src/pages/Leads.tsx:935 `note`
+- src/pages/Leads.tsx:558 `head-actions`
+- src/pages/Leads.tsx:705 `lead-form-section lead-form-planning-note`
+- src/pages/Leads.tsx:822 `table-card lead-table-card`
+- src/pages/Leads.tsx:877 `lead-action-cell`
+- src/pages/Leads.tsx:883 `lead-actions`
+- src/pages/Leads.tsx:916 `right-card lead-right-card lead-top-relations`
+- src/pages/Leads.tsx:942 `note`
 - src/pages/NotificationsCenter.tsx:324 `notifications-stat-icon`
 - src/pages/NotificationsCenter.tsx:382 `notifications-row-icon cf-severity-dot`
 - src/pages/NotificationsCenter.tsx:409 `notifications-row-actions`

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T15:55:16.608Z",
+  "generatedAt": "2026-05-08T17:01:24.084Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -995,17 +995,17 @@
     {
       "term": "Usuń",
       "file": "src/pages/Leads.tsx",
-      "line": 810
+      "line": 817
     },
     {
       "term": "Zapisz",
       "file": "src/pages/Leads.tsx",
-      "line": 706
+      "line": 718
     },
     {
       "term": "Anuluj",
       "file": "src/pages/Leads.tsx",
-      "line": 703
+      "line": 715
     },
     {
       "term": "Kopiuj",
@@ -1180,27 +1180,27 @@
     {
       "term": "Usuń",
       "file": "src/pages/TasksStable.tsx",
-      "line": 544
+      "line": 548
     },
     {
       "term": "Edytuj",
       "file": "src/pages/TasksStable.tsx",
-      "line": 542
+      "line": 546
     },
     {
       "term": "Edytuj",
       "file": "src/pages/TasksStable.tsx",
-      "line": 558
+      "line": 562
     },
     {
       "term": "Zapisz",
       "file": "src/pages/TasksStable.tsx",
-      "line": 601
+      "line": 605
     },
     {
       "term": "Anuluj",
       "file": "src/pages/TasksStable.tsx",
-      "line": 600
+      "line": 604
     },
     {
       "term": "Usuń",
@@ -2457,25 +2457,25 @@
     {
       "tag": "Link",
       "file": "src/pages/Leads.tsx",
-      "line": 547,
+      "line": 559,
       "snippet": "<Link to=\"/ai-drafts\" className=\"btn soft-blue\" data-stage26-leads-head-ai=\"true\">"
     },
     {
       "tag": "button",
       "file": "src/pages/Leads.tsx",
-      "line": 551,
+      "line": 563,
       "snippet": "<button\n              type=\"button\"\n              className=\"btn\"\n              onClick={toggleTrashView}\n            >"
     },
     {
       "tag": "Button",
       "file": "src/pages/Leads.tsx",
-      "line": 702,
+      "line": 714,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Link",
       "file": "src/pages/Leads.tsx",
-      "line": 847,
+      "line": 854,
       "snippet": "<Link to={`/leads/${leadId}`} className=\"block\">"
     },
     {
@@ -2763,37 +2763,37 @@
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 479,
+      "line": 483,
       "snippet": "<Button type=\"button\" variant=\"outline\" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 538,
+      "line": 542,
       "snippet": "<Button type=\"button\" variant=\"outline\" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48=\"done-toggle\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 541,
+      "line": 545,
       "snippet": "<Button type=\"button\" variant=\"outline\" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48=\"edit\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 544,
+      "line": 548,
       "snippet": "<Button type=\"button\" variant=\"outline\" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48=\"delete\" onClic"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 600,
+      "line": 604,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={closeDialog} disabled={saving}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 648,
+      "line": 652,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={closeNextStepPrompt} disabled={nextStepSaving}>"
     },
     {
@@ -6659,37 +6659,37 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 546,
+      "line": 558,
       "className": "head-actions"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 693,
+      "line": 705,
       "className": "lead-form-section lead-form-planning-note"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 815,
+      "line": 822,
       "className": "table-card lead-table-card"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 870,
+      "line": 877,
       "className": "lead-action-cell"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 876,
+      "line": 883,
       "className": "lead-actions"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 909,
+      "line": 916,
       "className": "right-card lead-right-card lead-top-relations"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 935,
+      "line": 942,
       "className": "note"
     },
     {
@@ -7234,7 +7234,7 @@
     },
     {
       "file": "src/pages/TasksStable.tsx",
-      "line": 521,
+      "line": 525,
       "className": "border-slate-100 shadow-sm tasks-stage48-task-card"
     },
     {

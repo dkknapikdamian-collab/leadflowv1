@@ -47,17 +47,28 @@ const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod 
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
-  { value: 'new', label: 'Nowy', color: 'bg-blue-100 text-blue-700' },
-  { value: 'contacted', label: 'Skontaktowany', color: 'bg-indigo-100 text-indigo-700' },
-  { value: 'qualification', label: 'Kwalifikacja', color: 'bg-purple-100 text-purple-700' },
-  { value: 'proposal_sent', label: 'Oferta wysłana', color: 'bg-amber-100 text-amber-700' },
-  { value: 'waiting_response', label: 'Czeka na odpowiedź', color: 'bg-orange-100 text-orange-700' },
-  { value: 'accepted', label: 'Zaakceptowany', color: 'bg-cyan-100 text-cyan-700' },
-  { value: 'moved_to_service', label: 'Przeniesiony do obsługi', color: 'bg-violet-100 text-violet-700' },
-  { value: 'negotiation', label: 'Negocjacje', color: 'bg-pink-100 text-pink-700' },
-  { value: 'lost', label: 'Przegrany', color: 'bg-slate-100 text-slate-700' },
-  { value: 'archived', label: 'W koszu', color: 'bg-amber-100 text-amber-700' },
+  { value: 'new', label: 'Nowy', tone: 'blue' },
+  { value: 'contacted', label: 'Skontaktowany', tone: 'blue' },
+  { value: 'qualification', label: 'Kwalifikacja', tone: 'blue' },
+  { value: 'proposal_sent', label: 'Oferta wysłana', tone: 'amber' },
+  { value: 'waiting_response', label: 'Czeka na odpowiedź', tone: 'amber' },
+  { value: 'accepted', label: 'Zaakceptowany', tone: 'green' },
+  { value: 'moved_to_service', label: 'Przeniesiony do obsługi', tone: 'blue' },
+  { value: 'negotiation', label: 'Negocjacje', tone: 'amber' },
+  { value: 'lost', label: 'Przegrany', tone: 'neutral' },
+  { value: 'archived', label: 'W koszu', tone: 'amber' },
 ];
+
+type LeadStatusTone = 'blue' | 'green' | 'amber' | 'red' | 'neutral';
+function getLeadStatusLabel(value: unknown) {
+  const normalized = String(value || 'new');
+  return STATUS_OPTIONS.find((option) => option.value === normalized)?.label || 'Nowy';
+}
+
+function getLeadStatusTone(value: unknown) {
+  const normalized = String(value || 'new');
+  return STATUS_OPTIONS.find((option) => option.value === normalized)?.tone || 'blue';
+}
 
 const SOURCE_OPTIONS = [
   { value: 'instagram', label: 'Instagram' },
@@ -81,6 +92,7 @@ type CaseRecord = {
 };
 
 type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history';
+
 
 
 function formatLeadSourceLabel(value: unknown) {
@@ -742,8 +754,6 @@ export default function Leads() {
             onClick={toggleValueSorting}
             title="Sortuj leady po wartości"
             ariaLabel="Sortuj leady po wartości"
-            valueClassName="text-slate-900"
-            iconClassName="bg-slate-100 text-slate-500"
             helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortować!'}
           />
 
@@ -755,8 +765,7 @@ export default function Leads() {
             onClick={() => toggleQuickFilter('at-risk')}
             title="Pokaż zagrożone leady"
             ariaLabel="Pokaż zagrożone leady"
-            valueClassName="text-rose-600"
-            iconClassName="bg-rose-50 text-rose-500"
+            tone="risk"
           />
 
           <StatShortcutCard
@@ -767,8 +776,6 @@ export default function Leads() {
             onClick={() => toggleQuickFilter('history')}
             title="Pokaż leady przeniesione do obsługi"
             ariaLabel="Pokaż leady przeniesione do obsługi"
-            valueClassName="text-emerald-600"
-            iconClassName="bg-emerald-50 text-emerald-500"
           />
         </div>
 
