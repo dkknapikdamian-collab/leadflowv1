@@ -1,43 +1,63 @@
-# CloseFlow Metric Visual Parity Stage16A - 2026-05-08
+# CLOSEFLOW_METRIC_VISUAL_PARITY_STAGE16A
 
-CLOSEFLOW_METRIC_VISUAL_PARITY_STAGE16A
+## Cel
 
-## Co bylo niespojne na screenach
+Stage16A domyka faktyczna parzystosc wizualna kafelkow metryk i gornego hero strony.
+Ten etap nie zmienia danych, API, Supabase, auth, billingu, AI, routingu ani zachowania klikniec.
 
-- Kafelki w Zadaniach i Sprawach mialy rozne proporcje.
-- Label AKTYWNE potrafil lamac sie w polowie slowa jako AKTYW / NE.
-- Header strony Lista zadan nie byl wizualnie domkniety do wspolnego page hero.
+## Zakres
 
-## Zrodlo prawdy dla kafelkow
+- `src/styles/closeflow-metric-tiles.css`
+- `src/styles/closeflow-page-header.css`
+- `src/pages/TasksStable.tsx`
+- `scripts/check-closeflow-metric-visual-parity-contract.cjs`
+- `package.json`
 
-- Komponent: src/components/StatShortcutCard.tsx.
-- Style: src/styles/closeflow-metric-tiles.css.
-- Ton: data-eliteflow-metric-tone.
+## Decyzje
 
-## Zrodlo prawdy dla page hero/header
+1. `StatShortcutCard` zostaje glownym zrodlem top metryk.
+2. Label kafelka ma `white-space: nowrap`, `overflow-wrap: normal`, `word-break: keep-all`, `hyphens: none` i `text-overflow: ellipsis`.
+3. `AKTYWNE` i `ZROBIONE` nie moga lamac sie w polowie slowa.
+4. `TasksStable` nie moze byc nadpisywany starym fallbackiem CSS dla zwyklych buttonow.
+5. Page hero/header ma korzystac z jednego kontraktu `cf-page-hero`, `cf-page-hero-title`, `cf-page-hero-kicker`.
+6. Kafelki maja jeden rytm: label po lewej, value + icon po prawej, ta sama wysokosc, radius, padding, cien, rozmiar liczby i rozmiar ikony.
 
-- Style: src/styles/closeflow-page-header.css.
-- Klasa: cf-page-hero.
+## Nie zmieniono
 
-## Ekrany podpiete
+- logiki zadan,
+- filtrow,
+- API,
+- Supabase,
+- auth,
+- billing,
+- AI,
+- routingu,
+- Today.tsx,
+- TodayStable logic,
+- kontraktow danger/status/progress.
 
-- TasksStable.tsx uzywa StatShortcutCard dla gornych metryk i cf-page-hero dla headera Lista zadan.
-- Leads, Clients, Cases, AiDrafts i Activity pozostaja pod wspolnym kontraktem StatShortcutCard albo fallbackiem metryk opisanym w closeflow-metric-tiles.css.
+## Weryfikacja
 
-## Jak globalnie zmienic wyglad
+Wymagane po wdrozeniu:
 
-- Wysokosc kafla: --cf-metric-tile-min-height.
-- Font labela: --cf-metric-tile-label-size.
-- Font liczby: --cf-metric-tile-value-size.
-- Rozmiar ikony: --cf-metric-tile-icon-size.
-- Page hero/header: --cf-page-hero-* w closeflow-page-header.css.
+```bash
+npm run check:closeflow-metric-visual-parity-contract
+npm run check:closeflow-legacy-today-route-contract
+npm run check:closeflow-metric-icon-tone-contract
+npm run check:closeflow-page-header-copy-contract
+npm run check:closeflow-surface-contract
+npm run check:polish-mojibake
+npm run check:closeflow-danger-style-contract
+npm run audit:closeflow-ui-map
+npm run audit:closeflow-style-map
+npm run build
+```
 
-## Decyzja
+## Kryterium zakonczenia
 
-Stage16A blokuje overflow-wrap:anywhere w labelach kafelkow i chroni StatShortcutCard przed specjalnym fallbackiem TasksStable. Fallback moze stylowac tylko stare, hardcoded buttony, nie prawdziwe kafle StatShortcutCard.
-
-## Co zostaje na Etap 16B
-
-1. Weryfikacja wizualna po deployu na realnym UI.
-2. Ewentualne dopiecie innych headerow do cf-page-hero, jesli screenshoty pokaza dalszy rozjazd.
-3. Bez ruszania logiki danych, AI, billing, Supabase ani routingu.
+- check Stage16A przechodzi,
+- build przechodzi,
+- commit i push ida na `dev-rollout-freeze`,
+- remote GitHub jest potwierdzony,
+- screenshotowo kafelki w Zadaniach i Sprawach nie wygladaja jak dwa rozne systemy,
+- `AKTYWNE` nie lamie sie jako `AKTYW / NE`.

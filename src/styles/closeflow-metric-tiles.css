@@ -1,10 +1,9 @@
-/* STAGE16A_METRIC_VISUAL_PARITY_REPAIR: label/value/icon proportions are locked for all top metric tiles. */
+/* STAGE16A_METRIC_VISUAL_PARITY_REPAIR: one source of truth for top metric tiles. */
+/* CLOSEFLOW_METRIC_VISUAL_PARITY_STAGE16A */
 /* STAGE16AK_UNIFIED_TOP_METRIC_TILES_CSS */
 /* STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE_CSS */
-/* ELITEFLOW_TODAY_METRIC_TILE_LOCK_2026_05_07
-   Wzorzec: górne kafelki z zakładki Dziś. Ten plik jest jedyną blokadą stylu kafelków metryk
-   dla Leady, Klienci, Sprawy, Zadania, Szablony, Odpowiedzi/Szkice i Aktywność.
-*/
+/* ELITEFLOW_TODAY_METRIC_TILE_LOCK_2026_05_07 */
+
 :root {
   --cf-metric-tile-radius: 22px;
   --cf-metric-tile-border: #eef2f7;
@@ -21,10 +20,12 @@
   --cf-metric-tile-padding-y: 16px;
   --cf-metric-tile-padding-x: 18px;
   --cf-metric-tile-label-size: 12px;
-  --cf-metric-tile-value-size: 28px;
-  --cf-metric-tile-icon-size: 38px;
-  --cf-metric-tile-icon-radius: 16px;
-  --cf-metric-tile-icon-padding: 10px;
+  --cf-metric-tile-label-line-height: 1.08;
+  --cf-metric-tile-value-size: 26px;
+  --cf-metric-tile-icon-size: 34px;
+  --cf-metric-tile-icon-svg-size: 15px;
+  --cf-metric-tile-icon-radius: 14px;
+  --cf-metric-tile-icon-padding: 9px;
   --cf-metric-tone-neutral-value: #0f172a;
   --cf-metric-tone-neutral-icon-bg: #f1f5f9;
   --cf-metric-tone-neutral-icon: #475569;
@@ -46,9 +47,13 @@
 }
 
 .cf-top-metric-tile {
+  display: block;
+  width: 100%;
   border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
+  color: inherit !important;
+  text-align: left !important;
   text-decoration: none !important;
 }
 
@@ -63,7 +68,7 @@
   border: 1px solid var(--cf-metric-tile-border) !important;
   border-radius: var(--cf-metric-tile-radius) !important;
   background: var(--cf-metric-tile-bg) !important;
-  color: var(--cf-metric-tile-value);
+  color: var(--cf-metric-tile-value) !important;
   box-shadow: var(--cf-metric-tile-shadow) !important;
   transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
 }
@@ -83,8 +88,37 @@
 }
 
 .cf-top-metric-tile-left {
-  min-width: 0;
-  flex: 1 1 auto;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+.cf-top-metric-tile-label {
+  display: block;
+  max-width: 100% !important;
+  margin: 0 !important;
+  color: var(--cf-metric-tile-label) !important;
+  font-size: var(--cf-metric-tile-label-size) !important;
+  line-height: var(--cf-metric-tile-label-line-height) !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.cf-top-metric-tile-helper {
+  display: block;
+  margin-top: 4px !important;
+  color: var(--cf-metric-tile-helper) !important;
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
 }
 
 .cf-top-metric-tile-value-row {
@@ -92,46 +126,20 @@
   align-items: center !important;
   justify-content: flex-end !important;
   gap: 12px !important;
-  flex: 0 0 auto;
-  min-width: 0;
-}
-
-.cf-top-metric-tile-label {
-  display: block;
-  margin: 0 !important;
-  color: var(--cf-metric-tile-label) !important;
-  font-size: var(--cf-metric-tile-label-size) !important;
-  line-height: 1.18 !important;
-  font-weight: 850 !important;
-  letter-spacing: 0.025em !important;
-  text-transform: uppercase !important;
-  white-space: nowrap;
-  overflow-wrap: normal;
-  word-break: keep-all;
-  hyphens: none;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
 }
 
 .cf-top-metric-tile-value {
   display: block;
-  min-width: 0;
+  min-width: 0 !important;
+  margin: 0 !important;
   color: var(--cf-metric-tile-value) !important;
   font-size: var(--cf-metric-tile-value-size) !important;
   line-height: 1 !important;
   font-weight: 950 !important;
   letter-spacing: -0.045em !important;
-}
-
-.cf-top-metric-tile-helper {
-  display: block;
-  margin-top: 4px;
-  color: var(--cf-metric-tile-helper) !important;
-  font-size: 11px !important;
-  line-height: 1.25;
-  font-weight: 700 !important;
-  text-transform: none !important;
-  letter-spacing: 0 !important;
+  text-align: right !important;
 }
 
 .cf-top-metric-tile-icon {
@@ -149,8 +157,8 @@
 
 .cf-top-metric-tile-icon svg,
 .cf-top-metric-tile .metric-icon svg {
-  width: 16px !important;
-  height: 16px !important;
+  width: var(--cf-metric-tile-icon-svg-size) !important;
+  height: var(--cf-metric-tile-icon-svg-size) !important;
   stroke-width: 2.35 !important;
 }
 
@@ -212,7 +220,6 @@
   color: var(--cf-metric-tone-purple-icon) !important;
 }
 
-/* Szerokość jak w Dziś: cztery kafelki w rzędzie, reszta zawija się w ten sam rytm. */
 :where(
   .main-leads-html,
   .main-clients-html,
@@ -224,15 +231,7 @@
   .main-billing-html,
   .main-calendar-html,
   .cf-html-view[data-a16-template-light-ui="true"]
-) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid) {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: var(--cf-metric-tile-gap) !important;
-  align-items: stretch !important;
-}
-
-/* Zadania Stable mają własny układ bez cf-html-view, więc łapiemy tylko sekcję top metryk. */
-main[data-p0-tasks-stable-rebuild="true"] > section.grid,
+) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
 main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] {
   display: grid !important;
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
@@ -240,208 +239,6 @@ main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid=
   align-items: stretch !important;
 }
 
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) {
-  min-height: var(--cf-metric-tile-min-height) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 16px !important;
-  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
-  border: 1px solid var(--cf-metric-tile-border) !important;
-  border-radius: var(--cf-metric-tile-radius) !important;
-  background: var(--cf-metric-tile-bg) !important;
-  color: var(--cf-metric-tile-value) !important;
-  box-shadow: var(--cf-metric-tile-shadow) !important;
-  text-align: left !important;
-  transform: none !important;
-}
-
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile):hover {
-  box-shadow: var(--cf-metric-tile-shadow-hover) !important;
-  transform: translateY(-1px) !important;
-}
-
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) > div {
-  display: contents !important;
-}
-
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) p:first-of-type {
-  margin: 0 !important;
-  color: var(--cf-metric-tile-label) !important;
-  font-size: var(--cf-metric-tile-label-size) !important;
-  line-height: 1.18 !important;
-  font-weight: 850 !important;
-  letter-spacing: 0.025em !important;
-  text-transform: uppercase !important;
-  order: 1;
-}
-
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) p:last-of-type {
-  margin: 0 50px 0 auto !important;
-  color: inherit !important;
-  font-size: var(--cf-metric-tile-value-size) !important;
-  line-height: 1 !important;
-  font-weight: 950 !important;
-  letter-spacing: -0.045em !important;
-  text-align: right !important;
-  order: 2;
-}
-
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) svg {
-  width: var(--cf-metric-tile-icon-size) !important;
-  height: var(--cf-metric-tile-icon-size) !important;
-  min-width: var(--cf-metric-tile-icon-size) !important;
-  border-radius: var(--cf-metric-tile-icon-radius) !important;
-  background: var(--cf-metric-tile-icon-bg) !important;
-  padding: var(--cf-metric-tile-icon-padding) !important;
-  order: 3;
-}
-
-/* Fallback dla starszych/hardcoded kafelków metryk poza StatShortcutCard. */
-.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content),
-.cf-html-view :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid) > :is(.metric, .stat-card, .summary-card, .dashboard-stat-card) {
-  min-height: var(--cf-metric-tile-min-height) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 16px !important;
-  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
-  border: 1px solid var(--cf-metric-tile-border) !important;
-  border-radius: var(--cf-metric-tile-radius) !important;
-  background: var(--cf-metric-tile-bg) !important;
-  color: var(--cf-metric-tile-value) !important;
-  box-shadow: var(--cf-metric-tile-shadow) !important;
-  text-align: left !important;
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
-}
-
-.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content):hover {
-  box-shadow: var(--cf-metric-tile-shadow-hover) !important;
-  transform: translateY(-1px);
-}
-
-.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(label, .label, .metric-label, .stat-label, span:first-child, p:first-child) {
-  margin: 0 !important;
-  color: var(--cf-metric-tile-label) !important;
-  font-size: var(--cf-metric-tile-label-size) !important;
-  line-height: 1.18 !important;
-  font-weight: 850 !important;
-  letter-spacing: 0.025em !important;
-  text-transform: uppercase !important;
-}
-
-.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(strong, .value, .metric-value, .stat-value) {
-  color: var(--cf-metric-tile-value) !important;
-  font-size: var(--cf-metric-tile-value-size) !important;
-  line-height: 1 !important;
-  font-weight: 950 !important;
-  letter-spacing: -0.045em !important;
-}
-
-.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(.metric-icon, .stat-icon, svg:last-child) {
-  width: var(--cf-metric-tile-icon-size) !important;
-  height: var(--cf-metric-tile-icon-size) !important;
-  min-width: var(--cf-metric-tile-icon-size) !important;
-  border-radius: var(--cf-metric-tile-icon-radius) !important;
-  background-color: var(--cf-metric-tile-icon-bg) !important;
-  color: var(--cf-metric-tile-icon) !important;
-  padding: var(--cf-metric-tile-icon-padding) !important;
-}
-
-@media (max-width: 1180px) {
-  :where(
-    .main-leads-html,
-    .main-clients-html,
-    .main-cases-html,
-    .main-templates-html,
-    .main-response-templates-html,
-    .main-ai-drafts-html,
-    .main-activity-html,
-    .main-billing-html,
-    .main-calendar-html,
-    .cf-html-view[data-a16-template-light-ui="true"]
-  ) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
-  }
-
-@media (max-width: 640px) {
-  :root {
-    --cf-metric-tile-min-height: 70px;
-    --cf-metric-tile-gap: 12px;
-  }
-
-  :where(
-    .main-leads-html,
-    .main-clients-html,
-    .main-cases-html,
-    .main-templates-html,
-    .main-response-templates-html,
-    .main-ai-drafts-html,
-    .main-activity-html,
-    .main-billing-html,
-    .main-calendar-html,
-    .cf-html-view[data-a16-template-light-ui="true"]
-  ) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
-    .cf-top-metric-tile-content,
-  main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) {
-    padding: 14px 16px !important;
-  }
-
-  .cf-top-metric-tile-value,
-  main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) p:last-of-type,
-  .cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(strong, .value, .metric-value, .stat-value) {
-    font-size: 25px !important;
-  }
-}
-
-/* CLOSEFLOW_METRIC_VISUAL_PARITY_STAGE16A
-   Final visual parity pass: one rhythm for StatShortcutCard tiles across Tasks, Cases, Leads,
-   Clients, AiDrafts and Activity. TasksStable must not be restyled by legacy button fallbacks.
-*/
-:root {
-  --cf-metric-tile-padding-x: 18px;
-  --cf-metric-tile-padding-y: 16px;
-  --cf-metric-tile-label-size: 12px;
-  --cf-metric-tile-label-line-height: 1.08;
-  --cf-metric-tile-value-size: 26px;
-  --cf-metric-tile-icon-size: 34px;
-  --cf-metric-tile-icon-svg-size: 15px;
-}
-
-.cf-top-metric-tile-content {
-  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
-}
-
-.cf-top-metric-tile-label {
-  max-width: 100% !important;
-  font-size: var(--cf-metric-tile-label-size) !important;
-  line-height: var(--cf-metric-tile-label-line-height) !important;
-  white-space: nowrap !important;
-  overflow-wrap: normal !important;
-  word-break: keep-all !important;
-  hyphens: none !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-
-.cf-top-metric-tile-value {
-  font-size: var(--cf-metric-tile-value-size) !important;
-}
-
-.cf-top-metric-tile-icon {
-  width: var(--cf-metric-tile-icon-size) !important;
-  height: var(--cf-metric-tile-icon-size) !important;
-  min-width: var(--cf-metric-tile-icon-size) !important;
-  border-radius: 14px !important;
-  padding: 9px !important;
-}
-
-.cf-top-metric-tile-icon svg,
-.cf-top-metric-tile .metric-icon svg {
-  width: var(--cf-metric-tile-icon-svg-size) !important;
-  height: var(--cf-metric-tile-icon-svg-size) !important;
-}
-
-/* TasksStable uses StatShortcutCard; this override neutralizes older generic button fallbacks. */
 main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] {
   min-height: 0 !important;
   display: block !important;
@@ -476,10 +273,117 @@ main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid=
   order: initial !important;
 }
 
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) {
+  min-height: var(--cf-metric-tile-min-height) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
+  border: 1px solid var(--cf-metric-tile-border) !important;
+  border-radius: var(--cf-metric-tile-radius) !important;
+  background: var(--cf-metric-tile-bg) !important;
+  color: var(--cf-metric-tile-value) !important;
+  box-shadow: var(--cf-metric-tile-shadow) !important;
+  text-align: left !important;
+}
+
+.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content),
+.cf-html-view :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid) > :is(.metric, .stat-card, .summary-card, .dashboard-stat-card) {
+  min-height: var(--cf-metric-tile-min-height) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
+  border: 1px solid var(--cf-metric-tile-border) !important;
+  border-radius: var(--cf-metric-tile-radius) !important;
+  background: var(--cf-metric-tile-bg) !important;
+  color: var(--cf-metric-tile-value) !important;
+  box-shadow: var(--cf-metric-tile-shadow) !important;
+  text-align: left !important;
+}
+
+.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(label, .label, .metric-label, .stat-label, span:first-child, p:first-child) {
+  margin: 0 !important;
+  color: var(--cf-metric-tile-label) !important;
+  font-size: var(--cf-metric-tile-label-size) !important;
+  line-height: var(--cf-metric-tile-label-line-height) !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(strong, .value, .metric-value, .stat-value) {
+  color: var(--cf-metric-tile-value) !important;
+  font-size: var(--cf-metric-tile-value-size) !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(.metric-icon, .stat-icon, svg:last-child) {
+  width: var(--cf-metric-tile-icon-size) !important;
+  height: var(--cf-metric-tile-icon-size) !important;
+  min-width: var(--cf-metric-tile-icon-size) !important;
+  border-radius: var(--cf-metric-tile-icon-radius) !important;
+  background-color: var(--cf-metric-tile-icon-bg) !important;
+  color: var(--cf-metric-tile-icon) !important;
+  padding: var(--cf-metric-tile-icon-padding) !important;
+}
+
+@media (max-width: 1180px) {
+  :where(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-templates-html,
+    .main-response-templates-html,
+    .main-ai-drafts-html,
+    .main-activity-html,
+    .main-billing-html,
+    .main-calendar-html,
+    .cf-html-view[data-a16-template-light-ui="true"]
+  ) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
+  main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
 @media (max-width: 640px) {
   :root {
+    --cf-metric-tile-min-height: 70px;
+    --cf-metric-tile-gap: 12px;
     --cf-metric-tile-label-size: 12px;
     --cf-metric-tile-value-size: 24px;
     --cf-metric-tile-icon-size: 32px;
+    --cf-metric-tile-icon-svg-size: 14px;
+  }
+
+  :where(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-templates-html,
+    .main-response-templates-html,
+    .main-ai-drafts-html,
+    .main-activity-html,
+    .main-billing-html,
+    .main-calendar-html,
+    .cf-html-view[data-a16-template-light-ui="true"]
+  ) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
+  main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cf-top-metric-tile-content,
+  main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) {
+    padding: 14px 16px !important;
   }
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
 P0_TASKS_STABLE_REBUILD
 */
 
@@ -132,7 +132,7 @@ function isTaskOverdue(task: any) {
 
 
 function getTaskTitle(task: any) {
-  return readText(task, ['title', 'name'], 'Zadanie bez tytułu');
+  return readText(task, ['title', 'name'], 'Zadanie bez tytuĹ‚u');
 }
 
 
@@ -152,8 +152,8 @@ function getCaseTitle(caseRecord: any) {
 
 function getStatusBadge(task: any) {
   if (isTaskDone(task)) return 'Zrobione';
-  if (isTaskOverdue(task)) return 'Zaległe';
-  if (isTaskToday(task)) return 'Dziś';
+  if (isTaskOverdue(task)) return 'ZalegĹ‚e';
+  if (isTaskToday(task)) return 'DziĹ›';
   return 'Aktywne';
 }
 
@@ -229,7 +229,7 @@ export default function TasksStable() {
       setTasks(Array.isArray(taskRows) ? taskRows : []);
       setCases(Array.isArray(caseRows) ? caseRows : []);
     } catch (error: any) {
-      toast.error('Nie udało się pobrać zadań.');
+      toast.error('Nie udaĹ‚o siÄ™ pobraÄ‡ zadaĹ„.');
     } finally {
       setLoading(false);
     }
@@ -318,8 +318,8 @@ export default function TasksStable() {
 
   const handleSaveTask = async (event: FormEvent) => {
     event.preventDefault();
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!form.title.trim()) return toast.error('Podaj tytuł zadania.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!form.title.trim()) return toast.error('Podaj tytuĹ‚ zadania.');
 
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
@@ -351,7 +351,7 @@ export default function TasksStable() {
       setForm(defaultTaskForm());
       await refreshData();
     } catch (error: any) {
-      toast.error('Nie udało się zapisać zadania.');
+      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ zadania.');
     } finally {
       setSaving(false);
     }
@@ -381,10 +381,10 @@ export default function TasksStable() {
           setNextStepPrompt(buildNextStepPromptState(task));
         }
       } else {
-        toast.success('Zadanie przywrócone');
+        toast.success('Zadanie przywrĂłcone');
       }
     } catch {
-      toast.error('Nie udało się zapisać zadania.');
+      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ zadania.');
     }
   };
 
@@ -396,8 +396,8 @@ export default function TasksStable() {
   const handleCreateNextStepTask = async (event: FormEvent) => {
     event.preventDefault();
     if (!nextStepPrompt) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!nextStepPrompt.title.trim()) return toast.error('Podaj tytuł kolejnego kroku.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!nextStepPrompt.title.trim()) return toast.error('Podaj tytuĹ‚ kolejnego kroku.');
 
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
@@ -422,20 +422,20 @@ export default function TasksStable() {
       setNextStepPrompt(null);
       await refreshData();
     } catch {
-      toast.error('Nie udało się dodać kolejnego kroku.');
+      toast.error('Nie udaĹ‚o siÄ™ dodaÄ‡ kolejnego kroku.');
     } finally {
       setNextStepSaving(false);
     }
   };
 
   const deleteTask = async (task: any) => {
-    if (!window.confirm('Usunąć zadanie?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ zadanie?')) return;
     try {
       await deleteTaskFromSupabase(String(task.id));
-      toast.success('Zadanie usunięte');
+      toast.success('Zadanie usuniÄ™te');
       await refreshData();
     } catch {
-      toast.error('Nie udało się usunąć zadania.');
+      toast.error('Nie udaĹ‚o siÄ™ usunÄ…Ä‡ zadania.');
     }
   };
 
@@ -449,14 +449,14 @@ export default function TasksStable() {
     },
     {
       id: 'today' as TaskScope,
-      label: 'Dziś',
+      label: 'DziĹ›',
       value: stats.today,
       icon: Clock,
       tone: 'blue',
     },
     {
       id: 'overdue' as TaskScope,
-      label: 'Zaległe',
+      label: 'ZalegĹ‚e',
       value: stats.overdue,
       icon: AlertTriangle,
       tone: 'red',
@@ -474,15 +474,15 @@ export default function TasksStable() {
     <Layout>
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-stage48="true" data-stage83-task-done-next-step-prompt="true">
         <section className="cf-page-hero rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="cf-page-hero-layout flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <Badge className="mb-3 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-50">Zadania</Badge>
-              <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Lista zadań</h1>
+              <Badge className="cf-page-hero-kicker mb-3 rounded-full bg-slate-50 text-slate-600 hover:bg-slate-50">Zadania</Badge>
+              <h1 className="cf-page-hero-title text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Lista zadaĹ„</h1>
             </div>
             <div className="flex flex-wrap gap-2">
               <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() => void refreshData()} disabled={loading || workspaceLoading} data-tasks-refresh-visible-stage45m="true">
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
-                Odśwież
+                OdĹ›wieĹĽ
               </Button>
             </div>
           </div>
@@ -498,8 +498,8 @@ export default function TasksStable() {
               active={scope === card.id}
               onClick={() => setScope(card.id)}
               tone={card.tone}
-              title={`Pokaż zadania: ${card.label}`}
-              ariaLabel={`Pokaż zadania: ${card.label}`}
+              title={`PokaĹĽ zadania: ${card.label}`}
+              ariaLabel={`PokaĹĽ zadania: ${card.label}`}
             />
           ))}
         </section>
@@ -518,7 +518,7 @@ export default function TasksStable() {
 
         <section className="space-y-2" data-tasks-compact-list-stage48="true">
           {loading ? (
-            <Card className="border-slate-100"><CardContent className="flex items-center gap-3 p-5 text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> Ładowanie zadań...</CardContent></Card>
+            <Card className="border-slate-100"><CardContent className="flex items-center gap-3 p-5 text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> Ĺadowanie zadaĹ„...</CardContent></Card>
           ) : filteredTasks.length ? filteredTasks.map((task) => {
             const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
             return (
@@ -540,19 +540,19 @@ export default function TasksStable() {
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="done-toggle" onClick={() => void toggleTask(task)}>
-                        {isTaskDone(task) ? 'Przywróć' : 'Zrobione'}
+                        {isTaskDone(task) ? 'PrzywrĂłÄ‡' : 'Zrobione'}
                       </Button>
                       <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() => openEditTask(task)}>
                         Edytuj
                       </Button>
-                      <Button type="button" variant="outline" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48="delete" onClick={() => void deleteTask(task)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</Button>
+                      <Button type="button" variant="outline" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48="delete" onClick={() => void deleteTask(task)}><Trash2 className="mr-2 h-4 w-4" /> UsuĹ„</Button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             );
           }) : (
-            <Card className="border-slate-100"><CardContent className="p-6 text-sm text-slate-500">Brak zadań w tym widoku.</CardContent></Card>
+            <Card className="border-slate-100"><CardContent className="p-6 text-sm text-slate-500">Brak zadaĹ„ w tym widoku.</CardContent></Card>
           )}
         </section>
 
@@ -563,8 +563,8 @@ export default function TasksStable() {
             </DialogHeader>
             <form onSubmit={handleSaveTask} className="space-y-4">
               <div className="space-y-2">
-                <Label>Tytuł</Label>
-                <Input value={form.title} onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))} placeholder="Co trzeba zrobić?" />
+                <Label>TytuĹ‚</Label>
+                <Input value={form.title} onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))} placeholder="Co trzeba zrobiÄ‡?" />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
@@ -575,7 +575,7 @@ export default function TasksStable() {
                   <Label>Priorytet</Label>
                   <select className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm" value={form.priority} onChange={(event) => setForm((prev) => ({ ...prev, priority: event.target.value }))}>
                     <option value="low">Niski</option>
-                    <option value="medium">Średni</option>
+                    <option value="medium">Ĺšredni</option>
                     <option value="normal">Normalny</option>
                     <option value="high">Wysoki</option>
                   </select>
@@ -615,14 +615,14 @@ export default function TasksStable() {
             </DialogHeader>
             <form onSubmit={handleCreateNextStepTask} className="space-y-4">
               <p className="text-sm text-slate-600">
-                Zadanie jest zrobione. Ustaw następny follow-up, żeby lead albo sprawa nie wypadły z procesu.
+                Zadanie jest zrobione. Ustaw nastÄ™pny follow-up, ĹĽeby lead albo sprawa nie wypadĹ‚y z procesu.
               </p>
               <div className="space-y-2">
-                <Label>Tytuł kolejnego kroku</Label>
+                <Label>TytuĹ‚ kolejnego kroku</Label>
                 <Input
                   value={nextStepPrompt?.title || ''}
                   onChange={(event) => setNextStepPrompt((current) => (current ? { ...current, title: event.target.value } : current))}
-                  placeholder="Np. Zadzwonić ponownie / wysłać ofertę"
+                  placeholder="Np. ZadzwoniÄ‡ ponownie / wysĹ‚aÄ‡ ofertÄ™"
                 />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -642,14 +642,14 @@ export default function TasksStable() {
                     onChange={(event) => setNextStepPrompt((current) => (current ? { ...current, priority: event.target.value } : current))}
                   >
                     <option value="low">Niski</option>
-                    <option value="medium">Średni</option>
+                    <option value="medium">Ĺšredni</option>
                     <option value="normal">Normalny</option>
                     <option value="high">Wysoki</option>
                   </select>
                 </div>
               </div>
               <DialogFooter className={modalFooterClass()}>
-                <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>Pomiń</Button>
+                <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>PomiĹ„</Button>
                 <Button type="submit" disabled={nextStepSaving}>
                   {nextStepSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Ustaw kolejny krok
@@ -662,4 +662,5 @@ export default function TasksStable() {
     </Layout>
   );
 }
+
 
