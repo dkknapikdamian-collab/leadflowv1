@@ -691,6 +691,7 @@ const STAGE24A_CLIENT_SIDE_QUICK_ACTIONS_GUARD = 'client side quick actions use 
 const STAGE25B_CLIENT_DETAIL_FEEDBACK_COMPLETE_REPAIR_GUARD = 'client detail feedback complete repair';
 const STAGE25C_CLIENT_DETAIL_GUARD_COMPAT_FINAL = 'client detail final feedback guard compatibility';
 const STAGE25D_CLIENT_DETAIL_JSX_BUILD_FIX_GUARD = 'client detail JSX fragment build fix';
+const STAGE26A_FEEDBACK_AFTER_4EC_GUARD = 'feedback after 4ec client activity ai drafts';
 
 function getClientPaymentAmount(payment: any) {
   const raw =
@@ -1708,8 +1709,16 @@ export default function ClientDetail() {
                             <Button type="button" size="sm" variant="outline" onClick={() => (caseId ? navigate(`/cases/${caseId}`) : toast.info('Brak ID sprawy.'))}>
                               Edytuj
                             </Button>
-                            <Button type="button" size="sm" variant="outline" onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}>
-                              Usuń
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              className="client-detail-case-smart-delete-icon-button"
+                              aria-label="Usuń sprawę"
+                              title="Usuń sprawę"
+                              onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}
+                            >
+                              <Trash2 className="h-4 w-4" aria-hidden="true" />
                             </Button>
                           </div>
                         </article>

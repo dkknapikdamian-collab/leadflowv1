@@ -275,3 +275,61 @@ Do not hide real alerts with text, link or button.
 @import './styles/eliteflow-sidebar-user-footer-below-nav.css';
 @import './styles/eliteflow-admin-feedback-p1-hotfix.css';
 @import './styles/eliteflow-semantic-badges-and-today-sections.css';
+
+
+/* stage26a right rail quick filters light cards */
+.ai-drafts-right-rail,
+.activity-right-rail {
+  background: transparent !important;
+}
+
+.ai-drafts-right-card,
+.activity-right-card,
+.right-card.ai-drafts-right-card,
+.right-card.activity-right-card {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(148, 163, 184, 0.42) !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08) !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.ai-drafts-right-card::before,
+.ai-drafts-right-card::after,
+.activity-right-card::before,
+.activity-right-card::after {
+  display: none !important;
+  background: transparent !important;
+}
+
+.ai-drafts-right-card *,
+.activity-right-card *,
+.activity-rail-button,
+.activity-rail-button *,
+.ai-drafts-rail-button,
+.ai-drafts-rail-button * {
+  color: #0f172a !important;
+  stroke: #0f172a !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.activity-rail-button,
+.ai-drafts-rail-button,
+.activity-right-card button,
+.ai-drafts-right-card button {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06) !important;
+}
+
+.activity-rail-button:hover,
+.ai-drafts-rail-button:hover,
+.activity-right-card button:hover,
+.ai-drafts-right-card button:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #020617 !important;
+}
