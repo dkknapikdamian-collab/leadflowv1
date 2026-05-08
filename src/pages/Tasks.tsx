@@ -31,6 +31,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { StatShortcutCard } from '../components/StatShortcutCard';
+import { actionButtonClass } from '../components/entity-actions';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -970,40 +971,35 @@ await updateTaskInSupabase({
       id: 'active' as TaskScope,
       title: 'Aktywne',
       value: taskStats.active,
-      tone: 'text-slate-900',
-      bg: 'bg-slate-100 text-slate-500',
+      tone: 'neutral',
       icon: ListTodo,
     },
     {
       id: 'today' as TaskScope,
       title: 'Dziś',
       value: taskStats.today,
-      tone: 'text-blue-600',
-      bg: 'bg-blue-50 text-blue-500',
+      tone: 'blue',
       icon: Clock,
     },
     {
       id: 'week' as TaskScope,
       title: 'Ten tydzień',
       value: taskStats.week,
-      tone: 'text-indigo-600',
-      bg: 'bg-indigo-50 text-indigo-500',
+      tone: 'blue',
       icon: Bell,
     },
     {
       id: 'overdue' as TaskScope,
       title: 'Zaległe',
       value: taskStats.overdue,
-      tone: 'text-rose-600',
-      bg: 'bg-rose-50 text-rose-500',
+      tone: 'red',
       icon: AlertTriangle,
     },
     {
       id: 'done' as TaskScope,
       title: 'Zrobione',
       value: taskStats.done,
-      tone: 'text-emerald-600',
-      bg: 'bg-emerald-50 text-emerald-500',
+      tone: 'green',
       icon: CheckCircle2,
     },
   ];
@@ -1060,22 +1056,22 @@ await updateTaskInSupabase({
         </div>
 
         <div className="task-action-col task-action-col-compact" data-task-actions="compact">
-          <Button variant="outline" size="sm" className="task-action-btn rounded-xl" onClick={() => openEditTask(task)}>
+          <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} onClick={() => openEditTask(task)}>
             Edytuj
           </Button>
-          <Button variant="outline" size="sm" className="task-action-btn rounded-xl" disabled={done} onClick={() => rescheduleTask(task, 1, 'hour')}>
+          <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() => rescheduleTask(task, 1, 'hour')}>
             +1H
           </Button>
-          <Button variant="outline" size="sm" className="task-action-btn rounded-xl" disabled={done} onClick={() => rescheduleTask(task, 1, 'day')}>
+          <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() => rescheduleTask(task, 1, 'day')}>
             +1D
           </Button>
-          <Button variant="outline" size="sm" className="task-action-btn rounded-xl" disabled={done} onClick={() => rescheduleTask(task, 1, 'week')}>
+          <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() => rescheduleTask(task, 1, 'week')}>
             +1W
           </Button>
-          <Button variant={done ? 'outline' : 'default'} size="sm" className="task-action-btn rounded-xl" onClick={() => toggleTask(task.id, task.status)}>
+          <Button variant={done ? 'outline' : 'default'} size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} onClick={() => toggleTask(task.id, task.status)}>
             {done ? 'Przywróć' : 'Zrobione'}
           </Button>
-          <Button variant="ghost" size="sm" className="task-action-btn task-action-danger rounded-xl" onClick={() => deleteTask(task.id)}>
+          <Button variant="outline" size="sm" className={actionButtonClass('danger', 'task-action-btn task-action-danger rounded-xl')} onClick={() => deleteTask(task.id)}>
             Usuń
           </Button>
         </div>
@@ -1369,8 +1365,7 @@ await updateTaskInSupabase({
               icon={stat.icon}
               active={taskScope === stat.id}
               onClick={() => activateScope(stat.id)}
-              valueClassName={stat.tone}
-              iconClassName={stat.bg}
+              tone={stat.tone}
               title={`Pokaż: ${stat.title.toLowerCase()}`}
             />
           ))}

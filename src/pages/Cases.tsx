@@ -642,7 +642,7 @@ export default function Cases() {
             label="W realizacji"
             value={stats.total}
             icon={FileText}
-            iconClassName="bg-blue-50 text-blue-600"
+            tone="blue"
             active={caseView === 'all'}
             onClick={() => setCaseView('all')}
           />
@@ -650,7 +650,7 @@ export default function Cases() {
             label="Czeka na klienta"
             value={stats.waiting}
             icon={Clock}
-            iconClassName="bg-amber-50 text-amber-600"
+            tone="amber"
             active={caseView === 'waiting' || caseView === 'approval'}
             onClick={() => toggleCaseView('waiting')}
           />
@@ -658,7 +658,7 @@ export default function Cases() {
             label="Zablokowane"
             value={stats.blocked}
             icon={AlertTriangle}
-            iconClassName="bg-rose-50 text-rose-600"
+            tone="red"
             active={caseView === 'blocked'}
             onClick={() => toggleCaseView('blocked')}
           />
@@ -666,7 +666,7 @@ export default function Cases() {
             label="Gotowe"
             value={stats.ready}
             icon={CheckCircle2}
-            iconClassName="bg-emerald-50 text-emerald-600"
+            tone="green"
             active={caseView === 'ready'}
             onClick={() => toggleCaseView('ready')}
           />

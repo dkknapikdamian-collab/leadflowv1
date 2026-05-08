@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T11:41:42.401Z",
+  "generatedAt": "2026-05-08T11:57:33.935Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -1130,12 +1130,12 @@
     {
       "term": "Dodaj zadanie",
       "file": "src/pages/Tasks.tsx",
-      "line": 1098
+      "line": 1094
     },
     {
       "term": "Usuń",
       "file": "src/pages/Tasks.tsx",
-      "line": 1079
+      "line": 1075
     },
     {
       "term": "Edytuj",
@@ -1145,12 +1145,12 @@
     {
       "term": "Edytuj",
       "file": "src/pages/Tasks.tsx",
-      "line": 1064
+      "line": 1060
     },
     {
       "term": "Edytuj",
       "file": "src/pages/Tasks.tsx",
-      "line": 1229
+      "line": 1225
     },
     {
       "term": "Zapisz",
@@ -1160,47 +1160,47 @@
     {
       "term": "Zapisz",
       "file": "src/pages/Tasks.tsx",
-      "line": 1217
+      "line": 1213
     },
     {
       "term": "Zapisz",
       "file": "src/pages/Tasks.tsx",
-      "line": 1355
+      "line": 1351
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Tasks.tsx",
-      "line": 1098
+      "line": 1094
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Tasks.tsx",
-      "line": 1404
+      "line": 1399
     },
     {
       "term": "Usuń",
       "file": "src/pages/TasksStable.tsx",
-      "line": 529
+      "line": 525
     },
     {
       "term": "Edytuj",
       "file": "src/pages/TasksStable.tsx",
-      "line": 527
+      "line": 523
     },
     {
       "term": "Edytuj",
       "file": "src/pages/TasksStable.tsx",
-      "line": 543
+      "line": 539
     },
     {
       "term": "Zapisz",
       "file": "src/pages/TasksStable.tsx",
-      "line": 586
+      "line": 582
     },
     {
       "term": "Anuluj",
       "file": "src/pages/TasksStable.tsx",
-      "line": 585
+      "line": 581
     },
     {
       "term": "Edytuj",
@@ -2326,7 +2326,7 @@
     {
       "tag": "Link",
       "file": "src/pages/Clients.tsx",
-      "line": 543,
+      "line": 542,
       "snippet": "<Link to={`/clients/${client.id}`} className=\"block\">"
     },
     {
@@ -2716,85 +2716,79 @@
     {
       "tag": "Button",
       "file": "src/pages/Tasks.tsx",
-      "line": 1063,
-      "snippet": "<Button variant=\"outline\" size=\"sm\" className=\"task-action-btn rounded-xl\" onClick={() =>"
+      "line": 1059,
+      "snippet": "<Button variant=\"outline\" size=\"sm\" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Tasks.tsx",
-      "line": 1066,
-      "snippet": "<Button variant=\"outline\" size=\"sm\" className=\"task-action-btn rounded-xl\" disabled={done} onClick={() =>"
+      "line": 1062,
+      "snippet": "<Button variant=\"outline\" size=\"sm\" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Tasks.tsx",
-      "line": 1069,
-      "snippet": "<Button variant=\"outline\" size=\"sm\" className=\"task-action-btn rounded-xl\" disabled={done} onClick={() =>"
+      "line": 1065,
+      "snippet": "<Button variant=\"outline\" size=\"sm\" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Tasks.tsx",
-      "line": 1072,
-      "snippet": "<Button variant=\"outline\" size=\"sm\" className=\"task-action-btn rounded-xl\" disabled={done} onClick={() =>"
+      "line": 1068,
+      "snippet": "<Button variant=\"outline\" size=\"sm\" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Tasks.tsx",
-      "line": 1075,
-      "snippet": "<Button variant={done ? 'outline' : 'default'} size=\"sm\" className=\"task-action-btn rounded-xl\" onClick={() =>"
+      "line": 1074,
+      "snippet": "<Button variant=\"outline\" size=\"sm\" className={actionButtonClass('danger', 'task-action-btn task-action-danger rounded-xl')} onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Tasks.tsx",
-      "line": 1078,
-      "snippet": "<Button variant=\"ghost\" size=\"sm\" className=\"task-action-btn task-action-danger rounded-xl\" onClick={() =>"
-    },
-    {
-      "tag": "Button",
-      "file": "src/pages/Tasks.tsx",
-      "line": 1217,
+      "line": 1213,
       "snippet": "<Button type=\"submit\" className=\"w-full\" disabled={taskSubmitting || !workspaceReady}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Tasks.tsx",
-      "line": 1355,
+      "line": 1351,
       "snippet": "<Button type=\"submit\" className=\"w-full\" disabled={taskEditSubmitting}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 463,
-      "snippet": "<Button type=\"button\" variant=\"outline\" className=\"border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950\" onClick={() =>"
+      "line": 460,
+      "snippet": "<Button type=\"button\" variant=\"outline\" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 523,
-      "snippet": "<Button type=\"button\" variant=\"outline\" className=\"tasks-stage47-action-button tasks-stage48-task-action-button\" data-task-action-visible-stage48=\"done-toggle\" onClick={() =>"
+      "line": 519,
+      "snippet": "<Button type=\"button\" variant=\"outline\" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48=\"done-toggle\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 526,
-      "snippet": "<Button type=\"button\" variant=\"outline\" className=\"tasks-stage47-action-button tasks-stage48-task-action-button\" data-task-action-visible-stage48=\"edit\" onClick={() =>"
+      "line": 522,
+      "snippet": "<Button type=\"button\" variant=\"outline\" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48=\"edit\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 529,
-      "snippet": "<Button type=\"button\" variant=\"outline\" className=\"tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action\" data-task-action-visible-stage48=\"delete\" onClick={() =>"
+      "line": 525,
+      "snippet": "<Button type=\"button\" variant=\"outline\" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48=\"delete\" onClic"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 585,
+      "line": 581,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={closeDialog} disabled={saving}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TasksStable.tsx",
-      "line": 633,
+      "line": 629,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={closeNextStepPrompt} disabled={nextStepSaving}>"
     },
     {
@@ -4762,7 +4756,7 @@
       "file": "src/pages/Tasks.tsx"
     },
     {
-      "icon": "subscribeGlobalQuickAction } from '../components/GlobalQuickActions';\nimport { StatShortcutCard } from '../components/StatShortcutCard';\nimport { Card",
+      "icon": "subscribeGlobalQuickAction } from '../components/GlobalQuickActions';\nimport { StatShortcutCard } from '../components/StatShortcutCard';\nimport { actionButtonClass } from '../components/entity-actions';\nimport { Card",
       "file": "src/pages/Tasks.tsx"
     },
     {
@@ -4830,7 +4824,7 @@
       "file": "src/pages/TasksStable.tsx"
     },
     {
-      "icon": "type FormEvent } from 'react';\nimport Layout from '../components/Layout';\nimport { StatShortcutCard } from '../components/StatShortcutCard';\nimport { Card",
+      "icon": "type FormEvent } from 'react';\nimport Layout from '../components/Layout';\nimport { StatShortcutCard } from '../components/StatShortcutCard';\nimport { actionButtonClass } from '../components/entity-actions';\nimport { Card",
       "file": "src/pages/TasksStable.tsx"
     },
     {
@@ -5166,22 +5160,22 @@
     },
     {
       "file": "src/components/StatShortcutCard.tsx",
-      "line": 86,
+      "line": 109,
       "className": "cf-top-metric-tile-left min-w-0 flex-1"
     },
     {
       "file": "src/components/StatShortcutCard.tsx",
-      "line": 87,
+      "line": 110,
       "className": "cf-top-metric-tile-label text-[13px] font-extrabold uppercase tracking-[0.035em] text-slate-500"
     },
     {
       "file": "src/components/StatShortcutCard.tsx",
-      "line": 91,
+      "line": 114,
       "className": "cf-top-metric-tile-helper mt-1 text-[11px] font-semibold leading-snug text-slate-500"
     },
     {
       "file": "src/components/StatShortcutCard.tsx",
-      "line": 97,
+      "line": 120,
       "className": "cf-top-metric-tile-value-row flex shrink-0 items-center justify-end gap-3"
     },
     {
@@ -6391,52 +6385,52 @@
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 532,
+      "line": 531,
       "className": "table-card"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 534,
+      "line": 533,
       "className": "table-card"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 536,
+      "line": 535,
       "className": "table-card"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 542,
+      "line": 541,
       "className": "relative group/client-card"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 557,
+      "line": 556,
       "className": "lead-action-cell"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 558,
+      "line": 557,
       "className": "lead-actions"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 559,
+      "line": 558,
       "className": "btn ghost cf-icon-action-button"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 581,
+      "line": 580,
       "className": "right-card"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 591,
+      "line": 590,
       "className": "right-card"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 602,
+      "line": 601,
       "className": "note"
     },
     {
@@ -7081,183 +7075,138 @@
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1039,
+      "line": 1035,
       "className": "task-type-badge-col"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1040,
+      "line": 1036,
       "className": "task-type-badge"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1043,
+      "line": 1039,
       "className": "task-main min-w-0"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1045,
+      "line": 1041,
       "className": "task-meta"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1046,
+      "line": 1042,
       "className": "task-pills"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1047,
+      "line": 1043,
       "className": "task-priority-chip"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1052,
+      "line": 1048,
       "className": "task-term-col"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1053,
+      "line": 1049,
       "className": "task-col-label"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1057,
+      "line": 1053,
       "className": "task-status-col"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1058,
+      "line": 1054,
       "className": "task-col-label"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1062,
+      "line": 1058,
       "className": "task-action-col task-action-col-compact"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1063,
-      "className": "task-action-btn rounded-xl"
-    },
-    {
-      "file": "src/pages/Tasks.tsx",
-      "line": 1066,
-      "className": "task-action-btn rounded-xl"
-    },
-    {
-      "file": "src/pages/Tasks.tsx",
-      "line": 1069,
-      "className": "task-action-btn rounded-xl"
-    },
-    {
-      "file": "src/pages/Tasks.tsx",
-      "line": 1072,
-      "className": "task-action-btn rounded-xl"
-    },
-    {
-      "file": "src/pages/Tasks.tsx",
-      "line": 1075,
-      "className": "task-action-btn rounded-xl"
-    },
-    {
-      "file": "src/pages/Tasks.tsx",
-      "line": 1078,
-      "className": "task-action-btn task-action-danger rounded-xl"
-    },
-    {
-      "file": "src/pages/Tasks.tsx",
-      "line": 1088,
+      "line": 1084,
       "className": "cf-html-view main-tasks-html"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1095,
+      "line": 1091,
       "className": "head-actions"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1097,
+      "line": 1093,
       "className": "task-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1099,
+      "line": 1095,
       "className": "task-form-vnext space-y-6 py-4"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1228,
+      "line": 1224,
       "className": "task-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1230,
+      "line": 1226,
       "className": "task-form-vnext-description"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1232,
+      "line": 1228,
       "className": "task-form-vnext space-y-6 py-4"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1379,
+      "line": 1374,
       "className": "search-card border-none shadow-sm"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1416,
+      "line": 1411,
       "className": "tasks-list-card"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1442,
+      "line": 1437,
       "className": "tasks-list-card"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1455,
+      "line": 1450,
       "className": "tasks-right-rail"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1456,
+      "line": 1451,
       "className": "right-card tasks-right-card"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1465,
+      "line": 1460,
       "className": "right-card tasks-right-card"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1468,
+      "line": 1463,
       "className": "quick-note"
     },
     {
       "file": "src/pages/Tasks.tsx",
-      "line": 1469,
+      "line": 1464,
       "className": "quick-note"
     },
     {
       "file": "src/pages/TasksStable.tsx",
-      "line": 506,
+      "line": 502,
       "className": "border-slate-100 shadow-sm tasks-stage48-task-card"
-    },
-    {
-      "file": "src/pages/TasksStable.tsx",
-      "line": 523,
-      "className": "tasks-stage47-action-button tasks-stage48-task-action-button"
-    },
-    {
-      "file": "src/pages/TasksStable.tsx",
-      "line": 526,
-      "className": "tasks-stage47-action-button tasks-stage48-task-action-button"
-    },
-    {
-      "file": "src/pages/TasksStable.tsx",
-      "line": 529,
-      "className": "tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action"
     },
     {
       "file": "src/pages/Templates.tsx",

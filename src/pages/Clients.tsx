@@ -485,7 +485,7 @@ export default function Clients() {
             onClick={() => setShowArchived(false)}
             title="Pokaż aktywnych klientów"
             ariaLabel="Pokaż aktywnych klientów"
-            iconClassName="bg-blue-50 text-blue-500"
+            tone="blue"
             helper="z otwartą sprawą"
           />
           <StatShortcutCard
@@ -495,7 +495,7 @@ export default function Clients() {
             onClick={() => setShowArchived(false)}
             title="Pokaż klientów bez sprawy"
             ariaLabel="Pokaż klientów bez sprawy"
-            iconClassName="bg-slate-100 text-slate-500"
+            tone="neutral"
             helper="tylko kontakt"
           />
           <StatShortcutCard
@@ -505,7 +505,7 @@ export default function Clients() {
             onClick={() => setShowArchived(false)}
             title="Pokaż wartość relacji"
             ariaLabel="Pokaż wartość relacji"
-            iconClassName="bg-slate-100 text-slate-500"
+            tone="green"
             helper="w relacjach"
           />
           <StatShortcutCard
@@ -515,8 +515,7 @@ export default function Clients() {
             onClick={() => setShowArchived(false)}
             title="Pokaż klientów bez ruchu"
             ariaLabel="Pokaż klientów bez ruchu"
-            valueClassName="text-rose-600"
-            iconClassName="bg-rose-50 text-rose-500"
+            tone="red"
             helper="do sprawdzenia"
           />
         </div>

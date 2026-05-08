@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T11:41:42.401Z
+Generated: 2026-05-08T11:57:33.935Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -247,21 +247,21 @@ Source files scanned: 196
 - Zapisz: src/pages/SupportCenter.tsx:500
 - Zapisz: src/pages/SupportCenter.tsx:607
 - Dodaj: src/pages/SupportCenter.tsx:657
-- Dodaj zadanie: src/pages/Tasks.tsx:1098
-- Usuń: src/pages/Tasks.tsx:1079
+- Dodaj zadanie: src/pages/Tasks.tsx:1094
+- Usuń: src/pages/Tasks.tsx:1075
 - Edytuj: src/pages/Tasks.tsx:6
-- Edytuj: src/pages/Tasks.tsx:1064
-- Edytuj: src/pages/Tasks.tsx:1229
+- Edytuj: src/pages/Tasks.tsx:1060
+- Edytuj: src/pages/Tasks.tsx:1225
 - Zapisz: src/pages/Tasks.tsx:12
-- Zapisz: src/pages/Tasks.tsx:1217
-- Zapisz: src/pages/Tasks.tsx:1355
-- Dodaj: src/pages/Tasks.tsx:1098
-- Dodaj: src/pages/Tasks.tsx:1404
-- Usuń: src/pages/TasksStable.tsx:529
-- Edytuj: src/pages/TasksStable.tsx:527
-- Edytuj: src/pages/TasksStable.tsx:543
-- Zapisz: src/pages/TasksStable.tsx:586
-- Anuluj: src/pages/TasksStable.tsx:585
+- Zapisz: src/pages/Tasks.tsx:1213
+- Zapisz: src/pages/Tasks.tsx:1351
+- Dodaj: src/pages/Tasks.tsx:1094
+- Dodaj: src/pages/Tasks.tsx:1399
+- Usuń: src/pages/TasksStable.tsx:525
+- Edytuj: src/pages/TasksStable.tsx:523
+- Edytuj: src/pages/TasksStable.tsx:539
+- Zapisz: src/pages/TasksStable.tsx:582
+- Anuluj: src/pages/TasksStable.tsx:581
 - Edytuj: src/pages/Templates.tsx:390
 - Edytuj: src/pages/Templates.tsx:431
 - Zapisz: src/pages/Templates.tsx:515
@@ -865,6 +865,7 @@ import Layout from '../components/Layout';
 import { consumeGlobalQuickAction: src/pages/Tasks.tsx
 - subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { StatShortcutCard } from '../components/StatShortcutCard';
+import { actionButtonClass } from '../components/entity-actions';
 import { Card: src/pages/Tasks.tsx
 - CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -889,6 +890,7 @@ import {
 - type FormEvent } from 'react';
 import Layout from '../components/Layout';
 import { StatShortcutCard } from '../components/StatShortcutCard';
+import { actionButtonClass } from '../components/entity-actions';
 import { Card: src/pages/TasksStable.tsx
 - CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -1113,7 +1115,7 @@ import {
 - src/pages/Clients.tsx:391 <Button type="button" variant="outline" className="btn" onClick={() =>
 - src/pages/Clients.tsx:398 <Button className="btn primary" disabled={!workspace?.id}>
 - src/pages/Clients.tsx:466 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Clients.tsx:543 <Link to={`/clients/${client.id}`} className="block">
+- src/pages/Clients.tsx:542 <Link to={`/clients/${client.id}`} className="block">
 - src/pages/Dashboard.tsx:214 <Button variant="ghost" className="w-full justify-start gap-3 bg-slate-100 text-primary">
 - src/pages/Dashboard.tsx:218 <Button variant="ghost" className="w-full justify-start gap-3 text-slate-600">
 - src/pages/Dashboard.tsx:222 <Button variant="ghost" className="w-full justify-start gap-3 text-slate-600">
@@ -1178,20 +1180,19 @@ import {
 - src/pages/Settings.tsx:1292 <Button type="button" variant="outline" onClick={() =>
 - src/pages/SupportCenter.tsx:404 <Button type="button" variant="outline" onClick={() =>
 - src/pages/SupportCenter.tsx:613 <Button type="button" variant="outline" disabled={statusPendingId === selectedTicket.id || (selectedTicket.status || 'new') === 'closed'
-- src/pages/Tasks.tsx:1063 <Button variant="outline" size="sm" className="task-action-btn rounded-xl" onClick={() =>
-- src/pages/Tasks.tsx:1066 <Button variant="outline" size="sm" className="task-action-btn rounded-xl" disabled={done} onClick={() =>
-- src/pages/Tasks.tsx:1069 <Button variant="outline" size="sm" className="task-action-btn rounded-xl" disabled={done} onClick={() =>
-- src/pages/Tasks.tsx:1072 <Button variant="outline" size="sm" className="task-action-btn rounded-xl" disabled={done} onClick={() =>
-- src/pages/Tasks.tsx:1075 <Button variant={done ? 'outline' : 'default'} size="sm" className="task-action-btn rounded-xl" onClick={() =>
-- src/pages/Tasks.tsx:1078 <Button variant="ghost" size="sm" className="task-action-btn task-action-danger rounded-xl" onClick={() =>
-- src/pages/Tasks.tsx:1217 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
-- src/pages/Tasks.tsx:1355 <Button type="submit" className="w-full" disabled={taskEditSubmitting}>
-- src/pages/TasksStable.tsx:463 <Button type="button" variant="outline" className="border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950" onClick={() =>
-- src/pages/TasksStable.tsx:523 <Button type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button" data-task-action-visible-stage48="done-toggle" onClick={() =>
-- src/pages/TasksStable.tsx:526 <Button type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button" data-task-action-visible-stage48="edit" onClick={() =>
-- src/pages/TasksStable.tsx:529 <Button type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action" data-task-action-visible-stage48="delete" onClick={() =>
-- src/pages/TasksStable.tsx:585 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
-- src/pages/TasksStable.tsx:633 <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>
+- src/pages/Tasks.tsx:1059 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} onClick={() =>
+- src/pages/Tasks.tsx:1062 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>
+- src/pages/Tasks.tsx:1065 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>
+- src/pages/Tasks.tsx:1068 <Button variant="outline" size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() =>
+- src/pages/Tasks.tsx:1074 <Button variant="outline" size="sm" className={actionButtonClass('danger', 'task-action-btn task-action-danger rounded-xl')} onClick={() =>
+- src/pages/Tasks.tsx:1213 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
+- src/pages/Tasks.tsx:1351 <Button type="submit" className="w-full" disabled={taskEditSubmitting}>
+- src/pages/TasksStable.tsx:460 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() =>
+- src/pages/TasksStable.tsx:519 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="done-toggle" onClick={() =>
+- src/pages/TasksStable.tsx:522 <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() =>
+- src/pages/TasksStable.tsx:525 <Button type="button" variant="outline" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48="delete" onClic
+- src/pages/TasksStable.tsx:581 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
+- src/pages/TasksStable.tsx:629 <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>
 - src/pages/Templates.tsx:315 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
 - src/pages/Templates.tsx:359 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
 - src/pages/Templates.tsx:385 <Button variant="outline" size="icon" className="rounded-2xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
@@ -1224,6 +1225,7 @@ import {
 - src/pages/TodayStable.tsx:406 <button type="button" onClick={onToggle} aria-expanded={!collapsed} className="flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-
 - src/pages/TodayStable.tsx:539 <Link to={to} className="font-semibold text-slate-900 break-words hover:underline">
 - src/pages/TodayStable.tsx:557 <Button type="button" size="sm" variant="outline" onClick={onEdit}>
+- src/pages/TodayStable.tsx:572 <Link to={to} className="inline-flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
 
 ## Relevant className snippets
 - src/components/admin-tools/AdminDebugToolbar.tsx:496 `admin-tool-row admin-tool-quick-editor-head-actions`
@@ -1238,10 +1240,10 @@ import {
 - src/components/Layout.tsx:116 `trial-card`
 - src/components/Layout.tsx:133 `user-card`
 - src/components/Layout.tsx:364 `access-warning-action`
-- src/components/StatShortcutCard.tsx:86 `cf-top-metric-tile-left min-w-0 flex-1`
-- src/components/StatShortcutCard.tsx:87 `cf-top-metric-tile-label text-[13px] font-extrabold uppercase tracking-[0.035em] text-slate-500`
-- src/components/StatShortcutCard.tsx:91 `cf-top-metric-tile-helper mt-1 text-[11px] font-semibold leading-snug text-slate-500`
-- src/components/StatShortcutCard.tsx:97 `cf-top-metric-tile-value-row flex shrink-0 items-center justify-end gap-3`
+- src/components/StatShortcutCard.tsx:109 `cf-top-metric-tile-left min-w-0 flex-1`
+- src/components/StatShortcutCard.tsx:110 `cf-top-metric-tile-label text-[13px] font-extrabold uppercase tracking-[0.035em] text-slate-500`
+- src/components/StatShortcutCard.tsx:114 `cf-top-metric-tile-helper mt-1 text-[11px] font-semibold leading-snug text-slate-500`
+- src/components/StatShortcutCard.tsx:120 `cf-top-metric-tile-value-row flex shrink-0 items-center justify-end gap-3`
 - src/components/task-editor-dialog.tsx:102 `task-form-vnext-content`
 - src/components/task-editor-dialog.tsx:106 `task-form-vnext-header`
 - src/components/task-editor-dialog.tsx:107 `task-form-vnext-title-block`
@@ -1483,16 +1485,16 @@ import {
 - src/pages/ClientPortal.tsx:276 `text-[10px] h-4 px-1.5 border border-red-200 text-red-500 rounded-full inline-flex items-center`
 - src/pages/ClientPortal.tsx:377 `gap-2 text-red-600 hover:bg-red-50`
 - src/pages/Clients.tsx:389 `head-actions`
-- src/pages/Clients.tsx:532 `table-card`
-- src/pages/Clients.tsx:534 `table-card`
-- src/pages/Clients.tsx:536 `table-card`
-- src/pages/Clients.tsx:542 `relative group/client-card`
-- src/pages/Clients.tsx:557 `lead-action-cell`
-- src/pages/Clients.tsx:558 `lead-actions`
-- src/pages/Clients.tsx:559 `btn ghost cf-icon-action-button`
-- src/pages/Clients.tsx:581 `right-card`
-- src/pages/Clients.tsx:591 `right-card`
-- src/pages/Clients.tsx:602 `note`
+- src/pages/Clients.tsx:531 `table-card`
+- src/pages/Clients.tsx:533 `table-card`
+- src/pages/Clients.tsx:535 `table-card`
+- src/pages/Clients.tsx:541 `relative group/client-card`
+- src/pages/Clients.tsx:556 `lead-action-cell`
+- src/pages/Clients.tsx:557 `lead-actions`
+- src/pages/Clients.tsx:558 `btn ghost cf-icon-action-button`
+- src/pages/Clients.tsx:580 `right-card`
+- src/pages/Clients.tsx:590 `right-card`
+- src/pages/Clients.tsx:601 `note`
 - src/pages/Dashboard.tsx:228 `w-full justify-start gap-3 text-red-500 hover:text-red-600 hover:bg-red-50`
 - src/pages/Dashboard.tsx:333 `text-2xl font-bold text-red-600`
 - src/pages/Dashboard.tsx:335 `bg-red-50 p-3 rounded-xl`

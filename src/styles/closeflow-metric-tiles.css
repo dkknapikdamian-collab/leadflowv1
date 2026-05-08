@@ -17,6 +17,24 @@
   --cf-metric-tile-icon: #64748b;
   --cf-metric-tile-min-height: 72px;
   --cf-metric-tile-gap: 18px;
+  --cf-metric-tone-neutral-value: #0f172a;
+  --cf-metric-tone-neutral-icon-bg: #f1f5f9;
+  --cf-metric-tone-neutral-icon: #475569;
+  --cf-metric-tone-blue-value: #1d4ed8;
+  --cf-metric-tone-blue-icon-bg: #eff6ff;
+  --cf-metric-tone-blue-icon: #2563eb;
+  --cf-metric-tone-amber-value: #b45309;
+  --cf-metric-tone-amber-icon-bg: #fffbeb;
+  --cf-metric-tone-amber-icon: #d97706;
+  --cf-metric-tone-red-value: #be123c;
+  --cf-metric-tone-red-icon-bg: #fff1f2;
+  --cf-metric-tone-red-icon: #e11d48;
+  --cf-metric-tone-green-value: #047857;
+  --cf-metric-tone-green-icon-bg: #ecfdf3;
+  --cf-metric-tone-green-icon: #059669;
+  --cf-metric-tone-purple-value: #6d28d9;
+  --cf-metric-tone-purple-icon-bg: #f5f3ff;
+  --cf-metric-tone-purple-icon: #7c3aed;
 }
 
 .cf-top-metric-tile {
@@ -122,6 +140,64 @@
   width: 16px !important;
   height: 16px !important;
   stroke-width: 2.35 !important;
+}
+
+[data-eliteflow-metric-tone="neutral"] .cf-top-metric-tile-value,
+[data-eliteflow-metric-tone="slate"] .cf-top-metric-tile-value {
+  color: var(--cf-metric-tone-neutral-value) !important;
+}
+
+[data-eliteflow-metric-tone="neutral"] .cf-top-metric-tile-icon,
+[data-eliteflow-metric-tone="slate"] .cf-top-metric-tile-icon {
+  background-color: var(--cf-metric-tone-neutral-icon-bg) !important;
+  color: var(--cf-metric-tone-neutral-icon) !important;
+}
+
+[data-eliteflow-metric-tone="blue"] .cf-top-metric-tile-value {
+  color: var(--cf-metric-tone-blue-value) !important;
+}
+
+[data-eliteflow-metric-tone="blue"] .cf-top-metric-tile-icon {
+  background-color: var(--cf-metric-tone-blue-icon-bg) !important;
+  color: var(--cf-metric-tone-blue-icon) !important;
+}
+
+[data-eliteflow-metric-tone="amber"] .cf-top-metric-tile-value,
+[data-eliteflow-metric-tone="orange"] .cf-top-metric-tile-value {
+  color: var(--cf-metric-tone-amber-value) !important;
+}
+
+[data-eliteflow-metric-tone="amber"] .cf-top-metric-tile-icon,
+[data-eliteflow-metric-tone="orange"] .cf-top-metric-tile-icon {
+  background-color: var(--cf-metric-tone-amber-icon-bg) !important;
+  color: var(--cf-metric-tone-amber-icon) !important;
+}
+
+[data-eliteflow-metric-tone="red"] .cf-top-metric-tile-value {
+  color: var(--cf-metric-tone-red-value) !important;
+}
+
+[data-eliteflow-metric-tone="red"] .cf-top-metric-tile-icon {
+  background-color: var(--cf-metric-tone-red-icon-bg) !important;
+  color: var(--cf-metric-tone-red-icon) !important;
+}
+
+[data-eliteflow-metric-tone="green"] .cf-top-metric-tile-value {
+  color: var(--cf-metric-tone-green-value) !important;
+}
+
+[data-eliteflow-metric-tone="green"] .cf-top-metric-tile-icon {
+  background-color: var(--cf-metric-tone-green-icon-bg) !important;
+  color: var(--cf-metric-tone-green-icon) !important;
+}
+
+[data-eliteflow-metric-tone="purple"] .cf-top-metric-tile-value {
+  color: var(--cf-metric-tone-purple-value) !important;
+}
+
+[data-eliteflow-metric-tone="purple"] .cf-top-metric-tile-icon {
+  background-color: var(--cf-metric-tone-purple-icon-bg) !important;
+  color: var(--cf-metric-tone-purple-icon) !important;
 }
 
 /* Szerokość jak w Dziś: cztery kafelki w rzędzie, reszta zawija się w ten sam rytm. */

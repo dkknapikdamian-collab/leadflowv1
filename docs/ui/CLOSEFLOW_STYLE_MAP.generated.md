@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T11:41:42.899Z
+Generated: 2026-05-08T11:57:34.394Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -149,8 +149,26 @@ Generated: 2026-05-08T11:41:42.899Z
 - --cf-metric-tile-icon: src/styles/closeflow-metric-tiles.css:17
 - --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:18
 - --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:19
-- --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:283
-- --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:284
+- --cf-metric-tone-neutral-value: src/styles/closeflow-metric-tiles.css:20
+- --cf-metric-tone-neutral-icon-bg: src/styles/closeflow-metric-tiles.css:21
+- --cf-metric-tone-neutral-icon: src/styles/closeflow-metric-tiles.css:22
+- --cf-metric-tone-blue-value: src/styles/closeflow-metric-tiles.css:23
+- --cf-metric-tone-blue-icon-bg: src/styles/closeflow-metric-tiles.css:24
+- --cf-metric-tone-blue-icon: src/styles/closeflow-metric-tiles.css:25
+- --cf-metric-tone-amber-value: src/styles/closeflow-metric-tiles.css:26
+- --cf-metric-tone-amber-icon-bg: src/styles/closeflow-metric-tiles.css:27
+- --cf-metric-tone-amber-icon: src/styles/closeflow-metric-tiles.css:28
+- --cf-metric-tone-red-value: src/styles/closeflow-metric-tiles.css:29
+- --cf-metric-tone-red-icon-bg: src/styles/closeflow-metric-tiles.css:30
+- --cf-metric-tone-red-icon: src/styles/closeflow-metric-tiles.css:31
+- --cf-metric-tone-green-value: src/styles/closeflow-metric-tiles.css:32
+- --cf-metric-tone-green-icon-bg: src/styles/closeflow-metric-tiles.css:33
+- --cf-metric-tone-green-icon: src/styles/closeflow-metric-tiles.css:34
+- --cf-metric-tone-purple-value: src/styles/closeflow-metric-tiles.css:35
+- --cf-metric-tone-purple-icon-bg: src/styles/closeflow-metric-tiles.css:36
+- --cf-metric-tone-purple-icon: src/styles/closeflow-metric-tiles.css:37
+- --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:359
+- --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:360
 - --cf-surface-page: src/styles/closeflow-surface-tokens.css:2
 - --cf-surface-card: src/styles/closeflow-surface-tokens.css:3
 - --cf-surface-card-muted: src/styles/closeflow-surface-tokens.css:4
@@ -485,24 +503,6 @@ Generated: 2026-05-08T11:41:42.899Z
 - --cf21-shadow-soft: src/styles/visual-stage21-today-final-lock.css:29
 - --cf21-radius-xl: src/styles/visual-stage21-today-final-lock.css:30
 - --cf21-radius-lg: src/styles/visual-stage21-today-final-lock.css:31
-- --cf21-radius-md: src/styles/visual-stage21-today-final-lock.css:32
-- --cf22-bg: src/styles/visual-stage22-leads-final-lock.css:10
-- --cf22-bg-2: src/styles/visual-stage22-leads-final-lock.css:11
-- --cf22-sidebar: src/styles/visual-stage22-leads-final-lock.css:12
-- --cf22-sidebar-2: src/styles/visual-stage22-leads-final-lock.css:13
-- --cf22-card: src/styles/visual-stage22-leads-final-lock.css:14
-- --cf22-card-soft: src/styles/visual-stage22-leads-final-lock.css:15
-- --cf22-text: src/styles/visual-stage22-leads-final-lock.css:16
-- --cf22-muted: src/styles/visual-stage22-leads-final-lock.css:17
-- --cf22-muted-2: src/styles/visual-stage22-leads-final-lock.css:18
-- --cf22-line: src/styles/visual-stage22-leads-final-lock.css:19
-- --cf22-line-2: src/styles/visual-stage22-leads-final-lock.css:20
-- --cf22-blue: src/styles/visual-stage22-leads-final-lock.css:21
-- --cf22-blue-2: src/styles/visual-stage22-leads-final-lock.css:22
-- --cf22-blue-soft: src/styles/visual-stage22-leads-final-lock.css:23
-- --cf22-green: src/styles/visual-stage22-leads-final-lock.css:24
-- --cf22-green-soft: src/styles/visual-stage22-leads-final-lock.css:25
-- --cf22-red: src/styles/visual-stage22-leads-final-lock.css:26
 
 ## Danger/red local classes
 - border-rose-200: src/components/AppChunkErrorBoundary.tsx:100
@@ -532,8 +532,6 @@ Generated: 2026-05-08T11:41:42.899Z
 - border-rose-100: src/pages/Calendar.tsx:286
 - bg-rose-50: src/pages/Calendar.tsx:286
 - text-rose-700: src/pages/Calendar.tsx:286
-- bg-rose-50: src/pages/Cases.tsx:661
-- text-rose-600: src/pages/Cases.tsx:661
 - text-red-500: src/pages/ClientPortal.tsx:223
 - bg-red-100: src/pages/ClientPortal.tsx:265
 - text-red-600: src/pages/ClientPortal.tsx:265
@@ -541,9 +539,6 @@ Generated: 2026-05-08T11:41:42.899Z
 - text-red-500: src/pages/ClientPortal.tsx:276
 - text-red-600: src/pages/ClientPortal.tsx:377
 - bg-red-50: src/pages/ClientPortal.tsx:377
-- text-rose-600: src/pages/Clients.tsx:518
-- bg-rose-50: src/pages/Clients.tsx:519
-- text-rose-500: src/pages/Clients.tsx:519
 - text-red-500: src/pages/Dashboard.tsx:228
 - text-red-600: src/pages/Dashboard.tsx:228
 - bg-red-50: src/pages/Dashboard.tsx:228
@@ -556,15 +551,9 @@ Generated: 2026-05-08T11:41:42.899Z
 - bg-rose-50: src/pages/NotificationsCenter.tsx:643
 - text-rose-500: src/pages/NotificationsCenter.tsx:643
 - text-rose-600: src/pages/NotificationsCenter.tsx:643
-- text-rose-600: src/pages/Tasks.tsx:997
-- bg-rose-50: src/pages/Tasks.tsx:998
-- text-rose-500: src/pages/Tasks.tsx:998
-- bg-rose-50: src/pages/TasksStable.tsx:149
-- text-rose-700: src/pages/TasksStable.tsx:149
-- border-rose-100: src/pages/TasksStable.tsx:149
-- text-rose-700: src/pages/TasksStable.tsx:440
-- bg-rose-50: src/pages/TasksStable.tsx:441
-- text-rose-600: src/pages/TasksStable.tsx:441
+- bg-rose-50: src/pages/TasksStable.tsx:150
+- text-rose-700: src/pages/TasksStable.tsx:150
+- border-rose-100: src/pages/TasksStable.tsx:150
 - bg-rose-600: src/pages/Templates.tsx:410
 - border-red-100: src/pages/Today.tsx:1286
 - bg-red-50: src/pages/Today.tsx:1286

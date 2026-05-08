@@ -5,6 +5,7 @@ P0_TASKS_STABLE_REBUILD
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import Layout from '../components/Layout';
 import { StatShortcutCard } from '../components/StatShortcutCard';
+import { actionButtonClass } from '../components/entity-actions';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -421,32 +422,28 @@ export default function TasksStable() {
       label: 'Aktywne',
       value: stats.active,
       icon: CheckSquare,
-      tone: 'text-slate-900',
-      iconClassName: 'bg-slate-100 text-slate-700',
+      tone: 'neutral',
     },
     {
       id: 'today' as TaskScope,
       label: 'Dziś',
       value: stats.today,
       icon: Clock,
-      tone: 'text-blue-700',
-      iconClassName: 'bg-blue-50 text-blue-600',
+      tone: 'blue',
     },
     {
       id: 'overdue' as TaskScope,
       label: 'Zaległe',
       value: stats.overdue,
       icon: AlertTriangle,
-      tone: 'text-rose-700',
-      iconClassName: 'bg-rose-50 text-rose-600',
+      tone: 'red',
     },
     {
       id: 'done' as TaskScope,
       label: 'Zrobione',
       value: stats.done,
       icon: CheckCircle2,
-      tone: 'text-emerald-700',
-      iconClassName: 'bg-emerald-50 text-emerald-700',
+      tone: 'green',
     },
   ];
 
@@ -460,7 +457,7 @@ export default function TasksStable() {
               <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Lista zadań</h1>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button type="button" variant="outline" className="border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950" onClick={() => void refreshData()} disabled={loading || workspaceLoading} data-tasks-refresh-visible-stage45m="true">
+              <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() => void refreshData()} disabled={loading || workspaceLoading} data-tasks-refresh-visible-stage45m="true">
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
                 Odśwież
               </Button>
@@ -477,8 +474,7 @@ export default function TasksStable() {
               icon={card.icon}
               active={scope === card.id}
               onClick={() => setScope(card.id)}
-              valueClassName={card.tone}
-              iconClassName={card.iconClassName}
+              tone={card.tone}
               title={`Pokaż zadania: ${card.label}`}
               ariaLabel={`Pokaż zadania: ${card.label}`}
             />
@@ -520,13 +516,13 @@ export default function TasksStable() {
                       {readText(task, ['leadName', 'lead_name'], '') ? <p className="mt-1 text-sm text-slate-600">Lead: {readText(task, ['leadName', 'lead_name'], '')}</p> : null}
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <Button type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button" data-task-action-visible-stage48="done-toggle" onClick={() => void toggleTask(task)}>
+                      <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="done-toggle" onClick={() => void toggleTask(task)}>
                         {isTaskDone(task) ? 'Przywróć' : 'Zrobione'}
                       </Button>
-                      <Button type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button" data-task-action-visible-stage48="edit" onClick={() => openEditTask(task)}>
+                      <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() => openEditTask(task)}>
                         Edytuj
                       </Button>
-                      <Button type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action" data-task-action-visible-stage48="delete" onClick={() => void deleteTask(task)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</Button>
+                      <Button type="button" variant="outline" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48="delete" onClick={() => void deleteTask(task)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</Button>
                     </div>
                   </div>
                 </CardContent>

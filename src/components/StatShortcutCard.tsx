@@ -27,6 +27,26 @@ export type StatShortcutCardProps = {
   helper?: string;
   title?: string;
   ariaLabel?: string;
+  tone?: MetricTone;
+};
+
+type MetricTone = 'neutral' | 'blue' | 'amber' | 'red' | 'green' | 'purple' | 'active' | 'waiting' | 'overdue' | 'risk' | 'done' | 'value' | 'ai' | 'drafts';
+
+const METRIC_TONE_ALIAS: Record<MetricTone, 'neutral' | 'blue' | 'amber' | 'red' | 'green' | 'purple'> = {
+  neutral: 'neutral',
+  blue: 'blue',
+  amber: 'amber',
+  red: 'red',
+  green: 'green',
+  purple: 'purple',
+  active: 'blue',
+  waiting: 'amber',
+  overdue: 'red',
+  risk: 'red',
+  done: 'green',
+  value: 'green',
+  ai: 'purple',
+  drafts: 'purple',
 };
 
 function normalizeMetricToneText(value: unknown) {
@@ -39,24 +59,26 @@ function normalizeMetricToneText(value: unknown) {
     .trim();
 }
 
-function resolveMetricTone(label: string, valueClassName: string, iconClassName: string) {
+function resolveMetricTone(label: string, valueClassName: string, iconClassName: string, explicitTone?: MetricTone) {
+  if (explicitTone) return METRIC_TONE_ALIAS[explicitTone];
+
   const classText = normalizeMetricToneText(`${valueClassName} ${iconClassName}`);
   const labelText = normalizeMetricToneText(label);
 
   if (classText.includes('rose') || classText.includes('red')) return 'red';
   if (classText.includes('emerald') || classText.includes('green') || classText.includes('teal')) return 'green';
   if (classText.includes('purple') || classText.includes('violet')) return 'purple';
-  if (classText.includes('amber') || classText.includes('orange') || classText.includes('yellow')) return 'orange';
+  if (classText.includes('amber') || classText.includes('orange') || classText.includes('yellow')) return 'amber';
   if (classText.includes('blue') || classText.includes('sky') || classText.includes('indigo')) return 'blue';
 
   if (labelText.includes('zagro') || labelText.includes('ryzy') || labelText.includes('zaleg') || labelText.includes('blok') || labelText.includes('brak')) return 'red';
   if (labelText.includes('wartosc') || labelText.includes('wartoĹ›Ä‡') || labelText.includes('platn') || labelText.includes('pĹ‚atn') || labelText.includes('przychod')) return 'green';
   if (labelText.includes('aktywn') || labelText.includes('dzis') || labelText.includes('dziĹ›') || labelText.includes('obslugi') || labelText.includes('obsĹ‚ugi')) return 'blue';
-  if (labelText.includes('czek') || labelText.includes('historia') || labelText.includes('kosz')) return 'orange';
+  if (labelText.includes('czek') || labelText.includes('historia') || labelText.includes('kosz')) return 'amber';
   if (labelText.includes('wydar') || labelText.includes('szkic') || labelText.includes('akcept')) return 'purple';
   if (labelText.includes('zadania') || labelText.includes('zrobione') || labelText.includes('obowiazk') || labelText.includes('obowiÄ…zk')) return 'green';
 
-  return 'slate';
+  return 'neutral';
 }
 
 export function StatShortcutCard({
@@ -71,8 +93,9 @@ export function StatShortcutCard({
   helper,
   title,
   ariaLabel,
+  tone,
 }: StatShortcutCardProps) {
-  const tone = resolveMetricTone(label, valueClassName, iconClassName);
+  const resolvedTone = resolveMetricTone(label, valueClassName, iconClassName, tone);
   const card = (
     <div
       className={[
@@ -81,7 +104,7 @@ export function StatShortcutCard({
         active ? 'is-active' : '',
       ].filter(Boolean).join(' ')}
       data-eliteflow-today-metric-lock="true"
-      data-eliteflow-metric-tone={tone}
+      data-eliteflow-metric-tone={resolvedTone}
     >
       <div className="cf-top-metric-tile-left min-w-0 flex-1">
         <p className="cf-top-metric-tile-label text-[13px] font-extrabold uppercase tracking-[0.035em] text-slate-500">
