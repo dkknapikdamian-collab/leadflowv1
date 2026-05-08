@@ -12,6 +12,8 @@ import { requireWorkspaceId } from '../lib/workspace-context';
 import type { TaskCreateDialogContext } from './TaskCreateDialog';
 
 const STAGE85_CONTEXT_NOTE_DIALOG_SHARED = 'Shared note dialog for lead, client and case detail context actions';
+const STAGE27E_CONTEXT_NOTE_SAVED_EVENT = 'closeflow:context-note-saved';
+const STAGE27A_CONTEXT_NOTE_SAVED_EVENT = 'closeflow:context-note-saved';
 
 type ContextNoteDialogProps = {
   open: boolean;
@@ -70,6 +72,9 @@ export default function ContextNoteDialog({ open, onOpenChange, onSaved, context
     setSaving(true);
     try {
       await insertActivityToSupabase(input);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent(STAGE27A_CONTEXT_NOTE_SAVED_EVENT, { detail: input }));
+      }
       toast.success('Notatka dodana');
       onOpenChange(false);
       setNote('');

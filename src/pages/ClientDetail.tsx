@@ -64,7 +64,9 @@ import {
   Save,
   Sparkles,
   Target,
+  Trash2,
   UserRound,
+
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -692,6 +694,10 @@ const STAGE25B_CLIENT_DETAIL_FEEDBACK_COMPLETE_REPAIR_GUARD = 'client detail fee
 const STAGE25C_CLIENT_DETAIL_GUARD_COMPAT_FINAL = 'client detail final feedback guard compatibility';
 const STAGE25D_CLIENT_DETAIL_JSX_BUILD_FIX_GUARD = 'client detail JSX fragment build fix';
 const STAGE26A_FEEDBACK_AFTER_4EC_GUARD = 'feedback after 4ec client activity ai drafts';
+const STAGE27E_CLIENT_NOTES_EVENT_FINAL_GUARD = 'client notes event final after failed 27ad';
+const STAGE27D_CLIENT_NOTES_RUNTIME_FINAL_GUARD = 'client notes runtime visibility final';
+const STAGE27A_CLIENT_NOTES_TRASH2_GUARD = 'client notes visible after save and Trash2 imported';
+const STAGE27B_TRASH2_IMPORT_AND_NOTES_FINAL_GUARD = 'Trash2 import fixed and client notes final';
 
 function getClientPaymentAmount(payment: any) {
   const raw =
@@ -810,6 +816,21 @@ export default function ClientDetail() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
+
+  useEffect(() => {
+    const handleContextNoteSaved = (event: Event) => {
+      const detail = (event as CustomEvent<any>).detail;
+      if (!detail) return;
+      const detailClientId = String(detail?.clientId || detail?.payload?.clientId || '').trim();
+      const currentClientId = String(client?.id || id || '').trim();
+      if (detailClientId && currentClientId && detailClientId !== currentClientId) return;
+      setActivities((previous) => [detail, ...previous]);
+    };
+    window.addEventListener('closeflow:context-note-saved', handleContextNoteSaved as EventListener);
+    return () => window.removeEventListener('closeflow:context-note-saved', handleContextNoteSaved as EventListener);
+  }, [client?.id, id]);
+
+
   const [activeTab, setActiveTab] = useState<ClientTab>('summary');
   const [contactEditing, setContactEditing] = useState(false);
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
@@ -1920,7 +1941,26 @@ export default function ClientDetail() {
                 {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 Dyktuj
               </Button>
-            </section>
+            
+              <div className="client-detail-notes-list" data-client-notes-list="true">
+                <div className="client-detail-notes-list-head">
+                  <strong>Notatki</strong>
+                  <span>{getClientVisibleNotes(activities, client).length}</span>
+                </div>
+                {getClientVisibleNotes(activities, client).length ? (
+                  <div className="client-detail-notes-items">
+                    {getClientVisibleNotes(activities, client).map((note) => (
+                      <article key={note.id} className="client-detail-note-item" data-client-note-item="true">
+                        <p>{note.content}</p>
+                        <small>{note.createdAt ? formatDateTime(note.createdAt) : 'Dodano przed chwilą'}</small>
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="client-detail-notes-empty">Brak zapisanych notatek dla klienta.</p>
+                )}
+              </div>
+</section>
 
             <section className="right-card client-detail-right-card" data-client-finance-summary="true">
               <div className="client-detail-card-title-row">
@@ -1952,7 +1992,36 @@ export default function ClientDetail() {
 }
 
 
-
-
-
+function getClientVisibleNotes(activityRows: any[], clientRecord: any) {
+  const clientId = String(clientRecord?.id || '').trim();
+  return (activityRows || [])
+    .filter((activity) => {
+      const eventType = String(activity?.eventType || activity?.activityType || '').toLowerCase();
+      if (!['client_note_added', 'note_added', 'operator_note'].includes(eventType)) return false;
+      const activityClientId = String(activity?.clientId || activity?.client_id || activity?.payload?.clientId || '').trim();
+      const recordType = String(activity?.payload?.recordType || '').toLowerCase();
+      return Boolean(
+        (activityClientId && clientId && activityClientId === clientId) ||
+        recordType === 'client' ||
+        eventType === 'client_note_added'
+      );
+    })
+    .map((activity) => ({
+      id: String(activity?.id || activity?.createdAt || activity?.updatedAt || activity?.payload?.content || 'note'),
+      content:
+        asText(activity?.payload?.content) ||
+        asText(activity?.payload?.note) ||
+        asText(activity?.note) ||
+        asText(activity?.description) ||
+        asText(activity?.title),
+      createdAt: activity?.createdAt || activity?.updatedAt || activity?.happenedAt || null,
+    }))
+    .filter((note) => note.content)
+    .sort((left, right) => {
+      const leftTime = asDate(left.createdAt)?.getTime() || 0;
+      const rightTime = asDate(right.createdAt)?.getTime() || 0;
+      return rightTime - leftTime;
+    })
+    .slice(0, 8);
+}
 

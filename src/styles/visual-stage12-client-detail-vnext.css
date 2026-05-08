@@ -2930,3 +2930,151 @@ button.client-detail-top-tile-link {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* stage27a client notes visible after save */
+.client-detail-vnext-page [data-client-notes-list="true"] {
+  order: 40 !important;
+  margin-top: 12px !important;
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-list-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-top: 10px !important;
+  border-top: 1px solid rgba(148, 163, 184, 0.35) !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-list-head strong {
+  color: #0f172a !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-list-head span {
+  min-width: 24px !important;
+  height: 24px !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-items {
+  display: grid !important;
+  gap: 8px !important;
+  max-height: 280px !important;
+  overflow: auto !important;
+}
+
+.client-detail-vnext-page [data-client-note-item="true"] {
+  padding: 10px 11px !important;
+  border-radius: 14px !important;
+  background: #f8fafc !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  color: #172033 !important;
+}
+
+.client-detail-vnext-page [data-client-note-item="true"] p {
+  margin: 0 !important;
+  color: #172033 !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+  white-space: pre-wrap !important;
+}
+
+.client-detail-vnext-page [data-client-note-item="true"] small,
+.client-detail-vnext-page .client-detail-notes-empty {
+  margin: 0 !important;
+  color: #64748b !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-delete-icon-button,
+.client-detail-vnext-page .client-detail-case-smart-delete-icon-button svg {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
+  -webkit-text-fill-color: #dc2626 !important;
+}
+
+
+/* stage27e client notes event final */
+.client-detail-vnext-page [data-client-notes-list="true"] {
+  order: 40 !important;
+  margin-top: 12px !important;
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-list-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-top: 10px !important;
+  border-top: 1px solid rgba(148, 163, 184, 0.35) !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-list-head strong {
+  color: #0f172a !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-list-head span {
+  min-width: 24px !important;
+  height: 24px !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-items {
+  display: grid !important;
+  gap: 8px !important;
+  max-height: 280px !important;
+  overflow: auto !important;
+}
+
+.client-detail-vnext-page [data-client-note-item="true"] {
+  padding: 10px 11px !important;
+  border-radius: 14px !important;
+  background: #f8fafc !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  color: #172033 !important;
+}
+
+.client-detail-vnext-page [data-client-note-item="true"] p {
+  margin: 0 !important;
+  color: #172033 !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+  white-space: pre-wrap !important;
+}
+
+.client-detail-vnext-page [data-client-note-item="true"] small,
+.client-detail-vnext-page .client-detail-notes-empty {
+  margin: 0 !important;
+  color: #64748b !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-delete-icon-button,
+.client-detail-vnext-page .client-detail-case-smart-delete-icon-button svg {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
+  -webkit-text-fill-color: #dc2626 !important;
+}
