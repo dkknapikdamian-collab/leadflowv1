@@ -14,6 +14,8 @@ import { requireWorkspaceId } from '../lib/workspace-context';
 import type { TaskCreateDialogContext } from './TaskCreateDialog';
 
 const STAGE85_EVENT_CREATE_DIALOG_SHARED = 'Shared event create dialog for global and detail context actions';
+const CLOSEFLOW_CLIENT_EVENT_MODAL_RUNTIME_REPAIR = 'event create dialog readable save footer repair';
+void CLOSEFLOW_CLIENT_EVENT_MODAL_RUNTIME_REPAIR;
 
 type EventCreateFormState = {
   title: string;
@@ -117,8 +119,8 @@ export default function EventCreateDialog({ open, onOpenChange, onSaved, context
 
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => (nextOpen ? onOpenChange(true) : closeDialog())}>
-      <DialogContent className="max-w-2xl" data-event-create-dialog-stage85="true">
-        <DialogHeader>
+      <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable" data-event-create-dialog-stage85="true" data-event-create-dialog-stage22b="true">
+        <DialogHeader className="event-form-vnext-header">
           <DialogTitle>Nowe wydarzenie</DialogTitle>
         </DialogHeader>
         {context?.recordLabel ? (
@@ -126,7 +128,7 @@ export default function EventCreateDialog({ open, onOpenChange, onSaved, context
             Powiązanie: {context.recordLabel}
           </div>
         ) : null}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="event-form-vnext space-y-4">
           <div className="space-y-2">
             <Label>Tytuł</Label>
             <Input value={form.title} onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))} placeholder="Co ma się wydarzyć?" />
@@ -177,7 +179,7 @@ export default function EventCreateDialog({ open, onOpenChange, onSaved, context
               </select>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="event-form-footer" data-event-modal-save-footer="true">
             <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>Anuluj</Button>
             <Button type="submit" disabled={saving || workspaceLoading}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz wydarzenie</Button>
           </DialogFooter>

@@ -1,0 +1,140 @@
+/* CLOSEFLOW_CLIENT_EVENT_MODAL_RUNTIME_REPAIR_2026_05_08
+   P1 runtime/visual repair:
+   - ClientDetail note delete must have defined deleteActivityFromSupabase import.
+   - Event create/edit dialog must remain readable on light UI and expose a visible save footer.
+   Scope: event modal surfaces + ClientDetail runtime bug. No data/API/routing changes.
+*/
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) {
+  width: min(780px, calc(100vw - 24px)) !important;
+  max-width: 780px !important;
+  max-height: min(92vh, 860px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  border: 1px solid #dbe3ef !important;
+  border-radius: 26px !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18) !important;
+  -webkit-text-fill-color: initial !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable)::before,
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable)::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(.event-form-vnext-header, [data-radix-dialog-header], h2, h3, p, span, label, small, strong, div) {
+  color: #0f172a !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is([data-radix-dialog-header], .event-form-vnext-header) {
+  flex: 0 0 auto !important;
+  border-bottom: 1px solid #e5edf7 !important;
+  background: #ffffff !important;
+  padding: 18px 22px 14px !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(.event-form-vnext, .event-form-vnext-grid, form) {
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  padding: 18px 22px !important;
+  display: grid !important;
+  gap: 14px !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(.rounded-2xl, .event-form-card, [data-event-edit-reminder-panel="true"], fieldset) {
+  border: 1px solid #dbe3ef !important;
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(label, .event-form-field label) {
+  color: #475569 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #475569 !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(input, textarea, select, .event-form-select) {
+  min-height: 42px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  caret-color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04) !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(input, textarea)::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(input:focus, textarea:focus, select:focus, .event-form-select:focus) {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14) !important;
+  outline: none !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(.event-form-footer, [data-event-modal-save-footer="true"], [data-radix-dialog-footer]) {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 20 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  margin: 8px -22px -18px !important;
+  padding: 14px 22px !important;
+  border-top: 1px solid #e5edf7 !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 -12px 28px rgba(15, 23, 42, 0.08) !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(.event-form-footer, [data-event-modal-save-footer="true"], [data-radix-dialog-footer]) button {
+  min-height: 42px !important;
+  border-radius: 14px !important;
+  font-weight: 800 !important;
+}
+
+:where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) button[type="submit"] {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+@media (max-width: 640px) {
+  :where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) {
+    width: calc(100vw - 16px) !important;
+    max-height: 94vh !important;
+    border-radius: 22px !important;
+  }
+
+  :where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(.event-form-vnext, .event-form-vnext-grid, form) {
+    padding: 14px !important;
+  }
+
+  :where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(.event-form-footer, [data-event-modal-save-footer="true"], [data-radix-dialog-footer]) {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    margin: 8px -14px -14px !important;
+    padding: 12px 14px !important;
+  }
+
+  :where(.event-form-vnext-content, [data-event-create-dialog-stage85="true"], [data-event-create-dialog-stage22b="true"], .closeflow-event-modal-readable) :is(.event-form-footer, [data-event-modal-save-footer="true"], [data-radix-dialog-footer]) button {
+    width: 100% !important;
+  }
+}
