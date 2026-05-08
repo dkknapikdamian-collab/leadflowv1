@@ -1,0 +1,14 @@
+const fs = require('fs');
+const path = require('path');
+
+const root = process.argv[2] || process.cwd();
+const pkgPath = path.join(root, 'package.json');
+const scriptName = 'check:closeflow-stage16c-tasks-cases-visual-mobile-repair';
+const scriptValue = 'node scripts/check-closeflow-stage16c-tasks-cases-visual-mobile-repair.cjs';
+
+const raw = fs.readFileSync(pkgPath, 'utf8').replace(/^\uFEFF/, '');
+const pkg = JSON.parse(raw);
+pkg.scripts = pkg.scripts || {};
+pkg.scripts[scriptName] = scriptValue;
+fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf8');
+console.log('STAGE16C_PACKAGE_SCRIPT_OK');

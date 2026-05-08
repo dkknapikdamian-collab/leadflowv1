@@ -26,6 +26,7 @@
 @import "./styles/visual-stage01-shell.css";
 @import './styles/closeflow-action-tokens.css';
 @import './styles/closeflow-entity-type-tokens.css';
+@import './styles/closeflow-stage16c-tasks-cases-parity.css';
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;

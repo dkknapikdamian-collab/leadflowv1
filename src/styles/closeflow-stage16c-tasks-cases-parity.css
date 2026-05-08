@@ -1,0 +1,179 @@
+/* CLOSEFLOW_STAGE16C_TASKS_CASES_VISUAL_MOBILE_REPAIR
+   Scoped repair for /tasks and /cases only.
+   Uses existing contracts: metric tiles, page hero, action/form/mobile layout.
+   No data/API/routing behavior changes.
+*/
+
+:root {
+  --cf-stage16c-page-max-width: 72rem;
+  --cf-stage16c-page-gap: 1.25rem;
+  --cf-stage16c-mobile-page-padding: 1rem;
+  --cf-stage16c-desktop-page-padding: 1.5rem;
+}
+
+main[data-p0-tasks-stable-rebuild="true"],
+.cf-html-view.main-cases-html {
+  width: 100%;
+  max-width: var(--cf-stage16c-page-max-width) !important;
+  margin-inline: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--cf-stage16c-page-gap) !important;
+  padding: var(--cf-stage16c-mobile-page-padding) !important;
+  overflow-x: clip;
+}
+
+@media (min-width: 640px) {
+  main[data-p0-tasks-stable-rebuild="true"],
+  .cf-html-view.main-cases-html {
+    padding: var(--cf-stage16c-desktop-page-padding) !important;
+  }
+}
+
+main[data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+.cf-html-view.main-cases-html > .page-head {
+  width: 100%;
+  min-width: 0;
+  min-height: 126px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout,
+.cf-html-view.main-cases-html > .page-head {
+  width: 100%;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout > div:first-child,
+.cf-html-view.main-cases-html > .page-head > div:first-child {
+  min-width: 0;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-title,
+.cf-html-view.main-cases-html > .page-head h1 {
+  max-width: 100%;
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-actions,
+main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout > div:last-child,
+.cf-html-view.main-cases-html > .page-head .head-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-page-head-action-gap, 8px) !important;
+  min-width: 0;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"],
+.cf-html-view.main-cases-html > .grid-4 {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--cf-metric-tile-gap) !important;
+  align-items: stretch !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card],
+.cf-html-view.main-cases-html > .grid-4 > [data-stat-shortcut-card] {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-content,
+.cf-html-view.main-cases-html > .grid-4 .cf-top-metric-tile-content {
+  min-height: var(--cf-metric-tile-min-height) !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-label,
+.cf-html-view.main-cases-html > .grid-4 .cf-top-metric-tile-label {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .tasks-stage48-task-card,
+.cf-html-view.main-cases-html .table-card,
+.cf-html-view.main-cases-html .row,
+.cf-html-view.main-cases-html .case-row {
+  min-width: 0;
+  max-width: 100%;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .tasks-stage48-task-card h2,
+.cf-html-view.main-cases-html .case-row .title,
+.cf-html-view.main-cases-html .case-row .sub,
+.cf-html-view.main-cases-html .case-row .cf-list-row-client {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .tasks-stage48-task-action-button,
+.cf-html-view.main-cases-html .head-actions .btn {
+  min-height: 2.75rem;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] .tasks-stage48-danger-action,
+.cf-html-view.main-cases-html [data-cf-action-tone="danger"],
+.cf-html-view.main-cases-html .cf-entity-action-danger {
+  margin-inline-start: 0.25rem;
+}
+
+@media (max-width: 1180px) {
+  main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"],
+  .cf-html-view.main-cases-html > .grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  main[data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout,
+  .cf-html-view.main-cases-html > .page-head {
+    min-height: 0;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-actions,
+  main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout > div:last-child,
+  .cf-html-view.main-cases-html > .page-head .head-actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-actions > *,
+  main[data-p0-tasks-stable-rebuild="true"] .cf-page-hero-layout > div:last-child > *,
+  .cf-html-view.main-cases-html > .page-head .head-actions > * {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"],
+  .cf-html-view.main-cases-html > .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"] .tasks-stage48-task-card [class*="lg:flex-row"],
+  .cf-html-view.main-cases-html .case-row {
+    min-width: 0;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"] .tasks-stage48-task-card .flex.flex-wrap.gap-2,
+  .cf-html-view.main-cases-html .row-actions,
+  .cf-html-view.main-cases-html .actions {
+    width: 100%;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"] .tasks-stage48-task-action-button {
+    flex: 1 1 auto;
+  }
+}

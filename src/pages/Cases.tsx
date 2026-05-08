@@ -45,6 +45,7 @@ import {
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES';
 const CLIENT_CASE_FORMS_STAGE23_HUMAN_COPY = 'Podaj nazwę klienta. Podaj tytuł sprawy. Wybierz klienta albo utwórz nowego. Nie udało się zapisać. Spróbuj ponownie. Rozpocznij obsługę.';
 const CASES_LIFECYCLE_NEEDS_NEXT_STEP_GUARD = 'Bez kroku';
+const CLOSEFLOW_STAGE16C_TASKS_CASES_VISUAL_MOBILE_REPAIR = 'tasks cases visual mobile repair scoped to /cases';
 
 type CaseRecord = {
   id: string;
@@ -483,8 +484,8 @@ export default function Cases() {
 
   return (
     <Layout>
-      <div className="cf-html-view main-cases-html" data-cases-real-view="true">
-        <div className="page-head">
+      <div className="cf-html-view main-cases-html" data-cases-real-view="true" data-stage16c-tasks-cases-repair="cases">
+        <div className="page-head" data-stage16c-page-head="cases">
           <div>
             <span className="kicker">Centrum obsługi</span>
             <h1 className="text-3xl font-bold app-text">Sprawy</h1>
@@ -653,7 +654,7 @@ export default function Cases() {
           </div>
         </div>
 
-        <div className="grid-4">
+        <div className="grid-4" data-stage16c-cases-stat-grid="true">
           <StatShortcutCard
             label="W realizacji"
             value={stats.total}
