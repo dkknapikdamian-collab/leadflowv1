@@ -58,6 +58,8 @@ import {
   Mail,
   Mic,
   MicOff,
+  Eye,
+  Pin,
   Pencil,
   Phone,
   Plus,
@@ -66,6 +68,8 @@ import {
   Target,
   Trash2,
   UserRound,
+
+
 
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -696,6 +700,7 @@ const STAGE25D_CLIENT_DETAIL_JSX_BUILD_FIX_GUARD = 'client detail JSX fragment b
 const STAGE26A_FEEDBACK_AFTER_4EC_GUARD = 'feedback after 4ec client activity ai drafts';
 const STAGE27E_CLIENT_NOTES_EVENT_FINAL_GUARD = 'client notes event final after failed 27ad';
 const STAGE28A_CLIENT_NOTE_ID_COMPAT_GUARD = 'client note listener id safe before finance';
+const STAGE29A_CLIENT_NOTE_ACTIONS_GUARD = 'client notes edit delete preview pin actions';
 const STAGE27G_CLIENT_NOTE_LISTENER_ID_RUNTIME_FINAL_GUARD = 'client note listener uses client id only';
 const STAGE27D_CLIENT_NOTES_RUNTIME_FINAL_GUARD = 'client notes runtime visibility final';
 const STAGE27A_CLIENT_NOTES_TRASH2_GUARD = 'client notes visible after save and Trash2 imported';
@@ -818,6 +823,123 @@ export default function ClientDetail() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
+  const [clientPinnedNoteIds, setClientPinnedNoteIds] = useState<string[]>([]);
+
+
+
+  const clientNotePinStorageKey = useMemo(
+    () => `closeflow:client-pinned-notes:${String(client?.id || 'unknown')}`,
+    [client?.id],
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = window.localStorage.getItem(clientNotePinStorageKey);
+      setClientPinnedNoteIds(raw ? JSON.parse(raw) : []);
+    } catch {
+      setClientPinnedNoteIds([]);
+    }
+  }, [clientNotePinStorageKey]);
+
+  const persistClientPinnedNotes = useCallback(
+    (nextPinnedIds: string[]) => {
+      setClientPinnedNoteIds(nextPinnedIds);
+      if (typeof window === 'undefined') return;
+      try {
+        window.localStorage.setItem(clientNotePinStorageKey, JSON.stringify(nextPinnedIds));
+      } catch {
+        // localStorage is optional
+      }
+    },
+    [clientNotePinStorageKey],
+  );
+
+  const handlePreviewClientNote = useCallback((note: any) => {
+    const content = String(note?.content || '').trim();
+    if (!content) {
+      toast.info('Ta notatka jest pusta.');
+      return;
+    }
+    toast.info(content, { duration: 12000 });
+  }, []);
+
+  const handleToggleClientNotePin = useCallback(
+    (note: any) => {
+      const noteId = String(note?.id || '').trim();
+      if (!noteId) return;
+      const nextPinnedIds = clientPinnedNoteIds.includes(noteId)
+        ? clientPinnedNoteIds.filter((id) => id !== noteId)
+        : [noteId, ...clientPinnedNoteIds];
+      persistClientPinnedNotes(nextPinnedIds);
+    },
+    [clientPinnedNoteIds, persistClientPinnedNotes],
+  );
+
+  const handleEditClientNote = useCallback(
+    async (note: any) => {
+      const noteId = String(note?.id || '').trim();
+      const previousContent = String(note?.content || '');
+      const nextContent = typeof window !== 'undefined' ? window.prompt('Edytuj notatkę', previousContent) : previousContent;
+      if (nextContent === null) return;
+      const cleanContent = String(nextContent || '').trim();
+      if (!cleanContent) {
+        toast.error('Notatka nie może być pusta.');
+        return;
+      }
+      try {
+        await updateActivityInSupabase({
+          id: noteId,
+          payload: {
+            recordType: 'client',
+            clientId: client?.id || null,
+            content: cleanContent,
+            note: cleanContent,
+            editedAt: new Date().toISOString(),
+          },
+        } as any);
+        setActivities((previous) =>
+          previous.map((activity) =>
+            String(activity?.id || '') === noteId
+              ? {
+                  ...activity,
+                  payload: {
+                    ...(activity?.payload || {}),
+                    content: cleanContent,
+                    note: cleanContent,
+                    editedAt: new Date().toISOString(),
+                  },
+                  updatedAt: new Date().toISOString(),
+                }
+              : activity,
+          ),
+        );
+        toast.success('Notatka zaktualizowana');
+      } catch (error) {
+        console.error(error);
+        toast.error('Nie udało się edytować notatki.');
+      }
+    },
+    [client?.id],
+  );
+
+  const handleDeleteClientNote = useCallback(
+    async (note: any) => {
+      const noteId = String(note?.id || '').trim();
+      if (!noteId) return;
+      if (typeof window !== 'undefined' && !window.confirm('Usunąć tę notatkę?')) return;
+      try {
+        await deleteActivityFromSupabase(noteId);
+        setActivities((previous) => previous.filter((activity) => String(activity?.id || '') !== noteId));
+        persistClientPinnedNotes(clientPinnedNoteIds.filter((id) => id !== noteId));
+        toast.success('Notatka usunięta');
+      } catch (error) {
+        console.error(error);
+        toast.error('Nie udało się usunąć notatki.');
+      }
+    },
+    [clientPinnedNoteIds, persistClientPinnedNotes],
+  );
 
   useEffect(() => {
     const handleContextNoteSaved = (event: Event) => {
@@ -1947,12 +2069,31 @@ export default function ClientDetail() {
               <div className="client-detail-notes-list" data-client-notes-list="true">
                 <div className="client-detail-notes-list-head">
                   <strong>Notatki</strong>
-                  <span>{getClientVisibleNotes(activities, client).length}</span>
+                  <span>{getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds).length}</span>
                 </div>
-                {getClientVisibleNotes(activities, client).length ? (
+                {getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds).length ? (
                   <div className="client-detail-notes-items">
-                    {getClientVisibleNotes(activities, client).map((note) => (
-                      <article key={note.id} className="client-detail-note-item" data-client-note-item="true">
+                    {getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds).map((note) => (
+                      <article
+                        key={note.id}
+                        className="client-detail-note-item"
+                        data-client-note-item="true"
+                        data-client-note-pinned={clientPinnedNoteIds.includes(note.id) ? 'true' : 'false'}
+                      >
+                        <div className="client-detail-note-item-toolbar" data-client-note-actions="true">
+                          <button type="button" title="Przypnij notatkę" aria-label="Przypnij notatkę" onClick={() => handleToggleClientNotePin(note)}>
+                            <Pin className="h-3.5 w-3.5" />
+                          </button>
+                          <button type="button" title="Podgląd całej notatki" aria-label="Podgląd całej notatki" onClick={() => handlePreviewClientNote(note)}>
+                            <Eye className="h-3.5 w-3.5" />
+                          </button>
+                          <button type="button" title="Edytuj notatkę" aria-label="Edytuj notatkę" onClick={() => handleEditClientNote(note)}>
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
+                          <button type="button" className="client-detail-note-delete-button" title="Usuń notatkę" aria-label="Usuń notatkę" onClick={() => handleDeleteClientNote(note)}>
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                         <p>{note.content}</p>
                         <small>{note.createdAt ? formatDateTime(note.createdAt) : 'Dodano przed chwilą'}</small>
                       </article>
@@ -2027,3 +2168,13 @@ function getClientVisibleNotes(activityRows: any[], clientRecord: any) {
     .slice(0, 8);
 }
 
+function getClientNotesForRender(notes: any[], pinnedIds: string[] = []) {
+  return [...(notes || [])].sort((left, right) => {
+    const leftPinned = pinnedIds.includes(String(left?.id || ''));
+    const rightPinned = pinnedIds.includes(String(right?.id || ''));
+    if (leftPinned !== rightPinned) return leftPinned ? -1 : 1;
+    const leftTime = asDate(left?.createdAt)?.getTime() || 0;
+    const rightTime = asDate(right?.createdAt)?.getTime() || 0;
+    return rightTime - leftTime;
+  });
+}

@@ -1206,3 +1206,55 @@
 .case-detail-finance-history-panel .case-detail-finance-empty {
   margin: 10px 0 0;
 }
+
+
+/* stage29a case right rail light panel */
+.case-detail-vnext-page .case-detail-right-rail,
+.case-detail-shell .case-detail-right-rail,
+aside.case-detail-right-rail {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #0f172a !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail::before,
+.case-detail-vnext-page .case-detail-right-rail::after,
+.case-detail-shell .case-detail-right-rail::before,
+.case-detail-shell .case-detail-right-rail::after,
+aside.case-detail-right-rail::before,
+aside.case-detail-right-rail::after {
+  display: none !important;
+  background: transparent !important;
+  content: none !important;
+}
+
+.case-detail-vnext-page .case-detail-right-card,
+.case-detail-vnext-page [data-case-create-actions-panel="true"],
+.case-detail-vnext-page .case-detail-create-action-card,
+.case-detail-shell .case-detail-right-card,
+.case-detail-shell [data-case-create-actions-panel="true"],
+.case-detail-shell .case-detail-create-action-card {
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #0f172a !important;
+  border-color: rgba(148, 163, 184, 0.42) !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08) !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.case-detail-vnext-page .case-detail-right-card *,
+.case-detail-vnext-page [data-case-create-actions-panel="true"] *,
+.case-detail-vnext-page .case-detail-create-action-card * {
+  color: inherit !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.case-detail-vnext-page .case-detail-right-card button,
+.case-detail-vnext-page [data-case-create-actions-panel="true"] button,
+.case-detail-vnext-page .case-detail-create-action-card button {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}

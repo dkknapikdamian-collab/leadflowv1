@@ -3078,3 +3078,46 @@ button.client-detail-top-tile-link {
   stroke: #dc2626 !important;
   -webkit-text-fill-color: #dc2626 !important;
 }
+
+
+/* stage29a client note actions */
+.client-detail-vnext-page [data-client-note-pinned="true"] {
+  border-color: #f59e0b !important;
+  background: #fffbeb !important;
+}
+
+.client-detail-vnext-page .client-detail-note-item-toolbar {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 5px !important;
+  margin: -2px -2px 6px 0 !important;
+}
+
+.client-detail-vnext-page .client-detail-note-item-toolbar button {
+  width: 25px !important;
+  height: 25px !important;
+  min-width: 25px !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+  border: 1px solid #cbd5e1 !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.client-detail-vnext-page .client-detail-note-item-toolbar button:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.client-detail-vnext-page .client-detail-note-item-toolbar .client-detail-note-delete-button {
+  border-color: #fecaca !important;
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
+.client-detail-vnext-page .client-detail-note-item-toolbar .client-detail-note-delete-button svg {
+  stroke: #dc2626 !important;
+}

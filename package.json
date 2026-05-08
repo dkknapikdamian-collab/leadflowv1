@@ -480,7 +480,8 @@
     "check:stage27e-client-notes-event-final": "node scripts/check-stage27e-client-notes-event-final.cjs",
     "check:stage27g-client-notes-id-runtime-final": "node scripts/check-stage27g-client-notes-id-runtime-final.cjs",
     "check:stage28a-case-finance-core": "node scripts/check-stage28a-case-finance-core.cjs",
-    "check:stage28a3-case-finance-history-visible-repair": "node scripts/check-stage28a3-case-finance-history-visible-repair.cjs"
+    "check:stage28a3-case-finance-history-visible-repair": "node scripts/check-stage28a3-case-finance-history-visible-repair.cjs",
+    "check:stage29a-case-panel-notes-actions": "node scripts/check-stage29a-case-panel-notes-actions.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
