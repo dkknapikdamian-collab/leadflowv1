@@ -18,8 +18,8 @@ Nie było potrzeby dopisywać nowych wariantów do `src/styles/closeflow-alert-s
 
 ## Klasyfikacja TodayStable
 
-- Pozostałe lokalne red/rose/amber miejsca sklasyfikowane w `TodayStable`: **7**
-- Przepięte na alert/severity: **5**
+- Pozostałe lokalne red/rose/amber miejsca sklasyfikowane w `TodayStable`: **0**
+- Przepięte na alert/severity: **0**
 - Przepięte na status/progress: **0**
 - Zostawione jako wyjątek: **0**
 
