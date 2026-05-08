@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T17:01:24.084Z",
+  "generatedAt": "2026-05-08T17:15:49.513Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -1280,7 +1280,7 @@
     {
       "term": "Edytuj",
       "file": "src/pages/TodayStable.tsx",
-      "line": 579
+      "line": 581
     },
     {
       "term": "Dodaj notatkę",
@@ -2973,43 +2973,43 @@
     {
       "tag": "button",
       "file": "src/pages/TodayStable.tsx",
-      "line": 428,
+      "line": 430,
       "snippet": "<button\n      type=\"button\"\n      onClick={onToggle}\n      aria-expanded={!collapsed}\n      className=\"flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-"
     },
     {
       "tag": "Link",
       "file": "src/pages/TodayStable.tsx",
-      "line": 557,
+      "line": 559,
       "snippet": "<Link to={to} className=\"font-semibold text-slate-900 break-words hover:underline\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/TodayStable.tsx",
-      "line": 579,
+      "line": 581,
       "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" onClick={onEdit}>"
     },
     {
       "tag": "Link",
       "file": "src/pages/TodayStable.tsx",
-      "line": 594,
+      "line": 596,
       "snippet": "<Link to={to} className=\"inline-flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/TodayStable.tsx",
-      "line": 999,
+      "line": 1001,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TodayStable.tsx",
-      "line": 1004,
+      "line": 1006,
       "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/TodayStable.tsx",
-      "line": 1026,
+      "line": 1028,
       "snippet": "<Button\n                    type=\"button\"\n                    size=\"sm\"\n                    variant=\"outline\"\n                    onClick={() =>"
     },
     {
@@ -7369,13 +7369,8 @@
     },
     {
       "file": "src/pages/TodayStable.tsx",
-      "line": 996,
+      "line": 998,
       "className": "cf-section-head-actions flex flex-col items-end gap-2"
-    },
-    {
-      "file": "src/pages/TodayStable.tsx",
-      "line": 1012,
-      "className": "rounded-2xl border border-rose-100 bg-rose-50 p-4 text-sm font-semibold text-rose-700"
     },
     {
       "file": "src/pages/UiPreviewVNext.tsx",

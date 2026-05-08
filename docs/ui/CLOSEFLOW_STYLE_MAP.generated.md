@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T17:01:24.793Z
+Generated: 2026-05-08T17:15:50.226Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -574,11 +574,6 @@ Generated: 2026-05-08T17:01:24.793Z
 - text-rose-600: src/pages/Today.tsx:2849
 - border-rose-200: src/pages/Today.tsx:2850
 - text-rose-700: src/pages/Today.tsx:2850
-- text-rose-700: src/pages/TodayStable.tsx:919
-- border-rose-200: src/pages/TodayStable.tsx:919
-- border-rose-100: src/pages/TodayStable.tsx:1012
-- bg-rose-50: src/pages/TodayStable.tsx:1012
-- text-rose-700: src/pages/TodayStable.tsx:1012
 - text-rose-500: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
 - text-rose-600: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
 - text-rose-700: src/styles/eliteflow-metric-tiles-color-font-parity.css:122

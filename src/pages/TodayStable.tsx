@@ -62,6 +62,7 @@ const STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE = 'STAGE16AI_TODAY_REFRESH_BUT
 const STAGE16AI_TODAY_TILES_MATCH_LISTS = 'STAGE16AI_TODAY_TILES_MATCH_LISTS';
 const STAGE16AN_TODAY_VIEW_CUSTOMIZER = 'STAGE16AN_TODAY_VIEW_CUSTOMIZER';
 const STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED = 'STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED';
+const TODAY_STABLE_STAGE14_REMAINING_SEVERITY = 'TODAY_STABLE_STAGE14_REMAINING_SEVERITY';
 const TODAY_VIEW_STORAGE_KEY = 'closeflow:today:view-sections:v1';
 void P0_TODAY_STABLE_REBUILD;
 void STAGE70_TODAY_DECISION_ENGINE_STARTER;
@@ -71,6 +72,7 @@ void STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE;
 void STAGE16AI_TODAY_TILES_MATCH_LISTS;
 void STAGE16AN_TODAY_VIEW_CUSTOMIZER;
 void STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED;
+void TODAY_STABLE_STAGE14_REMAINING_SEVERITY;
 
 type DashboardStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -915,8 +917,8 @@ export default function TodayStable() {
     activeTone: string;
     icon: ReactNode;
   }> = [
-    { key: 'no_action', title: todaySectionLabels.no_action, count: noActionLeads.length, tone: 'text-amber-700', activeTone: 'hover:border-amber-200', icon: <AlertTriangle className="h-4 w-4" /> },
-    { key: 'risk', title: todaySectionLabels.risk, count: highValueAtRiskRows.length, tone: 'text-rose-700', activeTone: 'hover:border-rose-200', icon: <TrendingUp className="h-4 w-4" /> },
+    { key: 'no_action', title: todaySectionLabels.no_action, count: noActionLeads.length, tone: 'cf-severity-text-warning', activeTone: 'cf-severity-hover-warning', icon: <AlertTriangle className="h-4 w-4" /> },
+    { key: 'risk', title: todaySectionLabels.risk, count: highValueAtRiskRows.length, tone: 'cf-severity-text-error', activeTone: 'cf-severity-hover-error', icon: <TrendingUp className="h-4 w-4" /> },
     { key: 'waiting', title: todaySectionLabels.waiting, count: waitingLeadRows.length, tone: 'text-orange-700', activeTone: 'hover:border-orange-200', icon: <UserRound className="h-4 w-4" /> },
     { key: 'leads', title: todaySectionLabels.leads, count: operatorLeads.length, tone: 'text-blue-700', activeTone: 'hover:border-blue-200', icon: <UserRound className="h-4 w-4" /> },
     { key: 'tasks', title: todaySectionLabels.tasks, count: operatorTasks.length, tone: 'text-emerald-700', activeTone: 'hover:border-emerald-200', icon: <CheckSquare className="h-4 w-4" /> },
@@ -1009,7 +1011,7 @@ export default function TodayStable() {
         </section>
 
         {errorMessage ? (
-          <div className="rounded-2xl border border-rose-100 bg-rose-50 p-4 text-sm font-semibold text-rose-700">
+          <div  data-cf-severity="error"className="cf-severity-panel rounded-2xl border p-4 text-sm font-semibold">
             {errorMessage}
           </div>
         ) : null}

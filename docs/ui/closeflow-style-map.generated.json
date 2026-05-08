@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T17:01:24.793Z",
+  "generatedAt": "2026-05-08T17:15:50.226Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -3497,31 +3497,6 @@
       "className": "text-rose-700",
       "file": "src/pages/Today.tsx",
       "line": 2850
-    },
-    {
-      "className": "text-rose-700",
-      "file": "src/pages/TodayStable.tsx",
-      "line": 919
-    },
-    {
-      "className": "border-rose-200",
-      "file": "src/pages/TodayStable.tsx",
-      "line": 919
-    },
-    {
-      "className": "border-rose-100",
-      "file": "src/pages/TodayStable.tsx",
-      "line": 1012
-    },
-    {
-      "className": "bg-rose-50",
-      "file": "src/pages/TodayStable.tsx",
-      "line": 1012
-    },
-    {
-      "className": "text-rose-700",
-      "file": "src/pages/TodayStable.tsx",
-      "line": 1012
     },
     {
       "className": "text-rose-500",

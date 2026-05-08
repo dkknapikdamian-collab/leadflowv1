@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T17:01:24.084Z
+Generated: 2026-05-08T17:15:49.513Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -277,7 +277,7 @@ Source files scanned: 196
 - Usuń: src/pages/Today.tsx:2952
 - Edytuj: src/pages/Today.tsx:832
 - Edytuj: src/pages/Today.tsx:834
-- Edytuj: src/pages/TodayStable.tsx:579
+- Edytuj: src/pages/TodayStable.tsx:581
 - Dodaj notatkę: src/pages/UiPreviewVNextFull.tsx:20
 - Dodaj notatkę: src/pages/UiPreviewVNextFull.tsx:20
 - Dodaj notatkę: src/pages/UiPreviewVNextFull.tsx:20
@@ -1223,10 +1223,10 @@ import {
 - src/pages/Today.tsx:2946 <Button variant="ghost" size="sm" onClick={() =>
 - src/pages/Today.tsx:2954 <Button variant="outline" size="sm" onClick={() =>
 - src/pages/Today.tsx:2971 <Button variant="outline" size="sm" asChild>
-- src/pages/TodayStable.tsx:428 <button type="button" onClick={onToggle} aria-expanded={!collapsed} className="flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-
-- src/pages/TodayStable.tsx:557 <Link to={to} className="font-semibold text-slate-900 break-words hover:underline">
-- src/pages/TodayStable.tsx:579 <Button type="button" size="sm" variant="outline" onClick={onEdit}>
-- src/pages/TodayStable.tsx:594 <Link to={to} className="inline-flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
+- src/pages/TodayStable.tsx:430 <button type="button" onClick={onToggle} aria-expanded={!collapsed} className="flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-
+- src/pages/TodayStable.tsx:559 <Link to={to} className="font-semibold text-slate-900 break-words hover:underline">
+- src/pages/TodayStable.tsx:581 <Button type="button" size="sm" variant="outline" onClick={onEdit}>
+- src/pages/TodayStable.tsx:596 <Link to={to} className="inline-flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
 
 ## Relevant className snippets
 - src/components/admin-tools/AdminDebugToolbar.tsx:496 `admin-tool-row admin-tool-quick-editor-head-actions`
