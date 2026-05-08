@@ -472,7 +472,10 @@
     "check:stage21-client-detail-admin-feedback-layout": "node scripts/check-stage21-client-detail-admin-feedback-layout.cjs",
     "check:stage22a-client-detail-feedback-ui-cleanup": "node scripts/check-stage22a-client-detail-feedback-ui-cleanup.cjs",
     "check:stage23a-client-detail-cases-visibility-contrast": "node scripts/check-stage23a-client-detail-cases-visibility-contrast.cjs",
-    "check:stage24a-client-detail-actions-cases-roadmap": "node scripts/check-stage24a-client-detail-actions-cases-roadmap.cjs"
+    "check:stage24a-client-detail-actions-cases-roadmap": "node scripts/check-stage24a-client-detail-actions-cases-roadmap.cjs",
+    "check:stage25b-client-detail-feedback-complete-repair": "node scripts/check-stage25b-client-detail-feedback-complete-repair.cjs",
+    "check:stage25c-client-detail-guard-compat-final": "node scripts/check-stage25c-client-detail-guard-compat-final.cjs",
+    "check:stage25d-client-detail-jsx-build-fix": "node scripts/check-stage25d-client-detail-jsx-build-fix.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

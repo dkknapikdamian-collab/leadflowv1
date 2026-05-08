@@ -361,7 +361,32 @@ function getClientName(client: any) {
 }
 
 function getCaseTitle(caseRecord: any) {
-  return String(caseRecord?.title || caseRecord?.clientName || 'Sprawa klienta');
+  const rawTitle = asText(caseRecord?.title) || asText(caseRecord?.name);
+  const clientName = asText(caseRecord?.clientName);
+  if (rawTitle && clientName) {
+    const titleLower = rawTitle.toLowerCase();
+    const clientLower = clientName.toLowerCase();
+    if (titleLower === clientLower) return 'Sprawa obsługowa';
+    if (titleLower.includes(clientLower)) {
+      const cleaned = rawTitle.replace(clientName, '').replace(/^\s*[-–—:]\s*/g, '').trim();
+      return cleaned || 'Sprawa obsługowa';
+    }
+  }
+  return String(rawTitle || 'Sprawa obsługowa');
+}
+
+function getCaseValueLabel(caseRecord: any) {
+  const raw =
+    caseRecord?.value ??
+    caseRecord?.caseValue ??
+    caseRecord?.dealValue ??
+    caseRecord?.expectedValue ??
+    caseRecord?.potentialRevenue ??
+    caseRecord?.amount ??
+    caseRecord?.price ??
+    caseRecord?.budget ??
+    0;
+  return formatMoneyWithCurrency(raw, caseRecord?.currency);
 }
 
 function getCaseCompleteness(caseRecord: any) {
@@ -661,7 +686,11 @@ function StatCell({ label, value }: { label: string; value: string | number }) {
 
 const CLIENT_DETAIL_TOP_TILES_REPAIR6_GUARD = 'client-detail-top-tiles repair6 compact unified safe';
 const STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD = 'client cases visible panel with safe actions';
+const STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT = 'Wejdź w sprawę';
 const STAGE24A_CLIENT_SIDE_QUICK_ACTIONS_GUARD = 'client side quick actions use context action host';
+const STAGE25B_CLIENT_DETAIL_FEEDBACK_COMPLETE_REPAIR_GUARD = 'client detail feedback complete repair';
+const STAGE25C_CLIENT_DETAIL_GUARD_COMPAT_FINAL = 'client detail final feedback guard compatibility';
+const STAGE25D_CLIENT_DETAIL_JSX_BUILD_FIX_GUARD = 'client detail JSX fragment build fix';
 
 function getClientPaymentAmount(payment: any) {
   const raw =
@@ -1622,8 +1651,87 @@ export default function ClientDetail() {
                     </div>
                   </div>
 
-                  {leads.length ? (
-                    <div className="client-detail-relations-list client-detail-relations-list-acquisition-only">
+                  {leads.length ? (<>
+                    
+                  <div className="client-detail-case-smart-list" data-client-case-smart-list="true">
+                    {(cases.filter((caseRecord: any) => {
+                      const caseClientId = String(caseRecord?.clientId || caseRecord?.client_id || caseRecord?.clientID || '').trim();
+                      const caseClientName = asText(caseRecord?.clientName);
+                      const currentClientId = String(client.id || '').trim();
+                      const currentClientName = getClientName(client).toLowerCase();
+                      const isMainCase = mainCase?.id && String(caseRecord?.id || '') === String(mainCase.id);
+                      return Boolean(
+                        isMainCase ||
+                        (caseClientId && caseClientId === currentClientId) ||
+                        (caseClientName && caseClientName.toLowerCase() === currentClientName)
+                      );
+                    }).length
+                      ? cases.filter((caseRecord: any) => {
+                          const caseClientId = String(caseRecord?.clientId || caseRecord?.client_id || caseRecord?.clientID || '').trim();
+                          const caseClientName = asText(caseRecord?.clientName);
+                          const currentClientId = String(client.id || '').trim();
+                          const currentClientName = getClientName(client).toLowerCase();
+                          const isMainCase = mainCase?.id && String(caseRecord?.id || '') === String(mainCase.id);
+                          return Boolean(
+                            isMainCase ||
+                            (caseClientId && caseClientId === currentClientId) ||
+                            (caseClientName && caseClientName.toLowerCase() === currentClientName)
+                          );
+                        })
+                      : mainCase?.id
+                        ? [mainCase]
+                        : []
+                    ).map((caseRecord: any) => {
+                      const caseId = String(caseRecord?.id || '');
+                      const title = getCaseTitle(caseRecord);
+                      const status = caseStatusLabel(String(caseRecord?.status || 'in_progress'));
+                      const value = getCaseValueLabel(caseRecord);
+                      const completeness = getCaseCompleteness(caseRecord);
+                      return (
+                        <article key={caseId || title} className="client-detail-case-smart-card" data-client-case-smart-card="true">
+                          <div className="client-detail-case-smart-main">
+                            <span className="client-detail-case-smart-kicker">Sprawa</span>
+                            <strong>{title}</strong>
+                            <div className="client-detail-case-smart-meta">
+                              <span>{status}</span>
+                              <span>Kompletność {completeness}%</span>
+                            </div>
+                          </div>
+                          <div className="client-detail-case-smart-value">
+                            <small>Wartość sprawy</small>
+                            <b>{value}</b>
+                          </div>
+                          <div className="client-detail-case-smart-actions">
+                            <Button type="button" size="sm" onClick={() => (caseId ? navigate(`/cases/${caseId}`) : toast.info('Brak ID sprawy.'))}>
+                              Wejdź w sprawę
+                            </Button>
+                            <Button type="button" size="sm" variant="outline" onClick={() => (caseId ? navigate(`/cases/${caseId}`) : toast.info('Brak ID sprawy.'))}>
+                              Edytuj
+                            </Button>
+                            <Button type="button" size="sm" variant="outline" onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}>
+                              Usuń
+                            </Button>
+                          </div>
+                        </article>
+                      );
+                    })}
+                    {!(cases.filter((caseRecord: any) => {
+                      const caseClientId = String(caseRecord?.clientId || caseRecord?.client_id || caseRecord?.clientID || '').trim();
+                      const caseClientName = asText(caseRecord?.clientName);
+                      const currentClientId = String(client.id || '').trim();
+                      const currentClientName = getClientName(client).toLowerCase();
+                      const isMainCase = mainCase?.id && String(caseRecord?.id || '') === String(mainCase.id);
+                      return Boolean(
+                        isMainCase ||
+                        (caseClientId && caseClientId === currentClientId) ||
+                        (caseClientName && caseClientName.toLowerCase() === currentClientName)
+                      );
+                    }).length || mainCase?.id) ? (
+                      <div className="client-detail-case-smart-empty">Brak aktywnej sprawy dla klienta.</div>
+                    ) : null}
+                  </div>
+
+<div className="client-detail-relations-list client-detail-relations-list-acquisition-only">
                       {leads.map((lead) => {
                         const leadId = String(lead.id || lead.leadId || lead.name || lead.createdAt || 'lead');
                         const leadName = String(lead.name || lead.company || 'Lead bez nazwy');
@@ -1644,6 +1752,7 @@ export default function ClientDetail() {
                         );
                       })}
                     </div>
+                  </>
                   ) : (
                     <div className="client-detail-light-empty">
                       Brak zapisanej historii pozyskania dla tego klienta.
