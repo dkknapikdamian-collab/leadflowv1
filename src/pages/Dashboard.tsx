@@ -225,7 +225,7 @@ export default function Dashboard() {
           </Button>
         </nav>
         <div className="p-4 border-t border-slate-100">
-          <Button variant="ghost" className="w-full justify-start gap-3 text-red-500 hover:text-red-600 hover:bg-red-50" onClick={() => auth.signOut()}>
+          <Button variant="ghost" className="cf-session-action-danger w-full justify-start gap-3" data-cf-session-action="logout" onClick={() => auth.signOut()}>
             <LogOut className="w-5 h-5" />
             Wyloguj się
           </Button>

@@ -62,3 +62,33 @@
   align-items: center;
   justify-content: center;
 }
+
+/* CLOSEFLOW_SESSION_ACTION_COLOR_CONTRACT_STAGE17
+   Session actions are not entity delete/destructive actions.
+   Logout uses its own semantic token so danger/delete audits do not treat it as record deletion.
+*/
+:root {
+  --cf-session-action-danger-text: #dc2626;
+  --cf-session-action-danger-text-hover: #b91c1c;
+  --cf-session-action-danger-bg-hover: #fef2f2;
+  --cf-session-action-danger-focus: rgba(220, 38, 38, 0.22);
+}
+
+.cf-session-action-danger,
+.cf-session-action-danger svg {
+  color: var(--cf-session-action-danger-text) !important;
+  stroke: currentColor !important;
+  -webkit-text-fill-color: var(--cf-session-action-danger-text) !important;
+}
+
+.cf-session-action-danger:hover,
+.cf-session-action-danger:focus-visible {
+  color: var(--cf-session-action-danger-text-hover) !important;
+  background: var(--cf-session-action-danger-bg-hover) !important;
+  -webkit-text-fill-color: var(--cf-session-action-danger-text-hover) !important;
+}
+
+.cf-session-action-danger:focus-visible {
+  box-shadow: 0 0 0 3px var(--cf-session-action-danger-focus) !important;
+}
+

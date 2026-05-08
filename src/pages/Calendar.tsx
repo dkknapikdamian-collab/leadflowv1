@@ -265,10 +265,14 @@ function getCalendarEntryTypeLabel(entry: ScheduleEntry) {
   return 'Lead';
 }
 
-function getCalendarEntryTypeClass(entry: ScheduleEntry) {
-  if (entry.kind === 'event') return 'border-indigo-100 bg-indigo-50 text-indigo-700';
-  if (entry.kind === 'task') return 'border-emerald-100 bg-emerald-50 text-emerald-700';
-  return 'border-amber-100 bg-amber-50 text-amber-700';
+function getCalendarEntryTypeValue(entry: ScheduleEntry) {
+  if (entry.kind === 'event') return 'event';
+  if (entry.kind === 'task') return 'task';
+  return 'lead';
+}
+
+function getCalendarEntryTypeClass(_entry: ScheduleEntry) {
+  return 'cf-entity-type-pill';
 }
 
 function getCalendarEntryStatusLabel(entry: ScheduleEntry) {
@@ -378,7 +382,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
     <div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} className={`calendar-entry-card cf-readable-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md ${isCompletedEntry ? 'opacity-60' : ''}`}>
       <div className="grid gap-2 lg:grid-cols-[auto_minmax(220px,1fr)_76px_118px_auto] lg:items-center">
         <div className="flex min-w-0 items-center gap-1.5">
-          <span className={`inline-flex h-6 shrink-0 items-center rounded-full border px-2.5 text-[12px] font-bold leading-none ${getCalendarEntryTypeClass(entry)}`}>
+          <span className={`inline-flex h-6 shrink-0 items-center rounded-full border px-2.5 text-[12px] font-bold leading-none ${getCalendarEntryTypeClass(entry)}`} data-cf-entity-type={getCalendarEntryTypeValue(entry)}>
             {getCalendarEntryTypeLabel(entry)}
           </span>
         </div>

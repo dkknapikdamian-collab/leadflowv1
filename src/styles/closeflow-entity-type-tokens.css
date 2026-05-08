@@ -1,0 +1,43 @@
+/* CLOSEFLOW_ENTITY_TYPE_COLOR_CONTRACT_STAGE17
+   Calendar entity type pills are semantic entity labels, not danger/severity/status alerts.
+   Lead uses amber as an entity type color only through data-cf-entity-type="lead".
+*/
+:root {
+  --cf-entity-type-event-border: #c7d2fe;
+  --cf-entity-type-event-bg: #eef2ff;
+  --cf-entity-type-event-text: #4338ca;
+  --cf-entity-type-task-border: #bbf7d0;
+  --cf-entity-type-task-bg: #ecfdf5;
+  --cf-entity-type-task-text: #047857;
+  --cf-entity-type-lead-border: #fde68a;
+  --cf-entity-type-lead-bg: #fffbeb;
+  --cf-entity-type-lead-text: #b45309;
+}
+
+.cf-entity-type-pill {
+  border-color: var(--cf-entity-type-event-border) !important;
+  background: var(--cf-entity-type-event-bg) !important;
+  color: var(--cf-entity-type-event-text) !important;
+  -webkit-text-fill-color: var(--cf-entity-type-event-text) !important;
+}
+
+.cf-entity-type-pill[data-cf-entity-type="event"] {
+  border-color: var(--cf-entity-type-event-border) !important;
+  background: var(--cf-entity-type-event-bg) !important;
+  color: var(--cf-entity-type-event-text) !important;
+  -webkit-text-fill-color: var(--cf-entity-type-event-text) !important;
+}
+
+.cf-entity-type-pill[data-cf-entity-type="task"] {
+  border-color: var(--cf-entity-type-task-border) !important;
+  background: var(--cf-entity-type-task-bg) !important;
+  color: var(--cf-entity-type-task-text) !important;
+  -webkit-text-fill-color: var(--cf-entity-type-task-text) !important;
+}
+
+.cf-entity-type-pill[data-cf-entity-type="lead"] {
+  border-color: var(--cf-entity-type-lead-border) !important;
+  background: var(--cf-entity-type-lead-bg) !important;
+  color: var(--cf-entity-type-lead-text) !important;
+  -webkit-text-fill-color: var(--cf-entity-type-lead-text) !important;
+}

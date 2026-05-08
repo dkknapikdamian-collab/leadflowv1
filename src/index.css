@@ -24,6 +24,8 @@
 @import "./styles/visual-stage03-leads.css";
 @import "./styles/visual-stage02-today.css";
 @import "./styles/visual-stage01-shell.css";
+@import './styles/closeflow-action-tokens.css';
+@import './styles/closeflow-entity-type-tokens.css';
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
