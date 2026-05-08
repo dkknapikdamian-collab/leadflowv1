@@ -387,6 +387,28 @@ function getLeadRisk(lead: any, momentRaw: string, todayKey: string): TodayLeadR
   };
 }
 
+
+function getSectionHeaderSeverity(tone: string): 'error' | 'warning' | 'info' | 'success' | null {
+  if (tone === 'cf-severity:error') return 'error';
+  if (tone === 'cf-severity:warning') return 'warning';
+  if (tone === 'cf-severity:info') return 'info';
+  if (tone === 'cf-severity:success') return 'success';
+  return null;
+}
+
+function SectionHeaderIcon({ tone, icon }: { tone: string; icon: ReactNode }) {
+  const severity = getSectionHeaderSeverity(tone);
+  if (severity) {
+    return (
+      <div className="cf-severity-dot" data-cf-severity={severity}>
+        {icon}
+      </div>
+    );
+  }
+
+  return <SectionHeaderIcon tone={tone} icon={icon} />;
+}
+
 function SectionHeader({
   title,
   count,
@@ -451,19 +473,15 @@ function normalizeSemanticLabel(value: unknown) {
     .replace(/\s+/g, ' ')
     .trim();
 }
-function semanticBadgeClass(label: string) {
+function semanticBadgeTone(label: string): 'red' | 'amber' | 'blue' | 'green' | 'neutral' {
   const normalized = normalizeSemanticLabel(label);
-  let tone = 'neutral';
 
-  if (/(zalegl|po terminie|ryzy|blok|kosz|usun|usunieto|zagroz|awaria)/.test(normalized)) tone = 'danger';
-  else if (/(wydarzenie|spotkanie|kalendarz|calendar|termin)/.test(normalized)) tone = 'event';
-  else if (/(zadanie|zrobione|gotowe|aktywne|brak blokerow|wykonane)/.test(normalized)) tone = 'task';
-  else if (/(notat|szkic|czeka|do sprawdzenia|oczekuje|przypomnienie)/.test(normalized)) tone = 'note';
-  else if (/(lead|leady)/.test(normalized)) tone = 'lead';
-  else if (/(sprawa|sprawy)/.test(normalized)) tone = 'case';
-  else if (/(klient|klienci)/.test(normalized)) tone = 'client';
+  if (/(zalegl|po terminie|ryzy|blok|zagroz|awaria)/.test(normalized)) return 'red';
+  if (/(czeka|do sprawdzenia|oczekuje|przypomnienie)/.test(normalized)) return 'amber';
+  if (/(wydarzenie|spotkanie|kalendarz|calendar|termin|lead|leady|sprawa|sprawy|klient|klienci)/.test(normalized)) return 'blue';
+  if (/(zadanie|zrobione|gotowe|aktywne|brak blokerow|wykonane)/.test(normalized)) return 'green';
 
-  return 'cf-semantic-badge cf-semantic-badge-' + tone + ' rounded-full';
+  return 'neutral';
 }
 
 function getTodaySectionFromTileText(value: string): TodaySectionKey | null {
@@ -539,7 +557,11 @@ function RowLink({
             <Link to={to} className="font-semibold text-slate-900 break-words hover:underline">
               {title}
             </Link>
-            {badge ? <Badge variant="outline" className={semanticBadgeClass(badge)}>{badge}</Badge> : null}
+            {badge ? (
+              <Badge variant="outline" className="cf-status-pill rounded-full" data-cf-status-tone={semanticBadgeTone(badge)}>
+                {badge}
+              </Badge>
+            ) : null}
           </div>
           {helper ? <p className="mt-1 text-sm text-slate-600 break-words">{helper}</p> : null}
           {meta ? (
@@ -1086,7 +1108,7 @@ export default function TodayStable() {
 
         <section className="grid gap-4 xl:grid-cols-3" hidden={!sectionVisible('risk') && !sectionVisible('no_action') && !sectionVisible('waiting')}>
           <StableCard>
-            <SectionHeader title={todaySectionLabels.no_action} count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" collapsed={isCollapsed('no_action')} onToggle={() => toggleSectionCollapse('no_action')} />
+            <SectionHeader title={todaySectionLabels.no_action} count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="cf-severity:warning" collapsed={isCollapsed('no_action')} onToggle={() => toggleSectionCollapse('no_action')} />
             <div hidden={isCollapsed('no_action')}>
             {noActionLeads.length ? noActionLeads.map(({ lead, risk }) => (
               <RowLink
@@ -1105,7 +1127,7 @@ export default function TodayStable() {
           </StableCard>
 
           <StableCard>
-            <SectionHeader title={todaySectionLabels.risk} count={highValueAtRiskRows.length} icon={<TrendingUp className="h-5 w-5" />} tone="bg-rose-50 text-rose-700" collapsed={isCollapsed('risk')} onToggle={() => toggleSectionCollapse('risk')} />
+            <SectionHeader title={todaySectionLabels.risk} count={highValueAtRiskRows.length} icon={<TrendingUp className="h-5 w-5" />} tone="cf-severity:error" collapsed={isCollapsed('risk')} onToggle={() => toggleSectionCollapse('risk')} />
             <div hidden={isCollapsed('risk')}>
             {highValueAtRiskRows.length ? highValueAtRiskRows.map(({ lead, risk, momentRaw }) => (
               <RowLink
@@ -1124,7 +1146,7 @@ export default function TodayStable() {
           </StableCard>
 
           <StableCard>
-            <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
+            <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<UserRound className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
             <div hidden={isCollapsed('waiting')}>
             {waitingLeadRows.length ? waitingLeadRows.map(({ lead, risk, momentRaw }) => (
               <RowLink
@@ -1145,7 +1167,7 @@ export default function TodayStable() {
 
         <section className="grid gap-4 xl:grid-cols-2" hidden={!sectionVisible('leads') && !sectionVisible('tasks') && !sectionVisible('events') && !sectionVisible('drafts')}>
           <StableCard>
-            <SectionHeader title={todaySectionLabels.leads} count={operatorLeads.length} icon={<UserRound className="h-5 w-5" />} tone="bg-blue-50 text-blue-700" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
+            <SectionHeader title={todaySectionLabels.leads} count={operatorLeads.length} icon={<UserRound className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
             <div hidden={isCollapsed('leads')}>
             {operatorLeads.length ? operatorLeads.map(({ lead, momentRaw, risk }) => (
               <RowLink
@@ -1205,7 +1227,7 @@ export default function TodayStable() {
           </StableCard>
 
           <StableCard>
-            <SectionHeader title={todaySectionLabels.drafts} count={pendingDrafts.length} icon={<FileText className="h-5 w-5" />} tone="bg-amber-50 text-amber-700" collapsed={isCollapsed('drafts')} onToggle={() => toggleSectionCollapse('drafts')} />
+            <SectionHeader title={todaySectionLabels.drafts} count={pendingDrafts.length} icon={<FileText className="h-5 w-5" />} tone="cf-severity:warning" collapsed={isCollapsed('drafts')} onToggle={() => toggleSectionCollapse('drafts')} />
             <div hidden={isCollapsed('drafts')}>
             {pendingDrafts.length ? pendingDrafts.map((draft: any) => (
               <RowLink
