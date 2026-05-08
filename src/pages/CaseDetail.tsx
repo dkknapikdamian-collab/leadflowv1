@@ -49,7 +49,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { EntityActionButton } from '../components/entity-actions';
+import { EntityActionButton, actionButtonClass } from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
@@ -83,6 +83,28 @@ import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage13-case-detail-vnext.css';
+
+const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CASE = {
+  entity: 'case',
+  entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),
+  activityPanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),
+  notePanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),
+  tasksPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),
+  workItemsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),
+  eventsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),
+  calendarPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),
+  dangerActionZone: actionButtonClass('danger', 'cf-danger-action-zone'),
+  copyInlineSecondaryAction: actionButtonClass('neutral', 'cf-inline-secondary-action'),
+  placement: {
+    addNote: 'activity-panel-header',
+    dictateNote: 'activity-panel-header',
+    addTask: 'tasks-panel-header',
+    addEvent: 'events-panel-header',
+    editRecord: 'entity-header-action-cluster',
+    deleteRecord: 'danger-action-zone',
+    copy: 'info-row-inline-action',
+  },
+} as const;
 
 const CASE_DETAIL_V1_EVENT_ACTION_GUARD = 'Dodaj wydarzenie';
 const STAGE28A_CASE_FINANCE_CORE_GUARD = 'case finance core value paid remaining partial payments';

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T12:35:02.461Z",
+  "generatedAt": "2026-05-08T13:13:32.086Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -3596,11 +3596,11 @@
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1353
+      "line": 1375
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1477
+      "line": 1499
     },
     {
       "file": "src/pages/Cases.tsx",
@@ -3608,7 +3608,7 @@
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1671
+      "line": 1693
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",

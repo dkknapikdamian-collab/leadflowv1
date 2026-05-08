@@ -34,6 +34,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { actionButtonClass } from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import LeadAiFollowupDraft from '../components/LeadAiFollowupDraft';
 import LeadAiNextAction from '../components/LeadAiNextAction';
@@ -76,6 +77,28 @@ import {
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage14-lead-detail-vnext.css';
+
+const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_LEAD = {
+  entity: 'lead',
+  entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),
+  activityPanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),
+  notePanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),
+  tasksPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),
+  workItemsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),
+  eventsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),
+  calendarPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),
+  dangerActionZone: actionButtonClass('danger', 'cf-danger-action-zone'),
+  copyInlineSecondaryAction: actionButtonClass('neutral', 'cf-inline-secondary-action'),
+  placement: {
+    addNote: 'activity-panel-header',
+    dictateNote: 'activity-panel-header',
+    addTask: 'tasks-panel-header',
+    addEvent: 'events-panel-header',
+    editRecord: 'entity-header-action-cluster',
+    deleteRecord: 'danger-action-zone',
+    copy: 'info-row-inline-action',
+  },
+} as const;
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy' },

@@ -1,0 +1,54 @@
+/* CLOSEFLOW_ENTITY_ACTION_CLUSTER_CONTRACT
+   One source of truth for entity detail action cluster placement.
+   Same function = same logical action region across LeadDetail, ClientDetail and CaseDetail.
+*/
+
+.cf-entity-action-cluster,
+.cf-panel-header-actions,
+.cf-panel-action-row,
+.cf-danger-action-zone {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cf-entity-action-cluster {
+  justify-content: flex-end;
+}
+
+.cf-panel-header-actions {
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.cf-panel-action-row {
+  justify-content: flex-start;
+}
+
+.cf-danger-action-zone {
+  justify-content: flex-end;
+}
+
+.cf-inline-secondary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .cf-entity-action-cluster,
+  .cf-panel-header-actions,
+  .cf-panel-action-row,
+  .cf-danger-action-zone {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .cf-entity-action-cluster > *,
+  .cf-panel-header-actions > *,
+  .cf-panel-action-row > *,
+  .cf-danger-action-zone > * {
+    min-width: 0;
+  }
+}

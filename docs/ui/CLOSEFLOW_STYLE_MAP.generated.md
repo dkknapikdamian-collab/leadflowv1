@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T12:35:02.461Z
+Generated: 2026-05-08T13:13:32.086Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -620,10 +620,10 @@ Generated: 2026-05-08T12:35:02.461Z
 - src/pages/Activity.tsx:789
 - src/pages/Calendar.tsx:1476
 - src/pages/Calendar.tsx:1658
-- src/pages/CaseDetail.tsx:1353
-- src/pages/CaseDetail.tsx:1477
+- src/pages/CaseDetail.tsx:1375
+- src/pages/CaseDetail.tsx:1499
 - src/pages/Cases.tsx:741
-- src/pages/ClientDetail.tsx:1671
+- src/pages/ClientDetail.tsx:1693
 - src/pages/NotificationsCenter.tsx:705
 - src/pages/Today.tsx:808
 - src/pages/UiPreviewVNext.tsx:8

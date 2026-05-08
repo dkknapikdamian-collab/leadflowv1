@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T12:35:02.461Z",
+  "generatedAt": "2026-05-08T13:13:31.452Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -450,157 +450,157 @@
     {
       "term": "Dodaj notatkę",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1591
+      "line": 1613
     },
     {
       "term": "Dodaj notatkę",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1642
+      "line": 1664
     },
     {
       "term": "Dodaj zadanie",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1344
+      "line": 1366
     },
     {
       "term": "Usuń",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 215
+      "line": 237
     },
     {
       "term": "Usuń",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1907
+      "line": 1929
     },
     {
       "term": "Zapisz",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1725
+      "line": 1747
     },
     {
       "term": "Zapisz",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1791
+      "line": 1813
     },
     {
       "term": "Anuluj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1725
+      "line": 1747
     },
     {
       "term": "Anuluj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1787
+      "line": 1809
     },
     {
       "term": "Anuluj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1939
+      "line": 1961
     },
     {
       "term": "Kopiuj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1327
+      "line": 1349
     },
     {
       "term": "Kopiuj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1711
+      "line": 1733
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 87
+      "line": 109
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 211
+      "line": 233
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1331
+      "line": 1353
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1344
+      "line": 1366
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1439
+      "line": 1461
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1474
+      "line": 1496
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1521
+      "line": 1543
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1526
+      "line": 1548
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1578
+      "line": 1600
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1591
+      "line": 1613
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1603
+      "line": 1625
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1616
+      "line": 1638
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1642
+      "line": 1664
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1718
+      "line": 1740
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1718
+      "line": 1740
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1734
+      "line": 1756
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1823
+      "line": 1845
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1931
+      "line": 1953
     },
     {
       "term": "Dodaj",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1939
+      "line": 1961
     },
     {
       "term": "Usuń",
@@ -635,57 +635,57 @@
     {
       "term": "Dodaj notatkę",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2043
+      "line": 2065
     },
     {
       "term": "Dodaj notatkę",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2065
+      "line": 2087
     },
     {
       "term": "Dodaj zadanie",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1167
+      "line": 1189
     },
     {
       "term": "Dodaj zadanie",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2007
+      "line": 2029
     },
     {
       "term": "Usuń",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 652
+      "line": 674
     },
     {
       "term": "Usuń",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 652
+      "line": 674
     },
     {
       "term": "Usuń",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 654
+      "line": 676
     },
     {
       "term": "Usuń",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1865
+      "line": 1887
     },
     {
       "term": "Usuń",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1866
+      "line": 1888
     },
     {
       "term": "Usuń",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2096
+      "line": 2118
     },
     {
       "term": "Usuń",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2096
+      "line": 2118
     },
     {
       "term": "Edytuj",
@@ -695,27 +695,27 @@
     {
       "term": "Edytuj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 884
+      "line": 906
     },
     {
       "term": "Edytuj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1532
+      "line": 1554
     },
     {
       "term": "Edytuj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1856
+      "line": 1878
     },
     {
       "term": "Edytuj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2093
+      "line": 2115
     },
     {
       "term": "Edytuj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2093
+      "line": 2115
     },
     {
       "term": "Zapisz",
@@ -725,42 +725,42 @@
     {
       "term": "Zapisz",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1532
+      "line": 1554
     },
     {
       "term": "Zapisz",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1573
+      "line": 1595
     },
     {
       "term": "Anuluj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1576
+      "line": 1598
     },
     {
       "term": "Kopiuj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 665
+      "line": 687
     },
     {
       "term": "Kopiuj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 665
+      "line": 687
     },
     {
       "term": "Kopiuj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 665
+      "line": 687
     },
     {
       "term": "Dyktuj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1565
+      "line": 1587
     },
     {
       "term": "Dyktuj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2069
+      "line": 2091
     },
     {
       "term": "Nowa sprawa",
@@ -770,42 +770,42 @@
     {
       "term": "Nowa sprawa",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1433
+      "line": 1455
     },
     {
       "term": "Dodaj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 633
+      "line": 655
     },
     {
       "term": "Dodaj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 633
+      "line": 655
     },
     {
       "term": "Dodaj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1167
+      "line": 1189
     },
     {
       "term": "Dodaj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2007
+      "line": 2029
     },
     {
       "term": "Dodaj",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2030
-    },
-    {
-      "term": "Dodaj",
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 2043
+      "line": 2052
     },
     {
       "term": "Dodaj",
       "file": "src/pages/ClientDetail.tsx",
       "line": 2065
+    },
+    {
+      "term": "Dodaj",
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 2087
     },
     {
       "term": "Anuluj",
@@ -855,132 +855,132 @@
     {
       "term": "Usuń",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1520
+      "line": 1543
     },
     {
       "term": "Usuń",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1566
+      "line": 1589
     },
     {
       "term": "Edytuj",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1420
+      "line": 1443
     },
     {
       "term": "Edytuj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1515
-    },
-    {
-      "term": "Edytuj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1565
-    },
-    {
-      "term": "Edytuj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1689
-    },
-    {
-      "term": "Edytuj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1705
-    },
-    {
-      "term": "Edytuj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1719
-    },
-    {
-      "term": "Edytuj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1733
-    },
-    {
-      "term": "Zapisz",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1656
-    },
-    {
-      "term": "Zapisz",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1699
-    },
-    {
-      "term": "Zapisz",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1713
-    },
-    {
-      "term": "Zapisz",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1727
-    },
-    {
-      "term": "Zapisz",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1735
-    },
-    {
-      "term": "Anuluj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1656
-    },
-    {
-      "term": "Anuluj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1680
-    },
-    {
-      "term": "Anuluj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1699
-    },
-    {
-      "term": "Anuluj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1713
-    },
-    {
-      "term": "Anuluj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1727
-    },
-    {
-      "term": "Anuluj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1735
-    },
-    {
-      "term": "Dyktuj",
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1543
-    },
-    {
-      "term": "Dodaj",
       "file": "src/pages/LeadDetail.tsx",
       "line": 1538
     },
     {
-      "term": "Dodaj",
+      "term": "Edytuj",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1546
+      "line": 1588
+    },
+    {
+      "term": "Edytuj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1712
+    },
+    {
+      "term": "Edytuj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1728
+    },
+    {
+      "term": "Edytuj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1742
+    },
+    {
+      "term": "Edytuj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1756
+    },
+    {
+      "term": "Zapisz",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1679
+    },
+    {
+      "term": "Zapisz",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1722
+    },
+    {
+      "term": "Zapisz",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1736
+    },
+    {
+      "term": "Zapisz",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1750
+    },
+    {
+      "term": "Zapisz",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1758
+    },
+    {
+      "term": "Anuluj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1679
+    },
+    {
+      "term": "Anuluj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1703
+    },
+    {
+      "term": "Anuluj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1722
+    },
+    {
+      "term": "Anuluj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1736
+    },
+    {
+      "term": "Anuluj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1750
+    },
+    {
+      "term": "Anuluj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1758
+    },
+    {
+      "term": "Dyktuj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1566
     },
     {
       "term": "Dodaj",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1599
+      "line": 1561
     },
     {
       "term": "Dodaj",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1649
+      "line": 1569
     },
     {
       "term": "Dodaj",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1649
+      "line": 1622
+    },
+    {
+      "term": "Dodaj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1672
+    },
+    {
+      "term": "Dodaj",
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1672
     },
     {
       "term": "Usuń",
@@ -1959,91 +1959,91 @@
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1294,
+      "line": 1316,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1309,
+      "line": 1331,
       "snippet": "<button type=\"button\" className=\"case-detail-back-button\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1325,
+      "line": 1347,
       "snippet": "<Button type=\"button\" variant=\"outline\" className=\"cf-btn-tone-portal\" onClick={handleCopyPortal}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1329,
+      "line": 1351,
       "snippet": "<Button type=\"button\" variant=\"outline\" className=\"cf-btn-tone-gap\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1384,
+      "line": 1406,
       "snippet": "<Button type=\"button\" variant=\"ghost\" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss=\"true\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1581,
+      "line": 1603,
       "snippet": "<Button type=\"button\" variant=\"outline\" size=\"sm\" onClick={openCaseTaskDialog} data-case-create-action=\"task\" data-case-quick-action=\"true\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1585,
+      "line": 1607,
       "snippet": "<Button type=\"button\" variant=\"outline\" size=\"sm\" onClick={openCaseEventDialog} data-case-create-action=\"event\" data-case-quick-action=\"true\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1589,
+      "line": 1611,
       "snippet": "<Button type=\"button\" variant=\"outline\" data-case-create-action=\"note\" onClick={openCaseNoteDialog}>"
     },
     {
       "tag": "button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1603,
+      "line": 1625,
       "snippet": "<button type=\"button\" className=\"cf-btn-tone-gap\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1627,
+      "line": 1649,
       "snippet": "<Button\n                    type=\"button\"\n                    variant=\"ghost\"\n                    size=\"sm\"\n                    className=\"case-detail-link-button\"\n                    onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1711,
+      "line": 1733,
       "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" className=\"cf-btn-tone-portal\" onClick={handleCopyPortal}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1725,
+      "line": 1747,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1786,
+      "line": 1808,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1939,
+      "line": 1961,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1939,
+      "line": 1961,
       "snippet": "<Button type=\"button\" className=\"cf-btn-tone-gap\" onClick={onSubmit}>"
     },
     {
@@ -2079,193 +2079,193 @@
     {
       "tag": "button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 628,
-      "snippet": "<button\r\n          type=\"button\"\r\n          className=\"client-detail-mini-button\"\r\n          onClick={addValue}\r\n          data-client-contact-repeat-add={kind}\r\n          aria-label={kind === 'email' ? 'Dodaj kolejny em"
+      "line": 650,
+      "snippet": "<button\n          type=\"button\"\n          className=\"client-detail-mini-button\"\n          onClick={addValue}\n          data-client-contact-repeat-add={kind}\n          aria-label={kind === 'email' ? 'Dodaj kolejny email k"
     },
     {
       "tag": "button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 648,
-      "snippet": "<button\r\n                type=\"button\"\r\n                className=\"client-detail-mini-button client-detail-mini-button-muted\"\r\n                onClick={() =>"
+      "line": 670,
+      "snippet": "<button\n                type=\"button\"\n                className=\"client-detail-mini-button client-detail-mini-button-muted\"\n                onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 676,
+      "line": 698,
       "snippet": "<button type=\"button\" className=\"client-detail-icon-button\" onClick={onCopy} aria-label={copyLabel} title={copyLabel}>"
     },
     {
       "tag": "Link",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 763,
+      "line": 785,
       "snippet": "<Link to={nextAction.to} className=\"entity-overview-tile-link\">"
     },
     {
       "tag": "button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 805,
+      "line": 827,
       "snippet": "<button type=\"button\" className=\"entity-overview-tile-link\" onClick={onOpenCases}>"
     },
     {
       "tag": "button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1410,
+      "line": 1432,
       "snippet": "<button type=\"button\" className=\"client-detail-back-button\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1425,
+      "line": 1447,
       "snippet": "<Button type=\"button\" variant=\"default\" className=\"client-detail-header-action-soft\" asChild>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1431,
+      "line": 1453,
       "snippet": "<Button type=\"button\" variant=\"default\" onClick={openNewCase} disabled={!hasAccess}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1435,
+      "line": 1457,
       "snippet": "<Button type=\"button\" className=\"client-detail-header-action-primary\" onClick={openMainCase} disabled={!mainCase?.id}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1464,
-      "snippet": "<Button\r\n                    type=\"button\"\r\n                    variant=\"outline\"\r\n                    className=\"client-detail-today-info-tile-action\"\r\n                    onClick={() =>"
+      "line": 1486,
+      "snippet": "<Button\n                    type=\"button\"\n                    variant=\"outline\"\n                    className=\"client-detail-today-info-tile-action\"\n                    onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1521,
-      "snippet": "<Button\r\n                type=\"button\"\r\n                variant=\"default\"\r\n                className=\"client-detail-visible-edit-action client-detail-edit-main-button\"\r\n                data-client-detail-visible-edit-act"
+      "line": 1543,
+      "snippet": "<Button\n                type=\"button\"\n                variant=\"default\"\n                className=\"client-detail-visible-edit-action client-detail-edit-main-button\"\n                data-client-detail-visible-edit-action="
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1563,
+      "line": 1585,
       "snippet": "<Button type=\"button\" variant=\"outline\" size=\"sm\" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteAutosaving}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1575,
+      "line": 1597,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={cancelClientPanelEdit} disabled={saving}>"
     },
     {
       "tag": "Link",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1599,
+      "line": 1621,
       "snippet": "<Link key={move.id} to=\"/activity\" className=\"client-detail-recent-move-row\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1611,
+      "line": 1633,
       "snippet": "<Link to=\"/activity\" className=\"client-detail-recent-moves-link\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1649,
-      "snippet": "<Button\r\n                      type=\"button\"\r\n                      className=\"client-detail-hero-cta\"\r\n                      onClick={() =>"
+      "line": 1671,
+      "snippet": "<Button\n                      type=\"button\"\n                      className=\"client-detail-hero-cta\"\n                      onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1709,
+      "line": 1731,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1723,
+      "line": 1745,
       "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1727,
-      "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" onClick={() =>"
-    },
-    {
-      "tag": "Button",
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 1748,
-      "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" onClick={() =>"
-    },
-    {
-      "tag": "Button",
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 1752,
+      "line": 1749,
       "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
       "line": 1770,
-      "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
-    },
-    {
-      "tag": "Button",
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 1855,
       "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1986,
+      "line": 1774,
+      "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" onClick={() =>"
+    },
+    {
+      "tag": "Button",
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 1792,
+      "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
+    },
+    {
+      "tag": "Button",
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 1877,
+      "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" onClick={() =>"
+    },
+    {
+      "tag": "Button",
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 2008,
       "snippet": "<Button\n                    type=\"button\"\n                    variant=\"outline\"\n                    size=\"sm\"\n                    data-context-action-kind=\"task\"\n                    data-context-record-type=\"client\"\n    "
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2009,
+      "line": 2031,
       "snippet": "<Button\n                    type=\"button\"\n                    variant=\"outline\"\n                    size=\"sm\"\n                    data-context-action-kind=\"event\"\n                    data-context-record-type=\"client\"\n   "
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2032,
+      "line": 2054,
       "snippet": "<Button\n                    type=\"button\"\n                    variant=\"outline\"\n                    size=\"sm\"\n                    data-context-action-kind=\"note\"\n                    data-context-record-type=\"client\"\n    "
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2045,
+      "line": 2067,
       "snippet": "<Button\n                    type=\"button\"\n                    variant=\"outline\"\n                    size=\"sm\"\n                    onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2064,
+      "line": 2086,
       "snippet": "<Button type=\"button\" variant=\"outline\" size=\"sm\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2067,
+      "line": 2089,
       "snippet": "<Button type=\"button\" variant=\"outline\" size=\"sm\" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>"
     },
     {
       "tag": "button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2087,
+      "line": 2109,
       "snippet": "<button type=\"button\" title=\"Przypnij notatkę\" aria-label=\"Przypnij notatkę\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2090,
+      "line": 2112,
       "snippet": "<button type=\"button\" title=\"Podgląd całej notatki\" aria-label=\"Podgląd całej notatki\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2093,
+      "line": 2115,
       "snippet": "<button type=\"button\" title=\"Edytuj notatkę\" aria-label=\"Edytuj notatkę\" onClick={() =>"
     },
     {
@@ -2379,79 +2379,79 @@
     {
       "tag": "button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 424,
+      "line": 447,
       "snippet": "<button type=\"button\" className=\"lead-detail-chip-button\" onClick={onClick} disabled={disabled}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1375,
+      "line": 1398,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1392,
+      "line": 1415,
       "snippet": "<button type=\"button\" className=\"lead-detail-back-button\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1418,
+      "line": 1441,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={handleStartLeadEditing}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1541,
+      "line": 1564,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1588,
+      "line": 1611,
       "snippet": "<Button type=\"button\" size=\"sm\" variant=\"outline\" onClick={openCase}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1656,
+      "line": 1679,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1680,
+      "line": 1703,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1681,
+      "line": 1704,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={handleLinkExistingCase} disabled={linkingCase}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1699,
+      "line": 1722,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1713,
+      "line": 1736,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1727,
+      "line": 1750,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1735,
+      "line": 1758,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
@@ -3941,7 +3941,7 @@
       "file": "src/pages/ClientDetail.tsx"
     },
     {
-      "icon": "useState } from 'react';\r\nimport { Link",
+      "icon": "useState } from 'react';\nimport { Link",
       "file": "src/pages/ClientDetail.tsx"
     },
     {
@@ -3949,7 +3949,7 @@
       "file": "src/pages/ClientDetail.tsx"
     },
     {
-      "icon": "useParams } from 'react-router-dom';\r\nimport {\r\n  Activity",
+      "icon": "useParams } from 'react-router-dom';\nimport {\n  Activity",
       "file": "src/pages/ClientDetail.tsx"
     },
     {
@@ -4225,11 +4225,11 @@
       "file": "src/pages/LeadDetail.tsx"
     },
     {
-      "icon": "type ReactNode } from 'react';\r\nimport { useNavigate",
+      "icon": "type ReactNode } from 'react';\nimport { useNavigate",
       "file": "src/pages/LeadDetail.tsx"
     },
     {
-      "icon": "useParams } from 'react-router-dom';\r\nimport {\r\n  ArrowLeft",
+      "icon": "useParams } from 'react-router-dom';\nimport {\n  ArrowLeft",
       "file": "src/pages/LeadDetail.tsx"
     },
     {
@@ -5685,242 +5685,242 @@
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1277,
+      "line": 1299,
       "className": "case-detail-loading-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1290,
+      "line": 1312,
       "className": "case-detail-empty-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1309,
+      "line": 1331,
       "className": "case-detail-back-button"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1324,
+      "line": 1346,
       "className": "case-detail-header-actions"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1338,
+      "line": 1360,
       "className": "case-detail-top-card case-detail-top-card-blue"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1339,
+      "line": 1361,
       "className": "case-detail-card-title-row"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1346,
+      "line": 1368,
       "className": "case-detail-top-card case-detail-top-card-green"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1347,
-      "className": "case-detail-card-title-row"
-    },
-    {
-      "file": "src/pages/CaseDetail.tsx",
-      "line": 1355,
-      "className": "case-detail-top-card case-detail-top-card-amber"
-    },
-    {
-      "file": "src/pages/CaseDetail.tsx",
-      "line": 1356,
-      "className": "case-detail-card-title-row"
-    },
-    {
-      "file": "src/pages/CaseDetail.tsx",
-      "line": 1363,
-      "className": "case-detail-top-card case-detail-top-card-muted"
-    },
-    {
-      "file": "src/pages/CaseDetail.tsx",
-      "line": 1364,
+      "line": 1369,
       "className": "case-detail-card-title-row"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
       "line": 1377,
-      "className": "case-detail-note-follow-up-panel"
+      "className": "case-detail-top-card case-detail-top-card-amber"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
       "line": 1378,
+      "className": "case-detail-card-title-row"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1385,
+      "className": "case-detail-top-card case-detail-top-card-muted"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1386,
+      "className": "case-detail-card-title-row"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1399,
+      "className": "case-detail-note-follow-up-panel"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1400,
       "className": "case-detail-note-follow-up-head"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1388,
+      "line": 1410,
       "className": "case-detail-note-follow-up-preview"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1389,
+      "line": 1411,
       "className": "case-detail-note-follow-up-actions"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1395,
+      "line": 1417,
       "className": "case-detail-note-follow-up-custom"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1465,
+      "line": 1487,
       "className": "case-detail-section-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1496,
+      "line": 1518,
       "className": "case-detail-section-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1513,
+      "line": 1535,
       "className": "case-detail-section-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1536,
+      "line": 1558,
       "className": "case-detail-row-actions"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1549,
+      "line": 1571,
       "className": "case-detail-section-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1577,
+      "line": 1599,
       "className": "case-detail-right-card case-detail-create-action-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1580,
+      "line": 1602,
       "className": "case-detail-right-actions case-detail-create-actions"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1594,
+      "line": 1616,
       "className": "case-detail-right-note"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1597,
+      "line": 1619,
       "className": "right-card case-detail-right-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1598,
+      "line": 1620,
       "className": "case-detail-card-title-row"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1602,
+      "line": 1624,
       "className": "case-detail-right-actions"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1606,
+      "line": 1628,
       "className": "right-card case-detail-right-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1607,
+      "line": 1629,
       "className": "case-detail-card-title-row"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1615,
+      "line": 1637,
       "className": "case-detail-right-actions"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1621,
+      "line": 1643,
       "className": "case-detail-card case-detail-recent-moves-panel"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1631,
+      "line": 1653,
       "className": "case-detail-link-button"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1667,
+      "line": 1689,
       "className": "right-card case-detail-right-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1668,
+      "line": 1690,
       "className": "case-detail-card-title-row"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1675,
+      "line": 1697,
       "className": "case-detail-right-actions case-detail-right-actions-inline"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1681,
+      "line": 1703,
       "className": "right-card case-detail-right-card"
-    },
-    {
-      "file": "src/pages/CaseDetail.tsx",
-      "line": 1682,
-      "className": "case-detail-card-title-row"
-    },
-    {
-      "file": "src/pages/CaseDetail.tsx",
-      "line": 1686,
-      "className": "case-detail-right-metrics"
-    },
-    {
-      "file": "src/pages/CaseDetail.tsx",
-      "line": 1692,
-      "className": "case-detail-right-note"
-    },
-    {
-      "file": "src/pages/CaseDetail.tsx",
-      "line": 1693,
-      "className": "case-detail-right-actions case-detail-right-actions-inline"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
       "line": 1704,
+      "className": "case-detail-card-title-row"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1708,
+      "className": "case-detail-right-metrics"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1714,
+      "className": "case-detail-right-note"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1715,
+      "className": "case-detail-right-actions case-detail-right-actions-inline"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1726,
       "className": "right-card case-detail-right-card"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1705,
+      "line": 1727,
       "className": "case-detail-card-title-row"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1817,
+      "line": 1839,
       "className": "case-detail-card-title-row"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1822,
+      "line": 1844,
       "className": "case-detail-command-actions"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1879,
+      "line": 1901,
       "className": "case-detail-work-icon"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1890,
+      "line": 1912,
       "className": "case-detail-row-actions"
     },
     {
       "file": "src/pages/CaseDetail.tsx",
-      "line": 1907,
+      "line": 1929,
       "className": "case-detail-row-action-danger"
     },
     {
@@ -5985,93 +5985,58 @@
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 630,
+      "line": 652,
       "className": "client-detail-mini-button"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 650,
+      "line": 672,
       "className": "client-detail-mini-button client-detail-mini-button-muted"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 668,
+      "line": 690,
       "className": "client-detail-info-icon"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 676,
+      "line": 698,
       "className": "client-detail-icon-button"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 751,
+      "line": 773,
       "className": "client-detail-top-tiles entity-overview-tiles"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 753,
+      "line": 775,
       "className": "client-detail-top-tile entity-overview-tile entity-overview-tile-action "
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 756,
+      "line": 778,
       "className": "entity-overview-tile-head"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 757,
+      "line": 779,
       "className": "entity-overview-tile-icon"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 763,
+      "line": 785,
       "className": "entity-overview-tile-link"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 767,
+      "line": 789,
       "className": "entity-overview-tile-chip entity-overview-tile-chip-muted"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 771,
-      "className": "client-detail-top-tile entity-overview-tile entity-overview-tile-finance"
-    },
-    {
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 772,
-      "className": "entity-overview-tile-head"
-    },
-    {
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 773,
-      "className": "entity-overview-tile-icon"
-    },
-    {
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 777,
-      "className": "entity-overview-metrics"
-    },
-    {
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 778,
-      "className": "entity-overview-metric-row"
-    },
-    {
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 782,
-      "className": "entity-overview-metric-row"
-    },
-    {
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 786,
-      "className": "entity-overview-metric-row"
-    },
-    {
-      "file": "src/pages/ClientDetail.tsx",
       "line": 793,
-      "className": "client-detail-top-tile entity-overview-tile entity-overview-tile-cases"
+      "className": "client-detail-top-tile entity-overview-tile entity-overview-tile-finance"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
@@ -6085,287 +6050,322 @@
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 805,
+      "line": 799,
+      "className": "entity-overview-metrics"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 800,
+      "className": "entity-overview-metric-row"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 804,
+      "className": "entity-overview-metric-row"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 808,
+      "className": "entity-overview-metric-row"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 815,
+      "className": "client-detail-top-tile entity-overview-tile entity-overview-tile-cases"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 816,
+      "className": "entity-overview-tile-head"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 817,
+      "className": "entity-overview-tile-icon"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 827,
       "className": "entity-overview-tile-link"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1378,
+      "line": 1400,
       "className": "client-detail-loading-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1391,
+      "line": 1413,
       "className": "client-detail-empty-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1410,
+      "line": 1432,
       "className": "client-detail-back-button"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1423,
+      "line": 1445,
       "className": "client-detail-header-actions"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1425,
+      "line": 1447,
       "className": "client-detail-header-action-soft"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1435,
+      "line": 1457,
       "className": "client-detail-header-action-primary"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1453,
+      "line": 1475,
       "className": "client-detail-today-info-tiles"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1455,
+      "line": 1477,
       "className": "client-detail-today-info-tile-icon"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1458,
+      "line": 1480,
       "className": "client-detail-today-info-tile-body"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1467,
+      "line": 1489,
       "className": "client-detail-today-info-tile-action"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1492,
+      "line": 1514,
       "className": "client-detail-today-info-tile client-detail-today-info-tile-finance"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1493,
+      "line": 1515,
       "className": "client-detail-today-info-tile-icon"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1496,
+      "line": 1518,
       "className": "client-detail-today-info-tile-body"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1501,
+      "line": 1523,
       "className": "client-detail-today-info-tile-meta"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1512,
+      "line": 1534,
       "className": "client-detail-profile-card client-detail-side-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1524,
+      "line": 1546,
       "className": "client-detail-visible-edit-action client-detail-edit-main-button"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1570,
+      "line": 1592,
       "className": "client-detail-edit-actions"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1591,
+      "line": 1613,
       "className": "client-detail-right-card client-detail-recent-moves-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1592,
+      "line": 1614,
       "className": "client-detail-card-title-row"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1644,
+      "line": 1666,
       "className": "client-detail-top-cards"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1645,
+      "line": 1667,
       "className": "client-detail-hero-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1663,
+      "line": 1685,
       "className": "client-detail-top-cards-side"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1664,
+      "line": 1686,
       "className": "client-detail-completeness-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1665,
+      "line": 1687,
       "className": "client-detail-card-title-row"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1673,
+      "line": 1695,
       "className": "client-detail-completeness-note"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1680,
+      "line": 1702,
       "className": "client-detail-summary-card client-detail-finance-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1681,
+      "line": 1703,
       "className": "client-detail-card-title-row"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1685,
+      "line": 1707,
       "className": "client-detail-finance-metrics"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1704,
+      "line": 1726,
       "className": "client-detail-section-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1722,
+      "line": 1744,
       "className": "client-detail-relation-actions"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1747,
+      "line": 1769,
       "className": "client-detail-relation-actions"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1763,
+      "line": 1785,
       "className": "client-detail-section-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1794,
+      "line": 1816,
       "className": "client-detail-section-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1838,
+      "line": 1860,
       "className": "client-detail-case-smart-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1851,
+      "line": 1873,
       "className": "client-detail-case-smart-actions"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1864,
+      "line": 1886,
       "className": "client-detail-case-smart-delete-icon-button"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1924,
+      "line": 1946,
       "className": "client-detail-section-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1953,
+      "line": 1975,
       "className": "right-card client-detail-right-card client-detail-operational-center"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1954,
+      "line": 1976,
       "className": "client-detail-card-title-row"
-    },
-    {
-      "file": "src/pages/ClientDetail.tsx",
-      "line": 1958,
-      "className": "client-detail-quick-actions-list"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
       "line": 1980,
+      "className": "client-detail-quick-actions-list"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 2002,
       "className": "right-card client-detail-right-card client-detail-side-quick-actions-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1981,
+      "line": 2003,
       "className": "client-detail-card-title-row"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1985,
+      "line": 2007,
       "className": "client-detail-side-quick-actions-grid"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2056,
+      "line": 2078,
       "className": "right-card client-detail-right-card client-detail-note-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2057,
+      "line": 2079,
       "className": "client-detail-card-title-row"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2061,
+      "line": 2083,
       "className": "client-detail-note-text"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2072,
+      "line": 2094,
       "className": "client-detail-notes-list"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2073,
+      "line": 2095,
       "className": "client-detail-notes-list-head"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2078,
+      "line": 2100,
       "className": "client-detail-notes-items"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2082,
+      "line": 2104,
       "className": "client-detail-note-item"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2086,
+      "line": 2108,
       "className": "client-detail-note-item-toolbar"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2096,
+      "line": 2118,
       "className": "client-detail-note-delete-button"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2106,
+      "line": 2128,
       "className": "client-detail-notes-empty"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2111,
+      "line": 2133,
       "className": "right-card client-detail-right-card"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2112,
+      "line": 2134,
       "className": "client-detail-card-title-row"
     },
     {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 2120,
+      "line": 2142,
       "className": "client-detail-quick-actions-list"
     },
     {
@@ -6460,188 +6460,158 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 424,
+      "line": 447,
       "className": "lead-detail-chip-button"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 755,
+      "line": 778,
       "className": "lead-detail-work-metric"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 759,
+      "line": 782,
       "className": "lead-detail-work-metric"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 763,
+      "line": 786,
       "className": "lead-detail-work-metric lead-detail-work-metric-wide"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 775,
+      "line": 798,
       "className": "lead-detail-work-actions"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 801,
+      "line": 824,
       "className": "lead-detail-work-actions lead-detail-work-actions-service"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1358,
+      "line": 1381,
       "className": "lead-detail-loading-card"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1371,
+      "line": 1394,
       "className": "lead-detail-empty-card"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1392,
+      "line": 1415,
       "className": "lead-detail-back-button"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1406,
+      "line": 1429,
       "className": "lead-detail-header-actions"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1447,
+      "line": 1470,
       "className": "lead-detail-top-card lead-detail-callout-blue"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1448,
+      "line": 1471,
       "className": "lead-detail-card-title-row"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1459,
+      "line": 1482,
       "className": "lead-detail-top-card lead-detail-callout-green"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1460,
+      "line": 1483,
       "className": "lead-detail-card-title-row"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1464,
+      "line": 1487,
       "className": "lead-detail-top-card lead-detail-callout-amber"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1465,
+      "line": 1488,
       "className": "lead-detail-card-title-row"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1472,
+      "line": 1495,
       "className": "lead-detail-section-card"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1486,
+      "line": 1509,
       "className": "lead-detail-note-box"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1488,
+      "line": 1511,
       "className": "lead-detail-note-text"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1493,
+      "line": 1516,
       "className": "lead-detail-section-card"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1507,
+      "line": 1530,
       "className": "lead-detail-work-icon"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1514,
+      "line": 1537,
       "className": "lead-detail-row-actions"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1529,
+      "line": 1552,
       "className": "lead-detail-section-card"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1537,
+      "line": 1560,
       "className": "lead-detail-note-form"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1538,
+      "line": 1561,
       "className": "lead-detail-note-input"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1539,
+      "line": 1562,
       "className": "lead-detail-note-transcript"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1564,
+      "line": 1587,
       "className": "lead-detail-history-actions"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1578,
+      "line": 1601,
       "className": "right-card lead-detail-right-card"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1579,
+      "line": 1602,
       "className": "lead-detail-card-title-row"
-    },
-    {
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1584,
-      "className": "right-card lead-detail-right-card"
-    },
-    {
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1585,
-      "className": "lead-detail-card-title-row"
-    },
-    {
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1591,
-      "className": "right-card lead-detail-right-card"
-    },
-    {
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1592,
-      "className": "lead-detail-card-title-row"
-    },
-    {
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1598,
-      "className": "lead-detail-right-actions"
-    },
-    {
-      "file": "src/pages/LeadDetail.tsx",
-      "line": 1606,
-      "className": "right-card lead-detail-right-card"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
       "line": 1607,
-      "className": "lead-detail-card-title-row"
+      "className": "right-card lead-detail-right-card"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
       "line": 1608,
-      "className": "lead-detail-right-actions"
+      "className": "lead-detail-card-title-row"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
@@ -6655,12 +6625,42 @@
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1620,
+      "line": 1621,
+      "className": "lead-detail-right-actions"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1629,
       "className": "right-card lead-detail-right-card"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
-      "line": 1621,
+      "line": 1630,
+      "className": "lead-detail-card-title-row"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1631,
+      "className": "lead-detail-right-actions"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1637,
+      "className": "right-card lead-detail-right-card"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1638,
+      "className": "lead-detail-card-title-row"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1643,
+      "className": "right-card lead-detail-right-card"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 1644,
       "className": "lead-detail-card-title-row"
     },
     {
