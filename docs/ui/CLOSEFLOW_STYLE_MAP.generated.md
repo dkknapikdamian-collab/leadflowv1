@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T12:24:28.873Z
+Generated: 2026-05-08T12:35:02.461Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -137,6 +137,32 @@ Generated: 2026-05-08T12:24:28.873Z
 - --cf-case-info: src/styles/closeflow-case-detail-focus.css:18
 - --cf-case-info-bg: src/styles/closeflow-case-detail-focus.css:19
 - --cf-case-shadow: src/styles/closeflow-case-detail-focus.css:20
+- --cf-list-row-contact-text: src/styles/closeflow-list-row-tokens.css:5
+- --cf-list-row-contact-bg: src/styles/closeflow-list-row-tokens.css:6
+- --cf-list-row-contact-border: src/styles/closeflow-list-row-tokens.css:7
+- --cf-list-row-value-text: src/styles/closeflow-list-row-tokens.css:8
+- --cf-list-row-value-bg: src/styles/closeflow-list-row-tokens.css:9
+- --cf-list-row-value-border: src/styles/closeflow-list-row-tokens.css:10
+- --cf-list-row-client-text: src/styles/closeflow-list-row-tokens.css:11
+- --cf-list-row-client-bg: src/styles/closeflow-list-row-tokens.css:12
+- --cf-list-row-client-border: src/styles/closeflow-list-row-tokens.css:13
+- --cf-status-blue-text: src/styles/closeflow-list-row-tokens.css:14
+- --cf-status-blue-bg: src/styles/closeflow-list-row-tokens.css:15
+- --cf-status-blue-border: src/styles/closeflow-list-row-tokens.css:16
+- --cf-status-green-text: src/styles/closeflow-list-row-tokens.css:17
+- --cf-status-green-bg: src/styles/closeflow-list-row-tokens.css:18
+- --cf-status-green-border: src/styles/closeflow-list-row-tokens.css:19
+- --cf-status-amber-text: src/styles/closeflow-list-row-tokens.css:20
+- --cf-status-amber-bg: src/styles/closeflow-list-row-tokens.css:21
+- --cf-status-amber-border: src/styles/closeflow-list-row-tokens.css:22
+- --cf-status-red-text: src/styles/closeflow-list-row-tokens.css:23
+- --cf-status-red-bg: src/styles/closeflow-list-row-tokens.css:24
+- --cf-status-red-border: src/styles/closeflow-list-row-tokens.css:25
+- --cf-status-neutral-text: src/styles/closeflow-list-row-tokens.css:26
+- --cf-status-neutral-bg: src/styles/closeflow-list-row-tokens.css:27
+- --cf-status-neutral-border: src/styles/closeflow-list-row-tokens.css:28
+- --cf-progress-track: src/styles/closeflow-list-row-tokens.css:29
+- --cf-progress-fill: src/styles/closeflow-list-row-tokens.css:30
 - --cf-metric-tile-radius: src/styles/closeflow-metric-tiles.css:8
 - --cf-metric-tile-border: src/styles/closeflow-metric-tiles.css:9
 - --cf-metric-tile-bg: src/styles/closeflow-metric-tiles.css:10
@@ -477,32 +503,6 @@ Generated: 2026-05-08T12:24:28.873Z
 - --stage20-blue-soft: src/styles/visual-stage20-tasks-safe-css.css:17
 - --stage20-green: src/styles/visual-stage20-tasks-safe-css.css:18
 - --stage20-green-soft: src/styles/visual-stage20-tasks-safe-css.css:19
-- --stage20-red: src/styles/visual-stage20-tasks-safe-css.css:20
-- --stage20-red-soft: src/styles/visual-stage20-tasks-safe-css.css:21
-- --stage20-amber: src/styles/visual-stage20-tasks-safe-css.css:22
-- --stage20-amber-soft: src/styles/visual-stage20-tasks-safe-css.css:23
-- --stage20-shadow: src/styles/visual-stage20-tasks-safe-css.css:24
-- --stage20-shadow-soft: src/styles/visual-stage20-tasks-safe-css.css:25
-- --cf21-bg: src/styles/visual-stage21-today-final-lock.css:8
-- --cf21-bg-2: src/styles/visual-stage21-today-final-lock.css:9
-- --cf21-card: src/styles/visual-stage21-today-final-lock.css:10
-- --cf21-card-soft: src/styles/visual-stage21-today-final-lock.css:11
-- --cf21-text: src/styles/visual-stage21-today-final-lock.css:12
-- --cf21-muted: src/styles/visual-stage21-today-final-lock.css:13
-- --cf21-muted-2: src/styles/visual-stage21-today-final-lock.css:14
-- --cf21-line: src/styles/visual-stage21-today-final-lock.css:15
-- --cf21-line-2: src/styles/visual-stage21-today-final-lock.css:16
-- --cf21-blue: src/styles/visual-stage21-today-final-lock.css:17
-- --cf21-blue-2: src/styles/visual-stage21-today-final-lock.css:18
-- --cf21-blue-soft: src/styles/visual-stage21-today-final-lock.css:19
-- --cf21-green: src/styles/visual-stage21-today-final-lock.css:20
-- --cf21-green-soft: src/styles/visual-stage21-today-final-lock.css:21
-- --cf21-red: src/styles/visual-stage21-today-final-lock.css:22
-- --cf21-red-soft: src/styles/visual-stage21-today-final-lock.css:23
-- --cf21-amber: src/styles/visual-stage21-today-final-lock.css:24
-- --cf21-amber-soft: src/styles/visual-stage21-today-final-lock.css:25
-- --cf21-violet: src/styles/visual-stage21-today-final-lock.css:26
-- --cf21-violet-soft: src/styles/visual-stage21-today-final-lock.css:27
 
 ## Danger/red local classes
 - border-rose-200: src/components/AppChunkErrorBoundary.tsx:100
@@ -545,9 +545,9 @@ Generated: 2026-05-08T12:24:28.873Z
 - text-red-600: src/pages/Dashboard.tsx:333
 - bg-red-50: src/pages/Dashboard.tsx:335
 - text-red-500: src/pages/Dashboard.tsx:336
-- text-rose-600: src/pages/Leads.tsx:746
-- bg-rose-50: src/pages/Leads.tsx:747
-- text-rose-500: src/pages/Leads.tsx:747
+- text-rose-600: src/pages/Leads.tsx:744
+- bg-rose-50: src/pages/Leads.tsx:745
+- text-rose-500: src/pages/Leads.tsx:745
 - bg-rose-50: src/pages/NotificationsCenter.tsx:643
 - text-rose-500: src/pages/NotificationsCenter.tsx:643
 - text-rose-600: src/pages/NotificationsCenter.tsx:643
@@ -622,6 +622,7 @@ Generated: 2026-05-08T12:24:28.873Z
 - src/pages/Calendar.tsx:1658
 - src/pages/CaseDetail.tsx:1353
 - src/pages/CaseDetail.tsx:1477
+- src/pages/Cases.tsx:741
 - src/pages/ClientDetail.tsx:1671
 - src/pages/NotificationsCenter.tsx:705
 - src/pages/Today.tsx:808

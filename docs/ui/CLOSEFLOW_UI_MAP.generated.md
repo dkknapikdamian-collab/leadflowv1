@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T12:24:28.865Z
+Generated: 2026-05-08T12:35:02.461Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -142,7 +142,7 @@ Source files scanned: 196
 - Dodaj: src/pages/CaseDetail.tsx:1823
 - Dodaj: src/pages/CaseDetail.tsx:1931
 - Dodaj: src/pages/CaseDetail.tsx:1939
-- Usuń: src/pages/Cases.tsx:795
+- Usuń: src/pages/Cases.tsx:801
 - Zapisz: src/pages/Cases.tsx:631
 - Anuluj: src/pages/Cases.tsx:628
 - Nowa sprawa: src/pages/Cases.tsx:488
@@ -220,9 +220,9 @@ Source files scanned: 196
 - Dodaj: src/pages/LeadDetail.tsx:1649
 - Usuń: src/pages/Leads.tsx:44
 - Usuń: src/pages/Leads.tsx:46
-- Usuń: src/pages/Leads.tsx:798
-- Zapisz: src/pages/Leads.tsx:694
-- Anuluj: src/pages/Leads.tsx:691
+- Usuń: src/pages/Leads.tsx:796
+- Zapisz: src/pages/Leads.tsx:692
+- Anuluj: src/pages/Leads.tsx:689
 - Kopiuj: src/pages/Login.tsx:5
 - Kopiuj: src/pages/Login.tsx:19
 - Kopiuj: src/pages/Login.tsx:250
@@ -1072,8 +1072,8 @@ import {
 - src/pages/Cases.tsx:477 <Button type="button" variant="outline" className="btn soft-blue">
 - src/pages/Cases.tsx:487 <Button className="btn primary" disabled={!workspaceReady}>
 - src/pages/Cases.tsx:627 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Cases.tsx:725 <Link to={`/case/${record.id}`} className="title">
-- src/pages/Cases.tsx:743 <Button variant="outline" className="btn ghost" asChild>
+- src/pages/Cases.tsx:727 <Link to={`/case/${record.id}`} className="title">
+- src/pages/Cases.tsx:749 <Button variant="outline" className="btn ghost" asChild>
 - src/pages/ClientDetail.tsx:628 <button type="button" className="client-detail-mini-button" onClick={addValue} data-client-contact-repeat-add={kind} aria-label={kind === 'email' ? 'Dodaj kolejny em
 - src/pages/ClientDetail.tsx:648 <button type="button" className="client-detail-mini-button client-detail-mini-button-muted" onClick={() =>
 - src/pages/ClientDetail.tsx:676 <button type="button" className="client-detail-icon-button" onClick={onCopy} aria-label={copyLabel} title={copyLabel}>
@@ -1137,10 +1137,10 @@ import {
 - src/pages/LeadDetail.tsx:1713 <Button type="button" variant="outline" onClick={() =>
 - src/pages/LeadDetail.tsx:1727 <Button type="button" variant="outline" onClick={() =>
 - src/pages/LeadDetail.tsx:1735 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Leads.tsx:535 <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
-- src/pages/Leads.tsx:539 <button type="button" className="btn" onClick={toggleTrashView} >
-- src/pages/Leads.tsx:690 <Button type="button" variant="outline" onClick={() =>
-- src/pages/Leads.tsx:834 <Link to={`/leads/${leadId}`} className="block">
+- src/pages/Leads.tsx:533 <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
+- src/pages/Leads.tsx:537 <button type="button" className="btn" onClick={toggleTrashView} >
+- src/pages/Leads.tsx:688 <Button type="button" variant="outline" onClick={() =>
+- src/pages/Leads.tsx:833 <Link to={`/leads/${leadId}`} className="block">
 - src/pages/Login.tsx:183 <Button type="submit" className="h-12 w-full rounded-xl" disabled={loading || !authConfig.configured}>
 - src/pages/Login.tsx:184 <Button type="button" variant="ghost" className="w-full" onClick={() =>
 - src/pages/Login.tsx:236 <Button type="submit" className="h-11 w-full rounded-xl font-semibold" disabled={loading || !authConfig.configured}>
@@ -1398,13 +1398,13 @@ import {
 - src/pages/Cases.tsx:686 `table-card`
 - src/pages/Cases.tsx:693 `table-card`
 - src/pages/Cases.tsx:700 `table-card`
-- src/pages/Cases.tsx:737 `lead-action-cell`
-- src/pages/Cases.tsx:739 `next-action-text`
-- src/pages/Cases.tsx:740 `sub next-action-date`
-- src/pages/Cases.tsx:742 `lead-actions`
-- src/pages/Cases.tsx:759 `right-card cases-shortcuts-rail-card`
-- src/pages/Cases.tsx:769 `right-card cases-risk-rail-card`
-- src/pages/Cases.tsx:782 `note`
+- src/pages/Cases.tsx:743 `lead-action-cell`
+- src/pages/Cases.tsx:745 `next-action-text`
+- src/pages/Cases.tsx:746 `sub next-action-date`
+- src/pages/Cases.tsx:748 `lead-actions`
+- src/pages/Cases.tsx:765 `right-card cases-shortcuts-rail-card`
+- src/pages/Cases.tsx:775 `right-card cases-risk-rail-card`
+- src/pages/Cases.tsx:788 `note`
 - src/pages/ClientDetail.tsx:630 `client-detail-mini-button`
 - src/pages/ClientDetail.tsx:650 `client-detail-mini-button client-detail-mini-button-muted`
 - src/pages/ClientDetail.tsx:668 `client-detail-info-icon`
@@ -1490,12 +1490,12 @@ import {
 - src/pages/Clients.tsx:533 `table-card`
 - src/pages/Clients.tsx:535 `table-card`
 - src/pages/Clients.tsx:541 `relative group/client-card`
-- src/pages/Clients.tsx:556 `lead-action-cell`
-- src/pages/Clients.tsx:557 `lead-actions`
-- src/pages/Clients.tsx:558 `btn ghost cf-icon-action-button`
-- src/pages/Clients.tsx:580 `right-card`
-- src/pages/Clients.tsx:590 `right-card`
-- src/pages/Clients.tsx:601 `note`
+- src/pages/Clients.tsx:560 `lead-action-cell`
+- src/pages/Clients.tsx:561 `lead-actions`
+- src/pages/Clients.tsx:562 `btn ghost cf-icon-action-button`
+- src/pages/Clients.tsx:584 `right-card`
+- src/pages/Clients.tsx:594 `right-card`
+- src/pages/Clients.tsx:605 `note`
 - src/pages/Dashboard.tsx:228 `w-full justify-start gap-3 text-red-500 hover:text-red-600 hover:bg-red-50`
 - src/pages/Dashboard.tsx:333 `text-2xl font-bold text-red-600`
 - src/pages/Dashboard.tsx:335 `bg-red-50 p-3 rounded-xl`
@@ -1541,13 +1541,13 @@ import {
 - src/pages/LeadDetail.tsx:1615 `lead-detail-card-title-row`
 - src/pages/LeadDetail.tsx:1620 `right-card lead-detail-right-card`
 - src/pages/LeadDetail.tsx:1621 `lead-detail-card-title-row`
-- src/pages/Leads.tsx:534 `head-actions`
-- src/pages/Leads.tsx:681 `lead-form-section lead-form-planning-note`
-- src/pages/Leads.tsx:803 `table-card lead-table-card`
-- src/pages/Leads.tsx:853 `lead-action-cell`
-- src/pages/Leads.tsx:859 `lead-actions`
-- src/pages/Leads.tsx:892 `right-card lead-right-card lead-top-relations`
-- src/pages/Leads.tsx:918 `note`
+- src/pages/Leads.tsx:532 `head-actions`
+- src/pages/Leads.tsx:679 `lead-form-section lead-form-planning-note`
+- src/pages/Leads.tsx:801 `table-card lead-table-card`
+- src/pages/Leads.tsx:856 `lead-action-cell`
+- src/pages/Leads.tsx:862 `lead-actions`
+- src/pages/Leads.tsx:895 `right-card lead-right-card lead-top-relations`
+- src/pages/Leads.tsx:921 `note`
 - src/pages/NotificationsCenter.tsx:317 `notifications-stat-icon`
 - src/pages/NotificationsCenter.tsx:402 `notifications-row-actions`
 - src/pages/NotificationsCenter.tsx:404 `notifications-action notifications-action-open`

@@ -544,11 +544,15 @@ export default function Clients() {
                          <span className="index">{index + 1}</span>
                          <span className="lead-main-cell min-w-0">
                            <span className="title">{client.name || 'Klient'}</span>
-                           <span className="sub">{client.company || 'Bez firmy'} · {client.email || 'brak e-maila'} · {client.phone || 'brak telefonu'}</span>
+                           <span className="cf-list-row-meta">
+                             <span className="sub">{client.company || 'Bez firmy'}</span>
+                             <span className="cf-list-row-contact">{[client.email, client.phone].filter(Boolean).join(' · ') || 'brak kontaktu'}</span>
+                             <span className="cf-list-row-value">{formatClientMoney(clientValue)}</span>
+                           </span>
                            <span className="statusline">
-                             {isArchived ? <span className="pill amber">W koszu</span> : counters.cases > 0 ? <span className="pill green cf-chip-case-active">Aktywna sprawa</span> : <span className="pill cf-chip-no-case">Bez sprawy</span>}
-                             <span className="pill blue cf-chip-leads-count">Leady: {counters.leads}</span>
-                             <span className="pill blue cf-chip-client-value">Wartość: {formatClientMoney(clientValue)}</span>
+                             {isArchived ? <span className="cf-status-pill" data-cf-status-tone="amber">W koszu</span> : counters.cases > 0 ? <span className="cf-status-pill cf-chip-case-active" data-cf-status-tone="green">Aktywna sprawa</span> : <span className="cf-status-pill cf-chip-no-case">Bez sprawy</span>}
+                             <span className="cf-status-pill cf-chip-leads-count" data-cf-status-tone="blue">Leady: {counters.leads}</span>
+                             <span className="cf-list-row-value cf-chip-client-value">Wartość: {formatClientMoney(clientValue)}</span>
                              <span className="pill cf-chip-last-contact">Ostatni kontakt: {counters.payments > 0 ? 'jest' : 'brak'}</span>
                            </span>
                          </span>

@@ -1,0 +1,143 @@
+/* CLOSEFLOW_LIST_ROW_CONTRACT
+   One source of truth for record rows, contact/value fields, status and progress.
+*/
+:root {
+  --cf-list-row-contact-text: #0369a1;
+  --cf-list-row-contact-bg: #f0f9ff;
+  --cf-list-row-contact-border: #bae6fd;
+  --cf-list-row-value-text: #047857;
+  --cf-list-row-value-bg: #ecfdf3;
+  --cf-list-row-value-border: #a7f3d0;
+  --cf-list-row-client-text: #334155;
+  --cf-list-row-client-bg: #f8fafc;
+  --cf-list-row-client-border: #e2e8f0;
+  --cf-status-blue-text: #1d4ed8;
+  --cf-status-blue-bg: #eff6ff;
+  --cf-status-blue-border: #bfdbfe;
+  --cf-status-green-text: #047857;
+  --cf-status-green-bg: #ecfdf3;
+  --cf-status-green-border: #a7f3d0;
+  --cf-status-amber-text: #b45309;
+  --cf-status-amber-bg: #fffbeb;
+  --cf-status-amber-border: #fde68a;
+  --cf-status-red-text: #be123c;
+  --cf-status-red-bg: #fff1f2;
+  --cf-status-red-border: #fecdd3;
+  --cf-status-neutral-text: #475569;
+  --cf-status-neutral-bg: #f8fafc;
+  --cf-status-neutral-border: #e2e8f0;
+  --cf-progress-track: #e2e8f0;
+  --cf-progress-fill: #2563eb;
+}
+
+.cf-list-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.cf-list-row-contact,
+.cf-list-row-value,
+.cf-list-row-client,
+.cf-status-pill,
+.cf-progress-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0 9px;
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cf-list-row-contact {
+  border-color: var(--cf-list-row-contact-border);
+  background: var(--cf-list-row-contact-bg);
+  color: var(--cf-list-row-contact-text);
+}
+
+.cf-list-row-value {
+  border-color: var(--cf-list-row-value-border);
+  background: var(--cf-list-row-value-bg);
+  color: var(--cf-list-row-value-text);
+}
+
+.cf-list-row-client {
+  border-color: var(--cf-list-row-client-border);
+  background: var(--cf-list-row-client-bg);
+  color: var(--cf-list-row-client-text);
+}
+
+.cf-status-pill,
+.cf-progress-pill {
+  border-color: var(--cf-status-neutral-border);
+  background: var(--cf-status-neutral-bg);
+  color: var(--cf-status-neutral-text);
+}
+
+.cf-status-pill[data-cf-status-tone="blue"],
+.cf-progress-pill[data-cf-status-tone="blue"] {
+  border-color: var(--cf-status-blue-border);
+  background: var(--cf-status-blue-bg);
+  color: var(--cf-status-blue-text);
+}
+
+.cf-status-pill[data-cf-status-tone="green"],
+.cf-progress-pill[data-cf-status-tone="green"] {
+  border-color: var(--cf-status-green-border);
+  background: var(--cf-status-green-bg);
+  color: var(--cf-status-green-text);
+}
+
+.cf-status-pill[data-cf-status-tone="amber"],
+.cf-progress-pill[data-cf-status-tone="amber"] {
+  border-color: var(--cf-status-amber-border);
+  background: var(--cf-status-amber-bg);
+  color: var(--cf-status-amber-text);
+}
+
+.cf-status-pill[data-cf-status-tone="red"],
+.cf-progress-pill[data-cf-status-tone="red"] {
+  border-color: var(--cf-status-red-border);
+  background: var(--cf-status-red-bg);
+  color: var(--cf-status-red-text);
+}
+
+.cf-progress-bar {
+  width: 100%;
+  min-width: 76px;
+  height: 7px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--cf-progress-track);
+}
+
+.cf-progress-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cf-progress-fill);
+}
+
+.cf-progress-bar[data-cf-status-tone="green"] > span {
+  background: var(--cf-status-green-text);
+}
+
+.cf-progress-bar[data-cf-status-tone="amber"] > span {
+  background: var(--cf-status-amber-text);
+}
+
+.cf-progress-bar[data-cf-status-tone="red"] > span {
+  background: var(--cf-status-red-text);
+}
+
+.cf-progress-bar[data-cf-status-tone="blue"] > span {
+  background: var(--cf-status-blue-text);
+}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T12:24:28.873Z",
+  "generatedAt": "2026-05-08T12:35:02.461Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -670,6 +670,136 @@
       "name": "--cf-case-shadow",
       "file": "src/styles/closeflow-case-detail-focus.css",
       "line": 20
+    },
+    {
+      "name": "--cf-list-row-contact-text",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 5
+    },
+    {
+      "name": "--cf-list-row-contact-bg",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-list-row-contact-border",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-list-row-value-text",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-list-row-value-bg",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-list-row-value-border",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-list-row-client-text",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-list-row-client-bg",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-list-row-client-border",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-status-blue-text",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-status-blue-bg",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-status-blue-border",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 16
+    },
+    {
+      "name": "--cf-status-green-text",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 17
+    },
+    {
+      "name": "--cf-status-green-bg",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 18
+    },
+    {
+      "name": "--cf-status-green-border",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 19
+    },
+    {
+      "name": "--cf-status-amber-text",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 20
+    },
+    {
+      "name": "--cf-status-amber-bg",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 21
+    },
+    {
+      "name": "--cf-status-amber-border",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 22
+    },
+    {
+      "name": "--cf-status-red-text",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 23
+    },
+    {
+      "name": "--cf-status-red-bg",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 24
+    },
+    {
+      "name": "--cf-status-red-border",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 25
+    },
+    {
+      "name": "--cf-status-neutral-text",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 26
+    },
+    {
+      "name": "--cf-status-neutral-bg",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 27
+    },
+    {
+      "name": "--cf-status-neutral-border",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 28
+    },
+    {
+      "name": "--cf-progress-track",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 29
+    },
+    {
+      "name": "--cf-progress-fill",
+      "file": "src/styles/closeflow-list-row-tokens.css",
+      "line": 30
     },
     {
       "name": "--cf-metric-tile-radius",
@@ -3106,17 +3236,17 @@
     {
       "className": "text-rose-600",
       "file": "src/pages/Leads.tsx",
-      "line": 746
+      "line": 744
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/Leads.tsx",
-      "line": 747
+      "line": 745
     },
     {
       "className": "text-rose-500",
       "file": "src/pages/Leads.tsx",
-      "line": 747
+      "line": 745
     },
     {
       "className": "bg-rose-50",
@@ -3471,6 +3601,10 @@
     {
       "file": "src/pages/CaseDetail.tsx",
       "line": 1477
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 741
     },
     {
       "file": "src/pages/ClientDetail.tsx",

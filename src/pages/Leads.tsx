@@ -113,7 +113,7 @@ function buildLeadSearchText(lead: any, linkedCase?: CaseRecord) {
   ].map(normalizeLeadSearchValue).filter(Boolean).join(' ');
 }
 
-function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sourceLabel: string, valueLabel: string) {
+function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sourceLabel: string) {
   const contact = getLeadPrimaryContact(lead);
   const company = String(lead?.company || '').trim();
   const caseLabel = linkedCase ? 'sprawa: ' + (linkedCase.title || 'otwarta') : '';
@@ -122,7 +122,6 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
     sourceLabel,
     company,
     contact,
-    valueLabel,
     caseLabel,
   ].filter(Boolean).join(' · ');
 }
@@ -488,11 +487,10 @@ export default function Leads() {
     return filteredLeads.slice(0, 6).map((lead) => {
       const linkedCase = resolveLinkedCaseForLead(lead);
       const sourceLabel = formatLeadSourceLabel(lead.source);
-      const valueLabel = (Number(lead.dealValue) || 0).toLocaleString() + ' PLN';
       return {
         id: String(lead.id || ''),
         name: String(lead.name || 'Lead bez nazwy'),
-        meta: buildLeadCompactMeta(lead, linkedCase, sourceLabel, valueLabel),
+        meta: buildLeadCompactMeta(lead, linkedCase, sourceLabel),
       };
     }).filter((lead) => lead.id);
   }, [filteredLeads, resolveLinkedCaseForLead, searchQuery]);
@@ -825,7 +823,8 @@ export default function Leads() {
                   const statusOption = STATUS_OPTIONS.find((option) => option.value === String(lead.status || 'new'));
                   const statusLabel = statusOption?.label || 'Nowy';
                   const leadValueLabel = (Number(lead.dealValue) || 0).toLocaleString() + ' PLN';
-                  const meta = buildLeadCompactMeta(lead, linkedCase, sourceLabel, leadValueLabel);
+                  const contactLabel = getLeadPrimaryContact(lead);
+                  const meta = buildLeadCompactMeta(lead, linkedCase, sourceLabel);
                   const nextActionMeta = buildNextActionMeta(nextActionByLeadId.get(leadId));
                   const pending = archivePendingId === leadId;
 
@@ -837,17 +836,21 @@ export default function Leads() {
 
                         <span className="lead-main-cell">
                           <span className="title">{lead.name || 'Lead bez nazwy'}</span>
-                          <span className="sub" data-stage31-lead-one-line-meta="true">{meta || 'Brak danych kontaktowych'}</span>
+                          <span className="cf-list-row-meta" data-stage31-lead-one-line-meta="true">
+                            {contactLabel ? <span className="cf-list-row-contact">{contactLabel}</span> : null}
+                            <span className="cf-list-row-value">{leadValueLabel}</span>
+                            {meta ? <span className="sub">{meta}</span> : null}
+                          </span>
                           <span className="statusline">
-                            <span className="pill blue">{statusLabel}</span>
+                            <span className="cf-status-pill" data-cf-status-tone="blue">{statusLabel}</span>
                             <span className="pill">{sourceLabel}</span>
-                            {linkedCase ? <span className="pill violet">Sprawa</span> : null}
+                            {linkedCase ? <span className="cf-status-pill" data-cf-status-tone="green">Sprawa</span> : null}
                           </span>
                         </span>
 
                         <span className="lead-value-cell">
                           <span className="mini">Wartość</span>
-                          <strong>{leadValueLabel}</strong>
+                          <strong className="cf-list-row-value">{leadValueLabel}</strong>
                         </span>
 
                         <span className="lead-action-cell">

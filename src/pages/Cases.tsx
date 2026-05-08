@@ -704,8 +704,10 @@ export default function Cases() {
                   const updatedAt = toUpdatedDate(record.updatedAt);
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
                   const statusLabel = caseStatusLabel(record.status);
+                  const statusTone = record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue';
                   const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
                   const compactLifecyclePill = compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel;
+                  const progressTone = attention ? 'red' : percent >= 75 ? 'green' : percent >= 35 ? 'blue' : 'amber';
                   const nearestCaseAction = getNearestPlannedAction({
                     recordType: 'case',
                     recordId: String(record.id || ''),
@@ -723,16 +725,20 @@ export default function Cases() {
                       <span className="index">{index + 1}</span>
                       <span className="lead-main-cell min-w-0">
                         <Link to={`/case/${record.id}`} className="title">{record.title || 'Sprawa bez tytułu'}</Link>
-                        <span className="sub">Klient: {record.clientName || 'Brak nazwy klienta'} · {lifecycle.headline} · {metaSuffix}</span>
+                        <span className="cf-list-row-meta">
+                          <span className="cf-list-row-client">Klient: {record.clientName || 'Brak nazwy klienta'}</span>
+                          <span className="sub">{lifecycle.headline} · {metaSuffix}</span>
+                        </span>
                         <span className="statusline">
-                          <span className={`pill ${record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue'}`}>{statusLabel}</span>
-                          {compactLifecyclePill ? <span className={`pill ${lifecycleCompactVariant(record, lifecycle)}`}>{compactLifecyclePill}</span> : null}
-                          {attention && !compactLifecyclePill ? <span className="pill amber">Wymaga uwagi</span> : null}
+                          <span className="cf-status-pill" data-cf-status-tone={statusTone}>{statusLabel}</span>
+                          {compactLifecyclePill ? <span className="cf-status-pill" data-cf-status-tone={lifecycleCompactVariant(record, lifecycle)}>{compactLifecyclePill}</span> : null}
+                          {attention && !compactLifecyclePill ? <span className="cf-status-pill" data-cf-status-tone="amber">Wymaga uwagi</span> : null}
                         </span>
                       </span>
                       <span className="lead-value-cell">
                         <span className="mini">Postęp</span>
-                        <strong>{percent}%</strong>
+                        <strong><span className="cf-progress-pill" data-cf-status-tone={progressTone}>{percent}%</span></strong>
+                        <span className="cf-progress-bar" data-cf-status-tone={progressTone} aria-hidden="true"><span style={{ width: `${Math.max(0, Math.min(100, percent))}%` }} /></span>
                       </span>
                       <span className="lead-action-cell">
                         <span className="mini">Najbliższy termin w sprawie</span>

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T12:24:28.865Z",
+  "generatedAt": "2026-05-08T12:35:02.461Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -605,7 +605,7 @@
     {
       "term": "Usuń",
       "file": "src/pages/Cases.tsx",
-      "line": 795
+      "line": 801
     },
     {
       "term": "Zapisz",
@@ -995,17 +995,17 @@
     {
       "term": "Usuń",
       "file": "src/pages/Leads.tsx",
-      "line": 798
+      "line": 796
     },
     {
       "term": "Zapisz",
       "file": "src/pages/Leads.tsx",
-      "line": 694
+      "line": 692
     },
     {
       "term": "Anuluj",
       "file": "src/pages/Leads.tsx",
-      "line": 691
+      "line": 689
     },
     {
       "term": "Kopiuj",
@@ -2067,13 +2067,13 @@
     {
       "tag": "Link",
       "file": "src/pages/Cases.tsx",
-      "line": 725,
+      "line": 727,
       "snippet": "<Link to={`/case/${record.id}`} className=\"title\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/Cases.tsx",
-      "line": 743,
+      "line": 749,
       "snippet": "<Button variant=\"outline\" className=\"btn ghost\" asChild>"
     },
     {
@@ -2457,25 +2457,25 @@
     {
       "tag": "Link",
       "file": "src/pages/Leads.tsx",
-      "line": 535,
+      "line": 533,
       "snippet": "<Link to=\"/ai-drafts\" className=\"btn soft-blue\" data-stage26-leads-head-ai=\"true\">"
     },
     {
       "tag": "button",
       "file": "src/pages/Leads.tsx",
-      "line": 539,
+      "line": 537,
       "snippet": "<button\n              type=\"button\"\n              className=\"btn\"\n              onClick={toggleTrashView}\n            >"
     },
     {
       "tag": "Button",
       "file": "src/pages/Leads.tsx",
-      "line": 690,
+      "line": 688,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
       "tag": "Link",
       "file": "src/pages/Leads.tsx",
-      "line": 834,
+      "line": 833,
       "snippet": "<Link to={`/leads/${leadId}`} className=\"block\">"
     },
     {
@@ -5950,37 +5950,37 @@
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 737,
+      "line": 743,
       "className": "lead-action-cell"
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 739,
+      "line": 745,
       "className": "next-action-text"
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 740,
+      "line": 746,
       "className": "sub next-action-date"
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 742,
+      "line": 748,
       "className": "lead-actions"
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 759,
+      "line": 765,
       "className": "right-card cases-shortcuts-rail-card"
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 769,
+      "line": 775,
       "className": "right-card cases-risk-rail-card"
     },
     {
       "file": "src/pages/Cases.tsx",
-      "line": 782,
+      "line": 788,
       "className": "note"
     },
     {
@@ -6410,32 +6410,32 @@
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 556,
+      "line": 560,
       "className": "lead-action-cell"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 557,
+      "line": 561,
       "className": "lead-actions"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 558,
+      "line": 562,
       "className": "btn ghost cf-icon-action-button"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 580,
+      "line": 584,
       "className": "right-card"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 590,
+      "line": 594,
       "className": "right-card"
     },
     {
       "file": "src/pages/Clients.tsx",
-      "line": 601,
+      "line": 605,
       "className": "note"
     },
     {
@@ -6665,37 +6665,37 @@
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 534,
+      "line": 532,
       "className": "head-actions"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 681,
+      "line": 679,
       "className": "lead-form-section lead-form-planning-note"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 803,
+      "line": 801,
       "className": "table-card lead-table-card"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 853,
+      "line": 856,
       "className": "lead-action-cell"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 859,
+      "line": 862,
       "className": "lead-actions"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 892,
+      "line": 895,
       "className": "right-card lead-right-card lead-top-relations"
     },
     {
       "file": "src/pages/Leads.tsx",
-      "line": 918,
+      "line": 921,
       "className": "note"
     },
     {

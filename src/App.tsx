@@ -15,6 +15,7 @@ import './styles/closeflow-action-tokens.css';
 import './styles/closeflow-surface-tokens.css';
 import './styles/closeflow-metric-tiles.css';
 import './styles/closeflow-page-header.css';
+import './styles/closeflow-list-row-tokens.css';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 
