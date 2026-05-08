@@ -1010,12 +1010,12 @@ function AiDraftsInner() {
         </header>
 
         <section className="ai-drafts-stats-grid" aria-label="Statystyki szkiców AI" data-ai-draft-stats="true">
-          <MetricCard label="Do sprawdzenia" value={stats.draft} icon={Sparkles} active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} dataTab="draft" />
-          <MetricCard label="Leady" value={stats.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} dataTab="lead" />
-          <MetricCard label="Zadania" value={stats.tasks} icon={Clipboard} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} dataTab="task" />
-          <MetricCard label="Wydarzenia" value={stats.events} icon={CalendarClock} active={activeFilter === 'event'} onClick={() => setActiveFilter('event')} dataTab="event" />
-          <MetricCard label="Błędy / niepełne" value={stats.errors} icon={AlertTriangle} active={activeFilter === 'errors'} onClick={() => setActiveFilter('errors')} dataTab="errors" />
-          <MetricCard label="Zatwierdzone" value={stats.converted} icon={CheckCircle2} active={activeFilter === 'converted'} onClick={() => setActiveFilter('converted')} dataTab="converted" />
+          <MetricCard label="Do sprawdzenia" value={stats.draft} icon={Sparkles} tone="drafts" active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} dataTab="draft" />
+          <MetricCard label="Leady" value={stats.leads} icon={Target} tone="active" active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} dataTab="lead" />
+          <MetricCard label="Zadania" value={stats.tasks} icon={Clipboard} tone="waiting" active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} dataTab="task" />
+          <MetricCard label="Wydarzenia" value={stats.events} icon={CalendarClock} tone="blue" active={activeFilter === 'event'} onClick={() => setActiveFilter('event')} dataTab="event" />
+          <MetricCard label="Błędy / niepełne" value={stats.errors} icon={AlertTriangle} tone="risk" active={activeFilter === 'errors'} onClick={() => setActiveFilter('errors')} dataTab="errors" />
+          <MetricCard label="Zatwierdzone" value={stats.converted} icon={CheckCircle2} tone="done" active={activeFilter === 'converted'} onClick={() => setActiveFilter('converted')} dataTab="converted" />
         </section>
 
         <div className="ai-drafts-vnext-shell">

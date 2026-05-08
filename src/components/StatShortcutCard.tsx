@@ -72,11 +72,11 @@ function resolveMetricTone(label: string, valueClassName: string, iconClassName:
   if (classText.includes('blue') || classText.includes('sky') || classText.includes('indigo')) return 'blue';
 
   if (labelText.includes('zagro') || labelText.includes('ryzy') || labelText.includes('zaleg') || labelText.includes('blok') || labelText.includes('brak')) return 'red';
-  if (labelText.includes('wartosc') || labelText.includes('wartoĹ›Ä‡') || labelText.includes('platn') || labelText.includes('pĹ‚atn') || labelText.includes('przychod')) return 'green';
-  if (labelText.includes('aktywn') || labelText.includes('dzis') || labelText.includes('dziĹ›') || labelText.includes('obslugi') || labelText.includes('obsĹ‚ugi')) return 'blue';
+  if (labelText.includes('wartosc') || labelText.includes('platn') || labelText.includes('przychod')) return 'green';
+  if (labelText.includes('aktywn') || labelText.includes('dzis') || labelText.includes('obslugi')) return 'blue';
   if (labelText.includes('czek') || labelText.includes('historia') || labelText.includes('kosz')) return 'amber';
   if (labelText.includes('wydar') || labelText.includes('szkic') || labelText.includes('akcept')) return 'purple';
-  if (labelText.includes('zadania') || labelText.includes('zrobione') || labelText.includes('obowiazk') || labelText.includes('obowiÄ…zk')) return 'green';
+  if (labelText.includes('zadania') || labelText.includes('zrobione') || labelText.includes('obowiazk')) return 'green';
 
   return 'neutral';
 }
