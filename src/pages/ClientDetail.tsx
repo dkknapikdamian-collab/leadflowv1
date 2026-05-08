@@ -695,6 +695,7 @@ const STAGE25C_CLIENT_DETAIL_GUARD_COMPAT_FINAL = 'client detail final feedback 
 const STAGE25D_CLIENT_DETAIL_JSX_BUILD_FIX_GUARD = 'client detail JSX fragment build fix';
 const STAGE26A_FEEDBACK_AFTER_4EC_GUARD = 'feedback after 4ec client activity ai drafts';
 const STAGE27E_CLIENT_NOTES_EVENT_FINAL_GUARD = 'client notes event final after failed 27ad';
+const STAGE27G_CLIENT_NOTE_LISTENER_ID_RUNTIME_FINAL_GUARD = 'client note listener uses client id only';
 const STAGE27D_CLIENT_NOTES_RUNTIME_FINAL_GUARD = 'client notes runtime visibility final';
 const STAGE27A_CLIENT_NOTES_TRASH2_GUARD = 'client notes visible after save and Trash2 imported';
 const STAGE27B_TRASH2_IMPORT_AND_NOTES_FINAL_GUARD = 'Trash2 import fixed and client notes final';
@@ -822,13 +823,13 @@ export default function ClientDetail() {
       const detail = (event as CustomEvent<any>).detail;
       if (!detail) return;
       const detailClientId = String(detail?.clientId || detail?.payload?.clientId || '').trim();
-      const currentClientId = String(client?.id || id || '').trim();
+      const currentClientId = String(client?.id || '').trim();
       if (detailClientId && currentClientId && detailClientId !== currentClientId) return;
       setActivities((previous) => [detail, ...previous]);
     };
     window.addEventListener('closeflow:context-note-saved', handleContextNoteSaved as EventListener);
     return () => window.removeEventListener('closeflow:context-note-saved', handleContextNoteSaved as EventListener);
-  }, [client?.id, id]);
+  }, [client?.id]);
 
 
   const [activeTab, setActiveTab] = useState<ClientTab>('summary');
