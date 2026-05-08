@@ -1,0 +1,755 @@
+# CloseFlow Style Map — generated
+
+Generated: 2026-05-08T10:21:42.986Z
+
+## CSS variables
+- --font-sans: src/index.css:29
+- --color-primary: src/index.css:30
+- --color-primary-foreground: src/index.css:31
+- --color-primary: src/index.css:37
+- --color-primary-foreground: src/index.css:38
+- --app-bg: src/index.css:39
+- --app-surface: src/index.css:40
+- --app-surface-strong: src/index.css:41
+- --app-surface-muted: src/index.css:42
+- --app-border: src/index.css:43
+- --app-text: src/index.css:44
+- --app-muted: src/index.css:45
+- --app-muted-soft: src/index.css:46
+- --app-primary-chip-bg: src/index.css:47
+- --app-primary-chip-text: src/index.css:48
+- --app-shadow-color: src/index.css:49
+- --color-primary: src/index.css:53
+- --color-primary-foreground: src/index.css:54
+- --app-bg: src/index.css:55
+- --app-surface: src/index.css:56
+- --app-surface-strong: src/index.css:57
+- --app-surface-muted: src/index.css:58
+- --app-border: src/index.css:59
+- --app-text: src/index.css:60
+- --app-muted: src/index.css:61
+- --app-muted-soft: src/index.css:62
+- --app-primary-chip-bg: src/index.css:63
+- --app-primary-chip-text: src/index.css:64
+- --app-shadow-color: src/index.css:65
+- --color-primary: src/index.css:69
+- --color-primary-foreground: src/index.css:70
+- --app-bg: src/index.css:71
+- --app-surface: src/index.css:72
+- --app-surface-strong: src/index.css:73
+- --app-surface-muted: src/index.css:74
+- --app-border: src/index.css:75
+- --app-text: src/index.css:76
+- --app-muted: src/index.css:77
+- --app-muted-soft: src/index.css:78
+- --app-primary-chip-bg: src/index.css:79
+- --app-primary-chip-text: src/index.css:80
+- --app-shadow-color: src/index.css:81
+- --color-primary: src/index.css:85
+- --color-primary-foreground: src/index.css:86
+- --app-bg: src/index.css:87
+- --app-surface: src/index.css:88
+- --app-surface-strong: src/index.css:89
+- --app-surface-muted: src/index.css:90
+- --app-border: src/index.css:91
+- --app-text: src/index.css:92
+- --app-muted: src/index.css:93
+- --app-muted-soft: src/index.css:94
+- --app-primary-chip-bg: src/index.css:95
+- --app-primary-chip-text: src/index.css:96
+- --app-shadow-color: src/index.css:97
+- --bg: src/pages/UiPreviewVNextFull.tsx:20
+- --bg-2: src/pages/UiPreviewVNextFull.tsx:20
+- --sidebar: src/pages/UiPreviewVNextFull.tsx:20
+- --sidebar-2: src/pages/UiPreviewVNextFull.tsx:20
+- --card: src/pages/UiPreviewVNextFull.tsx:20
+- --card-soft: src/pages/UiPreviewVNextFull.tsx:20
+- --text: src/pages/UiPreviewVNextFull.tsx:20
+- --muted: src/pages/UiPreviewVNextFull.tsx:20
+- --muted-2: src/pages/UiPreviewVNextFull.tsx:20
+- --line: src/pages/UiPreviewVNextFull.tsx:20
+- --line-2: src/pages/UiPreviewVNextFull.tsx:20
+- --blue: src/pages/UiPreviewVNextFull.tsx:20
+- --blue-2: src/pages/UiPreviewVNextFull.tsx:20
+- --blue-soft: src/pages/UiPreviewVNextFull.tsx:20
+- --green: src/pages/UiPreviewVNextFull.tsx:20
+- --green-soft: src/pages/UiPreviewVNextFull.tsx:20
+- --red: src/pages/UiPreviewVNextFull.tsx:20
+- --red-soft: src/pages/UiPreviewVNextFull.tsx:20
+- --amber: src/pages/UiPreviewVNextFull.tsx:20
+- --amber-soft: src/pages/UiPreviewVNextFull.tsx:20
+- --violet: src/pages/UiPreviewVNextFull.tsx:20
+- --violet-soft: src/pages/UiPreviewVNextFull.tsx:20
+- --shadow: src/pages/UiPreviewVNextFull.tsx:20
+- --shadow-soft: src/pages/UiPreviewVNextFull.tsx:20
+- --radius-xl: src/pages/UiPreviewVNextFull.tsx:20
+- --radius-lg: src/pages/UiPreviewVNextFull.tsx:20
+- --radius-md: src/pages/UiPreviewVNextFull.tsx:20
+- --case-shell-radius: src/styles/case-detail-simplified.css:8
+- --case-tile-radius: src/styles/case-detail-simplified.css:9
+- --case-soft-border: src/styles/case-detail-simplified.css:10
+- --case-soft-surface: src/styles/case-detail-simplified.css:11
+- --case-muted-surface: src/styles/case-detail-simplified.css:12
+- --case-primary-soft: src/styles/case-detail-simplified.css:13
+- --case-primary-line: src/styles/case-detail-simplified.css:14
+- --case-stage2-radius-xl: src/styles/case-detail-stage2.css:8
+- --case-stage2-radius-lg: src/styles/case-detail-stage2.css:9
+- --case-stage2-radius-md: src/styles/case-detail-stage2.css:10
+- --case-stage2-border: src/styles/case-detail-stage2.css:11
+- --case-stage2-surface: src/styles/case-detail-stage2.css:12
+- --case-stage2-muted: src/styles/case-detail-stage2.css:13
+- --case-stage2-primary-soft: src/styles/case-detail-stage2.css:14
+- --case-stage2-primary-line: src/styles/case-detail-stage2.css:15
+- --case-stage2-warning-bg: src/styles/case-detail-stage2.css:16
+- --case-stage2-warning-line: src/styles/case-detail-stage2.css:17
+- --case-stage2-danger-bg: src/styles/case-detail-stage2.css:18
+- --case-stage2-danger-line: src/styles/case-detail-stage2.css:19
+- --case-stage2-success-bg: src/styles/case-detail-stage2.css:20
+- --case-stage2-success-line: src/styles/case-detail-stage2.css:21
+- --cf-case-bg: src/styles/closeflow-case-detail-focus.css:2
+- --cf-case-surface: src/styles/closeflow-case-detail-focus.css:3
+- --cf-case-surface-soft: src/styles/closeflow-case-detail-focus.css:4
+- --cf-case-border: src/styles/closeflow-case-detail-focus.css:5
+- --cf-case-border-strong: src/styles/closeflow-case-detail-focus.css:6
+- --cf-case-text: src/styles/closeflow-case-detail-focus.css:7
+- --cf-case-muted: src/styles/closeflow-case-detail-focus.css:8
+- --cf-case-primary: src/styles/closeflow-case-detail-focus.css:9
+- --cf-case-primary-dark: src/styles/closeflow-case-detail-focus.css:10
+- --cf-case-primary-soft: src/styles/closeflow-case-detail-focus.css:11
+- --cf-case-warning: src/styles/closeflow-case-detail-focus.css:12
+- --cf-case-warning-bg: src/styles/closeflow-case-detail-focus.css:13
+- --cf-case-danger: src/styles/closeflow-case-detail-focus.css:14
+- --cf-case-danger-bg: src/styles/closeflow-case-detail-focus.css:15
+- --cf-case-success: src/styles/closeflow-case-detail-focus.css:16
+- --cf-case-success-bg: src/styles/closeflow-case-detail-focus.css:17
+- --cf-case-info: src/styles/closeflow-case-detail-focus.css:18
+- --cf-case-info-bg: src/styles/closeflow-case-detail-focus.css:19
+- --cf-case-shadow: src/styles/closeflow-case-detail-focus.css:20
+- --cf-metric-tile-radius: src/styles/closeflow-metric-tiles.css:8
+- --cf-metric-tile-border: src/styles/closeflow-metric-tiles.css:9
+- --cf-metric-tile-bg: src/styles/closeflow-metric-tiles.css:10
+- --cf-metric-tile-shadow: src/styles/closeflow-metric-tiles.css:11
+- --cf-metric-tile-shadow-hover: src/styles/closeflow-metric-tiles.css:12
+- --cf-metric-tile-label: src/styles/closeflow-metric-tiles.css:13
+- --cf-metric-tile-value: src/styles/closeflow-metric-tiles.css:14
+- --cf-metric-tile-helper: src/styles/closeflow-metric-tiles.css:15
+- --cf-metric-tile-icon-bg: src/styles/closeflow-metric-tiles.css:16
+- --cf-metric-tile-icon: src/styles/closeflow-metric-tiles.css:17
+- --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:18
+- --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:19
+- --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:283
+- --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:284
+- --cfv-bg: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-bg-2: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-sidebar: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-card: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-card-soft: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-text: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-muted: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-muted-2: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-line: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-accent: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-accent-2: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-accent-soft: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-green: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-red: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-amber: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-shadow: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-shadow-soft: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-radius-xl: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-radius-lg: src/styles/closeflow-vnext-ui-contract.css:6
+- --cfv-radius-md: src/styles/closeflow-vnext-ui-contract.css:6
+- --eliteflow-desktop-scale: src/styles/eliteflow-desktop-compact-scale.css:9
+- --eliteflow-metric-radius: src/styles/eliteflow-final-metric-tiles-hard-lock.css:7
+- --eliteflow-metric-border: src/styles/eliteflow-final-metric-tiles-hard-lock.css:8
+- --eliteflow-metric-bg: src/styles/eliteflow-final-metric-tiles-hard-lock.css:9
+- --eliteflow-metric-label: src/styles/eliteflow-final-metric-tiles-hard-lock.css:10
+- --eliteflow-metric-value: src/styles/eliteflow-final-metric-tiles-hard-lock.css:11
+- --eliteflow-metric-icon-bg: src/styles/eliteflow-final-metric-tiles-hard-lock.css:12
+- --eliteflow-metric-icon: src/styles/eliteflow-final-metric-tiles-hard-lock.css:13
+- --eliteflow-metric-shadow: src/styles/eliteflow-final-metric-tiles-hard-lock.css:14
+- --eliteflow-metric-shadow-hover: src/styles/eliteflow-final-metric-tiles-hard-lock.css:15
+- --eliteflow-metric-min-height: src/styles/eliteflow-final-metric-tiles-hard-lock.css:16
+- --eliteflow-metric-gap: src/styles/eliteflow-final-metric-tiles-hard-lock.css:17
+- --eliteflow-metric-min-height: src/styles/eliteflow-final-metric-tiles-hard-lock.css:290
+- --eliteflow-metric-gap: src/styles/eliteflow-final-metric-tiles-hard-lock.css:291
+- --eliteflow-font-weight-label: src/styles/eliteflow-metric-tiles-color-font-parity.css:7
+- --eliteflow-font-weight-value: src/styles/eliteflow-metric-tiles-color-font-parity.css:8
+- --eliteflow-label-color: src/styles/eliteflow-metric-tiles-color-font-parity.css:9
+- --eliteflow-value-slate: src/styles/eliteflow-metric-tiles-color-font-parity.css:10
+- --eliteflow-value-blue: src/styles/eliteflow-metric-tiles-color-font-parity.css:11
+- --eliteflow-value-red: src/styles/eliteflow-metric-tiles-color-font-parity.css:12
+- --eliteflow-value-orange: src/styles/eliteflow-metric-tiles-color-font-parity.css:13
+- --eliteflow-value-green: src/styles/eliteflow-metric-tiles-color-font-parity.css:14
+- --eliteflow-value-purple: src/styles/eliteflow-metric-tiles-color-font-parity.css:15
+- --cf-semantic-danger-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:14
+- --cf-semantic-danger-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:15
+- --cf-semantic-danger-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:16
+- --cf-semantic-event-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:18
+- --cf-semantic-event-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:19
+- --cf-semantic-event-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:20
+- --cf-semantic-task-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:22
+- --cf-semantic-task-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:23
+- --cf-semantic-task-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:24
+- --cf-semantic-note-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:26
+- --cf-semantic-note-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:27
+- --cf-semantic-note-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:28
+- --cf-semantic-lead-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:30
+- --cf-semantic-lead-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:31
+- --cf-semantic-lead-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:32
+- --cf-semantic-case-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:34
+- --cf-semantic-case-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:35
+- --cf-semantic-case-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:36
+- --cf-semantic-client-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:38
+- --cf-semantic-client-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:39
+- --cf-semantic-client-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:40
+- --cf-semantic-neutral-bg: src/styles/eliteflow-semantic-badges-and-today-sections.css:42
+- --cf-semantic-neutral-border: src/styles/eliteflow-semantic-badges-and-today-sections.css:43
+- --cf-semantic-neutral-text: src/styles/eliteflow-semantic-badges-and-today-sections.css:44
+- --cf-detail-hotfix-card: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:7
+- --cf-detail-hotfix-soft: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:8
+- --cf-detail-hotfix-border: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:9
+- --cf-detail-hotfix-mini-border: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:10
+- --cf-detail-hotfix-text: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:11
+- --cf-detail-hotfix-muted: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:12
+- --cf-detail-hotfix-blue: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:13
+- --cf-detail-hotfix-shadow: src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:14
+- --cf-hotfix-border: src/styles/hotfix-right-rail-dark-wrappers.css:4
+- --cf-hotfix-shadow: src/styles/hotfix-right-rail-dark-wrappers.css:5
+- --tw-ring-color: src/styles/hotfix-task-stat-tiles-clean.css:20
+- --tw-ring-shadow: src/styles/hotfix-task-stat-tiles-clean.css:21
+- --cf30a-text: src/styles/stage30a-mobile-contrast-lock.css:15
+- --cf30a-muted: src/styles/stage30a-mobile-contrast-lock.css:16
+- --cf30a-soft-muted: src/styles/stage30a-mobile-contrast-lock.css:17
+- --cf30a-border: src/styles/stage30a-mobile-contrast-lock.css:18
+- --cf30a-card: src/styles/stage30a-mobile-contrast-lock.css:19
+- --cf30a-card-soft: src/styles/stage30a-mobile-contrast-lock.css:20
+- --cf30a-blue: src/styles/stage30a-mobile-contrast-lock.css:21
+- --cf30a-blue-strong: src/styles/stage30a-mobile-contrast-lock.css:22
+- --cf30a-blue-soft: src/styles/stage30a-mobile-contrast-lock.css:23
+- --cf30a-shadow: src/styles/stage30a-mobile-contrast-lock.css:24
+- --cf-tone-case-active-bg: src/styles/stage35-clients-value-detail-cleanup.css:5
+- --cf-tone-case-active-text: src/styles/stage35-clients-value-detail-cleanup.css:6
+- --cf-tone-case-active-border: src/styles/stage35-clients-value-detail-cleanup.css:7
+- --cf-tone-no-case-bg: src/styles/stage35-clients-value-detail-cleanup.css:9
+- --cf-tone-no-case-text: src/styles/stage35-clients-value-detail-cleanup.css:10
+- --cf-tone-no-case-border: src/styles/stage35-clients-value-detail-cleanup.css:11
+- --cf-tone-leads-bg: src/styles/stage35-clients-value-detail-cleanup.css:13
+- --cf-tone-leads-text: src/styles/stage35-clients-value-detail-cleanup.css:14
+- --cf-tone-leads-border: src/styles/stage35-clients-value-detail-cleanup.css:15
+- --cf-tone-value-bg: src/styles/stage35-clients-value-detail-cleanup.css:17
+- --cf-tone-value-text: src/styles/stage35-clients-value-detail-cleanup.css:18
+- --cf-tone-value-border: src/styles/stage35-clients-value-detail-cleanup.css:19
+- --cf-tone-contact-bg: src/styles/stage35-clients-value-detail-cleanup.css:21
+- --cf-tone-contact-text: src/styles/stage35-clients-value-detail-cleanup.css:22
+- --cf-tone-contact-border: src/styles/stage35-clients-value-detail-cleanup.css:23
+- --cf-tone-attention-bg: src/styles/stage35-clients-value-detail-cleanup.css:25
+- --cf-tone-attention-text: src/styles/stage35-clients-value-detail-cleanup.css:26
+- --cf-tone-attention-border: src/styles/stage35-clients-value-detail-cleanup.css:27
+- --cf-tone-blocked-bg: src/styles/stage35-clients-value-detail-cleanup.css:29
+- --cf-tone-blocked-text: src/styles/stage35-clients-value-detail-cleanup.css:30
+- --cf-tone-blocked-border: src/styles/stage35-clients-value-detail-cleanup.css:31
+- --cf-tone-portal-bg: src/styles/stage35-clients-value-detail-cleanup.css:33
+- --cf-tone-portal-text: src/styles/stage35-clients-value-detail-cleanup.css:34
+- --cf-tone-portal-border: src/styles/stage35-clients-value-detail-cleanup.css:35
+- --cf-tone-gap-bg: src/styles/stage35-clients-value-detail-cleanup.css:37
+- --cf-tone-gap-text: src/styles/stage35-clients-value-detail-cleanup.css:38
+- --cf-tone-gap-border: src/styles/stage35-clients-value-detail-cleanup.css:39
+- --cf-tone-task-bg: src/styles/stage35-clients-value-detail-cleanup.css:41
+- --cf-tone-task-text: src/styles/stage35-clients-value-detail-cleanup.css:42
+- --cf-tone-task-border: src/styles/stage35-clients-value-detail-cleanup.css:43
+- --cf-tone-event-bg: src/styles/stage35-clients-value-detail-cleanup.css:45
+- --cf-tone-event-text: src/styles/stage35-clients-value-detail-cleanup.css:46
+- --cf-tone-event-border: src/styles/stage35-clients-value-detail-cleanup.css:47
+- --cf-tone-note-bg: src/styles/stage35-clients-value-detail-cleanup.css:49
+- --cf-tone-note-text: src/styles/stage35-clients-value-detail-cleanup.css:50
+- --cf-tone-note-border: src/styles/stage35-clients-value-detail-cleanup.css:51
+- --cf-bg: src/styles/visual-html-theme-v14.css:3
+- --cf-sidebar: src/styles/visual-html-theme-v14.css:4
+- --cf-text: src/styles/visual-html-theme-v14.css:5
+- --cf-muted: src/styles/visual-html-theme-v14.css:6
+- --cf-line: src/styles/visual-html-theme-v14.css:7
+- --cf-blue: src/styles/visual-html-theme-v14.css:8
+- --cf-blue-soft: src/styles/visual-html-theme-v14.css:9
+- --cf-shadow: src/styles/visual-html-theme-v14.css:10
+- --cf-shadow-soft: src/styles/visual-html-theme-v14.css:11
+- --cf-radius-xl: src/styles/visual-html-theme-v14.css:12
+- --cf-vs-bg: src/styles/visual-stage01-shell.css:7
+- --cf-vs-bg-2: src/styles/visual-stage01-shell.css:8
+- --cf-vs-sidebar: src/styles/visual-stage01-shell.css:9
+- --cf-vs-sidebar-2: src/styles/visual-stage01-shell.css:10
+- --cf-vs-card: src/styles/visual-stage01-shell.css:11
+- --cf-vs-card-soft: src/styles/visual-stage01-shell.css:12
+- --cf-vs-text: src/styles/visual-stage01-shell.css:13
+- --cf-vs-muted: src/styles/visual-stage01-shell.css:14
+- --cf-vs-muted-2: src/styles/visual-stage01-shell.css:15
+- --cf-vs-line: src/styles/visual-stage01-shell.css:16
+- --cf-vs-line-2: src/styles/visual-stage01-shell.css:17
+- --cf-vs-blue: src/styles/visual-stage01-shell.css:18
+- --cf-vs-blue-2: src/styles/visual-stage01-shell.css:19
+- --cf-vs-blue-soft: src/styles/visual-stage01-shell.css:20
+- --cf-vs-green: src/styles/visual-stage01-shell.css:21
+- --cf-vs-red: src/styles/visual-stage01-shell.css:22
+- --cf-vs-amber: src/styles/visual-stage01-shell.css:23
+- --cf-vs-violet: src/styles/visual-stage01-shell.css:24
+- --cf-vs-shadow: src/styles/visual-stage01-shell.css:25
+- --cf-vs-shadow-soft: src/styles/visual-stage01-shell.css:26
+- --cf-vs-radius-xl: src/styles/visual-stage01-shell.css:27
+- --cf-vs-radius-lg: src/styles/visual-stage01-shell.css:28
+- --cf-vs-radius-md: src/styles/visual-stage01-shell.css:29
+- --cf-blue: src/styles/visual-stage03-leads.css:3
+- --cf-blue-soft: src/styles/visual-stage03-leads.css:4
+- --cf-text: src/styles/visual-stage03-leads.css:5
+- --cf-muted: src/styles/visual-stage03-leads.css:6
+- --cf-line: src/styles/visual-stage03-leads.css:7
+- --cf-card: src/styles/visual-stage03-leads.css:8
+- --cf-blue: src/styles/visual-stage04-lead-detail.css:3
+- --cf-blue-soft: src/styles/visual-stage04-lead-detail.css:4
+- --cf-green: src/styles/visual-stage04-lead-detail.css:5
+- --cf-red: src/styles/visual-stage04-lead-detail.css:6
+- --cf-amber: src/styles/visual-stage04-lead-detail.css:7
+- --cf-violet: src/styles/visual-stage04-lead-detail.css:8
+- --cf-text: src/styles/visual-stage04-lead-detail.css:9
+- --cf-muted: src/styles/visual-stage04-lead-detail.css:10
+- --cf-line: src/styles/visual-stage04-lead-detail.css:11
+- --cf-card: src/styles/visual-stage04-lead-detail.css:12
+- --cf-soft: src/styles/visual-stage04-lead-detail.css:13
+- --cf-client-card: src/styles/visual-stage06-client-detail.css:9
+- --cf-client-soft: src/styles/visual-stage06-client-detail.css:10
+- --cf-client-text: src/styles/visual-stage06-client-detail.css:11
+- --cf-client-muted: src/styles/visual-stage06-client-detail.css:12
+- --cf-client-line: src/styles/visual-stage06-client-detail.css:13
+- --cf-client-blue: src/styles/visual-stage06-client-detail.css:14
+- --cf-cases-card: src/styles/visual-stage07-cases.css:9
+- --cf-cases-soft: src/styles/visual-stage07-cases.css:10
+- --cf-cases-text: src/styles/visual-stage07-cases.css:11
+- --cf-cases-muted: src/styles/visual-stage07-cases.css:12
+- --cf-cases-line: src/styles/visual-stage07-cases.css:13
+- --cf-cases-blue: src/styles/visual-stage07-cases.css:14
+- --cf-cases-green: src/styles/visual-stage07-cases.css:15
+- --cf-cases-red: src/styles/visual-stage07-cases.css:16
+- --cf-cases-amber: src/styles/visual-stage07-cases.css:17
+- --cf-cases-shadow: src/styles/visual-stage07-cases.css:18
+- --cf-cases-shadow-soft: src/styles/visual-stage07-cases.css:19
+- --cf16-bg: src/styles/visual-stage16-today-html-reset.css:8
+- --cf16-bg-2: src/styles/visual-stage16-today-html-reset.css:9
+- --cf16-sidebar: src/styles/visual-stage16-today-html-reset.css:10
+- --cf16-sidebar-2: src/styles/visual-stage16-today-html-reset.css:11
+- --cf16-card: src/styles/visual-stage16-today-html-reset.css:12
+- --cf16-card-soft: src/styles/visual-stage16-today-html-reset.css:13
+- --cf16-text: src/styles/visual-stage16-today-html-reset.css:14
+- --cf16-muted: src/styles/visual-stage16-today-html-reset.css:15
+- --cf16-muted-2: src/styles/visual-stage16-today-html-reset.css:16
+- --cf16-line: src/styles/visual-stage16-today-html-reset.css:17
+- --cf16-line-2: src/styles/visual-stage16-today-html-reset.css:18
+- --cf16-blue: src/styles/visual-stage16-today-html-reset.css:19
+- --cf16-blue-2: src/styles/visual-stage16-today-html-reset.css:20
+- --cf16-blue-soft: src/styles/visual-stage16-today-html-reset.css:21
+- --cf16-green: src/styles/visual-stage16-today-html-reset.css:22
+- --cf16-green-soft: src/styles/visual-stage16-today-html-reset.css:23
+- --cf16-red: src/styles/visual-stage16-today-html-reset.css:24
+- --cf16-red-soft: src/styles/visual-stage16-today-html-reset.css:25
+- --cf16-amber: src/styles/visual-stage16-today-html-reset.css:26
+- --cf16-amber-soft: src/styles/visual-stage16-today-html-reset.css:27
+- --cf16-violet: src/styles/visual-stage16-today-html-reset.css:28
+- --cf16-violet-soft: src/styles/visual-stage16-today-html-reset.css:29
+- --cf16-shadow: src/styles/visual-stage16-today-html-reset.css:30
+- --cf16-shadow-soft: src/styles/visual-stage16-today-html-reset.css:31
+- --cf16-radius-xl: src/styles/visual-stage16-today-html-reset.css:32
+- --cf16-radius-lg: src/styles/visual-stage16-today-html-reset.css:33
+- --cf16-radius-md: src/styles/visual-stage16-today-html-reset.css:34
+- --cf17-bg: src/styles/visual-stage17-today-hard-1to1.css:7
+- --cf17-bg-2: src/styles/visual-stage17-today-hard-1to1.css:8
+- --cf17-sidebar: src/styles/visual-stage17-today-hard-1to1.css:9
+- --cf17-sidebar-2: src/styles/visual-stage17-today-hard-1to1.css:10
+- --cf17-card: src/styles/visual-stage17-today-hard-1to1.css:11
+- --cf17-card-soft: src/styles/visual-stage17-today-hard-1to1.css:12
+- --cf17-text: src/styles/visual-stage17-today-hard-1to1.css:13
+- --cf17-muted: src/styles/visual-stage17-today-hard-1to1.css:14
+- --cf17-muted-2: src/styles/visual-stage17-today-hard-1to1.css:15
+- --cf17-line: src/styles/visual-stage17-today-hard-1to1.css:16
+- --cf17-line-2: src/styles/visual-stage17-today-hard-1to1.css:17
+- --cf17-blue: src/styles/visual-stage17-today-hard-1to1.css:18
+- --cf17-blue-2: src/styles/visual-stage17-today-hard-1to1.css:19
+- --cf17-blue-soft: src/styles/visual-stage17-today-hard-1to1.css:20
+- --cf17-green: src/styles/visual-stage17-today-hard-1to1.css:21
+- --cf17-green-soft: src/styles/visual-stage17-today-hard-1to1.css:22
+- --cf17-red: src/styles/visual-stage17-today-hard-1to1.css:23
+- --cf17-red-soft: src/styles/visual-stage17-today-hard-1to1.css:24
+- --cf17-amber: src/styles/visual-stage17-today-hard-1to1.css:25
+- --cf17-amber-soft: src/styles/visual-stage17-today-hard-1to1.css:26
+- --cf17-violet: src/styles/visual-stage17-today-hard-1to1.css:27
+- --cf17-violet-soft: src/styles/visual-stage17-today-hard-1to1.css:28
+- --cf17-shadow: src/styles/visual-stage17-today-hard-1to1.css:29
+- --cf17-shadow-soft: src/styles/visual-stage17-today-hard-1to1.css:30
+- --cf17-radius-xl: src/styles/visual-stage17-today-hard-1to1.css:31
+- --cf17-radius-lg: src/styles/visual-stage17-today-hard-1to1.css:32
+- --cf17-radius-md: src/styles/visual-stage17-today-hard-1to1.css:33
+- --cf18-bg: src/styles/visual-stage18-leads-hard-1to1.css:7
+- --cf18-bg-2: src/styles/visual-stage18-leads-hard-1to1.css:8
+- --cf18-sidebar: src/styles/visual-stage18-leads-hard-1to1.css:9
+- --cf18-card: src/styles/visual-stage18-leads-hard-1to1.css:10
+- --cf18-card-soft: src/styles/visual-stage18-leads-hard-1to1.css:11
+- --cf18-text: src/styles/visual-stage18-leads-hard-1to1.css:12
+- --cf18-muted: src/styles/visual-stage18-leads-hard-1to1.css:13
+- --cf18-muted-2: src/styles/visual-stage18-leads-hard-1to1.css:14
+- --cf18-line: src/styles/visual-stage18-leads-hard-1to1.css:15
+- --cf18-line-2: src/styles/visual-stage18-leads-hard-1to1.css:16
+- --cf18-blue: src/styles/visual-stage18-leads-hard-1to1.css:17
+- --cf18-blue-2: src/styles/visual-stage18-leads-hard-1to1.css:18
+- --cf18-blue-soft: src/styles/visual-stage18-leads-hard-1to1.css:19
+- --cf18-green: src/styles/visual-stage18-leads-hard-1to1.css:20
+- --cf18-green-soft: src/styles/visual-stage18-leads-hard-1to1.css:21
+- --cf18-red: src/styles/visual-stage18-leads-hard-1to1.css:22
+- --cf18-red-soft: src/styles/visual-stage18-leads-hard-1to1.css:23
+- --cf18-amber: src/styles/visual-stage18-leads-hard-1to1.css:24
+- --cf18-amber-soft: src/styles/visual-stage18-leads-hard-1to1.css:25
+- --cf18-violet: src/styles/visual-stage18-leads-hard-1to1.css:26
+- --cf18-violet-soft: src/styles/visual-stage18-leads-hard-1to1.css:27
+- --cf18-shadow: src/styles/visual-stage18-leads-hard-1to1.css:28
+- --cf18-shadow-soft: src/styles/visual-stage18-leads-hard-1to1.css:29
+- --cf18-radius-xl: src/styles/visual-stage18-leads-hard-1to1.css:30
+- --cf18-radius-lg: src/styles/visual-stage18-leads-hard-1to1.css:31
+- --cf18-radius-md: src/styles/visual-stage18-leads-hard-1to1.css:32
+- --cf-blue: src/styles/visual-stage18-leads-hard-1to1.css:46
+- --cf-blue-soft: src/styles/visual-stage18-leads-hard-1to1.css:47
+- --cf-text: src/styles/visual-stage18-leads-hard-1to1.css:48
+- --cf-muted: src/styles/visual-stage18-leads-hard-1to1.css:49
+- --cf-line: src/styles/visual-stage18-leads-hard-1to1.css:50
+- --cf-card: src/styles/visual-stage18-leads-hard-1to1.css:51
+- --stage19-ink: src/styles/visual-stage19-clients-safe-css.css:7
+- --stage19-muted: src/styles/visual-stage19-clients-safe-css.css:8
+- --stage19-card: src/styles/visual-stage19-clients-safe-css.css:9
+- --stage19-card-strong: src/styles/visual-stage19-clients-safe-css.css:10
+- --stage19-line: src/styles/visual-stage19-clients-safe-css.css:11
+- --stage19-shadow: src/styles/visual-stage19-clients-safe-css.css:12
+- --stage19-soft-shadow: src/styles/visual-stage19-clients-safe-css.css:13
+- --stage20-ink: src/styles/visual-stage20-tasks-safe-css.css:8
+- --stage20-muted: src/styles/visual-stage20-tasks-safe-css.css:9
+- --stage20-muted-2: src/styles/visual-stage20-tasks-safe-css.css:10
+- --stage20-line: src/styles/visual-stage20-tasks-safe-css.css:11
+- --stage20-line-2: src/styles/visual-stage20-tasks-safe-css.css:12
+- --stage20-card: src/styles/visual-stage20-tasks-safe-css.css:13
+- --stage20-card-strong: src/styles/visual-stage20-tasks-safe-css.css:14
+- --stage20-card-soft: src/styles/visual-stage20-tasks-safe-css.css:15
+- --stage20-blue: src/styles/visual-stage20-tasks-safe-css.css:16
+- --stage20-blue-soft: src/styles/visual-stage20-tasks-safe-css.css:17
+- --stage20-green: src/styles/visual-stage20-tasks-safe-css.css:18
+- --stage20-green-soft: src/styles/visual-stage20-tasks-safe-css.css:19
+- --stage20-red: src/styles/visual-stage20-tasks-safe-css.css:20
+- --stage20-red-soft: src/styles/visual-stage20-tasks-safe-css.css:21
+- --stage20-amber: src/styles/visual-stage20-tasks-safe-css.css:22
+- --stage20-amber-soft: src/styles/visual-stage20-tasks-safe-css.css:23
+- --stage20-shadow: src/styles/visual-stage20-tasks-safe-css.css:24
+- --stage20-shadow-soft: src/styles/visual-stage20-tasks-safe-css.css:25
+- --cf21-bg: src/styles/visual-stage21-today-final-lock.css:8
+- --cf21-bg-2: src/styles/visual-stage21-today-final-lock.css:9
+- --cf21-card: src/styles/visual-stage21-today-final-lock.css:10
+- --cf21-card-soft: src/styles/visual-stage21-today-final-lock.css:11
+- --cf21-text: src/styles/visual-stage21-today-final-lock.css:12
+- --cf21-muted: src/styles/visual-stage21-today-final-lock.css:13
+- --cf21-muted-2: src/styles/visual-stage21-today-final-lock.css:14
+- --cf21-line: src/styles/visual-stage21-today-final-lock.css:15
+- --cf21-line-2: src/styles/visual-stage21-today-final-lock.css:16
+- --cf21-blue: src/styles/visual-stage21-today-final-lock.css:17
+- --cf21-blue-2: src/styles/visual-stage21-today-final-lock.css:18
+- --cf21-blue-soft: src/styles/visual-stage21-today-final-lock.css:19
+- --cf21-green: src/styles/visual-stage21-today-final-lock.css:20
+- --cf21-green-soft: src/styles/visual-stage21-today-final-lock.css:21
+- --cf21-red: src/styles/visual-stage21-today-final-lock.css:22
+- --cf21-red-soft: src/styles/visual-stage21-today-final-lock.css:23
+- --cf21-amber: src/styles/visual-stage21-today-final-lock.css:24
+- --cf21-amber-soft: src/styles/visual-stage21-today-final-lock.css:25
+- --cf21-violet: src/styles/visual-stage21-today-final-lock.css:26
+- --cf21-violet-soft: src/styles/visual-stage21-today-final-lock.css:27
+- --cf21-shadow: src/styles/visual-stage21-today-final-lock.css:28
+- --cf21-shadow-soft: src/styles/visual-stage21-today-final-lock.css:29
+- --cf21-radius-xl: src/styles/visual-stage21-today-final-lock.css:30
+- --cf21-radius-lg: src/styles/visual-stage21-today-final-lock.css:31
+- --cf21-radius-md: src/styles/visual-stage21-today-final-lock.css:32
+- --cf22-bg: src/styles/visual-stage22-leads-final-lock.css:10
+- --cf22-bg-2: src/styles/visual-stage22-leads-final-lock.css:11
+- --cf22-sidebar: src/styles/visual-stage22-leads-final-lock.css:12
+- --cf22-sidebar-2: src/styles/visual-stage22-leads-final-lock.css:13
+- --cf22-card: src/styles/visual-stage22-leads-final-lock.css:14
+- --cf22-card-soft: src/styles/visual-stage22-leads-final-lock.css:15
+- --cf22-text: src/styles/visual-stage22-leads-final-lock.css:16
+- --cf22-muted: src/styles/visual-stage22-leads-final-lock.css:17
+- --cf22-muted-2: src/styles/visual-stage22-leads-final-lock.css:18
+- --cf22-line: src/styles/visual-stage22-leads-final-lock.css:19
+- --cf22-line-2: src/styles/visual-stage22-leads-final-lock.css:20
+- --cf22-blue: src/styles/visual-stage22-leads-final-lock.css:21
+- --cf22-blue-2: src/styles/visual-stage22-leads-final-lock.css:22
+- --cf22-blue-soft: src/styles/visual-stage22-leads-final-lock.css:23
+- --cf22-green: src/styles/visual-stage22-leads-final-lock.css:24
+- --cf22-green-soft: src/styles/visual-stage22-leads-final-lock.css:25
+- --cf22-red: src/styles/visual-stage22-leads-final-lock.css:26
+- --cf22-red-soft: src/styles/visual-stage22-leads-final-lock.css:27
+- --cf22-amber: src/styles/visual-stage22-leads-final-lock.css:28
+- --cf22-amber-soft: src/styles/visual-stage22-leads-final-lock.css:29
+- --cf22-violet: src/styles/visual-stage22-leads-final-lock.css:30
+- --cf22-violet-soft: src/styles/visual-stage22-leads-final-lock.css:31
+- --cf22-shadow: src/styles/visual-stage22-leads-final-lock.css:32
+- --cf22-shadow-soft: src/styles/visual-stage22-leads-final-lock.css:33
+- --cf22-radius-xl: src/styles/visual-stage22-leads-final-lock.css:34
+- --cf22-radius-lg: src/styles/visual-stage22-leads-final-lock.css:35
+- --cf22-radius-md: src/styles/visual-stage22-leads-final-lock.css:36
+- --cf23-bg: src/styles/visual-stage23-leads-html-parity-fix.css:7
+- --cf23-bg-2: src/styles/visual-stage23-leads-html-parity-fix.css:8
+- --cf23-sidebar: src/styles/visual-stage23-leads-html-parity-fix.css:9
+- --cf23-card: src/styles/visual-stage23-leads-html-parity-fix.css:10
+- --cf23-card-soft: src/styles/visual-stage23-leads-html-parity-fix.css:11
+- --cf23-text: src/styles/visual-stage23-leads-html-parity-fix.css:12
+- --cf23-muted: src/styles/visual-stage23-leads-html-parity-fix.css:13
+- --cf23-muted-2: src/styles/visual-stage23-leads-html-parity-fix.css:14
+- --cf23-line: src/styles/visual-stage23-leads-html-parity-fix.css:15
+
+## Danger/red local classes
+- border-rose-200: src/components/AppChunkErrorBoundary.tsx:100
+- text-rose-700: src/components/AppChunkErrorBoundary.tsx:101
+- bg-red-100: src/components/ErrorBoundary.tsx:32
+- text-red-600: src/components/ErrorBoundary.tsx:32
+- border-red-500: src/components/ui/select.tsx:42
+- ring-red-500: src/components/ui/select.tsx:42
+- text-rose-500: src/lib/access.ts:87
+- bg-rose-500: src/lib/access.ts:87
+- bg-rose-500: src/lib/access.ts:88
+- text-rose-600: src/lib/access.ts:88
+- text-rose-400: src/lib/access.ts:88
+- text-rose-500: src/lib/access.ts:132
+- bg-rose-500: src/lib/access.ts:132
+- bg-rose-500: src/lib/access.ts:133
+- text-rose-600: src/lib/access.ts:133
+- text-rose-400: src/lib/access.ts:133
+- text-rose-500: src/lib/access.ts:167
+- bg-rose-500: src/lib/access.ts:167
+- bg-rose-500: src/lib/access.ts:168
+- text-rose-600: src/lib/access.ts:168
+- text-rose-400: src/lib/access.ts:168
+- bg-rose-50: src/pages/Activity.tsx:699
+- text-rose-500: src/pages/Activity.tsx:699
+- text-rose-600: src/pages/Activity.tsx:699
+- border-rose-100: src/pages/Calendar.tsx:285
+- bg-rose-50: src/pages/Calendar.tsx:285
+- text-rose-700: src/pages/Calendar.tsx:285
+- border-rose-200: src/pages/Calendar.tsx:358
+- bg-rose-50: src/pages/Calendar.tsx:358
+- text-rose-700: src/pages/Calendar.tsx:358
+- border-rose-300: src/pages/Calendar.tsx:358
+- bg-rose-100: src/pages/Calendar.tsx:358
+- bg-rose-50: src/pages/Cases.tsx:661
+- text-rose-600: src/pages/Cases.tsx:661
+- text-red-500: src/pages/ClientPortal.tsx:223
+- bg-red-100: src/pages/ClientPortal.tsx:265
+- text-red-600: src/pages/ClientPortal.tsx:265
+- border-red-200: src/pages/ClientPortal.tsx:276
+- text-red-500: src/pages/ClientPortal.tsx:276
+- text-red-600: src/pages/ClientPortal.tsx:377
+- bg-red-50: src/pages/ClientPortal.tsx:377
+- text-rose-600: src/pages/Clients.tsx:517
+- bg-rose-50: src/pages/Clients.tsx:518
+- text-rose-500: src/pages/Clients.tsx:518
+- text-red-500: src/pages/Dashboard.tsx:228
+- text-red-600: src/pages/Dashboard.tsx:228
+- bg-red-50: src/pages/Dashboard.tsx:228
+- text-red-600: src/pages/Dashboard.tsx:333
+- bg-red-50: src/pages/Dashboard.tsx:335
+- text-red-500: src/pages/Dashboard.tsx:336
+- text-rose-600: src/pages/Leads.tsx:745
+- bg-rose-50: src/pages/Leads.tsx:746
+- text-rose-500: src/pages/Leads.tsx:746
+- bg-rose-50: src/pages/NotificationsCenter.tsx:643
+- text-rose-500: src/pages/NotificationsCenter.tsx:643
+- text-rose-600: src/pages/NotificationsCenter.tsx:643
+- text-rose-600: src/pages/Tasks.tsx:997
+- bg-rose-50: src/pages/Tasks.tsx:998
+- text-rose-500: src/pages/Tasks.tsx:998
+- bg-rose-50: src/pages/TasksStable.tsx:149
+- text-rose-700: src/pages/TasksStable.tsx:149
+- border-rose-100: src/pages/TasksStable.tsx:149
+- text-rose-700: src/pages/TasksStable.tsx:440
+- bg-rose-50: src/pages/TasksStable.tsx:441
+- text-rose-600: src/pages/TasksStable.tsx:441
+- text-rose-600: src/pages/Templates.tsx:393
+- text-rose-600: src/pages/Templates.tsx:393
+- bg-rose-600: src/pages/Templates.tsx:407
+- text-rose-600: src/pages/Templates.tsx:458
+- bg-rose-50: src/pages/Templates.tsx:458
+- text-rose-700: src/pages/Templates.tsx:458
+- border-red-100: src/pages/Today.tsx:1286
+- bg-red-50: src/pages/Today.tsx:1286
+- border-red-200: src/pages/Today.tsx:1286
+- bg-red-100: src/pages/Today.tsx:1286
+- text-red-700: src/pages/Today.tsx:1287
+- text-red-950: src/pages/Today.tsx:1288
+- text-red-700: src/pages/Today.tsx:1289
+- border-red-100: src/pages/Today.tsx:1304
+- bg-red-50: src/pages/Today.tsx:1304
+- text-red-800: src/pages/Today.tsx:1305
+- border-red-100: src/pages/Today.tsx:1314
+- border-red-200: src/pages/Today.tsx:1314
+- bg-red-50: src/pages/Today.tsx:1314
+- text-red-950: src/pages/Today.tsx:1316
+- text-red-700: src/pages/Today.tsx:1317
+- border-rose-200: src/pages/Today.tsx:2182
+- text-rose-700: src/pages/Today.tsx:2184
+- text-rose-600: src/pages/Today.tsx:2302
+- bg-rose-50: src/pages/Today.tsx:2303
+- border-rose-100: src/pages/Today.tsx:2422
+- bg-rose-50: src/pages/Today.tsx:2422
+- border-rose-100: src/pages/Today.tsx:2431
+- text-rose-500: src/pages/Today.tsx:2446
+- text-rose-600: src/pages/Today.tsx:2473
+- text-rose-500: src/pages/Today.tsx:2485
+- border-rose-100: src/pages/Today.tsx:2486
+- bg-rose-50: src/pages/Today.tsx:2486
+- border-rose-200: src/pages/Today.tsx:2798
+- bg-rose-50: src/pages/Today.tsx:2798
+- bg-rose-50: src/pages/Today.tsx:2798
+- text-rose-700: src/pages/Today.tsx:2800
+- text-rose-600: src/pages/Today.tsx:2849
+- border-rose-200: src/pages/Today.tsx:2850
+- text-rose-700: src/pages/Today.tsx:2850
+- text-rose-600: src/pages/TodayStable.tsx:564
+- text-rose-700: src/pages/TodayStable.tsx:564
+- text-rose-700: src/pages/TodayStable.tsx:896
+- border-rose-200: src/pages/TodayStable.tsx:896
+- border-rose-100: src/pages/TodayStable.tsx:989
+- bg-rose-50: src/pages/TodayStable.tsx:989
+- text-rose-700: src/pages/TodayStable.tsx:989
+- bg-rose-50: src/pages/TodayStable.tsx:1107
+- text-rose-700: src/pages/TodayStable.tsx:1107
+- text-rose-500: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
+- text-rose-600: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
+- text-rose-700: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
+- text-red-500: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
+- text-red-600: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
+- text-red-700: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
+- bg-rose-50: src/styles/visual-stage20-tasks-safe-css.css:226
+- bg-red-50: src/styles/visual-stage20-tasks-safe-css.css:227
+- bg-red-50: src/styles/visual-stage21-today-final-lock.css:470
+- bg-rose-50: src/styles/visual-stage21-today-final-lock.css:471
+- bg-rose-50: src/styles/visual-stage22-leads-final-lock.css:459
+- bg-red-50: src/styles/visual-stage22-leads-final-lock.css:460
+- bg-rose-50: src/styles/visual-stage22-leads-final-lock.css:461
+- bg-red-50: src/styles/visual-stage22-leads-final-lock.css:462
+- bg-rose-50: src/styles/visual-stage22-leads-final-lock.css:463
+- bg-red-50: src/styles/visual-stage22-leads-final-lock.css:464
+
+## Inline styles
+- src/components/ContextActionDialogs.tsx:153
+- src/components/Layout.tsx:122
+- src/components/ui/progress.tsx:19
+- src/pages/Activity.tsx:789
+- src/pages/Calendar.tsx:1475
+- src/pages/Calendar.tsx:1657
+- src/pages/CaseDetail.tsx:1352
+- src/pages/CaseDetail.tsx:1476
+- src/pages/ClientDetail.tsx:1670
+- src/pages/NotificationsCenter.tsx:705
+- src/pages/Today.tsx:808
+- src/pages/UiPreviewVNext.tsx:8
+- src/pages/UiPreviewVNext.tsx:9
+- src/pages/UiPreviewVNext.tsx:14
+- src/pages/UiPreviewVNext.tsx:31
+- src/pages/UiPreviewVNext.tsx:32
+- src/pages/UiPreviewVNext.tsx:47
+- src/pages/UiPreviewVNext.tsx:49
+- src/pages/UiPreviewVNext.tsx:52
+- src/pages/UiPreviewVNextFull.tsx:27
+- src/pages/UiPreviewVNextFull.tsx:38
+
+## Local style risk files
+- src/App.tsx
+- src/components/GlobalAiAssistant.tsx
+- src/components/GlobalQuickActions.tsx
+- src/components/PwaInstallPrompt.tsx
+- src/components/StatShortcutCard.tsx
+- src/components/TodayAiAssistant.tsx
+- src/components/admin-tools/AdminDebugToolbar.tsx
+- src/components/admin-tools/admin-tools-export.ts
+- src/components/admin-tools/admin-tools-storage.ts
+- src/components/task-editor-dialog.tsx
+- src/components/ui/dialog.tsx
+- src/hooks/useSupabaseSession.ts
+- src/hooks/useWorkspace.ts
+- src/index.css
+- src/lib/ai-drafts.ts
+- src/lib/ai-usage-guard.ts
+- src/lib/schedule-conflicts.ts
+- src/lib/scheduling.ts
+- src/lib/stage31-today-tiles-interaction.ts
+- src/lib/stage32-today-relations-loading-polish.ts
+- src/lib/supabase-fallback.ts
+- src/pages/Activity.tsx
+- src/pages/AiDrafts.tsx
+- src/pages/Billing.tsx
+- src/pages/Calendar.tsx
+- src/pages/CaseDetail.tsx
+- src/pages/Cases.tsx
+- src/pages/ClientDetail.tsx
+- src/pages/Clients.tsx
+- src/pages/LeadDetail.tsx
+- src/pages/Leads.tsx
+- src/pages/NotificationsCenter.tsx
+- src/pages/Settings.tsx
+- src/pages/SupportCenter.tsx
+- src/pages/Tasks.tsx
+- src/pages/Today.tsx
+- src/pages/TodayStable.tsx
+- src/pages/UiPreviewVNext.tsx
+- src/pages/UiPreviewVNextFull.tsx
+- src/server/_access-gate.ts
+- src/server/_digest.ts
+- src/server/ai-application-operator.ts
+- src/server/ai-assistant.ts
+- src/server/google-calendar-inbound.ts
+- src/server/google-calendar-outbound.ts
+- src/server/google-calendar-sync.ts
+- src/server/payments.ts
+- src/server/records.ts
+- src/styles/admin-tools.css
+- src/styles/closeflow-vnext-ui-contract.css
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css
+- src/styles/eliteflow-metric-text-clip-tasks-repair.css
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css
+- src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css
+- src/styles/hotfix-ai-drafts-right-rail-stage28.css
+- src/styles/hotfix-lead-client-right-rail-dark-wrappers.css
+- src/styles/hotfix-right-rail-dark-wrappers.css
+- src/styles/hotfix-task-stat-tiles-clean.css
+- src/styles/stage31-full-mobile-polish.css
+- src/styles/stage33a-ai-drafts-generated-text-contrast.css
+- src/styles/stage35-clients-value-detail-cleanup.css
+- src/styles/stage36-unified-light-pages.css
+- src/styles/stage7a-tasks-blue-outline-fix.css
+- src/styles/stageA19v2-sidebar-nav-contrast-fix.css
+- src/styles/stageA20-sidebar-today-click-fix.css
+- src/styles/stageA20c-sidebar-today-hitbox-fix.css
+- src/styles/stageA20e-sidebar-today-tone-lock.css
+- src/styles/stageA25-today-relations-lead-badge-inline.css
+- src/styles/visual-stage01-shell.css
+- src/styles/visual-stage05-clients.css
+- src/styles/visual-stage08-case-detail.css
+- src/styles/visual-stage10-notifications-vnext.css
+- src/styles/visual-stage12-client-detail-vnext.css
+- src/styles/visual-stage13-case-detail-vnext.css
+- src/styles/visual-stage14-lead-detail-vnext.css
+- src/styles/visual-stage16-billing-vnext.css
+- src/styles/visual-stage17-support-vnext.css
+- src/styles/visual-stage17-today-hard-1to1.css
+- src/styles/visual-stage19-settings-vnext.css
+- src/styles/visual-stage20-lead-form-vnext.css
+- src/styles/visual-stage21-task-form-vnext.css
+- src/styles/visual-stage22-event-form-vnext.css
+- src/styles/visual-stage23-client-case-forms-vnext.css
+- src/styles/visual-stage23-leads-html-parity-fix.css
+- src/styles/visual-stage24-leads-html-dom-parity-hardfix.css
+- src/styles/visual-stage26-leads-visual-alignment-fix.css
+- src/styles/visual-stage27-cases-vnext.css
+- src/styles/visual-stage28-tasks-vnext.css
+- src/styles/visual-stage29-calendar-vnext.css
+- src/styles/visual-stage3-pipeline-and-case.css
+- src/styles/visual-stage8-activity-vnext.css
+- src/styles/visual-stage9-ai-drafts-vnext.css

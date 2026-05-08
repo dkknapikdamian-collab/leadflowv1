@@ -1,0 +1,3891 @@
+{
+  "generatedAt": "2026-05-08T10:21:42.986Z",
+  "cssVariables": [
+    {
+      "name": "--font-sans",
+      "file": "src/index.css",
+      "line": 29
+    },
+    {
+      "name": "--color-primary",
+      "file": "src/index.css",
+      "line": 30
+    },
+    {
+      "name": "--color-primary-foreground",
+      "file": "src/index.css",
+      "line": 31
+    },
+    {
+      "name": "--color-primary",
+      "file": "src/index.css",
+      "line": 37
+    },
+    {
+      "name": "--color-primary-foreground",
+      "file": "src/index.css",
+      "line": 38
+    },
+    {
+      "name": "--app-bg",
+      "file": "src/index.css",
+      "line": 39
+    },
+    {
+      "name": "--app-surface",
+      "file": "src/index.css",
+      "line": 40
+    },
+    {
+      "name": "--app-surface-strong",
+      "file": "src/index.css",
+      "line": 41
+    },
+    {
+      "name": "--app-surface-muted",
+      "file": "src/index.css",
+      "line": 42
+    },
+    {
+      "name": "--app-border",
+      "file": "src/index.css",
+      "line": 43
+    },
+    {
+      "name": "--app-text",
+      "file": "src/index.css",
+      "line": 44
+    },
+    {
+      "name": "--app-muted",
+      "file": "src/index.css",
+      "line": 45
+    },
+    {
+      "name": "--app-muted-soft",
+      "file": "src/index.css",
+      "line": 46
+    },
+    {
+      "name": "--app-primary-chip-bg",
+      "file": "src/index.css",
+      "line": 47
+    },
+    {
+      "name": "--app-primary-chip-text",
+      "file": "src/index.css",
+      "line": 48
+    },
+    {
+      "name": "--app-shadow-color",
+      "file": "src/index.css",
+      "line": 49
+    },
+    {
+      "name": "--color-primary",
+      "file": "src/index.css",
+      "line": 53
+    },
+    {
+      "name": "--color-primary-foreground",
+      "file": "src/index.css",
+      "line": 54
+    },
+    {
+      "name": "--app-bg",
+      "file": "src/index.css",
+      "line": 55
+    },
+    {
+      "name": "--app-surface",
+      "file": "src/index.css",
+      "line": 56
+    },
+    {
+      "name": "--app-surface-strong",
+      "file": "src/index.css",
+      "line": 57
+    },
+    {
+      "name": "--app-surface-muted",
+      "file": "src/index.css",
+      "line": 58
+    },
+    {
+      "name": "--app-border",
+      "file": "src/index.css",
+      "line": 59
+    },
+    {
+      "name": "--app-text",
+      "file": "src/index.css",
+      "line": 60
+    },
+    {
+      "name": "--app-muted",
+      "file": "src/index.css",
+      "line": 61
+    },
+    {
+      "name": "--app-muted-soft",
+      "file": "src/index.css",
+      "line": 62
+    },
+    {
+      "name": "--app-primary-chip-bg",
+      "file": "src/index.css",
+      "line": 63
+    },
+    {
+      "name": "--app-primary-chip-text",
+      "file": "src/index.css",
+      "line": 64
+    },
+    {
+      "name": "--app-shadow-color",
+      "file": "src/index.css",
+      "line": 65
+    },
+    {
+      "name": "--color-primary",
+      "file": "src/index.css",
+      "line": 69
+    },
+    {
+      "name": "--color-primary-foreground",
+      "file": "src/index.css",
+      "line": 70
+    },
+    {
+      "name": "--app-bg",
+      "file": "src/index.css",
+      "line": 71
+    },
+    {
+      "name": "--app-surface",
+      "file": "src/index.css",
+      "line": 72
+    },
+    {
+      "name": "--app-surface-strong",
+      "file": "src/index.css",
+      "line": 73
+    },
+    {
+      "name": "--app-surface-muted",
+      "file": "src/index.css",
+      "line": 74
+    },
+    {
+      "name": "--app-border",
+      "file": "src/index.css",
+      "line": 75
+    },
+    {
+      "name": "--app-text",
+      "file": "src/index.css",
+      "line": 76
+    },
+    {
+      "name": "--app-muted",
+      "file": "src/index.css",
+      "line": 77
+    },
+    {
+      "name": "--app-muted-soft",
+      "file": "src/index.css",
+      "line": 78
+    },
+    {
+      "name": "--app-primary-chip-bg",
+      "file": "src/index.css",
+      "line": 79
+    },
+    {
+      "name": "--app-primary-chip-text",
+      "file": "src/index.css",
+      "line": 80
+    },
+    {
+      "name": "--app-shadow-color",
+      "file": "src/index.css",
+      "line": 81
+    },
+    {
+      "name": "--color-primary",
+      "file": "src/index.css",
+      "line": 85
+    },
+    {
+      "name": "--color-primary-foreground",
+      "file": "src/index.css",
+      "line": 86
+    },
+    {
+      "name": "--app-bg",
+      "file": "src/index.css",
+      "line": 87
+    },
+    {
+      "name": "--app-surface",
+      "file": "src/index.css",
+      "line": 88
+    },
+    {
+      "name": "--app-surface-strong",
+      "file": "src/index.css",
+      "line": 89
+    },
+    {
+      "name": "--app-surface-muted",
+      "file": "src/index.css",
+      "line": 90
+    },
+    {
+      "name": "--app-border",
+      "file": "src/index.css",
+      "line": 91
+    },
+    {
+      "name": "--app-text",
+      "file": "src/index.css",
+      "line": 92
+    },
+    {
+      "name": "--app-muted",
+      "file": "src/index.css",
+      "line": 93
+    },
+    {
+      "name": "--app-muted-soft",
+      "file": "src/index.css",
+      "line": 94
+    },
+    {
+      "name": "--app-primary-chip-bg",
+      "file": "src/index.css",
+      "line": 95
+    },
+    {
+      "name": "--app-primary-chip-text",
+      "file": "src/index.css",
+      "line": 96
+    },
+    {
+      "name": "--app-shadow-color",
+      "file": "src/index.css",
+      "line": 97
+    },
+    {
+      "name": "--bg",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--bg-2",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--sidebar",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--sidebar-2",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--card",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--card-soft",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--text",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--muted",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--muted-2",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--line",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--line-2",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--blue",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--blue-2",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--blue-soft",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--green",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--green-soft",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--red",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--red-soft",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--amber",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--amber-soft",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--violet",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--violet-soft",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--shadow",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--shadow-soft",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--radius-xl",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--radius-lg",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--radius-md",
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20
+    },
+    {
+      "name": "--case-shell-radius",
+      "file": "src/styles/case-detail-simplified.css",
+      "line": 8
+    },
+    {
+      "name": "--case-tile-radius",
+      "file": "src/styles/case-detail-simplified.css",
+      "line": 9
+    },
+    {
+      "name": "--case-soft-border",
+      "file": "src/styles/case-detail-simplified.css",
+      "line": 10
+    },
+    {
+      "name": "--case-soft-surface",
+      "file": "src/styles/case-detail-simplified.css",
+      "line": 11
+    },
+    {
+      "name": "--case-muted-surface",
+      "file": "src/styles/case-detail-simplified.css",
+      "line": 12
+    },
+    {
+      "name": "--case-primary-soft",
+      "file": "src/styles/case-detail-simplified.css",
+      "line": 13
+    },
+    {
+      "name": "--case-primary-line",
+      "file": "src/styles/case-detail-simplified.css",
+      "line": 14
+    },
+    {
+      "name": "--case-stage2-radius-xl",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 8
+    },
+    {
+      "name": "--case-stage2-radius-lg",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 9
+    },
+    {
+      "name": "--case-stage2-radius-md",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 10
+    },
+    {
+      "name": "--case-stage2-border",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 11
+    },
+    {
+      "name": "--case-stage2-surface",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 12
+    },
+    {
+      "name": "--case-stage2-muted",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 13
+    },
+    {
+      "name": "--case-stage2-primary-soft",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 14
+    },
+    {
+      "name": "--case-stage2-primary-line",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 15
+    },
+    {
+      "name": "--case-stage2-warning-bg",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 16
+    },
+    {
+      "name": "--case-stage2-warning-line",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 17
+    },
+    {
+      "name": "--case-stage2-danger-bg",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 18
+    },
+    {
+      "name": "--case-stage2-danger-line",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 19
+    },
+    {
+      "name": "--case-stage2-success-bg",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 20
+    },
+    {
+      "name": "--case-stage2-success-line",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 21
+    },
+    {
+      "name": "--cf-case-bg",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 2
+    },
+    {
+      "name": "--cf-case-surface",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 3
+    },
+    {
+      "name": "--cf-case-surface-soft",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 4
+    },
+    {
+      "name": "--cf-case-border",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 5
+    },
+    {
+      "name": "--cf-case-border-strong",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-case-text",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-case-muted",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-case-primary",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-case-primary-dark",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-case-primary-soft",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-case-warning",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-case-warning-bg",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-case-danger",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-case-danger-bg",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-case-success",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 16
+    },
+    {
+      "name": "--cf-case-success-bg",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 17
+    },
+    {
+      "name": "--cf-case-info",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 18
+    },
+    {
+      "name": "--cf-case-info-bg",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 19
+    },
+    {
+      "name": "--cf-case-shadow",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 20
+    },
+    {
+      "name": "--cf-metric-tile-radius",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-metric-tile-border",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-metric-tile-bg",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-metric-tile-shadow",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-metric-tile-shadow-hover",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-metric-tile-label",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-metric-tile-value",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-metric-tile-helper",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-metric-tile-icon-bg",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 16
+    },
+    {
+      "name": "--cf-metric-tile-icon",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 17
+    },
+    {
+      "name": "--cf-metric-tile-min-height",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 18
+    },
+    {
+      "name": "--cf-metric-tile-gap",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 19
+    },
+    {
+      "name": "--cf-metric-tile-min-height",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 283
+    },
+    {
+      "name": "--cf-metric-tile-gap",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 284
+    },
+    {
+      "name": "--cfv-bg",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-bg-2",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-sidebar",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-card",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-card-soft",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-text",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-muted",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-muted-2",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-line",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-accent",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-accent-2",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-accent-soft",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-green",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-red",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-amber",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-shadow",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-shadow-soft",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-radius-xl",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-radius-lg",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--cfv-radius-md",
+      "file": "src/styles/closeflow-vnext-ui-contract.css",
+      "line": 6
+    },
+    {
+      "name": "--eliteflow-desktop-scale",
+      "file": "src/styles/eliteflow-desktop-compact-scale.css",
+      "line": 9
+    },
+    {
+      "name": "--eliteflow-metric-radius",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 7
+    },
+    {
+      "name": "--eliteflow-metric-border",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 8
+    },
+    {
+      "name": "--eliteflow-metric-bg",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 9
+    },
+    {
+      "name": "--eliteflow-metric-label",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 10
+    },
+    {
+      "name": "--eliteflow-metric-value",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 11
+    },
+    {
+      "name": "--eliteflow-metric-icon-bg",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 12
+    },
+    {
+      "name": "--eliteflow-metric-icon",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 13
+    },
+    {
+      "name": "--eliteflow-metric-shadow",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 14
+    },
+    {
+      "name": "--eliteflow-metric-shadow-hover",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 15
+    },
+    {
+      "name": "--eliteflow-metric-min-height",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 16
+    },
+    {
+      "name": "--eliteflow-metric-gap",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 17
+    },
+    {
+      "name": "--eliteflow-metric-min-height",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 290
+    },
+    {
+      "name": "--eliteflow-metric-gap",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 291
+    },
+    {
+      "name": "--eliteflow-font-weight-label",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 7
+    },
+    {
+      "name": "--eliteflow-font-weight-value",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 8
+    },
+    {
+      "name": "--eliteflow-label-color",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 9
+    },
+    {
+      "name": "--eliteflow-value-slate",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 10
+    },
+    {
+      "name": "--eliteflow-value-blue",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 11
+    },
+    {
+      "name": "--eliteflow-value-red",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 12
+    },
+    {
+      "name": "--eliteflow-value-orange",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 13
+    },
+    {
+      "name": "--eliteflow-value-green",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 14
+    },
+    {
+      "name": "--eliteflow-value-purple",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-semantic-danger-bg",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-semantic-danger-border",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-semantic-danger-text",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 16
+    },
+    {
+      "name": "--cf-semantic-event-bg",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 18
+    },
+    {
+      "name": "--cf-semantic-event-border",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 19
+    },
+    {
+      "name": "--cf-semantic-event-text",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 20
+    },
+    {
+      "name": "--cf-semantic-task-bg",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 22
+    },
+    {
+      "name": "--cf-semantic-task-border",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 23
+    },
+    {
+      "name": "--cf-semantic-task-text",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 24
+    },
+    {
+      "name": "--cf-semantic-note-bg",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 26
+    },
+    {
+      "name": "--cf-semantic-note-border",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 27
+    },
+    {
+      "name": "--cf-semantic-note-text",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 28
+    },
+    {
+      "name": "--cf-semantic-lead-bg",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 30
+    },
+    {
+      "name": "--cf-semantic-lead-border",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 31
+    },
+    {
+      "name": "--cf-semantic-lead-text",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 32
+    },
+    {
+      "name": "--cf-semantic-case-bg",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 34
+    },
+    {
+      "name": "--cf-semantic-case-border",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 35
+    },
+    {
+      "name": "--cf-semantic-case-text",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 36
+    },
+    {
+      "name": "--cf-semantic-client-bg",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 38
+    },
+    {
+      "name": "--cf-semantic-client-border",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 39
+    },
+    {
+      "name": "--cf-semantic-client-text",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 40
+    },
+    {
+      "name": "--cf-semantic-neutral-bg",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 42
+    },
+    {
+      "name": "--cf-semantic-neutral-border",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 43
+    },
+    {
+      "name": "--cf-semantic-neutral-text",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 44
+    },
+    {
+      "name": "--cf-detail-hotfix-card",
+      "file": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-detail-hotfix-soft",
+      "file": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-detail-hotfix-border",
+      "file": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-detail-hotfix-mini-border",
+      "file": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-detail-hotfix-text",
+      "file": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-detail-hotfix-muted",
+      "file": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-detail-hotfix-blue",
+      "file": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-detail-hotfix-shadow",
+      "file": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-hotfix-border",
+      "file": "src/styles/hotfix-right-rail-dark-wrappers.css",
+      "line": 4
+    },
+    {
+      "name": "--cf-hotfix-shadow",
+      "file": "src/styles/hotfix-right-rail-dark-wrappers.css",
+      "line": 5
+    },
+    {
+      "name": "--tw-ring-color",
+      "file": "src/styles/hotfix-task-stat-tiles-clean.css",
+      "line": 20
+    },
+    {
+      "name": "--tw-ring-shadow",
+      "file": "src/styles/hotfix-task-stat-tiles-clean.css",
+      "line": 21
+    },
+    {
+      "name": "--cf30a-text",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 15
+    },
+    {
+      "name": "--cf30a-muted",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 16
+    },
+    {
+      "name": "--cf30a-soft-muted",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 17
+    },
+    {
+      "name": "--cf30a-border",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 18
+    },
+    {
+      "name": "--cf30a-card",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 19
+    },
+    {
+      "name": "--cf30a-card-soft",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 20
+    },
+    {
+      "name": "--cf30a-blue",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 21
+    },
+    {
+      "name": "--cf30a-blue-strong",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 22
+    },
+    {
+      "name": "--cf30a-blue-soft",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 23
+    },
+    {
+      "name": "--cf30a-shadow",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 24
+    },
+    {
+      "name": "--cf-tone-case-active-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 5
+    },
+    {
+      "name": "--cf-tone-case-active-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-tone-case-active-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-tone-no-case-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-tone-no-case-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-tone-no-case-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-tone-leads-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-tone-leads-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-tone-leads-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-tone-value-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 17
+    },
+    {
+      "name": "--cf-tone-value-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 18
+    },
+    {
+      "name": "--cf-tone-value-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 19
+    },
+    {
+      "name": "--cf-tone-contact-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 21
+    },
+    {
+      "name": "--cf-tone-contact-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 22
+    },
+    {
+      "name": "--cf-tone-contact-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 23
+    },
+    {
+      "name": "--cf-tone-attention-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 25
+    },
+    {
+      "name": "--cf-tone-attention-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 26
+    },
+    {
+      "name": "--cf-tone-attention-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 27
+    },
+    {
+      "name": "--cf-tone-blocked-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 29
+    },
+    {
+      "name": "--cf-tone-blocked-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 30
+    },
+    {
+      "name": "--cf-tone-blocked-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 31
+    },
+    {
+      "name": "--cf-tone-portal-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 33
+    },
+    {
+      "name": "--cf-tone-portal-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 34
+    },
+    {
+      "name": "--cf-tone-portal-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 35
+    },
+    {
+      "name": "--cf-tone-gap-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 37
+    },
+    {
+      "name": "--cf-tone-gap-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 38
+    },
+    {
+      "name": "--cf-tone-gap-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 39
+    },
+    {
+      "name": "--cf-tone-task-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 41
+    },
+    {
+      "name": "--cf-tone-task-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 42
+    },
+    {
+      "name": "--cf-tone-task-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 43
+    },
+    {
+      "name": "--cf-tone-event-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 45
+    },
+    {
+      "name": "--cf-tone-event-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 46
+    },
+    {
+      "name": "--cf-tone-event-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 47
+    },
+    {
+      "name": "--cf-tone-note-bg",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 49
+    },
+    {
+      "name": "--cf-tone-note-text",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 50
+    },
+    {
+      "name": "--cf-tone-note-border",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 51
+    },
+    {
+      "name": "--cf-bg",
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 3
+    },
+    {
+      "name": "--cf-sidebar",
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 4
+    },
+    {
+      "name": "--cf-text",
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 5
+    },
+    {
+      "name": "--cf-muted",
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-line",
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-blue",
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-blue-soft",
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-shadow",
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-shadow-soft",
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-radius-xl",
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-vs-bg",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-vs-bg-2",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-vs-sidebar",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-vs-sidebar-2",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-vs-card",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-vs-card-soft",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-vs-text",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-vs-muted",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-vs-muted-2",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-vs-line",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 16
+    },
+    {
+      "name": "--cf-vs-line-2",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 17
+    },
+    {
+      "name": "--cf-vs-blue",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 18
+    },
+    {
+      "name": "--cf-vs-blue-2",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 19
+    },
+    {
+      "name": "--cf-vs-blue-soft",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 20
+    },
+    {
+      "name": "--cf-vs-green",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 21
+    },
+    {
+      "name": "--cf-vs-red",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 22
+    },
+    {
+      "name": "--cf-vs-amber",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 23
+    },
+    {
+      "name": "--cf-vs-violet",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 24
+    },
+    {
+      "name": "--cf-vs-shadow",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 25
+    },
+    {
+      "name": "--cf-vs-shadow-soft",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 26
+    },
+    {
+      "name": "--cf-vs-radius-xl",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 27
+    },
+    {
+      "name": "--cf-vs-radius-lg",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 28
+    },
+    {
+      "name": "--cf-vs-radius-md",
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 29
+    },
+    {
+      "name": "--cf-blue",
+      "file": "src/styles/visual-stage03-leads.css",
+      "line": 3
+    },
+    {
+      "name": "--cf-blue-soft",
+      "file": "src/styles/visual-stage03-leads.css",
+      "line": 4
+    },
+    {
+      "name": "--cf-text",
+      "file": "src/styles/visual-stage03-leads.css",
+      "line": 5
+    },
+    {
+      "name": "--cf-muted",
+      "file": "src/styles/visual-stage03-leads.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-line",
+      "file": "src/styles/visual-stage03-leads.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-card",
+      "file": "src/styles/visual-stage03-leads.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-blue",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 3
+    },
+    {
+      "name": "--cf-blue-soft",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 4
+    },
+    {
+      "name": "--cf-green",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 5
+    },
+    {
+      "name": "--cf-red",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-amber",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-violet",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-text",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-muted",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-line",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-card",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-soft",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-client-card",
+      "file": "src/styles/visual-stage06-client-detail.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-client-soft",
+      "file": "src/styles/visual-stage06-client-detail.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-client-text",
+      "file": "src/styles/visual-stage06-client-detail.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-client-muted",
+      "file": "src/styles/visual-stage06-client-detail.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-client-line",
+      "file": "src/styles/visual-stage06-client-detail.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-client-blue",
+      "file": "src/styles/visual-stage06-client-detail.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-cases-card",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-cases-soft",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-cases-text",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-cases-muted",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-cases-line",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-cases-blue",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-cases-green",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-cases-red",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 16
+    },
+    {
+      "name": "--cf-cases-amber",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 17
+    },
+    {
+      "name": "--cf-cases-shadow",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 18
+    },
+    {
+      "name": "--cf-cases-shadow-soft",
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 19
+    },
+    {
+      "name": "--cf16-bg",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 8
+    },
+    {
+      "name": "--cf16-bg-2",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 9
+    },
+    {
+      "name": "--cf16-sidebar",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 10
+    },
+    {
+      "name": "--cf16-sidebar-2",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 11
+    },
+    {
+      "name": "--cf16-card",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 12
+    },
+    {
+      "name": "--cf16-card-soft",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 13
+    },
+    {
+      "name": "--cf16-text",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 14
+    },
+    {
+      "name": "--cf16-muted",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 15
+    },
+    {
+      "name": "--cf16-muted-2",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 16
+    },
+    {
+      "name": "--cf16-line",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 17
+    },
+    {
+      "name": "--cf16-line-2",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 18
+    },
+    {
+      "name": "--cf16-blue",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 19
+    },
+    {
+      "name": "--cf16-blue-2",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 20
+    },
+    {
+      "name": "--cf16-blue-soft",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 21
+    },
+    {
+      "name": "--cf16-green",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 22
+    },
+    {
+      "name": "--cf16-green-soft",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 23
+    },
+    {
+      "name": "--cf16-red",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 24
+    },
+    {
+      "name": "--cf16-red-soft",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 25
+    },
+    {
+      "name": "--cf16-amber",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 26
+    },
+    {
+      "name": "--cf16-amber-soft",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 27
+    },
+    {
+      "name": "--cf16-violet",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 28
+    },
+    {
+      "name": "--cf16-violet-soft",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 29
+    },
+    {
+      "name": "--cf16-shadow",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 30
+    },
+    {
+      "name": "--cf16-shadow-soft",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 31
+    },
+    {
+      "name": "--cf16-radius-xl",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 32
+    },
+    {
+      "name": "--cf16-radius-lg",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 33
+    },
+    {
+      "name": "--cf16-radius-md",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 34
+    },
+    {
+      "name": "--cf17-bg",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 7
+    },
+    {
+      "name": "--cf17-bg-2",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 8
+    },
+    {
+      "name": "--cf17-sidebar",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 9
+    },
+    {
+      "name": "--cf17-sidebar-2",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 10
+    },
+    {
+      "name": "--cf17-card",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 11
+    },
+    {
+      "name": "--cf17-card-soft",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 12
+    },
+    {
+      "name": "--cf17-text",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 13
+    },
+    {
+      "name": "--cf17-muted",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 14
+    },
+    {
+      "name": "--cf17-muted-2",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 15
+    },
+    {
+      "name": "--cf17-line",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 16
+    },
+    {
+      "name": "--cf17-line-2",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 17
+    },
+    {
+      "name": "--cf17-blue",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 18
+    },
+    {
+      "name": "--cf17-blue-2",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 19
+    },
+    {
+      "name": "--cf17-blue-soft",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 20
+    },
+    {
+      "name": "--cf17-green",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 21
+    },
+    {
+      "name": "--cf17-green-soft",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 22
+    },
+    {
+      "name": "--cf17-red",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 23
+    },
+    {
+      "name": "--cf17-red-soft",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 24
+    },
+    {
+      "name": "--cf17-amber",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 25
+    },
+    {
+      "name": "--cf17-amber-soft",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 26
+    },
+    {
+      "name": "--cf17-violet",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 27
+    },
+    {
+      "name": "--cf17-violet-soft",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 28
+    },
+    {
+      "name": "--cf17-shadow",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 29
+    },
+    {
+      "name": "--cf17-shadow-soft",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 30
+    },
+    {
+      "name": "--cf17-radius-xl",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 31
+    },
+    {
+      "name": "--cf17-radius-lg",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 32
+    },
+    {
+      "name": "--cf17-radius-md",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 33
+    },
+    {
+      "name": "--cf18-bg",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 7
+    },
+    {
+      "name": "--cf18-bg-2",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 8
+    },
+    {
+      "name": "--cf18-sidebar",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 9
+    },
+    {
+      "name": "--cf18-card",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 10
+    },
+    {
+      "name": "--cf18-card-soft",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 11
+    },
+    {
+      "name": "--cf18-text",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 12
+    },
+    {
+      "name": "--cf18-muted",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 13
+    },
+    {
+      "name": "--cf18-muted-2",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 14
+    },
+    {
+      "name": "--cf18-line",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 15
+    },
+    {
+      "name": "--cf18-line-2",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 16
+    },
+    {
+      "name": "--cf18-blue",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 17
+    },
+    {
+      "name": "--cf18-blue-2",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 18
+    },
+    {
+      "name": "--cf18-blue-soft",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 19
+    },
+    {
+      "name": "--cf18-green",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 20
+    },
+    {
+      "name": "--cf18-green-soft",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 21
+    },
+    {
+      "name": "--cf18-red",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 22
+    },
+    {
+      "name": "--cf18-red-soft",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 23
+    },
+    {
+      "name": "--cf18-amber",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 24
+    },
+    {
+      "name": "--cf18-amber-soft",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 25
+    },
+    {
+      "name": "--cf18-violet",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 26
+    },
+    {
+      "name": "--cf18-violet-soft",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 27
+    },
+    {
+      "name": "--cf18-shadow",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 28
+    },
+    {
+      "name": "--cf18-shadow-soft",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 29
+    },
+    {
+      "name": "--cf18-radius-xl",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 30
+    },
+    {
+      "name": "--cf18-radius-lg",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 31
+    },
+    {
+      "name": "--cf18-radius-md",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 32
+    },
+    {
+      "name": "--cf-blue",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 46
+    },
+    {
+      "name": "--cf-blue-soft",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 47
+    },
+    {
+      "name": "--cf-text",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 48
+    },
+    {
+      "name": "--cf-muted",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 49
+    },
+    {
+      "name": "--cf-line",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 50
+    },
+    {
+      "name": "--cf-card",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 51
+    },
+    {
+      "name": "--stage19-ink",
+      "file": "src/styles/visual-stage19-clients-safe-css.css",
+      "line": 7
+    },
+    {
+      "name": "--stage19-muted",
+      "file": "src/styles/visual-stage19-clients-safe-css.css",
+      "line": 8
+    },
+    {
+      "name": "--stage19-card",
+      "file": "src/styles/visual-stage19-clients-safe-css.css",
+      "line": 9
+    },
+    {
+      "name": "--stage19-card-strong",
+      "file": "src/styles/visual-stage19-clients-safe-css.css",
+      "line": 10
+    },
+    {
+      "name": "--stage19-line",
+      "file": "src/styles/visual-stage19-clients-safe-css.css",
+      "line": 11
+    },
+    {
+      "name": "--stage19-shadow",
+      "file": "src/styles/visual-stage19-clients-safe-css.css",
+      "line": 12
+    },
+    {
+      "name": "--stage19-soft-shadow",
+      "file": "src/styles/visual-stage19-clients-safe-css.css",
+      "line": 13
+    },
+    {
+      "name": "--stage20-ink",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 8
+    },
+    {
+      "name": "--stage20-muted",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 9
+    },
+    {
+      "name": "--stage20-muted-2",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 10
+    },
+    {
+      "name": "--stage20-line",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 11
+    },
+    {
+      "name": "--stage20-line-2",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 12
+    },
+    {
+      "name": "--stage20-card",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 13
+    },
+    {
+      "name": "--stage20-card-strong",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 14
+    },
+    {
+      "name": "--stage20-card-soft",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 15
+    },
+    {
+      "name": "--stage20-blue",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 16
+    },
+    {
+      "name": "--stage20-blue-soft",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 17
+    },
+    {
+      "name": "--stage20-green",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 18
+    },
+    {
+      "name": "--stage20-green-soft",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 19
+    },
+    {
+      "name": "--stage20-red",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 20
+    },
+    {
+      "name": "--stage20-red-soft",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 21
+    },
+    {
+      "name": "--stage20-amber",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 22
+    },
+    {
+      "name": "--stage20-amber-soft",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 23
+    },
+    {
+      "name": "--stage20-shadow",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 24
+    },
+    {
+      "name": "--stage20-shadow-soft",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 25
+    },
+    {
+      "name": "--cf21-bg",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 8
+    },
+    {
+      "name": "--cf21-bg-2",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 9
+    },
+    {
+      "name": "--cf21-card",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 10
+    },
+    {
+      "name": "--cf21-card-soft",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 11
+    },
+    {
+      "name": "--cf21-text",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 12
+    },
+    {
+      "name": "--cf21-muted",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 13
+    },
+    {
+      "name": "--cf21-muted-2",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 14
+    },
+    {
+      "name": "--cf21-line",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 15
+    },
+    {
+      "name": "--cf21-line-2",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 16
+    },
+    {
+      "name": "--cf21-blue",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 17
+    },
+    {
+      "name": "--cf21-blue-2",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 18
+    },
+    {
+      "name": "--cf21-blue-soft",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 19
+    },
+    {
+      "name": "--cf21-green",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 20
+    },
+    {
+      "name": "--cf21-green-soft",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 21
+    },
+    {
+      "name": "--cf21-red",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 22
+    },
+    {
+      "name": "--cf21-red-soft",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 23
+    },
+    {
+      "name": "--cf21-amber",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 24
+    },
+    {
+      "name": "--cf21-amber-soft",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 25
+    },
+    {
+      "name": "--cf21-violet",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 26
+    },
+    {
+      "name": "--cf21-violet-soft",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 27
+    },
+    {
+      "name": "--cf21-shadow",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 28
+    },
+    {
+      "name": "--cf21-shadow-soft",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 29
+    },
+    {
+      "name": "--cf21-radius-xl",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 30
+    },
+    {
+      "name": "--cf21-radius-lg",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 31
+    },
+    {
+      "name": "--cf21-radius-md",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 32
+    },
+    {
+      "name": "--cf22-bg",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 10
+    },
+    {
+      "name": "--cf22-bg-2",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 11
+    },
+    {
+      "name": "--cf22-sidebar",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 12
+    },
+    {
+      "name": "--cf22-sidebar-2",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 13
+    },
+    {
+      "name": "--cf22-card",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 14
+    },
+    {
+      "name": "--cf22-card-soft",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 15
+    },
+    {
+      "name": "--cf22-text",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 16
+    },
+    {
+      "name": "--cf22-muted",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 17
+    },
+    {
+      "name": "--cf22-muted-2",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 18
+    },
+    {
+      "name": "--cf22-line",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 19
+    },
+    {
+      "name": "--cf22-line-2",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 20
+    },
+    {
+      "name": "--cf22-blue",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 21
+    },
+    {
+      "name": "--cf22-blue-2",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 22
+    },
+    {
+      "name": "--cf22-blue-soft",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 23
+    },
+    {
+      "name": "--cf22-green",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 24
+    },
+    {
+      "name": "--cf22-green-soft",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 25
+    },
+    {
+      "name": "--cf22-red",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 26
+    },
+    {
+      "name": "--cf22-red-soft",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 27
+    },
+    {
+      "name": "--cf22-amber",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 28
+    },
+    {
+      "name": "--cf22-amber-soft",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 29
+    },
+    {
+      "name": "--cf22-violet",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 30
+    },
+    {
+      "name": "--cf22-violet-soft",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 31
+    },
+    {
+      "name": "--cf22-shadow",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 32
+    },
+    {
+      "name": "--cf22-shadow-soft",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 33
+    },
+    {
+      "name": "--cf22-radius-xl",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 34
+    },
+    {
+      "name": "--cf22-radius-lg",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 35
+    },
+    {
+      "name": "--cf22-radius-md",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 36
+    },
+    {
+      "name": "--cf23-bg",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 7
+    },
+    {
+      "name": "--cf23-bg-2",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 8
+    },
+    {
+      "name": "--cf23-sidebar",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 9
+    },
+    {
+      "name": "--cf23-card",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 10
+    },
+    {
+      "name": "--cf23-card-soft",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 11
+    },
+    {
+      "name": "--cf23-text",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 12
+    },
+    {
+      "name": "--cf23-muted",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 13
+    },
+    {
+      "name": "--cf23-muted-2",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 14
+    },
+    {
+      "name": "--cf23-line",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 15
+    },
+    {
+      "name": "--cf23-line-2",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 16
+    },
+    {
+      "name": "--cf23-blue",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 17
+    },
+    {
+      "name": "--cf23-blue-2",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 18
+    },
+    {
+      "name": "--cf23-blue-soft",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 19
+    },
+    {
+      "name": "--cf23-green",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 20
+    },
+    {
+      "name": "--cf23-green-soft",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 21
+    },
+    {
+      "name": "--cf23-red",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 22
+    },
+    {
+      "name": "--cf23-red-soft",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 23
+    },
+    {
+      "name": "--cf23-amber",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 24
+    },
+    {
+      "name": "--cf23-amber-soft",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 25
+    },
+    {
+      "name": "--cf23-violet",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 26
+    },
+    {
+      "name": "--cf23-violet-soft",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 27
+    },
+    {
+      "name": "--cf23-shadow",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 28
+    },
+    {
+      "name": "--cf23-shadow-soft",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 29
+    },
+    {
+      "name": "--cf23-radius-xl",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 30
+    },
+    {
+      "name": "--cf23-radius-lg",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 31
+    },
+    {
+      "name": "--cf23-radius-md",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 32
+    },
+    {
+      "name": "--cf24-bg",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 7
+    },
+    {
+      "name": "--cf24-bg-2",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 8
+    },
+    {
+      "name": "--cf24-card",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 9
+    },
+    {
+      "name": "--cf24-card-soft",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 10
+    },
+    {
+      "name": "--cf24-text",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 11
+    },
+    {
+      "name": "--cf24-muted",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 12
+    },
+    {
+      "name": "--cf24-muted-2",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 13
+    },
+    {
+      "name": "--cf24-line",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 14
+    },
+    {
+      "name": "--cf24-line-2",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 15
+    },
+    {
+      "name": "--cf24-blue",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 16
+    },
+    {
+      "name": "--cf24-blue-2",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 17
+    },
+    {
+      "name": "--cf24-blue-soft",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 18
+    },
+    {
+      "name": "--cf24-green",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 19
+    },
+    {
+      "name": "--cf24-green-soft",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 20
+    },
+    {
+      "name": "--cf24-red",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 21
+    },
+    {
+      "name": "--cf24-red-soft",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 22
+    },
+    {
+      "name": "--cf24-amber",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 23
+    },
+    {
+      "name": "--cf24-amber-soft",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 24
+    },
+    {
+      "name": "--cf24-violet",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 25
+    },
+    {
+      "name": "--cf24-violet-soft",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 26
+    },
+    {
+      "name": "--cf24-shadow",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 27
+    },
+    {
+      "name": "--cf24-shadow-soft",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "line": 28
+    }
+  ],
+  "dangerColorClasses": [
+    {
+      "className": "border-rose-200",
+      "file": "src/components/AppChunkErrorBoundary.tsx",
+      "line": 100
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/components/AppChunkErrorBoundary.tsx",
+      "line": 101
+    },
+    {
+      "className": "bg-red-100",
+      "file": "src/components/ErrorBoundary.tsx",
+      "line": 32
+    },
+    {
+      "className": "text-red-600",
+      "file": "src/components/ErrorBoundary.tsx",
+      "line": 32
+    },
+    {
+      "className": "border-red-500",
+      "file": "src/components/ui/select.tsx",
+      "line": 42
+    },
+    {
+      "className": "ring-red-500",
+      "file": "src/components/ui/select.tsx",
+      "line": 42
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/lib/access.ts",
+      "line": 87
+    },
+    {
+      "className": "bg-rose-500",
+      "file": "src/lib/access.ts",
+      "line": 87
+    },
+    {
+      "className": "bg-rose-500",
+      "file": "src/lib/access.ts",
+      "line": 88
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/lib/access.ts",
+      "line": 88
+    },
+    {
+      "className": "text-rose-400",
+      "file": "src/lib/access.ts",
+      "line": 88
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/lib/access.ts",
+      "line": 132
+    },
+    {
+      "className": "bg-rose-500",
+      "file": "src/lib/access.ts",
+      "line": 132
+    },
+    {
+      "className": "bg-rose-500",
+      "file": "src/lib/access.ts",
+      "line": 133
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/lib/access.ts",
+      "line": 133
+    },
+    {
+      "className": "text-rose-400",
+      "file": "src/lib/access.ts",
+      "line": 133
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/lib/access.ts",
+      "line": 167
+    },
+    {
+      "className": "bg-rose-500",
+      "file": "src/lib/access.ts",
+      "line": 167
+    },
+    {
+      "className": "bg-rose-500",
+      "file": "src/lib/access.ts",
+      "line": 168
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/lib/access.ts",
+      "line": 168
+    },
+    {
+      "className": "text-rose-400",
+      "file": "src/lib/access.ts",
+      "line": 168
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Activity.tsx",
+      "line": 699
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/pages/Activity.tsx",
+      "line": 699
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Activity.tsx",
+      "line": 699
+    },
+    {
+      "className": "border-rose-100",
+      "file": "src/pages/Calendar.tsx",
+      "line": 285
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Calendar.tsx",
+      "line": 285
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/Calendar.tsx",
+      "line": 285
+    },
+    {
+      "className": "border-rose-200",
+      "file": "src/pages/Calendar.tsx",
+      "line": 358
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Calendar.tsx",
+      "line": 358
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/Calendar.tsx",
+      "line": 358
+    },
+    {
+      "className": "border-rose-300",
+      "file": "src/pages/Calendar.tsx",
+      "line": 358
+    },
+    {
+      "className": "bg-rose-100",
+      "file": "src/pages/Calendar.tsx",
+      "line": 358
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Cases.tsx",
+      "line": 661
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Cases.tsx",
+      "line": 661
+    },
+    {
+      "className": "text-red-500",
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 223
+    },
+    {
+      "className": "bg-red-100",
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 265
+    },
+    {
+      "className": "text-red-600",
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 265
+    },
+    {
+      "className": "border-red-200",
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 276
+    },
+    {
+      "className": "text-red-500",
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 276
+    },
+    {
+      "className": "text-red-600",
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 377
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 377
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Clients.tsx",
+      "line": 517
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Clients.tsx",
+      "line": 518
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/pages/Clients.tsx",
+      "line": 518
+    },
+    {
+      "className": "text-red-500",
+      "file": "src/pages/Dashboard.tsx",
+      "line": 228
+    },
+    {
+      "className": "text-red-600",
+      "file": "src/pages/Dashboard.tsx",
+      "line": 228
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/pages/Dashboard.tsx",
+      "line": 228
+    },
+    {
+      "className": "text-red-600",
+      "file": "src/pages/Dashboard.tsx",
+      "line": 333
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/pages/Dashboard.tsx",
+      "line": 335
+    },
+    {
+      "className": "text-red-500",
+      "file": "src/pages/Dashboard.tsx",
+      "line": 336
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Leads.tsx",
+      "line": 745
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Leads.tsx",
+      "line": 746
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/pages/Leads.tsx",
+      "line": 746
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 643
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 643
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 643
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Tasks.tsx",
+      "line": 997
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Tasks.tsx",
+      "line": 998
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/pages/Tasks.tsx",
+      "line": 998
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 149
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 149
+    },
+    {
+      "className": "border-rose-100",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 149
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 440
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 441
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/TasksStable.tsx",
+      "line": 441
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Templates.tsx",
+      "line": 393
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Templates.tsx",
+      "line": 393
+    },
+    {
+      "className": "bg-rose-600",
+      "file": "src/pages/Templates.tsx",
+      "line": 407
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Templates.tsx",
+      "line": 458
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Templates.tsx",
+      "line": 458
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/Templates.tsx",
+      "line": 458
+    },
+    {
+      "className": "border-red-100",
+      "file": "src/pages/Today.tsx",
+      "line": 1286
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/pages/Today.tsx",
+      "line": 1286
+    },
+    {
+      "className": "border-red-200",
+      "file": "src/pages/Today.tsx",
+      "line": 1286
+    },
+    {
+      "className": "bg-red-100",
+      "file": "src/pages/Today.tsx",
+      "line": 1286
+    },
+    {
+      "className": "text-red-700",
+      "file": "src/pages/Today.tsx",
+      "line": 1287
+    },
+    {
+      "className": "text-red-950",
+      "file": "src/pages/Today.tsx",
+      "line": 1288
+    },
+    {
+      "className": "text-red-700",
+      "file": "src/pages/Today.tsx",
+      "line": 1289
+    },
+    {
+      "className": "border-red-100",
+      "file": "src/pages/Today.tsx",
+      "line": 1304
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/pages/Today.tsx",
+      "line": 1304
+    },
+    {
+      "className": "text-red-800",
+      "file": "src/pages/Today.tsx",
+      "line": 1305
+    },
+    {
+      "className": "border-red-100",
+      "file": "src/pages/Today.tsx",
+      "line": 1314
+    },
+    {
+      "className": "border-red-200",
+      "file": "src/pages/Today.tsx",
+      "line": 1314
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/pages/Today.tsx",
+      "line": 1314
+    },
+    {
+      "className": "text-red-950",
+      "file": "src/pages/Today.tsx",
+      "line": 1316
+    },
+    {
+      "className": "text-red-700",
+      "file": "src/pages/Today.tsx",
+      "line": 1317
+    },
+    {
+      "className": "border-rose-200",
+      "file": "src/pages/Today.tsx",
+      "line": 2182
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/Today.tsx",
+      "line": 2184
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Today.tsx",
+      "line": 2302
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Today.tsx",
+      "line": 2303
+    },
+    {
+      "className": "border-rose-100",
+      "file": "src/pages/Today.tsx",
+      "line": 2422
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Today.tsx",
+      "line": 2422
+    },
+    {
+      "className": "border-rose-100",
+      "file": "src/pages/Today.tsx",
+      "line": 2431
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/pages/Today.tsx",
+      "line": 2446
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Today.tsx",
+      "line": 2473
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/pages/Today.tsx",
+      "line": 2485
+    },
+    {
+      "className": "border-rose-100",
+      "file": "src/pages/Today.tsx",
+      "line": 2486
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Today.tsx",
+      "line": 2486
+    },
+    {
+      "className": "border-rose-200",
+      "file": "src/pages/Today.tsx",
+      "line": 2798
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Today.tsx",
+      "line": 2798
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/Today.tsx",
+      "line": 2798
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/Today.tsx",
+      "line": 2800
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/Today.tsx",
+      "line": 2849
+    },
+    {
+      "className": "border-rose-200",
+      "file": "src/pages/Today.tsx",
+      "line": 2850
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/Today.tsx",
+      "line": 2850
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 564
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 564
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 896
+    },
+    {
+      "className": "border-rose-200",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 896
+    },
+    {
+      "className": "border-rose-100",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 989
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 989
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 989
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 1107
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/pages/TodayStable.tsx",
+      "line": 1107
+    },
+    {
+      "className": "text-rose-500",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 122
+    },
+    {
+      "className": "text-rose-600",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 122
+    },
+    {
+      "className": "text-rose-700",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 122
+    },
+    {
+      "className": "text-red-500",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 122
+    },
+    {
+      "className": "text-red-600",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 122
+    },
+    {
+      "className": "text-red-700",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "line": 122
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 226
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 227
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 470
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 471
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 459
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 460
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 461
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 462
+    },
+    {
+      "className": "bg-rose-50",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 463
+    },
+    {
+      "className": "bg-red-50",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 464
+    }
+  ],
+  "inlineStyles": [
+    {
+      "file": "src/components/ContextActionDialogs.tsx",
+      "line": 153
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 122
+    },
+    {
+      "file": "src/components/ui/progress.tsx",
+      "line": 19
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 789
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1475
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1657
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1352
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1476
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 1670
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 705
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 808
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx",
+      "line": 8
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx",
+      "line": 9
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx",
+      "line": 14
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx",
+      "line": 31
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx",
+      "line": 32
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx",
+      "line": 47
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx",
+      "line": 49
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx",
+      "line": 52
+    },
+    {
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 27
+    },
+    {
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 38
+    }
+  ],
+  "localStyleRisk": [
+    {
+      "file": "src/App.tsx"
+    },
+    {
+      "file": "src/components/admin-tools/admin-tools-export.ts"
+    },
+    {
+      "file": "src/components/admin-tools/admin-tools-storage.ts"
+    },
+    {
+      "file": "src/components/admin-tools/AdminDebugToolbar.tsx"
+    },
+    {
+      "file": "src/components/GlobalAiAssistant.tsx"
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx"
+    },
+    {
+      "file": "src/components/PwaInstallPrompt.tsx"
+    },
+    {
+      "file": "src/components/StatShortcutCard.tsx"
+    },
+    {
+      "file": "src/components/task-editor-dialog.tsx"
+    },
+    {
+      "file": "src/components/TodayAiAssistant.tsx"
+    },
+    {
+      "file": "src/components/ui/dialog.tsx"
+    },
+    {
+      "file": "src/hooks/useSupabaseSession.ts"
+    },
+    {
+      "file": "src/hooks/useWorkspace.ts"
+    },
+    {
+      "file": "src/index.css"
+    },
+    {
+      "file": "src/lib/ai-drafts.ts"
+    },
+    {
+      "file": "src/lib/ai-usage-guard.ts"
+    },
+    {
+      "file": "src/lib/schedule-conflicts.ts"
+    },
+    {
+      "file": "src/lib/scheduling.ts"
+    },
+    {
+      "file": "src/lib/stage31-today-tiles-interaction.ts"
+    },
+    {
+      "file": "src/lib/stage32-today-relations-loading-polish.ts"
+    },
+    {
+      "file": "src/lib/supabase-fallback.ts"
+    },
+    {
+      "file": "src/pages/Activity.tsx"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx"
+    },
+    {
+      "file": "src/pages/Billing.tsx"
+    },
+    {
+      "file": "src/pages/Calendar.tsx"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx"
+    },
+    {
+      "file": "src/pages/Cases.tsx"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx"
+    },
+    {
+      "file": "src/pages/Clients.tsx"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx"
+    },
+    {
+      "file": "src/pages/Leads.tsx"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx"
+    },
+    {
+      "file": "src/pages/Settings.tsx"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx"
+    },
+    {
+      "file": "src/pages/Tasks.tsx"
+    },
+    {
+      "file": "src/pages/Today.tsx"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx"
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx"
+    },
+    {
+      "file": "src/pages/UiPreviewVNextFull.tsx"
+    },
+    {
+      "file": "src/server/ai-application-operator.ts"
+    },
+    {
+      "file": "src/server/ai-assistant.ts"
+    },
+    {
+      "file": "src/server/google-calendar-inbound.ts"
+    },
+    {
+      "file": "src/server/google-calendar-outbound.ts"
+    },
+    {
+      "file": "src/server/google-calendar-sync.ts"
+    },
+    {
+      "file": "src/server/payments.ts"
+    },
+    {
+      "file": "src/server/records.ts"
+    },
+    {
+      "file": "src/server/_access-gate.ts"
+    },
+    {
+      "file": "src/server/_digest.ts"
+    },
+    {
+      "file": "src/styles/admin-tools.css"
+    },
+    {
+      "file": "src/styles/closeflow-vnext-ui-contract.css"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css"
+    },
+    {
+      "file": "src/styles/eliteflow-metric-text-clip-tasks-repair.css"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css"
+    },
+    {
+      "file": "src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css"
+    },
+    {
+      "file": "src/styles/hotfix-ai-drafts-right-rail-stage28.css"
+    },
+    {
+      "file": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css"
+    },
+    {
+      "file": "src/styles/hotfix-right-rail-dark-wrappers.css"
+    },
+    {
+      "file": "src/styles/hotfix-task-stat-tiles-clean.css"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css"
+    },
+    {
+      "file": "src/styles/stage33a-ai-drafts-generated-text-contrast.css"
+    },
+    {
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css"
+    },
+    {
+      "file": "src/styles/stage36-unified-light-pages.css"
+    },
+    {
+      "file": "src/styles/stage7a-tasks-blue-outline-fix.css"
+    },
+    {
+      "file": "src/styles/stageA19v2-sidebar-nav-contrast-fix.css"
+    },
+    {
+      "file": "src/styles/stageA20-sidebar-today-click-fix.css"
+    },
+    {
+      "file": "src/styles/stageA20c-sidebar-today-hitbox-fix.css"
+    },
+    {
+      "file": "src/styles/stageA20e-sidebar-today-tone-lock.css"
+    },
+    {
+      "file": "src/styles/stageA25-today-relations-lead-badge-inline.css"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css"
+    },
+    {
+      "file": "src/styles/visual-stage05-clients.css"
+    },
+    {
+      "file": "src/styles/visual-stage08-case-detail.css"
+    },
+    {
+      "file": "src/styles/visual-stage10-notifications-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage12-client-detail-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage13-case-detail-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage14-lead-detail-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage16-billing-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage17-support-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css"
+    },
+    {
+      "file": "src/styles/visual-stage19-settings-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage20-lead-form-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage22-event-form-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage23-client-case-forms-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css"
+    },
+    {
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css"
+    },
+    {
+      "file": "src/styles/visual-stage27-cases-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage3-pipeline-and-case.css"
+    },
+    {
+      "file": "src/styles/visual-stage8-activity-vnext.css"
+    },
+    {
+      "file": "src/styles/visual-stage9-ai-drafts-vnext.css"
+    }
+  ],
+  "metricTileTokens": [
+    {
+      "name": "--case-stage2-danger-bg",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 18
+    },
+    {
+      "name": "--case-stage2-danger-line",
+      "file": "src/styles/case-detail-stage2.css",
+      "line": 19
+    },
+    {
+      "name": "--cf-case-danger",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-case-danger-bg",
+      "file": "src/styles/closeflow-case-detail-focus.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-metric-tile-radius",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-metric-tile-border",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-metric-tile-bg",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-metric-tile-shadow",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-metric-tile-shadow-hover",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-metric-tile-label",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-metric-tile-value",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-metric-tile-helper",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-metric-tile-icon-bg",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 16
+    },
+    {
+      "name": "--cf-metric-tile-icon",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 17
+    },
+    {
+      "name": "--cf-metric-tile-min-height",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 18
+    },
+    {
+      "name": "--cf-metric-tile-gap",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 19
+    },
+    {
+      "name": "--cf-metric-tile-min-height",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 283
+    },
+    {
+      "name": "--cf-metric-tile-gap",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 284
+    },
+    {
+      "name": "--eliteflow-metric-radius",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 7
+    },
+    {
+      "name": "--eliteflow-metric-border",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 8
+    },
+    {
+      "name": "--eliteflow-metric-bg",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 9
+    },
+    {
+      "name": "--eliteflow-metric-label",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 10
+    },
+    {
+      "name": "--eliteflow-metric-value",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 11
+    },
+    {
+      "name": "--eliteflow-metric-icon-bg",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 12
+    },
+    {
+      "name": "--eliteflow-metric-icon",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 13
+    },
+    {
+      "name": "--eliteflow-metric-shadow",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 14
+    },
+    {
+      "name": "--eliteflow-metric-shadow-hover",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 15
+    },
+    {
+      "name": "--eliteflow-metric-min-height",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 16
+    },
+    {
+      "name": "--eliteflow-metric-gap",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 17
+    },
+    {
+      "name": "--eliteflow-metric-min-height",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 290
+    },
+    {
+      "name": "--eliteflow-metric-gap",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 291
+    },
+    {
+      "name": "--cf-semantic-danger-bg",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-semantic-danger-border",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-semantic-danger-text",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "line": 16
+    }
+  ]
+}
