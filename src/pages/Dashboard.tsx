@@ -325,15 +325,15 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-none shadow-sm">
+          <Card className="border-none shadow-sm cf-severity-panel" data-cf-severity="error">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-500">Blokują</p>
-                  <h3 className="text-2xl font-bold text-red-600">{stats.blocked}</h3>
+                  <h3 className="text-2xl font-bold cf-severity-text-error">{stats.blocked}</h3>
                 </div>
-                <div className="bg-red-50 p-3 rounded-xl">
-                  <AlertCircle className="w-6 h-6 text-red-500" />
+                <div className="cf-severity-dot" data-cf-severity="error">
+                  <AlertCircle className="w-6 h-6" />
                 </div>
               </div>
             </CardContent>

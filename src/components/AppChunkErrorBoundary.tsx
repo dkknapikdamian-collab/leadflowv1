@@ -78,9 +78,9 @@ export class AppChunkErrorBoundary extends Component<AppChunkErrorBoundaryProps,
     if (isChunkLoadError(this.state.error)) {
       return (
         <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-          <div className="max-w-md rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-            <h1 className="text-lg font-bold text-slate-900">Odświeżamy aplikację</h1>
-            <p className="mt-2 text-sm text-slate-600">
+          <div className="max-w-md cf-alert cf-alert-info p-6 text-center shadow-sm">
+            <h1 className="cf-alert-title text-lg font-bold">Odświeżamy aplikację</h1>
+            <p className="cf-alert-muted mt-2 text-sm">
               Wykryto starszą wersję plików aplikacji. Strona odświeży się automatycznie.
             </p>
             <button
@@ -97,9 +97,9 @@ export class AppChunkErrorBoundary extends Component<AppChunkErrorBoundaryProps,
 
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-        <div className="max-w-md rounded-2xl border border-rose-200 bg-white p-6 text-center shadow-sm">
-          <h1 className="text-lg font-bold text-rose-700">Nie udało się załadować widoku</h1>
-          <p className="mt-2 text-sm text-slate-600">Odśwież stronę i spróbuj ponownie.</p>
+        <div className="max-w-md cf-alert cf-alert-error p-6 text-center shadow-sm">
+          <h1 className="cf-alert-title text-lg font-bold">Nie udało się załadować widoku</h1>
+          <p className="cf-alert-muted mt-2 text-sm">Odśwież stronę i spróbuj ponownie.</p>
           <button
             type="button"
             className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white"

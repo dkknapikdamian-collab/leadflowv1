@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T14:13:58.839Z
+Generated: 2026-05-08T14:50:28.145Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -1233,8 +1233,6 @@ import {
 - src/components/admin-tools/AdminDebugToolbar.tsx:502 `admin-target-card`
 - src/components/admin-tools/AdminDebugToolbar.tsx:616 `admin-button-list`
 - src/components/admin-tools/AdminDebugToolbar.tsx:618 `admin-button-row`
-- src/components/AppChunkErrorBoundary.tsx:100 `max-w-md rounded-2xl border border-rose-200 bg-white p-6 text-center shadow-sm`
-- src/components/AppChunkErrorBoundary.tsx:101 `text-lg font-bold text-rose-700`
 - src/components/ErrorBoundary.tsx:32 `w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6`
 - src/components/GlobalQuickActions.tsx:12 `global-actions`
 - src/components/GlobalQuickActions.tsx:78 `global-actions sticky top-16 z-20 overflow-x-auto`
@@ -1500,9 +1498,6 @@ import {
 - src/pages/Clients.tsx:600 `right-card`
 - src/pages/Clients.tsx:611 `note`
 - src/pages/Dashboard.tsx:228 `w-full justify-start gap-3 text-red-500 hover:text-red-600 hover:bg-red-50`
-- src/pages/Dashboard.tsx:333 `text-2xl font-bold text-red-600`
-- src/pages/Dashboard.tsx:335 `bg-red-50 p-3 rounded-xl`
-- src/pages/Dashboard.tsx:336 `w-6 h-6 text-red-500`
 - src/pages/LeadDetail.tsx:416 `lead-detail-chip-button`
 - src/pages/LeadDetail.tsx:749 `lead-detail-work-metric`
 - src/pages/LeadDetail.tsx:753 `lead-detail-work-metric`
@@ -1579,3 +1574,8 @@ import {
 - src/pages/NotificationsCenter.tsx:758 `right-card notifications-right-card`
 - src/pages/NotificationsCenter.tsx:759 `notifications-right-card-head`
 - src/pages/NotificationsCenter.tsx:777 `right-card notifications-right-card`
+- src/pages/NotificationsCenter.tsx:778 `notifications-right-card-head`
+- src/pages/ResponseTemplates.tsx:218 `cf-readable-card border-none app-surface-strong app-shadow`
+- src/pages/ResponseTemplates.tsx:231 `cf-readable-card border-none app-surface-strong app-shadow`
+- src/pages/ResponseTemplates.tsx:236 `cf-readable-card border-none app-surface-strong app-shadow`
+- src/pages/ResponseTemplates.tsx:264 `cf-readable-card border-dashed app-surface-strong app-shadow`

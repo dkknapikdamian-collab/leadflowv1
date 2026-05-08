@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T14:13:58.839Z",
+  "generatedAt": "2026-05-08T14:50:28.145Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -5128,16 +5128,6 @@
       "className": "admin-button-row"
     },
     {
-      "file": "src/components/AppChunkErrorBoundary.tsx",
-      "line": 100,
-      "className": "max-w-md rounded-2xl border border-rose-200 bg-white p-6 text-center shadow-sm"
-    },
-    {
-      "file": "src/components/AppChunkErrorBoundary.tsx",
-      "line": 101,
-      "className": "text-lg font-bold text-rose-700"
-    },
-    {
       "file": "src/components/ErrorBoundary.tsx",
       "line": 32,
       "className": "w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6"
@@ -6461,21 +6451,6 @@
       "file": "src/pages/Dashboard.tsx",
       "line": 228,
       "className": "w-full justify-start gap-3 text-red-500 hover:text-red-600 hover:bg-red-50"
-    },
-    {
-      "file": "src/pages/Dashboard.tsx",
-      "line": 333,
-      "className": "text-2xl font-bold text-red-600"
-    },
-    {
-      "file": "src/pages/Dashboard.tsx",
-      "line": 335,
-      "className": "bg-red-50 p-3 rounded-xl"
-    },
-    {
-      "file": "src/pages/Dashboard.tsx",
-      "line": 336,
-      "className": "w-6 h-6 text-red-500"
     },
     {
       "file": "src/pages/LeadDetail.tsx",

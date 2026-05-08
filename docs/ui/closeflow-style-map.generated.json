@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T14:13:59.325Z",
+  "generatedAt": "2026-05-08T14:50:28.991Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -575,6 +575,71 @@
       "name": "--cf-action-neutral-border-hover",
       "file": "src/styles/closeflow-action-tokens.css",
       "line": 17
+    },
+    {
+      "name": "--cf-alert-error-text",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 2
+    },
+    {
+      "name": "--cf-alert-error-bg",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 3
+    },
+    {
+      "name": "--cf-alert-error-border",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 4
+    },
+    {
+      "name": "--cf-alert-warning-text",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 5
+    },
+    {
+      "name": "--cf-alert-warning-bg",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-alert-warning-border",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-alert-info-text",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-alert-info-bg",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-alert-info-border",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-alert-success-text",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-alert-success-bg",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-alert-success-border",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-alert-muted-text",
+      "file": "src/styles/closeflow-alert-severity.css",
+      "line": 14
     },
     {
       "name": "--cf-readable-card-bg",
@@ -3089,16 +3154,6 @@
   ],
   "dangerColorClasses": [
     {
-      "className": "border-rose-200",
-      "file": "src/components/AppChunkErrorBoundary.tsx",
-      "line": 100
-    },
-    {
-      "className": "text-rose-700",
-      "file": "src/components/AppChunkErrorBoundary.tsx",
-      "line": 101
-    },
-    {
       "className": "bg-red-100",
       "file": "src/components/ErrorBoundary.tsx",
       "line": 32
@@ -3272,21 +3327,6 @@
       "className": "bg-red-50",
       "file": "src/pages/Dashboard.tsx",
       "line": 228
-    },
-    {
-      "className": "text-red-600",
-      "file": "src/pages/Dashboard.tsx",
-      "line": 333
-    },
-    {
-      "className": "bg-red-50",
-      "file": "src/pages/Dashboard.tsx",
-      "line": 335
-    },
-    {
-      "className": "text-red-500",
-      "file": "src/pages/Dashboard.tsx",
-      "line": 336
     },
     {
       "className": "text-rose-600",

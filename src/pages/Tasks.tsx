@@ -308,6 +308,8 @@ function TaskReminderEditor({
   );
 }
 
+const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_TASKS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
+
 export default function Tasks() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [tasks, setTasks] = useState<any[]>([]);
@@ -1474,3 +1476,4 @@ await updateTaskInSupabase({
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= activateScope(stat.id) */
 
 /* GLOBAL_QUICK_ACTIONS_STAGE08D_TASK_MODAL_EVENT_BUS */
+

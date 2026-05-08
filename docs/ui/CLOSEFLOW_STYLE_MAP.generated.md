@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T14:13:59.325Z
+Generated: 2026-05-08T14:50:28.991Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -118,6 +118,19 @@ Generated: 2026-05-08T14:13:59.325Z
 - --cf-action-neutral-border: src/styles/closeflow-action-tokens.css:15
 - --cf-action-neutral-bg-hover: src/styles/closeflow-action-tokens.css:16
 - --cf-action-neutral-border-hover: src/styles/closeflow-action-tokens.css:17
+- --cf-alert-error-text: src/styles/closeflow-alert-severity.css:2
+- --cf-alert-error-bg: src/styles/closeflow-alert-severity.css:3
+- --cf-alert-error-border: src/styles/closeflow-alert-severity.css:4
+- --cf-alert-warning-text: src/styles/closeflow-alert-severity.css:5
+- --cf-alert-warning-bg: src/styles/closeflow-alert-severity.css:6
+- --cf-alert-warning-border: src/styles/closeflow-alert-severity.css:7
+- --cf-alert-info-text: src/styles/closeflow-alert-severity.css:8
+- --cf-alert-info-bg: src/styles/closeflow-alert-severity.css:9
+- --cf-alert-info-border: src/styles/closeflow-alert-severity.css:10
+- --cf-alert-success-text: src/styles/closeflow-alert-severity.css:11
+- --cf-alert-success-bg: src/styles/closeflow-alert-severity.css:12
+- --cf-alert-success-border: src/styles/closeflow-alert-severity.css:13
+- --cf-alert-muted-text: src/styles/closeflow-alert-severity.css:14
 - --cf-readable-card-bg: src/styles/closeflow-card-readability.css:8
 - --cf-readable-card-border: src/styles/closeflow-card-readability.css:9
 - --cf-readable-title: src/styles/closeflow-card-readability.css:10
@@ -490,23 +503,8 @@ Generated: 2026-05-08T14:13:59.325Z
 - --cf18-radius-lg: src/styles/visual-stage18-leads-hard-1to1.css:31
 - --cf18-radius-md: src/styles/visual-stage18-leads-hard-1to1.css:32
 - --cf-blue: src/styles/visual-stage18-leads-hard-1to1.css:46
-- --cf-blue-soft: src/styles/visual-stage18-leads-hard-1to1.css:47
-- --cf-text: src/styles/visual-stage18-leads-hard-1to1.css:48
-- --cf-muted: src/styles/visual-stage18-leads-hard-1to1.css:49
-- --cf-line: src/styles/visual-stage18-leads-hard-1to1.css:50
-- --cf-card: src/styles/visual-stage18-leads-hard-1to1.css:51
-- --stage19-ink: src/styles/visual-stage19-clients-safe-css.css:7
-- --stage19-muted: src/styles/visual-stage19-clients-safe-css.css:8
-- --stage19-card: src/styles/visual-stage19-clients-safe-css.css:9
-- --stage19-card-strong: src/styles/visual-stage19-clients-safe-css.css:10
-- --stage19-line: src/styles/visual-stage19-clients-safe-css.css:11
-- --stage19-shadow: src/styles/visual-stage19-clients-safe-css.css:12
-- --stage19-soft-shadow: src/styles/visual-stage19-clients-safe-css.css:13
-- --stage20-ink: src/styles/visual-stage20-tasks-safe-css.css:8
 
 ## Danger/red local classes
-- border-rose-200: src/components/AppChunkErrorBoundary.tsx:100
-- text-rose-700: src/components/AppChunkErrorBoundary.tsx:101
 - bg-red-100: src/components/ErrorBoundary.tsx:32
 - text-red-600: src/components/ErrorBoundary.tsx:32
 - border-red-500: src/components/ui/select.tsx:42
@@ -542,9 +540,6 @@ Generated: 2026-05-08T14:13:59.325Z
 - text-red-500: src/pages/Dashboard.tsx:228
 - text-red-600: src/pages/Dashboard.tsx:228
 - bg-red-50: src/pages/Dashboard.tsx:228
-- text-red-600: src/pages/Dashboard.tsx:333
-- bg-red-50: src/pages/Dashboard.tsx:335
-- text-red-500: src/pages/Dashboard.tsx:336
 - text-rose-600: src/pages/Leads.tsx:758
 - bg-rose-50: src/pages/Leads.tsx:759
 - text-rose-500: src/pages/Leads.tsx:759
