@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T15:20:19.444Z",
+  "generatedAt": "2026-05-08T15:55:16.608Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -400,17 +400,17 @@
     {
       "term": "Dodaj zadanie",
       "file": "src/pages/Calendar.tsx",
-      "line": 1406
+      "line": 1427
     },
     {
       "term": "Dodaj zadanie",
       "file": "src/pages/Calendar.tsx",
-      "line": 1444
+      "line": 1465
     },
     {
       "term": "Usuń",
       "file": "src/pages/Calendar.tsx",
-      "line": 425
+      "line": 446
     },
     {
       "term": "Edytuj",
@@ -420,12 +420,12 @@
     {
       "term": "Edytuj",
       "file": "src/pages/Calendar.tsx",
-      "line": 417
+      "line": 438
     },
     {
       "term": "Edytuj",
       "file": "src/pages/Calendar.tsx",
-      "line": 1691
+      "line": 1712
     },
     {
       "term": "Zapisz",
@@ -435,17 +435,17 @@
     {
       "term": "Zapisz",
       "file": "src/pages/Calendar.tsx",
-      "line": 1852
+      "line": 1873
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Calendar.tsx",
-      "line": 1406
+      "line": 1427
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Calendar.tsx",
-      "line": 1444
+      "line": 1465
     },
     {
       "term": "Dodaj notatkę",
@@ -1785,25 +1785,25 @@
     {
       "tag": "button",
       "file": "src/pages/Activity.tsx",
-      "line": 540,
+      "line": 555,
       "snippet": "<button type=\"button\" className=\"activity-payload-toggle\" onClick={() =>"
     },
     {
       "tag": "Link",
       "file": "src/pages/Activity.tsx",
-      "line": 551,
+      "line": 566,
       "snippet": "<Link to={'/leads/' + leadId} className=\"activity-relation-link\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/Activity.tsx",
-      "line": 556,
+      "line": 571,
       "snippet": "<Link to={'/cases/' + caseId} className=\"activity-relation-link\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/Activity.tsx",
-      "line": 569,
+      "line": 584,
       "snippet": "<Link to={relation.href} className=\"activity-open-button\" aria-label={'Otwórz ' + relation.label}>"
     },
     {
@@ -1911,49 +1911,49 @@
     {
       "tag": "Link",
       "file": "src/pages/Calendar.tsx",
-      "line": 393,
+      "line": 408,
       "snippet": "<Link to={`/leads/${entry.raw.leadId}`} className=\"text-blue-700 hover:underline\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/Calendar.tsx",
-      "line": 398,
+      "line": 413,
       "snippet": "<Link to={`/cases/${entry.raw.caseId}`} className=\"text-sky-700 hover:underline\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/Calendar.tsx",
-      "line": 1226,
+      "line": 1247,
       "snippet": "<Link to=\"/ai-drafts\" className=\"btn soft-blue\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1341,
+      "line": 1362,
       "snippet": "<Button type=\"submit\" className=\"w-full\" disabled={eventSubmitting || !workspaceReady}>"
     },
     {
       "tag": "button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1365,
+      "line": 1386,
       "snippet": "<button\n                type=\"button\"\n                className=\"nav-btn\"\n                onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1381,
+      "line": 1402,
       "snippet": "<button type=\"button\" className=\"nav-today\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1384,
+      "line": 1405,
       "snippet": "<button\n                type=\"button\"\n                className=\"nav-btn\"\n                onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1444,
+      "line": 1465,
       "snippet": "<Button type=\"submit\" className=\"w-full\" disabled={taskSubmitting || !workspaceReady}>"
     },
     {
@@ -3505,7 +3505,7 @@
       "file": "src/lib/options.ts"
     },
     {
-      "icon": "StatShortcutCard } from '../components/StatShortcutCard';\nimport {\r\n  ArrowUpRight",
+      "icon": "StatShortcutCard } from '../components/StatShortcutCard';\nimport {\n  ArrowUpRight",
       "file": "src/pages/Activity.tsx"
     },
     {
@@ -5339,48 +5339,28 @@
     },
     {
       "file": "src/pages/Activity.tsx",
-      "line": 567,
+      "line": 582,
       "className": "activity-row-action"
     },
     {
       "file": "src/pages/Activity.tsx",
-      "line": 569,
+      "line": 584,
       "className": "activity-open-button"
     },
     {
       "file": "src/pages/Activity.tsx",
-      "line": 573,
+      "line": 588,
       "className": "activity-open-button activity-open-button-disabled"
     },
     {
       "file": "src/pages/Activity.tsx",
-      "line": 704,
+      "line": 719,
       "className": "activity-toolbar-card"
     },
     {
       "file": "src/pages/Activity.tsx",
-      "line": 762,
+      "line": 777,
       "className": "activity-list-card"
-    },
-    {
-      "file": "src/pages/Activity.tsx",
-      "line": 808,
-      "className": "right-card activity-right-card"
-    },
-    {
-      "file": "src/pages/Activity.tsx",
-      "line": 809,
-      "className": "activity-right-card-head"
-    },
-    {
-      "file": "src/pages/Activity.tsx",
-      "line": 813,
-      "className": "activity-rail-button"
-    },
-    {
-      "file": "src/pages/Activity.tsx",
-      "line": 817,
-      "className": "activity-rail-button"
     },
     {
       "file": "src/pages/Activity.tsx",
@@ -5394,12 +5374,32 @@
     },
     {
       "file": "src/pages/Activity.tsx",
-      "line": 845,
+      "line": 828,
+      "className": "activity-rail-button"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 832,
+      "className": "activity-rail-button"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 838,
       "className": "right-card activity-right-card"
     },
     {
       "file": "src/pages/Activity.tsx",
-      "line": 846,
+      "line": 839,
+      "className": "activity-right-card-head"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 860,
+      "className": "right-card activity-right-card"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 861,
       "className": "activity-right-card-head"
     },
     {
@@ -5684,17 +5684,17 @@
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1225,
+      "line": 1246,
       "className": "head-actions"
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1554,
+      "line": 1575,
       "className": "right-card calendar-week-filter"
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1634,
+      "line": 1655,
       "className": "right-card calendar-week-plan"
     },
     {

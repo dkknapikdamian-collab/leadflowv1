@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T15:20:19.444Z
+Generated: 2026-05-08T15:55:16.608Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -101,16 +101,16 @@ Source files scanned: 196
 - Kopiuj: src/pages/AiDrafts.tsx:988
 - Kopiuj: src/pages/AiDrafts.tsx:1198
 - Anuluj: src/pages/Billing.tsx:683
-- Dodaj zadanie: src/pages/Calendar.tsx:1406
-- Dodaj zadanie: src/pages/Calendar.tsx:1444
-- Usuń: src/pages/Calendar.tsx:425
+- Dodaj zadanie: src/pages/Calendar.tsx:1427
+- Dodaj zadanie: src/pages/Calendar.tsx:1465
+- Usuń: src/pages/Calendar.tsx:446
 - Edytuj: src/pages/Calendar.tsx:124
-- Edytuj: src/pages/Calendar.tsx:417
-- Edytuj: src/pages/Calendar.tsx:1691
+- Edytuj: src/pages/Calendar.tsx:438
+- Edytuj: src/pages/Calendar.tsx:1712
 - Zapisz: src/pages/Calendar.tsx:124
-- Zapisz: src/pages/Calendar.tsx:1852
-- Dodaj: src/pages/Calendar.tsx:1406
-- Dodaj: src/pages/Calendar.tsx:1444
+- Zapisz: src/pages/Calendar.tsx:1873
+- Dodaj: src/pages/Calendar.tsx:1427
+- Dodaj: src/pages/Calendar.tsx:1465
 - Dodaj notatkę: src/pages/CaseDetail.tsx:1563
 - Dodaj notatkę: src/pages/CaseDetail.tsx:1614
 - Dodaj zadanie: src/pages/CaseDetail.tsx:1317
@@ -1025,10 +1025,10 @@ import {
 - src/components/task-editor-dialog.tsx:231 <Button type="button" variant="outline" onClick={() =>
 - src/components/TaskCreateDialog.tsx:177 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
 - src/components/topic-contact-picker.tsx:57 <Button type="button" size="icon" variant="ghost" className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 rounded-lg" onClick={() =>
-- src/pages/Activity.tsx:540 <button type="button" className="activity-payload-toggle" onClick={() =>
-- src/pages/Activity.tsx:551 <Link to={'/leads/' + leadId} className="activity-relation-link">
-- src/pages/Activity.tsx:556 <Link to={'/cases/' + caseId} className="activity-relation-link">
-- src/pages/Activity.tsx:569 <Link to={relation.href} className="activity-open-button" aria-label={'Otwórz ' + relation.label}>
+- src/pages/Activity.tsx:555 <button type="button" className="activity-payload-toggle" onClick={() =>
+- src/pages/Activity.tsx:566 <Link to={'/leads/' + leadId} className="activity-relation-link">
+- src/pages/Activity.tsx:571 <Link to={'/cases/' + caseId} className="activity-relation-link">
+- src/pages/Activity.tsx:584 <Link to={relation.href} className="activity-open-button" aria-label={'Otwórz ' + relation.label}>
 - src/pages/AdminAiSettings.tsx:134 <Button type="button" variant="outline" onClick={() =>
 - src/pages/AiDrafts.tsx:853 <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>
 - src/pages/AiDrafts.tsx:967 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
@@ -1046,14 +1046,14 @@ import {
 - src/pages/AiDrafts.tsx:1177 <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
 - src/pages/Billing.tsx:496 <Button type="button" variant="outline" onClick={refresh}>
 - src/pages/Billing.tsx:676 <Button type="button" size="sm" variant="outline" disabled={Boolean(billingActionLoading) || workspace.cancelAtPeriodEnd} 
-- src/pages/Calendar.tsx:393 <Link to={`/leads/${entry.raw.leadId}`} className="text-blue-700 hover:underline">
-- src/pages/Calendar.tsx:398 <Link to={`/cases/${entry.raw.caseId}`} className="text-sky-700 hover:underline">
-- src/pages/Calendar.tsx:1226 <Link to="/ai-drafts" className="btn soft-blue">
-- src/pages/Calendar.tsx:1341 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
-- src/pages/Calendar.tsx:1365 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.tsx:1381 <button type="button" className="nav-today" onClick={() =>
-- src/pages/Calendar.tsx:1384 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.tsx:1444 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
+- src/pages/Calendar.tsx:408 <Link to={`/leads/${entry.raw.leadId}`} className="text-blue-700 hover:underline">
+- src/pages/Calendar.tsx:413 <Link to={`/cases/${entry.raw.caseId}`} className="text-sky-700 hover:underline">
+- src/pages/Calendar.tsx:1247 <Link to="/ai-drafts" className="btn soft-blue">
+- src/pages/Calendar.tsx:1362 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
+- src/pages/Calendar.tsx:1386 <button type="button" className="nav-btn" onClick={() =>
+- src/pages/Calendar.tsx:1402 <button type="button" className="nav-today" onClick={() =>
+- src/pages/Calendar.tsx:1405 <button type="button" className="nav-btn" onClick={() =>
+- src/pages/Calendar.tsx:1465 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
 - src/pages/CaseDetail.tsx:1267 <Button type="button" variant="outline" onClick={() =>
 - src/pages/CaseDetail.tsx:1282 <button type="button" className="case-detail-back-button" onClick={() =>
 - src/pages/CaseDetail.tsx:1298 <Button type="button" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>
@@ -1275,19 +1275,19 @@ import {
 - src/components/TodayAiAssistant.tsx:192 `ai-assistant-card__inputRow`
 - src/components/TodayAiAssistant.tsx:206 `ai-assistant-card__error`
 - src/components/TodayAiAssistant.tsx:208 `ai-assistant-card__answer`
-- src/pages/Activity.tsx:567 `activity-row-action`
-- src/pages/Activity.tsx:569 `activity-open-button`
-- src/pages/Activity.tsx:573 `activity-open-button activity-open-button-disabled`
-- src/pages/Activity.tsx:704 `activity-toolbar-card`
-- src/pages/Activity.tsx:762 `activity-list-card`
-- src/pages/Activity.tsx:808 `right-card activity-right-card`
-- src/pages/Activity.tsx:809 `activity-right-card-head`
-- src/pages/Activity.tsx:813 `activity-rail-button`
-- src/pages/Activity.tsx:817 `activity-rail-button`
+- src/pages/Activity.tsx:582 `activity-row-action`
+- src/pages/Activity.tsx:584 `activity-open-button`
+- src/pages/Activity.tsx:588 `activity-open-button activity-open-button-disabled`
+- src/pages/Activity.tsx:719 `activity-toolbar-card`
+- src/pages/Activity.tsx:777 `activity-list-card`
 - src/pages/Activity.tsx:823 `right-card activity-right-card`
 - src/pages/Activity.tsx:824 `activity-right-card-head`
-- src/pages/Activity.tsx:845 `right-card activity-right-card`
-- src/pages/Activity.tsx:846 `activity-right-card-head`
+- src/pages/Activity.tsx:828 `activity-rail-button`
+- src/pages/Activity.tsx:832 `activity-rail-button`
+- src/pages/Activity.tsx:838 `right-card activity-right-card`
+- src/pages/Activity.tsx:839 `activity-right-card-head`
+- src/pages/Activity.tsx:860 `right-card activity-right-card`
+- src/pages/Activity.tsx:861 `activity-right-card-head`
 - src/pages/AdminAiSettings.tsx:35 `cf-readable-card border-none app-surface-strong`
 - src/pages/AdminAiSettings.tsx:104 `cf-readable-card border-none app-surface-strong`
 - src/pages/AdminAiSettings.tsx:140 `cf-readable-card border-none app-surface-strong`
@@ -1344,9 +1344,9 @@ import {
 - src/pages/Billing.tsx:720 `right-card billing-right-card`
 - src/pages/Billing.tsx:732 `right-card billing-right-card`
 - src/pages/Billing.tsx:742 `billing-settlements-card`
-- src/pages/Calendar.tsx:1225 `head-actions`
-- src/pages/Calendar.tsx:1554 `right-card calendar-week-filter`
-- src/pages/Calendar.tsx:1634 `right-card calendar-week-plan`
+- src/pages/Calendar.tsx:1246 `head-actions`
+- src/pages/Calendar.tsx:1575 `right-card calendar-week-filter`
+- src/pages/Calendar.tsx:1655 `right-card calendar-week-plan`
 - src/pages/CaseDetail.tsx:1250 `case-detail-loading-card`
 - src/pages/CaseDetail.tsx:1263 `case-detail-empty-card`
 - src/pages/CaseDetail.tsx:1282 `case-detail-back-button`

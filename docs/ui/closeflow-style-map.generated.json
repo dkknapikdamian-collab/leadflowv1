@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T15:20:19.903Z",
+  "generatedAt": "2026-05-08T15:55:17.137Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -3251,32 +3251,17 @@
     {
       "className": "bg-rose-50",
       "file": "src/pages/Activity.tsx",
-      "line": 699
+      "line": 714
     },
     {
       "className": "text-rose-500",
       "file": "src/pages/Activity.tsx",
-      "line": 699
+      "line": 714
     },
     {
       "className": "text-rose-600",
       "file": "src/pages/Activity.tsx",
-      "line": 699
-    },
-    {
-      "className": "border-rose-100",
-      "file": "src/pages/Calendar.tsx",
-      "line": 287
-    },
-    {
-      "className": "bg-rose-50",
-      "file": "src/pages/Calendar.tsx",
-      "line": 287
-    },
-    {
-      "className": "text-rose-700",
-      "file": "src/pages/Calendar.tsx",
-      "line": 287
+      "line": 714
     },
     {
       "className": "text-red-500",
@@ -3664,15 +3649,15 @@
     },
     {
       "file": "src/pages/Activity.tsx",
-      "line": 789
+      "line": 804
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1477
+      "line": 1498
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1659
+      "line": 1680
     },
     {
       "file": "src/pages/CaseDetail.tsx",

@@ -248,6 +248,8 @@ function getActivityIconTone(activity: any) {
   return 'neutral';
 }
 
+
+
 function getActivityTitle(activity: any) {
   const eventType = normalizeLower(activity?.eventType);
   const entity = getActivityEntity(activity);
@@ -488,6 +490,11 @@ function requiresAttention(activity: any) {
   );
 }
 
+function getActivitySeverity(activity: any) {
+  return requiresAttention(activity) ? 'warning' : undefined;
+}
+
+
 function shouldShowByFilter(activity: any, filter: string) {
   if (filter === 'all') return true;
   if (filter === 'today') return isActivityToday(activity);
@@ -495,6 +502,7 @@ function shouldShowByFilter(activity: any, filter: string) {
   if (filter === 'system') return getActivityEntity(activity) === 'system' || getActivityEntity(activity) === 'client';
   return getActivityEntity(activity) === filter;
 }
+
 
 function ActivityRow({
   activity,
@@ -526,14 +534,21 @@ function ActivityRow({
 
   return (
     <article className="activity-row" data-testid="activity-row">
-      <div className={['activity-row-icon', 'activity-row-icon-' + tone].join(' ')}>
+      <div
+        className={getActivitySeverity(activity) ? 'cf-severity-dot' : ['activity-row-icon', 'activity-row-icon-' + tone].join(' ')}
+        data-cf-severity={getActivitySeverity(activity)}
+      >
         <Icon className="h-4 w-4" />
       </div>
 
       <div className="activity-row-main">
         <div className="activity-row-heading">
           <span className="activity-row-type">{pill}</span>
-          {requiresAttention(activity) ? <span className="activity-attention-pill">Wymaga uwagi</span> : null}
+          {requiresAttention(activity) ? (
+            <span className="cf-severity-pill" data-cf-severity={getActivitySeverity(activity)}>
+              Wymaga uwagi
+            </span>
+          ) : null}
         </div>
         <h2 className="activity-row-title">{title}</h2>
         <p className="activity-row-meta">{meta || 'Zapis operacyjny'}</p>

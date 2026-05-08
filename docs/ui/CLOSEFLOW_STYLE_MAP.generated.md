@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T15:20:19.903Z
+Generated: 2026-05-08T15:55:17.137Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -524,12 +524,9 @@ Generated: 2026-05-08T15:20:19.903Z
 - bg-rose-500: src/lib/access.ts:168
 - text-rose-600: src/lib/access.ts:168
 - text-rose-400: src/lib/access.ts:168
-- bg-rose-50: src/pages/Activity.tsx:699
-- text-rose-500: src/pages/Activity.tsx:699
-- text-rose-600: src/pages/Activity.tsx:699
-- border-rose-100: src/pages/Calendar.tsx:287
-- bg-rose-50: src/pages/Calendar.tsx:287
-- text-rose-700: src/pages/Calendar.tsx:287
+- bg-rose-50: src/pages/Activity.tsx:714
+- text-rose-500: src/pages/Activity.tsx:714
+- text-rose-600: src/pages/Activity.tsx:714
 - text-red-500: src/pages/ClientPortal.tsx:223
 - bg-red-100: src/pages/ClientPortal.tsx:265
 - text-red-600: src/pages/ClientPortal.tsx:265
@@ -609,9 +606,9 @@ Generated: 2026-05-08T15:20:19.903Z
 - src/components/ContextActionDialogs.tsx:153
 - src/components/Layout.tsx:122
 - src/components/ui/progress.tsx:19
-- src/pages/Activity.tsx:789
-- src/pages/Calendar.tsx:1477
-- src/pages/Calendar.tsx:1659
+- src/pages/Activity.tsx:804
+- src/pages/Calendar.tsx:1498
+- src/pages/Calendar.tsx:1680
 - src/pages/CaseDetail.tsx:1326
 - src/pages/CaseDetail.tsx:1449
 - src/pages/Cases.tsx:757

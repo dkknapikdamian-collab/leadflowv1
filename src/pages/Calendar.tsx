@@ -1,4 +1,4 @@
-﻿import {
+import {
   useState,
   useEffect,
   FormEvent,
@@ -280,12 +280,27 @@ function getCalendarEntryStatusLabel(entry: ScheduleEntry) {
   return 'Zaplanowane';
 }
 
-function getCalendarEntryStatusClass(entry: ScheduleEntry) {
+function getCalendarEntrySeverity(entry: ScheduleEntry) {
   const status = getCalendarEntryStatus(entry);
-  if (status === 'done' || status === 'completed') return 'border-emerald-100 bg-emerald-50 text-emerald-700';
-  if (status === 'cancelled' || status === 'canceled') return 'border-slate-200 bg-slate-50 text-slate-500';
-  if (status === 'overdue') return 'border-rose-100 bg-rose-50 text-rose-700';
-  return 'border-blue-100 bg-blue-50 text-blue-700';
+  if (status === 'overdue') return 'error';
+  return undefined;
+}
+
+function getCalendarEntryStatusTone(entry: ScheduleEntry) {
+  const status = getCalendarEntryStatus(entry);
+  if (status === 'done' || status === 'completed') return 'green';
+  if (status === 'cancelled' || status === 'canceled') return 'neutral';
+  if (status === 'in_progress') return 'blue';
+  return 'blue';
+}
+
+
+
+
+
+
+function getCalendarEntryStatusPillClass(entry: ScheduleEntry) {
+  return getCalendarEntrySeverity(entry) === 'error' ? 'cf-severity-pill' : 'cf-status-pill';
 }
 
 function getCalendarEntryTimeLabel(entry: ScheduleEntry) {
@@ -408,9 +423,15 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
         </div>
 
         <div className="lg:text-center">
-          <span className={`inline-flex h-6 items-center rounded-full border px-2.5 text-[12px] font-bold leading-none ${getCalendarEntryStatusClass(entry)}`}>
-            {getCalendarEntryStatusLabel(entry)}
-          </span>
+          {getCalendarEntrySeverity(entry) ? (
+            <span className="cf-severity-pill" data-cf-severity={getCalendarEntrySeverity(entry)}>
+              {getCalendarEntryStatusLabel(entry)}
+            </span>
+          ) : (
+            <span className="cf-status-pill" data-cf-status-tone={getCalendarEntryStatusTone(entry)}>
+              {getCalendarEntryStatusLabel(entry)}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-1.5 lg:justify-end">
