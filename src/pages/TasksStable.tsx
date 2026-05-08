@@ -38,6 +38,8 @@ const STAGE83_TASK_DONE_NEXT_STEP_PROMPT = 'STAGE83_TASK_DONE_NEXT_STEP_PROMPT';
 void STAGE83_TASK_DONE_NEXT_STEP_PROMPT;
 const CLOSEFLOW_STAGE16C_TASKS_CASES_VISUAL_MOBILE_REPAIR = 'tasks cases visual mobile repair scoped to /tasks';
 void CLOSEFLOW_STAGE16C_TASKS_CASES_VISUAL_MOBILE_REPAIR;
+const CLOSEFLOW_STAGE16D_TASKS_METRIC_TILE_FINAL_LOCK = 'tasks metric tile compact parity final lock';
+void CLOSEFLOW_STAGE16D_TASKS_METRIC_TILE_FINAL_LOCK;
 
 type TaskScope = 'active' | 'today' | 'overdue' | 'done';
 
@@ -490,7 +492,7 @@ export default function TasksStable() {
           </div>
         </section>
 
-        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" data-eliteflow-task-stat-grid="true" data-stage16a-metric-visual-parity="true">
+        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" data-eliteflow-task-stat-grid="true" data-stage16a-metric-visual-parity="true" data-stage16d-task-metric-final-lock="true">
           {statCards.map((card) => (
             <StatShortcutCard
               key={card.id}

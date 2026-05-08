@@ -1,0 +1,136 @@
+/* CLOSEFLOW_STAGE16D_TASKS_METRIC_TILE_FINAL_LOCK
+   Screenshot-driven repair for /tasks top metric tiles only.
+   Fixes: too-large labels, broken AKTYWNE/ZROBIONE words, oversized/kanciasty tile look.
+   No data/API/routing changes.
+*/
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] {
+  --cf-stage16d-task-metric-radius: 16px;
+  --cf-stage16d-task-metric-min-height: 56px;
+  --cf-stage16d-task-metric-padding-y: 10px;
+  --cf-stage16d-task-metric-padding-x: 14px;
+  --cf-stage16d-task-metric-gap: 10px;
+  --cf-stage16d-task-metric-label-size: 11px;
+  --cf-stage16d-task-metric-value-size: 20px;
+  --cf-stage16d-task-metric-icon-size: 26px;
+  --cf-stage16d-task-metric-icon-svg-size: 12px;
+  --cf-stage16d-task-metric-shadow: 0 10px 24px rgba(15, 23, 42, 0.055);
+  --cf-stage16d-task-metric-active-shadow: 0 0 0 2px rgba(59, 130, 246, 0.11), 0 10px 24px rgba(15, 23, 42, 0.065);
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] {
+  min-width: 0 !important;
+  width: 100% !important;
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--cf-stage16d-task-metric-radius) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] > .cf-top-metric-tile-content {
+  min-height: var(--cf-stage16d-task-metric-min-height) !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: var(--cf-stage16d-task-metric-gap) !important;
+  padding: var(--cf-stage16d-task-metric-padding-y) var(--cf-stage16d-task-metric-padding-x) !important;
+  border-radius: var(--cf-stage16d-task-metric-radius) !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: var(--cf-stage16d-task-metric-shadow) !important;
+  transform: none !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card].is-active > .cf-top-metric-tile-content,
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] > .cf-top-metric-tile-content.is-active {
+  border-color: rgba(59, 130, 246, 0.22) !important;
+  box-shadow: var(--cf-stage16d-task-metric-active-shadow) !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-left {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-label {
+  display: block !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  font-size: var(--cf-stage16d-task-metric-label-size) !important;
+  line-height: 1 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.018em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-value-row {
+  min-width: max-content !important;
+  flex: 0 0 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 7px !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-value {
+  margin: 0 !important;
+  font-size: var(--cf-stage16d-task-metric-value-size) !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.035em !important;
+  text-align: right !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-icon {
+  width: var(--cf-stage16d-task-metric-icon-size) !important;
+  height: var(--cf-stage16d-task-metric-icon-size) !important;
+  min-width: var(--cf-stage16d-task-metric-icon-size) !important;
+  max-width: var(--cf-stage16d-task-metric-icon-size) !important;
+  padding: 0 !important;
+  border-radius: 11px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-icon svg {
+  width: var(--cf-stage16d-task-metric-icon-svg-size) !important;
+  height: var(--cf-stage16d-task-metric-icon-svg-size) !important;
+  stroke-width: 2.5 !important;
+}
+
+@media (max-width: 1180px) {
+  main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  main[data-p0-tasks-stable-rebuild="true"][data-stage16c-tasks-cases-repair="tasks"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] > .cf-top-metric-tile-content {
+    min-height: 54px !important;
+    padding: 10px 12px !important;
+  }
+}

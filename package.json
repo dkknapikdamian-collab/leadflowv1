@@ -513,7 +513,8 @@
     "check:closeflow-detail-action-visual-qa": "node scripts/check-closeflow-detail-action-visual-qa.cjs",
     "check:closeflow-mobile-parity-contract": "node scripts/check-closeflow-mobile-parity-contract.cjs",
     "check:closeflow-ui-cleanup-release-evidence": "node scripts/check-closeflow-ui-cleanup-release-evidence.cjs",
-    "check:closeflow-stage16c-tasks-cases-visual-mobile-repair": "node scripts/check-closeflow-stage16c-tasks-cases-visual-mobile-repair.cjs"
+    "check:closeflow-stage16c-tasks-cases-visual-mobile-repair": "node scripts/check-closeflow-stage16c-tasks-cases-visual-mobile-repair.cjs",
+    "check:closeflow-stage16d-tasks-metric-final-lock": "node scripts/check-closeflow-stage16d-tasks-metric-final-lock.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
