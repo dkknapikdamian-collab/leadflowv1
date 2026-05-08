@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T15:07:13.561Z",
+  "generatedAt": "2026-05-08T15:20:19.903Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -3346,17 +3346,17 @@
     {
       "className": "bg-rose-50",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 643
+      "line": 650
     },
     {
       "className": "text-rose-500",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 643
+      "line": 650
     },
     {
       "className": "text-rose-600",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 643
+      "line": 650
     },
     {
       "className": "bg-rose-50",
@@ -3692,7 +3692,7 @@
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 705
+      "line": 712
     },
     {
       "file": "src/pages/Today.tsx",

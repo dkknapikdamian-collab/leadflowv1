@@ -283,6 +283,13 @@ function rowIconClass(status: NotificationRowStatus, kind: NotificationRowKind) 
   return 'notifications-row-icon-green';
 }
 
+function notificationRowSeverity(status: NotificationRowStatus): 'error' | 'warning' | 'info' | 'success' {
+  if (status === 'overdue' || status === 'error') return 'error';
+  if (status === 'snoozed') return 'warning';
+  if (status === 'read') return 'success';
+  return 'info';
+}
+
 function NotificationRowIcon({ kind }: { kind: NotificationRowKind }) {
   if (kind === 'task') return <CheckCircle2 className="h-4 w-4" />;
   if (kind === 'event') return <CalendarClock className="h-4 w-4" />;
@@ -372,7 +379,7 @@ function NotificationsRow({
 }) {
   return (
     <article className="notifications-row" data-testid="notification-row">
-      <div className={['notifications-row-icon', rowIconClass(row.status, row.kind)].join(' ')}>
+            <div className="notifications-row-icon cf-severity-dot" data-cf-severity={notificationRowSeverity(row.status)}>
         <NotificationRowIcon kind={row.kind} />
       </div>
 
@@ -397,7 +404,7 @@ function NotificationsRow({
       </div>
 
       <time className="notifications-row-time">{row.timeLabel}</time>
-      <span className={['notifications-status-pill', 'notifications-status-' + row.status].join(' ')}>{row.statusLabel}</span>
+      <span className="notifications-status-pill cf-severity-pill" data-cf-severity={notificationRowSeverity(row.status)}>{row.statusLabel}</span>
 
       <div className="notifications-row-actions">
         {row.link ? (

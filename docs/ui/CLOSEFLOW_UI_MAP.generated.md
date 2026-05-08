@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T15:07:12.979Z
+Generated: 2026-05-08T15:20:19.444Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -1148,19 +1148,19 @@ import {
 - src/pages/Login.tsx:250 <Button type="button" variant="outline" className="rounded-xl bg-white" onClick={() =>
 - src/pages/Login.tsx:255 <Button variant="outline" onClick={handleGoogleLogin} className="flex h-11 w-full items-center justify-center gap-3 rounded-xl text-base font-semibold hover:bg-slate-50" disabled={loading || !authConfig.configured}>
 - src/pages/Login.tsx:284 <Button type="submit" className="h-11 w-full rounded-xl font-semibold" disabled={loading || !authConfig.configured}>
-- src/pages/NotificationsCenter.tsx:404 <Link className="notifications-action notifications-action-open" to={row.link}>
-- src/pages/NotificationsCenter.tsx:411 <button type="button" className="notifications-action notifications-action-neutral" onClick={() =>
-- src/pages/NotificationsCenter.tsx:419 <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż 15m" title="Odłóż 15m" onClick={() =>
-- src/pages/NotificationsCenter.tsx:420 <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż 1h" title="Odłóż 1h" onClick={() =>
-- src/pages/NotificationsCenter.tsx:421 <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż do jutra" title="Odłóż do jutra" onClick={() =>
-- src/pages/NotificationsCenter.tsx:422 <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż na datę" title="Odłóż na datę" onClick={() =>
-- src/pages/NotificationsCenter.tsx:427 <button type="button" className="notifications-action notifications-action-neutral" onClick={() =>
-- src/pages/NotificationsCenter.tsx:622 <button type="button" className="notifications-header-button notifications-header-button-primary" onClick={handleEnableBrowserNotifications}>
-- src/pages/NotificationsCenter.tsx:627 <Link to="/settings" className="notifications-header-button">
-- src/pages/NotificationsCenter.tsx:632 <button type="button" className="notifications-header-button" onClick={handleClearLog}>
-- src/pages/NotificationsCenter.tsx:744 <button type="button" className="notifications-rail-button" onClick={() =>
-- src/pages/NotificationsCenter.tsx:748 <button type="button" className="notifications-rail-button" onClick={() =>
-- src/pages/NotificationsCenter.tsx:752 <button type="button" className="notifications-rail-button" onClick={handleMarkAllRead}>
+- src/pages/NotificationsCenter.tsx:411 <Link className="notifications-action notifications-action-open" to={row.link}>
+- src/pages/NotificationsCenter.tsx:418 <button type="button" className="notifications-action notifications-action-neutral" onClick={() =>
+- src/pages/NotificationsCenter.tsx:426 <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż 15m" title="Odłóż 15m" onClick={() =>
+- src/pages/NotificationsCenter.tsx:427 <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż 1h" title="Odłóż 1h" onClick={() =>
+- src/pages/NotificationsCenter.tsx:428 <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż do jutra" title="Odłóż do jutra" onClick={() =>
+- src/pages/NotificationsCenter.tsx:429 <button type="button" className="notifications-action notifications-action-amber" aria-label="Odłóż na datę" title="Odłóż na datę" onClick={() =>
+- src/pages/NotificationsCenter.tsx:434 <button type="button" className="notifications-action notifications-action-neutral" onClick={() =>
+- src/pages/NotificationsCenter.tsx:629 <button type="button" className="notifications-header-button notifications-header-button-primary" onClick={handleEnableBrowserNotifications}>
+- src/pages/NotificationsCenter.tsx:634 <Link to="/settings" className="notifications-header-button">
+- src/pages/NotificationsCenter.tsx:639 <button type="button" className="notifications-header-button" onClick={handleClearLog}>
+- src/pages/NotificationsCenter.tsx:751 <button type="button" className="notifications-rail-button" onClick={() =>
+- src/pages/NotificationsCenter.tsx:755 <button type="button" className="notifications-rail-button" onClick={() =>
+- src/pages/NotificationsCenter.tsx:759 <button type="button" className="notifications-rail-button" onClick={handleMarkAllRead}>
 - src/pages/ResponseTemplates.tsx:205 <Button className="rounded-2xl" onClick={openCreate}>
 - src/pages/ResponseTemplates.tsx:247 <Button variant="outline" size="sm" className="rounded-2xl" onClick={() =>
 - src/pages/ResponseTemplates.tsx:250 <Button variant="outline" size="sm" className="rounded-2xl" onClick={() =>
@@ -1546,36 +1546,36 @@ import {
 - src/pages/Leads.tsx:876 `lead-actions`
 - src/pages/Leads.tsx:909 `right-card lead-right-card lead-top-relations`
 - src/pages/Leads.tsx:935 `note`
-- src/pages/NotificationsCenter.tsx:317 `notifications-stat-icon`
-- src/pages/NotificationsCenter.tsx:402 `notifications-row-actions`
-- src/pages/NotificationsCenter.tsx:404 `notifications-action notifications-action-open`
-- src/pages/NotificationsCenter.tsx:411 `notifications-action notifications-action-neutral`
-- src/pages/NotificationsCenter.tsx:419 `notifications-action notifications-action-amber`
-- src/pages/NotificationsCenter.tsx:420 `notifications-action notifications-action-amber`
-- src/pages/NotificationsCenter.tsx:421 `notifications-action notifications-action-amber`
-- src/pages/NotificationsCenter.tsx:422 `notifications-action notifications-action-amber`
-- src/pages/NotificationsCenter.tsx:427 `notifications-action notifications-action-neutral`
-- src/pages/NotificationsCenter.tsx:620 `notifications-header-actions`
-- src/pages/NotificationsCenter.tsx:622 `notifications-header-button notifications-header-button-primary`
-- src/pages/NotificationsCenter.tsx:627 `notifications-header-button`
-- src/pages/NotificationsCenter.tsx:632 `notifications-header-button`
-- src/pages/NotificationsCenter.tsx:652 `notifications-toolbar-card`
-- src/pages/NotificationsCenter.tsx:677 `notifications-list-card`
-- src/pages/NotificationsCenter.tsx:697 `notifications-empty-actions`
-- src/pages/NotificationsCenter.tsx:721 `right-card notifications-right-card`
-- src/pages/NotificationsCenter.tsx:722 `notifications-right-card-head`
-- src/pages/NotificationsCenter.tsx:726 `notifications-channel-card`
-- src/pages/NotificationsCenter.tsx:732 `notifications-channel-card`
-- src/pages/NotificationsCenter.tsx:739 `right-card notifications-right-card`
-- src/pages/NotificationsCenter.tsx:740 `notifications-right-card-head`
-- src/pages/NotificationsCenter.tsx:744 `notifications-rail-button`
-- src/pages/NotificationsCenter.tsx:748 `notifications-rail-button`
-- src/pages/NotificationsCenter.tsx:752 `notifications-rail-button`
-- src/pages/NotificationsCenter.tsx:758 `right-card notifications-right-card`
-- src/pages/NotificationsCenter.tsx:759 `notifications-right-card-head`
-- src/pages/NotificationsCenter.tsx:777 `right-card notifications-right-card`
-- src/pages/NotificationsCenter.tsx:778 `notifications-right-card-head`
+- src/pages/NotificationsCenter.tsx:324 `notifications-stat-icon`
+- src/pages/NotificationsCenter.tsx:382 `notifications-row-icon cf-severity-dot`
+- src/pages/NotificationsCenter.tsx:409 `notifications-row-actions`
+- src/pages/NotificationsCenter.tsx:411 `notifications-action notifications-action-open`
+- src/pages/NotificationsCenter.tsx:418 `notifications-action notifications-action-neutral`
+- src/pages/NotificationsCenter.tsx:426 `notifications-action notifications-action-amber`
+- src/pages/NotificationsCenter.tsx:427 `notifications-action notifications-action-amber`
+- src/pages/NotificationsCenter.tsx:428 `notifications-action notifications-action-amber`
+- src/pages/NotificationsCenter.tsx:429 `notifications-action notifications-action-amber`
+- src/pages/NotificationsCenter.tsx:434 `notifications-action notifications-action-neutral`
+- src/pages/NotificationsCenter.tsx:627 `notifications-header-actions`
+- src/pages/NotificationsCenter.tsx:629 `notifications-header-button notifications-header-button-primary`
+- src/pages/NotificationsCenter.tsx:634 `notifications-header-button`
+- src/pages/NotificationsCenter.tsx:639 `notifications-header-button`
+- src/pages/NotificationsCenter.tsx:659 `notifications-toolbar-card`
+- src/pages/NotificationsCenter.tsx:684 `notifications-list-card`
+- src/pages/NotificationsCenter.tsx:704 `notifications-empty-actions`
+- src/pages/NotificationsCenter.tsx:728 `right-card notifications-right-card`
+- src/pages/NotificationsCenter.tsx:729 `notifications-right-card-head`
+- src/pages/NotificationsCenter.tsx:733 `notifications-channel-card`
+- src/pages/NotificationsCenter.tsx:739 `notifications-channel-card`
+- src/pages/NotificationsCenter.tsx:746 `right-card notifications-right-card`
+- src/pages/NotificationsCenter.tsx:747 `notifications-right-card-head`
+- src/pages/NotificationsCenter.tsx:751 `notifications-rail-button`
+- src/pages/NotificationsCenter.tsx:755 `notifications-rail-button`
+- src/pages/NotificationsCenter.tsx:759 `notifications-rail-button`
+- src/pages/NotificationsCenter.tsx:765 `right-card notifications-right-card`
+- src/pages/NotificationsCenter.tsx:766 `notifications-right-card-head`
+- src/pages/NotificationsCenter.tsx:784 `right-card notifications-right-card`
+- src/pages/NotificationsCenter.tsx:785 `notifications-right-card-head`
 - src/pages/ResponseTemplates.tsx:218 `cf-readable-card border-none app-surface-strong app-shadow`
 - src/pages/ResponseTemplates.tsx:231 `cf-readable-card border-none app-surface-strong app-shadow`
 - src/pages/ResponseTemplates.tsx:236 `cf-readable-card border-none app-surface-strong app-shadow`
-- src/pages/ResponseTemplates.tsx:264 `cf-readable-card border-dashed app-surface-strong app-shadow`

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T15:07:12.979Z",
+  "generatedAt": "2026-05-08T15:20:19.444Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -2523,79 +2523,79 @@
     {
       "tag": "Link",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 404,
+      "line": 411,
       "snippet": "<Link className=\"notifications-action notifications-action-open\" to={row.link}>"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 411,
+      "line": 418,
       "snippet": "<button type=\"button\" className=\"notifications-action notifications-action-neutral\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 419,
+      "line": 426,
       "snippet": "<button type=\"button\" className=\"notifications-action notifications-action-amber\" aria-label=\"Odłóż 15m\" title=\"Odłóż 15m\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 420,
+      "line": 427,
       "snippet": "<button type=\"button\" className=\"notifications-action notifications-action-amber\" aria-label=\"Odłóż 1h\" title=\"Odłóż 1h\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 421,
+      "line": 428,
       "snippet": "<button type=\"button\" className=\"notifications-action notifications-action-amber\" aria-label=\"Odłóż do jutra\" title=\"Odłóż do jutra\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 422,
+      "line": 429,
       "snippet": "<button type=\"button\" className=\"notifications-action notifications-action-amber\" aria-label=\"Odłóż na datę\" title=\"Odłóż na datę\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 427,
+      "line": 434,
       "snippet": "<button type=\"button\" className=\"notifications-action notifications-action-neutral\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 622,
+      "line": 629,
       "snippet": "<button type=\"button\" className=\"notifications-header-button notifications-header-button-primary\" onClick={handleEnableBrowserNotifications}>"
     },
     {
       "tag": "Link",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 627,
+      "line": 634,
       "snippet": "<Link to=\"/settings\" className=\"notifications-header-button\">"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 632,
+      "line": 639,
       "snippet": "<button type=\"button\" className=\"notifications-header-button\" onClick={handleClearLog}>"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 744,
+      "line": 751,
       "snippet": "<button type=\"button\" className=\"notifications-rail-button\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 748,
+      "line": 755,
       "snippet": "<button type=\"button\" className=\"notifications-rail-button\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 752,
+      "line": 759,
       "snippet": "<button type=\"button\" className=\"notifications-rail-button\" onClick={handleMarkAllRead}>"
     },
     {
@@ -6694,147 +6694,152 @@
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 317,
+      "line": 324,
       "className": "notifications-stat-icon"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 402,
+      "line": 382,
+      "className": "notifications-row-icon cf-severity-dot"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 409,
       "className": "notifications-row-actions"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 404,
+      "line": 411,
       "className": "notifications-action notifications-action-open"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 411,
+      "line": 418,
       "className": "notifications-action notifications-action-neutral"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 419,
-      "className": "notifications-action notifications-action-amber"
-    },
-    {
-      "file": "src/pages/NotificationsCenter.tsx",
-      "line": 420,
-      "className": "notifications-action notifications-action-amber"
-    },
-    {
-      "file": "src/pages/NotificationsCenter.tsx",
-      "line": 421,
-      "className": "notifications-action notifications-action-amber"
-    },
-    {
-      "file": "src/pages/NotificationsCenter.tsx",
-      "line": 422,
+      "line": 426,
       "className": "notifications-action notifications-action-amber"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
       "line": 427,
+      "className": "notifications-action notifications-action-amber"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 428,
+      "className": "notifications-action notifications-action-amber"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 429,
+      "className": "notifications-action notifications-action-amber"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 434,
       "className": "notifications-action notifications-action-neutral"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 620,
+      "line": 627,
       "className": "notifications-header-actions"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 622,
+      "line": 629,
       "className": "notifications-header-button notifications-header-button-primary"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 627,
+      "line": 634,
       "className": "notifications-header-button"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 632,
+      "line": 639,
       "className": "notifications-header-button"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 652,
+      "line": 659,
       "className": "notifications-toolbar-card"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 677,
+      "line": 684,
       "className": "notifications-list-card"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 697,
+      "line": 704,
       "className": "notifications-empty-actions"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 721,
+      "line": 728,
       "className": "right-card notifications-right-card"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 722,
+      "line": 729,
       "className": "notifications-right-card-head"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 726,
-      "className": "notifications-channel-card"
-    },
-    {
-      "file": "src/pages/NotificationsCenter.tsx",
-      "line": 732,
+      "line": 733,
       "className": "notifications-channel-card"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
       "line": 739,
+      "className": "notifications-channel-card"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 746,
       "className": "right-card notifications-right-card"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 740,
+      "line": 747,
       "className": "notifications-right-card-head"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 744,
+      "line": 751,
       "className": "notifications-rail-button"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 748,
+      "line": 755,
       "className": "notifications-rail-button"
-    },
-    {
-      "file": "src/pages/NotificationsCenter.tsx",
-      "line": 752,
-      "className": "notifications-rail-button"
-    },
-    {
-      "file": "src/pages/NotificationsCenter.tsx",
-      "line": 758,
-      "className": "right-card notifications-right-card"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
       "line": 759,
-      "className": "notifications-right-card-head"
+      "className": "notifications-rail-button"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 777,
+      "line": 765,
       "className": "right-card notifications-right-card"
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
-      "line": 778,
+      "line": 766,
+      "className": "notifications-right-card-head"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 784,
+      "className": "right-card notifications-right-card"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 785,
       "className": "notifications-right-card-head"
     },
     {
