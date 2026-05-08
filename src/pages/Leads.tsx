@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { actionIconClass } from '../components/entity-actions';
 // STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Badge } from '../components/ui/badge';
@@ -861,7 +862,7 @@ export default function Leads() {
                           </span>
                           <button
                             type="button"
-                            className="btn ghost lead-icon-btn"
+                            className={actionIconClass('danger', 'btn ghost lead-icon-btn')}
                             disabled={pending}
                             onClick={(event) => (showTrash ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead))}
                             aria-label={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}

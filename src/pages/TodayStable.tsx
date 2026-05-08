@@ -13,6 +13,7 @@ import {
 } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { EntityActionButton } from '../components/entity-actions';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -555,18 +556,18 @@ function RowLink({
         <div className="flex items-center gap-2">
           {onEdit ? <Button type="button" size="sm" variant="outline" onClick={onEdit}>Edytuj</Button> : null}
           {onDelete ? (
-            <Button
+            <EntityActionButton
               type="button"
               size="sm"
               variant="ghost"
+              tone="danger"
               onClick={onDelete}
               disabled={deleting}
-              className="text-rose-600 hover:text-rose-700"
               aria-label={deleting ? 'Usuwanie' : 'Kosz'}
               title={deleting ? 'Usuwanie' : 'Kosz'}
             >
               {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-            </Button>
+            </EntityActionButton>
           ) : null}
           <Link to={to} className="inline-flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
             <ArrowRight className="h-4 w-4 shrink-0" />

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T10:21:42.986Z",
+  "generatedAt": "2026-05-08T10:38:39.993Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -515,6 +515,66 @@
       "name": "--case-stage2-success-line",
       "file": "src/styles/case-detail-stage2.css",
       "line": 21
+    },
+    {
+      "name": "--cf-action-danger-text",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-action-danger-text-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-action-danger-bg",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-action-danger-bg-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-action-danger-border",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-action-danger-border-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-action-danger-focus",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-action-neutral-text",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-action-neutral-bg",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-action-neutral-border",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-action-neutral-bg-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 16
+    },
+    {
+      "name": "--cf-action-neutral-border-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 17
     },
     {
       "name": "--cf-case-bg",
@@ -2821,42 +2881,17 @@
     {
       "className": "border-rose-100",
       "file": "src/pages/Calendar.tsx",
-      "line": 285
+      "line": 286
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/Calendar.tsx",
-      "line": 285
+      "line": 286
     },
     {
       "className": "text-rose-700",
       "file": "src/pages/Calendar.tsx",
-      "line": 285
-    },
-    {
-      "className": "border-rose-200",
-      "file": "src/pages/Calendar.tsx",
-      "line": 358
-    },
-    {
-      "className": "bg-rose-50",
-      "file": "src/pages/Calendar.tsx",
-      "line": 358
-    },
-    {
-      "className": "text-rose-700",
-      "file": "src/pages/Calendar.tsx",
-      "line": 358
-    },
-    {
-      "className": "border-rose-300",
-      "file": "src/pages/Calendar.tsx",
-      "line": 358
-    },
-    {
-      "className": "bg-rose-100",
-      "file": "src/pages/Calendar.tsx",
-      "line": 358
+      "line": 286
     },
     {
       "className": "bg-rose-50",
@@ -2906,17 +2941,17 @@
     {
       "className": "text-rose-600",
       "file": "src/pages/Clients.tsx",
-      "line": 517
+      "line": 518
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/Clients.tsx",
-      "line": 518
+      "line": 519
     },
     {
       "className": "text-rose-500",
       "file": "src/pages/Clients.tsx",
-      "line": 518
+      "line": 519
     },
     {
       "className": "text-red-500",
@@ -2951,17 +2986,17 @@
     {
       "className": "text-rose-600",
       "file": "src/pages/Leads.tsx",
-      "line": 745
+      "line": 746
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/Leads.tsx",
-      "line": 746
+      "line": 747
     },
     {
       "className": "text-rose-500",
       "file": "src/pages/Leads.tsx",
-      "line": 746
+      "line": 747
     },
     {
       "className": "bg-rose-50",
@@ -3024,34 +3059,9 @@
       "line": 441
     },
     {
-      "className": "text-rose-600",
-      "file": "src/pages/Templates.tsx",
-      "line": 393
-    },
-    {
-      "className": "text-rose-600",
-      "file": "src/pages/Templates.tsx",
-      "line": 393
-    },
-    {
       "className": "bg-rose-600",
       "file": "src/pages/Templates.tsx",
-      "line": 407
-    },
-    {
-      "className": "text-rose-600",
-      "file": "src/pages/Templates.tsx",
-      "line": 458
-    },
-    {
-      "className": "bg-rose-50",
-      "file": "src/pages/Templates.tsx",
-      "line": 458
-    },
-    {
-      "className": "text-rose-700",
-      "file": "src/pages/Templates.tsx",
-      "line": 458
+      "line": 410
     },
     {
       "className": "border-red-100",
@@ -3224,49 +3234,39 @@
       "line": 2850
     },
     {
-      "className": "text-rose-600",
-      "file": "src/pages/TodayStable.tsx",
-      "line": 564
-    },
-    {
       "className": "text-rose-700",
       "file": "src/pages/TodayStable.tsx",
-      "line": 564
-    },
-    {
-      "className": "text-rose-700",
-      "file": "src/pages/TodayStable.tsx",
-      "line": 896
+      "line": 897
     },
     {
       "className": "border-rose-200",
       "file": "src/pages/TodayStable.tsx",
-      "line": 896
+      "line": 897
     },
     {
       "className": "border-rose-100",
       "file": "src/pages/TodayStable.tsx",
-      "line": 989
+      "line": 990
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/TodayStable.tsx",
-      "line": 989
+      "line": 990
     },
     {
       "className": "text-rose-700",
       "file": "src/pages/TodayStable.tsx",
-      "line": 989
+      "line": 990
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/TodayStable.tsx",
-      "line": 1107
+      "line": 1108
     },
     {
       "className": "text-rose-700",
       "file": "src/pages/TodayStable.tsx",
-      "line": 1107
+      "line": 1108
     },
     {
       "className": "text-rose-500",
@@ -3368,23 +3368,23 @@
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1475
-    },
-    {
-      "file": "src/pages/Calendar.tsx",
-      "line": 1657
-    },
-    {
-      "file": "src/pages/CaseDetail.tsx",
-      "line": 1352
-    },
-    {
-      "file": "src/pages/CaseDetail.tsx",
       "line": 1476
     },
     {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1658
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1353
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 1477
+    },
+    {
       "file": "src/pages/ClientDetail.tsx",
-      "line": 1670
+      "line": 1671
     },
     {
       "file": "src/pages/NotificationsCenter.tsx",
@@ -3726,6 +3726,66 @@
       "name": "--case-stage2-danger-line",
       "file": "src/styles/case-detail-stage2.css",
       "line": 19
+    },
+    {
+      "name": "--cf-action-danger-text",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-action-danger-text-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-action-danger-bg",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-action-danger-bg-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-action-danger-border",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-action-danger-border-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-action-danger-focus",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-action-neutral-text",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-action-neutral-bg",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-action-neutral-border",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 15
+    },
+    {
+      "name": "--cf-action-neutral-bg-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 16
+    },
+    {
+      "name": "--cf-action-neutral-border-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 17
     },
     {
       "name": "--cf-case-danger",

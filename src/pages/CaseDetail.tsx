@@ -49,6 +49,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { EntityActionButton } from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
@@ -1903,7 +1904,7 @@ function WorkItemRow({
           <>
             <button type="button" onClick={() => onItemAccept(entry.source as CaseItem)}>Akceptuj</button>
             <button type="button" onClick={() => onItemReject(entry.source as CaseItem)}>Odrzuć</button>
-            <button type="button" className="case-detail-row-action-danger" onClick={() => onItemDelete(entry.source as CaseItem)}>Usuń</button>
+            <EntityActionButton type="button" tone="danger" className="case-detail-row-action-danger" onClick={() => onItemDelete(entry.source as CaseItem)}>Usuń</EntityActionButton>
           </>
         ) : null}
       </div>

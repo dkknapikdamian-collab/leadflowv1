@@ -9,6 +9,7 @@ import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { actionButtonClass as entityActionButtonClass } from '../components/entity-actions';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
@@ -355,7 +356,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
   const neutralActionClass = actionButtonClass;
   const postponeActionClass = `${actionButtonClass} border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:bg-blue-100`;
   const doneActionClass = `${actionButtonClass} border-emerald-200 bg-emerald-50 text-emerald-700 hover:border-emerald-300 hover:bg-emerald-100`;
-  const deleteActionClass = `${actionButtonClass} border-rose-200 bg-rose-50 text-rose-700 hover:border-rose-300 hover:bg-rose-100`;
+  const deleteActionClass = entityActionButtonClass('danger', actionButtonClass);
 
   return (
     <div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} className={`calendar-entry-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md ${isCompletedEntry ? 'opacity-60' : ''}`}>
@@ -1860,6 +1861,4 @@ export default function Calendar() {
 
 
 /* CALENDAR_STAGE08D_NO_FIREBASE_BOOT_BLOCK GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_MODAL_EVENT_BUS */
-
-
 

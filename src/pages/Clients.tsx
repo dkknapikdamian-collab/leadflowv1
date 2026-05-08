@@ -4,6 +4,7 @@ import { AlertTriangle, Briefcase, Loader2, Plus, RotateCcw, Search, Target, Tra
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { actionIconClass } from '../components/entity-actions';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
@@ -562,7 +563,7 @@ export default function Clients() {
                              title={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
                              disabled={archivePendingId === client.id}
                              onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
-                             className="btn ghost cf-icon-action-button cf-icon-action-button-danger"
+                              className={actionIconClass('danger', 'btn ghost cf-icon-action-button')}
                            >
                              {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
                            </button>

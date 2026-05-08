@@ -15,6 +15,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { EntityActionButton } from '../components/entity-actions';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Button } from '../components/ui/button';
@@ -390,8 +391,10 @@ export default function Templates() {
                           <DropdownMenuItem onClick={() => void handleDuplicateTemplate(template)}>
                             <Copy className="mr-2 h-4 w-4" /> Duplikuj
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={() => void handleDeleteTemplate(template.id)}>
+                          <DropdownMenuItem asChild>
+                            <EntityActionButton type="button" tone="danger" className="w-full justify-start rounded-sm px-2 py-1.5 text-sm font-normal shadow-none" onClick={() => void handleDeleteTemplate(template.id)}>
                             <Trash2 className="mr-2 h-4 w-4" /> UsuD
+                            </EntityActionButton>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -455,9 +458,9 @@ export default function Templates() {
                       <p className="text-sm font-bold text-slate-950">Pozycja {index + 1}</p>
                       <p className="text-xs text-slate-500">To dokBadnie zobaczy operator i klient w dalszym flow.</p>
                     </div>
-                    <Button variant="ghost" size="icon" className="rounded-2xl text-rose-600 hover:bg-rose-50 hover:text-rose-700" onClick={() => removeDraftItem(index)}>
+                    <EntityActionButton type="button" variant="ghost" size="icon" tone="danger" iconOnly className="rounded-2xl" onClick={() => removeDraftItem(index)}>
                       <Trash2 className="h-4 w-4" />
-                    </Button>
+                    </EntityActionButton>
                   </div>
 
                   <div className="grid gap-4">

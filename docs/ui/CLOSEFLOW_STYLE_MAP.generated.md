@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T10:21:42.986Z
+Generated: 2026-05-08T10:38:39.993Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -106,6 +106,18 @@ Generated: 2026-05-08T10:21:42.986Z
 - --case-stage2-danger-line: src/styles/case-detail-stage2.css:19
 - --case-stage2-success-bg: src/styles/case-detail-stage2.css:20
 - --case-stage2-success-line: src/styles/case-detail-stage2.css:21
+- --cf-action-danger-text: src/styles/closeflow-action-tokens.css:6
+- --cf-action-danger-text-hover: src/styles/closeflow-action-tokens.css:7
+- --cf-action-danger-bg: src/styles/closeflow-action-tokens.css:8
+- --cf-action-danger-bg-hover: src/styles/closeflow-action-tokens.css:9
+- --cf-action-danger-border: src/styles/closeflow-action-tokens.css:10
+- --cf-action-danger-border-hover: src/styles/closeflow-action-tokens.css:11
+- --cf-action-danger-focus: src/styles/closeflow-action-tokens.css:12
+- --cf-action-neutral-text: src/styles/closeflow-action-tokens.css:13
+- --cf-action-neutral-bg: src/styles/closeflow-action-tokens.css:14
+- --cf-action-neutral-border: src/styles/closeflow-action-tokens.css:15
+- --cf-action-neutral-bg-hover: src/styles/closeflow-action-tokens.css:16
+- --cf-action-neutral-border-hover: src/styles/closeflow-action-tokens.css:17
 - --cf-case-bg: src/styles/closeflow-case-detail-focus.css:2
 - --cf-case-surface: src/styles/closeflow-case-detail-focus.css:3
 - --cf-case-surface-soft: src/styles/closeflow-case-detail-focus.css:4
@@ -491,18 +503,6 @@ Generated: 2026-05-08T10:21:42.986Z
 - --cf22-violet-soft: src/styles/visual-stage22-leads-final-lock.css:31
 - --cf22-shadow: src/styles/visual-stage22-leads-final-lock.css:32
 - --cf22-shadow-soft: src/styles/visual-stage22-leads-final-lock.css:33
-- --cf22-radius-xl: src/styles/visual-stage22-leads-final-lock.css:34
-- --cf22-radius-lg: src/styles/visual-stage22-leads-final-lock.css:35
-- --cf22-radius-md: src/styles/visual-stage22-leads-final-lock.css:36
-- --cf23-bg: src/styles/visual-stage23-leads-html-parity-fix.css:7
-- --cf23-bg-2: src/styles/visual-stage23-leads-html-parity-fix.css:8
-- --cf23-sidebar: src/styles/visual-stage23-leads-html-parity-fix.css:9
-- --cf23-card: src/styles/visual-stage23-leads-html-parity-fix.css:10
-- --cf23-card-soft: src/styles/visual-stage23-leads-html-parity-fix.css:11
-- --cf23-text: src/styles/visual-stage23-leads-html-parity-fix.css:12
-- --cf23-muted: src/styles/visual-stage23-leads-html-parity-fix.css:13
-- --cf23-muted-2: src/styles/visual-stage23-leads-html-parity-fix.css:14
-- --cf23-line: src/styles/visual-stage23-leads-html-parity-fix.css:15
 
 ## Danger/red local classes
 - border-rose-200: src/components/AppChunkErrorBoundary.tsx:100
@@ -529,14 +529,9 @@ Generated: 2026-05-08T10:21:42.986Z
 - bg-rose-50: src/pages/Activity.tsx:699
 - text-rose-500: src/pages/Activity.tsx:699
 - text-rose-600: src/pages/Activity.tsx:699
-- border-rose-100: src/pages/Calendar.tsx:285
-- bg-rose-50: src/pages/Calendar.tsx:285
-- text-rose-700: src/pages/Calendar.tsx:285
-- border-rose-200: src/pages/Calendar.tsx:358
-- bg-rose-50: src/pages/Calendar.tsx:358
-- text-rose-700: src/pages/Calendar.tsx:358
-- border-rose-300: src/pages/Calendar.tsx:358
-- bg-rose-100: src/pages/Calendar.tsx:358
+- border-rose-100: src/pages/Calendar.tsx:286
+- bg-rose-50: src/pages/Calendar.tsx:286
+- text-rose-700: src/pages/Calendar.tsx:286
 - bg-rose-50: src/pages/Cases.tsx:661
 - text-rose-600: src/pages/Cases.tsx:661
 - text-red-500: src/pages/ClientPortal.tsx:223
@@ -546,18 +541,18 @@ Generated: 2026-05-08T10:21:42.986Z
 - text-red-500: src/pages/ClientPortal.tsx:276
 - text-red-600: src/pages/ClientPortal.tsx:377
 - bg-red-50: src/pages/ClientPortal.tsx:377
-- text-rose-600: src/pages/Clients.tsx:517
-- bg-rose-50: src/pages/Clients.tsx:518
-- text-rose-500: src/pages/Clients.tsx:518
+- text-rose-600: src/pages/Clients.tsx:518
+- bg-rose-50: src/pages/Clients.tsx:519
+- text-rose-500: src/pages/Clients.tsx:519
 - text-red-500: src/pages/Dashboard.tsx:228
 - text-red-600: src/pages/Dashboard.tsx:228
 - bg-red-50: src/pages/Dashboard.tsx:228
 - text-red-600: src/pages/Dashboard.tsx:333
 - bg-red-50: src/pages/Dashboard.tsx:335
 - text-red-500: src/pages/Dashboard.tsx:336
-- text-rose-600: src/pages/Leads.tsx:745
-- bg-rose-50: src/pages/Leads.tsx:746
-- text-rose-500: src/pages/Leads.tsx:746
+- text-rose-600: src/pages/Leads.tsx:746
+- bg-rose-50: src/pages/Leads.tsx:747
+- text-rose-500: src/pages/Leads.tsx:747
 - bg-rose-50: src/pages/NotificationsCenter.tsx:643
 - text-rose-500: src/pages/NotificationsCenter.tsx:643
 - text-rose-600: src/pages/NotificationsCenter.tsx:643
@@ -570,12 +565,7 @@ Generated: 2026-05-08T10:21:42.986Z
 - text-rose-700: src/pages/TasksStable.tsx:440
 - bg-rose-50: src/pages/TasksStable.tsx:441
 - text-rose-600: src/pages/TasksStable.tsx:441
-- text-rose-600: src/pages/Templates.tsx:393
-- text-rose-600: src/pages/Templates.tsx:393
-- bg-rose-600: src/pages/Templates.tsx:407
-- text-rose-600: src/pages/Templates.tsx:458
-- bg-rose-50: src/pages/Templates.tsx:458
-- text-rose-700: src/pages/Templates.tsx:458
+- bg-rose-600: src/pages/Templates.tsx:410
 - border-red-100: src/pages/Today.tsx:1286
 - bg-red-50: src/pages/Today.tsx:1286
 - border-red-200: src/pages/Today.tsx:1286
@@ -610,15 +600,13 @@ Generated: 2026-05-08T10:21:42.986Z
 - text-rose-600: src/pages/Today.tsx:2849
 - border-rose-200: src/pages/Today.tsx:2850
 - text-rose-700: src/pages/Today.tsx:2850
-- text-rose-600: src/pages/TodayStable.tsx:564
-- text-rose-700: src/pages/TodayStable.tsx:564
-- text-rose-700: src/pages/TodayStable.tsx:896
-- border-rose-200: src/pages/TodayStable.tsx:896
-- border-rose-100: src/pages/TodayStable.tsx:989
-- bg-rose-50: src/pages/TodayStable.tsx:989
-- text-rose-700: src/pages/TodayStable.tsx:989
-- bg-rose-50: src/pages/TodayStable.tsx:1107
-- text-rose-700: src/pages/TodayStable.tsx:1107
+- text-rose-700: src/pages/TodayStable.tsx:897
+- border-rose-200: src/pages/TodayStable.tsx:897
+- border-rose-100: src/pages/TodayStable.tsx:990
+- bg-rose-50: src/pages/TodayStable.tsx:990
+- text-rose-700: src/pages/TodayStable.tsx:990
+- bg-rose-50: src/pages/TodayStable.tsx:1108
+- text-rose-700: src/pages/TodayStable.tsx:1108
 - text-rose-500: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
 - text-rose-600: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
 - text-rose-700: src/styles/eliteflow-metric-tiles-color-font-parity.css:122
@@ -641,11 +629,11 @@ Generated: 2026-05-08T10:21:42.986Z
 - src/components/Layout.tsx:122
 - src/components/ui/progress.tsx:19
 - src/pages/Activity.tsx:789
-- src/pages/Calendar.tsx:1475
-- src/pages/Calendar.tsx:1657
-- src/pages/CaseDetail.tsx:1352
-- src/pages/CaseDetail.tsx:1476
-- src/pages/ClientDetail.tsx:1670
+- src/pages/Calendar.tsx:1476
+- src/pages/Calendar.tsx:1658
+- src/pages/CaseDetail.tsx:1353
+- src/pages/CaseDetail.tsx:1477
+- src/pages/ClientDetail.tsx:1671
 - src/pages/NotificationsCenter.tsx:705
 - src/pages/Today.tsx:808
 - src/pages/UiPreviewVNext.tsx:8

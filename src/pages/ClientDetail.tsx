@@ -75,6 +75,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { EntityActionButton } from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -1854,17 +1855,19 @@ export default function ClientDetail() {
                             <Button type="button" size="sm" variant="outline" onClick={() => (caseId ? navigate(`/cases/${caseId}`) : toast.info('Brak ID sprawy.'))}>
                               Edytuj
                             </Button>
-                            <Button
+                            <EntityActionButton
                               type="button"
                               size="sm"
                               variant="outline"
+                              tone="danger"
+                              iconOnly
                               className="client-detail-case-smart-delete-icon-button"
                               aria-label="Usuń sprawę"
                               title="Usuń sprawę"
                               onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}
                             >
                               <Trash2 className="h-4 w-4" aria-hidden="true" />
-                            </Button>
+                            </EntityActionButton>
                           </div>
                         </article>
                       );
@@ -2090,9 +2093,9 @@ export default function ClientDetail() {
                           <button type="button" title="Edytuj notatkę" aria-label="Edytuj notatkę" onClick={() => handleEditClientNote(note)}>
                             <Pencil className="h-3.5 w-3.5" />
                           </button>
-                          <button type="button" className="client-detail-note-delete-button" title="Usuń notatkę" aria-label="Usuń notatkę" onClick={() => handleDeleteClientNote(note)}>
+                          <EntityActionButton type="button" tone="danger" iconOnly className="client-detail-note-delete-button" title="Usuń notatkę" aria-label="Usuń notatkę" onClick={() => handleDeleteClientNote(note)}>
                             <Trash2 className="h-3.5 w-3.5" />
-                          </button>
+                          </EntityActionButton>
                         </div>
                         <p>{note.content}</p>
                         <small>{note.createdAt ? formatDateTime(note.createdAt) : 'Dodano przed chwilą'}</small>
