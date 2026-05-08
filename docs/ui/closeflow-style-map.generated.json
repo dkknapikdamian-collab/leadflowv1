@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T13:50:31.178Z",
+  "generatedAt": "2026-05-08T14:02:21.875Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -575,6 +575,36 @@
       "name": "--cf-action-neutral-border-hover",
       "file": "src/styles/closeflow-action-tokens.css",
       "line": 17
+    },
+    {
+      "name": "--cf-readable-card-bg",
+      "file": "src/styles/closeflow-card-readability.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-readable-card-border",
+      "file": "src/styles/closeflow-card-readability.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-readable-title",
+      "file": "src/styles/closeflow-card-readability.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-readable-text",
+      "file": "src/styles/closeflow-card-readability.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-readable-muted",
+      "file": "src/styles/closeflow-card-readability.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-readable-empty-bg",
+      "file": "src/styles/closeflow-card-readability.css",
+      "line": 13
     },
     {
       "name": "--cf-case-bg",
@@ -3181,17 +3211,17 @@
     {
       "className": "border-rose-100",
       "file": "src/pages/Calendar.tsx",
-      "line": 286
+      "line": 287
     },
     {
       "className": "bg-rose-50",
       "file": "src/pages/Calendar.tsx",
-      "line": 286
+      "line": 287
     },
     {
       "className": "text-rose-700",
       "file": "src/pages/Calendar.tsx",
-      "line": 286
+      "line": 287
     },
     {
       "className": "text-red-500",
@@ -3306,7 +3336,7 @@
     {
       "className": "bg-rose-600",
       "file": "src/pages/Templates.tsx",
-      "line": 410
+      "line": 411
     },
     {
       "className": "border-red-100",
@@ -3613,11 +3643,11 @@
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1476
+      "line": 1477
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1658
+      "line": 1659
     },
     {
       "file": "src/pages/CaseDetail.tsx",

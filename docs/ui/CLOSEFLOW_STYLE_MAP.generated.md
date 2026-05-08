@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T13:50:31.178Z
+Generated: 2026-05-08T14:02:21.875Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -118,6 +118,12 @@ Generated: 2026-05-08T13:50:31.178Z
 - --cf-action-neutral-border: src/styles/closeflow-action-tokens.css:15
 - --cf-action-neutral-bg-hover: src/styles/closeflow-action-tokens.css:16
 - --cf-action-neutral-border-hover: src/styles/closeflow-action-tokens.css:17
+- --cf-readable-card-bg: src/styles/closeflow-card-readability.css:8
+- --cf-readable-card-border: src/styles/closeflow-card-readability.css:9
+- --cf-readable-title: src/styles/closeflow-card-readability.css:10
+- --cf-readable-text: src/styles/closeflow-card-readability.css:11
+- --cf-readable-muted: src/styles/closeflow-card-readability.css:12
+- --cf-readable-empty-bg: src/styles/closeflow-card-readability.css:13
 - --cf-case-bg: src/styles/closeflow-case-detail-focus.css:2
 - --cf-case-surface: src/styles/closeflow-case-detail-focus.css:3
 - --cf-case-surface-soft: src/styles/closeflow-case-detail-focus.css:4
@@ -497,12 +503,6 @@ Generated: 2026-05-08T13:50:31.178Z
 - --stage19-shadow: src/styles/visual-stage19-clients-safe-css.css:12
 - --stage19-soft-shadow: src/styles/visual-stage19-clients-safe-css.css:13
 - --stage20-ink: src/styles/visual-stage20-tasks-safe-css.css:8
-- --stage20-muted: src/styles/visual-stage20-tasks-safe-css.css:9
-- --stage20-muted-2: src/styles/visual-stage20-tasks-safe-css.css:10
-- --stage20-line: src/styles/visual-stage20-tasks-safe-css.css:11
-- --stage20-line-2: src/styles/visual-stage20-tasks-safe-css.css:12
-- --stage20-card: src/styles/visual-stage20-tasks-safe-css.css:13
-- --stage20-card-strong: src/styles/visual-stage20-tasks-safe-css.css:14
 
 ## Danger/red local classes
 - border-rose-200: src/components/AppChunkErrorBoundary.tsx:100
@@ -529,9 +529,9 @@ Generated: 2026-05-08T13:50:31.178Z
 - bg-rose-50: src/pages/Activity.tsx:699
 - text-rose-500: src/pages/Activity.tsx:699
 - text-rose-600: src/pages/Activity.tsx:699
-- border-rose-100: src/pages/Calendar.tsx:286
-- bg-rose-50: src/pages/Calendar.tsx:286
-- text-rose-700: src/pages/Calendar.tsx:286
+- border-rose-100: src/pages/Calendar.tsx:287
+- bg-rose-50: src/pages/Calendar.tsx:287
+- text-rose-700: src/pages/Calendar.tsx:287
 - text-red-500: src/pages/ClientPortal.tsx:223
 - bg-red-100: src/pages/ClientPortal.tsx:265
 - text-red-600: src/pages/ClientPortal.tsx:265
@@ -554,7 +554,7 @@ Generated: 2026-05-08T13:50:31.178Z
 - bg-rose-50: src/pages/TasksStable.tsx:163
 - text-rose-700: src/pages/TasksStable.tsx:163
 - border-rose-100: src/pages/TasksStable.tsx:163
-- bg-rose-600: src/pages/Templates.tsx:410
+- bg-rose-600: src/pages/Templates.tsx:411
 - border-red-100: src/pages/Today.tsx:1286
 - bg-red-50: src/pages/Today.tsx:1286
 - border-red-200: src/pages/Today.tsx:1286
@@ -618,8 +618,8 @@ Generated: 2026-05-08T13:50:31.178Z
 - src/components/Layout.tsx:122
 - src/components/ui/progress.tsx:19
 - src/pages/Activity.tsx:789
-- src/pages/Calendar.tsx:1476
-- src/pages/Calendar.tsx:1658
+- src/pages/Calendar.tsx:1477
+- src/pages/Calendar.tsx:1659
 - src/pages/CaseDetail.tsx:1326
 - src/pages/CaseDetail.tsx:1449
 - src/pages/Cases.tsx:757

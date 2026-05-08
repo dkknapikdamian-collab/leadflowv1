@@ -29,6 +29,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Checkbox } from '../components/ui/checkbox';
 import { Textarea } from '../components/ui/textarea';
 import {
+// CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_TEMPLATES
   createCaseTemplateInSupabase,
   deleteCaseTemplateFromSupabase,
   fetchCaseTemplatesFromSupabase,
@@ -321,7 +322,7 @@ export default function Templates() {
 
         <LightMetricCardRow stats={stats} />
 
-        <Card className="border border-slate-200 bg-white shadow-sm">
+        <Card className="cf-readable-card border border-slate-200 bg-white shadow-sm">
           <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative flex-1">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -340,19 +341,19 @@ export default function Templates() {
 
         <section className="space-y-4">
           {loading ? (
-            <Card className="border border-slate-200 bg-white shadow-sm">
-              <CardContent className="flex flex-col items-center justify-center gap-3 py-16">
+            <Card className="cf-readable-card border border-slate-200 bg-white shadow-sm">
+              <CardContent className="cf-empty-state flex flex-col items-center justify-center gap-3 py-16">
                 <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-emerald-600" />
                 <p className="text-sm font-semibold text-slate-500">Ładowanie szablonów...</p>
               </CardContent>
             </Card>
           ) : filteredTemplates.length === 0 ? (
-            <Card className="border border-dashed border-slate-300 bg-white shadow-sm">
-              <CardContent className="flex min-h-[260px] flex-col items-center justify-center gap-4 px-6 py-16 text-center">
+            <Card className="cf-readable-card border border-dashed border-slate-300 bg-white shadow-sm">
+              <CardContent className="cf-empty-state flex min-h-[260px] flex-col items-center justify-center gap-4 px-6 py-16 text-center">
                 <div className="rounded-3xl bg-emerald-50 p-4 text-emerald-700"><FolderKanban className="h-8 w-8" /></div>
                 <div>
-                  <p className="text-xl font-black text-slate-950">Brak szablonów w tym widoku</p>
-                  <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
+                  <p className="cf-readable-title text-xl font-black text-slate-950">Brak szablonów w tym widoku</p>
+                  <p className="mt-2 max-w-md cf-readable-muted text-sm leading-6 text-slate-500">
                     Dodaj pierwszy szablon, jeśli chcesz szybciej zamieniać pozyskany temat w sprawę z checklistą.
                   </p>
                 </div>
@@ -367,16 +368,16 @@ export default function Templates() {
               const requiredCount = items.filter((item) => item.isRequired).length;
 
               return (
-                <Card key={template.id} className="border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+                <Card key={template.id} className="cf-readable-card border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                   <CardContent className="flex flex-col gap-5 p-5">
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                       <div className="space-y-3">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-xl font-black text-slate-950">{template.name || 'Szablon bez nazwy'}</h3>
+                          <h3 className="cf-readable-title text-xl font-black text-slate-950">{template.name || 'Szablon bez nazwy'}</h3>
                           <Badge variant="outline" className="border-slate-200 bg-slate-50 text-slate-700">{items.length} pozycji</Badge>
                           {requiredCount > 0 ? <Badge className="border border-amber-200 bg-amber-50 text-amber-700">{requiredCount} obowiązkowych</Badge> : null}
                         </div>
-                        <p className="text-sm leading-6 text-slate-500">
+                        <p className="cf-readable-muted text-sm leading-6 text-slate-500">
                           Po wybraniu szablonu pozycje zostaną skopiowane do checklisty nowej sprawy.
                         </p>
                       </div>
@@ -404,13 +405,13 @@ export default function Templates() {
                       {items.map((item, index) => {
                         const meta = itemTypeMeta(item.type);
                         return (
-                          <div key={`${template.id}-${index}`} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                          <div key={`${template.id}-${index}`} className="cf-readable-panel rounded-2xl border border-slate-200 bg-slate-50 p-4">
                             <div className="mb-3 flex flex-wrap items-center gap-2">
                               <Badge variant="outline" className={meta.badgeClassName}>{meta.label}</Badge>
                               {item.isRequired ? <Badge className="bg-rose-600 text-white">Obowiązkowe</Badge> : <Badge variant="outline" className="border-slate-200 bg-white text-slate-700">Opcjonalne</Badge>}
                             </div>
                             <p className="font-bold text-slate-950">{item.title}</p>
-                            <p className="mt-2 text-sm leading-6 text-slate-500">
+                            <p className="mt-2 cf-readable-muted text-sm leading-6 text-slate-500">
                               {item.description || 'Bez opisu. Warto dopisać krótkie wyjaśnienie dla klienta.'}
                             </p>
                           </div>
@@ -452,7 +453,7 @@ export default function Templates() {
 
             <div className="space-y-4">
               {draft.items.map((item, index) => (
-                <div key={`draft-item-${index}`} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div key={`draft-item-${index}`} className="cf-readable-card rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <div>
                       <p className="text-sm font-bold text-slate-950">Pozycja {index + 1}</p>

@@ -1,0 +1,82 @@
+/* CLOSEFLOW_CARD_READABILITY_CONTRACT
+   One source of truth for readable cards, content panels and empty states.
+   Scope: card/content readability only. It does not replace right-rail, list row,
+   page header, metric tile, danger/action or form footer contracts.
+*/
+
+:root {
+  --cf-readable-card-bg: #ffffff;
+  --cf-readable-card-border: #e2e8f0;
+  --cf-readable-title: #0f172a;
+  --cf-readable-text: #334155;
+  --cf-readable-muted: #64748b;
+  --cf-readable-empty-bg: #f8fafc;
+}
+
+.cf-card-readable,
+.cf-readable-card,
+.cf-readable-panel {
+  background: var(--cf-readable-card-bg) !important;
+  border-color: var(--cf-readable-card-border) !important;
+  color: var(--cf-readable-text) !important;
+}
+
+.cf-readable-card,
+.cf-readable-panel {
+  border: 1px solid var(--cf-readable-card-border);
+}
+
+.cf-readable-title,
+.cf-readable-card h1,
+.cf-readable-card h2,
+.cf-readable-card h3,
+.cf-readable-panel h1,
+.cf-readable-panel h2,
+.cf-readable-panel h3,
+.cf-empty-state h1,
+.cf-empty-state h2,
+.cf-empty-state h3,
+.cf-empty-state strong {
+  color: var(--cf-readable-title) !important;
+}
+
+.cf-readable-text,
+.cf-readable-card p,
+.cf-readable-panel p,
+.cf-empty-state p {
+  color: var(--cf-readable-text);
+}
+
+.cf-readable-muted,
+.cf-readable-card small,
+.cf-readable-panel small,
+.cf-empty-state small {
+  color: var(--cf-readable-muted) !important;
+}
+
+.cf-empty-state {
+  background: var(--cf-readable-empty-bg) !important;
+  color: var(--cf-readable-text) !important;
+  border-color: var(--cf-readable-card-border) !important;
+}
+
+.cf-empty-state .cf-readable-title,
+.cf-empty-state [class*="text-slate-950"],
+.cf-readable-card .cf-readable-title,
+.cf-readable-panel .cf-readable-title {
+  color: var(--cf-readable-title) !important;
+}
+
+.cf-empty-state .cf-readable-muted,
+.cf-empty-state [class*="text-slate-500"],
+.cf-readable-card .cf-readable-muted,
+.cf-readable-panel .cf-readable-muted {
+  color: var(--cf-readable-muted) !important;
+}
+
+.cf-readable-panel pre,
+pre.cf-readable-panel {
+  background: var(--cf-readable-empty-bg) !important;
+  border-color: var(--cf-readable-card-border) !important;
+  color: var(--cf-readable-text) !important;
+}

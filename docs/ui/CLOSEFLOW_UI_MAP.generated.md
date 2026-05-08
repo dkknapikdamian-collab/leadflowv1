@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T13:50:30.615Z
+Generated: 2026-05-08T14:02:21.283Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -101,16 +101,16 @@ Source files scanned: 196
 - Kopiuj: src/pages/AiDrafts.tsx:988
 - Kopiuj: src/pages/AiDrafts.tsx:1198
 - Anuluj: src/pages/Billing.tsx:683
-- Dodaj zadanie: src/pages/Calendar.tsx:1405
-- Dodaj zadanie: src/pages/Calendar.tsx:1443
-- Usuń: src/pages/Calendar.tsx:424
-- Edytuj: src/pages/Calendar.tsx:123
-- Edytuj: src/pages/Calendar.tsx:416
-- Edytuj: src/pages/Calendar.tsx:1690
-- Zapisz: src/pages/Calendar.tsx:123
-- Zapisz: src/pages/Calendar.tsx:1851
-- Dodaj: src/pages/Calendar.tsx:1405
-- Dodaj: src/pages/Calendar.tsx:1443
+- Dodaj zadanie: src/pages/Calendar.tsx:1406
+- Dodaj zadanie: src/pages/Calendar.tsx:1444
+- Usuń: src/pages/Calendar.tsx:425
+- Edytuj: src/pages/Calendar.tsx:124
+- Edytuj: src/pages/Calendar.tsx:417
+- Edytuj: src/pages/Calendar.tsx:1691
+- Zapisz: src/pages/Calendar.tsx:124
+- Zapisz: src/pages/Calendar.tsx:1852
+- Dodaj: src/pages/Calendar.tsx:1406
+- Dodaj: src/pages/Calendar.tsx:1444
 - Dodaj notatkę: src/pages/CaseDetail.tsx:1563
 - Dodaj notatkę: src/pages/CaseDetail.tsx:1614
 - Dodaj zadanie: src/pages/CaseDetail.tsx:1317
@@ -226,15 +226,15 @@ Source files scanned: 196
 - Kopiuj: src/pages/Login.tsx:5
 - Kopiuj: src/pages/Login.tsx:19
 - Kopiuj: src/pages/Login.tsx:250
-- Edytuj: src/pages/ResponseTemplates.tsx:249
-- Edytuj: src/pages/ResponseTemplates.tsx:294
-- Edytuj: src/pages/ResponseTemplates.tsx:308
-- Zapisz: src/pages/ResponseTemplates.tsx:334
-- Anuluj: src/pages/ResponseTemplates.tsx:333
-- Kopiuj: src/pages/ResponseTemplates.tsx:247
-- Kopiuj: src/pages/ResponseTemplates.tsx:293
-- Dodaj: src/pages/ResponseTemplates.tsx:268
-- Dodaj: src/pages/ResponseTemplates.tsx:271
+- Edytuj: src/pages/ResponseTemplates.tsx:250
+- Edytuj: src/pages/ResponseTemplates.tsx:295
+- Edytuj: src/pages/ResponseTemplates.tsx:309
+- Zapisz: src/pages/ResponseTemplates.tsx:335
+- Anuluj: src/pages/ResponseTemplates.tsx:334
+- Kopiuj: src/pages/ResponseTemplates.tsx:248
+- Kopiuj: src/pages/ResponseTemplates.tsx:294
+- Dodaj: src/pages/ResponseTemplates.tsx:269
+- Dodaj: src/pages/ResponseTemplates.tsx:272
 - Zapisz: src/pages/Settings.tsx:841
 - Zapisz: src/pages/Settings.tsx:880
 - Zapisz: src/pages/Settings.tsx:1019
@@ -262,15 +262,15 @@ Source files scanned: 196
 - Edytuj: src/pages/TasksStable.tsx:558
 - Zapisz: src/pages/TasksStable.tsx:601
 - Anuluj: src/pages/TasksStable.tsx:600
-- Usuń: src/pages/Templates.tsx:396
-- Edytuj: src/pages/Templates.tsx:390
-- Edytuj: src/pages/Templates.tsx:431
-- Zapisz: src/pages/Templates.tsx:515
-- Anuluj: src/pages/Templates.tsx:513
-- Dodaj: src/pages/Templates.tsx:238
-- Dodaj: src/pages/Templates.tsx:356
-- Dodaj: src/pages/Templates.tsx:360
-- Dodaj: src/pages/Templates.tsx:508
+- Usuń: src/pages/Templates.tsx:397
+- Edytuj: src/pages/Templates.tsx:391
+- Edytuj: src/pages/Templates.tsx:432
+- Zapisz: src/pages/Templates.tsx:516
+- Anuluj: src/pages/Templates.tsx:514
+- Dodaj: src/pages/Templates.tsx:239
+- Dodaj: src/pages/Templates.tsx:357
+- Dodaj: src/pages/Templates.tsx:361
+- Dodaj: src/pages/Templates.tsx:509
 - Usuń: src/pages/Today.tsx:2459
 - Usuń: src/pages/Today.tsx:2592
 - Usuń: src/pages/Today.tsx:2660
@@ -1029,7 +1029,7 @@ import {
 - src/pages/Activity.tsx:551 <Link to={'/leads/' + leadId} className="activity-relation-link">
 - src/pages/Activity.tsx:556 <Link to={'/cases/' + caseId} className="activity-relation-link">
 - src/pages/Activity.tsx:569 <Link to={relation.href} className="activity-open-button" aria-label={'Otwórz ' + relation.label}>
-- src/pages/AdminAiSettings.tsx:133 <Button type="button" variant="outline" onClick={() =>
+- src/pages/AdminAiSettings.tsx:134 <Button type="button" variant="outline" onClick={() =>
 - src/pages/AiDrafts.tsx:853 <Button type="button" size="sm" variant="outline" onClick={closeDraftApproval} disabled={approvalSaving}>
 - src/pages/AiDrafts.tsx:967 <button type="button" className="ai-drafts-action ai-drafts-action-blue" onClick={() =>
 - src/pages/AiDrafts.tsx:968 <button type="button" className="ai-drafts-action" onClick={() =>
@@ -1046,14 +1046,14 @@ import {
 - src/pages/AiDrafts.tsx:1177 <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
 - src/pages/Billing.tsx:496 <Button type="button" variant="outline" onClick={refresh}>
 - src/pages/Billing.tsx:676 <Button type="button" size="sm" variant="outline" disabled={Boolean(billingActionLoading) || workspace.cancelAtPeriodEnd} 
-- src/pages/Calendar.tsx:392 <Link to={`/leads/${entry.raw.leadId}`} className="text-blue-700 hover:underline">
-- src/pages/Calendar.tsx:397 <Link to={`/cases/${entry.raw.caseId}`} className="text-sky-700 hover:underline">
-- src/pages/Calendar.tsx:1225 <Link to="/ai-drafts" className="btn soft-blue">
-- src/pages/Calendar.tsx:1340 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
-- src/pages/Calendar.tsx:1364 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.tsx:1380 <button type="button" className="nav-today" onClick={() =>
-- src/pages/Calendar.tsx:1383 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.tsx:1443 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
+- src/pages/Calendar.tsx:393 <Link to={`/leads/${entry.raw.leadId}`} className="text-blue-700 hover:underline">
+- src/pages/Calendar.tsx:398 <Link to={`/cases/${entry.raw.caseId}`} className="text-sky-700 hover:underline">
+- src/pages/Calendar.tsx:1226 <Link to="/ai-drafts" className="btn soft-blue">
+- src/pages/Calendar.tsx:1341 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
+- src/pages/Calendar.tsx:1365 <button type="button" className="nav-btn" onClick={() =>
+- src/pages/Calendar.tsx:1381 <button type="button" className="nav-today" onClick={() =>
+- src/pages/Calendar.tsx:1384 <button type="button" className="nav-btn" onClick={() =>
+- src/pages/Calendar.tsx:1444 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
 - src/pages/CaseDetail.tsx:1267 <Button type="button" variant="outline" onClick={() =>
 - src/pages/CaseDetail.tsx:1282 <button type="button" className="case-detail-back-button" onClick={() =>
 - src/pages/CaseDetail.tsx:1298 <Button type="button" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>
@@ -1161,14 +1161,14 @@ import {
 - src/pages/NotificationsCenter.tsx:744 <button type="button" className="notifications-rail-button" onClick={() =>
 - src/pages/NotificationsCenter.tsx:748 <button type="button" className="notifications-rail-button" onClick={() =>
 - src/pages/NotificationsCenter.tsx:752 <button type="button" className="notifications-rail-button" onClick={handleMarkAllRead}>
-- src/pages/ResponseTemplates.tsx:204 <Button className="rounded-2xl" onClick={openCreate}>
-- src/pages/ResponseTemplates.tsx:246 <Button variant="outline" size="sm" className="rounded-2xl" onClick={() =>
-- src/pages/ResponseTemplates.tsx:249 <Button variant="outline" size="sm" className="rounded-2xl" onClick={() =>
-- src/pages/ResponseTemplates.tsx:250 <Button variant="outline" size="icon" className="rounded-2xl text-amber-600 hover:bg-amber-500/10 hover:text-amber-700" onClick={() =>
-- src/pages/ResponseTemplates.tsx:270 <Button className="rounded-2xl" onClick={openCreate}>
-- src/pages/ResponseTemplates.tsx:293 <Button className="rounded-2xl" onClick={() =>
-- src/pages/ResponseTemplates.tsx:294 <Button variant="outline" className="rounded-2xl" onClick={() =>
-- src/pages/ResponseTemplates.tsx:333 <Button variant="outline" onClick={() =>
+- src/pages/ResponseTemplates.tsx:205 <Button className="rounded-2xl" onClick={openCreate}>
+- src/pages/ResponseTemplates.tsx:247 <Button variant="outline" size="sm" className="rounded-2xl" onClick={() =>
+- src/pages/ResponseTemplates.tsx:250 <Button variant="outline" size="sm" className="rounded-2xl" onClick={() =>
+- src/pages/ResponseTemplates.tsx:251 <Button variant="outline" size="icon" className="rounded-2xl text-amber-600 hover:bg-amber-500/10 hover:text-amber-700" onClick={() =>
+- src/pages/ResponseTemplates.tsx:271 <Button className="rounded-2xl" onClick={openCreate}>
+- src/pages/ResponseTemplates.tsx:294 <Button className="rounded-2xl" onClick={() =>
+- src/pages/ResponseTemplates.tsx:295 <Button variant="outline" className="rounded-2xl" onClick={() =>
+- src/pages/ResponseTemplates.tsx:334 <Button variant="outline" onClick={() =>
 - src/pages/Settings.tsx:759 <Button type="button" variant="outline" onClick={refresh}>
 - src/pages/Settings.tsx:941 <Button type="button" variant="outline" onClick={() =>
 - src/pages/Settings.tsx:1021 <Button type="button" variant="outline" onClick={() =>
@@ -1194,12 +1194,12 @@ import {
 - src/pages/TasksStable.tsx:544 <Button type="button" variant="outline" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48="delete" onClic
 - src/pages/TasksStable.tsx:600 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>
 - src/pages/TasksStable.tsx:648 <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>
-- src/pages/Templates.tsx:315 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
-- src/pages/Templates.tsx:359 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
-- src/pages/Templates.tsx:385 <Button variant="outline" size="icon" className="rounded-2xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
-- src/pages/Templates.tsx:507 <Button variant="outline" className="w-full rounded-2xl border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={addDraftItem}>
-- src/pages/Templates.tsx:513 <Button variant="outline" className="border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={() =>
-- src/pages/Templates.tsx:514 <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={() =>
+- src/pages/Templates.tsx:316 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
+- src/pages/Templates.tsx:360 <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
+- src/pages/Templates.tsx:386 <Button variant="outline" size="icon" className="rounded-2xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
+- src/pages/Templates.tsx:508 <Button variant="outline" className="w-full rounded-2xl border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={addDraftItem}>
+- src/pages/Templates.tsx:514 <Button variant="outline" className="border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={() =>
+- src/pages/Templates.tsx:515 <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={() =>
 - src/pages/Today.tsx:559 <button type="button" data-today-tile-header="true" data-today-tile-id={id} data-today-tile-title={title} onClick={handleHeaderClick} aria-expanded={!collapsed}
 - src/pages/Today.tsx:604 <Link to={`/leads/${leadId}`} className="block group">
 - src/pages/Today.tsx:700 <Link to={`/leads/${leadId}`} className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:
@@ -1290,6 +1290,10 @@ import {
 - src/pages/Activity.tsx:824 `activity-right-card-head`
 - src/pages/Activity.tsx:845 `right-card activity-right-card`
 - src/pages/Activity.tsx:846 `activity-right-card-head`
+- src/pages/AdminAiSettings.tsx:35 `cf-readable-card border-none app-surface-strong`
+- src/pages/AdminAiSettings.tsx:104 `cf-readable-card border-none app-surface-strong`
+- src/pages/AdminAiSettings.tsx:140 `cf-readable-card border-none app-surface-strong`
+- src/pages/AdminAiSettings.tsx:186 `cf-readable-card border-none app-surface-strong`
 - src/pages/AiDrafts.tsx:848 `ai-drafts-approval-actions`
 - src/pages/AiDrafts.tsx:897 `ai-drafts-recognized-card`
 - src/pages/AiDrafts.tsx:909 `ai-drafts-recognized-card`
@@ -1342,9 +1346,9 @@ import {
 - src/pages/Billing.tsx:720 `right-card billing-right-card`
 - src/pages/Billing.tsx:732 `right-card billing-right-card`
 - src/pages/Billing.tsx:742 `billing-settlements-card`
-- src/pages/Calendar.tsx:1224 `head-actions`
-- src/pages/Calendar.tsx:1553 `right-card calendar-week-filter`
-- src/pages/Calendar.tsx:1633 `right-card calendar-week-plan`
+- src/pages/Calendar.tsx:1225 `head-actions`
+- src/pages/Calendar.tsx:1554 `right-card calendar-week-filter`
+- src/pages/Calendar.tsx:1634 `right-card calendar-week-plan`
 - src/pages/CaseDetail.tsx:1250 `case-detail-loading-card`
 - src/pages/CaseDetail.tsx:1263 `case-detail-empty-card`
 - src/pages/CaseDetail.tsx:1282 `case-detail-back-button`
@@ -1575,7 +1579,3 @@ import {
 - src/pages/NotificationsCenter.tsx:758 `right-card notifications-right-card`
 - src/pages/NotificationsCenter.tsx:759 `notifications-right-card-head`
 - src/pages/NotificationsCenter.tsx:777 `right-card notifications-right-card`
-- src/pages/NotificationsCenter.tsx:778 `notifications-right-card-head`
-- src/pages/Settings.tsx:6 `settings-section-card`
-- src/pages/Settings.tsx:7 `settings-section-card`
-- src/pages/Settings.tsx:8 `settings-section-card`

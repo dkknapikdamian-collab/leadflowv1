@@ -13,6 +13,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
+// CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_RESPONSE_TEMPLATES
   createResponseTemplateInSupabase,
   deleteResponseTemplateFromSupabase,
   fetchResponseTemplatesFromSupabase,
@@ -214,7 +215,7 @@ export default function ResponseTemplates() {
           <StatShortcutCard label="Zmienne" value={stats.withVariables} icon={Copy} iconClassName="bg-emerald-500/12 text-emerald-600" valueClassName="text-emerald-600" />
         </section>
 
-        <Card className="border-none app-surface-strong app-shadow">
+        <Card className="cf-readable-card border-none app-surface-strong app-shadow">
           <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative flex-1">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
@@ -227,12 +228,12 @@ export default function ResponseTemplates() {
         </Card>
 
         {loading ? (
-          <Card className="border-none app-surface-strong app-shadow"><CardContent className="p-6 app-muted">Ładowanie szablonów...</CardContent></Card>
+          <Card className="cf-readable-card border-none app-surface-strong app-shadow"><CardContent className="p-6 app-muted">Ładowanie szablonów...</CardContent></Card>
         ) : (
           <section className="grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)]">
             <div className="space-y-3">
               {filtered.map((item) => (
-                <Card key={item.id} className="border-none app-surface-strong app-shadow">
+                <Card key={item.id} className="cf-readable-card border-none app-surface-strong app-shadow">
                   <CardContent className="flex flex-col gap-4 p-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div className="space-y-2">
@@ -260,12 +261,12 @@ export default function ResponseTemplates() {
                 </Card>
               ))}
               {!filtered.length ? (
-                <Card className="border-dashed app-surface-strong app-shadow">
-                  <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+                <Card className="cf-readable-card border-dashed app-surface-strong app-shadow">
+                  <CardContent className="cf-empty-state flex flex-col items-center justify-center gap-3 py-16 text-center">
                     <div className="rounded-full p-4 app-primary-chip"><MessageSquareText className="h-7 w-7" /></div>
                     <div>
-                      <p className="text-lg font-semibold app-text">Brak szablonów odpowiedzi</p>
-                      <p className="mt-1 max-w-md text-sm app-muted">Dodaj pierwszy gotowiec, żeby szybciej odpowiadać na powtarzalne sytuacje.</p>
+                      <p className="cf-readable-title text-lg font-semibold app-text">Brak szablonów odpowiedzi</p>
+                      <p className="cf-readable-muted mt-1 max-w-md text-sm app-muted">Dodaj pierwszy gotowiec, żeby szybciej odpowiadać na powtarzalne sytuacje.</p>
                     </div>
                     <Button className="rounded-2xl" onClick={openCreate}>
                       <Plus className="h-4 w-4" /> Dodaj pierwszy szablon
@@ -279,7 +280,7 @@ export default function ResponseTemplates() {
               <CardContent className="space-y-5 p-5">
                 <div className="space-y-2">
                   <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Podgląd</p>
-                  <h3 className="text-xl font-bold app-text">{selectedTemplate?.name || 'Wybierz szablon'}</h3>
+                  <h3 className="cf-readable-title text-xl font-bold app-text">{selectedTemplate?.name || 'Wybierz szablon'}</h3>
                   <p className="text-sm app-muted">{selectedTemplate?.category || 'Ogólne'}</p>
                 </div>
                 {selectedTemplate ? (
@@ -295,7 +296,7 @@ export default function ResponseTemplates() {
                     </div>
                   </>
                 ) : (
-                  <div className="rounded-2xl border border-dashed p-6 text-sm app-border app-muted">Po dodaniu szablonu zobaczysz tutaj szybki podgląd treści.</div>
+                  <div className="cf-readable-panel rounded-2xl border border-dashed p-6 text-sm app-border app-muted">Po dodaniu szablonu zobaczysz tutaj szybki podgląd treści.</div>
                 )}
               </CardContent>
             </Card>

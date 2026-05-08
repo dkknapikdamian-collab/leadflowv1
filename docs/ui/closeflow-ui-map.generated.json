@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T13:50:30.615Z",
+  "generatedAt": "2026-05-08T14:02:21.283Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -400,52 +400,52 @@
     {
       "term": "Dodaj zadanie",
       "file": "src/pages/Calendar.tsx",
-      "line": 1405
+      "line": 1406
     },
     {
       "term": "Dodaj zadanie",
       "file": "src/pages/Calendar.tsx",
-      "line": 1443
+      "line": 1444
     },
     {
       "term": "Usuń",
       "file": "src/pages/Calendar.tsx",
-      "line": 424
+      "line": 425
     },
     {
       "term": "Edytuj",
       "file": "src/pages/Calendar.tsx",
-      "line": 123
+      "line": 124
     },
     {
       "term": "Edytuj",
       "file": "src/pages/Calendar.tsx",
-      "line": 416
+      "line": 417
     },
     {
       "term": "Edytuj",
       "file": "src/pages/Calendar.tsx",
-      "line": 1690
+      "line": 1691
     },
     {
       "term": "Zapisz",
       "file": "src/pages/Calendar.tsx",
-      "line": 123
+      "line": 124
     },
     {
       "term": "Zapisz",
       "file": "src/pages/Calendar.tsx",
-      "line": 1851
+      "line": 1852
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Calendar.tsx",
-      "line": 1405
+      "line": 1406
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Calendar.tsx",
-      "line": 1443
+      "line": 1444
     },
     {
       "term": "Dodaj notatkę",
@@ -1025,47 +1025,47 @@
     {
       "term": "Edytuj",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 249
+      "line": 250
     },
     {
       "term": "Edytuj",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 294
+      "line": 295
     },
     {
       "term": "Edytuj",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 308
+      "line": 309
     },
     {
       "term": "Zapisz",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 334
+      "line": 335
     },
     {
       "term": "Anuluj",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 333
+      "line": 334
     },
     {
       "term": "Kopiuj",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 247
+      "line": 248
     },
     {
       "term": "Kopiuj",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 293
+      "line": 294
     },
     {
       "term": "Dodaj",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 268
+      "line": 269
     },
     {
       "term": "Dodaj",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 271
+      "line": 272
     },
     {
       "term": "Zapisz",
@@ -1205,47 +1205,47 @@
     {
       "term": "Usuń",
       "file": "src/pages/Templates.tsx",
-      "line": 396
+      "line": 397
     },
     {
       "term": "Edytuj",
       "file": "src/pages/Templates.tsx",
-      "line": 390
+      "line": 391
     },
     {
       "term": "Edytuj",
       "file": "src/pages/Templates.tsx",
-      "line": 431
+      "line": 432
     },
     {
       "term": "Zapisz",
       "file": "src/pages/Templates.tsx",
-      "line": 515
+      "line": 516
     },
     {
       "term": "Anuluj",
       "file": "src/pages/Templates.tsx",
-      "line": 513
+      "line": 514
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Templates.tsx",
-      "line": 238
+      "line": 239
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Templates.tsx",
-      "line": 356
+      "line": 357
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Templates.tsx",
-      "line": 360
+      "line": 361
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Templates.tsx",
-      "line": 508
+      "line": 509
     },
     {
       "term": "Usuń",
@@ -1809,7 +1809,7 @@
     {
       "tag": "Button",
       "file": "src/pages/AdminAiSettings.tsx",
-      "line": 133,
+      "line": 134,
       "snippet": "<Button type=\"button\" variant=\"outline\" onClick={() =>"
     },
     {
@@ -1911,49 +1911,49 @@
     {
       "tag": "Link",
       "file": "src/pages/Calendar.tsx",
-      "line": 392,
+      "line": 393,
       "snippet": "<Link to={`/leads/${entry.raw.leadId}`} className=\"text-blue-700 hover:underline\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/Calendar.tsx",
-      "line": 397,
+      "line": 398,
       "snippet": "<Link to={`/cases/${entry.raw.caseId}`} className=\"text-sky-700 hover:underline\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/Calendar.tsx",
-      "line": 1225,
+      "line": 1226,
       "snippet": "<Link to=\"/ai-drafts\" className=\"btn soft-blue\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1340,
+      "line": 1341,
       "snippet": "<Button type=\"submit\" className=\"w-full\" disabled={eventSubmitting || !workspaceReady}>"
     },
     {
       "tag": "button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1364,
+      "line": 1365,
       "snippet": "<button\n                type=\"button\"\n                className=\"nav-btn\"\n                onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1380,
+      "line": 1381,
       "snippet": "<button type=\"button\" className=\"nav-today\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1383,
+      "line": 1384,
       "snippet": "<button\n                type=\"button\"\n                className=\"nav-btn\"\n                onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1443,
+      "line": 1444,
       "snippet": "<Button type=\"submit\" className=\"w-full\" disabled={taskSubmitting || !workspaceReady}>"
     },
     {
@@ -2601,49 +2601,49 @@
     {
       "tag": "Button",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 204,
+      "line": 205,
       "snippet": "<Button className=\"rounded-2xl\" onClick={openCreate}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 246,
-      "snippet": "<Button variant=\"outline\" size=\"sm\" className=\"rounded-2xl\" onClick={() =>"
-    },
-    {
-      "tag": "Button",
-      "file": "src/pages/ResponseTemplates.tsx",
-      "line": 249,
+      "line": 247,
       "snippet": "<Button variant=\"outline\" size=\"sm\" className=\"rounded-2xl\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ResponseTemplates.tsx",
       "line": 250,
+      "snippet": "<Button variant=\"outline\" size=\"sm\" className=\"rounded-2xl\" onClick={() =>"
+    },
+    {
+      "tag": "Button",
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 251,
       "snippet": "<Button variant=\"outline\" size=\"icon\" className=\"rounded-2xl text-amber-600 hover:bg-amber-500/10 hover:text-amber-700\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 270,
+      "line": 271,
       "snippet": "<Button className=\"rounded-2xl\" onClick={openCreate}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 293,
+      "line": 294,
       "snippet": "<Button className=\"rounded-2xl\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 294,
+      "line": 295,
       "snippet": "<Button variant=\"outline\" className=\"rounded-2xl\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/ResponseTemplates.tsx",
-      "line": 333,
+      "line": 334,
       "snippet": "<Button variant=\"outline\" onClick={() =>"
     },
     {
@@ -2799,37 +2799,37 @@
     {
       "tag": "Button",
       "file": "src/pages/Templates.tsx",
-      "line": 315,
+      "line": 316,
       "snippet": "<Button className=\"rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700\" onClick={openCreateDialog}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Templates.tsx",
-      "line": 359,
+      "line": 360,
       "snippet": "<Button className=\"rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700\" onClick={openCreateDialog}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Templates.tsx",
-      "line": 385,
+      "line": 386,
       "snippet": "<Button variant=\"outline\" size=\"icon\" className=\"rounded-2xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/Templates.tsx",
-      "line": 507,
+      "line": 508,
       "snippet": "<Button variant=\"outline\" className=\"w-full rounded-2xl border-slate-200 bg-white text-slate-800 hover:bg-slate-50\" onClick={addDraftItem}>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Templates.tsx",
-      "line": 513,
+      "line": 514,
       "snippet": "<Button variant=\"outline\" className=\"border-slate-200 bg-white text-slate-800 hover:bg-slate-50\" onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Templates.tsx",
-      "line": 514,
+      "line": 515,
       "snippet": "<Button className=\"bg-emerald-600 text-white hover:bg-emerald-700\" onClick={() =>"
     },
     {
@@ -4529,7 +4529,7 @@
       "file": "src/pages/ResponseTemplates.tsx"
     },
     {
-      "icon": "useState } from 'react';\r\nimport { Archive",
+      "icon": "useState } from 'react';\nimport { Archive",
       "file": "src/pages/ResponseTemplates.tsx"
     },
     {
@@ -5413,6 +5413,26 @@
       "className": "activity-right-card-head"
     },
     {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 35,
+      "className": "cf-readable-card border-none app-surface-strong"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 104,
+      "className": "cf-readable-card border-none app-surface-strong"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 140,
+      "className": "cf-readable-card border-none app-surface-strong"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 186,
+      "className": "cf-readable-card border-none app-surface-strong"
+    },
+    {
       "file": "src/pages/AiDrafts.tsx",
       "line": 848,
       "className": "ai-drafts-approval-actions"
@@ -5674,17 +5694,17 @@
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1224,
+      "line": 1225,
       "className": "head-actions"
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1553,
+      "line": 1554,
       "className": "right-card calendar-week-filter"
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1633,
+      "line": 1634,
       "className": "right-card calendar-week-plan"
     },
     {
@@ -6843,6 +6863,26 @@
       "className": "notifications-right-card-head"
     },
     {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 218,
+      "className": "cf-readable-card border-none app-surface-strong app-shadow"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 231,
+      "className": "cf-readable-card border-none app-surface-strong app-shadow"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 236,
+      "className": "cf-readable-card border-none app-surface-strong app-shadow"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 264,
+      "className": "cf-readable-card border-dashed app-surface-strong app-shadow"
+    },
+    {
       "file": "src/pages/Settings.tsx",
       "line": 6,
       "className": "settings-section-card"
@@ -7214,8 +7254,33 @@
     },
     {
       "file": "src/pages/Templates.tsx",
-      "line": 410,
+      "line": 325,
+      "className": "cf-readable-card border border-slate-200 bg-white shadow-sm"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 344,
+      "className": "cf-readable-card border border-slate-200 bg-white shadow-sm"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 351,
+      "className": "cf-readable-card border border-dashed border-slate-300 bg-white shadow-sm"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 371,
+      "className": "cf-readable-card border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 411,
       "className": "bg-rose-600 text-white"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 456,
+      "className": "cf-readable-card rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
     },
     {
       "file": "src/pages/Today.tsx",

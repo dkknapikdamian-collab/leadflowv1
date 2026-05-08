@@ -98,6 +98,7 @@ import {
 } from '../lib/supabase-fallback';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
+// CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
   title: string;
@@ -359,7 +360,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
   const deleteActionClass = entityActionButtonClass('danger', actionButtonClass);
 
   return (
-    <div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} className={`calendar-entry-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md ${isCompletedEntry ? 'opacity-60' : ''}`}>
+    <div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} className={`calendar-entry-card cf-readable-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md ${isCompletedEntry ? 'opacity-60' : ''}`}>
       <div className="grid gap-2 lg:grid-cols-[auto_minmax(220px,1fr)_76px_118px_auto] lg:items-center">
         <div className="flex min-w-0 items-center gap-1.5">
           <span className={`inline-flex h-6 shrink-0 items-center rounded-full border px-2.5 text-[12px] font-bold leading-none ${getCalendarEntryTypeClass(entry)}`}>
@@ -1515,7 +1516,7 @@ export default function Calendar() {
               })}
             </div>
 
-            <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+            <div className="cf-readable-panel mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
               <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Wybrany dzień</p>

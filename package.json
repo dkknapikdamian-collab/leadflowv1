@@ -493,7 +493,8 @@
     "check:closeflow-page-header-copy-contract": "node scripts/check-closeflow-page-header-copy-contract.cjs",
     "check:closeflow-list-row-contract": "node scripts/check-closeflow-list-row-contract.cjs",
     "check:closeflow-entity-action-placement-contract": "node scripts/check-closeflow-entity-action-placement-contract.cjs",
-    "check:closeflow-form-action-footer-contract": "node scripts/check-closeflow-form-action-footer-contract.cjs"
+    "check:closeflow-form-action-footer-contract": "node scripts/check-closeflow-form-action-footer-contract.cjs",
+    "check:closeflow-card-readability-contract": "node scripts/check-closeflow-card-readability-contract.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

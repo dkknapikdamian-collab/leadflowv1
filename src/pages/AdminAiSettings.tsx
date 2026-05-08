@@ -8,6 +8,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { fetchAiConfigDiagnostics, type AiConfigDiagnostics, type AiProviderDiagnostics } from '../lib/ai-config';
+// CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_ADMIN_AI
 
 function StatusBadge({ configured, available }: { configured: boolean; available?: boolean }) {
   if (available) {
@@ -31,11 +32,11 @@ function ProviderCard({
   provider: AiProviderDiagnostics;
 }) {
   return (
-    <Card className="border-none app-surface-strong">
+    <Card className="cf-readable-card border-none app-surface-strong">
       <CardHeader className="space-y-2">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <CardTitle className="text-base">{title}</CardTitle>
+            <CardTitle className="cf-readable-title text-base">{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
           <StatusBadge configured={provider.configured} available={provider.available} />
@@ -100,7 +101,7 @@ export default function AdminAiSettings() {
     return (
       <Layout>
         <div className="mx-auto w-full max-w-3xl p-4 md:p-8">
-          <Card className="border-none app-surface-strong">
+          <Card className="cf-readable-card border-none app-surface-strong">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <ShieldCheck className="h-5 w-5 text-slate-400" />
@@ -136,7 +137,7 @@ export default function AdminAiSettings() {
           </Button>
         </header>
 
-        <Card className="border-none app-surface-strong">
+        <Card className="cf-readable-card border-none app-surface-strong">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <KeyRound className="h-5 w-5 text-slate-400" />
@@ -145,19 +146,19 @@ export default function AdminAiSettings() {
             <CardDescription>Klucze są sprawdzane po stronie backendu. Frontend dostaje tylko informację, czy dana konfiguracja istnieje.</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-4">
-            <div className="rounded-2xl border border-slate-200 p-4">
+            <div className="cf-readable-panel rounded-2xl border border-slate-200 p-4">
               <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">AI</p>
               <p className="mt-2 text-lg font-bold app-text">{diagnostics?.ai.enabled ? 'Włączone' : 'Wymaga konfiguracji'}</p>
             </div>
-            <div className="rounded-2xl border border-slate-200 p-4">
+            <div className="cf-readable-panel rounded-2xl border border-slate-200 p-4">
               <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Quick Capture</p>
               <p className="mt-2 text-lg font-bold app-text">{diagnostics?.ai.quickLeadCaptureEnabled ? 'Beta' : 'W przygotowaniu'}</p>
             </div>
-            <div className="rounded-2xl border border-slate-200 p-4">
+            <div className="cf-readable-panel rounded-2xl border border-slate-200 p-4">
               <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Główny provider</p>
               <p className="mt-2 text-lg font-bold app-text">{diagnostics?.ai.primaryProvider || 'Wymaga konfiguracji'}</p>
             </div>
-            <div className="rounded-2xl border border-slate-200 p-4">
+            <div className="cf-readable-panel rounded-2xl border border-slate-200 p-4">
               <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">TTL szkicu</p>
               <p className="mt-2 text-lg font-bold app-text">{diagnostics?.ai.draftTtlHours || 24} h</p>
             </div>
@@ -182,7 +183,7 @@ export default function AdminAiSettings() {
           />
         </section>
 
-        <Card className="border-none app-surface-strong">
+        <Card className="cf-readable-card border-none app-surface-strong">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-amber-500" />
