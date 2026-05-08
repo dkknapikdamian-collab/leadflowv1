@@ -4,6 +4,8 @@ const path = require('path');
 const root = process.cwd();
 const src = path.join(root, 'src');
 const exts = new Set(['.tsx', '.ts', '.jsx', '.js']);
+const stage8DocPath = path.join(root, 'docs/ui/CLOSEFLOW_UI_CONTRACT_AUDIT_STAGE8_2026-05-08.md');
+const STAGE8_DOCUMENTED_LEGACY_EXCEPTIONS = 'STAGE8_DOCUMENTED_LEGACY_EXCEPTIONS';
 
 function walk(dir, acc = []) {
   if (!fs.existsSync(dir)) return acc;
@@ -23,6 +25,13 @@ function lineNo(text, idx) {
   return text.slice(0, idx).split(/\r?\n/).length;
 }
 
+function categorizeFinding(file, className) {
+  if (/AppChunkErrorBoundary|Dashboard/.test(file)) return 'real system alert/error';
+  if (/Activity|NotificationsCenter|Calendar|Today|TodayStable/.test(file)) return 'real system alert/error or schedule/status surface';
+  if (/TasksStable|Leads|Templates/.test(file)) return 'status/progress';
+  return 'unrelated legacy visual style do później';
+}
+
 const actionPattern = /(Trash2|Usuń|UsuĹ„|delete|Delete|destructive)/;
 const blockingActionPattern = /(Trash2|Usuń|UsuĹ„)/;
 const localDangerPattern = /(text|bg|border|ring)-(red|rose)-[0-9]{2,3}/;
@@ -37,7 +46,13 @@ for (const file of walk(src)) {
 
   let match;
   while ((match = localDangerGlobalPattern.exec(text))) {
-    findings.push({ file: rel(file), line: lineNo(text, match.index), className: match[0] });
+    const relative = rel(file);
+    findings.push({
+      file: relative,
+      line: lineNo(text, match.index),
+      className: match[0],
+      category: categorizeFinding(relative, match[0]),
+    });
   }
 
   if (allowedSharedFiles.has(rel(file))) continue;
@@ -82,8 +97,17 @@ if (blockingFindings.length) {
 }
 
 if (findings.length) {
-  console.warn('AUDIT: legacy local danger/red classes still exist in files that mention delete/destructive. They are not adjacent to delete/trash actions.');
-  for (const finding of findings.slice(0, 80)) console.warn(`- ${finding.file}:${finding.line} ${finding.className}`);
+  const hasStage8Doc = fs.existsSync(stage8DocPath) && fs.readFileSync(stage8DocPath, 'utf8').includes(STAGE8_DOCUMENTED_LEGACY_EXCEPTIONS);
+  if (!hasStage8Doc) {
+    console.warn('AUDIT: legacy local danger/red classes still exist, but Stage8 exception document is missing or incomplete.');
+  } else {
+    console.warn('AUDIT: Stage8 documented legacy local danger/red classes still exist outside delete/trash action context.');
+  }
+
+  const categoryCounts = new Map();
+  for (const finding of findings) categoryCounts.set(finding.category, (categoryCounts.get(finding.category) || 0) + 1);
+  for (const [category, count] of categoryCounts) console.warn(`- ${category}: ${count}`);
+  for (const finding of findings.slice(0, 80)) console.warn(`- ${finding.file}:${finding.line} ${finding.className} [${finding.category}]`);
 } else {
   console.log('OK: no local danger/red classes found in files that mention delete/destructive.');
 }

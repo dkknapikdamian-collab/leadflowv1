@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T14:02:21.283Z",
+  "generatedAt": "2026-05-08T14:13:58.839Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -6883,6 +6883,11 @@
       "className": "cf-readable-card border-dashed app-surface-strong app-shadow"
     },
     {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 279,
+      "className": "cf-readable-card border-none app-surface-strong app-shadow xl:sticky xl:top-6 xl:self-start"
+    },
+    {
       "file": "src/pages/Settings.tsx",
       "line": 6,
       "className": "settings-section-card"
@@ -7271,11 +7276,6 @@
       "file": "src/pages/Templates.tsx",
       "line": 371,
       "className": "cf-readable-card border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md"
-    },
-    {
-      "file": "src/pages/Templates.tsx",
-      "line": 411,
-      "className": "bg-rose-600 text-white"
     },
     {
       "file": "src/pages/Templates.tsx",

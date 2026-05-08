@@ -276,7 +276,7 @@ export default function ResponseTemplates() {
               ) : null}
             </div>
 
-            <Card className="border-none app-surface-strong app-shadow xl:sticky xl:top-6 xl:self-start">
+            <Card className="cf-readable-card border-none app-surface-strong app-shadow xl:sticky xl:top-6 xl:self-start">
               <CardContent className="space-y-5 p-5">
                 <div className="space-y-2">
                   <p className="text-xs font-bold uppercase tracking-[0.18em] app-muted">Podgląd</p>

@@ -408,7 +408,7 @@ export default function Templates() {
                           <div key={`${template.id}-${index}`} className="cf-readable-panel rounded-2xl border border-slate-200 bg-slate-50 p-4">
                             <div className="mb-3 flex flex-wrap items-center gap-2">
                               <Badge variant="outline" className={meta.badgeClassName}>{meta.label}</Badge>
-                              {item.isRequired ? <Badge className="bg-rose-600 text-white">Obowiązkowe</Badge> : <Badge variant="outline" className="border-slate-200 bg-white text-slate-700">Opcjonalne</Badge>}
+                              {item.isRequired ? <Badge className="cf-status-pill" data-cf-status-tone="red">Obowiązkowe</Badge> : <Badge variant="outline" className="border-slate-200 bg-white text-slate-700">Opcjonalne</Badge>}
                             </div>
                             <p className="font-bold text-slate-950">{item.title}</p>
                             <p className="mt-2 cf-readable-muted text-sm leading-6 text-slate-500">

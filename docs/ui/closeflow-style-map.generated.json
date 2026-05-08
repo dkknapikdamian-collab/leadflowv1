@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T14:02:21.875Z",
+  "generatedAt": "2026-05-08T14:13:59.325Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -3332,11 +3332,6 @@
       "className": "border-rose-100",
       "file": "src/pages/TasksStable.tsx",
       "line": 163
-    },
-    {
-      "className": "bg-rose-600",
-      "file": "src/pages/Templates.tsx",
-      "line": 411
     },
     {
       "className": "border-red-100",
