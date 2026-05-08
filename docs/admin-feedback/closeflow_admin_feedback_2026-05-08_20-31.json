@@ -1,0 +1,262 @@
+{
+  "version": "admin_tools_v1",
+  "reviewItems": [],
+  "bugItems": [
+    {
+      "id": "bug_1778264658349_3cb27932-7b5f-47e2-9cf3-b3ab4ef7dcfe",
+      "kind": "bug_note",
+      "createdAt": "2026-05-08T18:24:18.349Z",
+      "route": "/cases/d19ccf42-bccc-4e9c-ab2b-d0f3d6b1f59c",
+      "whatIDid": "Kliknięto element: Dodaj do sprawyZadanie, wydarzenie albo notatkaZadanieWydarzenieDodaj notatkęZadanie i wydarzenie zostaną automatycznie…",
+      "whatHappened": "za tymi kafelkami jest czarne tło do skasowania",
+      "expected": "",
+      "priority": "P1",
+      "target": {
+        "tag": "div",
+        "text": "Dodaj do sprawyZadanie, wydarzenie albo notatkaZadanieWydarzenieDodaj notatkęZadanie i wydarzenie zostaną automatycznie…",
+        "ariaLabel": "",
+        "title": "",
+        "role": "",
+        "id": "",
+        "className": "case-detail-right-card case-detail-create-action-card",
+        "dataAttributes": {
+          "data-case-create-actions-panel": "true"
+        },
+        "selectorHint": "div.case-detail-right-card.case-detail-create-action-card",
+        "candidateIndex": 0,
+        "candidateCount": 8,
+        "composedPathSummary": [
+          "div.case-detail-right-card.case-detail-create-action-card \"Dodaj do sprawyZadanie, wydarzenie albo notatka…\"",
+          "aside.case-detail-right-rail \"Panel sprawy\"",
+          "div.case-detail-shell \"Historia wpłat0Brak wpłat. Dodaj pierwszą zalic…\"",
+          "main.case-detail-vnext-page \"SprawySprawy / Alfred Panek - obsługaAlfred Pan…\"",
+          "div.view.active \"SprawySprawy / Alfred Panek - obsługaAlfred Pan…\"",
+          "main.main.main-case-detail \"Panel operatora SprawyReview Buttons Bug 3Copy …\"",
+          "div.app.closeflow-visual-stage01.cf-html-shell \"CFCloseFlowStart pracyDziśLeadyKlienciSprawyCza…\"",
+          "div#root \"CFCloseFlowStart pracyDziśLeadyKlienciSprawyCza…\""
+        ],
+        "rect": {
+          "x": 1609.807373046875,
+          "y": 488.2972106933594,
+          "width": 268.7894287109375,
+          "height": 231.6194610595703,
+          "top": 488.2972106933594,
+          "left": 1609.807373046875,
+          "right": 1878.5968017578125,
+          "bottom": 719.9166717529297
+        },
+        "scroll": {
+          "x": 0,
+          "y": 0
+        },
+        "viewport": {
+          "width": 2304,
+          "height": 1094,
+          "devicePixelRatio": 0.8333333730697632
+        },
+        "route": "/cases/d19ccf42-bccc-4e9c-ab2b-d0f3d6b1f59c",
+        "screen": "case-detail"
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "viewport": {
+        "width": 2304,
+        "height": 1094,
+        "devicePixelRatio": 0.8333333730697632
+      }
+    },
+    {
+      "id": "bug_1778264632769_ddd52d52-c050-4ed8-af01-c7825c093352",
+      "kind": "bug_note",
+      "createdAt": "2026-05-08T18:23:52.769Z",
+      "route": "/calendar",
+      "whatIDid": "Kliknięto element: Brak powiązania",
+      "whatHappened": "nie widac",
+      "expected": "",
+      "priority": "P1",
+      "target": {
+        "tag": "p",
+        "text": "Brak powiązania",
+        "ariaLabel": "",
+        "title": "",
+        "role": "",
+        "id": "",
+        "className": "truncate text-[12px] font-semibold text-slate-400",
+        "dataAttributes": {},
+        "selectorHint": "p.truncate.text-\\[12px\\].font-semibold",
+        "candidateIndex": 0,
+        "candidateCount": 15,
+        "composedPathSummary": [
+          "p.truncate.text-\\[12px\\].font-semibold \"Brak powiązania\"",
+          "div.min-w-0 \"Dzwonić o sufczyn rozliczenie panekBrak powiąza…\"",
+          "div.grid.gap-2.lg\\:grid-cols-\\[auto_minmax\\(220px\\,1fr\\)_76px_118px_auto\\] \"WydarzenieDzwonić o sufczyn rozliczenie panekBr…\"",
+          "div.calendar-entry-card.cf-readable-card.rounded-2xl \"WydarzenieDzwonić o sufczyn rozliczenie panekBr…\"",
+          "div \"WydarzenieDzwonić o sufczyn rozliczenie panekBr…\"",
+          "div.calendar-week-day-entries \"WydarzenieDzwonić o sufczyn rozliczenie panekBr…\"",
+          "section.calendar-week-day.is-active \"Dzisiaj8 maj6 wpisówWydarzenieDzwonić o sufczyn…\"",
+          "div.calendar-week-plan-list \"Dzisiaj8 maj6 wpisówWydarzenieDzwonić o sufczyn…\""
+        ],
+        "rect": {
+          "x": 1010.5828857421875,
+          "y": 457.4114685058594,
+          "width": 317.5042724609375,
+          "height": 15.120006561279297,
+          "top": 457.4114685058594,
+          "left": 1010.5828857421875,
+          "right": 1328.087158203125,
+          "bottom": 472.5314750671387
+        },
+        "scroll": {
+          "x": 0,
+          "y": 0
+        },
+        "viewport": {
+          "width": 2304,
+          "height": 1094,
+          "devicePixelRatio": 0.8333333730697632
+        },
+        "route": "/calendar",
+        "screen": "kalendarz"
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "viewport": {
+        "width": 2304,
+        "height": 1094,
+        "devicePixelRatio": 0.8333333730697632
+      }
+    },
+    {
+      "id": "bug_1778264627986_189870ba-2184-4e24-8722-d8a02e83ac2e",
+      "kind": "bug_note",
+      "createdAt": "2026-05-08T18:23:47.986Z",
+      "route": "/calendar",
+      "whatIDid": "Kliknięto element: 01:00",
+      "whatHappened": "nie widac",
+      "expected": "",
+      "priority": "P1",
+      "target": {
+        "tag": "div",
+        "text": "01:00",
+        "ariaLabel": "",
+        "title": "",
+        "role": "",
+        "id": "",
+        "className": "text-[12px] font-bold text-slate-600 lg:text-center",
+        "dataAttributes": {},
+        "selectorHint": "div.text-\\[12px\\].font-bold.text-slate-600",
+        "candidateIndex": 0,
+        "candidateCount": 14,
+        "composedPathSummary": [
+          "div.text-\\[12px\\].font-bold.text-slate-600 \"01:00\"",
+          "div.grid.gap-2.lg\\:grid-cols-\\[auto_minmax\\(220px\\,1fr\\)_76px_118px_auto\\] \"WydarzenieDzwonić o sufczyn rozliczenie panekBr…\"",
+          "div.calendar-entry-card.cf-readable-card.rounded-2xl \"WydarzenieDzwonić o sufczyn rozliczenie panekBr…\"",
+          "div \"WydarzenieDzwonić o sufczyn rozliczenie panekBr…\"",
+          "div.calendar-week-day-entries \"WydarzenieDzwonić o sufczyn rozliczenie panekBr…\"",
+          "section.calendar-week-day.is-active \"Dzisiaj8 maj6 wpisówWydarzenieDzwonić o sufczyn…\"",
+          "div.calendar-week-plan-list \"Dzisiaj8 maj6 wpisówWydarzenieDzwonić o sufczyn…\"",
+          "section.right-card.calendar-week-plan \"Plan najbliższych dniOś czasu pokazuje ostatnie…\""
+        ],
+        "rect": {
+          "x": 1334.796630859375,
+          "y": 449.0009460449219,
+          "width": 63.83481216430664,
+          "height": 15.120006561279297,
+          "top": 449.0009460449219,
+          "left": 1334.796630859375,
+          "right": 1398.6314430236816,
+          "bottom": 464.1209526062012
+        },
+        "scroll": {
+          "x": 0,
+          "y": 0
+        },
+        "viewport": {
+          "width": 2304,
+          "height": 1094,
+          "devicePixelRatio": 0.8333333730697632
+        },
+        "route": "/calendar",
+        "screen": "kalendarz"
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "viewport": {
+        "width": 2304,
+        "height": 1094,
+        "devicePixelRatio": 0.8333333730697632
+      }
+    },
+    {
+      "id": "bug_1778264622313_6f026361-5a03-44cd-aabb-ae03856dd47b",
+      "kind": "bug_note",
+      "createdAt": "2026-05-08T18:23:42.313Z",
+      "route": "/calendar",
+      "whatIDid": "Kliknięto element: Najbliższe 7 dniNajszybszy filtr.DzisiajPiątek · 8 maj6 rzeczySobota9 maj1 rzeczNiedziela10 maj1 rzeczPoniedziałek11 ma…",
+      "whatHappened": "brak widoczniosci dat i tekstu nizej białe tło i białe literki sie zlewają",
+      "expected": "",
+      "priority": "P1",
+      "target": {
+        "tag": "aside",
+        "text": "Najbliższe 7 dniNajszybszy filtr.DzisiajPiątek · 8 maj6 rzeczySobota9 maj1 rzeczNiedziela10 maj1 rzeczPoniedziałek11 ma…",
+        "ariaLabel": "",
+        "title": "",
+        "role": "",
+        "id": "",
+        "className": "right-card calendar-week-filter",
+        "dataAttributes": {},
+        "selectorHint": "aside.right-card.calendar-week-filter",
+        "candidateIndex": 0,
+        "candidateCount": 7,
+        "composedPathSummary": [
+          "aside.right-card.calendar-week-filter \"Najbliższe 7 dniNajszybszy filtr.DzisiajPiątek …\"",
+          "div.calendar-week-layout \"Najbliższe 7 dniNajszybszy filtr.DzisiajPiątek …\"",
+          "div.cf-html-view.main-calendar-html \"TerminyKalendarz Zapytaj AITydzieńMiesiącDzisia…\"",
+          "div.view.active \"TerminyKalendarz Zapytaj AITydzieńMiesiącDzisia…\"",
+          "main.main \"Panel operatora KalendarzReview Buttons Bug Cop…\"",
+          "div.app.closeflow-visual-stage01.cf-html-shell \"CFCloseFlowStart pracyDziśLeadyKlienciSprawyCza…\"",
+          "div#root \"CFCloseFlowStart pracyDziśLeadyKlienciSprawyCza…\""
+        ],
+        "rect": {
+          "x": 642.1116333007812,
+          "y": 310.7947082519531,
+          "width": 235.1947784423828,
+          "height": 813.9757080078125,
+          "top": 310.7947082519531,
+          "left": 642.1116333007812,
+          "right": 877.3064117431641,
+          "bottom": 1124.7704162597656
+        },
+        "scroll": {
+          "x": 0,
+          "y": 0
+        },
+        "viewport": {
+          "width": 2304,
+          "height": 1094,
+          "devicePixelRatio": 0.8333333730697632
+        },
+        "route": "/calendar",
+        "screen": "kalendarz"
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "viewport": {
+        "width": 2304,
+        "height": 1094,
+        "devicePixelRatio": 0.8333333730697632
+      }
+    }
+  ],
+  "copyItems": [],
+  "buttonSnapshots": [],
+  "settings": {
+    "reviewMode": "collect",
+    "showOverlay": true
+  },
+  "generatedAt": "2026-05-08T18:31:58.863Z",
+  "commit": "588caa0d8f992a55495ecee37ca303a5d8c4f727",
+  "route": "/response-templates",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+  "viewport": {
+    "width": 2304,
+    "height": 1094,
+    "devicePixelRatio": 0.8333333730697632
+  }
+}

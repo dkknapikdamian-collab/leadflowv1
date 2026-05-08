@@ -333,3 +333,75 @@ Do not hide real alerts with text, link or button.
   border-color: #94a3b8 !important;
   color: #020617 !important;
 }
+
+/* CLOSEFLOW_ADMIN_FEEDBACK_VISUAL_REPAIR_2026_05_08
+   Admin feedback repair, 2026-05-08.
+   Scope:
+   1) /cases/:id right rail create-action panel: remove black/dark backing behind tiles.
+   2) /calendar week filter and entry cards: restore text contrast on light cards.
+   Keep this block scoped to existing CloseFlow classes. Do not use global body/card overrides here.
+*/
+:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.97)) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08) !important;
+  backdrop-filter: none !important;
+}
+
+:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"])::before,
+:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"])::after {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) :is(h1, h2, h3, h4, p, span, div, label, small, strong) {
+  color: inherit;
+}
+
+:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) :is(button, a) {
+  color: #0f172a;
+}
+
+:where(.main-calendar-html .right-card.calendar-week-filter, .main-calendar-html .calendar-week-plan, .main-calendar-html .calendar-entry-card) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.98)) !important;
+  color: #0f172a !important;
+  border-color: rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.07) !important;
+}
+
+.main-calendar-html .right-card.calendar-week-filter :is(h1, h2, h3, h4, p, span, div, button, small, strong),
+.main-calendar-html .calendar-week-plan :is(h1, h2, h3, h4, p, span, div, button, small, strong),
+.main-calendar-html .calendar-entry-card :is(h1, h2, h3, h4, p, span, div, button, small, strong) {
+  color: #334155 !important;
+}
+
+.main-calendar-html .calendar-entry-card .text-slate-400,
+.main-calendar-html .calendar-entry-card p.text-slate-400,
+.main-calendar-html .calendar-entry-card .font-semibold.text-slate-400 {
+  color: #64748b !important;
+}
+
+.main-calendar-html .calendar-entry-card .text-slate-600,
+.main-calendar-html .calendar-entry-card div.text-slate-600,
+.main-calendar-html .calendar-entry-card .font-bold.text-slate-600 {
+  color: #334155 !important;
+}
+
+.main-calendar-html .calendar-week-filter :is(.is-active, [aria-current="date"], [data-active="true"]),
+.main-calendar-html .calendar-week-filter :is(.is-active, [aria-current="date"], [data-active="true"]) :is(h1, h2, h3, h4, p, span, div, button, small, strong) {
+  color: #0f172a !important;
+}
+
+.main-calendar-html .calendar-week-day.is-active,
+.main-calendar-html .calendar-week-day.is-active :is(h1, h2, h3, h4, p, span, div, button, small, strong) {
+  color: #0f172a !important;
+}
+
+.main-calendar-html .calendar-entry-card :is(.text-white, .text-slate-50, .text-slate-100),
+.main-calendar-html .right-card.calendar-week-filter :is(.text-white, .text-slate-50, .text-slate-100),
+.main-calendar-html .calendar-week-plan :is(.text-white, .text-slate-50, .text-slate-100) {
+  color: #334155 !important;
+}
+/* /CLOSEFLOW_ADMIN_FEEDBACK_VISUAL_REPAIR_2026_05_08 */
+
