@@ -84,6 +84,8 @@ import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage13-case-detail-vnext.css';
 
 const CASE_DETAIL_V1_EVENT_ACTION_GUARD = 'Dodaj wydarzenie';
+const STAGE28A_CASE_FINANCE_CORE_GUARD = 'case finance core value paid remaining partial payments';
+const STAGE28A3_CASE_FINANCE_HISTORY_VISIBLE_REPAIR_GUARD = 'case finance history visible separate section';
 
 type CaseDetailTab = 'service' | 'path' | 'checklists' | 'history';
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
@@ -153,6 +155,24 @@ type EventRecord = {
   caseId?: string | null;
   leadId?: string | null;
   clientId?: string | null;
+};
+
+
+type CasePaymentRecord = {
+  id?: string;
+  caseId?: string | null;
+  clientId?: string | null;
+  leadId?: string | null;
+  type?: string;
+  status?: string;
+  amount?: number | string;
+  value?: number | string;
+  paidAmount?: number | string;
+  currency?: string;
+  dueAt?: string | null;
+  paidAt?: string | null;
+  createdAt?: any;
+  note?: string | null;
 };
 
 type CaseActivity = {
@@ -291,6 +311,51 @@ function billingStatusLabel(status?: string) {
     default:
       return status || 'Brak statusu';
   }
+}
+
+
+function getPaymentAmount(payment: CasePaymentRecord) {
+  const raw = payment.amount ?? payment.value ?? payment.paidAmount ?? 0;
+  const amount = Number(raw || 0);
+  return Number.isFinite(amount) ? amount : 0;
+}
+
+function getCaseExpectedRevenue(caseData?: CaseRecord | null) {
+  const raw =
+    caseData?.expectedRevenue ??
+    (caseData as any)?.caseValue ??
+    (caseData as any)?.dealValue ??
+    (caseData as any)?.value ??
+    0;
+  const amount = Number(raw || 0);
+  return Number.isFinite(amount) ? amount : 0;
+}
+
+function getCaseFinanceSummary(caseData: CaseRecord | null, payments: CasePaymentRecord[]) {
+  const currency = String(caseData?.currency || payments.find((payment) => payment.currency)?.currency || 'PLN').toUpperCase();
+  const expected = getCaseExpectedRevenue(caseData);
+  const paid = payments
+    .filter((payment) => isPaidPaymentStatus(payment.status || 'paid'))
+    .reduce((sum, payment) => sum + getPaymentAmount(payment), 0);
+  const remaining = Math.max(expected - paid, 0);
+  const progress = expected > 0 ? Math.min(100, Math.round((paid / expected) * 100)) : 0;
+  const status =
+    expected <= 0
+      ? 'Ustal wartość'
+      : paid <= 0
+        ? 'Brak wpłaty'
+        : remaining <= 0
+          ? 'Opłacone'
+          : 'Częściowo opłacone';
+  return { expected, paid, remaining, progress, status, currency };
+}
+
+function sortCasePayments(payments: CasePaymentRecord[]) {
+  return [...payments].sort((first, second) => {
+    const firstTime = sortTime(first.paidAt || first.createdAt || first.dueAt, 0);
+    const secondTime = sortTime(second.paidAt || second.createdAt || second.dueAt, 0);
+    return secondTime - firstTime;
+  });
 }
 
 function sortTime(value: any, fallback = Number.MAX_SAFE_INTEGER) {
@@ -690,6 +755,59 @@ export default function CaseDetail() {
       clientId: caseData?.clientId || null,
       recordLabel: getCaseTitle(caseData),
     });
+  };
+
+
+  const caseFinanceSummary = useMemo(
+    () => getCaseFinanceSummary(caseData, payments as CasePaymentRecord[]),
+    [caseData, payments],
+  );
+  const visibleCasePayments = useMemo(() => sortCasePayments(payments as CasePaymentRecord[]).slice(0, 8), [payments]);
+
+  const handleCreateCasePayment = async () => {
+    if (!caseId || !caseData) return;
+    if (!hasAccess) {
+      toast.error('Brak dostępu do zapisu płatności.');
+      return;
+    }
+    const amount = Number(casePaymentDraft.amount || 0);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      toast.error('Podaj poprawną kwotę wpłaty.');
+      return;
+    }
+    try {
+      setCasePaymentSubmitting(true);
+      const input = {
+        caseId,
+        clientId: caseData.clientId || null,
+        leadId: caseData.leadId || null,
+        type: casePaymentDraft.type || 'payment',
+        status: casePaymentDraft.status || 'partially_paid',
+        amount,
+        currency: caseData.currency || 'PLN',
+        dueAt: casePaymentDraft.dueAt ? toIsoFromLocalInput(casePaymentDraft.dueAt) : '',
+        paidAt: new Date().toISOString(),
+        note: casePaymentDraft.note || '',
+      };
+      const created = await createPaymentInSupabase(input as any);
+      setPayments((previous) => [created || input, ...previous]);
+      await insertActivityToSupabase({
+        caseId,
+        clientId: caseData.clientId || null,
+        leadId: caseData.leadId || null,
+        actorType: 'operator',
+        eventType: 'payment_added',
+        payload: { title: 'Dodano wpłatę', amount, status: input.status, note: input.note },
+      } as any).catch(() => null);
+      setCasePaymentDraft({ type: 'payment', amount: '', status: 'partially_paid', dueAt: '', note: '' });
+      setIsCasePaymentOpen(false);
+      toast.success('Wpłata dodana');
+    } catch (error) {
+      console.error(error);
+      toast.error('Nie udało się dodać wpłaty.');
+    } finally {
+      setCasePaymentSubmitting(false);
+    }
   };
 
   const refreshCaseData = useCallback(async () => {
@@ -1281,6 +1399,50 @@ export default function CaseDetail() {
         </section>
       ) : null}
 
+      <section className="case-detail-finance-history-panel" data-case-finance-history-panel="true">
+
+        <div className="case-detail-finance-payments-head">
+
+          <strong>Historia wpłat</strong>
+
+          <span>{visibleCasePayments.length}</span>
+
+        </div>
+
+        {visibleCasePayments.length ? (
+
+          <div className="case-detail-finance-history-list">
+
+            {visibleCasePayments.map((payment) => (
+
+              <article key={String(payment.id || payment.createdAt || payment.note || getPaymentAmount(payment))} className="case-detail-finance-payment-row">
+
+                <div>
+
+                  <strong>{formatMoney(getPaymentAmount(payment), payment.currency || caseFinanceSummary.currency)}</strong>
+
+                  <span>{billingStatusLabel(payment.status)}</span>
+
+                </div>
+
+                <small>{formatDate(payment.paidAt || payment.createdAt || payment.dueAt, 'Bez daty')}</small>
+
+              </article>
+
+            ))}
+
+          </div>
+
+        ) : (
+
+          <p className="case-detail-finance-empty">Brak wpłat. Dodaj pierwszą zaliczkę albo płatność częściową.</p>
+
+        )}
+
+      </section>
+
+
+
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
               <nav aria-label="Zakładki sprawy">
                 <TabsList className="case-detail-tabs">
@@ -1564,7 +1726,73 @@ export default function CaseDetail() {
         </Dialog>
         <CaseItemDialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen} value={newItem} onChange={setNewItem} onSubmit={handleAddItem} />
       </main>
-    </Layout>
+    
+      <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
+        <DialogContent data-case-payment-dialog="true" className="case-detail-payment-dialog">
+          <DialogHeader>
+            <DialogTitle>Dodaj wpłatę do sprawy</DialogTitle>
+          </DialogHeader>
+          <div className="case-detail-payment-form">
+            <div>
+              <Label htmlFor="case-payment-amount">Kwota wpłaty</Label>
+              <Input
+                id="case-payment-amount"
+                type="number"
+                min="0"
+                step="0.01"
+                value={casePaymentDraft.amount}
+                onChange={(event) => setCasePaymentDraft((draft) => ({ ...draft, amount: event.target.value }))}
+                placeholder="np. 2000"
+              />
+            </div>
+            <div>
+              <Label htmlFor="case-payment-status">Status</Label>
+              <select
+                id="case-payment-status"
+                value={casePaymentDraft.status}
+                onChange={(event) => setCasePaymentDraft((draft) => ({ ...draft, status: event.target.value }))}
+              >
+                <option value="deposit_paid">Zaliczka wpłacona</option>
+                <option value="partially_paid">Częściowo opłacone</option>
+                <option value="fully_paid">Opłacone</option>
+                <option value="awaiting_payment">Czeka na płatność</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="case-payment-type">Typ</Label>
+              <select
+                id="case-payment-type"
+                value={casePaymentDraft.type}
+                onChange={(event) => setCasePaymentDraft((draft) => ({ ...draft, type: event.target.value }))}
+              >
+                <option value="deposit">Zaliczka</option>
+                <option value="partial">Wpłata częściowa</option>
+                <option value="final">Dopłata końcowa</option>
+                <option value="other">Inna wpłata</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="case-payment-note">Notatka</Label>
+              <Textarea
+                id="case-payment-note"
+                value={casePaymentDraft.note}
+                onChange={(event) => setCasePaymentDraft((draft) => ({ ...draft, note: event.target.value }))}
+                placeholder="np. zaliczka po akceptacji oferty"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setIsCasePaymentOpen(false)}>
+              Anuluj
+            </Button>
+            <Button type="button" onClick={handleCreateCasePayment} disabled={casePaymentSubmitting || !hasAccess}>
+              {casePaymentSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+              Zapisz wpłatę
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+</Layout>
   );
 }
 

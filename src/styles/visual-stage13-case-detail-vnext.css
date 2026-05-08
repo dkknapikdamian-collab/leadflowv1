@@ -1005,3 +1005,204 @@
 .case-detail-vnext-page .case-detail-create-actions [data-case-create-action="note"] {
   white-space: nowrap;
 }
+
+
+/* stage28a case finance core */
+.case-detail-finance-panel {
+  margin: 14px 0 16px;
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  border-radius: 22px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+}
+
+.case-detail-finance-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.case-detail-finance-head p {
+  margin: 0 0 4px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.case-detail-finance-head h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.case-detail-finance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.case-detail-finance-stat {
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.case-detail-finance-stat span {
+  display: block;
+  margin-bottom: 5px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.case-detail-finance-stat strong {
+  color: #0f172a;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.case-detail-finance-stat.is-paid {
+  background: #ecfdf5;
+  border-color: #bbf7d0;
+}
+
+.case-detail-finance-stat.is-paid strong {
+  color: #047857;
+}
+
+.case-detail-finance-stat.is-left {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.case-detail-finance-stat.is-left strong {
+  color: #c2410c;
+}
+
+.case-detail-finance-progress {
+  height: 8px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.case-detail-finance-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.case-detail-finance-payments {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.case-detail-finance-payments-head,
+.case-detail-finance-payment-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.case-detail-finance-payments-head strong {
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.case-detail-finance-payments-head span {
+  min-width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e2e8f0;
+  color: #0f172a;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.case-detail-finance-payment-row {
+  padding: 10px 11px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.case-detail-finance-payment-row div {
+  display: grid;
+  gap: 3px;
+}
+
+.case-detail-finance-payment-row strong {
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.case-detail-finance-payment-row span,
+.case-detail-finance-payment-row small,
+.case-detail-finance-empty {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.case-detail-payment-dialog select {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0 10px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.case-detail-payment-form {
+  display: grid;
+  gap: 12px;
+}
+
+@media (max-width: 760px) {
+  .case-detail-finance-head,
+  .case-detail-finance-payment-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .case-detail-finance-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* stage28a3 case finance history visible repair */
+.case-detail-finance-history-panel {
+  margin: -4px 0 16px;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+}
+
+.case-detail-finance-history-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.case-detail-finance-history-panel .case-detail-finance-empty {
+  margin: 10px 0 0;
+}
