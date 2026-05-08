@@ -406,7 +406,7 @@ function SectionHeaderIcon({ tone, icon }: { tone: string; icon: ReactNode }) {
     );
   }
 
-  return <SectionHeaderIcon tone={tone} icon={icon} />;
+  return <div className={'rounded-2xl p-2 ' + tone}>{icon}</div>;
 }
 
 function SectionHeader({
@@ -432,7 +432,7 @@ function SectionHeader({
       className="flex w-full flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4 text-left transition hover:bg-slate-50"
     >
       <div className="flex items-center gap-3">
-        <div className={'rounded-2xl p-2 ' + tone}>{icon}</div>
+        <SectionHeaderIcon tone={tone} icon={icon} />
         <div>
           <h2 className="text-base font-bold text-slate-900">{title}</h2>
           <p className="text-xs font-medium text-slate-500">{count} wpisów</p>
