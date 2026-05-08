@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T14:50:28.145Z
+Generated: 2026-05-08T14:51:07.638Z
 Source files scanned: 196
 
 ## Likely detail pages

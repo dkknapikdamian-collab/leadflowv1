@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T14:50:28.991Z
+Generated: 2026-05-08T14:51:08.414Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
