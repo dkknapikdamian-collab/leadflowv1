@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T11:32:11.269Z
+Generated: 2026-05-08T11:41:42.899Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -151,6 +151,13 @@ Generated: 2026-05-08T11:32:11.269Z
 - --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:19
 - --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:283
 - --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:284
+- --cf-surface-page: src/styles/closeflow-surface-tokens.css:2
+- --cf-surface-card: src/styles/closeflow-surface-tokens.css:3
+- --cf-surface-card-muted: src/styles/closeflow-surface-tokens.css:4
+- --cf-surface-border: src/styles/closeflow-surface-tokens.css:5
+- --cf-surface-text: src/styles/closeflow-surface-tokens.css:6
+- --cf-surface-muted: src/styles/closeflow-surface-tokens.css:7
+- --cf-surface-shadow: src/styles/closeflow-surface-tokens.css:8
 - --cfv-bg: src/styles/closeflow-vnext-ui-contract.css:6
 - --cfv-bg-2: src/styles/closeflow-vnext-ui-contract.css:6
 - --cfv-sidebar: src/styles/closeflow-vnext-ui-contract.css:6
@@ -496,13 +503,6 @@ Generated: 2026-05-08T11:32:11.269Z
 - --cf22-green: src/styles/visual-stage22-leads-final-lock.css:24
 - --cf22-green-soft: src/styles/visual-stage22-leads-final-lock.css:25
 - --cf22-red: src/styles/visual-stage22-leads-final-lock.css:26
-- --cf22-red-soft: src/styles/visual-stage22-leads-final-lock.css:27
-- --cf22-amber: src/styles/visual-stage22-leads-final-lock.css:28
-- --cf22-amber-soft: src/styles/visual-stage22-leads-final-lock.css:29
-- --cf22-violet: src/styles/visual-stage22-leads-final-lock.css:30
-- --cf22-violet-soft: src/styles/visual-stage22-leads-final-lock.css:31
-- --cf22-shadow: src/styles/visual-stage22-leads-final-lock.css:32
-- --cf22-shadow-soft: src/styles/visual-stage22-leads-final-lock.css:33
 
 ## Danger/red local classes
 - border-rose-200: src/components/AppChunkErrorBoundary.tsx:100

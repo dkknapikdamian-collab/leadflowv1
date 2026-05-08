@@ -207,8 +207,9 @@
 }
 
 .cf-html-view.main-leads-html .right-card .pill.dark {
-  background: #101828 !important;
-  color: #ffffff !important;
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
 }
 
 .cf-html-view.main-leads-html .quick-list {

@@ -487,7 +487,8 @@
     "check:closeflow-design-source-contract": "node scripts/check-closeflow-design-source-contract.cjs",
     "audit:closeflow-style-map": "node scripts/audit-closeflow-style-map.cjs",
     "check:closeflow-ui-premap-contract": "node scripts/check-closeflow-ui-premap-contract.cjs",
-    "check:closeflow-danger-style-contract": "node scripts/check-closeflow-danger-style-contract.cjs"
+    "check:closeflow-danger-style-contract": "node scripts/check-closeflow-danger-style-contract.cjs",
+    "check:closeflow-surface-contract": "node scripts/check-closeflow-surface-contract.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

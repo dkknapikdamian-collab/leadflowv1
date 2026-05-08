@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T11:32:11.269Z",
+  "generatedAt": "2026-05-08T11:41:42.899Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -740,6 +740,41 @@
       "name": "--cf-metric-tile-gap",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 284
+    },
+    {
+      "name": "--cf-surface-page",
+      "file": "src/styles/closeflow-surface-tokens.css",
+      "line": 2
+    },
+    {
+      "name": "--cf-surface-card",
+      "file": "src/styles/closeflow-surface-tokens.css",
+      "line": 3
+    },
+    {
+      "name": "--cf-surface-card-muted",
+      "file": "src/styles/closeflow-surface-tokens.css",
+      "line": 4
+    },
+    {
+      "name": "--cf-surface-border",
+      "file": "src/styles/closeflow-surface-tokens.css",
+      "line": 5
+    },
+    {
+      "name": "--cf-surface-text",
+      "file": "src/styles/closeflow-surface-tokens.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-surface-muted",
+      "file": "src/styles/closeflow-surface-tokens.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-surface-shadow",
+      "file": "src/styles/closeflow-surface-tokens.css",
+      "line": 8
     },
     {
       "name": "--cfv-bg",

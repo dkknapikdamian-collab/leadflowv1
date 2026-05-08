@@ -1,0 +1,43 @@
+:root {
+  --cf-surface-page: #f8fafc;
+  --cf-surface-card: #ffffff;
+  --cf-surface-card-muted: #f8fafc;
+  --cf-surface-border: #e2e8f0;
+  --cf-surface-text: #0f172a;
+  --cf-surface-muted: #64748b;
+  --cf-surface-shadow: 0 14px 32px rgba(15, 23, 42, 0.055);
+}
+
+.right-card,
+[class$="-right-card"],
+.settings-right-card,
+.billing-right-card,
+.activity-right-card,
+.lead-right-card,
+.cases-shortcuts-rail-card,
+.calendar-week-filter,
+.calendar-week-plan {
+  background: var(--cf-surface-card) !important;
+  background-color: var(--cf-surface-card) !important;
+  color: var(--cf-surface-text) !important;
+  border-color: var(--cf-surface-border) !important;
+  box-shadow: var(--cf-surface-shadow);
+}
+
+[class$="-right-rail"],
+.support-right-rail,
+.notifications-right-rail,
+.ai-drafts-right-rail {
+  background: transparent;
+  background-color: transparent;
+  color: var(--cf-surface-text);
+}
+
+.right-card p,
+.right-card small,
+.right-card [class*="text-slate-500"],
+.right-card [class*="text-slate-600"],
+[class$="-right-card"] p,
+[class$="-right-card"] small {
+  color: var(--cf-surface-muted);
+}
