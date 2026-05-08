@@ -1,63 +1,63 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T18:45:35.278Z
+Generated: 2026-05-08T19:05:48.262Z
 
 ## CSS variables
-- --font-sans: src/index.css:29
-- --color-primary: src/index.css:30
-- --color-primary-foreground: src/index.css:31
-- --color-primary: src/index.css:37
-- --color-primary-foreground: src/index.css:38
-- --app-bg: src/index.css:39
-- --app-surface: src/index.css:40
-- --app-surface-strong: src/index.css:41
-- --app-surface-muted: src/index.css:42
-- --app-border: src/index.css:43
-- --app-text: src/index.css:44
-- --app-muted: src/index.css:45
-- --app-muted-soft: src/index.css:46
-- --app-primary-chip-bg: src/index.css:47
-- --app-primary-chip-text: src/index.css:48
-- --app-shadow-color: src/index.css:49
-- --color-primary: src/index.css:53
-- --color-primary-foreground: src/index.css:54
-- --app-bg: src/index.css:55
-- --app-surface: src/index.css:56
-- --app-surface-strong: src/index.css:57
-- --app-surface-muted: src/index.css:58
-- --app-border: src/index.css:59
-- --app-text: src/index.css:60
-- --app-muted: src/index.css:61
-- --app-muted-soft: src/index.css:62
-- --app-primary-chip-bg: src/index.css:63
-- --app-primary-chip-text: src/index.css:64
-- --app-shadow-color: src/index.css:65
-- --color-primary: src/index.css:69
-- --color-primary-foreground: src/index.css:70
-- --app-bg: src/index.css:71
-- --app-surface: src/index.css:72
-- --app-surface-strong: src/index.css:73
-- --app-surface-muted: src/index.css:74
-- --app-border: src/index.css:75
-- --app-text: src/index.css:76
-- --app-muted: src/index.css:77
-- --app-muted-soft: src/index.css:78
-- --app-primary-chip-bg: src/index.css:79
-- --app-primary-chip-text: src/index.css:80
-- --app-shadow-color: src/index.css:81
-- --color-primary: src/index.css:85
-- --color-primary-foreground: src/index.css:86
-- --app-bg: src/index.css:87
-- --app-surface: src/index.css:88
-- --app-surface-strong: src/index.css:89
-- --app-surface-muted: src/index.css:90
-- --app-border: src/index.css:91
-- --app-text: src/index.css:92
-- --app-muted: src/index.css:93
-- --app-muted-soft: src/index.css:94
-- --app-primary-chip-bg: src/index.css:95
-- --app-primary-chip-text: src/index.css:96
-- --app-shadow-color: src/index.css:97
+- --font-sans: src/index.css:31
+- --color-primary: src/index.css:32
+- --color-primary-foreground: src/index.css:33
+- --color-primary: src/index.css:39
+- --color-primary-foreground: src/index.css:40
+- --app-bg: src/index.css:41
+- --app-surface: src/index.css:42
+- --app-surface-strong: src/index.css:43
+- --app-surface-muted: src/index.css:44
+- --app-border: src/index.css:45
+- --app-text: src/index.css:46
+- --app-muted: src/index.css:47
+- --app-muted-soft: src/index.css:48
+- --app-primary-chip-bg: src/index.css:49
+- --app-primary-chip-text: src/index.css:50
+- --app-shadow-color: src/index.css:51
+- --color-primary: src/index.css:55
+- --color-primary-foreground: src/index.css:56
+- --app-bg: src/index.css:57
+- --app-surface: src/index.css:58
+- --app-surface-strong: src/index.css:59
+- --app-surface-muted: src/index.css:60
+- --app-border: src/index.css:61
+- --app-text: src/index.css:62
+- --app-muted: src/index.css:63
+- --app-muted-soft: src/index.css:64
+- --app-primary-chip-bg: src/index.css:65
+- --app-primary-chip-text: src/index.css:66
+- --app-shadow-color: src/index.css:67
+- --color-primary: src/index.css:71
+- --color-primary-foreground: src/index.css:72
+- --app-bg: src/index.css:73
+- --app-surface: src/index.css:74
+- --app-surface-strong: src/index.css:75
+- --app-surface-muted: src/index.css:76
+- --app-border: src/index.css:77
+- --app-text: src/index.css:78
+- --app-muted: src/index.css:79
+- --app-muted-soft: src/index.css:80
+- --app-primary-chip-bg: src/index.css:81
+- --app-primary-chip-text: src/index.css:82
+- --app-shadow-color: src/index.css:83
+- --color-primary: src/index.css:87
+- --color-primary-foreground: src/index.css:88
+- --app-bg: src/index.css:89
+- --app-surface: src/index.css:90
+- --app-surface-strong: src/index.css:91
+- --app-surface-muted: src/index.css:92
+- --app-border: src/index.css:93
+- --app-text: src/index.css:94
+- --app-muted: src/index.css:95
+- --app-muted-soft: src/index.css:96
+- --app-primary-chip-bg: src/index.css:97
+- --app-primary-chip-text: src/index.css:98
+- --app-shadow-color: src/index.css:99
 - --bg: src/pages/UiPreviewVNextFull.tsx:20
 - --bg-2: src/pages/UiPreviewVNextFull.tsx:20
 - --sidebar: src/pages/UiPreviewVNextFull.tsx:20
@@ -118,6 +118,10 @@ Generated: 2026-05-08T18:45:35.278Z
 - --cf-action-neutral-border: src/styles/closeflow-action-tokens.css:15
 - --cf-action-neutral-bg-hover: src/styles/closeflow-action-tokens.css:16
 - --cf-action-neutral-border-hover: src/styles/closeflow-action-tokens.css:17
+- --cf-session-action-danger-text: src/styles/closeflow-action-tokens.css:71
+- --cf-session-action-danger-text-hover: src/styles/closeflow-action-tokens.css:72
+- --cf-session-action-danger-bg-hover: src/styles/closeflow-action-tokens.css:73
+- --cf-session-action-danger-focus: src/styles/closeflow-action-tokens.css:74
 - --cf-alert-error-text: src/styles/closeflow-alert-severity.css:2
 - --cf-alert-error-bg: src/styles/closeflow-alert-severity.css:3
 - --cf-alert-error-border: src/styles/closeflow-alert-severity.css:4
@@ -156,6 +160,15 @@ Generated: 2026-05-08T18:45:35.278Z
 - --cf-case-info: src/styles/closeflow-case-detail-focus.css:18
 - --cf-case-info-bg: src/styles/closeflow-case-detail-focus.css:19
 - --cf-case-shadow: src/styles/closeflow-case-detail-focus.css:20
+- --cf-entity-type-event-border: src/styles/closeflow-entity-type-tokens.css:6
+- --cf-entity-type-event-bg: src/styles/closeflow-entity-type-tokens.css:7
+- --cf-entity-type-event-text: src/styles/closeflow-entity-type-tokens.css:8
+- --cf-entity-type-task-border: src/styles/closeflow-entity-type-tokens.css:9
+- --cf-entity-type-task-bg: src/styles/closeflow-entity-type-tokens.css:10
+- --cf-entity-type-task-text: src/styles/closeflow-entity-type-tokens.css:11
+- --cf-entity-type-lead-border: src/styles/closeflow-entity-type-tokens.css:12
+- --cf-entity-type-lead-bg: src/styles/closeflow-entity-type-tokens.css:13
+- --cf-entity-type-lead-text: src/styles/closeflow-entity-type-tokens.css:14
 - --cf-form-actions-gap: src/styles/closeflow-form-actions.css:7
 - --cf-form-actions-mobile-gap: src/styles/closeflow-form-actions.css:8
 - --cf-form-actions-padding-top: src/styles/closeflow-form-actions.css:9
@@ -490,19 +503,6 @@ Generated: 2026-05-08T18:45:35.278Z
 - --cf17-green-soft: src/styles/visual-stage17-today-hard-1to1.css:22
 - --cf17-red: src/styles/visual-stage17-today-hard-1to1.css:23
 - --cf17-red-soft: src/styles/visual-stage17-today-hard-1to1.css:24
-- --cf17-amber: src/styles/visual-stage17-today-hard-1to1.css:25
-- --cf17-amber-soft: src/styles/visual-stage17-today-hard-1to1.css:26
-- --cf17-violet: src/styles/visual-stage17-today-hard-1to1.css:27
-- --cf17-violet-soft: src/styles/visual-stage17-today-hard-1to1.css:28
-- --cf17-shadow: src/styles/visual-stage17-today-hard-1to1.css:29
-- --cf17-shadow-soft: src/styles/visual-stage17-today-hard-1to1.css:30
-- --cf17-radius-xl: src/styles/visual-stage17-today-hard-1to1.css:31
-- --cf17-radius-lg: src/styles/visual-stage17-today-hard-1to1.css:32
-- --cf17-radius-md: src/styles/visual-stage17-today-hard-1to1.css:33
-- --cf18-bg: src/styles/visual-stage18-leads-hard-1to1.css:7
-- --cf18-bg-2: src/styles/visual-stage18-leads-hard-1to1.css:8
-- --cf18-sidebar: src/styles/visual-stage18-leads-hard-1to1.css:9
-- --cf18-card: src/styles/visual-stage18-leads-hard-1to1.css:10
 
 ## Danger/red local classes
 - bg-red-100: src/components/ErrorBoundary.tsx:32
@@ -531,9 +531,6 @@ Generated: 2026-05-08T18:45:35.278Z
 - text-red-500: src/pages/ClientPortal.tsx:276
 - text-red-600: src/pages/ClientPortal.tsx:377
 - bg-red-50: src/pages/ClientPortal.tsx:377
-- text-red-500: src/pages/Dashboard.tsx:228
-- text-red-600: src/pages/Dashboard.tsx:228
-- bg-red-50: src/pages/Dashboard.tsx:228
 - border-red-100: src/pages/Today.tsx:1290
 - bg-red-50: src/pages/Today.tsx:1290
 - border-red-200: src/pages/Today.tsx:1290
@@ -590,8 +587,8 @@ Generated: 2026-05-08T18:45:35.278Z
 - src/components/Layout.tsx:122
 - src/components/ui/progress.tsx:19
 - src/pages/Activity.tsx:804
-- src/pages/Calendar.tsx:1498
-- src/pages/Calendar.tsx:1680
+- src/pages/Calendar.tsx:1502
+- src/pages/Calendar.tsx:1684
 - src/pages/CaseDetail.tsx:1326
 - src/pages/CaseDetail.tsx:1449
 - src/pages/Cases.tsx:757

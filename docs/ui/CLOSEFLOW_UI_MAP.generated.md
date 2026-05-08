@@ -1,6 +1,6 @@
 # CloseFlow UI Map — generated
 
-Generated: 2026-05-08T18:45:32.722Z
+Generated: 2026-05-08T19:05:46.932Z
 Source files scanned: 196
 
 ## Likely detail pages
@@ -101,16 +101,16 @@ Source files scanned: 196
 - Kopiuj: src/pages/AiDrafts.tsx:988
 - Kopiuj: src/pages/AiDrafts.tsx:1198
 - Anuluj: src/pages/Billing.tsx:683
-- Dodaj zadanie: src/pages/Calendar.tsx:1427
-- Dodaj zadanie: src/pages/Calendar.tsx:1465
-- Usuń: src/pages/Calendar.tsx:446
+- Dodaj zadanie: src/pages/Calendar.tsx:1431
+- Dodaj zadanie: src/pages/Calendar.tsx:1469
+- Usuń: src/pages/Calendar.tsx:450
 - Edytuj: src/pages/Calendar.tsx:124
-- Edytuj: src/pages/Calendar.tsx:438
-- Edytuj: src/pages/Calendar.tsx:1712
+- Edytuj: src/pages/Calendar.tsx:442
+- Edytuj: src/pages/Calendar.tsx:1716
 - Zapisz: src/pages/Calendar.tsx:124
-- Zapisz: src/pages/Calendar.tsx:1873
-- Dodaj: src/pages/Calendar.tsx:1427
-- Dodaj: src/pages/Calendar.tsx:1465
+- Zapisz: src/pages/Calendar.tsx:1877
+- Dodaj: src/pages/Calendar.tsx:1431
+- Dodaj: src/pages/Calendar.tsx:1469
 - Dodaj notatkę: src/pages/CaseDetail.tsx:1563
 - Dodaj notatkę: src/pages/CaseDetail.tsx:1614
 - Dodaj zadanie: src/pages/CaseDetail.tsx:1317
@@ -1046,14 +1046,14 @@ import {
 - src/pages/AiDrafts.tsx:1177 <a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">
 - src/pages/Billing.tsx:496 <Button type="button" variant="outline" onClick={refresh}>
 - src/pages/Billing.tsx:676 <Button type="button" size="sm" variant="outline" disabled={Boolean(billingActionLoading) || workspace.cancelAtPeriodEnd} 
-- src/pages/Calendar.tsx:408 <Link to={`/leads/${entry.raw.leadId}`} className="text-blue-700 hover:underline">
-- src/pages/Calendar.tsx:413 <Link to={`/cases/${entry.raw.caseId}`} className="text-sky-700 hover:underline">
-- src/pages/Calendar.tsx:1247 <Link to="/ai-drafts" className="btn soft-blue">
-- src/pages/Calendar.tsx:1362 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
-- src/pages/Calendar.tsx:1386 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.tsx:1402 <button type="button" className="nav-today" onClick={() =>
-- src/pages/Calendar.tsx:1405 <button type="button" className="nav-btn" onClick={() =>
-- src/pages/Calendar.tsx:1465 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
+- src/pages/Calendar.tsx:412 <Link to={`/leads/${entry.raw.leadId}`} className="text-blue-700 hover:underline">
+- src/pages/Calendar.tsx:417 <Link to={`/cases/${entry.raw.caseId}`} className="text-sky-700 hover:underline">
+- src/pages/Calendar.tsx:1251 <Link to="/ai-drafts" className="btn soft-blue">
+- src/pages/Calendar.tsx:1366 <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>
+- src/pages/Calendar.tsx:1390 <button type="button" className="nav-btn" onClick={() =>
+- src/pages/Calendar.tsx:1406 <button type="button" className="nav-today" onClick={() =>
+- src/pages/Calendar.tsx:1409 <button type="button" className="nav-btn" onClick={() =>
+- src/pages/Calendar.tsx:1469 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>
 - src/pages/CaseDetail.tsx:1267 <Button type="button" variant="outline" onClick={() =>
 - src/pages/CaseDetail.tsx:1282 <button type="button" className="case-detail-back-button" onClick={() =>
 - src/pages/CaseDetail.tsx:1298 <Button type="button" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>
@@ -1120,7 +1120,7 @@ import {
 - src/pages/Dashboard.tsx:214 <Button variant="ghost" className="w-full justify-start gap-3 bg-slate-100 text-primary">
 - src/pages/Dashboard.tsx:218 <Button variant="ghost" className="w-full justify-start gap-3 text-slate-600">
 - src/pages/Dashboard.tsx:222 <Button variant="ghost" className="w-full justify-start gap-3 text-slate-600">
-- src/pages/Dashboard.tsx:228 <Button variant="ghost" className="w-full justify-start gap-3 text-red-500 hover:text-red-600 hover:bg-red-50" onClick={() =>
+- src/pages/Dashboard.tsx:228 <Button variant="ghost" className="cf-session-action-danger w-full justify-start gap-3" data-cf-session-action="logout" onClick={() =>
 - src/pages/Dashboard.tsx:243 <Button size="lg" className="gap-2 shadow-lg shadow-primary/20">
 - src/pages/Dashboard.tsx:281 <Button variant="outline" onClick={() =>
 - src/pages/Dashboard.tsx:366 <Button variant="outline" className="h-11 gap-2 bg-white">
@@ -1344,9 +1344,9 @@ import {
 - src/pages/Billing.tsx:720 `right-card billing-right-card`
 - src/pages/Billing.tsx:732 `right-card billing-right-card`
 - src/pages/Billing.tsx:742 `billing-settlements-card`
-- src/pages/Calendar.tsx:1246 `head-actions`
-- src/pages/Calendar.tsx:1575 `right-card calendar-week-filter`
-- src/pages/Calendar.tsx:1655 `right-card calendar-week-plan`
+- src/pages/Calendar.tsx:1250 `head-actions`
+- src/pages/Calendar.tsx:1579 `right-card calendar-week-filter`
+- src/pages/Calendar.tsx:1659 `right-card calendar-week-plan`
 - src/pages/CaseDetail.tsx:1250 `case-detail-loading-card`
 - src/pages/CaseDetail.tsx:1263 `case-detail-empty-card`
 - src/pages/CaseDetail.tsx:1282 `case-detail-back-button`
@@ -1497,7 +1497,7 @@ import {
 - src/pages/Clients.tsx:590 `right-card`
 - src/pages/Clients.tsx:600 `right-card`
 - src/pages/Clients.tsx:611 `note`
-- src/pages/Dashboard.tsx:228 `w-full justify-start gap-3 text-red-500 hover:text-red-600 hover:bg-red-50`
+- src/pages/Dashboard.tsx:228 `cf-session-action-danger w-full justify-start gap-3`
 - src/pages/LeadDetail.tsx:416 `lead-detail-chip-button`
 - src/pages/LeadDetail.tsx:749 `lead-detail-work-metric`
 - src/pages/LeadDetail.tsx:753 `lead-detail-work-metric`

@@ -1,280 +1,280 @@
 {
-  "generatedAt": "2026-05-08T18:45:35.278Z",
+  "generatedAt": "2026-05-08T19:05:48.262Z",
   "cssVariables": [
     {
       "name": "--font-sans",
-      "file": "src/index.css",
-      "line": 29
-    },
-    {
-      "name": "--color-primary",
-      "file": "src/index.css",
-      "line": 30
-    },
-    {
-      "name": "--color-primary-foreground",
       "file": "src/index.css",
       "line": 31
     },
     {
       "name": "--color-primary",
       "file": "src/index.css",
-      "line": 37
+      "line": 32
     },
     {
       "name": "--color-primary-foreground",
       "file": "src/index.css",
-      "line": 38
+      "line": 33
     },
     {
-      "name": "--app-bg",
+      "name": "--color-primary",
       "file": "src/index.css",
       "line": 39
     },
     {
-      "name": "--app-surface",
+      "name": "--color-primary-foreground",
       "file": "src/index.css",
       "line": 40
     },
     {
-      "name": "--app-surface-strong",
+      "name": "--app-bg",
       "file": "src/index.css",
       "line": 41
     },
     {
-      "name": "--app-surface-muted",
+      "name": "--app-surface",
       "file": "src/index.css",
       "line": 42
     },
     {
-      "name": "--app-border",
+      "name": "--app-surface-strong",
       "file": "src/index.css",
       "line": 43
     },
     {
-      "name": "--app-text",
+      "name": "--app-surface-muted",
       "file": "src/index.css",
       "line": 44
     },
     {
-      "name": "--app-muted",
+      "name": "--app-border",
       "file": "src/index.css",
       "line": 45
     },
     {
-      "name": "--app-muted-soft",
+      "name": "--app-text",
       "file": "src/index.css",
       "line": 46
     },
     {
-      "name": "--app-primary-chip-bg",
+      "name": "--app-muted",
       "file": "src/index.css",
       "line": 47
     },
     {
-      "name": "--app-primary-chip-text",
+      "name": "--app-muted-soft",
       "file": "src/index.css",
       "line": 48
     },
     {
-      "name": "--app-shadow-color",
+      "name": "--app-primary-chip-bg",
       "file": "src/index.css",
       "line": 49
     },
     {
+      "name": "--app-primary-chip-text",
+      "file": "src/index.css",
+      "line": 50
+    },
+    {
+      "name": "--app-shadow-color",
+      "file": "src/index.css",
+      "line": 51
+    },
+    {
       "name": "--color-primary",
-      "file": "src/index.css",
-      "line": 53
-    },
-    {
-      "name": "--color-primary-foreground",
-      "file": "src/index.css",
-      "line": 54
-    },
-    {
-      "name": "--app-bg",
       "file": "src/index.css",
       "line": 55
     },
     {
-      "name": "--app-surface",
+      "name": "--color-primary-foreground",
       "file": "src/index.css",
       "line": 56
     },
     {
-      "name": "--app-surface-strong",
+      "name": "--app-bg",
       "file": "src/index.css",
       "line": 57
     },
     {
-      "name": "--app-surface-muted",
+      "name": "--app-surface",
       "file": "src/index.css",
       "line": 58
     },
     {
-      "name": "--app-border",
+      "name": "--app-surface-strong",
       "file": "src/index.css",
       "line": 59
     },
     {
-      "name": "--app-text",
+      "name": "--app-surface-muted",
       "file": "src/index.css",
       "line": 60
     },
     {
-      "name": "--app-muted",
+      "name": "--app-border",
       "file": "src/index.css",
       "line": 61
     },
     {
-      "name": "--app-muted-soft",
+      "name": "--app-text",
       "file": "src/index.css",
       "line": 62
     },
     {
-      "name": "--app-primary-chip-bg",
+      "name": "--app-muted",
       "file": "src/index.css",
       "line": 63
     },
     {
-      "name": "--app-primary-chip-text",
+      "name": "--app-muted-soft",
       "file": "src/index.css",
       "line": 64
     },
     {
-      "name": "--app-shadow-color",
+      "name": "--app-primary-chip-bg",
       "file": "src/index.css",
       "line": 65
     },
     {
+      "name": "--app-primary-chip-text",
+      "file": "src/index.css",
+      "line": 66
+    },
+    {
+      "name": "--app-shadow-color",
+      "file": "src/index.css",
+      "line": 67
+    },
+    {
       "name": "--color-primary",
-      "file": "src/index.css",
-      "line": 69
-    },
-    {
-      "name": "--color-primary-foreground",
-      "file": "src/index.css",
-      "line": 70
-    },
-    {
-      "name": "--app-bg",
       "file": "src/index.css",
       "line": 71
     },
     {
-      "name": "--app-surface",
+      "name": "--color-primary-foreground",
       "file": "src/index.css",
       "line": 72
     },
     {
-      "name": "--app-surface-strong",
+      "name": "--app-bg",
       "file": "src/index.css",
       "line": 73
     },
     {
-      "name": "--app-surface-muted",
+      "name": "--app-surface",
       "file": "src/index.css",
       "line": 74
     },
     {
-      "name": "--app-border",
+      "name": "--app-surface-strong",
       "file": "src/index.css",
       "line": 75
     },
     {
-      "name": "--app-text",
+      "name": "--app-surface-muted",
       "file": "src/index.css",
       "line": 76
     },
     {
-      "name": "--app-muted",
+      "name": "--app-border",
       "file": "src/index.css",
       "line": 77
     },
     {
-      "name": "--app-muted-soft",
+      "name": "--app-text",
       "file": "src/index.css",
       "line": 78
     },
     {
-      "name": "--app-primary-chip-bg",
+      "name": "--app-muted",
       "file": "src/index.css",
       "line": 79
     },
     {
-      "name": "--app-primary-chip-text",
+      "name": "--app-muted-soft",
       "file": "src/index.css",
       "line": 80
     },
     {
-      "name": "--app-shadow-color",
+      "name": "--app-primary-chip-bg",
       "file": "src/index.css",
       "line": 81
     },
     {
-      "name": "--color-primary",
-      "file": "src/index.css",
-      "line": 85
-    },
-    {
-      "name": "--color-primary-foreground",
-      "file": "src/index.css",
-      "line": 86
-    },
-    {
-      "name": "--app-bg",
-      "file": "src/index.css",
-      "line": 87
-    },
-    {
-      "name": "--app-surface",
-      "file": "src/index.css",
-      "line": 88
-    },
-    {
-      "name": "--app-surface-strong",
-      "file": "src/index.css",
-      "line": 89
-    },
-    {
-      "name": "--app-surface-muted",
-      "file": "src/index.css",
-      "line": 90
-    },
-    {
-      "name": "--app-border",
-      "file": "src/index.css",
-      "line": 91
-    },
-    {
-      "name": "--app-text",
-      "file": "src/index.css",
-      "line": 92
-    },
-    {
-      "name": "--app-muted",
-      "file": "src/index.css",
-      "line": 93
-    },
-    {
-      "name": "--app-muted-soft",
-      "file": "src/index.css",
-      "line": 94
-    },
-    {
-      "name": "--app-primary-chip-bg",
-      "file": "src/index.css",
-      "line": 95
-    },
-    {
       "name": "--app-primary-chip-text",
       "file": "src/index.css",
-      "line": 96
+      "line": 82
     },
     {
       "name": "--app-shadow-color",
       "file": "src/index.css",
+      "line": 83
+    },
+    {
+      "name": "--color-primary",
+      "file": "src/index.css",
+      "line": 87
+    },
+    {
+      "name": "--color-primary-foreground",
+      "file": "src/index.css",
+      "line": 88
+    },
+    {
+      "name": "--app-bg",
+      "file": "src/index.css",
+      "line": 89
+    },
+    {
+      "name": "--app-surface",
+      "file": "src/index.css",
+      "line": 90
+    },
+    {
+      "name": "--app-surface-strong",
+      "file": "src/index.css",
+      "line": 91
+    },
+    {
+      "name": "--app-surface-muted",
+      "file": "src/index.css",
+      "line": 92
+    },
+    {
+      "name": "--app-border",
+      "file": "src/index.css",
+      "line": 93
+    },
+    {
+      "name": "--app-text",
+      "file": "src/index.css",
+      "line": 94
+    },
+    {
+      "name": "--app-muted",
+      "file": "src/index.css",
+      "line": 95
+    },
+    {
+      "name": "--app-muted-soft",
+      "file": "src/index.css",
+      "line": 96
+    },
+    {
+      "name": "--app-primary-chip-bg",
+      "file": "src/index.css",
       "line": 97
+    },
+    {
+      "name": "--app-primary-chip-text",
+      "file": "src/index.css",
+      "line": 98
+    },
+    {
+      "name": "--app-shadow-color",
+      "file": "src/index.css",
+      "line": 99
     },
     {
       "name": "--bg",
@@ -577,6 +577,26 @@
       "line": 17
     },
     {
+      "name": "--cf-session-action-danger-text",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 71
+    },
+    {
+      "name": "--cf-session-action-danger-text-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 72
+    },
+    {
+      "name": "--cf-session-action-danger-bg-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 73
+    },
+    {
+      "name": "--cf-session-action-danger-focus",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 74
+    },
+    {
       "name": "--cf-alert-error-text",
       "file": "src/styles/closeflow-alert-severity.css",
       "line": 2
@@ -765,6 +785,51 @@
       "name": "--cf-case-shadow",
       "file": "src/styles/closeflow-case-detail-focus.css",
       "line": 20
+    },
+    {
+      "name": "--cf-entity-type-event-border",
+      "file": "src/styles/closeflow-entity-type-tokens.css",
+      "line": 6
+    },
+    {
+      "name": "--cf-entity-type-event-bg",
+      "file": "src/styles/closeflow-entity-type-tokens.css",
+      "line": 7
+    },
+    {
+      "name": "--cf-entity-type-event-text",
+      "file": "src/styles/closeflow-entity-type-tokens.css",
+      "line": 8
+    },
+    {
+      "name": "--cf-entity-type-task-border",
+      "file": "src/styles/closeflow-entity-type-tokens.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-entity-type-task-bg",
+      "file": "src/styles/closeflow-entity-type-tokens.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-entity-type-task-text",
+      "file": "src/styles/closeflow-entity-type-tokens.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-entity-type-lead-border",
+      "file": "src/styles/closeflow-entity-type-tokens.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-entity-type-lead-bg",
+      "file": "src/styles/closeflow-entity-type-tokens.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-entity-type-lead-text",
+      "file": "src/styles/closeflow-entity-type-tokens.css",
+      "line": 14
     },
     {
       "name": "--cf-form-actions-gap",
@@ -3399,21 +3464,6 @@
       "line": 377
     },
     {
-      "className": "text-red-500",
-      "file": "src/pages/Dashboard.tsx",
-      "line": 228
-    },
-    {
-      "className": "text-red-600",
-      "file": "src/pages/Dashboard.tsx",
-      "line": 228
-    },
-    {
-      "className": "bg-red-50",
-      "file": "src/pages/Dashboard.tsx",
-      "line": 228
-    },
-    {
       "className": "border-red-100",
       "file": "src/pages/Today.tsx",
       "line": 1290
@@ -3683,11 +3733,11 @@
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1498
+      "line": 1502
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1680
+      "line": 1684
     },
     {
       "file": "src/pages/CaseDetail.tsx",
@@ -4108,6 +4158,26 @@
       "name": "--cf-action-neutral-border-hover",
       "file": "src/styles/closeflow-action-tokens.css",
       "line": 17
+    },
+    {
+      "name": "--cf-session-action-danger-text",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 71
+    },
+    {
+      "name": "--cf-session-action-danger-text-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 72
+    },
+    {
+      "name": "--cf-session-action-danger-bg-hover",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 73
+    },
+    {
+      "name": "--cf-session-action-danger-focus",
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 74
     },
     {
       "name": "--cf-case-danger",

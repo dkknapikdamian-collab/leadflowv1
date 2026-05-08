@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T18:45:32.722Z",
+  "generatedAt": "2026-05-08T19:05:46.932Z",
   "sourceFiles": 196,
   "actionOccurrences": [
     {
@@ -400,17 +400,17 @@
     {
       "term": "Dodaj zadanie",
       "file": "src/pages/Calendar.tsx",
-      "line": 1427
+      "line": 1431
     },
     {
       "term": "Dodaj zadanie",
       "file": "src/pages/Calendar.tsx",
-      "line": 1465
+      "line": 1469
     },
     {
       "term": "Usuń",
       "file": "src/pages/Calendar.tsx",
-      "line": 446
+      "line": 450
     },
     {
       "term": "Edytuj",
@@ -420,12 +420,12 @@
     {
       "term": "Edytuj",
       "file": "src/pages/Calendar.tsx",
-      "line": 438
+      "line": 442
     },
     {
       "term": "Edytuj",
       "file": "src/pages/Calendar.tsx",
-      "line": 1712
+      "line": 1716
     },
     {
       "term": "Zapisz",
@@ -435,17 +435,17 @@
     {
       "term": "Zapisz",
       "file": "src/pages/Calendar.tsx",
-      "line": 1873
+      "line": 1877
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Calendar.tsx",
-      "line": 1427
+      "line": 1431
     },
     {
       "term": "Dodaj",
       "file": "src/pages/Calendar.tsx",
-      "line": 1465
+      "line": 1469
     },
     {
       "term": "Dodaj notatkę",
@@ -1911,49 +1911,49 @@
     {
       "tag": "Link",
       "file": "src/pages/Calendar.tsx",
-      "line": 408,
+      "line": 412,
       "snippet": "<Link to={`/leads/${entry.raw.leadId}`} className=\"text-blue-700 hover:underline\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/Calendar.tsx",
-      "line": 413,
+      "line": 417,
       "snippet": "<Link to={`/cases/${entry.raw.caseId}`} className=\"text-sky-700 hover:underline\">"
     },
     {
       "tag": "Link",
       "file": "src/pages/Calendar.tsx",
-      "line": 1247,
+      "line": 1251,
       "snippet": "<Link to=\"/ai-drafts\" className=\"btn soft-blue\">"
     },
     {
       "tag": "Button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1362,
+      "line": 1366,
       "snippet": "<Button type=\"submit\" className=\"w-full\" disabled={eventSubmitting || !workspaceReady}>"
     },
     {
       "tag": "button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1386,
+      "line": 1390,
       "snippet": "<button\n                type=\"button\"\n                className=\"nav-btn\"\n                onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1402,
+      "line": 1406,
       "snippet": "<button type=\"button\" className=\"nav-today\" onClick={() =>"
     },
     {
       "tag": "button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1405,
+      "line": 1409,
       "snippet": "<button\n                type=\"button\"\n                className=\"nav-btn\"\n                onClick={() =>"
     },
     {
       "tag": "Button",
       "file": "src/pages/Calendar.tsx",
-      "line": 1465,
+      "line": 1469,
       "snippet": "<Button type=\"submit\" className=\"w-full\" disabled={taskSubmitting || !workspaceReady}>"
     },
     {
@@ -2356,7 +2356,7 @@
       "tag": "Button",
       "file": "src/pages/Dashboard.tsx",
       "line": 228,
-      "snippet": "<Button variant=\"ghost\" className=\"w-full justify-start gap-3 text-red-500 hover:text-red-600 hover:bg-red-50\" onClick={() =>"
+      "snippet": "<Button variant=\"ghost\" className=\"cf-session-action-danger w-full justify-start gap-3\" data-cf-session-action=\"logout\" onClick={() =>"
     },
     {
       "tag": "Button",
@@ -5684,17 +5684,17 @@
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1246,
+      "line": 1250,
       "className": "head-actions"
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1575,
+      "line": 1579,
       "className": "right-card calendar-week-filter"
     },
     {
       "file": "src/pages/Calendar.tsx",
-      "line": 1655,
+      "line": 1659,
       "className": "right-card calendar-week-plan"
     },
     {
@@ -6450,7 +6450,7 @@
     {
       "file": "src/pages/Dashboard.tsx",
       "line": 228,
-      "className": "w-full justify-start gap-3 text-red-500 hover:text-red-600 hover:bg-red-50"
+      "className": "cf-session-action-danger w-full justify-start gap-3"
     },
     {
       "file": "src/pages/LeadDetail.tsx",
