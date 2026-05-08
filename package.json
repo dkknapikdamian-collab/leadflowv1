@@ -503,7 +503,8 @@
     "check:closeflow-leads-tasks-status-contract": "node scripts/check-closeflow-leads-tasks-status-contract.cjs",
     "check:closeflow-today-stable-remaining-severity-contract": "node scripts/check-closeflow-today-stable-remaining-severity-contract.cjs",
     "check:closeflow-legacy-today-route-contract": "node scripts/check-closeflow-legacy-today-route-contract.cjs",
-    "check:closeflow-active-legacy-color-contract": "node scripts/check-closeflow-active-legacy-color-contract.cjs"
+    "check:closeflow-active-legacy-color-contract": "node scripts/check-closeflow-active-legacy-color-contract.cjs",
+    "check:closeflow-metric-visual-parity-contract": "node scripts/check-closeflow-metric-visual-parity-contract.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

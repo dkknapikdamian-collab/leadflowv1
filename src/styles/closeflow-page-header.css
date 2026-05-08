@@ -6,6 +6,12 @@
   --cf-page-head-muted: #64748b;
   --cf-page-head-kicker: #475569;
   --cf-page-head-action-gap: 8px;
+  --cf-page-hero-bg: #ffffff;
+  --cf-page-hero-border: #eef2f7;
+  --cf-page-hero-shadow: 0 14px 32px rgba(15, 23, 42, 0.055);
+  --cf-page-hero-radius: 28px;
+  --cf-page-hero-padding-y: 24px;
+  --cf-page-hero-padding-x: 24px;
 }
 
 .page-head,
@@ -91,5 +97,118 @@
   .cf-section-head-actions {
     justify-content: flex-start;
     width: 100%;
+  }
+}
+
+/* CLOSEFLOW_PAGE_HERO_VISUAL_PARITY_STAGE16A
+   One visual surface for top page hero/header cards, including TasksStable.
+*/
+:root {
+  --cf-page-hero-bg: #ffffff;
+  --cf-page-hero-border: #eef2f7;
+  --cf-page-hero-radius: 28px;
+  --cf-page-hero-padding-x: 26px;
+  --cf-page-hero-padding-y: 22px;
+  --cf-page-hero-shadow: 0 14px 36px rgba(15, 23, 42, 0.055);
+  --cf-page-hero-title-size: clamp(26px, 2.8vw, 34px);
+  --cf-page-hero-kicker-bg: #f8fafc;
+  --cf-page-hero-kicker-border: #e2e8f0;
+  --cf-page-hero-kicker-text: #475569;
+}
+
+.page-head,
+.cf-page-hero {
+  border: 1px solid var(--cf-page-hero-border) !important;
+  border-radius: var(--cf-page-hero-radius) !important;
+  background: var(--cf-page-hero-bg) !important;
+  box-shadow: var(--cf-page-hero-shadow) !important;
+  padding: var(--cf-page-hero-padding-y) var(--cf-page-hero-padding-x) !important;
+}
+
+.cf-page-hero-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 1024px) {
+  .cf-page-hero-layout {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.cf-page-hero-title,
+.page-head h1 {
+  color: var(--cf-page-head-title) !important;
+  font-size: var(--cf-page-hero-title-size) !important;
+  line-height: 1.05 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.035em !important;
+}
+
+.cf-page-hero-kicker,
+.page-head .kicker {
+  display: inline-flex !important;
+  width: fit-content !important;
+  align-items: center !important;
+  border: 1px solid var(--cf-page-hero-kicker-border) !important;
+  background: var(--cf-page-hero-kicker-bg) !important;
+  color: var(--cf-page-hero-kicker-text) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.035em !important;
+  text-transform: uppercase !important;
+}
+
+.cf-page-hero-actions,
+.head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--cf-page-head-action-gap);
+}
+
+@media (max-width: 720px) {
+  .page-head,
+  .cf-page-hero {
+    padding: 20px !important;
+  }
+
+  .cf-page-hero-actions,
+  .head-actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+/* STAGE16A_PAGE_HERO_VISUAL_PARITY: shared top page card / hero contract. */
+.cf-page-hero {
+  border: 1px solid var(--cf-page-hero-border) !important;
+  border-radius: var(--cf-page-hero-radius) !important;
+  background: var(--cf-page-hero-bg) !important;
+  box-shadow: var(--cf-page-hero-shadow) !important;
+  padding: var(--cf-page-hero-padding-y) var(--cf-page-hero-padding-x) !important;
+}
+
+.cf-page-hero .kicker,
+.cf-page-hero [class*="kicker"] {
+  color: var(--cf-page-head-kicker);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cf-page-hero h1 {
+  color: var(--cf-page-head-title);
+  line-height: 1.05;
+  font-weight: 900;
+}
+
+@media (max-width: 720px) {
+  .cf-page-hero {
+    padding: 20px !important;
   }
 }

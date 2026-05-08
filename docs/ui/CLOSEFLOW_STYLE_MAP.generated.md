@@ -1,6 +1,6 @@
 # CloseFlow Style Map — generated
 
-Generated: 2026-05-08T18:08:37.122Z
+Generated: 2026-05-08T18:30:11.361Z
 
 ## CSS variables
 - --font-sans: src/index.css:29
@@ -187,42 +187,75 @@ Generated: 2026-05-08T18:08:37.122Z
 - --cf-status-neutral-border: src/styles/closeflow-list-row-tokens.css:28
 - --cf-progress-track: src/styles/closeflow-list-row-tokens.css:29
 - --cf-progress-fill: src/styles/closeflow-list-row-tokens.css:30
-- --cf-metric-tile-radius: src/styles/closeflow-metric-tiles.css:8
-- --cf-metric-tile-border: src/styles/closeflow-metric-tiles.css:9
-- --cf-metric-tile-bg: src/styles/closeflow-metric-tiles.css:10
-- --cf-metric-tile-shadow: src/styles/closeflow-metric-tiles.css:11
-- --cf-metric-tile-shadow-hover: src/styles/closeflow-metric-tiles.css:12
-- --cf-metric-tile-label: src/styles/closeflow-metric-tiles.css:13
-- --cf-metric-tile-value: src/styles/closeflow-metric-tiles.css:14
-- --cf-metric-tile-helper: src/styles/closeflow-metric-tiles.css:15
-- --cf-metric-tile-icon-bg: src/styles/closeflow-metric-tiles.css:16
-- --cf-metric-tile-icon: src/styles/closeflow-metric-tiles.css:17
-- --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:18
-- --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:19
-- --cf-metric-tone-neutral-value: src/styles/closeflow-metric-tiles.css:20
-- --cf-metric-tone-neutral-icon-bg: src/styles/closeflow-metric-tiles.css:21
-- --cf-metric-tone-neutral-icon: src/styles/closeflow-metric-tiles.css:22
-- --cf-metric-tone-blue-value: src/styles/closeflow-metric-tiles.css:23
-- --cf-metric-tone-blue-icon-bg: src/styles/closeflow-metric-tiles.css:24
-- --cf-metric-tone-blue-icon: src/styles/closeflow-metric-tiles.css:25
-- --cf-metric-tone-amber-value: src/styles/closeflow-metric-tiles.css:26
-- --cf-metric-tone-amber-icon-bg: src/styles/closeflow-metric-tiles.css:27
-- --cf-metric-tone-amber-icon: src/styles/closeflow-metric-tiles.css:28
-- --cf-metric-tone-red-value: src/styles/closeflow-metric-tiles.css:29
-- --cf-metric-tone-red-icon-bg: src/styles/closeflow-metric-tiles.css:30
-- --cf-metric-tone-red-icon: src/styles/closeflow-metric-tiles.css:31
-- --cf-metric-tone-green-value: src/styles/closeflow-metric-tiles.css:32
-- --cf-metric-tone-green-icon-bg: src/styles/closeflow-metric-tiles.css:33
-- --cf-metric-tone-green-icon: src/styles/closeflow-metric-tiles.css:34
-- --cf-metric-tone-purple-value: src/styles/closeflow-metric-tiles.css:35
-- --cf-metric-tone-purple-icon-bg: src/styles/closeflow-metric-tiles.css:36
-- --cf-metric-tone-purple-icon: src/styles/closeflow-metric-tiles.css:37
-- --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:359
-- --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:360
+- --cf-metric-tile-radius: src/styles/closeflow-metric-tiles.css:9
+- --cf-metric-tile-border: src/styles/closeflow-metric-tiles.css:10
+- --cf-metric-tile-bg: src/styles/closeflow-metric-tiles.css:11
+- --cf-metric-tile-shadow: src/styles/closeflow-metric-tiles.css:12
+- --cf-metric-tile-shadow-hover: src/styles/closeflow-metric-tiles.css:13
+- --cf-metric-tile-label: src/styles/closeflow-metric-tiles.css:14
+- --cf-metric-tile-value: src/styles/closeflow-metric-tiles.css:15
+- --cf-metric-tile-helper: src/styles/closeflow-metric-tiles.css:16
+- --cf-metric-tile-icon-bg: src/styles/closeflow-metric-tiles.css:17
+- --cf-metric-tile-icon: src/styles/closeflow-metric-tiles.css:18
+- --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:19
+- --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:20
+- --cf-metric-tile-padding-y: src/styles/closeflow-metric-tiles.css:21
+- --cf-metric-tile-padding-x: src/styles/closeflow-metric-tiles.css:22
+- --cf-metric-tile-label-size: src/styles/closeflow-metric-tiles.css:23
+- --cf-metric-tile-value-size: src/styles/closeflow-metric-tiles.css:24
+- --cf-metric-tile-icon-size: src/styles/closeflow-metric-tiles.css:25
+- --cf-metric-tile-icon-radius: src/styles/closeflow-metric-tiles.css:26
+- --cf-metric-tile-icon-padding: src/styles/closeflow-metric-tiles.css:27
+- --cf-metric-tone-neutral-value: src/styles/closeflow-metric-tiles.css:28
+- --cf-metric-tone-neutral-icon-bg: src/styles/closeflow-metric-tiles.css:29
+- --cf-metric-tone-neutral-icon: src/styles/closeflow-metric-tiles.css:30
+- --cf-metric-tone-blue-value: src/styles/closeflow-metric-tiles.css:31
+- --cf-metric-tone-blue-icon-bg: src/styles/closeflow-metric-tiles.css:32
+- --cf-metric-tone-blue-icon: src/styles/closeflow-metric-tiles.css:33
+- --cf-metric-tone-amber-value: src/styles/closeflow-metric-tiles.css:34
+- --cf-metric-tone-amber-icon-bg: src/styles/closeflow-metric-tiles.css:35
+- --cf-metric-tone-amber-icon: src/styles/closeflow-metric-tiles.css:36
+- --cf-metric-tone-red-value: src/styles/closeflow-metric-tiles.css:37
+- --cf-metric-tone-red-icon-bg: src/styles/closeflow-metric-tiles.css:38
+- --cf-metric-tone-red-icon: src/styles/closeflow-metric-tiles.css:39
+- --cf-metric-tone-green-value: src/styles/closeflow-metric-tiles.css:40
+- --cf-metric-tone-green-icon-bg: src/styles/closeflow-metric-tiles.css:41
+- --cf-metric-tone-green-icon: src/styles/closeflow-metric-tiles.css:42
+- --cf-metric-tone-purple-value: src/styles/closeflow-metric-tiles.css:43
+- --cf-metric-tone-purple-icon-bg: src/styles/closeflow-metric-tiles.css:44
+- --cf-metric-tone-purple-icon: src/styles/closeflow-metric-tiles.css:45
+- --cf-metric-tile-min-height: src/styles/closeflow-metric-tiles.css:368
+- --cf-metric-tile-gap: src/styles/closeflow-metric-tiles.css:369
+- --cf-metric-tile-padding-x: src/styles/closeflow-metric-tiles.css:401
+- --cf-metric-tile-padding-y: src/styles/closeflow-metric-tiles.css:402
+- --cf-metric-tile-label-size: src/styles/closeflow-metric-tiles.css:403
+- --cf-metric-tile-label-line-height: src/styles/closeflow-metric-tiles.css:404
+- --cf-metric-tile-value-size: src/styles/closeflow-metric-tiles.css:405
+- --cf-metric-tile-icon-size: src/styles/closeflow-metric-tiles.css:406
+- --cf-metric-tile-icon-svg-size: src/styles/closeflow-metric-tiles.css:407
+- --cf-metric-tile-label-size: src/styles/closeflow-metric-tiles.css:481
+- --cf-metric-tile-value-size: src/styles/closeflow-metric-tiles.css:482
+- --cf-metric-tile-icon-size: src/styles/closeflow-metric-tiles.css:483
 - --cf-page-head-title: src/styles/closeflow-page-header.css:5
 - --cf-page-head-muted: src/styles/closeflow-page-header.css:6
 - --cf-page-head-kicker: src/styles/closeflow-page-header.css:7
 - --cf-page-head-action-gap: src/styles/closeflow-page-header.css:8
+- --cf-page-hero-bg: src/styles/closeflow-page-header.css:9
+- --cf-page-hero-border: src/styles/closeflow-page-header.css:10
+- --cf-page-hero-shadow: src/styles/closeflow-page-header.css:11
+- --cf-page-hero-radius: src/styles/closeflow-page-header.css:12
+- --cf-page-hero-padding-y: src/styles/closeflow-page-header.css:13
+- --cf-page-hero-padding-x: src/styles/closeflow-page-header.css:14
+- --cf-page-hero-bg: src/styles/closeflow-page-header.css:107
+- --cf-page-hero-border: src/styles/closeflow-page-header.css:108
+- --cf-page-hero-radius: src/styles/closeflow-page-header.css:109
+- --cf-page-hero-padding-x: src/styles/closeflow-page-header.css:110
+- --cf-page-hero-padding-y: src/styles/closeflow-page-header.css:111
+- --cf-page-hero-shadow: src/styles/closeflow-page-header.css:112
+- --cf-page-hero-title-size: src/styles/closeflow-page-header.css:113
+- --cf-page-hero-kicker-bg: src/styles/closeflow-page-header.css:114
+- --cf-page-hero-kicker-border: src/styles/closeflow-page-header.css:115
+- --cf-page-hero-kicker-text: src/styles/closeflow-page-header.css:116
 - --cf-surface-page: src/styles/closeflow-surface-tokens.css:2
 - --cf-surface-card: src/styles/closeflow-surface-tokens.css:3
 - --cf-surface-card-muted: src/styles/closeflow-surface-tokens.css:4
@@ -470,39 +503,6 @@ Generated: 2026-05-08T18:08:37.122Z
 - --cf17-amber: src/styles/visual-stage17-today-hard-1to1.css:25
 - --cf17-amber-soft: src/styles/visual-stage17-today-hard-1to1.css:26
 - --cf17-violet: src/styles/visual-stage17-today-hard-1to1.css:27
-- --cf17-violet-soft: src/styles/visual-stage17-today-hard-1to1.css:28
-- --cf17-shadow: src/styles/visual-stage17-today-hard-1to1.css:29
-- --cf17-shadow-soft: src/styles/visual-stage17-today-hard-1to1.css:30
-- --cf17-radius-xl: src/styles/visual-stage17-today-hard-1to1.css:31
-- --cf17-radius-lg: src/styles/visual-stage17-today-hard-1to1.css:32
-- --cf17-radius-md: src/styles/visual-stage17-today-hard-1to1.css:33
-- --cf18-bg: src/styles/visual-stage18-leads-hard-1to1.css:7
-- --cf18-bg-2: src/styles/visual-stage18-leads-hard-1to1.css:8
-- --cf18-sidebar: src/styles/visual-stage18-leads-hard-1to1.css:9
-- --cf18-card: src/styles/visual-stage18-leads-hard-1to1.css:10
-- --cf18-card-soft: src/styles/visual-stage18-leads-hard-1to1.css:11
-- --cf18-text: src/styles/visual-stage18-leads-hard-1to1.css:12
-- --cf18-muted: src/styles/visual-stage18-leads-hard-1to1.css:13
-- --cf18-muted-2: src/styles/visual-stage18-leads-hard-1to1.css:14
-- --cf18-line: src/styles/visual-stage18-leads-hard-1to1.css:15
-- --cf18-line-2: src/styles/visual-stage18-leads-hard-1to1.css:16
-- --cf18-blue: src/styles/visual-stage18-leads-hard-1to1.css:17
-- --cf18-blue-2: src/styles/visual-stage18-leads-hard-1to1.css:18
-- --cf18-blue-soft: src/styles/visual-stage18-leads-hard-1to1.css:19
-- --cf18-green: src/styles/visual-stage18-leads-hard-1to1.css:20
-- --cf18-green-soft: src/styles/visual-stage18-leads-hard-1to1.css:21
-- --cf18-red: src/styles/visual-stage18-leads-hard-1to1.css:22
-- --cf18-red-soft: src/styles/visual-stage18-leads-hard-1to1.css:23
-- --cf18-amber: src/styles/visual-stage18-leads-hard-1to1.css:24
-- --cf18-amber-soft: src/styles/visual-stage18-leads-hard-1to1.css:25
-- --cf18-violet: src/styles/visual-stage18-leads-hard-1to1.css:26
-- --cf18-violet-soft: src/styles/visual-stage18-leads-hard-1to1.css:27
-- --cf18-shadow: src/styles/visual-stage18-leads-hard-1to1.css:28
-- --cf18-shadow-soft: src/styles/visual-stage18-leads-hard-1to1.css:29
-- --cf18-radius-xl: src/styles/visual-stage18-leads-hard-1to1.css:30
-- --cf18-radius-lg: src/styles/visual-stage18-leads-hard-1to1.css:31
-- --cf18-radius-md: src/styles/visual-stage18-leads-hard-1to1.css:32
-- --cf-blue: src/styles/visual-stage18-leads-hard-1to1.css:46
 
 ## Danger/red local classes
 - bg-red-100: src/components/ErrorBoundary.tsx:32
@@ -659,6 +659,7 @@ Generated: 2026-05-08T18:08:37.122Z
 - src/server/payments.ts
 - src/server/records.ts
 - src/styles/admin-tools.css
+- src/styles/closeflow-metric-tiles.css
 - src/styles/closeflow-vnext-ui-contract.css
 - src/styles/eliteflow-admin-feedback-p1-hotfix.css
 - src/styles/eliteflow-metric-text-clip-tasks-repair.css

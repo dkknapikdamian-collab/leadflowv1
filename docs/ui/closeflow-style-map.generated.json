@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T18:08:37.122Z",
+  "generatedAt": "2026-05-08T18:30:11.361Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -924,162 +924,247 @@
     {
       "name": "--cf-metric-tile-radius",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 8
+      "line": 9
     },
     {
       "name": "--cf-metric-tile-border",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 9
+      "line": 10
     },
     {
       "name": "--cf-metric-tile-bg",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 10
+      "line": 11
     },
     {
       "name": "--cf-metric-tile-shadow",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 11
+      "line": 12
     },
     {
       "name": "--cf-metric-tile-shadow-hover",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 12
+      "line": 13
     },
     {
       "name": "--cf-metric-tile-label",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 13
+      "line": 14
     },
     {
       "name": "--cf-metric-tile-value",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 14
+      "line": 15
     },
     {
       "name": "--cf-metric-tile-helper",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 15
+      "line": 16
     },
     {
       "name": "--cf-metric-tile-icon-bg",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 16
+      "line": 17
     },
     {
       "name": "--cf-metric-tile-icon",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 17
-    },
-    {
-      "name": "--cf-metric-tile-min-height",
-      "file": "src/styles/closeflow-metric-tiles.css",
       "line": 18
     },
     {
-      "name": "--cf-metric-tile-gap",
+      "name": "--cf-metric-tile-min-height",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 19
     },
     {
-      "name": "--cf-metric-tone-neutral-value",
+      "name": "--cf-metric-tile-gap",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 20
     },
     {
-      "name": "--cf-metric-tone-neutral-icon-bg",
+      "name": "--cf-metric-tile-padding-y",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 21
     },
     {
-      "name": "--cf-metric-tone-neutral-icon",
+      "name": "--cf-metric-tile-padding-x",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 22
     },
     {
-      "name": "--cf-metric-tone-blue-value",
+      "name": "--cf-metric-tile-label-size",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 23
     },
     {
-      "name": "--cf-metric-tone-blue-icon-bg",
+      "name": "--cf-metric-tile-value-size",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 24
     },
     {
-      "name": "--cf-metric-tone-blue-icon",
+      "name": "--cf-metric-tile-icon-size",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 25
     },
     {
-      "name": "--cf-metric-tone-amber-value",
+      "name": "--cf-metric-tile-icon-radius",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 26
     },
     {
-      "name": "--cf-metric-tone-amber-icon-bg",
+      "name": "--cf-metric-tile-icon-padding",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 27
     },
     {
-      "name": "--cf-metric-tone-amber-icon",
+      "name": "--cf-metric-tone-neutral-value",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 28
     },
     {
-      "name": "--cf-metric-tone-red-value",
+      "name": "--cf-metric-tone-neutral-icon-bg",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 29
     },
     {
-      "name": "--cf-metric-tone-red-icon-bg",
+      "name": "--cf-metric-tone-neutral-icon",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 30
     },
     {
-      "name": "--cf-metric-tone-red-icon",
+      "name": "--cf-metric-tone-blue-value",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 31
     },
     {
-      "name": "--cf-metric-tone-green-value",
+      "name": "--cf-metric-tone-blue-icon-bg",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 32
     },
     {
-      "name": "--cf-metric-tone-green-icon-bg",
+      "name": "--cf-metric-tone-blue-icon",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 33
     },
     {
-      "name": "--cf-metric-tone-green-icon",
+      "name": "--cf-metric-tone-amber-value",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 34
     },
     {
-      "name": "--cf-metric-tone-purple-value",
+      "name": "--cf-metric-tone-amber-icon-bg",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 35
     },
     {
-      "name": "--cf-metric-tone-purple-icon-bg",
+      "name": "--cf-metric-tone-amber-icon",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 36
     },
     {
-      "name": "--cf-metric-tone-purple-icon",
+      "name": "--cf-metric-tone-red-value",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 37
     },
     {
+      "name": "--cf-metric-tone-red-icon-bg",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 38
+    },
+    {
+      "name": "--cf-metric-tone-red-icon",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 39
+    },
+    {
+      "name": "--cf-metric-tone-green-value",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 40
+    },
+    {
+      "name": "--cf-metric-tone-green-icon-bg",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 41
+    },
+    {
+      "name": "--cf-metric-tone-green-icon",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 42
+    },
+    {
+      "name": "--cf-metric-tone-purple-value",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 43
+    },
+    {
+      "name": "--cf-metric-tone-purple-icon-bg",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 44
+    },
+    {
+      "name": "--cf-metric-tone-purple-icon",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 45
+    },
+    {
       "name": "--cf-metric-tile-min-height",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 359
+      "line": 368
     },
     {
       "name": "--cf-metric-tile-gap",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 360
+      "line": 369
+    },
+    {
+      "name": "--cf-metric-tile-padding-x",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 401
+    },
+    {
+      "name": "--cf-metric-tile-padding-y",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 402
+    },
+    {
+      "name": "--cf-metric-tile-label-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 403
+    },
+    {
+      "name": "--cf-metric-tile-label-line-height",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 404
+    },
+    {
+      "name": "--cf-metric-tile-value-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 405
+    },
+    {
+      "name": "--cf-metric-tile-icon-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 406
+    },
+    {
+      "name": "--cf-metric-tile-icon-svg-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 407
+    },
+    {
+      "name": "--cf-metric-tile-label-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 481
+    },
+    {
+      "name": "--cf-metric-tile-value-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 482
+    },
+    {
+      "name": "--cf-metric-tile-icon-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 483
     },
     {
       "name": "--cf-page-head-title",
@@ -1100,6 +1185,86 @@
       "name": "--cf-page-head-action-gap",
       "file": "src/styles/closeflow-page-header.css",
       "line": 8
+    },
+    {
+      "name": "--cf-page-hero-bg",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 9
+    },
+    {
+      "name": "--cf-page-hero-border",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 10
+    },
+    {
+      "name": "--cf-page-hero-shadow",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 11
+    },
+    {
+      "name": "--cf-page-hero-radius",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 12
+    },
+    {
+      "name": "--cf-page-hero-padding-y",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 13
+    },
+    {
+      "name": "--cf-page-hero-padding-x",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 14
+    },
+    {
+      "name": "--cf-page-hero-bg",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 107
+    },
+    {
+      "name": "--cf-page-hero-border",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 108
+    },
+    {
+      "name": "--cf-page-hero-radius",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 109
+    },
+    {
+      "name": "--cf-page-hero-padding-x",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 110
+    },
+    {
+      "name": "--cf-page-hero-padding-y",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 111
+    },
+    {
+      "name": "--cf-page-hero-shadow",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 112
+    },
+    {
+      "name": "--cf-page-hero-title-size",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 113
+    },
+    {
+      "name": "--cf-page-hero-kicker-bg",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 114
+    },
+    {
+      "name": "--cf-page-hero-kicker-border",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 115
+    },
+    {
+      "name": "--cf-page-hero-kicker-text",
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 116
     },
     {
       "name": "--cf-surface-page",
@@ -3788,6 +3953,9 @@
       "file": "src/styles/admin-tools.css"
     },
     {
+      "file": "src/styles/closeflow-metric-tiles.css"
+    },
+    {
       "file": "src/styles/closeflow-vnext-ui-contract.css"
     },
     {
@@ -4029,162 +4197,247 @@
     {
       "name": "--cf-metric-tile-radius",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 8
+      "line": 9
     },
     {
       "name": "--cf-metric-tile-border",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 9
+      "line": 10
     },
     {
       "name": "--cf-metric-tile-bg",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 10
+      "line": 11
     },
     {
       "name": "--cf-metric-tile-shadow",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 11
+      "line": 12
     },
     {
       "name": "--cf-metric-tile-shadow-hover",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 12
+      "line": 13
     },
     {
       "name": "--cf-metric-tile-label",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 13
+      "line": 14
     },
     {
       "name": "--cf-metric-tile-value",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 14
+      "line": 15
     },
     {
       "name": "--cf-metric-tile-helper",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 15
+      "line": 16
     },
     {
       "name": "--cf-metric-tile-icon-bg",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 16
+      "line": 17
     },
     {
       "name": "--cf-metric-tile-icon",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 17
-    },
-    {
-      "name": "--cf-metric-tile-min-height",
-      "file": "src/styles/closeflow-metric-tiles.css",
       "line": 18
     },
     {
-      "name": "--cf-metric-tile-gap",
+      "name": "--cf-metric-tile-min-height",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 19
     },
     {
-      "name": "--cf-metric-tone-neutral-value",
+      "name": "--cf-metric-tile-gap",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 20
     },
     {
-      "name": "--cf-metric-tone-neutral-icon-bg",
+      "name": "--cf-metric-tile-padding-y",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 21
     },
     {
-      "name": "--cf-metric-tone-neutral-icon",
+      "name": "--cf-metric-tile-padding-x",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 22
     },
     {
-      "name": "--cf-metric-tone-blue-value",
+      "name": "--cf-metric-tile-label-size",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 23
     },
     {
-      "name": "--cf-metric-tone-blue-icon-bg",
+      "name": "--cf-metric-tile-value-size",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 24
     },
     {
-      "name": "--cf-metric-tone-blue-icon",
+      "name": "--cf-metric-tile-icon-size",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 25
     },
     {
-      "name": "--cf-metric-tone-amber-value",
+      "name": "--cf-metric-tile-icon-radius",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 26
     },
     {
-      "name": "--cf-metric-tone-amber-icon-bg",
+      "name": "--cf-metric-tile-icon-padding",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 27
     },
     {
-      "name": "--cf-metric-tone-amber-icon",
+      "name": "--cf-metric-tone-neutral-value",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 28
     },
     {
-      "name": "--cf-metric-tone-red-value",
+      "name": "--cf-metric-tone-neutral-icon-bg",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 29
     },
     {
-      "name": "--cf-metric-tone-red-icon-bg",
+      "name": "--cf-metric-tone-neutral-icon",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 30
     },
     {
-      "name": "--cf-metric-tone-red-icon",
+      "name": "--cf-metric-tone-blue-value",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 31
     },
     {
-      "name": "--cf-metric-tone-green-value",
+      "name": "--cf-metric-tone-blue-icon-bg",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 32
     },
     {
-      "name": "--cf-metric-tone-green-icon-bg",
+      "name": "--cf-metric-tone-blue-icon",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 33
     },
     {
-      "name": "--cf-metric-tone-green-icon",
+      "name": "--cf-metric-tone-amber-value",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 34
     },
     {
-      "name": "--cf-metric-tone-purple-value",
+      "name": "--cf-metric-tone-amber-icon-bg",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 35
     },
     {
-      "name": "--cf-metric-tone-purple-icon-bg",
+      "name": "--cf-metric-tone-amber-icon",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 36
     },
     {
-      "name": "--cf-metric-tone-purple-icon",
+      "name": "--cf-metric-tone-red-value",
       "file": "src/styles/closeflow-metric-tiles.css",
       "line": 37
     },
     {
+      "name": "--cf-metric-tone-red-icon-bg",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 38
+    },
+    {
+      "name": "--cf-metric-tone-red-icon",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 39
+    },
+    {
+      "name": "--cf-metric-tone-green-value",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 40
+    },
+    {
+      "name": "--cf-metric-tone-green-icon-bg",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 41
+    },
+    {
+      "name": "--cf-metric-tone-green-icon",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 42
+    },
+    {
+      "name": "--cf-metric-tone-purple-value",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 43
+    },
+    {
+      "name": "--cf-metric-tone-purple-icon-bg",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 44
+    },
+    {
+      "name": "--cf-metric-tone-purple-icon",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 45
+    },
+    {
       "name": "--cf-metric-tile-min-height",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 359
+      "line": 368
     },
     {
       "name": "--cf-metric-tile-gap",
       "file": "src/styles/closeflow-metric-tiles.css",
-      "line": 360
+      "line": 369
+    },
+    {
+      "name": "--cf-metric-tile-padding-x",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 401
+    },
+    {
+      "name": "--cf-metric-tile-padding-y",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 402
+    },
+    {
+      "name": "--cf-metric-tile-label-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 403
+    },
+    {
+      "name": "--cf-metric-tile-label-line-height",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 404
+    },
+    {
+      "name": "--cf-metric-tile-value-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 405
+    },
+    {
+      "name": "--cf-metric-tile-icon-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 406
+    },
+    {
+      "name": "--cf-metric-tile-icon-svg-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 407
+    },
+    {
+      "name": "--cf-metric-tile-label-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 481
+    },
+    {
+      "name": "--cf-metric-tile-value-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 482
+    },
+    {
+      "name": "--cf-metric-tile-icon-size",
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 483
     },
     {
       "name": "--cf-page-head-action-gap",

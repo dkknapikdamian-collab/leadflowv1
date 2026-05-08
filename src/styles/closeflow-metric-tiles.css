@@ -1,3 +1,4 @@
+/* STAGE16A_METRIC_VISUAL_PARITY_REPAIR: label/value/icon proportions are locked for all top metric tiles. */
 /* STAGE16AK_UNIFIED_TOP_METRIC_TILES_CSS */
 /* STAGE16AL_METRIC_TILE_ICONS_NEXT_TO_VALUE_CSS */
 /* ELITEFLOW_TODAY_METRIC_TILE_LOCK_2026_05_07
@@ -17,6 +18,13 @@
   --cf-metric-tile-icon: #64748b;
   --cf-metric-tile-min-height: 72px;
   --cf-metric-tile-gap: 18px;
+  --cf-metric-tile-padding-y: 16px;
+  --cf-metric-tile-padding-x: 18px;
+  --cf-metric-tile-label-size: 12px;
+  --cf-metric-tile-value-size: 28px;
+  --cf-metric-tile-icon-size: 38px;
+  --cf-metric-tile-icon-radius: 16px;
+  --cf-metric-tile-icon-padding: 10px;
   --cf-metric-tone-neutral-value: #0f172a;
   --cf-metric-tone-neutral-icon-bg: #f1f5f9;
   --cf-metric-tone-neutral-icon: #475569;
@@ -51,7 +59,7 @@
   align-items: center !important;
   justify-content: space-between !important;
   gap: 16px !important;
-  padding: 16px 18px !important;
+  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
   border: 1px solid var(--cf-metric-tile-border) !important;
   border-radius: var(--cf-metric-tile-radius) !important;
   background: var(--cf-metric-tile-bg) !important;
@@ -92,20 +100,24 @@
   display: block;
   margin: 0 !important;
   color: var(--cf-metric-tile-label) !important;
-  font-size: 13px !important;
+  font-size: var(--cf-metric-tile-label-size) !important;
   line-height: 1.18 !important;
   font-weight: 850 !important;
   letter-spacing: 0.025em !important;
   text-transform: uppercase !important;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  hyphens: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cf-top-metric-tile-value {
   display: block;
   min-width: 0;
   color: var(--cf-metric-tile-value) !important;
-  font-size: 28px !important;
+  font-size: var(--cf-metric-tile-value-size) !important;
   line-height: 1 !important;
   font-weight: 950 !important;
   letter-spacing: -0.045em !important;
@@ -123,16 +135,16 @@
 }
 
 .cf-top-metric-tile-icon {
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
+  width: var(--cf-metric-tile-icon-size) !important;
+  height: var(--cf-metric-tile-icon-size) !important;
+  min-width: var(--cf-metric-tile-icon-size) !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  border-radius: 16px !important;
+  border-radius: var(--cf-metric-tile-icon-radius) !important;
   background-color: var(--cf-metric-tile-icon-bg) !important;
   color: var(--cf-metric-tile-icon) !important;
-  padding: 10px !important;
+  padding: var(--cf-metric-tile-icon-padding) !important;
 }
 
 .cf-top-metric-tile-icon svg,
@@ -228,13 +240,13 @@ main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid=
   align-items: stretch !important;
 }
 
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button {
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) {
   min-height: var(--cf-metric-tile-min-height) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   gap: 16px !important;
-  padding: 16px 18px !important;
+  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
   border: 1px solid var(--cf-metric-tile-border) !important;
   border-radius: var(--cf-metric-tile-radius) !important;
   background: var(--cf-metric-tile-bg) !important;
@@ -244,19 +256,19 @@ main[data-p0-tasks-stable-rebuild="true"] > section.grid > button {
   transform: none !important;
 }
 
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:hover {
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile):hover {
   box-shadow: var(--cf-metric-tile-shadow-hover) !important;
   transform: translateY(-1px) !important;
 }
 
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button > div {
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) > div {
   display: contents !important;
 }
 
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:first-of-type {
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) p:first-of-type {
   margin: 0 !important;
   color: var(--cf-metric-tile-label) !important;
-  font-size: 13px !important;
+  font-size: var(--cf-metric-tile-label-size) !important;
   line-height: 1.18 !important;
   font-weight: 850 !important;
   letter-spacing: 0.025em !important;
@@ -264,10 +276,10 @@ main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:first-of-typ
   order: 1;
 }
 
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:last-of-type {
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) p:last-of-type {
   margin: 0 50px 0 auto !important;
   color: inherit !important;
-  font-size: 28px !important;
+  font-size: var(--cf-metric-tile-value-size) !important;
   line-height: 1 !important;
   font-weight: 950 !important;
   letter-spacing: -0.045em !important;
@@ -275,13 +287,13 @@ main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:last-of-type
   order: 2;
 }
 
-main[data-p0-tasks-stable-rebuild="true"] > section.grid > button svg {
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
-  border-radius: 16px !important;
+main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) svg {
+  width: var(--cf-metric-tile-icon-size) !important;
+  height: var(--cf-metric-tile-icon-size) !important;
+  min-width: var(--cf-metric-tile-icon-size) !important;
+  border-radius: var(--cf-metric-tile-icon-radius) !important;
   background: var(--cf-metric-tile-icon-bg) !important;
-  padding: 10px !important;
+  padding: var(--cf-metric-tile-icon-padding) !important;
   order: 3;
 }
 
@@ -293,7 +305,7 @@ main[data-p0-tasks-stable-rebuild="true"] > section.grid > button svg {
   align-items: center !important;
   justify-content: space-between !important;
   gap: 16px !important;
-  padding: 16px 18px !important;
+  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
   border: 1px solid var(--cf-metric-tile-border) !important;
   border-radius: var(--cf-metric-tile-radius) !important;
   background: var(--cf-metric-tile-bg) !important;
@@ -311,7 +323,7 @@ main[data-p0-tasks-stable-rebuild="true"] > section.grid > button svg {
 .cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(label, .label, .metric-label, .stat-label, span:first-child, p:first-child) {
   margin: 0 !important;
   color: var(--cf-metric-tile-label) !important;
-  font-size: 13px !important;
+  font-size: var(--cf-metric-tile-label-size) !important;
   line-height: 1.18 !important;
   font-weight: 850 !important;
   letter-spacing: 0.025em !important;
@@ -320,20 +332,20 @@ main[data-p0-tasks-stable-rebuild="true"] > section.grid > button svg {
 
 .cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(strong, .value, .metric-value, .stat-value) {
   color: var(--cf-metric-tile-value) !important;
-  font-size: 28px !important;
+  font-size: var(--cf-metric-tile-value-size) !important;
   line-height: 1 !important;
   font-weight: 950 !important;
   letter-spacing: -0.045em !important;
 }
 
 .cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(.metric-icon, .stat-icon, svg:last-child) {
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
-  border-radius: 16px !important;
+  width: var(--cf-metric-tile-icon-size) !important;
+  height: var(--cf-metric-tile-icon-size) !important;
+  min-width: var(--cf-metric-tile-icon-size) !important;
+  border-radius: var(--cf-metric-tile-icon-radius) !important;
   background-color: var(--cf-metric-tile-icon-bg) !important;
   color: var(--cf-metric-tile-icon) !important;
-  padding: 10px !important;
+  padding: var(--cf-metric-tile-icon-padding) !important;
 }
 
 @media (max-width: 1180px) {
@@ -349,10 +361,7 @@ main[data-p0-tasks-stable-rebuild="true"] > section.grid > button svg {
     .main-calendar-html,
     .cf-html-view[data-a16-template-light-ui="true"]
   ) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
-  main[data-p0-tasks-stable-rebuild="true"] > section.grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
-}
 
 @media (max-width: 640px) {
   :root {
@@ -372,18 +381,105 @@ main[data-p0-tasks-stable-rebuild="true"] > section.grid > button svg {
     .main-calendar-html,
     .cf-html-view[data-a16-template-light-ui="true"]
   ) :is(.grid-5, .grid-4, .grid-3, .stats-grid, .stat-grid, .metric-grid, .summary-grid),
-  main[data-p0-tasks-stable-rebuild="true"] > section.grid {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-
-  .cf-top-metric-tile-content,
-  main[data-p0-tasks-stable-rebuild="true"] > section.grid > button {
+    .cf-top-metric-tile-content,
+  main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) {
     padding: 14px 16px !important;
   }
 
   .cf-top-metric-tile-value,
-  main[data-p0-tasks-stable-rebuild="true"] > section.grid > button p:last-of-type,
+  main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile) p:last-of-type,
   .cf-html-view :is(.metric, .stat-card, .summary-card, .dashboard-stat-card):not(.cf-top-metric-tile-content) :is(strong, .value, .metric-value, .stat-value) {
     font-size: 25px !important;
+  }
+}
+
+/* CLOSEFLOW_METRIC_VISUAL_PARITY_STAGE16A
+   Final visual parity pass: one rhythm for StatShortcutCard tiles across Tasks, Cases, Leads,
+   Clients, AiDrafts and Activity. TasksStable must not be restyled by legacy button fallbacks.
+*/
+:root {
+  --cf-metric-tile-padding-x: 18px;
+  --cf-metric-tile-padding-y: 16px;
+  --cf-metric-tile-label-size: 12px;
+  --cf-metric-tile-label-line-height: 1.08;
+  --cf-metric-tile-value-size: 26px;
+  --cf-metric-tile-icon-size: 34px;
+  --cf-metric-tile-icon-svg-size: 15px;
+}
+
+.cf-top-metric-tile-content {
+  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
+}
+
+.cf-top-metric-tile-label {
+  max-width: 100% !important;
+  font-size: var(--cf-metric-tile-label-size) !important;
+  line-height: var(--cf-metric-tile-label-line-height) !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.cf-top-metric-tile-value {
+  font-size: var(--cf-metric-tile-value-size) !important;
+}
+
+.cf-top-metric-tile-icon {
+  width: var(--cf-metric-tile-icon-size) !important;
+  height: var(--cf-metric-tile-icon-size) !important;
+  min-width: var(--cf-metric-tile-icon-size) !important;
+  border-radius: 14px !important;
+  padding: 9px !important;
+}
+
+.cf-top-metric-tile-icon svg,
+.cf-top-metric-tile .metric-icon svg {
+  width: var(--cf-metric-tile-icon-svg-size) !important;
+  height: var(--cf-metric-tile-icon-svg-size) !important;
+}
+
+/* TasksStable uses StatShortcutCard; this override neutralizes older generic button fallbacks. */
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] {
+  min-height: 0 !important;
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--cf-metric-tile-radius) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  text-align: left !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] > .cf-top-metric-tile-content {
+  display: flex !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] .cf-top-metric-tile-left {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] .cf-top-metric-tile-value-row {
+  flex: 0 0 auto !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] .cf-top-metric-tile-value {
+  margin: 0 !important;
+  text-align: right !important;
+}
+
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] .cf-top-metric-tile-icon {
+  order: initial !important;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --cf-metric-tile-label-size: 12px;
+    --cf-metric-tile-value-size: 24px;
+    --cf-metric-tile-icon-size: 32px;
   }
 }

@@ -473,7 +473,7 @@ export default function TasksStable() {
   return (
     <Layout>
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-stage48="true" data-stage83-task-done-next-step-prompt="true">
-        <section className="rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
+        <section className="cf-page-hero rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <Badge className="mb-3 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-50">Zadania</Badge>
@@ -488,7 +488,7 @@ export default function TasksStable() {
           </div>
         </section>
 
-        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" data-eliteflow-task-stat-grid="true">
+        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" data-eliteflow-task-stat-grid="true" data-stage16a-metric-visual-parity="true">
           {statCards.map((card) => (
             <StatShortcutCard
               key={card.id}
