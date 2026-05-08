@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-08T17:38:25.834Z",
+  "generatedAt": "2026-05-08T18:04:27.478Z",
   "cssVariables": [
     {
       "name": "--font-sans",
@@ -3249,21 +3249,6 @@
       "line": 168
     },
     {
-      "className": "bg-rose-50",
-      "file": "src/pages/Activity.tsx",
-      "line": 714
-    },
-    {
-      "className": "text-rose-500",
-      "file": "src/pages/Activity.tsx",
-      "line": 714
-    },
-    {
-      "className": "text-rose-600",
-      "file": "src/pages/Activity.tsx",
-      "line": 714
-    },
-    {
       "className": "text-red-500",
       "file": "src/pages/ClientPortal.tsx",
       "line": 223
@@ -3312,21 +3297,6 @@
       "className": "bg-red-50",
       "file": "src/pages/Dashboard.tsx",
       "line": 228
-    },
-    {
-      "className": "bg-rose-50",
-      "file": "src/pages/NotificationsCenter.tsx",
-      "line": 650
-    },
-    {
-      "className": "text-rose-500",
-      "file": "src/pages/NotificationsCenter.tsx",
-      "line": 650
-    },
-    {
-      "className": "text-rose-600",
-      "file": "src/pages/NotificationsCenter.tsx",
-      "line": 650
     },
     {
       "className": "border-red-100",

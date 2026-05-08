@@ -711,7 +711,7 @@ export default function Activity() {
           <StatShortcutCard label="Leady" value={metrics.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} iconClassName="bg-indigo-50 text-indigo-500" />
           <StatShortcutCard label="Sprawy" value={metrics.cases} icon={Briefcase} active={activeFilter === 'case'} onClick={() => setActiveFilter('case')} iconClassName="bg-slate-100 text-slate-500" />
           <StatShortcutCard label="Zadania" value={metrics.tasks} icon={ListChecks} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} iconClassName="bg-emerald-50 text-emerald-500" valueClassName="text-emerald-600" />
-          <StatShortcutCard label="Wymaga uwagi" value={metrics.attention} icon={Bell} active={activeFilter === 'attention'} onClick={() => setActiveFilter('attention')} iconClassName="bg-rose-50 text-rose-500" valueClassName="text-rose-600" />
+          <StatShortcutCard label="Wymaga uwagi" value={metrics.attention} icon={Bell} active={activeFilter === 'attention'} onClick={() => setActiveFilter('attention')} tone="red" />
         </section>
 
         <div className="activity-vnext-shell">

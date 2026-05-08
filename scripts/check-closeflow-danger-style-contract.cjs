@@ -6,8 +6,10 @@ const src = path.join(root, 'src');
 const exts = new Set(['.tsx', '.ts', '.jsx', '.js']);
 const stage8DocPath = path.join(root, 'docs/ui/CLOSEFLOW_UI_CONTRACT_AUDIT_STAGE8_2026-05-08.md');
 const stage15DocPath = path.join(root, 'docs/ui/CLOSEFLOW_LEGACY_TODAY_ROUTE_STAGE15_2026-05-08.md');
+const stage16DocPath = path.join(root, 'docs/ui/CLOSEFLOW_ACTIVE_LEGACY_COLOR_STAGE16_2026-05-08.md');
 const STAGE8_DOCUMENTED_LEGACY_EXCEPTIONS = 'STAGE8_DOCUMENTED_LEGACY_EXCEPTIONS';
 const LEGACY_TODAY_TSX_INACTIVE_UI_SURFACE_STAGE15 = 'LEGACY_TODAY_TSX_INACTIVE_UI_SURFACE_STAGE15';
+const ACTIVE_LEGACY_COLOR_STAGE16 = 'CLOSEFLOW_ACTIVE_LEGACY_COLOR_STAGE16';
 
 function walk(dir, acc = []) {
   if (!fs.existsSync(dir)) return acc;
@@ -47,9 +49,15 @@ function isLegacyInactiveTodaySurface(file) {
 
 function categorizeFinding(file, className) {
   if (isLegacyInactiveTodaySurface(file)) return 'legacy inactive Today.tsx exception';
-  if (/AppChunkErrorBoundary|Dashboard/.test(file)) return 'real system alert/error';
-  if (/Activity|NotificationsCenter|Calendar|Today|TodayStable/.test(file)) return 'real system alert/error or schedule/status surface';
-  if (/TasksStable|Leads|Templates/.test(file)) return 'status/progress';
+  if (file === 'src/pages/Dashboard.tsx') return 'UI action color exception or alert/severity surface';
+  if (file === 'src/pages/Activity.tsx') return 'alert/severity or metric tile surface';
+  if (file === 'src/pages/NotificationsCenter.tsx') return 'alert/severity or notification status surface';
+  if (file === 'src/pages/Calendar.tsx') return 'status/progress or entity type color surface';
+  if (file === 'src/pages/Leads.tsx') return 'status/progress or entity action surface';
+  if (file === 'src/pages/TasksStable.tsx') return 'status/progress surface';
+  if (/AppChunkErrorBoundary/.test(file)) return 'real system alert/error';
+  if (/TodayStable/.test(file)) return 'real system alert/error or schedule/status surface';
+  if (/Templates/.test(file)) return 'status/progress';
   return 'unrelated legacy visual style do później';
 }
 
@@ -119,6 +127,8 @@ if (blockingFindings.length) {
 
 if (findings.length) {
   const hasStage8Doc = fs.existsSync(stage8DocPath) && fs.readFileSync(stage8DocPath, 'utf8').includes(STAGE8_DOCUMENTED_LEGACY_EXCEPTIONS);
+  const hasStage16Doc = fs.existsSync(stage16DocPath) && fs.readFileSync(stage16DocPath, 'utf8').includes(ACTIVE_LEGACY_COLOR_STAGE16);
+  if (hasStage16Doc) console.warn('AUDIT: Stage16 active legacy color classification document present.');
   if (!hasStage8Doc) {
     console.warn('AUDIT: legacy local danger/red classes still exist, but Stage8 exception document is missing or incomplete.');
   } else {
