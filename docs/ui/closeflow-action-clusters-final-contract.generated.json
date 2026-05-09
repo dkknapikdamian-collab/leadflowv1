@@ -1,0 +1,83 @@
+{
+  "stage": "VS-6",
+  "title": "Action clusters final contract",
+  "generatedAt": "2026-05-09T17:58:29.777Z",
+  "files": {
+    "actionCluster": "src/components/ui-system/ActionCluster.tsx",
+    "entityActions": "src/components/entity-actions.tsx",
+    "css": "src/styles/closeflow-action-clusters.css"
+  },
+  "status": "contract_finalized_runtime_wrappers_not_mass_migrated",
+  "regions": [
+    {
+      "region": "entity-header-action-cluster",
+      "occurrences": 6
+    },
+    {
+      "region": "activity-panel-header",
+      "occurrences": 5
+    },
+    {
+      "region": "note-panel-header",
+      "occurrences": 2
+    },
+    {
+      "region": "tasks-panel-header",
+      "occurrences": 3
+    },
+    {
+      "region": "work-items-panel-header",
+      "occurrences": 2
+    },
+    {
+      "region": "events-panel-header",
+      "occurrences": 3
+    },
+    {
+      "region": "calendar-panel-header",
+      "occurrences": 2
+    },
+    {
+      "region": "danger-action-zone",
+      "occurrences": 14
+    },
+    {
+      "region": "info-row-inline-action",
+      "occurrences": 4
+    }
+  ],
+  "classNames": [
+    {
+      "className": "cf-entity-action-cluster",
+      "occurrences": 9
+    },
+    {
+      "className": "cf-panel-header-actions",
+      "occurrences": 9
+    },
+    {
+      "className": "cf-panel-action-row",
+      "occurrences": 9
+    },
+    {
+      "className": "cf-danger-action-zone",
+      "occurrences": 9
+    },
+    {
+      "className": "cf-entity-action",
+      "occurrences": 21
+    },
+    {
+      "className": "cf-entity-icon-action",
+      "occurrences": 2
+    }
+  ],
+  "hasUiSystemActionCluster": true,
+  "hasLegacyWrapperMarkers": 4,
+  "hasCssMetadata": true,
+  "migrationPolicy": {
+    "massLegacyPageMigration": false,
+    "safeLayer": "component-css-check-contract",
+    "note": "VS-6 intentionally does not migrate Leads.tsx, Clients.tsx or Cases.tsx by regex."
+  }
+}

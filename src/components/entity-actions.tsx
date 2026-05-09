@@ -15,6 +15,13 @@ export type EntityActionRegion =
   | 'danger-action-zone'
   | 'info-row-inline-action';
 
+export const CLOSEFLOW_ACTION_CLUSTERS_FINAL_CONTRACT_VS6 = {
+  owner: 'src/components/entity-actions.tsx',
+  reason: 'one source of truth for action cluster spacing, wrap and region semantics',
+  scope: ['entity-header-action-cluster', 'panel-header-actions', 'panel-action-row', 'danger-action-zone'],
+  remove_after_stage: 'never - this is the permanent action cluster contract',
+} as const;
+
 export const ENTITY_DETAIL_ACTION_PLACEMENT_CONTRACT: Record<string, EntityActionRegion> = {
   editRecord: 'entity-header-action-cluster',
   addNote: 'activity-panel-header',
@@ -127,7 +134,7 @@ export function EntityActionCluster({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={entityActionClusterClass(className)} data-cf-action-region="entity-header-action-cluster" {...props} />;
+  return <div className={entityActionClusterClass(className)} data-cf-action-region="entity-header-action-cluster" data-standard-action-cluster="true" data-cf-action-cluster-contract="VS6" {...props} />;
 }
 
 export function PanelHeaderActions({
@@ -135,19 +142,19 @@ export function PanelHeaderActions({
   region = 'activity-panel-header',
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & { region?: Extract<EntityActionRegion, 'activity-panel-header' | 'note-panel-header' | 'tasks-panel-header' | 'work-items-panel-header' | 'events-panel-header' | 'calendar-panel-header'> }) {
-  return <div className={panelHeaderActionsClass(className)} data-cf-action-region={region} {...props} />;
+  return <div className={panelHeaderActionsClass(className)} data-cf-action-region={region} data-standard-action-cluster="true" data-cf-action-cluster-contract="VS6" {...props} />;
 }
 
 export function PanelActionRow({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={panelActionRowClass(className)} {...props} />;
+  return <div className={panelActionRowClass(className)} data-cf-action-region="info-row-inline-action" data-standard-action-cluster="true" data-cf-action-cluster-contract="VS6" {...props} />;
 }
 
 export function DangerActionZone({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={dangerActionZoneClass(className)} data-cf-action-region="danger-action-zone" {...props} />;
+  return <div className={dangerActionZoneClass(className)} data-cf-action-region="danger-action-zone" data-standard-action-cluster="true" data-cf-action-cluster-contract="VS6" {...props} />;
 }

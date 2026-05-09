@@ -52,3 +52,38 @@
     min-width: 0;
   }
 }
+
+/* CLOSEFLOW_ACTION_CLUSTERS_FINAL_CONTRACT_VS6_START
+   owner: ui-system
+   reason: one spacing/wrap source for entity/page action groups
+   scope: .cf-entity-action-cluster, .cf-panel-header-actions, .cf-panel-action-row, .cf-danger-action-zone
+   remove_after_stage: never - permanent design-system contract
+*/
+.cf-entity-action-cluster[data-standard-action-cluster="true"],
+.cf-panel-header-actions[data-standard-action-cluster="true"],
+.cf-panel-action-row[data-standard-action-cluster="true"],
+.cf-danger-action-zone[data-standard-action-cluster="true"] {
+  --cf-action-cluster-gap: 0.5rem;
+  gap: var(--cf-action-cluster-gap);
+}
+
+[data-cf-action-cluster-density="compact"] {
+  --cf-action-cluster-gap: 0.375rem;
+}
+
+.cf-entity-action-cluster[data-standard-action-cluster="true"] > .cf-entity-action,
+.cf-panel-header-actions[data-standard-action-cluster="true"] > .cf-entity-action,
+.cf-panel-action-row[data-standard-action-cluster="true"] > .cf-entity-action,
+.cf-danger-action-zone[data-standard-action-cluster="true"] > .cf-entity-action {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+  .cf-entity-action-cluster[data-standard-action-cluster="true"] > .cf-entity-action,
+  .cf-panel-header-actions[data-standard-action-cluster="true"] > .cf-entity-action,
+  .cf-panel-action-row[data-standard-action-cluster="true"] > .cf-entity-action,
+  .cf-danger-action-zone[data-standard-action-cluster="true"] > .cf-entity-action {
+    flex: 1 1 auto;
+  }
+}
+/* CLOSEFLOW_ACTION_CLUSTERS_FINAL_CONTRACT_VS6_END */
