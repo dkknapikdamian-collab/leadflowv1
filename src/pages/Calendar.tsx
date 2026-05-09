@@ -1,4 +1,6 @@
 import {
+  EntityIcon } from '../components/ui-system';
+import {
   useState,
   useEffect,
   FormEvent,
@@ -8,7 +10,8 @@ import {
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
-import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { consumeGlobalQuickAction,
+  subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionButtonClass as entityActionButtonClass } from '../components/entity-actions';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -16,9 +19,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
-  Bell,
+  NotificationEntityIcon,
   Repeat,
-  Sparkles,
   CheckSquare,
   Trash2
 } from 'lucide-react';
@@ -98,6 +100,8 @@ import {
 } from '../lib/supabase-fallback';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
+const NotificationEntityIcon = (props: { className?: string }) => <EntityIcon entity="notification" {...props} />;
+
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -1249,7 +1253,7 @@ export default function Calendar() {
                       </div>
           <div className="head-actions">
             <Link to="/ai-drafts" className="btn soft-blue">
-              <Sparkles className="h-4 w-4" /> Zapytaj AI
+              <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
             </Link>
             <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
               <DialogContent className="event-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>

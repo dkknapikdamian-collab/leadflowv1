@@ -1,16 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
+import {
+  AiEntityIcon,
+  TemplateEntityIcon } from '../components/ui-system';
+import {
+  useEffect,
+  useMemo,
+  useState } from 'react';
 import {
   AlertTriangle,
   CheckCircle2,
   Copy,
-  FileText,
   FolderKanban,
   MoreVertical,
   Plus,
   Search,
   ShieldAlert,
-  Sparkles,
-  Trash2,
+  Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -110,8 +114,8 @@ function LightMetricCardRow({
 }) {
   return (
     <section className="grid-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <StatShortcutCard label="Szablony" value={stats.totalTemplates} icon={Sparkles} iconClassName="bg-emerald-50 text-emerald-700" />
-      <StatShortcutCard label="Pozycje" value={stats.totalItems} icon={FileText} iconClassName="bg-indigo-50 text-indigo-700" />
+      <StatShortcutCard label="Szablony" value={stats.totalTemplates} icon={AiEntityIcon} iconClassName="bg-emerald-50 text-emerald-700" />
+      <StatShortcutCard label="Pozycje" value={stats.totalItems} icon={TemplateEntityIcon} iconClassName="bg-indigo-50 text-indigo-700" />
       <StatShortcutCard label="Obowiązkowe" value={stats.requiredItems} icon={AlertTriangle} iconClassName="bg-amber-50 text-amber-700" valueClassName="text-amber-600" />
       <StatShortcutCard label="Akceptacje" value={stats.decisionItems} icon={CheckCircle2} iconClassName="bg-emerald-50 text-emerald-700" valueClassName="text-emerald-600" />
     </section>

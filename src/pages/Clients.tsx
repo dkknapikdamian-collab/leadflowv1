@@ -1,7 +1,24 @@
+import {
+  CaseEntityIcon,
+  EntityIcon,
+  LeadEntityIcon,
+  PaymentEntityIcon } from '../components/ui-system';
 // CLOSEFLOW_CLIENT_CONFLICT_RESOLUTION_V1
-import { useCallback, useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type FormEvent,
+  type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, Briefcase, Loader2, Plus, RotateCcw, Search, Target, Trash2, UserRound, Wallet } from 'lucide-react';
+import { AlertTriangle,
+  Loader2,
+  Plus,
+  RotateCcw,
+  Search,
+  Trash2
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -549,7 +566,7 @@ export default function Clients() {
           <StatShortcutCard
             label="Aktywni"
             value={activeCount}
-            icon={Target}
+            icon={LeadEntityIcon}
             active={!showArchived}
             onClick={() => setShowArchived(false)}
             title="Pokaż aktywnych klientów"
@@ -560,7 +577,7 @@ export default function Clients() {
           <StatShortcutCard
             label="Bez sprawy"
             value={clientsWithoutCases}
-            icon={Briefcase}
+            icon={CaseEntityIcon}
             onClick={() => setShowArchived(false)}
             title="Pokaż klientów bez sprawy"
             ariaLabel="Pokaż klientów bez sprawy"
@@ -570,7 +587,7 @@ export default function Clients() {
           <StatShortcutCard
             label="Wartość"
             value={formatClientMoney(relationValue)}
-            icon={Wallet}
+            icon={PaymentEntityIcon}
             onClick={() => setShowArchived(false)}
             title="Pokaż wartość relacji"
             ariaLabel="Pokaż wartość relacji"
@@ -628,7 +645,7 @@ export default function Clients() {
                          <span className="lead-value-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
                          <span className="lead-action-cell"><span className="mini">Najbliższa zaplanowana akcja</span><strong>{nearestActionByClientId.get(client.id) || 'Brak zaplanowanych działań'}</strong></span>
                          <span className="lead-actions">
-                           <span className="btn ghost cf-icon-action-button" aria-hidden="true"><UserRound className="h-4 w-4" /></span>
+                           <span className="btn ghost cf-icon-action-button" aria-hidden="true"><EntityIcon entity="client" className="h-4 w-4" /></span>
                            <button
                              type="button"
                              aria-label={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
@@ -668,7 +685,7 @@ export default function Clients() {
                   return (
                     <Link key={client.id} to={`/clients/${client.id}`}>
                       <span><strong>{client.name || 'Klient'}</strong><small>Leady {counters.leads} · Sprawy {counters.cases}</small></span>
-                      <UserRound className="h-4 w-4" />
+                      <EntityIcon entity="client" className="h-4 w-4" />
                     </Link>
                   );
                 }) : <div className="note">Brak klientów wymagających natychmiastowej uwagi.</div>}

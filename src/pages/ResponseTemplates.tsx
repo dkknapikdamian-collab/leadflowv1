@@ -1,5 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Archive, Copy, MessageSquareText, Plus, Save, Search, ShieldAlert, Sparkles, Tags } from 'lucide-react';
+import {
+  AiEntityIcon } from '../components/ui-system';
+import {
+  useEffect,
+  useMemo,
+  useState } from 'react';
+import { Archive,
+  Copy,
+  MessageSquareText,
+  Plus,
+  Save,
+  Search,
+  ShieldAlert,
+  Tags
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -209,7 +222,7 @@ export default function ResponseTemplates() {
         </header>
 
         <section className="grid-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <StatShortcutCard label="Szablony" value={stats.total} icon={Sparkles} iconClassName="app-primary-chip" valueClassName="app-text" />
+          <StatShortcutCard label="Szablony" value={stats.total} icon={AiEntityIcon} iconClassName="app-primary-chip" valueClassName="app-text" />
           <StatShortcutCard label="Kategorie" value={stats.categories} icon={MessageSquareText} iconClassName="bg-indigo-500/12 text-indigo-600" valueClassName="app-text" />
           <StatShortcutCard label="Tagi" value={stats.tags} icon={Tags} iconClassName="bg-amber-500/12 text-amber-600" valueClassName="text-amber-600" />
           <StatShortcutCard label="Zmienne" value={stats.withVariables} icon={Copy} iconClassName="bg-emerald-500/12 text-emerald-600" valueClassName="text-emerald-600" />

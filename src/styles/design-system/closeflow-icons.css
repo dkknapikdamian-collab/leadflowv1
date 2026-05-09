@@ -1,0 +1,37 @@
+/* CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B */
+:root {
+  --cf-entity-icon-size-xs: 0.875rem;
+  --cf-entity-icon-size-sm: 1rem;
+  --cf-entity-icon-size-md: 1.25rem;
+  --cf-entity-icon-size-lg: 1.5rem;
+  --cf-entity-icon-client: var(--cf-icon-client, #2563eb);
+  --cf-entity-icon-lead: var(--cf-icon-lead, #7c3aed);
+  --cf-entity-icon-case: var(--cf-icon-case, #0f766e);
+  --cf-entity-icon-task: var(--cf-icon-task, #16a34a);
+  --cf-entity-icon-event: var(--cf-icon-event, #d97706);
+  --cf-entity-icon-activity: var(--cf-icon-activity, #475569);
+  --cf-entity-icon-payment: var(--cf-finance-paid, #059669);
+  --cf-entity-icon-commission: var(--cf-finance-commission, #9333ea);
+  --cf-entity-icon-ai: var(--cf-icon-ai, #7c3aed);
+  --cf-entity-icon-template: var(--cf-icon-template, #334155);
+  --cf-entity-icon-notification: var(--cf-status-warning, #d97706);
+}
+
+.cf-entity-icon {
+  width: var(--cf-entity-icon-size-sm);
+  height: var(--cf-entity-icon-size-sm);
+  flex: 0 0 auto;
+  stroke: currentColor;
+}
+
+.cf-entity-icon-client { color: var(--cf-entity-icon-client); }
+.cf-entity-icon-lead { color: var(--cf-entity-icon-lead); }
+.cf-entity-icon-case { color: var(--cf-entity-icon-case); }
+.cf-entity-icon-task { color: var(--cf-entity-icon-task); }
+.cf-entity-icon-event { color: var(--cf-entity-icon-event); }
+.cf-entity-icon-activity { color: var(--cf-entity-icon-activity); }
+.cf-entity-icon-payment { color: var(--cf-entity-icon-payment); }
+.cf-entity-icon-commission { color: var(--cf-entity-icon-commission); }
+.cf-entity-icon-ai { color: var(--cf-entity-icon-ai); }
+.cf-entity-icon-template { color: var(--cf-entity-icon-template); }
+.cf-entity-icon-notification { color: var(--cf-entity-icon-notification); }

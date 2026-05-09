@@ -1,19 +1,52 @@
+import {
+  EntityIcon } from '../components/ui-system';
 
 /* STAGE16O_SETTINGS_PLAN_VISIBILITY_STATIC_CONTRACTS
  * canUseGoogleCalendarByPlan = Boolean(isAdmin || isAppOwner || access?.features?.googleCalendar)
  * const loadGoogleCalendarStatus = async () => { if (!canUseGoogleCalendarByPlan) { DISABLED_BY_PLAN return; setCheckingGoogleCalendar(true)
- * useEffect(() => { if (!canUseGoogleCalendarByPlan) loadGoogleCalendarStatus() }, [workspace?.id, activeUserId, activeUserEmail, canUseGoogleCalendarByPlan])
+ * useEffect(() => { if (!canUseGoogleCalendarByPlan) loadGoogleCalendarStatus() },
+  [workspace?.id,
+  activeUserId,
+  activeUserEmail,
+  canUseGoogleCalendarByPlan])
  * <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-stage12="outbound-backfill"
  * <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06"
  * <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true"
  * canUseDigestByPlan = Boolean(isAdmin || isAppOwner || access?.features?.digest)
  * digestUiVisibleByPlan = DAILY_DIGEST_EMAIL_UI_VISIBLE && canUseDigestByPlan
  */
-import { useEffect, useMemo, useState } from 'react';
 import {
-  EmailAuthProvider, fetchSignInMethodsForEmail, linkWithCredential, reauthenticateWithCredential, sendPasswordResetEmail, signOut, verifyBeforeUpdateEmail, } from 'firebase/auth';
+  useEffect,
+  useMemo,
+  useState } from 'react';
 import {
-  Bell, Building2, CalendarDays, Database, KeyRound, LockKeyhole, LogOut, Mail, MonitorCog, RefreshCw, Save, Shield, SlidersHorizontal, Smartphone, User, Users, WalletCards, } from 'lucide-react';
+  EmailAuthProvider,
+  fetchSignInMethodsForEmail,
+  linkWithCredential,
+  reauthenticateWithCredential,
+  sendPasswordResetEmail,
+  signOut,
+  verifyBeforeUpdateEmail,
+  } from 'firebase/auth';
+import {
+  NotificationEntityIcon,
+  Building2,
+  CalendarDays,
+  Database,
+  KeyRound,
+  LockKeyhole,
+  LogOut,
+  Mail,
+  MonitorCog,
+  RefreshCw,
+  Save,
+  Shield,
+  SlidersHorizontal,
+  Smartphone,
+  User,
+  Users,
+  WalletCards
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -32,6 +65,8 @@ import { updateProfileSettingsInSupabase, updateWorkspaceSettingsInSupabase } fr
 import { GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS } from '../lib/options';
 import { getGoogleCalendarReminderPreference, setGoogleCalendarReminderPreference } from '../lib/google-calendar-reminder-preferences';
 import '../styles/visual-stage19-settings-vnext.css';
+
+const NotificationEntityIcon = (props: { className?: string }) => <EntityIcon entity="notification" {...props} />;
 
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
 const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
@@ -902,7 +937,7 @@ useEffect(() => {
             <section className="settings-section-card">
               <div className="settings-section-head">
                 <div>
-                  <span><Bell className="h-4 w-4" /> Powiadomienia</span>
+                  <span><EntityIcon entity="notification" className="h-4 w-4" /> Powiadomienia</span>
                   <h2>Powiadomienia</h2>
                   <p>Ustawienia in-app, browser i digest, jeśli backend je obsługuje.</p>
                 </div>

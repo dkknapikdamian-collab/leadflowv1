@@ -1,3 +1,6 @@
+import {
+  EntityIcon,
+  TaskEntityIcon } from '../components/ui-system';
 ﻿/*
 LEGACY_TODAY_TSX_INACTIVE_UI_SURFACE_STAGE15
 Stage15 decision: this file is retained as an inactive legacy UI surface. Active / and /today route through TodayStable in src/App.tsx. Do not refactor this file inside active UI cleanup stages.
@@ -28,11 +31,13 @@ TODAY_FUNNEL_DEDUP_VALUE_STAGE11
 function buildTodayDedupedFunnelSummary
 todayPipelineClientAmount
 todayPipelineBuildPersonKey
-Math.max(existing.amount, amount)
+Math.max(existing.amount,
+  amount)
 <TodayFunnelDedupValueCard leads={leads} clients={clients} />
 */
 // TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97
-// STAGE30A_TODAY_GUARD_COMPAT: marker only. Global actions stay in Layout, not rendered locally in Today.
+// STAGE30A_TODAY_GUARD_COMPAT: marker only. Global actions stay in Layout,
+  not rendered locally in Today.
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1
 /*
 AI_DRAFTS_IN_TODAY_STAGE04
@@ -46,11 +51,18 @@ TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
 Dziś pokazuje mały dolny kafelek Szkice z liczbą niezatwierdzonych szkiców AI. Bez dużej sekcji i bez ingerencji w zwijane listy.
 */
 
-import { useState, useEffect, FormEvent, ReactNode, useMemo, useRef } from 'react';
+import {
+  useState,
+  useEffect,
+  FormEvent,
+  ReactNode,
+  useMemo,
+  useRef } from 'react';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import Layout from '../components/Layout';
-import { Card, CardContent } from '../components/ui/card';
+import { Card,
+  CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
@@ -60,14 +72,11 @@ import {
   ArrowRight,
   TrendingUp,
   Loader2,
-  Bell,
   Repeat,
   Clock,
   ChevronDown,
   ChevronUp,
-  ListTodo,
-  ShieldAlert,
-  Briefcase,
+  ShieldAlert
 } from 'lucide-react';
 import {
   format,
@@ -2323,7 +2332,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       value: todayDecisionSections.find((section) => section.key === 'no_action')?.count || 0,
       tone: 'text-amber-600',
       bg: 'bg-amber-50',
-      icon: ListTodo,
+      icon: TaskEntityIcon,
       sectionIds: ['today-section-no-step'],
     },
     {
@@ -2392,7 +2401,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                 <p className="mt-4 text-4xl font-black tracking-tight text-slate-950">{pendingTodayAiDraftCount}</p>
               </div>
               <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-violet-200 bg-violet-50 text-violet-700">
-                <ListTodo className="h-6 w-6" />
+                <EntityIcon entity="task" className="h-6 w-6" />
               </span>
             </div>
           </button>
@@ -2408,7 +2417,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                 <p className="mt-4 text-4xl font-black tracking-tight text-slate-950">{readyToStartLeads.length + activeServiceLeads.length + blockedCases.length}</p>
               </div>
               <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700">
-                <Briefcase className="h-6 w-6" />
+                <EntityIcon entity="case" className="h-6 w-6" />
               </span>
             </div>
           </button>
@@ -2570,7 +2579,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                                     <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>
                                   ) : null}
                                   {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' ? (
-                                    <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>
+                                    <Badge variant="outline" className="text-[10px] uppercase"><EntityIcon entity="notification" className="w-3 h-3 mr-1" /> Przypomnienie</Badge>
                                   ) : null}
                                   {isCompleted ? (
                                     <Badge className="bg-slate-200 text-slate-700 hover:bg-slate-200 text-[10px] uppercase">Wykonane</Badge>
@@ -2638,7 +2647,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                                     <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>
                                   ) : null}
                                   {entry.raw?.reminder?.mode && entry.raw.reminder.mode !== 'none' ? (
-                                    <Badge variant="outline" className="text-[10px] uppercase"><Bell className="w-3 h-3 mr-1" /> Przypomnienie</Badge>
+                                    <Badge variant="outline" className="text-[10px] uppercase"><EntityIcon entity="notification" className="w-3 h-3 mr-1" /> Przypomnienie</Badge>
                                   ) : null}
                                   {isCompleted ? (
                                     <Badge className="bg-slate-200 text-slate-700 hover:bg-slate-200 text-[10px] uppercase">Zrobione</Badge>
@@ -2761,7 +2770,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
             {(readyToStartLeads.length > 0 || activeServiceLeads.length > 0 || blockedCases.length > 0) && (
               <section id="today-section-service-transition" className="space-y-4">
                 <div className="flex items-center gap-2 text-violet-600">
-                  <Briefcase className="w-5 h-5" />
+                  <EntityIcon entity="case" className="w-5 h-5" />
                   <h2 className="text-lg font-bold">Start i obsługa</h2>
                 </div>
                 {readyToStartLeads.length > 0 ? (
@@ -2941,7 +2950,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                   <Badge variant="outline"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === previewEntry.raw.recurrence.mode)?.label}</Badge>
                 ) : null}
                 {previewEntry.raw?.reminder?.mode && previewEntry.raw.reminder.mode !== 'none' ? (
-                  <Badge variant="outline"><Bell className="w-3 h-3 mr-1" /> Przypomnienie aktywne</Badge>
+                  <Badge variant="outline"><EntityIcon entity="notification" className="w-3 h-3 mr-1" /> Przypomnienie aktywne</Badge>
                 ) : null}
               </div>
 

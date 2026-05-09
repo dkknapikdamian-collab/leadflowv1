@@ -8,3 +8,5 @@ export * from './PageHero';
 export * from './PageShell';
 export * from './StatusPill';
 export * from './SurfaceCard';
+export * from './EntityIcon';
+export * from './icon-registry';

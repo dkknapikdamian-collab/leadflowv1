@@ -1,7 +1,11 @@
+import {
+  EntityIcon } from '../components/ui-system';
 
 /* STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS
- * import { useWorkspace } from '../hooks/useWorkspace'
-const { hasAccess, access } = useWorkspace()
+ * import {
+  useWorkspace } from '../hooks/useWorkspace'
+const { hasAccess,
+  access } = useWorkspace()
  * caseDetailWriteAccessDenied = !hasAccess caseDetailAccessStatus = String(access?.status guardCaseDetailWriteAccess trial_expired
  * toast.error(reason + ' Nie mozna teraz '
  * handleCopyPortal guardCaseDetailWriteAccess handleAddItem guardCaseDetailWriteAccess handleItemStatusChange guardCaseDetailWriteAccess handleDeleteItem guardCaseDetailWriteAccess handleAddTask guardCaseDetailWriteAccess handleAddEvent guardCaseDetailWriteAccess handleAddNote guardCaseDetailWriteAccess
@@ -21,8 +25,12 @@ const { hasAccess, access } = useWorkspace()
 // LEAD_TO_CASE_FLOW_STAGE24_CASE_DETAIL
 // CASE_DETAIL_VISUAL_REBUILD_STAGE13
 import {
- useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+ useCallback,
+  useEffect,
+  useMemo,
+  useState } from 'react';
+import { useNavigate,
+  useParams } from 'react-router-dom';
 import {
   AlertCircle,
   ArrowLeft,
@@ -33,7 +41,6 @@ import {
   Clock,
   Copy,
   ExternalLink,
-  FileText,
   History,
   ListChecks,
   Loader2,
@@ -43,8 +50,7 @@ import {
   Send,
   StickyNote,
   Trash2,
-  UserRound,
-  X,
+  X
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -686,7 +692,7 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
 function WorkKindIcon({ kind }: { kind: WorkItem['kind'] }) {
   if (kind === 'task') return <ListChecks className="h-4 w-4" />;
   if (kind === 'event') return <CalendarClock className="h-4 w-4" />;
-  if (kind === 'missing') return <FileText className="h-4 w-4" />;
+  if (kind === 'missing') return <EntityIcon entity="template" className="h-4 w-4" />;
   return <History className="h-4 w-4" />;
 }
 function getWorkKindLabel(kind: WorkItem['kind']) {
@@ -1648,7 +1654,7 @@ export default function CaseDetail() {
 
             <section className="right-card case-detail-right-card">
               <div className="case-detail-card-title-row">
-                <UserRound className="h-4 w-4" />
+                <EntityIcon entity="client" className="h-4 w-4" />
                 <h2>Klient w tle</h2>
               </div>
               <p>{caseData.clientName || 'Brak klienta'}</p>
@@ -1796,7 +1802,7 @@ function CaseDetailV1CommandCenter({
   return (
     <section className="case-detail-command-center" data-testid="case-detail-v1-command-center">
       <div className="case-detail-card-title-row">
-        <FileText className="h-4 w-4" />
+        <EntityIcon entity="template" className="h-4 w-4" />
         <h2>Centrum dowodzenia sprawy V1</h2>
       </div>
 

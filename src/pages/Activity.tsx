@@ -1,22 +1,27 @@
+import {
+  CaseEntityIcon,
+  EntityIcon,
+  LeadEntityIcon,
+  NotificationEntityIcon,
+  TemplateEntityIcon } from '../components/ui-system';
 import Layout from '../components/Layout';
 import '../styles/visual-stage8-activity-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
-import { StatShortcutCard } from '../components/StatShortcutCard';
+import {
+  StatShortcutCard } from '../components/StatShortcutCard';
 import {
   ArrowUpRight,
-  Bell,
-  Briefcase,
+  CaseEntityIcon,
   CalendarClock,
   CheckCircle2,
   Clock,
-  FileText,
   Filter,
   Link2,
   ListChecks,
   Loader2,
   Search,
-  Target,
-  UserRound,
+  LeadEntityIcon,
+  ClientEntityIcon
 } from 'lucide-react';
 import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -28,6 +33,10 @@ import {
 } from '../lib/supabase-fallback';
 import { toast } from 'sonner';
 import { useWorkspace } from '../hooks/useWorkspace';
+
+const CaseEntityIcon = (props: { className?: string }) => <EntityIcon entity="case" {...props} />;
+const LeadEntityIcon = (props: { className?: string }) => <EntityIcon entity="lead" {...props} />;
+const ClientEntityIcon = (props: { className?: string }) => <EntityIcon entity="client" {...props} />;
 
 const sourceOptions = [
   { value: 'all', label: 'Wszystko' },
@@ -221,15 +230,15 @@ function getActivityPillLabel(activity: any) {
 function getActivityIcon(activity: any) {
   switch (getActivityEntity(activity)) {
     case 'lead':
-      return Target;
+      return LeadEntityIcon;
     case 'case':
-      return Briefcase;
+      return CaseEntityIcon;
     case 'task':
       return ListChecks;
     case 'event':
       return CalendarClock;
     case 'client':
-      return UserRound;
+      return ClientEntityIcon;
     default:
       return Clock;
   }
@@ -706,12 +715,12 @@ export default function Activity() {
         </header>
 
         <section className="activity-stats-grid" aria-label="Statystyki aktywności">
-          <StatShortcutCard label="Wszystkie" value={metrics.all} icon={FileText} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />
+          <StatShortcutCard label="Wszystkie" value={metrics.all} icon={TemplateEntityIcon} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />
           <StatShortcutCard label="Dzisiaj" value={metrics.today} icon={Clock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} iconClassName="bg-blue-50 text-blue-500" valueClassName="text-blue-600" />
-          <StatShortcutCard label="Leady" value={metrics.leads} icon={Target} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} iconClassName="bg-indigo-50 text-indigo-500" />
-          <StatShortcutCard label="Sprawy" value={metrics.cases} icon={Briefcase} active={activeFilter === 'case'} onClick={() => setActiveFilter('case')} iconClassName="bg-slate-100 text-slate-500" />
+          <StatShortcutCard label="Leady" value={metrics.leads} icon={LeadEntityIcon} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} iconClassName="bg-indigo-50 text-indigo-500" />
+          <StatShortcutCard label="Sprawy" value={metrics.cases} icon={CaseEntityIcon} active={activeFilter === 'case'} onClick={() => setActiveFilter('case')} iconClassName="bg-slate-100 text-slate-500" />
           <StatShortcutCard label="Zadania" value={metrics.tasks} icon={ListChecks} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} iconClassName="bg-emerald-50 text-emerald-500" valueClassName="text-emerald-600" />
-          <StatShortcutCard label="Wymaga uwagi" value={metrics.attention} icon={Bell} active={activeFilter === 'attention'} onClick={() => setActiveFilter('attention')} tone="red" />
+          <StatShortcutCard label="Wymaga uwagi" value={metrics.attention} icon={NotificationEntityIcon} active={activeFilter === 'attention'} onClick={() => setActiveFilter('attention')} tone="red" />
         </section>
 
         <div className="activity-vnext-shell">
@@ -792,7 +801,7 @@ export default function Activity() {
                 </div>
               ) : filteredActivities.length === 0 ? (
                 <div className="activity-empty-state">
-                  <FileText className="h-8 w-8" />
+                  <EntityIcon entity="template" className="h-8 w-8" />
                   <h2>Brak aktywności do pokazania.</h2>
                   <p>Gdy dodasz leady, zadania, wydarzenia albo sprawy, zobaczysz tu ostatnie ruchy.</p>
                 </div>
@@ -837,7 +846,7 @@ export default function Activity() {
 
             <section className="right-card activity-right-card">
               <div className="activity-right-card-head">
-                <Briefcase className="h-4 w-4" />
+                <EntityIcon entity="case" className="h-4 w-4" />
                 <h2>Ostatnie zmiany w sprawach</h2>
               </div>
               {recentCaseChanges.length ? (
@@ -859,7 +868,7 @@ export default function Activity() {
 
             <section className="right-card activity-right-card">
               <div className="activity-right-card-head">
-                <Target className="h-4 w-4" />
+                <EntityIcon entity="lead" className="h-4 w-4" />
                 <h2>Ostatnie zmiany w leadach</h2>
               </div>
               {recentLeadChanges.length ? (

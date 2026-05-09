@@ -1,3 +1,5 @@
+import {
+  EntityIcon } from '../components/ui-system';
 /*
 P0_TODAY_STABLE_REBUILD
 Stable Today screen reads the same Supabase API collections that Network diagnostics proved are working.
@@ -11,10 +13,12 @@ import {
   useState,
   type ReactNode
 } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link,
+  useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { EntityActionButton } from '../components/entity-actions';
-import { Card, CardContent } from '../components/ui/card';
+import { Card,
+  CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
@@ -24,13 +28,11 @@ import {
   ChevronDown,
   ChevronUp,
   CheckSquare,
-  FileText,
   Loader2,
   RefreshCcw,
   SlidersHorizontal,
   Trash2,
-  TrendingUp,
-  UserRound,
+  TrendingUp
 } from 'lucide-react';
 import {
   deleteEventFromSupabase,
@@ -919,12 +921,12 @@ export default function TodayStable() {
   }> = [
     { key: 'no_action', title: todaySectionLabels.no_action, count: noActionLeads.length, tone: 'cf-severity-text-warning', activeTone: 'cf-severity-hover-warning', icon: <AlertTriangle className="h-4 w-4" /> },
     { key: 'risk', title: todaySectionLabels.risk, count: highValueAtRiskRows.length, tone: 'cf-severity-text-error', activeTone: 'cf-severity-hover-error', icon: <TrendingUp className="h-4 w-4" /> },
-    { key: 'waiting', title: todaySectionLabels.waiting, count: waitingLeadRows.length, tone: 'text-orange-700', activeTone: 'hover:border-orange-200', icon: <UserRound className="h-4 w-4" /> },
-    { key: 'leads', title: todaySectionLabels.leads, count: operatorLeads.length, tone: 'text-blue-700', activeTone: 'hover:border-blue-200', icon: <UserRound className="h-4 w-4" /> },
+    { key: 'waiting', title: todaySectionLabels.waiting, count: waitingLeadRows.length, tone: 'text-orange-700', activeTone: 'hover:border-orange-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
+    { key: 'leads', title: todaySectionLabels.leads, count: operatorLeads.length, tone: 'text-blue-700', activeTone: 'hover:border-blue-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
     { key: 'tasks', title: todaySectionLabels.tasks, count: operatorTasks.length, tone: 'text-emerald-700', activeTone: 'hover:border-emerald-200', icon: <CheckSquare className="h-4 w-4" /> },
     { key: 'events', title: todaySectionLabels.events, count: todayEvents.length, tone: 'text-violet-700', activeTone: 'hover:border-violet-200', icon: <CalendarDays className="h-4 w-4" /> },
     { key: 'upcoming', title: todaySectionLabels.upcoming, count: upcomingRows.length, tone: 'text-slate-700', activeTone: 'hover:border-slate-300', icon: <CalendarDays className="h-4 w-4" /> },
-    { key: 'drafts', title: todaySectionLabels.drafts, count: pendingDrafts.length, tone: 'text-indigo-700', activeTone: 'hover:border-indigo-200', icon: <FileText className="h-4 w-4" /> },
+    { key: 'drafts', title: todaySectionLabels.drafts, count: pendingDrafts.length, tone: 'text-indigo-700', activeTone: 'hover:border-indigo-200', icon: <EntityIcon entity="template" className="h-4 w-4" /> },
   ];
 
   const visibleTodayTiles = todayTiles.filter((tile) => visibleTodaySectionSet.has(tile.key));
@@ -1148,7 +1150,7 @@ export default function TodayStable() {
           </StableCard>
 
           <StableCard>
-            <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<UserRound className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
+            <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
             <div hidden={isCollapsed('waiting')}>
             {waitingLeadRows.length ? waitingLeadRows.map(({ lead, risk, momentRaw }) => (
               <RowLink
@@ -1169,7 +1171,7 @@ export default function TodayStable() {
 
         <section className="grid gap-4 xl:grid-cols-2" hidden={!sectionVisible('leads') && !sectionVisible('tasks') && !sectionVisible('events') && !sectionVisible('drafts')}>
           <StableCard>
-            <SectionHeader title={todaySectionLabels.leads} count={operatorLeads.length} icon={<UserRound className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
+            <SectionHeader title={todaySectionLabels.leads} count={operatorLeads.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
             <div hidden={isCollapsed('leads')}>
             {operatorLeads.length ? operatorLeads.map(({ lead, momentRaw, risk }) => (
               <RowLink
@@ -1229,7 +1231,7 @@ export default function TodayStable() {
           </StableCard>
 
           <StableCard>
-            <SectionHeader title={todaySectionLabels.drafts} count={pendingDrafts.length} icon={<FileText className="h-5 w-5" />} tone="cf-severity:warning" collapsed={isCollapsed('drafts')} onToggle={() => toggleSectionCollapse('drafts')} />
+            <SectionHeader title={todaySectionLabels.drafts} count={pendingDrafts.length} icon={<EntityIcon entity="template" className="h-5 w-5" />} tone="cf-severity:warning" collapsed={isCollapsed('drafts')} onToggle={() => toggleSectionCollapse('drafts')} />
             <div hidden={isCollapsed('drafts')}>
             {pendingDrafts.length ? pendingDrafts.map((draft: any) => (
               <RowLink

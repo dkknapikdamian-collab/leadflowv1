@@ -1,8 +1,12 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import {
+  EntityIcon,
+  NotificationEntityIcon } from '../components/ui-system';
+﻿import {
+  useEffect,
+  useMemo,
+  useState } from 'react';
 import {
   ArrowUpRight,
-  Bell,
-  BellRing,
   CalendarClock,
   Check,
   CheckCircle2,
@@ -14,8 +18,7 @@ import {
   Search,
   Settings2,
   ShieldAlert,
-  Target,
-  Trash2,
+  Trash2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
@@ -293,8 +296,8 @@ function notificationRowSeverity(status: NotificationRowStatus): 'error' | 'warn
 function NotificationRowIcon({ kind }: { kind: NotificationRowKind }) {
   if (kind === 'task') return <CheckCircle2 className="h-4 w-4" />;
   if (kind === 'event') return <CalendarClock className="h-4 w-4" />;
-  if (kind === 'lead') return <Target className="h-4 w-4" />;
-  if (kind === 'ai_draft') return <BellRing className="h-4 w-4" />;
+  if (kind === 'lead') return <EntityIcon entity="lead" className="h-4 w-4" />;
+  if (kind === 'ai_draft') return <EntityIcon entity="notification" className="h-4 w-4" />;
   return <ShieldAlert className="h-4 w-4" />;
 }
 
@@ -627,7 +630,7 @@ export default function NotificationsCenter() {
           <div className="notifications-header-actions">
             {permission === 'default' ? (
               <button type="button" className="notifications-header-button notifications-header-button-primary" onClick={handleEnableBrowserNotifications}>
-                <Bell className="h-4 w-4" />
+                <EntityIcon entity="notification" className="h-4 w-4" />
                 Włącz powiadomienia
               </button>
             ) : null}
@@ -645,11 +648,11 @@ export default function NotificationsCenter() {
         </header>
 
         <section className="notifications-stats-grid" aria-label="Statystyki powiadomień">
-          <StatShortcutCard label="Wszystkie" value={metrics.all} icon={BellRing} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />
+          <StatShortcutCard label="Wszystkie" value={metrics.all} icon={NotificationEntityIcon} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />
           <StatShortcutCard label="Do reakcji" value={metrics.action} icon={ShieldAlert} active={activeFilter === 'action'} onClick={() => setActiveFilter('action')} iconClassName="bg-blue-50 text-blue-500" valueClassName="text-blue-600" />
           <StatShortcutCard label="Zaległe" value={metrics.overdue} icon={Clock3} active={activeFilter === 'overdue'} onClick={() => setActiveFilter('overdue')} tone="red" />
           <StatShortcutCard label="Dzisiaj" value={metrics.today} icon={CalendarClock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} iconClassName="bg-indigo-50 text-indigo-500" />
-          <StatShortcutCard label="Nadchodzące" value={metrics.upcoming} icon={Bell} active={activeFilter === 'upcoming'} onClick={() => setActiveFilter('upcoming')} iconClassName="bg-slate-100 text-slate-500" />
+          <StatShortcutCard label="Nadchodzące" value={metrics.upcoming} icon={NotificationEntityIcon} active={activeFilter === 'upcoming'} onClick={() => setActiveFilter('upcoming')} iconClassName="bg-slate-100 text-slate-500" />
           <StatShortcutCard label="Odłożone" value={metrics.snoozed} icon={RotateCcw} active={activeFilter === 'snoozed'} onClick={() => setActiveFilter('snoozed')} tone="amber" />
           <StatShortcutCard label="Przeczytane" value={metrics.read} icon={Check} active={activeFilter === 'read'} onClick={() => setActiveFilter('read')} iconClassName="bg-emerald-50 text-emerald-500" valueClassName="text-emerald-600" />
         </section>
@@ -692,13 +695,13 @@ export default function NotificationsCenter() {
 
               {loading ? (
                 <div className="notifications-empty-state">
-                  <Bell className="h-8 w-8" />
+                  <EntityIcon entity="notification" className="h-8 w-8" />
                   <h2>Ładowanie powiadomień...</h2>
                   <p>Sprawdzam zadania, wydarzenia i historię wysłanych alertów.</p>
                 </div>
               ) : filteredRows.length === 0 ? (
                 <div className="notifications-empty-state">
-                  <BellRing className="h-8 w-8" />
+                  <EntityIcon entity="notification" className="h-8 w-8" />
                   <h2>Brak powiadomień</h2>
                   <p>Gdy pojawią się zaległe zadania, terminy albo szkice do sprawdzenia, zobaczysz je tutaj.</p>
                   <div className="notifications-empty-actions">
@@ -727,7 +730,7 @@ export default function NotificationsCenter() {
           <aside className="notifications-right-rail" aria-label="Panel powiadomień">
             <section className="right-card notifications-right-card">
               <div className="notifications-right-card-head">
-                <Bell className="h-4 w-4" />
+                <EntityIcon entity="notification" className="h-4 w-4" />
                 <h2>Kanały</h2>
               </div>
               <div className="notifications-channel-card">

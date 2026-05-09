@@ -544,7 +544,8 @@
     "check:a2-duplicate-warning-ux-full": "node scripts/check-closeflow-duplicate-warning-ux-full.cjs",
     "check:closeflow-design-system-tokens": "node scripts/check-closeflow-design-system-tokens.cjs",
     "check:closeflow-component-registry": "node scripts/check-closeflow-component-registry.cjs",
-    "check:closeflow-duplicate-warning-ux-full": "node scripts/check-closeflow-duplicate-warning-ux-full.cjs"
+    "check:closeflow-duplicate-warning-ux-full": "node scripts/check-closeflow-duplicate-warning-ux-full.cjs",
+    "check:closeflow-entity-icon-registry": "node scripts/check-closeflow-entity-icon-registry.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

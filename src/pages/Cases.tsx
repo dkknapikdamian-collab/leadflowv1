@@ -1,6 +1,14 @@
 import {
- useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+  EntityIcon,
+  TemplateEntityIcon } from '../components/ui-system';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent } from 'react';
+import { Link,
+  useSearchParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import {
@@ -9,11 +17,9 @@ import {
   Clock,
   CheckCircle2,
   ExternalLink,
-  FileText,
   Search,
-  Sparkles,
   Trash2,
-  Plus,
+  Plus
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -492,7 +498,7 @@ export default function Cases() {
                       </div>
           <div className="head-actions">
             <Button type="button" variant="outline" className="btn soft-blue">
-              <Sparkles className="h-4 w-4" /> Zapytaj AI
+              <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
             </Button>
             <Dialog open={isCreateCaseOpen} onOpenChange={(open) => {
               setIsCreateCaseOpen(open);
@@ -658,7 +664,7 @@ export default function Cases() {
           <StatShortcutCard
             label="W realizacji"
             value={stats.total}
-            icon={FileText}
+            icon={TemplateEntityIcon}
             tone="blue"
             active={caseView === 'all'}
             onClick={() => setCaseView('all')}

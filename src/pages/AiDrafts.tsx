@@ -1,3 +1,7 @@
+import {
+  AiEntityIcon,
+  EntityIcon,
+  LeadEntityIcon } from '../components/ui-system';
 
 /* STAGE16O_AI_DRAFTS_STATIC_CONTRACTS
  * Centrum szkiców Notatka głosowa najpierw trafia tutaj Lead powstaje dopiero po kliknięciu
@@ -7,7 +11,10 @@
  * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
  */
 ﻿// AI_DRAFT_CONFIRM_RECORDS_STAGE25_PAGE
-import { useEffect, useMemo, useState } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState } from 'react';
 import {
   Archive,
   AlertTriangle,
@@ -15,14 +22,13 @@ import {
   CheckCircle2,
   Clock,
   Clipboard,
-  FileText,
+  TemplateEntityIcon,
   Loader2,
   Pencil,
   Search,
-  Sparkles,
-  Target,
+  LeadEntityIcon,
   Trash2,
-  XCircle,
+  XCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -61,6 +67,9 @@ import {
 import { buildAiDraftConfirmedParsedDraft, getAiDraftCreatedRecordId } from '../lib/ai-draft-confirm-records';
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
+
+const LeadEntityIcon = (props: { className?: string }) => <EntityIcon entity="lead" {...props} />;
+const TemplateEntityIcon = (props: { className?: string }) => <EntityIcon entity="template" {...props} />;
 
 type DraftFilter =
   | 'all'
@@ -148,8 +157,8 @@ function getDraftIcon(draft: AiLeadDraft) {
   const type = getDraftType(draft);
   if (type === 'task') return Clipboard;
   if (type === 'event') return CalendarClock;
-  if (type === 'note') return FileText;
-  return Target;
+  if (type === 'note') return TemplateEntityIcon;
+  return LeadEntityIcon;
 }
 
 function getDraftStatusKey(draft: AiLeadDraft): 'draft' | 'converted' | 'archived' | 'errors' {
@@ -1012,8 +1021,8 @@ function AiDraftsInner() {
         </header>
 
         <section className="ai-drafts-stats-grid" aria-label="Statystyki szkiców AI" data-ai-draft-stats="true">
-          <MetricCard label="Do sprawdzenia" value={stats.draft} icon={Sparkles} tone="drafts" active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} dataTab="draft" />
-          <MetricCard label="Leady" value={stats.leads} icon={Target} tone="active" active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} dataTab="lead" />
+          <MetricCard label="Do sprawdzenia" value={stats.draft} icon={AiEntityIcon} tone="drafts" active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} dataTab="draft" />
+          <MetricCard label="Leady" value={stats.leads} icon={LeadEntityIcon} tone="active" active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} dataTab="lead" />
           <MetricCard label="Zadania" value={stats.tasks} icon={Clipboard} tone="waiting" active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} dataTab="task" />
           <MetricCard label="Wydarzenia" value={stats.events} icon={CalendarClock} tone="blue" active={activeFilter === 'event'} onClick={() => setActiveFilter('event')} dataTab="event" />
           <MetricCard label="Błędy / niepełne" value={stats.errors} icon={AlertTriangle} tone="risk" active={activeFilter === 'errors'} onClick={() => setActiveFilter('errors')} dataTab="errors" />
@@ -1063,7 +1072,7 @@ function AiDraftsInner() {
                 </div>
               ) : filteredDrafts.length === 0 ? (
                 <div className="ai-drafts-empty-state">
-                  <Sparkles className="h-8 w-8" />
+                  <EntityIcon entity="ai" className="h-8 w-8" />
                   <h2>Brak szkiców do sprawdzenia</h2>
                   <p>Gdy asystent przygotuje lead, zadanie albo wydarzenie, zobaczysz je tutaj przed zapisem.</p>
                 </div>
@@ -1078,7 +1087,7 @@ function AiDraftsInner() {
           <aside className="ai-drafts-right-rail" aria-label="Skrót szkiców AI">
             <section className="right-card ai-drafts-right-card">
               <div className="ai-drafts-right-card-head">
-                <Sparkles className="h-4 w-4" />
+                <EntityIcon entity="ai" className="h-4 w-4" />
                 <h2>Szybkie filtry</h2>
               </div>
               <button type="button" onClick={() => setActiveFilter('draft')} className="ai-drafts-rail-button">

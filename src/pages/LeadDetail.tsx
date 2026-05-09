@@ -1,3 +1,8 @@
+import {
+  ClientEntityIcon,
+  EntityIcon,
+  LeadEntityIcon,
+  TemplateEntityIcon } from '../components/ui-system';
 // LEAD_TO_CASE_FLOW_STAGE24_LEAD_DETAIL
 /*
 LEAD_DETAIL_VISUAL_REBUILD_STAGE14
@@ -7,18 +12,22 @@ const A16_V2_VOICE_NOTE_AUTOSAVE_ALLOWED = 'voice-notes-may-autosave-after-dicta
 const A24_LEAD_TO_CASE_COPY_LOCK = 'Rozpocznij obsługę | Ten temat jest już w obsłudze | Otwórz sprawę';
 const STAGE84_LEAD_DETAIL_WORK_CENTER = 'Lead Detail pokazuje centrum pracy: ostatni ruch, dni bez ruchu, najblizsza akcja i powod ryzyka';
 const STAGE88_LEAD_DETAIL_ADMIN_FEEDBACK_HOTFIX = 'LeadDetail cleans noisy helper copy and protects right rail readability';
-import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode } from 'react';
+import { useNavigate,
+  useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   ArrowRight,
-  Briefcase,
-  Calendar,
   CheckCircle2,
   Clock,
   DollarSign,
   Edit2,
-  FileText,
   Loader2,
   Mail,
   MoreVertical,
@@ -26,10 +35,7 @@ import {
   MicOff,
   Phone,
   Plus,
-  Sparkles,
-  Target,
-  Trash2,
-  UserRound,
+  Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -809,7 +815,7 @@ useEffect(() => {
             <Phone className="h-4 w-4" /> Zaplanuj telefon / follow-up
           </LeadActionButton>
           <LeadActionButton onClick={handleCreateQuickEvent} disabled={!hasAccess}>
-            <Calendar className="h-4 w-4" /> Zaplanuj spotkanie
+            <EntityIcon entity="event" className="h-4 w-4" /> Zaplanuj spotkanie
           </LeadActionButton>
           <LeadActionButton onClick={() => handleUpdateStatus('contacted')} disabled={!hasAccess}>
             <CheckCircle2 className="h-4 w-4" /> Kontakt wykonany
@@ -821,18 +827,18 @@ useEffect(() => {
             <Clock className="h-4 w-4" /> Oznacz waiting
           </LeadActionButton>
           <LeadActionButton onClick={() => openLeadContextAction('note')} disabled={!hasAccess}>
-            <FileText className="h-4 w-4" /> Dopisz notatkę
+            <EntityIcon entity="template" className="h-4 w-4" /> Dopisz notatkę
           </LeadActionButton>
           {serviceCaseId ? (
             <LeadActionButton onClick={() => navigate(`/cases/${serviceCaseId}`)}>
-              <Briefcase className="h-4 w-4" /> Otwórz sprawę
+              <EntityIcon entity="case" className="h-4 w-4" /> Otwórz sprawę
             </LeadActionButton>
           ) : null}
         </div>
       ) : (
         <div className="lead-detail-work-actions lead-detail-work-actions-service">
           <LeadActionButton onClick={() => serviceCaseId && navigate(`/cases/${serviceCaseId}`)} disabled={!serviceCaseId}>
-            <Briefcase className="h-4 w-4" /> Otwórz sprawę
+            <EntityIcon entity="case" className="h-4 w-4" /> Otwórz sprawę
           </LeadActionButton>
           <span>{leadServiceLockedMessage}</span>
         </div>
@@ -1401,7 +1407,7 @@ useEffect(() => {
       <Layout>
         <main className="lead-detail-vnext-page">
           <section className="lead-detail-empty-card">
-            <Target className="h-8 w-8" />
+            <EntityIcon entity="lead" className="h-8 w-8" />
             <h1>Nie znaleziono leada</h1>
             <p>{loadError || 'Ten rekord mógł zostać usunięty albo nie należy do aktualnego workspace.'}</p>
             <Button type="button" variant="outline" onClick={() => navigate('/leads')}>
@@ -1438,12 +1444,12 @@ useEffect(() => {
           <div className="lead-detail-header-actions">
             {leadInService ? (
               <Button type="button" onClick={openCase} disabled={!serviceCaseId}>
-                <Briefcase className="h-4 w-4" />
+                <EntityIcon entity="case" className="h-4 w-4" />
                 Otwórz sprawę
               </Button>
             ) : (
               <Button type="button" onClick={() => setIsCreateCaseOpen(true)} disabled={!hasAccess}>
-                <Briefcase className="h-4 w-4" />
+                <EntityIcon entity="case" className="h-4 w-4" />
                 Rozpocznij obsługę
               </Button>
             )}
@@ -1494,7 +1500,7 @@ useEffect(() => {
                   <p>{sourceLabel(lead.source)} · {statusLabel(lead.status)}</p>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-amber">
-                  <div className="lead-detail-card-title-row"><Target className="h-4 w-4" /><h2>Aktywny lead</h2></div>
+                  <div className="lead-detail-card-title-row"><EntityIcon entity="lead" className="h-4 w-4" /><h2>Aktywny lead</h2></div>
                   <strong>{sortedLinkedTasks.length + sortedLinkedEvents.length}</strong>
                   <p>powiązane zadania i wydarzenia sprzedażowe.</p>
                 </article>
@@ -1509,11 +1515,11 @@ useEffect(() => {
                 </div>
               </div>
               <div className="lead-detail-contact-grid">
-                <InfoLine icon={UserRound} label="Osoba" value={String(lead.name || '-')} />
+                <InfoLine icon={ClientEntityIcon} label="Osoba" value={String(lead.name || '-')} />
                 <InfoLine icon={Phone} label="Telefon" value={String(lead.phone || '-')} />
                 <InfoLine icon={Mail} label="E-mail" value={String(lead.email || '-')} />
-                <InfoLine icon={FileText} label="Firma" value={String(lead.company || '-')} />
-                <InfoLine icon={Target} label="Zrodlo" value={sourceLabel(lead.source)} />
+                <InfoLine icon={TemplateEntityIcon} label="Firma" value={String(lead.company || '-')} />
+                <InfoLine icon={LeadEntityIcon} label="Zrodlo" value={sourceLabel(lead.source)} />
               </div>
               <div className="lead-detail-note-box">
                 <small>Notatka</small>
@@ -1536,7 +1542,7 @@ useEffect(() => {
                   ) : (
                     timeline.map((entry) => (
                       <article key={entry.id} className="lead-detail-work-row">
-                        <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <Calendar className="h-4 w-4" />}</span>
+                        <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                         <div>
                           <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}</small>
                           <h3>{entry.title}</h3>
@@ -1608,13 +1614,13 @@ useEffect(() => {
           {!leadInService ? (
           <aside className="lead-detail-right-rail" aria-label="Panel leada">
             <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><Target className="h-4 w-4" /><h2>Status leada</h2></div>
+              <div className="lead-detail-card-title-row"><EntityIcon entity="lead" className="h-4 w-4" /><h2>Status leada</h2></div>
               <span className={`lead-detail-pill ${statusClass(String(lead.status || 'new'))}`}>{statusLabel(String(lead.status || 'new'))}</span>
               <p>{leadInService ? 'Lead jest już źródłem historii. Pracuj dalej w sprawie.' : 'Lead aktywny. Możesz prowadzić kontakt sprzedażowy.'}</p>
             </section>
 
             <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><Briefcase className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
+              <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
               <p>{serviceCaseId ? serviceCaseTitle : 'Brak powiązanej sprawy'}</p>
               <small>{serviceCaseId ? serviceCaseStatusLabel : 'Po rozpoczęciu obsługi pojawi się tutaj link do sprawy.'}</small>
               {serviceCaseId ? <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button> : null}
@@ -1650,7 +1656,7 @@ useEffect(() => {
             </section>
 
             <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><Sparkles className="h-4 w-4" /><h2>AI wsparcie</h2></div>
+              <div className="lead-detail-card-title-row"><EntityIcon entity="ai" className="h-4 w-4" /><h2>AI wsparcie</h2></div>
               {workCenterPanel}
               <Tabs defaultValue="next-action">
                 <TabsList className="lead-detail-ai-tabs-list w-full">

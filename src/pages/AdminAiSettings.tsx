@@ -1,5 +1,14 @@
-import { useEffect, useState } from 'react';
-import { AlertTriangle, Bot, CheckCircle2, KeyRound, RefreshCw, ShieldCheck } from 'lucide-react';
+import {
+  EntityIcon } from '../components/ui-system';
+import {
+  useEffect,
+  useState } from 'react';
+import { AlertTriangle,
+  CheckCircle2,
+  KeyRound,
+  RefreshCw,
+  ShieldCheck
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
@@ -121,7 +130,7 @@ export default function AdminAiSettings() {
         <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
-              <Bot className="h-3.5 w-3.5" />
+              <EntityIcon entity="ai" className="h-3.5 w-3.5" />
               AI admin
             </div>
             <div>

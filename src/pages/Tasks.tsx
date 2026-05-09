@@ -1,3 +1,6 @@
+import {
+  NotificationEntityIcon,
+  TaskEntityIcon } from '../components/ui-system';
 /* STAGE69H_SOFT_NEXT_STEP_PACKAGE_FINAL */
 /*
 TASK_FORM_VISUAL_REBUILD_STAGE21_COMPAT_GUARD
@@ -29,10 +32,12 @@ import {
 import { auth } from '../firebase';
 import { useWorkspace } from '../hooks/useWorkspace';
 import Layout from '../components/Layout';
-import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { consumeGlobalQuickAction,
+  subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { actionButtonClass } from '../components/entity-actions';
-import { Card, CardContent } from '../components/ui/card';
+import { Card,
+  CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
@@ -43,10 +48,8 @@ import {
   MoreVertical,
   Trash2,
   Loader2,
-  Bell,
   Repeat,
   Link2,
-  ListTodo,
   CheckCircle2
 } from 'lucide-react';
 import {
@@ -974,7 +977,7 @@ await updateTaskInSupabase({
       title: 'Aktywne',
       value: taskStats.active,
       tone: 'neutral',
-      icon: ListTodo,
+      icon: TaskEntityIcon,
     },
     {
       id: 'today' as TaskScope,
@@ -988,7 +991,7 @@ await updateTaskInSupabase({
       title: 'Ten tydzień',
       value: taskStats.week,
       tone: 'blue',
-      icon: Bell,
+      icon: NotificationEntityIcon,
     },
     {
       id: 'overdue' as TaskScope,

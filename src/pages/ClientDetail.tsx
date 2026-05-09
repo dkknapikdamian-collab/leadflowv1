@@ -1,3 +1,6 @@
+import {
+  EntityIcon,
+  EventEntityIcon } from '../components/ui-system';
 /* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
 /* STAGE55_CLIENT_CASE_OPERATIONAL_PACK */
 /* STAGE54_CLIENT_CASES_COMPACT_FIT */
@@ -41,19 +44,23 @@ const CLIENT_DETAIL_HISTORY_GUARD_UTF8_1 = 'Lead źródłowy';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Przejdź do sprawy';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState } from 'react';
+import { Link,
+  useNavigate,
+  useParams } from 'react-router-dom';
 import {
   Activity,
   AlertTriangle,
   ArrowLeft,
-  Briefcase,
   Building2,
-  Calendar,
   CheckCircle2,
   Clock,
   Copy,
-  FileText,
   Loader2,
   Mail,
   Mic,
@@ -64,12 +71,7 @@ import {
   Phone,
   Plus,
   Save,
-  Sparkles,
-  Target,
-  Trash2,
-  UserRound,
-
-
+  Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -778,7 +780,7 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpe
 
       <article className="client-detail-top-tile entity-overview-tile entity-overview-tile-finance" data-client-top-tile="finance-summary">
         <div className="entity-overview-tile-head">
-          <span className="entity-overview-tile-icon"><FileText className="h-4 w-4" /></span>
+          <span className="entity-overview-tile-icon"><EntityIcon entity="template" className="h-4 w-4" /></span>
           <small>Podsumowanie finansów</small>
         </div>
         <strong>{formatMoneyWithCurrency(paidTotal)}</strong>
@@ -800,7 +802,7 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpe
 
       <article className="client-detail-top-tile entity-overview-tile entity-overview-tile-cases" data-client-top-tile="cases-summary">
         <div className="entity-overview-tile-head">
-          <span className="entity-overview-tile-icon"><Briefcase className="h-4 w-4" /></span>
+          <span className="entity-overview-tile-icon"><EntityIcon entity="case" className="h-4 w-4" /></span>
           <small>Sprawy</small>
         </div>
         <strong>{activeCases.length} aktywne / {cases.length} razem</strong>
@@ -1396,7 +1398,7 @@ export default function ClientDetail() {
       <Layout>
         <main className="client-detail-vnext-page">
           <section className="client-detail-empty-card">
-            <UserRound className="h-8 w-8" />
+            <EntityIcon entity="client" className="h-8 w-8" />
             <h1>Nie znaleziono klienta</h1>
             <p>Ten rekord mógł zostać usunięty albo nie należy do aktualnego workspace.</p>
             <Button type="button" onClick={() => navigate('/clients')} variant="outline">
@@ -1431,7 +1433,7 @@ export default function ClientDetail() {
             
             <Button type="button" variant="default" className="client-detail-header-action-soft" asChild>
               <Link to="/ai-drafts">
-                <Sparkles className="h-4 w-4" />
+                <EntityIcon entity="ai" className="h-4 w-4" />
                 Zapytaj AI
               </Link>
             </Button>
@@ -1440,7 +1442,7 @@ export default function ClientDetail() {
               Nowa sprawa dla klienta
             </Button>
             <Button type="button" className="client-detail-header-action-primary" onClick={openMainCase} disabled={!mainCase?.id}>
-              <Briefcase className="h-4 w-4" />
+              <EntityIcon entity="case" className="h-4 w-4" />
               Otwórz główną sprawę
             </Button>
           </div>
@@ -1460,7 +1462,7 @@ export default function ClientDetail() {
                       <section className="client-detail-today-info-tiles" data-client-left-management-tiles="true" data-client-today-style-info-tiles="true" aria-label="Informacje o kliencie">
               <article className={`client-detail-today-info-tile ${nextActionToneClass(clientNextAction.tone)}`} data-client-left-next-action-tile="true">
                 <div className="client-detail-today-info-tile-icon">
-                  <Target className="h-4 w-4" />
+                  <EntityIcon entity="lead" className="h-4 w-4" />
                 </div>
                 <div className="client-detail-today-info-tile-body">
                   <small>Najbliższa zaplanowana akcja</small>
@@ -1498,7 +1500,7 @@ export default function ClientDetail() {
                 return (
                   <article className="client-detail-today-info-tile client-detail-today-info-tile-finance" data-client-left-finance-tile="true">
                     <div className="client-detail-today-info-tile-icon">
-                      <Briefcase className="h-4 w-4" />
+                      <EntityIcon entity="case" className="h-4 w-4" />
                     </div>
                     <div className="client-detail-today-info-tile-body">
                       <small>Podsumowanie finansów</small>
@@ -1588,7 +1590,7 @@ export default function ClientDetail() {
                   <InfoRow icon={Phone} label="Telefon" value={client.phone || '-'} onCopy={() => copyValue('Telefon', client.phone)} />
                   <InfoRow icon={Mail} label="E-mail" value={client.email || '-'} onCopy={() => copyValue('E-mail', client.email)} />
                   <InfoRow icon={Building2} label="Firma" value={client.company || 'Brak firmy'} />
-                  <InfoRow icon={Calendar} label="Ostatni kontakt" value={formatDate(lastActivityDate)} />
+                  <InfoRow icon={EventEntityIcon} label="Ostatni kontakt" value={formatDate(lastActivityDate)} />
                 </div>
               )}
 
@@ -1596,7 +1598,7 @@ export default function ClientDetail() {
 
           <section className="client-detail-right-card client-detail-recent-moves-card" data-client-recent-moves-panel="true">
                     <div className="client-detail-card-title-row">
-                      <Activity className="h-4 w-4" />
+                      <EntityIcon entity="activity" className="h-4 w-4" />
                       <h2>Roadmapa</h2>
                     </div>
                     {recentClientMovements.length ? (
@@ -1685,7 +1687,7 @@ export default function ClientDetail() {
 
                     <section className="client-detail-summary-card client-detail-finance-card" aria-label="Finanse klienta">
                       <div className="client-detail-card-title-row">
-                        <Target className="h-4 w-4" />
+                        <EntityIcon entity="lead" className="h-4 w-4" />
                         <h2>Finanse klienta</h2>
                       </div>
                       <div className="client-detail-finance-metrics">
@@ -1940,7 +1942,7 @@ export default function ClientDetail() {
                     ) : (
                       clientActivities.slice(0, 16).map((activity) => (
                         <article key={String(activity.id || activity.eventType || getActivityTime(activity))} className="client-detail-history-row">
-                          <span className="client-detail-history-dot"><Activity className="h-4 w-4" /></span>
+                          <span className="client-detail-history-dot"><EntityIcon entity="activity" className="h-4 w-4" /></span>
                           <div>
                             <h3>{activityLabel(activity)}</h3>
                             <p>{formatDateTime(getActivityTime(activity))}</p>
@@ -1985,7 +1987,7 @@ export default function ClientDetail() {
             
               <section className="right-card client-detail-right-card client-detail-side-quick-actions-card" data-client-side-quick-actions="true">
                 <div className="client-detail-card-title-row">
-                  <Sparkles className="h-4 w-4" />
+                  <EntityIcon entity="ai" className="h-4 w-4" />
                   <h2>Szybkie akcje</h2>
                 </div>
                 <div className="client-detail-side-quick-actions-grid">
@@ -2061,7 +2063,7 @@ export default function ClientDetail() {
 
 <section className="right-card client-detail-right-card client-detail-note-card">
               <div className="client-detail-card-title-row">
-                <FileText className="h-4 w-4" />
+                <EntityIcon entity="template" className="h-4 w-4" />
                 <h2>Krótka notatka</h2>
               </div>
               <p className="client-detail-note-text">
@@ -2116,7 +2118,7 @@ export default function ClientDetail() {
 
             <section className="right-card client-detail-right-card" data-client-finance-summary="true">
               <div className="client-detail-card-title-row">
-                <Target className="h-4 w-4" />
+                <EntityIcon entity="lead" className="h-4 w-4" />
                 <h2>Podsumowanie finansów</h2>
               </div>
               <small>Suma wartości spraw: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>

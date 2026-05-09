@@ -1,3 +1,7 @@
+import {
+  CaseEntityIcon,
+  EntityIcon,
+  LeadEntityIcon } from '../components/ui-system';
 // CLOSEFLOW_LEAD_CONFLICT_RESOLUTION_V1
 // LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
 // ADMIN_FEEDBACK_P1_LEADS_SEARCH_QUESTION_MARK_REMOVED
@@ -14,18 +18,16 @@ import {
 import { Link,
   useSearchParams } from 'react-router-dom';
 import { AlertTriangle,
-  Briefcase,
   ChevronRight,
   Clock3,
-  FileText,
+  TemplateEntityIcon,
   Loader2,
   Mail,
   RotateCcw,
   Search,
-  Sparkles,
-  Target,
   Trash2,
-  TrendingUp } from 'lucide-react';
+  TrendingUp
+} from 'lucide-react';
 import { format,
   isPast,
   parseISO } from 'date-fns';
@@ -75,6 +77,8 @@ import {
   deleteLeadFromSupabase
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage20-lead-form-vnext.css';
+
+const TemplateEntityIcon = (props: { className?: string }) => <EntityIcon entity="template" {...props} />;
 
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
@@ -676,7 +680,7 @@ export default function Leads() {
 
           <div className="head-actions">
             <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
-              <Sparkles className="h-4 w-4" />
+              <EntityIcon entity="ai" className="h-4 w-4" />
               Zapytaj AI
             </Link>
             <button
@@ -846,7 +850,7 @@ export default function Leads() {
           <StatShortcutCard
             label="Wszystkie"
             value={stats.total}
-            icon={Target}
+            icon={LeadEntityIcon}
             active={quickFilter === 'all' && !valueSortEnabled && !showTrash}
             onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}
             title="Pokaż wszystkie leady"
@@ -890,7 +894,7 @@ export default function Leads() {
           <StatShortcutCard
             label="Historia"
             value={stats.linkedToCase}
-            icon={Briefcase}
+            icon={CaseEntityIcon}
             active={quickFilter === 'history' && !showTrash}
             onClick={() => toggleQuickFilter('history')}
             title="Pokaż leady przeniesione do obsługi"

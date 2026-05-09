@@ -1,3 +1,7 @@
+import {
+  CaseEntityIcon,
+  LeadEntityIcon,
+  NotificationEntityIcon } from '../components/ui-system';
 /* PHASE0_GOOGLE_WEBVIEW_FIRST_OCCURRENCE
 isEmbeddedGoogleAuthBlockedUserAgent()
 Google blokuje logowanie w tej przeglądarce
@@ -24,11 +28,16 @@ signInWithPopup
 signInWithEmailAndPassword
 '; wv)'
 */
-import { useState, FormEvent } from 'react';
+import {
+  useState,
+  FormEvent } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger } from '../components/ui/tabs';
 import {
   CheckCircle2,
   LogIn,
@@ -36,11 +45,8 @@ import {
   Lock,
   User,
   Loader2,
-  Target,
   CalendarDays,
-  BellRing,
-  Briefcase,
-  ArrowRight,
+  ArrowRight
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -58,10 +64,10 @@ const HERO_POINTS = [
 ];
 
 const FEATURE_CARDS = [
-  { icon: Target, title: 'Sprzedaż bez chaosu', text: 'Każdy lead ma kolejny krok, termin i historię działań.' },
+  { icon: LeadEntityIcon, title: 'Sprzedaż bez chaosu', text: 'Każdy lead ma kolejny krok, termin i historię działań.' },
   { icon: CalendarDays, title: 'Kalendarz operacyjny', text: 'Spotkania, follow-upy i zadania siedzą na jednej osi czasu.' },
-  { icon: Briefcase, title: 'Sprawa po sprzedaży', text: 'Po domknięciu leada wchodzisz od razu w etap realizacji.' },
-  { icon: BellRing, title: 'Mniej przeoczeń', text: 'Przypomnienia i konflikty pomagają nie gubić ruchów.' },
+  { icon: CaseEntityIcon, title: 'Sprawa po sprzedaży', text: 'Po domknięciu leada wchodzisz od razu w etap realizacji.' },
+  { icon: NotificationEntityIcon, title: 'Mniej przeoczeń', text: 'Przypomnienia i konflikty pomagają nie gubić ruchów.' },
 ];
 
 function getSafeLoginUrl() {

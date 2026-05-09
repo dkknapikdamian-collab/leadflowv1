@@ -1,18 +1,28 @@
+import {
+  EntityIcon } from '../components/ui-system';
 
 /* STAGE16O_BILLING_VISIBILITY_STATIC_CONTRACTS
  * data-plan-visibility-stage32e="billing-plan-comparison" data-plan-visibility-stage32e="billing-feature-matrix"
  * Google Calendar sync — w przygotowaniu / wymaga konfiguracji OAuth
  * Asystent aplikacji i dyktowanie AI w trybie warunkowym (provider + env)
  * AI lokalne/regułowe i szkice do ręcznego zatwierdzenia działają także bez zewnętrznego modelu
- * Warstwy AI: lokalne/regułowe (bez modelu), asystent aplikacji (czyta dane i zapisuje szkice), zewnętrzny model dopiero po konfiguracji providera i env w Vercel.
+ * Warstwy AI: lokalne/regułowe (bez modelu),
+  asystent aplikacji (czyta dane i zapisuje szkice),
+  zewnętrzny model dopiero po konfiguracji providera i env w Vercel.
  * zewnętrzny model dopiero po konfiguracji providera i env w Vercel. Funkcji nieudostępnionych backendowo nie udajemy.
  * Płatność kartą lub BLIK Najlepszy wybór Pełny workflow Wybierz okres dostępu Przejdź do płatności Błąd uruchamiania płatności Stripe/BLIK
  */
 const BILLING_UI_STRIPE_SUBSCRIPTION_CARD_ONLY_STAGE86O = 'Recurring Stripe subscription checkout is card-only; BLIK requires a separate one-time payment flow.';
 const STAGE16B_PLAN_FEATURE_MATRIX_GUARD = [
-  { name: 'Google Calendar', basic: 'Nie', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Pełny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Dostępne' },
-] as const;
+  { name: 'Google Calendar',
+  basic: 'Nie',
+  pro: 'Dostępne',
+  ai: 'Dostępne' },
+  { name: 'Pełny asystent AI',
+  basic: 'Nie',
+  pro: 'Nie',
+  ai: 'Dostępne' },
+  ] as const;
 
 /*
 STAGE16B_BILLING_TRUTH_COPY
@@ -24,8 +34,12 @@ Raport tygodniowy
 const BILLING_UI_STRIPE_BLIK_LABEL_GUARD = 'Stripe/BLIK';
 const BILLING_UI_STRIPE_BLIK_COPY_GUARD = 'BLIK przez Stripe';
 const BILLING_UI_STRIPE_BLIK_ERROR_UTF8_GUARD = 'Błąd uruchamiania płatności Stripe/BLIK';
-import { useEffect, useMemo, useState } from 'react';
-import { format, parseISO } from 'date-fns';
+import {
+  useEffect,
+  useMemo,
+  useState } from 'react';
+import { format,
+  parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import {
   AlertTriangle,
@@ -33,12 +47,10 @@ import {
   BadgeCheck,
   CalendarClock,
   Check,
-  CreditCard,
   Loader2,
   LockKeyhole,
   RefreshCw,
-  Shield,
-  Sparkles,
+  Shield
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -498,7 +510,7 @@ export default function Billing() {
               Odśwież status
             </Button>
             <Button type="button" onClick={() => setTab('plan')}>
-              <CreditCard className="h-4 w-4" />
+              <EntityIcon entity="payment" className="h-4 w-4" />
               {accessCopy.cta}
             </Button>
           </div>
@@ -707,7 +719,7 @@ export default function Billing() {
 
               <section className="right-card billing-right-card billing-right-featured">
                 <div className="billing-right-title">
-                  <Sparkles className="h-4 w-4" />
+                  <EntityIcon entity="ai" className="h-4 w-4" />
                   <h2>Najczęściej wybierany</h2>
                 </div>
                 <p>Pro</p>
@@ -731,7 +743,7 @@ export default function Billing() {
 
               <section className="right-card billing-right-card">
                 <div className="billing-right-title">
-                  <Sparkles className="h-4 w-4" />
+                  <EntityIcon entity="ai" className="h-4 w-4" />
                   <h2>AI jako dodatek Beta</h2>
                 </div>
                 <small>Warstwy AI: lokalne/regułowe (bez modelu), asystent aplikacji (czyta dane i zapisuje szkice), zewnętrzny model dopiero po konfiguracji providera i env w Vercel.</small>
