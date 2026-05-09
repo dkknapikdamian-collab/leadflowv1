@@ -58,6 +58,40 @@ function formatClientMoney(value: number) {
   return `${Math.round(Number(value || 0)).toLocaleString('pl-PL')} PLN`;
 }
 
+const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
+
+const STAGE29_EXPECTED_VALUE_KEYS = [
+  'expectedRevenue',
+  'expected_revenue',
+  'caseValue',
+  'case_value',
+  'dealValue',
+  'deal_value',
+  'value',
+  'estimatedValue',
+  'estimated_value',
+  'budget',
+  'price',
+  'total',
+  'totalValue',
+  'total_value',
+  'grossAmount',
+  'gross_amount',
+  'netAmount',
+  'net_amount',
+];
+
+const STAGE29_PAID_VALUE_KEYS = ['paidAmount', 'paid_amount', 'amountPaid', 'amount_paid'];
+const STAGE29_REMAINING_VALUE_KEYS = ['remainingAmount', 'remaining_amount', 'leftAmount', 'left_amount'];
+
+function getStage29ExpectedCaseValue(row: Record<string, unknown>) {
+  const explicit = getStage35FirstMoneyValue(row, STAGE29_EXPECTED_VALUE_KEYS);
+  if (explicit > 0) return explicit;
+  const paid = getStage35FirstMoneyValue(row, STAGE29_PAID_VALUE_KEYS);
+  const remaining = getStage35FirstMoneyValue(row, STAGE29_REMAINING_VALUE_KEYS);
+  return paid + remaining > 0 ? paid + remaining : 0;
+}
+
 const STAGE35_MONEY_KEYS = [
   'amount',
   'value',
@@ -188,7 +222,7 @@ export default function Clients() {
     for (const caseRow of cases as Record<string, unknown>[]) {
       const clientId = getStage35RelationClientId(caseRow);
       if (!clientId) continue;
-      const value = getStage35FirstMoneyValue(caseRow, STAGE35_MONEY_KEYS);
+      const value = getStage29ExpectedCaseValue(caseRow);
       map.set(clientId, (map.get(clientId) || 0) + value);
     }
     return map;
@@ -224,13 +258,12 @@ export default function Clients() {
       const caseValue = caseValueByClientId.get(clientId) || 0;
       const leadValue = leadValueByClientId.get(clientId) || 0;
       const fallbackClientValue = clientFieldValueByClientId.get(clientId) || 0;
-      const finalValue = paymentValue > 0
-        ? paymentValue
-        : caseValue > 0
-          ? caseValue
-          : leadValue > 0
-            ? leadValue
-            : fallbackClientValue;
+      const expectedValue = caseValue > 0
+        ? caseValue
+        : leadValue > 0
+          ? leadValue
+          : fallbackClientValue;
+      const finalValue = expectedValue > 0 ? expectedValue : paymentValue;
       map.set(clientId, finalValue);
     }
     return map;

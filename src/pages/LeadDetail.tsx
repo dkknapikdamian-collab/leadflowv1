@@ -75,6 +75,7 @@ import {
   updateEventInSupabase,
   updateLeadInSupabase,
   updateTaskInSupabase,
+  updateCaseInSupabase,
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage14-lead-detail-vnext.css';
 
@@ -231,7 +232,15 @@ function formatMoney(value: unknown) {
   return Number.isFinite(amount) ? `${amount.toLocaleString('pl-PL')} PLN` : '0 PLN';
 }
 function getLeadFinance(lead: Record<string, unknown> | null) {
-  const dealValue = Number(lead?.dealValue || 0);
+  // CLOSEFLOW_LEAD_SETTLEMENT_DYNAMIC_V29
+  const rawDealValue =
+    lead?.dealValue ??
+    (lead as any)?.deal_value ??
+    (lead as any)?.expectedRevenue ??
+    (lead as any)?.expected_revenue ??
+    (lead as any)?.value ??
+    0;
+  const dealValue = Number(rawDealValue || 0);
   const formatted = formatMoney(Number.isFinite(dealValue) ? dealValue : 0);
   const currency = typeof lead?.currency === 'string' && lead.currency.trim() ? lead.currency.trim() : 'PLN';
   return { dealValue: Number.isFinite(dealValue) ? dealValue : 0, currency, formatted };
@@ -491,6 +500,15 @@ export default function LeadDetail() {
         allCaseRows.find((item) => String(item.id || '') === String((leadRow as any)?.linkedCaseId || (leadRow as any)?.caseId || '')) ||
         null;
       const currentCaseId = currentCase?.id ? String(currentCase.id) : null;
+      // CLOSEFLOW_LEAD_SETTLEMENT_DYNAMIC_V29_PAYMENTS
+      const basePaymentRows = Array.isArray(paymentRows) ? paymentRows : [];
+      const casePaymentRows = currentCaseId
+        ? await fetchPaymentsFromSupabase({ caseId: currentCaseId }).catch(() => [])
+        : [];
+      const mergedPaymentRows = dedupeById([
+        ...basePaymentRows,
+        ...(Array.isArray(casePaymentRows) ? casePaymentRows : []),
+      ] as any[]);
       const linkedTaskRows = dedupeById(
         (Array.isArray(taskRows) ? taskRows : [])
           .map((item: any) => ({ ...item, ...normalizeWorkItem(item) }))
@@ -509,7 +527,7 @@ export default function LeadDetail() {
       setLinkedTasks(linkedTaskRows);
       setLinkedEvents(linkedEventRows);
       setActivities(Array.isArray(activityRows) ? activityRows : []);
-      setLeadPayments(Array.isArray(paymentRows) ? paymentRows : []);
+      setLeadPayments(mergedPaymentRows);
       setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
       setCreateCaseDraft({
         title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsługa`,
@@ -554,11 +572,22 @@ export default function LeadDetail() {
       ? lead.partialPayments.reduce((sum: number, entry: any) => sum + (Number(entry?.amount) || 0), 0)
       : 0;
     const paid = paidFromPayments > 0 ? paidFromPayments : legacyPaid;
-    const potential = Math.max(0, Number(leadFinance.dealValue || 0));
+    // CLOSEFLOW_LEAD_SETTLEMENT_DYNAMIC_V29_CASE_VALUE
+    const casePotentialRaw =
+      associatedCase?.expectedRevenue ??
+      (associatedCase as any)?.expected_revenue ??
+      (associatedCase as any)?.caseValue ??
+      (associatedCase as any)?.case_value ??
+      (associatedCase as any)?.dealValue ??
+      (associatedCase as any)?.deal_value ??
+      (associatedCase as any)?.value ??
+      0;
+    const casePotential = Number(casePotentialRaw || 0);
+    const potential = Math.max(0, Number.isFinite(casePotential) && casePotential > 0 ? casePotential : Number(leadFinance.dealValue || 0));
     const remaining = Math.max(0, potential - paid);
     const billingStatus = deriveBillingStatus(potential, paid, leadPayments);
     return { potential, paid, remaining, billingStatus };
-  }, [lead?.partialPayments, leadFinance.dealValue, leadPayments]);
+  }, [associatedCase, lead?.partialPayments, leadFinance.dealValue, leadPayments]);
 
   const leadPrimaryNoteText = useMemo(() => {
     const directNote =
@@ -641,6 +670,15 @@ export default function LeadDetail() {
         { type: leadPaymentDraft.type, status: leadPaymentDraft.status, amount },
       ]);
       await updateLeadInSupabase({ id: leadId, billingStatus: nextBillingStatus }).catch(() => null);
+      // CLOSEFLOW_LEAD_SETTLEMENT_DYNAMIC_V29_CASE_UPDATE
+      if (serviceCaseId) {
+        await updateCaseInSupabase({
+          id: serviceCaseId,
+          paidAmount: paidAfter,
+          remainingAmount: Math.max(0, leadFinancePanel.potential - paidAfter),
+          billingStatus: nextBillingStatus,
+        }).catch(() => null);
+      }
       setIsLeadPaymentOpen(false);
       await loadLead();
       toast.success('Płatność leada zapisana.');

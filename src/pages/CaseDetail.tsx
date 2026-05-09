@@ -334,14 +334,24 @@ function getPaymentAmount(payment: CasePaymentRecord) {
   return Number.isFinite(amount) ? amount : 0;
 }
 function getCaseExpectedRevenue(caseData?: CaseRecord | null) {
-  const raw =
+  // CLOSEFLOW_CASE_SETTLEMENT_EXPECTED_VALUE_V29
+  const explicitRaw =
     caseData?.expectedRevenue ??
+    (caseData as any)?.expected_revenue ??
     (caseData as any)?.caseValue ??
+    (caseData as any)?.case_value ??
     (caseData as any)?.dealValue ??
+    (caseData as any)?.deal_value ??
+    (caseData as any)?.totalValue ??
+    (caseData as any)?.total_value ??
     (caseData as any)?.value ??
     0;
-  const amount = Number(raw || 0);
-  return Number.isFinite(amount) ? amount : 0;
+  const explicit = Number(explicitRaw || 0);
+  if (Number.isFinite(explicit) && explicit > 0) return explicit;
+  const paid = Number((caseData as any)?.paidAmount ?? (caseData as any)?.paid_amount ?? 0);
+  const remaining = Number((caseData as any)?.remainingAmount ?? (caseData as any)?.remaining_amount ?? 0);
+  const totalFromSettlement = (Number.isFinite(paid) ? paid : 0) + (Number.isFinite(remaining) ? remaining : 0);
+  return totalFromSettlement > 0 ? totalFromSettlement : 0;
 }
 function getCaseFinanceSummary(caseData: CaseRecord | null, payments: CasePaymentRecord[]) {
   const currency = String(caseData?.currency || payments.find((payment) => payment.currency)?.currency || 'PLN').toUpperCase();

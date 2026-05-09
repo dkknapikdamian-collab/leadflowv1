@@ -1,9 +1,9 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
 const srcFile = path.join(root, 'src', 'lib', 'supabase-fallback.ts');
-const source = fs.readFileSync(srcFile, 'utf8');
+const source = fs.readFileSync(srcFile, 'utf8').replace(/^\uFEFF/, '');
 
 function walk(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
@@ -11,7 +11,7 @@ function walk(dir, out = []) {
     const full = path.join(dir, item);
     const stat = fs.statSync(full);
     if (stat.isDirectory()) {
-      if (!['node_modules', 'dist', '.git'].includes(item)) walk(full, out);
+      if (!['node_modules', 'dist', '.git', '.vite'].includes(item)) walk(full, out);
     } else if (/\.(ts|tsx)$/.test(item)) {
       out.push(full);
     }
@@ -20,7 +20,7 @@ function walk(dir, out = []) {
 }
 
 function normalizeSource(value) {
-  return String(value || '').replace(/\\/g, '/').replace(/\.ts$/, '').replace(/\.tsx$/, '');
+  return String(value || '').replace(/\\/g, '/').replace(/\.tsx?$/, '');
 }
 
 function isSupabaseFallbackImport(importSource) {
@@ -51,7 +51,7 @@ function parseNamedImportBlock(block) {
 
 function collectImportDeclarations(text) {
   const declarations = [];
-  const lines = String(text || '').split(/\r?\n/);
+  const lines = String(text || '').replace(/^\uFEFF/, '').split(/\r?\n/);
   let current = '';
   let active = false;
   let startLine = 0;
@@ -121,17 +121,36 @@ function collectExports() {
     /export\s+function\s+([A-Za-z_$][\w$]*)\s*\(/g,
     /export\s+const\s+([A-Za-z_$][\w$]*)\b/g,
     /export\s+type\s+([A-Za-z_$][\w$]*)\b/g,
+    /export\s*\{([\s\S]*?)\}/g,
   ];
-  for (const pattern of patterns) {
+
+  for (const pattern of patterns.slice(0, 4)) {
     let match;
     while ((match = pattern.exec(source))) exported.add(match[1]);
   }
+
+  let match;
+  while ((match = patterns[4].exec(source))) {
+    for (const name of parseNamedImportBlock(match[1])) exported.add(name);
+  }
+
   return exported;
 }
 
 const imported = collectImports();
 const exportedNames = collectExports();
-const forbiddenFalsePositives = ['AlertTriangle', 'useState', 'Link', 'Dialog', 'CardContent', 'createResponseTemplateInSupabase imported by'];
+
+const forbiddenFalsePositives = [
+  'AlertTriangle',
+  'useState',
+  'Link',
+  'Dialog',
+  'CardContent',
+  'createResponseTemplateInSupabase imported by',
+  'createCaseTemplateInSupabase imported by',
+  'status',
+];
+
 for (const name of forbiddenFalsePositives) {
   if (imported.has(name)) {
     console.error('CLOSEFLOW_SUPABASE_FALLBACK_NAMED_EXPORTS_V1_FAIL');
